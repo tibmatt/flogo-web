@@ -1,0 +1,21 @@
+<div>
+
+  <div [hidden]="uiState.networkStatus.isOnline" style="margin-top: 5px; ">
+    <div class="alert alert-warning" style="text-align: center; margin-bottom:10px" role="warning">
+      <strong>Working offline.</strong> Your changes are saved locally
+    </div>
+  </div>
+
+  <pocgithub-config [config]="state.repoConfig" (onSubmit)="load($event)"
+                    [isReloadPermitted]="uiState.networkStatus.isOnline"></pocgithub-config>
+
+  <div [hidden]="!state.loadingFile">Loading file...</div>
+
+  <pocgithub-editor
+    [hidden]="state.loadingFile"
+    [uiState]="uiState?.file"
+    [fileStatus]="fileState"
+    [content]="state?.file"
+    (onSave)="save($event)"></pocgithub-editor>
+
+</div>

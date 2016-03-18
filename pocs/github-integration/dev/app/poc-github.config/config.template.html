@@ -1,0 +1,18 @@
+<div class="container pocgithub-config">
+  <legend>Configure</legend>
+  <form (submit)="handleSubmit($event)">
+    <div class="form-group">
+      <label for="repoOwner">Repo owner / name</label>
+      <div class="input-group">
+        <input [(ngModel)]="model.repo.owner" type="text" class="form-control" placeholder="owner" required>
+        <span class="input-group-addon">/</span>
+        <input [(ngModel)]="model.repo.name" type="text" class="form-control" placeholder="name" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="filePath">File path</label>
+      <input [(ngModel)]="model.filePath" type="text" class="form-control" required>
+    </div>
+    <button [disabled]="!isReloadPermitted" type="submit" class="btn btn-default">Load</button>
+  </form>
+</div>

@@ -1,0 +1,46 @@
+body {
+  background-color: #EEE;
+  margin: 0;
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .demo-header {
+    background-color: #222;
+    flex: 1 1 60px;
+  }
+
+  .demo-header__user {
+    color: white;
+    display: flex;
+    align-items: flex-end;
+  }
+  .demo-header__user__item {
+    margin-right: 5px;
+  }
+
+  .demo-header__user__loginName {
+    .demo-header__user__item;
+  }
+
+  .demo-header__user__avatar {
+    .demo-header__user__item;
+    width: 35px;
+    height: 35px;
+    border-radius: 50px;
+  }
+
+  .demo-main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    //margin-top:50px;
+    height: 100%;
+  }
+
+}
+
+
