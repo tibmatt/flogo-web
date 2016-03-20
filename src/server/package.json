@@ -1,0 +1,23 @@
+{
+  "name": "flogo-web-server",
+  "version": "0.1.0",
+  "description": "Wonderful web application for Flogo",
+  "repository": {
+    "url": "https://github.com/TIBCOSoftware/flogo-web.git"
+  },
+  "scripts": {
+    "start": "babel-node app.js"
+  },
+  "author": "Shaoke Xu<shaoxu@tibco.com>",
+  "devDependencies": {
+
+  },
+  "dependencies": {
+    "koa": "",
+    "koa-bodyparser": "",
+    "koa-router": "^5.4.0",
+    "koa-static": "^2.0.0",
+    "babel-cli": "^6.6.5",
+    "babel-preset-es2015": ""
+  }
+}

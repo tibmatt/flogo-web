@@ -1,0 +1,17 @@
+{
+  "name": "flogo-web-client",
+  "version": "0.1.0",
+  "description": "Wonderful web application for Flogo",
+  "repository": {
+    "url": "https://github.com/TIBCOSoftware/flogo-web.git"
+  },
+  "scripts": {
+    "start": "gulp"
+  },
+  "author": "Shaoke Xu<shaoxu@tibco.com>",
+  "devDependencies": {
+  },
+  "dependencies": {
+
+  }
+}
