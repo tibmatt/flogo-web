@@ -63,5 +63,5 @@ bower_components/
 
 # ignore files/folder in dist
 **/dist
-src/client/app/**/*.js
-src/client/app/**/*.map
+src/client/**/*.js
+src/client/**/*.map
