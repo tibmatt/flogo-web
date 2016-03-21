@@ -1,0 +1,8 @@
+node_modules/
+*.log
+/logs
+/typings
+
+/app/**/*.js
+/app/**/*.js.map
+/app/**/*.d.ts
