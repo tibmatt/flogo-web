@@ -39,28 +39,59 @@ export class FGDiagramService {
     diagram.nodes[ node.id ] = node;
 
     // wire the parents
-    _.each( node.parents, ( d: string, i: number ) => {
-      diagram.nodes[ d ].children.push( node.id );
-    } );
+    let indirectParentTypes = [ FGNodeType.LINK, FGNodeType.BRANCH ];
+    _.some( node.parents, ( d: string, i: number ) => {
+      let parentNode: FGNode = diagram.nodes[ d ];
+      if ( indirectParentTypes.indexOf( parentNode.type ) === -1 ) {
+        if ( parentNode.children.length ) {
+          let detachedChild: string;
 
-    // wire the children
-    _.each( node.children, ( d: string, i: number ) => {
-      let child = diagram.nodes[ d ];
+          _.some( parentNode.children, ( d: string, i: number ) => {
+            if ( indirectParentTypes.indexOf( diagram.nodes[ d ].type ) === -1 ) {
+              detachedChild = d;
 
-      child.parents.push( node.id );
+              parentNode.children.splice( parentNode.children.indexOf( d ), 1 );
 
-      child.parents = _.filter( child.parents, ( d: string, i: number ) => {
-        // filter the parents that are not in the parents of the adding node
-        let exist = node.parents.indexOf( d ) !== -1;
+              diagram.nodes[ d ].parents.splice( diagram.nodes[ d ].parents.indexOf( parentNode.id ), 1 );
 
-        if ( exist ) {
-          diagram.nodes[ d ].children.splice( diagram.nodes[ d ].children.indexOf( child.id ), 1 );
+              return true;
+            }
+
+            return false;
+          } );
+
+          // overwrite the children of the adding node
+          // TODO refine the logic
+          node.children = [ detachedChild ];
+
         }
 
-        return !exist;
+        parentNode.children.unshift( node.id );
+
+        return true;
+      }
+
+      return false;
+    } );
+
+    // ignore loc.children
+    // make sure the given node in the parents of its children
+    _.each( node.children, ( d: string, i: number ) => {
+      let nodeParents: string[ ] = diagram.nodes[ d ].parents;
+
+      _.each( nodeParents, ( parent: string ) => {
+
+        if ( indirectParentTypes.indexOf( diagram.nodes[ parent ].type ) === -1 ) {
+          nodeParents.splice( nodeParents.indexOf( parent ), 1 );
+        }
+
       } );
 
+      nodeParents.unshift( node.id );
+
     } );
+
+
 
     return Promise.resolve( node );
   }
