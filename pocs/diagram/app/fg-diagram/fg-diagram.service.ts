@@ -65,18 +65,17 @@ export class FGDiagramService {
     return Promise.resolve( node );
   }
 
-
   /**
-   * Update node in the diagram
+   * Verify if a node in the diagram
    */
-  updateNode( opt: {
+  isNodeUpdatable( opt: {
     node: FGNode,
     loc ? : {
       children: string[ ],
       parents: string[ ]
     },
     diagram: FGDiagram
-  } ): Promise < any > {
+  } ): boolean {
 
     // TODO opt validation
     let node = opt.node;
@@ -88,54 +87,10 @@ export class FGDiagramService {
 
     let verifyFailHandler = ( msg: string ) => {
       console.warn( msg );
-      return Promise.reject( msg );
+      return false;
     }
 
-    console.log( `Updating node ${node.id} ...` );
-
-    let updateMode = 'inject'; // 'inject' or 'append'
-
-    /**
-     * Cases
-     *   1. Update task content
-     *     1. don't care, render will do the job
-     *   2. Update the task location (non-branch/non-link node)
-     *     1. [verification]
-     *       1. the old parents contain only one non-branch/non-link node
-     *       2. that non-branch/non-link parent of the given node has only this child
-     *     2. attach the given node and its descendant to a new parent (only update parents)
-     *       1. [verification] in this case, the new parent should have no child
-     *       2. unlink the given node from the current non-branch/non-link parents (should be only one).
-     *       3. link to the new parent - merge the new parents array with the branch/link parents
-     *     3. inject the given node into a path (update both children and parents)
-     *       1. [verification] in this case
-     *         1. the new parent is the parent of the new child
-     *         2. the new child is a non-branch node
-     *         3. the given node should have no child
-     *       2. break the links to all of the old children,
-     *       3. unlink the given node from the current non-branch/non-link parents (should be only one).
-     *       4. link to the new parent - merge the new parents array with the branch/link parents
-     *       5. link to the new child
-     *     4. inject the given node into a path with omit children (only passed parents)
-     *       1. [verification] in this case,
-     *         1. the new parent should have children
-     *         2. the given node should have no child
-     *       2. the reset of the operations should be similar to the normal injection
-     *   3. [merged with case 2] Update a non-branch/non-link node linked by multiple link/branch nodes
-     *     1. unlink the given node from the current non-branch/non-link parents (should be only one).
-     *     2. merge the new parents array with the branch/link parents
-     *   4. [TODO] Update link node
-     *     *. [alternatives]
-     *       1. use add node + delete node to handle this case
-     *     1. [verification] in this case
-     *       1. only the children can be changed, since changing the parent & child is a combination of delete link node and create a new one link the parent and child together
-     *       2. should only have single child
-     *     2. unlink from the old children
-     *     3. link to the new children
-     *   5. [TODO] Update branch node
-     *     1. children only
-     *     2. parent only
-     */
+    console.log( `Verify node ${node.id} ...` );
 
     /**
      * Verify location
@@ -166,7 +121,6 @@ export class FGDiagramService {
     // 2. that non-branch/non-link parent of the given node has only this child
     let directParentTotal = 0;
     let indirectParentTypes = [ FGNodeType.LINK, FGNodeType.BRANCH ];
-    let oldParent: any;
     if ( _.some( oldNode.parents, ( d: any, i: number ) => {
 
         if ( directParentTotal > 1 ) {
@@ -180,8 +134,6 @@ export class FGDiagramService {
           return directParentChildren.length !== 1 || directParentChildren.indexOf( oldNode.id ) === -1;
         } else {
           directParentTotal++;
-
-          oldParent = diagram.nodes[ d ];
         }
 
         return false;
@@ -227,7 +179,7 @@ export class FGDiagramService {
         return verifyFailHandler( `There should only be one child when injecting node into a path.` );
       }
 
-      let newChild = diagram.nodes[ loc.children[ 0 ] ];
+      let newLocChild = diagram.nodes[ loc.children[ 0 ] ];
 
       // the given node should have no child
       if ( oldNode.children.length ) {
@@ -235,34 +187,131 @@ export class FGDiagramService {
       }
 
       // the children should be a non-branch node
-      if ( newChild.type === FGNodeType.BRANCH ) {
+      if ( newLocChild.type === FGNodeType.BRANCH ) {
         return verifyFailHandler( `The new child should not be a branch node when injecting a node into a path.` );
       }
 
       // the children should be the child of the new parent
-      if ( newParent.children.indexOf( newChild.id ) === -1 ) {
+      if ( newParent.children.indexOf( newLocChild.id ) === -1 ) {
         return verifyFailHandler( `The new child should be the children of the new parent when injecting a node into a path.` );
       }
     } else {
       if ( oldNode.children.length ) {
-        updateMode = 'append';
-
         if ( newParent.children.length ) {
           return verifyFailHandler( `The given parent should have no child when append node to it.` );
         }
       } else {
         if ( newParent.children.length ) {
           // injection verification
-          let newChild = diagram.nodes[ newParent.children[ 0 ] ];
+          let newParentChild = diagram.nodes[ newParent.children[ 0 ] ];
 
           // the children should be a non-branch node
-          if ( newChild.type === FGNodeType.BRANCH ) {
+          if ( newParentChild.type === FGNodeType.BRANCH ) {
             return verifyFailHandler( `The new child should not be a branch node when injecting a node into a path.` );
           }
-        } else {
-          updateMode = 'append';
         }
       }
+    }
+
+    return true;
+  }
+
+
+  /**
+   * Update node in the diagram
+   */
+  updateNode( opt: {
+    node: FGNode,
+    loc ? : {
+      children: string[ ],
+      parents: string[ ]
+    },
+    diagram: FGDiagram
+  } ): Promise < any > {
+
+    // TODO opt validation
+    let node = opt.node;
+    let diagram = opt.diagram;
+    let loc: FGNodeLocation = < FGNodeLocation > _.assign( {
+      children: node.children || [ ],
+      parents: node.parents || [ ]
+    }, opt.loc );
+
+    let verifyFailHandler = ( msg: string ) => {
+      console.warn( msg );
+      return Promise.reject( msg );
+    }
+
+    console.log( `Updating node ${node.id} ...` );
+
+    /**
+     * Cases
+     *   1. Update task content
+     *     1. don't care, render will do the job
+     *   2. Update the task location (non-branch/non-link node)
+     *     1. [verification]
+     *       1. the old parents contain only one non-branch/non-link node
+     *       2. that non-branch/non-link parent of the given node has only this child
+     *     2. attach the given node and its descendant to a new parent (only update parents)
+     *       1. [verification] in this case, the new parent should have no child
+     *       2. unlink the given node from the current non-branch/non-link parents (should be only one).
+     *       3. link to the new parent - merge the new parents array with the branch/link parents
+     *     3. inject the given node into a path (update both children and parents)
+     *       1. [verification] in this case
+     *         1. the new parent is the parent of the new child
+     *         2. the new child is a non-branch node
+     *         3. the given node should have no child
+     *       2. break the links to all of the old children,
+     *       3. unlink the given node from the current non-branch/non-link parents (should be only one).
+     *       4. link to the new parent - merge the new parents array with the branch/link parents
+     *       5. link to the new child
+     *     4. inject the given node into a path with omit children (only passed parents)
+     *       1. [verification] in this case,
+     *         1. the new parent should have children
+     *         2. the given node should have no child
+     *       2. the reset of the operations should be similar to the normal injection
+     *   3. [merged with case 2] Update a non-branch/non-link node linked by multiple link/branch nodes
+     *     1. unlink the given node from the current non-branch/non-link parents (should be only one).
+     *     2. merge the new parents array with the branch/link parents
+     *   4. [TODO] Update link node
+     *     *. [alternatives]
+     *       1. use add node + delete node to handle this case
+     *     1. [verification] in this case
+     *       1. only the children can be changed, since changing the parent & child is a combination of delete link node and create a new one link the parent and child together
+     *       2. should only have single child
+     *     2. unlink from the old children
+     *     3. link to the new children
+     *   5. [TODO] Update branch node
+     *     1. children only
+     *     2. parent only
+     */
+
+    if ( !this.isNodeUpdatable( opt ) ) {
+      return verifyFailHandler( 'Cannot update the node..' );
+    }
+
+    let oldNode = diagram.nodes[ node.id ];
+    let indirectParentTypes = [ FGNodeType.LINK, FGNodeType.BRANCH ];
+    let oldParent: any;
+
+    _.some( oldNode.parents, ( d: any, i: number ) => {
+
+      // find the direct parent
+      if ( indirectParentTypes.indexOf( diagram.nodes[ d ].type ) === -1 ) {
+        oldParent = diagram.nodes[ d ];
+        return true;
+      }
+
+      return false;
+    } );
+
+
+    let newParent = diagram.nodes[ loc.parents[ 0 ] ];
+
+    let updateMode = 'inject'; // 'inject' or 'append'
+
+    if ( !loc.children.length && ( oldNode.children.length || !newParent.children.length ) ) {
+      updateMode = 'append';
     }
 
     // create the updated node
@@ -274,7 +323,7 @@ export class FGDiagramService {
      *   2. node.parents should contain all of the branch/link nodes plus the new parent
      */
     // handle node.parents
-    node.parents = < string[ ] > _.uniq( _.difference( oldNode.parents, oldParent.id )
+    node.parents = < string[ ] > _.uniq( _.difference( oldNode.parents, [ oldParent.id ] )
       .concat( node.parents ) );
 
     // handle node.children
@@ -376,6 +425,80 @@ export class FGDiagramService {
     console.groupEnd( );
 
     return matrix;
+  }
+
+  getValidParents( opt: {
+    node: FGNode,
+    diagram: FGDiagram
+  } ) {
+
+    let validParents: string[ ] = [ ];
+    let indirectParentTypes = [ FGNodeType.LINK, FGNodeType.BRANCH ];
+
+    let isNodeInDiagram = !!opt.diagram.nodes[ opt.node.id ];
+
+    if ( isNodeInDiagram ) {
+      _.forIn( opt.diagram.nodes, ( node: FGNode, nodeID: string ) => {
+        if ( indirectParentTypes.indexOf( opt.diagram.nodes[ nodeID ].type ) === -1 && nodeID !== opt.node.id ) {
+          if ( this.isNodeUpdatable( {
+              node: opt.diagram.nodes[ opt.node.id ],
+              loc: {
+                parents: [ nodeID ],
+                children: [ ]
+              },
+              diagram: opt.diagram
+            } ) ) {
+            validParents.push( nodeID );
+          }
+        }
+      } );
+    } else {
+      _.forIn( opt.diagram.nodes, ( node: FGNode, nodeID: string ) => {
+        if ( indirectParentTypes.indexOf( opt.diagram.nodes[ nodeID ].type ) === -1 ) {
+          validParents.push( nodeID );
+        }
+      } );
+    }
+
+
+    return validParents;
+  }
+
+  getValidChildren( opt: {
+    node: FGNode,
+    diagram: FGDiagram
+  } ) {
+
+    let validChildren: string[ ] = [ ];
+    let indirectParentTypes = [ FGNodeType.LINK, FGNodeType.BRANCH ];
+
+    let isNodeInDiagram = !!opt.diagram.nodes[ opt.node.id ];
+
+    if ( isNodeInDiagram ) {
+      _.forIn( opt.diagram.nodes, ( node: FGNode, nodeID: string ) => {
+        if ( indirectParentTypes.indexOf( opt.diagram.nodes[ nodeID ].type ) === -1 && nodeID !== opt.node.id ) {
+
+          if ( this.isNodeUpdatable( {
+              node: opt.diagram.nodes[ nodeID ],
+              loc: {
+                parents: [ opt.node.id ],
+                children: [ ]
+              },
+              diagram: opt.diagram
+            } ) ) {
+            validChildren.push( nodeID );
+          }
+        }
+      } );
+    } else {
+      _.forIn( opt.diagram.nodes, ( node: FGNode, nodeID: string ) => {
+        if ( indirectParentTypes.indexOf( opt.diagram.nodes[ nodeID ].type ) === -1 ) {
+          validChildren.push( nodeID );
+        }
+      } );
+    }
+
+    return validChildren;
   }
 
 }

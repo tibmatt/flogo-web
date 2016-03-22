@@ -1,7 +1,7 @@
 import { Component } from 'angular2/core';
 import { FGDiagramComponent } from './fg-diagram/fg-diagram.component';
 import { FGTaskPanel } from './fg-task-panel/fg-task-panel.component';
-import { FGTaskDictionary, FGDiagram, FGNode, FGTask } from './models';
+import { FGTaskDictionary, FGDiagram, FGNode, FGTask, FGNodeLocation } from './models';
 import { FGTaskService } from './common/fg-task.service';
 
 // mock
@@ -23,7 +23,7 @@ export class FGAppComponent {
   diagram: FGDiagram;
   _diagram: FGDiagram;
   _tasks: FGTaskDictionary;
-  currentNode: FGNode;
+  currentNodeID: string;
 
   constructor( private _taskService: FGTaskService, private _diagramService: FGDiagramService ) {
     _taskService.getTasks( )
@@ -63,14 +63,15 @@ export class FGAppComponent {
 
     console.log( data );
 
-    this.currentNode = this.diagram.nodes[ data.node.id ];
+    this.currentNodeID = data.node.id;
 
     console.groupEnd( );
   }
 
   afterModify( data: {
     node: FGNode,
-    task: FGTask
+    task: FGTask,
+    loc ? : FGNodeLocation
   } ) {
     console.group( 'afterModify' );
 
@@ -81,16 +82,34 @@ export class FGAppComponent {
       let node = this.diagram.nodes[ data.node.id ];
 
       if ( node ) {
-        this._diagramService.updateNode( {
+        let params: any = {
           node: node,
           diagram: this.diagram
-        } );
+        };
+
+        if ( data.loc ) {
+          params.loc = data.loc;
+        }
+
+        if ( this._diagramService.isNodeUpdatable( params ) ) {
+          this._diagramService.updateNode( params );
+        }
       } else {
-        this._diagramService.addNode( {
-          node: node,
+        let params: any = {
+          node: data.node,
           diagram: this.diagram
-        } );
+        };
+
+        if ( data.loc ) {
+          params.loc = data.loc;
+        }
+
+        this._diagramService.addNode( params );
       }
+
+      // force refresh
+      // TODO replace this with proper logic
+      this.diagram = _.cloneDeep( this.diagram );
     }
 
     if ( data.task ) {
@@ -102,7 +121,7 @@ export class FGAppComponent {
       this.tasks = _.cloneDeep( this.tasks );
     }
 
-    this.currentNode = null;
+    this.currentNodeID = null;
 
     console.groupEnd( );
   }

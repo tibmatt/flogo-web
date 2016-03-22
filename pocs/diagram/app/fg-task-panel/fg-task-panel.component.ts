@@ -9,29 +9,30 @@ import { FGDiagramService } from '../fg-diagram/fg-diagram.service';
   templateUrl: './app/fg-task-panel/fg-task-panel.component.html',
   styleUrls: [ './app/fg-task-panel/fg-task-panel.component.css' ],
   outputs: [ 'afterModify' ],
-  inputs: [ 'diagram', 'tasks', 'currentNode' ]
+  inputs: [ 'diagram', 'tasks', 'currentNodeID' ]
 } )
 export class FGTaskPanel implements OnChanges {
 
   public diagram: FGDiagram;
   public tasks: FGTaskDictionary;
-  public currentNode: FGNode;
+  public currentNodeID: string;
 
   public afterModify: EventEmitter < any > ;
 
   private elmRef: ElementRef;
   private currentTask: FGTask;
+  private currentNode: FGNode;
 
-  private inputs: FGTaskInputs;
-  private inputsKeys: string[ ];
-  private outputs: FGTaskOutputs;
-  private outputsKeys: string[ ];
-  private newInputs: FGTaskInputs;
-  private newInputsKeys: string[ ];
-  private newOutputs: FGTaskOutputs;
-  private newOutputsKeys: string[ ];
-  private locParentsStr: string;
-  private locChildrenStr: string;
+  private currentParent: string; // id of the current non-branch/non-link parent
+  private currentChildren: string; // id of the current non-branch/non-link children
+
+  private validParents: string[ ];
+  private validChildren: string[ ];
+
+  private isRootNode: boolean;
+
+  private inputs: any[ ];
+  private outputs: any[ ];
 
   constructor( @Inject( ElementRef ) elementRef: ElementRef, private fgDiagramService: FGDiagramService ) {
     this.elmRef = elementRef;
@@ -43,14 +44,21 @@ export class FGTaskPanel implements OnChanges {
   } ) {
 
     // monitor the updates of the current task
-    if ( changes[ 'currentNode' ] ) {
+    if ( changes[ 'currentNodeID' ] ) {
 
-      console.group( 'Updated currentNode' );
-      console.log( this.currentNode );
+      console.group( 'Updated currentNodeID' );
+      console.log( this.currentNodeID );
       console.groupEnd( );
 
-      if ( this.currentNode ) {
+      if ( this.currentNodeID ) {
+        this.currentNode = _.cloneDeep( this.diagram.nodes[ this.currentNodeID ] );
         this.currentTask = _.cloneDeep( this.tasks[ this.diagram.nodes[ this.currentNode.id ].taskID ] );
+
+        if ( this.currentNode.type === FGNodeType.ROOT ) {
+          this.isRootNode = true;
+        } else {
+          this.isRootNode = false;
+        }
       } else {
         this.currentTask = null;
       }
@@ -63,20 +71,72 @@ export class FGTaskPanel implements OnChanges {
     }
   }
 
+  private initData( ) {
+    this.inputs = [ ];
+    this.outputs = [ ];
+    this.currentParent = '';
+    this.currentChildren = '';
+
+    _.forIn( this.currentTask.attrs.inputs, ( value: any, key: string ) => {
+      this.inputs.push( {
+        key: key,
+        value: value
+      } );
+    } );
+
+    _.forIn( this.currentTask.attrs.outputs, ( value: any, key: string ) => {
+      this.outputs.push( {
+        key: key,
+        value: value
+      } );
+    } );
+
+    let indirectParentTypes = [ FGNodeType.LINK, FGNodeType.BRANCH ];
+    _.some( this.currentNode.parents, ( d: string ) => {
+
+      if ( indirectParentTypes.indexOf( this.diagram.nodes[ d ].type ) === -1 ) {
+        this.currentParent = d;
+
+        return true;
+      }
+
+      return false;
+    } );
+
+    // get the single non-branch/non-link children
+    // TODO
+    //   how to handle multiple children
+    _.some( this.currentNode.children, ( d: string ) => {
+
+      if ( indirectParentTypes.indexOf( this.diagram.nodes[ d ].type ) === -1 ) {
+        this.currentChildren = d;
+
+        return true;
+      }
+
+      return false;
+    } );
+
+    this.validParents = this.fgDiagramService.getValidParents( {
+      node: this.diagram.nodes[ this.currentNode.id ] || this.currentNode,
+      diagram: this.diagram
+    } );
+
+    this.validParents.push( this.currentParent );
+    this.validParents = _.uniq( this.validParents );
+
+    this.validChildren = this.fgDiagramService.getValidChildren( {
+      node: this.diagram.nodes[ this.currentNode.id ] || this.currentNode,
+      diagram: this.diagram
+    } );
+
+    this.validChildren.push( this.currentChildren );
+    this.validChildren = _.uniq( this.validChildren );
+
+  }
+
   showPanel( ) {
-
-    this.inputs = this.currentTask.attrs.inputs;
-    this.outputs = this.currentTask.attrs.outputs;
-    this.inputsKeys = _.keys( this.inputs );
-    this.outputsKeys = _.keys( this.outputs );
-
-    this.newOutputs = {}
-    this.newOutputsKeys = [ ];
-    this.newInputs = {}
-    this.newInputsKeys = [ ];
-
-    this.locParentsStr = this.currentNode.parents.join( ', ' );
-    this.locChildrenStr = this.currentNode.children.join( ', ' );
+    this.initData( );
 
     let panel = $( this.elmRef.nativeElement )
       .children( '.fg-task-modal' );
@@ -112,25 +172,36 @@ export class FGTaskPanel implements OnChanges {
 
     this.hidePanel( );
 
-    // TODO verification
-    this.currentNode.parents = _.map( this.locParentsStr.split( ',' ), ( d: string ) => {
-      return d.trim( );
-    } );
-    this.currentNode.children = _.map( this.locChildrenStr.split( ',' ), ( d: string ) => {
-      return d.trim( );
+    _.each( this.inputs, ( input: any ) => {
+      this.currentTask.attrs.inputs[ input.key ] = input.value;
     } );
 
-    _.each( this.newInputsKeys, ( key: string ) => {
-      this.inputs[ key ] = _.cloneDeep( this.newInputs[ key ] );
+    _.each( this.outputs, ( output: any ) => {
+      this.currentTask.attrs.outputs[ output.key ] = output.value;
     } );
 
-    _.each( this.newOutputsKeys, ( key: string ) => {
-      this.outputs[ key ] = _.cloneDeep( this.newOutputs[ key ] );
-    } );
+    // get the new location information
+    let newLoc: FGNodeLocation = null;
+
+    // if the parent of is changed
+    if ( this.currentParent && this.currentNode.parents.indexOf( this.currentParent ) === -1 ) {
+      newLoc = {
+        parents: [ this.currentParent ],
+        children: [ ]
+      };
+
+      // change the children at the same time
+      if ( this.currentChildren && this.currentNode.children.indexOf( this.currentChildren ) === -1 ) {
+        newLoc.children = [ this.currentChildren ];
+      }
+    }
+
+    // apply changes on the node
 
     this.afterModify.emit( {
       task: this.currentTask,
-      node: this.currentNode
+      node: this.currentNode,
+      loc: newLoc
     } );
   }
 
@@ -151,19 +222,35 @@ export class FGTaskPanel implements OnChanges {
       parents: [ ],
       children: [ ]
     }
+
     this.showPanel( );
   }
 
   addOutput( ) {
     let newOutputsKey = 'newOutput' + Date.now( );
-    this.newOutputsKeys.push( newOutputsKey )
-    this.newOutputs[ newOutputsKey ] = '';
+    this.outputs.push( {
+      key: newOutputsKey,
+      value: ''
+    } );
   }
 
   addInput( ) {
     let newInputsKey = 'newInput' + Date.now( );
-    this.newInputsKeys.push( newInputsKey );
-    this.newInputs[ newInputsKey ] = '';
+    this.inputs.push( {
+      key: newInputsKey,
+      value: ''
+    } );
+  }
+
+  getTaskNameByNodeID( nodeID: string ) {
+    let taskName = 'not assigned';
+    let node = this.diagram.nodes[ nodeID ];
+
+    if ( node ) {
+      taskName = this.tasks[ node.taskID ].name;
+    }
+
+    return taskName;
   }
 
 }
