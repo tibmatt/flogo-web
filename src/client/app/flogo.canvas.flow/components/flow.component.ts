@@ -3,7 +3,7 @@ import {Component} from 'angular2/core';
 
 @Component({
   selector: 'flogo-canvas-flow',
-  templateUrl: '/app/flogo.canvas.flow/flow.tpl.html'
+  templateUrl: '/app/flogo.canvas.flow/components/flow.tpl.html'
 })
 
 //@RouteConfig([
