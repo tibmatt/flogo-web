@@ -15,7 +15,9 @@ app.use(function *(next){
 });
 
 app.use(function *(next){
-  if(this.path.endsWith('/')){
+  var path = this.path.endsWith('/')? this.path.substring(0, this.path.length - 1): this.path;
+
+  if(!/\/[^\/]+\.[^.\/]+$/i.test(path)&&!path.toLowerCase().startsWith('/api/')){
     this.path='/';
   }
   yield  next;
