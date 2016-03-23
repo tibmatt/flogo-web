@@ -48,7 +48,7 @@ gulp.task("dev", ()=>{
 });
 
 gulp.task("clean:dev", ()=>{
-  del.sync(["**/*"], {cwd: CONFIG.dist});
+  del.sync(["public/**/*"], {cwd: CONFIG.dist});
 });
 
 
@@ -58,7 +58,8 @@ gulp.task("tslint", ()=>{
 });
 
 // Copy files
-gulp.task("copy:dev", ["copy:client:dev", "copy:server:dev"], ()=>{
+//gulp.task("copy:dev", ["copy:client:dev", "copy:server:dev"], ()=>{
+gulp.task("copy:dev", ["copy:client:dev"], ()=>{
 
 });
 

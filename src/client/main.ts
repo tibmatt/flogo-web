@@ -3,11 +3,11 @@ import {bootstrap} from 'angular2/platform/browser';
 import {ROUTER_PROVIDERS, APP_BASE_HREF} from 'angular2/router';
 import {FlogoAppComponent} from './app/flogo/components/flogo.component';
 
-if ('prod') { enableProdMode(); }
+//if ('prod') { enableProdMode(); }
 
 bootstrap(FlogoAppComponent, [
   ROUTER_PROVIDERS,
-  provide(APP_BASE_HREF, { useValue: ''})
+  provide(APP_BASE_HREF, { useValue: '/'})
 ]);
 
 // In order to start the Service Worker located at "./sw.js"

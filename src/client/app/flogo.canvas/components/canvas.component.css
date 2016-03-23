@@ -1,0 +1,11 @@
+.canvas-flow{
+  display: inline-block;
+  float: left;
+  width: 60%
+}
+
+.canvas-right-container{
+  display: inline-block;
+  float: left;
+  width: 40%
+}

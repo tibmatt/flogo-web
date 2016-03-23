@@ -6,9 +6,6 @@ import bodyparser from 'koa-bodyparser';
 let app = koa();
 let port = process.env.PORT || 3010;
 
-app.use(koaStatic("./public"));
-app.use(bodyparser());
-
 // logger
 app.use(function *(next){
   var start = new Date;
@@ -16,5 +13,15 @@ app.use(function *(next){
   var ms = new Date - start;
   console.log('%s %s - %s', this.method, this.url, ms);
 });
+
+app.use(function *(next){
+  if(this.path.endsWith('/')){
+    this.path='/';
+  }
+  yield  next;
+});
+
+app.use(koaStatic("./public"));
+app.use(bodyparser());
 
 app.listen(port);

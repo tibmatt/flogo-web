@@ -3,9 +3,8 @@ import {ROUTER_DIRECTIVES} from 'angular2/router';
 
 @Component({
   selector: 'flogo-navbar',
-  moduleId: module.id,
-  templateUrl: './navbar.tpl.html',
-  styleUrls: ['./navbar.component.css'],
+  templateUrl: '/app/flogo/components/navbar.tpl.html',
+  styleUrls: ['app/flogo/components/navbar.component.css'],
   directives: [ROUTER_DIRECTIVES]
 })
 
