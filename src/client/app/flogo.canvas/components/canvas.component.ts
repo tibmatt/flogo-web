@@ -4,9 +4,10 @@ import {FlogoCanvasFlowComponent} from '../../flogo.canvas.flow/components/flow.
 
 @Component({
   selector: 'flogo-canvas',
+  moduleId: module.id,
   directives: [RouterOutlet, FlogoCanvasFlowComponent],
-  templateUrl: '/app/flogo.canvas/components/canvas.tpl.html',
-  styleUrls: ['app/flogo.canvas/components/canvas.component.css']
+  templateUrl: 'canvas.tpl.html',
+  styleUrls: ['canvas.component.css']
 })
 
 //@RouteConfig([

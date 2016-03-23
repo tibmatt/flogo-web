@@ -6,7 +6,8 @@ import {FlogoCanvasComponent} from '../../flogo.canvas/components/canvas.compone
 
 @Component({
   selector: 'flogo-app',
-  templateUrl: '/app/flogo/components/flogo.tpl.html',
+  moduleId: module.id,
+  templateUrl: 'flogo.tpl.html',
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent]
 })
 
@@ -15,7 +16,10 @@ import {FlogoCanvasComponent} from '../../flogo.canvas/components/canvas.compone
     path: '/', name: "FlogoHome", component:FlogoFlowsComponet
   },
   {
-    path:'/flows', name:"FlogoFlowDetail", component: FlogoCanvasComponent
+    path: '/flows', name: "FlogoFlows", component:FlogoFlowsComponet, useAsDefault: true
+  },
+  {
+    path:'/flows/:id', name:"FlogoFlowDetail", component: FlogoCanvasComponent
   }
 ])
 
