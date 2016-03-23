@@ -15,7 +15,7 @@ import {FlogoCanvasComponent} from '../../flogo.canvas/components/canvas.compone
     path: '/', name: "FlogoHome", component:FlogoFlowsComponet
   },
   {
-    path:'/flows', name:"FlogoDetail", component: FlogoCanvasComponent
+    path:'/flows', name:"FlogoFlowDetail", component: FlogoCanvasComponent
   }
 ])
 
