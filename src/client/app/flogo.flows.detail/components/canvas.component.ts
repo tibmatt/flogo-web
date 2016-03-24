@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
-import {FlogoCanvasFlowComponent} from '../../flogo.canvas.flow/components/flow.component';
+import {FlogoCanvasFlowComponent} from '../../flogo.flows.detail.graphic/components/flow.component';
 
 @Component({
   selector: 'flogo-canvas',

@@ -2,7 +2,7 @@ import {Component} from 'angular2/core';
 import {ROUTER_DIRECTIVES, RouteConfig} from 'angular2/router';
 import {FlogoNavbarComponent} from './navbar.component';
 import {FlogoFlowsComponet} from '../../flogo.flows/components/flows.component';
-import {FlogoCanvasComponent} from '../../flogo.canvas/components/canvas.component';
+import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.component';
 
 @Component({
   selector: 'flogo-app',
