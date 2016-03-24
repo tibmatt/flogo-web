@@ -18,6 +18,8 @@ CONFIG.dist= 'dist';
 CONFIG.public=path.join(CONFIG.dist, 'public');
 
 CONFIG.clientLibs = [
+  'd3/d3.js',
+  'lodash/lodash.js',
   'systemjs/dist/system-polyfills.src.js',
   'reflect-metadata/Reflect.js',
   'es6-shim/es6-shim.js',

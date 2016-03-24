@@ -1,0 +1,44 @@
+.flogo-flows-detail-diagram {
+  border: 1px solid #7777ff;
+  border-radius: 4px;
+  width: 100%;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.flogo-flows-detail-diagram-row {
+  border: 1px solid #000;
+  border-radius: 4px;
+  background-color: #CDEE90;
+  width: 100%;
+  margin: auto;
+  margin: 20px 0;
+}
+
+.flogo-flows-detail-diagram-node {
+  padding: 10px;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #5C9261;
+  display: inline-block;
+  width: 120px;
+  height: 50px;
+  margin: 10px 20px;
+  text-align: center;
+}
+
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_link"] {
+  background-color: #F0AD4E;
+  color: #222;
+}
+
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] {
+  background-color: #B9C519;
+  color: #222;
+}
+
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root"] {
+  background-color: #206188;
+}
+
