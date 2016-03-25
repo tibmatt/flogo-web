@@ -11,11 +11,51 @@ import {FlogoTaskContainerComponent} from '../../flogo.task.container/components
 })
 
 export class FlogoTaskComponent{
-  task: any;
+  schema: any;
+  stateData: any;
 
-  ngOnInit() {
+  getStateData() {
 
-    this.task = {
+    return {
+      "name": "Find User",
+      "tasks": [
+        {
+          "name": "tibco-routing",
+          "inputs": [
+            {
+              "name": "serverName",
+              "value": "185.422.134.16"
+            },
+            {
+              "name": "userName",
+              "value": "admin"
+            },
+            {
+              "name": "password",
+              "value": "1234"
+            },
+            {
+              "name": "query",
+              "value": "select user_id where privileges != 'admin'"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "queryStatus",
+              "value": "success"
+            }
+          ]
+        }
+      ]
+    }
+
+  }
+
+
+
+  getSchema() {
+
+    return {
       "name": "tibco-routing",
       "version": "0.1.0",
       "description": "Routing your request",
@@ -37,7 +77,7 @@ export class FlogoTaskComponent{
           required: true,
           validation: "",
           "validationMessage": "",
-          "type": "number"
+          "type": "string"
         },
         {
           "name": "password",
@@ -46,7 +86,7 @@ export class FlogoTaskComponent{
           required: true,
           validation: "",
           "validationMessage": "",
-          "type": "boolean"
+          "type": "string"
         },
         {
           "name": "query",
@@ -55,7 +95,7 @@ export class FlogoTaskComponent{
           required: true,
           validation: "",
           "validationMessage": "",
-          "type": "object"
+          "type": "string"
         }
       ],
       outputs: [
@@ -69,8 +109,13 @@ export class FlogoTaskComponent{
           "type": "string"
         }
       ]
-
     };
+
+  }
+
+  ngOnInit() {
+    this.schema = this.getSchema();
+    this.stateData = this.getStateData();
   }
 
 }

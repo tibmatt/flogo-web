@@ -1,10 +1,10 @@
 <div class="flogo-task-field">
-  <label class="control-label">{{configuration.title}}</label>
+  <label class="control-label">{{schema.title}}</label>
 
   <div class="flogo-task-field__boolean">
     <div>
-      <input type="radio" name="booleanValue" value="True"  id="trueValue"  class="flogo-task-field__boolean_input"> True
-      <input type="radio" name="booleanValue" value="False" id="falseValue" class="flogo-task-field__boolean_input"> False
+      <input type="radio" name="booleanValue" value="True"  id="trueValue"  class="flogo-task-field__boolean_input" [attr.checked]="stateField.value === true ? '' : null "> True
+      <input type="radio" name="booleanValue" value="False" id="falseValue" class="flogo-task-field__boolean_input" [attr.checked]="stateField.value === false ? '' : null "> False
     </div>
 
   </div>

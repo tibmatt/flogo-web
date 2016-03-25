@@ -8,14 +8,16 @@ import {FlogoTaskFieldObjectComponent} from '../../flogo.task.field/components/f
 @Component({
   selector: 'flogo-task-container',
   styleUrls: ['task.container.css'],
-  inputs:['task'],
+  inputs:['schema','stateData'],
   moduleId: module.id,
   templateUrl: 'task.container.tpl.html',
   directives: [ROUTER_DIRECTIVES]
 })
 
 export class FlogoTaskContainerComponent{
-  task: any;
+  schema: any;
+  stateData: any;
+  stateTask: any;
   componentsByType: any;
 
   constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef) {
@@ -30,40 +32,47 @@ export class FlogoTaskContainerComponent{
   }
 
   ngOnInit() {
-    var inputs = this.task.inputs || [];
-    var outputs = this.task.outputs || [];
+    var inputs = this.schema.inputs || [];
+    var outputs = this.schema.outputs || [];
+    this.stateTask = this.getStateTask(this.schema.name, this.stateData.tasks || []) || [];
 
     this.addFieldSetToDOM(inputs, 'inputFields');
     this.addFieldSetToDOM(outputs, 'outputFields');
   }
 
   addFieldSetToDOM(fieldSet:any, location:string) {
-
-    fieldSet.forEach((config:any) => {
-      let currentConfig = this.getCurrentConfiguration(config);
-      let component = this.componentsByType[currentConfig.type];
+    fieldSet.forEach((schema:any) => {
+      let fieldSchema = this.getCurrentFieldSchema(schema);
+      // base on the type load the correct control
+      let component = this.componentsByType[fieldSchema.type];
 
       if(component) {
         this.dcl.loadIntoLocation(component, this.elementRef, location)
           .then(ref => {
-            ref.instance.setConfiguration(currentConfig);
+            let parameterType = (location === 'inputFields') ? 'input' : 'output';
+            ref.instance.setConfiguration(fieldSchema, this.stateTask, parameterType);
           });
       }
       // TODO throw error because the component wasnot found
     });
-
   }
 
-  getCurrentConfiguration(config: any) {
+  getStateTask(schemaName:string, tasks:any) {
+    return tasks.find((task:any) => {
+      return task['name'] = schemaName;
+    });
+  }
+
+  getCurrentFieldSchema(schema: any) {
 
     return {
-      name:              config.name,
-      title:             config.title             || config.name,
-      type:              config.type,
-      description:       config.description       || '',
-      required:          config.required          || false,
-      validation:        config.validation        || '',
-      validationMessage: config.validationMessage || ''
+      name:              schema.name,
+      title:             schema.title             || schema.name,
+      type:              schema.type,
+      description:       schema.description       || '',
+      required:          schema.required          || false,
+      validation:        schema.validation        || '',
+      validationMessage: schema.validationMessage || ''
     }
 
   }
