@@ -1,9 +1,12 @@
-<div class="form-group flogo-task-field">
-  <label for="" class="control-label">{{configuration.title}}</label>
-  <br>
-  <input type="radio" name="booleanField" value="True"  id="trueValue">
-  <label for="trueValue">True</label>
+<div class="flogo-task-field">
+  <label class="control-label">{{configuration.title}}</label>
 
-  <input type="radio" name="booleanField" value="False" id="falseValue">
-  <label for="falseValue">False</label>
+  <div class="flogo-task-field__boolean">
+    <div>
+      <input type="radio" name="booleanValue" value="True"  id="trueValue"  class="flogo-task-field__boolean_input"> True
+      <input type="radio" name="booleanValue" value="False" id="falseValue" class="flogo-task-field__boolean_input"> False
+    </div>
+
+  </div>
+
 </div>

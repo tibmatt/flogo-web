@@ -31,13 +31,20 @@ export class FlogoTaskContainerComponent{
 
   ngOnInit() {
     var inputs = this.task.inputs || [];
+    var outputs = this.task.outputs || [];
 
-    inputs.forEach((config:any) => {
+    this.addFieldSetToDOM(inputs, 'inputFields');
+    this.addFieldSetToDOM(outputs, 'outputFields');
+  }
+
+  addFieldSetToDOM(fieldSet:any, location:string) {
+
+    fieldSet.forEach((config:any) => {
       let currentConfig = this.getCurrentConfiguration(config);
       let component = this.componentsByType[currentConfig.type];
 
       if(component) {
-        this.dcl.loadIntoLocation(component, this.elementRef, 'controls')
+        this.dcl.loadIntoLocation(component, this.elementRef, location)
           .then(ref => {
             ref.instance.setConfiguration(currentConfig);
           });

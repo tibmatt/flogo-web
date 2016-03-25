@@ -4,3 +4,11 @@
 .flogo-task-field__object {
   width: 100%;
 }
+.flogo-task-field__boolean {
+  display: flex;
+  flex-direction: column;
+}
+.flogo-task-field__boolean_input {
+  vertical-align: middle;
+  cursor: pointer;
+}

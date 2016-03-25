@@ -1,6 +1,11 @@
 <div class="flogo-task-container">
-  <div class="flogo-task-container__header">{{task.title}}</div>
-  <div #controls></div>
+  <div class="flogo-task-container__header"> <h3> {{task.title}} </h3></div>
+
+  <h3 class="flogo-task-container__fields-header">Input Parameters</h3>
+  <div #inputFields></div>
+  <h3 class="flogo-task-container__fields-header">Output Parameters</h3>
+  <div #outputFields></div>
+
   <div class="flogo-task-container__footer">
     <button class="btn btn-primary">Run</button>
     <button class="btn btn-default">Cancel</button>

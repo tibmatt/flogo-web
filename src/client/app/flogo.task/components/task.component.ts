@@ -16,49 +16,60 @@ export class FlogoTaskComponent{
   ngOnInit() {
 
     this.task = {
-      "name": "tibco-log",
+      "name": "tibco-routing",
       "version": "0.1.0",
-      "description": "Log  your message to console",
-      title: "TIBCO Log",
+      "description": "Routing your request",
+      title: "TIBCO Routing",
       inputs: [
         {
-          "name": "petName",
-          "title": "Pet name",
-          "description": "The full name of the pet",
+          "name": "serverName",
+          "title": "Server name",
+          "description": "Server name",
           "required": true,
           "validation": "",
           "validationMessage": "",
           "type": "string"
         },
         {
-          "name": "age",
-          "title": "Age",
-          "description": "The current pet's age",
+          "name": "userName",
+          "title": "User name",
+          "description": "User name",
           required: true,
           validation: "",
           "validationMessage": "",
           "type": "number"
         },
         {
-          "name": "brave",
-          "title": "Is brave?",
-          "description": "If the pet is brave",
+          "name": "password",
+          "title": "Password",
+          "description": "Password",
           required: true,
           validation: "",
           "validationMessage": "",
           "type": "boolean"
         },
         {
-          "name": "configuration",
-          "title": "Configuration",
-          "description": "Configuration of the pet",
+          "name": "query",
+          "title": "Query",
+          "description": "Query",
           required: true,
           validation: "",
           "validationMessage": "",
           "type": "object"
         }
-
+      ],
+      outputs: [
+        {
+          "name": "queryStatus",
+          "title": "Query status",
+          "description": "Query status",
+          required: true,
+          validation: "",
+          "validationMessage": "",
+          "type": "string"
+        }
       ]
+
     };
   }
 
