@@ -119,7 +119,7 @@ export class FlogoDiagram implements IFlogoDiagram {
     this.rootElm = d3.select( el )
     .select( '.flogo-flows-detail-diagram' );
 
-    !this.ng2StyleAttr && this.updateNG2StyleAttr( );
+    !this.ng2StyleAttr && this._updateNG2StyleAttr( );
 
     // enter selection
     let rows = this.rootElm.selectAll( '.flogo-flows-detail-diagram-row' )
@@ -137,9 +137,9 @@ export class FlogoDiagram implements IFlogoDiagram {
     //   .style( 'opacity', 1 );
 
     // enter selection
-    let tasks = this.preprocessTaskNodes( enterRows );
+    let tasks = this._preprocessTaskNodes( enterRows );
 
-    this.handleTaskNodes( tasks );
+    this._handleTaskNodes( tasks );
 
     // update selection
     rows.classed( 'updated', true )
@@ -149,9 +149,9 @@ export class FlogoDiagram implements IFlogoDiagram {
     .on( 'mouseleave', function ( ) {
       d3.select( this ).classed( 'hover', false );
     } )
-    tasks = this.preprocessTaskNodes( rows );
+    tasks = this._preprocessTaskNodes( rows );
 
-    this.handleTaskNodes( tasks );
+    this._handleTaskNodes( tasks );
 
     // exit selection
     rows.exit( )
@@ -232,7 +232,7 @@ export class FlogoDiagram implements IFlogoDiagram {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
-  private updateNG2StyleAttr( ) {
+  private _updateNG2StyleAttr( ) {
     let el = this.elm.getElementsByClassName( 'flogo-flows-detail-diagram' );
     let ng2StyleAttrReg = /^_ngcontent\-.*$/g
 
@@ -254,7 +254,7 @@ export class FlogoDiagram implements IFlogoDiagram {
     return false;
   }
 
-  private preprocessTaskNodes( rows: any ) {
+  private _preprocessTaskNodes( rows: any ) {
     return rows.selectAll( '.flogo-flows-detail-diagram-node' )
       .data( ( d: IFlogoNode[ ], i: number ) => {
         return _.map( d, ( nodeID: string ) => {
@@ -263,7 +263,7 @@ export class FlogoDiagram implements IFlogoDiagram {
       } );
   }
 
-  private handleTaskNodes( tasks: any ) {
+  private _handleTaskNodes( tasks: any ) {
     let diagram = this;
     // enter selection
     tasks.enter( )
