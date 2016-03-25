@@ -1,84 +1,145 @@
-import { Component, ElementRef, AfterViewInit, OnDestroy } from 'angular2/core';
+import { Component, ElementRef, OnChanges, SimpleChange, AfterViewInit, OnDestroy, EventEmitter } from 'angular2/core';
 import { FlogoDiagram, IFlogoTaskDictionary, IFlogoDiagram, FLOGO_TASK_TYPE, FLOGO_ATTRIBUTE_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_NODE_TYPE } from '../models';
-
-import { DIAGRAM, TASKS, TEST_DIAGRAM, TEST_TASKS } from '../mocks';
 
 @Component( {
   selector: 'flogo-canvas-flow-diagram',
   moduleId: module.id,
   templateUrl: 'diagram.tpl.html',
   styleUrls: [ 'diagram.component.css' ],
+  inputs: [ 'tasks', 'diagram', 'onAfterAddTask', 'onAfterEditTask' ],
+  outputs: [ 'onAddTask', 'onEditTask' ]
 } )
 export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
-  // TODO
-  //   make these as Inputs
   public tasks: IFlogoTaskDictionary;
   public diagram: IFlogoDiagram;
 
-  private elmRef: ElementRef;
+  public onAddTask: EventEmitter < any > ;
+  public onEditTask: EventEmitter < any > ;
+  public onAfterAddTask: EventEmitter < any > ;
+  public onAfterEditTask: EventEmitter < any > ;
+
+  private _elmRef: ElementRef;
   private _diagram: FlogoDiagram;
+  private _afterAddTaskSub: any;
+  private _afterEditTaskSub: any;
 
   constructor( elementRef: ElementRef ) {
-    this.elmRef = elementRef;
-    // TODO
-    //   remove these mock assignments after making them as Input of the components
-    this.tasks = TASKS;
-    this.diagram = DIAGRAM;
+    this._elmRef = elementRef;
+    this.onAddTask = new EventEmitter( );
+    this.onEditTask = new EventEmitter( );
   }
 
   ngAfterViewInit( ) {
-    this._diagram = new FlogoDiagram( this.diagram, this.tasks, this.elmRef.nativeElement );
+    this._diagram = new FlogoDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
     this._diagram.render( );
-  }
 
-  // mock implementation
-  addTask( $event: any ) {
-    console.group( 'Add task' );
-
-    console.log( $event );
-
-    // create a new task
-    let newTask = {
-      'id': btoa( 'FlogoTask::' + Date.now( ) ),
-      'type': FLOGO_TASK_TYPE.TASK,
-      'activityType': FLOGO_ACTIVITY_TYPE.REST,
-      'name': 'Task',
-      'attributes': {
-        'inputs': [
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'uri', 'value': 'http://petstore.swagger.io/v2/pet/{petId}' },
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'method', 'value': 'GET' },
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'petId', 'value': '' }
-        ],
-        'outputs': [
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'result', 'value': '' }
-        ]
-      },
-      'inputMappings': [
-        { 'type': 1, 'value': 'petId', 'mapTo': 'petId' }
-      ],
-      'outputMappings': [
-        { 'type': 1, 'value': 'result', 'mapTo': 'petInfo' }
-      ]
-    };
-    this.tasks[ newTask.id ] = newTask;
-
-    // link the new task to FlogoNode
-    this._diagram.linkNodeWithTask( $event.detail.node.id, newTask ).then( ( diagram ) => {
-      return diagram.updateAndRender( {
-        tasks: this.tasks
-      } );
+    this._afterAddTaskSub = this.onAfterAddTask.subscribe( this._afterAddTaskHandler.bind( this ), ( err: any ) => {
+      console.log( err );
+    }, ( done: any ) => {
+      console.log( done );
     } );
 
+    this._afterEditTaskSub = this.onAfterEditTask.subscribe( this._afterEditTaskHandler.bind( this ), ( err: any ) => {
+      console.log( err );
+    }, ( done: any ) => {
+      console.log( done );
+    } );
+  }
+
+  ngOnChanges( changes: {
+    [ propKey: string ]: SimpleChange
+  } ) {
+
+    console.log( changes );
+
+    // TODO
+    //   WARN: multiple rendering warning:
+    //     note that these change monitor may trigger render while the
+    //     subscriptions of onAfterEditTask and onAfterAddTask may do the same thing.
+    //     may need optimisation later
+    // only trigger the render for single time per change
+    // monitor the updates of diagram
+    if ( changes[ 'diagram' ] ) {
+
+      console.groupCollapsed( 'Updated diagram' );
+      console.log( this.diagram );
+      console.groupEnd( );
+
+      if ( this.diagram && this.tasks && this._diagram ) {
+        this._diagram.updateAndRender( {
+          tasks: this.tasks,
+          diagram: this.diagram
+        } );
+      }
+
+      // monitor the updates of tasks
+    } else if ( changes[ 'tasks' ] ) {
+
+      console.groupCollapsed( 'Updated tasks' );
+      console.log( this.tasks );
+      console.groupEnd( );
+
+      if ( this.diagram && this.tasks ) {
+        this._diagram.updateAndRender( {
+          tasks: this.tasks,
+        } );
+      }
+    }
+
+  }
+
+  private _afterAddTaskHandler( data: any ) {
+
+    console.group( '_afterAddTaskHandler' );
+    console.log( data );
+
+    if ( data.node && data.task ) {
+      // link the new task to FlogoNode
+      this._diagram.linkNodeWithTask( data.node.id, data.task ).then( ( diagram ) => {
+        return diagram.updateAndRender( {
+          tasks: this.tasks
+        } );
+      } );
+    }
+
     console.groupEnd( );
   }
 
-  // mock implementation
-  editTask( $event: any ) {
-    console.group( 'Edit task' );
+  private _afterEditTaskHandler( data: any ) {
 
-    console.log( $event );
+    console.group( '_afterEditTaskHandler' );
+    console.log( data );
+
+    // the tasks should have been passed into this component after changing
+    // so re-render the diagram
+    this._diagram.updateAndRender( {
+      tasks: this.tasks
+    } );
+
+    // TODO
+    //   if there are nodes position changing, then should apply the new diagram when updating
+    // this._diagram.updateAndRender( {
+    //   tasks: this.tasks,
+    //   diagram: this.diagram
+    // } );
 
     console.groupEnd( );
+  }
+
+  ngOnDestroy( ) {
+    // clean up subscriptions
+    this._afterAddTaskSub.unsubscribe( );
+    this._afterEditTaskSub.unsubscribe( );
+  }
+
+  // forwarding event
+  addTask( $event: any ) {
+    this.onAddTask.emit( $event );
+  }
+
+  // forwarding event
+  editTask( $event: any ) {
+    this.onEditTask.emit( $event );
   }
 }

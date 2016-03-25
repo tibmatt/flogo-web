@@ -82,6 +82,7 @@ export class FlogoDiagram implements IFlogoDiagram {
     this.root = _.cloneDeep( diagram.root );
 
     // convert FlogoNode object into instance of FlogoNode class
+    //   TODO optimisation is required
     // if a node has no child, append a NODE_ADD node as its child
     //   TODO case of NODE_LINK should be considered differently
     let nodeDict: IFlogoNodeDictionary = {};

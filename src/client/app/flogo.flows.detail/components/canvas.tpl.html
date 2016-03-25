@@ -1,9 +1,16 @@
 <div>
-  <div class="canvas-flow">
-    <flogo-canvas-flow id="211"></flogo-canvas-flow>
-    <flogo-canvas-flow-diagram></flogo-canvas-flow-diagram>
-  </div>
-  <div class="canvas-right-container">
-    right container
-  </div>
+    <div class="canvas-flow">
+        <flogo-canvas-flow id="211"></flogo-canvas-flow>
+        <flogo-canvas-flow-diagram
+            [tasks]="tasks"
+            [diagram]="diagram"
+            (onAddTask)="addTask($event)"
+            [onAfterAddTask]="onAfterAddTask"
+            (onEditTask)="editTask($event)"
+            [onAfterEditTask]="onAfterEditTask"
+        ></flogo-canvas-flow-diagram>
+    </div>
+    <div class="canvas-right-container">
+        right container
+    </div>
 </div>
