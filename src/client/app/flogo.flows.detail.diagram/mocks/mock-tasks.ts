@@ -119,7 +119,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task 5",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task 5",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -131,7 +131,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task 6",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task 6",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -143,7 +143,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task 7",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task 7",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -155,7 +155,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task 8",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task 8",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -167,7 +167,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task 9",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task 9",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -179,7 +179,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task a",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task a",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -191,7 +191,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task b",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task b",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -203,7 +203,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task c",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task c",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -215,7 +215,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task d",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task d",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -227,7 +227,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task e",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task e",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
@@ -239,7 +239,7 @@ export var TEST_TASKS: IFlogoTaskDictionary = {
     "id": "task f",
     "type": FLOGO_TASK_TYPE.TASK,
     "activityType": FLOGO_ACTIVITY_TYPE.LOG,
-    "name": "Log Start",
+    "name": "Task f",
     "attributes": {
       "inputs": [
         { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
