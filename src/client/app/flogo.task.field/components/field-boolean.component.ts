@@ -3,13 +3,13 @@ import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {FlogoTaskFieldBaseComponent}  from './field-base.component'
 
 @Component({
-  selector: 'flogo-task-field-number',
+  selector: 'flogo-task-field-boolean',
   styleUrls: ['task-field.css'],
   moduleId: module.id,
-  templateUrl: 'field-number.tpl.html',
+  templateUrl: 'field-boolean.tpl.html',
   directives: [ROUTER_DIRECTIVES]
 })
 
-export class FlogoTaskFieldNumberComponent extends FlogoTaskFieldBaseComponent{
+export class FlogoTaskFieldBooleanComponent extends FlogoTaskFieldBaseComponent{
 
 }

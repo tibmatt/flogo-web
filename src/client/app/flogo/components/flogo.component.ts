@@ -3,6 +3,7 @@ import {ROUTER_DIRECTIVES, RouteConfig} from 'angular2/router';
 import {FlogoNavbarComponent} from './navbar.component';
 import {FlogoFlowsComponet} from '../../flogo.flows/components/flows.component';
 import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.component';
+import {FlogoTaskComponent} from "../../flogo.task/components/task.component";
 
 @Component({
   selector: 'flogo-app',
@@ -20,6 +21,9 @@ import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.c
   },
   {
     path:'/flows/:id', name:"FlogoFlowDetail", component: FlogoCanvasComponent
+  },
+  {
+    path:'/task', name: 'FlogoTask', component: FlogoTaskComponent
   }
 ])
 

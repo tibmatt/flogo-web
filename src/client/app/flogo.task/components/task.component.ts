@@ -4,27 +4,62 @@ import {FlogoTaskContainerComponent} from '../../flogo.task.container/components
 
 @Component({
   selector: 'flogo-task',
+  styleUrls: ['task.css'],
   moduleId: module.id,
   templateUrl: 'task.tpl.html',
   directives: [ROUTER_DIRECTIVES, FlogoTaskContainerComponent]
 })
 
 export class FlogoTaskComponent{
-  configuration: any;
+  task: any;
 
   ngOnInit() {
 
-    this.configuration = [
-      {
-        "name": "petName",
-        "type": "string"
-      },
-      {
-        "name": "age",
-        "type": "number"
-      }
-    ];
+    this.task = {
+      "name": "tibco-log",
+      "version": "0.1.0",
+      "description": "Log  your message to console",
+      title: "TIBCO Log",
+      inputs: [
+        {
+          "name": "petName",
+          "title": "Pet name",
+          "description": "The full name of the pet",
+          "required": true,
+          "validation": "",
+          "validationMessage": "",
+          "type": "string"
+        },
+        {
+          "name": "age",
+          "title": "Age",
+          "description": "The current pet's age",
+          required: true,
+          validation: "",
+          "validationMessage": "",
+          "type": "number"
+        },
+        {
+          "name": "brave",
+          "title": "Is brave?",
+          "description": "If the pet is brave",
+          required: true,
+          validation: "",
+          "validationMessage": "",
+          "type": "boolean"
+        },
+        {
+          "name": "configuration",
+          "title": "Configuration",
+          "description": "Configuration of the pet",
+          required: true,
+          validation: "",
+          "validationMessage": "",
+          "type": "object"
+        }
 
+      ]
+    };
   }
 
 }
