@@ -1,4 +1,14 @@
-import { IFlogoDiagramRootNode, IFlogoNodeDictionary, IFlogoTaskDictionary, IFlogoNode, FlogoNode, FLOGO_NODE_TYPE, IFlogoTask } from '../models';
+import {
+  IFlogoDiagramRootNode,
+  IFlogoNodeDictionary,
+  IFlogoTaskDictionary,
+  IFlogoNode,
+  FlogoNode,
+  FLOGO_NODE_TYPE,
+  IFlogoTask,
+  IFlogoProcess,
+  FlogoProcess
+} from '../models';
 
 import { Selection } from 'd3';
 
@@ -232,6 +242,13 @@ export class FlogoDiagram implements IFlogoDiagram {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
+  public toProcess( ): any {
+    return FlogoProcess.toProcess( {
+      root: this.root,
+      nodes: this.nodes
+    }, this.tasks );
+  }
+
   private _updateNG2StyleAttr( ) {
     let el = this.elm.getElementsByClassName( 'flogo-flows-detail-diagram' );
     let ng2StyleAttrReg = /^_ngcontent\-.*$/g
@@ -384,6 +401,10 @@ export class FlogoDiagram implements IFlogoDiagram {
 // helper function of transformMatrix function
 //   if the item has multiple children, put the first non-branch node along with the item
 //   create new row the the rest of the branch nodes
+// TODO
+//   at some time, may need to track which node has been visited
+//   for example branch back to other path
+//   but for now, may not need to care about it
 function _insertChildNodes( matrix: string[ ][ ], diagram: IFlogoDiagram, node: IFlogoNode ): string[ ][ ] {
 
   // deep-first traversal

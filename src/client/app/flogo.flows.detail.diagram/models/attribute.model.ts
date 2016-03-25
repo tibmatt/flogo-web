@@ -1,4 +1,10 @@
-export enum FLOGO_ATTRIBUTE_TYPE { STRING, NUMBER, OBJECT, BOOLEAN, ARRAY };
+export enum FLOGO_ATTRIBUTE_TYPE {
+  STRING,
+  NUMBER,
+  OBJECT,
+  BOOLEAN,
+  ARRAY
+};
 
 export interface IFlogoAttribute {
   name: string;
@@ -12,3 +18,8 @@ export interface IFlogoAttribute {
   validationMessage ? : '';
   child ? : IFlogoAttribute[ ];
 };
+
+export interface IFlogoAttributes {
+  inputs ? : IFlogoAttribute[ ];
+  outputs ? : IFlogoAttribute[ ];
+}

@@ -1,6 +1,14 @@
 import { IFlogoDiagram } from '../models';
 
-export enum FLOGO_NODE_TYPE { NODE_ADD, NODE_ROOT, NODE, NODE_BRANCH, NODE_LINK, NODE_SUB_PROC, NODE_LOOP };
+export enum FLOGO_NODE_TYPE {
+  NODE_ADD,
+  NODE_ROOT,
+  NODE,
+  NODE_BRANCH,
+  NODE_LINK,
+  NODE_SUB_PROC,
+  NODE_LOOP
+};
 
 export interface IFlogoNode {
   id: string; // id of the node

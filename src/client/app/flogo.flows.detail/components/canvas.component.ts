@@ -3,10 +3,22 @@ import { RouteConfig, RouterOutlet } from 'angular2/router';
 import { FlogoCanvasFlowComponent } from '../../flogo.flows.detail.graphic/components/flow.component';
 import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
 
+import {
+  FlogoDiagram,
+  IFlogoTaskDictionary,
+  IFlogoDiagram,
+  FLOGO_TASK_TYPE,
+  FLOGO_ATTRIBUTE_TYPE,
+  FLOGO_ACTIVITY_TYPE,
+  FLOGO_NODE_TYPE
+} from '../../models';
 
-import { FlogoDiagram, IFlogoTaskDictionary, IFlogoDiagram, FLOGO_TASK_TYPE, FLOGO_ATTRIBUTE_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_NODE_TYPE } from '../../models';
-
-import { DIAGRAM, TASKS, TEST_DIAGRAM, TEST_TASKS } from '../../mocks';
+import {
+  DIAGRAM,
+  TASKS,
+  TEST_DIAGRAM,
+  TEST_TASKS
+} from '../../mocks';
 
 @Component( {
   selector: 'flogo-canvas',

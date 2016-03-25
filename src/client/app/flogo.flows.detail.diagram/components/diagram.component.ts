@@ -1,5 +1,24 @@
-import { Component, ElementRef, OnChanges, SimpleChange, AfterViewInit, OnDestroy, EventEmitter } from 'angular2/core';
-import { FlogoDiagram, IFlogoTaskDictionary, IFlogoDiagram, FLOGO_TASK_TYPE, FLOGO_ATTRIBUTE_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_NODE_TYPE } from '../models';
+import {
+  Component,
+  ElementRef,
+  OnChanges,
+  SimpleChange,
+  AfterViewInit,
+  OnDestroy,
+  EventEmitter
+} from 'angular2/core';
+
+import {
+  FlogoDiagram,
+  IFlogoTaskDictionary,
+  IFlogoDiagram,
+  FLOGO_TASK_TYPE,
+  FLOGO_ATTRIBUTE_TYPE,
+  FLOGO_ACTIVITY_TYPE,
+  FLOGO_NODE_TYPE
+} from '../models';
+
+import * as DEMO_MODELS from '../models';
 
 @Component( {
   selector: 'flogo-canvas-flow-diagram',
@@ -24,6 +43,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   private _afterAddTaskSub: any;
   private _afterEditTaskSub: any;
 
+  // TODO
+  //   remove this mock
+  private _mockProcess: any;
+
   constructor( elementRef: ElementRef ) {
     this._elmRef = elementRef;
     this.onAddTask = new EventEmitter( );
@@ -32,7 +55,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   ngAfterViewInit( ) {
     this._diagram = new FlogoDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
-    this._diagram.render( );
+
+    this._diagram.render( ).then( ( diagram ) => {
+      // TODO
+      //   remove this mock
+      this._mockProcess = diagram.toProcess( );
+    } );
 
     this._afterAddTaskSub = this.onAfterAddTask.subscribe( this._afterAddTaskHandler.bind( this ), ( err: any ) => {
       console.log( err );
@@ -70,6 +98,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
         this._diagram.updateAndRender( {
           tasks: this.tasks,
           diagram: this.diagram
+        } ).then( ( diagram ) => {
+          // TODO
+          //   remove this mock
+          this._mockProcess = diagram.toProcess( );
         } );
       }
 
@@ -80,10 +112,14 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       console.log( this.tasks );
       console.groupEnd( );
 
-      if ( this.diagram && this.tasks ) {
+      if ( this.diagram && this.tasks && this._diagram ) {
         this._diagram.updateAndRender( {
-          tasks: this.tasks,
-        } );
+          tasks: this.tasks
+        } ).then( ( diagram ) => {
+          // TODO
+          //   remove this mock
+          this._mockProcess = diagram.toProcess( );
+        } );;
       }
     }
 
@@ -100,7 +136,11 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
         return diagram.updateAndRender( {
           tasks: this.tasks
         } );
-      } );
+      } ).then( ( diagram ) => {
+        // TODO
+        //   remove this mock
+        this._mockProcess = diagram.toProcess( );
+      } );;
     }
 
     console.groupEnd( );
@@ -115,7 +155,11 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     // so re-render the diagram
     this._diagram.updateAndRender( {
       tasks: this.tasks
-    } );
+    } ).then( ( diagram ) => {
+      // TODO
+      //   remove this mock
+      this._mockProcess = diagram.toProcess( );
+    } );;
 
     // TODO
     //   if there are nodes position changing, then should apply the new diagram when updating
@@ -141,5 +185,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   // forwarding event
   editTask( $event: any ) {
     this.onEditTask.emit( $event );
+  }
+
+  getEnumerations( ): any {
+    return DEMO_MODELS;
   }
 }
