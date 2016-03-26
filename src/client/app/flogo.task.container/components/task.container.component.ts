@@ -33,7 +33,6 @@ export class FlogoTaskContainerComponent{
   }
 
   ngOnInit() {
-<<<<<<< Updated upstream
     var inputs = this.schema.inputs || [];
     var outputs = this.schema.outputs || [];
     this.stateTask = this.getStateTask(this.schema.name, this.stateData.tasks || []) || [];
@@ -48,20 +47,6 @@ export class FlogoTaskContainerComponent{
       let fieldSchema = this.getCurrentFieldSchema(schema);
       // base on the type load the correct control
       let component = this.componentsByType[fieldSchema.type];
-=======
-    var inputs = this.task.inputs || [];
-    var outputs = this.task.outputs || [];
-
-    this.addFieldSetToDOM(inputs, 'inputFields');
-    this.addFieldSetToDOM(outputs, 'outputFields');
-  }
-
-  addFieldSetToDOM(fieldSet:any, location:string) {
-
-    fieldSet.forEach((config:any) => {
-      let currentConfig = this.getCurrentConfiguration(config);
-      let component = this.componentsByType[currentConfig.type];
->>>>>>> Stashed changes
 
       if(component) {
         this.dcl.loadIntoLocation(component, this.elementRef, location)
