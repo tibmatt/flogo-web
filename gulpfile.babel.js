@@ -28,7 +28,8 @@ CONFIG.clientLibs = [
   'rxjs/bundles/Rx.js',
   'angular2/bundles/angular2.js',
   'angular2/bundles/router.js',
-  'angular2/bundles/http.js'
+  'angular2/bundles/http.js',
+  'postal/lib/postal.js'
 ];
 
 // load gulp plugins

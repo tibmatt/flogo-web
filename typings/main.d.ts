@@ -21,6 +21,7 @@
 /// <reference path="main/ambient/node/index.d.ts" />
 /// <reference path="main/ambient/orchestrator/index.d.ts" />
 /// <reference path="main/ambient/parse-glob/index.d.ts" />
+/// <reference path="main/ambient/postal/index.d.ts" />
 /// <reference path="main/ambient/rimraf/index.d.ts" />
 /// <reference path="main/ambient/run-sequence/index.d.ts" />
 /// <reference path="main/ambient/selenium-webdriver/index.d.ts" />

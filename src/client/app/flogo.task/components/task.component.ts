@@ -58,7 +58,11 @@ export class FlogoTaskComponent{
 
   getSchema() {
 
+<<<<<<< Updated upstream
     return {
+=======
+    this.task = {
+>>>>>>> Stashed changes
       "name": "tibco-routing",
       "version": "0.1.0",
       "description": "Routing your request",
@@ -120,7 +124,22 @@ export class FlogoTaskComponent{
           "validationMessage": "",
           "type": "string"
         }
+<<<<<<< Updated upstream
+=======
+      ],
+      outputs: [
+        {
+          "name": "queryStatus",
+          "title": "Query status",
+          "description": "Query status",
+          required: true,
+          validation: "",
+          "validationMessage": "",
+          "type": "string"
+        }
+>>>>>>> Stashed changes
       ]
+
     };
 
   }

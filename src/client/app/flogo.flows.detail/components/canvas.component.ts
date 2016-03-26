@@ -1,7 +1,16 @@
 import { Component, EventEmitter } from 'angular2/core';
-import { RouteConfig, RouterOutlet } from 'angular2/router';
+import { RouteConfig, RouterOutlet, RouteParams, Router } from 'angular2/router';
+import {PostService} from '../../../common/services/post.service';
 import { FlogoCanvasFlowComponent } from '../../flogo.flows.detail.graphic/components/flow.component';
 import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
+<<<<<<< Updated upstream
+=======
+import {FlogoFlowsDetail} from './flow-detail.component';
+import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/components/triggers.component';
+import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
+import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
+import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
+>>>>>>> Stashed changes
 
 import {
   FlogoDiagram,
@@ -28,11 +37,61 @@ import {
   styleUrls: [ 'canvas.component.css' ]
 } )
 
-//@RouteConfig([
-//  {path:'/add',    name: 'FlogoCanvas',   component: FlogoCanvas}
-//])
+@RouteConfig([
+  {path:'/',    name: 'FlogoFlowsDetailDefault',   component: FlogoFlowsDetail, useAsDefault: true},
+  {path:'/trigger/add',    name: 'FlogoFlowsDetailTriggerAdd',   component: FlogoFlowsDetailTriggers},
+  {path:'/trigger/:id',    name: 'FlogoFlowsDetailTriggerDetail',   component: FlogoFlowsDetailTriggersDetail},
+  {path:'/task/add',    name: 'FlogoFlowsDetailTaskAdd',   component: FlogoFlowsDetailTasks},
+  {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail}
+])
 
 export class FlogoCanvasComponent {
+
+  private initSubscribe(){
+    this._postService.subscribe({
+      channel: "flogo.flows.detail.graphic",
+      topic: "add-trigger",
+      callback: function(){
+        console.group("FlogoNavbarComponent -> add trigger");
+        console.log("receive: ", arguments);
+        this._router.navigate(['FlogoFlowsDetailTriggerAdd']);
+        console.groupEnd();
+      }.bind(this)
+    });
+
+    this._postService.subscribe({
+      channel: "flogo.flows.detail.graphic",
+      topic: "select-trigger",
+      callback: function(){
+        console.group("FlogoNavbarComponent -> select trigger");
+        console.log("receive: ", arguments);
+        this._router.navigate(['FlogoFlowsDetailTriggerDetail', {id:1}]);
+        console.groupEnd();
+      }.bind(this)
+    });
+
+    this._postService.subscribe({
+      channel: "flogo.flows.detail.graphic",
+      topic: "add-task",
+      callback: function(){
+        console.group("FlogoNavbarComponent -> add task");
+        console.log("receive: ", arguments);
+        this._router.navigate(['FlogoFlowsDetailTaskAdd']);
+        console.groupEnd();
+      }.bind(this)
+    });
+
+    this._postService.subscribe({
+      channel: "flogo.flows.detail.graphic",
+      topic: "select-task",
+      callback: function(){
+        console.group("FlogoNavbarComponent -> select task");
+        console.log("receive: ", arguments);
+        this._router.navigate(['FlogoFlowsDetailTaskDetail', {id:1}]);
+        console.groupEnd();
+      }.bind(this)
+    });
+  }
 
   public tasks: IFlogoTaskDictionary;
   public diagram: IFlogoDiagram;
@@ -40,11 +99,16 @@ export class FlogoCanvasComponent {
   public onAfterAddTask: EventEmitter < any > ;
   public onAfterEditTask: EventEmitter < any > ;
 
-  constructor( ) {
+  constructor(
+    private _postService: PostService,
+    private _routerParams: RouteParams,
+    private _router: Router
+  ) {
     this.tasks = TASKS;
     this.diagram = DIAGRAM;
     this.onAfterAddTask = new EventEmitter( );
     this.onAfterEditTask = new EventEmitter( );
+    this.initSubscribe();
   }
 
 
