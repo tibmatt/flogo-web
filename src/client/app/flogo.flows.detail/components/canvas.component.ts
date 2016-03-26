@@ -46,7 +46,7 @@ export class FlogoCanvasComponent {
 
   private initSubscribe(){
     this._postService.subscribe({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "add-trigger",
       callback: function(){
         console.group("FlogoNavbarComponent -> add trigger");
@@ -57,7 +57,7 @@ export class FlogoCanvasComponent {
     });
 
     this._postService.subscribe({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "select-trigger",
       callback: function(){
         console.group("FlogoNavbarComponent -> select trigger");
@@ -68,7 +68,7 @@ export class FlogoCanvasComponent {
     });
 
     this._postService.subscribe({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "add-task",
       callback: function(){
         console.group("FlogoNavbarComponent -> add task");
@@ -79,7 +79,7 @@ export class FlogoCanvasComponent {
     });
 
     this._postService.subscribe({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "select-task",
       callback: function(){
         console.group("FlogoNavbarComponent -> select task");

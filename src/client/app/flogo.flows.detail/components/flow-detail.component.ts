@@ -16,7 +16,7 @@ export class FlogoFlowsDetail{
 
   private initSubscribe(){
     //this._postService.subscribe({
-    //  channel: "flogo.flows.detail.graphic",
+    //  channel: "flogo-flows-detail-graphic",
     //  topic: "add-trigger",
     //  callback: function(){
     //    console.group("FlogoNavbarComponent -> constructor");

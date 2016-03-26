@@ -18,7 +18,7 @@ export class FlogoCanvasFlowComponent {
 
   addTrigger(){
     this._postService.publish({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "add-trigger",
       data: {
         who: "FlogoCanvasFlowComponent - add trigger"
@@ -28,7 +28,7 @@ export class FlogoCanvasFlowComponent {
 
   selectTrigger(){
     this._postService.publish({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "select-trigger",
       data: {
         who: "FlogoCanvasFlowComponent - select trigger"
@@ -38,7 +38,7 @@ export class FlogoCanvasFlowComponent {
 
   addTask(){
     this._postService.publish({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "add-task",
       data: {
         who: "FlogoCanvasFlowComponent - add task"
@@ -48,7 +48,7 @@ export class FlogoCanvasFlowComponent {
 
   selectTask(){
     this._postService.publish({
-      channel: "flogo.flows.detail.graphic",
+      channel: "flogo-flows-detail-graphic",
       topic: "select-task",
       data: {
         who: "FlogoCanvasFlowComponent - select task"
