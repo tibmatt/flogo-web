@@ -3,14 +3,11 @@ import { RouteConfig, RouterOutlet, RouteParams, Router } from 'angular2/router'
 import {PostService} from '../../../common/services/post.service';
 import { FlogoCanvasFlowComponent } from '../../flogo.flows.detail.graphic/components/flow.component';
 import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
-<<<<<<< Updated upstream
-=======
 import {FlogoFlowsDetail} from './flow-detail.component';
 import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/components/triggers.component';
 import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
->>>>>>> Stashed changes
 
 import {
   FlogoDiagram,
