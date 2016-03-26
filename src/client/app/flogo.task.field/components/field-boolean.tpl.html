@@ -3,8 +3,13 @@
 
   <div class="flogo-task-field__boolean">
     <div>
-      <input type="radio" name="booleanValue" value="True"  id="trueValue"  class="flogo-task-field__boolean_input" [attr.checked]="stateField.value === true ? '' : null "> True
-      <input type="radio" name="booleanValue" value="False" id="falseValue" class="flogo-task-field__boolean_input" [attr.checked]="stateField.value === false ? '' : null "> False
+      <input type="radio" name="booleanValue" value=true  id="trueValue"
+             (change)="value=$event.target.value"
+             class="flogo-task-field__boolean_input" [attr.checked]="value === true ? '' : null "> True
+
+      <input type="radio" name="booleanValue" value=false id="falseValue"
+             (change)="value=$event.target.value"
+             class="flogo-task-field__boolean_input" [attr.checked]="value === false ? '' : null "> False
     </div>
 
   </div>

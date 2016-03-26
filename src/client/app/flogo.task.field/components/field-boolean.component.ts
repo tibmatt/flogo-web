@@ -12,4 +12,5 @@ import {FlogoTaskFieldBaseComponent}  from './field-base.component'
 
 export class FlogoTaskFieldBooleanComponent extends FlogoTaskFieldBaseComponent{
 
+
 }

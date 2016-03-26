@@ -13,6 +13,7 @@ import {FlogoTaskContainerComponent} from '../../flogo.task.container/components
 export class FlogoTaskComponent{
   schema: any;
   stateData: any;
+  modifiedState: any;
 
   getStateData() {
 
@@ -37,6 +38,10 @@ export class FlogoTaskComponent{
             {
               "name": "query",
               "value": "select user_id where privileges != 'admin'"
+            },
+            {
+              "name": "ok",
+              "value": false
             }
           ],
           "outputs": [
@@ -50,8 +55,6 @@ export class FlogoTaskComponent{
     }
 
   }
-
-
 
   getSchema() {
 
@@ -95,7 +98,16 @@ export class FlogoTaskComponent{
           required: true,
           validation: "",
           "validationMessage": "",
-          "type": "string"
+          "type": "object"
+        },
+        {
+          "name": "ok",
+          "title": "Is OK",
+          "description": "Ok",
+          required: true,
+          validation: "",
+          "validationMessage": "",
+          "type": "boolean"
         }
       ],
       outputs: [
@@ -116,6 +128,10 @@ export class FlogoTaskComponent{
   ngOnInit() {
     this.schema = this.getSchema();
     this.stateData = this.getStateData();
+  }
+
+  onGetModifiedState(state:any) {
+    this.modifiedState = JSON.stringify(state, null, 2);
   }
 
 }

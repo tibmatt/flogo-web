@@ -1,4 +1,4 @@
-import {Component, Input, DynamicComponentLoader, ElementRef, Injectable} from 'angular2/core';
+import {Component, Input, DynamicComponentLoader, ElementRef, Injectable, EventEmitter, Output} from 'angular2/core';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {FlogoTaskFieldStringComponent} from '../../flogo.task.field/components/field-string.component';
 import {FlogoTaskFieldNumberComponent} from '../../flogo.task.field/components/field-number.component';
@@ -13,12 +13,13 @@ import {FlogoTaskFieldObjectComponent} from '../../flogo.task.field/components/f
   templateUrl: 'task.container.tpl.html',
   directives: [ROUTER_DIRECTIVES]
 })
-
 export class FlogoTaskContainerComponent{
   schema: any;
   stateData: any;
   stateTask: any;
   componentsByType: any;
+  inputFields: Object[];
+  @Output() onGetModifiedState: EventEmitter<any> = new EventEmitter();
 
   constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef) {
 
@@ -35,6 +36,7 @@ export class FlogoTaskContainerComponent{
     var inputs = this.schema.inputs || [];
     var outputs = this.schema.outputs || [];
     this.stateTask = this.getStateTask(this.schema.name, this.stateData.tasks || []) || [];
+    this.inputFields = [];
 
     this.addFieldSetToDOM(inputs, 'inputFields');
     this.addFieldSetToDOM(outputs, 'outputFields');
@@ -51,9 +53,10 @@ export class FlogoTaskContainerComponent{
           .then(ref => {
             let parameterType = (location === 'inputFields') ? 'input' : 'output';
             ref.instance.setConfiguration(fieldSchema, this.stateTask, parameterType);
+            this.inputFields.push(ref.instance);
           });
       }
-      // TODO throw error because the component wasnot found
+      // TODO throw error because the component was not found
     });
   }
 
@@ -61,6 +64,30 @@ export class FlogoTaskContainerComponent{
     return tasks.find((task:any) => {
       return task['name'] = schemaName;
     });
+  }
+
+  getModifiedStateTask() {
+    var jsonInputs:any = [];
+    var jsonOutputs:any = [];
+
+    this.inputFields.forEach((input:any) => {
+      var field:any = input.exportToJson();
+      if(input.getParameterType() === 'input') {
+        jsonInputs.push(field);
+      } else {
+        jsonOutputs.push(field);
+      }
+    });
+
+    var modifiedSate = {
+      "name" : this.schema.name,
+      "title": this.schema.title,
+      "description": this.schema.description,
+      "inputs": jsonInputs,
+      "outputs": jsonOutputs
+    };
+
+    this.onGetModifiedState.emit(modifiedSate);
   }
 
   getCurrentFieldSchema(schema: any) {
