@@ -1,6 +1,7 @@
 import {Component} from 'angular2/core';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {FlogoTaskContainerComponent} from '../../flogo.task.container/components/task.container.component';
+import {BehaviorSubject} from 'rxjs/Rx';
 
 @Component({
   selector: 'flogo-task',
@@ -11,127 +12,50 @@ import {FlogoTaskContainerComponent} from '../../flogo.task.container/components
 })
 
 export class FlogoTaskComponent{
-  schema: any;
-  stateData: any;
   modifiedState: any;
+  inputSchema: string;
+  inputState: string;
+  inputSchemaSubject: any;
+  inputStateSubject: any;
+  modifiedStateSubject: any;
 
   getStateData() {
-
-    return {
-      "name": "Find User",
-      "tasks": [
-        {
-          "name": "tibco-routing",
-          "inputs": [
-            {
-              "name": "serverName",
-              "value": "185.422.134.16"
-            },
-            {
-              "name": "userName",
-              "value": "admin"
-            },
-            {
-              "name": "password",
-              "value": "1234"
-            },
-            {
-              "name": "query",
-              "value": "select user_id where privileges != 'admin'"
-            },
-            {
-              "name": "ok",
-              "value": false
-            }
-          ],
-          "outputs": [
-            {
-              "name": "queryStatus",
-              "value": "success"
-            }
-          ]
-        }
-      ]
-    }
-
+    return {};
   }
 
   getSchema() {
+    return {};
+  }
 
-    return {
-      "name": "tibco-routing",
-      "version": "0.1.0",
-      "description": "Routing your request",
-      title: "TIBCO Routing",
-      inputs: [
-        {
-          "name": "serverName",
-          "title": "Server name",
-          "description": "Server name",
-          "required": true,
-          "validation": "",
-          "validationMessage": "",
-          "type": "string"
-        },
-        {
-          "name": "userName",
-          "title": "User name",
-          "description": "User name",
-          required: true,
-          validation: "",
-          "validationMessage": "",
-          "type": "string"
-        },
-        {
-          "name": "password",
-          "title": "Password",
-          "description": "Password",
-          required: true,
-          validation: "",
-          "validationMessage": "",
-          "type": "string"
-        },
-        {
-          "name": "query",
-          "title": "Query",
-          "description": "Query",
-          required: true,
-          validation: "",
-          "validationMessage": "",
-          "type": "object"
-        },
-        {
-          "name": "ok",
-          "title": "Is OK",
-          "description": "Ok",
-          required: true,
-          validation: "",
-          "validationMessage": "",
-          "type": "boolean"
-        }
-      ],
-      outputs: [
-        {
-          "name": "queryStatus",
-          "title": "Query status",
-          "description": "Query status",
-          required: true,
-          validation: "",
-          "validationMessage": "",
-          "type": "string"
-        }
-      ]
-    };
+  stringify(json:any) {
+    return JSON.stringify(json, null, 2);
+  }
 
+  changeInputSchema(event:any) {
+    this.inputSchemaSubject.next(event.value);
+  }
+
+  changeInputState(event:any) {
+    this.inputStateSubject.next(event.value);
   }
 
   ngOnInit() {
-    this.schema = this.getSchema();
-    this.stateData = this.getStateData();
+    this.inputSchema = this.stringify(this.getSchema());
+    this.inputState  = this.stringify(this.getStateData());
+
+    this.inputSchemaSubject = new BehaviorSubject(this.inputSchema);
+    this.inputStateSubject  = new BehaviorSubject(this.inputState);
+    this.modifiedStateSubject  = new BehaviorSubject({});
+
+    this.modifiedStateSubject.subscribe(
+      (value:any) => {
+        this.modifiedState = JSON.stringify(value, null, 2);
+      }
+
+    );
   }
 
   onGetModifiedState(state:any) {
-    this.modifiedState = JSON.stringify(state, null, 2);
   }
 
 }

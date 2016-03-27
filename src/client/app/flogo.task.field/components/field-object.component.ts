@@ -11,4 +11,19 @@ import {FlogoTaskFieldBaseComponent}  from './field-base.component'
 })
 
 export class FlogoTaskFieldObjectComponent extends FlogoTaskFieldBaseComponent{
+
+  exportToJson() {
+    var value:any;
+    try {
+      value = JSON.parse(this.value);
+    } catch(exc) {
+      value = {};
+    }
+    return {
+      "name": this.schema.name,
+      "value": value
+    }
+
+  }
+
 }

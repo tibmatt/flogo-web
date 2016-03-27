@@ -1,14 +1,21 @@
 <div class="flogo-task-container">
-  <div class="flogo-task-container__header"> <h3> {{schema.title}} </h3></div>
 
-  <h3 class="flogo-task-container__fields-header">Input Parameters</h3>
-  <div #inputFields></div>
+  <div [hidden]="hasErrors">
+      <div class="flogo-task-container__header"> <h3> {{task.schema.title || task.schema.name}} </h3></div>
 
-  <h3 class="flogo-task-container__fields-header">Output Parameters</h3>
-  <div #outputFields></div>
+      <h3 class="flogo-task-container__fields-header" [hidden]="!task.schema?.inputs?.length">Input Parameters</h3>
+      <div #inputFields></div>
 
-  <div class="flogo-task-container__footer">
-    <button class="btn btn-primary" (click)="getModifiedStateTask()">Run</button>
-    <button class="btn btn-default">Cancel</button>
+      <h3 class="flogo-task-container__fields-header" [hidden]="!task.schema?.outputs?.length">Output Parameters</h3>
+      <div #outputFields></div>
+
+      <!--<div class="flogo-task-container__footer">-->
+        <!--
+        <button class="btn btn-primary" (click)="getModifiedStateTask()">Run</button>
+        <button class="btn btn-default">Cancel</button>
+        -->
+      <!--</div>-->
   </div>
+
+  <!--<h3 [hidden]="!hasErrors">Error parsing JSON</h3>-->
 </div>

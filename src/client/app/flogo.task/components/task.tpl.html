@@ -1,10 +1,29 @@
 <div class="flogo-task">
   <div class="flogo-task__main-panel">
-    <h5>Modified State</h5>
-    <textarea name="" id="" cols="60" rows="20" [ngModel]="modifiedState"></textarea>
+
+    <div class="flogo-task__main-panel__demo-generate-ui">
+        <div>
+          <h4>Task schema</h4>
+          <textarea name="" class="flogo-task__main-panel__demo-generate-ui__input" cols="45" rows="20"
+                    [ngModel]="inputSchema" (keyup)="changeInputSchema($event.target)"></textarea>
+        </div>
+
+        <div>
+          <h4>Task state</h4>
+          <textarea name="" class="flogo-task__main-panel__demo-generate-ui__input" cols="45" rows="20"
+                    [ngModel]="inputState" (keyup)="changeInputState($event.target)"></textarea>
+        </div>
+
+    </div>
+
+    <div>
+      <h4>Modified State</h4>
+      <textarea name="" id="" cols="45" rows="20" [ngModel]="modifiedState"></textarea>
+    </div>
+
   </div>
-  <flogo-task-container [schema]="schema"
-                        [stateData]="stateData"
-                        (onGetModifiedState) = "onGetModifiedState($event)"
+  <flogo-task-container [inputSchemaSubject]="inputSchemaSubject"
+                        [inputStateSubject]="inputStateSubject"
+                        [modifiedStateSubject]="modifiedStateSubject"
                         class="flogo-task__task-panel"></flogo-task-container>
 </div>

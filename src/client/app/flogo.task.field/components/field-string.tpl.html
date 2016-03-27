@@ -1,4 +1,4 @@
 <div class="flogo-task-field">
   <label class="control-label">{{schema.title}}</label>
-  <input type="text" class="form-control" [(ngModel)]="value" >
+  <input type="text" class="form-control" [(ngModel)]="value" (keyup)="onChangeField()">
 </div>

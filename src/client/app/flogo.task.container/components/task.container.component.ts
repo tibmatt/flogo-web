@@ -1,25 +1,28 @@
-import {Component, Input, DynamicComponentLoader, ElementRef, Injectable, EventEmitter, Output} from 'angular2/core';
+import {Component, Input, DynamicComponentLoader, ElementRef, Injectable } from 'angular2/core';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {FlogoTaskFieldStringComponent} from '../../flogo.task.field/components/field-string.component';
 import {FlogoTaskFieldNumberComponent} from '../../flogo.task.field/components/field-number.component';
 import {FlogoTaskFieldBooleanComponent} from '../../flogo.task.field/components/field-boolean.component';
 import {FlogoTaskFieldObjectComponent} from '../../flogo.task.field/components/field-object.component';
+import {Observable, BehaviorSubject} from 'rxjs/Rx';
 
 @Component({
   selector: 'flogo-task-container',
   styleUrls: ['task.container.css'],
-  inputs:['schema','stateData'],
+  inputs:['inputSchemaSubject','inputStateSubject', 'modifiedStateSubject'],
   moduleId: module.id,
   templateUrl: 'task.container.tpl.html',
   directives: [ROUTER_DIRECTIVES]
 })
 export class FlogoTaskContainerComponent{
-  schema: any;
-  stateData: any;
-  stateTask: any;
+  task:any;
+  inputSchemaSubject:any;
+  inputStateSubject:any;
+  modifiedStateSubject:any;
   componentsByType: any;
+  fieldSubject:any;
   inputFields: Object[];
-  @Output() onGetModifiedState: EventEmitter<any> = new EventEmitter();
+  hasErrors:boolean;
 
   constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef) {
 
@@ -32,35 +35,84 @@ export class FlogoTaskContainerComponent{
 
   }
 
-  ngOnInit() {
-    var inputs = this.schema.inputs || [];
-    var outputs = this.schema.outputs || [];
-    this.stateTask = this.getStateTask(this.schema.name, this.stateData.tasks || []) || [];
-    this.inputFields = [];
 
-    this.addFieldSetToDOM(inputs, 'inputFields');
-    this.addFieldSetToDOM(outputs, 'outputFields');
+
+
+  ngOnInit() {
+    this.inputFields = [];
+    this.hasErrors = false;
+
+    this.fieldSubject = new BehaviorSubject('');
+
+    this.fieldSubject.subscribe((value:string) => {
+      this.modifiedStateSubject.next(this.getModifiedStateTask());
+    });
+
+    var schemaAndStateSubject = Observable.combineLatest(this.inputSchemaSubject, this.inputStateSubject, (schema:string, state:string) => {
+      var jsonSchema:any, jsonState:any;
+
+      try {
+        jsonSchema = JSON.parse(schema);
+        jsonState = JSON.parse(state);
+        this.hasErrors = false;
+      }
+      catch(exc) {
+        this.hasErrors = true;
+        jsonSchema = null;
+        jsonState = null;
+      }
+
+      return {
+          schema: jsonSchema || {},
+          state:  jsonState  || {}
+      }
+
+    });
+
+    schemaAndStateSubject.subscribe( (task) => {
+      this.task = task;
+
+      this.inputFields.forEach((input:any) => {
+        input.dispose();
+      });
+
+      this.inputFields = [];
+      debugger;
+
+      var inputs = this.task.schema.inputs || [];
+      var outputs = this.task.schema.outputs || [];
+
+      this.addFieldSetToDOM(inputs, 'inputFields');
+      this.addFieldSetToDOM(outputs, 'outputFields');
+    });
+
+
   }
 
   addFieldSetToDOM(fieldSet:any, location:string) {
+
     fieldSet.forEach((schema:any) => {
       let fieldSchema = this.getCurrentFieldSchema(schema);
       // base on the type load the correct control
       let component = this.componentsByType[fieldSchema.type];
 
       if(component) {
-        this.dcl.loadIntoLocation(component, this.elementRef, location)
+        this.loadIntoLocation(component, location)
           .then(ref => {
             let parameterType = (location === 'inputFields') ? 'input' : 'output';
-            ref.instance.setConfiguration(fieldSchema, this.stateTask, parameterType);
-            this.inputFields.push(ref.instance);
+            ref.instance.setConfiguration(fieldSchema, this.task.state, parameterType, this.fieldSubject);
+            this.inputFields.push(ref);
           });
       }
       // TODO throw error because the component was not found
     });
   }
 
-  getStateTask(schemaName:string, tasks:any) {
+  loadIntoLocation(component:any, location:string) {
+    return this.dcl.loadIntoLocation(component, this.elementRef, location);
+  }
+
+  getFieldState(schemaName:string, tasks:any) {
     return tasks.find((task:any) => {
       return task['name'] = schemaName;
     });
@@ -69,25 +121,28 @@ export class FlogoTaskContainerComponent{
   getModifiedStateTask() {
     var jsonInputs:any = [];
     var jsonOutputs:any = [];
+    var modified:any = {};
 
     this.inputFields.forEach((input:any) => {
-      var field:any = input.exportToJson();
-      if(input.getParameterType() === 'input') {
+      var field:any = input.instance.exportToJson();
+      if(input.instance.getParameterType() === 'input') {
         jsonInputs.push(field);
       } else {
         jsonOutputs.push(field);
       }
     });
 
-    var modifiedSate = {
-      "name" : this.schema.name,
-      "title": this.schema.title,
-      "description": this.schema.description,
-      "inputs": jsonInputs,
-      "outputs": jsonOutputs
-    };
+    if(this.task) {
+      modified = {
+        "name": this.task.schema.name,
+        "title": this.task.schema.title,
+        "description": this.task.schema.description,
+        "inputs": jsonInputs,
+        "outputs": jsonOutputs
+      }
+    }
 
-    this.onGetModifiedState.emit(modifiedSate);
+    return modified;
   }
 
   getCurrentFieldSchema(schema: any) {
