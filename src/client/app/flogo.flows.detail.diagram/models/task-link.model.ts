@@ -4,3 +4,9 @@ export interface IFlogoTaskLink {
   to: string
   name ? : string;
 };
+
+export class FlogoTaskLink {
+  static genTaskLinkID( ): string {
+    return btoa( 'FlogoTaskLink::' + Date.now( ) );
+  };
+}

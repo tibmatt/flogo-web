@@ -55,6 +55,24 @@ export class FlogoDiagram implements IFlogoDiagram {
     return matrix;
   }
 
+  static getEmptyDiagram( ): IFlogoDiagram {
+    let newRootNode = new FlogoNode( );
+    let empytDiagram = < IFlogoDiagram > {
+      root: {
+        is: newRootNode.id
+      },
+      nodes: < IFlogoNodeDictionary > {
+
+      }
+    };
+
+    newRootNode.type = FLOGO_NODE_TYPE.NODE_ROOT_NEW;
+
+    empytDiagram.nodes[ newRootNode.id ] = newRootNode;
+
+    return empytDiagram;
+  }
+
   public update( opt: {
     diagram ? : IFlogoDiagram,
     tasks ? : IFlogoTaskDictionary,
@@ -74,7 +92,8 @@ export class FlogoDiagram implements IFlogoDiagram {
       promises.push( this.updateElement( opt.element ) );
     }
 
-    return Promise.all( promises ).then( ( ) => this );
+    return Promise.all( promises )
+      .then( ( ) => this );
   }
 
   public updateAndRender( opt: {
@@ -82,32 +101,48 @@ export class FlogoDiagram implements IFlogoDiagram {
     tasks ? : IFlogoTaskDictionary,
     element ? : HTMLElement
   } ): Promise < FlogoDiagram > {
-    return this.update( opt ).then( ( ) => {
-      return this.render( );
-    } );
+    return this.update( opt )
+      .then( ( ) => {
+        return this.render( );
+      } );
   }
 
   public updateDiagram( diagram: IFlogoDiagram ): Promise < FlogoDiagram > {
-    // keep a copy of diagram information, but only keep the reference of the tasks
-    this.root = _.cloneDeep( diagram.root );
+    if ( diagram ) {
+      // handle diagram with trigger and more nodes
 
-    // convert FlogoNode object into instance of FlogoNode class
-    //   TODO optimisation is required
-    // if a node has no child, append a NODE_ADD node as its child
-    //   TODO case of NODE_LINK should be considered differently
-    let nodeDict: IFlogoNodeDictionary = {};
-    let NODES_CAN_HAVE_ADD_NODE = [ FLOGO_NODE_TYPE.NODE_BRANCH, FLOGO_NODE_TYPE.NODE, FLOGO_NODE_TYPE.NODE_ROOT, FLOGO_NODE_TYPE.NODE_SUB_PROC, FLOGO_NODE_TYPE.NODE_LOOP ];
+      // keep a copy of diagram information, but only keep the reference of the tasks
+      this.root = _.cloneDeep( diagram.root );
 
-    _.forIn( diagram.nodes, ( node, nodeID ) => {
-      let newNode = nodeDict[ nodeID ] = new FlogoNode( node );
+      // convert FlogoNode object into instance of FlogoNode class
+      //   TODO optimisation is required
+      // if a node has no child, append a NODE_ADD node as its child
+      //   TODO case of NODE_LINK should be considered differently
+      let nodeDict: IFlogoNodeDictionary = {};
+      let NODES_CAN_HAVE_ADD_NODE = [
+        FLOGO_NODE_TYPE.NODE_BRANCH,
+        FLOGO_NODE_TYPE.NODE,
+        FLOGO_NODE_TYPE.NODE_ROOT,
+        FLOGO_NODE_TYPE.NODE_SUB_PROC,
+        FLOGO_NODE_TYPE.NODE_LOOP
+      ];
 
-      if ( newNode.hasNoChild( ) && NODES_CAN_HAVE_ADD_NODE.indexOf( newNode.type ) !== -1 ) {
-        this._appendAddNode( nodeDict, < FlogoNode > newNode );
-      }
+      _.forIn( diagram.nodes, ( node, nodeID ) => {
+        let newNode = nodeDict[ nodeID ] = new FlogoNode( node );
 
-    } );
+        if ( newNode.hasNoChild( ) && NODES_CAN_HAVE_ADD_NODE.indexOf( newNode.type ) !== -1 ) {
+          this._appendAddNode( nodeDict, < FlogoNode > newNode );
+        }
 
-    this.nodes = nodeDict;
+      } );
+
+      this.nodes = nodeDict;
+
+    } else {
+      // handle empty diagram
+      this.updateDiagram( FlogoDiagram.getEmptyDiagram( ) );
+    }
+
 
     return Promise.resolve( this );
   }
@@ -117,7 +152,10 @@ export class FlogoDiagram implements IFlogoDiagram {
   }
 
   public updateElement( elm: HTMLElement ): Promise < FlogoDiagram > {
-    d3.select( this.elm ).select( '.flogo-flows-detail-diagram' ).selectAll( '.flogo-flows-detail-diagram-row' ).remove( ); // clean the previous diagram
+    d3.select( this.elm )
+    .select( '.flogo-flows-detail-diagram' )
+    .selectAll( '.flogo-flows-detail-diagram-row' )
+    .remove( ); // clean the previous diagram
     this.elm = elm;
     return Promise.resolve( this );
   }
@@ -154,10 +192,12 @@ export class FlogoDiagram implements IFlogoDiagram {
     // update selection
     rows.classed( 'updated', true )
     .on( 'mouseenter', function ( ) {
-      d3.select( this ).classed( 'hover', true );
+      d3.select( this )
+        .classed( 'hover', true );
     } )
     .on( 'mouseleave', function ( ) {
-      d3.select( this ).classed( 'hover', false );
+      d3.select( this )
+        .classed( 'hover', false );
     } )
     tasks = this._preprocessTaskNodes( rows );
 
@@ -190,6 +230,9 @@ export class FlogoDiagram implements IFlogoDiagram {
 
       if ( node.type === FLOGO_NODE_TYPE.NODE_ADD ) {
         node.type = FLOGO_NODE_TYPE.NODE;
+        this._appendAddNode( this.nodes, < FlogoNode > node );
+      } else if ( node.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+        node.type = FLOGO_NODE_TYPE.NODE_ROOT;
         this._appendAddNode( this.nodes, < FlogoNode > node );
       }
     } else {
@@ -325,13 +368,13 @@ export class FlogoDiagram implements IFlogoDiagram {
 
           let evtType = '';
 
-          if ( d.type === FLOGO_NODE_TYPE.NODE_ADD ) {
+          if ( d.type === FLOGO_NODE_TYPE.NODE_ADD || d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
             evtType = 'flogoAddTask';
 
             // TODO
             //   refine the logic to handle more nodes
           } else if ( [ FLOGO_NODE_TYPE.NODE, FLOGO_NODE_TYPE.NODE_ROOT ].indexOf( d.type ) !== -1 ) {
-            evtType = 'flogoEditTask';
+            evtType = 'flogoSelectTask';
           }
 
           if ( evtType ) {
@@ -365,6 +408,8 @@ export class FlogoDiagram implements IFlogoDiagram {
 
         if ( d.type === FLOGO_NODE_TYPE.NODE_ADD ) {
           label = 'ADD';
+        } else if ( d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+          label = 'Select trigger';
         }
 
         return label;

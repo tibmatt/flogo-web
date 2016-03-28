@@ -4,8 +4,7 @@ import {
   OnChanges,
   SimpleChange,
   AfterViewInit,
-  OnDestroy,
-  EventEmitter
+  OnDestroy
 } from 'angular2/core';
 
 import {
@@ -18,61 +17,118 @@ import {
   FLOGO_NODE_TYPE
 } from '../models';
 
+import { PostService } from '../../../common/services/post.service';
+
+// TODO
+//   remove this mock
 import * as DEMO_MODELS from '../models';
+
+const PUB_EVENTS = {
+  addTask: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'add-task'
+  },
+  selectTask: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'select-task'
+  },
+  addTrigger: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'add-trigger'
+  },
+  selectTrigger: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'select-trigger'
+  }
+};
 
 @Component( {
   selector: 'flogo-canvas-flow-diagram',
   moduleId: module.id,
   templateUrl: 'diagram.tpl.html',
   styleUrls: [ 'diagram.component.css' ],
-  inputs: [ 'tasks', 'diagram', 'onAfterAddTask', 'onAfterEditTask' ],
-  outputs: [ 'onAddTask', 'onEditTask' ]
+  inputs: [ 'tasks', 'diagram' ]
 } )
 export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   public tasks: IFlogoTaskDictionary;
   public diagram: IFlogoDiagram;
 
-  public onAddTask: EventEmitter < any > ;
-  public onEditTask: EventEmitter < any > ;
-  public onAfterAddTask: EventEmitter < any > ;
-  public onAfterEditTask: EventEmitter < any > ;
-
   private _elmRef: ElementRef;
   private _diagram: FlogoDiagram;
-  private _afterAddTaskSub: any;
-  private _afterEditTaskSub: any;
+  private _subscriptions: any[ ];
 
   // TODO
   //   remove this mock
   private _mockProcess: any;
 
-  constructor( elementRef: ElementRef ) {
+  constructor( elementRef: ElementRef, private _postService: PostService ) {
     this._elmRef = elementRef;
-    this.onAddTask = new EventEmitter( );
-    this.onEditTask = new EventEmitter( );
+    this.initSub( );
+  }
+
+  private initSub( ) {
+    if ( _.isEmpty( this._subscriptions ) ) {
+      this._subscriptions = [ ];
+    }
+
+    if ( !this._postService ) {
+      console.error( 'No PostService Found..' );
+      return;
+    }
+
+    let subs = [ {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'add-trigger-done',
+      callback: this._addTriggerDone.bind( this )
+    }, {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'select-trigger-done',
+      callback: this._selectTriggerDone.bind( this )
+    }, {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'add-task-done',
+      callback: this._addTaskDone.bind( this )
+    }, {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'select-task-done',
+      callback: this._selectTaskDone.bind( this )
+    } ];
+
+    _.each( subs, ( sub ) => {
+      this._subscriptions.push( this._postService.subscribe( sub ) );
+    } );
+  }
+
+  private unsub( ) {
+    if ( _.isEmpty( this._subscriptions ) ) {
+      return true;
+    }
+
+    _.each( this._subscriptions, ( sub ) => {
+      this._postService.unsubscribe( sub );
+    } );
+
+    return true;
   }
 
   ngAfterViewInit( ) {
-    this._diagram = new FlogoDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
+    // this._diagram = new FlogoDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
 
-    this._diagram.render( ).then( ( diagram ) => {
-      // TODO
-      //   remove this mock
-      this._mockProcess = diagram.toProcess( );
-    } );
+    // TODO
+    //   remove this mock, this is for evaluating empty diagram case
+    this._diagram = new FlogoDiagram( null, this.tasks, this._elmRef.nativeElement );
 
-    this._afterAddTaskSub = this.onAfterAddTask.subscribe( this._afterAddTaskHandler.bind( this ), ( err: any ) => {
-      console.log( err );
-    }, ( done: any ) => {
-      console.log( done );
-    } );
+    this._diagram.render( )
+      .then( ( diagram ) => {
+        // TODO
+        //   remove this mock
+        this._mockProcess = diagram.toProcess( );
+      } );
 
-    this._afterEditTaskSub = this.onAfterEditTask.subscribe( this._afterEditTaskHandler.bind( this ), ( err: any ) => {
-      console.log( err );
-    }, ( done: any ) => {
-      console.log( done );
-    } );
+    // TODO
+    //   subscription
+
   }
 
   ngOnChanges( changes: {
@@ -96,13 +152,14 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
       if ( this.diagram && this.tasks && this._diagram ) {
         this._diagram.updateAndRender( {
-          tasks: this.tasks,
-          diagram: this.diagram
-        } ).then( ( diagram ) => {
-          // TODO
-          //   remove this mock
-          this._mockProcess = diagram.toProcess( );
-        } );
+            tasks: this.tasks,
+            diagram: this.diagram
+          } )
+          .then( ( diagram ) => {
+            // TODO
+            //   remove this mock
+            this._mockProcess = diagram.toProcess( );
+          } );
       }
 
       // monitor the updates of tasks
@@ -114,36 +171,16 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
       if ( this.diagram && this.tasks && this._diagram ) {
         this._diagram.updateAndRender( {
-          tasks: this.tasks
-        } ).then( ( diagram ) => {
-          // TODO
-          //   remove this mock
-          this._mockProcess = diagram.toProcess( );
-        } );;
+            tasks: this.tasks
+          } )
+          .then( ( diagram ) => {
+            // TODO
+            //   remove this mock
+            this._mockProcess = diagram.toProcess( );
+          } );;
       }
     }
 
-  }
-
-  private _afterAddTaskHandler( data: any ) {
-
-    console.group( '_afterAddTaskHandler' );
-    console.log( data );
-
-    if ( data.node && data.task ) {
-      // link the new task to FlogoNode
-      this._diagram.linkNodeWithTask( data.node.id, data.task ).then( ( diagram ) => {
-        return diagram.updateAndRender( {
-          tasks: this.tasks
-        } );
-      } ).then( ( diagram ) => {
-        // TODO
-        //   remove this mock
-        this._mockProcess = diagram.toProcess( );
-      } );;
-    }
-
-    console.groupEnd( );
   }
 
   private _afterEditTaskHandler( data: any ) {
@@ -154,12 +191,13 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     // the tasks should have been passed into this component after changing
     // so re-render the diagram
     this._diagram.updateAndRender( {
-      tasks: this.tasks
-    } ).then( ( diagram ) => {
-      // TODO
-      //   remove this mock
-      this._mockProcess = diagram.toProcess( );
-    } );;
+        tasks: this.tasks
+      } )
+      .then( ( diagram ) => {
+        // TODO
+        //   remove this mock
+        this._mockProcess = diagram.toProcess( );
+      } );;
 
     // TODO
     //   if there are nodes position changing, then should apply the new diagram when updating
@@ -172,19 +210,119 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngOnDestroy( ) {
-    // clean up subscriptions
-    this._afterAddTaskSub.unsubscribe( );
-    this._afterEditTaskSub.unsubscribe( );
+    // TODO
+
+    this.unsub( );
   }
 
   // forwarding event
   addTask( $event: any ) {
-    this.onAddTask.emit( $event );
+    // TODO
+    console.group( 'forwarding add task event' );
+
+    console.log( $event );
+
+    let data = $event.detail;
+
+    if ( data.node.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+      // add trigger event
+      this._postService.publish( _.assign( {}, PUB_EVENTS.addTrigger, { data: data } ) );
+    } else if ( data.node.type === FLOGO_NODE_TYPE.NODE_ADD ) {
+      // add task event
+      this._postService.publish( _.assign( {}, PUB_EVENTS.addTask, { data: data } ) );
+    } else {
+      console.warn( 'unknown event type' );
+    }
+
+    console.groupEnd( );
   }
 
   // forwarding event
-  editTask( $event: any ) {
-    this.onEditTask.emit( $event );
+  selectTask( $event: any ) {
+    // TODO
+
+    console.group( 'forwarding select task event' );
+
+    console.log( $event );
+
+    let data = $event.detail;
+
+    // TODO
+    //   need to support branch/link and other nodes
+    if ( data.node.type === FLOGO_NODE_TYPE.NODE_ROOT ) {
+      // select trigger event
+      this._postService.publish( _.assign( {}, PUB_EVENTS.selectTrigger, { data: data } ) );
+    } else if ( data.node.type === FLOGO_NODE_TYPE.NODE ) {
+      // select task event
+      this._postService.publish( _.assign( {}, PUB_EVENTS.selectTask, { data: data } ) );
+    } else {
+      console.warn( 'unknown event type, yet' );
+    }
+
+    console.groupEnd( );
+  }
+
+
+  private _addTriggerDone( data: any, envelope: any ) {
+    console.group( 'Add Trigger Done' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._associateNodeWithTaskAndUpdateDiagram( data );
+
+    console.groupEnd( );
+  }
+
+  private _addTaskDone( data: any, envelope: any ) {
+    console.group( 'Add Task Done' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._associateNodeWithTaskAndUpdateDiagram( data );
+
+    console.groupEnd( );
+  }
+
+  private _selectTriggerDone( data: any, envelope: any ) {
+    console.group( 'Select Trigger Done' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._associateNodeWithTaskAndUpdateDiagram( data );
+
+    console.groupEnd( );
+  }
+
+  private _selectTaskDone( data: any, envelope: any ) {
+    console.group( 'Select task Done' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._associateNodeWithTaskAndUpdateDiagram( data );
+
+
+    console.groupEnd( );
+  }
+
+  private _associateNodeWithTaskAndUpdateDiagram( data: any ) {
+    if ( data.node && data.task ) {
+      // link the new task to FlogoNode
+      this._diagram.linkNodeWithTask( data.node.id, data.task )
+        .then( ( diagram ) => {
+          return diagram.updateAndRender( {
+            tasks: this.tasks
+          } );
+        } )
+        .then( ( diagram ) => {
+          // TODO
+          //   remove this mock
+          this._mockProcess = diagram.toProcess( );
+        } );
+    }
   }
 
   getEnumerations( ): any {

@@ -11,6 +11,8 @@ import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail
 
 import {
   FlogoDiagram,
+  FlogoTask,
+  IFlogoTask,
   IFlogoTaskDictionary,
   IFlogoDiagram,
   FLOGO_TASK_TYPE,
@@ -23,8 +25,28 @@ import {
   DIAGRAM,
   TASKS,
   TEST_DIAGRAM,
-  TEST_TASKS
+  TEST_TASKS,
+  MOCK_TASKS_ARR
 } from '../../mocks';
+
+const PUB_EVENTS = {
+  addTaskDone: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'add-task-done'
+  },
+  selectTaskDone: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'select-task-done'
+  },
+  addTriggerDone: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'add-trigger-done'
+  },
+  selectTriggerDone: {
+    channel: 'mock-flogo-flows-detail-diagram',
+    topic: 'select-trigger-done'
+  }
+};
 
 @Component( {
   selector: 'flogo-canvas',
@@ -88,13 +110,34 @@ export class FlogoCanvasComponent {
         console.groupEnd();
       }.bind(this)
     });
+
+    // TODO
+    //   1. merge these mocks with real implementation
+    //   2. unsubscribe on destroy
+    this._postService.subscribe( {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'add-trigger',
+      callback: this._addTrigger.bind(this)
+    } );
+    this._postService.subscribe( {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'select-trigger',
+      callback: this._selectTrigger.bind(this)
+    } );
+    this._postService.subscribe( {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'add-task',
+      callback: this._addTask.bind(this)
+    } );
+    this._postService.subscribe( {
+      channel: 'mock-flogo-flows-detail-diagram',
+      topic: 'select-task',
+      callback: this._selectTask.bind(this)
+    } );
   }
 
   public tasks: IFlogoTaskDictionary;
   public diagram: IFlogoDiagram;
-
-  public onAfterAddTask: EventEmitter < any > ;
-  public onAfterEditTask: EventEmitter < any > ;
 
   constructor(
     private _postService: PostService,
@@ -103,56 +146,79 @@ export class FlogoCanvasComponent {
   ) {
     this.tasks = TASKS;
     this.diagram = DIAGRAM;
-    this.onAfterAddTask = new EventEmitter( );
-    this.onAfterEditTask = new EventEmitter( );
     this.initSubscribe();
   }
 
+  private _addTrigger( data: any, envelope: any ) {
+    console.group( 'Add Trigger' );
 
-  addTask( $event: any ) {
-    console.group( 'Add task' );
+    console.log( data );
+    console.log( envelope );
 
-    // create a new task
-    let newTask = {
-      'id': btoa( 'FlogoTask::' + Date.now( ) ),
-      'type': FLOGO_TASK_TYPE.TASK,
-      'activityType': FLOGO_ACTIVITY_TYPE.REST,
-      'name': 'Task',
-      'attributes': {
-        'inputs': [
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'uri', 'value': 'http://petstore.swagger.io/v2/pet/{petId}' },
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'method', 'value': 'GET' },
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'petId', 'value': '' }
-        ],
-        'outputs': [
-          { 'type': FLOGO_ATTRIBUTE_TYPE.STRING, 'name': 'result', 'value': '' }
-        ]
-      },
-      'inputMappings': [
-        { 'type': 1, 'value': 'petId', 'mapTo': 'petId' }
-      ],
-      'outputMappings': [
-        { 'type': 1, 'value': 'result', 'mapTo': 'petInfo' }
-      ]
-    };
-    this.tasks[ newTask.id ] = newTask;
+    // TODO
+    //   replace this mock
+    let newRootTask = new FlogoTask( < IFlogoTask > _.assign( MOCK_TASKS_ARR.shift( ) || {}, {
+      type: FLOGO_TASK_TYPE.TASK_ROOT
+    } ) );
 
-    this.onAfterAddTask.emit( {
-      node: $event.detail.node,
-      task: newTask
-    } );
+    newRootTask.name = 'HTTP Trigger';
+
+    this.tasks[ newRootTask.id ] = newRootTask;
+
+    this._postService.publish( _.assign( {}, PUB_EVENTS.addTriggerDone, {
+      data: {
+        node: data.node,
+        task: newRootTask
+      }
+    } ) );
 
     console.groupEnd( );
   }
 
-  editTask( $event: any ) {
-    console.group( 'Edit task' );
+  private _addTask( data: any, envelope: any ) {
+    console.group( 'Add Task' );
 
-    console.log( $event );
+    console.log( data );
+    console.log( envelope );
 
-    this.onAfterEditTask.emit( {
-      msg: 'TODO'
-    } );
+    // TODO
+    //   replace this mock
+    let newTask = new FlogoTask( < IFlogoTask > ( MOCK_TASKS_ARR.shift( ) || {} ) );
+
+    this.tasks[ newTask.id ] = newTask;
+
+    this._postService.publish( _.assign( {}, PUB_EVENTS.addTaskDone, {
+      data: {
+        node: data.node,
+        task: newTask
+      }
+    } ) );
+
+    console.groupEnd( );
+  }
+
+  private _selectTrigger( data: any, envelope: any ) {
+    console.group( 'Select Trigger' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._postService.publish( _.assign( {}, PUB_EVENTS.selectTriggerDone, {
+      data: {}
+    } ) );
+
+    console.groupEnd( );
+  }
+
+  private _selectTask( data: any, envelope: any ) {
+    console.group( 'Select Task' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._postService.publish( _.assign( {}, PUB_EVENTS.selectTaskDone, {
+      data: {}
+    } ) );
 
     console.groupEnd( );
   }

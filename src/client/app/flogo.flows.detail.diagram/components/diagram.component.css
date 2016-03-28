@@ -48,6 +48,12 @@
   opacity: 1e-6;
 }
 
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] {
+  background-color: #CDEE90;
+  color: #222;
+  cursor: pointer;
+}
+
 .flogo-flows-detail-diagram-row.hover .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] {
   opacity: 1;
   cursor: pointer;

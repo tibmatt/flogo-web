@@ -1,5 +1,58 @@
 import { IFlogoTaskDictionary, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_TYPE, FLOGO_ATTRIBUTE_TYPE } from '../models';
 
+export var MOCK_TASKS_ARR = [ {
+  "id": "task 1",
+  "type": FLOGO_TASK_TYPE.TASK_ROOT,
+  "activityType": FLOGO_ACTIVITY_TYPE.DEFAULT,
+  "name": "Trigger"
+}, {
+  "id": "task 2",
+  "type": FLOGO_TASK_TYPE.TASK,
+  "activityType": FLOGO_ACTIVITY_TYPE.LOG,
+  "name": "Log Start",
+  "attributes": {
+    "inputs": [
+      { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "Find Pet Process Started!" },
+      { "type": FLOGO_ATTRIBUTE_TYPE.BOOLEAN, "name": "processInfo", "value": "true" }
+    ]
+  }
+}, {
+  "id": "task 3",
+  "type": FLOGO_TASK_TYPE.TASK,
+  "activityType": FLOGO_ACTIVITY_TYPE.REST,
+  "name": "Pet Query",
+  "attributes": {
+    "inputs": [
+      { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "uri", "value": "http://petstore.swagger.io/v2/pet/{petId}" },
+      { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "method", "value": "GET" },
+      { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "petId", "value": "" }
+    ],
+    "outputs": [
+      { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "result", "value": "" }
+    ]
+  },
+  "inputMappings": [
+    { "type": 1, "value": "petId", "mapTo": "petId" }
+  ],
+  "outputMappings": [
+    { "type": 1, "value": "result", "mapTo": "petInfo" }
+  ]
+}, {
+  "id": "task 4",
+  "type": FLOGO_TASK_TYPE.TASK,
+  "activityType": FLOGO_ACTIVITY_TYPE.LOG,
+  "name": "Log Results",
+  "attributes": {
+    "inputs": [
+      { "type": FLOGO_ATTRIBUTE_TYPE.STRING, "name": "message", "value": "REST results" },
+      { "type": FLOGO_ATTRIBUTE_TYPE.BOOLEAN, "name": "processInfo", "value": "true" }
+    ]
+  },
+  "inputMappings": [
+    { "type": 1, "value": "petInfo", "mapTo": "message" }
+  ]
+} ];
+
 export var TASKS: IFlogoTaskDictionary = {
   "task 1": {
     "id": "task 1",

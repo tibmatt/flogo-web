@@ -3,6 +3,7 @@ import { IFlogoDiagram } from '../models';
 export enum FLOGO_NODE_TYPE {
   NODE_ADD,
   NODE_ROOT,
+  NODE_ROOT_NEW,
   NODE,
   NODE_BRANCH,
   NODE_LINK,
@@ -39,7 +40,7 @@ export class FlogoNode implements IFlogoNode {
   constructor( node ? : IFlogoNode ) {
     if ( !node ) {
       node = {
-        id: btoa( 'FlogoNode::' + Date.now( ) ),
+        id: FlogoNode.genNodeID( ),
         taskID: '',
         type: FLOGO_NODE_TYPE.NODE_ADD,
         children: [ ],
@@ -48,6 +49,10 @@ export class FlogoNode implements IFlogoNode {
     }
 
     this.update( node );
+  };
+
+  static genNodeID( ): string {
+    return btoa( 'FlogoNode::' + Date.now( ) );
   };
 
   public update( node: IFlogoNode ): Promise < FlogoNode > {

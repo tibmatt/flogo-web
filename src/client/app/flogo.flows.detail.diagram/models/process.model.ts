@@ -8,6 +8,7 @@ import {
   IFlogoNodeDictionary,
   IFlogoTaskDictionary,
   FlogoTask,
+  FlogoTaskLink,
   FLOGO_TASK_TYPE,
   FLOGO_NODE_TYPE,
   FLOGO_ACTIVITY_TYPE,
@@ -45,7 +46,7 @@ export class FlogoProcess {
     model: 'simple',
     type: FLOGO_PROCESS_TYPE.DEFAULT,
     rootTask: {
-      'id': btoa( 'FlogoTask::' + Date.now( ) ),
+      'id': FlogoTask.genTaskID( ),
       'type': FLOGO_TASK_TYPE.TASK_ROOT,
       'activityType': FLOGO_ACTIVITY_TYPE.REST,
       'name': 'Task',
@@ -68,10 +69,14 @@ export class FlogoProcess {
     }
   };
 
+  static genProcessID( ): string {
+    return btoa( 'FlogoProcess::' + Date.now( ) );
+  }
+
   static toProcess( diagram: IFlogoDiagram, tasks: IFlogoTaskDictionary ): any {
     let process: any = _.cloneDeep( BASE_PROCESS );
 
-    process.id = btoa( 'FlogoProcess::' + Date.now( ) );
+    process.id = FlogoProcess.genProcessID( );
     process.name = 'Default process';
     process.description = 'This is a default process';
     process.attributes = [
@@ -138,7 +143,7 @@ function _traversalChildren( node: IFlogoNode, visitedNodes: string[ ], nodes: I
       // TODO
       //   need to filter out or handle branch/link node
       linksDest.push( {
-        id: btoa( 'FlogoTaskLink::' + Date.now( ) ),
+        id: FlogoTaskLink.genTaskLinkID( ),
         from: node.id,
         to: nid
       } );

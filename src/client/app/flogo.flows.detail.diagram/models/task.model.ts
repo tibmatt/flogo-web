@@ -57,17 +57,21 @@ export class FlogoTask implements IFlogoTask {
 
   constructor( task ? : IFlogoTask ) {
     this.update( task );
-  }
+  };
+
+  static genTaskID( ): string {
+    return btoa( 'FlogoTask::' + Date.now( ) );
+  };
 
   update( task: IFlogoTask ) {
     if ( !task ) {
       task = < IFlogoTask > {};
     }
 
-    this.id = task.id || this.id || btoa( 'FlogoTask::' + Date.now( ) );
+    this.id = task.id || this.id || FlogoTask.genTaskID( );
     this.type = task.type || this.type || FLOGO_TASK_TYPE.TASK;
     this.version = task.version || this.version || '';
-    this.name = task.name || this.name || '';
+    this.name = task.name || this.name || 'new task';
     this.description = task.description || this.description || '';
     this.title = task.title || this.title || '';
     this.activityType = task.activityType || this.activityType || FLOGO_ACTIVITY_TYPE.DEFAULT;
@@ -83,5 +87,5 @@ export class FlogoTask implements IFlogoTask {
       this.links = _.cloneDeep( task.links );
     }
 
-  }
+  };
 }
