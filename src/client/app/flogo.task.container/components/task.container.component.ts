@@ -119,16 +119,18 @@ export class FlogoTaskContainerComponent{
   }
 
   getModifiedStateTask() {
-    var jsonInputs:any = [];
-    var jsonOutputs:any = [];
+    var jsonInputs:any = {};
+    var jsonOutputs:any = {};
     var modified:any = {};
 
     this.inputFields.forEach((input:any) => {
-      var field:any = input.instance.exportToJson();
+      let field:any = input.instance.exportToJson();
+      let key = Object.keys(field)[0];
+      let value = field[key];
       if(input.instance.getParameterType() === 'input') {
-        jsonInputs.push(field);
+        jsonInputs[key] = value;
       } else {
-        jsonOutputs.push(field);
+        jsonOutputs[key] = value;
       }
     });
 

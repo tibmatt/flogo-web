@@ -20,8 +20,7 @@ export class FlogoTaskFieldObjectComponent extends FlogoTaskFieldBaseComponent{
       value = {};
     }
     return {
-      "name": this.schema.name,
-      "value": value
+      [this.schema.name]: value
     }
 
   }

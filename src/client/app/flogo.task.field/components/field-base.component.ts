@@ -39,8 +39,7 @@ export class FlogoTaskFieldBaseComponent{
     //}
 
     return {
-      "name": this.schema.name,
-      "value": this.value
+      [this.schema.name]: this.value
     }
   }
 
