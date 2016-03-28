@@ -20,11 +20,64 @@ export class FlogoTaskComponent{
   modifiedStateSubject: any;
 
   getStateData() {
-    return {};
+    return {
+      "name": "pets-query",
+      "inputs": [
+        {
+          "name": "url",
+          "value": "http://localhost"
+        },
+        {
+          "name": "port",
+          "value": "8081"
+        },
+        {
+          "name": "payload",
+          "value": {
+            "age": 3,
+            "type": "dog"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "value": false
+        }
+      ]
+    }
+
   }
 
   getSchema() {
-    return {};
+    return {
+      "name": "pets-query",
+      "title": "Pets query",
+      "inputs" : [
+        {
+          "name": "url",
+          "type": "string",
+          "title": "URL"
+        },
+        {
+          "name": "port",
+          "type": "number",
+          "title": "Port"
+        },
+        {
+          "name": "payload",
+          "type": "object",
+          "title": "Payload"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "boolean",
+          "title": "Is OK?"
+        }
+      ]
+    }
   }
 
   stringify(json:any) {
