@@ -10,14 +10,13 @@ import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/t
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 
 import {
-  FlogoFlowDiagram,
   FlogoFlowDiagramTask,
   IFlogoFlowDiagramTask,
   IFlogoFlowDiagramTaskDictionary,
   IFlogoFlowDiagram
 } from '../../../common/models';
 
-import { SUB_EVENTS as PUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
+import { SUB_EVENTS as FLOG_DIAGRAM_PUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
 
 import {
   DIAGRAM,
@@ -147,7 +146,7 @@ export class FlogoCanvasComponent {
 
     this.tasks[ newRootTask.id ] = newRootTask;
 
-    this._postService.publish( _.assign( {}, PUB_EVENTS.addTriggerDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTriggerDone, {
       data: {
         node: data.node,
         task: newRootTask
@@ -169,7 +168,7 @@ export class FlogoCanvasComponent {
 
     this.tasks[ newTask.id ] = newTask;
 
-    this._postService.publish( _.assign( {}, PUB_EVENTS.addTaskDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTaskDone, {
       data: {
         node: data.node,
         task: newTask
@@ -185,7 +184,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._postService.publish( _.assign( {}, PUB_EVENTS.selectTriggerDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTriggerDone, {
       data: {}
     } ) );
 
@@ -198,7 +197,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._postService.publish( _.assign( {}, PUB_EVENTS.selectTaskDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTaskDone, {
       data: {}
     } ) );
 

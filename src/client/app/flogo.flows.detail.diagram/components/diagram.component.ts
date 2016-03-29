@@ -167,7 +167,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
               this._mockProcess = diagram.toProcess();
             }
           );
-        ;
       }
     }
 
@@ -192,7 +191,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
           this._mockProcess = diagram.toProcess();
         }
       );
-    ;
 
     // TODO
     //   if there are nodes position changing, then should apply the new diagram when updating

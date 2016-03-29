@@ -115,9 +115,8 @@ export class FlogoFlowDiagramProcess {
 
     let nodes = diagram.nodes;
     let rootNode = nodes[ diagram.root.is ];
-    let rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
 
-    process.rootTask = rootTask;
+    process.rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
 
     let rootTaskChildren = < IFlogoFlowDiagramTask[ ] > [];
     let links = < IFlogoFlowDiagramTaskLink[ ] > [];

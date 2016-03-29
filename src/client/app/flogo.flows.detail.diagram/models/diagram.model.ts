@@ -169,9 +169,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   public render() : Promise < FlogoFlowDiagram > {
     console.group( 'rendering...' );
-    let el = this.elm;
 
-    this.rootElm = d3.select( el )
+    this.rootElm = d3.select( this.elm )
       .select( '.flogo-flows-detail-diagram' );
 
     !this.ng2StyleAttr && this._updateNG2StyleAttr();
@@ -209,7 +208,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           d3.select( this )
             .classed( 'hover', false );
         }
-      )
+      );
+
     tasks = this._preprocessTaskNodes( rows );
 
     this._handleTaskNodes( tasks );
@@ -273,7 +273,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       );
     } else {
       _.mapKeys(
-        this.nodes, ( node, key ) => {
+        this.nodes, ( node ) => {
           if ( node.type === type ) {
             nodes.push( node );
           }
@@ -317,11 +317,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _updateNG2StyleAttr() {
     let el = this.elm.getElementsByClassName( 'flogo-flows-detail-diagram' );
-    let ng2StyleAttrReg = /^_ngcontent\-.*$/g
+    let ng2StyleAttrReg = /^_ngcontent\-.*$/g;
 
     if ( el && el.length ) {
       Array.prototype.some.call(
-        el[ 0 ].attributes, ( attr : any, idx : number ) => {
+        el[ 0 ].attributes, ( attr : any ) => {
 
           if ( ng2StyleAttrReg.test( attr.name ) ) {
             this.ng2StyleAttr = attr.name;
@@ -342,7 +342,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private _preprocessTaskNodes( rows : any ) {
     return rows.selectAll( '.flogo-flows-detail-diagram-node' )
       .data(
-        ( d : IFlogoFlowDiagramNode[ ], i : number ) => {
+        ( d : IFlogoFlowDiagramNode[ ] ) => {
           return _.map(
             d, ( nodeID : string ) => {
               return this.nodes[ nodeID ];
@@ -394,7 +394,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
                 col : col,
                 row : row
               }
-            }
+            };
 
             let evtType = '';
 
@@ -426,7 +426,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           console.groupEnd();
         }
-      )
+      );
     // .style( 'opacity', 1e-6 )
     // .style( 'border-color', '#ff5500' )
     // .transition( )
@@ -458,7 +458,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           return label;
         }
-      )
+      );
     // .transition( )
     // .duration( 350 )
     // .delay( 350 )
@@ -507,7 +507,7 @@ function _insertChildNodes(
 
   if ( node.children.length ) {
     _.each(
-      node.children, ( d : string, i : number ) => {
+      node.children, ( d : string ) => {
         if ( diagram.nodes[ d ].type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
           // push to the current row if it's non-branch node
           matrix[ curRowIdx ].push( d );
