@@ -6,33 +6,31 @@ import {
   FlogoNode,
   FLOGO_NODE_TYPE,
   IFlogoTask,
-  IFlogoProcess,
   FlogoProcess
 } from '../models';
-
 import { Selection } from 'd3';
 
 export interface IFlogoDiagram {
-  root: IFlogoDiagramRootNode;
-  nodes: IFlogoNodeDictionary;
-};
+  root : IFlogoDiagramRootNode;
+  nodes : IFlogoNodeDictionary;
+}
 
 export class FlogoDiagram implements IFlogoDiagram {
-  public root: IFlogoDiagramRootNode;
-  public nodes: IFlogoNodeDictionary;
+  public root : IFlogoDiagramRootNode;
+  public nodes : IFlogoNodeDictionary;
 
-  private rootElm: Selection < any > ;
+  private rootElm : Selection < any >;
   private ng2StyleAttr = '';
 
-  constructor( diagram: IFlogoDiagram, private tasks: IFlogoTaskDictionary, private elm: HTMLElement ) {
+  constructor( diagram : IFlogoDiagram, private tasks : IFlogoTaskDictionary, private elm : HTMLElement ) {
     this.updateDiagram( diagram );
   }
 
-  static transformDiagram( diagram: IFlogoDiagram ): string[ ][ ] {
-    let matrix: string[ ][ ] = [ ];
+  static transformDiagram( diagram : IFlogoDiagram ) : string[ ][ ] {
+    let matrix : string[ ][ ] = [];
 
     // find the root node
-    let root: IFlogoNode; // diagram node
+    let root : IFlogoNode; // diagram node
     if ( diagram && diagram.root && diagram.root.is ) {
       root = diagram.nodes[ diagram.root.is ];
     }
@@ -50,20 +48,18 @@ export class FlogoDiagram implements IFlogoDiagram {
 
     console.groupCollapsed( 'matrix' );
     console.log( matrix );
-    console.groupEnd( );
+    console.groupEnd();
 
     return matrix;
   }
 
-  static getEmptyDiagram( ): IFlogoDiagram {
-    let newRootNode = new FlogoNode( );
+  static getEmptyDiagram() : IFlogoDiagram {
+    let newRootNode = new FlogoNode();
     let empytDiagram = < IFlogoDiagram > {
-      root: {
-        is: newRootNode.id
+      root : {
+        is : newRootNode.id
       },
-      nodes: < IFlogoNodeDictionary > {
-
-      }
+      nodes : < IFlogoNodeDictionary > {}
     };
 
     newRootNode.type = FLOGO_NODE_TYPE.NODE_ROOT_NEW;
@@ -73,12 +69,14 @@ export class FlogoDiagram implements IFlogoDiagram {
     return empytDiagram;
   }
 
-  public update( opt: {
-    diagram ? : IFlogoDiagram,
-    tasks ? : IFlogoTaskDictionary,
-    element ? : HTMLElement
-  } ): Promise < FlogoDiagram > {
-    let promises: Promise < FlogoDiagram > [ ] = [ ];
+  public update(
+    opt : {
+      diagram ? : IFlogoDiagram;
+      tasks ? : IFlogoTaskDictionary;
+      element ? : HTMLElement;
+    }
+  ) : Promise < FlogoDiagram > {
+    let promises : Promise < FlogoDiagram > [ ] = [];
 
     if ( opt.diagram ) {
       promises.push( this.updateDiagram( opt.diagram ) );
@@ -93,21 +91,25 @@ export class FlogoDiagram implements IFlogoDiagram {
     }
 
     return Promise.all( promises )
-      .then( ( ) => this );
+      .then( () => this );
   }
 
-  public updateAndRender( opt: {
-    diagram ? : IFlogoDiagram,
-    tasks ? : IFlogoTaskDictionary,
-    element ? : HTMLElement
-  } ): Promise < FlogoDiagram > {
+  public updateAndRender(
+    opt : {
+      diagram ? : IFlogoDiagram;
+      tasks ? : IFlogoTaskDictionary;
+      element ? : HTMLElement;
+    }
+  ) : Promise < FlogoDiagram > {
     return this.update( opt )
-      .then( ( ) => {
-        return this.render( );
-      } );
+      .then(
+        () => {
+          return this.render();
+        }
+      );
   }
 
-  public updateDiagram( diagram: IFlogoDiagram ): Promise < FlogoDiagram > {
+  public updateDiagram( diagram : IFlogoDiagram ) : Promise < FlogoDiagram > {
     if ( diagram ) {
       // handle diagram with trigger and more nodes
 
@@ -118,7 +120,7 @@ export class FlogoDiagram implements IFlogoDiagram {
       //   TODO optimisation is required
       // if a node has no child, append a NODE_ADD node as its child
       //   TODO case of NODE_LINK should be considered differently
-      let nodeDict: IFlogoNodeDictionary = {};
+      let nodeDict : IFlogoNodeDictionary = {};
       let NODES_CAN_HAVE_ADD_NODE = [
         FLOGO_NODE_TYPE.NODE_BRANCH,
         FLOGO_NODE_TYPE.NODE,
@@ -127,54 +129,57 @@ export class FlogoDiagram implements IFlogoDiagram {
         FLOGO_NODE_TYPE.NODE_LOOP
       ];
 
-      _.forIn( diagram.nodes, ( node, nodeID ) => {
-        let newNode = nodeDict[ nodeID ] = new FlogoNode( node );
+      _.forIn(
+        diagram.nodes, ( node, nodeID ) => {
+          let newNode = nodeDict[ nodeID ] = new FlogoNode( node );
 
-        if ( newNode.hasNoChild( ) && NODES_CAN_HAVE_ADD_NODE.indexOf( newNode.type ) !== -1 ) {
-          this._appendAddNode( nodeDict, < FlogoNode > newNode );
+          if ( newNode.hasNoChild() && NODES_CAN_HAVE_ADD_NODE.indexOf( newNode.type ) !== -1 ) {
+            this._appendAddNode( nodeDict, < FlogoNode > newNode );
+          }
+
         }
-
-      } );
+      );
 
       this.nodes = nodeDict;
 
     } else {
       // handle empty diagram
-      this.updateDiagram( FlogoDiagram.getEmptyDiagram( ) );
+      this.updateDiagram( FlogoDiagram.getEmptyDiagram() );
     }
 
 
     return Promise.resolve( this );
   }
-  public updateTasks( tasks: IFlogoTaskDictionary ): Promise < FlogoDiagram > {
+
+  public updateTasks( tasks : IFlogoTaskDictionary ) : Promise < FlogoDiagram > {
     this.tasks = tasks;
     return Promise.resolve( this );
   }
 
-  public updateElement( elm: HTMLElement ): Promise < FlogoDiagram > {
+  public updateElement( elm : HTMLElement ) : Promise < FlogoDiagram > {
     d3.select( this.elm )
-    .select( '.flogo-flows-detail-diagram' )
-    .selectAll( '.flogo-flows-detail-diagram-row' )
-    .remove( ); // clean the previous diagram
+      .select( '.flogo-flows-detail-diagram' )
+      .selectAll( '.flogo-flows-detail-diagram-row' )
+      .remove(); // clean the previous diagram
     this.elm = elm;
     return Promise.resolve( this );
   }
 
-  public render( ): Promise < FlogoDiagram > {
+  public render() : Promise < FlogoDiagram > {
     console.group( 'rendering...' );
     let el = this.elm;
 
     this.rootElm = d3.select( el )
-    .select( '.flogo-flows-detail-diagram' );
+      .select( '.flogo-flows-detail-diagram' );
 
-    !this.ng2StyleAttr && this._updateNG2StyleAttr( );
+    !this.ng2StyleAttr && this._updateNG2StyleAttr();
 
     // enter selection
     let rows = this.rootElm.selectAll( '.flogo-flows-detail-diagram-row' )
       .data( FlogoDiagram.transformDiagram( this ) );
 
     let enterRows = rows
-      .enter( )
+      .enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
       .classed( 'flogo-flows-detail-diagram-row', true );
@@ -191,38 +196,44 @@ export class FlogoDiagram implements IFlogoDiagram {
 
     // update selection
     rows.classed( 'updated', true )
-    .on( 'mouseenter', function ( ) {
-      d3.select( this )
-        .classed( 'hover', true );
-    } )
-    .on( 'mouseleave', function ( ) {
-      d3.select( this )
-        .classed( 'hover', false );
-    } )
+      .on(
+        'mouseenter', function () {
+          d3.select( this )
+            .classed( 'hover', true );
+        }
+      )
+      .on(
+        'mouseleave', function () {
+          d3.select( this )
+            .classed( 'hover', false );
+        }
+      )
     tasks = this._preprocessTaskNodes( rows );
 
     this._handleTaskNodes( tasks );
 
     // exit selection
-    rows.exit( )
-    .classed( {
-      'updated': false,
-      'exit': true
-    } )
-    .on( 'mouseenter', null )
-    .on( 'mouseleave', null )
-    // .transition( )
-    // .duration( 350 )
-    // .delay( 350 )
-    // .style( 'opacity', 1e-6 )
-    .remove( );
+    rows.exit()
+      .classed(
+        {
+          'updated' : false,
+          'exit' : true
+        }
+      )
+      .on( 'mouseenter', null )
+      .on( 'mouseleave', null )
+      // .transition( )
+      // .duration( 350 )
+      // .delay( 350 )
+      // .style( 'opacity', 1e-6 )
+      .remove();
 
-    console.groupEnd( );
+    console.groupEnd();
 
     return Promise.resolve( this );
   }
 
-  public linkNodeWithTask( nodeID: string, task: IFlogoTask ): Promise < FlogoDiagram > {
+  public linkNodeWithTask( nodeID : string, task : IFlogoTask ) : Promise < FlogoDiagram > {
     let node = this.nodes[ nodeID ];
 
     if ( node ) {
@@ -245,68 +256,78 @@ export class FlogoDiagram implements IFlogoDiagram {
     return Promise.resolve( this );
   }
 
-  public findNodesByType( type: FLOGO_NODE_TYPE, sourceNodes ? : IFlogoNode[ ] ): IFlogoNode[ ] {
-    let nodes: IFlogoNode[ ] = [ ];
+  public findNodesByType( type : FLOGO_NODE_TYPE, sourceNodes ? : IFlogoNode[ ] ) : IFlogoNode[ ] {
+    let nodes : IFlogoNode[ ] = [];
 
     if ( sourceNodes ) {
-      _.each( sourceNodes, ( node ) => {
-        if ( node.type === type ) {
-          nodes.push( node );
+      _.each(
+        sourceNodes, ( node ) => {
+          if ( node.type === type ) {
+            nodes.push( node );
+          }
         }
-      } );
+      );
     } else {
-      _.mapKeys( this.nodes, ( node, key ) => {
-        if ( node.type === type ) {
-          nodes.push( node );
+      _.mapKeys(
+        this.nodes, ( node, key ) => {
+          if ( node.type === type ) {
+            nodes.push( node );
+          }
         }
-      } );
+      );
     }
 
     return nodes;
   }
 
-  public findNodesByIDs( ids: string[ ] ): IFlogoNode[ ] {
-    let nodes: IFlogoNode[ ] = [ ];
+  public findNodesByIDs( ids : string[ ] ) : IFlogoNode[ ] {
+    let nodes : IFlogoNode[ ] = [];
 
-    _.each( ids, ( id ) => {
-      let node = this.nodes[ id ];
+    _.each(
+      ids, ( id ) => {
+        let node = this.nodes[ id ];
 
-      node && nodes.push( node );
-    } );
+        node && nodes.push( node );
+      }
+    );
 
     return nodes;
   }
 
-  public findChildrenNodesByType( type: FLOGO_NODE_TYPE, node: IFlogoNode ): IFlogoNode[ ] {
+  public findChildrenNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoNode ) : IFlogoNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.children ) );
   }
 
-  public findParentsNodesByType( type: FLOGO_NODE_TYPE, node: IFlogoNode ): IFlogoNode[ ] {
+  public findParentsNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoNode ) : IFlogoNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
-  public toProcess( ): any {
-    return FlogoProcess.toProcess( {
-      root: this.root,
-      nodes: this.nodes
-    }, this.tasks );
+  public toProcess() : any {
+    return FlogoProcess.toProcess(
+      {
+        root : this.root,
+        nodes : this.nodes
+      }, this.tasks
+    );
   }
 
-  private _updateNG2StyleAttr( ) {
+  private _updateNG2StyleAttr() {
     let el = this.elm.getElementsByClassName( 'flogo-flows-detail-diagram' );
     let ng2StyleAttrReg = /^_ngcontent\-.*$/g
 
     if ( el && el.length ) {
-      Array.prototype.some.call( el[ 0 ].attributes, ( attr: any, idx: number ) => {
+      Array.prototype.some.call(
+        el[ 0 ].attributes, ( attr : any, idx : number ) => {
 
-        if ( ng2StyleAttrReg.test( attr.name ) ) {
-          this.ng2StyleAttr = attr.name;
+          if ( ng2StyleAttrReg.test( attr.name ) ) {
+            this.ng2StyleAttr = attr.name;
 
-          return true;
+            return true;
+          }
+
+          return false;
         }
-
-        return false;
-      } );
+      );
 
       return true;
     }
@@ -314,126 +335,148 @@ export class FlogoDiagram implements IFlogoDiagram {
     return false;
   }
 
-  private _preprocessTaskNodes( rows: any ) {
+  private _preprocessTaskNodes( rows : any ) {
     return rows.selectAll( '.flogo-flows-detail-diagram-node' )
-      .data( ( d: IFlogoNode[ ], i: number ) => {
-        return _.map( d, ( nodeID: string ) => {
-          return this.nodes[ nodeID ];
-        } );
-      } );
+      .data(
+        ( d : IFlogoNode[ ], i : number ) => {
+          return _.map(
+            d, ( nodeID : string ) => {
+              return this.nodes[ nodeID ];
+            }
+          );
+        }
+      );
   }
 
-  private _handleTaskNodes( tasks: any ) {
+  private _handleTaskNodes( tasks : any ) {
     let diagram = this;
     // enter selection
-    tasks.enter( )
+    tasks.enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
       .classed( 'flogo-flows-detail-diagram-node', true )
-      .on( 'click', function ( d: IFlogoNode, col: number, row: number ) {
-        console.group( 'on click' );
+      .on(
+        'click', function ( d : IFlogoNode, col : number, row : number ) {
+          console.group( 'on click' );
 
-        console.group( 'node data' );
-        // console.table( d );
-        console.log( d );
-        console.groupEnd( );
+          console.group( 'node data' );
+          // console.table( d );
+          console.log( d );
+          console.groupEnd();
 
-        if ( d.taskID ) {
-          console.group( 'task data' );
-          console.log( diagram.tasks[ d.taskID ] );
-          console.groupEnd( );
-        }
+          if ( d.taskID ) {
+            console.group( 'task data' );
+            console.log( diagram.tasks[ d.taskID ] );
+            console.groupEnd();
+          }
 
-        console.group( 'location in matrix' );
-        console.log( `row: ${row+1}, col: ${col+1}` );
-        console.groupEnd( );
+          console.group( 'location in matrix' );
+          console.log( `row: ${row + 1}, col: ${col + 1}` );
+          console.groupEnd();
 
-        console.group( 'event' );
-        console.log( d3.event );
+          console.group( 'event' );
+          console.log( d3.event );
 
-        // trigger specific events
-        if ( CustomEvent && this.dispatchEvent ) {
-          let evtDetail = {
-            'view': window,
-            'bubbles': true,
-            'cancelable': true,
-            'cancelBubble': true,
-            'detail': {
-              origEvent: d3.event,
-              node: d,
-              col: col,
-              row: row
+          // trigger specific events
+          if ( CustomEvent && this.dispatchEvent ) {
+            let evtDetail = {
+              'view' : window,
+              'bubbles' : true,
+              'cancelable' : true,
+              'cancelBubble' : true,
+              'detail' : {
+                origEvent : d3.event,
+                node : d,
+                col : col,
+                row : row
+              }
             }
-          }
 
-          let evtType = '';
+            let evtType = '';
 
-          if ( d.type === FLOGO_NODE_TYPE.NODE_ADD || d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
-            evtType = 'flogoAddTask';
+            if ( d.type === FLOGO_NODE_TYPE.NODE_ADD || d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+              evtType = 'flogoAddTask';
 
-            // TODO
-            //   refine the logic to handle more nodes
-          } else if ( [ FLOGO_NODE_TYPE.NODE, FLOGO_NODE_TYPE.NODE_ROOT ].indexOf( d.type ) !== -1 ) {
-            evtType = 'flogoSelectTask';
-          }
-
-          if ( evtType ) {
-            let evt = new CustomEvent( evtType, evtDetail );
-
-            if ( this.dispatchEvent( evt ) ) {
-              console.log( evt );
+              // TODO
+              //   refine the logic to handle more nodes
+            } else if ( [
+                          FLOGO_NODE_TYPE.NODE,
+                          FLOGO_NODE_TYPE.NODE_ROOT
+                        ].indexOf( d.type ) !== -1 ) {
+              evtType = 'flogoSelectTask';
             }
+
+            if ( evtType ) {
+              let evt = new CustomEvent( evtType, evtDetail );
+
+              if ( this.dispatchEvent( evt ) ) {
+                console.log( evt );
+              }
+            }
+
+          } else {
+            console.warn( 'Unsupport CustomEvent or dispatchEvent' );
           }
 
-        } else {
-          console.warn( 'Unsupport CustomEvent or dispatchEvent' );
+          console.groupEnd();
+
+          console.groupEnd();
         }
-
-        console.groupEnd( );
-
-        console.groupEnd( );
-      } )
-      // .style( 'opacity', 1e-6 )
-      // .style( 'border-color', '#ff5500' )
-      // .transition( )
-      // .duration( 350 )
-      // .style( 'opacity', 1 )
+      )
+    // .style( 'opacity', 1e-6 )
+    // .style( 'border-color', '#ff5500' )
+    // .transition( )
+    // .duration( 350 )
+    // .style( 'opacity', 1 )
 
     // update selection
     tasks.classed( 'updated', true )
-      .attr( 'data-flogo-node-type', ( d: IFlogoNode ) => FLOGO_NODE_TYPE[ d.type ].toLowerCase( ) )
-      .text( ( d: IFlogoNode ) => {
-        let task = this.tasks[ d.taskID ];
-        let label = ( task && task.name ) || [ d.id, ' [', d.parents, ' to ', d.children, '] ' ].join( '' );
+      .attr( 'data-flogo-node-type', ( d : IFlogoNode ) => FLOGO_NODE_TYPE[ d.type ].toLowerCase() )
+      .text(
+        ( d : IFlogoNode ) => {
+          let task = this.tasks[ d.taskID ];
+          let label = (
+                      task && task.name
+                      ) || [
+                        d.id,
+                        ' [',
+                        d.parents,
+                        ' to ',
+                        d.children,
+                        '] '
+                      ].join( '' );
 
-        if ( d.type === FLOGO_NODE_TYPE.NODE_ADD ) {
-          label = 'ADD';
-        } else if ( d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
-          label = 'Select trigger';
+          if ( d.type === FLOGO_NODE_TYPE.NODE_ADD ) {
+            label = 'ADD';
+          } else if ( d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+            label = 'Select trigger';
+          }
+
+          return label;
         }
-
-        return label;
-      } )
-      // .transition( )
-      // .duration( 350 )
-      // .delay( 350 )
-      // .style( 'border-color', '#fff' );
+      )
+    // .transition( )
+    // .duration( 350 )
+    // .delay( 350 )
+    // .style( 'border-color', '#fff' );
 
     // exit selection
-    tasks.exit( )
-      .classed( {
-        'updated': false,
-        'exit': true
-      } )
+    tasks.exit()
+      .classed(
+        {
+          'updated' : false,
+          'exit' : true
+        }
+      )
       .on( 'click', null )
       // .transition( )
       // .duration( 350 )
       // .style( 'opacity', 1e-6 )
-      .remove( );
+      .remove();
   };
 
-  private _appendAddNode( nodeDict: IFlogoNodeDictionary, node: FlogoNode ) {
-    let newAddNode = new FlogoNode( );
+  private _appendAddNode( nodeDict : IFlogoNodeDictionary, node : FlogoNode ) {
+    let newAddNode = new FlogoNode();
     console.log( newAddNode.id );
     nodeDict[ newAddNode.id ] = newAddNode;
 
@@ -450,28 +493,30 @@ export class FlogoDiagram implements IFlogoDiagram {
 //   at some time, may need to track which node has been visited
 //   for example branch back to other path
 //   but for now, may not need to care about it
-function _insertChildNodes( matrix: string[ ][ ], diagram: IFlogoDiagram, node: IFlogoNode ): string[ ][ ] {
+function _insertChildNodes( matrix : string[ ][ ], diagram : IFlogoDiagram, node : IFlogoNode ) : string[ ][ ] {
 
   // deep-first traversal
 
   let curRowIdx = matrix.length - 1;
 
   if ( node.children.length ) {
-    _.each( node.children, ( d: string, i: number ) => {
-      if ( diagram.nodes[ d ].type !== FLOGO_NODE_TYPE.NODE_BRANCH ) {
-        // push to the current row if it's non-branch node
-        matrix[ curRowIdx ].push( d );
-      } else {
-        // create new row for branch node
-        matrix.push( [ d ] );
-      }
+    _.each(
+      node.children, ( d : string, i : number ) => {
+        if ( diagram.nodes[ d ].type !== FLOGO_NODE_TYPE.NODE_BRANCH ) {
+          // push to the current row if it's non-branch node
+          matrix[ curRowIdx ].push( d );
+        } else {
+          // create new row for branch node
+          matrix.push( [ d ] );
+        }
 
-      // not follow the children of a link node
-      if ( diagram.nodes[ d ].type !== FLOGO_NODE_TYPE.NODE_LINK ) {
-        _insertChildNodes( matrix, diagram, diagram.nodes[ d ] );
-      }
+        // not follow the children of a link node
+        if ( diagram.nodes[ d ].type !== FLOGO_NODE_TYPE.NODE_LINK ) {
+          _insertChildNodes( matrix, diagram, diagram.nodes[ d ] );
+        }
 
-    } );
+      }
+    );
   }
 
   return matrix;

@@ -1,3 +1,1 @@
-import { IFlogoProcess } from '../models';
-
-export var PROCESS: any = {};
+export var PROCESS : any = {};
