@@ -21,6 +21,8 @@ import {
   FLOGO_NODE_TYPE
 } from '../../models';
 
+import { SUB_EVENTS as PUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
+
 import {
   DIAGRAM,
   TASKS,
@@ -28,25 +30,6 @@ import {
   TEST_TASKS,
   MOCK_TASKS_ARR
 } from '../../mocks';
-
-const PUB_EVENTS = {
-  addTaskDone: {
-    channel: 'mock-flogo-flows-detail-diagram',
-    topic: 'add-task-done'
-  },
-  selectTaskDone: {
-    channel: 'mock-flogo-flows-detail-diagram',
-    topic: 'select-task-done'
-  },
-  addTriggerDone: {
-    channel: 'mock-flogo-flows-detail-diagram',
-    topic: 'add-trigger-done'
-  },
-  selectTriggerDone: {
-    channel: 'mock-flogo-flows-detail-diagram',
-    topic: 'select-trigger-done'
-  }
-};
 
 @Component( {
   selector: 'flogo-canvas',

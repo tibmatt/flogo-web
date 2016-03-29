@@ -2,25 +2,7 @@ import { Component, ElementRef, SimpleChange, AfterViewInit } from 'angular2/cor
 import * as DEMO_MODELS from '../models';
 import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram, FLOGO_NODE_TYPE } from '../models';
 import { PostService } from '../../../common/services/post.service';
-
-const PUB_EVENTS = {
-  addTask : {
-    channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'add-task'
-  },
-  selectTask : {
-    channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'select-task'
-  },
-  addTrigger : {
-    channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'add-trigger'
-  },
-  selectTrigger : {
-    channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'select-trigger'
-  }
-};
+import { PUB_EVENTS } from '../messages';
 
 @Component(
   {
