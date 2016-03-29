@@ -1,4 +1,4 @@
-import { IFlogoTaskDictionary, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_TYPE, FLOGO_ATTRIBUTE_TYPE } from '../models';
+import { IFlogoFlowDiagramTaskDictionary, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_TYPE, FLOGO_ATTRIBUTE_TYPE } from '../models';
 
 export var MOCK_TASKS_ARR = [
   {
@@ -102,7 +102,7 @@ export var MOCK_TASKS_ARR = [
   }
 ];
 
-export var TASKS : IFlogoTaskDictionary = {
+export var TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 1" : {
     "id" : "task 1",
     "type" : FLOGO_TASK_TYPE.TASK_ROOT,
@@ -205,7 +205,7 @@ export var TASKS : IFlogoTaskDictionary = {
 };
 
 
-export var TEST_TASKS : IFlogoTaskDictionary = {
+export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 1" : {
     "id" : "task 1",
     "type" : FLOGO_TASK_TYPE.TASK_ROOT,

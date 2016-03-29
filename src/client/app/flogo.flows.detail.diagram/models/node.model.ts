@@ -1,4 +1,4 @@
-import { IFlogoDiagram } from '../models';
+import { IFlogoFlowDiagram } from '../models';
 
 export enum FLOGO_NODE_TYPE {
   NODE_ADD,
@@ -11,36 +11,36 @@ export enum FLOGO_NODE_TYPE {
   NODE_LOOP
 }
 
-export interface IFlogoNode {
+export interface IFlogoFlowDiagramNode {
   id : string; // id of the node
   taskID : string; // id of the task
   type : FLOGO_NODE_TYPE; // type of the node
-  children : string[ ]; // ids of the children IFlogoNode
-  parents : string[ ]; // ids of the parents IFlogoNode
-  subProc ? : IFlogoDiagram[ ]; // [optional] sub process diagram of a task with sub process
+  children : string[ ]; // ids of the children IFlogoFlowDiagramNode
+  parents : string[ ]; // ids of the parents IFlogoFlowDiagramNode
+  subProc ? : IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
 }
 
-export interface IFlogoNodeLocation {
-  children : string[ ]; // ids of the children IFlogoNode
-  parents : string[ ]; // ids of the parents IFlogoNode
+export interface IFlogoFlowDiagramNodeLocation {
+  children : string[ ]; // ids of the children IFlogoFlowDiagramNode
+  parents : string[ ]; // ids of the parents IFlogoFlowDiagramNode
 }
 
-export interface IFlogoDiagramRootNode {
+export interface IFlogoFlowDiagramRootNode {
   is : string; // marking the root node in this dictionary
 }
 
-export class FlogoNode implements IFlogoNode {
+export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
   id : string; // id of the node
   taskID : string; // id of the task
   type : FLOGO_NODE_TYPE; // type of the node
-  children : string[ ]; // ids of the children IFlogoNode
-  parents : string[ ]; // ids of the parents IFlogoNode
-  subProc : IFlogoDiagram[ ]; // [optional] sub process diagram of a task with sub process
+  children : string[ ]; // ids of the children IFlogoFlowDiagramNode
+  parents : string[ ]; // ids of the parents IFlogoFlowDiagramNode
+  subProc : IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
 
-  constructor( node ? : IFlogoNode ) {
+  constructor( node ? : IFlogoFlowDiagramNode ) {
     if ( !node ) {
       node = {
-        id : FlogoNode.genNodeID(),
+        id : FlogoFlowDiagramNode.genNodeID(),
         taskID : '',
         type : FLOGO_NODE_TYPE.NODE_ADD,
         children : [],
@@ -52,10 +52,10 @@ export class FlogoNode implements IFlogoNode {
   };
 
   static genNodeID() : string {
-    return btoa( 'FlogoNode::' + Date.now() );
+    return btoa( 'FlogoFlowDiagramNode::' + Date.now() );
   };
 
-  public update( node : IFlogoNode ) : Promise < FlogoNode > {
+  public update( node : IFlogoFlowDiagramNode ) : Promise < FlogoFlowDiagramNode > {
 
     this.id = node.id;
     this.taskID = node.taskID;

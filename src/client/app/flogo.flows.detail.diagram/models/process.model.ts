@@ -1,14 +1,14 @@
 import {
-  IFlogoAttribute,
-  IFlogoAttributeMapping,
-  IFlogoTask,
-  IFlogoTaskLink,
-  IFlogoDiagram,
-  IFlogoNode,
-  IFlogoNodeDictionary,
-  IFlogoTaskDictionary,
-  FlogoTask,
-  FlogoTaskLink,
+  IFlogoFlowDiagramTaskAttribute,
+  IFlogoFlowDiagramTaskAttributeMapping,
+  IFlogoFlowDiagramTask,
+  IFlogoFlowDiagramTaskLink,
+  IFlogoFlowDiagram,
+  IFlogoFlowDiagramNode,
+  IFlogoFlowDiagramNodeDictionary,
+  IFlogoFlowDiagramTaskDictionary,
+  FlogoFlowDiagramTask,
+  FlogoFlowDiagramTaskLink,
   FLOGO_TASK_TYPE,
   FLOGO_NODE_TYPE,
   FLOGO_ACTIVITY_TYPE,
@@ -19,15 +19,15 @@ export enum FLOGO_PROCESS_TYPE { DEFAULT }
 
 export enum FLOGO_PROCESS_MODEL { DEFAULT }
 
-export interface IFlogoProcess {
+export interface IFlogoFlowDiagramProcess {
   id : string;
   name ? : string;
   description ? : string;
   model : string;
   type : FLOGO_PROCESS_TYPE;
-  attributes ? : IFlogoAttribute[ ];
-  inputMappings ? : IFlogoAttributeMapping[ ];
-  rootTask : IFlogoTask;
+  attributes ? : IFlogoFlowDiagramTaskAttribute[ ];
+  inputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
+  rootTask : IFlogoFlowDiagramTask;
 }
 
 const BASE_PROCESS = {
@@ -36,18 +36,18 @@ const BASE_PROCESS = {
   description : '',
   model : FLOGO_PROCESS_MODEL.DEFAULT,
   type : FLOGO_PROCESS_TYPE.DEFAULT,
-  attributes : < IFlogoAttribute[ ] > [],
-  rootTask : < IFlogoTask > null
+  attributes : < IFlogoFlowDiagramTaskAttribute[ ] > [],
+  rootTask : < IFlogoFlowDiagramTask > null
 };
 
-export class FlogoProcess {
+export class FlogoFlowDiagramProcess {
 
   static defaultFlogoProcess = {
     id : '',
     model : 'simple',
     type : FLOGO_PROCESS_TYPE.DEFAULT,
     rootTask : {
-      'id' : FlogoTask.genTaskID(),
+      'id' : FlogoFlowDiagramTask.genTaskID(),
       'type' : FLOGO_TASK_TYPE.TASK_ROOT,
       'activityType' : FLOGO_ACTIVITY_TYPE.REST,
       'name' : 'Task',
@@ -98,10 +98,10 @@ export class FlogoProcess {
     return btoa( 'FlogoProcess::' + Date.now() );
   }
 
-  static toProcess( diagram : IFlogoDiagram, tasks : IFlogoTaskDictionary ) : any {
+  static toProcess( diagram : IFlogoFlowDiagram, tasks : IFlogoFlowDiagramTaskDictionary ) : any {
     let process : any = _.cloneDeep( BASE_PROCESS );
 
-    process.id = FlogoProcess.genProcessID();
+    process.id = FlogoFlowDiagramProcess.genProcessID();
     process.name = 'Default process';
     process.description = 'This is a default process';
     process.attributes = [
@@ -114,12 +114,12 @@ export class FlogoProcess {
 
     let nodes = diagram.nodes;
     let rootNode = nodes[ diagram.root.is ];
-    let rootTask = new FlogoTask( tasks[ rootNode.taskID ] );
+    let rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
 
     process.rootTask = rootTask;
 
-    let rootTaskChildren = < IFlogoTask[ ] > [];
-    let links = < IFlogoTaskLink[ ] > [];
+    let rootTaskChildren = < IFlogoFlowDiagramTask[ ] > [];
+    let links = < IFlogoFlowDiagramTaskLink[ ] > [];
 
     traversalDiagram( diagram, tasks, rootTaskChildren, links );
 
@@ -136,7 +136,7 @@ export class FlogoProcess {
 }
 
 function traversalDiagram(
-  diagram : IFlogoDiagram, tasks : IFlogoTaskDictionary, tasksDest : IFlogoTask[ ], linksDest : IFlogoTaskLink[ ]
+  diagram : IFlogoFlowDiagram, tasks : IFlogoFlowDiagramTaskDictionary, tasksDest : IFlogoFlowDiagramTask[ ], linksDest : IFlogoFlowDiagramTaskLink[ ]
 ) : void {
 
   let visited = < string[ ] > [];
@@ -149,8 +149,8 @@ function traversalDiagram(
 }
 
 function _traversalChildren(
-  node : IFlogoNode, visitedNodes : string[ ], nodes : IFlogoNodeDictionary, tasks : IFlogoTaskDictionary,
-  tasksDest : IFlogoTask[ ], linksDest : IFlogoTaskLink[ ]
+  node : IFlogoFlowDiagramNode, visitedNodes : string[ ], nodes : IFlogoFlowDiagramNodeDictionary, tasks : IFlogoFlowDiagramTaskDictionary,
+  tasksDest : IFlogoFlowDiagramTask[ ], linksDest : IFlogoFlowDiagramTaskLink[ ]
 ) {
 
   // haven't visited
@@ -179,7 +179,7 @@ function _traversalChildren(
         //   need to filter out or handle branch/link node
         linksDest.push(
           {
-            id : FlogoTaskLink.genTaskLinkID(),
+            id : FlogoFlowDiagramTaskLink.genTaskLinkID(),
             from : node.id,
             to : nid
           }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, SimpleChange, AfterViewInit } from 'angular2/core';
 import * as DEMO_MODELS from '../models';
-import { FlogoDiagram, IFlogoTaskDictionary, IFlogoDiagram, FLOGO_NODE_TYPE } from '../models';
+import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram, FLOGO_NODE_TYPE } from '../models';
 import { PostService } from '../../../common/services/post.service';
 
 const PUB_EVENTS = {
@@ -36,11 +36,11 @@ const PUB_EVENTS = {
 )
 export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
-  public tasks : IFlogoTaskDictionary;
-  public diagram : IFlogoDiagram;
+  public tasks : IFlogoFlowDiagramTaskDictionary;
+  public diagram : IFlogoFlowDiagram;
 
   private _elmRef : ElementRef;
-  private _diagram : FlogoDiagram;
+  private _diagram : FlogoFlowDiagram;
   private _subscriptions : any[ ];
 
   // TODO
@@ -107,11 +107,11 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this._diagram = new FlogoDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
+    // this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
 
     // TODO
     //   remove this mock, this is for evaluating empty diagram case
-    this._diagram = new FlogoDiagram( null, this.tasks, this._elmRef.nativeElement );
+    this._diagram = new FlogoFlowDiagram( null, this.tasks, this._elmRef.nativeElement );
 
     this._diagram.render()
       .then(
@@ -322,7 +322,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   private _associateNodeWithTaskAndUpdateDiagram( data : any ) {
     if ( data.node && data.task ) {
-      // link the new task to FlogoNode
+      // link the new task to FlogoFlowDiagramNode
       this._diagram.linkNodeWithTask( data.node.id, data.task )
         .then(
           ( diagram ) => {

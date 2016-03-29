@@ -1,6 +1,6 @@
-import { IFlogoDiagram, FLOGO_NODE_TYPE } from '../models';
+import { IFlogoFlowDiagram, FLOGO_NODE_TYPE } from '../models';
 
-export var DIAGRAM : IFlogoDiagram = {
+export var DIAGRAM : IFlogoFlowDiagram = {
   "root" : {
     "is" : "1"
   },
@@ -36,7 +36,7 @@ export var DIAGRAM : IFlogoDiagram = {
   }
 };
 
-export var TEST_DIAGRAM : IFlogoDiagram = {
+export var TEST_DIAGRAM : IFlogoFlowDiagram = {
   "root" : {
     "is" : "1"
   },

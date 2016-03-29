@@ -1,12 +1,12 @@
-export interface IFlogoTaskLink {
+export interface IFlogoFlowDiagramTaskLink {
   id : string;
   from : string;
   to : string
   name ? : string;
 }
 
-export class FlogoTaskLink {
+export class FlogoFlowDiagramTaskLink {
   static genTaskLinkID() : string {
-    return btoa( 'FlogoTaskLink::' + Date.now() );
+    return btoa( 'FlogoFlowDiagramTaskLink::' + Date.now() );
   };
 }

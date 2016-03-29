@@ -1,36 +1,36 @@
 import {
-  IFlogoDiagramRootNode,
-  IFlogoNodeDictionary,
-  IFlogoTaskDictionary,
-  IFlogoNode,
-  FlogoNode,
+  IFlogoFlowDiagramRootNode,
+  IFlogoFlowDiagramNodeDictionary,
+  IFlogoFlowDiagramTaskDictionary,
+  IFlogoFlowDiagramNode,
+  FlogoFlowDiagramNode,
   FLOGO_NODE_TYPE,
-  IFlogoTask,
-  FlogoProcess
+  IFlogoFlowDiagramTask,
+  FlogoFlowDiagramProcess
 } from '../models';
 import { Selection } from 'd3';
 
-export interface IFlogoDiagram {
-  root : IFlogoDiagramRootNode;
-  nodes : IFlogoNodeDictionary;
+export interface IFlogoFlowDiagram {
+  root : IFlogoFlowDiagramRootNode;
+  nodes : IFlogoFlowDiagramNodeDictionary;
 }
 
-export class FlogoDiagram implements IFlogoDiagram {
-  public root : IFlogoDiagramRootNode;
-  public nodes : IFlogoNodeDictionary;
+export class FlogoFlowDiagram implements IFlogoFlowDiagram {
+  public root : IFlogoFlowDiagramRootNode;
+  public nodes : IFlogoFlowDiagramNodeDictionary;
 
   private rootElm : Selection < any >;
   private ng2StyleAttr = '';
 
-  constructor( diagram : IFlogoDiagram, private tasks : IFlogoTaskDictionary, private elm : HTMLElement ) {
+  constructor( diagram : IFlogoFlowDiagram, private tasks : IFlogoFlowDiagramTaskDictionary, private elm : HTMLElement ) {
     this.updateDiagram( diagram );
   }
 
-  static transformDiagram( diagram : IFlogoDiagram ) : string[ ][ ] {
+  static transformDiagram( diagram : IFlogoFlowDiagram ) : string[ ][ ] {
     let matrix : string[ ][ ] = [];
 
     // find the root node
-    let root : IFlogoNode; // diagram node
+    let root : IFlogoFlowDiagramNode; // diagram node
     if ( diagram && diagram.root && diagram.root.is ) {
       root = diagram.nodes[ diagram.root.is ];
     }
@@ -53,13 +53,13 @@ export class FlogoDiagram implements IFlogoDiagram {
     return matrix;
   }
 
-  static getEmptyDiagram() : IFlogoDiagram {
-    let newRootNode = new FlogoNode();
-    let empytDiagram = < IFlogoDiagram > {
+  static getEmptyDiagram() : IFlogoFlowDiagram {
+    let newRootNode = new FlogoFlowDiagramNode();
+    let empytDiagram = < IFlogoFlowDiagram > {
       root : {
         is : newRootNode.id
       },
-      nodes : < IFlogoNodeDictionary > {}
+      nodes : < IFlogoFlowDiagramNodeDictionary > {}
     };
 
     newRootNode.type = FLOGO_NODE_TYPE.NODE_ROOT_NEW;
@@ -71,12 +71,12 @@ export class FlogoDiagram implements IFlogoDiagram {
 
   public update(
     opt : {
-      diagram ? : IFlogoDiagram;
-      tasks ? : IFlogoTaskDictionary;
+      diagram ? : IFlogoFlowDiagram;
+      tasks ? : IFlogoFlowDiagramTaskDictionary;
       element ? : HTMLElement;
     }
-  ) : Promise < FlogoDiagram > {
-    let promises : Promise < FlogoDiagram > [ ] = [];
+  ) : Promise < FlogoFlowDiagram > {
+    let promises : Promise < FlogoFlowDiagram > [ ] = [];
 
     if ( opt.diagram ) {
       promises.push( this.updateDiagram( opt.diagram ) );
@@ -96,11 +96,11 @@ export class FlogoDiagram implements IFlogoDiagram {
 
   public updateAndRender(
     opt : {
-      diagram ? : IFlogoDiagram;
-      tasks ? : IFlogoTaskDictionary;
+      diagram ? : IFlogoFlowDiagram;
+      tasks ? : IFlogoFlowDiagramTaskDictionary;
       element ? : HTMLElement;
     }
-  ) : Promise < FlogoDiagram > {
+  ) : Promise < FlogoFlowDiagram > {
     return this.update( opt )
       .then(
         () => {
@@ -109,7 +109,7 @@ export class FlogoDiagram implements IFlogoDiagram {
       );
   }
 
-  public updateDiagram( diagram : IFlogoDiagram ) : Promise < FlogoDiagram > {
+  public updateDiagram( diagram : IFlogoFlowDiagram ) : Promise < FlogoFlowDiagram > {
     if ( diagram ) {
       // handle diagram with trigger and more nodes
 
@@ -120,7 +120,7 @@ export class FlogoDiagram implements IFlogoDiagram {
       //   TODO optimisation is required
       // if a node has no child, append a NODE_ADD node as its child
       //   TODO case of NODE_LINK should be considered differently
-      let nodeDict : IFlogoNodeDictionary = {};
+      let nodeDict : IFlogoFlowDiagramNodeDictionary = {};
       let NODES_CAN_HAVE_ADD_NODE = [
         FLOGO_NODE_TYPE.NODE_BRANCH,
         FLOGO_NODE_TYPE.NODE,
@@ -131,10 +131,10 @@ export class FlogoDiagram implements IFlogoDiagram {
 
       _.forIn(
         diagram.nodes, ( node, nodeID ) => {
-          let newNode = nodeDict[ nodeID ] = new FlogoNode( node );
+          let newNode = nodeDict[ nodeID ] = new FlogoFlowDiagramNode( node );
 
           if ( newNode.hasNoChild() && NODES_CAN_HAVE_ADD_NODE.indexOf( newNode.type ) !== -1 ) {
-            this._appendAddNode( nodeDict, < FlogoNode > newNode );
+            this._appendAddNode( nodeDict, < FlogoFlowDiagramNode > newNode );
           }
 
         }
@@ -144,19 +144,19 @@ export class FlogoDiagram implements IFlogoDiagram {
 
     } else {
       // handle empty diagram
-      this.updateDiagram( FlogoDiagram.getEmptyDiagram() );
+      this.updateDiagram( FlogoFlowDiagram.getEmptyDiagram() );
     }
 
 
     return Promise.resolve( this );
   }
 
-  public updateTasks( tasks : IFlogoTaskDictionary ) : Promise < FlogoDiagram > {
+  public updateTasks( tasks : IFlogoFlowDiagramTaskDictionary ) : Promise < FlogoFlowDiagram > {
     this.tasks = tasks;
     return Promise.resolve( this );
   }
 
-  public updateElement( elm : HTMLElement ) : Promise < FlogoDiagram > {
+  public updateElement( elm : HTMLElement ) : Promise < FlogoFlowDiagram > {
     d3.select( this.elm )
       .select( '.flogo-flows-detail-diagram' )
       .selectAll( '.flogo-flows-detail-diagram-row' )
@@ -165,7 +165,7 @@ export class FlogoDiagram implements IFlogoDiagram {
     return Promise.resolve( this );
   }
 
-  public render() : Promise < FlogoDiagram > {
+  public render() : Promise < FlogoFlowDiagram > {
     console.group( 'rendering...' );
     let el = this.elm;
 
@@ -176,7 +176,7 @@ export class FlogoDiagram implements IFlogoDiagram {
 
     // enter selection
     let rows = this.rootElm.selectAll( '.flogo-flows-detail-diagram-row' )
-      .data( FlogoDiagram.transformDiagram( this ) );
+      .data( FlogoFlowDiagram.transformDiagram( this ) );
 
     let enterRows = rows
       .enter()
@@ -233,7 +233,7 @@ export class FlogoDiagram implements IFlogoDiagram {
     return Promise.resolve( this );
   }
 
-  public linkNodeWithTask( nodeID : string, task : IFlogoTask ) : Promise < FlogoDiagram > {
+  public linkNodeWithTask( nodeID : string, task : IFlogoFlowDiagramTask ) : Promise < FlogoFlowDiagram > {
     let node = this.nodes[ nodeID ];
 
     if ( node ) {
@@ -241,10 +241,10 @@ export class FlogoDiagram implements IFlogoDiagram {
 
       if ( node.type === FLOGO_NODE_TYPE.NODE_ADD ) {
         node.type = FLOGO_NODE_TYPE.NODE;
-        this._appendAddNode( this.nodes, < FlogoNode > node );
+        this._appendAddNode( this.nodes, < FlogoFlowDiagramNode > node );
       } else if ( node.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
         node.type = FLOGO_NODE_TYPE.NODE_ROOT;
-        this._appendAddNode( this.nodes, < FlogoNode > node );
+        this._appendAddNode( this.nodes, < FlogoFlowDiagramNode > node );
       }
     } else {
       // use Promise.reject with error message cause TypeScript error
@@ -256,8 +256,8 @@ export class FlogoDiagram implements IFlogoDiagram {
     return Promise.resolve( this );
   }
 
-  public findNodesByType( type : FLOGO_NODE_TYPE, sourceNodes ? : IFlogoNode[ ] ) : IFlogoNode[ ] {
-    let nodes : IFlogoNode[ ] = [];
+  public findNodesByType( type : FLOGO_NODE_TYPE, sourceNodes ? : IFlogoFlowDiagramNode[ ] ) : IFlogoFlowDiagramNode[ ] {
+    let nodes : IFlogoFlowDiagramNode[ ] = [];
 
     if ( sourceNodes ) {
       _.each(
@@ -280,8 +280,8 @@ export class FlogoDiagram implements IFlogoDiagram {
     return nodes;
   }
 
-  public findNodesByIDs( ids : string[ ] ) : IFlogoNode[ ] {
-    let nodes : IFlogoNode[ ] = [];
+  public findNodesByIDs( ids : string[ ] ) : IFlogoFlowDiagramNode[ ] {
+    let nodes : IFlogoFlowDiagramNode[ ] = [];
 
     _.each(
       ids, ( id ) => {
@@ -294,16 +294,16 @@ export class FlogoDiagram implements IFlogoDiagram {
     return nodes;
   }
 
-  public findChildrenNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoNode ) : IFlogoNode[ ] {
+  public findChildrenNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.children ) );
   }
 
-  public findParentsNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoNode ) : IFlogoNode[ ] {
+  public findParentsNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
   public toProcess() : any {
-    return FlogoProcess.toProcess(
+    return FlogoFlowDiagramProcess.toProcess(
       {
         root : this.root,
         nodes : this.nodes
@@ -338,7 +338,7 @@ export class FlogoDiagram implements IFlogoDiagram {
   private _preprocessTaskNodes( rows : any ) {
     return rows.selectAll( '.flogo-flows-detail-diagram-node' )
       .data(
-        ( d : IFlogoNode[ ], i : number ) => {
+        ( d : IFlogoFlowDiagramNode[ ], i : number ) => {
           return _.map(
             d, ( nodeID : string ) => {
               return this.nodes[ nodeID ];
@@ -356,7 +356,7 @@ export class FlogoDiagram implements IFlogoDiagram {
       .attr( this.ng2StyleAttr, '' )
       .classed( 'flogo-flows-detail-diagram-node', true )
       .on(
-        'click', function ( d : IFlogoNode, col : number, row : number ) {
+        'click', function ( d : IFlogoFlowDiagramNode, col : number, row : number ) {
           console.group( 'on click' );
 
           console.group( 'node data' );
@@ -431,9 +431,9 @@ export class FlogoDiagram implements IFlogoDiagram {
 
     // update selection
     tasks.classed( 'updated', true )
-      .attr( 'data-flogo-node-type', ( d : IFlogoNode ) => FLOGO_NODE_TYPE[ d.type ].toLowerCase() )
+      .attr( 'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_NODE_TYPE[ d.type ].toLowerCase() )
       .text(
-        ( d : IFlogoNode ) => {
+        ( d : IFlogoFlowDiagramNode ) => {
           let task = this.tasks[ d.taskID ];
           let label = (
                       task && task.name
@@ -475,8 +475,8 @@ export class FlogoDiagram implements IFlogoDiagram {
       .remove();
   };
 
-  private _appendAddNode( nodeDict : IFlogoNodeDictionary, node : FlogoNode ) {
-    let newAddNode = new FlogoNode();
+  private _appendAddNode( nodeDict : IFlogoFlowDiagramNodeDictionary, node : FlogoFlowDiagramNode ) {
+    let newAddNode = new FlogoFlowDiagramNode();
     console.log( newAddNode.id );
     nodeDict[ newAddNode.id ] = newAddNode;
 
@@ -493,7 +493,7 @@ export class FlogoDiagram implements IFlogoDiagram {
 //   at some time, may need to track which node has been visited
 //   for example branch back to other path
 //   but for now, may not need to care about it
-function _insertChildNodes( matrix : string[ ][ ], diagram : IFlogoDiagram, node : IFlogoNode ) : string[ ][ ] {
+function _insertChildNodes( matrix : string[ ][ ], diagram : IFlogoFlowDiagram, node : IFlogoFlowDiagramNode ) : string[ ][ ] {
 
   // deep-first traversal
 

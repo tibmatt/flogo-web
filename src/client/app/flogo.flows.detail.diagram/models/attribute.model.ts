@@ -6,7 +6,7 @@ export enum FLOGO_ATTRIBUTE_TYPE {
   ARRAY
 }
 
-export interface IFlogoAttribute {
+export interface IFlogoFlowDiagramTaskAttribute {
   name : string;
   type : FLOGO_ATTRIBUTE_TYPE;
   value : string;
@@ -16,10 +16,10 @@ export interface IFlogoAttribute {
   required ? : boolean;
   validation ? : '';
   validationMessage ? : '';
-  child ? : IFlogoAttribute[ ];
+  child ? : IFlogoFlowDiagramTaskAttribute[ ];
 }
 
-export interface IFlogoAttributes {
-  inputs ? : IFlogoAttribute[ ];
-  outputs ? : IFlogoAttribute[ ];
+export interface IFlogoFlowDiagramTaskAttributes {
+  inputs ? : IFlogoFlowDiagramTaskAttribute[ ];
+  outputs ? : IFlogoFlowDiagramTaskAttribute[ ];
 }

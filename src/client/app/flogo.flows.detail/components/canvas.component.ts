@@ -10,11 +10,11 @@ import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/t
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 
 import {
-  FlogoDiagram,
-  FlogoTask,
-  IFlogoTask,
-  IFlogoTaskDictionary,
-  IFlogoDiagram,
+  FlogoFlowDiagram,
+  FlogoFlowDiagramTask,
+  IFlogoFlowDiagramTask,
+  IFlogoFlowDiagramTaskDictionary,
+  IFlogoFlowDiagram,
   FLOGO_TASK_TYPE,
   FLOGO_ATTRIBUTE_TYPE,
   FLOGO_ACTIVITY_TYPE,
@@ -136,8 +136,8 @@ export class FlogoCanvasComponent {
     } );
   }
 
-  public tasks: IFlogoTaskDictionary;
-  public diagram: IFlogoDiagram;
+  public tasks: IFlogoFlowDiagramTaskDictionary;
+  public diagram: IFlogoFlowDiagram;
 
   constructor(
     private _postService: PostService,
@@ -157,7 +157,7 @@ export class FlogoCanvasComponent {
 
     // TODO
     //   replace this mock
-    let newRootTask = new FlogoTask( < IFlogoTask > _.assign( MOCK_TASKS_ARR.shift( ) || {}, {
+    let newRootTask = new FlogoFlowDiagramTask( < IFlogoFlowDiagramTask > _.assign( MOCK_TASKS_ARR.shift( ) || {}, {
       type: FLOGO_TASK_TYPE.TASK_ROOT
     } ) );
 
@@ -183,7 +183,7 @@ export class FlogoCanvasComponent {
 
     // TODO
     //   replace this mock
-    let newTask = new FlogoTask( < IFlogoTask > ( MOCK_TASKS_ARR.shift( ) || {} ) );
+    let newTask = new FlogoFlowDiagramTask( < IFlogoFlowDiagramTask > ( MOCK_TASKS_ARR.shift( ) || {} ) );
 
     this.tasks[ newTask.id ] = newTask;
 

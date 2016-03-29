@@ -1,4 +1,4 @@
-import { IFlogoAttributeMapping, IFlogoTaskLink, IFlogoAttributes } from '../models';
+import { IFlogoFlowDiagramTaskAttributeMapping, IFlogoFlowDiagramTaskLink, IFlogoFlowDiagramTaskAttributes } from '../models';
 
 export enum FLOGO_ACTIVITY_TYPE {
   DEFAULT,
@@ -20,7 +20,7 @@ export enum FLOGO_TASK_TYPE {
   TASK_LOOP
 }
 
-export interface IFlogoTask {
+export interface IFlogoFlowDiagramTask {
   id : string;
   type : FLOGO_TASK_TYPE;
   version ? : string;
@@ -28,14 +28,14 @@ export interface IFlogoTask {
   description ? : string;
   title ? : string;
   activityType ? : FLOGO_ACTIVITY_TYPE;
-  attributes ? : IFlogoAttributes;
-  inputMappings ? : IFlogoAttributeMapping[ ];
-  outputMappings ? : IFlogoAttributeMapping[ ];
-  tasks ? : IFlogoTask[ ];
-  links ? : IFlogoTaskLink[ ];
+  attributes ? : IFlogoFlowDiagramTaskAttributes;
+  inputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
+  outputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
+  tasks ? : IFlogoFlowDiagramTask[ ];
+  links ? : IFlogoFlowDiagramTaskLink[ ];
 }
 
-export class FlogoTask implements IFlogoTask {
+export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   id : string;
   type : FLOGO_TASK_TYPE;
   version : string;
@@ -43,26 +43,26 @@ export class FlogoTask implements IFlogoTask {
   description : string;
   title : string;
   activityType : FLOGO_ACTIVITY_TYPE;
-  attributes : IFlogoAttributes;
-  inputMappings : IFlogoAttributeMapping[ ];
-  outputMappings : IFlogoAttributeMapping[ ];
-  tasks : IFlogoTask[ ];
-  links : IFlogoTaskLink[ ];
+  attributes : IFlogoFlowDiagramTaskAttributes;
+  inputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
+  outputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
+  tasks : IFlogoFlowDiagramTask[ ];
+  links : IFlogoFlowDiagramTaskLink[ ];
 
-  constructor( task ? : IFlogoTask ) {
+  constructor( task ? : IFlogoFlowDiagramTask ) {
     this.update( task );
   };
 
   static genTaskID() : string {
-    return btoa( 'FlogoTask::' + Date.now() );
+    return btoa( 'FlogoFlowDiagramTask::' + Date.now() );
   };
 
-  update( task : IFlogoTask ) {
+  update( task : IFlogoFlowDiagramTask ) {
     if ( !task ) {
-      task = < IFlogoTask > {};
+      task = < IFlogoFlowDiagramTask > {};
     }
 
-    this.id = task.id || this.id || FlogoTask.genTaskID();
+    this.id = task.id || this.id || FlogoFlowDiagramTask.genTaskID();
     this.type = task.type || this.type || FLOGO_TASK_TYPE.TASK;
     this.version = task.version || this.version || '';
     this.name = task.name || this.name || 'new task';
@@ -70,7 +70,7 @@ export class FlogoTask implements IFlogoTask {
     this.title = task.title || this.title || '';
     this.activityType = task.activityType || this.activityType || FLOGO_ACTIVITY_TYPE.DEFAULT;
     this.attributes = _.isEmpty( task.attributes ) ?
-                      this.attributes || < IFlogoAttributes > {} :
+                      this.attributes || < IFlogoFlowDiagramTaskAttributes > {} :
                       _.cloneDeep( task.attributes );
     this.inputMappings = _.isEmpty( task.inputMappings ) ? this.inputMappings || [] : _.cloneDeep( task.inputMappings );
     this.outputMappings = _.isEmpty( task.outputMappings ) ?

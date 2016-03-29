@@ -1,9 +1,9 @@
-import { IFlogoTask, IFlogoNode } from '../models';
+import { IFlogoFlowDiagramTask, IFlogoFlowDiagramNode } from '../models';
 
-export interface IFlogoTaskDictionary {
-  [ index : string ] : IFlogoTask
+export interface IFlogoFlowDiagramTaskDictionary {
+  [ index : string ] : IFlogoFlowDiagramTask
 }
 
-export interface IFlogoNodeDictionary {
-  [ index : string ] : IFlogoNode
+export interface IFlogoFlowDiagramNodeDictionary {
+  [ index : string ] : IFlogoFlowDiagramNode
 }
