@@ -1,5 +1,5 @@
 import { IFlogoFlowDiagramTaskDictionary } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../constants';
+import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
 
 export var MOCK_TASKS_ARR = [
   {

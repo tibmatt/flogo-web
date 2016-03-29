@@ -15,7 +15,7 @@ import {
   IFlogoFlowDiagramTask,
   IFlogoFlowDiagramTaskDictionary,
   IFlogoFlowDiagram
-} from '../../models';
+} from '../../../common/models';
 
 import { SUB_EVENTS as PUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
 
@@ -25,8 +25,10 @@ import {
   TEST_DIAGRAM,
   TEST_TASKS,
   MOCK_TASKS_ARR
-} from '../../mocks';
-import { FLOGO_TASK_TYPE } from '../../flogo.flows.detail.diagram/constants';
+} from '../../../common/mocks';
+
+import { FLOGO_TASK_TYPE } from '../../../common/constants';
+
 
 @Component( {
   selector: 'flogo-canvas',

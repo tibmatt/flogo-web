@@ -15,8 +15,10 @@ import {
   FLOGO_PROCESS_MODEL,
   FLOGO_TASK_TYPE,
   FLOGO_ACTIVITY_TYPE,
-  FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE
-} from '../constants';
+  FLOGO_TASK_ATTRIBUTE_TYPE,
+} from '../../../common/constants';
+
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 
 export interface IFlogoFlowDiagramProcess {
   id : string;

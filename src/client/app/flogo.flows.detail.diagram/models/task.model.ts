@@ -3,7 +3,7 @@ import {
   IFlogoFlowDiagramTaskLink,
   IFlogoFlowDiagramTaskAttributes
 } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE } from '../constants';
+import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE } from '../../../common/constants';
 
 export interface IFlogoFlowDiagramTask {
   id : string;
