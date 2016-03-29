@@ -1,3 +1,7 @@
+/**
+ * Events published from this module
+ */
+
 export const PUB_EVENTS = {
   addTask : {
     channel : 'mock-flogo-flows-detail-diagram',
@@ -16,6 +20,10 @@ export const PUB_EVENTS = {
     topic : 'select-trigger'
   }
 };
+
+/**
+ * Events subscribed by this module
+ */
 
 export const SUB_EVENTS = {
   addTaskDone : {

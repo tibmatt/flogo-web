@@ -2,7 +2,7 @@ import { Component, ElementRef, SimpleChange, AfterViewInit } from 'angular2/cor
 import * as DEMO_MODELS from '../models';
 import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } from '../models';
 import { PostService } from '../../../common/services/post.service';
-import { PUB_EVENTS } from '../messages';
+import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 
 @Component(
@@ -46,26 +46,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     }
 
     let subs = [
-      {
-        channel : 'mock-flogo-flows-detail-diagram',
-        topic : 'add-trigger-done',
-        callback : this._addTriggerDone.bind( this )
-      },
-      {
-        channel : 'mock-flogo-flows-detail-diagram',
-        topic : 'select-trigger-done',
-        callback : this._selectTriggerDone.bind( this )
-      },
-      {
-        channel : 'mock-flogo-flows-detail-diagram',
-        topic : 'add-task-done',
-        callback : this._addTaskDone.bind( this )
-      },
-      {
-        channel : 'mock-flogo-flows-detail-diagram',
-        topic : 'select-task-done',
-        callback : this._selectTaskDone.bind( this )
-      }
+      _.assign( {}, SUB_EVENTS.addTriggerDone, { callback : this._addTriggerDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.selectTriggerDone, { callback : this._selectTriggerDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.addTaskDone, { callback : this._addTaskDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.selectTaskDone, { callback : this._selectTaskDone.bind( this ) } )
     ];
 
     _.each(
