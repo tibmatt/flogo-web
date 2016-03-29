@@ -1,4 +1,5 @@
-import { IFlogoFlowDiagramTaskDictionary, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_TYPE, FLOGO_ATTRIBUTE_TYPE } from '../models';
+import { IFlogoFlowDiagramTaskDictionary } from '../models';
+import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../constants';
 
 export var MOCK_TASKS_ARR = [
   {
@@ -15,12 +16,12 @@ export var MOCK_TASKS_ARR = [
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -35,24 +36,24 @@ export var MOCK_TASKS_ARR = [
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "uri",
           "value" : "http://petstore.swagger.io/v2/pet/{petId}"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "method",
           "value" : "GET"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "petId",
           "value" : ""
         }
       ],
       "outputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "result",
           "value" : ""
         }
@@ -81,12 +82,12 @@ export var MOCK_TASKS_ARR = [
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "REST results"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -117,12 +118,12 @@ export var TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -137,24 +138,24 @@ export var TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "uri",
           "value" : "http://petstore.swagger.io/v2/pet/{petId}"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "method",
           "value" : "GET"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "petId",
           "value" : ""
         }
       ],
       "outputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "result",
           "value" : ""
         }
@@ -183,12 +184,12 @@ export var TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "REST results"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -220,12 +221,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -240,24 +241,24 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "uri",
           "value" : "http://petstore.swagger.io/v2/pet/{petId}"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "method",
           "value" : "GET"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "petId",
           "value" : ""
         }
       ],
       "outputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "result",
           "value" : ""
         }
@@ -286,12 +287,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "REST results"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -313,12 +314,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -333,12 +334,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -353,12 +354,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -373,12 +374,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -393,12 +394,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -413,12 +414,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -433,12 +434,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -453,12 +454,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -473,12 +474,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -493,12 +494,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }
@@ -513,12 +514,12 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
     "attributes" : {
       "inputs" : [
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
           "value" : "Find Pet Process Started!"
         },
         {
-          "type" : FLOGO_ATTRIBUTE_TYPE.BOOLEAN,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
           "value" : "true"
         }

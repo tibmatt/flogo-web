@@ -8,16 +8,15 @@ import {
   IFlogoFlowDiagramNodeDictionary,
   IFlogoFlowDiagramTaskDictionary,
   FlogoFlowDiagramTask,
-  FlogoFlowDiagramTaskLink,
-  FLOGO_TASK_TYPE,
-  FLOGO_NODE_TYPE,
-  FLOGO_ACTIVITY_TYPE,
-  FLOGO_ATTRIBUTE_TYPE
+  FlogoFlowDiagramTaskLink
 } from '../models';
-
-export enum FLOGO_PROCESS_TYPE { DEFAULT }
-
-export enum FLOGO_PROCESS_MODEL { DEFAULT }
+import {
+  FLOGO_PROCESS_TYPE,
+  FLOGO_PROCESS_MODEL,
+  FLOGO_TASK_TYPE,
+  FLOGO_ACTIVITY_TYPE,
+  FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE
+} from '../constants';
 
 export interface IFlogoFlowDiagramProcess {
   id : string;
@@ -54,24 +53,24 @@ export class FlogoFlowDiagramProcess {
       'attributes' : {
         'inputs' : [
           {
-            'type' : FLOGO_ATTRIBUTE_TYPE.STRING,
+            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
             'name' : 'uri',
             'value' : 'http://petstore.swagger.io/v2/pet/{petId}'
           },
           {
-            'type' : FLOGO_ATTRIBUTE_TYPE.STRING,
+            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
             'name' : 'method',
             'value' : 'GET'
           },
           {
-            'type' : FLOGO_ATTRIBUTE_TYPE.STRING,
+            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
             'name' : 'petId',
             'value' : ''
           }
         ],
         'outputs' : [
           {
-            'type' : FLOGO_ATTRIBUTE_TYPE.STRING,
+            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
             'name' : 'result',
             'value' : ''
           }
@@ -136,7 +135,8 @@ export class FlogoFlowDiagramProcess {
 }
 
 function traversalDiagram(
-  diagram : IFlogoFlowDiagram, tasks : IFlogoFlowDiagramTaskDictionary, tasksDest : IFlogoFlowDiagramTask[ ], linksDest : IFlogoFlowDiagramTaskLink[ ]
+  diagram : IFlogoFlowDiagram, tasks : IFlogoFlowDiagramTaskDictionary, tasksDest : IFlogoFlowDiagramTask[ ],
+  linksDest : IFlogoFlowDiagramTaskLink[ ]
 ) : void {
 
   let visited = < string[ ] > [];
@@ -149,7 +149,8 @@ function traversalDiagram(
 }
 
 function _traversalChildren(
-  node : IFlogoFlowDiagramNode, visitedNodes : string[ ], nodes : IFlogoFlowDiagramNodeDictionary, tasks : IFlogoFlowDiagramTaskDictionary,
+  node : IFlogoFlowDiagramNode, visitedNodes : string[ ], nodes : IFlogoFlowDiagramNodeDictionary,
+  tasks : IFlogoFlowDiagramTaskDictionary,
   tasksDest : IFlogoFlowDiagramTask[ ], linksDest : IFlogoFlowDiagramTaskLink[ ]
 ) {
 
@@ -165,7 +166,7 @@ function _traversalChildren(
         let n = nodes[ nid ];
 
         // filter the ADD node
-        if ( n.type === FLOGO_NODE_TYPE.NODE_ADD ) {
+        if ( n.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
           return;
         }
 

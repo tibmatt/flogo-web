@@ -1,14 +1,8 @@
-export enum FLOGO_ATTRIBUTE_TYPE {
-  STRING,
-  NUMBER,
-  OBJECT,
-  BOOLEAN,
-  ARRAY
-}
+import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../constants';
 
 export interface IFlogoFlowDiagramTaskAttribute {
   name : string;
-  type : FLOGO_ATTRIBUTE_TYPE;
+  type : FLOGO_TASK_ATTRIBUTE_TYPE;
   value : string;
   title ? : string;
   description ? : string;

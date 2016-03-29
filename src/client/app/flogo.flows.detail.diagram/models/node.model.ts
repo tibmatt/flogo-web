@@ -1,20 +1,10 @@
 import { IFlogoFlowDiagram } from '../models';
-
-export enum FLOGO_NODE_TYPE {
-  NODE_ADD,
-  NODE_ROOT,
-  NODE_ROOT_NEW,
-  NODE,
-  NODE_BRANCH,
-  NODE_LINK,
-  NODE_SUB_PROC,
-  NODE_LOOP
-}
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 
 export interface IFlogoFlowDiagramNode {
   id : string; // id of the node
   taskID : string; // id of the task
-  type : FLOGO_NODE_TYPE; // type of the node
+  type : FLOGO_FLOW_DIAGRAM_NODE_TYPE; // type of the node
   children : string[ ]; // ids of the children IFlogoFlowDiagramNode
   parents : string[ ]; // ids of the parents IFlogoFlowDiagramNode
   subProc ? : IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
@@ -32,7 +22,7 @@ export interface IFlogoFlowDiagramRootNode {
 export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
   id : string; // id of the node
   taskID : string; // id of the task
-  type : FLOGO_NODE_TYPE; // type of the node
+  type : FLOGO_FLOW_DIAGRAM_NODE_TYPE; // type of the node
   children : string[ ]; // ids of the children IFlogoFlowDiagramNode
   parents : string[ ]; // ids of the parents IFlogoFlowDiagramNode
   subProc : IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
@@ -42,7 +32,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
       node = {
         id : FlogoFlowDiagramNode.genNodeID(),
         taskID : '',
-        type : FLOGO_NODE_TYPE.NODE_ADD,
+        type : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
         children : [],
         parents : []
       }

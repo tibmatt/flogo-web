@@ -4,11 +4,11 @@ import {
   IFlogoFlowDiagramTaskDictionary,
   IFlogoFlowDiagramNode,
   FlogoFlowDiagramNode,
-  FLOGO_NODE_TYPE,
   IFlogoFlowDiagramTask,
   FlogoFlowDiagramProcess
 } from '../models';
 import { Selection } from 'd3';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 
 export interface IFlogoFlowDiagram {
   root : IFlogoFlowDiagramRootNode;
@@ -22,7 +22,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private rootElm : Selection < any >;
   private ng2StyleAttr = '';
 
-  constructor( diagram : IFlogoFlowDiagram, private tasks : IFlogoFlowDiagramTaskDictionary, private elm : HTMLElement ) {
+  constructor(
+    diagram : IFlogoFlowDiagram, private tasks : IFlogoFlowDiagramTaskDictionary, private elm : HTMLElement
+  ) {
     this.updateDiagram( diagram );
   }
 
@@ -62,7 +64,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       nodes : < IFlogoFlowDiagramNodeDictionary > {}
     };
 
-    newRootNode.type = FLOGO_NODE_TYPE.NODE_ROOT_NEW;
+    newRootNode.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
 
     empytDiagram.nodes[ newRootNode.id ] = newRootNode;
 
@@ -122,11 +124,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       //   TODO case of NODE_LINK should be considered differently
       let nodeDict : IFlogoFlowDiagramNodeDictionary = {};
       let NODES_CAN_HAVE_ADD_NODE = [
-        FLOGO_NODE_TYPE.NODE_BRANCH,
-        FLOGO_NODE_TYPE.NODE,
-        FLOGO_NODE_TYPE.NODE_ROOT,
-        FLOGO_NODE_TYPE.NODE_SUB_PROC,
-        FLOGO_NODE_TYPE.NODE_LOOP
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_SUB_PROC,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_LOOP
       ];
 
       _.forIn(
@@ -239,11 +241,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     if ( node ) {
       node.taskID = task.id;
 
-      if ( node.type === FLOGO_NODE_TYPE.NODE_ADD ) {
-        node.type = FLOGO_NODE_TYPE.NODE;
+      if ( node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+        node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE;
         this._appendAddNode( this.nodes, < FlogoFlowDiagramNode > node );
-      } else if ( node.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
-        node.type = FLOGO_NODE_TYPE.NODE_ROOT;
+      } else if ( node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+        node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT;
         this._appendAddNode( this.nodes, < FlogoFlowDiagramNode > node );
       }
     } else {
@@ -256,7 +258,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return Promise.resolve( this );
   }
 
-  public findNodesByType( type : FLOGO_NODE_TYPE, sourceNodes ? : IFlogoFlowDiagramNode[ ] ) : IFlogoFlowDiagramNode[ ] {
+  public findNodesByType(
+    type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, sourceNodes ? : IFlogoFlowDiagramNode[ ]
+  ) : IFlogoFlowDiagramNode[ ] {
     let nodes : IFlogoFlowDiagramNode[ ] = [];
 
     if ( sourceNodes ) {
@@ -294,11 +298,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return nodes;
   }
 
-  public findChildrenNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
+  public findChildrenNodesByType( type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.children ) );
   }
 
-  public findParentsNodesByType( type : FLOGO_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
+  public findParentsNodesByType( type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
@@ -394,14 +398,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
             let evtType = '';
 
-            if ( d.type === FLOGO_NODE_TYPE.NODE_ADD || d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+            if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD || d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
               evtType = 'flogoAddTask';
 
               // TODO
               //   refine the logic to handle more nodes
             } else if ( [
-                          FLOGO_NODE_TYPE.NODE,
-                          FLOGO_NODE_TYPE.NODE_ROOT
+                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
+                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT
                         ].indexOf( d.type ) !== -1 ) {
               evtType = 'flogoSelectTask';
             }
@@ -431,12 +435,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     // update selection
     tasks.classed( 'updated', true )
-      .attr( 'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_NODE_TYPE[ d.type ].toLowerCase() )
+      .attr( 'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase() )
       .text(
         ( d : IFlogoFlowDiagramNode ) => {
           let task = this.tasks[ d.taskID ];
           let label = (
-                      task && task.name
+                        task && task.name
                       ) || [
                         d.id,
                         ' [',
@@ -446,9 +450,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
                         '] '
                       ].join( '' );
 
-          if ( d.type === FLOGO_NODE_TYPE.NODE_ADD ) {
+          if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
             label = 'ADD';
-          } else if ( d.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+          } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
             label = 'Select trigger';
           }
 
@@ -493,7 +497,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 //   at some time, may need to track which node has been visited
 //   for example branch back to other path
 //   but for now, may not need to care about it
-function _insertChildNodes( matrix : string[ ][ ], diagram : IFlogoFlowDiagram, node : IFlogoFlowDiagramNode ) : string[ ][ ] {
+function _insertChildNodes(
+  matrix : string[ ][ ], diagram : IFlogoFlowDiagram, node : IFlogoFlowDiagramNode
+) : string[ ][ ] {
 
   // deep-first traversal
 
@@ -502,7 +508,7 @@ function _insertChildNodes( matrix : string[ ][ ], diagram : IFlogoFlowDiagram, 
   if ( node.children.length ) {
     _.each(
       node.children, ( d : string, i : number ) => {
-        if ( diagram.nodes[ d ].type !== FLOGO_NODE_TYPE.NODE_BRANCH ) {
+        if ( diagram.nodes[ d ].type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
           // push to the current row if it's non-branch node
           matrix[ curRowIdx ].push( d );
         } else {
@@ -511,7 +517,7 @@ function _insertChildNodes( matrix : string[ ][ ], diagram : IFlogoFlowDiagram, 
         }
 
         // not follow the children of a link node
-        if ( diagram.nodes[ d ].type !== FLOGO_NODE_TYPE.NODE_LINK ) {
+        if ( diagram.nodes[ d ].type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_LINK ) {
           _insertChildNodes( matrix, diagram, diagram.nodes[ d ] );
         }
 

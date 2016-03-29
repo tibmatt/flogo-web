@@ -1,8 +1,9 @@
 import { Component, ElementRef, SimpleChange, AfterViewInit } from 'angular2/core';
 import * as DEMO_MODELS from '../models';
-import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram, FLOGO_NODE_TYPE } from '../models';
+import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } from '../models';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS } from '../messages';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 
 @Component(
   {
@@ -218,10 +219,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     let data = $event.detail;
 
-    if ( data.node.type === FLOGO_NODE_TYPE.NODE_ROOT_NEW ) {
+    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
       // add trigger event
       this._postService.publish( _.assign( {}, PUB_EVENTS.addTrigger, { data : data } ) );
-    } else if ( data.node.type === FLOGO_NODE_TYPE.NODE_ADD ) {
+    } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
       // add task event
       this._postService.publish( _.assign( {}, PUB_EVENTS.addTask, { data : data } ) );
     } else {
@@ -243,10 +244,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     // TODO
     //   need to support branch/link and other nodes
-    if ( data.node.type === FLOGO_NODE_TYPE.NODE_ROOT ) {
+    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
       // select trigger event
       this._postService.publish( _.assign( {}, PUB_EVENTS.selectTrigger, { data : data } ) );
-    } else if ( data.node.type === FLOGO_NODE_TYPE.NODE ) {
+    } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE ) {
       // select task event
       this._postService.publish( _.assign( {}, PUB_EVENTS.selectTask, { data : data } ) );
     } else {
