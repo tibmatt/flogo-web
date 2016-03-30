@@ -57,11 +57,98 @@ app
         |-- app.directive.e2e.ts
     |-- services
     |-- models
-    
+    |-- messages.ts
 ```
 
 1. File name use lower case
 2. If name more than one word, use - to connect them. For example `app-detail.component.ts`
+1. The `messages.ts` holds the information of publish/subscribe events of a module (outgoing/incoming messages)
+
+#### The messaging mechanism and `messages.ts` file
+
+Modules communicating through messaging mechanism using the `common/services/post.services.ts`, which is based on [`Postal`](https://www.npmjs.com/package/postal).
+
+For the moment, considering decoupling, the solution is to implement a `messages.ts` within the module folder if the module need to communicate with the others through the message mechanism. The parent module will use the information of the `messages.ts` of its children modules to glue the children modules together.
+
+In this case, development of the child module or the same level module could be independent. The one of the cons of this approach is that the parent module have to take responsibility to glue its children and pass the messages of its children modules.
+
+##### Example of a `messages.ts`
+
+```javascript
+/**
+ * Events published from this module
+ */
+
+export const PUB_EVENTS = {
+  addTask : {
+    channel : 'mock-flogo-flows-detail-diagram',
+    topic : 'add-task'
+  }
+};
+
+/**
+ * Events subscribed by this module
+ */
+
+export const SUB_EVENTS = {
+  addTask : {
+    channel : 'mock-flogo-flows-detail-diagram',
+    topic : 'public-add-task'
+    // , data: {
+    //   task: {
+    //     id: "task id",
+    //     name: "task name",
+    //     ...
+    //   },
+    //   ...
+    // }
+  }
+};
+
+```
+
+___Note___ that the commented `data` field is used to provide an exmaple of the required information of that message, and the `topic` field is prefixed with `public-`.
+
+
+##### Example of usage
+
+```typescript
+
+/**
+ * inside the child module
+ * `this` is the class of the module
+ */
+
+// ...
+  // subscribe incoming message
+  this._postService.subscribe( _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ) )
+  
+  // publish the outgoing message
+  this._postService.publish( _.assign( {}, PUB_EVENTS.addTask, { data : data } ) );
+// ...
+
+/**
+ * inside the parent module
+ * `this` is the class of the module
+ */
+ 
+// ...
+  // subscribe message from child module
+  this._postService.subscribe( _.assign( {}, PUB_EVENTS.addTask, { callback : this._addTaskFromChild.bind( this ) } ) )
+  
+  // do the magic
+  
+  // publish message to the child module
+  this._postService.publish( _.assign( {}, SUB_EVENTS.addTask, { data : data } ) );
+// ...
+
+
+```
+
+
+
+__TODO:__ in the future, new messaging mechanism will be introduced to replace this one.
+
 
 ### Avoid name collision, use module name as prefix, this rule for class name, directive name, selector name...
 
