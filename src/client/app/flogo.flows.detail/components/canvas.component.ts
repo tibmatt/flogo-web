@@ -16,7 +16,7 @@ import {
   IFlogoFlowDiagram
 } from '../../../common/models';
 
-import { SUB_EVENTS as FLOG_DIAGRAM_PUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
+import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
 
 import {
   DIAGRAM,
@@ -95,26 +95,16 @@ export class FlogoCanvasComponent {
     // TODO
     //   1. merge these mocks with real implementation
     //   2. unsubscribe on destroy
-    this._postService.subscribe( {
-      channel: 'mock-flogo-flows-detail-diagram',
-      topic: 'add-trigger',
-      callback: this._addTrigger.bind(this)
-    } );
-    this._postService.subscribe( {
-      channel: 'mock-flogo-flows-detail-diagram',
-      topic: 'select-trigger',
-      callback: this._selectTrigger.bind(this)
-    } );
-    this._postService.subscribe( {
-      channel: 'mock-flogo-flows-detail-diagram',
-      topic: 'add-task',
-      callback: this._addTask.bind(this)
-    } );
-    this._postService.subscribe( {
-      channel: 'mock-flogo-flows-detail-diagram',
-      topic: 'select-task',
-      callback: this._selectTask.bind(this)
-    } );
+    _.each(
+      [
+        _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTask, { callback : this._addTask.bind( this ) } ),
+        _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTrigger, { callback : this._addTrigger.bind( this ) } ),
+        _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback : this._selectTask.bind( this ) } ),
+        _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback : this._selectTrigger.bind( this ) } )
+      ], sub => {
+        this._postService.subscribe( sub );
+      }
+    );
   }
 
   public tasks: IFlogoFlowDiagramTaskDictionary;
@@ -146,7 +136,7 @@ export class FlogoCanvasComponent {
 
     this.tasks[ newRootTask.id ] = newRootTask;
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTrigger, {
+    this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
       data: {
         node: data.node,
         task: newRootTask
@@ -168,7 +158,7 @@ export class FlogoCanvasComponent {
 
     this.tasks[ newTask.id ] = newTask;
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTask, {
+    this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
       data: {
         node: data.node,
         task: newTask
@@ -184,7 +174,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTrigger, {
+    this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
       data: {}
     } ) );
 
@@ -197,7 +187,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTask, {
+    this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
       data: {}
     } ) );
 
