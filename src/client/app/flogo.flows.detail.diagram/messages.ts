@@ -26,20 +26,20 @@ export const PUB_EVENTS = {
  */
 
 export const SUB_EVENTS = {
-  addTaskDone : {
+  addTask : {
     channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'add-task-done'
+    topic : 'public-add-task'
   },
-  selectTaskDone : {
+  selectTask : {
     channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'select-task-done'
+    topic : 'public-select-task'
   },
-  addTriggerDone : {
+  addTrigger : {
     channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'add-trigger-done'
+    topic : 'public-add-trigger'
   },
-  selectTriggerDone : {
+  selectTrigger : {
     channel : 'mock-flogo-flows-detail-diagram',
-    topic : 'select-trigger-done'
+    topic : 'public-select-trigger'
   }
 };

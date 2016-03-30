@@ -146,7 +146,7 @@ export class FlogoCanvasComponent {
 
     this.tasks[ newRootTask.id ] = newRootTask;
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTriggerDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTrigger, {
       data: {
         node: data.node,
         task: newRootTask
@@ -168,7 +168,7 @@ export class FlogoCanvasComponent {
 
     this.tasks[ newTask.id ] = newTask;
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTaskDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.addTask, {
       data: {
         node: data.node,
         task: newTask
@@ -184,7 +184,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTriggerDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTrigger, {
       data: {}
     } ) );
 
@@ -197,7 +197,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTaskDone, {
+    this._postService.publish( _.assign( {}, FLOG_DIAGRAM_PUB_EVENTS.selectTask, {
       data: {}
     } ) );
 

@@ -1,5 +1,5 @@
 import { Component, ElementRef, SimpleChange, AfterViewInit } from 'angular2/core';
-import * as DEMO_MODELS from '../models';
+import * as DEMO_MODELS from '../../../common/constants';
 import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } from '../models';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
@@ -46,10 +46,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     }
 
     let subs = [
-      _.assign( {}, SUB_EVENTS.addTriggerDone, { callback : this._addTriggerDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.selectTriggerDone, { callback : this._selectTriggerDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.addTaskDone, { callback : this._addTaskDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.selectTaskDone, { callback : this._selectTaskDone.bind( this ) } )
+      _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._addTriggerDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._selectTriggerDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } )
     ];
 
     _.each(
@@ -88,9 +88,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
           this._mockProcess = diagram.toProcess();
         }
       );
-
-    // TODO
-    //   subscription
 
   }
 
@@ -285,6 +282,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.groupEnd();
   }
 
+  /**
+   * Update the task information, link the node with the task, and then update & render the diagram
+   *
+   * @param data
+   * @private
+   */
   private _associateNodeWithTaskAndUpdateDiagram( data : any ) {
     if ( data.node && data.task ) {
       // link the new task to FlogoFlowDiagramNode
@@ -308,6 +311,11 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     }
   }
 
+  /**
+   * Display all of the enumerations and constants
+   * TODO
+   *  remove this mock function in the future
+   */
   getEnumerations() : any {
     return DEMO_MODELS;
   }
