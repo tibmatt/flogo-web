@@ -95,6 +95,7 @@ export class FlogoCanvasComponent {
       }.bind(this)
     });
 
+    // TODO move it to subscribe but to mock
     this._postService.subscribe({
       channel: "flogo-flows-detail-graphic",
       topic: "select-task",
@@ -112,11 +113,12 @@ export class FlogoCanvasComponent {
               this._loadedComponent = ref;
               ref.instance.setData(task);
             });
+        } else {
+          this._router.navigate(['FlogoFlowsDetailTaskDetail', {id:1}]);
         }
         console.group("FlogoNavbarComponenkt -> select task");
         console.log("receive: ", arguments);
         // TODO is not needed
-        //this._router.navigate(['FlogoFlowsDetailTaskDetail', {id:1}]);
         console.groupEnd();
 
       }.bind(this)

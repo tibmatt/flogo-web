@@ -1,6 +1,7 @@
 import {Component} from 'angular2/core';
 //import {RouteConfig, RouterOutlet} from 'angular2/router';
 import {PostService} from '../../../common/services/post.service';
+import {PUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-canvas-flow',
@@ -17,47 +18,22 @@ export class FlogoCanvasFlowComponent {
   }
 
   addTrigger(){
-    this._postService.publish({
-      channel: "flogo-flows-detail-graphic",
-      topic: "add-trigger",
-      data: {
-        who: "FlogoCanvasFlowComponent - add trigger"
-      }
-    })
+    var publish = _.assign({}, PUB_EVENTS.addTrigger, {data: {who: "FlogoCanvasFlowComponent - add trigger"} });
+    this._postService.publish(publish);
   }
 
   selectTrigger(){
-    this._postService.publish({
-      channel: "flogo-flows-detail-graphic",
-      topic: "select-trigger",
-      data: {
-        who: "FlogoCanvasFlowComponent - select trigger"
-      }
-    })
+    var publish = _.assign({}, PUB_EVENTS.selectTrigger, {data: {who: "FlogoCanvasFlowComponent - select trigger"} });
+    this._postService.publish(publish);
   }
 
   addTask(){
-    this._postService.publish({
-      channel: "flogo-flows-detail-graphic",
-      topic: "add-task",
-      data: {
-        who: "FlogoCanvasFlowComponent - add task"
-      }
-    })
+    var publish = _.assign({}, PUB_EVENTS.addTask, {data: {who: "FlogoCanvasFlowComponent - add task"} });
+    this._postService.publish(publish);
   }
 
   selectTask(){
-    this._postService.publish({
-      channel: "flogo-flows-detail-graphic",
-      topic: "select-task",
-      data: {
-        who: "FlogoCanvasFlowComponent - select task",
-        taskId: 'task 3',
-        stepId: '1',
-        taskPackageName: 'Pet Query',
-        stateData: {
-        }
-      }
-    })
+    var publish = _.assign({}, PUB_EVENTS.selectTask, {data: {who: "FlogoCanvasFlowComponent - select task"} });
+    this._postService.publish(publish);
   }
 }
