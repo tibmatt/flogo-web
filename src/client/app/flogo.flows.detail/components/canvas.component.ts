@@ -124,7 +124,14 @@ export class FlogoCanvasComponent {
         ( flow : any )=> {
           this._flow = flow;
           this.tasks = this._flow.items;
-          this.diagram = this._flow.paths;
+          if ( _.isEmpty( this._flow.paths ) ) {
+            this.diagram = this._flow.paths = <IFlogoFlowDiagram>{
+              root : {},
+              nodes : {}
+            };
+          } else {
+            this.diagram = this._flow.paths;
+          }
         }
       )
       .then(
@@ -184,10 +191,12 @@ export class FlogoCanvasComponent {
       data: {
         node: data.node,
         task: newRootTask
+      },
+      done : ( diagram : IFlogoFlowDiagram ) => {
+        _.assign( this.diagram, diagram );
+        this._updateFlow( this._flow );
       }
     } ) );
-
-    this._updateFlow(this._flow);
 
     console.groupEnd( );
   }
@@ -205,13 +214,15 @@ export class FlogoCanvasComponent {
     this.tasks[ newTask.id ] = newTask;
 
     this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
-      data: {
-        node: data.node,
-        task: newTask
+      data : {
+        node : data.node,
+        task : newTask
+      },
+      done : ( diagram : IFlogoFlowDiagram ) => {
+        _.assign( this.diagram, diagram );
+        this._updateFlow( this._flow );
       }
     } ) );
-
-    this._updateFlow(this._flow);
 
     console.groupEnd( );
   }
@@ -223,10 +234,12 @@ export class FlogoCanvasComponent {
     console.log( envelope );
 
     this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
-      data: {}
+      data : {},
+      done : ( diagram : IFlogoFlowDiagram ) => {
+        _.assign( this.diagram, diagram );
+        this._updateFlow( this._flow );
+      }
     } ) );
-
-    this._updateFlow(this._flow);
 
     console.groupEnd( );
   }
@@ -238,10 +251,12 @@ export class FlogoCanvasComponent {
     console.log( envelope );
 
     this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-      data: {}
+      data : {},
+      done : ( diagram : IFlogoFlowDiagram ) => {
+        _.assign( this.diagram, diagram );
+        this._updateFlow( this._flow );
+      }
     } ) );
-
-    this._updateFlow(this._flow);
 
     console.groupEnd( );
   }

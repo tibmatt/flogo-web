@@ -26,10 +26,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   private _diagram : FlogoFlowDiagram;
   private _subscriptions : any[ ];
 
-  // TODO
-  //   remove this mock
-  private _mockProcess : any;
-
   constructor( elementRef : ElementRef, private _postService : PostService ) {
     this._elmRef = elementRef;
     this.initSub();
@@ -76,14 +72,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   ngAfterViewInit() {
     this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
 
-    this._diagram.render()
-      .then(
-        ( diagram ) => {
-          // TODO
-          //   remove this mock
-          this._mockProcess = diagram.toProcess();
-        }
-      );
+    this._diagram.render();
 
   }
 
@@ -114,14 +103,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
             tasks : this.tasks,
             diagram : this.diagram
           }
-          )
-          .then(
-            ( diagram ) => {
-              // TODO
-              //   remove this mock
-              this._mockProcess = diagram.toProcess();
-            }
-          );
+        );
       }
 
       // monitor the updates of tasks
@@ -136,14 +118,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
           {
             tasks : this.tasks
           }
-          )
-          .then(
-            ( diagram ) => {
-              // TODO
-              //   remove this mock
-              this._mockProcess = diagram.toProcess();
-            }
-          );
+        );
       }
     }
 
@@ -160,14 +135,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       {
         tasks : this.tasks
       }
-      )
-      .then(
-        ( diagram ) => {
-          // TODO
-          //   remove this mock
-          this._mockProcess = diagram.toProcess();
-        }
-      );
+    );
 
     // TODO
     //   if there are nodes position changing, then should apply the new diagram when updating
@@ -239,7 +207,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( data );
     console.log( envelope );
 
-    this._associateNodeWithTaskAndUpdateDiagram( data );
+    this._associateNodeWithTaskAndUpdateDiagram( data )
+      .then(
+        () => {
+          _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        }
+      );
 
     console.groupEnd();
   }
@@ -250,7 +223,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( data );
     console.log( envelope );
 
-    this._associateNodeWithTaskAndUpdateDiagram( data );
+    this._associateNodeWithTaskAndUpdateDiagram( data )
+      .then(
+        () => {
+          _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        }
+      );
 
     console.groupEnd();
   }
@@ -261,7 +239,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( data );
     console.log( envelope );
 
-    this._associateNodeWithTaskAndUpdateDiagram( data );
+    this._associateNodeWithTaskAndUpdateDiagram( data )
+      .then(
+        () => {
+          _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        }
+      );
 
     console.groupEnd();
   }
@@ -272,7 +255,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( data );
     console.log( envelope );
 
-    this._associateNodeWithTaskAndUpdateDiagram( data );
+    this._associateNodeWithTaskAndUpdateDiagram( data )
+      .then(
+        () => {
+          _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        }
+      );
 
 
     console.groupEnd();
@@ -284,10 +272,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
    * @param data
    * @private
    */
-  private _associateNodeWithTaskAndUpdateDiagram( data : any ) {
+  private _associateNodeWithTaskAndUpdateDiagram( data : any ) : Promise<any> {
     if ( data.node && data.task ) {
       // link the new task to FlogoFlowDiagramNode
-      this._diagram.linkNodeWithTask( data.node.id, data.task )
+      return this._diagram.linkNodeWithTask( data.node.id, data.task )
         .then(
           ( diagram ) => {
             return diagram.updateAndRender(
@@ -296,15 +284,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
               }
             );
           }
-        )
-        .then(
-          ( diagram ) => {
-            // TODO
-            //   remove this mock
-            this._mockProcess = diagram.toProcess();
-          }
         );
     }
+
+    return Promise.reject( 'Invalid parameters.' );
   }
 
   /**

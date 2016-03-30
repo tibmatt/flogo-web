@@ -2,32 +2,31 @@
     <div class="canvas-flow">
         <flogo-canvas-flow id="211"></flogo-canvas-flow>
         <flogo-canvas-flow-diagram [tasks]="tasks" [diagram]="diagram"></flogo-canvas-flow-diagram>
+
+        <!-- the mock section below should be removed later-->
+        <section class="container-fluid" style="display:none">
+          <section class="row">
+            <header>
+              <h3>Mock Area in Canvas component</h3>
+            </header>
+          </section>
+
+          <section class="row">
+
+            <div class="col-xs-12">
+              <header>
+                <h4>Process.json</h4>
+              </header>
+            </div>
+
+            <div class="col-xs-12">
+              <pre><code [textContent]="_mockProcess | json"></code></pre>
+            </div>
+
+          </section>
+        </section>
     </div>
     <div class="canvas-right-container">
         <router-outlet></router-outlet>
     </div>
 </div>
-
-<!-- the mock section below should be removed later-->
-<!--<section class="container-fluid" style="display:none">-->
-<section class="container-fluid">
-  <section class="row">
-    <header>
-      <h3>Mock Area</h3>
-    </header>
-  </section>
-
-  <section class="row">
-
-    <div class="col-xs-12">
-      <header>
-        <h4>Process.json</h4>
-      </header>
-    </div>
-
-    <div class="col-xs-12">
-      <pre><code [textContent]="_mockProcess | json"></code></pre>
-    </div>
-
-  </section>
-</section>

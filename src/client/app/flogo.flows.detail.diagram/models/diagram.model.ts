@@ -112,7 +112,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   public updateDiagram( diagram : IFlogoFlowDiagram ) : Promise < FlogoFlowDiagram > {
-    if ( _.isEmpty( diagram ) ) {
+    if ( _.isEmpty( diagram ) || _.isEmpty( diagram.root ) ) {
 
       // handle empty diagram
       this.updateDiagram( FlogoFlowDiagram.getEmptyDiagram() );
