@@ -113,22 +113,24 @@ export class FlogoFlowDiagramProcess {
       }
     ];
 
-    let nodes = diagram.nodes;
-    let rootNode = nodes[ diagram.root.is ];
+    if ( !_.isEmpty( diagram ) && !_.isEmpty( tasks ) ) {
+      let nodes = diagram.nodes;
+      let rootNode = nodes[ diagram.root.is ];
 
-    process.rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
+      process.rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
 
-    let rootTaskChildren = < IFlogoFlowDiagramTask[ ] > [];
-    let links = < IFlogoFlowDiagramTaskLink[ ] > [];
+      let rootTaskChildren = < IFlogoFlowDiagramTask[ ] > [];
+      let links = < IFlogoFlowDiagramTaskLink[ ] > [];
 
-    traversalDiagram( diagram, tasks, rootTaskChildren, links );
+      traversalDiagram( diagram, tasks, rootTaskChildren, links );
 
-    if ( !_.isEmpty( links ) ) {
-      process.rootTask.links = links;
-    }
+      if ( !_.isEmpty( links ) ) {
+        process.rootTask.links = links;
+      }
 
-    if ( !_.isEmpty( rootTaskChildren ) ) {
-      process.rootTask.tasks = rootTaskChildren;
+      if ( !_.isEmpty( rootTaskChildren ) ) {
+        process.rootTask.tasks = rootTaskChildren;
+      }
     }
 
     return process;

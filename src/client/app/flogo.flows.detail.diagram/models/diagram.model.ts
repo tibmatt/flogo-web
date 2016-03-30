@@ -112,7 +112,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   public updateDiagram( diagram : IFlogoFlowDiagram ) : Promise < FlogoFlowDiagram > {
-    if ( diagram ) {
+    if ( _.isEmpty( diagram ) ) {
+
+      // handle empty diagram
+      this.updateDiagram( FlogoFlowDiagram.getEmptyDiagram() );
+
+    } else {
+
       // handle diagram with trigger and more nodes
 
       // keep a copy of diagram information, but only keep the reference of the tasks
@@ -143,10 +149,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       );
 
       this.nodes = nodeDict;
-
-    } else {
-      // handle empty diagram
-      this.updateDiagram( FlogoFlowDiagram.getEmptyDiagram() );
     }
 
 

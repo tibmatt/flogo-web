@@ -74,11 +74,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
-
-    // TODO
-    //   remove this mock, this is for evaluating empty diagram case
-    this._diagram = new FlogoFlowDiagram( null, this.tasks, this._elmRef.nativeElement );
+    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
 
     this._diagram.render()
       .then(

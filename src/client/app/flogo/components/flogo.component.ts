@@ -5,13 +5,14 @@ import {FlogoFlowsComponet} from '../../flogo.flows/components/flows.component';
 import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.component';
 import {FlogoTaskComponent} from "../../flogo.task/components/task.component";
 import {PostService} from '../../../common/services/post.service';
+import { RESTAPIService } from '../../../common/services/rest-api.service';
 
 @Component({
   selector: 'flogo-app',
   moduleId: module.id,
   templateUrl: 'flogo.tpl.html',
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
-  providers: [PostService]
+  providers: [PostService, RESTAPIService]
 })
 
 @RouteConfig([

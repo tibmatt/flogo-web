@@ -27,6 +27,7 @@ import {
 } from '../../../common/mocks';
 
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import { RESTAPIService } from '../../../common/services/rest-api.service';
 
 
 @Component( {
@@ -107,17 +108,60 @@ export class FlogoCanvasComponent {
     );
   }
 
-  public tasks: IFlogoFlowDiagramTaskDictionary;
-  public diagram: IFlogoFlowDiagram;
+  private tasks: IFlogoFlowDiagramTaskDictionary;
+  private diagram: IFlogoFlowDiagram;
+  private _flow: any;
+  private _mockProcess: any;
 
   constructor(
     private _postService: PostService,
+    private _restAPIService: RESTAPIService,
     private _routerParams: RouteParams,
     private _router: Router
   ) {
-    this.tasks = TASKS;
-    this.diagram = DIAGRAM;
+    this._restAPIService.flows.getFlowByID( this._routerParams.params[ 'id' ] )
+      .then(
+        ( flow : any )=> {
+          this._flow = flow;
+          this.tasks = this._flow.items;
+          this.diagram = this._flow.paths;
+        }
+      )
+      .then(
+        ()=> {
+          // TODO
+          //    remove this mock later
+          this._updateFlow( this._flow );
+        }
+      );
     this.initSubscribe();
+  }
+
+  // TODO
+  //  Remove this mock later
+  private _updateMockProcess() {
+    if ( !_.isEmpty( this._flow ) ) {
+
+      this._restAPIService.flows.getFlowConfigByID( this._flow.id )
+        .then(
+          ( process : any )=> {
+            this._mockProcess = process;
+          }
+        );
+    }
+  }
+
+  // TODO
+  //  Remove this mock later
+  private _updateFlow( flow : any ) {
+    this._restAPIService.flows.updateFlowByID( this._flow.id, flow )
+      .then(
+        () => {
+          // TODO
+          //  remove this mock
+          this._updateMockProcess();
+        }
+      );
   }
 
   private _addTrigger( data: any, envelope: any ) {
@@ -143,6 +187,8 @@ export class FlogoCanvasComponent {
       }
     } ) );
 
+    this._updateFlow(this._flow);
+
     console.groupEnd( );
   }
 
@@ -165,6 +211,8 @@ export class FlogoCanvasComponent {
       }
     } ) );
 
+    this._updateFlow(this._flow);
+
     console.groupEnd( );
   }
 
@@ -178,6 +226,8 @@ export class FlogoCanvasComponent {
       data: {}
     } ) );
 
+    this._updateFlow(this._flow);
+
     console.groupEnd( );
   }
 
@@ -190,6 +240,8 @@ export class FlogoCanvasComponent {
     this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
       data: {}
     } ) );
+
+    this._updateFlow(this._flow);
 
     console.groupEnd( );
   }
