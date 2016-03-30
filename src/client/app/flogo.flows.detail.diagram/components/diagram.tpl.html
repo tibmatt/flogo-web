@@ -9,6 +9,59 @@
         <div class="flogo-flows-detail-diagram" (flogoAddTask)="addTask($event)" (flogoSelectTask)="selectTask($event)"></div>
     </section>
 
+    <section class="row">
+        <div class="flogo-flows-detail-diagram">
+            <div class="flogo-flows-detail-diagram-row updated">
+                <div class="flogo-flows-detail-diagram-node updated" data-flogo-node-type="node_root">
+                    <div class="flogo-flows-detail-diagram-node-text">
+                        <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
+                        <div class="flogo-flows-detail-diagram-node-text-title">HTTP Trigger</div>
+                        <div class="flogo-flows-detail-diagram-node-text-description">Description of task</div>
+                    </div>
+                    <div class="flogo-flows-detail-diagram-node-menu">
+                        <ul class="flogo-flows-detail-diagram-node-menu-box">
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-plus"></i>Add branch</li>
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-bolt"></i>Transform</li>
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-trash-o"></i>Delete</li>
+                        </ul>
+                        <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
+                    </div>
+                </div>
+                <div class="flogo-flows-detail-diagram-node updated flogo-flows-detail-diagram-node-selected" data-flogo-node-type="node">
+                    <div class="flogo-flows-detail-diagram-node-text flogo-flows-detail-diagram-node-selected">
+                        <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
+                        <div class="flogo-flows-detail-diagram-node-text-title"> Log Start</div>
+                        <div class="flogo-flows-detail-diagram-node-text-description">Description of task</div>
+                    </div>
+                    <div class="flogo-flows-detail-diagram-node-menu">
+                        <ul class="flogo-flows-detail-diagram-node-menu-box">
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-plus"></i>Add branch</li>
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-bolt"></i>Transform</li>
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-trash-o"></i>Delete</li>
+                        </ul>
+                        <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
+                    </div>
+                </div>
+                <div class="flogo-flows-detail-diagram-node updated" data-flogo-node-type="node">
+                    <div class="flogo-flows-detail-diagram-node-text">
+                        <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
+                        <div class="flogo-flows-detail-diagram-node-text-title">Pet Query</div>
+                        <div class="flogo-flows-detail-diagram-node-text-description">Description of task</div>
+                    </div>
+                    <div class="flogo-flows-detail-diagram-node-menu  flogo-flows-detail-diagram-node-menu-open flogo-flows-detail-diagram-node-menu-selected">
+                        <ul class="flogo-flows-detail-diagram-node-menu-box">
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-plus"></i>Add branch</li>
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-bolt"></i>Transform</li>
+                            <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-trash-o"></i>Delete</li>
+                        </ul>
+                        <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
     <!-- the mock section below should be removed later-->
     <section class="container-fluid" style="display:none">
       <section class="row">

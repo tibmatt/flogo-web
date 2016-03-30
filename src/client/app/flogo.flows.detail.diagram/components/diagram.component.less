@@ -1,0 +1,176 @@
+.flogo-flows-detail-diagram {
+  border: 1px solid #7777ff;
+  border-radius: 4px;
+  width: 100%;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.flogo-flows-detail-diagram-row {
+  border: 1px solid #000;
+  border-radius: 4px;
+  //background-color: #CDEE90;
+  width: 100%;
+  margin: auto;
+  margin: 20px 0;
+}
+
+.flogo-flows-detail-diagram-node {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border: solid 1px #f4f4f4;
+  background-image: linear-gradient(to right, #f4f4f4, #ffffff);
+  border-radius: 10px;
+
+  font-family: SourceSansPro-Bold;
+  font-size: 15px;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  color: #666666;
+
+  display: inline-block;
+  margin: 5px;
+  text-align: center;
+
+  transition: all 500ms linear;
+  &.flogo-flows-detail-diagram-node-selected:before{
+    background: #79b8dc;
+    //border: solid 1px #70abcc;
+  }
+  &:before{
+    position: absolute;
+    left: 117px;
+    top: 54px;
+    z-index: 3;
+    content: '';
+    display: block;
+    width: 42px;
+    height: 30px;
+    background: #fff;
+    box-shadow: 1px -2px 1px 0 rgba(0, 0, 0, 0.1);
+    transform: rotate(65deg) skewX(36deg);
+
+  }
+  &[data-flogo-node-type="node_link"] {
+    background-color: #F0AD4E;
+    color: #222;
+  }
+  &[data-flogo-node-type="node_branch"] {
+    background-color: #B9C519;
+    color: #222;
+  }
+  &[data-flogo-node-type="node_root"] {
+    background-color: #206188;
+  }
+  &[data-flogo-node-type="node_add"] {
+    background-color: #CDEE90;
+    color: #222;
+    opacity: 0;
+  }
+  &[data-flogo-node-type="node_root_new"] {
+    background-color: #CDEE90;
+    color: #222;
+    cursor: pointer;
+  }
+  &[data-flogo-node-type="node"],&[data-flogo-node-type="node_root"]{
+    &.flogo-flows-detail-diagram-node-menu-open{
+      box-shadow: 0 2.5px 7px 0 rgba(0, 0, 0, 0.3);
+    }
+  }
+  .flogo-flows-detail-diagram-node-text{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.3);
+    border: solid 0.5px #f4f4f4;
+    border-radius: 5px;
+    background-image: linear-gradient(to right, #f4f4f4, #ffffff);
+    width: 100%;
+    height: 100%;
+    padding: 0 5px;
+    &.flogo-flows-detail-diagram-node-selected{
+      background: #79b8dc;
+      color: #fff;
+      border: solid 1px #70abcc;
+    }
+    img{
+      margin:18px 0;
+    }
+  }
+  .flogo-flows-detail-diagram-node-text-title{
+    font-weight: 600;
+    padding-bottom: 5px;
+  }
+  .flogo-flows-detail-diagram-node-text-description {
+    border-top: 1px solid #8e9aa8;
+    padding-top: 5px;
+    font-size: 12px;
+    letter-spacing: 0.7px;
+  }
+  .flogo-flows-detail-diagram-node-menu {
+    position: absolute;
+    left: 5px;
+    top: 0;
+    z-index: 1;
+    /*overflow-x: hidden;
+    overflow-y: visible;*/
+    width: 130px;
+    height: 50%;
+    border-radius: 5px;
+    background-color: rgba(179, 214, 233, 0.9);
+    //box-shadow: 0 2.5px 7px 0 rgba(0, 0, 0, 0.3);
+    &.flogo-flows-detail-diagram-node-menu-open {
+      width: 170px;
+    }
+    &.flogo-flows-detail-diagram-node-menu-selected {
+      left: 134px;
+      background-color: #79b8dc
+    }
+  }
+  .flogo-flows-detail-diagram-node-menu-box{
+    float: left;
+    margin: 0;
+    padding: 0;
+    height: 130%;
+    width: 130px;
+    border: 1px solid #79b8dc;
+    background: #fff;
+    box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.5);
+    li{
+      margin-top: 0;
+      padding-left: 20px;
+      line-height: 30px;
+      text-align: left;
+      list-style: none;
+      font-size: 12px;
+      cursor: pointer;
+      i{
+        margin-right: 10px;
+      }
+    }
+  }
+  .flogo-flows-detail-diagram-node-menu-gear{
+    float: left;
+    width: 40px;
+    height: 100%;
+    background: url("/assets/svg/flogo.flows.detail.diagram.gear.icon.svg") center no-repeat;
+
+  }
+}
+
+.flogo-flows-detail-diagram-node-menu-box li {
+  &:hover {
+    background: #ededed;
+  }
+  i {
+    margin-right: 10px;
+  }
+}
+
+.flogo-flows-detail-diagram-row.hover .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] {
+  opacity: 1;
+  cursor: pointer;
+}
+
