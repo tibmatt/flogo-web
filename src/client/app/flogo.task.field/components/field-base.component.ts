@@ -16,6 +16,7 @@ export class FlogoTaskFieldBaseComponent{
 
     let parameters = (parameterType === 'input') ? (stateTask.inputs || []) : (stateTask.outputs || []);
 
+    /*
     let stateField = parameters.find( (param:any) => {
       return param.name === fieldSchema.name;
     });
@@ -27,6 +28,7 @@ export class FlogoTaskFieldBaseComponent{
         this.value = stateField.value;
       }
     }
+    */
   }
 
   getParameterType() {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter } from 'angular2/core';
+import { Component, EventEmitter, DynamicComponentLoader } from 'angular2/core';
 import { RouteConfig, RouterOutlet, RouteParams, Router } from 'angular2/router';
 import {PostService} from '../../../common/services/post.service';
 import { FlogoCanvasFlowComponent } from '../../flogo.flows.detail.graphic/components/flow.component';
@@ -8,6 +8,7 @@ import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/compon
 import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
+import {FlogoTaskComponent} from '../../flogo.task/components/task.component';
 
 import {
   FlogoFlowDiagramTask,
@@ -28,6 +29,7 @@ import {
 
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
+import {ElementRef} from "angular2/core";
 
 
 @Component( {
@@ -47,12 +49,21 @@ import { RESTAPIService } from '../../../common/services/rest-api.service';
 ])
 
 export class FlogoCanvasComponent {
+  _loadedComponent: any;
+
+  private disposeLoadedComponent() {
+    if(this._loadedComponent) {
+      this._loadedComponent.dispose();
+    }
+  }
+
 
   private initSubscribe(){
     this._postService.subscribe({
       channel: "flogo-flows-detail-graphic",
       topic: "add-trigger",
       callback: function(){
+        this.disposeLoadedComponent();
         console.group("FlogoNavbarComponent -> add trigger");
         console.log("receive: ", arguments);
         this._router.navigate(['FlogoFlowsDetailTriggerAdd']);
@@ -64,6 +75,7 @@ export class FlogoCanvasComponent {
       channel: "flogo-flows-detail-graphic",
       topic: "select-trigger",
       callback: function(){
+        this.disposeLoadedComponent();
         console.group("FlogoNavbarComponent -> select trigger");
         console.log("receive: ", arguments);
         this._router.navigate(['FlogoFlowsDetailTriggerDetail', {id:1}]);
@@ -75,6 +87,7 @@ export class FlogoCanvasComponent {
       channel: "flogo-flows-detail-graphic",
       topic: "add-task",
       callback: function(){
+        this.disposeLoadedComponent();
         console.group("FlogoNavbarComponent -> add task");
         console.log("receive: ", arguments);
         this._router.navigate(['FlogoFlowsDetailTaskAdd']);
@@ -85,11 +98,27 @@ export class FlogoCanvasComponent {
     this._postService.subscribe({
       channel: "flogo-flows-detail-graphic",
       topic: "select-task",
-      callback: function(){
-        console.group("FlogoNavbarComponent -> select task");
+
+      callback: function(data:any, envelope:any) {
+        var task = MOCK_TASKS_ARR.find((task) => {
+          return task.id === data.taskId;
+        });
+
+        if(task) {
+          this.disposeLoadedComponent();
+
+          this._dcl.loadIntoLocation(FlogoTaskComponent, this._elementRef, "taskUI")
+            .then((ref:any) => {
+              this._loadedComponent = ref;
+              ref.instance.setData(task);
+            });
+        }
+        console.group("FlogoNavbarComponenkt -> select task");
         console.log("receive: ", arguments);
-        this._router.navigate(['FlogoFlowsDetailTaskDetail', {id:1}]);
+        // TODO is not needed
+        //this._router.navigate(['FlogoFlowsDetailTaskDetail', {id:1}]);
         console.groupEnd();
+
       }.bind(this)
     });
 
@@ -117,7 +146,9 @@ export class FlogoCanvasComponent {
     private _postService: PostService,
     private _restAPIService: RESTAPIService,
     private _routerParams: RouteParams,
-    private _router: Router
+    private _router: Router,
+    private _dcl: DynamicComponentLoader,
+    private _elementRef: ElementRef
   ) {
     this._restAPIService.flows.getFlowByID( this._routerParams.params[ 'id' ] )
       .then(

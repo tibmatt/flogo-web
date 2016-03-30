@@ -18,6 +18,11 @@ export class FlogoTaskComponent{
   inputSchemaSubject: any;
   inputStateSubject: any;
   modifiedStateSubject: any;
+  data: any;
+
+  setData(data:any) {
+    this.data = data;
+  }
 
   getStateData() {
     return {

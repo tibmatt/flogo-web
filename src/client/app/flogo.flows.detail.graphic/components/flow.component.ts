@@ -51,7 +51,12 @@ export class FlogoCanvasFlowComponent {
       channel: "flogo-flows-detail-graphic",
       topic: "select-task",
       data: {
-        who: "FlogoCanvasFlowComponent - select task"
+        who: "FlogoCanvasFlowComponent - select task",
+        taskId: 'task 3',
+        stepId: '1',
+        taskPackageName: 'Pet Query',
+        stateData: {
+        }
       }
     })
   }

@@ -5,17 +5,19 @@ import {FlogoTaskFieldNumberComponent} from '../../flogo.task.field/components/f
 import {FlogoTaskFieldBooleanComponent} from '../../flogo.task.field/components/field-boolean.component';
 import {FlogoTaskFieldObjectComponent} from '../../flogo.task.field/components/field-object.component';
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
+import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
 
 @Component({
   selector: 'flogo-task-container',
   styleUrls: ['task.container.css'],
-  inputs:['inputSchemaSubject','inputStateSubject', 'modifiedStateSubject'],
+  inputs:['inputSchemaSubject','inputStateSubject', 'modifiedStateSubject','data'],
   moduleId: module.id,
   templateUrl: 'task.container.tpl.html',
   directives: [ROUTER_DIRECTIVES]
 })
 export class FlogoTaskContainerComponent{
   task:any;
+  data:any;
   inputSchemaSubject:any;
   inputStateSubject:any;
   modifiedStateSubject:any;
@@ -27,10 +29,10 @@ export class FlogoTaskContainerComponent{
   constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef) {
 
     this.componentsByType =  {
-      'string': FlogoTaskFieldStringComponent,
-      'number': FlogoTaskFieldNumberComponent,
-      'boolean': FlogoTaskFieldBooleanComponent,
-      'object': FlogoTaskFieldObjectComponent
+      [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: FlogoTaskFieldStringComponent,
+      [FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER]: FlogoTaskFieldNumberComponent,
+      [FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT]: FlogoTaskFieldObjectComponent,
+      [FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN]: FlogoTaskFieldBooleanComponent
     }
 
   }
@@ -42,7 +44,21 @@ export class FlogoTaskContainerComponent{
     this.inputFields = [];
     this.hasErrors = false;
 
+    this.inputFields.forEach((input:any) => {
+      input.dispose();
+    });
+
+    this.inputFields = [];
     this.fieldSubject = new BehaviorSubject('');
+
+    var inputs =  this.data.attributes.inputs || [];
+    var outputs = this.data.attributes.outputs || [];
+
+    this.addFieldSetToDOM(inputs, 'inputFields');
+    this.addFieldSetToDOM(outputs, 'outputFields');
+
+
+    /*
 
     this.fieldSubject.subscribe((value:string) => {
       this.modifiedStateSubject.next(this.getModifiedStateTask());
@@ -85,6 +101,7 @@ export class FlogoTaskContainerComponent{
       this.addFieldSetToDOM(inputs, 'inputFields');
       this.addFieldSetToDOM(outputs, 'outputFields');
     });
+    */
 
 
   }
@@ -100,7 +117,8 @@ export class FlogoTaskContainerComponent{
         this.loadIntoLocation(component, location)
           .then(ref => {
             let parameterType = (location === 'inputFields') ? 'input' : 'output';
-            ref.instance.setConfiguration(fieldSchema, this.task.state, parameterType, this.fieldSubject);
+            //ref.instance.setConfiguration(fieldSchema, this.task.state, parameterType, this.fieldSubject);
+            ref.instance.setConfiguration(fieldSchema, this.fieldSubject);
             this.inputFields.push(ref);
           });
       }
@@ -156,7 +174,8 @@ export class FlogoTaskContainerComponent{
       description:       schema.description       || '',
       required:          schema.required          || false,
       validation:        schema.validation        || '',
-      validationMessage: schema.validationMessage || ''
+      validationMessage: schema.validationMessage || '',
+      value:             schema.value             || ''
     }
 
   }
