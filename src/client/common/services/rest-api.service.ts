@@ -1,10 +1,13 @@
 import { Injectable } from 'angular2/core';
 import { FlogoFlowDiagramProcess, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from '../models';
+import { PROCESS } from '../mocks';
+import { Http, Headers, RequestOptions, Response } from 'angular2/http';
 
 @Injectable()
 export class RESTAPIService {
 
   flows : any;
+  instances : any;
   activities : any;
   triggers : any;
 
@@ -12,7 +15,7 @@ export class RESTAPIService {
 
   // TODO
   //    need to replace this mock with real implementation
-  constructor() {
+  constructor( private http : Http ) {
 
     // TODO
     //    this is only mock implementation
@@ -29,7 +32,7 @@ export class RESTAPIService {
     };
 
     // TODO
-    //    To use fetch API? fetch('http://localhost:2560/flows', {mode:'no-cors'})
+    //    this is only POC implementation with mock data
     this.flows = {
       get : () => {
         return Promise.resolve(
@@ -64,8 +67,183 @@ export class RESTAPIService {
             <IFlogoFlowDiagramTaskDictionary>this.mockFlow[ id ].items
           )
         );
+      },
+      getFlowConfigByIDDemo : ( id : string ) => {
+        return Promise.resolve( PROCESS );
+      },
+      upload : ( id : string ) => {
+        // TODO
+        //  upload current flow to process service server
+        return this.flows.getFlowConfigByIDDemo( id )
+          .then(
+            ( flowConfig : any ) => {
+
+              let body = JSON.stringify( flowConfig );
+              let headers = new Headers(
+                {
+                  'Content-Type' : 'application/json',
+                  'Accept' : 'application/json'
+                }
+              );
+              let options = new RequestOptions( { headers : headers } );
+
+
+              return this.http.post( 'http://localhost:9090/processes', body, options )
+                .toPromise();
+            }
+          )
+          .then(
+            ( response : Response ) => {
+              if ( response.text() ) {
+                return response.json()
+              } else {
+                return response;
+              }
+            }
+          );
+      },
+      start : ( id : string, data : any ) => {
+        // TODO
+        //    start a new instance of a flow
+        return this.flows.upload( id )
+          .then(
+            () => {
+
+              let body = JSON.stringify(
+                {
+                  "processUri" : "http://localhost:9090/processes/" + id,
+                  "data" : data
+                }
+              );
+
+              let headers = new Headers(
+                {
+                  'Content-Type' : 'application/json',
+                  'Accept' : 'application/json'
+                }
+              );
+
+              let options = new RequestOptions( { headers : headers } );
+
+
+              return this.http.post( 'http://localhost:8080/process/start', body, options )
+                .toPromise()
+                .then(
+                  rsp => {
+                    if ( rsp.text() ) {
+                      return rsp.json();
+                    } else {
+                      return rsp;
+                    }
+                  }
+                );
+            }
+          );
       }
-    }
+    };
+
+    this.instances = {
+      getStepsByInstanceID : ( id : string ) => {
+        let headers = new Headers(
+          {
+            'Accept' : 'application/json'
+          }
+        );
+
+        let options = new RequestOptions( { headers : headers } );
+
+        return this.http.get( `http://localhost:9190/instances/${id}/steps`, options )
+          .toPromise()
+          .then(
+            rsp => {
+              if ( rsp.text() ) {
+                return rsp.json();
+              } else {
+                return rsp;
+              }
+            }
+          );
+      },
+      getStatusByInstanceID : ( id : string ) => {
+        let headers = new Headers(
+          {
+            'Accept' : 'application/json'
+          }
+        );
+
+        let options = new RequestOptions( { headers : headers } );
+
+        return this.http.get( `http://localhost:9190/instances/${id}/status`, options )
+          .toPromise()
+          .then(
+            rsp => {
+              if ( rsp.text() ) {
+                return rsp.json();
+              } else {
+                return rsp;
+              }
+            }
+          );
+      },
+      whenInstanceFinishByID : ( id : string ) => {
+        return new Promise(
+          ( resolve, reject ) => {
+            let TIMEOUT = 1000;
+            let _recur = () => {
+              setTimeout(
+                function () {
+                  this.instances.getStatusByInstanceID( id )
+                    .then(
+                      ( rsp : any ) => {
+                        if ( rsp.status === "500" ) {
+                          resolve( rsp );
+                        } else {
+                          _recur();
+                        }
+                      }
+                    )
+                    .catch( reject );
+                }.bind( this ), TIMEOUT
+              );
+            };
+
+            _recur();
+          }
+        );
+      }
+    };
+
+    // TODO
+    //    remove this mock later
+    // NOTE
+    //    1. start flogo engine and related services
+    //    2. uncomment this code to check the start instance API calls
+    // 
+    // this.flows.start(
+    //   'demo_process', {
+    //     "petId" : "20160222230266"
+    //   }
+    //   )
+    //   .then(
+    //     ( rsp : any )=> {
+    //       return this.instances.whenInstanceFinishByID( rsp.id );
+    //     }
+    //   )
+    //   .then(
+    //     ( rsp : any ) => {
+    //       return this.instances.getStepsByInstanceID( rsp.id );
+    //     }
+    //   )
+    //   .then(
+    //     ( rsp : any ) => {
+    //       console.log( rsp );
+    //     }
+    //   )
+    //   .catch(
+    //     ( err : any )=> {
+    //       console.error( err );
+    //     }
+    //   );
   }
 
 }

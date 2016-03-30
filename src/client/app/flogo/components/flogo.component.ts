@@ -6,13 +6,14 @@ import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.c
 import {FlogoTaskComponent} from "../../flogo.task/components/task.component";
 import {PostService} from '../../../common/services/post.service';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
+import { HTTP_PROVIDERS } from 'angular2/http';
 
 @Component({
   selector: 'flogo-app',
   moduleId: module.id,
   templateUrl: 'flogo.tpl.html',
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
-  providers: [PostService, RESTAPIService]
+  providers: [PostService, RESTAPIService, HTTP_PROVIDERS]
 })
 
 @RouteConfig([
