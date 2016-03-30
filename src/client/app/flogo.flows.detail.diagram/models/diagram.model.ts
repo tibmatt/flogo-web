@@ -298,11 +298,15 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return nodes;
   }
 
-  public findChildrenNodesByType( type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
+  public findChildrenNodesByType(
+    type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode
+  ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.children ) );
   }
 
-  public findParentsNodesByType( type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
+  public findParentsNodesByType(
+    type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode
+  ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
@@ -354,6 +358,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleTaskNodes( tasks : any ) {
     let diagram = this;
+    let timerHandle : any;
     // enter selection
     tasks.enter()
       .append( 'div' )
@@ -398,7 +403,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
             let evtType = '';
 
-            if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD || d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+            if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
+                 d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
               evtType = 'flogoAddTask';
 
               // TODO
@@ -426,6 +432,25 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           console.groupEnd();
         }
+      )
+      .on(
+        'mouseover', function ( d : IFlogoFlowDiagramNode ) {
+          let element : HTMLElement = this;
+
+          timerHandle = setTimeout(
+            () => {
+              d3.select( element )
+                .classed( 'flogo-flows-detail-diagram-node-menu-open', true );
+            }, 500
+          );
+        }
+      )
+      .on(
+        'mouseleave', function () {
+          clearTimeout( timerHandle );
+          d3.select( this )
+            .classed( 'flogo-flows-detail-diagram-node-menu-open', false );
+        }
       );
     // .style( 'opacity', 1e-6 )
     // .style( 'border-color', '#ff5500' )
@@ -435,7 +460,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     // update selection
     tasks.classed( 'updated', true )
-      .attr( 'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase() )
+      .attr(
+        'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase()
+      )
       .text(
         ( d : IFlogoFlowDiagramNode ) => {
           let task = this.tasks[ d.taskID ];
@@ -473,6 +500,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         }
       )
       .on( 'click', null )
+      .on( 'mouseover', null )
+      .on( 'mouseleave', null )
       // .transition( )
       // .duration( 350 )
       // .style( 'opacity', 1e-6 )
