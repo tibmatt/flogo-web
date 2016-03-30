@@ -1,20 +1,20 @@
 <div class="flogo-task-container">
 
   <div [hidden]="hasErrors">
+
       <div class="flogo-task-container__header"> <h3> {{data.name|| data.id}} </h3></div>
 
       <h3 class="flogo-task-container__fields-header" [hidden]="!data.attributes?.inputs?.length">Input Parameters</h3>
       <div #inputFields></div>
 
-      <h3 class="flogo-task-container__fields-header" [hidden]="!data.attributes?.outputs?.length">Output Parameters</h3>
+      <h3 class="flogo-task-container__fields-header" [hidden]="!data.attributes.outputs?.length">Output Parameters</h3>
       <div #outputFields></div>
 
-      <!--<div class="flogo-task-container__footer">-->
-        <!--
-        <button class="btn btn-primary" (click)="getModifiedStateTask()">Run</button>
+      <div class="flogo-task-container__footer">
+        <button class="btn btn-primary"> <span class="glyphicon glyphicon-play" aria-hidden=""></span>  Run from this tile</button>
         <button class="btn btn-default">Cancel</button>
-        -->
-      <!--</div>-->
+      </div>
+
   </div>
 
   <!--<h3 [hidden]="!hasErrors">Error parsing JSON</h3>-->
