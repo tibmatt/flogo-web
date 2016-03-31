@@ -327,7 +327,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._loadComponentInTaskUI(data.node.taskID);
+    this._loadComponentInTaskUI(FlogoTaskComponent, data.node.taskID);
 
     // NOTE
     //  only need this publish if the task has been changed
@@ -384,12 +384,12 @@ export class FlogoCanvasComponent {
     console.groupEnd();
   }
 
-  private _loadComponentInTaskUI(taskId:string) {
+  private _loadComponentInTaskUI(component:any, taskId:string) {
 
     if(this.tasks[taskId]) {
       this.disposeLoadedComponent();
 
-      this._dcl.loadIntoLocation(FlogoTaskComponent, this._elementRef, "taskUI")
+      this._dcl.loadIntoLocation(component, this._elementRef, "taskUI")
         .then((ref:any) => {
           this._loadedComponent = ref;
           ref.instance.setData(this.tasks[taskId]);
