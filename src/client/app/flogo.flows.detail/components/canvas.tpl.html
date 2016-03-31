@@ -4,27 +4,60 @@
         <flogo-canvas-flow-diagram [tasks]="tasks" [diagram]="diagram"></flogo-canvas-flow-diagram>
 
         <!-- the mock section below should be removed later-->
-        <section class="container-fluid" style="display:none">
-          <section class="row">
-            <header>
-              <h3>Mock Area in Canvas component</h3>
-            </header>
-          </section>
-
-          <section class="row">
-
-            <div class="col-xs-12">
-              <header>
-                <h4>Process.json</h4>
-              </header>
-            </div>
-
-            <div class="col-xs-12">
-              <pre><code [textContent]="_mockProcess | json"></code></pre>
-            </div>
-
-          </section>
+      <section class="container-fluid">
+        <section class="row">
+          <header>
+            <h3>Mock Area in Canvas component</h3>
+            <button type="button" class="btn btn-default" (click)="MOCK=!MOCK">Display</button>
+          </header>
         </section>
+
+        <section class="row" [hidden]="!MOCK">
+          <div class="col-xs-12">
+            <header><h4>Actions</h4></header>
+          </div>
+
+          <div class="col-xs-12">
+            <button type="button" class="btn btn-default" (click)="mockUploadProcess()"
+                    [disabled]="_mockUploadingProcess">Upload process
+            </button>
+            <button type="button" class="btn btn-default" (click)="mockStartProcess()"
+                    [disabled]="_mockStartingProcess" [hidden]="!_mockHasUploadedProcess">Start process
+            </button>
+            <button type="button" class="btn btn-default" (click)="mockGetSteps()"
+                    [disabled]="_mockGettingStepsProcess" [hidden]="!_mockHasUploadedProcess">Get steps
+            </button>
+          </div>
+        </section>
+
+        <section class="row" [hidden]="!MOCK || !_mockSteps">
+
+          <div class="col-xs-12">
+            <header>
+              <h4>Steps</h4>
+            </header>
+          </div>
+
+          <div class="col-xs-12">
+            <pre><code [textContent]="_mockSteps | json"></code></pre>
+          </div>
+
+        </section>
+
+        <section class="row" [hidden]="!MOCK">
+
+          <div class="col-xs-12">
+            <header>
+              <h4>Process.json</h4>
+            </header>
+          </div>
+
+          <div class="col-xs-12">
+            <pre><code [textContent]="_mockProcess | json"></code></pre>
+          </div>
+
+        </section>
+      </section>
     </div>
     <div class="canvas-right-container">
         <router-outlet></router-outlet>

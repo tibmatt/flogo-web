@@ -105,38 +105,32 @@ export class RESTAPIService {
       start : ( id : string, data : any ) => {
         // TODO
         //    start a new instance of a flow
-        return this.flows.upload( id )
+        let body = JSON.stringify(
+          {
+            "processUri" : `http://localhost:9090/processes/${id}`,
+            "data" : data
+          }
+        );
+
+        let headers = new Headers(
+          {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json'
+          }
+        );
+
+        let options = new RequestOptions( { headers : headers } );
+
+
+        return this.http.post( 'http://localhost:8080/process/start', body, options )
+          .toPromise()
           .then(
-            () => {
-
-              let body = JSON.stringify(
-                {
-                  "processUri" : "http://localhost:9090/processes/" + id,
-                  "data" : data
-                }
-              );
-
-              let headers = new Headers(
-                {
-                  'Content-Type' : 'application/json',
-                  'Accept' : 'application/json'
-                }
-              );
-
-              let options = new RequestOptions( { headers : headers } );
-
-
-              return this.http.post( 'http://localhost:8080/process/start', body, options )
-                .toPromise()
-                .then(
-                  rsp => {
-                    if ( rsp.text() ) {
-                      return rsp.json();
-                    } else {
-                      return rsp;
-                    }
-                  }
-                );
+            rsp => {
+              if ( rsp.text() ) {
+                return rsp.json();
+              } else {
+                return rsp;
+              }
             }
           );
       }
@@ -212,38 +206,6 @@ export class RESTAPIService {
         );
       }
     };
-
-    // TODO
-    //    remove this mock later
-    // NOTE
-    //    1. start flogo engine and related services
-    //    2. uncomment this code to check the start instance API calls
-    // 
-    // this.flows.start(
-    //   'demo_process', {
-    //     "petId" : "20160222230266"
-    //   }
-    //   )
-    //   .then(
-    //     ( rsp : any )=> {
-    //       return this.instances.whenInstanceFinishByID( rsp.id );
-    //     }
-    //   )
-    //   .then(
-    //     ( rsp : any ) => {
-    //       return this.instances.getStepsByInstanceID( rsp.id );
-    //     }
-    //   )
-    //   .then(
-    //     ( rsp : any ) => {
-    //       console.log( rsp );
-    //     }
-    //   )
-    //   .catch(
-    //     ( err : any )=> {
-    //       console.error( err );
-    //     }
-    //   );
   }
 
 }

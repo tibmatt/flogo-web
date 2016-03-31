@@ -53,6 +53,16 @@ export class FlogoCanvasComponent {
   _loadedComponent: any;
   _subscriptions : any[];
 
+  // TODO
+  //  Remove this mock
+  _mockHasUploadedProcess: boolean;
+  _mockUploadingProcess: boolean;
+  _mockStartingProcess: boolean;
+  _mockGettingStepsProcess: boolean;
+  _mockSteps: any;
+  _mockProcess: any;
+  _mockProcessInstanceID: string;
+
   private disposeLoadedComponent() {
     if(this._loadedComponent) {
       this._loadedComponent.dispose();
@@ -90,7 +100,6 @@ export class FlogoCanvasComponent {
   private tasks: IFlogoFlowDiagramTaskDictionary;
   private diagram: IFlogoFlowDiagram;
   private _flow: any;
-  private _mockProcess: any;
 
   constructor(
     private _postService: PostService,
@@ -100,6 +109,10 @@ export class FlogoCanvasComponent {
     private _dcl: DynamicComponentLoader,
     private _elementRef: ElementRef
   ) {
+    // TODO
+    //  Remove this mock
+    this._mockHasUploadedProcess = false ;
+
     this._restAPIService.flows.getFlowByID( this._routerParams.params[ 'id' ] )
       .then(
         ( flow : any )=> {
@@ -150,6 +163,74 @@ export class FlogoCanvasComponent {
           this._updateMockProcess();
         }
       );
+  }
+
+  // TODO
+  //  Remove this mock later
+  mockUploadProcess() {
+    this._mockUploadingProcess = true;
+
+    this._restAPIService.flows.upload( this._flow.id ).then(() => {
+      this._mockUploadingProcess = false;
+      this._mockHasUploadedProcess = true;
+    });
+  }
+
+  // TODO
+  //  Remove this mock later
+  mockStartProcess() {
+    this._mockStartingProcess = true;
+
+    this._restAPIService.flows.start(
+      'demo_process', {
+        "petId" : "20160222230266"
+      }
+      )
+      .then(
+        ( rsp : any )=> {
+          this._mockStartingProcess = false;
+          this._mockProcessInstanceID = rsp.id;
+        }
+      )
+      .then(
+        ( rsp : any ) => {
+          console.log( rsp );
+        }
+      )
+      .catch(
+        ( err : any )=> {
+          console.error( err );
+        }
+      );
+  }
+
+  // TODO
+  //  Remove this mock later
+  mockGetSteps() {
+    this._mockGettingStepsProcess = true;
+
+    if ( this._mockProcessInstanceID ) {
+      this._restAPIService.instances.whenInstanceFinishByID( this._mockProcessInstanceID )
+        .then(
+          ( rsp : any ) => {
+            return this._restAPIService.instances.getStepsByInstanceID( rsp.id );
+          }
+        )
+        .then(
+          ( rsp : any ) => {
+            this._mockGettingStepsProcess = false;
+            this._mockSteps = rsp;
+            console.log( rsp );
+          }
+        )
+        .catch(
+          ( err : any )=> {
+            console.error( err );
+          }
+        );
+    } else {
+      console.warn( 'No process has been started.' );
+    }
   }
 
   private _addTrigger( data: any, envelope: any ) {
