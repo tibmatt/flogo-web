@@ -16,7 +16,7 @@ export enum FLOGO_TASK_TYPE {
   TASK_LOOP
 }
 
-export enum FLOGO_PROCESS_TYPE { DEFAULT }
+export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
 
 export enum FLOGO_PROCESS_MODEL { DEFAULT }
 
@@ -34,8 +34,15 @@ export enum FLOGO_TASK_ATTRIBUTE_TYPE {
 
 export const FLOGO_ACTIVITIES = {
   'DEFAULT' : '',
-  'LOG' : 'tibco-log',
-  'REST' : 'tibco-rest'
+  // mock to log & rest for demo 1 TODO
+  'LOG' : 'log',
+  'REST' : 'rest'
+  // 'LOG' : 'tibco-log',
+  // 'REST' : 'tibco-rest'
+};
+
+export const FLOGO_PROCESS_MODELS = {
+  'DEFAULT' : 'simple'
 };
 
 /**

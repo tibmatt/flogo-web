@@ -16,6 +16,7 @@ import {
   FLOGO_TASK_TYPE,
   FLOGO_ACTIVITY_TYPE,
   FLOGO_TASK_ATTRIBUTE_TYPE,
+  FLOGO_PROCESS_MODELS, FLOGO_ACTIVITIES,
 } from '../../../common/constants';
 
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
@@ -35,10 +36,15 @@ const BASE_PROCESS = {
   id : '',
   name : '',
   description : '',
-  model : FLOGO_PROCESS_MODEL.DEFAULT,
-  type : FLOGO_PROCESS_TYPE.DEFAULT,
-  attributes : < IFlogoFlowDiagramTaskAttribute[ ] > [],
-  rootTask : < IFlogoFlowDiagramTask > null
+  process : {
+    model : (
+      <any>FLOGO_PROCESS_MODELS
+    )[ FLOGO_PROCESS_MODEL[ FLOGO_PROCESS_MODEL.DEFAULT ] ],
+    type : FLOGO_PROCESS_TYPE.DEFAULT,
+    name : '',
+    attributes : < IFlogoFlowDiagramTaskAttribute[ ] > [],
+    rootTask : < IFlogoFlowDiagramTask > null
+  }
 };
 
 export class FlogoFlowDiagramProcess {
@@ -105,7 +111,10 @@ export class FlogoFlowDiagramProcess {
     process.id = FlogoFlowDiagramProcess.genProcessID();
     process.name = 'Default process';
     process.description = 'This is a default process';
-    process.attributes = [
+
+    process.process.name = process.name;
+
+    process.process.attributes = [
       {
         "name" : "petInfo",
         "type" : "string",
@@ -116,8 +125,14 @@ export class FlogoFlowDiagramProcess {
     if ( !_.isEmpty( diagram ) && !_.isEmpty( tasks ) ) {
       let nodes = diagram.nodes;
       let rootNode = nodes[ diagram.root.is ];
-
-      process.rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
+      let rootTask = process.process.rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
+      rootTask.activityType = (
+        <any>FLOGO_ACTIVITIES
+      )[ FLOGO_ACTIVITY_TYPE[ rootTask.activityType ] ];
+      (
+        <any>rootTask
+      )[ 'ouputMappings' ] = _.cloneDeep( rootTask.outputMappings );
+      delete rootTask.outputMappings;
 
       let rootTaskChildren = < IFlogoFlowDiagramTask[ ] > [];
       let links = < IFlogoFlowDiagramTaskLink[ ] > [];
@@ -125,11 +140,11 @@ export class FlogoFlowDiagramProcess {
       traversalDiagram( diagram, tasks, rootTaskChildren, links );
 
       if ( !_.isEmpty( links ) ) {
-        process.rootTask.links = links;
+        process.process.rootTask.links = links;
       }
 
       if ( !_.isEmpty( rootTaskChildren ) ) {
-        process.rootTask.tasks = rootTaskChildren;
+        process.process.rootTask.tasks = rootTaskChildren;
       }
     }
 
@@ -154,7 +169,7 @@ function traversalDiagram(
 function _traversalChildren(
   node : IFlogoFlowDiagramNode, visitedNodes : string[ ], nodes : IFlogoFlowDiagramNodeDictionary,
   tasks : IFlogoFlowDiagramTaskDictionary,
-  tasksDest : IFlogoFlowDiagramTask[ ], linksDest : IFlogoFlowDiagramTaskLink[ ]
+  tasksDest : any[ ], linksDest : any[ ]
 ) {
 
   // haven't visited
@@ -173,21 +188,65 @@ function _traversalChildren(
           return;
         }
 
-        let task = tasks[ n.taskID ];
+        let task = <any>tasks[ n.taskID ];
 
         if ( task ) {
+          task = <any>_.cloneDeep( task ); // obtain an copy of the original task
+          let attrs = <any>[];
+
+          // convert attributes of tasks
+          task.activityType = (
+            <any>FLOGO_ACTIVITIES
+          )[ FLOGO_ACTIVITY_TYPE[ task.activityType ] ];
+
+          // convert attributes of tasks
+          task.attributes.inputs = _.map(
+            task.attributes.inputs, ( input : any ) => {
+              let i = <any>_.cloneDeep( input ); // due to Type check
+              i.type = FLOGO_TASK_ATTRIBUTE_TYPE[ input.type ].toLowerCase();
+              attrs.push( i );
+              return i;
+            }
+          );
+
+          // convert attributes of tasks
+          task.attributes.outputs = _.map(
+            task.attributes.outputs, ( output : any ) => {
+              let o = <any>_.cloneDeep( output ); // due to Type check
+              o.type = FLOGO_TASK_ATTRIBUTE_TYPE[ output.type ].toLowerCase();
+              attrs.push( o );
+              return o;
+            }
+          );
+
+          task.attributes = attrs;
+
+          if ( !_.isEmpty( task.outputMappings ) ) {
+            // convert attributes of tasks
+            // mapping outputMappings to ouputMappings
+            (
+              <any>task
+            )[ 'ouputMappings' ] = _.cloneDeep( task.outputMappings );
+            delete task.outputMappings;
+          }
+
+          // convert attributes of tasks
+          _.assign( task, { id : _convertTaskID( task.id ) } );
+
           tasksDest.push( task );
         }
 
         // TODO
         //   need to filter out or handle branch/link node
-        linksDest.push(
-          {
-            id : FlogoFlowDiagramTaskLink.genTaskLinkID(),
-            from : node.id,
-            to : nid
-          }
-        );
+        if ( node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE ) {
+          linksDest.push(
+            {
+              id : FlogoFlowDiagramTaskLink.genTaskLinkID(),
+              from : _convertTaskID( node.taskID ),
+              to : _convertTaskID( n.taskID )
+            }
+          );
+        }
 
         _traversalChildren( nodes[ nid ], visitedNodes, nodes, tasks, tasksDest, linksDest );
 
@@ -196,4 +255,27 @@ function _traversalChildren(
 
   }
 
+}
+
+/**
+ * Convert task ID to integer, which is the currently supported type in engine
+ * TODO
+ *  taskID should be string in the future, perhaps..
+ *
+ * @param taskID
+ * @returns {number}
+ * @private
+ */
+function _convertTaskID( taskID : string ) {
+  let id = '';
+
+  try {
+    id = atob( taskID );
+    id = id.split( '::' )[ 1 ]; // get the timestamp
+  } catch ( e ) {
+    console.warn( e );
+    id = taskID;
+  }
+
+  return parseInt( id );
 }

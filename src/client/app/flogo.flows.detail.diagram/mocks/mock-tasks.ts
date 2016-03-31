@@ -3,13 +3,13 @@ import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from 
 
 export var MOCK_TASKS_ARR = [
   {
-    "id" : "task 1",
+    "id" : "1",
     "type" : FLOGO_TASK_TYPE.TASK_ROOT,
     "activityType" : FLOGO_ACTIVITY_TYPE.DEFAULT,
     "name" : "Trigger"
   },
   {
-    "id" : "task 2",
+    "id" : "2",
     "type" : FLOGO_TASK_TYPE.TASK,
     "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
     "name" : "Log Start",
@@ -31,7 +31,7 @@ export var MOCK_TASKS_ARR = [
     }
   },
   {
-    "id" : "task 3",
+    "id" : "3",
     "type" : FLOGO_TASK_TYPE.TASK,
     "activityType" : FLOGO_ACTIVITY_TYPE.REST,
     "name" : "Pet Query",
@@ -81,7 +81,7 @@ export var MOCK_TASKS_ARR = [
     ]
   },
   {
-    "id" : "task 4",
+    "id" : "4",
     "type" : FLOGO_TASK_TYPE.TASK,
     "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
     "name" : "Log Results",
