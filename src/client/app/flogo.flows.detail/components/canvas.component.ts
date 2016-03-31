@@ -59,24 +59,23 @@ export class FlogoCanvasComponent {
     }
   }
 
+  private initSubscribe() {
+    this._subscriptions = [];
 
-  private initSubscribe(){
-    this._subscriptions = [
-      _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTask,       { callback : this._addTask.bind( this ) } ),
-      _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTrigger,    { callback : this._addTrigger.bind( this ) } ),
-      _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask,    { callback : this._selectTask.bind( this ) } ),
+    let subs = [
+      _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTask, { callback : this._addTask.bind( this ) } ),
+      _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTrigger, { callback : this._addTrigger.bind( this ) } ),
+      _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback : this._selectTask.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback : this._selectTrigger.bind( this ) } ),
-      _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.addTask,       { callback : this._addTaskGraphic.bind( this ) } ),
-      _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.addTrigger,    { callback : this._addTriggerGraphic.bind( this ) } ),
-      _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTask,    { callback : this._selectTaskGraphic.bind( this ) } ),
+      _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.addTask, { callback : this._addTaskGraphic.bind( this ) } ),
+      _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.addTrigger, { callback : this._addTriggerGraphic.bind( this ) } ),
+      _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTask, { callback : this._selectTaskGraphic.bind( this ) } ),
       _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerGraphic.bind( this ) } )
     ];
 
-    // TODO
-    //   1. merge these mocks with real implementation
-    //   2. unsubscribe on destroy
-    _.each( this._subscriptions, sub => {
-        this._postService.subscribe( sub );
+    _.each(
+      subs, sub => {
+        this._subscriptions.push( this._postService.subscribe( sub ) );
       }
     );
   }
@@ -92,7 +91,6 @@ export class FlogoCanvasComponent {
   private diagram: IFlogoFlowDiagram;
   private _flow: any;
   private _mockProcess: any;
-  private MOCK_TASKS_ARR_ORIGINAL: any[];
 
   constructor(
     private _postService: PostService,
@@ -102,9 +100,6 @@ export class FlogoCanvasComponent {
     private _dcl: DynamicComponentLoader,
     private _elementRef: ElementRef
   ) {
-    // TODO For mock purposes I need to have a reference to the original, because the elements are shifted
-    this.MOCK_TASKS_ARR_ORIGINAL = MOCK_TASKS_ARR.slice(0);
-
     this._restAPIService.flows.getFlowByID( this._routerParams.params[ 'id' ] )
       .then(
         ( flow : any )=> {
@@ -219,13 +214,22 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
-      data : {},
-      done : ( diagram : IFlogoFlowDiagram ) => {
-        _.assign( this.diagram, diagram );
-        this._updateFlow( this._flow );
-      }
-    } ) );
+    // NOTE
+    //  only need this publish if the trigger has been changed
+    this._postService.publish(
+      _.assign(
+        {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
+          data : {
+            node : data.node,
+            task : this.tasks[ data.node.taskID ]
+          },
+          done : ( diagram : IFlogoFlowDiagram ) => {
+            _.assign( this.diagram, diagram );
+            this._updateFlow( this._flow );
+          }
+        }
+      )
+    );
 
     console.groupEnd( );
   }
@@ -237,13 +241,22 @@ export class FlogoCanvasComponent {
 
     this._loadComponentInTaskUI(data.node.taskID);
 
-    this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-      data : {},
-      done : ( diagram : IFlogoFlowDiagram ) => {
-        _.assign( this.diagram, diagram );
-        this._updateFlow( this._flow );
-      }
-    } ) );
+    // NOTE
+    //  only need this publish if the task has been changed
+    this._postService.publish(
+      _.assign(
+        {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+          data : {
+            node : data.node,
+            task : this.tasks[ data.node.taskID ]
+          },
+          done : ( diagram : IFlogoFlowDiagram ) => {
+            _.assign( this.diagram, diagram );
+            this._updateFlow( this._flow );
+          }
+        }
+      )
+    );
 
     console.groupEnd( );
   }
@@ -284,17 +297,14 @@ export class FlogoCanvasComponent {
   }
 
   private _loadComponentInTaskUI(taskId:string) {
-    var task = this.MOCK_TASKS_ARR_ORIGINAL.find((task) => {
-      return task.id === taskId;
-    });
 
-    if(task) {
+    if(this.tasks[taskId]) {
       this.disposeLoadedComponent();
 
       this._dcl.loadIntoLocation(FlogoTaskComponent, this._elementRef, "taskUI")
         .then((ref:any) => {
           this._loadedComponent = ref;
-          ref.instance.setData(task);
+          ref.instance.setData(this.tasks[taskId]);
         });
     }
 
