@@ -74,7 +74,7 @@ export class RESTAPIService {
       upload : ( id : string ) => {
         // TODO
         //  upload current flow to process service server
-        return this.flows.getFlowConfigByIDDemo( id )
+        return this.flows.getFlowConfigByID( id )
           .then(
             ( flowConfig : any ) => {
 

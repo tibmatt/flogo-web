@@ -61,6 +61,7 @@ export class FlogoCanvasComponent {
   _mockGettingStepsProcess: boolean;
   _mockSteps: any;
   _mockProcess: any;
+  _mockProcessID: string;
   _mockProcessInstanceID: string;
 
   private disposeLoadedComponent() {
@@ -170,9 +171,12 @@ export class FlogoCanvasComponent {
   mockUploadProcess() {
     this._mockUploadingProcess = true;
 
-    this._restAPIService.flows.upload( this._flow.id ).then(() => {
+    this._restAPIService.flows.upload( this._flow.id ).then((rsp:any) => {
       this._mockUploadingProcess = false;
       this._mockHasUploadedProcess = true;
+      if (rsp) {
+        this._mockProcessID = rsp.id;
+      }
     });
   }
 
@@ -180,10 +184,11 @@ export class FlogoCanvasComponent {
   //  Remove this mock later
   mockStartProcess() {
     this._mockStartingProcess = true;
+    this._mockSteps = null;
 
     this._restAPIService.flows.start(
-      'demo_process', {
-        "petId" : "20160222230266"
+      this._mockProcessID, {
+        // "petId" : "20160222230266"
       }
       )
       .then(
@@ -199,6 +204,7 @@ export class FlogoCanvasComponent {
       )
       .catch(
         ( err : any )=> {
+          this._mockStartingProcess = false;
           console.error( err );
         }
       );
@@ -225,6 +231,7 @@ export class FlogoCanvasComponent {
         )
         .catch(
           ( err : any )=> {
+            this._mockGettingStepsProcess = false;
             console.error( err );
           }
         );

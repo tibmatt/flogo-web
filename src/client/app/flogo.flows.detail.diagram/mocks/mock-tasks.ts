@@ -53,7 +53,7 @@ export var MOCK_TASKS_ARR = [
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "petId",
           "title" : "Pet ID",
-          "value" : ""
+          "value" : "201603311111"
         }
       ],
       "outputs" : [
