@@ -84,6 +84,7 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node"].flogo-flows-detail-diagram-node-menu-open,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root"].flogo-flows-detail-diagram-node-menu-open {
   box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
+  z-index: 100;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-menu,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-menu,
