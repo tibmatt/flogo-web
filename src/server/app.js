@@ -23,7 +23,8 @@ app.use(function *(next){
   yield  next;
 });
 
-app.use(koaStatic("./public"));
+app.use(koaStatic("../public"));
 app.use(bodyparser());
 
 app.listen(port);
+
