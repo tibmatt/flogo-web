@@ -360,9 +360,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleTaskNodes( tasks : any ) {
     let diagram = this;
-    let timerHandle : any;
+    let timerHandle : any = {};
+
     // enter selection
-    tasks.enter()
+    let newNodes = tasks.enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
       .classed( 'flogo-flows-detail-diagram-node', true )
@@ -432,14 +433,17 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           console.groupEnd();
 
+          d3.select( this )
+            .classed( 'flogo-flows-detail-diagram-node-selected', true );
+
           console.groupEnd();
         }
       )
       .on(
-        'mouseover', function ( d : IFlogoFlowDiagramNode ) {
+        'mouseenter', function ( d : IFlogoFlowDiagramNode ) {
           let element : HTMLElement = this;
 
-          timerHandle = setTimeout(
+          timerHandle[ d.id ] = setTimeout(
             () => {
               d3.select( element )
                 .classed( 'flogo-flows-detail-diagram-node-menu-open', true );
@@ -448,10 +452,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         }
       )
       .on(
-        'mouseleave', function () {
-          clearTimeout( timerHandle );
+        'mouseleave', function ( d : IFlogoFlowDiagramNode ) {
+          clearTimeout( timerHandle[ d.id ] );
           d3.select( this )
-            .classed( 'flogo-flows-detail-diagram-node-menu-open', false );
+            .classed( 'flogo-flows-detail-diagram-node-menu-open', false )
+            .select( '.flogo-flows-detail-diagram-node-menu-selected' )
+            .classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
         }
       );
     // .style( 'opacity', 1e-6 )
@@ -460,38 +466,127 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     // .duration( 350 )
     // .style( 'opacity', 1 )
 
+    newNodes.each(
+      function ( d : IFlogoFlowDiagramNode ) {
+        let thisNode = d3.select( this );
+
+        // add text DOM
+        let newTextNode = thisNode.append( 'div' )
+          .attr( diagram.ng2StyleAttr, '' )
+          .classed( 'flogo-flows-detail-diagram-node-text', true )
+          .html(
+            () => {
+              return `<img ${diagram.ng2StyleAttr} src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
+                <div ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-text-title"></div>
+                <div ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-text-description"></div>`;
+            }
+          );
+
+        // add menu DOM
+        let newMenuNode = thisNode.append( 'div' )
+          .attr( diagram.ng2StyleAttr, '' )
+          .classed( 'flogo-flows-detail-diagram-node-menu', true )
+          .html(
+            () => {
+              return `<ul ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-box">
+                  <li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-plus"></i>Add branch</li>
+                  <li ${diagram.ng2StyleAttr}  class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-bolt"></i>Transform</li>
+                  <li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-trash-o"></i>Delete</li>
+                </ul>
+                <span ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-gear"></span>`;
+            }
+          )
+          .on(
+            'click', function () {
+              let event = <Event>d3.event;
+              event.stopPropagation();
+
+              d3.select( this )
+                .classed( 'flogo-flows-detail-diagram-node-menu-selected', true );
+            }
+          );
+
+        // add badges
+        // TODO
+        //    move to somewhere else
+        //    refine the badge adding part - should be in update area
+        let newBadgeArea = thisNode.append( 'div' )
+          .attr( diagram.ng2StyleAttr, '' )
+          .classed( 'flogo-flows-detail-diagram-node-badge', true )
+          .html(
+            () => {
+              return `<i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i><i ${diagram.ng2StyleAttr} class="fa fa-exclamation"></i>`;
+            }
+          );
+      }
+    );
+
+
     // update selection
-    tasks.classed( 'updated', true )
+    tasks.classed(
+      {
+        'updated' : true,
+        'flogo-flows-detail-diagram-node-selected' : false,
+        'flogo-flows-detail-diagram-node-menu-open' : false
+      }
+      )
       .attr(
         'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase()
-      )
-      .text(
-        ( d : IFlogoFlowDiagramNode ) => {
-          let task = this.tasks[ d.taskID ];
-          let label = (
-                        task && task.name
-                      ) || [
-                        d.id,
-                        ' [',
-                        d.parents,
-                        ' to ',
-                        d.children,
-                        '] '
-                      ].join( '' );
-
-          if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
-            label = 'ADD';
-          } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
-            label = 'Select trigger';
-          }
-
-          return label;
-        }
       );
     // .transition( )
     // .duration( 350 )
     // .delay( 350 )
     // .style( 'border-color', '#fff' );
+
+    //  update text
+    tasks.each(
+      function ( d : IFlogoFlowDiagramNode ) {
+        let thisNode = d3.select( this );
+
+        thisNode.select( '.flogo-flows-detail-diagram-node-text-title' )
+          .text(
+            ()=> {
+              let task = diagram.tasks[ d.taskID ];
+              let label = (
+                            task && task.name
+                          ) || d.id;
+
+              if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+                label = 'ADD';
+              } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+                label = 'Select trigger';
+              }
+
+              return label;
+            }
+          );
+
+        thisNode.select( '.flogo-flows-detail-diagram-node-text-description' )
+          .text(
+            () => {
+              let task = diagram.tasks[ d.taskID ];
+              let description = (
+                                  task && (
+                                    task.description || `Description of ${task.name}`
+                                  )
+                                ) || `[ ${d.parents} to ${d.children} ]`;
+
+
+              if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+                description = 'Click to add an activity';
+              } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+                description = 'Click to add a trigger';
+              }
+
+
+              return description;
+            }
+          );
+
+        thisNode.select( '.flogo-flows-detail-diagram-node-menu' )
+          .classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
+      }
+    );
 
     // exit selection
     tasks.exit()
