@@ -1,3 +1,5 @@
+import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
+
 export class FlogoTaskFieldBaseComponent{
   schema: any;
   value: any;
@@ -8,27 +10,28 @@ export class FlogoTaskFieldBaseComponent{
     this.fieldSubject.next('changing field');
   }
 
-  setConfiguration(fieldSchema:any, stateTask:any, parameterType:string, fieldSubject:any) {
+  setConfiguration(fieldSchema:any, fieldSubject:any) {
     this.schema = fieldSchema;
-    this.value = '';
     this.fieldSubject = fieldSubject;
-    this.parameterType = parameterType;
 
-    let parameters = (parameterType === 'input') ? (stateTask.inputs || []) : (stateTask.outputs || []);
+    switch(fieldSchema.type) {
+      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
+          this.value = JSON.stringify(fieldSchema.value, null, 2);
+          break;
 
-    /*
-    let stateField = parameters.find( (param:any) => {
-      return param.name === fieldSchema.name;
-    });
+      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
+        if(typeof fieldSchema.value === "string") {
+          this.value = (fieldSchema.value === 'true');
+        }else {
+          this.value = fieldSchema.value;
+        }
+        break;
 
-    if(stateField) {
-      if(fieldSchema.type === 'object') {
-        this.value = JSON.stringify(stateField.value, null, 2);
-      } else {
-        this.value = stateField.value;
-      }
+      default:
+        this.value = fieldSchema.value;
+        break;
     }
-    */
+
   }
 
   getParameterType() {
@@ -36,10 +39,6 @@ export class FlogoTaskFieldBaseComponent{
   }
 
   exportToJson() {
-    //if(this.schema.type === 'object') {
-    //  debugger;
-    //}
-
     return {
       [this.schema.name]: this.value
     }

@@ -56,54 +56,6 @@ export class FlogoTaskContainerComponent{
 
     this.addFieldSetToDOM(inputs, 'inputFields');
     this.addFieldSetToDOM(outputs, 'outputFields');
-
-
-    /*
-
-    this.fieldSubject.subscribe((value:string) => {
-      this.modifiedStateSubject.next(this.getModifiedStateTask());
-    });
-
-    var schemaAndStateSubject = Observable.combineLatest(this.inputSchemaSubject, this.inputStateSubject, (schema:string, state:string) => {
-      var jsonSchema:any, jsonState:any;
-
-      try {
-        jsonSchema = JSON.parse(schema);
-        jsonState = JSON.parse(state);
-        this.hasErrors = false;
-      }
-      catch(exc) {
-        this.hasErrors = true;
-        jsonSchema = null;
-        jsonState = null;
-      }
-
-      return {
-          schema: jsonSchema || {},
-          state:  jsonState  || {}
-      }
-
-    });
-
-    schemaAndStateSubject.subscribe( (task) => {
-      this.task = task;
-
-      this.inputFields.forEach((input:any) => {
-        input.dispose();
-      });
-
-      this.inputFields = [];
-      debugger;
-
-      var inputs = this.task.schema.inputs || [];
-      var outputs = this.task.schema.outputs || [];
-
-      this.addFieldSetToDOM(inputs, 'inputFields');
-      this.addFieldSetToDOM(outputs, 'outputFields');
-    });
-    */
-
-
   }
 
   addFieldSetToDOM(fieldSet:any, location:string) {
@@ -116,8 +68,6 @@ export class FlogoTaskContainerComponent{
       if(component) {
         this.loadIntoLocation(component, location)
           .then(ref => {
-            let parameterType = (location === 'inputFields') ? 'input' : 'output';
-            //ref.instance.setConfiguration(fieldSchema, this.task.state, parameterType, this.fieldSubject);
             ref.instance.setConfiguration(fieldSchema, this.fieldSubject);
             this.inputFields.push(ref);
           });
@@ -170,7 +120,7 @@ export class FlogoTaskContainerComponent{
     return {
       name:              schema.name,
       title:             schema.title             || schema.name,
-      type:              schema.type,
+      type:              schema.type              || FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
       description:       schema.description       || '',
       required:          schema.required          || false,
       validation:        schema.validation        || '',

@@ -18,11 +18,13 @@ export var MOCK_TASKS_ARR = [
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
+          "title": "Message",
           "value" : "Find Pet Process Started!"
         },
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
+          "title": "Process info",
           "value" : "true"
         }
       ]
@@ -38,16 +40,19 @@ export var MOCK_TASKS_ARR = [
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "uri",
+          "title" : "URI",
           "value" : "http://petstore.swagger.io/v2/pet/{petId}"
         },
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "method",
+          "title" : "Method",
           "value" : "GET"
         },
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "petId",
+          "title" : "Pet ID",
           "value" : ""
         }
       ],
@@ -55,6 +60,7 @@ export var MOCK_TASKS_ARR = [
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "result",
+          "title" : "Result",
           "value" : ""
         }
       ]
@@ -84,11 +90,13 @@ export var MOCK_TASKS_ARR = [
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "message",
+          "title" : "Message",
           "value" : "REST results"
         },
         {
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
           "name" : "processInfo",
+          "title" : "Process Info",
           "value" : "true"
         }
       ]

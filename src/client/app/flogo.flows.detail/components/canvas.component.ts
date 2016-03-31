@@ -92,6 +92,7 @@ export class FlogoCanvasComponent {
   private diagram: IFlogoFlowDiagram;
   private _flow: any;
   private _mockProcess: any;
+  private MOCK_TASKS_ARR_ORIGINAL: any[];
 
   constructor(
     private _postService: PostService,
@@ -101,6 +102,9 @@ export class FlogoCanvasComponent {
     private _dcl: DynamicComponentLoader,
     private _elementRef: ElementRef
   ) {
+    // TODO For mock purposes I need to have a reference to the original, because the elements are shifted
+    this.MOCK_TASKS_ARR_ORIGINAL = MOCK_TASKS_ARR.slice(0);
+
     this._restAPIService.flows.getFlowByID( this._routerParams.params[ 'id' ] )
       .then(
         ( flow : any )=> {
@@ -228,9 +232,10 @@ export class FlogoCanvasComponent {
 
   private _selectTask( data: any, envelope: any ) {
     console.group( 'Select Task' );
-
     console.log( data );
     console.log( envelope );
+
+    this._loadComponentInTaskUI(data.node.taskID);
 
     this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
       data : {},
@@ -243,7 +248,7 @@ export class FlogoCanvasComponent {
     console.groupEnd( );
   }
 
-  private _addTaskGraphic(data:any, envelope: any) {
+  private _addTaskGraphic() {
     this.disposeLoadedComponent();
     console.group("FlogoNavbarComponent -> add task");
     console.log("receive: ", arguments);
@@ -252,7 +257,7 @@ export class FlogoCanvasComponent {
   }
 
 
-  private _selectTaskGraphic(data:any, envelope: any) {
+  private _selectTaskGraphic() {
     this.disposeLoadedComponent();
     console.group("FlogoNavbarComponenkt -> select task");
     console.log("receive: ", arguments);
@@ -261,7 +266,7 @@ export class FlogoCanvasComponent {
   }
 
 
-  private _addTriggerGraphic(data:any, envelope: any) {
+  private _addTriggerGraphic() {
     this.disposeLoadedComponent();
     console.group("FlogoNavbarComponent -> add trigger");
     console.log("receive: ", arguments);
@@ -270,13 +275,32 @@ export class FlogoCanvasComponent {
   }
 
 
-  private _selectTriggerGraphic(data:any, envelope: any) {
+  private _selectTriggerGraphic() {
     this.disposeLoadedComponent();
     console.group("FlogoNavbarComponent -> select trigger");
     console.log("receive: ", arguments);
     this._router.navigate(['FlogoFlowsDetailTriggerDetail', {id:1}]);
     console.groupEnd();
   }
+
+  private _loadComponentInTaskUI(taskId:string) {
+    var task = this.MOCK_TASKS_ARR_ORIGINAL.find((task) => {
+      return task.id === taskId;
+    });
+
+    if(task) {
+      this.disposeLoadedComponent();
+
+      this._dcl.loadIntoLocation(FlogoTaskComponent, this._elementRef, "taskUI")
+        .then((ref:any) => {
+          this._loadedComponent = ref;
+          ref.instance.setData(task);
+        });
+    }
+
+  }
+
+
 
 
 
