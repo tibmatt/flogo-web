@@ -327,7 +327,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._loadComponentInTaskUI(FlogoTaskComponent, data.node.taskID);
+    this._loadTaskInDetailsPanel(FlogoTaskComponent, data.node.taskID);
 
     // NOTE
     //  only need this publish if the task has been changed
@@ -369,9 +369,11 @@ export class FlogoCanvasComponent {
 
   private _addTriggerGraphic() {
     this.disposeLoadedComponent();
+
+    this._loadComponentInDetailsPanel(FlogoFlowsDetailTriggers);
+
     console.group("FlogoNavbarComponent -> add trigger");
     console.log("receive: ", arguments);
-    this._router.navigate(['FlogoFlowsDetailTriggerAdd']);
     console.groupEnd();
   }
 
@@ -384,9 +386,9 @@ export class FlogoCanvasComponent {
     console.groupEnd();
   }
 
-  private _loadComponentInTaskUI(component:any, taskId:string) {
+  private _loadTaskInDetailsPanel(component:any, taskId:string) {
 
-    if(this.tasks[taskId]) {
+    if(this.tasks[taskId])  {
       this.disposeLoadedComponent();
 
       this._dcl.loadIntoLocation(component, this._elementRef, "taskUI")
@@ -398,8 +400,14 @@ export class FlogoCanvasComponent {
 
   }
 
+  private _loadComponentInDetailsPanel(component:any) {
+      this.disposeLoadedComponent();
 
+      this._dcl.loadIntoLocation(component, this._elementRef, "taskUI")
+        .then((ref:any) => {
+          this._loadedComponent = ref;
+        });
 
-
+  }
 
 }
