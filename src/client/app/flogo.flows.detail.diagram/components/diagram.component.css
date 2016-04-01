@@ -126,6 +126,7 @@
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] {
   opacity: 1;
+  cursor: pointer;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-menu,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-menu,
