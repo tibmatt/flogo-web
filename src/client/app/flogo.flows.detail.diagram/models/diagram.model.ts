@@ -455,9 +455,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         'mouseleave', function ( d : IFlogoFlowDiagramNode ) {
           clearTimeout( timerHandle[ d.id ] );
           d3.select( this )
-            .classed( 'flogo-flows-detail-diagram-node-menu-open', false )
-            .select( '.flogo-flows-detail-diagram-node-menu-selected' )
-            .classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
+            .classed(
+              {
+                'flogo-flows-detail-diagram-node-menu-open' : false,
+                'flogo-flows-detail-diagram-node-menu-selected' : false
+              }
+            );
         }
       );
     // .style( 'opacity', 1e-6 )
@@ -501,8 +504,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               let event = <Event>d3.event;
               event.stopPropagation();
 
-              d3.select( this )
-                .classed( 'flogo-flows-detail-diagram-node-menu-selected', true );
+              thisNode.classed( 'flogo-flows-detail-diagram-node-menu-selected', true );
             }
           );
 
@@ -583,8 +585,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             }
           );
 
-        thisNode.select( '.flogo-flows-detail-diagram-node-menu' )
-          .classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
+        thisNode.classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
       }
     );
 
