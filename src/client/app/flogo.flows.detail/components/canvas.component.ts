@@ -63,6 +63,13 @@ export class FlogoCanvasComponent {
   _mockProcess: any;
   _mockProcessID: string;
   _mockProcessInstanceID: string;
+  _mockDataToRestart : string = JSON.stringify(
+    {
+      'petId' : '201602222302661',
+      'process' : 'false',
+      'message' : ''
+    }
+  );
 
   private disposeLoadedComponent() {
     if(this._loadedComponent) {
@@ -225,7 +232,7 @@ export class FlogoCanvasComponent {
         .then(
           ( rsp : any ) => {
             this._mockGettingStepsProcess = false;
-            this._mockSteps = rsp;
+            this._mockSteps = rsp.steps;
             console.log( rsp );
           }
         )
@@ -240,7 +247,35 @@ export class FlogoCanvasComponent {
     }
   }
 
-  private _addTrigger( data: any, envelope: any ) {
+  trackBySteps( idx : number, s : {id : string, [key : string] : string} ) {
+    return s.id;
+  }
+
+  // TODO
+  //  Remove this mock later
+  mockRestartFrom( step : number ) {
+    this._mockStartingProcess = true;
+    this._mockSteps = null;
+
+    this._restAPIService.flows.restartFrom(
+      this._mockProcessInstanceID, JSON.parse( this._mockDataToRestart ), step
+      )
+      .then(
+        ( rsp : any ) => {
+          this._mockProcessInstanceID = rsp.id;
+          this._mockStartingProcess = false;
+          console.log( rsp );
+        }
+      )
+      .catch(
+        ( err : any )=> {
+          this._mockStartingProcess = false;
+          console.error( err );
+        }
+      );
+  }
+
+  private _addTrigger( data : any, envelope : any ) {
     console.group( 'Add Trigger' );
 
     console.log( data );

@@ -133,6 +133,51 @@ export class RESTAPIService {
               }
             }
           );
+      },
+      restartFrom : ( id : string, data : any, step : number ) => {
+        // TODO
+
+        // get the state of the last step
+        let snapshotID = step - 1;
+        if ( snapshotID < 1 ) {
+          return Promise.reject( `Invalid step ${step} to start from.` );
+        }
+
+        return this.instances.getSnapshot( id, snapshotID )
+          .then(
+            ( state : any ) => {
+
+              // then restart from that state with data
+
+              let body = JSON.stringify(
+                {
+                  'initialState' : state,
+                  'data' : data
+                }
+              );
+
+              let headers = new Headers(
+                {
+                  'Content-Type' : 'application/json',
+                  'Accept' : 'application/json'
+                }
+              );
+
+              let options = new RequestOptions( { headers : headers } );
+
+              return this.http.post( 'http://localhost:8080/process/restart', body, options )
+                .toPromise()
+                .then(
+                  rsp => {
+                    if ( rsp.text() ) {
+                      return rsp.json();
+                    } else {
+                      return rsp;
+                    }
+                  }
+                );
+            }
+          );
       }
     };
 
@@ -168,6 +213,29 @@ export class RESTAPIService {
         let options = new RequestOptions( { headers : headers } );
 
         return this.http.get( `http://localhost:9190/instances/${id}/status`, options )
+          .toPromise()
+          .then(
+            rsp => {
+              if ( rsp.text() ) {
+                return rsp.json();
+              } else {
+                return rsp;
+              }
+            }
+          );
+      },
+      getSnapshot : ( instanceID : string, snapshotID : number ) => {
+        // TODO
+
+        let headers = new Headers(
+          {
+            'Accept' : 'application/json'
+          }
+        );
+
+        let options = new RequestOptions( { headers : headers } );
+
+        return this.http.get( `http://localhost:9190/instances/${instanceID}/snapshot/${snapshotID}`, options )
           .toPromise()
           .then(
             rsp => {
