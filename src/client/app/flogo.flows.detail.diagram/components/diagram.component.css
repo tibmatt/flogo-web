@@ -99,18 +99,11 @@
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"],
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] {
-  height: 88px;
-  width: 88px;
+  transform: scale(0.63);
   background-color: #fff;
-  margin: 31px 31px 44px ;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
   overflow: hidden;
   opacity: 0;
-  /*.flogo-flows-detail-diagram-node-add{
-      color: #b6d9ed;
-      font-size: 56px;
-      line-height: 86px;
-    }*/
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] img,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] img,
@@ -127,8 +120,8 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-text:before,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-text:before {
   content: '+';
-  font-size: 56px;
-  line-height: 88px;
+  font-size: 88px;
+  line-height: 138px;
   color: #b6d9ed;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] {
