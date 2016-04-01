@@ -3,9 +3,9 @@
  */
 
 export const PUB_EVENTS = {
-  addTask : {
+  selectTask : {
     channel : 'flogo-flows-detail-tasks',
-    topic : 'add-task'
+    topic : 'select-task'
   }
 };
 
@@ -13,8 +13,8 @@ export const PUB_EVENTS = {
  * Events subscribed by this module
  */
 export const SUB_EVENTS = {
-  addTask : {
+  selectTask : {
     channel : 'flogo-flows-detail-tasks',
-    topic : 'public-add-task'
+    topic : 'public-select-task'
   }
 };

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, DynamicComponentLoader } from 'angular2/core';
+import { Component } from 'angular2/core';
 import { RouteConfig, RouterOutlet, RouteParams, Router } from 'angular2/router';
 import {PostService} from '../../../common/services/post.service';
 import { FlogoCanvasFlowComponent } from '../../flogo.flows.detail.graphic/components/flow.component';
@@ -8,11 +8,8 @@ import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/compon
 import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
-import {FlogoTaskComponent} from '../../flogo.task/components/task.component';
 
 import {
-  FlogoFlowDiagramTask,
-  IFlogoFlowDiagramTask,
   IFlogoFlowDiagramTaskDictionary,
   IFlogoFlowDiagram
 } from '../../../common/models';
@@ -21,19 +18,11 @@ import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB
 
 import { SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS, PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS } from '../../flogo.flows.detail.triggers/messages';
 
-import { SUB_EVENTS as FLOGO_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks/messages';
+import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks/messages';
 
-import {
-  DIAGRAM,
-  TASKS,
-  TEST_DIAGRAM,
-  TEST_TASKS
-} from '../../../common/mocks';
+import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
 
-import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
-import {ElementRef} from "angular2/core";
-
 
 @Component( {
   selector: 'flogo-canvas',
@@ -52,7 +41,6 @@ import {ElementRef} from "angular2/core";
 ])
 
 export class FlogoCanvasComponent {
-  _loadedComponent: any;
   _subscriptions : any[];
 
   // TODO
@@ -73,12 +61,6 @@ export class FlogoCanvasComponent {
     }
   );
 
-  private disposeLoadedComponent() {
-    if(this._loadedComponent) {
-      this._loadedComponent.dispose();
-    }
-  }
-
   private initSubscribe() {
     this._subscriptions = [];
 
@@ -88,8 +70,8 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback : this._selectTaskFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback : this._addTriggerFromTriggers.bind( this ) } ),
-      _.assign( {}, FLOGO_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } )
-      // _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTask, { callback : this._selectTaskGraphic.bind( this ) } ),
+      _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
+      _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } )
       // _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerGraphic.bind( this ) } )
     ];
 
@@ -115,9 +97,7 @@ export class FlogoCanvasComponent {
     private _postService: PostService,
     private _restAPIService: RESTAPIService,
     private _routerParams: RouteParams,
-    private _router: Router,
-    private _dcl: DynamicComponentLoader,
-    private _elementRef: ElementRef
+    private _router: Router
   ) {
     // TODO
     //  Remove this mock
@@ -347,7 +327,7 @@ export class FlogoCanvasComponent {
 
           this._postService.publish(
             _.assign(
-              {}, FLOGO_TASKS_PUB_EVENTS.addTask, {
+              {}, FLOGO_ADD_TASKS_PUB_EVENTS.addTask, {
                 data : data
               }
             )
@@ -423,66 +403,70 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this._loadTaskInDetailsPanel(FlogoTaskComponent, data.node.taskID);
 
-    // NOTE
-    //  only need this publish if the task has been changed
-    this._postService.publish(
-      _.assign(
-        {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-          data : {
-            node : data.node,
-            task : this.tasks[ data.node.taskID ]
-          },
-          done : ( diagram : IFlogoFlowDiagram ) => {
-            _.assign( this.diagram, diagram );
-            this._updateFlow( this._flow );
-          }
-        }
+    this._router.navigate(
+      [
+        'FlogoFlowsDetailTaskDetail',
+        { id : data.node.taskID }
+      ]
       )
-    );
+      .then(
+        () => {
+          console.group( 'after navigation' );
+
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } )
+              }
+            )
+          );
+
+          console.groupEnd();
+        }
+      );
 
     console.groupEnd( );
   }
-  
-  private _selectTaskGraphic() {
-    this.disposeLoadedComponent();
-    console.group("FlogoNavbarComponenkt -> select task");
-    console.log("receive: ", arguments);
-    this._router.navigate(['FlogoFlowsDetailTaskDetail', {id:1}]);
-    console.groupEnd();
-  }
 
-  private _selectTriggerGraphic() {
-    this.disposeLoadedComponent();
-    console.group("FlogoNavbarComponent -> select trigger");
-    console.log("receive: ", arguments);
-    this._router.navigate(['FlogoFlowsDetailTriggerDetail', {id:1}]);
-    console.groupEnd();
-  }
+  private _selectTaskFromTasks( data: any, envelope: any) {
+    console.group( 'Select task message from task' );
 
-  private _loadTaskInDetailsPanel(component:any, taskId:string) {
+    console.log( data );
+    console.log( envelope );
 
-    if(this.tasks[taskId])  {
-      this.disposeLoadedComponent();
+    this.tasks[ data.task.id ] = data.task;
 
-      this._dcl.loadIntoLocation(component, this._elementRef, "taskUI")
-        .then((ref:any) => {
-          this._loadedComponent = ref;
-          ref.instance.setData(this.tasks[taskId]);
-        });
-    }
+    this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+      .then(
+        ()=> {
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+                data : {
+                  node : data.node,
+                  task : data.task
+                },
+                done : ( diagram : IFlogoFlowDiagram ) => {
+                  _.assign( this.diagram, diagram );
+                  this._updateFlow( this._flow );
+                }
+              }
+            )
+          );
+        }
+      );
 
-  }
-
-  private _loadComponentInDetailsPanel(component:any) {
-      this.disposeLoadedComponent();
-
-      this._dcl.loadIntoLocation(component, this._elementRef, "taskUI")
-        .then((ref:any) => {
-          this._loadedComponent = ref;
-        });
+    console.groupEnd( );
 
   }
+
+  // private _selectTriggerGraphic() {
+  //   this.disposeLoadedComponent();
+  //   console.group("FlogoNavbarComponent -> select trigger");
+  //   console.log("receive: ", arguments);
+  //   this._router.navigate(['FlogoFlowsDetailTriggerDetail', {id:1}]);
+  //   console.groupEnd();
+  // }
 
 }

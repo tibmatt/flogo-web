@@ -1,23 +1,33 @@
-import {Component} from 'angular2/core';
-import {PostService} from '../../../common/services/post.service';
-import {TRIGGERS as TRIGGERS_MOCK} from '../mocks/triggers';
-import {PUB_EVENTS, SUB_EVENTS} from '../messages';
+import { Component } from 'angular2/core';
+import { PostService } from '../../../common/services/post.service';
+import { TRIGGERS as TRIGGERS_MOCK } from '../mocks/triggers';
+import { PUB_EVENTS, SUB_EVENTS } from '../messages';
+import { RouteParams } from 'angular2/router';
 
-@Component({
-  selector: 'flogo-flows-detail-triggers',
-  moduleId: module.id,
-  templateUrl: 'triggers.tpl.html',
-  styleUrls: ['triggers.component.css']
-})
-export class FlogoFlowsDetailTriggers{
-  private triggers: any;
-  private _subscriptions: any;
-  private _addTriggerMsg: any;
-  private _selectTriggerMsg: any;
-  constructor(private _postService: PostService){
+@Component(
+  {
+    selector : 'flogo-flows-detail-triggers',
+    moduleId : module.id,
+    templateUrl : 'triggers.tpl.html',
+    styleUrls : [ 'triggers.component.css' ]
+  }
+)
+export class FlogoFlowsDetailTriggers {
+  private triggers : any;
+  private _subscriptions : any;
+  private _addTriggerMsg : any;
+  private _selectTriggerMsg : any;
+
+  constructor( private _postService : PostService, private _routeParams : RouteParams ) {
+    console.group( 'Constructing FlogoFlowsDetailTasks' );
+
+    console.log( this._routeParams );
+
     this.initSubscribe();
 
     this.triggers = TRIGGERS_MOCK || [];
+
+    console.groupEnd();
   }
 
   private initSubscribe() {
@@ -36,9 +46,11 @@ export class FlogoFlowsDetailTriggers{
   }
 
   ngOnDestroy() {
-    this._subscriptions.forEach((sub:any) => {
-      this._postService.unsubscribe(sub);
-    });
+    this._subscriptions.forEach(
+      ( sub : any ) => {
+        this._postService.unsubscribe( sub );
+      }
+    );
   }
 
   private _getAddTriggerMsg( data : any, envelope : any ) {
