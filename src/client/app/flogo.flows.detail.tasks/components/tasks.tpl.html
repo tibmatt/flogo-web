@@ -1,2 +1,8 @@
 <div>
+  <h3>Select a task</h3>
+  <ul>
+    <li *ngFor="#task of tasks" (click)="sendAddTaskMsg(task)">
+      <a class="btn btn-default">{{task.name}}</a>
+    </li>
+  </ul>
 </div>

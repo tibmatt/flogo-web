@@ -1,8 +1,7 @@
 import {Component} from 'angular2/core';
 import {PostService} from '../../../common/services/post.service';
 import {TRIGGERS as TRIGGERS_MOCK} from '../mocks/triggers';
-import {PUB_EVENTS} from '../messages';
-
+import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-flows-detail-triggers',
@@ -12,23 +11,66 @@ import {PUB_EVENTS} from '../messages';
 })
 export class FlogoFlowsDetailTriggers{
   private triggers: any;
-  subscriptions:any;
+  private _subscriptions: any;
+  private _addTriggerMsg: any;
+  private _selectTriggerMsg: any;
   constructor(private _postService: PostService){
-    this.subscriptions = [];
+    this.initSubscribe();
 
     this.triggers = TRIGGERS_MOCK || [];
   }
 
+  private initSubscribe() {
+    this._subscriptions = [];
+
+    let subs = [
+      _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._getAddTriggerMsg.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._getSelectTriggerMsg.bind( this ) } )
+    ];
+
+    _.each(
+      subs, sub => {
+        this._subscriptions.push( this._postService.subscribe( sub ) );
+      }
+    );
+  }
+
   ngOnDestroy() {
-    this.subscriptions.forEach((sub:any) => {
+    this._subscriptions.forEach((sub:any) => {
       this._postService.unsubscribe(sub);
     });
   }
 
-  selectTrigger(trigger:any) {
-    var publishParams = _.assign({}, PUB_EVENTS.selectTrigger, {data:{trigger}});
-    this._postService.publish(publishParams);
+  private _getAddTriggerMsg( data : any, envelope : any ) {
+    console.group( 'Add trigger message in triggers' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._addTriggerMsg = data;
+
+    console.groupEnd();
   }
 
+  private _getSelectTriggerMsg( data : any, envelope : any ) {
+    console.group( 'Select trigger message in triggers' );
+
+    console.log( data );
+    console.log( envelope );
+
+    this._selectTriggerMsg = data;
+
+    console.groupEnd();
+  }
+
+  sendAddTriggerMsg( trigger : any ) {
+    this._postService.publish(
+      _.assign(
+        {}, PUB_EVENTS.addTrigger, {
+          data : _.assign( {}, this._addTriggerMsg, { trigger : trigger } )
+        }
+      )
+    );
+  }
 
 }
