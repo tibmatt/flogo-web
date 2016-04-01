@@ -3,6 +3,7 @@
  */
 
 export enum FLOGO_FLOW_DIAGRAM_NODE_TYPE {
+  NODE_HOLDER,
   NODE_ADD,
   NODE_ROOT,
   NODE_ROOT_NEW,
