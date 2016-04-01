@@ -1,7 +1,8 @@
 import { Injectable } from 'angular2/core';
 import { FlogoFlowDiagramProcess, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from '../models';
-import { PROCESS } from '../mocks';
+import { PROCESS, MOCK_TASKS } from '../mocks';
 import { Http, Headers, RequestOptions, Response } from 'angular2/http';
+import {TASKS} from "../../app/flogo.flows.detail.diagram/mocks/mock-tasks";
 
 @Injectable()
 export class RESTAPIService {
@@ -274,6 +275,69 @@ export class RESTAPIService {
         );
       }
     };
+
+    this._initActivities();
+
   }
+
+
+  _initActivities() {
+
+    let activities = MOCK_TASKS.map((activity:any, index:number) => Object.assign({isInstalled: index < 2}, activity));
+    let getCopy = (arr:any[]) => arr.map((activity:any) => _.omit(activity, ['isInstalled']));
+
+    this.activities = {
+
+      getAll() {
+        return Promise.resolve(getCopy(activities));
+      },
+
+      getInstalled() {
+        let installed = activities.filter((activity:any) => activity.isInstalled);
+        return Promise.resolve(getCopy(installed));
+      },
+
+      getAvailableToInstall() {
+        let available = activities.filter((activity:any) => !activity.isInstalled);
+        return Promise.resolve(getCopy(available));
+      },
+
+      install(activitiesToInstall:{name:string, version:string}[]) {
+
+        let installMap = activitiesToInstall.map((a:any) => {
+          return {[a.name]: a.version}
+        });
+
+        activities
+          .filter((activity:any) => {
+            let toInstall = installMap[activity.name];
+            return toInstall && toInstall == activity.version;
+          })
+          .forEach((activity:any) => activity.isInstalled = true);
+
+      },
+
+      uninstall() {
+        console.warn('Not implemented yet');
+      }
+
+    };
+
+    this.activities.get = () => {
+
+      if (!status) {
+        return this.activities.getAll();
+      } else if (status == 'installed') {
+        return this.activities.getInstalled();
+      } else if (status == 'none') {
+        return this.activities.getAvailableToInstall();
+      }
+
+      throw new Error(`Unknown option "${status}"`);
+
+    }
+
+  }
+
 
 }

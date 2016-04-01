@@ -1,7 +1,11 @@
 <div>
   <h3>Select a task</h3>
+  <div>
+    <input type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks" >
+  </div>
+
   <ul>
-    <li *ngFor="#task of tasks" (click)="sendAddTaskMsg(task)">
+    <li *ngFor="#task of filteredTasks" (click)="sendAddTaskMsg(task)">
       <a class="btn btn-default">{{task.name}}</a>
     </li>
   </ul>

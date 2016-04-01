@@ -1,5 +1,6 @@
 import { Component } from 'angular2/core';
 import { PostService } from '../../../common/services/post.service';
+import {RESTAPIService} from "../../../common/services/rest-api.service";
 import { MOCK_TASKS } from '../mocks/tasks';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { RouteParams } from 'angular2/router';
@@ -14,18 +15,27 @@ import { RouteParams } from 'angular2/router';
 )
 
 export class FlogoFlowsDetailTasks {
-  private tasks : any;
+  public filteredTasks : any[] = [];
+  private _filterQuery : string = null;
+
+  private tasks : any[] = [];
+
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( private _postService : PostService, private _routeParams : RouteParams ) {
+  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restApiService : RESTAPIService ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     console.log( this._routeParams );
 
     this.initSubscribe();
 
-    this.tasks = MOCK_TASKS || [];
+    this._restApiService.activities
+      .getInstalled()
+      .then((tasks:any[]) => {
+        this.tasks = tasks;
+        this._filterActivities();
+      });
 
     console.groupEnd();
   }
@@ -52,6 +62,16 @@ export class FlogoFlowsDetailTasks {
     );
   }
 
+  public get filterQuery() {
+    return this._filterQuery;
+  }
+
+  public set filterQuery(query:string){
+    this._filterQuery = query;
+    this._filterActivities();
+  }
+
+
   private _getAddTaskMsg( data : any, envelope : any ) {
     console.group( 'Add task message in tasks' );
 
@@ -62,6 +82,16 @@ export class FlogoFlowsDetailTasks {
 
     console.groupEnd();
   }
+
+  private _filterActivities() {
+    if (this.filterQuery) {
+      let filterQuery = this.filterQuery.toLowerCase();
+      this.filteredTasks = _.filter(this.tasks, task => task.name.toLowerCase().indexOf(filterQuery) >= 0);
+    } else {
+      this.filteredTasks = this.tasks;
+    }
+  }
+
 
   sendAddTaskMsg( task : any ) {
 
