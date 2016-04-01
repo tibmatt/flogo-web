@@ -87,7 +87,7 @@ gulp.task("watch", ()=>{
   //TODO. when file changes, just run the necessary tasks
   gulp.watch(['**', '**/*'], {cwd: CONFIG.client}, ['client:dev']);
 
-  gulp.watch(['**', '**/*'], {cwd: CONFIG.server}, ['start:dev']);
+  gulp.watch(['**', '**/*'], {cwd: CONFIG.server}, ['server:dev']);
 
 });
 
@@ -99,7 +99,7 @@ gulp.task("clean:client:dev", ()=>{
 });
 
 gulp.task("clean:server:dev", ()=>{
-  del.sync(["server/**/*", "!server/node_modules/**"], {cwd: CONFIG.dist});
+  del.sync(["**/*", "!node_modules/**", "!data/**", '!log.txt'], {cwd: CONFIG.serverDist});
 });
 
 
@@ -162,17 +162,15 @@ gulp.task("install:serverDist:dev", ()=>{
 
 gulp.task("start:dev", ()=>{
 
-  // if server already start, first kill server, then restart server
-  if (server) server.kill();
-  server = cp.spawn('npm', ['run', 'start-server'], {cwd: CONFIG.serverDist, stdio: 'inherit'})
-  server.on('close', function (code) {
-    if (code === 8) {
-      gulp.log('Error detected, waiting for changes...');
-    }
-  });
-
-  // if db didn't start, then start db.
-  if(!db){
+  // TODO don't need to restart db every change
+  if(!server && !db){
+    server = cp.spawn('npm', ['run', 'start-server'], {cwd: CONFIG.serverDist, stdio: 'inherit'});
+    db = cp.spawn("npm", ["run", "start-db"], {cwd: CONFIG.serverDist, stdio: 'inherit'});
+  }else{
+    server.kill();
+    db.kill();
+    cp.execSync("killall node");
+    server = cp.spawn('npm', ['run', 'start-server'], {cwd: CONFIG.serverDist, stdio: 'inherit'});
     db = cp.spawn("npm", ["run", "start-db"], {cwd: CONFIG.serverDist, stdio: 'inherit'});
   }
 

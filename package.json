@@ -22,8 +22,6 @@
     "del":"^2.2.0",
     "gulp-typescript": "^2.12.1",
     "mustache": "^2.2.1 ",
-    "nodemon": "^1.9.1",
-    "gulp-watch": "^4.3.5",
     "pouchdb-server": ""
   }
 }
