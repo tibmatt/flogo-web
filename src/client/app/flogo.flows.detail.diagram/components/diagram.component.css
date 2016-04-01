@@ -52,6 +52,10 @@
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected:before {
   background: #79b8dc;
 }
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"],
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"] {
+  opacity: 1;
+}
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-run:before {
   background-image: linear-gradient(to right, #def2fd, #def2fd);
 }
