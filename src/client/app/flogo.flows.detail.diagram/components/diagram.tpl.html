@@ -12,6 +12,7 @@
     <section class="row">
         <div class="flogo-flows-detail-diagram">
             <div class="flogo-flows-detail-diagram-row updated">
+                <!-- default -->
                 <div class="flogo-flows-detail-diagram-node updated" data-flogo-node-type="node_root">
                     <div class="flogo-flows-detail-diagram-node-text">
                         <img src="/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg" alt=""/>
@@ -27,8 +28,9 @@
                         <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
                     </div>
                 </div>
+                <!-- selected -->
                 <div class="flogo-flows-detail-diagram-node updated flogo-flows-detail-diagram-node-selected" data-flogo-node-type="node">
-                    <div class="flogo-flows-detail-diagram-node-text flogo-flows-detail-diagram-node-selected">
+                    <div class="flogo-flows-detail-diagram-node-text">
                         <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
                         <div class="flogo-flows-detail-diagram-node-text-title"> Log Start</div>
                         <div class="flogo-flows-detail-diagram-node-text-description">Description of task</div>
@@ -42,8 +44,9 @@
                         <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
                     </div>
                 </div>
+                <!-- run -->
                 <div class="flogo-flows-detail-diagram-node updated flogo-flows-detail-diagram-node-run" data-flogo-node-type="node">
-                    <div class="flogo-flows-detail-diagram-node-text flogo-flows-detail-diagram-node-run">
+                    <div class="flogo-flows-detail-diagram-node-text">
                         <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
                         <div class="flogo-flows-detail-diagram-node-text-title">New Tasks</div>
                         <div class="flogo-flows-detail-diagram-node-text-description">Description of task</div>
@@ -57,13 +60,14 @@
                         <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
                     </div>
                 </div>
-                <div class="flogo-flows-detail-diagram-node updated" data-flogo-node-type="node">
+                <!-- menu-open menu-selected -->
+                <div class="flogo-flows-detail-diagram-node updated flogo-flows-detail-diagram-node-menu-open flogo-flows-detail-diagram-node-menu-selected" data-flogo-node-type="node">
                     <div class="flogo-flows-detail-diagram-node-text">
                         <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
                         <div class="flogo-flows-detail-diagram-node-text-title">Pet Query</div>
                         <div class="flogo-flows-detail-diagram-node-text-description">Description of task</div>
                     </div>
-                    <div class="flogo-flows-detail-diagram-node-menu  flogo-flows-detail-diagram-node-menu-open flogo-flows-detail-diagram-node-menu-selected">
+                    <div class="flogo-flows-detail-diagram-node-menu ">
                         <ul class="flogo-flows-detail-diagram-node-menu-box">
                             <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-plus"></i>Add branch</li>
                             <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-bolt"></i>Transform</li>
@@ -72,7 +76,8 @@
                         <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
                     </div>
                 </div>
-                <div class="flogo-flows-detail-diagram-node updated " data-flogo-node-type="node">
+                <!-- add -->
+                <div class="flogo-flows-detail-diagram-node updated " data-flogo-node-type="node_add">
                     <div class="flogo-flows-detail-diagram-node-text ">
                         <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
                         <div class="flogo-flows-detail-diagram-node-text-title"> Log Results</div>
@@ -87,13 +92,14 @@
                         <span class="flogo-flows-detail-diagram-node-menu-gear"></span>
                     </div>
                 </div>
-                <div class="flogo-flows-detail-diagram-node updated " data-flogo-node-type="node">
+                <!-- menu-open -->
+                <div class="flogo-flows-detail-diagram-node updated flogo-flows-detail-diagram-node-menu-open" data-flogo-node-type="node">
                     <div class="flogo-flows-detail-diagram-node-text ">
                         <img src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
                         <div class="flogo-flows-detail-diagram-node-text-title"> Log Results</div>
                         <div class="flogo-flows-detail-diagram-node-text-description">Description of task</div>
                     </div>
-                    <div class="flogo-flows-detail-diagram-node-menu flogo-flows-detail-diagram-node-menu-open">
+                    <div class="flogo-flows-detail-diagram-node-menu">
                         <ul class="flogo-flows-detail-diagram-node-menu-box">
                             <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-plus"></i>Add branch</li>
                             <li class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-bolt"></i>Transform</li>
@@ -111,25 +117,25 @@
 
     <!-- the mock section below should be removed later-->
     <section class="container-fluid" style="display:none">
-      <section class="row">
-        <header>
-          <h3>Mock Area</h3>
-        </header>
-      </section>
+        <section class="row">
+            <header>
+                <h3>Mock Area</h3>
+            </header>
+        </section>
 
-      <section class="row">
+        <section class="row">
 
-        <div class="col-xs-12">
-          <header>
-            <h4>Defined Enumerations (Objects are generated by TypeScript)</h4>
-          </header>
-        </div>
+            <div class="col-xs-12">
+                <header>
+                    <h4>Defined Enumerations (Objects are generated by TypeScript)</h4>
+                </header>
+            </div>
 
-        <div class="col-xs-12">
-          <pre><code [textContent]="getEnumerations() | json"></code></pre>
-        </div>
+            <div class="col-xs-12">
+                <pre><code [textContent]="getEnumerations() | json"></code></pre>
+            </div>
 
-      </section>
+        </section>
     </section>
 
 </section>

@@ -13,19 +13,18 @@
   font-style: normal;
 }
 .flogo-flows-detail-diagram {
-  border: 1px solid #7777ff;
-  border-radius: 4px;
-  width: 100%;
-  margin: auto;
+  background-color: #eeeded;
   padding: 0 20px;
+  width: 100%;
+  transition: background-color 500ms linear;
+  &:hover{
+    background-color: rgba(182, 217, 237, 0.2);
+  }
 }
 
 .flogo-flows-detail-diagram-row {
-  border: 1px solid #000;
   border-radius: 4px;
-  //background-color: #CDEE90;
-  width: 100%;
-  margin: auto;
+  //width: 100%;
   margin: 20px 0;
 }
 
@@ -44,16 +43,52 @@
   color: #666666;
 
   display: inline-block;
-  margin: 5px;
+  margin: 20px 5px;
   text-align: center;
 
   transition: all 500ms linear;
-  &.flogo-flows-detail-diagram-node-selected:before{
-    background: #79b8dc;
-    //border: solid 1px #70abcc;
+  &.flogo-flows-detail-diagram-node-selected{
+    transform: scale(1.1);
+    z-index: 10;
+    .flogo-flows-detail-diagram-node-text{
+      background: #79b8dc;
+      color: #fff;
+      border: solid 1px #70abcc;
+    }
+    &:before{
+      background: #79b8dc;
+      //border: solid 1px #70abcc;
+    }
   }
-  &.flogo-flows-detail-diagram-node-run:before{
-    background: #def2fd;
+  &.flogo-flows-detail-diagram-node-run{
+    &:before{
+      //background: #def2fd;
+      background-image: linear-gradient(to right, #def2fd, #def2fd);
+    }
+    .flogo-flows-detail-diagram-node-text {
+      background-image: linear-gradient(to right, #d0e7f4, #def2fd);
+      box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+    }
+
+  }
+  &.flogo-flows-detail-diagram-node-menu-open{
+    &[data-flogo-node-type="node"],&[data-flogo-node-type="node_root"]{
+      box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
+      z-index: 100;
+    }
+    .flogo-flows-detail-diagram-node-menu {
+      width: 170px;
+    }
+    .flogo-flows-detail-diagram-node-menu-gear{
+      //display: block;
+    }
+  }
+  &.flogo-flows-detail-diagram-node-menu-selected{
+    .flogo-flows-detail-diagram-node-menu{
+      left: 133px;
+      background-color: #79b8dc;
+      border: 1px solid #79b8dc;
+    }
   }
   &:before{
     position: absolute;
@@ -67,7 +102,7 @@
     background: #fff;
     box-shadow: 1px -2px 1px 0 rgba(0, 0, 0, 0.1);
     transform: rotate(65deg) skewX(36deg);
-
+    transition: all 500ms linear;
   }
   &[data-flogo-node-type="node_link"] {
     background-color: #F0AD4E;
@@ -81,21 +116,37 @@
     background-color: #206188;
   }
   &[data-flogo-node-type="node_add"] {
-    background-color: #CDEE90;
-    color: #222;
+    height: 88px;
+    width: 88px;
+    background-color: #fff;
+    margin: 31px 31px 44px ;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    overflow: hidden;
     opacity: 0;
+    img, .flogo-flows-detail-diagram-node-text-title, .flogo-flows-detail-diagram-node-text-description{
+      display: none;
+    }
+    &:hover{
+      box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.3);
+    }
+    .flogo-flows-detail-diagram-node-text:before{
+      content: '+';
+      font-size: 56px;
+      line-height: 88px;
+      color: #b6d9ed;
+    }
+    /*.flogo-flows-detail-diagram-node-add{
+      color: #b6d9ed;
+      font-size: 56px;
+      line-height: 86px;
+    }*/
   }
   &[data-flogo-node-type="node_root_new"] {
     background-color: #CDEE90;
     color: #222;
     cursor: pointer;
   }
-  &[data-flogo-node-type="node"],&[data-flogo-node-type="node_root"]{
-    &.flogo-flows-detail-diagram-node-menu-open{
-      box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
-      z-index: 100;
-    }
-  }
+
 
   &[data-flogo-node-type="node_add"],
   &[data-flogo-node-type="node_root_new"]
@@ -114,22 +165,15 @@
     box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.3);
     border: solid 0.5px #f4f4f4;
     border-radius: 10px;
-    background-image: linear-gradient(to right, #f4f4f4, #ffffff);
+    //background-image: linear-gradient(to right, #f4f4f4, #ffffff);
+    background: #fff;
     width: 100%;
     height: 100%;
     padding: 0 5px;
     transition: all 500ms linear;
-    .flogo-flows-detail-diagram-node-selected& {
-      background: #79b8dc;
-      color: #fff;
-      border: solid 1px #70abcc;
-    }
+
     img{
       margin:18px 0;
-    }
-    &.flogo-flows-detail-diagram-node-run{
-      background-image: linear-gradient(to right, #d0e7f4, #def2fd);
-      box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
     }
   }
   .flogo-flows-detail-diagram-node-text-title{
@@ -151,18 +195,11 @@
     z-index: 1;
     width: 130px;
     height: 100%;
+    overflow: hidden;
     border-radius: 10px;
     background-color: rgba(179, 214, 233, 0.9);
     box-shadow: 0 2.5px 7px 0 rgba(0, 0, 0, 0.3);
     transition: all 500ms linear;
-    .flogo-flows-detail-diagram-node-menu-open& {
-      width: 170px;
-    }
-    &.flogo-flows-detail-diagram-node-menu-selected {
-      left: 133px;
-      background-color: #79b8dc;
-      border: 1px solid #79b8dc;
-    }
   }
   .flogo-flows-detail-diagram-node-menu-box{
     float: left;
@@ -191,7 +228,7 @@
     width: 40px;
     height: 100%;
     background: url("/assets/svg/flogo.flows.detail.diagram.gear.icon.svg") center 11px no-repeat;
-
+    //display: none;
   }
 }
 
@@ -202,6 +239,7 @@
   i {
     margin-right: 10px;
   }
+
 }
 .flogo-flows-detail-diagram-node-badge{
   position: absolute;
