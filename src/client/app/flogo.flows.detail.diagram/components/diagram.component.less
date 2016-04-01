@@ -115,7 +115,8 @@
   &[data-flogo-node-type="node_root"] {
     background-color: #206188;
   }
-  &[data-flogo-node-type="node_add"] {
+  &[data-flogo-node-type="node_add"],
+  &[data-flogo-node-type="node_root_new"] {
     height: 88px;
     width: 88px;
     background-color: #fff;
@@ -141,12 +142,10 @@
       line-height: 86px;
     }*/
   }
-  &[data-flogo-node-type="node_root_new"] {
-    background-color: #CDEE90;
-    color: #222;
-    cursor: pointer;
-  }
 
+  &[data-flogo-node-type="node_root_new"]{
+    opacity: 1;
+  }
 
   &[data-flogo-node-type="node_add"],
   &[data-flogo-node-type="node_root_new"]

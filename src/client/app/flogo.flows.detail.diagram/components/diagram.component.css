@@ -97,7 +97,8 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root"] {
   background-color: #206188;
 }
-.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] {
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"],
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] {
   height: 88px;
   width: 88px;
   background-color: #fff;
@@ -112,23 +113,26 @@
     }*/
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] img,
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] img,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-text-title,
-.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-text-description {
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-text-title,
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-text-description,
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-text-description {
   display: none;
 }
-.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"]:hover {
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"]:hover,
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"]:hover {
   box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.3);
 }
-.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-text:before {
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-text:before,
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-text:before {
   content: '+';
   font-size: 56px;
   line-height: 88px;
   color: #b6d9ed;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] {
-  background-color: #CDEE90;
-  color: #222;
-  cursor: pointer;
+  opacity: 1;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-menu,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-menu,
