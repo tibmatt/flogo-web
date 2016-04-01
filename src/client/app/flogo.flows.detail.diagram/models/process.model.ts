@@ -106,6 +106,10 @@ export class FlogoFlowDiagramProcess {
   }
 
   static toProcess( diagram : IFlogoFlowDiagram, tasks : IFlogoFlowDiagramTaskDictionary ) : any {
+    // ensure the original diagram & tasks won't be changed
+    diagram = _.cloneDeep( diagram );
+    tasks = _.cloneDeep( tasks );
+
     let process : any = _.cloneDeep( BASE_PROCESS );
 
     process.id = FlogoFlowDiagramProcess.genProcessID();
@@ -131,8 +135,10 @@ export class FlogoFlowDiagramProcess {
       )[ FLOGO_ACTIVITY_TYPE[ rootTask.activityType ] ];
       (
         <any>rootTask
-      )[ 'ouputMappings' ] = _.cloneDeep( rootTask.outputMappings );
+      )[ 'ouputMappings' ] = rootTask.outputMappings;
       delete rootTask.outputMappings;
+
+      _.assign( rootTask, { id : _convertTaskID( rootTask.id ) } ); // convert task ID to integer
 
       let rootTaskChildren = < IFlogoFlowDiagramTask[ ] > [];
       let links = < IFlogoFlowDiagramTaskLink[ ] > [];
@@ -152,6 +158,8 @@ export class FlogoFlowDiagramProcess {
   }
 }
 
+// helper function of to process
+// Note that the input diagram/node/tasks... are all subject to change.
 function traversalDiagram(
   diagram : IFlogoFlowDiagram, tasks : IFlogoFlowDiagramTaskDictionary, tasksDest : IFlogoFlowDiagramTask[ ],
   linksDest : IFlogoFlowDiagramTaskLink[ ]
@@ -166,6 +174,8 @@ function traversalDiagram(
 
 }
 
+// helper function of to process
+// Note that the input diagram/node/tasks... are all subject to change.
 function _traversalChildren(
   node : IFlogoFlowDiagramNode, visitedNodes : string[ ], nodes : IFlogoFlowDiagramNodeDictionary,
   tasks : IFlogoFlowDiagramTaskDictionary,
@@ -191,7 +201,6 @@ function _traversalChildren(
         let task = <any>tasks[ n.taskID ];
 
         if ( task ) {
-          task = <any>_.cloneDeep( task ); // obtain an copy of the original task
           let attrs = <any>[];
 
           // convert attributes of tasks
@@ -226,7 +235,7 @@ function _traversalChildren(
             // mapping outputMappings to ouputMappings
             (
               <any>task
-            )[ 'ouputMappings' ] = _.cloneDeep( task.outputMappings );
+            )[ 'ouputMappings' ] = task.outputMappings;
             delete task.outputMappings;
           }
 
@@ -271,7 +280,13 @@ function _convertTaskID( taskID : string ) {
 
   try {
     id = atob( taskID );
-    id = id.split( '::' )[ 1 ]; // get the timestamp
+
+    // get the timestamp
+    let parsedID = id.split( '::' );
+
+    if ( parsedID.length >= 2 ) {
+      id = parsedID[ 1 ];
+    }
   } catch ( e ) {
     console.warn( e );
     id = taskID;
