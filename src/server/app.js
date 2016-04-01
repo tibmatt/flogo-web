@@ -1,13 +1,16 @@
 import koa from 'koa';
 import koaStatic from 'koa-static';
-import router from 'koa-router';
+var router = require('koa-router')();
 import bodyparser from 'koa-bodyparser';
 import compress from 'koa-compress';
-import appConfig from './config/app-config';
+import {config} from './config/app-config';
+import {activities} from './api/activities';
 
 
 let app = koa();
-let port = process.env.PORT || 3010;
+let port = config.app.port;
+
+activities(app, router);
 
 // logger
 app.use(function *(next){
@@ -21,7 +24,8 @@ app.use(function *(next){
 app.use(function *(next){
   var path = this.path.endsWith('/')? this.path.substring(0, this.path.length - 1): this.path;
 
-  if(!/\/[^\/]+\.[^.\/]+$/i.test(path)&&!path.toLowerCase().startsWith('/api/')){
+  // not include restful api
+  if(!/\/[^\/]+\.[^.\/]+$/i.test(path)&&path.toLowerCase().search('/api/')===-1){
     this.path='/';
   }
   yield  next;
@@ -39,7 +43,7 @@ app.use(compress({
 app.use(koaStatic("../public"));
 app.use(bodyparser());
 
+app.use(router.routes());
+
 app.listen(port);
-
-
 
