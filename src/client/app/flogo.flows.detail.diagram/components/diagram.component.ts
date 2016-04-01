@@ -4,6 +4,7 @@ import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } 
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import {PUB_EVENTS as SUB_EVENTS_TRIGGERS_LIST} from '../../flogo.flows.detail.triggers/messages';
 
 @Component(
   {
@@ -45,7 +46,8 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._addTriggerDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._selectTriggerDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } )
+      _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS_TRIGGERS_LIST.selectTrigger, { callback : this._onSelectedTriggerList.bind( this ) } )
     ];
 
     _.each(
@@ -264,6 +266,14 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
 
     console.groupEnd();
+  }
+
+  private _onSelectedTriggerList(data:any) {
+    // Get the root reference
+    data.node = this._diagram.nodes[this._diagram.root.is];
+    // TODO in node I'm missing col,row, originEvent parameters
+
+    this._postService.publish( _.assign( {}, PUB_EVENTS.addTrigger, { data : data } ) );
   }
 
   /**

@@ -1,11 +1,9 @@
 export const TRIGGERS =  [
   {
-    "name": "http-trigger",
-    "title": "http Trigger"
+    "name": "HTTP Trigger"
   },
   {
-    "name": "mgtt-trigger",
-    "title": "mgtt Trigger"
+    "name": "MGTT Trigger"
   }
 ];
 

@@ -252,7 +252,7 @@ export class FlogoCanvasComponent {
       type: FLOGO_TASK_TYPE.TASK_ROOT
     } ) );
 
-    newRootTask.name = 'HTTP Trigger';
+    newRootTask.name = data.trigger&&data.trigger.name ||  'HTTP Trigger';
 
     this.tasks[ newRootTask.id ] = newRootTask;
 

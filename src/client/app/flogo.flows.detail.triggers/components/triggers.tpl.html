@@ -1,6 +1,6 @@
 <div class="flogo-flows-detail-triggers">
   <h3 class="flogo-flows-detail-triggers__list__header">Select a trigger</h3>
   <ul class="flogo-flows-detail-triggers__list">
-      <li *ngFor="#trigger of triggers" class="flogo-flows-detail-triggers__list__item" >{{trigger.title}}</li>
+      <li *ngFor="#trigger of triggers" class="flogo-flows-detail-triggers__list__item" (click)="selectTrigger(trigger)" >{{trigger.name}}</li>
   </ul>
 </div>
