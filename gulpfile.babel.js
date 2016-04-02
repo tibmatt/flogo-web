@@ -34,7 +34,8 @@ CONFIG.clientLibs = [
   'angular2/bundles/router.js',
   'angular2/bundles/http.js',
   'postal/lib/postal.js',
-  'pouchdb/dist/pouchdb.js'
+  'pouchdb/dist/pouchdb.js',
+  "ng2-bs3-modal/bundles/ng2-bs3-modal.min.js"
 ];
 
 // load gulp plugins

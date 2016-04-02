@@ -1,14 +1,17 @@
 import { Component } from 'angular2/core';
 import { PostService } from '../../../common/services/post.service';
-import {RESTAPIService} from "../../../common/services/rest-api.service";
+import { RESTAPIService } from "../../../common/services/rest-api.service";
 import { MOCK_TASKS } from '../mocks/tasks';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { RouteParams } from 'angular2/router';
+
+import {InstallComponent} from '../../flogo.flows.detail.tasks.install/components/install.component';
 
 @Component(
   {
     selector : 'flogo-flows-detail-tasks',
     moduleId : module.id,
+    directives: [InstallComponent],
     templateUrl : 'tasks.tpl.html',
     styleUrls : [ 'tasks.component.css' ]
   }
@@ -23,35 +26,15 @@ export class FlogoFlowsDetailTasks {
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restApiService : RESTAPIService ) {
+  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restApiService : RESTAPIService) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     console.log( this._routeParams );
 
     this.initSubscribe();
-
-    this._restApiService.activities
-      .getInstalled()
-      .then((tasks:any[]) => {
-        this.tasks = tasks;
-        this._filterActivities();
-      });
+    this._loadActivities();
 
     console.groupEnd();
-  }
-
-  private initSubscribe() {
-    this._subscriptions = [];
-
-    let subs = [
-      _.assign( {}, SUB_EVENTS.addTask, { callback : this._getAddTaskMsg.bind( this ) } )
-    ];
-
-    _.each(
-      subs, sub => {
-        this._subscriptions.push( this._postService.subscribe( sub ) );
-      }
-    );
   }
 
   ngOnDestroy() {
@@ -69,6 +52,42 @@ export class FlogoFlowsDetailTasks {
   public set filterQuery(query:string){
     this._filterQuery = query;
     this._filterActivities();
+  }
+
+  public sendAddTaskMsg( task : any ) {
+
+    this._postService.publish(
+      _.assign(
+        {}, PUB_EVENTS.addTask, {
+          data : _.assign( {}, this._addTaskMsg, { task : task } )
+        }
+      )
+    );
+  }
+
+  private initSubscribe() {
+    this._subscriptions = [];
+
+    let subs = [
+      _.assign( {}, SUB_EVENTS.addTask, { callback : this._getAddTaskMsg.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.installActivity, { callback : this._loadActivities.bind( this ) } ),
+    ];
+
+    _.each(
+      subs, sub => {
+        this._subscriptions.push( this._postService.subscribe( sub ) );
+      }
+    );
+  }
+
+  private _loadActivities() {
+    console.log('Loading activities')
+    this._restApiService.activities
+      .getInstalled()
+      .then((tasks:any[]) => {
+        this.tasks = tasks;
+        this._filterActivities();
+      });
   }
 
 
@@ -92,19 +111,4 @@ export class FlogoFlowsDetailTasks {
     }
   }
 
-
-  sendAddTaskMsg( task : any ) {
-
-    // TODO
-    //  Remove this mock later
-    _.pull( MOCK_TASKS, task );
-
-    this._postService.publish(
-      _.assign(
-        {}, PUB_EVENTS.addTask, {
-          data : _.assign( {}, this._addTaskMsg, { task : task } )
-        }
-      )
-    );
-  }
 }

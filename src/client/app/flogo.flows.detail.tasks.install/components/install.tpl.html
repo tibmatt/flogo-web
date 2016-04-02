@@ -1,0 +1,37 @@
+<div>
+  <button type="button" class="btn btn-default" (click)="modal.open()">Install new tiles</button>
+
+  <modal #modal>
+    <modal-header [show-close]="true">
+      <div class="row">
+        <div class="col-md-8">
+          <h4 class="modal-title">Download Tiles</h4>
+        </div>
+        <div class="col-md-4">
+          search
+        </div>
+      </div>
+    </modal-header>
+    <modal-body>
+      <div class="row">
+        <div class="col-md-4">
+          CATEGORY
+          <ul>
+            <li>Requests</li>
+            <li>Optimizations</li>
+            <li>Connect to Devices</li>
+            <li>Framework Adaptors</li>
+            <li>Web Adaptors</li>
+          </ul>
+        </div>
+        <div class="col-md-8">
+          <ul>
+            <li *ngFor="#activity of activities">
+              <button class="btn btn-default" [disabled]="activity.isInstalled" (click)="install(activity)">{{activity.name}}</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </modal-body>
+  </modal>
+</div>

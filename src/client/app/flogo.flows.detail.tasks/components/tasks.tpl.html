@@ -3,7 +3,7 @@
   <div>
     <input type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks" >
   </div>
-
+  <flogo-flows-detail-task-install></flogo-flows-detail-task-install>
   <ul>
     <li *ngFor="#task of filteredTasks" (click)="sendAddTaskMsg(task)">
       <a class="btn btn-default">{{task.name}}</a>
