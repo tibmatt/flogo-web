@@ -65,3 +65,50 @@ button:hover {
 button[hidden] {
   display: none;
 }
+
+/* TODO: Only for demo, need to find a way to add custom class to modal's parent */
+.modal-content {
+  padding: 39px 39px 60px;
+}
+
+.flogo-flows-detail-tasks-install-modal .category-list__title {
+  font-size: 15px;
+  color: #0081cb;
+}
+
+.flogo-flows-detail-tasks-install-modal__content {
+  margin-top: -15px;
+}
+
+.flogo-flows-detail-tasks-install-modal .category-list__category {
+  margin-top: 4px;
+}
+
+.flogo-flows-detail-tasks-install-modal .activities-list {
+  margin-top: 0;
+}
+
+.flogo-flows-detail-tasks-install-modal .activities-list__activity {
+  border-bottom: solid 1px #d8d8d8;
+  margin-top: 0;
+  padding: 19px 26px 17px;
+}
+
+.flogo-flows-detail-tasks-install-modal .activities-list__activity:hover {
+  background-color: #d8d8d8;
+  cursor: pointer;
+}
+
+.flogo-flows-detail-tasks-install-modal .activities-list__activity.installed:hover {
+  cursor: not-allowed;
+}
+
+.flogo-flows-detail-tasks-install-modal .activities-list__activity .install-status-icon {
+  color: #79b8dc;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+.flogo-flows-detail-tasks-install-modal .activities-list__activity.installed .install-status-icon {
+  color: #d8d8d8;
+}
