@@ -1,12 +1,12 @@
 <div>
-  <h3>Select a task</h3>
-  <div>
-    <input type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks" >
+  <h3 class="title">Select a task</h3>
+  <div class="filter-box">
+    <input class="filter-box__input" type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks" >
   </div>
   <flogo-flows-detail-task-install></flogo-flows-detail-task-install>
-  <ul>
-    <li *ngFor="#task of filteredTasks" (click)="sendAddTaskMsg(task)">
-      <a class="btn btn-default">{{task.name}}</a>
+  <ul class="task-list list-unstyled">
+    <li class="task-list__task" *ngFor="#task of filteredTasks" (click)="sendAddTaskMsg(task)">
+      <i class="fa fa-gears"></i> {{task.name}}
     </li>
   </ul>
 </div>
