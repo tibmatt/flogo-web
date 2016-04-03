@@ -6,6 +6,8 @@ import {FlogoTaskFieldBooleanComponent} from '../../flogo.task.field/components/
 import {FlogoTaskFieldObjectComponent} from '../../flogo.task.field/components/field-object.component';
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
+import {PostService} from '../../../common/services/post.service';
+import {PUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-task-container',
@@ -18,6 +20,7 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
 export class FlogoTaskContainerComponent{
   task:any;
   data:any;
+  _subscriptions: any[];
   inputSchemaSubject:any;
   inputStateSubject:any;
   modifiedStateSubject:any;
@@ -26,7 +29,7 @@ export class FlogoTaskContainerComponent{
   inputFields: Object[];
   hasErrors:boolean;
 
-  constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef) {
+  constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef, private _postService:PostService) {
 
     this.componentsByType =  {
       [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: FlogoTaskFieldStringComponent,
@@ -35,10 +38,46 @@ export class FlogoTaskContainerComponent{
       [FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN]: FlogoTaskFieldBooleanComponent
     }
 
+    this._initSubscribe();
   }
 
+  private _initSubscribe() {
+    this._subscriptions = [];
 
+    _.each([], sub => {
+        this._subscriptions.push( this._postService.subscribe( sub ) );
+      }
+    );
+  }
 
+  ngOnDestroy() {
+    _.each( this._subscriptions, sub => {
+        this._postService.unsubscribe( sub );
+      }
+    );
+  }
+
+  _mapResults(fieldSet:any[], stepResult:any, outputMappings:any[]) {
+
+    if(stepResult && stepResult.process) {
+      let attributes = stepResult.process.attributes || [];
+      attributes.forEach((attribute:any)=> {
+        // check if the attribute is
+        let mapping = _.find(outputMappings, (mapping:any) => {
+          return attribute.name === mapping.mapTo;
+        });
+
+        if(mapping) {
+          let item = _.find(fieldSet, (output:any) => {
+            return output.name === mapping.value;
+          });
+          if(item) {
+            item.value = attribute.value;
+          }
+        }
+      });
+    }
+  }
 
   ngOnInit() {
     this.inputFields = [];
@@ -51,8 +90,31 @@ export class FlogoTaskContainerComponent{
     this.inputFields = [];
     this.fieldSubject = new BehaviorSubject('');
 
-    var inputs =  this.data.attributes.inputs || [];
-    var outputs = this.data.attributes.outputs || [];
+    var inputs =  _.cloneDeep(this.data.attributes.inputs) || [];
+    var outputs = _.cloneDeep(this.data.attributes.outputs) || [];
+
+    this._mapResults(outputs, this.data.stepResult, this.data.outputMappings);
+
+    /*
+    if(this.data.stepResult && this.data.stepResult.process) {
+      let attributes = this.data.stepResult.process.attributes || [];
+      attributes.forEach((attribute:any)=> {
+        // check if the attribute is
+        let mapping = _.find(this.data.outputMappings, (mapping:any) => {
+          return attribute.name === mapping.mapTo;
+        });
+
+        if(mapping) {
+          let item = _.find(outputs, (output:any) => {
+            return output.name === mapping.value;
+          });
+          if(item) {
+            item.value = attribute.value;
+          }
+        }
+      });
+    }
+    */
 
     this.addFieldSetToDOM(inputs, 'inputFields');
     this.addFieldSetToDOM(outputs, 'outputFields');
@@ -128,6 +190,10 @@ export class FlogoTaskContainerComponent{
       value:             schema.value             || ''
     }
 
+  }
+
+  runFromThisTile() {
+    this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTitle, {data:this.data} ));
   }
 
 }

@@ -22,6 +22,8 @@ import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS
 
 import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
 
+import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS} from '../../flogo.task/messages'
+
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 
 @Component( {
@@ -71,7 +73,8 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback : this._addTriggerFromTriggers.bind( this ) } ),
       _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
-      _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } )
+      _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } )
       // _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerGraphic.bind( this ) } )
     ];
 
@@ -239,14 +242,13 @@ export class FlogoCanvasComponent {
     this._mockStartingProcess = true;
     this._mockSteps = null;
 
-    this._restAPIService.flows.restartFrom(
+    return this._restAPIService.flows.restartFrom(
       this._mockProcessInstanceID, JSON.parse( this._mockDataToRestart ), step
       )
       .then(
         ( rsp : any ) => {
           this._mockProcessInstanceID = rsp.id;
           this._mockStartingProcess = false;
-          console.log( rsp );
         }
       )
       .catch(
@@ -413,7 +415,8 @@ export class FlogoCanvasComponent {
       .then(
         () => {
           console.group( 'after navigation' );
-
+          let stepNumber = this._getStepNumberFromTask(data.node.taskID);
+          data.stepResult = (stepNumber && this._mockSteps) ? this._mockSteps[stepNumber - 1] : null;
           this._postService.publish(
             _.assign(
               {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
@@ -458,6 +461,84 @@ export class FlogoCanvasComponent {
       );
 
     console.groupEnd( );
+
+  }
+
+  // based on the task id, look in the task list to get the number of the step
+  //  TODO check if there is another way of get the step number
+  private _getStepNumberFromTask(taskId:string) {
+    let index = 0;
+
+    for(let task in this.tasks) {
+      if(task == taskId) {
+        return index +1;
+      }
+      ++index;
+    }
+
+    return 0;
+  }
+
+  private _runFromThisTile(data:any, envelope:any) {
+    console.group('Run from this tile');
+
+    if(this._mockProcessInstanceID) {
+
+      var stepNumber =  this._getStepNumberFromTask(data.id);
+      stepNumber =2;
+
+      if(stepNumber) {
+        this.mockRestartFrom(stepNumber)
+          .then(()=> {
+            let maxQuery = 10;
+            let queriedTime = 0;
+            var queryStatus = setInterval(function() {
+
+              this._restAPIService.instances.getStatusByInstanceID(this._mockProcessInstanceID)
+                .then((result:any) => {
+                  let status = result.status && result.status.toString(); // status null doesn't mean it failed
+                  switch(status) {
+                    case '0':
+                      console.log('Process not start, queriedTime',queriedTime);
+                      break;
+                    case '100':
+                      console.log('Process in progress, queriedTime',queriedTime);
+                      break;
+                    case '500':
+                      console.log('Process finished, queriedTime',queriedTime);
+                      console.log('Result', result);
+                      this._restAPIService.instances.getStepsByInstanceID(this._mockProcessInstanceID)
+                            .then((result:any) => {
+                              this._mockSteps = result.steps;
+                            });
+                      clearInterval(queryStatus);
+                      break;
+                    case '600':
+                      console.log('Process cancelled, queriedTime',queriedTime);
+                      console.log('Result:', result);
+                      clearInterval(queryStatus);
+                      break;
+                    case '700':
+                      console.log('Process failed, queriedTime',queriedTime);
+                      clearInterval(queryStatus);
+                      break;
+                  }
+                  queriedTime++;
+                  if(queriedTime>maxQuery){
+                    console.error("getStates timeout");
+                    clearInterval(queryStatus);
+                    console.groupEnd();
+                  }
+                });
+            }.bind(this), 500);
+
+
+
+          })
+      }
+    } else {
+      console.error('You have not run the processs yet');
+    }
 
   }
 

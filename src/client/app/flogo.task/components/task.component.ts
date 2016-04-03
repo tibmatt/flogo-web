@@ -1,7 +1,10 @@
 import { Component, SimpleChange } from 'angular2/core';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {FlogoTaskContainerComponent} from '../../flogo.task.container/components/task.container.component';
+import {PostService} from '../../../common/services/post.service';
 import {BehaviorSubject} from 'rxjs/Rx';
+import {PUB_EVENTS as FLOGO_TASKCONTAINER_SUB_EVENTS} from '../../flogo.task.container/messages';
+import {PUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-task',
@@ -20,9 +23,39 @@ export class FlogoTaskComponent{
   inputStateSubject: any;
   modifiedStateSubject: any;
   data: any;
+  _subscriptions: any[];
+
+  constructor(private _postService: PostService) {
+    this._initSubscribe();
+  }
+
+  private _initSubscribe() {
+    this._subscriptions = [];
+
+    let subs = [
+      _.assign( {}, FLOGO_TASKCONTAINER_SUB_EVENTS.runFromThisTitle, { callback : this._runFromThisTile.bind( this ) } )
+    ];
+
+    _.each(
+      subs, sub => {
+        this._subscriptions.push( this._postService.subscribe( sub ) );
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    _.each( this._subscriptions, sub => {
+        this._postService.unsubscribe( sub );
+      }
+    );
+  }
 
   setData(data:any) {
     this.data = data;
+  }
+
+  _runFromThisTile(data:any, envelope:any) {
+    this._postService.publish(_.assign({}, PUB_EVENTS.runFromThisTile, {data:data}));
   }
 
   getStateData() {
@@ -90,15 +123,17 @@ export class FlogoTaskComponent{
     return JSON.stringify(json, null, 2);
   }
 
+  /*
   changeInputSchema(event:any) {
     this.inputSchemaSubject.next(event.value);
   }
-
   changeInputState(event:any) {
     this.inputStateSubject.next(event.value);
   }
+  */
 
   _init() {
+    /*
     this.inputSchema = this.stringify(this.getSchema());
     this.inputState  = this.stringify(this.getStateData());
 
@@ -112,6 +147,7 @@ export class FlogoTaskComponent{
       }
 
     );
+    */
   }
 
   ngOnChanges(
@@ -129,7 +165,9 @@ export class FlogoTaskComponent{
     }
   }
 
+  /*
   onGetModifiedState(state:any) {
   }
+  */
 
 }
