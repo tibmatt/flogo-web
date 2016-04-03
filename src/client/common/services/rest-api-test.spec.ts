@@ -63,27 +63,58 @@ export class RESTAPITest{
   }
 
   testFlow(){
-
-    // step 1: create flow
-    let request = {
-      name: "My First Flow "+ new Date().toISOString(),
-      description: "Created by rest-api.spec"
-    };
-    // create a flow
-    this._flow.createFlow(_.clone(request)).then((response)=>{
-      console.log("create flow successful. ", response);
-      this.print('create flow successful',request, response);
-    }).catch((err)=>{
-      console.log("create flow error. ", err);
-      this.print('create flow error',request, err, true);
-    });
-
-    // step 2: get all flows
-    this._flow.getFlows().then((response)=>{
-      this.print('get all flows successful',null, response);
-    }).catch((err)=>{
-      this.print('get all flows error',null, err, true);
-    });
-
+    new Promise((resolve, reject)=>{
+      // step 1: create flow
+      let request = {
+        name: "My First Flow "+ new Date().toISOString(),
+        description: "Created by rest-api.spec"
+      };
+      this._flow.createFlow(_.clone(request)).then((response)=>{
+        console.log("create flow successful. ", response);
+        this.print('create flow successful',request, response);
+        resolve(response);
+      }).catch((err)=>{
+        console.log("create flow error. ", err);
+        this.print('create flow error',request, err, true);
+        reject(err);
+      });
+    }).then((response)=>{
+      // step 2: get all flows
+      return new Promise((resolve, reject)=>{
+        this._flow.getFlows().then((response)=>{
+          this.print('get all flows successful',null, response);
+          resolve(response);
+        }).catch((err)=>{
+          this.print('get all flows error',null, err, true);
+          reject(err);
+        })
+      })
+    }).then((response)=>{
+      // step 3: update a flow
+      return new Promise((resolve, reject)=>{
+        let flow = response&&response[0] || {};
+        flow.name = flow.name+"change name ";
+        this._flow.updateFlow(flow).then((response)=>{
+          this.print('update flow successful',flow, response);
+          resolve(response);
+        }).catch((err)=>{
+          this.print('update flow error',flow, err, true);
+          reject(err);
+        });
+      });
+    }).then((response)=>{
+      // step 4: remove a flow
+      // return new Promise((resolve, reject)=>{
+      //   let id = response.id;
+      //   let rev = response.rev;
+      //   this._flow.deleteFlow(id, rev).then((response)=>{
+      //     this.print('remove flow successful',{id: id, rev: rev}, response);
+      //     resolve(response);
+      //   }).catch((err)=>{
+      //     this.print('remove flow error',{id: id, rev: rev}, err, true);
+      //     reject(err);
+      //   });
+      // });
+    })
   }
 }

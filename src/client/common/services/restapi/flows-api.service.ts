@@ -7,7 +7,7 @@ export class RESTAPIFlowsService{
   constructor(private _db: FlogoDBService){
   }
 
-  createFlow(flowObj:object){
+  createFlow(flowObj: Object){
     flowObj._id = this._db.generateFlowID();
 
     flowObj.$table = this._db.FLOW;
@@ -42,6 +42,27 @@ export class RESTAPIFlowsService{
       }).catch((err)=>{
         reject(err);
       });
+    });
+  }
+
+  updateFlow(flowObj: Object){
+    return new Promise((resolve, reject)=>{
+      this._db.update(flowObj).then((response)=>{
+        resolve(response);
+      }).catch((err)=>{
+        reject(err);
+      })
+    });
+  }
+
+  deleteFlow(){
+    let parameters = arguments;
+    return new Promise((resolve, reject)=>{
+      this._db.remove.apply(this,parameters).then((response)=>{
+        resolve(response);
+      }).catch((err)=>{
+        reject(err);
+      })
     });
   }
 }

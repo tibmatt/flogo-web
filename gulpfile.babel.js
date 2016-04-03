@@ -22,6 +22,7 @@ CONFIG.public=path.join(CONFIG.dist, 'public');
 CONFIG.serverDist=path.join(CONFIG.dist, 'server');
 
 CONFIG.clientLibs = [
+  "jquery/dist/jquery.js",
   'd3/d3.js',
   'lodash/lodash.js',
   'systemjs/dist/system-polyfills.src.js',
@@ -35,7 +36,13 @@ CONFIG.clientLibs = [
   'angular2/bundles/http.js',
   'postal/lib/postal.js',
   'pouchdb/dist/pouchdb.js',
-  "ng2-bs3-modal/bundles/ng2-bs3-modal.min.js"
+  "ng2-bs3-modal/bundles/ng2-bs3-modal.min.js",
+  "bootstrap/dist/js/bootstrap.js"
+];
+
+CONFIG.clientLibStyles = [
+  'bootstrap/dist/css/**/*',
+  'bootstrap/dist/fonts/**/*'
 ];
 
 // load gulp plugins
@@ -118,6 +125,11 @@ gulp.task("copy:dev", ["copy:client:dev", "copy:server:dev"], ()=>{
 gulp.task("copy:client:dev", ()=>{
   return gulp.src(['**/*', "!**/*.ts", "!**/*.js", "!**/*.js.map", "!**/node_modules/**"], {cwd: CONFIG.client})
     .pipe(gulp.dest(CONFIG.public))
+});
+
+gulp.task("copy:client:lib", ()=>{
+  return gulp.src(CONFIG.clientLibStyles, {cwd: path.join(CONFIG.client, "node_modules")})
+    .pipe(gulp.dest(path.join(CONFIG.public, "assets")));
 });
 
 gulp.task("copy:server:dev", ()=>{
