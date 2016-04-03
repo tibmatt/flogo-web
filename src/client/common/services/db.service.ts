@@ -5,7 +5,11 @@ export class FlogoDBService{
 
   // PouchDB instance
   private _db:PouchDB;
-  private _PREFIX_FLOW = 'flows';
+  public PREFIX_AUTO_GENERATE:string = 'auto-generate-id';
+  public FLOW:string = 'flows';
+  public DIAGRAM:string = 'diagram';
+  public DELIMITER:string = ":";
+  public DEFAULT_USER_ID = 'flogoweb-admin';
 
   constructor(){
     // When create this service, initial pouchdb
@@ -33,11 +37,11 @@ export class FlogoDBService{
     // if userID isn't passed, then use default 'flogoweb'
     if(!userID){
       // TODO for now, is optional. When we implement user login, then this is required
-      userID = 'flogoweb';
+      userID = this.DEFAULT_USER_ID;
     }
     let timestamp = new Date().toISOString();
     let random = Math.random();
-    let id = `auto-generate-id::${userID}::${timestamp}::${random}`;
+    let id = `${this.PREFIX_AUTO_GENERATE}${this.DELIMITER}${userID}${this.DELIMITER}${timestamp}${this.DELIMITER}${random}`;
 
     return id;
   }
@@ -50,11 +54,11 @@ export class FlogoDBService{
     // if userID isn't passed, then use default 'flogoweb'
     if(!userID){
       // TODO for now, is optional. When we implement user login, then this is required
-      userID = 'flogoweb-admin';
+      userID = this.DEFAULT_USER_ID;
     }
 
     let timestamp = new Date().toISOString();
-    let id = `${this._PREFIX_FLOW}:${userID}:${timestamp}`;
+    let id = `${this.FLOW}${this.DELIMITER}${userID}${this.DELIMITER}${timestamp}`;
 
     console.log("[info]flowID: ", id);
     return id;
@@ -66,6 +70,11 @@ export class FlogoDBService{
    */
   create(doc: Object): Object{
     if(!doc) return;
+
+    if(!doc.$table){
+      console.error("[Error]doc.$table is required. You must pass. ", doc);
+      return;
+    }
 
     // if this doc don't have id, generate an id for it
     if(!doc._id){
@@ -121,8 +130,15 @@ export class FlogoDBService{
     });
   }
 
-  allDocs(){
-
+  allDocs(options:Object){
+    return new Promise((resolve, reject)=>{
+      this._db.allDocs(options).then((response)=>{
+        console.log("[allDocs]response: ", response);
+        resolve(response);
+      }).catch((err)=>{
+        console.error(err);
+      });
+    });
   }
 
 }

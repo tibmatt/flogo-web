@@ -25,7 +25,7 @@ export class RESTAPITest{
 
     if(request){
       if(typeof request == 'object'){
-        request = JSON.stringify(request);
+        request = JSON.stringify(request, null, 2);
       }else{
         request = request.toString();
       }
@@ -35,7 +35,7 @@ export class RESTAPITest{
 
     if(response){
       if(typeof response == 'object'){
-        response = JSON.stringify(response);
+        response = JSON.stringify(response, null, 2);
       }else{
         response = response.toString();
       }
@@ -50,15 +50,11 @@ export class RESTAPITest{
         <h3>
           Request
         </h3>
-        <div>
-        ${request}
-        </div>
+        <pre>${request}</pre>
         <h3>
           Response
         </h3>
-        <div>
-        ${response}
-        </div>
+        <pre>${response}</pre>
 
       </div>
     </div>
@@ -82,8 +78,12 @@ export class RESTAPITest{
       this.print('create flow error',request, err, true);
     });
 
-    // step 2: get flow
-
+    // step 2: get all flows
+    this._flow.getFlows().then((response)=>{
+      this.print('get all flows successful',null, response);
+    }).catch((err)=>{
+      this.print('get all flows error',null, err, true);
+    });
 
   }
 }

@@ -8,11 +8,9 @@ export class RESTAPIFlowsService{
   }
 
   createFlow(flowObj:object){
-    if(!flowObj._id){
-      flowObj._id = this._db.generateFlowID();
-    }
+    flowObj._id = this._db.generateFlowID();
 
-    flowObj.table = 'flows';
+    flowObj.$table = this._db.FLOW;
 
     return new Promise((resolve, reject)=>{
       this._db.create(flowObj).then((response)=>{
@@ -24,6 +22,26 @@ export class RESTAPIFlowsService{
   }
 
   getFlows(){
-
+    return new Promise((resolve, reject)=>{
+      // TODO need to change ${this._db.DEFAULT_USER_ID} to correct userID
+      let options = {
+        include_docs: true,
+        startKey: `${this._db.FLOW}${this._db.DELIMITER}${this._db.DEFAULT_USER_ID}${this._db.DELIMITER}`,
+        endKey: `${this._db.FLOW}${this._db.DELIMITER}${this._db.DEFAULT_USER_ID}${this._db.DELIMITER}\uffff`
+      };
+      this._db.allDocs(options).then((response)=>{
+        let allFlows = [];
+        let rows = response&&response.rows||[];
+        rows.forEach((item)=>{
+          // if this item's tabel is this._db.FLOW
+          if(item&&item.doc&&item.doc.$table === this._db.FLOW){
+            allFlows.push(item.doc);
+          }
+        });
+        resolve(allFlows);
+      }).catch((err)=>{
+        reject(err);
+      });
+    });
   }
 }
