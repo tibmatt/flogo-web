@@ -5,10 +5,10 @@
       <div class="flogo-task-container__header"> <h3> {{data.name|| data.id}} </h3></div>
 
       <h3 class="flogo-task-container__fields-header" [hidden]="!data.attributes?.inputs?.length">Input Parameters</h3>
-      <div #inputFields></div>
+      <div #inputFields class="flogo-task-container__fields-set"></div>
 
       <h3 class="flogo-task-container__fields-header" [hidden]="!data.attributes.outputs?.length">Output Parameters</h3>
-      <div #outputFields></div>
+      <div #outputFields class="flogo-task-container__fields-set"></div>
 
       <div class="flogo-task-container__footer">
         <button class="btn btn-primary" (click)="runFromThisTile($event)"> <span class="glyphicon glyphicon-play" aria-hidden=""></span>  Run from this tile</button>

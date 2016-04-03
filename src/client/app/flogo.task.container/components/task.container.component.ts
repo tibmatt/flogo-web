@@ -112,8 +112,13 @@ export class FlogoTaskContainerComponent{
       //this.getModifiedStateTask();
     });
 
-    var inputs =  _.cloneDeep(this.data.attributes.inputs) || [];
-    var outputs = _.cloneDeep(this.data.attributes.outputs) || [];
+    if(!this.data.attributes) {
+      this.data.attributes ={};
+    }
+
+
+    var inputs =  _.cloneDeep(this.data.attributes.inputs || []);
+    var outputs = _.cloneDeep(this.data.attributes.outputs || []);
 
     this._mapResults(outputs, this.data.stepResult, this.data.outputMappings);
     //TODO  inputs

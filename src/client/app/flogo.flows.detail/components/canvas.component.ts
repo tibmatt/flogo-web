@@ -392,7 +392,18 @@ export class FlogoCanvasComponent {
           done : ( diagram : IFlogoFlowDiagram ) => {
             _.assign( this.diagram, diagram );
             this._updateFlow( this._flow );
+
+            this._showDetailTask(data);
           }
+        }
+      )
+    );
+
+    // show the ui
+    this._postService.publish(
+      _.assign(
+        {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+          data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } )
         }
       )
     );
@@ -400,11 +411,7 @@ export class FlogoCanvasComponent {
     console.groupEnd( );
   }
 
-  private _selectTaskFromDiagram( data: any, envelope: any ) {
-    console.group( 'Select task message from diagram' );
-    console.log( data );
-    console.log( envelope );
-
+  _showDetailTask(data:any) {
 
     this._router.navigate(
       [
@@ -425,6 +432,27 @@ export class FlogoCanvasComponent {
             )
           );
 
+          console.groupEnd();
+        }
+      );
+
+  }
+
+  private _selectTaskFromDiagram( data: any, envelope: any ) {
+    console.group( 'Select task message from diagram' );
+    console.log( data );
+    console.log( envelope );
+
+    this._router.navigate(
+      [
+        'FlogoFlowsDetailTaskDetail',
+        { id : data.node.taskID }
+      ]
+      )
+      .then(
+        () => {
+          console.group( 'after navigation' );
+          this._showDetailTask(data);
           console.groupEnd();
         }
       );
@@ -468,8 +496,9 @@ export class FlogoCanvasComponent {
   //  TODO check if there is another way of get the step number
   private _getStepNumberFromTask(taskId:string) {
     let index = 0;
+    let tasks = this.tasks || [];
 
-    for(let task in this.tasks) {
+    for(let task in tasks) {
       if(task == taskId) {
         return index +1;
       }
@@ -481,8 +510,9 @@ export class FlogoCanvasComponent {
 
   private _getStepNumberFromSteps(taskId:string) {
     var stepNumber:number = 0;
+    let steps = this._mockSteps || [];
 
-    this._mockSteps.forEach((step:any, index:number) => {
+    steps.forEach((step:any, index:number) => {
       if(step.taskId == taskId) {
         stepNumber = index + 1;
       }
