@@ -3,8 +3,8 @@ import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {FlogoTaskContainerComponent} from '../../flogo.task.container/components/task.container.component';
 import {PostService} from '../../../common/services/post.service';
 import {BehaviorSubject} from 'rxjs/Rx';
-import {PUB_EVENTS as FLOGO_TASKCONTAINER_SUB_EVENTS} from '../../flogo.task.container/messages';
-import {PUB_EVENTS} from '../messages';
+import {PUB_EVENTS as FLOGO_TASKCONTAINER_SUB_EVENTS, SUB_EVENTS as FLOGO_TASKCONTAINER_PUB_EVENTS} from '../../flogo.task.container/messages';
+import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-task',
@@ -33,7 +33,8 @@ export class FlogoTaskComponent{
     this._subscriptions = [];
 
     let subs = [
-      _.assign( {}, FLOGO_TASKCONTAINER_SUB_EVENTS.runFromThisTitle, { callback : this._runFromThisTile.bind( this ) } )
+      _.assign( {}, FLOGO_TASKCONTAINER_SUB_EVENTS.runFromThisTitle, { callback : this._runFromThisTile.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.updateTaskResults, { callback : this._updateTaskResults.bind( this ) } )
     ];
 
     _.each(
@@ -41,6 +42,11 @@ export class FlogoTaskComponent{
         this._subscriptions.push( this._postService.subscribe( sub ) );
       }
     );
+  }
+
+
+  _updateTaskResults(data:any, envelope:any) {
+    this._postService.publish(_.assign({}, FLOGO_TASKCONTAINER_PUB_EVENTS.updateTaskResults, {data}));
   }
 
   ngOnDestroy() {
@@ -55,7 +61,7 @@ export class FlogoTaskComponent{
   }
 
   _runFromThisTile(data:any, envelope:any) {
-    this._postService.publish(_.assign({}, PUB_EVENTS.runFromThisTile, {data:data}));
+    this._postService.publish(_.assign({}, PUB_EVENTS.runFromThisTile, {data}));
   }
 
   getStateData() {

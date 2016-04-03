@@ -22,7 +22,7 @@ import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS
 
 import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
 
-import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS} from '../../flogo.task/messages'
+import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.task/messages'
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 
@@ -238,12 +238,12 @@ export class FlogoCanvasComponent {
 
   // TODO
   //  Remove this mock later
-  mockRestartFrom( step : number ) {
+  mockRestartFrom( step : number, mockDataToRestart:string ) {
     this._mockStartingProcess = true;
     this._mockSteps = null;
 
     return this._restAPIService.flows.restartFrom(
-      this._mockProcessInstanceID, JSON.parse( this._mockDataToRestart ), step
+      this._mockProcessInstanceID, JSON.parse( mockDataToRestart ), step
       )
       .then(
         ( rsp : any ) => {
@@ -479,16 +479,27 @@ export class FlogoCanvasComponent {
     return 0;
   }
 
+  private _getStepNumberFromSteps(taskId:string) {
+    var stepNumber:number = 0;
+
+    this._mockSteps.forEach((step:any, index:number) => {
+      if(step.taskId == taskId) {
+        stepNumber = index + 1;
+      }
+    });
+
+    return stepNumber;
+  }
+
+
   private _runFromThisTile(data:any, envelope:any) {
     console.group('Run from this tile');
+    var step = this._getStepNumberFromSteps(data.taskId);
 
     if(this._mockProcessInstanceID) {
 
-      var stepNumber =  this._getStepNumberFromTask(data.id);
-      stepNumber =2;
-
-      if(stepNumber) {
-        this.mockRestartFrom(stepNumber)
+      if(step) {
+        this.mockRestartFrom(step, JSON.stringify(data.inputs))
           .then(()=> {
             let maxQuery = 10;
             let queriedTime = 0;
@@ -510,6 +521,14 @@ export class FlogoCanvasComponent {
                       this._restAPIService.instances.getStepsByInstanceID(this._mockProcessInstanceID)
                             .then((result:any) => {
                               this._mockSteps = result.steps;
+                              var resultTask = this._mockSteps.find((step:any) => {
+                                return step.taskId == data.taskId;
+
+                              });
+
+                              this._postService.publish(
+                                _.assign({}, FLOGO_TASK_PUB_EVENTS.updateTaskResults, {data:{result:resultTask}})
+                              )
                             });
                       clearInterval(queryStatus);
                       break;

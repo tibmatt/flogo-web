@@ -13,4 +13,8 @@ export const PUB_EVENTS = {
  * Events subscribed by this module
  */
 export const SUB_EVENTS = {
+  updateTaskResults : {
+    channel : 'flogo-task-container',
+    topic : 'update-task-results'
+  }
 };

@@ -46,12 +46,12 @@ export var MOCK_TASKS = [
           "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
           "name" : "petId",
           "title" : "Pet ID",
-          "value" : "1459644292122"
+          "value" : "201603311111"
         }
       ],
       "outputs" : [
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT,
           "name" : "result",
           "title" : "Result",
           "value" : ""

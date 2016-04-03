@@ -7,12 +7,21 @@ export class FlogoTaskFieldBaseComponent{
   parameterType: string;
 
   onChangeField() {
-    this.fieldSubject.next('changing field');
+    //this.fieldSubject.next('changing field');
   }
 
-  setConfiguration(fieldSchema:any, fieldSubject:any) {
+  updateValue(parameterType:string, name:string, value:string) {
+    if(parameterType === this.parameterType && this.schema.name === name) {
+      this.value = value;
+    }
+
+  }
+
+  setConfiguration(fieldSchema:any, fieldSubject:any, parameterType:any) {
     this.schema = fieldSchema;
     this.fieldSubject = fieldSubject;
+
+    this.parameterType = parameterType;
 
     switch(fieldSchema.type) {
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:

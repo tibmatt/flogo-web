@@ -7,7 +7,7 @@ import {FlogoTaskFieldObjectComponent} from '../../flogo.task.field/components/f
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
 import {PostService} from '../../../common/services/post.service';
-import {PUB_EVENTS} from '../messages';
+import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-task-container',
@@ -36,7 +36,7 @@ export class FlogoTaskContainerComponent{
       [FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER]: FlogoTaskFieldNumberComponent,
       [FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT]: FlogoTaskFieldObjectComponent,
       [FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN]: FlogoTaskFieldBooleanComponent
-    }
+    };
 
     this._initSubscribe();
   }
@@ -44,10 +44,28 @@ export class FlogoTaskContainerComponent{
   private _initSubscribe() {
     this._subscriptions = [];
 
-    _.each([], sub => {
+    this._subscriptions = [
+      _.assign( {}, SUB_EVENTS.updateTaskResults, { callback : this._updateTaskResults.bind( this ) } ),
+    ];
+
+    _.each(this._subscriptions, sub => {
         this._subscriptions.push( this._postService.subscribe( sub ) );
       }
     );
+  }
+
+  _updateTaskResults(data:any, envelope:any) {
+    var outputs = _.cloneDeep(this.data.attributes.outputs) || [];
+
+    this._mapResults(outputs, data.result, this.data.outputMappings);
+
+    // update the value of the fields
+    this.inputFields.forEach((input:any) => {
+      outputs.forEach((field:any)=> {
+        input.instance.updateValue('outputFields',field.name,field.value);
+      });
+    });
+
   }
 
   ngOnDestroy() {
@@ -90,31 +108,16 @@ export class FlogoTaskContainerComponent{
     this.inputFields = [];
     this.fieldSubject = new BehaviorSubject('');
 
+    this.fieldSubject.subscribe((value:string) => {
+      //this.getModifiedStateTask();
+    });
+
     var inputs =  _.cloneDeep(this.data.attributes.inputs) || [];
     var outputs = _.cloneDeep(this.data.attributes.outputs) || [];
 
     this._mapResults(outputs, this.data.stepResult, this.data.outputMappings);
+    //TODO  inputs
 
-    /*
-    if(this.data.stepResult && this.data.stepResult.process) {
-      let attributes = this.data.stepResult.process.attributes || [];
-      attributes.forEach((attribute:any)=> {
-        // check if the attribute is
-        let mapping = _.find(this.data.outputMappings, (mapping:any) => {
-          return attribute.name === mapping.mapTo;
-        });
-
-        if(mapping) {
-          let item = _.find(outputs, (output:any) => {
-            return output.name === mapping.value;
-          });
-          if(item) {
-            item.value = attribute.value;
-          }
-        }
-      });
-    }
-    */
 
     this.addFieldSetToDOM(inputs, 'inputFields');
     this.addFieldSetToDOM(outputs, 'outputFields');
@@ -130,7 +133,7 @@ export class FlogoTaskContainerComponent{
       if(component) {
         this.loadIntoLocation(component, location)
           .then(ref => {
-            ref.instance.setConfiguration(fieldSchema, this.fieldSubject);
+            ref.instance.setConfiguration(fieldSchema, this.fieldSubject, location);
             this.inputFields.push(ref);
           });
       }
@@ -157,18 +160,18 @@ export class FlogoTaskContainerComponent{
       let field:any = input.instance.exportToJson();
       let key = Object.keys(field)[0];
       let value = field[key];
-      if(input.instance.getParameterType() === 'input') {
+      if(input.instance.getParameterType() === 'inputFields') {
         jsonInputs[key] = value;
       } else {
         jsonOutputs[key] = value;
       }
     });
 
-    if(this.task) {
+    if(this.data) {
       modified = {
-        "name": this.task.schema.name,
-        "title": this.task.schema.title,
-        "description": this.task.schema.description,
+        "name": this.data.name,
+        "title": '', //this.data.title || data.name,
+        "description": '', //this.task.schema.description,
         "inputs": jsonInputs,
         "outputs": jsonOutputs
       }
@@ -193,7 +196,13 @@ export class FlogoTaskContainerComponent{
   }
 
   runFromThisTile() {
-    this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTitle, {data:this.data} ));
+    var modified = this.getModifiedStateTask();
+    var inputs = modified.inputs || {};
+    var taskId   = (this.data.stepResult) ? this.data.stepResult['taskId'] : 0;
+
+    this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTitle, {
+      data: {inputs, taskId}
+    } ));
   }
 
 }
