@@ -12,7 +12,7 @@ export class RESTAPIFlowsService{
       flowObj._id = this._db.generateFlowID();
     }
 
-    flowObj.type = 'flow';
+    flowObj.table = 'flows';
 
     return new Promise((resolve, reject)=>{
       this._db.create(flowObj).then((response)=>{

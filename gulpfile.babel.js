@@ -129,7 +129,7 @@ gulp.task("build:ts:dev", ()=>{
   let _tsProject = $.typescript.createProject('tsconfig.json', {
     typescript: require('typescript')
   });
-  return gulp.src(["../../typings/browser.d.ts", "**/*.ts", "!**/*.spec.ts", "!**/*.e2e.ts", "!node_modules/**/*.ts"], {cwd: CONFIG.client})
+  return gulp.src(["../../typings/browser.d.ts", "**/*.ts", "**/*.spec.ts", "!**/*.e2e.ts", "!node_modules/**/*.ts"], {cwd: CONFIG.client})
     .pipe($.typescript(_tsProject))
     .pipe(gulp.dest(CONFIG.public));
 });

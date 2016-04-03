@@ -54,7 +54,7 @@ export class FlogoDBService{
     }
 
     let timestamp = new Date().toISOString();
-    let id = `${this._PREFIX_FLOW}::${userID}::${timestamp}`;
+    let id = `${this._PREFIX_FLOW}:${userID}:${timestamp}`;
 
     console.log("[info]flowID: ", id);
     return id;
