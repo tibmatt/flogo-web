@@ -28,6 +28,7 @@ export class FlogoTaskContainerComponent{
   fieldSubject:any;
   inputFields: Object[];
   hasErrors:boolean;
+  canRunFromThisTile:boolean;
 
   constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef, private _postService:PostService) {
 
@@ -100,6 +101,7 @@ export class FlogoTaskContainerComponent{
   ngOnInit() {
     this.inputFields = [];
     this.hasErrors = false;
+    this.canRunFromThisTile = false;
 
     this.inputFields.forEach((input:any) => {
       input.dispose();
@@ -116,11 +118,19 @@ export class FlogoTaskContainerComponent{
       this.data.attributes ={};
     }
 
+    //if(this.data.stepResult || !this.data.stepResult && this.data.stepNumber == 1) {
+    if(!this.data.step) {
+      this.data.step = {};
+    }
+    if(this.data.step.result || !this.data.step.result && this.data.step.number == 1) {
+      this.canRunFromThisTile = true;
+    }
+
 
     var inputs =  _.cloneDeep(this.data.attributes.inputs || []);
     var outputs = _.cloneDeep(this.data.attributes.outputs || []);
 
-    this._mapResults(outputs, this.data.stepResult, this.data.outputMappings);
+    this._mapResults(outputs, this.data.step.result, this.data.outputMappings);
     //TODO  inputs
 
 
@@ -203,7 +213,10 @@ export class FlogoTaskContainerComponent{
   runFromThisTile() {
     var modified = this.getModifiedStateTask();
     var inputs = modified.inputs || {};
-    var taskId   = (this.data.stepResult) ? this.data.stepResult['taskId'] : 0;
+    if(!this.data.step) {
+      this.data.step = {};
+    }
+    var taskId   = (this.data.step.result) ? this.data.step.result['taskId'] : 0;
 
     this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTitle, {
       data: {inputs, taskId}

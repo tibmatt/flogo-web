@@ -59,7 +59,7 @@ export class FlogoFlowsDetailTasksDetail {
 
     this._selectTaskMsg = data;
     this._task = data.task;
-    this._task.stepResult = data.stepResult;
+    this._task.step =  data.step;
 
     // TODO
     //  this mock is to fake the modification of the task information from user

@@ -423,7 +423,8 @@ export class FlogoCanvasComponent {
         () => {
           console.group( 'after navigation' );
           let stepNumber = this._getStepNumberFromTask(data.node.taskID);
-          data.stepResult = (stepNumber && this._mockSteps) ? this._mockSteps[stepNumber - 1] : null;
+          data.step = {result:(stepNumber && this._mockSteps) ? this._mockSteps[stepNumber - 1] : null,
+                       number: stepNumber};
           this._postService.publish(
             _.assign(
               {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {

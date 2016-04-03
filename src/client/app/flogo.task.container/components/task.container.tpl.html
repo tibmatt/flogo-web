@@ -4,14 +4,14 @@
 
       <div class="flogo-task-container__header"> <h3> {{data.name|| data.id}} </h3></div>
 
-      <h3 class="flogo-task-container__fields-header" [hidden]="!data.attributes?.inputs?.length">Input Parameters</h3>
+      <h3 class="flogo-task-container__fields-header" [hidden]="!data?.attributes?.inputs?.length">Input Parameters</h3>
       <div #inputFields class="flogo-task-container__fields-set"></div>
 
-      <h3 class="flogo-task-container__fields-header" [hidden]="!data.attributes.outputs?.length">Output Parameters</h3>
+      <h3 class="flogo-task-container__fields-header" [hidden]="!data?.attributes?.outputs?.length">Output Parameters</h3>
       <div #outputFields class="flogo-task-container__fields-set"></div>
 
       <div class="flogo-task-container__footer">
-        <button class="btn btn-primary" (click)="runFromThisTile($event)"> <span class="glyphicon glyphicon-play" aria-hidden=""></span>  Run from this tile</button>
+        <button class="btn btn-primary" [disabled]="!canRunFromThisTile" (click)="runFromThisTile($event)"> <span class="glyphicon glyphicon-play" aria-hidden=""></span>  Run from this tile</button>
         <button class="btn btn-default">Cancel</button>
       </div>
 
