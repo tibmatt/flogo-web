@@ -145,6 +145,19 @@ export class FlogoCanvasComponent {
     }
   }
 
+  private _runFromTrigger() {
+
+    this.mockUploadProcess()
+      .then(() => {
+        this.mockStartProcess()
+          .then(() => {
+            this.mockGetSteps()
+              .then(() => {
+            })
+          })
+      });
+  }
+
   // TODO
   //  Remove this mock later
   private _updateFlow( flow : any ) {
@@ -163,7 +176,7 @@ export class FlogoCanvasComponent {
   mockUploadProcess() {
     this._mockUploadingProcess = true;
 
-    this._restAPIService.flows.upload( this._flow.id ).then((rsp:any) => {
+    return this._restAPIService.flows.upload( this._flow.id ).then((rsp:any) => {
       this._mockUploadingProcess = false;
       this._mockHasUploadedProcess = true;
       if (rsp) {
@@ -178,7 +191,7 @@ export class FlogoCanvasComponent {
     this._mockStartingProcess = true;
     this._mockSteps = null;
 
-    this._restAPIService.flows.start(
+    return this._restAPIService.flows.start(
       this._mockProcessID, {
         // "petId" : "20160222230266"
       }
@@ -208,7 +221,7 @@ export class FlogoCanvasComponent {
     this._mockGettingStepsProcess = true;
 
     if ( this._mockProcessInstanceID ) {
-      this._restAPIService.instances.whenInstanceFinishByID( this._mockProcessInstanceID )
+      return this._restAPIService.instances.whenInstanceFinishByID( this._mockProcessInstanceID )
         .then(
           ( rsp : any ) => {
             return this._restAPIService.instances.getStepsByInstanceID( rsp.id );
@@ -587,7 +600,8 @@ export class FlogoCanvasComponent {
           })
       }
     } else {
-      console.error('You have not run the processs yet');
+      this._runFromTrigger();
+      //console.error('You have not run the processs yet');
     }
 
   }
