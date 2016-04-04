@@ -5,7 +5,9 @@ export class FlogoDBService{
 
   // PouchDB instance
   private _db:PouchDB;
+  private _activitesDB: PouchDB;
   private _sync:Object;
+  private _syncActivities: Object;
   public PREFIX_AUTO_GENERATE:string = 'auto-generate-id';
   public FLOW:string = 'flows';
   public DIAGRAM:string = 'diagram';
@@ -21,6 +23,17 @@ export class FlogoDBService{
    * initial a pouchdb
    */
   private _initDB(): FlogoDBService{
+    this._activitiesDB = new PouchDB('flogo-web-activities-local');
+    this._activitiesDB.info().then(function(db){
+      console.log(db);
+    }).catch(function(err:Object){
+      console.error(err);
+    });
+    this._syncActivities = PouchDB.sync('flogo-web-activities-local', 'http://localhost:5984/flogo-web-activities', {
+      live: true,
+      retry: true
+    });
+
     this._db = new PouchDB('flogo-web-local');
     // create db in browser
     this._db.info().then(function(db){

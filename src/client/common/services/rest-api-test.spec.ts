@@ -105,17 +105,17 @@ export class RESTAPITest{
       });
     }).then((response)=>{
       // step 4: remove a flow
-      // return new Promise((resolve, reject)=>{
-      //   let id = response.id;
-      //   let rev = response.rev;
-      //   this._flow.deleteFlow(id, rev).then((response)=>{
-      //     this.print('remove flow successful',{id: id, rev: rev}, response);
-      //     resolve(response);
-      //   }).catch((err)=>{
-      //     this.print('remove flow error',{id: id, rev: rev}, err, true);
-      //     reject(err);
-      //   });
-      // });
+      return new Promise((resolve, reject)=>{
+        let id = response.id;
+        let rev = response.rev;
+        this._flow.deleteFlow(id, rev).then((response)=>{
+          this.print('remove flow successful',{id: id, rev: rev}, response);
+          resolve(response);
+        }).catch((err)=>{
+          this.print('remove flow error',{id: id, rev: rev}, err, true);
+          reject(err);
+        });
+      });
     })
   }
 }
