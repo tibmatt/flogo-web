@@ -1,4 +1,12 @@
-<div class="flogo-flows-detail-triggers">
+<div class="flogo-common-edit-panel flogo-flows-detail-triggers">
+
+  <div class="flogo-common-edit-panel__head">
+    <div class="flogo-common-edit-panel__head-wrapper">
+      <h3 class="flogo-common-edit-panel__head-title">Add Task</h3>
+      <div class="flogo-common-edit-panel__head-subtitle"></div>
+    </div>
+  </div>
+
   <h3 class="flogo-flows-detail-triggers__list__header">Select a trigger</h3>
   <ul class="flogo-flows-detail-triggers__list">
       <li *ngFor="#trigger of triggers" class="flogo-flows-detail-triggers__list__item" (click)="sendAddTriggerMsg(trigger)" >{{trigger.name}}</li>

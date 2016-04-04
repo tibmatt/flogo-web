@@ -12,9 +12,23 @@ div {
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('fonts/SourceSansPro-Regular.eot');
+  src: url('fonts/SourceSansPro-Regular.ttf')  format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('fonts/SourceSansPro-Bold.eot');
+  src: url('fonts/SourceSansPro-Bold.ttf')  format('truetype');
+  font-weight: bold;
+}
+
 /* Set up a default font and some padding to provide breathing room */
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
+  /*font-family: Roboto, "Helvetica Neue", sans-serif;*/
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -67,8 +81,15 @@ button[hidden] {
 }
 
 /* TODO: Only for demo, need to find a way to add custom class to modal's parent */
+
 .modal-content {
+  border-radius: 4px;
+  box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.3);
   padding: 39px 39px 60px;
+}
+
+.modal-backdrop {
+  background-color: rgba(113, 113, 113, 0.8);
 }
 
 .flogo-flows-detail-tasks-install-modal .category-list__title,
@@ -121,3 +142,44 @@ button[hidden] {
 .flogo-flows-detail-triggers-install-modal .activities-list__activity.installed .install-status-icon {
   color: #d8d8d8;
 }
+
+/* Edit panel */
+.flogo-common-edit-panel {
+  background-color: #fff;
+}
+
+.flogo-common-edit-panel__head {
+  background-color: #79b8dc;
+  color: #fff;
+  min-height: 99px;
+  padding: 29px 16px 24px;
+}
+
+.flogo-common-edit-panel__head-wrapper {
+  display: inline-block;
+}
+
+.flogo-common-edit-panel__head-title {
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  padding: 0;
+  letter-spacing: 2px;
+}
+
+.flogo-common-edit-panel__head-subtitle {
+
+}
+
+.flogo-common-edit-panel__head-icon {
+  display: inline-block;
+  margin-right: 11px;
+  height: 46px;
+  width: 46px;
+}
+
+
+.flogo-common-edit-panel__tile-list {
+  margin: 0;
+  padding: 0;
+}
+
