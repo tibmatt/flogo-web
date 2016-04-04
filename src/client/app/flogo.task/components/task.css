@@ -4,7 +4,6 @@
 .flogo-task .flogo-task__main-panel {
   display: flex;
   flex-direction: column;
-  margin: 10px;
 }
 .flogo-task .flogo-task__main-panel__demo-generate-ui {
   display: flex;
@@ -20,5 +19,4 @@
 }
 .flogo-task .flogo-task__task-panel {
   width: 100%;
-  border: 1px solid gray;
 }

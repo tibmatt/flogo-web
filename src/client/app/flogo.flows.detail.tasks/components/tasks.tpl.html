@@ -8,12 +8,14 @@
   </div>
 
   <div class="filter-box">
-    <input class="filter-box__input" type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks" >
+    <input class="filter-box__input" type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks">
   </div>
+
   <flogo-flows-detail-tasks-install></flogo-flows-detail-tasks-install>
-  <ul class="task-list list-unstyled">
-    <li class="task-list__task" *ngFor="#task of filteredTasks" (click)="sendAddTaskMsg(task)">
-      <i class="fa fa-gears"></i> {{task.name}}
+
+  <ul class="flogo-common-edit-panel__tiles-list">
+    <li class="flogo-common-edit-panel__tiles-list-tile" *ngFor="#task of filteredTasks"
+        (click)="sendAddTaskMsg(task)">{{task.name}}
     </li>
   </ul>
 </div>

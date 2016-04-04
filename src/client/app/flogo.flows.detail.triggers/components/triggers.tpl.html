@@ -2,14 +2,17 @@
 
   <div class="flogo-common-edit-panel__head">
     <div class="flogo-common-edit-panel__head-wrapper">
-      <h3 class="flogo-common-edit-panel__head-title">Add Task</h3>
+      <h3 class="flogo-common-edit-panel__head-title">Add Trigger</h3>
       <div class="flogo-common-edit-panel__head-subtitle"></div>
     </div>
   </div>
 
-  <h3 class="flogo-flows-detail-triggers__list__header">Select a trigger</h3>
-  <ul class="flogo-flows-detail-triggers__list">
-      <li *ngFor="#trigger of triggers" class="flogo-flows-detail-triggers__list__item" (click)="sendAddTriggerMsg(trigger)" >{{trigger.name}}</li>
-  </ul>
+  <!-- Search -->
+
   <flogo-flows-detail-triggers-install></flogo-flows-detail-triggers-install>
+
+  <ul class="flogo-common-edit-panel__tiles-list flogo-flows-detail-triggers__list">
+      <li *ngFor="#trigger of triggers" class="flogo-common-edit-panel__tiles-list-tile flogo-flows-detail-triggers__list__item"
+          (click)="sendAddTriggerMsg(trigger)" >{{trigger.name}}</li>
+  </ul>
 </div>

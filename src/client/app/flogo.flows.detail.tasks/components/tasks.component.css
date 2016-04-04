@@ -1,13 +1,3 @@
-.title {
-  background-color: #79b8dc;
-  color: #fff;
-  font-size: 24px;
-  line-height: 99px;
-  height: 99px;
-  margin-top: 0;
-  padding-left: 21px;
-  padding-right: 21px;
-}
 
 .filter-box {
   margin: 19px 21px;
@@ -15,21 +5,4 @@
 
 .filter-box__input {
   width: 100%;
-}
-
-.task-list {
-  border-bottom: solid 1px #d8d8d8;
-}
-
-.task-list__task {
-  border-top: solid 1px #d8d8d8;
-  height: 60px;
-  margin-top: 0;
-  padding: 16px 20px 14px;
-  text-transform: uppercase;
-}
-
-.task-list__task:hover {
-  background-color: #d8d8d8;
-  cursor: pointer;
 }

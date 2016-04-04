@@ -151,6 +151,7 @@ button[hidden] {
 .flogo-common-edit-panel__head {
   background-color: #79b8dc;
   color: #fff;
+  margin-bottom: 10px;
   min-height: 99px;
   padding: 29px 16px 24px;
 }
@@ -161,7 +162,7 @@ button[hidden] {
 
 .flogo-common-edit-panel__head-title {
   font-weight: bold;
-  margin: 0 0 10px 0;
+  margin: 0;
   padding: 0;
   letter-spacing: 2px;
 }
@@ -177,9 +178,34 @@ button[hidden] {
   width: 46px;
 }
 
+.flogo-common-edit-panel__btn-download {
+  background: url('svg/flogo.icon.download.svg') no-repeat;
+  background-position-x: 24px;
+  background-position-y: 9px;
+  padding: 10px 24px 10px 60px; /* Extra padding for icon */
+  text-align: left;
+  width: 100%;
+}
 
-.flogo-common-edit-panel__tile-list {
-  margin: 0;
+.flogo-common-edit-panel__tiles-list {
+  border-bottom: solid 1px #d8d8d8;
+  margin: 10px 0 0 0;
+  list-style: none;
   padding: 0;
 }
 
+.flogo-common-edit-panel__tiles-list-tile {
+  border-top: solid 1px #d8d8d8;
+  background: url('svg/flogo.flows.detail.tasks.gears.svg') no-repeat center left 20px,
+    url('svg/flogo.icon.checked.circle.svg') no-repeat center right 20px;
+  color: #666;
+  font-weight: bold;
+  margin: 0;
+  padding: 15px 53px 15px 60px;
+  text-transform: uppercase;
+}
+
+.flogo-common-edit-panel__tiles-list-tile:hover {
+  background-color: #ececec;
+  cursor: pointer;
+}

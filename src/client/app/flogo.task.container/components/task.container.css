@@ -1,7 +1,6 @@
 .flogo-task-container {
   display: flex;
   flex-direction: column;
-  background-color: #F9FAFB;
 }
 /*
 .flogo-task-container .flogo-task-container__header {
@@ -19,9 +18,10 @@
   min-height: 10px;
 }
 .flogo-task-container .flogo-task-container__footer {
-  border-top: 1px solid lightgray;
+  background-color: #f8f8f8;
+  border-top: 1px solid #b5b5b5;
+  color: #666;
   margin-top: 10px;
-  color: white;
-  padding: 10px;
-  min-height: 50px;
+  min-height: 83px;
+  padding: 19px 16px;
 }
