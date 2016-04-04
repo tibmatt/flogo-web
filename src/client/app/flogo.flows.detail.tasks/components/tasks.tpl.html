@@ -3,7 +3,7 @@
   <div class="filter-box">
     <input class="filter-box__input" type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks" >
   </div>
-  <flogo-flows-detail-task-install></flogo-flows-detail-task-install>
+  <flogo-flows-detail-tasks-install></flogo-flows-detail-tasks-install>
   <ul class="task-list list-unstyled">
     <li class="task-list__task" *ngFor="#task of filteredTasks" (click)="sendAddTaskMsg(task)">
       <i class="fa fa-gears"></i> {{task.name}}

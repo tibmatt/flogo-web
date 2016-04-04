@@ -4,10 +4,13 @@ import { TRIGGERS as TRIGGERS_MOCK } from '../mocks/triggers';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { RouteParams } from 'angular2/router';
 
+import {FlogoFlowsDetailTriggersInstallComponent as TriggersInstallerComponent} from '../../flogo.flows.detail.triggers.install/components/install.component';
+
 @Component(
   {
     selector : 'flogo-flows-detail-triggers',
     moduleId : module.id,
+    directives: [TriggersInstallerComponent],
     templateUrl : 'triggers.tpl.html',
     styleUrls : [ 'triggers.component.css' ]
   }

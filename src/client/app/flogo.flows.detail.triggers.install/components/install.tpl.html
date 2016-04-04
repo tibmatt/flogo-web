@@ -1,21 +1,21 @@
 <div>
   <button type="button" class="btn btn-link" (click)="modal.open()">
-    <i class="fa fa-download"></i> Install new tiles
+    <i class="fa fa-download"></i> Install new triggers
   </button>
 
   <modal [size]="'lg'" #modal>
     <modal-header [show-close]="true">
-      <div class="row flogo-flows-detail-tasks-install-modal">
+      <div class="row flogo-flows-detail-triggers-install-modal">
         <div class="col-md-7">
-          <h3 class="modal-title">Download Tiles</h3>
+          <h3 class="modal-title">Download Triggers</h3>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <input type="text" placeholder="Search">
         </div>
       </div>
     </modal-header>
     <modal-body>
-      <div class="row flogo-flows-detail-tasks-install-modal flogo-flows-detail-tasks-install-modal__content">
+      <div class="row flogo-flows-detail-triggers-install-modal flogo-flows-detail-triggers-install-modal__content">
         <div class="col-md-4">
           <h4 class="category-list__title">Category</h4>
           <ul class="list-unstyled category-list">
@@ -27,17 +27,18 @@
           </ul>
         </div>
         <div class="col-md-8">
+          <!-- TODO: change ngClass[isInstalled?true] to ngClass[isInstalled?trigger.isInstalled] -->
+          <!-- TODO: add click handling (click)="!trigger.isInstalled && install(trigger)"  -->
           <ul class="list-unstyled activities-list">
-            <li *ngFor="#activity of activities"
-                class="activities-list__activity" [ngClass]="{installed: activity.isInstalled}"
-                (click)="!activity.isInstalled && install(activity)">
+            <li *ngFor="#trigger of triggers"
+                class="activities-list__activity" [ngClass]="{installed: true}">
 
               <div class="row">
-                <div class="col-md-2"><i class="fa fa-gears"></i></div>
-                <div class="col-md-7">{{activity.name}}</div>
-                <div class="col-md-2">
-                  <i class="fa fa-check-circle-o install-status-icon" *ngIf="activity.isInstalled"></i>
-                  <i class="fa fa-download install-status-icon" *ngIf="!activity.isInstalled"></i>
+                <div class="col-sm-2"><i class="fa fa-gears"></i></div>
+                <div class="col-sm-8">{{trigger.name}}</div>
+                <div class="col-sm-2">
+                  <i class="fa fa-check-circle-o install-status-icon" *ngIf="trigger.isInstalled"></i>
+                  <i class="fa fa-download install-status-icon" *ngIf="!trigger.isInstalled"></i>
                 </div>
               </div>
             </li>

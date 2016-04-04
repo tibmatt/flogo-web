@@ -3,4 +3,5 @@
   <ul class="flogo-flows-detail-triggers__list">
       <li *ngFor="#trigger of triggers" class="flogo-flows-detail-triggers__list__item" (click)="sendAddTriggerMsg(trigger)" >{{trigger.name}}</li>
   </ul>
+  <flogo-flows-detail-triggers-install></flogo-flows-detail-triggers-install>
 </div>

@@ -24,5 +24,9 @@ export const SUB_EVENTS = {
   selectTrigger : {
     channel : 'flogo-flows-detail-triggers',
     topic : 'public-select-trigger'
+  },
+  installTrigger : {
+    channel : 'flogo-flows-detail-triggers',
+    topic : 'public-install-trigger'
   }
 };

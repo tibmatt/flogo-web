@@ -8,7 +8,7 @@ import {RESTAPIService} from "../../../common/services/rest-api.service";
 import {PostService} from "../../../common/services/post.service";
 
 @Component({
-  selector: 'flogo-flows-detail-task-install',
+  selector: 'flogo-flows-detail-tasks-install',
   directives: [MODAL_DIRECTIVES],
   moduleId: module.id,
   templateUrl: 'install.tpl.html',
