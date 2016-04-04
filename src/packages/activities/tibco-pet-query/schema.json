@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Query a pet's infromation",
   "title": "TIBCO Pet Query",
-  "category": "activity", // trigger, activity
   "inputs": [
     {
       "name":"petId"

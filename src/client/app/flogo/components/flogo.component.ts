@@ -8,7 +8,6 @@ import {PostService} from '../../../common/services/post.service';
 import { FlogoDBService } from '../../../common/services/db.service';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { HTTP_PROVIDERS } from 'angular2/http';
-//import { RESTAPITest } from '../../../common/services/rest-api.spec';
 import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
 
 @Component({

@@ -5,12 +5,14 @@ import bodyparser from 'koa-bodyparser';
 import compress from 'koa-compress';
 import {config} from './config/app-config';
 import {activities} from './api/activities';
-
+import {RegisterActivities} from './packages/activities/register-activities';
 
 let app = koa();
 let port = config.app.port;
 
 activities(app, router);
+
+let registerActivities  = new RegisterActivities();
 
 // logger
 app.use(function *(next){
@@ -46,4 +48,3 @@ app.use(bodyparser());
 app.use(router.routes());
 
 app.listen(port);
-

@@ -1,5 +1,6 @@
 import {Component} from 'angular2/core';
 import {RESTAPIFlowsService} from './restapi/flows-api.service';
+import {RESTAPIActivitiesService} from './restapi/activities-api.service';
 
 @Component({
   moduleId: module.id,
@@ -7,7 +8,7 @@ import {RESTAPIFlowsService} from './restapi/flows-api.service';
             `<div id="test-container" class="container">
 
             </div>`,
-  providers: [RESTAPIFlowsService]
+  providers: [RESTAPIFlowsService, RESTAPIActivitiesService]
 })
 
 export class RESTAPITest{

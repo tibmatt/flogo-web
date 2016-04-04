@@ -16,10 +16,12 @@ CONFIG.source='src';
 CONFIG.client=path.join(CONFIG.source, 'client');
 // server source code
 CONFIG.server=path.join(CONFIG.source, 'server');
+CONFIG.packages=path.join(CONFIG.source, 'packages');
 // generate dist folder
 CONFIG.dist= 'dist';
 CONFIG.public=path.join(CONFIG.dist, 'public');
 CONFIG.serverDist=path.join(CONFIG.dist, 'server');
+CONFIG.packagesDist =path.join(CONFIG.dist, 'packages');
 
 CONFIG.clientLibs = [
   "jquery/dist/jquery.js",
@@ -106,7 +108,7 @@ gulp.task("clean:client:dev", ()=>{
   del.sync(["public/**/*"], {cwd: CONFIG.dist});
 });
 
-gulp.task("clean:server:dev", ()=>{
+gulp.task("clean:server:dev", ['copy:packages:dev'], ()=>{
   del.sync(["**/*", "!node_modules/**", "!data/**", '!log.txt'], {cwd: CONFIG.serverDist});
 });
 
@@ -135,6 +137,11 @@ gulp.task("copy:client:lib", ()=>{
 gulp.task("copy:server:dev", ()=>{
   return gulp.src(["**/*", "package.json", "!**/node_modules/**"], {cwd: CONFIG.server})
     .pipe(gulp.dest(CONFIG.serverDist))
+});
+
+gulp.task("copy:packages:dev", ()=>{
+  return gulp.src(["**/*"], {cwd: CONFIG.packages})
+    .pipe(gulp.dest(CONFIG.packagesDist))
 });
 
 gulp.task("build:ts:dev", ()=>{

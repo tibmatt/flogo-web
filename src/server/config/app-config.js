@@ -9,8 +9,10 @@ let config = {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
     cacheTime: 7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
+  },
+  activities:{
+    path: 'packages/activities'
   }
 };
 
 export {config};
-
