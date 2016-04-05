@@ -6,7 +6,8 @@
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "clean": "rm -rfv `find . -path \"*/node_modules\" -print`"
   },
   "author": "Shaoke Xu<shaoxu@tibco.com>",
   "devDependencies": {
@@ -23,14 +24,5 @@
     "gulp-typescript": "^2.12.1",
     "mustache": "^2.2.1 ",
     "pouchdb-server": ""
-  },
-  "dependencies": {
-    "angular2": "^2.0.0-beta.13",
-    "bootstrap": "^3.3.6",
-    "es6-shim": "^0.35.0",
-    "ng2-bs3-modal": "^0.4.5",
-    "reflect-metadata": "^0.1.2",
-    "rxjs": "^5.0.0-beta.2",
-    "zone.js": "^0.6.8"
   }
 }
