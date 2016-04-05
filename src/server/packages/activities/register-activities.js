@@ -27,7 +27,7 @@ function generateActivityID(name, version){
   return id;
 }
 
-let packageJSONPath = '/Users/shaoke/SK/TIBCO/Projects/flogo/flogo-web/dist/server/packages/activities';
+let packageJSONPath = path.resolve(__dirname, '.');
 // console.log(__dirname);
 // let p = path.resolve(__dirname, '../../../../packages/activities/tibco-pet-query');
 // console.log(p);
