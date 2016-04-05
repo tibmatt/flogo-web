@@ -16,6 +16,12 @@ export enum FLOGO_TASK_TYPE {
   TASK_LOOP
 }
 
+export enum FLOGO_TASK_STATUS {
+  DEFAULT,
+  RUNNING,
+  DONE
+}
+
 export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
 
 export enum FLOGO_PROCESS_MODEL { DEFAULT }

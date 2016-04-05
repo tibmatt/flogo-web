@@ -1,10 +1,10 @@
-<div>
+<div *ngIf="!_mockLoading">
     <div class="canvas-flow">
         <!--<flogo-canvas-flow id="211"></flogo-canvas-flow>-->
         <flogo-canvas-flow-diagram [tasks]="tasks" [diagram]="diagram"></flogo-canvas-flow-diagram>
 
         <!-- the mock section below should be removed later-->
-      <section class="container-fluid" style="display:none">
+      <section class="container-fluid">
         <section class="row">
           <header>
             <h3>Mock Area in Canvas component</h3>
@@ -85,3 +85,5 @@
         <router-outlet></router-outlet>
     </div>
 </div>
+
+<div *ngIf="_mockLoading">Loading...</div>

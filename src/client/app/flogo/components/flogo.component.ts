@@ -9,13 +9,15 @@ import { FlogoDBService } from '../../../common/services/db.service';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { HTTP_PROVIDERS } from 'angular2/http';
 import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
+import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 
 @Component({
   selector: 'flogo-app',
   moduleId: module.id,
   templateUrl: 'flogo.tpl.html',
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
-  providers: [PostService,FlogoDBService, RESTAPIService, HTTP_PROVIDERS]
+  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, HTTP_PROVIDERS]
 })
 
 @RouteConfig([

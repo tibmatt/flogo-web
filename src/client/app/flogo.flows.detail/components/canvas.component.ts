@@ -25,6 +25,8 @@ import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT
 import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.task/messages'
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
+import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 
 @Component( {
   selector: 'flogo-canvas',
@@ -47,6 +49,7 @@ export class FlogoCanvasComponent {
 
   // TODO
   //  Remove this mock
+  _mockLoading = true;
   _mockHasUploadedProcess: boolean;
   _mockUploadingProcess: boolean;
   _mockStartingProcess: boolean;
@@ -99,47 +102,102 @@ export class FlogoCanvasComponent {
   constructor(
     private _postService: PostService,
     private _restAPIService: RESTAPIService,
+    private _restAPIFlowsService: RESTAPIFlowsService,
     private _routerParams: RouteParams,
     private _router: Router
   ) {
     // TODO
     //  Remove this mock
     this._mockHasUploadedProcess = false ;
+    this._mockLoading = true;
 
-    this._restAPIService.flows.getFlowByID( this._routerParams.params[ 'id' ] )
+    //  get the flow by ID
+    let id = '' + this._routerParams.params[ 'id' ];
+
+    try {
+      id = atob( id );
+    } catch ( e ) {
+      console.warn( e );
+    }
+
+    this._restAPIFlowsService.getFlow(id)
       .then(
-        ( flow : any )=> {
-          this._flow = flow;
-          this.tasks = this._flow.items;
-          if ( _.isEmpty( this._flow.paths ) ) {
-            this.diagram = this._flow.paths = <IFlogoFlowDiagram>{
-              root : {},
-              nodes : {}
-            };
+        ( rsp : any )=> {
+
+          if ( !_.isEmpty( rsp ) ) {
+            // initialisation
+            console.group( 'Initialise canvas component' );
+
+            this._flow = rsp;
+
+            this.tasks = this._flow.items;
+            if ( _.isEmpty( this._flow.paths ) ) {
+              this.diagram = this._flow.paths = <IFlogoFlowDiagram>{
+                root : {},
+                nodes : {}
+              };
+            } else {
+              this.diagram = this._flow.paths;
+            }
+
+            this.initSubscribe();
+
+            console.groupEnd();
+
+            // TODO
+            //    remove this mock later
+            return this._updateFlow( this._flow );
           } else {
-            this.diagram = this._flow.paths;
+            return this._flow;
           }
         }
       )
       .then(
         ()=> {
-          // TODO
-          //    remove this mock later
-          this._updateFlow( this._flow );
+          this._mockLoading = false;
+        }
+      )
+      .catch(
+        ( err )=> {
+          if ( err.status === 404 ) {
+
+            // TODO
+            //  this is a mock
+            // provision database with a random flow
+            // then just to open that flow
+            return this._restAPIFlowsService.createFlow(
+              {
+                "paths" : {},
+                "name" : "Payroll Distribution",
+                "description" : "This is a demo flow",
+                "items" : {}
+              }
+              )
+              .then(
+                ( rsp : any )=> {
+                  console.log( rsp );
+                  this._router.navigate(
+                    [
+                      'FlogoFlowDetail',
+                      { id : btoa( rsp.id ) }
+                    ]
+                  );  // navigation triggered
+                }
+              );
+
+          }
         }
       );
-    this.initSubscribe();
   }
 
   // TODO
   //  Remove this mock later
   private _updateMockProcess() {
     if ( !_.isEmpty( this._flow ) ) {
-
-      this._restAPIService.flows.getFlowConfigByID( this._flow.id )
+      this._restAPIFlowsService.getFlows()
         .then(
-          ( process : any )=> {
-            this._mockProcess = process;
+          ( rsp : any ) => {
+            this._mockProcess = _.find( rsp, { _id : this._flow._id } );
           }
         );
     }
@@ -148,25 +206,43 @@ export class FlogoCanvasComponent {
   private _runFromTrigger() {
 
     this.mockUploadProcess()
-      .then(() => {
-        this.mockStartProcess()
-          .then(() => {
-            this.mockGetSteps()
-              .then(() => {
-            })
-          })
-      });
+      .then(
+        (rsp : any) => {
+          return this.mockStartProcess( rsp.id );
+        }
+      )
+      .then(
+        () => {
+          this.mockGetSteps();
+        }
+      );
   }
 
   // TODO
   //  Remove this mock later
   private _updateFlow( flow : any ) {
-    this._restAPIService.flows.updateFlowByID( this._flow.id, flow )
+    // processing this._flow to pure JSON object
+    flow = _.cloneDeep( flow );
+    _.each(
+      _.keys( flow.paths ), ( key : string ) => {
+        if ( key !== 'root' && key !== 'nodes' ) {
+          delete flow.paths[ key ];
+        }
+      }
+    );
+    flow = JSON.parse( JSON.stringify( flow ) );
+
+    return this._restAPIFlowsService.updateFlow( flow )
+      .then(
+        ( rsp : any ) => {
+          console.log( rsp );
+        }
+      )
       .then(
         () => {
           // TODO
           //  remove this mock
-          this._updateMockProcess();
+          return this._updateMockProcess();
         }
       );
   }
@@ -176,25 +252,32 @@ export class FlogoCanvasComponent {
   mockUploadProcess() {
     this._mockUploadingProcess = true;
 
-    return this._restAPIService.flows.upload( this._flow.id ).then((rsp:any) => {
+    // generate process based on
+    let process = _.assign(
+      new FlogoFlowDiagram( this._flow.paths, this._flow.items ).toProcess(), { id : btoa( this._flow._id ) }
+    );
+
+    return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
       this._mockUploadingProcess = false;
       this._mockHasUploadedProcess = true;
       if (rsp) {
         this._mockProcessID = rsp.id;
       }
+
+      return rsp;
     });
   }
 
   // TODO
   //  Remove this mock later
-  mockStartProcess() {
+  mockStartProcess( id? : string ) {
     this._mockStartingProcess = true;
     this._mockSteps = null;
 
-    return this._restAPIService.flows.start(
-      this._mockProcessID, {
-        // "petId" : "20160222230266"
-      }
+    return this._restAPIFlowsService.startFlow(
+        id || this._mockProcessID, {
+          // "petId" : "20160222230266"
+        }
       )
       .then(
         ( rsp : any )=> {
@@ -630,6 +713,8 @@ export class FlogoCanvasComponent {
       this._runFromTrigger();
       //console.error('You have not run the processs yet');
     }
+
+    console.groupEnd();
 
   }
 

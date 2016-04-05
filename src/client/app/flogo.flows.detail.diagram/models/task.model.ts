@@ -3,7 +3,7 @@ import {
   IFlogoFlowDiagramTaskLink,
   IFlogoFlowDiagramTaskAttributes
 } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
 
 export interface IFlogoFlowDiagramTask {
   id : string;
@@ -18,6 +18,7 @@ export interface IFlogoFlowDiagramTask {
   outputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks ? : IFlogoFlowDiagramTask[ ];
   links ? : IFlogoFlowDiagramTaskLink[ ];
+  status ? : FLOGO_TASK_STATUS;
 }
 
 export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
@@ -33,6 +34,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   outputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks : IFlogoFlowDiagramTask[ ];
   links : IFlogoFlowDiagramTaskLink[ ];
+  status: FLOGO_TASK_STATUS;
 
   constructor( task ? : IFlogoFlowDiagramTask ) {
     this.update( task );
@@ -68,6 +70,10 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
 
     if ( !_.isEmpty( task.links ) ) {
       this.links = _.cloneDeep( task.links );
+    }
+
+    if ( !_.isEmpty(task.status)) {
+      this.status = task.status;
     }
 
   };

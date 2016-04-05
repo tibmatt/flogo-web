@@ -9,6 +9,7 @@ import {
 } from '../models';
 import { Selection } from 'd3';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import { FLOGO_TASK_STATUS } from '../../../common/constants';
 
 export interface IFlogoFlowDiagram {
   root : IFlogoFlowDiagramRootNode;
@@ -23,7 +24,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private ng2StyleAttr = '';
 
   constructor(
-    diagram : IFlogoFlowDiagram, private tasks : IFlogoFlowDiagramTaskDictionary, private elm : HTMLElement
+    diagram : IFlogoFlowDiagram, private tasks : IFlogoFlowDiagramTaskDictionary, private elm ? : HTMLElement
   ) {
     this.updateDiagram( diagram );
   }
@@ -544,46 +545,55 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     tasks.each(
       function ( d : IFlogoFlowDiagramNode ) {
         let thisNode = d3.select( this );
+        let task = diagram.tasks && diagram.tasks[ d.taskID ];
 
-        thisNode.select( '.flogo-flows-detail-diagram-node-text-title' )
-          .text(
-            ()=> {
-              let task = diagram.tasks[ d.taskID ];
-              let label = (
-                            task && task.name
-                          ) || d.id;
+        if ( task ) {
+          thisNode.select( '.flogo-flows-detail-diagram-node-text-title' )
+            .text(
+              ()=> {
+                let label = (
+                              task && task.name
+                            ) || d.id;
 
-              if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
-                label = 'ADD';
-              } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
-                label = 'Select trigger';
+                if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+                  label = 'ADD';
+                } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+                  label = 'Select trigger';
+                }
+
+                return label;
               }
+            );
 
-              return label;
-            }
-          );
-
-        thisNode.select( '.flogo-flows-detail-diagram-node-text-description' )
-          .text(
-            () => {
-              let task = diagram.tasks[ d.taskID ];
-              let description = (
-                                  task && (
-                                    task.description || `Description of ${task.name}`
-                                  )
-                                ) || `[ ${d.parents} to ${d.children} ]`;
+          thisNode.select( '.flogo-flows-detail-diagram-node-text-description' )
+            .text(
+              () => {
+                let description = (
+                                    task && (
+                                      task.description || `Description of ${task.name}`
+                                    )
+                                  ) || `[ ${d.parents} to ${d.children} ]`;
 
 
-              if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
-                description = 'Click to add an activity';
-              } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
-                description = 'Click to add a trigger';
+                if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+                  description = 'Click to add an activity';
+                } else if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+                  description = 'Click to add a trigger';
+                }
+
+
+                return description;
               }
+            );
 
-
-              return description;
-            }
-          );
+          if ( task.status === FLOGO_TASK_STATUS.RUNNING || task.status === FLOGO_TASK_STATUS.DONE ) {
+            thisNode.classed( 'flogo-flows-detail-diagram-node-run', true );
+          } else {
+            thisNode.classed( 'flogo-flows-detail-diagram-node-run', false );
+          }
+        } else {
+          thisNode.classed( 'flogo-flows-detail-diagram-node-run', false );
+        }
 
         thisNode.classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
       }

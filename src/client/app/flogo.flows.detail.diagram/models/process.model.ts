@@ -242,6 +242,9 @@ function _traversalChildren(
           // convert attributes of tasks
           _.assign( task, { id : _convertTaskID( task.id ) } );
 
+          // delete status information
+          delete task.status;
+
           tasksDest.push( task );
         }
 

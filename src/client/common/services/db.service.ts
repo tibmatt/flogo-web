@@ -169,12 +169,20 @@ export class FlogoDBService{
       if(!doc['updated_at']){
         doc['updated_at'] = new Date().toISOString();
       }
-      this._db.put(doc).then((response)=>{
-        console.log("response: ", response);
-        resolve(response);
-      }).catch((err)=>{
-        console.error(err);
-        reject(err);
+      this._db.get(doc._id).then(
+        ( dbDoc : any )=> {
+
+          doc = _.cloneDeep( doc );
+          delete doc[ '_rev' ];
+          _.assign( dbDoc, doc );
+
+          return this._db.put( dbDoc ).then((response)=>{
+            console.log("response: ", response);
+            resolve(response);
+          }).catch((err)=>{
+            console.error(err);
+            reject(err);
+          });
       });
     });
   }
@@ -225,6 +233,10 @@ export class FlogoDBService{
         })
       }
     });
+  }
+
+  get( id : string ) {
+    return this._db.get( id );
   }
 
 }

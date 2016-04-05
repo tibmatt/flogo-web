@@ -1,9 +1,10 @@
 import { Injectable } from 'angular2/core';
 import { FlogoDBService } from '../db.service';
+import { Http, Headers, RequestOptions, Response } from 'angular2/http';
 
 @Injectable()
 export class RESTAPIFlowsService{
-  constructor(private _db: FlogoDBService){
+  constructor(private _db: FlogoDBService, private http:Http){
   }
 
   createFlow(flowObj: Object){
@@ -63,5 +64,64 @@ export class RESTAPIFlowsService{
         reject(err);
       })
     });
+  }
+
+  getFlow( id : string ) {
+    return this._db.get( id );
+  }
+
+  uploadFlow( process : any ) {
+    //  upload current flow to process service server
+
+    let body = JSON.stringify( process );
+    let headers = new Headers(
+      {
+        'Content-Type' : 'application/json',
+        'Accept' : 'application/json'
+      }
+    );
+    let options = new RequestOptions( { headers : headers } );
+
+    return this.http.post( 'http://localhost:9090/processes', body, options )
+      .toPromise().then(
+        ( response : Response ) => {
+          if ( response.text() ) {
+            return response.json()
+          } else {
+            return response;
+          }
+        }
+      );
+  }
+
+  startFlow( id : string, data : any ) {
+    let body = JSON.stringify(
+      {
+        "processUri" : `http://localhost:9090/processes/${id}`,
+        "data" : data
+      }
+    );
+
+    let headers = new Headers(
+      {
+        'Content-Type' : 'application/json',
+        'Accept' : 'application/json'
+      }
+    );
+
+    let options = new RequestOptions( { headers : headers } );
+
+
+    return this.http.post( 'http://localhost:8080/process/start', body, options )
+      .toPromise()
+      .then(
+        rsp => {
+          if ( rsp.text() ) {
+            return rsp.json();
+          } else {
+            return rsp;
+          }
+        }
+      );
   }
 }
