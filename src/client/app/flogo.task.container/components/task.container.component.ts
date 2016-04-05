@@ -4,7 +4,7 @@ import {FlogoTaskFieldStringComponent} from '../../flogo.task.field/components/f
 import {FlogoTaskFieldNumberComponent} from '../../flogo.task.field/components/field-number.component';
 import {FlogoTaskFieldBooleanComponent} from '../../flogo.task.field/components/field-boolean.component';
 import {FlogoTaskFieldObjectComponent} from '../../flogo.task.field/components/field-object.component';
-import {Observable, BehaviorSubject} from 'rxjs/Rx';
+import {Observable, BehaviorSubject, ReplaySubject} from 'rxjs/Rx';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
 import {PostService} from '../../../common/services/post.service';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
@@ -18,6 +18,7 @@ import {PUB_EVENTS, SUB_EVENTS} from '../messages';
   directives: [ROUTER_DIRECTIVES]
 })
 export class FlogoTaskContainerComponent{
+  hasChanges:boolean;
   task:any;
   data:any;
   _subscriptions: any[];
@@ -31,6 +32,7 @@ export class FlogoTaskContainerComponent{
   canRunFromThisTile:boolean;
 
   constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef, private _postService:PostService) {
+    this.hasChanges = false;
 
     this.componentsByType =  {
       [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: FlogoTaskFieldStringComponent,
@@ -108,10 +110,10 @@ export class FlogoTaskContainerComponent{
     });
 
     this.inputFields = [];
-    this.fieldSubject = new BehaviorSubject('');
+    this.fieldSubject = new ReplaySubject(2);
 
     this.fieldSubject.subscribe((value:string) => {
-      //this.getModifiedStateTask();
+      this.hasChanges = true;
     });
 
     if(!this.data.attributes) {

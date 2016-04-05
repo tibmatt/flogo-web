@@ -26,7 +26,7 @@
       <button class="btn btn-primary" [disabled]="!canRunFromThisTile" (click)="runFromThisTile($event)"><span
         class="glyphicon glyphicon-play" aria-hidden=""></span> Run from this tile
       </button>
-      <button class="btn btn-default">Cancel</button>
+      <button class="btn btn-default" [disabled]="!hasChanges">Cancel</button>
     </div>
 
   </div>

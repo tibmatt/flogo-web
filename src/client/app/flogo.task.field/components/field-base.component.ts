@@ -7,14 +7,13 @@ export class FlogoTaskFieldBaseComponent{
   parameterType: string;
 
   onChangeField() {
-    //this.fieldSubject.next('changing field');
+    this.fieldSubject.next(this.value);
   }
 
   updateValue(parameterType:string, name:string, value:string) {
     if(parameterType === this.parameterType && this.schema.name === name) {
       this.value = value;
     }
-
   }
 
   setConfiguration(fieldSchema:any, fieldSubject:any, parameterType:any) {
