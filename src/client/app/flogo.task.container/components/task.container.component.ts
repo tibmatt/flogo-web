@@ -9,6 +9,9 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
 import {PostService} from '../../../common/services/post.service';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 
+const INPUT_FIELDS = 'inputFields';
+const OUTPUT_FIELDS = 'outputFields';
+
 @Component({
   selector: 'flogo-task-container',
   styleUrls: ['task.container.css'],
@@ -30,9 +33,11 @@ export class FlogoTaskContainerComponent{
   inputFields: Object[];
   hasErrors:boolean;
   canRunFromThisTile:boolean;
+  initialFields:any;
 
   constructor(public dcl: DynamicComponentLoader, public elementRef:ElementRef, private _postService:PostService) {
     this.hasChanges = false;
+    this.inputFields = [];
 
     this.componentsByType =  {
       [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: FlogoTaskFieldStringComponent,
@@ -65,7 +70,7 @@ export class FlogoTaskContainerComponent{
     // update the value of the fields
     this.inputFields.forEach((input:any) => {
       outputs.forEach((field:any)=> {
-        input.instance.updateValue('outputFields',field.name,field.value);
+        input.instance.updateValue(OUTPUT_FIELDS,field.name,field.value);
       });
     });
 
@@ -100,18 +105,15 @@ export class FlogoTaskContainerComponent{
     }
   }
 
+  getCanRunFromThisTile(step:any) {
+    return (step.result || !step.result && step.number == 1);
+  }
+
   ngOnInit() {
-    this.inputFields = [];
     this.hasErrors = false;
-    this.canRunFromThisTile = false;
 
-    this.inputFields.forEach((input:any) => {
-      input.dispose();
-    });
-
-    this.inputFields = [];
+    // detect changes on the fields
     this.fieldSubject = new ReplaySubject(2);
-
     this.fieldSubject.subscribe((value:string) => {
       this.hasChanges = true;
     });
@@ -120,14 +122,32 @@ export class FlogoTaskContainerComponent{
       this.data.attributes ={};
     }
 
-    //if(this.data.stepResult || !this.data.stepResult && this.data.stepNumber == 1) {
     if(!this.data.step) {
       this.data.step = {};
     }
-    if(this.data.step.result || !this.data.step.result && this.data.step.number == 1) {
-      this.canRunFromThisTile = true;
-    }
+    this.canRunFromThisTile = this.getCanRunFromThisTile(this.data.step);
+    this.restartFields();
+  }
 
+  restartFields() {
+    this.initialFields = this.initFields();
+
+    this.addFieldSetToDOM(this.initialFields.inputs, INPUT_FIELDS);
+    this.addFieldSetToDOM(this.initialFields.outputs, OUTPUT_FIELDS);
+  }
+
+  cancelEdit() {
+    this.restartFields();
+    this.hasChanges = false;
+  }
+
+
+  initFields() {
+    this.inputFields.forEach((input:any) => {
+      input.dispose();
+    });
+
+    this.inputFields = [];
 
     var inputs =  _.cloneDeep(this.data.attributes.inputs || []);
     var outputs = _.cloneDeep(this.data.attributes.outputs || []);
@@ -135,9 +155,7 @@ export class FlogoTaskContainerComponent{
     this._mapResults(outputs, this.data.step.result, this.data.outputMappings);
     //TODO  inputs
 
-
-    this.addFieldSetToDOM(inputs, 'inputFields');
-    this.addFieldSetToDOM(outputs, 'outputFields');
+    return { inputs, outputs };
   }
 
   addFieldSetToDOM(fieldSet:any, location:string) {
@@ -177,7 +195,7 @@ export class FlogoTaskContainerComponent{
       let field:any = input.instance.exportToJson();
       let key = Object.keys(field)[0];
       let value = field[key];
-      if(input.instance.getParameterType() === 'inputFields') {
+      if(input.instance.getParameterType() === INPUT_FIELDS) {
         jsonInputs[key] = value;
       } else {
         jsonOutputs[key] = value;
