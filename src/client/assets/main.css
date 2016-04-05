@@ -51,7 +51,7 @@ li {
   font-weight: 400;
   margin-top: 4px;
 }
-
+/*
 input {
   border: 1px solid #106cc8;
   font-size: 14px;
@@ -75,10 +75,62 @@ button {
 button:hover {
   background-color: #28739e;
 }
+*/
 
 button[hidden] {
   display: none;
 }
+
+
+label {
+  color: #8493a8;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.flogo-btn-link {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.3333333;
+  outline: none;
+  padding: 10px 36px;
+}
+
+.flogo-btn-link:hover {
+  color: #79b8dc;
+}
+
+.flogo-btn-link:active {
+  color: #062e79;
+}
+
+.flogo-input-search {
+  border: 1px solid #106cc8;
+  font-size: 14px;
+  height: 40px;
+  outline: none;
+  padding: 8px;
+}
+
+.flogo-btn-link[disabled],
+.flogo-btn-link[disabled]:hover,
+.flogo-btn-link.disabled,
+.flogo-btn-link.disabled:hover {
+  color: #cad3df;
+}
+
+/*---------------------------*\
+  TIBCO Cloud UI Pattern adjustments
+\*---------------------------*/
+
+.tc-text-areas {
+  width: 100%;
+}
+
+/* ================ */
 
 /* TODO: Only for demo, need to find a way to add custom class to modal's parent */
 
@@ -178,6 +230,10 @@ button[hidden] {
   width: 46px;
 }
 
+.flogo-common-edit-panel__container {
+  padding: 10px 19px 10px 17px;
+}
+
 .flogo-common-edit-panel__btn-download {
   background: url('svg/flogo.icon.download.svg') no-repeat;
   background-position-x: 24px;
@@ -208,4 +264,27 @@ button[hidden] {
 .flogo-common-edit-panel__tiles-list-tile:hover {
   background-color: #ececec;
   cursor: pointer;
+}
+
+.flogo-common-edit-panel__legend {
+  background-color: #f4f4f4;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  margin: 10px 0 0 0;
+  line-height: 1.5;
+  padding: 5px 16px;
+  text-transform: uppercase;
+}
+
+.flogo-common-edit-panel__container .flogo-common-edit-panel__legend {
+  margin: 10px -19px 10px -17px;
+}
+
+.flogo-common-edit-panel__container > .flogo-common-edit-panel__legend:first-child {
+  margin-top: -20px;
+}
+
+.flogo-common-edit-panel__head + .flogo-common-edit-panel__legend {
+  margin-top: -10px;
 }

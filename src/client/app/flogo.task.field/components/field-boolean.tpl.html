@@ -1,17 +1,20 @@
 <div class="flogo-task-field">
   <label class="control-label">{{schema.title}}</label>
 
-  <div class="flogo-task-field__boolean">
-    <div>
-      <input type="radio" name="booleanValue" value=true  id="trueValue"
+  <div class="flogo-task-field__boolean-radio">
+    <div class="flogo-task-field__radio tc-radio-buttons tc-radio-button">
+      <input type="radio" name="booleanValue" value=true id="trueValue"
              (change)="value=$event.target.value;onChangeField()"
-             class="flogo-task-field__boolean_input" [attr.checked]="value === true ? '' : null "> True
-
-      <input type="radio" name="booleanValue" value=false id="falseValue"
-             (change)="value=$event.target.value;onChangeField()"
-             class="flogo-task-field__boolean_input" [attr.checked]="value === false ? '' : null "> False
+             class="flogo-task-field__boolean_input" [attr.checked]="value === true ? '' : null ">
+      <label for="trueValue"><span class="flogo-task-field__boolean__label-text">True</span></label>
     </div>
 
+    <div class="flogo-task-field__boolean-radio tc-radio-buttons tc-radio-button">
+      <input type="radio" name="booleanValue" value=false id="falseValue"
+             (change)="value=$event.target.value;onChangeField()"
+             class="flogo-task-field__boolean_input" [attr.checked]="value === false ? '' : null ">
+      <label for="falseValue"><span class="flogo-task-field__boolean__label-text">False</span></label>
+    </div>
   </div>
 
 </div>
