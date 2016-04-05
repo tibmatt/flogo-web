@@ -448,7 +448,24 @@ export class FlogoCanvasComponent {
 
           console.groupEnd();
         }
+      ).
+    then(()=> {
+      this._postService.publish(
+        _.assign(
+          {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+            data : {
+              node : data.node,
+              task : this.tasks[ data.node.taskID ]
+            },
+            done : ( diagram : IFlogoFlowDiagram ) => {
+              _.assign( this.diagram, diagram );
+              this._updateFlow( this._flow );
+            }
+          }
+        )
       );
+    }) ;
+
 
   }
 
