@@ -8,6 +8,7 @@ import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/compon
 import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
+import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -24,6 +25,8 @@ import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT
 
 import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.task/messages'
 
+import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
+
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
@@ -33,7 +36,7 @@ import { flogoIDDecode, flogoIDEncode } from '../../../common/utils';
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoCanvasFlowComponent, FlogoFlowsDetailDiagramComponent ],
+  directives: [ RouterOutlet, FlogoCanvasFlowComponent, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ]
 } )
@@ -80,7 +83,7 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback : this._addTriggerFromTriggers.bind( this ) } ),
       _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
-      _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } )
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
       // _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerGraphic.bind( this ) } )
     ];
 
@@ -567,6 +570,14 @@ export class FlogoCanvasComponent {
     }
   }
 
+  mockOpenTransform() {
+    this._selectTaskToTransformFromDiagram({
+      task: {
+        name: 'Pet Query'
+      }
+    });
+  }
+
   private _addTriggerFromDiagram( data : any, envelope : any ) {
     console.group( 'Add trigger message from diagram' );
 
@@ -939,6 +950,29 @@ export class FlogoCanvasComponent {
     }
 
     console.groupEnd();
+
+  }
+
+  private _selectTaskToTransformFromDiagram(data:any, envelope:any) {
+
+    // TODO: somehow get the previous tiles
+    let previous = [
+        {
+          name: 'http trigger'
+        },
+        {
+          name: 'IP Query'
+        }
+      ];
+
+    this._postService.publish(_.assign(
+      {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
+        data: {
+          previous,
+          tile: data.task
+        }
+      }
+    ));
 
   }
 

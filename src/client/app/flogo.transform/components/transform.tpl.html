@@ -1,0 +1,27 @@
+<div>
+  <modal [size]="'lg'" #transformModal>
+    <modal-header [show-close]="true">
+      <h2>Transformation</h2>
+    </modal-header>
+    <modal-body>
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          <legend>Previous tiles</legend>
+          <pre>{{ data.previous | json }}</pre>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <legend>Transformation</legend>
+          <textarea #codeInput [ngFormControl]="codeControl" (keyup)="onCodeChange(codeInput.value)" name="" id="" cols="30" rows="12"></textarea>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <legend>Input data <small>{{ data.tile?.name }}</small></legend>
+          <pre>{{ data.tile | json }}</pre>
+        </div>
+      </div>
+    </modal-body>
+    <modal-footer>
+      <button class="tc-buttons tc-buttons-secondary" (click)="deleteTransform()">Delete</button>
+      <button class="tc-buttons tc-buttons-primary" (click)="saveTransform()">Save</button>
+    </modal-footer>
+  </modal>
+</div>
