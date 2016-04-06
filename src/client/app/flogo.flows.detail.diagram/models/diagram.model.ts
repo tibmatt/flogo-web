@@ -185,20 +185,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       .enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
-      .classed( 'flogo-flows-detail-diagram-row', true );
-
-    // enterRows.style( 'opacity', 1e-6 )
-    //   .transition( )
-    //   .duration( 350 )
-    //   .style( 'opacity', 1 );
-
-    // enter selection
-    let tasks = this._preprocessTaskNodes( enterRows );
-
-    this._handleTaskNodes( tasks );
-
-    // update selection
-    rows.classed( 'updated', true )
+      .classed( 'flogo-flows-detail-diagram-row', true )
       .on(
         'mouseenter', function () {
           d3.select( this )
@@ -211,6 +198,19 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             .classed( 'hover', false );
         }
       );
+
+    // enterRows.style( 'opacity', 1e-6 )
+    //   .transition( )
+    //   .duration( 350 )
+    //   .style( 'opacity', 1 );
+
+    // enter selection
+    let tasks = this._preprocessTaskNodes( enterRows );
+
+    this._handleTaskNodes( tasks );
+
+    // update selection
+    rows.classed( 'updated', true );
 
     tasks = this._preprocessTaskNodes( rows );
 
