@@ -17,8 +17,18 @@ export class FlogoTaskFieldBaseComponent{
   }
 
   updateValue(parameterType:string, name:string, value:string) {
+
     if(parameterType === this.parameterType && this.schema.name === name) {
-      this.value = value;
+
+      if(this.schema.type === FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT) {
+        if(typeof value === "object") {
+          this.value = JSON.stringify(value, null, 2);
+        }else {
+          this.value = value;
+        }
+      } else {
+        this.value = value;
+      }
     }
   }
 

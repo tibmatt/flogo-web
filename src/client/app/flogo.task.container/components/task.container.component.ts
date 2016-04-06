@@ -100,7 +100,19 @@ export class FlogoTaskContainerComponent{
             return output.name === mapping.value;
           });
           if(item) {
-            item.value = attribute.value;
+            var value:any;
+
+            if(item.type === FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT) {
+              if(!attribute.value) {
+                value = {};
+              } else {
+                value = JSON.parse(attribute.value);
+              }
+            } else {
+              value = attribute.value;
+            }
+
+            item.value = value;
           }
         }
       });
@@ -112,7 +124,6 @@ export class FlogoTaskContainerComponent{
   }
 
   updateAttributeByUserChanges(changedObject:any) {
-    //var fields = (changedObject.parameterType === INPUT_FIELDS) ? this.data.attributes.inputs || [] : this.data.attributes.outputs || [];
     var fields = (changedObject.parameterType === INPUT_FIELDS) ? this.initialFields.inputs || [] : this.initialFields.outputs || [];
 
     var item = _.find(fields, (field:any) => {
