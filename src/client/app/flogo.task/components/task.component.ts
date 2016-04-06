@@ -33,7 +33,7 @@ export class FlogoTaskComponent{
     this._subscriptions = [];
 
     let subs = [
-      _.assign( {}, FLOGO_TASKCONTAINER_SUB_EVENTS.runFromThisTitle, { callback : this._runFromThisTile.bind( this ) } ),
+      _.assign( {}, FLOGO_TASKCONTAINER_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.updateTaskResults, { callback : this._updateTaskResults.bind( this ) } )
     ];
 
@@ -61,7 +61,7 @@ export class FlogoTaskComponent{
   }
 
   _runFromThisTile(data:any, envelope:any) {
-    this._postService.publish(_.assign({}, PUB_EVENTS.runFromThisTile, {data}));
+    this._postService.publish(_.assign({}, PUB_EVENTS.runFromThisTile, {data}, {done:envelope.done}));
   }
 
   getStateData() {

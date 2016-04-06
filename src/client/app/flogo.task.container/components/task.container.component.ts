@@ -77,6 +77,8 @@ export class FlogoTaskContainerComponent{
   }
 
   ngOnDestroy() {
+
+
     _.each( this._subscriptions, sub => {
         this._postService.unsubscribe( sub );
       }
@@ -109,14 +111,36 @@ export class FlogoTaskContainerComponent{
     return (step.result || !step.result && step.number == 1);
   }
 
+  updateAttributeByUserChanges(changedObject:any) {
+    //var fields = (changedObject.parameterType === INPUT_FIELDS) ? this.data.attributes.inputs || [] : this.data.attributes.outputs || [];
+    var fields = (changedObject.parameterType === INPUT_FIELDS) ? this.initialFields.inputs || [] : this.initialFields.outputs || [];
+
+    var item = _.find(fields, (field:any) => {
+      return field.name === changedObject.name;
+    });
+
+    if(item) {
+      item.value = changedObject.value
+    }
+
+  }
+
+  getCurrentAttributesValues() {
+    var currentAttributesValues = sessionStorage.getItem('task-attributes-' + this.data.id);
+    return (currentAttributesValues) ? JSON.parse(currentAttributesValues) : this.data.attributes;
+  }
+
   ngOnInit() {
     this.hasErrors = false;
 
     // detect changes on the fields
     this.fieldSubject = new ReplaySubject(2);
-    this.fieldSubject.subscribe((value:string) => {
+    this.fieldSubject.subscribe((changedObject:any) => {
+      this.updateAttributeByUserChanges(changedObject);
       this.hasChanges = true;
     });
+
+    this.data.attributes = this.getCurrentAttributesValues();
 
     if(!this.data.attributes) {
       this.data.attributes ={};
@@ -238,8 +262,16 @@ export class FlogoTaskContainerComponent{
     }
     var taskId   = (this.data.step.result) ? this.data.step.result['taskId'] : 0;
 
-    this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTitle, {
-      data: {inputs, taskId}
+    this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTile, {
+      data: {inputs, taskId},
+      done: () => {
+        // If there is changes on the inputs send the changes to keep it
+        if(this.hasChanges) {
+          sessionStorage.setItem('task-attributes-' + this.data.id, JSON.stringify(this.initialFields));
+          this.data.attributes = this.getCurrentAttributesValues();
+          this.hasChanges = false;
+        }
+      }
     } ));
   }
 

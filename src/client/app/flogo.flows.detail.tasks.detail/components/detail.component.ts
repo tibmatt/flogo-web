@@ -61,6 +61,10 @@ export class FlogoFlowsDetailTasksDetail {
     this._task = data.task;
     this._task.step =  data.step;
 
+    if(_.isFunction( envelope.done )) {
+      envelope.done();
+    }
+
     // TODO
     //  this mock is to fake the modification of the task information from user
     // let keepThisInTimeout = this;

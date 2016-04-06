@@ -3,7 +3,7 @@
  */
 
 export const PUB_EVENTS = {
-  runFromThisTitle : {
+  runFromThisTile : {
     channel : 'flogo-task-container',
     topic : 'run-from-this-tile'
   }

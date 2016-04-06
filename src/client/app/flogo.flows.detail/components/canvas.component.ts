@@ -393,38 +393,6 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    // NOTE
-    //  only need this publish if the trigger has been changed
-    this._postService.publish(
-      _.assign(
-        {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
-          data : {
-            node : data.node,
-            task : this.tasks[ data.node.taskID ]
-          },
-          done : ( diagram : IFlogoFlowDiagram ) => {
-            _.assign( this.diagram, diagram );
-            this._updateFlow( this._flow );
-
-            this._showDetailTask(data);
-          }
-        }
-      )
-    );
-
-    // show the ui
-    this._postService.publish(
-      _.assign(
-        {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-          data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } )
-        }
-      )
-    );
-
-    console.groupEnd( );
-  }
-
-  _showDetailTask(data:any) {
 
     this._router.navigate(
       [
@@ -435,39 +403,46 @@ export class FlogoCanvasComponent {
       .then(
         () => {
           console.group( 'after navigation' );
+
+          // Refresh task detail
           let stepNumber = this._getStepNumberFromTask(data.node.taskID);
           data.step = {result:(stepNumber && this._mockSteps) ? this._mockSteps[stepNumber - 1] : null,
-                       number: stepNumber};
+            number: stepNumber};
           this._postService.publish(
             _.assign(
               {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } )
+                data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } ),
+
+                done: () => {
+                  // select task done
+                  //  only need this publish if the trigger has been changed
+                  this._postService.publish(
+                    _.assign(
+                      {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
+                        data : {
+                          node : data.node,
+                          task : this.tasks[ data.node.taskID ]
+                        },
+                        done : ( diagram : IFlogoFlowDiagram ) => {
+                          _.assign( this.diagram, diagram );
+                          this._updateFlow( this._flow );
+                        }
+                      }
+                    )
+                  );
+
+                }
               }
             )
           );
 
-          console.groupEnd();
         }
-      ).
-    then(()=> {
-      this._postService.publish(
-        _.assign(
-          {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-            data : {
-              node : data.node,
-              task : this.tasks[ data.node.taskID ]
-            },
-            done : ( diagram : IFlogoFlowDiagram ) => {
-              _.assign( this.diagram, diagram );
-              this._updateFlow( this._flow );
-            }
-          }
-        )
       );
-    }) ;
 
 
+    console.groupEnd( );
   }
+
 
   private _selectTaskFromDiagram( data: any, envelope: any ) {
     console.group( 'Select task message from diagram' );
@@ -483,8 +458,38 @@ export class FlogoCanvasComponent {
       .then(
         () => {
           console.group( 'after navigation' );
-          this._showDetailTask(data);
-          console.groupEnd();
+
+          // Refresh task detail
+          let stepNumber = this._getStepNumberFromTask(data.node.taskID);
+          data.step = {result:(stepNumber && this._mockSteps) ? this._mockSteps[stepNumber - 1] : null,
+            number: stepNumber};
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } ),
+
+                done: () => {
+                  // select task done
+                  this._postService.publish(
+                    _.assign(
+                      {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+                        data : {
+                          node : data.node,
+                          task : this.tasks[ data.node.taskID ]
+                        },
+                        done : ( diagram : IFlogoFlowDiagram ) => {
+                          _.assign( this.diagram, diagram );
+                          this._updateFlow( this._flow );
+                        }
+                      }
+                    )
+                  );
+
+                }
+              }
+            )
+          );
+
         }
       );
 
@@ -611,10 +616,15 @@ export class FlogoCanvasComponent {
                   }
                 });
             }.bind(this), 500);
+          }).
+          then(()=> {
 
+          if(_.isFunction(envelope.done)) {
+            envelope.done();
+          }
 
+        })
 
-          })
       }
     } else {
       this._runFromTrigger();
