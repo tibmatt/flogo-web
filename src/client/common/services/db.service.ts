@@ -1,4 +1,4 @@
-import {Injectable} from 'angular2/core';
+import { Injectable, NgZone } from 'angular2/core';
 
 @Injectable()
 export class FlogoDBService{
@@ -14,9 +14,21 @@ export class FlogoDBService{
   public DELIMITER:string = ":";
   public DEFAULT_USER_ID = 'flogoweb-admin';
 
-  constructor(){
+  constructor(private _ngZone: NgZone){
     // When create this service, initial pouchdb
     this._initDB();
+
+    this._ngZone.onError.subscribe(
+      ( err : any )=> {
+        if ( _.isFunction( err && err.error && err.error.promise && err.error.promise.catch ) ) {
+          err.error.promise.catch(
+            ( err : any )=> {
+              console.info( err );
+            }
+          );
+        }
+      }
+    );
   }
 
   /**
@@ -29,6 +41,7 @@ export class FlogoDBService{
     }).catch(function(err:Object){
       console.error(err);
     });
+
     this._syncActivities = PouchDB.sync('flogo-web-activities-local', 'http://localhost:5984/flogo-web-activities', {
       live: false,
       retry: true
