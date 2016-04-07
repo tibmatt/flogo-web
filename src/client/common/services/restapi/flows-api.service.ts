@@ -88,7 +88,11 @@ export class RESTAPIFlowsService{
           if ( response.text() ) {
             return response.json()
           } else {
-            return response;
+            // TODO
+            //  need to handle the empty response
+            //  maybe later on the /processes API should be changed to reply the exist process
+            //  instead of an empty response, however, in that case this block won't be run
+            return {};
           }
         }
       );

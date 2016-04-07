@@ -47,16 +47,18 @@ import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagra
 export class FlogoCanvasComponent {
   _subscriptions : any[];
 
+  _currentProcessID: string;
+  _isCurrentProcessDirty = true;
+  _hasUploadedProcess: boolean;
+  _uploadingProcess: boolean;
+
   // TODO
   //  Remove this mock
   _mockLoading = true;
-  _mockHasUploadedProcess: boolean;
-  _mockUploadingProcess: boolean;
   _mockStartingProcess: boolean;
   _mockGettingStepsProcess: boolean;
   _mockSteps: any;
   _mockProcess: any;
-  _mockProcessID: string;
   _mockProcessInstanceID: string;
   _mockDataToRestart : string = JSON.stringify(
     {
@@ -106,9 +108,10 @@ export class FlogoCanvasComponent {
     private _routerParams: RouteParams,
     private _router: Router
   ) {
+    this._hasUploadedProcess = false ;
+
     // TODO
     //  Remove this mock
-    this._mockHasUploadedProcess = false ;
     this._mockLoading = true;
 
     //  get the flow by ID
@@ -144,8 +147,6 @@ export class FlogoCanvasComponent {
 
             console.groupEnd();
 
-            // TODO
-            //    remove this mock later
             return this._updateFlow( this._flow );
           } else {
             return this._flow;
@@ -198,6 +199,9 @@ export class FlogoCanvasComponent {
         .then(
           ( rsp : any ) => {
             this._mockProcess = _.find( rsp, { _id : this._flow._id } );
+            this._mockProcess = _.assign(
+              new FlogoFlowDiagram( this._mockProcess.paths, this._mockProcess.items ).toProcess(), { id : btoa( this._flow._id ) }
+            );
           }
         );
     }
@@ -205,22 +209,27 @@ export class FlogoCanvasComponent {
 
   private _runFromTrigger() {
 
-    this.mockUploadProcess()
+    return this.uploadProcess()
       .then(
         (rsp : any) => {
-          return this.mockStartProcess( rsp.id );
+          if ( !_.isEmpty( rsp ) ) {
+            return this.mockStartProcess( rsp.id );
+          } else {
+            // the process isn't changed
+            return this.mockStartProcess( this._currentProcessID );
+          }
         }
       )
       .then(
         () => {
-          this.mockGetSteps();
+          return this.mockGetSteps();
         }
       );
   }
 
-  // TODO
-  //  Remove this mock later
   private _updateFlow( flow : any ) {
+    this._isCurrentProcessDirty = true;
+
     // processing this._flow to pure JSON object
     flow = _.cloneDeep( flow );
     _.each(
@@ -247,10 +256,8 @@ export class FlogoCanvasComponent {
       );
   }
 
-  // TODO
-  //  Remove this mock later
-  mockUploadProcess() {
-    this._mockUploadingProcess = true;
+  uploadProcess() {
+    this._uploadingProcess = true;
 
     // generate process based on
     let process = _.assign(
@@ -258,10 +265,11 @@ export class FlogoCanvasComponent {
     );
 
     return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
-      this._mockUploadingProcess = false;
-      this._mockHasUploadedProcess = true;
-      if (rsp) {
-        this._mockProcessID = rsp.id;
+      this._uploadingProcess = false;
+      this._hasUploadedProcess = true;
+      if ( !_.isEmpty( rsp ) ) {
+        this._currentProcessID = rsp.id;
+        this._isCurrentProcessDirty = false;
       }
 
       return rsp;
@@ -275,7 +283,7 @@ export class FlogoCanvasComponent {
     this._mockSteps = null;
 
     return this._restAPIFlowsService.startFlow(
-        id || this._mockProcessID, {
+        id || this._currentProcessID, {
           // "petId" : "20160222230266"
         }
       )

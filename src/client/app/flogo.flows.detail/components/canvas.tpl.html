@@ -18,14 +18,14 @@
           </div>
 
           <div class="col-xs-12">
-            <button type="button" class="btn btn-warning" (click)="mockUploadProcess()"
-                    [disabled]="_mockUploadingProcess">Upload process
+            <button type="button" class="btn btn-warning" (click)="uploadProcess()"
+                    [disabled]="_uploadingProcess">Upload process
             </button>
             <button type="button" class="btn btn-default" (click)="mockStartProcess()"
-                    [disabled]="_mockStartingProcess" [hidden]="!_mockHasUploadedProcess">Start process
+                    [disabled]="_mockStartingProcess" [hidden]="!_hasUploadedProcess">Start process
             </button>
             <button type="button" class="btn btn-default" (click)="mockGetSteps()"
-                    [disabled]="_mockGettingStepsProcess" [hidden]="!_mockHasUploadedProcess">Get steps
+                    [disabled]="_mockGettingStepsProcess" [hidden]="!_hasUploadedProcess">Get steps
             </button>
           </div>
 
@@ -45,7 +45,7 @@
 
               <div class="form-group">
                 <button type="button" class="btn btn-default" (click)="mockRestartFrom(stepToRestart)"
-                        [disabled]="_mockStartingProcess" [hidden]="!_mockHasUploadedProcess">Restart From
+                        [disabled]="_mockStartingProcess" [hidden]="!_hasUploadedProcess">Restart From
                 </button>
               </div>
             </form>
