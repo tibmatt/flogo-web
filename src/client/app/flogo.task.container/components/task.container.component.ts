@@ -271,7 +271,9 @@ export class FlogoTaskContainerComponent{
     if(!this.data.step) {
       this.data.step = {};
     }
-    var taskId   = (this.data.step.result) ? this.data.step.result['taskId'] : 0;
+    
+    // return the id of the task directly, this id is encoded using `btoa`, should be handled by subscribers
+    var taskId   = this.data.id;
 
     this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTile, {
       data: {inputs, taskId},

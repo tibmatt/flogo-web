@@ -21,20 +21,20 @@
             <button type="button" class="btn btn-warning" (click)="uploadProcess()"
                     [disabled]="_uploadingProcess">Upload process
             </button>
-            <button type="button" class="btn btn-default" (click)="mockStartProcess()"
-                    [disabled]="_mockStartingProcess" [hidden]="!_hasUploadedProcess">Start process
+            <button type="button" class="btn btn-default" (click)="startProcess()"
+                    [disabled]="_startingProcess" [hidden]="!_hasUploadedProcess">Start process
             </button>
             <button type="button" class="btn btn-default" (click)="mockGetSteps()"
                     [disabled]="_mockGettingStepsProcess" [hidden]="!_hasUploadedProcess">Get steps
             </button>
           </div>
 
-          <div class="col-xs-12" [hidden]="!_mockSteps">
+          <div class="col-xs-12" [hidden]="!_steps">
             <form>
               <div class="form-group">
                 <label>Step to restart from</label>
                 <select class="form-control" [(ngModel)]="stepToRestart">
-                  <option *ngFor="#s of _mockSteps; trackBy:trackBySteps " [value]="s.id">{{s.id}}</option>
+                  <option *ngFor="#s of _steps; trackBy:trackBySteps " [value]="s.id">{{s.id}}</option>
                 </select>
               </div>
 
@@ -45,14 +45,14 @@
 
               <div class="form-group">
                 <button type="button" class="btn btn-default" (click)="mockRestartFrom(stepToRestart)"
-                        [disabled]="_mockStartingProcess" [hidden]="!_hasUploadedProcess">Restart From
+                        [disabled]="_startingProcess" [hidden]="!_hasUploadedProcess">Restart From
                 </button>
               </div>
             </form>
           </div>
         </section>
 
-        <section class="row" [hidden]="!MOCK || !_mockSteps">
+        <section class="row" [hidden]="!MOCK || !_steps">
 
           <div class="col-xs-12">
             <header>
@@ -61,7 +61,7 @@
           </div>
 
           <div class="col-xs-12">
-            <pre><code [textContent]="_mockSteps | json"></code></pre>
+            <pre><code [textContent]="_steps | json"></code></pre>
           </div>
 
         </section>

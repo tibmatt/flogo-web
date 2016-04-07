@@ -59,7 +59,12 @@ export class FlogoFlowsDetailTasks {
     this._postService.publish(
       _.assign(
         {}, PUB_EVENTS.addTask, {
-          data : _.assign( {}, this._addTaskMsg, { task : task } )
+          // TODO for the moment, the taskId can only be number, so timestamp is used.
+          data : _.assign(
+            {}, this._addTaskMsg, {
+              task : _.assign( {}, task, { id : btoa( '' + (Date.now() >>> 1)  ) } ) // avoid overflow 32 bit system
+            }
+          )
         }
       )
     );

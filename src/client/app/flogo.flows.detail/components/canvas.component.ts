@@ -27,6 +27,7 @@ import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
+import { FLOGO_TASK_TYPE } from '../../../common/constants';
 
 @Component( {
   selector: 'flogo-canvas',
@@ -55,11 +56,11 @@ export class FlogoCanvasComponent {
   // TODO
   //  Remove this mock
   _mockLoading = true;
-  _mockStartingProcess: boolean;
+  _startingProcess: boolean;
   _mockGettingStepsProcess: boolean;
-  _mockSteps: any;
+  _steps: any;
   _mockProcess: any;
-  _mockProcessInstanceID: string;
+  _processInstanceID: string;
   _mockDataToRestart : string = JSON.stringify(
     {
       'petId' : '201602222302661',
@@ -209,22 +210,39 @@ export class FlogoCanvasComponent {
 
   private _runFromTrigger() {
 
-    return this.uploadProcess()
-      .then(
-        (rsp : any) => {
-          if ( !_.isEmpty( rsp ) ) {
-            return this.mockStartProcess( rsp.id );
-          } else {
-            // the process isn't changed
-            return this.mockStartProcess( this._currentProcessID );
+    if ( this._isCurrentProcessDirty ) {
+
+      return this.uploadProcess()
+        .then(
+          ( rsp : any ) => {
+            if ( !_.isEmpty( rsp ) ) {
+              return this.startProcess( rsp.id );
+            } else {
+              // the process isn't changed
+              return this.startProcess( this._currentProcessID );
+            }
           }
-        }
-      )
-      .then(
-        () => {
-          return this.mockGetSteps();
-        }
-      );
+        )
+        .then(
+          () => {
+            // TODO
+            //  this is just mock implementation to see the steps result
+            return this.mockGetSteps();
+          }
+        );
+    } else {
+
+      return this.startProcess( this._currentProcessID )
+        .then(
+          () => {
+            // TODO
+            //  this is just mock implementation to see the steps result
+            return this.mockGetSteps();
+          }
+        );
+
+    }
+
   }
 
   private _updateFlow( flow : any ) {
@@ -276,11 +294,9 @@ export class FlogoCanvasComponent {
     });
   }
 
-  // TODO
-  //  Remove this mock later
-  mockStartProcess( id? : string ) {
-    this._mockStartingProcess = true;
-    this._mockSteps = null;
+  startProcess( id? : string ) {
+    this._startingProcess = true;
+    this._steps = null;
 
     return this._restAPIFlowsService.startFlow(
         id || this._currentProcessID, {
@@ -289,8 +305,8 @@ export class FlogoCanvasComponent {
       )
       .then(
         ( rsp : any )=> {
-          this._mockStartingProcess = false;
-          this._mockProcessInstanceID = rsp.id;
+          this._startingProcess = false;
+          this._processInstanceID = rsp.id;
         }
       )
       .then(
@@ -300,7 +316,7 @@ export class FlogoCanvasComponent {
       )
       .catch(
         ( err : any )=> {
-          this._mockStartingProcess = false;
+          this._startingProcess = false;
           console.error( err );
         }
       );
@@ -311,8 +327,8 @@ export class FlogoCanvasComponent {
   mockGetSteps() {
     this._mockGettingStepsProcess = true;
 
-    if ( this._mockProcessInstanceID ) {
-      return this._restAPIService.instances.whenInstanceFinishByID( this._mockProcessInstanceID )
+    if ( this._processInstanceID ) {
+      return this._restAPIService.instances.whenInstanceFinishByID( this._processInstanceID )
         .then(
           ( rsp : any ) => {
             return this._restAPIService.instances.getStepsByInstanceID( rsp.id );
@@ -321,7 +337,7 @@ export class FlogoCanvasComponent {
         .then(
           ( rsp : any ) => {
             this._mockGettingStepsProcess = false;
-            this._mockSteps = rsp.steps;
+            this._steps = rsp.steps;
             console.log( rsp );
           }
         )
@@ -343,21 +359,21 @@ export class FlogoCanvasComponent {
   // TODO
   //  Remove this mock later
   mockRestartFrom( step : number, mockDataToRestart:string ) {
-    this._mockStartingProcess = true;
-    this._mockSteps = null;
+    this._startingProcess = true;
+    this._steps = null;
 
     return this._restAPIService.flows.restartFrom(
-      this._mockProcessInstanceID, JSON.parse( mockDataToRestart ), step
+      this._processInstanceID, JSON.parse( mockDataToRestart ), step
       )
       .then(
         ( rsp : any ) => {
-          this._mockProcessInstanceID = rsp.id;
-          this._mockStartingProcess = false;
+          this._processInstanceID = rsp.id;
+          this._startingProcess = false;
         }
       )
       .catch(
         ( err : any )=> {
-          this._mockStartingProcess = false;
+          this._startingProcess = false;
           console.error( err );
         }
       );
@@ -497,7 +513,7 @@ export class FlogoCanvasComponent {
 
           // Refresh task detail
           let stepNumber = this._getStepNumberFromTask(data.node.taskID);
-          data.step = {result:(stepNumber && this._mockSteps) ? this._mockSteps[stepNumber - 1] : null,
+          data.step = {result: (stepNumber && this._steps) ? this._steps[ stepNumber - 1] : null,
             number: stepNumber};
           this._postService.publish(
             _.assign(
@@ -552,7 +568,7 @@ export class FlogoCanvasComponent {
 
           // Refresh task detail
           let stepNumber = this._getStepNumberFromTask(data.node.taskID);
-          data.step = {result:(stepNumber && this._mockSteps) ? this._mockSteps[stepNumber - 1] : null,
+          data.step = {result: (stepNumber && this._steps) ? this._steps[ stepNumber - 1] : null,
             number: stepNumber};
           this._postService.publish(
             _.assign(
@@ -637,7 +653,8 @@ export class FlogoCanvasComponent {
 
   private _getStepNumberFromSteps(taskId:string) {
     var stepNumber:number = 0;
-    let steps = this._mockSteps || [];
+    let steps = this._steps || [];
+    taskId = atob( taskId ); // decode the taskId
 
     steps.forEach((step:any, index:number) => {
       if(step.taskId == taskId) {
@@ -651,9 +668,13 @@ export class FlogoCanvasComponent {
 
   private _runFromThisTile(data:any, envelope:any) {
     console.group('Run from this tile');
-    var step = this._getStepNumberFromSteps(data.taskId);
 
-    if(this._mockProcessInstanceID) {
+    if ( this.tasks[ data.taskId ].type === FLOGO_TASK_TYPE.TASK_ROOT ) {
+      this._runFromTrigger();
+    } else if ( this._processInstanceID ) {
+      // run from other than the trigger (root task);
+
+      let step = this._getStepNumberFromSteps( data.taskId );
 
       if(step) {
         this.mockRestartFrom(step, JSON.stringify(data.inputs))
@@ -662,7 +683,7 @@ export class FlogoCanvasComponent {
             let queriedTime = 0;
             var queryStatus = setInterval(function() {
 
-              this._restAPIService.instances.getStatusByInstanceID(this._mockProcessInstanceID)
+              this._restAPIService.instances.getStatusByInstanceID(this._processInstanceID)
                 .then((result:any) => {
                   let status = result.status && result.status.toString(); // status null doesn't mean it failed
                   switch(status) {
@@ -675,18 +696,18 @@ export class FlogoCanvasComponent {
                     case '500':
                       console.log('Process finished, queriedTime',queriedTime);
                       console.log('Result', result);
-                      this._restAPIService.instances.getStepsByInstanceID(this._mockProcessInstanceID)
-                            .then((result:any) => {
-                              this._mockSteps = result.steps;
-                              var resultTask = this._mockSteps.find((step:any) => {
-                                return step.taskId == data.taskId;
+                      this._restAPIService.instances.getStepsByInstanceID(this._processInstanceID)
+                        .then((result:any) => {
+                          this._steps = result.steps;
+                          var resultTask = this._steps.find( ( step:any) => {
+                            return step.taskId == data.taskId;
 
-                              });
+                          });
 
-                              this._postService.publish(
-                                _.assign({}, FLOGO_TASK_PUB_EVENTS.updateTaskResults, {data:{result:resultTask}})
-                              )
-                            });
+                          this._postService.publish(
+                            _.assign({}, FLOGO_TASK_PUB_EVENTS.updateTaskResults, {data:{result:resultTask}})
+                          )
+                        });
                       clearInterval(queryStatus);
                       break;
                     case '600':
@@ -708,7 +729,7 @@ export class FlogoCanvasComponent {
                 });
             }.bind(this), 500);
           }).
-          then(()=> {
+        then(()=> {
 
           if(_.isFunction(envelope.done)) {
             envelope.done();
@@ -718,8 +739,10 @@ export class FlogoCanvasComponent {
 
       }
     } else {
-      this._runFromTrigger();
-      //console.error('You have not run the processs yet');
+      // TODO
+      //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
+      let task = this.tasks[ data.taskId ];
+      console.error( `Cannot start from task ${task.name} (${task.id})` );
     }
 
     console.groupEnd();
