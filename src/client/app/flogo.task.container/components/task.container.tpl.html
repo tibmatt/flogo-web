@@ -26,7 +26,7 @@
     </div>
 
     <div class="flogo-task-container__footer">
-      <button class="tc-buttons tc-buttons-primary-call" [disabled]="!canRunFromThisTile" (click)="runFromThisTile($event)">
+      <button class="tc-buttons tc-buttons-primary-call" [class.disabled]="!canRunFromThisTile" [disabled]="!canRunFromThisTile" (click)="runFromThisTile($event)">
         Run from this tile
       </button>
       <button class="flogo-btn-link" [disabled]="!hasChanges" (click)="cancelEdit($event)">Cancel</button>
