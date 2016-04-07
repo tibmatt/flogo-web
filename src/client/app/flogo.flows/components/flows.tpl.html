@@ -10,6 +10,14 @@
       <i class="fa fa-plus"></i>
       <span>Create New</span>
     </div>
-    <ul id="flogo-flows-container-lists" class="flogo-flows-container-lists"></ul>
+    <ul id="flogo-flows-container-lists" class="flogo-flows-container-lists">
+      <li *ngFor="#flow of flows" class="flogo-flows-container-list">
+        <a class="flogo-flows-container-list-detail">
+          <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow._id, flow._rev)"></span>
+          <span class="flogo-flows-container-list-detail-name">{{flow.name}}</span>
+          <span class="flogo-flows-container-list-detail-creatTime">{{flow.created_at}}</span>
+        </a>
+      </li>
+    </ul>
   </div>
 </div>
