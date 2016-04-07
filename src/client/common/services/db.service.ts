@@ -30,7 +30,7 @@ export class FlogoDBService{
       console.error(err);
     });
     this._syncActivities = PouchDB.sync('flogo-web-activities-local', 'http://localhost:5984/flogo-web-activities', {
-      live: true,
+      live: false,
       retry: true
     });
 
@@ -42,7 +42,7 @@ export class FlogoDBService{
       console.error(err);
     });
     this._sync = PouchDB.sync('flogo-web-local', 'http://localhost:5984/flogo-web', {
-      live: true,
+      live: false,
       retry: true
     }).on('change', function (info) {
       // handle change
