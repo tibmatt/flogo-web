@@ -82,7 +82,7 @@ export class FlogoFlowsDetailTriggers {
     this._postService.publish(
       _.assign(
         {}, PUB_EVENTS.addTrigger, {
-          data : _.assign( {}, this._addTriggerMsg, { trigger : trigger } )
+          data : _.assign( {}, this._addTriggerMsg, { trigger : _.cloneDeep( trigger ) } )
         }
       )
     );

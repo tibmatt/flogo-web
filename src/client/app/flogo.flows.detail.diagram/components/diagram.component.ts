@@ -46,7 +46,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._addTriggerDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._selectTriggerDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } )
+      _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.render, { callback : function(){
+        this._diagram.render();
+      }.bind( this ) } )
     ];
 
     _.each(

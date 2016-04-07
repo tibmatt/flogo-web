@@ -41,5 +41,9 @@ export const SUB_EVENTS = {
   selectTrigger : {
     channel : 'mock-flogo-flows-detail-diagram',
     topic : 'public-select-trigger'
+  },
+  render: {
+    channel : 'mock-flogo-flows-detail-diagram',
+    topic : 'public-render'
   }
 };

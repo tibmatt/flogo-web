@@ -27,7 +27,7 @@ import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
-import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
 
 @Component( {
   selector: 'flogo-canvas',
@@ -334,6 +334,17 @@ export class FlogoCanvasComponent {
         ( rsp : any )=> {
           return this.monitorProcessStatus( rsp.id, opt );
         }
+      )
+      .then(
+        ( rsp : any )=> {
+          return this.updateTaskRunStatus();
+        }
+      )
+      .catch(
+        ( err : any )=> {
+          console.error( err );
+          return err;
+        }
       );
   }
 
@@ -346,18 +357,22 @@ export class FlogoCanvasComponent {
     opt = _.assign(
       {}, {
         maxTrials : 20,
-        queryInterval : 1000 // ms
+        queryInterval : 200 // ms // TODO change this small polling interval to slow down, this is for evaluating
       }, opt
     );
+
+    this.clearTaskRunStatus();
 
     if ( processInstanceID ) {
       let trials = 0;
       let self = this;
       return new Promise(
         ( resolve, reject )=> {
+          let processingStatus = { done : false };
           let done = ( timer : any, rsp : any ) => {
+            processingStatus.done = true;
             clearInterval( timer );
-            resolve( rsp );
+            return resolve( rsp );
           };
 
           let timer = setInterval(
@@ -375,8 +390,6 @@ export class FlogoCanvasComponent {
                   ( rsp : any ) => {
                     ( // logging the response of each trial
                       function ( n : number ) {
-                        console.log( `From trial ${n}: ` );
-                        console.log( rsp );
 
                         switch ( rsp.status ) {
                           case '0':
@@ -384,6 +397,7 @@ export class FlogoCanvasComponent {
                             break;
                           case '100':
                             console.log( `[PROC STATE][${n}] Process is running...` );
+                            self.updateTaskRunStatus(rsp.id, processingStatus);
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
@@ -403,6 +417,9 @@ export class FlogoCanvasComponent {
                             break;
                         }
 
+                        // TODO
+                        console.log( rsp );
+
                       }( trials )
                     );
                   }
@@ -419,23 +436,80 @@ export class FlogoCanvasComponent {
     }
   }
 
+  clearTaskRunStatus() {
+    _.forIn(
+      this.tasks, ( task : any, taskID : string ) => {
+        task.status = FLOGO_TASK_STATUS.DEFAULT;
+      }
+    );
+  }
+
+  updateTaskRunStatus( processInstanceID? : string, processingStatus? : {
+    done: boolean
+  } ) {
+    processInstanceID = processInstanceID || this._processInstanceID;
+
+    if ( processInstanceID ) {
+      return this._restAPIService.instances.getStepsByInstanceID( processInstanceID )
+        .then(
+          ( rsp : any )=> {
+            if ( _.has(processingStatus, 'done') && processingStatus.done) {
+              // if using processingStatus and the processing status is done,
+              // then skip the updating since the previous query may be out-of-date
+              console.warn( 'Just logging to know if any query is discarded' );
+              return rsp;
+            } else {
+
+              let steps = _.get( rsp, 'steps', [] );
+
+              _.each(
+                steps, ( step : any )=> {
+                  // if the task is in steps array, it's run.
+                  // need to convert the number task ID to base64 string
+                  this.tasks[btoa(''+step.taskId)].status = FLOGO_TASK_STATUS.DONE;
+                }
+              );
+
+              // TODO logging
+              // console.log( _.cloneDeep( this.tasks ) );
+
+              // TODO
+              //  how to verify if a task is running?
+              //    should be the next task downstream the last running task
+              //    but need to find the node of that task in the diagram
+
+            }
+
+            return rsp;
+          }
+        ).then(
+          ( rsp : any )=> {
+
+            this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+
+            return rsp;
+          }
+        );
+    } else {
+      console.warn( 'No process has been started.' );
+      return Promise.reject( 'No process has been started.' );
+    }
+
+  }
+
   // TODO
   //  Remove this mock later
   mockGetSteps() {
     this._mockGettingStepsProcess = true;
 
     if ( this._processInstanceID ) {
-      return this._restAPIService.instances.whenInstanceFinishByID( this._processInstanceID )
-        .then(
-          ( rsp : any ) => {
-            return this._restAPIService.instances.getStepsByInstanceID( rsp.id );
-          }
-        )
+      return this._restAPIService.instances.getStepsByInstanceID( this._processInstanceID )
         .then(
           ( rsp : any ) => {
             this._mockGettingStepsProcess = false;
             this._steps = rsp.steps;
             console.log( rsp );
+            return rsp;
           }
         )
         .catch(
