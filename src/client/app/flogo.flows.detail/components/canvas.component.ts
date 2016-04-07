@@ -160,14 +160,14 @@ export class FlogoCanvasComponent {
         }
       )
       .catch(
-        ( err )=> {
+        ( err : any )=> {
           if ( err.status === 404 ) {
 
             // TODO
             //  this is a mock
             // provision database with a random flow
             // then just to open that flow
-            return this._restAPIFlowsService.createFlow(
+            this._restAPIFlowsService.createFlow(
               {
                 "paths" : {},
                 "name" : "Payroll Distribution",
@@ -216,10 +216,10 @@ export class FlogoCanvasComponent {
         .then(
           ( rsp : any ) => {
             if ( !_.isEmpty( rsp ) ) {
-              return this.startProcess( rsp.id );
+              return this.startAndMonitorProcess( rsp.id );
             } else {
               // the process isn't changed
-              return this.startProcess( this._currentProcessID );
+              return this.startAndMonitorProcess( this._currentProcessID );
             }
           }
         )
@@ -232,7 +232,7 @@ export class FlogoCanvasComponent {
         );
     } else {
 
-      return this.startProcess( this._currentProcessID )
+      return this.startAndMonitorProcess( this._currentProcessID )
         .then(
           () => {
             // TODO
@@ -307,19 +307,116 @@ export class FlogoCanvasComponent {
         ( rsp : any )=> {
           this._startingProcess = false;
           this._processInstanceID = rsp.id;
+
+          return rsp;
         }
       )
       .then(
         ( rsp : any ) => {
           console.log( rsp );
+
+          return rsp;
         }
       )
       .catch(
         ( err : any )=> {
           this._startingProcess = false;
           console.error( err );
+
+          return err;
         }
       );
+  }
+
+  startAndMonitorProcess( processID? : string, opt? : any ) {
+    return this.startProcess( processID )
+      .then(
+        ( rsp : any )=> {
+          return this.monitorProcessStatus( rsp.id, opt );
+        }
+      );
+  }
+
+  // monitor the status of a process till it's done or up to the max trials
+  monitorProcessStatus(
+    processInstanceID? : string,
+    opt? : any
+  ) : Promise<any> {
+    processInstanceID = processInstanceID || this._processInstanceID;
+    opt = _.assign(
+      {}, {
+        maxTrials : 20,
+        queryInterval : 1000 // ms
+      }, opt
+    );
+
+    if ( processInstanceID ) {
+      let trials = 0;
+      let self = this;
+      return new Promise(
+        ( resolve, reject )=> {
+          let done = ( timer : any, rsp : any ) => {
+            clearInterval( timer );
+            resolve( rsp );
+          };
+
+          let timer = setInterval(
+            () => {
+
+              if ( trials > opt.maxTrials ) {
+                clearInterval( timer );
+                reject( `Reach maximum trial time: ${trials}` );
+                return;
+              }
+              trials++;
+
+              self._restAPIService.instances.getStatusByInstanceID( processInstanceID )
+                .then(
+                  ( rsp : any ) => {
+                    ( // logging the response of each trial
+                      function ( n : number ) {
+                        console.log( `From trial ${n}: ` );
+                        console.log( rsp );
+
+                        switch ( rsp.status ) {
+                          case '0':
+                            console.log( `[PROC STATE][${n}] Process didn't start.` );
+                            break;
+                          case '100':
+                            console.log( `[PROC STATE][${n}] Process is running...` );
+                            break;
+                          case '500':
+                            console.log( `[PROC STATE][${n}] Process finished.` );
+                            done( timer, rsp );
+                            break;
+                          case '600':
+                            console.log( `[PROC STATE][${n}] Process has been cancelled.` );
+                            done( timer, rsp );
+                            break;
+                          case '700':
+                            console.log( `[PROC STATE][${n}] Process is failed.` );
+                            done( timer, rsp );
+                            break;
+                          case null :
+                            console.log( `[PROC STATE][${n}] Process is ~!@#$%^&*()_+.` );
+                            done( timer, rsp );
+                            break;
+                        }
+
+                      }( trials )
+                    );
+                  }
+                );
+
+            }, opt.queryInterval
+          );
+        }
+      );
+
+    } else {
+      console.warn( 'No process instance has been logged.' );
+      return Promise.reject( 'No process instance has been logged.' );
+    }
   }
 
   // TODO
