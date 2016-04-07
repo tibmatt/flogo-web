@@ -52,22 +52,21 @@ export class FlogoCanvasComponent {
   _isCurrentProcessDirty = true;
   _hasUploadedProcess: boolean;
   _uploadingProcess: boolean;
+  _startingProcess: boolean;
+  _restartingProcess: boolean;
+  _steps: any;
+  _processInstanceID: string;
+  _restartProcessInstanceID: string;
+
+  // TODO
+  //  may need better implementation
+  _lastProcessInstanceFromBeginning : any;
 
   // TODO
   //  Remove this mock
   _mockLoading = true;
-  _startingProcess: boolean;
   _mockGettingStepsProcess: boolean;
-  _steps: any;
   _mockProcess: any;
-  _processInstanceID: string;
-  _mockDataToRestart : string = JSON.stringify(
-    {
-      'petId' : '201602222302661',
-      'process' : 'false',
-      'message' : ''
-    }
-  );
 
   private initSubscribe() {
     this._subscriptions = [];
@@ -277,7 +276,7 @@ export class FlogoCanvasComponent {
   uploadProcess() {
     this._uploadingProcess = true;
 
-    // generate process based on
+    // generate process based on the current flow
     let process = _.assign(
       new FlogoFlowDiagram( this._flow.paths, this._flow.items ).toProcess(), { id : btoa( this._flow._id ) }
     );
@@ -340,6 +339,17 @@ export class FlogoCanvasComponent {
           return this.updateTaskRunStatus();
         }
       )
+      .then(
+        ( rsp : any )=> {
+          return this._restAPIService.instances.getInstance( this._processInstanceID )
+        }
+      )
+      .then(
+        ( rsp : any )=> {
+          this._lastProcessInstanceFromBeginning = rsp;
+          return rsp;
+        }
+      )
       .catch(
         ( err : any )=> {
           console.error( err );
@@ -357,7 +367,7 @@ export class FlogoCanvasComponent {
     opt = _.assign(
       {}, {
         maxTrials : 20,
-        queryInterval : 200 // ms // TODO change this small polling interval to slow down, this is for evaluating
+        queryInterval : 500 // ms // TODO change this small polling interval to slow down, this is for evaluating
       }, opt
     );
 
@@ -380,7 +390,7 @@ export class FlogoCanvasComponent {
 
               if ( trials > opt.maxTrials ) {
                 clearInterval( timer );
-                reject( `Reach maximum trial time: ${trials}` );
+                reject( `Reach maximum trial time: ${opt.maxTrials}` );
                 return;
               }
               trials++;
@@ -466,7 +476,11 @@ export class FlogoCanvasComponent {
                 steps, ( step : any )=> {
                   // if the task is in steps array, it's run.
                   // need to convert the number task ID to base64 string
-                  this.tasks[btoa(''+step.taskId)].status = FLOGO_TASK_STATUS.DONE;
+                  let task = this.tasks[btoa(''+step.taskId)];
+
+                  if ( task ) {
+                    task.status = FLOGO_TASK_STATUS.DONE;
+                  }
                 }
               );
 
@@ -528,26 +542,40 @@ export class FlogoCanvasComponent {
   }
 
   // TODO
-  //  Remove this mock later
-  mockRestartFrom( step : number, mockDataToRestart:string ) {
-    this._startingProcess = true;
-    this._steps = null;
+  //  to do proper restart process, need to select proper snapshot, hence
+  //  the current implementation is only for the last start-from-beginning snapshot, i.e.
+  //  the using this._processInstanceID to restart
+  restartProcessFrom( step : number, dataToRestart:string ) {
 
-    return this._restAPIService.flows.restartFrom(
-      this._processInstanceID, JSON.parse( mockDataToRestart ), step
-      )
-      .then(
-        ( rsp : any ) => {
-          this._processInstanceID = rsp.id;
-          this._startingProcess = false;
-        }
-      )
-      .catch(
-        ( err : any )=> {
-          this._startingProcess = false;
-          console.error( err );
-        }
-      );
+    if ( this._processInstanceID ) {
+      this._restartingProcess = true;
+      this._steps = null;
+
+      this.clearTaskRunStatus();
+
+      return this._restAPIService.flows.restartFrom(
+        this._processInstanceID, JSON.parse( dataToRestart ), step
+        )
+        .then(
+          ( rsp : any ) => {
+            this._restartProcessInstanceID = rsp.id;
+            this._restartingProcess = false;
+
+            return rsp;
+          }
+        )
+        .catch(
+          ( err : any )=> {
+            this._restartingProcess = false;
+            console.error( err );
+
+            return err;
+          }
+        );
+    } else {
+      console.warn( 'Should start from trigger for the first time.' );
+      return Promise.reject( 'Should start from trigger for the first time.' );
+    }
   }
 
   private _addTriggerFromDiagram( data : any, envelope : any ) {
@@ -806,6 +834,10 @@ export class FlogoCanvasComponent {
 
   }
 
+  // TODO
+  //  get step index logic should be based on the selected snapshot,
+  //  hence need to be refined in the future
+  //
   // based on the task id, look in the task list to get the number of the step
   //  TODO check if there is another way of get the step number
   private _getStepNumberFromTask(taskId:string) {
@@ -822,9 +854,14 @@ export class FlogoCanvasComponent {
     return 0;
   }
 
+  // TODO
+  //  get step index logic should be based on the selected snapshot,
+  //  hence need to be refined in the future
   private _getStepNumberFromSteps(taskId:string) {
     var stepNumber:number = 0;
-    let steps = this._steps || [];
+    // firstly try to get steps from the last process instance running from the beginning,
+    // otherwise use some defauts
+    let steps = _.get(this._lastProcessInstanceFromBeginning, 'steps', this._steps || []);
     taskId = atob( taskId ); // decode the taskId
 
     steps.forEach((step:any, index:number) => {
@@ -847,67 +884,59 @@ export class FlogoCanvasComponent {
 
       let step = this._getStepNumberFromSteps( data.taskId );
 
-      if(step) {
-        this.mockRestartFrom(step, JSON.stringify(data.inputs))
-          .then(()=> {
-            let maxQuery = 10;
-            let queriedTime = 0;
-            var queryStatus = setInterval(function() {
+      if ( step ) {
+        this.restartProcessFrom( step, JSON.stringify( data.inputs ) )
+          .then(
+            ( rsp : any )=> {
+              return this.monitorProcessStatus( rsp.id );
+            }
+          )
+          .then(
+            ( rsp : any )=> {
+              return this.updateTaskRunStatus( rsp.id );
+            }
+          )
+          .then(
+            ( rsp : any )=> {
 
-              this._restAPIService.instances.getStatusByInstanceID(this._processInstanceID)
-                .then((result:any) => {
-                  let status = result.status && result.status.toString(); // status null doesn't mean it failed
-                  switch(status) {
-                    case '0':
-                      console.log('Process not start, queriedTime',queriedTime);
-                      break;
-                    case '100':
-                      console.log('Process in progress, queriedTime',queriedTime);
-                      break;
-                    case '500':
-                      console.log('Process finished, queriedTime',queriedTime);
-                      console.log('Result', result);
-                      this._restAPIService.instances.getStepsByInstanceID(this._processInstanceID)
-                        .then((result:any) => {
-                          this._steps = result.steps;
-                          var resultTask = this._steps.find( ( step:any) => {
-                            return step.taskId == data.taskId;
+              this._steps = _.get( rsp, 'steps', [] );
 
-                          });
-
-                          this._postService.publish(
-                            _.assign({}, FLOGO_TASK_PUB_EVENTS.updateTaskResults, {data:{result:resultTask}})
-                          )
-                        });
-                      clearInterval(queryStatus);
-                      break;
-                    case '600':
-                      console.log('Process cancelled, queriedTime',queriedTime);
-                      console.log('Result:', result);
-                      clearInterval(queryStatus);
-                      break;
-                    case '700':
-                      console.log('Process failed, queriedTime',queriedTime);
-                      clearInterval(queryStatus);
-                      break;
+              var resultTask = this._steps.find(
+                ( step : any ) => {
+                  let id = data.taskId;
+                  try { // try to decode the base64 encoded taskId to number
+                    id = atob( id );
+                  } catch ( e ) {
+                    console.warn( e );
                   }
-                  queriedTime++;
-                  if(queriedTime>maxQuery){
-                    console.error("getStates timeout");
-                    clearInterval(queryStatus);
-                    console.groupEnd();
-                  }
-                });
-            }.bind(this), 500);
-          }).
-        then(()=> {
+                  return step.taskId == id;
+                }
+              );
 
-          if(_.isFunction(envelope.done)) {
-            envelope.done();
-          }
+              this._postService.publish(
+                _.assign( {}, FLOGO_TASK_PUB_EVENTS.updateTaskResults, { data : { result : resultTask } } )
+              )
+            }
+          )
+          .then(
+            ()=> {
 
-        })
+              if ( _.isFunction( envelope.done ) ) {
+                envelope.done();
+              }
 
+            }
+          )
+          .catch(
+            ( err : any )=> {
+              console.error( err );
+
+              return err;
+            }
+          );
+      } else {
+        // TODO
+        console.warn( 'Cannot find proper step to restart from, skipping...' );
       }
     } else {
       // TODO

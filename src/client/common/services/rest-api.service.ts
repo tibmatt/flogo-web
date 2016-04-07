@@ -183,6 +183,27 @@ export class RESTAPIService {
     };
 
     this.instances = {
+      getInstance : ( id : string ) => {
+        let headers = new Headers(
+          {
+            'Accept' : 'application/json'
+          }
+        );
+
+        let options = new RequestOptions( { headers : headers } );
+
+        return this.http.get( `http://localhost:9190/instances/${id}`, options )
+          .toPromise()
+          .then(
+            rsp => {
+              if ( rsp.text() ) {
+                return rsp.json();
+              } else {
+                return rsp;
+              }
+            }
+          );
+      },
       getStepsByInstanceID: (id:string) => {
         let headers = new Headers(
           {
