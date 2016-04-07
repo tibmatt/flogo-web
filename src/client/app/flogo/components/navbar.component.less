@@ -1,18 +1,20 @@
 @flogo-header-background-color: #062e79;
+@flogo-header-height: 48px;
 
 :host {
   background-color: @flogo-header-background-color;
   color: rgba(255, 255, 255, 0.87);
   display: block;
-  height: 48px;
+  height: @flogo-header-height;
   padding: 0 16px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
-h1 {
+.flogo-header {
   display: inline;
   font-size: 20px;
   font-weight: normal;
   letter-spacing: 0.1px;
-  line-height: 48px;
+  line-height: @flogo-header-height;
   margin: 0;
 }

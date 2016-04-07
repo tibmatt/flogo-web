@@ -3,3 +3,13 @@
   <a [routerLink]="['FlogoFlowDetail', {id:1}]">My First Flow</a>
   <a [routerLink]="['FlogoTask']">Flogo Task</a>
 </div>
+<div class="flogo-flows-container">
+  <div id="flogo-flows-container-box" class="flogo-flows-container-box">
+    <div class="flogo-flows-container-title">My Flows</div>
+    <div class="flogo-flows-container-box-add" (click)="addFlow()">
+      <i class="fa fa-plus"></i>
+      <span>Create New</span>
+    </div>
+    <ul id="flogo-flows-container-lists" class="flogo-flows-container-lists"></ul>
+  </div>
+</div>
