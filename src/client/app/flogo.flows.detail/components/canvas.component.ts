@@ -655,7 +655,11 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this.tasks[ data.task.id ] = data.task;
+    // generate task id when adding the task
+    // shift the timestamp for avoiding overflow 32 bit system
+    let task = _.assign({}, data.task, { id : flogoIDEncode( '' + (Date.now() >>> 1)  ) });
+
+    this.tasks[ task.id ] = task;
 
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
@@ -665,7 +669,7 @@ export class FlogoCanvasComponent {
               {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
                 data : {
                   node : data.node,
-                  task : data.task
+                  task : task
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );

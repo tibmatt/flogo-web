@@ -1,12 +1,10 @@
 import { Component } from 'angular2/core';
 import { PostService } from '../../../common/services/post.service';
 import { RESTAPIService } from "../../../common/services/rest-api.service";
-import { MOCK_TASKS } from '../mocks/tasks';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { RouteParams } from 'angular2/router';
 
 import {InstallComponent} from '../../flogo.flows.detail.tasks.install/components/install.component';
-import { flogoIDEncode } from '../../../common/utils';
 
 @Component(
   {
@@ -63,7 +61,7 @@ export class FlogoFlowsDetailTasks {
           // TODO for the moment, the taskId can only be number, so timestamp is used.
           data : _.assign(
             {}, this._addTaskMsg, {
-              task : _.assign( {}, task, { id : flogoIDEncode( '' + (Date.now() >>> 1)  ) } ) // avoid overflow 32 bit system
+              task : _.assign( {}, task )
             }
           )
         }
