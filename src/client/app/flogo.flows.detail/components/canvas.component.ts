@@ -144,6 +144,8 @@ export class FlogoCanvasComponent {
               this.diagram = this._flow.paths;
             }
 
+            this.clearTaskRunStatus();
+
             this.initSubscribe();
 
             console.groupEnd();
