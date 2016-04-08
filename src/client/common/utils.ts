@@ -1,7 +1,7 @@
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
-import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from './constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from './constants';
 export function flogoIDEncode( id : string ) {
   return btoa( id )
     .replace( /\+/g, '-' )
@@ -28,7 +28,7 @@ export function activitySchemaToTask(schema: any) : any {
 
   let task:any = {
     type: FLOGO_TASK_TYPE.TASK,
-    activityType: _.get(schema, 'name', FLOGO_ACTIVITY_TYPE.DEFAULT),
+    activityType: _.get(schema, 'name', ''),
     name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),

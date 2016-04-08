@@ -1,17 +1,17 @@
 import { IFlogoFlowDiagramTaskDictionary } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
 
 export var TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 1" : {
     "id" : "task 1",
     "type" : FLOGO_TASK_TYPE.TASK_ROOT,
-    "activityType" : FLOGO_ACTIVITY_TYPE.DEFAULT,
+    "activityType" : '',
     "name" : "Trigger"
   },
   "task 2" : {
     "id" : "task 2",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Log Start",
     "attributes" : {
       "inputs" : [
@@ -31,7 +31,7 @@ export var TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 3" : {
     "id" : "task 3",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.REST,
+    "activityType" : 'rest',
     "name" : "Pet Query",
     "attributes" : {
       "inputs" : [
@@ -77,7 +77,7 @@ export var TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 4" : {
     "id" : "task 4",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Log Results",
     "attributes" : {
       "inputs" : [
@@ -108,13 +108,13 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 1" : {
     "id" : "task 1",
     "type" : FLOGO_TASK_TYPE.TASK_ROOT,
-    "activityType" : FLOGO_ACTIVITY_TYPE.DEFAULT,
+    "activityType" : '',
     "name" : "Trigger"
   },
   "task 2" : {
     "id" : "task 2",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Log Start",
     "attributes" : {
       "inputs" : [
@@ -134,7 +134,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 3" : {
     "id" : "task 3",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.REST,
+    "activityType" : 'rest',
     "name" : "Pet Query",
     "attributes" : {
       "inputs" : [
@@ -180,7 +180,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 4" : {
     "id" : "task 4",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Log Results",
     "attributes" : {
       "inputs" : [
@@ -207,7 +207,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 5" : {
     "id" : "task 5",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task 5",
     "attributes" : {
       "inputs" : [
@@ -227,7 +227,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 6" : {
     "id" : "task 6",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task 6",
     "attributes" : {
       "inputs" : [
@@ -247,7 +247,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 7" : {
     "id" : "task 7",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task 7",
     "attributes" : {
       "inputs" : [
@@ -267,7 +267,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 8" : {
     "id" : "task 8",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task 8",
     "attributes" : {
       "inputs" : [
@@ -287,7 +287,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 9" : {
     "id" : "task 9",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task 9",
     "attributes" : {
       "inputs" : [
@@ -307,7 +307,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task a" : {
     "id" : "task a",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task a",
     "attributes" : {
       "inputs" : [
@@ -327,7 +327,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task b" : {
     "id" : "task b",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task b",
     "attributes" : {
       "inputs" : [
@@ -347,7 +347,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task c" : {
     "id" : "task c",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task c",
     "attributes" : {
       "inputs" : [
@@ -367,7 +367,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task d" : {
     "id" : "task d",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task d",
     "attributes" : {
       "inputs" : [
@@ -387,7 +387,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task e" : {
     "id" : "task e",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task e",
     "attributes" : {
       "inputs" : [
@@ -407,7 +407,7 @@ export var TEST_TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task f" : {
     "id" : "task f",
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Task f",
     "attributes" : {
       "inputs" : [

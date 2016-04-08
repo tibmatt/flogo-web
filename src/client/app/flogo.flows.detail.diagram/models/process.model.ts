@@ -14,9 +14,8 @@ import {
   FLOGO_PROCESS_TYPE,
   FLOGO_PROCESS_MODEL,
   FLOGO_TASK_TYPE,
-  FLOGO_ACTIVITY_TYPE,
   FLOGO_TASK_ATTRIBUTE_TYPE,
-  FLOGO_PROCESS_MODELS, FLOGO_ACTIVITIES,
+  FLOGO_PROCESS_MODELS,
 } from '../../../common/constants';
 
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
@@ -50,58 +49,6 @@ const BASE_PROCESS = {
 
 export class FlogoFlowDiagramProcess {
 
-  static defaultFlogoProcess = {
-    id : '',
-    model : 'simple',
-    type : FLOGO_PROCESS_TYPE.DEFAULT,
-    rootTask : {
-      'id' : FlogoFlowDiagramTask.genTaskID(),
-      'type' : FLOGO_TASK_TYPE.TASK_ROOT,
-      'activityType' : FLOGO_ACTIVITY_TYPE.REST,
-      'name' : 'Task',
-      'attributes' : {
-        'inputs' : [
-          {
-            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-            'name' : 'uri',
-            'value' : 'http://petstore.swagger.io/v2/pet/{petId}'
-          },
-          {
-            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-            'name' : 'method',
-            'value' : 'GET'
-          },
-          {
-            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-            'name' : 'petId',
-            'value' : ''
-          }
-        ],
-        'outputs' : [
-          {
-            'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-            'name' : 'result',
-            'value' : ''
-          }
-        ]
-      },
-      'inputMappings' : [
-        {
-          'type' : 1,
-          'value' : 'petId',
-          'mapTo' : 'petId'
-        }
-      ],
-      'outputMappings' : [
-        {
-          'type' : 1,
-          'value' : 'result',
-          'mapTo' : 'petInfo'
-        }
-      ]
-    }
-  };
-
   static genProcessID() : string {
     return flogoIDEncode( 'FlogoProcess::' + Date.now() );
   }
@@ -131,9 +78,6 @@ export class FlogoFlowDiagramProcess {
       let nodes = diagram.nodes;
       let rootNode = nodes[ diagram.root.is ];
       let rootTask = process.process.rootTask = new FlogoFlowDiagramTask( tasks[ rootNode.taskID ] );
-      rootTask.activityType = (
-        <any>FLOGO_ACTIVITIES
-      )[ FLOGO_ACTIVITY_TYPE[ rootTask.activityType ] ];
       (
         <any>rootTask
       )[ 'ouputMappings' ] = rootTask.outputMappings;
@@ -203,11 +147,6 @@ function _traversalChildren(
 
         if ( task ) {
           let attrs = <any>[];
-
-          // convert attributes of tasks
-          task.activityType = (
-            <any>FLOGO_ACTIVITIES
-          )[ FLOGO_ACTIVITY_TYPE[ task.activityType ] ];
 
           // convert attributes of tasks
           task.attributes.inputs = _.map(

@@ -3,7 +3,7 @@ import {
   IFlogoFlowDiagramTaskLink,
   IFlogoFlowDiagramTaskAttributes
 } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
 import { flogoIDEncode } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramTask {
@@ -13,7 +13,7 @@ export interface IFlogoFlowDiagramTask {
   name ? : string;
   description ? : string;
   title ? : string;
-  activityType ? : FLOGO_ACTIVITY_TYPE;
+  activityType ? : string;
   attributes ? : IFlogoFlowDiagramTaskAttributes;
   inputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
   outputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
@@ -29,7 +29,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   name : string;
   description : string;
   title : string;
-  activityType : FLOGO_ACTIVITY_TYPE;
+  activityType : string;
   attributes : IFlogoFlowDiagramTaskAttributes;
   inputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
   outputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
@@ -56,7 +56,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.name = task.name || this.name || 'new task';
     this.description = task.description || this.description || '';
     this.title = task.title || this.title || '';
-    this.activityType = task.activityType || this.activityType || FLOGO_ACTIVITY_TYPE.DEFAULT;
+    this.activityType = task.activityType || this.activityType || '';
     this.attributes = _.isEmpty( task.attributes ) ?
                       this.attributes || < IFlogoFlowDiagramTaskAttributes > {} :
                       _.cloneDeep( task.attributes );

@@ -2,12 +2,6 @@
  * Enumerations
  */
 
-export enum FLOGO_ACTIVITY_TYPE {
-  DEFAULT,
-  LOG,
-  REST
-}
-
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
   TASK,
@@ -37,15 +31,6 @@ export enum FLOGO_TASK_ATTRIBUTE_TYPE {
 /**
  * Constants
  */
-
-export const FLOGO_ACTIVITIES = {
-  'DEFAULT' : '',
-  // mock to log & rest for demo 1 TODO
-  'LOG' : 'log',
-  'REST' : 'rest'
-  // 'LOG' : 'tibco-log',
-  // 'REST' : 'tibco-rest'
-};
 
 export const FLOGO_PROCESS_MODELS = {
   'DEFAULT' : 'simple'

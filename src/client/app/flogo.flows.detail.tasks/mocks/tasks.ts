@@ -1,11 +1,11 @@
-import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
 import { flogoIDEncode } from '../../../common/utils';
 
 export var MOCK_TASKS = [
   {
     "id" : flogoIDEncode( "2" ),
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Log Start",
     "attributes" : {
       "inputs" : [
@@ -27,7 +27,7 @@ export var MOCK_TASKS = [
   {
     "id" : flogoIDEncode( "3" ),
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.REST,
+    "activityType" : 'rest',
     "name" : "Pet Query",
     "attributes" : {
       "inputs" : [
@@ -77,7 +77,7 @@ export var MOCK_TASKS = [
   {
     "id" : flogoIDEncode( "4" ),
     "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : FLOGO_ACTIVITY_TYPE.LOG,
+    "activityType" : 'log',
     "name" : "Log Results",
     "attributes" : {
       "inputs" : [
