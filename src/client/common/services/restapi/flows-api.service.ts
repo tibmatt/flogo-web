@@ -67,7 +67,7 @@ export class RESTAPIFlowsService{
   }
 
   getFlow( id : string ) {
-    return this._db.get( id );
+    return this._db.getFlow( id );
   }
 
   uploadFlow( process : any ) {

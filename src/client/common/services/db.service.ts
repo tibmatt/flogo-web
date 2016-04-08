@@ -248,7 +248,7 @@ export class FlogoDBService{
     });
   }
 
-  get( id : string ) {
+  getFlow( id : string ) {
     return this._db.get( id );
   }
 
