@@ -163,30 +163,10 @@ export class FlogoCanvasComponent {
         ( err : any )=> {
           if ( err.status === 404 ) {
 
-            // TODO
-            //  this is a mock
-            // provision database with a random flow
-            // then just to open that flow
-            this._restAPIFlowsService.createFlow(
-              {
-                "paths" : {},
-                "name" : "Payroll Distribution",
-                "description" : "This is a demo flow",
-                "items" : {}
-              }
-              )
-              .then(
-                ( rsp : any )=> {
-                  console.log( rsp );
-                  this._router.navigate(
-                    [
-                      'FlogoFlowDetail',
-                      { id : flogoIDEncode( rsp.id ) }
-                    ]
-                  );  // navigation triggered
-                }
-              );
+            this._router.navigate(['FlogoFlows']);
 
+          } else {
+            return err;
           }
         }
       );

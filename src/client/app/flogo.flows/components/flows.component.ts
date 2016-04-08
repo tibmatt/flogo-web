@@ -2,6 +2,7 @@ import {Component} from 'angular2/core';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
+import { flogoIDEncode } from '../../../common/utils';
 
 @Component({
   selector: 'flogo-flows',
@@ -63,7 +64,7 @@ export class FlogoFlowsComponet{
       });
   }
   getAllFlows(){
-    new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject)=>{
       this._flow.getFlows().then((response)=>{
         if(typeof response !== 'object'){
           response = JSON.parse(response);
@@ -85,16 +86,26 @@ export class FlogoFlowsComponet{
     new Promise((resolve, reject)=>{
       let request = {
         name: "My Added Flow "+ new Date().toISOString(),
-        description: "Created by rest-api.spec"
+        description: "Created by rest-api.spec",
+        paths: {},
+        items: {}
       };
       this._flow.createFlow(_.clone(request)).then((response)=>{
-          this.getAllFlows();
         resolve(response);
       }).catch((err)=>{
         console.log("create flow error. ", err);
         this.renderFlow(request, true);
         reject(err);
       });
-    }).then(this.getAllFlows);
+    }).then(()=>{
+      return this.getAllFlows();
+    }).catch((err)=>{
+      console.error(err);
+    });
+  }
+  // export flogoIDEncode
+  // mainly for Route Link
+  flogoIDEncode( id ) {
+    return flogoIDEncode( id );
   }
 }
