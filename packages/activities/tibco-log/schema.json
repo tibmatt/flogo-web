@@ -1,0 +1,14 @@
+{
+  "name": "tibco-log",
+  "version": "0.1.0",
+  "description": "Log",
+  "title": "TIBCO Log",
+  "inputs": [
+  ],
+  "outputs": [
+    {
+      "name": "result",
+      "type": "object"
+    }
+  ]
+}

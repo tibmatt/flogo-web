@@ -3,57 +3,119 @@ import path from 'path';
 import npm from 'npm';
 import _ from 'lodash';
 import fs from 'fs';
+import {DBService} from '../../common/db.service';
 
-let db = new Pouchdb("http://localhost:5984/flogo-web-activities");
-let ACTIVITIES = 'activity';
-let DELIMITER = ":";
-
-db.info().then((response)=>{
-  // console.log(response);
-}).catch((err)=>{
-  // console.error(err);
-});
+// TODO DB Name should pass from options
+// The database for activities
+let dbDefaultName = "http://localhost:5984/flogo-web-activities";
+// TODO the path should pass from options
+// The folder which contains all activities
+let activitiesDefaultPath = "../../../../packages/activities";
 
 function generateActivityID(name, version){
-  console.log("generateActivityID, arguments: ", arguments);
+  // console.log("generateActivityID, arguments: ", arguments);
   name = _.kebabCase(name);
-  console.log("name: ", name);
+  // console.log("name: ", name);
   // TODO need to think about how to versionable activity
   version = _.kebabCase(version);
-  console.log("version: ", version);
+  // console.log("version: ", version);
   // let id = this.ACTIVITIES+this.DELIMITER+name+this.DELIMITER+version;
   let id = name;
   console.log("generateActivityID, id: ", id);
   return id;
 }
 
-let packageJSONPath = path.resolve(__dirname, '.');
-// console.log(__dirname);
-// let p = path.resolve(__dirname, '../../../../packages/activities/tibco-pet-query');
-// console.log(p);
-
 export class RegisterActivities{
-  constructor(){
-    console.log("constructor of RegisterActivities");
-    // TODO need to improve the install
-    // Step 1: install all the packages
-    this.install().then((resolve, reject)=>{
-      // Step 2: update the db
-      let packageJSON = JSON.parse(fs.readFileSync(path.join(packageJSONPath, 'package.json'), 'utf8'));
-      // console.log(packageJSON);
-      let dependencies = packageJSON.dependencies;
+  constructor(dbName, options){
+    this._dbService = new DBService(dbName||dbDefaultName);
+    // folder store activities package.json
+    this._packageJSONFolderPath = path.resolve(__dirname, '.');
+    // activities package.json path
+    this._packageJSONTplFilePath = path.join(this._packageJSONFolderPath, 'package.tpl.json');
+    this.activitiesPath = options&&options.activitiesPath || activitiesDefaultPath;
+    this.activitiesAbsolutePath = path.resolve(__dirname, this.activitiesPath);
+    // read the package.json template, will use this template to generate package.json
+    try{
+      let data = fs.readFileSync(this._packageJSONTplFilePath, {"encoding": "utf8"});
+      this.packageJSONTemplate = JSON.parse(data);
+      // console.log("????????[packageJSONTemplate]: ", this.packageJSONTemplate);
+    }catch(err){
+      console.error("[error]Read package.json template error. ", err);
+    }
+    // start watch files/folder changes
+    this.watch();
+  }
 
+  get dbService(){
+    return this._dbService;
+  }
+  // watch the activities
+  watch(){
+    this.updateActivitiesDB();
+    // continue watch and also watch te sbudirectories
+    let watchOptions = {
+      persistent: true,
+      recursive: true
+    };
+
+    // start watch the change in activities folder
+    fs.watch(this.activitiesAbsolutePath, watchOptions, (event, filename)=>{
+      // console.log("========event: ", event);
+      // console.log("========filename: ", filename);
+      this.updateActivitiesDB();
+    });
+  }
+
+  /**
+   * install all activities in the activitiesPath
+   */
+  updatePackageJSON(){
+    let packageJSON = _.cloneDeep(this.packageJSONTemplate);
+    packageJSON.dependencies = {};
+    // get all the activity package in activitiesPath
+    let dirs = fs.readdirSync(this.activitiesAbsolutePath);
+    if(dirs){
+      // console.log("???????dirs", dirs);
+      dirs.forEach((value, index)=>{
+        // console.log(value);
+        let stats = fs.statSync(path.join(this.activitiesAbsolutePath, value));
+        // if it is a directory, then assume it is a activity package.
+        // TODO add more validate, make sure it is a activity package.
+        if(stats.isDirectory()){
+          packageJSON.dependencies[value] = path.join(this.activitiesPath, value);
+        }
+      });
+      // console.log("++++++packageJSON: ", packageJSON);
+      let JSONStr = JSON.stringify(packageJSON, null, 2);
+      fs.writeFileSync(path.join(this._packageJSONFolderPath, 'package.json').toString(), JSONStr, {"encoding": "utf8"});
+    }else{
+      console.error("[error]updatePackageJSON. ", err);
+    }
+
+    return packageJSON;
+  }
+
+  updateActivitiesDB(){
+    // update activity package.json
+    let packageJSON = this.updatePackageJSON();
+    // console.log(packageJSON);
+    let dependencies = packageJSON.dependencies;
+    // new activities generate from package.json
+    let activityDocs = {};
+
+    // install all activity packages
+    this.install().then(()=>{
+
+      // generate all the activity docs
       _.forOwn(dependencies, (value, key)=>{
-        console.log('value: ', value);
-        console.log('key: ', key);
-        let packageJSON = JSON.parse(fs.readFileSync(path.join(packageJSONPath, 'node_modules', key, 'package.json'), 'utf8'));
-        let schemaJSON = JSON.parse(fs.readFileSync(path.join(packageJSONPath, 'node_modules', key, 'schema.json'), 'utf8'));
-
+        let packageJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'package.json'), 'utf8'));
+        let schemaJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'schema.json'), 'utf8'));
         // console.log("packageJSON: ", packageJSON);
         // console.log("schemaJSON: ", schemaJSON);
 
         let id = generateActivityID(key, packageJSON.version);
         console.log("id: ", id);
+
         let activityDoc = {
           _id: id,
           'name': key,
@@ -62,33 +124,72 @@ export class RegisterActivities{
           'keywords': packageJSON.keywords||[],
           'schema': schemaJSON
         };
-        console.log("activityDoc: ", activityDoc);
 
-        db.get(id).then((doc)=>{
-          console.log(doc);
-          activityDoc.updated_at = new Date().toISOString();
-          activityDoc = _.merge(doc, activityDoc);
-          console.log("update activityDoc: ", activityDoc);
-          db.put(activityDoc).then((response)=>{
-            console.log("Update activity success: ", response);
-          }).catch((err)=>{
-            console.log("Update activity error: ", err);
-          })
-        }).catch((err)=>{
-          console.log(err);
-          if(err&&err.status == 404){
-            activityDoc.created_at = new Date().toISOString();
-            console.log("new activityDoc: ", activityDoc);
-            db.put(activityDoc).then((response)=>{
-              console.log("Add activity success: ", response);
-            }).catch((err)=>{
-              console.log("Add activity error: ", err);
-            })
-          }
-        })
-
+        activityDocs[id]=activityDoc;
       });
 
+      // console.log("!!!!!!!!activityDocs: ", activityDocs);
+
+      this.dbService.db.allDocs({include_docs: true}).then((docs)=>{
+        // console.log("============ - docs: ", docs);
+        let rows = docs.rows||[];
+        let activities = [];
+
+        rows.forEach((item, index)=>{
+          if(item&&item.doc){
+            activities.push(item.doc);
+          }
+        });
+        // update or remove activity
+        activities.forEach((activity, index)=>{
+          let newActivity = activityDocs[activity['_id']];
+          // console.log("activity['id']: ", activity['id']);
+          // console.log("**********newActivity: ", newActivity);
+          // if this activity cannot find in activityDocs generate from package.json, then need to remove it
+          if(!newActivity){
+            // console.log("[Remove]activity: ", activity);
+            this.dbService.db.remove(activity).then((response)=>{
+              console.log("[info]delete activity success. ", response);
+            }).catch((err)=>{
+              console.error("[error]delete activity fail. ", err);
+            });
+          }else{
+            // When we update an activity, we will use new activity to overwrite the old one. This is because, user maybe in new activity delete some value,
+            // copy the some value from current activity in DB
+            newActivity['_id'] = activity['_id'];
+            newActivity['_rev'] = activity['_rev'];
+            newActivity.created_at = activity.created_at;
+            newActivity.updated_at = new Date().toISOString();
+            // update this activity in DB
+            this.dbService.db.put(_.cloneDeep(newActivity)).then((response)=>{
+              console.log("Update activity success: ", response);
+            }).catch((err)=>{
+              console.log("Update activity error: ", err);
+            });
+            // delete this activity
+            delete activityDocs[activity['_id']];
+          }
+        });
+
+        // console.log("@@@@@@@@@[activityDocs]: ", activityDocs);
+
+        // Rest activities should be new activity
+        _.forOwn(activityDocs, (activity, index)=>{
+          activity.created_at = new Date().toISOString();
+          // add this activity in DB
+          this.dbService.db.put(activity).then((response)=>{
+            console.log("Add activity success: ", response);
+          }).catch((err)=>{
+            console.log("Add activity error: ", err);
+          });
+        });
+      }).catch((err)=>{
+        console.log("[error]Get all activities fail. ", err);
+      });
+
+
+    }).catch((err)=>{
+      console.error("[error]Install error. ", err);
     });
   }
 
@@ -109,20 +210,20 @@ export class RegisterActivities{
 
   install(){
     return new Promise((resolve, reject)=>{
-      this.npmLoad(function(){
+      this.npmLoad(()=>{
         // Store current working directory
         var currentCWD = process.cwd();
         console.log("currentCWD: ", currentCWD);
-        process.chdir(packageJSONPath);
-        npm.commands.install(packageJSONPath, [], function(err, result){
+        process.chdir(this._packageJSONFolderPath);
+        npm.commands.install(this._packageJSONFolderPath, [], (err, result)=>{
           // Change current working directory back
           process.chdir(currentCWD);
           if(err){
             reject(err);
-            // console.log(err);
+            console.log(err);
           }else{
             resolve(result);
-            // console.log("success: ", result);
+            console.log("success: ", result);
           }
         });
       });
