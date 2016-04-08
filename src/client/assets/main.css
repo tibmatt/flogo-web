@@ -7,6 +7,19 @@ div {
   padding: 0;
 }
 
+html, body {
+  display: flex;
+  align-items: stretch;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  width: 100%;
+}
+
 /* Box-sizing border-box */
 * {
   box-sizing: border-box;

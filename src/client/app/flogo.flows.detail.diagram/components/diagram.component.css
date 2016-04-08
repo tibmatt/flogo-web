@@ -10,18 +10,28 @@
   font-weight: normal;
   font-style: normal;
 }
-.flogo-flows-detail-diagram {
-  background-color: #eeeded;
-  padding: 0 20px;
+:host {
+  display: flex;
   width: 100%;
-  transition: background-color 500ms linear;
+  flex-grow: 3;
+  overflow: auto;
+  background-color: #eeeded;
 }
-.flogo-flows-detail-diagram:hover {
-  background-color: rgba(182, 217, 237, 0.2);
+.flogo-flows-detail-diagram {
+  padding: 0 20px;
+  min-width: 100%;
+  transition: background-color 500ms linear;
+  white-space: pre-wrap;
 }
 .flogo-flows-detail-diagram-row {
   border-radius: 4px;
+  min-width: 100%;
+  white-space: nowrap;
+  display: inline-block;
   margin: 20px 0;
+}
+.flogo-flows-detail-diagram-row:hover {
+  background-color: rgba(182, 217, 237, 0.2);
 }
 .flogo-flows-detail-diagram-node {
   position: relative;
@@ -30,6 +40,7 @@
   border: solid 1px #f4f4f4;
   background-image: linear-gradient(to right, #f4f4f4, #ffffff);
   border-radius: 10px;
+  white-space: normal;
   font-family: SourceSansPro-Regular;
   font-size: 14px;
   line-height: 1.1;

@@ -16,6 +16,7 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
   selector: 'flogo-app',
   moduleId: module.id,
   templateUrl: 'flogo.tpl.html',
+  styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
   providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, HTTP_PROVIDERS]
 })
