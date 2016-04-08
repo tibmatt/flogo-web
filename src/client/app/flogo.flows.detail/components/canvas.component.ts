@@ -174,6 +174,10 @@ export class FlogoCanvasComponent {
       );
   }
 
+  isOnDefaultRoute() {
+    return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
+  }
+
   // TODO
   //  Remove this mock later
   private _updateMockProcess() {
