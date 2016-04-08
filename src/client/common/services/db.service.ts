@@ -1,11 +1,12 @@
 import { Injectable, NgZone } from 'angular2/core';
+import { activitySchemaToTask } from '../utils';
 
 @Injectable()
 export class FlogoDBService{
 
   // PouchDB instance
   private _db:PouchDB;
-  private _activitesDB: PouchDB;
+  private _activitiesDB: PouchDB;
   private _sync:Object;
   private _syncActivities: Object;
   public PREFIX_AUTO_GENERATE:string = 'auto-generate-id';
@@ -252,4 +253,53 @@ export class FlogoDBService{
     return this._db.get( id );
   }
 
+  // force to retrieve all of the activities without number limitation
+  getAllActivities() {
+    return this.getActivities(false);
+  }
+
+  // retrieve all of the activities with limit up to 200
+  getActivities( limit = 200 ) {
+    // TODO
+    //  currently due to DB sync issue, force to sync the local DB with remote each time querying all activities
+    return PouchDB.sync(
+      'flogo-web-activities-local', 'http://localhost:5984/flogo-web-activities', {
+        live : false,
+        retry : true
+      }
+      )
+      .then(
+        ()=> {
+          // the real logic to get all activities
+          return this._activitiesDB.allDocs(
+            {
+              include_docs : true,
+              limit : limit
+            }
+            )
+            .then(
+              ( docs : any ) => {
+                // get doc information from non-empty records
+                return _.map(
+                  _.filter( docs.rows, ( doc : any ) => !_.isEmpty( _.get( doc, 'doc.schema', '' ) ) ),
+                  ( doc : any )=> {
+                    return activitySchemaToTask( doc.doc.schema );
+                  }
+                );
+              }
+            );
+        }
+      )
+      .catch(
+        ( err : any )=> {
+          console.log( err );
+          return err;
+        }
+      );
+  }
+
+  // TODO
+  getInstallableActivities() {
+    return Promise.resolve( [] );
+  }
 }

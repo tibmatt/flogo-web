@@ -5,6 +5,7 @@ import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { RouteParams } from 'angular2/router';
 
 import {InstallComponent} from '../../flogo.flows.detail.tasks.install/components/install.component';
+import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 
 @Component(
   {
@@ -25,7 +26,7 @@ export class FlogoFlowsDetailTasks {
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restApiService : RESTAPIService) {
+  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restApiService : RESTAPIService, private _restAPIActivitiesService: RESTAPIActivitiesService) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     console.log( this._routeParams );
@@ -85,13 +86,20 @@ export class FlogoFlowsDetailTasks {
   }
 
   private _loadActivities() {
-    console.log('Loading activities')
-    this._restApiService.activities
-      .getInstalled()
-      .then((tasks:any[]) => {
-        this.tasks = tasks;
-        this._filterActivities();
-      });
+    console.log('Loading activities');
+
+    this._restAPIActivitiesService.getActivities()
+      .then(
+        ( tasks : any )=> {
+          this.tasks = tasks;
+          this._filterActivities();
+        }
+      )
+      .catch(
+        ( err : any )=> {
+          console.error( err );
+        }
+      );
   }
 
 

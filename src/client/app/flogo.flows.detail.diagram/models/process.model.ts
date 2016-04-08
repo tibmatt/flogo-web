@@ -213,7 +213,8 @@ function _traversalChildren(
           task.attributes.inputs = _.map(
             task.attributes.inputs, ( input : any ) => {
               let i = <any>_.cloneDeep( input ); // due to Type check
-              i.type = FLOGO_TASK_ATTRIBUTE_TYPE[ input.type ].toLowerCase();
+              i.type = _.get( FLOGO_TASK_ATTRIBUTE_TYPE, input.type, 'string' )
+                .toLowerCase();
               attrs.push( i );
               return i;
             }
@@ -223,7 +224,8 @@ function _traversalChildren(
           task.attributes.outputs = _.map(
             task.attributes.outputs, ( output : any ) => {
               let o = <any>_.cloneDeep( output ); // due to Type check
-              o.type = FLOGO_TASK_ATTRIBUTE_TYPE[ output.type ].toLowerCase();
+              o.type = _.get( FLOGO_TASK_ATTRIBUTE_TYPE, output.type, 'string' )
+                .toLowerCase();
               attrs.push( o );
               return o;
             }
