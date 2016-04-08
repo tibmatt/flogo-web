@@ -1,3 +1,4 @@
+import { flogoIDEncode } from '../../../common/utils';
 export interface IFlogoFlowDiagramTaskLink {
   id : string;
   from : string;
@@ -7,6 +8,6 @@ export interface IFlogoFlowDiagramTaskLink {
 
 export class FlogoFlowDiagramTaskLink {
   static genTaskLinkID() : string {
-    return btoa( 'FlogoFlowDiagramTaskLink::' + Date.now() );
+    return flogoIDEncode( 'FlogoFlowDiagramTaskLink::' + Date.now() );
   };
 }

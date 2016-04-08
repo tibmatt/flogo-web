@@ -4,6 +4,7 @@ import {
   IFlogoFlowDiagramTaskAttributes
 } from '../models';
 import { FLOGO_TASK_TYPE, FLOGO_ACTIVITY_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
+import { flogoIDEncode } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramTask {
   id : string;
@@ -41,7 +42,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   };
 
   static genTaskID() : string {
-    return btoa( 'FlogoFlowDiagramTask::' + Date.now() );
+    return flogoIDEncode( 'FlogoFlowDiagramTask::' + Date.now() );
   };
 
   update( task : IFlogoFlowDiagramTask ) {

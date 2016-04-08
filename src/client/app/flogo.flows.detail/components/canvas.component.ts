@@ -28,6 +28,7 @@ import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
+import { flogoIDDecode, flogoIDEncode } from '../../../common/utils';
 
 @Component( {
   selector: 'flogo-canvas',
@@ -118,7 +119,7 @@ export class FlogoCanvasComponent {
     let id = '' + this._routerParams.params[ 'id' ];
 
     try {
-      id = atob( id );
+      id = flogoIDDecode( id );
     } catch ( e ) {
       console.warn( e );
     }
@@ -180,7 +181,7 @@ export class FlogoCanvasComponent {
                   this._router.navigate(
                     [
                       'FlogoFlowDetail',
-                      { id : btoa( rsp.id ) }
+                      { id : flogoIDEncode( rsp.id ) }
                     ]
                   );  // navigation triggered
                 }
@@ -200,7 +201,7 @@ export class FlogoCanvasComponent {
           ( rsp : any ) => {
             this._mockProcess = _.find( rsp, { _id : this._flow._id } );
             this._mockProcess = _.assign(
-              new FlogoFlowDiagram( this._mockProcess.paths, this._mockProcess.items ).toProcess(), { id : btoa( this._flow._id ) }
+              new FlogoFlowDiagram( this._mockProcess.paths, this._mockProcess.items ).toProcess(), { id : flogoIDEncode( this._flow._id ) }
             );
           }
         );
@@ -280,7 +281,7 @@ export class FlogoCanvasComponent {
     // TODO
     //    since the same process ID returns 204 No Content response, attach timestamp to the ID.
     let process = _.assign(
-      new FlogoFlowDiagram( this._flow.paths, this._flow.items ).toProcess(), { id : btoa( `${this._flow._id}:${Date.now()}`) }
+      new FlogoFlowDiagram( this._flow.paths, this._flow.items ).toProcess(), { id : flogoIDEncode( `${this._flow._id}:${Date.now()}`) }
     );
 
     return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
@@ -478,7 +479,7 @@ export class FlogoCanvasComponent {
                 steps, ( step : any )=> {
                   // if the task is in steps array, it's run.
                   // need to convert the number task ID to base64 string
-                  let task = this.tasks[btoa(''+step.taskId)];
+                  let task = this.tasks[flogoIDEncode(''+step.taskId)];
 
                   if ( task ) {
                     task.status = FLOGO_TASK_STATUS.DONE;
@@ -864,7 +865,7 @@ export class FlogoCanvasComponent {
     // firstly try to get steps from the last process instance running from the beginning,
     // otherwise use some defauts
     let steps = _.get(this._lastProcessInstanceFromBeginning, 'steps', this._steps || []);
-    taskId = atob( taskId ); // decode the taskId
+    taskId = flogoIDDecode( taskId ); // decode the taskId
 
     steps.forEach((step:any, index:number) => {
       if(step.taskId == taskId) {
@@ -907,7 +908,7 @@ export class FlogoCanvasComponent {
                 ( step : any ) => {
                   let id = data.taskId;
                   try { // try to decode the base64 encoded taskId to number
-                    id = atob( id );
+                    id = flogoIDDecode( id );
                   } catch ( e ) {
                     console.warn( e );
                   }

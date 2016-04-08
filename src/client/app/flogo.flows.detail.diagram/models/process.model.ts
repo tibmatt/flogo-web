@@ -20,6 +20,7 @@ import {
 } from '../../../common/constants';
 
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import { flogoIDDecode, flogoIDEncode } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramProcess {
   id : string;
@@ -102,7 +103,7 @@ export class FlogoFlowDiagramProcess {
   };
 
   static genProcessID() : string {
-    return btoa( 'FlogoProcess::' + Date.now() );
+    return flogoIDEncode( 'FlogoProcess::' + Date.now() );
   }
 
   static toProcess( diagram : IFlogoFlowDiagram, tasks : IFlogoFlowDiagramTaskDictionary ) : any {
@@ -282,7 +283,7 @@ function _convertTaskID( taskID : string ) {
   let id = '';
 
   try {
-    id = atob( taskID );
+    id = flogoIDDecode( taskID );
 
     // get the timestamp
     let parsedID = id.split( '::' );

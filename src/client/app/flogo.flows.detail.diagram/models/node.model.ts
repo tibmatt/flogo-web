@@ -1,5 +1,6 @@
 import { IFlogoFlowDiagram } from '../models';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import { flogoIDEncode } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramNode {
   id : string; // id of the node
@@ -42,7 +43,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
   };
 
   static genNodeID() : string {
-    return btoa( 'FlogoFlowDiagramNode::' + Date.now() );
+    return flogoIDEncode( 'FlogoFlowDiagramNode::' + Date.now() );
   };
 
   public update( node : IFlogoFlowDiagramNode ) : Promise < FlogoFlowDiagramNode > {
