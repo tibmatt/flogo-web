@@ -70,5 +70,12 @@ export function activitySchemaToTask(schema: any) : any {
     }
   );
 
+  _.each(
+    task.attributes.outputs, ( output : any ) => {
+      // convert to task enumeration and provision default types
+      output.type = _.get(FLOGO_TASK_ATTRIBUTE_TYPE, _.get(output, 'type', 'STRING').toUpperCase(), FLOGO_TASK_ATTRIBUTE_TYPE.STRING);
+    }
+  );
+
   return task;
 }
