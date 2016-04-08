@@ -1,11 +1,23 @@
 {
-  "name": "tibco-pet-query",
+  "name": "rest",
   "version": "0.1.0",
   "description": "Query a pet's infromation",
   "title": "TIBCO Pet Query",
   "inputs": [
     {
-      "name":"petId"
+      "name": "petId",
+      "title": "Pet ID",
+      "value": "222"
+    },
+    {
+      "name": "uri",
+      "title": "URI",
+      "value": "http://petstore.swagger.io/v2/pet/{petId}"
+    },
+    {
+      "name": "method",
+      "title": "Method",
+      "value": "GET"
     }
   ],
   "outputs": [

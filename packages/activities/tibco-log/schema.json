@@ -1,9 +1,18 @@
 {
-  "name": "tibco-log",
+  "name": "log",
   "version": "0.1.0",
   "description": "Log",
   "title": "TIBCO Log",
   "inputs": [
+    {
+      "name": "message",
+      "title": "Message"
+    },
+    {
+      "type": "boolean",
+      "name": "processInfo",
+      "title": "Process info"
+    }
   ],
   "outputs": [
     {
