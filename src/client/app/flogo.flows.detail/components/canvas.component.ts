@@ -277,8 +277,10 @@ export class FlogoCanvasComponent {
     this._uploadingProcess = true;
 
     // generate process based on the current flow
+    // TODO
+    //    since the same process ID returns 204 No Content response, attach timestamp to the ID.
     let process = _.assign(
-      new FlogoFlowDiagram( this._flow.paths, this._flow.items ).toProcess(), { id : btoa( this._flow._id ) }
+      new FlogoFlowDiagram( this._flow.paths, this._flow.items ).toProcess(), { id : btoa( `${this._flow._id}:${Date.now()}`) }
     );
 
     return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
