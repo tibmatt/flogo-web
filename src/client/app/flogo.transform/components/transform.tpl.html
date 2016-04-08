@@ -7,11 +7,11 @@
       <div class="row">
         <div class="col-md-4 col-sm-12">
           <legend>Previous tiles</legend>
-          <pre>{{ data.previous | json }}</pre>
+          <pre>{{ data.previousTiles | json }}</pre>
         </div>
         <div class="col-md-4 col-sm-12">
-          <legend>Transformation</legend>
-          <textarea #codeInput [ngFormControl]="codeControl" (keyup)="onCodeChange(codeInput.value)" name="" id="" cols="30" rows="12"></textarea>
+          <legend>Mappings</legend>
+          <flogo-transform-map-editor [mappings]="data.mappings" (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
         </div>
         <div class="col-md-4 col-sm-12">
           <legend>Input data <small>{{ data.tile?.name }}</small></legend>
@@ -21,7 +21,7 @@
     </modal-body>
     <modal-footer>
       <button class="tc-buttons tc-buttons-secondary" (click)="deleteTransform()">Delete</button>
-      <button class="tc-buttons tc-buttons-primary" (click)="saveTransform()">Save</button>
+      <button class="tc-buttons tc-buttons-primary" [class.disabled]="!isValid" [disabled]="!isValid" (click)="saveTransform()">Save</button>
     </modal-footer>
   </modal>
 </div>

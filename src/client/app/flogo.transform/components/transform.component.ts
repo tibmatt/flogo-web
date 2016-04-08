@@ -1,11 +1,10 @@
 import { Component, ViewChild, OnDestroy } from 'angular2/core';
-import { Control, FORM_DIRECTIVES } from 'angular2/common';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import {Observable} from 'rxjs/Rx';
 
 import { PostService } from '../../../common/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
+import { MapEditorComponent } from "./map-editor.component";
 
 interface TransformData {
   previous: any[],
@@ -16,7 +15,7 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MODAL_DIRECTIVES, FORM_DIRECTIVES],
+  directives: [MODAL_DIRECTIVES, MapEditorComponent],
   moduleId: module.id,
   templateUrl: 'transform.tpl.html',
 })
@@ -25,39 +24,41 @@ export class TransformComponent implements OnDestroy {
   @ViewChild('transformModal')
   modal:ModalComponent;
 
+  isValid : boolean = false;
+
   private _subscriptions:any[];
   private data:TransformData = {
     previousTiles: [],
     tile: null,
-    mappings: ''
+    mappings: null
   };
 
-  ///
-  codeControl = new Control();
   result:{} = {};
 
   constructor(private _postService:PostService) {
     this.initSubscriptions();
-
-    this.codeControl.valueChanges
-      .debounceTime(400)
-      .distinctUntilChanged()
-      .subscribe(this.onCodeChange.bind(this));
-
   }
 
   ngOnDestroy() {
     this.cancelSubscriptions();
   }
 
-  onCodeChange(newCode:string) {
+  onMappingsChange(mappings:any) {
+    console.log(mappings);
+    let isInvalid = mappings.type && mappings.type == 'error';
+    this.isValid = !isInvalid;
+
+    if(this.isValid) {
+      this.data.mappings = mappings;
+    }
+
   }
 
   saveTransform() {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
-        tile: this.data.current,
-        result: this.data.mappings
+        tile: this.data.tile,
+        inputMappings: this.data.mappings
       }
     }));
     this.close();
@@ -66,8 +67,7 @@ export class TransformComponent implements OnDestroy {
   deleteTransform() {
     this._postService.publish(_.assign({}, PUB_EVENTS.deleteTransform, {
       data: {
-        tile: this.data.tile,
-        result: this.data.mappings
+        tile: this.data.tile
       }
     }));
     this.close();
@@ -92,10 +92,13 @@ export class TransformComponent implements OnDestroy {
   }
 
   private onTransformSelected(data:any, envelope:any) {
-    // 1. set/restart data
-    // 2. open modal
-    this.data = Object.assign({mappings: ''}, data);
-    this.modal.open();
+    this.data = {
+      previousTiles: data.previousTiles,
+      tile: data.tile,
+      mappings: data.tile.inputMappings ? _.cloneDeep(data.tile.inputMappings) : []
+    };
+
+    setTimeout(() => this.modal.open(), 0);
   }
 
   private close() {

@@ -79,11 +79,15 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTask, { callback : this._addTaskFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addTrigger, { callback : this._addTriggerFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback : this._selectTaskFromDiagram.bind( this ) } ),
+      // trigger transform modal
+      //_.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback : this._selectTaskToTransformFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback : this._addTriggerFromTriggers.bind( this ) } ),
       _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
+      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
+      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
       // _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerGraphic.bind( this ) } )
     ];
 
@@ -570,14 +574,6 @@ export class FlogoCanvasComponent {
     }
   }
 
-  mockOpenTransform() {
-    this._selectTaskToTransformFromDiagram({
-      task: {
-        name: 'Pet Query'
-      }
-    });
-  }
-
   private _addTriggerFromDiagram( data : any, envelope : any ) {
     console.group( 'Add trigger message from diagram' );
 
@@ -955,24 +951,41 @@ export class FlogoCanvasComponent {
 
   private _selectTaskToTransformFromDiagram(data:any, envelope:any) {
 
-    // TODO: somehow get the previous tiles
-    let previous = [
-        {
-          name: 'http trigger'
-        },
-        {
-          name: 'IP Query'
-        }
-      ];
+    let selectedTaskId = data.node.taskID;
 
-    this._postService.publish(_.assign(
-      {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
-        data: {
-          previous,
-          tile: data.task
-        }
+    // TODO: somehow get the previous tiles
+    let previousTiles = [];
+    for(let taskId in this.tasks){
+      if(taskId === selectedTaskId) {
+        break;
       }
-    ));
+      previousTiles.push(this.tasks[taskId]);
+    }
+
+    this._postService.publish(
+      _.assign(
+        {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
+          data: {
+            previousTiles,
+            tile: _.cloneDeep( this.tasks[selectedTaskId] )
+          }
+        }
+      ));
+
+  }
+
+  private _saveTransformFromTransform(data:any, envelope:any){
+    // data.tile.taskId
+    // data.inputMappings
+
+    console.log('Save transform from transform', data);
+
+  }
+
+  private _deleteTransformFromTransform(data:any, envelope:any){
+    // data.tile.taskId
+
+    console.log('Delete transform from transform', data);
 
   }
 
