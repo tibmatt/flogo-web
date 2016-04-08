@@ -57,15 +57,17 @@
     color: #666;
     padding: 18px 28px;
     display: block;
+    text-decoration: none;
 }
 .flogo-flows-container-list-detail:hover {
-    text-decoration: none;
     background-color: #d8d8d8;
     /*box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.3);*/
 }
 .flogo-flows-container-list-detail-trash {
     height: 14px;
     width: 14px;
+    margin-top: 26px;
+    margin-right: 26px;
     float: right;
     line-height: 100%;
     background: url("/assets/svg/flogo.flows.trash.icon.svg") no-repeat;
