@@ -1,5 +1,4 @@
 import { Component, ElementRef, SimpleChange, AfterViewInit } from 'angular2/core';
-import * as DEMO_MODELS from '../../../common/constants';
 import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } from '../models';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
@@ -308,14 +307,5 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     }
 
     return Promise.reject( 'Invalid parameters.' );
-  }
-
-  /**
-   * Display all of the enumerations and constants
-   * TODO
-   *  remove this mock function in the future
-   */
-  getEnumerations() : any {
-    return DEMO_MODELS;
   }
 }
