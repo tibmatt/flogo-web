@@ -3,7 +3,7 @@ import {ROUTER_DIRECTIVES, RouteConfig} from 'angular2/router';
 import {FlogoNavbarComponent} from './navbar.component';
 import {FlogoFlowsComponet} from '../../flogo.flows/components/flows.component';
 import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.component';
-import {FlogoTaskComponent} from "../../flogo.task/components/task.component";
+import {FlogoFormBuilderComponent} from "../../flogo.form-builder/components/form-builder.component";
 import {PostService} from '../../../common/services/post.service';
 import { FlogoDBService } from '../../../common/services/db.service';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
@@ -32,7 +32,7 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
     path:'/flows/:id/...', name:"FlogoFlowDetail", component: FlogoCanvasComponent
   },
   {
-    path:'/task', name: 'FlogoTask', component: FlogoTaskComponent
+    path:'/task', name: 'FlogoTask', component: FlogoFormBuilderComponent
   },
   {
     path:'/rest-api-test', name: 'FlogoRESTAPITest', component: RESTAPITest

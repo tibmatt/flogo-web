@@ -2,7 +2,7 @@ import { Component } from 'angular2/core';
 import { PostService } from '../../../common/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { RouteParams } from 'angular2/router';
-import { FlogoTaskComponent } from '../../flogo.task/components/task.component';
+import { FlogoFormBuilderComponent } from '../../flogo.form-builder/components/form-builder.component';
 
 @Component(
   {
@@ -10,12 +10,13 @@ import { FlogoTaskComponent } from '../../flogo.task/components/task.component';
     moduleId : module.id,
     templateUrl : 'detail.tpl.html',
     styleUrls : [ 'detail.component.css' ],
-    directives : [ FlogoTaskComponent ]
+    directives : [ FlogoFormBuilderComponent ]
   }
 )
 
 export class FlogoFlowsDetailTasksDetail {
   private _task : any;
+  private _step : any;
   private _subscriptions : any;
   private _selectTaskMsg : any;
 
@@ -59,7 +60,8 @@ export class FlogoFlowsDetailTasksDetail {
 
     this._selectTaskMsg = data;
     this._task = data.task;
-    this._task.step =  data.step;
+    //this._task.step =  data.step;
+    this._step = data.step;
 
     if(_.isFunction( envelope.done )) {
       envelope.done();

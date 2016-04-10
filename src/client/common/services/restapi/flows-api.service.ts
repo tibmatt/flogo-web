@@ -1,6 +1,7 @@
 import { Injectable } from 'angular2/core';
 import { FlogoDBService } from '../db.service';
 import { Http, Headers, RequestOptions, Response } from 'angular2/http';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class RESTAPIFlowsService{

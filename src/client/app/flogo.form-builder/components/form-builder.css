@@ -2,17 +2,10 @@
   display: flex;
   flex-direction: column;
 }
-/*
-.flogo-task-container .flogo-task-container__header {
-  background-color: #0081CB;
-  color: white;
-  padding: 10px;
-  min-height: 50px;
-}
-*/
-.flogo-task-container .flogo-task-container__fields-header {
-}
-.flogo-task-container .flogo-task-container__fields-set {
+.flogo-task-container .flogo-task-container__input,
+.flogo-task-container .flogo-task-container__output {
+  padding-left: 15px;
+  padding-right: 15px;
 }
 .flogo-task-container .flogo-task-container__footer {
   background-color: #f8f8f8;

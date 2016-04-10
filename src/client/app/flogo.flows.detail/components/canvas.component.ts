@@ -23,7 +23,7 @@ import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS
 
 import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
 
-import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.task/messages'
+import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
 
 import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
 
@@ -711,14 +711,19 @@ export class FlogoCanvasComponent {
           console.group( 'after navigation' );
 
           // Refresh task detail
-          let stepNumber = this._getStepNumberFromTask(data.node.taskID);
-          data.step = {result: (stepNumber && this._steps) ? this._steps[ stepNumber - 1] : null,
-            number: stepNumber};
+          //let stepNumber = this._getStepNumberFromTask(data.node.taskID);
+          //data.step = {result: (stepNumber && this._steps) ? this._steps[ stepNumber - 1] : null,
+          //  number: stepNumber};
+          var currentStep = this._getCurrentState(data.node.taskID);
+          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ), {isTrigger:true} );
+
           this._postService.publish(
             _.assign(
               {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } ),
-
+                data : _.assign( {}, data,
+                  { task : currentTask } ,
+                  { step: currentStep }
+                ),
                 done: () => {
                   // select task done
                   //  only need this publish if the trigger has been changed
@@ -766,13 +771,17 @@ export class FlogoCanvasComponent {
           console.group( 'after navigation' );
 
           // Refresh task detail
-          let stepNumber = this._getStepNumberFromTask(data.node.taskID);
-          data.step = {result: (stepNumber && this._steps) ? this._steps[ stepNumber - 1] : null,
-            number: stepNumber};
+          var currentStep = this._getCurrentState(data.node.taskID);
+          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ), {isTrigger:false} );
+
           this._postService.publish(
             _.assign(
               {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                data : _.assign( {}, data, { task : _.cloneDeep( this.tasks[ data.node.taskID ] ) } ),
+                data : _.assign( {},
+                                data,
+                                { task : currentTask } ,
+                                { step: currentStep }
+                ),
 
                 done: () => {
                   // select task done
@@ -873,6 +882,29 @@ export class FlogoCanvasComponent {
     return stepNumber;
   }
 
+  private _getCurrentState(taskID:string) {
+    var result:any;
+    var steps = this._steps || [];
+
+    steps.forEach((current) => {
+
+      let id = taskID;
+      try { // try to decode the base64 encoded taskId to number
+        id = flogoIDDecode( id );
+      } catch ( e ) {
+        console.warn( e );
+      }
+
+      if(id == current.taskId) {
+        result = current;
+      }
+
+    });
+
+    return result;
+  }
+
+
 
   private _runFromThisTile(data:any, envelope:any) {
     console.group('Run from this tile');
@@ -901,21 +933,20 @@ export class FlogoCanvasComponent {
 
               this._steps = _.get( rsp, 'steps', [] );
 
-              var resultTask = this._steps.find(
-                ( step : any ) => {
-                  let id = data.taskId;
-                  try { // try to decode the base64 encoded taskId to number
-                    id = flogoIDDecode( id );
-                  } catch ( e ) {
-                    console.warn( e );
-                  }
-                  return step.taskId == id;
-                }
-              );
+              var currentStep = this._getCurrentState(data.taskId);
+              var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.taskId ] ), {isTrigger:false} );
 
               this._postService.publish(
-                _.assign( {}, FLOGO_TASK_PUB_EVENTS.updateTaskResults, { data : { result : resultTask } } )
-              )
+                _.assign(
+                  {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                    data: _.assign({},
+                      data,
+                      {task: currentTask},
+                      {step: currentStep}
+                    )
+                  }
+                ));
+
             }
           )
           .then(
