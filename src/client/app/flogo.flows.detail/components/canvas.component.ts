@@ -81,8 +81,6 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.deleteTask, { callback : this._deleteTaskFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addBranch, { callback : this._addBranchFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTransform, { callback : this._selectTransformFromDiagram.bind( this ) } ),
-      // trigger transform modal
-      //_.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback : this._selectTaskToTransformFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback : this._addTriggerFromTriggers.bind( this ) } ),
       _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
@@ -991,15 +989,7 @@ export class FlogoCanvasComponent {
 
   }
 
-  private _selectTransformFromDiagram( data : any, envelope : any ) {
-    console.group( 'Select transform message from diagram' );
-
-    console.log(data);
-
-    console.groupEnd();
-  }
-
-  private _selectTaskToTransformFromDiagram(data:any, envelope:any) {
+  private _selectTransformFromDiagram(data:any, envelope:any) {
 
     let selectedTaskId = data.node.taskID;
 
