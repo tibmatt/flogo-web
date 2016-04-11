@@ -22,7 +22,8 @@
 }
 
 .flogo-flows-detail-diagram {
-  padding: 0 20px;
+  padding: 0;
+  margin: 0;
   min-width: 100%;
   transition: background-color 500ms linear;
   white-space: pre-wrap;
@@ -33,7 +34,8 @@
   min-width: 100%;
   white-space: nowrap;
   display: inline-block;
-  margin: 20px 0;
+  padding: 0 30px;
+  margin: 0;
   &:hover{
     background-color: rgba(182, 217, 237, 0.2);
   }
@@ -145,6 +147,11 @@
       display: none;
     }
   }
+
+  &[data-flogo-node-type="node_holder"] {
+    opacity: 0;
+  }
+
   &[data-flogo-node-type="node_add"],
   &[data-flogo-node-type="node_root_new"] {
     background-color: #fff;
@@ -276,7 +283,12 @@
   }
 }
 
-.flogo-flows-detail-diagram-row.hover .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] {
-  opacity: 1;
-  cursor: pointer;
+.flogo-flows-detail-diagram-row.hover {
+  .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] {
+    opacity: 1;
+    cursor: pointer;
+  }
+  .flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"] {
+    opacity: 1;
+  }
 }

@@ -14,11 +14,15 @@ import { FLOGO_TASK_STATUS } from '../../../common/constants';
 export interface IFlogoFlowDiagram {
   root : IFlogoFlowDiagramRootNode;
   nodes : IFlogoFlowDiagramNodeDictionary;
+  MAX_ROW_LEN?: number;
 }
+
+const DEFAULT_MAX_ROW_LEN = 7;
 
 export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   public root : IFlogoFlowDiagramRootNode;
   public nodes : IFlogoFlowDiagramNodeDictionary;
+  public MAX_ROW_LEN = DEFAULT_MAX_ROW_LEN;
 
   private rootElm : Selection < any >;
   private ng2StyleAttr = '';
@@ -56,6 +60,28 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return matrix;
   }
 
+  static padMatrix( matrix : string [][], rowLen = DEFAULT_MAX_ROW_LEN ) : string[][] {
+    let outputMatrix : string[][] = [];
+
+    _.each(
+      matrix, ( matrixRow ) => {
+        if ( matrixRow.length < rowLen ) {
+          let rowLenDiff = rowLen - matrixRow.length;
+          let paddingArr = _.fill( Array( rowLenDiff ), '_' );
+          outputMatrix.push( matrixRow.concat( paddingArr ) );
+        } else {
+          // TODO
+          // ignore for the moment, assuming that the row won't be overflow
+          // and the overflow case should be handled somewhere else.
+
+          outputMatrix.push( matrixRow )
+        }
+      }
+    );
+
+    return outputMatrix;
+  }
+
   static getEmptyDiagram() : IFlogoFlowDiagram {
     let newRootNode = new FlogoFlowDiagramNode();
     let empytDiagram = < IFlogoFlowDiagram > {
@@ -70,6 +96,41 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     empytDiagram.nodes[ newRootNode.id ] = newRootNode;
 
     return empytDiagram;
+  }
+
+  static filterOverflowAddNode(
+    matrix : string[][], nodes : IFlogoFlowDiagramNodeDictionary, rowLen = DEFAULT_MAX_ROW_LEN
+  ) : string[][] {
+    let outputMatrix = _.cloneDeep( matrix );
+
+    _.each(
+      outputMatrix, ( matrixRow : string[] ) => {
+
+        if ( matrixRow.length > rowLen ) {
+
+          let diffRowLen = matrixRow.length - rowLen;
+          let node : IFlogoFlowDiagramNode;
+
+          while ( diffRowLen ) {
+            let node = nodes[ matrixRow[ matrixRow.length - 1 ] ];
+
+            if ( node && (
+                node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
+                node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW
+              ) ) {
+              matrixRow.pop();
+            }
+
+            diffRowLen--;
+          }
+
+        }
+
+      }
+    );
+
+
+    return outputMatrix;
   }
 
   public update(
@@ -150,6 +211,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       );
 
       this.nodes = nodeDict;
+
+      this.MAX_ROW_LEN = _.isNumber( diagram.MAX_ROW_LEN ) ? diagram.MAX_ROW_LEN : this.MAX_ROW_LEN;
     }
 
 
@@ -180,7 +243,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     // enter selection
     let rows = this.rootElm.selectAll( '.flogo-flows-detail-diagram-row' )
-      .data( FlogoFlowDiagram.transformDiagram( this ) );
+      .data(
+        FlogoFlowDiagram.filterOverflowAddNode(
+          FlogoFlowDiagram.padMatrix(
+            FlogoFlowDiagram.transformDiagram( this ), this.MAX_ROW_LEN
+          ), this.nodes
+        )
+      );
 
     let enterRows = rows
       .enter()
@@ -352,7 +421,24 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         ( d : IFlogoFlowDiagramNode[ ] ) => {
           return _.map(
             d, ( nodeID : string ) => {
-              return this.nodes[ nodeID ];
+              let nodeInfo = this.nodes[ nodeID ];
+
+              if ( nodeID === '_' ) {
+                // placeholder node
+                nodeInfo = {
+                  id : '',
+                  taskID : '',
+                  type : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
+                  children : [],
+                  parents : []
+                };
+              } else if ( _.isEmpty( nodeInfo ) ) {
+                console.warn( 'Empty Node Information' );
+                // TODO
+                //  add some handler
+              }
+
+              return nodeInfo;
             }
           );
         }
