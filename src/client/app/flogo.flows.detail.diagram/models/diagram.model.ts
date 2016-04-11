@@ -8,7 +8,7 @@ import {
   FlogoFlowDiagramProcess
 } from '../models';
 import { Selection } from 'd3';
-import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
 import { FLOGO_TASK_STATUS } from '../../../common/constants';
 
 export interface IFlogoFlowDiagram {
@@ -269,11 +269,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         }
       );
 
-    // enterRows.style( 'opacity', 1e-6 )
-    //   .transition( )
-    //   .duration( 350 )
-    //   .style( 'opacity', 1 );
-
     // enter selection
     let tasks = this._preprocessTaskNodes( enterRows );
 
@@ -296,10 +291,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       )
       .on( 'mouseenter', null )
       .on( 'mouseleave', null )
-      // .transition( )
-      // .duration( 350 )
-      // .delay( 350 )
-      // .style( 'opacity', 1e-6 )
       .remove();
 
     console.groupEnd();
@@ -476,46 +467,30 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           console.group( 'event' );
           console.log( d3.event );
 
-          // trigger specific events
-          if ( CustomEvent && this.dispatchEvent ) {
-            let evtDetail = {
-              'view' : window,
-              'bubbles' : true,
-              'cancelable' : true,
-              'cancelBubble' : true,
-              'detail' : {
-                origEvent : d3.event,
-                node : d,
-                col : col,
-                row : row
-              }
-            };
+          let evtType = '';
 
-            let evtType = '';
+          if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
+               d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+            evtType = 'flogoAddTask';
 
-            if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
-                 d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
-              evtType = 'flogoAddTask';
+            // TODO
+            //   refine the logic to handle more kinds of nodes
+          } else if ( [
+                        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
+                        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT
+                      ].indexOf( d.type ) !== -1 ) {
+            evtType = 'flogoSelectTask';
+          }
 
-              // TODO
-              //   refine the logic to handle more nodes
-            } else if ( [
-                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
-                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT
-                        ].indexOf( d.type ) !== -1 ) {
-              evtType = 'flogoSelectTask';
-            }
+          if ( evtType ) {
 
-            if ( evtType ) {
-              let evt = new CustomEvent( evtType, evtDetail );
+            _triggerCustomEvent(evtType, {
+              origEvent : d3.event,
+              node : d,
+              col : col,
+              row : row
+            }, this);
 
-              if ( this.dispatchEvent( evt ) ) {
-                console.log( evt );
-              }
-            }
-
-          } else {
-            console.warn( 'Unsupport CustomEvent or dispatchEvent' );
           }
 
           console.groupEnd();
@@ -550,14 +525,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             );
         }
       );
-    // .style( 'opacity', 1e-6 )
-    // .style( 'border-color', '#ff5500' )
-    // .transition( )
-    // .duration( 350 )
-    // .style( 'opacity', 1 )
 
     newNodes.each(
-      function ( d : IFlogoFlowDiagramNode ) {
+      function ( d : IFlogoFlowDiagramNode, col : number, row : number  ) {
         let thisNode = d3.select( this );
 
         // add text DOM
@@ -579,9 +549,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           .html(
             () => {
               return `<ul ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-box">
-                  <li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-plus"></i>Add branch</li>
-                  <li ${diagram.ng2StyleAttr}  class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-bolt"></i>Transform</li>
-                  <li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list"><i class="fa fa-trash-o"></i>Delete</li>
+                  <li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i class="fa fa-plus"></i>Add branch</li>
+                  <li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i class="fa fa-bolt"></i>Transform</li>
+                  <li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i class="fa fa-trash-o"></i>Delete</li>
                 </ul>
                 <span ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-gear"></span>`;
             }
@@ -590,6 +560,20 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             'click', function () {
               let event = <Event>d3.event;
               event.stopPropagation();
+
+              if ( ( <HTMLElement>event.target ).getAttribute( 'data-menu-item-type' ) ) {
+                // fire event if it's menu item
+                let evtType = 'flogoClickNodeMenuItem';
+
+                _triggerCustomEvent(
+                  evtType, {
+                    origEvent : d3.event,
+                    node : d,
+                    col : col,
+                    row : row
+                  }, this
+                );
+              }
 
               thisNode.classed( 'flogo-flows-detail-diagram-node-menu-selected', true );
             }
@@ -622,10 +606,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       .attr(
         'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase()
       );
-    // .transition( )
-    // .duration( 350 )
-    // .delay( 350 )
-    // .style( 'border-color', '#fff' );
 
     //  update text
     tasks.each(
@@ -696,9 +676,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       .on( 'click', null )
       .on( 'mouseover', null )
       .on( 'mouseleave', null )
-      // .transition( )
-      // .duration( 350 )
-      // .style( 'opacity', 1e-6 )
       .remove();
   };
 
@@ -749,4 +726,31 @@ function _insertChildNodes(
   }
 
   return matrix;
+}
+
+function _triggerCustomEvent( eventType : string, eventDetail : any, elm: HTMLElement ) : boolean {
+
+  // trigger specific events
+  if ( CustomEvent && elm.dispatchEvent ) {
+    if ( eventType ) {
+      let evtDetail = {
+        'view' : window,
+        'bubbles' : true,
+        'cancelable' : true,
+        'cancelBubble' : true,
+        'detail' : eventDetail
+      };
+
+      elm.dispatchEvent( new CustomEvent( eventType, evtDetail ) );
+
+      return true;
+    } else {
+      console.warn( 'No eventType is given.' );
+      return false;
+    }
+  } else {
+    console.warn( 'Unsupport CustomEvent or dispatchEvent' );
+    return false;
+  }
+
 }

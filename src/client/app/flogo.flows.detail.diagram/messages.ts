@@ -4,20 +4,32 @@
 
 export const PUB_EVENTS = {
   addTask : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'add-task'
   },
   selectTask : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'select-task'
   },
   addTrigger : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'add-trigger'
   },
   selectTrigger : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'select-trigger'
+  },
+  addBranch : {
+    channel : 'flogo-flows-detail-diagram',
+    topic : 'add-branch'
+  },
+  selectTransform : {
+    channel : 'flogo-flows-detail-diagram',
+    topic : 'select-transform'
+  },
+  deleteTask : {
+    channel : 'flogo-flows-detail-diagram',
+    topic : 'delete-task'
   }
 };
 
@@ -27,23 +39,35 @@ export const PUB_EVENTS = {
 
 export const SUB_EVENTS = {
   addTask : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'public-add-task'
   },
   selectTask : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'public-select-task'
   },
   addTrigger : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'public-add-trigger'
   },
   selectTrigger : {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'public-select-trigger'
   },
   render: {
-    channel : 'mock-flogo-flows-detail-diagram',
+    channel : 'flogo-flows-detail-diagram',
     topic : 'public-render'
+  },
+  addBranch : {
+    channel : 'flogo-flows-detail-diagram',
+    topic : 'public-add-branch'
+  },
+  selectTransform : {
+    channel : 'flogo-flows-detail-diagram',
+    topic : 'public-select-transform'
+  },
+  deleteTask : {
+    channel : 'flogo-flows-detail-diagram',
+    topic : 'public-delete-task'
   }
 };

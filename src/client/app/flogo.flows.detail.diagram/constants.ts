@@ -14,6 +14,12 @@ export enum FLOGO_FLOW_DIAGRAM_NODE_TYPE {
   NODE_LOOP
 }
 
+export enum FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE {
+  ADD_BRANCH,
+  SELECT_TRANSFORM,
+  DELETE
+}
+
 /**
  * Constants
  */

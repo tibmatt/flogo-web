@@ -2,7 +2,7 @@ import { Component, ElementRef, SimpleChange, AfterViewInit } from 'angular2/cor
 import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } from '../models';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
 
 @Component(
@@ -203,6 +203,30 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.groupEnd();
   }
 
+  // forwarding event based on item type
+  onMenuItemClicked( $event : any ) {
+    console.group( 'forwarding menu item clicked event' );
+    let menuItemType = $event.detail.origEvent.target.getAttribute( 'data-menu-item-type' );
+
+    if ( _.isEmpty( menuItemType ) ) {
+      console.warn( 'Invalid data menu item type.' );
+    } else {
+      let data = $event.detail;
+
+      switch ( Number( menuItemType ) ) {
+        case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH:
+          this._postService.publish( _.assign( {}, PUB_EVENTS.addBranch, { data : data } ) );
+          break;
+        case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM:
+          this._postService.publish( _.assign( {}, PUB_EVENTS.selectTransform, { data : data } ) );
+          break;
+        case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE:
+          this._postService.publish( _.assign( {}, PUB_EVENTS.deleteTask, { data : data } ) );
+          break;
+      }
+    }
+    console.groupEnd();
+  }
 
   private _addTriggerDone( data : any, envelope : any ) {
     console.group( 'Add Trigger Done' );
