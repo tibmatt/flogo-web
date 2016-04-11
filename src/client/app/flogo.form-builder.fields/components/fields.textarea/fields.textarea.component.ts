@@ -8,11 +8,11 @@ import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
   moduleId: module.id,
   templateUrl: 'fields.textarea.tpl.html',
   directives: [ROUTER_DIRECTIVES],
-  inputs:['info','_observer:observer']
+  inputs:['_info:info','_observer:observer']
 })
 
 export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase {
-  info:any;
+  _info:any;
   _observer:any;
 
   constructor() {
