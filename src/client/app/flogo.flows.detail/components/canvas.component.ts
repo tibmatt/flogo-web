@@ -1018,14 +1018,21 @@ export class FlogoCanvasComponent {
     // data.tile.taskId
     // data.inputMappings
 
-    console.log('Save transform from transform', data);
+    let tile = this.tasks[data.tile.id];
+    tile.inputMappings = _.cloneDeep(data.inputMappings);
+
+    this._updateFlow( this._flow ).then(() => {
+      console.group('Save transform');
+      console.log('Flow updated');
+      console.groupEnd();
+    });
 
   }
 
   private _deleteTransformFromTransform(data:any, envelope:any){
     // data.tile.taskId
-
-    console.log('Delete transform from transform', data);
+    let tile = this.tasks[data.tile.id];
+    delete tile.inputMappings;
 
   }
 
