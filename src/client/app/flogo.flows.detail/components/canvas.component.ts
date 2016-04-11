@@ -1,7 +1,6 @@
 import { Component } from 'angular2/core';
 import { RouteConfig, RouterOutlet, RouteParams, Router } from 'angular2/router';
 import {PostService} from '../../../common/services/post.service';
-import { FlogoCanvasFlowComponent } from '../../flogo.flows.detail.graphic/components/flow.component';
 import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
 import {FlogoFlowsDetail} from './flow-detail.component';
 import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/components/triggers.component';
@@ -36,7 +35,7 @@ import { flogoIDDecode, flogoIDEncode } from '../../../common/utils';
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoCanvasFlowComponent, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ]
 } )
