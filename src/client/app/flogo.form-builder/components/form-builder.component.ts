@@ -15,18 +15,19 @@ import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-buil
   styleUrls: ['form-builder.css'],
   templateUrl: 'form-builder.tpl.html',
   directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber ],
-  inputs: ['_task:task','_step:step']
+  inputs: ['_task:task','_step:step', '_context:context']
 })
 export class FlogoFormBuilderComponent{
   _observerInput:ReplaySubject;
   _observerOutput:ReplaySubject;
   _task: any;
   _step: any;
+  _context: any;
   _subscriptions: any[];
   _canRunFromThisTile: boolean = false;
   _attributes:any;
   _hasChanges:boolean = false;
-  _originalAttributes:any;
+  _attributesOriginal:any;
 
   constructor(private _postService: PostService) {
     this._initSubscribe();
@@ -78,16 +79,12 @@ export class FlogoFormBuilderComponent{
   }
 
   ngOnChanges() {
-    this._originalAttributes = _.cloneDeep(this._task.attributes || {});
+    this._attributesOriginal = _.cloneDeep(this._task.attributes || {});
     this._setEnvironment(this._task.attributes || {});
   }
 
   _setEnvironment(attributes:any) {
-    //var attributes = _.assign({},this._task.attributes) || [];
-
-    // the task can say if is trigger
-    this._canRunFromThisTile =  (this._step|| this._task.isTrigger);
-
+    this._canRunFromThisTile =  (this._context.isTrigger || this._context.hasProcess);
     this._attributes = { inputs: attributes['inputs'] || [], outputs: attributes['outputs'] || [] };
 
     this._attributes.inputs.map((input) => {   input.mappings = this._task.inputMappings;    input.step  = this._step });
@@ -95,7 +92,6 @@ export class FlogoFormBuilderComponent{
   }
 
   getControlByType(type:string) {
-
     switch(type) {
       case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
         return {control: 'FieldTextBox'};
@@ -130,7 +126,6 @@ export class FlogoFormBuilderComponent{
   }
 
   _getMappingValue(info:any) {
-
     // if there is results
     if(info.step) {
 
@@ -139,7 +134,6 @@ export class FlogoFormBuilderComponent{
       });
 
       if (mapping) {
-
         var resultValue = _.find(info.step.process.attributes, (attribute) => {
           return mapping.mapTo == attribute.name;
         });
@@ -149,14 +143,13 @@ export class FlogoFormBuilderComponent{
         }
       }
     }
-
     return info.value;
   }
 
   runFromThisTile() {
     // return the id of the task directly, this id is encoded using `flogoIDEncode`, should be handled by subscribers
     var taskId   = this._task.id;
-    var inputs = this._getModifiedStateTask(this._attributes.inputs);
+    var inputs = this._getCurrentTaskState(this._attributes.inputs);
 
     this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTile, {
       data: {inputs, taskId},
@@ -175,7 +168,7 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  _getModifiedStateTask(items:any[]) {
+  _getCurrentTaskState(items:any[]) {
        var result :any = {};
 
        items.forEach((item:any) => {
@@ -186,7 +179,7 @@ export class FlogoFormBuilderComponent{
   }
 
   cancelEdit(event) {
-    this._setEnvironment(_.cloneDeep(this._originalAttributes || {}));
+    this._setEnvironment(_.cloneDeep(this._attributesOriginal || {}));
     this._hasChanges = false
 
   }

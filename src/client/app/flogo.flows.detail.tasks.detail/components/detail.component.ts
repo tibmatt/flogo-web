@@ -17,6 +17,7 @@ import { FlogoFormBuilderComponent } from '../../flogo.form-builder/components/f
 export class FlogoFlowsDetailTasksDetail {
   private _task : any;
   private _step : any;
+  private _context: any;
   private _subscriptions : any;
   private _selectTaskMsg : any;
 
@@ -60,8 +61,8 @@ export class FlogoFlowsDetailTasksDetail {
 
     this._selectTaskMsg = data;
     this._task = data.task;
-    //this._task.step =  data.step;
     this._step = data.step;
+    this._context = data.context;
 
     if(_.isFunction( envelope.done )) {
       envelope.done();

@@ -711,18 +711,17 @@ export class FlogoCanvasComponent {
           console.group( 'after navigation' );
 
           // Refresh task detail
-          //let stepNumber = this._getStepNumberFromTask(data.node.taskID);
-          //data.step = {result: (stepNumber && this._steps) ? this._steps[ stepNumber - 1] : null,
-          //  number: stepNumber};
           var currentStep = this._getCurrentState(data.node.taskID);
-          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ), {isTrigger:true} );
+          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
+          var context     = this._getCurrentContext(data.node.taskID);
 
           this._postService.publish(
             _.assign(
               {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
                 data : _.assign( {}, data,
                   { task : currentTask } ,
-                  { step: currentStep }
+                  { step: currentStep },
+                  { context: context}
                 ),
                 done: () => {
                   // select task done
@@ -754,6 +753,12 @@ export class FlogoCanvasComponent {
     console.groupEnd( );
   }
 
+  private _getCurrentContext(taskId:any) {
+
+    var isTrigger = this.tasks[taskId].type === FLOGO_TASK_TYPE.TASK_ROOT;
+    return {isTrigger: isTrigger, hasProcess: !!this._currentProcessID };
+  }
+
 
   private _selectTaskFromDiagram( data: any, envelope: any ) {
     console.group( 'Select task message from diagram' );
@@ -772,7 +777,8 @@ export class FlogoCanvasComponent {
 
           // Refresh task detail
           var currentStep = this._getCurrentState(data.node.taskID);
-          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ), {isTrigger:false} );
+          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
+          var context     = this._getCurrentContext(data.node.taskID);
 
           this._postService.publish(
             _.assign(
@@ -780,7 +786,8 @@ export class FlogoCanvasComponent {
                 data : _.assign( {},
                                 data,
                                 { task : currentTask } ,
-                                { step: currentStep }
+                                { step: currentStep },
+                                { context: context }
                 ),
 
                 done: () => {
@@ -934,7 +941,8 @@ export class FlogoCanvasComponent {
               this._steps = _.get( rsp, 'steps', [] );
 
               var currentStep = this._getCurrentState(data.taskId);
-              var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.taskId ] ), {isTrigger:false} );
+              var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.taskId ] ) );
+              var context     = this._getCurrentContext(data.taskId);
 
               this._postService.publish(
                 _.assign(
@@ -942,7 +950,8 @@ export class FlogoCanvasComponent {
                     data: _.assign({},
                       data,
                       {task: currentTask},
-                      {step: currentStep}
+                      {step: currentStep},
+                      {context: context}
                     )
                   }
                 ));
