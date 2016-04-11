@@ -79,8 +79,14 @@ export class FlogoFormBuilderComponent{
   }
 
   ngOnChanges() {
-    this._attributesOriginal = _.cloneDeep(this._task.attributes || {});
-    this._setEnvironment(this._task.attributes || {});
+    var attributes = this._task ? this._task.attributes || {} : {};
+
+    if(!this._context) {
+      this._context = {isTrigger:false , hasProcess:false};
+    }
+
+    this._attributesOriginal = _.cloneDeep(attributes);
+    this._setEnvironment(attributes);
   }
 
   _setEnvironment(attributes:any) {

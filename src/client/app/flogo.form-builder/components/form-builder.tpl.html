@@ -9,7 +9,7 @@
       </div>
 
       <div class="flogo-common-edit-panel__head-wrapper flogo-task-container__header">
-        <h3 class="flogo-common-edit-panel__head-title">{{ _task.name || _task.id }}</h3>
+        <h3  *ngIf="_task" class="flogo-common-edit-panel__head-title">{{ _task.name || _task.id }}</h3>
         <div class="flogo-common-edit-panel__head-subtitle"></div>
       </div>
     </div>
