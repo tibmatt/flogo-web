@@ -53,6 +53,12 @@
   text-align: center;
   transition: all 500ms linear;
 }
+.flogo-flows-detail-diagram-node:first-of-type {
+  margin-left: 0;
+}
+.flogo-flows-detail-diagram-node:last-of-type {
+  margin-right: 0;
+}
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected {
   transform: scale(1.1);
   z-index: 10;

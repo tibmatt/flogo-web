@@ -143,6 +143,10 @@ label {
   width: 100%;
 }
 
+.tc-buttons-primary-call {
+  padding: 12px 24px;
+}
+
 /* ================ */
 
 /* TODO: Only for demo, need to find a way to add custom class to modal's parent */
