@@ -466,37 +466,43 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           console.group( 'event' );
           console.log( d3.event );
-
-          let evtType = '';
-
-          if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
-               d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
-            evtType = 'flogoAddTask';
-
-            // TODO
-            //   refine the logic to handle more kinds of nodes
-          } else if ( [
-                        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
-                        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT
-                      ].indexOf( d.type ) !== -1 ) {
-            evtType = 'flogoSelectTask';
-          }
-
-          if ( evtType ) {
-
-            _triggerCustomEvent(evtType, {
-              origEvent : d3.event,
-              node : d,
-              col : col,
-              row : row
-            }, this);
-
-          }
-
           console.groupEnd();
 
-          d3.select( this )
-            .classed( 'flogo-flows-detail-diagram-node-selected', true );
+          if ( !(
+            d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
+            ) ) {
+
+            let evtType = '';
+
+            if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
+                 d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+              evtType = 'flogoAddTask';
+
+              // TODO
+              //   refine the logic to handle more kinds of nodes
+            } else if ( [
+                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
+                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT
+                        ].indexOf( d.type ) !== -1 ) {
+              evtType = 'flogoSelectTask';
+            }
+
+            if ( evtType ) {
+
+              _triggerCustomEvent(
+                evtType, {
+                  origEvent : d3.event,
+                  node : d,
+                  col : col,
+                  row : row
+                }, this
+              );
+
+            }
+
+            d3.select( this )
+              .classed( 'flogo-flows-detail-diagram-node-selected', true );
+          }
 
           console.groupEnd();
         }
