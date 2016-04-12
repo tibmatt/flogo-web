@@ -1,4 +1,7 @@
 <div class="flogo-field-textbox">
   <label class="control-label">{{_info.title}}</label>
-  <input type="text" class="form-control tc-inputs" [(ngModel)]="_info.value" (keyup)="onChangeField($event)">
+  <input type="text" class="form-control tc-inputs" [class.error]="_hasError" [(ngModel)]="_info.value" (keyup)="onChangeField($event)" (change)="onValidate($event)">
+  <div *ngIf="_hasError && _errorMessage" class="control-group error">
+    <label class="flogo-fields-base__error">{{_errorMessage}}</label>
+  </div>
 </div>

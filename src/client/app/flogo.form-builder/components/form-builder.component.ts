@@ -20,6 +20,7 @@ import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-buil
 export class FlogoFormBuilderComponent{
   _observerInput:ReplaySubject;
   _observerOutput:ReplaySubject;
+  _observerFieldError:ReplaySubject;
   _task: any;
   _step: any;
   _context: any;
@@ -28,6 +29,7 @@ export class FlogoFormBuilderComponent{
   _attributes:any;
   _hasChanges:boolean = false;
   _attributesOriginal:any;
+  _fieldsErrors:string[];
 
   constructor(private _postService: PostService) {
     this._initSubscribe();
@@ -56,16 +58,34 @@ export class FlogoFormBuilderComponent{
   _setFieldsObservers() {
     this._observerInput = new ReplaySubject(2);
     this._observerOutput = new ReplaySubject(2);
+    this._observerFieldError  = new ReplaySubject(2);
 
     this._observerInput.subscribe((changedObject:any) => {
       this._updateAttributeByUserChanges(this._attributes.inputs, changedObject);
       this._hasChanges = true;
     });
 
-    this._observerInput.subscribe((changedObject:any) => {
+
+    this._observerOutput.subscribe((changedObject:any) => {
       this._updateAttributeByUserChanges(this._attributes.outputs, changedObject);
       this._hasChanges = true;
     });
+
+     this._observerFieldError.subscribe( (field:any) => {
+
+       if(field.status == 'error') {
+         if(this._fieldsErrors.indexOf(field.name) == -1) {
+           this._fieldsErrors.push(field.name)
+         }
+       } else {
+         var index  = this._fieldsErrors.indexOf(field.name);
+         if(index != -1) {
+           this._fieldsErrors.splice(index, 1);
+         }
+       }
+    });
+
+
   }
 
   _updateAttributeByUserChanges(attributes:any, changedObject:any) {
@@ -79,6 +99,7 @@ export class FlogoFormBuilderComponent{
   }
 
   ngOnChanges() {
+    this._fieldsErrors = [];
     var attributes = this._task ? this._task.attributes || {} : {};
 
     if(!this._context) {
@@ -124,7 +145,10 @@ export class FlogoFormBuilderComponent{
       title:      input.title || input.name || '',
       value:      input.value,
       mappings:   input.mappings,
-      step:       input.step
+      step:       input.step,
+      validation: input.validation,
+      validationMessage: input.validationMessage,
+      required:   input.required
     };
     info.value = this._getMappingValue(info);
 
@@ -186,6 +210,7 @@ export class FlogoFormBuilderComponent{
 
   cancelEdit(event) {
     this._setEnvironment(_.cloneDeep(this._attributesOriginal || {}));
+    this._fieldsErrors = [];
     this._hasChanges = false
 
   }

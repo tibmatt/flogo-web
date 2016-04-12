@@ -8,17 +8,21 @@
       "name": "petId",
       "title": "Pet ID",
       "value": "222",
-      "required": true
+      "required": true,
+      "validation": "^\\d*$",
+      "validationMessage": "Pet ID Should be a valid number"
     },
     {
       "name": "uri",
       "title": "URI",
-      "value": "http://petstore.swagger.io/v2/pet/{petId}"
+      "value": "http://petstore.swagger.io/v2/pet/{petId}",
+      "required": true
     },
     {
       "name": "method",
       "title": "Method",
-      "value": "GET"
+      "value": "GET",
+      "required": true
     }
   ],
   "outputs": [
