@@ -60,6 +60,7 @@ export class FlogoCanvasComponent {
   _steps: any;
   _processInstanceID: string;
   _restartProcessInstanceID: string;
+  _isDiagramEdited:boolean;
 
   // TODO
   //  may need better implementation
@@ -117,6 +118,7 @@ export class FlogoCanvasComponent {
     private _router: Router
   ) {
     this._hasUploadedProcess = false ;
+    this._isDiagramEdited = false;
 
     // TODO
     //  Remove this mock
@@ -202,6 +204,7 @@ export class FlogoCanvasComponent {
   }
 
   private _runFromTrigger() {
+    this._isDiagramEdited = false;
 
     if ( this._isCurrentProcessDirty ) {
 
@@ -620,6 +623,7 @@ export class FlogoCanvasComponent {
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
                   this._updateFlow( this._flow );
+                  this._isDiagramEdited = true;
                 }
               }
             )
@@ -681,6 +685,7 @@ export class FlogoCanvasComponent {
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
                   this._updateFlow( this._flow );
+                  this._isDiagramEdited = true;
                 }
               }
             )
@@ -754,9 +759,8 @@ export class FlogoCanvasComponent {
   }
 
   private _getCurrentContext(taskId:any) {
-
     var isTrigger = this.tasks[taskId].type === FLOGO_TASK_TYPE.TASK_ROOT;
-    return {isTrigger: isTrigger, hasProcess: !!this._currentProcessID };
+    return {isTrigger: isTrigger, hasProcess: !!this._currentProcessID, isDiagramEdited: this._isDiagramEdited };
   }
 
 
@@ -1059,6 +1063,7 @@ export class FlogoCanvasComponent {
               delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
               delete this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
               this._updateFlow( this._flow );
+              this._isDiagramEdited = true;
             }
           }
         )

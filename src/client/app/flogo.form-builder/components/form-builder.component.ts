@@ -103,15 +103,27 @@ export class FlogoFormBuilderComponent{
     var attributes = this._task ? this._task.attributes || {} : {};
 
     if(!this._context) {
-      this._context = {isTrigger:false , hasProcess:false};
+      this._context = {isTrigger:false , hasProcess:false, _isDiagramEdited:false };
     }
 
     this._attributesOriginal = _.cloneDeep(attributes);
     this._setEnvironment(attributes);
   }
 
+  _getCanRunFromThisTile() {
+    if(this._context.isTrigger) {
+      return true;
+    }
+
+    if(this._context.isDiagramEdited) {
+       return false;
+    }
+
+    return this._context.hasProcess;
+  }
+
   _setEnvironment(attributes:any) {
-    this._canRunFromThisTile =  (this._context.isTrigger || this._context.hasProcess);
+    this._canRunFromThisTile =  this._getCanRunFromThisTile();
     this._attributes = { inputs: attributes['inputs'] || [], outputs: attributes['outputs'] || [] };
 
     this._attributes.inputs.map((input) => {   input.mappings = this._task.inputMappings;    input.step  = this._step });
