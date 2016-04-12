@@ -12,7 +12,6 @@ export const TRIGGERS = [
     "id" : flogoIDEncode( "1" ),
     "type" : FLOGO_TASK_TYPE.TASK_ROOT,
     "activityType" : '',
-    "name" : "MGTT Trigger"
+    "name" : "MQTT Trigger"
   }
 ];
-
