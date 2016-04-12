@@ -151,6 +151,10 @@ label {
 
 /* TODO: Only for demo, need to find a way to add custom class to modal's parent */
 
+.modal-dialog {
+  width: 90%;
+}
+
 .modal-content {
   border-radius: 4px;
   box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.3);
@@ -159,6 +163,16 @@ label {
 
 .modal-backdrop {
   background-color: rgba(113, 113, 113, 0.8);
+}
+
+.flogo-transform-header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.flogo-transform-header__title {
+  flex: 1;
 }
 
 .flogo-flows-detail-tasks-install-modal .category-list__title,

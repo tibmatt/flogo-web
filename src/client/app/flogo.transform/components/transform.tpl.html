@@ -1,7 +1,23 @@
 <div>
-  <modal [size]="'lg'" #transformModal>
-    <modal-header [show-close]="true">
-      <h2>Transformation</h2>
+  <modal [ngClass]="{myModalClass: true}" [size]="'lg'" #transformModal>
+    <modal-header>
+      <div class="flogo-transform-header">
+        <div class="flogo-transform-header__title">
+          <h2>Transformation</h2>
+        </div>
+        <div class="flogo-transform-header__options">
+          <button class="tc-buttons tc-buttons-secondary" (click)="deleteTransform()">Delete</button>
+        </div>
+        <div class="flogo-transform-header__main-actions">
+          <button class="tc-buttons tc-buttons-primary"
+                  [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
+                  (click)="saveTransform()">Save
+          </button>
+          <button class="close" (click)="cancel()">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+      </div>
     </modal-header>
     <modal-body>
       <div class="row">
@@ -9,19 +25,18 @@
           <legend>Previous tiles</legend>
           <pre>{{ data.previousTiles | json }}</pre>
         </div>
-        <div class="col-md-4 col-sm-12">
+        <div [class.has-error]="!isValid" class="col-md-4 col-sm-12">
           <legend>Mappings</legend>
-          <flogo-transform-map-editor [mappings]="data.mappings" (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
+          <flogo-transform-map-editor [mappings]="data.mappings"
+                                      (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
         </div>
         <div class="col-md-4 col-sm-12">
-          <legend>Input data <small>{{ data.tile?.name }}</small></legend>
+          <legend>Input data
+            <small>{{ data.tile?.name }}</small>
+          </legend>
           <pre>{{ data.tile | json }}</pre>
         </div>
       </div>
     </modal-body>
-    <modal-footer>
-      <button class="tc-buttons tc-buttons-secondary" (click)="deleteTransform()">Delete</button>
-      <button class="tc-buttons tc-buttons-primary" [class.disabled]="!isValid" [disabled]="!isValid" (click)="saveTransform()">Save</button>
-    </modal-footer>
   </modal>
 </div>

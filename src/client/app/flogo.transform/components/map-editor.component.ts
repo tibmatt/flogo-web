@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from 'angular2/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from 'angular2/core';
 import { FORM_DIRECTIVES, Control } from 'angular2/common';
 import { Observable } from 'rxjs/Rx';
 
@@ -8,11 +8,11 @@ import { Observable } from 'rxjs/Rx';
   moduleId: module.id,
   templateUrl: 'map-editor.tpl.html'
 })
-export class MapEditorComponent implements OnChanges {
+export class MapEditorComponent implements OnChanges, OnInit {
 
   @Output() mappingChange:EventEmitter<any>;
+  @Input() format:boolean = false;
   @Input() mappings:any = '';
-  private prevVal:string;
 
   editor:Control = new Control();
 
@@ -20,6 +20,9 @@ export class MapEditorComponent implements OnChanges {
     this.editor = new Control();
     this.mappingChange = new EventEmitter();
 
+  }
+
+  ngOnInit() {
     this
       .editor
       .valueChanges
@@ -32,30 +35,31 @@ export class MapEditorComponent implements OnChanges {
           return {type: 'error', message: 'invalid json'};
         }
       })
-      .scan((acc:any, next:any) => {
-        return {prev: acc.next, next}
-      }, {prev: null, next: null})
-      .filter(acc => !_.isEqual(acc.prev, acc.next))
-      .map(acc => acc.next)
+      .distinctUntilChanged((prev:any, next:any) => _.isEqual(prev, next))
+      .map(val => {
+        return {
+          mappings: val,
+          isValid: !(val.type && val.type == 'error'),
+          isDirty: this.editor.dirty
+        };
+      })
+      .do((val) => {
+        console.group('emitted val');
+        console.log(val);
+        console.groupEnd();
+      })
       .subscribe(val => this.mappingChange.emit(val));
-
   }
 
   ngOnChanges(changes) {
     let stringified:string = '';
     if (changes.mappings) {
-      try {
-        let value = changes.mappings.currentValue ? changes.mappings.currentValue : [];
-        stringified = JSON.stringify(value, null, 2);
-      } catch (e) {
+      let mappings = changes.mappings;
+      let nextValue = mappings.currentValue;
+      if (!_.isEqual(mappings.previousValue, nextValue) && !_.isEqual(nextValue, JSON.parse(this.editor.value))) {
+        stringified = JSON.stringify(nextValue || [], null, 2);
+        this.editor.updateValue(stringified, {onlySelf: true, emitEvent: false});
       }
-
-      if (this.prevVal != stringified) {
-        this.prevVal = stringified;
-        this.editor.updateValue(stringified, {onlySelf: true, emitEvent: false})
-      }
-
-
     }
   }
 

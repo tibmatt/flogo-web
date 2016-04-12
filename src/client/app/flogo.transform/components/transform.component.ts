@@ -7,10 +7,9 @@ import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { MapEditorComponent } from "./map-editor.component";
 
 interface TransformData {
-  previous: any[],
-  current: {},
-  mappings: string,
-  next: {}
+  previousTiles: any[],
+  tile: {},
+  mappings: any
 }
 
 @Component({
@@ -24,7 +23,8 @@ export class TransformComponent implements OnDestroy {
   @ViewChild('transformModal')
   modal:ModalComponent;
 
-  isValid : boolean = false;
+  isValid : boolean = true;
+  isDirty : boolean = false;
 
   private _subscriptions:any[];
   private data:TransformData = {
@@ -32,8 +32,6 @@ export class TransformComponent implements OnDestroy {
     tile: null,
     mappings: null
   };
-
-  result:{} = {};
 
   constructor(private _postService:PostService) {
     this.initSubscriptions();
@@ -43,13 +41,12 @@ export class TransformComponent implements OnDestroy {
     this.cancelSubscriptions();
   }
 
-  onMappingsChange(mappings:any) {
-    console.log(mappings);
-    let isInvalid = mappings.type && mappings.type == 'error';
-    this.isValid = !isInvalid;
+  onMappingsChange(change:any) {
+    this.isValid = change.isValid;
+    this.isDirty = change.isDirty;
 
-    if(this.isValid) {
-      this.data.mappings = mappings;
+    if(change.isValid) {
+      this.data.mappings = change.mappings;
     }
 
   }
@@ -70,6 +67,10 @@ export class TransformComponent implements OnDestroy {
         tile: this.data.tile
       }
     }));
+    this.close();
+  }
+
+  cancel() {
     this.close();
   }
 
