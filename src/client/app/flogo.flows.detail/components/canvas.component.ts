@@ -29,7 +29,7 @@ import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import { flogoIDDecode, flogoIDEncode } from '../../../common/utils';
 
 @Component( {
@@ -1040,6 +1040,30 @@ export class FlogoCanvasComponent {
     console.group( 'Delete task message from diagram' );
 
     console.log(data);
+
+    let task = this.tasks[ _.get( data, 'node.taskID', '' ) ];
+    let node = this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
+
+    // TODO
+    //  refine confirmation
+    //  delete trigger isn't hanlded
+    if ( node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task && confirm( `Are you sure to delete task` ) ) {
+
+      this._postService.publish(
+        _.assign(
+          {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
+            data : {
+              node : data.node
+            },
+            done : ( diagram : IFlogoFlowDiagram ) => {
+              delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
+              delete this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
+              this._updateFlow( this._flow );
+            }
+          }
+        )
+      );
+    }
 
     console.groupEnd();
   }

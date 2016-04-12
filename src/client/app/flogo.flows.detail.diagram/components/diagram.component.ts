@@ -4,6 +4,7 @@ import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FlogoFlowDiagramNode } from '../models/node.model';
 
 @Component(
   {
@@ -46,6 +47,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._selectTriggerDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.deleteTask, { callback : this._deleteTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.render, { callback : function(){
         this._diagram.render();
       }.bind( this ) } )
@@ -289,6 +291,35 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
         }
       );
 
+
+    console.groupEnd();
+  }
+
+  private _deleteTaskDone( data : any, envelope : any ) {
+    console.group( 'Delete task done.' );
+
+    console.log( data );
+    console.log( envelope );
+
+    let node = <FlogoFlowDiagramNode>this._diagram.nodes[ _.get( data, 'node.id', '' ) ];
+
+    if ( node ) {
+      this._diagram.deleteNode( node )
+        .then(
+          ( diagram : FlogoFlowDiagram )=> {
+            if ( diagram && _.isFunction( diagram.render ) ) {
+              return this._diagram.render();
+            } else {
+              return diagram;
+            }
+          }
+        )
+        .then(
+          ()=> {
+            _.isFunction( envelope.done ) && envelope.done( this._diagram );
+          }
+        );
+    }
 
     console.groupEnd();
   }

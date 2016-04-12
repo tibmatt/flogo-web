@@ -373,6 +373,23 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
+  public deleteNode( node : IFlogoFlowDiagramNode ) : Promise<any> {
+    let deleteNode = <FlogoFlowDiagramNode>this.nodes[ node.id ];
+
+    if ( deleteNode ) {
+      return deleteNode.unlinkFromDiagram( this.nodes )
+        .then(
+          ()=> {
+            delete this.nodes[ node.id ];
+
+            return this;
+          }
+        );
+    } else {
+      return Promise.reject( `Node ${node.id} doesn't exists.` );
+    }
+  }
+
   public toProcess() : any {
     return FlogoFlowDiagramProcess.toProcess(
       {

@@ -1,6 +1,7 @@
 import { IFlogoFlowDiagram } from '../models';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 import { flogoIDEncode } from '../../../common/utils';
+import { IFlogoFlowDiagramNodeDictionary } from './dictionary.model';
 
 export interface IFlogoFlowDiagramNode {
   id : string; // id of the node
@@ -106,6 +107,30 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
 
     return Promise.resolve( true );
   };
+
+  public unlinkFromDiagram( nodes : IFlogoFlowDiagramNodeDictionary ) : Promise<any> {
+
+    let promises : Promise<any>[] = [];
+
+    // single flow verification
+    if ( this.children.length < 2 && this.parents.length < 2 ) {
+      // single flow unlinking
+      let parent = nodes[ this.parents[ 0 ] ];
+      let child = nodes[ this.children[ 0 ] ];
+
+      child.parents.splice( 0, 1, parent.id );
+      parent.children.splice( 0, 1, child.id );
+
+      return Promise.resolve( true );
+
+    } else {
+      // TODO
+      //  support branching/linking cases
+      console.warn( 'Unsupported case..' );
+
+      return Promise.reject( 'Unsupported case..' );
+    }
+  }
 
   public unlinkFrom(
     nodes : {
