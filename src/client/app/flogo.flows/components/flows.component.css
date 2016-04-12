@@ -25,26 +25,49 @@
   position: absolute;
   top: 24px;
   right: 24px;
-  line-height: 35px;
   height: 35px;
-  /*width: 46px;*/
+  width: 46px;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
   text-align: center;
   opacity: 0.4;
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.9);
   border: solid 2px #979797;
-  font-size: 18px;
-  color: #79b8dc;
+  font-size: 12px;
+  color: #727272;
   cursor: pointer;
+  white-space: nowrap;
+  transition: width 500ms linear;
+}
+.flogo-flows-container-box-add:hover {
+  width: 112px;
+  background: #79b8dc;
+  border: #79b8dc;
+}
+.flogo-flows-container-box-add:hover i {
+  color: #fff;
+}
+.flogo-flows-container-box-add:hover span {
+  color: #fff;
+}
+.flogo-flows-container-box-add.flogo-flows-container-box-add-selected {
+  background: #79b8dc;
+  border: solid 2px #79b8dc;
 }
 .flogo-flows-container-box-add i {
-  margin-left: 10px;
-  margin-right: 5px;
+  margin-left: 14px;
+  margin-right: 14px;
+  line-height: 35px;
+  font-size: 18px;
+  color: #79b8dc;
 }
 .flogo-flows-container-box-add span {
   line-height: 35px;
   font-size: 12px;
   color: #727272;
+  margin-right: 6px;
 }
 .flogo-flows-container-lists {
   padding: 0;
@@ -57,15 +80,14 @@
   /*opacity: .5;*/
   border-top: 1px solid #ccc;
 }
+.flogo-flows-container-list:hover {
+  background-color: #d8d8d8;
+}
 .flogo-flows-container-list-detail {
   color: #666;
   padding: 18px 28px;
   display: block;
   text-decoration: none;
-}
-.flogo-flows-container-list-detail:hover {
-  background-color: #d8d8d8;
-  /*box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.3);*/
 }
 .flogo-flows-container-list-detail-trash {
   height: 14px;

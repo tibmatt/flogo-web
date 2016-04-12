@@ -1,10 +1,9 @@
 <div class="flogo-flows-container">
   <div id="flogo-flows-container-box" class="flogo-flows-container-box">
     <div class="flogo-flows-container-title">My Flows</div>
-    <div class="flogo-flows-container-box-add" (click)="addFlow()">
-      <i class="fa fa-plus"></i>
-      <span>Create New</span>
-    </div>
+    <button class="flogo-flows-container-box-add" (click)="addFlow()">
+      <i class="fa fa-plus"></i><span>Create New</span>
+    </button>
     <ul id="flogo-flows-container-lists" class="flogo-flows-container-lists">
       <li *ngFor="#flow of flows" class="flogo-flows-container-list">
         <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow._id, flow._rev)"></span>
