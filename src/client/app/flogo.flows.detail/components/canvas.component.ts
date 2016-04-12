@@ -1026,9 +1026,7 @@ export class FlogoCanvasComponent {
     tile.inputMappings = _.cloneDeep(data.inputMappings);
 
     this._updateFlow( this._flow ).then(() => {
-      console.group('Save transform');
-      console.log('Flow updated');
-      console.groupEnd();
+      this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
     });
 
   }
@@ -1037,6 +1035,10 @@ export class FlogoCanvasComponent {
     // data.tile.taskId
     let tile = this.tasks[data.tile.id];
     delete tile.inputMappings;
+
+    this._updateFlow( this._flow ).then(() => {
+      this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+    });
 
   }
 
