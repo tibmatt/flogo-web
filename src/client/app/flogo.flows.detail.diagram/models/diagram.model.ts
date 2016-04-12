@@ -568,7 +568,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
                 _triggerCustomEvent(
                   evtType, {
                     origEvent : d3.event,
-                    node : d,
+                    node : thisNode.datum(),
                     col : col,
                     row : row
                   }, this
