@@ -965,8 +965,10 @@ function _isTaskHasMapping( taskInfo : any ) : boolean {
   return taskInfo && (
       (
         _.isArray( taskInfo.inputMappings ) && taskInfo.inputMappings.length > 0
-      ) || (
-        _.isArray( taskInfo.outputMappings ) && taskInfo.outputMappings.length > 0
       )
+      // TODO: re-enable outputMappings verification after its editing is enabled
+      // || (
+      //  _.isArray( taskInfo.outputMappings ) && taskInfo.outputMappings.length > 0
+      // )
     )
 }
