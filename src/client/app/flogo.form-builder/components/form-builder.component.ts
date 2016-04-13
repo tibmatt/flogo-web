@@ -29,7 +29,9 @@ export class FlogoFormBuilderComponent{
   _attributes:any;
   _hasChanges:boolean = false;
   _attributesOriginal:any;
+  _attributesTriggerOriginal:any;
   _fieldsErrors:string[];
+  _attributesTrigger:any;
 
   constructor(private _postService: PostService) {
     this._initSubscribe();
@@ -61,13 +63,17 @@ export class FlogoFormBuilderComponent{
     this._observerFieldError  = new ReplaySubject(2);
 
     this._observerInput.subscribe((changedObject:any) => {
-      this._updateAttributeByUserChanges(this._attributes.inputs, changedObject);
+      if(!changedObject.isTrigger) {
+        this._updateAttributeByUserChanges(this._attributes.inputs, changedObject);
+      }
       this._hasChanges = true;
     });
 
 
     this._observerOutput.subscribe((changedObject:any) => {
-      this._updateAttributeByUserChanges(this._attributes.outputs, changedObject);
+      if(!changedObject.isTrigger) {
+        this._updateAttributeByUserChanges(this._attributes.outputs, changedObject);
+      }
       this._hasChanges = true;
     });
 
@@ -100,14 +106,30 @@ export class FlogoFormBuilderComponent{
 
   ngOnChanges() {
     this._fieldsErrors = [];
-    var attributes = this._task ? this._task.attributes || {} : {};
 
     if(!this._context) {
       this._context = {isTrigger:false , hasProcess:false, _isDiagramEdited:false };
     }
 
-    this._attributesOriginal = _.cloneDeep(attributes);
-    this._setEnvironment(attributes);
+    this._canRunFromThisTile =  this._getCanRunFromThisTile();
+
+
+    if(this._context.isTrigger) {
+      var attributesTrigger = {};
+      var task = this._task || {};
+
+      attributesTrigger['endpointSettings'] = ((task['endpoint'] || {})['settings']) || [];
+      attributesTrigger['outputs'] = task['outputs'] || [];
+      attributesTrigger['settings'] = task['settings'] || [];
+
+      this._attributesTriggerOriginal = _.cloneDeep(attributesTrigger);
+      this._setTriggerEnvironment(attributesTrigger);
+    } else {
+      var attributes = this._task ? this._task.attributes || {} : {};
+      this._attributesOriginal = _.cloneDeep(attributes);
+      this._setTaskEnvironment(attributes);
+    }
+
   }
 
   _getCanRunFromThisTile() {
@@ -122,8 +144,12 @@ export class FlogoFormBuilderComponent{
     return this._context.hasProcess;
   }
 
-  _setEnvironment(attributes:any) {
-    this._canRunFromThisTile =  this._getCanRunFromThisTile();
+  _setTriggerEnvironment(attributes:any) {
+    this._attributesTrigger = attributes;
+
+  }
+
+  _setTaskEnvironment(attributes:any) {
     this._attributes = { inputs: attributes['inputs'] || [], outputs: attributes['outputs'] || [] };
 
     this._attributes.inputs.map((input) => {   input.mappings = this._task.inputMappings;    input.step  = this._step });
@@ -133,9 +159,11 @@ export class FlogoFormBuilderComponent{
   getControlByType(type:string) {
     switch(type) {
       case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
+      case 'string':
         return {control: 'FieldTextBox'};
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
+      case 'number':
         return {control:'FieldNumber'};
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
@@ -160,9 +188,13 @@ export class FlogoFormBuilderComponent{
       step:       input.step,
       validation: input.validation,
       validationMessage: input.validationMessage,
-      required:   input.required
+      required:   input.required,
+      isTrigger:  this._context.isTrigger
     };
-    info.value = this._getMappingValue(info);
+
+    if(!this._context.isTrigger) {
+      info.value = this._getMappingValue(info);
+    }
 
     return _.assign({}, info, this.getControlByType(input.type));
   }
@@ -191,7 +223,7 @@ export class FlogoFormBuilderComponent{
   runFromThisTile() {
     // return the id of the task directly, this id is encoded using `flogoIDEncode`, should be handled by subscribers
     var taskId   = this._task.id;
-    var inputs = this._getCurrentTaskState(this._attributes.inputs);
+    var inputs = (this._context.isTrigger) ? {} : this._getCurrentTaskState(this._attributes.inputs);
 
     this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTile, {
       data: {inputs, taskId},
@@ -220,8 +252,12 @@ export class FlogoFormBuilderComponent{
         return result;
   }
 
-  cancelEdit(event) {
-    this._setEnvironment(_.cloneDeep(this._attributesOriginal || {}));
+  cancelEdit(event:any) {
+    if(this._context.isTrigger) {
+      this._setTriggerEnvironment(_.cloneDeep(this._attributesTriggerOriginal));
+    } else {
+      this._setTaskEnvironment(_.cloneDeep(this._attributesOriginal || {}));
+    }
     this._fieldsErrors = [];
     this._hasChanges = false
 
