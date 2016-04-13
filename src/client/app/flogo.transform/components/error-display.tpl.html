@@ -1,0 +1,27 @@
+<div class="tc-notifications tc-notifications-error" style="width: 100%; min-width: 1px">
+  <div class="tc-notifications-message">
+    <div>Errors found</div>
+    <ul>
+      <li *ngIf="errors.invalidJson">Invalid json</li>
+      <li *ngIf="errors.notArray">Mappings should be an array</li>
+      <template [ngIf]="errors.invalidMappings">
+        <li *ngFor="#mapErrors of errors.invalidMappings.errors">
+          Error found in mapping at position {{ mapErrors.index }}:
+          <ul>
+            <li *ngIf="mapErrors.errors.type?.missing">Missing or empty property "type"</li>
+            <li *ngIf="mapErrors.errors.type?.invalidValue">"{{ mapErrors.value.type }}" is not a valid value for
+              property "type"
+            </li>
+            <li *ngIf="mapErrors.errors.value?.missing">Missing or empty property "value"</li>
+            <li *ngIf="mapErrors.errors.value?.invalidValue">"{{ mapErrors.value.value }}" is not a valid value for
+              property "value"
+            </li>
+            <li *ngIf="mapErrors.errors.mapTo?.missing">Missing or empty property "mapTo"</li>
+            <li *ngIf="mapErrors.errors.mapTo?.invalidValue">Invalid value for "mapTo". This activity does not have an input attribute "{{ mapErrors.value.mapTo }}" to map to.
+            </li>
+          </ul>
+        </li>
+      </template>
+    </ul>
+  </div>
+</div>

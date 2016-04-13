@@ -6,7 +6,7 @@ export function mappingsValidatorFactory(tileInfo:TileInOutInfo) {
   return mappingsValidator.bind(null, tileInfo);
 }
 
-export function mappingsValidator(tileInfo: TileInOutInfo, control:Control) {
+export function mappingsValidator(tileInfo: TileInOutInfo, control:Control) : any {
 
   if(control.getError('invalidJson') || !control.value || _.isEmpty(control.value.trim())) {
     return null;

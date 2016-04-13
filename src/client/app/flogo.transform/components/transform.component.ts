@@ -5,6 +5,7 @@ import { PostService } from '../../../common/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { MapEditorComponent } from "./map-editor.component";
+import { ErrorDisplayComponent } from "./error-display.component";
 
 interface TransformData {
   previousTiles: any[],
@@ -14,7 +15,7 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MODAL_DIRECTIVES, MapEditorComponent],
+  directives: [MODAL_DIRECTIVES, MapEditorComponent, ErrorDisplayComponent],
   moduleId: module.id,
   templateUrl: 'transform.tpl.html',
 })
@@ -23,8 +24,10 @@ export class TransformComponent implements OnDestroy {
   @ViewChild('transformModal')
   modal:ModalComponent;
 
-  isValid : boolean = true;
-  isDirty : boolean = false;
+  isValid : boolean;
+  isDirty : boolean;
+
+  errors : any;
 
   private _subscriptions:any[];
   private data:TransformData = {
@@ -35,6 +38,7 @@ export class TransformComponent implements OnDestroy {
 
   constructor(private _postService:PostService) {
     this.initSubscriptions();
+    this.resetState();
   }
 
   ngOnDestroy() {
@@ -48,7 +52,7 @@ export class TransformComponent implements OnDestroy {
     if(change.isValid) {
       this.data.mappings = change.value;
     } else {
-      console.log('Invalid change', change.errors);
+      this.errors = change.errors;
     }
 
   }
@@ -100,8 +104,15 @@ export class TransformComponent implements OnDestroy {
       tile: data.tile,
       mappings: data.tile.inputMappings ? _.cloneDeep(data.tile.inputMappings) : []
     };
+    this.resetState();
 
     setTimeout(() => this.modal.open(), 0);
+  }
+
+  private resetState() {
+    this.isValid = true;
+    this.isDirty = false;
+    this.errors = null;
   }
 
   private close() {

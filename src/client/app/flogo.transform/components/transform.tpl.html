@@ -27,6 +27,7 @@
         </div>
         <div [class.has-error]="!isValid" class="col-md-4 col-sm-12">
           <legend>Mappings</legend>
+          <flogo-transform-error-display *ngIf="errors" [errors]="errors"></flogo-transform-error-display>
           <flogo-transform-map-editor [mappings]="data.mappings"
                                       [tile]="data.tile"
                                       [precedingTiles]="data.previousTiles"
