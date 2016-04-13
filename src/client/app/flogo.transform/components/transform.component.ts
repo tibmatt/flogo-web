@@ -8,7 +8,7 @@ import { MapEditorComponent } from "./map-editor.component";
 
 interface TransformData {
   previousTiles: any[],
-  tile: {},
+  tile: any,
   mappings: any
 }
 
@@ -46,7 +46,9 @@ export class TransformComponent implements OnDestroy {
     this.isDirty = change.isDirty;
 
     if(change.isValid) {
-      this.data.mappings = change.mappings;
+      this.data.mappings = change.value;
+    } else {
+      console.log('Invalid change', change.errors);
     }
 
   }

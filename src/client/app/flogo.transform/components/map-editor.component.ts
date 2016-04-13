@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from 'angular2/core';
-import { FORM_DIRECTIVES, Control } from 'angular2/common';
+import { FORM_DIRECTIVES, Control, Validator, Validators } from 'angular2/common';
 import { Observable } from 'rxjs/Rx';
+
+import { TileInOutInfo } from '../models/tile-in-out-info.model';
+import { jsonValidator, mappingsValidatorFactory } from '../validators/validators';
 
 @Component({
   selector: 'flogo-transform-map-editor',
@@ -11,15 +14,22 @@ import { Observable } from 'rxjs/Rx';
 export class MapEditorComponent implements OnChanges, OnInit {
 
   @Output() mappingChange:EventEmitter<any>;
-  @Input() format:boolean = false;
   @Input() mappings:any = '';
 
-  editor:Control = new Control();
+  @Input() tile:any = null;
+  @Input() precedingTiles:any[] = [];
+
+  editor:Control;
+
+  private tileInfo:TileInOutInfo = {
+    attributes: [],
+    precedingOutputs: []
+  };
 
   constructor() {
-    this.editor = new Control();
+    let mappingsValidator = mappingsValidatorFactory(this.tileInfo);
+    this.editor = new Control('', Validators.compose([Validators.required, jsonValidator, mappingsValidator]));
     this.mappingChange = new EventEmitter();
-
   }
 
   ngOnInit() {
@@ -28,21 +38,15 @@ export class MapEditorComponent implements OnChanges, OnInit {
       .valueChanges
       .debounceTime(300)
       .distinctUntilChanged()
-      .map((code:string) => {
-        try {
-          return JSON.parse(code);
-        } catch (e) {
-          return {type: 'error', message: 'invalid json'};
-        }
-      })
-      .distinctUntilChanged((prev:any, next:any) => _.isEqual(prev, next))
-      .map(val => {
+      .map((rawVal:string) => {
         return {
-          mappings: val,
-          isValid: !(val.type && val.type == 'error'),
-          isDirty: this.editor.dirty
+          isValid: this.editor.valid,
+          isDirty: this.editor.dirty,
+          errors: this.editor.errors,
+          value: this.editor.valid ? JSON.parse(rawVal) : null
         };
       })
+      .distinctUntilChanged((prev:any, next:any) => _.isEqual(prev, next))
       .do((val) => {
         console.group('emitted val');
         console.log(val);
@@ -51,16 +55,54 @@ export class MapEditorComponent implements OnChanges, OnInit {
       .subscribe(val => this.mappingChange.emit(val));
   }
 
-  ngOnChanges(changes) {
-    let stringified:string = '';
+  ngOnChanges(changes:any) {
     if (changes.mappings) {
-      let mappings = changes.mappings;
-      let nextValue = mappings.currentValue;
-      if (!_.isEqual(mappings.previousValue, nextValue) && !_.isEqual(nextValue, JSON.parse(this.editor.value))) {
-        stringified = JSON.stringify(nextValue || [], null, 2);
-        this.editor.updateValue(stringified, {onlySelf: true, emitEvent: false});
-      }
+      this.onMappingsChange(changes.mappings);
     }
+
+    if (changes.tile && this.tile) {
+      this.tileInfo.attributes = this.extractAttributes(this.tile);
+    }
+
+    if (changes.precedingTiles && this.precedingTiles) {
+      this.tileInfo.precedingOutputs = this.extractPrecedingOutputs(this.precedingTiles);
+    }
+
+  }
+
+  private onMappingsChange(mappingsChange:any) {
+    let nextValue = mappingsChange.currentValue;
+    let currentEditorValue:any = null;
+    try {
+      currentEditorValue = JSON.parse(this.editor.value);
+    } catch (e) { // current val is just not valid json
+    }
+
+    if (!_.isEqual(mappingsChange.previousValue, nextValue) && !_.isEqual(nextValue, currentEditorValue)) {
+      let stringified = JSON.stringify(nextValue || [], null, 2);
+      this.editor.updateValue(stringified, {onlySelf: true, emitEvent: false});
+    }
+  }
+
+  private extractAttributes(tile:any) {
+    return tile && tile.attributes && tile.attributes.inputs ? tile.attributes.inputs.map((attr:any) => attr.name) : [];
+  }
+
+  private extractPrecedingOutputs(precedingTiles:any[]) {
+    return precedingTiles ? precedingTiles.reduce((outputs:string[], tile:any) => {
+
+      let tileOutputs : string[] = [];
+
+      if (tile.attributes && tile.attributes.outputs) {
+        tileOutputs = tileOutputs.concat(tile.attributes.outputs.map((output:any) => output.mapTo));
+      }
+
+      if (tile.outputMappings) {
+        tileOutputs = tileOutputs.concat(tile.outputMappings.map((mapping:any) => mapping.name));
+      }
+
+      return outputs.concat(tileOutputs);
+    }, []) : [];
   }
 
 }

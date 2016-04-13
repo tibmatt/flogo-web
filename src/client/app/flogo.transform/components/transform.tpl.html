@@ -28,6 +28,8 @@
         <div [class.has-error]="!isValid" class="col-md-4 col-sm-12">
           <legend>Mappings</legend>
           <flogo-transform-map-editor [mappings]="data.mappings"
+                                      [tile]="data.tile"
+                                      [precedingTiles]="data.previousTiles"
                                       (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
         </div>
         <div class="col-md-4 col-sm-12">
