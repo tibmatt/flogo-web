@@ -47,7 +47,7 @@ Following [Gulp Getting Started](https://github.com/gulpjs/gulp/blob/master/docs
 # Start server
 
 ## Start State Server and Process Server
-1. Navigate to `flogo-contrib`. `cd $flogo_base/flogo-internal`
+1. Navigate to `cd $flogo_base/flogo-internal`
 2. Navigate to `demo/cli/setup` folder, this folder contains all the shell script you need to start state server and process server
 3. If you didn't run `setup-docker.sh` before, run this shell file. `sh setup-docker.sh`. This will create a docker environment - flogo, and pull the images we need
 4. Build State Server and Process Server. `sh setup-env.sh`
