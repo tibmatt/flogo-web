@@ -1,0 +1,61 @@
+.flogo-flows-container-box-add {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  height: 35px;
+  width: 46px;
+  padding: 0;
+  overflow: hidden;
+  text-align: center;
+  opacity: 0.4;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: solid 2px #979797;
+  font-size: 12px;
+  color: #727272;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: width 500ms linear;
+}
+.flogo-flows-container-box-add:hover {
+  width: 112px;
+}
+.flogo-flows-container-box-add:active {
+  background: #79b8dc;
+  border: #79b8dc;
+}
+.flogo-flows-container-box-add:active i {
+  color: #fff;
+}
+.flogo-flows-container-box-add:active span {
+  color: #fff;
+}
+.flogo-flows-container-box-add i {
+  margin-left: 14px;
+  margin-right: 14px;
+  line-height: 35px;
+  font-size: 18px;
+  color: #79b8dc;
+}
+.flogo-flows-container-box-add span {
+  line-height: 35px;
+  font-size: 12px;
+  color: #727272;
+  margin-right: 6px;
+}
+.flogo-flows-add-save {
+  cursor: not-allowed;
+  opacity: .65;
+  background: #e6e6e6;
+  border-color: #adadad;
+}
+.flogo-flows-add-save.allowed {
+  border-color: #ccc;
+  background: #fff;
+  cursor: pointer;
+  opacity: 1;
+}
+.flogo-flows-add-save.allowed:hover {
+  background: #e6e6e6;
+  border-color: #adadad;
+}
