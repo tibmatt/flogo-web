@@ -16,8 +16,8 @@ export class MapEditorComponent implements OnChanges, OnInit {
   @Output() mappingChange:EventEmitter<any>;
   @Input() mappings:any = '';
 
-  @Input() tile:any = null;
-  @Input() precedingTiles:any[] = [];
+  @Input() tileInputInfo:any = null;
+  @Input() precedingTilesOutputs:any[] = [];
 
   editor:Control;
 
@@ -60,12 +60,12 @@ export class MapEditorComponent implements OnChanges, OnInit {
       this.onMappingsChange(changes.mappings);
     }
 
-    if (changes.tile && this.tile) {
-      this.tileInfo.attributes = this.extractAttributes(this.tile);
+    if (changes.tileInputInfo && this.tileInputInfo) {
+      this.tileInfo.attributes = this.extractInputs(this.tileInputInfo);
     }
 
-    if (changes.precedingTiles && this.precedingTiles) {
-      this.tileInfo.precedingOutputs = this.extractPrecedingOutputs(this.precedingTiles);
+    if (changes.precedingTilesOutputs && this.precedingTilesOutputs) {
+      this.tileInfo.precedingOutputs = this.extractPrecedingOutputs(this.precedingTilesOutputs);
     }
 
   }
@@ -84,24 +84,16 @@ export class MapEditorComponent implements OnChanges, OnInit {
     }
   }
 
-  private extractAttributes(tile:any) {
-    return tile && tile.attributes && tile.attributes.inputs ? tile.attributes.inputs.map((attr:any) => attr.name) : [];
+  private extractInputs(tile:any) {
+    return tile && tile.inputs ? tile.inputs.map((attr:any) => attr.name) : [];
   }
 
-  private extractPrecedingOutputs(precedingTiles:any[]) {
-    return precedingTiles ? precedingTiles.reduce((outputs:string[], tile:any) => {
-
-      let tileOutputs : string[] = [];
-
-      if (tile.attributes && tile.attributes.outputs) {
-        tileOutputs = tileOutputs.concat(tile.attributes.outputs.map((output:any) => output.mapTo));
-      }
-
-      if (tile.outputMappings) {
-        tileOutputs = tileOutputs.concat(tile.outputMappings.map((mapping:any) => mapping.name));
-      }
-
-      return outputs.concat(tileOutputs);
+  private extractPrecedingOutputs(precedingTiles:any) {
+    return precedingTiles ? _.reduce(precedingTiles, (allOutputNames:string[], tileOutputs:any[], tileId:any) => {
+      return allOutputNames
+        .concat(
+          tileOutputs.map(output => `${tileId}.${output.name}`)
+        );
     }, []) : [];
   }
 

@@ -8,8 +8,9 @@ import { MapEditorComponent } from "./map-editor.component";
 import { ErrorDisplayComponent } from "./error-display.component";
 
 interface TransformData {
-  previousTiles: any[],
+  precedingTilesOutputs: any[],
   tile: any,
+  tileInputInfo: any,
   mappings: any
 }
 
@@ -24,15 +25,16 @@ export class TransformComponent implements OnDestroy {
   @ViewChild('transformModal')
   modal:ModalComponent;
 
-  isValid : boolean;
-  isDirty : boolean;
+  isValid:boolean;
+  isDirty:boolean;
 
-  errors : any;
+  errors:any;
 
   private _subscriptions:any[];
   private data:TransformData = {
-    previousTiles: [],
+    precedingTilesOutputs: [],
     tile: null,
+    tileInputInfo: null,
     mappings: null
   };
 
@@ -49,8 +51,9 @@ export class TransformComponent implements OnDestroy {
     this.isValid = change.isValid;
     this.isDirty = change.isDirty;
 
-    if(change.isValid) {
+    if (change.isValid) {
       this.data.mappings = change.value;
+      this.errors = null;
     } else {
       this.errors = change.errors;
     }
@@ -100,13 +103,29 @@ export class TransformComponent implements OnDestroy {
 
   private onTransformSelected(data:any, envelope:any) {
     this.data = {
-      previousTiles: data.previousTiles,
+      precedingTilesOutputs: this.extractPrecedingTilesOutputInfo(data.previousTiles),
       tile: data.tile,
+      tileInputInfo: this.extractTileInputInfo(data.tile || {}),
       mappings: data.tile.inputMappings ? _.cloneDeep(data.tile.inputMappings) : []
     };
     this.resetState();
 
     setTimeout(() => this.modal.open(), 0);
+  }
+
+  private extractPrecedingTilesOutputInfo(precedingTiles:any[]) {
+    return _.chain(precedingTiles || [])
+      .filter((tile:any) => tile.attributes && tile.attributes.outputs && tile.attributes.outputs.length > 0)
+      .map((tile:any) => [tile.id, tile.attributes.outputs])
+      .fromPairs()
+      .value();
+  }
+
+  private extractTileInputInfo(tile : any){
+    return {
+      id: tile.id,
+      inputs: tile.attributes && tile.attributes.inputs ? tile.attributes.inputs : []
+    }
   }
 
   private resetState() {

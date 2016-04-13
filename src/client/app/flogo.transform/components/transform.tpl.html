@@ -23,21 +23,21 @@
       <div class="row">
         <div class="col-md-4 col-sm-12">
           <legend>Previous tiles</legend>
-          <pre>{{ data.previousTiles | json }}</pre>
+          <pre>{{ data.precedingTilesOutputs | json }}</pre>
         </div>
         <div [class.has-error]="!isValid" class="col-md-4 col-sm-12">
           <legend>Mappings</legend>
-          <flogo-transform-error-display *ngIf="errors" [errors]="errors"></flogo-transform-error-display>
           <flogo-transform-map-editor [mappings]="data.mappings"
-                                      [tile]="data.tile"
-                                      [precedingTiles]="data.previousTiles"
+                                      [tileInputInfo]="data.tileInputInfo"
+                                      [precedingTilesOutputs]="data.precedingTilesOutputs"
                                       (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
+          <flogo-transform-error-display *ngIf="errors" [errors]="errors"></flogo-transform-error-display>
         </div>
         <div class="col-md-4 col-sm-12">
           <legend>Input data
             <small>{{ data.tile?.name }}</small>
           </legend>
-          <pre>{{ data.tile | json }}</pre>
+          <pre>{{ data.tileInputInfo | json }}</pre>
         </div>
       </div>
     </modal-body>
