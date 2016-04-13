@@ -73,7 +73,7 @@
   &.flogo-flows-detail-diagram-node-selected{
     transform: scale(1.1);
     z-index: 10;
-    .flogo-flows-detail-diagram-node-text{
+    .flogo-flows-detail-diagram-node-detail{
       background: #79b8dc;
       color: #fff;
       border: solid 1px #70abcc;
@@ -92,7 +92,7 @@
       //background: #def2fd;
       background-image: linear-gradient(to right, #def2fd, #def2fd);
     }
-    .flogo-flows-detail-diagram-node-text {
+    .flogo-flows-detail-diagram-node-detail {
       background-image: linear-gradient(to right, #d0e7f4, #def2fd);
       box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
     }
@@ -148,8 +148,8 @@
     transform: scale(.63);
     overflow: hidden;
     img,
-    .flogo-flows-detail-diagram-node-text-title,
-    .flogo-flows-detail-diagram-node-text-description,
+    .flogo-flows-detail-diagram-node-detail-title,
+    .flogo-flows-detail-diagram-node-detail-description,
     .flogo-flows-detail-diagram-node-menu,
     .flogo-flows-detail-diagram-node-badge {
       display: none;
@@ -168,7 +168,7 @@
     &:hover{
       box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.3);
     }
-    .flogo-flows-detail-diagram-node-text:before{
+    .flogo-flows-detail-diagram-node-detail:before{
       content: '+';
       font-size: 88px;
       line-height: 138px;
@@ -177,7 +177,7 @@
   }
   &[data-flogo-node-type="node_holder"]{
     background-color: rgba(179, 214, 233, 0.9);
-    .flogo-flows-detail-diagram-node-text{
+    .flogo-flows-detail-diagram-node-detail{
       background-color: rgba(179, 214, 233, 0.9);
       z-index: 4;
     }
@@ -186,7 +186,7 @@
     opacity: 1;
     cursor: pointer;
   }
-  .flogo-flows-detail-diagram-node-text{
+  .flogo-flows-detail-diagram-node-detail{
     position: absolute;
     top: 0;
     left: 0;
@@ -205,13 +205,13 @@
       margin:18px 0;
     }
   }
-  .flogo-flows-detail-diagram-node-text-title{
+  .flogo-flows-detail-diagram-node-detail-title{
     font-family: SourceSansPro-Bold;
     font-weight: 600;
     padding-bottom: 5px;
     letter-spacing: .4px;
   }
-  .flogo-flows-detail-diagram-node-text-description {
+  .flogo-flows-detail-diagram-node-detail-description {
     border-top: 1px solid #8e9aa8;
     padding-top: 5px;
     font-size: 12px;
