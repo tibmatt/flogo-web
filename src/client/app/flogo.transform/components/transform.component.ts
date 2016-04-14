@@ -1,8 +1,8 @@
 import { Component, ViewChild, OnDestroy } from 'angular2/core';
-import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { PostService } from '../../../common/services/post.service';
 
+import { FLOGO_TASK_ATTRIBUTE_TYPE as TYPES } from '../../../common/constants';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { MapEditorComponent } from "./map-editor.component";
 import { ErrorDisplayComponent } from "./error-display.component";
@@ -16,17 +16,12 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MODAL_DIRECTIVES, MapEditorComponent, ErrorDisplayComponent],
+  directives: [MapEditorComponent, ErrorDisplayComponent],
   moduleId: module.id,
   styleUrls: ['transform.component.css'],
   templateUrl: 'transform.tpl.html',
 })
 export class TransformComponent implements OnDestroy {
-
-  /*
-  @ViewChild('transformModal')
-  modal:ModalComponent;
-  */
 
   isValid:boolean;
   isDirty:boolean;
@@ -124,16 +119,28 @@ export class TransformComponent implements OnDestroy {
   private extractPrecedingTilesOutputInfo(precedingTiles:any[]) {
     return _.chain(precedingTiles || [])
       .filter((tile:any) => tile.attributes && tile.attributes.outputs && tile.attributes.outputs.length > 0)
-      .map((tile:any) => [tile.id, tile.attributes.outputs])
+      .map((tile:any) => {
+        let outputs = tile.attributes.outputs.map(this.mapInOutObjectDisplay);
+        return [tile.id, outputs];
+      })
       .fromPairs()
       .value();
   }
 
-  private extractTileInputInfo(tile : any){
+  private extractTileInputInfo(tile:any) {
     return {
       id: tile.id,
-      inputs: tile.attributes && tile.attributes.inputs ? tile.attributes.inputs : []
+      inputs: tile.attributes && tile.attributes.inputs ?
+        tile.attributes.inputs.map(this.mapInOutObjectDisplay)
+        : []
     }
+  }
+
+  private mapInOutObjectDisplay(inputOutput:{name:string, type:TYPES}) {
+    return {
+      name: inputOutput.name,
+      type: TYPES[inputOutput.type].toLowerCase()
+    };
   }
 
   private resetState() {
@@ -143,7 +150,6 @@ export class TransformComponent implements OnDestroy {
   }
 
   private open() {
-    //setTimeout(() => this.modal.open(), 0);
     this.out = false;
     setTimeout(() => this.active = true, 0);
   }
