@@ -1,0 +1,67 @@
+.flogo-transform-modal-wrapper {
+  background-color: #fff;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 999;
+
+  -webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease;
+  -moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease;
+  -o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease;
+  transition: transform 0.3s ease-out, opacity 0.3s ease;
+
+  -webkit-transform: translateY(-100%);
+  -ms-transform: translateY(-100%); /* IE9+ */
+  transform: translateY(-100%);
+
+  opacity: 0;
+
+}
+
+.flogo-transform-modal-wrapper.in {
+  -webkit-transform: translateY(0%);
+  -ms-transform: translateY(0%); /* IE9+ */
+  transform: translateY(0%);
+
+  opacity: 1;
+}
+
+.flogo-transform-modal {
+  display: flex;
+  flex-direction: column;
+  padding: 39px 70px;
+
+  height: 100%;
+  width: 100%;
+}
+
+.flogo-transform-modal__header {
+  border-bottom: 1px solid #d8d8d8;
+  height: 61px;
+  margin-bottom: 50px;
+  padding-bottom: 16px;
+  position: relative;
+}
+
+.flogo-transform-modal__close {
+  background: url('/assets/svg/flogo.close.svg') no-repeat center center;
+  border: none;
+  position: absolute;
+  height: 19px;
+  right: -44px;
+  top: -10px;
+  width: 19px;
+}
+
+.flogo-transform-modal__content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.flogo-transform-modal__content .col {
+  width: 32%;
+}

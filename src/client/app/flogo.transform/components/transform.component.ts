@@ -18,17 +18,24 @@ interface TransformData {
   selector: 'flogo-transform',
   directives: [MODAL_DIRECTIVES, MapEditorComponent, ErrorDisplayComponent],
   moduleId: module.id,
+  styleUrls: ['transform.component.css'],
   templateUrl: 'transform.tpl.html',
 })
 export class TransformComponent implements OnDestroy {
 
+  /*
   @ViewChild('transformModal')
   modal:ModalComponent;
+  */
 
   isValid:boolean;
   isDirty:boolean;
 
   errors:any;
+
+  // two variables control the display of the modal to support animation when opening and closing
+  active:boolean = false; // controls the rendering of the content of the modal
+  out:boolean = false; // controls the in/out transition of the modal
 
   private _subscriptions:any[];
   private data:TransformData = {
@@ -110,7 +117,8 @@ export class TransformComponent implements OnDestroy {
     };
     this.resetState();
 
-    setTimeout(() => this.modal.open(), 0);
+    this.open();
+
   }
 
   private extractPrecedingTilesOutputInfo(precedingTiles:any[]) {
@@ -134,8 +142,15 @@ export class TransformComponent implements OnDestroy {
     this.errors = null;
   }
 
+  private open() {
+    //setTimeout(() => this.modal.open(), 0);
+    this.out = false;
+    setTimeout(() => this.active = true, 0);
+  }
+
   private close() {
-    this.modal.close();
+    this.out = true;
+    setTimeout(() => this.active = this.out = false, 400);
   }
 
 }
