@@ -1,0 +1,6 @@
+[submodule "submodules/flogo-internal"]
+	path = submodules/flogo-internal
+	url = https://github.com/TIBCOSoftware/flogo-internal.git
+[submodule "submodules/flogo-contrib"]
+	path = submodules/flogo-contrib
+	url = https://github.com/TIBCOSoftware/flogo-contrib.git
