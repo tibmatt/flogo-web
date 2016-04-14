@@ -61,18 +61,23 @@ export class FlogoFlowsComponet{
     }
 
     // delete a flow
-    deleteFlow( id, rev) {
-        new Promise((resolve, reject)=> {
-            this._flow.deleteFlow(id, rev).then((response)=> {
-                console.log('remove flow successful ' + response);
-                this.getAllFlows();
-                resolve(response);
+    deleteFlow( flow: any) {
+        if(confirm('Are you sure to delete ' + flow.name + ' flow?')) {
+            new Promise((resolve, reject)=> {
+                this._flow.deleteFlow(flow._id, flow._rev).then((response)=> {
+                    console.log('remove flow successful ' + response);
+                    this.getAllFlows();
+                    resolve(response);
 
-            }).catch((err)=> {
-                console.log('remove flow error ' + err);
-                reject(err);
+                }).catch((err)=> {
+                    console.log('remove flow error ' + err);
+                    reject(err);
+                });
             });
-        });
+        } else {
+            // omit
+        }
+
     }
     getAllFlows(){
         return new Promise((resolve, reject)=>{
@@ -80,6 +85,7 @@ export class FlogoFlowsComponet{
                 if(typeof response !== 'object'){
                     response = JSON.parse(response);
                 }
+                response.reverse();
                 this.flows = response;
                 resolve(response);
             }).catch((err)=>{

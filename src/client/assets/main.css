@@ -319,3 +319,8 @@ label {
 .flogo-common-edit-panel__head + .flogo-common-edit-panel__legend {
   margin-top: -10px;
 }
+
+/* This is just for Add Flow Modal in homepage */
+.modal-dialog.modal-sm {
+  width: 50%;
+}

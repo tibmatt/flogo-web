@@ -1,67 +1,75 @@
 :host {
   display: flex;
-  width: 100%;
-  align-items: center;
-  flex-grow: 2;
+  flex: auto;
 }
 .flogo-flows-container {
-  display: flex;
-  margin: 30px auto;
-}
-.flogo-flows-container-box {
-  position: relative;
-  width: 561px;
-  border-radius: 4px;
-  background-color: #ffffff;
-  box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.3);
+  background: #eeeded;
+  width: 100%;
 }
 .flogo-flows-container-title {
-  line-height: 82px;
-  font-size: 18px;
-  font-weight: 500;
-  padding-left: 28px;
+  color: #666;
+}
+.flogo-flows-container-header {
+  height: 136px;
+  padding-top: 46px;
+  background: #fafafa;
+}
+.flogo-flows-container-header-detail {
+  position: relative;
+  margin: 0 auto;
+  width: 560px;
 }
 .flogo-flows-container-lists {
-  padding: 0;
-  margin: 0;
+  margin: 0 auto;
+  padding: 34px 0 0;
+  width: 560px;
+}
+.flogo-flows-container-lists .flogo-flows-container-list {
+  margin: 0 0 21px;
+  height: 69px;
+  object-fit: contain;
+  border-radius: 4px;
   list-style: none;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
 }
-.flogo-flows-container-list {
-  padding: 0;
-  margin: 0;
-  /*opacity: .5;*/
-  border-top: 1px solid #ccc;
+.flogo-flows-container-lists .flogo-flows-container-list:hover {
+  background-color: #ececec;
 }
-.flogo-flows-container-list:hover {
-  background-color: #d8d8d8;
+.flogo-flows-container-lists .flogo-flows-container-list:hover .flogo-flows-container-list-detail-trash {
+  display: block;
 }
-.flogo-flows-container-list-detail {
+.flogo-flows-container-lists .flogo-flows-container-list-detail {
   color: #666;
-  padding: 18px 28px;
+  padding: 18px 28px 16px;
   display: block;
   text-decoration: none;
 }
-.flogo-flows-container-list-detail-trash {
-  height: 14px;
-  width: 14px;
+.flogo-flows-container-lists .flogo-flows-container-list-detail-trash {
+  display: none;
+  height: 22px;
+  width: 30px;
   margin-top: 26px;
-  margin-right: 26px;
+  margin-right: 10px;
   float: right;
+  cursor: pointer;
   line-height: 100%;
   background: url("/assets/svg/flogo.flows.trash.icon.svg") no-repeat;
+  background-size: 50%;
 }
-.flogo-flows-container-list-detail-trash:hover {
+.flogo-flows-container-lists .flogo-flows-container-list-detail-trash:hover {
   background: url("/assets/svg/flogo.flows.trash.hover.icon.svg") no-repeat;
+  background-size: 50%;
 }
-.flogo-flows-container-list-detail-name {
+.flogo-flows-container-lists .flogo-flows-container-list-detail-name {
   display: block;
   font-size: 14px;
   letter-spacing: 0.4px;
   line-height: 18px;
 }
-.flogo-flows-container-list-detail-creatTime {
+.flogo-flows-container-lists .flogo-flows-container-list-detail-creatTime {
   display: block;
-  line-height: 11px;
-  font-size: 9px;
+  line-height: 13px;
+  font-size: 10px;
   letter-spacing: 0.6px;
 }

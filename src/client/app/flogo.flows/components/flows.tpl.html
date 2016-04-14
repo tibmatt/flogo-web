@@ -1,13 +1,18 @@
 <div class="flogo-flows-container">
-  <div id="flogo-flows-container-box" class="flogo-flows-container-box">
-    <div class="flogo-flows-container-title">My Flows</div>
-    <flogo-flows-add></flogo-flows-add>
-    <ul id="flogo-flows-container-lists" class="flogo-flows-container-lists">
+  <div class="flogo-flows-container-header">
+    <div class="flogo-flows-container-header-detail">
+      <h3 class="flogo-flows-container-title">My Flows</h3>
+      <flogo-flows-add></flogo-flows-add>
+    </div>
+
+  </div>
+  <div class="flogo-flows-container-body">
+    <ul class="flogo-flows-container-lists">
       <li *ngFor="#flow of flows" class="flogo-flows-container-list">
-        <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow._id, flow._rev)"></span>
+        <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow)"></span>
         <a class="flogo-flows-container-list-detail" [routerLink]="['FlogoFlowDetail', {id:flogoIDEncode(flow._id)}]">
           <span class="flogo-flows-container-list-detail-name">{{flow.name}}</span>
-          <span class="flogo-flows-container-list-detail-creatTime">{{flow.created_at}}</span>
+          <i class="flogo-flows-container-list-detail-creatTime">{{flow.created_at}}</i>
         </a>
       </li>
     </ul>
