@@ -392,7 +392,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             () => {
               d3.select( element )
                 .classed( 'flogo-flows-detail-diagram-node-menu-open', true );
-            }, 500
+            }, 250
           );
         }
       )
