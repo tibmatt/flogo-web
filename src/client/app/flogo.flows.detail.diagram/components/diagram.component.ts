@@ -197,13 +197,16 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     let data = $event.detail;
 
     // TODO
-    //   need to support branch/link and other nodes
+    //   need to support link and other nodes
     if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
       // select trigger event
       this._postService.publish( _.assign( {}, PUB_EVENTS.selectTrigger, { data : data } ) );
     } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE ) {
       // select task event
       this._postService.publish( _.assign( {}, PUB_EVENTS.selectTask, { data : data } ) );
+    } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+      // select branch event
+      this._postService.publish( _.assign( {}, PUB_EVENTS.selectBranch, { data : data } ) );
     } else {
       console.warn( 'unknown event type, yet' );
     }

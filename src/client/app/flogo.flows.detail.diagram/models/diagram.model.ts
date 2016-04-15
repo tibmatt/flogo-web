@@ -378,7 +378,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               //   refine the logic to handle more kinds of nodes
             } else if ( [
                           FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
-                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT
+                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
+                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH,
                         ].indexOf( d.type ) !== -1 ) {
               evtType = 'flogoSelectTask';
             }

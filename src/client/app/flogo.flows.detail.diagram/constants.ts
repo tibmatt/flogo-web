@@ -29,5 +29,5 @@ export enum FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE {
 /**
  * Debugging switch
  */
-export const FLOGO_FLOW_DIAGRAM_DEBUG = false;
-export const FLOGO_FLOW_DIAGRAM_VERBOSE = FLOGO_FLOW_DIAGRAM_DEBUG && true;
+export const FLOGO_FLOW_DIAGRAM_DEBUG = true;
+export const FLOGO_FLOW_DIAGRAM_VERBOSE = FLOGO_FLOW_DIAGRAM_DEBUG && false;

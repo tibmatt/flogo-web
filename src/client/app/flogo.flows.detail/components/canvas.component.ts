@@ -81,6 +81,7 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback : this._selectTaskFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.deleteTask, { callback : this._deleteTaskFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.addBranch, { callback : this._addBranchFromDiagram.bind( this ) } ),
+      _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectBranch, { callback : this._selectBranchFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTransform, { callback : this._selectTransformFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerFromDiagram.bind( this ) } ),
       _.assign( {}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback : this._addTriggerFromTriggers.bind( this ) } ),
@@ -88,8 +89,7 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
-      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
-      // _.assign( {}, FLOGO_GRAPHIC_SUB_EVENTS.selectTrigger, { callback : this._selectTriggerGraphic.bind( this ) } )
+      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } )
     ];
 
     _.each(
@@ -1106,12 +1106,16 @@ export class FlogoCanvasComponent {
 
     console.groupEnd();
   }
-  // private _selectTriggerGraphic() {
-  //   this.disposeLoadedComponent();
-  //   console.group("FlogoNavbarComponent -> select trigger");
-  //   console.log("receive: ", arguments);
-  //   this._router.navigate(['FlogoFlowsDetailTriggerDetail', {id:1}]);
-  //   console.groupEnd();
-  // }
 
+  private _selectBranchFromDiagram( data : any, envelope : any ) {
+    console.group( 'Select branch message from diagram' );
+
+    console.log( data );
+
+    // TODO
+    //  reference to _selectTaskFromDiagram
+    //  may need to route to some other URL?
+
+    console.groupEnd();
+  }
 }

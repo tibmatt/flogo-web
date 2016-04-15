@@ -23,6 +23,10 @@ export const PUB_EVENTS = {
     channel : 'flogo-flows-detail-diagram',
     topic : 'add-branch'
   },
+  selectBranch : {
+    channel : 'flogo-flows-detail-diagram',
+    topic : 'select-branch'
+  },
   selectTransform : {
     channel : 'flogo-flows-detail-diagram',
     topic : 'select-transform'
@@ -62,6 +66,13 @@ export const SUB_EVENTS = {
     channel : 'flogo-flows-detail-diagram',
     topic : 'public-add-branch'
   },
+  // TODO
+  //  seems that we don't need any extra information to render on the node when the branch information is changed,
+  //  hence gonna hanle this later.
+  // selectBranch : {
+  //   channel : 'flogo-flows-detail-diagram',
+  //   topic : 'public-select-branch'
+  // },
   selectTransform : {
     channel : 'flogo-flows-detail-diagram',
     topic : 'public-select-transform'
