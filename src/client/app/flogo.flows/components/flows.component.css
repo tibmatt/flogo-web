@@ -47,19 +47,17 @@
 }
 .flogo-flows-container-lists .flogo-flows-container-list-detail-trash {
   display: none;
-  height: 22px;
-  width: 30px;
-  margin-top: 26px;
-  margin-right: 10px;
+  height: 100%;
+  width: 60px;
   float: right;
   cursor: pointer;
   line-height: 100%;
-  background: url("/assets/svg/flogo.flows.trash.icon.svg") no-repeat;
-  background-size: 50%;
+  background: url("/assets/svg/flogo.flows.trash.icon.svg") center no-repeat;
+  background-size: 25%;
 }
 .flogo-flows-container-lists .flogo-flows-container-list-detail-trash:hover {
-  background: url("/assets/svg/flogo.flows.trash.hover.icon.svg") no-repeat;
-  background-size: 50%;
+  background: url("/assets/svg/flogo.flows.trash.hover.icon.svg") center no-repeat;
+  background-size: 25%;
 }
 .flogo-flows-container-lists .flogo-flows-container-list-detail-name {
   display: block;
