@@ -1,4 +1,4 @@
-<div class="flogo-common-edit-panel flogo-task-container">
+<div class="flogo-common-edit-panel">
 
   <div [hidden]="hasErrors">
 
@@ -7,15 +7,15 @@
         <img src="/assets/svg/flogo.icon.gears.circle.svg" alt="">
       </div>
 
-      <div class="flogo-common-edit-panel__head-wrapper flogo-task-container__header">
+      <div class="flogo-common-edit-panel__head-wrapper">
         <h3  *ngIf="_task" class="flogo-common-edit-panel__head-title">{{ _task.name || _task.id }}</h3>
         <div class="flogo-common-edit-panel__head-subtitle"></div>
       </div>
     </div>
 
-    <div *ngIf="_context.isTrigger">
-      <h3 class="flogo-common-edit-panel__legend flogo-task-container__fields-header" [hidden]="!_attributesTrigger.settings.length">Settings</h3>
-      <div *ngFor="#item of _attributesTrigger.settings" class="flogo-task-container__input">
+    <div *ngIf="_context.isTrigger" class="flogo-common-edit-panel__container">
+      <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.settings.length">Settings</h3>
+      <div *ngFor="#item of _attributesTrigger.settings" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getInfo(item)" [observer]="_observerInput" [observerError]="_observerFieldError"></flogo-form-builder-fields-textbox>
         </div>
@@ -25,8 +25,8 @@
         </div>
       </div>
 
-      <h3 class="flogo-common-edit-panel__legend flogo-task-container__fields-header" [hidden]="!_attributesTrigger.endpointSettings.length">End point</h3>
-      <div *ngFor="#item of _attributesTrigger.endpointSettings" class="flogo-task-container__input">
+      <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.endpointSettings.length">End point</h3>
+      <div *ngFor="#item of _attributesTrigger.endpointSettings" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getInfo(item)" [observer]="_observerInput" [observerError]="_observerFieldError"></flogo-form-builder-fields-textbox>
         </div>
@@ -36,8 +36,8 @@
         </div>
       </div>
 
-      <h3 class="flogo-common-edit-panel__legend flogo-task-container__fields-header" [hidden]="!_attributesTrigger.outputs.length">Outputs</h3>
-      <div *ngFor="#item of _attributesTrigger.outputs" class="flogo-task-container__input">
+      <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.outputs.length">Outputs</h3>
+      <div *ngFor="#item of _attributesTrigger.outputs" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getInfo(item)" [observer]="_observerInput" [observerError]="_observerFieldError"></flogo-form-builder-fields-textbox>
         </div>
@@ -48,9 +48,9 @@
       </div>
     </div>
 
-    <div *ngIf="!_context.isTrigger">
-      <h3 class="flogo-common-edit-panel__legend flogo-task-container__fields-header" [hidden]="!_attributes.inputs.length">Input Parameters</h3>
-      <div *ngFor="#input of _attributes.inputs" class="flogo-task-container__input">
+    <div *ngIf="!_context.isTrigger" class="flogo-common-edit-panel__container">
+      <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributes.inputs.length">Input Parameters</h3>
+      <div *ngFor="#input of _attributes.inputs" class="">
         <div *ngIf="getControlByType(input.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getInfo(input)" [observer]="_observerInput" [observerError]="_observerFieldError"></flogo-form-builder-fields-textbox>
         </div>
@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <h3 class="flogo-common-edit-panel__legend flogo-task-container__fields-header" [hidden]="!_attributes.outputs.length">Output Parameters</h3>
+      <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributes.outputs.length">Output Parameters</h3>
       <div *ngFor="#output of _attributes.outputs" class="flogo-task-container__output">
 
         <div *ngIf="getControlByType(output.type).control == 'FieldTextBox'">
@@ -91,7 +91,7 @@
 
 
 
-    <div class="flogo-task-container__footer">
+    <div class="flogo-common-edit-panel__footer">
       <button class="tc-buttons tc-buttons-primary-call" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" (click)="runFromThisTile($event)">
         Run from this tile
       </button>

@@ -1,3 +1,8 @@
+.flogo-form-builder {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
 .flogo-task-container {
   display: flex;
   flex-direction: column;
