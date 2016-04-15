@@ -338,6 +338,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     // enter selection
     let newNodes = nodes.enter()
       .append( 'div' )
+      .attr( 'data-task-id', ( nodeInfo : IFlogoFlowDiagramNode ) => {
+        return nodeInfo.taskID || -1
+      } )
       .attr( this.ng2StyleAttr, '' )
       .classed( 'flogo-flows-detail-diagram-node', true )
       .on(
@@ -397,6 +400,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
             }
 
+            d3.selectAll( '.flogo-flows-detail-diagram-node-selected' )
+              .classed( 'flogo-flows-detail-diagram-node-selected', false );
             d3.select( this )
               .classed( 'flogo-flows-detail-diagram-node-selected', true );
           }
@@ -443,16 +448,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private _handleUpdateNodes( nodes : any ) {
     let diagram = this;
 
-    nodes.classed(
-      {
+    nodes.classed( {
         'updated' : true,
-        'flogo-flows-detail-diagram-node-selected' : false,
         'flogo-flows-detail-diagram-node-menu-open' : false
-      }
-      )
-      .attr(
-        'data-flogo-node-type', ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase()
-      );
+      } )
+      .attr( 'data-flogo-node-type',
+        ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase() );
 
     nodes.each(
       function ( d : IFlogoFlowDiagramNode ) {
@@ -470,6 +471,18 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         }
 
         thisNode.classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
+
+        // update the current node ID
+        thisNode.attr( 'data-task-id', function ( nodeInfo : IFlogoFlowDiagramNode ) {
+          let previousID = thisNode.attr( 'data-task-id' );
+
+          // unset whatever status should not be kept once the task is changed.
+          if ( previousID !== nodeInfo.taskID ) {
+            thisNode.classed( 'flogo-flows-detail-diagram-node-selected', false );
+          }
+
+          return nodeInfo.taskID || -1
+        } );
       }
     );
 
