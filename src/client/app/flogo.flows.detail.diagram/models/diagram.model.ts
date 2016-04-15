@@ -621,9 +621,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             _triggerCustomEvent(
               evtType, {
                 origEvent : d3.event,
-                node : nodeInfo,
-                col : col,
-                row : row
+                node : nodeInfo
               }, this
             );
           } else {
@@ -634,9 +632,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             _triggerCustomEvent(
               evtType, {
                 origEvent : d3.event,
-                node : nodeInfo,
-                col : col,
-                row : row
+                node : nodeInfo
               }, this
             );
           }
