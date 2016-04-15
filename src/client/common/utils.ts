@@ -1,8 +1,8 @@
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from './constants';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from './constants';
-export function flogoIDEncode( id : string ) {
+export function flogoIDEncode( id : string ) : string {
   return btoa( id )
     .replace( /\+/g, '-' )
     .replace( /\//g, '_' )
@@ -11,7 +11,7 @@ export function flogoIDEncode( id : string ) {
 
 // URL safe base64 decoding
 // reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDDecode( encodedId : string ) {
+export function flogoIDDecode( encodedId : string ) : string {
 
   encodedId = encodedId.replace( /-/g, '+' )
     .replace( /_/g, '/' );
@@ -21,6 +21,13 @@ export function flogoIDDecode( encodedId : string ) {
   }
 
   return atob( encodedId );
+}
+
+export function flogoGenTaskID() : string {
+  // shift the timestamp for avoiding overflow 32 bit system
+  // TODO
+  //  generate a more meaningful task ID in string format
+  return flogoIDEncode( '' + (Date.now() >>> 1) );
 }
 
 // mapping from schema.json of activity to the task can be used in flow.json

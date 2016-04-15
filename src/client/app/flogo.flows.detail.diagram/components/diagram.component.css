@@ -87,6 +87,12 @@
   box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
   z-index: 100;
 }
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-menu-open[data-flogo-node-type="node_branch"] {
+  z-index: 100;
+}
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-menu-open[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-detail {
+  box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
+}
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-menu-open .flogo-flows-detail-diagram-node-menu {
   width: 170px;
 }
@@ -143,7 +149,8 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"] .flogo-flows-detail-diagram-node-badge {
   display: none;
 }
-.flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"] {
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"],
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_padding"] {
   opacity: 0;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"],
@@ -242,6 +249,35 @@
   width: 40px;
   height: 100%;
   background: url("/assets/svg/flogo.flows.detail.diagram.gear.icon.svg") center 11px no-repeat;
+}
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] {
+  background: none;
+  box-shadow: none;
+  border: none;
+}
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"]:before {
+  display: none;
+}
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-detail {
+  background-image: linear-gradient(to bottom, #abb0c5, #c2c5d9);
+  box-shadow: none;
+  border: none;
+  height: 32px;
+  padding: 0;
+  margin: auto;
+  bottom: 0;
+}
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-detail .flogo-flows-detail-diagram-node-detail-description {
+  display: none;
+}
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-menu {
+  height: 32px;
+  margin: auto;
+  bottom: 0;
+}
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-menu .flogo-flows-detail-diagram-node-menu-gear {
+  background-position-x: 50%;
+  background-position-y: 50%;
 }
 .flogo-flows-detail-diagram-node-menu-box li:hover {
   background: #ededed;

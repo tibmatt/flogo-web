@@ -99,10 +99,20 @@
 
   }
   &.flogo-flows-detail-diagram-node-menu-open{
-    &[data-flogo-node-type="node"],&[data-flogo-node-type="node_root"]{
+    &[data-flogo-node-type="node"],
+    &[data-flogo-node-type="node_root"] {
       box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
       z-index: 100;
     }
+
+    &[data-flogo-node-type="node_branch"] {
+      z-index: 100;
+
+      .flogo-flows-detail-diagram-node-detail {
+        box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
+      }
+    }
+
     .flogo-flows-detail-diagram-node-menu {
       width: 170px;
     }
@@ -156,7 +166,8 @@
     }
   }
 
-  &[data-flogo-node-type="node_holder"] {
+  &[data-flogo-node-type="node_holder"],
+  &[data-flogo-node-type="node_padding"]{
     opacity: 0;
   }
 
@@ -258,6 +269,46 @@
     height: 100%;
     background: url("/assets/svg/flogo.flows.detail.diagram.gear.icon.svg") center 11px no-repeat;
     //display: none;
+  }
+
+  &[data-flogo-node-type="node_branch"] {
+    // override generic style
+    background: none;
+    box-shadow: none;
+    border: none;
+
+    &:before {
+      display: none;
+    }
+
+    .flogo-flows-detail-diagram-node-detail {
+
+      background-image: linear-gradient(to bottom, #ABB0C5, #C2C5D9);
+      box-shadow: none;
+      border: none;
+
+      height: 32px;
+      padding: 0;
+      margin: auto;
+      bottom: 0;
+
+      // TODO
+      //    remove this mock
+      .flogo-flows-detail-diagram-node-detail-description {
+        display: none;
+      }
+    }
+
+    .flogo-flows-detail-diagram-node-menu {
+      height: 32px;
+      margin: auto;
+      bottom: 0;
+
+      .flogo-flows-detail-diagram-node-menu-gear {
+        background-position-x: 50%;
+        background-position-y: 50%;
+      }
+    }
   }
 }
 

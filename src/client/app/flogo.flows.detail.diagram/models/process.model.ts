@@ -139,7 +139,16 @@ function _traversalChildren(
         let n = nodes[ nid ];
 
         // filter the ADD node
-        if ( n.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+        if ( n.type
+          === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD
+          || n.type
+          === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+          return;
+        }
+
+        // TODO
+        //  handle branch node differently
+        if ( n.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
           return;
         }
 

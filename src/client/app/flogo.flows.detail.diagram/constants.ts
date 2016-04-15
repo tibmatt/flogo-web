@@ -3,7 +3,8 @@
  */
 
 export enum FLOGO_FLOW_DIAGRAM_NODE_TYPE {
-  NODE_HOLDER,
+  NODE_PADDING, // padding node
+  NODE_HOLDER,  // placeholder node
   NODE_ADD,
   NODE_ROOT,
   NODE_ROOT_NEW,
@@ -23,3 +24,10 @@ export enum FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE {
 /**
  * Constants
  */
+
+
+/**
+ * Debugging switch
+ */
+export const FLOGO_FLOW_DIAGRAM_DEBUG = false;
+export const FLOGO_FLOW_DIAGRAM_VERBOSE = FLOGO_FLOW_DIAGRAM_DEBUG && true;

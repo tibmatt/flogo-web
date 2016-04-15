@@ -30,7 +30,7 @@ import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
-import { flogoIDDecode, flogoIDEncode } from '../../../common/utils';
+import { flogoIDDecode, flogoIDEncode, flogoGenTaskID } from '../../../common/utils';
 
 @Component( {
   selector: 'flogo-canvas',
@@ -667,8 +667,7 @@ export class FlogoCanvasComponent {
     console.log( envelope );
 
     // generate task id when adding the task
-    // shift the timestamp for avoiding overflow 32 bit system
-    let task = _.assign({}, data.task, { id : flogoIDEncode( '' + (Date.now() >>> 1)  ) });
+    let task = _.assign({}, data.task, { id : flogoGenTaskID() });
 
     this.tasks[ task.id ] = task;
 
@@ -1062,8 +1061,10 @@ export class FlogoCanvasComponent {
               node : data.node
             },
             done : ( diagram : IFlogoFlowDiagram ) => {
+              // TODO
+              //  NOTE that once delete branch, not only single task is removed.
               delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
-              delete this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
+              _.assign( this.diagram, diagram );
               this._updateFlow( this._flow );
               this._isDiagramEdited = true;
             }
@@ -1078,7 +1079,30 @@ export class FlogoCanvasComponent {
   private _addBranchFromDiagram( data : any, envelope : any ) {
     console.group( 'Add branch message from diagram' );
 
-    console.log(data);
+    console.log( data );
+
+    // TODO
+    //  remove this mock later
+    //    here just creating a branch node with new branch info
+
+    let branchInfo = {
+      id : flogoGenTaskID(),
+      type : FLOGO_TASK_TYPE.TASK_BRANCH,
+      condition : ''
+    };
+
+    this.tasks[ branchInfo.id ] = branchInfo;
+
+    this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.addBranch, {
+      data : {
+        node : data.node,
+        task : branchInfo
+      },
+      done : ( diagram : IFlogoFlowDiagram ) => {
+        _.assign( this.diagram, diagram );
+        this._updateFlow( this._flow );
+      }
+    } ) );
 
     console.groupEnd();
   }

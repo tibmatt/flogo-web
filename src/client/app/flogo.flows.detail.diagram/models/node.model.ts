@@ -1,11 +1,13 @@
 import { IFlogoFlowDiagram } from '../models';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 import { flogoIDEncode } from '../../../common/utils';
-import { IFlogoFlowDiagramNodeDictionary } from './dictionary.model';
+
+import {FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG} from '../constants';
+import {FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE} from '../constants';
 
 export interface IFlogoFlowDiagramNode {
   id : string; // id of the node
-  taskID : string; // id of the task
+  taskID ? : string; // id of the task
   type : FLOGO_FLOW_DIAGRAM_NODE_TYPE; // type of the node
   children : string[ ]; // ids of the children IFlogoFlowDiagramNode
   parents : string[ ]; // ids of the parents IFlogoFlowDiagramNode
@@ -44,7 +46,15 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
   };
 
   static genNodeID() : string {
-    return flogoIDEncode( 'FlogoFlowDiagramNode::' + Date.now() );
+    let id = '';
+
+    if ( performance && _.isFunction( performance.now ) ) {
+      id = `FlogoFlowDiagramNode::${Date.now()}::${performance.now()}`;
+    } else {
+      id = `FlogoFlowDiagramNode::${Date.now()}}`;
+    }
+
+    return flogoIDEncode( id );
   };
 
   public update( node : IFlogoFlowDiagramNode ) : Promise < FlogoFlowDiagramNode > {
@@ -89,10 +99,10 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
   public linkToChildren( nodeIDs : string[ ] ) : Promise < boolean > {
     this.children = _.union( this.children, nodeIDs );
 
-    console.groupCollapsed( this.id + ' linkToChildren' );
-    console.log( this );
-    console.log( this.children );
-    console.groupEnd();
+    VERBOSE && console.groupCollapsed( this.id + ' linkToChildren' );
+    VERBOSE && console.log( this );
+    VERBOSE && console.log( this.children );
+    VERBOSE && console.groupEnd();
 
     return Promise.resolve( true );
   };
@@ -100,37 +110,13 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
   public linkToParents( nodeIDs : string[ ] ) : Promise < boolean > {
     this.parents = _.union( this.parents, nodeIDs );
 
-    console.groupCollapsed( this.id + ' linkToParents' );
-    console.log( this );
-    console.log( this.parents );
-    console.groupEnd();
+    VERBOSE && console.groupCollapsed( this.id + ' linkToParents' );
+    VERBOSE && console.log( this );
+    VERBOSE && console.log( this.parents );
+    VERBOSE && console.groupEnd();
 
     return Promise.resolve( true );
   };
-
-  public unlinkFromDiagram( nodes : IFlogoFlowDiagramNodeDictionary ) : Promise<any> {
-
-    let promises : Promise<any>[] = [];
-
-    // single flow verification
-    if ( this.children.length < 2 && this.parents.length < 2 ) {
-      // single flow unlinking
-      let parent = nodes[ this.parents[ 0 ] ];
-      let child = nodes[ this.children[ 0 ] ];
-
-      child.parents.splice( 0, 1, parent.id );
-      parent.children.splice( 0, 1, child.id );
-
-      return Promise.resolve( true );
-
-    } else {
-      // TODO
-      //  support branching/linking cases
-      console.warn( 'Unsupported case..' );
-
-      return Promise.reject( 'Unsupported case..' );
-    }
-  }
 
   public unlinkFrom(
     nodes : {
@@ -158,10 +144,10 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
       }
     );
 
-    console.groupCollapsed( this.id + ' unlinkFromChildren' );
-    console.log( this );
-    console.log( removed );
-    console.groupEnd();
+    VERBOSE && console.groupCollapsed( this.id + ' unlinkFromChildren' );
+    VERBOSE && console.log( this );
+    VERBOSE && console.log( removed );
+    VERBOSE && console.groupEnd();
 
     return Promise.resolve( true );
   };
@@ -173,10 +159,10 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
       }
     );
 
-    console.groupCollapsed( this.id + ' unlinkFromParents' );
-    console.log( this );
-    console.log( removed );
-    console.groupEnd();
+    VERBOSE && console.groupCollapsed( this.id + ' unlinkFromParents' );
+    VERBOSE && console.log( this );
+    VERBOSE && console.log( removed );
+    VERBOSE && console.groupEnd();
 
     return Promise.resolve( true );
   };

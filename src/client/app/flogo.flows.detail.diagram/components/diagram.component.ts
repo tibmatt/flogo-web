@@ -48,9 +48,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.deleteTask, { callback : this._deleteTaskDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.render, { callback : function(){
-        this._diagram.render();
-      }.bind( this ) } )
+      _.assign( {}, SUB_EVENTS.render, {
+        callback : function () {
+          this._diagram.render();
+        }.bind( this )
+      } ),
+      _.assign( {}, SUB_EVENTS.addBranch, { callback : this._addBranchDone.bind( this ) } ),
     ];
 
     _.each(
@@ -103,12 +106,13 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       console.groupEnd();
 
       if ( this.diagram && this.tasks && this._diagram ) {
-        this._diagram.updateAndRender(
-          {
+        this._diagram.updateAndRender( {
             tasks : this.tasks,
             diagram : this.diagram
-          }
-        );
+          } )
+          .then( ( diagram )=> {
+            this._diagram = diagram;
+          } );
       }
 
       // monitor the updates of tasks
@@ -119,11 +123,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       console.groupEnd();
 
       if ( this.diagram && this.tasks && this._diagram ) {
-        this._diagram.updateAndRender(
-          {
+        this._diagram.updateAndRender( {
             tasks : this.tasks
-          }
-        );
+          } )
+          .then( ( diagram )=> {
+            this._diagram = diagram;
+          } );
       }
     }
 
@@ -136,11 +141,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     // the tasks should have been passed into this component after changing
     // so re-render the diagram
-    this._diagram.updateAndRender(
-      {
+    this._diagram.updateAndRender( {
         tasks : this.tasks
-      }
-    );
+      } )
+      .then( ( diagram )=> {
+        this._diagram = diagram;
+      } );
 
     // TODO
     //   if there are nodes position changing, then should apply the new diagram when updating
@@ -305,20 +311,17 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     if ( node ) {
       this._diagram.deleteNode( node )
-        .then(
-          ( diagram : FlogoFlowDiagram )=> {
-            if ( diagram && _.isFunction( diagram.render ) ) {
-              return this._diagram.render();
-            } else {
-              return diagram;
-            }
+        .then( ( diagram : FlogoFlowDiagram )=> {
+          if ( diagram && _.isFunction( diagram.render ) ) {
+            return this._diagram.render();
+          } else {
+            return diagram;
           }
-        )
-        .then(
-          ()=> {
-            _.isFunction( envelope.done ) && envelope.done( this._diagram );
-          }
-        );
+        } )
+        .then( ( diagram )=> {
+          this._diagram = diagram;
+          _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        } );
     }
 
     console.groupEnd();
@@ -334,15 +337,15 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     if ( data.node && data.task ) {
       // link the new task to FlogoFlowDiagramNode
       return this._diagram.linkNodeWithTask( data.node.id, data.task )
-        .then(
-          ( diagram ) => {
-            return diagram.updateAndRender(
-              {
-                tasks : this.tasks
-              }
-            );
-          }
-        );
+        .then( ( diagram ) => {
+          return diagram.updateAndRender(
+            {
+              tasks : this.tasks
+            } )
+            .then( ( diagram )=> {
+              this._diagram = diagram;
+            } );
+        } );
     }
 
     // link the trigger with the root node with node id omitted
@@ -350,17 +353,48 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     if ( data.task && data.task.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
       // link the trigger to FlogoFlowDiagramNode
       return this._diagram.linkNodeWithTask( this._diagram.root.is, data.task )
-        .then(
-          ( diagram ) => {
-            return diagram.updateAndRender(
-              {
-                tasks : this.tasks
-              }
-            );
-          }
-        );
+        .then( ( diagram ) => {
+          return diagram.updateAndRender( {
+              tasks : this.tasks
+            } )
+            .then( ( diagram )=> {
+              this._diagram = diagram;
+            } );
+        } );
     }
 
     return Promise.reject( 'Invalid parameters.' );
+  }
+
+  private _addBranchDone( data : any, envelope : any ) {
+    console.group( 'Add branch done.' );
+
+    console.log( data );
+    console.log( envelope );
+
+    let node = <FlogoFlowDiagramNode>this._diagram.nodes[ _.get( data, 'node.id', '' ) ];
+
+    // if node is of add type and task is of branch type
+    if ( node &&
+      (_.get( data, 'task.type', -1 ) === FLOGO_TASK_TYPE.TASK_BRANCH) &&
+      (_.get( data, 'node.type', '' )) ) {
+
+      this._diagram.addBranch( data.node, data.task )
+        .then( ( diagram ) => {
+          return diagram.updateAndRender(
+            {
+              tasks : this.tasks
+            } )
+            .then( ( diagram : FlogoFlowDiagram )=> {
+              this._diagram = diagram;
+            } );
+        } )
+        .then( ()=> {
+          _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        } );
+
+    }
+
+    console.groupEnd();
   }
 }
