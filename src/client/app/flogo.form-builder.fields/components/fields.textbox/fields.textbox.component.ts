@@ -8,13 +8,12 @@ import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
   moduleId: module.id,
   templateUrl: 'fields.textbox.tpl.html',
   directives: [ROUTER_DIRECTIVES],
-  inputs:['_info:info','_observer:observer','_observerError:observerError']
+  inputs:['_info:info','_fieldObserver:fieldObserver']
 })
 
 export class FlogoFormBuilderFieldsTextBox  extends FlogoFormBuilderFieldsBase {
   _info:any;
-  _observer:any;
-  _observerError:any;
+  _fieldObserver:any;
 
   constructor() {
   }

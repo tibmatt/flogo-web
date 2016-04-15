@@ -759,7 +759,16 @@ export class FlogoCanvasComponent {
 
   private _getCurrentContext(taskId:any) {
     var isTrigger = this.tasks[taskId].type === FLOGO_TASK_TYPE.TASK_ROOT;
-    return {isTrigger: isTrigger, hasProcess: !!this._currentProcessID, isDiagramEdited: this._isDiagramEdited };
+    var isBranch = this.tasks[taskId].type  === FLOGO_TASK_TYPE.TASK_BRANCH;
+    var isTask = this.tasks[taskId].type  === FLOGO_TASK_TYPE.TASK;
+
+    return {
+            isTrigger: isTrigger,
+            isBranch: isBranch,
+            isTask: isTask,
+            hasProcess: !!this._currentProcessID,
+            isDiagramEdited: this._isDiagramEdited
+    };
   }
 
 
@@ -1115,6 +1124,42 @@ export class FlogoCanvasComponent {
     // TODO
     //  reference to _selectTaskFromDiagram
     //  may need to route to some other URL?
+    var currentStep = this._getCurrentState(data.node.taskID);
+    var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
+    var context     = this._getCurrentContext(data.node.taskID);
+
+
+    this._postService.publish(
+      _.assign(
+        {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+          data : _.assign( {},
+            data,
+            { task : currentTask } ,
+            { step: currentStep },
+            { context: context }
+          ),
+
+          done: () => {
+            // select task done
+            this._postService.publish(
+              _.assign(
+                {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+                  data : {
+                    node : data.node,
+                    task : this.tasks[ data.node.taskID ]
+                  },
+                  done : ( diagram : IFlogoFlowDiagram ) => {
+                    _.assign( this.diagram, diagram );
+                    this._updateFlow( this._flow );
+                  }
+                }
+              )
+            );
+
+          }
+        }
+      )
+    );
 
     console.groupEnd();
   }

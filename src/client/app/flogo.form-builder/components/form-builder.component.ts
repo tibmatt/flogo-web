@@ -18,9 +18,7 @@ import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-buil
   inputs: ['_task:task','_step:step', '_context:context']
 })
 export class FlogoFormBuilderComponent{
-  _observerInput:ReplaySubject;
-  _observerOutput:ReplaySubject;
-  _observerFieldError:ReplaySubject;
+  _fieldObserver:ReplaySubject;
   _task: any;
   _step: any;
   _context: any;
@@ -58,37 +56,55 @@ export class FlogoFormBuilderComponent{
   }
 
   _setFieldsObservers() {
-    this._observerInput = new ReplaySubject(2);
-    this._observerOutput = new ReplaySubject(2);
-    this._observerFieldError  = new ReplaySubject(2);
 
-    this._observerInput.subscribe((changedObject:any) => {
-      if(!changedObject.isTrigger) {
-        this._updateAttributeByUserChanges(this._attributes.inputs, changedObject);
+    this._fieldObserver = new ReplaySubject(2);
+
+    // handle error status
+    this._fieldObserver.filter((param:any) => {
+      return param.message == 'validation' && param.payload.status == 'error';
+    }).
+    subscribe((param:any) => {
+      // add to the error array
+      if(this._fieldsErrors.indexOf(param.payload.field) == -1) {
+        this._fieldsErrors.push(param.payload.field)
       }
-      this._hasChanges = true;
+    });
+
+    //handle ok validation status
+    this._fieldObserver.filter((param:any) => {
+      return param.message == 'validation' && param.payload.status == 'ok';
+    }).
+    subscribe((param:any) => {
+      // remove from the error array
+      var index  = this._fieldsErrors.indexOf(param.payload.field);
+      if(index != -1) {
+        this._fieldsErrors.splice(index, 1);
+      }
+    });
+
+    // handle change field input fields
+    this._fieldObserver.filter((param:any) => {
+      return param.message == 'change-field' && param.payload.isTrigger == false  && param.payload.direction == 'input';
+    }).
+    subscribe((param:any) => {
+        this._updateAttributeByUserChanges(this._attributes.inputs, param.payload);
     });
 
 
-    this._observerOutput.subscribe((changedObject:any) => {
-      if(!changedObject.isTrigger) {
-        this._updateAttributeByUserChanges(this._attributes.outputs, changedObject);
-      }
-      this._hasChanges = true;
+    // handle change field output fields
+    this._fieldObserver.filter((param:any) => {
+      return param.message == 'change-field' && param.payload.isTrigger == false  && param.payload.direction == 'output';
+    }).
+    subscribe((param:any) => {
+      this._updateAttributeByUserChanges(this._attributes.outputs, param.payload);
     });
 
-     this._observerFieldError.subscribe( (field:any) => {
-
-       if(field.status == 'error') {
-         if(this._fieldsErrors.indexOf(field.name) == -1) {
-           this._fieldsErrors.push(field.name)
-         }
-       } else {
-         var index  = this._fieldsErrors.indexOf(field.name);
-         if(index != -1) {
-           this._fieldsErrors.splice(index, 1);
-         }
-       }
+    // when some field changes
+    this._fieldObserver.filter((param:any) => {
+      return param.message == 'change-field';
+    }).
+    subscribe((param:any) => {
+      this._hasChanges = true;
     });
 
 
@@ -105,10 +121,14 @@ export class FlogoFormBuilderComponent{
   }
 
   ngOnChanges() {
+    this._setupEnvironment();
+  }
+
+  _setupEnvironment() {
     this._fieldsErrors = [];
 
     if(!this._context) {
-      this._context = {isTrigger:false , hasProcess:false, _isDiagramEdited:false };
+      this._context = {isTrigger:false , isTask: false, isBranch:false,  hasProcess:false, _isDiagramEdited:false };
     }
 
     this._canRunFromThisTile =  this._getCanRunFromThisTile();
@@ -124,12 +144,15 @@ export class FlogoFormBuilderComponent{
 
       this._attributesTriggerOriginal = _.cloneDeep(attributesTrigger);
       this._setTriggerEnvironment(attributesTrigger);
-    } else {
+      return;
+    }
+
+    if(this._context.isTask) {
       var attributes = this._task ? this._task.attributes || {} : {};
       this._attributesOriginal = _.cloneDeep(attributes);
       this._setTaskEnvironment(attributes);
+      return;
     }
-
   }
 
   _getCanRunFromThisTile() {
@@ -178,7 +201,18 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  getInfo(input:any) {
+  getBranchInfo() {
+    var info = {
+      name:       this._task.id,
+      title:      'If',
+      value:      this._task.condition,
+      required:   true
+    };
+
+    return info;
+  }
+
+  getTriggerInfo(input:any) {
     var info = {
       name:       input.name,
       type:       input.type,
@@ -189,7 +223,29 @@ export class FlogoFormBuilderComponent{
       validation: input.validation,
       validationMessage: input.validationMessage,
       required:   input.required,
-      isTrigger:  this._context.isTrigger
+      isTrigger:  true,
+      isBranch:   false
+    };
+
+
+    return _.assign({}, info, this.getControlByType(input.type));
+  }
+
+
+  getTaskInfo(input:any, direction:any) {
+    var info = {
+      name:       input.name,
+      type:       input.type,
+      title:      input.title || input.name || '',
+      value:      input.value,
+      mappings:   input.mappings,
+      step:       input.step,
+      validation: input.validation,
+      validationMessage: input.validationMessage,
+      required:   input.required,
+      isTrigger:  false,
+      isBranch:   false,
+      direction: direction
     };
 
     if(!this._context.isTrigger) {
@@ -255,9 +311,13 @@ export class FlogoFormBuilderComponent{
   cancelEdit(event:any) {
     if(this._context.isTrigger) {
       this._setTriggerEnvironment(_.cloneDeep(this._attributesTriggerOriginal));
-    } else {
+    }
+
+    if(this._context.isTask){
       this._setTaskEnvironment(_.cloneDeep(this._attributesOriginal || {}));
     }
+
+
     this._fieldsErrors = [];
     this._hasChanges = false
 
