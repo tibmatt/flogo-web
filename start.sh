@@ -2,6 +2,7 @@
 #############################
 # Colors
 #############################
+FG_DEFAULT="\e[39m"
 FG_BLACK="\e[30m"
 FG_RED="\e[31m"
 FG_GREEN="\e[32m"
@@ -9,7 +10,7 @@ FG_YELLOW="\e[33m"
 FG_BLUE="\e[34m"
 FG_PURPLE="\e[35m"
 FG_CYAN="\e[36m"
-FG_WHITE="\e[37m"
+FG_LIGHTGRAY="\e[37m"
 NC='\033[0m'
 
 #############################
@@ -27,9 +28,19 @@ echoBlack()
   printf "${FG_BLACK}$@${NC}\n"
 }
 
+echoDefault()
+{
+  printf "${FG_DEFAULT}$@${NC}\n"
+}
+echoHeader()
+{
+  echoBlack "======================================================"
+  echoBlack "## $@"
+  echoBlack "======================================================"
+}
 echoInfo()
 {
-  printf "${FG_YELLOW}[Info] ${NC}${FG_BLACK}$@${NC}\n"
+  printf "${FG_YELLOW}[Info] ${NC}${FG_DEFAULT}$@${NC}\n"
 }
 echoError()
 {
@@ -66,14 +77,31 @@ open_url(){
   fi
 }
 
+remove_flogo(){
+
+  echoInfo "Start remove flogo command"
+  # remove flogo command
+  rm "${GOPATH}/bin/flogo"
+  # remove flogo pkg
+  rm -rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo"
+  # remove flogo src
+  rm -rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo"
+  echoInfo "Finish remove flogo command"
+}
+
+update_flogo(){
+  echoInfo "Start update flogo command"
+  remove_flogo
+  go get github.com/TIBCOSoftware/flogo/...
+  echoInfo "Finish update flogo command"
+}
+
 #############################
 # Step 1: check environment
 #############################
 ## TODO when a command doesn't exist, then install it automatically
 
-echoBlack "======================================================"
-echoBlack "## Step1: check environment"
-echoBlack "======================================================"
+echoHeader "Step1: check environment"
 
 #============================
 # go
@@ -114,48 +142,45 @@ check_command docker
 #============================
 # flogo
 #============================
-check_command flogo
+# check_command flogo
+update_flogo
 
 #############################
 # Step 2: update submodule
 #############################
-echoBlack "======================================================"
-echoBlack "## Step2: update submodule: flogo-internal, flogo-contrib"
-echoBlack "======================================================"
+echoInfo "update submodule: flogo-internal, flogo-contrib"
 
 git submodule init
 git submodule update
 
-echoBlack "[Success]update submodule"
+echoSuccess "update submodule"
 
 #############################
 # Step 3: start process and state server
 #############################
-echoBlack "======================================================"
-echoBlack "## Step3: start process and state server"
-echoBlack "======================================================"
+echoHeader "Step3: start process and state server"
 
-echoBlack "## setup docker"
+echoInfo " setup docker"
 cd "${FLOGO_INTERNAL_PATH}/utils/demo/cli/setup"
 sh setup-docker.sh
 
-echoBlack "## stop process and state server"
+echoInfo "stop process and state server"
 sh stop-env.sh
 
-echoBlack "## stop flogo-web and pouchdb"
+echoInfo "stop flogo-web and pouchdb"
 lsof -i:3010 | grep node | awk '{print $2}' | xargs kill -9
 lsof -i:5984 | grep node | awk '{print $2}' | xargs kill -9
 
-echoBlack "## setup env"
+echoInfo "setup env"
 sh setup-env.sh
 
-echoBlack "## start mqtt"
+echoInfo "start mqtt"
 sh start-mosquitto.sh &
 
-echoBlack "## start process and state server"
+echoInfo "start process and state server"
 sh start-services.sh &
 
-echoBlack "## start flogo-web"
+echoInfo "start flogo-web"
 cd $CURRENT_PATH
 npm install
 gulp && open_url "http://localhost:3010"
