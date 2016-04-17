@@ -111,6 +111,11 @@ check_command npm
 check_command docker-machine
 check_command docker
 
+#============================
+# flogo
+#============================
+check_command flogo
+
 #############################
 # Step 2: update submodule
 #############################
