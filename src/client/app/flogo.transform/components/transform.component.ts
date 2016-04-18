@@ -8,6 +8,7 @@ import { MapEditorComponent } from "./map-editor.component";
 import { ErrorDisplayComponent } from "./error-display.component";
 
 interface TransformData {
+  result: any,
   precedingTilesOutputs: any[],
   tile: any,
   tileInputInfo: any,
@@ -34,6 +35,7 @@ export class TransformComponent implements OnDestroy {
 
   private _subscriptions:any[];
   private data:TransformData = {
+    result: null,
     precedingTilesOutputs: [],
     tile: null,
     tileInputInfo: null,
@@ -54,7 +56,7 @@ export class TransformComponent implements OnDestroy {
     this.isDirty = change.isDirty;
 
     if (change.isValid) {
-      this.data.mappings = change.value;
+      this.data.result = change.value;
       this.errors = null;
     } else {
       this.errors = change.errors;
@@ -66,7 +68,7 @@ export class TransformComponent implements OnDestroy {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.data.tile,
-        inputMappings: this.data.mappings
+        inputMappings: this.data.result
       }
     }));
     this.close();
@@ -105,7 +107,8 @@ export class TransformComponent implements OnDestroy {
 
   private onTransformSelected(data:any, envelope:any) {
     this.data = {
-      precedingTilesOutputs: this.extractPrecedingTilesOutputInfo(data.previousTiles),
+      result: null,
+      precedingTilesOutputs: this.extractPrecedingTilesOutputs(data.previousTiles),
       tile: data.tile,
       tileInputInfo: this.extractTileInputInfo(data.tile || {}),
       mappings: data.tile.inputMappings ? _.cloneDeep(data.tile.inputMappings) : []
@@ -116,12 +119,13 @@ export class TransformComponent implements OnDestroy {
 
   }
 
-  private extractPrecedingTilesOutputInfo(precedingTiles:any[]) {
+  private extractPrecedingTilesOutputs(precedingTiles:any[]) {
     return _.chain(precedingTiles || [])
       .filter((tile:any) => tile.attributes && tile.attributes.outputs && tile.attributes.outputs.length > 0)
       .map((tile:any) => {
+        let name = _.kebabCase(tile.name);
         let outputs = tile.attributes.outputs.map(this.mapInOutObjectDisplay);
-        return [tile.id, outputs];
+        return [name, outputs];
       })
       .fromPairs()
       .value();

@@ -24,7 +24,7 @@ export class MapEditorComponent implements OnChanges, OnInit {
 
   private tileInfo:TileInOutInfo = {
     attributes: [],
-    precedingOutputs: []
+    precedingOutputs: {}
   };
 
   constructor() {
@@ -92,12 +92,13 @@ export class MapEditorComponent implements OnChanges, OnInit {
   }
 
   private extractPrecedingOutputs(precedingTiles:any) {
-    return precedingTiles ? _.reduce(precedingTiles, (allOutputNames:string[], tileOutputs:any[], tileId:any) => {
-      return allOutputNames
-        .concat(
-          tileOutputs.map(output => `${tileId}.${output.name}`)
-        );
-    }, []) : [];
+    return precedingTiles ? _.reduce(precedingTiles, (allOutputNames:any, tileOutputs:any[], tileName:any) => {
+      tileOutputs.forEach(output => {
+        let path = `${tileName}.${output.name}`;
+        allOutputNames[path] = output;
+      });
+      return allOutputNames;
+    }, {}) : {};
   }
 
 }

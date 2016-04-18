@@ -57,7 +57,8 @@ function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:numb
   }
 
   if (!errors.type) {
-    if (mapping.type == TYPE_ATTR_ASSIGNMENT && !_.includes(tileInfo.precedingOutputs, mapping.value)) {
+    // todo: add case for object so user can do my-tile.result.subobject
+    if (mapping.type == TYPE_ATTR_ASSIGNMENT && !tileInfo.precedingOutputs[mapping.value]) {
       errors.value = {
         invalidValue: true
       };
