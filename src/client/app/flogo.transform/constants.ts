@@ -6,3 +6,6 @@ export const VALID_TYPES = [
   TYPE_LITERAL_ASSIGNMENT
   // TYPE_EXPRESSION_ASSIGNMENT // not yet
 ];
+
+export const REGEX_INPUT_VALUE_INTERNAL = /^(([\w-]+)\.([\w-]+))(\.[\w-]+)*$/;
+export const REGEX_INPUT_VALUE_EXTERNAL = /^\[T([\w-]+)\.([\w-]+)\](\.[\w-]+)*$/;

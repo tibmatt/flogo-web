@@ -188,3 +188,7 @@ export function branchLine(height: number, state?: boolean) {
 
   return svgEle;
 }
+
+export function sluggifyTaskName(taskName:string) {
+  return _.kebabCase(taskName);
+}

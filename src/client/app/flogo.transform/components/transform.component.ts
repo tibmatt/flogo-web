@@ -3,12 +3,16 @@ import { Component, ViewChild, OnDestroy } from 'angular2/core';
 import { PostService } from '../../../common/services/post.service';
 
 import { FLOGO_TASK_ATTRIBUTE_TYPE as TYPES } from '../../../common/constants';
+import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { MapEditorComponent } from "./map-editor.component";
-import { ErrorDisplayComponent } from "./error-display.component";
+import { MapEditorComponent } from './map-editor.component';
+import { ErrorDisplayComponent } from './error-display.component';
+
+import { sluggifyTaskName as convertTaskName } from '../../../common/utils';
 
 interface TransformData {
   result: any,
+  precedingTiles: any[],
   precedingTilesOutputs: any[],
   tile: any,
   tileInputInfo: any,
@@ -36,6 +40,7 @@ export class TransformComponent implements OnDestroy {
   private _subscriptions:any[];
   private data:TransformData = {
     result: null,
+    precedingTiles: [],
     precedingTilesOutputs: [],
     tile: null,
     tileInputInfo: null,
@@ -68,7 +73,7 @@ export class TransformComponent implements OnDestroy {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.data.tile,
-        inputMappings: this.data.result
+        inputMappings: this.transformMappingsToExternalFormat(this.data.result)
       }
     }));
     this.close();
@@ -108,11 +113,14 @@ export class TransformComponent implements OnDestroy {
   private onTransformSelected(data:any, envelope:any) {
     this.data = {
       result: null,
+      precedingTiles: data.previousTiles,
       precedingTilesOutputs: this.extractPrecedingTilesOutputs(data.previousTiles),
       tile: data.tile,
       tileInputInfo: this.extractTileInputInfo(data.tile || {}),
       mappings: data.tile.inputMappings ? _.cloneDeep(data.tile.inputMappings) : []
     };
+    this.data.mappings = this.transformMappingsToInternalFormat(this.data.mappings);
+
     this.resetState();
 
     this.open();
@@ -123,7 +131,7 @@ export class TransformComponent implements OnDestroy {
     return _.chain(precedingTiles || [])
       .filter((tile:any) => tile.attributes && tile.attributes.outputs && tile.attributes.outputs.length > 0)
       .map((tile:any) => {
-        let name = _.kebabCase(tile.name);
+        let name = convertTaskName(tile.name);
         let outputs = tile.attributes.outputs.map(this.mapInOutObjectDisplay);
         return [name, outputs];
       })
@@ -145,6 +153,54 @@ export class TransformComponent implements OnDestroy {
       name: inputOutput.name,
       type: TYPES[inputOutput.type].toLowerCase()
     };
+  }
+
+  private transformMappingsToExternalFormat(mappings: any[]) {
+    let tileMap = {};
+    _.forEach(this.data.precedingTiles, tile => {
+      tileMap[convertTaskName(tile.name)] = tile.id;
+    });
+
+    let re = REGEX_INPUT_VALUE_INTERNAL;
+
+    mappings.forEach(mapping => {
+      let matches = re.exec(mapping.value);
+      if(!matches) {
+        return; // ignoring it
+      }
+
+      let taskId = tileMap[matches[2]];
+      let property = matches[3];
+      let rest = matches[4] || '';
+      mapping.value = `[T${taskId}.${property}]${rest}`;
+    });
+
+    return mappings;
+
+  }
+
+  private transformMappingsToInternalFormat(mappings: any[]) {
+    let tileMap = {};
+    _.forEach(this.data.precedingTiles, tile => {
+      tileMap[tile.id] = convertTaskName(tile.name);
+    });
+
+    let re = REGEX_INPUT_VALUE_EXTERNAL;
+
+    mappings.forEach(mapping => {
+      let matches = re.exec(mapping.value);
+      if(!matches) {
+        return; // ignoring it
+      }
+
+      let taskName = tileMap[matches[1]];
+      let property = matches[2];
+      let rest = matches[3] || '';
+      mapping.value = `${taskName}.${property}${rest}`;
+    });
+
+    return mappings;
+
   }
 
   private resetState() {

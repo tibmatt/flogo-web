@@ -1,4 +1,4 @@
-import { TYPE_ATTR_ASSIGNMENT, TYPE_EXPRESSION_ASSIGNMENT, VALID_TYPES } from '../constants';
+import { TYPE_ATTR_ASSIGNMENT, TYPE_EXPRESSION_ASSIGNMENT, VALID_TYPES, REGEX_INPUT_VALUE_INTERNAL } from '../constants';
 import { TileInOutInfo } from '../models/tile-in-out-info.model'
 
 export function mappingValidator(tileInfo:TileInOutInfo, mapping:any) {
@@ -59,9 +59,23 @@ function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:numb
   if (!errors.type) {
     // todo: add case for object so user can do my-tile.result.subobject
     if (mapping.type == TYPE_ATTR_ASSIGNMENT && !tileInfo.precedingOutputs[mapping.value]) {
-      errors.value = {
-        invalidValue: true
-      };
+
+      let matches = REGEX_INPUT_VALUE_INTERNAL.exec(mapping.value);
+      if(matches) {
+        let path = matches[1];
+        let outputInfo = tileInfo.precedingOutputs[path];
+        if(!outputInfo || outputInfo.type !== 'object') {
+          errors.value = {
+            invalidValue: true
+          };
+        }
+      } else {
+        errors.value = {
+          invalidValue: true
+        };
+      }
+
+
     }
   }
   return errors;
