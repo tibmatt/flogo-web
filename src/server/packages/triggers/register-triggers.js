@@ -7,15 +7,16 @@ import {DBService} from '../../common/db.service';
 import {config} from '../../config/app-config';
 import {isDirectory, isExisted} from '../../common/utils';
 
+// TODO trigger and activity register is same, should merge to one
 
 // TODO DB Name should pass from options
 // The database for activities
 // let dbDefaultName = "http://localhost:5984/flogo-web-activities";
-let dbDefaultName = config.activities.db;
+let dbDefaultName = config.triggers.db;
 // TODO the path should pass from options
 // The folder which contains all activities
 // let activitiesDefaultPath = "../../../../packages/activities";
-let activitiesDefaultPath = config.activities.path;
+let activitiesDefaultPath = config.triggers.path;
 
 function generateActivityID(name, version){
   // console.log("generateActivityID, arguments: ", arguments);
@@ -30,7 +31,7 @@ function generateActivityID(name, version){
   return id;
 }
 
-export class RegisterActivities{
+export class RegisterTriggers{
   constructor(dbName, engine, options){
     this._dbService = new DBService(dbName||dbDefaultName);
     this._engine = engine;
@@ -106,7 +107,7 @@ export class RegisterActivities{
         let activityPath = path.join(this.activitiesAbsolutePath, dir);
         console.log("activityPath: ", activityPath);
         // Add activity to engine
-        this._engine.addActivity("file://"+activityPath);
+        this._engine.addTrigger("file://"+activityPath);
 
         let design_package_json=null;
         let value = null;
@@ -156,7 +157,7 @@ export class RegisterActivities{
       // generate all the activity docs
       _.forOwn(dependencies, (value, key)=>{
         let packageJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'package.json'), 'utf8'));
-        let schemaJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'activity.json'), 'utf8'));
+        let schemaJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'trigger.json'), 'utf8'));
         // console.log("packageJSON: ", packageJSON);
         // console.log("schemaJSON: ", schemaJSON);
 

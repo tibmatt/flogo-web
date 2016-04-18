@@ -5,12 +5,9 @@ import _ from 'lodash';
 import fs from 'fs';
 import {DBService} from '../../common/db.service';
 import {config} from '../../config/app-config';
-import {isDirectory, isExisted} from '../../common/utils';
-
 
 // TODO DB Name should pass from options
 // The database for activities
-// let dbDefaultName = "http://localhost:5984/flogo-web-activities";
 let dbDefaultName = config.activities.db;
 // TODO the path should pass from options
 // The folder which contains all activities
@@ -31,19 +28,14 @@ function generateActivityID(name, version){
 }
 
 export class RegisterActivities{
-  constructor(dbName, engine, options){
+  constructor(dbName, options){
     this._dbService = new DBService(dbName||dbDefaultName);
-    this._engine = engine;
     // folder store activities package.json
     this._packageJSONFolderPath = path.resolve(__dirname, '.');
     // activities package.json path
     this._packageJSONTplFilePath = path.join(this._packageJSONFolderPath, 'package.tpl.json');
     this.activitiesPath = options&&options.activitiesPath || activitiesDefaultPath;
-    //this.activitiesAbsolutePath = path.resolve(__dirname, this.activitiesPath);
-    this.activitiesAbsolutePath = path.resolve(config.rootPath, this.activitiesPath);
-
-    console.log("this.activitiesAbsolutePath: ", this.activitiesAbsolutePath);
-
+    this.activitiesAbsolutePath = path.resolve(__dirname, this.activitiesPath);
     // read the package.json template, will use this template to generate package.json
     try{
       let data = fs.readFileSync(this._packageJSONTplFilePath, {"encoding": "utf8"});
@@ -52,11 +44,8 @@ export class RegisterActivities{
     }catch(err){
       console.error("[error]Read package.json template error. ", err);
     }
-
-    this.updateActivitiesDB();
-
     // start watch files/folder changes
-    //this.watch();
+    this.watch();
   }
 
   get dbService(){
@@ -79,11 +68,6 @@ export class RegisterActivities{
     });
   }
 
-  findActivityDesignFolder(activityPath){
-
-  }
-
-
   /**
    * install all activities in the activitiesPath
    */
@@ -94,43 +78,14 @@ export class RegisterActivities{
     let dirs = fs.readdirSync(this.activitiesAbsolutePath);
     if(dirs){
       // console.log("???????dirs", dirs);
-      dirs.forEach((dir, index)=>{
-        //// console.log(value);
-        //let stats = fs.statSync(path.join(this.activitiesAbsolutePath, value));
-        //// if it is a directory, then assume it is a activity package.
-        //// TODO add more validate, make sure it is a activity package.
-        //if(stats.isDirectory()){
-        //  packageJSON.dependencies[value] = path.join(this.activitiesPath, value);
-        //}
-        console.log("=====dir", dir);
-        let activityPath = path.join(this.activitiesAbsolutePath, dir);
-        console.log("activityPath: ", activityPath);
-        // Add activity to engine
-        this._engine.addActivity("file://"+activityPath);
-
-        let design_package_json=null;
-        let value = null;
-
-        // TODO need to improve, provide more good way
-
-        if(isExisted(path.join(activityPath, 'design', 'package.json'))){
-          design_package_json = path.join(activityPath, 'design', 'package.json');
-          value = path.join(activityPath, 'design');
-        }else if(isExisted(path.join(activityPath, 'src', 'design', 'package.json'))){
-          design_package_json = path.join(activityPath, 'src', 'design', 'package.json');
-          value = path.join(activityPath, 'src', 'design');
-        }else{
-          console.log("[Warning] didn't find design time for this activity");
+      dirs.forEach((value, index)=>{
+        // console.log(value);
+        let stats = fs.statSync(path.join(this.activitiesAbsolutePath, value));
+        // if it is a directory, then assume it is a activity package.
+        // TODO add more validate, make sure it is a activity package.
+        if(stats.isDirectory()){
+          packageJSON.dependencies[value] = path.join(this.activitiesPath, value);
         }
-
-        if(design_package_json){
-          let data = fs.readFileSync(design_package_json, {"encoding": "utf8"});
-          let designPackageJSONData = JSON.parse(data);
-          if(designPackageJSONData.name){
-            packageJSON.dependencies[designPackageJSONData.name] = path.join(value);
-          }
-        }
-
       });
       // console.log("++++++packageJSON: ", packageJSON);
       let JSONStr = JSON.stringify(packageJSON, null, 2);
@@ -156,7 +111,7 @@ export class RegisterActivities{
       // generate all the activity docs
       _.forOwn(dependencies, (value, key)=>{
         let packageJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'package.json'), 'utf8'));
-        let schemaJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'activity.json'), 'utf8'));
+        let schemaJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'schema.json'), 'utf8'));
         // console.log("packageJSON: ", packageJSON);
         // console.log("schemaJSON: ", schemaJSON);
 

@@ -40,15 +40,58 @@ export class Engine {
     }
   }
 
-  addActivity(){
-
+  addActivity(activityPath){
+    try{
+      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      execSync(`flogo add activity ${activityPath}`, {cwd: defaultEnginePath});
+      return true;
+    }catch (err){
+      console.error("[Error]Engine->addActivity. Error: ", err);
+      return false;
+    }
   }
 
-  addTrigger(){
-
+  addTrigger(triggerPath){
+    try{
+      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      execSync(`flogo add trigger ${triggerPath}`, {cwd: defaultEnginePath});
+      return true;
+    }catch (err){
+      console.error("[Error]Engine->addTrigger. Error: ", err);
+      return false;
+    }
   }
 
-  addModel(){
+  addModel(modelPath){
+    try{
+      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      execSync(`flogo add model ${modelPath}`, {cwd: defaultEnginePath});
+      return true;
+    }catch (err){
+      console.error("[Error]Engine->addModel. Error: ", err);
+      return false;
+    }
+  }
 
+  build(){
+    try{
+      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      execSync(`flogo build`, {cwd: defaultEnginePath});
+      return true;
+    }catch (err){
+      console.error("[Error]Engine->build. Error: ", err);
+      return false;
+    }
+  }
+
+  start(){
+    try{
+      let defaultEngineBinPath =  path.join(this.enginePath, config.engine.name, 'bin');
+      execSync(`./flogo`, {cwd: defaultEngineBinPath});
+      return true;
+    }catch (err){
+      console.error("[Error]Engine->start. Error: ", err);
+      return false;
+    }
   }
 }

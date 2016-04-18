@@ -4,13 +4,11 @@
   "private": true,
   "author": "TIBCO",
   "scripts": {
-
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "dependencies": {
-    "tibco-pet-query": "../../../../packages/triggers/tibco-http"
   }
 }

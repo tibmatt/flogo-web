@@ -2,6 +2,8 @@ import path from 'path';
 
 let rootPath = path.normalize(__dirname + '/..');
 
+console.log("rootPath: ", rootPath);
+
 let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
@@ -12,11 +14,15 @@ let config = {
   },
   activities:{
     db: "http://localhost:5984/flogo-web-activities",
-    path: "../submodules/flogo-contib/activity"
+    path: "../../submodules/flogo-contrib/activity"
   },
   triggers:{
     db: "http://localhost:5984/flogo-web-triggers",
-    path: "../submodules/flogo-contib/trigger"
+    path: "../../submodules/flogo-contrib/trigger"
+  },
+  models:{
+    db: "http://localhost:5984/flogo-web-models",
+    path: "../../submodules/flogo-contrib/model"
   },
   engine:{
     host: "localhost",

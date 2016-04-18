@@ -6,8 +6,9 @@ import compress from 'koa-compress';
 import {config} from './config/app-config';
 import {activities} from './api/activities';
 import {RegisterActivities} from './packages/activities/register-activities';
+import {RegisterTriggers} from './packages/triggers/register-triggers';
 import {Engine} from './modules/engine';
-
+import path from 'path';
 
 // TODO Need to use cluster to improve the performance
 
@@ -18,7 +19,12 @@ activities(app, router);
 
 let engine = new Engine();
 
-let registerActivities  = new RegisterActivities();
+let registerActivities  = new RegisterActivities(null, engine);
+let registerTriggers  = new RegisterTriggers(null, engine);
+
+engine.addModel("file://", path.join(config.rootPath, config.models.path, 'simple'));
+//engine.build();
+//engine.start();
 
 // logger
 app.use(function *(next){

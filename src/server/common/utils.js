@@ -1,9 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 
-export function isExisted(){
+export function isExisted(testedPath){
   try {
-    fs.accessSync(path, fs.F_OK);
+    fs.accessSync(testedPath, fs.F_OK);
     return true;
   } catch (e) {
     return false;
