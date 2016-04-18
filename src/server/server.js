@@ -6,11 +6,17 @@ import compress from 'koa-compress';
 import {config} from './config/app-config';
 import {activities} from './api/activities';
 import {RegisterActivities} from './packages/activities/register-activities';
+import {Engine} from './modules/engine';
+
+
+// TODO Need to use cluster to improve the performance
 
 let app = koa();
 let port = config.app.port;
 
 activities(app, router);
+
+let engine = new Engine();
 
 let registerActivities  = new RegisterActivities();
 

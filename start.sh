@@ -30,7 +30,8 @@ echoBlack()
 
 echoDefault()
 {
-  printf "${FG_DEFAULT}$@${NC}\n"
+  now=$(date +"%T")
+  printf "[$now]${FG_DEFAULT}$@${NC}\n"
 }
 echoHeader()
 {
@@ -40,16 +41,19 @@ echoHeader()
 }
 echoInfo()
 {
-  printf "${FG_YELLOW}[Info] ${NC}${FG_DEFAULT}$@${NC}\n"
+  now=$(date +"%T")
+  printf "${FG_YELLOW}[Info][$now] ${NC}${FG_DEFAULT}$@${NC}\n"
 }
 echoError()
 {
-  printf "${FG_RED}[Error]$@${NC}\n"
+  now=$(date +"%T")
+  printf "${FG_RED}[Error][$now] $@${NC}\n"
 }
 
 echoSuccess()
 {
-  printf "${FG_GREEN}[Success]$@${NC}\n"
+  now=$(date +"%T")
+  printf "${FG_GREEN}[Success][$now] $@${NC}\n"
 }
 check_command(){
   local cmd="$1"; shift
@@ -63,7 +67,6 @@ check_command(){
     result=1
     echoInfo "$cmd exist"
   fi
-
 #  echo "$result";
 }
 
@@ -77,15 +80,22 @@ open_url(){
   fi
 }
 
+rm_rf(){
+  if [ -d "$1" -o -f "$1" ]
+  then
+    rm -rf $1
+  fi
+}
+
 remove_flogo(){
 
   echoInfo "Start remove flogo command"
   # remove flogo command
-  rm "${GOPATH}/bin/flogo"
+  rm_rf "${GOPATH}/bin/flogo"
   # remove flogo pkg
-  rm -rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo"
   # remove flogo src
-  rm -rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo"
   echoInfo "Finish remove flogo command"
 }
 
@@ -148,12 +158,12 @@ update_flogo
 #############################
 # Step 2: update submodule
 #############################
-echoInfo "update submodule: flogo-internal, flogo-contrib"
+echoHeader "Step2: update submodule: flogo-internal, flogo-contrib"
 
 git submodule init
 git submodule update
 
-echoSuccess "update submodule"
+echoSuccess "update submodule\n\n"
 
 #############################
 # Step 3: start process and state server
@@ -180,16 +190,10 @@ sh start-mosquitto.sh &
 echoInfo "start process and state server"
 sh start-services.sh &
 
-echoInfo "start flogo-web"
+#############################
+# Step 4: start flogo-web
+#############################
+echoHeader "Step4: start flogo-web"
 cd $CURRENT_PATH
 npm install
 gulp && open_url "http://localhost:3010"
-
-#############################
-# Step 1: check environment
-#############################
-
-
-#############################
-# Step 1: check environment
-#############################
