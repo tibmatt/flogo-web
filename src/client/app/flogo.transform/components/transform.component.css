@@ -1,7 +1,7 @@
 .flogo-transform-modal-wrapper {
   background-color: #fff;
 
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
@@ -41,9 +41,17 @@
 .flogo-transform-modal__header {
   border-bottom: 1px solid #d8d8d8;
   height: 61px;
-  margin-bottom: 50px;
+  margin-bottom: 25px;
   padding-bottom: 16px;
   position: relative;
+}
+
+.flogo-transform-modal__header-title {
+  background: url('/assets/svg/flogo.transform.icon.svg') no-repeat left center;
+  color: #666;
+  font-size: 24px;
+  margin: 0;
+  padding: 0 0 0 30px;
 }
 
 .flogo-transform-modal__close {
@@ -58,10 +66,89 @@
 
 .flogo-transform-modal__content {
   display: flex;
+  flex: 1;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .flogo-transform-modal__content .col {
   width: 32%;
+  display: flex;
+  flex-direction: column;
 }
+
+.flogo-transform-modal__col-header {
+  font-size: 15px;
+  margin-bottom: 17px;
+}
+
+.flogo-transform-modal__col-header-title {
+  line-height: 1.2;
+  padding-top: 20px;
+}
+
+.flogo-transform-modal__col-header-subtitle {
+  color: #aaa;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.flogo-transform-modal__col-header-subtitle + .flogo-transform-modal__col-header-title {
+  padding-top: 2px;
+}
+
+.flogo-transform-modal__col-content {
+  flex: 1;
+}
+
+.flogo-transform-modal__schema-display {
+  background-color: #eceff4;
+  border: none;
+  border-radius: 4px;
+  color: #666;
+  padding: 19px 24px;
+  margin: 0;
+  overflow: auto;
+}
+
+.editor-col .flogo-transform-modal__col-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.flogo-transform-modal__editor-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  flex-shrink: 0;
+
+  height: 75%;
+  min-height: 75%;
+
+}
+
+.flogo-transform-modal__error-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 25%;
+  max-height: 25%;
+  padding-top: 20px;
+}
+
+.flogo-transform-delete-btn {
+  background: url('/assets/svg/flogo.transform.trash.icon.svg') no-repeat 13px center;
+  color: #0081cb;
+}
+
+.flogo-transform-delete-btn:hover {
+  -webkit-filter: brightness(140%) saturate(60%);
+  filter: brightness(140%) saturate(60%);
+}
+
+.flogo-transform-delete-btn:active {
+  -webkit-filter: brightness(80%) saturate(80%);
+  filter: brightness(80%) saturate(80%);
+}
+
+

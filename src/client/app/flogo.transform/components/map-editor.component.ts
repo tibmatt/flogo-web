@@ -9,6 +9,7 @@ import { jsonValidator, mappingsValidatorFactory } from '../validators/validator
   selector: 'flogo-transform-map-editor',
   directives: [FORM_DIRECTIVES],
   moduleId: module.id,
+  styleUrls: ['map-editor.component.css'],
   templateUrl: 'map-editor.tpl.html'
 })
 export class MapEditorComponent implements OnChanges, OnInit {
@@ -27,12 +28,9 @@ export class MapEditorComponent implements OnChanges, OnInit {
   };
 
   constructor() {
+    this.mappingChange = new EventEmitter();
     let mappingsValidator = mappingsValidatorFactory(this.tileInfo);
     this.editor = new Control('', Validators.compose([Validators.required, jsonValidator, mappingsValidator]));
-    this.mappingChange = new EventEmitter();
-  }
-
-  ngOnInit() {
     this
       .editor
       .valueChanges
@@ -53,6 +51,11 @@ export class MapEditorComponent implements OnChanges, OnInit {
         console.groupEnd();
       })
       .subscribe(val => this.mappingChange.emit(val));
+
+  }
+
+  ngOnInit() {
+
   }
 
   ngOnChanges(changes:any) {

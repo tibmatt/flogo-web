@@ -101,6 +101,11 @@ label {
   font-weight: normal;
 }
 
+/* Required because of specificity when using angular components css */
+[hidden] {
+  display: none !important;
+}
+
 .flogo-btn-link {
   background-color: transparent;
   border: none;

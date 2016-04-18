@@ -3,10 +3,12 @@
     <div class="flogo-transform-modal__header">
       <div class="flogo-transform-header">
         <div class="flogo-transform-header__title">
-          <h2>Transformation</h2>
+          <h2 class="flogo-transform-modal__header-title">Transformation</h2>
         </div>
         <div class="flogo-transform-header__options">
-          <button class="flogo-btn-link" (click)="deleteTransform()">Delete</button>
+          <button class="flogo-btn-link flogo-transform-delete-btn" (click)="deleteTransform()">
+            Delete
+          </button>
         </div>
         <div class="flogo-transform-header__main-actions">
           <button class="tc-buttons tc-buttons-primary"
@@ -21,22 +23,34 @@
     </div>
     <div class="flogo-transform-modal__content">
       <div class="col">
-        <legend>Previous tiles</legend>
-        <pre>{{ data.precedingTilesOutputs | json }}</pre>
+        <div class="flogo-transform-modal__col-header">
+          <div class="flogo-transform-modal__col-header-subtitle">Previous tiles</div>
+          <div class="flogo-transform-modal__col-header-title">Output data</div>
+        </div>
+        <pre class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ data.precedingTilesOutputs | json }}</pre>
       </div>
-      <div class="col" [class.has-error]="!isValid">
-        <legend>Mappings</legend>
-        <flogo-transform-map-editor [mappings]="data.mappings"
-                                    [tileInputInfo]="data.tileInputInfo"
-                                    [precedingTilesOutputs]="data.precedingTilesOutputs"
-                                    (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
-        <flogo-transform-error-display *ngIf="errors" [errors]="errors"></flogo-transform-error-display>
+      <div class="col editor-col" [class.has-error]="!isValid">
+        <div class="flogo-transform-modal__col-header">
+          <div class="flogo-transform-modal__col-header-title">Transformation</div>
+        </div>
+        <div class="flogo-transform-modal__col-content">
+          <div class="flogo-transform-modal__editor-container">
+            <flogo-transform-map-editor [mappings]="data.mappings"
+                                        [tileInputInfo]="data.tileInputInfo"
+                                        [precedingTilesOutputs]="data.precedingTilesOutputs"
+                                        (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
+          </div>
+          <div class="flogo-transform-modal__error-container" [hidden]="!errors">
+            <flogo-transform-error-display [errors]="errors"></flogo-transform-error-display>
+          </div>
+        </div>
       </div>
       <div class="col">
-        <legend>Input data
-          <small>{{ data.tile?.name }}</small>
-        </legend>
-        <pre>{{ data.tileInputInfo | json }}</pre>
+        <div class="flogo-transform-modal__col-header">
+          <div class="flogo-transform-modal__col-header-subtitle">{{ data.tile?.name }}</div>
+          <div class="flogo-transform-modal__col-header-title">Input data</div>
+        </div>
+        <pre class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ data.tileInputInfo | json }}</pre>
       </div>
     </div>
   </div>
