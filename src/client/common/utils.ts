@@ -89,12 +89,12 @@ export function activitySchemaToTask(schema: any) : any {
 
 
 // Create a svg element for line of branch
-export function branchLine(height: number, state: boolean) {
+export function branchLine(height: number, state?: boolean) {
   let path1 = ['M33',16,'L3.55252287e-15',16, 'L0.00429665299',104.882392, 'C0.00509736356',121.446231, 13.4334279, 134.881117, 29.9973119,134.881118, 'L95', 134.881119, 'L95', 103.126919, 'L43.0031989', 103.126919, 'C37.4785847', 103.126919, 33,98.6492943, 33,93.1237817, 'L33', 16];
   let path2 = ['M95', 135.118308, 'L103.999517', 118.557306, 'L95', 103, 'L95', 135.118308];
   let path3 = ['M3.55271368e-15', 0, 'L33', 0, 'L33', 16, 'L3.55271368e-15', 16, 'L3.55271368e-15', 0];
 
-  let formatPath = function(path) {
+  let formatPath = function(path: any) {
     let pathString = '';
     for(let i = 0; i < path.length; i++) {
       if(i%2) {
@@ -127,7 +127,7 @@ export function branchLine(height: number, state: boolean) {
   dPath = formatPath(path1) + ' ' + formatPath(path2) + ' ' + formatPath(path3);
   if(state) {
     svgEle = `
-    <svg width="132px" height="${height}px" viewBox="0 0 132 ${height}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg width="110px" height="${height+5}px" viewBox="0 0 110 ${height+5}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
             <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1">
                 <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
@@ -150,7 +150,7 @@ export function branchLine(height: number, state: boolean) {
         </defs>
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" filter="url(#filter-1)">
             <g fill="#8A90AE">
-                <g transform="translate(15, 9)">
+                <g transform="translate(5, 5)">
                     <g filter="url(#filter-2)">
                         <path d="${dPath}"></path>
                     </g>

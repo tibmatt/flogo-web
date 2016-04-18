@@ -10,8 +10,9 @@ import {
 import { Selection } from 'd3';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
 import { FLOGO_TASK_STATUS } from '../../../common/constants';
-import {FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG} from '../constants';
-import {FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE} from '../constants';
+import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
+import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
+import { branchLine } from '../../../common/utils';
 
 export interface IFlogoFlowDiagram {
   root : IFlogoFlowDiagramRootNode;
@@ -20,6 +21,28 @@ export interface IFlogoFlowDiagram {
 }
 
 const DEFAULT_MAX_ROW_LEN = 7;
+
+const CLS = {
+  diagram : 'flogo-flows-detail-diagram',
+  diagramRow : 'flogo-flows-detail-diagram-row',
+  diagramNode : 'flogo-flows-detail-diagram-node',
+  diagramNodeBranchHover : 'flogo-flows-diagram-node-branch-hover',
+  diagramNodeStatusSelected : 'flogo-flows-detail-diagram-node-selected',
+  diagramNodeStatusRun : 'flogo-flows-detail-diagram-node-run',
+  diagramNodeDetail : 'flogo-flows-detail-diagram-node-detail',
+  diagramNodeDetailBranch : 'flogo-flows-detail-diagram-node-detail-branch',
+  diagramNodeDetailBranchSelected : 'flogo-flows-detail-diagram-node-detail-branch-selected',
+  diagramNodeDetailIcon : 'flogo-flows-detail-diagram-node-detail-icon',
+  diagramNodeDetailTitle : 'flogo-flows-detail-diagram-node-detail-title',
+  diagramNodeDetailDesc : 'flogo-flows-detail-diagram-node-detail-description',
+  diagramNodeBadge : 'flogo-flows-detail-diagram-node-badge',
+  diagramNodeMenu : 'flogo-flows-detail-diagram-node-menu',
+  diagramNodeMenuOpen : 'flogo-flows-detail-diagram-node-menu-open',
+  diagramNodeMenuSelected : 'flogo-flows-detail-diagram-node-menu-selected',
+  diagramNodeMenuBox : 'flogo-flows-detail-diagram-node-menu-box',
+  diagramNodeMenuList : 'flogo-flows-detail-diagram-node-menu-list',
+  diagramNodeMenuGear : 'flogo-flows-detail-diagram-node-menu-gear'
+};
 
 export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   public root : IFlogoFlowDiagramRootNode;
@@ -30,9 +53,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private ng2StyleAttr = '';
   private nodesOfAddType : IFlogoFlowDiagramNodeDictionary;
 
-  constructor(
-    diagram : IFlogoFlowDiagram, private tasks : IFlogoFlowDiagramTaskDictionary, private elm ? : HTMLElement
-  ) {
+  constructor( diagram : IFlogoFlowDiagram,
+    private tasks : IFlogoFlowDiagramTaskDictionary,
+    private elm ? : HTMLElement ) {
     this.updateDiagram( diagram );
   }
 
@@ -64,7 +87,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   // pad display matrix with nodes of add type and placeholder type
-  static padMatrix( matrix : string [][], rowLen = DEFAULT_MAX_ROW_LEN, diagram: IFlogoFlowDiagram ) : string[][] {
+  static padMatrix( matrix : string [][], rowLen = DEFAULT_MAX_ROW_LEN, diagram : IFlogoFlowDiagram ) : string[][] {
     let outputMatrix : string[][] = [];
 
     _.each(
@@ -115,9 +138,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return empytDiagram;
   }
 
-  static filterOverflowAddNode(
-    matrix : string[][], nodes : IFlogoFlowDiagramNodeDictionary, rowLen = DEFAULT_MAX_ROW_LEN
-  ) : string[][] {
+  static filterOverflowAddNode( matrix : string[][],
+    nodes : IFlogoFlowDiagramNodeDictionary,
+    rowLen = DEFAULT_MAX_ROW_LEN ) : string[][] {
     let outputMatrix = _.cloneDeep( matrix );
 
     _.each(
@@ -150,13 +173,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return outputMatrix;
   }
 
-  public update(
-    opt : {
-      diagram ? : IFlogoFlowDiagram;
-      tasks ? : IFlogoFlowDiagramTaskDictionary;
-      element ? : HTMLElement;
-    }
-  ) : Promise < FlogoFlowDiagram > {
+  public update( opt : {
+    diagram ? : IFlogoFlowDiagram;
+    tasks ? : IFlogoFlowDiagramTaskDictionary;
+    element ? : HTMLElement;
+  } ) : Promise < FlogoFlowDiagram > {
     let promises : Promise < FlogoFlowDiagram > [ ] = [];
 
     if ( opt.diagram ) {
@@ -175,13 +196,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       .then( () => this );
   }
 
-  public updateAndRender(
-    opt : {
-      diagram ? : IFlogoFlowDiagram;
-      tasks ? : IFlogoFlowDiagramTaskDictionary;
-      element ? : HTMLElement;
-    }
-  ) : Promise < FlogoFlowDiagram > {
+  public updateAndRender( opt : {
+    diagram ? : IFlogoFlowDiagram;
+    tasks ? : IFlogoFlowDiagramTaskDictionary;
+    element ? : HTMLElement;
+  } ) : Promise < FlogoFlowDiagram > {
     return this.update( opt )
       .then(
         () => {
@@ -228,8 +247,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   public updateElement( elm : HTMLElement ) : Promise < FlogoFlowDiagram > {
     d3.select( this.elm )
-      .select( '.flogo-flows-detail-diagram' )
-      .selectAll( '.flogo-flows-detail-diagram-row' )
+      .select( `.${CLS.diagram}` )
+      .selectAll( `.${CLS.diagramRow}` )
       .remove(); // clean the previous diagram
     this.elm = elm;
     return Promise.resolve( this );
@@ -250,7 +269,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       .enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
-      .classed( 'flogo-flows-detail-diagram-row', true )
+      .classed( CLS.diagramRow, true )
+      .style( 'z-index', ( d : any, row : number ) => rows.size() - row ) // the earlier rendered row is higher
       .on(
         'mouseenter', function () {
           d3.select( this )
@@ -268,9 +288,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private _handleUpdateRows( rows : any ) {
     rows.classed( 'updated', true );
 
-    let tasks = this._bindDataToNodes( rows.selectAll( '.flogo-flows-detail-diagram-node' ) );
+    let tasks = this._bindDataToNodes( rows );
 
-    this._handleTaskNodes( tasks );
+    this._handleTaskNodes( tasks, rows );
   }
 
   private _handleExitRows( rows : any ) {
@@ -286,7 +306,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       .remove();
   }
 
-  private _bindDataToNodes( nodes : any ) {
+  private _bindDataToNodes( rows : any ) {
+    let nodes = rows.selectAll( `.${CLS.diagramNode}` );
+
     return nodes.data( ( rowNodesIds : string[ ] ) => {
       return _.map(
         rowNodesIds, ( nodeID : string, idx : number ) => {
@@ -324,7 +346,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     } );
   }
 
-  private _handleEnterNodes( nodes : any ) {
+  private _handleEnterNodes( nodes : any, rows : any ) {
     let diagram = this;
     let timerHandle : any = {};
 
@@ -342,7 +364,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         return nodeInfo.taskID || -1
       } )
       .attr( this.ng2StyleAttr, '' )
-      .classed( 'flogo-flows-detail-diagram-node', true )
+      .classed( CLS.diagramNode, true )
       .on(
         'click', function ( d : IFlogoFlowDiagramNode, col : number, row : number ) {
           DEBUG && console.group( 'on click' );
@@ -374,16 +396,16 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             let evtType = '';
 
             if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
-                 d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+              d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
               evtType = 'flogoAddTask';
 
               // TODO
               //   refine the logic to handle more kinds of nodes
             } else if ( [
-                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
-                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
-                          FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH,
-                        ].indexOf( d.type ) !== -1 ) {
+                FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
+                FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
+                FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH,
+              ].indexOf( d.type ) !== -1 ) {
               evtType = 'flogoSelectTask';
             }
 
@@ -400,10 +422,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
             }
 
-            d3.selectAll( '.flogo-flows-detail-diagram-node-selected' )
-              .classed( 'flogo-flows-detail-diagram-node-selected', false );
+            d3.selectAll( `.${CLS.diagramNodeStatusSelected}` )
+              .classed( CLS.diagramNodeStatusSelected, false );
             d3.select( this )
-              .classed( 'flogo-flows-detail-diagram-node-selected', true );
+              .classed( CLS.diagramNodeStatusSelected, true );
           }
 
           DEBUG && console.groupEnd();
@@ -413,14 +435,28 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         'mouseenter', function ( d : IFlogoFlowDiagramNode ) {
           let element : HTMLElement = this;
 
-          if ( dontCareNodesTypesForNodeMenu.indexOf(d.type) !== -1 ) {
+          if ( dontCareNodesTypesForNodeMenu.indexOf( d.type ) !== -1 ) {
             return;
+          }
+
+          if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+            let doneFlag = false;
+            d3.select( diagram.elm )
+              .selectAll( `.${CLS.diagramRow}` )
+              .each( function ( rowNodesIDs : string[], row : number ) {
+                if ( !doneFlag && rowNodesIDs.indexOf( d.id ) !== -1 ) {
+                  d3.select( this )
+                    .classed( CLS.diagramNodeBranchHover, true )
+                    .style( 'z-index', () => rows.size() + 1 );
+                  doneFlag = true;
+                }
+              } );
           }
 
           timerHandle[ d.id ] = setTimeout(
             () => {
               d3.select( element )
-                .classed( 'flogo-flows-detail-diagram-node-menu-open', true );
+                .classed( CLS.diagramNodeMenuOpen, true );
             }, 250
           );
         }
@@ -429,28 +465,42 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         'mouseleave', function ( d : IFlogoFlowDiagramNode ) {
           clearTimeout( timerHandle[ d.id ] );
           d3.select( this )
-            .classed(
-              {
-                'flogo-flows-detail-diagram-node-menu-open' : false,
-                'flogo-flows-detail-diagram-node-menu-selected' : false
-              }
-            );
+            .classed( CLS.diagramNodeMenuOpen, false )
+            .classed( CLS.diagramNodeMenuSelected, false );
+
+          if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+            d3.selectAll( `.${CLS.diagramNodeBranchHover}` )
+              .classed( CLS.diagramNodeBranchHover, false );
+          }
+
+          if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+            let doneFlag = false;
+            d3.select( diagram.elm )
+              .selectAll( `.${CLS.diagramRow}` )
+              .each( function ( rowNodesIDs : string[], row : number ) {
+                if ( !doneFlag && rowNodesIDs.indexOf( d.id ) !== -1 ) {
+                  d3.select( this )
+                    .style( 'z-index', () => rows.size() - row );
+                  doneFlag = true;
+                }
+              } );
+          }
         }
       )
       .on(
         'flogoClickNodeMenu', function ( nodeInfo : any ) {
           d3.select( this )
-            .classed( 'flogo-flows-detail-diagram-node-menu-selected', true );
+            .classed( CLS.diagramNodeMenuSelected, true );
         }
       );
   }
 
-  private _handleUpdateNodes( nodes : any ) {
+  private _handleUpdateNodes( nodes : any, rows : any ) {
     let diagram = this;
 
-    nodes.classed( {
-        'updated' : true,
-        'flogo-flows-detail-diagram-node-menu-open' : false
+    nodes.classed( CLS.diagramNodeMenuOpen, false )
+      .classed( {
+        'updated' : true
       } )
       .attr( 'data-flogo-node-type',
         ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase() );
@@ -462,15 +512,15 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         if ( task ) {
           if ( task.status === FLOGO_TASK_STATUS.RUNNING || task.status === FLOGO_TASK_STATUS.DONE ) {
-            thisNode.classed( 'flogo-flows-detail-diagram-node-run', true );
+            thisNode.classed( CLS.diagramNodeStatusRun, true );
           } else {
-            thisNode.classed( 'flogo-flows-detail-diagram-node-run', false );
+            thisNode.classed( CLS.diagramNodeStatusRun, false );
           }
         } else {
-          thisNode.classed( 'flogo-flows-detail-diagram-node-run', false );
+          thisNode.classed( CLS.diagramNodeStatusRun, false );
         }
 
-        thisNode.classed( 'flogo-flows-detail-diagram-node-menu-selected', false );
+        thisNode.classed( CLS.diagramNodeMenuSelected, false );
 
         // update the current node ID
         thisNode.attr( 'data-task-id', function ( nodeInfo : IFlogoFlowDiagramNode ) {
@@ -478,7 +528,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           // unset whatever status should not be kept once the task is changed.
           if ( previousID !== nodeInfo.taskID ) {
-            thisNode.classed( 'flogo-flows-detail-diagram-node-selected', false );
+            thisNode.classed( CLS.diagramNodeStatusSelected, false );
           }
 
           return nodeInfo.taskID || -1
@@ -486,17 +536,17 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       }
     );
 
-    let nodeDetails = this._bindDataToNodeDetails( nodes.selectAll( '.flogo-flows-detail-diagram-node-detail' ) );
-    this._handleNodeDetails( nodeDetails );
+    let nodeDetails = this._bindDataToNodeDetails( rows );
+    this._handleNodeDetails( nodeDetails, rows );
 
-    let nodeBadgeArea = this._bindDataToNodeBadges( nodes.selectAll( '.flogo-flows-detail-diagram-node-badge' ) );
+    let nodeBadgeArea = this._bindDataToNodeBadges( nodes.selectAll( `.${CLS.diagramNodeBadge}` ) );
     this._handleNodeBadges( nodeBadgeArea );
 
-    let nodeMenus = this._bindDataToNodeMenus( nodes.selectAll( '.flogo-flows-detail-diagram-node-menu' ) );
+    let nodeMenus = this._bindDataToNodeMenus( nodes.selectAll( `.${CLS.diagramNodeMenu}` ) );
     this._handleNodeMenus( nodeMenus );
   }
 
-  private _handleExitNodes( nodes : any ) {
+  private _handleExitNodes( nodes : any, rows : any ) {
     nodes.exit()
       .classed(
         {
@@ -511,15 +561,17 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       .remove();
   }
 
-  private _handleTaskNodes( tasks : any ) {
+  private _handleTaskNodes( tasks : any, rows : any ) {
 
-    this._handleEnterNodes( tasks );
-    this._handleUpdateNodes( tasks );
-    this._handleExitNodes( tasks );
+    this._handleEnterNodes( tasks, rows );
+    this._handleUpdateNodes( tasks, rows );
+    this._handleExitNodes( tasks, rows );
 
   }
 
-  private _bindDataToNodeDetails( nodeDetails : any ) {
+  private _bindDataToNodeDetails( rows : any ) {
+    let nodeDetails = rows.selectAll( `.${CLS.diagramNode}` )
+      .selectAll( `.${CLS.diagramNodeDetail}` );
     return nodeDetails.data(
       ( nodeInfo : any )=> {
         if ( nodeInfo ) {
@@ -527,10 +579,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           if ( task && _isNodeHasDetails( nodeInfo ) ) {
             let taskDescription = (
-                                    task && (
-                                      task.description || `Description of ${task.name}`
-                                    )
-                                  ) || `[ ${nodeInfo.parents} to ${nodeInfo.children} ]`;
+                task && (
+                  task.description || `Description of ${task.name}`
+                )
+              ) || `[ ${nodeInfo.parents} to ${nodeInfo.children} ]`;
 
             return [
               {
@@ -551,37 +603,66 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     );
   }
 
-  private _handleEnterNodeDetails( nodeDetails : any ) {
+  private _handleEnterNodeDetails( nodeDetails : any, rows : any ) {
     nodeDetails.enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
-      .classed( 'flogo-flows-detail-diagram-node-detail', true );
+      .classed( CLS.diagramNodeDetail, true );
   }
 
-  private _handleUpdateNodeDetails( nodeDetails : any ) {
+  private _handleUpdateNodeDetails( nodeDetails : any, rows : any ) {
     let diagram = this;
+    let rowHeight = _getRowHeight( diagram.elm, CLS.diagramRow );
+
+    nodeDetails = rows.selectAll( `.${CLS.diagramNodeDetail}` );
 
     nodeDetails.html( ( taskInfo : {
       name : string;
       desc : string;
       nodeInfo : any;
-    } ) => {
+    }, col : number, row : number ) => {
 
       if ( _.isEmpty( taskInfo ) ) {
         return '';
       }
 
       if ( taskInfo.nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+        let thisBranchRow = row;
+        let level = 0;
+
+        let thisBranchParent = <any>{
+          id : taskInfo.nodeInfo.parents[ 0 ]
+        };
 
         // TODO
-        //  remove this mock after branching is implemented.
-        return `<div ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-detail-title">${this.tasks[ this.nodes[ taskInfo.nodeInfo.parents[ 0 ] ].taskID ].name}</div>`;
+        //  change to other Array API like some to optimise? but need to manually call d3 API to get the data..
+        rows.each( function ( rowNodesIDs : string[], row:number ) {
+          // if haven't got the level
+          // try to find the parent node's row and get the diff of the rows as the level
+          if (!level) {
+            let parentCol = rowNodesIDs.indexOf(thisBranchParent.id);
+
+            if (parentCol !== -1) {
+              thisBranchParent.loc = {
+                col: parentCol,
+                row: row
+              };
+
+              level = thisBranchRow - row;
+            }
+          }
+        } );
+
+        let thisBranchLineHeight = rowHeight * (level - 0.25);
+        return `
+          <img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailBranch}" src="data:image/svg+xml;base64,${btoa( branchLine( thisBranchLineHeight ).trim().replace( /"/g, "'" ).replace( /\s+/g, ' ' ) )}">
+          <img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailBranchSelected}" src="data:image/svg+xml;base64,${btoa( branchLine( thisBranchLineHeight, true ).trim().replace( /"/g, "'" ).replace( /\s+/g, ' ' ) )}">`;
       }
 
       if ( taskInfo.name && taskInfo.desc ) {
-        return `<img ${diagram.ng2StyleAttr} src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
-                <div ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-detail-title">${taskInfo.name}</div>
-                <div ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-detail-description">${taskInfo.desc}</div>`;
+        return `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}" src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
+                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}">${taskInfo.name}</div>
+                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}">${taskInfo.desc}</div>`;
       } else {
         return ``;
       }
@@ -589,16 +670,16 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     } );
   }
 
-  private _handleExitNodeDetails( nodeDetails : any ) {
+  private _handleExitNodeDetails( nodeDetails : any, rows : any ) {
     nodeDetails.exit()
       .remove();
   }
 
-  private _handleNodeDetails( nodeDetails : any ) {
+  private _handleNodeDetails( nodeDetails : any, rows : any ) {
 
-    this._handleEnterNodeDetails( nodeDetails );
-    this._handleUpdateNodeDetails( nodeDetails );
-    this._handleExitNodeDetails( nodeDetails );
+    this._handleEnterNodeDetails( nodeDetails, rows );
+    this._handleUpdateNodeDetails( nodeDetails, rows );
+    this._handleExitNodeDetails( nodeDetails, rows );
 
   }
 
@@ -618,7 +699,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     nodeMenus.enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
-      .classed( 'flogo-flows-detail-diagram-node-menu', true )
+      .classed( CLS.diagramNodeMenu, true )
       .on(
         'click', function ( nodeInfo : any, col : number, row : number ) {
           let event = <Event>d3.event;
@@ -658,33 +739,33 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     nodeMenus.html(
       ( nodeInfo : any ) => {
-        let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i class="fa fa-plus"></i>Add branch</li>`;
+        let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i class="fa fa-plus"></i>Add branch</li>`;
 
-        let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i class="fa fa-bolt"></i>Transform</li>`;
+        let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i class="fa fa-bolt"></i>Transform</li>`;
 
-        let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-list" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i class="fa fa-trash-o"></i>Delete</li>`;
+        let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i class="fa fa-trash-o"></i>Delete</li>`;
 
-        let tplGear = `<span ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-gear"></span>`;
+        let tplGear = `<span ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuGear}"></span>`;
 
         // TODO
         //  enable the delete for trigger in the future
         if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
 
           // template without delete
-          return `<ul ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-box">
+          return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemAddBranch}
                     ${tplItemTransform}
                   </ul>${tplGear}`;
         }
 
         if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
-          return `<ul ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-box">
+          return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemDelete}
                   </ul>${tplGear}`;
         }
 
         // normal template
-        return `<ul ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-menu-box">
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemAddBranch}
                     ${tplItemTransform}
                     ${tplItemDelete}
@@ -732,19 +813,17 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     nodeBadges.enter()
       .append( 'div' )
       .attr( this.ng2StyleAttr, '' )
-      .classed( 'flogo-flows-detail-diagram-node-badge', true );
+      .classed( CLS.diagramNodeBadge, true );
   }
 
   private _handleUpdateNodeBadges( nodeBadges : any ) {
     let diagram = this;
 
     nodeBadges.html(
-      (
-        nodeStatus : {
-          hasError : boolean;
-          hasMapping : boolean;
-        }
-      ) => {
+      ( nodeStatus : {
+        hasError : boolean;
+        hasMapping : boolean;
+      } ) => {
         let tpl = '';
 
         if ( nodeStatus ) {
@@ -779,7 +858,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     DEBUG && console.group( 'rendering...' );
 
     this.rootElm = d3.select( this.elm )
-      .select( '.flogo-flows-detail-diagram' );
+      .select( `.${CLS.diagram}` );
 
     !this.ng2StyleAttr && this._updateNG2StyleAttr();
 
@@ -787,7 +866,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     this.nodesOfAddType = <IFlogoFlowDiagramNodeDictionary>{};
 
     // enter selection
-    let rows = this._bindDataToRows( this.rootElm.selectAll( '.flogo-flows-detail-diagram-row' ) );
+    let rows = this._bindDataToRows( this.rootElm.selectAll( `.${CLS.diagramRow}` ) );
 
     this._handleEnterRows( rows );
     this._handleUpdateRows( rows );
@@ -827,9 +906,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return Promise.resolve( this );
   }
 
-  public findNodesByType(
-    type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, sourceNodes ? : IFlogoFlowDiagramNode[ ]
-  ) : IFlogoFlowDiagramNode[ ] {
+  public findNodesByType( type : FLOGO_FLOW_DIAGRAM_NODE_TYPE,
+    sourceNodes ? : IFlogoFlowDiagramNode[ ] ) : IFlogoFlowDiagramNode[ ] {
     let nodes : IFlogoFlowDiagramNode[ ] = [];
 
     if ( sourceNodes ) {
@@ -867,15 +945,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return nodes;
   }
 
-  public findChildrenNodesByType(
-    type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode
-  ) : IFlogoFlowDiagramNode[ ] {
+  public findChildrenNodesByType( type : FLOGO_FLOW_DIAGRAM_NODE_TYPE,
+    node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.children ) );
   }
 
-  public findParentsNodesByType(
-    type : FLOGO_FLOW_DIAGRAM_NODE_TYPE, node : IFlogoFlowDiagramNode
-  ) : IFlogoFlowDiagramNode[ ] {
+  public findParentsNodesByType( type : FLOGO_FLOW_DIAGRAM_NODE_TYPE,
+    node : IFlogoFlowDiagramNode ) : IFlogoFlowDiagramNode[ ] {
     return this.findNodesByType( type, this.findNodesByIDs( node.parents ) );
   }
 
@@ -883,7 +959,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     let deleteNode = <FlogoFlowDiagramNode>this.nodes[ node.id ];
 
     if ( deleteNode ) {
-      _deleteNode(deleteNode, this.nodes);
+      _deleteNode( deleteNode, this.nodes );
     } else {
       return Promise.reject( `Node ${node.id} doesn't exists.` );
     }
@@ -920,7 +996,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   private _updateNG2StyleAttr() {
-    let el = this.elm.getElementsByClassName( 'flogo-flows-detail-diagram' );
+    let el = this.elm.getElementsByClassName( CLS.diagram );
     let ng2StyleAttrReg = /^_ngcontent\-.*$/g;
 
     if ( el && el.length ) {
@@ -1027,10 +1103,10 @@ function _triggerCustomEvent( eventType : string, eventDetail : any, elm : HTMLE
 function _isNodeHasDetails( nodeInfo : any ) : boolean {
   if ( nodeInfo.type ) {
     return [
-             FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
-             FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
-             FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
-           ].indexOf( nodeInfo.type ) === -1;
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
+      ].indexOf( nodeInfo.type ) === -1;
   } else {
     return false;
   }
@@ -1039,10 +1115,10 @@ function _isNodeHasDetails( nodeInfo : any ) : boolean {
 function _isNodeHasMenu( nodeInfo : any ) : boolean {
   if ( nodeInfo.type ) {
     return [
-             FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
-             FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
-             FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
-           ].indexOf( nodeInfo.type ) === -1;
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
+      ].indexOf( nodeInfo.type ) === -1;
   } else {
     return false;
   }
@@ -1051,13 +1127,20 @@ function _isNodeHasMenu( nodeInfo : any ) : boolean {
 function _isTaskHasMapping( taskInfo : any ) : boolean {
   return taskInfo && (
       (
-         _.isArray( taskInfo.inputMappings ) && taskInfo.inputMappings.length > 0
+        _.isArray( taskInfo.inputMappings ) && taskInfo.inputMappings.length > 0
       )
       // TODO: re-enable outputMappings verification after its editing is enabled
       // || (
       //  _.isArray( taskInfo.outputMappings ) && taskInfo.outputMappings.length > 0
       // )
     )
+}
+
+function _getRowHeight( elm : HTMLElement, rowClassName : string ) : number {
+  let rowElm = elm.querySelector( `.${rowClassName}` );
+  let clientRect = rowElm.getBoundingClientRect();
+
+  return clientRect.height;
 }
 
 /**
