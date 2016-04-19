@@ -1018,17 +1018,12 @@ export class FlogoCanvasComponent {
   }
 
   private _selectTransformFromDiagram(data:any, envelope:any) {
+    let selectedNode = data.node;
+    let previousNodes = this.findPathToNode(this.diagram.root.is, selectedNode.id);
+    previousNodes.pop(); // ignore last item as it is the very same selected node
+    let previousTiles = this.mapNodesToTiles(previousNodes);
 
-    let selectedTaskId = data.node.taskID;
-
-    // TODO: somehow get the previous tiles
-    let previousTiles = [];
-    for(let taskId in this.tasks){
-      if(taskId === selectedTaskId) {
-        break;
-      }
-      previousTiles.push(this.tasks[taskId]);
-    }
+    let selectedTaskId = selectedNode.taskID;
 
     this._postService.publish(
       _.assign(
@@ -1181,7 +1176,7 @@ export class FlogoCanvasComponent {
   }
 
   private uniqueTaskName(taskName:string) {
-    // TODO for performance pre-sluggify task names?
+    // TODO for performance pre-normalize and store task names?
     let newNormalizedName = normalizeTaskName(taskName);
 
     let greatestIndex = _.reduce(this.tasks, (greatest:number, task:any) => {
@@ -1202,5 +1197,49 @@ export class FlogoCanvasComponent {
 
     return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
   }
+
+  /**
+   * Finds a path from starting node to target node
+   * Assumes we have a tree structure, meaning we have no cycles
+   * @param {string} startNodeId
+   * @param {string} targetNodeId
+   * @returns string[] list of node ids
+     */
+  private findPathToNode(startNodeId:any, targetNodeId:any) {
+    let nodes = this.diagram.nodes; // should be parameter?
+    let queue = [[startNodeId]];
+
+    while (queue.length > 0) {
+      let path = queue.shift();
+      let nodeId = path[path.length - 1];
+
+      if (nodeId == targetNodeId) {
+        return path;
+      }
+
+      let children = nodes[nodeId].children;
+      if (children) {
+        let paths = children.map(child => path.concat(child));
+        queue = queue.concat(paths);
+      }
+
+    }
+
+    return [];
+  }
+
+  private mapNodesToTiles(nodeIds:any[]) {
+    return nodeIds
+      .map(nodeId => {
+        let node = this.diagram.nodes[nodeId];
+        if (node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE) {
+          return this.tasks[node.taskID];
+        } else {
+          return null;
+        }
+      })
+      .filter(task => !!task);
+  }
+
 
 }
