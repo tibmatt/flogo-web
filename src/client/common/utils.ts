@@ -192,3 +192,108 @@ export function branchLine(height: number, state?: boolean) {
 export function normalizeTaskName(taskName:string) {
   return _.kebabCase(taskName);
 }
+
+export function updateFlogoGlobalConfig( config : any ) {
+  (<any>window).FLOGO_GLOBAL = config;
+
+  if ( localStorage ) {
+    localStorage.setItem( 'FLOGO_GLOBAL', JSON.stringify( config ) );
+  }
+}
+
+export function getFlogoGlobalConfig() : any {
+
+  if ( !(<any>window).FLOGO_GLOBAL ) {
+    let config : any;
+
+    if ( localStorage ) {
+      config = localStorage.getItem( 'FLOGO_GLOBAL' );
+
+      if ( config ) {
+
+        try {
+          config = JSON.parse( config );
+        } catch ( e ) {
+          console.warn( e );
+        }
+
+        updateFlogoGlobalConfig( config );
+
+        return config;
+      }
+    }
+
+    // set default value
+    updateFlogoGlobalConfig( {
+      db : {
+        protocol : 'http',
+        host : 'localhost',
+        port : '5984',
+        name : 'flogo-web'
+      },
+      activities : {
+        db : {
+          protocol : 'http',
+          host : 'localhost',
+          port : '5984',
+          name : 'flogo-web-activities'
+        }
+      },
+      triggers : {
+        db : {
+          protocol : 'http',
+          host : 'localhost',
+          port : '5984',
+          name : 'flogo-web-triggers'
+        },
+      },
+      models : {
+        db : {
+          protocol : 'http',
+          host : 'localhost',
+          port : '5984',
+          name : 'flogo-web-models'
+        },
+      },
+      engine : {
+        protocal: 'http',
+        host : "localhost",
+        port : "8080",
+      },
+      stateServer : {
+        protocal: 'http',
+        host : "localhost",
+        port : "9190"
+      },
+      processServer : {
+        protocal: 'http',
+        host : "localhost",
+        port : "9090"
+      }
+    } );
+  }
+
+  return (<any>window).FLOGO_GLOBAL;
+}
+
+function getURL( config : {
+  protocol? : string;
+  host : string;
+  port? : string;
+} ) : string {
+  return config.port ?
+         `${config.protocol || 'http'}://${config.host}:${config.port}` :
+         `${config.protocol || 'http'}://${config.host}}`
+}
+
+export function getEngineURL() : string {
+  return getURL( (<any>window).FLOGO_GLOBAL.engine );
+}
+
+export function getStateServerURL() : string {
+  return getURL( (<any>window).FLOGO_GLOBAL.stateServer );
+}
+
+export function getProcessServerURL() : string {
+  return getURL( (<any>window).FLOGO_GLOBAL.processServer );
+}

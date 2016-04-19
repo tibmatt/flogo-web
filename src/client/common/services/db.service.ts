@@ -36,29 +36,40 @@ export class FlogoDBService{
    * initial a pouchdb
    */
   private _initDB(): FlogoDBService{
-    this._activitiesDB = new PouchDB('flogo-web-activities-local');
+    let appDBConfig = (<any>window).FLOGO_GLOBAL.db;
+    let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
+    this._activitiesDB = new PouchDB(`${activitiesDBConfig.name}-local`);
     this._activitiesDB.info().then(function(db){
       console.log(db);
     }).catch(function(err:Object){
       console.error(err);
     });
 
-    this._syncActivities = PouchDB.sync('flogo-web-activities-local', 'http://localhost:5984/flogo-web-activities', {
-      live: false,
-      retry: true
-    });
+    this._syncActivities = PouchDB.sync( `${activitiesDBConfig.name}-local`,
+      activitiesDBConfig.port ?
+      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}:${activitiesDBConfig.port}/${activitiesDBConfig.name}` :
+      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}}/${activitiesDBConfig.name}`,
+      {
+        live : false,
+        retry : true
+      } );
 
-    this._db = new PouchDB('flogo-web-local');
+    this._db = new PouchDB(`${appDBConfig.name}-local`);
     // create db in browser
     this._db.info().then(function(db){
       console.log(db);
     }).catch(function(err:Object){
       console.error(err);
     });
-    this._sync = PouchDB.sync('flogo-web-local', 'http://localhost:5984/flogo-web', {
-      live: false,
-      retry: true
-    }).on('change', function (info) {
+    this._sync = PouchDB.sync( `${appDBConfig.name}-local`,
+      appDBConfig.port ?
+      `${appDBConfig.protocol}://${appDBConfig.host}:${appDBConfig.port}/${appDBConfig.name}` :
+      `${appDBConfig.protocol}://${appDBConfig.host}}/${appDBConfig.name}`,
+      {
+        live : false,
+        retry : true
+      } )
+      .on('change', function (info) {
       // handle change
       console.group("[DB Sync] Change");
       console.log("info: ", info);
@@ -262,8 +273,13 @@ export class FlogoDBService{
   getActivities( limit = 200 ) {
     // TODO
     //  currently due to DB sync issue, force to sync the local DB with remote each time querying all activities
+    let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
     return PouchDB.sync(
-      'flogo-web-activities-local', 'http://localhost:5984/flogo-web-activities', {
+      `${activitiesDBConfig.name}-local`,
+      activitiesDBConfig.port ?
+      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}:${activitiesDBConfig.port}/${activitiesDBConfig.name}` :
+      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}}/${activitiesDBConfig.name}`,
+      {
         live : false,
         retry : true
       }

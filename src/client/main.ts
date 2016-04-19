@@ -2,8 +2,11 @@ import {provide, enableProdMode} from 'angular2/core';
 import {bootstrap} from 'angular2/platform/browser';
 import {ROUTER_PROVIDERS, APP_BASE_HREF} from 'angular2/router';
 import {FlogoAppComponent} from './app/flogo/components/flogo.component';
+import { getFlogoGlobalConfig } from './common/utils';
 
 //if ('prod') { enableProdMode(); }
+
+(<any>window).FLOGO_GLOBAL = getFlogoGlobalConfig();
 
 bootstrap(FlogoAppComponent, [
   ROUTER_PROVIDERS,

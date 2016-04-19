@@ -3,6 +3,7 @@ import { FlogoFlowDiagramProcess, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictio
 import { PROCESS, MOCK_TASKS } from '../mocks';
 import { Http, Headers, RequestOptions, Response } from 'angular2/http';
 import {TASKS} from "../../app/flogo.flows.detail.diagram/mocks/mock-tasks";
+import { getEngineURL, getStateServerURL } from '../utils';
 
 @Injectable()
 export class RESTAPIService {
@@ -50,7 +51,7 @@ export class RESTAPIService {
 
               let options = new RequestOptions({headers: headers});
 
-              return this.http.post('http://localhost:8080/process/restart', body, options)
+              return this.http.post(`${getEngineURL()}/process/restart`, body, options)
                 .toPromise()
                 .then(
                   rsp => {
@@ -76,7 +77,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions( { headers : headers } );
 
-        return this.http.get( `http://localhost:9190/instances/${id}`, options )
+        return this.http.get( `${getStateServerURL()}/instances/${id}`, options )
           .toPromise()
           .then(
             rsp => {
@@ -97,7 +98,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`http://localhost:9190/instances/${id}/steps`, options)
+        return this.http.get(`${getStateServerURL()}/instances/${id}/steps`, options)
           .toPromise()
           .then(
             rsp => {
@@ -118,7 +119,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`http://localhost:9190/instances/${id}/status`, options)
+        return this.http.get(`${getStateServerURL()}/instances/${id}/status`, options)
           .toPromise()
           .then(
             rsp => {
@@ -141,7 +142,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`http://localhost:9190/instances/${instanceID}/snapshot/${snapshotID}`, options)
+        return this.http.get(`${getStateServerURL()}/instances/${instanceID}/snapshot/${snapshotID}`, options)
           .toPromise()
           .then(
             rsp => {
