@@ -55,13 +55,15 @@ export class RegisterActivities{
       console.error("[error]Read package.json template error. ", err);
     }
 
-    this.cleanInstalledActivites().then(()=>{
-      console.log("[Info]clean installed activities success!");
-      this.updateActivitiesDB();
-    }).catch(()=>{
-      console.error("[Error]clean installed activities fail!");
-      throw "clean installed activities fail!"
-    })
+    this.updateActivitiesDB();
+    //
+    // this.cleanInstalledActivites().then(()=>{
+    //   console.log("[Info]clean installed activities success!");
+    //
+    // }).catch(()=>{
+    //   console.error("[Error]clean installed activities fail!");
+    //   throw "clean installed activities fail!"
+    // })
 
     // start watch files/folder changes
     //this.watch();
