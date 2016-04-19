@@ -2,8 +2,8 @@
   <div class="canvas-flow">
     <section class="flogo-flow-detail">
       <header class="flogo-flow-detail-header">
-        <h3 class="flogo-flow-detail-name" [textContent]="_flow.name"></h3>
-        <p class="flogo-flow-detail-description" [textContent]="_flow.description"></p>
+        <h3 class="flogo-flow-detail-name" [(myContenteidtable)]="_flow.name" (myContenteidtableChange)="changeFlowDetail($event, 'name')"></h3>
+        <p class="flogo-flow-detail-description" [(myContenteidtable)]="_flow.description" (myContenteidtableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
     </section>
     <!--<flogo-canvas-flow id="211"></flogo-canvas-flow>-->

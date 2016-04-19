@@ -32,10 +32,12 @@ import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagra
 import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName } from '../../../common/utils';
 
+import {Contenteditable} from '../../../common/directives/contenteditable.directive';
+
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ]
 } )
@@ -185,6 +187,18 @@ export class FlogoCanvasComponent {
 
   isOnDefaultRoute() {
     return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
+  }
+
+  private changeFlowDetail($event, property) {
+    return new Promise((resolve, reject)=>{
+      this._updateFlow(this._flow).then((response)=>{
+        console.log(`update flow's ${property} successful`, response);
+        resolve(response);
+      }).catch((err)=>{
+        console.log(`update flow's ${property} error`, err, true);
+        reject(err);
+      });
+    })
   }
 
   // TODO
