@@ -201,6 +201,57 @@ export function updateFlogoGlobalConfig( config : any ) {
   }
 }
 
+export function resetFlogoGlobalConfig() {
+  // set default value
+  updateFlogoGlobalConfig( {
+    db : {
+      protocol : 'http',
+      host : 'localhost',
+      port : '5984',
+      name : 'flogo-web'
+    },
+    activities : {
+      db : {
+        protocol : 'http',
+        host : 'localhost',
+        port : '5984',
+        name : 'flogo-web-activities'
+      }
+    },
+    triggers : {
+      db : {
+        protocol : 'http',
+        host : 'localhost',
+        port : '5984',
+        name : 'flogo-web-triggers'
+      },
+    },
+    models : {
+      db : {
+        protocol : 'http',
+        host : 'localhost',
+        port : '5984',
+        name : 'flogo-web-models'
+      },
+    },
+    engine : {
+      protocol : 'http',
+      host : "localhost",
+      port : "8080",
+    },
+    stateServer : {
+      protocol : 'http',
+      host : "localhost",
+      port : "9190"
+    },
+    processServer : {
+      protocol : 'http',
+      host : "localhost",
+      port : "9090"
+    }
+  } );
+}
+
 export function getFlogoGlobalConfig() : any {
 
   if ( !(<any>window).FLOGO_GLOBAL ) {
@@ -223,54 +274,7 @@ export function getFlogoGlobalConfig() : any {
       }
     }
 
-    // set default value
-    updateFlogoGlobalConfig( {
-      db : {
-        protocol : 'http',
-        host : 'localhost',
-        port : '5984',
-        name : 'flogo-web'
-      },
-      activities : {
-        db : {
-          protocol : 'http',
-          host : 'localhost',
-          port : '5984',
-          name : 'flogo-web-activities'
-        }
-      },
-      triggers : {
-        db : {
-          protocol : 'http',
-          host : 'localhost',
-          port : '5984',
-          name : 'flogo-web-triggers'
-        },
-      },
-      models : {
-        db : {
-          protocol : 'http',
-          host : 'localhost',
-          port : '5984',
-          name : 'flogo-web-models'
-        },
-      },
-      engine : {
-        protocal: 'http',
-        host : "localhost",
-        port : "8080",
-      },
-      stateServer : {
-        protocal: 'http',
-        host : "localhost",
-        port : "9190"
-      },
-      processServer : {
-        protocal: 'http',
-        host : "localhost",
-        port : "9090"
-      }
-    } );
+    resetFlogoGlobalConfig();
   }
 
   return (<any>window).FLOGO_GLOBAL;

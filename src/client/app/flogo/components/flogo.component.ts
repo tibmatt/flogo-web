@@ -11,6 +11,7 @@ import { HTTP_PROVIDERS } from 'angular2/http';
 import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { Flogo_ConfigComponent } from '../../flogo._config/components/_config.components';
 
 @Component({
   selector: 'flogo-app',
@@ -36,7 +37,12 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
   },
   {
     path:'/rest-api-test', name: 'FlogoRESTAPITest', component: RESTAPITest
-  }
+  },
+  // TODO
+  //  temp config page to change server URL settings
+  {
+    path: '/_config', name: "FlogoDevConfig", component:Flogo_ConfigComponent
+  },
 ])
 
 export class FlogoAppComponent{
