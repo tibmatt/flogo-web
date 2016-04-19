@@ -9,7 +9,7 @@ import {
 } from '../models';
 import { Selection } from 'd3';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
-import { FLOGO_TASK_STATUS } from '../../../common/constants';
+import { FLOGO_TASK_STATUS, FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { branchLine } from '../../../common/utils';
@@ -588,6 +588,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               {
                 name : task.name,
                 desc : taskDescription,
+                type : task.type,
                 nodeInfo : nodeInfo
               }
             ]
@@ -619,6 +620,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     nodeDetails.html( ( taskInfo : {
       name : string;
       desc : string;
+      type : FLOGO_TASK_TYPE;
       nodeInfo : any;
     }, col : number, row : number ) => {
 
@@ -653,16 +655,22 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           }
         } );
 
-        let thisBranchLineHeight = rowHeight * (level - 0.25);
+        let thisBranchLineHeight = rowHeight * (level - 0.22);
         return `
           <img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailBranch}" src="data:image/svg+xml;base64,${btoa( branchLine( thisBranchLineHeight ).trim().replace( /"/g, "'" ).replace( /\s+/g, ' ' ) )}">
           <img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailBranchSelected}" src="data:image/svg+xml;base64,${btoa( branchLine( thisBranchLineHeight, true ).trim().replace( /"/g, "'" ).replace( /\s+/g, ' ' ) )}">`;
       }
 
       if ( taskInfo.name && taskInfo.desc ) {
-        return `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}" src="/assets/svg/flogo.flows.detail.diagram.routing.icon.svg" alt=""/>
-                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}">${taskInfo.name}</div>
-                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}">${taskInfo.desc}</div>`;
+        let iconName = 'routing.icon.svg';
+
+        if ( taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
+          iconName = 'trigger.icon.svg';
+        }
+
+        return `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}" src="/assets/svg/flogo.flows.detail.diagram.${iconName}" alt=""/>
+                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}" title="${taskInfo.name}">${taskInfo.name}</div>
+                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskInfo.desc}</div>`;
       } else {
         return ``;
       }

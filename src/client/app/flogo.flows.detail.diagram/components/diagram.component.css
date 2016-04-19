@@ -39,15 +39,15 @@
 }
 .flogo-flows-detail-diagram-node {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 112px;
+  height: 112px;
   border: solid 1px #f4f4f4;
   background-image: linear-gradient(to right, #f4f4f4, #ffffff);
   border-radius: 10px;
   white-space: normal;
   font-family: SourceSansPro-Regular;
-  font-size: 14px;
-  line-height: 1.1;
+  font-size: 12px;
+  line-height: 1;
   letter-spacing: 1px;
   color: #666666;
   display: inline-block;
@@ -96,15 +96,15 @@
   opacity: 1;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-menu-open .flogo-flows-detail-diagram-node-menu {
-  width: 170px;
+  width: 140px;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-menu-selected .flogo-flows-detail-diagram-node-menu {
-  left: 133px;
+  left: 103px;
   background-color: #79b8dc;
   border: 1px solid #79b8dc;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-menu-selected[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-menu {
-  left: 145px;
+  left: 115px;
   background-color: #79b8dc;
   box-shadow: 0 2.5px 7px 0 rgba(0, 0, 0, 0.3);
 }
@@ -113,17 +113,21 @@
 }
 .flogo-flows-detail-diagram-node:before {
   position: absolute;
-  left: 117px;
-  top: 54px;
+  left: 88px;
+  top: 41px;
   z-index: 3;
   content: '';
   display: block;
-  width: 42px;
+  width: 38px;
   height: 30px;
-  background: #fff;
+  background: #FFF;
   box-shadow: 1px -2px 1px 0 rgba(0, 0, 0, 0.1);
-  transform: rotate(65deg) skewX(36deg);
+  transform: rotate(65deg) skewX(35deg);
   transition: all 250ms linear;
+}
+[data-flogo-node-type="node_add"].flogo-flows-detail-diagram-node:before,
+[data-flogo-node-type="node_root_new"].flogo-flows-detail-diagram-node:before {
+  display: none;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_link"] {
   background-color: #F0AD4E;
@@ -177,7 +181,7 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-detail:before {
   content: '+';
   font-size: 88px;
-  line-height: 138px;
+  line-height: 110px;
   color: #b6d9ed;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"] {
@@ -206,26 +210,35 @@
   transition: all 250ms linear;
 }
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-detail .flogo-flows-detail-diagram-node-detail-icon {
-  margin: 18px 0;
+  margin: 14px 0 13px;
+  width: 30px;
 }
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-detail-title {
   font-family: SourceSansPro-Bold;
   font-weight: 600;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   letter-spacing: .4px;
+  max-width: 90%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: auto;
 }
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-detail-description {
-  border-top: 1px solid #8e9aa8;
-  padding-top: 5px;
-  font-size: 12px;
-  letter-spacing: 0.7px;
+  font-size: 10px;
+  line-height: 1.1;
+  max-width: 90%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: auto;
 }
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-menu {
   position: absolute;
   left: 5px;
   top: 0;
   z-index: 1;
-  width: 130px;
+  width: 100px;
   height: 100%;
   overflow: hidden;
   border-radius: 10px;
@@ -238,7 +251,7 @@
   margin: 0;
   padding: 0;
   height: 100%;
-  width: 128px;
+  width: 98px;
   background: #fff;
   box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.5);
 }
@@ -248,7 +261,7 @@
   line-height: 30px;
   text-align: left;
   list-style: none;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
 }
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-menu-box li i {
@@ -295,7 +308,7 @@
   height: 32px;
   margin: auto;
   bottom: 0;
-  width: 170px;
+  width: 140px;
   left: 22px;
   background-color: transparent;
   box-shadow: none;
@@ -304,11 +317,10 @@
   opacity: 0;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-menu-gear {
-  background-position-x: 50%;
-  background-position-y: 50%;
+  background-position: center center;
   background-color: rgba(179, 214, 233, 0.9);
   opacity: 0;
-  transition: opacity 250ms ease;
+  transition: opacity 250ms linear;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-detail-branch,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-detail-branch-selected {
