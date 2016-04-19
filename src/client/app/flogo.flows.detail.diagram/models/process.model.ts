@@ -19,7 +19,7 @@ import {
 } from '../../../common/constants';
 
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
-import { flogoIDDecode, flogoIDEncode } from '../../../common/utils';
+import { flogoIDEncode, convertTaskID } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramProcess {
   id : string;
@@ -83,7 +83,7 @@ export class FlogoFlowDiagramProcess {
       )[ 'ouputMappings' ] = rootTask.outputMappings;
       delete rootTask.outputMappings;
 
-      _.assign( rootTask, { id : _convertTaskID( rootTask.id ) } ); // convert task ID to integer
+      _.assign( rootTask, { id : convertTaskID( rootTask.id ) } ); // convert task ID to integer
 
       let rootTaskChildren = < IFlogoFlowDiagramTask[ ] > [];
       let links = < IFlogoFlowDiagramTaskLink[ ] > [];
@@ -191,7 +191,7 @@ function _traversalChildren(
           }
 
           // convert attributes of tasks
-          _.assign( task, { id : _convertTaskID( task.id ) } );
+          _.assign( task, { id : convertTaskID( task.id ) } );
 
           // delete status information
           delete task.status;
@@ -205,8 +205,8 @@ function _traversalChildren(
           linksDest.push(
             {
               id : FlogoFlowDiagramTaskLink.genTaskLinkID(),
-              from : _convertTaskID( node.taskID ),
-              to : _convertTaskID( n.taskID )
+              from : convertTaskID( node.taskID ),
+              to : convertTaskID( n.taskID )
             }
           );
         }
@@ -218,33 +218,4 @@ function _traversalChildren(
 
   }
 
-}
-
-/**
- * Convert task ID to integer, which is the currently supported type in engine
- * TODO
- *  taskID should be string in the future, perhaps..
- *
- * @param taskID
- * @returns {number}
- * @private
- */
-function _convertTaskID( taskID : string ) {
-  let id = '';
-
-  try {
-    id = flogoIDDecode( taskID );
-
-    // get the timestamp
-    let parsedID = id.split( '::' );
-
-    if ( parsedID.length >= 2 ) {
-      id = parsedID[ 1 ];
-    }
-  } catch ( e ) {
-    console.warn( e );
-    id = taskID;
-  }
-
-  return parseInt( id );
 }

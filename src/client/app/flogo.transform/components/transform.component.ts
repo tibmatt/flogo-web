@@ -8,7 +8,7 @@ import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { MapEditorComponent } from './map-editor.component';
 import { ErrorDisplayComponent } from './error-display.component';
 
-import { normalizeTaskName } from '../../../common/utils';
+import { normalizeTaskName, convertTaskID } from '../../../common/utils';
 
 interface TransformData {
   result: any,
@@ -158,7 +158,7 @@ export class TransformComponent implements OnDestroy {
   private transformMappingsToExternalFormat(mappings: any[]) {
     let tileMap : any = {};
     _.forEach(this.data.precedingTiles, (tile:any) => {
-      tileMap[normalizeTaskName(tile.name)] = tile.id;
+      tileMap[normalizeTaskName(tile.name)] = convertTaskID(tile.id);
     });
 
     let re = REGEX_INPUT_VALUE_INTERNAL;
@@ -182,7 +182,8 @@ export class TransformComponent implements OnDestroy {
   private transformMappingsToInternalFormat(mappings: any[]) {
     let tileMap : any = {};
     _.forEach(this.data.precedingTiles, tile => {
-      tileMap[tile.id] = normalizeTaskName(tile.name);
+      let tileId = convertTaskID(tile.id);
+      tileMap[tileId] = normalizeTaskName(tile.name);
     });
 
     let re = REGEX_INPUT_VALUE_EXTERNAL;

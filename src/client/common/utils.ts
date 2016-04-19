@@ -30,6 +30,35 @@ export function flogoGenTaskID() : string {
   return flogoIDEncode( '' + (Date.now() >>> 1) );
 }
 
+/**
+ * Convert task ID to integer, which is the currently supported type in engine
+ * TODO
+ *  taskID should be string in the future, perhaps..
+ *
+ * @param taskID
+ * @returns {number}
+ * @private
+ */
+export function convertTaskID(taskID : string ) {
+  let id = '';
+
+  try {
+    id = flogoIDDecode( taskID );
+
+    // get the timestamp
+    let parsedID = id.split( '::' );
+
+    if ( parsedID.length >= 2 ) {
+      id = parsedID[ 1 ];
+    }
+  } catch ( e ) {
+    console.warn( e );
+    id = taskID;
+  }
+
+  return parseInt( id );
+}
+
 // mapping from schema.json of activity to the task can be used in flow.json
 export function activitySchemaToTask(schema: any) : any {
 
