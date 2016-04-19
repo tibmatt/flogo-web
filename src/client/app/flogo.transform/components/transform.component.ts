@@ -8,7 +8,7 @@ import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { MapEditorComponent } from './map-editor.component';
 import { ErrorDisplayComponent } from './error-display.component';
 
-import { sluggifyTaskName as convertTaskName } from '../../../common/utils';
+import { normalizeTaskName } from '../../../common/utils';
 
 interface TransformData {
   result: any,
@@ -131,7 +131,7 @@ export class TransformComponent implements OnDestroy {
     return _.chain(precedingTiles || [])
       .filter((tile:any) => tile.attributes && tile.attributes.outputs && tile.attributes.outputs.length > 0)
       .map((tile:any) => {
-        let name = convertTaskName(tile.name);
+        let name = normalizeTaskName(tile.name);
         let outputs = tile.attributes.outputs.map(this.mapInOutObjectDisplay);
         return [name, outputs];
       })
@@ -156,9 +156,9 @@ export class TransformComponent implements OnDestroy {
   }
 
   private transformMappingsToExternalFormat(mappings: any[]) {
-    let tileMap = {};
-    _.forEach(this.data.precedingTiles, tile => {
-      tileMap[convertTaskName(tile.name)] = tile.id;
+    let tileMap : any = {};
+    _.forEach(this.data.precedingTiles, (tile:any) => {
+      tileMap[normalizeTaskName(tile.name)] = tile.id;
     });
 
     let re = REGEX_INPUT_VALUE_INTERNAL;
@@ -180,9 +180,9 @@ export class TransformComponent implements OnDestroy {
   }
 
   private transformMappingsToInternalFormat(mappings: any[]) {
-    let tileMap = {};
+    let tileMap : any = {};
     _.forEach(this.data.precedingTiles, tile => {
-      tileMap[tile.id] = convertTaskName(tile.name);
+      tileMap[tile.id] = normalizeTaskName(tile.name);
     });
 
     let re = REGEX_INPUT_VALUE_EXTERNAL;

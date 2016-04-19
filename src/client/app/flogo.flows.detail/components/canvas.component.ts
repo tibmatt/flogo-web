@@ -30,7 +30,7 @@ import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
-import { flogoIDDecode, flogoIDEncode, flogoGenTaskID } from '../../../common/utils';
+import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName } from '../../../common/utils';
 
 @Component( {
   selector: 'flogo-canvas',
@@ -666,8 +666,10 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
+    let taskName = this.uniqueTaskName(data.task.name);
+
     // generate task id when adding the task
-    let task = _.assign({}, data.task, { id : flogoGenTaskID() });
+    let task = _.assign({}, data.task, { id : flogoGenTaskID(), name: taskName });
 
     this.tasks[ task.id ] = task;
 
@@ -1163,4 +1165,28 @@ export class FlogoCanvasComponent {
 
     console.groupEnd();
   }
+
+  private uniqueTaskName(taskName:string) {
+    // TODO for performance pre-sluggify task names?
+    let newNormalizedName = normalizeTaskName(taskName);
+
+    let greatestIndex = _.reduce(this.tasks, (greatest:number, task:any) => {
+      let currentNormalized = normalizeTaskName(task.name);
+      let repeatIndex = 0;
+      if (newNormalizedName == currentNormalized) {
+        repeatIndex = 1;
+      } else {
+        let match = /^(.*)\-([0-9]+)$/.exec(currentNormalized); // some-name-{{integer}}
+        if (match && match[1] == newNormalizedName) {
+          repeatIndex = _.toInteger(match[2]);
+        }
+      }
+
+      return repeatIndex > greatest ? repeatIndex : greatest;
+
+    }, 0);
+
+    return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
+  }
+
 }

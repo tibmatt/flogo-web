@@ -48,7 +48,7 @@ function validateMapTo(tileInfo:TileInOutInfo, mapping:{mapTo?:string}, errors:a
 }
 
 
-function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:number}, errors:any) {
+function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:any}, errors:any) {
   if (_.isEmpty(mapping.value)) {
     errors.value = {
       missing: true
@@ -57,7 +57,6 @@ function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:numb
   }
 
   if (!errors.type) {
-    // todo: add case for object so user can do my-tile.result.subobject
     if (mapping.type == TYPE_ATTR_ASSIGNMENT && !tileInfo.precedingOutputs[mapping.value]) {
 
       let matches = REGEX_INPUT_VALUE_INTERNAL.exec(mapping.value);
