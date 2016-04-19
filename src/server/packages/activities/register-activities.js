@@ -7,6 +7,8 @@ import {DBService} from '../../common/db.service';
 import {config} from '../../config/app-config';
 import {isDirectory, isExisted} from '../../common/utils';
 
+const execSync = require('child_process').execSync;
+
 
 // TODO DB Name should pass from options
 // The database for activities
@@ -53,7 +55,13 @@ export class RegisterActivities{
       console.error("[error]Read package.json template error. ", err);
     }
 
-    this.updateActivitiesDB();
+    this.cleanInstalledActivites().then(()=>{
+      console.log("[Info]clean installed activities success!");
+      this.updateActivitiesDB();
+    }).catch(()=>{
+      console.error("[Error]clean installed activities fail!");
+      throw "clean installed activities fail!"
+    })
 
     // start watch files/folder changes
     //this.watch();
@@ -62,6 +70,7 @@ export class RegisterActivities{
   get dbService(){
     return this._dbService;
   }
+
   // watch the activities
   watch(){
     this.updateActivitiesDB();
@@ -79,8 +88,54 @@ export class RegisterActivities{
     });
   }
 
-  findActivityDesignFolder(activityPath){
+  cleanInstalledActivites(){
+    return new Promise((resolve, reject)=>{
+      cleanDB()
+      .then((result)=>{
+        return cleanNodeModules();
+      })
+      .then((result)=>{
+        resolve(true);
+      })
+      .catch((err)=>{
+        reject(false);
+      });
+    });
+  }
 
+  cleanDB(){
+    return new Promise((resolve, reject)=>{
+      this._dbService.db.allDocs().then((result)=>{
+        let docs = result&&result.rows||[];
+        docs.forEach((doc)=>{
+          doc._deleted = true;
+        });
+
+        console.log(docs);
+        this._dbService.db.bulkDocs(docs).then((result)=>{
+          resolve(result);
+        }).catch((err)=>{
+          reject(err);
+        });
+
+      }).catch((err)=>{
+        reject(err);
+      });
+    });
+  }
+
+  cleanNodeModules(){
+    return new Promise((resolve, reject)=>{
+      try {
+        let nodeModulesPath = path.join(this._packageJSONFolderPath, 'node_modules');
+        if(isExisted(nodeModulesPath)){
+          execSync(`rm -rf ${nodeModulesPath}`);
+        }
+        resolve(true);
+      }catch (err){
+        reject(false);
+      }
+    });
   }
 
 
@@ -233,7 +288,6 @@ export class RegisterActivities{
       }).catch((err)=>{
         console.log("[error]Get all activities fail. ", err);
       });
-
 
     }).catch((err)=>{
       console.error("[error]Install error. ", err);

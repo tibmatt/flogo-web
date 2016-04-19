@@ -160,10 +160,9 @@ update_flogo
 #############################
 echoHeader "Step2: update submodule: flogo-internal, flogo-contrib"
 
-git submodule init
-git submodule update
+git submodule update --init --remote
 
-echoSuccess "update submodule\n\n"
+echoSuccess "update submodule\n"
 
 #############################
 # Step 3: start process and state server

@@ -22,7 +22,7 @@ let engine = new Engine();
 let registerActivities  = new RegisterActivities(null, engine);
 let registerTriggers  = new RegisterTriggers(null, engine);
 
-engine.addModel("file://", path.join(config.rootPath, config.models.path, 'simple'));
+engine.addModel("local://", path.join(config.rootPath, config.models.path, 'simple'));
 //engine.build();
 //engine.start();
 
