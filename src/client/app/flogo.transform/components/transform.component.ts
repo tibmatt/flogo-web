@@ -7,6 +7,7 @@ import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL } from '../const
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { MapEditorComponent } from './map-editor.component';
 import { ErrorDisplayComponent } from './error-display.component';
+import { HelpComponent } from "./help.component";
 
 import { normalizeTaskName, convertTaskID } from '../../../common/utils';
 
@@ -21,7 +22,7 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MapEditorComponent, ErrorDisplayComponent],
+  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent],
   moduleId: module.id,
   styleUrls: ['transform.component.css'],
   templateUrl: 'transform.tpl.html',
