@@ -1,6 +1,7 @@
 import {Component} from 'angular2/core';
 import {RESTAPIFlowsService} from './restapi/flows-api.service';
 import {RESTAPIActivitiesService} from './restapi/activities-api.service';
+import {RESTAPITriggersService} from './restapi/triggers-api.service';
 
 @Component({
   moduleId: module.id,
@@ -8,7 +9,7 @@ import {RESTAPIActivitiesService} from './restapi/activities-api.service';
             `<div id="test-container" class="container">
 
             </div>`,
-  providers: [RESTAPIFlowsService, RESTAPIActivitiesService]
+  providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService]
 })
 
 export class RESTAPITest{

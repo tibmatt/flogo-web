@@ -116,6 +116,24 @@ export function activitySchemaToTask(schema: any) : any {
   return task;
 }
 
+// mapping from schema.json of activity to the trigger can be used in flow.json
+export function activitySchemaToTrigger(schema: any) : any {
+
+  let trigger:any = {
+    type: FLOGO_TASK_TYPE.TASK_ROOT,
+    activityType: _.get(schema, 'name', ''),
+    name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
+    version: _.get(schema, 'version', ''),
+    title: _.get(schema, 'title', ''),
+    description: _.get(schema, 'description', ''),
+    settings: _.get(schema, 'settings', ''),
+    outputs: _.get(schema, 'outputs', ''),
+    endpoint: { settings: _.get(schema, 'endpoint.settings', '') }
+  };
+
+  return trigger;
+}
+
 
 // Create a svg element for line of branch
 export function branchLine(height: number, state?: boolean) {

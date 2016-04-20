@@ -11,6 +11,7 @@ import { HTTP_PROVIDERS } from 'angular2/http';
 import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { Flogo_ConfigComponent } from '../../flogo._config/components/_config.components';
 
 @Component({
@@ -19,7 +20,7 @@ import { Flogo_ConfigComponent } from '../../flogo._config/components/_config.co
   templateUrl: 'flogo.tpl.html',
   styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
-  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, HTTP_PROVIDERS]
+  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS]
 })
 
 @RouteConfig([

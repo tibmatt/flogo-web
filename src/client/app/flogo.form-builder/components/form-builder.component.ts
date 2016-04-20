@@ -181,8 +181,11 @@ export class FlogoFormBuilderComponent{
 
   getControlByType(type:string) {
     switch(type) {
+      // TODO use contants
+      //TODO check map field
       case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
       case 'string':
+      case 'map':
         return {control: 'FieldTextBox'};
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:

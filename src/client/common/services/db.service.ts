@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from 'angular2/core';
 import { activitySchemaToTask } from '../utils';
+import { activitySchemaToTrigger } from '../utils';
 
 @Injectable()
 export class FlogoDBService{
@@ -7,6 +8,7 @@ export class FlogoDBService{
   // PouchDB instance
   private _db:PouchDB;
   private _activitiesDB: PouchDB;
+  private _triggersDB: PouchDB;
   private _sync:Object;
   private _syncActivities: Object;
   public PREFIX_AUTO_GENERATE:string = 'auto-generate-id';
@@ -44,6 +46,16 @@ export class FlogoDBService{
     }).catch(function(err:Object){
       console.error(err);
     });
+
+    let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
+    this._triggersDB = new PouchDB(`${triggersDBConfig.name}-local`);
+    this._triggersDB.info().then(function(db){
+      console.log(db);
+    }).catch(function(err:Object){
+      console.error(err);
+    });
+
+
 
     this._syncActivities = PouchDB.sync( `${activitiesDBConfig.name}-local`,
       activitiesDBConfig.port ?
@@ -318,4 +330,59 @@ export class FlogoDBService{
   getInstallableActivities() {
     return Promise.resolve( [] );
   }
+
+  // retrieve all of the triggers without number limitation
+  getAllTriggers() {
+    return this.getTriggers();
+  }
+
+// retrieve all of the activities with limit up to 200
+  getTriggers( limit = 200 ) {
+    // TODO
+    //  currently due to DB sync issue, force to sync the local DB with remote each time querying all activities
+    let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
+    return PouchDB.sync(
+      `${triggersDBConfig.name}-local`,
+      triggersDBConfig.port ?
+        `${triggersDBConfig.protocol}://${triggersDBConfig.host}:${triggersDBConfig.port}/${triggersDBConfig.name}` :
+        `${triggersDBConfig.protocol}://${triggersDBConfig.host}}/${triggersDBConfig.name}`,
+      {
+        live : false,
+        retry : true
+      }
+      )
+      .then(
+        ()=> {
+          // the real logic to get all activities
+          return this._triggersDB.allDocs(
+            {
+              include_docs : true,
+              limit : limit
+            }
+            )
+            .then(
+              ( docs : any ) => {
+                // get doc information from non-empty records
+                return _.map(
+                  _.filter( docs.rows, ( doc : any ) => !_.isEmpty( _.get( doc, 'doc.schema', '' ) ) ),
+                  ( doc : any )=> {
+                    return activitySchemaToTrigger( doc.doc.schema );
+                  }
+                );
+              }
+            );
+        }
+      )
+      .catch(
+        ( err : any )=> {
+          console.log( err );
+          return err;
+        }
+      );
+  }
+
+
+
+
+
 }

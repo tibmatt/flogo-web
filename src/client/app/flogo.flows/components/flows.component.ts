@@ -2,6 +2,7 @@ import {Component} from 'angular2/core';
 import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
+import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
 import { flogoIDEncode } from '../../../common/utils';
 import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 
@@ -14,7 +15,7 @@ import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
   directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd],
-  providers: [RESTAPIFlowsService, RESTAPIActivitiesService]
+  providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService]
 })
 
 export class FlogoFlowsComponet{

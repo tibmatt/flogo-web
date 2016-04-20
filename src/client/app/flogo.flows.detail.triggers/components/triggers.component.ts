@@ -5,6 +5,7 @@ import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { RouteParams } from 'angular2/router';
 
 import {FlogoFlowsDetailTriggersInstallComponent as TriggersInstallerComponent} from '../../flogo.flows.detail.triggers.install/components/install.component';
+import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
 
 @Component(
   {
@@ -21,14 +22,15 @@ export class FlogoFlowsDetailTriggers {
   private _addTriggerMsg : any;
   private _selectTriggerMsg : any;
 
-  constructor( private _postService : PostService, private _routeParams : RouteParams ) {
+  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restAPITriggersService: RESTAPITriggersService ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     console.log( this._routeParams );
 
     this.initSubscribe();
+    this._loadTriggers();
 
-    this.triggers = TRIGGERS_MOCK || [];
+    //this.triggers = TRIGGERS_MOCK || [];
 
     console.groupEnd();
   }
@@ -86,6 +88,22 @@ export class FlogoFlowsDetailTriggers {
         }
       )
     );
+  }
+
+  private _loadTriggers() {
+    console.log('Loading triggers');
+
+    this._restAPITriggersService.getTriggers()
+      .then(
+        ( triggers : any )=> {
+          this.triggers = triggers;
+        }
+      )
+      .catch(
+        ( err : any )=> {
+          console.error( err );
+        }
+      );
   }
 
 }
