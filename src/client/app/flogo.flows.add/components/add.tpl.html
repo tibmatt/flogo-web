@@ -3,20 +3,20 @@
 </button>
 
 <modal [size]="'sm'" #modal>
-    <modal-header><h3>Add flow</h3></modal-header>
+    <modal-header><h3>Create new flow</h3></modal-header>
     <modal-body>
         <div class="form-group">
-            <label for="flowName" class="h4">Flow Name</label>
-            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="Flow's Name">
+            <label for="flowName" class="h4">Flow name</label>
+            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="Flow's name">
         </div>
         <div class="form-group">
-            <label for="flowDescription" class="h4">Flow Description</label>
-            <textarea class="form-control" [(ngModel)]="flowInfo.description" rows="3" id="flowDescription" placeholder="Flow's Description"></textarea>
+            <label for="flowDescription" class="h4">Flow description</label>
+            <textarea class="form-control" [(ngModel)]="flowInfo.description" rows="3" id="flowDescription" placeholder="Flow's description"></textarea>
         </div>
     </modal-body>
     <modal-footer>
-        <button type="button" class="btn btn-default flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name}"
-                (click)="flowInfo.name&&sendAddFlowMsg()">Save</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeAddFlowModal()">Cancel</button>
+        <button type="button" class="flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">CANCEL</button>
+        <button type="button" class="flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name}"
+                (click)="flowInfo.name&&sendAddFlowMsg()">SAVE</button>
     </modal-footer>
 </modal>

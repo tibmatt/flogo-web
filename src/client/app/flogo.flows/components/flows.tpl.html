@@ -12,7 +12,10 @@
         <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow)"></span>
         <a class="flogo-flows-container-list-detail" [routerLink]="['FlogoFlowDetail', {id:flogoIDEncode(flow._id)}]">
           <span class="flogo-flows-container-list-detail-name">{{flow.name}}</span>
-          <i class="flogo-flows-container-list-detail-creatTime">{{flow.created_at}}</i>
+          <span class="clearfix flogo-flows-container-list-detail-info">
+            <span class="flogo-flows-container-list-detail-description">{{flow.description}}</span>
+            <i class="flogo-flows-container-list-detail-creatTime">{{flow.created_at}}</i>
+          </span>
         </a>
       </li>
     </ul>
