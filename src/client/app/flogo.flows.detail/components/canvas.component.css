@@ -13,7 +13,8 @@
   display: flex;
   width: 77.5%;
   flex-direction: column;
-  overflow: auto;
+  z-index: 1;
+  /*overflow: auto;*/
 }
 .canvas-right-container {
   display: flex;
@@ -27,7 +28,7 @@
   background-color: #FAFAFA;
 }
 .flogo-flow-detail-header {
-  padding: 30px 30px;
+  padding: 20px 0 30px 30px;
 }
 .flogo-flow-detail-name {
   font-size: 24px;
@@ -39,5 +40,60 @@
   font-size: 15px;
   line-height: 1.5;
   color: rgba(102, 102, 102, 0.7);
+  margin-top: 5px;
   margin-bottom: 0;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.flogo-flow-detail-menu {
+  height: 43px;
+  width: 29px;
+  margin-right: 15px;
+  margin-top: 36px;
+  float: right;
+  position: relative;
+  background: url("/assets/svg/flogo.flows.detail.menu.icon.svg") left top no-repeat;
+}
+.flogo-flow-detail-menu:hover,
+.flogo-flow-detail-menu:active {
+  background: url("/assets/svg/flogo.flows.detail.menu.hover.icon.svg") left top no-repeat;
+}
+.flogo-flow-detail-menu:hover .flogo-flow-detail-menu-list,
+.flogo-flow-detail-menu:active .flogo-flow-detail-menu-list {
+  width: 129px;
+  opacity: 1;
+  height: 120px;
+}
+.flogo-flow-detail-menu .flogo-flow-detail-menu-list {
+  overflow: hidden;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 11px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border-radius: 2px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+  border: solid 1px #727272;
+  transition: all 300ms linear;
+}
+.flogo-flow-detail-menu .flogo-flow-detail-menu-item {
+  padding: 0 15px;
+  margin: 0;
+  height: 30px;
+  list-style: none;
+  font-size: 12px;
+  line-height: 2.5;
+  color: #727272;
+  cursor: pointer;
+}
+.flogo-flow-detail-menu .flogo-flow-detail-menu-item:hover {
+  background: #ececec;
+}
+.flogo-flow-detail-menu .flogo-flow-detail-menu-item i {
+  margin-right: 6px;
 }

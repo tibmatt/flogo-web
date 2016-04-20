@@ -28,7 +28,7 @@ export class Contenteditable {
     ngOnInit() {
         this.$el.html(this.myContenteidtable);
         this._el.setAttribute('contenteditable', 'true');
-        this.$el.append('<i class="fa fa-pencil" style="float: right;display: none" aria-hidden="true"></i>');
+        this.$el.append('<i class="fa fa-pencil" style="float: right;display: none; line-height: inherit; margin-right: 10px;color: #666;" aria-hidden="true"></i>');
     }
     onMouseEnter() {
         this.$el.find('i').eq(0).css('display', 'block');

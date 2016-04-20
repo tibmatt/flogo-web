@@ -32,6 +32,7 @@
   padding: 0 30px;
   margin: 0;
   position: relative;
+  width: 100px;
   z-index: 0;
 }
 .flogo-flows-detail-diagram-row:hover {

@@ -1,10 +1,20 @@
 <div *ngIf="!_mockLoading" [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">
   <div class="canvas-flow">
     <section class="flogo-flow-detail">
-      <header class="flogo-flow-detail-header">
+      <header class="flogo-flow-detail-header col-sm-10">
         <h3 class="flogo-flow-detail-name" [(myContenteidtable)]="_flow.name" (myContenteidtableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteidtable)]="_flow.description" (myContenteidtableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
+      <div class="col-sm-2">
+        <div class="flogo-flow-detail-menu">
+          <ul class="flogo-flow-detail-menu-list">
+            <li class="flogo-flow-detail-menu-item"><i class="fa fa-pencil"></i>Build</li>
+            <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone"></i>Make a copy</li>
+            <li class="flogo-flow-detail-menu-item"><i class="fa fa-download"></i>Import JSON</li>
+            <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash"></i>Another action</li>
+          </ul>
+        </div>
+      </div>
     </section>
     <!--<flogo-canvas-flow id="211"></flogo-canvas-flow>-->
     <flogo-canvas-flow-diagram [tasks]="tasks" [diagram]="diagram"></flogo-canvas-flow-diagram>
