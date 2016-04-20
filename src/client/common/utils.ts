@@ -75,30 +75,6 @@ export function activitySchemaToTask(schema: any) : any {
     }
   };
 
-  // TODO
-  //  mock for demo2
-  //    adding mapping information for pet query tasks
-  if ( task.activityType === 'rest' ) {
-    _.assign(
-      task, {
-        "inputMappings" : [
-          {
-            "type" : 1,
-            "value" : "petId",
-            "mapTo" : "petId"
-          }
-        ],
-        "outputMappings" : [
-          {
-            "type" : 1,
-            "value" : "result",
-            "mapTo" : "petInfo"
-          }
-        ]
-      }
-    );
-  }
-
   _.each(
     task.attributes.inputs, ( input : any ) => {
       // convert to task enumeration and provision default types

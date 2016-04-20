@@ -1108,7 +1108,7 @@ export class FlogoCanvasComponent {
     let branchInfo = {
       id : flogoGenTaskID(),
       type : FLOGO_TASK_TYPE.TASK_BRANCH,
-      condition : ''
+      condition : 'false'
     };
 
     this.tasks[ branchInfo.id ] = branchInfo;
