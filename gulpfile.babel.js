@@ -39,7 +39,8 @@ CONFIG.clientLibs = [
   'postal/lib/postal.js',
   'pouchdb/dist/pouchdb.js',
   "ng2-bs3-modal/bundles/ng2-bs3-modal.min.js",
-  "bootstrap/dist/js/bootstrap.js"
+  "bootstrap/dist/js/bootstrap.js",
+  "moment/min/moment-with-locales.min.js"
 ];
 
 CONFIG.clientLibStyles = [
