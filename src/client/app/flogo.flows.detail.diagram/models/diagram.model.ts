@@ -39,6 +39,7 @@ const CLS = {
   diagramNodeDetailDesc : 'flogo-flows-detail-diagram-node-detail-description',
   diagramNodeBadge : 'flogo-flows-detail-diagram-node-badge',
   diagramNodeMenu : 'flogo-flows-detail-diagram-node-menu',
+  diagramNodeMenuTrigger : 'flogo-flows-detail-diagram-node-menu-trigger',
   diagramNodeMenuOpen : 'flogo-flows-detail-diagram-node-menu-open',
   diagramNodeMenuSelected : 'flogo-flows-detail-diagram-node-menu-selected',
   diagramNodeMenuBox : 'flogo-flows-detail-diagram-node-menu-box',
@@ -750,86 +751,99 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   private _handleEnterNodeMenus( nodeMenus : any ) {
-    nodeMenus.enter()
-      .append( 'div' )
+    let newNodeMenus = nodeMenus.enter();
+
+    newNodeMenus.append( 'div' )
+      .attr( this.ng2StyleAttr, '' )
+      .classed( CLS.diagramNodeMenuTrigger, true )
+      .on( 'click', function ( nodeInfo : any, col : number, row : number ) {
+        let event = <Event>d3.event;
+        event.stopPropagation();
+
+        // fire menu on clicked event if this menu is clicked.
+        let evtType = 'flogoClickNodeMenu';
+
+        _triggerCustomEvent( evtType, {
+          origEvent : d3.event,
+          node : nodeInfo
+        }, this );
+      } );
+
+    newNodeMenus.append( 'div' )
       .attr( this.ng2StyleAttr, '' )
       .classed( CLS.diagramNodeMenu, true )
-      .on(
-        'click', function ( nodeInfo : any, col : number, row : number ) {
-          let event = <Event>d3.event;
-          event.stopPropagation();
+      .on( 'click', function ( nodeInfo : any, col : number, row : number ) {
+        let event = <Event>d3.event;
+        event.stopPropagation();
 
-          if ( (
-              <HTMLElement>event.target
-            ).getAttribute( 'data-menu-item-type' ) ) {
+        if ( (
+            <HTMLElement>event.target
+          ).getAttribute( 'data-menu-item-type' ) ) {
 
-            // fire event if it's menu item
-            let evtType = 'flogoClickNodeMenuItem';
+          // fire event if it's menu item
+          let evtType = 'flogoClickNodeMenuItem';
 
-            _triggerCustomEvent(
-              evtType, {
-                origEvent : d3.event,
-                node : nodeInfo
-              }, this
-            );
-          } else {
+          _triggerCustomEvent( evtType, {
+            origEvent : d3.event,
+            node : nodeInfo
+          }, this );
+        } else {
 
-            // fire menu on clicked event if this menu is clicked.
-            let evtType = 'flogoClickNodeMenu';
+          // fire menu on clicked event if this menu is clicked.
+          let evtType = 'flogoClickNodeMenu';
 
-            _triggerCustomEvent(
-              evtType, {
-                origEvent : d3.event,
-                node : nodeInfo
-              }, this
-            );
-          }
+          _triggerCustomEvent( evtType, {
+            origEvent : d3.event,
+            node : nodeInfo
+          }, this );
         }
-      );
+      } );
   }
 
   private _handleUpdateNodeMenus( nodeMenus : any ) {
     let diagram = this;
 
-    nodeMenus.html(
-      ( nodeInfo : any ) => {
-        let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i class="fa fa-plus"></i>Add branch</li>`;
+    nodeMenus.html( ( nodeInfo : any ) => {
+      let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i class="fa fa-plus"></i>Add branch</li>`;
 
-        let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i class="fa fa-bolt"></i>Transform</li>`;
+      let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i class="fa fa-bolt"></i>Transform</li>`;
 
-        let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i class="fa fa-trash-o"></i>Delete</li>`;
+      let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i class="fa fa-trash-o"></i>Delete</li>`;
 
-        let tplGear = `<span ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuGear}"></span>`;
+      let tplGear = `<span ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuGear}"></span>`;
 
-        // TODO
-        //  enable the delete for trigger in the future
-        if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
+      // TODO
+      //  enable the delete for trigger in the future
+      if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
 
-          // template without delete
-          return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+        // template without delete
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemAddBranch}
                     ${tplItemTransform}
                   </ul>${tplGear}`;
-        }
+      }
 
-        if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
-          return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+      if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemDelete}
                   </ul>${tplGear}`;
-        }
+      }
 
-        // normal template
-        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+      // normal template
+      return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemAddBranch}
                     ${tplItemTransform}
                     ${tplItemDelete}
                 </ul>${tplGear}`;
-      }
-    )
+    } );
   }
 
   private _handleExitNodeMenus( nodeMenus : any ) {
-    nodeMenus.exit()
+    let exitNodeMenus = nodeMenus.exit();
+    exitNodeMenus.on( 'click', null )
+      .remove();
+
+    exitNodeMenus.selectAll( `.${CLS.diagramNodeMenuTrigger}` )
       .on( 'click', null )
       .remove();
   }
