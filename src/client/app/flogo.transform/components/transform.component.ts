@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnDestroy } from 'angular2/core';
+import {Component, ViewChild, ElementRef, OnDestroy, HostListener} from 'angular2/core';
 
 import { PostService } from '../../../common/services/post.service';
 
@@ -37,6 +37,9 @@ export class TransformComponent implements OnDestroy {
   // two variables control the display of the modal to support animation when opening and closing
   active:boolean = false; // controls the rendering of the content of the modal
   out:boolean = false; // controls the in/out transition of the modal
+
+  showDeleteConfirmation:boolean = false;
+  @ViewChild('deleteContainer') deleteContainer: ElementRef;
 
   private _subscriptions:any[];
   private data:TransformData = {
@@ -91,6 +94,22 @@ export class TransformComponent implements OnDestroy {
 
   cancel() {
     this.close();
+  }
+
+  openDeleteConfirmation(event:Event) {
+    this.showDeleteConfirmation = true;
+    event.stopPropagation();
+  }
+
+  cancelDeleteConfirmation() {
+    this.showDeleteConfirmation = false;
+  }
+
+  @HostListener('click', ['$event'])
+  clickOutsideDeleteConfirmation(event:Event) {
+    if(this.showDeleteConfirmation && this.deleteContainer && !this.deleteContainer.nativeElement.contains(event.target)){
+      this.showDeleteConfirmation = false;
+    }
   }
 
   private initSubscriptions() {
@@ -209,6 +228,7 @@ export class TransformComponent implements OnDestroy {
     this.isValid = true;
     this.isDirty = false;
     this.errors = null;
+    this.showDeleteConfirmation = false;
   }
 
   private open() {
