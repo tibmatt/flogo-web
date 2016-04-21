@@ -304,7 +304,7 @@ label {
 
 .flogo-common-edit-panel__tiles-list-tile {
   border-top: solid 1px #d8d8d8;
-  background: url('svg/flogo.flows.detail.tasks.gears.svg') no-repeat center left 20px,
+  background: url('svg/flogo.flows.detail.diagram.trigger.icon.svg') no-repeat center left 20px,
     url('svg/flogo.icon.checked.circle.svg') no-repeat center right 20px;
   color: #666;
   font-weight: bold;

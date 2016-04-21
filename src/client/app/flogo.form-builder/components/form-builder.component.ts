@@ -6,6 +6,7 @@ import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
 import {FlogoFormBuilderFieldsRadio as FieldRadio} from '../../flogo.form-builder.fields/components/fields.radio/fields.radio.component';
 import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-builder.fields/components/fields.textbox/fields.textbox.component';
+import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
 
@@ -14,7 +15,7 @@ import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-buil
   moduleId: module.id,
   styleUrls: ['form-builder.css'],
   templateUrl: 'form-builder.tpl.html',
-  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber ],
+  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldParams ],
   inputs: ['_task:task','_step:step', '_context:context']
 })
 export class FlogoFormBuilderComponent{
@@ -180,16 +181,13 @@ export class FlogoFormBuilderComponent{
   }
 
   getControlByType(type:string) {
-    switch(type) {
-      // TODO use contants
-      //TODO check map field
+
+    switch(this._mapTypeToConstant(type)) {
+
       case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
-      case 'string':
-      case 'map':
         return {control: 'FieldTextBox'};
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
-      case 'number':
         return {control:'FieldNumber'};
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
@@ -198,10 +196,42 @@ export class FlogoFormBuilderComponent{
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
         return {control:'FieldTextArea'};
 
+      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAM:
+        return {control:'FieldParams'};
+
       default:
         return {control:'TextBox'};
     }
 
+  }
+
+  _mapTypeToConstant(type:string) {
+
+    switch(type) {
+      case 'string':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
+        return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
+
+      case 'number':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
+        return FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER;
+
+      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
+      case 'boolean':
+        return FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN;
+
+      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
+      case 'object':
+        return FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT;
+
+      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAM:
+      case 'map':
+      case 'params':
+        return FLOGO_TASK_ATTRIBUTE_TYPE.PARAM;
+
+      default:
+        return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
+    }
   }
 
   getBranchInfo() {

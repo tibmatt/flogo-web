@@ -54,7 +54,17 @@
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
           <flogo-form-builder-fields-number [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldTextArea'">
+          <flogo-form-builder-fields-textarea [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+        </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
+          <flogo-form-builder-fields-params [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
+        </div>
+
       </div>
+
     </div>
 
     <!-- TASK CONFIGURATION -->
@@ -76,6 +86,11 @@
         <div *ngIf="getControlByType(item.type).control == 'FieldTextArea'">
           <flogo-form-builder-fields-textarea [info]="getTaskInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
         </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
+          <flogo-form-builder-fields-params [info]="getTaskInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
+        </div>
+
       </div>
 
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributes.outputs.length">Output Parameters</h3>
@@ -96,6 +111,11 @@
         <div *ngIf="getControlByType(item.type).control == 'FieldTextArea'">
           <flogo-form-builder-fields-textarea [info]="getTaskInfo(item, 'output')" [fieldObserver]="_fieldObserver"  ></flogo-form-builder-fields-textarea>
         </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
+          <flogo-form-builder-fields-params [info]="getTaskInfo(item, 'output')" [fieldObserver]="_fieldObserver"  ></flogo-form-builder-fields-params>
+        </div>
+
       </div>
     </div>
 
