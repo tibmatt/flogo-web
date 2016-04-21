@@ -239,7 +239,8 @@ export class FlogoFormBuilderComponent{
       name:       this._task.id,
       title:      'If',
       value:      this._task.condition,
-      required:   true
+      required:   true,
+      placeholder: ''
     };
 
     return info;
@@ -256,6 +257,7 @@ export class FlogoFormBuilderComponent{
       validation: input.validation,
       validationMessage: input.validationMessage,
       required:   input.required,
+      placeholder: input.placeholder || '',
       isTrigger:  true,
       isBranch:   false
     };
@@ -276,6 +278,7 @@ export class FlogoFormBuilderComponent{
       validation: input.validation,
       validationMessage: input.validationMessage,
       required:   input.required,
+      placeholder: input.placeholder || '',
       isTrigger:  false,
       isBranch:   false,
       direction: direction

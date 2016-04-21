@@ -3,6 +3,7 @@
   <textarea name="" id="objectField" rows="5"
             (keyup)="onChangeField($event)"
             [class.error]="_hasError"
+            [placeholder]="_info.placeholder"
             class="form-control tc-text-areas tc-text-area" [(ngModel)]="_info.value"
             (change)="onValidate($event)"></textarea>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
