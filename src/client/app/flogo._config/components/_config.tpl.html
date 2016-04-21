@@ -30,6 +30,9 @@
           <input type="text" class="form-control" placeholder="localhost" [(ngModel)]="server.config.host">
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="server.config.port">
+          <div class="input-group-addon">
+            <flogo-_config-service-status-indicator [urlConfig]="server.config"></flogo-_config-service-status-indicator>
+          </div>
         </div>
       </div>
     </div>
@@ -38,11 +41,11 @@
 
     <div class="form-group" *ngIf="_appDB || _dbs">
       <hr class="col-md-offset-2 col-md-8" *ngIf="_servers"/>
-      <label class="col-md-2 col-sm-3">Datebases</label>
+      <label class="col-md-2 col-sm-3">Databases</label>
     </div>
 
     <div class="form-group" *ngIf="_appDB">
-      <label class="col-md-2 col-sm-3">Application Datebase</label>
+      <label class="col-md-2 col-sm-3">Application Database</label>
       <div class="col-lg-9 col-md-10 col-sm-12">
         <div class="input-group">
           <input type="text" class="form-control" placeholder="http" [(ngModel)]="_appDB.protocol">
@@ -52,6 +55,9 @@
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="_appDB.port">
           <div class="input-group-addon">/</div>
           <input type="text" class="form-control" placeholder="dbname" [(ngModel)]="_appDB.name">
+          <div class="input-group-addon">
+            <flogo-_config-service-status-indicator [urlConfig]="_appDB"></flogo-_config-service-status-indicator>
+          </div>
         </div>
       </div>
     </div>
@@ -67,6 +73,9 @@
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="db.config.port">
           <div class="input-group-addon">/</div>
           <input type="text" class="form-control" placeholder="dbname" [(ngModel)]="db.config.name">
+          <div class="input-group-addon">
+            <flogo-_config-service-status-indicator [urlConfig]="db.config"></flogo-_config-service-status-indicator>
+          </div>
         </div>
       </div>
     </div>

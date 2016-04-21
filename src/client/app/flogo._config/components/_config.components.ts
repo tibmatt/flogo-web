@@ -1,6 +1,7 @@
 import { Component } from 'angular2/core';
 import { getFlogoGlobalConfig, updateFlogoGlobalConfig, resetFlogoGlobalConfig } from '../../../common/utils';
 import { Router } from 'angular2/router';
+import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
 
 const DBS_ARR = [ 'activities', 'triggers', 'models' ];
 const SERVERS_ARR = [ 'engine', 'stateServer', 'processServer' ];
@@ -8,6 +9,7 @@ const SERVERS_ARR = [ 'engine', 'stateServer', 'processServer' ];
 @Component( {
   selector : 'flogo-_config',
   moduleId : module.id,
+  directives: [ServiceStatusIndicatorComponent],
   templateUrl : '_config.tpl.html',
   styleUrls : [ '_config.component.css' ]
 } )
