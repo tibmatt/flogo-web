@@ -12,7 +12,7 @@ import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } 
 import { FLOGO_TASK_STATUS, FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
-import { branchLine } from '../../../common/utils';
+import { genBranchLine } from '../../../common/utils';
 
 export interface IFlogoFlowDiagram {
   root : IFlogoFlowDiagramRootNode;
@@ -25,6 +25,7 @@ const DEFAULT_MAX_ROW_LEN = 7;
 const CLS = {
   diagram : 'flogo-flows-detail-diagram',
   diagramRow : 'flogo-flows-detail-diagram-row',
+  diagramRowStatusSelected : 'flogo-flows-detail-diagram-row-selected',
   diagramNode : 'flogo-flows-detail-diagram-node',
   diagramNodeBranchHover : 'flogo-flows-diagram-node-branch-hover',
   diagramNodeStatusSelected : 'flogo-flows-detail-diagram-node-selected',
@@ -32,6 +33,7 @@ const CLS = {
   diagramNodeDetail : 'flogo-flows-detail-diagram-node-detail',
   diagramNodeDetailBranch : 'flogo-flows-detail-diagram-node-detail-branch',
   diagramNodeDetailBranchSelected : 'flogo-flows-detail-diagram-node-detail-branch-selected',
+  diagramNodeDetailBranchHover : 'flogo-flows-detail-diagram-node-detail-branch-hover',
   diagramNodeDetailIcon : 'flogo-flows-detail-diagram-node-detail-icon',
   diagramNodeDetailTitle : 'flogo-flows-detail-diagram-node-detail-title',
   diagramNodeDetailDesc : 'flogo-flows-detail-diagram-node-detail-description',
@@ -424,8 +426,16 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
             d3.selectAll( `.${CLS.diagramNodeStatusSelected}` )
               .classed( CLS.diagramNodeStatusSelected, false );
+            d3.selectAll( `.${CLS.diagramRowStatusSelected}` )
+              .classed( CLS.diagramRowStatusSelected, false );
+
             d3.select( this )
               .classed( CLS.diagramNodeStatusSelected, true );
+
+            if ( d.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+              d3.select( this.parentElement )
+                .classed( CLS.diagramRowStatusSelected, true );
+            }
           }
 
           DEBUG && console.groupEnd();
@@ -536,14 +546,27 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       }
     );
 
+    // if no node is selected, unset the row selected class
+    if ( !_.some( nodes.selectAll( `.${CLS.diagramNodeStatusSelected}` )
+        .data(), ( nodesInfo : any ) => {
+        return nodesInfo && (nodesInfo.type
+          === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE
+          || nodesInfo.type
+          === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT);
+      } ) ) {
+      d3.select( `.${CLS.diagramRowStatusSelected}` )
+        .classed( CLS.diagramRowStatusSelected, false );
+    }
+
+    let nodeMenus = this._bindDataToNodeMenus( nodes.selectAll( `.${CLS.diagramNodeMenu}` ) );
+    this._handleNodeMenus( nodeMenus );
+
     let nodeDetails = this._bindDataToNodeDetails( rows );
     this._handleNodeDetails( nodeDetails, rows );
 
     let nodeBadgeArea = this._bindDataToNodeBadges( nodes.selectAll( `.${CLS.diagramNodeBadge}` ) );
     this._handleNodeBadges( nodeBadgeArea );
 
-    let nodeMenus = this._bindDataToNodeMenus( nodes.selectAll( `.${CLS.diagramNodeMenu}` ) );
-    this._handleNodeMenus( nodeMenus );
   }
 
   private _handleExitNodes( nodes : any, rows : any ) {
@@ -569,7 +592,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   }
 
-  private _bindDataToNodeDetails( rows : any ) {
+  private _bindDataToNodeDetails( rows : any ) : any {
     let nodeDetails = rows.selectAll( `.${CLS.diagramNode}` )
       .selectAll( `.${CLS.diagramNodeDetail}` );
     return nodeDetails.data(
@@ -584,7 +607,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
                 )
               ) || `[ ${nodeInfo.parents} to ${nodeInfo.children} ]`;
 
-            return [
+            return <any>[
               {
                 name : task.name,
                 desc : taskDescription,
@@ -595,7 +618,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           }
         }
 
-        return [
+        return <any>[
           {
             nodeInfo : nodeInfo
           }
@@ -655,10 +678,33 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           }
         } );
 
-        let thisBranchLineHeight = rowHeight * (level - 0.22);
-        return `
-          <img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailBranch}" src="data:image/svg+xml;base64,${btoa( branchLine( thisBranchLineHeight ).trim().replace( /"/g, "'" ).replace( /\s+/g, ' ' ) )}">
-          <img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailBranchSelected}" src="data:image/svg+xml;base64,${btoa( branchLine( thisBranchLineHeight, true ).trim().replace( /"/g, "'" ).replace( /\s+/g, ' ' ) )}">`;
+        let thisBranchLineHeight = rowHeight * level - 5;
+        let branchLines = genBranchLine( { svgHeight : thisBranchLineHeight } );
+
+        return _.map( [
+            {
+              class : CLS.diagramNodeDetailBranch,
+              state : 'default'
+            }, {
+              class : CLS.diagramNodeDetailBranchHover,
+              state : 'hover'
+            }, {
+              class : CLS.diagramNodeDetailBranchSelected,
+              state : 'selected'
+            }
+          ], ( item : any )=> {
+            let branchLine = btoa(
+              branchLines[ item.state ].trim()
+                .replace( /"/g, "'" )
+                .replace( /\s+/g, ' ' ) );
+            return `
+              <div ${diagram.ng2StyleAttr} class="${item.class}">
+                <div ${diagram.ng2StyleAttr} class="img-left" style="background:url(data:image/svg+xml;base64,${branchLine}) left bottom no-repeat; height: ${thisBranchLineHeight}px"></div>
+                <div ${diagram.ng2StyleAttr} class="img-right" style="background:url(data:image/svg+xml;base64,${branchLine}) right bottom no-repeat;"></div>
+              </div>
+            `
+          } )
+          .join( '' );
       }
 
       if ( taskInfo.name && taskInfo.desc ) {
