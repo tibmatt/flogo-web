@@ -945,6 +945,82 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return Promise.resolve( this );
   }
 
+  public triggerByTaskID( eventName : string, taskID : string ) : Promise < FlogoFlowDiagram > {
+
+    if ( !eventName || !taskID ) {
+      return Promise.resolve( this );
+    }
+
+    let nodeID : string;
+
+    for ( let nid in this.nodes ) {
+      if ( this.nodes[ nid ].taskID === taskID ) {
+        nodeID = nid;
+        break;
+      }
+    }
+
+    let node = this.nodes[ nodeID ];
+
+    if ( !node ) {
+      return Promise.resolve( this );
+    }
+
+    let diagram = this;
+
+    let allNodes = d3.selectAll( `.${CLS.diagramNode}` );
+
+    // find the node in diagram
+    let nodeInDiagram : any;
+    let prevNodeInDiagram : any;
+    let nextNodeInDiagram : any;
+    let doneFlag = false;
+
+    allNodes.each( function ( nodeInfo : any, idx : number ) {
+
+      // get the next node of the current node in the diagram
+      if ( doneFlag ) {
+        if ( nodeInDiagram && !nextNodeInDiagram ) {
+          nextNodeInDiagram = d3.select( this );
+        }
+        return;
+      }
+
+      // get the given node in the diagram
+      if ( nodeInfo.id === nodeID ) {
+        doneFlag = true;
+        nodeInDiagram = d3.select( this );
+      } else {
+        // record the previous node in the diagram
+        prevNodeInDiagram = d3.select( this );
+      }
+
+      return;
+    } );
+
+    try {
+      switch ( eventName ) {
+        case 'addTask':
+
+          $( nextNodeInDiagram[ 0 ][ 0 ] )
+            .trigger( 'click' );
+
+          break;
+
+        default:
+
+          $( nodeInDiagram[ 0 ][ 0 ] )
+            .trigger( eventName );
+
+          break;
+      }
+    } catch ( e : any ) {
+      console.error( e );
+    }
+
+    return Promise.resolve( this );
+  }
+
   public linkNodeWithTask( nodeID : string, task : IFlogoFlowDiagramTask ) : Promise < FlogoFlowDiagram > {
     let node = this.nodes[ nodeID ] || this.nodesOfAddType[ nodeID ];
 

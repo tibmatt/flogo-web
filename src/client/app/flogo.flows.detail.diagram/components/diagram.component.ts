@@ -392,10 +392,16 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
               this._diagram = diagram;
             } );
         } )
-        .then( ()=> {
-          _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        .then( () => {
+          return _.isFunction( envelope.done ) && envelope.done( this._diagram );
+        } )
+        .then( () => {
+          // navigate to add task
+          return this._diagram.triggerByTaskID('addTask', data.task.id);
+        } )
+        .catch( ( err : any ) => {
+          console.error( err );
         } );
-
     }
 
     console.groupEnd();
