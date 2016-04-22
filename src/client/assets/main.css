@@ -302,15 +302,24 @@ label {
   padding: 0;
 }
 
-.flogo-common-edit-panel__tiles-list-tile {
+.flogo-common-edit-panel__tiles-list-tile,
+.flogo-common-edit-panel__tiles-list-trigger {
   border-top: solid 1px #d8d8d8;
-  background: url('svg/flogo.flows.detail.diagram.trigger.icon.svg') no-repeat center left 20px,
-    url('svg/flogo.icon.checked.circle.svg') no-repeat center right 20px;
   color: #666;
   font-weight: bold;
   margin: 0;
   padding: 15px 53px 15px 60px;
   text-transform: uppercase;
+}
+
+.flogo-common-edit-panel__tiles-list-tile {
+  background: url('svg/flogo.flows.detail.tasks.gears.svg') no-repeat center left 20px,
+  url('svg/flogo.icon.checked.circle.svg') no-repeat center right 20px;
+}
+
+.flogo-common-edit-panel__tiles-list-trigger {
+  background: url('svg/flogo.flows.detail.diagram.trigger.icon.svg') no-repeat center left 20px,
+  url('svg/flogo.icon.checked.circle.svg') no-repeat center right 20px;
 }
 
 .flogo-common-edit-panel__tiles-list-tile:hover {
