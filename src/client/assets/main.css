@@ -272,15 +272,14 @@ label {
 
 .flogo-common-edit-panel__container {
   padding: 10px 19px 10px 17px;
-  min-height: 70vh;
-  max-height: 70vh;
   overflow-y: scroll;
+  margin-bottom: 70px;
 }
 
 .flogo-common-edit-panel__footer {
   background-color: #f8f8f8;
   padding: 10px 16px;
-  position:absolute;
+  position: fixed;
   bottom:0;
   border-top: 1px solid lightgray;
   width: 100%;
@@ -322,7 +321,9 @@ label {
   url('svg/flogo.icon.checked.circle.svg') no-repeat center right 20px;
 }
 
-.flogo-common-edit-panel__tiles-list-tile:hover {
+.flogo-common-edit-panel__tiles-list-tile:hover,
+.flogo-common-edit-panel__tiles-list-trigger:hover
+{
   background-color: #ececec;
   cursor: pointer;
 }
