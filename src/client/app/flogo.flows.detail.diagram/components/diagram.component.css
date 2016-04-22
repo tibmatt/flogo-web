@@ -16,6 +16,7 @@
   flex-grow: 3;
   overflow: auto;
   background-color: #eeeded;
+  z-index: 1;
 }
 .flogo-flows-detail-diagram {
   padding: 0;
