@@ -88,6 +88,12 @@ export class FlogoFlowsComponet{
                 }
                 response.reverse();
                 this.flows = response;
+                this.flows.forEach((flow) => {
+                    let time = new Date(flow.created_at);
+                    time = new Date(time.getTime());
+                    time = ''+time.getFullYear()+this._toDouble(time.getMonth()+1)+this._toDouble(time.getDate())+' '+ this._toDouble(time.getHours())+':'+this._toDouble(time.getMinutes())+':'+this._toDouble(time.getSeconds());
+                    flow.created_at = moment(time, 'YYYYMMDD hh:mm:ss').fromNow();
+                });
                 resolve(response);
             }).catch((err)=>{
                 reject(err);
@@ -99,5 +105,8 @@ export class FlogoFlowsComponet{
     // mainly for Route Link
     flogoIDEncode( id ) {
         return flogoIDEncode( id );
+    }
+    private _toDouble(num) {
+        return num > 9? num: '0' + num;
     }
 }
