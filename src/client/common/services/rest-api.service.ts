@@ -49,7 +49,7 @@ export class RESTAPIService {
 
               let options = new RequestOptions({headers: headers});
 
-              return this.http.post(`${getEngineURL()}/process/restart`, body, options)
+              return this.http.post(`${getEngineURL()}/flow/restart`, body, options)
                 .toPromise()
                 .then(
                   rsp => {

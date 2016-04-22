@@ -84,7 +84,7 @@ export class RESTAPIFlowsService{
     );
     let options = new RequestOptions( { headers : headers } );
 
-    return this.http.post( `${getProcessServerURL()}/processes`, body, options )
+    return this.http.post( `${getProcessServerURL()}/flows`, body, options )
       .toPromise().then(
         ( response : Response ) => {
           if ( response.text() ) {
@@ -92,7 +92,7 @@ export class RESTAPIFlowsService{
           } else {
             // TODO
             //  need to handle the empty response
-            //  maybe later on the /processes API should be changed to reply the exist process
+            //  maybe later on the /flows API should be changed to reply the exist process
             //  instead of an empty response, however, in that case this block won't be run
             return {};
           }
@@ -103,7 +103,7 @@ export class RESTAPIFlowsService{
   startFlow( id : string, data : any ) {
     let body = JSON.stringify(
       {
-        "processUri" : `${getProcessServerURL()}/processes/${id}`,
+        "flowUri" : `${getProcessServerURL()}/flows/${id}`,
         "data" : data
       }
     );
@@ -118,7 +118,7 @@ export class RESTAPIFlowsService{
     let options = new RequestOptions( { headers : headers } );
 
 
-    return this.http.post( `${getEngineURL()}/process/start`, body, options )
+    return this.http.post( `${getEngineURL()}/flow/start`, body, options )
       .toPromise()
       .then(
         rsp => {
