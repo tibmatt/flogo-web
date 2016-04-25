@@ -107,6 +107,21 @@ export function activitySchemaToTrigger(schema: any) : any {
     endpoint: { settings: _.get(schema, 'endpoint.settings', '') }
   };
 
+  _.each(
+    trigger.inputs, ( input : any ) => {
+      // convert to task enumeration and provision default types
+      input.type = _.get(FLOGO_TASK_ATTRIBUTE_TYPE, _.get(input, 'type', 'STRING').toUpperCase(), FLOGO_TASK_ATTRIBUTE_TYPE.STRING);
+    }
+  );
+
+  _.each(
+    trigger.outputs, ( output : any ) => {
+      // convert to task enumeration and provision default types
+      output.type = _.get(FLOGO_TASK_ATTRIBUTE_TYPE, _.get(output, 'type', 'STRING').toUpperCase(), FLOGO_TASK_ATTRIBUTE_TYPE.STRING);
+    }
+  );
+
+
   return trigger;
 }
 
