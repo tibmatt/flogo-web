@@ -179,6 +179,10 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_padding"] {
   opacity: 0;
 }
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"]:before,
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_padding"]:before {
+  display: none;
+}
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"],
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"] {
   background-color: #fff;
