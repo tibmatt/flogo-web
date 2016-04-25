@@ -1,23 +1,23 @@
 import {Component, ViewChild, ElementRef, OnDestroy, HostListener} from 'angular2/core';
 
-import { PostService } from '../../../common/services/post.service';
+import {PostService} from '../../../common/services/post.service';
 
-import { FLOGO_TASK_ATTRIBUTE_TYPE as TYPES } from '../../../common/constants';
-import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
-import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { MapEditorComponent } from './map-editor.component';
-import { ErrorDisplayComponent } from './error-display.component';
-import { HelpComponent } from "./help.component";
+import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYPE} from '../../../common/constants';
+import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL} from '../constants';
+import {PUB_EVENTS, SUB_EVENTS} from '../messages';
+import {MapEditorComponent} from './map-editor.component';
+import {ErrorDisplayComponent} from './error-display.component';
+import {HelpComponent} from "./help.component";
 
-import { normalizeTaskName, convertTaskID } from '../../../common/utils';
+import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
 interface TransformData {
-  result: any,
-  precedingTiles: any[],
-  precedingTilesOutputs: any[],
-  tile: any,
-  tileInputInfo: any,
-  mappings: any
+  result:any,
+  precedingTiles:any[],
+  precedingTilesOutputs:any[],
+  tile:any,
+  tileInputInfo:any,
+  mappings:any
 }
 
 @Component({
@@ -39,7 +39,7 @@ export class TransformComponent implements OnDestroy {
   out:boolean = false; // controls the in/out transition of the modal
 
   showDeleteConfirmation:boolean = false;
-  @ViewChild('deleteContainer') deleteContainer: ElementRef;
+  @ViewChild('deleteContainer') deleteContainer:ElementRef;
 
   private _subscriptions:any[];
   private data:TransformData = {
@@ -107,7 +107,7 @@ export class TransformComponent implements OnDestroy {
 
   @HostListener('click', ['$event'])
   clickOutsideDeleteConfirmation(event:Event) {
-    if(this.showDeleteConfirmation && this.deleteContainer && !this.deleteContainer.nativeElement.contains(event.target)){
+    if (this.showDeleteConfirmation && this.deleteContainer && !this.deleteContainer.nativeElement.contains(event.target)) {
       this.showDeleteConfirmation = false;
     }
   }
@@ -149,10 +149,14 @@ export class TransformComponent implements OnDestroy {
 
   private extractPrecedingTilesOutputs(precedingTiles:any[]) {
     return _.chain(precedingTiles || [])
-      .filter((tile:any) => tile.attributes && tile.attributes.outputs && tile.attributes.outputs.length > 0)
+      .filter((tile:any) => {
+        let attrHolder = tile.type == TASK_TYPE.TASK_ROOT ? tile : tile.attributes;
+        return attrHolder && attrHolder.outputs && attrHolder.outputs.length > 0;
+      })
       .map((tile:any) => {
         let name = normalizeTaskName(tile.name);
-        let outputs = tile.attributes.outputs.map(this.mapInOutObjectDisplay);
+        let attrHolder = tile.type == TASK_TYPE.TASK_ROOT ? tile : tile.attributes;
+        let outputs = attrHolder.outputs.map(this.mapInOutObjectDisplay);
         return [name, outputs];
       })
       .fromPairs()
@@ -168,15 +172,15 @@ export class TransformComponent implements OnDestroy {
     }
   }
 
-  private mapInOutObjectDisplay(inputOutput:{name:string, type:TYPES}) {
+  private mapInOutObjectDisplay(inputOutput:{name:string, type:ATTRIBUTE_TYPE}) {
     return {
       name: inputOutput.name,
-      type: TYPES[inputOutput.type].toLowerCase()
+      type: ATTRIBUTE_TYPE[inputOutput.type].toLowerCase()
     };
   }
 
-  private transformMappingsToExternalFormat(mappings: any[]) {
-    let tileMap : any = {};
+  private transformMappingsToExternalFormat(mappings:any[]) {
+    let tileMap:any = {};
     _.forEach(this.data.precedingTiles, (tile:any) => {
       tileMap[normalizeTaskName(tile.name)] = convertTaskID(tile.id);
     });
@@ -185,24 +189,25 @@ export class TransformComponent implements OnDestroy {
 
     mappings.forEach(mapping => {
       let matches = re.exec(mapping.value);
-      if(!matches) {
+      if (!matches) {
         return; // ignoring it
       }
 
       let taskId = tileMap[matches[2]];
       let property = matches[3];
+      let path = taskId ? `A${taskId}.${property}` : `T.${property}`;
       let rest = matches[4] || '';
-      mapping.value = `[T${taskId}.${property}]${rest}`;
+      mapping.value = `[${path}]${rest}`;
     });
 
     return mappings;
 
   }
 
-  private transformMappingsToInternalFormat(mappings: any[]) {
-    let tileMap : any = {};
-    _.forEach(this.data.precedingTiles, tile => {
-      let tileId = convertTaskID(tile.id);
+  private transformMappingsToInternalFormat(mappings:any[]) {
+    let tileMap:any = {};
+    _.forEach(this.data.precedingTiles, (tile:any) => {
+      let tileId = convertTaskID(tile.id) || undefined;
       tileMap[tileId] = normalizeTaskName(tile.name);
     });
 
@@ -210,13 +215,13 @@ export class TransformComponent implements OnDestroy {
 
     mappings.forEach(mapping => {
       let matches = re.exec(mapping.value);
-      if(!matches) {
+      if (!matches) {
         return; // ignoring it
       }
 
-      let taskName = tileMap[matches[1]];
-      let property = matches[2];
-      let rest = matches[3] || '';
+      let taskName = tileMap[matches[2]];
+      let property = matches[3];
+      let rest = matches[4] || '';
       mapping.value = `${taskName}.${property}${rest}`;
     });
 

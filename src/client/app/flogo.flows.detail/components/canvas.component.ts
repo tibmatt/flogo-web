@@ -1250,7 +1250,7 @@ export class FlogoCanvasComponent {
     return nodeIds
       .map(nodeId => {
         let node = this.diagram.nodes[nodeId];
-        if (node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE) {
+        if (node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE || node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT) {
           return this.tasks[node.taskID];
         } else {
           return null;
