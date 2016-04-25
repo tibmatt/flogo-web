@@ -1138,38 +1138,49 @@ export class FlogoCanvasComponent {
     var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
     var context     = this._getCurrentContext(data.node.taskID);
 
-
-    this._postService.publish(
-      _.assign(
-        {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-          data : _.assign( {},
-            data,
-            { task : currentTask } ,
-            { step: currentStep },
-            { context: context }
-          ),
-
-          done: () => {
-            // select task done
-            this._postService.publish(
-              _.assign(
-                {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-                  data : {
-                    node : data.node,
-                    task : this.tasks[ data.node.taskID ]
-                  },
-                  done : ( diagram : IFlogoFlowDiagram ) => {
-                    _.assign( this.diagram, diagram );
-                    this._updateFlow( this._flow );
-                  }
-                }
-              )
-            );
-
-          }
-        }
+    this._router.navigate(
+      [
+        'FlogoFlowsDetailTaskDetail',
+        { id : data.node.taskID }
+      ]
       )
-    );
+      .then(
+        () => {
+          console.group('after navigation');
+
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                data: _.assign({},
+                  data,
+                  {task: currentTask},
+                  {step: currentStep},
+                  {context: context}
+                ),
+
+                done: () => {
+                  // select task done
+                  this._postService.publish(
+                    _.assign(
+                      {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+                        data: {
+                          node: data.node,
+                          task: this.tasks[data.node.taskID]
+                        },
+                        done: (diagram:IFlogoFlowDiagram) => {
+                          _.assign(this.diagram, diagram);
+                          this._updateFlow(this._flow);
+                        }
+                      }
+                    )
+                  );
+
+                }
+              }
+            )
+          );
+        }
+  );
 
     console.groupEnd();
   }
