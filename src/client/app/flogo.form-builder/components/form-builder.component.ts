@@ -196,7 +196,7 @@ export class FlogoFormBuilderComponent{
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
         return {control:'FieldTextArea'};
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAM:
+      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
         return {control:'FieldParams'};
 
       default:
@@ -224,10 +224,10 @@ export class FlogoFormBuilderComponent{
       case 'object':
         return FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAM:
+      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
       case 'map':
       case 'params':
-        return FLOGO_TASK_ATTRIBUTE_TYPE.PARAM;
+        return FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS;
 
       default:
         return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;

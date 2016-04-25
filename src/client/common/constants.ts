@@ -26,7 +26,7 @@ export enum FLOGO_TASK_ATTRIBUTE_TYPE {
   OBJECT,
   BOOLEAN,
   ARRAY,
-  PARAM
+  PARAMS
 }
 
 /**
