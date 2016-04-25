@@ -426,18 +426,19 @@
   z-index: 4;
   color: #fff;
 }
-.flogo-flows-detail-diagram-node-badge i {
+.flogo-flows-detail-diagram-node-badge .flogo-flows-detail-diagram-status-icon {
   border-radius: 50%;
   width: 18px;
   height: 18px;
   line-height: 18px;
   margin-left: 4px;
+  display: inline-block;
 }
-.flogo-flows-detail-diagram-node-badge i.fa-bolt {
-  background: #AECC64;
+.flogo-flows-detail-diagram-node-badge .flogo-flows-detail-diagram-status-icon.flogo-flows-detail-diagram-ic-transform {
+  background-image: url('/assets/svg/flogo.flows.diagram.icon.transform.svg');
 }
-.flogo-flows-detail-diagram-node-badge i.fa-exclamation {
-  background: #ED6464;
+.flogo-flows-detail-diagram-node-badge .flogo-flows-detail-diagram-status-icon.flogo-flows-detail-diagram-ic-error {
+  background-image: url('/assets/svg/flogo.flows.diagram.icon.error.svg');
 }
 .flogo-flows-detail-diagram-row.hover .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"] {
   opacity: 1;

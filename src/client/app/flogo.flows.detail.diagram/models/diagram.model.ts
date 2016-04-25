@@ -895,11 +895,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         if ( nodeStatus ) {
           if ( nodeStatus.hasError ) {
-            tpl += `<i ${diagram.ng2StyleAttr} class="fa fa-exclamation"></i>`;
+            tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-error"></i>`;
           }
 
           if ( nodeStatus.hasMapping ) {
-            tpl += `<i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i>`;
+            tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-transform"></i>`;
           }
         }
 

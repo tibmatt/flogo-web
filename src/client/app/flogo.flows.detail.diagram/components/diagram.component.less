@@ -487,17 +487,21 @@
   right: 10px;
   z-index: 4;
   color: #fff;
-  i{
+
+  .flogo-flows-detail-diagram-status-icon {
     border-radius: 50%;
     width: 18px;
     height: 18px;
     line-height: 18px;
     margin-left: 4px;
-    &.fa-bolt{
-      background: #AECC64;
+    display: inline-block;
+
+    &.flogo-flows-detail-diagram-ic-transform {
+      background-image: url('/assets/svg/flogo.flows.diagram.icon.transform.svg');
     }
-    &.fa-exclamation{
-      background: #ED6464;
+
+    &.flogo-flows-detail-diagram-ic-error {
+      background-image: url('/assets/svg/flogo.flows.diagram.icon.error.svg');
     }
   }
 }
