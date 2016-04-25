@@ -242,9 +242,6 @@ label {
   min-height: 89px;
   max-height: 89px;
   padding: 19px 16px 24px;
-  display: flex;
-  flex-direction:row;
-  align-items: baseline;
 
 }
 
@@ -256,6 +253,7 @@ label {
   font-weight: bold;
   margin: 0;
   padding: 0;
+  line-height: 1.5;
   letter-spacing: 2px;
 }
 

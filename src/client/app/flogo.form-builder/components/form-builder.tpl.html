@@ -14,7 +14,9 @@
       </div>
 
       <div class="flogo-common-edit-panel__head-wrapper">
-        <h3  *ngIf="_task && (_context.isTask || _context.isTrigger)" class="flogo-common-edit-panel__head-title">{{ _task.name || _task.id }}</h3>
+        <div  *ngIf="_task && (_context.isTask || _context.isTrigger)">
+          <h3 [(myContenteditable)]="_task.name" class="flogo-common-edit-panel__head-title" (myContenteditableChange)="changeTaskDetail($event)"></h3>
+        </div>
         <h3  *ngIf="_context.isBranch" class="flogo-common-edit-panel__head-title">Configure Branch</h3>
         <div class="flogo-common-edit-panel__head-subtitle"></div>
       </div>

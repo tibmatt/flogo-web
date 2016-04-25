@@ -9,13 +9,14 @@ import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-bu
 import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
+import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 
 @Component({
   selector: 'flogo-form-builder',
   moduleId: module.id,
   styleUrls: ['form-builder.css'],
   templateUrl: 'form-builder.tpl.html',
-  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldParams ],
+  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldParams, Contenteditable],
   inputs: ['_task:task','_step:step', '_context:context']
 })
 export class FlogoFormBuilderComponent{
@@ -359,4 +360,7 @@ export class FlogoFormBuilderComponent{
 
   }
 
+  changeTaskDetail(event: any) {
+    console.log(event);
+  }
 }
