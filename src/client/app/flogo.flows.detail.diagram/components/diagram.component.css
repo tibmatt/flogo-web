@@ -116,11 +116,11 @@
   left: 115px;
   background-color: #79b8dc;
   box-shadow: 0 2.5px 7px 0 rgba(0, 0, 0, 0.3);
-  width: 162px;
+  width: 142px;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-menu-selected[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-menu .flogo-flows-detail-diagram-node-menu-box {
   opacity: 1;
-  width: 118px;
+  width: 98px;
 }
 .flogo-flows-detail-diagram-node:before {
   position: absolute;
