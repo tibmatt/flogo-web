@@ -170,7 +170,7 @@ echoSuccess "update submodule\n"
 echoHeader "Step3: start process and state server"
 
 echoInfo " setup docker"
-cd "${FLOGO_INTERNAL_PATH}/utils/demo/cli/setup"
+cd "${FLOGO_INTERNAL_PATH}/utils/flow-demo/cli/setup"
 sh setup-docker.sh
 
 echoInfo "stop process and state server"
