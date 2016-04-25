@@ -82,7 +82,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
       parents ? : string[ ],
       children ? : string[ ]
     }
-  ) : Promise < boolean[ ] > {
+  ) : Promise < any > {
     let promises : Promise < boolean > [ ] = [];
 
     if ( nodes.children ) {
@@ -123,7 +123,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
       parents ? : string[ ],
       children ? : string[ ]
     }
-  ) : Promise < boolean[ ] > {
+  ) : Promise < any > {
     let promises : Promise < boolean > [ ] = [];
 
     if ( nodes.children ) {

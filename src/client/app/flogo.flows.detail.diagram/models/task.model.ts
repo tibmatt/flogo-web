@@ -13,13 +13,14 @@ export interface IFlogoFlowDiagramTask {
   name ? : string;
   description ? : string;
   title ? : string;
-  activityType ? : string;
+  activityType? : string;
   attributes ? : IFlogoFlowDiagramTaskAttributes;
   inputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
   outputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks ? : IFlogoFlowDiagramTask[ ];
   links ? : IFlogoFlowDiagramTaskLink[ ];
   status ? : FLOGO_TASK_STATUS;
+  condition? : string;
 }
 
 export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {

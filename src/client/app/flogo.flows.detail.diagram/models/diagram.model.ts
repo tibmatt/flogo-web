@@ -4,8 +4,7 @@ import {
   IFlogoFlowDiagramTaskDictionary,
   IFlogoFlowDiagramNode,
   FlogoFlowDiagramNode,
-  IFlogoFlowDiagramTask,
-  FlogoFlowDiagramProcess
+  IFlogoFlowDiagramTask
 } from '../models';
 import { Selection } from 'd3';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
@@ -1002,19 +1001,19 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       switch ( eventName ) {
         case 'addTask':
 
-          $( nextNodeInDiagram[ 0 ][ 0 ] )
+          (<any>$( nextNodeInDiagram[ 0 ][ 0 ] ))
             .trigger( 'click' );
 
           break;
 
         default:
 
-          $( nodeInDiagram[ 0 ][ 0 ] )
+          (<any>$( nodeInDiagram[ 0 ][ 0 ] ))
             .trigger( eventName );
 
           break;
       }
-    } catch ( e : any ) {
+    } catch ( e ) {
       console.error( e );
     }
 
@@ -1128,15 +1127,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     (<FlogoFlowDiagramNode>this.nodes[ parentNode.id ]).linkToChildren( [ node.id ] );
 
     return Promise.resolve( this );
-  }
-
-  public toProcess() : any {
-    return FlogoFlowDiagramProcess.toProcess(
-      {
-        root : this.root,
-        nodes : this.nodes
-      }, this.tasks
-    );
   }
 
   private _updateNG2StyleAttr() {

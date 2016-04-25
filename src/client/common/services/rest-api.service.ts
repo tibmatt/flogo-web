@@ -1,8 +1,6 @@
 import { Injectable } from 'angular2/core';
-import { FlogoFlowDiagramProcess, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from '../models';
-import { PROCESS, MOCK_TASKS } from '../mocks';
-import { Http, Headers, RequestOptions, Response } from 'angular2/http';
-import {TASKS} from "../../app/flogo.flows.detail.diagram/mocks/mock-tasks";
+import { MOCK_TASKS } from '../mocks';
+import { Http, Headers, RequestOptions } from 'angular2/http';
 import { getEngineURL, getStateServerURL } from '../utils';
 
 @Injectable()

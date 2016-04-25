@@ -33,6 +33,7 @@ import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from
 import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName } from '../../../common/utils';
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
+import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 
 @Component( {
   selector: 'flogo-canvas',
@@ -209,9 +210,7 @@ export class FlogoCanvasComponent {
         .then(
           ( rsp : any ) => {
             this._mockProcess = _.find( rsp, { _id : this._flow._id } );
-            this._mockProcess = _.assign(
-              new FlogoFlowDiagram( this._mockProcess.paths, this._mockProcess.items ).toProcess(), { id : flogoIDEncode( this._flow._id ) }
-            );
+            this._mockProcess = flogoFlowToJSON( this._mockProcess );
           }
         );
     }
@@ -290,9 +289,9 @@ export class FlogoCanvasComponent {
     // generate process based on the current flow
     // TODO
     //    since the same process ID returns 204 No Content response, attach timestamp to the ID.
-    let process = _.assign(
-      new FlogoFlowDiagram( this._flow.paths, this._flow.items ).toProcess(), { id : flogoIDEncode( `${this._flow._id}:${Date.now()}`) }
-    );
+    let process = flogoFlowToJSON( _.assign( {},
+      this._flow,
+      { id : flogoIDEncode( `${this._flow._id}:${Date.now()}` ) } ) );
 
     return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
       this._uploadingProcess = false;
