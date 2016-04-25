@@ -43,7 +43,7 @@ export class FlogoFlowsComponet{
         new Promise((resolve, reject)=>{
             let request = {
                 name: data.name,
-                description: data.description?data.description:'This flow has no description.',
+                description: data.description,
                 paths: {},
                 items: {}
             };
