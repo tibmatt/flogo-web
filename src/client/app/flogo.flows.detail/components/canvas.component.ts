@@ -1086,6 +1086,14 @@ export class FlogoCanvasComponent {
               _.assign( this.diagram, diagram );
               this._updateFlow( this._flow );
               this._isDiagramEdited = true;
+              // clear details panel
+              this._router.navigate(
+                [
+                  'FlogoFlowsDetailTaskDetail',
+                  { id : null}
+                ]
+              )
+
             }
           }
         )
