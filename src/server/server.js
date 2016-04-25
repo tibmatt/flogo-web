@@ -22,9 +22,9 @@ let engine = new Engine();
 let registerActivities  = new RegisterActivities(null, engine);
 let registerTriggers  = new RegisterTriggers(null, engine);
 
-engine.addModel("local://", path.join(config.rootPath, config.models.path, 'simple'));
-//engine.build();
-//engine.start();
+// engine.addModel("local://", path.join(config.rootPath, config.models.path, 'simple'));
+// engine.build();
+// engine.start();
 
 // logger
 app.use(function *(next){

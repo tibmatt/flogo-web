@@ -9,14 +9,11 @@ import {isDirectory, isExisted} from '../../common/utils';
 
 const execSync = require('child_process').execSync;
 
-
 // TODO DB Name should pass from options
 // The database for activities
-// let dbDefaultName = "http://localhost:5984/flogo-web-activities";
 let dbDefaultName = config.activities.db;
 // TODO the path should pass from options
 // The folder which contains all activities
-// let activitiesDefaultPath = "../../../../packages/activities";
 let activitiesDefaultPath = config.activities.path;
 
 function generateActivityID(name, version){
@@ -55,15 +52,15 @@ export class RegisterActivities{
       console.error("[error]Read package.json template error. ", err);
     }
 
-    this.updateActivitiesDB();
+
     //
-    // this.cleanInstalledActivites().then(()=>{
-    //   console.log("[Info]clean installed activities success!");
-    //
-    // }).catch(()=>{
-    //   console.error("[Error]clean installed activities fail!");
-    //   throw "clean installed activities fail!"
-    // })
+    this.cleanInstalledActivites().then(()=>{
+      console.log("[Info]clean installed activities success!");
+      this.updateActivitiesDB();
+    }).catch(()=>{
+      console.error("[Error]clean installed activities fail!");
+      throw "clean installed activities fail!"
+    })
 
     // start watch files/folder changes
     //this.watch();
@@ -91,10 +88,11 @@ export class RegisterActivities{
   }
 
   cleanInstalledActivites(){
+    console.log("-------cleanInstalledActivites");
     return new Promise((resolve, reject)=>{
-      cleanDB()
+      this.cleanDB()
       .then((result)=>{
-        return cleanNodeModules();
+        return this.cleanNodeModules();
       })
       .then((result)=>{
         resolve(true);
@@ -107,14 +105,22 @@ export class RegisterActivities{
 
   cleanDB(){
     return new Promise((resolve, reject)=>{
-      this._dbService.db.allDocs().then((result)=>{
+      this._dbService.db.allDocs({include_docs: true}).then((result)=>{
+        console.log("************cleanDB");
         let docs = result&&result.rows||[];
-        docs.forEach((doc)=>{
-          doc._deleted = true;
+        let deletedDocs = [];
+        docs.forEach((item)=>{
+          //doc._deleted = true;
+          let doc = item&&item.doc;
+          if(doc){
+            doc._deleted = true;
+            deletedDocs.push(doc);
+          }
+          console.log(doc);
         });
 
-        console.log(docs);
-        this._dbService.db.bulkDocs(docs).then((result)=>{
+        console.log(deletedDocs);
+        this._dbService.db.bulkDocs(deletedDocs).then((result)=>{
           resolve(result);
         }).catch((err)=>{
           reject(err);
