@@ -1043,15 +1043,13 @@ export class FlogoCanvasComponent {
     let previousTiles = this.mapNodesToTiles(previousNodes);
 
     let selectedTaskId = selectedNode.taskID;
-    let selectedTask = _.cloneDeep( this.tasks[ selectedTaskId ] );
 
     this._postService.publish(
       _.assign(
         {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
           data: {
             previousTiles,
-            tile: selectedTask,
-            tileType: selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT ? 'trigger' : 'activity'
+            tile: _.cloneDeep( this.tasks[selectedTaskId] )
           }
         }
       ));
