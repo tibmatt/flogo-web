@@ -622,7 +622,11 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
-    this.tasks[ data.trigger.id ] = data.trigger;
+    // generate trigger id when adding the trigger;
+    //  TODO replace the task ID generation function?
+    let trigger = _.assign( {}, data.trigger, { id : flogoGenTaskID() } );
+
+    this.tasks[ trigger.id ] = trigger;
 
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
@@ -632,7 +636,7 @@ export class FlogoCanvasComponent {
               {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
                 data : {
                   node : data.node,
-                  task : data.trigger
+                  task : trigger
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
