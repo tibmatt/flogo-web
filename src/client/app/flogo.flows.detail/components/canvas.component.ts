@@ -216,7 +216,7 @@ export class FlogoCanvasComponent {
     }
   }
 
-  private _runFromTrigger() {
+  private _runFromTrigger( data? : any ) {
     this._isDiagramEdited = false;
 
     if ( this._isCurrentProcessDirty ) {
@@ -225,10 +225,14 @@ export class FlogoCanvasComponent {
         .then(
           ( rsp : any ) => {
             if ( !_.isEmpty( rsp ) ) {
-              return this.startAndMonitorProcess( rsp.id );
+              return this.startAndMonitorProcess( rsp.id, {
+                initData: data
+              } );
             } else {
               // the process isn't changed
-              return this.startAndMonitorProcess( this._currentProcessID );
+              return this.startAndMonitorProcess( this._currentProcessID, {
+                initData: data
+              } );
             }
           }
         )
@@ -241,7 +245,9 @@ export class FlogoCanvasComponent {
         );
     } else {
 
-      return this.startAndMonitorProcess( this._currentProcessID )
+      return this.startAndMonitorProcess( this._currentProcessID, {
+        initData: data
+      } )
         .then(
           () => {
             // TODO
@@ -306,14 +312,12 @@ export class FlogoCanvasComponent {
     });
   }
 
-  startProcess( id? : string ) {
+  startProcess( id : string, initData? : any ) {
     this._startingProcess = true;
     this._steps = null;
 
     return this._restAPIFlowsService.startFlow(
-        id || this._currentProcessID, {
-          // "petId" : "20160222230266"
-        }
+        id || this._currentProcessID, initData || {}
       )
       .then(
         ( rsp : any )=> {
@@ -341,7 +345,7 @@ export class FlogoCanvasComponent {
   }
 
   startAndMonitorProcess( processID? : string, opt? : any ) {
-    return this.startProcess( processID )
+    return this.startProcess( processID, opt && opt.initData )
       .then(
         ( rsp : any )=> {
           return this.monitorProcessStatus( rsp.id, opt );
@@ -947,9 +951,16 @@ export class FlogoCanvasComponent {
 
   private _runFromThisTile(data:any, envelope:any) {
     console.group('Run from this tile');
+    let initData = data.initData || {
+        petId: "1234567890"
+      }; // TODO remove mock data
 
     if ( this.tasks[ data.taskId ].type === FLOGO_TASK_TYPE.TASK_ROOT ) {
-      this._runFromTrigger();
+      if ( _.isEmpty( initData ) ) {
+        this._runFromTrigger();
+      } else {
+        this._runFromTrigger( initData );
+      }
     } else if ( this._processInstanceID ) {
       // run from other than the trigger (root task);
 
