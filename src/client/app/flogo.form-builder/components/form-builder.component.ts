@@ -19,7 +19,7 @@ import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-buil
   inputs: ['_task:task','_step:step', '_context:context']
 })
 export class FlogoFormBuilderComponent{
-  _fieldObserver:ReplaySubject;
+  _fieldObserver:ReplaySubject<any>;
   _task: any;
   _step: any;
   _context: any;
@@ -40,10 +40,10 @@ export class FlogoFormBuilderComponent{
   private _initSubscribe() {
     this._subscriptions = [];
 
-    let subs = [];
+    let subs :any[] = [];
 
     _.each(
-      subs, sub => {
+      (subs:any, sub:any) => {
         this._subscriptions.push( this._postService.subscribe( sub ) );
       }
     );
@@ -55,8 +55,7 @@ export class FlogoFormBuilderComponent{
       this._saveChangesToFlow();
     }
 
-
-    _.each( this._subscriptions, sub => {
+    _.each( this._subscriptions, (sub:any) => {
         this._postService.unsubscribe( sub );
       }
     );
@@ -160,7 +159,7 @@ export class FlogoFormBuilderComponent{
 
 
     if(this._context.isTrigger) {
-      var attributesTrigger = {};
+      var attributesTrigger : any = {};
       var task = this._task || {};
 
       attributesTrigger['endpointSettings'] = ((task['endpoint'] || {})['settings']) || [];
@@ -200,8 +199,8 @@ export class FlogoFormBuilderComponent{
   _setTaskEnvironment(attributes:any) {
     this._attributes = { inputs: attributes['inputs'] || [], outputs: attributes['outputs'] || [] };
 
-    this._attributes.inputs.map((input) => {   input.mappings = this._task.inputMappings;    input.step  = this._step });
-    this._attributes.outputs.map((output) => { output.mappings = this._task.outputMappings;  output.step =  this._step });
+    this._attributes.inputs.map((input:any) => {   input.mappings = this._task.inputMappings;    input.step  = this._step });
+    this._attributes.outputs.map((output:any) => { output.mappings = this._task.outputMappings;  output.step =  this._step });
   }
 
   getControlByType(type:string) {
@@ -229,7 +228,7 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  _mapTypeToConstant(type:string) {
+  _mapTypeToConstant(type:string|FLOGO_TASK_ATTRIBUTE_TYPE) {
 
     switch(type) {
       case 'string':
@@ -319,12 +318,12 @@ export class FlogoFormBuilderComponent{
     // if there is results
     if(info.step) {
 
-      var mapping = _.find(info.mappings, (mapping) => {
+      var mapping = _.find(info.mappings, (mapping:any) => {
         return mapping.value === info.name;
       });
 
       if (mapping) {
-        var resultValue = _.find(info.step.process.attributes, (attribute) => {
+        var resultValue = _.find(info.step.process.attributes, (attribute:any) => {
           return mapping.mapTo == attribute.name;
         });
 
