@@ -1,4 +1,4 @@
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from './constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, DEFAULT_VALUES_OF_TYPES } from './constants';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
@@ -59,6 +59,35 @@ export function convertTaskID(taskID : string ) {
   return parseInt( id );
 }
 
+// get default value of a given type
+export function getDefaultValue( type : FLOGO_TASK_ATTRIBUTE_TYPE ) : any {
+  return DEFAULT_VALUES_OF_TYPES[ type ];
+}
+
+// convert the type of attribute and add default value if enabled
+function portAttribute( inAttr : {
+  type : string;
+  value : any;
+  [key : string] : any;
+}, withDefault = false ) {
+
+  let outAttr = <{
+    type : FLOGO_TASK_ATTRIBUTE_TYPE;
+    value : any;
+    [key : string] : any;
+  }>_.assign( {}, inAttr );
+
+  outAttr.type = <FLOGO_TASK_ATTRIBUTE_TYPE>_.get( FLOGO_TASK_ATTRIBUTE_TYPE,
+    _.get( outAttr, 'type', 'STRING' )
+      .toUpperCase() );
+
+  if ( withDefault && _.isUndefined( outAttr.value ) ) {
+    outAttr.value = getDefaultValue( outAttr.type );
+  }
+
+  return outAttr;
+}
+
 // mapping from schema.json of activity to the task can be used in flow.json
 export function activitySchemaToTask(schema: any) : any {
 
@@ -78,14 +107,14 @@ export function activitySchemaToTask(schema: any) : any {
   _.each(
     task.attributes.inputs, ( input : any ) => {
       // convert to task enumeration and provision default types
-      input.type = _.get(FLOGO_TASK_ATTRIBUTE_TYPE, _.get(input, 'type', 'STRING').toUpperCase(), FLOGO_TASK_ATTRIBUTE_TYPE.STRING);
+      _.assign( input, portAttribute( input, true ) );
     }
   );
 
   _.each(
     task.attributes.outputs, ( output : any ) => {
       // convert to task enumeration and provision default types
-      output.type = _.get(FLOGO_TASK_ATTRIBUTE_TYPE, _.get(output, 'type', 'STRING').toUpperCase(), FLOGO_TASK_ATTRIBUTE_TYPE.STRING);
+      _.assign( output, portAttribute( output ) );
     }
   );
 
@@ -110,14 +139,14 @@ export function activitySchemaToTrigger(schema: any) : any {
   _.each(
     trigger.inputs, ( input : any ) => {
       // convert to task enumeration and provision default types
-      input.type = _.get(FLOGO_TASK_ATTRIBUTE_TYPE, _.get(input, 'type', 'STRING').toUpperCase(), FLOGO_TASK_ATTRIBUTE_TYPE.STRING);
+      _.assign( input, portAttribute( input, true ) );
     }
   );
 
   _.each(
     trigger.outputs, ( output : any ) => {
       // convert to task enumeration and provision default types
-      output.type = _.get(FLOGO_TASK_ATTRIBUTE_TYPE, _.get(output, 'type', 'STRING').toUpperCase(), FLOGO_TASK_ATTRIBUTE_TYPE.STRING);
+      _.assign( output, portAttribute( output ) );
     }
   );
 
