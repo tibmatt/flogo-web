@@ -43,6 +43,7 @@ export class Engine {
   addActivity(activityPath){
     try{
       let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      console.log(`flogo add activity ${activityPath}`);
       execSync(`flogo add activity ${activityPath}`, {cwd: defaultEnginePath});
       return true;
     }catch (err){
@@ -54,6 +55,7 @@ export class Engine {
   addTrigger(triggerPath){
     try{
       let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      console.log(`flogo add trigger ${triggerPath}`);
       execSync(`flogo add trigger ${triggerPath}`, {cwd: defaultEnginePath});
       return true;
     }catch (err){
@@ -65,6 +67,7 @@ export class Engine {
   addModel(modelPath){
     try{
       let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      console.log(`flogo add model ${modelPath}`);
       execSync(`flogo add model ${modelPath}`, {cwd: defaultEnginePath});
       return true;
     }catch (err){
