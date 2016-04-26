@@ -407,7 +407,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
       mapping.value = <string>_.get( inMapping, 'value' );
       mapping.mapTo = <string>_.get( inMapping, 'mapTo' );
 
-      if ( _.isEmpty( mapping.type ) ) {
+      if ( _.isUndefined( mapping.type ) ) {
         DEBUG && console.warn( 'Empty mapping type found' );
         DEBUG && console.log( inMapping );
         return;
@@ -428,8 +428,8 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
       // TODO
       //  haven't got the types for mapping, hence of the type of mapping isn't the required integre type,
       //  force it to 1;
-      if ( _.isNumber( mapping.type ) ) {
-        INFO && console.warn( `Force invalid mapping type to 1 since it's not integer` );
+      if ( !_.isNumber( mapping.type ) ) {
+        INFO && console.warn( `Force invalid mapping type to 1 since it's not a number.` );
         INFO && console.log( mapping );
         mapping.type = 1;
       }
