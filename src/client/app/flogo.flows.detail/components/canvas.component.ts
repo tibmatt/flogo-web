@@ -287,11 +287,12 @@ export class FlogoCanvasComponent {
     this._uploadingProcess = true;
 
     // generate process based on the current flow
-    // TODO
-    //    since the same process ID returns 204 No Content response, attach timestamp to the ID.
-    let process = flogoFlowToJSON( _.assign( {},
-      this._flow,
-      { id : flogoIDEncode( `${this._flow._id}:${Date.now()}` ) } ) );
+    let process = flogoFlowToJSON( this._flow );
+
+    //  delete the id of the flow,
+    //  since the same process ID returns 204 No Content response and cannot be updated,
+    //  while the flow information without ID will be assigned an ID automatically.
+    delete process.id;
 
     return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
       this._uploadingProcess = false;
