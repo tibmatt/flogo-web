@@ -17,7 +17,8 @@ interface TransformData {
   precedingTilesOutputs:any[],
   tile:any,
   tileInputInfo:any,
-  mappings:any
+  mappings:any,
+  tileType:string
 }
 
 @Component({
@@ -48,7 +49,8 @@ export class TransformComponent implements OnDestroy {
     precedingTilesOutputs: [],
     tile: null,
     tileInputInfo: null,
-    mappings: null
+    mappings: null,
+    tileType: ''
   };
 
   constructor(private _postService:PostService) {
@@ -137,7 +139,8 @@ export class TransformComponent implements OnDestroy {
       precedingTilesOutputs: this.extractPrecedingTilesOutputs(data.previousTiles),
       tile: data.tile,
       tileInputInfo: this.extractTileInputInfo(data.tile || {}),
-      mappings: data.tile.inputMappings ? _.cloneDeep(data.tile.inputMappings) : []
+      mappings: data.tile.inputMappings ? _.cloneDeep(data.tile.inputMappings) : [],
+      tileType: data.tileType
     };
     this.data.mappings = this.transformMappingsToInternalFormat(this.data.mappings);
 
@@ -195,7 +198,7 @@ export class TransformComponent implements OnDestroy {
 
       let taskId = tileMap[matches[2]];
       let property = matches[3];
-      let path = taskId ? `A${taskId}.${property}` : `T.${property}`;
+      let path = this.data.tileType === 'trigger' ? `T.${property}` : `A${taskId}.${property}`;
       let rest = matches[4] || '';
       mapping.value = `[${path}]${rest}`;
     });
