@@ -11,6 +11,8 @@ import {HelpComponent} from "./help.component";
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
+const TILE_MAP_ROOT_KEY = 'root-task';
+
 interface TransformData {
   result:any,
   precedingTiles:any[],
@@ -182,7 +184,10 @@ export class TransformComponent implements OnDestroy {
   private transformMappingsToExternalFormat(mappings:any[]) {
     let tileMap:any = {};
     _.forEach(this.data.precedingTiles, (tile:any) => {
-      tileMap[normalizeTaskName(tile.name)] = convertTaskID(tile.id);
+      tileMap[normalizeTaskName(tile.name)] = {
+        id: convertTaskID(tile.id),
+        isRoot: tile.type == TASK_TYPE.TASK_ROOT
+      };
     });
 
     let re = REGEX_INPUT_VALUE_INTERNAL;
@@ -193,9 +198,9 @@ export class TransformComponent implements OnDestroy {
         return; // ignoring it
       }
 
-      let taskId = tileMap[matches[2]];
+      let taskInfo = tileMap[matches[2]];
       let property = matches[3];
-      let path = taskId ? `A${taskId}.${property}` : `T.${property}`;
+      let path = taskInfo.isRoot ? `T.${property}` : `A${taskInfo.id}.${property}`;
       let rest = matches[4] || '';
       mapping.value = `[${path}]${rest}`;
     });
@@ -209,6 +214,9 @@ export class TransformComponent implements OnDestroy {
     _.forEach(this.data.precedingTiles, (tile:any) => {
       let tileId = convertTaskID(tile.id) || undefined;
       tileMap[tileId] = normalizeTaskName(tile.name);
+      if(tile.type == TASK_TYPE.TASK_ROOT) {
+        tileMap[TILE_MAP_ROOT_KEY] = tileMap[tileId];
+      }
     });
 
     let re = REGEX_INPUT_VALUE_EXTERNAL;
@@ -219,7 +227,7 @@ export class TransformComponent implements OnDestroy {
         return; // ignoring it
       }
 
-      let taskName = tileMap[matches[2]];
+      let taskName = tileMap[matches[2]] || tileMap[TILE_MAP_ROOT_KEY];
       let property = matches[3];
       let rest = matches[4] || '';
       mapping.value = `${taskName}.${property}${rest}`;
