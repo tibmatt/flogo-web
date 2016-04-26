@@ -23,7 +23,7 @@ export class MapEditorComponent implements OnChanges, OnInit {
   editor:Control;
 
   private tileInfo:TileInOutInfo = {
-    attributes: [],
+    attributes: {},
     precedingOutputs: {}
   };
 
@@ -88,7 +88,15 @@ export class MapEditorComponent implements OnChanges, OnInit {
   }
 
   private extractInputs(tile:any) {
-    return tile && tile.inputs ? tile.inputs.map((attr:any) => attr.name) : [];
+    let inputMap = {};
+
+    if(tile && tile.inputs) {
+      tile.inputs.forEach(attr => {
+        inputMap[attr.name] = attr.type;
+      });
+    }
+
+    return inputMap;
   }
 
   private extractPrecedingOutputs(precedingTiles:any) {

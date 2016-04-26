@@ -1,5 +1,11 @@
 import { TYPE_ATTR_ASSIGNMENT, TYPE_EXPRESSION_ASSIGNMENT, VALID_TYPES, REGEX_INPUT_VALUE_INTERNAL } from '../constants';
-import { TileInOutInfo } from '../models/tile-in-out-info.model'
+import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
+import { TileInOutInfo } from '../models/tile-in-out-info.model';
+
+const NESTABLE_ATTRIBUTE_TYPES = [
+  FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT].toLowerCase(),
+  FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS].toLowerCase(),
+];
 
 export function mappingValidator(tileInfo:TileInOutInfo, mapping:any) {
   if (!_.isObject(mapping)) {
@@ -34,7 +40,15 @@ function validateType(tileInfo:TileInOutInfo, mapping:{type?: any}, errors:any) 
 
 function validateMapTo(tileInfo:TileInOutInfo, mapping:{mapTo?:string}, errors:any) {
   if (!_.isEmpty(mapping.mapTo)) {
-    if (!_.includes(tileInfo.attributes, mapping.mapTo)) {
+    let matches = /^([\w]+)(\.[\w-]+)*$/.exec(mapping.mapTo); // var-name[.sub-path]
+    let attrName = matches ? matches[1] : null;
+    if (attrName && tileInfo.attributes[attrName]) {
+      if(matches[2] && !_.includes(NESTABLE_ATTRIBUTE_TYPES, tileInfo.attributes[attrName])) {
+        errors.mapTo = {
+          invalidValue: true,
+        }
+      }
+    } else {
       errors.mapTo = {
         invalidValue: true,
       }
@@ -63,7 +77,8 @@ function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:any}
       if(matches) {
         let path = matches[1];
         let outputInfo = tileInfo.precedingOutputs[path];
-        if(!outputInfo || outputInfo.type !== 'object') {
+
+        if(!outputInfo || !_.includes(NESTABLE_ATTRIBUTE_TYPES, outputInfo.type)) {
           errors.value = {
             invalidValue: true
           };

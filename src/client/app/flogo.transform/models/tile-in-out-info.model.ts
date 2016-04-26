@@ -1,4 +1,4 @@
 export interface TileInOutInfo {
-  precedingOutputs: {[key:string]: {type: number}},
-  attributes: string[]
+  precedingOutputs: {[key:string]: {type: string}},
+  attributes: {[key:string]: string}
 }
