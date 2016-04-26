@@ -3,7 +3,7 @@ import {ROUTER_DIRECTIVES} from 'angular2/router';
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
 import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
-import { flogoIDEncode } from '../../../common/utils';
+import { flogoIDEncode , notification } from '../../../common/utils';
 import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 
 import {PostService} from '../../../common/services/post.service'
@@ -48,10 +48,10 @@ export class FlogoFlowsComponet{
                 items: {}
             };
             this._flow.createFlow(_.clone(request)).then((response)=>{
-                console.log('create flow successful ' + response);
+                notification('Create the flow successfully!', 'success', 3000);
                 resolve(response);
             }).catch((err)=>{
-                console.log("create flow error ", err);
+                notification(`Create flow error: ${err}`, 'error');
                 reject(err);
             });
         }).then(()=>{
@@ -66,12 +66,12 @@ export class FlogoFlowsComponet{
         if(confirm('Are you sure to delete ' + flow.name + ' flow?')) {
             new Promise((resolve, reject)=> {
                 this._flow.deleteFlow(flow._id, flow._rev).then((response)=> {
-                    console.log('remove flow successful ' + response);
                     this.getAllFlows();
+                    notification('Remove the flow successfully!', 'warning', 3000);
                     resolve(response);
 
                 }).catch((err)=> {
-                    console.log('remove flow error ' + err);
+                    notification(`Remove flow error: ${err}`, 'error');
                     reject(err);
                 });
             });
@@ -100,6 +100,7 @@ export class FlogoFlowsComponet{
             })
         })
     }
+
 
     // export flogoIDEncode
     // mainly for Route Link

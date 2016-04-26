@@ -540,3 +540,45 @@ export function copyToClipboard(element:HTMLElement) {
   sel.removeAllRanges();
   return res;
 }
+
+/**
+ * Create a notification
+ *
+ * @param message
+ * @param type: information, success, warming, error
+ * @param time: the time to autoclose; if not configured, the notification wouldn't be autoclosed.
+ * @param setting: inline style
+ */
+export function notification(message: string, type: string, time?: number, settings ?: any) {
+  let styles = '';
+  for (let key in settings) {
+    styles += key + ':' + settings[key] + ';'
+  }
+  let template = `<div style="${styles}" class="${type} flogo-common-notification">${message}`;
+  if(!time) {
+    template += `
+    <i class="fa fa-times flogo-common-notification-close"></i>
+    `
+  }
+  template += '</div>';
+  window.jQuery('body').append(template);
+  let notification = $('body>div:last');
+  setTimeout(function () {
+    notification.addClass('on');
+  }, 200);
+  return new Promise((resolve, reject) => {
+    if(time) {
+      setTimeout(function () {
+        notification.remove();
+      }, time);
+    }
+    if(!time) {
+      window.jQuery('.flogo-common-notification-close').click(() => {
+        notification.remove();
+        resolve();
+      });
+    } else {
+      resolve();
+    }
+  })
+}

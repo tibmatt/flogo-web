@@ -355,3 +355,45 @@ label {
 .modal-dialog.modal-sm {
   width: 50%;
 }
+
+/* the class of notification */
+.flogo-common-notification {
+  position: fixed;
+  top: -100px;
+  left: 37%;
+  width: 26%;
+  opacity: 0;
+  padding: 10px 20px;
+  text-align: center;
+  border-radius: 4px;
+  transition: all 500ms linear;
+  z-index: 1000;
+}
+.flogo-common-notification.on {
+  top: 100px;
+  opacity: 1;
+}
+.flogo-common-notification.information {
+  color: #0082d5;
+  background: rgba(0, 130, 213, 0.1);
+  border: solid 1px #0082d5;
+}
+.flogo-common-notification.success {
+  color: #a5d377;
+  background: rgba(165, 211,  119, 0.1);
+  border: 2px solid #a5d377;
+}
+.flogo-common-notification.warning {
+  color: #ff9948;
+  background: rgba(255, 153, 72, 0.1);
+  border: solid 1px #ff9948;
+}
+.flogo-common-notification.error {
+  color: #d0021b;
+  background: rgba(208, 1, 27, 0.1);
+  border: 2px solid #d0021b;
+}
+.flogo-common-notification .flogo-common-notification-close{
+  float: right;
+  cursor: pointer;
+}

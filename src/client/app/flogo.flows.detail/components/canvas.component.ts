@@ -30,7 +30,7 @@ import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
-import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName } from '../../../common/utils';
+import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification } from '../../../common/utils';
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
@@ -193,10 +193,10 @@ export class FlogoCanvasComponent {
   private changeFlowDetail($event, property) {
     return new Promise((resolve, reject)=>{
       this._updateFlow(this._flow).then((response)=>{
-        console.log(`update flow's ${property} successful`, response);
+        notification(`Update flow's ${property} successfully!`,'success', 3000);
         resolve(response);
       }).catch((err)=>{
-        console.log(`update flow's ${property} error`, err, true);
+        notification(`Update flow's ${property} error: ${err}`, 'error');
         reject(err);
       });
     })
