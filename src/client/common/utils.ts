@@ -479,16 +479,19 @@ export function resetFlogoGlobalConfig() {
       protocol : 'http',
       host : "localhost",
       port : "8080",
+      testPath: "status"
     },
     stateServer : {
       protocol : 'http',
       host : "localhost",
-      port : "9190"
+      port : "9190",
+      testPath: "ping"
     },
     processServer : {
       protocol : 'http',
       host : "localhost",
-      port : "9090"
+      port : "9090",
+      testPath: "ping"
     }
   } );
 }

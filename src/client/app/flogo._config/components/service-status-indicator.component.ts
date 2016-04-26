@@ -3,24 +3,26 @@ import {Http} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject,Subscription} from "rxjs/Rx";
 
-const PING_INTERVAL_MS = 2000;
+const PING_INTERVAL_MS = 2500;
 
 @Component({
   selector: 'flogo-_config-service-status-indicator',
   moduleId: module.id,
-  template: `<i class="fa" [style.color]="color"
-                [ngClass]="{'fa-circle': status == 'reached' || status == 'not-reached', 'fa-circle-o': !status}"></i>`
+  template: `<i [title]="info" class="fa" [style.color]="color"
+                [ngClass]="{'fa-circle': status == 'online' || status == 'offline' || status == 'online-warning', 'fa-circle-o': !status}"></i>`
 })
 export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestroy {
 
-  @Input() urlConfig:{protocol:string, host:string, port:string, name?:string} = null;
+  @Input() urlConfig:{protocol:string, host:string, port:string, name?:string, testPath?: string} = null;
   status : string = null;
+  statusCode : any = null;
 
   private configChangeSubject : BehaviorSubject<any> = null;
   private subscription : Subscription = null;
   private colors : any = {
-    'reached': 'green',
-    'not-reached': 'red',
+    'online': 'green',
+    'online-warning': 'gold',
+    'offline': 'red',
     'unknown': 'orange'
   };
 
@@ -40,18 +42,22 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
       .map((url:string) => this.http.get(url))
       .switch()
       .catch((error:any) => {
+        this.statusCode = error.status;
         // status 200 means no response from server
         if(error.status != 200) {
-          this.status = 'reached';
+          this.status = 'online-warning';
         } else {
-          this.status = 'not-reached'
+          this.status = 'offline'
         }
         // TODO: report if error 500?
         // TODO: when there are cors issues we get also 200 code
         return Observable.throw(error);
       })
       .retry()
-      .subscribe((result:any) => this.status = 'reached');
+      .subscribe((result:any) => {
+        this.status = 'online';
+        this.statusCode = result.status;
+      });
 
   }
 
@@ -69,12 +75,20 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
     return this.colors[this.status] || this.colors.unknown;
   }
 
+  get info() {
+    if(this.status == 'online-warning') {
+      return `Online but returned status code ${this.statusCode}`;
+    }
+    return '';
+  }
+
   private buildUrl() {
     if(this.urlConfig) {
       let config = this.urlConfig;
       let port = this.urlConfig.port ? `:${this.urlConfig.port}` : '';
       let name = this.urlConfig.name ? `/${this.urlConfig.name}` : '';
-      return `${config.protocol}://${config.host}${port}${name}`;
+      let testPath = this.urlConfig.testPath ? `/${this.urlConfig.testPath}` : '';
+      return `${config.protocol}://${config.host}${port}${name}${testPath}`;
     }
     return null;
   }
