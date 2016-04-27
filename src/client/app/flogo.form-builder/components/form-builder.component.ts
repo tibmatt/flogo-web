@@ -371,7 +371,7 @@ export class FlogoFormBuilderComponent{
        var result :any = {};
 
        items.forEach((item:any) => {
-         result[item.name] = item.value || '';
+         result[item.name] = item.value || null;
         });
 
         return result;

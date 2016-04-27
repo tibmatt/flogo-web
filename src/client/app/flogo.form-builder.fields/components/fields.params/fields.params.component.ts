@@ -17,12 +17,27 @@ export class FlogoFormBuilderFieldsParams  extends FlogoFormBuilderFieldsBase {
   _value:any;
 
   constructor() {
+    super();
+  }
+
+  onChangeField(event:any){
+    let value : any = null;
+    try {
+      value = JSON.parse(event.target.value);
+    } catch(e) {
+      // invalid json
+    }
+    this._info.value = value;
+    this.publishNextChange();
   }
 
   ngOnInit() {
+
     if(this._info.value) {
-      this._value= this.clearQuotes(JSON.stringify(this._info.value));
+      this._value= JSON.stringify(this._info.value);
     }
+
   }
+
 
 }

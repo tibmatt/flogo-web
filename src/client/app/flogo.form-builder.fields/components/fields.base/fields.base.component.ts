@@ -14,23 +14,20 @@ export class FlogoFormBuilderFieldsBase{
     this._hasError = false;
   }
 
-  clearQuotes(s:string) {
-    s = s.replace(/^\"/, "");
-    s = s.replace(/\"$/, "");
-    return s;
-  }
-
-  onChangeField(event) {
-    this._info.value =event.target.value;
-    this._fieldObserver.next(this._getMessage('change-field', this._info));
+  onChangeField(event:any) {
+    this._info.value = event.target.value;
+    this.publishNextChange();
   }
 
   _getMessage(message:string, properties:any) {
     return _.assign({}, {message: message}, {payload:properties});
   }
 
+  publishNextChange() {
+    this._fieldObserver.next(this._getMessage('change-field', this._info));
+  }
 
-  onValidate(event) {
+  onValidate(event:any) {
     var value = event.target.value || '';
 
     if(this._info.required) {
