@@ -66,20 +66,20 @@
 .flogo-flows-detail-diagram-node:last-of-type {
   margin-right: 0;
 }
-.flogo-flows-detail-diagram-node.updated.flogo-flows-detail-diagram-node-selected {
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected {
   transform: scale(1.1);
   z-index: 10;
 }
-.flogo-flows-detail-diagram-node.updated.flogo-flows-detail-diagram-node-selected .flogo-flows-detail-diagram-node-detail {
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected .flogo-flows-detail-diagram-node-detail {
   background: #79b8dc;
   color: #fff;
   border: solid 1px #70abcc;
 }
-.flogo-flows-detail-diagram-node.updated.flogo-flows-detail-diagram-node-selected:before {
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected:before {
   background: #79b8dc;
 }
-.flogo-flows-detail-diagram-node.updated.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"],
-.flogo-flows-detail-diagram-node.updated.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"] {
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"],
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"] {
   opacity: 1;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-run:before {
