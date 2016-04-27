@@ -10,6 +10,10 @@ export const PUB_EVENTS = {
   taskDetailsChanged: {
     chanel: 'flogo-task',
     topic: 'task-details-changed'
+  },
+  changeTileName : {
+    channel : 'flogo-task',
+    topic : 'change-tile-name'
   }
 };
 
