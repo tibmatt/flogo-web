@@ -814,12 +814,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       // TODO
       //  enable the delete for trigger in the future
       if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
-
-        // template without delete
-        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
-                    ${tplItemAddBranch}
-                    ${tplItemTransform}
-                  </ul>${tplGear}`;
+        return ``;
       }
 
       if ( nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {

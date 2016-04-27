@@ -152,6 +152,9 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root"] {
   background-color: #206188;
 }
+.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root"] .flogo-flows-detail-diagram-node-menu {
+  display: none;
+}
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_add"],
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root_new"],
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"] {
