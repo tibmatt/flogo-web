@@ -9,7 +9,7 @@ import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-bu
 import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
-import {convertTaskID} from "../../../common/utils";
+import {convertTaskID, parseMapping} from "../../../common/utils";
 
 @Component({
   selector: 'flogo-form-builder',
@@ -317,31 +317,32 @@ export class FlogoFormBuilderComponent{
 
   _getMappingValue(info:any) {
     // if there is results
+    let resultValue : any = null;
     if(info.step) {
       let taskId = convertTaskID(this._task.id);
       if (info.direction === 'output') {
-        let outputVal = _.find(info.step.flow.attributes, (attr:any) => attr.name == `[A${taskId}.${info.name}]`)
-        if (outputVal) {
-          return outputVal.value;
-        }
-      }
-
-        // TODO fix to include input mappings
-      var mapping = _.find(info.mappings, (mapping:any) => {
-        return mapping.value === info.name;
-      });
-
-      if (mapping) {
-        var resultValue = _.find(info.step.flow.attributes, (attribute:any) => {
-          return mapping.mapTo == attribute.name;
-        });
-
-        if (resultValue) {
-          return resultValue.value;
+        resultValue = _.find(info.step.flow.attributes, (attr:any) => attr.name == `[A${taskId}.${info.name}]`)
+      } else {
+        // TODO support map to nested attributes
+        let mapping = _.find(info.mappings, (mapping:any) => mapping.mapTo === info.name);
+        let parsedMapping = mapping ? parseMapping(mapping.value) : null;
+        if(parsedMapping) {
+          let resultHolder = _.find(info.step.flow.attributes, (attr:any) => {
+            return attr.name == parsedMapping.autoMap;
+          });
+          if(resultHolder) {
+            if(parsedMapping.path) {
+              resultValue = {
+                value: _.get(resultHolder.value, parsedMapping.path)
+              };
+            } else {
+              resultValue = resultHolder;
+            }
+          }
         }
       }
     }
-    return info.value;
+    return resultValue ? resultValue.value : info.value;
   }
 
   runFromThisTile() {

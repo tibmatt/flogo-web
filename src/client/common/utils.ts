@@ -1,4 +1,4 @@
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, DEFAULT_VALUES_OF_TYPES } from './constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, DEFAULT_VALUES_OF_TYPES, FLOGO_AUTOMAPPING_FORMAT } from './constants';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
@@ -432,6 +432,26 @@ export function genBranchLine( opts? : any ) : any {
 
 export function normalizeTaskName(taskName:string) {
   return _.kebabCase(taskName);
+}
+
+export function parseMapping(automapping:string){
+  let matches = FLOGO_AUTOMAPPING_FORMAT.exec(automapping);
+  if (!matches) {
+    return null;
+  }
+
+  let taskId = matches[2] || null;
+  let attributeName = matches[3];
+  let path = matches[4] ? _.trimStart(matches[4], '.') : null;
+
+  return {
+    autoMap: `[${matches[1]}.${attributeName}]`,
+    isRoot: !taskId,
+    taskId,
+    attributeName,
+    path
+  };
+
 }
 
 export function updateFlogoGlobalConfig( config : any ) {
