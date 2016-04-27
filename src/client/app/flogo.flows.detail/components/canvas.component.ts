@@ -1324,6 +1324,10 @@ export class FlogoCanvasComponent {
       task.__props.initData = data.outputs;
     }
 
+    if ( _.isFunction( envelope.done ) ) {
+      envelope.done();
+    }
+
     console.groupEnd();
   }
 

@@ -128,9 +128,10 @@
 
     <!-- PANEL FOOTER -->
     <div class="flogo-common-edit-panel__footer" *ngIf="_context.isTask || _context.isTrigger">
-      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" (click)="runFromThisTile($event)">
-        Run from this tile
+      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+      Run from this tile
       </button>
+      <button class="tc-buttons tc-buttons-primary" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
       <button class="flogo-btn-link" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
     </div>
 

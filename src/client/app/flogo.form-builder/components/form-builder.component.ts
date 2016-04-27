@@ -53,13 +53,7 @@ export class FlogoFormBuilderComponent{
   ngOnDestroy() {
 
     if ( this._hasChanges ) {
-      if ( this._context.isTask ) {
-        this._saveActivityChangesToFlow();
-      } else if ( this._context.isTrigger ) {
-        this._saveTriggerChangesToFlow();
-      } else if ( this._context.isBranch ) {
-        this._saveBranchChangesToFlow();
-      }
+      this._saveChangesToFlow();
     }
 
     _.each( this._subscriptions, (sub:any) => {
@@ -106,7 +100,8 @@ export class FlogoFormBuilderComponent{
 
   // TODO
   _saveBranchChangesToFlow() {
-
+    console.warn('TODO save branch info');
+    this._hasChanges  = false;
   }
 
 
@@ -430,6 +425,20 @@ export class FlogoFormBuilderComponent{
     this._fieldsErrors = [];
     this._hasChanges = false
 
+  }
+
+  private _saveChangesToFlow() {
+    if ( this._context.isTask ) {
+      this._saveActivityChangesToFlow();
+    } else if ( this._context.isTrigger ) {
+      this._saveTriggerChangesToFlow();
+    } else if ( this._context.isBranch ) {
+      this._saveBranchChangesToFlow();
+    }
+  }
+
+  saveChanges( event? : any ) {
+    this._saveChangesToFlow();
   }
 
 }
