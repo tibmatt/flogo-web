@@ -21,7 +21,7 @@ export class FlogoFormBuilderFieldsParams  extends FlogoFormBuilderFieldsBase {
 
   ngOnInit() {
     if(this._info.value) {
-      this._value= JSON.stringify(this._info.value);
+      this._value= this.clearQuotes(JSON.stringify(this._info.value));
     }
   }
 

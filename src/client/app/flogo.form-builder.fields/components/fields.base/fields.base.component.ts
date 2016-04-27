@@ -14,6 +14,12 @@ export class FlogoFormBuilderFieldsBase{
     this._hasError = false;
   }
 
+  clearQuotes(s:string) {
+    s = s.replace(/^\"/, "");
+    s = s.replace(/\"$/, "");
+    return s;
+  }
+
   onChangeField(event) {
     this._info.value =event.target.value;
     this._fieldObserver.next(this._getMessage('change-field', this._info));
