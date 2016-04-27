@@ -360,7 +360,14 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  changeTaskDetail(event: any) {
-    console.log(event);
+  changeTaskDetail(tileName: any) {
+    console.log(tileName);
+
+    this._postService.publish(_.assign({},PUB_EVENTS.changeTileName,
+      {
+        data: {tileName, taskId:this._task.id}
+      }
+    ));
+
   }
 }

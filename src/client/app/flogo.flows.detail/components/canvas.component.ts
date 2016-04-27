@@ -91,7 +91,8 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
-      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } )
+      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.changeTileName, { callback : this._changeTileName.bind( this ) } ),
     ];
 
     _.each(
@@ -937,6 +938,17 @@ export class FlogoCanvasComponent {
     });
 
     return result;
+  }
+
+  private _changeTileName(data:any, envelope:any) {
+    var task = this.tasks[data.taskId];
+
+    if(task) {
+      task.name = this.uniqueTaskName(data.tileName);
+      this._updateFlow( this._flow ).then(() => {
+        this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+      });
+    }
   }
 
 
