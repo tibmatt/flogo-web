@@ -21,6 +21,7 @@ export interface IFlogoFlowDiagramTask {
   links ? : IFlogoFlowDiagramTaskLink[ ];
   status ? : FLOGO_TASK_STATUS;
   condition? : string;
+  __props?: any; // internal only properties in UI
 }
 
 export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {

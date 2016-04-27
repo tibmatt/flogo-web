@@ -54,19 +54,19 @@
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.outputs.length">Outputs</h3>
       <div *ngFor="#item of _attributesTrigger.outputs" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
-          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
+          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'output')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
-          <flogo-form-builder-fields-number [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
+          <flogo-form-builder-fields-number [info]="getTriggerInfo(item, 'output')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldTextArea'">
-          <flogo-form-builder-fields-textarea [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+          <flogo-form-builder-fields-textarea [info]="getTriggerInfo(item, 'output')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
-          <flogo-form-builder-fields-params [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
+          <flogo-form-builder-fields-params [info]="getTriggerInfo(item, 'output')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
         </div>
 
       </div>

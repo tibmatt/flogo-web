@@ -30,7 +30,10 @@ import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
-import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification } from '../../../common/utils';
+import {
+  flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
+  attributeTypeToString
+} from '../../../common/utils';
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
@@ -953,21 +956,34 @@ export class FlogoCanvasComponent {
   private _runFromThisTile(data:any, envelope:any) {
     console.group('Run from this tile');
 
-    // The inital data to start the process from trigger
-    let initData = data.initData || [
-        {
-          "name": "params",
-          "type": "params",
-          "value": {
-            "petId": "1234567890"
-          }
-        }
-      ]; // TODO remove mock data
+    let selectedTask = this.tasks[ data.taskId ];
 
-    if ( this.tasks[ data.taskId ].type === FLOGO_TASK_TYPE.TASK_ROOT ) {
+    if ( selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
+      // The inital data to start the process from trigger
+      let initData = _.get( selectedTask, '__props.initData' );
+
       if ( _.isEmpty( initData ) ) {
         this._runFromTrigger();
       } else {
+        // preprocessing initial data
+        initData = _( initData )
+          .filter( ( item : any )=> {
+
+            // filter empty values
+
+            return !(<any>_).isNil( item.value );
+          } )
+          .map( ( item : any ) => {
+
+            // converting the type of the initData from enum to string;
+
+            let outItem = _.cloneDeep( item );
+
+            outItem.type = attributeTypeToString( outItem.type );
+
+            return outItem;
+          } );
+
         this._runFromTrigger( initData );
       }
     } else if ( this._processInstanceID ) {
@@ -1285,18 +1301,27 @@ export class FlogoCanvasComponent {
   }
 
   private _taskDetailsChanged(data:any, envelope:any) {
-    console.group('Run from this tile');
+    console.group('Save task details to flow');
     var task = this.tasks[data.taskId];
-    var changedInputs = data.inputs || {};
 
-    for(var name in changedInputs) {
+    if (task.type === FLOGO_TASK_TYPE.TASK) { // TODO handle more activity task types in the future
+      var changedInputs = data.inputs || {};
 
-      task.attributes.inputs.forEach((input)=> {
-        if(input.name === name) {
-          input.value =  changedInputs[name];
-        }
-      });
+      for(var name in changedInputs) {
 
+        task.attributes.inputs.forEach((input)=> {
+          if(input.name === name) {
+            input.value =  changedInputs[name];
+          }
+        });
+
+      }
+    } else if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
+
+      // ensure the persence of the internal properties
+      task.__props = task.__props || {};
+
+      task.__props.initData = data.outputs;
     }
 
     console.groupEnd();

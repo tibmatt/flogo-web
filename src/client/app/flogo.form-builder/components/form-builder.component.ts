@@ -52,8 +52,14 @@ export class FlogoFormBuilderComponent{
 
   ngOnDestroy() {
 
-    if(this._hasChanges && this._context.isTask) {
-      this._saveChangesToFlow();
+    if ( this._hasChanges ) {
+      if ( this._context.isTask ) {
+        this._saveActivityChangesToFlow();
+      } else if ( this._context.isTrigger ) {
+        this._saveTriggerChangesToFlow();
+      } else if ( this._context.isBranch ) {
+        this._saveBranchChangesToFlow();
+      }
     }
 
     _.each( this._subscriptions, (sub:any) => {
@@ -62,7 +68,7 @@ export class FlogoFormBuilderComponent{
     );
   }
 
-  _saveChangesToFlow() {
+  _saveActivityChangesToFlow() {
 
     var state = {
       taskId: this._task.id,
@@ -76,6 +82,30 @@ export class FlogoFormBuilderComponent{
       }
     }));
 
+
+  }
+
+  // TODO
+  _saveTriggerChangesToFlow() {
+
+    let currentOutputs = this._attributesTrigger.outputs;
+
+    let state = {
+      taskId: this._task.id,
+      outputs: currentOutputs
+    };
+
+    this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
+      data: state,
+      done: ()=> {
+        this._hasChanges  = false;
+      }
+    }));
+
+  }
+
+  // TODO
+  _saveBranchChangesToFlow() {
 
   }
 
@@ -132,6 +162,13 @@ export class FlogoFormBuilderComponent{
       this._hasChanges = true;
     });
 
+    // handle outputs changes of trigger
+    this._fieldObserver.filter((param:any) => {
+      return param.message == 'change-field' && param.payload.isTrigger && param.payload.direction === 'output';
+    }).
+    subscribe((param:any) => {
+      this._updateAttributeByUserChanges(this._attributesTrigger.outputs, param.payload);
+    });
 
   }
 
@@ -164,7 +201,9 @@ export class FlogoFormBuilderComponent{
       var task = this._task || {};
 
       attributesTrigger['endpointSettings'] = ((task['endpoint'] || {})['settings']) || [];
-      attributesTrigger['outputs'] = task['outputs'] || [];
+
+      // override trigger outputs attributes if there is internal values
+      attributesTrigger[ 'outputs' ] = _.get( task, '__props.initData', task[ 'outputs' ] || [] );
       attributesTrigger['settings'] = task['settings'] || [];
 
       this._attributesTriggerOriginal = _.cloneDeep(attributesTrigger);
@@ -270,7 +309,7 @@ export class FlogoFormBuilderComponent{
     return info;
   }
 
-  getTriggerInfo(input:any) {
+  getTriggerInfo(input:any, direction?:string) {
     var info = {
       name:       input.name,
       type:       input.type,
@@ -283,7 +322,8 @@ export class FlogoFormBuilderComponent{
       required:   input.required,
       placeholder: input.placeholder || '',
       isTrigger:  true,
-      isBranch:   false
+      isBranch:   false,
+      direction: direction
     };
 
 

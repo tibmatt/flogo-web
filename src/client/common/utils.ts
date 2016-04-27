@@ -634,3 +634,11 @@ export function notification(message: string, type: string, time?: number, setti
     }
   })
 }
+
+export function attributeTypeToString( inType : any ) : string {
+  if ( _.isString( inType ) ) {
+    return inType;
+  }
+
+  return (FLOGO_TASK_ATTRIBUTE_TYPE[inType] || 'string').toLowerCase();
+}
