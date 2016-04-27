@@ -104,7 +104,7 @@ export class RESTAPIFlowsService{
     let body = JSON.stringify(
       {
         "flowUri" : `${getProcessServerURL()}/flows/${id}`,
-        "data" : data
+        "attrs" : data
       }
     );
 

@@ -954,11 +954,15 @@ export class FlogoCanvasComponent {
     console.group('Run from this tile');
 
     // The inital data to start the process from trigger
-    let initData = data.initData || {
-        params: {
-          petId: "1234567890"
+    let initData = data.initData || [
+        {
+          "name": "params",
+          "type": "params",
+          "value": {
+            "petId": "1234567890"
+          }
         }
-      }; // TODO remove mock data
+      ]; // TODO remove mock data
 
     if ( this.tasks[ data.taskId ].type === FLOGO_TASK_TYPE.TASK_ROOT ) {
       if ( _.isEmpty( initData ) ) {
