@@ -50,11 +50,35 @@ export class FlogoFormBuilderComponent{
   }
 
   ngOnDestroy() {
+
+    if(this._hasChanges && this._context.isTask) {
+      this._saveChangesToFlow();
+    }
+
+
     _.each( this._subscriptions, sub => {
         this._postService.unsubscribe( sub );
       }
     );
   }
+
+  _saveChangesToFlow() {
+
+    var state = {
+      taskId: this._task.id,
+      inputs: this._getCurrentTaskState(this._attributes.inputs)
+    };
+
+    this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
+      data: state,
+      done: ()=> {
+        this._hasChanges  = false;
+      }
+    }));
+
+
+  }
+
 
   _setFieldsObservers() {
 

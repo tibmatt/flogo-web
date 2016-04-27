@@ -92,7 +92,8 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
-      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } )
+      _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback : this._taskDetailsChanged.bind( this ) } ),
     ];
 
     _.each(
@@ -1277,6 +1278,24 @@ export class FlogoCanvasComponent {
         }
       })
       .filter(task => !!task);
+  }
+
+  private _taskDetailsChanged(data:any, envelope:any) {
+    console.group('Run from this tile');
+    var task = this.tasks[data.taskId];
+    var changedInputs = data.inputs || {};
+
+    for(var name in changedInputs) {
+
+      task.attributes.inputs.forEach((input)=> {
+        if(input.name === name) {
+          input.value =  changedInputs[name];
+        }
+      });
+
+    }
+
+    console.groupEnd();
   }
 
 

@@ -14,8 +14,17 @@ import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
 export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any;
+  _value:any;
 
   constructor() {
+  }
+
+  ngOnInit() {
+
+    if(this._info.value) {
+      this._value= JSON.stringify(this._info.value);
+    }
+
   }
 
 }

@@ -4,7 +4,7 @@
             (keyup)="onChangeField($event)"
             [class.error]="_hasError"
             [placeholder]="_info.placeholder"
-            class="form-control tc-text-areas tc-text-area" [(ngModel)]="_info.value"
+            class="form-control tc-text-areas tc-text-area" [(ngModel)]="_value"
             (change)="onValidate($event)"></textarea>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>

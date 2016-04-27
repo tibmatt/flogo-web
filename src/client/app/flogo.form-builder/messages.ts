@@ -6,6 +6,10 @@ export const PUB_EVENTS = {
   runFromThisTile : {
     channel : 'flogo-task',
     topic : 'run-from-this-tile'
+  },
+  taskDetailsChanged: {
+    chanel: 'flogo-task',
+    topic: 'task-details-changed'
   }
 };
 

@@ -15,10 +15,12 @@ export class FlogoFormBuilderFieldsTextBox  extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any;
 
+
   constructor() {
   }
 
   ngOnInit() {
+
   }
 
 }
