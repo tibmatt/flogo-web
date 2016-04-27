@@ -599,7 +599,7 @@ export function copyToClipboard(element:HTMLElement) {
  * @param message
  * @param type: information, success, warming, error
  * @param time: the time to autoclose; if not configured, the notification wouldn't be autoclosed.
- * @param setting: inline style
+ * @param settings: inline styles
  */
 export function notification(message: string, type: string, time?: number, settings ?: any) {
   let styles = '';
@@ -613,15 +613,21 @@ export function notification(message: string, type: string, time?: number, setti
     `
   }
   template += '</div>';
-  window.jQuery('body').append(template);
-  let notification = $('body>div:last');
+  let notificationContainer = window.jQuery('body > .flogo-common-notification-container');
+  if(notificationContainer.length) {
+    notificationContainer.append(template);
+  } else {
+    window.jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
+  }
+  let notification = window.jQuery('.flogo-common-notification-container>div:last');
   setTimeout(function () {
     notification.addClass('on');
-  }, 200);
+  }, 100);
   return new Promise((resolve, reject) => {
     if(time) {
       setTimeout(function () {
         notification.remove();
+        if(!notificationContainer.html()) notificationContainer.remove();
       }, time);
     }
     if(!time) {

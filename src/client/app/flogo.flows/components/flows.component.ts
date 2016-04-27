@@ -67,7 +67,7 @@ export class FlogoFlowsComponet{
             new Promise((resolve, reject)=> {
                 this._flow.deleteFlow(flow._id, flow._rev).then((response)=> {
                     this.getAllFlows();
-                    notification('Remove the flow successfully!', 'warning', 3000);
+                    notification('Remove the flow successfully!', 'success', 3000);
                     resolve(response);
 
                 }).catch((err)=> {

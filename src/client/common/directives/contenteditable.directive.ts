@@ -29,7 +29,7 @@ export class Contenteditable {
         this.$el = window.jQuery(this._el);
     }
     ngOnInit() {
-        this.$el.html(this.myContenteditable);
+        if(this.myContenteditable != undefined) this.$el.html(this.myContenteditable);
         this.$el.attr('contenteditable', 'true');
         this.$el.css({'paddingRight': '38px', 'marginLeft': '-10px', 'paddingLeft': '10px', 'borderRadius': '4px', 'outline': 'none','lineHeight': parseInt(this.$el.css('lineHeight')) - 2 + 'px', 'border': '1px solid transparent'});
         this._initPlaceholder();
@@ -65,7 +65,9 @@ export class Contenteditable {
         if(this.placeholder || this.$el.text() !== '') {
             this.$el.css({'background': '', 'border': '1px solid transparent'});
             if(this.colorFlag)  this.$el.css('color', 'rgb(255, 255, 255)');
-            if(this.$el.text() != this.myContenteditable) {
+            if(this.$el.text() === '' && this.myContenteditable === undefined) {
+                // omit
+            } else if(this.$el.text() !== this.myContenteditable) {
                 this.myContenteditableChange.emit(this.$el.text());
             }
             this._initPlaceholder();

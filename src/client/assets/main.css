@@ -358,43 +358,55 @@ label {
 }
 
 /* the class of notification */
-.flogo-common-notification {
+.flogo-common-notification-container{
   position: fixed;
-  top: -100px;
-  left: 37%;
+  top: 48px;
+  right: 0;
   width: 26%;
+  min-width: 320px;
+  z-index: 1000;
+}
+.flogo-common-notification {
   opacity: 0;
+  width: 0;
+  float: right;
+  height: 46px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   padding: 10px 20px;
+  margin-bottom: 10px;
   text-align: center;
   border-radius: 4px;
   transition: all 500ms linear;
-  z-index: 1000;
 }
 .flogo-common-notification.on {
-  top: 100px;
+  width: 100%;
   opacity: 1;
 }
 .flogo-common-notification.information {
   color: #0082d5;
-  background: rgba(0, 130, 213, 0.1);
+  background: rgba(255, 255, 255, 0.9);
   border: solid 1px #0082d5;
 }
 .flogo-common-notification.success {
   color: #a5d377;
-  background: rgba(165, 211,  119, 0.1);
+  background: rgba(255, 255, 255, 0.9);
   border: 2px solid #a5d377;
 }
 .flogo-common-notification.warning {
   color: #ff9948;
-  background: rgba(255, 153, 72, 0.1);
+  background: rgba(255, 255, 255, 0.9);
   border: solid 1px #ff9948;
 }
 .flogo-common-notification.error {
   color: #d0021b;
-  background: rgba(208, 1, 27, 0.1);
+  background: rgba(255, 255, 255, 0.9);
   border: 2px solid #d0021b;
 }
 .flogo-common-notification .flogo-common-notification-close{
-  float: right;
+  position: absolute;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
 }
