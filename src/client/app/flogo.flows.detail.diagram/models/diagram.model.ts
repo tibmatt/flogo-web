@@ -1001,6 +1001,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           break;
 
+        case 'selectTask':
+        case 'selectTrigger':
+
+          (<any>$( nodeInDiagram[ 0 ][ 0 ] ))
+            .trigger( 'click' );
+
+          break;
+
         default:
 
           (<any>$( nodeInDiagram[ 0 ][ 0 ] ))

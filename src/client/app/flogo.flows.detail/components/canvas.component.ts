@@ -780,7 +780,7 @@ export class FlogoCanvasComponent {
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
-                          this._updateFlow( this._flow );
+                          // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
                         }
                       }
                     )
@@ -854,7 +854,7 @@ export class FlogoCanvasComponent {
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
-                          this._updateFlow( this._flow );
+                          // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
                         }
                       }
                     )
@@ -871,6 +871,7 @@ export class FlogoCanvasComponent {
     console.groupEnd( );
   }
 
+  // TODO still in use?
   private _selectTaskFromTasks( data: any, envelope: any) {
     console.group( 'Select task message from task' );
 
@@ -891,7 +892,7 @@ export class FlogoCanvasComponent {
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
-                  this._updateFlow( this._flow );
+                  // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
                 }
               }
             )
@@ -1242,7 +1243,7 @@ export class FlogoCanvasComponent {
                         },
                         done: (diagram:IFlogoFlowDiagram) => {
                           _.assign(this.diagram, diagram);
-                          this._updateFlow(this._flow);
+                          // this._updateFlow(this._flow);
                         }
                       }
                     )
@@ -1351,6 +1352,8 @@ export class FlogoCanvasComponent {
     if ( _.isFunction( envelope.done ) ) {
       envelope.done();
     }
+
+    this._updateFlow( this._flow );
 
     console.groupEnd();
   }

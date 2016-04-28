@@ -246,11 +246,16 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( envelope );
 
     this._associateNodeWithTaskAndUpdateDiagram( data )
-      .then(
-        () => {
-          _.isFunction( envelope.done ) && envelope.done( this._diagram );
-        }
-      );
+      .then( () => {
+        _.isFunction( envelope.done ) && envelope.done( this._diagram );
+      } )
+      .then( () => {
+        // navigate to add task
+        return this._diagram.triggerByTaskID( 'selectTrigger', data.task.id );
+      } )
+      .catch( ( err : any ) => {
+        console.error( err );
+      } );
 
     console.groupEnd();
   }
@@ -262,11 +267,16 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( envelope );
 
     this._associateNodeWithTaskAndUpdateDiagram( data )
-      .then(
-        () => {
-          _.isFunction( envelope.done ) && envelope.done( this._diagram );
-        }
-      );
+      .then( () => {
+        _.isFunction( envelope.done ) && envelope.done( this._diagram );
+      } )
+      .then( () => {
+        // navigate to add task
+        return this._diagram.triggerByTaskID( 'selectTask', data.task.id );
+      } )
+      .catch( ( err : any ) => {
+        console.error( err );
+      } );
 
     console.groupEnd();
   }
