@@ -39,8 +39,11 @@ const CLS = {
   diagramNodeBadge : 'flogo-flows-detail-diagram-node-badge',
   diagramNodeMenu : 'flogo-flows-detail-diagram-node-menu',
   diagramNodeMenuTrigger : 'flogo-flows-detail-diagram-node-menu-trigger',
-  diagramNodeMenuOpen : 'flogo-flows-detail-diagram-node-menu-open',
-  diagramNodeMenuSelected : 'flogo-flows-detail-diagram-node-menu-selected',
+
+  // comment out since hover will show the menu
+  // diagramNodeMenuOpen : 'flogo-flows-detail-diagram-node-menu-open',
+  // diagramNodeMenuSelected : 'flogo-flows-detail-diagram-node-menu-selected',
+
   diagramNodeMenuBox : 'flogo-flows-detail-diagram-node-menu-box',
   diagramNodeMenuList : 'flogo-flows-detail-diagram-node-menu-list',
   diagramNodeMenuGear : 'flogo-flows-detail-diagram-node-menu-gear'
@@ -350,7 +353,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleEnterNodes( nodes : any, rows : any ) {
     let diagram = this;
-    let timerHandle : any = {};
+    // let timerHandle : any = {};
 
     let dontCareNodesTypesForNodeMenu = [
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
@@ -463,20 +466,23 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               } );
           }
 
-          timerHandle[ d.id ] = setTimeout(
-            () => {
-              d3.select( element )
-                .classed( CLS.diagramNodeMenuOpen, true );
-            }, 250
-          );
+          // comment out since hover will show the menu
+          // timerHandle[ d.id ] = setTimeout(
+          //   () => {
+          //     d3.select( element )
+          //       .classed( CLS.diagramNodeMenuOpen, true );
+          //   }, 250
+          // );
         }
       )
       .on(
         'mouseleave', function ( d : IFlogoFlowDiagramNode ) {
-          clearTimeout( timerHandle[ d.id ] );
-          d3.select( this )
-            .classed( CLS.diagramNodeMenuOpen, false )
-            .classed( CLS.diagramNodeMenuSelected, false );
+          // clearTimeout( timerHandle[ d.id ] );
+
+          // comment out since hover will show the menu
+          // d3.select( this )
+          //   .classed( CLS.diagramNodeMenuOpen, false )
+          //   .classed( CLS.diagramNodeMenuSelected, false );
 
           if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
             d3.selectAll( `.${CLS.diagramNodeBranchHover}` )
@@ -496,20 +502,22 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               } );
           }
         }
-      )
-      .on(
-        'flogoClickNodeMenu', function ( nodeInfo : any ) {
-          d3.select( this )
-            .classed( CLS.diagramNodeMenuSelected, true );
-        }
       );
+      // comment out since hover will show the menu
+      // .on(
+      //   'flogoClickNodeMenu', function ( nodeInfo : any ) {
+      //     d3.select( this )
+      //       .classed( CLS.diagramNodeMenuSelected, true );
+      //   }
+      // );
   }
 
   private _handleUpdateNodes( nodes : any, rows : any ) {
     let diagram = this;
 
-    nodes.classed( CLS.diagramNodeMenuOpen, false )
-      .classed( {
+    // comment out since hover will show the menu
+    // nodes.classed( CLS.diagramNodeMenuOpen, false )
+    nodes.classed( {
         'updated' : true
       } )
       .attr( 'data-flogo-node-type',
@@ -530,7 +538,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           thisNode.classed( CLS.diagramNodeStatusRun, false );
         }
 
-        thisNode.classed( CLS.diagramNodeMenuSelected, false );
+        // comment out since hover will show the menu
+        // thisNode.classed( CLS.diagramNodeMenuSelected, false );
 
         // update the current node ID
         thisNode.attr( 'data-task-id', function ( nodeInfo : IFlogoFlowDiagramNode ) {
@@ -754,19 +763,21 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     newNodeMenus.append( 'div' )
       .attr( this.ng2StyleAttr, '' )
-      .classed( CLS.diagramNodeMenuTrigger, true )
-      .on( 'click', function ( nodeInfo : any, col : number, row : number ) {
-        let event = <Event>d3.event;
-        event.stopPropagation();
+      .classed( CLS.diagramNodeMenuTrigger, true );
 
-        // fire menu on clicked event if this menu is clicked.
-        let evtType = 'flogoClickNodeMenu';
-
-        _triggerCustomEvent( evtType, {
-          origEvent : d3.event,
-          node : nodeInfo
-        }, this );
-      } );
+      // comment out since hover will show the menu
+      // .on( 'click', function ( nodeInfo : any, col : number, row : number ) {
+      //   let event = <Event>d3.event;
+      //   event.stopPropagation();
+      //
+      //   // fire menu on clicked event if this menu is clicked.
+      //   let evtType = 'flogoClickNodeMenu';
+      //
+      //   _triggerCustomEvent( evtType, {
+      //     origEvent : d3.event,
+      //     node : nodeInfo
+      //   }, this );
+      // } );
 
     newNodeMenus.append( 'div' )
       .attr( this.ng2StyleAttr, '' )
@@ -786,16 +797,19 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             origEvent : d3.event,
             node : nodeInfo
           }, this );
-        } else {
-
-          // fire menu on clicked event if this menu is clicked.
-          let evtType = 'flogoClickNodeMenu';
-
-          _triggerCustomEvent( evtType, {
-            origEvent : d3.event,
-            node : nodeInfo
-          }, this );
         }
+
+        // comment out since hover will show the menu
+        // else {
+        //
+        //   // fire menu on clicked event if this menu is clicked.
+        //   let evtType = 'flogoClickNodeMenu';
+        //
+        //   _triggerCustomEvent( evtType, {
+        //     origEvent : d3.event,
+        //     node : nodeInfo
+        //   }, this );
+        // }
       } );
   }
 
