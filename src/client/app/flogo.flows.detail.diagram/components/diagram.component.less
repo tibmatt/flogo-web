@@ -94,12 +94,21 @@
       border: solid 1px #70abcc;
     }
     &:before{
-      //background: linear-gradient(to top right, transparent, transparent, transparent, #79b8dc, #79b8dc, #79b8dc);
       background: #79b8dc;
     }
     &[data-flogo-node-type="node_add"],
     &[data-flogo-node-type="node_root_new"] {
       opacity: 1;
+    }
+    &.flogo-flows-detail-diagram-node-run{
+      &:before{
+        background: #79b8dc;
+      }
+      .flogo-flows-detail-diagram-node-detail {
+        background: #79b8dc;
+        box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.3);
+      }
+
     }
   }
   &.flogo-flows-detail-diagram-node-run{

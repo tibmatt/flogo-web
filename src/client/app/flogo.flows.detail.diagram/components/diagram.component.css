@@ -82,6 +82,13 @@
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"] {
   opacity: 1;
 }
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected.flogo-flows-detail-diagram-node-run:before {
+  background: #79b8dc;
+}
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected.flogo-flows-detail-diagram-node-run .flogo-flows-detail-diagram-node-detail {
+  background: #79b8dc;
+  box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.3);
+}
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-run:before {
   background-image: linear-gradient(to right, #def2fd, #def2fd);
 }
