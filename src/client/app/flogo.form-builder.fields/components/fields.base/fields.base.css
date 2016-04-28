@@ -1,3 +1,9 @@
 .flogo-fields-base__error {
   color: red;
 }
+.flogo-fields-header-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 10px;
+}

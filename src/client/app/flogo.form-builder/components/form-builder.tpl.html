@@ -34,22 +34,22 @@
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.settings.length">Settings</h3>
       <div *ngFor="#item of _attributesTrigger.settings" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
-          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item)"  [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
+          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input')"  [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
-          <flogo-form-builder-fields-number [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
+          <flogo-form-builder-fields-number [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
       </div>
 
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.endpointSettings.length">End point</h3>
       <div *ngFor="#item of _attributesTrigger.endpointSettings" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
-          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
+          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
-          <flogo-form-builder-fields-number [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
+          <flogo-form-builder-fields-number [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
       </div>
 
