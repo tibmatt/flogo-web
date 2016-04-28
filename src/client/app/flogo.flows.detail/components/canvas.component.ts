@@ -321,6 +321,10 @@ export class FlogoCanvasComponent {
     this._startingProcess = true;
     this._steps = null;
 
+    // clear task status and render the diagram
+    this.clearTaskRunStatus();
+    this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+
     return this._restAPIFlowsService.startFlow(
         id || this._currentProcessID, initData || []
       )
@@ -482,6 +486,14 @@ export class FlogoCanvasComponent {
     processInstanceID = processInstanceID || this._processInstanceID;
 
     if ( processInstanceID ) {
+
+      try { // rootTask should be in DONE status once the flow start
+        let rootTask = this.tasks[ this.diagram.nodes[ this.diagram.root.is ].taskID ];
+        rootTask.status = FLOGO_TASK_STATUS.DONE;
+      } catch ( e ) {
+        console.warn( e );
+        console.warn( 'No root task/trigger is found.' );
+      }
       return this._restAPIService.instances.getStepsByInstanceID( processInstanceID )
         .then(
           ( rsp : any )=> {
