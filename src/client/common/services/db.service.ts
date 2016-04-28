@@ -40,76 +40,88 @@ export class FlogoDBService{
   private _initDB(): FlogoDBService{
     let appDBConfig = (<any>window).FLOGO_GLOBAL.db;
     let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
-    this._activitiesDB = new PouchDB(`${activitiesDBConfig.name}-local`);
-    this._activitiesDB.info().then(function(db){
-      console.log(db);
-    }).catch(function(err:Object){
-      console.error(err);
-    });
-
     let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
-    this._triggersDB = new PouchDB(`${triggersDBConfig.name}-local`);
-    this._triggersDB.info().then(function(db){
-      console.log(db);
+
+    let returnDBUrl = ( dbConfig : {port : string;protocol : string;host : string;name : string} )=> {
+      return dbConfig.port ?
+             `${dbConfig.protocol}://${dbConfig.host}:${dbConfig.port}/${dbConfig.name}` :
+             `${dbConfig.protocol}://${dbConfig.host}}/${dbConfig.name}`;
+    };
+
+    // this._activitiesDB = new PouchDB(`${activitiesDBConfig.name}-local`);
+    this._activitiesDB = new PouchDB( returnDBUrl( activitiesDBConfig ) );
+    this._activitiesDB.info().then(function(db){
+      console.log('[DB] Activities: ', db);
     }).catch(function(err:Object){
       console.error(err);
     });
 
+    // this._triggersDB = new PouchDB(`${triggersDBConfig.name}-local`);
+    this._triggersDB = new PouchDB( returnDBUrl( triggersDBConfig ) );
+    this._triggersDB.info().then(function(db){
+      console.log('[DB] Triggers: ', db);
+    }).catch(function(err:Object){
+      console.error(err);
+    });
 
-
-    this._syncActivities = PouchDB.sync( `${activitiesDBConfig.name}-local`,
-      activitiesDBConfig.port ?
-      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}:${activitiesDBConfig.port}/${activitiesDBConfig.name}` :
-      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}}/${activitiesDBConfig.name}`,
-      {
-        live : false,
-        retry : true
-      } );
-
-    this._db = new PouchDB(`${appDBConfig.name}-local`);
+    // this._db = new PouchDB(`${appDBConfig.name}-local`);
+    this._db = new PouchDB( returnDBUrl( appDBConfig ) );
     // create db in browser
     this._db.info().then(function(db){
-      console.log(db);
+      console.log('[DB] Application: ', db);
     }).catch(function(err:Object){
       console.error(err);
     });
-    this._sync = PouchDB.sync( `${appDBConfig.name}-local`,
-      appDBConfig.port ?
-      `${appDBConfig.protocol}://${appDBConfig.host}:${appDBConfig.port}/${appDBConfig.name}` :
-      `${appDBConfig.protocol}://${appDBConfig.host}}/${appDBConfig.name}`,
-      {
-        live : false,
-        retry : true
-      } )
-      .on('change', function (info) {
-      // handle change
-      console.group("[DB Sync] Change");
-      console.log("info: ", info);
-      console.groupEnd();
-    }).on('paused', function () {
-      // replication paused (e.g. user went offline)
-      console.group("[DB Sync] Paused");
-      console.groupEnd();
-    }).on('active', function () {
-      // replicate resumed (e.g. user went back online)
-      console.group("[DB Sync] Active");
-      console.groupEnd();
-    }).on('denied', function (info) {
-      // a document failed to replicate (e.g. due to permissions)
-      console.group("[DB Sync] Denied");
-      console.log("info: ", info);
-      console.groupEnd();
-    }).on('complete', function (info) {
-      // handle complete
-      console.group("[DB Sync] Complete");
-      console.log("info: ", info);
-      console.groupEnd();
-    }).on('error', function (err) {
-      // handle error
-      console.group("[DB Sync] Error");
-      console.log("err: ", err);
-      console.groupEnd();
-    });
+
+    // Comment out and connect to remote db directly
+    // this._syncActivities = PouchDB.sync( `${activitiesDBConfig.name}-local`,
+    //   activitiesDBConfig.port ?
+    //   `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}:${activitiesDBConfig.port}/${activitiesDBConfig.name}` :
+    //   `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}}/${activitiesDBConfig.name}`,
+    //   {
+    //     live : false,
+    //     retry : true
+    //   } );
+
+    // Comment out and connect to remote db directly
+    // this._sync = PouchDB.sync( `${appDBConfig.name}-local`,
+    //   appDBConfig.port ?
+    //   `${appDBConfig.protocol}://${appDBConfig.host}:${appDBConfig.port}/${appDBConfig.name}` :
+    //   `${appDBConfig.protocol}://${appDBConfig.host}}/${appDBConfig.name}`,
+    //   {
+    //     live : false,
+    //     retry : true
+    //   } )
+    //   .on('change', function (info) {
+    //   // handle change
+    //   console.group("[DB Sync] Change");
+    //   console.log("info: ", info);
+    //   console.groupEnd();
+    // }).on('paused', function () {
+    //   // replication paused (e.g. user went offline)
+    //   console.group("[DB Sync] Paused");
+    //   console.groupEnd();
+    // }).on('active', function () {
+    //   // replicate resumed (e.g. user went back online)
+    //   console.group("[DB Sync] Active");
+    //   console.groupEnd();
+    // }).on('denied', function (info) {
+    //   // a document failed to replicate (e.g. due to permissions)
+    //   console.group("[DB Sync] Denied");
+    //   console.log("info: ", info);
+    //   console.groupEnd();
+    // }).on('complete', function (info) {
+    //   // handle complete
+    //   console.group("[DB Sync] Complete");
+    //   console.log("info: ", info);
+    //   console.groupEnd();
+    // }).on('error', function (err) {
+    //   // handle error
+    //   console.group("[DB Sync] Error");
+    //   console.log("err: ", err);
+    //   console.groupEnd();
+    // });
+
     return this;
   }
 
