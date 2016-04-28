@@ -802,7 +802,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private _handleUpdateNodeMenus( nodeMenus : any ) {
     let diagram = this;
 
-    nodeMenus.html( ( nodeInfo : any ) => {
+    nodeMenus.html( ( nodeInfo : any, ignore : number, idxInTotalNodes : number ) => {
       let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i class="fa fa-plus"></i>Add branch</li>`;
 
       let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i class="fa fa-bolt"></i>Transform</li>`;
@@ -823,12 +823,22 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
                   </ul>${tplGear}`;
       }
 
-      // normal template
-      return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+      // if not the last node in row
+      if ( (idxInTotalNodes + 1) % 7 ) {
+        // normal template
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemAddBranch}
                     ${tplItemTransform}
                     ${tplItemDelete}
                 </ul>${tplGear}`;
+      } else {
+        // no add branch
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+                    ${tplItemTransform}
+                    ${tplItemDelete}
+                </ul>${tplGear}`;
+      }
+
     } );
   }
 
