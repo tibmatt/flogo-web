@@ -166,12 +166,7 @@ export class TransformComponent implements OnDestroy {
   }
 
   private extractTileInputInfo(tile:any) {
-    return {
-      id: tile.id,
-      inputs: tile.attributes && tile.attributes.inputs ?
-        tile.attributes.inputs.map(this.mapInOutObjectDisplay)
-        : []
-    }
+    return (tile.attributes && tile.attributes.inputs) ? tile.attributes.inputs.map(this.mapInOutObjectDisplay) : [];
   }
 
   private mapInOutObjectDisplay(inputOutput:{name:string, type:ATTRIBUTE_TYPE}) {
