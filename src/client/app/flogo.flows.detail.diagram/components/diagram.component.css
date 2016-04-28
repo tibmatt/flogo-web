@@ -47,7 +47,7 @@
   width: 112px;
   height: 112px;
   border: solid 1px #f4f4f4;
-  background-image: linear-gradient(to right, #f4f4f4, #ffffff);
+  background: #fff;
   border-radius: 10px;
   white-space: normal;
   font-family: SourceSansPro-Regular;
@@ -90,10 +90,10 @@
   box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.3);
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-run:before {
-  background-image: linear-gradient(to right, #def2fd, #def2fd);
+  background: #def2fd;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-run .flogo-flows-detail-diagram-node-detail {
-  background-image: linear-gradient(to right, #d0e7f4, #def2fd);
+  background: #def2fd;
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
 }
 .flogo-flows-detail-diagram-node:hover[data-flogo-node-type="node"],
