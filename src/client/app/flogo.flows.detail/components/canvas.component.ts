@@ -322,7 +322,7 @@ export class FlogoCanvasComponent {
     this._steps = null;
 
     return this._restAPIFlowsService.startFlow(
-        id || this._currentProcessID, initData || {}
+        id || this._currentProcessID, initData || []
       )
       .then(
         ( rsp : any )=> {
