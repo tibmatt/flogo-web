@@ -451,8 +451,7 @@ export class FlogoCanvasComponent {
                             done( timer, rsp );
                             break;
                           case null :
-                            console.log( `[PROC STATE][${n}] Process is ~!@#$%^&*()_+.` );
-                            done( timer, rsp );
+                            console.log( `[PROC STATE][${n}] Process status is null, retrying...` );
                             break;
                         }
 
@@ -1397,7 +1396,7 @@ export class FlogoCanvasComponent {
       if ( input.required && ( (<any>_).isNil( input.value )
                                 || (_.isString( input.value ) && _.isEmpty( input.value ))
         ) ) {
-        
+
         //  add configure required msg;
         task.__props.warnings.push({ msg : 'Configure Required' });
         return true;
