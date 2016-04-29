@@ -8,7 +8,7 @@ import {
 } from '../models';
 import { Selection } from 'd3';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
-import { FLOGO_TASK_STATUS, FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { genBranchLine } from '../../../common/utils';
@@ -529,7 +529,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         let task = diagram.tasks && diagram.tasks[ d.taskID ];
 
         if ( task ) {
-          if ( task.status === FLOGO_TASK_STATUS.RUNNING || task.status === FLOGO_TASK_STATUS.DONE ) {
+          if ( _.get( task, '__status.hasRun', false ) ) {
             thisNode.classed( CLS.diagramNodeStatusRun, true );
           } else {
             thisNode.classed( CLS.diagramNodeStatusRun, false );

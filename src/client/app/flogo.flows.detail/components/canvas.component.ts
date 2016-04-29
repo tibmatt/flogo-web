@@ -29,7 +29,7 @@ import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
   attributeTypeToString
@@ -473,11 +473,20 @@ export class FlogoCanvasComponent {
   }
 
   clearTaskRunStatus() {
-    _.forIn(
-      this.tasks, ( task : any, taskID : string ) => {
-        task.status = FLOGO_TASK_STATUS.DEFAULT;
+    const statusToClean = [ 'isRunning', 'hasRun' ];
+    _.forIn( this.tasks, ( task : any, taskID : string ) => {
+
+      // ensure the presence of __status
+      if ((<any>_).isNil(task.__status)) {
+        task.__status = {};
       }
-    );
+
+      _.forIn( task.__status, ( status : boolean, key : string ) => {
+        if ( statusToClean.indexOf( key ) !== -1 ) {
+          task.__status[ key ] = false;
+        }
+      } );
+    } );
   }
 
   updateTaskRunStatus( processInstanceID? : string, processingStatus? : {
@@ -489,7 +498,8 @@ export class FlogoCanvasComponent {
 
       try { // rootTask should be in DONE status once the flow start
         let rootTask = this.tasks[ this.diagram.nodes[ this.diagram.root.is ].taskID ];
-        rootTask.status = FLOGO_TASK_STATUS.DONE;
+        rootTask.__status['hasRun'] = true;
+        rootTask.__status['isRunning'] = false;
       } catch ( e ) {
         console.warn( e );
         console.warn( 'No root task/trigger is found.' );
@@ -513,7 +523,8 @@ export class FlogoCanvasComponent {
                   let task = this.tasks[flogoIDEncode(''+step.taskId)];
 
                   if ( task ) {
-                    task.status = FLOGO_TASK_STATUS.DONE;
+                    task.__status['hasRun'] = true;
+                    task.__status['isRunning'] = false;
                   }
                 }
               );
