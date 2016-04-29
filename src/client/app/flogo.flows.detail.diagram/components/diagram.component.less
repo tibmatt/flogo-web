@@ -12,6 +12,12 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face{
+  font-family: SourceSansPro-Semibold;
+  src: url('/assets/fonts/SourceSansPro-Semibold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 
 @diagram-node-height: 112px;
 @diagram-placeholder-node-height: 70px;
@@ -114,6 +120,15 @@
         }
       }
     }
+
+    &.flogo-flows-detail-diagram-node-has-warn {
+      .flogo-flows-detail-diagram-node-detail-description {
+        font-family: SourceSansPro-Regular;
+        font-size: @diagram-node-font-size-small;
+        color: #fff;
+      }
+    }
+
     &.flogo-flows-detail-diagram-node-run{
       &:before{
         background: #79b8dc;
@@ -217,7 +232,7 @@
     color: #222;
   }
   &[data-flogo-node-type="node_root"] {
-    background-color: #206188;
+    //background-color: #206188;
     .flogo-flows-detail-diagram-node-menu {
       display: none;
     }
@@ -317,6 +332,13 @@
     text-overflow: ellipsis;
     overflow: hidden;
     margin: auto;
+  }
+  &.flogo-flows-detail-diagram-node-has-warn {
+    .flogo-flows-detail-diagram-node-detail-description {
+      font-family: SourceSansPro-Semibold;
+      font-size: 11px;
+      color: #ff9f00;
+    }
   }
   .flogo-flows-detail-diagram-node-menu {
     position: absolute;

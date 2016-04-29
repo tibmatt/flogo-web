@@ -10,6 +10,12 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: SourceSansPro-Semibold;
+  src: url('/assets/fonts/SourceSansPro-Semibold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 :host {
   display: flex;
   width: 100%;
@@ -95,6 +101,11 @@
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-detail:before {
   color: #FFF;
 }
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected.flogo-flows-detail-diagram-node-has-warn .flogo-flows-detail-diagram-node-detail-description {
+  font-family: SourceSansPro-Regular;
+  font-size: 10px;
+  color: #fff;
+}
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected.flogo-flows-detail-diagram-node-run:before {
   background: #79b8dc;
 }
@@ -172,9 +183,6 @@
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] {
   background-color: #B9C519;
   color: #222;
-}
-.flogo-flows-detail-diagram-node[data-flogo-node-type="node_root"] {
-  background-color: #206188;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_root"] .flogo-flows-detail-diagram-node-menu {
   display: none;
@@ -284,6 +292,11 @@
   text-overflow: ellipsis;
   overflow: hidden;
   margin: auto;
+}
+.flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-has-warn .flogo-flows-detail-diagram-node-detail-description {
+  font-family: SourceSansPro-Semibold;
+  font-size: 11px;
+  color: #ff9f00;
 }
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-menu {
   position: absolute;
