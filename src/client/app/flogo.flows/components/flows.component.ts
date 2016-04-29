@@ -8,6 +8,7 @@ import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
+import {FlogoModal} from '../../../common/services/modal.service';
 
 @Component({
   selector: 'flogo-flows',
@@ -15,7 +16,7 @@ import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
   directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd],
-  providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService]
+  providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
 
 export class FlogoFlowsComponet{
@@ -24,7 +25,8 @@ export class FlogoFlowsComponet{
 
     constructor(
         private _flow:RESTAPIFlowsService,
-        private _postService: PostService
+        private _postService: PostService,
+        private _flogoModal: FlogoModal
     ){
         this.getAllFlows();
         this.initSubscribe();
@@ -63,22 +65,18 @@ export class FlogoFlowsComponet{
 
     // delete a flow
     deleteFlow( flow: any) {
-        if(confirm('Are you sure to delete ' + flow.name + ' flow?')) {
-            new Promise((resolve, reject)=> {
-                this._flow.deleteFlow(flow._id, flow._rev).then((response)=> {
+        this._flogoModal.confirm('Are you sure to delete ' + flow.name + ' flow?').then((res) => {
+            if(res) {
+                this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
                     this.getAllFlows();
                     notification('Remove the flow successfully!', 'success', 3000);
-                    resolve(response);
-
                 }).catch((err)=> {
                     notification(`Remove flow error: ${err}`, 'error');
-                    reject(err);
                 });
-            });
-        } else {
-            // omit
-        }
-
+            } else {
+                // omit
+            }
+        });
     }
     getAllFlows(){
         return new Promise((resolve, reject)=>{

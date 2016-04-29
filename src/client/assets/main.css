@@ -408,3 +408,75 @@ label {
   right: 10px;
   cursor: pointer;
 }
+
+/* the style for confirm modal */
+.flogo-common-service-modal-container{
+  position: fixed;
+  z-index: 1001;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(113, 113, 113, 0.8);
+}
+.flogo-common-service-modal-detail{
+  background: #fff;
+  padding: 40px;
+  margin: 40px auto;
+  width: 40%;
+  border-radius: 4px;
+  box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.3);
+  color: #666666;
+  transform: translate(0, -200%);
+  transition: all 200ms linear;
+}
+.flogo-common-service-modal-detail.in{
+  transform: translate(0, 0);
+}
+.flogo-common-service-modal-confirm{
+  padding: 17px 0;
+  border-bottom: 1px solid #d8d8d8;
+  font-size: 24px;
+  line-height: 0.8;
+  letter-spacing: 0.4px;
+}
+.flogo-common-service-modal-message{
+  padding: 20px 0;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  margin-bottom: 50px;
+}
+.flogo-common-service-modal-button{
+  float: right;
+  margin-left: 20px;
+  width: 124px;
+  height: 45px;
+  text-align: center;
+  font-size: 16px;
+}
+.flogo-common-service-modal-button-primary{
+  border: none;
+  color: #ffffff;
+  background-color: #0081cb;
+}
+.flogo-common-service-modal-button-primary:hover{
+  background-color: #0081cb;
+  border-radius: 4px;
+}
+.flogo-common-service-modal-button-primary:active{
+  border-radius: 4px;
+  background-color: #062e79;
+}
+.flogo-common-service-modal-button-secondary{
+  background-color: transparent;
+  border: solid 2px #0081cb;
+  color: #0081cb;
+}
+.flogo-common-service-modal-button-secondary:hover{
+  border-radius: 4px;
+}
+.flogo-common-service-modal-button-secondary:active{
+  border: none;
+  background-color: #062e79;
+  color: #ffffff;
+}

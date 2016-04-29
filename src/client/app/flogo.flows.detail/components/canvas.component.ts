@@ -37,13 +37,15 @@ import {
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
+import { FlogoModal } from '../../../common/services/modal.service';
 
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
   directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable ],
   templateUrl: 'canvas.tpl.html',
-  styleUrls: [ 'canvas.component.css' ]
+  styleUrls: [ 'canvas.component.css' ],
+  providers: [ FlogoModal ]
 } )
 
 @RouteConfig([
@@ -123,7 +125,8 @@ export class FlogoCanvasComponent {
     private _restAPIService: RESTAPIService,
     private _restAPIFlowsService: RESTAPIFlowsService,
     private _routerParams: RouteParams,
-    private _router: Router
+    private _router: Router,
+    private _flogoModal: FlogoModal
   ) {
     this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
@@ -1154,33 +1157,38 @@ export class FlogoCanvasComponent {
     // TODO
     //  refine confirmation
     //  delete trigger isn't hanlded
-    if ( node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task && confirm( `Are you sure to delete task` ) ) {
+    if ( node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task) {
+      this._flogoModal.confirm(`Are you sure to delete task?`).then((res) => {
+        if(res) {
+          this._postService.publish(
+              _.assign(
+                  {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
+                    data : {
+                      node : data.node
+                    },
+                    done : ( diagram : IFlogoFlowDiagram ) => {
+                      // TODO
+                      //  NOTE that once delete branch, not only single task is removed.
+                      delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
+                      _.assign( this.diagram, diagram );
+                      this._updateFlow( this._flow );
+                      this._isDiagramEdited = true;
+                      // clear details panel
+                      this._router.navigate(
+                          [
+                            'FlogoFlowsDetailTaskDetail',
+                            { id : null}
+                          ]
+                      )
 
-      this._postService.publish(
-        _.assign(
-          {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
-            data : {
-              node : data.node
-            },
-            done : ( diagram : IFlogoFlowDiagram ) => {
-              // TODO
-              //  NOTE that once delete branch, not only single task is removed.
-              delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
-              _.assign( this.diagram, diagram );
-              this._updateFlow( this._flow );
-              this._isDiagramEdited = true;
-              // clear details panel
-              this._router.navigate(
-                [
-                  'FlogoFlowsDetailTaskDetail',
-                  { id : null}
-                ]
+                    }
+                  }
               )
-
-            }
-          }
-        )
-      );
+          );
+        }
+      }).catch((err) => {
+        console.error(err);
+      });
     }
 
     console.groupEnd();
