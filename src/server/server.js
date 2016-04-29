@@ -5,6 +5,7 @@ import bodyparser from 'koa-bodyparser';
 import compress from 'koa-compress';
 import {config} from './config/app-config';
 import {activities} from './api/activities';
+import {flows} from './api/flows';
 import {RegisterActivities} from './packages/activities/register-activities';
 import {RegisterTriggers} from './packages/triggers/register-triggers';
 import {Engine} from './modules/engine';
@@ -16,6 +17,7 @@ let app = koa();
 let port = config.app.port;
 
 activities(app, router);
+flows(app, router);
 
 let engine = new Engine();
 
