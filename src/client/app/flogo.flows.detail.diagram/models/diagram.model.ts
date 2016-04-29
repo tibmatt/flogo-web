@@ -29,6 +29,8 @@ const CLS = {
   diagramNodeBranchHover : 'flogo-flows-diagram-node-branch-hover',
   diagramNodeStatusSelected : 'flogo-flows-detail-diagram-node-selected',
   diagramNodeStatusRun : 'flogo-flows-detail-diagram-node-run',
+  diagramNodeStatusHasError : 'flogo-flows-detail-diagram-node-has-error',
+  diagramNodeStatusHasWarn : 'flogo-flows-detail-diagram-node-has-warn',
   diagramNodeDetail : 'flogo-flows-detail-diagram-node-detail',
   diagramNodeDetailBranch : 'flogo-flows-detail-diagram-node-detail-branch',
   diagramNodeDetailBranchSelected : 'flogo-flows-detail-diagram-node-detail-branch-selected',
@@ -527,15 +529,23 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       function ( d : IFlogoFlowDiagramNode ) {
         let thisNode = d3.select( this );
         let task = diagram.tasks && diagram.tasks[ d.taskID ];
+        let classes : {[key : string] : boolean} = {};
+
+        // status for resetting
+        classes[ CLS.diagramNodeStatusRun ] = false;
+        classes[ CLS.diagramNodeStatusHasError ] = false;
+        classes[ CLS.diagramNodeStatusHasWarn ] = false;
 
         if ( task ) {
-          if ( _.get( task, '__status.hasRun', false ) ) {
-            thisNode.classed( CLS.diagramNodeStatusRun, true );
-          } else {
-            thisNode.classed( CLS.diagramNodeStatusRun, false );
-          }
+          let taskStatus = _getTaskStatus( task );
+
+          classes[ CLS.diagramNodeStatusRun ] = taskStatus[ 'hasRun' ];
+          classes[ CLS.diagramNodeStatusHasError ] = taskStatus.hasError;
+          classes[ CLS.diagramNodeStatusHasWarn ] = taskStatus.hasWarning;
+          thisNode.classed( classes );
+
         } else {
-          thisNode.classed( CLS.diagramNodeStatusRun, false );
+          thisNode.classed( classes );
         }
 
         // comment out since hover will show the menu
@@ -610,17 +620,26 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           let task = this.tasks[ nodeInfo.taskID ];
 
           if ( task && _isNodeHasDetails( nodeInfo ) ) {
-            let taskDescription = (
-                task && (
-                  task.description || `Description of ${task.name}`
-                )
-              ) || `[ ${nodeInfo.parents} to ${nodeInfo.children} ]`;
+            let taskDescription : string;
+            let taskStatus = _getTaskStatus( task );
+
+            // the first message of error/warning will be used as description when presents
+            if ( taskStatus.hasError ) {
+              let _errors = _.get( task, '__props.errors', [ { msg : '' } ] );
+              taskDescription = _errors[ 0 ].msg;
+            } else if ( taskStatus.hasWarning ) {
+              let _warnings = _.get( task, '__props.warnings', [ { msg : '' } ] );
+              taskDescription = _warnings[ 0 ].msg;
+            } else {
+              taskDescription = task.description;
+            }
 
             return <any>[
               {
                 name : task.name,
                 desc : taskDescription,
                 type : task.type,
+                taskStatus : taskStatus,
                 nodeInfo : nodeInfo
               }
             ]
@@ -653,6 +672,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       name : string;
       desc : string;
       type : FLOGO_TASK_TYPE;
+      taskStatus : {
+        [key : string] : boolean;
+        hasError : boolean;
+        hasWarning : boolean;
+      };
       nodeInfo : any;
     }, col : number, row : number ) => {
 
@@ -879,11 +903,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       ( nodeInfo : any ) => {
         if ( nodeInfo ) {
           let task = this.tasks[ nodeInfo.taskID ];
+          let taskStatus = _getTaskStatus( task );
 
           if ( task ) {
             return [
               {
-                hasError : false,
+                hasError : taskStatus.hasError,
                 hasMapping : _isTaskHasMapping( task )
               }
             ]
@@ -906,18 +931,18 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     let diagram = this;
 
     nodeBadges.html(
-      ( nodeStatus : {
+      ( taskStatus : {
         hasError : boolean;
         hasMapping : boolean;
       } ) => {
         let tpl = '';
 
-        if ( nodeStatus ) {
-          if ( nodeStatus.hasError ) {
+        if ( taskStatus ) {
+          if ( taskStatus.hasError ) {
             tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-error"></i>`;
           }
 
-          if ( nodeStatus.hasMapping ) {
+          if ( taskStatus.hasMapping ) {
             tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-transform"></i>`;
           }
         }
@@ -1259,6 +1284,26 @@ function _triggerCustomEvent( eventType : string, eventDetail : any, elm : HTMLE
     return false;
   }
 
+}
+
+function _getTaskStatus( task : any ) {
+  let _errors = _.get( task, '__props.errors', [] );
+  let _warnings = _.get( task, '__props.warnings', [] );
+
+  let taskStatus : {
+    [key : string] : boolean;
+    hasError : boolean;
+    hasWarning : boolean;
+  } = {
+    hasError : !_.isEmpty( _errors ),
+    hasWarning : !_.isEmpty( _warnings )
+  };
+
+  _.forIn( _.get( task, '__status', {} ), ( val : boolean, statusName : string ) => {
+    taskStatus[ statusName ] = val;
+  } );
+
+  return taskStatus;
 }
 
 function _isNodeHasDetails( nodeInfo : any ) : boolean {

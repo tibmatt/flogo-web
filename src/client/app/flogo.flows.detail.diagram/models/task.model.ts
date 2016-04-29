@@ -20,7 +20,11 @@ export interface IFlogoFlowDiagramTask {
   tasks ? : IFlogoFlowDiagramTask[ ];
   links ? : IFlogoFlowDiagramTaskLink[ ];
   condition? : string;
-  __props? : any; // internal only properties in design time
+  __props? : {
+    [key : string] : any;
+    errors? : {msg : string;}[];
+    warnings? : {msg : string;}[];
+  }; // internal only properties in design time
   __status? : {
     [key : string] : boolean;
   }; // internal only properties in design time

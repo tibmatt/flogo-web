@@ -1357,7 +1357,7 @@ export class FlogoCanvasComponent {
       // ensure the persence of the internal properties
       task.__props = task.__props || {};
 
-      task.__props.initData = data.outputs;
+      task.__props['initData'] = data.outputs;
     }
 
     if ( _.isFunction( envelope.done ) ) {
