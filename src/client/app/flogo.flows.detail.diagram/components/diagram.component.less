@@ -100,6 +100,19 @@
     &[data-flogo-node-type="node_add"],
     &[data-flogo-node-type="node_root_new"] {
       opacity: 1;
+
+      &:before {
+        background: #F5BE23;
+      }
+
+      .flogo-flows-detail-diagram-node-detail {
+        background-color: #F5BE23;
+        border: none;
+
+        &:before {
+          color: #FFF;
+        }
+      }
     }
     &.flogo-flows-detail-diagram-node-run{
       &:before{
