@@ -64,10 +64,12 @@ export class FlogoFormBuilderComponent{
   }
 
   _saveActivityChangesToFlow() {
+    var warnings = this.verifyRequiredFields(this._task);
 
     var state = {
       taskId: this._task.id,
-      inputs: this._getCurrentTaskState(this._attributes.inputs)
+      inputs: this._getCurrentTaskState(this._attributes.inputs),
+      warnings: warnings
     };
 
     this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
@@ -182,6 +184,40 @@ export class FlogoFormBuilderComponent{
     this._setupEnvironment();
   }
 
+  private verifyRequiredFields( task : any ) {
+    let warnings = [];
+
+    //  verify if all of the required fields are fulfilled.
+    _.some( _.get( this._task, 'attributes.inputs' ), ( input : any ) => {
+      if ( input.required && ( (<any>_).isNil( input.value )
+          || (_.isString( input.value ) && _.isEmpty( input.value ))
+        ) ) {
+
+        //  add configure required msg;
+        warnings.push({ msg : 'Configure Required' });
+        return true;
+      }
+
+      return false;
+    } );
+
+    return warnings;
+  }
+
+  _setTaskWarnings():void {
+    var taskId   = this._task.id;
+    var warnings = this.verifyRequiredFields(this._task);
+
+
+     this._postService.publish(_.assign({},PUB_EVENTS.setTaskWarnings, {
+      data: {warnings,  taskId},
+      done: () => {}
+      } ));
+
+
+
+  }
+
   _setupEnvironment() {
     this._fieldsErrors = [];
 
@@ -211,6 +247,10 @@ export class FlogoFormBuilderComponent{
       var attributes = this._task ? this._task.attributes || {} : {};
       this._attributesOriginal = _.cloneDeep(attributes);
       this._setTaskEnvironment(attributes);
+
+      setTimeout(()=> {
+        this._setTaskWarnings();
+      },1000);
       return;
     }
   }
@@ -390,14 +430,6 @@ export class FlogoFormBuilderComponent{
       data: {inputs, taskId},
       done: () => {
         this._hasChanges = false;
-        /*
-         // If there is changes on the inputs send the changes to keep it
-         if(this.hasChanges) {
-         sessionStorage.setItem('task-attributes-' + this.data.id, JSON.stringify(this.initialFields));
-         this.data.attributes = this.getCurrentAttributesValues();
-         this.hasChanges = false;
-         }
-         */
       }
     } ));
 

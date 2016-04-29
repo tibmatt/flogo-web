@@ -96,6 +96,7 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.setTaskWarnings, { callback : this._setTaskWarnings.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback : this._taskDetailsChanged.bind( this ) } ),
@@ -841,12 +842,6 @@ export class FlogoCanvasComponent {
         () => {
           console.group( 'after navigation' );
 
-          // TODO
-          //  remove this mock
-          _.forIn( this.tasks, ( task : any, taskID : string ) => {
-            this.verifyRequiredFields( task );
-          } );
-
           // Refresh task detail
           var currentStep = this._getCurrentState(data.node.taskID);
           var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
@@ -926,26 +921,6 @@ export class FlogoCanvasComponent {
   // TODO
   //  get step index logic should be based on the selected snapshot,
   //  hence need to be refined in the future
-  //
-  // based on the task id, look in the task list to get the number of the step
-  //  TODO check if there is another way of get the step number
-  private _getStepNumberFromTask(taskId:string) {
-    let index = 0;
-    let tasks = this.tasks || [];
-
-    for(let task in tasks) {
-      if(task == taskId) {
-        return index +1;
-      }
-      ++index;
-    }
-
-    return 0;
-  }
-
-  // TODO
-  //  get step index logic should be based on the selected snapshot,
-  //  hence need to be refined in the future
   private _getStepNumberFromSteps(taskId:string) {
     var stepNumber:number = 0;
     // firstly try to get steps from the last process instance running from the beginning,
@@ -995,7 +970,18 @@ export class FlogoCanvasComponent {
     }
   }
 
+  private _setTaskWarnings(data:any, envelope:any) {
+    var task = this.tasks[data.taskId];
 
+    if(task) {
+      _.set( task, '__props.warnings', data.warnings );
+
+      this._updateFlow( this._flow ).then(() => {
+        this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+      });
+    }
+
+  }
 
   private _runFromThisTile(data:any, envelope:any) {
     console.group('Run from this tile');
@@ -1356,14 +1342,15 @@ export class FlogoCanvasComponent {
     if (task.type === FLOGO_TASK_TYPE.TASK) { // TODO handle more activity task types in the future
       var changedInputs = data.inputs || {};
 
-      for(var name in changedInputs) {
+      // set/unset the warnings in the tile
+      _.set( task, '__props.warnings', data.warnings );
 
+      for(var name in changedInputs) {
         task.attributes.inputs.forEach((input)=> {
           if(input.name === name) {
             input.value =  changedInputs[name];
           }
         });
-
       }
     } else if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
 
@@ -1377,33 +1364,12 @@ export class FlogoCanvasComponent {
       envelope.done();
     }
 
-    this._updateFlow( this._flow );
+    //this._updateFlow( this._flow );
+    this._updateFlow( this._flow ).then(() => {
+      this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+    });
 
     console.groupEnd();
-  }
-
-  // TODO
-  //  move this to form-builder component, maybe
-  //  and verify the required fields in proper timing.
-  private verifyRequiredFields( task : any ) {
-
-    //clear all warnings
-    _.set( task, '__props.warnings', [ ] );
-
-    // TODO
-    //  verify if all of the required fields are fulfilled.
-    _.some( _.get( task, 'attributes.inputs' ), ( input : any ) => {
-      if ( input.required && ( (<any>_).isNil( input.value )
-                                || (_.isString( input.value ) && _.isEmpty( input.value ))
-        ) ) {
-
-        //  add configure required msg;
-        task.__props.warnings.push({ msg : 'Configure Required' });
-        return true;
-      }
-
-      return false;
-    } );
   }
 
 
