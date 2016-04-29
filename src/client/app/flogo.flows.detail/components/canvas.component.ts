@@ -839,6 +839,12 @@ export class FlogoCanvasComponent {
         () => {
           console.group( 'after navigation' );
 
+          // TODO
+          //  remove this mock
+          _.forIn( this.tasks, ( task : any, taskID : string ) => {
+            this.verifyRequiredFields( task );
+          } );
+
           // Refresh task detail
           var currentStep = this._getCurrentState(data.node.taskID);
           var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
@@ -1367,6 +1373,30 @@ export class FlogoCanvasComponent {
     this._updateFlow( this._flow );
 
     console.groupEnd();
+  }
+
+  // TODO
+  //  move this to form-builder component, maybe
+  //  and verify the required fields in proper timing.
+  private verifyRequiredFields( task : any ) {
+
+    //clear all warnings
+    _.set( task, '__props.warnings', [ ] );
+
+    // TODO
+    //  verify if all of the required fields are fulfilled.
+    _.some( _.get( task, 'attributes.inputs' ), ( input : any ) => {
+      if ( input.required && ( (<any>_).isNil( input.value )
+                                || (_.isString( input.value ) && _.isEmpty( input.value ))
+        ) ) {
+        
+        //  add configure required msg;
+        task.__props.warnings.push({ msg : 'Configure Required' });
+        return true;
+      }
+
+      return false;
+    } );
   }
 
 
