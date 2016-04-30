@@ -1,0 +1,22 @@
+{
+  "name": "floslack",
+  "version": "1.0.0",
+  "description": "Build your flows in slack",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "bot",
+    "slack",
+    "flogo"
+  ],
+  "author": "fabian",
+  "license": "SEE LICENSE IN readme.md",
+  "dependencies": {
+    "bluebird": "^3.3.5",
+    "botkit": "^0.1.1",
+    "dotenv": "^2.0.0",
+    "request-promise": "^3.0.0"
+  }
+}
