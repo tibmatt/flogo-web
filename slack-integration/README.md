@@ -9,7 +9,7 @@ You need to create a *bot* slack integration and grab the API token it provides.
 
 If you want to use the *slash command* features you need to expose this 
 application's endpoints to the internet so they can be reachable by slack. Be sure to configure
-your slash commands in slack to point to the url `https://<your-host>/slack/receive.
+your slash commands in slack to point to the url `https://<your-host>/slack/receive`.
 All commands are accessible in that endpoint.
  
 For testing/trying purposes you can use [ngrok](http://ngrok.com) to allow access

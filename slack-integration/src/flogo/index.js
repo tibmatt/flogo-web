@@ -27,6 +27,24 @@ let state = {
 
 function create(flowName) {
   return new Promise((resolve, reject) => {
+    request
+      .post({
+        url: BASE_PATH + '/flows',
+        body: JSON.stringify({name: flowName}),
+        json: false,
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      })
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err);
+      });
+
+
+    /*
     let exists = state.flows.find(flow => flow.name == flowName);
     if (exists) {
       return reject({code: ERRORS.ALREADY_EXISTS});
@@ -36,7 +54,7 @@ function create(flowName) {
     state.flows.push(flow);
     state.lastCreated = flow;
 
-    return resolve(flow);
+    return resolve(flow);*/
   });
 }
 

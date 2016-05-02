@@ -11,8 +11,7 @@
     "slack",
     "flogo"
   ],
-  "author": "fabian",
-  "license": "SEE LICENSE IN readme.md",
+  "author": "flogo",
   "dependencies": {
     "bluebird": "^3.3.5",
     "botkit": "^0.1.1",
