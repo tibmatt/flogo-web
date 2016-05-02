@@ -1,7 +1,7 @@
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
-import bodyparser from 'koa-bodyparser';
+import bodyParser from 'koa-body';
 import compress from 'koa-compress';
 import {config} from './config/app-config';
 import {activities} from './api/activities';
@@ -28,14 +28,6 @@ let registerTriggers  = new RegisterTriggers(null, engine);
 // engine.build();
 // engine.start();
 
-// logger
-app.use(function *(next){
-  var start = new Date;
-  yield next;
-  var ms = new Date - start;
-  console.log('%s %s - %s', this.method, this.url, ms);
-});
-
 // make sure deep link it works
 app.use(function *(next){
   var path = this.path.endsWith('/')? this.path.substring(0, this.path.length - 1): this.path;
@@ -56,9 +48,28 @@ app.use(compress({
   flush: require('zlib').Z_SYNC_FLUSH
 }));
 
+// server static resources
 app.use(koaStatic("../public"));
-app.use(bodyparser());
+app.use(bodyParser());
+
+app.on('error', function(err){
+    if (401 == err.status) return;
+    if (404 == err.status) return;
+
+    console.error(err.toString());
+});
 
 app.use(router.routes());
+
+// logger
+app.use(function *(next){
+  var start = new Date;
+  yield next;
+  var ms = new Date - start;
+  console.log('%s %s - %s', this.method, this.url, ms);
+  console.log(this.body);
+  console.log(this.request.body);
+});
+
 
 app.listen(port);

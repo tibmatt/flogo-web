@@ -26,6 +26,8 @@
     "koa-compress": "^1.0.9",
     "lodash": "^3.10.1",
     "pouchdb": "^5.3.1",
-    "npm":"^3.8.5"
+    "npm":"^3.8.5",
+    "koa-body": "",
+    "koa-json": ""
   }
 }

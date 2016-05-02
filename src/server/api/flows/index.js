@@ -1,5 +1,6 @@
 import {config} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
+import _ from 'lodash';
 
 let basePath = config.app.basePath;
 let dbDefaultName = config.db;
@@ -34,6 +35,16 @@ function getAllFlows(){
   });
 }
 
+function createFlow(flowObj){
+  return new Promise((resolve, reject)=>{
+    _dbService.create(flowObj).then((response)=>{
+      resolve(response);
+    }).catch((err)=>{
+      reject(err);
+    });
+  });
+}
+
 export function flows(app, router){
   if(!app){
     console.error("[Error][api/activities/index.js]You must pass app");
@@ -56,8 +67,18 @@ function* getFlows(next){
 
 function* createFlows(next){
   console.log("createFlows");
-  this.body = 'createFlows';
-  yield next;
+
+  let data = JSON.parse(this.request.body)||{};
+  let flowObj = {};
+  flowObj.name = data.name||"";
+  flowObj.description = data.description || "";
+  flowObj._id = _dbService.generateFlowID();
+  flowObj.$table = _dbService.getIdentifier("FLOW");
+  flowObj.paths = {};
+  flowObj.items = {};
+  console.log(flowObj);
+  let res = yield createFlow(flowObj);
+  this.body = res;
 }
 
 function* deleteFlows(next){
