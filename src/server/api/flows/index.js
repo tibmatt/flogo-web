@@ -1,5 +1,6 @@
 import {config} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
+import {isJson, flogoIDEncode, flogoIDDecode, flogoGenTaskID} from '../../common/utils';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
@@ -53,6 +54,12 @@ export function flows(app, router){
   router.get(basePath+"/flows", getFlows);
   router.post(basePath+"/flows", createFlows);
   router.delete(basePath+"/flows", deleteFlows);
+
+  // {
+  //   name: "tibco-mqtt"
+  // }
+  router.post(basePath+"/flows/trigger", addTrigger);
+  router.post(basePath+"/flows/activity", addActivity);
 }
 
 function* getFlows(next){
@@ -67,22 +74,48 @@ function* getFlows(next){
 
 function* createFlows(next){
   console.log("createFlows");
+  try{
+    let data = this.request.body||{};
+    if(typeof this.request.body == 'string'){
+      if(isJson(this.request.body)){
+        data = JSON.parse(this.request.body);
+      }
+    }
+    let flowObj = {};
+    flowObj.name = data.name||"";
+    flowObj.description = data.description || "";
+    flowObj._id = _dbService.generateFlowID();
+    flowObj.$table = _dbService.getIdentifier("FLOW");
+    flowObj.paths = {};
+    flowObj.items = {};
+    console.log(flowObj);
+    let res = yield createFlow(flowObj);
+    this.body = res;
 
-  let data = JSON.parse(this.request.body)||{};
-  let flowObj = {};
-  flowObj.name = data.name||"";
-  flowObj.description = data.description || "";
-  flowObj._id = _dbService.generateFlowID();
-  flowObj.$table = _dbService.getIdentifier("FLOW");
-  flowObj.paths = {};
-  flowObj.items = {};
-  console.log(flowObj);
-  let res = yield createFlow(flowObj);
-  this.body = res;
+    throw new Error("test error");
+  }catch(err){
+    var error = {
+      code: 500,
+      message: err.message
+    };
+    this.body = error;
+  }
 }
 
 function* deleteFlows(next){
   console.log("deleteFlows");
   this.body = 'deleteFlows';
+  yield next;
+}
+
+function * addTrigger(next){
+  console.log("addTrigger");
+  this.body = 'addTrigger';
+  yield next;
+}
+
+function * addActivity(next){
+  console.log("addActivity");
+  this.body = 'addActivity';
   yield next;
 }
