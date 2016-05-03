@@ -20,8 +20,7 @@ module.exports = {
 };
 
 let state = {
-  lastCreated: null,
-  flows: []
+  lastCreated: null
 };
 
 function create(flowName) {
@@ -34,8 +33,10 @@ function create(flowName) {
       })
       .then(res => {
         let flow = res;
+        flow._id = flow.id;
         flow.id = utils.flogoIDEncode(flow.id);
         flow.name = flow.name || flowName;
+        state.lastCreated = Object.assign({}, flow);
         resolve(flow);
       })
       .catch(err => {
@@ -45,51 +46,11 @@ function create(flowName) {
 }
 
 function addTrigger(triggerName) {
-  return new Promise((resolve, reject) => {
-    request
-      .post({
-        url: BASE_PATH + '/flows/triggers',
-        body: JSON.stringify({name: triggerName}),
-        json: false,
-        headers: {
-          'Content-Type': 'text/plain'
-        }
-      })
-      .then(res => {
-        resolve(true);
-      })
-      .catch(err => {
-        let reason = err;
-        if (err.statusCode == 400) {
-          reject({code: ERRORS.NOT_FOUND});
-        }
-        reject(reason);
-      });
-  });
+  return addTile('triggers', triggerName);
 }
 
 function addActivity(activityName) {
-  return new Promise((resolve, reject) => {
-    request
-      .post({
-        url: BASE_PATH + '/flows/activities',
-        body: JSON.stringify({name: activityName}),
-        json: false,
-        headers: {
-          'Content-Type': 'text/plain'
-        }
-      })
-      .then(res => {
-        resolve(true);
-      })
-      .catch(err => {
-        let reason = err;
-        if (err.statusCode == 400) {
-          reject({code: ERRORS.NOT_FOUND});
-        }
-        reject(reason);
-      });
-  });
+  return addTile('activities', activityName);
 }
 
 function getFlow(flowName) {
@@ -129,6 +90,42 @@ function getLast() {
     return Object.assign({}, state.lastCreated);
   }
   return null;
+}
+
+function addTile(type, name) {
+  return new Promise((resolve, reject) => {
+
+    let lastFlow = getLast();
+    if(!lastFlow) {
+      return reject({code: ERRORS.NO_FLOW});
+    }
+
+    // TODO: remove, this is only for mock purposes
+    return resolve({flowName: lastFlow.name});
+
+/*
+    request
+      .post({
+        url: BASE_PATH + `/flows/${type}`,
+        qs: {
+          flowId: lastFlow._id
+        },
+        body: {name},
+        json: true
+      })
+      .then(res => {
+        // TODO format of response?
+        resolve(true);
+      })
+      .catch(err => {
+        let reason = err;
+        if (err.statusCode == 400) {
+          reject({code: ERRORS.NOT_FOUND});
+        }
+        reject(reason);
+      });
+    */
+  });
 }
 
 
