@@ -66,13 +66,14 @@ module.exports = function (controller) {
   controller.hears(['show\s*(.*)'],
     ['direct_message', 'direct_mention', 'mention'],
     (bot, message) => {
+      bot.startTyping(message);
 
       var flowName = message.match[1];
       if (!flowName) {
         return listFlows(bot, message);
       }
 
-      flogo.getFlow(flowName)
+      flogo.getFlow(flowName.trim())
         .then(flow => {
           if (flow) {
             bot.reply(message, formatter.formatFlow(flow));

@@ -126,7 +126,7 @@ function _show(bot, message, params) {
         if (flow) {
           bot.replyPublic(message, formatter.formatFlow(flow));
         } else {
-          bot.replyPublic(message, 'I didn\'t find a flow with that name');
+          bot.replyPublic(message, 'There is no flow with that name');
         }
       })
       .catch(err => {

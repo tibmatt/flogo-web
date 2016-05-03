@@ -19,9 +19,6 @@ module.exports = {
   ERRORS
 };
 
-const TRIGGERS = ['rest', 'mqtt'];
-const ACTIVITIES = ['sms', 'rest', 'log'];
-
 let state = {
   lastCreated: null,
   flows: []
@@ -49,38 +46,78 @@ function create(flowName) {
 
 function addTrigger(triggerName) {
   return new Promise((resolve, reject) => {
-    if (state.lastCreated) {
-      if (triggerName && TRIGGERS.indexOf(triggerName.toLowerCase()) >= 0) {
-        resolve({
-          flowName: state.lastCreated.name
-        });
-      } else {
-        reject({code: ERRORS.NOT_FOUND});
-      }
-    } else {
-      reject({code: ERRORS.NO_FLOW});
-    }
+    request
+      .post({
+        url: BASE_PATH + '/flows/triggers',
+        body: JSON.stringify({name: triggerName}),
+        json: false,
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      })
+      .then(res => {
+        resolve(true);
+      })
+      .catch(err => {
+        let reason = err;
+        if (err.statusCode == 400) {
+          reject({code: ERRORS.NOT_FOUND});
+        }
+        reject(reason);
+      });
   });
 }
 
 function addActivity(activityName) {
   return new Promise((resolve, reject) => {
-    if (state.lastCreated) {
-      if (activityName && ACTIVITIES.indexOf(activityName.toLowerCase()) >= 0) {
-        resolve({
-          flowName: state.lastCreated.name
-        });
-      } else {
-        reject({code: ERRORS.NOT_FOUND});
-      }
-    } else {
-      reject({code: ERRORS.NO_FLOW});
-    }
+    request
+      .post({
+        url: BASE_PATH + '/flows/activities',
+        body: JSON.stringify({name: activityName}),
+        json: false,
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      })
+      .then(res => {
+        resolve(true);
+      })
+      .catch(err => {
+        let reason = err;
+        if (err.statusCode == 400) {
+          reject({code: ERRORS.NOT_FOUND});
+        }
+        reject(reason);
+      });
   });
 }
 
 function getFlow(flowName) {
-  return Promise.resolve(state.flows.find(flow => flow.name == flowName));
+  return new Promise((resolve, reject) => {
+    request
+      .get({
+        url: BASE_PATH + '/flows',
+        qs: {
+          name: flowName
+        },
+        json: true
+      })
+      .then(flows => {
+        let flow = null;
+        if(flows && flows.length > 0) {
+          flow = flows[0];
+          flow.id = utils.flogoIDEncode(flow.id || flow._id);
+        }
+        resolve(flow);
+      })
+      .catch(err => {
+        let reason = err;
+        if (err.statusCode == 400) {
+          reject({code: ERRORS.NOT_FOUND});
+        }
+        reject(reason);
+      });
+  });
 }
 
 function listFlows() {
@@ -94,18 +131,4 @@ function getLast() {
   return null;
 }
 
-function _createFlow(flowName) {
-  let id = 1;
-  if (state.lastCreated) {
-    id = state.lastCreated.id + 1;
-  }
-
-  return {
-    id,
-    name: flowName,
-    description: null,
-    created: new Date()
-  };
-
-}
 
