@@ -140,10 +140,12 @@
   background-color: #79b8dc;
   border: 1px solid #79b8dc;
   width: 162px;
+  transition-delay: 200ms;
 }
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-menu:hover .flogo-flows-detail-diagram-node-menu-box,
 .flogo-flows-detail-diagram-node .flogo-flows-detail-diagram-node-menu-trigger:hover ~ .flogo-flows-detail-diagram-node-menu .flogo-flows-detail-diagram-node-menu-box {
   width: 118px;
+  transition-delay: 200ms;
 }
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-menu:hover,
 .flogo-flows-detail-diagram-node[data-flogo-node-type="node_branch"] .flogo-flows-detail-diagram-node-menu-trigger:hover ~ .flogo-flows-detail-diagram-node-menu {
