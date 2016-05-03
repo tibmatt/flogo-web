@@ -14,21 +14,41 @@ let config = {
   },
   activities:{
     db: "http://localhost:5984/flogo-web-activities",
-    path: "../../submodules/flogo-contrib/activity"
+    defaultPath: "../../submodules/flogo-contrib/activity",
+    contribPath: "../../contrib/activity",
+    default:{
+      "rest": "github.com/TIBCOSoftware/flogo-contrib/activity/rest",
+      "log": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
+    },
+    contrib:{
+
+    }
   },
   triggers:{
     db: "http://localhost:5984/flogo-web-triggers",
-    path: "../../submodules/flogo-contrib/trigger"
+    defaultPath: "../../submodules/flogo-contrib/trigger",
+    contribPath: "../../contrib/trigger",
+    default: {
+      "rest": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+      "mqtt": "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt",
+      "timer": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
+    }
   },
   models:{
     db: "http://localhost:5984/flogo-web-models",
-    path: "../../submodules/flogo-contrib/model"
+    defaultPath: "../../submodules/flogo-contrib/model",
+    contribPath: "../../contrib/model"
   },
   engine:{
     host: "localhost",
     port: "8080",
     path: "./",
-    name: "default-engine"
+    name: "default-engine",
+    triggers:{
+      "rest": {     /*default configure for rest*/
+        "port": "4010"
+      }
+    }
   },
   stateServer:{
     host: "localhost",

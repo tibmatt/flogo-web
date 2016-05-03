@@ -6,8 +6,8 @@ import compress from 'koa-compress';
 import {config} from './config/app-config';
 import {activities} from './api/activities';
 import {flows} from './api/flows';
-import {RegisterActivities} from './packages/activities/register-activities';
-import {RegisterTriggers} from './packages/triggers/register-triggers';
+import {RegisterActivities} from './modules/activities';
+import {RegisterTriggers} from './modules/triggers';
 import {Engine} from './modules/engine';
 import path from 'path';
 
@@ -21,8 +21,20 @@ flows(app, router);
 
 let engine = new Engine();
 
-let registerActivities  = new RegisterActivities(null, engine);
-let registerTriggers  = new RegisterTriggers(null, engine);
+let registerActivities  = new RegisterActivities(config.activities.db, engine, {
+  defaultPath: path.resolve(config.rootPath, config.activities.defaultPath),
+  defaultConfig: config.activities.default,
+  customPath: path.resolve(config.rootPath, config.activities.contribPath),
+  customConfig: config.activities.contrib
+});
+
+let registerTriggers  = new RegisterTriggers(config.triggers.db, engine, {
+  defaultPath: path.resolve(config.rootPath, config.triggers.defaultPath),
+  defaultConfig: config.triggers.default,
+  customPath: path.resolve(config.rootPath, config.triggers.contribPath),
+  customConfig: config.triggers.contrib
+});
+//let registerTriggers  = new RegisterTriggers(null, engine);
 
 // engine.addModel("file://", path.join(config.rootPath, config.models.path, 'simple'));
 // engine.build();

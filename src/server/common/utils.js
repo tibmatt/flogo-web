@@ -23,6 +23,18 @@ export function isDirectory(testedPath){
   }
 }
 
+export function readDirectoriesSync(dirPath){
+  let dirs = fs.readdirSync(dirPath);
+  let nDirs = [];
+  dirs.forEach((dir)=>{
+    if(isDirectory(path.join(dirPath, dir))){
+      nDirs.push(dir);
+    }
+  });
+
+  return nDirs;
+}
+
 export function isJson(str) {
   try {
     JSON.parse(str);
