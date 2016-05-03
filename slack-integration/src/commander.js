@@ -57,7 +57,14 @@ module.exports = function (controller) {
 };
 
 function _showHelp(bot, message) {
-  bot.replyPublic(message, 'This is the help');
+  bot.replyPrivate(message, `Available commands:
+  • \`/flogo help\` - show this help
+  • \`/flogo-create [name of your flow]\` - create a new flow
+  • \`/flogo-add trigger [name-of-the-trigger]\` - add a trigger to the current flow
+  • \`/flogo-add activity [name-of-the-activity]\` - add an activity to the current flow
+  • \`/flogo-show\` - list all flows
+  • \`/flogo-show [flow name]\` - find a flow by name
+  `);
 }
 
 function _createFlow(bot, message, params){

@@ -89,9 +89,20 @@ module.exports = function (controller) {
 
   controller.hears(['list( flows)?'], ['direct_message', 'direct_mention', 'mention'], listFlows);
 
+  controller.hears(['help'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
+    bot.reply(message, `You can ask me to do things for you, for example:
+    • \`create [name of your flow]\` - create a new flow
+    • \`add trigger [name-of-the-trigger]\` - add a trigger to the current flow
+    • \`add activity [name-of-the-activity]\` - add an activity to the current flow
+    • \`show\` or \`list\` - list all flows
+    • \`show [flow name]\` - find a flow by name
+  `);
+  });
+
   controller.hears(['hello', 'hi'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
     bot.reply(message, 'Hello. What can I do for you? :steam_locomotive:');
   });
+
 
   controller.hears(['current flow'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
     var currentFlow = flogo.getLast();
