@@ -59,6 +59,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
 export class FlogoCanvasComponent {
   _subscriptions : any[];
 
+  _flowID: string;
   _currentProcessID: string;
   _isCurrentProcessDirty = true;
   _hasUploadedProcess: boolean;
@@ -298,7 +299,7 @@ export class FlogoCanvasComponent {
       );
   }
 
-  uploadProcess() {
+  uploadProcess( updateCurrentProcessID = true ) {
     this._uploadingProcess = true;
 
     // generate process based on the current flow
@@ -310,11 +311,15 @@ export class FlogoCanvasComponent {
     delete process.id;
 
     return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
-      this._uploadingProcess = false;
-      this._hasUploadedProcess = true;
-      if ( !_.isEmpty( rsp ) ) {
-        this._currentProcessID = rsp.id;
-        this._isCurrentProcessDirty = false;
+
+      if (updateCurrentProcessID) {
+        this._uploadingProcess = false;
+        this._hasUploadedProcess = true;
+        this._flowID = rsp.id;
+        if ( !_.isEmpty( rsp ) ) {
+          this._currentProcessID = rsp.id;
+          this._isCurrentProcessDirty = false;
+        }
       }
 
       return rsp;
@@ -327,6 +332,16 @@ export class FlogoCanvasComponent {
 
     // clear task status and render the diagram
     this.clearTaskRunStatus();
+
+    try { // rootTask should be in DONE status once the flow start
+      let rootTask = this.tasks[ this.diagram.nodes[ this.diagram.root.is ].taskID ];
+      rootTask.__status['hasRun'] = true;
+      rootTask.__status['isRunning'] = false;
+    } catch ( e ) {
+      console.warn( e );
+      console.warn( 'No root task/trigger is found.' );
+    }
+
     this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
     return this._restAPIFlowsService.startFlow(
@@ -401,7 +416,7 @@ export class FlogoCanvasComponent {
       }, opt
     );
 
-    this.clearTaskRunStatus();
+    // this.clearTaskRunStatus();
 
     if ( processInstanceID ) {
       let trials = 0;
@@ -498,15 +513,6 @@ export class FlogoCanvasComponent {
     processInstanceID = processInstanceID || this._processInstanceID;
 
     if ( processInstanceID ) {
-
-      try { // rootTask should be in DONE status once the flow start
-        let rootTask = this.tasks[ this.diagram.nodes[ this.diagram.root.is ].taskID ];
-        rootTask.__status['hasRun'] = true;
-        rootTask.__status['isRunning'] = false;
-      } catch ( e ) {
-        console.warn( e );
-        console.warn( 'No root task/trigger is found.' );
-      }
       return this._restAPIService.instances.getStepsByInstanceID( processInstanceID )
         .then(
           ( rsp : any )=> {
@@ -593,16 +599,17 @@ export class FlogoCanvasComponent {
   //  to do proper restart process, need to select proper snapshot, hence
   //  the current implementation is only for the last start-from-beginning snapshot, i.e.
   //  the using this._processInstanceID to restart
-  restartProcessFrom( step : number, dataToRestart:string ) {
+  restartProcessFrom( step : number, newFlowID : string, dataOfInterceptor : string ) {
 
     if ( this._processInstanceID ) {
       this._restartingProcess = true;
       this._steps = null;
 
       this.clearTaskRunStatus();
+      this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
-      return this._restAPIService.flows.restartFrom(
-        this._processInstanceID, JSON.parse( dataToRestart ), step
+      return this._restAPIService.flows.restartWithIcptFrom(
+        this._processInstanceID, JSON.parse( dataOfInterceptor ), step, this._flowID, newFlowID
         )
         .then(
           ( rsp : any ) => {
@@ -1022,56 +1029,76 @@ export class FlogoCanvasComponent {
       let step = this._getStepNumberFromSteps( data.taskId );
 
       if ( step ) {
-        this.restartProcessFrom( step, JSON.stringify( data.inputs ) )
-          .then(
-            ( rsp : any )=> {
-              return this.monitorProcessStatus( rsp.id );
-            }
-          )
-          .then(
-            ( rsp : any )=> {
-              return this.updateTaskRunStatus( rsp.id );
-            }
-          )
-          .then(
-            ( rsp : any )=> {
+        // upload a new flow of with the latest flow information
+        this.uploadProcess(false).then((rsp:any)=> {
+          if (!_.isEmpty(rsp)) {
+            let newFlowID = rsp.id;
 
-              this._steps = _.get( rsp, 'steps', [] );
+            let dataOfInterceptor = <any>{
+              tasks : <any>[
+                {
+                  id : parseInt( flogoIDDecode( selectedTask.id ) ),
+                  inputs : (function parseInput( d : any ) {
+                    let attrs = _.get(selectedTask, 'attributes.inputs');
 
-              var currentStep = this._getCurrentState(data.taskId);
-              var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.taskId ] ) );
-              var context     = this._getCurrentContext(data.taskId);
+                    if (attrs) {
+                      return _.map(attrs, (input: any)=> {
+                        // override the value;
+                        return _.assign( _.cloneDeep( input ), {
+                          value : d[ input[ 'name' ] ],
+                          type : attributeTypeToString( input[ 'type' ] )
+                        } );
+                      });
+                    } else {
+                      return [];
+                    }
+                  }( data.inputs ))
+                }
+              ]
+            };
 
-              this._postService.publish(
-                _.assign(
-                  {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                    data: _.assign({},
-                      data,
-                      {task: currentTask},
-                      {step: currentStep},
-                      {context: context}
-                    )
-                  }
-                ));
+            this.restartProcessFrom( step, newFlowID, JSON.stringify( dataOfInterceptor ) )
+              .then( ( rsp : any )=> {
+                return this.monitorProcessStatus( rsp.id );
+              } )
+              .then( ( rsp : any )=> {
+                return this.updateTaskRunStatus( rsp.id );
+              } )
+              .then( ( rsp : any )=> {
 
-            }
-          )
-          .then(
-            ()=> {
+                this._steps = _.get( rsp, 'steps', [] );
 
-              if ( _.isFunction( envelope.done ) ) {
-                envelope.done();
-              }
+                var currentStep = this._getCurrentState( data.taskId );
+                var currentTask = _.assign( {}, _.cloneDeep( this.tasks[ data.taskId ] ) );
+                var context = this._getCurrentContext( data.taskId );
 
-            }
-          )
-          .catch(
-            ( err : any )=> {
-              console.error( err );
+                this._postService.publish(
+                  _.assign(
+                    {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                      data : _.assign( {},
+                        data,
+                        { task : currentTask },
+                        { step : currentStep },
+                        { context : context }
+                      )
+                    }
+                  ) );
 
-              return err;
-            }
-          );
+              } )
+              .then( ()=> {
+
+                if ( _.isFunction( envelope.done ) ) {
+                  envelope.done();
+                }
+
+              } )
+              .catch( ( err : any )=> {
+                console.error( err );
+
+                return err;
+              } );
+          }
+        });
       } else {
         // TODO
         console.warn( 'Cannot find proper step to restart from, skipping...' );
@@ -1191,7 +1218,7 @@ export class FlogoCanvasComponent {
     let branchInfo = {
       id : flogoGenTaskID(),
       type : FLOGO_TASK_TYPE.TASK_BRANCH,
-      condition : 'false'
+      condition : 'true'
     };
 
     this.tasks[ branchInfo.id ] = branchInfo;
