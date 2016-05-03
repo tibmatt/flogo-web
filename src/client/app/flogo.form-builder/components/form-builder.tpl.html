@@ -25,7 +25,9 @@
 
     <!-- BRANCH CONFIGURATION -->
     <div *ngIf="_context.isBranch" class="flogo-common-edit-panel__container">
-      <flogo-form-builder-fields-textarea [info]="getBranchInfo()" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+      <div *ngFor="#item of _branchConfigs" >
+        <flogo-form-builder-fields-textarea [info]="getBranchInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+      </div>
     </div>
 
 
@@ -139,7 +141,7 @@
 
      <!-- PANEL FOOTER -->
     <div class="flogo-common-edit-panel__footer" *ngIf="_context.isBranch">
-      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="true" [disabled]="true">
+      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="!_hasChanges" [disabled]="!_hasChanges" (click)="saveChanges($event)">
         Save changes
       </button>
       <button class="flogo-btn-link" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>

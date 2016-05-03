@@ -1385,6 +1385,8 @@ export class FlogoCanvasComponent {
       task.__props = task.__props || {};
 
       task.__props['initData'] = data.outputs;
+    } else if ( task.type === FLOGO_TASK_TYPE.TASK_BRANCH ) { // branch
+      task.condition = data.condition;
     }
 
     if ( _.isFunction( envelope.done ) ) {

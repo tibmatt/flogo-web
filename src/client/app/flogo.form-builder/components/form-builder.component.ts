@@ -33,6 +33,7 @@ export class FlogoFormBuilderComponent{
   _attributesTriggerOriginal:any;
   _fieldsErrors:string[];
   _attributesTrigger:any;
+  _branchConfigs:any[]; // force the fields update by taking the advantage of ngFor
 
   constructor(private _postService: PostService) {
     this._initSubscribe();
@@ -82,7 +83,6 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  // TODO
   _saveTriggerChangesToFlow() {
 
     let currentOutputs = this._attributesTrigger.outputs;
@@ -101,10 +101,19 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  // TODO
   _saveBranchChangesToFlow() {
-    console.warn('TODO save branch info');
-    this._hasChanges  = false;
+    let branchInfo = this._branchConfigs[ 0 ];
+    let state = {
+      taskId : branchInfo.id,
+      condition : branchInfo.condition
+    };
+
+    this._postService.publish( _.assign( {}, PUB_EVENTS.taskDetailsChanged, {
+      data : state,
+      done : ()=> {
+        this._hasChanges = false;
+      }
+    } ) );
   }
 
 
@@ -168,6 +177,13 @@ export class FlogoFormBuilderComponent{
       this._updateAttributeByUserChanges(this._attributesTrigger.outputs, param.payload);
     });
 
+    // handle the change of condition of branch
+    this._fieldObserver.filter( ( param : any ) => {
+        return param.message == 'change-field' && param.payload.isBranch && param.payload.name === 'condition';
+      } )
+      .subscribe( ( param : any ) => {
+        this._branchConfigs[ 0 ].condition = param.payload.value;
+      } );
   }
 
   _updateAttributeByUserChanges(attributes:any, changedObject:any) {
@@ -253,6 +269,10 @@ export class FlogoFormBuilderComponent{
       },1000);
       return;
     }
+
+    if (this._context.isBranch) {
+      this._setBranchEnvironment(this._task);
+    }
   }
 
   _getCanRunFromThisTile() {
@@ -277,6 +297,16 @@ export class FlogoFormBuilderComponent{
 
     this._attributes.inputs.map((input:any) => {   input.mappings = this._task.inputMappings;    input.step  = this._step });
     this._attributes.outputs.map((output:any) => { output.mappings = this._task.outputMappings;  output.step =  this._step });
+  }
+
+  _setBranchEnvironment( branchInfo : any ) {
+    this._branchConfigs = [
+      _.assign( {},
+        {
+          id : branchInfo.id,
+          condition : branchInfo.condition
+        } )
+    ];
   }
 
   getControlByType(type:string) {
@@ -333,13 +363,15 @@ export class FlogoFormBuilderComponent{
     }
   }
 
-  getBranchInfo() {
+  getBranchInfo( branchInfo : any ) {
     var info = {
-      name:       this._task.id,
+      name:       'condition',
+      id:         branchInfo.id,
       title:      'If',
-      value:      this._task.condition,
+      value:      branchInfo.condition,
       required:   true,
-      placeholder: ''
+      placeholder: '',
+      isBranch:   true,
     };
 
     return info;
@@ -454,6 +486,9 @@ export class FlogoFormBuilderComponent{
       this._setTaskEnvironment(_.cloneDeep(this._attributesOriginal || {}));
     }
 
+    if (this._context.isBranch) {
+      this._setBranchEnvironment( this._task || {} );
+    }
 
     this._fieldsErrors = [];
     this._hasChanges = false
