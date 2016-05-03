@@ -36,6 +36,38 @@ function getAllFlows(){
   });
 }
 
+/**
+ *
+ * @param query {name: string}
+ * @returns {*}
+ */
+function filterFlows(query){
+  query = _.assign({}, query);
+
+  let options = {
+    include_docs: true,
+    startKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}`,
+    endKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}\uffff`,
+    key: query.name
+  };
+
+  // TODO:  repplace with a persistent query: https://pouchdb.com/guides/queries.html
+  return _dbService.db
+    .query(function(doc, emit) { emit(doc.name); }, options)
+    .then((response) => {
+      let allFlows = [];
+      let rows = response&&response.rows||[];
+      rows.forEach((item)=>{
+        // if this item's tabel is FLOW
+        if(item&&item.doc&&item.doc.$table === FLOW){
+          allFlows.push(item.doc);
+        }
+      });
+      return allFlows;
+    });
+
+}
+
 function createFlow(flowObj){
   return new Promise((resolve, reject)=>{
     _dbService.create(flowObj).then((response)=>{
@@ -66,8 +98,14 @@ function* getFlows(next){
   console.log("getFlows, next: ", next);
   //this.body = 'getFlows';
 
+  console.log('/****** QUERY ******/\n', this.query);
+  let data = [];
+  if (!_.isEmpty(this.query)) {
+    data = yield filterFlows(this.query);
+  } else {
+    data = yield getAllFlows();
+  }
   //yield next;
-  let data = yield getAllFlows();
   console.log(data);
   this.body = data;
 }
@@ -91,8 +129,6 @@ function* createFlows(next){
     console.log(flowObj);
     let res = yield createFlow(flowObj);
     this.body = res;
-
-    throw new Error("test error");
   }catch(err){
     var error = {
       code: 500,
