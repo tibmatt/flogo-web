@@ -64,7 +64,7 @@ function _createFlow(bot, message, params){
   if(params && params.length > 0) {
     let flowName = params.join(' ');
     flogo.create(flowName)
-      .then(() => bot.replyPublic(message, `I created the flow "${flowName}"`))
+      .then(flowInfo => bot.replyPublic(message, formatter.formatFlow(flowInfo, `Successfully created flow "${flowName}"`)))
       .catch(err => {
         console.error(err);
         if (err.code && err.code == flogo.ERRORS.ALREADY_EXISTS) {

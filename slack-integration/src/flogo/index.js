@@ -5,6 +5,8 @@ let request = require('request-promise').defaults({json: true});
 
 let ERRORS = require('./errors');
 
+let utils = require('./utils');
+
 const BASE_PATH = require('./base-path')();
 
 module.exports = {
@@ -30,31 +32,18 @@ function create(flowName) {
     request
       .post({
         url: BASE_PATH + '/flows',
-        body: JSON.stringify({name: flowName}),
-        json: false,
-        headers: {
-          'Content-Type': 'text/plain'
-        }
+        body: {name: flowName},
+        json: true
       })
       .then(res => {
-        resolve(res);
+        let flow = res;
+        flow.id = utils.flogoIDEncode(flow.id);
+        flow.name = flow.name || flowName;
+        resolve(flow);
       })
       .catch(err => {
         reject(err);
       });
-
-
-    /*
-    let exists = state.flows.find(flow => flow.name == flowName);
-    if (exists) {
-      return reject({code: ERRORS.ALREADY_EXISTS});
-    }
-
-    let flow = _createFlow(flowName);
-    state.flows.push(flow);
-    state.lastCreated = flow;
-
-    return resolve(flow);*/
   });
 }
 
@@ -99,7 +88,7 @@ function listFlows() {
 }
 
 function getLast() {
-  if(state.lastCreated) {
+  if (state.lastCreated) {
     return Object.assign({}, state.lastCreated);
   }
   return null;

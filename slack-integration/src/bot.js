@@ -13,9 +13,10 @@ module.exports = function (controller) {
 
       bot.startTyping(message);
       flogo.create(flowName)
-        .then(() => bot.reply(message, `I created the flow "${flowName}" and now it is your current flow :smile:`))
+        .then(flowInfo => bot.reply(message, formatter.formatFlow(flowInfo, `I created the flow "${flowName}" and now it is your current flow :smile:`)))
         .catch(err => {
           console.error(err);
+          console.error(err.stack);
           if (err.code && err.code == flogo.ERRORS.ALREADY_EXISTS) {
             bot.reply(message, 'There\'s already a flow with that name. You may want to try another name.');
           } else {
