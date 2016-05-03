@@ -14,7 +14,7 @@ export class FlogoModal {
         window.jQuery('flogo-app').append(`
             <div class="flogo-common-service-modal-container fade">
                 <div class="flogo-common-service-modal-detail fade clearfix" style="${style}">
-                    <div class="flogo-common-service-modal-confirm">confirm</div>
+                    <div class="flogo-common-service-modal-confirm">Confirm</div>
                     <div class="flogo-common-service-modal-message">${message}</div>
                     <button class="flogo-common-service-modal-button flogo-common-service-modal-button-primary">YES</button>
                     <button class="flogo-common-service-modal-button flogo-common-service-modal-button-secondary">NO</button>

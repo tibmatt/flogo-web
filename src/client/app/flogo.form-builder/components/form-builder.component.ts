@@ -509,12 +509,13 @@ export class FlogoFormBuilderComponent{
     this._saveChangesToFlow();
   }
 
-  changeTaskDetail(tileName: any) {
-    console.log(tileName);
+  changeTaskDetail(content: any, proper: string) {
+    console.log(content);
 
-    this._postService.publish(_.assign({},PUB_EVENTS.changeTileName,
+    this._postService.publish(_.assign({},PUB_EVENTS.changeTileDetail,
       {
-        data: {tileName, taskId:this._task.id}
+        data: {content: content, proper: proper, taskId:this._task.id}
+
       }
     ));
 

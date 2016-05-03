@@ -2,23 +2,39 @@
 
   <div [hidden]="hasErrors">
 
-    <!-- PANEAL HEADER -->
-    <div class="flogo-common-edit-panel__head">
-
-      <div class="flogo-common-edit-panel__head-icon" *ngIf="_context.isTask || _context.isBranch">
-        <img src="/assets/svg/flogo.icon.gears.circle.svg" alt="">
-      </div>
-
-      <div class="flogo-common-edit-panel__head-icon" *ngIf="_context.isTrigger">
-        <img src="/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg" alt="">
-      </div>
-
+    <!-- PANEL HEADER -->
+    <div class="flogo-common-edit-panel__head" [class.flogo-common-edit-panel__head-branch]="_context.isBranch">
       <div class="flogo-common-edit-panel__head-wrapper">
-        <div  *ngIf="_task && (_context.isTask || _context.isTrigger)">
-          <h3 [(myContenteditable)]="_task.name" class="flogo-common-edit-panel__head-title" (myContenteditableChange)="changeTaskDetail($event)"></h3>
+
+        <!-- PANEL TITLES -->
+        <div  *ngIf="_task && (_context.isTask || _context.isTrigger)" [ngClass]="{trigger:_context.isTrigger, task: _context.isTask}">
+          <div class="flogo-common-edit-panel__head-titles">
+            <h3 [(myContenteditable)]="_task.name" class="flogo-common-edit-panel__head-title" (myContenteditableChange)="changeTaskDetail($event, 'name')"></h3>
+            <div class="flogo-common-edit-panel__head-subtitle" [(myContenteditable)]="_task.description" (myContenteditableChange)="changeTaskDetail($event, 'description')"></div>
+          </div>
         </div>
-        <h3  *ngIf="_context.isBranch" class="flogo-common-edit-panel__head-title">Configure Branch</h3>
-        <div class="flogo-common-edit-panel__head-subtitle"></div>
+
+        <div *ngIf="_context.isBranch" class="branch">
+          <div class="flogo-common-edit-panel__head-titles">
+            <h3 class="flogo-common-edit-panel__head-title">Configure Branch</h3>
+          </div>
+        </div>
+        <!-- PANEL BUTTONS -->
+        <div *ngIf="_context.isTask || _context.isTrigger" class="clearfix">
+          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+            Run tile
+          </button>
+          <!--<button class="flogo-form-builder-buttons-secondary right" [hidden]="_hasChanges" (click)="runFromThisTile($event)">Run from Trigger</button>-->
+          <button class="flogo-form-builder-buttons-primary left" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
+          <button class="flogo-form-builder-buttons-secondary right" [class.disabled]="!_hasChanges" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
+        </div>
+
+        <div *ngIf="_context.isBranch" class="clearfix">
+          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="true" [disabled]="true">
+            Save changes
+          </button>
+          <button class="flogo-form-builder-buttons-secondary right" [class.disabled]="!_hasChanges" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
+        </div>
       </div>
     </div>
 
@@ -127,24 +143,6 @@
         </div>
 
       </div>
-    </div>
-
-
-    <!-- PANEL FOOTER -->
-    <div class="flogo-common-edit-panel__footer" *ngIf="_context.isTask || _context.isTrigger">
-      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
-      Run from this tile
-      </button>
-      <button class="tc-buttons tc-buttons-primary" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
-      <button class="flogo-btn-link" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
-    </div>
-
-     <!-- PANEL FOOTER -->
-    <div class="flogo-common-edit-panel__footer" *ngIf="_context.isBranch">
-      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="!_hasChanges" [disabled]="!_hasChanges" (click)="saveChanges($event)">
-        Save changes
-      </button>
-      <button class="flogo-btn-link" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
     </div>
 
   </div>

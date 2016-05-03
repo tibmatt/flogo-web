@@ -11,9 +11,9 @@ export const PUB_EVENTS = {
     chanel: 'flogo-task',
     topic: 'task-details-changed'
   },
-  changeTileName : {
+  changeTileDetail: {
     channel : 'flogo-task',
-    topic : 'change-tile-name'
+    topic : 'change-tile-detail'
   },
   setTaskWarnings: {
     channel: 'flogo-task',

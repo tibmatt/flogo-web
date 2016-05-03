@@ -47,5 +47,113 @@
     //bottom: 0;
     width: 100%;
   }
-
+}
+.flogo-common-edit-panel__head.flogo-common-edit-panel__head-branch{
+  background: #8a90ae;
+}
+.flogo-common-edit-panel__head-wrapper{
+  .trigger, .task, .branch{
+    padding-top: 26px;
+    padding-bottom: 2px;
+    &:before{
+      margin-right: 15px;
+      vertical-align: middle;
+      display: inline-block;
+      content: "";
+      border-radius: 50%;
+    }
+  }
+  .trigger{
+    &:before{
+      background: url("/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg") no-repeat left center/46px 46px;
+      width: 46px;
+      height: 46px;
+    }
+  }
+  .task{
+    &:before{
+      background: url("/assets/svg/flogo.icon.gears.circle.svg") no-repeat left center/40px 40px;
+      width: 40px;
+      height: 40px;
+    }
+  }
+  .branch{
+    &:before{
+      background: #fff url("/assets/svg/flogo.flows.detail.add.cross.gray.icon.svg") no-repeat center/50%;
+      width: 40px;
+      height: 40px;
+    }
+  }
+  .flogo-common-edit-panel__head-titles{
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .flogo-common-edit-panel__head-subtitle{
+    margin-top: -5px;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+  }
+  button{
+    width: 140px;
+    height: 45px;
+    color: #fff;
+    margin-top: 14px;
+    margin-bottom: 14px;
+    &.disabled{
+      cursor: not-allowed;
+    }
+  }
+  .flogo-form-builder-buttons-primary-call{
+    background: #fe883b;
+    border: 1px solid #fff;
+    &:hover{
+      border-radius: 4px;
+    }
+    &:active{
+      border-radius: 4px;
+      background: #fff;
+      color: #fe883b;
+    }
+    &.disabled{
+      background: #ffc49d;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+  }
+  .left{
+    float: left;
+  }
+  .right{
+    float: right;
+  }
+  .flogo-form-builder-buttons-primary{
+    background: #138ace;
+    border: 1px solid #fff;
+    &:hover{
+      border-radius: 4px;
+    }
+    &:active{
+      border-radius: 4px;
+      background: #fff;
+      color: #138ace;
+    }
+    &.disabled{
+      opacity: 0.4;
+    }
+  }
+  .flogo-form-builder-buttons-secondary{
+    background: transparent;
+    border: 1px solid #fff;
+    &:hover{
+      border-radius: 4px;
+    }
+    &:active{
+      border-radius: 4px;
+      background: #fff;
+      color: #79b8dc;
+    }
+    &.disabled{
+      background-color: rgba(255, 255, 255, 0.4);
+      border: solid 1px rgba(255, 255, 255, 0.5);
+    }
+  }
 }

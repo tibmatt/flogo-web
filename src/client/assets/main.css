@@ -240,14 +240,11 @@ label {
 .flogo-common-edit-panel__head {
   background-color: #79b8dc;
   color: #fff;
-  min-height: 89px;
-  max-height: 89px;
-  padding: 19px 16px 24px;
+  min-height: 100px;
+  /*max-height: 89px;*/
+  padding-left: 16px;
+  padding-right: 16px;
 
-}
-
-.flogo-common-edit-panel__head-wrapper {
-  display: inline-block;
 }
 
 .flogo-common-edit-panel__head-title {
@@ -260,13 +257,6 @@ label {
 
 .flogo-common-edit-panel__head-subtitle {
 
-}
-
-.flogo-common-edit-panel__head-icon {
-  display: inline-block;
-  margin-right: 11px;
-  height: 46px;
-  width: 46px;
 }
 
 .flogo-common-edit-panel__container {
