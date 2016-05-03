@@ -289,11 +289,11 @@ export function genBranchArrow( opts? : any ) : string {
 export function genBranchLine( opts? : any ) : any {
   // default opts
   let svgSize = [
-    _.get( opts, 'svgWidth', 120 ),
-    _.get( opts, 'svgHeight', 132 )
+    _.get( opts, 'svgWidth', 92 ),
+    _.get( opts, 'svgHeight', 107 )
   ];
   let barWidth = _.get( opts, 'barSize', 26 );
-  let translate = _.get( opts, 'translate', [ 15, 2 ] );
+  let translate = _.get( opts, 'translate', [ 2, 2 ] );
 
   let SUPPORTED_STATES = [ 'default', 'hover', 'selected' ];
 
@@ -313,16 +313,7 @@ export function genBranchLine( opts? : any ) : any {
       <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1">
           <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
           <feGaussianBlur stdDeviation="1.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-          <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.14 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
-          <feMerge>
-              <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
-          </feMerge>
-      </filter>
-      <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-2">
-          <feOffset dx="0" dy="5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-          <feGaussianBlur stdDeviation="7" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-          <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.228122169 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
+          <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.4 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
           <feMerge>
               <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
               <feMergeNode in="SourceGraphic"></feMergeNode>
@@ -333,16 +324,7 @@ export function genBranchLine( opts? : any ) : any {
       <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1">
           <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
           <feGaussianBlur stdDeviation="1.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-          <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.14 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
-          <feMerge>
-              <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
-          </feMerge>
-      </filter>
-      <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-2">
-          <feOffset dx="0" dy="5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-          <feGaussianBlur stdDeviation="7" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-          <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.228122169 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
+          <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.4 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
           <feMerge>
               <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
               <feMergeNode in="SourceGraphic"></feMergeNode>
@@ -374,8 +356,8 @@ export function genBranchLine( opts? : any ) : any {
       barWidth : barWidth,
       translate : translate,
       padding : {
-        bottom: 35,
-        right: 18
+        bottom: 10,
+        right: 3
       }
     } ) );
 
@@ -386,22 +368,22 @@ export function genBranchLine( opts? : any ) : any {
       </g>
     `.trim(),
     'hover' : `
-      <g id="Spec" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" filter="url(#filter-1)" transform="translate(${translate[ 0 ]}, ${translate[ 1 ]})">
+      <g id="Spec" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(${translate[ 0 ]}, ${translate[ 1 ]})">
           <g id="Flogo_Branch-Configure-1" fill="url(#linearGradient-1)">
               <g id="branches">
-                  <g id="branch-1" filter="url(#filter-2)">
-                      <path d="${path}" id="Combined-Shape"></path>
+                  <g id="branch-1">
+                      <path d="${path}" id="Combined-Shape" filter="url(#filter-1)"></path>
                   </g>
               </g>
           </g>
       </g>
     `.trim(),
     'selected' : `
-      <g id="Spec" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" filter="url(#filter-1)" transform="translate(${translate[ 0 ]}, ${translate[ 1 ]})">
+      <g id="Spec" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(${translate[ 0 ]}, ${translate[ 1 ]})">
           <g id="Flogo_Branch-Configure-1" fill="#8A90AE">
               <g id="branches">
-                  <g id="branch-1" filter="url(#filter-2)">
-                      <path d="${path}" id="Combined-Shape"></path>
+                  <g id="branch-1">
+                      <path d="${path}" id="Combined-Shape" filter="url(#filter-1)"></path>
                   </g>
               </g>
           </g>

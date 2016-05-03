@@ -40,7 +40,6 @@ const CLS = {
   diagramNodeDetailDesc : 'flogo-flows-detail-diagram-node-detail-description',
   diagramNodeBadge : 'flogo-flows-detail-diagram-node-badge',
   diagramNodeMenu : 'flogo-flows-detail-diagram-node-menu',
-  diagramNodeMenuTrigger : 'flogo-flows-detail-diagram-node-menu-trigger',
 
   // comment out since hover will show the menu
   // diagramNodeMenuOpen : 'flogo-flows-detail-diagram-node-menu-open',
@@ -711,7 +710,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           }
         } );
 
-        let thisBranchLineHeight = rowHeight * level - 5;
+        let thisBranchLineHeight = rowHeight * level - 31;
         let branchLines = genBranchLine( { svgHeight : thisBranchLineHeight } );
 
         return _.map( [
@@ -784,24 +783,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleEnterNodeMenus( nodeMenus : any ) {
     let newNodeMenus = nodeMenus.enter();
-
-    newNodeMenus.append( 'div' )
-      .attr( this.ng2StyleAttr, '' )
-      .classed( CLS.diagramNodeMenuTrigger, true );
-
-      // comment out since hover will show the menu
-      // .on( 'click', function ( nodeInfo : any, col : number, row : number ) {
-      //   let event = <Event>d3.event;
-      //   event.stopPropagation();
-      //
-      //   // fire menu on clicked event if this menu is clicked.
-      //   let evtType = 'flogoClickNodeMenu';
-      //
-      //   _triggerCustomEvent( evtType, {
-      //     origEvent : d3.event,
-      //     node : nodeInfo
-      //   }, this );
-      // } );
 
     newNodeMenus.append( 'div' )
       .attr( this.ng2StyleAttr, '' )
@@ -883,10 +864,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private _handleExitNodeMenus( nodeMenus : any ) {
     let exitNodeMenus = nodeMenus.exit();
     exitNodeMenus.on( 'click', null )
-      .remove();
-
-    exitNodeMenus.selectAll( `.${CLS.diagramNodeMenuTrigger}` )
-      .on( 'click', null )
       .remove();
   }
 
