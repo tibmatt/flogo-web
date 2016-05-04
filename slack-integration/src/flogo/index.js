@@ -102,10 +102,6 @@ function addTile(type, name) {
       return reject({code: ERRORS.NO_FLOW});
     }
 
-    // TODO: remove, this is only for mock purposes
-    return resolve({flowName: lastFlow.name});
-
-/*
     request
       .post({
         url: BASE_PATH + `/flows/${type}`,
@@ -116,8 +112,7 @@ function addTile(type, name) {
         json: true
       })
       .then(res => {
-        // TODO format of response?
-        resolve(true);
+        resolve({flowName: res.name});
       })
       .catch(err => {
         let reason = err;
@@ -126,7 +121,6 @@ function addTile(type, name) {
         }
         reject(reason);
       });
-    */
   });
 }
 
