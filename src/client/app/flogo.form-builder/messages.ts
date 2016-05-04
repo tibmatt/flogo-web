@@ -7,13 +7,21 @@ export const PUB_EVENTS = {
     channel : 'flogo-task',
     topic : 'run-from-this-tile'
   },
+  runFromTrigger : {
+    channel: 'flogo-task',
+    topic: 'run-from-this-trigger'
+  },
   taskDetailsChanged: {
     chanel: 'flogo-task',
     topic: 'task-details-changed'
   },
-  changeTileName : {
+  changeTileDetail: {
     channel : 'flogo-task',
-    topic : 'change-tile-name'
+    topic : 'change-tile-detail'
+  },
+  setTaskWarnings: {
+    channel: 'flogo-task',
+    topic: 'set-task-warnings'
   }
 };
 

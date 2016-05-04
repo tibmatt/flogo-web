@@ -87,11 +87,11 @@ export class MapEditorComponent implements OnChanges, OnInit {
     }
   }
 
-  private extractInputs(tile:any) {
+  private extractInputs(tileInputs:any) {
     let inputMap = {};
 
-    if(tile && tile.inputs) {
-      tile.inputs.forEach(attr => {
+    if(tileInputs) {
+      tileInputs.forEach(attr => {
         inputMap[attr.name] = attr.type;
       });
     }

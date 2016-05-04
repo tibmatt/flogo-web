@@ -8,7 +8,7 @@ import {
 } from '../models';
 import { Selection } from 'd3';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
-import { FLOGO_TASK_STATUS, FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { genBranchLine } from '../../../common/utils';
@@ -29,6 +29,8 @@ const CLS = {
   diagramNodeBranchHover : 'flogo-flows-diagram-node-branch-hover',
   diagramNodeStatusSelected : 'flogo-flows-detail-diagram-node-selected',
   diagramNodeStatusRun : 'flogo-flows-detail-diagram-node-run',
+  diagramNodeStatusHasError : 'flogo-flows-detail-diagram-node-has-error',
+  diagramNodeStatusHasWarn : 'flogo-flows-detail-diagram-node-has-warn',
   diagramNodeDetail : 'flogo-flows-detail-diagram-node-detail',
   diagramNodeDetailBranch : 'flogo-flows-detail-diagram-node-detail-branch',
   diagramNodeDetailBranchSelected : 'flogo-flows-detail-diagram-node-detail-branch-selected',
@@ -38,9 +40,11 @@ const CLS = {
   diagramNodeDetailDesc : 'flogo-flows-detail-diagram-node-detail-description',
   diagramNodeBadge : 'flogo-flows-detail-diagram-node-badge',
   diagramNodeMenu : 'flogo-flows-detail-diagram-node-menu',
-  diagramNodeMenuTrigger : 'flogo-flows-detail-diagram-node-menu-trigger',
-  diagramNodeMenuOpen : 'flogo-flows-detail-diagram-node-menu-open',
-  diagramNodeMenuSelected : 'flogo-flows-detail-diagram-node-menu-selected',
+
+  // comment out since hover will show the menu
+  // diagramNodeMenuOpen : 'flogo-flows-detail-diagram-node-menu-open',
+  // diagramNodeMenuSelected : 'flogo-flows-detail-diagram-node-menu-selected',
+
   diagramNodeMenuBox : 'flogo-flows-detail-diagram-node-menu-box',
   diagramNodeMenuList : 'flogo-flows-detail-diagram-node-menu-list',
   diagramNodeMenuGear : 'flogo-flows-detail-diagram-node-menu-gear'
@@ -318,10 +322,23 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           if ( nodeID === '+' ) {
             // node of NODE_ADD
-            nodeInfo = new FlogoFlowDiagramNode();
-            this.nodesOfAddType[ nodeInfo.id ] = nodeInfo;
 
-            nodeInfo.linkToParents( [ rowNodesIds[ idx - 1 ] ] );
+            // reuse existing nodes
+            let found = false;
+            _.forIn( this.nodesOfAddType, ( node : FlogoFlowDiagramNode, id : string ) => {
+              if ( node.parents.indexOf( rowNodesIds[ idx - 1 ] ) !== -1 ) {
+                found = true;
+                nodeInfo = node;
+              }
+            } );
+
+            if ( !found ) {
+              nodeInfo = new FlogoFlowDiagramNode();
+              this.nodesOfAddType[ nodeInfo.id ] = nodeInfo;
+              // only save the parent IDs to this node, but not add this node to the children of the parent node,
+              // in order to keep the diagram itself clean.
+              nodeInfo.linkToParents( [ rowNodesIds[ idx - 1 ] ] );
+            }
           } else if ( nodeID === '_' ) {
             // placeholder node
             nodeInfo = new FlogoFlowDiagramNode( {
@@ -350,7 +367,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleEnterNodes( nodes : any, rows : any ) {
     let diagram = this;
-    let timerHandle : any = {};
+    // let timerHandle : any = {};
 
     let dontCareNodesTypesForNodeMenu = [
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
@@ -425,12 +442,18 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             }
 
             d3.selectAll( `.${CLS.diagramNodeStatusSelected}` )
-              .classed( CLS.diagramNodeStatusSelected, false );
+              .classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+                _.set(nodeInfo, '__status.isSelected', false);
+                return false;
+              } );
             d3.selectAll( `.${CLS.diagramRowStatusSelected}` )
               .classed( CLS.diagramRowStatusSelected, false );
 
             d3.select( this )
-              .classed( CLS.diagramNodeStatusSelected, true );
+              .classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+                _.set(nodeInfo, '__status.isSelected', true);
+                return true;
+              } );
 
             if ( d.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
               d3.select( this.parentElement )
@@ -463,20 +486,23 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               } );
           }
 
-          timerHandle[ d.id ] = setTimeout(
-            () => {
-              d3.select( element )
-                .classed( CLS.diagramNodeMenuOpen, true );
-            }, 250
-          );
+          // comment out since hover will show the menu
+          // timerHandle[ d.id ] = setTimeout(
+          //   () => {
+          //     d3.select( element )
+          //       .classed( CLS.diagramNodeMenuOpen, true );
+          //   }, 250
+          // );
         }
       )
       .on(
         'mouseleave', function ( d : IFlogoFlowDiagramNode ) {
-          clearTimeout( timerHandle[ d.id ] );
-          d3.select( this )
-            .classed( CLS.diagramNodeMenuOpen, false )
-            .classed( CLS.diagramNodeMenuSelected, false );
+          // clearTimeout( timerHandle[ d.id ] );
+
+          // comment out since hover will show the menu
+          // d3.select( this )
+          //   .classed( CLS.diagramNodeMenuOpen, false )
+          //   .classed( CLS.diagramNodeMenuSelected, false );
 
           if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
             d3.selectAll( `.${CLS.diagramNodeBranchHover}` )
@@ -496,20 +522,22 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               } );
           }
         }
-      )
-      .on(
-        'flogoClickNodeMenu', function ( nodeInfo : any ) {
-          d3.select( this )
-            .classed( CLS.diagramNodeMenuSelected, true );
-        }
       );
+      // comment out since hover will show the menu
+      // .on(
+      //   'flogoClickNodeMenu', function ( nodeInfo : any ) {
+      //     d3.select( this )
+      //       .classed( CLS.diagramNodeMenuSelected, true );
+      //   }
+      // );
   }
 
   private _handleUpdateNodes( nodes : any, rows : any ) {
     let diagram = this;
 
-    nodes.classed( CLS.diagramNodeMenuOpen, false )
-      .classed( {
+    // comment out since hover will show the menu
+    // nodes.classed( CLS.diagramNodeMenuOpen, false )
+    nodes.classed( {
         'updated' : true
       } )
       .attr( 'data-flogo-node-type',
@@ -519,18 +547,27 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       function ( d : IFlogoFlowDiagramNode ) {
         let thisNode = d3.select( this );
         let task = diagram.tasks && diagram.tasks[ d.taskID ];
+        let classes : {[key : string] : boolean} = {};
+
+        // status for resetting
+        classes[ CLS.diagramNodeStatusRun ] = false;
+        classes[ CLS.diagramNodeStatusHasError ] = false;
+        classes[ CLS.diagramNodeStatusHasWarn ] = false;
 
         if ( task ) {
-          if ( task.status === FLOGO_TASK_STATUS.RUNNING || task.status === FLOGO_TASK_STATUS.DONE ) {
-            thisNode.classed( CLS.diagramNodeStatusRun, true );
-          } else {
-            thisNode.classed( CLS.diagramNodeStatusRun, false );
-          }
+          let taskStatus = _getTaskStatus( task );
+
+          classes[ CLS.diagramNodeStatusRun ] = taskStatus[ 'hasRun' ];
+          classes[ CLS.diagramNodeStatusHasError ] = taskStatus.hasError;
+          classes[ CLS.diagramNodeStatusHasWarn ] = taskStatus.hasWarning;
+          thisNode.classed( classes );
+
         } else {
-          thisNode.classed( CLS.diagramNodeStatusRun, false );
+          thisNode.classed( classes );
         }
 
-        thisNode.classed( CLS.diagramNodeMenuSelected, false );
+        // comment out since hover will show the menu
+        // thisNode.classed( CLS.diagramNodeMenuSelected, false );
 
         // update the current node ID
         thisNode.attr( 'data-task-id', function ( nodeInfo : IFlogoFlowDiagramNode ) {
@@ -538,7 +575,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           // unset whatever status should not be kept once the task is changed.
           if ( previousID !== nodeInfo.taskID ) {
-            thisNode.classed( CLS.diagramNodeStatusSelected, false );
+            // persist node selected status
+            thisNode.classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+              return _.get( nodeInfo, '__status.isSelected', false );
+            } );
           }
 
           return nodeInfo.taskID || -1
@@ -601,17 +641,26 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           let task = this.tasks[ nodeInfo.taskID ];
 
           if ( task && _isNodeHasDetails( nodeInfo ) ) {
-            let taskDescription = (
-                task && (
-                  task.description || `Description of ${task.name}`
-                )
-              ) || `[ ${nodeInfo.parents} to ${nodeInfo.children} ]`;
+            let taskDescription : string;
+            let taskStatus = _getTaskStatus( task );
+
+            // the first message of error/warning will be used as description when presents
+            if ( taskStatus.hasError ) {
+              let _errors = _.get( task, '__props.errors', [ { msg : '' } ] );
+              taskDescription = _errors[ 0 ].msg;
+            } else if ( taskStatus.hasWarning ) {
+              let _warnings = _.get( task, '__props.warnings', [ { msg : '' } ] );
+              taskDescription = _warnings[ 0 ].msg;
+            } else {
+              taskDescription = task.description;
+            }
 
             return <any>[
               {
                 name : task.name,
                 desc : taskDescription,
                 type : task.type,
+                taskStatus : taskStatus,
                 nodeInfo : nodeInfo
               }
             ]
@@ -644,6 +693,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       name : string;
       desc : string;
       type : FLOGO_TASK_TYPE;
+      taskStatus : {
+        [key : string] : boolean;
+        hasError : boolean;
+        hasWarning : boolean;
+      };
       nodeInfo : any;
     }, col : number, row : number ) => {
 
@@ -678,7 +732,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           }
         } );
 
-        let thisBranchLineHeight = rowHeight * level - 5;
+        let thisBranchLineHeight = rowHeight * level - 31;
         let branchLines = genBranchLine( { svgHeight : thisBranchLineHeight } );
 
         return _.map( [
@@ -754,22 +808,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     newNodeMenus.append( 'div' )
       .attr( this.ng2StyleAttr, '' )
-      .classed( CLS.diagramNodeMenuTrigger, true )
-      .on( 'click', function ( nodeInfo : any, col : number, row : number ) {
-        let event = <Event>d3.event;
-        event.stopPropagation();
-
-        // fire menu on clicked event if this menu is clicked.
-        let evtType = 'flogoClickNodeMenu';
-
-        _triggerCustomEvent( evtType, {
-          origEvent : d3.event,
-          node : nodeInfo
-        }, this );
-      } );
-
-    newNodeMenus.append( 'div' )
-      .attr( this.ng2StyleAttr, '' )
       .classed( CLS.diagramNodeMenu, true )
       .on( 'click', function ( nodeInfo : any, col : number, row : number ) {
         let event = <Event>d3.event;
@@ -786,28 +824,31 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             origEvent : d3.event,
             node : nodeInfo
           }, this );
-        } else {
-
-          // fire menu on clicked event if this menu is clicked.
-          let evtType = 'flogoClickNodeMenu';
-
-          _triggerCustomEvent( evtType, {
-            origEvent : d3.event,
-            node : nodeInfo
-          }, this );
         }
+
+        // comment out since hover will show the menu
+        // else {
+        //
+        //   // fire menu on clicked event if this menu is clicked.
+        //   let evtType = 'flogoClickNodeMenu';
+        //
+        //   _triggerCustomEvent( evtType, {
+        //     origEvent : d3.event,
+        //     node : nodeInfo
+        //   }, this );
+        // }
       } );
   }
 
   private _handleUpdateNodeMenus( nodeMenus : any ) {
     let diagram = this;
 
-    nodeMenus.html( ( nodeInfo : any ) => {
-      let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i class="fa fa-plus"></i>Add branch</li>`;
+    nodeMenus.html( ( nodeInfo : any, ignore : number, idxInTotalNodes : number ) => {
+      let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i ${diagram.ng2StyleAttr} class="fa fa-plus"></i>Add branch</li>`;
 
-      let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i class="fa fa-bolt"></i>Transform</li>`;
+      let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i>Transform</li>`;
 
-      let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i class="fa fa-trash-o"></i>Delete</li>`;
+      let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i ${diagram.ng2StyleAttr} class="fa fa-trash-o"></i>Delete</li>`;
 
       let tplGear = `<span ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuGear}"></span>`;
 
@@ -823,22 +864,28 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
                   </ul>${tplGear}`;
       }
 
-      // normal template
-      return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+      // if not the last node in row
+      if ( (idxInTotalNodes + 1) % 7 ) {
+        // normal template
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemAddBranch}
                     ${tplItemTransform}
                     ${tplItemDelete}
                 </ul>${tplGear}`;
+      } else {
+        // no add branch
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+                    ${tplItemTransform}
+                    ${tplItemDelete}
+                </ul>${tplGear}`;
+      }
+
     } );
   }
 
   private _handleExitNodeMenus( nodeMenus : any ) {
     let exitNodeMenus = nodeMenus.exit();
     exitNodeMenus.on( 'click', null )
-      .remove();
-
-    exitNodeMenus.selectAll( `.${CLS.diagramNodeMenuTrigger}` )
-      .on( 'click', null )
       .remove();
   }
 
@@ -855,11 +902,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       ( nodeInfo : any ) => {
         if ( nodeInfo ) {
           let task = this.tasks[ nodeInfo.taskID ];
+          let taskStatus = _getTaskStatus( task );
 
           if ( task ) {
             return [
               {
-                hasError : false,
+                hasError : taskStatus.hasError,
                 hasMapping : _isTaskHasMapping( task )
               }
             ]
@@ -882,18 +930,18 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     let diagram = this;
 
     nodeBadges.html(
-      ( nodeStatus : {
+      ( taskStatus : {
         hasError : boolean;
         hasMapping : boolean;
       } ) => {
         let tpl = '';
 
-        if ( nodeStatus ) {
-          if ( nodeStatus.hasError ) {
+        if ( taskStatus ) {
+          if ( taskStatus.hasError ) {
             tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-error"></i>`;
           }
 
-          if ( nodeStatus.hasMapping ) {
+          if ( taskStatus.hasMapping ) {
             tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-transform"></i>`;
           }
         }
@@ -924,8 +972,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     !this.ng2StyleAttr && this._updateNG2StyleAttr();
 
-    // clear previous nodes of add type
-    this.nodesOfAddType = <IFlogoFlowDiagramNodeDictionary>{};
+    this.nodesOfAddType = this.nodesOfAddType || <IFlogoFlowDiagramNodeDictionary>{};
 
     // enter selection
     let rows = this._bindDataToRows( this.rootElm.selectAll( `.${CLS.diagramRow}` ) );
@@ -997,6 +1044,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         case 'addTask':
 
           (<any>$( nextNodeInDiagram[ 0 ][ 0 ] ))
+            .trigger( 'click' );
+
+          break;
+
+        case 'selectTask':
+        case 'selectTrigger':
+
+          (<any>$( nodeInDiagram[ 0 ][ 0 ] ))
             .trigger( 'click' );
 
           break;
@@ -1227,6 +1282,26 @@ function _triggerCustomEvent( eventType : string, eventDetail : any, elm : HTMLE
     return false;
   }
 
+}
+
+function _getTaskStatus( task : any ) {
+  let _errors = _.get( task, '__props.errors', [] );
+  let _warnings = _.get( task, '__props.warnings', [] );
+
+  let taskStatus : {
+    [key : string] : boolean;
+    hasError : boolean;
+    hasWarning : boolean;
+  } = {
+    hasError : !_.isEmpty( _errors ),
+    hasWarning : !_.isEmpty( _warnings )
+  };
+
+  _.forIn( _.get( task, '__status', {} ), ( val : boolean, statusName : string ) => {
+    taskStatus[ statusName ] = val;
+  } );
+
+  return taskStatus;
 }
 
 function _isNodeHasDetails( nodeInfo : any ) : boolean {

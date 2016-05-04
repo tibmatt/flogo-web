@@ -29,7 +29,7 @@ import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
   attributeTypeToString
@@ -37,13 +37,15 @@ import {
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
+import { FlogoModal } from '../../../common/services/modal.service';
 
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
   directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable ],
   templateUrl: 'canvas.tpl.html',
-  styleUrls: [ 'canvas.component.css' ]
+  styleUrls: [ 'canvas.component.css' ],
+  providers: [ FlogoModal ]
 } )
 
 @RouteConfig([
@@ -57,6 +59,7 @@ import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.mo
 export class FlogoCanvasComponent {
   _subscriptions : any[];
 
+  _flowID: string;
   _currentProcessID: string;
   _isCurrentProcessDirty = true;
   _hasUploadedProcess: boolean;
@@ -94,10 +97,12 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback : this._runFromTriggerinTile.bind( this ) } ),
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.setTaskWarnings, { callback : this._setTaskWarnings.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback : this._taskDetailsChanged.bind( this ) } ),
-      _.assign( {}, FLOGO_TASK_SUB_EVENTS.changeTileName, { callback : this._changeTileName.bind( this ) } )
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback : this._changeTileDetail.bind( this ) } )
     ];
 
     _.each(
@@ -123,7 +128,8 @@ export class FlogoCanvasComponent {
     private _restAPIService: RESTAPIService,
     private _restAPIFlowsService: RESTAPIFlowsService,
     private _routerParams: RouteParams,
-    private _router: Router
+    private _router: Router,
+    private _flogoModal: FlogoModal
   ) {
     this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
@@ -265,6 +271,36 @@ export class FlogoCanvasComponent {
 
   }
 
+  private _runFromRoot() {
+    // The inital data to start the process from trigger
+    let initData = _.get( this.tasks[this.diagram.nodes[this.diagram.root.is].taskID], '__props.initData' );
+
+    if ( _.isEmpty( initData ) ) {
+      this._runFromTrigger();
+    } else {
+      // preprocessing initial data
+      initData = _( initData )
+          .filter( ( item : any )=> {
+
+            // filter empty values
+
+            return !(<any>_).isNil( item.value );
+          } )
+          .map( ( item : any ) => {
+
+            // converting the type of the initData from enum to string;
+
+            let outItem = _.cloneDeep( item );
+
+            outItem.type = attributeTypeToString( outItem.type );
+
+            return outItem;
+          } );
+
+      this._runFromTrigger( initData );
+    }
+  }
+
   private _updateFlow( flow : any ) {
     this._isCurrentProcessDirty = true;
 
@@ -294,7 +330,7 @@ export class FlogoCanvasComponent {
       );
   }
 
-  uploadProcess() {
+  uploadProcess( updateCurrentProcessID = true ) {
     this._uploadingProcess = true;
 
     // generate process based on the current flow
@@ -306,11 +342,15 @@ export class FlogoCanvasComponent {
     delete process.id;
 
     return this._restAPIFlowsService.uploadFlow( process ).then((rsp:any) => {
-      this._uploadingProcess = false;
-      this._hasUploadedProcess = true;
-      if ( !_.isEmpty( rsp ) ) {
-        this._currentProcessID = rsp.id;
-        this._isCurrentProcessDirty = false;
+
+      if (updateCurrentProcessID) {
+        this._uploadingProcess = false;
+        this._hasUploadedProcess = true;
+        this._flowID = rsp.id;
+        if ( !_.isEmpty( rsp ) ) {
+          this._currentProcessID = rsp.id;
+          this._isCurrentProcessDirty = false;
+        }
       }
 
       return rsp;
@@ -321,8 +361,22 @@ export class FlogoCanvasComponent {
     this._startingProcess = true;
     this._steps = null;
 
+    // clear task status and render the diagram
+    this.clearTaskRunStatus();
+
+    try { // rootTask should be in DONE status once the flow start
+      let rootTask = this.tasks[ this.diagram.nodes[ this.diagram.root.is ].taskID ];
+      rootTask.__status['hasRun'] = true;
+      rootTask.__status['isRunning'] = false;
+    } catch ( e ) {
+      console.warn( e );
+      console.warn( 'No root task/trigger is found.' );
+    }
+
+    this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+
     return this._restAPIFlowsService.startFlow(
-        id || this._currentProcessID, initData || {}
+        id || this._currentProcessID, initData || []
       )
       .then(
         ( rsp : any )=> {
@@ -393,7 +447,7 @@ export class FlogoCanvasComponent {
       }, opt
     );
 
-    this.clearTaskRunStatus();
+    // this.clearTaskRunStatus();
 
     if ( processInstanceID ) {
       let trials = 0;
@@ -444,8 +498,7 @@ export class FlogoCanvasComponent {
                             done( timer, rsp );
                             break;
                           case null :
-                            console.log( `[PROC STATE][${n}] Process is ~!@#$%^&*()_+.` );
-                            done( timer, rsp );
+                            console.log( `[PROC STATE][${n}] Process status is null, retrying...` );
                             break;
                         }
 
@@ -469,11 +522,20 @@ export class FlogoCanvasComponent {
   }
 
   clearTaskRunStatus() {
-    _.forIn(
-      this.tasks, ( task : any, taskID : string ) => {
-        task.status = FLOGO_TASK_STATUS.DEFAULT;
+    const statusToClean = [ 'isRunning', 'hasRun' ];
+    _.forIn( this.tasks, ( task : any, taskID : string ) => {
+
+      // ensure the presence of __status
+      if ((<any>_).isNil(task.__status)) {
+        task.__status = {};
       }
-    );
+
+      _.forIn( task.__status, ( status : boolean, key : string ) => {
+        if ( statusToClean.indexOf( key ) !== -1 ) {
+          task.__status[ key ] = false;
+        }
+      } );
+    } );
   }
 
   updateTaskRunStatus( processInstanceID? : string, processingStatus? : {
@@ -501,7 +563,8 @@ export class FlogoCanvasComponent {
                   let task = this.tasks[flogoIDEncode(''+step.taskId)];
 
                   if ( task ) {
-                    task.status = FLOGO_TASK_STATUS.DONE;
+                    task.__status['hasRun'] = true;
+                    task.__status['isRunning'] = false;
                   }
                 }
               );
@@ -567,16 +630,17 @@ export class FlogoCanvasComponent {
   //  to do proper restart process, need to select proper snapshot, hence
   //  the current implementation is only for the last start-from-beginning snapshot, i.e.
   //  the using this._processInstanceID to restart
-  restartProcessFrom( step : number, dataToRestart:string ) {
+  restartProcessFrom( step : number, newFlowID : string, dataOfInterceptor : string ) {
 
     if ( this._processInstanceID ) {
       this._restartingProcess = true;
       this._steps = null;
 
       this.clearTaskRunStatus();
+      this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
-      return this._restAPIService.flows.restartFrom(
-        this._processInstanceID, JSON.parse( dataToRestart ), step
+      return this._restAPIService.flows.restartWithIcptFrom(
+        this._processInstanceID, JSON.parse( dataOfInterceptor ), step, this._flowID, newFlowID
         )
         .then(
           ( rsp : any ) => {
@@ -768,7 +832,7 @@ export class FlogoCanvasComponent {
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
-                          this._updateFlow( this._flow );
+                          // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
                         }
                       }
                     )
@@ -778,6 +842,8 @@ export class FlogoCanvasComponent {
               }
             )
           );
+
+          console.groupEnd( );
 
         }
       );
@@ -842,7 +908,7 @@ export class FlogoCanvasComponent {
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
-                          this._updateFlow( this._flow );
+                          // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
                         }
                       }
                     )
@@ -853,12 +919,14 @@ export class FlogoCanvasComponent {
             )
           );
 
+          console.groupEnd( );
         }
       );
 
     console.groupEnd( );
   }
 
+  // TODO still in use?
   private _selectTaskFromTasks( data: any, envelope: any) {
     console.group( 'Select task message from task' );
 
@@ -879,7 +947,7 @@ export class FlogoCanvasComponent {
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
-                  this._updateFlow( this._flow );
+                  // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
                 }
               }
             )
@@ -889,26 +957,6 @@ export class FlogoCanvasComponent {
 
     console.groupEnd( );
 
-  }
-
-  // TODO
-  //  get step index logic should be based on the selected snapshot,
-  //  hence need to be refined in the future
-  //
-  // based on the task id, look in the task list to get the number of the step
-  //  TODO check if there is another way of get the step number
-  private _getStepNumberFromTask(taskId:string) {
-    let index = 0;
-    let tasks = this.tasks || [];
-
-    for(let task in tasks) {
-      if(task == taskId) {
-        return index +1;
-      }
-      ++index;
-    }
-
-    return 0;
   }
 
   // TODO
@@ -952,18 +1000,37 @@ export class FlogoCanvasComponent {
     return result;
   }
 
-  private _changeTileName(data:any, envelope:any) {
+  private _changeTileDetail(data:{
+    content: string;
+    proper: string;
+    taskId: any
+  }, envelope:any) {
     var task = this.tasks[data.taskId];
 
     if(task) {
-      task.name = this.uniqueTaskName(data.tileName);
+      if(data.proper == 'name') {
+        task[data.proper] = this.uniqueTaskName(data.content);
+      } else {
+        task[data.proper] = data.content;
+      }
       this._updateFlow( this._flow ).then(() => {
         this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
       });
     }
   }
 
+  private _setTaskWarnings(data:any, envelope:any) {
+    var task = this.tasks[data.taskId];
 
+    if(task) {
+      _.set( task, '__props.warnings', data.warnings );
+
+      this._updateFlow( this._flow ).then(() => {
+        this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+      });
+    }
+
+  }
 
   private _runFromThisTile(data:any, envelope:any) {
     console.group('Run from this tile');
@@ -971,89 +1038,83 @@ export class FlogoCanvasComponent {
     let selectedTask = this.tasks[ data.taskId ];
 
     if ( selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
-      // The inital data to start the process from trigger
-      let initData = _.get( selectedTask, '__props.initData' );
-
-      if ( _.isEmpty( initData ) ) {
-        this._runFromTrigger();
-      } else {
-        // preprocessing initial data
-        initData = _( initData )
-          .filter( ( item : any )=> {
-
-            // filter empty values
-
-            return !(<any>_).isNil( item.value );
-          } )
-          .map( ( item : any ) => {
-
-            // converting the type of the initData from enum to string;
-
-            let outItem = _.cloneDeep( item );
-
-            outItem.type = attributeTypeToString( outItem.type );
-
-            return outItem;
-          } );
-
-        this._runFromTrigger( initData );
-      }
+      this._runFromRoot();
     } else if ( this._processInstanceID ) {
       // run from other than the trigger (root task);
 
       let step = this._getStepNumberFromSteps( data.taskId );
 
       if ( step ) {
-        this.restartProcessFrom( step, JSON.stringify( data.inputs ) )
-          .then(
-            ( rsp : any )=> {
-              return this.monitorProcessStatus( rsp.id );
-            }
-          )
-          .then(
-            ( rsp : any )=> {
-              return this.updateTaskRunStatus( rsp.id );
-            }
-          )
-          .then(
-            ( rsp : any )=> {
+        // upload a new flow of with the latest flow information
+        this.uploadProcess(false).then((rsp:any)=> {
+          if (!_.isEmpty(rsp)) {
+            let newFlowID = rsp.id;
 
-              this._steps = _.get( rsp, 'steps', [] );
+            let dataOfInterceptor = <any>{
+              tasks : <any>[
+                {
+                  id : parseInt( flogoIDDecode( selectedTask.id ) ),
+                  inputs : (function parseInput( d : any ) {
+                    let attrs = _.get(selectedTask, 'attributes.inputs');
 
-              var currentStep = this._getCurrentState(data.taskId);
-              var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.taskId ] ) );
-              var context     = this._getCurrentContext(data.taskId);
+                    if (attrs) {
+                      return _.map(attrs, (input: any)=> {
+                        // override the value;
+                        return _.assign( _.cloneDeep( input ), {
+                          value : d[ input[ 'name' ] ],
+                          type : attributeTypeToString( input[ 'type' ] )
+                        } );
+                      });
+                    } else {
+                      return [];
+                    }
+                  }( data.inputs ))
+                }
+              ]
+            };
 
-              this._postService.publish(
-                _.assign(
-                  {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                    data: _.assign({},
-                      data,
-                      {task: currentTask},
-                      {step: currentStep},
-                      {context: context}
-                    )
-                  }
-                ));
+            this.restartProcessFrom( step, newFlowID, JSON.stringify( dataOfInterceptor ) )
+              .then( ( rsp : any )=> {
+                return this.monitorProcessStatus( rsp.id );
+              } )
+              .then( ( rsp : any )=> {
+                return this.updateTaskRunStatus( rsp.id );
+              } )
+              .then( ( rsp : any )=> {
 
-            }
-          )
-          .then(
-            ()=> {
+                this._steps = _.get( rsp, 'steps', [] );
 
-              if ( _.isFunction( envelope.done ) ) {
-                envelope.done();
-              }
+                var currentStep = this._getCurrentState( data.taskId );
+                var currentTask = _.assign( {}, _.cloneDeep( this.tasks[ data.taskId ] ) );
+                var context = this._getCurrentContext( data.taskId );
 
-            }
-          )
-          .catch(
-            ( err : any )=> {
-              console.error( err );
+                this._postService.publish(
+                  _.assign(
+                    {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                      data : _.assign( {},
+                        data,
+                        { task : currentTask },
+                        { step : currentStep },
+                        { context : context }
+                      )
+                    }
+                  ) );
 
-              return err;
-            }
-          );
+              } )
+              .then( ()=> {
+
+                if ( _.isFunction( envelope.done ) ) {
+                  envelope.done();
+                }
+
+              } )
+              .catch( ( err : any )=> {
+                console.error( err );
+
+                return err;
+              } );
+          }
+        });
       } else {
         // TODO
         console.warn( 'Cannot find proper step to restart from, skipping...' );
@@ -1067,6 +1128,11 @@ export class FlogoCanvasComponent {
 
     console.groupEnd();
 
+  }
+  private _runFromTriggerinTile(data: any, envolope: any) {
+    console.group('Run from Trigger');
+    this._runFromRoot();
+    console.groupEnd();
   }
 
   private _selectTransformFromDiagram(data:any, envelope:any) {
@@ -1120,37 +1186,87 @@ export class FlogoCanvasComponent {
 
     let task = this.tasks[ _.get( data, 'node.taskID', '' ) ];
     let node = this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
+    let _diagram = this.diagram;
 
     // TODO
     //  refine confirmation
     //  delete trigger isn't hanlded
-    if ( node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task && confirm( `Are you sure to delete task` ) ) {
+    if ( node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task) {
+      this._flogoModal.confirm(`Are you sure to delete task?`).then((res) => {
+        if(res) {
 
-      this._postService.publish(
-        _.assign(
-          {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
-            data : {
-              node : data.node
-            },
-            done : ( diagram : IFlogoFlowDiagram ) => {
-              // TODO
-              //  NOTE that once delete branch, not only single task is removed.
-              delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
-              _.assign( this.diagram, diagram );
-              this._updateFlow( this._flow );
-              this._isDiagramEdited = true;
-              // clear details panel
-              this._router.navigate(
-                [
-                  'FlogoFlowsDetailTaskDetail',
-                  { id : null}
-                ]
-              )
+          // clear details panel, if the selected activity is deleted
+          // verify if should jump back to detail page before sending delete message
+          let _shouldGoBack = false;
+          let parsedURL = location.pathname.split( 'task/' );
+          if ( parsedURL.length === 2 && _.isString( parsedURL[ 1 ] ) ) {
 
+            let currentTaskID = parsedURL[ 1 ];
+            let deletingTaskID = _.get( data, 'node.taskID', '' );
+
+            // if the current task ID in the URL is the deleting task, or
+            // if the deleting task has branches or itself is branch, and the current task is in one of the branches
+            // navigate to the flow default view
+            if ( currentTaskID === deletingTaskID || // if the current task ID in the URL is the deleting task
+
+              // if the deleting task has branches or itself is branch, and the current task is in one of the branches
+              ((_.some( _.get( data, 'node.children', [] ), ( nodeId : string )=> {
+
+                // try to find children of NODE_BRANCH type
+                return _diagram.nodes[ nodeId ].type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH;
+
+              } ) || _.get( data, 'node.type' ) === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH)
+              && (function isTaskIsChildOf( taskID : string, parentNode : any, isInBranch = false ) : boolean {
+
+                // traversal the downstream task
+                let children = _.get( parentNode, 'children', [] );
+
+                if ( parentNode.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+                  isInBranch = true;
+                }
+
+                if ( taskID === _.get( parentNode, 'taskID' ) ) {
+                  return isInBranch; // if in branch, then should go back, otherwise ignore
+                } else if ( children.length === 0 ) { // no child
+                  return false;
+                } else { // resursive call to the next level
+                  return _.some( children, ( childID : string )=> {
+                    return isTaskIsChildOf( taskID, _diagram.nodes[ childID ], isInBranch );
+                  } );
+                }
+
+              }( currentTaskID, data.node ))) ) {
+              _shouldGoBack = true;
             }
           }
-        )
-      );
+
+          this._postService.publish(
+              _.assign(
+                  {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
+                    data : {
+                      node : data.node
+                    },
+                    done : ( diagram : IFlogoFlowDiagram ) => {
+                      // TODO
+                      //  NOTE that once delete branch, not only single task is removed.
+                      delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
+                      _.assign( this.diagram, diagram );
+                      this._updateFlow( this._flow );
+                      this._isDiagramEdited = true;
+
+                      if (_shouldGoBack) {
+                        this._router.navigate( [
+                          'FlogoFlowsDetailDefault'
+                        ] );
+                      }
+                    }
+                  }
+              )
+          );
+        }
+      }).catch((err) => {
+        console.error(err);
+      });
     }
 
     console.groupEnd();
@@ -1168,7 +1284,7 @@ export class FlogoCanvasComponent {
     let branchInfo = {
       id : flogoGenTaskID(),
       type : FLOGO_TASK_TYPE.TASK_BRANCH,
-      condition : 'false'
+      condition : 'true'
     };
 
     this.tasks[ branchInfo.id ] = branchInfo;
@@ -1230,7 +1346,7 @@ export class FlogoCanvasComponent {
                         },
                         done: (diagram:IFlogoFlowDiagram) => {
                           _.assign(this.diagram, diagram);
-                          this._updateFlow(this._flow);
+                          // this._updateFlow(this._flow);
                         }
                       }
                     )
@@ -1240,6 +1356,8 @@ export class FlogoCanvasComponent {
               }
             )
           );
+
+          console.groupEnd( );
         }
   );
 
@@ -1319,26 +1437,34 @@ export class FlogoCanvasComponent {
     if (task.type === FLOGO_TASK_TYPE.TASK) { // TODO handle more activity task types in the future
       var changedInputs = data.inputs || {};
 
-      for(var name in changedInputs) {
+      // set/unset the warnings in the tile
+      _.set( task, '__props.warnings', data.warnings );
 
+      for(var name in changedInputs) {
         task.attributes.inputs.forEach((input)=> {
           if(input.name === name) {
             input.value =  changedInputs[name];
           }
         });
-
       }
     } else if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
 
       // ensure the persence of the internal properties
       task.__props = task.__props || {};
 
-      task.__props.initData = data.outputs;
+      task.__props['initData'] = data.outputs;
+    } else if ( task.type === FLOGO_TASK_TYPE.TASK_BRANCH ) { // branch
+      task.condition = data.condition;
     }
 
     if ( _.isFunction( envelope.done ) ) {
       envelope.done();
     }
+
+    //this._updateFlow( this._flow );
+    this._updateFlow( this._flow ).then(() => {
+      this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+    });
 
     console.groupEnd();
   }

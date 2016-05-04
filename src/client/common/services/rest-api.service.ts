@@ -18,7 +18,7 @@ export class RESTAPIService {
     // TODO
     //    this is only POC implementation with mock data
     this.flows = {
-      restartFrom: (id:string, data:any, step:number) => {
+      restartWithIcptFrom: (id : string, data : any, step : number, curFlowID? : string, newFlowID? : string) => {
         // TODO
 
         // get the state of the last step
@@ -33,10 +33,16 @@ export class RESTAPIService {
 
               // then restart from that state with data
 
+              if ( newFlowID && curFlowID ) {
+                // replace the old flowURL with the newFlowID
+                let pattern = new RegExp( `flows/${curFlowID}` );
+                state[ 'flowUri' ] = state[ 'flowUri' ].replace( pattern, `flows/${newFlowID}` );
+              }
+
               let body = JSON.stringify(
                 {
                   'initialState': state,
-                  'data': data
+                  'interceptor': data
                 }
               );
 

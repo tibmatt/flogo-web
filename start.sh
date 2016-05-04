@@ -159,7 +159,7 @@ update_flogo
 # Step 2: update submodule
 #############################
 echoHeader "Step2: update submodule: flogo-internal, flogo-contrib"
-
+rm -rf submodules/
 git submodule update --init --remote
 
 echoSuccess "update submodule\n"

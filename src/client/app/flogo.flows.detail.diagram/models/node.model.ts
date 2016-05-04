@@ -12,6 +12,9 @@ export interface IFlogoFlowDiagramNode {
   children : string[ ]; // ids of the children IFlogoFlowDiagramNode
   parents : string[ ]; // ids of the parents IFlogoFlowDiagramNode
   subProc ? : IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
+  __status? : {
+    [key : string] : boolean;
+  };
 }
 
 export interface IFlogoFlowDiagramNodeLocation {

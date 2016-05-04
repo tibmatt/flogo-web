@@ -1,6 +1,9 @@
 <div class="flogo-field-radio">
-  <label class="control-label">{{_info.title}}</label>
-
+  <!--<label class="control-label">{{_info.title}}</label>-->
+  <div class="flogo-fields-header-field">
+    <label class="control-label">{{_info.title}}</label>
+    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >Optional</label>
+  </div>
 
     <div class="flogo-field-radio__option tc-radio-buttons tc-radio-button">
       <input type="radio" name="booleanValue" value=true id="trueValue"

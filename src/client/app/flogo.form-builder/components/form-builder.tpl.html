@@ -2,30 +2,54 @@
 
   <div [hidden]="hasErrors">
 
-    <!-- PANEAL HEADER -->
-    <div class="flogo-common-edit-panel__head">
-
-      <div class="flogo-common-edit-panel__head-icon" *ngIf="_context.isTask || _context.isBranch">
-        <img src="/assets/svg/flogo.icon.gears.circle.svg" alt="">
-      </div>
-
-      <div class="flogo-common-edit-panel__head-icon" *ngIf="_context.isTrigger">
-        <img src="/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg" alt="">
-      </div>
-
+    <!-- PANEL HEADER -->
+    <div class="flogo-common-edit-panel__head" [class.flogo-common-edit-panel__head-branch]="_context.isBranch">
       <div class="flogo-common-edit-panel__head-wrapper">
-        <div  *ngIf="_task && (_context.isTask || _context.isTrigger)">
-          <h3 [(myContenteditable)]="_task.name" class="flogo-common-edit-panel__head-title" (myContenteditableChange)="changeTaskDetail($event)"></h3>
+
+        <!-- PANEL TITLES -->
+        <div  *ngIf="_task && (_context.isTask || _context.isTrigger)" [ngClass]="{trigger:_context.isTrigger, task: _context.isTask}">
+          <div class="flogo-common-edit-panel__head-titles">
+            <h3 [(myContenteditable)]="_task.name" class="flogo-common-edit-panel__head-title" (myContenteditableChange)="changeTaskDetail($event, 'name')"></h3>
+            <div class="flogo-common-edit-panel__head-subtitle" [(myContenteditable)]="_task.description" (myContenteditableChange)="changeTaskDetail($event, 'description')"></div>
+          </div>
         </div>
-        <h3  *ngIf="_context.isBranch" class="flogo-common-edit-panel__head-title">Configure Branch</h3>
-        <div class="flogo-common-edit-panel__head-subtitle"></div>
+
+        <div *ngIf="_context.isBranch" class="branch" [class.change]="_hasChanges">
+          <h3 class="flogo-common-edit-panel__head-title">Configure Branch</h3>
+        </div>
+        <!-- PANEL BUTTONS -->
+        <div *ngIf="_context.isTrigger" class="clearfix">
+          <button  class="flogo-form-builder-buttons-primary-call center" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+            Run Trigger
+          </button>
+          <button class="flogo-form-builder-buttons-primary left" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
+          <button class="flogo-form-builder-buttons-secondary right" [hidden]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
+        </div>
+
+        <div *ngIf="_context.isTask" class="clearfix">
+          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+            Run Tile
+          </button>
+          <button class="flogo-form-builder-buttons-secondary right" [hidden]="_hasChanges" (click)="runFromTrigger($event)">Run from Trigger</button>
+          <button class="flogo-form-builder-buttons-primary left" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
+          <button class="flogo-form-builder-buttons-secondary right" [hidden]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
+        </div>
+
+        <div *ngIf="_context.isBranch" class="clearfix">
+          <button [hidden]="!_hasChanges"  class="flogo-form-builder-buttons-primary-call left" (click)="saveChanges($event)">
+            Save
+          </button>
+          <button [hidden]="!_hasChanges" class="flogo-form-builder-buttons-secondary right" (click)="cancelEdit($event)">Cancel</button>
+        </div>
       </div>
     </div>
 
 
     <!-- BRANCH CONFIGURATION -->
     <div *ngIf="_context.isBranch" class="flogo-common-edit-panel__container">
-      <flogo-form-builder-fields-textarea [info]="getBranchInfo()" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+      <div *ngFor="#item of _branchConfigs" >
+        <flogo-form-builder-fields-textarea [info]="getBranchInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+      </div>
     </div>
 
 
@@ -34,22 +58,22 @@
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.settings.length">Settings</h3>
       <div *ngFor="#item of _attributesTrigger.settings" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
-          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item)"  [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
+          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input')"  [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
-          <flogo-form-builder-fields-number [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
+          <flogo-form-builder-fields-number [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
       </div>
 
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.endpointSettings.length">End point</h3>
       <div *ngFor="#item of _attributesTrigger.endpointSettings" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
-          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
+          <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
-          <flogo-form-builder-fields-number [info]="getTriggerInfo(item)" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
+          <flogo-form-builder-fields-number [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
       </div>
 
@@ -125,24 +149,6 @@
         </div>
 
       </div>
-    </div>
-
-
-    <!-- PANEL FOOTER -->
-    <div class="flogo-common-edit-panel__footer" *ngIf="_context.isTask || _context.isTrigger">
-      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
-      Run from this tile
-      </button>
-      <button class="tc-buttons tc-buttons-primary" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
-      <button class="flogo-btn-link" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
-    </div>
-
-     <!-- PANEL FOOTER -->
-    <div class="flogo-common-edit-panel__footer" *ngIf="_context.isBranch">
-      <button  class="tc-buttons tc-buttons-primary-call" [class.disabled]="true" [disabled]="true">
-        Save changes
-      </button>
-      <button class="flogo-btn-link" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
     </div>
 
   </div>

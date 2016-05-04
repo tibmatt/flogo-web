@@ -1,5 +1,10 @@
 <div class="flogo-field-number">
-  <label class="control-label">{{_info.title}}</label>
+
+  <div class="flogo-fields-header-field">
+    <label class="control-label">{{_info.title}}</label>
+    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >Optional</label>
+  </div>
+
   <input type="number" class="form-control tc-inputs" [class.error]="_hasError"  [(ngModel)]="_info.value"
          (keyup)="onChangeField($event)"
          [placeholder]="_info.placeholder"

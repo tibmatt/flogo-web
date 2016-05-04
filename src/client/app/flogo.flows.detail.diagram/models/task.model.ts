@@ -3,7 +3,7 @@ import {
   IFlogoFlowDiagramTaskLink,
   IFlogoFlowDiagramTaskAttributes
 } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_STATUS } from '../../../common/constants';
+import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { flogoIDEncode } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramTask {
@@ -19,9 +19,15 @@ export interface IFlogoFlowDiagramTask {
   outputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks ? : IFlogoFlowDiagramTask[ ];
   links ? : IFlogoFlowDiagramTaskLink[ ];
-  status ? : FLOGO_TASK_STATUS;
   condition? : string;
-  __props?: any; // internal only properties in UI
+  __props? : {
+    [key : string] : any;
+    errors? : {msg : string;}[];
+    warnings? : {msg : string;}[];
+  }; // internal only properties in design time
+  __status? : {
+    [key : string] : boolean;
+  }; // internal only properties in design time
 }
 
 export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
@@ -37,7 +43,9 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   outputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks : IFlogoFlowDiagramTask[ ];
   links : IFlogoFlowDiagramTaskLink[ ];
-  status: FLOGO_TASK_STATUS;
+  __status : {
+    [key : string] : boolean;
+  };
 
   constructor( task ? : IFlogoFlowDiagramTask ) {
     this.update( task );
@@ -75,8 +83,8 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
       this.links = _.cloneDeep( task.links );
     }
 
-    if ( !_.isEmpty(task.status)) {
-      this.status = task.status;
+    if ( !_.isEmpty( task.__status ) ) {
+      this.__status = _.cloneDeep( task.__status );
     }
 
   };
