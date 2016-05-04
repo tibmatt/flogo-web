@@ -1,8 +1,9 @@
 import {config} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
 import {isJson, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
-import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE} from '../../common/constants';
+import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
 import _ from 'lodash';
+import * as flowUtils from './flows.utils';
 
 let basePath = config.app.basePath;
 let dbDefaultName = config.db;
@@ -154,56 +155,52 @@ function* deleteFlows(next){
 }
 
 function * addTrigger(next){
+  let response = {};
   //TODO validate this query is json
-  var data = _.assign({},this.request.body || {}, this.query);
-  let triggerId = flogoGenTaskID();
+  var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
 
-  let trigger = yield _getTriggerByName(data.name);
-  if(trigger) {
-    trigger = _activitySchemaToTrigger(trigger.schema);
-  }
-  let flow = yield _getFlowById(data.flowId);
+  let trigger = yield _getTriggerByName(params.name);
+  if(!trigger) { this.throw('Trigger Not found', 400); }
 
+  let flow = yield _getFlowById(params.flowId);
+  if(!flow) { this.throw('Flow Not found', 400); }
 
-  let response = {status : 400};
-  if(flow && trigger) {
-    var nodeID = genNodeID();
-    flow.paths = _.assign({}, {root:{is:nodeID}});
+  trigger = _activitySchemaToTrigger(trigger.schema);
+  flow = flowUtils.addTriggerToFlow(flow, trigger);
 
-    flow.paths['nodes'] = flow.paths['nodes'] || {};
-    flow.paths['nodes'][nodeID] = {
-      id: nodeID,
-      taskID: triggerId,
-      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
-      children: [],
-      parents: []
-    };
+  let res = yield updateFlow(flow);
 
-
-    // attach the trigger to the flow
-    trigger.id = triggerId;
-    let items = {};
-    items[triggerId] = trigger;
-    flow["items"] = items;
-
-
-    let updateResponse = yield updateFlow(flow);
-
-    if(updateResponse&&updateResponse.ok && updateResponse.ok == true) {
-      response.status = 200;
-      response.id = updateResponse.id;
-      response.name = flow.name || '';
-    }
-  } else {
-    this.throw('Not found', 400);
+  if(res&&res.ok && res.ok == true) {
+     response.status = 200;
+     response.id = res.id;
+     response.name = flow.name || '';
   }
 
   this.body = response;
 }
 
 function * addActivity(next){
-  console.log("addActivity");
-  this.body = 'addActivity';
+  let response = {};
+  var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
+
+  let activity = yield _getActivityByName(params.name);
+  if(!activity) { this.throw('Activity not found', 400) };
+
+  let flow = yield _getFlowById(params.flowId);
+  if(!flow) { this.throw('Flow not found', 400); }
+
+  activity = _activitySchemaToTask(activity.schema);
+  flow = flowUtils.addActivityToFlow(flow, activity);
+
+  let res = yield updateFlow(flow);
+
+  if(res&&res.ok && res.ok == true) {
+    response.status = 200;
+    response.id = res.id;
+    response.name = flow.name || '';
+  }
+
+  this.body = activity;
   yield next;
 }
 
@@ -231,6 +228,30 @@ function _getTriggerByName(triggerName) {
 }
 
 
+/**
+ *
+ * @param activityName: string
+ * @returns {*}
+ */
+function _getActivityByName(activityName) {
+  let _dbActivities = new DBService(config.activities.db);
+  let activity = activityName;
+
+  return new Promise(function (resolve, reject) {
+    _dbActivities.db
+      .query(function(doc, emit) {emit(doc._id);}, {key:activity, include_docs:true})
+      .then(function (response) {
+        let rows = response&&response.rows||[];
+        let doc = rows.length > 0 ? rows[0].doc : null;
+        resolve(doc);
+
+      }).catch(function (err) {
+      reject(err);
+    });
+  });
+}
+
+
 function _activitySchemaToTrigger(schema) {
   return {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
@@ -244,6 +265,67 @@ function _activitySchemaToTrigger(schema) {
     endpoint: { settings: _.get(schema, 'endpoint.settings', '') }
   }
 }
+
+// mapping from schema.json of activity to the task can be used in flow.json
+function _activitySchemaToTask(schema) {
+
+  let task = {
+    type: FLOGO_TASK_TYPE.TASK,
+    activityType: _.get(schema, 'name', ''),
+    name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
+    version: _.get(schema, 'version', ''),
+    title: _.get(schema, 'title', ''),
+    description: _.get(schema, 'description', ''),
+    attributes: {
+      inputs: _.get(schema, 'inputs', []),
+      outputs: _.get(schema, 'outputs', [])
+    }
+  };
+
+  _.each(
+    task.attributes.inputs, (input) => {
+      // convert to task enumeration and provision default types
+      _.assign( input, portAttribute( input, true ) );
+    }
+  );
+
+  _.each(
+    task.attributes.outputs, (output) => {
+      // convert to task enumeration and provision default types
+      _.assign( output, portAttribute( output ) );
+    }
+  );
+
+  return task;
+}
+
+function portAttribute(inAttr, withDefault) {
+  if (withDefault === void 0) { withDefault = false; }
+  var outAttr = _.assign({}, inAttr);
+
+  outAttr.type =  FLOGO_TASK_ATTRIBUTE_TYPE[_.get(outAttr, 'type', 'STRING').toUpperCase()];
+
+  if (withDefault && _.isUndefined(outAttr.value)) {
+    outAttr.value = getDefaultValue(outAttr.type);
+  }
+  return outAttr;
+}
+
+// get default value of a given type
+function getDefaultValue(type) {
+  let defaultValues = [];
+
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER] = 0.0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN] = false;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY] = [];
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS] = null;
+
+  return defaultValues[ type ];
+}
+
 
 /**
  *

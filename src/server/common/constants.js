@@ -18,3 +18,14 @@ export const FLOGO_TASK_TYPE = {
   TASK_SUB_PROC:3,
   TASK_LOOP:4
 };
+
+
+export const FLOGO_TASK_ATTRIBUTE_TYPE  = {
+    STRING:0,
+    INTEGER:1,
+    NUMBER:2,
+    BOOLEAN:3,
+    OBJECT:4,
+    ARRAY:5,
+    PARAMS:6
+};
