@@ -16,7 +16,9 @@ module.exports = {
   addActivity,
   getFlow,
   listFlows,
-  getLast,
+  listActivities,
+  listTriggers,
+  _getLast,
   ERRORS
 };
 
@@ -37,7 +39,7 @@ function create(flowName) {
         flow._id = flow.id;
         flow.id = utils.flogoIDEncode(flow.id);
         flow.name = flow.name || flowName;
-        flow = augmentFlow(flow);
+        flow = _augmentFlow(flow);
         state.lastCreated = Object.assign({}, flow);
         resolve(flow);
       })
@@ -48,11 +50,11 @@ function create(flowName) {
 }
 
 function addTrigger(triggerName) {
-  return addTile('triggers', triggerName);
+  return _addTile('triggers', triggerName);
 }
 
 function addActivity(activityName) {
-  return addTile('activities', activityName);
+  return _addTile('activities', activityName);
 }
 
 function getFlow(flowName) {
@@ -68,7 +70,7 @@ function getFlow(flowName) {
       .then(flows => {
         let flow = null;
         if(flows && flows.length > 0) {
-          flow = augmentFlow(flows[0]);
+          flow = _augmentFlow(flows[0]);
         }
         resolve(flow);
       })
@@ -84,20 +86,30 @@ function getFlow(flowName) {
 
 function listFlows() {
   return request(BASE_PATH + '/flows')
-    .then(flows => flows.map(augmentFlow));
+    .then(flows => flows.map(_augmentFlow));
 }
 
-function getLast() {
+function listActivities() {
+  return request(BASE_PATH + '/activities')
+}
+
+function listTriggers() {
+  return request(BASE_PATH + '/triggers')
+}
+
+/*-----------------------------------*/
+
+function _getLast() {
   if (state.lastCreated) {
     return Object.assign({}, state.lastCreated);
   }
   return null;
 }
 
-function addTile(type, name) {
+function _addTile(type, name) {
   return new Promise((resolve, reject) => {
 
-    let lastFlow = getLast();
+    let lastFlow = _getLast();
     if(!lastFlow) {
       return reject({code: ERRORS.NO_FLOW});
     }
@@ -124,7 +136,7 @@ function addTile(type, name) {
   });
 }
 
-function augmentFlow(flow) {
+function _augmentFlow(flow) {
   flow.id = flow.id || utils.flogoIDEncode(flow._id);
   flow.url = flow.url = basePath.buildFlogoBaseUiPath(`flows/${flow.id}`);
   return flow;

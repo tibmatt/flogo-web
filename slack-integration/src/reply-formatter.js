@@ -1,8 +1,10 @@
 'use strict';
+let truncate = require('lodash/truncate');
 
 module.exports = {
   formatFlow,
-  formatFlowList
+  formatFlowList,
+  formatTileList
 };
 
 function formatFlow(flow, msg) {
@@ -38,6 +40,7 @@ function formatFlowList(flows, msg) {
     attachments: [
       {
         pretext,
+        fallback: 'Flows',
         title: 'Flows',
         text: flowList,
         mrkdwn_in: ['text', 'pretext']
@@ -45,4 +48,30 @@ function formatFlowList(flows, msg) {
     ]
   };
 
+}
+
+/**
+ *
+ * @param tiles
+ * @param options
+ * @params options.title
+ * @params options.msg
+ * @returns {{attachments: *[]}}
+ */
+function formatTileList(tiles, options) {
+  options = options || {};
+  let pretext = options.msg ? options.msg : undefined;
+  let text = (tiles || []).map(tile => `• *${tile.name}*: ${truncate(tile.description) || tile.name}`).join('\n');
+
+  return {
+    attachments: [
+      {
+        pretext,
+        text,
+        fallback: options.title || text,
+        title: options.title || undefined,
+        mrkdwn_in: ['text', 'pretext']
+      }
+    ]
+  };
 }

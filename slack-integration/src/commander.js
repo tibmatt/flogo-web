@@ -7,7 +7,9 @@ const SLASH_COMMANDS = {
   MAIN: '/flogo',
   CREATE: '/flogo-create',
   ADD: '/flogo-add',
-  SHOW: '/flogo-show'
+  SHOW: '/flogo-show',
+  LIST_ACTIVITIES: '/flogo-show-activities',
+  LIST_TRIGGERS: '/flogo-show-triggers'
 };
 
 const COMMANDS = {
@@ -50,6 +52,12 @@ module.exports = function (controller) {
       case SLASH_COMMANDS.SHOW:
         _show(bot, message, params);
         break;
+      case SLASH_COMMANDS.LIST_ACTIVITIES:
+        _list('activities', bot, message, params);
+        break;
+      case SLASH_COMMANDS.LIST_TRIGGERS:
+        _list('triggers', bot, message, params);
+        break;
     }
 
   });
@@ -64,6 +72,8 @@ function _showHelp(bot, message) {
   • \`/flogo-add activity [name-of-the-activity]\` - add an activity to the current flow
   • \`/flogo-show\` - list all flows
   • \`/flogo-show [flow name]\` - find a flow by name
+  • \`/flogo-show-triggers\` - list all triggers
+  • \`/flogo-show-activities\` - list all activities
   `);
 }
 
@@ -155,6 +165,26 @@ function _show(bot, message, params) {
       });
   }
 
+}
+
+function _list(tileType, bot, message, params) {
+  var promise = tileType == 'activities' ? flogo.listActivities() : flogo.listTriggers();
+
+  return promise
+    .then(tiles => {
+      if(tiles && tiles.length > 0) {
+        var replyMsg = formatter.formatTileList(tiles, {
+          title: tileType
+        });
+        bot.replyPubliv(message, replyMsg);
+      } else {
+        bot.replyPublic(message, `No ${tileType} found`);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      bot.replyPrivate(message, 'Oh no, something wen\'t wrong');
+    });
 }
 
 function _isKnownSlashCommand(commandName) {
