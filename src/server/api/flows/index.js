@@ -108,7 +108,6 @@ function* getFlows(next){
   console.log("getFlows, next: ", next);
   //this.body = 'getFlows';
 
-  console.log('/****** QUERY ******/\n', this.query);
   let data = [];
   if (!_.isEmpty(this.query)) {
     data = yield filterFlows(this.query);

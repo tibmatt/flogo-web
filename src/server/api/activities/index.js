@@ -1,6 +1,11 @@
 import {config} from '../../config/app-config';
+import {DBService} from '../../common/db.service';
+import _ from 'lodash';
 
 let basePath = config.app.basePath;
+let dbName = config.activities.db;
+
+let _dbService = new DBService(dbName);
 
 export function activities(app, router){
   if(!app){
@@ -13,8 +18,14 @@ export function activities(app, router){
 }
 
 function* getActivities(next){
-  console.log("getActivities");
-  this.body = 'getActivities';
+  let data = [];
+
+  data = yield _dbService.allDocs({ include_docs: true })
+    .then(res => res.rows || [])
+    .then(rows => rows.map(row => row.doc ? _.pick(row.doc, ['_id', 'name', 'version', 'description']) : []));
+
+  console.log(data);
+  this.body = data;
   yield next;
 }
 
