@@ -812,6 +812,8 @@ export class FlogoCanvasComponent {
             )
           );
 
+          console.groupEnd( );
+
         }
       );
 
@@ -886,6 +888,7 @@ export class FlogoCanvasComponent {
             )
           );
 
+          console.groupEnd( );
         }
       );
 
@@ -1343,6 +1346,8 @@ export class FlogoCanvasComponent {
               }
             )
           );
+
+          console.groupEnd( );
         }
   );
 
