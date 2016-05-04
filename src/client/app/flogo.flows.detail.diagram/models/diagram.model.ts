@@ -322,10 +322,23 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           if ( nodeID === '+' ) {
             // node of NODE_ADD
-            nodeInfo = new FlogoFlowDiagramNode();
-            this.nodesOfAddType[ nodeInfo.id ] = nodeInfo;
 
-            nodeInfo.linkToParents( [ rowNodesIds[ idx - 1 ] ] );
+            // reuse existing nodes
+            let found = false;
+            _.forIn( this.nodesOfAddType, ( node : FlogoFlowDiagramNode, id : string ) => {
+              if ( node.parents.indexOf( rowNodesIds[ idx - 1 ] ) !== -1 ) {
+                found = true;
+                nodeInfo = node;
+              }
+            } );
+
+            if ( !found ) {
+              nodeInfo = new FlogoFlowDiagramNode();
+              this.nodesOfAddType[ nodeInfo.id ] = nodeInfo;
+              // only save the parent IDs to this node, but not add this node to the children of the parent node,
+              // in order to keep the diagram itself clean.
+              nodeInfo.linkToParents( [ rowNodesIds[ idx - 1 ] ] );
+            }
           } else if ( nodeID === '_' ) {
             // placeholder node
             nodeInfo = new FlogoFlowDiagramNode( {
@@ -959,8 +972,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     !this.ng2StyleAttr && this._updateNG2StyleAttr();
 
-    // clear previous nodes of add type
-    this.nodesOfAddType = <IFlogoFlowDiagramNodeDictionary>{};
+    this.nodesOfAddType = this.nodesOfAddType || <IFlogoFlowDiagramNodeDictionary>{};
 
     // enter selection
     let rows = this._bindDataToRows( this.rootElm.selectAll( `.${CLS.diagramRow}` ) );
