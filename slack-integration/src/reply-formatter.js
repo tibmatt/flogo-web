@@ -8,9 +8,6 @@ module.exports = {
 function formatFlow(flow, msg) {
   let pretext = msg ? msg : undefined;
 
-  // TODO extract server info as env/config vars
-  // TODO maybe url should already come in flow data
-  let url = 'http://localhost:3010/flows/' + flow.id;
   let text = flow.name;
   if(flow.description) {
     text = flow.description;
@@ -22,9 +19,9 @@ function formatFlow(flow, msg) {
     attachments: [
       {
         pretext,
-        fallback: url,
+        fallback: flow.url,
         title: flow.name,
-        title_link: url,
+        title_link: flow.url,
         text,
         color: '#28D7E5'
       }
@@ -33,7 +30,19 @@ function formatFlow(flow, msg) {
 
 }
 
-function formatFlowList(flows) {
-  return 'These are the existing flows:\n'
-    + (flows || []).map((flow, index) => `${index + 1}. ${flow.name}`).join('\n');
+function formatFlowList(flows, msg) {
+  let pretext = msg ? msg : undefined;
+  let flowList = (flows || []).map((flow, index) => `${index + 1}. <${flow.url}|${flow.name}>`).join('\n');
+
+  return {
+    attachments: [
+      {
+        pretext,
+        title: 'Flows',
+        text: flowList,
+        mrkdwn_in: ['text', 'pretext']
+      }
+    ]
+  };
+
 }

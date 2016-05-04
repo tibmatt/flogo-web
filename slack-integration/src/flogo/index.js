@@ -7,7 +7,8 @@ let ERRORS = require('./errors');
 
 let utils = require('./utils');
 
-const BASE_PATH = require('./base-path')();
+let basePath = require('./base-path');
+const BASE_PATH = basePath.buildFlogoBaseApiPath();
 
 module.exports = {
   create,
@@ -36,6 +37,7 @@ function create(flowName) {
         flow._id = flow.id;
         flow.id = utils.flogoIDEncode(flow.id);
         flow.name = flow.name || flowName;
+        flow = augmentFlow(flow);
         state.lastCreated = Object.assign({}, flow);
         resolve(flow);
       })
@@ -66,8 +68,7 @@ function getFlow(flowName) {
       .then(flows => {
         let flow = null;
         if(flows && flows.length > 0) {
-          flow = flows[0];
-          flow.id = utils.flogoIDEncode(flow.id || flow._id);
+          flow = augmentFlow(flows[0]);
         }
         resolve(flow);
       })
@@ -82,7 +83,8 @@ function getFlow(flowName) {
 }
 
 function listFlows() {
-  return request(BASE_PATH + '/flows');
+  return request(BASE_PATH + '/flows')
+    .then(flows => flows.map(augmentFlow));
 }
 
 function getLast() {
@@ -128,4 +130,9 @@ function addTile(type, name) {
   });
 }
 
+function augmentFlow(flow) {
+  flow.id = flow.id || utils.flogoIDEncode(flow._id);
+  flow.url = flow.url = basePath.buildFlogoBaseUiPath(`flows/${flow.id}`);
+  return flow;
+}
 
