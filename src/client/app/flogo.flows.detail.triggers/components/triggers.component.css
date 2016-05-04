@@ -1,9 +1,10 @@
 .flogo-common-edit-panel__head {
+  padding-top: 33px;
   background-color: #F5BE23;
 }
 .flogo-common-edit-panel__head-title:before {
   content: "";
-  background: #ffffff url("/assets/svg/flogo.flows.detail.add.cross.icon.svg") center center / 50% no-repeat;
+  background: #fff url("/assets/svg/flogo.flows.detail.add.cross.icon.svg") center center / 50% no-repeat;
   width: 40px;
   height: 40px;
   border-radius: 50%;

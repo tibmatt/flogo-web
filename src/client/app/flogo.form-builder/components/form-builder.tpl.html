@@ -14,26 +14,32 @@
           </div>
         </div>
 
-        <div *ngIf="_context.isBranch" class="branch">
-          <div class="flogo-common-edit-panel__head-titles">
-            <h3 class="flogo-common-edit-panel__head-title">Configure Branch</h3>
-          </div>
+        <div *ngIf="_context.isBranch" class="branch" [class.change]="_hasChanges">
+          <h3 class="flogo-common-edit-panel__head-title">Configure Branch</h3>
         </div>
         <!-- PANEL BUTTONS -->
-        <div *ngIf="_context.isTask || _context.isTrigger" class="clearfix">
-          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
-            Run tile
+        <div *ngIf="_context.isTrigger" class="clearfix">
+          <button  class="flogo-form-builder-buttons-primary-call center" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+            Run Trigger
           </button>
-          <!--<button class="flogo-form-builder-buttons-secondary right" [hidden]="_hasChanges" (click)="runFromThisTile($event)">Run from Trigger</button>-->
           <button class="flogo-form-builder-buttons-primary left" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
-          <button class="flogo-form-builder-buttons-secondary right" [class.disabled]="!_hasChanges" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
+          <button class="flogo-form-builder-buttons-secondary right" [hidden]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
+        </div>
+
+        <div *ngIf="_context.isTask" class="clearfix">
+          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+            Run Tile
+          </button>
+          <button class="flogo-form-builder-buttons-secondary right" [hidden]="_hasChanges" (click)="runFromTrigger($event)">Run from Trigger</button>
+          <button class="flogo-form-builder-buttons-primary left" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
+          <button class="flogo-form-builder-buttons-secondary right" [hidden]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
         </div>
 
         <div *ngIf="_context.isBranch" class="clearfix">
-          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="true" [disabled]="true">
-            Save changes
+          <button [hidden]="!_hasChanges"  class="flogo-form-builder-buttons-primary-call left" (click)="saveChanges($event)">
+            Save
           </button>
-          <button class="flogo-form-builder-buttons-secondary right" [class.disabled]="!_hasChanges" [disabled]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
+          <button [hidden]="!_hasChanges" class="flogo-form-builder-buttons-secondary right" (click)="cancelEdit($event)">Cancel</button>
         </div>
       </div>
     </div>

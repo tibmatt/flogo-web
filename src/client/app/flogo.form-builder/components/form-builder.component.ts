@@ -467,6 +467,14 @@ export class FlogoFormBuilderComponent{
 
   }
 
+  runFromTrigger() {
+    var taskId   = this._task.id;
+    var inputs = (this._context.isTrigger) ? {} : this._getCurrentTaskState(this._attributes.inputs);
+    this._postService.publish(_.assign({}, PUB_EVENTS.runFromTrigger, {
+      data: {inputs, taskId}
+    }))
+  }
+
   _getCurrentTaskState(items:any[]) {
        var result :any = {};
 

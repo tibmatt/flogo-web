@@ -24,42 +24,55 @@
 .flogo-common-edit-panel__head.flogo-common-edit-panel__head-branch {
   background: #8a90ae;
 }
-.flogo-common-edit-panel__head-wrapper .trigger,
-.flogo-common-edit-panel__head-wrapper .task,
-.flogo-common-edit-panel__head-wrapper .branch {
-  padding-top: 26px;
-  padding-bottom: 2px;
-}
 .flogo-common-edit-panel__head-wrapper .trigger:before,
 .flogo-common-edit-panel__head-wrapper .task:before,
 .flogo-common-edit-panel__head-wrapper .branch:before {
+  float: left;
   margin-right: 15px;
-  vertical-align: middle;
-  display: inline-block;
   content: "";
-  border-radius: 50%;
+}
+.flogo-common-edit-panel__head-wrapper .trigger {
+  padding-top: 21px;
+  padding-bottom: 6px;
 }
 .flogo-common-edit-panel__head-wrapper .trigger:before {
-  background: url("/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg") no-repeat left center / 46px 46px;
+  background: url("/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg") no-repeat left bottom / 46px 46px;
   width: 46px;
-  height: 46px;
+  height: 54px;
+}
+.flogo-common-edit-panel__head-wrapper .task {
+  padding-top: 21px;
+  padding-bottom: 6px;
 }
 .flogo-common-edit-panel__head-wrapper .task:before {
-  background: url("/assets/svg/flogo.icon.gears.circle.svg") no-repeat left center / 40px 40px;
+  background: url("/assets/svg/flogo.icon.gears.circle.svg") no-repeat left bottom / 40px 40px;
   width: 40px;
-  height: 40px;
+  height: 50px;
+}
+.flogo-common-edit-panel__head-wrapper .branch {
+  padding-top: 33px;
 }
 .flogo-common-edit-panel__head-wrapper .branch:before {
   background: #fff url("/assets/svg/flogo.flows.detail.add.cross.gray.icon.svg") no-repeat center / 50%;
   width: 40px;
   height: 40px;
+  border-radius: 50%;
+}
+.flogo-common-edit-panel__head-wrapper .branch.change {
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
+.flogo-common-edit-panel__head-wrapper .flogo-common-edit-panel__head-titles,
+.flogo-common-edit-panel__head-wrapper .flogo-common-edit-panel__head-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .flogo-common-edit-panel__head-wrapper .flogo-common-edit-panel__head-titles {
-  display: inline-block;
-  vertical-align: middle;
+  margin-left: 60px;
 }
 .flogo-common-edit-panel__head-wrapper .flogo-common-edit-panel__head-subtitle {
-  margin-top: -5px;
+  margin-top: -3px;
   font-size: 15px;
   letter-spacing: 0.3px;
 }
@@ -89,6 +102,10 @@
 .flogo-common-edit-panel__head-wrapper .flogo-form-builder-buttons-primary-call.disabled {
   background: #ffc49d;
   border: 1px solid rgba(255, 255, 255, 0.5);
+}
+.flogo-common-edit-panel__head-wrapper .flogo-form-builder-buttons-primary-call.center {
+  display: block;
+  margin: 14px auto;
 }
 .flogo-common-edit-panel__head-wrapper .left {
   float: left;

@@ -97,6 +97,7 @@ export class FlogoCanvasComponent {
       _.assign( {}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback : this._addTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_SELECT_TASKS_SUB_EVENTS.selectTask, { callback : this._selectTaskFromTasks.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback : this._runFromThisTile.bind( this ) } ),
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback : this._runFromTriggerinTile.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.setTaskWarnings, { callback : this._setTaskWarnings.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
@@ -268,6 +269,36 @@ export class FlogoCanvasComponent {
 
     }
 
+  }
+
+  private _runFromRoot() {
+    // The inital data to start the process from trigger
+    let initData = _.get( FLOGO_TASK_TYPE.TASK_ROOT, '__props.initData' );
+
+    if ( _.isEmpty( initData ) ) {
+      this._runFromTrigger();
+    } else {
+      // preprocessing initial data
+      initData = _( initData )
+          .filter( ( item : any )=> {
+
+            // filter empty values
+
+            return !(<any>_).isNil( item.value );
+          } )
+          .map( ( item : any ) => {
+
+            // converting the type of the initData from enum to string;
+
+            let outItem = _.cloneDeep( item );
+
+            outItem.type = attributeTypeToString( outItem.type );
+
+            return outItem;
+          } );
+
+      this._runFromTrigger( initData );
+    }
   }
 
   private _updateFlow( flow : any ) {
@@ -1007,33 +1038,7 @@ export class FlogoCanvasComponent {
     let selectedTask = this.tasks[ data.taskId ];
 
     if ( selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
-      // The inital data to start the process from trigger
-      let initData = _.get( selectedTask, '__props.initData' );
-
-      if ( _.isEmpty( initData ) ) {
-        this._runFromTrigger();
-      } else {
-        // preprocessing initial data
-        initData = _( initData )
-          .filter( ( item : any )=> {
-
-            // filter empty values
-
-            return !(<any>_).isNil( item.value );
-          } )
-          .map( ( item : any ) => {
-
-            // converting the type of the initData from enum to string;
-
-            let outItem = _.cloneDeep( item );
-
-            outItem.type = attributeTypeToString( outItem.type );
-
-            return outItem;
-          } );
-
-        this._runFromTrigger( initData );
-      }
+      this._runFromRoot();
     } else if ( this._processInstanceID ) {
       // run from other than the trigger (root task);
 
@@ -1123,6 +1128,11 @@ export class FlogoCanvasComponent {
 
     console.groupEnd();
 
+  }
+  private _runFromTriggerinTile(data: any, envolope: any) {
+    console.group('Run from Trigger');
+    this._runFromRoot();
+    console.groupEnd();
   }
 
   private _selectTransformFromDiagram(data:any, envelope:any) {
