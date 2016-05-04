@@ -1,10 +1,12 @@
-import {config} from '../../config/app-config';
 import path from 'path';
+import fs from 'fs';
+
+import {config} from '../../config/app-config';
 import {isExisted} from '../../common/utils'
 
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
-const spawn = require('child_process').spawn;
+const execFileSync = require('child_process').execFileSync;
 
 export class Engine {
   constructor(){
@@ -87,10 +89,44 @@ export class Engine {
     }
   }
 
+  config(){
+    // config config.json
+    let defaultEngineBinPath =  path.join(this.enginePath, config.engine.name, 'bin');
+    fs.writeFileSync(path.join(defaultEngineBinPath, 'config.json').toString(), JSON.stringify(config.engine.config, null, 2), {"encoding": "utf8"});
+
+    // config triggers.json
+    let data = fs.readFileSync(path.join(defaultEngineBinPath, 'triggers.json'), {"encoding": "utf8"});
+    //console.log("=======triggers.json: ", data);
+    let triggersJSON = JSON.parse(data);
+    //console.log(triggersJSON);
+    let triggers = triggersJSON.triggers||[];
+    let triggersConfig = config.engine.triggers;
+    let newTriggers = [];
+    let newTriggersJSON = {};
+    //console.log("triggers: ", triggers);
+    triggers.forEach((trigger, index)=>{
+      //console.log(trigger);
+      if(triggersConfig[trigger&&trigger.name||'']){
+        newTriggers.push(triggersConfig[trigger&&trigger.name||'']);
+      }
+    });
+
+    newTriggersJSON.triggers = newTriggers;
+    //console.log(newTriggersJSON);
+    fs.writeFileSync(path.join(defaultEngineBinPath, 'triggers.json').toString(), JSON.stringify(newTriggersJSON, null, 2), {"encoding": "utf8"});
+  }
+
   start(){
     try{
+      console.log("[info]start");
       let defaultEngineBinPath =  path.join(this.enginePath, config.engine.name, 'bin');
-      execSync(`./flogo`, {cwd: defaultEngineBinPath});
+      console.log("[info]defaultEngineBinPath: ", defaultEngineBinPath);
+      let command = "./"+config.engine.name+" &";
+      console.log("[info]command: ", command);
+      exec(command, {cwd: defaultEngineBinPath});
+
+      //execFileSync(command,[], {cwd: defaultEngineBinPath});
+
       return true;
     }catch (err){
       console.error("[Error]Engine->start. Error: ", err);

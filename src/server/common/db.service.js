@@ -11,7 +11,7 @@ const DEFAULT_USER_ID = 'flogoweb-admin';
 export class DBService{
 
   constructor(name, options){
-    console.log("DBService initial");
+    console.log("DBService initial, name: ", name);
     this.options = options;
     this._db = this._initDB(name, options);
     this._sync = null;

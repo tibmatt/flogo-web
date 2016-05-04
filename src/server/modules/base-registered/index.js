@@ -48,7 +48,7 @@ export class BaseRegistered{
 
     this._options = _.merge({}, defaultOptions, options);
 
-    console.log("this._options: ", this._options);
+    //console.log("this._options: ", this._options);
 
     // store db information
     this._dbService = new DBService(dbName);
@@ -64,16 +64,25 @@ export class BaseRegistered{
     let data = fs.readFileSync(this._packageJSONTplFilePath, {"encoding": "utf8"});
     this.packageJSONTemplate = JSON.parse(data);
     //
-    this.clean().then(()=>{
-      console.log("[Info]clean installed activities success!");
-      this.updateDB();
-    }).catch(()=>{
-      console.error("[Error]clean installed activities fail!");
-      //throw "clean installed activities fail!"
-    });
 
     // start watch files/folder changes
     //this.watch();
+  }
+
+  register(){
+    return new Promise((resolve, reject)=>{
+      this.clean().then(()=>{
+        console.log("[Info]clean success!, type: ", this._options.type);
+        this.updateDB().then(()=>{
+          resolve(true);
+        }).catch((err)=>{
+          reject(err);
+        });
+      }).catch((err)=>{
+        console.error("[Error]clean fail!, type: ", this._options.type);
+        reject(err);
+      });
+    });
   }
 
   get dbService(){
@@ -89,7 +98,7 @@ export class BaseRegistered{
     // console.log("version: ", version);
     // let id = this.ACTIVITIES+this.DELIMITER+name+this.DELIMITER+version;
     let id = name;
-    console.log("generateID, id: ", id);
+    //console.log("generateID, id: ", id);
     return id;
   }
 
@@ -111,7 +120,7 @@ export class BaseRegistered{
   }
 
   clean(){
-    console.log("-------clean");
+    //console.log("-------clean");
     return new Promise((resolve, reject)=>{
       this.cleanDB()
         .then((result)=>{
@@ -129,14 +138,13 @@ export class BaseRegistered{
   cleanDB(){
     return new Promise((resolve, reject)=>{
       this._dbService.db.allDocs({include_docs: true}).then((result)=>{
-        console.log("************cleanDB");
+        console.log("[info]cleanDB, type: ", this._options.type);
         let docs = result&&result.rows||[];
         let deletedDocs = [];
 
-        if(docs.length==0){
-          console.log("[info]docs is empty");
+        if(docs.length === 0){
+          console.log("[success]cleanDB finished!, empty docs type: ", this._options.type);
           resolve(result);
-          return;
         }
 
         docs.forEach((item)=>{
@@ -146,17 +154,20 @@ export class BaseRegistered{
             doc._deleted = true;
             deletedDocs.push(doc);
           }
-          console.log(doc);
+          //console.log(doc);
         });
 
-        console.log(deletedDocs);
+        //console.log(deletedDocs);
         this._dbService.db.bulkDocs(deletedDocs).then((result)=>{
+          console.log("[success]cleanDB finished!, type: ", this._options.type);
           resolve(result);
         }).catch((err)=>{
           reject(err);
+          console.error("[error]cleanDB error!, update docs error! type: ", this._options.type, err);
         });
 
       }).catch((err)=>{
+        console.error("[error]cleanDB error!, get docs error! type: ", this._options.type, err);
         reject(err);
       });
     });
@@ -169,9 +180,10 @@ export class BaseRegistered{
         if(isExisted(nodeModulesPath)){
           execSync(`rm -rf ${nodeModulesPath}`);
         }
-        console.log("[Success]cleanNodeModules finished!");
+        console.log("[Success]cleanNodeModules finished!, type: ", this._options.type);
         resolve(true);
       }catch (err){
+        console.error("[error]cleanNodeModules error!, type: ", this._options.type);
         reject(false);
       }
     });
@@ -195,15 +207,15 @@ export class BaseRegistered{
    */
   updatePackageJSON(dirPath, config, sourcePackageJSON){
     console.log("[debug]updatePackageJSON");
-    console.log(dirPath);
-    console.log(config);
+    //console.log(dirPath);
+    //console.log(config);
     //console.log(sourcePackageJSON);
     let packageJSON = _.cloneDeep(sourcePackageJSON);
     !packageJSON.dependencies ? (packageJSON.dependencies = {}): null;
     // get all the activity package in activitiesPath
     if(dirPath){
       let dirs = readDirectoriesSync(dirPath);
-      console.log(dirs);
+      //console.log(dirs);
       if(dirs&&dirs.length){
         // console.log("???????dirs", dirs);
         dirs.forEach((dir, index)=>{
@@ -214,15 +226,18 @@ export class BaseRegistered{
           //if(stats.isDirectory()){
           //  packageJSON.dependencies[value] = path.join(this.activitiesPath, value);
           //}
-          console.log("=====dir", dir);
+          //console.log("=====dir", dir);
           let itemPath = path.join(dirPath, dir);
-          console.log("itemPath: ", itemPath);
+          //console.log("itemPath: ", itemPath);
 
-          // if it is configured, then user configured path
-          if(config[dir]){
-            this.installToEngine(this._options.type, config[dir]);
-          }else{
-            this.installToEngine(this._options.type, "file://"+itemPath);
+          // for test, we don't need to install all the triggers to engine. User can decide which tigger want to be installed
+          if(config[dir]&&config[dir].install){
+            let path = config[dir].path;
+            if(path){
+              this.installToEngine(this._options.type, path);
+            }else{
+              this.installToEngine(this._options.type, "file://"+itemPath);
+            }
           }
 
           let design_package_json=null;
@@ -262,103 +277,120 @@ export class BaseRegistered{
   }
 
   updateDB(){
-    console.log("[debug]updateDB");
-    // update activity package.json
-    let packageJSON = _.cloneDeep(this.packageJSONTemplate);
-    packageJSON = this.updatePackageJSON(this._options.defaultPath, this._options.defaultConfig, packageJSON);
-    packageJSON = this.updatePackageJSON(this._options.customPath, this._options.customConfig, packageJSON);
-    console.log(packageJSON);
-    // console.log(packageJSON);
-    let dependencies = packageJSON.dependencies;
-    // new activities generate from package.json
-    let items = {};
+    return new Promise((resolve, reject)=>{
+      console.log("[debug]updateDB");
+      // update activity package.json
+      let packageJSON = _.cloneDeep(this.packageJSONTemplate);
+      packageJSON = this.updatePackageJSON(this._options.defaultPath, this._options.defaultConfig, packageJSON);
+      packageJSON = this.updatePackageJSON(this._options.customPath, this._options.customConfig, packageJSON);
+      // console.log(packageJSON);
+      let dependencies = packageJSON.dependencies;
+      // new activities generate from package.json
+      let items = {};
 
-    // install all activity packages
-    this.install().then(()=>{
+      // install all activity packages
+      this.install().then(()=>{
 
-      // generate all the activity docs
-      _.forOwn(dependencies, (value, key)=>{
-        let packageJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'package.json'), 'utf8'));
-        let schemaJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, this._options.schemaJsonName), 'utf8'));
-        // console.log("packageJSON: ", packageJSON);
-        // console.log("schemaJSON: ", schemaJSON);
+        // generate all the activity docs
+        _.forOwn(dependencies, (value, key)=>{
+          let packageJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'package.json'), 'utf8'));
+          let schemaJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, this._options.schemaJsonName), 'utf8'));
+          // console.log("packageJSON: ", packageJSON);
+          // console.log("schemaJSON: ", schemaJSON);
 
-        let id = this.generateID(key, packageJSON.version);
-        console.log("id: ", id);
+          let id = this.generateID(key, packageJSON.version);
+          console.log("id: ", id);
 
-        let item = {
-          _id: id,
-          'name': key,
-          'version': packageJSON.version,
-          'description': packageJSON.description,
-          'keywords': packageJSON.keywords||[],
-          'schema': schemaJSON
-        };
+          let item = {
+            _id: id,
+            'name': key,
+            'version': packageJSON.version,
+            'description': packageJSON.description,
+            'keywords': packageJSON.keywords||[],
+            'schema': schemaJSON
+          };
 
-        items[id]=item;
-      });
-
-      // console.log("!!!!!!!!activityDocs: ", activityDocs);
-
-      this.dbService.db.allDocs({include_docs: true}).then((docs)=>{
-        // console.log("============ - docs: ", docs);
-        let rows = docs.rows||[];
-        let activities = [];
-
-        rows.forEach((item, index)=>{
-          if(item&&item.doc){
-            activities.push(item.doc);
-          }
-        });
-        // update or remove activity
-        activities.forEach((activity, index)=>{
-          let newActivity = items[activity['_id']];
-          // console.log("activity['id']: ", activity['id']);
-          // console.log("**********newActivity: ", newActivity);
-          // if this activity cannot find in activityDocs generate from package.json, then need to remove it
-          if(!newActivity){
-            // console.log("[Remove]activity: ", activity);
-            this.dbService.db.remove(activity).then((response)=>{
-              console.log("[info]delete activity success. ", response);
-            }).catch((err)=>{
-              console.error("[error]delete activity fail. ", err);
-            });
-          }else{
-            // When we update an activity, we will use new activity to overwrite the old one. This is because, user maybe in new activity delete some value,
-            // copy the some value from current activity in DB
-            newActivity['_id'] = activity['_id'];
-            newActivity['_rev'] = activity['_rev'];
-            newActivity.created_at = activity.created_at;
-            newActivity.updated_at = new Date().toISOString();
-            // update this activity in DB
-            this.dbService.db.put(_.cloneDeep(newActivity)).then((response)=>{
-              console.log("Update activity success: ", response);
-            }).catch((err)=>{
-              console.log("Update activity error: ", err);
-            });
-            // delete this activity
-            delete items[activity['_id']];
-          }
+          items[id]=item;
         });
 
-         console.log("@@@@@@@@@[items]: ", items);
+        // console.log("!!!!!!!!activityDocs: ", activityDocs);
 
-        // Rest activities should be new activity
-        _.forOwn(items, (activity, index)=>{
-          activity.created_at = new Date().toISOString();
-          // add this activity in DB
-          this.dbService.db.put(activity).then((response)=>{
-            console.log("Add activity success: ", response);
-          }).catch((err)=>{
-            console.log("Add activity error: ", err);
+        this.dbService.db.allDocs({include_docs: true}).then((docs)=>{
+          // console.log("============ - docs: ", docs);
+          let rows = docs.rows||[];
+          let activities = [];
+
+          rows.forEach((item, index)=>{
+            if(item&&item.doc){
+              activities.push(item.doc);
+            }
           });
-        });
-      }).catch((err)=>{
-        console.log("[error]Get all activities fail. ", err);
-      });
+          // update or remove activity
+          activities.forEach((activity, index)=>{
+            let newActivity = items[activity['_id']];
+            // console.log("activity['id']: ", activity['id']);
+            // console.log("**********newActivity: ", newActivity);
+            // if this activity cannot find in activityDocs generate from package.json, then need to remove it
+            if(!newActivity){
+              // console.log("[Remove]activity: ", activity);
+              this.dbService.db.remove(activity).then((response)=>{
+                console.log("[info]delete activity success. ", response);
+              }).catch((err)=>{
+                console.error("[error]delete activity fail. ", err);
+              });
+            }else{
+              // When we update an activity, we will use new activity to overwrite the old one. This is because, user maybe in new activity delete some value,
+              // copy the some value from current activity in DB
+              newActivity['_id'] = activity['_id'];
+              newActivity['_rev'] = activity['_rev'];
+              newActivity.created_at = activity.created_at;
+              newActivity.updated_at = new Date().toISOString();
+              // update this activity in DB
+              this.dbService.db.put(_.cloneDeep(newActivity)).then((response)=>{
+                console.log("Update activity success: ", response);
+              }).catch((err)=>{
+                console.log("Update activity error: ", err);
+              });
+              // delete this activity
+              delete items[activity['_id']];
+            }
+          });
 
-    }).catch((err)=>{
-      console.error("[error]Install error. ", err);
+          console.log("@@@@@@@@@[items]: ", items);
+
+          let PromiseAll = [];
+
+          // Rest activities should be new activity
+          _.forOwn(items, (activity, index)=>{
+            activity.created_at = new Date().toISOString();
+            // add this activity in DB
+            let promise = new Promise((res, rej)=>{
+              this.dbService.db.put(activity).then((response)=>{
+                console.log("Add activity success: ", response);
+                res(response);
+              }).catch((err)=>{
+                console.log("Add activity error: ", err);
+                rej(err);
+              });
+            });
+            PromiseAll.push(promise);
+          });
+
+          Promise.all(PromiseAll).then(()=>{
+            resolve(true);
+          }).catch((err)=>{
+            reject(err);
+          })
+
+        }).catch((err)=>{
+          console.log("[error]Get all activities fail. ", err);
+          reject(err);
+        });
+
+      }).catch((err)=>{
+        console.error("[error]Install error. ", err);
+        reject(err);
+      });
     });
   }
 

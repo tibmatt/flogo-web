@@ -469,6 +469,7 @@ export function resetFlogoGlobalConfig() {
         name : 'flogo-web-triggers'
       },
     },
+    /*
     models : {
       db : {
         protocol : 'http',
@@ -476,7 +477,7 @@ export function resetFlogoGlobalConfig() {
         port : '5984',
         name : 'flogo-web-models'
       },
-    },
+    },*/
     engine : {
       protocol : 'http',
       host : "localhost",
