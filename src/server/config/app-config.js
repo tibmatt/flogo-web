@@ -17,10 +17,18 @@ let config = {
     defaultPath: "../../submodules/flogo-contrib/activity",
     contribPath: "../../contrib/activity",
     default: {
-      "counter": "github.com/TIBCOSoftware/flogo-contrib/activity/counter",
-      "rest": "github.com/TIBCOSoftware/flogo-contrib/activity/rest",
-      "log": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-      "twilio": "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
+      "counter":{
+        path:"github.com/TIBCOSoftware/flogo-contrib/activity/counter"
+      },
+      "rest": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
+      },
+      "log": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/log"
+      },
+      "twilio": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
+      }
     },
     contrib: {}
   },
@@ -30,14 +38,15 @@ let config = {
     contribPath: "../../contrib/trigger",
     default: {
       "rest": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
-        install: true
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
       },
       "mqtt": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt"
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt",
+        ignore: true
       },
       "timer": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
+        ignore: true
       }
     }
   },
@@ -64,42 +73,20 @@ let config = {
           "qos": "0",
           "cleansess": "false"
         },
-        "endpoints": [
-          {
-            "flowURI": "local://testFlow",
-            "settings": {
-              "topic": "test_start"
-            }
-          }
-        ]
+        "endpoints": null
       },
       "tibco-rest": {
         "name": "tibco-rest",
         "settings": {
           "port": "9990"
         },
-        "endpoints": [
-          {
-            "flowURI": "local://new_device_flow",
-            "settings": {
-              "method": "POST",
-              "path": "/device"
-            }
-          }
-        ]
+        "endpoints": null
       },
       "tibco-timer": {
         "name": "tibco-timer",
         "settings": {
         },
-        "endpoints": [
-          {
-            "flowURI": "local://new_device_flow",
-            "settings": {
-              "repeating": "false"
-            }
-          }
-        ]
+        "endpoints": null
       }
     },
     config: {

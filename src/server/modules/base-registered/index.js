@@ -231,7 +231,7 @@ export class BaseRegistered{
           //console.log("itemPath: ", itemPath);
 
           // for test, we don't need to install all the triggers to engine. User can decide which tigger want to be installed
-          if(config[dir]&&config[dir].install){
+          if(config[dir]&&!config[dir].ignore){
             let path = config[dir].path;
             if(path){
               this.installToEngine(this._options.type, path);
