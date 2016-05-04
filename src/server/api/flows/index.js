@@ -100,8 +100,8 @@ export function flows(app, router){
   // {
   //   name: "tibco-mqtt"
   // }
-  router.post(basePath+"/flows/trigger", addTrigger);
-  router.post(basePath+"/flows/activity", addActivity);
+  router.post(basePath+"/flows/triggers", addTrigger);
+  router.post(basePath+"/flows/activities", addActivity);
 }
 
 function* getFlows(next){
@@ -195,6 +195,8 @@ function * addTrigger(next){
       response.id = updateResponse.id;
       response.name = flow.name || '';
     }
+  } else {
+    this.throw('Not found', 400);
   }
 
   this.body = response;
