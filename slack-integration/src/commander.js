@@ -176,7 +176,7 @@ function _list(tileType, bot, message, params) {
         var replyMsg = formatter.formatTileList(tiles, {
           title: tileType
         });
-        bot.replyPubliv(message, replyMsg);
+        bot.replyPublic(message, replyMsg);
       } else {
         bot.replyPublic(message, `No ${tileType} found`);
       }
