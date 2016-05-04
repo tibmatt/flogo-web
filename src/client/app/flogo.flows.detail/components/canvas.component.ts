@@ -1173,6 +1173,7 @@ export class FlogoCanvasComponent {
 
     let task = this.tasks[ _.get( data, 'node.taskID', '' ) ];
     let node = this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
+    let _diagram = this.diagram;
 
     // TODO
     //  refine confirmation
@@ -1180,6 +1181,52 @@ export class FlogoCanvasComponent {
     if ( node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task) {
       this._flogoModal.confirm(`Are you sure to delete task?`).then((res) => {
         if(res) {
+
+          // clear details panel, if the selected activity is deleted
+          // verify if should jump back to detail page before sending delete message
+          let _shouldGoBack = false;
+          let parsedURL = location.pathname.split( 'task/' );
+          if ( parsedURL.length === 2 && _.isString( parsedURL[ 1 ] ) ) {
+
+            let currentTaskID = parsedURL[ 1 ];
+            let deletingTaskID = _.get( data, 'node.taskID', '' );
+
+            // if the current task ID in the URL is the deleting task, or
+            // if the deleting task has branches or itself is branch, and the current task is in one of the branches
+            // navigate to the flow default view
+            if ( currentTaskID === deletingTaskID || // if the current task ID in the URL is the deleting task
+
+              // if the deleting task has branches or itself is branch, and the current task is in one of the branches
+              ((_.some( _.get( data, 'node.children', [] ), ( nodeId : string )=> {
+
+                // try to find children of NODE_BRANCH type
+                return _diagram.nodes[ nodeId ].type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH;
+
+              } ) || _.get( data, 'node.type' ) === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH)
+              && (function isTaskIsChildOf( taskID : string, parentNode : any, isInBranch = false ) : boolean {
+
+                // traversal the downstream task
+                let children = _.get( parentNode, 'children', [] );
+
+                if ( parentNode.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
+                  isInBranch = true;
+                }
+
+                if ( taskID === _.get( parentNode, 'taskID' ) ) {
+                  return isInBranch; // if in branch, then should go back, otherwise ignore
+                } else if ( children.length === 0 ) { // no child
+                  return false;
+                } else { // resursive call to the next level
+                  return _.some( children, ( childID : string )=> {
+                    return isTaskIsChildOf( taskID, _diagram.nodes[ childID ], isInBranch );
+                  } );
+                }
+
+              }( currentTaskID, data.node ))) ) {
+              _shouldGoBack = true;
+            }
+          }
+
           this._postService.publish(
               _.assign(
                   {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
@@ -1193,14 +1240,12 @@ export class FlogoCanvasComponent {
                       _.assign( this.diagram, diagram );
                       this._updateFlow( this._flow );
                       this._isDiagramEdited = true;
-                      // clear details panel
-                      this._router.navigate(
-                          [
-                            'FlogoFlowsDetailTaskDetail',
-                            { id : null}
-                          ]
-                      )
 
+                      if (_shouldGoBack) {
+                        this._router.navigate( [
+                          'FlogoFlowsDetailDefault'
+                        ] );
+                      }
                     }
                   }
               )

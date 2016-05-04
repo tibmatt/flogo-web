@@ -429,12 +429,18 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             }
 
             d3.selectAll( `.${CLS.diagramNodeStatusSelected}` )
-              .classed( CLS.diagramNodeStatusSelected, false );
+              .classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+                _.set(nodeInfo, '__status.isSelected', false);
+                return false;
+              } );
             d3.selectAll( `.${CLS.diagramRowStatusSelected}` )
               .classed( CLS.diagramRowStatusSelected, false );
 
             d3.select( this )
-              .classed( CLS.diagramNodeStatusSelected, true );
+              .classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+                _.set(nodeInfo, '__status.isSelected', true);
+                return true;
+              } );
 
             if ( d.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
               d3.select( this.parentElement )
@@ -556,7 +562,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           // unset whatever status should not be kept once the task is changed.
           if ( previousID !== nodeInfo.taskID ) {
-            thisNode.classed( CLS.diagramNodeStatusSelected, false );
+            // persist node selected status
+            thisNode.classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+              return _.get( nodeInfo, '__status.isSelected', false );
+            } );
           }
 
           return nodeInfo.taskID || -1
