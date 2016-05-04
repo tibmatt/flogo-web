@@ -1,6 +1,7 @@
 import {config} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
-import {isJson, flogoIDEncode, flogoIDDecode, flogoGenTaskID} from '../../common/utils';
+import {isJson, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
+import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE} from '../../common/constants';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
@@ -65,12 +66,21 @@ function filterFlows(query){
       });
       return allFlows;
     });
-
 }
 
 function createFlow(flowObj){
   return new Promise((resolve, reject)=>{
     _dbService.create(flowObj).then((response)=>{
+      resolve(response);
+    }).catch((err)=>{
+      reject(err);
+    });
+  });
+}
+
+function updateFlow(flowObj){
+  return new Promise((resolve, reject)=>{
+    _dbService.update(flowObj).then((response)=>{
       resolve(response);
     }).catch((err)=>{
       reject(err);
@@ -145,9 +155,49 @@ function* deleteFlows(next){
 }
 
 function * addTrigger(next){
-  console.log("addTrigger");
-  this.body = 'addTrigger';
-  yield next;
+  //TODO validate this query is json
+  var data = _.assign({},this.request.body || {}, this.query);
+  let triggerId = flogoGenTaskID();
+
+  let trigger = yield _getTriggerByName(data.name);
+  if(trigger) {
+    trigger = _activitySchemaToTrigger(trigger.schema);
+  }
+  let flow = yield _getFlowById(data.flowId);
+
+
+  let response = {status : 400};
+  if(flow && trigger) {
+    var nodeID = genNodeID();
+    flow.paths = _.assign({}, {root:{is:nodeID}});
+
+    flow.paths['nodes'] = flow.paths['nodes'] || {};
+    flow.paths['nodes'][nodeID] = {
+      id: nodeID,
+      taskID: triggerId,
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
+      children: [],
+      parents: []
+    };
+
+
+    // attach the trigger to the flow
+    trigger.id = triggerId;
+    let items = {};
+    items[triggerId] = trigger;
+    flow["items"] = items;
+
+
+    let updateResponse = yield updateFlow(flow);
+
+    if(updateResponse&&updateResponse.ok && updateResponse.ok == true) {
+      response.status = 200;
+      response.id = updateResponse.id;
+      response.name = flow.name || '';
+    }
+  }
+
+  this.body = response;
 }
 
 function * addActivity(next){
@@ -155,3 +205,73 @@ function * addActivity(next){
   this.body = 'addActivity';
   yield next;
 }
+
+/**
+ *
+ * @param triggerName: string
+ * @returns {*}
+ */
+function _getTriggerByName(triggerName) {
+  let _dbTrigger = new DBService(config.triggers.db);
+  let trigger = triggerName;
+
+  return new Promise(function (resolve, reject) {
+    _dbTrigger.db
+      .query(function(doc, emit) {emit(doc._id);}, {key:trigger, include_docs:true})
+      .then(function (response) {
+        let rows = response&&response.rows||[];
+        let doc = rows.length > 0 ? rows[0].doc : null;
+        resolve(doc);
+
+      }).catch(function (err) {
+      reject(err);
+    });
+  });
+}
+
+
+function _activitySchemaToTrigger(schema) {
+  return {
+    type: FLOGO_TASK_TYPE.TASK_ROOT,
+    activityType: _.get(schema, 'name', ''),
+    name: _.get(schema, 'name', ''),
+    version: _.get(schema, 'version', ''),
+    title: _.get(schema, 'title', ''),
+    description: _.get(schema, 'description', ''),
+    settings: _.get(schema, 'settings', ''),
+    outputs: _.get(schema, 'outputs', ''),
+    endpoint: { settings: _.get(schema, 'endpoint.settings', '') }
+  }
+}
+
+/**
+ *
+ * @param id: string
+ * @returns {*}
+ */
+function _getFlowById(id) {
+
+  let options = {
+    include_docs: true,
+    startKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}`,
+    endKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}\uffff`
+  };
+
+  // TODO:  replace with a persistent query: https://pouchdb.com/guides/queries.html
+  return _dbService.db
+    .query(function(doc, emit) { emit(doc.name);  }, options)
+    .then((response) => {
+      let flow = null;
+      let rows = response&&response.rows||[];
+
+      rows.forEach((item)=>{
+        // if this item's tabel is FLOW
+        if(item&&item.doc&&item.doc.$table === FLOW && item.doc._id === id){
+          flow = item.doc;
+        }
+      });
+
+      return flow;
+    });
+}
+

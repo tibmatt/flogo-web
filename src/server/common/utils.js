@@ -1,5 +1,8 @@
 import path from 'path';
 import fs from 'fs';
+import btoa from 'btoa';
+import performanceNow from "performance-now";
+import _ from 'lodash';
 
 export function isExisted(testedPath){
   try {
@@ -71,3 +74,15 @@ export function flogoGenTaskID() {
   //  generate a more meaningful task ID in string format
   return flogoIDEncode( '' + (Date.now() >>> 1) );
 }
+
+export function genNodeID()  {
+  let id = '';
+
+  if ( performanceNow && _.isFunction( performanceNow ) ) {
+    id = `FlogoFlowDiagramNode::${Date.now()}::${performanceNow()}`;
+  } else {
+    id = `FlogoFlowDiagramNode::${Date.now()}}`;
+  }
+
+  return flogoIDEncode( id );
+};
