@@ -273,7 +273,7 @@ export class FlogoCanvasComponent {
 
   private _runFromRoot() {
     // The inital data to start the process from trigger
-    let initData = _.get( FLOGO_TASK_TYPE.TASK_ROOT, '__props.initData' );
+    let initData = _.get( this.tasks[this.diagram.nodes[this.diagram.root.is].taskID], '__props.initData' );
 
     if ( _.isEmpty( initData ) ) {
       this._runFromTrigger();
