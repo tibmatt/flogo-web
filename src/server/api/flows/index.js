@@ -12,6 +12,15 @@ let FLOW = 'flows';
 let DELIMITER = ":";
 let DEFAULT_USER_ID = 'flogoweb-admin';
 
+const ERROR_TRIGGER_NOT_FOUND  = 'TRIGGER_NOT_FOUND';
+const ERROR_ACTIVITY_NOT_FOUND = 'ACTIVITY_NOT_FOUND';
+const ERROR_FLOW_NOT_FOUND     = 'FLOW_NOT_FOUND';
+const ERROR_MISSING_TRIGGER    = 'MISSING_TRIGGER';
+const ERROR_WRITING_DATABASE   = 'ERROR_WRITING_DATABASE';
+const ERROR_CODE_BADINPUT      = 400;
+const ERROR_CODE_SERVERERROR   = 500;
+
+
 function getAllFlows(){
   let options = {
     include_docs: true,
@@ -160,10 +169,10 @@ function * addTrigger(next){
   var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
 
   let trigger = yield _getTriggerByName(params.name);
-  if(!trigger) { this.throw('Trigger Not found', 400); }
+  if(!trigger) { this.throw(ERROR_CODE_BADINPUT,ERROR_TRIGGER_NOT_FOUND, { details: { type:ERROR_TRIGGER_NOT_FOUND, message:ERROR_TRIGGER_NOT_FOUND}} ); }
 
   let flow = yield _getFlowById(params.flowId);
-  if(!flow) { this.throw('Flow Not found', 400); }
+  if(!flow) { this.throw(ERROR_CODE_BADINPUT, ERROR_FLOW_NOT_FOUND, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} ); }
 
   trigger = _activitySchemaToTrigger(trigger.schema);
   flow = flowUtils.addTriggerToFlow(flow, trigger);
@@ -174,6 +183,8 @@ function * addTrigger(next){
      response.status = 200;
      response.id = res.id;
      response.name = flow.name || '';
+  } else {
+    this.throw(ERROR_CODE_SERVERERROR, ERROR_WRITING_DATABASE, {details:{ type:ERROR_WRITING_DATABASE, message:ERROR_WRITING_DATABASE}});
   }
 
   this.body = response;
@@ -184,14 +195,17 @@ function * addActivity(next){
   var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
 
   let activity = yield _getActivityByName(params.name);
-  if(!activity) { this.throw('Activity not found', 400) };
+  if(!activity) { this.throw(ERROR_CODE_BADINPUT, ERROR_ACTIVITY_NOT_FOUND, { details: { type:ERROR_ACTIVITY_NOT_FOUND, message:ERROR_ACTIVITY_NOT_FOUND}} );};
 
   let flow = yield _getFlowById(params.flowId);
-  if(!flow) { this.throw('Flow not found', 400); }
+  if(!flow) { this.throw(ERROR_CODE_BADINPUT, ERROR_FLOW_NOT_FOUND, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} ); }
 
 
 
   activity = _activitySchemaToTask(activity.schema);
+  if(!flowUtils.findNodeNotChildren(flow)) {
+    this.throw(ERROR_CODE_BADINPUT, ERROR_MISSING_TRIGGER, { details:{ type:ERROR_MISSING_TRIGGER, message:ERROR_MISSING_TRIGGER}} );
+  }
   flow = flowUtils.addActivityToFlow(flow, activity);
 
   let res = yield updateFlow(flow);
@@ -201,7 +215,7 @@ function * addActivity(next){
     response.id = res.id;
     response.name = flow.name || '';
   }else {
-    this.throw('Can not save to database', 500);
+    this.throw(ERROR_CODE_SERVERERROR, ERROR_WRITING_DATABASE, { details: { type:ERROR_WRITING_DATABASE, message:ERROR_WRITING_DATABASE} } );
   }
 
   this.body = response;
