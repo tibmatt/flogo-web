@@ -189,6 +189,8 @@ function * addActivity(next){
   let flow = yield _getFlowById(params.flowId);
   if(!flow) { this.throw('Flow not found', 400); }
 
+
+
   activity = _activitySchemaToTask(activity.schema);
   flow = flowUtils.addActivityToFlow(flow, activity);
 
@@ -198,9 +200,11 @@ function * addActivity(next){
     response.status = 200;
     response.id = res.id;
     response.name = flow.name || '';
+  }else {
+    this.throw('Can not save to database', 500);
   }
 
-  this.body = activity;
+  this.body = response;
   yield next;
 }
 
@@ -266,6 +270,13 @@ function _activitySchemaToTrigger(schema) {
   }
 }
 
+function _isRequiredConfiguration(schema) {
+  var inputs = _.get(schema, 'inputs', []);
+  var index =  _.findIndex(inputs, function (input) {return input.required == true; } );
+
+  return (index !== -1);
+}
+
 // mapping from schema.json of activity to the task can be used in flow.json
 function _activitySchemaToTask(schema) {
 
@@ -279,8 +290,15 @@ function _activitySchemaToTask(schema) {
     attributes: {
       inputs: _.get(schema, 'inputs', []),
       outputs: _.get(schema, 'outputs', [])
+    },
+    __props: {
+      warnings:[]
     }
   };
+
+  if(_isRequiredConfiguration(schema)) {
+    task.__props.warnings.push({msg:"Configure Required"});
+  }
 
   _.each(
     task.attributes.inputs, (input) => {
