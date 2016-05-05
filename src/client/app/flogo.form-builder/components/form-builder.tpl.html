@@ -57,6 +57,7 @@
     <div *ngIf="_context.isTrigger" class="flogo-common-edit-panel__container">
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.settings.length">Settings</h3>
       <div *ngFor="#item of _attributesTrigger.settings" class="">
+
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input')"  [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
@@ -64,10 +65,24 @@
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
           <flogo-form-builder-fields-number [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldTextArea'">
+          <flogo-form-builder-fields-textarea [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+        </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
+          <flogo-form-builder-fields-params [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
+        </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldRadio'">
+          <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
+        </div>
+
       </div>
 
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.endpointSettings.length">End point</h3>
       <div *ngFor="#item of _attributesTrigger.endpointSettings" class="">
+
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
@@ -75,10 +90,24 @@
         <div *ngIf="getControlByType(item.type).control == 'FieldNumber'">
           <flogo-form-builder-fields-number [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
         </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldTextArea'">
+          <flogo-form-builder-fields-textarea [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
+        </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
+          <flogo-form-builder-fields-params [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
+        </div>
+
+        <div *ngIf="getControlByType(item.type).control == 'FieldRadio'">
+          <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
+        </div>
+
       </div>
 
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributesTrigger.outputs.length">Outputs</h3>
       <div *ngFor="#item of _attributesTrigger.outputs" class="">
+
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'output')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
@@ -95,6 +124,10 @@
           <flogo-form-builder-fields-params [info]="getTriggerInfo(item, 'output')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
         </div>
 
+        <div *ngIf="getControlByType(item.type).control == 'FieldRadio'">
+          <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'output')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
+        </div>
+
       </div>
 
     </div>
@@ -103,6 +136,7 @@
     <div *ngIf="_context.isTask" class="flogo-common-edit-panel__container">
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributes.inputs.length">Input Parameters</h3>
       <div *ngFor="#item of _attributes.inputs; #index = index" class="">
+
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getTaskInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>

@@ -7,7 +7,9 @@
 
   <input type="text" class="form-control tc-inputs" [class.error]="_hasError" [(ngModel)]="_info.value"
          [placeholder]="_info.placeholder"
-         (keyup)="onChangeField($event)" (change)="onValidate($event)">
+         (keyup)="onChangeField($event)"
+         (change)="onValidate($event)"
+         [readonly]="isReadOnly()">
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>
   </div>

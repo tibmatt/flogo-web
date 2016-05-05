@@ -8,14 +8,18 @@
     <div class="flogo-field-radio__option tc-radio-buttons tc-radio-button">
       <input type="radio" [name]="'booleanValue'+_index" value=true [id]="'trueValue'+_index"
              (change)="onChangeField($event)"
-             class="flogo-task-field__boolean_input" [attr.checked]="( _info.value === true || _info.value == 'true' )? true : null ">
+             class="flogo-task-field__boolean_input"
+             [attr.checked]="( _info.value === true || _info.value == 'true' )? true : null "
+             [readonly]="isReadOnly()">
       <label [attr.for]="'trueValue'+_index"><span class="flogo-task-field__boolean__label-text">True</span></label>
     </div>
 
     <div class="flogo-field-radio__option tc-radio-buttons tc-radio-button">
       <input type="radio" [name]="'booleanValue'+_index" value=false [id]="'falseValue'+_index"
              (change)="onChangeField($event)"
-             class="flogo-task-field__boolean_input" [attr.checked]="( _info.value === false || _info.value == 'false' )? true : null ">
+             class="flogo-task-field__boolean_input"
+             [attr.checked]="( _info.value === false || _info.value == 'false' )? true : null "
+             [readonly]="isReadOnly()">
       <label [attr.for]="'falseValue'+_index"><span class="flogo-task-field__boolean__label-text">False</span></label>
 
     </div>
