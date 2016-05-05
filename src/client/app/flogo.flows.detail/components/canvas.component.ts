@@ -276,7 +276,7 @@ export class FlogoCanvasComponent {
     let initData = _.get( this.tasks[this.diagram.nodes[this.diagram.root.is].taskID], '__props.initData' );
 
     if ( _.isEmpty( initData ) ) {
-      this._runFromTrigger();
+      return this._runFromTrigger();
     } else {
       // preprocessing initial data
       initData = _( initData )
@@ -297,7 +297,7 @@ export class FlogoCanvasComponent {
             return outItem;
           } );
 
-      this._runFromTrigger( initData );
+      return this._runFromTrigger( initData );
     }
   }
 
@@ -1139,7 +1139,31 @@ export class FlogoCanvasComponent {
   }
   private _runFromTriggerinTile(data: any, envolope: any) {
     console.group('Run from Trigger');
-    this._runFromRoot();
+
+    this._runFromRoot().then((res) => {
+      var currentStep = this._getCurrentState( data.taskId );
+      var currentTask = _.assign( {}, _.cloneDeep( this.tasks[ data.taskId ] ) );
+      var context = this._getCurrentContext( data.taskId );
+
+      this._postService.publish(
+          _.assign(
+              {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                data : _.assign( {},
+                    data,
+                    { task : currentTask },
+                    { step : currentStep },
+                    { context : context }
+                )
+              }
+          ) );
+    })
+        .catch(
+        (err : any )=> {
+          console.error( err );
+          return err;
+        }
+    );
+
     console.groupEnd();
   }
 
