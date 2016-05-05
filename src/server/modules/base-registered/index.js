@@ -63,6 +63,8 @@ export class BaseRegistered{
     // read the package.json template, will use this template to generate package.json
     let data = fs.readFileSync(this._packageJSONTplFilePath, {"encoding": "utf8"});
     this.packageJSONTemplate = JSON.parse(data);
+
+    this._where = [];
     //
 
     // start watch files/folder changes
@@ -229,15 +231,11 @@ export class BaseRegistered{
           //console.log("=====dir", dir);
           let itemPath = path.join(dirPath, dir);
           //console.log("itemPath: ", itemPath);
+          let where = config[dir]&&config[dir].path? config[dir].path: "file://"+itemPath;
 
           // for test, we don't need to install all the triggers to engine. User can decide which tigger want to be installed
           if(config[dir]&&!config[dir].ignore){
-            let path = config[dir].path;
-            if(path){
-              this.installToEngine(this._options.type, path);
-            }else{
-              this.installToEngine(this._options.type, "file://"+itemPath);
-            }
+            this.installToEngine(this._options.type, where);
           }
 
           let design_package_json=null;
@@ -260,6 +258,7 @@ export class BaseRegistered{
             let designPackageJSONData = JSON.parse(data);
             if(designPackageJSONData.name){
               packageJSON.dependencies[designPackageJSONData.name] = path.join(value);
+              this._where[designPackageJSONData.name] = where;
             }
           }
 
@@ -303,6 +302,7 @@ export class BaseRegistered{
 
           let item = {
             _id: id,
+            'where': this._where[key],
             'name': key,
             'version': packageJSON.version,
             'description': packageJSON.description,
@@ -356,7 +356,7 @@ export class BaseRegistered{
             }
           });
 
-          console.log("@@@@@@@@@[items]: ", items);
+          //console.log("@@@@@@@@@[items]: ", items);
 
           let PromiseAll = [];
 
