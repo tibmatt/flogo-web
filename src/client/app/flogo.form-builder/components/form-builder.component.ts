@@ -30,9 +30,7 @@ export class FlogoFormBuilderComponent{
   _attributes:any;
   _hasChanges:boolean = false;
   _attributesOriginal:any;
-  _attributesTriggerOriginal:any;
   _fieldsErrors:string[];
-  _attributesTrigger:any;
   _branchConfigs:any[]; // force the fields update by taking the advantage of ngFor
 
   constructor(private _postService: PostService) {
@@ -42,8 +40,7 @@ export class FlogoFormBuilderComponent{
 
   private _initSubscribe() {
     this._subscriptions = [];
-
-    let subs :any[] = [];
+    //let subs :any[] = [];
 
     _.each(
       (subs:any, sub:any) => {
@@ -65,13 +62,22 @@ export class FlogoFormBuilderComponent{
   }
 
   _saveActivityChangesToFlow() {
-    var warnings = this.verifyRequiredFields(this._task);
 
     var state = {
       taskId: this._task.id,
-      inputs: this._getCurrentTaskState(this._attributes.inputs),
-      warnings: warnings
+      warnings: []
     };
+
+    if(this._context.isTask) {
+      state['inputs'] = this._getCurrentTaskState(this._attributes.inputs);
+      state['warnings'] = this.verifyRequiredFields(this._task);
+    }
+
+    if(this._context.isTrigger) {
+      state['endpointSettings'] = this._getCurrentTaskState(this._attributes.endpointSettings || []);
+      state['outputs'] = this._getCurrentTaskState(this._attributes.outputs || []);
+      state['settings'] = this._getCurrentTaskState(this._attributes.settings || []);
+    }
 
     this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
       data: state,
@@ -83,13 +89,21 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  _saveTriggerChangesToFlow() {
+  getStructureFromAttributes(structure:string) {
+    var returnValue =  _.get(this._attributes, structure, []);
 
-    let currentOutputs = this._attributesTrigger.outputs;
+    return this._getArray(returnValue);
+  }
+
+  /*
+  _saveTriggerChangesToFlow() {
+    //let currentOutputs = this._attributesTrigger.outputs;
 
     let state = {
       taskId: this._task.id,
-      outputs: currentOutputs
+      endpointSettings: this._getCurrentTaskState(this._attributes.endpointSettings),
+      outputs: this._getCurrentTaskState(this._attributes.outputs),
+      settings: this._getCurrentTaskState(this._attributes.settings)
     };
 
     this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
@@ -98,8 +112,8 @@ export class FlogoFormBuilderComponent{
         this._hasChanges  = false;
       }
     }));
-
   }
+  */
 
   _saveBranchChangesToFlow() {
     let branchInfo = this._branchConfigs[ 0 ];
@@ -144,37 +158,16 @@ export class FlogoFormBuilderComponent{
       }
     });
 
-    // handle change field input fields
-    this._fieldObserver.filter((param:any) => {
-      return param.message == 'change-field' && param.payload.isTrigger == false  && param.payload.direction == 'input';
-    }).
-    subscribe((param:any) => {
-        this._updateAttributeByUserChanges(this._attributes.inputs, param.payload);
-    });
-
-
-    // handle change field output fields
-    this._fieldObserver.filter((param:any) => {
-      return param.message == 'change-field' && param.payload.isTrigger == false  && param.payload.direction == 'output';
-    }).
-    subscribe((param:any) => {
-      this._updateAttributeByUserChanges(this._attributes.outputs, param.payload);
-    });
-
     // when some field changes
     this._fieldObserver.filter((param:any) => {
       return param.message == 'change-field';
     }).
     subscribe((param:any) => {
       this._hasChanges = true;
-    });
 
-    // handle outputs changes of trigger
-    this._fieldObserver.filter((param:any) => {
-      return param.message == 'change-field' && param.payload.isTrigger && param.payload.direction === 'output';
-    }).
-    subscribe((param:any) => {
-      this._updateAttributeByUserChanges(this._attributesTrigger.outputs, param.payload);
+      if(param.payload.isTask || param.payload.isTrigger) {
+          this._updateAttributeByUserChanges(_.get(this._attributes,param.payload.structure,[]), param.payload);
+      }
     });
 
     // handle the change of condition of branch
@@ -187,6 +180,7 @@ export class FlogoFormBuilderComponent{
   }
 
   _updateAttributeByUserChanges(attributes:any, changedObject:any) {
+
     var item = _.find(attributes, (field:any) => {
       return field.name === changedObject.name;
     });
@@ -194,6 +188,7 @@ export class FlogoFormBuilderComponent{
     if(item) {
       item.value = changedObject.value
     }
+
   }
 
   ngOnChanges() {
@@ -245,17 +240,17 @@ export class FlogoFormBuilderComponent{
 
 
     if(this._context.isTrigger) {
-      var attributesTrigger : any = {};
+      var attributes : any = {};
       var task = this._task || {};
 
-      attributesTrigger['endpointSettings'] = ((task['endpoint'] || {})['settings']) || [];
-
+      attributes['endpointSettings'] =  this._getArray( _.get(task,'endpoint.settings',[])); // ((task['endpoint'] || {})['settings']) || [];
       // override trigger outputs attributes if there is internal values
-      attributesTrigger[ 'outputs' ] = _.get( task, '__props.initData', task[ 'outputs' ] || [] );
-      attributesTrigger['settings'] = task['settings'] || [];
+      //attributesTrigger[ 'outputs' ] = _.get( task, '__props.initData', task[ 'outputs' ] || [] );
+      attributes[ 'outputs' ] = this._getArray( _.get( task, 'outputs',  [] ));
+      attributes['settings'] = this._getArray(task['settings'] || []);
 
-      this._attributesTriggerOriginal = _.cloneDeep(attributesTrigger);
-      this._setTriggerEnvironment(attributesTrigger);
+      this._attributesOriginal = _.cloneDeep(attributes);
+      this._setTriggerEnvironment(attributes);
       return;
     }
 
@@ -288,8 +283,7 @@ export class FlogoFormBuilderComponent{
   }
 
   _setTriggerEnvironment(attributes:any) {
-    this._attributesTrigger = attributes;
-
+    this._attributes = attributes;
   }
 
   _setTaskEnvironment(attributes:any) {
@@ -372,12 +366,14 @@ export class FlogoFormBuilderComponent{
       required:   true,
       placeholder: '',
       isBranch:   true,
+      isTrigger: false,
+      isTask: false
     };
 
     return info;
   }
 
-  getTriggerInfo(input:any, direction?:string) {
+  getTriggerInfo(input:any, direction:string, structure:string) {
     var info = {
       name:       input.name,
       type:       input.type,
@@ -389,9 +385,11 @@ export class FlogoFormBuilderComponent{
       validationMessage: input.validationMessage,
       required:   input.required || false,
       placeholder: input.placeholder || '',
+      isTask: false,
       isTrigger:  true,
       isBranch:   false,
-      direction: direction
+      direction: direction || '',
+      structure: structure || ''
     };
 
 
@@ -399,7 +397,7 @@ export class FlogoFormBuilderComponent{
   }
 
 
-  getTaskInfo(input:any, direction:any) {
+  getTaskInfo(input:any, direction:string, structure:string) {
     var info = {
       name:       input.name,
       type:       input.type,
@@ -413,7 +411,9 @@ export class FlogoFormBuilderComponent{
       placeholder: input.placeholder || '',
       isTrigger:  false,
       isBranch:   false,
-      direction: direction
+      isTask: true,
+      direction: direction,
+      structure: structure
     };
 
     if(!this._context.isTrigger) {
@@ -453,6 +453,15 @@ export class FlogoFormBuilderComponent{
     return resultValue ? resultValue.value : info.value;
   }
 
+  _getArray(obj:any) {
+
+    if(!Array.isArray(obj)) {
+      return [];
+    }
+
+    return obj;
+  }
+
   runFromThisTile() {
     // return the id of the task directly, this id is encoded using `flogoIDEncode`, should be handled by subscribers
     var taskId   = this._task.id;
@@ -478,6 +487,8 @@ export class FlogoFormBuilderComponent{
   _getCurrentTaskState(items:any[]) {
        var result :any = {};
 
+      items = this._getArray(items);
+
        items.forEach((item:any) => {
          result[item.name] = item.value || null;
         });
@@ -487,7 +498,7 @@ export class FlogoFormBuilderComponent{
 
   cancelEdit(event:any) {
     if(this._context.isTrigger) {
-      this._setTriggerEnvironment(_.cloneDeep(this._attributesTriggerOriginal));
+      this._setTriggerEnvironment(_.cloneDeep(this._attributesOriginal));
     }
 
     if(this._context.isTask){
@@ -504,11 +515,9 @@ export class FlogoFormBuilderComponent{
   }
 
   private _saveChangesToFlow() {
-    if ( this._context.isTask ) {
+    if ( this._context.isTask || this._context.isTrigger) {
       this._saveActivityChangesToFlow();
-    } else if ( this._context.isTrigger ) {
-      this._saveTriggerChangesToFlow();
-    } else if ( this._context.isBranch ) {
+    }  else if ( this._context.isBranch ) {
       this._saveBranchChangesToFlow();
     }
   }

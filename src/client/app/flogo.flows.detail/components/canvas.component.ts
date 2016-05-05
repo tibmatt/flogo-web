@@ -1465,24 +1465,45 @@ export class FlogoCanvasComponent {
       .filter(task => !!task);
   }
 
+  private _updateAttributesChanges(task:any,changedInputs:any, structure:any) {
+
+    for(var name in changedInputs) {
+      var attributes = _.get(task,structure, []);
+
+      attributes.forEach((input)=> {
+        if(input.name === name) {
+          input['value'] =  changedInputs[name];
+        }
+      });
+    }
+
+  }
+
   private _taskDetailsChanged(data:any, envelope:any) {
     console.group('Save task details to flow');
     var task = this.tasks[data.taskId];
 
     if (task.type === FLOGO_TASK_TYPE.TASK) { // TODO handle more activity task types in the future
-      var changedInputs = data.inputs || {};
-
       // set/unset the warnings in the tile
       _.set( task, '__props.warnings', data.warnings );
 
+      var changedInputs = data.inputs || {};
+      this._updateAttributesChanges(task, changedInputs, 'attributes.inputs');
+
+      /*
       for(var name in changedInputs) {
         task.attributes.inputs.forEach((input)=> {
           if(input.name === name) {
             input.value =  changedInputs[name];
           }
         });
-      }
+       }
+      */
     } else if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
+
+      this._updateAttributesChanges(task, data.settings, 'settings');
+      this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
+      this._updateAttributesChanges(task, data.outputs, 'endpoint.outputs');
 
       // ensure the persence of the internal properties
       task.__props = task.__props || {};
@@ -1503,6 +1524,7 @@ export class FlogoCanvasComponent {
 
     console.groupEnd();
   }
+
 
 
 }
