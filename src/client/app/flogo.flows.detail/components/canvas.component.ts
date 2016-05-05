@@ -140,6 +140,9 @@ export class FlogoCanvasComponent {
 
     //  get the flow by ID
     let id = '' + this._routerParams.params[ 'id' ];
+    this._id = id;
+
+    this.downloadLink = `/v1/api/flows/${this._id}/build`;
 
     try {
       id = flogoIDDecode( id );

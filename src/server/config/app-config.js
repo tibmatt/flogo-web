@@ -55,11 +55,78 @@ let config = {
     defaultPath: "../../submodules/flogo-contrib/model",
     contribPath: "../../contrib/model"
   },
-  engine: {
+  testEngine: {
     host: "localhost",
     port: "8080",
     path: "./",
-    name: "defaultengine",
+    name: "test-engine",
+    triggers: {
+      "tibco-mqtt": {
+        "name": "tibco-mqtt",
+        "settings": {
+          "topic": "flogo/#",
+          "broker": "tcp://192.168.1.12:1883",
+          "id": "flogoEngine",
+          "user": "",
+          "password": "",
+          "store": "",
+          "qos": "0",
+          "cleansess": "false"
+        },
+        "endpoints": null
+      },
+      "tibco-rest": {
+        "name": "tibco-rest",
+        "settings": {
+          "port": "9990"
+        },
+        "endpoints": null
+      },
+      "tibco-timer": {
+        "name": "tibco-timer",
+        "settings": {
+        },
+        "endpoints": null
+      }
+    },
+    config: {
+      "loglevel": "DEBUG",
+      "flowRunner": {
+        "type": "pooled",
+        "pooled": {
+          "numWorkers": 5,
+          "workQueueSize": 50,
+          "maxStepCount": 32000
+        }
+      },
+      "services": [
+        {
+          "name": "stateRecorder",
+          "enabled": true,
+          "settings": {
+            "host": "localhost",
+            "port": "9190"
+          }
+        },
+        {
+          "name": "flowProvider",
+          "enabled": true
+        },
+        {
+          "name": "engineTester",
+          "enabled": true,
+          "settings": {
+            "port": "8080"
+          }
+        }
+      ]
+    }
+  },
+  buildEngine: {
+    host: "localhost",
+    port: "8081",
+    path: "./",
+    name: "build-engine",
     triggers: {
       "tibco-mqtt": {
         "name": "tibco-mqtt",

@@ -1,6 +1,8 @@
 import path from 'path';
 import fs from 'fs';
 
+import _ from 'lodash';
+
 import {config} from '../../config/app-config';
 import {isExisted} from '../../common/utils'
 
@@ -9,17 +11,18 @@ const execSync = require('child_process').execSync;
 const execFileSync = require('child_process').execFileSync;
 
 export class Engine {
-  constructor(){
+  constructor(options){
     // Get the path to engine
-    this.enginePath = path.join(config.rootPath, config.engine.path);
+    this.options = _.cloneDeep(options);
+    this.enginePath = path.join(config.rootPath, this.options.path);
     this.removeEngine();
     this.createEngine();
   }
 
   removeEngine(){
     try{
-      let port = config.engine.port;
-      let engineFolder = path.join(this.enginePath, config.engine.name);
+      let port = this.options.port;
+      let engineFolder = path.join(this.enginePath, this.options.name);
       // if engine is running stop it
       execSync(`lsof -i:${port} | grep node | awk '{print $2}' | xargs kill -9`);
       // remove the engine folder
@@ -35,7 +38,7 @@ export class Engine {
 
   createEngine(){
     try{
-      execSync(`flogo create ${config.engine.name}`, {cwd: this.enginePath});
+      execSync(`flogo create ${this.options.name}`, {cwd: this.enginePath});
     }catch (err){
       console.error("[Error]Engine->createEngine. Error: ", err);
       return false;
@@ -44,7 +47,7 @@ export class Engine {
 
   addActivity(activityPath){
     try{
-      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`flogo add activity ${activityPath}`);
       execSync(`flogo add activity ${activityPath}`, {cwd: defaultEnginePath});
       return true;
@@ -56,7 +59,7 @@ export class Engine {
 
   addTrigger(triggerPath){
     try{
-      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`flogo add trigger ${triggerPath}`);
       execSync(`flogo add trigger ${triggerPath}`, {cwd: defaultEnginePath});
       return true;
@@ -68,7 +71,7 @@ export class Engine {
 
   addModel(modelPath){
     try{
-      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`flogo add model ${modelPath}`);
       execSync(`flogo add model ${modelPath}`, {cwd: defaultEnginePath});
       return true;
@@ -80,8 +83,8 @@ export class Engine {
 
   build(){
     try{
-      let defaultEnginePath = path.join(this.enginePath, config.engine.name);
-      execSync(`flogo build`, {cwd: defaultEnginePath});
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
+      execSync(`flogo build -i`, {cwd: defaultEnginePath});
       return true;
     }catch (err){
       console.error("[Error]Engine->build. Error: ", err);
@@ -91,8 +94,8 @@ export class Engine {
 
   config(){
     // config config.json
-    let defaultEngineBinPath =  path.join(this.enginePath, config.engine.name, 'bin');
-    fs.writeFileSync(path.join(defaultEngineBinPath, 'config.json').toString(), JSON.stringify(config.engine.config, null, 2), {"encoding": "utf8"});
+    let defaultEngineBinPath =  path.join(this.enginePath, this.options.name, 'bin');
+    fs.writeFileSync(path.join(defaultEngineBinPath, 'config.json').toString(), JSON.stringify(this.options.config, null, 2), {"encoding": "utf8"});
 
     // config triggers.json
     let data = fs.readFileSync(path.join(defaultEngineBinPath, 'triggers.json'), {"encoding": "utf8"});
@@ -100,7 +103,7 @@ export class Engine {
     let triggersJSON = JSON.parse(data);
     //console.log(triggersJSON);
     let triggers = triggersJSON.triggers||[];
-    let triggersConfig = config.engine.triggers;
+    let triggersConfig = this.options.triggers;
     let newTriggers = [];
     let newTriggersJSON = {};
     //console.log("triggers: ", triggers);
@@ -119,9 +122,9 @@ export class Engine {
   start(){
     try{
       console.log("[info]start");
-      let defaultEngineBinPath =  path.join(this.enginePath, config.engine.name, 'bin');
+      let defaultEngineBinPath =  path.join(this.enginePath, this.options.name, 'bin');
       console.log("[info]defaultEngineBinPath: ", defaultEngineBinPath);
-      let command = "./"+config.engine.name+" &";
+      let command = "./"+this.options.name+" &";
       console.log("[info]command: ", command);
       exec(command, {cwd: defaultEngineBinPath});
 

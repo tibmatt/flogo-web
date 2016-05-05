@@ -112,6 +112,7 @@ export function flows(app, router){
   // }
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
+
 }
 
 function* getFlows(next){
