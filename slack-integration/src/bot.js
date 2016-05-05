@@ -51,12 +51,23 @@ module.exports = function (controller) {
       promise
         .then(res => bot.reply(message, `Added ${entity} "${entityName}" to flow "${res.flowName}"`))
         .catch(err => {
+          console.error(err);
           var msg = 'Oh no, something wen\'t wrong';
           if (err && err.code) {
-            if (err.code == flogo.ERRORS.NO_FLOW) {
-              msg = 'You have not created a flow yet';
-            } else if (err.code == flogo.ERRORS.NOT_FOUND) {
-              msg = `I didn't find ${isTrigger ? 'a' : 'an'} ${entity} named "${entityName}"`;
+
+            switch (err.code) {
+              case flogo.ERRORS.NO_FLOW:
+                msg = 'You have not created a flow yet';
+                break;
+              case flogo.ERRORS.FLOW_NOT_FOUND:
+                msg = `I cannot find the flow "${err.flowName}" anymore`;
+                break;
+              case flogo.ERRORS.MISSING_TRIGGER:
+                msg = `You need to add a trigger to ${err.flowName} before adding an activity`;
+                break;
+              default:
+                msg = `I didn't find ${isTrigger ? 'a' : 'an'} ${entity} named "${entityName}"`;
+                break;
             }
           }
           return bot.reply(message, msg);

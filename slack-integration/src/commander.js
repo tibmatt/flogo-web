@@ -2,6 +2,7 @@
 
 let flogo = require('./flogo');
 var formatter = require('./reply-formatter');
+var _ = require('lodash');
 
 const SLASH_COMMANDS = {
   MAIN: '/flogo',
@@ -123,12 +124,24 @@ function _addTile(bot, message, params) {
     .then(res => bot.replyPublic(message, `Added ${entity} "${entityName}" to flow "${res.flowName}"`))
     .catch(err => {
       var msg = 'Oh no, something wen\'t wrong';
+
       if (err && err.code) {
-        if (err.code == flogo.ERRORS.NO_FLOW) {
-          msg = 'You have not created a flow yet';
-        } else if (err.code == flogo.ERRORS.NOT_FOUND) {
-          msg = `I didn't find ${isTrigger ? 'a' : 'an'} ${entity} named "${entityName}"`;
+
+        switch (err.code) {
+          case flogo.ERRORS.NO_FLOW:
+            msg = 'You have not created a flow yet';
+            break;
+          case flogo.ERRORS.FLOW_NOT_FOUND:
+            msg = `The flow "${err.flowName}" is not found. It may have been deleted.`;
+            break;
+          case flogo.ERRORS.MISSING_TRIGGER:
+            msg = `You need to add a trigger to "${err.flowName}" before adding an activity`;
+            break;
+          default:
+            msg = `${_.capitalize(entity)} "${entityName}" not found`;
+            break;
         }
+
       }
       return bot.replyPrivate(message, msg);
     });

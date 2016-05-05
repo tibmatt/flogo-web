@@ -4,6 +4,8 @@ let Promise = require('bluebird');
 let request = require('request-promise').defaults({json: true});
 
 let ERRORS = require('./errors');
+let CLIENT_ERRORS = ERRORS.CLIENT_ERRORS;
+let SERVER_ERRORS = ERRORS.SERVER_ERRORS;
 
 let utils = require('./utils');
 
@@ -18,8 +20,8 @@ module.exports = {
   listFlows,
   listActivities,
   listTriggers,
-  _getLast,
-  ERRORS
+  getLast,
+  ERRORS: ERRORS.CLIENT_ERRORS
 };
 
 let state = {
@@ -77,7 +79,7 @@ function getFlow(flowName) {
       .catch(err => {
         let reason = err;
         if (err.statusCode == 400) {
-          reject({code: ERRORS.NOT_FOUND});
+          reject({code: CLIENT_ERRORS.NOT_FOUND});
         }
         reject(reason);
       });
@@ -97,21 +99,21 @@ function listTriggers() {
   return request(BASE_PATH + '/triggers')
 }
 
-/*-----------------------------------*/
-
-function _getLast() {
+function getLast() {
   if (state.lastCreated) {
     return Object.assign({}, state.lastCreated);
   }
   return null;
 }
 
+/*-----------------------------------*/
+
 function _addTile(type, name) {
   return new Promise((resolve, reject) => {
 
-    let lastFlow = _getLast();
+    let lastFlow = getLast();
     if(!lastFlow) {
-      return reject({code: ERRORS.NO_FLOW});
+      return reject({code: CLIENT_ERRORS.NO_FLOW});
     }
 
     request
@@ -129,7 +131,15 @@ function _addTile(type, name) {
       .catch(err => {
         let reason = err;
         if (err.statusCode == 400) {
-          reject({code: ERRORS.NOT_FOUND});
+          let data = err.error || {};
+          reason = {flowName: lastFlow.name};
+          if(data.type == SERVER_ERRORS.MISSING_TRIGGER) {
+            reason.code = CLIENT_ERRORS.MISSING_TRIGGER;
+          } else if (data.type == SERVER_ERRORS.FLOW_NOT_FOUND) {
+            reason.code = CLIENT_ERRORS.FLOW_NOT_FOUND;
+          } else {
+            reason.code = CLIENT_ERRORS.NOT_FOUND;
+          }
         }
         reject(reason);
       });
