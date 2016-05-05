@@ -397,6 +397,7 @@ export class FlogoCanvasComponent {
         ( err : any )=> {
           this._startingProcess = false;
           console.error( err );
+          throw err;
 
           return err;
         }
@@ -429,6 +430,9 @@ export class FlogoCanvasComponent {
       .catch(
         ( err : any )=> {
           console.error( err );
+          // TODO
+          //  more specific error message?
+          notification('Flow stopped on error.', 'error');
           return err;
         }
       );
@@ -487,14 +491,17 @@ export class FlogoCanvasComponent {
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
+                            notification('Flow is finished.', 'success', 3000);
                             done( timer, rsp );
                             break;
                           case '600':
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
+                            notification('Flow has been cancelled.', 'warning', 3000);
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
+                            notification('Flow is failed with error code 700.', 'error');
                             done( timer, rsp );
                             break;
                           case null :
@@ -654,6 +661,7 @@ export class FlogoCanvasComponent {
           ( err : any )=> {
             this._restartingProcess = false;
             console.error( err );
+            throw err;
 
             return err;
           }
