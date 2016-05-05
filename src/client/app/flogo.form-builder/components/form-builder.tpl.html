@@ -102,7 +102,7 @@
     <!-- TASK CONFIGURATION -->
     <div *ngIf="_context.isTask" class="flogo-common-edit-panel__container">
       <h3 class="flogo-common-edit-panel__legend" [hidden]="!_attributes.inputs.length">Input Parameters</h3>
-      <div *ngFor="#item of _attributes.inputs" class="">
+      <div *ngFor="#item of _attributes.inputs; #index = index" class="">
         <div *ngIf="getControlByType(item.type).control == 'FieldTextBox'">
           <flogo-form-builder-fields-textbox [info]="getTaskInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
         </div>
@@ -112,7 +112,7 @@
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldRadio'">
-          <flogo-form-builder-fields-radio [info]="getTaskInfo(item, 'input')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
+          <flogo-form-builder-fields-radio [info]="getTaskInfo(item, 'input')" [fieldObserver]="_fieldObserver" [index]="index" ></flogo-form-builder-fields-radio>
         </div>
 
         <div *ngIf="getControlByType(item.type).control == 'FieldTextArea'">

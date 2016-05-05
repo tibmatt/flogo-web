@@ -6,17 +6,17 @@
   </div>
 
     <div class="flogo-field-radio__option tc-radio-buttons tc-radio-button">
-      <input type="radio" name="booleanValue" value=true id="trueValue"
+      <input type="radio" [name]="'booleanValue'+_index" value=true [id]="'trueValue'+_index"
              (change)="onChangeField($event)"
              class="flogo-task-field__boolean_input" [attr.checked]="( _info.value === true || _info.value == 'true' )? true : null ">
-      <label for="trueValue"><span class="flogo-task-field__boolean__label-text">True</span></label>
+      <label [attr.for]="'trueValue'+_index"><span class="flogo-task-field__boolean__label-text">True</span></label>
     </div>
 
     <div class="flogo-field-radio__option tc-radio-buttons tc-radio-button">
-      <input type="radio" name="booleanValue" value=false id="falseValue"
+      <input type="radio" [name]="'booleanValue'+_index" value=false [id]="'falseValue'+_index"
              (change)="onChangeField($event)"
              class="flogo-task-field__boolean_input" [attr.checked]="( _info.value === false || _info.value == 'false' )? true : null ">
-      <label for="falseValue"><span class="flogo-task-field__boolean__label-text">False</span></label>
+      <label [attr.for]="'falseValue'+_index"><span class="flogo-task-field__boolean__label-text">False</span></label>
 
     </div>
 
