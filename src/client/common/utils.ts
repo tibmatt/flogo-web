@@ -126,7 +126,7 @@ export function activitySchemaToTrigger(schema: any) : any {
 
   let trigger:any = {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
-    activityType: _.get(schema, 'name', ''),
+    triggerType: _.get(schema, 'name', ''),
     name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
