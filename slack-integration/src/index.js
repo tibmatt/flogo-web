@@ -3,7 +3,12 @@
 require('./config');
 
 if (!process.env['SLACK_API_TOKEN']) {
-  console.log('Error: Specify token in environment');
+  console.log('Error: Specify token in environment SLACK_API_TOKEN');
+  process.exit(1);
+}
+
+if (!process.env['FLOGO_HOSTNAME']){
+  console.log('Error: Missing FLOGO_HOSTNAME');
   process.exit(1);
 }
 
