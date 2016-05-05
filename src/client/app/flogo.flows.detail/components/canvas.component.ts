@@ -1503,7 +1503,7 @@ export class FlogoCanvasComponent {
 
       this._updateAttributesChanges(task, data.settings, 'settings');
       this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
-      this._updateAttributesChanges(task, data.outputs, 'endpoint.outputs');
+      this._updateAttributesChanges(task, data.outputs, 'outputs');
 
       // ensure the persence of the internal properties
       task.__props = task.__props || {};

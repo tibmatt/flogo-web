@@ -28,6 +28,10 @@ export class FlogoFormBuilderFieldsBase{
   }
 
   isReadOnly() {
+    if(this._info.isTrigger) {
+      return false;
+    }
+
     return this._info.direction == 'output';
   }
 
