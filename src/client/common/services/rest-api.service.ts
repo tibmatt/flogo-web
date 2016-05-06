@@ -39,33 +39,107 @@ export class RESTAPIService {
                 state[ 'flowUri' ] = state[ 'flowUri' ].replace( pattern, `flows/${newFlowID}` );
               }
 
-              let body = JSON.stringify(
-                {
-                  'initialState': state,
-                  'interceptor': data
-                }
-              );
 
               let headers = new Headers(
                 {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
+                  'Accept' : 'application/json'
                 }
               );
 
-              let options = new RequestOptions({headers: headers});
+              let options = new RequestOptions( { headers : headers } );
 
-              return this.http.post(`${getEngineURL()}/flow/restart`, body, options)
+              return this.http.get( state[ 'flowUri' ], options )
                 .toPromise()
-                .then(
-                  rsp => {
-                    if (rsp.text()) {
-                      return rsp.json();
-                    } else {
-                      return rsp;
-                    }
+                .then( ( rsp : any ) => {
+                  if ( rsp.text() ) {
+                    return rsp.json();
+                  } else {
+                    return rsp;
                   }
-                );
+                } )
+                .then( ( flowInfo : any )=> {
+
+                  // process state info based on flowInfo
+                  let icptTaskIds = _.map( data.tasks, ( task : any )=> {
+                    return task.id
+                  } );
+
+                  let workQueue = _.get( state, 'workQueue', [] );
+                  let taskDatas = _.get( state, 'rootTaskEnv.taskDatas', [] );
+                  let linksInfo = _.get( flowInfo, 'rootTask.links', [] );
+
+                  let taskInPath = icptTaskIds.slice();
+                  let linksToGo = linksInfo.slice();
+                  let lastLinksToGoLength = linksToGo.length;
+
+                  // find all of the tasks that in the path of the given tasks to intercept.
+                  // once the linksToGo stay the same or empty, then finish
+                  while ( linksToGo.length ) {
+
+                    linksToGo = _.filter( linksToGo, ( link : any ) => {
+                      if ( taskInPath.indexOf( link.from ) !== -1 ) {
+
+                        // avoid duplications
+                        if ( taskInPath.indexOf( link.to ) === -1 ) {
+                          taskInPath.push( link.to );
+                        }
+
+                        return false;
+                      }
+
+                      return true;
+                    } );
+
+
+                    if ( lastLinksToGoLength === linksToGo.length ) {
+                      break;
+                    }
+
+                    lastLinksToGoLength = linksToGo.length;
+                  }
+
+                  // filter the tasks that not in the path
+                  workQueue = _.filter( workQueue, ( queueItem : any ) => {
+                    return taskInPath.indexOf( queueItem.taskID ) !== -1;
+                  } );
+
+                  // filter the tasks that not in the path
+                  taskDatas = _.filter( taskDatas, ( taskData : any ) => {
+                    return taskData.taskId === 1 || taskInPath.indexOf( taskData.taskId ) !== -1;
+                  } );
+
+                  _.set( state, 'workQueue', workQueue );
+                  _.set( state, 'rootTaskEnv.taskDatas', taskDatas );
+
+                  // restarting...
+                  let body = JSON.stringify(
+                    {
+                      'initialState' : state,
+                      'interceptor' : data
+                    }
+                  );
+
+                  let headers = new Headers(
+                    {
+                      'Content-Type' : 'application/json',
+                      'Accept' : 'application/json'
+                    }
+                  );
+
+                  let options = new RequestOptions( { headers : headers } );
+
+                  return this.http.post( `${getEngineURL()}/flow/restart`, body, options )
+                    .toPromise()
+                    .then(
+                      rsp => {
+                        if ( rsp.text() ) {
+                          return rsp.json();
+                        } else {
+                          return rsp;
+                        }
+                      }
+                    );
+                } );
             }
           );
       }
