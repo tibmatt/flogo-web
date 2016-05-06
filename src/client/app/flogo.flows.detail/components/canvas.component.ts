@@ -276,7 +276,7 @@ export class FlogoCanvasComponent {
 
   private _runFromRoot() {
     // The inital data to start the process from trigger
-    let initData = _.get( this.tasks[this.diagram.nodes[this.diagram.root.is].taskID], '__props.initData' );
+    let initData = _.get( this.tasks[this.diagram.nodes[this.diagram.root.is].taskID], '__props.outputs' );
 
     if ( _.isEmpty( initData ) ) {
       return this._runFromTrigger();
@@ -1508,7 +1508,17 @@ export class FlogoCanvasComponent {
       // ensure the persence of the internal properties
       task.__props = task.__props || {};
 
-      task.__props['initData'] = data.outputs;
+      // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
+      task.__props[ 'outputs' ] = _.map( _.get( task, 'outputs', [] ), ( output : any )=> {
+        let newValue = data.outputs[ output.name ];
+
+        // undefined is invalid default value, hence filter that out.
+        if ( output && !_.isUndefined( newValue ) ) {
+          output.value = newValue;
+        }
+
+        return output;
+      } );
     } else if ( task.type === FLOGO_TASK_TYPE.TASK_BRANCH ) { // branch
       task.condition = data.condition;
     }
