@@ -8,6 +8,19 @@
 
         <!-- PANEL TITLES -->
         <div  *ngIf="_task && (_context.isTask || _context.isTrigger)" [ngClass]="{trigger:_context.isTrigger, task: _context.isTask}">
+          <div class="flogo-common-edit-panel__head-read">
+            <span  class="flogo-common-edit-panel__head-read-icon"></span>
+            <div class="flogo-common-edit-panel__head-read-detail-wrapper">
+              <div  class="flogo-common-edit-panel__head-read-detail">
+                <!--<i class="fa fa-times flogo-common-edit-panel__head-read-detail-close" aria-hidden="true"></i>-->
+                <hgroup class="flogo-common-edit-panel__head-read-titles">
+                  <h3 [textContent]="_task.name"  class="flogo-common-edit-panel__head-read-title" [class.up]="_task.creator"></h3>
+                  <span *ngIf="_task.creator" [textContent]="'Created by ' + _task.creator"  class="flogo-common-edit-panel__head-read-creator"></span>
+                </hgroup>
+                <p [textContent]="_task.readMe || _task.description"  class="flogo-common-edit-panel__head-read-text"></p>
+              </div>
+            </div>
+          </div>
           <div class="flogo-common-edit-panel__head-titles">
             <h3 [(myContenteditable)]="_task.name" class="flogo-common-edit-panel__head-title" (myContenteditableChange)="changeTaskDetail($event, 'name')"></h3>
             <div class="flogo-common-edit-panel__head-subtitle" [(myContenteditable)]="_task.description" (myContenteditableChange)="changeTaskDetail($event, 'description')"></div>
