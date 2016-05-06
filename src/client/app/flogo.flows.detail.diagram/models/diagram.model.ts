@@ -587,7 +587,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     );
 
     // if no node is selected, unset the row selected class
-    if ( !_.some( nodes.selectAll( `.${CLS.diagramNodeStatusSelected}` )
+    if ( !_.some( d3.selectAll( `.${CLS.diagramNodeStatusSelected}` )
         .data(), ( nodesInfo : any ) => {
         return nodesInfo && (nodesInfo.type
           === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE
