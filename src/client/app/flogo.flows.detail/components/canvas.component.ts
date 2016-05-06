@@ -32,7 +32,7 @@ import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagra
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
-  attributeTypeToString
+  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID
 } from '../../../common/utils';
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
@@ -708,7 +708,7 @@ export class FlogoCanvasComponent {
 
     // generate trigger id when adding the trigger;
     //  TODO replace the task ID generation function?
-    let trigger = _.assign( {}, data.trigger, { id : flogoGenTaskID() } );
+    let trigger = _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
 
     this.tasks[ trigger.id ] = trigger;
 
@@ -771,7 +771,12 @@ export class FlogoCanvasComponent {
     let taskName = this.uniqueTaskName(data.task.name);
 
     // generate task id when adding the task
-    let task = _.assign({}, data.task, { id : flogoGenTaskID(), name: taskName });
+    let task = _.assign( {},
+      data.task,
+      {
+        id : flogoGenTaskID( this.tasks ),
+        name : taskName
+      } );
 
     this.tasks[ task.id ] = task;
 
@@ -1317,7 +1322,7 @@ export class FlogoCanvasComponent {
     //    here just creating a branch node with new branch info
 
     let branchInfo = {
-      id : flogoGenTaskID(),
+      id : flogoGenBranchID(),
       type : FLOGO_TASK_TYPE.TASK_BRANCH,
       condition : 'true'
     };

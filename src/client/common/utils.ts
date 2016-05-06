@@ -23,11 +23,42 @@ export function flogoIDDecode( encodedId : string ) : string {
   return atob( encodedId );
 }
 
-export function flogoGenTaskID() : string {
-  // shift the timestamp for avoiding overflow 32 bit system
+export function flogoGenTaskID( items? : any ) : string {
+  let taskID : string;
   // TODO
   //  generate a more meaningful task ID in string format
-  return flogoIDEncode( '' + (Date.now() >>> 1) );
+  if ( items ) {
+    let ids = _.keys( items );
+    let startPoint = 2; // taskID 1 is reserved for the rootTask
+
+    let taskIDs = _.map( _.filter( ids, ( id : string ) => {
+      return items[ id ].type === FLOGO_TASK_TYPE.TASK;
+    } ), ( id : string )=> {
+      return _[ 'toNumber' ]( flogoIDDecode( id ) );
+    } );
+
+    let currentMax = _.max( taskIDs );
+
+    if ( currentMax ) {
+      taskID = '' + ( currentMax + 1);
+    } else {
+      taskID = '' + startPoint;
+    }
+
+  } else {
+    // shift the timestamp for avoiding overflow 32 bit system
+    taskID = '' + (Date.now() >>> 1);
+  }
+
+  return flogoIDEncode( taskID );
+}
+
+export function flogoGenBranchID() : string {
+  return flogoIDEncode( `FloGo::Branch::${Date.now()}` );
+}
+
+export function flogoGenTriggerID() : string {
+  return flogoIDEncode( `FloGo::Trigger::${Date.now()}` );
 }
 
 /**
