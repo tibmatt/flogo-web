@@ -53,13 +53,54 @@ export function readDirectoriesSync(dirPath){
   return nDirs;
 }
 
-export function isJson(str) {
+/**
+ * judge whether a string is a valid json string. if i
+ * @param  {string}  str - the JSON string
+ * @return {object|undefined} if it is a valid json, return json, otherwise return undefined
+ */
+export function isJSON(str) {
   try {
-    JSON.parse(str);
+    return JSON.parse(str);
   } catch (e) {
+    return undefined;
+  }
+}
+
+/**
+ * Read a JSON file
+ * @param  {string|Path} jSONPath - the path of JSON file
+ * @return {object|undefined} if it is a valid and exist json, return json, otherwise return undefined
+ */
+export function readJSONFileSync(JSONPath){
+  let data = undefined;
+  if(isExisted(JSONPath)){
+    data = fs.readFileSync(JSONPath, {
+      "encoding": "utf8"
+    });
+    data = isJSON(data);
+  }else{
+    console.error("[error][utils.js->readJSONFileSync] path doesn't exist. path: ", JSONPath);
+  }
+
+  return data;
+}
+
+/**
+ * write a JSON file
+ * @param {string|Path} JSONPath - the path of JSON file
+ * @param {object} data - the JSON data you want to write
+ * @return {boolean} if write successful, return ture, otherwise return false
+ */
+export function writeJSONFileSync(JSONPath, data){
+  try{
+    fs.writeFileSync(JSONPath, JSON.stringify(data, null, 2), {
+      "encoding": "utf8"
+    });
+    return true;
+  }catch(err){
+    console.error("[error][utils.js->writeJSONFileSync] err: ", err);
     return false;
   }
-  return true;
 }
 
 export function flogoIDEncode( id){

@@ -3,7 +3,7 @@ import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
-import {config, activitiesDBService, triggersDBService, dbService} from './config/app-config';
+import {config, activitiesDBService, triggersDBService, dbService, engines} from './config/app-config';
 
 import {api} from './api';
 
@@ -19,8 +19,17 @@ let port = config.app.port;
 
 api(app, router);
 
-let engine = new Engine(config.testEngine);
-let buildEngine = new Engine(config.buildEngine);
+let testEngine = new Engine({
+  name: config.testEngine.name,
+  path: config.testEngine.path,
+  port: config.testEngine.port
+});
+
+let buildEngine = new Engine({
+  name: config.buildEngine.name,
+  path: config.buildEngine.path,
+  port: config.buildEngine.port
+});
 
 let registerActivities  = new RegisterActivities(activitiesDBService, {
   defaultPath: path.resolve(config.rootPath, config.activities.defaultPath),
@@ -35,21 +44,6 @@ let registerTriggers  = new RegisterTriggers(triggersDBService, {
   customPath: path.resolve(config.rootPath, config.triggers.contribPath),
   customConfig: config.triggers.contrib
 });
-
-//registerActivities.register().then(()=>{
-//  return registerTriggers.register();
-//}).then(()=>{
-//  console.log("[info] All promise finished");
-//  engine.config();
-//  console.log("[info] finish config");
-//  engine.build();
-//  console.log("[info] finish build");
-//  engine.start();
-//  console.log("[info] finish start");
-//}).catch((err)=>{
-//  console.log("[error] registerActivities error");
-//});
-
 
 //
 let PromiseAll = [];
@@ -78,18 +72,24 @@ let triggerPromise = new Promise((resolve, reject)=>{
 PromiseAll.push(triggerPromise);
 
 Promise.all(PromiseAll).then(()=>{
-  engine.addAllActivities().then(()=>{
-    return engine.addAllTriggers(config.testEngine.installConfig);
+  testEngine.addAllActivities().then(()=>{
+    return testEngine.addAllTriggers(config.testEngine.installConfig);
   }).then(()=>{
-    //console.log("[info]All promise finished");
-    engine.config();
-    //console.log("[info] finish config");
-    engine.build();
+    // update config.json, use overwrite mode
+    testEngine.updateConfigJSON(config.testEngine.config, true);
+    // update triggers.json
+    testEngine.updateTriggerJSON({
+      "triggers": config.testEngine.triggers
+    });
+    testEngine.build();
     //console.log("[info] finish build");
-    engine.start();
+    testEngine.start();
     //console.log("[info] finish start");
     buildEngine.addAllActivities().then(()=>{
-      buildEngine.addAllTriggers();
+      buildEngine.addAllTriggers().then(()=>{
+        engines.build = buildEngine;
+        engines.test = test;
+      });
     });
   }).catch((err)=>{
 

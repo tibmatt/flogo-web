@@ -1,4 +1,4 @@
-import {config, dbService, triggersDBService} from '../../config/app-config';
+import {config, dbService, triggersDBService, engines} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
 import {flogoFlowToJSON} from '../../common/flow.model';
 import {flogoIDDecode} from '../../common/utils';
@@ -7,11 +7,9 @@ import fs from 'fs';
 import path from 'path';
 
 let basePath = config.app.basePath;
-let dbName = config.db;
-let triggerDBName = config.triggers.db;
 
 let _dbService = dbService;
-let _triggerDBService = triggersDBService;
+//let _triggerDBService = triggersDBService;
 
 function generateBuild(id){
   return new Promise((resolve, reject)=>{
@@ -26,7 +24,13 @@ function generateBuild(id){
       let flowJSON = flogoFlowToJSON(doc);
       console.log(flowJSON);
 
-      resolve(flowJSON);
+      if(engines.build){
+        console.log("build engine, build.enginePath", engines.build.enginePath);
+        let engineFolderPath = path.join(engines.build.enginePath, engines.build.options.name);
+        resolve(flowJSON);
+      }else{
+        reject(err);
+      }
 
     }).catch((err)=>{
       reject(err);

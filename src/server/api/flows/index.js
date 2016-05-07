@@ -1,6 +1,6 @@
 import {config, dbService, triggersDBService, activitiesDBService} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
-import {isJson, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
+import {isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
 import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
 import _ from 'lodash';
 import * as flowUtils from './flows.utils';
@@ -135,7 +135,7 @@ function* createFlows(next){
   try{
     let data = this.request.body||{};
     if(typeof this.request.body == 'string'){
-      if(isJson(this.request.body)){
+      if(isJSON(this.request.body)){
         data = JSON.parse(this.request.body);
       }
     }
@@ -390,4 +390,3 @@ function _getFlowById(id) {
       return flow;
     });
 }
-

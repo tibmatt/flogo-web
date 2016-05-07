@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {isJson, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
+import {isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
 import {FLOGO_FLOW_DIAGRAM_NODE_TYPE} from '../../common/constants';
 
 
