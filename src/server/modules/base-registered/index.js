@@ -24,8 +24,7 @@ const defaultOptions = {
 export class BaseRegistered{
   /**
    * constructor function
-   * @param {string} dbName - db name. it can be local or remote db
-   * @param {Object} engine - flogo engine.
+   * @param {string||DBService} dbName - db name or an instance of DBService. it can be local or remote db
    * @param {Object} options
    * @param {Object} options.type - currently registered type, it can be trigger, activity, model
    * @param {string} options.defaultPath - the default path that store activity or trigger or model develop by Flogo team
@@ -36,24 +35,22 @@ export class BaseRegistered{
    * @param {string} [options.jsonTplName='package.tpl.json'] - package.json template file name.
    * @param {string} options.schemaJsonName - The name of schema json
    */
-  constructor(dbName, engine, options){
+  constructor(dbName, options){
 
     if(!dbName){
       throw "dbName is required";
     }
 
-    if(!engine){
-      throw "engine is required";
-    }
-
     this._options = _.merge({}, defaultOptions, options);
 
-    //console.log("this._options: ", this._options);
-
     // store db information
-    this._dbService = new DBService(dbName);
-    // store the engine information
-    this._engine = engine;
+    if(_.isString(dbName)){
+      this._dbService = new DBService(dbName);
+    }else if(_.isObject(dbName)&&(dbName instanceof DBService)){
+      this._dbService = dbName;
+    }else{
+      throw "dbName is required, and it should be a name of DB or an instance of DBService";
+    }
 
     // folder store package.json
     this._packageJSONFolderPath = path.resolve(config.rootPath, this._options.path);
@@ -64,11 +61,8 @@ export class BaseRegistered{
     let data = fs.readFileSync(this._packageJSONTplFilePath, {"encoding": "utf8"});
     this.packageJSONTemplate = JSON.parse(data);
 
+    // store the path of RT(activity RT, trigger RT)
     this._where = [];
-    //
-
-    // start watch files/folder changes
-    //this.watch();
   }
 
   register(){
@@ -191,27 +185,11 @@ export class BaseRegistered{
     });
   }
 
-  installToEngine(type, url){
-    // trigger
-    if(type === COMPONENT_TYPE[0]){
-      this._engine.addTrigger(url);
-    }else if(type === COMPONENT_TYPE[1]){ // activity
-      this._engine.addActivity(url);
-    }else if(type === COMPONENT_TYPE[2]){
-      this._engine.addModel(url);
-    }else{
-      console.error("[installToEngine][type didn't find], type: ", type);
-    }
-  }
-
   /**
    *
    */
   updatePackageJSON(dirPath, config, sourcePackageJSON){
     console.log("[debug]updatePackageJSON");
-    //console.log(dirPath);
-    //console.log(config);
-    //console.log(sourcePackageJSON);
     let packageJSON = _.cloneDeep(sourcePackageJSON);
     !packageJSON.dependencies ? (packageJSON.dependencies = {}): null;
     // get all the activity package in activitiesPath
@@ -221,22 +199,8 @@ export class BaseRegistered{
       if(dirs&&dirs.length){
         // console.log("???????dirs", dirs);
         dirs.forEach((dir, index)=>{
-          //// console.log(value);
-          //let stats = fs.statSync(path.join(this.activitiesAbsolutePath, value));
-          //// if it is a directory, then assume it is a activity package.
-          //// TODO add more validate, make sure it is a activity package.
-          //if(stats.isDirectory()){
-          //  packageJSON.dependencies[value] = path.join(this.activitiesPath, value);
-          //}
-          //console.log("=====dir", dir);
           let itemPath = path.join(dirPath, dir);
           //console.log("itemPath: ", itemPath);
-          let where = config[dir]&&config[dir].path? config[dir].path: "file://"+itemPath;
-
-          // for test, we don't need to install all the triggers to engine. User can decide which tigger want to be installed
-          if(config[dir]&&!config[dir].ignore){
-            this.installToEngine(this._options.type, where);
-          }
 
           let design_package_json=null;
           let value = null;
@@ -256,9 +220,11 @@ export class BaseRegistered{
           if(design_package_json){
             let data = fs.readFileSync(design_package_json, {"encoding": "utf8"});
             let designPackageJSONData = JSON.parse(data);
-            if(designPackageJSONData.name){
-              packageJSON.dependencies[designPackageJSONData.name] = path.join(value);
-              this._where[designPackageJSONData.name] = where;
+            let type = designPackageJSONData.name;
+            if(type){
+              packageJSON.dependencies[type] = path.join(value);
+              let where = config[type]&&config[type].path? config[type].path: "file://"+itemPath;
+              this._where[type] = where;
             }
           }
 
@@ -424,7 +390,7 @@ export class BaseRegistered{
             console.log(err);
           }else{
             resolve(result);
-            console.log("success: ", result);
+            //console.log("success: ", result);
           }
         });
       });

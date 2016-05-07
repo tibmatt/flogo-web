@@ -1,14 +1,14 @@
 import path from 'path';
 import fs from 'fs';
-
 import _ from 'lodash';
 
-import {config} from '../../config/app-config';
-import {isExisted} from '../../common/utils'
+import {config, activitiesDBService, triggersDBService} from '../../config/app-config';
+import {isExisted} from '../../common/utils';
+import {DBService} from '../../common/db.service';
 
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
-const execFileSync = require('child_process').execFileSync;
+//const execFileSync = require('child_process').execFileSync;
 
 export class Engine {
   constructor(options){
@@ -43,6 +43,65 @@ export class Engine {
       console.error("[Error]Engine->createEngine. Error: ", err);
       return false;
     }
+  }
+
+  addAllActivities(options){
+    return new Promise((resolve, reject)=>{
+      activitiesDBService.allDocs().then((result)=>{
+        //console.log("[info]addAllActivities, result", result);
+        result ? result: (result=[]);
+        options ? options: (options={});
+
+        result.forEach((item)=>{
+          item ? item: (item={});
+          let ignore = options[item.name]&&options[item.name].ignore||false;
+          if(item.where){
+            if(!ignore){
+              this.addActivity(item.where);
+            }else{
+              console.log("[info] ignore");
+            }
+          }else{
+            console.error("[error]", item.name, " where isn't defined");
+          }
+        });
+
+        resolve(true);
+      }).catch((err)=>{
+        console.error("[error]activitiesDBService.allDocs(), err: ", err);
+        reject(err);
+      });
+    });
+  }
+
+  addAllTriggers(options){
+    return new Promise((resolve, reject)=>{
+      triggersDBService.allDocs().then((result)=>{
+        //console.log("[info]triggersDBService, result", result);
+        result ? result: (result=[]);
+        options ? options: (options={});
+
+        result.forEach((item)=>{
+          item ? item: (item={});
+          let ignore = options[item.name]&&options[item.name].ignore||false;
+          if(item.where){
+            if(!ignore){
+              this.addTrigger(item.where);
+            }else{
+              console.log("[info] ignore");
+            }
+          }else{
+            console.error("[error]", item.name, " where isn't defined");
+          }
+        });
+
+        resolve(true);
+      }).catch((err)=>{
+        console.error("[error]triggersDBService.allDocs(), err: ", err);
+
+        reject(err);
+      });
+    });
   }
 
   addActivity(activityPath){

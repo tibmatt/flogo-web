@@ -1,11 +1,11 @@
-import {config} from '../../config/app-config';
+import {config, dbService} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
 let dbName = config.triggers.db;
 
-let _dbService = new DBService(dbName);
+let _dbService = dbService;
 
 export function triggers(app, router){
   if(!app){

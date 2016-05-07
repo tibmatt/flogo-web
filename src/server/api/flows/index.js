@@ -1,4 +1,4 @@
-import {config} from '../../config/app-config';
+import {config, dbService, triggersDBService, activitiesDBService} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
 import {isJson, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
 import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
@@ -7,7 +7,7 @@ import * as flowUtils from './flows.utils';
 
 let basePath = config.app.basePath;
 let dbDefaultName = config.db;
-let _dbService = new DBService(dbDefaultName);
+let _dbService = dbService;
 let FLOW = 'flows';
 let DELIMITER = ":";
 let DEFAULT_USER_ID = 'flogoweb-admin';
@@ -229,7 +229,7 @@ function * addActivity(next){
  * @returns {*}
  */
 function _getTriggerByName(triggerName) {
-  let _dbTrigger = new DBService(config.triggers.db);
+  let _dbTrigger = triggersDBService;
   let trigger = triggerName;
 
   return new Promise(function (resolve, reject) {
@@ -253,7 +253,7 @@ function _getTriggerByName(triggerName) {
  * @returns {*}
  */
 function _getActivityByName(activityName) {
-  let _dbActivities = new DBService(config.activities.db);
+  let _dbActivities = activitiesDBService;
   let activity = activityName;
 
   return new Promise(function (resolve, reject) {

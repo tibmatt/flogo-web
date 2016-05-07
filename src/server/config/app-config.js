@@ -1,4 +1,5 @@
 import path from 'path';
+import {DBService} from '../common/db.service';
 
 let rootPath = path.normalize(__dirname + '/..');
 
@@ -17,16 +18,7 @@ let config = {
     defaultPath: "../../submodules/flogo-contrib/activity",
     contribPath: "../../contrib/activity",
     default: {
-      "counter":{
-        path:"github.com/TIBCOSoftware/flogo-contrib/activity/counter"
-      },
-      "rest": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
-      },
-      "log": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/activity/log"
-      },
-      "twilio": {
+      "tibco-twilio": {
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
       }
     },
@@ -37,16 +29,8 @@ let config = {
     defaultPath: "../../submodules/flogo-contrib/trigger",
     contribPath: "../../contrib/trigger",
     default: {
-      "rest": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
-      },
-      "mqtt": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt",
-        ignore: true
-      },
-      "timer": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
-        ignore: true
+      "tibco-mqtt": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt"
       }
     }
   },
@@ -60,6 +44,14 @@ let config = {
     port: "8080",
     path: "./",
     name: "test-engine",
+    installConfig: {
+      "tibco-mqtt": {
+        ignore: true
+      },
+      "tibco-timer": {
+        ignore: true
+      }
+    },
     triggers: {
       "tibco-mqtt": {
         "name": "tibco-mqtt",
@@ -200,3 +192,11 @@ let config = {
 };
 
 export {config};
+
+let triggersDBService = new DBService(config.triggers.db);
+let activitiesDBService = new DBService(config.activities.db);
+let dbService = new DBService(config.db);
+
+export {triggersDBService};
+export {activitiesDBService};
+export {dbService};

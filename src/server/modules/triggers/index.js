@@ -14,7 +14,7 @@ const defaultOptions = {
 };
 
 export class RegisterTriggers extends BaseRegistered{
-  constructor(dbName, engine, options){
-    super(dbName, engine, _.merge({}, defaultOptions, options||{}));
+  constructor(dbName, options){
+    super(dbName, _.merge({}, defaultOptions, options||{}));
   }
 }

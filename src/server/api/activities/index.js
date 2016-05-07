@@ -1,11 +1,11 @@
-import {config} from '../../config/app-config';
+import {config, activitiesDBService} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
-let dbName = config.activities.db;
+//let dbName = config.activities.db;
 
-let _dbService = new DBService(dbName);
+let _dbService = activitiesDBService;
 
 export function activities(app, router){
   if(!app){
