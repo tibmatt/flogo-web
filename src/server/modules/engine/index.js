@@ -40,6 +40,9 @@ export class Engine {
     // TODO for now, model is installed by engine default, so this object is empty
     this.installedModels = {
     };
+    // Installed flow
+    this.installedFlows = {
+    };
 
     // currently engine is started or not
     this.engineStarted = false;
@@ -228,24 +231,142 @@ export class Engine {
     }
   }
 
-  addFlow(){
+  /**
+   * Add a flow to engine
+   * @param {string|Path} flowPath - the path to flow json
+   * @param {string} [flowName] - the name of this flow
+   * @return {boolean} if successful, return true, otherwise return false
+   */
+  addFlow(flowPath, flowName){
+    try {
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
+      console.log(`[info]flogo add flow ${flowPath}`);
+      if(!flowName){
+        let parseResult = path.parse(flowPath);
+        flowName = parseResult.name;
+      }
+      console.log("[info][Engine->addFlow] flowName: ", flowName);
 
+      execSync(`flogo add flow ${flowPath}`, {
+        cwd: defaultEnginePath
+      });
+      this.installedFlows[flowName] = {
+        path: flowPath
+      }
+
+      return true;
+    } catch (err) {
+      console.error("[Error]Engine->addFlow. Error: ", err);
+      return false;
+    }
   }
 
+  /**
+   * Delete an activity in this engine
+   * @param {string} activityName - the name of activity
+   * @return {boolean} if successful, return true, otherwise return false
+   */
   deleteActivity(activityName){
+    try {
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
+      console.log(`[info]flogo del activity ${activityName}`);
 
+      execSync(`flogo del activity ${activityName}`, {
+        cwd: defaultEnginePath
+      });
+
+      delete this.installedActivites[activityName];
+      return true;
+    } catch (err) {
+      console.error("[Error]Engine->deleteActivity. Error: ", err);
+      return false;
+    }
   }
 
+  /**
+   * Delete a trigger in this engine
+   * @param {string} triggerName - the name of trigger
+   * @return {boolean} if successful, return true, otherwise return false
+   */
   deleteTrigger(triggerName){
+    try {
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
+      console.log(`[info]flogo del trigger ${triggerName}`);
 
+      execSync(`flogo del trigger ${triggerName}`, {
+        cwd: defaultEnginePath
+      });
+
+      delete this.installedTriggers[triggerName];
+      return true;
+    } catch (err) {
+      console.error("[Error]Engine->deleteTrigger. Error: ", err);
+      return false;
+    }
   }
 
+  /**
+   * Delete a model in this engine
+   * @param {string} modelName - the name of model
+   * @return {boolean} if successful, return true, otherwise return false
+   */
   deleteModel(modelName){
+    try {
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
+      console.log(`[info]flogo del model ${modelName}`);
 
+      execSync(`flogo del model ${modelName}`, {
+        cwd: defaultEnginePath
+      });
+
+      delete this.installedModels[modelName];
+      return true;
+    } catch (err) {
+      console.error("[Error]Engine->deleteModel. Error: ", err);
+      return false;
+    }
   }
 
-  deleteFlow(){
+  /**
+   * Delete a flow to engine
+   * @param {string} flowName - the name of this flow
+   * @return {boolean} if successful, return true, otherwise return false
+   */
+  deleteFlow(flowName){
+    try {
+      let defaultEnginePath = path.join(this.enginePath, this.options.name);
+      let flow = `embedded://${flowName}`
+      console.log(`[info]flogo del flow ${flow}`);
 
+      execSync(`flogo del flow ${flow}`, {
+        cwd: defaultEnginePath
+      });
+
+      delete this.installedFlows[flowName];
+      return true;
+    } catch (err) {
+      console.error("[Error]Engine->deleteFlow. Error: ", err);
+      return false;
+    }
+  }
+
+  /**
+   * Add a flow to engine
+   * @param {string|Path} flowPath - the path to flow json
+   * @param {string} [flowName] - the name of this flow
+   * @return {boolean} if successful, return true, otherwise return false
+   */
+  deleteAllFlows(){
+    try {
+      let flowNames = _.keys(this.installedFlows);
+      flowNames.forEach((flowName)=>{
+        this.deleteFlow(flowName);
+      });
+      return true;
+    } catch (err) {
+      console.error("[Error]Engine->deleteAllFlows. Error: ", err);
+      return false;
+    }
   }
 
   /**
@@ -310,10 +431,11 @@ export class Engine {
     }
   }
 
-  build() {
+  build(args) {
     try {
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      execSync(`flogo build -i`, {
+      args ? args: (args='');
+      execSync(`flogo build ${args}`, {
         cwd: defaultEnginePath
       });
       return true;
