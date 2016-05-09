@@ -10,13 +10,10 @@
 
 ## Build Process Service
 #cd ../.././../../process-service/
-cd ../../submodules/flogo-internal/process-service
+cd ../../submodules/flogo-internal/flow-service
 ./gradlew installDist
 
 ## Build State Service
-cd ../state-service
+cd ../flow-state-service
 ./gradlew installDist
 
-## Build Flogo Engine
-cd ../engine
-gb build

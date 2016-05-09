@@ -6,7 +6,7 @@ pkill flogo
 ## Stop State Service
 ps ax | grep 'com.tibco.flogo.ss.service.FlogoServerService' | grep -v grep | awk '{ print "kill " $1 }' | bash
 
-## Stop Process Service
+## Stop Flow Service
 ps ax | grep 'com.tibco.flogo.service.FlogoServerService' | grep -v grep | awk '{ print "kill " $1 }' | bash
 
 ## Stop Redis

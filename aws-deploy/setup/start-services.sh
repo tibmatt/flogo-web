@@ -17,10 +17,10 @@ docker run --name flogo-redis -p 6379:6379 -d redis
 #export FLOGO_REDIS_HOST=$DOCKER_IP
 export FLOGO_REDIS_HOST=127.0.0.1
 
-## Start Process Service
-cd ../../submodules/flogo-internal/process-service/build/install/process-service/bin
-./process-service server ../config/server.yml &
+## Start Flow Service
+cd ../../submodules/flogo-internal/flow-service/build/install/flow-service/bin/
+./flow-service server ../config/server.yml &
 
 ## Start State Service
-cd ../../../../../state-service/build/install/state-service/bin/
+cd ../../../../../flow-state-service/build/install/state-service/bin/
 ./state-service server ../config/server.yml &
