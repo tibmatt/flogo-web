@@ -8,12 +8,19 @@ Flogo web include flogo front-end and flogo design time server
 
 1. Application structure suitable for distributed contributions
 
-2. Manage and Merge front-end libraries? Bower or NPM?
+2. Manage and Merge front-end libraries by NPM
+
+3. Compile LESS
+
+4. One command start everything
+
+## upcoming features
   
-3. Production vs Dev mode
+1. Production vs Dev mode
 
-4. Auto reload web application
+2. Auto reload web application
 
-5. Compile LESS
+3. flogo engine auto restart
 
-6. One command start everything
+
+
