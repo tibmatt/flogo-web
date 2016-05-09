@@ -9,7 +9,6 @@
   <div class="flogo-flows-container-body">
     <ul class="flogo-flows-container-lists">
       <li *ngFor="#flow of flows" class="flogo-flows-container-list">
-        <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow)"></span>
         <a class="flogo-flows-container-list-detail" [routerLink]="['FlogoFlowDetail', {id:flogoIDEncode(flow._id)}]">
           <span class="flogo-flows-container-list-detail-name">{{flow.name}}</span>
           <span class="clearfix flogo-flows-container-list-detail-info">
@@ -17,6 +16,7 @@
             <i class="flogo-flows-container-list-detail-creatTime">Created {{flow.created_at}}</i>
           </span>
         </a>
+        <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow)"></span>
       </li>
     </ul>
   </div>

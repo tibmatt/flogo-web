@@ -25,8 +25,9 @@
   padding: 34px 0 0;
   width: 560px;
   .flogo-flows-container-list{
+    display: flex;
     margin: 0 0 21px;
-    height: 69px;
+    min-height: 69px;
     object-fit: contain;
     border-radius: 4px;
     list-style: none;
@@ -35,28 +36,29 @@
     &:hover{
       background-color: #ececec;
       .flogo-flows-container-list-detail-trash{
-        display: block;
+        opacity: 1;
       }
     }
   }
   .flogo-flows-container-list-detail{
+    flex: auto;
     color: #666;
-    padding: 18px 60px 16px 28px;
+    width: 500px;
+    padding: 18px 0 16px 28px;
     display: block;
     text-decoration: none;
   }
   .flogo-flows-container-list-detail-trash{
-    display: none;
-    height: 100%;
+    flex: auto;
+    opacity: 0;
     width: 60px;
-    float: right;
     cursor: pointer;
     line-height: 100%;
     background: url("/assets/svg/flogo.flows.trash.icon.svg") center no-repeat;
-    background-size: 25%;
+    background-size: 16px;
     &:hover{
       background: url("/assets/svg/flogo.flows.trash.hover.icon.svg") center no-repeat;
-      background-size: 25%;
+      background-size: 16px;
     }
   }
   .flogo-flows-container-list-detail-name{
@@ -73,9 +75,14 @@
     letter-spacing: 0.6px;
   }
   .flogo-flows-container-list-detail-creatTime{
-    float: right;
+    display: inline-block;
+    vertical-align: middle;
+    width: 29%;
+    text-align: right;
   }
   .flogo-flows-container-list-detail-description{
-    float: left;
+    display: inline-block;
+    vertical-align: middle;
+    width: 70%;
   }
 }
