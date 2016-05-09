@@ -155,6 +155,98 @@ label {
 
 /* ================ */
 
+/* The spin loading styles */
+.flogo-spin-loading-bg {
+  background: #fafafa;
+  width: 100%;
+}
+.flogo-spin-loading {
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  position: fixed;
+  top: 38%;
+  left: 50%;
+  margin-left: -50px;
+  margin-top: -50px;
+  width: 200px;
+  height: 200px;
+}
+@keyframes flogo-spin-loading {
+  0% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0.1;
+    transform: scale(0.1);
+  }
+}
+.flogo-spin-loading > div {
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+  margin-top: 4px;
+  position: absolute;
+}
+.flogo-spin-loading > div > div {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  background: #062e79;
+}
+.flogo-spin-loading > div:nth-of-type(1) > div {
+  animation: flogo-spin-loading 1s linear infinite 0s;
+}
+.flogo-spin-loading > div:nth-of-type(1) {
+  transform: translate(84px, 84px) rotate(45deg) translate(70px, 0);
+}
+.flogo-spin-loading > div:nth-of-type(2) > div {
+  animation: flogo-spin-loading 1s linear infinite 0.12s;
+}
+.flogo-spin-loading > div:nth-of-type(2) {
+  transform: translate(84px, 84px) rotate(90deg) translate(70px, 0);
+}
+.flogo-spin-loading > div:nth-of-type(3) > div {
+  animation: flogo-spin-loading 1s linear infinite 0.25s;
+}
+.flogo-spin-loading > div:nth-of-type(3) {
+  transform: translate(84px, 84px) rotate(135deg) translate(70px, 0);
+}
+.flogo-spin-loading > div:nth-of-type(4) > div {
+  animation: flogo-spin-loading 1s linear infinite 0.37s;
+}
+.flogo-spin-loading > div:nth-of-type(4) {
+  transform: translate(84px, 84px) rotate(180deg) translate(70px, 0);
+}
+.flogo-spin-loading > div:nth-of-type(5) > div {
+  animation: flogo-spin-loading 1s linear infinite 0.5s;
+}
+.flogo-spin-loading > div:nth-of-type(5) {
+  transform: translate(84px, 84px) rotate(225deg) translate(70px, 0);
+}
+.flogo-spin-loading > div:nth-of-type(6) > div {
+  animation: flogo-spin-loading 1s linear infinite 0.62s;
+}
+.flogo-spin-loading > div:nth-of-type(6) {
+  transform: translate(84px, 84px) rotate(270deg) translate(70px, 0);
+}
+.flogo-spin-loading > div:nth-of-type(7) > div {
+  animation: flogo-spin-loading 1s linear infinite 0.75s;
+}
+.flogo-spin-loading > div:nth-of-type(7) {
+  transform: translate(84px, 84px) rotate(315deg) translate(70px, 0);
+}
+.flogo-spin-loading > div:nth-of-type(8) > div {
+  animation: flogo-spin-loading 1s linear infinite 0.87s;
+}
+.flogo-spin-loading > div:nth-of-type(8) {
+  transform: translate(84px, 84px) rotate(360deg) translate(70px, 0);
+}
+
 /* TODO: Only for demo, need to find a way to add custom class to modal's parent */
 
 .modal-dialog {
