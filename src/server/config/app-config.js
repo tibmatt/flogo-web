@@ -33,6 +33,9 @@ let config = {
     default: {
       "tibco-mqtt": {
         path: "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt"
+      },
+      "tibco-timer":{
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
       }
     }
   },
@@ -111,6 +114,8 @@ let config = {
     port: "8081",
     path: "./",
     name: "build-engine",
+    installConfig: {
+    },
     config: {
       "loglevel": "DEBUG",
       "flowRunner": {

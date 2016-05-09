@@ -86,7 +86,7 @@ Promise.all(PromiseAll).then(()=>{
     testEngine.start();
     //console.log("[info] finish start");
     buildEngine.addAllActivities().then(()=>{
-      buildEngine.addAllTriggers().then(()=>{
+      buildEngine.addAllTriggers(config.buildEngine.installConfig).then(()=>{
         engines.build = buildEngine;
         engines.test = test;
       });
