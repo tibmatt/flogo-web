@@ -18,7 +18,20 @@ NC='\033[0m'
 #############################
 FLOGO_INTERNAL_PATH="submodules/flogo-internal"
 FLOGO_CONTRIB_PATH="submodules/flogo-contrib"
-CURRENT_PATH=$PWD
+current_path=$PWD
+cd ..
+ROOT_PATH=$PWD
+echo "####### ROOT_PATH=$PWD"
+cd "${current_path}"
+
+OS_ARCH="linux_amd64"
+
+
+PUBLIC_DNS_NAME=$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
+echo "Public DNS name: ${PUBLIC_DNS_NAME}"
+
+# oÂosx
+# OS_ARCH="darwin_amd64"
 
 #############################
 # Utils
@@ -93,7 +106,7 @@ remove_flogo(){
   # remove flogo command
   rm_rf "${GOPATH}/bin/flogo"
   # remove flogo pkg
-  rm_rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/pkg/${OS_ARCH}/github.com/TIBCOSoftware/flogo"
   # remove flogo src
   rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo"
   echoInfo "Finish remove flogo command"
@@ -159,6 +172,7 @@ update_flogo
 # Step 2: update submodule
 #############################
 echoHeader "Step2: update submodule: flogo-internal, flogo-contrib"
+cd ..
 rm -rf submodules/
 git submodule update --init --remote
 
@@ -169,8 +183,9 @@ echoSuccess "update submodule\n"
 #############################
 echoHeader "Step3: start process and state server"
 
+cd aws-deploy/setup
+
 echoInfo " setup docker"
-cd "aws-deploy/setup"
 sh setup-docker.sh
 
 echoInfo "stop process and state server"
@@ -193,12 +208,18 @@ sh start-services.sh &
 # Step 4: start flogo-web
 #############################
 echoHeader "Step4: start flogo-web"
-cd $CURRENT_PATH
+cd $ROOT_PATH
 npm install
 gulp &
+
+##########################
+# Setp 5: start slack bot
+#########################
 
 echoInfo "stop slack bot"
 lsof -i:5050 | grep node | awk '{print $2}' | xargs kill -9
 
-cd slack_integration
-node ./src &
+echoInfo "start slack bot"
+cd "${ROOT_PATH}/slack-integration"
+npm install
+FLOGO_HOSTNAME="${PUBLIC_DNS_NAME}" node ./src > .log 2>&1 &

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "concurrently \"pouchdb-server -p 5984 -d './data'\" \"babel-node server.js\"",
-    "start-db": "pouchdb-server -p 5984 -d data",
+    "start-db": "pouchdb-server -p 5984 -d data --host 0.0.0.0",
     "start-server": "babel-node server.js"
   },
   "author": "Shaoke Xu<shaoxu@tibco.com>",
