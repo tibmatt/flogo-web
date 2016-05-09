@@ -762,7 +762,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       }
 
       if ( taskInfo.name && taskInfo.desc ) {
-        let iconName = 'routing.icon.svg';
+        let iconName = 'activity.icon.svg';
 
         if ( taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
           iconName = 'trigger.icon.svg';
