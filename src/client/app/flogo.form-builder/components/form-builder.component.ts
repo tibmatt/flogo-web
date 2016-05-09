@@ -546,6 +546,9 @@ export class FlogoFormBuilderComponent{
     // display format sample: query-a-pet.result.code == 1
     // internal format sample: $[A<taskID>.result].code == 1;
 
+    // ensure condition is in string format
+    condition = '' + condition;
+
     // cases
     //  $[T]
     //  $[A3]
@@ -614,6 +617,9 @@ export class FlogoFormBuilderComponent{
   convertBranchConditionToInternal( condition : string, tiles : any[] ) : string {
     // display format sample: query-a-pet.result.code == 1
     // internal format sample: $[A<taskID>.result].code == 1;
+    
+    // ensure condition is in string format
+    condition = '' + condition;
 
     // paths cases
     //  base cases

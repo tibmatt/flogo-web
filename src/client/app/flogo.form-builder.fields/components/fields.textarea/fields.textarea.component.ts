@@ -26,6 +26,10 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
       value = JSON.parse(event.target.value);
     } catch(e) {
       // invalid json
+      // TODO
+      //  better handler of invalid JSON?
+      //  for the moment, keep the value even though it's not valid JSON, and ensure string format
+      value = '' + event.target.value;
     }
     this._info.value = value;
     this.publishNextChange();
@@ -33,8 +37,12 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
 
   ngOnInit() {
 
-    if(this._info.value) {
-      this._value= JSON.stringify(this._info.value);
+    // primitive values could be assigned directly instead of using JSON.stringify, for avoiding the extra " marks
+    // also ensure the value is in string format
+    if ( _.isNumber( this._info.value ) || _.isString( this._info.value ) || _.isBoolean( this._info.value ) ) {
+      this._value = '' + this._info.value;
+    } else if ( this._info.value ) {
+      this._value = JSON.stringify( this._info.value );
     }
 
   }
