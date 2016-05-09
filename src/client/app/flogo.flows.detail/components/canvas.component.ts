@@ -1355,6 +1355,11 @@ export class FlogoCanvasComponent {
     var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
     var context     = this._getCurrentContext(data.node.taskID);
 
+    let selectedNode = data.node;
+    let previousNodes = this.findPathToNode(this.diagram.root.is, selectedNode.id);
+    previousNodes.pop(); // ignore last item as it is the very same selected node
+    let previousTiles = this.mapNodesToTiles(previousNodes);
+
     this._router.navigate(
       [
         'FlogoFlowsDetailTaskDetail',
@@ -1372,7 +1377,13 @@ export class FlogoCanvasComponent {
                   data,
                   {task: currentTask},
                   {step: currentStep},
-                  {context: context}
+                  {
+                    context : _.assign( context, {
+                      contextData : {
+                        previousTiles : previousTiles
+                      }
+                    } )
+                  }
                 ),
 
                 done: () => {

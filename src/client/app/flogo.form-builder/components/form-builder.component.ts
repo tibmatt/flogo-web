@@ -9,7 +9,7 @@ import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-bu
 import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
-import {convertTaskID, parseMapping} from "../../../common/utils";
+import { convertTaskID, parseMapping, normalizeTaskName } from "../../../common/utils";
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 
 @Component({
@@ -116,10 +116,12 @@ export class FlogoFormBuilderComponent{
   */
 
   _saveBranchChangesToFlow() {
+    let self = this;
     let branchInfo = this._branchConfigs[ 0 ];
     let state = {
       taskId : branchInfo.id,
-      condition : branchInfo.condition
+      condition : self.convertBranchConditionToInternal( branchInfo.condition,
+        _.get( self, '_context.contextData.previousTiles', [] ) )
     };
 
     this._postService.publish( _.assign( {}, PUB_EVENTS.taskDetailsChanged, {
@@ -294,11 +296,13 @@ export class FlogoFormBuilderComponent{
   }
 
   _setBranchEnvironment( branchInfo : any ) {
+    var self = this;
     this._branchConfigs = [
       _.assign( {},
         {
           id : branchInfo.id,
-          condition : branchInfo.condition
+          condition : self.convertBranchConditionToDisplay( branchInfo.condition,
+            _.get( self, '_context.contextData.previousTiles', [] ) )
         } )
     ];
   }
@@ -536,5 +540,140 @@ export class FlogoFormBuilderComponent{
       }
     ));
 
+  }
+
+  convertBranchConditionToDisplay( condition : string, tiles : any[] ) : string {
+    // display format sample: query-a-pet.result.code == 1
+    // internal format sample: $[A<taskID>.result].code == 1;
+
+    // cases
+    //  $[T]
+    //  $[A3]
+    //  $[T.pathParams]
+    //  $[A3.result]
+    //  $[T.pathParams].petId
+    //  $[A3.result].code
+    let reComTriggerLabel = '(T)'; // T
+    let reComActivityLabel = '(A)(\\d+)'; // A3
+    let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel})`; // T | A3
+    let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
+
+    let reProp = `(?:\\$\\[${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\])((?:\\.${reComPropNameWithoutQuote})*)`;
+
+    let pattern = new RegExp(reProp.replace(/\s/g, ''), 'g');
+
+    let taskIDNameMappings = <any>{};
+
+    _.each( tiles, ( tile : any ) => {
+      if ( tile.triggerType ) {
+        taskIDNameMappings[ 'T' ] = {
+          name : normalizeTaskName( tile.name ),
+          triggerType : tile.triggerType,
+          activityType : tile.activityType
+        };
+      } else {
+        taskIDNameMappings[ 'A' + convertTaskID( tile.id ) ] = {
+          name : normalizeTaskName( tile.name ),
+          triggerType : tile.triggerType,
+          activityType : tile.activityType
+        };
+      }
+    } );
+
+    condition = condition.replace( pattern,
+      ( match : string,
+        taskLabel : string,
+        triggerTypeLabel : string,
+        activityTypeLabel : string,
+        taskID : string,
+        taskLabelProp : string,
+        propPath : string,
+        offset : number,
+        wholeString : string ) => {
+
+        let taskInfo = taskIDNameMappings[taskLabel];
+
+        if (taskInfo) {
+          let labelProp = _['toPath'](taskLabelProp).join('.');
+          let props = _['toPath'](propPath).join('.'); // normalise prop paths
+
+          if (labelProp) {
+            return props ? `${taskInfo.name}.${labelProp}.${props}` : `${taskInfo.name}.${labelProp}`;
+          } else {
+            return `${taskInfo.name}`;
+          }
+
+        } else {
+          return match;
+        }
+      } );
+
+    return condition;
+  }
+
+  convertBranchConditionToInternal( condition : string, tiles : any[] ) : string {
+    // display format sample: query-a-pet.result.code == 1
+    // internal format sample: $[A<taskID>.result].code == 1;
+
+    // paths cases
+    //  base cases
+    //    variable['propName']
+    //    variable.propName
+    //    variable["prop-name"]
+    //  composition cases
+    //    variable['propName']["prop-name"]
+    //    variable['propName'].propName
+    //    variable['propName'].propName["prop-name"]
+    //    variable.propName.propName["prop-name"]
+    let reComTaskName = '\\w+(?:\\-|\\w)*'; // sample: query-a-pet
+    let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
+    let reComPropNameWithQuote = '(?:[\\$\\-]|\\w)+'; // '(?:\"|\')(?:[\\$\\-]|\\w)+(?:\"|\')'
+
+    let reProp = `(${reComTaskName})
+    ((?:
+      (?:\\.${reComPropNameWithoutQuote}) |
+      (?:\\[
+        (?:
+          (?:\\"${reComPropNameWithQuote}\\") |
+          (?:\\'${reComPropNameWithQuote}\\')
+        )\\]
+      )
+    )+)`;
+
+    let pattern = new RegExp(reProp.replace(/\s/g, ''), 'g');
+
+    let taskNameIDMappings = <any>{};
+
+    _.each( tiles, ( tile : any ) => {
+      taskNameIDMappings[ normalizeTaskName( tile.name ) ] = {
+        id : convertTaskID( tile.id ),
+        triggerType : tile.triggerType,
+        activityType : tile.activityType
+      }
+    } );
+
+    condition = condition.replace( pattern,
+      ( match : string, taskName : string, propPath : string, offset : number, wholeString : string ) => {
+
+        let taskInfo = taskNameIDMappings[ normalizeTaskName( taskName ) ];
+        if (taskInfo) {
+          taskName = taskInfo.activityType ? `A${taskInfo.id}` : `T`;
+
+          let _propPath = _['toPath'](propPath);
+          let firstProp = _propPath.shift();
+
+          if ( firstProp ) {
+            return _propPath.length ?
+                   `$[${taskName}.${firstProp}].${_propPath.join( '.' )}` :
+                   `$[${taskName}.${firstProp}]`;
+          } else {
+            return `$[${taskName}]`;
+          }
+        } else {
+          return match;
+        }
+      } );
+
+    return condition;
   }
 }
