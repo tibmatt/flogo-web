@@ -30,7 +30,7 @@ OS_ARCH="linux_amd64"
 PUBLIC_DNS_NAME=$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
 echo "Public DNS name: ${PUBLIC_DNS_NAME}"
 
-# oÂosx
+# oï¿½osx
 # OS_ARCH="darwin_amd64"
 
 #############################
@@ -222,4 +222,4 @@ lsof -i:5050 | grep node | awk '{print $2}' | xargs kill -9
 echoInfo "start slack bot"
 cd "${ROOT_PATH}/slack-integration"
 npm install
-FLOGO_HOSTNAME="${PUBLIC_DNS_NAME}" node ./src > .log 2>&1 &
+FLOGO_PUBLIC_HOSTNAME="${PUBLIC_DNS_NAME}" node ./src > .log 2>&1 &
