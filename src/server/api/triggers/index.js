@@ -1,11 +1,7 @@
-import {config, dbService} from '../../config/app-config';
-import {DBService} from '../../common/db.service';
+import {config, triggersDBService} from '../../config/app-config';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
-let dbName = config.triggers.db;
-
-let _dbService = dbService;
 
 export function triggers(app, router){
   if(!app){
@@ -15,13 +11,12 @@ export function triggers(app, router){
 }
 
 function* getTriggers(next){
+  console.log('get triggers');
   let data = [];
 
-  data = yield _dbService.allDocs({ include_docs: true })
-    .then(res => res.rows || [])
-    .then(rows => rows.map(row => row.doc ? _.pick(row.doc, ['_id', 'name', 'version', 'description']) : []));
-
-  console.log(data);
+  data = yield triggersDBService.allDocs({ include_docs: true })
+    .then(triggers => triggers.map(trigger => _.pick(trigger, ['_id', 'name', 'version', 'description'])));
+  
   this.body = data;
   yield next;
 }

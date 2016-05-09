@@ -1,11 +1,7 @@
 import {config, activitiesDBService} from '../../config/app-config';
-import {DBService} from '../../common/db.service';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
-//let dbName = config.activities.db;
-
-let _dbService = activitiesDBService;
 
 export function activities(app, router){
   if(!app){
@@ -20,11 +16,9 @@ export function activities(app, router){
 function* getActivities(next){
   let data = [];
 
-  data = yield _dbService.allDocs({ include_docs: true })
-    .then(res => res.rows || [])
-    .then(rows => rows.map(row => row.doc ? _.pick(row.doc, ['_id', 'name', 'version', 'description']) : []));
-
-  console.log(data);
+  data = yield activitiesDBService.allDocs({ include_docs: true })
+    .then(rows => rows.map(activity => _.pick(activity, ['_id', 'name', 'version', 'description'])));
+  
   this.body = data;
   yield next;
 }
