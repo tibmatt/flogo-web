@@ -129,10 +129,12 @@ export function activitySchemaToTask(schema: any) : any {
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
     description: _.get(schema, 'description', ''),
+    homepage: _.get(schema, 'homepage', ''),
     attributes: {
       inputs: _.get(schema, 'inputs', []),
       outputs: _.get(schema, 'outputs', [])
-    }
+    },
+    __schema: _.cloneDeep(schema)
   };
 
   _.each(
@@ -162,9 +164,11 @@ export function activitySchemaToTrigger(schema: any) : any {
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
     description: _.get(schema, 'description', ''),
+    homepage: _.get(schema, 'homepage', ''),
     settings: _.get(schema, 'settings', ''),
     outputs: _.get(schema, 'outputs', ''),
-    endpoint: { settings: _.get(schema, 'endpoint.settings', '') }
+    endpoint: { settings: _.get(schema, 'endpoint.settings', '') },
+    __schema: _.cloneDeep(schema)
   };
 
   _.each(

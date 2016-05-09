@@ -9,7 +9,7 @@
         <!-- PANEL TITLES -->
         <div  *ngIf="_task && (_context.isTask || _context.isTrigger)" [ngClass]="{trigger:_context.isTrigger, task: _context.isTask}">
           <div class="flogo-common-edit-panel__head-read">
-            <span  class="flogo-common-edit-panel__head-read-icon"></span>
+            <a  class="flogo-common-edit-panel__head-read-icon" [href]="_task.homepage? _task.homepage : 'javascript:;'" target="_blank"></a>
             <div class="flogo-common-edit-panel__head-read-detail-wrapper">
               <div  class="flogo-common-edit-panel__head-read-detail">
                 <!--<i class="fa fa-times flogo-common-edit-panel__head-read-detail-close" aria-hidden="true"></i>-->
