@@ -4,13 +4,12 @@
 Flogo web include flogo front-end and flogo design time server
 
 
-## Following part still working on
+## Few notable features
 
-1. Basically structure of application
+1. Application structure suitable for distributed contributions
 
-2. Which tool should use to manage front-end libraries? Bower or NPM?
-    
-    Temp solution is manually merge them together
+2. Manage and Merge front-end libraries? Bower or NPM?
+  
 3. Production vs Dev mode
 
 4. Auto reload web application
