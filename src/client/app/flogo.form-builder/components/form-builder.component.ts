@@ -9,7 +9,7 @@ import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-bu
 import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
-import { convertTaskID, parseMapping, normalizeTaskName } from "../../../common/utils";
+import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 
 @Component({
@@ -494,7 +494,7 @@ export class FlogoFormBuilderComponent{
       items = this._getArray(items);
 
        items.forEach((item:any) => {
-         result[item.name] = item.value || null;
+         result[ item.name ] = _.get( item, 'value', getDefaultValue( item.type ) );
         });
 
         return result;
