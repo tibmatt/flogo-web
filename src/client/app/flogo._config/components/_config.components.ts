@@ -4,7 +4,7 @@ import { Router } from 'angular2/router';
 import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
 
 const DBS_ARR = [ 'activities', 'triggers', 'models' ];
-const SERVERS_ARR = [ 'engine', 'stateServer', 'processServer' ];
+const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
 
 @Component( {
   selector : 'flogo-_config',
@@ -33,7 +33,7 @@ export class Flogo_ConfigComponent {
     this._dbs = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
       if ( DBS_ARR.indexOf( key ) !== -1 ) {
         result.push( {
-          _label : _.capitalize( key ),
+          _label : _.startCase( key ),
           _key : key,
           config : value.db
         } );
@@ -45,7 +45,7 @@ export class Flogo_ConfigComponent {
     this._servers = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
       if ( SERVERS_ARR.indexOf( key ) !== -1 ) {
         result.push( {
-          _label : _.capitalize( key ),
+          _label : _.startCase( key ),
           _key : key,
           config : value
         } );

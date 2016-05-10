@@ -54,11 +54,11 @@ export function flogoGenTaskID( items? : any ) : string {
 }
 
 export function flogoGenBranchID() : string {
-  return flogoIDEncode( `FloGo::Branch::${Date.now()}` );
+  return flogoIDEncode( `Flogo::Branch::${Date.now()}` );
 }
 
 export function flogoGenTriggerID() : string {
-  return flogoIDEncode( `FloGo::Trigger::${Date.now()}` );
+  return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
 }
 
 /**
@@ -525,7 +525,7 @@ export function resetFlogoGlobalConfig() {
       port : "9190",
       testPath: "ping"
     },
-    processServer : {
+    flowServer : {
       // protocol : 'http',
       // host : "localhost",
       port : "9090",
@@ -583,7 +583,7 @@ export function getStateServerURL() : string {
 }
 
 export function getProcessServerURL() : string {
-  return getURL( (<any>window).FLOGO_GLOBAL.processServer );
+  return getURL( (<any>window).FLOGO_GLOBAL.flowServer );
 }
 
 export function getDBURL( dbConfig : {
