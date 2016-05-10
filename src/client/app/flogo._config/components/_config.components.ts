@@ -19,6 +19,7 @@ export class Flogo_ConfigComponent {
   private _servers : any[];
   private _dbs : any[];
   private _appDB : any;
+  private location = location; // expose window.location
 
   constructor( private _router : Router ) {
     this.init();

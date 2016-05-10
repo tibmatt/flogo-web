@@ -25,9 +25,9 @@
       <label class="col-md-2 col-sm-3" [textContent]="server._label"></label>
       <div class="col-lg-8 col-md-10 col-sm-12">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="http" [(ngModel)]="server.config.protocol">
+          <input type="text" class="form-control" placeholder="{{location.protocol.replace( ':', '' )}}" [(ngModel)]="server.config.protocol">
           <div class="input-group-addon">://</div>
-          <input type="text" class="form-control" placeholder="localhost" [(ngModel)]="server.config.host">
+          <input type="text" class="form-control" placeholder="{{location.hostname}}" [(ngModel)]="server.config.host">
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="server.config.port">
           <div class="input-group-addon">
@@ -48,9 +48,9 @@
       <label class="col-md-2 col-sm-3">Application Database</label>
       <div class="col-lg-9 col-md-10 col-sm-12">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="http" [(ngModel)]="_appDB.protocol">
+          <input type="text" class="form-control" placeholder="{{location.protocol.replace( ':', '' )}}" [(ngModel)]="_appDB.protocol">
           <div class="input-group-addon">://</div>
-          <input type="text" class="form-control" placeholder="localhost" [(ngModel)]="_appDB.host">
+          <input type="text" class="form-control" placeholder="{{location.hostname}}" [(ngModel)]="_appDB.host">
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="_appDB.port">
           <div class="input-group-addon">/</div>
@@ -66,9 +66,9 @@
       <label class="col-md-2 col-sm-3" [textContent]="db._label"></label>
       <div class="col-lg-9 col-md-10 col-sm-12">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="http" [(ngModel)]="db.config.protocol">
+          <input type="text" class="form-control" placeholder="{{location.protocol.replace( ':', '' )}}" [(ngModel)]="db.config.protocol">
           <div class="input-group-addon">://</div>
-          <input type="text" class="form-control" placeholder="localhost" [(ngModel)]="db.config.host">
+          <input type="text" class="form-control" placeholder="{{location.hostname}}" [(ngModel)]="db.config.host">
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="db.config.port">
           <div class="input-group-addon">/</div>

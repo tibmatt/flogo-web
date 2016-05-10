@@ -2,6 +2,7 @@ import {Component, Input, OnInit, DoCheck, OnDestroy} from 'angular2/core';
 import {Http} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject,Subscription} from "rxjs/Rx";
+import { getURL } from '../../../common/utils';
 
 const PING_INTERVAL_MS = 2500;
 
@@ -85,10 +86,9 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
   private buildUrl() {
     if(this.urlConfig) {
       let config = this.urlConfig;
-      let port = this.urlConfig.port ? `:${this.urlConfig.port}` : '';
       let name = this.urlConfig.name ? `/${this.urlConfig.name}` : '';
       let testPath = this.urlConfig.testPath ? `/${this.urlConfig.testPath}` : '';
-      return `${config.protocol}://${config.host}${port}${name}${testPath}`;
+      return `${getURL(config)}${name}${testPath}`;
     }
     return null;
   }

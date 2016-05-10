@@ -483,23 +483,23 @@ export function resetFlogoGlobalConfig() {
   // set default value
   updateFlogoGlobalConfig( {
     db : {
-      protocol : 'http',
-      host : 'localhost',
+      // protocol : 'http',
+      // host : 'localhost',
       port : '5984',
       name : 'flogo-web'
     },
     activities : {
       db : {
-        protocol : 'http',
-        host : 'localhost',
+        // protocol : 'http',
+        // host : 'localhost',
         port : '5984',
         name : 'flogo-web-activities'
       }
     },
     triggers : {
       db : {
-        protocol : 'http',
-        host : 'localhost',
+        // protocol : 'http',
+        // host : 'localhost',
         port : '5984',
         name : 'flogo-web-triggers'
       },
@@ -507,27 +507,27 @@ export function resetFlogoGlobalConfig() {
     /*
     models : {
       db : {
-        protocol : 'http',
-        host : 'localhost',
+        // protocol : 'http',
+        // host : 'localhost',
         port : '5984',
         name : 'flogo-web-models'
       },
     },*/
     engine : {
-      protocol : 'http',
-      host : "localhost",
+      // protocol : 'http',
+      // host : "localhost",
       port : "8080",
       testPath: "status"
     },
     stateServer : {
-      protocol : 'http',
-      host : "localhost",
+      // protocol : 'http',
+      // host : "localhost",
       port : "9190",
       testPath: "ping"
     },
     processServer : {
-      protocol : 'http',
-      host : "localhost",
+      // protocol : 'http',
+      // host : "localhost",
       port : "9090",
       testPath: "ping"
     }
@@ -562,14 +562,16 @@ export function getFlogoGlobalConfig() : any {
   return (<any>window).FLOGO_GLOBAL;
 }
 
-function getURL( config : {
+export function getURL( config : {
   protocol? : string;
-  host : string;
+  host? : string;
   port? : string;
 } ) : string {
-  return config.port ?
-         `${config.protocol || 'http'}://${config.host}:${config.port}` :
-         `${config.protocol || 'http'}://${config.host}}`
+  if ( config.port ) {
+    return `${config.protocol || location.protocol.replace( ':', '' )}://${config.host || location.hostname}:${config.port}`;
+  } else {
+    return `${config.protocol || location.protocol.replace( ':', '' )}://${config.host || location.hostname}}`;
+  }
 }
 
 export function getEngineURL() : string {
@@ -582,6 +584,14 @@ export function getStateServerURL() : string {
 
 export function getProcessServerURL() : string {
   return getURL( (<any>window).FLOGO_GLOBAL.processServer );
+}
+
+export function getDBURL( dbConfig : {
+  port : string;
+  protocol : string;
+  host : string;name : string
+} ) : string {
+  return `${getURL( dbConfig )}/${dbConfig.name}`;
 }
 
 /**
