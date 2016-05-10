@@ -1,7 +1,8 @@
 import path from 'path';
 import fs from 'fs';
-import performanceNow from "performance-now";
+import performanceNow from 'performance-now';
 import _ from 'lodash';
+import {FLOGO_TASK_TYPE} from '../common/constants';
 
 export function btoa(str) {
   var buffer;
@@ -124,14 +125,45 @@ export function flogoIDDecode( encodedId ){
   return atob( encodedId );
 }
 
-export function flogoGenTaskID() {
-  // shift the timestamp for avoiding overflow 32 bit system
+export function flogoGenTaskID(items) {
+  let taskID;
+
   // TODO
   //  generate a more meaningful task ID in string format
-  return flogoIDEncode( '' + (Date.now() >>> 1) );
+  if ( items ) {
+    let ids = _.keys( items );
+    let startPoint = 2; // taskID 1 is reserved for the rootTask
+
+    let taskIDs = _.map( _.filter( ids, id => {
+      return items[ id ].type === FLOGO_TASK_TYPE.TASK;
+    } ), id => {
+      return _.toNumber( flogoIDDecode( id ) );
+    } );
+
+    let currentMax = _.max( taskIDs );
+
+    if ( currentMax && _.isFinite(currentMax) ) { // isFinite: _.max coerces values to number in lodash versions < 4
+      taskID = '' + ( currentMax + 1);
+    } else {
+      taskID = '' + startPoint;
+    }
+
+  } else {
+    // shift the timestamp for avoiding overflow 32 bit system
+    taskID = '' + (Date.now() >>> 1);
+  }
+
+  return flogoIDEncode( taskID );
+
 }
 
-export function genNodeID()  {
+export function flogoGenTriggerID() {
+  return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
+}
+
+export function genNodeID(items)  {
+
+
   let id = '';
 
   if ( performanceNow && _.isFunction( performanceNow ) ) {
