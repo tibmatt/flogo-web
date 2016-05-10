@@ -13,7 +13,9 @@ import {
 } from '../../common/utils';
 
 const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
 const execSync = require('child_process').execSync;
+const fs = require('fs');
 
 //TODO: make sync function to async
 
@@ -454,11 +456,20 @@ export class Engine {
       console.log("[info]start");
       let defaultEngineBinPath = path.join(this.enginePath, this.options.name, 'bin');
       console.log("[info]defaultEngineBinPath: ", defaultEngineBinPath);
-      let command = "./" + this.options.name + " &";
+      let command = "./" + this.options.name; //+ " &";
       console.log("[info]command: ", command);
-      exec(command, {
+
+      let logFile = path.join(config.rootPath, '.engine.log')
+      let logStream = fs.createWriteStream(logFile, { flags: 'a' });
+      console.log("[info]engine logFile: ", logFile);
+
+      let engineProcess = spawn(command, {
         cwd: defaultEngineBinPath
       });
+
+      // log engine output
+      engineProcess.stdout.pipe(logStream);
+      engineProcess.stderr.pipe(logStream);
 
       this.engineStarted = true;
       return true;
