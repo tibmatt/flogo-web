@@ -5,7 +5,7 @@ import {FLOGO_FLOW_DIAGRAM_NODE_TYPE} from '../../common/constants';
 
 export function addTriggerToFlow(flow, trigger) {
   var newFlow = _.cloneDeep(flow);
-  var nodeID = genNodeID()
+  var nodeID = genNodeID();
   var triggerID = flogoGenTaskID();
   trigger.id = triggerID;
 

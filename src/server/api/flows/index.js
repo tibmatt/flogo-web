@@ -272,7 +272,7 @@ function _getActivityByName(activityName) {
 
 
 function _activitySchemaToTrigger(schema) {
-  return {
+  let trigger = {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
     activityType: _.get(schema, 'name', ''),
     name: _.get(schema, 'name', ''),
@@ -282,7 +282,16 @@ function _activitySchemaToTrigger(schema) {
     settings: _.get(schema, 'settings', ''),
     outputs: _.get(schema, 'outputs', ''),
     endpoint: { settings: _.get(schema, 'endpoint.settings', '') }
-  }
+  };
+
+  _.each(
+    trigger.outputs, (output) => {
+      // convert to task enumeration and provision default types
+      _.assign( output, portAttribute( output ) );
+    }
+  );
+
+  return trigger;
 }
 
 function _isRequiredConfiguration(schema) {
