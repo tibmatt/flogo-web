@@ -468,6 +468,12 @@ export class FlogoCanvasComponent {
             return resolve( rsp );
           };
 
+          let stopOnError = ( timer : any, rsp : any ) => {
+            processingStatus.done = true;
+            clearInterval( timer );
+            return reject( rsp );
+          };
+
           let timer = setInterval(
             () => {
 
@@ -490,7 +496,22 @@ export class FlogoCanvasComponent {
                             break;
                           case '100':
                             console.log( `[PROC STATE][${n}] Process is running...` );
-                            self.updateTaskRunStatus(rsp.id, processingStatus);
+                            self.updateTaskRunStatus( rsp.id, processingStatus )
+                              .then( ( status : any )=> {
+                                console.group( `[PROC STATE][${n}] status` );
+                                console.log( status );
+                                let isFlowDone = _.get( status, '__status.isFlowDone' );
+                                if ( isFlowDone ) {
+                                  done( timer, rsp );
+                                }
+                                console.groupEnd();
+                              } )
+                              .catch( ( err : any ) => {
+                                console.group( `[PROC STATE][${n}] on error` );
+                                console.log( err );
+                                stopOnError( timer, err );
+                                console.groupEnd();
+                              } );
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
@@ -535,6 +556,9 @@ export class FlogoCanvasComponent {
     const statusToClean = [ 'isRunning', 'hasRun' ];
     _.forIn( this.tasks, ( task : any, taskID : string ) => {
 
+      // clear errors
+      _.set( task, '__props.errors', [] );
+
       // ensure the presence of __status
       if ((<any>_).isNil(task.__status)) {
         task.__status = {};
@@ -563,21 +587,86 @@ export class FlogoCanvasComponent {
               console.warn( 'Just logging to know if any query is discarded' );
               return rsp;
             } else {
-
               let steps = _.get( rsp, 'steps', [] );
 
+              let runTasksIDs = <string[]>[];
+              let errors = <{
+                [index : string] : {
+                  msg : string;
+                  time : string;
+                }[];
+              }>{};
+              let isFlowDone = false;
+              let runTasks = _.reduce( steps, ( result : any, step : any ) => {
+                let taskID = step.taskId;
+
+                if ( taskID !== 1 && !_.isNil( taskID ) ) { // if not rootTask and not `null`
+
+                  taskID = flogoIDEncode( '' + taskID );
+                  runTasksIDs.push( taskID );
+                  let reAttrName = new RegExp( `^\\[A${step.taskId}\\..*`, 'g' );
+                  let reAttrErrMsg = new RegExp( `^\\[A${step.taskId}\\._errorMsg\\]$`, 'g' );
+
+                  let taskInfo = _.reduce( _.get( step, 'flow.attributes', [] ), ( taskInfo : any, attr : any ) => {
+                    if ( reAttrName.test( _.get( attr, 'name', '' ) ) ) {
+                      taskInfo[ attr.name ] = attr;
+
+                      if ( reAttrErrMsg.test( attr.name ) ) {
+                        let errs = <any[]>_.get( errors, `${taskID}` );
+                        let shouldOverride = _.isUndefined( errs );
+                        errs = errs || [];
+
+                        errs.push( {
+                          msg : attr.value,
+                          time : new Date().toJSON()
+                        } );
+
+                        if ( shouldOverride ) {
+                          _.set( errors, `${taskID}`, errs );
+                        }
+                      }
+                    }
+                    return taskInfo;
+                  }, {} );
+
+                  result[ taskID ] = { attrs : taskInfo };
+                } else if ( _.isNull( taskID ) ) {
+                  isFlowDone = true;
+                }
+
+                return result;
+              }, {} );
+
               _.each(
-                steps, ( step : any )=> {
-                  // if the task is in steps array, it's run.
-                  // need to convert the number task ID to base64 string
-                  let task = this.tasks[flogoIDEncode(''+step.taskId)];
+                runTasksIDs, ( runTaskID : string )=> {
+                  let task = this.tasks[runTaskID];
 
                   if ( task ) {
                     task.__status['hasRun'] = true;
                     task.__status['isRunning'] = false;
+
+                    let errs = errors[ runTaskID ];
+                    if ( !_.isUndefined( errs ) ) {
+                      _.set( task, '__props.errors', errs );
+                    }
                   }
                 }
               );
+
+              _.set(rsp, '__status', {
+                isFlowDone: isFlowDone,
+                errors: errors,
+                runTasks: runTasks,
+                runTasksIDs: runTasksIDs
+              });
+
+              this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+
+              // when the flow is done on error, throw an error
+              // the error is the response with `__status` provisioned.
+              if (isFlowDone && !_.isEmpty(errors)) {
+                throw rsp;
+              }
 
               // TODO logging
               // console.log( _.cloneDeep( this.tasks ) );
@@ -591,17 +680,14 @@ export class FlogoCanvasComponent {
 
             return rsp;
           }
-        ).then(
-          ( rsp : any )=> {
-
-            this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
-
-            return rsp;
-          }
         );
     } else {
-      console.warn( 'No process has been started.' );
-      return Promise.reject( 'No process has been started.' );
+      console.warn( 'No flow has been started.' );
+      return Promise.reject( {
+        error : {
+          message : 'No flow has been started.'
+        }
+      } );
     }
 
   }
