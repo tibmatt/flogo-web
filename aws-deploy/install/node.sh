@@ -9,3 +9,7 @@ nvm install 5.2.0
 nvm alias default 5.2.0
 
 echo "nvm use default" >> ~/.profile
+
+
+#/home/ubuntu/.nvm/v5.2.0/bin/npm install -g gulp
+npm install -g gulp
