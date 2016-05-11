@@ -645,10 +645,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             let taskStatus = _getTaskStatus( task );
 
             // the first message of error/warning will be used as description when presents
-            if ( taskStatus.hasError ) {
-              let _errors = _.get( task, '__props.errors', [ { msg : '' } ] );
-              taskDescription = _errors[ 0 ].msg;
-            } else if ( taskStatus.hasWarning ) {
+            // NOTE: not going to display error messages in the
+            // if ( taskStatus.hasError ) {
+            //   let _errors = _.get( task, '__props.errors', [ { msg : '' } ] );
+            //   taskDescription = _errors[ 0 ].msg;
+            // } else
+            if ( taskStatus.hasWarning ) {
               let _warnings = _.get( task, '__props.warnings', [ { msg : '' } ] );
               taskDescription = _warnings[ 0 ].msg;
             } else {
@@ -903,12 +905,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         if ( nodeInfo ) {
           let task = this.tasks[ nodeInfo.taskID ];
           let taskStatus = _getTaskStatus( task );
+          let errors = _.get( task, '__props.errors', [] );
 
           if ( task ) {
             return [
               {
                 hasError : taskStatus.hasError,
-                hasMapping : _isTaskHasMapping( task )
+                hasMapping : _isTaskHasMapping( task ),
+                errors : errors
               }
             ]
           }
@@ -929,16 +933,18 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private _handleUpdateNodeBadges( nodeBadges : any ) {
     let diagram = this;
 
-    nodeBadges.html(
-      ( taskStatus : {
-        hasError : boolean;
-        hasMapping : boolean;
-      } ) => {
+    nodeBadges.html( ( taskStatus : any ) => {
         let tpl = '';
 
         if ( taskStatus ) {
           if ( taskStatus.hasError ) {
-            tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-error"></i>`;
+            let message = _.reduce( taskStatus.errors, ( result : string, error : {msg : string;time : string;} ) => {
+              return `${result}[Error][${moment( error.time || new Date().toJSON() )
+                .fromNow()
+                }]: ${error.msg}\n`;
+            }, '' );
+
+            tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-error" title="${message.trim()}"></i>`;
           }
 
           if ( taskStatus.hasMapping ) {
@@ -947,8 +953,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         }
 
         return tpl;
-      }
-    );
+      } );
   }
 
   private _handleExitNodeBadges( nodeBadges : any ) {
