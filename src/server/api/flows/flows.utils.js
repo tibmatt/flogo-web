@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import {isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
+import {flogoGenTaskID, flogoGenTriggerID, genNodeID} from '../../common/utils';
 import {FLOGO_FLOW_DIAGRAM_NODE_TYPE} from '../../common/constants';
 
 
 export function addTriggerToFlow(flow, trigger) {
   var newFlow = _.cloneDeep(flow);
   var nodeID = genNodeID();
-  var triggerID = flogoGenTaskID();
+  var triggerID = flogoGenTriggerID();
   trigger.id = triggerID;
 
   //override the root
@@ -30,7 +30,7 @@ export function addTriggerToFlow(flow, trigger) {
 export function addActivityToFlow(flow, activity) {
   var newFlow = _.cloneDeep(flow);
   var nodeID = genNodeID();
-  var activityID = flogoGenTaskID();
+  var activityID = flogoGenTaskID(flow.items || {});
   activity.id = activityID;
 
   var node = findNodeNotChildren(newFlow);
