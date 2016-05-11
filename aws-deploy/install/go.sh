@@ -17,3 +17,7 @@ cd /usr/local/go
 
 /usr/local/go/bin/go get github.com/constabulary/gb/…
 
+
+echo "==================================="
+echo "==================================="
+echo "End go install"

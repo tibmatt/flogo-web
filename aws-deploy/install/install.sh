@@ -7,3 +7,4 @@ sh ./go.sh
 
 echo "Installing node"
 sh ./node.sh
+

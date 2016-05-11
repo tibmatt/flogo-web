@@ -29,3 +29,11 @@ sudo update-ca-certificates -f
 #/home/ubuntu/.nvm/v5.2.0/bin/npm install -g gulp
 npm install -g gulp
 
+
+
+chown -R ubuntu:ubuntu /home/ubuntu/flogo-web
+
+
+echo "==================================="
+echo "==================================="
+echo "End node install"
