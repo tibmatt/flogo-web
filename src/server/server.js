@@ -124,7 +124,7 @@ app.use(compress({
 }));
 
 // server static resources
-app.use(koaStatic("../public"));
+app.use(koaStatic("../public", {maxage: config.app.cacheTime}));
 app.use(bodyParser());
 
 app.on('error', function(err){
