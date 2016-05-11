@@ -10,6 +10,7 @@ export class RESTAPIService {
   instances:any;
   activities:any;
   triggers:any;
+  engine:any;
 
   // TODO
   //    need to replace this mock with real implementation
@@ -261,6 +262,11 @@ export class RESTAPIService {
     };
 
     this._initActivities();
+
+    this.engine = {
+      restart:()=>{
+      }
+    }
 
   }
 

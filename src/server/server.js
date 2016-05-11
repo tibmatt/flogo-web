@@ -88,7 +88,11 @@ Promise.all(PromiseAll).then(()=>{
     buildEngine.addAllActivities().then(()=>{
       buildEngine.addAllTriggers(config.buildEngine.installConfig).then(()=>{
         engines.build = buildEngine;
-        engines.test = test;
+        engines.test = testEngine;
+
+        console.log("=============================================================================================");
+        console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
+        console.log("=============================================================================================");
       });
     });
   }).catch((err)=>{

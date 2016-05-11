@@ -2,6 +2,7 @@ import { Component } from 'angular2/core';
 import { getFlogoGlobalConfig, updateFlogoGlobalConfig, resetFlogoGlobalConfig } from '../../../common/utils';
 import { Router } from 'angular2/router';
 import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
+import { Http, Headers, RequestOptions } from 'angular2/http';
 
 const DBS_ARR = [ 'activities', 'triggers', 'models' ];
 const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
@@ -21,7 +22,7 @@ export class Flogo_ConfigComponent {
   private _appDB : any;
   private location = location; // expose window.location
 
-  constructor( private _router : Router ) {
+  constructor( private _router : Router, private http:Http ) {
     this.init();
   }
 
@@ -44,9 +45,16 @@ export class Flogo_ConfigComponent {
 
     this._servers = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
       if ( SERVERS_ARR.indexOf( key ) !== -1 ) {
+        let _display = false;
+
+        // for now we just has the restart feature for 8080(default engine)
+        if(value&&value.port == '8080'){
+          _display = true
+        }
         result.push( {
           _label : _.startCase( key ),
           _key : key,
+          _display: _display,
           config : value
         } );
       }
@@ -81,6 +89,29 @@ export class Flogo_ConfigComponent {
 
   onCancel() {
     this._router.navigate( [ 'FlogoHome' ] );
+  }
+
+  onRestart(server:any){
+    console.log(server);
+    let port = server&&server.config&&server.config.port||undefined;
+    if(port == '8080'){
+      let headers = new Headers(
+        {
+          'Accept' : 'application/json'
+        }
+      );
+
+      let options = new RequestOptions( { headers : headers } );
+
+      this.http.get( `/v1/api/engine/restart`, options )
+        .toPromise()
+        .then((res)=>{
+          console.log("Restart engine successful. res: ", res);
+        }).catch((err)=>{
+          console.log("Restart engine errror. err: ", err);
+        });
+
+    }
   }
 
   onResetDefault () {

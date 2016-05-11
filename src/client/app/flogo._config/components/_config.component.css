@@ -7,3 +7,11 @@
   text-align: right;
   line-height: 32px;
 }
+
+.hide{
+  display: none;
+}
+
+.show{
+  display: block;
+}

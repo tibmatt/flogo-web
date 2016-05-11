@@ -475,7 +475,8 @@ export class Engine {
   stop(){
     try {
       let port = this.options.port;
-      execSync(`lsof -i:${port} | grep node | awk '{print $2}' | xargs kill -9`);
+      let name = this.options.name;
+      execSync(`pgrep ${name} | xargs kill -9`);
       this.engineStarted = false;
 
       return true;
