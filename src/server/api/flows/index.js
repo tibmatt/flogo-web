@@ -274,7 +274,7 @@ function _getActivityByName(activityName) {
 function _activitySchemaToTrigger(schema) {
   let trigger = {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
-    activityType: _.get(schema, 'name', ''),
+    triggerType: _.get(schema, 'name', ''),
     name: _.get(schema, 'name', ''),
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
