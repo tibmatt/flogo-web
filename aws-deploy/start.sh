@@ -2,16 +2,6 @@
 #############################
 # Colors
 #############################
-FG_DEFAULT="\e[39m"
-FG_BLACK="\e[30m"
-FG_RED="\e[31m"
-FG_GREEN="\e[32m"
-FG_YELLOW="\e[33m"
-FG_BLUE="\e[34m"
-FG_PURPLE="\e[35m"
-FG_CYAN="\e[36m"
-FG_LIGHTGRAY="\e[37m"
-NC='\033[0m'
 
 #############################
 # Paths
@@ -30,7 +20,7 @@ OS_ARCH="linux_amd64"
 PUBLIC_DNS_NAME=$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
 echo "Public DNS name: ${PUBLIC_DNS_NAME}"
 
-# o�osx
+# osx
 # OS_ARCH="darwin_amd64"
 
 #############################
@@ -38,13 +28,13 @@ echo "Public DNS name: ${PUBLIC_DNS_NAME}"
 #############################
 echoBlack()
 {
-  printf "${FG_BLACK}$@${NC}\n"
+  printf "$@\n"
 }
 
 echoDefault()
 {
   now=$(date +"%T")
-  printf "[$now]${FG_DEFAULT}$@${NC}\n"
+  printf "[$now]$@\n"
 }
 echoHeader()
 {
@@ -55,18 +45,18 @@ echoHeader()
 echoInfo()
 {
   now=$(date +"%T")
-  printf "${FG_YELLOW}[Info][$now] ${NC}${FG_DEFAULT}$@${NC}\n"
+  printf "[Info][$now] $@\n"
 }
 echoError()
 {
   now=$(date +"%T")
-  printf "${FG_RED}[Error][$now] $@${NC}\n"
+  printf "[Error][$now] $@\n"
 }
 
 echoSuccess()
 {
   now=$(date +"%T")
-  printf "${FG_GREEN}[Success][$now] $@${NC}\n"
+  printf "[Success][$now] $@\n"
 }
 check_command(){
   local cmd="$1"; shift
