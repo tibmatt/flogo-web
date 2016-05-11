@@ -208,9 +208,17 @@ sh start-services.sh &
 # Step 4: start flogo-web
 #############################
 echoHeader "Step4: start flogo-web"
-cd $ROOT_PATH
+cd "$ROOT_PATH"
 npm install
-gulp &
+gulp build
+
+cd "$ROOT_PATH"
+cd dist/server
+
+LOG_ROUTE="$HOME/flogo-logs"
+mkdir -p "$LOG_ROUTE"
+( npm run start-server 2>&1 | tee -a "$LOG_ROUTE/flogo-webserver-$(date +"%Y%m%d-%H%M").log" ) &
+( npm run start-db 2>&1 | tee -a "$LOG_ROUTE/flogo-db-$(date +"%Y%m%d-%H%M").log" ) &
 
 ##########################
 # Setp 5: start slack bot
@@ -222,4 +230,4 @@ lsof -i:5050 | grep node | awk '{print $2}' | xargs kill -9
 echoInfo "start slack bot"
 cd "${ROOT_PATH}/slack-integration"
 npm install
-FLOGO_PUBLIC_HOSTNAME="${PUBLIC_DNS_NAME}" node ./src > .log 2>&1 &
+FLOGO_PUBLIC_HOSTNAME="${PUBLIC_DNS_NAME}" node ./src > "$LOG_ROUTE/flogo-slackbot-$(date +"%Y%m%d-%H%M").log" 2>&1 &

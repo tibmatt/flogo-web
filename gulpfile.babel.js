@@ -57,6 +57,16 @@ gulp.task("default", ()=>{
   )
 });
 
+gulp.task("build", () => {
+  runSequence([
+    'clean:dev',
+    'copy:dev',
+    'build:ts:dev',
+    'install:dev',
+    'concat:lib'
+  ])
+});
+
 gulp.task("dev", ()=>{
   runSequence(
     "build:dev",
