@@ -459,7 +459,7 @@ export class Engine {
       let command = "./" + this.options.name; //+ " &";
       console.log("[info]command: ", command);
 
-      let logFile = path.join(config.rootPath, '.engine.log')
+      let logFile = path.join(config.publicPath, 'engine.log')
       let logStream = fs.createWriteStream(logFile, { flags: 'a' });
       console.log("[info]engine logFile: ", logFile);
 

@@ -8,10 +8,10 @@
   line-height: 32px;
 }
 
-.hide{
-  display: none;
+.flogo-hide{
+  visibility: hidden;
 }
 
-.show{
-  display: block;
+.flogo-show{
+  visibility: visible;;
 }

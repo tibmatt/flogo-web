@@ -5,11 +5,15 @@ import {
 
 let rootPath = path.normalize(__dirname + '/..');
 
+let publicPath = path.normalize(rootPath+'/../public');
+
 console.log("rootPath: ", rootPath);
+console.log("publicPath: ", publicPath);
 
 let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
+  publicPath: publicPath,
   app: {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
@@ -128,7 +132,7 @@ let config = {
       },
       "services": [{
         "name": "stateRecorder",
-        "enabled": true,
+        "enabled": false,
         "settings": {
           "host": "localhost",
           "port": "9190"
