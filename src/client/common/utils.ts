@@ -648,18 +648,26 @@ export function notification(message: string, type: string, time?: number, setti
     window.jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
   let notification = window.jQuery('.flogo-common-notification-container>div:last');
+  let notifications =  window.jQuery('.flogo-common-notification-container>div');
+  let maxCounter = 5;
+
+  if(notifications.length > 5) {
+    for(let i = 0; i < notifications.length - maxCounter; i++) {
+      if(notifications[i]) notifications[i].remove();
+    }
+  }
   setTimeout(function () {
     notification.addClass('on');
   }, 100);
   return new Promise((resolve, reject) => {
     if(time) {
       setTimeout(function () {
-        notification.remove();
+        if(notification) notification.remove();
         if(!notificationContainer.html()) notificationContainer.remove();
       }, time);
     }
     if(!time) {
-      window.jQuery('.flogo-common-notification-close').click(() => {
+      notification.find('.flogo-common-notification-close').click(() => {
         notification.remove();
         resolve();
       });

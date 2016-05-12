@@ -447,6 +447,7 @@ label {
   z-index: 1000;
 }
 .flogo-common-notification {
+  position: relative;
   opacity: 0;
   width: 0;
   float: right;
@@ -466,22 +467,22 @@ label {
 }
 .flogo-common-notification.information {
   color: #0082d5;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 1);
   border: solid 1px #0082d5;
 }
 .flogo-common-notification.success {
   color: #a5d377;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 1);
   border: 2px solid #a5d377;
 }
 .flogo-common-notification.warning {
   color: #ff9948;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 1);
   border: solid 1px #ff9948;
 }
 .flogo-common-notification.error {
   color: #d0021b;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 1);
   border: 2px solid #d0021b;
 }
 .flogo-common-notification .flogo-common-notification-close{
