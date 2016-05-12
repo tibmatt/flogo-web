@@ -11,12 +11,13 @@ export function triggers(app, router){
 }
 
 function* getTriggers(next){
-  console.log('get triggers');
   let data = [];
 
   data = yield triggersDBService.allDocs({ include_docs: true })
-    .then(triggers => triggers.map(trigger => _.pick(trigger, ['_id', 'name', 'version', 'description'])));
-  
+    .then(triggers => triggers.map(trigger => {
+      return Object.assign({}, _.pick(trigger, ['_id', 'name', 'title', 'version', 'description']), { title: _.get(trigger, 'schema.title')});
+    }));
+
   this.body = data;
   yield next;
 }

@@ -14,11 +14,11 @@ export function activities(app, router){
 }
 
 function* getActivities(next){
-  let data = [];
+  let data = yield activitiesDBService.allDocs({ include_docs: true })
+    .then(activities => activities.map(activity => {
+      return Object.assign({}, _.pick(activity, ['_id', 'name', 'title', 'version', 'description']), { title: _.get(activity, 'schema.title') });
+    }));
 
-  data = yield activitiesDBService.allDocs({ include_docs: true })
-    .then(rows => rows.map(activity => _.pick(activity, ['_id', 'name', 'version', 'description'])));
-  
   this.body = data;
   yield next;
 }

@@ -116,6 +116,10 @@ function _addTile(type, name) {
       return reject({code: CLIENT_ERRORS.NO_FLOW});
     }
 
+    if(!name.startsWith('tibco-')) {  // add tibco namespace if they don't have it'
+      name = `tibco-${name}`;
+    }
+
     request
       .post({
         url: BASE_PATH + `/flows/${type}`,

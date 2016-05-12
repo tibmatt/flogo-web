@@ -1,5 +1,6 @@
 'use strict';
 let truncate = require('lodash/truncate');
+let trimStart = require('lodash/trimStart');
 
 module.exports = {
   formatFlow,
@@ -61,7 +62,13 @@ function formatFlowList(flows, msg) {
 function formatTileList(tiles, options) {
   options = options || {};
   let pretext = options.msg ? options.msg : undefined;
-  let text = (tiles || []).map(tile => `• *${tile.name}*: ${truncate(tile.description) || tile.name}`).join('\n');
+  let text = (tiles || [])
+    .map(tile => {
+      // TODO do not remove namespace after TN?
+      let line =  `• *${_removeNamespace(tile.name, 'tibco-')}*`;
+      return tile.title ? `${line}: ${truncate(tile.title || tile.name)}` : line;
+    })
+    .join('\n');
 
   return {
     attachments: [
@@ -74,4 +81,8 @@ function formatTileList(tiles, options) {
       }
     ]
   };
+}
+
+function _removeNamespace(string) {
+  return string ?  string.replace(/^(tibco-)/, '') : '';
 }
