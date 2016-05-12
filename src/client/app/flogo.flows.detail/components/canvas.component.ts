@@ -70,6 +70,7 @@ export class FlogoCanvasComponent {
   _processInstanceID: string;
   _restartProcessInstanceID: string;
   _isDiagramEdited:boolean;
+  exportLink:string;
 
   // TODO
   //  may need better implementation
@@ -149,6 +150,8 @@ export class FlogoCanvasComponent {
     } catch ( e ) {
       console.warn( e );
     }
+    
+    this.exportLink = `/v1/api/flows/${id}/json`;
 
     this._restAPIFlowsService.getFlow(id)
       .then(
