@@ -2,4 +2,6 @@
 
 git config --global credential.helper 'cache --timeout=3600'
 
-nohup ./start.sh > ../dist/public/web.log &
+LOG_DIR="../dist/public"
+mkdir -p "$LOG_DIR"
+nohup ./start.sh > "$LOG_DIR/web.log" &
