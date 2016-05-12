@@ -4,6 +4,7 @@ import {isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '.
 import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
 import _ from 'lodash';
 import * as flowUtils from './flows.utils';
+import { readFileSync } from 'fs';
 
 let basePath = config.app.basePath;
 let dbDefaultName = config.db;
@@ -296,12 +297,54 @@ function * exportFlowInJsonById( next ) {
 
 function * importFlowFromJson( next ) {
   console.log( '[INFO] Import flow from JSON' );
-  console.log( this.query );
-  console.log( this.params );
-  console.log( this.request.params );
-  console.log( this.request.body );
-  console.log( this.request.query );
-  this.body = '[INFO] Import flow from JSON';
+
+  let importedFile = _.get( this, 'request.body.files.importFile' );
+
+  if ( _.isObject( importedFile ) && !_.isEmpty( importedFile ) ) {
+
+    // only support `application/json`
+    if ( importedFile.type !== 'application/json' ) {
+      console.error( '[ERROR]: ', importedFile );
+      this.throw( 400, 'Unsupported file type: ' + importedFile.type + '; Support application/json only.' );
+    } else {
+
+      /* processing the imported file */
+
+      let imported;
+
+      // read file data into string
+      try {
+        imported = readFileSync( importedFile.path, { encoding : 'utf-8' } );
+      } catch ( err ) {
+        console.error( '[ERROR]: ', err );
+        this.throw( 500, 'Cannot read the uploaded file.', { expose : true } );
+      }
+
+      // parse file date to object
+      try {
+        imported = JSON.parse( imported );
+      } catch ( err ) {
+        console.error( '[ERROR]: ', err );
+        this.throw( 400, 'Invalid JSON data.' );
+      }
+
+      // create the flow with the parsed imported data
+      let createFlowResult;
+      try {
+        createFlowResult = yield createFlow( imported );
+      } catch ( err ) {
+        console.error( '[ERROR]: ', err );
+        this.throw( 500, 'Fail to create flow.', { expose : true } );
+      }
+
+      this.body = createFlowResult;
+    }
+
+  } else {
+    console.log( this.request.body.files );
+    this.throw( 400, 'Invalid file.' );
+  }
+
   yield next;
 }
 

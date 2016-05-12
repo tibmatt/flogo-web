@@ -125,7 +125,7 @@ app.use(compress({
 
 // server static resources
 app.use(koaStatic("../public", {maxage: config.app.cacheTime}));
-app.use(bodyParser());
+app.use( bodyParser( { multipart : true } ) );
 
 app.on('error', function(err){
   if (401 == err.status) return;
