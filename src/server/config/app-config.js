@@ -26,6 +26,9 @@ let config = {
     default: {
       "tibco-twilio": {
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
+      },
+      "tibco-coap": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/coap"
       }
     },
     contrib: {}
@@ -40,6 +43,9 @@ let config = {
       },
       "tibco-timer":{
         path: "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
+      },
+      "tibco-coap":{
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
       }
     }
   },
@@ -57,6 +63,9 @@ let config = {
         ignore: true
       },
       "tibco-timer": {
+        ignore: true
+      },
+      "tibco-coap":{
         ignore: true
       }
     },
