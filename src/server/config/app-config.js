@@ -184,3 +184,7 @@ export {
 export {
   engines
 };
+
+export let flowExport = {
+  filename: 'flogo.export.json'
+};

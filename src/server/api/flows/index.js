@@ -1,4 +1,4 @@
-import {config, dbService, triggersDBService, activitiesDBService} from '../../config/app-config';
+import {config, dbService, triggersDBService, activitiesDBService, flowExport} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
 import {isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
 import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
@@ -113,6 +113,8 @@ export function flows(app, router){
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
 
+  router.post(basePath+'/flows/json', importFlowFromJson);
+  router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
 function* getFlows(next){
@@ -220,6 +222,86 @@ function * addActivity(next){
   }
 
   this.body = response;
+  yield next;
+}
+
+function * exportFlowInJsonById( next ) {
+  console.log( '[INFO] Export flow in JSON by ID' );
+
+  let flowId = _.get( this, 'params.id' );
+  let errMsg = {
+    'INVALID_PARAMS' : 'Invalid flow id.',
+    'FLOW_NOT_FOUND' : 'Cannot find flow [___FLOW_ID___].'
+  };
+  let filename = flowExport.filename || 'export.json';
+
+  if ( _.isUndefined( flowId ) ) {
+
+    // invalid parameters
+    this.throw( 400, errMsg.INVALID_PARAMS );
+
+  } else {
+
+    let flowInfo = yield _getFlowById( flowId );
+
+    if ( _.isNil( flowInfo ) || _.isObject( flowInfo ) && _.isEmpty( flowInfo ) ) {
+
+      // cannot find the flow
+      this.throw( 404, errMsg.FLOW_NOT_FOUND.replace( '___FLOW_ID___', flowId ) );
+
+    } else {
+
+      // export the flow information as a JSON file
+      this.type = 'application/json;charset=UTF-8';
+      this.attachment( filename );
+
+      // processing the flow information to omit unwanted fields
+      this.body = _.omitBy( flowInfo, ( propVal, propName ) => {
+
+        if ( [ '_id', '_rev', '_conflicts', 'updated_at', 'created_at' ].indexOf( propName ) !== -1 ) {
+          return true;
+        }
+
+        // remove the `__status` attribute from `paths.nodes`
+        if ( propName === 'paths' ) {
+          let nodes = _.get( propVal, 'nodes', {} );
+
+          if ( !_.isEmpty( nodes ) ) {
+            _.forIn( nodes, ( n )=> {
+              _.unset( n, '__status' );
+            } );
+          }
+        }
+
+        // remove the `__status` and `__props` attributes from `items`
+        if ( propName === 'items' ) {
+
+          if ( !_.isEmpty( propVal ) ) {
+            _.forIn( propVal, ( item )=> {
+              _.each( [ '__status', '__props' ], ( path ) => {
+                _.unset( item, path );
+              } );
+            } );
+          }
+
+        }
+
+        return false;
+      } );
+    }
+  }
+
+  yield next;
+}
+
+function * importFlowFromJson( next ) {
+  console.log( '[INFO] Import flow from JSON' );
+  console.log( this.query );
+  console.log( this.params );
+  console.log( this.request.params );
+  console.log( this.request.body );
+  console.log( this.request.query );
+  this.body = '[INFO] Import flow from JSON';
   yield next;
 }
 
