@@ -9,13 +9,14 @@ import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
+import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
 
 @Component({
   selector: 'flogo-flows',
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
 
@@ -98,6 +99,19 @@ export class FlogoFlowsComponet{
             })
         })
     }
+
+  onFlowImportSuccess( result : any ) {
+    notification( `Import flow successfully!`, 'success', 3000 );
+    this.getAllFlows();
+  }
+
+  onFlowImportError( err : {
+    status : string;
+    statusText : string;
+    response : any
+  } ) {
+    notification( `${err.response}`, 'error' );
+  }
 
 
     // export flogoIDEncode

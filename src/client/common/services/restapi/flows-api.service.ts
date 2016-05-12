@@ -131,5 +131,30 @@ export class RESTAPIFlowsService{
       );
   }
 
+  importFlow( importFile : any ) {
+    return new Promise( ( resolve, reject ) => {
+      var formData : any = new FormData();
+      var xhr = new XMLHttpRequest();
+      formData.append( 'importFile', importFile, importFile.name );
+
+      xhr.onreadystatechange = function () {
+        if ( xhr.readyState == 4 ) {
+          if ( xhr.status == 200 ) {
+            resolve( JSON.parse( xhr.response ) );
+          } else {
+            reject( {
+              status : xhr.status,
+              statusText : xhr.statusText,
+              response : xhr.response
+            } );
+          }
+        }
+      };
+
+      xhr.open( 'POST', '/v1/api/flows/json', true );
+      xhr.send( formData );
+    } );
+  }
+
   // restartFlow() TODO need to inject instance related APIs
 }
