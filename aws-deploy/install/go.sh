@@ -5,19 +5,16 @@ sudo curl -O https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz
 sudo tar -xvf go1.6.linux-amd64.tar.gz
 
 sudo mv go      /usr/local
-
+export PATH=$PATH:$HOME/.golang_default/bin:/usr/local/go/bin
 export GOPATH=$HOME/.golang_default
 
+sudo rm -rf go1.6.linux-amd64.tar.gz
 echo "export PATH=$PATH:$HOME/.golang_default/bin:/usr/local/go/bin" >> ~/.profile
 echo "export GOPATH=$HOME/.golang_default" >> ~/.profile
-
-
-cd /usr/local/go
-
-
-/usr/local/go/bin/go get github.com/constabulary/gb/…
-
-
+echo "==================================="
+echo "Instaling GB"
+echo "==================================="
+go get github.com/constabulary/gb/...
 echo "==================================="
 echo "==================================="
 echo "End go install"
