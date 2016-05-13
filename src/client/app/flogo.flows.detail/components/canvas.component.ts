@@ -438,7 +438,7 @@ export class FlogoCanvasComponent {
           console.error( err );
           // TODO
           //  more specific error message?
-          notification('Flow stopped on error.', 'error');
+          notification('Ops! something wrong! :(', 'error');
           return err;
         }
       );
@@ -518,7 +518,7 @@ export class FlogoCanvasComponent {
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
-                            notification('Flow is finished.', 'success', 3000);
+                            notification('Flow completed! ^_^', 'success', 3000);
                             done( timer, rsp );
                             break;
                           case '600':
