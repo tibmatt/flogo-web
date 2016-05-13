@@ -2,11 +2,18 @@
 
 # Gettign started
 
-1. git status // to check the branch 
-2. git pull --rebase 
-3. git checkout develop
-4. ./start.sh 
+1. `git status` // to check the branch 
+2. `git pull --rebase`
+3. `git checkout develop`
+4. `./start.sh`
 
+If start successful, it you can see following output 
+
+```
+=============================================================================================
+[success] open http://localhost:3010 or http://localhost:3010/_config in your browser
+=============================================================================================
+```
 
 
 # flogo-web
