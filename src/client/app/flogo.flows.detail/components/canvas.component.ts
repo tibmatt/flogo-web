@@ -150,7 +150,7 @@ export class FlogoCanvasComponent {
     } catch ( e ) {
       console.warn( e );
     }
-    
+
     this.exportLink = `/v1/api/flows/${id}/json`;
 
     this._restAPIFlowsService.getFlow(id)
@@ -1321,7 +1321,7 @@ export class FlogoCanvasComponent {
     //  refine confirmation
     //  delete trigger isn't hanlded
     if ( node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task) {
-      this._flogoModal.confirm(`Are you sure to delete task?`).then((res) => {
+      this._flogoModal.confirmDelete('Are you sure you want to delete this task?').then((res) => {
         if(res) {
 
           // clear details panel, if the selected activity is deleted

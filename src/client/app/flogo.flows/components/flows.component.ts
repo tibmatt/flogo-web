@@ -51,7 +51,7 @@ export class FlogoFlowsComponet{
                 items: {}
             };
             this._flow.createFlow(_.clone(request)).then((response)=>{
-                notification('Create the flow successfully!', 'success', 3000);
+                notification('Flow was created successfully!', 'success', 3000);
                 resolve(response);
             }).catch((err)=>{
                 notification(`Create flow error: ${err}`, 'error');
@@ -66,11 +66,11 @@ export class FlogoFlowsComponet{
 
     // delete a flow
     deleteFlow( flow: any) {
-        this._flogoModal.confirm('Are you sure to delete ' + flow.name + ' flow?').then((res) => {
+        this._flogoModal.confirmDelete('Are you sure you want to delete ' + flow.name + ' flow?').then((res) => {
             if(res) {
                 this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
                     this.getAllFlows();
-                    notification('Remove the flow successfully!', 'success', 3000);
+                    notification('Flow was deleted successfully!', 'success', 3000);
                 }).catch((err)=> {
                     notification(`Remove flow error: ${err}`, 'error');
                 });

@@ -90,11 +90,11 @@
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"]:before,
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"]:before {
-  background: #F5BE23;
+  background: #fe883b;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-detail,
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-detail {
-  background-color: #F5BE23;
+  background-color: #fe883b;
   border: none;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-detail:before,

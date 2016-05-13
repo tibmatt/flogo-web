@@ -4,20 +4,27 @@ import {Injectable} from 'angular2/core';
 export class FlogoModal {
     constructor() {
     }
-    confirm(message, options?: {
+  confirmDelete(message, styles?: {
+    [key : string] : string;
+    }) {
+      var options = {primary: 'DELETE', secondary:'CANCEL'};
+      return this.confirm('Confirm deletion', message, options);
+    }
+    confirm(title, message, options, styles?: {
         [key : string] : string;
     }) {
+      var buttons = _.assign({}, {primary:'YES', secondary:'NO'}, options);
         let style = '';
-        for(let attr in options) {
-            style += `${attr}: ${options[attr]};`
+        for(let attr in styles) {
+            style += `${attr}: ${styles[attr]};`
         }
         window.jQuery('flogo-app').append(`
             <div class="flogo-common-service-modal-container fade">
                 <div class="flogo-common-service-modal-detail fade clearfix" style="${style}">
-                    <div class="flogo-common-service-modal-confirm">Confirm</div>
+                    <div class="flogo-common-service-modal-confirm">${title}</div>
                     <div class="flogo-common-service-modal-message">${message}</div>
-                    <button class="flogo-common-service-modal-button flogo-common-service-modal-button-primary">YES</button>
-                    <button class="flogo-common-service-modal-button flogo-common-service-modal-button-secondary">NO</button>
+                    <button class="flogo-common-service-modal-button flogo-common-service-modal-button-primary">${buttons.primary}</button>
+                    <button class="flogo-common-service-modal-button flogo-common-service-modal-button-secondary">${buttons.secondary}</button>
                 </div>
             </div>
         `);
@@ -30,7 +37,7 @@ export class FlogoModal {
             }, 100);
 
             modalDetail.find('button').click(function() {
-                if(window.jQuery(this).text() == 'YES') {
+                if(window.jQuery(this).text() == buttons.primary) {
                     resolve(true);
                 } else {
                     resolve(false);
