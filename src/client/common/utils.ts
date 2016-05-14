@@ -23,11 +23,42 @@ export function flogoIDDecode( encodedId : string ) : string {
   return atob( encodedId );
 }
 
-export function flogoGenTaskID() : string {
-  // shift the timestamp for avoiding overflow 32 bit system
+export function flogoGenTaskID( items? : any ) : string {
+  let taskID : string;
   // TODO
   //  generate a more meaningful task ID in string format
-  return flogoIDEncode( '' + (Date.now() >>> 1) );
+  if ( items ) {
+    let ids = _.keys( items );
+    let startPoint = 2; // taskID 1 is reserved for the rootTask
+
+    let taskIDs = _.map( _.filter( ids, ( id : string ) => {
+      return items[ id ].type === FLOGO_TASK_TYPE.TASK;
+    } ), ( id : string )=> {
+      return _[ 'toNumber' ]( flogoIDDecode( id ) );
+    } );
+
+    let currentMax = _.max( taskIDs );
+
+    if ( currentMax ) {
+      taskID = '' + ( currentMax + 1);
+    } else {
+      taskID = '' + startPoint;
+    }
+
+  } else {
+    // shift the timestamp for avoiding overflow 32 bit system
+    taskID = '' + (Date.now() >>> 1);
+  }
+
+  return flogoIDEncode( taskID );
+}
+
+export function flogoGenBranchID() : string {
+  return flogoIDEncode( `Flogo::Branch::${Date.now()}` );
+}
+
+export function flogoGenTriggerID() : string {
+  return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
 }
 
 /**
@@ -98,10 +129,12 @@ export function activitySchemaToTask(schema: any) : any {
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
     description: _.get(schema, 'description', ''),
+    homepage: _.get(schema, 'homepage', ''),
     attributes: {
       inputs: _.get(schema, 'inputs', []),
       outputs: _.get(schema, 'outputs', [])
-    }
+    },
+    __schema: _.cloneDeep(schema)
   };
 
   _.each(
@@ -126,14 +159,16 @@ export function activitySchemaToTrigger(schema: any) : any {
 
   let trigger:any = {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
-    activityType: _.get(schema, 'name', ''),
+    triggerType: _.get(schema, 'name', ''),
     name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
     description: _.get(schema, 'description', ''),
+    homepage: _.get(schema, 'homepage', ''),
     settings: _.get(schema, 'settings', ''),
     outputs: _.get(schema, 'outputs', ''),
-    endpoint: { settings: _.get(schema, 'endpoint.settings', '') }
+    endpoint: { settings: _.get(schema, 'endpoint.settings', '') },
+    __schema: _.cloneDeep(schema)
   };
 
   _.each(
@@ -448,23 +483,23 @@ export function resetFlogoGlobalConfig() {
   // set default value
   updateFlogoGlobalConfig( {
     db : {
-      protocol : 'http',
-      host : 'localhost',
+      // protocol : 'http',
+      // host : 'localhost',
       port : '5984',
       name : 'flogo-web'
     },
     activities : {
       db : {
-        protocol : 'http',
-        host : 'localhost',
+        // protocol : 'http',
+        // host : 'localhost',
         port : '5984',
         name : 'flogo-web-activities'
       }
     },
     triggers : {
       db : {
-        protocol : 'http',
-        host : 'localhost',
+        // protocol : 'http',
+        // host : 'localhost',
         port : '5984',
         name : 'flogo-web-triggers'
       },
@@ -472,27 +507,27 @@ export function resetFlogoGlobalConfig() {
     /*
     models : {
       db : {
-        protocol : 'http',
-        host : 'localhost',
+        // protocol : 'http',
+        // host : 'localhost',
         port : '5984',
         name : 'flogo-web-models'
       },
     },*/
     engine : {
-      protocol : 'http',
-      host : "localhost",
+      // protocol : 'http',
+      // host : "localhost",
       port : "8080",
       testPath: "status"
     },
     stateServer : {
-      protocol : 'http',
-      host : "localhost",
+      // protocol : 'http',
+      // host : "localhost",
       port : "9190",
       testPath: "ping"
     },
-    processServer : {
-      protocol : 'http',
-      host : "localhost",
+    flowServer : {
+      // protocol : 'http',
+      // host : "localhost",
       port : "9090",
       testPath: "ping"
     }
@@ -527,14 +562,16 @@ export function getFlogoGlobalConfig() : any {
   return (<any>window).FLOGO_GLOBAL;
 }
 
-function getURL( config : {
+export function getURL( config : {
   protocol? : string;
-  host : string;
+  host? : string;
   port? : string;
 } ) : string {
-  return config.port ?
-         `${config.protocol || 'http'}://${config.host}:${config.port}` :
-         `${config.protocol || 'http'}://${config.host}}`
+  if ( config.port ) {
+    return `${config.protocol || location.protocol.replace( ':', '' )}://${config.host || location.hostname}:${config.port}`;
+  } else {
+    return `${config.protocol || location.protocol.replace( ':', '' )}://${config.host || location.hostname}}`;
+  }
 }
 
 export function getEngineURL() : string {
@@ -546,7 +583,15 @@ export function getStateServerURL() : string {
 }
 
 export function getProcessServerURL() : string {
-  return getURL( (<any>window).FLOGO_GLOBAL.processServer );
+  return getURL( (<any>window).FLOGO_GLOBAL.flowServer );
+}
+
+export function getDBURL( dbConfig : {
+  port : string;
+  protocol : string;
+  host : string;name : string
+} ) : string {
+  return `${getURL( dbConfig )}/${dbConfig.name}`;
 }
 
 /**
@@ -603,18 +648,26 @@ export function notification(message: string, type: string, time?: number, setti
     window.jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
   let notification = window.jQuery('.flogo-common-notification-container>div:last');
+  let notifications =  window.jQuery('.flogo-common-notification-container>div');
+  let maxCounter = 5;
+
+  if(notifications.length > 5) {
+    for(let i = 0; i < notifications.length - maxCounter; i++) {
+      if(notifications[i]) notifications[i].remove();
+    }
+  }
   setTimeout(function () {
     notification.addClass('on');
   }, 100);
   return new Promise((resolve, reject) => {
     if(time) {
       setTimeout(function () {
-        notification.remove();
+        if(notification) notification.remove();
         if(!notificationContainer.html()) notificationContainer.remove();
       }, time);
     }
     if(!time) {
-      window.jQuery('.flogo-common-notification-close').click(() => {
+      notification.find('.flogo-common-notification-close').click(() => {
         notification.remove();
         resolve();
       });

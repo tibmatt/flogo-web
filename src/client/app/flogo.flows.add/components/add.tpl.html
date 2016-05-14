@@ -1,5 +1,5 @@
 <button class="flogo-flows-container-box-add btn btn-default" (click)="modal.open()">
-    Create New
+    New flow
 </button>
 
 <modal [size]="'sm'" #modal>
@@ -7,11 +7,11 @@
     <modal-body>
         <div class="form-group">
             <label for="flowName" class="h4">Flow name</label>
-            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="Flow's name">
+            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="Give your flow a name">
         </div>
         <div class="form-group">
             <label for="flowDescription" class="h4">Flow description</label>
-            <textarea class="form-control" [(ngModel)]="flowInfo.description" rows="3" id="flowDescription" placeholder="Flow's description"></textarea>
+            <textarea class="form-control" [(ngModel)]="flowInfo.description" rows="3" id="flowDescription" placeholder="Add a description of your flow"></textarea>
         </div>
     </modal-body>
     <modal-footer>

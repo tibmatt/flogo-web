@@ -1,10 +1,9 @@
 <section class="container">
 
   <header class="page-header">
-    <h3>FloGo Configuration</h3>
+    <h3>Flogo Configuration</h3>
     <p>Configurations of Server Information</p>
   </header>
-
 
   <form class="form-horizontal" (ngSubmit)="onSave()">
     <div class="form-group">
@@ -15,6 +14,17 @@
       </div>
     </div>
 
+    <!-- log link -->
+    <div class="form-group">
+      <div class="col-xs-11 col-xs-offset-1">
+        <a href="/engine.log" target="_blank">View Test Engine Log</a>
+      </div>
+      <div class="col-xs-11 col-xs-offset-1">
+        <a href="/web.log" target="_blank">View Flogo Web Server Log</a>
+      </div>
+    </div>
+
+
     <!-- server configuration -->
 
     <div class="form-group" *ngIf="_servers">
@@ -22,12 +32,12 @@
     </div>
 
     <div class="form-group" *ngFor="#server of _servers">
-      <label class="col-md-2 col-sm-3" [textContent]="server._label"></label>
-      <div class="col-lg-8 col-md-10 col-sm-12">
+      <label class="col-lg-2 col-md-2 col-sm-3" [textContent]="server._label"></label>
+      <div class="col-lg-8 col-md-8 col-sm-12">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="http" [(ngModel)]="server.config.protocol">
+          <input type="text" class="form-control" placeholder="{{location.protocol.replace( ':', '' )}}" [(ngModel)]="server.config.protocol">
           <div class="input-group-addon">://</div>
-          <input type="text" class="form-control" placeholder="localhost" [(ngModel)]="server.config.host">
+          <input type="text" class="form-control" placeholder="{{location.hostname}}" [(ngModel)]="server.config.host">
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="server.config.port">
           <div class="input-group-addon">
@@ -35,6 +45,7 @@
           </div>
         </div>
       </div>
+      <button class="col-lg-2 col-md-2 col-sm-3" [ngClass]="{'flogo-display': server._display, 'flogo-hide': !server._display}" style="float:left;" type="button" class="btn btn-default" (click)="onRestart(server)">Restart</button>
     </div>
 
     <!-- DB configuration -->
@@ -48,9 +59,9 @@
       <label class="col-md-2 col-sm-3">Application Database</label>
       <div class="col-lg-9 col-md-10 col-sm-12">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="http" [(ngModel)]="_appDB.protocol">
+          <input type="text" class="form-control" placeholder="{{location.protocol.replace( ':', '' )}}" [(ngModel)]="_appDB.protocol">
           <div class="input-group-addon">://</div>
-          <input type="text" class="form-control" placeholder="localhost" [(ngModel)]="_appDB.host">
+          <input type="text" class="form-control" placeholder="{{location.hostname}}" [(ngModel)]="_appDB.host">
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="_appDB.port">
           <div class="input-group-addon">/</div>
@@ -66,9 +77,9 @@
       <label class="col-md-2 col-sm-3" [textContent]="db._label"></label>
       <div class="col-lg-9 col-md-10 col-sm-12">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="http" [(ngModel)]="db.config.protocol">
+          <input type="text" class="form-control" placeholder="{{location.protocol.replace( ':', '' )}}" [(ngModel)]="db.config.protocol">
           <div class="input-group-addon">://</div>
-          <input type="text" class="form-control" placeholder="localhost" [(ngModel)]="db.config.host">
+          <input type="text" class="form-control" placeholder="{{location.hostname}}" [(ngModel)]="db.config.host">
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="db.config.port">
           <div class="input-group-addon">/</div>
@@ -81,5 +92,5 @@
     </div>
   </form>
 
-</section>
 
+</section>

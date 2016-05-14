@@ -1,7 +1,11 @@
 <div class="flogo-flows-container">
   <div class="flogo-flows-container-header">
     <div class="flogo-flows-container-header-detail">
-      <h3 class="flogo-flows-container-title">My Flows</h3>
+      <h3 class="flogo-flows-container-title">My flows
+        <flogo-flows-import
+          (importSuccess)="onFlowImportSuccess($event)"
+          (importError)="onFlowImportError($event)"></flogo-flows-import>
+      </h3>
       <flogo-flows-add></flogo-flows-add>
     </div>
 
@@ -9,7 +13,6 @@
   <div class="flogo-flows-container-body">
     <ul class="flogo-flows-container-lists">
       <li *ngFor="#flow of flows" class="flogo-flows-container-list">
-        <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow)"></span>
         <a class="flogo-flows-container-list-detail" [routerLink]="['FlogoFlowDetail', {id:flogoIDEncode(flow._id)}]">
           <span class="flogo-flows-container-list-detail-name">{{flow.name}}</span>
           <span class="clearfix flogo-flows-container-list-detail-info">
@@ -17,6 +20,7 @@
             <i class="flogo-flows-container-list-detail-creatTime">Created {{flow.created_at}}</i>
           </span>
         </a>
+        <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow)"></span>
       </li>
     </ul>
   </div>

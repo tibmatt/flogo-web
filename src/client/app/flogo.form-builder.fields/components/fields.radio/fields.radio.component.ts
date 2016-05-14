@@ -8,11 +8,12 @@ import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
   moduleId: module.id,
   templateUrl: 'fields.radio.tpl.html',
   directives: [ROUTER_DIRECTIVES],
-  inputs:['_info:info','_fieldObserver:fieldObserver']
+  inputs:['_info:info','_fieldObserver:fieldObserver', '_index:index']
 })
 
 export class FlogoFormBuilderFieldsRadio extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any;
+  _index: number;
 
 }

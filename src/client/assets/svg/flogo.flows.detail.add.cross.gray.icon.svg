@@ -5,7 +5,7 @@
     <desc>Created with sketchtool.</desc>
     <defs></defs>
     <g id="Visual-Design" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Flogo_Hover-and-Add-Task" transform="translate(-301.000000, -228.000000)" fill="#8a90ae">
+        <g id="Flogo_Hover-and-Add-Task" transform="translate(-301.000000, -228.000000)" fill="#fe883b">
             <path d="M311,242 L302.229315,242 L301,242 L301,238 L302.229315,238 L311,238 L311,229.231264 L311,228 L315,228 L315,229.231264 L315,238 L322.770685,238 L324,238 L324,242 L322.770685,242 L315,242 L315,249.768736 L315,251 L311,251 L311,249.768736 L311,242 Z" id="add-icon"></path>
         </g>
     </g>

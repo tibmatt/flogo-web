@@ -7,12 +7,21 @@
       </header>
       <div class="col-sm-2">
         <div class="flogo-flow-detail-menu">
-          <ul class="flogo-flow-detail-menu-list">
-            <li class="flogo-flow-detail-menu-item"><i class="fa fa-pencil"></i>Build</li>
-            <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone"></i>Make a copy</li>
-            <li class="flogo-flow-detail-menu-item"><i class="fa fa-download"></i>Import JSON</li>
-            <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash"></i>Delete</li>
-          </ul>
+          <div class="flogo-flow-detail-menu-list-wrapper">
+            <ul class="flogo-flow-detail-menu-list">
+              <li class="flogo-flow-detail-menu-item"><i class="fa fa-pencil"></i>
+                <a [href]="downloadLink" download>Build</a>
+                <ul class="flogo-flow-detail-menu-item-choices">
+                  <li class="flogo-flow-detail-menu-item-choice"><label class="flogo-flow-detail-menu-item-choice-text"><input type="checkbox" disabled/><span>ARM/Linux</span></label></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><label class="flogo-flow-detail-menu-item-choice-text"><input type="checkbox" disabled/><span>x86/Linux</span></label></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><label class="flogo-flow-detail-menu-item-choice-text"><input type="checkbox" checked="checked"/><span>Darwin/OSX</span></label></li>
+                </ul>
+              </li>
+              <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone"></i><a href="javascript:void(0);">Make a copy</a></li>
+              <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download"></i> Export JSON</a></li>
+              <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash"></i><a href="javascript:void(0);">Delete</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
@@ -83,4 +92,31 @@
   </div>
 </div>
 
-<div *ngIf="_mockLoading">Loading...</div>
+<div *ngIf="_mockLoading" class="flogo-spin-loading-bg">
+  <div class="flogo-spin-loading">
+    <div>
+      <div></div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+  </div>
+</div>

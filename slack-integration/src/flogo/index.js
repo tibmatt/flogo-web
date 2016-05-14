@@ -4,10 +4,13 @@ let Promise = require('bluebird');
 let request = require('request-promise').defaults({json: true});
 
 let ERRORS = require('./errors');
+let CLIENT_ERRORS = ERRORS.CLIENT_ERRORS;
+let SERVER_ERRORS = ERRORS.SERVER_ERRORS;
 
 let utils = require('./utils');
 
-const BASE_PATH = require('./base-path')();
+let basePath = require('./base-path');
+const BASE_PATH = basePath.buildFlogoBaseApiPath();
 
 module.exports = {
   create,
@@ -15,8 +18,10 @@ module.exports = {
   addActivity,
   getFlow,
   listFlows,
+  listActivities,
+  listTriggers,
   getLast,
-  ERRORS
+  ERRORS: ERRORS.CLIENT_ERRORS
 };
 
 let state = {
@@ -36,6 +41,7 @@ function create(flowName) {
         flow._id = flow.id;
         flow.id = utils.flogoIDEncode(flow.id);
         flow.name = flow.name || flowName;
+        flow = _augmentFlow(flow);
         state.lastCreated = Object.assign({}, flow);
         resolve(flow);
       })
@@ -46,11 +52,11 @@ function create(flowName) {
 }
 
 function addTrigger(triggerName) {
-  return addTile('triggers', triggerName);
+  return _addTile('triggers', triggerName);
 }
 
 function addActivity(activityName) {
-  return addTile('activities', activityName);
+  return _addTile('activities', activityName);
 }
 
 function getFlow(flowName) {
@@ -66,15 +72,14 @@ function getFlow(flowName) {
       .then(flows => {
         let flow = null;
         if(flows && flows.length > 0) {
-          flow = flows[0];
-          flow.id = utils.flogoIDEncode(flow.id || flow._id);
+          flow = _augmentFlow(flows[0]);
         }
         resolve(flow);
       })
       .catch(err => {
         let reason = err;
         if (err.statusCode == 400) {
-          reject({code: ERRORS.NOT_FOUND});
+          reject({code: CLIENT_ERRORS.NOT_FOUND});
         }
         reject(reason);
       });
@@ -82,7 +87,16 @@ function getFlow(flowName) {
 }
 
 function listFlows() {
-  return request(BASE_PATH + '/flows');
+  return request(BASE_PATH + '/flows')
+    .then(flows => flows.map(_augmentFlow));
+}
+
+function listActivities() {
+  return request(BASE_PATH + '/activities')
+}
+
+function listTriggers() {
+  return request(BASE_PATH + '/triggers')
 }
 
 function getLast() {
@@ -92,18 +106,20 @@ function getLast() {
   return null;
 }
 
-function addTile(type, name) {
+/*-----------------------------------*/
+
+function _addTile(type, name) {
   return new Promise((resolve, reject) => {
 
     let lastFlow = getLast();
     if(!lastFlow) {
-      return reject({code: ERRORS.NO_FLOW});
+      return reject({code: CLIENT_ERRORS.NO_FLOW});
     }
 
-    // TODO: remove, this is only for mock purposes
-    return resolve({flowName: lastFlow.name});
+    if(!name.startsWith('tibco-')) {  // add tibco namespace if they don't have it'
+      name = `tibco-${name}`;
+    }
 
-/*
     request
       .post({
         url: BASE_PATH + `/flows/${type}`,
@@ -114,18 +130,29 @@ function addTile(type, name) {
         json: true
       })
       .then(res => {
-        // TODO format of response?
-        resolve(true);
+        resolve({flowName: res.name});
       })
       .catch(err => {
         let reason = err;
         if (err.statusCode == 400) {
-          reject({code: ERRORS.NOT_FOUND});
+          let data = err.error || {};
+          reason = {flowName: lastFlow.name};
+          if(data.type == SERVER_ERRORS.MISSING_TRIGGER) {
+            reason.code = CLIENT_ERRORS.MISSING_TRIGGER;
+          } else if (data.type == SERVER_ERRORS.FLOW_NOT_FOUND) {
+            reason.code = CLIENT_ERRORS.FLOW_NOT_FOUND;
+          } else {
+            reason.code = CLIENT_ERRORS.NOT_FOUND;
+          }
         }
         reject(reason);
       });
-    */
   });
 }
 
+function _augmentFlow(flow) {
+  flow.id = flow.id || utils.flogoIDEncode(flow._id);
+  flow.url = flow.url = basePath.buildFlogoBaseUiPath(`flows/${flow.id}`);
+  return flow;
+}
 

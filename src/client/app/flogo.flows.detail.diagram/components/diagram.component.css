@@ -52,7 +52,6 @@
   position: relative;
   width: 112px;
   height: 112px;
-  border: solid 1px #f4f4f4;
   background: #fff;
   border-radius: 10px;
   white-space: normal;
@@ -81,7 +80,6 @@
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected .flogo-flows-detail-diagram-node-detail {
   background: #79b8dc;
   color: #fff;
-  border: solid 1px #70abcc;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected:before {
   background: #79b8dc;
@@ -92,11 +90,11 @@
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"]:before,
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"]:before {
-  background: #F5BE23;
+  background: #fe883b;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-detail,
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_root_new"] .flogo-flows-detail-diagram-node-detail {
-  background-color: #F5BE23;
+  background-color: #fe883b;
   border: none;
 }
 .flogo-flows-detail-diagram-node.flogo-flows-detail-diagram-node-selected[data-flogo-node-type="node_add"] .flogo-flows-detail-diagram-node-detail:before,
@@ -157,17 +155,17 @@
 }
 .flogo-flows-detail-diagram-node:before {
   position: absolute;
-  left: 88px;
-  top: 41px;
+  left: 93px;
+  top: 43px;
   z-index: 3;
   content: '';
   display: block;
-  width: 38px;
-  height: 30px;
+  width: 34px;
+  height: 28px;
   opacity: 1;
   background: #FFF;
   box-shadow: 1px -2px 1px 0 rgba(0, 0, 0, 0.1);
-  transform: rotate(65deg) skewX(35deg);
+  transform: rotate(63deg) skewX(35deg);
   transition: all 250ms linear;
 }
 [data-flogo-node-type="node_add"].flogo-flows-detail-diagram-node:before,
@@ -254,7 +252,6 @@
   left: 0;
   z-index: 2;
   box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.3);
-  border: solid 0.5px #f4f4f4;
   border-radius: 10px;
   background: #fff;
   width: 100%;

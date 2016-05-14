@@ -1,0 +1,21 @@
+:host {
+  display: inline-block;
+  position: relative;
+}
+:host :hover {
+  color: #0081CB;
+}
+.flogo-flows-import-input-file {
+  display: none;
+}
+.flogo-flows-import-label {
+  cursor: pointer;
+  padding-left: 23px;
+  transition: color 200ms ease-in-out;
+}
+.flogo-flows-import-label > .fa {
+  font-size: 18px;
+  position: absolute;
+  left: 0;
+  bottom: 3px;
+}

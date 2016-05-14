@@ -1,4 +1,4 @@
-import { flogoIDEncode, convertTaskID } from '../../../common/utils';
+import { flogoIDEncode, convertTaskID, getDefaultValue } from '../../../common/utils';
 import { FLOGO_PROCESS_TYPE, FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
 import {
   IFlogoFlowDiagramNode,
@@ -260,6 +260,11 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
           taskInfo.attributes = _parseFlowAttributes( <IFlogoFlowDiagramTaskAttribute[]>_.get( task,
             'attributes.inputs' ) );
 
+          // filter null/undefined/{}/[]
+          taskInfo.attributes = _.filter( taskInfo.attributes, ( attr : any )=> {
+            return !(_.isNil( attr.value ) || (_.isObject( attr.value ) && _.isEmpty( attr.value )));
+          } );
+
           /* add inputMappings */
 
           let inputMappings = _parseFlowMappings( <IFlogoFlowDiagramTaskAttributeMapping[]>_.get( task,
@@ -366,7 +371,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
       /* simple validation */
       attr.name = <string>_.get( inAttr, 'name' );
-      attr.value = <any>_.get( inAttr, 'value' );
+      attr.value = <any>_.get( inAttr, 'value', getDefaultValue( inAttr.type ) );
 
       if ( _.isEmpty( attr.name ) ) {
         DEBUG && console.warn( 'Empty attribute name found' );

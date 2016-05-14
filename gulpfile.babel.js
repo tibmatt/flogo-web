@@ -57,6 +57,16 @@ gulp.task("default", ()=>{
   )
 });
 
+gulp.task("build", () => {
+  runSequence([
+    'clean:dev',
+    'copy:dev',
+    'build:ts:dev',
+    'install:dev',
+    'concat:lib'
+  ])
+});
+
 gulp.task("dev", ()=>{
   runSequence(
     "build:dev",
@@ -106,7 +116,7 @@ gulp.task("clean:dev", ['clean:client:dev', 'clean:server:dev'],()=>{
 });
 
 gulp.task("clean:client:dev", ()=>{
-  del.sync(["public/**/*"], {cwd: CONFIG.dist});
+  del.sync(["public/**/*", "!public/web.log", "!public/engine.log"], {cwd: CONFIG.dist});
 });
 
 gulp.task("clean:server:dev", ['copy:packages:dev'], ()=>{

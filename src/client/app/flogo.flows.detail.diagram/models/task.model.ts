@@ -14,6 +14,7 @@ export interface IFlogoFlowDiagramTask {
   description ? : string;
   title ? : string;
   activityType? : string;
+  triggerType? : string;
   attributes ? : IFlogoFlowDiagramTaskAttributes;
   inputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
   outputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
@@ -38,6 +39,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   description : string;
   title : string;
   activityType : string;
+  triggerType : string;
   attributes : IFlogoFlowDiagramTaskAttributes;
   inputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
   outputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
@@ -67,6 +69,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.description = task.description || this.description || '';
     this.title = task.title || this.title || '';
     this.activityType = task.activityType || this.activityType || '';
+    this.triggerType = task.triggerType || this.triggerType || '';
     this.attributes = _.isEmpty( task.attributes ) ?
                       this.attributes || < IFlogoFlowDiagramTaskAttributes > {} :
                       _.cloneDeep( task.attributes );

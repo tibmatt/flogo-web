@@ -9,13 +9,14 @@ import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
+import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
 
 @Component({
   selector: 'flogo-flows',
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
 
@@ -50,7 +51,7 @@ export class FlogoFlowsComponet{
                 items: {}
             };
             this._flow.createFlow(_.clone(request)).then((response)=>{
-                notification('Create the flow successfully!', 'success', 3000);
+                notification('Flow was created successfully!', 'success', 3000);
                 resolve(response);
             }).catch((err)=>{
                 notification(`Create flow error: ${err}`, 'error');
@@ -65,11 +66,11 @@ export class FlogoFlowsComponet{
 
     // delete a flow
     deleteFlow( flow: any) {
-        this._flogoModal.confirm('Are you sure to delete ' + flow.name + ' flow?').then((res) => {
+        this._flogoModal.confirmDelete('Are you sure you want to delete ' + flow.name + ' flow?').then((res) => {
             if(res) {
                 this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
                     this.getAllFlows();
-                    notification('Remove the flow successfully!', 'success', 3000);
+                    notification('Flow was deleted successfully!', 'success', 3000);
                 }).catch((err)=> {
                     notification(`Remove flow error: ${err}`, 'error');
                 });
@@ -98,6 +99,19 @@ export class FlogoFlowsComponet{
             })
         })
     }
+
+  onFlowImportSuccess( result : any ) {
+    notification( `Import flow successfully!`, 'success', 3000 );
+    this.getAllFlows();
+  }
+
+  onFlowImportError( err : {
+    status : string;
+    statusText : string;
+    response : any
+  } ) {
+    notification( `${err.response}`, 'error' );
+  }
 
 
     // export flogoIDEncode

@@ -67,6 +67,9 @@
       width: 46px;
       height: 54px;
     }
+    .flogo-common-edit-panel__head-read-detail:before{
+      background: url("/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg") no-repeat center/46px
+    }
   }
   .task{
     padding-top: 21px;
@@ -75,6 +78,9 @@
       background: url("/assets/svg/flogo.icon.gears.circle.svg") no-repeat left bottom/40px 40px;
       width: 40px;
       height: 50px;
+    }
+    .flogo-common-edit-panel__head-read-detail:before{
+      background: url("/assets/svg/flogo.icon.gears.circle.svg") no-repeat center/46px 46px;
     }
   }
   .branch{
@@ -90,8 +96,9 @@
       padding-bottom: 10px;
     }
   }
-  .flogo-common-edit-panel__head-titles,
+  .flogo-common-edit-panel__head-title,
   .flogo-common-edit-panel__head-subtitle{
+    margin-right: 20px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -170,6 +177,96 @@
     &.disabled{
       background-color: rgba(255, 255, 255, 0.4);
       border: solid 1px rgba(255, 255, 255, 0.5);
+    }
+  }
+  .flogo-common-edit-panel__head-read{
+    position: absolute;
+    top: 25px;
+    right: 14px;
+    width: 17px;
+    height: 17px;
+    &:hover{
+      .flogo-common-edit-panel__head-read-detail-wrapper{
+        width: 390px;
+        opacity: 1;
+        transition-delay: 0ms;
+      }
+      .flogo-common-edit-panel__head-read-detail{
+        transform: translate(0, 0);
+        transition-delay: 0ms;
+      }
+    }
+  }
+  .flogo-common-edit-panel__head-read-icon{
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: url("/assets/svg/flogo.form-builder.info.icon.svg") no-repeat;
+  }
+  .flogo-common-edit-panel__head-read-detail-wrapper{
+    position: absolute;
+    top: 0;
+    right: 27px;
+    z-index: 10;
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 300ms linear 200ms;
+  }
+  .flogo-common-edit-panel__head-read-detail{
+    padding: 0 20px 20px;
+    width: 100%;
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+    border: solid 1px #727272;
+    color: #666;
+    transform: translate(100%, -100%);
+    transition: all 300ms linear 200ms;
+    &:before{
+      content: '';
+      float: left;
+      width: 46px;
+      height: 46px;
+      margin-top: 20px;
+      background-size: 46px;
+    }
+  }
+  .flogo-common-edit-panel__head-read-detail-close{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #b5b5b5;
+    cursor: pointer;
+    &:hover{
+      color: #666;
+    }
+  }
+  .flogo-common-edit-panel__head-read-titles{
+    padding-left: 71px;
+    .flogo-common-edit-panel__head-read-title,
+    .flogo-common-edit-panel__head-read-creator{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .flogo-common-edit-panel__head-read-title{
+      letter-spacing: 0.4px;
+      margin-top: 30px;
+      &.up{
+        margin-top: 20px;
+        margin-bottom: 7px;
+      }
+    }
+    .flogo-common-edit-panel__head-read-creator{
+      display: inline-block;
+      max-width: 277px;
+      font-size: 10px;
+      letter-spacing: 0.6px;
+      color: #666666;
+    }
+    .flogo-common-edit-panel__head-read-text{
+      font-size: 14px;
     }
   }
 }

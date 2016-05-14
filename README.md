@@ -1,20 +1,42 @@
 **This is draft version, I am still working on add more**
 
+# Gettign started
+
+1. `git status` // to check the branch 
+2. `git pull --rebase`
+3. `git checkout develop`
+4. `./start.sh`
+
+If start successful, it you can see following output 
+
+```
+=============================================================================================
+[success] open http://localhost:3010 or http://localhost:3010/_config in your browser
+=============================================================================================
+```
+
+
 # flogo-web
 Flogo web include flogo front-end and flogo design time server
 
 
-## Following part still working on
+## Few notable features
 
-1. Basically structure of application
+1. Application structure suitable for distributed contributions
 
-2. Which tool should use to manage front-end libraries? Bower or NPM?
-    
-    Temp solution is manually merge them together
-3. Production vs Dev mode
+2. Manage and Merge front-end libraries by NPM
 
-4. Auto reload web application
+3. Compile LESS
 
-5. Compile LESS
+4. One command start everything
 
-6. One command start everything
+## upcoming features
+  
+1. Production vs Dev mode
+
+2. Auto reload web application
+
+3. flogo engine auto restart
+
+
+

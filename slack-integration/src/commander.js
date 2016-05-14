@@ -2,12 +2,15 @@
 
 let flogo = require('./flogo');
 var formatter = require('./reply-formatter');
+var _ = require('lodash');
 
 const SLASH_COMMANDS = {
   MAIN: '/flogo',
   CREATE: '/flogo-create',
   ADD: '/flogo-add',
-  SHOW: '/flogo-show'
+  SHOW: '/flogo-show',
+  LIST_ACTIVITIES: '/flogo-show-activities',
+  LIST_TRIGGERS: '/flogo-show-triggers'
 };
 
 const COMMANDS = {
@@ -50,6 +53,12 @@ module.exports = function (controller) {
       case SLASH_COMMANDS.SHOW:
         _show(bot, message, params);
         break;
+      case SLASH_COMMANDS.LIST_ACTIVITIES:
+        _list('activities', bot, message, params);
+        break;
+      case SLASH_COMMANDS.LIST_TRIGGERS:
+        _list('triggers', bot, message, params);
+        break;
     }
 
   });
@@ -64,6 +73,8 @@ function _showHelp(bot, message) {
   • \`/flogo-add activity [name-of-the-activity]\` - add an activity to the current flow
   • \`/flogo-show\` - list all flows
   • \`/flogo-show [flow name]\` - find a flow by name
+  • \`/flogo-show-triggers\` - list all triggers
+  • \`/flogo-show-activities\` - list all activities
   `);
 }
 
@@ -113,12 +124,24 @@ function _addTile(bot, message, params) {
     .then(res => bot.replyPublic(message, `Added ${entity} "${entityName}" to flow "${res.flowName}"`))
     .catch(err => {
       var msg = 'Oh no, something wen\'t wrong';
+
       if (err && err.code) {
-        if (err.code == flogo.ERRORS.NO_FLOW) {
-          msg = 'You have not created a flow yet';
-        } else if (err.code == flogo.ERRORS.NOT_FOUND) {
-          msg = `I didn't find ${isTrigger ? 'a' : 'an'} ${entity} named "${entityName}"`;
+
+        switch (err.code) {
+          case flogo.ERRORS.NO_FLOW:
+            msg = 'You have not created a flow yet';
+            break;
+          case flogo.ERRORS.FLOW_NOT_FOUND:
+            msg = `The flow "${err.flowName}" is not found. It may have been deleted.`;
+            break;
+          case flogo.ERRORS.MISSING_TRIGGER:
+            msg = `You need to add a trigger to "${err.flowName}" before adding an activity`;
+            break;
+          default:
+            msg = `${_.capitalize(entity)} "${entityName}" not found`;
+            break;
         }
+
       }
       return bot.replyPrivate(message, msg);
     });
@@ -155,6 +178,26 @@ function _show(bot, message, params) {
       });
   }
 
+}
+
+function _list(tileType, bot, message, params) {
+  var promise = tileType == 'activities' ? flogo.listActivities() : flogo.listTriggers();
+
+  return promise
+    .then(tiles => {
+      if(tiles && tiles.length > 0) {
+        var replyMsg = formatter.formatTileList(tiles, {
+          title: tileType
+        });
+        bot.replyPublic(message, replyMsg);
+      } else {
+        bot.replyPublic(message, `No ${tileType} found`);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      bot.replyPrivate(message, 'Oh no, something wen\'t wrong');
+    });
 }
 
 function _isKnownSlashCommand(commandName) {

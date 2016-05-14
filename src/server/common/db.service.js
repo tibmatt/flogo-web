@@ -146,10 +146,23 @@ export class DBService{
   }
 
   allDocs(options){
+    let defaultOptions = {
+      include_docs: true
+    };
     return new Promise((resolve, reject)=>{
-      this._db.allDocs(options).then((response)=>{
-        console.log("[allDocs]response: ", response);
-        resolve(response);
+      let ops = _.merge({}, defaultOptions, options||{});
+      this._db.allDocs(ops).then((response)=>{
+        //console.log("[allDocs]response: ", response);
+        let res = [];
+        if(ops.include_docs){
+          let rows = response&&response.rows||[];
+          rows.forEach((item)=>{
+            res.push(item&&item.doc);
+          });
+        }else{
+          res = response;
+        }
+        resolve(res);
       }).catch((err)=>{
         console.error(err);
         reject(err);

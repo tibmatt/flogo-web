@@ -1,12 +1,19 @@
 import path from 'path';
+import {
+  DBService
+} from '../common/db.service';
 
 let rootPath = path.normalize(__dirname + '/..');
 
+let publicPath = path.normalize(rootPath+'/../public');
+
 console.log("rootPath: ", rootPath);
+console.log("publicPath: ", publicPath);
 
 let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
+  publicPath: publicPath,
   app: {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
@@ -17,17 +24,11 @@ let config = {
     defaultPath: "../../submodules/flogo-contrib/activity",
     contribPath: "../../contrib/activity",
     default: {
-      "counter":{
-        path:"github.com/TIBCOSoftware/flogo-contrib/activity/counter"
-      },
-      "rest": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
-      },
-      "log": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/activity/log"
-      },
-      "twilio": {
+      "tibco-twilio": {
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
+      },
+      "tibco-coap": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/coap"
       }
     },
     contrib: {}
@@ -37,16 +38,14 @@ let config = {
     defaultPath: "../../submodules/flogo-contrib/trigger",
     contribPath: "../../contrib/trigger",
     default: {
-      "rest": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
+      "tibco-mqtt": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt"
       },
-      "mqtt": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt",
-        ignore: true
+      "tibco-timer":{
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
       },
-      "timer": {
-        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
-        ignore: true
+      "tibco-coap":{
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
       }
     }
   },
@@ -55,39 +54,80 @@ let config = {
     defaultPath: "../../submodules/flogo-contrib/model",
     contribPath: "../../contrib/model"
   },
-  engine: {
-    host: "localhost",
-    port: "8080",
+  testEngine: {
     path: "./",
-    name: "defaultengine",
-    triggers: {
+    name: "test-engine",
+    port: "8080",
+    installConfig: {
       "tibco-mqtt": {
-        "name": "tibco-mqtt",
-        "settings": {
-          "topic": "flogo/#",
-          "broker": "tcp://192.168.1.12:1883",
-          "id": "flogoEngine",
-          "user": "",
-          "password": "",
-          "store": "",
-          "qos": "0",
-          "cleansess": "false"
-        },
-        "endpoints": null
-      },
-      "tibco-rest": {
-        "name": "tibco-rest",
-        "settings": {
-          "port": "9990"
-        },
-        "endpoints": null
+        ignore: true
       },
       "tibco-timer": {
-        "name": "tibco-timer",
-        "settings": {
-        },
-        "endpoints": null
+        ignore: true
+      },
+      "tibco-coap":{
+        ignore: true
       }
+    },
+    triggers: [{
+      "name": "tibco-mqtt",
+      "settings": {
+        "topic": "flogo/#",
+        "broker": "tcp://192.168.1.12:1883",
+        "id": "flogoEngine",
+        "user": "",
+        "password": "",
+        "store": "",
+        "qos": "0",
+        "cleansess": "false"
+      },
+      "endpoints": null
+    }, {
+      "name": "tibco-rest",
+      "settings": {
+        "port": "9990"
+      },
+      "endpoints": null
+    }, {
+      "name": "tibco-timer",
+      "settings": {},
+      "endpoints": null
+    }],
+    config: {
+      "loglevel": "DEBUG",
+      "flowRunner": {
+        "type": "pooled",
+        "pooled": {
+          "numWorkers": 5,
+          "workQueueSize": 50,
+          "maxStepCount": 32000
+        }
+      },
+      "services": [{
+        "name": "stateRecorder",
+        "enabled": true,
+        "settings": {
+          "host": "localhost",
+          "port": "9190"
+        }
+      }, {
+        "name": "flowProvider",
+        "enabled": true
+      }, {
+        "name": "engineTester",
+        "enabled": true,
+        "settings": {
+          "port": "8080"
+        }
+      }]
+    }
+  },
+  buildEngine: {
+    host: "localhost",
+    port: "8081",
+    path: "./",
+    name: "build-engine",
+    installConfig: {
     },
     config: {
       "loglevel": "DEBUG",
@@ -99,27 +139,23 @@ let config = {
           "maxStepCount": 32000
         }
       },
-      "services": [
-        {
-          "name": "stateRecorder",
-          "enabled": true,
-          "settings": {
-            "host": "localhost",
-            "port": "9190"
-          }
-        },
-        {
-          "name": "flowProvider",
-          "enabled": true
-        },
-        {
-          "name": "engineTester",
-          "enabled": true,
-          "settings": {
-            "port": "8080"
-          }
+      "services": [{
+        "name": "stateRecorder",
+        "enabled": false,
+        "settings": {
+          "host": "localhost",
+          "port": "9190"
         }
-      ]
+      }, {
+        "name": "flowProvider",
+        "enabled": true
+      }, {
+        "name": "engineTester",
+        "enabled": true,
+        "settings": {
+          "port": "8081"
+        }
+      }]
     }
   },
   stateServer: {
@@ -132,4 +168,32 @@ let config = {
   }
 };
 
-export {config};
+export {
+  config
+};
+
+let triggersDBService = new DBService(config.triggers.db);
+let activitiesDBService = new DBService(config.activities.db);
+let dbService = new DBService(config.db);
+
+let engines = {
+  "test": undefined,
+  "build": undefined
+};
+
+export {
+  triggersDBService
+};
+export {
+  activitiesDBService
+};
+export {
+  dbService
+};
+export {
+  engines
+};
+
+export let flowExport = {
+  filename: 'flogo.export.json'
+};

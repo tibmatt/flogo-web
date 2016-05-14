@@ -14,7 +14,8 @@ const defaultOptions = {
 };
 
 export class RegisterActivities extends BaseRegistered{
-  constructor(dbName, engine, options){
-    super(dbName, engine, _.merge({}, defaultOptions, options||{}));
+  constructor(dbName, options){
+    super(dbName, _.merge({}, defaultOptions, options||{}));
   }
+
 }

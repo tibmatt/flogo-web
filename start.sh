@@ -195,4 +195,4 @@ sh start-services.sh &
 echoHeader "Step4: start flogo-web"
 cd $CURRENT_PATH
 npm install
-gulp && open_url "http://localhost:3010"
+gulp

@@ -27,6 +27,14 @@ export class FlogoFormBuilderFieldsBase{
     this._fieldObserver.next(this._getMessage('change-field', this._info));
   }
 
+  isReadOnly() {
+    if(this._info.isTrigger) {
+      return false;
+    }
+
+    return this._info.direction == 'output';
+  }
+
   onValidate(event:any) {
     var value = event.target.value || '';
 

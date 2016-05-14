@@ -1,5 +1,6 @@
 var flogo = require('./flogo');
 var formatter = require('./reply-formatter');
+var _capitalize = require('lodash/capitalize');
 
 module.exports = function (controller) {
 
@@ -50,18 +51,54 @@ module.exports = function (controller) {
       promise
         .then(res => bot.reply(message, `Added ${entity} "${entityName}" to flow "${res.flowName}"`))
         .catch(err => {
+          console.error(err);
           var msg = 'Oh no, something wen\'t wrong';
           if (err && err.code) {
-            if (err.code == flogo.ERRORS.NO_FLOW) {
-              msg = 'You have not created a flow yet';
-            } else if (err.code == flogo.ERRORS.NOT_FOUND) {
-              msg = `I didn't find ${isTrigger ? 'a' : 'an'} ${entity} named "${entityName}"`;
+
+            switch (err.code) {
+              case flogo.ERRORS.NO_FLOW:
+                msg = 'You have not created a flow yet';
+                break;
+              case flogo.ERRORS.FLOW_NOT_FOUND:
+                msg = `I cannot find the flow "${err.flowName}" anymore`;
+                break;
+              case flogo.ERRORS.MISSING_TRIGGER:
+                msg = `You need to add a trigger to ${err.flowName} before adding an activity`;
+                break;
+              default:
+                msg = `I didn't find ${isTrigger ? 'a' : 'an'} ${entity} named "${entityName}"`;
+                break;
             }
           }
           return bot.reply(message, msg);
         });
 
     });
+
+
+  controller.hears(['list (activities|triggers)', 'show (activities|triggers)'], ['direct_message', 'direct_mention', 'mention'], function(bot, message) {
+    bot.startTyping(message);
+    var tileType = message.match[1];
+    var promise = tileType == 'activities' ? flogo.listActivities() : flogo.listTriggers();
+
+    return promise
+      .then(tiles => {
+        if(tiles && tiles.length > 0) {
+          var replyMsg = formatter.formatTileList(tiles, {
+            title: _capitalize(tileType),
+            msg: 'This is what I found'
+          });
+          bot.reply(message, replyMsg);
+        } else {
+          bot.reply(message, `I found no ${tileType}`);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        bot.reply(message, 'Oh no, something wen\'t wrong');
+      });
+  });
+
 
   controller.hears(['show\s*(.*)'],
     ['direct_message', 'direct_mention', 'mention'],
@@ -87,15 +124,17 @@ module.exports = function (controller) {
 
     });
 
-  controller.hears(['list( flows)?'], ['direct_message', 'direct_mention', 'mention'], listFlows);
+  controller.hears(['list flows'], ['direct_message', 'direct_mention', 'mention'], listFlows);
 
   controller.hears(['help'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
     bot.reply(message, `You can ask me to do things for you, for example:
     • \`create [name of your flow]\` - create a new flow
     • \`add trigger [name-of-the-trigger]\` - add a trigger to the current flow
     • \`add activity [name-of-the-activity]\` - add an activity to the current flow
-    • \`show\` or \`list\` - list all flows
+    • \`show\` or \`list flows\` - list all flows
     • \`show [flow name]\` - find a flow by name
+    • \`list activities\` - list all activities
+    • \`list triggers\` - list all triggers
   `);
   });
 

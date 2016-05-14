@@ -1,4 +1,5 @@
-import {config} from '../../config/app-config';
+import {config, activitiesDBService} from '../../config/app-config';
+import _ from 'lodash';
 
 let basePath = config.app.basePath;
 
@@ -13,8 +14,12 @@ export function activities(app, router){
 }
 
 function* getActivities(next){
-  console.log("getActivities");
-  this.body = 'getActivities';
+  let data = yield activitiesDBService.allDocs({ include_docs: true })
+    .then(activities => activities.map(activity => {
+      return Object.assign({}, _.pick(activity, ['_id', 'name', 'title', 'version', 'description']), { title: _.get(activity, 'schema.title') });
+    }));
+
+  this.body = data;
   yield next;
 }
 

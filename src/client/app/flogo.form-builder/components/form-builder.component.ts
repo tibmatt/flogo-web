@@ -9,7 +9,7 @@ import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-bu
 import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
-import {convertTaskID, parseMapping} from "../../../common/utils";
+import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
 
 @Component({
@@ -30,9 +30,7 @@ export class FlogoFormBuilderComponent{
   _attributes:any;
   _hasChanges:boolean = false;
   _attributesOriginal:any;
-  _attributesTriggerOriginal:any;
   _fieldsErrors:string[];
-  _attributesTrigger:any;
   _branchConfigs:any[]; // force the fields update by taking the advantage of ngFor
 
   constructor(private _postService: PostService) {
@@ -42,8 +40,7 @@ export class FlogoFormBuilderComponent{
 
   private _initSubscribe() {
     this._subscriptions = [];
-
-    let subs :any[] = [];
+    //let subs :any[] = [];
 
     _.each(
       (subs:any, sub:any) => {
@@ -65,13 +62,22 @@ export class FlogoFormBuilderComponent{
   }
 
   _saveActivityChangesToFlow() {
-    var warnings = this.verifyRequiredFields(this._task);
 
     var state = {
       taskId: this._task.id,
-      inputs: this._getCurrentTaskState(this._attributes.inputs),
-      warnings: warnings
+      warnings: []
     };
+
+    if(this._context.isTask) {
+      state['inputs'] = this._getCurrentTaskState(this._attributes.inputs);
+      state['warnings'] = this.verifyRequiredFields(this._task);
+    }
+
+    if(this._context.isTrigger) {
+      state['endpointSettings'] = this._getCurrentTaskState(this._attributes.endpointSettings || []);
+      state['outputs'] = this._getCurrentTaskState(this._attributes.outputs || []);
+      state['settings'] = this._getCurrentTaskState(this._attributes.settings || []);
+    }
 
     this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
       data: state,
@@ -83,13 +89,21 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  _saveTriggerChangesToFlow() {
+  getStructureFromAttributes(structure:string) {
+    var returnValue =  _.get(this._attributes, structure, []);
 
-    let currentOutputs = this._attributesTrigger.outputs;
+    return this._getArray(returnValue);
+  }
+
+  /*
+  _saveTriggerChangesToFlow() {
+    //let currentOutputs = this._attributesTrigger.outputs;
 
     let state = {
       taskId: this._task.id,
-      outputs: currentOutputs
+      endpointSettings: this._getCurrentTaskState(this._attributes.endpointSettings),
+      outputs: this._getCurrentTaskState(this._attributes.outputs),
+      settings: this._getCurrentTaskState(this._attributes.settings)
     };
 
     this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
@@ -98,14 +112,16 @@ export class FlogoFormBuilderComponent{
         this._hasChanges  = false;
       }
     }));
-
   }
+  */
 
   _saveBranchChangesToFlow() {
+    let self = this;
     let branchInfo = this._branchConfigs[ 0 ];
     let state = {
       taskId : branchInfo.id,
-      condition : branchInfo.condition
+      condition : self.convertBranchConditionToInternal( branchInfo.condition,
+        _.get( self, '_context.contextData.previousTiles', [] ) )
     };
 
     this._postService.publish( _.assign( {}, PUB_EVENTS.taskDetailsChanged, {
@@ -144,37 +160,16 @@ export class FlogoFormBuilderComponent{
       }
     });
 
-    // handle change field input fields
-    this._fieldObserver.filter((param:any) => {
-      return param.message == 'change-field' && param.payload.isTrigger == false  && param.payload.direction == 'input';
-    }).
-    subscribe((param:any) => {
-        this._updateAttributeByUserChanges(this._attributes.inputs, param.payload);
-    });
-
-
-    // handle change field output fields
-    this._fieldObserver.filter((param:any) => {
-      return param.message == 'change-field' && param.payload.isTrigger == false  && param.payload.direction == 'output';
-    }).
-    subscribe((param:any) => {
-      this._updateAttributeByUserChanges(this._attributes.outputs, param.payload);
-    });
-
     // when some field changes
     this._fieldObserver.filter((param:any) => {
       return param.message == 'change-field';
     }).
     subscribe((param:any) => {
       this._hasChanges = true;
-    });
 
-    // handle outputs changes of trigger
-    this._fieldObserver.filter((param:any) => {
-      return param.message == 'change-field' && param.payload.isTrigger && param.payload.direction === 'output';
-    }).
-    subscribe((param:any) => {
-      this._updateAttributeByUserChanges(this._attributesTrigger.outputs, param.payload);
+      if(param.payload.isTask || param.payload.isTrigger) {
+          this._updateAttributeByUserChanges(_.get(this._attributes,param.payload.structure,[]), param.payload);
+      }
     });
 
     // handle the change of condition of branch
@@ -187,6 +182,7 @@ export class FlogoFormBuilderComponent{
   }
 
   _updateAttributeByUserChanges(attributes:any, changedObject:any) {
+
     var item = _.find(attributes, (field:any) => {
       return field.name === changedObject.name;
     });
@@ -194,6 +190,7 @@ export class FlogoFormBuilderComponent{
     if(item) {
       item.value = changedObject.value
     }
+
   }
 
   ngOnChanges() {
@@ -245,17 +242,17 @@ export class FlogoFormBuilderComponent{
 
 
     if(this._context.isTrigger) {
-      var attributesTrigger : any = {};
+      var attributes : any = {};
       var task = this._task || {};
 
-      attributesTrigger['endpointSettings'] = ((task['endpoint'] || {})['settings']) || [];
-
+      attributes['endpointSettings'] =  this._getArray( _.get(task,'endpoint.settings',[])); // ((task['endpoint'] || {})['settings']) || [];
       // override trigger outputs attributes if there is internal values
-      attributesTrigger[ 'outputs' ] = _.get( task, '__props.initData', task[ 'outputs' ] || [] );
-      attributesTrigger['settings'] = task['settings'] || [];
+      //attributesTrigger[ 'outputs' ] = _.get( task, '__props.initData', task[ 'outputs' ] || [] );
+      attributes[ 'outputs' ] = this._getArray( _.get( task, 'outputs',  [] ));
+      attributes['settings'] = this._getArray(task['settings'] || []);
 
-      this._attributesTriggerOriginal = _.cloneDeep(attributesTrigger);
-      this._setTriggerEnvironment(attributesTrigger);
+      this._attributesOriginal = _.cloneDeep(attributes);
+      this._setTriggerEnvironment(attributes);
       return;
     }
 
@@ -288,8 +285,7 @@ export class FlogoFormBuilderComponent{
   }
 
   _setTriggerEnvironment(attributes:any) {
-    this._attributesTrigger = attributes;
-
+    this._attributes = attributes;
   }
 
   _setTaskEnvironment(attributes:any) {
@@ -300,11 +296,13 @@ export class FlogoFormBuilderComponent{
   }
 
   _setBranchEnvironment( branchInfo : any ) {
+    var self = this;
     this._branchConfigs = [
       _.assign( {},
         {
           id : branchInfo.id,
-          condition : branchInfo.condition
+          condition : self.convertBranchConditionToDisplay( branchInfo.condition,
+            _.get( self, '_context.contextData.previousTiles', [] ) )
         } )
     ];
   }
@@ -372,12 +370,14 @@ export class FlogoFormBuilderComponent{
       required:   true,
       placeholder: '',
       isBranch:   true,
+      isTrigger: false,
+      isTask: false
     };
 
     return info;
   }
 
-  getTriggerInfo(input:any, direction?:string) {
+  getTriggerInfo(input:any, direction:string, structure:string) {
     var info = {
       name:       input.name,
       type:       input.type,
@@ -389,9 +389,11 @@ export class FlogoFormBuilderComponent{
       validationMessage: input.validationMessage,
       required:   input.required || false,
       placeholder: input.placeholder || '',
+      isTask: false,
       isTrigger:  true,
       isBranch:   false,
-      direction: direction
+      direction: direction || '',
+      structure: structure || ''
     };
 
 
@@ -399,7 +401,7 @@ export class FlogoFormBuilderComponent{
   }
 
 
-  getTaskInfo(input:any, direction:any) {
+  getTaskInfo(input:any, direction:string, structure:string) {
     var info = {
       name:       input.name,
       type:       input.type,
@@ -413,7 +415,9 @@ export class FlogoFormBuilderComponent{
       placeholder: input.placeholder || '',
       isTrigger:  false,
       isBranch:   false,
-      direction: direction
+      isTask: true,
+      direction: direction,
+      structure: structure
     };
 
     if(!this._context.isTrigger) {
@@ -453,6 +457,15 @@ export class FlogoFormBuilderComponent{
     return resultValue ? resultValue.value : info.value;
   }
 
+  _getArray(obj:any) {
+
+    if(!Array.isArray(obj)) {
+      return [];
+    }
+
+    return obj;
+  }
+
   runFromThisTile() {
     // return the id of the task directly, this id is encoded using `flogoIDEncode`, should be handled by subscribers
     var taskId   = this._task.id;
@@ -478,8 +491,10 @@ export class FlogoFormBuilderComponent{
   _getCurrentTaskState(items:any[]) {
        var result :any = {};
 
+      items = this._getArray(items);
+
        items.forEach((item:any) => {
-         result[item.name] = item.value || null;
+         result[ item.name ] = _.get( item, 'value', getDefaultValue( item.type ) );
         });
 
         return result;
@@ -487,7 +502,7 @@ export class FlogoFormBuilderComponent{
 
   cancelEdit(event:any) {
     if(this._context.isTrigger) {
-      this._setTriggerEnvironment(_.cloneDeep(this._attributesTriggerOriginal));
+      this._setTriggerEnvironment(_.cloneDeep(this._attributesOriginal));
     }
 
     if(this._context.isTask){
@@ -504,11 +519,9 @@ export class FlogoFormBuilderComponent{
   }
 
   private _saveChangesToFlow() {
-    if ( this._context.isTask ) {
+    if ( this._context.isTask || this._context.isTrigger) {
       this._saveActivityChangesToFlow();
-    } else if ( this._context.isTrigger ) {
-      this._saveTriggerChangesToFlow();
-    } else if ( this._context.isBranch ) {
+    }  else if ( this._context.isBranch ) {
       this._saveBranchChangesToFlow();
     }
   }
@@ -527,5 +540,146 @@ export class FlogoFormBuilderComponent{
       }
     ));
 
+  }
+
+  convertBranchConditionToDisplay( condition : string, tiles : any[] ) : string {
+    // display format sample: query-a-pet.result.code == 1
+    // internal format sample: $[A<taskID>.result].code == 1;
+
+    // ensure condition is in string format
+    condition = '' + condition;
+
+    // cases
+    //  $[T]
+    //  $[A3]
+    //  $[T.pathParams]
+    //  $[A3.result]
+    //  $[T.pathParams].petId
+    //  $[A3.result].code
+    let reComTriggerLabel = '(T)'; // T
+    let reComActivityLabel = '(A)(\\d+)'; // A3
+    let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel})`; // T | A3
+    let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
+
+    let reProp = `(?:\\$\\[${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\])((?:\\.${reComPropNameWithoutQuote})*)`;
+
+    let pattern = new RegExp(reProp.replace(/\s/g, ''), 'g');
+
+    let taskIDNameMappings = <any>{};
+
+    _.each( tiles, ( tile : any ) => {
+      if ( tile.triggerType ) {
+        taskIDNameMappings[ 'T' ] = {
+          name : normalizeTaskName( tile.name ),
+          triggerType : tile.triggerType,
+          activityType : tile.activityType
+        };
+      } else {
+        taskIDNameMappings[ 'A' + convertTaskID( tile.id ) ] = {
+          name : normalizeTaskName( tile.name ),
+          triggerType : tile.triggerType,
+          activityType : tile.activityType
+        };
+      }
+    } );
+
+    condition = condition.replace( pattern,
+      ( match : string,
+        taskLabel : string,
+        triggerTypeLabel : string,
+        activityTypeLabel : string,
+        taskID : string,
+        taskLabelProp : string,
+        propPath : string,
+        offset : number,
+        wholeString : string ) => {
+
+        let taskInfo = taskIDNameMappings[taskLabel];
+
+        if (taskInfo) {
+          let labelProp = _['toPath'](taskLabelProp).join('.');
+          let props = _['toPath'](propPath).join('.'); // normalise prop paths
+
+          if (labelProp) {
+            return props ? `${taskInfo.name}.${labelProp}.${props}` : `${taskInfo.name}.${labelProp}`;
+          } else {
+            return `${taskInfo.name}`;
+          }
+
+        } else {
+          return match;
+        }
+      } );
+
+    return condition;
+  }
+
+  convertBranchConditionToInternal( condition : string, tiles : any[] ) : string {
+    // display format sample: query-a-pet.result.code == 1
+    // internal format sample: $[A<taskID>.result].code == 1;
+    
+    // ensure condition is in string format
+    condition = '' + condition;
+
+    // paths cases
+    //  base cases
+    //    variable['propName']
+    //    variable.propName
+    //    variable["prop-name"]
+    //  composition cases
+    //    variable['propName']["prop-name"]
+    //    variable['propName'].propName
+    //    variable['propName'].propName["prop-name"]
+    //    variable.propName.propName["prop-name"]
+    let reComTaskName = '\\w+(?:\\-|\\w)*'; // sample: query-a-pet
+    let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
+    let reComPropNameWithQuote = '(?:[\\$\\-]|\\w)+'; // '(?:\"|\')(?:[\\$\\-]|\\w)+(?:\"|\')'
+
+    let reProp = `(${reComTaskName})
+    ((?:
+      (?:\\.${reComPropNameWithoutQuote}) |
+      (?:\\[
+        (?:
+          (?:\\"${reComPropNameWithQuote}\\") |
+          (?:\\'${reComPropNameWithQuote}\\')
+        )\\]
+      )
+    )+)`;
+
+    let pattern = new RegExp(reProp.replace(/\s/g, ''), 'g');
+
+    let taskNameIDMappings = <any>{};
+
+    _.each( tiles, ( tile : any ) => {
+      taskNameIDMappings[ normalizeTaskName( tile.name ) ] = {
+        id : convertTaskID( tile.id ),
+        triggerType : tile.triggerType,
+        activityType : tile.activityType
+      }
+    } );
+
+    condition = condition.replace( pattern,
+      ( match : string, taskName : string, propPath : string, offset : number, wholeString : string ) => {
+
+        let taskInfo = taskNameIDMappings[ normalizeTaskName( taskName ) ];
+        if (taskInfo) {
+          taskName = taskInfo.activityType ? `A${taskInfo.id}` : `T`;
+
+          let _propPath = _['toPath'](propPath);
+          let firstProp = _propPath.shift();
+
+          if ( firstProp ) {
+            return _propPath.length ?
+                   `$[${taskName}.${firstProp}].${_propPath.join( '.' )}` :
+                   `$[${taskName}.${firstProp}]`;
+          } else {
+            return `$[${taskName}]`;
+          }
+        } else {
+          return match;
+        }
+      } );
+
+    return condition;
   }
 }

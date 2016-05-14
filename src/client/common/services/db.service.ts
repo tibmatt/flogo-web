@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from 'angular2/core';
-import { activitySchemaToTask } from '../utils';
+import { activitySchemaToTask, getDBURL } from '../utils';
 import { activitySchemaToTrigger } from '../utils';
 
 @Injectable()
@@ -42,14 +42,8 @@ export class FlogoDBService{
     let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
     let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
 
-    let returnDBUrl = ( dbConfig : {port : string;protocol : string;host : string;name : string} )=> {
-      return dbConfig.port ?
-             `${dbConfig.protocol}://${dbConfig.host}:${dbConfig.port}/${dbConfig.name}` :
-             `${dbConfig.protocol}://${dbConfig.host}}/${dbConfig.name}`;
-    };
-
     // this._activitiesDB = new PouchDB(`${activitiesDBConfig.name}-local`);
-    this._activitiesDB = new PouchDB( returnDBUrl( activitiesDBConfig ) );
+    this._activitiesDB = new PouchDB( getDBURL( activitiesDBConfig ) );
     this._activitiesDB.info().then(function(db){
       console.log('[DB] Activities: ', db);
     }).catch(function(err:Object){
@@ -57,7 +51,7 @@ export class FlogoDBService{
     });
 
     // this._triggersDB = new PouchDB(`${triggersDBConfig.name}-local`);
-    this._triggersDB = new PouchDB( returnDBUrl( triggersDBConfig ) );
+    this._triggersDB = new PouchDB( getDBURL( triggersDBConfig ) );
     this._triggersDB.info().then(function(db){
       console.log('[DB] Triggers: ', db);
     }).catch(function(err:Object){
@@ -65,7 +59,7 @@ export class FlogoDBService{
     });
 
     // this._db = new PouchDB(`${appDBConfig.name}-local`);
-    this._db = new PouchDB( returnDBUrl( appDBConfig ) );
+    this._db = new PouchDB( getDBURL( appDBConfig ) );
     // create db in browser
     this._db.info().then(function(db){
       console.log('[DB] Application: ', db);
@@ -300,9 +294,7 @@ export class FlogoDBService{
     let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
     return PouchDB.sync(
       `${activitiesDBConfig.name}-local`,
-      activitiesDBConfig.port ?
-      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}:${activitiesDBConfig.port}/${activitiesDBConfig.name}` :
-      `${activitiesDBConfig.protocol}://${activitiesDBConfig.host}}/${activitiesDBConfig.name}`,
+      getDBURL(activitiesDBConfig),
       {
         live : false,
         retry : true
@@ -355,9 +347,7 @@ export class FlogoDBService{
     let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
     return PouchDB.sync(
       `${triggersDBConfig.name}-local`,
-      triggersDBConfig.port ?
-        `${triggersDBConfig.protocol}://${triggersDBConfig.host}:${triggersDBConfig.port}/${triggersDBConfig.name}` :
-        `${triggersDBConfig.protocol}://${triggersDBConfig.host}}/${triggersDBConfig.name}`,
+      getDBURL(triggersDBConfig),
       {
         live : false,
         retry : true
