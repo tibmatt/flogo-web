@@ -256,7 +256,7 @@ export class Engine {
         path: flowPath
       }
 
-      return true;
+      return flowName;
     } catch (err) {
       console.error("[Error]Engine->addFlow. Error: ", err);
       return false;

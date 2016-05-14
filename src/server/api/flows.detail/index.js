@@ -25,7 +25,7 @@ function getFlatObj(arr){
   return obj;
 }
 
-function generateTriggerJSON(doc){
+function generateTriggerJSON(doc, flowName){
   // for now each flow just can has one trigger
   let trigger = {
     name: '',
@@ -55,6 +55,9 @@ function generateTriggerJSON(doc){
     }
   });
 
+  // TODO this is temp solution
+  endpoint.flowURI = "embedded://"+flowName;
+
   trigger.endpoints.push(endpoint);
 
   console.log("[info]generateTriggerJSON, trigger: ", trigger);
@@ -82,11 +85,12 @@ function generateBuild(id){
         let tmpFlowJSONPath = path.join(config.rootPath, 'tmp', 'flow.json');
         fse.outputJSONSync(tmpFlowJSONPath, flowJSON.flow);
         engines.build.deleteAllFlows();
-        engines.build.addFlow('file://'+tmpFlowJSONPath);
+        let flowName = engines.build.addFlow('file://'+tmpFlowJSONPath);
         // step2: update config.json
         engines.build.updateConfigJSON(config.buildEngine.config, true);
         // step3: update trigger.json
-        let triggerJSON = generateTriggerJSON(doc);
+        let triggerJSON = generateTriggerJSON(doc, flowName);
+
         let triggersJSON = {
           "triggers": [
           ]
