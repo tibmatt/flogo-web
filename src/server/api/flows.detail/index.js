@@ -35,7 +35,7 @@ function generateTriggerJSON(doc, flowName){
   let key = _.findKey(doc.items, function(o){return o&&o.triggerType});
   let triggerItem = doc.items[key];
   // For now, triggers.json just has name, settings, endpoints
-  trigger.name = triggerItem.name;
+  trigger.name = triggerItem.triggerType;
   let settings = triggerItem.settings;
   if(_.isArray(settings)){
     trigger.settings = getFlatObj(settings);
