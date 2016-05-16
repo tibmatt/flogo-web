@@ -75,7 +75,7 @@
 .flogo-flows-container-lists .flogo-flows-container-list-detail-name {
   display: block;
   margin-bottom: 3px;
-  font-size: 14px;
+  font-size: 18px;
   letter-spacing: 0.4px;
   line-height: 18px;
   white-space: nowrap;
@@ -103,7 +103,7 @@
   vertical-align: middle;
   width: 100%;
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.2;
   max-height: 4.8em;
   overflow: hidden;
