@@ -36,8 +36,8 @@
   list-style: none;
   background-color: #ffffff;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  width: 250px;
-  height: 140px;
+  /*width: 250px;*/
+  height: 160px;
   position: relative;
 }
 .flogo-flows-container-lists .flogo-flows-container-list:hover {
@@ -129,6 +129,14 @@
   top: 3.6em;
   left: 0;
 }
+
+.flogo-flows-container-list-col {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
 @media all and (min-width:  290px ) {
   .flogo-flows-container-lists {
     width: 290px;
@@ -154,3 +162,4 @@
     width: 1450px;
   }
 }
+*/
