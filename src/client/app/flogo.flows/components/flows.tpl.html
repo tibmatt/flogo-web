@@ -1,12 +1,11 @@
 <div class="flogo-flows-container">
   <div class="flogo-flows-container-header">
-    <div class="flogo-flows-container-header-detail">
-      <h3 class="flogo-flows-container-title">My Flows
-        <flogo-flows-import
-          (importSuccess)="onFlowImportSuccess($event)"
-          (importError)="onFlowImportError($event)"></flogo-flows-import>
-      </h3>
+    <div class="container-fluid">
+      <h3 class="flogo-flows-container-title">My Flows</h3>
       <flogo-flows-add></flogo-flows-add>
+      <flogo-flows-import
+        (importSuccess)="onFlowImportSuccess($event)"
+        (importError)="onFlowImportError($event)"></flogo-flows-import>
     </div>
 
   </div>

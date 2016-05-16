@@ -7,11 +7,13 @@
   width: 100%;
 }
 .flogo-flows-container-title {
+  display: inline-block;
+  line-height: 35px;
   color: #666;
 }
 .flogo-flows-container-header {
   height: 136px;
-  padding-top: 46px;
+  padding-top: 30px;
   background: #fafafa;
 }
 .flogo-flows-container-header-detail {
