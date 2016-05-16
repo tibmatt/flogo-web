@@ -16,6 +16,12 @@
   padding-top: 30px;
   background: #fafafa;
 }
+
+.flogo-flows-container-header-container{
+  width: 90%;
+  margin: 0 auto;
+}
+
 .flogo-flows-container-header-detail {
   position: relative;
   margin: 0 auto;
