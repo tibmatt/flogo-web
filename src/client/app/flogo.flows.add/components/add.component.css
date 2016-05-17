@@ -3,12 +3,10 @@
   position: relative;
   float: right;
   margin: 24px 0;
-
-  :hover {
-    color: #0081CB;
-  }
 }
-
+:host :hover {
+  color: #0081CB;
+}
 .flogo-flows-container-box-add {
   top: -5px;
   right: 0;
