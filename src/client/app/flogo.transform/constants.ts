@@ -7,5 +7,5 @@ export const VALID_TYPES = [
   // TYPE_EXPRESSION_ASSIGNMENT // not yet
 ];
 
-export const REGEX_INPUT_VALUE_INTERNAL = /^(([\w-]+)\.([\w-]+))(\.[\w-]+)*$/;
-export const REGEX_INPUT_VALUE_EXTERNAL = /^\[(A([\w-]+)|T)\.([\w-]+)\](\.[\w-]+)*$/;
+export const REGEX_INPUT_VALUE_INTERNAL = /^(([\w-]+)\.([\w-]+))((?:\.[\w-]+)*)$/;
+export const REGEX_INPUT_VALUE_EXTERNAL = /^\[(A([\w-]+)|T)\.([\w-]+)\]((?:\.[\w-]+)*)$/;
