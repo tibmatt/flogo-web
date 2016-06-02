@@ -25,7 +25,7 @@ gulp.task('dev', cb => {
   runSequence(
     'dev.clean',
     'dev.build',
-    //'dev.watch',
+    'dev.watch',
     cb
   );
 

@@ -1,16 +1,18 @@
 import gulp from 'gulp';
-import path from 'path';
-var ts = require('gulp-typescript');
+import ts from 'gulp-typescript';
+import changed from 'gulp-changed';
+
 import {CONFIG} from '../config';
 
-gulp.task('dev.client.typescript', [], ()=> {
+let tsProject = ts.createProject('tsconfig.json', {
+  typescript: require('typescript')
+});
 
-  let _tsProject = ts.createProject('tsconfig.json', {
-    typescript: require('typescript')
-  });
-
-  return gulp.src(["../../typings/browser.d.ts", "**/*.ts", "**/*.spec.ts", "!**/*.e2e.ts", "!node_modules/**/*.ts"], {cwd: CONFIG.paths.source.client})
-    .pipe(ts(_tsProject))
-    .pipe(gulp.dest(CONFIG.paths.dist.public));
+gulp.task('dev.client.typescript', [], () => {
+  let dest = CONFIG.paths.dist.public;
+  return gulp.src(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client})
+    .pipe(changed(dest, {extension: '.js'}))
+    .pipe(ts(tsProject))
+    .pipe(gulp.dest(dest));
 });
 

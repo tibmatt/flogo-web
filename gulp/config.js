@@ -16,7 +16,10 @@ export const CONFIG = {
       public: path.join(dist, 'public'),
       server: path.join(dist, 'server'),
       packages: path.join(dist, 'packages')
-    }
+    },
+    ts: ['../../typings/browser.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
+    less: ['{assets,app,common}/**/*.less'],
+    assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.css', '!**/*.less', '!**/*.js.map', '!**/node_modules/**']
   },
   libs: {
     js: [

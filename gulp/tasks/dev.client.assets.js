@@ -1,10 +1,13 @@
 import gulp from 'gulp';
+import changed from 'gulp-changed';
+
 import {CONFIG} from '../config';
 
-
 gulp.task('dev.client.assets', [], ()=> {
-  return gulp.src(['**/*', "!**/*.ts", "!**/*.js", "!**/*.css", "!**/*.less", "!**/*.js.map", "!**/node_modules/**"], {cwd: CONFIG.paths.source.client})
-    .pipe(gulp.dest(CONFIG.paths.dist.public))
+  let dest = CONFIG.paths.dist.public;
+  return gulp.src(CONFIG.paths.assets, {cwd: CONFIG.paths.source.client})
+    .pipe(changed(dest))
+    .pipe(gulp.dest(dest))
 });
 
 
