@@ -20,27 +20,27 @@ export const CONFIG = {
   },
   libs: {
     js: [
-      'jquery/dist/jquery.js',
-      'd3/d3.js',
-      'lodash/lodash.js',
-      'systemjs/dist/system-polyfills.src.js',
-      'reflect-metadata/Reflect.js',
-      'es6-shim/es6-shim.js',
-      'systemjs/dist/system.src.js',
-      'angular2/bundles/angular2-polyfills.js',
-      'rxjs/bundles/Rx.js',
-      'angular2/bundles/angular2.js',
-      'angular2/bundles/router.js',
-      'angular2/bundles/http.js',
-      'postal/lib/postal.js',
-      'pouchdb/dist/pouchdb.js',
-      'ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
-      'bootstrap/dist/js/bootstrap.js',
-      'moment/min/moment-with-locales.min.js'
+      'node_modules/jquery/dist/jquery.js',
+      'node_modules/d3/d3.js',
+      'node_modules/lodash/lodash.js',
+      'node_modules/systemjs/dist/system-polyfills.src.js',
+      'node_modules/reflect-metadata/Reflect.js',
+      'node_modules/es6-shim/es6-shim.js',
+      'node_modules/systemjs/dist/system.src.js',
+      'node_modules/angular2/bundles/angular2-polyfills.js',
+      'node_modules/rxjs/bundles/Rx.js',
+      'node_modules/angular2/bundles/angular2.js',
+      'node_modules/angular2/bundles/router.js',
+      'node_modules/angular2/bundles/http.js',
+      'node_modules/postal/lib/postal.js',
+      'node_modules/pouchdb/dist/pouchdb.js',
+      'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
+      'node_modules/bootstrap/dist/js/bootstrap.js',
+      'node_modules/moment/min/moment-with-locales.min.js'
     ],
     styles: [
-      'bootstrap/dist/css/**/*',
-      'bootstrap/dist/fonts/**/*'
+      'node_modules/bootstrap/dist/css/**/*',
+      'node_modules/bootstrap/dist/fonts/**/*'
     ]
   }
 

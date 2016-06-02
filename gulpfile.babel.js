@@ -9,23 +9,25 @@ requireDir('./gulp/tasks', {
 
 gulp.task('default', ['prod']);
 
-gulp.task('prod', () => {
+gulp.task('prod', cb => {
 
-  runSequence([
+  runSequence(
     'prod.clean',
     'prod.build',
-    'prod.watch'
-  ]);
+    'prod.watch',
+    cb
+  );
 
 });
 
-gulp.task('dev', () => {
+gulp.task('dev', cb => {
 
-  runSequence([
+  runSequence(
     'dev.clean',
     'dev.build',
-    'dev.watch'
-  ]);
+    //'dev.watch',
+    cb
+  );
 
 });
 
