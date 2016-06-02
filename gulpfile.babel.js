@@ -12,7 +12,7 @@ gulp.task('default', ['prod']);
 gulp.task('prod', cb => {
 
   runSequence(
-    'prod.clean',
+    'dev.clean',
     'prod.build',
     'prod.watch',
     cb
