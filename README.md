@@ -1,13 +1,21 @@
-**This is draft version, I am still working on add more**
 
-# Gettign started
+** For currently, the start.sh works on Mac OS **
 
-1. `git status` // to check the branch 
+# Prepare
+1. [Install `Go`](https://golang.org/doc/install). Don't forget to setup your `$GOPATH`, you can following [Test your installation](https://golang.org/doc/install#testing), and add `$GOPATH/bin` to your path
+1. [Install `gb`](https://getgb.io/docs/install/)
+1. [Install `git`](https://git-scm.com/)
+1. [Install `node`](https://nodejs.org/en/download/). Suggest you to download LTS version
+
+
+# Getting started
+
+1. `git status` // to check the branch
 2. `git pull --rebase`
 3. `git checkout develop`
 4. `./start.sh`
 
-If start successful, it you can see following output 
+If start successful, it you can see following output
 
 ```
 =============================================================================================
@@ -31,12 +39,9 @@ Flogo web include flogo front-end and flogo design time server
 4. One command start everything
 
 ## upcoming features
-  
+
 1. Production vs Dev mode
 
 2. Auto reload web application
 
 3. flogo engine auto restart
-
-
-

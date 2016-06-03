@@ -32,6 +32,9 @@ let config = {
       },
       "tibco-awsiot":{
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot"
+      },
+      "tibco-rest":{
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
       }
     },
     contrib: {}
@@ -49,6 +52,9 @@ let config = {
       },
       "tibco-coap":{
         path: "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
+      },
+      "tibco-rest": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
       }
     }
   },
