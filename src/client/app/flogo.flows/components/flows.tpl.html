@@ -1,26 +1,29 @@
 <div class="flogo-flows-container">
   <div class="flogo-flows-container-header">
-    <div class="flogo-flows-container-header-detail">
-      <h3 class="flogo-flows-container-title">My flows
+    <div class="container-fluid">
+      <div class="flogo-flows-container-header-container">
+        <h3 class="flogo-flows-container-title">My Flows</h3>
+        <flogo-flows-add></flogo-flows-add>
         <flogo-flows-import
           (importSuccess)="onFlowImportSuccess($event)"
           (importError)="onFlowImportError($event)"></flogo-flows-import>
-      </h3>
-      <flogo-flows-add></flogo-flows-add>
+        </div>
     </div>
 
   </div>
-  <div class="flogo-flows-container-body">
-    <ul class="flogo-flows-container-lists">
-      <li *ngFor="#flow of flows" class="flogo-flows-container-list">
-        <a class="flogo-flows-container-list-detail" [routerLink]="['FlogoFlowDetail', {id:flogoIDEncode(flow._id)}]">
-          <span class="flogo-flows-container-list-detail-name">{{flow.name}}</span>
-          <span class="clearfix flogo-flows-container-list-detail-info">
-            <span class="flogo-flows-container-list-detail-description">{{flow.description}}</span>
-            <i class="flogo-flows-container-list-detail-creatTime">Created {{flow.created_at}}</i>
-          </span>
-        </a>
-        <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow)"></span>
+  <div class="flogo-flows-container-body container-fluid">
+    <ul class="flogo-flows-container-lists row">
+      <li *ngFor="#flow of flows" class="flogo-flows-container-list-col col-lg-4 col-sm-6 col-xs-12">
+        <div class="flogo-flows-container-list">
+          <a class="flogo-flows-container-list-detail" href="javascript:void(0);" (click)="openFlow(flow._id, $event)">
+            <header class="flogo-flows-container-list-detail-name" [title]="flow.name">{{flow.name}}</header>
+            <section class="flogo-flows-container-list-detail-info">
+              <p class="flogo-flows-container-list-detail-description" [title]="flow.description">{{flow.description}}</p>
+              <i class="flogo-flows-container-list-detail-creatTime">Created {{flow.created_at}}</i>
+            </section>
+          </a>
+          <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow, $event)"></span>
+        </div>
       </li>
     </ul>
   </div>

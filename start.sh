@@ -23,9 +23,9 @@ CURRENT_PATH=$PWD
 #############################
 # Utils
 #############################
-echoBlack()
+echoBlue()
 {
-  printf "${FG_BLACK}$@${NC}\n"
+  printf "${FG_BLUE}$@${NC}\n"
 }
 
 echoDefault()
@@ -35,9 +35,9 @@ echoDefault()
 }
 echoHeader()
 {
-  echoBlack "======================================================"
-  echoBlack "## $@"
-  echoBlack "======================================================"
+  echoBlue "======================================================"
+  echoBlue "## $@"
+  echoBlue "======================================================"
 }
 echoInfo()
 {
@@ -136,7 +136,7 @@ check_command node
 #============================
 # gulp
 #============================
-check_command gulp
+# check_command gulp
 
 #============================
 # npm
@@ -195,4 +195,4 @@ sh start-services.sh &
 echoHeader "Step4: start flogo-web"
 cd $CURRENT_PATH
 npm install
-gulp
+npm start
