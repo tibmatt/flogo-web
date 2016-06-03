@@ -19,7 +19,8 @@ export const CONFIG = {
     },
     ts: ['../../typings/browser.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
     less: ['{assets,app,common}/**/*.less'],
-    assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.css', '!**/*.less', '!**/*.js.map', '!**/node_modules/**']
+    assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.css', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
+    serverSrc: ['**/*', 'package.json', '!**/node_modules/**']
   },
   libs: {
     js: [

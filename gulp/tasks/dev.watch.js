@@ -1,3 +1,3 @@
 import gulp from 'gulp';
 
-gulp.task('dev.watch', ['dev.client.watch']);
+gulp.task('dev.watch', ['dev.client.watch', 'dev.server.watch']);

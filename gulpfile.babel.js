@@ -26,6 +26,7 @@ gulp.task('dev', cb => {
     'dev.clean',
     'dev.build',
     'dev.watch',
+    'dev.start',
     cb
   );
 
