@@ -20,7 +20,8 @@ export const CONFIG = {
     ts: ['../../typings/browser.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
     less: ['{assets,app,common}/**/*.less'],
     assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
-    serverSrc: ['**/*', 'package.json', '!**/node_modules/**']
+    serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
+    distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**']
   },
   libs: {
     js: [
@@ -45,7 +46,17 @@ export const CONFIG = {
     styles: [
       'node_modules/bootstrap/dist/css/**/*',
       'node_modules/bootstrap/dist/fonts/**/*'
-    ]
+    ],
+    dist: {
+      js: [
+        'js/lib.js',
+        'app/app.js'
+      ]
+    }
+  },
+  bundles: {
+    lib: 'lib.js',
+    app: 'app.js'
   }
 
 
