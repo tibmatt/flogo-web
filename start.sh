@@ -195,4 +195,13 @@ sh start-services.sh &
 echoHeader "Step4: start flogo-web"
 cd $CURRENT_PATH
 npm install
-gulp
+
+if [ "$1" = "dev" ]
+then
+  echo "Running gulp dev"
+  gulp dev
+else
+  echo "Running gulp"
+  gulp
+fi
+
