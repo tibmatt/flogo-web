@@ -33,7 +33,7 @@ import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagra
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
-  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID
+  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
 } from '../../../common/utils';
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
@@ -664,6 +664,9 @@ export class FlogoCanvasComponent {
                 runTasks: runTasks,
                 runTasksIDs: runTasksIDs
               });
+
+              // update branch run status after apply the other status.
+              updateBranchNodesRunStatus(this.diagram.nodes, this.tasks);
 
               this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
