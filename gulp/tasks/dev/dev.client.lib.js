@@ -1,7 +1,7 @@
 import gulp from 'gulp';
 import path from 'path';
 
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 gulp.task('dev.client.lib', ()=>{
   let base = CONFIG.paths.source.client;

@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import ts from 'gulp-typescript';
 import changed from 'gulp-changed';
 
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 let tsProject = ts.createProject('tsconfig.json', {
   typescript: require('typescript')

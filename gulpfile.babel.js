@@ -3,6 +3,7 @@ import runSequence from 'run-sequence';
 
 import requireDir from 'require-dir';
 
+// Automatically load tasks
 requireDir('./gulp/tasks', {
   recurse: true
 });

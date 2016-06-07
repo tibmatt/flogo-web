@@ -1,6 +1,6 @@
 import gulp from 'gulp';
 import cp from "child_process";
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 gulp.task("dev.install", ['dev.client.install', 'dev.server.install'], ()=>{
 });

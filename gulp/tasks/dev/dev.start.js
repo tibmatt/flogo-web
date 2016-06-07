@@ -4,7 +4,7 @@ import path from 'path';
 import gulp from 'gulp';
 import nodemon from 'gulp-nodemon';
 
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 const serverIgnore = ['log.txt', 'node_modules', 'test-engine', 'build-engine', 'packages', 'data'];
 

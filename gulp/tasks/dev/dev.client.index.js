@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import path from 'path';
 import inject from 'gulp-inject';
 
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 gulp.task('dev.client.index', () => {
   let originalIndex = path.join(CONFIG.paths.source.client, 'index.html');

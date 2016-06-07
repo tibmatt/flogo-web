@@ -1,5 +1,5 @@
 import gulp from 'gulp';
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 gulp.task('dev.client.watch', () => {
   gulp.watch(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client}, ['dev.client.typescript']);

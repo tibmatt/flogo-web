@@ -4,7 +4,7 @@ import gulp from 'gulp';
 import changed from 'gulp-changed';
 import less from 'gulp-less';
 
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 gulp.task('dev.client.styles', () => {
   let dest = CONFIG.paths.dist.public;

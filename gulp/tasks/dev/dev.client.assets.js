@@ -1,7 +1,7 @@
 import gulp from 'gulp';
 import changed from 'gulp-changed';
 
-import {CONFIG} from '../config';
+import {CONFIG} from '../../config';
 
 gulp.task('dev.client.assets', [], ()=> {
   let dest = CONFIG.paths.dist.public;
