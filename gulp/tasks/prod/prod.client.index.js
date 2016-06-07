@@ -15,6 +15,6 @@ gulp.task('prod.client.index', () => {
 
 function injectJsLibs() {
   let jsLibsPath = path.join(CONFIG.paths.dist.public);
-  let sources = gulp.src(CONFIG.libs.dist.js, {cwd: jsLibsPath});
-  return inject(sources, {relative: true, addPrefix: 'js'});
+  let sources = gulp.src(CONFIG.libs.dist.js.map(file => path.join(jsLibsPath, file)));
+  return inject(sources, {relative: false, ignorePath: jsLibsPath});
 }

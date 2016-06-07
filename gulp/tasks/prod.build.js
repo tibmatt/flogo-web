@@ -9,6 +9,7 @@ gulp.task('prod.build', cb => runSequence(
 gulp.task('prod.client.build', cb => runSequence(
   'prod.client.bundle',
   'prod.client.assets',
+  'prod.client.less',
   'prod.client.index',
   cb
 ));
