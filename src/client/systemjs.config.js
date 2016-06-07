@@ -4,38 +4,62 @@
  *
  */
 
-(function (global) {
-  var config = {
-    "defaultJSExtensions": true,
-    "packageConfigPaths": [],
-    "paths": {
-      "main": "/main"
+(function(global) {
+  // ENV
+  //global.ENV = 'development'
+
+  // wildcard paths
+  var paths = {
+    'n:*': 'src/client/node_modules/*'
+  };
+
+  // map tells the System loader where to look for things
+  var map = {
+    'main': 'dist/public',
+    'rxjs': 'n:rxjs',
+    'angular2': 'n:angular2',
+    'ng2-bs3-modal': 'n:ng2-bs3-modal',
+    'reflect-metadata': 'n:reflect-metadata'
+    //'lodash': 'n:lodash'
+  };
+
+  // packages tells the System loader how to load when no filename and/or no extension
+  var packages = {
+    'angular2': {
+      defaultExtension: 'js'
     },
-    "packages": {
-      "angular2": {
-        "defaultExtension": false
-      },
-      "rxjs": {
-        "defaultExtension": false
-      },
-      "ng2-bs3-modal": {
-        "defaultExtension": false
-      }
+    'main': {
+      main: 'main',
+      defaultExtension: 'js'
+    },
+    'rxjs': {
+      defaultExtension: 'js'
+    },
+    'ng2-bs3-modal': {
+      defaultExtension: 'js'
+    },
+    'reflect-metadata': {
+      defaultExtension: 'js'
     }
   };
 
-  if (typeof DEV != 'undefined' && !DEV) {
-    delete config.paths;
-    config.defaultJSExtensions = false;
-    config.packages.main = {
-      "format": "register"
+  var config = {
+    defaultJSExtensions: false,
+    map: map,
+    packages: packages,
+    paths: paths
+  };
+
+  if (typeof DEV != 'undefined' && DEV) {
+    config.paths = {
+      'main': '/main'
     };
+    delete config.packages.main;
+    delete config.map;
   }
 
   // filterSystemConfig - index.html's chance to modify config before we register it.
-  if (global.filterSystemConfig) {
-    global.filterSystemConfig(config);
-  }
+  if (global.filterSystemConfig) { global.filterSystemConfig(config); }
 
   System.config(config);
 

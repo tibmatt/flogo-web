@@ -73,10 +73,12 @@
 
 
 <script>
-  System.import('main')
-          .catch(function (e) {
-            console.error(e);
-          });
+  if(typeof DEV != 'undefined' && DEV) {
+    System.import('main')
+      .catch(function (e) {
+        console.error(e);
+      });
+  }
 </script>
 
 </body>
