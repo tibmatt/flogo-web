@@ -4,6 +4,7 @@ const source = 'src';
 const dist = 'dist';
 
 export const CONFIG = {
+  host: 'localhost:3010',
   paths: {
     source: {
       root: source,
