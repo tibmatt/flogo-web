@@ -5,7 +5,9 @@ const browserSync = require('browser-sync').create();
 
 gulp.task('dev.client.watch',  () => {
   browserSync.init({
-    proxy: CONFIG.host
+    proxy:  {
+      target: CONFIG.host
+    }
   });
 
   gulp.watch(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client}, ['dev.client.typescript']);
