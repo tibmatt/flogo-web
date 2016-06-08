@@ -8,7 +8,7 @@ requireDir('./gulp/tasks', {
   recurse: true
 });
 
-gulp.task('default', ['prod']);
+gulp.task('default', ['tmp-prod']);
 
 gulp.task('prod', cb => {
 
@@ -19,6 +19,15 @@ gulp.task('prod', cb => {
     cb
   );
 
+});
+
+gulp.task('tmp-prod', cb => {
+  runSequence(
+    'clean',
+    'dev.build',
+    'start',
+    cb
+  );
 });
 
 gulp.task('dev', cb => {
