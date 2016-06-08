@@ -195,4 +195,11 @@ sh start-services.sh &
 echoHeader "Step4: start flogo-web"
 cd $CURRENT_PATH
 npm install
-npm start
+if [ "$1" = "dev" ]
+then
+  echo "Running dev env"
+  gulp dev
+else
+  echo "Running prod env"
+  npm start
+fi

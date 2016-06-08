@@ -1,0 +1,20 @@
+import gulp from 'gulp';
+import path from 'path';
+import inject from 'gulp-inject';
+
+import {CONFIG} from '../../config';
+
+gulp.task('prod.client.index', () => {
+  let originalIndex = path.join(CONFIG.paths.source.client, 'index.html');
+
+  return gulp.src(originalIndex)
+    .pipe(injectJsLibs())
+    .pipe(gulp.dest(CONFIG.paths.dist.public));
+
+});
+
+function injectJsLibs() {
+  let jsLibsPath = path.join(CONFIG.paths.dist.public);
+  let sources = gulp.src(CONFIG.libs.dist.js.map(file => path.join(jsLibsPath, file)));
+  return inject(sources, {relative: false, ignorePath: jsLibsPath});
+}
