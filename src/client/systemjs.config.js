@@ -54,8 +54,14 @@
     config.paths = {
       'main': '/main'
     };
+    config.defaultJSExtensions = 'js';
     delete config.packages.main;
     delete config.map;
+
+    for(var pkgName in config.packages) {
+      config.packages[pkgName].defaultExtension = false;
+    }
+
   }
 
   // filterSystemConfig - index.html's chance to modify config before we register it.

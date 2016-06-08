@@ -8,7 +8,6 @@ import {CONFIG} from '../../config';
 
 gulp.task('dev.client.styles', () => {
   let dest = CONFIG.paths.dist.public;
-  console.log('dev.client.styles');
   return gulp.src(CONFIG.paths.less, {cwd: CONFIG.paths.source.client})
     .pipe(changed(dest), {extension: '.css'})
     .pipe(less())

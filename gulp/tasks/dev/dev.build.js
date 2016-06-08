@@ -17,7 +17,7 @@ gulp.task('dev.client.build', (cb)=> {
 
 gulp.task('dev.server.build', cb => {
   return runSequence(
-    'dev.server.copy',
+    'server.copy',
     'dev.server.install',
      cb);
 });
