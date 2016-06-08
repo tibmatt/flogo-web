@@ -4,9 +4,9 @@
  *
  */
 
-(function(global) {
+(function (global) {
   // ENV
-  //global.ENV = 'development'
+  var isDevEnv = typeof global.DEV != 'undefined' && global.DEV;
 
   // wildcard paths
   var paths = {
@@ -17,22 +17,19 @@
   var map = {
     'main': 'dist/public',
     'rxjs': 'n:rxjs',
-    'angular2': 'n:angular2',
     'ng2-bs3-modal': 'n:ng2-bs3-modal',
-    'reflect-metadata': 'n:reflect-metadata'
-    //'lodash': 'n:lodash'
+    'reflect-metadata': 'n:reflect-metadata',
+    '@angular': 'n:@angular'
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {
-    'angular2': {
-      defaultExtension: 'js'
-    },
     'main': {
       main: 'main',
       defaultExtension: 'js'
     },
     'rxjs': {
+      //main: isDevEnv ? 'Rx.umd.js' : 'undefined',
       defaultExtension: 'js'
     },
     'ng2-bs3-modal': {
@@ -43,6 +40,24 @@
     }
   };
 
+  var ngPackageNames = [
+    'common',
+    'compiler',
+    'core',
+    'http',
+    'platform-browser',
+    'platform-browser-dynamic',
+    'router',
+    'router-deprecated'
+  ];
+
+  ngPackageNames.forEach(function (pkgName) {
+    packages['@angular/' + pkgName] = {
+      main: isDevEnv ? pkgName + '.umd.js' : 'index.js',
+      defaultExtension: 'js'
+    };
+  });
+
   var config = {
     defaultJSExtensions: false,
     map: map,
@@ -50,22 +65,27 @@
     paths: paths
   };
 
-  if (typeof DEV != 'undefined' && DEV) {
+  if (isDevEnv) {
     config.paths = {
       'main': '/main'
     };
     config.defaultJSExtensions = 'js';
     delete config.packages.main;
-    delete config.map;
 
-    for(var pkgName in config.packages) {
+    config.map = {
+      '@angular': 'js/node_modules/@angular'
+    };
+
+    for (var pkgName in config.packages) {
       config.packages[pkgName].defaultExtension = false;
     }
 
   }
 
   // filterSystemConfig - index.html's chance to modify config before we register it.
-  if (global.filterSystemConfig) { global.filterSystemConfig(config); }
+  if (global.filterSystemConfig) {
+    global.filterSystemConfig(config);
+  }
 
   System.config(config);
 
