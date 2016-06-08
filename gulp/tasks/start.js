@@ -12,8 +12,7 @@ gulp.task('start', () => {
   nodemon({
     // DON'T use cwd here, it will change the whole gulp process cwd
     exec: `npm --prefix="${CONFIG.paths.dist.server}" run start-server`,
-    watch: [CONFIG.paths.dist.server],
-    ignore: CONFIG.paths.serverIgnore.map(ignorePath => path.join(CONFIG.paths.dist.server, ignorePath))
+    watch: CONFIG.paths.serverWatch.map(watchPath => path.join(CONFIG.paths.dist.server, watchPath))
   });
 
 });

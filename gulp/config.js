@@ -24,8 +24,8 @@ export const CONFIG = {
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     distLess: ['assets/**/*.less', '!{app,common}/**/*.less'],
-    // files and directories that should be ignored by running server
-    serverIgnore: ['log.txt', 'node_modules', 'test-engine', 'build-engine', 'packages', 'data', 'etc']
+    // directories that should be watched by running server so it restarts if something changes
+    serverWatch: ['api', 'common', 'config', 'modules']
   },
   libs: {
     js: [
