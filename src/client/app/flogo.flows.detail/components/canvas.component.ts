@@ -11,7 +11,8 @@ import {TransformComponent as FlogoTransformComponent} from '../../flogo.transfo
 
 import {
   IFlogoFlowDiagramTaskDictionary,
-  IFlogoFlowDiagram
+  IFlogoFlowDiagram,
+  IFlogoFlowDiagramTask
 } from '../../../common/models';
 
 import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
@@ -57,8 +58,11 @@ import { FlogoModal } from '../../../common/services/modal.service';
 ])
 
 export class FlogoCanvasComponent {
+  downloadLink: string;
+
   _subscriptions : any[];
 
+  _id: any;
   _flowID: string;
   _currentProcessID: string;
   _isCurrentProcessDirty = true;
@@ -209,7 +213,7 @@ export class FlogoCanvasComponent {
 
   private changeFlowDetail($event, property) {
     return new Promise((resolve, reject)=>{
-      this._updateFlow(this._flow).then((response)=>{
+      this._updateFlow(this._flow).then((response:any)=>{
         notification(`Update flow's ${property} successfully!`,'success', 3000);
         resolve(response);
       }).catch((err)=>{
@@ -404,8 +408,6 @@ export class FlogoCanvasComponent {
           this._startingProcess = false;
           console.error( err );
           throw err;
-
-          return err;
         }
       );
   }
@@ -754,8 +756,6 @@ export class FlogoCanvasComponent {
             this._restartingProcess = false;
             console.error( err );
             throw err;
-
-            return err;
           }
         );
     } else {
@@ -797,7 +797,7 @@ export class FlogoCanvasComponent {
 
     // generate trigger id when adding the trigger;
     //  TODO replace the task ID generation function?
-    let trigger = _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
+    let trigger = <IFlogoFlowDiagramTask> _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
 
     this.tasks[ trigger.id ] = trigger;
 
@@ -860,7 +860,7 @@ export class FlogoCanvasComponent {
     let taskName = this.uniqueTaskName(data.task.name);
 
     // generate task id when adding the task
-    let task = _.assign( {},
+    let task = <IFlogoFlowDiagramTask> _.assign( {},
       data.task,
       {
         id : flogoGenTaskID( this.tasks ),

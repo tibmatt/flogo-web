@@ -11,11 +11,12 @@ import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
   inputs:['_info:info','_fieldObserver:fieldObserver']
 })
 
-export class FlogoFormBuilderFieldsNumber extends FlogoFormBuilderFieldsBase{
+export class FlogoFormBuilderFieldsNumber extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any
 
   constructor() {
+    super();
   }
 
 }

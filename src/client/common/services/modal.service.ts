@@ -1,5 +1,10 @@
 import {Injectable} from '@angular/core';
 
+export interface IOptions {
+  primary?: string
+  secondary?: string
+}
+
 @Injectable()
 export class FlogoModal {
     constructor() {
@@ -10,15 +15,15 @@ export class FlogoModal {
       var options = {primary: 'DELETE', secondary:'CANCEL'};
       return this.confirm('Confirm deletion', message, options);
     }
-    confirm(title, message, options, styles?: {
+    confirm(title, message, options : IOptions, styles?: {
         [key : string] : string;
     }) {
-      var buttons = _.assign({}, {primary:'YES', secondary:'NO'}, options);
+      var buttons = <IOptions> _.assign({}, {primary:'YES', secondary:'NO'}, options);
         let style = '';
         for(let attr in styles) {
             style += `${attr}: ${styles[attr]};`
         }
-        window.jQuery('flogo-app').append(`
+        jQuery('flogo-app').append(`
             <div class="flogo-common-service-modal-container fade">
                 <div class="flogo-common-service-modal-detail fade clearfix" style="${style}">
                     <div class="flogo-common-service-modal-confirm">${title}</div>
@@ -28,8 +33,8 @@ export class FlogoModal {
                 </div>
             </div>
         `);
-        let modalContainer = window.jQuery('.flogo-common-service-modal-container');
-        let modalDetail = window.jQuery('.flogo-common-service-modal-container .flogo-common-service-modal-detail');
+        let modalContainer = jQuery('.flogo-common-service-modal-container');
+        let modalDetail = jQuery('.flogo-common-service-modal-container .flogo-common-service-modal-detail');
         return new Promise((resolve, reject) => {
             setTimeout(function() {
                 modalContainer.addClass('in');
@@ -37,7 +42,7 @@ export class FlogoModal {
             }, 100);
 
             modalDetail.find('button').click(function() {
-                if(window.jQuery(this).text() == buttons.primary) {
+                if(jQuery(this).text() == buttons.primary) {
                     resolve(true);
                 } else {
                     resolve(false);

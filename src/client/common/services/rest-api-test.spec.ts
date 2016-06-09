@@ -19,7 +19,7 @@ export class RESTAPITest{
     this.testFlow();
   }
 
-  print(title, request, response, fail){
+  print(title, request?, response?, fail?){
     let className = 'panel-success';
     if(fail){
       className = 'panel-danger';
@@ -61,7 +61,7 @@ export class RESTAPITest{
       </div>
     </div>
     `;
-    window.jQuery("#test-container").append(html);
+    jQuery("#test-container").append(html);
   }
 
   testFlow(){
@@ -104,7 +104,7 @@ export class RESTAPITest{
           reject(err);
         });
       });
-    }).then((response)=>{
+    }).then((response:{id:any,rev:any})=>{
       // step 4: remove a flow
       return new Promise((resolve, reject)=>{
         let id = response.id;

@@ -17,6 +17,7 @@ export class FlogoFormBuilderFieldsTextBox  extends FlogoFormBuilderFieldsBase {
 
 
   constructor() {
+    super();
   }
 
   ngOnInit() {

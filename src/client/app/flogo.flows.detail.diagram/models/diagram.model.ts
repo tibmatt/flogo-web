@@ -13,6 +13,8 @@ import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { genBranchLine } from '../../../common/utils';
 
+import * as moment from 'moment';
+
 export interface IFlogoFlowDiagram {
   root : IFlogoFlowDiagramRootNode;
   nodes : IFlogoFlowDiagramNodeDictionary;

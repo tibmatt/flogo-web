@@ -26,7 +26,7 @@ export class Contenteditable {
 
     constructor(private el: ElementRef, private _flow: RESTAPIFlowsService) {
         this._el = el.nativeElement;
-        this.$el = window.jQuery(this._el);
+        this.$el = jQuery(this._el);
     }
     ngOnInit() {
         if(this.myContenteditable != undefined) this.$el.html(this.myContenteditable);

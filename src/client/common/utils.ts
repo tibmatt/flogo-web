@@ -103,7 +103,7 @@ function portAttribute( inAttr : {
 }, withDefault = false ) {
 
   let outAttr = <{
-    type : FLOGO_TASK_ATTRIBUTE_TYPE;
+    type : any;
     value : any;
     [key : string] : any;
   }>_.assign( {}, inAttr );
@@ -641,14 +641,14 @@ export function notification(message: string, type: string, time?: number, setti
     `
   }
   template += '</div>';
-  let notificationContainer = window.jQuery('body > .flogo-common-notification-container');
+  let notificationContainer = jQuery('body > .flogo-common-notification-container');
   if(notificationContainer.length) {
     notificationContainer.append(template);
   } else {
-    window.jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
+    jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
-  let notification = window.jQuery('.flogo-common-notification-container>div:last');
-  let notifications =  window.jQuery('.flogo-common-notification-container>div');
+  let notification = jQuery('.flogo-common-notification-container>div:last');
+  let notifications =  jQuery('.flogo-common-notification-container>div');
   let maxCounter = 5;
 
   if(notifications.length > 5) {

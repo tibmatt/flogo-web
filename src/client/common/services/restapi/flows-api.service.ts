@@ -9,7 +9,7 @@ export class RESTAPIFlowsService{
   constructor(private _db: FlogoDBService, private http:Http){
   }
 
-  createFlow(flowObj: Object){
+  createFlow(flowObj: any){
     flowObj._id = this._db.generateFlowID();
 
     flowObj.$table = this._db.FLOW;
@@ -31,7 +31,7 @@ export class RESTAPIFlowsService{
         startKey: `${this._db.FLOW}${this._db.DELIMITER}${this._db.DEFAULT_USER_ID}${this._db.DELIMITER}`,
         endKey: `${this._db.FLOW}${this._db.DELIMITER}${this._db.DEFAULT_USER_ID}${this._db.DELIMITER}\uffff`
       };
-      this._db.allDocs(options).then((response)=>{
+      this._db.allDocs(options).then((response:any)=>{
         let allFlows = [];
         let rows = response&&response.rows||[];
         rows.forEach((item)=>{
@@ -57,7 +57,7 @@ export class RESTAPIFlowsService{
     });
   }
 
-  deleteFlow(){
+  deleteFlow(...args: any[]){
     let parameters = arguments;
     return new Promise((resolve, reject)=>{
       this._db.remove.apply(this,parameters).then((response)=>{
