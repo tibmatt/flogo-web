@@ -5,7 +5,7 @@ gulp.task('dev.build', ['dev.client.build', 'dev.server.build']);
 
 gulp.task('dev.client.build', (cb)=> {
   return runSequence(
-    'dev.client.install',
+    'install.client',
     'dev.client.lib',
     'dev.client.styles',
     'dev.client.typescript',
@@ -18,6 +18,6 @@ gulp.task('dev.client.build', (cb)=> {
 gulp.task('dev.server.build', cb => {
   return runSequence(
     'server.copy',
-    'dev.server.install',
+    'install.server',
      cb);
 });

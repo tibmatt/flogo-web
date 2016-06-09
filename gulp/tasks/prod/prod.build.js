@@ -12,11 +12,13 @@ gulp.task('prod.client.build', cb => runSequence(
   'prod.client.assets',
   'prod.client.less',
   'prod.client.index',
+  'install.client',
   cb
 ));
 
 gulp.task('prod.server.build', cb => runSequence(
   'server.copy',
+  'install.server',
   cb
 ));
 

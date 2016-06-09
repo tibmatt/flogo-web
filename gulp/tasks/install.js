@@ -1,14 +1,14 @@
 import gulp from 'gulp';
 import cp from "child_process";
-import {CONFIG} from '../../config';
+import {CONFIG} from '../config';
 
-gulp.task("dev.install", ['dev.client.install', 'dev.server.install'], ()=>{
+gulp.task("install", ['install.client', 'install.server'], ()=>{
 });
 
-gulp.task("dev.client.install", ()=>{
+gulp.task("install.client", ()=>{
   return cp.execSync("npm install", {cwd: CONFIG.paths.source.client});
 });
 
-gulp.task("dev.server.install", ()=> {
+gulp.task("install.server", ()=> {
   return cp.execSync("npm install", {cwd: CONFIG.paths.dist.server});
 });
