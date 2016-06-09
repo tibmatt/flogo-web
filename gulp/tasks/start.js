@@ -13,6 +13,9 @@ gulp.task('start', () => {
     // DON'T use cwd here, it will change the whole gulp process cwd
     exec: `npm --prefix="${CONFIG.paths.dist.server}" run start-server`,
     watch: CONFIG.paths.serverWatch.map(watchPath => path.join(CONFIG.paths.dist.server, watchPath))
+  })
+  .on('start', () => {
+    process.env['FLOGO_SKIP_PKG_INSTALL'] = true;
   });
 
 });
