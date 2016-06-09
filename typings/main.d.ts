@@ -18,6 +18,7 @@
 /// <reference path="main/ambient/micromatch/index.d.ts" />
 /// <reference path="main/ambient/mime/index.d.ts" />
 /// <reference path="main/ambient/minimatch/index.d.ts" />
+/// <reference path="main/ambient/moment-node/index.d.ts" />
 /// <reference path="main/ambient/moment/index.d.ts" />
 /// <reference path="main/ambient/ng2/index.d.ts" />
 /// <reference path="main/ambient/node/index.d.ts" />

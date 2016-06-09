@@ -18,6 +18,7 @@
 /// <reference path="browser/ambient/micromatch/index.d.ts" />
 /// <reference path="browser/ambient/mime/index.d.ts" />
 /// <reference path="browser/ambient/minimatch/index.d.ts" />
+/// <reference path="browser/ambient/moment-node/index.d.ts" />
 /// <reference path="browser/ambient/moment/index.d.ts" />
 /// <reference path="browser/ambient/ng2/index.d.ts" />
 /// <reference path="browser/ambient/node/index.d.ts" />
