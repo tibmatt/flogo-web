@@ -73,7 +73,7 @@
     delete config.packages.main;
 
     config.map = {
-      '@angular': 'js/node_modules/@angular'
+      '@angular': '/js/node_modules/@angular'
     };
 
     for (var pkgName in config.packages) {
