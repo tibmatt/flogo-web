@@ -25,7 +25,7 @@ export const CONFIG = {
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     distLess: ['assets/**/*.less', '!{app,common}/**/*.less'],
     // directories that should be watched by running server so it restarts if something changes
-    serverWatch: ['api', 'common', 'config', 'modules']
+    serverWatch: ['api', 'common', 'config', 'modules', 'server.js']
   },
   libs: {
     js: [
