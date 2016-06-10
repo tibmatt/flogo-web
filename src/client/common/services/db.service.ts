@@ -284,8 +284,8 @@ export class FlogoDBService{
 
   getAllActivities() {
     // force to retrieve all of the activities without number limitation
-    return this.getActivities(0);
-  }
+    return this.getActivities(Infinity);
+      }
 
   // retrieve all of the activities with limit up to 200
   getActivities( limit : number = 200 ) {
