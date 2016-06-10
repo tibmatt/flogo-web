@@ -9,6 +9,10 @@ import less from 'less';
 
 import {CONFIG} from '../../config'
 
+/**
+ * Generate app bundle file.
+ * Makes a single javascript file from app and library sources.
+ */
 gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
 
   let Builder = require('systemjs-builder');
@@ -23,6 +27,9 @@ gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
 
 });
 
+/**
+ * Compile app's typescript files to javascript and inline html templates and styles 
+ */
 gulp.task('prod.client.bundle.app.ts', () => {
 
   let tsProject = ts.createProject('tsconfig.json', {

@@ -1,3 +1,9 @@
+/**
+ * Flogo web build process
+ * Tasks are automatically loaded from '/gulp/tasks' folder.
+ * Configuration located in '/gulp/config'
+ */
+
 import gulp from 'gulp';
 import runSequence from 'run-sequence';
 
@@ -8,8 +14,15 @@ requireDir('./gulp/tasks', {
   recurse: true
 });
 
+/**
+ * Default is prod mode
+ */
+// TODO: replace for prod mode
 gulp.task('default', ['tmp-prod']);
 
+/**
+ * Start production mode
+ */
 gulp.task('prod', cb => {
 
   runSequence(
@@ -21,15 +34,9 @@ gulp.task('prod', cb => {
 
 });
 
-gulp.task('tmp-prod', cb => {
-  runSequence(
-    'clean',
-    'dev.build',
-    'prod.start',
-    cb
-  );
-});
-
+/**
+ * Start development mode
+ */
 gulp.task('dev', cb => {
 
   runSequence(
@@ -40,6 +47,20 @@ gulp.task('dev', cb => {
     cb
   );
 
+});
+
+
+/**
+ * Start without watches
+ */
+// TODO: Should be removed after inline template fix
+gulp.task('tmp-prod', cb => {
+  runSequence(
+    'clean',
+    'dev.build',
+    'prod.start',
+    cb
+  );
 });
 
 

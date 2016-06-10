@@ -10,6 +10,9 @@ let tsProject = ts.createProject('tsconfig.json', {
   typescript: require('typescript')
 });
 
+/**
+ * Compile typescript sources to build folder
+ */
 gulp.task('dev.client.typescript', [], () => {
   let dest = CONFIG.paths.dist.public;
 

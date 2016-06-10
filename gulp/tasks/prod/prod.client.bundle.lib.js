@@ -6,8 +6,10 @@ import uglify from 'gulp-uglify';
 
 import {CONFIG} from '../../config';
 
-gulp.task('prod.client.bundle.lib', ()=>{
-
+/**
+ * Generate bundle files from third party libraries.
+ */
+gulp.task('prod.client.bundle.lib', () => {
   let base = CONFIG.paths.source.client;
   return gulp.src(CONFIG.libs.dist.vendors, {cwd: base, base: base})
     .pipe(concat(CONFIG.bundles.lib))

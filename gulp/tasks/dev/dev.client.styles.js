@@ -6,6 +6,9 @@ import less from 'gulp-less';
 
 import {CONFIG} from '../../config';
 
+/**
+ * Copmpiles less files to build folder 
+ */
 gulp.task('dev.client.styles', () => {
   let dest = CONFIG.paths.dist.public;
   return gulp.src(CONFIG.paths.less, {cwd: CONFIG.paths.source.client})

@@ -3,6 +3,9 @@ import {CONFIG} from '../config';
 
 import del from 'del';
 
+/**
+ * Delete application files from client and server dist folders to have a clean state for build process
+ */
 gulp.task('clean', ['clean.client', 'clean.server']);
 
 gulp.task('clean.client', () => {

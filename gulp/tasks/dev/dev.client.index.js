@@ -4,6 +4,9 @@ import inject from 'gulp-inject';
 
 import {CONFIG} from '../../config';
 
+/**
+ * Builds index.html file for development
+ */
 gulp.task('dev.client.index', () => {
   let originalIndex = path.join(CONFIG.paths.source.client, 'index.html');
 
