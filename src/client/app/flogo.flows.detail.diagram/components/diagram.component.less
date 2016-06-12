@@ -490,6 +490,10 @@
 
     &.flogo-flows-detail-diagram-node-run {
 
+      .flogo-flows-detail-diagram-node-detail:before {
+        color: #79B8DC;
+      }
+
       .flogo-flows-detail-diagram-node-detail-branch-run {
         opacity: 1;
       }
@@ -505,6 +509,11 @@
         opacity: 1;
       }
 
+      // override the node-run status
+      .flogo-flows-detail-diagram-node-detail:before {
+        color: #FFF;
+      }
+
       // `hover` style overrides the `run` style
       .flogo-flows-detail-diagram-node-detail-branch,
       .flogo-flows-detail-diagram-node-detail-branch-run {
@@ -514,6 +523,11 @@
 
     &.flogo-flows-detail-diagram-node-selected {
       transform: none;
+      
+      // override the node-run status
+      .flogo-flows-detail-diagram-node-detail:before {
+        color: #FFF;
+      }
 
       .flogo-flows-detail-diagram-node-detail-branch-selected {
         opacity: 1;
