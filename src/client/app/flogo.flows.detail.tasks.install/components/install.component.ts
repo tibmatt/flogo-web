@@ -1,23 +1,25 @@
 import {Component} from '@angular/core';
-import { MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import {PUB_EVENTS} from '../../flogo.flows.detail.tasks/messages';
 import {SUB_EVENTS} from "../../flogo.flows.detail.tasks/messages";
 
 import {RESTAPIService} from "../../../common/services/rest-api.service";
 import {PostService} from "../../../common/services/post.service";
+import { FlogoInstallerComponent } from '../../flogo.installer/components/installer.component';
 
 @Component({
   selector: 'flogo-flows-detail-tasks-install',
-  directives: [MODAL_DIRECTIVES],
+  directives: [FlogoInstallerComponent],
   moduleId: module.id,
   templateUrl: 'install.tpl.html',
 })
 export class InstallComponent {
 
   public activities:any[] = [];
+  private isActivated = false;
 
   constructor(private _restApiService:RESTAPIService, private _postService:PostService) {
+    this.isActivated = false;
     this._loadActivities();
   }
 
@@ -47,5 +49,9 @@ export class InstallComponent {
     this._restApiService.activities.getAll()
       .then((activities:any) => this.activities = activities);
   };
+
+  private openModal() {
+    this.isActivated = true;
+  }
 
 }
