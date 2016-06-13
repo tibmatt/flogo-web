@@ -15,7 +15,7 @@ gulp.task('prod', cb => {
   runSequence(
     'clean',
     'prod.build',
-    'start',
+    'prod.start',
     cb
   );
 
@@ -25,7 +25,7 @@ gulp.task('tmp-prod', cb => {
   runSequence(
     'clean',
     'dev.build',
-    'start',
+    'prod.start',
     cb
   );
 });
@@ -36,7 +36,7 @@ gulp.task('dev', cb => {
     'clean',
     'dev.build',
     'dev.watch',
-    'start',
+    'dev.start',
     cb
   );
 

@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
