@@ -1,11 +1,18 @@
-import gulp from 'gulp';
 import path from 'path';
+
+import gulp from 'gulp';
+import del from 'del';
+import vinyl from 'vinyl-fs';
 
 import {CONFIG} from '../../config';
 
-gulp.task('dev.client.lib', ()=>{
-  let base = CONFIG.paths.source.client;
-  let allJs = CONFIG.libs.js.concat(CONFIG.libs.bundles);
-  return gulp.src(allJs, {cwd: base, base: base})
-    .pipe(gulp.dest(path.join(CONFIG.paths.dist.public, 'js')));
+const DEPENDENCIES_DIRNAME = 'node_modules';
+
+/**
+ * Link third party libs to build folder
+ */
+gulp.task('dev.client.lib', () => {
+  del.sync([path.join(CONFIG.paths.dist.public, DEPENDENCIES_DIRNAME)]);
+  return vinyl.src(path.join(CONFIG.paths.source.client, DEPENDENCIES_DIRNAME), {followSymlinks: false})
+    .pipe(vinyl.symlink(CONFIG.paths.dist.public));
 });

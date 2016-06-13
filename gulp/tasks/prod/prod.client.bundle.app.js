@@ -19,7 +19,7 @@ gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
   let builder = new Builder('', path.join(CONFIG.paths.source.client, 'systemjs.config.js'));
 
   Promise.all([
-    builder.buildStatic('main/main.js + main/app/**/**.js + main/common/**/**.js', path.join(CONFIG.paths.dist.public, 'app.bundle.js'), {minify: false, sourceMaps: true, lowResSourceMaps: true, encodeNames: true})
+    builder.buildStatic('main/main.js + main/app/**/**.js + main/common/**/**.js', path.join(CONFIG.paths.dist.public, 'app.bundle.js'), {minify: true, sourceMaps: true, lowResSourceMaps: true, encodeNames: true})
   ])
     .then(() => cb())
     .catch(err => cb(err))
@@ -28,7 +28,7 @@ gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
 });
 
 /**
- * Compile app's typescript files to javascript and inline html templates and styles 
+ * Compile app's typescript files to javascript and inline html templates and styles
  */
 gulp.task('prod.client.bundle.app.ts', () => {
 

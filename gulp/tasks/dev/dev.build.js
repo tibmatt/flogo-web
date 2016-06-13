@@ -7,6 +7,7 @@ gulp.task('dev.client.build', (cb)=> {
   return runSequence(
     'install.client',
     'dev.client.lib',
+    'dev.client.config',
     'dev.client.styles',
     'dev.client.typescript',
     'dev.client.assets',

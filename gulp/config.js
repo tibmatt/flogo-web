@@ -53,17 +53,6 @@ export const CONFIG = {
       'dev.env.js',
       'systemjs.config.js'
     ],
-    // these won't be injected into html page but they need to be in client dist folder to be loaded by systemjs
-    bundles: [
-      'node_modules/@angular/common/common.umd.js',
-      'node_modules/@angular/compiler/compiler.umd.js',
-      'node_modules/@angular/core/core.umd.js',
-      'node_modules/@angular/http/http.umd.js',
-      'node_modules/@angular/platform-browser/platform-browser.umd.js',
-      'node_modules/@angular/platform-browser-dynamic/platform-browser-dynamic.umd.js',
-      'node_modules/@angular/router/router.umd.js',
-      'node_modules/@angular/router-deprecated/router-deprecated.umd.js'
-    ],
     styles: [
       'node_modules/bootstrap/dist/css/**/*',
       'node_modules/bootstrap/dist/fonts/**/*'
