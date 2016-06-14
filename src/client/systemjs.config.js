@@ -44,7 +44,7 @@
 
     // map tells the System loader where to look for things
     map = {
-      'main': 'dist/public',
+      'main': 'dist/public/build',
       'rxjs': 'n:rxjs',
       'ng2-bs3-modal': 'n:ng2-bs3-modal',
       '@angular': 'n:@angular'

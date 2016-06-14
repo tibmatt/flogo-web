@@ -19,7 +19,8 @@ gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
   let builder = new Builder('', path.join(CONFIG.paths.source.client, 'systemjs.config.js'));
 
   Promise.all([
-    builder.buildStatic('main/main.js + main/app/**/**.js + main/common/**/**.js', path.join(CONFIG.paths.dist.public, 'app.bundle.js'), {minify: true, sourceMaps: true, lowResSourceMaps: true, encodeNames: true})
+    // app bundle
+    builder.buildStatic('main/main.js + main/app/**/**.js + main/common/**/**.js', path.join(CONFIG.paths.dist.public, 'app.bundle.js'), {minify: true, sourceMaps: true, lowResSourceMaps: true, encodeNames: true, rollup: true})
   ])
     .then(() => cb())
     .catch(err => cb(err))
@@ -33,8 +34,7 @@ gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
 gulp.task('prod.client.bundle.app.ts', () => {
 
   let tsProject = ts.createProject('tsconfig.json', {
-    typescript: require('typescript'),
-    module: 'system'//,
+    typescript: require('typescript')
     //outFile: CONFIG.bundles.app
   });
 
@@ -48,7 +48,7 @@ gulp.task('prod.client.bundle.app.ts', () => {
     .pipe(ts(tsProject))
     //.pipe(uglify({mangle:false}))
     //.pipe(concat(CONFIG.bundles.app))
-    .pipe(gulp.dest(path.join(CONFIG.paths.dist.public)));
+    .pipe(gulp.dest(path.join(CONFIG.paths.dist.public, 'build')));
 
 });
 
