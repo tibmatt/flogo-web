@@ -3,15 +3,17 @@ import path from 'path';
 const source = 'src';
 const dist = 'dist';
 
+const sourcePaths = {
+  root: source,
+  client: path.join(source, 'client'),
+  server: path.join(source, 'server'),
+  packages: path.join(source, 'packages')
+};
+
 export const CONFIG = {
   host: 'localhost:3010',
   paths: {
-    source: {
-      root: source,
-      client: path.join(source, 'client'),
-      server: path.join(source, 'server'),
-      packages: path.join(source, 'packages')
-    },
+    source: sourcePaths,
     dist: {
       root: dist,
       public: path.join(dist, 'public'),
@@ -19,11 +21,12 @@ export const CONFIG = {
       packages: path.join(dist, 'packages')
     },
     ts: ['../../typings/browser.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
-    less: ['{assets,app,common}/**/*.less'],
+    less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
     assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     distLess: ['assets/**/*.less', '!{app,common}/**/*.less'],
+    lessImports: ['.', path.join(sourcePaths.client, 'assets')],
     // directories that should be watched by running server so it restarts if something changes
     serverWatch: ['api', 'common', 'config', 'modules', 'server.js']
   },

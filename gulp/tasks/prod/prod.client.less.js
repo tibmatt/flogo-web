@@ -12,6 +12,6 @@ import {CONFIG} from '../../config';
 gulp.task('prod.client.less', () => {
   let dest = path.join(CONFIG.paths.dist.public, 'assets');
   return gulp.src(CONFIG.paths.distLess, {cwd: CONFIG.paths.source.client})
-    .pipe(less())
+    .pipe(less({paths: CONFIG.paths.lessImports}))
     .pipe(gulp.dest(dest));
 });

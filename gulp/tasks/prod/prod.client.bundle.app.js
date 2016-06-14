@@ -74,7 +74,7 @@ function convertExtensions(ext, path) {
 
 function processLess(path, fileContent, cb) {
 
-  less.render(fileContent, (err, output) => {
+  less.render(fileContent, {paths: CONFIG.paths.lessImports}, (err, output) => {
     onRender(err, output ? output.css : null);
   });
 
