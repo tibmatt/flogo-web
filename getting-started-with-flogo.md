@@ -61,6 +61,8 @@ After you start successful, you can use `curl http://localhost:9190/instances` t
 
 After start successful, then you can go to [http://localhost:3010](http://localhost:3010)
 
+# gulp tasks
+Run `gulp help` for a list of available tasks.
 
 
 

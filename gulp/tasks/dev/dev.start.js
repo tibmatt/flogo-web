@@ -6,7 +6,10 @@ import nodemon from 'gulp-nodemon';
 
 import {CONFIG} from '../../config';
 
-gulp.task('dev.start', () => {
+/**
+ * Starts the server for development
+ */
+gulp.task('dev.start', 'Starts server app and db for development', () => {
 
   cp.spawn('npm', ['run', 'start-db'], {cwd: CONFIG.paths.dist.server, stdio: 'inherit'});
   nodemon({

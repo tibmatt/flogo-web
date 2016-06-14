@@ -14,7 +14,7 @@ import {CONFIG} from '../../config'
  * Generate app bundle file.
  * Makes a single javascript file from app and library sources.
  */
-gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
+gulp.task('prod.client.bundle.app', false, ['prod.client.bundle.app.ts'], cb => {
 
   let Builder = require('systemjs-builder');
   let builder = new Builder('', path.join(CONFIG.paths.source.client, 'systemjs.config.js'));
@@ -32,7 +32,7 @@ gulp.task('prod.client.bundle.app', ['prod.client.bundle.app.ts'], cb => {
 /**
  * Compile app's typescript files to javascript and inline html templates and styles
  */
-gulp.task('prod.client.bundle.app.ts', () => {
+gulp.task('prod.client.bundle.app.ts', false, () => {
 
   let tsProject = ts.createProject('tsconfig.json', {
     typescript: require('typescript')

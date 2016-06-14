@@ -11,9 +11,9 @@ let tsProject = ts.createProject('tsconfig.json', {
 });
 
 /**
- * Compile typescript sources to build folder
+ * Compile typescript sources to build dir
  */
-gulp.task('dev.client.typescript', [], () => {
+gulp.task('dev.client.typescript', 'Compile typescript sources to build dir', [], () => {
   let dest = CONFIG.paths.dist.public;
 
   return gulp.src(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client})

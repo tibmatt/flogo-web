@@ -1,13 +1,21 @@
 /**
  * Flogo web build process
+ * 
+ * Run `gulp help` in terminal for a list an description of tasks
+ * 
  * Tasks are automatically loaded from '/gulp/tasks' folder.
  * Configuration located in '/gulp/config'
  */
 
 import gulp from 'gulp';
+import help from 'gulp-help';
+
 import runSequence from 'run-sequence';
 
 import requireDir from 'require-dir';
+
+// patch gulp for help features
+help(gulp, {hideDepsMessage: true});
 
 // Automatically load tasks
 requireDir('./gulp/tasks', {
@@ -17,27 +25,30 @@ requireDir('./gulp/tasks', {
 /**
  * Default is prod mode
  */
-// TODO: replace for prod mode
-gulp.task('default', ['tmp-prod']);
+gulp.task('default', ['prod']);
 
 /**
- * Start production mode
+ * Build an start production mode
  */
-gulp.task('prod', cb => {
-
-  runSequence(
-    'clean',
-    'prod.build',
-    'prod.start',
-    cb
-  );
-
-});
+gulp.task('prod', 'Buld and start in production mode', cb => runSequence(
+  'build',
+  'prod.start',
+  cb
+));
 
 /**
- * Start development mode
+ * Build but don't run
  */
-gulp.task('dev', cb => {
+gulp.task('build', 'Build in production mode (does not start the server or db, use `prod` instead)', cb => runSequence(
+  'clean',
+  'prod.build',
+  cb
+));
+
+/**
+ * Build an start development mode
+ */
+gulp.task('dev', 'Buil and start in development mode', cb => {
 
   runSequence(
     'clean',
@@ -49,18 +60,5 @@ gulp.task('dev', cb => {
 
 });
 
-
-/**
- * Start without watches
- */
-// TODO: Should be removed after inline template fix
-gulp.task('tmp-prod', cb => {
-  runSequence(
-    'clean',
-    'dev.build',
-    'prod.start',
-    cb
-  );
-});
 
 

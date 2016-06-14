@@ -1,6 +1,14 @@
 ## Adding new tasks
 Add new tasks to `tasks` directory or subdirectory, they will be automatically loaded by main gulpfile.
 
+`gulp-help` plugin is used to provide a help feature so you need to add the description when defining a new task, like this:
+
+```javascript
+  gulp.task(taskname, description, [])
+```
+
+This description will be displayed when running `gulp help`.
+
 Conventions we're following:
 
 - One task per file and file has the same name as the task it contains

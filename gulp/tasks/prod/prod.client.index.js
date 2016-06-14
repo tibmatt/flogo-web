@@ -8,7 +8,7 @@ import {CONFIG} from '../../config';
 /**
  * Builds index.html file for production
  */
-gulp.task('prod.client.index', () => {
+gulp.task('prod.client.index', 'Builds index.html file for production', () => {
   let originalIndex = path.join(CONFIG.paths.source.client, 'index.html');
 
   return gulp.src(originalIndex)

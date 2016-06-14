@@ -9,7 +9,7 @@ import {CONFIG} from '../../config';
 /**
  * Generate bundle files from third party libraries.
  */
-gulp.task('prod.client.bundle.lib', () => {
+gulp.task('prod.client.bundle.lib', false, () => {
   let base = CONFIG.paths.source.client;
   return gulp.src(CONFIG.libs.dist.vendors, {cwd: base, base: base})
     .pipe(concat(CONFIG.bundles.lib))
