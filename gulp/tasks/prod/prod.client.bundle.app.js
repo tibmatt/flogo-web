@@ -3,8 +3,9 @@ import fs from 'fs';
 
 import gulp from 'gulp';
 import inlineTemplate from 'gulp-inline-ng2-template';
-
 import ts from 'gulp-typescript';
+import filter from 'gulp-filter';
+
 import less from 'less';
 
 import {CONFIG} from '../../config'
@@ -38,13 +39,17 @@ gulp.task('prod.client.bundle.app.ts', () => {
     //outFile: CONFIG.bundles.app
   });
 
+  let componentFilter = filter('**/*.component.{js,ts}', {restore: true});
+
   return gulp.src(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client})
+    .pipe(componentFilter)
     .pipe(inlineTemplate({
       useRelativePaths: true,
       removeLineBreaks: true,
       customFilePath: convertExtensions,
       styleProcessor: processLess
     }))
+    .pipe(componentFilter.restore)
     .pipe(ts(tsProject))
     //.pipe(uglify({mangle:false}))
     //.pipe(concat(CONFIG.bundles.app))
