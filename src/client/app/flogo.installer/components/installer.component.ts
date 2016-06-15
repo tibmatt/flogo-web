@@ -2,8 +2,8 @@ import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@an
 import { Router } from '@angular/router-deprecated';
 import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.category-selector/components/category-selector.component';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { FlogoInstallerTriggerComponent } from '../../flogo.installer.trigger/components/trigger-installer.component';
-import { FlogoInstallerActivityComponent } from '../../flogo.installer.activity/components/activity-installer.component';
+import { FlogoInstallerTriggerComponent } from '../../flogo.installer.trigger-installer/components/trigger-installer.component';
+import { FlogoInstallerActivityComponent } from '../../flogo.installer.activity-installer/components/activity-installer.component';
 import { FlogoInstallerSearchComponent } from '../../flogo.installer.search/components/search.component';
 
 const ACTIVITY_TITLE = 'Download Tiles';
