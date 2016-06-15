@@ -12,7 +12,7 @@ import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
-import { Flogo_ConfigComponent } from '../../flogo._config/components/_config.components';
+import { FlogoConfigComponent } from '../../flogo.config/components/config.components';
 
 @Component({
   selector: 'flogo-app',
@@ -42,7 +42,7 @@ import { Flogo_ConfigComponent } from '../../flogo._config/components/_config.co
   // TODO
   //  temp config page to change server URL settings
   {
-    path: '/_config', name: "FlogoDevConfig", component:Flogo_ConfigComponent
+    path: '/_config', name: "FlogoDevConfig", component:FlogoConfigComponent
   },
 ])
 

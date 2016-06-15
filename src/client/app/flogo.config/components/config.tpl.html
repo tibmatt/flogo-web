@@ -49,7 +49,7 @@
           <div class="input-group-addon">:</div>
           <input type="text" class="form-control" placeholder="port" [(ngModel)]="server.config.port">
           <div class="input-group-addon">
-            <flogo-_config-service-status-indicator [urlConfig]="server.config"></flogo-_config-service-status-indicator>
+            <flogo-config-service-status-indicator [urlConfig]="server.config"></flogo-config-service-status-indicator>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@
           <div class="input-group-addon">/</div>
           <input type="text" class="form-control" placeholder="dbname" [(ngModel)]="_appDB.name">
           <div class="input-group-addon">
-            <flogo-_config-service-status-indicator [urlConfig]="_appDB"></flogo-_config-service-status-indicator>
+            <flogo-config-service-status-indicator [urlConfig]="_appDB"></flogo-config-service-status-indicator>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@
           <div class="input-group-addon">/</div>
           <input type="text" class="form-control" placeholder="dbname" [(ngModel)]="db.config.name">
           <div class="input-group-addon">
-            <flogo-_config-service-status-indicator [urlConfig]="db.config"></flogo-_config-service-status-indicator>
+            <flogo-config-service-status-indicator [urlConfig]="db.config"></flogo-config-service-status-indicator>
           </div>
         </div>
       </div>

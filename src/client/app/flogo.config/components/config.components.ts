@@ -8,14 +8,14 @@ const DBS_ARR = [ 'activities', 'triggers', 'models' ];
 const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
 
 @Component( {
-  selector : 'flogo-_config',
+  selector : 'flogo-config',
   moduleId : module.id,
   directives: [ServiceStatusIndicatorComponent],
-  templateUrl : '_config.tpl.html',
-  styleUrls : [ '_config.component.css' ]
+  templateUrl : 'config.tpl.html',
+  styleUrls : [ 'config.component.css' ]
 } )
 
-export class Flogo_ConfigComponent {
+export class FlogoConfigComponent {
   private _config : any;
   private _servers : any[];
   private _dbs : any[];
