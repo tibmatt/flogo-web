@@ -85,7 +85,7 @@ export class BaseRegistered{
     return this._dbService;
   }
 
-  generateID(name, version){
+  static generateID(name, version){
     // console.log("generateActivityID, arguments: ", arguments);
     name = _.kebabCase(name);
     // console.log("name: ", name);
@@ -96,6 +96,103 @@ export class BaseRegistered{
     let id = name;
     //console.log("generateID, id: ", id);
     return id;
+  }
+
+  static constructItem( opts ) {
+    return {
+      _id : opts.id,
+      'where' : opts.where,
+      'name' : opts.name,
+      'version' : opts.version,
+      'description' : opts.description,
+      'keywords' : opts.keywords || [],
+      'schema' : opts.schema
+    }
+  }
+
+  static saveItems( dbService, items ) {
+
+    dbService.db.allDocs( { include_docs : true } )
+      .then( ( docs )=> {
+        // console.log("============ - docs: ", docs);
+        let rows = docs.rows || [];
+        let activities = [];
+
+        rows.forEach( ( item, index )=> {
+          if ( item && item.doc ) {
+            activities.push( item.doc );
+          }
+        } );
+        // update or remove activity
+        activities.forEach( ( activity, index )=> {
+          let newActivity = items[ activity[ '_id' ] ];
+          // console.log("activity['id']: ", activity['id']);
+          // console.log("**********newActivity: ", newActivity);
+          // if this activity cannot find in activityDocs generate from package.json, then need to remove it
+          if ( !newActivity ) {
+            // console.log("[Remove]activity: ", activity);
+            dbService.db.remove( activity )
+              .then( ( response )=> {
+                console.log( "[info]delete activity success. ", response );
+              } )
+              .catch( ( err )=> {
+                console.error( "[error]delete activity fail. ", err );
+              } );
+          } else {
+            // When we update an activity, we will use new activity to overwrite the old one. This is because, user maybe in new activity delete some value,
+            // copy the some value from current activity in DB
+            newActivity[ '_id' ] = activity[ '_id' ];
+            newActivity[ '_rev' ] = activity[ '_rev' ];
+            newActivity.created_at = activity.created_at;
+            newActivity.updated_at = new Date().toISOString();
+            // update this activity in DB
+            dbService.db.put( _.cloneDeep( newActivity ) )
+              .then( ( response )=> {
+                console.log( "Update activity success: ", response );
+              } )
+              .catch( ( err )=> {
+                console.log( "Update activity error: ", err );
+              } );
+            // delete this activity
+            delete items[ activity[ '_id' ] ];
+          }
+        } );
+
+        //console.log("@@@@@@@@@[items]: ", items);
+
+        let PromiseAll = [];
+
+        // Rest activities should be new activity
+        _.forOwn( items, ( activity, index )=> {
+          activity.created_at = new Date().toISOString();
+          // add this activity in DB
+          let promise = new Promise( ( res, rej )=> {
+            dbService.db.put( activity )
+              .then( ( response )=> {
+                console.log( "Add activity success: ", response );
+                res( response );
+              } )
+              .catch( ( err )=> {
+                console.log( "Add activity error: ", err );
+                rej( err );
+              } );
+          } );
+          PromiseAll.push( promise );
+        } );
+
+        Promise.all( PromiseAll )
+          .then( ()=> {
+            resolve( true );
+          } )
+          .catch( ( err )=> {
+            reject( err );
+          } )
+
+      } )
+      .catch( ( err )=> {
+        console.log( "[error]Get all activities fail. ", err );
+        reject( err );
+      } );
   }
 
   // watch the activities
@@ -263,95 +360,25 @@ export class BaseRegistered{
           // console.log("packageJSON: ", packageJSON);
           // console.log("schemaJSON: ", schemaJSON);
 
-          let id = this.generateID(key, packageJSON.version);
+          let id = BaseRegistered.generateID(key, packageJSON.version);
           console.log("id: ", id);
 
-          let item = {
-            _id: id,
-            'where': this._where[key],
-            'name': key,
-            'version': packageJSON.version,
-            'description': packageJSON.description,
-            'keywords': packageJSON.keywords||[],
-            'schema': schemaJSON
-          };
-
-          items[id]=item;
+          items[ id ] = BaseRegistered.constructItem( {
+            'id' : id,
+            'where' : this._where[ key ],
+            'name' : key,
+            'version' : packageJSON.version,
+            'description' : packageJSON.description,
+            'keywords' : packageJSON.keywords || [],
+            'schema' : schemaJSON
+          } );
         });
 
         // console.log("!!!!!!!!activityDocs: ", activityDocs);
 
-        this.dbService.db.allDocs({include_docs: true}).then((docs)=>{
-          // console.log("============ - docs: ", docs);
-          let rows = docs.rows||[];
-          let activities = [];
-
-          rows.forEach((item, index)=>{
-            if(item&&item.doc){
-              activities.push(item.doc);
-            }
-          });
-          // update or remove activity
-          activities.forEach((activity, index)=>{
-            let newActivity = items[activity['_id']];
-            // console.log("activity['id']: ", activity['id']);
-            // console.log("**********newActivity: ", newActivity);
-            // if this activity cannot find in activityDocs generate from package.json, then need to remove it
-            if(!newActivity){
-              // console.log("[Remove]activity: ", activity);
-              this.dbService.db.remove(activity).then((response)=>{
-                console.log("[info]delete activity success. ", response);
-              }).catch((err)=>{
-                console.error("[error]delete activity fail. ", err);
-              });
-            }else{
-              // When we update an activity, we will use new activity to overwrite the old one. This is because, user maybe in new activity delete some value,
-              // copy the some value from current activity in DB
-              newActivity['_id'] = activity['_id'];
-              newActivity['_rev'] = activity['_rev'];
-              newActivity.created_at = activity.created_at;
-              newActivity.updated_at = new Date().toISOString();
-              // update this activity in DB
-              this.dbService.db.put(_.cloneDeep(newActivity)).then((response)=>{
-                console.log("Update activity success: ", response);
-              }).catch((err)=>{
-                console.log("Update activity error: ", err);
-              });
-              // delete this activity
-              delete items[activity['_id']];
-            }
-          });
-
-          //console.log("@@@@@@@@@[items]: ", items);
-
-          let PromiseAll = [];
-
-          // Rest activities should be new activity
-          _.forOwn(items, (activity, index)=>{
-            activity.created_at = new Date().toISOString();
-            // add this activity in DB
-            let promise = new Promise((res, rej)=>{
-              this.dbService.db.put(activity).then((response)=>{
-                console.log("Add activity success: ", response);
-                res(response);
-              }).catch((err)=>{
-                console.log("Add activity error: ", err);
-                rej(err);
-              });
-            });
-            PromiseAll.push(promise);
-          });
-
-          Promise.all(PromiseAll).then(()=>{
-            resolve(true);
-          }).catch((err)=>{
-            reject(err);
-          })
-
-        }).catch((err)=>{
-          console.log("[error]Get all activities fail. ", err);
-          reject(err);
-        });
+        BaseRegistered.saveItems( this.dbService, items )
+          .then( resolve )
+          .catch( reject );
 
       }).catch((err)=>{
         console.error("[error]Install error. ", err);
