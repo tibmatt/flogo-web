@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Source Sans Pro', 'Helvetica', 'Arial', sans-serif;
+}
+
+@flogo-installer-url-installer-icon-size: 43px;
+@flogo-installer-url-installer-icon-width: 30px;
+@flogo-installer-url-installer-icon-height: @flogo-installer-url-installer-icon-width;
+
+@flogo-installer-url-installer-primary-color: #0081CB;
+
+.flogo-installer-url-installer-download-icon {
+  display: inline-block;
+  width: @flogo-installer-url-installer-icon-size;
+  height: @flogo-installer-url-installer-icon-size;
+  background: url('/assets/svg/flogo.icon.download.svg') no-repeat center center;
+  background-size: @flogo-installer-url-installer-icon-width @flogo-installer-url-installer-icon-height;
+
+  cursor: pointer;
+}
+
+.flogo-installer-url-installer-input {
+  display: inline-block;
+  vertical-align: top;
+
+  padding: 10px 22px;
+
+  width: ~ "-moz-calc(100% - @{flogo-installer-url-installer-icon-size})";
+  width: ~"-webkit-calc(100% - @{flogo-installer-url-installer-icon-size})";
+  width: ~"calc(100% - @{flogo-installer-url-installer-icon-size})";
+
+  font-size: 15px;
+
+  border: solid 1px @flogo-installer-url-installer-primary-color;
+
+  &:focus {
+    outline: none;
+  }
+}

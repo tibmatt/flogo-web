@@ -5,24 +5,24 @@
   width: 100%;
 }
 
-@search-primary-color: #0081CB;
-@search-icon-color: #FFF;
-@search-height: 43px;
+@flogo-installer-search-primary-color: #0081CB;
+@flogo-installer-search-icon-color: #FFF;
+@flogo-installer-search-height: 43px;
 
 .flogo-installer-search-input {
   display: inline-block;
   vertical-align: top;
 
   padding: 10px 22px;
-  height: @search-height;
-  width: ~"-moz-calc(100% - @{search-height})";
-  width: ~"-webkit-calc(100% - @{search-height})";
-  width: ~"calc(100% - @{search-height})";
+  height: @flogo-installer-search-height;
+  width: ~"-moz-calc(100% - @{flogo-installer-search-height})";
+  width: ~"-webkit-calc(100% - @{flogo-installer-search-height})";
+  width: ~"calc(100% - @{flogo-installer-search-height})";
 
   font-family: 'Source Sans Pro', 'Helvetica', 'Arial', sans-serif;
   font-size: 15px;
 
-  border: solid 1px @search-primary-color;
+  border: solid 1px @flogo-installer-search-primary-color;
 
   &:focus {
     outline: none;
@@ -33,9 +33,9 @@
   display: inline-block;
   vertical-align: top;
 
-  background: @search-primary-color url('/assets/svg/flogo.icon.search.svg') no-repeat center center ;
-  color: @search-icon-color;
+  background: @flogo-installer-search-primary-color url('/assets/svg/flogo.icon.search.svg') no-repeat center center ;
+  color: @flogo-installer-search-icon-color;
 
-  height: @search-height;
-  width: @search-height;
+  height: @flogo-installer-search-height;
+  width: @flogo-installer-search-height;
 }

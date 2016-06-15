@@ -5,6 +5,7 @@ import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlogoInstallerTriggerComponent } from '../../flogo.installer.trigger-installer/components/trigger-installer.component';
 import { FlogoInstallerActivityComponent } from '../../flogo.installer.activity-installer/components/activity-installer.component';
 import { FlogoInstallerSearchComponent } from '../../flogo.installer.search/components/search.component';
+import { FlogoInstallerUrlComponent } from '../../flogo.installer.url-installer/components/url-installer.component';
 
 const ACTIVITY_TITLE = 'Download Tiles';
 const TRIGGER_TITLE = 'Download Triggers';
@@ -17,7 +18,8 @@ const TRIGGER_TITLE = 'Download Triggers';
     FlogoInstallerSearchComponent,
     FlogoInstallerCategorySelectorComponent,
     FlogoInstallerActivityComponent,
-    FlogoInstallerTriggerComponent
+    FlogoInstallerTriggerComponent,
+    FlogoInstallerUrlComponent
   ],
   templateUrl : 'installer.tpl.html',
   inputs : [ 'installType: flogoInstallType', 'isActivated: flogoIsActivated' ],
