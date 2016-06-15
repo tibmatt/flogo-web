@@ -65,3 +65,7 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   "ARRAY": 5,
   "PARAMS": 6
 };
+
+export const TYPE_TRIGGER = 'trigger';
+export const TYPE_ACTIVITY = 'activity';
+export const TYPE_UNKNOWN = 'unknown';

@@ -1,7 +1,11 @@
 import {config, activitiesDBService} from '../../config/app-config';
+import { TYPE_ACTIVITY } from '../../common/constants';
+import { RemoteInstaller } from '../../modules/remote-installer';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
+
+let remoteInstaller = new RemoteInstaller( TYPE_ACTIVITY );
 
 export function activities(app, router){
   if(!app){
@@ -24,13 +28,40 @@ function* getActivities(next){
 }
 
 function* installActivities(next){
-  console.log("installActivities");
-  this.body = 'installActivities';
+  let urls = preProcessURLs( this.request.body.urls );
+
+  console.log( '------- ------- -------' );
+  console.log( 'Install Activities' );
+  __insp( urls );
+  let results = yield remoteInstaller.install( urls );
+  console.log( 'Installation results' );
+  __insp( results );
+  this.body = results;
+  console.log( '------- ------- -------' );
+
   yield next;
 }
 
 function* deleteActivities(next){
-  console.log("deleteActivities");
-  this.body = 'deleteActivities';
+  console.log( '------- ------- -------' );
+  console.log( 'Delete Activities' );
+  console.log( this.request.body.urls );
+  this.body = 'TODO';
+  console.log( '------- ------- -------' );
+
   yield next;
+}
+
+function preProcessURLs( urls ) {
+  'use strict';
+  // TODO
+  return urls;
+}
+
+// ------- ------- -------
+// debugging inspector utility
+function __insp( obj ) {
+  'use strict';
+  console.log( require( 'util' )
+    .inspect( obj, { depth : 7, colors : true } ) );
 }
