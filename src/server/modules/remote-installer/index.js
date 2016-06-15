@@ -1,11 +1,25 @@
-import { TYPE_TRIGGER, TYPE_ACTIVITY, TYPE_UNKNOWN } from '../../common/constants';
+import {
+  TYPE_TRIGGER,
+  TYPE_ACTIVITY,
+  TYPE_UNKNOWN,
+  // SCHEMA_FILE_NAME_TRIGGER,
+  // SCHEMA_FILE_NAME_ACTIVITY
+} from '../../common/constants';
+import { config } from '../../config/app-config';
 import _ from 'lodash';
+import path from 'path';
 
 // TODO support more git format
 //  for the moment
 //    https://github.com/:username/:projectname.git
 //    https://github.com/:username/:projectname
 const GITHUB_URL_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+)(?:\.git)?)$/.source;
+
+// TODO
+// update this information. the `somefile.json` is only for testing.
+// should use the imported ones from constants.
+const SCHEMA_FILE_NAME_TRIGGER = 'somefile.json';
+const SCHEMA_FILE_NAME_ACTIVITY = 'somefile.json';
 
 /*
  * Utility functions to be extracted to utility module.
@@ -79,7 +93,29 @@ export class RemoteInstaller {
       console.log( '------- ------- -------' );
       console.log( 'Install from GitHub' );
       console.log( sourceURLs );
-      resolve( sourceURLs );
+
+      let installPromise = null;
+
+      switch ( this.type ) {
+        case TYPE_ACTIVITY:
+          installPromise = installActivity();
+          break;
+        case TYPE_TRIGGER:
+          installPromise = installTrigger();
+          break;
+        default:
+          throw new Error( 'Unknown Type' );
+          break;
+      }
+
+      installPromise.then( ( result )=> {
+        console.log( 'Installed' );
+
+        return result;
+      } )
+        .then( resolve )
+        .catch( reject );
+
       console.log( '------- ------- -------' );
     } );
   }
@@ -96,6 +132,18 @@ export class RemoteInstaller {
   }
 }
 
+// ------- ------- -------
+// utility functions
+
+function installTrigger() {
+  // TODO
+  return Promise.resolve( true );
+}
+
+function installActivity() {
+  // TODO
+  return Promise.resolve( true );
+}
 
 // ------- ------- -------
 // debugging inspector utility

@@ -69,3 +69,9 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
 export const TYPE_TRIGGER = 'trigger';
 export const TYPE_ACTIVITY = 'activity';
 export const TYPE_UNKNOWN = 'unknown';
+
+export const SCHEMA_FILE_NAME_TRIGGER = 'trigger.json';
+export const SCHEMA_FILE_NAME_ACTIVITY = 'activity.json';
+
+export const DEFAULT_PATH_TRIGGER = 'packages/triggers';
+export const DEFAULT_PATH_ACTIVITY = 'packages/activities';

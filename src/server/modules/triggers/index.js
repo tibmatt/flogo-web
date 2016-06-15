@@ -6,11 +6,12 @@ import fs from 'fs';
 import {DBService} from '../../common/db.service';
 import {config} from '../../config/app-config';
 import {BaseRegistered} from '../base-registered';
+import { TYPE_TRIGGER, SCHEMA_FILE_NAME_TRIGGER, DEFAULT_PATH_TRIGGER } from '../../common/constants';
 
 const defaultOptions = {
-  type: "trigger",
-  path: "packages/triggers",
-  schemaJsonName: "trigger.json"
+  type: TYPE_TRIGGER,
+  path: DEFAULT_PATH_TRIGGER,
+  schemaJsonName: SCHEMA_FILE_NAME_TRIGGER
 };
 
 export class RegisterTriggers extends BaseRegistered{
