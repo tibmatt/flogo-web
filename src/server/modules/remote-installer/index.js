@@ -182,8 +182,16 @@ function installFromGitHub(sourceURLs, schemaFileName, dbService) {
     // filter null items
     .then( items => _.filter( items, item => !_.isNull( item ) ) )
 
+    // change items from array to map
+    .then( items => _.reduce( items, ( itemDict, item ) => {
+
+      itemDict[ item[ '_id' ] ] = item;
+
+      return itemDict;
+    }, {} ) )
+
     // save items to db
-    .then( items => BaseRegistered.saveItems( dbService, items ) )
+    .then( items => BaseRegistered.saveItems( dbService, items, true ) )
 
     // finally return ture once finished.
     .then( result => true );
