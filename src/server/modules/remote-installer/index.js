@@ -6,7 +6,7 @@ import {
   // SCHEMA_FILE_NAME_ACTIVITY
   // DEFAULT_SCHEMA_ROOT_FOLDER_NAME
 } from '../../common/constants';
-import { config } from '../../config/app-config';
+import { activitiesDBService, triggersDBService } from '../../config/app-config';
 import _ from 'lodash';
 import url from 'url';
 import https from 'https';
@@ -135,13 +135,11 @@ export class RemoteInstaller {
 
       installPromise.then( ( result )=> {
         console.log( 'Installed' );
-
+        console.log( '------- ------- -------' );
         return result;
       } )
         .then( resolve )
         .catch( reject );
-
-      console.log( '------- ------- -------' );
     } );
   }
 
@@ -160,13 +158,15 @@ export class RemoteInstaller {
 // ------- ------- -------
 // utility functions
 
-function installTriggerFromGitHub( sourceURLs ) {
+// install item from GitHub
+function installFromGitHub(sourceURLs, schemaFileName, dbService) {
 
+  // for each given source URLs, retrieve the package.json and schema.json information
   return Promise.all( _.map( sourceURLs, ( sourceURL ) => {
     let githubInfo = parseGitHubURL( sourceURL );
 
     return Promise.all(
-      [ getPackageJSONFromGitHub( githubInfo ), getSchemaJSONFromGitHub( githubInfo, SCHEMA_FILE_NAME_TRIGGER ) ] )
+      [ getPackageJSONFromGitHub( githubInfo ), getSchemaJSONFromGitHub( githubInfo, schemaFileName ) ] )
       .then( ( results ) => {
         return {
           path : constructGitHubPath( githubInfo ),
@@ -175,55 +175,30 @@ function installTriggerFromGitHub( sourceURLs ) {
         }
       } );
   } ) )
-    .then( ( results ) => {
 
-      // TODO
-      //  create trigger items.
-      //  save  trigger items to the database.
+  // process raw items
+    .then( rawItems => _.map( rawItems, rawItem => processItemFromGitHub( rawItem ) ) )
 
-      _.each( results, ( result, idx )=> {
-        console.log( '------- ------- -------' );
-        console.log( `Install Trigger | result | ${ sourceURLs[ idx ] }` );
-        __insp( processItemFromGitHub( result ) );
-        console.log( '------- ------- -------' );
-      } );
+    // filter null items
+    .then( items => _.filter( items, item => !_.isNull( item ) ) )
 
-      return true;
+    // save items to db
+    .then( items => BaseRegistered.saveItems( dbService, items ) )
 
-    } );
+    // finally return ture once finished.
+    .then( result => true );
 }
 
+// shorthand function to install triggers from GitHub
+function installTriggerFromGitHub( sourceURLs ) {
+
+  return installFromGitHub(sourceURLs, SCHEMA_FILE_NAME_TRIGGER, triggersDBService);
+}
+
+// shorthand function to install activities from GitHub
 function installActivityFromGitHub( sourceURLs ) {
 
-  return Promise.all( _.map( sourceURLs, ( sourceURL ) => {
-    let githubInfo = parseGitHubURL( sourceURL );
-
-    return Promise.all(
-      [ getPackageJSONFromGitHub( githubInfo ), getSchemaJSONFromGitHub( githubInfo, SCHEMA_FILE_NAME_ACTIVITY ) ] )
-      .then( ( results ) => {
-        return {
-          path : constructGitHubPath( githubInfo ),
-          package : results[ 0 ],
-          schema : results[ 1 ]
-        }
-      } );
-  } ) )
-    .then( ( results ) => {
-
-      // TODO
-      //  create activity items.
-      //  save  activity items to the database.
-
-      _.each( results, ( result, idx )=> {
-        console.log( '------- ------- -------' );
-        console.log( `Install Activity | result | ${ sourceURLs[ idx ] }` );
-        __insp( processItemFromGitHub( result ) );
-        console.log( '------- ------- -------' );
-      } );
-
-      return true;
-
-    } );
+  return installFromGitHub(sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService);
 }
 
 /**
