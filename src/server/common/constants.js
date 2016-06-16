@@ -75,3 +75,5 @@ export const SCHEMA_FILE_NAME_ACTIVITY = 'activity.json';
 
 export const DEFAULT_PATH_TRIGGER = 'packages/triggers';
 export const DEFAULT_PATH_ACTIVITY = 'packages/activities';
+
+export const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'design';

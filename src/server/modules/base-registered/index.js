@@ -6,6 +6,7 @@ import fs from 'fs';
 import {DBService} from '../../common/db.service';
 import {isDirectory, isExisted, readDirectoriesSync} from '../../common/utils';
 import {config} from '../../config/app-config';
+import { DEFAULT_SCHEMA_ROOT_FOLDER_NAME } from '../../common/constants';
 
 const execSync = require('child_process').execSync;
 
@@ -304,12 +305,12 @@ export class BaseRegistered{
 
           // TODO need to improve, provide more good way
 
-          if(isExisted(path.join(itemPath, 'design', 'package.json'))){
-            design_package_json = path.join(itemPath, 'design', 'package.json');
-            value = path.join(itemPath, 'design');
-          }else if(isExisted(path.join(itemPath, 'src', 'design', 'package.json'))){
-            design_package_json = path.join(itemPath, 'src', 'design', 'package.json');
-            value = path.join(itemPath, 'src', 'design');
+          if(isExisted(path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+            design_package_json = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
+            value = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
+          }else if(isExisted(path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+            design_package_json = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
+            value = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
           }else{
             console.log("[Warning] didn't find design time for this activity");
           }
