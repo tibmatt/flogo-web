@@ -169,6 +169,7 @@ function installTriggerFromGitHub( sourceURLs ) {
       [ getPackageJSONFromGitHub( githubInfo ), getSchemaJSONFromGitHub( githubInfo, SCHEMA_FILE_NAME_TRIGGER ) ] )
       .then( ( results ) => {
         return {
+          path : constructGitHubPath( githubInfo ),
           package : results[ 0 ],
           schema : results[ 1 ]
         }
@@ -183,7 +184,7 @@ function installTriggerFromGitHub( sourceURLs ) {
       _.each( results, ( result, idx )=> {
         console.log( '------- ------- -------' );
         console.log( `Install Trigger | result | ${ sourceURLs[ idx ] }` );
-        __insp( result );
+        __insp( processItemFromGitHub( result ) );
         console.log( '------- ------- -------' );
       } );
 
@@ -216,7 +217,7 @@ function installActivityFromGitHub( sourceURLs ) {
       _.each( results, ( result, idx )=> {
         console.log( '------- ------- -------' );
         console.log( `Install Activity | result | ${ sourceURLs[ idx ] }` );
-        __insp( result );
+        __insp( processItemFromGitHub( result ) );
         console.log( '------- ------- -------' );
       } );
 
@@ -328,6 +329,31 @@ function getSchemaJSONFromGitHub( githubInfo, schemaFileName ) {
 
   // get the remote JSON.
   return getRemoteJSON( fileURI );
+}
+
+function processItemFromGitHub( rawItemInfo ) {
+  let itemInfo = null;
+
+  if ( rawItemInfo.path && rawItemInfo.package && rawItemInfo.schema ) {
+    let p = rawItemInfo.package;
+    let s = rawItemInfo.schema;
+
+    // merge the schema and package information together
+    // so that the name/version/description information can be overridden.
+    let m = _.assign( {}, p, s );
+
+    itemInfo = BaseRegistered.constructItem( {
+      'id' : BaseRegistered.generateID( m.name, m.version ),
+      'where' : rawItemInfo.path,
+      'name' : m.name,
+      'version' : m.version,
+      'description' : m.description,
+      'keywords' : m.keywords || [],
+      'schema' : s
+    } );
+  }
+
+  return itemInfo;
 }
 
 // ------- ------- -------
