@@ -1,5 +1,13 @@
 version: '2'
 services:
+  flogo-web:
+    build:
+     context: .
+     dockerfile: Dockerfile
+    ports:
+      - "3010:3010"
+      - "5984:5984"
+      - "8080:8080"
   flogo-flow-services:
     build:
       context: .
