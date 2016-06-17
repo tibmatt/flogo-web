@@ -12,7 +12,7 @@ import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
-import { FlogoConfigComponent } from '../../flogo.config/components/config.components';
+import { FlogoConfigComponent } from '../../flogo.config/components/config.component';
 
 @Component({
   selector: 'flogo-app',
