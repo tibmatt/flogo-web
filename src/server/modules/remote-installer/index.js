@@ -1,11 +1,4 @@
-import {
-  TYPE_TRIGGER,
-  TYPE_ACTIVITY,
-  TYPE_UNKNOWN,
-  // SCHEMA_FILE_NAME_TRIGGER,
-  // SCHEMA_FILE_NAME_ACTIVITY
-  // DEFAULT_SCHEMA_ROOT_FOLDER_NAME
-} from '../../common/constants';
+import { TYPE_TRIGGER, TYPE_ACTIVITY, TYPE_UNKNOWN } from '../../common/constants';
 import { activitiesDBService, triggersDBService } from '../../config/app-config';
 import _ from 'lodash';
 import url from 'url';
@@ -108,8 +101,22 @@ export class RemoteInstaller {
 
           return result;
         } )
+        .then( ( result ) => {
+
+          // TODO
+          //  need to merge and include the installed success ones and failed ones.
+
+
+          return {
+            success : _.union( result.github.success, result.default.success ),
+            fail : _.union( result.github.fail, result.default.fail )
+          };
+        } )
         .then( resolve )
-        .catch( reject );
+        .catch( ( err ) => {
+          console.error( err );
+          reject( err );
+        } );
     } );
   }
 
@@ -148,8 +155,16 @@ export class RemoteInstaller {
     return new Promise( ( resolve, reject )=> {
       console.log( '------- ------- -------' );
       console.log( 'Default installation [TODO]' );
-      console.log( sourceURLs );
-      resolve( sourceURLs );
+
+      resolve( _.reduce( sourceURLs, ( installResult, url ) => {
+        console.warn( `[TODO defaultInstall] Try to install [${ url }]..` );
+        installResult.fail.push( url );
+        return installResult;
+      }, {
+        success : [],
+        fail : []
+      } ) );
+
       console.log( '------- ------- -------' );
     } );
   }
@@ -159,7 +174,7 @@ export class RemoteInstaller {
 // utility functions
 
 // install item from GitHub
-function installFromGitHub(sourceURLs, schemaFileName, dbService) {
+function installFromGitHub( sourceURLs, schemaFileName, dbService ) {
 
   // for each given source URLs, retrieve the package.json and schema.json information
   return Promise.all( _.map( sourceURLs, ( sourceURL ) => {
@@ -170,43 +185,77 @@ function installFromGitHub(sourceURLs, schemaFileName, dbService) {
       .then( ( results ) => {
         return {
           path : constructGitHubPath( githubInfo ),
+          sourceURL : sourceURL,
           package : results[ 0 ],
-          schema : results[ 1 ]
+          schema : results[ 1 ],
+          savedToDB : false
         }
       } );
   } ) )
 
   // process raw items
-    .then( rawItems => _.map( rawItems, rawItem => processItemFromGitHub( rawItem ) ) )
-
-    // filter null items
-    .then( items => _.filter( items, item => !_.isNull( item ) ) )
-
-    // change items from array to map
-    .then( items => _.reduce( items, ( itemDict, item ) => {
-
-      itemDict[ item[ '_id' ] ] = item;
-
-      return itemDict;
-    }, {} ) )
+    .then( rawItems => {
+      return _.map( rawItems, rawItem => {
+        return {
+          raw : rawItem,
+          dbItem : processItemFromGitHub( rawItem )
+        };
+      } );
+    } )
 
     // save items to db
-    .then( items => BaseRegistered.saveItems( dbService, items, true ) )
+    .then( items => {
+
+      // construct items for saving
+      //    1. filter null items
+      //    2. create a map
+      let itemsToSave = _.reduce( items, ( itemDict, item ) => {
+
+        if ( !_.isNil( item.dbItem ) ) {
+          itemDict[ item.dbItem[ '_id' ] ] = item.dbItem;
+          item.raw.savedToDB = true;
+        }
+
+        return itemDict;
+      }, {} );
+
+      return BaseRegistered.saveItems( dbService, itemsToSave, true )
+        .then( ( result ) => {
+          return {
+            saveResult : result,
+            items
+          }
+        } );
+    } )
 
     // finally return ture once finished.
-    .then( result => true );
+    .then( result => {
+      return _.reduce( result.items, ( installResult, item ) => {
+
+        if ( item.raw.savedToDB && result.saveResult === true ) {
+          installResult.success.push( item.raw.sourceURL );
+        } else {
+          installResult.fail.push( item.raw.sourceURL );
+        }
+
+        return installResult;
+      }, {
+        success : [],
+        fail : []
+      } );
+    } );
 }
 
 // shorthand function to install triggers from GitHub
 function installTriggerFromGitHub( sourceURLs ) {
 
-  return installFromGitHub(sourceURLs, SCHEMA_FILE_NAME_TRIGGER, triggersDBService);
+  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_TRIGGER, triggersDBService );
 }
 
 // shorthand function to install activities from GitHub
 function installActivityFromGitHub( sourceURLs ) {
 
-  return installFromGitHub(sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService);
+  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService );
 }
 
 /**
