@@ -106,10 +106,17 @@ export class RemoteInstaller {
           // TODO
           //  need to merge and include the installed success ones and failed ones.
 
-          return result;
+
+          return {
+            success : _.union( result.github.success, result.default.success ),
+            fail : _.union( result.github.fail, result.default.fail )
+          };
         } )
         .then( resolve )
-        .catch( reject );
+        .catch( ( err ) => {
+          console.error( err );
+          reject( err );
+        } );
     } );
   }
 
