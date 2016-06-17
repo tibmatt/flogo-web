@@ -108,6 +108,12 @@ export class RemoteInstaller {
 
           return result;
         } )
+        .then( (result) => {
+
+          // TODO
+          //  need to merge and include the installed success ones and failed ones.
+
+        } )
         .then( resolve )
         .catch( reject );
     } );
@@ -161,6 +167,9 @@ export class RemoteInstaller {
 // install item from GitHub
 function installFromGitHub(sourceURLs, schemaFileName, dbService) {
 
+  // TODO
+  //  need to mark the installed success ones and failed ones.
+  
   // for each given source URLs, retrieve the package.json and schema.json information
   return Promise.all( _.map( sourceURLs, ( sourceURL ) => {
     let githubInfo = parseGitHubURL( sourceURL );
