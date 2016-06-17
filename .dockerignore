@@ -1,0 +1,11 @@
+.git
+.idea
+
+dist
+docs
+pocs
+
+**/node_modules
+**/.gradle
+
+**/build
