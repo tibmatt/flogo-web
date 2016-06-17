@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.category-selector/components/category-selector.component';
 import { FlogoInstallerListViewComponent } from '../../flogo.installer.list-view/components/list-view.component';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';

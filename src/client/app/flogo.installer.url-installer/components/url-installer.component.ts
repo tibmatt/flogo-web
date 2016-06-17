@@ -51,6 +51,6 @@ export class FlogoInstallerUrlComponent implements OnChanges {
   }
 
   onInstallAction( evt : any ) {
-    this.onInstallEvent.emit(this.sourceUrl);
+    this.onInstallEvent.emit( this.sourceUrl );
   }
 }

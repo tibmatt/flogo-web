@@ -5,8 +5,10 @@
   <div class="flogo-installer-list-item-description" [innerText]="_item.description"></div>
 </section>
 
-<i class="flogo-installer-list-item-status-icon-not-installed pull-right" *ngIf="!_item.isInstalled" (click)="onInstall()" title="Install"></i>
-<i class="flogo-installer-list-item-status-icon-installed pull-right" *ngIf="_item.isInstalled" (click)="onUninstall()" title="Installed."></i>
+<i class="flogo-installer-list-item-status-icon-not-installed pull-right" *ngIf="!_item.isInstalled"
+   (click)="onInstall()" title="Install"></i>
+<i class="flogo-installer-list-item-status-icon-installed pull-right" *ngIf="_item.isInstalled" (click)="onUninstall()"
+   title="Installed."></i>
 
 <section class="flogo-installer-list-item-detail pull-right">
   <div class="flogo-installer-list-item-author" [innerText]="_item.author"></div>

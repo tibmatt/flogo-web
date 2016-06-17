@@ -1,7 +1,8 @@
 <section class="row">
   <ul>
     <li class="flogo-list-view-item" *ngFor="let installable of _installables; let i = index">
-      <flogo-installer-list-view-item [flogoItem]="installable" (flogoOnItemAction)="onItemAction($event)"></flogo-installer-list-view-item>
+      <flogo-installer-list-view-item [flogoItem]="installable"
+                                      (flogoOnItemAction)="onItemAction($event)"></flogo-installer-list-view-item>
     </li>
   </ul>
 </section>

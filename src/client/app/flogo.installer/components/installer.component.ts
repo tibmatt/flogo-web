@@ -145,7 +145,7 @@ export class FlogoInstallerComponent implements OnChanges {
       .then( ( response )=> {
         console.group( `[FlogoInstallerComponent] onResponse` );
         console.log( response );
-        notification(`${_.capitalize(self._installType)} installed.`,'success', 3000);
+        notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
         console.groupEnd();
         return response;
       } )
