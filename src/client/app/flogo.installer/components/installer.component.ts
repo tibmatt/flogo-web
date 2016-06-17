@@ -144,8 +144,13 @@ export class FlogoInstallerComponent implements OnChanges {
     installAPI( [ url ] )
       .then( ( response )=> {
         console.group( `[FlogoInstallerComponent] onResponse` );
-        console.log( response );
-        notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
+        if (response.fail.length) {
+          notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
+          console.error(`${_.capitalize( self._installType )} [ ${url} ] installation failed.`);
+        } else {
+          notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
+          console.log(`${_.capitalize( self._installType )} [ ${url} ] installed.`);
+        }
         console.groupEnd();
         return response;
       } )
