@@ -123,4 +123,11 @@ export class FlogoFlowsDetailTasks {
     }
   }
 
+  private onInstalledAction( response : any ) {
+    console.group( `[FlogoFlowsDetailTasks] onInstalled` );
+    console.log( response );
+    console.groupEnd();
+    this._loadActivities();
+  }
+
 }

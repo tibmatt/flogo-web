@@ -10,6 +10,7 @@ const PLACEHOLDER = {
   moduleId : module.id,
   directives : [],
   inputs : [ 'installType: flogoInstallType' ],
+  outputs : [ 'onInstallEvent: flogoOnInstall' ],
   templateUrl : 'url-installer.tpl.html',
   styleUrls : [ 'url-installer.component.css' ]
 } )
@@ -18,6 +19,7 @@ export class FlogoInstallerUrlComponent implements OnChanges {
   private installType : string;
   private placeholder : string;
   private sourceUrl : string;
+  private onInstallEvent = new EventEmitter();
 
   constructor() {
 
@@ -49,9 +51,6 @@ export class FlogoInstallerUrlComponent implements OnChanges {
   }
 
   onInstallAction( evt : any ) {
-    console.group( `[FlogoInstallerUrlComponent] onInstallAction` );
-    console.log( `Source URL: ${this.sourceUrl} ` );
-    console.log( evt );
-    console.groupEnd();
+    this.onInstallEvent.emit(this.sourceUrl);
   }
 }

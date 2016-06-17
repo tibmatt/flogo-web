@@ -24,7 +24,7 @@
     <section class="container-fluid">
       <div class="row">
         <div class="col-md-offset-4 col-md-8">
-          <flogo-installer-url [flogoInstallType]="_installType"></flogo-installer-url>
+          <flogo-installer-url [flogoInstallType]="_installType" (flogoOnInstall)="onInstallAction($event)"></flogo-installer-url>
         </div>
       </div>
     </section>

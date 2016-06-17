@@ -3,6 +3,7 @@
     Install new triggers
   </button>
 
-  <flogo-installer [flogoInstallType]="'trigger'" [(flogoIsActivated)]="isActivated"></flogo-installer>
+  <flogo-installer [flogoInstallType]="'trigger'" [(flogoIsActivated)]="isActivated"
+                   (flogoOnInstalled)="onInstalledAction($event)"></flogo-installer>
 
 </div>

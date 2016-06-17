@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 
 import {PUB_EVENTS, SUB_EVENTS} from '../../flogo.flows.detail.triggers/messages';
 
@@ -11,6 +11,7 @@ import { FlogoInstallerComponent } from '../../flogo.installer/components/instal
 @Component({
   selector: 'flogo-flows-detail-triggers-install',
   directives: [FlogoInstallerComponent],
+  outputs : [ 'onInstalled: flogoOnInstalled' ],
   moduleId: module.id,
   templateUrl: 'install.tpl.html',
 })
@@ -18,6 +19,7 @@ export class FlogoFlowsDetailTriggersInstallComponent {
 
   public triggers:any[] = [];
   private isActivated = false;
+  onInstalled = new EventEmitter();
 
   constructor(private _restApiService:RESTAPIService, private _postService:PostService) {
     this.isActivated = false;
@@ -51,9 +53,14 @@ export class FlogoFlowsDetailTriggersInstallComponent {
     this._restApiService.triggers.getAll()
       .then((triggers:any) => this.triggers = triggers);
   };
-  
+
   private openModal() {
     this.isActivated = true;
+  }
+
+  private onInstalledAction( response : any ) {
+    // bubble the event.
+    this.onInstalled.emit(response);
   }
 
 }

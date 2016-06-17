@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 
 import {PUB_EVENTS} from '../../flogo.flows.detail.tasks/messages';
 import {SUB_EVENTS} from "../../flogo.flows.detail.tasks/messages";
@@ -10,6 +10,7 @@ import { FlogoInstallerComponent } from '../../flogo.installer/components/instal
 @Component({
   selector: 'flogo-flows-detail-tasks-install',
   directives: [FlogoInstallerComponent],
+  outputs : [ 'onInstalled: flogoOnInstalled' ],
   moduleId: module.id,
   templateUrl: 'install.tpl.html',
 })
@@ -17,6 +18,7 @@ export class InstallComponent {
 
   public activities:any[] = [];
   private isActivated = false;
+  onInstalled = new EventEmitter();
 
   constructor(private _restApiService:RESTAPIService, private _postService:PostService) {
     this.isActivated = false;
@@ -54,4 +56,8 @@ export class InstallComponent {
     this.isActivated = true;
   }
 
+  private onInstalledAction( response : any ) {
+    // bubble the event.
+    this.onInstalled.emit(response);
+  }
 }

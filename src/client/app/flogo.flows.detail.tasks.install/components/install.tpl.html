@@ -4,6 +4,7 @@
     Install new Activity
   </button>
 
-  <flogo-installer [flogoInstallType]="'activity'" [(flogoIsActivated)]="isActivated"></flogo-installer>
+  <flogo-installer [flogoInstallType]="'activity'" [(flogoIsActivated)]="isActivated"
+                   (flogoOnInstalled)="onInstalledAction($event)"></flogo-installer>
 
 </div>

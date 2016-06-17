@@ -6,6 +6,9 @@ import { FlogoInstallerTriggerComponent } from '../../flogo.installer.trigger-in
 import { FlogoInstallerActivityComponent } from '../../flogo.installer.activity-installer/components/activity-installer.component';
 import { FlogoInstallerSearchComponent } from '../../flogo.installer.search/components/search.component';
 import { FlogoInstallerUrlComponent } from '../../flogo.installer.url-installer/components/url-installer.component';
+import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { notification } from '../../../common/utils';
 
 const ACTIVITY_TITLE = 'Download Tiles';
 const TRIGGER_TITLE = 'Download Triggers';
@@ -23,7 +26,11 @@ const TRIGGER_TITLE = 'Download Triggers';
   ],
   templateUrl : 'installer.tpl.html',
   inputs : [ 'installType: flogoInstallType', 'isActivated: flogoIsActivated' ],
-  outputs : [ 'installTypeUpdate: flogoInstallTypeChange', 'isActivatedUpdate: flogoIsActivatedChange' ],
+  outputs : [
+    'installTypeUpdate: flogoInstallTypeChange',
+    'isActivatedUpdate: flogoIsActivatedChange',
+    'onInstalled: flogoOnInstalled'
+  ],
   styleUrls : [ 'installer.component.css' ]
 } )
 export class FlogoInstallerComponent implements OnChanges {
@@ -36,6 +43,7 @@ export class FlogoInstallerComponent implements OnChanges {
   isActivated : boolean;
   _isActivated : boolean;
   isActivatedUpdate = new EventEmitter();
+  onInstalled = new EventEmitter();
 
   _query = '';
   _title = '';
@@ -44,7 +52,9 @@ export class FlogoInstallerComponent implements OnChanges {
   //  may add two-way binding later.
   installTypeUpdate = new EventEmitter();
 
-  constructor( private _router : Router ) {
+  constructor( private _router : Router,
+    private _triggersAPIs : RESTAPITriggersService,
+    private _activitiesAPIs : RESTAPIActivitiesService ) {
     this.init();
   }
 
@@ -69,7 +79,7 @@ export class FlogoInstallerComponent implements OnChanges {
   onInstallTypeChange( newVal ) {
     this._installType = newVal;
 
-    switch(this._installType) {
+    switch ( this._installType ) {
       case 'activity':
         this._title = ACTIVITY_TITLE;
         break;
@@ -111,5 +121,42 @@ export class FlogoInstallerComponent implements OnChanges {
     console.log( 'On Modal Close.' );
     this._isActivated = false;
     this.isActivatedUpdate.emit( false );
+  }
+
+  onInstallAction( url : string ) {
+    console.group( `[FlogoInstallerComponent] onInstallAction` );
+    console.log( `Source URL: ${url} ` );
+
+    let installAPI = null;
+
+    if ( this._installType === 'trigger' ) {
+      installAPI = this._triggersAPIs.installTriggers.bind( this._triggersAPIs );
+    } else if ( this._installType === 'activity' ) {
+      installAPI = this._activitiesAPIs.installActivities.bind( this._activitiesAPIs );
+    } else {
+      console.warn( 'Unknown installation type.' );
+      console.groupEnd();
+      return;
+    }
+
+    let self = this;
+
+    installAPI( [ url ] )
+      .then( ( response )=> {
+        console.group( `[FlogoInstallerComponent] onResponse` );
+        console.log( response );
+        notification(`${_.capitalize(self._installType)} installed.`,'success', 3000);
+        console.groupEnd();
+        return response;
+      } )
+      .then( ( response ) => {
+        this.onInstalled.emit( response );
+        console.groupEnd();
+        return response;
+      } )
+      .catch( ( err ) => {
+        console.error( err );
+        console.groupEnd();
+      } );
   }
 }
