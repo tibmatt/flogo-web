@@ -3,6 +3,10 @@ import { MOCK_TASKS } from '../mocks';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { getEngineURL, getStateServerURL } from '../utils';
 
+/**
+ * Deprecated since most of the implementation is used for when working on the POC.
+ * Functionalities should be moved/migrated to ./src/client/common/services/restapi/*.services.ts
+ */
 @Injectable()
 export class RESTAPIService {
 
