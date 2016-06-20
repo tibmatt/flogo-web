@@ -1,11 +1,16 @@
-.git
-.idea
 
-dist
-docs
-pocs
+**/.git/*
+.idea/*
+**/.DS_Store
 
-**/node_modules
-**/.gradle
+dist/
+docs/
+pocs/
+aws-deploy/
+scripts/
+slack-integration/
 
-**/build
+**/node_modules/*
+**/.gradle/*
+
+**/build/*
