@@ -71,3 +71,5 @@ contrib/
 !contrib/activity/README
 !contrib/trigger/README
 !contrib/model/README
+
+flogo.env
