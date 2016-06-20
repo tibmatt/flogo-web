@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+USERNAME='your-username-here'
+PASSWORD='your-password-here'
+
+
+git config --global credential.helper cache  && git config --global credential.helper 'cache --timeout=3600'
+git ls-remote https://${USERNAME}:${PASSWORD}@github.com/TIBCOSoftware/flogo-contrib.git
