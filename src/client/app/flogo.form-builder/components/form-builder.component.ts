@@ -408,7 +408,7 @@ export class FlogoFormBuilderComponent{
     let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel})`; // T | A3
     let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
 
-    let reProp = `(?:\\$\\[${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\])((?:\\.${reComPropNameWithoutQuote})*)`;
+    let reProp = `(?:\\$\\{${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\})((?:\\.${reComPropNameWithoutQuote})*)`;
 
     let pattern = new RegExp(reProp.replace(/\s/g, ''), 'g');
 
@@ -517,10 +517,10 @@ export class FlogoFormBuilderComponent{
 
           if ( firstProp ) {
             return _propPath.length ?
-                   `$[${taskName}.${firstProp}].${_propPath.join( '.' )}` :
-                   `$[${taskName}.${firstProp}]`;
+                   `$\{${taskName}.${firstProp}\}.${_propPath.join( '.' )}` :
+                   `$\{${taskName}.${firstProp}\}`;
           } else {
-            return `$[${taskName}]`;
+            return `$\{${taskName}\}`;
           }
         } else {
           return match;
