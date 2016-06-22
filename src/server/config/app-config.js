@@ -116,12 +116,16 @@ let config = {
         "name": "stateRecorder",
         "enabled": true,
         "settings": {
-          "host": "localhost",
+          "host": "flogo-flow-services",
           "port": "9190"
         }
       }, {
         "name": "flowProvider",
-        "enabled": true
+        "enabled": true,
+        "settings": {
+          "host": "flogo-flow-services",
+          "port": "9090"
+        }
       }, {
         "name": "engineTester",
         "enabled": true,
@@ -168,11 +172,11 @@ let config = {
     }
   },
   stateServer: {
-    host: "localhost",
+    host: "flogo-flow-services",
     port: "9190"
   },
   processServer: {
-    host: "localhost",
+    host: "flogo-flow-services",
     port: "9090"
   }
 };

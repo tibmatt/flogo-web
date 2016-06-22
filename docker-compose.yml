@@ -9,6 +9,8 @@ services:
       - "5984:5984"
       - "8080:8080"
     env_file: flogo.env
+    depends_on:
+     - flogo-flow-services
   flogo-flow-services:
     build:
       context: .
