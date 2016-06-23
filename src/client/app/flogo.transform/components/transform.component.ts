@@ -197,7 +197,7 @@ export class TransformComponent implements OnDestroy {
       let property = matches[3];
       let path = taskInfo.isRoot ? `T.${property}` : `A${taskInfo.id}.${property}`;
       let rest = matches[4] || '';
-      mapping.value = `[${path}]${rest}`;
+      mapping.value = `{${path}}${rest}`;
     });
 
     return mappings;
