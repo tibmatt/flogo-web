@@ -88,12 +88,11 @@ rm_rf(){
 }
 
 remove_flogo(){
-
   echoInfo "Start remove flogo command"
   # remove flogo command
   rm_rf "${GOPATH}/bin/flogo"
   # remove flogo pkg
-  rm_rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/pkg/$(go run scripts/detect-arch.go)/github.com/TIBCOSoftware/flogo"
   # remove flogo src
   rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo"
   echoInfo "Finish remove flogo command"
