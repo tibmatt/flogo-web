@@ -1,5 +1,7 @@
 FROM golang
 
+VOLUME "docker-shared"
+
 #ENV GOPATH $HOME/.golang_default
 #ENV PATH $PATH:$GOPATH/bin:/usr/local/go/bin
 RUN go get github.com/constabulary/gb/...
@@ -30,6 +32,7 @@ COPY ./contrib /usr/app/contrib
 COPY submodules/flogo ${GOPATH}/src/github.com/TIBCOSoftware/flogo
 RUN go get github.com/TIBCOSoftware/flogo/... \
     && go install github.com/TIBCOSoftware/flogo/...
+
 
 RUN gulp prod.build
 
