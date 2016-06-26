@@ -6,8 +6,8 @@
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "scripts": {
-    "start": "concurrently \"pouchdb-server -p 5984 -d '/docker-shared'\" \"babel-node server.js\"",
-    "start-db": "pouchdb-server -p 5984 -d /docker-shared --host 0.0.0.0",
+    "start": "concurrently \"pouchdb-server -p 5984 -d './docker-shared'\" \"babel-node server.js\"",
+    "start-db": "pouchdb-server -p 5984 -d ./docker-shared --host 0.0.0.0",
     "start-server": "npm run start-prod-server",
     "start-dev-server": "babel-node server.js",
     "start-prod-server": "node server.js"

@@ -1,6 +1,6 @@
 FROM golang
 
-VOLUME "docker-shared"
+VOLUME "./docker-shared"
 
 #ENV GOPATH $HOME/.golang_default
 #ENV PATH $PATH:$GOPATH/bin:/usr/local/go/bin

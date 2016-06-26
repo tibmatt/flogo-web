@@ -8,7 +8,8 @@ services:
       - "3010:3010"
       - "5984:5984"
       - "8080:8080"
-    env_file: flogo.env
+    environment:
+      FLOGO_FLOW_SERVICES: "flogo-flow-services"
     depends_on:
      - flogo-flow-services
   flogo-flow-services:
