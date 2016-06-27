@@ -345,6 +345,7 @@ function getRemoteJSON( fileURI ) {
     .catch( ( err )=> {
       if ( _.get( err, 'res.statusCode' ) === 404 ) {
         // cannot find the file
+        console.warn(`[WARN] 404: ${fileURI}`);
         return null;
       } else {
         throw err;
