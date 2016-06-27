@@ -69,6 +69,7 @@ function parseGitHubURL( url ) {
 
 /**
  * Remote Installer class
+ * Install activities and triggers from remote URL, currently only supports GitHub
  */
 export class RemoteInstaller {
 
