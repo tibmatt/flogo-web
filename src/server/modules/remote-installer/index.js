@@ -1,4 +1,11 @@
-import { TYPE_TRIGGER, TYPE_ACTIVITY, TYPE_UNKNOWN } from '../../common/constants';
+import {
+  TYPE_TRIGGER,
+  TYPE_ACTIVITY,
+  TYPE_UNKNOWN,
+  DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
+  SCHEMA_FILE_NAME_ACTIVITY,
+  SCHEMA_FILE_NAME_TRIGGER
+} from '../../common/constants';
 import { activitiesDBService, triggersDBService } from '../../config/app-config';
 import _ from 'lodash';
 import url from 'url';
@@ -16,9 +23,9 @@ const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)
 // TODO
 // update this information. the `somefile.json` and `aFloder` are only for testing.
 // should use the imported ones from constants.
-const SCHEMA_FILE_NAME_TRIGGER = 'somefile.json';
-const SCHEMA_FILE_NAME_ACTIVITY = 'somefile.json';
-const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'aFolder';
+// const SCHEMA_FILE_NAME_TRIGGER = 'somefile.json';
+// const SCHEMA_FILE_NAME_ACTIVITY = 'somefile.json';
+// const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'aFolder';
 
 /*
  * Utility functions to be extracted to utility module.
