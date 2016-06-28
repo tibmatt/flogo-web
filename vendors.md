@@ -14,7 +14,7 @@ Root Development Dependencies
 | gulp-filter | ^4.0.0 | https://github.com/sindresorhus/gulp-filter | MIT | Filter files in a vinyl stream |
 | gulp-help | ^1.6.1 | https://github.com/chmontgomery/gulp-help#readme | MIT | Adds a default help task to gulp and provides the ability to add custom help messages to your gulp tasks |
 | gulp-inject | ^4.1.0 | https://github.com/klei/gulp-inject | MIT | A javascript, stylesheet and webcomponent injection plugin for Gulp, i.e. inject file references into your index.html |
-| gulp-inline-ng2-template | git+https://github.com/fcastill/gulp-inline-ng2-template.git | https://github.com/ludohenin/gulp-inline-ng2-template#readme | MIT | Gulp plugin to inline HTML and CSS into Angular 2 component views |
+| gulp-inline-ng2-template | 4.0.2 | https://github.com/ludohenin/gulp-inline-ng2-template#readme | MIT | Gulp plugin to inline HTML and CSS into Angular 2 component views |
 | gulp-less | ^3.1.0 | https://github.com/plus3network/gulp-less#readme | MIT | Less for Gulp |
 | gulp-load-plugins | ^1.2.0 | https://github.com/jackfranklin/gulp-load-plugins#readme | MIT | Automatically load any gulp plugins in your package.json |
 | gulp-nodemon | ^2.0.7 | https://github.com/JacksonGariety/gulp-nodemon | BSD-2-Clause | it's gulp + nodemon + convenience |
@@ -81,3 +81,15 @@ Server Production Dependencies
 | performance-now | ^0.2.0 | https://github.com/meryn/performance-now | MIT | Implements performance.now (based on process.hrtime). |
 | pouchdb | ^5.3.1 | https://github.com/pouchdb/pouchdb#readme | Apache-2.0 | PouchDB is a pocket-sized database |
 | pouchdb-server | ^1.1.1 | https://github.com/pouchdb/pouchdb-server | [Apache License](https://github.com/pouchdb/pouchdb-server/blob/master/LICENSE) | A standalone REST interface server for PouchDB. |
+
+
+Slack bot production Dependencies
+
+| Name | Version | Home Page | License | Description |
+| ---- | ------- | --------- | ------- | ----------- |
+| atob | 2.0.3 | https://github.com/node-browser-compat/atob | MIT or Apache-2.0 | |
+| bluebird | 3.3.5 | https://github.com/petkaantonov/bluebird | MIT | |
+| botkit | 0.1.1 | https://github.com/howdyai/botkit | MIT | |
+| btoa | 1.1.2 | https://github.com/node-browser-compat/btoa | Apache | |
+| lodash | 4.11.2 | https://lodash.com/ | MIT | |
+| request-promise | 3.0.0 | https://github.com/request/request-promise | MIT | |
