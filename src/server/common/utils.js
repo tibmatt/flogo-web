@@ -311,3 +311,58 @@ export function runShellCMD( cmd, args, opts ) {
     } );
   } );
 }
+
+/**
+ * Create the given folder using `mkdir` command
+ *
+ * @param folderPath
+ * @returns {Promise}
+ */
+export function createFolder( folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'mkdir', [ '-p', folderPath ] )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        reject( err );
+      } );
+  } );
+}
+
+/**
+ * Git clone a given repo with `--recursive` flag, to an absolute path
+ *
+ * @param repoURL
+ * @param folderPath
+ * @returns {Promise}
+ */
+export function gitClone( repoURL, folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'git', [ 'clone', '--recursive', repoURL, folderPath ] )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        reject( err );
+      } );
+  } );
+}
+
+/**
+ * Run `git pull --rebase` under the given absolute path.
+ *
+ * @param folderPath
+ * @returns {Promise}
+ */
+export function gitUpdate( folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'git', [ 'pull', '--rebase' ], { cwd : folderPath } )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        reject( err );
+      } );
+  } );
+}

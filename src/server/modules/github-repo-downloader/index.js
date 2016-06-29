@@ -2,7 +2,7 @@ import { TYPE_UNKNOWN } from '../../common/constants';
 import { config } from '../../config/app-config';
 import _ from 'lodash';
 import path from 'path';
-import { runShellCMD, parseGitHubURL } from '../../common/utils';
+import { runShellCMD, parseGitHubURL, createFolder, gitClone, gitUpdate } from '../../common/utils';
 
 /**
  * Download GitHub repo to local environment.
@@ -38,6 +38,17 @@ export class GitHubRepoDownloader {
     this.opts = _.assign( {}, defaultOpts, opts );
   }
 
+
+  /**
+   * Get the relative path of a given repo that should be used to cache the repo
+   *
+   * @param repoURL
+   */
+  static getTargetPath( repoURL ) {
+    let parsedURL = parseGitHubURL( repoURL );
+    return path.join( parsedURL.username, parsedURL.repoName );
+  }
+
   updateType( newType ) {
     this.opts.type = newType;
   }
@@ -52,7 +63,7 @@ export class GitHubRepoDownloader {
       const repos = _.uniq( urls );
 
       let taskPromises = _.map( repos, ( repo )=> {
-        let targetPath = getTargetPath( repo );
+        let targetPath = GitHubRepoDownloader.getTargetPath( repo );
         let absoluteTargetPath = path.join( this.cacheTarget, targetPath );
 
         console.log( `[log] caching repo '${repo}' to '${ absoluteTargetPath }'` );
@@ -101,16 +112,6 @@ export class GitHubRepoDownloader {
 }
 
 /**
- * Get the relative path of a given repo that should be used to cache the repo
- *
- * @param repoURL
- */
-function getTargetPath( repoURL ) {
-  let parsedURL = parseGitHubURL( repoURL );
-  return path.join( parsedURL.username, parsedURL.repoName );
-}
-
-/**
  * check if the given repo exists in the cache folder.
  *
  * @param repoURL
@@ -119,48 +120,12 @@ function getTargetPath( repoURL ) {
  */
 function hasRepoCached( repoURL, cacheFolder ) {
   return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'stat', [ '-l', path.join( cacheFolder, getTargetPath( repoURL ), '.git' ) ] )
+    runShellCMD( 'stat', [ '-l', path.join( cacheFolder, GitHubRepoDownloader.getTargetPath( repoURL ), '.git' ) ] )
       .then( ()=> {
         resolve( true );
       } )
       .catch( ( err )=> {
         resolve( false );
-      } );
-  } );
-}
-
-function createFolder( folderPath ) {
-  return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'mkdir', [ '-p', folderPath ] )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
-        reject( err );
-      } );
-  } );
-}
-
-function gitClone( repoURL, folderPath ) {
-  return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'git', [ 'clone', '--recursive', repoURL, folderPath ] )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
-        reject( err );
-      } );
-  } );
-}
-
-function gitUpdate( folderPath ) {
-  return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'git', [ 'pull', '--rebase' ], { cwd : folderPath } )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
-        reject( err );
       } );
   } );
 }
