@@ -203,3 +203,78 @@ export function convertTaskID(taskID ) {
 
   return parseInt( id );
 }
+
+/** *******
+ * GitHub related utility functions
+ */
+
+// TODO support more git format
+//  for the moment
+//    https://github.com/:username/:projectname.git
+//    https://github.com/:username/:projectname
+const GITHUB_URL_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+)(?:\.git)?)$/.source;
+const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+))\/(?:([\w\-/]+))$/.source;
+
+export function isGitHubURL( url ) {
+  let simplePattern = new RegExp( GITHUB_URL_PATTERN );
+  let subfolderPattern = new RegExp( GITHUB_URL_SUBFOLDER_PATTERN );
+  return simplePattern.test( url ) || subfolderPattern.test( url );
+}
+
+export function parseGitHubURL( url ) {
+  let simplePattern = new RegExp( GITHUB_URL_PATTERN );
+  let subfolderPattern = new RegExp( GITHUB_URL_SUBFOLDER_PATTERN );
+  let result = null;
+
+  let parsed = url.match( simplePattern );
+
+  if ( parsed ) {
+    result = {
+      url : url,
+      username : parsed[ 1 ],
+      repoName : parsed[ 2 ]
+    }
+  } else {
+    parsed = url.match( subfolderPattern );
+
+    if ( parsed ) {
+      result = {
+        url : url,
+        username : parsed[ 1 ],
+        repoName : parsed[ 2 ],
+        extraPath : parsed[ 3 ]
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Construct GitHub file URI using the download URL format.
+ *
+ * https://raw.githubusercontent.com/:username/:repoName/[:branchName | :commitHash]/:filename
+ *
+ * @param githubInfo {Object} `username`, `repoName`, `branchName`, `commitHash`
+ * @param fileName {String} Name of the file.
+ * @returns {string} The file URI to retrieve the raw data of the file.
+ */
+export function constructGitHubFileURI( githubInfo, fileName ) {
+  let commitish = githubInfo.commitHash || githubInfo.branchName || 'master';
+  let extraPath = githubInfo.extraPath ? `/${ githubInfo.extraPath }` : '';
+
+  return `https://raw.githubusercontent.com/${ githubInfo.username }/${ githubInfo.repoName }/${ commitish }${ extraPath }/${ fileName }`;
+}
+
+export function constructGitHubPath( githubInfo ) {
+  let extraPath = githubInfo.extraPath ? `/${ githubInfo.extraPath }` : '';
+  return `github.com/${ githubInfo.username }/${ githubInfo.repoName }${ extraPath }`;
+}
+
+export function constructGitHubRepoURL( githubInfo ) {
+  return `https://github.com/${githubInfo.username}/${githubInfo.repoName}.git`;
+}
+
+/** *******
+ * End of GitHub related utility functions
+ */
