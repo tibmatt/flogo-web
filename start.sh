@@ -93,16 +93,16 @@ remove_flogo(){
   # remove flogo command
   rm_rf "${GOPATH}/bin/flogo"
   # remove flogo pkg
-  rm_rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo-cli"
   # remove flogo src
-  rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo-cli"
   echoInfo "Finish remove flogo command"
 }
 
 update_flogo(){
   echoInfo "Start update flogo command"
   remove_flogo
-  go get github.com/TIBCOSoftware/flogo/...
+  go get github.com/TIBCOSoftware/flogo-cli/...
   echoInfo "Finish update flogo command"
 }
 
