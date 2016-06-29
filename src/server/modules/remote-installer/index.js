@@ -102,6 +102,14 @@ export class RemoteInstaller {
       repoDownloader.download( _.map( sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
         .then( ( result )=> {
 
+          console.log( `[TODO] download result: ` );
+          _.each( result, ( item )=> {
+            console.log(
+              `---> url: ${item.repo}\n${item.result || item.error}\n${require( 'path' )
+                .join( repoDownloader.cacheTarget,
+                  GitHubRepoDownloader.getTargetPath( item.repo ) )}\n<---` );
+          } );
+
           let installPromise = null;
 
           switch ( this.type ) {
