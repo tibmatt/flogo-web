@@ -12,13 +12,14 @@ import url from 'url';
 import https from 'https';
 import http from 'http';
 import { BaseRegistered } from '../../modules/base-registered';
-
-// TODO support more git format
-//  for the moment
-//    https://github.com/:username/:projectname.git
-//    https://github.com/:username/:projectname
-const GITHUB_URL_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+)(?:\.git)?)$/.source;
-const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)\/)(?:([\w\-]+))\/(?:([\w\-/]+))$/.source;
+import {
+  isGitHubURL,
+  parseGitHubURL,
+  constructGitHubFileURI,
+  constructGitHubPath,
+  constructGitHubRepoURL
+} from '../../common/utils';
+import { GitHubRepoDownloader } from '../github-repo-downloader';
 
 // TODO
 // update this information. the `somefile.json` and `aFloder` are only for testing.
@@ -27,48 +28,9 @@ const GITHUB_URL_SUBFOLDER_PATTERN = /^(?:https\:\/\/)?github\.com\/(?:([\w\-]+)
 // const SCHEMA_FILE_NAME_ACTIVITY = 'somefile.json';
 // const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'aFolder';
 
-/*
- * Utility functions to be extracted to utility module.
- * TODO
- */
-
-function isGitHubURL( url ) {
-  let simplePattern = new RegExp( GITHUB_URL_PATTERN );
-  let subfolderPattern = new RegExp( GITHUB_URL_SUBFOLDER_PATTERN );
-  return simplePattern.test( url ) || subfolderPattern.test( url );
-}
-
-function parseGitHubURL( url ) {
-  let simplePattern = new RegExp( GITHUB_URL_PATTERN );
-  let subfolderPattern = new RegExp( GITHUB_URL_SUBFOLDER_PATTERN );
-  let result = null;
-
-  let parsed = url.match( simplePattern );
-
-  if ( parsed ) {
-    result = {
-      url : url,
-      username : parsed[ 1 ],
-      repoName : parsed[ 2 ]
-    }
-  } else {
-    parsed = url.match( subfolderPattern );
-
-    if ( parsed ) {
-      result = {
-        url : url,
-        username : parsed[ 1 ],
-        repoName : parsed[ 2 ],
-        extraPath : parsed[ 3 ]
-      }
-    }
-  }
-
-  return result;
-}
-
 /**
  * Remote Installer class
+ * Install activities and triggers from remote URL, currently only supports GitHub
  */
 export class RemoteInstaller {
 
@@ -133,27 +95,48 @@ export class RemoteInstaller {
       console.log( 'Install from GitHub' );
       console.log( sourceURLs );
 
-      let installPromise = null;
+      const repoDownloader = new GitHubRepoDownloader( {
+        type : this.type
+      } );
 
-      switch ( this.type ) {
-        case TYPE_ACTIVITY:
-          installPromise = installActivityFromGitHub( sourceURLs );
-          break;
-        case TYPE_TRIGGER:
-          installPromise = installTriggerFromGitHub( sourceURLs );
-          break;
-        default:
-          throw new Error( 'Unknown Type' );
-          break;
-      }
+      repoDownloader.download( _.map( sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
+        .then( ( result )=> {
 
-      installPromise.then( ( result )=> {
-        console.log( 'Installed' );
-        console.log( '------- ------- -------' );
-        return result;
-      } )
-        .then( resolve )
-        .catch( reject );
+          console.log( `[TODO] download result: ` );
+          _.each( result, ( item )=> {
+            console.log(
+              `---> url: ${item.repo}\n${item.result || item.error}\n${require( 'path' )
+                .join( repoDownloader.cacheTarget,
+                  GitHubRepoDownloader.getTargetPath( item.repo ) )}\n<---` );
+          } );
+
+          let installPromise = null;
+
+          switch ( this.type ) {
+            case TYPE_ACTIVITY:
+              installPromise = installActivityFromGitHub( sourceURLs );
+              break;
+            case TYPE_TRIGGER:
+              installPromise = installTriggerFromGitHub( sourceURLs );
+              break;
+            default:
+              throw new Error( 'Unknown Type' );
+              break;
+          }
+
+          return installPromise.then( ( result )=> {
+            console.log( 'Installed' );
+            console.log( '------- ------- -------' );
+            return result;
+          } )
+            .then( resolve )
+            .catch( reject );
+
+        } )
+        .catch( ( err )=> {
+          reject( err );
+        } );
+
     } );
   }
 
@@ -265,27 +248,6 @@ function installActivityFromGitHub( sourceURLs ) {
   return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService );
 }
 
-/**
- * Construct GitHub file URI using the download URL format.
- *
- * https://raw.githubusercontent.com/:username/:repoName/[:branchName | :commitHash]/:filename
- *
- * @param githubInfo {Object} `username`, `repoName`, `branchName`, `commitHash`
- * @param fileName {String} Name of the file.
- * @returns {string} The file URI to retrieve the raw data of the file.
- */
-function constructGitHubFileURI( githubInfo, fileName ) {
-  let commitish = githubInfo.commitHash || githubInfo.branchName || 'master';
-  let extraPath = githubInfo.extraPath ? `/${ githubInfo.extraPath }` : '';
-
-  return `https://raw.githubusercontent.com/${ githubInfo.username }/${ githubInfo.repoName }/${ commitish }${ extraPath }/${ fileName }`;
-}
-
-function constructGitHubPath( githubInfo ) {
-  let extraPath = githubInfo.extraPath ? `/${ githubInfo.extraPath }` : '';
-  return `github.com/${ githubInfo.username }/${ githubInfo.repoName }${ extraPath }`;
-}
-
 // retrieve file data
 function getRemoteFile( fileURI ) {
   return new Promise( ( resolve, reject ) => {
@@ -345,7 +307,7 @@ function getRemoteJSON( fileURI ) {
     .catch( ( err )=> {
       if ( _.get( err, 'res.statusCode' ) === 404 ) {
         // cannot find the file
-        console.warn(`[WARN] 404: ${fileURI}`);
+        console.warn( `[WARN] 404: ${fileURI}` );
         return null;
       } else {
         throw err;
