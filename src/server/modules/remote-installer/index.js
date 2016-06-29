@@ -11,13 +11,16 @@ import _ from 'lodash';
 import url from 'url';
 import https from 'https';
 import http from 'http';
+import path from 'path';
 import { BaseRegistered } from '../../modules/base-registered';
 import {
+  readJSONFileSync,
   isGitHubURL,
   parseGitHubURL,
   constructGitHubFileURI,
   constructGitHubPath,
-  constructGitHubRepoURL
+  constructGitHubRepoURL,
+  isInGitHubRepo
 } from '../../common/utils';
 import { GitHubRepoDownloader } from '../github-repo-downloader';
 
@@ -104,10 +107,62 @@ export class RemoteInstaller {
 
           console.log( `[TODO] download result: ` );
           _.each( result, ( item )=> {
+            let repoPath = path.join( repoDownloader.cacheTarget,
+              GitHubRepoDownloader.getTargetPath( item.repo ) );
             console.log(
-              `---> url: ${item.repo}\n${item.result || item.error}\n${require( 'path' )
-                .join( repoDownloader.cacheTarget,
-                  GitHubRepoDownloader.getTargetPath( item.repo ) )}\n<---` );
+              `---> url: ${item.repo}\n${item.result || item.error}\n${repoPath}\n<---` );
+          } );
+
+          // TODO
+          // print package.json and schema.json
+          _.each( sourceURLs, ( sourceURL ) => {
+            let repoPath = '';
+
+            if ( _.some( result, ( item ) => {
+                if ( isInGitHubRepo( item.repo, sourceURL ) && !item.error ) {
+                  repoPath = path.join( repoDownloader.cacheTarget,
+                    GitHubRepoDownloader.getTargetPath( item.repo ) );
+
+                  return true;
+                }
+
+                return false;
+              } ) ) {
+
+              console.log( `[TODO] downloaded: ${sourceURL}` );
+              if ( repoPath ) {
+                let parsedSourceURL = parseGitHubURL( sourceURL );
+                let extraPath = parsedSourceURL.extraPath || '';
+
+                // print package.json
+                try {
+                  console.log(
+                    readJSONFileSync(
+                      path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json' ) ) );
+                } catch ( e ) {
+                  console.log(
+                    `[TODO] cannot find file: ${path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
+                      'package.json' )}` );
+                  console.log( e );
+                }
+
+                console.log( '<------->' );
+
+                // pring schema.json
+                let schemaName = this.type === TYPE_ACTIVITY ? SCHEMA_FILE_NAME_ACTIVITY : SCHEMA_FILE_NAME_TRIGGER;
+                try {
+                  console.log(
+                    readJSONFileSync( path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, schemaName ) ) );
+                } catch ( e ) {
+                  console.log(
+                    `[TODO] cannot find file: ${path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
+                      schemaName )}` );
+                  console.log( e );
+                }
+              } else {
+                console.warn( `[TODO] no repo path found.` );
+              }
+            }
           } );
 
           let installPromise = null;

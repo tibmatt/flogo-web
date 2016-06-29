@@ -252,6 +252,24 @@ export function parseGitHubURL( url ) {
 }
 
 /**
+ * Verify if the given url is within the given GitHub repo.
+ *
+ * @param repoURL
+ * @param url
+ */
+export function isInGitHubRepo( repoURL, url ) {
+  if ( isGitHubURL( repoURL ) && isGitHubURL( url ) ) {
+    const parsedRepoURL = parseGitHubURL( repoURL );
+    const parsedURL = parseGitHubURL( url );
+
+    return parsedRepoURL.username === parsedURL.username && parsedRepoURL.repoName === parsedURL.repoName;
+  } else {
+    console.warn( `[warn] invalid GitHub URL: ${repoURL}` );
+    return false;
+  }
+}
+
+/**
  * Construct GitHub file URI using the download URL format.
  *
  * https://raw.githubusercontent.com/:username/:repoName/[:branchName | :commitHash]/:filename
