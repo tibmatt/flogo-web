@@ -19,6 +19,7 @@ import {
   constructGitHubPath,
   constructGitHubRepoURL
 } from '../../common/utils';
+import { GitHubRepoDownloader } from '../github-repo-downloader';
 
 // TODO
 // update this information. the `somefile.json` and `aFloder` are only for testing.
@@ -94,27 +95,40 @@ export class RemoteInstaller {
       console.log( 'Install from GitHub' );
       console.log( sourceURLs );
 
-      let installPromise = null;
+      const repoDownloader = new GitHubRepoDownloader( {
+        type : this.type
+      } );
 
-      switch ( this.type ) {
-        case TYPE_ACTIVITY:
-          installPromise = installActivityFromGitHub( sourceURLs );
-          break;
-        case TYPE_TRIGGER:
-          installPromise = installTriggerFromGitHub( sourceURLs );
-          break;
-        default:
-          throw new Error( 'Unknown Type' );
-          break;
-      }
+      repoDownloader.download( _.map( sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
+        .then( ( result )=> {
 
-      installPromise.then( ( result )=> {
-        console.log( 'Installed' );
-        console.log( '------- ------- -------' );
-        return result;
-      } )
-        .then( resolve )
-        .catch( reject );
+          let installPromise = null;
+
+          switch ( this.type ) {
+            case TYPE_ACTIVITY:
+              installPromise = installActivityFromGitHub( sourceURLs );
+              break;
+            case TYPE_TRIGGER:
+              installPromise = installTriggerFromGitHub( sourceURLs );
+              break;
+            default:
+              throw new Error( 'Unknown Type' );
+              break;
+          }
+
+          installPromise.then( ( result )=> {
+            console.log( 'Installed' );
+            console.log( '------- ------- -------' );
+            return result;
+          } )
+            .then( resolve )
+            .catch( reject );
+
+        } )
+        .catch( ( err )=> {
+          reject( err );
+        } );
+
     } );
   }
 

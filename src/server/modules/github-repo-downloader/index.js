@@ -1,3 +1,9 @@
+import { TYPE_UNKNOWN } from '../../common/constants';
+import { config } from '../../config/app-config';
+import _ from 'lodash';
+import path from 'path';
+import { runShellCMD, parseGitHubURL } from '../../common/utils';
+
 /**
  * Download GitHub repo to local environment.
  *
@@ -23,5 +29,175 @@
  */
 export class GitHubRepoDownloader {
 
+  constructor( opts ) {
+    const defaultOpts = {
+      cacheFolder : path.join( config.rootPath, 'cache' ),
+      type : TYPE_UNKNOWN
+    };
+
+    this.opts = _.assign( {}, defaultOpts, opts );
+  }
+
+  updateType( newType ) {
+    this.opts.type = newType;
+  }
+
+  get cacheTarget() {
+    return path.join( this.opts.cacheFolder, this.opts.type.toLowerCase() );
+  }
+
+  download( urls ) {
+    return new Promise( ( resolve, reject )=> {
+      // deduplication
+      const repos = _.uniq( urls );
+
+      let taskPromises = _.map( repos, ( repo )=> {
+        let targetPath = getTargetPath( repo );
+        let absoluteTargetPath = path.join( this.cacheTarget, targetPath );
+
+        console.log( `[log] caching repo '${repo}' to '${ absoluteTargetPath }'` );
+
+        return hasRepoCached( repo, this.cacheTarget )
+          .then( ( result ) => {
+            if ( result === false ) {
+
+              return newRepoHandler( repo, absoluteTargetPath );
+            } else if ( result === true ) {
+
+              return existsRepoHandler( repo, absoluteTargetPath );
+            } else {
+              // invalid result.
+              throw result;
+            }
+          } )
+          .then( ( result ) => {
+            return {
+              repo : repo,
+              result : result
+            };
+          } )
+          .catch( ( err )=> {
+            console.error( err );
+            return {
+              repo : repo,
+              error : err
+            }
+          } );
+      } );
+
+      Promise.all( taskPromises )
+        .then( ( result )=> {
+          console.log( `[info] download repos results: ` );
+          console.log( result );
+          resolve( result );
+        } )
+        .catch( ( err )=> {
+          console.log( `[error] fail to download repos` );
+          reject( err );
+        } );
+
+    } );
+  }
 }
 
+/**
+ * Get the relative path of a given repo that should be used to cache the repo
+ *
+ * @param repoURL
+ */
+function getTargetPath( repoURL ) {
+  let parsedURL = parseGitHubURL( repoURL );
+  return path.join( parsedURL.username, parsedURL.repoName );
+}
+
+/**
+ * check if the given repo exists in the cache folder.
+ *
+ * @param repoURL
+ * @param cacheFolder
+ * @returns {Promise}
+ */
+function hasRepoCached( repoURL, cacheFolder ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'stat', [ '-l', path.join( cacheFolder, getTargetPath( repoURL ), '.git' ) ] )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        resolve( false );
+      } );
+  } );
+}
+
+function createFolder( folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'mkdir', [ '-p', folderPath ] )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        reject( err );
+      } );
+  } );
+}
+
+function gitClone( repoURL, folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'git', [ 'clone', '--recursive', repoURL, folderPath ] )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        reject( err );
+      } );
+  } );
+}
+
+function gitUpdate( folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'git', [ 'pull', '--rebase' ], { cwd : folderPath } )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        reject( err );
+      } );
+  } );
+}
+
+// download new repo
+//    create folder
+//    clone the repo
+function newRepoHandler( repoURL, folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    createFolder( folderPath )
+      .then( ( result )=> {
+        return gitClone( repoURL, folderPath );
+      } )
+      .then( ( result ) => {
+        console.log( `[log] new repo: ${repoURL} ---> ${folderPath}` );
+        console.log( result );
+        resolve( true );
+        return result;
+      } )
+      .catch( ( err )=> {
+        console.error( `[error] error on newRepoHandler` );
+        reject( err );
+      } )
+
+  } );
+}
+
+// update the repo
+function existsRepoHandler( repoURL, folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    gitUpdate( folderPath )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        console.error( `[error] error on existsRepoHandler` );
+        reject( err );
+      } );
+  } );
+}
