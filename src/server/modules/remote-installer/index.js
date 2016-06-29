@@ -98,99 +98,27 @@ export class RemoteInstaller {
       console.log( 'Install from GitHub' );
       console.log( sourceURLs );
 
-      const repoDownloader = new GitHubRepoDownloader( {
-        type : this.type
-      } );
+      let installPromise = null;
 
-      repoDownloader.download( _.map( sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
-        .then( ( result )=> {
+      switch ( this.type ) {
+        case TYPE_ACTIVITY:
+          installPromise = installActivityFromGitHub( sourceURLs );
+          break;
+        case TYPE_TRIGGER:
+          installPromise = installTriggerFromGitHub( sourceURLs );
+          break;
+        default:
+          throw new Error( 'Unknown Type' );
+          break;
+      }
 
-          console.log( `[TODO] download result: ` );
-          _.each( result, ( item )=> {
-            let repoPath = path.join( repoDownloader.cacheTarget,
-              GitHubRepoDownloader.getTargetPath( item.repo ) );
-            console.log(
-              `---> url: ${item.repo}\n${item.result || item.error}\n${repoPath}\n<---` );
-          } );
-
-          // TODO
-          // print package.json and schema.json
-          _.each( sourceURLs, ( sourceURL ) => {
-            let repoPath = '';
-
-            if ( _.some( result, ( item ) => {
-                if ( isInGitHubRepo( item.repo, sourceURL ) && !item.error ) {
-                  repoPath = path.join( repoDownloader.cacheTarget,
-                    GitHubRepoDownloader.getTargetPath( item.repo ) );
-
-                  return true;
-                }
-
-                return false;
-              } ) ) {
-
-              console.log( `[TODO] downloaded: ${sourceURL}` );
-              if ( repoPath ) {
-                let parsedSourceURL = parseGitHubURL( sourceURL );
-                let extraPath = parsedSourceURL.extraPath || '';
-
-                // print package.json
-                try {
-                  console.log(
-                    readJSONFileSync(
-                      path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json' ) ) );
-                } catch ( e ) {
-                  console.log(
-                    `[TODO] cannot find file: ${path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
-                      'package.json' )}` );
-                  console.log( e );
-                }
-
-                console.log( '<------->' );
-
-                // pring schema.json
-                let schemaName = this.type === TYPE_ACTIVITY ? SCHEMA_FILE_NAME_ACTIVITY : SCHEMA_FILE_NAME_TRIGGER;
-                try {
-                  console.log(
-                    readJSONFileSync( path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, schemaName ) ) );
-                } catch ( e ) {
-                  console.log(
-                    `[TODO] cannot find file: ${path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
-                      schemaName )}` );
-                  console.log( e );
-                }
-              } else {
-                console.warn( `[TODO] no repo path found.` );
-              }
-            }
-          } );
-
-          let installPromise = null;
-
-          switch ( this.type ) {
-            case TYPE_ACTIVITY:
-              installPromise = installActivityFromGitHub( sourceURLs );
-              break;
-            case TYPE_TRIGGER:
-              installPromise = installTriggerFromGitHub( sourceURLs );
-              break;
-            default:
-              throw new Error( 'Unknown Type' );
-              break;
-          }
-
-          return installPromise.then( ( result )=> {
-            console.log( 'Installed' );
-            console.log( '------- ------- -------' );
-            return result;
-          } )
-            .then( resolve )
-            .catch( reject );
-
-        } )
-        .catch( ( err )=> {
-          reject( err );
-        } );
+      return installPromise.then( ( result )=> {
+        console.log( 'Installed' );
+        console.log( '------- ------- -------' );
+        return result;
+      } )
+        .then( resolve )
+        .catch( reject );
 
     } );
   }
@@ -219,26 +147,80 @@ export class RemoteInstaller {
 // utility functions
 
 // install item from GitHub
-function installFromGitHub( sourceURLs, schemaFileName, dbService ) {
+function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
 
-  // for each given source URLs, retrieve the package.json and schema.json information
-  return Promise.all( _.map( sourceURLs, ( sourceURL ) => {
-    let githubInfo = parseGitHubURL( sourceURL );
+  const repoDownloader = new GitHubRepoDownloader( { type } );
 
-    return Promise.all(
-      [ getPackageJSONFromGitHub( githubInfo ), getSchemaJSONFromGitHub( githubInfo, schemaFileName ) ] )
-      .then( ( results ) => {
-        return {
+  return repoDownloader.download(
+    _.map( sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
+    .then( ( result )=> {
+
+      // console.log( `[TODO] download result: ` );
+      // _.each( result, ( item )=> {
+      //   let repoPath = path.join( repoDownloader.cacheTarget,
+      //     GitHubRepoDownloader.getTargetPath( item.repo ) );
+      //   console.log(
+      //     `---> url: ${item.repo}\n${item.result || item.error}\n${repoPath}\n<---` );
+      // } );
+
+      // reduce the sourceURLs to a downloadResult
+      // create raw data for further processing.
+      return _.reduce( sourceURLs, ( dlResult, sourceURL ) => {
+
+        let repoPath = '';
+        const githubInfo = parseGitHubURL( sourceURL );
+        const item = {
           path : constructGitHubPath( githubInfo ),
           sourceURL : sourceURL,
-          package : results[ 0 ],
-          schema : results[ 1 ],
+          package : '', // package.json, to be added later
+          schema : '', // schema.json, activity.json or trigger.json, to be added later
           savedToDB : false
-        }
-      } );
-  } ) )
+        };
 
-  // process raw items
+        // check if the given sourceURL belongs to a successfully downloaded repo
+        const isAvailable = _.some( result, ( item ) => {
+          if ( isInGitHubRepo( item.repo, sourceURL ) && !item.error ) {
+            repoPath = path.join( repoDownloader.cacheTarget,
+              GitHubRepoDownloader.getTargetPath( item.repo ) );
+
+            return true;
+          }
+
+          return false;
+        } );
+
+        // get package.json && schema.json
+        if ( isAvailable && repoPath ) {
+          const extraPath = githubInfo.extraPath || '';
+          const packageJSONPath = path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
+            'package.json' );
+          const schemaJSONPath = path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
+            schemaFileName );
+
+          try {
+            console.error( `[log] reading ${packageJSONPath}` );
+            item.package = readJSONFileSync( packageJSONPath );
+          } catch ( e ) {
+            console.error( `[error] reading ${packageJSONPath}: ` );
+            console.error( e );
+          }
+
+          try {
+            console.error( `[log] reading ${schemaJSONPath}` );
+            item.schema = readJSONFileSync( schemaJSONPath );
+          } catch ( e ) {
+            console.error( `[error] reading ${schemaJSONPath}: ` );
+            console.error( e );
+          }
+        }
+
+        dlResult.push( item );
+
+        return dlResult;
+      }, [] );
+    } )
+
+    // process raw items
     .then( rawItems => {
       return _.map( rawItems, rawItem => {
         return {
@@ -288,19 +270,23 @@ function installFromGitHub( sourceURLs, schemaFileName, dbService ) {
         success : [],
         fail : []
       } );
+    } )
+    .catch( ( err )=> {
+      console.log( `[error] error on installFromGitHub` );
+      throw err;
     } );
 }
 
 // shorthand function to install triggers from GitHub
 function installTriggerFromGitHub( sourceURLs ) {
 
-  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_TRIGGER, triggersDBService );
+  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_TRIGGER, triggersDBService, TYPE_TRIGGER );
 }
 
 // shorthand function to install activities from GitHub
 function installActivityFromGitHub( sourceURLs ) {
 
-  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService );
+  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService, TYPE_ACTIVITY );
 }
 
 // retrieve file data
