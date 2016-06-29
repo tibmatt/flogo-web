@@ -2,7 +2,7 @@ import { TYPE_UNKNOWN } from '../../common/constants';
 import { config } from '../../config/app-config';
 import _ from 'lodash';
 import path from 'path';
-import { runShellCMD, parseGitHubURL, createFolder, gitClone, gitUpdate } from '../../common/utils';
+import { runShellCMD, parseGitHubURL, createFolder, gitClone, gitUpdate, rmFolder } from '../../common/utils';
 
 /**
  * Download GitHub repo to local environment.
@@ -55,6 +55,10 @@ export class GitHubRepoDownloader {
 
   get cacheTarget() {
     return path.join( this.opts.cacheFolder, this.opts.type.toLowerCase() );
+  }
+
+  clearCache() {
+    return rmFolder( this.cacheTarget );
   }
 
   download( urls ) {

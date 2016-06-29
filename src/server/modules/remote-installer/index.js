@@ -116,7 +116,7 @@ export class RemoteInstaller {
               break;
           }
 
-          installPromise.then( ( result )=> {
+          return installPromise.then( ( result )=> {
             console.log( 'Installed' );
             console.log( '------- ------- -------' );
             return result;

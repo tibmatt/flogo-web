@@ -331,6 +331,24 @@ export function createFolder( folderPath ) {
 }
 
 /**
+ * Remove the given folder using `rm -rf`
+ *
+ * @param folderPath
+ * @returns {Promise}
+ */
+export function rmFolder( folderPath ) {
+  return new Promise( ( resolve, reject )=> {
+    runShellCMD( 'rm', [ '-rf', folderPath ] )
+      .then( ()=> {
+        resolve( true );
+      } )
+      .catch( ( err )=> {
+        reject( err );
+      } );
+  } );
+}
+
+/**
  * Git clone a given repo with `--recursive` flag, to an absolute path
  *
  * @param repoURL
