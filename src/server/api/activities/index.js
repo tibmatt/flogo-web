@@ -27,17 +27,14 @@ function* getActivities(next){
   yield next;
 }
 
-function* installActivities(next){
+function* installActivities( next ) {
   let urls = preProcessURLs( this.request.body.urls );
-
-  console.log( '------- ------- -------' );
-  console.log( 'Install Activities' );
+  console.log( '[log] Install Activities' );
   __insp( urls );
   let results = yield remoteInstaller.install( urls );
-  console.log( 'Installation results' );
+  console.log( '[log] Installation results' );
   __insp( results );
   this.body = results;
-  console.log( '------- ------- -------' );
 
   yield next;
 }

@@ -31,14 +31,12 @@ function* getTriggers(next){
 function* installTriggers( next ) {
   let urls = preProcessURLs( this.request.body.urls );
 
-  console.log( '------- ------- -------' );
-  console.log( 'Install Triggers' );
+  console.log( '[log] Install Triggers' );
   __insp( urls );
   let results = yield remoteInstaller.install( urls );
-  console.log( 'Installation results' );
+  console.log( '[log] Installation results' );
   __insp( results );
   this.body = results;
-  console.log( '------- ------- -------' );
 
   yield next;
 }

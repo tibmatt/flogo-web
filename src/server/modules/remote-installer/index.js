@@ -94,8 +94,7 @@ export class RemoteInstaller {
 
   installFromGitHub( sourceURLs ) {
     return new Promise( ( resolve, reject )=> {
-      console.log( '------- ------- -------' );
-      console.log( 'Install from GitHub' );
+      console.log( '[log] Install from GitHub' );
       console.log( sourceURLs );
 
       let installPromise = null;
@@ -113,8 +112,7 @@ export class RemoteInstaller {
       }
 
       return installPromise.then( ( result )=> {
-        console.log( 'Installed' );
-        console.log( '------- ------- -------' );
+        console.log( '[log] Installed' );
         return result;
       } )
         .then( resolve )
@@ -126,8 +124,7 @@ export class RemoteInstaller {
   // TODO
   defaultInstall( sourceURLs ) {
     return new Promise( ( resolve, reject )=> {
-      console.log( '------- ------- -------' );
-      console.log( 'Default installation [TODO]' );
+      console.log( '[TODO] Default installation' );
 
       resolve( _.reduce( sourceURLs, ( installResult, url ) => {
         console.warn( `[TODO defaultInstall] Try to install [${ url }]..` );
@@ -137,8 +134,6 @@ export class RemoteInstaller {
         success : [],
         fail : []
       } ) );
-
-      console.log( '------- ------- -------' );
     } );
   }
 }
@@ -198,7 +193,7 @@ function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
             schemaFileName );
 
           try {
-            console.error( `[log] reading ${packageJSONPath}` );
+            // console.error( `[log] reading ${packageJSONPath}` );
             item.package = readJSONFileSync( packageJSONPath );
           } catch ( e ) {
             console.error( `[error] reading ${packageJSONPath}: ` );
@@ -206,7 +201,7 @@ function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
           }
 
           try {
-            console.error( `[log] reading ${schemaJSONPath}` );
+            // console.error( `[log] reading ${schemaJSONPath}` );
             item.schema = readJSONFileSync( schemaJSONPath );
           } catch ( e ) {
             console.error( `[error] reading ${schemaJSONPath}: ` );
@@ -289,91 +284,6 @@ function installActivityFromGitHub( sourceURLs ) {
   return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService, TYPE_ACTIVITY );
 }
 
-// retrieve file data
-function getRemoteFile( fileURI ) {
-  return new Promise( ( resolve, reject ) => {
-    let urlInfo = url.parse( fileURI );
-
-    let reqSender = urlInfo.protocol === 'https:' ? https.request : http.request;
-
-    let fileReq = reqSender( _.assign( urlInfo, {
-      headers : {
-        'Accept' : 'application/json',
-        'Accept-Charset' : 'utf-8'
-      }
-    } ), ( fileRes )=> {
-      let body = '';
-
-      fileRes.setEncoding( 'utf8' );
-
-      fileRes.on( 'data', ( chunk ) => {
-        body += chunk;
-      } );
-
-      fileRes.on( 'end', () => {
-        if ( fileRes.statusCode !== 200 ) {
-          reject( {
-            body : body,
-            res : fileRes
-          } );
-        } else {
-          resolve( body );
-        }
-      } );
-
-      fileRes.on( 'error', reject );
-    } );
-
-    fileReq.on( 'error', reject );
-    fileReq.end();
-  } );
-}
-
-// get JSOM from remote
-function getRemoteJSON( fileURI ) {
-  return getRemoteFile( fileURI )
-    .then( ( fileContent )=> {
-      let fileJSON;
-      try {
-        fileJSON = JSON.parse( fileContent );
-      } catch ( e ) {
-        console.warn( `File parse error: ${fileURI}` );
-        console.warn( e );
-        // fallback to empty JSON when on parse file error.
-        fileJSON = {};
-      }
-
-      return fileJSON;
-    } )
-    .catch( ( err )=> {
-      if ( _.get( err, 'res.statusCode' ) === 404 ) {
-        // cannot find the file
-        console.warn( `[WARN] 404: ${fileURI}` );
-        return null;
-      } else {
-        throw err;
-      }
-    } );
-}
-
-// shorthand funtion to get `package.json`
-function getPackageJSONFromGitHub( githubInfo ) {
-  // construct the URI of package.json
-  let fileURI = constructGitHubFileURI( githubInfo, `${DEFAULT_SCHEMA_ROOT_FOLDER_NAME}/package.json` );
-
-  // get the remote JSON.
-  return getRemoteJSON( fileURI );
-}
-
-// shorthand function to get the schema.json
-function getSchemaJSONFromGitHub( githubInfo, schemaFileName ) {
-  // construct the URI of the schema file
-  let fileURI = constructGitHubFileURI( githubInfo, `${DEFAULT_SCHEMA_ROOT_FOLDER_NAME}/${schemaFileName}` );
-
-  // get the remote JSON.
-  return getRemoteJSON( fileURI );
-}
-
 function processItemFromGitHub( rawItemInfo ) {
   let itemInfo = null;
 
@@ -397,12 +307,4 @@ function processItemFromGitHub( rawItemInfo ) {
   }
 
   return itemInfo;
-}
-
-// ------- ------- -------
-// debugging inspector utility
-function __insp( obj ) {
-  'use strict';
-  console.log( require( 'util' )
-    .inspect( obj, { depth : 7, colors : true } ) );
 }
