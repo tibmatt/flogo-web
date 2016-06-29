@@ -9,22 +9,16 @@ services:
       - "5984:5984"
       - "8080:8080"
     environment:
-      FLOGO_FLOW_SERVICES: "flogo-flow-services"
+      FLOGO_FLOW_SERVICE_HOST: flow-service
+      FLOGO_FLOW_STATE_SERVICE_HOST: flow-state-service
     depends_on:
-     - flogo-flow-services
-  flogo-flow-services:
-    build:
-      context: .
-      dockerfile: docker/flow-services/Dockerfile
+     - flow-service
+     - flow-state-service
+  flow-service:
+    image: flogo/flow-service
     ports:
-     - "9190:9190"
-     - "9090:9090"
-    depends_on:
-     - flogo-redis
-  flogo-redis:
-    image: redis
-  flogo-toke-mosquitto:
-    image: toke/mosquitto
+      - "9090:9090"
+  flow-state-service:
+    image: flogo/flow-state-service
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - "9190:9190"

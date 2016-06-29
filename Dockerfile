@@ -29,12 +29,12 @@ COPY ./gulp /usr/app/gulp
 COPY ./src /usr/app/src
 COPY ./contrib /usr/app/contrib
 
-COPY submodules/flogo ${GOPATH}/src/github.com/TIBCOSoftware/flogo
-RUN go get github.com/TIBCOSoftware/flogo/... \
-    && go install github.com/TIBCOSoftware/flogo/...
+COPY submodules/flogo-cli ${GOPATH}/src/github.com/TIBCOSoftware/flogo-cli
+RUN go get github.com/TIBCOSoftware/flogo-cli/... \
+    && go install github.com/TIBCOSoftware/flogo-cli/...
 
 
-RUN gulp prod.build
+RUN gulp prod.build && rm -r src
 
 COPY ["docker/config-git.sh","docker/start.sh", "/usr/app/"]
 
