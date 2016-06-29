@@ -2,54 +2,55 @@ import path from 'path';
 import fs from 'fs';
 import performanceNow from 'performance-now';
 import _ from 'lodash';
-import {FLOGO_TASK_TYPE} from '../common/constants';
+import { FLOGO_TASK_TYPE } from '../common/constants';
+import { spawn } from 'child_process';
 
-export function btoa(str) {
+export function btoa( str ) {
   var buffer;
 
-  if (str instanceof Buffer) {
+  if ( str instanceof Buffer ) {
     buffer = str;
   } else {
-    buffer = new Buffer(str.toString(), 'binary');
+    buffer = new Buffer( str.toString(), 'binary' );
   }
 
-  return buffer.toString('base64');
+  return buffer.toString( 'base64' );
 }
 
-export function atob(str) {
-  return new Buffer(str, 'base64').toString('binary');
+export function atob( str ) {
+  return new Buffer( str, 'base64' ).toString( 'binary' );
 }
 
-export function isExisted(testedPath){
+export function isExisted( testedPath ) {
   try {
-    fs.accessSync(testedPath, fs.F_OK);
+    fs.accessSync( testedPath, fs.F_OK );
     return true;
-  } catch (e) {
+  } catch ( e ) {
     return false;
   }
 }
 
-export function isDirectory(testedPath){
-  if(isExisted(testedPath)){
-    let stats = fs.statSync(testedPath);
-    if(stats.isDirectory()){
+export function isDirectory( testedPath ) {
+  if ( isExisted( testedPath ) ) {
+    let stats = fs.statSync( testedPath );
+    if ( stats.isDirectory() ) {
       return true
-    }else{
+    } else {
       return false;
     }
-  }else{
+  } else {
     return undefined;
   }
 }
 
-export function readDirectoriesSync(dirPath){
-  let dirs = fs.readdirSync(dirPath);
+export function readDirectoriesSync( dirPath ) {
+  let dirs = fs.readdirSync( dirPath );
   let nDirs = [];
-  dirs.forEach((dir)=>{
-    if(isDirectory(path.join(dirPath, dir))){
-      nDirs.push(dir);
+  dirs.forEach( ( dir )=> {
+    if ( isDirectory( path.join( dirPath, dir ) ) ) {
+      nDirs.push( dir );
     }
-  });
+  } );
 
   return nDirs;
 }
@@ -59,10 +60,10 @@ export function readDirectoriesSync(dirPath){
  * @param  {string}  str - the JSON string
  * @return {object|undefined} if it is a valid json, return json, otherwise return undefined
  */
-export function isJSON(str) {
+export function isJSON( str ) {
   try {
-    return JSON.parse(str);
-  } catch (e) {
+    return JSON.parse( str );
+  } catch ( e ) {
     return undefined;
   }
 }
@@ -72,15 +73,15 @@ export function isJSON(str) {
  * @param  {string|Path} jSONPath - the path of JSON file
  * @return {object|undefined} if it is a valid and exist json, return json, otherwise return undefined
  */
-export function readJSONFileSync(JSONPath){
+export function readJSONFileSync( JSONPath ) {
   let data = undefined;
-  if(isExisted(JSONPath)){
-    data = fs.readFileSync(JSONPath, {
-      "encoding": "utf8"
-    });
-    data = isJSON(data);
-  }else{
-    console.error("[error][utils.js->readJSONFileSync] path doesn't exist. path: ", JSONPath);
+  if ( isExisted( JSONPath ) ) {
+    data = fs.readFileSync( JSONPath, {
+      "encoding" : "utf8"
+    } );
+    data = isJSON( data );
+  } else {
+    console.error( "[error][utils.js->readJSONFileSync] path doesn't exist. path: ", JSONPath );
   }
 
   return data;
@@ -92,19 +93,19 @@ export function readJSONFileSync(JSONPath){
  * @param {object} data - the JSON data you want to write
  * @return {boolean} if write successful, return ture, otherwise return false
  */
-export function writeJSONFileSync(JSONPath, data){
-  try{
-    fs.writeFileSync(JSONPath, JSON.stringify(data, null, 2), {
-      "encoding": "utf8"
-    });
+export function writeJSONFileSync( JSONPath, data ) {
+  try {
+    fs.writeFileSync( JSONPath, JSON.stringify( data, null, 2 ), {
+      "encoding" : "utf8"
+    } );
     return true;
-  }catch(err){
-    console.error("[error][utils.js->writeJSONFileSync] err: ", err);
+  } catch ( err ) {
+    console.error( "[error][utils.js->writeJSONFileSync] err: ", err );
     return false;
   }
 }
 
-export function flogoIDEncode( id){
+export function flogoIDEncode( id ) {
   return btoa( id )
     .replace( /\+/g, '-' )
     .replace( /\//g, '_' )
@@ -113,7 +114,7 @@ export function flogoIDEncode( id){
 
 // URL safe base64 decoding
 // reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDDecode( encodedId ){
+export function flogoIDDecode( encodedId ) {
 
   encodedId = encodedId.replace( /-/g, '+' )
     .replace( /_/g, '/' );
@@ -125,7 +126,7 @@ export function flogoIDDecode( encodedId ){
   return atob( encodedId );
 }
 
-export function flogoGenTaskID(items) {
+export function flogoGenTaskID( items ) {
   let taskID;
 
   // TODO
@@ -142,7 +143,7 @@ export function flogoGenTaskID(items) {
 
     let currentMax = _.max( taskIDs );
 
-    if ( currentMax && _.isFinite(currentMax) ) { // isFinite: _.max coerces values to number in lodash versions < 4
+    if ( currentMax && _.isFinite( currentMax ) ) { // isFinite: _.max coerces values to number in lodash versions < 4
       taskID = '' + ( currentMax + 1);
     } else {
       taskID = '' + startPoint;
@@ -161,7 +162,7 @@ export function flogoGenTriggerID() {
   return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
 }
 
-export function genNodeID(items)  {
+export function genNodeID( items ) {
 
 
   let id = '';
@@ -184,7 +185,7 @@ export function genNodeID(items)  {
  * @returns {number}
  * @private
  */
-export function convertTaskID(taskID ) {
+export function convertTaskID( taskID ) {
   let id = '';
 
   try {
@@ -276,5 +277,37 @@ export function constructGitHubRepoURL( githubInfo ) {
 }
 
 /** *******
- * End of GitHub related utility functions
+ * CMD related utility functions
  */
+
+/**
+ * Port `child_process.spawn` with Promise, same inputs as the original API
+ *
+ * https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
+ */
+export function runShellCMD( cmd, args, opts ) {
+  return new Promise( ( resolve, reject ) => {
+    const _cmd = spawn( cmd, args, opts );
+    let _data = '';
+    let errData = '';
+
+    console.log( `[info] run command: ${cmd} ${args.join( ' ' )}` );
+
+    _cmd.stdout.on( 'data', ( data ) => {
+      _data += data;
+    } );
+
+    _cmd.stderr.on( 'data', ( data ) => {
+      errData += data instanceof Buffer ? data.toString() : data;
+    } );
+
+    _cmd.on( 'close', ( code ) => {
+      if ( code !== 0 ) {
+        console.log( `[log] command exited with code ${code}: ${cmd} ${args.join( ' ' )}` );
+        reject( errData );
+      } else {
+        resolve( _data );
+      }
+    } );
+  } );
+}
