@@ -31,7 +31,7 @@ export class GitHubRepoDownloader {
 
   constructor( opts ) {
     const defaultOpts = {
-      cacheFolder : path.join( config.rootPath, 'cache' ),
+      cacheFolder : config.app.gitRepoCachePath,
       type : TYPE_UNKNOWN
     };
 

@@ -4,6 +4,7 @@ import performanceNow from 'performance-now';
 import _ from 'lodash';
 import { FLOGO_TASK_TYPE } from '../common/constants';
 import { spawn } from 'child_process';
+import { inspect } from 'util';
 
 export function btoa( str ) {
   var buffer;
@@ -401,4 +402,18 @@ export function gitUpdate( folderPath ) {
         reject( err );
       } );
   } );
+}
+
+/** *******
+ * Logging related utilities
+ */
+
+/**
+ * Inspect object using `util.inspect` of NodeJS
+ * Mainly for debugging only, SHOULD NOT be used in production.
+ *
+ * @param obj
+ */
+export function inspectObj( obj ) {
+  console.log( inspect( obj, { depth : 7, color : true } ) );
 }

@@ -1,11 +1,15 @@
 import {config, triggersDBService} from '../../config/app-config';
-import { TYPE_TRIGGER } from '../../common/constants';
+import { TYPE_TRIGGER, DEFAULT_PATH_TRIGGER } from '../../common/constants';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import _ from 'lodash';
+import path from 'path';
 
 let basePath = config.app.basePath;
 
-let remoteInstaller = new RemoteInstaller( TYPE_TRIGGER );
+let remoteInstaller = new RemoteInstaller( {
+  type : TYPE_TRIGGER,
+  registerPath : path.join( config.rootPath, DEFAULT_PATH_TRIGGER )
+} );
 
 export function triggers(app, router){
   if(!app){

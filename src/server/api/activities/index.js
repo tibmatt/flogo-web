@@ -1,11 +1,15 @@
 import {config, activitiesDBService} from '../../config/app-config';
-import { TYPE_ACTIVITY } from '../../common/constants';
+import { TYPE_ACTIVITY, DEFAULT_PATH_ACTIVITY } from '../../common/constants';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import _ from 'lodash';
+import path from 'path';
 
 let basePath = config.app.basePath;
 
-let remoteInstaller = new RemoteInstaller( TYPE_ACTIVITY );
+let remoteInstaller = new RemoteInstaller( {
+  type : TYPE_ACTIVITY,
+  registerPath : path.join( config.rootPath, DEFAULT_PATH_ACTIVITY )
+} );
 
 export function activities(app, router){
   if(!app){

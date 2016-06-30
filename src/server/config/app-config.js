@@ -17,7 +17,8 @@ let config = {
   app: {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
-    cacheTime: 7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
+    cacheTime: 7 * 24 * 60 * 60 * 1000, /* default caching time (7 days) for static files, calculated in milliseconds */
+    gitRepoCachePath : path.join( rootPath, 'git-cache' )
   },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",

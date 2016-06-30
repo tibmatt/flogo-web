@@ -6,21 +6,18 @@ import {
   SCHEMA_FILE_NAME_ACTIVITY,
   SCHEMA_FILE_NAME_TRIGGER
 } from '../../common/constants';
-import { activitiesDBService, triggersDBService } from '../../config/app-config';
+import { activitiesDBService, triggersDBService, config } from '../../config/app-config';
 import _ from 'lodash';
-import url from 'url';
-import https from 'https';
-import http from 'http';
 import path from 'path';
 import { BaseRegistered } from '../../modules/base-registered';
 import {
   readJSONFileSync,
   isGitHubURL,
   parseGitHubURL,
-  constructGitHubFileURI,
   constructGitHubPath,
   constructGitHubRepoURL,
-  isInGitHubRepo
+  isInGitHubRepo,
+  inspectObj
 } from '../../common/utils';
 import { GitHubRepoDownloader } from '../github-repo-downloader';
 
@@ -37,8 +34,14 @@ import { GitHubRepoDownloader } from '../github-repo-downloader';
  */
 export class RemoteInstaller {
 
-  constructor( type ) {
-    this.type = type || TYPE_UNKNOWN;
+  constructor( opts ) {
+    const defaultOpts = {
+      type : TYPE_UNKNOWN,
+      gitRepoCachePath : config.app.gitRepoCachePath, // location to cache the git repos.
+      registerPath : path.join( config.rootPath, `packages/defaults` ) // location to install the node packages. Will run `npm insatll` under it.
+    };
+
+    this.opts = _.assign( {}, defaultOpts, opts );
   }
 
   install( sourceURLs ) {
@@ -99,12 +102,18 @@ export class RemoteInstaller {
 
       let installPromise = null;
 
-      switch ( this.type ) {
+      switch ( this.opts.type ) {
         case TYPE_ACTIVITY:
-          installPromise = installActivityFromGitHub( sourceURLs );
+          installPromise = installActivityFromGitHub( {
+            sourceURLs,
+            gitRepoCachePath : this.opts.gitRepoCachePath
+          } );
           break;
         case TYPE_TRIGGER:
-          installPromise = installTriggerFromGitHub( sourceURLs );
+          installPromise = installTriggerFromGitHub( {
+            sourceURLs,
+            gitRepoCachePath : this.opts.gitRepoCachePath
+          } );
           break;
         default:
           throw new Error( 'Unknown Type' );
@@ -142,12 +151,19 @@ export class RemoteInstaller {
 // utility functions
 
 // install item from GitHub
-function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
+function installFromGitHub( opts ) {
 
-  const repoDownloader = new GitHubRepoDownloader( { type } );
+  // const opts = {
+  //   sourceURLs, schemaFileName, dbService, type
+  // };
+
+  const repoDownloader = new GitHubRepoDownloader( {
+    type : opts.type,
+    cacheFolder : opts.gitRepoCachePath
+  } );
 
   return repoDownloader.download(
-    _.map( sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
+    _.map( opts.sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
     .then( ( result )=> {
 
       // console.log( `[TODO] download result: ` );
@@ -160,7 +176,7 @@ function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
 
       // reduce the sourceURLs to a downloadResult
       // create raw data for further processing.
-      return _.reduce( sourceURLs, ( dlResult, sourceURL ) => {
+      return _.reduce( opts.sourceURLs, ( dlResult, sourceURL ) => {
 
         let repoPath = '';
         const githubInfo = parseGitHubURL( sourceURL );
@@ -190,7 +206,7 @@ function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
           const packageJSONPath = path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
             'package.json' );
           const schemaJSONPath = path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
-            schemaFileName );
+            opts.schemaFileName );
 
           try {
             // console.error( `[log] reading ${packageJSONPath}` );
@@ -241,7 +257,7 @@ function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
         return itemDict;
       }, {} );
 
-      return BaseRegistered.saveItems( dbService, itemsToSave, true )
+      return BaseRegistered.saveItems( opts.dbService, itemsToSave, true )
         .then( ( result ) => {
           return {
             saveResult : result,
@@ -273,15 +289,23 @@ function installFromGitHub( sourceURLs, schemaFileName, dbService, type ) {
 }
 
 // shorthand function to install triggers from GitHub
-function installTriggerFromGitHub( sourceURLs ) {
+function installTriggerFromGitHub( opts ) {
 
-  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_TRIGGER, triggersDBService, TYPE_TRIGGER );
+  return installFromGitHub( _.assign( {
+    schemaFileName : SCHEMA_FILE_NAME_TRIGGER,
+    dbService : triggersDBService,
+    type : TYPE_TRIGGER
+  }, opts ) );
 }
 
 // shorthand function to install activities from GitHub
-function installActivityFromGitHub( sourceURLs ) {
+function installActivityFromGitHub( opts ) {
 
-  return installFromGitHub( sourceURLs, SCHEMA_FILE_NAME_ACTIVITY, activitiesDBService, TYPE_ACTIVITY );
+  return installFromGitHub( _.assign( {
+    schemaFileName : SCHEMA_FILE_NAME_ACTIVITY,
+    dbService : activitiesDBService,
+    type : TYPE_ACTIVITY
+  }, opts ) );
 }
 
 function processItemFromGitHub( rawItemInfo ) {
