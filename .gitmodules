@@ -1,8 +1,7 @@
-[submodule "submodules/flogo-internal"]
-	path = submodules/flogo-internal
-	url = https://github.com/TIBCOSoftware/flogo-internal.git
-	ignore = all
 [submodule "submodules/flogo-contrib"]
 	path = submodules/flogo-contrib
 	url = https://github.com/TIBCOSoftware/flogo-contrib.git
 	ignore = all
+[submodule "submodules/flogo-services"]
+	path = submodules/flogo-services
+	url = https://github.com/TIBCOSoftware/flogo-services.git
