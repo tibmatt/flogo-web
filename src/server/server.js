@@ -10,7 +10,7 @@ import {api} from './api';
 
 import {RegisterActivities} from './modules/activities';
 import {RegisterTriggers} from './modules/triggers';
-import {Engine} from './modules/engine';
+import { getTestEngine, getBuildEngine } from './modules/engine';
 import path from 'path';
 
 // TODO Need to use cluster to improve the performance
@@ -22,17 +22,8 @@ api(app, router);
 
 
 if(!process.env['FLOGO_SKIP_PKG_INSTALL'] ) {
-  let testEngine = new Engine({
-    name: config.testEngine.name,
-    path: config.testEngine.path,
-    port: config.testEngine.port
-  });
-
-  let buildEngine = new Engine({
-    name: config.buildEngine.name,
-    path: config.buildEngine.path,
-    port: config.buildEngine.port
-  });
+  let testEngine = getTestEngine();
+  let buildEngine = getBuildEngine();
 
   let registerActivities  = new RegisterActivities(activitiesDBService, {
     defaultPath: path.resolve(config.rootPath, config.activities.defaultPath),

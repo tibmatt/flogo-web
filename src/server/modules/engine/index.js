@@ -502,3 +502,38 @@ export class Engine {
     }
   }
 }
+
+/**
+ * singleton engines
+ */
+
+let testEngine = null;
+let buildEngine = null;
+
+export function getTestEngine() {
+  if ( testEngine ) {
+    return testEngine;
+  }
+
+  testEngine = new Engine( {
+    name : config.testEngine.name,
+    path : config.testEngine.path,
+    port : config.testEngine.port
+  } );
+
+  return testEngine;
+}
+
+export function getBuildEngine() {
+  if ( buildEngine ) {
+    return buildEngine;
+  }
+
+  buildEngine = new Engine( {
+    name : config.buildEngine.name,
+    path : config.buildEngine.path,
+    port : config.buildEngine.port
+  } );
+
+  return buildEngine;
+}
