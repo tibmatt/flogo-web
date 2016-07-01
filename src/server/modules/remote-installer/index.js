@@ -17,7 +17,7 @@ import {
   constructGitHubPath,
   constructGitHubRepoURL,
   isInGitHubRepo,
-  inspectObj
+  runShellCMD
 } from '../../common/utils';
 import { GitHubRepoDownloader } from '../github-repo-downloader';
 
@@ -38,7 +38,8 @@ export class RemoteInstaller {
     const defaultOpts = {
       type : TYPE_UNKNOWN,
       gitRepoCachePath : config.app.gitRepoCachePath, // location to cache the git repos.
-      registerPath : path.join( config.rootPath, `packages/defaults` ) // location to install the node packages. Will run `npm insatll` under it.
+      registerPath : path.join( config.rootPath, `packages/defaults` ), // location to install the node packages. Will run `npm insatll` under it.
+      schemaRootFolderName : DEFAULT_SCHEMA_ROOT_FOLDER_NAME
     };
 
     this.opts = _.assign( {}, defaultOpts, opts );
@@ -101,19 +102,14 @@ export class RemoteInstaller {
       console.log( sourceURLs );
 
       let installPromise = null;
+      let opts = _.assign( { sourceURLs }, this.opts );
 
-      switch ( this.opts.type ) {
+      switch ( opts.type ) {
         case TYPE_ACTIVITY:
-          installPromise = installActivityFromGitHub( {
-            sourceURLs,
-            gitRepoCachePath : this.opts.gitRepoCachePath
-          } );
+          installPromise = installActivityFromGitHub( opts );
           break;
         case TYPE_TRIGGER:
-          installPromise = installTriggerFromGitHub( {
-            sourceURLs,
-            gitRepoCachePath : this.opts.gitRepoCachePath
-          } );
+          installPromise = installTriggerFromGitHub( opts );
           break;
         default:
           throw new Error( 'Unknown Type' );
@@ -185,6 +181,8 @@ function installFromGitHub( opts ) {
           sourceURL : sourceURL,
           package : '', // package.json, to be added later
           schema : '', // schema.json, activity.json or trigger.json, to be added later
+          downloaded : false,
+          installed : false,
           savedToDB : false
         };
 
@@ -203,9 +201,9 @@ function installFromGitHub( opts ) {
         // get package.json && schema.json
         if ( isAvailable && repoPath ) {
           const extraPath = githubInfo.extraPath || '';
-          const packageJSONPath = path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
+          const packageJSONPath = path.join( repoPath, extraPath, opts.schemaRootFolderName,
             'package.json' );
-          const schemaJSONPath = path.join( repoPath, extraPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME,
+          const schemaJSONPath = path.join( repoPath, extraPath, opts.schemaRootFolderName,
             opts.schemaFileName );
 
           try {
@@ -219,6 +217,9 @@ function installFromGitHub( opts ) {
           try {
             // console.error( `[log] reading ${schemaJSONPath}` );
             item.schema = readJSONFileSync( schemaJSONPath );
+
+            // at this step, should be save to mark the item has been downloaded.
+            item.downloaded = true;
           } catch ( e ) {
             console.error( `[error] reading ${schemaJSONPath}: ` );
             console.error( e );
@@ -241,6 +242,26 @@ function installFromGitHub( opts ) {
       } );
     } )
 
+    // install the given items using `npm` commands to the registered modules folder
+    .then( items => {
+      return sequentiallyInstall( items, {
+        registerPath : opts.registerPath,
+        // repo root folder including git repo cache root + type folder
+        repoRoot : path.join( opts.gitRepoCachePath, opts.type.toLocaleLowerCase() ),
+        schemaRootFolderName : opts.schemaRootFolderName
+      } );
+    } )
+
+    // update installation results in items.
+    .then( installedResult => {
+
+      return _.map( installedResult.items, ( item, idx ) => {
+        item.raw.installed = installedResult.results[ idx ];
+        return item;
+      } );
+
+    } )
+
     // save items to db
     .then( items => {
 
@@ -249,7 +270,8 @@ function installFromGitHub( opts ) {
       //    2. create a map
       let itemsToSave = _.reduce( items, ( itemDict, item ) => {
 
-        if ( !_.isNil( item.dbItem ) ) {
+        // only save the item has dbItem configuration and installed into the server's activity/trigger repo
+        if ( !_.isNil( item.dbItem ) && item.raw.installed ) {
           itemDict[ item.dbItem[ '_id' ] ] = item.dbItem;
           item.raw.savedToDB = true;
         }
@@ -331,4 +353,74 @@ function processItemFromGitHub( rawItemInfo ) {
   }
 
   return itemInfo;
+}
+/**
+ * Install the items sequentially using `npm install` command,
+ *
+ * Will resolve with the items passed into it, after job done.
+ * {
+ *  items: items,
+ *  result: installationResult
+ * }
+ *
+ * @param items
+ * @param opts
+ * @returns {Promise}
+ */
+function sequentiallyInstall( items, opts ) {
+
+  return new Promise( ( resolve, reject )=> {
+
+    let processedItemNum = 0;
+    let installedResult = [];
+
+    function _sequentiallyInstall() {
+
+      let item = items[ processedItemNum ];
+
+      if ( _.isNil( item ) ) {
+        throw new Error( `[error] cannot install item ${ processedItemNum } of ${ items }` );
+      }
+
+      let githubInfo = parseGitHubURL( item.raw.sourceURL );
+      let packagePath = path.join( opts.repoRoot, githubInfo.username, githubInfo.repoName,
+        githubInfo.extraPath, opts.schemaRootFolderName );
+
+      processedItemNum++;
+
+      let promise = null;
+
+      // if the repo is available, run `npm install` command for it.
+      if ( item.raw.downloaded ) {
+        promise = runShellCMD( 'npm', [ 'i', '-S', packagePath ], { cwd : opts.registerPath } );
+      } else {
+        promise = Promise.resolve( false );
+      }
+
+      return promise.then( ( result )=> {
+        if ( result !== false && !_.isNil( result ) ) {
+          installedResult.push( true );
+        } else {
+          installedResult.push( false );
+        }
+
+        if ( processedItemNum >= items.length ) {
+          resolve( {
+            items,
+            results : installedResult
+          } );
+        } else {
+          return _sequentiallyInstall();
+        }
+      } );
+    }
+
+    _sequentiallyInstall()
+      .catch( ( err )=> {
+        console.log( `[TODO] sequentiallyInstall on error: ` );
+        console.error( err );
+        reject( err );
+      } )
+
+  } )
 }
