@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {ROUTER_DIRECTIVES, RouteConfig} from 'angular2/router';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, RouteConfig} from '@angular/router-deprecated';
 import {FlogoNavbarComponent} from './navbar.component';
 import {FlogoFlowsComponet} from '../../flogo.flows/components/flows.component';
 import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.component';
@@ -7,12 +7,12 @@ import {FlogoFormBuilderComponent} from "../../flogo.form-builder/components/for
 import {PostService} from '../../../common/services/post.service';
 import { FlogoDBService } from '../../../common/services/db.service';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
-import { HTTP_PROVIDERS } from 'angular2/http';
+import { HTTP_PROVIDERS } from '@angular/http';
 import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
-import { Flogo_ConfigComponent } from '../../flogo._config/components/_config.components';
+import { FlogoConfigComponent } from '../../flogo.config/components/config.component';
 
 @Component({
   selector: 'flogo-app',
@@ -42,7 +42,7 @@ import { Flogo_ConfigComponent } from '../../flogo._config/components/_config.co
   // TODO
   //  temp config page to change server URL settings
   {
-    path: '/_config', name: "FlogoDevConfig", component:Flogo_ConfigComponent
+    path: '/_config', name: "FlogoDevConfig", component:FlogoConfigComponent
   },
 ])
 

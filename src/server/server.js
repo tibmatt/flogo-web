@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
@@ -19,89 +20,94 @@ let port = config.app.port;
 
 api(app, router);
 
-let testEngine = new Engine({
-  name: config.testEngine.name,
-  path: config.testEngine.path,
-  port: config.testEngine.port
-});
 
-let buildEngine = new Engine({
-  name: config.buildEngine.name,
-  path: config.buildEngine.path,
-  port: config.buildEngine.port
-});
+if(!process.env['FLOGO_SKIP_PKG_INSTALL'] ) {
+  let testEngine = new Engine({
+    name: config.testEngine.name,
+    path: config.testEngine.path,
+    port: config.testEngine.port
+  });
 
-let registerActivities  = new RegisterActivities(activitiesDBService, {
-  defaultPath: path.resolve(config.rootPath, config.activities.defaultPath),
-  defaultConfig: config.activities.default,
-  customPath: path.resolve(config.rootPath, config.activities.contribPath),
-  customConfig: config.activities.contrib
-});
+  let buildEngine = new Engine({
+    name: config.buildEngine.name,
+    path: config.buildEngine.path,
+    port: config.buildEngine.port
+  });
 
-let registerTriggers  = new RegisterTriggers(triggersDBService, {
-  defaultPath: path.resolve(config.rootPath, config.triggers.defaultPath),
-  defaultConfig: config.triggers.default,
-  customPath: path.resolve(config.rootPath, config.triggers.contribPath),
-  customConfig: config.triggers.contrib
-});
+  let registerActivities  = new RegisterActivities(activitiesDBService, {
+    defaultPath: path.resolve(config.rootPath, config.activities.defaultPath),
+    defaultConfig: config.activities.default,
+    customPath: path.resolve(config.rootPath, config.activities.contribPath),
+    customConfig: config.activities.contrib
+  });
+
+  let registerTriggers  = new RegisterTriggers(triggersDBService, {
+    defaultPath: path.resolve(config.rootPath, config.triggers.defaultPath),
+    defaultConfig: config.triggers.default,
+    customPath: path.resolve(config.rootPath, config.triggers.contribPath),
+    customConfig: config.triggers.contrib
+  });
 
 //
-let PromiseAll = [];
-let activityPromise = new Promise((resolve, reject)=>{
-  registerActivities.register().then(()=>{
-    console.log("[success]registerActivities success");
-    resolve(true);
-  }).catch((err)=>{
-    console.log("[error]registerActivities error");
-    reject(err);
-  });
-});
-
-PromiseAll.push(activityPromise);
-
-let triggerPromise = new Promise((resolve, reject)=>{
-  registerTriggers.register().then(()=>{
-    console.log("[success]registerTriggers success");
-    resolve(true);
-  }).catch((err)=>{
-    console.log("[error]registerTriggers error");
-    reject(err);
-  });
-});
-
-PromiseAll.push(triggerPromise);
-
-Promise.all(PromiseAll).then(()=>{
-  testEngine.addAllActivities().then(()=>{
-    return testEngine.addAllTriggers(config.testEngine.installConfig);
-  }).then(()=>{
-    // update config.json, use overwrite mode
-    testEngine.updateConfigJSON(config.testEngine.config, true);
-    // update triggers.json
-    testEngine.updateTriggerJSON({
-      "triggers": config.testEngine.triggers
+  let PromiseAll = [];
+  let activityPromise = new Promise((resolve, reject)=>{
+    registerActivities.register().then(()=>{
+      console.log("[success]registerActivities success");
+      resolve(true);
+    }).catch((err)=>{
+      console.log("[error]registerActivities error");
+      reject(err);
     });
-    testEngine.build();
-    //console.log("[info] finish build");
-    testEngine.start();
-    //console.log("[info] finish start");
-    buildEngine.addAllActivities().then(()=>{
-      buildEngine.addAllTriggers(config.buildEngine.installConfig).then(()=>{
-        engines.build = buildEngine;
-        engines.test = testEngine;
+  });
 
-        console.log("=============================================================================================");
-        console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
-        console.log("=============================================================================================");
+  PromiseAll.push(activityPromise);
+
+  let triggerPromise = new Promise((resolve, reject)=>{
+    registerTriggers.register().then(()=>{
+      console.log("[success]registerTriggers success");
+      resolve(true);
+    }).catch((err)=>{
+      console.log("[error]registerTriggers error");
+      reject(err);
+    });
+  });
+
+  PromiseAll.push(triggerPromise);
+
+  Promise.all(PromiseAll).then(()=>{
+    testEngine.addAllActivities().then(()=>{
+      return testEngine.addAllTriggers(config.testEngine.installConfig);
+    }).then(()=>{
+      // update config.json, use overwrite mode
+      testEngine.updateConfigJSON(config.testEngine.config, true);
+      // update triggers.json
+      testEngine.updateTriggerJSON({
+        "triggers": config.testEngine.triggers
       });
-    });
-  }).catch((err)=>{
+      testEngine.build();
+      //console.log("[info] finish build");
+      testEngine.start();
+      //console.log("[info] finish start");
+      buildEngine.addAllActivities().then(()=>{
+        buildEngine.addAllTriggers(config.buildEngine.installConfig).then(()=>{
+          engines.build = buildEngine;
+          engines.test = testEngine;
+          showInitBanner();
+        });
+      });
+    }).catch((err)=>{
 
+    });
+
+  }).catch((err)=>{
+    console.log(err);
   });
 
-}).catch((err)=>{
-  console.log(err);
-});
+}else {
+  showInitBanner();
+}
+
+
 
 // make sure deep link it works
 app.use(function *(next){
@@ -145,5 +151,12 @@ app.use(function *(next){
   console.log(this.body);
   console.log(this.request.body);
 });
+
+
+function showInitBanner() {
+  console.log("=============================================================================================");
+  console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
+  console.log("=============================================================================================");
+}
 
 app.listen(port);

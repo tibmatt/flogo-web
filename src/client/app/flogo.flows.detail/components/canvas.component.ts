@@ -1,5 +1,5 @@
-import { Component } from 'angular2/core';
-import { RouteConfig, RouterOutlet, RouteParams, Router } from 'angular2/router';
+import { Component } from '@angular/core';
+import { RouteConfig, RouterOutlet, RouteParams, Router } from '@angular/router-deprecated';
 import {PostService} from '../../../common/services/post.service';
 import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
 import {FlogoFlowsDetail} from './flow-detail.component';
@@ -11,7 +11,8 @@ import {TransformComponent as FlogoTransformComponent} from '../../flogo.transfo
 
 import {
   IFlogoFlowDiagramTaskDictionary,
-  IFlogoFlowDiagram
+  IFlogoFlowDiagram,
+  IFlogoFlowDiagramTask
 } from '../../../common/models';
 
 import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
@@ -32,7 +33,7 @@ import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagra
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
-  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID
+  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
 } from '../../../common/utils';
 
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
@@ -57,8 +58,11 @@ import { FlogoModal } from '../../../common/services/modal.service';
 ])
 
 export class FlogoCanvasComponent {
+  downloadLink: string;
+
   _subscriptions : any[];
 
+  _id: any;
   _flowID: string;
   _currentProcessID: string;
   _isCurrentProcessDirty = true;
@@ -209,7 +213,7 @@ export class FlogoCanvasComponent {
 
   private changeFlowDetail($event, property) {
     return new Promise((resolve, reject)=>{
-      this._updateFlow(this._flow).then((response)=>{
+      this._updateFlow(this._flow).then((response:any)=>{
         notification(`Update flow's ${property} successfully!`,'success', 3000);
         resolve(response);
       }).catch((err)=>{
@@ -404,8 +408,6 @@ export class FlogoCanvasComponent {
           this._startingProcess = false;
           console.error( err );
           throw err;
-
-          return err;
         }
       );
   }
@@ -663,6 +665,9 @@ export class FlogoCanvasComponent {
                 runTasksIDs: runTasksIDs
               });
 
+              // update branch run status after apply the other status.
+              updateBranchNodesRunStatus(this.diagram.nodes, this.tasks);
+
               this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
               // when the flow is done on error, throw an error
@@ -754,8 +759,6 @@ export class FlogoCanvasComponent {
             this._restartingProcess = false;
             console.error( err );
             throw err;
-
-            return err;
           }
         );
     } else {
@@ -797,7 +800,7 @@ export class FlogoCanvasComponent {
 
     // generate trigger id when adding the trigger;
     //  TODO replace the task ID generation function?
-    let trigger = _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
+    let trigger = <IFlogoFlowDiagramTask> _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
 
     this.tasks[ trigger.id ] = trigger;
 
@@ -860,7 +863,7 @@ export class FlogoCanvasComponent {
     let taskName = this.uniqueTaskName(data.task.name);
 
     // generate task id when adding the task
-    let task = _.assign( {},
+    let task = <IFlogoFlowDiagramTask> _.assign( {},
       data.task,
       {
         id : flogoGenTaskID( this.tasks ),

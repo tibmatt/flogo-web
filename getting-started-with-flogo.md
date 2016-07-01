@@ -57,10 +57,12 @@ After you start successful, you can use `curl http://localhost:9190/instances` t
 
 ## Start flogo-web
 1. `npm install`
-2. `gulp`
+2. `gulp dev`
 
 After start successful, then you can go to [http://localhost:3010](http://localhost:3010)
 
+# gulp tasks
+Run `gulp help` for a list of available tasks.
 
 
 

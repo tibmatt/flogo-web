@@ -1,5 +1,7 @@
-import {Component} from 'angular2/core';
-import {ROUTER_DIRECTIVES, Router} from 'angular2/router';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, Router} from '@angular/router-deprecated';
+//import * as moment from 'moment';
+
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
 import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
@@ -28,7 +30,7 @@ export class FlogoFlowsComponet{
         private _flow:RESTAPIFlowsService,
         private _postService: PostService,
         private _flogoModal: FlogoModal,
-        private _router: Router,
+        private _router: Router
     ){
         this.getAllFlows();
         this.initSubscribe();
@@ -102,7 +104,7 @@ export class FlogoFlowsComponet{
     }
     getAllFlows(){
         return new Promise((resolve, reject)=>{
-            this._flow.getFlows().then((response)=>{
+            this._flow.getFlows().then((response:any)=>{
                 if(typeof response !== 'object'){
                     response = JSON.parse(response);
                 }
@@ -111,8 +113,8 @@ export class FlogoFlowsComponet{
                 this.flows.forEach((flow) => {
                     let time = new Date(flow.created_at);
                     time = new Date(time.getTime());
-                    time = ''+time.getFullYear()+this._toDouble(time.getMonth()+1)+this._toDouble(time.getDate())+' '+ this._toDouble(time.getHours())+':'+this._toDouble(time.getMinutes())+':'+this._toDouble(time.getSeconds());
-                    flow.created_at = moment(time, 'YYYYMMDD hh:mm:ss').fromNow();
+                    let timeStr = ''+time.getFullYear()+this._toDouble(time.getMonth()+1)+this._toDouble(time.getDate())+' '+ this._toDouble(time.getHours())+':'+this._toDouble(time.getMinutes())+':'+this._toDouble(time.getSeconds());
+                    flow.created_at = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
                 });
                 resolve(response);
             }).catch((err)=>{

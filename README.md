@@ -23,6 +23,16 @@ If start successful, it you can see following output
 =============================================================================================
 ```
 
+# Run in development mode
+Run `./start.sh dev` to start the development mode. Files will be watched for changes to automatically update the running environment.
+
+**Note** browser will be automatically opened **but** you have to wait for the following message in the console to navigate the web app:
+
+```
+=============================================================================================
+[success] open http://localhost:3010 or http://localhost:3010/_config in your browser
+=============================================================================================
+```
 
 # flogo-web
 Flogo web include flogo front-end and flogo design time server
@@ -41,7 +51,4 @@ Flogo web include flogo front-end and flogo design time server
 ## upcoming features
 
 1. Production vs Dev mode
-
-2. Auto reload web application
-
-3. flogo engine auto restart
+1. flogo engine auto restart

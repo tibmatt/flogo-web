@@ -1,4 +1,15 @@
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, DEFAULT_VALUES_OF_TYPES, FLOGO_AUTOMAPPING_FORMAT } from './constants';
+import {
+  FLOGO_TASK_TYPE,
+  FLOGO_TASK_ATTRIBUTE_TYPE,
+  DEFAULT_VALUES_OF_TYPES,
+  FLOGO_AUTOMAPPING_FORMAT
+} from './constants';
+import {
+  FlogoFlowDiagram,
+  IFlogoFlowDiagramNodeDictionary,
+  IFlogoFlowDiagramTaskDictionary,
+  IFlogoFlowDiagramNode
+} from '../app/flogo.flows.detail.diagram/models';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
@@ -103,7 +114,7 @@ function portAttribute( inAttr : {
 }, withDefault = false ) {
 
   let outAttr = <{
-    type : FLOGO_TASK_ATTRIBUTE_TYPE;
+    type : any;
     value : any;
     [key : string] : any;
   }>_.assign( {}, inAttr );
@@ -330,10 +341,9 @@ export function genBranchLine( opts? : any ) : any {
   let barWidth = _.get( opts, 'barSize', 26 );
   let translate = _.get( opts, 'translate', [ 2, 2 ] );
 
-  let SUPPORTED_STATES = [ 'default', 'hover', 'selected' ];
+  let SUPPORTED_STATES = [ 'default', 'hover', 'selected', 'run' ];
 
-  let filters = <any>{
-    'default' : `
+  const DEFAULT_FILTER = `
       <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1">
           <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
           <feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
@@ -343,7 +353,10 @@ export function genBranchLine( opts? : any ) : any {
               <feMergeNode in="SourceGraphic"></feMergeNode>
           </feMerge>
       </filter>
-    `.trim(),
+    `.trim();
+
+  let filters = <any>{
+    'default' : DEFAULT_FILTER,
     'hover' : `
       <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1">
           <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
@@ -365,7 +378,8 @@ export function genBranchLine( opts? : any ) : any {
               <feMergeNode in="SourceGraphic"></feMergeNode>
           </feMerge>
       </filter>
-    `.trim()
+    `.trim(),
+    'run': DEFAULT_FILTER
   };
 
   let fills = <any>{
@@ -381,7 +395,8 @@ export function genBranchLine( opts? : any ) : any {
           <stop stop-color="#C2C5DA" offset="100%"></stop>
       </linearGradient>
     `.trim(),
-    'selected' : ``.trim()
+    'selected' : '',
+    'run' : ''
   };
 
   let path = genBranchArrow(
@@ -416,6 +431,17 @@ export function genBranchLine( opts? : any ) : any {
     'selected' : `
       <g id="Spec" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(${translate[ 0 ]}, ${translate[ 1 ]})">
           <g id="Flogo_Branch-Configure-1" fill="#8A90AE">
+              <g id="branches">
+                  <g id="branch-1">
+                      <path d="${path}" id="Combined-Shape" filter="url(#filter-1)"></path>
+                  </g>
+              </g>
+          </g>
+      </g>
+    `.trim(),
+    'run' : `
+      <g id="Spec" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(${translate[ 0 ]}, ${translate[ 1 ]})">
+          <g id="Flogo_Branch-Configure-1" fill="#DEF2FD">
               <g id="branches">
                   <g id="branch-1">
                       <path d="${path}" id="Combined-Shape" filter="url(#filter-1)"></path>
@@ -462,7 +488,7 @@ export function parseMapping(automapping:string){
   let path = matches[4] ? _.trimStart(matches[4], '.') : null;
 
   return {
-    autoMap: `[${matches[1]}.${attributeName}]`,
+    autoMap: `{${matches[1]}.${attributeName}}`,
     isRoot: !taskId,
     taskId,
     attributeName,
@@ -641,14 +667,14 @@ export function notification(message: string, type: string, time?: number, setti
     `
   }
   template += '</div>';
-  let notificationContainer = window.jQuery('body > .flogo-common-notification-container');
+  let notificationContainer = jQuery('body > .flogo-common-notification-container');
   if(notificationContainer.length) {
     notificationContainer.append(template);
   } else {
-    window.jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
+    jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
-  let notification = window.jQuery('.flogo-common-notification-container>div:last');
-  let notifications =  window.jQuery('.flogo-common-notification-container>div');
+  let notification = jQuery('.flogo-common-notification-container>div:last');
+  let notifications =  jQuery('.flogo-common-notification-container>div');
   let maxCounter = 5;
 
   if(notifications.length > 5) {
@@ -683,4 +709,17 @@ export function attributeTypeToString( inType : any ) : string {
   }
 
   return (FLOGO_TASK_ATTRIBUTE_TYPE[inType] || 'string').toLowerCase();
+}
+
+export function updateBranchNodesRunStatus( nodes : IFlogoFlowDiagramNodeDictionary,
+  tasks : IFlogoFlowDiagramTaskDictionary ) {
+
+  _.forIn( nodes, ( node : IFlogoFlowDiagramNode ) => {
+    const task = tasks[ node.taskID ];
+
+    if ( task.type === FLOGO_TASK_TYPE.TASK_BRANCH ) {
+      _.set( task, '__status.hasRun', FlogoFlowDiagram.hasBranchRun( node, tasks, nodes ) );
+    }
+  } );
+
 }

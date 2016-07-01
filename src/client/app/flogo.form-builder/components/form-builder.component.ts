@@ -1,5 +1,5 @@
-import { Component, SimpleChange } from 'angular2/core';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import { Component, SimpleChange } from '@angular/core';
+import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {PostService} from '../../../common/services/post.service';
 import {BehaviorSubject, ReplaySubject} from 'rxjs/Rx';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
@@ -11,13 +11,16 @@ import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
 import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 import {Contenteditable} from '../../../common/directives/contenteditable.directive';
+import {FlogoFormBuilderConfigurationTriggerComponent as TriggersDirective} from '../../flogo.form-builder.configuration.trigger/components/form-builder.configuration.trigger.component';
+import {FlogoFormBuilderConfigurationTaskComponent as TaskDirective} from '../../flogo.form-builder.configuration.task/components/form-builder.configuration.task.component';
+import {FlogoFormBuilderConfigurationBranchComponent as BranchDirective} from '../../flogo.form-builder.configuration.branch/components/form-builder.configuration.branch.component';
 
 @Component({
   selector: 'flogo-form-builder',
   moduleId: module.id,
   styleUrls: ['form-builder.css'],
   templateUrl: 'form-builder.tpl.html',
-  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldParams, Contenteditable],
+  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldParams, Contenteditable, TriggersDirective, TaskDirective, BranchDirective],
   inputs: ['_task:task','_step:step', '_context:context']
 })
 export class FlogoFormBuilderComponent{
@@ -87,12 +90,6 @@ export class FlogoFormBuilderComponent{
     }));
 
 
-  }
-
-  getStructureFromAttributes(structure:string) {
-    var returnValue =  _.get(this._attributes, structure, []);
-
-    return this._getArray(returnValue);
   }
 
   /*
@@ -307,156 +304,6 @@ export class FlogoFormBuilderComponent{
     ];
   }
 
-  getControlByType(type:string) {
-
-    switch(this._mapTypeToConstant(type)) {
-
-      case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
-        return {control: 'FieldTextBox'};
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
-        return {control:'FieldNumber'};
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
-        return {control:'FieldRadio'};
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
-        return {control:'FieldTextArea'};
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-        return {control:'FieldParams'};
-
-      default:
-        return {control:'TextBox'};
-    }
-
-  }
-
-  _mapTypeToConstant(type:string|FLOGO_TASK_ATTRIBUTE_TYPE) {
-
-    switch(type) {
-      case 'string':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
-
-      case 'number':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER;
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
-      case 'boolean':
-        return FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN;
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
-      case 'object':
-        return FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT;
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-      case 'map':
-      case 'params':
-        return FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS;
-
-      default:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
-    }
-  }
-
-  getBranchInfo( branchInfo : any ) {
-    var info = {
-      name:       'condition',
-      id:         branchInfo.id,
-      title:      'If',
-      value:      branchInfo.condition,
-      required:   true,
-      placeholder: '',
-      isBranch:   true,
-      isTrigger: false,
-      isTask: false
-    };
-
-    return info;
-  }
-
-  getTriggerInfo(input:any, direction:string, structure:string) {
-    var info = {
-      name:       input.name,
-      type:       input.type,
-      title:      input.title || input.name || '',
-      value:      input.value,
-      mappings:   input.mappings,
-      step:       input.step,
-      validation: input.validation,
-      validationMessage: input.validationMessage,
-      required:   input.required || false,
-      placeholder: input.placeholder || '',
-      isTask: false,
-      isTrigger:  true,
-      isBranch:   false,
-      direction: direction || '',
-      structure: structure || ''
-    };
-
-
-    return _.assign({}, info, this.getControlByType(input.type));
-  }
-
-
-  getTaskInfo(input:any, direction:string, structure:string) {
-    var info = {
-      name:       input.name,
-      type:       input.type,
-      title:      input.title || input.name || '',
-      value:      input.value,
-      mappings:   input.mappings,
-      step:       input.step,
-      validation: input.validation,
-      validationMessage: input.validationMessage,
-      required:   input.required || false,
-      placeholder: input.placeholder || '',
-      isTrigger:  false,
-      isBranch:   false,
-      isTask: true,
-      direction: direction,
-      structure: structure
-    };
-
-    if(!this._context.isTrigger) {
-      info.value = this._getMappingValue(info);
-    }
-
-    return _.assign({}, info, this.getControlByType(input.type));
-  }
-
-  _getMappingValue(info:any) {
-    // if there is results
-    let resultValue : any = null;
-    if(info.step) {
-      let taskId = convertTaskID(this._task.id);
-      if (info.direction === 'output') {
-        resultValue = _.find(info.step.flow.attributes, (attr:any) => attr.name == `[A${taskId}.${info.name}]`)
-      } else {
-        // TODO support map to nested attributes
-        let mapping = _.find(info.mappings, (mapping:any) => mapping.mapTo === info.name);
-        let parsedMapping = mapping ? parseMapping(mapping.value) : null;
-        if(parsedMapping) {
-          let resultHolder = _.find(info.step.flow.attributes, (attr:any) => {
-            return attr.name == parsedMapping.autoMap;
-          });
-          if(resultHolder) {
-            if(parsedMapping.path) {
-              resultValue = {
-                value: _.get(resultHolder.value, parsedMapping.path)
-              };
-            } else {
-              resultValue = resultHolder;
-            }
-          }
-        }
-      }
-    }
-    return resultValue ? resultValue.value : info.value;
-  }
-
   _getArray(obj:any) {
 
     if(!Array.isArray(obj)) {
@@ -561,7 +408,7 @@ export class FlogoFormBuilderComponent{
     let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel})`; // T | A3
     let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
 
-    let reProp = `(?:\\$\\[${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\])((?:\\.${reComPropNameWithoutQuote})*)`;
+    let reProp = `(?:\\$\\{${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\})((?:\\.${reComPropNameWithoutQuote})*)`;
 
     let pattern = new RegExp(reProp.replace(/\s/g, ''), 'g');
 
@@ -617,7 +464,7 @@ export class FlogoFormBuilderComponent{
   convertBranchConditionToInternal( condition : string, tiles : any[] ) : string {
     // display format sample: query-a-pet.result.code == 1
     // internal format sample: $[A<taskID>.result].code == 1;
-    
+
     // ensure condition is in string format
     condition = '' + condition;
 
@@ -670,10 +517,10 @@ export class FlogoFormBuilderComponent{
 
           if ( firstProp ) {
             return _propPath.length ?
-                   `$[${taskName}.${firstProp}].${_propPath.join( '.' )}` :
-                   `$[${taskName}.${firstProp}]`;
+                   `$\{${taskName}.${firstProp}\}.${_propPath.join( '.' )}` :
+                   `$\{${taskName}.${firstProp}\}`;
           } else {
-            return `$[${taskName}]`;
+            return `$\{${taskName}\}`;
           }
         } else {
           return match;

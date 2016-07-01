@@ -88,21 +88,20 @@ rm_rf(){
 }
 
 remove_flogo(){
-
   echoInfo "Start remove flogo command"
   # remove flogo command
-  rm_rf "${GOPATH}/bin/flogo"
+  rm_rf "${GOPATH}/bin/flogo-cli"
   # remove flogo pkg
-  rm_rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/pkg/$(go run scripts/detect-arch.go)/github.com/TIBCOSoftware/flogo-cli"
   # remove flogo src
-  rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo"
+  rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo-cli"
   echoInfo "Finish remove flogo command"
 }
 
 update_flogo(){
   echoInfo "Start update flogo command"
   remove_flogo
-  go get github.com/TIBCOSoftware/flogo/...
+  go get github.com/TIBCOSoftware/flogo-cli/...
   echoInfo "Finish update flogo command"
 }
 
@@ -158,7 +157,7 @@ update_flogo
 #############################
 # Step 2: update submodule
 #############################
-echoHeader "Step2: update submodule: flogo-internal, flogo-contrib"
+echoHeader "Step2: update submodules: flogo-contrib, flogo-services"
 rm -rf submodules/
 git submodule update --init --remote
 
@@ -170,7 +169,7 @@ echoSuccess "update submodule\n"
 echoHeader "Step3: start process and state server"
 
 echoInfo " setup docker"
-cd "${FLOGO_INTERNAL_PATH}/utils/flow-demo/cli/setup"
+cd scripts/setup
 sh setup-docker.sh
 
 echoInfo "stop process and state server"
@@ -195,4 +194,11 @@ sh start-services.sh &
 echoHeader "Step4: start flogo-web"
 cd $CURRENT_PATH
 npm install
-npm start
+if [ "$1" = "dev" ]
+then
+  echo "Running dev env"
+  gulp dev
+else
+  echo "Running prod env"
+  npm start
+fi

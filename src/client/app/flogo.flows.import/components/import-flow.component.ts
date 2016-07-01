@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter } from 'angular2/core';
+import { Component, ElementRef, EventEmitter } from '@angular/core';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { notification } from '../../../common/utils';
 
@@ -11,8 +11,8 @@ import { notification } from '../../../common/utils';
 } )
 export class FlogoFlowsImport {
   private _elmRef : ElementRef;
-  private onError : EventEmitter;
-  private onSuccess : EventEmitter;
+  private onError : EventEmitter<any>;
+  private onSuccess : EventEmitter<any>;
 
   constructor( elementRef : ElementRef, private _flowsAPIs : RESTAPIFlowsService ) {
     this._elmRef = elementRef;
@@ -21,7 +21,7 @@ export class FlogoFlowsImport {
   }
 
   private selectFile( evt : any ) {
-    let fileElm = $( this._elmRef.nativeElement )
+    let fileElm = jQuery( this._elmRef.nativeElement )
       .find( '.flogo-flows-import-input-file' );
 
     // clean the previous selected file

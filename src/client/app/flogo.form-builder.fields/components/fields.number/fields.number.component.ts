@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
 
 @Component({
@@ -11,11 +11,12 @@ import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
   inputs:['_info:info','_fieldObserver:fieldObserver']
 })
 
-export class FlogoFormBuilderFieldsNumber extends FlogoFormBuilderFieldsBase{
+export class FlogoFormBuilderFieldsNumber extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any
 
   constructor() {
+    super();
   }
 
 }

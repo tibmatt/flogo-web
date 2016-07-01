@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef, OnDestroy, HostListener} from 'angular2/core';
+import {Component, ViewChild, ElementRef, OnDestroy, HostListener} from '@angular/core';
 
 import {PostService} from '../../../common/services/post.service';
 
@@ -197,7 +197,7 @@ export class TransformComponent implements OnDestroy {
       let property = matches[3];
       let path = taskInfo.isRoot ? `T.${property}` : `A${taskInfo.id}.${property}`;
       let rest = matches[4] || '';
-      mapping.value = `[${path}]${rest}`;
+      mapping.value = `{${path}}${rest}`;
     });
 
     return mappings;

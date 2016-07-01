@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from 'angular2/core';
+import { Injectable, NgZone } from '@angular/core';
 import { activitySchemaToTask, getDBURL } from '../utils';
 import { activitySchemaToTrigger } from '../utils';
 
@@ -6,11 +6,11 @@ import { activitySchemaToTrigger } from '../utils';
 export class FlogoDBService{
 
   // PouchDB instance
-  private _db:PouchDB;
-  private _activitiesDB: PouchDB;
-  private _triggersDB: PouchDB;
-  private _sync:Object;
-  private _syncActivities: Object;
+  private _db:pouchdb.thenable.PouchDB;
+  private _activitiesDB:pouchdb.thenable.PouchDB;
+  private _triggersDB:pouchdb.thenable.PouchDB;
+  private _sync:any;
+  private _syncActivities: any;
   public PREFIX_AUTO_GENERATE:string = 'auto-generate-id';
   public FLOW:string = 'flows';
   public DIAGRAM:string = 'diagram';
@@ -46,7 +46,7 @@ export class FlogoDBService{
     this._activitiesDB = new PouchDB( getDBURL( activitiesDBConfig ) );
     this._activitiesDB.info().then(function(db){
       console.log('[DB] Activities: ', db);
-    }).catch(function(err:Object){
+    }).catch(function(err:any){
       console.error(err);
     });
 
@@ -54,7 +54,7 @@ export class FlogoDBService{
     this._triggersDB = new PouchDB( getDBURL( triggersDBConfig ) );
     this._triggersDB.info().then(function(db){
       console.log('[DB] Triggers: ', db);
-    }).catch(function(err:Object){
+    }).catch(function(err:any){
       console.error(err);
     });
 
@@ -63,7 +63,7 @@ export class FlogoDBService{
     // create db in browser
     this._db.info().then(function(db){
       console.log('[DB] Application: ', db);
-    }).catch(function(err:Object){
+    }).catch(function(err:any){
       console.error(err);
     });
 
@@ -122,7 +122,7 @@ export class FlogoDBService{
   /**
    * generate a unique id
    */
-  generateID(userID: string): string{
+  generateID(userID: string = undefined): string{
     // if userID isn't passed, then use default 'flogoweb'
     if(!userID){
       // TODO for now, is optional. When we implement user login, then this is required
@@ -139,7 +139,7 @@ export class FlogoDBService{
    * generate an id of flow
    * @param {string} [userID] - the id of currently user.
    */
-  generateFlowID(userID: string): string{
+  generateFlowID(userID?: string): string{
     // if userID isn't passed, then use default 'flogoweb'
     if(!userID){
       // TODO for now, is optional. When we implement user login, then this is required
@@ -155,9 +155,9 @@ export class FlogoDBService{
 
   /**
    * create a doc to db
-   * @param {Object} doc
+   * @param {any} doc
    */
-  create(doc: Object): Object{
+  create(doc: any): any{
     return new Promise((resolve, reject)=>{
       if(!doc) reject("Please pass doc");
 
@@ -187,9 +187,9 @@ export class FlogoDBService{
 
   /**
    * update a doc
-   * @param {Object} doc
+   * @param {any} doc
    */
-  update(doc: Object): Object{
+  update(doc: any): any{
     return new Promise((resolve, reject)=>{
       if(!doc) reject("Please pass doc");
 
@@ -230,7 +230,7 @@ export class FlogoDBService{
     });
   }
 
-  allDocs(options:Object){
+  allDocs(options:any) : Promise<{rows?: any}> {
     return new Promise((resolve, reject)=>{
       this._db.allDocs(options).then((response)=>{
         console.log("[allDocs]response: ", response);
@@ -282,13 +282,13 @@ export class FlogoDBService{
     return this._db.get( id );
   }
 
-  // force to retrieve all of the activities without number limitation
   getAllActivities() {
-    return this.getActivities(false);
-  }
+    // force to retrieve all of the activities without number limitation
+    return this.getActivities(Infinity);
+      }
 
   // retrieve all of the activities with limit up to 200
-  getActivities( limit = 200 ) {
+  getActivities( limit : number = 200 ) {
     // TODO
     //  currently due to DB sync issue, force to sync the local DB with remote each time querying all activities
     let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
