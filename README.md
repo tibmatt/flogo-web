@@ -1,21 +1,20 @@
 
+
 ** For currently, the start.sh works on Mac OS **
 
 # Prepare
-1. [Install `Go`](https://golang.org/doc/install). Don't forget to setup your `$GOPATH`, you can following [Test your installation](https://golang.org/doc/install#testing), and add `$GOPATH/bin` to your path
-1. [Install `gb`](https://getgb.io/docs/install/)
-1. [Install `git`](https://git-scm.com/)
-1. [Install `node`](https://nodejs.org/en/download/). Suggest you to download LTS version
+Find requirements and setup instructions in [getting stated guide](getting-started-with-flogo.md).
 
+# Run the application
 
-# Getting started
+## In production mode
 
-1. `git status` // to check the branch
-2. `git pull --rebase`
-3. `git checkout develop`
-4. `./start.sh`
+1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
+1. Run `git status` // to make sure you're in master branch
+1. Run `git pull --rebase` // to download the latest changes
+1. Run `./start.sh`
 
-If start successful, it you can see following output
+Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
 
 ```
 =============================================================================================
@@ -23,17 +22,22 @@ If start successful, it you can see following output
 =============================================================================================
 ```
 
-# Run in development mode
-Run `./start.sh dev` to start the development mode. Files will be watched for changes to automatically update the running environment.
+## Run in development mode
 
-**Note** browser will be automatically opened **but** you have to wait for the following message in the console to navigate the web app:
+In this mode files will be watched for changes to automatically update the running environment.
+
+1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
+1. Run `git status` // to make sure you're in master branch
+1. Run `git pull --rebase` // to download the latest changes
+1. Run `./start.sh dev`
+
+Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser (use localhost:3000 instead to use livereloading features):
 
 ```
 =============================================================================================
 [success] open http://localhost:3010 or http://localhost:3010/_config in your browser
 =============================================================================================
 ```
-
 # flogo-web
 Flogo web include flogo front-end and flogo design time server
 
@@ -50,5 +54,4 @@ Flogo web include flogo front-end and flogo design time server
 
 ## upcoming features
 
-1. Production vs Dev mode
 1. flogo engine auto restart
