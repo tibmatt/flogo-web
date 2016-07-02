@@ -68,10 +68,10 @@ Install gulp.js globally by running
 npm install -g gulp-cli
 ```
 
-### Install java jdk 8
-Make sure you have java jdk 8 installed in your machine.
+### Install java JDK 8
+Make sure you have java JDK 8 installed in your machine.
 
-You can get the lates version in []https://www.java.com/en/
+You can get the latest version in [the official java site](https://www.java.com/en/)
 
 # Run the application
 
@@ -123,7 +123,7 @@ You will see many `command docker-machine` not found during `start.sh` execution
 
 **Note** this haven't been tested with the native osx docker client but it should work too assuming the docker client is correctly configured in your machine.
 
-## node-gyp / pouchdb / leveldown issues
+## node-gyp / pouchdb / leveldown installation issues during start.sh execution
 
 Follow: https://github.com/nodejs/node-gyp#installation
 
