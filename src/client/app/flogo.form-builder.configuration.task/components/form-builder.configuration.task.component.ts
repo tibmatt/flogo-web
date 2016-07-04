@@ -44,7 +44,7 @@ export class FlogoFormBuilderConfigurationTaskComponent {
     if(info.step) {
       let taskId = convertTaskID(this._task.id);
       if (info.direction === 'output') {
-        resultValue = _.find(info.step.flow.attributes, (attr:any) => attr.name == `[A${taskId}.${info.name}]`)
+        resultValue = _.find(info.step.flow.attributes, (attr:any) => attr.name == `{A${taskId}.${info.name}}`)
       } else {
         // TODO support map to nested attributes
         let mapping = _.find(info.mappings, (mapping:any) => mapping.mapTo === info.name);
