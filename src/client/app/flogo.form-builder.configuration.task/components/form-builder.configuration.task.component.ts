@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, SimpleChange} from '@angular/core';
 
 import {FlogoFormBuilderFieldsRadio as FieldRadio} from '../../flogo.form-builder.fields/components/fields.radio/fields.radio.component';
 import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-builder.fields/components/fields.textbox/fields.textbox.component';
@@ -25,13 +25,14 @@ export class FlogoFormBuilderConfigurationTaskComponent {
   constructor(private _commonService: FlogoFormBuilderCommon) {
   }
 
-  ngOnInit() {
-
+  ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
     this.fields = {
       inputs : this._commonService.getStructureFromAttributes('inputs',  this._attributes),
       outputs: this._commonService.getStructureFromAttributes('outputs', this._attributes),
     }
+  }
 
+  ngOnInit() {
   }
 
   getControlByType(type:string) :any {
