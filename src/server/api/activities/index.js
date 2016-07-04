@@ -1,7 +1,7 @@
 import {config, activitiesDBService} from '../../config/app-config';
 import { TYPE_ACTIVITY, DEFAULT_PATH_ACTIVITY } from '../../common/constants';
 import { inspectObj } from '../../common/utils';
-import { getTestEngine } from '../../modules/engine';
+import { getInitialisedTestEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import _ from 'lodash';
 import path from 'path';
@@ -44,7 +44,7 @@ function* installActivities( next ) {
     fail: results.fail
   } );
 
-  let testEngine = getTestEngine();
+  let testEngine = yield getInitialisedTestEngine();
 
   if ( testEngine ) {
 
@@ -62,6 +62,8 @@ function* installActivities( next ) {
           name : item.schema.name || item.package.name,
           path : item.path
         };
+
+        inspectObj( itemInfoToInstall );
 
         const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
 

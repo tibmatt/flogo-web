@@ -1,4 +1,5 @@
-import {config, engines} from '../../config/app-config';
+import {config} from '../../config/app-config';
+import { getInitialisedTestEngine, getInitialisedBuildEngine } from '../../modules/engine';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
@@ -21,10 +22,10 @@ function* restartEngine(next){
   try{
     let name = this.query&&this.query.name? this.query&&this.query.name: "test";
 
-    let testEngine = engines.test;
+    let testEngine = yield getInitialisedTestEngine();
 
-    if(name == "build"){
-      testEngine = engines.build;
+    if ( name == "build" ) {
+      testEngine = yield getInitialisedBuildEngine();
     }
 
     if(testEngine.stop()){
