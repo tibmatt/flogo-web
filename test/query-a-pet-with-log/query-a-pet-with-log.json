@@ -1,1 +1,298 @@
-{"name":"test:no branch:query a pet with log","paths":{"root":{"is":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw"},"nodes":{"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw","taskID":"RmxvZ286OlRyaWdnZXI6OjE0NjczMDg4ODQ2NzI","type":3,"children":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ"],"parents":[]},"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ","taskID":"Mg","type":5,"children":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg"],"parents":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw"]},"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg","taskID":"Mw","type":5,"children":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5NTcwNjE6OjEyOTE3NzUuMDUwMDAwMDAwMw"],"parents":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ"]},"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5NTcwNjE6OjEyOTE3NzUuMDUwMDAwMDAwMw":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5NTcwNjE6OjEyOTE3NzUuMDUwMDAwMDAwMw","taskID":"NA","type":5,"children":[],"parents":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg"]}}},"items":{"RmxvZ286OlRyaWdnZXI6OjE0NjczMDg4ODQ2NzI":{"type":0,"triggerType":"tibco-rest","name":"REST Trigger","version":"0.0.1","title":"REST Trigger","description":"Simple REST Trigger","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest","settings":[{"name":"port","type":"integer","required":true}],"outputs":[{"name":"pathParams","type":6},{"name":"queryParams","type":6},{"name":"content","type":4}],"endpoint":{"settings":[{"name":"method","type":"string","required":true},{"name":"path","type":"string","required":true},{"name":"autoIdReply","type":"boolean"}]},"__schema":{"name":"tibco-rest","version":"0.0.1","title":"REST Trigger","description":"Simple REST Trigger","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest","settings":[{"name":"port","type":"integer","required":true}],"outputs":[{"name":"pathParams","type":"params"},{"name":"queryParams","type":"params"},{"name":"content","type":"object"}],"endpoint":{"settings":[{"name":"method","type":"string","required":true},{"name":"path","type":"string","required":true},{"name":"autoIdReply","type":"boolean"}]}},"id":"RmxvZ286OlRyaWdnZXI6OjE0NjczMDg4ODQ2NzI"},"Mg":{"type":1,"activityType":"tibco-log","name":"log start","version":"0.0.1","title":"Log Activity","description":"Simple Log Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log","attributes":{"inputs":[{"name":"message","type":0,"value":"logging..."},{"name":"flowInfo","type":3,"value":"true"},{"name":"addToFlow","type":3,"value":"true"}],"outputs":[{"name":"message","type":0}]},"__schema":{"name":"tibco-log","version":"0.0.1","title":"Log Activity","description":"Simple Log Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log","inputs":[{"name":"message","type":"string","value":""},{"name":"flowInfo","type":"boolean","value":"true"},{"name":"addToFlow","type":"boolean","value":"true"}],"outputs":[{"name":"message","type":"string"}]},"id":"Mg"},"Mw":{"type":1,"activityType":"tibco-rest","name":"pet query","version":"0.0.1","title":"REST Activity","description":"Simple REST Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest","attributes":{"inputs":[{"name":"method","type":0,"required":true,"value":"GET"},{"name":"uri","type":0,"required":true,"value":"http://petstore.swagger.io/v2/pet/:petId"},{"name":"pathParams","type":6,"value":{"petId":"222"}},{"name":"queryParams","type":6,"value":null},{"name":"content","type":4,"value":null}],"outputs":[{"name":"result","type":4}]},"__schema":{"name":"tibco-rest","version":"0.0.1","title":"REST Activity","description":"Simple REST Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest","inputs":[{"name":"method","type":"string","required":true},{"name":"uri","type":"string","required":true},{"name":"pathParams","type":"params"},{"name":"queryParams","type":"params"},{"name":"content","type":"object"}],"outputs":[{"name":"result","type":"object"}]},"id":"Mw"},"NA":{"type":1,"activityType":"tibco-log","name":"log pet","version":"0.0.1","title":"Log Activity","description":"Simple Log Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log","attributes":{"inputs":[{"name":"message","type":0,"value":""},{"name":"flowInfo","type":3,"value":"true"},{"name":"addToFlow","type":3,"value":"true"}],"outputs":[{"name":"message","type":0}]},"__schema":{"name":"tibco-log","version":"0.0.1","title":"Log Activity","description":"Simple Log Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log","inputs":[{"name":"message","type":"string","value":""},{"name":"flowInfo","type":"boolean","value":"true"},{"name":"addToFlow","type":"boolean","value":"true"}],"outputs":[{"name":"message","type":"string"}]},"id":"NA","inputMappings":[{"type":1,"mapTo":"message","value":"{A3.result}.name"}]}},"$table":"flows","description":"Get a pet with given petId with logging (petId is configured in the activity.)"}
+{
+  "name": "test:no branch:query a pet with log",
+  "paths": {
+    "root": {
+      "is": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw"
+    },
+    "nodes": {
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw",
+        "taskID": "RmxvZ286OlRyaWdnZXI6OjE0NjczMDg4ODQ2NzI",
+        "type": 3,
+        "children": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ"],
+        "parents": []
+      },
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ",
+        "taskID": "Mg",
+        "type": 5,
+        "children": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg"],
+        "parents": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4NjE5NzA6OjExOTY2ODcuOTE1MDAwMDAwMw"]
+      },
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg",
+        "taskID": "Mw",
+        "type": 5,
+        "children": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5NTcwNjE6OjEyOTE3NzUuMDUwMDAwMDAwMw"],
+        "parents": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg4ODQ2Nzk6OjEyMTkzOTUuNzc1MDAwMDAwMQ"]
+      },
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5NTcwNjE6OjEyOTE3NzUuMDUwMDAwMDAwMw": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5NTcwNjE6OjEyOTE3NzUuMDUwMDAwMDAwMw",
+        "taskID": "NA",
+        "type": 5,
+        "children": [],
+        "parents": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjczMDg5MTQxMzM6OjEyNDg4NDkuMjk1MDAwMDAwMg"]
+      }
+    }
+  },
+  "items": {
+    "RmxvZ286OlRyaWdnZXI6OjE0NjczMDg4ODQ2NzI": {
+      "type": 0,
+      "triggerType": "tibco-rest",
+      "name": "REST Trigger",
+      "version": "0.0.1",
+      "title": "REST Trigger",
+      "description": "Simple REST Trigger",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest",
+      "settings": [{
+        "name": "port",
+        "type": "integer",
+        "required": true
+      }],
+      "outputs": [{
+        "name": "pathParams",
+        "type": 6
+      }, {
+        "name": "queryParams",
+        "type": 6
+      }, {
+        "name": "content",
+        "type": 4
+      }],
+      "endpoint": {
+        "settings": [{
+          "name": "method",
+          "type": "string",
+          "required": true
+        }, {
+          "name": "path",
+          "type": "string",
+          "required": true
+        }, {
+          "name": "autoIdReply",
+          "type": "boolean"
+        }]
+      },
+      "__schema": {
+        "name": "tibco-rest",
+        "version": "0.0.1",
+        "title": "REST Trigger",
+        "description": "Simple REST Trigger",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest",
+        "settings": [{
+          "name": "port",
+          "type": "integer",
+          "required": true
+        }],
+        "outputs": [{
+          "name": "pathParams",
+          "type": "params"
+        }, {
+          "name": "queryParams",
+          "type": "params"
+        }, {
+          "name": "content",
+          "type": "object"
+        }],
+        "endpoint": {
+          "settings": [{
+            "name": "method",
+            "type": "string",
+            "required": true
+          }, {
+            "name": "path",
+            "type": "string",
+            "required": true
+          }, {
+            "name": "autoIdReply",
+            "type": "boolean"
+          }]
+        }
+      },
+      "id": "RmxvZ286OlRyaWdnZXI6OjE0NjczMDg4ODQ2NzI"
+    },
+    "Mg": {
+      "type": 1,
+      "activityType": "tibco-log",
+      "name": "log start",
+      "version": "0.0.1",
+      "title": "Log Activity",
+      "description": "Simple Log Activity",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log",
+      "attributes": {
+        "inputs": [{
+          "name": "message",
+          "type": 0,
+          "value": "logging..."
+        }, {
+          "name": "flowInfo",
+          "type": 3,
+          "value": "true"
+        }, {
+          "name": "addToFlow",
+          "type": 3,
+          "value": "true"
+        }],
+        "outputs": [{
+          "name": "message",
+          "type": 0
+        }]
+      },
+      "__schema": {
+        "name": "tibco-log",
+        "version": "0.0.1",
+        "title": "Log Activity",
+        "description": "Simple Log Activity",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log",
+        "inputs": [{
+          "name": "message",
+          "type": "string",
+          "value": ""
+        }, {
+          "name": "flowInfo",
+          "type": "boolean",
+          "value": "true"
+        }, {
+          "name": "addToFlow",
+          "type": "boolean",
+          "value": "true"
+        }],
+        "outputs": [{
+          "name": "message",
+          "type": "string"
+        }]
+      },
+      "id": "Mg"
+    },
+    "Mw": {
+      "type": 1,
+      "activityType": "tibco-rest",
+      "name": "pet query",
+      "version": "0.0.1",
+      "title": "REST Activity",
+      "description": "Simple REST Activity",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest",
+      "attributes": {
+        "inputs": [{
+          "name": "method",
+          "type": 0,
+          "required": true,
+          "value": "GET"
+        }, {
+          "name": "uri",
+          "type": 0,
+          "required": true,
+          "value": "http://petstore.swagger.io/v2/pet/:petId"
+        }, {
+          "name": "pathParams",
+          "type": 6,
+          "value": {
+            "petId": "222"
+          }
+        }, {
+          "name": "queryParams",
+          "type": 6,
+          "value": null
+        }, {
+          "name": "content",
+          "type": 4,
+          "value": null
+        }],
+        "outputs": [{
+          "name": "result",
+          "type": 4
+        }]
+      },
+      "__schema": {
+        "name": "tibco-rest",
+        "version": "0.0.1",
+        "title": "REST Activity",
+        "description": "Simple REST Activity",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/rest",
+        "inputs": [{
+          "name": "method",
+          "type": "string",
+          "required": true
+        }, {
+          "name": "uri",
+          "type": "string",
+          "required": true
+        }, {
+          "name": "pathParams",
+          "type": "params"
+        }, {
+          "name": "queryParams",
+          "type": "params"
+        }, {
+          "name": "content",
+          "type": "object"
+        }],
+        "outputs": [{
+          "name": "result",
+          "type": "object"
+        }]
+      },
+      "id": "Mw"
+    },
+    "NA": {
+      "type": 1,
+      "activityType": "tibco-log",
+      "name": "log pet",
+      "version": "0.0.1",
+      "title": "Log Activity",
+      "description": "Simple Log Activity",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log",
+      "attributes": {
+        "inputs": [{
+          "name": "message",
+          "type": 0,
+          "value": ""
+        }, {
+          "name": "flowInfo",
+          "type": 3,
+          "value": "true"
+        }, {
+          "name": "addToFlow",
+          "type": 3,
+          "value": "true"
+        }],
+        "outputs": [{
+          "name": "message",
+          "type": 0
+        }]
+      },
+      "__schema": {
+        "name": "tibco-log",
+        "version": "0.0.1",
+        "title": "Log Activity",
+        "description": "Simple Log Activity",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log",
+        "inputs": [{
+          "name": "message",
+          "type": "string",
+          "value": ""
+        }, {
+          "name": "flowInfo",
+          "type": "boolean",
+          "value": "true"
+        }, {
+          "name": "addToFlow",
+          "type": "boolean",
+          "value": "true"
+        }],
+        "outputs": [{
+          "name": "message",
+          "type": "string"
+        }]
+      },
+      "id": "NA",
+      "inputMappings": [{
+        "type": 1,
+        "mapTo": "message",
+        "value": "{A3.result}.name"
+      }]
+    }
+  },
+  "$table": "flows",
+  "description": "Get a pet with given petId with logging (petId is configured in the activity.)"
+}

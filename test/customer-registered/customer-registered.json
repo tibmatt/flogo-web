@@ -1,1 +1,303 @@
-{"name":"customer registered","paths":{"root":{"is":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw"},"nodes":{"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw","taskID":"RmxvZ286OlRyaWdnZXI6OjE0NjMyNjA1NTczNDg","type":3,"children":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU"],"parents":[]},"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU","taskID":"Mg","type":5,"children":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw"],"parents":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw"]},"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw","taskID":"Mw","type":5,"children":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyOTk1Njk4ODM6OjIxODEzLjI5"],"parents":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU"]},"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyOTk1Njk4ODM6OjIxODEzLjI5":{"id":"RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyOTk1Njk4ODM6OjIxODEzLjI5","taskID":"NA","type":5,"children":[],"parents":["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw"]}}},"items":{"RmxvZ286OlRyaWdnZXI6OjE0NjMyNjA1NTczNDg":{"type":0,"triggerType":"tibco-rest","name":"http","version":"0.0.1","title":"REST Trigger","description":"Simple REST Trigger","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest","settings":[{"name":"port","type":"integer","required":true,"value":"7010"}],"outputs":[{"name":"pathParams","type":6,"value":{"num":"+16509655386"}},{"name":"queryParams","type":6,"value":null},{"name":"content","type":4,"value":null}],"endpoint":{"settings":[{"name":"method","type":"string","required":true,"value":"GET"},{"name":"path","type":"string","required":true,"value":"/phone/:num"},{"name":"autoIdReply","type":"boolean","value":"true"}]},"__schema":{"name":"tibco-rest","version":"0.0.1","title":"REST Trigger","description":"Simple REST Trigger","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest","settings":[{"name":"port","type":"integer","required":true}],"outputs":[{"name":"pathParams","type":"params"},{"name":"queryParams","type":"params"},{"name":"content","type":"object"}],"endpoint":{"settings":[{"name":"method","type":"string","required":true},{"name":"path","type":"string","required":true},{"name":"autoIdReply","type":"boolean"}]}},"id":"RmxvZ286OlRyaWdnZXI6OjE0NjMyNjA1NTczNDg"},"Mg":{"type":1,"activityType":"tibco-counter","name":"customer counter","version":"0.0.1","title":"Counter Activity","description":"Simple Global Counter Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter","attributes":{"inputs":[{"name":"counterName","type":0,"required":true,"value":"customer number"},{"name":"increment","type":3,"value":"true"},{"name":"reset","type":3,"value":false}],"outputs":[{"name":"value","type":1}]},"__schema":{"name":"tibco-counter","version":"0.0.1","title":"Counter Activity","description":"Simple Global Counter Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter","inputs":[{"name":"counterName","type":"string","required":true},{"name":"increment","type":"boolean"},{"name":"reset","type":"boolean"}],"outputs":[{"name":"value","type":"integer"}]},"id":"Mg"},"Mw":{"type":1,"activityType":"tibco-twilio","name":"sms to user","version":"0.0.1","title":"Twilio Activity","description":"Simple Twilio Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio","attributes":{"inputs":[{"name":"accountSID","type":0,"value":"ACaf68c3b797f3e74a867f94e5a2cdefef"},{"name":"authToken","type":0,"value":" 4cfdec8f82a9364a4047fa7376f658db"},{"name":"from","type":0,"value":"+14084007674"},{"name":"to","type":0,"value":""},{"name":"message","type":0,"value":""}],"outputs":[]},"__schema":{"name":"tibco-twilio","version":"0.0.1","title":"Twilio Activity","description":"Simple Twilio Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio","inputs":[{"name":"accountSID","type":"string"},{"name":"authToken","type":"string"},{"name":"from","type":"string"},{"name":"to","type":"string"},{"name":"message","type":"string"}],"outputs":[]},"id":"Mw","inputMappings":[{"type":1,"mapTo":"to","value":"{T.pathParams}.num"},{"type":1,"mapTo":"message","value":"{A2.value}"}]},"NA":{"type":1,"activityType":"tibco-log","name":"log phone","version":"0.0.1","title":"Log Activity","description":"Simple Log Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log","attributes":{"inputs":[{"name":"message","type":0,"value":""},{"name":"flowInfo","type":3,"value":"true"},{"name":"addToFlow","type":3,"value":"true"}],"outputs":[{"name":"message","type":0}]},"__schema":{"name":"tibco-log","version":"0.0.1","title":"Log Activity","description":"Simple Log Activity","homepage":"https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log","inputs":[{"name":"message","type":"string","value":""},{"name":"flowInfo","type":"boolean","value":"true"},{"name":"addToFlow","type":"boolean","value":"true"}],"outputs":[{"name":"message","type":"string"}]},"id":"NA","inputMappings":[{"type":1,"mapTo":"message","value":"{T.pathParams}.num"}]}},"$table":"flows","description":"customer register, if register successful, send the customer id to customer's phone"}
+{
+  "name": "customer registered",
+  "paths": {
+    "root": {
+      "is": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw"
+    },
+    "nodes": {
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw",
+        "taskID": "RmxvZ286OlRyaWdnZXI6OjE0NjMyNjA1NTczNDg",
+        "type": 3,
+        "children": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU"],
+        "parents": []
+      },
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU",
+        "taskID": "Mg",
+        "type": 5,
+        "children": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw"],
+        "parents": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjA1NDkyODk6OjE1MzY2Ni41OTAwMDAwMDAwMw"]
+      },
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw",
+        "taskID": "Mw",
+        "type": 5,
+        "children": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyOTk1Njk4ODM6OjIxODEzLjI5"],
+        "parents": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODY2OTI6OjIwODgzOS43NzU"]
+      },
+      "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyOTk1Njk4ODM6OjIxODEzLjI5": {
+        "id": "RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyOTk1Njk4ODM6OjIxODEzLjI5",
+        "taskID": "NA",
+        "type": 5,
+        "children": [],
+        "parents": ["RmxvZ29GbG93RGlhZ3JhbU5vZGU6OjE0NjMyNjYwODk5NTM6OjIxMjEwMC41Nw"]
+      }
+    }
+  },
+  "items": {
+    "RmxvZ286OlRyaWdnZXI6OjE0NjMyNjA1NTczNDg": {
+      "type": 0,
+      "triggerType": "tibco-rest",
+      "name": "http",
+      "version": "0.0.1",
+      "title": "REST Trigger",
+      "description": "Simple REST Trigger",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest",
+      "settings": [{
+        "name": "port",
+        "type": "integer",
+        "required": true,
+        "value": "7010"
+      }],
+      "outputs": [{
+        "name": "pathParams",
+        "type": 6,
+        "value": {
+          "num": "+16509655386"
+        }
+      }, {
+        "name": "queryParams",
+        "type": 6,
+        "value": null
+      }, {
+        "name": "content",
+        "type": 4,
+        "value": null
+      }],
+      "endpoint": {
+        "settings": [{
+          "name": "method",
+          "type": "string",
+          "required": true,
+          "value": "GET"
+        }, {
+          "name": "path",
+          "type": "string",
+          "required": true,
+          "value": "/phone/:num"
+        }, {
+          "name": "autoIdReply",
+          "type": "boolean",
+          "value": "true"
+        }]
+      },
+      "__schema": {
+        "name": "tibco-rest",
+        "version": "0.0.1",
+        "title": "REST Trigger",
+        "description": "Simple REST Trigger",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest",
+        "settings": [{
+          "name": "port",
+          "type": "integer",
+          "required": true
+        }],
+        "outputs": [{
+          "name": "pathParams",
+          "type": "params"
+        }, {
+          "name": "queryParams",
+          "type": "params"
+        }, {
+          "name": "content",
+          "type": "object"
+        }],
+        "endpoint": {
+          "settings": [{
+            "name": "method",
+            "type": "string",
+            "required": true
+          }, {
+            "name": "path",
+            "type": "string",
+            "required": true
+          }, {
+            "name": "autoIdReply",
+            "type": "boolean"
+          }]
+        }
+      },
+      "id": "RmxvZ286OlRyaWdnZXI6OjE0NjMyNjA1NTczNDg"
+    },
+    "Mg": {
+      "type": 1,
+      "activityType": "tibco-counter",
+      "name": "customer counter",
+      "version": "0.0.1",
+      "title": "Counter Activity",
+      "description": "Simple Global Counter Activity",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter",
+      "attributes": {
+        "inputs": [{
+          "name": "counterName",
+          "type": 0,
+          "required": true,
+          "value": "customer number"
+        }, {
+          "name": "increment",
+          "type": 3,
+          "value": "true"
+        }, {
+          "name": "reset",
+          "type": 3,
+          "value": false
+        }],
+        "outputs": [{
+          "name": "value",
+          "type": 1
+        }]
+      },
+      "__schema": {
+        "name": "tibco-counter",
+        "version": "0.0.1",
+        "title": "Counter Activity",
+        "description": "Simple Global Counter Activity",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter",
+        "inputs": [{
+          "name": "counterName",
+          "type": "string",
+          "required": true
+        }, {
+          "name": "increment",
+          "type": "boolean"
+        }, {
+          "name": "reset",
+          "type": "boolean"
+        }],
+        "outputs": [{
+          "name": "value",
+          "type": "integer"
+        }]
+      },
+      "id": "Mg"
+    },
+    "Mw": {
+      "type": 1,
+      "activityType": "tibco-twilio",
+      "name": "sms to user",
+      "version": "0.0.1",
+      "title": "Twilio Activity",
+      "description": "Simple Twilio Activity",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio",
+      "attributes": {
+        "inputs": [{
+          "name": "accountSID",
+          "type": 0,
+          "value": "ACaf68c3b797f3e74a867f94e5a2cdefef"
+        }, {
+          "name": "authToken",
+          "type": 0,
+          "value": " 4cfdec8f82a9364a4047fa7376f658db"
+        }, {
+          "name": "from",
+          "type": 0,
+          "value": "+14084007674"
+        }, {
+          "name": "to",
+          "type": 0,
+          "value": ""
+        }, {
+          "name": "message",
+          "type": 0,
+          "value": ""
+        }],
+        "outputs": []
+      },
+      "__schema": {
+        "name": "tibco-twilio",
+        "version": "0.0.1",
+        "title": "Twilio Activity",
+        "description": "Simple Twilio Activity",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio",
+        "inputs": [{
+          "name": "accountSID",
+          "type": "string"
+        }, {
+          "name": "authToken",
+          "type": "string"
+        }, {
+          "name": "from",
+          "type": "string"
+        }, {
+          "name": "to",
+          "type": "string"
+        }, {
+          "name": "message",
+          "type": "string"
+        }],
+        "outputs": []
+      },
+      "id": "Mw",
+      "inputMappings": [{
+        "type": 1,
+        "mapTo": "to",
+        "value": "{T.pathParams}.num"
+      }, {
+        "type": 1,
+        "mapTo": "message",
+        "value": "{A2.value}"
+      }]
+    },
+    "NA": {
+      "type": 1,
+      "activityType": "tibco-log",
+      "name": "log phone",
+      "version": "0.0.1",
+      "title": "Log Activity",
+      "description": "Simple Log Activity",
+      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log",
+      "attributes": {
+        "inputs": [{
+          "name": "message",
+          "type": 0,
+          "value": ""
+        }, {
+          "name": "flowInfo",
+          "type": 3,
+          "value": "true"
+        }, {
+          "name": "addToFlow",
+          "type": 3,
+          "value": "true"
+        }],
+        "outputs": [{
+          "name": "message",
+          "type": 0
+        }]
+      },
+      "__schema": {
+        "name": "tibco-log",
+        "version": "0.0.1",
+        "title": "Log Activity",
+        "description": "Simple Log Activity",
+        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log",
+        "inputs": [{
+          "name": "message",
+          "type": "string",
+          "value": ""
+        }, {
+          "name": "flowInfo",
+          "type": "boolean",
+          "value": "true"
+        }, {
+          "name": "addToFlow",
+          "type": "boolean",
+          "value": "true"
+        }],
+        "outputs": [{
+          "name": "message",
+          "type": "string"
+        }]
+      },
+      "id": "NA",
+      "inputMappings": [{
+        "type": 1,
+        "mapTo": "message",
+        "value": "{T.pathParams}.num"
+      }]
+    }
+  },
+  "$table": "flows",
+  "description": "customer register, if register successful, send the customer id to customer's phone"
+}
