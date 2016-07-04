@@ -184,6 +184,28 @@ export class Engine {
   }
 
   /**
+   * Check if an activity has been added to the engine
+   * @param {string} activityName - the name of this activity.
+   * @param {string} activityPath - the path of this activity.
+   * @return {Object}
+   *
+   * {
+   *    exists: boolean, // true if the activity name exists
+   *    samePath: boolean // true if the path is the same
+   * }
+   *
+   */
+  hasActivity( activityName, activityPath ) {
+    const activity = this.installedActivites[ activityName ];
+    const exists = !_.isNil( activity );
+
+    return {
+      exists : exists,
+      samePath : exists && activity.path === activityPath
+    };
+  }
+
+  /**
    * Add an trigger to the engine
    * @param {string} triggerName - the name of this trigger.
    * @param {string} triggerPath - the path of this trigger.
@@ -206,6 +228,28 @@ export class Engine {
       console.error("[Error]Engine->addTrigger. Error: ", err);
       return false;
     }
+  }
+
+  /**
+   * Check if an trigger has been added to the engine
+   * @param {string} triggerName - the name of this trigger.
+   * @param {string} triggerPath - the path of this trigger.
+   * @return {Object}
+   *
+   * {
+   *    exists: boolean, // true if the trigger name exists
+   *    samePath: boolean // true if the path is the same
+   * }
+   *
+   */
+  hasTrigger( triggerName, triggerPath ) {
+    const trigger = this.installedTriggers[ triggerName ];
+    const exists = !_.isNil( trigger );
+
+    return {
+      exists : exists,
+      samePath : exists && trigger.path === triggerPath
+    };
   }
 
   /**

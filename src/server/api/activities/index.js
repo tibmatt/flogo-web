@@ -58,7 +58,31 @@ function* installActivities( next ) {
       let addActivitiesResult = yield Promise.all( _.map( results.success, ( successItemURL, idx ) => {
         console.log( `[log] adding ${ successItemURL } to test engine ...` );
         const item = results.details[ successItemURL ];
-        return testEngine.addActivity( item.name, item.path );
+        const itemInfoToInstall = {
+          name : item.schema.name || item.package.name,
+          path : item.path
+        };
+
+        const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+
+        if ( hasActivity.exists ) {
+          if ( hasActivity.samePath ) {
+            console.log(
+              `[log] skip adding exists activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+            return true;
+          } else {
+            // else delete the activity before install
+
+            if ( testEngine.deleteActivity( itemInfoToInstall.name ) ) {
+              return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+            } else {
+              throw Error(
+                `[error] failed to delete activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+            }
+          }
+        }
+
+        return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
       } ) );
     } catch ( err ) {
       console.error( `[error] add activities to test engine` );
