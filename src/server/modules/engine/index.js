@@ -4,7 +4,8 @@ import _ from 'lodash';
 import {
   config,
   activitiesDBService,
-  triggersDBService
+  triggersDBService,
+  engines
 } from '../../config/app-config';
 import {
   isExisted,
@@ -184,6 +185,28 @@ export class Engine {
   }
 
   /**
+   * Check if an activity has been added to the engine
+   * @param {string} activityName - the name of this activity.
+   * @param {string} activityPath - the path of this activity.
+   * @return {Object}
+   *
+   * {
+   *    exists: boolean, // true if the activity name exists
+   *    samePath: boolean // true if the path is the same
+   * }
+   *
+   */
+  hasActivity( activityName, activityPath ) {
+    const activity = this.installedActivites[ activityName ];
+    const exists = !_.isNil( activity );
+
+    return {
+      exists : exists,
+      samePath : exists && activity.path === activityPath
+    };
+  }
+
+  /**
    * Add an trigger to the engine
    * @param {string} triggerName - the name of this trigger.
    * @param {string} triggerPath - the path of this trigger.
@@ -206,6 +229,28 @@ export class Engine {
       console.error("[Error]Engine->addTrigger. Error: ", err);
       return false;
     }
+  }
+
+  /**
+   * Check if an trigger has been added to the engine
+   * @param {string} triggerName - the name of this trigger.
+   * @param {string} triggerPath - the path of this trigger.
+   * @return {Object}
+   *
+   * {
+   *    exists: boolean, // true if the trigger name exists
+   *    samePath: boolean // true if the path is the same
+   * }
+   *
+   */
+  hasTrigger( triggerName, triggerPath ) {
+    const trigger = this.installedTriggers[ triggerName ];
+    const exists = !_.isNil( trigger );
+
+    return {
+      exists : exists,
+      samePath : exists && trigger.path === triggerPath
+    };
   }
 
   /**
@@ -500,5 +545,115 @@ export class Engine {
       console.error("[Error]Engine->stop. Error: ", err);
       return false;
     }
+  }
+}
+
+/**
+ * singleton engines
+ */
+
+let testEngine = null;
+let buildEngine = null;
+
+export function getTestEngine() {
+  return new Promise( ( resolve, reject )=> {
+
+    if ( testEngine ) {
+      resolve( testEngine );
+    }
+
+    console.log( `[log] creating new test engine...` );
+
+    testEngine = new Engine( {
+      name : config.testEngine.name,
+      path : config.testEngine.path,
+      port : config.testEngine.port
+    } );
+
+    resolve( testEngine );
+  } );
+}
+
+export function initTestEngine() {
+
+  // get a test engine
+  // add default activities and triggers
+  // update configurations
+  // return the initalised test engine.
+  return getTestEngine()
+    .then( ( testEngine )=> { // using testEngine to shadow the local testEngine.
+      console.log( `[log] adding activities to the test engine, will take some time...` );
+      return testEngine.addAllActivities();
+    } )
+    .then( ()=> {
+      console.log( `[log] adding triggers to the test engine, will take some time...` );
+      return testEngine.addAllTriggers( config.testEngine.installConfig );
+    } )
+    .then( ()=> {
+      console.log( `[log] updating configurations of the test engine, will take some time...` );
+      // update config.json, use overwrite mode
+      testEngine.updateConfigJSON( config.testEngine.config, true );
+      // update triggers.json
+      testEngine.updateTriggerJSON( {
+        "triggers" : config.testEngine.triggers
+      } );
+
+      engines.test = testEngine;
+      return testEngine;
+    } );
+}
+
+export function getInitialisedTestEngine() {
+  if (testEngine) {
+    return Promise.resolve(testEngine);
+  } else {
+    return initTestEngine();
+  }
+}
+
+export function getBuildEngine() {
+  return new Promise( ( resolve, reject )=> {
+
+    if ( buildEngine ) {
+      resolve( buildEngine );
+    }
+
+    console.log( `[log] creating new build engine...` );
+
+    buildEngine = new Engine( {
+      name : config.buildEngine.name,
+      path : config.buildEngine.path,
+      port : config.buildEngine.port
+    } );
+
+    resolve( buildEngine );
+  } );
+}
+
+export function initBuildEngine() {
+
+  // get a test engine
+  // add default activities and triggers
+  // return the initalised build engine.
+  return getBuildEngine()
+    .then( ( buildEngine )=> { // using testEngine to shadow the local buildEngine.
+      console.log( `[log] adding activities to the build engine, will take some time...` );
+      return buildEngine.addAllActivities()
+    } )
+    .then( ()=> {
+      console.log( `[log] adding triggers to the build engine, will take some time...` );
+      return buildEngine.addAllTriggers( config.buildEngine.installConfig );
+    } )
+    .then( ()=> {
+      engines.build = buildEngine;
+      return buildEngine;
+    } );
+}
+
+export function getInitialisedBuildEngine() {
+  if ( buildEngine ) {
+    return Promise.resolve( buildEngine );
+  } else {
+    return initBuildEngine();
   }
 }

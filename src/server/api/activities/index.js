@@ -1,5 +1,7 @@
 import {config, activitiesDBService} from '../../config/app-config';
 import { TYPE_ACTIVITY, DEFAULT_PATH_ACTIVITY } from '../../common/constants';
+import { inspectObj } from '../../common/utils';
+import { getInitialisedTestEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import _ from 'lodash';
 import path from 'path';
@@ -34,10 +36,70 @@ function* getActivities(next){
 function* installActivities( next ) {
   let urls = preProcessURLs( this.request.body.urls );
   console.log( '[log] Install Activities' );
-  __insp( urls );
+  inspectObj( urls );
   let results = yield remoteInstaller.install( urls );
   console.log( '[log] Installation results' );
-  __insp( results );
+  inspectObj( {
+    success: results.success,
+    fail: results.fail
+  } );
+
+  let testEngine = yield getInitialisedTestEngine();
+
+  if ( testEngine ) {
+
+    console.log( `[log] adding activities to test engine...` );
+
+    if ( !testEngine.stop() ) {
+      throw new Error( '[error] Encounter error to stop test engine.' );
+    }
+
+    try {
+      let addActivitiesResult = yield Promise.all( _.map( results.success, ( successItemURL, idx ) => {
+        console.log( `[log] adding ${ successItemURL } to test engine ...` );
+        const item = results.details[ successItemURL ];
+        const itemInfoToInstall = {
+          name : item.schema.name || item.package.name,
+          path : item.path
+        };
+
+        inspectObj( itemInfoToInstall );
+
+        const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+
+        if ( hasActivity.exists ) {
+          if ( hasActivity.samePath ) {
+            console.log(
+              `[log] skip adding exists activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+            return true;
+          } else {
+            // else delete the activity before install
+
+            if ( testEngine.deleteActivity( itemInfoToInstall.name ) ) {
+              return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+            } else {
+              throw Error(
+                `[error] failed to delete activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+            }
+          }
+        }
+
+        return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+      } ) );
+    } catch ( err ) {
+      console.error( `[error] add activities to test engine` );
+      console.error( err );
+      throw new Error( '[error] Encounter error to add activities to test engine.' );
+    }
+
+    testEngine.build();
+    if ( !testEngine.start() ) {
+      throw new Error( '[error] Encounter error to start test engine after adding activities.' );
+    }
+  }
+
+  delete results.details; // keep the details internally.
+
   this.body = results;
 
   yield next;
@@ -57,12 +119,4 @@ function preProcessURLs( urls ) {
   'use strict';
   // TODO
   return urls;
-}
-
-// ------- ------- -------
-// debugging inspector utility
-function __insp( obj ) {
-  'use strict';
-  console.log( require( 'util' )
-    .inspect( obj, { depth : 7, colors : true } ) );
 }

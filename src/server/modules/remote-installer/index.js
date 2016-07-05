@@ -85,7 +85,8 @@ export class RemoteInstaller {
 
           return {
             success : _.union( result.github.success, result.default.success ),
-            fail : _.union( result.github.fail, result.default.fail )
+            fail : _.union( result.github.fail, result.default.fail ),
+            details : _.assign( {}, result.github.details, result.default.details )
           };
         } )
         .then( resolve )
@@ -298,10 +299,12 @@ function installFromGitHub( opts ) {
           installResult.fail.push( item.raw.sourceURL );
         }
 
+        installResult.details[ item.raw.sourceURL ] = item.raw;
         return installResult;
       }, {
         success : [],
-        fail : []
+        fail : [],
+        details : {}
       } );
     } )
     .catch( ( err )=> {
