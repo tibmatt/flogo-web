@@ -1,6 +1,7 @@
 import {config, triggersDBService} from '../../config/app-config';
 import { TYPE_TRIGGER, DEFAULT_PATH_TRIGGER } from '../../common/constants';
 import { RemoteInstaller } from '../../modules/remote-installer';
+import { inspectObj } from '../../common/utils';
 import _ from 'lodash';
 import path from 'path';
 
@@ -36,10 +37,15 @@ function* installTriggers( next ) {
   let urls = preProcessURLs( this.request.body.urls );
 
   console.log( '[log] Install Triggers' );
-  __insp( urls );
+  inspectObj( urls );
   let results = yield remoteInstaller.install( urls );
   console.log( '[log] Installation results' );
-  __insp( results );
+  inspectObj( {
+    success : results.success,
+    fail : results.fail
+  } );
+
+  delete results.details; // keep the details internally.
   this.body = results;
 
   yield next;
@@ -60,12 +66,4 @@ function preProcessURLs( urls ) {
   'use strict';
   // TODO
   return urls;
-}
-
-// ------- ------- -------
-// debugging inspector utility
-function __insp( obj ) {
-  'use strict';
-  console.log( require( 'util' )
-    .inspect( obj, { depth : 7, colors : true } ) );
 }

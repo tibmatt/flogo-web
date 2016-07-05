@@ -40,8 +40,8 @@ function* installActivities( next ) {
   let results = yield remoteInstaller.install( urls );
   console.log( '[log] Installation results' );
   inspectObj( {
-    success: results.success,
-    fail: results.fail
+    success : results.success,
+    fail : results.fail
   } );
 
   let testEngine = yield getInitialisedTestEngine();
