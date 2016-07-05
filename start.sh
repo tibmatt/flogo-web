@@ -80,7 +80,7 @@ check_java_version() {
         echoInfo "Java version $installed_version is OK"
     else
         result=1
-        echoError "java version is lower than required version, please upgrade to $targetVersion or upper"
+        echoError "java version is lower than required version, please upgrade to $targetVersion or greater"
         exit 1
     fi
 }
@@ -98,7 +98,7 @@ check_version() {
         echoInfo "$command version $installed_version is OK"
     else
         result=1
-        echoError "$command version is lower than required version, please upgrade to $targetVersion or upper"
+        echoError "$command version is lower than required version, please upgrade to $targetVersion or greater"
         exit 1
     fi
 }
