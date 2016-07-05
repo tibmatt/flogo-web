@@ -80,7 +80,25 @@ check_java_version() {
         echoInfo "Java version $installed_version is OK"
     else
         result=1
-        echoError "java version is less than required version, please upgrade to $targetVersion or upper"
+        echoError "java version is lower than required version, please upgrade to $targetVersion or upper"
+        exit 1
+    fi
+}
+
+check_version() {
+    local command="$1"
+    local targetVersion="$2"
+    result=0;
+
+    installed_version=$("$command" --version 2>&1)
+    installed_version=${installed_version//v}
+
+    if [[ "$installed_version" > $targetVersion ]]; then
+        result=0
+        echoInfo "$command version $installed_version is OK"
+    else
+        result=1
+        echoError "$command version is lower than required version, please upgrade to $targetVersion or upper"
         exit 1
     fi
 }
@@ -152,6 +170,7 @@ check_command git
 # node
 #============================
 check_command node
+check_version node "4.0"
 
 #============================
 # gulp
@@ -162,6 +181,7 @@ check_command node
 # npm
 #============================
 check_command npm
+check_version npm "3.0"
 
 #============================
 # docker-machine & docker
