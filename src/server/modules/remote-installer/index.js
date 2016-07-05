@@ -351,6 +351,7 @@ function processItemFromGitHub( rawItemInfo ) {
       'version' : m.version,
       'description' : m.description,
       'keywords' : m.keywords || [],
+      'author' : m.author,
       'schema' : s
     } );
   }

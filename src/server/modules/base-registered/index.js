@@ -107,6 +107,7 @@ export class BaseRegistered{
       'version' : opts.version,
       'description' : opts.description,
       'keywords' : opts.keywords || [],
+      'author' : opts.author || 'Anonymous',
       'schema' : opts.schema
     }
   }
@@ -392,6 +393,7 @@ export class BaseRegistered{
             'version' : packageJSON.version,
             'description' : packageJSON.description,
             'keywords' : packageJSON.keywords || [],
+            'author' : packageJSON.author,
             'schema' : schemaJSON
           } );
         });
