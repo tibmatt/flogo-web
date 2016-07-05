@@ -23,7 +23,7 @@ export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent
   // override
   getInstallables() {
     // TODO replace these mock data.
-    return [
+    return Promise.resolve( [
       {
         name : 'tibco-awsiot',
         title : 'AWS IoT Activity',
@@ -96,6 +96,6 @@ export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent
         updateTime : Date.now(),
         isInstalled : true
       }
-    ];
+    ] );
   }
 }

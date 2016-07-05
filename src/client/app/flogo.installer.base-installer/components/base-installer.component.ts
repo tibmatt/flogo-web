@@ -16,28 +16,38 @@ export class FlogoInstallerBaseComponent implements OnChanges {
 
   init() {
     console.log( 'Initialise Flogo Installer Base Component.' );
-    this._categories = this.getCategories();
-    this.installables = this.getInstallables();
-
-    this._installables = this.getFilteredInstallables();
+    Promise.all( [
+      this.getCategories(),
+      this.getInstallables()
+    ] )
+      .then( ( result : any ) => {
+        this._categories = result[ 0 ] || [];
+        this.installables = result[ 1 ] || [];
+      } )
+      .then( ()=> {
+        this._installables = this.getFilteredInstallables();
+      } )
+      .catch( ( err ) => {
+        console.error( err );
+      } );
   }
 
   // TODO replace these mock data.
   getCategories() {
     console.log( TO_BE_OVERRIDDEN );
-    return [
+    return Promise.resolve( [
       'Requests',
       'Optimizations',
       'Connect to Devices',
       'Framework Adaptors',
       'Web Adaptors',
       'Uncategorized'
-    ];
+    ] );
   }
 
   getInstallables() {
     console.log( TO_BE_OVERRIDDEN );
-    return [
+    return Promise.resolve( [
       {
         name : '',
         description : '',
@@ -48,7 +58,7 @@ export class FlogoInstallerBaseComponent implements OnChanges {
         createTime : Date.now(),
         isInstalled : false
       }
-    ];
+    ] );
   }
 
   getFilteredInstallables() {

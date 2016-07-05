@@ -23,7 +23,8 @@ export class FlogoInstallerTriggerComponent extends FlogoInstallerBaseComponent 
   // override
   getInstallables() {
     // TODO replace these mock data.
-    return [
+    
+    return Promise.resolve( [
       {
         name : 'tibco-coap',
         title : 'CoAP Trigger',
@@ -72,6 +73,6 @@ export class FlogoInstallerTriggerComponent extends FlogoInstallerBaseComponent 
         updateTime : Date.now(),
         isInstalled : false
       }
-    ];
+    ] );
   }
 }
