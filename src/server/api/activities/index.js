@@ -93,7 +93,7 @@ function* installActivities( next ) {
     }
 
     testEngine.build();
-    if ( testEngine.start() ) {
+    if ( !testEngine.start() ) {
       throw new Error( '[error] Encounter error to start test engine after adding activities.' );
     }
   }
