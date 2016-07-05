@@ -70,6 +70,21 @@ check_command(){
 #  echo "$result";
 }
 
+check_java_version() {
+    local targetVersion="$1"
+    result=0;
+
+    installed_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+    if [[ "$installed_version" > $targetVersion ]]; then
+        result=0
+        echoInfo "Java version $installed_version is OK"
+    else
+        result=1
+        echoError "java version is less than required version, please upgrade to $targetVersion or upper"
+        exit 1
+    fi
+}
+
 open_url(){
   # open the url in browser
   if which open > /dev/null
@@ -116,6 +131,12 @@ echoHeader "Step1: check environment"
 # go
 #============================
 check_command go
+
+#============================
+# java
+#============================
+check_command java
+check_java_version "1.8"
 
 #============================
 # gb
