@@ -13,6 +13,7 @@ gulp.task('dev.client.watch', 'Watch client sources and execute the dev tasks wh
   gulp.watch(CONFIG.paths.assets, {cwd: CONFIG.paths.source.client}, ['dev.client.assets']);
 
   browserSync.init({
+      browser: false,
       proxy:  {
         target: CONFIG.host
       }

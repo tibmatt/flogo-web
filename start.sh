@@ -20,6 +20,16 @@ FLOGO_INTERNAL_PATH="submodules/flogo-internal"
 FLOGO_CONTRIB_PATH="submodules/flogo-contrib"
 CURRENT_PATH=$PWD
 
+export SKIPCHECK_DOCKER_MACHINE=""
+while getopts ":m" opt; do
+  case $opt in
+    m)
+      export SKIPCHECK_DOCKER_MACHINE=true
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
 #############################
 # Utils
 #############################
@@ -70,6 +80,39 @@ check_command(){
 #  echo "$result";
 }
 
+check_java_version() {
+    local targetVersion="$1"
+    result=0;
+
+    installed_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+    if [[ "$installed_version" > $targetVersion ]]; then
+        result=0
+        echoInfo "Java version $installed_version is OK"
+    else
+        result=1
+        echoError "java version is lower than required version, please upgrade to $targetVersion or greater"
+        exit 1
+    fi
+}
+
+check_version() {
+    local command="$1"
+    local targetVersion="$2"
+    result=0;
+
+    installed_version=$("$command" --version 2>&1)
+    installed_version=${installed_version//v}
+
+    if [[ "$installed_version" > $targetVersion ]]; then
+        result=0
+        echoInfo "$command version $installed_version is OK"
+    else
+        result=1
+        echoError "$command version is lower than required version, please upgrade to $targetVersion or greater"
+        exit 1
+    fi
+}
+
 open_url(){
   # open the url in browser
   if which open > /dev/null
@@ -88,12 +131,11 @@ rm_rf(){
 }
 
 remove_flogo(){
-
   echoInfo "Start remove flogo command"
   # remove flogo command
-  rm_rf "${GOPATH}/bin/flogo"
+  rm_rf "${GOPATH}/bin/flogo-cli"
   # remove flogo pkg
-  rm_rf "${GOPATH}/pkg/darwin_amd64/github.com/TIBCOSoftware/flogo-cli"
+  rm_rf "${GOPATH}/pkg/$(go run scripts/detect-arch.go)/github.com/TIBCOSoftware/flogo-cli"
   # remove flogo src
   rm_rf "${GOPATH}/src/github.com/TIBCOSoftware/flogo-cli"
   echoInfo "Finish remove flogo command"
@@ -119,6 +161,12 @@ echoHeader "Step1: check environment"
 check_command go
 
 #============================
+# java
+#============================
+check_command java
+check_java_version "1.8"
+
+#============================
 # gb
 #============================
 check_command gb
@@ -132,6 +180,7 @@ check_command git
 # node
 #============================
 check_command node
+check_version node "4.0"
 
 #============================
 # gulp
@@ -142,11 +191,14 @@ check_command node
 # npm
 #============================
 check_command npm
+check_version npm "3.0"
 
 #============================
 # docker-machine & docker
 #============================
-check_command docker-machine
+if [ -z "$SKIPCHECK_DOCKER_MACHINE" ]; then
+  check_command docker-machine
+fi
 check_command docker
 
 #============================
@@ -158,7 +210,7 @@ update_flogo
 #############################
 # Step 2: update submodule
 #############################
-echoHeader "Step2: update submodule: flogo-internal, flogo-contrib"
+echoHeader "Step2: update submodules: flogo-contrib, flogo-services"
 rm -rf submodules/
 git submodule update --init --remote
 
@@ -170,7 +222,7 @@ echoSuccess "update submodule\n"
 echoHeader "Step3: start process and state server"
 
 echoInfo " setup docker"
-cd "${FLOGO_INTERNAL_PATH}/utils/flow-demo/cli/setup"
+cd scripts/setup
 sh setup-docker.sh
 
 echoInfo "stop process and state server"

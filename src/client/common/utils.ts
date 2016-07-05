@@ -488,7 +488,7 @@ export function parseMapping(automapping:string){
   let path = matches[4] ? _.trimStart(matches[4], '.') : null;
 
   return {
-    autoMap: `[${matches[1]}.${attributeName}]`,
+    autoMap: `{${matches[1]}.${attributeName}}`,
     isRoot: !taskId,
     taskId,
     attributeName,
