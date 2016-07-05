@@ -20,6 +20,16 @@ FLOGO_INTERNAL_PATH="submodules/flogo-internal"
 FLOGO_CONTRIB_PATH="submodules/flogo-contrib"
 CURRENT_PATH=$PWD
 
+export SKIPCHECK_DOCKER_MACHINE=""
+while getopts ":m" opt; do
+  case $opt in
+    m)
+      export SKIPCHECK_DOCKER_MACHINE=true
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
 #############################
 # Utils
 #############################
@@ -186,7 +196,9 @@ check_version npm "3.0"
 #============================
 # docker-machine & docker
 #============================
-check_command docker-machine
+if [ -z "$SKIPCHECK_DOCKER_MACHINE" ]; then
+  check_command docker-machine
+fi
 check_command docker
 
 #============================
