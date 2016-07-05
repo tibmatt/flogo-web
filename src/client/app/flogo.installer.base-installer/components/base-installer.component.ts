@@ -11,7 +11,6 @@ export class FlogoInstallerBaseComponent implements OnChanges {
   installables = <any[]>[];
 
   constructor() {
-    this.init();
   }
 
   init() {
