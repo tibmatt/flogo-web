@@ -131,7 +131,7 @@ check_version() {
     local targetVersion="$2"
     result=0;
 
-    installed_version=$("$command" --version 2>&1 | awk -F '"' '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/ {print $1}')
+    installed_version=$("$command" --version 2>&1 | grep '[0-9]\+\.[0-9]\+\.[0-9]\+$')
     installed_version=${installed_version//v}
 
     compare_versions $installed_version $targetVersion
