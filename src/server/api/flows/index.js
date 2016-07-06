@@ -280,7 +280,10 @@ function * exportFlowInJsonById( next ) {
           if ( !_.isEmpty( propVal ) ) {
             _.forIn( propVal, ( item )=> {
               _.each( [ '__status', '__props' ], ( path ) => {
-                _.unset( item, path );
+                // If is not trigger, remove __props
+                if(item.type !== FLOGO_TASK_TYPE.TASK_ROOT) {
+                  _.unset( item, path );
+                }
               } );
             } );
           }
