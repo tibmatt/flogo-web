@@ -1,9 +1,11 @@
 #!/bin/bash
 
-## Setup Docker
-docker-machine create --driver virtualbox flogo
-docker-machine start flogo
-eval $(docker-machine env flogo)
+if [ -z "$SKIPCHECK_DOCKER_MACHINE" ]; then
+  ## Setup Docker
+  docker-machine create --driver virtualbox flogo
+  docker-machine start flogo
+  eval $(docker-machine env flogo)
+fi
 
 ## Run setup-docker.sh first
 # docker pull redis
