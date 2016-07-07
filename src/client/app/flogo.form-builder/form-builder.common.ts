@@ -61,11 +61,9 @@ export class FlogoFormBuilderCommon {
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
         return {control:'FieldRadio'};
 
+      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
         return {control:'FieldTextArea'};
-
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-        return {control:'FieldParams'};
 
       default:
         return {control:'TextBox'};

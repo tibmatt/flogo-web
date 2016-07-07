@@ -1,11 +1,12 @@
 #!/bin/bash
 
-## Start docker
-docker-machine start flogo
-eval $(docker-machine env flogo)
-DOCKER_IP=$(docker-machine ip flogo)
-
-echo *** $DOCKER_IP
+if [ -z "$SKIPCHECK_DOCKER_MACHINE" ]; then
+  ## Start docker
+  docker-machine start flogo
+  eval $(docker-machine env flogo)
+  DOCKER_IP=$(docker-machine ip flogo)
+  echo *** $DOCKER_IP
+fi;
 
 ## Cleanup containers
 docker stop $(docker ps -q -f "name=redis")

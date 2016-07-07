@@ -3,7 +3,7 @@
 **Current start script is not available for windows**
 
 ## Prepare
-Find requirements and setup instructions in [getting stated guide](getting-started-with-flogo.md).
+Find requirements and setup instructions in [getting started guide](getting-started-with-flogo.md).
 
 ## Run the application
 
