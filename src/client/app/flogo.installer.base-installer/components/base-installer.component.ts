@@ -11,33 +11,46 @@ export class FlogoInstallerBaseComponent implements OnChanges {
   installables = <any[]>[];
 
   constructor() {
-    this.init();
   }
 
   init() {
     console.log( 'Initialise Flogo Installer Base Component.' );
-    this._categories = this.getCategories();
-    this.installables = this.getInstallables();
+    this.updateData();
+  }
 
-    this._installables = this.getFilteredInstallables();
+  updateData() {
+    return Promise.all( [
+      this.getCategories(),
+      this.getInstallables()
+    ] )
+      .then( ( result : any ) => {
+        this._categories = result[ 0 ] || [];
+        this.installables = result[ 1 ] || [];
+      } )
+      .then( ()=> {
+        this._installables = this.getFilteredInstallables();
+      } )
+      .catch( ( err ) => {
+        console.error( err );
+      } );
   }
 
   // TODO replace these mock data.
   getCategories() {
     console.log( TO_BE_OVERRIDDEN );
-    return [
+    return Promise.resolve( [
       'Requests',
       'Optimizations',
       'Connect to Devices',
       'Framework Adaptors',
       'Web Adaptors',
       'Uncategorized'
-    ];
+    ] );
   }
 
   getInstallables() {
     console.log( TO_BE_OVERRIDDEN );
-    return [
+    return Promise.resolve( [
       {
         name : '',
         description : '',
@@ -48,7 +61,7 @@ export class FlogoInstallerBaseComponent implements OnChanges {
         createTime : Date.now(),
         isInstalled : false
       }
-    ];
+    ] );
   }
 
   getFilteredInstallables() {
@@ -70,7 +83,11 @@ export class FlogoInstallerBaseComponent implements OnChanges {
     if ( _.has( changes, 'query' ) ) {
       let currentValue = changes[ 'query' ].currentValue;
 
-      this.onQueryChange( this.query );
+      this.onQueryChange( currentValue );
+    }
+
+    if ( _.has( changes, 'status' ) ) {
+      this.onInstallerStatusChange( changes[ 'status' ].currentValue );
     }
 
   }
@@ -86,5 +103,10 @@ export class FlogoInstallerBaseComponent implements OnChanges {
 
   onItemAction( info : any ) {
     console.log( TO_BE_OVERRIDDEN );
+  }
+
+  onInstallerStatusChange( status : string ) {
+    console.log( TO_BE_OVERRIDDEN );
+    console.log( status );
   }
 }

@@ -2,6 +2,11 @@ import { Component } from '@angular/core';
 import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.category-selector/components/category-selector.component';
 import { FlogoInstallerListViewComponent } from '../../flogo.installer.list-view/components/list-view.component';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
+import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import {
+  FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
+  FLOGO_INSTALLER_STATUS_INSTALL_FAILED
+} from '../../flogo.installer/constants';
 
 @Component( {
   selector : 'flogo-installer-activity',
@@ -11,91 +16,42 @@ import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installe
     FlogoInstallerListViewComponent
   ],
   templateUrl : 'activity-installer.tpl.html',
-  inputs : [ 'query: flogoSearchQuery' ],
+  inputs : [ 'query: flogoSearchQuery', 'status: flogoInstallerStatus' ],
   styleUrls : [ 'activity-installer.component.css' ]
 } )
 export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent {
 
-  constructor() {
+  constructor( private _restAPIActivitiesService : RESTAPIActivitiesService ) {
     super();
+
+    this.init();
   }
 
   // override
   getInstallables() {
-    // TODO replace these mock data.
-    return [
-      {
-        name : 'tibco-awsiot',
-        title : 'AWS IoT Activity',
-        description : 'Simple AWS IoT Activity',
-        version : '0.0.1',
-        where : 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot',
-        icon : '',
-        author : 'Francisco Martinez',
-        createTime : new Date( '2016-05' ).getTime(),
-        updateTime : Date.now(),
-        isInstalled : false
-      },
-      {
-        name : 'tibco-coap',
-        title : 'CoAP Activity',
-        description : 'Simple CoAP Activity',
-        version : '0.0.1',
-        where : 'github.com/TIBCOSoftware/flogo-contrib/activity/coap',
-        icon : '',
-        author : 'Francisco Martinez',
-        createTime : new Date( '2016-05' ).getTime(),
-        updateTime : Date.now(),
-        isInstalled : false
-      },
-      {
-        name : 'tibco-counter',
-        title : 'Counter Activity',
-        description : 'Simple Global Counter Activity',
-        version : '0.0.1',
-        where : 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-        icon : '',
-        author : 'Francisco Martinez',
-        createTime : new Date( '2016-04' ).getTime(),
-        updateTime : Date.now(),
-        isInstalled : true
-      },
-      {
-        name : 'tibco-log',
-        title : 'Log Activity',
-        description : 'Simple Log Activity',
-        version : '0.0.1',
-        where : 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-        icon : '',
-        author : 'Francisco Martinez',
-        createTime : new Date( '2016-01' ).getTime(),
-        updateTime : Date.now(),
-        isInstalled : true
-      },
-      {
-        name : 'tibco-rest',
-        title : 'REST Activity',
-        description : 'Simple REST Activity',
-        version : '0.0.1',
-        where : 'github.com/TIBCOSoftware/flogo-contrib/activity/rest',
-        icon : '',
-        author : 'Francisco Martinez',
-        createTime : new Date( '2016-01' ).getTime(),
-        updateTime : Date.now(),
-        isInstalled : true
-      },
-      {
-        name : 'tibco-twilio',
-        title : 'Twilio Activity',
-        description : 'Simple Twilio Activity',
-        version : '0.0.1',
-        where : 'github.com/TIBCOSoftware/flogo-contrib/activity/twilio',
-        icon : '',
-        author : 'Francisco Martinez',
-        createTime : new Date( '2016-04' ).getTime(),
-        updateTime : Date.now(),
-        isInstalled : true
-      }
-    ];
+    return this._restAPIActivitiesService.getActivities()
+      .then( ( activities ) => {
+        return _.map( activities, ( activity : any ) => {
+          return {
+            name : activity.name,
+            title : activity.title,
+            description : activity.description,
+            version : activity.version,
+            where : activity.where,
+            icon : activity.icon,
+            author : activity.author,
+            createTime : activity.createTime || Date.now(),
+            updateTime : activity.updateTime || Date.now(),
+            isInstalled : activity.installed || false
+          }
+        } );
+      } );
+  }
+
+  // override
+  onInstallerStatusChange( status: string) {
+    if (status === FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS || status === FLOGO_INSTALLER_STATUS_INSTALL_FAILED) {
+      this.updateData();
+    }
   }
 }
