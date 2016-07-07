@@ -21,6 +21,7 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
   }
 
   onChangeField(event:any){
+    let invalidJSON = false;
     let value : any = null;
     try {
       value = JSON.parse(event.target.value);
@@ -29,7 +30,16 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
       // TODO
       //  better handler of invalid JSON?
       //  for the moment, keep the value even though it's not valid JSON, and ensure string format
+      this._errorMessage = this._info.title + ' invalid JSON';
+      this._hasError = true;
+      invalidJSON = true;
+      this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}) );
+
       value = '' + event.target.value;
+    }
+    if(!invalidJSON) {
+      this._hasError = false;
+      this._fieldObserver.next(this._getMessage('validation', {status:'ok',field: this._info.name}) );
     }
     this._info.value = value;
     this.publishNextChange();
