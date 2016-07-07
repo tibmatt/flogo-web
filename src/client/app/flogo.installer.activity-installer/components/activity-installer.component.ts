@@ -3,6 +3,10 @@ import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.c
 import { FlogoInstallerListViewComponent } from '../../flogo.installer.list-view/components/list-view.component';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import {
+  FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
+  FLOGO_INSTALLER_STATUS_INSTALL_FAILED
+} from '../../flogo.installer/constants';
 
 @Component( {
   selector : 'flogo-installer-activity',
@@ -12,7 +16,7 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
     FlogoInstallerListViewComponent
   ],
   templateUrl : 'activity-installer.tpl.html',
-  inputs : [ 'query: flogoSearchQuery' ],
+  inputs : [ 'query: flogoSearchQuery', 'status: flogoInstallerStatus' ],
   styleUrls : [ 'activity-installer.component.css' ]
 } )
 export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent {
@@ -42,5 +46,12 @@ export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent
           }
         } );
       } );
+  }
+
+  // override
+  onInstallerStatusChange( status: string) {
+    if (status === FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS || status === FLOGO_INSTALLER_STATUS_INSTALL_FAILED) {
+      this.updateData();
+    }
   }
 }

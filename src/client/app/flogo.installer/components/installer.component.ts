@@ -9,6 +9,10 @@ import { FlogoInstallerUrlComponent } from '../../flogo.installer.url-installer/
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { notification } from '../../../common/utils';
+import {
+  FLOGO_INSTALLER_STATUS_STANDBY, FLOGO_INSTALLER_STATUS_IDLE,
+  FLOGO_INSTALLER_STATUS_INSTALL_FAILED, FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS, FLOGO_INSTALLER_STATUS_INSTALLING
+} from '../constants';
 
 const ACTIVITY_TITLE = 'Download Tiles';
 const TRIGGER_TITLE = 'Download Triggers';
@@ -48,6 +52,8 @@ export class FlogoInstallerComponent implements OnChanges {
   _query = '';
   _title = '';
 
+  _status = FLOGO_INSTALLER_STATUS_IDLE;
+
   // TODO
   //  may add two-way binding later.
   installTypeUpdate = new EventEmitter();
@@ -60,6 +66,8 @@ export class FlogoInstallerComponent implements OnChanges {
 
   init() {
     console.log( 'Initialise Flogo Installer Component.' );
+
+    this._status = FLOGO_INSTALLER_STATUS_STANDBY;
   }
 
   ngOnChanges( changes : {
@@ -109,6 +117,7 @@ export class FlogoInstallerComponent implements OnChanges {
 
   openModal() {
     console.log( 'Open Modal.' );
+    this._status = FLOGO_INSTALLER_STATUS_STANDBY;
     this.modal.open();
   }
 
@@ -120,6 +129,7 @@ export class FlogoInstallerComponent implements OnChanges {
   onModalCloseOrDismiss() {
     console.log( 'On Modal Close.' );
     this._isActivated = false;
+    this._status = FLOGO_INSTALLER_STATUS_IDLE;
     this.isActivatedUpdate.emit( false );
   }
 
@@ -141,27 +151,38 @@ export class FlogoInstallerComponent implements OnChanges {
 
     let self = this;
 
-    installAPI( [ url ] )
-      .then( ( response )=> {
-        console.group( `[FlogoInstallerComponent] onResponse` );
-        if (response.fail.length) {
+    if ( _.isFunction( installAPI ) ) {
+
+      self._status = FLOGO_INSTALLER_STATUS_INSTALLING;
+
+      installAPI( [ url ] )
+        .then( ( response )=> {
+          console.group( `[FlogoInstallerComponent] onResponse` );
+          if ( response.fail.length ) {
+            notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
+            console.error( `${_.capitalize( self._installType )} [ ${url} ] installation failed.` );
+          } else {
+            notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
+            console.log( `${_.capitalize( self._installType )} [ ${url} ] installed.` );
+          }
+          console.groupEnd();
+          return response;
+        } )
+        .then( ( response ) => {
+          this.onInstalled.emit( response );
+          self._status = FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS;
+          console.groupEnd();
+          return response;
+        } )
+        .catch( ( err ) => {
+          console.error( err );
           notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
-          console.error(`${_.capitalize( self._installType )} [ ${url} ] installation failed.`);
-        } else {
-          notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
-          console.log(`${_.capitalize( self._installType )} [ ${url} ] installed.`);
-        }
-        console.groupEnd();
-        return response;
-      } )
-      .then( ( response ) => {
-        this.onInstalled.emit( response );
-        console.groupEnd();
-        return response;
-      } )
-      .catch( ( err ) => {
-        console.error( err );
-        console.groupEnd();
-      } );
+          self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
+          console.groupEnd();
+        } );
+    } else {
+      self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
+    }
+
   }
 }

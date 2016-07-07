@@ -20,6 +20,11 @@
   background-size: @flogo-installer-url-installer-icon-width @flogo-installer-url-installer-icon-height;
 
   cursor: pointer;
+
+  &.flogo-installer-url-installer-disabled {
+    cursor: progress;
+    background-image: url('/assets/svg/flogo.icon.download.disabled.svg');
+  }
 }
 
 .flogo-installer-url-installer-input {

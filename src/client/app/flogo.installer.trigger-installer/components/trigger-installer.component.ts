@@ -3,6 +3,10 @@ import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.c
 import { FlogoInstallerListViewComponent } from '../../flogo.installer.list-view/components/list-view.component';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import {
+  FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
+  FLOGO_INSTALLER_STATUS_INSTALL_FAILED
+} from '../../flogo.installer/constants';
 
 @Component( {
   selector : 'flogo-installer-trigger',
@@ -12,12 +16,12 @@ import { RESTAPITriggersService } from '../../../common/services/restapi/trigger
     FlogoInstallerListViewComponent
   ],
   templateUrl : 'trigger-installer.tpl.html',
-  inputs : [ 'query: flogoSearchQuery' ],
+  inputs : [ 'query: flogoSearchQuery', 'status: flogoInstallerStatus' ],
   styleUrls : [ 'trigger-installer.component.css' ]
 } )
 export class FlogoInstallerTriggerComponent extends FlogoInstallerBaseComponent {
 
-  constructor(private _restAPITriggersService : RESTAPITriggersService) {
+  constructor( private _restAPITriggersService : RESTAPITriggersService ) {
     super();
 
     this.init();
@@ -42,5 +46,12 @@ export class FlogoInstallerTriggerComponent extends FlogoInstallerBaseComponent 
           }
         } );
       } );
+  }
+
+  // override
+  onInstallerStatusChange( status: string) {
+    if (status === FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS || status === FLOGO_INSTALLER_STATUS_INSTALL_FAILED) {
+      this.updateData();
+    }
   }
 }

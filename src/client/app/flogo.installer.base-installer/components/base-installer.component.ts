@@ -15,7 +15,11 @@ export class FlogoInstallerBaseComponent implements OnChanges {
 
   init() {
     console.log( 'Initialise Flogo Installer Base Component.' );
-    Promise.all( [
+    this.updateData();
+  }
+
+  updateData() {
+    return Promise.all( [
       this.getCategories(),
       this.getInstallables()
     ] )
@@ -79,7 +83,11 @@ export class FlogoInstallerBaseComponent implements OnChanges {
     if ( _.has( changes, 'query' ) ) {
       let currentValue = changes[ 'query' ].currentValue;
 
-      this.onQueryChange( this.query );
+      this.onQueryChange( currentValue );
+    }
+
+    if ( _.has( changes, 'status' ) ) {
+      this.onInstallerStatusChange( changes[ 'status' ].currentValue );
     }
 
   }
@@ -95,5 +103,10 @@ export class FlogoInstallerBaseComponent implements OnChanges {
 
   onItemAction( info : any ) {
     console.log( TO_BE_OVERRIDDEN );
+  }
+
+  onInstallerStatusChange( status : string ) {
+    console.log( TO_BE_OVERRIDDEN );
+    console.log( status );
   }
 }
