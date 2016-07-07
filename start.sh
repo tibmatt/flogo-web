@@ -248,8 +248,11 @@ update_flogo
 # Step 2: update submodule
 #############################
 echoHeader "Step2: update submodules: flogo-contrib, flogo-services"
-rm -rf submodules/
-git submodule update --init --remote
+
+git submodule update --init -- submodules/flogo-services
+# make sure always pulls the latest changes from flogo-contrib
+rm -rf submodules/flogo-contrib
+git submodule update --init --remote -- submodules/flogo-contrib
 
 echoSuccess "update submodule\n"
 
