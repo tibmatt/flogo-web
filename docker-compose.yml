@@ -1,24 +1,58 @@
 version: '2'
 services:
   flogo-web:
-    build:
-     context: .
-     dockerfile: Dockerfile
-    ports:
-      - "3010:3010"
-      - "5984:5984"
-      - "8080:8080"
-    environment:
-      FLOGO_FLOW_SERVICE_HOST: flow-service
-      FLOGO_FLOW_STATE_SERVICE_HOST: flow-state-service
-    depends_on:
-     - flow-service
-     - flow-state-service
-  flow-service:
-    image: flogo/flow-service
-    ports:
-      - "9090:9090"
-  flow-state-service:
-    image: flogo/flow-state-service
-    ports:
-      - "9190:9190"
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "3010:3010"
+        - "5984:5984"
+        - "8080:8080"
+      environment:
+        FLOGO_FLOW_SERVICE_HOST: flogo-flow-service
+        FLOGO_FLOW_STATE_SERVICE_HOST: flogo-state-service
+        GIT_USERNAME: myname
+        GIT_PASSWORD: mypassword
+      depends_on:
+        - flogo-flow-service
+        - flogo-state-service
+  flogo-redis:
+        image: redis
+  flogo-flow-service:
+        image: flogo/flow-service
+        build: 
+            context: ./submodules/flogo-services
+            dockerfile: Dockerfile-flow-service
+        depends_on:
+        - flogo-redis
+        ports: 
+        - "9090:9090"
+        - "9091:9091"
+        links:
+        - flogo-redis
+        entrypoint:
+        - /tmp/flow-service/docker-start.sh
+        - compile
+        volumes: 
+        - ./submodules/flogo-services/flow-store-service/config:/tmp/config
+        environment: 
+        - FLOGO_REDIS_HOST=flogo-redis
+  flogo-state-service:
+        image: flogo/state-service
+        build: 
+            context: ./submodules/flogo-services
+            dockerfile: Dockerfile-flow-state-service
+        depends_on:
+        - flogo-redis
+        ports: 
+        - "9190:9190"
+        - "9191:9191"
+        links:
+        - flogo-redis
+        entrypoint:
+        - /tmp/flow-state-service/docker-start.sh
+        - compile
+        volumes: 
+        - ./submodules/flogo-services/flow-state-service/config:/tmp/config
+        environment: 
+        - FLOGO_REDIS_HOST=flogo-redis

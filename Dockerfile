@@ -1,38 +1,51 @@
-FROM flogo/flogo-cli
+FROM golang:1.6.2-alpine
+MAINTAINER Aditya Wagle
 
 VOLUME "./docker-shared"
+#COPY * /tmp/flogo-web/
 
-## INSTALL NODE
-RUN apk --no-cache add nodejs python bash
+WORKDIR /tmp/flogo-web
 
-# Create app directory
-RUN mkdir -p /usr/app/src
-WORKDIR /usr/app
-COPY ["package.json","/usr/app"]
-RUN npm install && npm cache clear
+COPY ["package.json","/tmp/flogo-web"]
 
 # Install app dependencies files
 COPY [".babelrc", \
         "gulpfile.babel.js",  \
         "tsconfig.json", \
         "typings.json", \
-    "/usr/app/"]
+        "docker-start.sh",\
+    "/tmp/flogo-web/"]
 
-COPY submodules /usr/app/submodules
-COPY typings /usr/app/typings
-COPY gulp /usr/app/gulp
-COPY contrib /usr/app/contrib
+COPY submodules /tmp/flogo-web/submodules
+COPY typings /tmp/flogo-web/typings
+COPY gulp /tmp/flogo-web/gulp
+COPY contrib /tmp/flogo-web/contrib
 
-COPY src /usr/app/src
+COPY src /tmp/flogo-web/src
 
-#INSTALL GULP
-RUN mkdir -p $HOME && \
-    npm install -g gulp-cli \
-    && gulp prod.build \
-    && rm -rf src \
-    && npm cache clear
+COPY gulp /tmp/flogo-web/gulp
 
-COPY ["docker/config-git.sh","docker/start.sh", "/usr/app/"]
+#flogo-web will be at /tmp/flogo-web
+
+
+
+## INSTALL NODE
+RUN apk --no-cache add make nodejs python bash git g++ && \
+    node --version && \
+    echo "### RUNNING npm install ### " && \
+    npm install  && \
+    echo "### RUNNING npm cache clear ### " && \
+    echo "Installing GULP CLI" && \
+    npm install -g gulp-cli && \
+    npm cache clear && \
+    chmod 777 /tmp/flogo-web/docker-start.sh && \
+    echo "Starting local build" && \
+    gulp build && \
+    echo "Installing GB" && \
+    go get github.com/constabulary/gb/...
+
+WORKDIR /tmp/flogo-web
+
 EXPOSE 3010
 
-CMD ["bash", "start.sh"]
+ENTRYPOINT /tmp/flogo-web/docker-start.sh
