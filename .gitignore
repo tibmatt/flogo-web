@@ -71,3 +71,6 @@ contrib/
 !contrib/activity/README
 !contrib/trigger/README
 !contrib/model/README
+
+
+docker/config-git.sh
