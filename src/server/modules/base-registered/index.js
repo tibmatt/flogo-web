@@ -10,6 +10,7 @@ import {config} from '../../config/app-config';
 const execSync = require('child_process').execSync;
 
 const COMPONENT_TYPE = ["trigger", "activity", "model"];
+const UI_FOLDER_NAME = 'ui';
 
 
 // default options
@@ -61,7 +62,7 @@ export class BaseRegistered{
     let data = fs.readFileSync(this._packageJSONTplFilePath, {"encoding": "utf8"});
     this.packageJSONTemplate = JSON.parse(data);
 
-    // store the path of RT(activity RT, trigger RT)
+    // store the path of runtime(activity runtime, trigger runtime)
     this._where = [];
   }
 
@@ -207,12 +208,12 @@ export class BaseRegistered{
 
           // TODO need to improve, provide more good way
 
-          if(isExisted(path.join(itemPath, 'design', 'package.json'))){
-            design_package_json = path.join(itemPath, 'design', 'package.json');
-            value = path.join(itemPath, 'design');
-          }else if(isExisted(path.join(itemPath, 'src', 'design', 'package.json'))){
-            design_package_json = path.join(itemPath, 'src', 'design', 'package.json');
-            value = path.join(itemPath, 'src', 'design');
+          if(isExisted(path.join(itemPath, UI_FOLDER_NAME, 'package.json'))){
+            design_package_json = path.join(itemPath, UI_FOLDER_NAME, 'package.json');
+            value = path.join(itemPath, UI_FOLDER_NAME);
+          }else if(isExisted(path.join(itemPath, 'src', UI_FOLDER_NAME, 'package.json'))){
+            design_package_json = path.join(itemPath, 'src', UI_FOLDER_NAME, 'package.json');
+            value = path.join(itemPath, 'src', UI_FOLDER_NAME);
           }else{
             console.log("[Warning] didn't find design time for this activity");
           }
