@@ -20,8 +20,9 @@
         <flogo-form-builder-fields-textarea [info]="getTaskInfo(item, 'input','inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
       </div>
 
-      <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
-        <flogo-form-builder-fields-params [info]="getTaskInfo(item, 'input','inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-params>
+
+      <div *ngIf="getControlByType(item.type).control == 'FieldObject'">
+        <flogo-form-builder-fields-object [info]="getTaskInfo(item, 'input','inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-object>
       </div>
 
     </div>
@@ -45,9 +46,10 @@
         <flogo-form-builder-fields-textarea [info]="getTaskInfo(item, 'output','outputs')" [fieldObserver]="_fieldObserver"  ></flogo-form-builder-fields-textarea>
       </div>
 
-      <div *ngIf="getControlByType(item.type).control == 'FieldParams'">
-        <flogo-form-builder-fields-params [info]="getTaskInfo(item, 'output','outputs')" [fieldObserver]="_fieldObserver"  ></flogo-form-builder-fields-params>
+      <div *ngIf="getControlByType(item.type).control == 'FieldObject'">
+        <flogo-form-builder-fields-object [info]="getTaskInfo(item, 'output','outputs')" [fieldObserver]="_fieldObserver"  ></flogo-form-builder-fields-object>
       </div>
+
     </div>
   </div>
 
