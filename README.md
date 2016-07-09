@@ -15,7 +15,7 @@ Flogo Web UI provides a web-based Designer & debugger to build Flogo application
 4. [flogo-lib](https://github.com/TIBCOSoftware/flogo-lib.git)
 5. [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git)
 
-If you don't have git repo access, please send email to [Rajeev Kozhikkattuthodi](mailto:rkozhikk@tibco.com?subject=Flogo%20Git%20Access) or [Francisco Martinez](mailto:fmartinez@tibco.com?subject=Flogo%20Git%20Access)
+If you don't have git repo access, please email [Rajeev Kozhikkattuthodi](mailto:rkozhikk@tibco.com?subject=Flogo%20Git%20Access) or [Francisco Martinez](mailto:fmartinez@tibco.com?subject=Flogo%20Git%20Access)
 
 ## Setting up Flogo Web UI & dependencies
 
@@ -33,10 +33,9 @@ git clone https://github.com/TIBCOSoftware/flogo-web.git
 1. Run the following commands to update the submodules:
    
    `git submodule update --init -- submodules/flogo-services`
-   
    `rm -rf submodules/flogo-contrib`
-   
    `git submodule update --init --remote -- submodules/flogo-contrib`
+
 1. Run `docker-compose up`
 
 Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
