@@ -33,7 +33,9 @@ git clone https://github.com/TIBCOSoftware/flogo-web.git
 1. Run the following commands to update the submodules:
    
    `git submodule update --init -- submodules/flogo-services`
+
    `rm -rf submodules/flogo-contrib`
+   
    `git submodule update --init --remote -- submodules/flogo-contrib`
 
 1. Run `docker-compose up`
