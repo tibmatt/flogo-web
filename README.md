@@ -1,9 +1,12 @@
 # flogo-web
 
+Flogo Web UI provides a web-based Designer & debugger to build Flogo applications 
+
+
 ## Prerequisites
 
-- git 
-- docker and docker-machine (https://www.docker.com)
+- git: There are several excellent tools available for [git](https://git-scm.com/downloads)
+- docker:  Refer to the getting started documentation on [docs.docker.com](https://docs.docker.com/)
 - Access to the following git repositories:
 
 1. [flogo-cli](https://github.com/TIBCOSoftware/flogo-cli.git)
@@ -14,7 +17,7 @@
 
 If you don't have git repo access, please send email to [Rajeev Kozhikkattuthodi](mailto:rkozhikk@tibco.com?subject=Flogo%20Git%20Access) or [Francisco Martinez](mailto:fmartinez@tibco.com?subject=Flogo%20Git%20Access)
 
-## Installing Flogo Web UI
+## Setting up Flogo Web UI & dependencies
 
 After you get git access, clone the [flogo-web repository](https://github.com/TIBCOSoftware/flogo-web.git)
 
@@ -22,7 +25,7 @@ After you get git access, clone the [flogo-web repository](https://github.com/TI
 git clone https://github.com/TIBCOSoftware/flogo-web.git
 ```
 
-## Run Flogo Web UI application
+## Run Flogo Web UI 
 
 1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
 1. Run `git status` // to make sure you're in **master** branch
@@ -44,4 +47,7 @@ Application and services will be started, when you see the following banner in t
 =============================================================================================
 ```
 
+## Questions 
+
+Post a question on [Tibbr](https://tibco.tibbr.com/tibbr/#!/subjects/48414) or Slack
 
