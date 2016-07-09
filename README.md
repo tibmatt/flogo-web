@@ -2,11 +2,9 @@
 
 ## Prerequisites
 
-- git
+- git 
 - docker and docker-machine (https://www.docker.com)
-
-## Make sure you have access to source code
-Before you continue make sure you have git access for following repositories:
+- Access to the following git repositories:
 
 1. [flogo-cli](https://github.com/TIBCOSoftware/flogo-cli.git)
 2. [flogo-contrib](https://github.com/TIBCOSoftware/flogo-contrib.git)
@@ -14,7 +12,9 @@ Before you continue make sure you have git access for following repositories:
 4. [flogo-lib](https://github.com/TIBCOSoftware/flogo-lib.git)
 5. [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git)
 
-If you don't have git access, please send email to [Rajeev Kozhikkattuthodi](mailto:rkozhikk@tibco.com?subject=Flogo%20Git%20Access) or [Francisco Martinez](mailto:fmartinez@tibco.com?subject=Flogo%20Git%20Access)
+If you don't have git repo access, please send email to [Rajeev Kozhikkattuthodi](mailto:rkozhikk@tibco.com?subject=Flogo%20Git%20Access) or [Francisco Martinez](mailto:fmartinez@tibco.com?subject=Flogo%20Git%20Access)
+
+## Installing Flogo Web UI
 
 After you get git access, clone the [flogo-web repository](https://github.com/TIBCOSoftware/flogo-web.git)
 
@@ -22,7 +22,7 @@ After you get git access, clone the [flogo-web repository](https://github.com/TI
 git clone https://github.com/TIBCOSoftware/flogo-web.git
 ```
 
-## Run the application
+## Run Flogo Web UI application
 
 1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
 1. Run `git status` // to make sure you're in **master** branch
@@ -45,16 +45,3 @@ Application and services will be started, when you see the following banner in t
 ```
 
 
-## Few notable features
-
-1. Application structure suitable for distributed contributions
-
-2. Manage and Merge front-end libraries by NPM
-
-3. Compile LESS
-
-4. One command start everything
-
-## Upcoming features
-
-1. flogo engine auto restart
