@@ -160,7 +160,7 @@ export class Engine {
   createEngine() {
     const self = this;
 
-    return new Promise((resolve, reject)=>{
+    return new Promise( ( resolve, reject )=> {
 
       const successHandler = ()=> {
         self.isProcessing = false;
@@ -670,26 +670,35 @@ export class Engine {
     }
   }
 
-  build(args) {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.BUILDING;
+  build( args ) {
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      args ? args: (args='');
-      // TODO sync to async
-      execSync(`flogo build ${args}`, {
-        cwd: defaultEnginePath
-      });
+    return new Promise( ( resolve, reject )=> {
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->build. Error: ", err);
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      this.isProcessing = false;
-      return false;
-    }
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->build. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.BUILDING;
+
+      const defaultEnginePath = path.join( this.enginePath, this.options.name );
+      args = args || '';
+
+      runShellCMD( 'flogo', [ 'build', args ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
