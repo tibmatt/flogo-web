@@ -189,7 +189,7 @@ export class Engine {
    * [addAllActivities description]
    * @param {[type]} options [description]
    */
-  addAllActivities(options) {
+  addAllActivities( options ) {
     let self = this;
     return new Promise( ( resolve, reject ) => {
 
@@ -207,35 +207,70 @@ export class Engine {
       self.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
 
       activitiesDBService.allDocs()
-        .then( ( result ) => {
-          //console.log("[info]addAllActivities, result", result);
-          result ? result : (result = []);
-          options ? options : (options = {});
+        .then( ( activities ) => {
 
-          const promises = [];
+          options = options || [];
+          activities = activities || [];
 
-          result.forEach( ( item ) => {
-            item ? item : (item = {});
-            let ignore = options[ item.name ] && options[ item.name ].ignore || false;
-            if ( item.where ) {
-              if ( !ignore ) {
-                promises.push( self.addActivity( item.name, item.where ) );
+          return new Promise( ( resolve, reject )=> {
+
+            let processedItemNum = 0;
+            let runResult = [];
+
+            function _sequentiallyRun() {
+
+              let activity = activities[ processedItemNum ];
+
+              processedItemNum++;
+
+              let promise = null;
+
+              activity = activity || {};
+
+              let ignore = options[ activity.name ] && options[ activity.name ].ignore || false;
+
+              if ( activity.where ) {
+                if ( !ignore ) {
+                  promise = self.addActivity( activity.name, activity.where );
+                } else {
+                  console.log( "[info] ignore" );
+                  promise = Promise.resolve( true );
+                }
               } else {
-                console.log( "[info] ignore" );
+                console.error( "[error]", activity.name, " where isn't defined" );
+                promise = Promise.resolve( false );
               }
-            } else {
-              console.error( "[error]", item.name, " where isn't defined" );
-            }
-          } );
 
-          return Promise.all( promises )
-            .then( successHandler );
+              return promise.then( ( result )=> {
+                if ( result !== false && !_.isNil( result ) ) {
+                  runResult.push( true );
+                } else {
+                  runResult.push( false );
+                }
+
+                if ( processedItemNum >= activities.length ) {
+                  console.log( `[log] add all activities result:` );
+                  console.log( runResult );
+                  resolve( true );
+                } else {
+                  return _sequentiallyRun();
+                }
+              } );
+            }
+
+            _sequentiallyRun()
+              .catch( ( err )=> {
+                console.log( `[error] add all activities -> sequentiallyRun on error: ` );
+                console.error( err );
+                reject( err );
+              } );
+          } ).then( successHandler );
         } )
         .catch( ( err ) => {
           console.error( "[error] activitiesDBService.allDocs(), err: ", err );
           errorHandler( err );
         } );
-    });
+    } );
   }
 
   /**
