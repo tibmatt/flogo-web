@@ -98,13 +98,14 @@ function generateBuild(id){
         triggersJSON.triggers.push(triggerJSON);
         engines.build.updateTriggerJSON(triggersJSON, true);
         // step4: build
-        engines.build.build('-i -o');
+        engines.build.build( '-i -o' )
+          .then( ()=> {
+            let buildEnginePath = path.join( engineFolderPath, 'bin', engines.build.options.name );
+            let data = fs.readFileSync( buildEnginePath );
 
-        let buildEnginePath = path.join(engineFolderPath, 'bin', engines.build.options.name);
-
-        let data = fs.readFileSync(buildEnginePath);
-
-        resolve(data);
+            resolve( data );
+          } )
+          .catch( reject );
       }else{
         reject(err);
       }

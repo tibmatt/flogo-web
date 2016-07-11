@@ -139,17 +139,15 @@ export class Engine {
       const engineFolder = path.join( self.enginePath, self.options.name );
 
       // if engine is running stop it
-      // TODO sync to async
-      self.stop();
-
-      // remove the engine folder
-      if ( isExisted( engineFolder ) ) {
-        runShellCMD( 'rm', [ '-rf', engineFolder ] )
-          .then( successHandler )
-          .catch( errorHandler );
-      } else {
-        successHandler();
-      }
+      self.stop()
+        .then( ()=> {
+          // remove the engine folder
+          if ( isExisted( engineFolder ) ) {
+            return runShellCMD( 'rm', [ '-rf', engineFolder ] )
+          }
+        } )
+        .then( successHandler )
+        .catch( errorHandler );
     } );
   }
 

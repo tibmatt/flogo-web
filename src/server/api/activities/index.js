@@ -50,7 +50,9 @@ function* installActivities( next ) {
 
     console.log( `[log] adding activities to test engine...` );
 
-    if ( !testEngine.stop() ) {
+    let stopTestEngineResult = yield testEngine.stop();
+
+    if ( !stopTestEngineResult ) {
       throw new Error( '[error] Encounter error to stop test engine.' );
     }
 
@@ -92,8 +94,15 @@ function* installActivities( next ) {
       throw new Error( '[error] Encounter error to add activities to test engine.' );
     }
 
-    testEngine.build();
-    if ( !testEngine.start() ) {
+    let testEngineBuildResult = yield testEngine.build();
+
+    if ( !testEngineBuildResult ) {
+      throw new Error( '[error] Encounter error to build test engine after adding activities.' );
+    }
+
+    let testEngineStartResult = yield testEngine.start();
+
+    if ( !testEngineStartResult ) {
       throw new Error( '[error] Encounter error to start test engine after adding activities.' );
     }
   }
