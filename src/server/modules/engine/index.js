@@ -11,6 +11,7 @@ import {
   isExisted,
   readJSONFileSync,
   writeJSONFileSync,
+  runShellCMD,
   inspectObj
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
@@ -119,6 +120,7 @@ export class Engine {
       this.stop();
       // remove the engine folder
       if (isExisted(engineFolder)) {
+        // TODO sync to async
         execSync(`rm -rf ${engineFolder}`);
       }
 
@@ -142,6 +144,7 @@ export class Engine {
       this.isProcessing = true;
       this.status = FLOGO_ENGINE_STATUS.CREATING;
 
+      // TODO sync to async
       execSync(`flogo create ${this.options.name}`, {
         cwd: this.enginePath
       });
@@ -250,6 +253,8 @@ export class Engine {
 
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add activity ${activityPath}`);
+
+      // TODO sync to async
       execSync(`flogo add activity ${activityPath}`, {
         cwd: defaultEnginePath
       });
@@ -303,6 +308,8 @@ export class Engine {
 
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add trigger ${triggerPath}`);
+
+      // TODO sync to async
       execSync(`flogo add trigger ${triggerPath}`, {
         cwd: defaultEnginePath
       });
@@ -356,6 +363,8 @@ export class Engine {
 
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add model ${modelPath}`);
+
+      // TODO sync to async
       execSync(`flogo add model ${modelPath}`, {
         cwd: defaultEnginePath
       });
@@ -393,6 +402,7 @@ export class Engine {
       }
       console.log("[info][Engine->addFlow] flowName: ", flowName);
 
+      // TODO sync to async
       execSync(`flogo add flow ${flowPath}`, {
         cwd: defaultEnginePath
       });
@@ -423,6 +433,7 @@ export class Engine {
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del activity ${activityName}`);
 
+      // TODO sync to async
       execSync(`flogo del activity ${activityName}`, {
         cwd: defaultEnginePath
       });
@@ -452,6 +463,7 @@ export class Engine {
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del trigger ${triggerName}`);
 
+      // TODO sync to async
       execSync(`flogo del trigger ${triggerName}`, {
         cwd: defaultEnginePath
       });
@@ -481,6 +493,7 @@ export class Engine {
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del model ${modelName}`);
 
+      // TODO sync to async
       execSync(`flogo del model ${modelName}`, {
         cwd: defaultEnginePath
       });
@@ -511,6 +524,7 @@ export class Engine {
       let flow = `embedded://${flowName}`
       console.log(`[info]flogo del flow ${flow}`);
 
+      // TODO sync to async
       execSync(`flogo del flow ${flow}`, {
         cwd: defaultEnginePath
       });
@@ -636,6 +650,7 @@ export class Engine {
 
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       args ? args: (args='');
+      // TODO sync to async
       execSync(`flogo build ${args}`, {
         cwd: defaultEnginePath
       });
@@ -705,6 +720,7 @@ export class Engine {
 
       let port = this.options.port;
       let name = this.options.name;
+      // TODO sync to async
       execSync(`pgrep ${name} | xargs kill -9`);
       this.isStarted = false;
 
