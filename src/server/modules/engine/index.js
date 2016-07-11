@@ -191,37 +191,50 @@ export class Engine {
    */
   addAllActivities(options) {
     let self = this;
-    return new Promise((resolve, reject) => {
+    return new Promise( ( resolve, reject ) => {
+
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        self.isProcessing = false;
+        reject( err );
+      };
+
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
 
-      activitiesDBService.allDocs().then((result) => {
-        //console.log("[info]addAllActivities, result", result);
-        result ? result : (result = []);
-        options ? options : (options = {});
+      activitiesDBService.allDocs()
+        .then( ( result ) => {
+          //console.log("[info]addAllActivities, result", result);
+          result ? result : (result = []);
+          options ? options : (options = {});
 
-        result.forEach((item) => {
-          item ? item : (item = {});
-          let ignore = options[item.name] && options[item.name].ignore || false;
-          if (item.where) {
-            if (!ignore) {
-              this.addActivity(item.name, item.where);
+          const promises = [];
+
+          result.forEach( ( item ) => {
+            item ? item : (item = {});
+            let ignore = options[ item.name ] && options[ item.name ].ignore || false;
+            if ( item.where ) {
+              if ( !ignore ) {
+                promises.push( self.addActivity( item.name, item.where ) );
+              } else {
+                console.log( "[info] ignore" );
+              }
             } else {
-              console.log("[info] ignore");
+              console.error( "[error]", item.name, " where isn't defined" );
             }
-          } else {
-            console.error("[error]", item.name, " where isn't defined");
-          }
-        });
+          } );
 
-        self.isProcessing = false;
-        resolve(true);
-      }).catch((err) => {
-        console.error("[error]activitiesDBService.allDocs(), err: ", err);
-
-        self.isProcessing = false;
-        reject(err);
-      });
+          return Promise.all( promises )
+            .then( successHandler );
+        } )
+        .catch( ( err ) => {
+          console.error( "[error] activitiesDBService.allDocs(), err: ", err );
+          errorHandler( err );
+        } );
     });
   }
 
