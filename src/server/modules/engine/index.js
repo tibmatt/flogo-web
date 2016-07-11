@@ -78,9 +78,6 @@ export class Engine {
     } else if ( status === false ) {
       this._isProcessing.pop();
     }
-
-    console.log( `[TODO] current isProcessing: ${FLOGO_ENGINE_STATUS[ this.status ]} >> ${this.isProcessing}` );
-    inspectObj( this._isProcessing );
   }
 
   get status() {
@@ -106,11 +103,6 @@ export class Engine {
 
     // add new status;
     this._status.push( status );
-
-    console.log( `[TODO] current status: ${FLOGO_ENGINE_STATUS[ this.status ]} >> ${this.isProcessing}` );
-    inspectObj( _.map( this._status, ( s )=> {
-      return FLOGO_ENGINE_STATUS[ s ];
-    } ) );
   }
 
   /**
