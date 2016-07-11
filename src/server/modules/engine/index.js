@@ -12,6 +12,7 @@ import {
   readJSONFileSync,
   writeJSONFileSync
 } from '../../common/utils';
+import { FLOGO_ENGINE_STATUS } from '../../common/constants';
 
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
@@ -48,7 +49,13 @@ export class Engine {
     };
 
     // currently engine is started or not
-    this.engineStarted = false;
+    this.isStarted = false;
+
+    // if the current engine is running internal tasks such as adding activity,
+    // namely, the engine is down and unable to serve
+    this.isProcessing = false;
+
+    this.status = FLOGO_ENGINE_STATUS['give me an undefined'];
 
     this.removeEngine();
     this.createEngine();
@@ -521,7 +528,7 @@ export class Engine {
       engineProcess.stdout.pipe(logStream);
       engineProcess.stderr.pipe(logStream);
 
-      this.engineStarted = true;
+      this.isStarted = true;
       return true;
     } catch (err) {
       console.error("[Error]Engine->start. Error: ", err);
@@ -538,7 +545,7 @@ export class Engine {
       let port = this.options.port;
       let name = this.options.name;
       execSync(`pgrep ${name} | xargs kill -9`);
-      this.engineStarted = false;
+      this.isStarted = false;
 
       return true;
     }catch(err){
