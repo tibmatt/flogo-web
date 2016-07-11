@@ -57,11 +57,17 @@ export class Engine {
     // namely, the engine is down and unable to serve
     this.isProcessing = false;
 
-    this.removeEngine().then(() => {
-      return this.createEngine();
-    });
-
     return this;
+  }
+
+  init() {
+    return this.removeEngine()
+      .then( () => {
+        return this.createEngine();
+      } )
+      .then( ()=> {
+        return this;
+      } );
   }
 
   get isProcessing() {
@@ -779,7 +785,11 @@ export function getTestEngine() {
       port : config.testEngine.port
     } );
 
-    resolve( testEngine );
+    testEngine.init()
+      .then( ()=> {
+        resolve( testEngine );
+      } )
+      .catch( reject );
   } );
 }
 
@@ -835,7 +845,11 @@ export function getBuildEngine() {
       port : config.buildEngine.port
     } );
 
-    resolve( buildEngine );
+    buildEngine.init()
+      .then( ()=> {
+        resolve( buildEngine );
+      } )
+      .catch( reject );
   } );
 }
 
