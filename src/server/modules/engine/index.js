@@ -177,7 +177,7 @@ export class Engine {
       self.status = FLOGO_ENGINE_STATUS.CREATING;
 
       runShellCMD( 'flogo', [ 'create', self.options.name ], {
-        cwd : this.enginePath
+        cwd : self.enginePath
       } )
         .then( successHandler )
         .catch( errorHandler );
@@ -269,33 +269,40 @@ export class Engine {
    * Add an activity to the engine
    * @param {string} activityName - the name of this activity.
    * @param {string} activityPath - the path of this activity.
-   * @return {boolean} if create successful, return true, otherwise return false
+   * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
-  addActivity(activityName, activityPath) {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
+  addActivity( activityName, activityPath ) {
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo add activity ${activityPath}`);
+    return new Promise( ( resolve, reject )=> {
 
-      // TODO sync to async
-      execSync(`flogo add activity ${activityPath}`, {
-        cwd: defaultEnginePath
-      });
+      const successHandler = ()=> {
+        self.installedActivites[ activityName ] = {
+          path : activityPath
+        };
 
-      this.installedActivites[activityName] = {
-        path: activityPath
+        self.isProcessing = false;
+        resolve( true );
       };
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->addActivity. Error: ", err);
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->addActivity. Error: ", err );
 
-      this.isProcessing = false;
-      return false;
-    }
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'add', 'activity', activityPath ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
