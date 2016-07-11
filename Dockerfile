@@ -2,45 +2,22 @@ FROM golang:1.6.2-alpine
 MAINTAINER Aditya Wagle
 
 VOLUME "./docker-shared"
-#COPY * /tmp/flogo-web/
 
 WORKDIR /tmp/flogo-web
 
-COPY ["package.json","/tmp/flogo-web"]
-
-# Install app dependencies files
-COPY [".babelrc", \
-        "gulpfile.babel.js",  \
-        "tsconfig.json", \
-        "typings.json", \
-        "docker-start.sh",\
-    "/tmp/flogo-web/"]
-
-COPY submodules /tmp/flogo-web/submodules
-COPY typings /tmp/flogo-web/typings
-COPY gulp /tmp/flogo-web/gulp
-COPY contrib /tmp/flogo-web/contrib
-
-COPY src /tmp/flogo-web/src
-
-COPY gulp /tmp/flogo-web/gulp
-
-#flogo-web will be at /tmp/flogo-web
-
-
+COPY . /tmp/flogo-web
 
 ## INSTALL NODE
 RUN apk --no-cache add make nodejs python bash git g++ && \
     node --version && \
+    cd /tmp/flogo-web/build/server && \
     echo "### RUNNING npm install ### " && \
-    npm install  && \
+    # seems silly but it is reported to increase npm install speed (https://github.com/npm/npm/issues/11283)
+    npm set progress=false && \
+    npm install --production && \
     echo "### RUNNING npm cache clear ### " && \
-    echo "Installing GULP CLI" && \
-    npm install -g gulp-cli && \
     npm cache clear && \
     chmod 777 /tmp/flogo-web/docker-start.sh && \
-    echo "Starting local build" && \
-    gulp build && \
     echo "Installing GB" && \
     go get github.com/constabulary/gb/...
 

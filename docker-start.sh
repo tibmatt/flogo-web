@@ -22,10 +22,10 @@ go get -u github.com/TIBCOSoftware/flogo-cli/...
 # start flogo-web
 #############################
 echo "start flogo-web"
-cd /tmp/flogo-web 
+cd /tmp/flogo-web
 
-echo "Calling gulp prod.start"
+echo "Calling npm run start"
 
 ## Need to handle SIGTERM
-
-gulp prod.start
+#cd /tmp/flogo-web/build/server && npm run start
+cd /tmp/flogo-web/build/server && npm run start

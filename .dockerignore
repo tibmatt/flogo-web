@@ -13,4 +13,5 @@ slack-integration/
 **/node_modules/*
 **/.gradle/*
 
-**/build/*
+submodules/**/build
+build/node_modules
