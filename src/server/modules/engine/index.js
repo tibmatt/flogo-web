@@ -694,56 +694,68 @@ export class Engine {
 
   /**
    * Start engine in the background
-   * @return {boolean} if start successful, return true, otherwise return false
+   * @return {Promise<boolean>} if start successful, return true, otherwise return false
    */
   start() {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.STARTING;
+    const self = this;
+    console.log( `[info] starting engine ${self.options.name}` );
 
-      console.log("[info]start");
-      let defaultEngineBinPath = path.join(this.enginePath, this.options.name, 'bin');
-      console.log("[info]defaultEngineBinPath: ", defaultEngineBinPath);
-      let command = "./" + this.options.name; //+ " &";
-      console.log("[info]command: ", command);
+    return new Promise( ( resolve, reject )=> {
 
-      let logFile = path.join(config.publicPath, this.options.name+'.log')
-      let logStream = fs.createWriteStream(logFile, { flags: 'a' });
-      console.log("[info]engine logFile: ", logFile);
+      const successHandler = ()=> {
+        self.isStarted = true;
+        self.status = FLOGO_ENGINE_STATUS.STARTED;
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      if(!isExisted(path.join(defaultEngineBinPath, command))){
-        console.log("[error]engine doesn't exist");
-        return false;
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->start. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.STARTING;
+
+      let defaultEngineBinPath = path.join( self.enginePath, self.options.name, 'bin' );
+      console.log( "[info] defaultEngineBinPath: ", defaultEngineBinPath );
+      let command = "./" + self.options.name; //+ " &";
+      console.log( "[info] command: ", command );
+
+      let logFile = path.join( config.publicPath, self.options.name + '.log' );
+      let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
+      console.log( "[info] engine logFile: ", logFile );
+
+      if ( !isExisted( path.join( defaultEngineBinPath, command ) ) ) {
+
+        console.log( `[error] engine ${self.options.name} doesn't exist` );
+        errorHandler( new Error( `[error] engine ${self.options.name} doesn't exist` ) );
+
+      } else {
+
+        let engineProcess = spawn( command, {
+          cwd : defaultEngineBinPath
+        } );
+
+        // log engine output
+        engineProcess.stdout.pipe( logStream );
+        engineProcess.stderr.pipe( logStream );
+
+        successHandler();
       }
-
-      let engineProcess = spawn(command, {
-        cwd: defaultEngineBinPath
-      });
-
-      // log engine output
-      engineProcess.stdout.pipe(logStream);
-      engineProcess.stderr.pipe(logStream);
-
-      this.isStarted = true;
-      this.status = FLOGO_ENGINE_STATUS.STARTED;
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->start. Error: ", err);
-
-      this.isProcessing = false;
-      return false;
-    }
+    } );
   }
 
   /**
    * Stop engine
    * @return {Promise<boolean>} if stop successful, return true, otherwise return false
    */
-  stop(){
+  stop() {
     const self = this;
 
-    return new Promise((resolve, reject)=>{
+    return new Promise( ( resolve, reject )=> {
 
       const successHandler = ()=> {
         self.isStarted = false;
@@ -754,7 +766,7 @@ export class Engine {
       };
 
       const errorHandler = ( err ) => {
-        console.error("[error] Engine->stop. Error: ", err);
+        console.error( "[error] Engine->stop. Error: ", err );
 
         self.isProcessing = false;
         reject( false );
@@ -763,7 +775,7 @@ export class Engine {
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.STOPPING;
 
-      runShellCMD( 'pgrep', [ self.options.name, '|', 'xargs', 'kill', '-9' ])
+      runShellCMD( 'pgrep', [ self.options.name, '|', 'xargs', 'kill', '-9' ] )
         .then( successHandler )
         .catch( errorHandler );
     } );
