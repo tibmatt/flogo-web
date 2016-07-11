@@ -7,6 +7,9 @@ let rootPath = path.normalize(__dirname + '/..');
 
 let publicPath = path.normalize(rootPath+'/../public');
 
+let FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
+let FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
+
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
 
@@ -17,7 +20,7 @@ let config = {
   app: {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
-    cacheTime: 7 * 24 * 60 * 60 * 1000, /* default caching time (7 days) for static files, calculated in milliseconds */
+    cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
   },
   activities: {
@@ -117,12 +120,16 @@ let config = {
         "name": "stateRecorder",
         "enabled": true,
         "settings": {
-          "host": "localhost",
+          "host": FLOW_STATE_SERVICE_HOST,
           "port": "9190"
         }
       }, {
         "name": "flowProvider",
-        "enabled": true
+        "enabled": true,
+        "settings": {
+          "host": FLOW_SERVICE_HOST,
+          "port": "9090"
+        }
       }, {
         "name": "engineTester",
         "enabled": true,
@@ -169,11 +176,11 @@ let config = {
     }
   },
   stateServer: {
-    host: "localhost",
+    host: FLOW_STATE_SERVICE_HOST,
     port: "9190"
   },
   processServer: {
-    host: "localhost",
+    host: FLOW_SERVICE_HOST,
     port: "9090"
   }
 };

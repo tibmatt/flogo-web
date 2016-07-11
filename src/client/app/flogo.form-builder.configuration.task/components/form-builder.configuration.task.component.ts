@@ -2,17 +2,17 @@ import {Component, SimpleChange} from '@angular/core';
 
 import {FlogoFormBuilderFieldsRadio as FieldRadio} from '../../flogo.form-builder.fields/components/fields.radio/fields.radio.component';
 import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-builder.fields/components/fields.textbox/fields.textbox.component';
-import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
+import {FlogoFormBuilderFieldsObject as FieldObject} from '../../flogo.form-builder.fields/components/fields.object/fields.object.component';
 import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 
 @Component({
     selector: 'flogo-form-builder-task-configuration',
     moduleId: module.id,
     templateUrl: 'form-builder.configuration.task.tpl.html',
-    directives: [FieldRadio, FieldTextBox, FieldParams, FieldTextArea, FieldNumber],
+    directives: [FieldRadio, FieldTextBox,  FieldTextArea, FieldNumber, FieldObject],
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes', '_task:task'],
     providers: [FlogoFormBuilderCommon]
 })

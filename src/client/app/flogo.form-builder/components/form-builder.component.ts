@@ -6,7 +6,6 @@ import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
 import {FlogoFormBuilderFieldsRadio as FieldRadio} from '../../flogo.form-builder.fields/components/fields.radio/fields.radio.component';
 import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-builder.fields/components/fields.textbox/fields.textbox.component';
-import {FlogoFormBuilderFieldsParams as FieldParams} from '../../flogo.form-builder.fields/components/fields.params/fields.params.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
 import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from "../../../common/utils";
@@ -20,7 +19,7 @@ import {FlogoFormBuilderConfigurationBranchComponent as BranchDirective} from '.
   moduleId: module.id,
   styleUrls: ['form-builder.css'],
   templateUrl: 'form-builder.tpl.html',
-  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldParams, Contenteditable, TriggersDirective, TaskDirective, BranchDirective],
+  directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber,  Contenteditable, TriggersDirective, TaskDirective, BranchDirective],
   inputs: ['_task:task','_step:step', '_context:context']
 })
 export class FlogoFormBuilderComponent{

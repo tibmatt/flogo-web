@@ -19,6 +19,7 @@ gulp.task('prod.client.build', 'Build client app for production', cb => runSeque
 gulp.task('prod.server.build', 'Build server app for production', cb => runSequence(
   'server.copy',
   'install.server',
+  'prod.server.transpile',
   cb
 ));
 

@@ -62,7 +62,7 @@ export class BaseRegistered{
     let data = fs.readFileSync(this._packageJSONTplFilePath, {"encoding": "utf8"});
     this.packageJSONTemplate = JSON.parse(data);
 
-    // store the path of RT(activity RT, trigger RT)
+    // store the path of runtime(activity runtime, trigger runtime)
     this._where = [];
   }
 

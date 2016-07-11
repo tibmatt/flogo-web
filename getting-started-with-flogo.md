@@ -36,7 +36,7 @@ You can also check the latest way to install `gb` from [https://getgb.io](https:
 
 Docker and docker-machine are required, you can install both by downloading the [Docker toolbox](https://www.docker.com/products/docker-toolbox).
 
-**Note:** In linux os or if you want to use the mac native docker application (currently in beta) you will need to modify the start script, see the [known issues](#know-issues-and-workarounds) section for more info.
+**Note:** In linux os or if you want to use the mac native docker application (currently in beta) you will need to modify the start script, see the [known issues](#known-issues-and-workarounds) section for more info.
 
 ## Install Node.js
 
@@ -111,15 +111,9 @@ Application and services will be started, when you see the following banner in t
 
 ## docker-machine
 
-If you're using a native docker client, which could be the case of an ubuntu os, you're probably not using docker-machine tool as it is not necessary. To run flogo you will need to deactivate the docker-machine check in the `start.sh` script.
+If you're using a native docker client, which could be the case of an ubuntu OS, you're probably not using docker-machine tool as it is not necessary. 
 
-Open `start.sh` script and comment out line 148 like this:
-
-```
-check_command docker-machine
-```
-
-You will see many `command docker-machine` not found during `start.sh` execution, you can ignore these messages.
+To run flogo execute `flogo -m` for production mode or `flogo -m dev` for development mode. `-m` flag will skip the docker-machine check.
 
 **Note** this haven't been tested with the native osx docker client but it should work too assuming the docker client is correctly configured in your machine.
 
