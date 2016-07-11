@@ -136,7 +136,7 @@ export class Engine {
 
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.REMOVING;
-      let engineFolder = path.join( this.enginePath, this.options.name );
+      const engineFolder = path.join( self.enginePath, self.options.name );
 
       // if engine is running stop it
       // TODO sync to async
@@ -178,7 +178,7 @@ export class Engine {
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.CREATING;
 
-      runShellCMD( 'flogo', [ 'create', this.options.name ], {
+      runShellCMD( 'flogo', [ 'create', self.options.name ], {
         cwd : this.enginePath
       } )
         .then( successHandler )
@@ -738,28 +738,35 @@ export class Engine {
 
   /**
    * Stop engine
-   * @return {boolean} if stop successful, return true, otherwise return false
+   * @return {Promise<boolean>} if stop successful, return true, otherwise return false
    */
   stop(){
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.STOPPING;
+    const self = this;
 
-      let port = this.options.port;
-      let name = this.options.name;
-      // TODO sync to async
-      execSync(`pgrep ${name} | xargs kill -9`);
-      this.isStarted = false;
+    return new Promise((resolve, reject)=>{
 
-      this.status = FLOGO_ENGINE_STATUS.STARTED;
-      this.isProcessing = false;
-      return true;
-    }catch(err){
-      console.error("[Error]Engine->stop. Error: ", err);
+      const successHandler = ()=> {
+        self.isStarted = false;
+        self.status = FLOGO_ENGINE_STATUS.STOPPED;
+        self.isProcessing = false;
 
-      this.isProcessing = false;
-      return false;
-    }
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        console.error("[error] Engine->stop. Error: ", err);
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.STOPPING;
+
+      runShellCMD( 'pgrep', [ self.options.name, '|', 'xargs', 'kill', '-9' ])
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 }
 
