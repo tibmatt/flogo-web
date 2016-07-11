@@ -57,8 +57,9 @@ export class Engine {
     // namely, the engine is down and unable to serve
     this.isProcessing = false;
 
-    this.removeEngine();
-    this.createEngine();
+    this.removeEngine().then(() => {
+      return this.createEngine();
+    });
 
     return this;
   }
@@ -108,31 +109,42 @@ export class Engine {
 
   /**
    * Stop engine and remove it
-   * @return {boolean} if remove successful, return true, otherwise return false
+   * @return {Promise<boolean>} if remove successful, return true, otherwise return false
    */
   removeEngine() {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.REMOVING;
+    const self = this;
+    return new Promise( ( resolve, reject ) => {
 
-      let engineFolder = path.join(this.enginePath, this.options.name);
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        self.status = FLOGO_ENGINE_STATUS.REMOVED;
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->removeEngine. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.REMOVING;
+      let engineFolder = path.join( this.enginePath, this.options.name );
+
       // if engine is running stop it
-      this.stop();
+      // TODO sync to async
+      self.stop();
+
       // remove the engine folder
-      if (isExisted(engineFolder)) {
-        // TODO sync to async
-        execSync(`rm -rf ${engineFolder}`);
+      if ( isExisted( engineFolder ) ) {
+        runShellCMD( 'rm', [ '-rf', engineFolder ] )
+          .then( successHandler )
+          .catch( errorHandler );
+      } else {
+        successHandler();
       }
-
-      this.isProcessing = false;
-      this.status = FLOGO_ENGINE_STATUS.REMOVED;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->removeEngine. Error: ", err);
-
-      this.isProcessing = false;
-      return false;
-    }
+    } );
   }
 
   /**
