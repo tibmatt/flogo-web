@@ -809,9 +809,12 @@ export class Engine {
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.STOPPING;
 
-      runShellCMD( 'pgrep', [ self.options.name, '|', 'xargs', 'kill', '-9' ] )
-        .then( successHandler )
-        .catch( errorHandler );
+      try {
+        execSync( `pgrep ${self.options.name} | xargs kill -9` );
+        successHandler();
+      } catch ( err ) {
+        errorHandler( err );
+      }
     } );
   }
 }
