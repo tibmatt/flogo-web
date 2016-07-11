@@ -11,6 +11,7 @@ import {
   isExisted,
   readJSONFileSync,
   writeJSONFileSync,
+  runShellCMD,
   inspectObj
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
@@ -56,10 +57,17 @@ export class Engine {
     // namely, the engine is down and unable to serve
     this.isProcessing = false;
 
-    this.removeEngine();
-    this.createEngine();
-
     return this;
+  }
+
+  init() {
+    return this.removeEngine()
+      .then( () => {
+        return this.createEngine();
+      } )
+      .then( ()=> {
+        return this;
+      } );
   }
 
   get isProcessing() {
@@ -107,94 +115,162 @@ export class Engine {
 
   /**
    * Stop engine and remove it
-   * @return {boolean} if remove successful, return true, otherwise return false
+   * @return {Promise<boolean>} if remove successful, return true, otherwise return false
    */
   removeEngine() {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.REMOVING;
+    const self = this;
+    return new Promise( ( resolve, reject ) => {
 
-      let engineFolder = path.join(this.enginePath, this.options.name);
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        self.status = FLOGO_ENGINE_STATUS.REMOVED;
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->removeEngine. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.REMOVING;
+      const engineFolder = path.join( self.enginePath, self.options.name );
+
       // if engine is running stop it
-      this.stop();
-      // remove the engine folder
-      if (isExisted(engineFolder)) {
-        execSync(`rm -rf ${engineFolder}`);
-      }
-
-      this.isProcessing = false;
-      this.status = FLOGO_ENGINE_STATUS.REMOVED;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->removeEngine. Error: ", err);
-
-      this.isProcessing = false;
-      return false;
-    }
+      self.stop()
+        .then( ()=> {
+          // remove the engine folder
+          if ( isExisted( engineFolder ) ) {
+            return runShellCMD( 'rm', [ '-rf', engineFolder ] )
+          }
+        } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
    * Create an engine
-   * @return {boolean} if create successful, return true, otherwise return false
+   * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
   createEngine() {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.CREATING;
+    const self = this;
 
-      execSync(`flogo create ${this.options.name}`, {
-        cwd: this.enginePath
-      });
+    return new Promise( ( resolve, reject )=> {
 
-      this.isProcessing = false;
-      this.status = FLOGO_ENGINE_STATUS.CREATED;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->createEngine. Error: ", err);
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        self.status = FLOGO_ENGINE_STATUS.CREATED;
+        resolve( true );
+      };
 
-      this.isProcessing = false;
-      return false;
-    }
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->createEngine. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.CREATING;
+
+      runShellCMD( 'flogo', [ 'create', self.options.name ], {
+        cwd : self.enginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
+
   }
 
   /**
    * [addAllActivities description]
    * @param {[type]} options [description]
    */
-  addAllActivities(options) {
+  addAllActivities( options ) {
     let self = this;
-    return new Promise((resolve, reject) => {
+    return new Promise( ( resolve, reject ) => {
+
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        self.isProcessing = false;
+        reject( err );
+      };
+
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
 
-      activitiesDBService.allDocs().then((result) => {
-        //console.log("[info]addAllActivities, result", result);
-        result ? result : (result = []);
-        options ? options : (options = {});
+      activitiesDBService.allDocs()
+        .then( ( activities ) => {
 
-        result.forEach((item) => {
-          item ? item : (item = {});
-          let ignore = options[item.name] && options[item.name].ignore || false;
-          if (item.where) {
-            if (!ignore) {
-              this.addActivity(item.name, item.where);
-            } else {
-              console.log("[info] ignore");
+          options = options || [];
+          activities = activities || [];
+
+          return new Promise( ( resolve, reject )=> {
+
+            let processedItemNum = 0;
+            let runResult = [];
+
+            function _sequentiallyRun() {
+
+              let activity = activities[ processedItemNum ];
+
+              processedItemNum++;
+
+              let promise = null;
+
+              activity = activity || {};
+
+              let ignore = options[ activity.name ] && options[ activity.name ].ignore || false;
+
+              if ( activity.where ) {
+                if ( !ignore ) {
+                  promise = self.addActivity( activity.name, activity.where );
+                } else {
+                  console.log( "[info] ignore" );
+                  promise = Promise.resolve( true );
+                }
+              } else {
+                console.error( "[error]", activity.name, " where isn't defined" );
+                promise = Promise.resolve( false );
+              }
+
+              return promise.then( ( result )=> {
+                if ( result !== false && !_.isNil( result ) ) {
+                  runResult.push( true );
+                } else {
+                  runResult.push( false );
+                }
+
+                if ( processedItemNum >= activities.length ) {
+                  console.log( `[log] add all activities result:` );
+                  console.log( runResult );
+                  resolve( true );
+                } else {
+                  return _sequentiallyRun();
+                }
+              } );
             }
-          } else {
-            console.error("[error]", item.name, " where isn't defined");
-          }
-        });
 
-        self.isProcessing = false;
-        resolve(true);
-      }).catch((err) => {
-        console.error("[error]activitiesDBService.allDocs(), err: ", err);
-
-        self.isProcessing = false;
-        reject(err);
-      });
-    });
+            _sequentiallyRun()
+              .catch( ( err )=> {
+                console.log( `[error] add all activities -> sequentiallyRun on error: ` );
+                console.error( err );
+                reject( err );
+              } );
+          } ).then( successHandler );
+        } )
+        .catch( ( err ) => {
+          console.error( "[error] activitiesDBService.allDocs(), err: ", err );
+          errorHandler( err );
+        } );
+    } );
   }
 
   /**
@@ -241,31 +317,40 @@ export class Engine {
    * Add an activity to the engine
    * @param {string} activityName - the name of this activity.
    * @param {string} activityPath - the path of this activity.
-   * @return {boolean} if create successful, return true, otherwise return false
+   * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
-  addActivity(activityName, activityPath) {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
+  addActivity( activityName, activityPath ) {
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo add activity ${activityPath}`);
-      execSync(`flogo add activity ${activityPath}`, {
-        cwd: defaultEnginePath
-      });
+    return new Promise( ( resolve, reject )=> {
 
-      this.installedActivites[activityName] = {
-        path: activityPath
+      const successHandler = ()=> {
+        self.installedActivites[ activityName ] = {
+          path : activityPath
+        };
+
+        self.isProcessing = false;
+        resolve( true );
       };
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->addActivity. Error: ", err);
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->addActivity. Error: ", err );
 
-      this.isProcessing = false;
-      return false;
-    }
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'add', 'activity', activityPath ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
@@ -303,6 +388,8 @@ export class Engine {
 
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add trigger ${triggerPath}`);
+
+      // TODO sync to async
       execSync(`flogo add trigger ${triggerPath}`, {
         cwd: defaultEnginePath
       });
@@ -356,6 +443,8 @@ export class Engine {
 
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add model ${modelPath}`);
+
+      // TODO sync to async
       execSync(`flogo add model ${modelPath}`, {
         cwd: defaultEnginePath
       });
@@ -393,6 +482,7 @@ export class Engine {
       }
       console.log("[info][Engine->addFlow] flowName: ", flowName);
 
+      // TODO sync to async
       execSync(`flogo add flow ${flowPath}`, {
         cwd: defaultEnginePath
       });
@@ -413,30 +503,38 @@ export class Engine {
   /**
    * Delete an activity in this engine
    * @param {string} activityName - the name of activity
-   * @return {boolean} if successful, return true, otherwise return false
+   * @return {Promise<boolean>} if successful, return true, otherwise return false
    */
-  deleteActivity(activityName){
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.REMOVING_ACTIVITY;
+  deleteActivity( activityName ) {
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo del activity ${activityName}`);
+    return new Promise( ( resolve, reject )=> {
 
-      execSync(`flogo del activity ${activityName}`, {
-        cwd: defaultEnginePath
-      });
+      const successHandler = ()=> {
+        delete self.installedActivites[ activityName ];
 
-      delete this.installedActivites[activityName];
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->deleteActivity. Error: ", err);
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->deleteActivity. Error: ", err );
 
-      this.isProcessing = false;
-      return false;
-    }
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.REMOVING_ACTIVITY;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'del', 'activity', activityName ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
@@ -452,6 +550,7 @@ export class Engine {
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del trigger ${triggerName}`);
 
+      // TODO sync to async
       execSync(`flogo del trigger ${triggerName}`, {
         cwd: defaultEnginePath
       });
@@ -481,6 +580,7 @@ export class Engine {
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del model ${modelName}`);
 
+      // TODO sync to async
       execSync(`flogo del model ${modelName}`, {
         cwd: defaultEnginePath
       });
@@ -511,6 +611,7 @@ export class Engine {
       let flow = `embedded://${flowName}`
       console.log(`[info]flogo del flow ${flow}`);
 
+      // TODO sync to async
       execSync(`flogo del flow ${flow}`, {
         cwd: defaultEnginePath
       });
@@ -629,94 +730,127 @@ export class Engine {
     }
   }
 
-  build(args) {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.BUILDING;
+  build( args ) {
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      args ? args: (args='');
-      execSync(`flogo build ${args}`, {
-        cwd: defaultEnginePath
-      });
+    return new Promise( ( resolve, reject )=> {
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->build. Error: ", err);
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      this.isProcessing = false;
-      return false;
-    }
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->build. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.BUILDING;
+
+      const defaultEnginePath = path.join( this.enginePath, this.options.name );
+      args = args || '';
+
+      runShellCMD( 'flogo', [ 'build', args ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
    * Start engine in the background
-   * @return {boolean} if start successful, return true, otherwise return false
+   * @return {Promise<boolean>} if start successful, return true, otherwise return false
    */
   start() {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.STARTING;
+    const self = this;
+    console.log( `[info] starting engine ${self.options.name}` );
 
-      console.log("[info]start");
-      let defaultEngineBinPath = path.join(this.enginePath, this.options.name, 'bin');
-      console.log("[info]defaultEngineBinPath: ", defaultEngineBinPath);
-      let command = "./" + this.options.name; //+ " &";
-      console.log("[info]command: ", command);
+    return new Promise( ( resolve, reject )=> {
 
-      let logFile = path.join(config.publicPath, this.options.name+'.log')
-      let logStream = fs.createWriteStream(logFile, { flags: 'a' });
-      console.log("[info]engine logFile: ", logFile);
+      const successHandler = ()=> {
+        self.isStarted = true;
+        self.status = FLOGO_ENGINE_STATUS.STARTED;
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      if(!isExisted(path.join(defaultEngineBinPath, command))){
-        console.log("[error]engine doesn't exist");
-        return false;
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->start. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.STARTING;
+
+      let defaultEngineBinPath = path.join( self.enginePath, self.options.name, 'bin' );
+      console.log( "[info] defaultEngineBinPath: ", defaultEngineBinPath );
+      let command = "./" + self.options.name; //+ " &";
+      console.log( "[info] command: ", command );
+
+      let logFile = path.join( config.publicPath, self.options.name + '.log' );
+      let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
+      console.log( "[info] engine logFile: ", logFile );
+
+      if ( !isExisted( path.join( defaultEngineBinPath, command ) ) ) {
+
+        console.log( `[error] engine ${self.options.name} doesn't exist` );
+        errorHandler( new Error( `[error] engine ${self.options.name} doesn't exist` ) );
+
+      } else {
+
+        let engineProcess = spawn( command, {
+          cwd : defaultEngineBinPath
+        } );
+
+        // log engine output
+        engineProcess.stdout.pipe( logStream );
+        engineProcess.stderr.pipe( logStream );
+
+        successHandler();
       }
-
-      let engineProcess = spawn(command, {
-        cwd: defaultEngineBinPath
-      });
-
-      // log engine output
-      engineProcess.stdout.pipe(logStream);
-      engineProcess.stderr.pipe(logStream);
-
-      this.isStarted = true;
-      this.status = FLOGO_ENGINE_STATUS.STARTED;
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->start. Error: ", err);
-
-      this.isProcessing = false;
-      return false;
-    }
+    } );
   }
 
   /**
    * Stop engine
-   * @return {boolean} if stop successful, return true, otherwise return false
+   * @return {Promise<boolean>} if stop successful, return true, otherwise return false
    */
-  stop(){
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.STOPPING;
+  stop() {
+    const self = this;
 
-      let port = this.options.port;
-      let name = this.options.name;
-      execSync(`pgrep ${name} | xargs kill -9`);
-      this.isStarted = false;
+    return new Promise( ( resolve, reject )=> {
 
-      this.status = FLOGO_ENGINE_STATUS.STARTED;
-      this.isProcessing = false;
-      return true;
-    }catch(err){
-      console.error("[Error]Engine->stop. Error: ", err);
+      const successHandler = ()=> {
+        self.isStarted = false;
+        self.status = FLOGO_ENGINE_STATUS.STOPPED;
+        self.isProcessing = false;
 
-      this.isProcessing = false;
-      return false;
-    }
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->stop. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.STOPPING;
+
+      try {
+        execSync( `pgrep ${self.options.name} | xargs kill -9` );
+        successHandler();
+      } catch ( err ) {
+        errorHandler( err );
+      }
+    } );
   }
 }
 
@@ -742,7 +876,11 @@ export function getTestEngine() {
       port : config.testEngine.port
     } );
 
-    resolve( testEngine );
+    testEngine.init()
+      .then( ()=> {
+        resolve( testEngine );
+      } )
+      .catch( reject );
   } );
 }
 
@@ -798,7 +936,11 @@ export function getBuildEngine() {
       port : config.buildEngine.port
     } );
 
-    resolve( buildEngine );
+    buildEngine.init()
+      .then( ()=> {
+        resolve( buildEngine );
+      } )
+      .catch( reject );
   } );
 }
 

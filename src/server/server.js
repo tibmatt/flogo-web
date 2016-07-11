@@ -76,11 +76,14 @@ if ( !process.env[ 'FLOGO_SKIP_PKG_INSTALL' ] ) {
       return getInitialisedTestEngine();
     } )
     .then( ( testEngine ) => {
-      testEngine.build();
-      console.log( "[log] build test engine done." );
-      testEngine.start();
+      return testEngine.build()
+        .then( ()=> {
+          console.log( "[log] build test engine done." );
+          return testEngine.start();
+        } );
+    } )
+    .then( ()=> {
       console.log( "[log] start test engine done" );
-
       return getInitialisedBuildEngine();
     } )
     .then( ( buildEngine )=> {

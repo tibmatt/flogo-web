@@ -28,15 +28,19 @@ function* restartEngine(next){
       testEngine = yield getInitialisedBuildEngine();
     }
 
-    if(testEngine.stop()){
-      if(!testEngine.start()){
-        data.status = 500;
+    let stopTestEngineResult = yield testEngine.stop();
+    let startTestEngineResult = false;
 
-        console.log("didn't start successful");
-      }
-    }else{
+    if (stopTestEngineResult) {
+      startTestEngineResult = yield testEngine.start();
+    } else {
       data.status = 500;
-      console.log("didn't stop successful");
+      console.log("[error] didn't stop successful");
+    }
+
+    if (!startTestEngineResult) {
+      data.status = 500;
+      console.log("[error] didn't start successful");
     }
 
     this.body = data;
