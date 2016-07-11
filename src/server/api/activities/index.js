@@ -67,26 +67,39 @@ function* installActivities( next ) {
 
         inspectObj( itemInfoToInstall );
 
-        const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+        return new Promise( ( resolve, reject )=> {
 
-        if ( hasActivity.exists ) {
-          if ( hasActivity.samePath ) {
+          const addOnError = ( err )=> {
+            // if error happens, just note it down and report adding activity failed.
             console.log(
-              `[log] skip adding exists activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
-            return true;
-          } else {
-            // else delete the activity before install
+              `[error] failed to add activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+            console.log( err );
+            resolve( false );
+          };
 
-            if ( testEngine.deleteActivity( itemInfoToInstall.name ) ) {
-              return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+          const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+
+          if ( hasActivity.exists ) {
+            if ( hasActivity.samePath ) {
+              console.log(
+                `[log] skip adding exists activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+              resolve( true );
             } else {
-              throw Error(
-                `[error] failed to delete activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+              // else delete the activity before install
+              return testEngine.deleteActivity( itemInfoToInstall.name )
+                .then( ()=> {
+                  return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+                } )
+                .catch( addOnError );
             }
+          } else {
+            return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path )
+              .then( ()=> {
+                resolve( true );
+              } )
+              .catch( addOnError );
           }
-        }
-
-        return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+        } );
       } ) );
     } catch ( err ) {
       console.error( `[error] add activities to test engine` );
