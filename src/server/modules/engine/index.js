@@ -10,7 +10,8 @@ import {
 import {
   isExisted,
   readJSONFileSync,
-  writeJSONFileSync
+  writeJSONFileSync,
+  inspectObj
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
 
@@ -55,12 +56,61 @@ export class Engine {
     // namely, the engine is down and unable to serve
     this.isProcessing = false;
 
-    this.status = FLOGO_ENGINE_STATUS['give me an undefined'];
-
     this.removeEngine();
     this.createEngine();
 
     return this;
+  }
+
+  get isProcessing() {
+    this._isProcessing = this._isProcessing || [];
+    // if nothing is running, return false,
+    return !!this._isProcessing.length;
+  }
+
+  set isProcessing( status ) {
+    this._isProcessing = this._isProcessing || [];
+
+    // keep record the number of true
+    // a false will remove a true;
+    if ( status === true ) {
+      this._isProcessing.push( status );
+    } else if ( status === false ) {
+      this._isProcessing.pop();
+    }
+
+    console.log( `[TODO] current isProcessing: ${FLOGO_ENGINE_STATUS[ this.status ]} >> ${this.isProcessing}` );
+    inspectObj( this._isProcessing );
+  }
+
+  get status() {
+    this._status = this._status || [];
+
+    return this._status[ this._status.length < 1 ? 0 : this._status.length - 1 ];
+  }
+
+  set status( status ) {
+    this._status = this._status || [];
+
+    // clear the previous finished status;
+    const statusStackLen = this._isProcessing.length;
+    let diffLen = this._status.length - statusStackLen;
+
+    if ( diffLen < 0 ) {
+      diffLen = 0;
+    }
+
+    for ( let i = 0; i < diffLen; i++ ) {
+      this._status.shift();
+    }
+
+    // add new status;
+    this._status.push( status );
+
+    console.log( `[TODO] current status: ${FLOGO_ENGINE_STATUS[ this.status ]} >> ${this.isProcessing}` );
+    inspectObj( _.map( this._status, ( s )=> {
+      return FLOGO_ENGINE_STATUS[ s ];
+    } ) );
   }
 
   /**
