@@ -149,27 +149,36 @@ export class Engine {
 
   /**
    * Create an engine
-   * @return {boolean} if create successful, return true, otherwise return false
+   * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
   createEngine() {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.CREATING;
+    const self = this;
 
-      // TODO sync to async
-      execSync(`flogo create ${this.options.name}`, {
-        cwd: this.enginePath
-      });
+    return new Promise((resolve, reject)=>{
 
-      this.isProcessing = false;
-      this.status = FLOGO_ENGINE_STATUS.CREATED;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->createEngine. Error: ", err);
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        self.status = FLOGO_ENGINE_STATUS.CREATED;
+        resolve( true );
+      };
 
-      this.isProcessing = false;
-      return false;
-    }
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->createEngine. Error: ", err );
+
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.CREATING;
+
+      runShellCMD( 'flogo', [ 'create', this.options.name ], {
+        cwd : this.enginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
+
   }
 
   /**
