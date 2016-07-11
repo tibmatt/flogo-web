@@ -468,31 +468,38 @@ export class Engine {
   /**
    * Delete an activity in this engine
    * @param {string} activityName - the name of activity
-   * @return {boolean} if successful, return true, otherwise return false
+   * @return {Promise<boolean>} if successful, return true, otherwise return false
    */
-  deleteActivity(activityName){
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.REMOVING_ACTIVITY;
+  deleteActivity( activityName ) {
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo del activity ${activityName}`);
+    return new Promise( ( resolve, reject )=> {
 
-      // TODO sync to async
-      execSync(`flogo del activity ${activityName}`, {
-        cwd: defaultEnginePath
-      });
+      const successHandler = ()=> {
+        delete self.installedActivites[ activityName ];
 
-      delete this.installedActivites[activityName];
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->deleteActivity. Error: ", err);
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->deleteActivity. Error: ", err );
 
-      this.isProcessing = false;
-      return false;
-    }
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.REMOVING_ACTIVITY;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'del', 'activity', activityName ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
