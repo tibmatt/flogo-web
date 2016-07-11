@@ -69,6 +69,9 @@ export class Engine {
    */
   removeEngine() {
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.REMOVING;
+
       let engineFolder = path.join(this.enginePath, this.options.name);
       // if engine is running stop it
       this.stop();
@@ -76,9 +79,14 @@ export class Engine {
       if (isExisted(engineFolder)) {
         execSync(`rm -rf ${engineFolder}`);
       }
+
+      this.isProcessing = false;
+      this.status = FLOGO_ENGINE_STATUS.REMOVED;
       return true;
     } catch (err) {
       console.error("[Error]Engine->removeEngine. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -89,12 +97,20 @@ export class Engine {
    */
   createEngine() {
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.CREATING;
+
       execSync(`flogo create ${this.options.name}`, {
         cwd: this.enginePath
       });
+
+      this.isProcessing = false;
+      this.status = FLOGO_ENGINE_STATUS.CREATED;
       return true;
     } catch (err) {
       console.error("[Error]Engine->createEngine. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -104,7 +120,11 @@ export class Engine {
    * @param {[type]} options [description]
    */
   addAllActivities(options) {
+    let self = this;
     return new Promise((resolve, reject) => {
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
+
       activitiesDBService.allDocs().then((result) => {
         //console.log("[info]addAllActivities, result", result);
         result ? result : (result = []);
@@ -124,9 +144,12 @@ export class Engine {
           }
         });
 
+        self.isProcessing = false;
         resolve(true);
       }).catch((err) => {
         console.error("[error]activitiesDBService.allDocs(), err: ", err);
+
+        self.isProcessing = false;
         reject(err);
       });
     });
@@ -137,7 +160,11 @@ export class Engine {
    * @param {[type]} options [description]
    */
   addAllTriggers(options) {
+    let self = this;
     return new Promise((resolve, reject) => {
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
+
       triggersDBService.allDocs().then((result) => {
         //console.log("[info]triggersDBService, result", result);
         result ? result : (result = []);
@@ -157,10 +184,12 @@ export class Engine {
           }
         });
 
+        self.isProcessing = false;
         resolve(true);
       }).catch((err) => {
         console.error("[error]triggersDBService.allDocs(), err: ", err);
 
+        self.isProcessing = false;
         reject(err);
       });
     });
@@ -174,6 +203,9 @@ export class Engine {
    */
   addActivity(activityName, activityPath) {
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.ADDING_ACTIVITY;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add activity ${activityPath}`);
       execSync(`flogo add activity ${activityPath}`, {
@@ -182,11 +214,14 @@ export class Engine {
 
       this.installedActivites[activityName] = {
         path: activityPath
-      }
+      };
 
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->addActivity. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -221,6 +256,9 @@ export class Engine {
    */
   addTrigger(triggerName, triggerPath) {
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add trigger ${triggerPath}`);
       execSync(`flogo add trigger ${triggerPath}`, {
@@ -229,11 +267,14 @@ export class Engine {
 
       this.installedTriggers[triggerName] = {
         path: triggerPath
-      }
+      };
 
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->addTrigger. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -268,6 +309,9 @@ export class Engine {
    */
   addModel(modelName, modelPath) {
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.ADDING_MODEL;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add model ${modelPath}`);
       execSync(`flogo add model ${modelPath}`, {
@@ -276,11 +320,14 @@ export class Engine {
 
       this.installedModels[modelName] = {
         path: modelPath
-      }
+      };
 
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->addModel. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -293,6 +340,9 @@ export class Engine {
    */
   addFlow(flowPath, flowName){
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.ADDING_FLOW;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo add flow ${flowPath}`);
       if(!flowName){
@@ -306,11 +356,14 @@ export class Engine {
       });
       this.installedFlows[flowName] = {
         path: flowPath
-      }
+      };
 
+      this.isProcessing = false;
       return flowName;
     } catch (err) {
       console.error("[Error]Engine->addFlow. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -322,6 +375,9 @@ export class Engine {
    */
   deleteActivity(activityName){
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.REMOVING_ACTIVITY;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del activity ${activityName}`);
 
@@ -330,9 +386,13 @@ export class Engine {
       });
 
       delete this.installedActivites[activityName];
+
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->deleteActivity. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -344,6 +404,9 @@ export class Engine {
    */
   deleteTrigger(triggerName){
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.REMOVING_TRIGGER;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del trigger ${triggerName}`);
 
@@ -352,9 +415,13 @@ export class Engine {
       });
 
       delete this.installedTriggers[triggerName];
+
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->deleteTrigger. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -366,6 +433,9 @@ export class Engine {
    */
   deleteModel(modelName){
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.REMOVING_MODEL;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       console.log(`[info]flogo del model ${modelName}`);
 
@@ -374,9 +444,13 @@ export class Engine {
       });
 
       delete this.installedModels[modelName];
+
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->deleteModel. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -388,6 +462,9 @@ export class Engine {
    */
   deleteFlow(flowName){
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.REMOVING_FLOW;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       let flow = `embedded://${flowName}`
       console.log(`[info]flogo del flow ${flow}`);
@@ -397,9 +474,13 @@ export class Engine {
       });
 
       delete this.installedFlows[flowName];
+
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->deleteFlow. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -412,13 +493,20 @@ export class Engine {
    */
   deleteAllFlows(){
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.REMOVING_FLOW;
+
       let flowNames = _.keys(this.installedFlows);
       flowNames.forEach((flowName)=>{
         this.deleteFlow(flowName);
       });
+
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->deleteAllFlows. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -431,6 +519,9 @@ export class Engine {
    */
   updateConfigJSON(options, overwrite) {
     try{
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.UPDATING_CONFIG_JSON;
+
       let defaultEngineBinPath = path.join(this.enginePath, this.options.name, 'bin');
       let configJSONPath = path.join(defaultEngineBinPath, 'config.json');
       let configData = options;
@@ -440,9 +531,13 @@ export class Engine {
       }
       writeJSONFileSync(configJSONPath, configData);
       console.log("[success][engine->updateConfigJSON]");
+
+      this.isProcessing = false;
       return true;
     }catch(err){
       console.error("[error][engine->updateConfigJSON] error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -455,6 +550,9 @@ export class Engine {
    */
   updateTriggerJSON(options, overwrite) {
     try{
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.UPDATING_TRIGGER_JSON;
+
       let defaultEngineBinPath = path.join(this.enginePath, this.options.name, 'bin');
       let triggersJSONPath = path.join(defaultEngineBinPath, 'triggers.json');
       console.log("[debug][engine->updateTriggerJSON], options: ", options);
@@ -478,23 +576,34 @@ export class Engine {
         triggersData = nTriggersData;
       }
       writeJSONFileSync(triggersJSONPath, triggersData);
+
+      this.isProcessing = false;
       console.log("[success][engine->updateTriggerJSON]", triggersData);
     }catch(err){
       console.error("[error][engine->updateTriggerJSON] error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
 
   build(args) {
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.BUILDING;
+
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
       args ? args: (args='');
       execSync(`flogo build ${args}`, {
         cwd: defaultEnginePath
       });
+
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->build. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -505,6 +614,9 @@ export class Engine {
    */
   start() {
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.STARTING;
+
       console.log("[info]start");
       let defaultEngineBinPath = path.join(this.enginePath, this.options.name, 'bin');
       console.log("[info]defaultEngineBinPath: ", defaultEngineBinPath);
@@ -529,9 +641,13 @@ export class Engine {
       engineProcess.stderr.pipe(logStream);
 
       this.isStarted = true;
+      this.status = FLOGO_ENGINE_STATUS.STARTED;
+      this.isProcessing = false;
       return true;
     } catch (err) {
       console.error("[Error]Engine->start. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
@@ -542,14 +658,21 @@ export class Engine {
    */
   stop(){
     try {
+      this.isProcessing = true;
+      this.status = FLOGO_ENGINE_STATUS.STOPPING;
+
       let port = this.options.port;
       let name = this.options.name;
       execSync(`pgrep ${name} | xargs kill -9`);
       this.isStarted = false;
 
+      this.status = FLOGO_ENGINE_STATUS.STARTED;
+      this.isProcessing = false;
       return true;
     }catch(err){
       console.error("[Error]Engine->stop. Error: ", err);
+
+      this.isProcessing = false;
       return false;
     }
   }
