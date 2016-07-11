@@ -59,7 +59,7 @@
         "name": "pathParams",
         "type": 6,
         "value": {
-          "petId": "111"
+          "petId": "222"
         }
       }, {
         "name": "queryParams",
@@ -126,7 +126,33 @@
           }]
         }
       },
-      "id": "RmxvZ286OlRyaWdnZXI6OjE0NjI4OTk1NDMwMDc"
+      "id": "RmxvZ286OlRyaWdnZXI6OjE0NjI4OTk1NDMwMDc",
+      "__props": {
+        "errors": [],
+        "outputs": [{
+          "name": "params",
+          "type": 6,
+          "value": null
+        }, {
+          "name": "pathParams",
+          "type": 6,
+          "value": {
+            "petId": "222"
+          }
+        }, {
+          "name": "queryParams",
+          "type": 6,
+          "value": null
+        }, {
+          "name": "content",
+          "type": 4,
+          "value": null
+        }]
+      },
+      "__status": {
+        "hasRun": true,
+        "isRunning": false
+      }
     },
     "Mg": {
       "type": 1,
@@ -251,7 +277,7 @@
       "inputMappings": [{
         "type": 1,
         "mapTo": "pathParams",
-        "value": "tibco-rest.pathParams"
+        "value": "{T.pathParams}"
       }]
     },
     "NA": {
@@ -309,7 +335,7 @@
       "inputMappings": [{
         "type": 1,
         "mapTo": "message",
-        "value": "pet-query.result.id"
+        "value": "{A3.result}.name"
       }]
     }
   },
