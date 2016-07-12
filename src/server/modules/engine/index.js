@@ -844,12 +844,23 @@ export class Engine {
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.STOPPING;
 
+      // try to get the process id
+      // if cannot get the process id, considering as the engine is stopped.
+      // otherwise, try to stop the engine.
       try {
-        execSync( `pgrep ${self.options.name} | xargs kill -9` );
+        execSync( `pgrep ${self.options.name}` );
+
+        try {
+          execSync( `pgrep ${self.options.name} | xargs kill -9` );
+          successHandler();
+        } catch ( err ) {
+          errorHandler( err );
+        }
+
+      } catch (err) {
         successHandler();
-      } catch ( err ) {
-        errorHandler( err );
       }
+
     } );
   }
 }
