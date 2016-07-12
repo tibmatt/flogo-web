@@ -13,6 +13,6 @@ gulp.task('clean.client', 'Delete application files from client dist folder', ()
 });
 
 gulp.task('clean.server', 'Delete application files from server dist folder', () => {
-  return del.sync(['**/*', '!node_modules/**', '!data/**', '!log.txt'], {cwd: CONFIG.paths.dist.server});
+  return del.sync(['**/*', '!node_modules/**', '!docker-shared/**', '!log.txt'], {cwd: CONFIG.paths.dist.server});
 });
 
