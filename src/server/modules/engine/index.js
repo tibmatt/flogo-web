@@ -544,30 +544,56 @@ export class Engine {
    * @return {boolean} if successful, return true, otherwise return false
    */
   deleteTrigger(triggerName){
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.REMOVING_TRIGGER;
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo del trigger ${triggerName}`);
+    return new Promise( ( resolve, reject )=> {
 
-      // TODO sync to async
-      execSync(`flogo del trigger ${triggerName}`, {
-        cwd: defaultEnginePath
-      });
+      const successHandler = ()=> {
+        delete self.installedTriggers[triggerName];
 
-      // TODO Also update the trigger.json to remove the entry of this trigger, since the `flogo del` won't do that.
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      delete this.installedTriggers[triggerName];
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->deleteTrigger. Error: ", err );
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->deleteTrigger. Error: ", err);
+        self.isProcessing = false;
+        reject( false );
+      };
 
-      this.isProcessing = false;
-      return false;
-    }
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.REMOVING_TRIGGER;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'del', 'trigger', triggerName ], {
+        cwd : defaultEnginePath
+      } )
+        .then( () => {
+          // update the trigger.json to remove the entry of this trigger,
+          // since the `flogo del` won't do that.
+
+          // handling file read/write in sync way, since it won't be a large file in the near future.
+
+          let triggersJSONPath = path.join( defaultEnginePath, 'bin', 'triggers.json' );
+          let triggersData = readJSONFileSync( triggersJSONPath );
+
+          console.log( '[TODO] engine -> deleteTrigger | original triggersData:' );
+          console.log( triggersData );
+
+          _.remove( triggersData.triggers, ( trigger ) => {
+            return trigger.name === triggerName;
+          } );
+
+          console.log( '[TODO] engine -> deleteTrigger | modified triggersData:' );
+          console.log( triggersData );
+
+          writeJSONFileSync( triggersJSONPath, triggersData );
+        } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
