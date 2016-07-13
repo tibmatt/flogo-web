@@ -384,30 +384,37 @@ export class Engine {
    * @return {boolean} if create successful, return true, otherwise return false
    */
   addTrigger(triggerName, triggerPath) {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo add trigger ${triggerPath}`);
+    return new Promise( ( resolve, reject )=> {
 
-      // TODO sync to async
-      execSync(`flogo add trigger ${triggerPath}`, {
-        cwd: defaultEnginePath
-      });
+      const successHandler = ()=> {
+        self.installedTriggers[ triggerName ] = {
+          path : triggerPath
+        };
 
-      this.installedTriggers[triggerName] = {
-        path: triggerPath
+        self.isProcessing = false;
+        resolve( true );
       };
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->addTrigger. Error: ", err);
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->addTrigger. Error: ", err );
 
-      this.isProcessing = false;
-      return false;
-    }
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'add', 'trigger', triggerPath ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
