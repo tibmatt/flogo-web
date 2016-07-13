@@ -128,6 +128,24 @@ export function writeJSONFileSync( JSONPath, data ) {
   }
 }
 
+/**
+ * Async version of writeJSONFileSync
+ * @param {string|Path} JSONPath - the path of JSON file
+ * @param {object} data - the JSON data you want to write
+ * @return {Promise<boolean>} if write successful, return true, otherwise return false
+ */
+export function writeJSONFile( JSONPath, data ) {
+  return new Promise( ( resolve, reject ) => {
+    fs.writeFile( JSONPath, JSON.stringify( data, null, 2 ), { 'encoding' : 'utf8' }, ( err )=> {
+      if ( err ) {
+        reject( err );
+      } else {
+        resolve( true );
+      }
+    } );
+  } );
+}
+
 export function flogoIDEncode( id ) {
   return btoa( id )
     .replace( /\+/g, '-' )
