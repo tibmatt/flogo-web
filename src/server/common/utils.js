@@ -89,6 +89,28 @@ export function readJSONFileSync( JSONPath ) {
 }
 
 /**
+ * Async version of readJSONFileSync
+ * @param  {string|Path} jSONPath - the path of JSON file
+ * @return {Promise<object|undefined>} if it is a valid and exist json, return json, otherwise return undefined
+ */
+export function readJSONFile( JSONPath ) {
+  return new Promise( ( resolve, reject ) => {
+    if ( isExisted( JSONPath ) ) {
+      fs.readFile( JSONPath, { 'encoding' : 'utf8' }, ( err, data )=> {
+        if ( err ) {
+          reject( err );
+        } else {
+          resolve( isJSON( data ) );
+        }
+      } );
+    } else {
+      console.error( "[error][utils.js->readJSONFile] path doesn't exist. path: ", JSONPath );
+      throw new Error( `Path [${JSONPath}] doesn't exist.` );
+    }
+  } );
+}
+
+/**
  * write a JSON file
  * @param {string|Path} JSONPath - the path of JSON file
  * @param {object} data - the JSON data you want to write
