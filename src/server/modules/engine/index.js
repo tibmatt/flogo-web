@@ -539,6 +539,7 @@ export class Engine {
 
   /**
    * Delete a trigger in this engine
+   * Also update the trigger.json to remove the entry of this trigger.
    * @param {string} triggerName - the name of trigger
    * @return {boolean} if successful, return true, otherwise return false
    */
@@ -554,6 +555,8 @@ export class Engine {
       execSync(`flogo del trigger ${triggerName}`, {
         cwd: defaultEnginePath
       });
+
+      // TODO Also update the trigger.json to remove the entry of this trigger, since the `flogo del` won't do that.
 
       delete this.installedTriggers[triggerName];
 
