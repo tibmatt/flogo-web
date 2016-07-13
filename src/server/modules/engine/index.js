@@ -233,7 +233,7 @@ export class Engine {
 
               if ( activity.where ) {
                 if ( !ignore ) {
-                  promise = self.addActivity( activity.name, activity.where );
+                  promise = self.addActivity( activity.name, activity.where, activity.version );
                 } else {
                   console.log( "[info] ignore" );
                   promise = Promise.resolve( true );
@@ -320,7 +320,7 @@ export class Engine {
 
               if ( trigger.where ) {
                 if ( !ignore ) {
-                  promise = self.addTrigger( trigger.name, trigger.where );
+                  promise = self.addTrigger( trigger.name, trigger.where, trigger.version );
                 } else {
                   console.log( "[info] ignore" );
                   promise = Promise.resolve( true );
@@ -366,16 +366,18 @@ export class Engine {
    * Add an activity to the engine
    * @param {string} activityName - the name of this activity.
    * @param {string} activityPath - the path of this activity.
+   * @param {string} activityVersion - the version of this activity.
    * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
-  addActivity( activityName, activityPath ) {
+  addActivity( activityName, activityPath, activityVersion ) {
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
 
       const successHandler = ()=> {
         self.installedActivites[ activityName ] = {
-          path : activityPath
+          path : activityPath,
+          version : activityVersion // leave the version to be undefined, if not provided.
         };
 
         self.isProcessing = false;
@@ -420,7 +422,8 @@ export class Engine {
 
     return {
       exists : exists,
-      samePath : exists && activity.path === activityPath
+      samePath : exists && activity.path === activityPath,
+      version : exists ? activity.version : {}[ 'just need an undefined' ]
     };
   }
 
@@ -428,16 +431,18 @@ export class Engine {
    * Add an trigger to the engine
    * @param {string} triggerName - the name of this trigger.
    * @param {string} triggerPath - the path of this trigger.
+   * @param {string} triggerVersion - the version of this trigger.
    * @return {boolean} if create successful, return true, otherwise return false
    */
-  addTrigger(triggerName, triggerPath) {
+  addTrigger(triggerName, triggerPath, triggerVersion) {
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
 
       const successHandler = ()=> {
         self.installedTriggers[ triggerName ] = {
-          path : triggerPath
+          path : triggerPath,
+          version : triggerVersion // leave the version to be undefined, if not provided.
         };
 
         self.isProcessing = false;
@@ -482,7 +487,8 @@ export class Engine {
 
     return {
       exists : exists,
-      samePath : exists && trigger.path === triggerPath
+      samePath : exists && trigger.path === triggerPath,
+      version : exists ? trigger.version : {}[ 'just need an undefined' ]
     };
   }
 

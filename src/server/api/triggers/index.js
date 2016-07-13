@@ -64,7 +64,8 @@ function* installTriggers( next ) {
         const item = results.details[ successItemURL ];
         const itemInfoToInstall = {
           name : item.schema.name || item.package.name,
-          path : item.path
+          path : item.path,
+          version : item.schema.version || item.package.version
         };
 
         inspectObj( itemInfoToInstall );
@@ -90,14 +91,14 @@ function* installTriggers( next ) {
               // else delete the trigger before install
               return testEngine.deleteTrigger( itemInfoToInstall.name )
                 .then( ()=> {
-                  return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path );
+                  return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version );
                 } ).then( ()=> {
                   resolve( true );
                 } )
                 .catch( addOnError );
             }
           } else {
-            return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path )
+            return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version )
               .then( ()=> {
                 resolve( true );
               } )
