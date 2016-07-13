@@ -34,11 +34,14 @@ let config = {
       "tibco-coap": {
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/coap"
       },
-      "tibco-awsiot":{
+      "tibco-awsiot": {
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot"
       },
-      "tibco-rest":{
+      "tibco-rest": {
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
+      },
+      "sendWSMessage":{
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
       }
     },
     contrib: {}
