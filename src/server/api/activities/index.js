@@ -5,6 +5,7 @@ import { getInitialisedTestEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import _ from 'lodash';
 import path from 'path';
+import semver from 'semver';
 
 let basePath = config.app.basePath;
 
@@ -81,9 +82,9 @@ function* installActivities( next ) {
           const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
 
           if ( hasActivity.exists ) {
-            if ( hasActivity.samePath ) {
+            if ( hasActivity.samePath && hasActivity.version && itemInfoToInstall.version && semver.lte( itemInfoToInstall.version, hasActivity.version ) ) {
               console.log(
-                `[log] skip adding exists activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+                `[log] skip adding exists activity ${ itemInfoToInstall.name } (${ itemInfoToInstall.version }) [${ itemInfoToInstall.path }]` );
               resolve( true );
             } else {
               // else delete the activity before install

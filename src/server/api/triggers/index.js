@@ -4,6 +4,7 @@ import { RemoteInstaller } from '../../modules/remote-installer';
 import { inspectObj } from '../../common/utils';
 import _ from 'lodash';
 import path from 'path';
+import semver from 'semver';
 import { getInitialisedTestEngine } from '../../modules/engine';
 
 let basePath = config.app.basePath;
@@ -83,9 +84,9 @@ function* installTriggers( next ) {
           const hasTrigger = testEngine.hasTrigger( itemInfoToInstall.name, itemInfoToInstall.path );
 
           if ( hasTrigger.exists ) {
-            if ( hasTrigger.samePath ) {
+            if ( hasTrigger.samePath && hasTrigger.version && itemInfoToInstall.version && semver.lte( itemInfoToInstall.version, hasTrigger.version )  ) {
               console.log(
-                `[log] skip adding exists trigger ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+                `[log] skip adding exists trigger ${ itemInfoToInstall.name } (${ itemInfoToInstall.version }) [${ itemInfoToInstall.path }]` );
               resolve( true );
             } else {
               // else delete the trigger before install
