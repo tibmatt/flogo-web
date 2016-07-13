@@ -4,6 +4,7 @@ import { RemoteInstaller } from '../../modules/remote-installer';
 import { inspectObj } from '../../common/utils';
 import _ from 'lodash';
 import path from 'path';
+import { getInitialisedTestEngine } from '../../modules/engine';
 
 let basePath = config.app.basePath;
 
@@ -44,6 +45,82 @@ function* installTriggers( next ) {
     success : results.success,
     fail : results.fail
   } );
+
+  let testEngine = yield getInitialisedTestEngine();
+
+  if ( testEngine ) {
+
+    console.log( `[log] adding triggers to test engine...` );
+
+    let stopTestEngineResult = yield testEngine.stop();
+
+    if ( !stopTestEngineResult ) {
+      throw new Error( '[error] Encounter error to stop test engine.' );
+    }
+
+    try {
+      let addTriggersResult = yield Promise.all( _.map( results.success, ( successItemURL, idx ) => {
+        console.log( `[log] adding ${ successItemURL } to test engine ...` );
+        const item = results.details[ successItemURL ];
+        const itemInfoToInstall = {
+          name : item.schema.name || item.package.name,
+          path : item.path
+        };
+
+        inspectObj( itemInfoToInstall );
+
+        return new Promise( ( resolve, reject )=> {
+
+          const addOnError = ( err )=> {
+            // if error happens, just note it down and report adding trigger failed.
+            console.log(
+              `[error] failed to add trigger ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+            console.log( err );
+            resolve( false );
+          };
+
+          const hasTrigger = testEngine.hasTrigger( itemInfoToInstall.name, itemInfoToInstall.path );
+
+          if ( hasTrigger.exists ) {
+            if ( hasTrigger.samePath ) {
+              console.log(
+                `[log] skip adding exists trigger ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+              resolve( true );
+            } else {
+              // else delete the trigger before install
+              return testEngine.deleteTrigger( itemInfoToInstall.name )
+                .then( ()=> {
+                  return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path );
+                } )
+                .catch( addOnError );
+            }
+          } else {
+            return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path )
+              .then( ()=> {
+                resolve( true );
+              } )
+              .catch( addOnError );
+          }
+        } );
+      } ) );
+    } catch ( err ) {
+      console.error( `[error] add triggers to test engine` );
+      console.error( err );
+      throw new Error( '[error] Encounter error to add triggers to test engine.' );
+    }
+
+    let testEngineBuildResult = yield testEngine.build();
+
+    if ( !testEngineBuildResult ) {
+      throw new Error( '[error] Encounter error to build test engine after adding triggers.' );
+    }
+
+    let testEngineStartResult = yield testEngine.start();
+
+    if ( !testEngineStartResult ) {
+      throw new Error( '[error] Encounter error to start test engine after adding triggers.' );
+    }
+  }
 
   delete results.details; // keep the details internally.
   this.body = results;
