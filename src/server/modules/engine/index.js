@@ -282,37 +282,84 @@ export class Engine {
   addAllTriggers(options) {
     let self = this;
     return new Promise((resolve, reject) => {
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        self.isProcessing = false;
+        reject( err );
+      };
+
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
 
-      triggersDBService.allDocs().then((result) => {
-        //console.log("[info]triggersDBService, result", result);
-        result ? result : (result = []);
-        options ? options : (options = {});
+      triggersDBService.allDocs()
+        .then( ( triggers ) => {
 
-        result.forEach((item) => {
-          item ? item : (item = {});
-          let ignore = options[item.name] && options[item.name].ignore || false;
-          if (item.where) {
-            if (!ignore) {
-              this.addTrigger(item.name, item.where);
-            } else {
-              console.log("[info] ignore");
+          options = options || [];
+          triggers = triggers || [];
+
+          return new Promise( ( resolve, reject )=> {
+
+            let processedItemNum = 0;
+            let runResult = [];
+
+            function _sequentiallyRun() {
+
+              let trigger = triggers[ processedItemNum ];
+
+              processedItemNum++;
+
+              let promise = null;
+
+              trigger = trigger || {};
+
+              let ignore = options[ trigger.name ] && options[ trigger.name ].ignore || false;
+
+              if ( trigger.where ) {
+                if ( !ignore ) {
+                  promise = self.addTrigger( trigger.name, trigger.where );
+                } else {
+                  console.log( "[info] ignore" );
+                  promise = Promise.resolve( true );
+                }
+              } else {
+                console.error( "[error]", trigger.name, " where isn't defined" );
+                promise = Promise.resolve( false );
+              }
+
+              return promise.then( ( result )=> {
+                if ( result !== false && !_.isNil( result ) ) {
+                  runResult.push( true );
+                } else {
+                  runResult.push( false );
+                }
+
+                if ( processedItemNum >= triggers.length ) {
+                  console.log( `[log] add all triggers result:` );
+                  console.log( runResult );
+                  resolve( true );
+                } else {
+                  return _sequentiallyRun();
+                }
+              } );
             }
-          } else {
-            console.error("[error]", item.name, " where isn't defined");
-          }
-        });
 
-        self.isProcessing = false;
-        resolve(true);
-      }).catch((err) => {
-        console.error("[error]triggersDBService.allDocs(), err: ", err);
-
-        self.isProcessing = false;
-        reject(err);
-      });
-    });
+            _sequentiallyRun()
+              .catch( ( err )=> {
+                console.log( `[error] add all triggers -> sequentiallyRun on error: ` );
+                console.error( err );
+                reject( err );
+              } );
+          } ).then( successHandler );
+        } )
+        .catch( ( err ) => {
+          console.error( "[error] triggersDBService.allDocs(), err: ", err );
+          errorHandler( err );
+        } );
+    } );
   }
 
   /**
