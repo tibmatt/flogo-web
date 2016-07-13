@@ -2,6 +2,7 @@ import { TYPE_UNKNOWN } from '../../common/constants';
 import { config } from '../../config/app-config';
 import _ from 'lodash';
 import path from 'path';
+import fs from 'fs';
 import { runShellCMD, parseGitHubURL, createFolder, gitClone, gitUpdate, rmFolder } from '../../common/utils';
 
 /**
@@ -124,13 +125,20 @@ export class GitHubRepoDownloader {
  */
 function hasRepoCached( repoURL, cacheFolder ) {
   return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'stat', [ '-l', path.join( cacheFolder, GitHubRepoDownloader.getTargetPath( repoURL ), '.git' ) ] )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
+    fs.stat( path.join( cacheFolder, GitHubRepoDownloader.getTargetPath( repoURL ), '.git' ), ( err, stats ) => {
+      if ( err ) {
+        // log the error if it's not the `no entity` error.
+        if (err.code !== 'ENOENT') {
+          console.log( `[log] GitHubRepoDownloader.hasRepoCached on error: ` );
+          console.log( err );
+        }
         resolve( false );
-      } );
+      } else if ( stats.isDirectory() ) {
+        resolve( true );
+      } else {
+        resolve( false );
+      }
+    } );
   } );
 }
 
