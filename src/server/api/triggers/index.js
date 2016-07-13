@@ -91,6 +91,8 @@ function* installTriggers( next ) {
               return testEngine.deleteTrigger( itemInfoToInstall.name )
                 .then( ()=> {
                   return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path );
+                } ).then( ()=> {
+                  resolve( true );
                 } )
                 .catch( addOnError );
             }

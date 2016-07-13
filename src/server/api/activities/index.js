@@ -89,6 +89,8 @@ function* installActivities( next ) {
               return testEngine.deleteActivity( itemInfoToInstall.name )
                 .then( ()=> {
                   return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+                } ).then( ()=> {
+                  resolve( true );
                 } )
                 .catch( addOnError );
             }
