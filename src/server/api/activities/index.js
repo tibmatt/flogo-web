@@ -64,7 +64,7 @@ function* installActivities( next ) {
         const itemInfoToInstall = {
           name : item.schema.name || item.package.name,
           path : item.path,
-          version : item.schema.version || item.package.version
+          version : item.package.version || item.schema.version
         };
 
         inspectObj( itemInfoToInstall );
