@@ -632,15 +632,15 @@ export class Engine {
 
         return readJSONFile( triggersJSONPath )
           .then( ( triggersData )=> {
-            console.log( '[TODO] engine -> deleteTrigger | original triggersData:' );
-            inspectObj( triggersData );
+            // console.log( '[TODO] engine -> deleteTrigger | original triggersData:' );
+            // inspectObj( triggersData );
 
             _.remove( triggersData.triggers, ( trigger ) => {
               return trigger.name === triggerName;
             } );
 
-            console.log( '[TODO] engine -> deleteTrigger | modified triggersData:' );
-            inspectObj( triggersData );
+            // console.log( '[TODO] engine -> deleteTrigger | modified triggersData:' );
+            // inspectObj( triggersData );
 
             return triggersData;
           } )
