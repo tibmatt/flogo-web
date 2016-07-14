@@ -11,8 +11,8 @@ services:
       environment:
         FLOGO_FLOW_SERVICE_HOST: flogo-flow-service
         FLOGO_FLOW_STATE_SERVICE_HOST: flogo-state-service
-        GIT_USERNAME: myname
-        GIT_PASSWORD: mypassword
+        GIT_USERNAME: ${GITHUB_USERNAME}
+        GIT_PASSWORD: ${GITHUB_PASSWORD}
       depends_on:
         - flogo-flow-service
         - flogo-state-service
@@ -20,12 +20,12 @@ services:
         image: redis
   flogo-flow-service:
         image: flogo/flow-service
-        build: 
+        build:
             context: ./submodules/flogo-services
             dockerfile: Dockerfile-flow-service
         depends_on:
         - flogo-redis
-        ports: 
+        ports:
         - "9090:9090"
         - "9091:9091"
         links:
@@ -33,18 +33,18 @@ services:
         entrypoint:
         - /tmp/flow-service/docker-start.sh
         - compile
-        volumes: 
+        volumes:
         - ./submodules/flogo-services/flow-store-service/config:/tmp/config
-        environment: 
+        environment:
         - FLOGO_REDIS_HOST=flogo-redis
   flogo-state-service:
         image: flogo/state-service
-        build: 
+        build:
             context: ./submodules/flogo-services
             dockerfile: Dockerfile-flow-state-service
         depends_on:
         - flogo-redis
-        ports: 
+        ports:
         - "9190:9190"
         - "9191:9191"
         links:
@@ -52,7 +52,7 @@ services:
         entrypoint:
         - /tmp/flow-state-service/docker-start.sh
         - compile
-        volumes: 
+        volumes:
         - ./submodules/flogo-services/flow-state-service/config:/tmp/config
-        environment: 
+        environment:
         - FLOGO_REDIS_HOST=flogo-redis
