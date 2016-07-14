@@ -60,7 +60,9 @@ function* installTriggers( next ) {
     }
 
     try {
-      let addTriggersResult = yield Promise.all( _.map( results.success, ( successItemURL, idx ) => {
+      const addTriggersResult = [];
+
+      for ( let successItemURL of results.success ) {
         console.log( `[log] adding ${ successItemURL } to test engine ...` );
         const item = results.details[ successItemURL ];
         const itemInfoToInstall = {
@@ -71,7 +73,7 @@ function* installTriggers( next ) {
 
         inspectObj( itemInfoToInstall );
 
-        return new Promise( ( resolve, reject )=> {
+        let addTriggerResult = yield new Promise( ( resolve, reject )=> {
 
           const addOnError = ( err )=> {
             // if error happens, just note it down and report adding trigger failed.
@@ -86,7 +88,8 @@ function* installTriggers( next ) {
           inspectObj( hasTrigger );
 
           if ( hasTrigger.exists ) {
-            if ( hasTrigger.samePath && hasTrigger.version && itemInfoToInstall.version && semver.lte( itemInfoToInstall.version, hasTrigger.version )  ) {
+            if ( hasTrigger.samePath && hasTrigger.version && itemInfoToInstall.version &&
+              semver.lte( itemInfoToInstall.version, hasTrigger.version ) ) {
               console.log(
                 `[log] skip adding exists trigger ${ itemInfoToInstall.name } (${ itemInfoToInstall.version }) [${ itemInfoToInstall.path }]` );
               resolve( true );
@@ -94,8 +97,10 @@ function* installTriggers( next ) {
               // else delete the trigger before install, but keep the previous configuration in `flogo.json`
               return testEngine.deleteTrigger( itemInfoToInstall.name, true )
                 .then( ()=> {
-                  return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version );
-                } ).then( ()=> {
+                  return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path,
+                    itemInfoToInstall.version );
+                } )
+                .then( ()=> {
                   resolve( true );
                 } )
                 .catch( addOnError );
@@ -108,7 +113,9 @@ function* installTriggers( next ) {
               .catch( addOnError );
           }
         } );
-      } ) );
+
+        addTriggersResult.push( addTriggerResult );
+      }
     } catch ( err ) {
       console.error( `[error] add triggers to test engine` );
       console.error( err );

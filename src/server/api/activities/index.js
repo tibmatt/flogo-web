@@ -58,7 +58,11 @@ function* installActivities( next ) {
     }
 
     try {
-      let addActivitiesResult = yield Promise.all( _.map( results.success, ( successItemURL, idx ) => {
+
+      const addActivitiesResult = [];
+
+      for ( let successItemURL of results.success ) {
+
         console.log( `[log] adding ${ successItemURL } to test engine ...` );
         const item = results.details[ successItemURL ];
         const itemInfoToInstall = {
@@ -69,7 +73,7 @@ function* installActivities( next ) {
 
         inspectObj( itemInfoToInstall );
 
-        return new Promise( ( resolve, reject )=> {
+        let addActivityResult = yield new Promise( ( resolve, reject )=> {
 
           const addOnError = ( err )=> {
             // if error happens, just note it down and report adding activity failed.
@@ -84,7 +88,8 @@ function* installActivities( next ) {
           inspectObj( hasActivity );
 
           if ( hasActivity.exists ) {
-            if ( hasActivity.samePath && hasActivity.version && itemInfoToInstall.version && semver.lte( itemInfoToInstall.version, hasActivity.version ) ) {
+            if ( hasActivity.samePath && hasActivity.version && itemInfoToInstall.version &&
+              semver.lte( itemInfoToInstall.version, hasActivity.version ) ) {
               console.log(
                 `[log] skip adding exists activity ${ itemInfoToInstall.name } (${ itemInfoToInstall.version }) [${ itemInfoToInstall.path }]` );
               resolve( true );
@@ -92,8 +97,10 @@ function* installActivities( next ) {
               // else delete the activity before install
               return testEngine.deleteActivity( itemInfoToInstall.name )
                 .then( ()=> {
-                  return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version );
-                } ).then( ()=> {
+                  return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path,
+                    itemInfoToInstall.version );
+                } )
+                .then( ()=> {
                   resolve( true );
                 } )
                 .catch( addOnError );
@@ -106,7 +113,9 @@ function* installActivities( next ) {
               .catch( addOnError );
           }
         } );
-      } ) );
+
+        addActivitiesResult.push( addActivityResult );
+      }
     } catch ( err ) {
       console.error( `[error] add activities to test engine` );
       console.error( err );
