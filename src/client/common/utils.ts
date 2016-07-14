@@ -600,17 +600,7 @@ export function getURL( config : {
   }
 }
 
-export function getEngineURL() : string {
-  return getURL( (<any>window).FLOGO_GLOBAL.engine );
-}
 
-export function getStateServerURL() : string {
-  return getURL( (<any>window).FLOGO_GLOBAL.stateServer );
-}
-
-export function getProcessServerURL() : string {
-  return getURL( (<any>window).FLOGO_GLOBAL.flowServer );
-}
 
 export function getDBURL( dbConfig : {
   port : string;

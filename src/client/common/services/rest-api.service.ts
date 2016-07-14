@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MOCK_TASKS } from '../mocks';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { getEngineURL, getStateServerURL } from '../utils';
 
 /**
  * Deprecated since most of the implementation is used for when working on the POC.
@@ -133,7 +132,7 @@ export class RESTAPIService {
 
                   let options = new RequestOptions( { headers : headers } );
 
-                  return this.http.post( `${getEngineURL()}/flow/restart`, body, options )
+                  return this.http.post( `/v1/api/flows/run/restart`, body, options )
                     .toPromise()
                     .then(
                       rsp => {
@@ -160,7 +159,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions( { headers : headers } );
 
-        return this.http.get( `${getStateServerURL()}/instances/${id}`, options )
+        return this.http.get( `/v1/api/flows/run/instances/${id}`, options )
           .toPromise()
           .then(
             rsp => {
@@ -181,7 +180,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`${getStateServerURL()}/instances/${id}/steps`, options)
+        return this.http.get(`/v1/api/flows/run/instances/${id}/steps`, options)
           .toPromise()
           .then(
             rsp => {
@@ -202,7 +201,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`${getStateServerURL()}/instances/${id}/status`, options)
+        return this.http.get(`/v1/api/flows/run/instances/${id}/status`, options)
           .toPromise()
           .then(
             rsp => {
@@ -225,7 +224,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`${getStateServerURL()}/instances/${instanceID}/snapshot/${snapshotID}`, options)
+        return this.http.get(`/v1/api/flows/run/instances/${instanceID}/snapshot/${snapshotID}`, options)
           .toPromise()
           .then(
             rsp => {

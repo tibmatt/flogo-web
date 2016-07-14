@@ -5,6 +5,7 @@ import {errorHandler} from './error';
 import {flowsDetail} from './flows.detail';
 import {engine} from './engine';
 import {ping} from './ping';
+import {flowsRun} from './flows.run';
 
 export function api(app, router) {
   errorHandler(app, router);
@@ -14,4 +15,5 @@ export function api(app, router) {
   flowsDetail(app, router);
   engine(app, router);
   ping(app, router);
+  flowsRun(app, router);
 }
