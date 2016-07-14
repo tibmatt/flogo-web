@@ -5,6 +5,7 @@ import { getInitialisedTestEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import _ from 'lodash';
 import path from 'path';
+import semver from 'semver';
 
 let basePath = config.app.basePath;
 
@@ -62,7 +63,8 @@ function* installActivities( next ) {
         const item = results.details[ successItemURL ];
         const itemInfoToInstall = {
           name : item.schema.name || item.package.name,
-          path : item.path
+          path : item.path,
+          version : item.package.version || item.schema.version
         };
 
         inspectObj( itemInfoToInstall );
@@ -79,21 +81,25 @@ function* installActivities( next ) {
 
           const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
 
+          inspectObj( hasActivity );
+
           if ( hasActivity.exists ) {
-            if ( hasActivity.samePath ) {
+            if ( hasActivity.samePath && hasActivity.version && itemInfoToInstall.version && semver.lte( itemInfoToInstall.version, hasActivity.version ) ) {
               console.log(
-                `[log] skip adding exists activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
+                `[log] skip adding exists activity ${ itemInfoToInstall.name } (${ itemInfoToInstall.version }) [${ itemInfoToInstall.path }]` );
               resolve( true );
             } else {
               // else delete the activity before install
               return testEngine.deleteActivity( itemInfoToInstall.name )
                 .then( ()=> {
-                  return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path );
+                  return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version );
+                } ).then( ()=> {
+                  resolve( true );
                 } )
                 .catch( addOnError );
             }
           } else {
-            return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path )
+            return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version )
               .then( ()=> {
                 resolve( true );
               } )

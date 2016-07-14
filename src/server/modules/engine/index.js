@@ -12,6 +12,8 @@ import {
   readJSONFileSync,
   writeJSONFileSync,
   runShellCMD,
+  readJSONFile,
+  writeJSONFile,
   inspectObj
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
@@ -231,7 +233,7 @@ export class Engine {
 
               if ( activity.where ) {
                 if ( !ignore ) {
-                  promise = self.addActivity( activity.name, activity.where );
+                  promise = self.addActivity( activity.name, activity.where, activity.version );
                 } else {
                   console.log( "[info] ignore" );
                   promise = Promise.resolve( true );
@@ -280,53 +282,102 @@ export class Engine {
   addAllTriggers(options) {
     let self = this;
     return new Promise((resolve, reject) => {
+      const successHandler = ()=> {
+        self.isProcessing = false;
+        resolve( true );
+      };
+
+      const errorHandler = ( err ) => {
+        self.isProcessing = false;
+        reject( err );
+      };
+
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
 
-      triggersDBService.allDocs().then((result) => {
-        //console.log("[info]triggersDBService, result", result);
-        result ? result : (result = []);
-        options ? options : (options = {});
+      triggersDBService.allDocs()
+        .then( ( triggers ) => {
 
-        result.forEach((item) => {
-          item ? item : (item = {});
-          let ignore = options[item.name] && options[item.name].ignore || false;
-          if (item.where) {
-            if (!ignore) {
-              this.addTrigger(item.name, item.where);
-            } else {
-              console.log("[info] ignore");
+          options = options || [];
+          triggers = triggers || [];
+
+          return new Promise( ( resolve, reject )=> {
+
+            let processedItemNum = 0;
+            let runResult = [];
+
+            function _sequentiallyRun() {
+
+              let trigger = triggers[ processedItemNum ];
+
+              processedItemNum++;
+
+              let promise = null;
+
+              trigger = trigger || {};
+
+              let ignore = options[ trigger.name ] && options[ trigger.name ].ignore || false;
+
+              if ( trigger.where ) {
+                if ( !ignore ) {
+                  promise = self.addTrigger( trigger.name, trigger.where, trigger.version );
+                } else {
+                  console.log( "[info] ignore" );
+                  promise = Promise.resolve( true );
+                }
+              } else {
+                console.error( "[error]", trigger.name, " where isn't defined" );
+                promise = Promise.resolve( false );
+              }
+
+              return promise.then( ( result )=> {
+                if ( result !== false && !_.isNil( result ) ) {
+                  runResult.push( true );
+                } else {
+                  runResult.push( false );
+                }
+
+                if ( processedItemNum >= triggers.length ) {
+                  console.log( `[log] add all triggers result:` );
+                  console.log( runResult );
+                  resolve( true );
+                } else {
+                  return _sequentiallyRun();
+                }
+              } );
             }
-          } else {
-            console.error("[error]", item.name, " where isn't defined");
-          }
-        });
 
-        self.isProcessing = false;
-        resolve(true);
-      }).catch((err) => {
-        console.error("[error]triggersDBService.allDocs(), err: ", err);
-
-        self.isProcessing = false;
-        reject(err);
-      });
-    });
+            _sequentiallyRun()
+              .catch( ( err )=> {
+                console.log( `[error] add all triggers -> sequentiallyRun on error: ` );
+                console.error( err );
+                reject( err );
+              } );
+          } ).then( successHandler );
+        } )
+        .catch( ( err ) => {
+          console.error( "[error] triggersDBService.allDocs(), err: ", err );
+          errorHandler( err );
+        } );
+    } );
   }
 
   /**
    * Add an activity to the engine
    * @param {string} activityName - the name of this activity.
    * @param {string} activityPath - the path of this activity.
+   * @param {string} activityVersion - the version of this activity.
    * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
-  addActivity( activityName, activityPath ) {
+  addActivity( activityName, activityPath, activityVersion ) {
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
 
       const successHandler = ()=> {
         self.installedActivites[ activityName ] = {
-          path : activityPath
+          path : activityPath,
+          version : activityVersion // leave the version to be undefined, if not provided.
         };
 
         self.isProcessing = false;
@@ -371,7 +422,8 @@ export class Engine {
 
     return {
       exists : exists,
-      samePath : exists && activity.path === activityPath
+      samePath : exists && activity.path === activityPath,
+      version : exists ? activity.version : {}[ 'just need an undefined' ]
     };
   }
 
@@ -379,33 +431,42 @@ export class Engine {
    * Add an trigger to the engine
    * @param {string} triggerName - the name of this trigger.
    * @param {string} triggerPath - the path of this trigger.
+   * @param {string} triggerVersion - the version of this trigger.
    * @return {boolean} if create successful, return true, otherwise return false
    */
-  addTrigger(triggerName, triggerPath) {
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
+  addTrigger(triggerName, triggerPath, triggerVersion) {
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo add trigger ${triggerPath}`);
+    return new Promise( ( resolve, reject )=> {
 
-      // TODO sync to async
-      execSync(`flogo add trigger ${triggerPath}`, {
-        cwd: defaultEnginePath
-      });
+      const successHandler = ()=> {
+        self.installedTriggers[ triggerName ] = {
+          path : triggerPath,
+          version : triggerVersion // leave the version to be undefined, if not provided.
+        };
 
-      this.installedTriggers[triggerName] = {
-        path: triggerPath
+        self.isProcessing = false;
+        resolve( true );
       };
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->addTrigger. Error: ", err);
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->addTrigger. Error: ", err );
 
-      this.isProcessing = false;
-      return false;
-    }
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.ADDING_TRIGGER;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'add', 'trigger', triggerPath ], {
+        cwd : defaultEnginePath
+      } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**
@@ -426,7 +487,8 @@ export class Engine {
 
     return {
       exists : exists,
-      samePath : exists && trigger.path === triggerPath
+      samePath : exists && trigger.path === triggerPath,
+      version : exists ? trigger.version : {}[ 'just need an undefined' ]
     };
   }
 
@@ -539,32 +601,70 @@ export class Engine {
 
   /**
    * Delete a trigger in this engine
+   * Also update the trigger.json to remove the entry of this trigger.
    * @param {string} triggerName - the name of trigger
+   * @param {boolean} keepConfig - keep the configuration of the trigger, using with an add trigger call for updating.
    * @return {boolean} if successful, return true, otherwise return false
    */
-  deleteTrigger(triggerName){
-    try {
-      this.isProcessing = true;
-      this.status = FLOGO_ENGINE_STATUS.REMOVING_TRIGGER;
+  deleteTrigger(triggerName, keepConfig){
+    const self = this;
 
-      let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      console.log(`[info]flogo del trigger ${triggerName}`);
+    return new Promise( ( resolve, reject )=> {
 
-      // TODO sync to async
-      execSync(`flogo del trigger ${triggerName}`, {
-        cwd: defaultEnginePath
-      });
+      const successHandler = ()=> {
+        delete self.installedTriggers[triggerName];
 
-      delete this.installedTriggers[triggerName];
+        self.isProcessing = false;
+        resolve( true );
+      };
 
-      this.isProcessing = false;
-      return true;
-    } catch (err) {
-      console.error("[Error]Engine->deleteTrigger. Error: ", err);
+      const errorHandler = ( err ) => {
+        console.error( "[error] Engine->deleteTrigger. Error: ", err );
 
-      this.isProcessing = false;
-      return false;
-    }
+        self.isProcessing = false;
+        reject( false );
+      };
+
+      // update the trigger.json to remove the entry of this trigger,
+      // since the `flogo del` won't do that.
+      const removeTriggerInfoFromTriggersJSON = () => {
+        let triggersJSONPath = path.join( defaultEnginePath, 'bin', 'triggers.json' );
+
+        return readJSONFile( triggersJSONPath )
+          .then( ( triggersData )=> {
+            // console.log( '[TODO] engine -> deleteTrigger | original triggersData:' );
+            // inspectObj( triggersData );
+
+            _.remove( triggersData.triggers, ( trigger ) => {
+              return trigger.name === triggerName;
+            } );
+
+            // console.log( '[TODO] engine -> deleteTrigger | modified triggersData:' );
+            // inspectObj( triggersData );
+
+            return triggersData;
+          } )
+          .then( ( triggersData )=> {
+            return writeJSONFile( triggersJSONPath, triggersData );
+          } );
+      };
+
+      self.isProcessing = true;
+      self.status = FLOGO_ENGINE_STATUS.REMOVING_TRIGGER;
+
+      let defaultEnginePath = path.join( self.enginePath, self.options.name );
+
+      runShellCMD( 'flogo', [ 'del', 'trigger', triggerName ], {
+        cwd : defaultEnginePath
+      } )
+        .then( () => {
+          if ( !keepConfig ) {
+            return removeTriggerInfoFromTriggersJSON();
+          }
+        } )
+        .then( successHandler )
+        .catch( errorHandler );
+    } );
   }
 
   /**

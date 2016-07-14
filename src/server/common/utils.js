@@ -89,6 +89,28 @@ export function readJSONFileSync( JSONPath ) {
 }
 
 /**
+ * Async version of readJSONFileSync
+ * @param  {string|Path} jSONPath - the path of JSON file
+ * @return {Promise<object|undefined>} if it is a valid and exist json, return json, otherwise return undefined
+ */
+export function readJSONFile( JSONPath ) {
+  return new Promise( ( resolve, reject ) => {
+    if ( isExisted( JSONPath ) ) {
+      fs.readFile( JSONPath, { 'encoding' : 'utf8' }, ( err, data )=> {
+        if ( err ) {
+          reject( err );
+        } else {
+          resolve( isJSON( data ) );
+        }
+      } );
+    } else {
+      console.error( "[error][utils.js->readJSONFile] path doesn't exist. path: ", JSONPath );
+      throw new Error( `Path [${JSONPath}] doesn't exist.` );
+    }
+  } );
+}
+
+/**
  * write a JSON file
  * @param {string|Path} JSONPath - the path of JSON file
  * @param {object} data - the JSON data you want to write
@@ -104,6 +126,24 @@ export function writeJSONFileSync( JSONPath, data ) {
     console.error( "[error][utils.js->writeJSONFileSync] err: ", err );
     return false;
   }
+}
+
+/**
+ * Async version of writeJSONFileSync
+ * @param {string|Path} JSONPath - the path of JSON file
+ * @param {object} data - the JSON data you want to write
+ * @return {Promise<boolean>} if write successful, return true, otherwise return false
+ */
+export function writeJSONFile( JSONPath, data ) {
+  return new Promise( ( resolve, reject ) => {
+    fs.writeFile( JSONPath, JSON.stringify( data, null, 2 ), { 'encoding' : 'utf8' }, ( err )=> {
+      if ( err ) {
+        reject( err );
+      } else {
+        resolve( true );
+      }
+    } );
+  } );
 }
 
 export function flogoIDEncode( id ) {
