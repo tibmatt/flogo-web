@@ -11,6 +11,7 @@ services:
       environment:
         FLOGO_FLOW_SERVICE_HOST: flogo-flow-service
         FLOGO_FLOW_STATE_SERVICE_HOST: flogo-state-service
+        FLOGO_FLOW_WEB_HOST: $DOCKER_HOST
         GIT_USERNAME: myname
         GIT_PASSWORD: mypassword
       depends_on:

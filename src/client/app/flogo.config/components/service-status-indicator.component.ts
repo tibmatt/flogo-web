@@ -1,10 +1,18 @@
 import {Component, Input, OnInit, DoCheck, OnDestroy} from '@angular/core';
-import {Http} from '@angular/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject,Subscription} from "rxjs/Rx";
 import { getURL } from '../../../common/utils';
 
 const PING_INTERVAL_MS = 2500;
+
+interface IUrlConfig {
+  protocol:string;
+  host:string;
+  port:string;
+  name?:string;
+  testPath?: string;
+}
 
 @Component({
   selector: 'flogo-config-service-status-indicator',
@@ -14,7 +22,7 @@ const PING_INTERVAL_MS = 2500;
 })
 export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestroy {
 
-  @Input() urlConfig:{protocol:string, host:string, port:string, name?:string, testPath?: string} = null;
+  @Input() urlConfig:IUrlConfig = null;
   status : string = null;
   statusCode : any = null;
 
@@ -28,7 +36,7 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
   };
 
   constructor(private http:Http) {
-    this.configChangeSubject = new BehaviorSubject(this.buildUrl());
+    this.configChangeSubject = new BehaviorSubject(this.urlConfig);
   }
 
   ngOnInit() {
@@ -40,12 +48,18 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
       .interval(PING_INTERVAL_MS)
       .combineLatest(configChangeStream)
       .map(combined => combined[1])
-      .map((url:string) => this.http.get(url))
+      .map((config:IUrlConfig) => {
+        let headers = new Headers({'Content-Type':'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let body = JSON.stringify({ config:config });
+
+        return this.http.post('/v1/api/ping/service',body,options);
+      })
       .switch()
       .catch((error:any) => {
         this.statusCode = error.status;
         // status 200 means no response from server
-        if(error.status != 200) {
+        if(error.status != 500) {
           this.status = 'online-warning';
         } else {
           this.status = 'offline'
@@ -63,7 +77,7 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
   }
 
   ngDoCheck() {
-    this.configChangeSubject.next(this.buildUrl());
+    this.configChangeSubject.next(this.urlConfig);
   }
 
   // TODO: Not always executed thus observers are always on, should be fixed in next angular release: https://github.com/angular/angular/issues/8458
