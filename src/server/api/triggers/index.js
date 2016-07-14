@@ -83,6 +83,8 @@ function* installTriggers( next ) {
 
           const hasTrigger = testEngine.hasTrigger( itemInfoToInstall.name, itemInfoToInstall.path );
 
+          inspectObj( hasTrigger );
+
           if ( hasTrigger.exists ) {
             if ( hasTrigger.samePath && hasTrigger.version && itemInfoToInstall.version && semver.lte( itemInfoToInstall.version, hasTrigger.version )  ) {
               console.log(

@@ -81,6 +81,8 @@ function* installActivities( next ) {
 
           const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
 
+          inspectObj( hasActivity );
+
           if ( hasActivity.exists ) {
             if ( hasActivity.samePath && hasActivity.version && itemInfoToInstall.version && semver.lte( itemInfoToInstall.version, hasActivity.version ) ) {
               console.log(
