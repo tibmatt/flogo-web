@@ -433,12 +433,49 @@ export class Engine {
     }
   }
 
-  build(args) {
+  /**
+   * Synchronously build the engine.
+   *
+   * For valid compile os and architechture values see https://golang.org/doc/install/source#environment
+   *
+   * @param opts Options for engine build
+   * @param opts.optimize {boolean} Optimize for embedded flows. Default false.
+   * @param opts.incorporateConfig {boolean} incorporate config into application. Default false.
+   * @param opts.compile.os {string} Target operating system. Default value false. Falsy value will fallback to engine host's default os.
+   * @param opts.compile.arch {string} Target compilation architechture. Default value false. Falsy value will fallback to engine host's default arch.
+
+   * @returns {boolean} whether build was successful or not
+   */
+  build(opts) {
+    let defaultOpts = {
+      optimize: false, incorporateConfig: false,
+      compile: {os: false, arch: false}
+    };
+    opts = Object.assign({}, defaultOpts, opts);
+
     try {
       let defaultEnginePath = path.join(this.enginePath, this.options.name);
-      args ? args: (args='');
+
+      let args = [
+        opts.optimize ? '-o' : '',
+        opts.incorporateConfig ? '-i' : ''
+      ].join(' ');
+
+      let env = {};
+      if (opts.compile) {
+        if (opts.compile.os) {
+          env['GOOS'] = opts.compile.os;
+        }
+
+        if (opts.compile.arch) {
+          env['GOARCH'] = opts.compile.arch
+        }
+      }
+
+      console.log(`Build flogo: "flogo build ${args}" compileOpts: ${JSON.stringify(env)}`);
       execSync(`flogo build ${args}`, {
-        cwd: defaultEnginePath
+        cwd: defaultEnginePath,
+        env: Object.assign({}, process.env, env)
       });
       return true;
     } catch (err) {
