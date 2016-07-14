@@ -6,6 +6,19 @@ import { FLOGO_TASK_TYPE } from '../common/constants';
 import { spawn } from 'child_process';
 import { inspect } from 'util';
 
+export function extractDomain(url) {
+  var domain;
+  if (url.indexOf("://") > -1) {
+    domain = url.split('/')[2];
+  }
+  else {
+    domain = url.split('/')[0];
+  }
+
+  domain = domain.split(':')[0];
+  return domain;
+}
+
 export function btoa( str ) {
   var buffer;
 

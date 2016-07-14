@@ -1,4 +1,6 @@
 import path from 'path';
+import { extractDomain } from '../common/utils';
+
 import {
   DBService
 } from '../common/db.service';
@@ -9,6 +11,7 @@ let publicPath = path.normalize(rootPath+'/../public');
 
 let FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
 let FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
+let FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost");
 
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
@@ -178,13 +181,50 @@ let config = {
       }]
     }
   },
+  flogoWeb: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web",
+    label: 'Application database'
+  },
+  flogoWebActivities: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web-activities",
+    label: 'Activities'
+  },
+  flogoWebTriggers: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web-triggers",
+    label: 'Triggers'
+  },
   stateServer: {
+    protocol: 'http',
     host: FLOW_STATE_SERVICE_HOST,
-    port: "9190"
+    port: "9190",
+    testPath: "ping"
   },
   processServer: {
+    protocol: 'http',
     host: FLOW_SERVICE_HOST,
-    port: "9090"
+    port: "9090",
+    testPath: "ping"
+  },
+  webServer: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "3010",
+    testPath: ''
+  },
+  engine: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "8080",
+    testPath: "status"
   }
 };
 
