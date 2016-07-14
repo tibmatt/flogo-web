@@ -6,7 +6,7 @@ Flogo Web UI provides a web-based Designer & debugger to build Flogo application
 ## Prerequisites
 
 - git: There are several excellent tools available for [git](https://git-scm.com/downloads)
-- docker:  Refer to the getting started documentation on [docs.docker.com](https://docs.docker.com/)
+- docker: Install the latest Docker for Mac or Windows (not toolbox). Refer to the getting started documentation on [docs.docker.com](https://docs.docker.com/)
 - Access to the following git repositories:
 
 1. [flogo-cli](https://github.com/TIBCOSoftware/flogo-cli.git)
