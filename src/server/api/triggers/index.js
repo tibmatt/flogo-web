@@ -89,8 +89,8 @@ function* installTriggers( next ) {
                 `[log] skip adding exists trigger ${ itemInfoToInstall.name } (${ itemInfoToInstall.version }) [${ itemInfoToInstall.path }]` );
               resolve( true );
             } else {
-              // else delete the trigger before install
-              return testEngine.deleteTrigger( itemInfoToInstall.name )
+              // else delete the trigger before install, but keep the previous configuration in `flogo.json`
+              return testEngine.deleteTrigger( itemInfoToInstall.name, true )
                 .then( ()=> {
                   return testEngine.addTrigger( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version );
                 } ).then( ()=> {

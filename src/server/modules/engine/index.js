@@ -603,9 +603,10 @@ export class Engine {
    * Delete a trigger in this engine
    * Also update the trigger.json to remove the entry of this trigger.
    * @param {string} triggerName - the name of trigger
+   * @param {boolean} keepConfig - keep the configuration of the trigger, using with an add trigger call for updating.
    * @return {boolean} if successful, return true, otherwise return false
    */
-  deleteTrigger(triggerName){
+  deleteTrigger(triggerName, keepConfig){
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
@@ -656,7 +657,11 @@ export class Engine {
       runShellCMD( 'flogo', [ 'del', 'trigger', triggerName ], {
         cwd : defaultEnginePath
       } )
-        .then( removeTriggerInfoFromTriggersJSON )
+        .then( () => {
+          if ( !keepConfig ) {
+            return removeTriggerInfoFromTriggersJSON();
+          }
+        } )
         .then( successHandler )
         .catch( errorHandler );
     } );
