@@ -106,4 +106,11 @@ export class FlogoFlowsDetailTriggers {
       );
   }
 
+  private onInstalledAction( response : any ) {
+    console.group( `[FlogoFlowsDetailTriggers] onInstalled` );
+    console.log( response );
+    console.groupEnd();
+    this._loadTriggers();
+  }
+
 }

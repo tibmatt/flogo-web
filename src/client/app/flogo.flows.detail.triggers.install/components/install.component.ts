@@ -1,53 +1,30 @@
-import {Component} from '@angular/core';
-import { MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { Component, EventEmitter } from '@angular/core';
+import { FlogoInstallerComponent } from '../../flogo.installer/components/installer.component';
 
-import {PUB_EVENTS, SUB_EVENTS} from '../../flogo.flows.detail.triggers/messages';
-
-import {RESTAPIService} from "../../../common/services/rest-api.service";
-import {PostService} from "../../../common/services/post.service";
-
-import {TRIGGERS as MOCK_TRIGGERS} from "../../flogo.flows.detail.triggers/mocks/triggers"
-
-@Component({
-  selector: 'flogo-flows-detail-triggers-install',
-  directives: [MODAL_DIRECTIVES],
-  moduleId: module.id,
-  templateUrl: 'install.tpl.html',
-})
+@Component( {
+  selector : 'flogo-flows-detail-triggers-install',
+  directives : [ FlogoInstallerComponent ],
+  outputs : [ 'onInstalled: flogoOnInstalled' ],
+  moduleId : module.id,
+  templateUrl : 'install.tpl.html',
+} )
 export class FlogoFlowsDetailTriggersInstallComponent {
 
-  public triggers:any[] = [];
+  public triggers : any[] = [];
+  private isActivated = false;
+  onInstalled = new EventEmitter();
 
-  constructor(private _restApiService:RESTAPIService, private _postService:PostService) {
-    this.triggers = MOCK_TRIGGERS;
-    //this._loadTriggers();
+  constructor() {
+    this.isActivated = false;
   }
 
-  public install(trigger:any) {
-
-    this._restApiService.triggers
-      .install([{
-        name: trigger.name,
-        version: trigger.version
-      }])
-      .then(() => {
-        this._loadTriggers();
-        this._postService.publish(
-          _.assign(
-            {}, SUB_EVENTS.installTrigger, {
-              data: {}
-            }
-          )
-        );
-
-
-      });
-
+  private openModal() {
+    this.isActivated = true;
   }
 
-  private _loadTriggers() {
-    this._restApiService.triggers.getAll()
-      .then((triggers:any) => this.triggers = triggers);
-  };
+  private onInstalledAction( response : any ) {
+    // bubble the event.
+    this.onInstalled.emit( response );
+  }
 
 }

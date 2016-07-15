@@ -111,34 +111,34 @@ function generateBuild(id, compileOptions){
         triggersJSON.triggers.push(triggerJSON);
         engines.build.updateTriggerJSON(triggersJSON, true);
 
-        // / step4: build
-        engines.build.build({
+        // step4: build
+        engines.build.build( {
           optimize: true,
           incorporateConfig: true,
           compile: compileOptions
-        });
-
-        // setp 5: return file
-        let binPath = path.join(engineFolderPath, 'bin');
-        let executableName = _determineBuildExecutableNamePattern(engines.build.options.name, compileOptions);
-        console.log(`execName: ${executableName}`);
-        // if no compile options provided or both options provided we can skip the search for generated binary since we have the exact name
-        let isDefaultCompile = !compileOptions.os && !compileOptions.arch;
-        if(isDefaultCompile || (compileOptions.os && compileOptions.arch)) {
-          console.log('Default compile, grab file directly')
-          let data = fs.readFileSync(path.join(binPath, executableName));
-          return resolve(data);
-        } else {
-          console.log('Find file');
-          findLastCreatedFile(binPath, new RegExp(executableName))
-            .then(buildEnginePath => {
-              console.log('Found: ' + JSON.stringify(buildEnginePath));
-              let data = fs.readFileSync(buildEnginePath);
-              resolve(data);
-            })
-            .catch(reject);
-        }
-
+        } )
+          .then( ()=> {
+            // setp 5: return file
+            let binPath = path.join( engineFolderPath, 'bin' );
+            let executableName = _determineBuildExecutableNamePattern( engines.build.options.name, compileOptions );
+            console.log( `[log] execName: ${executableName}` );
+            // if no compile options provided or both options provided we can skip the search for generated binary since we have the exact name
+            let isDefaultCompile = !compileOptions.os && !compileOptions.arch;
+            if ( isDefaultCompile || (compileOptions.os && compileOptions.arch) ) {
+              console.log( '[debug] Default compile, grab file directly' );
+              let data = fs.readFileSync( path.join( binPath, executableName ) );
+              return resolve( data );
+            } else {
+              console.log( '[debug] Find file' );
+              return findLastCreatedFile( binPath, new RegExp( executableName ) )
+                .then( buildEnginePath => {
+                  console.log( '[log] Found: ' + JSON.stringify( buildEnginePath ) );
+                  let data = fs.readFileSync( buildEnginePath );
+                  resolve( data );
+                } );
+            }
+          } )
+          .catch( reject );
       }else{
         reject(err);
       }

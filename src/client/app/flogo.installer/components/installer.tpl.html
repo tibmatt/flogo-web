@@ -1,0 +1,36 @@
+<modal [size]="'lg'" #installerModal (onClose)="onModalCloseOrDismiss($event)"
+       (onDismiss)="onModalCloseOrDismiss($event)">
+  <modal-body>
+    <i class="flogo-installer-modal-close" (click)="closeModal()"></i>
+    <header class="container-fluid">
+      <div class="row">
+        <div class="col-md-8">
+          <h3 class="flogo-installer-modal-title" [innerHtml]="_title"></h3>
+        </div>
+        <div class="col-md-4">
+          <flogo-installer-search [(flogoSearchQuery)]="query"></flogo-installer-search>
+        </div>
+      </div>
+      <hr class="flogo-installer-modal-hr"/>
+    </header>
+
+    <section class="container-fluid">
+      <flogo-installer-activity *ngIf="_installType=='activity'" [flogoSearchQuery]="query"
+                                [flogoInstallerStatus]="_status"></flogo-installer-activity>
+      <flogo-installer-trigger *ngIf="_installType=='trigger'" [flogoSearchQuery]="query"
+                               [flogoInstallerStatus]="_status"></flogo-installer-trigger>
+    </section>
+
+    <hr/>
+
+    <section class="container-fluid">
+      <div class="row">
+        <div class="col-md-offset-4 col-md-8">
+          <flogo-installer-url [flogoInstallType]="_installType"
+                               (flogoOnInstall)="onInstallAction($event)"
+                               [flogoInstallerStatus]="_status"></flogo-installer-url>
+        </div>
+      </div>
+    </section>
+  </modal-body>
+</modal>

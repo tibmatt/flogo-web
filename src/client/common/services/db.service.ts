@@ -315,7 +315,14 @@ export class FlogoDBService{
                 return _.map(
                   _.filter( docs.rows, ( doc : any ) => !_.isEmpty( _.get( doc, 'doc.schema', '' ) ) ),
                   ( doc : any )=> {
-                    return activitySchemaToTask( doc.doc.schema );
+                    console.log( 'activity doc', doc );
+                    return _.assign( activitySchemaToTask( doc.doc.schema ), {
+                      author : _.get( doc, 'doc.author' ),
+                      where : _.get( doc, 'doc.where' ),
+                      // TODO fix this installed status.
+                      // as of now, whatever can be read from db, should have been installed.
+                      installed : true
+                    } );
                   }
                 );
               }
@@ -368,7 +375,14 @@ export class FlogoDBService{
                 return _.map(
                   _.filter( docs.rows, ( doc : any ) => !_.isEmpty( _.get( doc, 'doc.schema', '' ) ) ),
                   ( doc : any )=> {
-                    return activitySchemaToTrigger( doc.doc.schema );
+                    console.log( 'trigger doc', doc );
+                    return _.assign( activitySchemaToTrigger( doc.doc.schema ), {
+                      author : _.get( doc, 'doc.author' ),
+                      where : _.get( doc, 'doc.where' ),
+                      // TODO fix this installed status.
+                      // as of now, whatever can be read from db, should have been installed.
+                      installed : true
+                    } );
                   }
                 );
               }

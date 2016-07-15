@@ -1,0 +1,75 @@
+@font-color: #666666;
+
+:host {
+  display: block;
+  margin: 20px 0 0;
+  padding: 0 15px 12px 25px;
+  font-family: 'Source Sans Pro', 'Helvetica', 'Arial', sans-serif;
+  color: @font-color;
+  position: relative;
+  border-bottom: solid 1px #D8D8D8;
+}
+
+.flogo-installer-list-item-icon {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url('/assets/svg/flogo.icon.gears.svg') no-repeat center center;
+  background-size: 30px 30px;
+
+  // adjustment
+  position: relative;
+  top: 3px;
+}
+
+.flogo-installer-list-item-info {
+  vertical-align: top;
+  display: inline-block;
+
+  margin-left: 25px;
+}
+
+.flogo-installer-list-item-detail {
+  vertical-align: top;
+  display: inline-block;
+  text-align: right;
+
+  margin-left: 25px;
+}
+
+.flogo-installer-list-item-status-icon {
+  vertical-align: top;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background-size: 24px;
+
+  margin-left: 25px;
+}
+
+.flogo-installer-list-item-status-icon-installed:extend(.flogo-installer-list-item-status-icon) {
+  background: url('/assets/svg/flogo.icon.check.circle.grey.svg') no-repeat center center;
+}
+
+.flogo-installer-list-item-status-icon-not-installed:extend(.flogo-installer-list-item-status-icon) {
+  background: url('/assets/svg/flogo.icon.download.svg') no-repeat center center;
+}
+
+.flogo-installer-list-item-display-name {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.flogo-installer-list-item-description {
+  font-size: 12px;
+}
+
+.flogo-installer-list-item-author {
+  font-size: 11px;
+}
+
+.flogo-installer-list-item-create-time {
+  font-size: 11px;
+}

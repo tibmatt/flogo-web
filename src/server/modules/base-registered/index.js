@@ -6,11 +6,11 @@ import fs from 'fs';
 import {DBService} from '../../common/db.service';
 import {isDirectory, isExisted, readDirectoriesSync} from '../../common/utils';
 import {config} from '../../config/app-config';
+import { DEFAULT_SCHEMA_ROOT_FOLDER_NAME } from '../../common/constants';
 
 const execSync = require('child_process').execSync;
 
 const COMPONENT_TYPE = ["trigger", "activity", "model"];
-const UI_FOLDER_NAME = 'ui';
 
 
 // default options
@@ -86,7 +86,7 @@ export class BaseRegistered{
     return this._dbService;
   }
 
-  generateID(name, version){
+  static generateID(name, version){
     // console.log("generateActivityID, arguments: ", arguments);
     name = _.kebabCase(name);
     // console.log("name: ", name);
@@ -97,6 +97,125 @@ export class BaseRegistered{
     let id = name;
     //console.log("generateID, id: ", id);
     return id;
+  }
+
+  static constructItem( opts ) {
+    return {
+      _id : opts.id,
+      'where' : opts.where,
+      'name' : opts.name,
+      'version' : opts.version,
+      'description' : opts.description,
+      'keywords' : opts.keywords || [],
+      'author' : opts.author || 'Anonymous',
+      'schema' : opts.schema
+    }
+  }
+
+  static saveItems( dbService, items, updateOnly ) {
+    let _items = _.cloneDeep( items ); // in order to avoid the changes on the given items.
+
+    // get all of the items in the given db
+    return dbService.db.allDocs( { include_docs : true } )
+      .then( ( docs )=> {
+        console.log( '[info] Get all items.' );
+        return docs
+      } )
+      // pre-process the docs
+      .then( ( docs ) => {
+        console.log( '[info] pre-process the docs' );
+        return _.map( docs.rows, ( row ) => {
+          return (row && row.doc) || null;
+        } );
+      } )
+      .then( ( itemDocs ) => {
+        return _.filter( itemDocs, itemDoc => !_.isNull( itemDoc ) );
+      } )
+
+      // update or remove item
+      // `updateOnly` will skip the `remove other items` part.
+      .then( ( oldItems ) => {
+
+        console.log( '[info] update or remove item' );
+
+        return Promise.all( _.map( oldItems, ( oldItem ) => {
+
+          let newItem = _items[ oldItem[ '_id' ] ];
+
+          // if this item cannot be found in the activityDocs generated from package.json, then need to be removed
+          if ( !newItem ) {
+            if ( updateOnly ) {
+              console.log( `[info] ignore exist item [${oldItem[ 'where' ]}] for updating only.` );
+              return null;
+            }
+            return dbService.db.remove( oldItem )
+              .then( ( result ) => {
+                console.log( `[info] delete item [${oldItem[ 'where' ]}] success.` );
+                return result;
+              } )
+              .catch( ( err )=> {
+                console.error( "[error] delete item fail.", err );
+                throw err;
+              } );
+          } else {
+            // update the item.
+
+            // When updating an item, the old one will be overwritten,
+            // since the user maybe delete some value in the new one.
+
+            // copy the some value from current activity in DB
+            newItem[ '_id' ] = oldItem[ '_id' ];
+            newItem[ '_rev' ] = oldItem[ '_rev' ];
+            newItem.created_at = oldItem.created_at;
+            newItem.updated_at = new Date().toISOString();
+
+            // update this item in DB
+            return dbService.db.put( _.cloneDeep( newItem ) )
+              .then( ( response )=> {
+                console.log( `[info] Update item [${newItem[ 'where' ]}] success.` );
+                return response;
+              } )
+              .then( ( result ) => {
+                // delete this item from the given list.
+                delete _items[ oldItem[ '_id' ] ];
+                return result;
+              } )
+              .catch( ( err )=> {
+                console.log( `[error] Update item [${newItem[ 'where' ]}] error: `, err );
+                throw err;
+              } );
+          }
+        } ) );
+
+      } )
+      // filter undefined && null
+      .then( ()=> _.filter( _items, _item => !_.isNil( _items ) ) )
+
+      // add new items
+      .then( ( newItems )=> {
+        console.log( '[info] add new items' );
+
+        return Promise.all( _.map( newItems, ( newItem ) => {
+          newItem.created_at = new Date().toISOString();
+
+          return dbService.db.put( newItem )
+            .then( ( response )=> {
+              console.log( `[info] Add item [${newItem[ 'where' ]}] success.` );
+              return response;
+            } )
+            .catch( ( err )=> {
+              console.log( `[error] Add item [${newItem[ 'where' ]}] error: `, err );
+              throw err;
+            } );
+        } ) );
+      } )
+
+      // done with true
+      .then( () => true )
+      .catch( ( err ) => {
+        console.error( `Error in saveItems:\n${ err }` );
+        throw err;
+      } );
   }
 
   // watch the activities
@@ -208,12 +327,12 @@ export class BaseRegistered{
 
           // TODO need to improve, provide more good way
 
-          if(isExisted(path.join(itemPath, UI_FOLDER_NAME, 'package.json'))){
-            design_package_json = path.join(itemPath, UI_FOLDER_NAME, 'package.json');
-            value = path.join(itemPath, UI_FOLDER_NAME);
-          }else if(isExisted(path.join(itemPath, 'src', UI_FOLDER_NAME, 'package.json'))){
-            design_package_json = path.join(itemPath, 'src', UI_FOLDER_NAME, 'package.json');
-            value = path.join(itemPath, 'src', UI_FOLDER_NAME);
+          if(isExisted(path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+            design_package_json = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
+            value = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
+          }else if(isExisted(path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+            design_package_json = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
+            value = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
           }else{
             console.log("[Warning] didn't find design time for this activity");
           }
@@ -264,95 +383,30 @@ export class BaseRegistered{
           // console.log("packageJSON: ", packageJSON);
           // console.log("schemaJSON: ", schemaJSON);
 
-          let id = this.generateID(key, packageJSON.version);
+          let id = BaseRegistered.generateID(key, packageJSON.version);
           console.log("id: ", id);
 
-          let item = {
-            _id: id,
-            'where': this._where[key],
-            'name': key,
-            'version': packageJSON.version,
-            'description': packageJSON.description,
-            'keywords': packageJSON.keywords||[],
-            'schema': schemaJSON
-          };
-
-          items[id]=item;
+          items[ id ] = BaseRegistered.constructItem( {
+            'id' : id,
+            'where' : this._where[ key ],
+            'name' : key,
+            'version' : packageJSON.version,
+            'description' : packageJSON.description,
+            'keywords' : packageJSON.keywords || [],
+            'author' : packageJSON.author,
+            'schema' : schemaJSON
+          } );
         });
 
         // console.log("!!!!!!!!activityDocs: ", activityDocs);
 
-        this.dbService.db.allDocs({include_docs: true}).then((docs)=>{
-          // console.log("============ - docs: ", docs);
-          let rows = docs.rows||[];
-          let activities = [];
-
-          rows.forEach((item, index)=>{
-            if(item&&item.doc){
-              activities.push(item.doc);
-            }
-          });
-          // update or remove activity
-          activities.forEach((activity, index)=>{
-            let newActivity = items[activity['_id']];
-            // console.log("activity['id']: ", activity['id']);
-            // console.log("**********newActivity: ", newActivity);
-            // if this activity cannot find in activityDocs generate from package.json, then need to remove it
-            if(!newActivity){
-              // console.log("[Remove]activity: ", activity);
-              this.dbService.db.remove(activity).then((response)=>{
-                console.log("[info]delete activity success. ", response);
-              }).catch((err)=>{
-                console.error("[error]delete activity fail. ", err);
-              });
-            }else{
-              // When we update an activity, we will use new activity to overwrite the old one. This is because, user maybe in new activity delete some value,
-              // copy the some value from current activity in DB
-              newActivity['_id'] = activity['_id'];
-              newActivity['_rev'] = activity['_rev'];
-              newActivity.created_at = activity.created_at;
-              newActivity.updated_at = new Date().toISOString();
-              // update this activity in DB
-              this.dbService.db.put(_.cloneDeep(newActivity)).then((response)=>{
-                console.log("Update activity success: ", response);
-              }).catch((err)=>{
-                console.log("Update activity error: ", err);
-              });
-              // delete this activity
-              delete items[activity['_id']];
-            }
-          });
-
-          //console.log("@@@@@@@@@[items]: ", items);
-
-          let PromiseAll = [];
-
-          // Rest activities should be new activity
-          _.forOwn(items, (activity, index)=>{
-            activity.created_at = new Date().toISOString();
-            // add this activity in DB
-            let promise = new Promise((res, rej)=>{
-              this.dbService.db.put(activity).then((response)=>{
-                console.log("Add activity success: ", response);
-                res(response);
-              }).catch((err)=>{
-                console.log("Add activity error: ", err);
-                rej(err);
-              });
-            });
-            PromiseAll.push(promise);
-          });
-
-          Promise.all(PromiseAll).then(()=>{
-            resolve(true);
-          }).catch((err)=>{
-            reject(err);
+        BaseRegistered.saveItems( this.dbService, items )
+          .then( ( result ) => {
+            console.log( `[info] updateDB done.` );
+            return result;
           })
-
-        }).catch((err)=>{
-          console.log("[error]Get all activities fail. ", err);
-          reject(err);
-        });
+          .then( resolve )
+          .catch( reject );
 
       }).catch((err)=>{
         console.error("[error]Install error. ", err);

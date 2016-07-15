@@ -1,0 +1,4 @@
+<input class="flogo-installer-url-installer-input" type="text" [placeholder]="placeholder" [ngModel]="sourceUrl"
+       (ngModelChange)="onSourceUrlChange($event)"/><i class="flogo-installer-url-installer-download-icon"
+                                                       [ngClass]="{ 'flogo-installer-url-installer-disabled': disableInstall }"
+                                                       (click)="onInstallAction($event)"></i>
