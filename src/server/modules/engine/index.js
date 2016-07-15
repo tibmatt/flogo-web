@@ -23,6 +23,8 @@ const spawn = require('child_process').spawn;
 const execSync = require('child_process').execSync;
 const fs = require('fs');
 
+const NO_ENGINE_RECREATION = !!process.env.FLOGO_NO_ENGINE_RECREATION;
+
 //TODO: make sync function to async
 
 export class Engine {
@@ -63,7 +65,16 @@ export class Engine {
   }
 
   init() {
-    return this.removeEngine()
+    let initPromise = Promise.resolve(true);
+    if(!NO_ENGINE_RECREATION) {
+      initPromise = initPromise
+        .then(() => {
+          console.log('[log] Start remove enginge...');
+          return this.removeEngine()
+        })
+    }
+
+    return initPromise
       .then( () => {
         return this.createEngine();
       } )
@@ -126,12 +137,12 @@ export class Engine {
       const successHandler = ()=> {
         self.isProcessing = false;
         self.status = FLOGO_ENGINE_STATUS.REMOVED;
+        console.log(`[log] Removed enginde "${self.options.name}"`);
         resolve( true );
       };
 
       const errorHandler = ( err ) => {
         console.error( "[error] Engine->removeEngine. Error: ", err );
-
         self.isProcessing = false;
         reject( false );
       };
@@ -167,6 +178,11 @@ export class Engine {
         self.status = FLOGO_ENGINE_STATUS.CREATED;
         resolve( true );
       };
+
+      // TODO: workaround to prevent engine recreation
+      if (NO_ENGINE_RECREATION) {
+        return successHandler();
+      }
 
       const errorHandler = ( err ) => {
         console.error( "[error] Engine->createEngine. Error: ", err );
@@ -1040,27 +1056,36 @@ export function initTestEngine() {
   // add default activities and triggers
   // update configurations
   // return the initalised test engine.
-  return getTestEngine()
-    .then( ( testEngine )=> { // using testEngine to shadow the local testEngine.
-      console.log( `[log] adding activities to the test engine, will take some time...` );
-      return testEngine.addAllActivities();
-    } )
-    .then( ()=> {
-      console.log( `[log] adding triggers to the test engine, will take some time...` );
-      return testEngine.addAllTriggers( config.testEngine.installConfig );
-    } )
-    .then( ()=> {
-      console.log( `[log] updating configurations of the test engine, will take some time...` );
-      // update config.json, use overwrite mode
-      testEngine.updateConfigJSON( config.testEngine.config, true );
-      // update triggers.json
-      testEngine.updateTriggerJSON( {
-        "triggers" : config.testEngine.triggers
-      } );
+  let initEnginePromise = getTestEngine();
 
-      engines.test = testEngine;
-      return testEngine;
-    } );
+  if (!NO_ENGINE_RECREATION) {
+    initEnginePromise = initEnginePromise
+      .then((testEngine)=> { // using testEngine to shadow the local testEngine.
+        console.log(`[log] adding activities to the test engine, will take some time...`);
+        return testEngine.addAllActivities();
+      })
+      .then(()=> {
+        console.log(`[log] adding triggers to the test engine, will take some time...`);
+        return testEngine.addAllTriggers(config.testEngine.installConfig);
+      })
+      .then(() => {
+        console.log(`[log] updating configurations of the test engine, will take some time...`);
+        // update config.json, use overwrite mode
+        testEngine.updateConfigJSON(config.testEngine.config, true);
+        // update triggers.json
+        testEngine.updateTriggerJSON({
+          "triggers": config.testEngine.triggers
+        });
+      });
+
+  } else {
+    // TODO: only load activities and triggers info from db
+  }
+
+  return initEnginePromise.then(() => {
+    engines.test = testEngine;
+    return testEngine;
+  });
 }
 
 export function getInitialisedTestEngine() {
@@ -1099,19 +1124,26 @@ export function initBuildEngine() {
   // get a test engine
   // add default activities and triggers
   // return the initalised build engine.
-  return getBuildEngine()
-    .then( ( buildEngine )=> { // using testEngine to shadow the local buildEngine.
-      console.log( `[log] adding activities to the build engine, will take some time...` );
-      return buildEngine.addAllActivities()
-    } )
-    .then( ()=> {
-      console.log( `[log] adding triggers to the build engine, will take some time...` );
-      return buildEngine.addAllTriggers( config.buildEngine.installConfig );
-    } )
-    .then( ()=> {
-      engines.build = buildEngine;
-      return buildEngine;
-    } );
+  let initEnginePromise = getBuildEngine();
+
+  if (!NO_ENGINE_RECREATION) {
+    initEnginePromise = initEnginePromise
+      .then((buildEngine)=> { // using testEngine to shadow the local buildEngine.
+        console.log(`[log] adding activities to the build engine, will take some time...`);
+        return buildEngine.addAllActivities()
+      })
+      .then(()=> {
+        console.log(`[log] adding triggers to the build engine, will take some time...`);
+        return buildEngine.addAllTriggers(config.buildEngine.installConfig);
+      })
+  } else {
+    // TODO: only load activities and triggers from db
+  }
+
+  return initEnginePromise.then(()=> {
+    engines.build = buildEngine;
+    return buildEngine;
+  });
 }
 
 export function getInitialisedBuildEngine() {
