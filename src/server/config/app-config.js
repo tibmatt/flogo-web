@@ -1,5 +1,6 @@
 import path from 'path';
 import { extractDomain } from '../common/utils';
+import _ from 'lodash';
 
 import {
   DBService
@@ -15,6 +16,8 @@ let FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost"
 
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
+
+
 
 let config = {
   db: 'http://localhost:5984/flogo-web',
@@ -257,3 +260,17 @@ export {
 export let flowExport = {
   filename: 'flogo.export.json'
 };
+
+export function setConfiguration(newSettings) {
+  let settings = _.cloneDeep(newSettings);
+
+  config = _.assign({}, config, {
+    engine: settings.engine,
+    stateServer:  settings.stateServer,
+    processServer: settings.flowServer,
+    flogoWeb: settings.db,
+    flogoWebActivities: settings.activities,
+    flogoWebTriggers: settings.triggers
+  });
+
+}

@@ -3,7 +3,7 @@ import { updateFlogoGlobalConfig, formatServerConfiguration } from '../../../com
 import { Router } from '@angular/router-deprecated';
 import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { RESTAPIPingService } from '../../../common/services/restapi/ping-service';
+import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-service';
 
 const MAIN_DB = 'db';
 const DBS_ARR = [ 'activities', 'triggers', MAIN_DB ];
@@ -24,7 +24,7 @@ export class FlogoConfigComponent {
   private _appDB : any;
   private location = location; // expose window.location
 
-  constructor( private _router : Router, private http:Http, private _RESTAPIPingService:RESTAPIPingService  ) {
+  constructor( private _router : Router, private http:Http, private _RESTAPIConfigurationService:RESTAPIConfigurationService  ) {
     this.init();
   }
 
@@ -111,6 +111,10 @@ export class FlogoConfigComponent {
     console.groupEnd();
 
     updateFlogoGlobalConfig( config );
+    this._RESTAPIConfigurationService.setConfiguration(config)
+        .then((res:any) => {
+          debugger;
+    });
   }
 
   onCancel() {
@@ -159,7 +163,7 @@ export class FlogoConfigComponent {
   }
 
   onResetDefault () {
-    this._RESTAPIPingService.getConfiguration()
+    this._RESTAPIConfigurationService.getConfiguration()
         .then((res:any) => {
           try {
             let config:any = JSON.parse(res._body);
