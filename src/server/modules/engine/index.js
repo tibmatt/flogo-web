@@ -830,8 +830,27 @@ export class Engine {
     }
   }
 
-  build( args ) {
+  /**
+   * Asynchronously build the engine.
+   *
+   * For valid compile os and architechture values see https://golang.org/doc/install/source#environment
+   *
+   * @param opts Options for engine build
+   * @param opts.optimize {boolean} Optimize for embedded flows. Default false.
+   * @param opts.incorporateConfig {boolean} incorporate config into application. Default false.
+   * @param opts.compile.os {string} Target operating system. Default value false. Falsy value will fallback to engine host's default os.
+   * @param opts.compile.arch {string} Target compilation architechture. Default value false. Falsy value will fallback to engine host's default arch.
+   *
+   * @returns {Promise<boolean>} whether build was successful or not
+   */
+  build( opts ) {
     const self = this;
+
+    let defaultOpts = {
+      optimize : false, incorporateConfig : false,
+      compile : { os : false, arch : false }
+    };
+    opts = Object.assign( {}, defaultOpts, opts );
 
     return new Promise( ( resolve, reject )=> {
 
@@ -851,10 +870,30 @@ export class Engine {
       self.status = FLOGO_ENGINE_STATUS.BUILDING;
 
       const defaultEnginePath = path.join( this.enginePath, this.options.name );
-      args = args || '';
 
-      runShellCMD( 'flogo', [ 'build', args ], {
-        cwd : defaultEnginePath
+      const args = [
+        opts.optimize ? '-o' : '',
+        opts.incorporateConfig ? '-i' : ''
+      ].join( ' ' ).trim();
+
+      let env = {};
+
+      if ( opts.compile ) {
+        if ( opts.compile.os ) {
+          env[ 'GOOS' ] = opts.compile.os;
+        }
+
+        if ( opts.compile.arch ) {
+          env[ 'GOARCH' ] = opts.compile.arch
+        }
+      }
+
+      console.log( `[log] Build flogo: "flogo build ${args}" compileOpts:` );
+      inspectObj( env );
+
+      runShellCMD( 'flogo', [ 'build' ].concat( args.split( ' ' ) ), {
+        cwd : defaultEnginePath,
+        env : Object.assign( {}, process.env, env )
       } )
         .then( successHandler )
         .catch( errorHandler );

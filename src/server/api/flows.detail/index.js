@@ -1,7 +1,7 @@
 import {config, dbService, triggersDBService, engines} from '../../config/app-config';
 import {DBService} from '../../common/db.service';
 import {flogoFlowToJSON} from '../../common/flow.model';
-import {flogoIDDecode, writeJSONFileSync} from '../../common/utils';
+import {flogoIDDecode, findLastCreatedFile, writeJSONFileSync} from '../../common/utils';
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
@@ -64,8 +64,21 @@ function generateTriggerJSON(doc, flowName){
   return trigger;
 }
 
-function generateBuild(id){
-  return new Promise((resolve, reject)=>{
+function _determineBuildExecutableNamePattern(name, compileOptions) {
+  let executableName = name;
+  if(compileOptions.os && compileOptions.arch) {
+    executableName = `${executableName}-${compileOptions.os}-${compileOptions.arch}`;
+  } else if (compileOptions.os) {
+    executableName = `${executableName}-${compileOptions.os}`;
+  } else if (compileOptions.arch) {
+    executableName = `${executableName}-.*-${compileOptions.arch}`;
+  }
+  return executableName;
+}
+
+function generateBuild(id, compileOptions){
+  compileOptions = compileOptions || {};
+  return new Promise((resolve, reject)=> {
     console.log('generateBuild');
 
     let flowID = flogoIDDecode(id);
@@ -97,13 +110,33 @@ function generateBuild(id){
         };
         triggersJSON.triggers.push(triggerJSON);
         engines.build.updateTriggerJSON(triggersJSON, true);
-        // step4: build
-        engines.build.build( '-i -o' )
-          .then( ()=> {
-            let buildEnginePath = path.join( engineFolderPath, 'bin', engines.build.options.name );
-            let data = fs.readFileSync( buildEnginePath );
 
-            resolve( data );
+        // step4: build
+        engines.build.build( {
+          optimize: true,
+          incorporateConfig: true,
+          compile: compileOptions
+        } )
+          .then( ()=> {
+            // setp 5: return file
+            let binPath = path.join( engineFolderPath, 'bin' );
+            let executableName = _determineBuildExecutableNamePattern( engines.build.options.name, compileOptions );
+            console.log( `[log] execName: ${executableName}` );
+            // if no compile options provided or both options provided we can skip the search for generated binary since we have the exact name
+            let isDefaultCompile = !compileOptions.os && !compileOptions.arch;
+            if ( isDefaultCompile || (compileOptions.os && compileOptions.arch) ) {
+              console.log( '[debug] Default compile, grab file directly' );
+              let data = fs.readFileSync( path.join( binPath, executableName ) );
+              return resolve( data );
+            } else {
+              console.log( '[debug] Find file' );
+              return findLastCreatedFile( binPath, new RegExp( executableName ) )
+                .then( buildEnginePath => {
+                  console.log( '[log] Found: ' + JSON.stringify( buildEnginePath ) );
+                  let data = fs.readFileSync( buildEnginePath );
+                  resolve( data );
+                } );
+            }
           } )
           .catch( reject );
       }else{
@@ -136,7 +169,16 @@ function* getBuild(next){
   //console.log("data: ", data);
   let id = this.params.id;
 
-  let data = yield generateBuild(id);
+  let compileOptions;
+  // TODO: make sure os and arch are valid
+  if (this.query.os || this.query.arch) {
+    compileOptions = {
+      os: this.query.os,
+      arch: this.query.arch
+    };
+  }
+
+  let data = yield generateBuild(id, compileOptions);
 
   //data = yield _dbService.allDocs({ include_docs: true })
   //  .then(res => res.rows || [])

@@ -12,9 +12,9 @@
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-pencil fa-fw"></i>
                 <a [href]="downloadLink" download>Build</a>
                 <ul class="flogo-flow-detail-menu-item-choices">
-                  <li class="flogo-flow-detail-menu-item-choice"><label class="flogo-flow-detail-menu-item-choice-text"><input type="checkbox" disabled/><span>ARM/Linux</span></label></li>
-                  <li class="flogo-flow-detail-menu-item-choice"><label class="flogo-flow-detail-menu-item-choice-text"><input type="checkbox" disabled/><span>x86/Linux</span></label></li>
-                  <li class="flogo-flow-detail-menu-item-choice"><label class="flogo-flow-detail-menu-item-choice-text"><input type="checkbox" checked="checked"/><span>Darwin/OSX</span></label></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=386'"><label class="flogo-flow-detail-menu-item-choice-text"><!--<input type="checkbox" disabled/>--><span>x86/Linux</span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=arm'"><label class="flogo-flow-detail-menu-item-choice-text"><!--<input type="checkbox" disabled/>--><span>ARM/Linux</span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=darwin'"><label class="flogo-flow-detail-menu-item-choice-text"><!--<input type="checkbox" checked="checked"/>--><span>Darwin/OSX</span></label></a></li>
                 </ul>
               </li>
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a href="javascript:void(0);">Make a copy</a></li>
