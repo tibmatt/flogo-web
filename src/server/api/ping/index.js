@@ -19,9 +19,11 @@ export function ping(app, router){
   }
 
   router.post(basePath+"/ping/service", pingService);
-  router.get(basePath+"/ping/configuration", pingConfiguration);
+
+  //router.get(basePath+"/ping/configuration", pingConfiguration);
 }
 
+/*
 function* pingConfiguration(next) {
   this.body = {
     engine: config.engine,
@@ -34,6 +36,7 @@ function* pingConfiguration(next) {
   };
   yield next;
 }
+*/
 
 function* pingService(next){
 
