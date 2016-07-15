@@ -36,7 +36,6 @@ export class RESTAPIService {
             (state:any) => {
 
               // then restart from that state with data
-
               if ( newFlowID && curFlowID ) {
                 // replace the old flowURL with the newFlowID
                 let pattern = new RegExp( `flows/${curFlowID}` );

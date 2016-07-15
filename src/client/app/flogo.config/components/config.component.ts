@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { getFlogoGlobalConfig, updateFlogoGlobalConfig, resetFlogoGlobalConfig } from '../../../common/utils';
+import { updateFlogoGlobalConfig, formatServerConfiguration } from '../../../common/utils';
 import { Router } from '@angular/router-deprecated';
 import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { RESTAPIPingService } from '../../../common/services/restapi/ping-service';
 
 const MAIN_DB = 'db';
 const DBS_ARR = [ 'activities', 'triggers', MAIN_DB ];
@@ -23,25 +24,29 @@ export class FlogoConfigComponent {
   private _appDB : any;
   private location = location; // expose window.location
 
-  constructor( private _router : Router, private http:Http ) {
+  constructor( private _router : Router, private http:Http, private _RESTAPIPingService:RESTAPIPingService  ) {
     this.init();
   }
 
   init() {
+    //this._RESTAPIPingService.getConfiguration()
+    //  .then((data) => {
+        //this._config = getFlogoGlobalConfig();
 
-    this.http.get('/v1/api/ping/configuration')
-      .toPromise()
-      .then((data) => {
-        this._config = getFlogoGlobalConfig();
+        this._config = (<any>window).FLOGO_GLOBAL;
 
         // Merge the local with the server configuration
-        this._config = _.merge({}, data.json()/*,this._config*/);
+        //this._config = _.merge({}, data.json()/*,this._config*/);
 
 
         this._appDB = _.cloneDeep( this._config[MAIN_DB] );
 
         this._dbs = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
           if ( DBS_ARR.indexOf( key ) !== -1 ) {
+            if(!value.testPath) {
+              value.testPath = value.name;
+            }
+
             value.name = value.testPath;
             result.push( {
               _label : _.startCase( key ),
@@ -76,7 +81,7 @@ export class FlogoConfigComponent {
 
 
 
-      });
+      //});
 
 
 
@@ -96,14 +101,10 @@ export class FlogoConfigComponent {
 
     _.each( this._dbs, ( db : any )=> {
       if ( DBS_ARR.indexOf( db._key ) !== -1 ) {
-        if(db._key == MAIN_DB) {
-          config[ db._key ] =  _.cloneDeep( db.config ) ;
-        } else  {
-          config[ db._key ] = { db : _.cloneDeep( db.config ) };
-        }
-
+        config[ db._key ] =  _.cloneDeep( db.config ) ;
       }
     } );
+
 
     console.groupCollapsed( 'Save configuration' );
     console.log( _.cloneDeep( config ) );
@@ -158,8 +159,17 @@ export class FlogoConfigComponent {
   }
 
   onResetDefault () {
-    resetFlogoGlobalConfig();
-    this.init();
+    this._RESTAPIPingService.getConfiguration()
+        .then((res:any) => {
+          try {
+            let config:any = JSON.parse(res._body);
+            (<any>window).FLOGO_GLOBAL = formatServerConfiguration(config);
+            this.init();
+          }catch(err) {
+            console.log(err);
+          }
+        });
+    //resetFlogoGlobalConfig();
   }
 
   getDatabaseName(db) {

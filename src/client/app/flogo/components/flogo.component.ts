@@ -13,6 +13,8 @@ import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { FlogoConfigComponent } from '../../flogo.config/components/config.component';
+import { RESTAPIPingService } from '../../../common/services/restapi/ping-service';
+import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
 
 @Component({
   selector: 'flogo-app',
@@ -20,7 +22,7 @@ import { FlogoConfigComponent } from '../../flogo.config/components/config.compo
   templateUrl: 'flogo.tpl.html',
   styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
-  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS]
+  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIPingService]
 })
 
 @RouteConfig([
@@ -47,7 +49,27 @@ import { FlogoConfigComponent } from '../../flogo.config/components/config.compo
 ])
 
 export class FlogoAppComponent{
-  constructor(){
+  constructor(private _RESTAPIPingService: RESTAPIPingService){
+    let configuration:any;
+
+    configuration = getFlogoGlobalConfig();
+
+    if(configuration) {
+      (<any>window).FLOGO_GLOBAL = configuration;
+    }else {
+      _RESTAPIPingService.getConfiguration()
+        .then((res:any) => {
+          try {
+            let config:any = JSON.parse(res._body);
+            (<any>window).FLOGO_GLOBAL = formatServerConfiguration(config);
+          }catch(err) {
+           console.log(err);
+          }
+      });
+    }
+
+
+
   }
 
 }

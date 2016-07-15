@@ -3,15 +3,12 @@ import {bootstrap} from '@angular/platform-browser-dynamic';
 import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {APP_BASE_HREF} from '@angular/common'
 import {FlogoAppComponent} from './app/flogo/components/flogo.component';
-import { getFlogoGlobalConfig } from './common/utils';
 
 if(typeof window['DEV'] != 'undefined' && window['DEV']) {
   console.log('Development env ON');
 } else {
   enableProdMode();
 }
-
-(<any>window).FLOGO_GLOBAL = getFlogoGlobalConfig();
 
 bootstrap(FlogoAppComponent, [
   ROUTER_PROVIDERS,

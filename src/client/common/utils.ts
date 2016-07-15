@@ -560,6 +560,77 @@ export function resetFlogoGlobalConfig() {
   } );
 }
 
+export function formatServerConfiguration(config:any) {
+  return {
+    db : {
+      protocol: config.db.protocol,
+      host: config.db.host,
+      port : config.db.port,
+      name : config.db.testPath,
+      label: config.db.label
+    },
+    activities : {
+      protocol: config.activities.protocol,
+      host: config.activities.host,
+      port: config.activities.port,
+      testPath: config.activities.testPath,
+      label: config.activities.label,
+      db : {
+        port : config.activities.port,
+        name : config.activities.testPath
+      }
+    },
+    triggers : {
+      protocol: config.triggers.protocol,
+      host: config.triggers.host,
+      port: config.triggers.port,
+      testPath: config.triggers.testPath,
+      label: config.triggers.label,
+      db : {
+        port : config.triggers.port,
+        name : config.triggers.testPath
+      },
+    },
+    engine : {
+      protocol : config.engine.protocol,
+      host : config.engine.host,
+      port : config.engine.port,
+      testPath: config.engine.testPath
+    },
+    stateServer : {
+      protocol : config.stateServer.protocol,
+      host : config.stateServer.host,
+      port : config.stateServer.port,
+      testPath:config.stateServer.testPath
+    },
+    flowServer : {
+      protocol : config.flowServer.protocol,
+      host : config.flowServer.host,
+      port : config.flowServer.port,
+      testPath: config.flowServer.testPath
+    }
+  }
+}
+
+
+export function getFlogoGlobalConfig() : any {
+  let config : any = null;
+
+  if( localStorage ) {
+    config = localStorage.getItem( 'FLOGO_GLOBAL' );
+
+    if ( config ) {
+      try {
+        config = JSON.parse(config);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
+
+  return config;
+}
+/*
 export function getFlogoGlobalConfig() : any {
 
   if ( !(<any>window).FLOGO_GLOBAL ) {
@@ -587,6 +658,7 @@ export function getFlogoGlobalConfig() : any {
 
   return (<any>window).FLOGO_GLOBAL;
 }
+*/
 
 export function getURL( config : {
   protocol? : string;
