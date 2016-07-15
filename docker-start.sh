@@ -6,7 +6,7 @@ cd /tmp/flogo-web
 
 
 ## setup GIT
-echo "Username is $GIT_USERNAME and PASSWORD is $GIT_PASSWORD"
+echo "Username is $GIT_USERNAME"
 git config --global credential.helper store
 git remote add origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-contrib.git
 git remote add origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-cli.git
