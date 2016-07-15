@@ -18,6 +18,27 @@ export function flowsRun(app, router) {
   router.get(basePath+'/flows/run/instances/:id', instanceById);
   router.get(basePath+'/flows/run/instances/:idInstance/snapshot/:idSnapshot', getSnapshot);
   router.post(basePath+'/flows/run/restart', restart);
+  router.get(basePath+'/flows/run/flows/:id', getProcessFlow);
+}
+
+function* getProcessFlow(next) {
+  let process = config.processServer;
+  let id = this.params.id;
+  let uri =  getUrl(process) + '/flows/' + id;
+  this.body = id;
+
+  try {
+    let result = yield request({
+      uri: uri,
+      method: 'GET'
+    });
+
+    this.body = result.body;
+  }catch(err) {
+    this.throw(err.message, 500);
+  }
+
+  yield next;
 }
 
 function* restart(next) {

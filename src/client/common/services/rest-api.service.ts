@@ -34,7 +34,6 @@ export class RESTAPIService {
         return this.instances.getSnapshot(id, snapshotID)
           .then(
             (state:any) => {
-
               // then restart from that state with data
               if ( newFlowID && curFlowID ) {
                 // replace the old flowURL with the newFlowID
@@ -51,7 +50,7 @@ export class RESTAPIService {
 
               let options = new RequestOptions( { headers : headers } );
 
-              return this.http.get( state[ 'flowUri' ], options )
+              return this.http.get( '/v1/api/flows/run/flows/' + newFlowID , options )
                 .toPromise()
                 .then( ( rsp : any ) => {
                   if ( rsp.text() ) {
