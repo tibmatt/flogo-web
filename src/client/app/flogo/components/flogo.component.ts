@@ -13,7 +13,8 @@ import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { FlogoConfigComponent } from '../../flogo.config/components/config.component';
-import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-service';
+import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
+import { ConfigurationService } from '../../../common/services/configuration.service';
 import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
 
 @Component({
@@ -22,7 +23,7 @@ import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common
   templateUrl: 'flogo.tpl.html',
   styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
-  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService]
+  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService, ConfigurationService]
 })
 
 @RouteConfig([
@@ -49,27 +50,5 @@ import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common
 ])
 
 export class FlogoAppComponent{
-  constructor(private _RESTAPIConfigurationService: RESTAPIConfigurationService){
-    let configuration:any;
-
-    configuration = getFlogoGlobalConfig();
-
-    if(configuration) {
-      (<any>window).FLOGO_GLOBAL = configuration;
-    }else {
-      _RESTAPIConfigurationService.getConfiguration()
-        .then((res:any) => {
-          try {
-            let config:any = JSON.parse(res._body);
-            (<any>window).FLOGO_GLOBAL = formatServerConfiguration(config);
-          }catch(err) {
-           console.log(err);
-          }
-      });
-    }
-
-
-
-  }
-
+  constructor(){ }
 }

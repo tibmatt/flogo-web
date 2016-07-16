@@ -1,8 +1,9 @@
-import {provide, enableProdMode} from '@angular/core';
+import {provide, enableProdMode, ComponentRef} from '@angular/core';
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {APP_BASE_HREF} from '@angular/common'
 import {FlogoAppComponent} from './app/flogo/components/flogo.component';
+import { appInjector } from './common/services/injector.service';
 
 if(typeof window['DEV'] != 'undefined' && window['DEV']) {
   console.log('Development env ON');
@@ -13,7 +14,11 @@ if(typeof window['DEV'] != 'undefined' && window['DEV']) {
 bootstrap(FlogoAppComponent, [
   ROUTER_PROVIDERS,
   provide(APP_BASE_HREF, { useValue: '/'})
-]);
+])
+.then((appRef: ComponentRef) => {
+  // store the reference to the application injector
+  appInjector(appRef.injector);
+});
 
 // In order to start the Service Worker located at "./sw.js"
 // uncomment this line. More about Service Workers here

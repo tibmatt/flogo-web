@@ -612,25 +612,6 @@ export function formatServerConfiguration(config:any) {
   }
 }
 
-
-export function getFlogoGlobalConfig() : any {
-  let config : any = null;
-
-  if( localStorage ) {
-    config = localStorage.getItem( 'FLOGO_GLOBAL' );
-
-    if ( config ) {
-      try {
-        config = JSON.parse(config);
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-  }
-
-  return config;
-}
-/*
 export function getFlogoGlobalConfig() : any {
 
   if ( !(<any>window).FLOGO_GLOBAL ) {
@@ -658,7 +639,6 @@ export function getFlogoGlobalConfig() : any {
 
   return (<any>window).FLOGO_GLOBAL;
 }
-*/
 
 export function getURL( config : {
   protocol? : string;

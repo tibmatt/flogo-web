@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { updateFlogoGlobalConfig, formatServerConfiguration } from '../../../common/utils';
-import { Router } from '@angular/router-deprecated';
+import { Router, CanActivate } from '@angular/router-deprecated';
 import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-service';
+import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
+import { ConfigurationService } from '../../../common/services/configuration.service';
+import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service'
 
 const MAIN_DB = 'db';
 const DBS_ARR = [ 'activities', 'triggers', MAIN_DB ];
@@ -17,6 +19,9 @@ const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
   styleUrls : [ 'config.component.css' ]
 } )
 
+@CanActivate((next) => {
+  return isConfigurationLoaded();
+})
 export class FlogoConfigComponent {
   private _config : any;
   private _servers : any[];
@@ -24,21 +29,12 @@ export class FlogoConfigComponent {
   private _appDB : any;
   private location = location; // expose window.location
 
-  constructor( private _router : Router, private http:Http, private _RESTAPIConfigurationService:RESTAPIConfigurationService  ) {
+  constructor( private _router : Router, private http:Http, private _RESTAPIConfigurationService:RESTAPIConfigurationService, private _configurationService: ConfigurationService  ) {
     this.init();
   }
 
   init() {
-    //this._RESTAPIPingService.getConfiguration()
-    //  .then((data) => {
-        //this._config = getFlogoGlobalConfig();
-
-        this._config = (<any>window).FLOGO_GLOBAL;
-
-        // Merge the local with the server configuration
-        //this._config = _.merge({}, data.json()/*,this._config*/);
-
-
+        this._config = this._configurationService.configuration;
         this._appDB = _.cloneDeep( this._config[MAIN_DB] );
 
         this._dbs = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
@@ -113,7 +109,6 @@ export class FlogoConfigComponent {
     updateFlogoGlobalConfig( config );
     this._RESTAPIConfigurationService.setConfiguration(config)
         .then((res:any) => {
-          debugger;
     });
   }
 
@@ -163,6 +158,7 @@ export class FlogoConfigComponent {
   }
 
   onResetDefault () {
+    /*
     this._RESTAPIConfigurationService.getConfiguration()
         .then((res:any) => {
           try {
@@ -173,6 +169,7 @@ export class FlogoConfigComponent {
             console.log(err);
           }
         });
+    */
     //resetFlogoGlobalConfig();
   }
 

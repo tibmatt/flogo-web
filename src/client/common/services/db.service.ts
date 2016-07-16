@@ -1,9 +1,10 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, OnInit } from '@angular/core';
 import { activitySchemaToTask, getDBURL } from '../utils';
 import { activitySchemaToTrigger } from '../utils';
+import { ConfigurationService } from '../../common/services/configuration.service';
 
 @Injectable()
-export class FlogoDBService{
+export class FlogoDBService implements OnInit {
 
   // PouchDB instance
   private _db:pouchdb.thenable.PouchDB;
@@ -17,30 +18,34 @@ export class FlogoDBService{
   public DELIMITER:string = ":";
   public DEFAULT_USER_ID = 'flogoweb-admin';
 
-  constructor(private _ngZone: NgZone){
+  constructor(private _ngZone: NgZone, private _configurationService: ConfigurationService){
     // When create this service, initial pouchdb
     this._initDB();
 
     this._ngZone.onError.subscribe(
-      ( err : any )=> {
-        if ( _.isFunction( err && err.error && err.error.promise && err.error.promise.catch ) ) {
-          err.error.promise.catch(
-            ( err : any )=> {
-              console.info( err );
-            }
-          );
+        ( err : any )=> {
+          if ( _.isFunction( err && err.error && err.error.promise && err.error.promise.catch ) ) {
+            err.error.promise.catch(
+                ( err : any )=> {
+                  console.info( err );
+                }
+            );
+          }
         }
-      }
     );
+
+  }
+
+  ngOnInit() {
   }
 
   /**
    * initial a pouchdb
    */
   private _initDB(): FlogoDBService{
-    let appDBConfig = (<any>window).FLOGO_GLOBAL.db;
-    let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
-    let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
+    let appDBConfig = this._configurationService.configuration.db;
+    let activitiesDBConfig = this._configurationService.configuration.activities.db;
+    let triggersDBConfig = this._configurationService.configuration.triggers.db;
 
     // this._activitiesDB = new PouchDB(`${activitiesDBConfig.name}-local`);
     this._activitiesDB = new PouchDB( getDBURL( activitiesDBConfig ) );
@@ -291,7 +296,9 @@ export class FlogoDBService{
   getActivities( limit : number = 200 ) {
     // TODO
     //  currently due to DB sync issue, force to sync the local DB with remote each time querying all activities
-    let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
+    //let activitiesDBConfig = (<any>window).FLOGO_GLOBAL.activities.db;
+    let activitiesDBConfig = this._configurationService.configuration.activities.db;
+
     return PouchDB.sync(
       `${activitiesDBConfig.name}-local`,
       getDBURL(activitiesDBConfig),
@@ -351,7 +358,8 @@ export class FlogoDBService{
   getTriggers( limit = 200 ) {
     // TODO
     //  currently due to DB sync issue, force to sync the local DB with remote each time querying all activities
-    let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
+    //let triggersDBConfig = (<any>window).FLOGO_GLOBAL.triggers.db;
+    let triggersDBConfig = this._configurationService.configuration.triggers.db;
     return PouchDB.sync(
       `${triggersDBConfig.name}-local`,
       getDBURL(triggersDBConfig),
