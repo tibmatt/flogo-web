@@ -660,6 +660,8 @@ export function getDBURL( dbConfig : {
   host : string;name : string
 } ) : string {
   return `${getURL( dbConfig )}/${dbConfig.name}`;
+  //debugger;
+  //return 'http://localhost:3010/v1/api/db/' + dbConfig.name;
 }
 
 /**

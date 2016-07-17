@@ -225,14 +225,20 @@ let config = {
   },
   engine: {
     protocol: 'http',
-    host: FLOW_WEB_HOST,
+    host: 'localhost',
     port: "8080",
     testPath: "status"
   }
 };
 
+let originalConfig = _.cloneDeep(config);
+
 export {
   config
+};
+
+export {
+  originalConfig
 };
 
 let triggersDBService = new DBService(config.triggers.db);
@@ -273,4 +279,8 @@ export function setConfiguration(newSettings) {
     flogoWebTriggers: settings.triggers
   });
 
+}
+
+export function resetConfiguration() {
+  config = _.cloneDeep(originalConfig);
 }

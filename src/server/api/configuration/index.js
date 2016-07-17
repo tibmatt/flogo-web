@@ -1,4 +1,4 @@
-import { config, setConfiguration as setNewConfiguration } from '../../config/app-config';
+import { config, originalConfig, resetConfiguration, setConfiguration as setNewConfiguration } from '../../config/app-config';
 import {isJSON } from '../../common/utils';
 import _ from 'lodash';
 import request from 'co-request';
@@ -12,6 +12,7 @@ export function configuration(app, router) {
   }
 
   router.post(basePath+"/configuration/", setConfiguration);
+  router.get(basePath+"/configuration/reset", reset);
   router.get(basePath+"/configuration",  getConfiguration);
 }
 
@@ -25,6 +26,19 @@ function* getConfiguration(next) {
     activities: config.flogoWebActivities,
     triggers: config.flogoWebTriggers
   };
+  yield next;
+}
+
+function* reset(next){
+
+  try{
+    resetConfiguration();
+    this.body = config;
+
+  }catch(err){
+    this.throw(err.message, 500);
+  }
+
   yield next;
 }
 

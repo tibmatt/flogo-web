@@ -3,7 +3,6 @@ import { updateFlogoGlobalConfig, formatServerConfiguration } from '../../../com
 import { Router, CanActivate } from '@angular/router-deprecated';
 import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
 import { ConfigurationService } from '../../../common/services/configuration.service';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service'
 
@@ -29,7 +28,7 @@ export class FlogoConfigComponent {
   private _appDB : any;
   private location = location; // expose window.location
 
-  constructor( private _router : Router, private http:Http, private _RESTAPIConfigurationService:RESTAPIConfigurationService, private _configurationService: ConfigurationService  ) {
+  constructor( private _router : Router, private http:Http,  private _configurationService: ConfigurationService  ) {
     this.init();
   }
 
@@ -106,10 +105,14 @@ export class FlogoConfigComponent {
     console.log( _.cloneDeep( config ) );
     console.groupEnd();
 
+    this._configurationService.save();
+
+    /*
     updateFlogoGlobalConfig( config );
     this._RESTAPIConfigurationService.setConfiguration(config)
         .then((res:any) => {
     });
+    */
   }
 
   onCancel() {
@@ -158,19 +161,13 @@ export class FlogoConfigComponent {
   }
 
   onResetDefault () {
-    /*
-    this._RESTAPIConfigurationService.getConfiguration()
-        .then((res:any) => {
-          try {
-            let config:any = JSON.parse(res._body);
-            (<any>window).FLOGO_GLOBAL = formatServerConfiguration(config);
-            this.init();
-          }catch(err) {
-            console.log(err);
-          }
+
+    this._configurationService.resetConfiguration()
+        .then((config) => {
+          this.init();
+          console.log('Configuration restored')
         });
-    */
-    //resetFlogoGlobalConfig();
+
   }
 
   getDatabaseName(db) {

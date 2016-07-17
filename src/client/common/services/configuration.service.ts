@@ -53,13 +53,6 @@ export class ConfigurationService {
 
     }
 
-
-    updateLocalStorage( config : any ) {
-        if ( localStorage ) {
-            localStorage.setItem( this.configurationName , JSON.stringify( config ) );
-        }
-    }
-
     getFromLocalStorage() : any {
         var config: any;
 
@@ -109,5 +102,33 @@ export class ConfigurationService {
         }
 
     }
+
+    save() {
+        this._APIConfiguration.setConfiguration(this.configuration)
+            .then((res:any) => {
+                this.saveToLocalStorage(this.configuration);
+            });
+
+    }
+
+
+    resetConfiguration () {
+
+        return new Promise((resolve, reject) => {
+
+            this._APIConfiguration.resetConfiguration()
+                .then(() => {
+                    this.getFromServer()
+                        .then((config:any) => {
+                            this.configuration = config;
+                            resolve(config);
+                    });
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        });
+    }
+
 
 }

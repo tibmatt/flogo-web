@@ -15,7 +15,7 @@ bootstrap(FlogoAppComponent, [
   ROUTER_PROVIDERS,
   provide(APP_BASE_HREF, { useValue: '/'})
 ])
-.then((appRef: ComponentRef) => {
+.then((appRef: ComponentRef<any>) => {
   // store the reference to the application injector
   appInjector(appRef.injector);
 });

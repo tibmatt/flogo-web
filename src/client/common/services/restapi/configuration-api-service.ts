@@ -20,4 +20,10 @@ export class RESTAPIConfigurationService {
         return this.http.post('/v1/api/configuration',body,options)
                         .toPromise();
     }
+
+
+    resetConfiguration() {
+        return this.http.get('/v1/api/configuration/reset')
+            .toPromise();
+    }
 }
