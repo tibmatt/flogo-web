@@ -12,7 +12,7 @@ RUN apk --no-cache add make nodejs python bash git g++ && \
     node --version && \
     cd /tmp/flogo-web/build/server && \
     echo "### RUNNING npm install ### " && \
-    # seems silly but it is reported to increase npm install speed (https://github.com/npm/npm/issues/11283)
+    # progress=false is reported to increase npm install speed (https://github.com/npm/npm/issues/11283)
     npm set progress=false && \
     npm install --production && \
     echo "### RUNNING npm cache clear ### " && \

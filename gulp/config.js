@@ -1,7 +1,7 @@
 import path from 'path';
 
 const source = 'src';
-const dist = 'dist';
+const dist = process.env.DIST_BUILD ? 'dist/build' : 'dist';
 
 const sourcePaths = {
   root: source,
