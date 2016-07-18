@@ -17,6 +17,7 @@ RUN apk --no-cache add make nodejs python bash git g++ && \
     npm install --production && \
     echo "### RUNNING npm cache clear ### " && \
     npm cache clear && \
+    apk --no-cache del make python g++ && \
     chmod 777 /tmp/flogo-web/docker-start.sh && \
     echo "Installing GB" && \
     go get github.com/constabulary/gb/...
