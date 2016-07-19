@@ -1067,25 +1067,26 @@ export function initTestEngine() {
       .then(()=> {
         console.log(`[log] adding triggers to the test engine, will take some time...`);
         return testEngine.addAllTriggers(config.testEngine.installConfig);
-      })
-      .then(() => {
-        console.log(`[log] updating configurations of the test engine, will take some time...`);
-        // update config.json, use overwrite mode
-        testEngine.updateConfigJSON(config.testEngine.config, true);
-        // update triggers.json
-        testEngine.updateTriggerJSON({
-          "triggers": config.testEngine.triggers
-        });
       });
 
   } else {
     // TODO: only load activities and triggers info from db
   }
 
-  return initEnginePromise.then(() => {
-    engines.test = testEngine;
-    return testEngine;
-  });
+  return initEnginePromise
+    .then(() => {
+      console.log(`[log] updating configurations of the test engine, will take some time...`);
+      // update config.json, use overwrite mode
+      testEngine.updateConfigJSON(config.testEngine.config, true);
+      // update triggers.json
+      testEngine.updateTriggerJSON({
+        "triggers": config.testEngine.triggers
+      });
+    })
+    .then(() => {
+      engines.test = testEngine;
+      return testEngine;
+    })
 }
 
 export function getInitialisedTestEngine() {
