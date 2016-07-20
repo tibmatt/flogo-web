@@ -122,6 +122,11 @@ function* installTriggers( next ) {
       throw new Error( '[error] Encounter error to add triggers to test engine.' );
     }
 
+    // clean the triggers configurations for the test engine.
+    testEngine.updateTriggerJSON( {
+      "triggers" : []
+    }, true );
+
     let testEngineBuildResult = yield testEngine.build();
 
     if ( !testEngineBuildResult ) {
