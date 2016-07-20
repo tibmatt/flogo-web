@@ -1,2 +1,2 @@
-import {configureAndInitializeEngines} from './modules/init';
-configureAndInitializeEngines();
+import {installAndConfigureEngines} from './modules/init';
+installAndConfigureEngines();

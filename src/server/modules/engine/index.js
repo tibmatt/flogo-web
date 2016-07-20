@@ -1093,9 +1093,11 @@ export function initTestEngine() {
       });
 
   } else {
+    /* WILL be loaded externally
     initEnginePromise = initEnginePromise.then(testEngine => {
       return testEngine.loadInfoFromExisting();
     })
+     */
   }
 
   return initEnginePromise
@@ -1163,9 +1165,10 @@ export function initBuildEngine() {
         return buildEngine.addAllTriggers(config.buildEngine.installConfig);
       })
   } else {
+    /* WILL be loaded externally
     initEnginePromise = initEnginePromise.then(buildEngine => {
       return buildEngine.loadInfoFromExisting();
-    })
+    })*/
   }
 
   return initEnginePromise.then(()=> {

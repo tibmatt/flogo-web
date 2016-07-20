@@ -11,7 +11,7 @@ import {api} from './api';
 
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
 
-import {configureAndInitializeEngines} from './modules/init'
+import { installAndConfigureEngines, loadTasksToEngines } from './modules/init'
 
 // TODO Need to use cluster to improve the performance
 
@@ -28,7 +28,9 @@ let app;
 
 let startConfig = Promise.resolve(true);
 if ( !process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
-  startConfig = startConfig.then(configureAndInitializeEngines);
+  startConfig = startConfig.then(installAndConfigureEngines);
+} else {
+  startConfig = startConfig.then(loadTasksToEngines)
 }
 
 startConfig
@@ -36,6 +38,11 @@ startConfig
     return getInitialisedTestEngine();
   } )
   .then( ( testEngine ) => {
+    console.log('############ TEST ENGINE ####################');
+    console.log('~~~ ACTIVITIES ~~~');
+    console.log(testEngine.installedActivites);
+    console.log('~~~ Triggers ~~~');
+    console.log(testEngine.installedTriggers);
     return testEngine.build()
       .then( ()=> {
         console.log( "[log] build test engine done." );
@@ -47,6 +54,11 @@ startConfig
     return getInitialisedBuildEngine();
   } )
   .then( ( buildEngine )=> {
+    console.log('############ BUILD ENGINE ####################');
+    console.log('~~~ ACTIVITIES ~~~');
+    console.log(buildEngine.installedActivites);
+    console.log('~~~ Triggers ~~~');
+    console.log(buildEngine.installedTriggers);
     console.log( `[log] start web server...` );
     return initServer();
   } )
