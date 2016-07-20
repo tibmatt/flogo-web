@@ -21,3 +21,10 @@ gulp.task('install.client', 'Install client dependencies', () =>{
 gulp.task('install.server', 'Install server dependencies', () => {
   return cp.execSync('npm install', {cwd: CONFIG.paths.dist.server});
 });
+
+/**
+ * Install server dependencies
+ */
+gulp.task('install.server.dev', 'Install server dependencies', () => {
+  return cp.execSync('npm install', {cwd: CONFIG.paths.source.server});
+});
