@@ -1,19 +1,21 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { VisualMapperOutputComponent } from './visual-mapper-output.component';
+import { VisualMapperInputComponent } from './visual-mapper-input.component';
 
 @Component({
     selector: 'flogo-transform-visual-mapper',
     moduleId: module.id,
     templateUrl: 'visual-mapper.tpl.html',
     styleUrls: ['visual-mapper.css'],
-    directives: [VisualMapperOutputComponent]
+    directives: [VisualMapperOutputComponent, VisualMapperInputComponent]
 })
 
 export class VisualMapperComponent {
     @Output() mappingChange:EventEmitter<any>;
     @Input() mappings:any = '';
     @Input() precedingTilesOutputs:any[] = [];
+    @Input() tileInputInfo:any[] = [];
     outputs:any[] = [];
 
     constructor() {

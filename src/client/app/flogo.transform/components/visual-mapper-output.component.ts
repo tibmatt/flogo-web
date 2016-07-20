@@ -33,5 +33,11 @@ export class VisualMapperOutputComponent {
         this.showList = false;
     }
 
+    onKeyPress(event) {
+        if(event.keyCode == 27) {
+            this.showList = false;
+        }
+    }
+
 }
 
