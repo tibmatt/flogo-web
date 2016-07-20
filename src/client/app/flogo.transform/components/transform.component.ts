@@ -6,6 +6,7 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYP
 import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL} from '../constants';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 import {MapEditorComponent} from './map-editor.component';
+import {VisualMapperComponent} from './visual-mapper.component';
 import {ErrorDisplayComponent} from './error-display.component';
 import {HelpComponent} from "./help.component";
 
@@ -24,7 +25,7 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent],
+  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent],
   moduleId: module.id,
   styleUrls: ['transform.component.css'],
   templateUrl: 'transform.tpl.html',

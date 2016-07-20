@@ -39,14 +39,22 @@
           </div>
         </div>
         <div class="flogo-transform-modal__col-content">
+          <!--
           <div class="flogo-transform-modal__editor-container">
             <flogo-transform-map-editor [mappings]="data.mappings"
                                         [tileInputInfo]="data.tileInputInfo"
                                         [precedingTilesOutputs]="data.precedingTilesOutputs"
                                         (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
           </div>
+          -->
           <div class="flogo-transform-modal__error-container" [hidden]="!errors">
             <flogo-transform-error-display [errors]="errors"></flogo-transform-error-display>
+          </div>
+          <div>
+            <flogo-transform-visual-mapper [mappings]="data.mappings"
+                                           [tileInputInfo]="data.tileInputInfo"
+                                           [precedingTilesOutputs]="data.precedingTilesOutputs"
+                                           (mappingChange)="onMappingsChange($event)"  ></flogo-transform-visual-mapper>
           </div>
         </div>
       </div>
@@ -59,4 +67,6 @@
       </div>
     </div>
   </div>
+
+
 </div>

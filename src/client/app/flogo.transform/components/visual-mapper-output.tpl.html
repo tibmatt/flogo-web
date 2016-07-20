@@ -1,0 +1,13 @@
+<div class="flogo-visual-mapper-output">
+    <input type="text" (focus)="focus()" [(ngModel)]="selectedValue" class="flogo-visual-mapper-output__text">
+    <div class="flogo-visual-mapper-output__list" [hidden]="!showList">
+       <ul *ngFor="let output of outputs">
+         <li class="flogo-visual-mapper-output__tile-name">{{output.name}}</li>
+            <ul>
+                <li class="flogo-visual-mapper-output__tile-path"
+                *ngFor="let field of output.fields" (click)="clickField(output, field)">{{output.name}}.{{field.name}}</li>
+            </ul>
+        </ul>
+    </div>
+
+</div>
