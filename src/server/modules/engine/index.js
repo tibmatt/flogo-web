@@ -17,6 +17,7 @@ import {
   inspectObj
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
+import { list as flogoList } from './commands';
 
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
@@ -1018,6 +1019,28 @@ export class Engine {
 
     } );
   }
+
+  loadInfoFromExisting() {
+    return flogoList(path.join( this.enginePath, this.options.name ))
+      .then(data => {
+        this.installedActivites = mapTasks(data.activities);
+        this.installedTriggers = mapTasks(data.triggers);
+
+        console.log('<Installed activities>');
+        console.log(this.installedActivites);
+        console.log('<Installed triggers>');
+        console.log(this.installedTriggers);
+
+      });
+
+    function mapTasks(tasks) {
+      return _.fromPairs(tasks.map(
+        task => [task.name, { path: task.path, version: tasks.version}]
+      ));
+    }
+
+  }
+
 }
 
 /**
@@ -1070,7 +1093,9 @@ export function initTestEngine() {
       });
 
   } else {
-    // TODO: only load activities and triggers info from db
+    initEnginePromise = initEnginePromise.then(testEngine => {
+      return testEngine.loadInfoFromExisting();
+    })
   }
 
   return initEnginePromise
@@ -1138,7 +1163,9 @@ export function initBuildEngine() {
         return buildEngine.addAllTriggers(config.buildEngine.installConfig);
       })
   } else {
-    // TODO: only load activities and triggers from db
+    initEnginePromise = initEnginePromise.then(buildEngine => {
+      return buildEngine.loadInfoFromExisting();
+    })
   }
 
   return initEnginePromise.then(()=> {
