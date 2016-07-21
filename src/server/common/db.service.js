@@ -1,5 +1,9 @@
+import fs from 'fs';
+
 import _ from 'lodash';
 import Pouchdb from 'pouchdb';
+import pouchDbLoad from 'pouchdb-load';
+Pouchdb.plugin(pouchDbLoad);
 
 const PREFIX_AUTO_GENERATE = 'auto-generate-id';
 const FLOW = 'flows';
@@ -204,6 +208,43 @@ export class DBService{
         })
       }
     });
+  }
+
+  /**
+   * @param dumpPath path to dump file
+   */
+  verifyInitialDataLoad(dumpPath) {
+
+    let db = this._db;
+    return db.get('_local/initial_load_complete')
+      .catch(function (err) {
+        if (err.status !== 404) { // 404 means not found
+          throw err;
+        }
+        console.log(`Will load from ${dumpPath}`);
+        return loadFile(dumpPath)
+          .then(content => db.load(content))
+          .then(() => db.put({_id: '_local/initial_load_complete'}));
+      }).then(function () {
+        console.info('Initial db data load completed');
+    }).catch(function (err) {
+      console.info('Could not load db initial data');
+      console.error(err);
+      console.error(err.stack);
+    });
+
+    function loadFile(path) {
+      return new Promise((resolve, reject) => {
+        fs.readFile(path, {'encoding': 'utf8'}, (err, data)=> {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
+          }
+        });
+      })
+    }
+
   }
 
   get db(){

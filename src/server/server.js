@@ -1,17 +1,17 @@
 import 'babel-polyfill';
+import path from 'path';
+
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
-import {config} from './config/app-config';
+
 import { inspectObj } from './common/utils';
-
+import {config, triggersDBService, activitiesDBService} from './config/app-config';
 import {api} from './api';
-
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
-
-import { installAndConfigureEngines, loadTasksToEngines } from './modules/init'
+import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
 
 // TODO Need to use cluster to improve the performance
 
@@ -27,10 +27,13 @@ let app;
  */
 
 let startConfig = Promise.resolve(true);
-if ( !process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
-  startConfig = startConfig.then(installAndConfigureEngines);
+if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
+  startConfig = startConfig
+    .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
+    .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
+    .then(() => loadTasksToEngines());
 } else {
-  startConfig = startConfig.then(loadTasksToEngines)
+  startConfig = startConfig.then(installAndConfigureTasks);
 }
 
 startConfig

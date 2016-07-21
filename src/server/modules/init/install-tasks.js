@@ -5,7 +5,6 @@ import {config, activitiesDBService, triggersDBService} from '../../config/app-c
 
 import {RegisterActivities} from '../activities';
 import {RegisterTriggers} from '../triggers';
-import { getInitialisedTestEngine, getInitialisedBuildEngine } from '../engine';
 
 /*
  * Server start logic
@@ -16,7 +15,7 @@ import { getInitialisedTestEngine, getInitialisedBuildEngine } from '../engine';
  * 4. configure the server and start listening
  */
 
-export function installAndConfigureEngines() {
+export function installAndConfigureTasks() {
   let registerActivitiesPromise = (() => {
     return new Promise( ( resolve, reject ) => {
       const reg = new RegisterActivities( activitiesDBService, {
@@ -59,15 +58,7 @@ export function installAndConfigureEngines() {
     } );
   })();
 
-  return Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] )
-    .then( ()=> {
-      console.log( "[log] init test engine done" );
-      return getInitialisedTestEngine();
-    } )
-    .then( ( testEngine ) => {
-      console.log( "[log] init test engine done" );
-      return getInitialisedBuildEngine();
-    } );
+  return Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] );
 
 }
 
