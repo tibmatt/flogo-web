@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Rx';
 @Component({
     selector: 'flogo-transform-visual-mapper-output',
     moduleId: module.id,
-    styleUrls: ['visual-mapper-output.component.css'],
+    styleUrls: ['visual-mapper.component.css'],
     templateUrl: 'visual-mapper-output.tpl.html'
 })
 export class VisualMapperOutputComponent {

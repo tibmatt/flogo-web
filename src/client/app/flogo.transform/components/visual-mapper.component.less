@@ -1,0 +1,74 @@
+@height: 40;
+@height-item: 25;
+
+
+.flogo-visual-mapper {
+  margin-top:10px;
+
+  .flogo-visual-mapper__item {
+    display: flex;
+    flex-direction: row;
+    height: (@height)*1px;
+    //margin-bottom: 10px;
+  }
+
+  .flogo-visual-mapper__item--connected {
+    left: 9px;
+  }
+
+  .flogo-visual-mapper__item__output {
+    flex: 0 0 60%;
+    background: #3498db;
+    margin: 0 10px 0 0;
+  }
+
+  .flogo-visual-mapper__item__input {
+    flex: 0 0 40%;
+    background-color: green;
+    color: #fff;
+  }
+
+  .flogo-visual-mapper__item__list {
+    width: 60%;
+    margin-bottom: 10px;
+    margin-top: 0;
+  }
+
+  .flogo-visual-mapper__item__list li {
+    cursor: pointer;
+  }
+
+  .flogo-visual-mapper__item__output, .flogo-visual-mapper__item__input {
+    display: block;
+    float: left;
+    text-align: center;
+    padding: 15px;
+    //padding: 15px 40px 0 40px;
+    position: relative;
+    font-size: 10px;
+    text-decoration: none;
+  }
+
+  .flogo-visual-mapper__item__output:after {
+    content: "";
+    border-top: (@height-item - 5)*1px solid transparent;
+    border-bottom: (@height-item - 5)*1px solid transparent;
+    border-left: (@height-item - 5)*1px solid #3498db;
+    position: absolute;
+    right: -(@height-item - 5)*1px;
+    top: 0;
+    z-index: 1;
+  }
+
+  .flogo-visual-mapper__item__input:before {
+    content: "";
+    border-top: (@height-item - 5)*1px solid transparent;
+    border-bottom: (@height-item - 5)*1px solid transparent;
+    border-left: (@height-item - 5)*1px solid #fff;
+    position: absolute;
+    left: 0;
+    top: 0
+  }
+
+}
+
