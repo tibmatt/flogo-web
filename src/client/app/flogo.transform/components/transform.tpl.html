@@ -51,10 +51,12 @@
             <flogo-transform-error-display [errors]="errors"></flogo-transform-error-display>
           </div>
           <div>
-            <flogo-transform-visual-mapper [mappings]="data.mappings"
-                                           [tileInputInfo]="data.tileInputInfo"
-                                           [precedingTilesOutputs]="data.precedingTilesOutputs"
-                                           (mappingChange)="onMappingsChange($event)"  ></flogo-transform-visual-mapper>
+            <div *ngFor="let input of data.tileInputInfo">
+                <flogo-transform-visual-mapper  [mappings]="data.mappings"
+                                                [tileInputInfo]="input"
+                                                [precedingTilesOutputs]="data.precedingTilesOutputs"
+                                                (mappingChange)="onMappingsChange($event)"  ></flogo-transform-visual-mapper>
+            </div>
           </div>
         </div>
       </div>

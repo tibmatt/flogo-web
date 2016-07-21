@@ -16,10 +16,11 @@ export class VisualMapperComponent {
     @Output() mappingChange:EventEmitter<any>;
     @Input() mappings:any = '';
     @Input() precedingTilesOutputs:any[] = [];
-    @Input() tileInputInfo:any[] = [];
+    @Input() tileInputInfo:any;
     outputs:any[] = [];
     showList:boolean = false;
     selectedValue:string;
+    input:any;
 
     constructor() {
         this.selectedValue = '';
@@ -55,6 +56,7 @@ export class VisualMapperComponent {
 
     ngOnChanges(changes:any) {
         this.outputs = this.precedingTilesToArray(changes.precedingTilesOutputs.currentValue);
+        this.input = changes.tileInputInfo.currentValue;
     }
 
 

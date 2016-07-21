@@ -1,6 +1,8 @@
 @height: 40;
 @height-item: 25;
-
+//@color-output: #3498db;
+@color-output: #b3e3ff;
+@color-input: #e6e7e9;
 
 .flogo-visual-mapper {
   margin-top:10px;
@@ -12,26 +14,26 @@
     //margin-bottom: 10px;
   }
 
-  .flogo-visual-mapper__item--connected {
-    left: 9px;
-  }
+
 
   .flogo-visual-mapper__item__output {
     flex: 0 0 60%;
-    background: #3498db;
+    background: @color-output;
     margin: 0 10px 0 0;
   }
 
   .flogo-visual-mapper__item__input {
     flex: 0 0 40%;
-    background-color: green;
-    color: #fff;
+    //background-color: @color-input;
+    background-color: #ccd0d8;
+    color: #000;
   }
 
   .flogo-visual-mapper__item__list {
     width: 60%;
     margin-bottom: 10px;
     margin-top: 0;
+    background-color: @color-input;
   }
 
   .flogo-visual-mapper__item__list li {
@@ -42,10 +44,10 @@
     display: block;
     float: left;
     text-align: center;
-    padding: 15px;
+    padding: 10px;
     //padding: 15px 40px 0 40px;
     position: relative;
-    font-size: 10px;
+    //font-size: 10px;
     text-decoration: none;
   }
 
@@ -53,7 +55,7 @@
     content: "";
     border-top: (@height-item - 5)*1px solid transparent;
     border-bottom: (@height-item - 5)*1px solid transparent;
-    border-left: (@height-item - 5)*1px solid #3498db;
+    border-left: (@height-item - 5)*1px solid @color-output;
     position: absolute;
     right: -(@height-item - 5)*1px;
     top: 0;
@@ -68,6 +70,13 @@
     position: absolute;
     left: 0;
     top: 0
+  }
+
+  .flogo-visual-mapper__item__output--connected {
+    left: 10px;
+  }
+  .flogo-visual-mapper__item__input--connected {
+    background-color: #ccd0d8;
   }
 
 }

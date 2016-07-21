@@ -1,18 +1,18 @@
-<div *ngFor="let input of tileInputInfo" class="flogo-visual-mapper" >
+<!--<div *ngFor="let input of tileInputInfo" class="flogo-visual-mapper" >-->
+<div class="flogo-visual-mapper">
 
     <div class="flogo-visual-mapper__item">
-        <div class="flogo-visual-mapper__item__output">
+        <div class="flogo-visual-mapper__item__output" [class.flogo-visual-mapper__item__output--connected]="selectedValue != ''">
             <div>
                 <input type="text"  [(ngModel)]="selectedValue"
                        (focus)="focusInputText($event)" (keyup)="onKeyPress($event)"   style="width: 90%;background-color: transparent;border:0" >
             </div>
         </div>
 
-        <div class="flogo-visual-mapper__item__input">{{input.name}}</div>
+        <div class="flogo-visual-mapper__item__input" [class.flogo-visual-mapper__item__input--connected]="selectedValue != ''">{{input.name}}</div>
     </div>
 
     <div class="flogo-visual-mapper__item__list">
-
         <ul *ngFor="let output of outputs" [hidden]="!showList">
             <li class="">{{output.name}}</li>
             <ul>
@@ -20,7 +20,6 @@
                     *ngFor="let field of output.fields" (click)="clickField(output, field)">{{output.name}}.{{field.name}} </li>
             </ul>
         </ul>
-
     </div>
 
 </div>
