@@ -1,18 +1,17 @@
 import 'babel-polyfill';
+import path from 'path';
+
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
-import {config, activitiesDBService, triggersDBService, dbService, engines} from './config/app-config';
+
 import { inspectObj } from './common/utils';
-
+import {config, triggersDBService, activitiesDBService} from './config/app-config';
 import {api} from './api';
-
-import {RegisterActivities} from './modules/activities';
-import {RegisterTriggers} from './modules/triggers';
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
-import path from 'path';
+import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
 
 // TODO Need to use cluster to improve the performance
 
@@ -27,77 +26,50 @@ let app;
  * 4. configure the server and start listening
  */
 
-if ( !process.env[ 'FLOGO_SKIP_PKG_INSTALL' ] ) {
-
-  let registerActivitiesPromise = (() => {
-    return new Promise( ( resolve, reject ) => {
-      const reg = new RegisterActivities( activitiesDBService, {
-        defaultPath : path.resolve( config.rootPath, config.activities.defaultPath ),
-        defaultConfig : config.activities.default,
-        customPath : path.resolve( config.rootPath, config.activities.contribPath ),
-        customConfig : config.activities.contrib
-      } );
-
-      return reg.register()
-        .then( ()=> {
-          console.log( "[success]registerActivities success" );
-          resolve( true );
-        } )
-        .catch( ( err )=> {
-          console.log( "[error]registerActivities error" );
-          reject( err );
-        } );
-    } );
-  })();
-
-  let registerTriggersPromise = (()=> {
-    return new Promise( ( resolve, reject ) => {
-      const reg = new RegisterTriggers( triggersDBService, {
-        defaultPath : path.resolve( config.rootPath, config.triggers.defaultPath ),
-        defaultConfig : config.triggers.default,
-        customPath : path.resolve( config.rootPath, config.triggers.contribPath ),
-        customConfig : config.triggers.contrib
-      } );
-
-      return reg.register()
-        .then( ()=> {
-          console.log( "[success]registerTriggers success" );
-          resolve( true );
-        } )
-        .catch( ( err )=> {
-          console.log( "[error]registerTriggers error" );
-          reject( err );
-        } );
-    } );
-  })();
-
-  Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] )
-    .then( ()=> {
-      return getInitialisedTestEngine();
-    } )
-    .then( ( testEngine ) => {
-      return testEngine.build()
-        .then( ()=> {
-          console.log( "[log] build test engine done." );
-          return testEngine.start();
-        } );
-    } )
-    .then( ()=> {
-      console.log( "[log] start test engine done" );
-      return getInitialisedBuildEngine();
-    } )
-    .then( ( buildEngine )=> {
-      console.log( `[log] start web server...` );
-      return initServer();
-    } )
-    .catch( ( err )=> {
-      console.log( err );
-      throw err;
-    } );
-
+let startConfig = Promise.resolve(true);
+if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
+  startConfig = startConfig
+    .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
+    .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
+    .then(() => loadTasksToEngines());
 } else {
-  initServer();
+  startConfig = startConfig.then(installAndConfigureTasks);
 }
+
+startConfig
+  .then( ()=> {
+    return getInitialisedTestEngine();
+  } )
+  .then( ( testEngine ) => {
+    console.log('############ TEST ENGINE ####################');
+    console.log('~~~ ACTIVITIES ~~~');
+    console.log(testEngine.installedActivites);
+    console.log('~~~ Triggers ~~~');
+    console.log(testEngine.installedTriggers);
+    return testEngine.build()
+      .then( ()=> {
+        console.log( "[log] build test engine done." );
+        return testEngine.start();
+      } );
+  } )
+  .then( ()=> {
+    console.log( "[log] start test engine done" );
+    return getInitialisedBuildEngine();
+  } )
+  .then( ( buildEngine )=> {
+    console.log('############ BUILD ENGINE ####################');
+    console.log('~~~ ACTIVITIES ~~~');
+    console.log(buildEngine.installedActivites);
+    console.log('~~~ Triggers ~~~');
+    console.log(buildEngine.installedTriggers);
+    console.log( `[log] start web server...` );
+    return initServer();
+  } )
+  .catch( ( err )=> {
+    console.log( err );
+    throw err;
+  } );
+
 
 function initServer() {
 

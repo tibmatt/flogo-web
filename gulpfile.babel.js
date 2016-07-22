@@ -1,8 +1,8 @@
 /**
  * Flogo web build process
- * 
+ *
  * Run `gulp help` in terminal for a list an description of tasks
- * 
+ *
  * Tasks are automatically loaded from '/gulp/tasks' folder.
  * Configuration located in '/gulp/config'
  */
@@ -30,7 +30,7 @@ gulp.task('default', ['prod']);
 /**
  * Build an start production mode
  */
-gulp.task('prod', 'Buld and start in production mode', cb => runSequence(
+gulp.task('prod', 'Build and start in production mode', cb => runSequence(
   'build',
   'prod.start',
   cb
@@ -48,7 +48,7 @@ gulp.task('build', 'Build in production mode (does not start the server or db, u
 /**
  * Build an start development mode
  */
-gulp.task('dev', 'Buil and start in development mode', cb => {
+gulp.task('dev', 'Build and start in development mode', cb => {
 
   runSequence(
     'clean',
@@ -57,6 +57,15 @@ gulp.task('dev', 'Buil and start in development mode', cb => {
     'dev.start',
     cb
   );
+
+});
+
+gulp.task('dist', '', cb => {
+  runSequence(
+    'prod.build',
+    'dist.support-files',
+    'dist.build-engines',
+    cb);
 
 });
 

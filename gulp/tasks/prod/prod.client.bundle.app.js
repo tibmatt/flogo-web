@@ -19,6 +19,19 @@ gulp.task('prod.client.bundle.app', false, ['prod.client.bundle.app.ts'], cb => 
   let Builder = require('systemjs-builder');
   let builder = new Builder('', path.join(CONFIG.paths.source.client, 'systemjs.config.js'));
 
+
+  builder.config({
+    map: {
+      main: path.join(CONFIG.paths.dist.public, 'build')
+    },
+    packages: {
+      main: {
+        main: 'main',
+        defaultExtension: 'js'
+      }
+    }
+  });
+
   Promise.all([
     // app bundle
     builder.buildStatic('main/main.js + main/app/**/**.js + main/common/**/**.js', path.join(CONFIG.paths.dist.public, 'app.bundle.js'), {minify: true, sourceMaps: true, lowResSourceMaps: true, encodeNames: true, rollup: true})

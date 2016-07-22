@@ -19,6 +19,7 @@ gulp.task('dev.client.build', 'Build client app for development', (cb)=> {
 gulp.task('dev.server.build', 'Build server app for development', cb => {
   return runSequence(
     'server.copy',
-    'install.server',
+    'install.server.dev',
+    'dev.server.lib',
      cb);
 });

@@ -63,6 +63,7 @@ bower_components/
 
 # ignore files/folder in dist
 **/dist
+!gulp/tasks/dist
 #src/client/**/*.js
 #src/client/**/*.map
 

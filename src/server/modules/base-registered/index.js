@@ -325,7 +325,7 @@ export class BaseRegistered{
           let design_package_json=null;
           let value = null;
 
-          // TODO need to improve, provide more good way
+          // TODO need to improve, provide better way
 
           if(isExisted(path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
             design_package_json = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
@@ -365,11 +365,18 @@ export class BaseRegistered{
     return new Promise((resolve, reject)=>{
       console.log("[debug]updateDB");
       // update activity package.json
-      let packageJSON = _.cloneDeep(this.packageJSONTemplate);
-      packageJSON = this.updatePackageJSON(this._options.defaultPath, this._options.defaultConfig, packageJSON);
-      packageJSON = this.updatePackageJSON(this._options.customPath, this._options.customConfig, packageJSON);
-      // console.log(packageJSON);
-      let dependencies = packageJSON.dependencies;
+      let dependencies;
+      if(!process.env[ 'FLOGO_NO_ENGINE_RECREATION' ]) {
+        let packageJSON = _.cloneDeep(this.packageJSONTemplate);
+        packageJSON = this.updatePackageJSON(this._options.defaultPath, this._options.defaultConfig, packageJSON);
+        packageJSON = this.updatePackageJSON(this._options.customPath, this._options.customConfig, packageJSON);
+        // console.log(packageJSON);
+        dependencies = packageJSON.dependencies;
+      } else {
+        let existingPackageJSON = JSON.parse(fs.readFileSync(path.join(this._packageJSONFolderPath, 'node_modules', key, 'package.json'), 'utf8'));
+        dependencies = existingPackageJSON && existingPackageJSON.dependencies ? existingPackageJSON.dependencies : {};
+      }
+
       // new activities generate from package.json
       let items = {};
 
