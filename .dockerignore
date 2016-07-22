@@ -3,15 +3,15 @@
 .idea/*
 **/.DS_Store
 
-dist/
-docs/
-pocs/
-aws-deploy/
-scripts/
-slack-integration/
+dist
+docs
+pocs
+aws-deploy
+scripts
+slack-integration
 
 **/node_modules/*
 **/.gradle/*
 
-submodules/**/build
-build/node_modules
+submodules/**/build/**
+dist/build/node_modules/**

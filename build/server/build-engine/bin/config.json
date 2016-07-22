@@ -1,0 +1,32 @@
+{
+  "loglevel": "INFO",
+  "flowRunner": {
+    "type": "pooled",
+    "pooled": {
+      "numWorkers": 5,
+      "workQueueSize": 50,
+      "maxStepCount": 32000
+    }
+  },
+  "services": [
+    {
+      "name": "stateRecorder",
+      "enabled": false,
+      "settings": {
+        "host": "",
+        "port": ""
+      }
+    },
+    {
+      "name": "flowProvider",
+      "enabled": true
+    },
+    {
+      "name": "engineTester",
+      "enabled": true,
+      "settings": {
+        "port": "8080"
+      }
+    }
+  ]
+}

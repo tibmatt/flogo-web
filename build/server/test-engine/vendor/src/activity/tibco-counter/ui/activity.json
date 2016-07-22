@@ -1,0 +1,28 @@
+{
+  "name": "tibco-counter",
+  "version": "0.0.1",
+  "title": "Counter Activity",
+  "description": "Simple Global Counter Activity",
+  "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter",
+  "inputs":[
+    {
+      "name": "counterName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "increment",
+      "type": "boolean"
+    },
+    {
+      "name": "reset",
+      "type": "boolean"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "value",
+      "type": "integer"
+    }
+  ]
+}

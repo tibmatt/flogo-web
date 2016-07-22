@@ -1,0 +1,142 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/Shopify/go-lua",
+			"repository": "https://github.com/Shopify/go-lua",
+			"revision": "e070da3ec8b0d36f41063f67fec918692bebc165",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/activity/awsiot"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/activity/coap",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/activity/coap"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/activity/rest",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/activity/rest"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/activity/twilio",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/activity/twilio"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/activity/wsmessage"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/model/simple",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/model/simple"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/trigger/coap",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/trigger/coap"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/trigger/mqtt"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/trigger/rest"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
+			"repository": "https://github.com/TIBCOSoftware/flogo-contrib",
+			"revision": "42d20ddaf4825b640c8db5b443468fe6fa959a0a",
+			"branch": "master",
+			"path": "/trigger/timer"
+		},
+		{
+			"importpath": "github.com/TIBCOSoftware/flogo-lib",
+			"repository": "https://github.com/TIBCOSoftware/flogo-lib",
+			"revision": "beebade5af8089c747fb73c4830ba02b6dd40db6",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/carlescere/scheduler",
+			"repository": "https://github.com/carlescere/scheduler",
+			"revision": "5e2cc370dae40237c2a08b9181d4c84faf4150e9",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/dustin/go-coap",
+			"repository": "https://github.com/dustin/go-coap",
+			"revision": "75229d0ed26e3f08048d9220408dff03ef604f75",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/eclipse/paho.mqtt.golang",
+			"repository": "https://github.com/eclipse/paho.mqtt.golang",
+			"revision": "44eec149d4433449add74781ffc86cc60d3f1598",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/gorilla/websocket",
+			"repository": "https://github.com/gorilla/websocket",
+			"revision": "5e2e56d5dfd46884df1036f828777ee6273f2cff",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/japm/goScript",
+			"repository": "https://github.com/japm/goScript",
+			"revision": "760203589d63cc2038c5828482ec857a2ae9260d",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/julienschmidt/httprouter",
+			"repository": "https://github.com/julienschmidt/httprouter",
+			"revision": "fb79d6a91d3e4a9ecb6d945b218d78fc0d9b1939",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/op/go-logging",
+			"repository": "https://github.com/op/go-logging",
+			"revision": "970db520ece77730c7e4724c61121037378659d9",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/sfreiberg/gotwilio",
+			"repository": "https://github.com/sfreiberg/gotwilio",
+			"revision": "f024bbefe80fdb7bcc8c43b6add05dae97744e0e",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/net/websocket",
+			"repository": "https://go.googlesource.com/net",
+			"revision": "4d38db76854b199960801a1734443fd02870d7e1",
+			"branch": "master",
+			"path": "/websocket"
+		}
+	]
+}

@@ -323,6 +323,58 @@ function resetFlogoGlobalConfig() {
     });
 }
 exports.resetFlogoGlobalConfig = resetFlogoGlobalConfig;
+function formatServerConfiguration(config) {
+    return {
+        db: {
+            protocol: config.db.protocol,
+            host: config.db.host,
+            port: config.db.port,
+            name: config.db.testPath,
+            label: config.db.label
+        },
+        activities: {
+            protocol: config.activities.protocol,
+            host: config.activities.host,
+            port: config.activities.port,
+            testPath: config.activities.testPath,
+            label: config.activities.label,
+            db: {
+                port: config.activities.port,
+                name: config.activities.testPath
+            }
+        },
+        triggers: {
+            protocol: config.triggers.protocol,
+            host: config.triggers.host,
+            port: config.triggers.port,
+            testPath: config.triggers.testPath,
+            label: config.triggers.label,
+            db: {
+                port: config.triggers.port,
+                name: config.triggers.testPath
+            },
+        },
+        engine: {
+            protocol: config.engine.protocol,
+            host: config.engine.host,
+            port: config.engine.port,
+            testPath: config.engine.testPath
+        },
+        stateServer: {
+            protocol: config.stateServer.protocol,
+            host: config.stateServer.host,
+            port: config.stateServer.port,
+            testPath: config.stateServer.testPath
+        },
+        flowServer: {
+            protocol: config.flowServer.protocol,
+            host: config.flowServer.host,
+            port: config.flowServer.port,
+            testPath: config.flowServer.testPath
+        }
+    };
+}
+exports.formatServerConfiguration = formatServerConfiguration;
 function getFlogoGlobalConfig() {
     if (!window.FLOGO_GLOBAL) {
         var config = void 0;
@@ -353,18 +405,6 @@ function getURL(config) {
     }
 }
 exports.getURL = getURL;
-function getEngineURL() {
-    return getURL(window.FLOGO_GLOBAL.engine);
-}
-exports.getEngineURL = getEngineURL;
-function getStateServerURL() {
-    return getURL(window.FLOGO_GLOBAL.stateServer);
-}
-exports.getStateServerURL = getStateServerURL;
-function getProcessServerURL() {
-    return getURL(window.FLOGO_GLOBAL.flowServer);
-}
-exports.getProcessServerURL = getProcessServerURL;
 function getDBURL(dbConfig) {
     return getURL(dbConfig) + "/" + dbConfig.name;
 }

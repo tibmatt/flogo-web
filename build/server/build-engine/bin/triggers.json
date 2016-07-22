@@ -1,0 +1,37 @@
+{
+  "triggers": [
+    {
+      "name": "tibco-coap",
+      "settings": {
+        "port": ""
+      },
+      "endpoints": null
+    },
+    {
+      "name": "tibco-mqtt",
+      "settings": {
+        "broker": "",
+        "cleansess": "",
+        "id": "",
+        "password": "",
+        "qos": "",
+        "store": "",
+        "topic": "",
+        "user": ""
+      },
+      "endpoints": null
+    },
+    {
+      "name": "tibco-rest",
+      "settings": {
+        "port": ""
+      },
+      "endpoints": null
+    },
+    {
+      "name": "tibco-timer",
+      "settings": {},
+      "endpoints": null
+    }
+  ]
+}

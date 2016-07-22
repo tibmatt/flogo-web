@@ -10,9 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var db_service_1 = require('../db.service');
+var http_1 = require('@angular/http');
 var RESTAPIActivitiesService = (function () {
-    function RESTAPIActivitiesService(_db) {
+    function RESTAPIActivitiesService(_db, _http) {
         this._db = _db;
+        this._http = _http;
     }
     RESTAPIActivitiesService.prototype.getActivities = function () {
         return this._db.getAllActivities();
@@ -20,9 +22,29 @@ var RESTAPIActivitiesService = (function () {
     RESTAPIActivitiesService.prototype.getInstallableActivities = function () {
         return this._db.getInstallableActivities();
     };
+    RESTAPIActivitiesService.prototype.installActivities = function (urls) {
+        var body = JSON.stringify({
+            'urls': urls
+        });
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this._http.post("/v1/api/activities", body, options)
+            .toPromise()
+            .then(function (rsp) {
+            if (rsp.text()) {
+                return rsp.json();
+            }
+            else {
+                return rsp;
+            }
+        });
+    };
     RESTAPIActivitiesService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [db_service_1.FlogoDBService])
+        __metadata('design:paramtypes', [db_service_1.FlogoDBService, http_1.Http])
     ], RESTAPIActivitiesService);
     return RESTAPIActivitiesService;
 }());

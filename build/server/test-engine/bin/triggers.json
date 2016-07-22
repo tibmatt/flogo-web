@@ -1,0 +1,11 @@
+{
+  "triggers": [
+    {
+      "name": "tibco-rest",
+      "settings": {
+        "port": "9990"
+      },
+      "endpoints": null
+    }
+  ]
+}

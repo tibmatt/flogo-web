@@ -23,6 +23,8 @@ var flows_api_service_1 = require('../../../common/services/restapi/flows-api.se
 var activities_api_service_1 = require('../../../common/services/restapi/activities-api.service');
 var triggers_api_service_1 = require('../../../common/services/restapi/triggers-api.service');
 var config_component_1 = require('../../flogo.config/components/config.component');
+var configuration_api_service_1 = require('../../../common/services/restapi/configuration-api-service');
+var configuration_service_1 = require('../../../common/services/configuration.service');
 var FlogoAppComponent = (function () {
     function FlogoAppComponent() {
     }
@@ -33,7 +35,7 @@ var FlogoAppComponent = (function () {
             template: "<flogo-navbar></flogo-navbar> <router-outlet></router-outlet>",
             styles: [":host {   display: flex;   align-items: stretch;   width: 100%;   flex-direction: column; }"],
             directives: [router_deprecated_1.ROUTER_DIRECTIVES, navbar_component_1.FlogoNavbarComponent],
-            providers: [post_service_1.PostService, db_service_1.FlogoDBService, rest_api_service_1.RESTAPIService, flows_api_service_1.RESTAPIFlowsService, activities_api_service_1.RESTAPIActivitiesService, triggers_api_service_1.RESTAPITriggersService, http_1.HTTP_PROVIDERS]
+            providers: [post_service_1.PostService, db_service_1.FlogoDBService, rest_api_service_1.RESTAPIService, flows_api_service_1.RESTAPIFlowsService, activities_api_service_1.RESTAPIActivitiesService, triggers_api_service_1.RESTAPITriggersService, http_1.HTTP_PROVIDERS, configuration_api_service_1.RESTAPIConfigurationService, configuration_service_1.ConfigurationService]
         }),
         router_deprecated_1.RouteConfig([
             {

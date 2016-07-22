@@ -10,16 +10,38 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var db_service_1 = require('../db.service');
+var http_1 = require('@angular/http');
 var RESTAPITriggersService = (function () {
-    function RESTAPITriggersService(_db) {
+    function RESTAPITriggersService(_db, _http) {
         this._db = _db;
+        this._http = _http;
     }
     RESTAPITriggersService.prototype.getTriggers = function () {
         return this._db.getAllTriggers();
     };
+    RESTAPITriggersService.prototype.installTriggers = function (urls) {
+        var body = JSON.stringify({
+            'urls': urls
+        });
+        var headers = new http_1.Headers({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this._http.post("/v1/api/triggers", body, options)
+            .toPromise()
+            .then(function (rsp) {
+            if (rsp.text()) {
+                return rsp.json();
+            }
+            else {
+                return rsp;
+            }
+        });
+    };
     RESTAPITriggersService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [db_service_1.FlogoDBService])
+        __metadata('design:paramtypes', [db_service_1.FlogoDBService, http_1.Http])
     ], RESTAPITriggersService);
     return RESTAPITriggersService;
 }());

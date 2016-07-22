@@ -12,7 +12,6 @@ var core_1 = require('@angular/core');
 var db_service_1 = require('../db.service');
 var http_1 = require('@angular/http');
 require('rxjs/add/operator/toPromise');
-var utils_1 = require('../../utils');
 var RESTAPIFlowsService = (function () {
     function RESTAPIFlowsService(_db, http) {
         this._db = _db;
@@ -87,7 +86,7 @@ var RESTAPIFlowsService = (function () {
             'Accept': 'application/json'
         });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(utils_1.getProcessServerURL() + "/flows", body, options)
+        return this.http.post('/v1/api/flows/run/flows', body, options)
             .toPromise().then(function (response) {
             if (response.text()) {
                 return response.json();
@@ -99,7 +98,7 @@ var RESTAPIFlowsService = (function () {
     };
     RESTAPIFlowsService.prototype.startFlow = function (id, data) {
         var body = JSON.stringify({
-            "flowUri": utils_1.getProcessServerURL() + "/flows/" + id,
+            "flowId": id,
             "attrs": data
         });
         var headers = new http_1.Headers({
@@ -107,7 +106,7 @@ var RESTAPIFlowsService = (function () {
             'Accept': 'application/json'
         });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post(utils_1.getEngineURL() + "/flow/start", body, options)
+        return this.http.post('/v1/api/flows/run/flow/start', body, options)
             .toPromise()
             .then(function (rsp) {
             if (rsp.text()) {

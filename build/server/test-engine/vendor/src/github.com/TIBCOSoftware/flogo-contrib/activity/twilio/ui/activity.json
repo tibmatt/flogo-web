@@ -1,0 +1,30 @@
+{
+  "name": "tibco-twilio",
+  "version": "0.0.1",
+  "title": "Twilio Activity",
+  "description": "Simple Twilio Activity",
+  "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/twilio",
+  "inputs":[
+    {
+      "name": "accountSID",
+      "type": "string"
+    },
+    {
+      "name": "authToken",
+      "type": "string"
+    },
+    {
+      "name": "from",
+      "type": "string"
+    },
+    {
+      "name": "to",
+      "type": "string"
+    },
+    {
+      "name": "message",
+      "type": "string"
+    }
+  ],
+  "outputs": []
+}

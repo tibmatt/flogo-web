@@ -10,16 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var post_service_1 = require('../../../common/services/post.service');
-var rest_api_service_1 = require("../../../common/services/rest-api.service");
 var messages_1 = require('../messages');
 var router_deprecated_1 = require('@angular/router-deprecated');
 var install_component_1 = require('../../flogo.flows.detail.tasks.install/components/install.component');
 var activities_api_service_1 = require('../../../common/services/restapi/activities-api.service');
 var FlogoFlowsDetailTasks = (function () {
-    function FlogoFlowsDetailTasks(_postService, _routeParams, _restApiService, _restAPIActivitiesService) {
+    function FlogoFlowsDetailTasks(_postService, _routeParams, _restAPIActivitiesService) {
         this._postService = _postService;
         this._routeParams = _routeParams;
-        this._restApiService = _restApiService;
         this._restAPIActivitiesService = _restAPIActivitiesService;
         this.filteredTasks = [];
         this._filterQuery = null;
@@ -93,15 +91,21 @@ var FlogoFlowsDetailTasks = (function () {
             this.filteredTasks = this.tasks;
         }
     };
+    FlogoFlowsDetailTasks.prototype.onInstalledAction = function (response) {
+        console.group("[FlogoFlowsDetailTasks] onInstalled");
+        console.log(response);
+        console.groupEnd();
+        this._loadActivities();
+    };
     FlogoFlowsDetailTasks = __decorate([
         core_1.Component({
             selector: 'flogo-flows-detail-tasks',
             moduleId: module.id,
-            directives: [install_component_1.InstallComponent],
-            template: "<div class=\"flogo-common-edit-panel\">    <div class=\"flogo-common-edit-panel__head\">     <div class=\"flogo-common-edit-panel__head-wrapper\">       <h3 class=\"flogo-common-edit-panel__head-title\">Add Activity</h3>       <div class=\"flogo-common-edit-panel__head-subtitle\"></div>     </div>   </div>    <div class=\"filter-box\">     <input class=\"flogo-input-search filter-box__input\" type=\"text\" [(ngModel)]=\"filterQuery\" placeholder=\"Filter tasks\">   </div>    <flogo-flows-detail-tasks-install></flogo-flows-detail-tasks-install>    <ul class=\"flogo-common-edit-panel__tiles-list\">     <li class=\"flogo-common-edit-panel__tiles-list-tile\" *ngFor=\"let task of filteredTasks\"         (click)=\"sendAddTaskMsg(task)\">{{task.name}}     </li>   </ul> </div>",
+            directives: [install_component_1.FlogoFlowsDetailTasksInstallComponent],
+            template: "<div class=\"flogo-common-edit-panel\">    <div class=\"flogo-common-edit-panel__head\">     <div class=\"flogo-common-edit-panel__head-wrapper\">       <h3 class=\"flogo-common-edit-panel__head-title\">Add Activity</h3>       <div class=\"flogo-common-edit-panel__head-subtitle\"></div>     </div>   </div>    <div class=\"filter-box\">     <input class=\"flogo-input-search filter-box__input\" type=\"text\" [(ngModel)]=\"filterQuery\" placeholder=\"Filter tasks\">   </div>    <flogo-flows-detail-tasks-install     (flogoOnInstalled)=\"onInstalledAction($event)\"></flogo-flows-detail-tasks-install>    <ul class=\"flogo-common-edit-panel__tiles-list\">     <li class=\"flogo-common-edit-panel__tiles-list-tile\" *ngFor=\"let task of filteredTasks\"         (click)=\"sendAddTaskMsg(task)\">{{task.name}}     </li>   </ul> </div>",
             styles: [".filter-box {   margin: 19px 21px; } .filter-box__input {   width: 100%; } .flogo-common-edit-panel__head {   background-color: #fe883b;   padding-top: 33px; } .flogo-common-edit-panel__head-title:before {   content: \"\";   background: #fff url(\"/assets/svg/flogo.flows.detail.add.cross.icon.svg\") center center / 50% no-repeat;   width: 40px;   height: 40px;   border-radius: 50%;   display: inline-block;   margin-right: 15px;   text-align: center;   vertical-align: middle; }"]
         }), 
-        __metadata('design:paramtypes', [post_service_1.PostService, router_deprecated_1.RouteParams, rest_api_service_1.RESTAPIService, activities_api_service_1.RESTAPIActivitiesService])
+        __metadata('design:paramtypes', [post_service_1.PostService, router_deprecated_1.RouteParams, activities_api_service_1.RESTAPIActivitiesService])
     ], FlogoFlowsDetailTasks);
     return FlogoFlowsDetailTasks;
 }());

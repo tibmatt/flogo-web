@@ -72,12 +72,18 @@ var FlogoFlowsDetailTriggers = (function () {
             console.error(err);
         });
     };
+    FlogoFlowsDetailTriggers.prototype.onInstalledAction = function (response) {
+        console.group("[FlogoFlowsDetailTriggers] onInstalled");
+        console.log(response);
+        console.groupEnd();
+        this._loadTriggers();
+    };
     FlogoFlowsDetailTriggers = __decorate([
         core_1.Component({
             selector: 'flogo-flows-detail-triggers',
             moduleId: module.id,
             directives: [install_component_1.FlogoFlowsDetailTriggersInstallComponent],
-            template: "<div class=\"flogo-common-edit-panel flogo-flows-detail-triggers\">    <div class=\"flogo-common-edit-panel__head\">     <div class=\"flogo-common-edit-panel__head-wrapper\">       <h3 class=\"flogo-common-edit-panel__head-title\">Add Trigger</h3>       <div class=\"flogo-common-edit-panel__head-subtitle\"></div>     </div>   </div>    <!-- Search -->    <flogo-flows-detail-triggers-install></flogo-flows-detail-triggers-install>    <ul class=\"flogo-common-edit-panel__tiles-list flogo-flows-detail-triggers__list\">       <li *ngFor=\"let trigger of triggers\" class=\"flogo-common-edit-panel__tiles-list-trigger flogo-flows-detail-triggers__list__item\"           (click)=\"sendAddTriggerMsg(trigger)\" >{{trigger.name}}</li>   </ul> </div>",
+            template: "<div class=\"flogo-common-edit-panel flogo-flows-detail-triggers\">    <div class=\"flogo-common-edit-panel__head\">     <div class=\"flogo-common-edit-panel__head-wrapper\">       <h3 class=\"flogo-common-edit-panel__head-title\">Add Trigger</h3>       <div class=\"flogo-common-edit-panel__head-subtitle\"></div>     </div>   </div>    <!-- Search -->    <flogo-flows-detail-triggers-install     (flogoOnInstalled)=\"onInstalledAction($event)\"></flogo-flows-detail-triggers-install>    <ul class=\"flogo-common-edit-panel__tiles-list flogo-flows-detail-triggers__list\">       <li *ngFor=\"let trigger of triggers\" class=\"flogo-common-edit-panel__tiles-list-trigger flogo-flows-detail-triggers__list__item\"           (click)=\"sendAddTriggerMsg(trigger)\" >{{trigger.name}}</li>   </ul> </div>",
             styles: [".flogo-common-edit-panel__head {   padding-top: 33px;   background-color: #fe883b; } .flogo-common-edit-panel__head-title:before {   content: \"\";   background: #fff url(\"/assets/svg/flogo.flows.detail.add.cross.icon.svg\") center center / 50% no-repeat;   width: 40px;   height: 40px;   border-radius: 50%;   display: inline-block;   margin-right: 15px;   text-align: center;   float: left; }"]
         }), 
         __metadata('design:paramtypes', [post_service_1.PostService, router_deprecated_1.RouteParams, triggers_api_service_1.RESTAPITriggersService])

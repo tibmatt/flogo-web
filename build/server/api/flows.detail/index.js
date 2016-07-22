@@ -92,7 +92,20 @@ function generateTriggerJSON(doc, flowName) {
   return trigger;
 }
 
-function generateBuild(id) {
+function _determineBuildExecutableNamePattern(name, compileOptions) {
+  var executableName = name;
+  if (compileOptions.os && compileOptions.arch) {
+    executableName = executableName + '-' + compileOptions.os + '-' + compileOptions.arch;
+  } else if (compileOptions.os) {
+    executableName = executableName + '-' + compileOptions.os;
+  } else if (compileOptions.arch) {
+    executableName = executableName + '-.*-' + compileOptions.arch;
+  }
+  return executableName;
+}
+
+function generateBuild(id, compileOptions) {
+  compileOptions = compileOptions || {};
   return new Promise(function (resolve, reject) {
     console.log('generateBuild');
 
@@ -106,32 +119,52 @@ function generateBuild(id) {
       console.log(flowJSON);
 
       if (_appConfig.engines.build) {
-        console.log("build engine, build.enginePath", _appConfig.engines.build.enginePath);
-        var engineFolderPath = _path2.default.join(_appConfig.engines.build.enginePath, _appConfig.engines.build.options.name);
+        (function () {
+          console.log("build engine, build.enginePath", _appConfig.engines.build.enginePath);
+          var engineFolderPath = _path2.default.join(_appConfig.engines.build.enginePath, _appConfig.engines.build.options.name);
 
-        // step1: add flow.json
-        var tmpFlowJSONPath = _path2.default.join(_appConfig.config.rootPath, 'tmp', 'flow.json');
-        _fsExtra2.default.outputJSONSync(tmpFlowJSONPath, flowJSON.flow);
-        _appConfig.engines.build.deleteAllFlows();
-        var flowName = _appConfig.engines.build.addFlow('file://' + tmpFlowJSONPath);
-        // step2: update config.json
-        _appConfig.engines.build.updateConfigJSON(_appConfig.config.buildEngine.config, true);
-        // step3: update trigger.json
-        var triggerJSON = generateTriggerJSON(doc, flowName);
+          // step1: add flow.json
+          var tmpFlowJSONPath = _path2.default.join(_appConfig.config.rootPath, 'tmp', 'flow.json');
+          _fsExtra2.default.outputJSONSync(tmpFlowJSONPath, flowJSON.flow);
+          _appConfig.engines.build.deleteAllFlows();
+          var flowName = _appConfig.engines.build.addFlow('file://' + tmpFlowJSONPath);
+          // step2: update config.json
+          _appConfig.engines.build.updateConfigJSON(_appConfig.config.buildEngine.config, true);
+          // step3: update trigger.json
+          var triggerJSON = generateTriggerJSON(doc, flowName);
 
-        var triggersJSON = {
-          "triggers": []
-        };
-        triggersJSON.triggers.push(triggerJSON);
-        _appConfig.engines.build.updateTriggerJSON(triggersJSON, true);
-        // step4: build
-        _appConfig.engines.build.build('-i -o');
+          var triggersJSON = {
+            "triggers": []
+          };
+          triggersJSON.triggers.push(triggerJSON);
+          _appConfig.engines.build.updateTriggerJSON(triggersJSON, true);
 
-        var buildEnginePath = _path2.default.join(engineFolderPath, 'bin', _appConfig.engines.build.options.name);
-
-        var data = _fs2.default.readFileSync(buildEnginePath);
-
-        resolve(data);
+          // step4: build
+          _appConfig.engines.build.build({
+            optimize: true,
+            incorporateConfig: true,
+            compile: compileOptions
+          }).then(function () {
+            // setp 5: return file
+            var binPath = _path2.default.join(engineFolderPath, 'bin');
+            var executableName = _determineBuildExecutableNamePattern(_appConfig.engines.build.options.name, compileOptions);
+            console.log('[log] execName: ' + executableName);
+            // if no compile options provided or both options provided we can skip the search for generated binary since we have the exact name
+            var isDefaultCompile = !compileOptions.os && !compileOptions.arch;
+            if (isDefaultCompile || compileOptions.os && compileOptions.arch) {
+              console.log('[debug] Default compile, grab file directly');
+              var data = _fs2.default.readFileSync(_path2.default.join(binPath, executableName));
+              return resolve(data);
+            } else {
+              console.log('[debug] Find file');
+              return (0, _utils.findLastCreatedFile)(binPath, new RegExp(executableName)).then(function (buildEnginePath) {
+                console.log('[log] Found: ' + JSON.stringify(buildEnginePath));
+                var data = _fs2.default.readFileSync(buildEnginePath);
+                resolve(data);
+              });
+            }
+          }).catch(reject);
+        })();
       } else {
         reject(err);
       }
@@ -149,7 +182,7 @@ function flowsDetail(app, router) {
 }
 
 function getBuild(next) {
-  var id, data;
+  var id, compileOptions, data;
   return regeneratorRuntime.wrap(function getBuild$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -165,10 +198,20 @@ function getBuild(next) {
 
           //console.log("data: ", data);
           id = this.params.id;
-          _context.next = 4;
-          return generateBuild(id);
+          compileOptions = void 0;
+          // TODO: make sure os and arch are valid
 
-        case 4:
+          if (this.query.os || this.query.arch) {
+            compileOptions = {
+              os: this.query.os,
+              arch: this.query.arch
+            };
+          }
+
+          _context.next = 6;
+          return generateBuild(id, compileOptions);
+
+        case 6:
           data = _context.sent;
 
 
@@ -178,10 +221,10 @@ function getBuild(next) {
           //
           //console.log(data);
           this.body = data;
-          _context.next = 8;
+          _context.next = 10;
           return next;
 
-        case 8:
+        case 10:
         case 'end':
           return _context.stop();
       }

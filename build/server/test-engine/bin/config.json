@@ -1,0 +1,36 @@
+{
+  "loglevel": "DEBUG",
+  "flowRunner": {
+    "type": "pooled",
+    "pooled": {
+      "numWorkers": 5,
+      "workQueueSize": 50,
+      "maxStepCount": 32000
+    }
+  },
+  "services": [
+    {
+      "name": "stateRecorder",
+      "enabled": true,
+      "settings": {
+        "host": "localhost",
+        "port": "9190"
+      }
+    },
+    {
+      "name": "flowProvider",
+      "enabled": true,
+      "settings": {
+        "host": "localhost",
+        "port": "9090"
+      }
+    },
+    {
+      "name": "engineTester",
+      "enabled": true,
+      "settings": {
+        "port": "8080"
+      }
+    }
+  ]
+}

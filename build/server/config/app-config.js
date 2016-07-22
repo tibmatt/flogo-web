@@ -3,11 +3,19 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.flowExport = exports.engines = exports.dbService = exports.activitiesDBService = exports.triggersDBService = exports.config = undefined;
+exports.flowExport = exports.engines = exports.dbService = exports.activitiesDBService = exports.triggersDBService = exports.originalConfig = exports.config = undefined;
+exports.setConfiguration = setConfiguration;
+exports.resetConfiguration = resetConfiguration;
 
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
+
+var _utils = require('../common/utils');
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _db = require('../common/db.service');
 
@@ -19,6 +27,7 @@ var publicPath = _path2.default.normalize(rootPath + '/../public');
 
 var FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
 var FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
+var FLOW_WEB_HOST = (0, _utils.extractDomain)(process.env.FLOGO_FLOW_WEB_HOST || "localhost");
 
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
@@ -30,7 +39,8 @@ var config = {
   app: {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
-    cacheTime: 0 //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
+    cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
+    gitRepoCachePath: _path2.default.join(rootPath, 'git-cache')
   },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
@@ -48,6 +58,9 @@ var config = {
       },
       "tibco-rest": {
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
+      },
+      "sendWSMessage": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
       }
     },
     contrib: {}
@@ -183,17 +196,57 @@ var config = {
       }]
     }
   },
+  flogoWeb: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web",
+    label: 'Application database'
+  },
+  flogoWebActivities: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web-activities",
+    label: 'Activities'
+  },
+  flogoWebTriggers: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web-triggers",
+    label: 'Triggers'
+  },
   stateServer: {
+    protocol: 'http',
     host: FLOW_STATE_SERVICE_HOST,
-    port: "9190"
+    port: "9190",
+    testPath: "ping"
   },
   processServer: {
+    protocol: 'http',
     host: FLOW_SERVICE_HOST,
-    port: "9090"
+    port: "9090",
+    testPath: "ping"
+  },
+  webServer: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "3010",
+    testPath: ''
+  },
+  engine: {
+    protocol: 'http',
+    host: 'localhost',
+    port: "8080",
+    testPath: "status"
   }
 };
 
+var originalConfig = _lodash2.default.cloneDeep(config);
+
 exports.config = config;
+exports.originalConfig = originalConfig;
 
 
 var triggersDBService = new _db.DBService(config.triggers.db);
@@ -212,3 +265,20 @@ exports.engines = engines;
 var flowExport = exports.flowExport = {
   filename: 'flogo.export.json'
 };
+
+function setConfiguration(newSettings) {
+  var settings = _lodash2.default.cloneDeep(newSettings);
+
+  exports.config = config = _lodash2.default.assign({}, config, {
+    engine: settings.engine,
+    stateServer: settings.stateServer,
+    processServer: settings.flowServer,
+    flogoWeb: settings.db,
+    flogoWebActivities: settings.activities,
+    flogoWebTriggers: settings.triggers
+  });
+}
+
+function resetConfiguration() {
+  exports.config = config = _lodash2.default.cloneDeep(originalConfig);
+}

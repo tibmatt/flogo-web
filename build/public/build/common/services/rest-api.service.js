@@ -9,9 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var mocks_1 = require('../mocks');
 var http_1 = require('@angular/http');
-var utils_1 = require('../utils');
 var RESTAPIService = (function () {
     function RESTAPIService(http) {
         var _this = this;
@@ -32,7 +30,7 @@ var RESTAPIService = (function () {
                         'Accept': 'application/json'
                     });
                     var options = new http_1.RequestOptions({ headers: headers });
-                    return _this.http.get(state['flowUri'], options)
+                    return _this.http.get('/v1/api/flows/run/flows/' + newFlowID, options)
                         .toPromise()
                         .then(function (rsp) {
                         if (rsp.text()) {
@@ -84,7 +82,7 @@ var RESTAPIService = (function () {
                             'Accept': 'application/json'
                         });
                         var options = new http_1.RequestOptions({ headers: headers });
-                        return _this.http.post(utils_1.getEngineURL() + "/flow/restart", body, options)
+                        return _this.http.post("/v1/api/flows/run/restart", body, options)
                             .toPromise()
                             .then(function (rsp) {
                             if (rsp.text()) {
@@ -104,7 +102,7 @@ var RESTAPIService = (function () {
                     'Accept': 'application/json'
                 });
                 var options = new http_1.RequestOptions({ headers: headers });
-                return _this.http.get(utils_1.getStateServerURL() + "/instances/" + id, options)
+                return _this.http.get("/v1/api/flows/run/instances/" + id, options)
                     .toPromise()
                     .then(function (rsp) {
                     if (rsp.text()) {
@@ -120,7 +118,7 @@ var RESTAPIService = (function () {
                     'Accept': 'application/json'
                 });
                 var options = new http_1.RequestOptions({ headers: headers });
-                return _this.http.get(utils_1.getStateServerURL() + "/instances/" + id + "/steps", options)
+                return _this.http.get("/v1/api/flows/run/instances/" + id + "/steps", options)
                     .toPromise()
                     .then(function (rsp) {
                     if (rsp.text()) {
@@ -136,7 +134,7 @@ var RESTAPIService = (function () {
                     'Accept': 'application/json'
                 });
                 var options = new http_1.RequestOptions({ headers: headers });
-                return _this.http.get(utils_1.getStateServerURL() + "/instances/" + id + "/status", options)
+                return _this.http.get("/v1/api/flows/run/instances/" + id + "/status", options)
                     .toPromise()
                     .then(function (rsp) {
                     if (rsp.text()) {
@@ -152,7 +150,7 @@ var RESTAPIService = (function () {
                     'Accept': 'application/json'
                 });
                 var options = new http_1.RequestOptions({ headers: headers });
-                return _this.http.get(utils_1.getStateServerURL() + "/instances/" + instanceID + "/snapshot/" + snapshotID, options)
+                return _this.http.get("/v1/api/flows/run/instances/" + instanceID + "/snapshot/" + snapshotID, options)
                     .toPromise()
                     .then(function (rsp) {
                     if (rsp.text()) {
@@ -184,58 +182,11 @@ var RESTAPIService = (function () {
                 });
             }
         };
-        this._initActivities();
         this.engine = {
             restart: function () {
             }
         };
     }
-    RESTAPIService.prototype._initActivities = function () {
-        var _this = this;
-        var activities = mocks_1.MOCK_TASKS.map(function (activity, index) { return Object.assign({ isInstalled: index < 2, version: '0.0.1' }, activity); });
-        var getCopy = function (arr) { return arr.map(function (activity) { return Object.assign({}, activity); }); };
-        var self = this;
-        this.activities = {
-            getAll: function () {
-                return Promise.resolve(getCopy(activities));
-            },
-            getInstalled: function () {
-                var installed = activities.filter(function (activity) { return activity.isInstalled; });
-                return Promise.resolve(getCopy(installed));
-            },
-            getAvailableToInstall: function () {
-                var available = activities.filter(function (activity) { return !activity.isInstalled; });
-                return Promise.resolve(getCopy(available));
-            },
-            install: function (activitiesToInstall) {
-                var installMap = activitiesToInstall.reduce(function (map, a) {
-                    map[a.name] = a.version || '0.0.1';
-                    return map;
-                }, {});
-                activities
-                    .filter(function (activity) {
-                    return installMap[activity.name] && installMap[activity.name] == activity.version;
-                })
-                    .forEach(function (activity) { return activity.isInstalled = true; });
-                return self.activities.getInstalled();
-            },
-            uninstall: function () {
-                console.warn('Not implemented yet');
-            }
-        };
-        this.activities.get = function () {
-            if (!status) {
-                return _this.activities.getAll();
-            }
-            else if (status == 'installed') {
-                return _this.activities.getInstalled();
-            }
-            else if (status == 'none') {
-                return _this.activities.getAvailableToInstall();
-            }
-            throw new Error("Unknown option \"" + status + "\"");
-        };
-    };
     RESTAPIService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])

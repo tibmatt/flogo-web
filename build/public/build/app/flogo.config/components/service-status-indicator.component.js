@@ -28,7 +28,7 @@ var ServiceStatusIndicatorComponent = (function () {
             'offline': 'red',
             'unknown': 'orange'
         };
-        this.configChangeSubject = new Rx_1.BehaviorSubject(this.buildUrl());
+        this.configChangeSubject = new Rx_1.BehaviorSubject(this.urlConfig);
     }
     ServiceStatusIndicatorComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -38,11 +38,16 @@ var ServiceStatusIndicatorComponent = (function () {
             .interval(PING_INTERVAL_MS)
             .combineLatest(configChangeStream)
             .map(function (combined) { return combined[1]; })
-            .map(function (url) { return _this.http.get(url); })
+            .map(function (config) {
+            var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+            var options = new http_1.RequestOptions({ headers: headers });
+            var body = JSON.stringify({ config: config });
+            return _this.http.post('/v1/api/ping/service', body, options);
+        })
             .switch()
             .catch(function (error) {
             _this.statusCode = error.status;
-            if (error.status != 200) {
+            if (error.status != 500) {
                 _this.status = 'online-warning';
             }
             else {
@@ -57,7 +62,7 @@ var ServiceStatusIndicatorComponent = (function () {
         });
     };
     ServiceStatusIndicatorComponent.prototype.ngDoCheck = function () {
-        this.configChangeSubject.next(this.buildUrl());
+        this.configChangeSubject.next(this.urlConfig);
     };
     ServiceStatusIndicatorComponent.prototype.ngOnDestroy = function () {
         console.log('Destroying', this.buildUrl());

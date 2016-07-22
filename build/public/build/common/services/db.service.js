@@ -11,9 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var utils_1 = require('../utils');
 var utils_2 = require('../utils');
+var configuration_service_1 = require('../../common/services/configuration.service');
 var FlogoDBService = (function () {
-    function FlogoDBService(_ngZone) {
+    function FlogoDBService(_ngZone, _configurationService) {
         this._ngZone = _ngZone;
+        this._configurationService = _configurationService;
         this.PREFIX_AUTO_GENERATE = 'auto-generate-id';
         this.FLOW = 'flows';
         this.DIAGRAM = 'diagram';
@@ -28,10 +30,12 @@ var FlogoDBService = (function () {
             }
         });
     }
+    FlogoDBService.prototype.ngOnInit = function () {
+    };
     FlogoDBService.prototype._initDB = function () {
-        var appDBConfig = window.FLOGO_GLOBAL.db;
-        var activitiesDBConfig = window.FLOGO_GLOBAL.activities.db;
-        var triggersDBConfig = window.FLOGO_GLOBAL.triggers.db;
+        var appDBConfig = this._configurationService.configuration.db;
+        var activitiesDBConfig = this._configurationService.configuration.activities.db;
+        var triggersDBConfig = this._configurationService.configuration.triggers.db;
         this._activitiesDB = new PouchDB(utils_1.getDBURL(activitiesDBConfig));
         this._activitiesDB.info().then(function (db) {
             console.log('[DB] Activities: ', db);
@@ -183,7 +187,7 @@ var FlogoDBService = (function () {
     FlogoDBService.prototype.getActivities = function (limit) {
         var _this = this;
         if (limit === void 0) { limit = 200; }
-        var activitiesDBConfig = window.FLOGO_GLOBAL.activities.db;
+        var activitiesDBConfig = this._configurationService.configuration.activities.db;
         return PouchDB.sync(activitiesDBConfig.name + "-local", utils_1.getDBURL(activitiesDBConfig), {
             live: false,
             retry: true
@@ -195,7 +199,12 @@ var FlogoDBService = (function () {
             })
                 .then(function (docs) {
                 return _.map(_.filter(docs.rows, function (doc) { return !_.isEmpty(_.get(doc, 'doc.schema', '')); }), function (doc) {
-                    return utils_1.activitySchemaToTask(doc.doc.schema);
+                    console.log('activity doc', doc);
+                    return _.assign(utils_1.activitySchemaToTask(doc.doc.schema), {
+                        author: _.get(doc, 'doc.author'),
+                        where: _.get(doc, 'doc.where'),
+                        installed: true
+                    });
                 });
             });
         })
@@ -213,7 +222,7 @@ var FlogoDBService = (function () {
     FlogoDBService.prototype.getTriggers = function (limit) {
         var _this = this;
         if (limit === void 0) { limit = 200; }
-        var triggersDBConfig = window.FLOGO_GLOBAL.triggers.db;
+        var triggersDBConfig = this._configurationService.configuration.triggers.db;
         return PouchDB.sync(triggersDBConfig.name + "-local", utils_1.getDBURL(triggersDBConfig), {
             live: false,
             retry: true
@@ -225,7 +234,12 @@ var FlogoDBService = (function () {
             })
                 .then(function (docs) {
                 return _.map(_.filter(docs.rows, function (doc) { return !_.isEmpty(_.get(doc, 'doc.schema', '')); }), function (doc) {
-                    return utils_2.activitySchemaToTrigger(doc.doc.schema);
+                    console.log('trigger doc', doc);
+                    return _.assign(utils_2.activitySchemaToTrigger(doc.doc.schema), {
+                        author: _.get(doc, 'doc.author'),
+                        where: _.get(doc, 'doc.where'),
+                        installed: true
+                    });
                 });
             });
         })
@@ -236,7 +250,7 @@ var FlogoDBService = (function () {
     };
     FlogoDBService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [core_1.NgZone])
+        __metadata('design:paramtypes', [core_1.NgZone, configuration_service_1.ConfigurationService])
     ], FlogoDBService);
     return FlogoDBService;
 }());

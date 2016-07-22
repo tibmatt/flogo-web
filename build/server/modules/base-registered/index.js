@@ -33,6 +33,8 @@ var _utils = require('../../common/utils');
 
 var _appConfig = require('../../config/app-config');
 
+var _constants = require('../../common/constants');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40,7 +42,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var execSync = require('child_process').execSync;
 
 var COMPONENT_TYPE = ["trigger", "activity", "model"];
-var UI_FOLDER_NAME = 'ui';
 
 // default options
 var defaultOptions = {
@@ -118,24 +119,10 @@ var BaseRegistered = exports.BaseRegistered = function () {
       });
     }
   }, {
-    key: 'generateID',
-    value: function generateID(name, version) {
-      // console.log("generateActivityID, arguments: ", arguments);
-      name = _lodash2.default.kebabCase(name);
-      // console.log("name: ", name);
-      // TODO need to think about how to versionable activity
-      version = _lodash2.default.kebabCase(version);
-      // console.log("version: ", version);
-      // let id = this.ACTIVITIES+this.DELIMITER+name+this.DELIMITER+version;
-      var id = name;
-      //console.log("generateID, id: ", id);
-      return id;
-    }
+    key: 'watch',
+
 
     // watch the activities
-
-  }, {
-    key: 'watch',
     value: function watch() {
       var _this2 = this;
 
@@ -254,14 +241,14 @@ var BaseRegistered = exports.BaseRegistered = function () {
             var design_package_json = null;
             var value = null;
 
-            // TODO need to improve, provide more good way
+            // TODO need to improve, provide better way
 
-            if ((0, _utils.isExisted)(_path2.default.join(itemPath, UI_FOLDER_NAME, 'package.json'))) {
-              design_package_json = _path2.default.join(itemPath, UI_FOLDER_NAME, 'package.json');
-              value = _path2.default.join(itemPath, UI_FOLDER_NAME);
-            } else if ((0, _utils.isExisted)(_path2.default.join(itemPath, 'src', UI_FOLDER_NAME, 'package.json'))) {
-              design_package_json = _path2.default.join(itemPath, 'src', UI_FOLDER_NAME, 'package.json');
-              value = _path2.default.join(itemPath, 'src', UI_FOLDER_NAME);
+            if ((0, _utils.isExisted)(_path2.default.join(itemPath, _constants.DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))) {
+              design_package_json = _path2.default.join(itemPath, _constants.DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
+              value = _path2.default.join(itemPath, _constants.DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
+            } else if ((0, _utils.isExisted)(_path2.default.join(itemPath, 'src', _constants.DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))) {
+              design_package_json = _path2.default.join(itemPath, 'src', _constants.DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
+              value = _path2.default.join(itemPath, 'src', _constants.DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
             } else {
               console.log("[Warning] didn't find design time for this activity");
             }
@@ -296,11 +283,18 @@ var BaseRegistered = exports.BaseRegistered = function () {
       return new Promise(function (resolve, reject) {
         console.log("[debug]updateDB");
         // update activity package.json
-        var packageJSON = _lodash2.default.cloneDeep(_this7.packageJSONTemplate);
-        packageJSON = _this7.updatePackageJSON(_this7._options.defaultPath, _this7._options.defaultConfig, packageJSON);
-        packageJSON = _this7.updatePackageJSON(_this7._options.customPath, _this7._options.customConfig, packageJSON);
-        // console.log(packageJSON);
-        var dependencies = packageJSON.dependencies;
+        var dependencies = void 0;
+        if (!process.env['FLOGO_NO_ENGINE_RECREATION']) {
+          var packageJSON = _lodash2.default.cloneDeep(_this7.packageJSONTemplate);
+          packageJSON = _this7.updatePackageJSON(_this7._options.defaultPath, _this7._options.defaultConfig, packageJSON);
+          packageJSON = _this7.updatePackageJSON(_this7._options.customPath, _this7._options.customConfig, packageJSON);
+          // console.log(packageJSON);
+          dependencies = packageJSON.dependencies;
+        } else {
+          var existingPackageJSON = JSON.parse(_fs2.default.readFileSync(_path2.default.join(_this7._packageJSONFolderPath, 'node_modules', key, 'package.json'), 'utf8'));
+          dependencies = existingPackageJSON && existingPackageJSON.dependencies ? existingPackageJSON.dependencies : {};
+        }
+
         // new activities generate from package.json
         var items = {};
 
@@ -314,94 +308,27 @@ var BaseRegistered = exports.BaseRegistered = function () {
             // console.log("packageJSON: ", packageJSON);
             // console.log("schemaJSON: ", schemaJSON);
 
-            var id = _this7.generateID(key, packageJSON.version);
+            var id = BaseRegistered.generateID(key, packageJSON.version);
             console.log("id: ", id);
 
-            var item = {
-              _id: id,
+            items[id] = BaseRegistered.constructItem({
+              'id': id,
               'where': _this7._where[key],
               'name': key,
               'version': packageJSON.version,
               'description': packageJSON.description,
               'keywords': packageJSON.keywords || [],
+              'author': packageJSON.author,
               'schema': schemaJSON
-            };
-
-            items[id] = item;
+            });
           });
 
           // console.log("!!!!!!!!activityDocs: ", activityDocs);
 
-          _this7.dbService.db.allDocs({ include_docs: true }).then(function (docs) {
-            // console.log("============ - docs: ", docs);
-            var rows = docs.rows || [];
-            var activities = [];
-
-            rows.forEach(function (item, index) {
-              if (item && item.doc) {
-                activities.push(item.doc);
-              }
-            });
-            // update or remove activity
-            activities.forEach(function (activity, index) {
-              var newActivity = items[activity['_id']];
-              // console.log("activity['id']: ", activity['id']);
-              // console.log("**********newActivity: ", newActivity);
-              // if this activity cannot find in activityDocs generate from package.json, then need to remove it
-              if (!newActivity) {
-                // console.log("[Remove]activity: ", activity);
-                _this7.dbService.db.remove(activity).then(function (response) {
-                  console.log("[info]delete activity success. ", response);
-                }).catch(function (err) {
-                  console.error("[error]delete activity fail. ", err);
-                });
-              } else {
-                // When we update an activity, we will use new activity to overwrite the old one. This is because, user maybe in new activity delete some value,
-                // copy the some value from current activity in DB
-                newActivity['_id'] = activity['_id'];
-                newActivity['_rev'] = activity['_rev'];
-                newActivity.created_at = activity.created_at;
-                newActivity.updated_at = new Date().toISOString();
-                // update this activity in DB
-                _this7.dbService.db.put(_lodash2.default.cloneDeep(newActivity)).then(function (response) {
-                  console.log("Update activity success: ", response);
-                }).catch(function (err) {
-                  console.log("Update activity error: ", err);
-                });
-                // delete this activity
-                delete items[activity['_id']];
-              }
-            });
-
-            //console.log("@@@@@@@@@[items]: ", items);
-
-            var PromiseAll = [];
-
-            // Rest activities should be new activity
-            _lodash2.default.forOwn(items, function (activity, index) {
-              activity.created_at = new Date().toISOString();
-              // add this activity in DB
-              var promise = new Promise(function (res, rej) {
-                _this7.dbService.db.put(activity).then(function (response) {
-                  console.log("Add activity success: ", response);
-                  res(response);
-                }).catch(function (err) {
-                  console.log("Add activity error: ", err);
-                  rej(err);
-                });
-              });
-              PromiseAll.push(promise);
-            });
-
-            Promise.all(PromiseAll).then(function () {
-              resolve(true);
-            }).catch(function (err) {
-              reject(err);
-            });
-          }).catch(function (err) {
-            console.log("[error]Get all activities fail. ", err);
-            reject(err);
-          });
+          BaseRegistered.saveItems(_this7.dbService, items).then(function (result) {
+            console.log('[info] updateDB done.');
+            return result;
+          }).then(resolve).catch(reject);
         }).catch(function (err) {
           console.error("[error]Install error. ", err);
           reject(err);
@@ -455,6 +382,138 @@ var BaseRegistered = exports.BaseRegistered = function () {
     key: 'dbService',
     get: function get() {
       return this._dbService;
+    }
+  }], [{
+    key: 'generateID',
+    value: function generateID(name, version) {
+      // console.log("generateActivityID, arguments: ", arguments);
+      name = _lodash2.default.kebabCase(name);
+      // console.log("name: ", name);
+      // TODO need to think about how to versionable activity
+      version = _lodash2.default.kebabCase(version);
+      // console.log("version: ", version);
+      // let id = this.ACTIVITIES+this.DELIMITER+name+this.DELIMITER+version;
+      var id = name;
+      //console.log("generateID, id: ", id);
+      return id;
+    }
+  }, {
+    key: 'constructItem',
+    value: function constructItem(opts) {
+      return {
+        _id: opts.id,
+        'where': opts.where,
+        'name': opts.name,
+        'version': opts.version,
+        'description': opts.description,
+        'keywords': opts.keywords || [],
+        'author': opts.author || 'Anonymous',
+        'schema': opts.schema
+      };
+    }
+  }, {
+    key: 'saveItems',
+    value: function saveItems(dbService, items, updateOnly) {
+      var _items = _lodash2.default.cloneDeep(items); // in order to avoid the changes on the given items.
+
+      // get all of the items in the given db
+      return dbService.db.allDocs({ include_docs: true }).then(function (docs) {
+        console.log('[info] Get all items.');
+        return docs;
+      })
+      // pre-process the docs
+      .then(function (docs) {
+        console.log('[info] pre-process the docs');
+        return _lodash2.default.map(docs.rows, function (row) {
+          return row && row.doc || null;
+        });
+      }).then(function (itemDocs) {
+        return _lodash2.default.filter(itemDocs, function (itemDoc) {
+          return !_lodash2.default.isNull(itemDoc);
+        });
+      })
+
+      // update or remove item
+      // `updateOnly` will skip the `remove other items` part.
+      .then(function (oldItems) {
+
+        console.log('[info] update or remove item');
+
+        return Promise.all(_lodash2.default.map(oldItems, function (oldItem) {
+
+          var newItem = _items[oldItem['_id']];
+
+          // if this item cannot be found in the activityDocs generated from package.json, then need to be removed
+          if (!newItem) {
+            if (updateOnly) {
+              console.log('[info] ignore exist item [' + oldItem['where'] + '] for updating only.');
+              return null;
+            }
+            return dbService.db.remove(oldItem).then(function (result) {
+              console.log('[info] delete item [' + oldItem['where'] + '] success.');
+              return result;
+            }).catch(function (err) {
+              console.error("[error] delete item fail.", err);
+              throw err;
+            });
+          } else {
+            // update the item.
+
+            // When updating an item, the old one will be overwritten,
+            // since the user maybe delete some value in the new one.
+
+            // copy the some value from current activity in DB
+            newItem['_id'] = oldItem['_id'];
+            newItem['_rev'] = oldItem['_rev'];
+            newItem.created_at = oldItem.created_at;
+            newItem.updated_at = new Date().toISOString();
+
+            // update this item in DB
+            return dbService.db.put(_lodash2.default.cloneDeep(newItem)).then(function (response) {
+              console.log('[info] Update item [' + newItem['where'] + '] success.');
+              return response;
+            }).then(function (result) {
+              // delete this item from the given list.
+              delete _items[oldItem['_id']];
+              return result;
+            }).catch(function (err) {
+              console.log('[error] Update item [' + newItem['where'] + '] error: ', err);
+              throw err;
+            });
+          }
+        }));
+      })
+      // filter undefined && null
+      .then(function () {
+        return _lodash2.default.filter(_items, function (_item) {
+          return !_lodash2.default.isNil(_items);
+        });
+      })
+
+      // add new items
+      .then(function (newItems) {
+        console.log('[info] add new items');
+
+        return Promise.all(_lodash2.default.map(newItems, function (newItem) {
+          newItem.created_at = new Date().toISOString();
+
+          return dbService.db.put(newItem).then(function (response) {
+            console.log('[info] Add item [' + newItem['where'] + '] success.');
+            return response;
+          }).catch(function (err) {
+            console.log('[error] Add item [' + newItem['where'] + '] error: ', err);
+            throw err;
+          });
+        }));
+      })
+
+      // done with true
+      .then(function () {
+        return true;
+      }).catch(function (err) {
+        console.error('Error in saveItems:\n' + err);
+        throw err;
+      });
     }
   }]);
 

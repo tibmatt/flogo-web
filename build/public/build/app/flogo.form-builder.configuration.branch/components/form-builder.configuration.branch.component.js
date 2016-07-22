@@ -20,6 +20,8 @@ var FlogoFormBuilderConfigurationBranchComponent = (function () {
         this._commonService = _commonService;
     }
     FlogoFormBuilderConfigurationBranchComponent.prototype.ngOnInit = function () {
+    };
+    FlogoFormBuilderConfigurationBranchComponent.prototype.ngOnChanges = function (change) {
         this.fields = this._attributes;
     };
     FlogoFormBuilderConfigurationBranchComponent.prototype.getBranchInfo = function (branchInfo) {
