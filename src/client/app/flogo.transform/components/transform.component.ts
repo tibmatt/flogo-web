@@ -9,6 +9,7 @@ import {MapEditorComponent} from './map-editor.component';
 import {VisualMapperComponent} from './visual-mapper.component';
 import {ErrorDisplayComponent} from './error-display.component';
 import {HelpComponent} from "./help.component";
+import {TransformMapperComponent} from './transform-mapper.component';
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
@@ -25,7 +26,7 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent],
+  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent, TransformMapperComponent],
   moduleId: module.id,
   styleUrls: ['transform.component.css'],
   templateUrl: 'transform.tpl.html',
