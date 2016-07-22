@@ -1,7 +1,6 @@
 <div class="">
-    Hello
-    <div *ngFor="let input of tileInfo.attributes">
-        <flogo-transform-mapper-field></flogo-transform-mapper-field>
+    <div *ngFor="let tile of tileInputInfo">
+        <flogo-transform-mapper-field [tile]="tile" [preceding]="precedingTilesOutputs"></flogo-transform-mapper-field>
         <!--
         <flogo-transform-visual-mapper  [mappings]="data.mappings"
                                         [tileInputInfo]="input"

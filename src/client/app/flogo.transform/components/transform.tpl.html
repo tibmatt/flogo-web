@@ -55,8 +55,10 @@
                                     [precedingTilesOutputs]="data.precedingTilesOutputs"
                                     (mappingChange)="onMappingsChange($event)"></flogo-transform-mapper>
           </div>
+          <!-- graphic -->
+
+          <!--
           <div>
-            <!-- graphic -->
             <div *ngFor="let input of data.tileInputInfo">
                 <flogo-transform-visual-mapper  [mappings]="data.mappings"
                                                 [tileInputInfo]="input"
@@ -64,6 +66,8 @@
                                                 (mappingChange)="onMappingsChange($event)"  ></flogo-transform-visual-mapper>
             </div>
           </div>
+          -->
+
         </div>
       </div>
       <div class="col">

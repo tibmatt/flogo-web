@@ -15,13 +15,13 @@
     </div>
 
     <div class="flogo-visual-mapper__item__list" [class.flogo-visual-mapper__item__list--selectedvalue]="selectedValue">
-        <ul *ngFor="let output of outputs" [hidden]="!showList">
-            <li class="">{{output.name}}</li>
-            <ul>
-                <li class=""
-                    *ngFor="let field of output.fields" (click)="clickField(output, field)">{{output.name}}.{{field.name}} </li>
-            </ul>
-        </ul>
-    </div>
+<ul *ngFor="let output of outputs" [hidden]="!showList">
+    <li class="">{{output.name}}</li>
+    <ul>
+        <li class=""
+            *ngFor="let field of output.fields" (click)="clickField(output, field)">{{output.name}}.{{field.name}} </li>
+    </ul>
+</ul>
+</div>
 
 </div>

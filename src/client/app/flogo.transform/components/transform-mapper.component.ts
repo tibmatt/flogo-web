@@ -11,8 +11,7 @@ import {TransformMapperField} from './transform-mapper-field.component';
     templateUrl: 'transform-mapper.tpl.html',
     styleUrls: ['transform-mapper.component.css']
 })
-
-export class TransformMapperComponent {
+export class TransformMapperComponent implements OnChanges {
     @Output() mappingChange:EventEmitter<any>;
     @Input() mappings:any = '';
 
@@ -32,18 +31,23 @@ export class TransformMapperComponent {
     }
 
     ngOnChanges(changes:any) {
-        debugger;
+
         if (changes.mappings) {
             this.onMappingsChange(changes.mappings);
         }
 
         if (changes.tileInputInfo && this.tileInputInfo) {
             this.tileInfo.attributes = this.extractInputs(this.tileInputInfo);
+
+
         }
 
         if (changes.precedingTilesOutputs && this.precedingTilesOutputs) {
             this.tileInfo.precedingOutputs = this.extractPrecedingOutputs(this.precedingTilesOutputs);
         }
+
+
+
 
     }
 
