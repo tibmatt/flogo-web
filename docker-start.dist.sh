@@ -6,17 +6,17 @@ cd /tmp/flogo-web
 
 
 ## setup GIT
-echo "Username is $GIT_USERNAME and PASSWORD is $GIT_PASSWORD"
-git config --global credential.helper store
-git remote add origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-contrib.git
-git remote add origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-cli.git
+#echo "Username is $GIT_USERNAME and PASSWORD is $GIT_PASSWORD"
+#git config --global credential.helper store
+#git remote add origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-contrib.git
+#git remote add origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-cli.git
 
 ## Go get Flogo-CLI
-echo "Getting flogo-cli"
-cd $GOPATH/src
-echo "CLONING flogo-cli"
-git clone https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-cli.git
-go get -u github.com/TIBCOSoftware/flogo-cli/...
+#echo "Getting flogo-cli"
+#cd $GOPATH/src
+#echo "CLONING flogo-cli"
+#git clone https://$GIT_USERNAME:$GIT_PASSWORD@github.com/TIBCOSoftware/flogo-cli.git
+#go get -u github.com/TIBCOSoftware/flogo-cli/...
 
 #############################
 # start flogo-web
