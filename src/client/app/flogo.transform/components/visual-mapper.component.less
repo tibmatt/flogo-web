@@ -14,7 +14,10 @@
     //margin-bottom: 10px;
   }
 
-
+  .flogo-visual-mapper__item__remove {
+    flex: 0 0 5%;
+    cursor: pointer;
+  }
 
   .flogo-visual-mapper__item__output {
     flex: 0 0 60%;
@@ -22,8 +25,29 @@
     margin: 0 10px 0 0;
   }
 
+  .flogo-visual-mapper__item__output__text {
+    width: 80%;background-color: transparent;border:0
+  }
+
+  .flogo-visual-mapper__item__output__text:focus {
+    outline-width: 0;
+  }
+
+  /*
+  .flogo-visual-mapper__item:before {
+    //content: "\20ac";
+    font-family: "Glyphicons Halflings";
+    content: "\e088";
+    position: relative;
+    top: 5px;
+    color:red;
+    cursor: pointer;
+    //left: 7px;
+  }
+  */
+
   .flogo-visual-mapper__item__input {
-    flex: 0 0 40%;
+    flex: 0 0 35%;
     //background-color: @color-input;
     background-color: #ccd0d8;
     color: #000;
@@ -38,6 +62,11 @@
 
   .flogo-visual-mapper__item__list li {
     cursor: pointer;
+  }
+
+  .flogo-visual-mapper__item__list--selectedvalue {
+    left: 30px;
+    position: relative;
   }
 
   .flogo-visual-mapper__item__output, .flogo-visual-mapper__item__input {

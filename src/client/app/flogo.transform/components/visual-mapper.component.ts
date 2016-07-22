@@ -59,5 +59,10 @@ export class VisualMapperComponent {
         this.input = changes.tileInputInfo.currentValue;
     }
 
+    clickRemove() {
+        this.selectedValue = '';
+        this.showList = false;
+    }
+
 
 }
