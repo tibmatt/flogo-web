@@ -2,9 +2,6 @@ version: '2'
 services:
   flogo-web:
       image: reldocker.tibco.com/flogo/flow-web:0.2alpha1
-      build:
-        context: .
-        dockerfile: Dockerfile
       ports:
         - "3010:3010"
         - "5984:5984"
