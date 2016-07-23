@@ -103,8 +103,13 @@ export class TransformComponent implements OnDestroy {
       this.removeError(change);
     }
 
-    this.fieldsConnections[change.field] = {value: change.value, field: change.field, hasError: change.hasError};
+    this.fieldsConnections[change.field] = {value: change.value, mapTo: change.field, hasError: change.hasError};
     this.isValid = this.checkIsValid();
+    this.isDirty = true;
+
+    if(this.isValid) {
+       this.data.result = this.getResult();
+    }
 
 
     /*
@@ -121,6 +126,24 @@ export class TransformComponent implements OnDestroy {
 
   }
 
+  getResult() {
+    let results:any[] = [];
+
+    for(var key in this.fieldsConnections) {
+      if(this.fieldsConnections.hasOwnProperty(key)) {
+        if(!this.fieldsConnections[key].hasError) {
+          results.push({
+            type: 1,
+            mapTo: this.fieldsConnections[key].mapTo,
+            value: this.fieldsConnections[key].value
+          });
+        }
+      }
+    }
+
+    return results;
+  }
+
   checkIsValid() {
     for(var key in this.fieldsConnections) {
       if(this.fieldsConnections.hasOwnProperty(key)) {
@@ -130,13 +153,13 @@ export class TransformComponent implements OnDestroy {
       }
     }
 
-    debugger;
     return true;
   }
 
 
 
   saveTransform() {
+    debugger;
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.data.tile,
