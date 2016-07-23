@@ -1,12 +1,23 @@
 <div class="flogo-visual-mapper">
 
+    <div class="alert alert-danger" role="alert" [hidden]="!hasError">{{messageError}}</div>
+
     <div class="flogo-visual-mapper__item">
         <div class="flogo-visual-mapper__item__remove" [hidden]="!selectedValue"><span class="glyphicon glyphicon-remove" (click)="clickRemove($event)" aria-hidden="true"></span></div>
         <div class="flogo-visual-mapper__item__output" [class.flogo-visual-mapper__item__output--connected]="selectedValue">
             <div>
+                <span   (click)="toggleList()"
+                        [hidden]="showList"
+                        class="glyphicon glyphicon-triangle-bottom flogo-visual-mapper__item__output__list__selector"></span>
+
+                 <span   (click)="toggleList()"
+                        [hidden]="!showList"
+                        class="glyphicon glyphicon-triangle-top flogo-visual-mapper__item__output__list__selector"></span>
+
+
                 <input type="text"  [(ngModel)]="selectedValue"
-                       (focus)="focusInputText($event)" (keyup)="onKeyPress($event)"
-                       (keyup)="onChangeText($event.target)"
+                       (keyup)="onKeyPress($event)"
+                       (keyup)="onKeyUp($event.target)"
                        class="flogo-visual-mapper__item__output__text">
             </div>
         </div>
@@ -14,7 +25,6 @@
         <div class="flogo-visual-mapper__item__input"
              [class.flogo-visual-mapper__item__input--connected]="selectedValue != ''">{{tile.name}}</div>
     </div>
-    <div class="alert alert-danger" role="alert" [hidden]="!hasError">Invalid field</div>
     <div class="flogo-visual-mapper__item__list" [class.flogo-visual-mapper__item__list--selectedvalue]="selectedValue">
         <ul *ngFor="let tile of tiles" [hidden]="!showList">
             <li class="">{{tile.name}}</li>
