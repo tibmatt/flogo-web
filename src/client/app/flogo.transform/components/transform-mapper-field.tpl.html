@@ -1,6 +1,6 @@
 <div class="flogo-visual-mapper">
 
-    <div class="alert alert-danger" role="alert" [hidden]="!hasError">{{messageError}}</div>
+    <!--<div class="alert alert-danger" role="alert" [hidden]="!hasError">{{messageError}}</div>-->
 
     <div class="flogo-visual-mapper__item">
         <div class="flogo-visual-mapper__item__remove" [hidden]="!selectedValue"><span class="glyphicon glyphicon-remove" (click)="clickRemove($event)" aria-hidden="true"></span></div>
@@ -17,7 +17,7 @@
 
                 <input type="text"  [(ngModel)]="selectedValue"
                        (keyup)="onKeyPress($event)"
-                       (keyup)="onKeyUp($event.target)"
+                       (keyup)="onKeyUp($event.target.value)"
                        class="flogo-visual-mapper__item__output__text">
             </div>
         </div>

@@ -32,7 +32,7 @@ interface TransformData {
   templateUrl: 'transform.tpl.html',
 })
 export class TransformComponent implements OnDestroy {
-
+  fieldsConnections:any[] = [];
   isValid:boolean;
   isDirty:boolean;
 
@@ -64,7 +64,50 @@ export class TransformComponent implements OnDestroy {
     this.cancelSubscriptions();
   }
 
+  removeError(change:any) {
+    this.errors = this.errors || {invalidMappings: {errors:[]}};
+    let index = this.errors.invalidMappings.errors.findIndex(function (item:any) {
+      return item.value.mapTo == change.field;
+    });
+
+    if(index !== -1) {
+      this.errors.invalidMappings.errors.splice(index,1);
+    }
+    if(this.errors.invalidMappings.errors.length == 0) {
+      this.errors = null;
+    }
+
+  }
+
+  updateErrors(change:any) {
+    let currentError = change.errors.invalidMappings.errors[0];
+    this.errors = this.errors || {invalidMappings: {errors:[]}};
+
+    if(change.errors.invalidMappings&&change.errors.invalidMappings.errors) {
+      let index = this.errors.invalidMappings.errors.findIndex(function (item:any) {
+        return item.value.mapTo == change.field;
+      });
+
+      if(index == -1) {
+        this.errors.invalidMappings.errors.push(currentError);
+      } else  {
+        this.errors.invalidMappings.errors[index] = currentError;
+      }
+    }
+  }
+
   onMappingsChange(change:any) {
+    if(change.hasError) {
+      this.updateErrors(change);
+    } else {
+      this.removeError(change);
+    }
+
+    this.fieldsConnections[change.field] = {value: change.value, field: change.field, hasError: change.hasError};
+    this.isValid = this.checkIsValid();
+
+
+    /*
     this.isValid = change.isValid;
     this.isDirty = change.isDirty;
 
@@ -74,8 +117,24 @@ export class TransformComponent implements OnDestroy {
     } else {
       this.errors = change.errors;
     }
+    */
 
   }
+
+  checkIsValid() {
+    for(var key in this.fieldsConnections) {
+      if(this.fieldsConnections.hasOwnProperty(key)) {
+        if(this.fieldsConnections[key].hasError) {
+          return  false;
+        }
+      }
+    }
+
+    debugger;
+    return true;
+  }
+
+
 
   saveTransform() {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {

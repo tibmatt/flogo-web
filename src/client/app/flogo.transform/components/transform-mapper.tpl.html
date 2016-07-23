@@ -5,12 +5,7 @@
                 [mappings]="mappings"
                 [tileInputInfo]="tileInputInfo"
                 [tileInfo]="tileInfo"
+                (mappingChange)="onMappingChange($event)"
                 [precedingTilesOutputs]="precedingTilesOutputs"></flogo-transform-mapper-field>
-        <!--
-        <flogo-transform-visual-mapper  [mappings]="data.mappings"
-                                        [tileInputInfo]="input"
-                                        [precedingTilesOutputs]="data.precedingTilesOutputs"
-                                        (mappingChange)="onMappingsChange($event)"  ></flogo-transform-visual-mapper>
-                                        -->
     </div>
 </div>

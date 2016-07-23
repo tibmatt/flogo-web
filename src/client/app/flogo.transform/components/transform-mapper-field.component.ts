@@ -14,27 +14,51 @@ export class TransformMapperField implements  OnChanges, OnInit {
     @Input() precedingTilesOutputs:any;
     @Input() tileInputInfo:any;
     @Input() tileInfo:any;
+    @Output() mappingChange:EventEmitter<any>;
+
     selectedValue:string = '';
     showList:boolean  = false;
     tiles:any[] = [];
     hasError:boolean = false;
     messageError:string = '';
+    errors:any;
 
+    constructor() {
+        this.mappingChange = new EventEmitter();
+    }
 
     ngOnInit() {
     }
 
-    onKeyUp(target:any) {
-        this.validateField(target.value);
+    onKeyUp(value:string) {
+      this.emitChange(value);
+    }
+
+    emitChange(value:string) {
+        this.validateField(value);
+
+        this.mappingChange.emit({
+            field: this.tile.name,
+            value:value,
+            hasError: this.hasError,
+            errors: this.errors
+        });
     }
 
     validateField(value:string) {
-        let errors:any = mappingsValidateField(this.tileInfo, this.wrapInJSON(value));
-        if(errors&&errors.invalidMappings) {
-            this.setError(true,this.getErrorMessage(errors.invalidMappings.errors || []) )
-        }else {
+        if(!value) {
             this.setError(false, '');
+        } else {
+
+          this.errors = mappingsValidateField(this.tileInfo, this.wrapInJSON(value));
+          if(this.errors&&this.errors.invalidMappings) {
+            this.setError(true,this.getErrorMessage(this.errors.invalidMappings.errors || []) )
+          }else {
+            this.setError(false, '');
+          }
         }
+
+
     }
 
     setError(hasError:boolean, message:string) {
@@ -82,14 +106,17 @@ export class TransformMapperField implements  OnChanges, OnInit {
 
     clickField(output, field) {
         this.selectedValue = output.name + '.' + field.name;
-        this.validateField(this.selectedValue);
+        //this.validateField(this.selectedValue);
+        this.emitChange(this.selectedValue);
         this.showList = false;
     }
 
     clickRemove() {
         this.selectedValue = '';
         this.showList = false;
+
         this.setError(false, '');
+        this.emitChange('');
     }
 
     wrapInJSON(value) {

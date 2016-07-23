@@ -88,5 +88,9 @@ export class TransformMapperComponent implements OnChanges {
         }, {}) : {};
     }
 
+    private onMappingChange(event) {
+        this.mappingChange.emit(event);
+    }
+
 
 }
