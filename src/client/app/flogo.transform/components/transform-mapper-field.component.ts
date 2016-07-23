@@ -9,14 +9,20 @@ import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angu
 })
 export class TransformMapperField implements  OnChanges, OnInit {
     @Input() tile:any;
-    @Input() preceding:any;
+    @Input() mappings:any;
+    @Input() precedingTilesOutputs:any;
+    @Input() tileInputInfo:any;
     selectedValue:string = '';
     showList:boolean  = false;
     tiles:any[] = [];
+    hasError:boolean = false;
 
 
     ngOnInit() {
+    }
 
+    onChangeText(event) {
+        debugger;
     }
 
     precedingTilesToArray(precedingTiles:any) {
@@ -31,9 +37,10 @@ export class TransformMapperField implements  OnChanges, OnInit {
     }
 
     ngOnChanges(changes:any) {
+        debugger;
 
-        if(changes.preceding && this.tiles) {
-            this.tiles = this.precedingTilesToArray(changes.preceding.currentValue);
+        if(changes.precedingTilesOutputs && this.tiles) {
+            this.tiles = this.precedingTilesToArray(changes.precedingTilesOutputs.currentValue);
         }
 
     }

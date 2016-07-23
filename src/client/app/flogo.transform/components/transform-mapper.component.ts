@@ -13,10 +13,11 @@ import {TransformMapperField} from './transform-mapper-field.component';
 })
 export class TransformMapperComponent implements OnChanges {
     @Output() mappingChange:EventEmitter<any>;
-    @Input() mappings:any = '';
 
+    @Input() mappings:any = '';
     @Input() tileInputInfo:any = null;
     @Input() precedingTilesOutputs:any[] = [];
+
     transformationJSON:string = '';
 
     private tileInfo:TileInOutInfo = {
@@ -27,7 +28,6 @@ export class TransformMapperComponent implements OnChanges {
 
     constructor() {
         this.mappingChange = new EventEmitter();
-
     }
 
     ngOnChanges(changes:any) {
@@ -62,7 +62,6 @@ export class TransformMapperComponent implements OnChanges {
 
         if (!_.isEqual(mappingsChange.previousValue, nextValue) && !_.isEqual(nextValue, currentEditorValue)) {
             let stringified = JSON.stringify(nextValue || [], null, 2);
-            debugger;
             //##this.editor.updateValue(stringified, {onlySelf: true, emitEvent: false});
         }
     }

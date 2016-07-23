@@ -6,6 +6,7 @@
             <div>
                 <input type="text"  [(ngModel)]="selectedValue"
                        (focus)="focusInputText($event)" (keyup)="onKeyPress($event)"
+                       (keyup)="onChangeText($event.target)"
                        class="flogo-visual-mapper__item__output__text">
             </div>
         </div>
@@ -13,7 +14,7 @@
         <div class="flogo-visual-mapper__item__input"
              [class.flogo-visual-mapper__item__input--connected]="selectedValue != ''">{{tile.name}}</div>
     </div>
-
+    <div class="alert alert-danger" role="alert" [hidden]="!hasError">Invalid field</div>
     <div class="flogo-visual-mapper__item__list" [class.flogo-visual-mapper__item__list--selectedvalue]="selectedValue">
         <ul *ngFor="let tile of tiles" [hidden]="!showList">
             <li class="">{{tile.name}}</li>
