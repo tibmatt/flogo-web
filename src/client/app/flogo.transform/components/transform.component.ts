@@ -111,19 +111,6 @@ export class TransformComponent implements OnDestroy {
        this.data.result = this.getResult();
     }
 
-
-    /*
-    this.isValid = change.isValid;
-    this.isDirty = change.isDirty;
-
-    if (change.isValid) {
-      this.data.result = change.value;
-      this.errors = null;
-    } else {
-      this.errors = change.errors;
-    }
-    */
-
   }
 
   getResult() {
@@ -131,7 +118,7 @@ export class TransformComponent implements OnDestroy {
 
     for(var key in this.fieldsConnections) {
       if(this.fieldsConnections.hasOwnProperty(key)) {
-        if(!this.fieldsConnections[key].hasError) {
+        if(!this.fieldsConnections[key].hasError && this.fieldsConnections[key].value) {
           results.push({
             type: 1,
             mapTo: this.fieldsConnections[key].mapTo,
@@ -145,21 +132,25 @@ export class TransformComponent implements OnDestroy {
   }
 
   checkIsValid() {
+    let hasNonEmpty:boolean = false;
+
     for(var key in this.fieldsConnections) {
       if(this.fieldsConnections.hasOwnProperty(key)) {
         if(this.fieldsConnections[key].hasError) {
           return  false;
         }
+        if(this.fieldsConnections[key].value) {
+          hasNonEmpty = true;
+        }
       }
     }
 
-    return true;
+    return hasNonEmpty;
   }
 
 
 
   saveTransform() {
-    debugger;
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.data.tile,

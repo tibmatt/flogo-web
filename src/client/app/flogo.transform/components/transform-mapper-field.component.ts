@@ -88,6 +88,16 @@ export class TransformMapperField implements  OnChanges, OnInit {
 
     ngOnChanges(changes:any) {
 
+        let mapping = this.mappings.find((item) => {
+            return item.mapTo == this.tile.name;
+        });
+
+        if(mapping) {
+            this.selectedValue = mapping.value;
+            this.emitChange(this.selectedValue);
+
+        }
+
         if(changes.precedingTilesOutputs && this.tiles) {
             this.tiles = this.precedingTilesToArray(changes.precedingTilesOutputs.currentValue);
         }
@@ -106,7 +116,6 @@ export class TransformMapperField implements  OnChanges, OnInit {
 
     clickField(output, field) {
         this.selectedValue = output.name + '.' + field.name;
-        //this.validateField(this.selectedValue);
         this.emitChange(this.selectedValue);
         this.showList = false;
     }
