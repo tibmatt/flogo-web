@@ -3,7 +3,7 @@
     <!--<div class="alert alert-danger" role="alert" [hidden]="!hasError">{{messageError}}</div>-->
 
     <div class="flogo-visual-mapper__item">
-        <div class="flogo-visual-mapper__item__remove" [hidden]="!selectedValue"><span class="glyphicon glyphicon-remove" (click)="clickRemove($event)" aria-hidden="true"></span></div>
+        <div class="flogo-visual-mapper__item__remove" title="Remove transformation" [hidden]="!selectedValue"><span class="glyphicon glyphicon-remove" (click)="clickRemove($event)" aria-hidden="true"></span></div>
         <div class="flogo-visual-mapper__item__output" [class.flogo-visual-mapper__item__output--connected]="selectedValue">
             <div>
                 <span   (click)="toggleList()"
@@ -23,7 +23,8 @@
         </div>
 
         <div class="flogo-visual-mapper__item__input"
-             [class.flogo-visual-mapper__item__input--connected]="selectedValue != ''">{{tile.name}}</div>
+             [class.flogo-visual-mapper__item__input--connected]="selectedValue != ''"
+             [style.color]="hasError ? 'red': 'black'">{{tile.name}}</div>
     </div>
     <div class="flogo-visual-mapper__item__list" [class.flogo-visual-mapper__item__list--selectedvalue]="selectedValue">
         <ul *ngFor="let tile of tiles" [hidden]="!showList">
