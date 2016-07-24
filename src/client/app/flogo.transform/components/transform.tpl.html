@@ -32,24 +32,13 @@
         </div>
         <pre class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ data.precedingTilesOutputs | json }}</pre>
       </div>
-      <div class="col editor-col" [class.has-error]="!isValid">
+      <div class="editor-col" [class.has-error]="!isValid">
+
         <div class="flogo-transform-modal__col-header">
-          <div class="flogo-transform-modal__col-header-title">
-            Transformation <flogo-transform-help></flogo-transform-help>
-          </div>
+          <div class="flogo-transform-modal__col-header-title">&nbsp;</div>
         </div>
+
         <div class="flogo-transform-modal__col-content">
-
-          <!--
-          <div class="flogo-transform-modal__editor-container">
-            <flogo-transform-map-editor [mappings]="data.mappings"
-                                        [tileInputInfo]="data.tileInputInfo"
-                                        [precedingTilesOutputs]="data.precedingTilesOutputs"
-                                        (mappingChange)="onMappingsChange($event)"></flogo-transform-map-editor>
-          </div>
-          -->
-
-
           <div>
             <flogo-transform-mapper [mappings]="data.mappings"
                                     [tileInputInfo]="data.tileInputInfo"
@@ -61,19 +50,6 @@
                <flogo-transform-error-display [errors]="errors"></flogo-transform-error-display>
               </div>
           </div>
-          <!-- graphic -->
-
-          <!--
-          <div>
-            <div *ngFor="let input of data.tileInputInfo">
-                <flogo-transform-visual-mapper  [mappings]="data.mappings"
-                                                [tileInputInfo]="input"
-                                                [precedingTilesOutputs]="data.precedingTilesOutputs"
-                                                (mappingChange)="onMappingsChange($event)"  ></flogo-transform-visual-mapper>
-            </div>
-          </div>
-          -->
-
         </div>
       </div>
       <div class="col">
