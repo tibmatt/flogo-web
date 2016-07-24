@@ -6,13 +6,9 @@ export function mappingsValidatorFactory(tileInfo:TileInOutInfo) {
   return mappingsValidator.bind(null, tileInfo);
 }
 
-export function mappingsValidator(tileInfo: TileInOutInfo, control:Control) : any {
+export function mappingsValidateField(tileInfo: TileInOutInfo, value: string) : any {
 
-  if(control.getError('invalidJson') || !control.value || _.isEmpty(control.value.trim())) {
-    return null;
-  }
-
-  let mappings = JSON.parse(control.value);
+  let mappings = JSON.parse(value);
   if (!_.isArray(mappings)) {
     return {
       notArray: true
@@ -20,7 +16,7 @@ export function mappingsValidator(tileInfo: TileInOutInfo, control:Control) : an
   }
 
   let allErrors : any[] = [];
-   mappings.forEach((mapping:any, index:number) => {
+  mappings.forEach((mapping:any, index:number) => {
     let errors : any[] = mappingValidator(tileInfo, mapping);
     if(errors) {
       allErrors.push({
@@ -37,6 +33,17 @@ export function mappingsValidator(tileInfo: TileInOutInfo, control:Control) : an
       errors: allErrors
     }
   };
+
+
+}
+
+export function mappingsValidator(tileInfo: TileInOutInfo, control:Control) : any {
+
+  if(control.getError('invalidJson') || !control.value || _.isEmpty(control.value.trim())) {
+    return null;
+  }
+
+  return mappingsValidateField(tileInfo, control.value);
 
 }
 

@@ -26,6 +26,10 @@ gulp.task('dev.client.watch', 'Watch client sources and execute the dev tasks wh
     path.join(CONFIG.paths.dist.public, 'app/**/*.js')
   ];
 
+  /*browserSync.reload*/
+
   return gulp.watch(files)
-    .on('change', browserSync.reload );
+    .on('change', function() {
+      console.log('please reload');
+    });
 });

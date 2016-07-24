@@ -1,0 +1,11 @@
+<div class="">
+    <div *ngFor="let tile of tileInputInfo">
+        <flogo-transform-mapper-field
+                [tile]="tile"
+                [mappings]="mappings"
+                [tileInputInfo]="tileInputInfo"
+                [tileInfo]="tileInfo"
+                (mappingChange)="onMappingChange($event)"
+                [precedingTilesOutputs]="precedingTilesOutputs"></flogo-transform-mapper-field>
+    </div>
+</div>

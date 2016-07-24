@@ -6,8 +6,10 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYP
 import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL} from '../constants';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 import {MapEditorComponent} from './map-editor.component';
+import {VisualMapperComponent} from './visual-mapper.component';
 import {ErrorDisplayComponent} from './error-display.component';
 import {HelpComponent} from "./help.component";
+import {TransformMapperComponent} from './transform-mapper.component';
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
@@ -24,13 +26,13 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent],
+  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent, TransformMapperComponent],
   moduleId: module.id,
   styleUrls: ['transform.component.css'],
   templateUrl: 'transform.tpl.html',
 })
 export class TransformComponent implements OnDestroy {
-
+  fieldsConnections:any[] = [];
   isValid:boolean;
   isDirty:boolean;
 
@@ -62,18 +64,91 @@ export class TransformComponent implements OnDestroy {
     this.cancelSubscriptions();
   }
 
-  onMappingsChange(change:any) {
-    this.isValid = change.isValid;
-    this.isDirty = change.isDirty;
+  removeError(change:any) {
+    this.errors = this.errors || {invalidMappings: {errors:[]}};
+    let index = this.errors.invalidMappings.errors.findIndex(function (item:any) {
+      return item.value.mapTo == change.field;
+    });
 
-    if (change.isValid) {
-      this.data.result = change.value;
+    if(index !== -1) {
+      this.errors.invalidMappings.errors.splice(index,1);
+    }
+    if(this.errors.invalidMappings.errors.length == 0) {
       this.errors = null;
-    } else {
-      this.errors = change.errors;
     }
 
   }
+
+  updateErrors(change:any) {
+    let currentError = change.errors.invalidMappings.errors[0];
+    this.errors = this.errors || {invalidMappings: {errors:[]}};
+
+    if(change.errors.invalidMappings&&change.errors.invalidMappings.errors) {
+      let index = this.errors.invalidMappings.errors.findIndex(function (item:any) {
+        return item.value.mapTo == change.field;
+      });
+
+      if(index == -1) {
+        this.errors.invalidMappings.errors.push(currentError);
+      } else  {
+        this.errors.invalidMappings.errors[index] = currentError;
+      }
+    }
+  }
+
+  onMappingsChange(change:any) {
+    if(change.hasError) {
+      this.updateErrors(change);
+    } else {
+      this.removeError(change);
+    }
+
+    this.fieldsConnections[change.field] = {value: change.value, mapTo: change.field, hasError: change.hasError};
+    this.isValid = this.checkIsValid();
+    this.isDirty = true;
+
+    if(this.isValid) {
+       this.data.result = this.getResult();
+    }
+
+  }
+
+  getResult() {
+    let results:any[] = [];
+
+    for(var key in this.fieldsConnections) {
+      if(this.fieldsConnections.hasOwnProperty(key)) {
+        if(!this.fieldsConnections[key].hasError && this.fieldsConnections[key].value) {
+          results.push({
+            type: 1,
+            mapTo: this.fieldsConnections[key].mapTo,
+            value: this.fieldsConnections[key].value
+          });
+        }
+      }
+    }
+
+    return results;
+  }
+
+  checkIsValid() {
+    let hasNonEmpty:boolean = false;
+
+    for(var key in this.fieldsConnections) {
+      if(this.fieldsConnections.hasOwnProperty(key)) {
+        if(this.fieldsConnections[key].hasError) {
+          return  false;
+        }
+        if(this.fieldsConnections[key].value) {
+          hasNonEmpty = true;
+        }
+      }
+    }
+
+    return hasNonEmpty;
+  }
+
+
 
   saveTransform() {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
