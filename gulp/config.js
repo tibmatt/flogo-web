@@ -1,7 +1,7 @@
 import path from 'path';
 
 const source = 'src';
-const dist = 'dist';
+const dist = process.env.DIST_BUILD ? 'dist/build' : 'dist';
 
 const sourcePaths = {
   root: source,
@@ -11,7 +11,6 @@ const sourcePaths = {
 };
 
 export const CONFIG = {
-  host: 'localhost:3010',
   paths: {
     source: sourcePaths,
     dist: {
@@ -30,6 +29,7 @@ export const CONFIG = {
     // directories that should be watched by running server so it restarts if something changes
     serverWatch: ['api', 'common', 'config', 'modules', 'server.js']
   },
+  host: 'localhost:3010',
   libs: {
     js: [
       'node_modules/es6-shim/es6-shim.js',

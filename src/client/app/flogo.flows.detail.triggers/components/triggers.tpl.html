@@ -9,7 +9,8 @@
 
   <!-- Search -->
 
-  <flogo-flows-detail-triggers-install></flogo-flows-detail-triggers-install>
+  <flogo-flows-detail-triggers-install
+    (flogoOnInstalled)="onInstalledAction($event)"></flogo-flows-detail-triggers-install>
 
   <ul class="flogo-common-edit-panel__tiles-list flogo-flows-detail-triggers__list">
       <li *ngFor="let trigger of triggers" class="flogo-common-edit-panel__tiles-list-trigger flogo-flows-detail-triggers__list__item"

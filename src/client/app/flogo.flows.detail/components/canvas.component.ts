@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouteConfig, RouterOutlet, RouteParams, Router } from '@angular/router-deprecated';
+import { RouteConfig, RouterOutlet, RouteParams, Router, CanActivate } from '@angular/router-deprecated';
 import {PostService} from '../../../common/services/post.service';
 import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
 import {FlogoFlowsDetail} from './flow-detail.component';
@@ -8,6 +8,7 @@ import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
+import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -48,6 +49,9 @@ import { FlogoModal } from '../../../common/services/modal.service';
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ]
 } )
+@CanActivate((next) => {
+  return isConfigurationLoaded();
+})
 
 @RouteConfig([
   {path:'/',    name: 'FlogoFlowsDetailDefault',   component: FlogoFlowsDetail, useAsDefault: true},

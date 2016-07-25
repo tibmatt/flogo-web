@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { FlogoDBService } from '../db.service';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { getEngineURL, getProcessServerURL } from '../../utils';
 
 @Injectable()
 export class RESTAPIFlowsService{
@@ -84,7 +83,7 @@ export class RESTAPIFlowsService{
     );
     let options = new RequestOptions( { headers : headers } );
 
-    return this.http.post( `${getProcessServerURL()}/flows`, body, options )
+    return this.http.post('/v1/api/flows/run/flows', body, options )
       .toPromise().then(
         ( response : Response ) => {
           if ( response.text() ) {
@@ -103,7 +102,7 @@ export class RESTAPIFlowsService{
   startFlow( id : string, data : any ) {
     let body = JSON.stringify(
       {
-        "flowUri" : `${getProcessServerURL()}/flows/${id}`,
+        "flowId" : id,
         "attrs" : data
       }
     );
@@ -118,7 +117,7 @@ export class RESTAPIFlowsService{
     let options = new RequestOptions( { headers : headers } );
 
 
-    return this.http.post( `${getEngineURL()}/flow/start`, body, options )
+    return this.http.post( '/v1/api/flows/run/flow/start', body, options )
       .toPromise()
       .then(
         rsp => {

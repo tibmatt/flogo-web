@@ -62,11 +62,13 @@ export class FlogoFormBuilderCommon {
         return {control:'FieldRadio'};
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
         return {control:'FieldTextArea'};
 
+      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
+        return {control:'FieldObject'};
+
       default:
-        return {control:'TextBox'};
+        return {control:'FieldTextBox'};
     }
 
   }

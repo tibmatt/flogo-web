@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MOCK_TASKS } from '../mocks';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { getEngineURL, getStateServerURL } from '../utils';
 
+/**
+ * Deprecated since most of the implementation is used for when working on the POC.
+ * Functionalities should be moved/migrated to ./src/client/common/services/restapi/*.services.ts
+ */
 @Injectable()
 export class RESTAPIService {
 
@@ -31,9 +34,7 @@ export class RESTAPIService {
         return this.instances.getSnapshot(id, snapshotID)
           .then(
             (state:any) => {
-
               // then restart from that state with data
-
               if ( newFlowID && curFlowID ) {
                 // replace the old flowURL with the newFlowID
                 let pattern = new RegExp( `flows/${curFlowID}` );
@@ -49,7 +50,7 @@ export class RESTAPIService {
 
               let options = new RequestOptions( { headers : headers } );
 
-              return this.http.get( state[ 'flowUri' ], options )
+              return this.http.get( '/v1/api/flows/run/flows/' + newFlowID , options )
                 .toPromise()
                 .then( ( rsp : any ) => {
                   if ( rsp.text() ) {
@@ -129,7 +130,7 @@ export class RESTAPIService {
 
                   let options = new RequestOptions( { headers : headers } );
 
-                  return this.http.post( `${getEngineURL()}/flow/restart`, body, options )
+                  return this.http.post( `/v1/api/flows/run/restart`, body, options )
                     .toPromise()
                     .then(
                       rsp => {
@@ -156,7 +157,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions( { headers : headers } );
 
-        return this.http.get( `${getStateServerURL()}/instances/${id}`, options )
+        return this.http.get( `/v1/api/flows/run/instances/${id}`, options )
           .toPromise()
           .then(
             rsp => {
@@ -177,7 +178,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`${getStateServerURL()}/instances/${id}/steps`, options)
+        return this.http.get(`/v1/api/flows/run/instances/${id}/steps`, options)
           .toPromise()
           .then(
             rsp => {
@@ -198,7 +199,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`${getStateServerURL()}/instances/${id}/status`, options)
+        return this.http.get(`/v1/api/flows/run/instances/${id}/status`, options)
           .toPromise()
           .then(
             rsp => {
@@ -221,7 +222,7 @@ export class RESTAPIService {
 
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(`${getStateServerURL()}/instances/${instanceID}/snapshot/${snapshotID}`, options)
+        return this.http.get(`/v1/api/flows/run/instances/${instanceID}/snapshot/${snapshotID}`, options)
           .toPromise()
           .then(
             rsp => {
@@ -261,7 +262,7 @@ export class RESTAPIService {
       }
     };
 
-    this._initActivities();
+    // this._initActivities();
 
     this.engine = {
       restart:()=>{
@@ -271,66 +272,66 @@ export class RESTAPIService {
   }
 
 
-  _initActivities() {
-
-    let activities = MOCK_TASKS.map((activity:any, index:number) => Object.assign({isInstalled: index < 2, version: '0.0.1'}, activity));
-    let getCopy = (arr:any[]) => arr.map((activity:any) => Object.assign({}, activity));
-
-    let self = this;
-    this.activities = {
-
-      getAll() {
-        return Promise.resolve(getCopy(activities));
-      },
-
-      getInstalled() {
-        let installed = activities.filter((activity:any) => activity.isInstalled);
-        return Promise.resolve(getCopy(installed));
-      },
-
-      getAvailableToInstall() {
-        let available = activities.filter((activity:any) => !activity.isInstalled);
-        return Promise.resolve(getCopy(available));
-      },
-
-      install(activitiesToInstall:{name:string, version:string}[]) {
-
-        let installMap = activitiesToInstall.reduce((map:any, a:any) => {
-          map[a.name] = a.version || '0.0.1';
-          return map;
-        }, {});
-
-        activities
-          .filter((activity:any) => {
-            return installMap[activity.name] && installMap[activity.name] == activity.version;
-          })
-          .forEach((activity:any) => activity.isInstalled = true);
-
-        return self.activities.getInstalled();
-
-      },
-
-      uninstall() {
-        console.warn('Not implemented yet');
-      }
-
-    };
-
-    this.activities.get = () => {
-
-      if (!status) {
-        return this.activities.getAll();
-      } else if (status == 'installed') {
-        return this.activities.getInstalled();
-      } else if (status == 'none') {
-        return this.activities.getAvailableToInstall();
-      }
-
-      throw new Error(`Unknown option "${status}"`);
-
-    }
-
-  }
+  // _initActivities() {
+  //
+  //   let activities = MOCK_TASKS.map((activity:any, index:number) => Object.assign({isInstalled: index < 2, version: '0.0.1'}, activity));
+  //   let getCopy = (arr:any[]) => arr.map((activity:any) => Object.assign({}, activity));
+  //
+  //   let self = this;
+  //   this.activities = {
+  //
+  //     getAll() {
+  //       return Promise.resolve(getCopy(activities));
+  //     },
+  //
+  //     getInstalled() {
+  //       let installed = activities.filter((activity:any) => activity.isInstalled);
+  //       return Promise.resolve(getCopy(installed));
+  //     },
+  //
+  //     getAvailableToInstall() {
+  //       let available = activities.filter((activity:any) => !activity.isInstalled);
+  //       return Promise.resolve(getCopy(available));
+  //     },
+  //
+  //     install(activitiesToInstall:{name:string, version:string}[]) {
+  //
+  //       let installMap = activitiesToInstall.reduce((map:any, a:any) => {
+  //         map[a.name] = a.version || '0.0.1';
+  //         return map;
+  //       }, {});
+  //
+  //       activities
+  //         .filter((activity:any) => {
+  //           return installMap[activity.name] && installMap[activity.name] == activity.version;
+  //         })
+  //         .forEach((activity:any) => activity.isInstalled = true);
+  //
+  //       return self.activities.getInstalled();
+  //
+  //     },
+  //
+  //     uninstall() {
+  //       console.warn('Not implemented yet');
+  //     }
+  //
+  //   };
+  //
+  //   this.activities.get = () => {
+  //
+  //     if (!status) {
+  //       return this.activities.getAll();
+  //     } else if (status == 'installed') {
+  //       return this.activities.getInstalled();
+  //     } else if (status == 'none') {
+  //       return this.activities.getAvailableToInstall();
+  //     }
+  //
+  //     throw new Error(`Unknown option "${status}"`);
+  //
+  //   }
+  //
+  // }
 
 
 }

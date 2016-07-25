@@ -81,6 +81,7 @@ Server Production Dependencies
 | performance-now | ^0.2.0 | https://github.com/meryn/performance-now | MIT | Implements performance.now (based on process.hrtime). |
 | pouchdb | ^5.3.1 | https://github.com/pouchdb/pouchdb#readme | Apache-2.0 | PouchDB is a pocket-sized database |
 | pouchdb-server | ^1.1.1 | https://github.com/pouchdb/pouchdb-server | [Apache License](https://github.com/pouchdb/pouchdb-server/blob/master/LICENSE) | A standalone REST interface server for PouchDB. |
+| semver | ^5.2.0 | https://github.com/npm/node-semver#readme | ISC | The semantic version parser used by npm. |
 
 
 Slack bot production Dependencies

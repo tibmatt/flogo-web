@@ -11,7 +11,8 @@
     <input class="flogo-input-search filter-box__input" type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks">
   </div>
 
-  <flogo-flows-detail-tasks-install></flogo-flows-detail-tasks-install>
+  <flogo-flows-detail-tasks-install
+    (flogoOnInstalled)="onInstalledAction($event)"></flogo-flows-detail-tasks-install>
 
   <ul class="flogo-common-edit-panel__tiles-list">
     <li class="flogo-common-edit-panel__tiles-list-tile" *ngFor="let task of filteredTasks"

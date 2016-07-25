@@ -13,6 +13,9 @@ import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { FlogoConfigComponent } from '../../flogo.config/components/config.component';
+import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
+import { ConfigurationService } from '../../../common/services/configuration.service';
+import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
 
 @Component({
   selector: 'flogo-app',
@@ -20,7 +23,7 @@ import { FlogoConfigComponent } from '../../flogo.config/components/config.compo
   templateUrl: 'flogo.tpl.html',
   styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
-  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS]
+  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService, ConfigurationService]
 })
 
 @RouteConfig([
@@ -47,7 +50,5 @@ import { FlogoConfigComponent } from '../../flogo.config/components/config.compo
 ])
 
 export class FlogoAppComponent{
-  constructor(){
-  }
-
+  constructor(){ }
 }

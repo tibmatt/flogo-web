@@ -1,5 +1,6 @@
-import {Component} from '@angular/core';
-import {ROUTER_DIRECTIVES, Router} from '@angular/router-deprecated';
+import {Component, Injector} from '@angular/core';
+import {ROUTER_DIRECTIVES, Router, CanActivate} from '@angular/router-deprecated';
+
 //import * as moment from 'moment';
 
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
@@ -12,6 +13,7 @@ import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
 import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
+import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 
 @Component({
   selector: 'flogo-flows',
@@ -21,7 +23,9 @@ import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flo
   directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
-
+@CanActivate((next) => {
+    return isConfigurationLoaded();
+})
 export class FlogoFlowsComponet{
     private _sub: any;
     public flows: any[] = [];

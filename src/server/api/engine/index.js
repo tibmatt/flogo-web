@@ -1,4 +1,5 @@
-import {config, engines} from '../../config/app-config';
+import {config} from '../../config/app-config';
+import { getInitialisedTestEngine, getInitialisedBuildEngine } from '../../modules/engine';
 import _ from 'lodash';
 
 let basePath = config.app.basePath;
@@ -21,21 +22,25 @@ function* restartEngine(next){
   try{
     let name = this.query&&this.query.name? this.query&&this.query.name: "test";
 
-    let testEngine = engines.test;
+    let testEngine = yield getInitialisedTestEngine();
 
-    if(name == "build"){
-      testEngine = engines.build;
+    if ( name == "build" ) {
+      testEngine = yield getInitialisedBuildEngine();
     }
 
-    if(testEngine.stop()){
-      if(!testEngine.start()){
-        data.status = 500;
+    let stopTestEngineResult = yield testEngine.stop();
+    let startTestEngineResult = false;
 
-        console.log("didn't start successful");
-      }
-    }else{
+    if (stopTestEngineResult) {
+      startTestEngineResult = yield testEngine.start();
+    } else {
       data.status = 500;
-      console.log("didn't stop successful");
+      console.log("[error] didn't stop successful");
+    }
+
+    if (!startTestEngineResult) {
+      data.status = 500;
+      console.log("[error] didn't start successful");
     }
 
     this.body = data;

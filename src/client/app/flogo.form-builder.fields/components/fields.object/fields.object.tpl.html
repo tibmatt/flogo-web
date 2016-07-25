@@ -1,17 +1,19 @@
-<div class="flogo-field-params">
-  <!--<label for="objectField" class="control-label">{{_info.title}}</label>-->
+<div class="flogo-field-object">
+
   <div class="flogo-fields-header-field">
     <label class="control-label">{{_info.title}}</label>
-    <label class="control-label" [hidden]="_info.required || _info.direction == 'output'" >Optional</label>
+    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >Optional</label>
   </div>
 
-  <textarea name="" id="objectField" rows="5"
+  <textarea rows="5"
             (keyup)="onChangeField($event)"
             [class.error]="_hasError"
             [placeholder]="_info.placeholder"
-            class="form-control tc-text-areas tc-text-area" [(ngModel)]="_value"
+            class="form-control tc-text-areas tc-text-area"
+            [(ngModel)]="_value"
             (change)="onValidate($event)"
             [readonly]="isReadOnly()"></textarea>
+
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>
   </div>

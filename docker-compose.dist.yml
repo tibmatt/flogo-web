@@ -1,0 +1,60 @@
+version: '2'
+services:
+  flogo-web:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "3010:3010"
+        - "5984:5984"
+        - "8080:8080"
+      environment:
+        FLOGO_FLOW_SERVICE_HOST: flogo-flow-service
+        FLOGO_FLOW_STATE_SERVICE_HOST: flogo-state-service
+        FLOGO_FLOW_WEB_HOST: $DOCKER_HOST
+        FLOGO_NO_ENGINE_RECREATION: "true"
+        GIT_USERNAME: ${GIT_USERNAME}
+        GIT_PASSWORD: ${GIT_PASSWORD}
+      depends_on:
+        - flogo-flow-service
+        - flogo-state-service
+  flogo-redis:
+        image: redis
+  flogo-flow-service:
+        image: flogo/flow-service
+#        build:
+#            context: ./submodules/flogo-services
+#            dockerfile: Dockerfile-flow-service
+        depends_on:
+        - flogo-redis
+        ports:
+        - "9090:9090"
+        - "9091:9091"
+        links:
+        - flogo-redis
+        entrypoint:
+        - /tmp/flow-service/docker-start.sh
+        - compile
+#        volumes:
+#        - ./submodules/flogo-services/flow-store-service/config:/tmp/config
+        environment:
+        - FLOGO_REDIS_HOST=flogo-redis
+  flogo-state-service:
+        image: flogo/state-service
+#        build:
+#            context: ./submodules/flogo-services
+#            dockerfile: Dockerfile-flow-state-service
+        depends_on:
+        - flogo-redis
+        ports:
+        - "9190:9190"
+        - "9191:9191"
+        links:
+        - flogo-redis
+        entrypoint:
+        - /tmp/flow-state-service/docker-start.sh
+        - compile
+#        volumes:
+#        - ./submodules/flogo-services/flow-state-service/config:/tmp/config
+        environment:
+        - FLOGO_REDIS_HOST=flogo-redis

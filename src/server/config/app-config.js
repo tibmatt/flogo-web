@@ -1,4 +1,7 @@
 import path from 'path';
+import { extractDomain } from '../common/utils';
+import _ from 'lodash';
+
 import {
   DBService
 } from '../common/db.service';
@@ -9,9 +12,12 @@ let publicPath = path.normalize(rootPath+'/../public');
 
 let FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
 let FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
+let FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost");
 
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
+
+
 
 let config = {
   db: 'http://localhost:5984/flogo-web',
@@ -20,7 +26,8 @@ let config = {
   app: {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
-    cacheTime: 0//7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
+    cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
+    gitRepoCachePath : path.join( rootPath, 'git-cache' )
   },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
@@ -177,18 +184,61 @@ let config = {
       }]
     }
   },
+  flogoWeb: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web",
+    label: 'Application database'
+  },
+  flogoWebActivities: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web-activities",
+    label: 'Activities'
+  },
+  flogoWebTriggers: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "5984",
+    testPath: "flogo-web-triggers",
+    label: 'Triggers'
+  },
   stateServer: {
+    protocol: 'http',
     host: FLOW_STATE_SERVICE_HOST,
-    port: "9190"
+    port: "9190",
+    testPath: "ping"
   },
   processServer: {
+    protocol: 'http',
     host: FLOW_SERVICE_HOST,
-    port: "9090"
+    port: "9090",
+    testPath: "ping"
+  },
+  webServer: {
+    protocol: 'http',
+    host: FLOW_WEB_HOST,
+    port: "3010",
+    testPath: ''
+  },
+  engine: {
+    protocol: 'http',
+    host: 'localhost',
+    port: "8080",
+    testPath: "status"
   }
 };
 
+let originalConfig = _.cloneDeep(config);
+
 export {
   config
+};
+
+export {
+  originalConfig
 };
 
 let triggersDBService = new DBService(config.triggers.db);
@@ -216,3 +266,21 @@ export {
 export let flowExport = {
   filename: 'flogo.export.json'
 };
+
+export function setConfiguration(newSettings) {
+  let settings = _.cloneDeep(newSettings);
+
+  config = _.assign({}, config, {
+    engine: settings.engine,
+    stateServer:  settings.stateServer,
+    processServer: settings.flowServer,
+    flogoWeb: settings.db,
+    flogoWebActivities: settings.activities,
+    flogoWebTriggers: settings.triggers
+  });
+
+}
+
+export function resetConfiguration() {
+  config = _.cloneDeep(originalConfig);
+}

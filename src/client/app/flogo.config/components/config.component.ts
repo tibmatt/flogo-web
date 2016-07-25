@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
-import { getFlogoGlobalConfig, updateFlogoGlobalConfig, resetFlogoGlobalConfig } from '../../../common/utils';
-import { Router } from '@angular/router-deprecated';
+import { updateFlogoGlobalConfig, formatServerConfiguration } from '../../../common/utils';
+import { Router, CanActivate } from '@angular/router-deprecated';
 import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { ConfigurationService } from '../../../common/services/configuration.service';
+import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service'
 
-const DBS_ARR = [ 'activities', 'triggers', 'models' ];
+const MAIN_DB = 'db';
+const DBS_ARR = [ 'activities', 'triggers', MAIN_DB ];
 const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
 
 @Component( {
@@ -15,6 +18,9 @@ const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
   styleUrls : [ 'config.component.css' ]
 } )
 
+@CanActivate((next) => {
+  return isConfigurationLoaded();
+})
 export class FlogoConfigComponent {
   private _config : any;
   private _servers : any[];
@@ -22,51 +28,65 @@ export class FlogoConfigComponent {
   private _appDB : any;
   private location = location; // expose window.location
 
-  constructor( private _router : Router, private http:Http ) {
+  constructor( private _router : Router, private http:Http,  private _configurationService: ConfigurationService  ) {
     this.init();
   }
 
   init() {
-    this._config = getFlogoGlobalConfig();
+        this._config = this._configurationService.configuration;
+        this._appDB = _.cloneDeep( this._config[MAIN_DB] );
 
-    this._appDB = _.cloneDeep( this._config.db );
+        this._dbs = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
+          if ( DBS_ARR.indexOf( key ) !== -1 ) {
+            if(!value.testPath) {
+              value.testPath = value.name;
+            }
 
-    this._dbs = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
-      if ( DBS_ARR.indexOf( key ) !== -1 ) {
-        result.push( {
-          _label : _.startCase( key ),
-          _key : key,
-          config : value.db
-        } );
-      }
+            value.name = value.testPath;
+            result.push( {
+              _label : _.startCase( key ),
+              _key : key,
+              config : value
+            } );
+          }
 
-      return result;
-    }, [] );
+          return result;
+        }, [] );
 
-    this._servers = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
-      if ( SERVERS_ARR.indexOf( key ) !== -1 ) {
-        let _display = false;
+        this._servers = _.reduce( this._config, ( result : any[], value : any, key : string ) => {
+          if ( SERVERS_ARR.indexOf( key ) !== -1 ) {
+            let _display = false;
 
-        // for now we just has the restart feature for 8080(default engine)
-        if(value&&value.port == '8080'){
-          _display = true
-        }
-        result.push( {
-          _label : _.startCase( key ),
-          _key : key,
-          _display: _display,
-          config : value
-        } );
-      }
+            // for now we just has the restart feature for 8080(default engine)
+            if(value&&value.port == '8080'){
+              _display = true
+            }
+            value.name = key;
+            result.push( {
+              _label : _.startCase( key ),
+              _key : key,
+              _display: _display,
+              config : value
+            } );
+          }
 
-      return result;
-    }, [] );
+          return result;
+        }, [] );
+
+
+
+
+      //});
+
+
+
+
   }
 
   onSave() {
     let config = <any>{};
 
-    config.db = _.cloneDeep( this._appDB );
+    //config.db = _.cloneDeep( this._appDB );
 
     _.each( this._servers, ( server : any )=> {
       if ( SERVERS_ARR.indexOf( server._key ) !== -1 ) {
@@ -76,15 +96,23 @@ export class FlogoConfigComponent {
 
     _.each( this._dbs, ( db : any )=> {
       if ( DBS_ARR.indexOf( db._key ) !== -1 ) {
-        config[ db._key ] = { db : _.cloneDeep( db.config ) };
+        config[ db._key ] =  _.cloneDeep( db.config ) ;
       }
     } );
+
 
     console.groupCollapsed( 'Save configuration' );
     console.log( _.cloneDeep( config ) );
     console.groupEnd();
 
+    this._configurationService.save();
+
+    /*
     updateFlogoGlobalConfig( config );
+    this._RESTAPIConfigurationService.setConfiguration(config)
+        .then((res:any) => {
+    });
+    */
   }
 
   onCancel() {
@@ -133,7 +161,17 @@ export class FlogoConfigComponent {
   }
 
   onResetDefault () {
-    resetFlogoGlobalConfig();
-    this.init();
+
+    this._configurationService.resetConfiguration()
+        .then((config) => {
+          this.init();
+          console.log('Configuration restored')
+        });
+
+  }
+
+  getDatabaseName(db) {
+    db = db || "";
+    return db.replace("Database","");
   }
 }

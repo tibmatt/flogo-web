@@ -1,0 +1,110 @@
+@height: 40;
+@height-item: 25;
+//@color-output: #3498db;
+@color-output: #b3e3ff;
+@color-input: #e6e7e9;
+
+.flogo-visual-mapper {
+  margin-top:10px;
+
+  .flogo-visual-mapper__item {
+    display: flex;
+    flex-direction: row;
+    height: (@height)*1px;
+  }
+
+  .flogo-visual-mapper__item__remove {
+    display: flex;
+    flex: 0 0 5%;
+    cursor: pointer;
+    color: #b13d3d;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flogo-visual-mapper__item__output {
+    flex: 0 0 60%;
+    background: @color-output;
+    margin: 0 10px 0 0;
+  }
+
+  .flogo-visual-mapper__item__output__text {
+    width: 80%;background-color: transparent;border:0
+  }
+
+  .flogo-visual-mapper__item__output__list__selector {
+    cursor: pointer;
+    color: dimgray;
+  }
+
+
+  .flogo-visual-mapper__item__output__text:focus {
+    outline-width: 0;
+  }
+
+
+  .flogo-visual-mapper__item__input {
+    flex: 0 0 35%;
+    background-color: #ccd0d8;
+    color: #000;
+  }
+
+  .flogo-visual-mapper__item__list {
+    width: 60%;
+    margin-bottom: 10px;
+    margin-top: 0;
+    background-color: @color-input;
+  }
+
+
+  .flogo-visual-mapper__item__list li {
+    cursor: pointer;
+  }
+
+  .flogo-visual-mapper__item__list--selectedvalue {
+    left: 30px;
+    position: relative;
+  }
+
+  .flogo-visual-mapper__item__output, .flogo-visual-mapper__item__input {
+    display: block;
+    float: left;
+    text-align: center;
+    padding: 10px;
+    //padding: 15px 40px 0 40px;
+    position: relative;
+    //font-size: 10px;
+    text-decoration: none;
+  }
+
+  .flogo-visual-mapper__item__output:after {
+    content: "";
+    border-top: (@height-item - 5)*1px solid transparent;
+    border-bottom: (@height-item - 5)*1px solid transparent;
+    border-left: (@height-item - 5)*1px solid @color-output;
+    position: absolute;
+    right: -(@height-item - 5)*1px;
+    top: 0;
+    z-index: 1;
+  }
+
+  .flogo-visual-mapper__item__input:before {
+    content: "";
+    border-top: (@height-item - 5)*1px solid transparent;
+    border-bottom: (@height-item - 5)*1px solid transparent;
+    border-left: (@height-item - 5)*1px solid #fff;
+    position: absolute;
+    left: 0;
+    top: 0
+  }
+
+  .flogo-visual-mapper__item__output--connected,
+  .flogo-visual-mapper__item__error {
+    left: 10px;
+  }
+  .flogo-visual-mapper__item__input--connected {
+    background-color: #ccd0d8;
+    flex: 0 0 30%;
+  }
+
+}

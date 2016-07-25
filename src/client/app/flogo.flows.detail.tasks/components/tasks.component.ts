@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
-import { RESTAPIService } from "../../../common/services/rest-api.service";
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { RouteParams } from '@angular/router-deprecated';
 
-import {InstallComponent} from '../../flogo.flows.detail.tasks.install/components/install.component';
+import {
+  FlogoFlowsDetailTasksInstallComponent
+} from '../../flogo.flows.detail.tasks.install/components/install.component';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 
 @Component(
   {
     selector : 'flogo-flows-detail-tasks',
     moduleId : module.id,
-    directives: [InstallComponent],
+    directives: [FlogoFlowsDetailTasksInstallComponent],
     templateUrl : 'tasks.tpl.html',
     styleUrls : [ 'tasks.component.css' ]
   }
@@ -26,7 +27,7 @@ export class FlogoFlowsDetailTasks {
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restApiService : RESTAPIService, private _restAPIActivitiesService: RESTAPIActivitiesService) {
+  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restAPIActivitiesService: RESTAPIActivitiesService) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     console.log( this._routeParams );
@@ -121,6 +122,13 @@ export class FlogoFlowsDetailTasks {
     } else {
       this.filteredTasks = this.tasks;
     }
+  }
+
+  private onInstalledAction( response : any ) {
+    console.group( `[FlogoFlowsDetailTasks] onInstalled` );
+    console.log( response );
+    console.groupEnd();
+    this._loadActivities();
   }
 
 }

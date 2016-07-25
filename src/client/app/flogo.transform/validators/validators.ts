@@ -1,2 +1,2 @@
 export { jsonValidator } from './json.validator';
-export { mappingsValidatorFactory } from './mappings.validator';
+export { mappingsValidatorFactory, mappingsValidateField } from './mappings.validator';

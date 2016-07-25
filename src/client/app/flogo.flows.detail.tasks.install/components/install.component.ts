@@ -1,51 +1,29 @@
-import {Component} from '@angular/core';
-import { MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { Component, EventEmitter } from '@angular/core';
+import { FlogoInstallerComponent } from '../../flogo.installer/components/installer.component';
 
-import {PUB_EVENTS} from '../../flogo.flows.detail.tasks/messages';
-import {SUB_EVENTS} from "../../flogo.flows.detail.tasks/messages";
+@Component( {
+  selector : 'flogo-flows-detail-tasks-install',
+  directives : [ FlogoInstallerComponent ],
+  outputs : [ 'onInstalled: flogoOnInstalled' ],
+  moduleId : module.id,
+  templateUrl : 'install.tpl.html',
+} )
+export class FlogoFlowsDetailTasksInstallComponent {
 
-import {RESTAPIService} from "../../../common/services/rest-api.service";
-import {PostService} from "../../../common/services/post.service";
+  public activities : any[] = [];
+  private isActivated = false;
+  onInstalled = new EventEmitter();
 
-@Component({
-  selector: 'flogo-flows-detail-tasks-install',
-  directives: [MODAL_DIRECTIVES],
-  moduleId: module.id,
-  templateUrl: 'install.tpl.html',
-})
-export class InstallComponent {
-
-  public activities:any[] = [];
-
-  constructor(private _restApiService:RESTAPIService, private _postService:PostService) {
-    this._loadActivities();
+  constructor() {
+    this.isActivated = false;
   }
 
-  public install(activity:any) {
-
-    this._restApiService.activities
-      .install([{
-        name: activity.name,
-        version: activity.version
-      }])
-      .then(() => {
-        this._loadActivities();
-        this._postService.publish(
-          _.assign(
-            {}, SUB_EVENTS.installActivity, {
-              data: {}
-            }
-          )
-        );
-
-
-      });
-
+  private openModal() {
+    this.isActivated = true;
   }
 
-  private _loadActivities() {
-    this._restApiService.activities.getAll()
-      .then((activities:any) => this.activities = activities);
-  };
-
+  private onInstalledAction( response : any ) {
+    // bubble the event.
+    this.onInstalled.emit( response );
+  }
 }
