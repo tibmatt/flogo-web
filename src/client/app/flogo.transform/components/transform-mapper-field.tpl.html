@@ -1,4 +1,4 @@
-<div class="flogo-visual-mapper">
+<div class="flogo-visual-mapper" (mouseleave)="onMouseLeave($event)">
 
     <div class="flogo-visual-mapper__item">
         <div class="flogo-visual-mapper__item__output" [class.flogo-visual-mapper__item__output--connected]="selectedValue">
@@ -9,7 +9,7 @@
 
 
                 <input type="text"  [(ngModel)]="selectedValue"
-                       (focus)="onFocusText(tile.name)"
+                       (click)="onFocusText(tile.name)"
                        (keyup)="onKeyPress($event)"
                        (keyup)="onKeyUp($event.target.value)"
                        class="flogo-visual-mapper__item__output__text">
@@ -21,7 +21,7 @@
     </div>
 
 
-    <div class="flogo-visual-mapper__item__list" >
+    <div class="flogo-visual-mapper__item__list" [style.border]="showList ? '1px solid gray' : none">
         <ul *ngFor="let item of tiles" [hidden]="!showList" style="margin-top: 0; padding-top: 0;">
             <span class="glyphicon"
                   [ngClass]="{'glyphicon-triangle-right':!selectedTitle, 'glyphicon-triangle-bottom':selectedTile == item.name}"

@@ -32,6 +32,17 @@ export class TransformMapperField implements  OnChanges, OnInit {
     ngOnInit() {
     }
 
+    onMouseLeave() {
+        this.resetStatus();
+    }
+
+    resetStatus() {
+        this.selectedTile = '';
+        this.selectedInput = '';
+        this.showList = false;
+
+    }
+
     onFocusText(input: string) {
         this.selectedTile = '';
         this.selectedInput = input;
