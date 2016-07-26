@@ -1,25 +1,15 @@
 <div class="flogo-visual-mapper">
 
-    <!--<div class="alert alert-danger" role="alert" [hidden]="!hasError">{{messageError}}</div>-->
-
     <div class="flogo-visual-mapper__item">
-        <!--<div class="flogo-visual-mapper__item__remove" title="Remove transformation" [hidden]="!selectedValue"><span class="glyphicon glyphicon-remove" (click)="clickRemove($event)" aria-hidden="true"></span></div>-->
         <div class="flogo-visual-mapper__item__output" [class.flogo-visual-mapper__item__output--connected]="selectedValue">
             <div>
                 <span class="glyphicon glyphicon-remove" (click)="clickRemove($event)"
                       style="left:-10px;color:dimgray;cursor:pointer"
                       aria-hidden="true" [hidden]="!selectedValue" (click)="clickRemove($event)"></span>
 
-                <span   (click)="toggleList()"
-                        [hidden]="showList"
-                        class="glyphicon glyphicon-triangle-bottom flogo-visual-mapper__item__output__list__selector"></span>
-
-                 <span   (click)="toggleList()"
-                        [hidden]="!showList"
-                        class="glyphicon glyphicon-triangle-top flogo-visual-mapper__item__output__list__selector"></span>
-
 
                 <input type="text"  [(ngModel)]="selectedValue"
+                       (focus)="onFocusText(tile.name)"
                        (keyup)="onKeyPress($event)"
                        (keyup)="onKeyUp($event.target.value)"
                        class="flogo-visual-mapper__item__output__text">
@@ -29,13 +19,19 @@
         <div class="flogo-visual-mapper__item__input"
              [style.color]="hasError ? 'red': 'black'">{{tile.name}}</div>
     </div>
-    <div class="flogo-visual-mapper__item__list" [class.flogo-visual-mapper__item__list--selectedvalue]="selectedValue">
-        <ul *ngFor="let tile of tiles" [hidden]="!showList">
-            <li class="">{{tile.name}}</li>
+
+
+    <div class="flogo-visual-mapper__item__list" >
+        <ul *ngFor="let item of tiles" [hidden]="!showList" style="margin-top: 0; padding-top: 0;">
+            <span class="glyphicon"
+                  [ngClass]="{'glyphicon-triangle-right':!selectedTitle, 'glyphicon-triangle-bottom':selectedTile == item.name}"
+                  style="color:dimgray;font-size: 0.8em"></span>
+            <li style="margin-left: 5px; margin-top: 0;list-style-type: none;display: inline" (click)="setSelectedTile(item.name)">{{item.name}}</li>
             <ul>
-                <li class=""
-                    *ngFor="let field of tile.fields"
-                    (click)="clickField(tile, field)">{{tile.name}}.{{field.name}} </li>
+                <li style="list-style-type: none; margin-left: 10px"
+                    [hidden]="selectedTile != item.name"
+                    *ngFor="let field of item.fields"
+                    (click)="clickField(item, field)">{{item.name}}.{{field.name}} </li>
             </ul>
         </ul>
     </div>
