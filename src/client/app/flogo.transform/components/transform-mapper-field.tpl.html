@@ -3,8 +3,7 @@
     <div class="flogo-visual-mapper__item">
         <div class="flogo-visual-mapper__item__output" [class.flogo-visual-mapper__item__output--connected]="selectedValue">
             <div>
-                <span class="glyphicon glyphicon-remove" (click)="clickRemove($event)"
-                      style="left:-10px;color:dimgray;cursor:pointer"
+                <span class="glyphicon glyphicon-remove flogo-visual-mapper__item__remove" (click)="clickRemove($event)"
                       aria-hidden="true" [hidden]="!selectedValue" (click)="clickRemove($event)"></span>
 
 
@@ -20,22 +19,17 @@
              [style.color]="hasError ? 'red': 'black'">{{tile.name}}</div>
     </div>
 
-
     <div class="flogo-visual-mapper__item__list" [style.border]="showList ? '1px solid gray' : none">
-        <div *ngFor="let item of tiles" [hidden]="!showList" style="margin-top: 0; padding-top: 0;">
-            <span class="glyphicon"
-                  [ngClass]="{'glyphicon-triangle-right':!selectedTitle, 'glyphicon-triangle-bottom':selectedTile == item.name}"
-                  style="color:dimgray;font-size: 0.8em"></span>
-            <div style="font-weight: bold; margin-left: 5px; margin-top: 0;margin-bottom: 5px; cursor:pointer; list-style-type: none;display: inline"
-                (click)="setSelectedTile(item.name)">{{item.name}}</div>
-            <!--<ul>-->
+        <div *ngFor="let item of tiles" [hidden]="!showList"  class="flogo-visual-mapper__item__list__item" >
+            <span class="glyphicon flogo-visual-mapper__item__action"
+                  [ngClass]="{'glyphicon-triangle-right':!selectedTitle, 'glyphicon-triangle-bottom':selectedTile == item.name}"></span>
+            <div class="flogo-visual-mapper__item__name" (click)="setSelectedTile(item.name)">{{item.name}}</div>
                 <div class="flogo-visual-mapper__item__list__field"
                     [hidden]="selectedTile != item.name"
                     *ngFor="let field of item.fields"
                     (click)="clickField(item, field)">
-                    <div style="margin-left: 20px">{{item.name}}.{{field.name}}</div>
+                    <div class="flogo-visual-mapper__item__field">{{item.name}}.{{field.name}}</div>
                 </div>
-            <!--</ul>-->
         </div>
     </div>
 
