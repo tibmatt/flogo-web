@@ -33,7 +33,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     }
 
     onMouseLeave() {
-        //this.resetStatus();
+        this.resetStatus();
     }
 
     resetStatus() {
