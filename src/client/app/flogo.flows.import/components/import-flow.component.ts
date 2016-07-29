@@ -36,7 +36,7 @@ export class FlogoFlowsImport {
   }
 
   private onFileChange( evt : any ) {
-    let importFile = _.get( evt, 'target.files[0]' );
+    let importFile = <File> _.get( evt, 'target.files[0]' );
 
     if ( _.isUndefined( importFile ) ) {
       console.error( 'Invalid file to import' );

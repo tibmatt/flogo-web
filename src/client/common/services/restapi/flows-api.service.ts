@@ -130,10 +130,14 @@ export class RESTAPIFlowsService{
       );
   }
 
-  importFlow( importFile : any ) {
+  importFlow( importFile : File ) {
     return new Promise( ( resolve, reject ) => {
-      var formData : any = new FormData();
+      var formData = new FormData();
       var xhr = new XMLHttpRequest();
+      if(!importFile.type) {
+        importFile = new File([importFile], importFile.name, {type: 'application/json'});
+      }
+
       formData.append( 'importFile', importFile, importFile.name );
 
       xhr.onreadystatechange = function () {
