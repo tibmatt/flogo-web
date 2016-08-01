@@ -37,14 +37,14 @@ import {
   attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
 } from '../../../common/utils';
 
-import {Contenteditable} from '../../../common/directives/contenteditable.directive';
+import { Contenteditable, JsonDownloader } from '../../../common/directives';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable, JsonDownloader ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ]
@@ -769,6 +769,16 @@ export class FlogoCanvasComponent {
       console.warn( 'Should start from trigger for the first time.' );
       return Promise.reject( 'Should start from trigger for the first time.' );
     }
+  }
+
+  exportFlow () {
+    return this._exportFlow.bind(this);
+  }
+
+  private _exportFlow() {
+    return new Promise((resolve, reject) => {
+      resolve(flogoFlowToJSON( this._flow ));
+    });
   }
 
   private _addTriggerFromDiagram( data : any, envelope : any ) {
