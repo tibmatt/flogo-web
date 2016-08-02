@@ -10,6 +10,7 @@ import {VisualMapperComponent} from './visual-mapper.component';
 import {ErrorDisplayComponent} from './error-display.component';
 import {HelpComponent} from "./help.component";
 import {TransformMapperComponent} from './transform-mapper.component';
+import { TransformJsonPanelComponent } from './transform-json-panel.component';
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
@@ -26,7 +27,7 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent, TransformMapperComponent],
+  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent, TransformMapperComponent, TransformJsonPanelComponent],
   moduleId: module.id,
   styleUrls: ['transform.component.css'],
   templateUrl: 'transform.tpl.html',
@@ -35,6 +36,8 @@ export class TransformComponent implements OnDestroy {
   fieldsConnections:any[] = [];
   isValid:boolean;
   isDirty:boolean;
+  isCollapsedOutput:boolean = true;
+  isCollapsedInput:boolean = true;
 
   errors:any;
 
@@ -77,6 +80,14 @@ export class TransformComponent implements OnDestroy {
       this.errors = null;
     }
 
+  }
+
+  onToggledSchema(state:any) {
+    if(state.isInput) {
+      this.isCollapsedInput = state.isCollapsed;
+    } else {
+      this.isCollapsedOutput = state.isCollapsed;
+    }
   }
 
   updateErrors(change:any) {

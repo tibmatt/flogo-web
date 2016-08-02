@@ -24,41 +24,57 @@
         </button>
       </div>
     </div>
+
     <div class="flogo-transform-modal__content">
-      <div class="col">
+
+      <div class="col" [ngClass]="{'collapsed':isCollapsedOutput, 'not-collapsed':!isCollapsedOutput}"   >
+        <flogo-json-panel [schema]="data.precedingTilesOutputs" (toggled)="onToggledSchema($event)" [isInput]="false"></flogo-json-panel>
+
+        <!--
         <div class="flogo-transform-modal__col-header">
           <div class="flogo-transform-modal__col-header-subtitle">Previous tiles</div>
           <div class="flogo-transform-modal__col-header-title">Output data</div>
         </div>
         <pre class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ data.precedingTilesOutputs | json }}</pre>
+        -->
+
       </div>
+
+
+
       <div class="mappings-container" [class.has-error]="!isValid">
-
         <div class="mappings-container__header"></div>
-
         <div class="mappings-container__main">
             <flogo-transform-mapper [mappings]="data.mappings"
                                     [tileInputInfo]="data.tileInputInfo"
                                     [precedingTilesOutputs]="data.precedingTilesOutputs"
                                     (mappingChange)="onMappingsChange($event)"></flogo-transform-mapper>
         </div>
-
-
         <div class="mappings-container__error" [hidden]="!errors">
           <flogo-transform-error-display [errors]="errors"></flogo-transform-error-display>
         </div>
-
       </div>
 
-      <div class="col">
+
+      <div class="col" [ngClass]="{'collapsed':isCollapsedInput, 'not-collapsed':!isCollapsedInput}"  >
+        <!--
         <div class="flogo-transform-modal__col-header">
           <div class="flogo-transform-modal__col-header-subtitle">Transformation for {{ data.tile?.name }}</div>
           <div class="flogo-transform-modal__col-header-title">Input data</div>
         </div>
         <pre class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ data.tileInputInfo | json }}</pre>
+        -->
+        <flogo-json-panel [schema]="data.tileInputInfo"
+                          [isInput]="true"
+                          (toggled)="onToggledSchema($event)"
+                          [name]="data.tile?.name"></flogo-json-panel>
       </div>
+
+
+
     </div>
   </div>
+
 
 
 </div>

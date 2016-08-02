@@ -1,0 +1,37 @@
+<div class="flogo-transform-json-panel">
+
+        <div *ngIf="isInput"
+             [ngClass]="{'flogo-transform-json-panel__top-header--collapsed':isCollapsed, 'flogo-transform-json-panel__top-header--not-collapsed':!isCollapsed}"
+             class="flogo-transform-json-panel__top-header">
+
+            <!--<div *ngIf="!isCollapsed" class="flogo-transform-modal__col-header-subtitle" >Transformation for {{name}}</div>-->
+            <div class="flogo-transform-modal__col-header-title">Input </div>
+
+            <div class="flogo-transform-json__toggle-button"
+                 (click)="togglePanel()"
+                 *ngIf="isCollapsed"><img src="/assets/svg/arrow-left.svg" alt=""></div>
+
+            <div class="flogo-transform-json__toggle-button"
+                 (click)="togglePanel()"
+                 *ngIf="!isCollapsed"><img src="/assets/svg/arrow-right.svg" alt=""></div>
+
+        </div >
+
+        <div *ngIf="!isInput"
+             [ngClass]="{'flogo-transform-json-panel__top-header--collapsed':isCollapsed, 'flogo-transform-json-panel__top-header--not-collapsed':!isCollapsed}"
+             class="flogo-transform-json-panel__top-header">
+
+            <!--<div *ngIf="!isCollapsed" class="flogo-transform-modal__col-header-subtitle">Previous tiles</div>-->
+            <div class="flogo-transform-modal__col-header-title">Output </div>
+            <div class="flogo-transform-json__toggle-button"
+                 (click)="togglePanel()"
+                 *ngIf="isCollapsed"><img src="/assets/svg/arrow-right.svg" alt=""></div>
+
+            <div class="flogo-transform-json__toggle-button"
+                 (click)="togglePanel()"
+                 *ngIf="!isCollapsed"><img src="/assets/svg/arrow-left.svg" alt=""></div>
+
+        </div>
+
+        <pre *ngIf="!isCollapsed" class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ schema | json }}</pre>
+</div>
