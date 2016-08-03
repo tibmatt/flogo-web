@@ -15,6 +15,10 @@ export class TransformJsonPanelComponent implements OnChanges {
 
     private toggledControl:EventEmitter<any> = new EventEmitter();
 
+    ngOnInit() {
+        //this.getFormattedHTML(this.schema, 'tile','rest-trigger');
+    }
+
     ngOnChanges(changes:any) {
     }
 
@@ -26,6 +30,49 @@ export class TransformJsonPanelComponent implements OnChanges {
             isInput:this.isInput,
             isCollapsed: this.isCollapsed
         });
+    }
+
+    wrapInDiv(value:string, isSelected:boolean) {
+        let html:string = '';
+
+        html += `<div class="ft-json__selected"`;
+        if(isSelected) {
+            html+= ' style="font-weight:bold"';
+        }
+        html += `>${value}</div>`;
+
+        return html;
+    }
+
+    getFormattedHTML(jsonSchema:any, tileSelected:string, fieldSelected:string ) {
+        let html:string = '';
+        let isSelected:boolean = false;
+
+        for(var tile in jsonSchema) {
+
+            // Check if is an array, in this case if is a tile
+            if(jsonSchema[tile] instanceof Array) {
+
+                html += this.wrapInDiv(`"${tile}":[`,false);
+
+                for(var fieldIndex in jsonSchema[tile]) {
+                    html += this.wrapInDiv('{', false);
+                    isSelected =  (tile == tileSelected && jsonSchema[tile][fieldIndex]['name'] == fieldSelected);
+
+                    for(var field in jsonSchema[tile][fieldIndex]) {
+                        debugger;
+                        html += this.wrapInDiv(`"${field}":"${jsonSchema[tile][fieldIndex][field]}"`, isSelected);
+                    }
+
+                    html += this.wrapInDiv('}', false);
+                }
+
+                html += this.wrapInDiv(']', false);
+            }
+
+        }
+
+        return html;
     }
 
 }
