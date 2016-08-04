@@ -7,7 +7,10 @@
   },
   "scripts": {
     "start": "gulp",
-    "clean": "rm -rfv `find . -path \"*/node_modules\" -print`"
+    "clean": "rm -rfv `find . -path \"*/node_modules\" -print`",
+    "webdriver-manager": "webdriver-manager update && webdriver-manager start",
+    "e2e": "protractor protractor-conf.js",
+    "e2e-watch": "gulp e2e"
   },
   "author": "Shaoke Xu<shaoxu@tibco.com>",
   "devDependencies": {
@@ -29,18 +32,20 @@
     "gulp-less": "^3.1.0",
     "gulp-load-plugins": "^1.2.0",
     "gulp-nodemon": "^2.0.7",
+    "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "1.6.0",
     "gulp-typescript": "^2.13.6",
     "gulp-uglify": "^1.2.0",
     "less": "^2.7.1",
     "mustache": "^2.2.1 ",
     "pouchdb-server": "",
+    "protractor": "^4.0.2",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.5",
     "systemjs-builder": "^0.15.22",
     "tslint": "^3.5.0",
     "typescript": "^1.8.10",
     "vinyl-fs": "^2.4.3",
-    "gulp-rename": "^1.2.2"
+    "webdriver-manager": "^10.2.1"
   }
 }
