@@ -1,5 +1,5 @@
 <div class="ft-json">
-    <div [innerHTML]="getFormattedHTML(schema, 'log-activity','message')"></div>
+    <!--<div [innerHTML]="getFormattedHTML(schema, 'log-activity','message')"></div>-->
     <div class="ft-json__header">
 
         <div *ngIf="isInput" class="ft-json__header--input">
@@ -20,5 +20,5 @@
 
     </div>
 
-    <pre *ngIf="!isCollapsed" class="ft-json__code">{{ schema | json }}</pre>
+    <div *ngIf="!isCollapsed" [innerHTML]="currentSchema" class="ft-json__code"></div>
 </div>

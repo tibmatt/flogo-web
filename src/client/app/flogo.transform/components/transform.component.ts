@@ -38,6 +38,7 @@ export class TransformComponent implements OnDestroy {
   isDirty:boolean;
   isCollapsedOutput:boolean = true;
   isCollapsedInput:boolean = true;
+  currentFieldSelected:any = {};
 
   errors:any;
 
@@ -65,6 +66,10 @@ export class TransformComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.cancelSubscriptions();
+  }
+
+  onSelectedItem(params:any) {
+    this.currentFieldSelected = params;
   }
 
   removeError(change:any) {

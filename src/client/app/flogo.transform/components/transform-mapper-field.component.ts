@@ -15,6 +15,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     @Input() tileInputInfo:any;
     @Input() tileInfo:any;
     @Output() mappingChange:EventEmitter<any>;
+    @Output() itemOver:EventEmitter<any>;
 
     selectedValue:string = '';
     showList:boolean  = false;
@@ -27,6 +28,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
 
     constructor() {
         this.mappingChange = new EventEmitter();
+        this.itemOver      = new EventEmitter();
     }
 
     ngOnInit() {
@@ -34,6 +36,14 @@ export class TransformMapperField implements  OnChanges, OnInit {
 
     onMouseLeave() {
         this.resetStatus();
+    }
+
+    onMouseOver(tile:string, field:string) {
+        this.emittItemOver(tile, field);
+    }
+
+    emittItemOver(tile:string, field: string) {
+        this.itemOver.emit({tile:tile, name: field });
     }
 
     resetStatus() {
