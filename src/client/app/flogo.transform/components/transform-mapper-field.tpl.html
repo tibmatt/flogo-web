@@ -17,6 +17,7 @@
 
         <div class="flogo-visual-mapper__item__input"
              (mouseover)="onMouseOver('',tile.name)"
+             (mouseleave)="onMouseOver('','')"
              [style.color]="hasError ? 'red': 'black'">{{tile.name}}</div>
 
     </div>

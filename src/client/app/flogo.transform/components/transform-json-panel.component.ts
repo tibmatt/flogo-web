@@ -48,6 +48,15 @@ export class TransformJsonPanelComponent implements OnChanges {
             isInput:this.isInput,
             isCollapsed: this.isCollapsed
         });
+
+        if(!this.isCollapsed) {
+            if(this.isInput) {
+                this.currentSchema =  this.getFormattedHTMLInput(this.schema,  '');
+            }else {
+                this.currentSchema =  this.getFormattedHTMLOutput(this.schema, '', '');
+            }
+        }
+
     }
 
     wrapInDiv(value:string, isSelected:boolean, leftMargin:string) {
