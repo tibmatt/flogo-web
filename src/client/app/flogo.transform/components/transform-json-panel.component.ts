@@ -81,7 +81,6 @@ export class TransformJsonPanelComponent implements OnChanges {
 
     getFormattedHTMLInput(jsonSchema:any,  fieldSelected:string ) {
         let html:string = '';
-        debugger;
 
         html += this.wrapInDiv('[', false, '-15px');
 

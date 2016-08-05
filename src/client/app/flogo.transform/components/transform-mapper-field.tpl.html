@@ -1,39 +1,51 @@
 <div class="flogo-visual-mapper" (mouseleave)="onMouseLeave($event)">
 
-    <div class="flogo-visual-mapper__item">
-        <div class="flogo-visual-mapper__item__output" [class.flogo-visual-mapper__item__output--connected]="selectedValue">
-            <div>
+    <div class="shape" [ngClass]="{'shape-connected':selectedValue}">
+
+        <div class="output">
+            <div [ngClass]="{'connected':selectedValue, 'not-connected':!selectedValue}">
+
+                <!--
                 <span class="glyphicon glyphicon-remove flogo-visual-mapper__item__remove" (click)="clickRemove($event)"
                       aria-hidden="true" [hidden]="!selectedValue" (click)="clickRemove($event)"></span>
+                      -->
 
+                <img src="/assets/svg/flogo.transform.closeicon.svg"
+                     class="flogo-visual-mapper__item__remove" (click)="clickRemove($event)"
+                     aria-hidden="true" [hidden]="!selectedValue" alt="Remove connection">
 
                 <input type="text"  [(ngModel)]="selectedValue"
                        (click)="onFocusText(tile.name)"
                        (keyup)="onKeyPress($event)"
                        (keyup)="onKeyUp($event.target.value)"
-                       class="flogo-visual-mapper__item__output__text">
+                       class="output-text">
             </div>
         </div>
 
-        <div class="flogo-visual-mapper__item__input"
+        <div class="input-shape"
              (mouseover)="onMouseOver('',tile.name)"
              (mouseleave)="onMouseOver('','')"
-             [style.color]="hasError ? 'red': 'black'">{{tile.name}}</div>
-
+             [style.color]="hasError ? 'red': 'black'">
+            <div [ngClass]="{'connected':selectedValue, 'not-connected':!selectedValue}">{{tile.name}}</div>
+        </div>
     </div>
 
     <div class="flogo-visual-mapper__item__list" [style.border]="showList ? '1px solid gray' : none">
         <div *ngFor="let item of tiles" [hidden]="!showList"  class="flogo-visual-mapper__item__list__item" >
+
             <span class="glyphicon flogo-visual-mapper__item__action"
                   [ngClass]="{'glyphicon-triangle-right':!selectedTitle, 'glyphicon-triangle-bottom':selectedTile == item.name}"></span>
+
             <div class="flogo-visual-mapper__item__name" (click)="setSelectedTile(item.name)">{{item.name}}</div>
                 <div class="flogo-visual-mapper__item__list__field"
                     [hidden]="selectedTile != item.name"
                     *ngFor="let field of item.fields"
                     (click)="clickField(item, field)">
+
                     <div class="flogo-visual-mapper__item__field"
                          (mouseleave)="emittItemOver('','')"
                          (mouseover)="onMouseOver(item.name, field.name)">{{field.name}}</div>
+
                 </div>
         </div>
     </div>
