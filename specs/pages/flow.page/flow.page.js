@@ -1,5 +1,7 @@
 'use strict';
 
+var transform = require('./transform.fragment');
+
 var flowPage = {
   flowTitle: {
     get: function () {
@@ -72,20 +74,35 @@ var flowPage = {
     },
     saveButton: {
       get() {
-        return element(by.css('.flogo-form-builder-buttons-save'))
+        return element(by.css('.flogo-form-builder-buttons-save'));
       }
     }
   },
   tasks: {
-    getTitles: function(taskNodes) {
+    getTitles: function (taskNodes) {
       return taskNodes.map(node => node.element(by.css('.flogo-flows-detail-diagram-node-detail-title')).getText());
     },
-    getOfType: function(types) {
+    getOfType: function (types) {
       types = types || [];
       return element.all(by.css('.flogo-flows-detail-diagram-node'))
         .filter(element => element.getAttribute('data-flogo-node-type').then(attrVal => types.indexOf(attrVal) > -1));
+    },
+    findOne: function (taskName) {
+      return element.all(by.css('.flogo-flows-detail-diagram-node'))
+        .filter(elem => {
+          let titleElemSel = by.css('.flogo-flows-detail-diagram-node-detail-title');
+          return elem
+            .isElementPresent(titleElemSel)
+            .then(isPresent => {
+              return isPresent ?
+                elem.element(titleElemSel).getText().then(text => text == taskName)
+                : false
+            }, () => false);
+        })
+        .first();
     }
-  }
+  },
+  transform: transform
 };
 module.exports = flowPage;
 

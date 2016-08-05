@@ -5,33 +5,26 @@ const MS_WAIT_FOR_ANIMATION = 500;
 
 var homepage = require('./pages/home.page');
 var flowPage = require('./pages/flow.page');
-
-var LoadingIndicator = {
-  wait: function(timeout){
-    var ignoreSync = browser.ignoreSynchronization;
-    browser.ignoreSynchronization = true;
-    var spinner = element(by.css('.flogo-spin-loading'));
-    return browser
-      .wait(protractor.ExpectedConditions.stalenessOf(spinner), timeout || 3000)
-      .then(() => browser.ignoreSynchronization = ignoreSync);
-  }
-};
+var loadingIndicator = require('./pages/loading-indicator');
+var helpers = require('./helpers');
 
 describe('flogo web', function() {
   var flowName = 'My new shiny flow';
 
   it('should create a flow', function() {
     browser.get(`http://${HOST}:${PORT}`);
-    LoadingIndicator.wait();
+    loadingIndicator.wait();
 
     homepage.addFlowButton.click();
 
-    setValueOnInputElement(homepage.newFlow.name.get(), flowName);
+    helpers.setValueOnInputElement(homepage.newFlow.name.get(), flowName);
 
     var flowList = homepage.flowList().get();
     var initialFlowCount = flowList.count();
 
     homepage.newFlow.clickSave();
+
+    browser.ignoreSynchronization = true;
 
     initialFlowCount.then(initialCount => expect(flowList.count()).toEqual(initialCount + 1));
 
@@ -40,7 +33,6 @@ describe('flogo web', function() {
 
     flow.click();
 
-    browser.ignoreSynchronization = true;
     let flowTitle = flowPage.flowTitle.get();
     browser.wait(protractor.ExpectedConditions.presenceOf(flowTitle));
     expect(flowTitle.getText()).toEqual(flowName);
@@ -68,7 +60,7 @@ describe('flogo web', function() {
     flowPage.newActivity.selectByName('Log Activity').click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
     flowPage.activityPanel.title.replaceText(activityTitle);
-    setValueOnInputElement(flowPage.activityPanel.textInput('message'), 'Start logging...');
+    helpers.setValueOnInputElement(flowPage.activityPanel.textInput('message'), 'Start logging...');
     flowPage.activityPanel.booleanInput('flowInfo', true).click();
     flowPage.activityPanel.booleanInput('addToFlow', true).click();
 
@@ -91,9 +83,9 @@ describe('flogo web', function() {
     flowPage.newActivity.selectByName('REST Activity').click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
     flowPage.activityPanel.title.replaceText('pet query');
-    setValueOnInputElement(flowPage.activityPanel.textInput('method'), 'GET');
-    setValueOnInputElement(flowPage.activityPanel.textInput('uri'), 'http://petstore.swagger.io/v2/pet/:petId');
-    setValueOnInputElement(flowPage.activityPanel.textArea('pathParams'), '{"petId":"222"}');
+    helpers.setValueOnInputElement(flowPage.activityPanel.textInput('method'), 'GET');
+    helpers.setValueOnInputElement(flowPage.activityPanel.textInput('uri'), 'http://petstore.swagger.io/v2/pet/:petId');
+    helpers.setValueOnInputElement(flowPage.activityPanel.textArea('pathParams'), '{"petId":"222"}');
     flowPage.activityPanel.saveButton.get().click();
 
     flowPage.newActivity.openPanel();
@@ -112,22 +104,24 @@ describe('flogo web', function() {
 
   }, 70000);
 
+  it('should allow to add transformation specification', function(){
+    browser.ignoreSynchronization = true;
+
+    flowPage.transform.open(flowPage.tasks.findOne('log pet'));
+    let transform = flowPage.transform.get();
+    transform.waitVisible();
+
+    let outputField = transform.outputFieldFor('message');
+    expect(outputField.isPresent()).toBeTruthy();
+    helpers.setValueOnInputElement(outputField, 'pet-query.result.name');
+
+    let saveButton = transform.saveButton.get();
+    expect(saveButton.isEnabled()).toBeTruthy();
+    saveButton.click();
+
+    expect(transform.tileHasTransformBadge(flowPage.tasks.findOne('log pet'))).toBeTruthy();
+
+  });
+
 
 });
-
-// chrome driver bug
-function setValueOnInputElement(inputElement, value) {
-  inputElement.clear();
-  inputElement.sendKeys(value);
-  inputElement.getAttribute('value').then(insertedValue => {
-    if (insertedValue !== value) {
-      // Failed, must send characters one at a time
-      inputElement.clear();
-      var i;
-      for(i = 0; i < value.length; i++){
-        inputElement.sendKeys(value.charAt(i));
-      }
-    }
-  });
-}
-
