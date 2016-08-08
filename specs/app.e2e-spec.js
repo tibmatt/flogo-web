@@ -8,10 +8,10 @@ var flowPage = require('./pages/flow.page');
 var loadingIndicator = require('./pages/loading-indicator');
 var helpers = require('./helpers');
 
-describe('flogo web', function() {
+describe('flogo web', function () {
   var flowName = 'My new shiny flow';
 
-  it('should create a flow', function() {
+  it('should create a flow', function () {
     browser.get(`http://${HOST}:${PORT}`);
     loadingIndicator.wait();
 
@@ -39,7 +39,7 @@ describe('flogo web', function() {
 
   }, 60000);
 
-  it('should add a trigger to a flow', function() {
+  it('should add a trigger to a flow', function () {
     browser.ignoreSynchronization = true;
 
     flowPage.newTrigger.openPanel();
@@ -52,7 +52,7 @@ describe('flogo web', function() {
 
   });
 
-  it('should add an activity to a flow', function() {
+  it('should add an activity to a flow', function () {
     browser.ignoreSynchronization = true;
 
     let activityTitle = 'log start';
@@ -76,7 +76,7 @@ describe('flogo web', function() {
 
   }, 70000);
 
-  it('should activities to a flow', function() {
+  it('should activities to a flow', function () {
     browser.ignoreSynchronization = true;
 
     flowPage.newActivity.openPanel();
@@ -104,7 +104,7 @@ describe('flogo web', function() {
 
   }, 70000);
 
-  it('should allow to add transformation specification', function(){
+  it('should allow to add transformation specification', function () {
     browser.ignoreSynchronization = true;
 
     flowPage.transform.open(flowPage.tasks.findOne('log pet'));
@@ -117,11 +117,42 @@ describe('flogo web', function() {
 
     let saveButton = transform.saveButton.get();
     expect(saveButton.isEnabled()).toBeTruthy();
+
     saveButton.click();
 
     expect(transform.tileHasTransformBadge(flowPage.tasks.findOne('log pet'))).toBeTruthy();
 
   });
+
+  it('should run succesfully from trigger', function () {
+    browser.ignoreSynchronization = true;
+
+    flowPage.tasks.getOfType(['node_root']).first().click();
+    browser.sleep(MS_WAIT_FOR_ANIMATION);
+
+    let runFromTriggerButton = flowPage.activityPanel.runFromTriggerButton.get();
+    expect(runFromTriggerButton.isEnabled()).toBeTruthy();
+
+    expect(flowPage.notification.getAll().count()).toEqual(0);
+    let allTiles = flowPage.tasks.getOfType(['node_root', 'node']);
+    expect(allTiles.filter(flowPage.tasks.isRan).count()).toBe(0);
+
+    runFromTriggerButton.click();
+
+    let successNotification = flowPage.notification.getSuccess();
+    browser.wait(protractor.ExpectedConditions.presenceOf(successNotification));
+
+    expect(successNotification.getText()).toMatch(/Flow completed/i);
+
+    flowPage.tasks.getOfType(['node_root', 'node']).count()
+      .then(totalCount => { expect(
+          flowPage.tasks.getOfType(['node_root', 'node'])
+            .filter(flowPage.tasks.isRan).count()
+        ).toEqual(totalCount);
+      });
+
+
+  })
 
 
 });

@@ -34,7 +34,7 @@
         </div>
         <!-- PANEL BUTTONS -->
         <div *ngIf="_context.isTrigger" class="clearfix">
-          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+          <button  class="flogo-form-builder-buttons-primary-call flogo-btn-run-from-trigger left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
             Run from Trigger
           </button>
           <button class="flogo-form-builder-buttons-primary flogo-form-builder-buttons-save left" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
@@ -45,7 +45,7 @@
           <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
             Run from Tile
           </button>
-          <button class="flogo-form-builder-buttons-primary right" [hidden]="_hasChanges" (click)="runFromTrigger($event)">Run from Trigger</button>
+          <button class="flogo-form-builder-buttons-primary flogo-btn-run-from-trigger right" [hidden]="_hasChanges" (click)="runFromTrigger($event)">Run from Trigger</button>
           <button class="flogo-form-builder-buttons-primary flogo-form-builder-buttons-save left" [hidden]="!_hasChanges" (click)="saveChanges($event)">Save</button>
           <button class="flogo-form-builder-buttons-secondary right" [hidden]="!_hasChanges" (click)="cancelEdit($event)">Cancel</button>
         </div>

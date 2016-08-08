@@ -74,7 +74,12 @@ var flowPage = {
     },
     saveButton: {
       get() {
-        return element(by.css('.flogo-form-builder-buttons-save'));
+        return element(by.css('flogo-form-builder')).element(by.css('.flogo-form-builder-buttons-save'));
+      }
+    },
+    runFromTriggerButton: {
+      get() {
+        return element(by.css('.flogo-btn-run-from-trigger'));
       }
     }
   },
@@ -100,9 +105,21 @@ var flowPage = {
             }, () => false);
         })
         .first();
+    },
+    isRan(tile) {
+      return tile.getAttribute('class')
+        .then(classes => classes.split(' ').includes('flogo-flows-detail-diagram-node-run'));
     }
   },
-  transform: transform
+  transform: transform,
+  notification: {
+    getAll() {
+      return element.all(by.css('.flogo-common-notification'));
+    },
+    getSuccess() {
+      return element(by.css('.flogo-common-notification.success'));
+    }
+  }
 };
 module.exports = flowPage;
 
