@@ -7,6 +7,8 @@
                 <div class="ft-json__header__icon" (click)="togglePanel()" *ngIf="isCollapsed"><img src="/assets/svg/arrow-left.svg" alt=""></div>
                 <div class="ft-json__header__icon" (click)="togglePanel()" *ngIf="!isCollapsed"><img src="/assets/svg/arrow-right.svg" alt=""></div>
             </div>
+
+
         </div>
 
          <div *ngIf="!isInput" class="ft-json__header--output">
@@ -19,7 +21,18 @@
 
     </div>
 
-    <hr *ngIf="!isCollapsed" />
+    <div *ngIf="!isCollapsed">
+        <hr />
+
+        <div  *ngIf="!isInput">
+            <div class="ft-json__header__subtitle">Previous tiles</div>
+        </div>
+
+        <div  *ngIf="isInput">
+            <div class="ft-json__header__subtitle">Transformation for {{name}} </div>
+        </div>
+
+    </div>
 
     <div *ngIf="!isCollapsed" [innerHTML]="currentSchema" class="ft-json__code"></div>
 </div>
