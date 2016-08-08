@@ -32,6 +32,9 @@ export class TransformJsonPanelComponent implements OnChanges {
 
             if(!_.isEmpty(itemSelected)) {
                 if(this.isInput) {
+                    if(itemSelected.tile) {
+                        itemSelected.name = '';
+                    }
                     this.currentSchema =  this.getFormattedHTMLInput(this.schema, itemSelected.name || '');
                 }else {
                     this.currentSchema =  this.getFormattedHTMLOutput(this.schema, itemSelected.tile || '', itemSelected.name || '');
@@ -144,7 +147,7 @@ export class TransformJsonPanelComponent implements OnChanges {
         let html:string = '';
         let isSelected:boolean = false;
 
-        html += this.wrapInDiv('{', false, '-15px');
+        html += this.wrapInDiv('{', false, '-10px');
         for(var tile in jsonSchema) {
 
             // Check if is an array, in this case if is a tile
@@ -154,17 +157,18 @@ export class TransformJsonPanelComponent implements OnChanges {
 
                 let countField:number = 1;
                 for(var fieldIndex in jsonSchema[tile]) {
-                    html += this.wrapInDiv('{', false,'10px');
+                    html += this.wrapInDiv('{', false,'5px');
                     isSelected =  (tile == tileSelected && jsonSchema[tile][fieldIndex]['name'] == fieldSelected);
 
                     for(var field in jsonSchema[tile][fieldIndex]) {
-                        html += this.wrapInDiv(`"${field}":"${jsonSchema[tile][fieldIndex][field]}"`, isSelected, '20px');
+                        html += this.wrapInDiv(`"${field}":"${jsonSchema[tile][fieldIndex][field]}"`,
+                            isSelected, '10px');
                     }
 
                     if(countField < jsonSchema[tile].length ) {
-                        html += this.wrapInDiv('},', false,'10px');
+                        html += this.wrapInDiv('},', false,'5px');
                     } else {
-                        html += this.wrapInDiv('}', false,'10px');
+                        html += this.wrapInDiv('}', false,'5px');
                     }
 
                     countField += 1;
