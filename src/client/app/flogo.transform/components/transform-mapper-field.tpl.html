@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <div class="flogo-visual-mapper__item__list" [style.border]="showList ? '1px solid gray' : none">
+    <div class="flogo-visual-mapper__item__list" [ngClass]="{'flogo-visual-mapper__item_list--active':showList}">
         <div *ngFor="let item of tiles" [hidden]="!showList"  class="flogo-visual-mapper__item__list__item" >
 
             <span class="glyphicon flogo-visual-mapper__item__action"
