@@ -13,6 +13,7 @@
                        (click)="onFocusText(tile.name)"
                        (keyup)="onKeyPress($event)"
                        (keyup)="onKeyUp($event.target.value)"
+                       [attr.data-flogo-output-for]="tile.name"
                        class="output-text">
             </div>
         </div>
@@ -21,7 +22,8 @@
              (mouseover)="onMouseOver('',tile.name)"
              (mouseleave)="onMouseOver('','')"
              [style.color]="hasError ? 'red': 'black'">
-            <div [ngClass]="{'connected':selectedValue, 'not-connected':!selectedValue}">{{tile.name}}</div>
+            <div [ngClass]="{'connected':selectedValue, 'not-connected':!selectedValue}"
+                 [attr.data-flogo-input-for]="tile.name">{{tile.name}}</div>
         </div>
     </div>
 

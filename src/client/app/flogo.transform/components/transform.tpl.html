@@ -9,7 +9,7 @@
           <button class="flogo-btn-link flogo-transform-delete-btn" (click)="openDeleteConfirmation($event)">
             Delete
           </button>
-          <button class="tc-buttons tc-buttons-primary"
+          <button class="tc-buttons tc-buttons-primary flogo-transform-save-btn"
                   [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
                   (click)="saveTransform()">Save
           </button>
