@@ -1,7 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, ElementRef, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { mappingsValidateField } from '../validators/validators';
 
 @Component({
+    host: {
+        '(document: click)': 'onClick($event)'
+    },
     selector: 'flogo-transform-mapper-field',
     moduleId: module.id,
     directives: [],
@@ -26,16 +29,24 @@ export class TransformMapperField implements  OnChanges, OnInit {
     selectedTile:string = '';
     selectedInput:string = '';
 
-    constructor() {
+    constructor(private _eref: ElementRef) {
         this.mappingChange = new EventEmitter();
         this.itemOver      = new EventEmitter();
+    }
+
+    onClick(event) {
+        let nativeElement = this._eref.nativeElement;
+
+        if (event.target !== nativeElement && !nativeElement.contains(event.target)) {
+            this.showList = false;
+        }
+
     }
 
     ngOnInit() {
     }
 
     onMouseLeave() {
-        this.resetStatus();
     }
 
     onMouseOver(tile:string, field:string) {
@@ -158,6 +169,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
         this.selectedValue = output.name + '.' + field.name;
         this.emitChange(this.selectedValue);
         this.showList = false;
+        return true;
     }
 
     clickRemove() {
@@ -172,5 +184,6 @@ export class TransformMapperField implements  OnChanges, OnInit {
         return '[ { "type": 1, "value": "' + value + '", "mapTo": "' + this.tile.name + '" } ]'
 
     }
+
 
 }

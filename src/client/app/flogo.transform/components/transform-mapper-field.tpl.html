@@ -1,14 +1,9 @@
-<div class="flogo-visual-mapper" (mouseleave)="onMouseLeave($event)">
+<div class="flogo-visual-mapper">
 
     <div class="shape" [ngClass]="{'shape-connected':selectedValue}">
 
         <div class="output">
             <div [ngClass]="{'connected':selectedValue, 'not-connected':!selectedValue}">
-
-                <!--
-                <span class="glyphicon glyphicon-remove flogo-visual-mapper__item__remove" (click)="clickRemove($event)"
-                      aria-hidden="true" [hidden]="!selectedValue" (click)="clickRemove($event)"></span>
-                      -->
 
                 <img src="/assets/svg/flogo.transform.closeicon.svg"
                      class="flogo-visual-mapper__item__remove" (click)="clickRemove($event)"
