@@ -19,6 +19,10 @@
     background-color: #eceff4;
   }
 
+  .shape-connected-over {
+    background-color: #abb0c5;
+  }
+
 
   .shape {
     display: flex;
@@ -36,6 +40,7 @@
 
       .output-text {
         width: 90%;
+        height: 90%;
         border: 0;
       }
 
@@ -92,7 +97,6 @@
       height: @background-output-height-connected*1px;
       width: 250px;
       text-align: center;
-      padding-top: 10px;
 
       .connected {
       }
@@ -102,11 +106,11 @@
 
       .connected, .not-connected {
         height: 100%;
+        padding-top:8px;
       }
 
       .connected:hover, .not-connected:hover {
         color: white;
-
       }
 
     }

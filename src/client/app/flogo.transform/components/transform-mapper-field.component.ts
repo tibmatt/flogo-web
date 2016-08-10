@@ -28,6 +28,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     errors:any;
     selectedTile:string = '';
     selectedInput:string = '';
+    overInput:boolean = false;
 
     constructor(private _eref: ElementRef) {
         this.mappingChange = new EventEmitter();
@@ -47,10 +48,17 @@ export class TransformMapperField implements  OnChanges, OnInit {
     }
 
     onMouseLeave() {
+       this.emittItemOver('', '');
+        this.overInput = false;
+        console.log('Mouse leave');
     }
 
-    onMouseOver(tile:string, field:string) {
+    onMouseOver(tile:string, field:string, type:string) {
         this.emittItemOver(tile, field);
+        if(type == 'input') {
+            this.overInput = true;
+        }
+        console.log('Mouse over');
     }
 
     emittItemOver(tile:string, field: string) {

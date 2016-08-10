@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angu
 import { TileInOutInfo } from '../models/tile-in-out-info.model';
 import { Observable } from 'rxjs/Rx';
 import {TransformMapperField} from './transform-mapper-field.component';
-import Event = d3.layout.force.Event;
 
 
 @Component({

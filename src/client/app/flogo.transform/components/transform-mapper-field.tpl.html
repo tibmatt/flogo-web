@@ -1,6 +1,6 @@
 <div class="flogo-visual-mapper">
 
-    <div class="shape" [ngClass]="{'shape-connected':selectedValue}">
+    <div class="shape" [ngClass]="{'shape-connected':selectedValue, 'shape-connected-over':selectedValue && overInput}">
 
         <div class="output">
             <div [ngClass]="{'connected':selectedValue, 'not-connected':!selectedValue}">
@@ -19,8 +19,8 @@
         </div>
 
         <div class="input-shape"
-             (mouseover)="onMouseOver('',tile.name)"
-             (mouseleave)="onMouseOver('','')"
+             (mouseover)="onMouseOver('',tile.name, 'input')"
+             (mouseleave)="onMouseLeave('','')"
              [style.color]="hasError ? 'red': 'black'">
             <div [ngClass]="{'connected':selectedValue, 'not-connected':!selectedValue}"
                  [attr.data-flogo-input-for]="tile.name">{{tile.name}}</div>
@@ -41,7 +41,7 @@
 
                     <div class="flogo-visual-mapper__item__field"
                          (mouseleave)="emittItemOver('','')"
-                         (mouseover)="onMouseOver(item.name, field.name)">{{field.name}}</div>
+                         (mouseover)="onMouseOver(item.name, field.name, 'output')">{{field.name}}</div>
 
                 </div>
         </div>

@@ -1,7 +1,7 @@
 import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'flogo-json-panel',
+    selector: 'flogo-transform-json-panel',
     moduleId: module.id,
     templateUrl: 'transform-json-panel.tpl.html',
     outputs: ['toggledControl:toggled'],
