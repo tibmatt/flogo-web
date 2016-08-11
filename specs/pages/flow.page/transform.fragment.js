@@ -41,13 +41,7 @@ function TransformFragment(fragment) {
 
   return {
     outputFieldFor: function outputFieldFor(inputPropName) {
-      return fragment
-        .all(by.css('.flogo-visual-mapper__item'))
-        .filter(item => item
-          .element(by.css('.flogo-visual-mapper__item__input'))
-          .getText(propName => propName == inputPropName))
-        .first()
-        .element(by.css('.flogo-visual-mapper__item__output__text'));
+      return fragment.element(by.css(`flogo-transform-mapper-field input[data-flogo-output-for="${inputPropName}"]`));
     },
     waitVisible: function waitVisible() {
       return browser.wait(protractor.ExpectedConditions.visibilityOf(fragment));
