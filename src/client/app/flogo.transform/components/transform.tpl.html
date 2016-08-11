@@ -28,15 +28,13 @@
     <div class="flogo-transform-modal__content">
 
       <div class="col" [ngClass]="{'collapsed':isCollapsedOutput, 'not-collapsed':!isCollapsedOutput}"   >
-        <flogo-json-panel
+        <flogo-transform-json-panel
                 class="flogo-transform-modal__content-json-panel"
                 [schema]="data.precedingTilesOutputs"
                 [currentFieldSelected]="currentFieldSelected"
                 (toggled)="onToggledSchema($event)"
-                [isInput]="false"></flogo-json-panel>
+                [isInput]="false"></flogo-transform-json-panel>
       </div>
-
-
 
       <div class="mappings-container" [class.has-error]="!isValid">
         <div class="mappings-container__main">
@@ -53,12 +51,12 @@
 
 
       <div class="col" [ngClass]="{'collapsed':isCollapsedInput, 'not-collapsed':!isCollapsedInput}"  >
-        <flogo-json-panel [schema]="data.tileInputInfo"
+        <flogo-transform-json-panel [schema]="data.tileInputInfo"
                           class="flogo-transform-modal__content-json-panel"
                           [isInput]="true"
                           [currentFieldSelected]="currentFieldSelected"
                           (toggled)="onToggledSchema($event)"
-                          [name]="data.tile?.name"></flogo-json-panel>
+                          [name]="data.tile?.name"></flogo-transform-json-panel>
       </div>
 
 
