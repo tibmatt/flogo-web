@@ -108,7 +108,7 @@ var flowPage = {
     },
     isRan(tile) {
       return tile.getAttribute('class')
-        .then(classes => classes.split(' ').includes('flogo-flows-detail-diagram-node-run'));
+        .then(classes => classes.split(' ').indexOf('flogo-flows-detail-diagram-node-run') > -1)
     }
   },
   transform: transform,

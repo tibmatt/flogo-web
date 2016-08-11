@@ -11,7 +11,7 @@ var loadingIndicator = require('./pages/loading-indicator');
 var helpers = require('./helpers');
 
 describe('flogo web', function () {
-  var flowName = 'My new shiny flow';
+  var flowName = 'My test flow';
 
   it('should create a flow', function () {
     browser.get(`http://${HOST}:${PORT}`);
