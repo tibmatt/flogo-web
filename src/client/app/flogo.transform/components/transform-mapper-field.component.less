@@ -1,3 +1,187 @@
+@width : 380;
+@height: 50;
+@border-color: green;
+@background-color: #FFF;
+@border-width: 15;
+@radius: 4;
+
+@width-increment-when-selected:   48;
+
+@background-output-height-not-connected: 40;
+@background-output-width-not-connected: 321;
+
+@background-output-height-connected:     40;
+@background-output-width-connected:     369;
+
+.flogo-visual-mapper {
+
+  .shape-connected {
+    background-color: #eceff4;
+  }
+
+  .shape-connected-over {
+    background-color: #abb0c5;
+  }
+
+
+  .shape {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    margin-top:20px;
+    display: flex;
+    width: 630px;
+
+
+    .output {
+      background-repeat: no-repeat;
+
+
+      .output-text {
+        width: 90%;
+        height: 90%;
+        border: 0;
+      }
+
+      .connected {
+
+        align-items: center;
+        background-image: url('/assets/svg/flogo.transform.output-shape-connected.svg');
+        display: flex;
+        height: @background-output-height-connected*1px;
+        justify-content: center;
+        width: @background-output-width-connected *1px;
+
+        //.output-text  {
+        //  border: 0;
+        //}
+
+        .output-text:focus {
+          outline-width: 0;
+          //width: 90%;
+        }
+
+      }
+
+      .not-connected {
+        align-items: center;
+        background-image: url('/assets/svg/flogo.transform.output-shape-not-connected.svg');
+        display: flex;
+        height: @background-output-height-not-connected*1px;
+        justify-content: center;
+        width: @background-output-width-not-connected *1px;
+        //height: 100%;
+
+        //.output-text  {
+        //border: 0;
+        //}
+
+        .output-text:focus {
+          outline-width: 0;
+          width: 90%;
+        }
+      }
+
+      .not-connected.active {
+        background-image: url('/assets/svg/flogo.transform.output-shape-not-connected-active.svg');
+      }
+
+      .connected.active {
+        background-image: url('/assets/svg/flogo.transform.output-shape-connected-active.svg');
+      }
+    }
+
+    .input-shape {
+      background-image: url('/assets/svg/flogo.transform.input-shape.svg');
+      height: @background-output-height-connected*1px;
+      width: 250px;
+      text-align: center;
+
+      .connected {
+      }
+
+      .not-connected {
+      }
+
+      .connected, .not-connected {
+        height: 100%;
+        padding-top:8px;
+      }
+
+      .connected:hover, .not-connected:hover {
+        color: white;
+      }
+
+    }
+    .input-shape:hover {
+      background-image: url('/assets/svg/flogo.transform.input-shape-hover.svg');
+      color: white;
+    }
+  }
+
+  .flogo-visual-mapper__item__list {
+    width: 315px;
+    background-color: white;
+    z-index: 900;
+    position: absolute;
+    /*
+    border-right: 2px solid #a5d377;
+    border-bottom: 2px solid #a5d377;
+    border-left: 2px solid #a5d377;
+    */
+  }
+
+  .flogo-visual-mapper__item_list--active {
+    border-right: 2px solid #a5d377;
+    border-bottom: 2px solid #a5d377;
+    border-left: 2px solid #a5d377;
+  }
+
+  .flogo-visual-mapper__item__list__item {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+
+  .flogo-visual-mapper__item__action {
+    color:dimgray;
+    font-size: 0.8em;
+  }
+
+  .flogo-visual-mapper__item__name {
+    font-weight: bold;
+    margin-left: 5px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    cursor:pointer;
+    list-style-type: none;
+    display: inline
+  }
+
+  .flogo-visual-mapper__item__list__field {
+    cursor:pointer;
+    list-style-type: none;
+    margin-bottom: 5px;
+  }
+
+  .flogo-visual-mapper__item__field {
+    padding-left: 30px;
+  }
+
+  .flogo-visual-mapper__item__field:hover {
+    background-color: #ededed;
+  }
+
+  .flogo-visual-mapper__item__remove {
+    color:dimgray;
+    cursor:pointer;
+    margin-right: 6px;
+  }
+
+}
+
+/*
 @height: 40;
 @height-item: 25;
 //@color-output: #3498db;
@@ -11,15 +195,36 @@
     display: flex;
     flex-direction: row;
     height: (@height)*1px;
+
+  }
+
+  .flogo-visual-mapper__item__name {
+    font-weight: bold;
+    margin-left: 5px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    cursor:pointer;
+    list-style-type: none;
+    display: inline
+  }
+
+  .flogo-visual-mapper__item__field {
+    margin-left: 30px
+  }
+
+  .flogo-visual-mapper__item__error {
+    color: red;
   }
 
   .flogo-visual-mapper__item__remove {
-    display: flex;
-    flex: 0 0 5%;
-    cursor: pointer;
-    color: #b13d3d;
-    align-items: center;
-    justify-content: center;
+    left:-5px;
+    color:dimgray;
+    cursor:pointer
+  }
+
+  .flogo-visual-mapper__item__action {
+    color:dimgray;
+    font-size: 0.8em;
   }
 
   .flogo-visual-mapper__item__output {
@@ -29,7 +234,7 @@
   }
 
   .flogo-visual-mapper__item__output__text {
-    width: 80%;background-color: transparent;border:0
+    width: 94%;background-color: transparent;border:0
   }
 
   .flogo-visual-mapper__item__output__list__selector {
@@ -50,10 +255,15 @@
   }
 
   .flogo-visual-mapper__item__list {
-    width: 60%;
-    margin-bottom: 10px;
+    width: 250px;
+    background-color: white;
+    z-index: 900;
+    position: absolute;
+  }
+
+  .flogo-visual-mapper__item__list__item {
     margin-top: 0;
-    background-color: @color-input;
+    padding-top: 0;
   }
 
 
@@ -61,9 +271,16 @@
     cursor: pointer;
   }
 
-  .flogo-visual-mapper__item__list--selectedvalue {
-    left: 30px;
-    position: relative;
+  .flogo-visual-mapper__item__list__field {
+    cursor:pointer;
+    list-style-type: none;
+
+    margin-bottom: 5px;
+    //margin-left: 10px
+  }
+
+  .flogo-visual-mapper__item__list__field:hover {
+    background-color: #ededed;
   }
 
   .flogo-visual-mapper__item__output, .flogo-visual-mapper__item__input {
@@ -98,13 +315,12 @@
     top: 0
   }
 
-  .flogo-visual-mapper__item__output--connected,
-  .flogo-visual-mapper__item__error {
-    left: 10px;
+  .flogo-visual-mapper__item__output--connected {
+    margin-right: 0;
   }
   .flogo-visual-mapper__item__input--connected {
     background-color: #ccd0d8;
     flex: 0 0 30%;
   }
-
 }
+*/

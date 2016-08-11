@@ -1,7 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, ElementRef, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { mappingsValidateField } from '../validators/validators';
 
 @Component({
+    host: {
+        '(document: click)': 'onClick($event)'
+    },
     selector: 'flogo-transform-mapper-field',
     moduleId: module.id,
     directives: [],
@@ -15,6 +18,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     @Input() tileInputInfo:any;
     @Input() tileInfo:any;
     @Output() mappingChange:EventEmitter<any>;
+    @Output() itemOver:EventEmitter<any>;
 
     selectedValue:string = '';
     showList:boolean  = false;
@@ -22,12 +26,57 @@ export class TransformMapperField implements  OnChanges, OnInit {
     hasError:boolean = false;
     messageError:string = '';
     errors:any;
+    selectedTile:string = '';
+    selectedInput:string = '';
+    overInput:boolean = false;
 
-    constructor() {
+    constructor(private _eref: ElementRef) {
         this.mappingChange = new EventEmitter();
+        this.itemOver      = new EventEmitter();
+    }
+
+    onClick(event) {
+        let nativeElement = this._eref.nativeElement;
+
+        if (event.target !== nativeElement && !nativeElement.contains(event.target)) {
+            this.showList = false;
+        }
+
     }
 
     ngOnInit() {
+    }
+
+    onMouseLeave() {
+       this.emittItemOver('', '');
+        this.overInput = false;
+        console.log('Mouse leave');
+    }
+
+    onMouseOver(tile:string, field:string, type:string) {
+        this.emittItemOver(tile, field);
+        if(type == 'input') {
+            this.overInput = true;
+        }
+        console.log('Mouse over');
+    }
+
+    emittItemOver(tile:string, field: string) {
+        this.itemOver.emit({tile:tile, name: field });
+    }
+
+    resetStatus() {
+        this.selectedTile = '';
+        this.selectedInput = '';
+        this.showList = false;
+
+    }
+
+    onFocusText(input: string) {
+        this.selectedTile = '';
+        this.selectedInput = input;
+        this.showList = true;
+        console.log('The selected input is:', this.selectedInput);
     }
 
     onKeyUp(value:string) {
@@ -43,6 +92,15 @@ export class TransformMapperField implements  OnChanges, OnInit {
             hasError: this.hasError,
             errors: this.errors
         });
+    }
+
+    setSelectedTile(value:string) : void {
+
+        if(this.selectedTile == value) {
+            this.selectedTile = '';
+        } else {
+            this.selectedTile = value;
+        }
     }
 
     validateField(value:string) {
@@ -111,6 +169,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     onKeyPress(event) {
         if(event.keyCode == 27) {
             this.showList = false;
+            this.selectedInput = '';
         }
     }
 
@@ -118,6 +177,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
         this.selectedValue = output.name + '.' + field.name;
         this.emitChange(this.selectedValue);
         this.showList = false;
+        return true;
     }
 
     clickRemove() {
@@ -132,5 +192,6 @@ export class TransformMapperField implements  OnChanges, OnInit {
         return '[ { "type": 1, "value": "' + value + '", "mapTo": "' + this.tile.name + '" } ]'
 
     }
+
 
 }

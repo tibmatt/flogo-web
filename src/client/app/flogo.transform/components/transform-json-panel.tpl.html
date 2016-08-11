@@ -1,0 +1,38 @@
+<div class="flogo-transformation-json">
+    <div class="flogo-transformation-json__header">
+
+        <div *ngIf="isInput" class="flogo-transformation-json__header--input">
+            <div [ngClass]="{'flogo-transformation-json__header--collapsed':isCollapsed,'flogo-transformation-json__header--not-collapsed':!isCollapsed}">
+                <div class="flogo-transformation-json__header__label">Input</div>
+                <div class="flogo-transformation-json__header__icon" (click)="togglePanel()" *ngIf="isCollapsed"><img src="/assets/svg/arrow-left.svg" alt=""></div>
+                <div class="flogo-transformation-json__header__icon" (click)="togglePanel()" *ngIf="!isCollapsed"><img src="/assets/svg/arrow-right.svg" alt=""></div>
+            </div>
+
+
+        </div>
+
+         <div *ngIf="!isInput" class="flogo-transformation-json__header--output">
+            <div [ngClass]="{'flogo-transformation-json__header--collapsed':isCollapsed,'flogo-transformation-json__header--not-collapsed':!isCollapsed}">
+                <div class="flogo-transformation-json__header__label">Output</div>
+                <div class="flogo-transformation-json__header__icon" (click)="togglePanel()" *ngIf="isCollapsed"><img src="/assets/svg/arrow-right.svg" alt=""></div>
+                <div class="flogo-transformation-json__header__icon" (click)="togglePanel()" *ngIf="!isCollapsed"><img src="/assets/svg/arrow-left.svg" alt=""></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div *ngIf="!isCollapsed">
+        <hr />
+
+        <div  *ngIf="!isInput">
+            <div class="flogo-transformation-json__header__subtitle">Previous tiles</div>
+        </div>
+
+        <div  *ngIf="isInput">
+            <div class="flogo-transformation-json__header__subtitle">Transformation for {{name}} </div>
+        </div>
+
+    </div>
+
+    <div *ngIf="!isCollapsed" [innerHTML]="currentSchema" class="flogo-transformation-json__code"></div>
+</div>

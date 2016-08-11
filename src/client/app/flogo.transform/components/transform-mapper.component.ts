@@ -17,6 +17,7 @@ export class TransformMapperComponent implements OnChanges {
     @Input() mappings:any = '';
     @Input() tileInputInfo:any = null;
     @Input() precedingTilesOutputs:any[] = [];
+    @Output() selectedItem:EventEmitter<any>;
 
     transformationJSON:string = '';
 
@@ -28,6 +29,7 @@ export class TransformMapperComponent implements OnChanges {
 
     constructor() {
         this.mappingChange = new EventEmitter();
+        this.selectedItem = new EventEmitter();
     }
 
     ngOnChanges(changes:any) {
@@ -45,11 +47,12 @@ export class TransformMapperComponent implements OnChanges {
         if (changes.precedingTilesOutputs && this.precedingTilesOutputs) {
             this.tileInfo.precedingOutputs = this.extractPrecedingOutputs(this.precedingTilesOutputs);
         }
-
-
-
-
     }
+
+    onItemOver(params:any) {
+        this.selectedItem.emit(params);
+    }
+
 
     private onMappingsChange(mappingsChange:any) {
         let nextValue = mappingsChange.currentValue;

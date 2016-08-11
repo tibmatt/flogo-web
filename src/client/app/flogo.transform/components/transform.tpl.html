@@ -9,7 +9,7 @@
           <button class="flogo-btn-link flogo-transform-delete-btn" (click)="openDeleteConfirmation($event)">
             Delete
           </button>
-          <button class="tc-buttons tc-buttons-primary"
+          <button class="tc-buttons tc-buttons-primary flogo-transform-save-btn"
                   [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
                   (click)="saveTransform()">Save
           </button>
@@ -24,43 +24,46 @@
         </button>
       </div>
     </div>
+
     <div class="flogo-transform-modal__content">
-      <div class="col">
-        <div class="flogo-transform-modal__col-header">
-          <div class="flogo-transform-modal__col-header-subtitle">Previous tiles</div>
-          <div class="flogo-transform-modal__col-header-title">Output data</div>
-        </div>
-        <pre class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ data.precedingTilesOutputs | json }}</pre>
+
+      <div class="col" [ngClass]="{'collapsed':isCollapsedOutput, 'not-collapsed':!isCollapsedOutput}"   >
+        <flogo-transform-json-panel
+                class="flogo-transform-modal__content-json-panel"
+                [schema]="data.precedingTilesOutputs"
+                [currentFieldSelected]="currentFieldSelected"
+                (toggled)="onToggledSchema($event)"
+                [isInput]="false"></flogo-transform-json-panel>
       </div>
-      <div class="editor-col" [class.has-error]="!isValid">
 
-        <div class="flogo-transform-modal__col-header">
-          <div class="flogo-transform-modal__col-header-title">&nbsp;</div>
-        </div>
-
-        <div class="flogo-transform-modal__col-content">
-          <div>
+      <div class="mappings-container" [class.has-error]="!isValid">
+        <div class="mappings-container__main">
             <flogo-transform-mapper [mappings]="data.mappings"
                                     [tileInputInfo]="data.tileInputInfo"
                                     [precedingTilesOutputs]="data.precedingTilesOutputs"
+                                    (selectedItem)="onSelectedItem($event)"
                                     (mappingChange)="onMappingsChange($event)"></flogo-transform-mapper>
-
-
-              <div class="flogo-transform-modal__error-container" [hidden]="!errors">
-               <flogo-transform-error-display [errors]="errors"></flogo-transform-error-display>
-              </div>
-          </div>
+        </div>
+        <div class="mappings-container__error" [hidden]="!errors">
+          <flogo-transform-error-display [errors]="errors"></flogo-transform-error-display>
         </div>
       </div>
-      <div class="col">
-        <div class="flogo-transform-modal__col-header">
-          <div class="flogo-transform-modal__col-header-subtitle">Transformation for {{ data.tile?.name }}</div>
-          <div class="flogo-transform-modal__col-header-title">Input data</div>
-        </div>
-        <pre class="flogo-transform-modal__col-content flogo-transform-modal__schema-display">{{ data.tileInputInfo | json }}</pre>
+
+
+      <div class="col" [ngClass]="{'collapsed':isCollapsedInput, 'not-collapsed':!isCollapsedInput}"  >
+        <flogo-transform-json-panel [schema]="data.tileInputInfo"
+                          class="flogo-transform-modal__content-json-panel"
+                          [isInput]="true"
+                          [currentFieldSelected]="currentFieldSelected"
+                          (toggled)="onToggledSchema($event)"
+                          [name]="data.tile?.name"></flogo-transform-json-panel>
       </div>
+
+
+
     </div>
   </div>
+
 
 
 </div>
