@@ -1,5 +1,6 @@
 exports.config = {
-  framework: 'jasmine',
+  framework: 'jasmine2',
+  directConnect: true,
   //seleniumAddress: 'http://localhost:4444/wd/hub',
   specs: ['./app.e2e-spec.js'],
   useAllAngular2AppRoots: true,
@@ -11,5 +12,8 @@ exports.config = {
     'chromeOptions': {
       'args': ['no-sandbox']
     }
+  },
+  onPrepare: function(){
+    browser.manage().timeouts().implicitlyWait(500);
   }
 };

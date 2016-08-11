@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   wait: function(timeout){
     var ignoreSync = browser.ignoreSynchronization;

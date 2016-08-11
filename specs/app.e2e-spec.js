@@ -1,3 +1,5 @@
+'use strict';
+
 const HOST = process.env.FLOGO_HOST || 'localhost';
 const PORT = process.env.FLOGO_PORT || '3010';
 
@@ -17,6 +19,7 @@ describe('flogo web', function () {
 
     homepage.addFlowButton.click();
 
+    browser.wait(protractor.ExpectedConditions.presenceOf(homepage.newFlow.name.get()));
     helpers.setValueOnInputElement(homepage.newFlow.name.get(), flowName);
 
     var flowList = homepage.flowList().get();
@@ -24,9 +27,9 @@ describe('flogo web', function () {
 
     homepage.newFlow.clickSave();
 
-    browser.ignoreSynchronization = true;
+    //browser.ignoreSynchronization = true;
 
-    initialFlowCount.then(initialCount => expect(flowList.count()).toEqual(initialCount + 1));
+    initialFlowCount.then(initialCount => expect(homepage.flowList().get().count()).toEqual(initialCount + 1));
 
     var flow = flowList.getFlow(0);
     expect(flow.getName()).toEqual(flowName);
@@ -80,6 +83,7 @@ describe('flogo web', function () {
     browser.ignoreSynchronization = true;
 
     flowPage.newActivity.openPanel();
+
     flowPage.newActivity.selectByName('REST Activity').click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
     flowPage.activityPanel.title.replaceText('pet query');
@@ -99,10 +103,10 @@ describe('flogo web', function () {
       .then(isDisplayed => isDisplayed ? flowPage.activityPanel.saveButton.get().click() : null);
 
     let taskNodes = flowPage.tasks.getOfType(['node', 'node_root']);
-    expect(taskNodes.count()).toEqual(4);
-    expect(flowPage.tasks.getTitles(taskNodes)).toEqual(['REST Trigger', 'log start', 'pet query', 'log pet']);
+    expect(flowPage.tasks.getOfType(['node', 'node_root']).count()).toEqual(4);
+    expect(flowPage.tasks.getTitles(flowPage.tasks.getOfType(['node', 'node_root']))).toEqual(['REST Trigger', 'log start', 'pet query', 'log pet']);
 
-  }, 70000);
+  }, 80000);
 
   it('should allow to add transformation specification', function () {
     browser.ignoreSynchronization = true;
@@ -115,10 +119,8 @@ describe('flogo web', function () {
     expect(outputField.isPresent()).toBeTruthy();
     helpers.setValueOnInputElement(outputField, 'pet-query.result.name');
 
-    let saveButton = transform.saveButton.get();
-    expect(saveButton.isEnabled()).toBeTruthy();
-
-    saveButton.click();
+    expect(transform.saveButton.get().isEnabled()).toBeTruthy();
+    transform.saveButton.get().click();
 
     expect(transform.tileHasTransformBadge(flowPage.tasks.findOne('log pet'))).toBeTruthy();
 
@@ -141,8 +143,7 @@ describe('flogo web', function () {
 
     let successNotification = flowPage.notification.getSuccess();
     browser.wait(protractor.ExpectedConditions.presenceOf(successNotification));
-
-    expect(successNotification.getText()).toMatch(/Flow completed/i);
+    //expect(flowPage.notification.getSuccess().getText().then(text => {console.log('message', text); return text;})).toMatch(/Flow completed/i);
 
     flowPage.tasks.getOfType(['node_root', 'node']).count()
       .then(totalCount => { expect(

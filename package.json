@@ -9,8 +9,8 @@
     "start": "gulp",
     "clean": "rm -rfv `find . -path \"*/node_modules\" -print`",
     "webdriver-manager": "webdriver-manager update && webdriver-manager start",
-    "e2e": "cd specs && npm run e2e",
-    "e2e-container": "cd specs && npm run e2e-container"
+    "e2e": "cd specs && protractor protractor.conf.js",
+    "e2e-container": "cd specs && docker run -it --rm --net=host --name flogo-protractor-runner -v $(pwd):/protractor/project hortonworks/docker-e2e-protractor protractor.conf.js"
   },
   "author": "Shaoke Xu<shaoxu@tibco.com>",
   "devDependencies": {

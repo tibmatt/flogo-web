@@ -1,10 +1,12 @@
+'use strict';
+
 module.exports = {
   setValueOnInputElement: setValueOnInputElement
 };
 
 // chrome driver bug
 function setValueOnInputElement(inputElement, value) {
-  inputElement.clear();
+  //inputElement.clear().then(()=>console.log('clear'));
   inputElement.sendKeys(value);
   inputElement.getAttribute('value').then(insertedValue => {
     if (insertedValue !== value) {
