@@ -6,13 +6,14 @@ import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
 import {FlogoFormBuilderFieldsObject as FieldObject} from '../../flogo.form-builder.fields/components/fields.object/fields.object.component';
+import {FlogoFormBuilderFieldsListBox as FieldListBox} from '../../flogo.form-builder.fields/components/fields.listbox/fields.listbox.component';
 import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 
 @Component({
     selector: 'flogo-form-builder-task-configuration',
     moduleId: module.id,
     templateUrl: 'form-builder.configuration.task.tpl.html',
-    directives: [FieldRadio, FieldTextBox,  FieldTextArea, FieldNumber, FieldObject],
+    directives: [FieldRadio, FieldTextBox,  FieldTextArea, FieldNumber, FieldObject, FieldListBox],
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes', '_task:task'],
     providers: [FlogoFormBuilderCommon]
 })
@@ -35,8 +36,13 @@ export class FlogoFormBuilderConfigurationTaskComponent {
   ngOnInit() {
   }
 
-  getControlByType(type:string) :any {
-    return this._commonService.getControlByType(type);
+  getControlByType(item:any) :any {
+
+    if(item.allowed) {
+      return {control: 'FieldListBox'};
+    }
+
+    return this._commonService.getControlByType(item.type);
   }
 
   _getMappingValue(info:any) {
@@ -86,7 +92,8 @@ export class FlogoFormBuilderConfigurationTaskComponent {
       isBranch:   false,
       isTask: true,
       direction: direction,
-      structure: structure
+      structure: structure,
+      allowed: input.allowed
     };
 
     info.value = this._getMappingValue(info);
@@ -94,7 +101,7 @@ export class FlogoFormBuilderConfigurationTaskComponent {
     //  info.value = this._getMappingValue(info);
     //}
 
-    return _.assign({}, info, this.getControlByType(input.type));
+    return _.assign({}, info, this.getControlByType(input));
   }
 
 
