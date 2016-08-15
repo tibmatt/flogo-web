@@ -261,9 +261,15 @@ export class TransformComponent implements OnDestroy {
   }
 
   private mapInOutObjectDisplay(inputOutput:{name:string, type:ATTRIBUTE_TYPE}) {
+    let attributeType = ATTRIBUTE_TYPE[inputOutput.type];
+    if (!attributeType) {
+      attributeType = <string> (inputOutput.type || '');
+      console.warn(`WARN! Unknown type: ${inputOutput.type}`);
+    }
+
     return {
       name: inputOutput.name,
-      type: ATTRIBUTE_TYPE[inputOutput.type].toLowerCase()
+      type: attributeType.toLowerCase()
     };
   }
 
