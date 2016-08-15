@@ -1,6 +1,9 @@
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
+import {DEFAULT_VALUES_OF_TYPES as DEFAULT_VALUES} from '../../../../common/constants'
+
+const EMPTY_OPTION = '<empty>';
 
 @Component({
   selector: 'flogo-form-builder-fields-listbox',
@@ -22,11 +25,15 @@ export class FlogoFormBuilderFieldsListBox  extends FlogoFormBuilderFieldsBase {
   }
 
   ngOnInit() {
-    this.options =  [""].concat(this._info.allowed);
+    this.options =  [EMPTY_OPTION].concat(this._info.allowed);
   }
 
-  onSelectOption(option:string) {
+  onChangeField(option:string) {
+    if (option == EMPTY_OPTION) {
+      option = DEFAULT_VALUES[this._info.type];
+    }
     this._info.value = option;
+    this.publishNextChange();
   }
 
 }

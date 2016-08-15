@@ -2,7 +2,7 @@
 
   <div class="flogo-common-edit-panel__container">
     <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.inputs.length">Input</h3>
-    <div *ngFor="#item of fields.inputs; #index = index" class="">
+    <div *ngFor="let item of fields.inputs; #index = index" class="">
 
       <div *ngIf="getControlByType(item).control == 'FieldTextBox'">
         <flogo-form-builder-fields-textbox [info]="getTaskInfo(item, 'input','inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
@@ -32,7 +32,7 @@
     </div>
 
     <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.outputs.length">Output</h3>
-    <div *ngFor="#item of fields.outputs" class="flogo-task-container__output">
+    <div *ngFor="let item of fields.outputs" class="flogo-task-container__output">
 
       <div *ngIf="getControlByType(item).control == 'FieldTextBox'">
         <flogo-form-builder-fields-textbox [info]="getTaskInfo(item, 'output','outputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>

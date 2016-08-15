@@ -92,6 +92,7 @@ export class FlogoFormBuilderConfigurationTaskComponent {
       isBranch:   false,
       isTask: true,
       direction: direction,
+      // subfield where this item is located
       structure: structure,
       allowed: input.allowed
     };
