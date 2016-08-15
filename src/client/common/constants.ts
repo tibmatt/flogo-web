@@ -20,7 +20,8 @@ export enum FLOGO_TASK_ATTRIBUTE_TYPE {
   BOOLEAN,
   OBJECT,
   ARRAY,
-  PARAMS
+  PARAMS,
+  ANY
 }
 
 /**
@@ -41,6 +42,7 @@ defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN] = false;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY] = [];
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS] = null;
+defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ANY] = null;
 
 export const DEFAULT_VALUES_OF_TYPES = defaultValues;
 /**
