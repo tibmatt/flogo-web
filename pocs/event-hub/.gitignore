@@ -1,7 +1,0 @@
-dist/
-node_modules/
-*.log
-coverage/
-
-examples/index.js
-examples/index.js.map
