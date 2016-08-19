@@ -117,7 +117,17 @@ let config = {
     }],
     config: {
       "loglevel": "DEBUG",
+      "disableTriggerValidation": true,
+      // flowRunner will be eventually replaced by actionRunner
       "flowRunner": {
+        "type": "pooled",
+        "pooled": {
+          "numWorkers": 5,
+          "workQueueSize": 50,
+          "maxStepCount": 32000
+        }
+      },
+      "actionRunner": {
         "type": "pooled",
         "pooled": {
           "numWorkers": 5,
@@ -157,7 +167,16 @@ let config = {
     },
     config: {
       "loglevel": "DEBUG",
+      // flowRunner will be eventually replaced by actionRunner
       "flowRunner": {
+        "type": "pooled",
+        "pooled": {
+          "numWorkers": 5,
+          "workQueueSize": 50,
+          "maxStepCount": 32000
+        }
+      },
+      "actionRunner": {
         "type": "pooled",
         "pooled": {
           "numWorkers": 5,

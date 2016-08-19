@@ -38,7 +38,8 @@ export class RESTAPIService {
               if ( newFlowID && curFlowID ) {
                 // replace the old flowURL with the newFlowID
                 let pattern = new RegExp( `flows/${curFlowID}` );
-                state[ 'flowUri' ] = state[ 'flowUri' ].replace( pattern, `flows/${newFlowID}` );
+                state[ 'actionUri' ] = state[ 'actionUri' ].replace( pattern, `flows/${newFlowID}` );
+                state[ 'flowUri' ] = state[ 'actionUri' ];
               }
 
 

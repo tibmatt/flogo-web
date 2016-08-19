@@ -159,7 +159,8 @@ function* flowStart(next) {
   let process = config.processServer;
 
   let uri = getUrl(engine) + '/flow/start';
-  data.flowUri =  getUrl(process) + '/flows/' + data.flowId;
+  data.actionUri =  getUrl(process) + '/flows/' + data.flowId;
+  data.flowUri = data.actionUri;
   delete data.flowId;
 
   try {

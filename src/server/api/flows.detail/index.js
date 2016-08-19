@@ -56,7 +56,9 @@ function generateTriggerJSON(doc, flowName){
   });
 
   // TODO this is temp solution
-  endpoint.flowURI = "embedded://"+flowName;
+  endpoint.actionType = 'flow';
+  endpoint.actionURI = `embedded://${flowName}`;
+  endpoint.flowURI = endpoint.actionURI;
 
   trigger.endpoints.push(endpoint);
 
