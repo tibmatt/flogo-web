@@ -132,7 +132,6 @@ let config = {
         "pooled": {
           "numWorkers": 5,
           "workQueueSize": 50,
-          "maxStepCount": 32000
         }
       },
       "services": [{
