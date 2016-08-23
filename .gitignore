@@ -11,8 +11,8 @@ atom.sh
 .gradle
 
 # Build dirs
-build/
-out/
+submodules/**/build/
+submodules/**/out/
 
 ## OS X Resources
 .DS_Store

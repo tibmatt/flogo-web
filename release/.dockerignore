@@ -1,0 +1,17 @@
+
+**/.git/*
+.idea/*
+**/.DS_Store
+
+dist
+docs
+pocs
+aws-deploy
+scripts
+slack-integration
+
+**/node_modules/*
+**/.gradle/*
+
+submodules/**/build/**
+dist/build/node_modules/**

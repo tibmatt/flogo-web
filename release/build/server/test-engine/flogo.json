@@ -1,0 +1,76 @@
+{
+  "name": "test-engine",
+  "version": "0.0.1",
+  "description": "My flogo application description",
+  "models": [
+    {
+      "name": "tibco-simple",
+      "path": "github.com/TIBCOSoftware/flogo-contrib/model/simple",
+      "version": "latest"
+    }
+  ],
+  "activities": [
+    {
+      "name": "sendWSMessage",
+      "path": "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage",
+      "version": "latest"
+    },
+    {
+      "name": "tibco-app",
+      "path": "activity/tibco-app",
+      "version": "latest",
+      "localpath": "file:///home/fcastillo/dev/flogo-web/dist/submodules/flogo-contrib/activity/app"
+    },
+    {
+      "name": "tibco-awsiot",
+      "path": "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot",
+      "version": "latest"
+    },
+    {
+      "name": "tibco-coap",
+      "path": "github.com/TIBCOSoftware/flogo-contrib/activity/coap",
+      "version": "latest"
+    },
+    {
+      "name": "tibco-counter",
+      "path": "activity/tibco-counter",
+      "version": "latest",
+      "localpath": "file:///home/fcastillo/dev/flogo-web/dist/submodules/flogo-contrib/activity/counter"
+    },
+    {
+      "name": "tibco-error",
+      "path": "activity/tibco-error",
+      "version": "latest",
+      "localpath": "file:///home/fcastillo/dev/flogo-web/dist/submodules/flogo-contrib/activity/error"
+    },
+    {
+      "name": "tibco-log",
+      "path": "activity/tibco-log",
+      "version": "latest",
+      "localpath": "file:///home/fcastillo/dev/flogo-web/dist/submodules/flogo-contrib/activity/log"
+    },
+    {
+      "name": "tibco-reply",
+      "path": "activity/tibco-reply",
+      "version": "latest",
+      "localpath": "file:///home/fcastillo/dev/flogo-web/dist/submodules/flogo-contrib/activity/reply"
+    },
+    {
+      "name": "tibco-rest",
+      "path": "github.com/TIBCOSoftware/flogo-contrib/activity/rest",
+      "version": "latest"
+    },
+    {
+      "name": "tibco-twilio",
+      "path": "github.com/TIBCOSoftware/flogo-contrib/activity/twilio",
+      "version": "latest"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "tibco-rest",
+      "path": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+      "version": "latest"
+    }
+  ]
+}
