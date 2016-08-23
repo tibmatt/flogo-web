@@ -37,7 +37,7 @@ docker::pull_and_tag() {
 
   if [ -n "$docker_registry" ]; then
     docker pull $docker_registry/$base_name && \
-    docker tag -f $docker_registry/$base_name $base_name && \
+    docker tag $docker_registry/$base_name $base_name && \
     docker rmi $docker_registry/$base_name
   fi
 }
@@ -51,9 +51,9 @@ docker::push_and_tag() {
 
   if [ -n "$bid" -a -n "$docker_registry" ]; then
     echo "Publishing image..."
-    docker tag -f $image_name:$bid $image_name:$latest && \
-    docker tag -f $image_name:$bid $docker_registry/$image_name:$bid && \
-    docker tag -f $image_name:$bid $docker_registry/$image_name:$latest && \
+    docker tag $image_name:$bid $image_name:$latest && \
+    docker tag $image_name:$bid $docker_registry/$image_name:$bid && \
+    docker tag $image_name:$bid $docker_registry/$image_name:$latest && \
     docker images | grep $image_name >> images.txt && \
     docker push $docker_registry/$image_name:$latest && \
     docker push $docker_registry/$image_name:$bid && \
@@ -76,9 +76,9 @@ docker::copy_tag_and_push() {
 
   if [ -n "${bid}" -a -n "${docker_registry}" ]; then
     echo "Retagging image from: ${src_image_name}:${bid} to: ${dest_image_name}:${bid} ..."
-    docker tag -f ${src_image_name}:${bid} ${dest_image_name}:${latest} && \
-    docker tag -f ${src_image_name}:${bid} ${docker_registry}/${dest_image_name}:${bid} && \
-    docker tag -f ${src_image_name}:${bid} ${docker_registry}/${dest_image_name}:${latest} && \
+    docker tag ${src_image_name}:${bid} ${dest_image_name}:${latest} && \
+    docker tag ${src_image_name}:${bid} ${docker_registry}/${dest_image_name}:${bid} && \
+    docker tag ${src_image_name}:${bid} ${docker_registry}/${dest_image_name}:${latest} && \
     docker push ${docker_registry}/${dest_image_name}:${latest} && \
     docker push ${docker_registry}/${dest_image_name}:${bid} && \
     docker rmi ${docker_registry}/${dest_image_name}:${latest} && \
@@ -86,6 +86,6 @@ docker::copy_tag_and_push() {
     echo "Done."
   else
      # no bid and docker registry i.e. local machine
-     docker tag -f ${src_image_name}:${latest} ${dest_image_name}:${latest}
+     docker tag  ${src_image_name}:${latest} ${dest_image_name}:${latest}
   fi
 }

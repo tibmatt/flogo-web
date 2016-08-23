@@ -8,3 +8,4 @@ readonly BUILD_ROOT=$(
 )
 
 source "${BUILD_ROOT}/scripts/docker-build.sh"
+source "${BUILD_ROOT}/scripts/common.sh"
