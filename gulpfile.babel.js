@@ -60,7 +60,7 @@ gulp.task('dev', 'Build and start in development mode', cb => {
 
 });
 
-gulp.task('dist', '', cb => {
+gulp.task('release', '', cb => {
   runSequence(
     'prod.build',
     'dist.support-files',
