@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+
+if [[ "$1" == "help" ]]; then
+  echo "usage: start.sh [--mode <m>| --skip <s>][--help]"
+  echo "Flogo start"
+  echo "  --mode|-m dev or prod (Default dev)"
+  echo "  --skip|-s skip component"
+  echo "    * flow-service: skip flow service initialization"
+  echo "    * state-service: skip state service initialization"
+  echo "    * engine: skip engine install/update"
+  echo "    * contrib: do not fetch latest contrib repository changes"
+  exit 0
+fi
+
 #############################
 # Colors
 #############################
@@ -21,14 +34,27 @@ FLOGO_CONTRIB_PATH="submodules/flogo-contrib"
 CURRENT_PATH=$PWD
 
 export SKIPCHECK_DOCKER_MACHINE=""
-while getopts ":m" opt; do
-  case $opt in
-    m)
-      export SKIPCHECK_DOCKER_MACHINE=true
-      ;;
+
+STD_IN=0
+SKIP_COMPONENTS=();
+FLOGO_WEB_MODE=dev
+
+prefix=""
+key=""
+value=""
+for keyValue in "$@"
+do
+  case "${prefix}${keyValue}" in
+    -s=*|--skip=*)  key="-s";     value="${keyValue#*=}";;
+    -m=*|--mode=*) key="-m";  value="${keyValue#*=}";;
+    *)                                      value=$keyValue;;
+  esac
+  case $key in
+    -s) SKIP_COMPONENTS=("${SKIP_COMPONENTS[@]}" "${value//,/ }")  prefix=""; key="";;
+    -m) FLOGO_WEB_MODE=echo "$value" | awk '{print tolower($0)}' prefix=""; key="";;
+    *)   prefix="${keyValue}=";;
   esac
 done
-shift $(($OPTIND - 1))
 
 #############################
 # Utils
@@ -65,6 +91,7 @@ echoSuccess()
   now=$(date +"%T")
   printf "${FG_GREEN}[Success][$now] $@${NC}\n"
 }
+
 check_command(){
   local cmd="$1"; shift
   result=0;
@@ -78,21 +105,6 @@ check_command(){
     echoInfo "$cmd exist"
   fi
 #  echo "$result";
-}
-
-check_java_version() {
-    local targetVersion="$1"
-    result=0;
-
-    installed_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
-    if [[ "$installed_version" > $targetVersion ]]; then
-        result=0
-        echoInfo "Java version $installed_version is OK"
-    else
-        result=1
-        echoError "java version is lower than required version, please upgrade to $targetVersion or greater"
-        exit 1
-    fi
 }
 
 compare_versions () {
@@ -182,8 +194,9 @@ update_flogo(){
   echoInfo "Finish update flogo command"
 }
 
-
-
+should_run(){
+ [[ ! " ${SKIP_COMPONENTS[@]} " =~ " $1 " ]]
+}
 #############################
 # Step 1: check environment
 #############################
@@ -195,12 +208,6 @@ echoHeader "Step1: check environment"
 # go
 #============================
 check_command go
-
-#============================
-# java
-#============================
-check_command java
-check_java_version "1.8"
 
 #============================
 # gb
@@ -219,11 +226,6 @@ check_command node
 check_version node "4.0"
 
 #============================
-# gulp
-#============================
-# check_command gulp
-
-#============================
 # npm
 #============================
 check_command npm
@@ -233,65 +235,60 @@ check_version npm "3.0"
 #============================
 # docker-machine & docker
 #============================
-if [ -z "$SKIPCHECK_DOCKER_MACHINE" ]; then
-  check_command docker-machine
-fi
 check_command docker
 
 #============================
 # flogo
 #============================
 # check_command flogo
-update_flogo
+if should_run 'engine'; then
+  update_flogo
+else
+  echoInfo 'Skipping engine reinstall'
+fi
 
 #############################
 # Step 2: update submodule
 #############################
 echoHeader "Step2: update submodules: flogo-contrib, flogo-services"
-
 git submodule update --init -- submodules/flogo-services
-# make sure always pulls the latest changes from flogo-contrib
-rm -rf submodules/flogo-contrib
-git submodule update --init --remote -- submodules/flogo-contrib
 
-echoSuccess "update submodule\n"
+if should_run 'contrib'; then
+  # make sure always pulls the latest changes from flogo-contrib
+  rm -rf submodules/flogo-contrib
+  git submodule update --init --remote -- submodules/flogo-contrib
+  echoSuccess "update submodule\n"
+else
+  echoInfo 'Skipping contrib submodule update'
+fi
 
 #############################
 # Step 3: start process and state server
 #############################
 echoHeader "Step3: start process and state server"
 
-echoInfo " setup docker"
-cd scripts/setup
-sh setup-docker.sh
+if should_run 'flow-service'; then
+  docker-compose stop flogo-flow-service
+  docker-compose up -d flogo-flow-service
+else
+ echoInfo 'Skipping flow service'
+fi
 
-echoInfo "stop process and state server"
-sh stop-env.sh
-
-echoInfo "stop flogo-web and pouchdb"
-lsof -i:3010 | grep node | awk '{print $2}' | xargs kill -9
-lsof -i:5984 | grep node | awk '{print $2}' | xargs kill -9
-
-echoInfo "setup env"
-sh setup-env.sh
-
-echoInfo "start mqtt"
-sh start-mosquitto.sh &
-
-echoInfo "start process and state server"
-sh start-services.sh &
+if should_run 'state-service'; then
+  docker-compose stop flogo-state-service
+  docker-compose up -d flogo-state-service
+else
+ echoInfo 'Skipping state service'
+fi
 
 #############################
 # Step 4: start flogo-web
 #############################
-echoHeader "Step4: start flogo-web"
+echoInfo "stop flogo-web and pouchdb"
+pkill --signal SIGINT flogoweb
+
+echoHeader "Step4: start flogo-web in mode '${FLOGO_WEB_MODE}'"
 cd $CURRENT_PATH
+
 npm install
-if [ "$1" = "dev" ]
-then
-  echo "Running dev env"
-  gulp dev
-else
-  echo "Running prod env"
-  npm start
-fi
+npm run start $FLOGO_WEB_MODE

@@ -24,4 +24,11 @@ gulp.task('dev.start', 'Starts server app and db for development', () => {
     }
   });
 
+  process.title = 'flogoweb';
+  process.on('SIGINT', function() {
+    setTimeout(function() {
+      process.exit(1);
+    }, 500);
+  });
+
 });

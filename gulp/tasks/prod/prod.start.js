@@ -21,4 +21,11 @@ gulp.task('prod.start', 'Starts server app and db in production mode', [], () =>
     process.env['FLOGO_SKIP_PKG_INSTALL'] = true;
   });
 
+  process.title = 'flogoweb';
+  process.on('SIGINT', function() {
+    setTimeout(function() {
+      process.exit(1);
+    }, 500);
+  });
+
 });
