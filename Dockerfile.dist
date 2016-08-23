@@ -1,4 +1,4 @@
-FROM golang:1.6.2-alpine
+FROM golang:1.7.0-alpine
 MAINTAINER Aditya Wagle
 
 WORKDIR /tmp/flogo-web
