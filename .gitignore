@@ -72,3 +72,5 @@ contrib/
 !contrib/activity/README
 !contrib/trigger/README
 !contrib/model/README
+
+.vscode/symbols.json
