@@ -37,6 +37,8 @@ rm -rf ${BUILD_ROOT}/dist/build/server/node_modules
 git clone --single-branch https://github.com/TIBCOSoftware/flogo-cli.git ${BUILD_ROOT}/dist/flogo-cli
 rm -rf ${BUILD_ROOT}/dist/flogo-cli/.git
 
+# Build flogo/base docker image
+docker::build_and_push flogo/flogo-base Dockerfile.base
 # Build flogo/flogo-web docker image
 pushd ${BUILD_ROOT}/dist
 docker::build_and_push flogo/flow-web
