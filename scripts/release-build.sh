@@ -23,7 +23,20 @@ mkdir -p ${BUILD_ROOT}/dist/build \
         ${BUILD_ROOT}/dist/submodules \
         ${BUILD_ROOT}/dist/contrib/trigger \
         ${BUILD_ROOT}/dist/contrib/activity
-cp -r ${BUILD_ROOT}/submodules/flogo-contrib ${BUILD_ROOT}/dist/submodules
+
+
+# Pull and tag flogo/flogo-base
+docker::pull_and_tag "flogo/flogo-base:latest"
+
+# Pull and tag flogo/flogo-base
+docker::pull_and_tag "flogo/flogo-contrib:latest"
+
+cid=$(docker create --name contrib-container flogo/flogo-contrib)
+docker run --rm --volumes-from contrib-container \
+      -v ${BUILD_ROOT}/dist/submodules:/submodules \
+      alpine /bin/sh -c "ls -al /flogo/flogo-contrib && cp -r /flogo/flogo-contrib /submodules"
+docker rm -f ${cid}
+# cp -r ${BUILD_ROOT}/submodules/flogo-contrib ${BUILD_ROOT}/dist/submodules
 
 # Build the application files, pre-create the engines and dump the database
 DIST_BUILD=true npm run start release
@@ -37,8 +50,7 @@ rm -rf ${BUILD_ROOT}/dist/build/server/node_modules
 git clone --single-branch https://github.com/TIBCOSoftware/flogo-cli.git ${BUILD_ROOT}/dist/flogo-cli
 rm -rf ${BUILD_ROOT}/dist/flogo-cli/.git
 
-# Build flogo/base docker image
-docker::build_and_push flogo/flogo-base Dockerfile.base
+
 # Build flogo/flogo-web docker image
 pushd ${BUILD_ROOT}/dist
 docker::build_and_push flogo/flow-web
