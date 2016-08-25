@@ -28,7 +28,7 @@ mkdir -p ${BUILD_ROOT}/dist/build \
 # Pull and tag flogo/flogo-base
 docker::pull_and_tag "flogo/flogo-base:latest"
 
-# Pull and tag flogo/flogo-base
+# Pull and tag flogo/flogo-contrib
 docker::pull_and_tag "flogo/flogo-contrib:latest"
 
 cid=$(docker create --name contrib-container flogo/flogo-contrib)
@@ -49,6 +49,16 @@ rm -rf ${BUILD_ROOT}/dist/build/server/node_modules
 # TODO: remove once flogo-cli repo is public
 git clone --single-branch https://github.com/TIBCOSoftware/flogo-cli.git ${BUILD_ROOT}/dist/flogo-cli
 rm -rf ${BUILD_ROOT}/dist/flogo-cli/.git
+
+#Replace git clone flogo-cli above with the following
+# Pull and tag flogo/flogo-cli
+# docker::pull_and_tag "flogo/flogo-cli:latest"
+
+# cid=$(docker create --name cli-container flogo/flogo-cli)
+# docker run --rm --volumes-from cli-container \
+#       -v ${BUILD_ROOT}/dist/submodules:/submodules \
+#       alpine /bin/sh -c "ls -al /flogo/flogo-cli && cp -r /flogo/flogo-cli /submodules"
+# docker rm -f ${cid}
 
 
 # Build flogo/flogo-web docker image
