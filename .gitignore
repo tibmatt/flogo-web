@@ -74,3 +74,4 @@ contrib/
 !contrib/model/README
 
 .vscode/symbols.json
+.build-cache
