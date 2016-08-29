@@ -1,5 +1,5 @@
 FROM flogo/flogo-base
-MAINTAINER Aditya Wagle
+MAINTAINER TIBCO Software Inc.
 
 WORKDIR /tmp/flogo-web
 
