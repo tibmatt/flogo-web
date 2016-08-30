@@ -8,7 +8,7 @@ readonly SCRIPT_ROOT=$(
 )
 if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
   rm -rf ${SCRIPT_ROOT}/submodules/flogo-cicd
-  git submodule update --init --remote --recursive
+  git submodule update --init --remote submodules/flogo-cicd
   source ${SCRIPT_ROOT}/submodules/flogo-cicd/scripts/init.sh
   # Get node packages
   pushd ${SCRIPT_ROOT}
