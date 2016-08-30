@@ -10,6 +10,29 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
   rm -rf ${SCRIPT_ROOT}/submodules/flogo-cicd
   git submodule update --init --remote --recursive
   source ${SCRIPT_ROOT}/submodules/flogo-cicd/scripts/init.sh
+ 
+  echo  "#### Building flogo/flogo-base"
+  pushd ${SCRIPT_ROOT}
+  docker::build_and_push flogo/flogo-base Dockerfile.base
+  popd
+
+
+  echo "#### Building flogo/flogo-contrib"
+  pushd ${SCRIPT_ROOT}/submodules/flogo-contrib
+  docker::build_and_push flogo/flogo-contrib 
+  popd
+
+  echo "#### Building flogo/flogo-cli"
+  pushd ${SCRIPT_ROOT}/submodules/flogo-cli
+  docker::build_and_push flogo/flogo-cli 
+  popd
+
+  echo "#### Building flogo/flow-service and flogo/state-service docker images"
+  pushd ${SCRIPT_ROOT}/submodules/flogo-services
+  docker::build_and_push flogo/flow-service Dockerfile-flow-service
+  docker::build_and_push flogo/state-service Dockerfile-flow-state-service
+  popd
+ 
   # Get node packages
   pushd ${SCRIPT_ROOT}
   npm install
@@ -38,17 +61,12 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
   git clone --single-branch https://github.com/TIBCOSoftware/flogo-cli.git ${SCRIPT_ROOT}/dist/flogo-cli
   rm -rf ${SCRIPT_ROOT}/dist/flogo-cli/.git
 
-  # Build flogo/base docker image
-  docker::build_and_push flogo/flogo-base Dockerfile.base
-  # Build flogo/flogo-web docker image
+
+  echo "#### Building flogo/flogo-web docker image"
   pushd ${SCRIPT_ROOT}/dist
   docker::build_and_push flogo/flow-web
   popd
-  # Build flogo/flow-service and flogo/state-service docker images
-  pushd ${SCRIPT_ROOT}/submodules/flogo-services
-  docker::build_and_push flogo/flow-service Dockerfile-flow-service
-  docker::build_and_push flogo/state-service Dockerfile-flow-state-service
-  popd
+  
 fi
 
 

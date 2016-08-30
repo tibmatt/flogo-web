@@ -15,7 +15,6 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
   # Pull and tag alpine:latest
   docker::pull_and_tag "mhart/alpine-node:6.4.0"
   # Build flogo/base docker image
-  # TODO: change to build_and_push() after 0.2.0
   docker::build_and_push flogo/flogo-base Dockerfile.base
   popd
 fi
