@@ -13,23 +13,28 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
  
   echo  "#### Building flogo/flogo-base"
   pushd ${SCRIPT_ROOT}
+  cp ${SCRIPT_ROOT}/submodules/flogo-cicd/docker/flogo-base/Dockerfile ./Dockerfile.base
   docker::build_and_push flogo/flogo-base Dockerfile.base
   popd
 
 
   echo "#### Building flogo/flogo-contrib"
   pushd ${SCRIPT_ROOT}/submodules/flogo-contrib
+  cp ${SCRIPT_ROOT}/submodules/flogo-cicd/docker/flogo-contrib/Dockerfile ${SCRIPT_ROOT}/submodules/flogo-contrib/Dockerfile
   docker::build_and_push flogo/flogo-contrib 
   popd
 
   echo "#### Building flogo/flogo-cli"
   pushd ${SCRIPT_ROOT}/submodules/flogo-cli
+  cp ${SCRIPT_ROOT}/submodules/flogo-cicd/docker/flogo-cli/Dockerfile ${SCRIPT_ROOT}/submodules/flogo-cli/Dockerfile
   docker::build_and_push flogo/flogo-cli 
   popd
 
   echo "#### Building flogo/flow-service and flogo/state-service docker images"
   pushd ${SCRIPT_ROOT}/submodules/flogo-services
+  cp ${SCRIPT_ROOT}/submodules/flogo-cicd/docker/flow-service/Dockerfile ${SCRIPT_ROOT}/submodules/flogo-services/Dockerfile-flow-service
   docker::build_and_push flogo/flow-service Dockerfile-flow-service
+  cp ${SCRIPT_ROOT}/submodules/flogo-cicd/docker/state-service/Dockerfile ${SCRIPT_ROOT}/submodules/flogo-services/Dockerfile-flow-state-service
   docker::build_and_push flogo/state-service Dockerfile-flow-state-service
   popd
  
@@ -66,8 +71,6 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
     echo "script_root=\$(dirname \"\${BASH_SOURCE}\")"
     [ -n "${BUILD_RELEASE_TAG}" ] && echo "export BUILD_RELEASE_TAG=${BUILD_RELEASE_TAG}"
     [ -n "${DOCKER_REGISTRY}" ] && echo "export DOCKER_REGISTRY=${DOCKER_REGISTRY}"
-    [ -n "${FLOGO_FLOW_WEB_HOST}" ] && echo "export FLOGO_FLOW_WEB_HOST=${FLOGO_FLOW_WEB_HOST}" \
-        echo "export FLOGO_FLOW_WEB_HOST=${FLOGO_FLOW_WEB_HOST:-localhost}"
     echo "docker-compose -f \${script_root}/docker-compose.yml up"
     echo "docker-compose rm -f"
   } > ${SCRIPT_ROOT}/dist/docker-compose-start.sh && \
