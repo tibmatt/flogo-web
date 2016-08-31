@@ -12,6 +12,7 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
   source ${SCRIPT_ROOT}/submodules/flogo-cicd/scripts/init.sh
   # Build flogo/flogo-cli docker image
   pushd ${SCRIPT_ROOT}
+  cp ${SCRIPT_ROOT}/submodules/flogo-cicd/docker/flogo-base/Dockerfile ./Dockerfile.base
   # Pull and tag alpine:latest
   docker::pull_and_tag "mhart/alpine-node:6.4.0"
   # Build flogo/base docker image

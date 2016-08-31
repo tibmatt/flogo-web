@@ -76,3 +76,4 @@ contrib/
 .vscode/symbols.json
 .build-cache
 submodules/
+./Dockerfile.base
