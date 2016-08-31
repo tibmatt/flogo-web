@@ -69,6 +69,7 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
     [ -n "${FLOGO_FLOW_WEB_HOST}" ] && echo "export FLOGO_FLOW_WEB_HOST=${FLOGO_FLOW_WEB_HOST}" \
         echo "export FLOGO_FLOW_WEB_HOST=${FLOGO_FLOW_WEB_HOST:-localhost}"
     echo "docker-compose -f \${script_root}/docker-compose.yml up"
+    echo "docker-compose rm -f"
   } > ${SCRIPT_ROOT}/dist/docker-compose-start.sh && \
     chmod +x ${SCRIPT_ROOT}/dist/docker-compose-start.sh
 
