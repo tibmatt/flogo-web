@@ -61,11 +61,24 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
   git clone --single-branch https://github.com/TIBCOSoftware/flogo-cli.git ${SCRIPT_ROOT}/dist/flogo-cli
   rm -rf ${SCRIPT_ROOT}/dist/flogo-cli/.git
 
+  {
+    echo "#!/bin/bash"
+    echo "script_root=\$(dirname \"\${BASH_SOURCE}\")"
+    [ -n "${BUILD_RELEASE_TAG}" ] && echo "export BUILD_RELEASE_TAG=${BUILD_RELEASE_TAG}"
+    [ -n "${DOCKER_REGISTRY}" ] && echo "export DOCKER_REGISTRY=${DOCKER_REGISTRY}"
+    [ -n "${FLOGO_FLOW_WEB_HOST}" ] && echo "export FLOGO_FLOW_WEB_HOST=${FLOGO_FLOW_WEB_HOST}" \
+        echo "export FLOGO_FLOW_WEB_HOST=${FLOGO_FLOW_WEB_HOST:-localhost}"
+    echo "docker-compose -f \${script_root}/docker-compose.yml up"
+  } > ${SCRIPT_ROOT}/dist/docker-compose-start.sh && \
+    chmod +x ${SCRIPT_ROOT}/dist/docker-compose-start.sh
 
   echo "#### Building flogo/flogo-web docker image"
   pushd ${SCRIPT_ROOT}/dist
   docker::build_and_push flogo/flow-web
   popd
+
+  
+
   
 fi
 

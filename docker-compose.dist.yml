@@ -12,7 +12,7 @@ services:
       environment:
         FLOGO_FLOW_SERVICE_HOST: flogo-flow-service
         FLOGO_FLOW_STATE_SERVICE_HOST: flogo-state-service
-        FLOGO_FLOW_WEB_HOST: $DOCKER_HOST
+        FLOGO_FLOW_WEB_HOST: ${DOCKER_HOST}
         FLOGO_NO_ENGINE_RECREATION: "true"
       depends_on:
         - flogo-flow-service
