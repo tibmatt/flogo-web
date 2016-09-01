@@ -19,7 +19,7 @@ After you get git access, clone the [flogo-web repository](https://github.com/TI
 git clone https://github.com/TIBCOSoftware/flogo-web.git
 ```
 ##  User Workflow
-1. Download the `docker-compose-start.sh and docker-compose.yml` from [here](https://github.com/TIBCOSoftware/flogo-web/releases/tag/0.2.0) and run `docker-compose-start.sh`.
+1. Download the `docker-compose-start.sh and docker-compose.yml` from [here](https://github.com/TIBCOSoftware/flogo-web/releases) and run `docker-compose-start.sh`.
 
 ##  Developer Workflow
 
