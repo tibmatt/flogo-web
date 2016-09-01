@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
 if [[ "$1" == "help" ]]; then
-  echo "usage: start.sh [--mode <m>| --skip <s>][--help]"
-  echo "Flogo start"
-  echo "  --mode|-m dev or prod (Default dev)"
-  echo "  --skip|-s skip component"
-  echo "    * flow-service: skip flow service initialization"
-  echo "    * state-service: skip state service initialization"
-  echo "    * engine: skip engine install/update"
-  echo "    * contrib: do not fetch latest contrib repository changes"
+  cat << FlogoHelp
+usage: start.sh [--mode <m>| --skip <s>][--help]
+Flogo start
+  --mode|-m dev or prod (Default dev)
+  --skip|-s skip component
+    * flow-service: skip flow service initialization
+    * state-service: skip state service initialization
+    * engine: skip engine install/update
+    * contrib: do not fetch latest contrib repository changes
+FlogoHelp
   exit 0
 fi
 
@@ -31,7 +33,7 @@ NC='\033[0m'
 #############################
 FLOGO_INTERNAL_PATH="submodules/flogo-internal"
 FLOGO_CONTRIB_PATH="submodules/flogo-contrib"
-CURRENT_PATH=$PWD
+PROJECT_ROOT="$PWD"
 
 export SKIPCHECK_DOCKER_MACHINE=""
 
@@ -197,6 +199,21 @@ update_flogo(){
 should_run(){
  [[ ! " ${SKIP_COMPONENTS[@]} " =~ " $1 " ]]
 }
+
+buildAndStartService(){
+  local imageName="$1"
+  local dockerfile="$2"
+  local serviceName="$3"
+
+  docker-compose -f docker-compose.dist.yml stop "$serviceName"
+  pushd ${PROJECT_ROOT}/submodules/flogo-services
+  cp ${PROJECT_ROOT}/submodules/flogo-cicd/docker/${imageName}/Dockerfile ${PROJECT_ROOT}/submodules/flogo-services/${dockerfile}
+  docker build -t flogo/${imageName} -f "$dockerfile" .
+  popd
+  BUILD_RELEASE_TAG=latest docker-compose -f docker-compose.dist.yml up -d "$serviceName"
+
+}
+
 #############################
 # Step 1: check environment
 #############################
@@ -251,11 +268,13 @@ fi
 # Step 2: update submodule
 #############################
 echoHeader "Step2: update submodules: flogo-contrib, flogo-services"
-git submodule update --init -- submodules/flogo-services
+
+rm -rf "$PROJECT_ROOT/submodules/flogo-services"
+git submodule update --init --remote -- submodules/flogo-services
 
 if should_run 'contrib'; then
   # make sure always pulls the latest changes from flogo-contrib
-  rm -rf submodules/flogo-contrib
+  rm -rf "$PROJECT_ROOT/submodules/flogo-contrib"
   git submodule update --init --remote -- submodules/flogo-contrib
   echoSuccess "update submodule\n"
 else
@@ -268,15 +287,13 @@ fi
 echoHeader "Step3: start process and state server"
 
 if should_run 'flow-service'; then
-  docker-compose stop flogo-flow-service
-  docker-compose up -d flogo-flow-service
+  buildAndStartService flow-service Dockerfile-flow-service flogo-flow-service
 else
  echoInfo 'Skipping flow service'
 fi
 
 if should_run 'state-service'; then
-  docker-compose stop flogo-state-service
-  docker-compose up -d flogo-state-service
+  buildAndStartService state-service Dockerfile-flow-state-service flogo-state-service
 else
  echoInfo 'Skipping state service'
 fi
@@ -288,7 +305,7 @@ echoInfo "stop flogo-web and pouchdb"
 pkill --signal SIGINT flogoweb
 
 echoHeader "Step4: start flogo-web in mode '${FLOGO_WEB_MODE}'"
-cd $CURRENT_PATH
+cd "$PROJECT_ROOT"
 
 npm install
-npm run start $FLOGO_WEB_MODE
+npm run start "$FLOGO_WEB_MODE"
