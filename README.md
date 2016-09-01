@@ -18,8 +18,15 @@ After you get git access, clone the [flogo-web repository](https://github.com/TI
 ```
 git clone https://github.com/TIBCOSoftware/flogo-web.git
 ```
-## Building the application
+##  User Workflow
+1. Download the `docker-compose-start.sh and docker-compose.yml` from [here](https://github.com/TIBCOSoftware/flogo-web/releases/tag/0.2.0) and run `docker-compose-start.sh`.
+
+##  Developer Workflow
+
+### Building the application 
 1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
+1. Run `git status` to make sure you're in **master** branch
+1. To switch to **master** branch run `git checkout master`
 1. Choose docker registry 
     1. #### Private Docker Registry 
        1. Start your own registry as shown below
@@ -48,14 +55,10 @@ git clone https://github.com/TIBCOSoftware/flogo-web.git
     docker-compose -f ${script_root}/docker-compose.yml up
     docker-compose rm -f
 ```
-## Run the application
+### Run the application after build
 
-1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
-1. Run `git status` to make sure you're in **0.2alpha1** branch
-1. To switch to **0.2alpha1** branch run `git checkout 0.2alpha1`
-1. Run `docker login reldocker.tibco.com` to login to the docker registry. Use your LDAP credentials for login.
-1. Down the generated `docker-compose-start.sh` and `docker-compose.yml` into any folder from https://github.com/TIBCOSoftware/flogo-web/releases section for the tagged release.
-1. Run `docker-compose-start.sh`
+
+1. `cd` to the `dist` folder after build step above and run the generated `docker-compose-start.sh`.
 
 
 Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
