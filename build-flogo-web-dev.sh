@@ -69,7 +69,7 @@ if [ -d "${SCRIPT_ROOT}/submodules/flogo-cicd" ]; then
   {
     echo "#!/bin/bash"
     echo "script_root=\$(dirname \"\${BASH_SOURCE}\")"
-    [ -n "${BUILD_RELEASE_TAG}" ] && echo "export BUILD_RELEASE_TAG=${BUILD_RELEASE_TAG}"
+    [ -n "${BUILD_RELEASE_TAG:-latest}" ] && echo "export BUILD_RELEASE_TAG=${BUILD_RELEASE_TAG:-latest}"
     [ -n "${DOCKER_REGISTRY}" ] && echo "export DOCKER_REGISTRY=${DOCKER_REGISTRY}"
     echo "docker-compose -f \${script_root}/docker-compose.yml up"
     echo "docker-compose rm -f"
