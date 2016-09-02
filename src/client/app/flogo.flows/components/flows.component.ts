@@ -77,13 +77,24 @@ export class FlogoFlowsComponet{
       evt.stopPropagation();
     }
 
-    this._router.navigate( [
+   this._router.navigate( [
       'FlogoFlowDetail',
       { id : flogoIDEncode( flowId ) }
     ] )
       .catch( ( err : any )=> {
         console.error( err );
       } );
+
+      /*
+    this._router.navigate( [
+      'FlogoCanvasSet',
+      { id : flogoIDEncode( flowId ) }
+    ] )
+      .catch( ( err : any )=> {
+        console.error( err );
+      } );
+      */
+
   }
 
     // delete a flow

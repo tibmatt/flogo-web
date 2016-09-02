@@ -16,6 +16,7 @@ import { FlogoConfigComponent } from '../../flogo.config/components/config.compo
 import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
 import { ConfigurationService } from '../../../common/services/configuration.service';
 import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
+import { FlogoCanvasSetComponent } from '../../flogo.canvas-set/flogo.canvas-set.component';
 
 @Component({
   selector: 'flogo-app',
@@ -35,6 +36,9 @@ import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common
   },
   {
     path:'/flows/:id/...', name:"FlogoFlowDetail", component: FlogoCanvasComponent
+  },
+  {
+    path:'/flows/new/:id', name:"FlogoCanvasSet", component: FlogoCanvasSetComponent
   },
   {
     path:'/task', name: 'FlogoTask', component: FlogoFormBuilderComponent
