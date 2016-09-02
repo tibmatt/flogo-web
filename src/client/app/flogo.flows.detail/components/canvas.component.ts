@@ -777,7 +777,8 @@ export class FlogoCanvasComponent {
 
   private _exportFlow() {
     return new Promise((resolve, reject) => {
-      resolve(flogoFlowToJSON( this._flow ));
+      let jsonFlow = flogoFlowToJSON( this._flow );
+      resolve(jsonFlow.flow);
     });
   }
 
