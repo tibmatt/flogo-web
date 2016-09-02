@@ -209,6 +209,8 @@ export class FlogoCanvasComponent {
           }
         }
       );
+
+
   }
 
   isOnDefaultRoute() {
