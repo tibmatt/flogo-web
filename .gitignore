@@ -73,7 +73,6 @@ contrib/
 !contrib/trigger/README
 !contrib/model/README
 
-.vscode/symbols.json
+.vscode/
 .build-cache
 submodules/
-Dockerfile.base
