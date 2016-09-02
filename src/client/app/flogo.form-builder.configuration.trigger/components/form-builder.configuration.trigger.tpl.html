@@ -2,7 +2,7 @@
   <div  class="flogo-common-edit-panel__container">
     <!--// TODO: extract field creation to single component to simplify these templates -->
     <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.settings.length">Settings</h3>
-    <div *ngFor="let item of fields.settings" class="">
+    <div *ngFor="let item of fields.settings; #index = index" class="">
 
       <div *ngIf="getControlByType(item).control == 'FieldTextBox'">
         <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input', 'settings')"  [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
@@ -21,7 +21,7 @@
       </div>
 
       <div *ngIf="getControlByType(item).control == 'FieldRadio'">
-        <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'input', 'settings')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
+        <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'input', 'settings')" [fieldObserver]="_fieldObserver"  [index]="index" ></flogo-form-builder-fields-radio>
       </div>
 
       <div *ngIf="getControlByType(item).control == 'FieldObject'">
@@ -31,7 +31,7 @@
     </div>
 
     <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.endpointSettings.length">End point</h3>
-    <div *ngFor="let item of fields.endpointSettings" class="">
+    <div *ngFor="let item of fields.endpointSettings; #index = index" class="">
 
       <div *ngIf="getControlByType(item).control == 'FieldTextBox'">
         <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'input', 'endpointSettings')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
@@ -50,7 +50,7 @@
       </div>
 
       <div *ngIf="getControlByType(item).control == 'FieldRadio'">
-        <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'input', 'endpointSettings')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
+        <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'input', 'endpointSettings')" [fieldObserver]="_fieldObserver"  [index]="index" ></flogo-form-builder-fields-radio>
       </div>
 
       <div *ngIf="getControlByType(item).control == 'FieldObject'">
@@ -60,7 +60,7 @@
     </div>
 
     <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.outputs.length">Outputs</h3>
-    <div *ngFor="let item of fields.outputs" class="">
+    <div *ngFor="let item of fields.outputs; #index= index" class="">
 
       <div *ngIf="getControlByType(item).control == 'FieldTextBox'">
         <flogo-form-builder-fields-textbox [info]="getTriggerInfo(item, 'output', 'outputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
@@ -79,7 +79,7 @@
       </div>
 
       <div *ngIf="getControlByType(item).control == 'FieldRadio'">
-        <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'output', 'outputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
+        <flogo-form-builder-fields-radio [info]="getTriggerInfo(item, 'output', 'outputs')" [fieldObserver]="_fieldObserver" [index]="index" ></flogo-form-builder-fields-radio>
       </div>
 
       <div *ngIf="getControlByType(item).control == 'FieldObject'">
