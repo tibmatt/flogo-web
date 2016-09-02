@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
-import { FORM_DIRECTIVES, Control, Validator, Validators } from '@angular/common';
+import { REACTIVE_FORM_DIRECTIVES, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
 import { TileInOutInfo } from '../models/tile-in-out-info.model';
@@ -7,7 +7,7 @@ import { jsonValidator, mappingsValidatorFactory } from '../validators/validator
 
 @Component({
   selector: 'flogo-transform-map-editor',
-  directives: [FORM_DIRECTIVES],
+  directives: [REACTIVE_FORM_DIRECTIVES],
   moduleId: module.id,
   styleUrls: ['map-editor.component.css'],
   templateUrl: 'map-editor.tpl.html'
@@ -20,7 +20,7 @@ export class MapEditorComponent implements OnChanges, OnInit {
   @Input() tileInputInfo:any = null;
   @Input() precedingTilesOutputs:any[] = [];
 
-  editor:Control;
+  editor:FormControl;
 
   private tileInfo:TileInOutInfo = {
     attributes: {},
@@ -30,7 +30,7 @@ export class MapEditorComponent implements OnChanges, OnInit {
   constructor() {
     this.mappingChange = new EventEmitter();
     let mappingsValidator = mappingsValidatorFactory(this.tileInfo);
-    this.editor = new Control('', Validators.compose([Validators.required, jsonValidator, mappingsValidator]));
+    this.editor = new FormControl('', Validators.compose([Validators.required, jsonValidator, mappingsValidator]));
     this
       .editor
       .valueChanges

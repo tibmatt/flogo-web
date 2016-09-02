@@ -32,14 +32,13 @@ export const CONFIG = {
   host: 'localhost:3010',
   libs: {
     js: [
-      'node_modules/es6-shim/es6-shim.js',
-      'node_modules/es6-promise/dist/es6-promise.js',
+      'node_modules/core-js/client/shim.min.js',
       'node_modules/reflect-metadata/Reflect.js',
 
       'node_modules/systemjs/dist/system-polyfills.src.js',
       'node_modules/systemjs/dist/system.src.js',
 
-      // needs to be loaded after es6-shim and es6-promise
+      // needs to be loaded after core-js
       'node_modules/zone.js/dist/zone.js',
 
       'node_modules/jquery/dist/jquery.js',

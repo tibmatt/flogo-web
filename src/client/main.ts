@@ -2,6 +2,7 @@ import {provide, enableProdMode, ComponentRef} from '@angular/core';
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {APP_BASE_HREF} from '@angular/common'
+import {disableDeprecatedForms, provideForms} from '@angular/forms';
 import {FlogoAppComponent} from './app/flogo/components/flogo.component';
 import { appInjector } from './common/services/injector.service';
 
@@ -13,7 +14,9 @@ if(typeof window['DEV'] != 'undefined' && window['DEV']) {
 
 bootstrap(FlogoAppComponent, [
   ROUTER_PROVIDERS,
-  provide(APP_BASE_HREF, { useValue: '/'})
+  provide(APP_BASE_HREF, { useValue: '/'}),
+  disableDeprecatedForms(),
+  provideForms()
 ])
 .then((appRef: ComponentRef<any>) => {
   // store the reference to the application injector

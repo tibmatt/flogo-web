@@ -69,6 +69,7 @@
     'common',
     'compiler',
     'core',
+    'forms',
     'http',
     'platform-browser',
     'platform-browser-dynamic',
@@ -78,7 +79,7 @@
 
   ngPackageNames.forEach(function (pkgName) {
     packages['@angular/' + pkgName] = {
-      main: isDevEnv ? pkgName + '.umd.js' : 'esm/index.js',
+      main: isDevEnv ? 'bundles/' + pkgName + '.umd.js' : 'esm/index.js',
       defaultExtension: 'js'
     };
   });
