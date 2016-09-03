@@ -43,28 +43,14 @@ import { FlogoModal } from '../../../common/services/modal.service';
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ],
-  inputs: ['flowId']
+  inputs: ['tasks', 'diagram','flow']
 } )
 @CanActivate((next) => {
   return isConfigurationLoaded();
 })
 
-/*
-@RouteConfig([
-  {path:'/',    name: 'FlogoFlowsDetailDefault',   component: FlogoFlowsDetail, useAsDefault: true},
-  {path:'/trigger/add',    name: 'FlogoFlowsDetailTriggerAdd',   component: FlogoFlowsDetailTriggers},
-  {path:'/trigger/:id',    name: 'FlogoFlowsDetailTriggerDetail',   component: FlogoFlowsDetailTriggersDetail},
-  {path:'/task/add',    name: 'FlogoFlowsDetailTaskAdd',   component: FlogoFlowsDetailTasks},
-  {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail}
-])
-*/
-
 export class FlogoCanvasComponent implements  OnChanges {
-  downloadLink: string;
-  flowId: string;
-
   _subscriptions : any[];
-
   _id: any;
   _flowID: string;
   _currentProcessID: string;
@@ -77,7 +63,6 @@ export class FlogoCanvasComponent implements  OnChanges {
   _processInstanceID: string;
   _restartProcessInstanceID: string;
   _isDiagramEdited:boolean;
-  exportLink:string;
 
   // TODO
   //  may need better implementation
@@ -90,13 +75,17 @@ export class FlogoCanvasComponent implements  OnChanges {
   _mockProcess: any;
 
   ngOnChanges(changes:any) {
-    if(changes.flowId&&changes.flowId.currentValue) {
-      this.getFlow(changes.flowId.currentValue)
+
+    if(changes.tasks&&changes.diagram&&changes.flow) {
+      this._mockLoading = false;
+      this.clearTaskRunStatus()
+      return this._updateFlow( changes.flow.currentValue );
+
     }
+
   }
 
   private initSubscribe() {
-    debugger;
     this._subscriptions = [];
 
     let subs = [
@@ -128,7 +117,6 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   ngOnDestroy() {
-    debugger;
     _.each( this._subscriptions, sub => {
         this._postService.unsubscribe( sub );
       }
@@ -137,19 +125,19 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private tasks: IFlogoFlowDiagramTaskDictionary;
   private diagram: IFlogoFlowDiagram;
-  private _flow: any;
+  private flow: any;
 
   constructor(
     private _postService: PostService,
     private _restAPIService: RESTAPIService,
     private _restAPIFlowsService: RESTAPIFlowsService,
-    private _routerParams: RouteParams,
     private _router: Router,
     private _flogoModal: FlogoModal
   ) {
-
+    this.initSubscribe();
   }
 
+  /*
   private getFlow(id: string) {
     this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
@@ -158,11 +146,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     //  Remove this mock
     this._mockLoading = true;
 
-    //  get the flow by ID
-    //let id = '' + this._routerParams.params[ 'id' ];
     this._id = id;
 
-    this.downloadLink = `/v1/api/flows/${this._id}/build`;
 
     try {
       id = flogoIDDecode( id );
@@ -170,7 +155,6 @@ export class FlogoCanvasComponent implements  OnChanges {
       console.warn( e );
     }
 
-    this.exportLink = `/v1/api/flows/${id}/json`;
 
     this._restAPIFlowsService.getFlow(id)
         .then(
@@ -180,27 +164,24 @@ export class FlogoCanvasComponent implements  OnChanges {
                 // initialisation
                 console.group( 'Initialise canvas component' );
 
-                this._flow = rsp;
+                this.flow = rsp;
 
-                this.tasks = this._flow.items;
-                if ( _.isEmpty( this._flow.paths ) ) {
-                  this.diagram = this._flow.paths = <IFlogoFlowDiagram>{
+                this.tasks = this.flow.items;
+                if ( _.isEmpty( this.flow.paths ) ) {
+                  this.diagram = this.flow.paths = <IFlogoFlowDiagram>{
                     root : {},
                     nodes : {}
                   };
                 } else {
-                  this.diagram = this._flow.paths;
+                  this.diagram = this.flow.paths;
                 }
 
                 this.clearTaskRunStatus();
-
                 this.initSubscribe();
-
                 console.groupEnd();
-
-                return this._updateFlow( this._flow );
+                return this._updateFlow( this.flow );
               } else {
-                return this._flow;
+                return this.flow;
               }
             }
         )
@@ -222,31 +203,20 @@ export class FlogoCanvasComponent implements  OnChanges {
         );
 
   }
+  */
 
   isOnDefaultRoute() {
     return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
   }
 
-  private changeFlowDetail($event, property) {
-    return new Promise((resolve, reject)=>{
-      this._updateFlow(this._flow).then((response:any)=>{
-        notification(`Update flow's ${property} successfully!`,'success', 3000);
-        resolve(response);
-      }).catch((err)=>{
-        notification(`Update flow's ${property} error: ${err}`, 'error');
-        reject(err);
-      });
-    })
-  }
-
   // TODO
   //  Remove this mock later
   private _updateMockProcess() {
-    if ( !_.isEmpty( this._flow ) ) {
+    if ( !_.isEmpty( this.flow ) ) {
       this._restAPIFlowsService.getFlows()
         .then(
           ( rsp : any ) => {
-            this._mockProcess = _.find( rsp, { _id : this._flow._id } );
+            this._mockProcess = _.find( rsp, { _id : this.flow._id } );
             this._mockProcess = flogoFlowToJSON( this._mockProcess );
           }
         );
@@ -360,7 +330,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     this._uploadingProcess = true;
 
     // generate process based on the current flow
-    let process = flogoFlowToJSON( this._flow );
+    let process = flogoFlowToJSON( this.flow );
 
     //  delete the id of the flow,
     //  since the same process ID returns 204 No Content response and cannot be updated,
@@ -789,7 +759,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _exportFlow() {
     return new Promise((resolve, reject) => {
-      resolve(flogoFlowToJSON( this._flow ));
+      resolve(flogoFlowToJSON( this.flow ));
     });
   }
 
@@ -842,7 +812,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
-                  this._updateFlow( this._flow );
+                  this._updateFlow( this.flow );
                   this._isDiagramEdited = true;
                 }
               }
@@ -910,7 +880,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
-                  this._updateFlow( this._flow );
+                  this._updateFlow( this.flow );
                   this._isDiagramEdited = true;
                 }
               }
@@ -930,7 +900,6 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-    debugger;
 
     this._router.navigate(
       [
@@ -967,7 +936,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
-                          // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
+                          // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
                         }
                       }
                     )
@@ -1043,7 +1012,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
-                          // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
+                          // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
                         }
                       }
                     )
@@ -1082,7 +1051,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
-                  // this._updateFlow( this._flow ); // doesn't need to save if only selecting without any change
+                  // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
                 }
               }
             )
@@ -1148,7 +1117,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       } else {
         task[data.proper] = data.content;
       }
-      this._updateFlow( this._flow ).then(() => {
+      this._updateFlow( this.flow ).then(() => {
         this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
       });
     }
@@ -1160,7 +1129,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     if(task) {
       _.set( task, '__props.warnings', data.warnings );
 
-      this._updateFlow( this._flow ).then(() => {
+      this._updateFlow( this.flow ).then(() => {
         this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
       });
     }
@@ -1321,7 +1290,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     let tile = this.tasks[data.tile.id];
     tile.inputMappings = _.cloneDeep(data.inputMappings);
 
-    this._updateFlow( this._flow ).then(() => {
+    this._updateFlow( this.flow ).then(() => {
       this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
     });
 
@@ -1332,7 +1301,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     let tile = this.tasks[data.tile.id];
     delete tile.inputMappings;
 
-    this._updateFlow( this._flow ).then(() => {
+    this._updateFlow( this.flow ).then(() => {
       this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
     });
 
@@ -1410,7 +1379,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                       //  NOTE that once delete branch, not only single task is removed.
                       delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
                       _.assign( this.diagram, diagram );
-                      this._updateFlow( this._flow );
+                      this._updateFlow( this.flow );
                       this._isDiagramEdited = true;
 
                       if (_shouldGoBack) {
@@ -1455,7 +1424,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       },
       done : ( diagram : IFlogoFlowDiagram ) => {
         _.assign( this.diagram, diagram );
-        this._updateFlow( this._flow );
+        this._updateFlow( this.flow );
       }
     } ) );
 
@@ -1516,7 +1485,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                         },
                         done: (diagram:IFlogoFlowDiagram) => {
                           _.assign(this.diagram, diagram);
-                          // this._updateFlow(this._flow);
+                          // this._updateFlow(this.flow);
                         }
                       }
                     )
@@ -1662,8 +1631,8 @@ export class FlogoCanvasComponent implements  OnChanges {
       envelope.done();
     }
 
-    //this._updateFlow( this._flow );
-    this._updateFlow( this._flow ).then(() => {
+    //this._updateFlow( this.flow );
+    this._updateFlow( this.flow ).then(() => {
       this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
     });
 

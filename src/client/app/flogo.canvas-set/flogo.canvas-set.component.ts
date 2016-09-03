@@ -57,6 +57,7 @@ export class FlogoCanvasSetComponent {
        private _restAPIFlowsService: RESTAPIFlowsService
    ) {
        this.flowId = this._routerParams.params['id'];
+
        this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
 
        this._mockLoading = true;
@@ -115,6 +116,7 @@ export class FlogoCanvasSetComponent {
                  }
               }
           );
+
 
 
    }
