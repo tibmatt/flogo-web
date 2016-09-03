@@ -1,4 +1,43 @@
-<div>
-    <h1>The id flow is:</h1>
-    <h1>{{id}}</h1>
+<!--<div [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">-->
+<div *ngIf="!_mockLoading" class="flogo-canvas-maximum">
+    <div class="canvas-flow">
+        <section class="flogo-flow-detail">
+            <header class="flogo-flow-detail-header col-sm-10">
+                <h3 class="flogo-flow-detail-name" [(myContenteditable)]="_flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
+                <p class="flogo-flow-detail-description" [(myContenteditable)]="_flow.description" placeholder="Add flow's description" (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+            </header>
+
+            <!--
+            <div class="col-sm-2">
+                <div class="flogo-flow-detail-menu">
+                    <div class="flogo-flow-detail-menu-list-wrapper">
+                        <ul class="flogo-flow-detail-menu-list">
+                            <li class="flogo-flow-detail-menu-item"><i class="fa fa-pencil fa-fw"></i>
+                                <a [href]="downloadLink" download>Build</a>
+                                <ul class="flogo-flow-detail-menu-item-choices">
+                                    <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=386'"><label class="flogo-flow-detail-menu-item-choice-text"><span>x86/Linux</span></label></a></li>
+                                    <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=arm'"><label class="flogo-flow-detail-menu-item-choice-text"><span>ARM/Linux</span></label></a></li>
+                                    <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=darwin&arch=amd64'"><label class="flogo-flow-detail-menu-item-choice-text"><span>Darwin/OSX</span></label></a></li>
+                                </ul>
+                            </li>
+                            <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">Make a copy</a></li>
+                            <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportFlow()"><i class="fa fa-cloud-download fa-fw"></i>Export for CLI</a></li>
+                            <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>Export for web UI</a></li>
+                            <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">Delete</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            -->
+
+        </section>
+
+       <!--
+        <flogo-canvas-flow-diagram [tasks]="tasks" [diagram]="diagram"></flogo-canvas-flow-diagram>
+        <flogo-transform></flogo-transform>
+        -->
+    </div>
+
+
 </div>
+

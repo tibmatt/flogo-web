@@ -169,6 +169,7 @@ function* deleteFlows(next){
 
 function * addTrigger(next){
   let response = {};
+  console.log('ADDKING TRIGGER...........');
   //TODO validate this query is json
   var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
 
