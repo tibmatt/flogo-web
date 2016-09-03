@@ -28,7 +28,7 @@ import {
    selector: 'flogo-canvas-set',
    moduleId: module.id,
    templateUrl: 'flogo.canvas-set.tpl.html',
-   directives: [ROUTER_DIRECTIVES, RouterOutlet, Contenteditable, JsonDownloader, FlogoFlowsDetailDiagramComponent],
+   directives: [ROUTER_DIRECTIVES, FlogoCanvasComponent, RouterOutlet, Contenteditable, JsonDownloader, FlogoFlowsDetailDiagramComponent],
     styleUrls: ['flogo.canvas-set.component.css']
 })
 @CanActivate((next) => {
@@ -42,7 +42,7 @@ import {
     {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail}
 ])
 export class FlogoCanvasSetComponent {
-   private id: string;
+   private flowId: string;
    private diagram: IFlogoFlowDiagram;
    private tasks: IFlogoFlowDiagramTaskDictionary;
    private _flow: any;
@@ -56,22 +56,22 @@ export class FlogoCanvasSetComponent {
        private _routerParams: RouteParams,
        private _restAPIFlowsService: RESTAPIFlowsService
    ) {
-       this.id = this._routerParams.params['id'];
-       this.downloadLink = `/v1/api/flows/${this.id}/build`;
+       this.flowId = this._routerParams.params['id'];
+       this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
 
        this._mockLoading = true;
 
 
        try {
-           this.id = flogoIDDecode( this.id );
+           this.flowId = flogoIDDecode( this.flowId );
        } catch ( e ) {
            console.warn( e );
        }
 
 
-       this.exportLink = `/v1/api/flows/${this.id}/json`;
+       this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
-      this._restAPIFlowsService.getFlow(this.id)
+      this._restAPIFlowsService.getFlow(this.flowId)
           .then(
               ( rsp : any )=> {
                  if ( !_.isEmpty( rsp ) ) {

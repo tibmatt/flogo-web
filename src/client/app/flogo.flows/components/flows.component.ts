@@ -77,6 +77,7 @@ export class FlogoFlowsComponet{
       evt.stopPropagation();
     }
 
+      /*
    this._router.navigate( [
       'FlogoFlowDetail',
       { id : flogoIDEncode( flowId ) }
@@ -84,8 +85,8 @@ export class FlogoFlowsComponet{
       .catch( ( err : any )=> {
         console.error( err );
       } );
+      */
 
-      /*
     this._router.navigate( [
       'FlogoCanvasSet',
       { id : flogoIDEncode( flowId ) }
@@ -93,7 +94,6 @@ export class FlogoFlowsComponet{
       .catch( ( err : any )=> {
         console.error( err );
       } );
-      */
 
   }
 

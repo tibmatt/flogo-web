@@ -38,7 +38,7 @@ import { FlogoCanvasSetComponent } from '../../flogo.canvas-set/flogo.canvas-set
     path:'/flows/:id/...', name:"FlogoFlowDetail", component: FlogoCanvasComponent
   },
   {
-    path:'/flows/new/:id', name:"FlogoCanvasSet", component: FlogoCanvasSetComponent
+    path:'/flows/new/:id/...', name:"FlogoCanvasSet", component: FlogoCanvasSetComponent
   },
   {
     path:'/task', name: 'FlogoTask', component: FlogoFormBuilderComponent

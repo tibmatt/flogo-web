@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges } from '@angular/core';
 import { RouteConfig, RouterOutlet, RouteParams, Router, CanActivate } from '@angular/router-deprecated';
 import {PostService} from '../../../common/services/post.service';
 import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
@@ -17,15 +17,10 @@ import {
 } from '../../../common/models';
 
 import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
-
 import { SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS, PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS } from '../../flogo.flows.detail.triggers/messages';
-
 import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks/messages';
-
 import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
-
 import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
-
 import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
@@ -47,7 +42,8 @@ import { FlogoModal } from '../../../common/services/modal.service';
   directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable, JsonDownloader ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
-  providers: [ FlogoModal ]
+  providers: [ FlogoModal ],
+  inputs: ['flowId']
 } )
 @CanActivate((next) => {
   return isConfigurationLoaded();
@@ -63,8 +59,9 @@ import { FlogoModal } from '../../../common/services/modal.service';
 ])
 */
 
-export class FlogoCanvasComponent {
+export class FlogoCanvasComponent implements  OnChanges {
   downloadLink: string;
+  flowId: string;
 
   _subscriptions : any[];
 
@@ -92,7 +89,14 @@ export class FlogoCanvasComponent {
   _mockGettingStepsProcess: boolean;
   _mockProcess: any;
 
+  ngOnChanges(changes:any) {
+    if(changes.flowId&&changes.flowId.currentValue) {
+      this.getFlow(changes.flowId.currentValue)
+    }
+  }
+
   private initSubscribe() {
+    debugger;
     this._subscriptions = [];
 
     let subs = [
@@ -124,6 +128,7 @@ export class FlogoCanvasComponent {
   }
 
   ngOnDestroy() {
+    debugger;
     _.each( this._subscriptions, sub => {
         this._postService.unsubscribe( sub );
       }
@@ -142,6 +147,10 @@ export class FlogoCanvasComponent {
     private _router: Router,
     private _flogoModal: FlogoModal
   ) {
+
+  }
+
+  private getFlow(id: string) {
     this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
 
@@ -150,7 +159,7 @@ export class FlogoCanvasComponent {
     this._mockLoading = true;
 
     //  get the flow by ID
-    let id = '' + this._routerParams.params[ 'id' ];
+    //let id = '' + this._routerParams.params[ 'id' ];
     this._id = id;
 
     this.downloadLink = `/v1/api/flows/${this._id}/build`;
@@ -164,54 +173,53 @@ export class FlogoCanvasComponent {
     this.exportLink = `/v1/api/flows/${id}/json`;
 
     this._restAPIFlowsService.getFlow(id)
-      .then(
-        ( rsp : any )=> {
+        .then(
+            ( rsp : any )=> {
 
-          if ( !_.isEmpty( rsp ) ) {
-            // initialisation
-            console.group( 'Initialise canvas component' );
+              if ( !_.isEmpty( rsp ) ) {
+                // initialisation
+                console.group( 'Initialise canvas component' );
 
-            this._flow = rsp;
+                this._flow = rsp;
 
-            this.tasks = this._flow.items;
-            if ( _.isEmpty( this._flow.paths ) ) {
-              this.diagram = this._flow.paths = <IFlogoFlowDiagram>{
-                root : {},
-                nodes : {}
-              };
-            } else {
-              this.diagram = this._flow.paths;
+                this.tasks = this._flow.items;
+                if ( _.isEmpty( this._flow.paths ) ) {
+                  this.diagram = this._flow.paths = <IFlogoFlowDiagram>{
+                    root : {},
+                    nodes : {}
+                  };
+                } else {
+                  this.diagram = this._flow.paths;
+                }
+
+                this.clearTaskRunStatus();
+
+                this.initSubscribe();
+
+                console.groupEnd();
+
+                return this._updateFlow( this._flow );
+              } else {
+                return this._flow;
+              }
             }
+        )
+        .then(
+            ()=> {
+              this._mockLoading = false;
+            }
+        )
+        .catch(
+            ( err : any )=> {
+              if ( err.status === 404 ) {
 
-            this.clearTaskRunStatus();
+                this._router.navigate(['FlogoFlows']);
 
-            this.initSubscribe();
-
-            console.groupEnd();
-
-            return this._updateFlow( this._flow );
-          } else {
-            return this._flow;
-          }
-        }
-      )
-      .then(
-        ()=> {
-          this._mockLoading = false;
-        }
-      )
-      .catch(
-        ( err : any )=> {
-          if ( err.status === 404 ) {
-
-            this._router.navigate(['FlogoFlows']);
-
-          } else {
-            return err;
-          }
-        }
-      );
-
+              } else {
+                return err;
+              }
+            }
+        );
 
   }
 
