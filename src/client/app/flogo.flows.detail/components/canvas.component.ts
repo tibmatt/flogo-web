@@ -53,6 +53,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
   return isConfigurationLoaded();
 })
 
+/*
 @RouteConfig([
   {path:'/',    name: 'FlogoFlowsDetailDefault',   component: FlogoFlowsDetail, useAsDefault: true},
   {path:'/trigger/add',    name: 'FlogoFlowsDetailTriggerAdd',   component: FlogoFlowsDetailTriggers},
@@ -60,6 +61,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
   {path:'/task/add',    name: 'FlogoFlowsDetailTaskAdd',   component: FlogoFlowsDetailTasks},
   {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail}
 ])
+*/
 
 export class FlogoCanvasComponent {
   downloadLink: string;
@@ -920,6 +922,7 @@ export class FlogoCanvasComponent {
     console.log( data );
     console.log( envelope );
 
+    debugger;
 
     this._router.navigate(
       [

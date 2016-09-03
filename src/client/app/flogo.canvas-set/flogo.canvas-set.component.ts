@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
 import { FlogoCanvasComponent } from '../flogo.flows.detail/components/canvas.component';
-import { ROUTER_DIRECTIVES,  RouteParams,  RouterOutlet,  Router, CanActivate } from '@angular/router-deprecated';
+import { ROUTER_DIRECTIVES,  RouteConfig, RouteParams,  RouterOutlet,  Router, CanActivate } from '@angular/router-deprecated';
+import {FlogoFlowsDetail} from './../flogo.flows.detail/components/flow-detail.component';
+import {FlogoFlowsDetailTriggers} from '../flogo.flows.detail.triggers/components/triggers.component';
+import {FlogoFlowsDetailTriggersDetail} from '../flogo.flows.detail.triggers.detail/components/detail.component';
+import {FlogoFlowsDetailTasks} from '../flogo.flows.detail.tasks/components/tasks.component';
+import {FlogoFlowsDetailTasksDetail} from '../flogo.flows.detail.tasks.detail/components/detail.component';
 import { RESTAPIService } from '../../common/services/rest-api.service';
+import { FlogoFlowsDetailDiagramComponent } from '../flogo.flows.detail.diagram/components';
 import { RESTAPIFlowsService } from '../../common/services/restapi/flows-api.service';
 import { isConfigurationLoaded } from '../../common/services/configurationLoaded.service';
 
@@ -22,12 +28,19 @@ import {
    selector: 'flogo-canvas-set',
    moduleId: module.id,
    templateUrl: 'flogo.canvas-set.tpl.html',
-   directives: [ROUTER_DIRECTIVES, Contenteditable, JsonDownloader],
+   directives: [ROUTER_DIRECTIVES, RouterOutlet, Contenteditable, JsonDownloader, FlogoFlowsDetailDiagramComponent],
     styleUrls: ['flogo.canvas-set.component.css']
 })
 @CanActivate((next) => {
     return isConfigurationLoaded();
 })
+@RouteConfig([
+    {path:'/',    name: 'FlogoFlowsDetailDefault',   component: FlogoFlowsDetail, useAsDefault: true},
+    {path:'/trigger/add',    name: 'FlogoFlowsDetailTriggerAdd',   component: FlogoFlowsDetailTriggers},
+    {path:'/trigger/:id',    name: 'FlogoFlowsDetailTriggerDetail',   component: FlogoFlowsDetailTriggersDetail},
+    {path:'/task/add',    name: 'FlogoFlowsDetailTaskAdd',   component: FlogoFlowsDetailTasks},
+    {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail}
+])
 export class FlogoCanvasSetComponent {
    private id: string;
    private diagram: IFlogoFlowDiagram;
