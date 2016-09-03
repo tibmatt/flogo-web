@@ -35,13 +35,17 @@ export class FlogoCanvasSetComponent {
    private _flow: any;
    private _mockLoading: boolean;
    private _isCurrentProcessDirty:boolean = true;
-    private _mockProcess: any;
+  private _mockProcess: any;
+  private exportLink:string;
+  private downloadLink: string;
 
    constructor(
        private _routerParams: RouteParams,
        private _restAPIFlowsService: RESTAPIFlowsService
    ) {
-      this.id = this._routerParams.params['id'];
+       this.id = this._routerParams.params['id'];
+       this.downloadLink = `/v1/api/flows/${this.id}/build`;
+
        this._mockLoading = true;
 
 
@@ -50,6 +54,9 @@ export class FlogoCanvasSetComponent {
        } catch ( e ) {
            console.warn( e );
        }
+
+
+       this.exportLink = `/v1/api/flows/${this.id}/json`;
 
       this._restAPIFlowsService.getFlow(this.id)
           .then(
@@ -122,6 +129,16 @@ export class FlogoCanvasSetComponent {
                     }
                 );
         }
+    }
+
+    exportFlow () {
+        return this._exportFlow.bind(this);
+    }
+
+    private _exportFlow() {
+        return new Promise((resolve, reject) => {
+            resolve(flogoFlowToJSON( this._flow ));
+        });
     }
 
     private _updateFlow( flow : any ) {
