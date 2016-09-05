@@ -197,7 +197,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( $event );
 
     let data = $event.detail;
-    debugger;
     data.id = this.id;
 
     // TODO
@@ -301,13 +300,20 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.groupEnd();
   }
 
+  private raisedByThisDiagram(id:string) {
+    return this.id === (id || '');
+  }
+
   private _selectTaskDone( data : any, envelope : any ) {
-    if(this.id !== data.id || '')  {
+    if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
 
+    //if(this.id !== data.id || '')  {
+    //  return;
+    //}
+
     console.group( 'Select task Done' );
-    debugger;
 
     console.log( data );
     console.log( envelope );

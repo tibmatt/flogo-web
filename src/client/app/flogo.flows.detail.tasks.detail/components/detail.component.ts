@@ -55,7 +55,6 @@ export class FlogoFlowsDetailTasksDetail {
 
   private _getSelectTaskMsg( data : any, envelope : any ) {
     console.group( 'Select task message in tasks' );
-    debugger;
 
     console.log( data );
     console.log( envelope );
