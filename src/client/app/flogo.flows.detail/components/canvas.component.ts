@@ -80,8 +80,9 @@ export class FlogoCanvasComponent implements  OnChanges {
       this._mockLoading = false;
       this.clearTaskRunStatus()
       return this._updateFlow( changes.flow.currentValue );
-
     }
+
+    return;
 
   }
 
@@ -972,9 +973,15 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   private _selectTaskFromDiagram( data: any, envelope: any ) {
+    if(this.flow._id !== data.id || '') {
+      return;
+    }
+
     console.group( 'Select task message from diagram' );
     console.log( data );
     console.log( envelope );
+    debugger;
+
 
     this._router.navigate(
       [
@@ -1008,7 +1015,8 @@ export class FlogoCanvasComponent implements  OnChanges {
                       {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
                         data : {
                           node : data.node,
-                          task : this.tasks[ data.node.taskID ]
+                          task : this.tasks[ data.node.taskID ],
+                          id: data.id
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
@@ -1033,6 +1041,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   // TODO still in use?
   private _selectTaskFromTasks( data: any, envelope: any) {
     console.group( 'Select task message from task' );
+    debugger;
 
     console.log( data );
     console.log( envelope );

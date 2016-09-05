@@ -43,9 +43,17 @@ import {
 ])
 export class FlogoCanvasSetComponent {
    private flowId: string;
+    private flowIdError: string;
+
    private diagram: IFlogoFlowDiagram;
    private tasks: IFlogoFlowDiagramTaskDictionary;
    private _flow: any;
+
+
+   private diagramError: IFlogoFlowDiagram;
+   private tasksError: IFlogoFlowDiagramTaskDictionary;
+   private _flowError: any;
+
    private _mockLoading: boolean;
    private _isCurrentProcessDirty:boolean = true;
   private _mockProcess: any;
@@ -65,6 +73,7 @@ export class FlogoCanvasSetComponent {
 
        try {
            this.flowId = flogoIDDecode( this.flowId );
+           this.flowIdError = flogoIDDecode('Zmxvd3M6ZmxvZ293ZWItYWRtaW46MjAxNi0wOS0wNFQwNDowOToyMy41NzRa');
        } catch ( e ) {
            console.warn( e );
        }
@@ -72,6 +81,27 @@ export class FlogoCanvasSetComponent {
 
        this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
+       this.getFlow(this.flowId)
+            .then((res:any)=> {
+                debugger;
+                this._flow = res._flow;
+                this.diagram = res.diagram;
+                this.tasks = res.tasks;
+                //this._mockLoading = false;
+
+                this.getFlow(this.flowIdError)
+                    .then((res:any)=>{
+                        this._flowError = res._flow;
+                        this.diagramError = res.diagram;
+                        this.tasksError = res.tasks;
+                        this._mockLoading = false;
+                    });
+
+       });
+
+
+
+       /*
       this._restAPIFlowsService.getFlow(this.flowId)
           .then(
               ( rsp : any )=> {
@@ -90,12 +120,7 @@ export class FlogoCanvasSetComponent {
                     } else {
                        this.diagram = this._flow.paths;
                     }
-
-                    //### this.clearTaskRunStatus();
-                    //### this.initSubscribe();
-                    //### console.groupEnd();
-                    //### return this._updateFlow( this._flow );
-                     return this._flow;
+                    return this._flow;
 
                  } else {
                     return this._flow;
@@ -116,12 +141,73 @@ export class FlogoCanvasSetComponent {
                  }
               }
           );
+          */
 
 
 
    }
 
+    private getFlow(id:string) {
+        let diagram: IFlogoFlowDiagram;
+        let tasks: IFlogoFlowDiagramTaskDictionary;
+        let _flow: any;
+
+        return new Promise((resolve, reject)=> {
+
+            this._restAPIFlowsService.getFlow(id)
+                .then(
+                    ( rsp : any )=> {
+
+
+                        if ( !_.isEmpty( rsp ) ) {
+                            // initialisation
+                            console.group( 'Initialise canvas component' );
+
+                            _flow = rsp;
+
+                            tasks = _flow.items;
+                            if ( _.isEmpty( _flow.paths ) ) {
+                                diagram = _flow.paths = <IFlogoFlowDiagram>{
+                                    root : {},
+                                    nodes : {}
+                                };
+                            } else {
+                                diagram = _flow.paths;
+                            }
+                            //return this._flow;
+
+                        } else {
+                            //return this._flow;
+                        }
+
+                        resolve({diagram, tasks, _flow});
+                    }
+                )
+                /*.then(
+                    ()=> {
+                        this._mockLoading = false;
+                    }
+                )*/
+                .catch(
+                    ( err : any )=> {
+
+                        reject(null);
+
+                        /*
+                        if ( err.status === 404 ) {
+                            //### this._router.navigate(['FlogoFlows']);
+                        } else {
+                            return err;
+                        }
+                        */
+                    }
+                );
+
+        });
+    }
+
     private changeFlowDetail($event, property) {
+
         return new Promise((resolve, reject)=>{
             this._updateFlow(this._flow).then((response:any)=>{
                 notification(`Update flow's ${property} successfully!`,'success', 3000);

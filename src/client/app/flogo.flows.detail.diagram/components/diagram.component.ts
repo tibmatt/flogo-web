@@ -14,7 +14,8 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
     styleUrls : [ 'diagram.component.css' ],
     inputs : [
       'tasks',
-      'diagram'
+      'diagram',
+       'id'
     ]
   }
 )
@@ -22,6 +23,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   public tasks : IFlogoFlowDiagramTaskDictionary;
   public diagram : IFlogoFlowDiagram;
+  public id: string;
 
   private _elmRef : ElementRef;
   private _diagram : FlogoFlowDiagram;
@@ -195,6 +197,8 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( $event );
 
     let data = $event.detail;
+    debugger;
+    data.id = this.id;
 
     // TODO
     //   need to support link and other nodes
@@ -298,7 +302,12 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTaskDone( data : any, envelope : any ) {
+    if(this.id !== data.id || '')  {
+      return;
+    }
+
     console.group( 'Select task Done' );
+    debugger;
 
     console.log( data );
     console.log( envelope );
