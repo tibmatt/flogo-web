@@ -765,6 +765,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTriggerFromDiagram( data : any, envelope : any ) {
+    debugger;
     console.group( 'Add trigger message from diagram' );
 
     console.log( data );
@@ -790,6 +791,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTriggerFromTriggers( data: any, envelope: any) {
+    debugger;
     console.group( 'Add trigger message from trigger' );
 
     console.log( data );
@@ -827,6 +829,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTaskFromDiagram( data: any, envelope: any ) {
+    debugger;
     console.group( 'Add task message from diagram' );
 
     console.log( data );
@@ -852,6 +855,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTaskFromTasks( data: any, envelope: any) {
+    debugger;
     console.group( 'Add task message from task' );
 
     console.log( data );
@@ -896,7 +900,13 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   private _selectTriggerFromDiagram( data: any, envelope: any ) {
+    debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
+
     console.group( 'Select trigger message from diagram' );
+    debugger;
 
     console.log( data );
     console.log( envelope );
@@ -933,7 +943,8 @@ export class FlogoCanvasComponent implements  OnChanges {
                       {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
                         data : {
                           node : data.node,
-                          task : this.tasks[ data.node.taskID ]
+                          task : this.tasks[ data.node.taskID ],
+                          id: data.id
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
                           _.assign( this.diagram, diagram );
@@ -977,6 +988,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   private _selectTaskFromDiagram( data: any, envelope: any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -1043,6 +1055,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   // TODO still in use?
   private _selectTaskFromTasks( data: any, envelope: any) {
+    debugger;
     console.group( 'Select task message from task' );
 
     console.log( data );
@@ -1120,6 +1133,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     proper: string;
     taskId: any
   }, envelope:any) {
+    debugger;
     var task = this.tasks[data.taskId];
 
     if(task) {
@@ -1135,6 +1149,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _setTaskWarnings(data:any, envelope:any) {
+    debugger;
     var task = this.tasks[data.taskId];
 
     if(task) {
@@ -1148,6 +1163,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _runFromThisTile(data:any, envelope:any) {
+    debugger;
     console.group('Run from this tile');
 
     let selectedTask = this.tasks[ data.taskId ];
@@ -1245,6 +1261,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   }
   private _runFromTriggerinTile(data: any, envolope: any) {
+    debugger;
     console.group('Run from Trigger');
 
     this._runFromRoot().then((res) => {
@@ -1275,6 +1292,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _selectTransformFromDiagram(data:any, envelope:any) {
+    debugger;
     let selectedNode = data.node;
     let previousNodes = this.findPathToNode(this.diagram.root.is, selectedNode.id);
     previousNodes.pop(); // ignore last item as it is the very same selected node
@@ -1295,6 +1313,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _saveTransformFromTransform(data:any, envelope:any){
+    debugger;
     // data.tile.taskId
     // data.inputMappings
 
@@ -1308,6 +1327,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _deleteTransformFromTransform(data:any, envelope:any){
+    debugger;
     // data.tile.taskId
     let tile = this.tasks[data.tile.id];
     delete tile.inputMappings;
@@ -1319,6 +1339,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _deleteTaskFromDiagram( data : any, envelope : any ) {
+    debugger;
     console.group( 'Delete task message from diagram' );
 
     console.log(data);
@@ -1412,6 +1433,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addBranchFromDiagram( data : any, envelope : any ) {
+    debugger;
     console.group( 'Add branch message from diagram' );
 
     console.log( data );
@@ -1443,6 +1465,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _selectBranchFromDiagram( data : any, envelope : any ) {
+    debugger;
     console.group( 'Select branch message from diagram' );
 
     console.log( data );
@@ -1595,6 +1618,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _taskDetailsChanged(data:any, envelope:any) {
+    debugger;
     console.group('Save task details to flow');
     var task = this.tasks[data.taskId];
 

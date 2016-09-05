@@ -191,9 +191,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   // forwarding event
   selectTask( $event : any ) {
     // TODO
+    debugger;
 
     console.group( 'forwarding select task event' );
-
     console.log( $event );
 
     let data = $event.detail;
@@ -243,6 +243,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTriggerDone( data : any, envelope : any ) {
+    debugger;
     console.group( 'Add Trigger Done' );
 
     console.log( data );
@@ -264,6 +265,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTaskDone( data : any, envelope : any ) {
+    debugger;
     console.group( 'Add Task Done' );
 
     console.log( data );
@@ -285,6 +287,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTriggerDone( data : any, envelope : any ) {
+    debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Select Trigger Done' );
 
     console.log( data );
@@ -305,6 +311,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTaskDone( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -330,6 +337,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _deleteTaskDone( data : any, envelope : any ) {
+    debugger;
     console.group( 'Delete task done.' );
 
     console.log( data );
@@ -395,6 +403,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addBranchDone( data : any, envelope : any ) {
+    debugger;
     console.group( 'Add branch done.' );
 
     console.log( data );
