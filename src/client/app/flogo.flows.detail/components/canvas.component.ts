@@ -25,7 +25,7 @@ import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
-import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
+import { FlogoFlowDigram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
@@ -1350,9 +1350,13 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _deleteTaskFromDiagram( data : any, envelope : any ) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Delete task message from diagram' );
 
     console.log(data);
+    //data.id = this.flow._id;
 
     let task = this.tasks[ _.get( data, 'node.taskID', '' ) ];
     let node = this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
@@ -1409,12 +1413,14 @@ export class FlogoCanvasComponent implements  OnChanges {
               _shouldGoBack = true;
             }
           }
+          debugger;
 
           this._postService.publish(
               _.assign(
                   {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
                     data : {
-                      node : data.node
+                      node : data.node,
+                      id: data.id
                     },
                     done : ( diagram : IFlogoFlowDiagram ) => {
                       // TODO

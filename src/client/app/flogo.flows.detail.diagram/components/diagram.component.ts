@@ -220,6 +220,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   // forwarding event based on item type
   onMenuItemClicked( $event : any ) {
+    debugger;
     console.group( 'forwarding menu item clicked event' );
     let menuItemType = $event.detail.origEvent.target.getAttribute( 'data-menu-item-type' );
 
@@ -227,6 +228,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       console.warn( 'Invalid data menu item type.' );
     } else {
       let data = $event.detail;
+      data.id = this.id;
 
       switch ( Number( menuItemType ) ) {
         case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH:
@@ -342,6 +344,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   private _deleteTaskDone( data : any, envelope : any ) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Delete task done.' );
 
     console.log( data );
