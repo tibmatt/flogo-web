@@ -24,6 +24,7 @@ import {
     flogoIDDecode, flogoIDEncode,notification
 } from '../../common/utils';
 
+
 @Component({
    selector: 'flogo-canvas-set',
    moduleId: module.id,
@@ -39,7 +40,7 @@ import {
     {path:'/trigger/add',    name: 'FlogoFlowsDetailTriggerAdd',   component: FlogoFlowsDetailTriggers},
     {path:'/trigger/:id',    name: 'FlogoFlowsDetailTriggerDetail',   component: FlogoFlowsDetailTriggersDetail},
     {path:'/task/add',    name: 'FlogoFlowsDetailTaskAdd',   component: FlogoFlowsDetailTasks},
-    {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail}
+    {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail }
 ])
 export class FlogoCanvasSetComponent {
    private flowId: string;
@@ -83,6 +84,7 @@ export class FlogoCanvasSetComponent {
 
        this.getFlow(this.flowId)
             .then((res:any)=> {
+                debugger;
                 this._flow = res._flow;
                 this.diagram = res.diagram;
                 this.tasks = res.tasks;
@@ -90,6 +92,7 @@ export class FlogoCanvasSetComponent {
 
                 this.getFlow(this.flowIdError)
                     .then((res:any)=>{
+                        debugger;
                         this._flowError = res._flow;
                         this.diagramError = res.diagram;
                         this.tasksError = res.tasks;

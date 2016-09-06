@@ -15,6 +15,7 @@ import { FlogoFormBuilderComponent } from '../../flogo.form-builder/components/f
 )
 
 export class FlogoFlowsDetailTasksDetail {
+  private _flowId:string;
   private _task : any;
   private _step : any;
   private _context: any;
@@ -23,6 +24,7 @@ export class FlogoFlowsDetailTasksDetail {
 
   constructor( private _postService : PostService, private _routeParams : RouteParams ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
+    debugger;
 
     console.log( this._routeParams );
 
@@ -55,6 +57,7 @@ export class FlogoFlowsDetailTasksDetail {
 
   private _getSelectTaskMsg( data : any, envelope : any ) {
     debugger;
+    this._flowId = data.id;
     console.group( 'Select task message in tasks' );
 
     console.log( data );

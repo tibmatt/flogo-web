@@ -6,7 +6,7 @@ import {FlogoFlowsDetail} from './flow-detail.component';
 import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/components/triggers.component';
 import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
-import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
+//import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 
@@ -1619,6 +1619,9 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _taskDetailsChanged(data:any, envelope:any) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group('Save task details to flow');
     var task = this.tasks[data.taskId];
 
