@@ -224,7 +224,7 @@ export class FlogoFormBuilderComponent{
 
 
      this._postService.publish(_.assign({},PUB_EVENTS.setTaskWarnings, {
-      data: {warnings,  taskId},
+      data: {warnings,  taskId, id:this._flowId},
       done: () => {}
       } ));
 

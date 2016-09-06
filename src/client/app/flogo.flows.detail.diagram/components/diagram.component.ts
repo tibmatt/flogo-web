@@ -174,6 +174,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( $event );
 
     let data = $event.detail;
+    data.id = this.id;
 
     if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
       // add trigger event
@@ -266,6 +267,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   private _addTaskDone( data : any, envelope : any ) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Add Task Done' );
 
     console.log( data );

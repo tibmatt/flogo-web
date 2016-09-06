@@ -830,6 +830,9 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _addTaskFromDiagram( data: any, envelope: any ) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Add task message from diagram' );
 
     console.log( data );
@@ -856,6 +859,9 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _addTaskFromTasks( data: any, envelope: any) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Add task message from task' );
 
     console.log( data );
@@ -881,7 +887,8 @@ export class FlogoCanvasComponent implements  OnChanges {
               {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
                 data : {
                   node : data.node,
-                  task : task
+                  task : task,
+                  id: data.id
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
                   _.assign( this.diagram, diagram );
@@ -1150,6 +1157,9 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _setTaskWarnings(data:any, envelope:any) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     var task = this.tasks[data.taskId];
 
     if(task) {
