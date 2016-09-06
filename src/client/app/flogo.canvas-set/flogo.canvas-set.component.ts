@@ -74,7 +74,7 @@ export class FlogoCanvasSetComponent {
 
        try {
            this.flowId = flogoIDDecode( this.flowId );
-           this.flowIdError = flogoIDDecode('Zmxvd3M6ZmxvZ293ZWItYWRtaW46MjAxNi0wOS0wNlQxNzoxOTowNS40Mjha');
+           this.flowIdError = flogoIDDecode('Zmxvd3M6ZmxvZ293ZWItYWRtaW46MjAxNi0wOS0wNlQyMTozMjoyNS45Njla');
        } catch ( e ) {
            console.warn( e );
        }
@@ -84,7 +84,6 @@ export class FlogoCanvasSetComponent {
 
        this.getFlow(this.flowId)
             .then((res:any)=> {
-                debugger;
                 this._flow = res._flow;
                 this.diagram = res.diagram;
                 this.tasks = res.tasks;
@@ -92,7 +91,6 @@ export class FlogoCanvasSetComponent {
 
                 this.getFlow(this.flowIdError)
                     .then((res:any)=>{
-                        debugger;
                         this._flowError = res._flow;
                         this.diagramError = res.diagram;
                         this.tasksError = res.tasks;

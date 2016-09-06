@@ -30,6 +30,7 @@ interface TransformData {
   directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent, TransformMapperComponent, TransformJsonPanelComponent],
   moduleId: module.id,
   styleUrls: ['transform.component.css'],
+  inputs:['flowId'],
   templateUrl: 'transform.tpl.html',
 })
 export class TransformComponent implements OnDestroy {
@@ -39,6 +40,7 @@ export class TransformComponent implements OnDestroy {
   isCollapsedOutput:boolean = true;
   isCollapsedInput:boolean = true;
   currentFieldSelected:any = {};
+  flowId:string;
 
   errors:any;
 
@@ -70,6 +72,10 @@ export class TransformComponent implements OnDestroy {
 
   onSelectedItem(params:any) {
     this.currentFieldSelected = params;
+  }
+
+  private raisedByThisDiagram(id:string) {
+    return this.flowId === (id || '');
   }
 
   removeError(change:any) {
@@ -170,7 +176,8 @@ export class TransformComponent implements OnDestroy {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.data.tile,
-        inputMappings: this.transformMappingsToExternalFormat(this.data.result)
+        inputMappings: this.transformMappingsToExternalFormat(this.data.result),
+        id: this.flowId
       }
     }));
     this.close();
@@ -179,7 +186,8 @@ export class TransformComponent implements OnDestroy {
   deleteTransform() {
     this._postService.publish(_.assign({}, PUB_EVENTS.deleteTransform, {
       data: {
-        tile: this.data.tile
+        tile: this.data.tile,
+        id: this.flowId
       }
     }));
     this.close();
@@ -224,6 +232,9 @@ export class TransformComponent implements OnDestroy {
   }
 
   private onTransformSelected(data:any, envelope:any) {
+    if(!this.raisedByThisDiagram(data.id) ) {
+      return;
+    }
     this.data = {
       result: null,
       precedingTiles: data.previousTiles,

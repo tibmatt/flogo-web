@@ -5,7 +5,7 @@
     </section>
 
     <flogo-canvas-flow-diagram [tasks]="tasks" [diagram]="diagram" [id]="flow._id"></flogo-canvas-flow-diagram>
-    <flogo-transform></flogo-transform>
+    <flogo-transform [flowId]="flow._id"></flogo-transform>
 
     <!-- the mock section below should be removed later-->
     <section class="container-fluid" style="display: none; width: 100%;">

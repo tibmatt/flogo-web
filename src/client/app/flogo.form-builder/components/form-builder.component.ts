@@ -82,7 +82,6 @@ export class FlogoFormBuilderComponent{
       state['settings'] = this._getCurrentTaskState(this._attributes.settings || []);
     }
 
-    debugger;
 
     this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
       data: _.assign({},{id: this._flowId}, state) ,
@@ -122,8 +121,6 @@ export class FlogoFormBuilderComponent{
       condition : self.convertBranchConditionToInternal( branchInfo.condition,
         _.get( self, '_context.contextData.previousTiles', [] ) )
     };
-
-    debugger;
 
     this._postService.publish( _.assign( {}, PUB_EVENTS.taskDetailsChanged, {
       data : state,

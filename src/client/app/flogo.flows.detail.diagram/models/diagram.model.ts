@@ -444,8 +444,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             }
 
             if ( evtType ) {
-              debugger;
-
               _triggerCustomEvent(
                 evtType, {
                   origEvent : d3.event,
@@ -840,7 +838,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           // fire event if it's menu item
           let evtType = 'flogoClickNodeMenuItem';
-          debugger;
 
           _triggerCustomEvent( evtType, {
             origEvent : d3.event,
@@ -1422,7 +1419,6 @@ function _hasBranchRun( node : IFlogoFlowDiagramNode,
 
 function _removeNodeInSingleRow( node : FlogoFlowDiagramNode, nodes : IFlogoFlowDiagramNodeDictionary ) {
   VERBOSE && console.group( `_removeNodeInSingleRow: ${node.id}` );
-  debugger;
 
   let itsParent = nodes[ node.parents[ 0 ] ];
   let itsChild = nodes[ node.children[ 0 ] ];

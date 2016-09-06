@@ -192,7 +192,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   // forwarding event
   selectTask( $event : any ) {
     // TODO
-    debugger;
 
     console.group( 'forwarding select task event' );
     console.log( $event );
@@ -220,7 +219,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   // forwarding event based on item type
   onMenuItemClicked( $event : any ) {
-    debugger;
     console.group( 'forwarding menu item clicked event' );
     let menuItemType = $event.detail.origEvent.target.getAttribute( 'data-menu-item-type' );
 
@@ -246,7 +244,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTriggerDone( data : any, envelope : any ) {
-    debugger;
     console.group( 'Add Trigger Done' );
 
     console.log( data );
@@ -268,7 +265,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTaskDone( data : any, envelope : any ) {
-    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -293,7 +289,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTriggerDone( data : any, envelope : any ) {
-    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -317,7 +312,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTaskDone( data : any, envelope : any ) {
-    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -343,7 +337,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _deleteTaskDone( data : any, envelope : any ) {
-    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -412,7 +405,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addBranchDone( data : any, envelope : any ) {
-    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }

@@ -24,8 +24,6 @@ export class FlogoFlowsDetailTasksDetail {
 
   constructor( private _postService : PostService, private _routeParams : RouteParams ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
-    debugger;
-
     console.log( this._routeParams );
 
     this.initSubscribe();
@@ -56,7 +54,6 @@ export class FlogoFlowsDetailTasksDetail {
   }
 
   private _getSelectTaskMsg( data : any, envelope : any ) {
-    debugger;
     this._flowId = data.id;
     console.group( 'Select task message in tasks' );
 

@@ -70,7 +70,6 @@ export class FlogoFlowsDetailTriggers {
   }
 
   private _getSelectTriggerMsg( data : any, envelope : any ) {
-    debugger;
     console.group( 'Select trigger message in triggers' );
 
     console.log( data );
