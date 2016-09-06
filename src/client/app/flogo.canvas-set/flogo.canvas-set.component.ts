@@ -74,7 +74,7 @@ export class FlogoCanvasSetComponent {
 
        try {
            this.flowId = flogoIDDecode( this.flowId );
-           this.flowIdError = flogoIDDecode('Zmxvd3M6ZmxvZ293ZWItYWRtaW46MjAxNi0wOS0wNlQwMjoyNzozNC40NzZa');
+           this.flowIdError = flogoIDDecode('Zmxvd3M6ZmxvZ293ZWItYWRtaW46MjAxNi0wOS0wNlQxNzoxOTowNS40Mjha');
        } catch ( e ) {
            console.warn( e );
        }

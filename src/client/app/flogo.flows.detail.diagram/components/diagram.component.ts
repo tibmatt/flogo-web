@@ -413,6 +413,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   private _addBranchDone( data : any, envelope : any ) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Add branch done.' );
 
     console.log( data );

@@ -1450,6 +1450,9 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _addBranchFromDiagram( data : any, envelope : any ) {
     debugger;
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Add branch message from diagram' );
 
     console.log( data );
@@ -1469,7 +1472,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.addBranch, {
       data : {
         node : data.node,
-        task : branchInfo
+        task : branchInfo,
+        id: data.id
       },
       done : ( diagram : IFlogoFlowDiagram ) => {
         _.assign( this.diagram, diagram );
