@@ -1381,18 +1381,19 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _deleteTaskFromDiagram( data : any, envelope : any ) {
+    let diagramId: string  = data.id;
     debugger;
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    //if(!this.raisedByThisDiagram(data.id)) {
+    //  return;
+    //}
     console.group( 'Delete task message from diagram' );
 
     console.log(data);
     //data.id = this.flow._id;
 
-    let task = this.tasks[ _.get( data, 'node.taskID', '' ) ];
-    let node = this.diagram.nodes[ _.get( data, 'node.id', '' ) ];
-    let _diagram = this.diagram;
+    let task = this.subFlows[diagramId].tasks[ _.get( data, 'node.taskID', '' ) ];
+    let node = this.subFlows[diagramId].diagram.nodes[ _.get( data, 'node.id', '' ) ];
+    let _diagram = this.subFlows[diagramId].diagram;
 
     // TODO
     //  refine confirmation
@@ -1451,13 +1452,13 @@ export class FlogoCanvasComponent implements  OnChanges {
                   {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
                     data : {
                       node : data.node,
-                      id: data.id
+                      id: diagramId
                     },
                     done : ( diagram : IFlogoFlowDiagram ) => {
                       // TODO
                       //  NOTE that once delete branch, not only single task is removed.
-                      delete this.tasks[ _.get( data, 'node.taskID', '' ) ];
-                      _.assign( this.diagram, diagram );
+                      delete this.subFlows[diagramId].tasks[ _.get( data, 'node.taskID', '' ) ];
+                      _.assign( this.subFlows[diagramId].diagram, diagram );
                       this._updateFlow( this.flow );
                       this._isDiagramEdited = true;
 
