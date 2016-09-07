@@ -52,10 +52,8 @@ import {
 export class FlogoCanvasSetComponent {
   public flow: any;
   public flowId: string;
-  public rootFlow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
-  public errorFlow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
-
-
+  public mainSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
+  public errorSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
 
   public loading: boolean;
   public isCurrentProcessDirty: boolean = true;
@@ -82,8 +80,8 @@ export class FlogoCanvasSetComponent {
     this.getFlow(this.flowId)
       .then((res: any)=> {
         this.flow = res.flow;
-        this.rootFlow = res.root;
-        this.errorFlow = res.errorHandler;
+        this.mainSubflow = res.root;
+        this.errorSubflow = res.errorHandler;
         this.loading = false;
       });
 

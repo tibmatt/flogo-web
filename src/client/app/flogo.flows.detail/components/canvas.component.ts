@@ -43,16 +43,16 @@ import { FlogoModal } from '../../../common/services/modal.service';
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ],
-  inputs: ['rootFlow', 'errorFlow','flow']
+  inputs: ['mainSubflow', 'errorSubflow','flow']
 } )
 @CanActivate((next) => {
   return isConfigurationLoaded();
 })
 
 export class FlogoCanvasComponent implements  OnChanges {
-  public rootFlow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
-  public errorFlow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
   public flow: any;
+  public mainSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
+  public errorSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
 
   tasks:any;
   diagram:any;
@@ -93,11 +93,11 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   ngOnChanges(changes:any) {
 
-    if(changes.rootFlow&&changes.errorFlow&&changes.flow) {
+    if(changes.mainSubflow&&changes.errorSubflow&&changes.flow) {
       this._mockLoading = false;
       this.clearTaskRunStatus();
-      this.tasks = changes.rootFlow.tasks;
-      this.diagram = changes.rootFlow.diagram;
+      this.tasks = changes.mainSubflow.tasks;
+      this.diagram = changes.mainSubflow.diagram;
       return this._updateFlow( changes.flow.currentValue );
     }
 
@@ -812,7 +812,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     //  TODO replace the task ID generation function?
     let trigger = <IFlogoFlowDiagramTask> _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
 
-    let subflow = data.id == 'root' ? this.rootFlow : this.errorFlow;
+    let subflow = data.id == 'root' ? this.mainSubflow : this.errorSubflow;
     let tasks = subflow.tasks;
 
     tasks[ trigger.id ] = trigger;

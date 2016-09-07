@@ -4,8 +4,8 @@
     <section class="flogo-flow-detail">
     </section>
 
-    <flogo-canvas-flow-diagram [tasks]="rootFlow.tasks" [diagram]="rootFlow.diagram" [id]="'root'"></flogo-canvas-flow-diagram>
-    <flogo-canvas-flow-diagram [tasks]="errorFlow.tasks" [diagram]="errorFlow.diagram" [id]="'errorHandler'"></flogo-canvas-flow-diagram>
+    <flogo-canvas-flow-diagram [tasks]="mainSubflow.tasks" [diagram]="mainSubflow.diagram" [id]="'root'"></flogo-canvas-flow-diagram>
+    <flogo-canvas-flow-diagram [tasks]="errorSubflow.tasks" [diagram]="errorSubflow.diagram" [id]="'errorHandler'"></flogo-canvas-flow-diagram>
     <flogo-transform [flowId]="flow._id"></flogo-transform>
 
     <!-- the mock section below should be removed later-->
