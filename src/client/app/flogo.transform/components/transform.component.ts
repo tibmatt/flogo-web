@@ -232,6 +232,7 @@ export class TransformComponent implements OnDestroy {
   }
 
   private onTransformSelected(data:any, envelope:any) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id) ) {
       return;
     }

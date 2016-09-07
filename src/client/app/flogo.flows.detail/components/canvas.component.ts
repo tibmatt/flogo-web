@@ -1324,14 +1324,16 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _selectTransformFromDiagram(data:any, envelope:any) {
+    let diagramId:string = data.id;
     debugger;
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    //if(!this.raisedByThisDiagram(data.id)) {
+    //  return;
+    //}
+
     let selectedNode = data.node;
-    let previousNodes = this.findPathToNode(this.diagram.root.is, selectedNode.id);
+    let previousNodes = this.findPathToNode(this.subFlows[diagramId].diagram.root.is, selectedNode.id, diagramId);
     previousNodes.pop(); // ignore last item as it is the very same selected node
-    let previousTiles = this.mapNodesToTiles(previousNodes);
+    let previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
 
     let selectedTaskId = selectedNode.taskID;
 
@@ -1340,8 +1342,8 @@ export class FlogoCanvasComponent implements  OnChanges {
         {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
           data: {
             previousTiles,
-            tile: _.cloneDeep( this.tasks[selectedTaskId] ),
-            id: data.id
+            tile: _.cloneDeep( this.subFlows[diagramId].tasks[selectedTaskId] ),
+            id: diagramId
           }
         }
       ));
@@ -1481,12 +1483,12 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addBranchFromDiagram( data : any, envelope : any ) {
+    let diagramId:string = data.id;
     debugger;
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    //if(!this.raisedByThisDiagram(data.id)) {
+    //  return;
+    //}
     console.group( 'Add branch message from diagram' );
-
     console.log( data );
 
     // TODO
@@ -1499,16 +1501,16 @@ export class FlogoCanvasComponent implements  OnChanges {
       condition : 'true'
     };
 
-    this.tasks[ branchInfo.id ] = branchInfo;
+    this.subFlows[diagramId].tasks[ branchInfo.id ] = branchInfo;
 
     this._postService.publish( _.assign( {}, FLOGO_DIAGRAM_PUB_EVENTS.addBranch, {
       data : {
         node : data.node,
         task : branchInfo,
-        id: data.id
+        id: diagramId
       },
       done : ( diagram : IFlogoFlowDiagram ) => {
-        _.assign( this.diagram, diagram );
+        _.assign( this.subFlows[diagramId].diagram, diagram );
         this._updateFlow( this.flow );
       }
     } ) );
@@ -1532,7 +1534,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     let selectedNode = data.node;
     let previousNodes = this.findPathToNode(this.diagram.root.is, selectedNode.id);
     previousNodes.pop(); // ignore last item as it is the very same selected node
-    let previousTiles = this.mapNodesToTiles(previousNodes);
+    let previousTiles = this.mapNodesToTiles(previousNodes, null);
 
     this._router.navigate(
       [
@@ -1619,8 +1621,8 @@ export class FlogoCanvasComponent implements  OnChanges {
    * @param {string} targetNodeId
    * @returns string[] list of node ids
      */
-  private findPathToNode(startNodeId:any, targetNodeId:any) {
-    let nodes = this.diagram.nodes; // should be parameter?
+  private findPathToNode(startNodeId:any, targetNodeId:any, diagramId:string) {
+    let nodes = this.subFlows[diagramId].diagram.nodes; // should be parameter?
     let queue = [[startNodeId]];
 
     while (queue.length > 0) {
@@ -1642,12 +1644,12 @@ export class FlogoCanvasComponent implements  OnChanges {
     return [];
   }
 
-  private mapNodesToTiles(nodeIds:any[]) {
+  private mapNodesToTiles(nodeIds:any[], diagramId:string) {
     return nodeIds
       .map(nodeId => {
-        let node = this.diagram.nodes[nodeId];
+        let node = this.subFlows[diagramId].diagram.nodes[nodeId];
         if (node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE || node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT) {
-          return this.tasks[node.taskID];
+          return this.subFlows[diagramId].tasks[node.taskID];
         } else {
           return null;
         }
