@@ -785,6 +785,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTriggerFromDiagram( data : any, envelope : any ) {
+    debugger;
     console.group( 'Add trigger message from diagram' );
 
     console.log( data );
@@ -810,6 +811,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTriggerFromTriggers( data: any, envelope: any) {
+    debugger;
     console.group( 'Add trigger message from trigger' );
 
     console.log( data );
@@ -851,6 +853,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTaskFromDiagram( data: any, envelope: any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -879,6 +882,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addTaskFromTasks( data: any, envelope: any) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -928,6 +932,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   private _selectTriggerFromDiagram( data: any, envelope: any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -1014,6 +1019,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   private _selectTaskFromDiagram( data: any, envelope: any ) {
+    debugger;
     let diagramId:string =data.id;
 
     console.group( 'Select task message from diagram' );
@@ -1078,6 +1084,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   // TODO still in use?
   private _selectTaskFromTasks( data: any, envelope: any) {
+    debugger;
     console.group( 'Select task message from task' );
 
     console.log( data );
@@ -1155,6 +1162,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     proper: string;
     taskId: any
   }, envelope:any) {
+    debugger;
     var task = this.tasks[data.taskId];
 
     if(task) {
@@ -1170,10 +1178,12 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _setTaskWarnings(data:any, envelope:any) {
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
-    var task = this.tasks[data.taskId];
+    let diagramId = data.id;
+    debugger;
+    //if(!this.raisedByThisDiagram(data.id)) {
+    //  return;
+    //}
+    var task = this.subFlows[diagramId].tasks[data.taskId];
 
     if(task) {
       _.set( task, '__props.warnings', data.warnings );
@@ -1186,6 +1196,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _runFromThisTile(data:any, envelope:any) {
+    debugger;
     console.group('Run from this tile');
 
     let selectedTask = this.tasks[ data.taskId ];
@@ -1283,6 +1294,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   }
   private _runFromTriggerinTile(data: any, envolope: any) {
+    debugger;
     console.group('Run from Trigger');
 
     this._runFromRoot().then((res) => {
@@ -1313,6 +1325,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _selectTransformFromDiagram(data:any, envelope:any) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -1337,6 +1350,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _saveTransformFromTransform(data:any, envelope:any){
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -1353,6 +1367,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _deleteTransformFromTransform(data:any, envelope:any){
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -1367,6 +1382,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _deleteTaskFromDiagram( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -1465,6 +1481,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _addBranchFromDiagram( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -1500,6 +1517,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _selectBranchFromDiagram( data : any, envelope : any ) {
+    debugger;
     console.group( 'Select branch message from diagram' );
 
     console.log( data );
@@ -1640,7 +1658,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   private _updateAttributesChanges(task:any,changedInputs:any, structure:any) {
 
     for(var name in changedInputs) {
-      var attributes = _.get(task,structure, []);
+      var attributes = _.get(task, structure, []);
 
       attributes.forEach((input)=> {
         if(input.name === name) {
@@ -1652,11 +1670,15 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _taskDetailsChanged(data:any, envelope:any) {
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    debugger;
+    let diagramId = data.id;
+
+    //if(!this.raisedByThisDiagram(data.id)) {
+    //  return;
+    //}
+
     console.group('Save task details to flow');
-    var task = this.tasks[data.taskId];
+    var task = this.subFlows[diagramId].tasks[data.taskId];
 
     if (task.type === FLOGO_TASK_TYPE.TASK) { // TODO handle more activity task types in the future
       // set/unset the warnings in the tile

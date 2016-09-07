@@ -243,6 +243,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTriggerDone( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -268,6 +269,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTaskDone( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -292,6 +294,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTriggerDone( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -315,6 +318,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTaskDone( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -340,6 +344,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _deleteTaskDone( data : any, envelope : any ) {
+    debugger;
     if(!this.raisedByThisDiagram(data.id)) {
       return;
     }
