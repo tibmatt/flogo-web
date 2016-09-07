@@ -930,9 +930,10 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _selectTriggerFromDiagram( data: any, envelope: any ) {
     debugger;
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    let diagramId:string = data.id;
+    //if(!this.raisedByThisDiagram(data.id)) {
+    //  return;
+    //}
 
     console.group( 'Select trigger message from diagram' );
 
@@ -952,8 +953,8 @@ export class FlogoCanvasComponent implements  OnChanges {
 
           // Refresh task detail
           var currentStep = this._getCurrentState(data.node.taskID);
-          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
-          var context     = this._getCurrentContext(data.node.taskID, null);
+          var currentTask = _.assign({}, _.cloneDeep( this.subFlows[diagramId].tasks[ data.node.taskID ] ) );
+          var context     = this._getCurrentContext(data.node.taskID, diagramId);
 
           this._postService.publish(
             _.assign(
@@ -971,11 +972,11 @@ export class FlogoCanvasComponent implements  OnChanges {
                       {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
                         data : {
                           node : data.node,
-                          task : this.tasks[ data.node.taskID ],
+                          task : this.subFlows[diagramId].tasks[ data.node.taskID ],
                           id: data.id
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
-                          _.assign( this.diagram, diagram );
+                          _.assign( this.subFlows[diagramId].diagram, diagram );
                           // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
                         }
                       }
