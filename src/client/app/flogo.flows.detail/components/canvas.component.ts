@@ -854,9 +854,6 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _addTaskFromDiagram( data: any, envelope: any ) {
     debugger;
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
     console.group( 'Add task message from diagram' );
 
     console.log( data );
@@ -883,26 +880,26 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _addTaskFromTasks( data: any, envelope: any) {
     debugger;
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    let diagramId:string = data.id;
     console.group( 'Add task message from task' );
 
     console.log( data );
     console.log( envelope );
 
-    let taskName = this.uniqueTaskName(data.task.name);
+    let taskName = this.uniqueTaskName(data.task.name, diagramId);
+
+    debugger;
 
     // generate task id when adding the task
     let task = <IFlogoFlowDiagramTask> _.assign( {},
       data.task,
       {
-        id : flogoGenTaskID( this.tasks ),
-        //id : flogoGenTaskID( _.assign({}, this.subFlows['root'].tasks, this.subFlows['errorHandler'].tasks  ) ),
+        //id : flogoGenTaskID( this.tasks ),
+        id : flogoGenTaskID( _.assign({}, this.subFlows['root'].tasks, this.subFlows['errorHandler'].tasks  ) ),
         name : taskName
       } );
 
-    this.tasks[ task.id ] = task;
+    this.subFlows[diagramId].tasks[ task.id ] = task;
 
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
@@ -916,7 +913,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                   id: data.id
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
-                  _.assign( this.diagram, diagram );
+                  _.assign( this.subFlows[diagramId].diagram, diagram );
                   this._updateFlow( this.flow );
                   this._isDiagramEdited = true;
                 }
@@ -1167,7 +1164,8 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     if(task) {
       if(data.proper == 'name') {
-        task[data.proper] = this.uniqueTaskName(data.content);
+        debugger;
+        task[data.proper] = this.uniqueTaskName(data.content, null);
       } else {
         task[data.proper] = data.content;
       }
@@ -1589,11 +1587,11 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.groupEnd();
   }
 
-  private uniqueTaskName(taskName:string) {
+  private uniqueTaskName(taskName:string, diagramId:string) {
     // TODO for performance pre-normalize and store task names?
     let newNormalizedName = normalizeTaskName(taskName);
 
-    let greatestIndex = _.reduce(this.tasks, (greatest:number, task:any) => {
+    let greatestIndex = _.reduce(this.subFlows[diagramId].tasks, (greatest:number, task:any) => {
       let currentNormalized = normalizeTaskName(task.name);
       let repeatIndex = 0;
       if (newNormalizedName == currentNormalized) {
