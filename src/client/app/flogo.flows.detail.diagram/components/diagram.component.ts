@@ -244,6 +244,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTriggerDone( data : any, envelope : any ) {
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
+
     console.group( 'Add Trigger Done' );
 
     console.log( data );

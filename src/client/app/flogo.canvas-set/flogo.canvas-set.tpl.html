@@ -1,10 +1,10 @@
 <!--<div [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">-->
-<div *ngIf="!_mockLoading" class="flogo-canvas-maximum">
+<div *ngIf="!loading" class="flogo-canvas-maximum">
     <div class="canvas-flow">
         <section class="flogo-flow-detail">
             <header class="flogo-flow-detail-header col-sm-10">
-                <h3 class="flogo-flow-detail-name" [(myContenteditable)]="_flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
-                <p class="flogo-flow-detail-description" [(myContenteditable)]="_flow.description" placeholder="Add flow's description" (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+                <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
+                <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description" placeholder="Add flow's description" (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
             </header>
 
             <div class="col-sm-2">
@@ -30,8 +30,8 @@
 
         </section>
 
-        <flogo-canvas [tasks]="tasks" [diagram]="diagram" [flow]="_flow"></flogo-canvas>
-        <flogo-canvas [tasks]="tasksError" [diagram]="diagramError" [flow]="_flowError"></flogo-canvas>
+        <flogo-canvas [rootFlow]="rootFlow" [errorFlow]="errorFlow" [flow]="flow"></flogo-canvas>
+        <!--<flogo-canvas [tasks]="errorFlow.tasks" [diagram]="errorFlow.diagram" [flow]="flow.errorHandler"></flogo-canvas>-->
 
     </div>
 

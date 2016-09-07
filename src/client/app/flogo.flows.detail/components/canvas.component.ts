@@ -43,13 +43,20 @@ import { FlogoModal } from '../../../common/services/modal.service';
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ],
-  inputs: ['tasks', 'diagram','flow']
+  inputs: ['rootFlow', 'errorFlow','flow']
 } )
 @CanActivate((next) => {
   return isConfigurationLoaded();
 })
 
 export class FlogoCanvasComponent implements  OnChanges {
+  public rootFlow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
+  public errorFlow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
+  public flow: any;
+
+  tasks:any;
+  diagram:any;
+
   _subscriptions : any[];
   _id: any;
   _flowID: string;
@@ -74,11 +81,23 @@ export class FlogoCanvasComponent implements  OnChanges {
   _mockGettingStepsProcess: boolean;
   _mockProcess: any;
 
+  constructor(
+    private _postService: PostService,
+    private _restAPIService: RESTAPIService,
+    private _restAPIFlowsService: RESTAPIFlowsService,
+    private _router: Router,
+    private _flogoModal: FlogoModal
+  ) {
+    this.initSubscribe();
+  }
+
   ngOnChanges(changes:any) {
 
-    if(changes.tasks&&changes.diagram&&changes.flow) {
+    if(changes.rootFlow&&changes.errorFlow&&changes.flow) {
       this._mockLoading = false;
-      this.clearTaskRunStatus()
+      this.clearTaskRunStatus();
+      this.tasks = changes.rootFlow.tasks;
+      this.diagram = changes.rootFlow.diagram;
       return this._updateFlow( changes.flow.currentValue );
     }
 
@@ -124,19 +143,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     );
   }
 
-  private tasks: IFlogoFlowDiagramTaskDictionary;
-  private diagram: IFlogoFlowDiagram;
-  private flow: any;
 
-  constructor(
-    private _postService: PostService,
-    private _restAPIService: RESTAPIService,
-    private _restAPIFlowsService: RESTAPIFlowsService,
-    private _router: Router,
-    private _flogoModal: FlogoModal
-  ) {
-    this.initSubscribe();
-  }
 
   /*
   private getFlow(id: string) {
@@ -300,16 +307,22 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _updateFlow( flow : any ) {
     this._isCurrentProcessDirty = true;
+    function cleanPaths(paths:any) {
+      _.each(_.keys(paths), key => {
+        if ( key !== 'root' && key !== 'nodes' ) {
+          delete paths[ key ];
+        }
+      });
+    }
 
     // processing this._flow to pure JSON object
     flow = _.cloneDeep( flow );
-    _.each(
-      _.keys( flow.paths ), ( key : string ) => {
-        if ( key !== 'root' && key !== 'nodes' ) {
-          delete flow.paths[ key ];
-        }
-      }
-    );
+    cleanPaths(flow.paths);
+
+    if(flow.errorHandler && !_.isEmpty(flow.errorHandler.paths)) {
+      cleanPaths(flow.errorHandler.paths);
+    }
+
     flow = JSON.parse( JSON.stringify( flow ) );
 
     return this._restAPIFlowsService.updateFlow( flow )
@@ -799,7 +812,10 @@ export class FlogoCanvasComponent implements  OnChanges {
     //  TODO replace the task ID generation function?
     let trigger = <IFlogoFlowDiagramTask> _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
 
-    this.tasks[ trigger.id ] = trigger;
+    let subflow = data.id == 'root' ? this.rootFlow : this.errorFlow;
+    let tasks = subflow.tasks;
+
+    tasks[ trigger.id ] = trigger;
 
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
@@ -808,11 +824,12 @@ export class FlogoCanvasComponent implements  OnChanges {
             _.assign(
               {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
                 data : {
+                  id: data.id,
                   node : data.node,
                   task : trigger
                 },
                 done : ( diagram : IFlogoFlowDiagram ) => {
-                  _.assign( this.diagram, diagram );
+                  _.assign( subflow.diagram, diagram );
                   this._updateFlow( this.flow );
                   this._isDiagramEdited = true;
                 }

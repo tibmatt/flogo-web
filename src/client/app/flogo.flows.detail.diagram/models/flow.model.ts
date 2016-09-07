@@ -57,7 +57,8 @@ interface flowToJSON_FlowInfo {
   name : string;
   model : string;
   attributes : flowToJSON_Attribute[];
-  rootTask : flowToJSON_RootTask
+  rootTask : flowToJSON_RootTask,
+  errorHandlerTask?: flowToJSON_RootTask
 }
 
 interface flowToJSON_RootTask {
