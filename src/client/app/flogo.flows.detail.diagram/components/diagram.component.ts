@@ -192,7 +192,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   // forwarding event
   selectTask( $event : any ) {
     // TODO
-
     console.group( 'forwarding select task event' );
     console.log( $event );
 

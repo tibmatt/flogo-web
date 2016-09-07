@@ -53,6 +53,8 @@ export class FlogoCanvasComponent implements  OnChanges {
   public flow: any;
   public mainSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
   public errorSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
+  public subFlows: any;
+
 
   tasks:any;
   diagram:any;
@@ -94,6 +96,11 @@ export class FlogoCanvasComponent implements  OnChanges {
   ngOnChanges(changes:any) {
 
     if(changes.mainSubflow&&changes.errorSubflow&&changes.flow) {
+      this.subFlows = {
+        'root': changes.mainSubflow.currentValue,
+        'errorHandler': changes.errorSubflow.currentValue
+      };
+
       this._mockLoading = false;
       this.clearTaskRunStatus();
       this.tasks = changes.mainSubflow.tasks;
@@ -887,6 +894,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       data.task,
       {
         id : flogoGenTaskID( this.tasks ),
+        //id : flogoGenTaskID( _.assign({}, this.subFlows['root'].tasks, this.subFlows['errorHandler'].tasks  ) ),
         name : taskName
       } );
 
@@ -943,7 +951,7 @@ export class FlogoCanvasComponent implements  OnChanges {
           // Refresh task detail
           var currentStep = this._getCurrentState(data.node.taskID);
           var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
-          var context     = this._getCurrentContext(data.node.taskID);
+          var context     = this._getCurrentContext(data.node.taskID, null);
 
           this._postService.publish(
             _.assign(
@@ -986,10 +994,10 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.groupEnd( );
   }
 
-  private _getCurrentContext(taskId:any) {
-    var isTrigger = this.tasks[taskId].type === FLOGO_TASK_TYPE.TASK_ROOT;
-    var isBranch = this.tasks[taskId].type  === FLOGO_TASK_TYPE.TASK_BRANCH;
-    var isTask = this.tasks[taskId].type  === FLOGO_TASK_TYPE.TASK;
+  private _getCurrentContext(taskId:any, diagramId:string) {
+    var isTrigger = this.subFlows[diagramId].tasks[taskId].type === FLOGO_TASK_TYPE.TASK_ROOT;
+    var isBranch = this.subFlows[diagramId].tasks[taskId].type  === FLOGO_TASK_TYPE.TASK_BRANCH;
+    var isTask = this.subFlows[diagramId].tasks[taskId].type  === FLOGO_TASK_TYPE.TASK;
 
     return {
             isTrigger: isTrigger,
@@ -1006,9 +1014,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   private _selectTaskFromDiagram( data: any, envelope: any ) {
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    let diagramId:string =data.id;
 
     console.group( 'Select task message from diagram' );
     console.log( data );
@@ -1027,8 +1033,8 @@ export class FlogoCanvasComponent implements  OnChanges {
 
           // Refresh task detail
           var currentStep = this._getCurrentState(data.node.taskID);
-          var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
-          var context     = this._getCurrentContext(data.node.taskID);
+          var currentTask = _.assign({}, _.cloneDeep( this.subFlows[diagramId].tasks[ data.node.taskID ] ) );
+          var context     = this._getCurrentContext(data.node.taskID, diagramId);
 
           this._postService.publish(
             _.assign(
@@ -1047,11 +1053,11 @@ export class FlogoCanvasComponent implements  OnChanges {
                       {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
                         data : {
                           node : data.node,
-                          task : this.tasks[ data.node.taskID ],
-                          id: data.id
+                          task : this.subFlows[diagramId].tasks[ data.node.taskID ],
+                          id: diagramId
                         },
                         done : ( diagram : IFlogoFlowDiagram ) => {
-                          _.assign( this.diagram, diagram );
+                          _.assign( this.subFlows[diagramId].diagram, diagram );
                           // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
                         }
                       }
@@ -1233,7 +1239,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
                 var currentStep = this._getCurrentState( data.taskId );
                 var currentTask = _.assign( {}, _.cloneDeep( this.tasks[ data.taskId ] ) );
-                var context = this._getCurrentContext( data.taskId );
+                var context = this._getCurrentContext( data.taskId, null );
 
                 this._postService.publish(
                   _.assign(
@@ -1282,7 +1288,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     this._runFromRoot().then((res) => {
       var currentStep = this._getCurrentState( data.taskId );
       var currentTask = _.assign( {}, _.cloneDeep( this.tasks[ data.taskId ] ) );
-      var context = this._getCurrentContext( data.taskId );
+      var context = this._getCurrentContext( data.taskId, null );
 
       this._postService.publish(
           _.assign(
@@ -1503,7 +1509,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     //  may need to route to some other URL?
     var currentStep = this._getCurrentState(data.node.taskID);
     var currentTask = _.assign({}, _.cloneDeep( this.tasks[ data.node.taskID ] ) );
-    var context     = this._getCurrentContext(data.node.taskID);
+    var context     = this._getCurrentContext(data.node.taskID, null);
 
     let selectedNode = data.node;
     let previousNodes = this.findPathToNode(this.diagram.root.is, selectedNode.id);
