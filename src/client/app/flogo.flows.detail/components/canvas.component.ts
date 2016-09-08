@@ -1335,13 +1335,12 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _saveTransformFromTransform(data:any, envelope:any){
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    let diagramId:string = data.id;
+
     // data.tile.taskId
     // data.inputMappings
 
-    let tile = this.tasks[data.tile.id];
+    let tile = this.subFlows[diagramId].tasks[data.tile.id];
     tile.inputMappings = _.cloneDeep(data.inputMappings);
 
     this._updateFlow( this.flow ).then(() => {
@@ -1351,11 +1350,14 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _deleteTransformFromTransform(data:any, envelope:any){
-    if(!this.raisedByThisDiagram(data.id)) {
-      return;
-    }
+    let diagramId:string = data.id;
+
+    //if(!this.raisedByThisDiagram(data.id)) {
+    //  return;
+    //}
+
     // data.tile.taskId
-    let tile = this.tasks[data.tile.id];
+    let tile = this.subFlows[diagramId].tasks[data.tile.id];
     delete tile.inputMappings;
 
     this._updateFlow( this.flow ).then(() => {

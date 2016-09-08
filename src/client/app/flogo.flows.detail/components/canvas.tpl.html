@@ -6,7 +6,8 @@
 
     <flogo-canvas-flow-diagram [tasks]="mainSubflow.tasks" [diagram]="mainSubflow.diagram" [id]="'root'"></flogo-canvas-flow-diagram>
     <flogo-canvas-flow-diagram [tasks]="errorSubflow.tasks" [diagram]="errorSubflow.diagram" [id]="'errorHandler'"></flogo-canvas-flow-diagram>
-    <flogo-transform [flowId]="flow._id"></flogo-transform>
+    <flogo-transform [flowId]="'root'"></flogo-transform>
+    <flogo-transform [flowId]="'errorHandler'"></flogo-transform>
 
     <!-- the mock section below should be removed later-->
     <section class="container-fluid" style="display: none; width: 100%;">
