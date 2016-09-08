@@ -21,46 +21,6 @@ git clone https://github.com/TIBCOSoftware/flogo-web.git
 ##  User Workflow
 1. Download the `docker-compose-start.sh and docker-compose.yml` from [here](https://github.com/TIBCOSoftware/flogo-web/releases) and run `docker-compose-start.sh`.
 
-##  Developer Workflow
-
-### Building the application 
-1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
-1. Run `git status` to make sure you're in **master** branch
-1. To switch to **master** branch run `git checkout master`
-1. Choose docker registry 
-    1. #### Private Docker Registry 
-       1. Start your own registry as shown below
-            ```
-            docker run -d -p 5000:5000 --restart=always --name registry registry:2
-            ```
-       1. Set environment variable `export DOCKER_REGISTRY=localhost:5000/`
-
-    1. #### TIBCO Docker Registry
-        1. Run `docker login reldocker.tibco.com` to login to the docker registry. Use your LDAP credentials for login.
-        1. Set environment variable `export DOCKER_REGISTRY=reldocker.tibco.com/`
-        
-1. Install flogo-cli as shown here https://github.com/TIBCOSoftware/flogo-cli
-1. Install GB a go based project build tool as shown here https://getgb.io
-1. Make sure the following are created in $GOPATH/bin folder and `$GOPATH/bin` is included in your environment `PATH`
-    ```
-    -rwxr-xr-x   1 root  staff  8301852 Aug 30 18:17 flogo*
-    -rwxr-xr-x   1 root  staff  9089788 Aug 30 18:18 gb*
-    -rwxr-xr-x   1 root  staff  9169036 Aug 30 18:18 gb-vendor*
-    ```
-1. Run `./build-flogo-web-dev.sh` . This will generate a docker-compose-start.sh file e.g.
-```
-    #!/bin/bash
-    script_root=$(dirname "${BASH_SOURCE}")
-    export DOCKER_REGISTRY=reldocker.tibco.com/
-    docker-compose -f ${script_root}/docker-compose.yml up
-    docker-compose rm -f
-```
-### Run the application after build
-
-
-1. `cd` to the `dist` folder after build step above and run the generated `docker-compose-start.sh`.
-
-
 Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
 
 ```
