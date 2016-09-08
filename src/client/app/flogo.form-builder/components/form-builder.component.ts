@@ -65,8 +65,6 @@ export class FlogoFormBuilderComponent{
   }
 
   _saveActivityChangesToFlow() {
-    debugger;
-
     var state = {
       taskId: this._task.id,
       warnings: []
@@ -115,12 +113,13 @@ export class FlogoFormBuilderComponent{
   */
 
   _saveBranchChangesToFlow() {
-    debugger;
+    let diagramId = this._flowId;
 
     let self = this;
     let branchInfo = this._branchConfigs[ 0 ];
     let state = {
       taskId : branchInfo.id,
+      id: diagramId,
       condition : self.convertBranchConditionToInternal( branchInfo.condition,
         _.get( self, '_context.contextData.previousTiles', [] ) )
     };
@@ -135,7 +134,6 @@ export class FlogoFormBuilderComponent{
 
 
   _setFieldsObservers() {
-    debugger;
     this._fieldObserver = new ReplaySubject(2);
 
     // handle error status
@@ -183,7 +181,6 @@ export class FlogoFormBuilderComponent{
   }
 
   _updateAttributeByUserChanges(attributes:any, changedObject:any) {
-    debugger;
     var item = _.find(attributes, (field:any) => {
       return field.name === changedObject.name;
     });
@@ -195,12 +192,10 @@ export class FlogoFormBuilderComponent{
   }
 
   ngOnChanges() {
-    debugger;
     this._setupEnvironment();
   }
 
   private verifyRequiredFields( task : any ) {
-    debugger;
     let warnings = [];
 
     //  verify if all of the required fields are fulfilled.
@@ -221,7 +216,6 @@ export class FlogoFormBuilderComponent{
   }
 
   _setTaskWarnings():void {
-    debugger;
     var taskId   = this._task.id;
     var warnings = this.verifyRequiredFields(this._task);
 
