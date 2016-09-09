@@ -809,6 +809,10 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.groupEnd( );
   }
 
+  private _getAllTasks() {
+    return _.assign({}, this.subFlows['root'].tasks, this.subFlows['errorHandler'].tasks  );
+  }
+
   private _addTriggerFromTriggers( data: any, envelope: any) {
     console.group( 'Add trigger message from trigger' );
 
@@ -819,7 +823,13 @@ export class FlogoCanvasComponent implements  OnChanges {
     //  TODO replace the task ID generation function?
     let trigger = <IFlogoFlowDiagramTask> _.assign( {}, data.trigger, { id : flogoGenTriggerID() } );
 
-    let subflow = data.id == 'root' ? this.mainSubflow : this.errorSubflow;
+    let diagramId = data.id;
+    let subflow = this.subFlows[diagramId];
+
+    if(subflow == this.errorSubflow) {
+      trigger.id = flogoGenTaskID( this._getAllTasks() );
+    }
+
     let tasks = subflow.tasks;
 
     tasks[ trigger.id ] = trigger;
@@ -887,8 +897,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     let task = <IFlogoFlowDiagramTask> _.assign( {},
       data.task,
       {
-        //id : flogoGenTaskID( this.tasks ),
-        id : flogoGenTaskID( _.assign({}, this.subFlows['root'].tasks, this.subFlows['errorHandler'].tasks  ) ),
+        id : flogoGenTaskID( this._getAllTasks() ),
         name : taskName
       } );
 
