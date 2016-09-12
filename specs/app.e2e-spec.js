@@ -87,7 +87,8 @@ describe('flogo web', function () {
     flowPage.newActivity.selectByName('REST Activity').click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
     flowPage.activityPanel.title.replaceText('pet query');
-    helpers.setValueOnInputElement(flowPage.activityPanel.textInput('method'), 'GET');
+    flowPage.activityPanel.selectOption('method', 'GET').click();
+    //helpers.setValueOnInputElement(flowPage.activityPanel.textInput('method'), 'GET');
     helpers.setValueOnInputElement(flowPage.activityPanel.textInput('uri'), 'http://petstore.swagger.io/v2/pet/:petId');
     helpers.setValueOnInputElement(flowPage.activityPanel.textArea('pathParams'), '{"petId":"222"}');
     flowPage.activityPanel.saveButton.get().click();

@@ -72,6 +72,13 @@ var flowPage = {
       // we cannot click directly the radio inputs since they're not visible
         .element(by.css(`input[type="radio"][value="${boolVal ? 'true' : 'false'}"] + label`));
     },
+    selectOption: function(label, selectVal) {
+      let container = findFieldContainer('flogo-form-builder-fields-listbox', label);
+      let link = container.element(by.cssContainingText('a', selectVal));
+      container.element(by.css('button.dropdown-toggle')).click();
+      browser.wait(protractor.ExpectedConditions.visibilityOf(link));
+      return link;
+    },
     saveButton: {
       get() {
         return element(by.css('flogo-form-builder')).element(by.css('.flogo-form-builder-buttons-save'));
