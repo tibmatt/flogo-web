@@ -80,7 +80,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
+    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
 
     this._diagram.render();
 
@@ -200,7 +200,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     // TODO
     //   need to support link and other nodes
-    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
+    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT || data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW ) {
       // select trigger event
       this._postService.publish( _.assign( {}, PUB_EVENTS.selectTrigger, { data : data } ) );
     } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE ) {
@@ -391,6 +391,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     // link the trigger with the root node with node id omitted
     // this should make the ../trigger/add deeplinking work
+
     if ( data.task && data.task.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
       // link the trigger to FlogoFlowDiagramNode
       return this._diagram.linkNodeWithTask( this._diagram.root.is, data.task )

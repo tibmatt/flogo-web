@@ -63,6 +63,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     }
 
     this.id = task.id || this.id || FlogoFlowDiagramTask.genTaskID();
+    // TODO: Fix it will always reassign FLOGO_TASK_TYPE FLOGO_TASK_TYPE.TASK_ROOT is 0, so in the case
     this.type = task.type || this.type || FLOGO_TASK_TYPE.TASK;
     this.version = task.version || this.version || '';
     this.name = task.name || this.name || 'new task';
@@ -91,4 +92,16 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     }
 
   };
+}
+
+export function makeDefaultErrorTrigger(id) {
+  let errorTrigger = new FlogoFlowDiagramTask({
+    id: id,
+    name: '__error-trigger',
+    title: 'Error trigger',
+    type: FLOGO_TASK_TYPE.TASK_ROOT
+  });
+  // we set it here instead of the constructor because TASK_ROOT == 0 see note inside FlogoFlowDiagramTask
+  errorTrigger.type = FLOGO_TASK_TYPE.TASK_ROOT;
+  return errorTrigger;
 }

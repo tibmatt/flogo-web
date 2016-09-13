@@ -13,7 +13,8 @@ import { isConfigurationLoaded } from '../../../common/services/configurationLoa
 import {
   IFlogoFlowDiagramTaskDictionary,
   IFlogoFlowDiagram,
-  IFlogoFlowDiagramTask
+  IFlogoFlowDiagramTask,
+  makeDefaultErrorTrigger
 } from '../../../common/models';
 
 import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
@@ -892,38 +893,68 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-    let taskName = this.uniqueTaskName(data.task.name, diagramId);
-    // generate task id when adding the task
-    let task = <IFlogoFlowDiagramTask> _.assign( {},
-      data.task,
-      {
-        id : flogoGenTaskID( this._getAllTasks() ),
-        name : taskName
-      } );
+    let doRegisterTask = _registerTask.bind(this);
 
-    this.subFlows[diagramId].tasks[ task.id ] = task;
+    if(this.subFlows[diagramId] == this.errorSubflow && _.isEmpty(this.errorSubflow.tasks)) {
+      let errorTrigger = makeDefaultErrorTrigger(flogoGenTaskID(this._getAllTasks()));
+      this.errorSubflow.tasks[errorTrigger.id] = errorTrigger;
 
-    this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
-      .then(
-        ()=> {
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
-                data : {
-                  node : data.node,
-                  task : task,
-                  id: data.id
-                },
-                done : ( diagram : IFlogoFlowDiagram ) => {
-                  _.assign( this.subFlows[diagramId].diagram, diagram );
-                  this._updateFlow( this.flow );
-                  this._isDiagramEdited = true;
-                }
-              }
-            )
-          );
-        }
+      this._postService.publish(
+        _.assign(
+          {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
+            data : {
+              node : null,
+              task : errorTrigger,
+              id: data.id
+            },
+            done : ( diagram : IFlogoFlowDiagram ) => {
+              _.assign( this.subFlows[diagramId].diagram, diagram );
+              this._updateFlow( this.flow );
+              this._isDiagramEdited = true;
+              doRegisterTask();
+            }
+          }
+        )
       );
+
+    } else {
+      doRegisterTask();
+    }
+
+    function _registerTask() {
+      let taskName = this.uniqueTaskName(data.task.name, diagramId);
+      // generate task id when adding the task
+      let task = <IFlogoFlowDiagramTask> _.assign( {},
+        data.task,
+        {
+          id : flogoGenTaskID( this._getAllTasks() ),
+          name : taskName
+        } );
+
+      this.subFlows[diagramId].tasks[ task.id ] = task;
+
+      this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+        .then(
+          ()=> {
+            this._postService.publish(
+              _.assign(
+                {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
+                  data : {
+                    node : data.node,
+                    task : task,
+                    id: data.id
+                  },
+                  done : ( diagram : IFlogoFlowDiagram ) => {
+                    _.assign( this.subFlows[diagramId].diagram, diagram );
+                    this._updateFlow( this.flow );
+                    this._isDiagramEdited = true;
+                  }
+                }
+              )
+            );
+          }
+        );
+    }
 
     console.groupEnd( );
 
