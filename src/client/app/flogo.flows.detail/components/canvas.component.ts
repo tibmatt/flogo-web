@@ -601,10 +601,6 @@ export class FlogoCanvasComponent implements  OnChanges {
     done: boolean
   } ) {
 
-    if(_.isEmpty(diagramId)) {
-      debugger;
-    }
-
     let currentDiagram = this.subFlows[diagramId];
     processInstanceID = processInstanceID || this._processInstanceID;
 
@@ -1240,12 +1236,15 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _runFromThisTile(data:any, envelope:any) {
+    let diagramId : string = data.id;
+    let currentDiagram = this.subFlows[diagramId];
+
     console.group('Run from this tile');
 
-    let selectedTask = this.tasks[ data.taskId ];
+    let selectedTask = currentDiagram.tasks[ data.taskId ];
 
     if ( selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
-      this._runFromRoot(null);
+      this._runFromRoot(diagramId);
     } else if ( this._processInstanceID ) {
       // run from other than the trigger (root task);
 
@@ -1282,18 +1281,18 @@ export class FlogoCanvasComponent implements  OnChanges {
 
             this.restartProcessFrom( step, newFlowID, JSON.stringify( dataOfInterceptor ) )
               .then( ( rsp : any )=> {
-                return this.monitorProcessStatus(null, rsp.id );
+                return this.monitorProcessStatus(diagramId, rsp.id );
               } )
               .then( ( rsp : any )=> {
-                return this.updateTaskRunStatus(null, rsp.id );
+                return this.updateTaskRunStatus(diagramId, rsp.id );
               } )
               .then( ( rsp : any )=> {
 
                 this._steps = _.get( rsp, 'steps', [] );
 
                 var currentStep = this._getCurrentState( data.taskId );
-                var currentTask = _.assign( {}, _.cloneDeep( this.tasks[ data.taskId ] ) );
-                var context = this._getCurrentContext( data.taskId, null );
+                var currentTask = _.assign( {}, _.cloneDeep( currentDiagram.tasks[ data.taskId ] ) );
+                var context = this._getCurrentContext( data.taskId, diagramId );
 
                 this._postService.publish(
                   _.assign(
@@ -1329,7 +1328,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     } else {
       // TODO
       //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
-      let task = this.tasks[ data.taskId ];
+      let task = currentDiagram.tasks[ data.taskId ];
       console.error( `Cannot start from task ${task.name} (${task.id})` );
     }
 
