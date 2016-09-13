@@ -55,8 +55,6 @@ export class FlogoCanvasComponent implements  OnChanges {
   public mainSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
   public errorSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
   public subFlows: any;
-
-
   tasks:any;
   diagram:any;
 
@@ -103,7 +101,10 @@ export class FlogoCanvasComponent implements  OnChanges {
       };
 
       this._mockLoading = false;
-      this.clearTaskRunStatus(null);
+
+      this.clearTaskRunStatus('root');
+      this.clearTaskRunStatus('errorHandler');
+
       this.tasks = changes.mainSubflow.tasks;
       this.diagram = changes.mainSubflow.diagram;
       return this._updateFlow( changes.flow.currentValue );
@@ -602,6 +603,8 @@ export class FlogoCanvasComponent implements  OnChanges {
   } ) {
 
     let currentDiagram = this.subFlows[diagramId];
+    let errorDiagram = this.subFlows['errorHandler'];
+
     processInstanceID = processInstanceID || this._processInstanceID;
 
     if ( processInstanceID ) {
@@ -667,6 +670,10 @@ export class FlogoCanvasComponent implements  OnChanges {
               _.each(
                 runTasksIDs, ( runTaskID : string )=> {
                   let task = currentDiagram.tasks[runTaskID];
+
+                  if(_.isEmpty(task)) {
+                    task = errorDiagram.tasks[runTaskID];
+                  }
 
                   if ( task ) {
                     task.__status['hasRun'] = true;
