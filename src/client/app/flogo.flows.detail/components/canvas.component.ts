@@ -103,7 +103,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       };
 
       this._mockLoading = false;
-      this.clearTaskRunStatus();
+      this.clearTaskRunStatus(null);
       this.tasks = changes.mainSubflow.tasks;
       this.diagram = changes.mainSubflow.diagram;
       return this._updateFlow( changes.flow.currentValue );
@@ -239,7 +239,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
   }
 
-  private _runFromTrigger( data? : any ) {
+  private _runFromTrigger(diagramId: string,  data? : any ) {
     this._isDiagramEdited = false;
 
     if ( this._isCurrentProcessDirty ) {
@@ -248,12 +248,12 @@ export class FlogoCanvasComponent implements  OnChanges {
         .then(
           ( rsp : any ) => {
             if ( !_.isEmpty( rsp ) ) {
-              return this.startAndMonitorProcess( rsp.id, {
+              return this.startAndMonitorProcess(diagramId, rsp.id, {
                 initData: data
               } );
             } else {
               // the process isn't changed
-              return this.startAndMonitorProcess( this._currentProcessID, {
+              return this.startAndMonitorProcess(diagramId, this._currentProcessID, {
                 initData: data
               } );
             }
@@ -268,7 +268,7 @@ export class FlogoCanvasComponent implements  OnChanges {
         );
     } else {
 
-      return this.startAndMonitorProcess( this._currentProcessID, {
+      return this.startAndMonitorProcess(diagramId, this._currentProcessID, {
         initData: data
       } )
         .then(
@@ -283,12 +283,14 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   }
 
-  private _runFromRoot() {
+  private _runFromRoot(diagramId:string) {
+    let currentDiagram = this.subFlows[diagramId];
+
     // The inital data to start the process from trigger
-    let initData = _.get( this.tasks[this.diagram.nodes[this.diagram.root.is].taskID], '__props.outputs' );
+    let initData = _.get( currentDiagram.tasks[currentDiagram.diagram.nodes[currentDiagram.diagram.root.is].taskID], '__props.outputs' );
 
     if ( _.isEmpty( initData ) ) {
-      return this._runFromTrigger();
+      return this._runFromTrigger(diagramId);
     } else {
       // preprocessing initial data
       initData = _( initData )
@@ -309,7 +311,7 @@ export class FlogoCanvasComponent implements  OnChanges {
             return outItem;
           } );
 
-      return this._runFromTrigger( initData );
+      return this._runFromTrigger(diagramId, initData );
     }
   }
 
@@ -375,15 +377,16 @@ export class FlogoCanvasComponent implements  OnChanges {
     });
   }
 
-  startProcess( id : string, initData? : any ) {
+  startProcess(diagramId : string, id : string, initData? : any ) {
+    let currentDiagram = this.subFlows[diagramId];
     this._startingProcess = true;
     this._steps = null;
 
     // clear task status and render the diagram
-    this.clearTaskRunStatus();
+    this.clearTaskRunStatus(diagramId);
 
     try { // rootTask should be in DONE status once the flow start
-      let rootTask = this.tasks[ this.diagram.nodes[ this.diagram.root.is ].taskID ];
+      let rootTask = currentDiagram.tasks[ currentDiagram.diagram.nodes[ currentDiagram.diagram.root.is ].taskID ];
       rootTask.__status['hasRun'] = true;
       rootTask.__status['isRunning'] = false;
     } catch ( e ) {
@@ -420,16 +423,16 @@ export class FlogoCanvasComponent implements  OnChanges {
       );
   }
 
-  startAndMonitorProcess( processID? : string, opt? : any ) {
-    return this.startProcess( processID, opt && opt.initData )
+  startAndMonitorProcess(diagramId:string, processID? : string, opt? : any ) {
+    return this.startProcess(diagramId, processID, opt && opt.initData )
       .then(
         ( rsp : any )=> {
-          return this.monitorProcessStatus( rsp.id, opt );
+          return this.monitorProcessStatus(diagramId, rsp.id, opt );
         }
       )
       .then(
         ( rsp : any )=> {
-          return this.updateTaskRunStatus();
+          return this.updateTaskRunStatus(diagramId);
         }
       )
       .then(
@@ -456,6 +459,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   // monitor the status of a process till it's done or up to the max trials
   monitorProcessStatus(
+      diagramId : string,
     processInstanceID? : string,
     opt? : any
   ) : Promise<any> {
@@ -509,7 +513,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                             break;
                           case '100':
                             console.log( `[PROC STATE][${n}] Process is running...` );
-                            self.updateTaskRunStatus( rsp.id, processingStatus )
+                            self.updateTaskRunStatus(diagramId, rsp.id, processingStatus )
                               .then( ( status : any )=> {
                                 console.group( `[PROC STATE][${n}] status` );
                                 console.log( status );
@@ -563,11 +567,19 @@ export class FlogoCanvasComponent implements  OnChanges {
       console.warn( 'No process instance has been logged.' );
       return Promise.reject( 'No process instance has been logged.' );
     }
+
   }
 
-  clearTaskRunStatus() {
+  clearTaskRunStatus(diagramId:string) {
+
+    if(_.isEmpty(diagramId)) {
+      return ;
+    }
+
+    let currentDiagram = this.subFlows[diagramId];
     const statusToClean = [ 'isRunning', 'hasRun' ];
-    _.forIn( this.tasks, ( task : any, taskID : string ) => {
+
+    _.forIn( currentDiagram.tasks, ( task : any, taskID : string ) => {
 
       // clear errors
       _.set( task, '__props.errors', [] );
@@ -585,9 +597,15 @@ export class FlogoCanvasComponent implements  OnChanges {
     } );
   }
 
-  updateTaskRunStatus( processInstanceID? : string, processingStatus? : {
+  updateTaskRunStatus(diagramId : string, processInstanceID? : string, processingStatus? : {
     done: boolean
   } ) {
+
+    if(_.isEmpty(diagramId)) {
+      debugger;
+    }
+
+    let currentDiagram = this.subFlows[diagramId];
     processInstanceID = processInstanceID || this._processInstanceID;
 
     if ( processInstanceID ) {
@@ -652,7 +670,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
               _.each(
                 runTasksIDs, ( runTaskID : string )=> {
-                  let task = this.tasks[runTaskID];
+                  let task = currentDiagram.tasks[runTaskID];
 
                   if ( task ) {
                     task.__status['hasRun'] = true;
@@ -674,7 +692,7 @@ export class FlogoCanvasComponent implements  OnChanges {
               });
 
               // update branch run status after apply the other status.
-              updateBranchNodesRunStatus(this.diagram.nodes, this.tasks);
+              updateBranchNodesRunStatus(currentDiagram.diagram.nodes, currentDiagram.tasks);
 
               this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
@@ -748,7 +766,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       this._restartingProcess = true;
       this._steps = null;
 
-      this.clearTaskRunStatus();
+      this.clearTaskRunStatus(null);
       this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
       return this._restAPIService.flows.restartWithIcptFrom(
@@ -1227,7 +1245,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     let selectedTask = this.tasks[ data.taskId ];
 
     if ( selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
-      this._runFromRoot();
+      this._runFromRoot(null);
     } else if ( this._processInstanceID ) {
       // run from other than the trigger (root task);
 
@@ -1264,10 +1282,10 @@ export class FlogoCanvasComponent implements  OnChanges {
 
             this.restartProcessFrom( step, newFlowID, JSON.stringify( dataOfInterceptor ) )
               .then( ( rsp : any )=> {
-                return this.monitorProcessStatus( rsp.id );
+                return this.monitorProcessStatus(null, rsp.id );
               } )
               .then( ( rsp : any )=> {
-                return this.updateTaskRunStatus( rsp.id );
+                return this.updateTaskRunStatus(null, rsp.id );
               } )
               .then( ( rsp : any )=> {
 
@@ -1319,12 +1337,15 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   }
   private _runFromTriggerinTile(data: any, envolope: any) {
+    let diagramId:string = data.id;
+    let currentDiagram:any =  this.subFlows[diagramId];
+
     console.group('Run from Trigger');
 
-    this._runFromRoot().then((res) => {
+    this._runFromRoot(diagramId).then((res) => {
       var currentStep = this._getCurrentState( data.taskId );
-      var currentTask = _.assign( {}, _.cloneDeep( this.tasks[ data.taskId ] ) );
-      var context = this._getCurrentContext( data.taskId, null );
+      var currentTask = _.assign( {}, _.cloneDeep( currentDiagram.tasks[ data.taskId ] ) );
+      var context = this._getCurrentContext( data.taskId, diagramId );
 
       this._postService.publish(
           _.assign(
