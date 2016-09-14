@@ -8,7 +8,7 @@ import {Directive, ElementRef, Input} from '@angular/core';
 })
 export class JsonDownloader {
   private _el: HTMLElement;
-  private _link : HTMLAnchorElement;
+  private _link: HTMLAnchorElement;
 
   @Input('jsonDownloader')
   generateObject: () => Promise<any> = () => null;
@@ -31,7 +31,9 @@ export class JsonDownloader {
 
         this._link.setAttribute('href', dataString);
         this._link.setAttribute('download', 'flow.json');
+        document.body.appendChild(this._link);
         this._link.click();
+        document.body.removeChild(this._link);
 
       });
   }
