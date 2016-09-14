@@ -1,0 +1,13 @@
+<div class="layout">
+  <div class="layout__main">
+    <div class="wrapper">
+      <button (click)="toggle()" class="tc-buttons tc-buttons-primary">Error Flow</button>
+      <div class="panel">
+        <div class="panel-content" *ngIf="isOpen || isOpening || isClosing">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="layout__side"></div>
+</div>

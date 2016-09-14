@@ -1,11 +1,11 @@
 <div *ngIf="!_mockLoading" [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">
+
   <div class="canvas-flow">
 
     <section class="flogo-flow-detail">
     </section>
 
     <flogo-canvas-flow-diagram [tasks]="mainSubflow.tasks" [diagram]="mainSubflow.diagram" [id]="'root'"></flogo-canvas-flow-diagram>
-    <flogo-canvas-flow-diagram [tasks]="errorSubflow.tasks" [diagram]="errorSubflow.diagram" [id]="'errorHandler'"></flogo-canvas-flow-diagram>
     <flogo-transform [flowId]="'root'"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'"></flogo-transform>
 
@@ -69,6 +69,10 @@
     </section>
   </div>
 
+
+  <flogo-flows-detail-error-panel>
+    <flogo-canvas-flow-diagram [tasks]="errorSubflow.tasks" [diagram]="errorSubflow.diagram" [id]="'errorHandler'"></flogo-canvas-flow-diagram>
+  </flogo-flows-detail-error-panel>
 
 </div>
 

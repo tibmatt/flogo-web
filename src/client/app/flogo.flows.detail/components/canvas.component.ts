@@ -8,7 +8,9 @@ import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
 //import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
+import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component'
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
+
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -40,7 +42,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable, JsonDownloader ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ],
