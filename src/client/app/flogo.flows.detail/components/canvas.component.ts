@@ -945,7 +945,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
 
     function _registerTask() {
-      let taskName = this.uniqueTaskName(data.task.name, diagramId);
+      let taskName = this.uniqueTaskName(data.task.name);
       // generate task id when adding the task
       let task = <IFlogoFlowDiagramTask> _.assign( {},
         data.task,
@@ -1217,7 +1217,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     if(task) {
       if(data.proper == 'name') {
-        task[data.proper] = this.uniqueTaskName(data.content, null);
+        task[data.proper] = this.uniqueTaskName(data.content);
       } else {
         task[data.proper] = data.content;
       }
@@ -1642,11 +1642,15 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.groupEnd();
   }
 
-  private uniqueTaskName(taskName:string, diagramId:string) {
+  private uniqueTaskName(taskName:string) {
     // TODO for performance pre-normalize and store task names?
     let newNormalizedName = normalizeTaskName(taskName);
 
-    let greatestIndex = _.reduce(this.subFlows[diagramId].tasks, (greatest:number, task:any) => {
+    //All activities are gathered in one variable
+    let allTasks = _.reduce(this.subFlows, (all, current) => _.assign(all, current.tasks), {});
+
+    //search for the greatest index in all the flow
+    let greatestIndex = _.reduce(allTasks, (greatest:number, task:any) => {
       let currentNormalized = normalizeTaskName(task.name);
       let repeatIndex = 0;
       if (newNormalizedName == currentNormalized) {
