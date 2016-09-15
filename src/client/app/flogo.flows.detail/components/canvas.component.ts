@@ -1648,7 +1648,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     let newNormalizedName = normalizeTaskName(taskName);
 
     //All activities are gathered in one variable
-    let allTasks = _.reduce(this.subFlows, (all, current) => _.assign(all, current.tasks), {});
+    let allTasks = _.reduce(this.subFlows, (all:any, current:any) => _.assign(all, current.tasks), {});
 
     //search for the greatest index in all the flow
     let greatestIndex = _.reduce(allTasks, (greatest:number, task:any) => {
