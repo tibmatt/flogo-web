@@ -390,18 +390,18 @@ export class FlogoFormBuilderComponent{
 
   convertBranchConditionToDisplay( condition : string, tiles : any[] ) : string {
     // display format sample: query-a-pet.result.code == 1
-    // internal format sample: $[A<taskID>.result].code == 1;
+    // internal format sample: ${A<taskID>.result}.code == 1;
 
     // ensure condition is in string format
     condition = '' + condition;
 
     // cases
-    //  $[T]
-    //  $[A3]
-    //  $[T.pathParams]
-    //  $[A3.result]
-    //  $[T.pathParams].petId
-    //  $[A3.result].code
+    //  ${T}
+    //  ${A3}
+    //  ${T.pathParams}
+    //  ${A3.result}
+    //  ${T.pathParams}.petId
+    //  ${A3.result}.code
     let reComTriggerLabel = '(T)'; // T
     let reComActivityLabel = '(A)(\\d+)'; // A3
     let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel})`; // T | A3
@@ -443,6 +443,11 @@ export class FlogoFormBuilderComponent{
         let taskInfo = taskIDNameMappings[taskLabel];
 
         if (taskInfo) {
+
+          //delete first dot in the strings for right parsing
+          taskLabelProp = taskLabelProp && taskLabelProp[0] == '.' ? taskLabelProp.substring(1) : taskLabelProp;
+          propPath = propPath && propPath[0] == '.' ? propPath.substring(1) : propPath;
+
           let labelProp = _['toPath'](taskLabelProp).join('.');
           let props = _['toPath'](propPath).join('.'); // normalise prop paths
 
@@ -466,7 +471,6 @@ export class FlogoFormBuilderComponent{
 
     // ensure condition is in string format
     condition = '' + condition;
-
     // paths cases
     //  base cases
     //    variable['propName']
@@ -511,6 +515,9 @@ export class FlogoFormBuilderComponent{
         if (taskInfo) {
           taskName = taskInfo.activityType ? `A${taskInfo.id}` : `T`;
 
+          //delete first dot in the string for right parsing
+          propPath = propPath && propPath[0] == '.' ? propPath.substring(1) : propPath;
+
           let _propPath = _['toPath'](propPath);
           let firstProp = _propPath.shift();
 
@@ -525,7 +532,6 @@ export class FlogoFormBuilderComponent{
           return match;
         }
       } );
-
     return condition;
   }
 }
