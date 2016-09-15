@@ -1211,9 +1211,10 @@ export class FlogoCanvasComponent implements  OnChanges {
   private _changeTileDetail(data:{
     content: string;
     proper: string;
-    taskId: any
+    taskId: any,
+    id:string
   }, envelope:any) {
-    var task = this.tasks[data.taskId];
+    var task = this.subFlows[data.id].tasks[data.taskId];
 
     if(task) {
       if(data.proper == 'name') {

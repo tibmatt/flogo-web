@@ -383,8 +383,7 @@ export class FlogoFormBuilderComponent{
 
     this._postService.publish(_.assign({},PUB_EVENTS.changeTileDetail,
       {
-        data: {content: content, proper: proper, taskId:this._task.id}
-
+        data: {content: content, proper: proper, taskId:this._task.id, id:this._flowId}
       }
     ));
 
