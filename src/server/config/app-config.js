@@ -23,6 +23,7 @@ let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
   publicPath: publicPath,
+  libVersion: process.env.FLOGO_LIB_VERSION,
   app: {
     basePath: '/v1/api',
     port: process.env.PORT || 3010,
