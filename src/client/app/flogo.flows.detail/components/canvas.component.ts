@@ -1380,16 +1380,31 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _selectTransformFromDiagram(data:any, envelope:any) {
     let diagramId:string = data.id;
-    //if(!this.raisedByThisDiagram(data.id)) {
-    //  return;
-    //}
+    let previousTiles:any;
 
     let selectedNode = data.node;
-    let previousNodes = this.findPathToNode(this.subFlows[diagramId].diagram.root.is, selectedNode.id, diagramId);
-    previousNodes.pop(); // ignore last item as it is the very same selected node
-    let previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
+
+    if(diagramId == 'errorHandler') {
+      let allPathsMainFlow = this.getAllPaths(this.subFlows['root'].diagram.nodes);
+      let previousTilesMainFlow = this.mapNodesToTiles(allPathsMainFlow , 'root');
+
+      let previousNodesErrorFlow = this.findPathToNode(this.subFlows['errorHandler'].diagram.root.is,
+                                                       selectedNode.id, 'errorHandler');
+      previousNodesErrorFlow.pop(); // ignore last item as it is the very same selected node
+      let previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, 'errorHandler');
+
+      previousTiles = previousTilesMainFlow.concat(previousTilesErrorFlow);
+    } else {
+      let previousNodes = this.findPathToNode(this.subFlows[diagramId].diagram.root.is, selectedNode.id, diagramId);
+
+      previousNodes.pop(); // ignore last item as it is the very same selected node
+      previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
+    }
+
+    //let previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
 
     let selectedTaskId = selectedNode.taskID;
+
 
     this._postService.publish(
       _.assign(
@@ -1668,6 +1683,10 @@ export class FlogoCanvasComponent implements  OnChanges {
     }, 0);
 
     return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
+  }
+
+  private getAllPaths(nodes:any[]) {
+    return Object.keys(nodes);
   }
 
   /**
