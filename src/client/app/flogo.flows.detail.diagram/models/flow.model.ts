@@ -57,7 +57,8 @@ interface flowToJSON_FlowInfo {
   name : string;
   model : string;
   attributes : flowToJSON_Attribute[];
-  rootTask : flowToJSON_RootTask
+  rootTask : flowToJSON_RootTask,
+  explicitReply?: boolean
 }
 
 interface flowToJSON_RootTask {
@@ -184,6 +185,10 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
     return flow;
   }());
+
+  if(_hasExplicitReply(flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks)) {
+    flowJSON.flow.explicitReply = true;
+  }
 
   INFO && console.log( 'Generated flow.json: ', flowJSON );
 
@@ -443,6 +448,17 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     } );
 
     return mappings;
+  }
+
+  function _hasExplicitReply(tasks?:any) : boolean {
+    if(!tasks) {
+      return false;
+    }
+
+    // hardcoding the activity type, for now
+    // TODO: maybe the activity should expose a property so we know it can reply?
+    return !!_.find(tasks, task => task.activityType == 'tibco-reply');
+
   }
 
   return flowJSON;
