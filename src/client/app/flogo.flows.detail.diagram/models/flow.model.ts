@@ -457,7 +457,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
     // hardcoding the activity type, for now
     // TODO: maybe the activity should expose a property so we know it can reply?
-    return !!_.find(tasks, task => task.activityType == 'tibco-reply');
+    return !!_.find(tasks, task => (<any>task).activityType == 'tibco-reply');
 
   }
 

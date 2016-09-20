@@ -259,7 +259,7 @@ export class Engine {
 
               if ( activity.where ) {
                 if ( !ignore ) {
-                  promise = self.addActivity( activity.name, activity.where, self.options.libVersion );
+                  promise = self.addActivity( activity.name, activity.where, activity.version, self.options.libVersion );
                 } else {
                   console.log( "[info] ignore" );
                   promise = Promise.resolve( true );
@@ -346,7 +346,7 @@ export class Engine {
 
               if ( trigger.where ) {
                 if ( !ignore ) {
-                  promise = self.addTrigger( trigger.name, trigger.where, self.options.libVersion );
+                  promise = self.addTrigger( trigger.name, trigger.where, trigger.version, self.options.libVersion );
                 } else {
                   console.log( "[info] ignore" );
                   promise = Promise.resolve( true );
@@ -393,9 +393,10 @@ export class Engine {
    * @param {string} activityName - the name of this activity.
    * @param {string} activityPath - the path of this activity.
    * @param {string} activityVersion - the version of this activity.
+   * @param {string} libVersion - lib version, will use latest if not provided
    * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
-  addActivity( activityName, activityPath, activityVersion ) {
+  addActivity( activityName, activityPath, activityVersion, libVersion ) {
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
@@ -403,7 +404,7 @@ export class Engine {
       const successHandler = ()=> {
         self.installedActivites[ activityName ] = {
           path : activityPath,
-          version : activityVersion // leave the version to be undefined, if not provided.
+          version : activityVersion
         };
 
         self.isProcessing = false;
@@ -423,11 +424,11 @@ export class Engine {
       let defaultEnginePath = path.join( self.enginePath, self.options.name );
 
       let installPath = activityPath;
-      if(activityVersion && activityVersion != 'latest') {
-        installPath = `${installPath}@${activityVersion}`;
+      if(libVersion && libVersion != 'latest') {
+        installPath = `${installPath}@${libVersion}`;
       }
 
-      console.info(`[Add activity] ${activityPath}@${activityVersion||'latest'}`);
+      console.info(`[Add activity] ${activityPath}@${libVersion||'latest'}`);
       runShellCMD( 'flogo', [ 'add', 'activity', installPath ], {
         cwd : defaultEnginePath
       } )
@@ -464,9 +465,10 @@ export class Engine {
    * @param {string} triggerName - the name of this trigger.
    * @param {string} triggerPath - the path of this trigger.
    * @param {string} triggerVersion - the version of this trigger.
+   * @param {string} libVersion - lib version, will use latest if not provided
    * @return {boolean} if create successful, return true, otherwise return false
    */
-  addTrigger(triggerName, triggerPath, triggerVersion) {
+  addTrigger(triggerName, triggerPath, triggerVersion, libVersion) {
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
@@ -474,7 +476,7 @@ export class Engine {
       const successHandler = ()=> {
         self.installedTriggers[ triggerName ] = {
           path : triggerPath,
-          version : triggerVersion // leave the version to be undefined, if not provided.
+          version : triggerVersion
         };
 
         self.isProcessing = false;
@@ -494,11 +496,11 @@ export class Engine {
       let defaultEnginePath = path.join( self.enginePath, self.options.name );
 
       let installPath = triggerPath;
-      if(triggerVersion && triggerVersion != 'latest') {
-        installPath = `${installPath}@${triggerVersion}`
+      if(libVersion && libVersion != 'latest') {
+        installPath = `${installPath}@${libVersion}`
       }
 
-      console.info(`[Add trigger] ${triggerPath}@${triggerVersion||'latest'}`);
+      console.info(`[Add trigger] ${triggerPath}@${libVersion||'latest'}`);
       runShellCMD( 'flogo', [ 'add', 'trigger', installPath ], {
         cwd : defaultEnginePath
       } )
