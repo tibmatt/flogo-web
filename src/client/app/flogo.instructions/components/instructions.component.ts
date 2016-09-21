@@ -23,7 +23,7 @@ export class FlogoInstructionsComponent implements OnChanges {
     isActivated : boolean;
     onInstalled = new EventEmitter();
     onClosedModal = new EventEmitter();
-    steps = [
+    steps:any[] = [
         {title:'Configure the trigger', description: 'Text of configure the trigger...', icon: 'instructions-step-1', screenshot:'instructions-screenshot-pending.png'} ,
         {title:'Add and configure activities', description: 'Text of Add nd configure...', icon: 'instructions-step-2', screenshot:'instructions-screenshot-pending.png'} ,
         {title:'Run and test at any time', description: 'Text of Run and test...', icon: 'instructions-step-3', screenshot:'instructions-screenshot-pending.png'} ,
@@ -31,8 +31,9 @@ export class FlogoInstructionsComponent implements OnChanges {
     ];
     currentIndex : number;
     currentStep :any[];
+    STEPS_LENGTH = this.steps.length - 1;
 
-    constructor( private _router : Router) {
+    constructor( ) {
         this.init();
     }
 
@@ -47,7 +48,7 @@ export class FlogoInstructionsComponent implements OnChanges {
     }
 
     clickNext(event) {
-        if(this.currentIndex < 3 ) {
+        if(this.currentIndex < this.STEPS_LENGTH ) {
             this.currentIndex += 1;
         }
         this.currentStep = this.steps[this.currentIndex];
@@ -67,7 +68,7 @@ export class FlogoInstructionsComponent implements OnChanges {
     } ) {
 
         if(_.has(changes, 'isActivated')) {
-            if(changes.isActivated.currentValue == true) {
+            if(changes['isActivated'].currentValue == true) {
                 this.openModal();
             }
         }

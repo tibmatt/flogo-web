@@ -10,7 +10,6 @@ import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
-import { setCookie, getCookie } from '../../../common/cookies';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -127,13 +126,14 @@ export class FlogoCanvasComponent  {
   }
 
   showInstructions() {
-    let instructions:any = getCookie('show-instructions');
+    let instructions:any = localStorage.getItem('flogo-show-instructions');
 
     if(_.isEmpty(instructions)) {
-      setCookie('show-instructions', new Date().toString(), 10000);
+      localStorage.setItem('flogo-show-instructions', new Date().toString());
       this.isInstructionsActivated = true;
     }
 
+    return this.isInstructionsActivated;
   }
 
   ngOnDestroy() {

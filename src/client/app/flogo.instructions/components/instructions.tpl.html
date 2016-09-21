@@ -7,7 +7,7 @@
         </modal-header>
 
         <modal-body>
-            <div style="display:flex;flex-direction: row">
+            <div class="flogo-instructions-panel">
                 <div>
                     <ul>
                         <li *ngFor="let step of steps; let i = index;"
@@ -30,8 +30,8 @@
 
         <modal-footer [show-default-buttons]="false">
             <button type="button" *ngIf="currentIndex > 0" class="btn  btn-lg btn-primary" (click)="clickBack($event)">BACK</button>
-            <button type="button" *ngIf="currentIndex < 3" class="btn  btn-lg btn-primary" (click)="clickNext($event)">NEXT</button>
-            <button type="button" *ngIf="currentIndex == 3" class="btn btn-lg btn-primary" (click)="closeModal()">CLOSE</button>
+            <button type="button" *ngIf="currentIndex < STEPS_LENGTH " class="btn  btn-lg btn-primary" (click)="clickNext($event)">NEXT</button>
+            <button type="button" *ngIf="currentIndex == STEPS_LENGTH" class="btn btn-lg btn-primary" (click)="closeModal()">CLOSE</button>
         </modal-footer>
 
     </modal-body>
