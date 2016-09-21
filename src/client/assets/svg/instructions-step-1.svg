@@ -7,8 +7,8 @@
     <g id="All-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Flow-instructions" transform="translate(-303.000000, -384.000000)">
             <g id="step1" transform="translate(304.000000, 385.000000)">
-                <ellipse id="Oval" stroke="#36BFBB" cx="8" cy="8" rx="8" ry="8"></ellipse>
-                <path d="M5.966,12 L10.286,12 L10.286,11.184 L8.702,11.184 L8.702,4.344 L7.946,4.344 C7.526,4.596 7.022,4.788 6.326,4.908 L6.326,5.544 L7.718,5.544 L7.718,11.184 L5.966,11.184 L5.966,12 Z" id="1" fill="#36BFBB"></path>
+                <ellipse id="Oval" stroke="#0081CB" cx="8" cy="8" rx="8" ry="8"></ellipse>
+                <path d="M5.966,12 L10.286,12 L10.286,11.184 L8.702,11.184 L8.702,4.344 L7.946,4.344 C7.526,4.596 7.022,4.788 6.326,4.908 L6.326,5.544 L7.718,5.544 L7.718,11.184 L5.966,11.184 L5.966,12 Z" id="1" fill="#0081CB"></path>
             </g>
         </g>
     </g>
