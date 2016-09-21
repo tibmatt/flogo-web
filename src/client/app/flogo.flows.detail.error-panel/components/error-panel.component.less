@@ -14,6 +14,13 @@
   align-items: stretch;
   display: flex;
   height: 100%;
+  // navbar height
+  padding-top: 48px;
+
+  &.layout--scrolled {
+    padding-top: 0;
+  }
+
 }
 
 .layout__main {
@@ -50,10 +57,13 @@
   -o-transition: transform 200ms ease-out;
   transition: transform 200ms ease-out;
 
+  transform: @hide-position;
+
 }
 
-.panel {
-  height: 0;
+.error-panel {
+  //min-height: 200px;
+  //height: 0;
   //display: none;
 }
 
@@ -63,13 +73,16 @@
   height: 100%;
 
   .layout__main {
-    background-color: rgba(250, 250, 250, 0.5);
+    background-color: rgba(113, 113, 113, 0.75);
   }
 
-  .panel {
-    height: auto;
-    min-height: 100px;
-    box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+  .error-panel {
+    -webkit-box-shadow: -4px -2px 15px rgba(0,0,0,.5);
+    box-shadow: -4px -2px 15px rgba(0,0,0,.5);
+  }
+
+  .wrapper {
+    transform: translateY(0);
   }
 
 }
@@ -77,10 +90,10 @@
 
 :host.is-opening .wrapper {
   transform: translateY(100%);
-  transform: @hide-position;
+  //transform: @hide-position;
 
-  .panel {
-    //min-height: 200px;
+  .error-panel {
+    min-height: 200px;
   }
 
 }

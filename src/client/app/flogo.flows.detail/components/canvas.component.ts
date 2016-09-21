@@ -23,8 +23,9 @@ import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB
 import { SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS, PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS } from '../../flogo.flows.detail.triggers/messages';
 import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks/messages';
 import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
-import {PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
+import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
 import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
+import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS} from '../../flogo.flows.detail.error-panel/messages'
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
@@ -137,7 +138,9 @@ export class FlogoCanvasComponent implements  OnChanges {
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback : this._saveTransformFromTransform.bind( this ) } ),
       _.assign( {}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback : this._deleteTransformFromTransform.bind( this ) } ),
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback : this._taskDetailsChanged.bind( this ) } ),
-      _.assign( {}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback : this._changeTileDetail.bind( this ) } )
+      _.assign( {}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback : this._changeTileDetail.bind( this ) } ),
+      _.assign( {}, FLOGO_ERROR_PANEL_SUB_EVENTS.openPanel, { callback : this._errorPanelStatusChanged.bind( this, true ) } ),
+      _.assign( {}, FLOGO_ERROR_PANEL_SUB_EVENTS.closePanel, { callback : this._errorPanelStatusChanged.bind( this, false ) } ),
     ];
 
     _.each(
@@ -1548,6 +1551,27 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
 
     console.groupEnd();
+  }
+
+  private _errorPanelStatusChanged(isOpened: boolean, data: any, envelope: any) {
+
+    console.group('Close/open error panel from error panel');
+
+    // clean selection status
+
+    let allNodes = _.reduce(this.subFlows, (allNodes, subflow) => {
+      return _.assign(allNodes, _.get(subflow, 'diagram.nodesOfAddType', {}), _.get(subflow, 'diagram.nodes', {}));
+    }, {});
+    _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
+
+    this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+
+    this._router.navigate([
+      'FlogoFlowsDetailDefault'
+    ]);
+
+    console.groupEnd();
+
   }
 
   private _addBranchFromDiagram( data : any, envelope : any ) {

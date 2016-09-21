@@ -424,10 +424,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           DEBUG && console.log( d3.event );
           DEBUG && console.groupEnd();
 
-          if ( d.type
-            !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
-            && d.type
-            !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_PADDING ) {
+          if ( _isNodeSelectable(d) ) {
 
             let evtType = '';
 
@@ -584,6 +581,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         // comment out since hover will show the menu
         // thisNode.classed( CLS.diagramNodeMenuSelected, false );
+
+        thisNode.classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+          return _.get( nodeInfo, '__status.isSelected', false );
+        } );
 
         // update the current node ID
         thisNode.attr( 'data-task-id', function ( nodeInfo : IFlogoFlowDiagramNode ) {
@@ -1351,6 +1352,18 @@ function _isNodeHasMenu( nodeInfo : any ) : boolean {
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
+      ].indexOf( nodeInfo.type ) === -1;
+  } else {
+    return false;
+  }
+}
+
+function _isNodeSelectable(nodeInfo: IFlogoFlowDiagramNode) {
+  if ( nodeInfo.type ) {
+    return [
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_PADDING,
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
       ].indexOf( nodeInfo.type ) === -1;
   } else {
