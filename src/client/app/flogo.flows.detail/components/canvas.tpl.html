@@ -5,6 +5,8 @@
         <h3 class="flogo-flow-detail-name" [(myContenteditable)]="_flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteditable)]="_flow.description" placeholder="Add flow's description" (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
+
+
       <div class="col-sm-2">
         <div class="flogo-flow-detail-menu">
           <div class="flogo-flow-detail-menu-list-wrapper">
@@ -20,16 +22,18 @@
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">Make a copy</a></li>
               <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportFlow()"><i class="fa fa-cloud-download fa-fw"></i>Export for CLI</a></li>
               <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>Export for web UI</a></li>
+              <li class="flogo-flow-detail-menu-item"><a (click)="activateInstructions($event)"><i class="fa fa-question-circle fa-fw"></i>Show instructions</a></li>
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">Delete</a></li>
             </ul>
           </div>
         </div>
       </div>
+
     </section>
-    <!--<flogo-canvas-flow id="211"></flogo-canvas-flow>-->
     <flogo-canvas-flow-diagram [tasks]="tasks" [diagram]="diagram"></flogo-canvas-flow-diagram>
 
     <flogo-transform></flogo-transform>
+    <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
 
     <!-- the mock section below should be removed later-->
     <section class="container-fluid" style="display: none; width: 100%;">
