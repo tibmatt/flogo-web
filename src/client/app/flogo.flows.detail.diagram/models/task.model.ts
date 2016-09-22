@@ -3,7 +3,7 @@ import {
   IFlogoFlowDiagramTaskLink,
   IFlogoFlowDiagramTaskAttributes
 } from '../models';
-import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
 import { flogoIDEncode } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramTask {
@@ -94,14 +94,41 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   };
 }
 
-export function makeDefaultErrorTrigger(id) {
+export function makeDefaultErrorTrigger(id) : IFlogoFlowDiagramTask {
+
+  let outputs = [
+    {
+      name: 'activity',
+      type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+      title: 'activity',
+      value: ''
+    },
+    {
+      name: 'message',
+      type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+      title: 'message',
+      value: ''
+    },
+    {
+      name: 'data',
+      type: FLOGO_TASK_ATTRIBUTE_TYPE.ANY,
+      title: 'data',
+      value: ''
+    }
+  ];
+
   let errorTrigger = new FlogoFlowDiagramTask({
     id: id,
-    name: '__error-trigger',
+    name: FLOGO_ERROR_ROOT_NAME,
     title: 'Error trigger',
-    type: FLOGO_TASK_TYPE.TASK_ROOT
+    type: FLOGO_TASK_TYPE.TASK_ROOT,
+    attributes: {
+      outputs
+    }
   });
+
   // we set it here instead of the constructor because TASK_ROOT == 0 see note inside FlogoFlowDiagramTask
   errorTrigger.type = FLOGO_TASK_TYPE.TASK_ROOT;
+  errorTrigger.outputs = outputs;
   return errorTrigger;
 }

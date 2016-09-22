@@ -2,7 +2,7 @@ import {Component, ViewChild, ElementRef, OnDestroy, HostListener} from '@angula
 
 import {PostService} from '../../../common/services/post.service';
 
-import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYPE} from '../../../common/constants';
+import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYPE, FLOGO_ERROR_ROOT_NAME as ERROR_ROOT_NAME} from '../../../common/constants';
 import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL} from '../constants';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 import {MapEditorComponent} from './map-editor.component';
@@ -10,7 +10,7 @@ import {VisualMapperComponent} from './visual-mapper.component';
 import {ErrorDisplayComponent} from './error-display.component';
 import {HelpComponent} from "./help.component";
 import {TransformMapperComponent} from './transform-mapper.component';
-import { TransformJsonPanelComponent } from './transform-json-panel.component';
+import {TransformJsonPanelComponent} from './transform-json-panel.component';
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
@@ -289,7 +289,8 @@ export class TransformComponent implements OnDestroy {
     _.forEach(this.data.precedingTiles, (tile:any) => {
       tileMap[normalizeTaskName(tile.name)] = {
         id: convertTaskID(tile.id),
-        isRoot: tile.type == TASK_TYPE.TASK_ROOT
+        isRoot: tile.type == TASK_TYPE.TASK_ROOT,
+        isError: tile.name == ERROR_ROOT_NAME
       };
     });
 
@@ -303,7 +304,12 @@ export class TransformComponent implements OnDestroy {
 
       let taskInfo = tileMap[matches[2]];
       let property = matches[3];
-      let path = taskInfo.isRoot ? `T.${property}` : `A${taskInfo.id}.${property}`;
+      let path;
+      if (taskInfo.isRoot) {
+        path = taskInfo.isError ? `E.${property}` : `T.${property}`;
+      } else {
+        path = `A${taskInfo.id}.${property}`;
+      }
       let rest = matches[4] || '';
       mapping.value = `{${path}}${rest}`;
     });
@@ -315,11 +321,11 @@ export class TransformComponent implements OnDestroy {
   private transformMappingsToInternalFormat(mappings:any[]) {
     let tileMap:any = {};
     _.forEach(this.data.precedingTiles, (tile:any) => {
-      let tileId = convertTaskID(tile.id) || undefined;
-      tileMap[tileId] = normalizeTaskName(tile.name);
+      let tileId : any = convertTaskID(tile.id) || undefined;
       if(tile.type == TASK_TYPE.TASK_ROOT) {
-        tileMap[TILE_MAP_ROOT_KEY] = tileMap[tileId];
+        tileId = tile.name == ERROR_ROOT_NAME ? ERROR_ROOT_NAME : TILE_MAP_ROOT_KEY;
       }
+      tileMap[tileId] = normalizeTaskName(tile.name);
     });
 
     let re = REGEX_INPUT_VALUE_EXTERNAL;
@@ -330,7 +336,12 @@ export class TransformComponent implements OnDestroy {
         return; // ignoring it
       }
 
-      let taskName = tileMap[matches[2]] || tileMap[TILE_MAP_ROOT_KEY];
+
+      let taskName = tileMap[matches[2]];
+      if(!taskName) {
+        let type = matches[1];
+        taskName = type == 'T' ? tileMap[TILE_MAP_ROOT_KEY] : tileMap[ERROR_ROOT_NAME];
+      }
       let property = matches[3];
       let rest = matches[4] || '';
       mapping.value = `${taskName}.${property}${rest}`;

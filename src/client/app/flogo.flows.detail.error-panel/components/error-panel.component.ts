@@ -56,11 +56,7 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
     if (this.isOpen) {
       let target = <any>event.target;
       let NAV_HEIGHT = 48;
-      if(target && target.body && target.body.scrollTop > NAV_HEIGHT) {
-        this.isScreenScrolled = true;
-      } else {
-        this.isScreenScrolled = false;
-      }
+      this.isScreenScrolled = !!(target && target.body && target.body.scrollTop > NAV_HEIGHT);
     }
   }
 

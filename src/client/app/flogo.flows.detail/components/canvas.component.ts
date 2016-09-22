@@ -40,6 +40,11 @@ import { Contenteditable, JsonDownloader } from '../../../common/directives';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 
+interface SubFlowInfo {
+  diagram: IFlogoFlowDiagram,
+  tasks: IFlogoFlowDiagramTaskDictionary
+}
+
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
@@ -63,9 +68,9 @@ import { FlogoModal } from '../../../common/services/modal.service';
 export class FlogoCanvasComponent implements  OnChanges {
   public flow: any;
   public flowId: string;
-  public mainSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
-  public errorSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
-  public subFlows: any;
+  public mainSubflow: SubFlowInfo;
+  public errorSubflow: SubFlowInfo;
+  public subFlows: { [id:string]: SubFlowInfo };
   tasks:any;
   diagram:any;
 
@@ -1452,19 +1457,18 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     if(diagramId == 'errorHandler') {
       let allPathsMainFlow = this.getAllPaths(this.subFlows['root'].diagram.nodes);
-      let previousTilesMainFlow = this.mapNodesToTiles(allPathsMainFlow , 'root');
+      let previousTilesMainFlow = this.mapNodesToTiles(allPathsMainFlow , this.subFlows['root']);
 
-      let previousNodesErrorFlow = this.findPathToNode(this.subFlows['errorHandler'].diagram.root.is,
-                                                       selectedNode.id, 'errorHandler');
+      let previousNodesErrorFlow = this.findPathToNode(this.subFlows['errorHandler'].diagram.root.is, selectedNode.id, 'errorHandler');
       previousNodesErrorFlow.pop(); // ignore last item as it is the very same selected node
-      let previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, 'errorHandler');
+      let previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, this.subFlows['errorHandler']);
 
       previousTiles = previousTilesMainFlow.concat(previousTilesErrorFlow);
     } else {
       let previousNodes = this.findPathToNode(this.subFlows[diagramId].diagram.root.is, selectedNode.id, diagramId);
 
       previousNodes.pop(); // ignore last item as it is the very same selected node
-      previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
+      previousTiles = this.mapNodesToTiles(previousNodes, this.subFlows[diagramId]);
     }
 
     //let previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
@@ -1688,7 +1692,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     let selectedNode = data.node;
     let previousNodes = this.findPathToNode(this.subFlows[diagramId].diagram.root.is, selectedNode.id, diagramId);
     previousNodes.pop(); // ignore last item as it is the very same selected node
-    let previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
+    let previousTiles = this.mapNodesToTiles(previousNodes, this.subFlows[diagramId]);
 
     this._router.navigate(
       [
@@ -1772,7 +1776,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
   }
 
-  private getAllPaths(nodes:any[]) {
+  private getAllPaths(nodes:any) {
     return Object.keys(nodes);
   }
 
@@ -1806,12 +1810,19 @@ export class FlogoCanvasComponent implements  OnChanges {
     return [];
   }
 
-  private mapNodesToTiles(nodeIds:any[], diagramId:string) {
+  private mapNodesToTiles(nodeIds:any[], from:SubFlowInfo) {
+
+    let isApplicableNodeType = _.includes.bind(null, [
+      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
+      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
+      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
+    ]);
+
     return nodeIds
       .map(nodeId => {
-        let node = this.subFlows[diagramId].diagram.nodes[nodeId];
-        if (node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE || node.type == FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT) {
-          return this.subFlows[diagramId].tasks[node.taskID];
+        let node = from.diagram.nodes[nodeId];
+        if (isApplicableNodeType(node.type)) {
+          return from.tasks[node.taskID];
         } else {
           return null;
         }

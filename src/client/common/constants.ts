@@ -49,5 +49,7 @@ export const DEFAULT_VALUES_OF_TYPES = defaultValues;
  * Defined in modules
  */
 
+export const FLOGO_ERROR_ROOT_NAME = '__error-trigger';
+
 export * from '../app/flogo.flows.detail.diagram/constants';
 export {REGEX_INPUT_VALUE_EXTERNAL as FLOGO_AUTOMAPPING_FORMAT} from '../app/flogo.transform/constants';
