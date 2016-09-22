@@ -1,44 +1,25 @@
 # flogo-web
-
-Flogo Web UI provides a web-based Designer & debugger to build Flogo applications 
-
+Project Flogo Web UI  
 
 ## Prerequisites
 
-- git: There are several excellent tools available for [git](https://git-scm.com/downloads)
-- docker: Install the latest Docker for Mac or Windows (not toolbox). Refer to the getting started documentation on [docs.docker.com](https://docs.docker.com/)
-- Access to the following git repositories:
+- git
+- Docker for Mac or Windows or Linux (https://www.docker.com) 1.12.0-rc4-beta20 or later
+- GO Lang 1.7 - Download it from here https://golang.org/dl/ and install and install as shown here https://golang.org/doc/install 
+- Node JS 6.4.0 - Download it from here https://nodejs.org/en/download/releases/ 
 
-1. [flogo-cli](https://github.com/TIBCOSoftware/flogo-cli.git)
-2. [flogo-contrib](https://github.com/TIBCOSoftware/flogo-contrib.git)
-3. [flogo-services](https://github.com/TIBCOSoftware/flogo-services.git)
-4. [flogo-lib](https://github.com/TIBCOSoftware/flogo-lib.git)
-5. [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git)
+Make sure you have access to TIBCO's Internal Docker registry at http://reldocker.tibco.com. All TIBCO LDAP users have read only access to the registry.
 
-If you don't have git repo access, please email [Rajeev Kozhikkattuthodi](mailto:rkozhikk@tibco.com?subject=Flogo%20Git%20Access) or [Francisco Martinez](mailto:fmartinez@tibco.com?subject=Flogo%20Git%20Access)
 
-## Setting up Flogo Web UI & dependencies
+If you don't have access, please send email to [Aditya Wagle](mailto:awagle@tibco.com?subject=Flogo%20Docker%20Access) or [Prahlad Kulkarni](mailto:pkulkarn@tibco.com?subject=Flogo%20%20Access)
 
 After you get git access, clone the [flogo-web repository](https://github.com/TIBCOSoftware/flogo-web.git)
 
 ```
 git clone https://github.com/TIBCOSoftware/flogo-web.git
 ```
-
-## Run Flogo Web UI 
-
-1. `cd` to the directory where you cloned the [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git) or clone it if you haven't already.
-1. Run `git status` // to make sure you're in **master** branch
-1. Update github username and password in `docker-compose.yml` (you can also [generate a github personal access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) to use here instead of your password)
-1. Run the following commands to update the submodules:
-   
-   `git submodule update --init -- submodules/flogo-services`
-
-   `rm -rf submodules/flogo-contrib`
-   
-   `git submodule update --init --remote -- submodules/flogo-contrib`
-
-1. Run `docker-compose up`
+##  User Workflow
+1. Download the `docker-compose-start.sh and docker-compose.yml` from [here](https://github.com/TIBCOSoftware/flogo-web/releases) and run `docker-compose-start.sh`.
 
 Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
 
@@ -47,8 +28,14 @@ Application and services will be started, when you see the following banner in t
 [success] open http://localhost:3010 or http://localhost:3010/_config in your browser
 =============================================================================================
 ```
+## Trouble shooting
 
-## Questions 
+1. If you are having issues such as "Invalid volume destination path", try removing all docker images usning `docker rmi <image_id>`
+2. If you are having issues developing or running with Web UI, try reloading with "New Incognito Window" or "New Private Window"
 
-Post a question on [Tibbr](https://tibco.tibbr.com/tibbr/#!/subjects/48414) or Slack
+## Known Issues
+See list [here](https://github.com/TIBCOSoftware/flogo-web/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
 
+## Upcoming features
+
+1. flogo engine auto restart

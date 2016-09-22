@@ -8,4 +8,8 @@ installAndConfigureTasks()
   .then((testEngine) => {
     console.log("[log] init test engine done");
     return getInitialisedBuildEngine();
-  });
+  })
+  .catch(error => {
+    console.error(error);
+    console.error(error.stack);
+  })

@@ -807,7 +807,8 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _exportFlow() {
     return new Promise((resolve, reject) => {
-      resolve(flogoFlowToJSON( this.flow ));
+      let jsonFlow = flogoFlowToJSON( this.flow );
+      resolve(jsonFlow.flow);
     });
   }
 

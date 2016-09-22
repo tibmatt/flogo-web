@@ -78,7 +78,7 @@
 
   ngPackageNames.forEach(function (pkgName) {
     packages['@angular/' + pkgName] = {
-      main: isDevEnv ? pkgName + '.umd.js' : 'index.js',
+      main: isDevEnv ? pkgName + '.umd.js' : 'esm/index.js',
       defaultExtension: 'js'
     };
   });

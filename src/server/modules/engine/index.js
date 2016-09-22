@@ -35,6 +35,7 @@ export class Engine {
    * @param {string} options.name - the name of this engine
    * @param {string} options.path - the root path to this engine
    * @param {number} options.port - the port of this engine
+   * @param {string} options.libVersion - the flogo-lib version the engine should use
    * @return {Engine} - return Engine instance
    */
   constructor(options) {
@@ -138,7 +139,7 @@ export class Engine {
       const successHandler = ()=> {
         self.isProcessing = false;
         self.status = FLOGO_ENGINE_STATUS.REMOVED;
-        console.log(`[log] Removed enginde "${self.options.name}"`);
+        console.log(`[log] Removed engine "${self.options.name}"`);
         resolve( true );
       };
 
@@ -195,7 +196,15 @@ export class Engine {
       self.isProcessing = true;
       self.status = FLOGO_ENGINE_STATUS.CREATING;
 
-      runShellCMD( 'flogo', [ 'create', self.options.name ], {
+      let commandOptions = ['create'];
+      let libVersion = self.options.libVersion;
+      if(libVersion && libVersion != 'latest') {
+        commandOptions.push('-flv', libVersion);
+      }
+      commandOptions.push(self.options.name);
+
+      console.info(`[Info] Create engine. Name: ${self.options.name}, lib version (-flv): ${libVersion||'Not specified'}`);
+      runShellCMD( 'flogo', commandOptions, {
         cwd : self.enginePath
       } )
         .then( successHandler )
@@ -250,7 +259,7 @@ export class Engine {
 
               if ( activity.where ) {
                 if ( !ignore ) {
-                  promise = self.addActivity( activity.name, activity.where, activity.version );
+                  promise = self.addActivity( activity.name, activity.where, activity.version, self.options.libVersion );
                 } else {
                   console.log( "[info] ignore" );
                   promise = Promise.resolve( true );
@@ -337,7 +346,7 @@ export class Engine {
 
               if ( trigger.where ) {
                 if ( !ignore ) {
-                  promise = self.addTrigger( trigger.name, trigger.where, trigger.version );
+                  promise = self.addTrigger( trigger.name, trigger.where, trigger.version, self.options.libVersion );
                 } else {
                   console.log( "[info] ignore" );
                   promise = Promise.resolve( true );
@@ -384,9 +393,10 @@ export class Engine {
    * @param {string} activityName - the name of this activity.
    * @param {string} activityPath - the path of this activity.
    * @param {string} activityVersion - the version of this activity.
+   * @param {string} libVersion - lib version, will use latest if not provided
    * @return {Promise<boolean>} if create successful, return true, otherwise return false
    */
-  addActivity( activityName, activityPath, activityVersion ) {
+  addActivity( activityName, activityPath, activityVersion, libVersion ) {
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
@@ -394,7 +404,7 @@ export class Engine {
       const successHandler = ()=> {
         self.installedActivites[ activityName ] = {
           path : activityPath,
-          version : activityVersion // leave the version to be undefined, if not provided.
+          version : activityVersion
         };
 
         self.isProcessing = false;
@@ -413,7 +423,13 @@ export class Engine {
 
       let defaultEnginePath = path.join( self.enginePath, self.options.name );
 
-      runShellCMD( 'flogo', [ 'add', 'activity', activityPath ], {
+      let installPath = activityPath;
+      if(libVersion && libVersion != 'latest') {
+        installPath = `${installPath}@${libVersion}`;
+      }
+
+      console.info(`[Add activity] ${activityPath}@${libVersion||'latest'}`);
+      runShellCMD( 'flogo', [ 'add', 'activity', installPath ], {
         cwd : defaultEnginePath
       } )
         .then( successHandler )
@@ -449,9 +465,10 @@ export class Engine {
    * @param {string} triggerName - the name of this trigger.
    * @param {string} triggerPath - the path of this trigger.
    * @param {string} triggerVersion - the version of this trigger.
+   * @param {string} libVersion - lib version, will use latest if not provided
    * @return {boolean} if create successful, return true, otherwise return false
    */
-  addTrigger(triggerName, triggerPath, triggerVersion) {
+  addTrigger(triggerName, triggerPath, triggerVersion, libVersion) {
     const self = this;
 
     return new Promise( ( resolve, reject )=> {
@@ -459,7 +476,7 @@ export class Engine {
       const successHandler = ()=> {
         self.installedTriggers[ triggerName ] = {
           path : triggerPath,
-          version : triggerVersion // leave the version to be undefined, if not provided.
+          version : triggerVersion
         };
 
         self.isProcessing = false;
@@ -478,7 +495,13 @@ export class Engine {
 
       let defaultEnginePath = path.join( self.enginePath, self.options.name );
 
-      runShellCMD( 'flogo', [ 'add', 'trigger', triggerPath ], {
+      let installPath = triggerPath;
+      if(libVersion && libVersion != 'latest') {
+        installPath = `${installPath}@${libVersion}`
+      }
+
+      console.info(`[Add trigger] ${triggerPath}@${libVersion||'latest'}`);
+      runShellCMD( 'flogo', [ 'add', 'trigger', installPath ], {
         cwd : defaultEnginePath
       } )
         .then( successHandler )
@@ -1062,7 +1085,8 @@ export function getTestEngine() {
     testEngine = new Engine( {
       name : config.testEngine.name,
       path : config.testEngine.path,
-      port : config.testEngine.port
+      port : config.testEngine.port,
+      libVersion: config.libVersion
     } );
 
     testEngine.init()
@@ -1136,7 +1160,8 @@ export function getBuildEngine() {
     buildEngine = new Engine( {
       name : config.buildEngine.name,
       path : config.buildEngine.path,
-      port : config.buildEngine.port
+      port : config.buildEngine.port,
+      libVersion: config.libVersion
     } );
 
     buildEngine.init()
