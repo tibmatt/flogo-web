@@ -46,12 +46,12 @@ describe('flogo web', function () {
     browser.ignoreSynchronization = true;
 
     flowPage.newTrigger.openPanel();
-    flowPage.newTrigger.selectByName('REST Trigger').click();
+    flowPage.newTrigger.selectByName('Receive HTTP Message').click();
     flowPage.tasks.getOfType(['node', 'node_root']);
 
     let triggerNodes = flowPage.tasks.getOfType(['node_root']);
     expect(triggerNodes.count()).toEqual(1);
-    expect(flowPage.tasks.getTitles(triggerNodes)).toEqual(['REST Trigger']);
+    expect(flowPage.tasks.getTitles(triggerNodes)).toEqual(['Receive HTTP Message']);
 
   });
 
@@ -60,7 +60,7 @@ describe('flogo web', function () {
 
     let activityTitle = 'log start';
     flowPage.newActivity.openPanel();
-    flowPage.newActivity.selectByName('Log Activity').click();
+    flowPage.newActivity.selectByName('Log Message').click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
     flowPage.activityPanel.title.replaceText(activityTitle);
     helpers.setValueOnInputElement(flowPage.activityPanel.textInput('message'), 'Start logging...');
@@ -84,7 +84,7 @@ describe('flogo web', function () {
 
     flowPage.newActivity.openPanel();
 
-    flowPage.newActivity.selectByName('REST Activity').click();
+    flowPage.newActivity.selectByName('Invoke REST Service').click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
     flowPage.activityPanel.title.replaceText('pet query');
     flowPage.activityPanel.selectOption('method', 'GET').click();
@@ -94,7 +94,7 @@ describe('flogo web', function () {
     flowPage.activityPanel.saveButton.get().click();
 
     flowPage.newActivity.openPanel();
-    flowPage.newActivity.selectByName('Log Activity').click();
+    flowPage.newActivity.selectByName('Log Message').click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
     flowPage.activityPanel.title.replaceText('log pet');
     flowPage.activityPanel.booleanInput('flowInfo', true).click();
@@ -105,7 +105,7 @@ describe('flogo web', function () {
 
     let taskNodes = flowPage.tasks.getOfType(['node', 'node_root']);
     expect(flowPage.tasks.getOfType(['node', 'node_root']).count()).toEqual(4);
-    expect(flowPage.tasks.getTitles(flowPage.tasks.getOfType(['node', 'node_root']))).toEqual(['REST Trigger', 'log start', 'pet query', 'log pet']);
+    expect(flowPage.tasks.getTitles(flowPage.tasks.getOfType(['node', 'node_root']))).toEqual(['Receive HTTP Message', 'log start', 'pet query', 'log pet']);
 
   }, 80000);
 
