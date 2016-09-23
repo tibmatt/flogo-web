@@ -56,6 +56,32 @@ export function flogoFlowToJSON(inFlow) {
     return flow;
   }());
 
+  let errorItems = _.get( inFlow, 'errorHandler.items' );
+  let errorPath = _.get( inFlow, 'errorHandler.paths' );
+
+  if(_.isEmpty(errorPath) || _.isEmpty(errorItems)) {
+    return flow;
+  }
+
+  flowJSON.flow.errorHandlerTask = (function _parseErrorTask() {
+
+    let errorPathRoot = _.get( errorPath, 'root' );
+    let errorPathNodes = _.get( errorPath, 'nodes' );
+
+    let rootNode = errorPathNodes[ errorPathRoot.is ];
+    let errorTask = {
+      id : convertTaskID(rootNode.taskID), // TODO
+      type : FLOGO_TASK_TYPE.TASK, // this is 1
+      activityType : '',
+      name : 'error_root',
+      tasks : [],
+      links : []
+  };
+
+    _traversalDiagram( rootNode, errorPathNodes, errorItems, errorTask.tasks, errorTask.links );
+
+    return errorTask;
+  }());
 
   if(_hasExplicitReply(flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks)) {
     flowJSON.flow.explicitReply = true;
