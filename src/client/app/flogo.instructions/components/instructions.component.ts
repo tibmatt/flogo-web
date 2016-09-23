@@ -24,10 +24,10 @@ export class FlogoInstructionsComponent implements OnChanges {
     onInstalled = new EventEmitter();
     onClosedModal = new EventEmitter();
     steps:any[] = [
-        {title:'Configure the trigger', description: '', icon: '/assets/svg/flogo.icon.step-1.svg', screenshot:'/assets/svg/graphic-1.svg'} ,
-        {title:'Add and configure activities', description: '', icon: '/assets/svg/flogo.icon.step-2.svg', screenshot:'/assets/svg/graphic-2.svg'} ,
-        {title:'Run and test at any time', description: '', icon: '/assets/svg/flogo.icon.step-3.svg', screenshot:'/assets/svg/graphic-3.svg'} ,
-        {title:'Build and run', description: '', icon: '/assets/svg/flogo.icon.step-4.svg', screenshot:'/assets/svg/graphic-4.svg'}
+        {title:'Configure the trigger', description: '', icon: '/assets/svg/flogo.icon.step-1', screenshot:'/assets/svg/graphic-1.svg'} ,
+        {title:'Add and configure activities', description: '', icon: '/assets/svg/flogo.icon.step-2', screenshot:'/assets/svg/graphic-2.svg'} ,
+        {title:'Run and test at any time', description: '', icon: '/assets/svg/flogo.icon.step-3', screenshot:'/assets/svg/graphic-3.svg'} ,
+        {title:'Build and run', description: '', icon: '/assets/svg/flogo.icon.step-4', screenshot:'/assets/svg/graphic-4.svg'}
     ];
     currentIndex : number;
     currentStep :any[];
