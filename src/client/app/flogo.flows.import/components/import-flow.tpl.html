@@ -1,4 +1,14 @@
-<label class="flogo-flows-import-label" (click)="selectFile($event)">
-  <i class="fa fa-cloud-upload"></i>Import a flow
-  <input class="flogo-flows-import-input-file" type="file" accept="application/json" hidden (change)="onFileChange($event)" name="importFile">
-</label>
+<div class="flogo-flows-import-container">
+    <label class="flogo-flows-import-label" (click)="selectFile($event)">
+      <!--<i class="fa fa-cloud-upload"></i>-->Import a flow
+      <input class="flogo-flows-import-input-file" type="file" accept="application/json" hidden (change)="onFileChange($event)" name="importFile">
+  </label>
+</div>
+<!--
+<div class="flogo-flows-container-box-add" (click)="selectFile($event)">
+    <img src="/assets/svg/flogo.import.btn.svg">
+    <p>Import a flow</p>
+    <input class="flogo-flows-import-input-file" type="file" accept="application/json" hidden (change)="onFileChange($event)" name="importFile">
+</div>
+
+-->

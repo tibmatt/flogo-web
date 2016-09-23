@@ -1,9 +1,12 @@
-<button class="flogo-flows-container-box-add btn btn-default" (click)="modal.open()">
-    New flow
-</button>
+<div class="flogo-flows-container-box-add btn btn-default" (click)="modal.open()">
+    <img src="/assets/svg/flogo.flows.add.btn.svg">
+    <p>Create New Flow</p>
+</div>
 
 <modal [size]="'sm'" #modal>
-    <modal-header><h3>Create new flow</h3></modal-header>
+    <modal-header>
+        <h3>Create new flow</h3>
+    </modal-header>
     <modal-body>
         <div class="form-group">
             <label for="flowName" class="h4">Flow name</label>
@@ -16,7 +19,6 @@
     </modal-body>
     <modal-footer>
         <button type="button" class="flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">CANCEL</button>
-        <button type="button" class="flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name}"
-                (click)="flowInfo.name&&sendAddFlowMsg()">SAVE</button>
+        <button type="button" class="flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name}" (click)="flowInfo.name&&sendAddFlowMsg()">SAVE</button>
     </modal-footer>
 </modal>
