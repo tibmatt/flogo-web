@@ -161,6 +161,20 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   }
 
+    private changeFlowDetail($event, property) {
+
+        return new Promise((resolve, reject)=> {
+            this._updateFlow(this.flow).then((response: any)=> {
+                notification(`Update flow's ${property} successfully!`, 'success', 3000);
+                resolve(response);
+            }).catch((err)=> {
+                notification(`Update flow's ${property} error: ${err}`, 'error');
+                reject(err);
+            });
+        })
+
+    }
+
   private getFlow(id: string) {
     let diagram: IFlogoFlowDiagram;
     let errorDiagram: IFlogoFlowDiagram;
