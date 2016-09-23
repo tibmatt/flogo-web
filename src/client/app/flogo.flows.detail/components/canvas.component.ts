@@ -46,8 +46,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
   directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
-  providers: [ FlogoModal ],
-  inputs: ['mainSubflow', 'errorSubflow','flow']
+  providers: [ FlogoModal ]
 } )
 @CanActivate((next) => {
   return isConfigurationLoaded();
@@ -55,6 +54,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 export class FlogoCanvasComponent implements  OnChanges {
   public flow: any;
+  public flowId: string;
   public mainSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
   public errorSubflow: {diagram: IFlogoFlowDiagram, tasks: IFlogoFlowDiagramTaskDictionary};
   public subFlows: any;
@@ -85,35 +85,159 @@ export class FlogoCanvasComponent implements  OnChanges {
   _mockGettingStepsProcess: boolean;
   _mockProcess: any;
 
+  public loading: boolean;
+  public isCurrentProcessDirty: boolean = true;
+  public mockProcess: any;
+  public exportLink: string;
+  public downloadLink: string;
+
   constructor(
     private _postService: PostService,
     private _restAPIService: RESTAPIService,
     private _restAPIFlowsService: RESTAPIFlowsService,
     private _router: Router,
-    private _flogoModal: FlogoModal
+    private _flogoModal: FlogoModal,
+    private _routerParams: RouteParams
   ) {
-    this.initSubscribe();
+    this._hasUploadedProcess = false ;
+    this._isDiagramEdited = false;
+
+    // TODO
+    //  Remove this mock
+    this._mockLoading = true;
+    this.flowId = this._routerParams.params['id'];
+
+    this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
+
+    this.loading = true;
+
+    try {
+      this.flowId = flogoIDDecode(this.flowId);
+    } catch (e) {
+      console.warn(e);
+    }
+
+    this.exportLink = `/v1/api/flows/${this.flowId}/json`;
+
+    this.getFlow(this.flowId)
+        .then((res: any)=> {
+          this.flow = res.flow;
+          this.subFlows = {
+            'root': res.root,
+            'errorHandler': res.errorHandler
+          };
+
+
+          this.tasks = this.subFlows['root'].tasks; //  res.root.tasks;
+          this.diagram = this.subFlows['errorHandler'].diagram; // res.root.diagram;
+          this.mainSubflow = this.subFlows['root'];
+          this.errorSubflow = this.subFlows['errorHandler'];
+
+
+          this.clearTaskRunStatus('root');
+          this.clearTaskRunStatus('errorHandler');
+
+
+          this.initSubscribe();
+
+          this._updateFlow( this.flow).
+            then(()=> {
+            this.loading = false;
+            this._mockLoading = false;
+          });
+
+        });
+
+  }
+
+  private getFlow(id: string) {
+    let diagram: IFlogoFlowDiagram;
+    let errorDiagram: IFlogoFlowDiagram;
+    let tasks: IFlogoFlowDiagramTaskDictionary;
+    let errorTasks: IFlogoFlowDiagramTaskDictionary;
+    let flow: any;
+
+
+    return new Promise((resolve, reject)=> {
+
+      this._restAPIFlowsService.getFlow(id)
+          .then(
+              (rsp: any)=> {
+
+
+                if (!_.isEmpty(rsp)) {
+                  // initialisation
+                  console.group('Initialise canvas component');
+
+                  flow = rsp;
+
+                  tasks = flow.items;
+                  if (_.isEmpty(flow.paths)) {
+                    diagram = flow.paths = <IFlogoFlowDiagram>{
+                      root: {},
+                      nodes: {}
+                    };
+                  } else {
+                    diagram = flow.paths;
+                  }
+
+                  if (_.isEmpty(flow.errorHandler)) {
+                    flow.errorHandler = {paths: {}, items: {}};
+                  }
+
+                  errorTasks = flow.errorHandler.items;
+                  if (_.isEmpty(flow.errorHandler.paths)) {
+                    errorDiagram = flow.errorHandler.paths = <IFlogoFlowDiagram>{
+                      root: {},
+                      nodes: {}
+                    }
+                  } else {
+                    errorDiagram = flow.errorHandler.paths;
+                  }
+
+
+                }
+
+                resolve({
+                  flow,
+                  root: {
+                    diagram, tasks
+                  },
+                  errorHandler: {
+                    diagram: errorDiagram, tasks: errorTasks
+                  }
+                });
+              }
+          )
+          .catch(
+              (err: any)=> {
+                reject(null);
+              }
+          );
+
+    });
   }
 
   ngOnChanges(changes:any) {
-
-    if(changes.mainSubflow&&changes.errorSubflow&&changes.flow) {
-      this.subFlows = {
-        'root': changes.mainSubflow.currentValue,
-        'errorHandler': changes.errorSubflow.currentValue
-      };
-
-      this._mockLoading = false;
-
-      this.clearTaskRunStatus('root');
-      this.clearTaskRunStatus('errorHandler');
-
-      this.tasks = changes.mainSubflow.tasks;
-      this.diagram = changes.mainSubflow.diagram;
-      return this._updateFlow( changes.flow.currentValue );
-    }
-
-    return;
+    //
+    //if(changes.mainSubflow&&changes.errorSubflow&&changes.flow) {
+    //
+    //  this.subFlows = {
+    //    'root': changes.mainSubflow.currentValue,
+    //    'errorHandler': changes.errorSubflow.currentValue
+    //  };
+    //
+    //  this._mockLoading = false;
+    //
+    //  this.clearTaskRunStatus('root');
+    //  this.clearTaskRunStatus('errorHandler');
+    //
+    //  this.tasks = changes.mainSubflow.tasks;
+    //  this.diagram = changes.mainSubflow.diagram;
+    //  return this._updateFlow( changes.flow.currentValue );
+    //}
+    //
+    //return;
 
   }
 
@@ -157,75 +281,6 @@ export class FlogoCanvasComponent implements  OnChanges {
     );
   }
 
-
-
-  /*
-  private getFlow(id: string) {
-    this._hasUploadedProcess = false ;
-    this._isDiagramEdited = false;
-
-    // TODO
-    //  Remove this mock
-    this._mockLoading = true;
-
-    this._id = id;
-
-
-    try {
-      id = flogoIDDecode( id );
-    } catch ( e ) {
-      console.warn( e );
-    }
-
-
-    this._restAPIFlowsService.getFlow(id)
-        .then(
-            ( rsp : any )=> {
-
-              if ( !_.isEmpty( rsp ) ) {
-                // initialisation
-                console.group( 'Initialise canvas component' );
-
-                this.flow = rsp;
-
-                this.tasks = this.flow.items;
-                if ( _.isEmpty( this.flow.paths ) ) {
-                  this.diagram = this.flow.paths = <IFlogoFlowDiagram>{
-                    root : {},
-                    nodes : {}
-                  };
-                } else {
-                  this.diagram = this.flow.paths;
-                }
-
-                this.clearTaskRunStatus();
-                this.initSubscribe();
-                console.groupEnd();
-                return this._updateFlow( this.flow );
-              } else {
-                return this.flow;
-              }
-            }
-        )
-        .then(
-            ()=> {
-              this._mockLoading = false;
-            }
-        )
-        .catch(
-            ( err : any )=> {
-              if ( err.status === 404 ) {
-
-                this._router.navigate(['FlogoFlows']);
-
-              } else {
-                return err;
-              }
-            }
-        );
-
-  }
-  */
 
   isOnDefaultRoute() {
     return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
@@ -577,7 +632,6 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   clearTaskRunStatus(diagramId:string) {
-
     if(_.isEmpty(diagramId)) {
       return ;
     }

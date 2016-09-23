@@ -1,7 +1,9 @@
 <!--<div [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">-->
 <div *ngIf="!loading" class="flogo-canvas-maximum">
     <div class="canvas-flow">
+        <!--
         <section class="flogo-flow-detail">
+
             <header class="flogo-flow-detail-header col-sm-10">
                 <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
                 <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description" placeholder="Add flow's description" (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
@@ -27,10 +29,10 @@
                     </div>
                 </div>
             </div>
-
         </section>
+        -->
 
-        <flogo-canvas [flow]="flow" [mainSubflow]="mainSubflow" [errorSubflow]="errorSubflow"></flogo-canvas>
+        <flogo-canvas></flogo-canvas>
 
     </div>
 

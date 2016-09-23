@@ -63,6 +63,7 @@ export class FlogoCanvasSetComponent {
 
   constructor(private _routerParams: RouteParams,
               private _restAPIFlowsService: RESTAPIFlowsService) {
+    /*
     this.flowId = this._routerParams.params['id'];
 
     this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
@@ -84,6 +85,7 @@ export class FlogoCanvasSetComponent {
         this.errorSubflow = res.errorHandler;
         this.loading = false;
       });
+      */
 
   }
 
