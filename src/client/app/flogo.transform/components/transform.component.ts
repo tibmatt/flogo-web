@@ -290,7 +290,7 @@ export class TransformComponent implements OnDestroy {
       tileMap[normalizeTaskName(tile.name)] = {
         id: convertTaskID(tile.id),
         isRoot: tile.type == TASK_TYPE.TASK_ROOT,
-        isError: tile.name == ERROR_ROOT_NAME
+        isError: tile.triggerType == ERROR_ROOT_NAME
       };
     });
 
@@ -323,7 +323,7 @@ export class TransformComponent implements OnDestroy {
     _.forEach(this.data.precedingTiles, (tile:any) => {
       let tileId : any = convertTaskID(tile.id) || undefined;
       if(tile.type == TASK_TYPE.TASK_ROOT) {
-        tileId = tile.name == ERROR_ROOT_NAME ? ERROR_ROOT_NAME : TILE_MAP_ROOT_KEY;
+        tileId = tile.triggerType == ERROR_ROOT_NAME ? ERROR_ROOT_NAME : TILE_MAP_ROOT_KEY;
       }
       tileMap[tileId] = normalizeTaskName(tile.name);
     });

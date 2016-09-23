@@ -119,9 +119,10 @@ export function makeDefaultErrorTrigger(id) : IFlogoFlowDiagramTask {
 
   let errorTrigger = new FlogoFlowDiagramTask({
     id: id,
-    name: FLOGO_ERROR_ROOT_NAME,
+    name: 'Error trigger',
     title: 'Error trigger',
     type: FLOGO_TASK_TYPE.TASK_ROOT,
+    triggerType: FLOGO_ERROR_ROOT_NAME,
     attributes: {
       outputs
     }
@@ -129,6 +130,6 @@ export function makeDefaultErrorTrigger(id) : IFlogoFlowDiagramTask {
 
   // we set it here instead of the constructor because TASK_ROOT == 0 see note inside FlogoFlowDiagramTask
   errorTrigger.type = FLOGO_TASK_TYPE.TASK_ROOT;
-  errorTrigger.outputs = outputs;
+  (<any>errorTrigger).outputs = outputs;
   return errorTrigger;
 }

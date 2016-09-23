@@ -3,7 +3,7 @@ import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {PostService} from '../../../common/services/post.service';
 import {BehaviorSubject, ReplaySubject} from 'rxjs/Rx';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
-import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
+import {FLOGO_ERROR_ROOT_NAME} from '../../../common/constants';
 import {FlogoFormBuilderFieldsRadio as FieldRadio} from '../../flogo.form-builder.fields/components/fields.radio/fields.radio.component';
 import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-builder.fields/components/fields.textbox/fields.textbox.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
@@ -403,9 +403,13 @@ export class FlogoFormBuilderComponent{
     //  ${A3.result}
     //  ${T.pathParams}.petId
     //  ${A3.result}.code
+    //  ${E}
+    //  ${E.message}
+    //  ${E.data}.name
     let reComTriggerLabel = '(T)'; // T
     let reComActivityLabel = '(A)(\\d+)'; // A3
-    let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel})`; // T | A3
+    let reComErrorLabel = '(E)'; // E
+    let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel}|${reComErrorLabel})`; // T | A3 | E
     let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
 
     let reProp = `(?:\\$\\{${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\})((?:\\.${reComPropNameWithoutQuote})*)`;
@@ -416,10 +420,11 @@ export class FlogoFormBuilderComponent{
 
     _.each( tiles, ( tile : any ) => {
       if ( tile.triggerType ) {
-        taskIDNameMappings[ 'T' ] = {
-          name : normalizeTaskName( tile.name ),
-          triggerType : tile.triggerType,
-          activityType : tile.activityType
+        let key = tile.triggerType == FLOGO_ERROR_ROOT_NAME ? 'E' : 'T';
+        taskIDNameMappings[key] = {
+          name: normalizeTaskName(tile.name),
+          triggerType: tile.triggerType,
+          activityType: tile.activityType
         };
       } else {
         taskIDNameMappings[ 'A' + convertTaskID( tile.id ) ] = {
@@ -435,6 +440,7 @@ export class FlogoFormBuilderComponent{
         taskLabel : string,
         triggerTypeLabel : string,
         activityTypeLabel : string,
+        errorTypeLabel: string,
         taskID : string,
         taskLabelProp : string,
         propPath : string,
@@ -514,7 +520,12 @@ export class FlogoFormBuilderComponent{
 
         let taskInfo = taskNameIDMappings[ normalizeTaskName( taskName ) ];
         if (taskInfo) {
-          taskName = taskInfo.activityType ? `A${taskInfo.id}` : `T`;
+          let taskName;
+          if ( taskInfo.triggerType ) {
+            taskName = taskInfo.triggerType == FLOGO_ERROR_ROOT_NAME ? 'E' : 'T';
+          } else {
+            taskName = `A${taskInfo.id}`;
+          }
 
           //delete first dot in the string for right parsing
           propPath = propPath && propPath[0] == '.' ? propPath.substring(1) : propPath;
