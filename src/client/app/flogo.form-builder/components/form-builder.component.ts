@@ -271,6 +271,10 @@ export class FlogoFormBuilderComponent{
   }
 
   _getCanRunFromThisTile() {
+    if(this._flowId == 'errorHandler') {
+      return false;
+    }
+
     if(this._context.isTrigger) {
       return true;
     }
