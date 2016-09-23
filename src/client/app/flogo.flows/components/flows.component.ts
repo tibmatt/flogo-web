@@ -88,7 +88,7 @@ export class FlogoFlowsComponet{
       */
 
     this._router.navigate( [
-      'FlogoCanvasSet',
+      'FlogoFlowDetail',
       { id : flogoIDEncode( flowId ) }
     ] )
       .catch( ( err : any )=> {
