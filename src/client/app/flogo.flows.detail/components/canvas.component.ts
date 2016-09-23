@@ -307,7 +307,9 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _runFromTrigger(diagramId: string,  data? : any ) {
+
     this._isDiagramEdited = false;
+    diagramId = 'root';
 
     if ( this._isCurrentProcessDirty ) {
 
@@ -1319,7 +1321,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _runFromThisTile(data:any, envelope:any) {
-    let diagramId : string = data.id;
+    let diagramId : string = 'root';
     let currentDiagram = this.handlers[diagramId];
 
     console.group('Run from this tile');
