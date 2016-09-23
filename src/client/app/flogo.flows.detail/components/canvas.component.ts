@@ -147,9 +147,7 @@ export class FlogoCanvasComponent implements  OnChanges {
           this.errorSubflow = this.subFlows['errorHandler'];
 
 
-          this.clearTaskRunStatus('root');
-          this.clearTaskRunStatus('errorHandler');
-
+        this.clearStatusBothDiagrams();
 
           this.initSubscribe();
 
@@ -457,7 +455,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     this._steps = null;
 
     // clear task status and render the diagram
-    this.clearTaskRunStatus(diagramId);
+    this.clearStatusBothDiagrams();
+
 
     try { // rootTask should be in DONE status once the flow start
       let rootTask = currentDiagram.tasks[ currentDiagram.diagram.nodes[ currentDiagram.diagram.root.is ].taskID ];
@@ -831,17 +830,25 @@ export class FlogoCanvasComponent implements  OnChanges {
     return s.id;
   }
 
+
+  clearStatusBothDiagrams()   {
+      this.clearTaskRunStatus('root');
+      this.clearTaskRunStatus('errorHandler');
+  }
+
   // TODO
   //  to do proper restart process, need to select proper snapshot, hence
   //  the current implementation is only for the last start-from-beginning snapshot, i.e.
   //  the using this._processInstanceID to restart
-  restartProcessFrom( step : number, newFlowID : string, dataOfInterceptor : string ) {
+  restartProcessFrom( diagramId: string,  step : number, newFlowID : string, dataOfInterceptor : string ) {
 
     if ( this._processInstanceID ) {
       this._restartingProcess = true;
       this._steps = null;
 
-      this.clearTaskRunStatus(null);
+      //this.clearTaskRunStatus(diagramId);
+      this.clearStatusBothDiagrams();
+
       this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
       return this._restAPIService.flows.restartWithIcptFrom(
@@ -1360,7 +1367,7 @@ export class FlogoCanvasComponent implements  OnChanges {
               ]
             };
 
-            this.restartProcessFrom( step, newFlowID, JSON.stringify( dataOfInterceptor ) )
+            this.restartProcessFrom(diagramId, step, newFlowID, JSON.stringify( dataOfInterceptor ) )
               .then( ( rsp : any )=> {
                 return this.monitorProcessStatus(diagramId, rsp.id );
               } )
