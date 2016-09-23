@@ -11,14 +11,14 @@
                     <ul>
                         <li *ngFor="let step of steps; let i = index;" (click)="clickOption(step, i)" [ngClass]="{'flogo-instructions-option-selected': i == currentIndex}" class="flogo-instructions-option">
 
-                            <div *ngIf="i !== currentIndex"><img src="{{step.icon + '.svg'}}" />{{step.title}}</div>
-                            <div *ngIf="i == currentIndex"><img src="{{step.icon + '-selected.svg'}}" />{{step.title}}</div>
+                            <div *ngIf="i !== currentIndex"><img src="/assets/svg/{{step.icon + '.svg'}}" />{{step.title}}</div>
+                            <div *ngIf="i == currentIndex"><img src="/assets/svg/{{step.icon + '-selected.svg'}}" />{{step.title}}</div>
                         </li>
                     </ul>
 
                 </div>
                 <div style="width: 100%">
-                    <div><img src="{{currentStep.screenshot}}" class="flogo-instructions-screenshot" /></div>
+                    <div><img src="/assets/svg/{{currentStep.screenshot}}" class="flogo-instructions-screenshot" /></div>
                     <div class="flogo-instructions-description">{{currentStep.description}}</div>
                 </div>
             </div>

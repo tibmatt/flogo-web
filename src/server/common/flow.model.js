@@ -55,6 +55,12 @@ export function flogoFlowToJSON(inFlow) {
     }());
     return flow;
   }());
+
+
+  if(_hasExplicitReply(flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks)) {
+    flowJSON.flow.explicitReply = true;
+  }
+
   INFO && console.log('Generated flow.json: ', flowJSON);
   function _traversalDiagram(rootNode, nodes, tasks, tasksDest, linksDest) {
     var visited = [];
@@ -201,5 +207,17 @@ export function flogoFlowToJSON(inFlow) {
     });
     return mappings;
   }
+
+  function _hasExplicitReply(tasks)  {
+    if(!tasks) {
+      return false;
+    }
+
+    // hardcoding the activity type, for now
+    // TODO: maybe the activity should expose a property so we know it can reply?
+    return !!_.find(tasks, task => task.activityType == 'tibco-reply');
+
+  }
+
   return flowJSON;
 }

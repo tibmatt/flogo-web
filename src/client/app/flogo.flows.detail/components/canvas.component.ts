@@ -9,6 +9,7 @@ import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/t
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
+import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -44,7 +45,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable, JsonDownloader ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, Contenteditable, JsonDownloader, FlogoInstructionsComponent ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ]
@@ -61,7 +62,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
   {path:'/task/:id',    name: 'FlogoFlowsDetailTaskDetail',   component: FlogoFlowsDetailTasksDetail}
 ])
 
-export class FlogoCanvasComponent {
+export class FlogoCanvasComponent  {
   downloadLink: string;
 
   _subscriptions : any[];
@@ -89,6 +90,9 @@ export class FlogoCanvasComponent {
   _mockLoading = true;
   _mockGettingStepsProcess: boolean;
   _mockProcess: any;
+
+  public isInstructionsActivated:boolean  = false;
+
 
   private initSubscribe() {
     this._subscriptions = [];
@@ -121,12 +125,33 @@ export class FlogoCanvasComponent {
     );
   }
 
+  showInstructions() {
+    let instructions:any = localStorage.getItem('flogo-show-instructions');
+
+    if(_.isEmpty(instructions)) {
+      localStorage.setItem('flogo-show-instructions', new Date().toString());
+      this.isInstructionsActivated = true;
+    }
+
+    return this.isInstructionsActivated;
+  }
+
   ngOnDestroy() {
     _.each( this._subscriptions, sub => {
         this._postService.unsubscribe( sub );
       }
     );
   }
+
+
+  public onClosedInstructions(closed) {
+    this.isInstructionsActivated = false;
+  }
+
+  public activateInstructions() {
+    this.isInstructionsActivated = true;
+  }
+
 
   private tasks: IFlogoFlowDiagramTaskDictionary;
   private diagram: IFlogoFlowDiagram;
@@ -142,6 +167,7 @@ export class FlogoCanvasComponent {
   ) {
     this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
+
 
     // TODO
     //  Remove this mock
@@ -186,6 +212,9 @@ export class FlogoCanvasComponent {
             this.initSubscribe();
 
             console.groupEnd();
+            setTimeout(() => {
+              this.showInstructions();
+            },500);
 
             return this._updateFlow( this._flow );
           } else {
