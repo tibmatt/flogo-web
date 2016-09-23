@@ -119,8 +119,8 @@ export function makeDefaultErrorTrigger(id) : IFlogoFlowDiagramTask {
 
   let errorTrigger = new FlogoFlowDiagramTask({
     id: id,
-    name: 'Error trigger',
-    title: 'Error trigger',
+    name: 'On Error',
+    title: 'On Error',
     type: FLOGO_TASK_TYPE.TASK_ROOT,
     triggerType: FLOGO_ERROR_ROOT_NAME,
     attributes: {

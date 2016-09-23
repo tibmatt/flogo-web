@@ -1,7 +1,7 @@
 <div class="layout" [class.layout--scrolled]="isScreenScrolled">
   <div class="layout__main">
     <div class="wrapper">
-      <button (click)="toggle()" class="tc-buttons tc-buttons-primary">Error Flow</button>
+      <button (click)="toggle()" class="tc-buttons tc-buttons-primary">Error Handler</button>
       <div class="error-panel">
         <div class="error-panel__content" *ngIf="isOpen || isOpening || isClosing">
           <ng-content></ng-content>

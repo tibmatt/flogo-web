@@ -784,7 +784,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       }
 
       if( taskInfo.nodeInfo.type ===  FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW ) {
-        taskInfo = _.assign({}, taskInfo, {name: 'Error trigger', desc: 'Error ocurred', type: FLOGO_TASK_TYPE.TASK_ROOT});
+        taskInfo = _.assign({}, taskInfo, {name: 'On Error', desc: 'Error ocurred', type: FLOGO_TASK_TYPE.TASK_ROOT});
       }
 
       if ( taskInfo.name && taskInfo.desc ) {
