@@ -2,6 +2,15 @@
 // ~"" syntax to avoid less overwriting calc
 @hide-position: translateY(~"calc(100% - " @open-button-height ~")");
 
+.toggle-button {
+  min-width: 180px;
+
+  &__icon {
+    margin-left: 5px;
+  }
+
+}
+
 :host {
   position: fixed;
   bottom: 0;
@@ -89,8 +98,8 @@
 
 
 :host.is-opening .wrapper {
-  transform: translateY(100%);
-  //transform: @hide-position;
+  //transform: translateY(100%);
+  transform: @hide-position;
 
   .error-panel {
     min-height: 200px;

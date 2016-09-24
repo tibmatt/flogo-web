@@ -1,7 +1,10 @@
 <div class="layout" [class.layout--scrolled]="isScreenScrolled">
   <div class="layout__main">
     <div class="wrapper">
-      <button (click)="toggle()" class="tc-buttons tc-buttons-primary">Error Handler</button>
+      <button (click)="toggle()" class="tc-buttons tc-buttons-primary toggle-button">
+        Error Handler
+        <i class="fa toggle-button__icon" [class.fa-caret-up]="!isOpen" [class.fa-caret-down]="isOpen" ></i>
+      </button>
       <div class="error-panel">
         <div class="error-panel__content" *ngIf="isOpen || isOpening || isClosing">
           <ng-content></ng-content>
