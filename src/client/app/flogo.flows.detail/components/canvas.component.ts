@@ -147,7 +147,7 @@ export class FlogoCanvasComponent implements  OnChanges {
           this.errorHandler = this.handlers['errorHandler'];
 
 
-        this.clearStatusBothDiagrams();
+        this.clearAllRunStatus();
 
           this.initSubscribe();
 
@@ -306,10 +306,10 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
   }
 
-  private _runFromTrigger(diagramId: string,  data? : any ) {
+  private _runFromTrigger(data? : any ) {
 
     this._isDiagramEdited = false;
-    diagramId = 'root';
+    let diagramId = 'root';
 
     if ( this._isCurrentProcessDirty ) {
 
@@ -358,8 +358,10 @@ export class FlogoCanvasComponent implements  OnChanges {
     // The inital data to start the process from trigger
     let initData = _.get( currentDiagram.tasks[currentDiagram.diagram.nodes[currentDiagram.diagram.root.is].taskID], '__props.outputs' );
 
+    this._postService.publish( FLOGO_ERROR_PANEL_PUB_EVENTS.closePanel );
+
     if ( _.isEmpty( initData ) ) {
-      return this._runFromTrigger(diagramId);
+      return this._runFromTrigger();
     } else {
       // preprocessing initial data
       initData = _( initData )
@@ -380,7 +382,9 @@ export class FlogoCanvasComponent implements  OnChanges {
             return outItem;
           } );
 
-      return this._runFromTrigger(diagramId, initData );
+
+
+      return this._runFromTrigger( initData );
     }
   }
 
@@ -452,7 +456,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     this._steps = null;
 
     // clear task status and render the diagram
-    this.clearStatusBothDiagrams();
+    this.clearAllRunStatus();
 
 
     try { // rootTask should be in DONE status once the flow start
@@ -679,6 +683,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       return this._restAPIService.instances.getStepsByInstanceID( processInstanceID )
         .then(
           ( rsp : any )=> {
+            let isErrorHandlerTouched = false;
             if ( _.has(processingStatus, 'done') && processingStatus.done) {
               // if using processingStatus and the processing status is done,
               // then skip the updating since the previous query may be out-of-date
@@ -741,6 +746,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
                   if(_.isEmpty(task)) {
                     task = errorDiagram.tasks[runTaskID];
+                    isErrorHandlerTouched = !!task;
                   }
 
                   if ( task ) {
@@ -764,6 +770,10 @@ export class FlogoCanvasComponent implements  OnChanges {
 
               // update branch run status after apply the other status.
               updateBranchNodesRunStatus(currentDiagram.diagram.nodes, currentDiagram.tasks);
+
+              if(isErrorHandlerTouched) {
+                this._postService.publish( FLOGO_ERROR_PANEL_PUB_EVENTS.openPanel );
+              }
 
               this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
@@ -828,7 +838,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
 
-  clearStatusBothDiagrams()   {
+  clearAllRunStatus()   {
       this.clearTaskRunStatus('root');
       this.clearTaskRunStatus('errorHandler');
   }
@@ -844,7 +854,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       this._steps = null;
 
       //this.clearTaskRunStatus(diagramId);
-      this.clearStatusBothDiagrams();
+      this.clearAllRunStatus();
 
       this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 

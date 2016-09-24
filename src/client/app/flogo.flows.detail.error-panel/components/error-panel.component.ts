@@ -47,6 +47,18 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
     }, 100);
   }
 
+  public open() {
+    if(!this.isOpen && !this.isOpening) {
+      this.toggle();
+    }
+  }
+
+  public close() {
+    if(this.isOpen || this.isOpening) {
+      this.toggle();
+    }
+  }
+
   public ngOnDestroy(): any {
     this.unsubscribe();
   }
@@ -71,8 +83,8 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
     }
 
     let subs = [
-      _.assign( {}, SUB_EVENTS.closePanel, { callback : this.toggle.bind(this) } ),
-      _.assign( {}, SUB_EVENTS.openPanel, { callback : this.toggle.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.openPanel, { callback : this.open.bind(this) } ),
+      _.assign( {}, SUB_EVENTS.closePanel, { callback : this.close.bind(this) } )
     ];
 
     _.each(
