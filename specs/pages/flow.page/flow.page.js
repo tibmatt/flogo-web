@@ -94,13 +94,21 @@ var flowPage = {
     getTitles: function (taskNodes) {
       return taskNodes.map(node => node.element(by.css('.flogo-flows-detail-diagram-node-detail-title')).getText());
     },
-    getOfType: function (types) {
+    getOfType: function (types, diagramId) {
       types = types || [];
-      return element.all(by.css('.flogo-flows-detail-diagram-node'))
+      let nodesSelector = '.flogo-flows-detail-diagram-node';
+      if(diagramId) {
+        nodesSelector = 'flogo-canvas-flow-diagram[data-flogo-diagram-id="' + diagramId + '"] ' + nodesSelector;
+      }
+      return element.all(by.css(nodesSelector))
         .filter(element => element.getAttribute('data-flogo-node-type').then(attrVal => types.indexOf(attrVal) > -1));
     },
-    findOne: function (taskName) {
-      return element.all(by.css('.flogo-flows-detail-diagram-node'))
+    findOne: function (taskName, diagramId) {
+      let nodesSelector = '.flogo-flows-detail-diagram-node';
+      if(diagramId) {
+        nodesSelector = 'flogo-canvas-flow-diagram[data-flogo-diagram-id="' + diagramId + '"] ' + nodesSelector;
+      }
+      return element.all(by.css(nodesSelector))
         .filter(elem => {
           let titleElemSel = by.css('.flogo-flows-detail-diagram-node-detail-title');
           return elem

@@ -31,8 +31,12 @@ module.exports = {
    *
    * @returns {TransformFragment}
    */
-  get: function() {
-    let elem = element(by.css('flogo-transform'));
+  get: function(forDiagramId) {
+    let selector = 'flogo-transform';
+    if(forDiagramId) {
+      selector = selector + '[data-flogo-for-diagram-id="' + forDiagramId + '"]';
+    }
+    let elem = element(by.css(selector));
     return new TransformFragment(elem);
   }
 };

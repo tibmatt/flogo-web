@@ -4,6 +4,7 @@ const HOST = process.env.FLOGO_HOST || 'localhost';
 const PORT = process.env.FLOGO_PORT || '3010';
 
 const MS_WAIT_FOR_ANIMATION = 500;
+const ROOT_DIAGRAM_ID = 'root';
 
 var homepage = require('./pages/home.page');
 var flowPage = require('./pages/flow.page');
@@ -47,9 +48,9 @@ describe('flogo web', function () {
 
     flowPage.newTrigger.openPanel();
     flowPage.newTrigger.selectByName('Receive HTTP Message').click();
-    flowPage.tasks.getOfType(['node', 'node_root']);
+    flowPage.tasks.getOfType(['node', 'node_root'], ROOT_DIAGRAM_ID);
 
-    let triggerNodes = flowPage.tasks.getOfType(['node_root']);
+    let triggerNodes = flowPage.tasks.getOfType(['node_root'], ROOT_DIAGRAM_ID);
     expect(triggerNodes.count()).toEqual(1);
     expect(flowPage.tasks.getTitles(triggerNodes)).toEqual(['Receive HTTP Message']);
 
@@ -73,9 +74,9 @@ describe('flogo web', function () {
 
     flowPage.activityPanel.saveButton.get().click();
 
-    let activityNodes = flowPage.tasks.getOfType(['node']);
+    let activityNodes = flowPage.tasks.getOfType(['node'], ROOT_DIAGRAM_ID);
     expect(activityNodes.count()).toEqual(1);
-    expect(flowPage.tasks.getTitles(activityNodes)).toEqual([activityTitle]);
+    expect(flowPage.tasks.getTitles(activityNodes, ROOT_DIAGRAM_ID)).toEqual([activityTitle]);
 
   }, 70000);
 
@@ -103,9 +104,9 @@ describe('flogo web', function () {
     flowPage.activityPanel.saveButton.get().isDisplayed()
       .then(isDisplayed => isDisplayed ? flowPage.activityPanel.saveButton.get().click() : null);
 
-    let taskNodes = flowPage.tasks.getOfType(['node', 'node_root']);
-    expect(flowPage.tasks.getOfType(['node', 'node_root']).count()).toEqual(4);
-    expect(flowPage.tasks.getTitles(flowPage.tasks.getOfType(['node', 'node_root']))).toEqual(['Receive HTTP Message', 'log start', 'pet query', 'log pet']);
+    let taskNodes = flowPage.tasks.getOfType(['node', 'node_root'], ROOT_DIAGRAM_ID);
+    expect(flowPage.tasks.getOfType(['node', 'node_root'], ROOT_DIAGRAM_ID).count()).toEqual(4);
+    expect(flowPage.tasks.getTitles(flowPage.tasks.getOfType(['node', 'node_root'], ROOT_DIAGRAM_ID))).toEqual(['Receive HTTP Message', 'log start', 'pet query', 'log pet']);
 
   }, 80000);
 
@@ -113,7 +114,7 @@ describe('flogo web', function () {
     browser.ignoreSynchronization = true;
 
     flowPage.transform.open(flowPage.tasks.findOne('log pet'));
-    let transform = flowPage.transform.get();
+    let transform = flowPage.transform.get(ROOT_DIAGRAM_ID);
     transform.waitVisible();
 
     let outputField = transform.outputFieldFor('message');
@@ -123,21 +124,21 @@ describe('flogo web', function () {
     expect(transform.saveButton.get().isEnabled()).toBeTruthy();
     transform.saveButton.get().click();
 
-    expect(transform.tileHasTransformBadge(flowPage.tasks.findOne('log pet'))).toBeTruthy();
+    expect(transform.tileHasTransformBadge(flowPage.tasks.findOne('log pet', ROOT_DIAGRAM_ID))).toBeTruthy();
 
   });
 
   it('should run succesfully from trigger', function () {
     browser.ignoreSynchronization = true;
 
-    flowPage.tasks.getOfType(['node_root']).first().click();
+    flowPage.tasks.getOfType(['node_root'], ROOT_DIAGRAM_ID).first().click();
     browser.sleep(MS_WAIT_FOR_ANIMATION);
 
     let runFromTriggerButton = flowPage.activityPanel.runFromTriggerButton.get();
     expect(runFromTriggerButton.isEnabled()).toBeTruthy();
 
     expect(flowPage.notification.getAll().count()).toEqual(0);
-    let allTiles = flowPage.tasks.getOfType(['node_root', 'node']);
+    let allTiles = flowPage.tasks.getOfType(['node_root', 'node'], ROOT_DIAGRAM_ID);
     expect(allTiles.filter(flowPage.tasks.isRan).count()).toBe(0);
 
     runFromTriggerButton.click();
@@ -146,9 +147,9 @@ describe('flogo web', function () {
     browser.wait(protractor.ExpectedConditions.presenceOf(successNotification));
     //expect(flowPage.notification.getSuccess().getText().then(text => {console.log('message', text); return text;})).toMatch(/Flow completed/i);
 
-    flowPage.tasks.getOfType(['node_root', 'node']).count()
+    flowPage.tasks.getOfType(['node_root', 'node'], ROOT_DIAGRAM_ID).count()
       .then(totalCount => { expect(
-          flowPage.tasks.getOfType(['node_root', 'node'])
+          flowPage.tasks.getOfType(['node_root', 'node'], ROOT_DIAGRAM_ID)
             .filter(flowPage.tasks.isRan).count()
         ).toEqual(totalCount);
       });

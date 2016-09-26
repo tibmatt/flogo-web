@@ -34,9 +34,11 @@
     </section>
 
     <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
-                               [id]="'root'"></flogo-canvas-flow-diagram>
-    <flogo-transform [flowId]="'root'"></flogo-transform>
-    <flogo-transform [flowId]="'errorHandler'"></flogo-transform>
+                               [id]="'root'"
+                               data-flogo-diagram-id="root">
+    </flogo-canvas-flow-diagram>
+    <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
+    <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
     <!-- the mock section below should be removed later-->
     <section class="container-fluid" style="display: none; width: 100%;">
@@ -100,7 +102,8 @@
 
     <flogo-flows-detail-error-panel>
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
-                                 [id]="'errorHandler'"></flogo-canvas-flow-diagram>
+                                 [id]="'errorHandler'"
+                                 data-flogo-diagram-id="root"></flogo-canvas-flow-diagram>
     </flogo-flows-detail-error-panel>
 
   </div>
