@@ -306,12 +306,12 @@ export class TransformComponent implements OnDestroy {
       let property = matches[3];
       let path;
       if (taskInfo.isRoot) {
-        path = taskInfo.isError ? `E.${property}` : `T.${property}`;
+        path = taskInfo.isError ? `[E.${property}]` : `{T.${property}}`;
       } else {
-        path = `A${taskInfo.id}.${property}`;
+        path = `{A${taskInfo.id}.${property}}`;
       }
       let rest = matches[4] || '';
-      mapping.value = `{${path}}${rest}`;
+      mapping.value = `${path}${rest}`;
     });
 
     return mappings;
