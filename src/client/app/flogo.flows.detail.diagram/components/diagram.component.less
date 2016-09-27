@@ -1,3 +1,6 @@
+@color-error: #ff6f6f;
+@color-error--selected: #801515;
+
 @font-face{
   font-family: SourceSansPro-Regular;
   src: url('/assets/fonts/SourceSansPro-Regular.ttf'),
@@ -104,6 +107,12 @@
     }
     &:before{
       background: #79b8dc;
+    }
+    &[data-flogo-node-type="node_root_error_new"] {
+      &:before,
+      .flogo-flows-detail-diagram-node-detail  {
+        background: @color-error--selected;
+      }
     }
     &[data-flogo-node-type="node_add"],
     &[data-flogo-node-type="node_root_new"] {
@@ -293,6 +302,7 @@
     opacity: 1;
     cursor: pointer;
   }
+
   .flogo-flows-detail-diagram-node-detail{
     position: absolute;
     top: 0;
@@ -313,7 +323,17 @@
       margin:14px 0 13px;
       width: 30px;
     }
+
   }
+
+  &[data-flogo-node-type="node_root_error_new"] {
+    &:before,
+    .flogo-flows-detail-diagram-node-detail  {
+      background: @color-error;
+      cursor: default;
+    }
+  }
+
   .flogo-flows-detail-diagram-node-detail-title{
     font-family: SourceSansPro-Bold;
     font-weight: 600;
@@ -585,4 +605,5 @@
   .flogo-flows-detail-diagram-node[data-flogo-node-type="node_holder"] {
     opacity: 1;
   }
+
 }

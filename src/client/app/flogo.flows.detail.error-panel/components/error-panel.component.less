@@ -1,0 +1,120 @@
+@open-button-height: 45px;
+// ~"" syntax to avoid less overwriting calc
+@hide-position: translateY(~"calc(100% - " @open-button-height ~")");
+
+.toggle-button {
+  min-width: 180px;
+
+  &__icon {
+    margin-left: 5px;
+  }
+
+}
+
+:host {
+  position: fixed;
+  bottom: 0;
+  pointer-events: none;
+  width: 100%;
+  z-index: 2;
+}
+
+.layout {
+  align-items: stretch;
+  display: flex;
+  height: 100%;
+  // navbar height
+  padding-top: 48px;
+
+  &.layout--scrolled {
+    padding-top: 0;
+  }
+
+}
+
+.layout__main {
+  align-items: center;
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  pointer-events: all;
+
+  -webkit-transition: background-color 200ms ease-in-out;
+  -moz-transition: background-color 200ms ease-in-out;
+  -ms-transition: background-color 200ms ease-in-out;
+  -o-transition: background-color 200ms ease-in-out;
+  transition: background-color 200ms ease-in-out;
+
+  width: 100%;
+}
+
+.layout__side {
+  flex-direction: column;
+  min-width: 321px;
+  width: 22.5%;
+}
+
+.wrapper {
+  align-self: flex-end;
+  position: relative;
+  width: 100%;
+
+  -webkit-transition: transform 200ms ease-out;
+  -moz-transition: transform 200ms ease-out;
+  -ms-transition: transform 200ms ease-out;
+  -o-transition: transform 200ms ease-out;
+  transition: transform 200ms ease-out;
+
+  transform: @hide-position;
+
+}
+
+.error-panel {
+  //min-height: 200px;
+  //height: 0;
+  //display: none;
+}
+
+:host.is-open,
+:host.is-opening,
+:host.is-closing {
+  height: 100%;
+
+  .layout__main {
+    background-color: rgba(113, 113, 113, 0.75);
+  }
+
+  .error-panel {
+    -webkit-box-shadow: -4px -2px 15px rgba(0,0,0,.5);
+    box-shadow: -4px -2px 15px rgba(0,0,0,.5);
+  }
+
+  .wrapper {
+    transform: translateY(0);
+  }
+
+}
+
+
+:host.is-opening .wrapper {
+  //transform: translateY(100%);
+  transform: @hide-position;
+
+  .error-panel {
+    min-height: 200px;
+  }
+
+}
+
+:host.is-closing {
+  .layout__main {
+    background-color: transparent;
+  }
+
+  .wrapper {
+    transform: translateY(100%);
+    transform: @hide-position;
+  }
+
+}

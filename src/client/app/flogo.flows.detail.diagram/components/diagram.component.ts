@@ -14,7 +14,8 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
     styleUrls : [ 'diagram.component.css' ],
     inputs : [
       'tasks',
-      'diagram'
+      'diagram',
+       'id'
     ]
   }
 )
@@ -22,6 +23,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   public tasks : IFlogoFlowDiagramTaskDictionary;
   public diagram : IFlogoFlowDiagram;
+  public id: string;
 
   private _elmRef : ElementRef;
   private _diagram : FlogoFlowDiagram;
@@ -78,7 +80,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement );
+    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
 
     this._diagram.render();
 
@@ -172,6 +174,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.log( $event );
 
     let data = $event.detail;
+    data.id = this.id;
 
     if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
       // add trigger event
@@ -189,16 +192,15 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   // forwarding event
   selectTask( $event : any ) {
     // TODO
-
     console.group( 'forwarding select task event' );
-
     console.log( $event );
 
     let data = $event.detail;
+    data.id = this.id;
 
     // TODO
     //   need to support link and other nodes
-    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT ) {
+    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT || data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW ) {
       // select trigger event
       this._postService.publish( _.assign( {}, PUB_EVENTS.selectTrigger, { data : data } ) );
     } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE ) {
@@ -223,6 +225,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       console.warn( 'Invalid data menu item type.' );
     } else {
       let data = $event.detail;
+      data.id = this.id;
 
       switch ( Number( menuItemType ) ) {
         case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH:
@@ -240,6 +243,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTriggerDone( data : any, envelope : any ) {
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
+
     console.group( 'Add Trigger Done' );
 
     console.log( data );
@@ -261,6 +268,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addTaskDone( data : any, envelope : any ) {
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Add Task Done' );
 
     console.log( data );
@@ -282,6 +292,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _selectTriggerDone( data : any, envelope : any ) {
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Select Trigger Done' );
 
     console.log( data );
@@ -297,7 +310,19 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     console.groupEnd();
   }
 
+  private raisedByThisDiagram(id:string) {
+    return this.id === (id || '');
+  }
+
   private _selectTaskDone( data : any, envelope : any ) {
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
+
+    //if(this.id !== data.id || '')  {
+    //  return;
+    //}
+
     console.group( 'Select task Done' );
 
     console.log( data );
@@ -315,6 +340,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _deleteTaskDone( data : any, envelope : any ) {
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Delete task done.' );
 
     console.log( data );
@@ -363,6 +391,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     // link the trigger with the root node with node id omitted
     // this should make the ../trigger/add deeplinking work
+
     if ( data.task && data.task.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
       // link the trigger to FlogoFlowDiagramNode
       return this._diagram.linkNodeWithTask( this._diagram.root.is, data.task )
@@ -380,6 +409,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   private _addBranchDone( data : any, envelope : any ) {
+    if(!this.raisedByThisDiagram(data.id)) {
+      return;
+    }
     console.group( 'Add branch done.' );
 
     console.log( data );

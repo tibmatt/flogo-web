@@ -43,7 +43,8 @@ export function flogoGenTaskID( items? : any ) : string {
     let startPoint = 2; // taskID 1 is reserved for the rootTask
 
     let taskIDs = _.map( _.filter( ids, ( id : string ) => {
-      return items[ id ].type === FLOGO_TASK_TYPE.TASK;
+      let type = items[ id ].type;
+      return type === FLOGO_TASK_TYPE.TASK || type === FLOGO_TASK_TYPE.TASK_ROOT;
     } ), ( id : string )=> {
       return _[ 'toNumber' ]( flogoIDDecode( id ) );
     } );

@@ -8,4 +8,4 @@ export const VALID_TYPES = [
 ];
 
 export const REGEX_INPUT_VALUE_INTERNAL = /^(([\w-]+)\.([\w-]+))((?:\.[\w-]+)*)$/;
-export const REGEX_INPUT_VALUE_EXTERNAL = /^\{(A([\w-]+)|T)\.([\w-]+)\}((?:\.[\w-]+)*)$/;
+export const REGEX_INPUT_VALUE_EXTERNAL = /^\{(A([\w-]+)|T|E)\.([\w-]+)\}((?:\.[\w-]+)*)$/;

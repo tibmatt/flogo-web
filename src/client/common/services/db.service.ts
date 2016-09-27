@@ -217,22 +217,24 @@ export class FlogoDBService implements OnInit {
       if(!doc['updated_at']){
         doc['updated_at'] = new Date().toISOString();
       }
-      this._db.get(doc._id).then(
-        ( dbDoc : any )=> {
 
-          doc = _.cloneDeep( doc );
-          delete doc[ '_rev' ];
-          _.assign( dbDoc, doc );
-
-          return this._db.put( dbDoc ).then((response)=>{
-            console.log("response: ", response);
-            resolve(response);
-          }).catch((err)=>{
-            console.error(err);
-            reject(err);
-          });
-      });
+      let res = this.retryUntilWritten(doc);
+      resolve(res);
     });
+  }
+
+  retryUntilWritten(doc) {
+      return this._db.get(doc._id).then((origDoc) => {
+        doc._rev = origDoc._rev;
+        return this._db.put(doc);
+      }).catch((err) => {
+        if (err.status === 409) {
+          return this.retryUntilWritten(doc);
+        } else { // new doc
+          return this._db.put(doc);
+        }
+      });
+
   }
 
   allDocs(options:any) : Promise<{rows?: any}> {

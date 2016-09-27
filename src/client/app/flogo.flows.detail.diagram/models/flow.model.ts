@@ -58,6 +58,7 @@ interface flowToJSON_FlowInfo {
   model : string;
   attributes : flowToJSON_Attribute[];
   rootTask : flowToJSON_RootTask,
+  errorHandlerTask?: flowToJSON_RootTask,
   explicitReply?: boolean
 }
 
@@ -181,6 +182,41 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
       _traversalDiagram( rootNode, flowPathNodes, flowItems, rootTask.tasks, rootTask.links );
 
       return rootTask;
+    }());
+
+
+    let errorItems = <IFlogoFlowDiagramTaskDictionary>_.get( inFlow, 'errorHandler.items' );
+    let errorPath = <{
+      root : {
+        is : string
+      };
+      nodes : IFlogoFlowDiagramNodeDictionary,
+    }>_.get( inFlow, 'errorHandler.paths' );
+
+    if(_.isEmpty(errorPath) || _.isEmpty(errorItems)) {
+      return flow;
+    }
+
+    flow.errorHandlerTask = (function _parseErrorTask() {
+
+      let errorPathRoot = <{
+        is : string
+      }>_.get( errorPath, 'root' );
+      let errorPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( errorPath, 'nodes' );
+
+      let rootNode = errorPathNodes[ errorPathRoot.is ];
+      let errorTask = <flowToJSON_RootTask>{
+        id : convertTaskID(rootNode.taskID), // TODO
+        type : FLOGO_TASK_TYPE.TASK, // this is 1
+        activityType : '',
+        name : 'error_root',
+        tasks : <flowToJSON_Task[]>[],
+        links : <flowToJSON_Link[]>[]
+      };
+
+      _traversalDiagram( rootNode, errorPathNodes, errorItems, errorTask.tasks, errorTask.links );
+
+      return errorTask;
     }());
 
     return flow;

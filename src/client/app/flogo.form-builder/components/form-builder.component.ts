@@ -3,7 +3,7 @@ import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {PostService} from '../../../common/services/post.service';
 import {BehaviorSubject, ReplaySubject} from 'rxjs/Rx';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
-import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
+import {FLOGO_ERROR_ROOT_NAME} from '../../../common/constants';
 import {FlogoFormBuilderFieldsRadio as FieldRadio} from '../../flogo.form-builder.fields/components/fields.radio/fields.radio.component';
 import {FlogoFormBuilderFieldsTextBox as FieldTextBox} from '../../flogo.form-builder.fields/components/fields.textbox/fields.textbox.component';
 import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-builder.fields/components/fields.textarea/fields.textarea.component';
@@ -20,7 +20,7 @@ import {FlogoFormBuilderConfigurationBranchComponent as BranchDirective} from '.
   styleUrls: ['form-builder.css'],
   templateUrl: 'form-builder.tpl.html',
   directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber,  Contenteditable, TriggersDirective, TaskDirective, BranchDirective],
-  inputs: ['_task:task','_step:step', '_context:context']
+  inputs: ['_task:task','_step:step', '_context:context', '_flowId:flowId']
 })
 export class FlogoFormBuilderComponent{
   _fieldObserver:ReplaySubject<any>;
@@ -34,6 +34,7 @@ export class FlogoFormBuilderComponent{
   _attributesOriginal:any;
   _fieldsErrors:string[];
   _branchConfigs:any[]; // force the fields update by taking the advantage of ngFor
+  _flowId:string;
 
   constructor(private _postService: PostService) {
     this._initSubscribe();
@@ -64,7 +65,6 @@ export class FlogoFormBuilderComponent{
   }
 
   _saveActivityChangesToFlow() {
-
     var state = {
       taskId: this._task.id,
       warnings: []
@@ -81,8 +81,9 @@ export class FlogoFormBuilderComponent{
       state['settings'] = this._getCurrentTaskState(this._attributes.settings || []);
     }
 
+
     this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
-      data: state,
+      data: _.assign({},{id: this._flowId}, state) ,
       done: ()=> {
         this._hasChanges  = false;
       }
@@ -112,10 +113,13 @@ export class FlogoFormBuilderComponent{
   */
 
   _saveBranchChangesToFlow() {
+    let diagramId = this._flowId;
+
     let self = this;
     let branchInfo = this._branchConfigs[ 0 ];
     let state = {
       taskId : branchInfo.id,
+      id: diagramId,
       condition : self.convertBranchConditionToInternal( branchInfo.condition,
         _.get( self, '_context.contextData.previousTiles', [] ) )
     };
@@ -130,7 +134,6 @@ export class FlogoFormBuilderComponent{
 
 
   _setFieldsObservers() {
-
     this._fieldObserver = new ReplaySubject(2);
 
     // handle error status
@@ -178,7 +181,6 @@ export class FlogoFormBuilderComponent{
   }
 
   _updateAttributeByUserChanges(attributes:any, changedObject:any) {
-
     var item = _.find(attributes, (field:any) => {
       return field.name === changedObject.name;
     });
@@ -219,7 +221,7 @@ export class FlogoFormBuilderComponent{
 
 
      this._postService.publish(_.assign({},PUB_EVENTS.setTaskWarnings, {
-      data: {warnings,  taskId},
+      data: {warnings,  taskId, id:this._flowId},
       done: () => {}
       } ));
 
@@ -269,6 +271,10 @@ export class FlogoFormBuilderComponent{
   }
 
   _getCanRunFromThisTile() {
+    if(this._flowId == 'errorHandler') {
+      return false;
+    }
+
     if(this._context.isTrigger) {
       return true;
     }
@@ -318,7 +324,7 @@ export class FlogoFormBuilderComponent{
     var inputs = (this._context.isTrigger) ? {} : this._getCurrentTaskState(this._attributes.inputs);
 
     this._postService.publish(_.assign({},PUB_EVENTS.runFromThisTile, {
-      data: {inputs, taskId},
+      data: {inputs, taskId, id:this._flowId},
       done: () => {
         this._hasChanges = false;
       }
@@ -330,7 +336,7 @@ export class FlogoFormBuilderComponent{
     var taskId   = this._task.id;
     var inputs = (this._context.isTrigger) ? {} : this._getCurrentTaskState(this._attributes.inputs);
     this._postService.publish(_.assign({}, PUB_EVENTS.runFromTrigger, {
-      data: {inputs, taskId}
+      data: {inputs, taskId, id:this._flowId}
     }))
   }
 
@@ -381,8 +387,7 @@ export class FlogoFormBuilderComponent{
 
     this._postService.publish(_.assign({},PUB_EVENTS.changeTileDetail,
       {
-        data: {content: content, proper: proper, taskId:this._task.id}
-
+        data: {content: content, proper: proper, taskId:this._task.id, id:this._flowId}
       }
     ));
 
@@ -402,9 +407,13 @@ export class FlogoFormBuilderComponent{
     //  ${A3.result}
     //  ${T.pathParams}.petId
     //  ${A3.result}.code
+    //  ${E}
+    //  ${E.message}
+    //  ${E.data}.name
     let reComTriggerLabel = '(T)'; // T
     let reComActivityLabel = '(A)(\\d+)'; // A3
-    let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel})`; // T | A3
+    let reComErrorLabel = '(E)'; // E
+    let reComTaskLabel = `(${reComTriggerLabel}|${reComActivityLabel}|${reComErrorLabel})`; // T | A3 | E
     let reComPropNameWithoutQuote = '(?:\\$|\\w)+'; // sample: $propName1, _propName1
 
     let reProp = `(?:\\$\\{${reComTaskLabel}(\\.${reComPropNameWithoutQuote})?\\})((?:\\.${reComPropNameWithoutQuote})*)`;
@@ -415,10 +424,11 @@ export class FlogoFormBuilderComponent{
 
     _.each( tiles, ( tile : any ) => {
       if ( tile.triggerType ) {
-        taskIDNameMappings[ 'T' ] = {
-          name : normalizeTaskName( tile.name ),
-          triggerType : tile.triggerType,
-          activityType : tile.activityType
+        let key = tile.triggerType == FLOGO_ERROR_ROOT_NAME ? 'E' : 'T';
+        taskIDNameMappings[key] = {
+          name: normalizeTaskName(tile.name),
+          triggerType: tile.triggerType,
+          activityType: tile.activityType
         };
       } else {
         taskIDNameMappings[ 'A' + convertTaskID( tile.id ) ] = {
@@ -434,6 +444,7 @@ export class FlogoFormBuilderComponent{
         taskLabel : string,
         triggerTypeLabel : string,
         activityTypeLabel : string,
+        errorTypeLabel: string,
         taskID : string,
         taskLabelProp : string,
         propPath : string,
@@ -513,7 +524,12 @@ export class FlogoFormBuilderComponent{
 
         let taskInfo = taskNameIDMappings[ normalizeTaskName( taskName ) ];
         if (taskInfo) {
-          taskName = taskInfo.activityType ? `A${taskInfo.id}` : `T`;
+          let taskName;
+          if ( taskInfo.triggerType ) {
+            taskName = taskInfo.triggerType == FLOGO_ERROR_ROOT_NAME ? 'E' : 'T';
+          } else {
+            taskName = `A${taskInfo.id}`;
+          }
 
           //delete first dot in the string for right parsing
           propPath = propPath && propPath[0] == '.' ? propPath.substring(1) : propPath;

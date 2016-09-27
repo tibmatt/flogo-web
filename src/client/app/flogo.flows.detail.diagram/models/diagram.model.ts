@@ -64,7 +64,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   constructor( diagram : IFlogoFlowDiagram,
     private tasks : IFlogoFlowDiagramTaskDictionary,
-    private elm ? : HTMLElement ) {
+    private elm ? : HTMLElement,
+    private diagramType? : string) {
     this.updateDiagram( diagram );
   }
 
@@ -143,20 +144,20 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return outputMatrix;
   }
 
-  static getEmptyDiagram() : IFlogoFlowDiagram {
+  static getEmptyDiagram(diagramType?:string) : IFlogoFlowDiagram {
     let newRootNode = new FlogoFlowDiagramNode();
-    let empytDiagram = < IFlogoFlowDiagram > {
+    let emptyDiagram = < IFlogoFlowDiagram > {
       root : {
         is : newRootNode.id
       },
       nodes : < IFlogoFlowDiagramNodeDictionary > {}
     };
 
-    newRootNode.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
+    newRootNode.type = diagramType == 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
 
-    empytDiagram.nodes[ newRootNode.id ] = newRootNode;
+    emptyDiagram.nodes[ newRootNode.id ] = newRootNode;
 
-    return empytDiagram;
+    return emptyDiagram;
   }
 
   static filterOverflowAddNode( matrix : string[][],
@@ -234,7 +235,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     if ( _.isEmpty( diagram ) || _.isEmpty( diagram.root ) ) {
 
       // handle empty diagram
-      this.updateDiagram( FlogoFlowDiagram.getEmptyDiagram() );
+      this.updateDiagram( FlogoFlowDiagram.getEmptyDiagram(this.diagramType) );
 
     } else {
 
@@ -388,7 +389,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
-      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_PADDING
+      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_PADDING,
+      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
     ];
 
     // enter selection
@@ -422,10 +424,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           DEBUG && console.log( d3.event );
           DEBUG && console.groupEnd();
 
-          if ( d.type
-            !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
-            && d.type
-            !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_PADDING ) {
+          if ( _isNodeSelectable(d) ) {
 
             let evtType = '';
 
@@ -444,7 +443,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             }
 
             if ( evtType ) {
-
               _triggerCustomEvent(
                 evtType, {
                   origEvent : d3.event,
@@ -583,6 +581,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         // comment out since hover will show the menu
         // thisNode.classed( CLS.diagramNodeMenuSelected, false );
+
+        thisNode.classed( CLS.diagramNodeStatusSelected, ( nodeInfo : any ) => {
+          return _.get( nodeInfo, '__status.isSelected', false );
+        } );
 
         // update the current node ID
         thisNode.attr( 'data-task-id', function ( nodeInfo : IFlogoFlowDiagramNode ) {
@@ -781,10 +783,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           .join( '' );
       }
 
+      if( taskInfo.nodeInfo.type ===  FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW ) {
+        taskInfo = _.assign({}, taskInfo, {name: 'On Error', desc: 'Error ocurred', type: FLOGO_TASK_TYPE.TASK_ROOT});
+      }
+
       if ( taskInfo.name && taskInfo.desc ) {
         let iconName = 'activity.icon.svg';
 
-        if ( taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT ) {
+        if (taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT) {
           iconName = 'trigger.icon.svg';
         }
 
@@ -1109,7 +1115,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         (<FlogoFlowDiagramNode>parentNode).linkToChildren( [ node.id ] );
 
-      } else if ( node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+      } else if (node.type ===  FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW) {
         node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT;
       }
     } else {
@@ -1332,7 +1338,8 @@ function _isNodeHasDetails( nodeInfo : any ) : boolean {
     return [
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
-        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
       ].indexOf( nodeInfo.type ) === -1;
   } else {
     return false;
@@ -1344,7 +1351,20 @@ function _isNodeHasMenu( nodeInfo : any ) : boolean {
     return [
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD,
         FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW,
-        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
+      ].indexOf( nodeInfo.type ) === -1;
+  } else {
+    return false;
+  }
+}
+
+function _isNodeSelectable(nodeInfo: IFlogoFlowDiagramNode) {
+  if ( nodeInfo.type ) {
+    return [
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_PADDING,
+        FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
       ].indexOf( nodeInfo.type ) === -1;
   } else {
     return false;

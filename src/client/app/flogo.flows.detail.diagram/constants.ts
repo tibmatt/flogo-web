@@ -12,7 +12,8 @@ export enum FLOGO_FLOW_DIAGRAM_NODE_TYPE {
   NODE_BRANCH,    // the branch line node
   NODE_LINK,      // the link node
   NODE_SUB_PROC,  // activity with sub flow
-  NODE_LOOP       // repeatable activity
+  NODE_LOOP,       // repeatable activity
+  NODE_ROOT_ERROR_NEW
 }
 
 // types of link in `flow.json`
