@@ -22,13 +22,13 @@
     </div>
     <div class="flogo-flows-container-body container-fluid">
         <ul class="flogo-flows-container-lists row">
-            <li class="flogo-flows-container-list-col col-lg-4 col-sm-6 col-xs-12">
+            <li class="flogo-flows-container-list-col">
                 <div class="flogo-flows-container-new">
                   <flogo-flows-add class="flogo-flows-container-new__option"></flogo-flows-add>
                   <flogo-flows-import class="flogo-flows-container-new__option" (importSuccess)="onFlowImportSuccess($event)" (importError)="onFlowImportError($event)"></flogo-flows-import>
                 </div>
             </li>
-            <li *ngFor="let flow of flows" class="flogo-flows-container-list-col col-lg-4 col-sm-6 col-xs-12">
+            <li *ngFor="let flow of flows" class="flogo-flows-container-list-col">
                 <div class="flogo-flows-container-list">
                     <a class="flogo-flows-container-list-detail" href="javascript:void(0);" (click)="openFlow(flow._id, $event)">
                         <header class="flogo-flows-container-list-detail-name" [title]="flow.name">{{flow.name}}</header>

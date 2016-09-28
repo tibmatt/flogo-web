@@ -6,7 +6,7 @@
 @card-bg-color: #ffffff;
 @card-bg-color-hover: #ececec;
 @card-width: 250px;
-@card-height: 160px;
+@card-height: 200px;
 @card-gutter-vertical: 20px;
 @card-gutter-horizontal: @card-gutter-vertical;
 
@@ -24,6 +24,10 @@
 .flogo-flows-container{
   background: #eeeded;
   width: 100%;
+}
+
+flogo-flows-import:hover{
+  background-color: #fff;
 }
 
 .flogo-flows-container-title{
@@ -59,7 +63,7 @@
 .flogo-welcomeMsg-description{
   width: 680px;
   height: 32px;
-  font-family: SourceSansPro;
+  font-family: "Source Sans Pro";
   font-size: 14px;
   font-weight: normal;
   font-style: normal;
@@ -100,7 +104,7 @@
 
   .flogo-flows-container-list{
     display: flex;
-    margin: @card-gutter-vertical @card-gutter-horizontal;
+    margin: 0px @card-gutter-horizontal @card-gutter-vertical;
     border-radius: 4px;
     list-style: none;
     background-color: @card-bg-color;
@@ -108,6 +112,7 @@
     /*width: @card-width;*/
     height: @card-height;
     position: relative;
+    width: 200px;
 
     &:hover{
       background-color: @card-bg-color-hover;
@@ -218,8 +223,8 @@
 .flogo-flows-container-new {
   border: 3px dashed #ccc;
   border-radius: 4px;
-  margin: 20px;
-  padding: 4px;
+  /*margin: 20px;
+  padding: 4px;*/
   width: 200px;
   height: 200px;
 }
