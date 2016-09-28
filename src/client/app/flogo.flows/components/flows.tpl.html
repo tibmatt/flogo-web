@@ -1,6 +1,6 @@
 <div class="flogo-flows-container">
     <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
-    <div class="flogo-flows-welcomeContainer">
+    <div class="flogo-flows-welcomeContainer clearfix">
         <div class="flogo-welcome-msg">
             <p class="flogo-welcomeMsg-header">Welcome back</p>
             <p class="flogo-welcomeMsg-description">We have got some new instructional videos you can check out that can help you</p>
@@ -10,12 +10,10 @@
             <img src="/assets/svg/flogo-flynn.svg">
         </div>
     </div>
-    <div class="flogo-flows-container-header" style="position:static;">
+    <div class="flogo-flows-container-header">
         <div class="container-fluid">
             <div class="flogo-flows-container-header-container">
                 <h3 class="flogo-flows-container-title">My Flows</h3>
-                <!-- <flogo-flows-add></flogo-flows-add> -->
-                <!--<flogo-flows-import (importSuccess)="onFlowImportSuccess($event)" (importError)="onFlowImportError($event)"></flogo-flows-import>-->
             </div>
         </div>
 
