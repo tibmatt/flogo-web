@@ -1,4 +1,6 @@
 <label class="flogo-flows-import-label" (click)="selectFile($event)">
-  <i class="fa fa-cloud-upload"></i>Import a flow
-  <input class="flogo-flows-import-input-file" type="file" accept="application/json" hidden (change)="onFileChange($event)" name="importFile">
+    <img class="flogo-common-flows-new-flow__icon" style="margin-bottom:10px;" src="/assets/svg/flogo.icon.download.svg">
+    <p class="flogo-common-flows-new-flow__text">Import a Flow</p>
+    <!--<i class="fa fa-cloud-upload"></i>Import a flow-->
+    <input class="flogo-flows-import-input-file" type="file" accept="application/json" hidden (change)="onFileChange($event)" name="importFile">
 </label>

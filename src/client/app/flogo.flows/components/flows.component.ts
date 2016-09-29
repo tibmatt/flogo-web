@@ -14,13 +14,13 @@ import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
 import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
-
+import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
 @Component({
   selector: 'flogo-flows',
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport,FlogoInstructionsComponent],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
 @CanActivate((next) => {
@@ -29,6 +29,7 @@ import { isConfigurationLoaded } from '../../../common/services/configurationLoa
 export class FlogoFlowsComponet{
     private _sub: any;
     public flows: any[] = [];
+    public isInstructionsActivated:boolean  = false;
 
     constructor(
         private _flow:RESTAPIFlowsService,
@@ -38,7 +39,29 @@ export class FlogoFlowsComponet{
     ){
         this.getAllFlows();
         this.initSubscribe();
+        setTimeout(() => {
+           this.showInstructions();
+       },500);
     }
+    showInstructions() {
+       let instructions:any = localStorage.getItem('flogo-show-instructions');
+
+       if(_.isEmpty(instructions)) {
+           localStorage.setItem('flogo-show-instructions', new Date().toString());
+           this.isInstructionsActivated = true;
+       }
+
+       return this.isInstructionsActivated;
+   }
+
+
+   public onClosedInstructions(closed) {
+       this.isInstructionsActivated = false;
+   }
+
+   public activateInstructions() {
+       this.isInstructionsActivated = true;
+   }
     private initSubscribe() {
         this._sub = this._postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, {
             callback: this._addFlowMsg.bind(this)

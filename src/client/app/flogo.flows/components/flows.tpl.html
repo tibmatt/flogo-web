@@ -1,30 +1,43 @@
 <div class="flogo-flows-container">
-  <div class="flogo-flows-container-header">
-    <div class="container-fluid">
-      <div class="flogo-flows-container-header-container">
-        <h3 class="flogo-flows-container-title">My Flows</h3>
-        <flogo-flows-add></flogo-flows-add>
-        <flogo-flows-import
-          (importSuccess)="onFlowImportSuccess($event)"
-          (importError)="onFlowImportError($event)"></flogo-flows-import>
+    <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
+    <div class="flogo-flows-welcomeContainer clearfix">
+        <div class="flogo-welcome-msg">
+            <p class="flogo-welcomeMsg-header">Welcome back</p>
+            <p class="flogo-welcomeMsg-description">We have got some new instructional videos you can check out that can help you</p>
+            <a href="#" target="_blank"><img src="/assets/svg/flogo.video.icon.svg"> Featured Video tutorial</a>
+        </div>
+        <div class="flogo-mascot">
+            <img src="/assets/svg/flogo-flynn.svg">
         </div>
     </div>
-
-  </div>
-  <div class="flogo-flows-container-body container-fluid">
-    <ul class="flogo-flows-container-lists row">
-      <li *ngFor="let flow of flows" class="flogo-flows-container-list-col col-lg-4 col-sm-6 col-xs-12">
-        <div class="flogo-flows-container-list">
-          <a class="flogo-flows-container-list-detail" href="javascript:void(0);" (click)="openFlow(flow._id, $event)">
-            <header class="flogo-flows-container-list-detail-name" [title]="flow.name">{{flow.name}}</header>
-            <section class="flogo-flows-container-list-detail-info">
-              <p class="flogo-flows-container-list-detail-description" [title]="flow.description">{{flow.description}}</p>
-              <i class="flogo-flows-container-list-detail-creatTime">Created {{flow.created_at}}</i>
-            </section>
-          </a>
-          <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow, $event)"></span>
+    <div class="flogo-flows-container-header">
+        <div class="container-fluid">
+            <div class="flogo-flows-container-header-container">
+                <h3 class="flogo-flows-container-title">My Flows</h3>
+            </div>
         </div>
-      </li>
-    </ul>
-  </div>
+
+    </div>
+    <div class="flogo-flows-container-body container-fluid">
+        <ul class="flogo-flows-container-lists row">
+            <li class="flogo-flows-container-list-col">
+                <div class="flogo-flows-container-new">
+                  <flogo-flows-add class="flogo-flows-container-new__option"></flogo-flows-add>
+                  <flogo-flows-import class="flogo-flows-container-new__option" (importSuccess)="onFlowImportSuccess($event)" (importError)="onFlowImportError($event)"></flogo-flows-import>
+                </div>
+            </li>
+            <li *ngFor="let flow of flows" class="flogo-flows-container-list-col">
+                <div class="flogo-flows-container-list">
+                    <a class="flogo-flows-container-list-detail" href="javascript:void(0);" (click)="openFlow(flow._id, $event)">
+                        <header class="flogo-flows-container-list-detail-name" [title]="flow.name">{{flow.name}}</header>
+                        <section class="flogo-flows-container-list-detail-info">
+                            <p class="flogo-flows-container-list-detail-description" [title]="flow.description">{{flow.description}}</p>
+                            <i class="flogo-flows-container-list-detail-creatTime">Created {{flow.created_at}}</i>
+                        </section>
+                    </a>
+                    <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow, $event)"></span>
+                </div>
+            </li>
+        </ul>
+    </div>
 </div>

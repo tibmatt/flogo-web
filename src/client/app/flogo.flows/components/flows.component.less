@@ -6,7 +6,7 @@
 @card-bg-color: #ffffff;
 @card-bg-color-hover: #ececec;
 @card-width: 250px;
-@card-height: 160px;
+@card-height: 200px;
 @card-gutter-vertical: 20px;
 @card-gutter-horizontal: @card-gutter-vertical;
 
@@ -25,15 +25,64 @@
   background: #eeeded;
   width: 100%;
 }
+
+flogo-flows-import:hover{
+  background-color: #fff;
+}
+
 .flogo-flows-container-title{
   display: inline-block;
-  line-height: 35px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  line-height: 24px;
   color: #666;
 }
-.flogo-flows-container-header{
-  height: 136px;
-  padding-top: 30px;
-  background: #fafafa;
+.flogo-flows-welcomeContainer{
+  background-color: #fff;
+  padding-bottom: 60px;
+  width:100%;
+}
+.flogo-welcome-msg{
+  width: 50%;
+  height:100%;
+  overflow: hidden;
+  float: left;
+  padding-left: 40px;
+}
+.flogo-welcomeMsg-header{
+  width: 50%;
+  height: 64px;
+  font-family: "Source Sans Pro";
+  font-size: 48px;
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.33;
+  letter-spacing: 0.9px;
+  color: #666666;
+  margin-bottom: 0px;
+}
+.flogo-welcomeMsg-description{
+  width: 680px;
+  height: 32px;
+  font-family: "Source Sans Pro";
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.14;
+  letter-spacing: 0.3px;
+  color: #666666;
+}
+.flogo-mascot{
+  float:left;
+  margin-top:10px;
+  width: 300px;
+  height: 200px;
+  object-fit: contain;
+}
+.flogo-flows-container-header {
+  background: #eeeded;
 }
 .flogo-flows-container-header-container{
   width: 90%;
@@ -44,17 +93,24 @@
   margin: 0 auto;
   width: 560px;
 }
-.flogo-flows-container-lists{
+
+.flogo-flows-container-body {
   margin: 0 auto;
-  padding: 30px 0 0;
   width: 90%;
+}
+
+.flogo-flows-container-lists{
+  margin: -20px -20px 0 -20px;
+  padding: 30px 0 0;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  list-style: none;
 
   .flogo-flows-container-list{
     display: flex;
-    margin: @card-gutter-vertical @card-gutter-horizontal;
+    margin: @card-gutter-horizontal @card-gutter-vertical;
     border-radius: 4px;
     list-style: none;
     background-color: @card-bg-color;
@@ -62,6 +118,7 @@
     /*width: @card-width;*/
     height: @card-height;
     position: relative;
+    width: 200px;
 
     &:hover{
       background-color: @card-bg-color-hover;
@@ -73,6 +130,7 @@
       }
     }
   }
+
   .flogo-flows-container-list-detail{
     flex: auto;
     color: #666;
@@ -162,6 +220,18 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.flogo-common-flows-new {
+  width: 100%;
+}
+
+.flogo-flows-container-new {
+  border: 3px dashed #ccc;
+  border-radius: 4px;
+  margin: @card-gutter-horizontal @card-gutter-vertical;
+  width: 200px;
+  height: 200px;
 }
 
 /*

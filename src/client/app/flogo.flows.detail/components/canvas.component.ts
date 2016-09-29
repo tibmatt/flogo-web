@@ -8,7 +8,8 @@ import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.
 import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
-import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component'
+import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component';
+import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 
 
@@ -48,7 +49,7 @@ interface HandlerInfo {
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoInstructionsComponent ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ]
@@ -103,16 +104,15 @@ export class FlogoCanvasComponent implements  OnChanges {
   public mockProcess: any;
   public exportLink: string;
   public downloadLink: string;
+  public isInstructionsActivated: boolean  = false;
 
-  constructor(
-    private _postService: PostService,
-    private _restAPIService: RESTAPIService,
-    private _restAPIFlowsService: RESTAPIFlowsService,
-    private _router: Router,
-    private _flogoModal: FlogoModal,
-    private _routerParams: RouteParams
-  ) {
-    this._hasUploadedProcess = false ;
+  constructor(private _postService: PostService,
+              private _restAPIService: RESTAPIService,
+              private _restAPIFlowsService: RESTAPIFlowsService,
+              private _router: Router,
+              private _flogoModal: FlogoModal,
+              private _routerParams: RouteParams) {
+    this._hasUploadedProcess = false;
     this._isDiagramEdited = false;
 
     // TODO
@@ -133,31 +133,34 @@ export class FlogoCanvasComponent implements  OnChanges {
     this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
     this.getFlow(this.flowId)
-        .then((res: any)=> {
-          this.flow = res.flow;
-          this.handlers = {
-            'root': res.root,
-            'errorHandler': res.errorHandler
-          };
+      .then((res: any)=> {
+        this.flow = res.flow;
+        this.handlers = {
+          'root': res.root,
+          'errorHandler': res.errorHandler
+        };
 
 
-          this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
-          this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
-          this.mainHandler = this.handlers['root'];
-          this.errorHandler = this.handlers['errorHandler'];
+        this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
+        this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
+        this.mainHandler = this.handlers['root'];
+        this.errorHandler = this.handlers['errorHandler'];
 
 
         this.clearAllRunStatus();
 
-          this.initSubscribe();
+        this.initSubscribe();
 
-          this._updateFlow( this.flow).
-            then(()=> {
-            this.loading = false;
-            this._mockLoading = false;
-          });
+        setTimeout(() => {
+          this.showInstructions();
+        }, 500);
 
+        this._updateFlow(this.flow).then(()=> {
+          this.loading = false;
+          this._mockLoading = false;
         });
+
+      });
 
   }
 
@@ -1920,6 +1923,22 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.groupEnd();
   }
 
+  showInstructions() {
+    let instructions:any = localStorage.getItem('flogo-show-instructions');
+    if(_.isEmpty(instructions)) {
+      localStorage.setItem('flogo-show-instructions', new Date().toString());
+      this.isInstructionsActivated = true;
+    }
+    return this.isInstructionsActivated;
+  }
+
+  public onClosedInstructions(closed) {
+      this.isInstructionsActivated = false;
+    }
+
+  public activateInstructions() {
+      this.isInstructionsActivated = true;
+    }
 
 
 }
