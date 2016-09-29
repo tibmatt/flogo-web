@@ -1,6 +1,6 @@
 <div>
   <button type="button" class="btn btn-link flogo-common-edit-panel__btn-download" (click)="openModal()">
-    Install new triggers
+    {{ 'TRIGGERS-INSTALL:INSTALL_NEW_TRIGGER' | translate }}
   </button>
 
   <flogo-installer [flogoInstallType]="'trigger'" [(flogoIsActivated)]="isActivated"

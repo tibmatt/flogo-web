@@ -31,5 +31,7 @@
   "ADD:CANCEL":"CANCEL",
   "ADD:SAVE":"SAVE",
   "ADD:GIVE_YOUR_FLOW_A_NAME": "Give your flow a name",
-  "ADD:ADD_A_DESCRIPTION_OF_YOUR_FLOW": "Add a description of your flow"
+  "ADD:ADD_A_DESCRIPTION_OF_YOUR_FLOW": "Add a description of your flow",
+  "TRIGGERS:ADD_TRIGGER": "Add trigger",
+  "TRIGGERS-INSTALL:INSTALL_NEW_TRIGGER":"Install new triggers"
 }

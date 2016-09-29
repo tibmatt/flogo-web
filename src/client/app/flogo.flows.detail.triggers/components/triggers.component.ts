@@ -6,6 +6,7 @@ import { RouteParams } from '@angular/router-deprecated';
 
 import {FlogoFlowsDetailTriggersInstallComponent as TriggersInstallerComponent} from '../../flogo.flows.detail.triggers.install/components/install.component';
 import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
+import { TranslatePipe } from 'ng2-translate/ng2-translate';
 
 @Component(
   {
@@ -13,6 +14,7 @@ import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-
     moduleId : module.id,
     directives: [TriggersInstallerComponent],
     templateUrl : 'triggers.tpl.html',
+    pipes: [TranslatePipe],
     styleUrls : [ 'triggers.component.css' ]
   }
 )
