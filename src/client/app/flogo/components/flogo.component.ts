@@ -16,7 +16,7 @@ import { FlogoConfigComponent } from '../../flogo.config/components/config.compo
 import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
 import { ConfigurationService } from '../../../common/services/configuration.service';
 import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-app',
@@ -24,6 +24,7 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
   templateUrl: 'flogo.tpl.html',
   styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
+  pipes: [TranslatePipe],
   providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService, ConfigurationService]
 })
 

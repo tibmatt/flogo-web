@@ -24,5 +24,12 @@
   "FLOWS:FLOW_WAS_DELETED_SUCCESSFULLY": "Flow was deleted successfully!",
   "FLOWS:REMOVE_FLOW_ERROR": "Remove flow error: {{value}}",
   "FLOWS:IMPORT_FLOW_SUCCESSFULLY":"Import flow successfully!",
-  "FLOWS:IMPORT_FLOW_ERROR":"{{value}}"
+  "FLOWS:IMPORT_FLOW_ERROR":"{{value}}",
+  "ADD:CREATE_NEW_FLOW":"Create new flow",
+  "ADD:FLOW_NAME":"Flow name",
+  "ADD:FLOW_DESCRIPTION":"Flow description",
+  "ADD:CANCEL":"CANCEL",
+  "ADD:SAVE":"SAVE",
+  "ADD:GIVE_YOUR_FLOW_A_NAME": "Give your flow a name",
+  "ADD:ADD_A_DESCRIPTION_OF_YOUR_FLOW": "Add a description of your flow"
 }

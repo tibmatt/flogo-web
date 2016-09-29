@@ -130,8 +130,8 @@ export class FlogoFlowsComponet{
                     let message = this.translate.get('FLOWS:FLOW_WAS_DELETED_SUCCESSFULLY');
                     notification(message['value'], 'success', 3000);
                 }).catch((err)=> {
-                    let message = this.translate.get('FLOWS:FLOW_WAS_DELETED_SUCCESSFULLY');
-                    notification(`Remove flow error: ${err}`, 'error');
+                    let message = this.translate.get('FLOWS:REMOVE_FLOW_ERROR', {value:err});
+                    notification(message['value'], 'error');
                 });
             } else {
                 // omit
