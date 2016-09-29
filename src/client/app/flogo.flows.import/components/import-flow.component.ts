@@ -1,12 +1,14 @@
 import { Component, ElementRef, EventEmitter } from '@angular/core';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { notification } from '../../../common/utils';
+import { TranslatePipe } from 'ng2-translate/ng2-translate';
 
 @Component( {
   selector : 'flogo-flows-import',
   moduleId : module.id,
   templateUrl : 'import-flow.tpl.html',
   styleUrls : [ 'import-flow.component.css' ],
+  pipes: [TranslatePipe],
   outputs : [ 'onError:importError', 'onSuccess:importSuccess' ]
 } )
 export class FlogoFlowsImport {
