@@ -52,6 +52,7 @@ export const CONFIG = {
 
       'node_modules/rxjs/bundles/Rx.js',
       'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
+      'node_modules/ng2-translate/ng2-translate.js',
 
       'dev.env.js',
       'systemjs.config.js'
@@ -77,6 +78,7 @@ export const CONFIG = {
         'node_modules/d3/d3.min.js',
         'node_modules/lodash/lodash.min.js',
         'node_modules/postal/lib/postal.min.js',
+        'node_modules/ng2-translate/ng2-translate.js',
         'node_modules/pouchdb/dist/pouchdb.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/moment/min/moment-with-locales.min.js'

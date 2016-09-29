@@ -16,6 +16,7 @@ import { FlogoConfigComponent } from '../../flogo.config/components/config.compo
 import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
 import { ConfigurationService } from '../../../common/services/configuration.service';
 import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-app',
@@ -50,5 +51,14 @@ import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common
 ])
 
 export class FlogoAppComponent{
-  constructor(){ }
+  constructor(translate: TranslateService){
+    var userLang = navigator.language.split('-')[0]; // use navigator lang if available
+    userLang = /(fr|en)/gi.test(userLang) ? userLang : 'en';
+
+    // this language will be used as a fallback when a translation isn't found in the current language
+    translate.setDefaultLang('en');
+
+    // the lang to use, if the lang isn't available, it will use the current loader to get them
+    translate.use(userLang);
+  }
 }
