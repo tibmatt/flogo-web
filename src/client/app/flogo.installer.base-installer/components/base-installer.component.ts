@@ -1,4 +1,6 @@
 import { OnChanges, SimpleChange } from '@angular/core';
+import {Component, Injector} from '@angular/core';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 const TO_BE_OVERRIDDEN = '[FlogoInstallerBaseComponent] To be overridden.';
 
@@ -10,7 +12,7 @@ export class FlogoInstallerBaseComponent implements OnChanges {
   _installables = <any[]>[];
   installables = <any[]>[];
 
-  constructor() {
+  constructor(public translate: TranslateService) {
   }
 
   init() {
@@ -37,14 +39,15 @@ export class FlogoInstallerBaseComponent implements OnChanges {
 
   // TODO replace these mock data.
   getCategories() {
+    let translator = this.translate;
     console.log( TO_BE_OVERRIDDEN );
     return Promise.resolve( [
-      'Requests',
-      'Optimizations',
-      'Connect to Devices',
-      'Framework Adaptors',
-      'Web Adaptors',
-      'Uncategorized'
+      translator.get('INSTALLER:REQUESTS')['value'],
+      translator.get('INSTALLER:OPTIMIZATIONS')['value'],
+      translator.get('INSTALLER:CONNECT_TO_DEVICES')['value'],
+      translator.get('INSTALLER:FRAMEWORK_ADAPTORS')['value'],
+      translator.get('INSTALLER:WEB_ADAPTORS')['value'],
+      translator.get('INSTALLER:UNCATEGORIZED')['value']
     ] );
   }
 
