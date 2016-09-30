@@ -8,7 +8,7 @@
   </div>
 
   <div class="filter-box">
-    <input class="flogo-input-search filter-box__input" type="text" [(ngModel)]="filterQuery" placeholder="Filter tasks">
+    <input class="flogo-input-search filter-box__input" type="text" [(ngModel)]="filterQuery" placeholder="{{ translate.get('ADD:FILTER_TASKS').value }}">
   </div>
 
   <flogo-flows-detail-tasks-install

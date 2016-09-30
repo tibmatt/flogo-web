@@ -28,6 +28,7 @@
   "ADD:CREATE_NEW_FLOW":"Create new flow",
   "ADD:FLOW_NAME":"Flow name",
   "ADD:FLOW_DESCRIPTION":"Flow description",
+  "ADD:FILTER_TASKS":"Filter tasks",
   "ADD:CANCEL":"CANCEL",
   "ADD:SAVE":"SAVE",
   "ADD:GIVE_YOUR_FLOW_A_NAME": "Give your flow a name",
@@ -47,5 +48,8 @@
   "SEARCH:SEARCH": "SEARCH",
   "URL-INSTALLER:TRIGGER": "Install trigger from URL.",
   "URL-INSTALLER:ACTIVITY": "Instal activity from URL.",
-  "TASKS:ADD_ACTIVITY": "Add Activity"
+  "TASKS:ADD_ACTIVITY": "Add Activity",
+  "MODAL:CONFIRM_DELETION": "Confirm deletion",
+  "MODAL:DELETE": "DELETE",
+  "MODAL:CANCEL": "CANCEL"
 }
