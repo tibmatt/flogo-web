@@ -5,6 +5,7 @@ import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FlogoFlowDiagramNode } from '../models/node.model';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component(
   {
@@ -12,6 +13,7 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
     moduleId : module.id,
     templateUrl : 'diagram.tpl.html',
     styleUrls : [ 'diagram.component.css' ],
+    pipes: [TranslatePipe],
     inputs : [
       'tasks',
       'diagram',
@@ -29,7 +31,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   private _diagram : FlogoFlowDiagram;
   private _subscriptions : any[ ];
 
-  constructor( elementRef : ElementRef, private _postService : PostService ) {
+  constructor( elementRef : ElementRef, private _postService : PostService, public translate: TranslateService ) {
     this._elmRef = elementRef;
     this.initSub();
   }
@@ -80,7 +82,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this.translate,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
 
     this._diagram.render();
 
