@@ -33,5 +33,19 @@
   "ADD:GIVE_YOUR_FLOW_A_NAME": "Give your flow a name",
   "ADD:ADD_A_DESCRIPTION_OF_YOUR_FLOW": "Add a description of your flow",
   "TRIGGERS:ADD_TRIGGER": "Add trigger",
-  "TRIGGERS-INSTALL:INSTALL_NEW_TRIGGER":"Install new triggers"
+  "TRIGGERS-INSTALL:INSTALL_NEW_TRIGGER":"Install new triggers",
+  "INSTALLER:DOWNLOAD_TRIGGERS": "Download Triggers",
+  "INSTALLER:DOWNLOAD_TILES": "Download Tiles",
+  "INSTALLER:INSTALLED": "{{value}} installed.",
+  "INSTALLER:INSTALLATION_FAILED": "{{value}} installation failed.",
+  "INSTALLER:REQUESTS": "Requests",
+  "INSTALLER:OPTIMIZATIONS": "Optimizations",
+  "INSTALLER:CONNECT_TO_DEVICES": "Connect to Devices",
+  "INSTALLER:FRAMEWORK_ADAPTORS": "Framework Adaptors",
+  "INSTALLER:WEB_ADAPTORS": "Web Adaptors",
+  "INSTALLER:UNCATEGORIZED": "Uncategorized",
+  "SEARCH:SEARCH": "SEARCH",
+  "URL-INSTALLER:TRIGGER": "Install trigger from URL.",
+  "URL-INSTALLER:ACTIVITY": "Instal activity from URL.",
+  "TASKS:ADD_ACTIVITY": "Add Activity"
 }

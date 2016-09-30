@@ -170,8 +170,6 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
     private changeFlowDetail($event, property) {
-        debugger;
-
         return new Promise((resolve, reject)=> {
             this._updateFlow(this.flow).then((response: any)=> {
                 let message = this.translate.get('CANVAS:UPDATE_FLOW_SUCCESSFULLY',{value: property});
