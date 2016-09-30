@@ -6,6 +6,7 @@ import {FlogoFormBuilderFieldsTextArea as FieldTextArea} from '../../flogo.form-
 import {FlogoFormBuilderFieldsNumber as FieldNumber} from '../../flogo.form-builder.fields/components/fields.number/fields.number.component';
 import {FlogoFormBuilderFieldsObject as FieldObject} from '../../flogo.form-builder.fields/components/fields.object/fields.object.component';
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
+import {  TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
     selector: 'flogo-form-builder-branch-configuration',
@@ -20,7 +21,7 @@ export class FlogoFormBuilderConfigurationBranchComponent {
   _attributes: any;
   fields:any;
 
-  constructor(private _commonService: FlogoFormBuilderCommon) {
+  constructor(private _commonService: FlogoFormBuilderCommon, public translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -32,10 +33,11 @@ export class FlogoFormBuilderConfigurationBranchComponent {
 
 
   getBranchInfo( branchInfo : any ) {
+      let translator = this.translate;
     var info = {
       name:       'condition',
       id:         branchInfo.id,
-      title:      'If',
+      title:      translator.get('FORM-BUILDER-CONFIGURATION_BRANCH:IF')['value'],
       value:      branchInfo.condition,
       required:   true,
       placeholder: '',

@@ -11,6 +11,7 @@ import {ErrorDisplayComponent} from './error-display.component';
 import {HelpComponent} from "./help.component";
 import {TransformMapperComponent} from './transform-mapper.component';
 import {TransformJsonPanelComponent} from './transform-json-panel.component';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
@@ -32,6 +33,7 @@ interface TransformData {
   styleUrls: ['transform.component.css'],
   inputs:['flowId'],
   templateUrl: 'transform.tpl.html',
+  pipes: [TranslatePipe]
 })
 export class TransformComponent implements OnDestroy {
   fieldsConnections:any[] = [];
@@ -61,7 +63,7 @@ export class TransformComponent implements OnDestroy {
     mappings: null
   };
 
-  constructor(private _postService:PostService) {
+  constructor(private _postService:PostService, public translate: TranslateService) {
     this.initSubscriptions();
     this.resetState();
   }

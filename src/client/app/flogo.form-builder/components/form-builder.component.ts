@@ -13,6 +13,7 @@ import {Contenteditable} from '../../../common/directives/contenteditable.direct
 import {FlogoFormBuilderConfigurationTriggerComponent as TriggersDirective} from '../../flogo.form-builder.configuration.trigger/components/form-builder.configuration.trigger.component';
 import {FlogoFormBuilderConfigurationTaskComponent as TaskDirective} from '../../flogo.form-builder.configuration.task/components/form-builder.configuration.task.component';
 import {FlogoFormBuilderConfigurationBranchComponent as BranchDirective} from '../../flogo.form-builder.configuration.branch/components/form-builder.configuration.branch.component';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder',
@@ -20,7 +21,8 @@ import {FlogoFormBuilderConfigurationBranchComponent as BranchDirective} from '.
   styleUrls: ['form-builder.css'],
   templateUrl: 'form-builder.tpl.html',
   directives: [ROUTER_DIRECTIVES, FieldRadio, FieldTextBox, FieldTextArea, FieldNumber,  Contenteditable, TriggersDirective, TaskDirective, BranchDirective],
-  inputs: ['_task:task','_step:step', '_context:context', '_flowId:flowId']
+  inputs: ['_task:task','_step:step', '_context:context', '_flowId:flowId'],
+  pipes: [TranslatePipe]
 })
 export class FlogoFormBuilderComponent{
   _fieldObserver:ReplaySubject<any>;
@@ -36,7 +38,7 @@ export class FlogoFormBuilderComponent{
   _branchConfigs:any[]; // force the fields update by taking the advantage of ngFor
   _flowId:string;
 
-  constructor(private _postService: PostService) {
+  constructor(private _postService: PostService, public translate: TranslateService) {
     this._initSubscribe();
     this._setFieldsObservers();
   }
