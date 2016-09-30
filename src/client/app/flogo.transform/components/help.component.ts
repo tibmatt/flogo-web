@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {InformationPopupComponent, CopyToClipboardComponent} from '../../../common/components/components';
+import {InformationPopupComponent, CopyToClipboardComponent} from '../../../common/components';
 
 @Component({
   selector: 'flogo-transform-help',

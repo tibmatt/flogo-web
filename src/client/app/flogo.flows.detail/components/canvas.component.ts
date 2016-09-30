@@ -10,7 +10,6 @@ import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
 import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component';
 import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
-import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 
 
 import {
@@ -54,10 +53,6 @@ interface HandlerInfo {
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ]
 } )
-@CanActivate((next) => {
-  return isConfigurationLoaded();
-})
-
 @RouteConfig([
     {path: '/', name: 'FlogoFlowsDetailDefault', component: FlogoFlowsDetail, useAsDefault: true},
     {path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggers},

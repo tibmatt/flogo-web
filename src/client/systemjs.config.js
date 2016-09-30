@@ -13,7 +13,7 @@
   // REMEMBER to also add your add library to be loaded in map config in production section below
   var packages = {
     'rxjs': {
-      defaultExtension: false
+      defaultExtension: 'js'
     },
     'ng2-bs3-modal': {
       defaultExtension: false
@@ -32,7 +32,8 @@
     // map tells the System loader where to look for things
     // load angular from node_modules folder
     map = {
-      '@angular': '/node_modules/@angular'
+      '@angular': '/node_modules/@angular',
+      'rxjs': '/node_modules/rxjs'
     };
 
   } else {

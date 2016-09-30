@@ -49,7 +49,7 @@ export const CONFIG = {
       'node_modules/bootstrap/dist/js/bootstrap.js',
       'node_modules/moment/min/moment-with-locales.min.js',
 
-      'node_modules/rxjs/bundles/Rx.js',
+     // 'node_modules/rxjs/bundles/Rx.umd.js',
       'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
 
       'dev.env.js',

@@ -1,14 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import {PostService} from '../../../common/services/post.service';
-import {PUB_EVENTS} from '../message';
-import {MODAL_DIRECTIVES, ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import { PostService } from '../../../common/services/post.service';
+import { PUB_EVENTS } from '../message';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
     selector: 'flogo-flows-add',
     moduleId: module.id,
     templateUrl: 'add.tpl.html',
-    styleUrls: ['add.component.css'],
-    directives: [MODAL_DIRECTIVES]
+    styleUrls: ['add.component.css']
 })
 export class FlogoFlowsAdd {
     public flowName: string;

@@ -1,15 +1,10 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
-import { Router } from '@angular/router-deprecated';
-import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { notification } from '../../../common/utils';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 
 @Component( {
     selector : 'flogo-instructions',
     moduleId : module.id,
-    directives : [
-        MODAL_DIRECTIVES
-    ],
     templateUrl : 'instructions.tpl.html',
     inputs : ['isActivated'],
     outputs : ['onClosedModal: flogoOnClosedModal'],
@@ -18,10 +13,7 @@ import { notification } from '../../../common/utils';
 export class FlogoInstructionsComponent implements OnChanges {
 
     @ViewChild( 'instructionsModal' ) modal : ModalComponent;
-
-    installType : string;
     isActivated : boolean;
-    onInstalled = new EventEmitter();
     onClosedModal = new EventEmitter();
     steps:any[] = [
         {title:'Configure the trigger', description: '', icon: 'instructions-step-1', screenshot:'graphic-1.svg'} ,
@@ -75,7 +67,6 @@ export class FlogoInstructionsComponent implements OnChanges {
     }
 
     openModal() {
-        console.log( 'Open Modal.' );
         this.init();
         this.modal.open('lg');
     }

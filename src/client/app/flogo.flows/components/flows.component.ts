@@ -1,32 +1,20 @@
-import {Component, Injector} from '@angular/core';
-import {ROUTER_DIRECTIVES, Router, CanActivate} from '@angular/router-deprecated';
-
-//import * as moment from 'moment';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
-import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
-import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
 import { flogoIDEncode , notification } from '../../../common/utils';
-import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
-import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
-import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
-import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
+
 @Component({
   selector: 'flogo-flows',
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
-  styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport,FlogoInstructionsComponent],
-  providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
-})
-@CanActivate((next) => {
-    return isConfigurationLoaded();
-})
-export class FlogoFlowsComponet{
+  styleUrls: ['flows.component.css']
+ })
+export class FlogoFlowsComponent{
     private _sub: any;
     public flows: any[] = [];
     public isInstructionsActivated:boolean  = false;
@@ -100,20 +88,7 @@ export class FlogoFlowsComponet{
       evt.stopPropagation();
     }
 
-      /*
-   this._router.navigate( [
-      'FlogoFlowDetail',
-      { id : flogoIDEncode( flowId ) }
-    ] )
-      .catch( ( err : any )=> {
-        console.error( err );
-      } );
-      */
-
-    this._router.navigate( [
-      'FlogoFlowDetail',
-      { id : flogoIDEncode( flowId ) }
-    ] )
+    this._router.navigate( [ '/flows', flogoIDEncode(flowId) ] )
       .catch( ( err : any )=> {
         console.error( err );
       } );

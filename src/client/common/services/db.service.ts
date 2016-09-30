@@ -42,34 +42,37 @@ export class FlogoDBService implements OnInit {
   /**
    * initial a pouchdb
    */
-  private _initDB(): FlogoDBService{
-    let appDBConfig = this._configurationService.configuration.db;
-    let activitiesDBConfig = this._configurationService.configuration.activities.db;
-    let triggersDBConfig = this._configurationService.configuration.triggers.db;
+  private _initDB(): FlogoDBService {
 
-    // this._activitiesDB = new PouchDB(`${activitiesDBConfig.name}-local`);
-    this._activitiesDB = new PouchDB( getDBURL( activitiesDBConfig ) );
-    this._activitiesDB.info().then(function(db){
-      console.log('[DB] Activities: ', db);
-    }).catch(function(err:any){
-      console.error(err);
-    });
+    this._configurationService.getConfiguration().then(configuration => {
+      let appDBConfig = this._configurationService.configuration.db;
+      let activitiesDBConfig = this._configurationService.configuration.activities.db;
+      let triggersDBConfig = this._configurationService.configuration.triggers.db;
 
-    // this._triggersDB = new PouchDB(`${triggersDBConfig.name}-local`);
-    this._triggersDB = new PouchDB( getDBURL( triggersDBConfig ) );
-    this._triggersDB.info().then(function(db){
-      console.log('[DB] Triggers: ', db);
-    }).catch(function(err:any){
-      console.error(err);
-    });
+      // this._activitiesDB = new PouchDB(`${activitiesDBConfig.name}-local`);
+      this._activitiesDB = new PouchDB( getDBURL( activitiesDBConfig ) );
+      this._activitiesDB.info().then(function(db){
+        console.log('[DB] Activities: ', db);
+      }).catch(function(err:any){
+        console.error(err);
+      });
 
-    // this._db = new PouchDB(`${appDBConfig.name}-local`);
-    this._db = new PouchDB( getDBURL( appDBConfig ) );
-    // create db in browser
-    this._db.info().then(function(db){
-      console.log('[DB] Application: ', db);
-    }).catch(function(err:any){
-      console.error(err);
+      // this._triggersDB = new PouchDB(`${triggersDBConfig.name}-local`);
+      this._triggersDB = new PouchDB( getDBURL( triggersDBConfig ) );
+      this._triggersDB.info().then(function(db){
+        console.log('[DB] Triggers: ', db);
+      }).catch(function(err:any){
+        console.error(err);
+      });
+
+      // this._db = new PouchDB(`${appDBConfig.name}-local`);
+      this._db = new PouchDB( getDBURL( appDBConfig ) );
+      // create db in browser
+      this._db.info().then(function(db){
+        console.log('[DB] Application: ', db);
+      }).catch(function(err:any){
+        console.error(err);
+      });
     });
 
     // Comment out and connect to remote db directly
