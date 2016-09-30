@@ -8,6 +8,7 @@ import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.comm
 import {FlogoFormBuilderFieldsObject as FieldObject} from '../../flogo.form-builder.fields/components/fields.object/fields.object.component';
 import {FlogoFormBuilderFieldsListBox as FieldListBox} from '../../flogo.form-builder.fields/components/fields.listbox/fields.listbox.component';
 import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from "../../../common/utils";
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
     selector: 'flogo-form-builder-task-configuration',
@@ -15,6 +16,7 @@ import { convertTaskID, parseMapping, normalizeTaskName, getDefaultValue } from 
     templateUrl: 'form-builder.configuration.task.tpl.html',
     directives: [FieldRadio, FieldTextBox,  FieldTextArea, FieldNumber, FieldObject, FieldListBox],
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes', '_task:task'],
+    pipes: [TranslatePipe],
     providers: [FlogoFormBuilderCommon]
 })
 export class FlogoFormBuilderConfigurationTaskComponent {
@@ -23,7 +25,7 @@ export class FlogoFormBuilderConfigurationTaskComponent {
   _task:any;
   fields:any;
 
-  constructor(private _commonService: FlogoFormBuilderCommon) {
+  constructor(private _commonService: FlogoFormBuilderCommon, public translate: TranslateService) {
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {

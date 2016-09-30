@@ -534,7 +534,7 @@ export class FlogoCanvasComponent implements  OnChanges {
           console.error( err );
           // TODO
           //  more specific error message?
-          let message = this.translate.get('CANVAS:OPS_SOMETHING_WRONG');
+          let message = this.translate.get('CANVAS:SOMETHING_WRONG');
           notification(message['value'],'error');
           return err;
         }
