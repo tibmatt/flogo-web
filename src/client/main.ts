@@ -1,5 +1,5 @@
 import {provide, enableProdMode, ComponentRef} from '@angular/core';
-import { HTTP_PROVIDERS } from '@angular/http';
+import { HTTP_PROVIDERS, Http } from '@angular/http';
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {APP_BASE_HREF} from '@angular/common'
@@ -16,7 +16,11 @@ if(typeof window['DEV'] != 'undefined' && window['DEV']) {
 bootstrap(FlogoAppComponent, [
     HTTP_PROVIDERS,
     ROUTER_PROVIDERS,
-    TRANSLATE_PROVIDERS,
+    provide(TranslateLoader, {
+        useFactory: (http: Http) => new TranslateStaticLoader(http, '/i18n', '.json'),
+        deps: [Http]
+    }),
+    TranslateService,
   provide(APP_BASE_HREF, { useValue: '/'})
 ])
 .then((appRef: ComponentRef<any>) => {
