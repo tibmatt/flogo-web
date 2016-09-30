@@ -68,5 +68,9 @@
   "TRANSFORM-JSON-PANEL:INPUT": "Input",
   "TRANSFORM-JSON-PANEL:OUTPUT": "Output",
   "TRANSFORM-JSON-PANEL:PREVIOUS_TILES": "Previous tiles",
-  "TRANSFORM-JSON-PANEL:TRANSFORMATION_FOR_NAME": "Txransformation for {{value}}"
+  "TRANSFORM-JSON-PANEL:TRANSFORMATION_FOR_NAME": "Txransformation for {{value}}",
+  "FIELDS-BASE:TITLE_IS_REQUIRED" : "{{value}} is required",
+  "FIELDS-TEXTAREA:INVALID_JSON" : "{{value}} invalid JSON",
+  "ERROR-PANEL:ERROR-HANDLER" : "Error Handler"
+
 }

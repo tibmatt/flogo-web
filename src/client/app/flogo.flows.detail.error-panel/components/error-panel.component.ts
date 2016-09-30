@@ -1,5 +1,6 @@
 import {Component, HostBinding, OnDestroy, HostListener} from '@angular/core';
 import {PostService} from '../../../common/services/post.service';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 import {SUB_EVENTS, PUB_EVENTS} from '../messages';
 
@@ -7,7 +8,8 @@ import {SUB_EVENTS, PUB_EVENTS} from '../messages';
   selector: 'flogo-flows-detail-error-panel',
   moduleId: module.id,
   templateUrl: 'error-panel.tpl.html',
-  styleUrls: ['error-panel.component.css']
+  styleUrls: ['error-panel.component.css'],
+  pipes: [TranslatePipe]
 })
 
 
@@ -24,7 +26,7 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
 
   private subscriptions : Array<any>;
 
-  constructor(private postService: PostService){
+  constructor(private postService: PostService, public translate: TranslateService){
     this.initSubscribe();
   }
 
