@@ -207,7 +207,7 @@ export class FlogoFormBuilderComponent{
         ) ) {
 
         //  add configure required msg;
-        warnings.push({ msg : 'Configure Required' });
+        warnings.push({ msg : this.translate.get('FORM-BUILDER:CONFIGURE-REQUIRED')['value'] });
         return true;
       }
 
