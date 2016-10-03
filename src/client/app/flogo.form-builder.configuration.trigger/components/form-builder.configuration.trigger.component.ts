@@ -1,23 +1,12 @@
 import {Component, SimpleChange} from '@angular/core';
 
-import {
-  FlogoFormBuilderFieldsRadio as FieldRadio,
-  FlogoFormBuilderFieldsTextBox as FieldTextBox,
-  FlogoFormBuilderFieldsTextArea as FieldTextArea,
-  FlogoFormBuilderFieldsNumber as FieldNumber,
-  FlogoFormBuilderFieldsObject as FieldObject,
-  FlogoFormBuilderFieldsListBox as FieldListBox
-} from '../../flogo.form-builder.fields/fields';
-
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
 
 @Component({
     selector: 'flogo-form-builder-trigger-configuration',
     moduleId: module.id,
     templateUrl: 'form-builder.configuration.trigger.tpl.html',
-    directives: [FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldObject, FieldListBox],
-    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes'],
-    providers: [FlogoFormBuilderCommon]
+    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes']
 })
 export class FlogoFormBuilderConfigurationTriggerComponent {
   _fieldObserver : any;

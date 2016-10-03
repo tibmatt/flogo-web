@@ -2,49 +2,37 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { FlogoFlowsComponent } from "../flogo.flows/components/flows.component";
-import { FlogoCanvasComponent } from "../flogo.flows.detail/components/canvas.component";
-import { FlogoFormBuilderComponent } from "../flogo.form-builder/components/form-builder.component";
-import { RESTAPITest } from "../../common/services/rest-api-test.spec";
 import { FlogoConfigComponent } from "../flogo.config/components/config.component";
 
 import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
 
 export const appRoutes: Routes = [
-  /*{
+  {
     path: 'flows',
     canActivate: [ ConfigurationLoadedGuard ],
     //name: "FlogoFlows",
-    component: FlogoFlowsComponent,
+    loadChildren: '/app/flogo.flows/flogo.flows.module#FlowsModule'//,
+    //component: FlogoFlowsComponent,
     //useAsDefault: true
   },
   {
-    path: 'flows/:id/...',
+    path: 'flows/:id',
     canActivate: [ ConfigurationLoadedGuard ],
     //name:"FlogoFlowDetail",
-    component: FlogoCanvasComponent
+    loadChildren: '/app/flogo.flows.detail/flogo.flows.detail.module#FlogoFlowsDetailModule'
+    //component: FlogoCanvasComponent
   },
-  {
-    path: 'task',
-    //name: 'FlogoTask',
-    component: FlogoFormBuilderComponent
-  },
-  {
-    path: 'rest-api-test',
-    //name: 'FlogoRESTAPITest',
-    component: RESTAPITest
-  },*/
-  // TODO
-  //  temp config page to change server URL settings
   {
     path: '_config',
     //name: "FlogoDevConfig",
+    loadChildren: '/app/flogo.config/flogo.config.module#ConfigModule',
     canActivate: [ ConfigurationLoadedGuard ],
-    component: FlogoConfigComponent
+    //component: FlogoConfigComponent
   },
   {
     path: '',
-    canActivate: [ ConfigurationLoadedGuard ],
-    component: FlogoFlowsComponent
+    redirectTo: 'flows',
+    pathMatch: 'full'
     //name: "FlogoHome",
   }
 ];

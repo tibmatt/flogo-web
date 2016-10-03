@@ -1,15 +1,6 @@
-import { Component, OnChanges } from '@angular/core';
-import { RouteConfig, RouterOutlet, RouteParams, Router, CanActivate } from '@angular/router-deprecated';
-import {PostService} from '../../../common/services/post.service';
-import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
-import {FlogoFlowsDetail} from './flow-detail.component';
-import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/components/triggers.component';
-import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
-import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
-import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
-import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
-import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component';
-import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
+import {Component, OnChanges, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import { PostService } from '../../../common/services/post.service';
 
 
 import {
@@ -29,14 +20,12 @@ import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_P
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
-import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
   attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
 } from '../../../common/utils';
 
-import { Contenteditable, JsonDownloader } from '../../../common/directives';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 
@@ -48,20 +37,11 @@ interface HandlerInfo {
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoInstructionsComponent ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
-  providers: [ FlogoModal ]
 } )
-@RouteConfig([
-    {path: '/', name: 'FlogoFlowsDetailDefault', component: FlogoFlowsDetail, useAsDefault: true},
-    {path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggers},
-    {path: '/trigger/:id', name: 'FlogoFlowsDetailTriggerDetail', component: FlogoFlowsDetailTriggersDetail},
-    {path: '/task/add', name: 'FlogoFlowsDetailTaskAdd', component: FlogoFlowsDetailTasks},
-    {path: '/task/:id', name: 'FlogoFlowsDetailTaskDetail', component: FlogoFlowsDetailTasksDetail}
-])
 
-export class FlogoCanvasComponent implements  OnChanges {
+export class FlogoCanvasComponent implements OnInit {
   public flow: any;
   public flowId: string;
   public mainHandler:HandlerInfo;
@@ -106,72 +86,75 @@ export class FlogoCanvasComponent implements  OnChanges {
               private _restAPIFlowsService: RESTAPIFlowsService,
               private _router: Router,
               private _flogoModal: FlogoModal,
-              private _routerParams: RouteParams) {
+              private _route: ActivatedRoute) {
     this._hasUploadedProcess = false;
     this._isDiagramEdited = false;
 
     // TODO
     //  Remove this mock
     this._mockLoading = true;
-    this.flowId = this._routerParams.params['id'];
-
-    this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
-
-    this.loading = true;
-
-    try {
-      this.flowId = flogoIDDecode(this.flowId);
-    } catch (e) {
-      console.warn(e);
-    }
-
-    this.exportLink = `/v1/api/flows/${this.flowId}/json`;
-
-    this.getFlow(this.flowId)
-      .then((res: any)=> {
-        this.flow = res.flow;
-        this.handlers = {
-          'root': res.root,
-          'errorHandler': res.errorHandler
-        };
-
-
-        this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
-        this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
-        this.mainHandler = this.handlers['root'];
-        this.errorHandler = this.handlers['errorHandler'];
-
-
-        this.clearAllRunStatus();
-
-        this.initSubscribe();
-
-        setTimeout(() => {
-          this.showInstructions();
-        }, 500);
-
-        this._updateFlow(this.flow).then(()=> {
-          this.loading = false;
-          this._mockLoading = false;
-        });
-
-      });
 
   }
 
-    private changeFlowDetail($event, property) {
+  public ngOnInit() {
+      this.flowId = this._route.snapshot.params['id'];
 
-        return new Promise((resolve, reject)=> {
-            this._updateFlow(this.flow).then((response: any)=> {
-                notification(`Update flow's ${property} successfully!`, 'success', 3000);
-                resolve(response);
-            }).catch((err)=> {
-                notification(`Update flow's ${property} error: ${err}`, 'error');
-                reject(err);
-            });
-        })
+      this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
 
-    }
+      this.loading = true;
+
+      try {
+        this.flowId = flogoIDDecode(this.flowId);
+      } catch (e) {
+        console.warn(e);
+      }
+
+      this.exportLink = `/v1/api/flows/${this.flowId}/json`;
+
+      this.getFlow(this.flowId)
+        .then((res: any)=> {
+          this.flow = res.flow;
+          this.handlers = {
+            'root': res.root,
+            'errorHandler': res.errorHandler
+          };
+
+
+          this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
+          this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
+          this.mainHandler = this.handlers['root'];
+          this.errorHandler = this.handlers['errorHandler'];
+
+
+          this.clearAllRunStatus();
+
+          this.initSubscribe();
+
+          setTimeout(() => {
+            this.showInstructions();
+          }, 500);
+
+          this._updateFlow(this.flow).then(()=> {
+            this.loading = false;
+            this._mockLoading = false;
+          });
+
+        });
+  }
+
+  private changeFlowDetail($event, property) {
+
+      return new Promise((resolve, reject)=> {
+          this._updateFlow(this.flow).then((response: any)=> {
+              notification(`Update flow's ${property} successfully!`, 'success', 3000);
+              resolve(response);
+          }).catch((err)=> {
+              notification(`Update flow's ${property} error: ${err}`, 'error');
+              reject(err);
+          });
+      })
+
+  }
 
   private getFlow(id: string) {
     let diagram: IFlogoFlowDiagram;
@@ -241,10 +224,6 @@ export class FlogoCanvasComponent implements  OnChanges {
     });
   }
 
-  ngOnChanges(changes:any) {
-
-  }
-
   private initSubscribe() {
     this._subscriptions = [];
 
@@ -287,7 +266,11 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   isOnDefaultRoute() {
-    return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
+    console.log(this._router.url);
+    return true;
+    //this._router.createUrlTree([/]);
+    //this._router.isActive()
+    //return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
   }
 
   // TODO
@@ -897,7 +880,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-    this._router.navigate( [ 'FlogoFlowsDetailTriggerAdd' ] )
+    this._navigateFromModuleRoot(['trigger', 'add'])
       .then(
         () => {
           console.group( 'after navigation' );
@@ -941,7 +924,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     tasks[ trigger.id ] = trigger;
 
-    this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+    this._navigateFromModuleRoot()
       .then(
         ()=> {
           this._postService.publish(
@@ -973,7 +956,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-    this._router.navigate( [ 'FlogoFlowsDetailTaskAdd' ] )
+    this._navigateFromModuleRoot( [ 'task', 'add' ] )
       .then(
         () => {
           console.group( 'after navigation' );
@@ -1039,7 +1022,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
       this.handlers[diagramId].tasks[ task.id ] = task;
 
-      this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+      this._navigateFromModuleRoot()
         .then(
           ()=> {
             this._postService.publish(
@@ -1079,12 +1062,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( envelope );
 
 
-    this._router.navigate(
-      [
-        'FlogoFlowsDetailTaskDetail',
-        { id : data.node.taskID }
-      ]
-      )
+    this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
           console.group( 'after navigation' );
@@ -1162,12 +1140,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( envelope );
 
 
-    this._router.navigate(
-      [
-        'FlogoFlowsDetailTaskDetail',
-        { id : data.node.taskID }
-      ]
-      )
+    this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
           console.group( 'after navigation' );
@@ -1226,7 +1199,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     this.tasks[ data.task.id ] = data.task;
 
-    this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+    this._navigateFromModuleRoot()
       .then(
         ()=> {
           this._postService.publish(
@@ -1615,9 +1588,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                       this._isDiagramEdited = true;
 
                       if (_shouldGoBack) {
-                        this._router.navigate( [
-                          'FlogoFlowsDetailDefault'
-                        ] );
+                        this._navigateFromModuleRoot();
                       }
                     }
                   }
@@ -1645,9 +1616,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
-    this._router.navigate([
-      'FlogoFlowsDetailDefault'
-    ]);
+    this._navigateFromModuleRoot();
 
     console.groupEnd();
 
@@ -1706,12 +1675,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     previousNodes.pop(); // ignore last item as it is the very same selected node
     let previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
 
-    this._router.navigate(
-      [
-        'FlogoFlowsDetailTaskDetail',
-        { id : data.node.taskID }
-      ]
-      )
+    this._navigateFromModuleRoot([ 'task', data.node.taskID ])
       .then(
         () => {
           console.group('after navigation');
@@ -1918,6 +1882,16 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.groupEnd();
   }
 
+  /**
+   *
+   * @param urlParts empty to navigate to module root
+   * @returns {Promise<boolean>}
+   * @private
+   */
+  private _navigateFromModuleRoot(urlParts = []) {
+    return this._router.navigate( [ '/flows', flogoIDEncode(this.flowId), ...urlParts ] );
+  }
+
   showInstructions() {
     let instructions:any = localStorage.getItem('flogo-show-instructions');
     if(_.isEmpty(instructions)) {
@@ -1929,11 +1903,11 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   public onClosedInstructions(closed) {
       this.isInstructionsActivated = false;
-    }
+  }
 
   public activateInstructions() {
       this.isInstructionsActivated = true;
-    }
+  }
 
 
 }

@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.category-selector/components/category-selector.component';
-import { FlogoInstallerListViewComponent } from '../../flogo.installer.list-view/components/list-view.component';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import {
@@ -11,10 +9,6 @@ import {
 @Component( {
   selector : 'flogo-installer-activity',
   moduleId : module.id,
-  directives : [
-    FlogoInstallerCategorySelectorComponent,
-    FlogoInstallerListViewComponent
-  ],
   templateUrl : 'activity-installer.tpl.html',
   inputs : [ 'query: flogoSearchQuery', 'status: flogoInstallerStatus' ],
   styleUrls : [ 'activity-installer.component.css' ]

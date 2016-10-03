@@ -14,16 +14,11 @@ export class ConfigurationLoadedGuard implements CanActivate {
   }
 
   canActivate() {
-
-    console.log('can activate');
-
     return this._config.getConfiguration()
       .then(() => {
-        console.log('got config');
         return true;
       })
       .catch((err) => {
-        console.log('dd not get sconfig');
         console.log(err);
         return false;
       });

@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'flogo-transform-json-panel',

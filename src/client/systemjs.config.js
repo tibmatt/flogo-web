@@ -74,8 +74,7 @@
     'http',
     'platform-browser',
     'platform-browser-dynamic',
-    'router',
-    'router-deprecated'
+    'router'
   ];
 
   ngPackageNames.forEach(function (pkgName) {

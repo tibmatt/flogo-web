@@ -1,7 +1,6 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
-
 @Component( {
     selector : 'flogo-instructions',
     moduleId : module.id,

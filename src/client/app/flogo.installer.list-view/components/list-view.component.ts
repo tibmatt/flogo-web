@@ -1,10 +1,8 @@
 import { Component, OnChanges, SimpleChange, EventEmitter } from '@angular/core';
-import { FlogoInstallerListViewItemComponent } from '../../flogo.installer.list-view.item/components/item.component';
 
 @Component( {
   selector : 'flogo-installer-list-view',
   moduleId : module.id,
-  directives : [ FlogoInstallerListViewItemComponent ],
   inputs : [ 'installables: flogoInstallables' ],
   outputs : [ 'itemAction: flogoOnItemAction' ],
   templateUrl : 'list-view.tpl.html',

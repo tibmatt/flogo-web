@@ -5,12 +5,6 @@ import {PostService} from '../../../common/services/post.service';
 import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYPE, FLOGO_ERROR_ROOT_NAME as ERROR_ROOT_NAME} from '../../../common/constants';
 import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL} from '../constants';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
-import {MapEditorComponent} from './map-editor.component';
-import {VisualMapperComponent} from './visual-mapper.component';
-import {ErrorDisplayComponent} from './error-display.component';
-import {HelpComponent} from "./help.component";
-import {TransformMapperComponent} from './transform-mapper.component';
-import {TransformJsonPanelComponent} from './transform-json-panel.component';
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
 
@@ -27,10 +21,9 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  directives: [MapEditorComponent, ErrorDisplayComponent, HelpComponent,VisualMapperComponent, TransformMapperComponent, TransformJsonPanelComponent],
-  moduleId: module.id,
   styleUrls: ['transform.component.css'],
   inputs:['flowId'],
+  moduleId: module.id,
   templateUrl: 'transform.tpl.html',
 })
 export class TransformComponent implements OnDestroy {

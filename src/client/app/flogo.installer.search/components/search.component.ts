@@ -5,7 +5,6 @@ const PLACEHOLDER = 'SEARCH';
 @Component( {
   selector : 'flogo-installer-search',
   moduleId : module.id,
-  directives : [],
   templateUrl : 'search.tpl.html',
   inputs : [ 'query: flogoSearchQuery' ],
   outputs : [ 'queryUpdate: flogoSearchQueryChange' ],

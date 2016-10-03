@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
-import { flogoIDEncode , notification } from '../../../common/utils';
+import {flogoIDEncode , notification} from '../../../common/utils';
 
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';

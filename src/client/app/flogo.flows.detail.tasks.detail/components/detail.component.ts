@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
-import { RouteParams } from '@angular/router-deprecated';
-import { FlogoFormBuilderComponent } from '../../flogo.form-builder/components/form-builder.component';
 
 @Component(
   {
@@ -10,7 +8,6 @@ import { FlogoFormBuilderComponent } from '../../flogo.form-builder/components/f
     moduleId : module.id,
     templateUrl : 'detail.tpl.html',
     styleUrls : [ 'detail.component.css' ],
-    directives : [ FlogoFormBuilderComponent ]
   }
 )
 
@@ -22,9 +19,8 @@ export class FlogoFlowsDetailTasksDetail {
   private _subscriptions : any;
   private _selectTaskMsg : any;
 
-  constructor( private _postService : PostService, private _routeParams : RouteParams ) {
+  constructor( private _postService : PostService ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
-    console.log( this._routeParams );
 
     this.initSubscribe();
 

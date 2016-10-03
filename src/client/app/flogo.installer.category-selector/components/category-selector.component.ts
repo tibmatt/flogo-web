@@ -3,7 +3,6 @@ import { Component, EventEmitter, SimpleChange, OnChanges } from '@angular/core'
 @Component( {
   selector : 'flogo-installer-category-selector',
   moduleId : module.id,
-  directives : [],
   inputs : [ 'categories: flogoCategories' ],
   outputs : [ 'categorySelected: flogoOnCategorySelected' ],
   templateUrl : 'category-selector.tpl.html',

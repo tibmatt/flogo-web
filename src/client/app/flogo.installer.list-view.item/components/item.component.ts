@@ -3,7 +3,6 @@ import { Component, OnChanges, SimpleChange, EventEmitter } from '@angular/core'
 @Component( {
   selector : 'flogo-installer-list-view-item',
   moduleId : module.id,
-  directives : [],
   inputs : [ 'item: flogoItem' ],
   outputs : [ 'onItemAction: flogoOnItemAction' ],
   templateUrl : 'item.tpl.html',

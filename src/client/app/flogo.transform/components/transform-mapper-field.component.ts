@@ -7,7 +7,6 @@ import { mappingsValidateField } from '../validators/validators';
     },
     selector: 'flogo-transform-mapper-field',
     moduleId: module.id,
-    directives: [],
     styleUrls: ['transform-mapper-field.component.css'],
     templateUrl: 'transform-mapper-field.tpl.html'
 })

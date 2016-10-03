@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.category-selector/components/category-selector.component';
-import { FlogoInstallerListViewComponent } from '../../flogo.installer.list-view/components/list-view.component';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import {
@@ -11,10 +9,6 @@ import {
 @Component( {
   selector : 'flogo-installer-trigger',
   moduleId : module.id,
-  directives : [
-    FlogoInstallerCategorySelectorComponent,
-    FlogoInstallerListViewComponent
-  ],
   templateUrl : 'trigger-installer.tpl.html',
   inputs : [ 'query: flogoSearchQuery', 'status: flogoInstallerStatus' ],
   styleUrls : [ 'trigger-installer.component.css' ]

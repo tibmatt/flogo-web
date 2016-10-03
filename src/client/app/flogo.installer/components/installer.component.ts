@@ -1,11 +1,5 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
-import { Router } from '@angular/router-deprecated';
-import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.category-selector/components/category-selector.component';
-import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { FlogoInstallerTriggerComponent } from '../../flogo.installer.trigger-installer/components/trigger-installer.component';
-import { FlogoInstallerActivityComponent } from '../../flogo.installer.activity-installer/components/activity-installer.component';
-import { FlogoInstallerSearchComponent } from '../../flogo.installer.search/components/search.component';
-import { FlogoInstallerUrlComponent } from '../../flogo.installer.url-installer/components/url-installer.component';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 import { notification } from '../../../common/utils';
@@ -20,14 +14,6 @@ const TRIGGER_TITLE = 'Download Triggers';
 @Component( {
   selector : 'flogo-installer',
   moduleId : module.id,
-  directives : [
-    MODAL_DIRECTIVES,
-    FlogoInstallerSearchComponent,
-    FlogoInstallerCategorySelectorComponent,
-    FlogoInstallerActivityComponent,
-    FlogoInstallerTriggerComponent,
-    FlogoInstallerUrlComponent
-  ],
   templateUrl : 'installer.tpl.html',
   inputs : [ 'installType: flogoInstallType', 'isActivated: flogoIsActivated' ],
   outputs : [
@@ -58,7 +44,7 @@ export class FlogoInstallerComponent implements OnChanges {
   //  may add two-way binding later.
   installTypeUpdate = new EventEmitter();
 
-  constructor( private _router : Router,
+  constructor(
     private _triggersAPIs : RESTAPITriggersService,
     private _activitiesAPIs : RESTAPIActivitiesService ) {
     this.init();

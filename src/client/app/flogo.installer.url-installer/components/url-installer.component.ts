@@ -9,7 +9,6 @@ const PLACEHOLDER = {
 @Component( {
   selector : 'flogo-installer-url',
   moduleId : module.id,
-  directives : [],
   inputs : [ 'installType: flogoInstallType', 'status: flogoInstallerStatus'  ],
   outputs : [ 'onInstallEvent: flogoOnInstall' ],
   templateUrl : 'url-installer.tpl.html',
