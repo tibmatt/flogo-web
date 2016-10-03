@@ -60,7 +60,7 @@ export function flogoFlowToJSON(inFlow) {
   let errorPath = _.get( inFlow, 'errorHandler.paths' );
 
   if(_.isEmpty(errorPath) || _.isEmpty(errorItems)) {
-    return flow;
+    return flowJSON;
   }
 
   flowJSON.flow.errorHandlerTask = (function _parseErrorTask() {
