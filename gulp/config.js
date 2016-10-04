@@ -19,7 +19,7 @@ export const CONFIG = {
       server: path.join(dist, 'server'),
       packages: path.join(dist, 'packages')
     },
-    ts: ['../../typings/browser.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
+    ts: ['../../typings/index.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
     less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
     assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "declaration": false,
+    "removeComments": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "pretty": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "suppressImplicitAnyIndexErrors": true,
+    "outDir": "./compiled"
+  },
+  "include":[
+    "./src/client/",
+    "./typings/index.d.ts"
+  ],
+  "exclude": [
+    "src/client/node_modules/**/*"
+  ],
+  "compileOnSave": false,
+  "angularCompilerOptions": {
+    "genDir": "./aot",
+    "skipMetadataEmit" : true
+  }
+}

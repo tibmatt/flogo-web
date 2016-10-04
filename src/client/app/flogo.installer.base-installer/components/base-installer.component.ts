@@ -18,7 +18,7 @@ export class FlogoInstallerBaseComponent implements OnChanges {
     this.updateData();
   }
 
-  updateData() {
+  updateData() : Promise<any> {
     return Promise.all( [
       this.getCategories(),
       this.getInstallables()

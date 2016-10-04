@@ -7,9 +7,9 @@ import { ConfigurationService } from '../../common/services/configuration.servic
 export class FlogoDBService implements OnInit {
 
   // PouchDB instance
-  private _db:pouchdb.thenable.PouchDB;
-  private _activitiesDB:pouchdb.thenable.PouchDB;
-  private _triggersDB:pouchdb.thenable.PouchDB;
+  private _db:PouchDB.Database<any>;
+  private _activitiesDB:PouchDB.Database<any>;
+  private _triggersDB:PouchDB.Database<any>;
   private _sync:any;
   private _syncActivities: any;
   public PREFIX_AUTO_GENERATE:string = 'auto-generate-id';
