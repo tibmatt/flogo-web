@@ -4,12 +4,14 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components'
 import { Contenteditable, JsonDownloader } from './directives';
+import { LoadingIndicatorComponent } from "./components/loading-indicator.component";
 
 const ALL_MODULE_DECLARABLES = [
   CopyToClipboardComponent,
   ...INFORMATION_POPUP_DIRECTIVES,
   Contenteditable,
-  JsonDownloader
+  JsonDownloader,
+  LoadingIndicatorComponent
 ];
 
 @NgModule({

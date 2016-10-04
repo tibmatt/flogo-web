@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 
-import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
+import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 
 import { FlogoAppComponent }   from './components/flogo.component';
 import { FlogoNavbarComponent }   from './components/navbar.component';
@@ -16,7 +16,7 @@ import {routing, appRoutingProviders} from "./flogo.routing";
     CommonModule,
     FormsModule,
     Ng2Bs3ModalModule,
-    FlogoInstructionsModule,
+    FlogoCommonModule,
     routing
   ],
   declarations: [

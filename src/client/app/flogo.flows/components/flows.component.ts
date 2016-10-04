@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import {Observable} from 'rxjs/Observable';
 
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
 import {flogoIDEncode , notification} from '../../../common/utils';
@@ -7,6 +8,7 @@ import {flogoIDEncode , notification} from '../../../common/utils';
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
+import {LoadingStatusService} from "../../../common/services/loading-status.service";
 
 @Component({
   selector: 'flogo-flows',
@@ -18,20 +20,26 @@ export class FlogoFlowsComponent{
     private _sub: any;
     public flows: any[] = [];
     public isInstructionsActivated:boolean  = false;
+    public isLoading : Observable<boolean>
 
     constructor(
         private _flow:RESTAPIFlowsService,
         private _postService: PostService,
         private _flogoModal: FlogoModal,
-        private _router: Router
+        private _router: Router,
+        private _loadingStatusService : LoadingStatusService
     ){
         this.getAllFlows();
         this.initSubscribe();
         setTimeout(() => {
            this.showInstructions();
        },500);
+
+      this.isLoading = _loadingStatusService.status;
+
     }
-    showInstructions() {
+
+    public showInstructions() {
        let instructions:any = localStorage.getItem('flogo-show-instructions');
 
        if(_.isEmpty(instructions)) {
@@ -41,7 +49,6 @@ export class FlogoFlowsComponent{
 
        return this.isInstructionsActivated;
    }
-
 
    public onClosedInstructions(closed) {
        this.isInstructionsActivated = false;
@@ -88,6 +95,7 @@ export class FlogoFlowsComponent{
       evt.stopPropagation();
     }
 
+    this._loadingStatusService.start();
     this._router.navigate( [ '/flows', flogoIDEncode(flowId) ] )
       .catch( ( err : any )=> {
         console.error( err );

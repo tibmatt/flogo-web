@@ -10,6 +10,7 @@ import {ConfigurationService} from './services/configuration.service';
 import {FlogoDBService} from './services/db.service';
 import {PostService} from './services/post.service';
 import {ConfigurationLoadedGuard} from './services/configuration-loaded-guard.service';
+import {LoadingStatusService} from './services/loading-status.service';
 
 @NgModule({
   providers: [ // services
@@ -22,7 +23,8 @@ import {ConfigurationLoadedGuard} from './services/configuration-loaded-guard.se
     ConfigurationService,
     FlogoDBService,
     PostService,
-    ConfigurationLoadedGuard
+    ConfigurationLoadedGuard,
+    LoadingStatusService
   ]
 })
 export class CoreModule { }
