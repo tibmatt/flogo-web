@@ -7,7 +7,7 @@
             <a href="#" target="_blank"><img src="/assets/svg/flogo.video.icon.svg"> {{ 'FLOWS:FEATURED_VIDEO_TUTORIAL' | translate }} </a>
         </div>
         <div class="flogo-mascot">
-            <img src="/assets/svg/flogo-flynn.svg">
+            <img src="/assets/svg/flogo-flynn.png" class="flogo-flows-mascotImg">
         </div>
     </div>
     <div class="flogo-flows-container-header">
@@ -22,8 +22,8 @@
         <ul class="flogo-flows-container-lists row">
             <li class="flogo-flows-container-list-col">
                 <div class="flogo-flows-container-new">
-                  <flogo-flows-add class="flogo-flows-container-new__option"></flogo-flows-add>
-                  <flogo-flows-import class="flogo-flows-container-new__option" (importSuccess)="onFlowImportSuccess($event)" (importError)="onFlowImportError($event)"></flogo-flows-import>
+                    <flogo-flows-add class="flogo-flows-container-new__option"></flogo-flows-add>
+                    <flogo-flows-import class="flogo-flows-container-new__option" (importSuccess)="onFlowImportSuccess($event)" (importError)="onFlowImportError($event)"></flogo-flows-import>
                 </div>
             </li>
             <li *ngFor="let flow of flows" class="flogo-flows-container-list-col">
