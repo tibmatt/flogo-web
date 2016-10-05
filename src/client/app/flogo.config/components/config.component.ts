@@ -14,11 +14,11 @@ const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
   styleUrls : [ 'config.component.css' ]
 } )
 export class FlogoConfigComponent {
-  private _config : any;
-  private _servers : any[];
-  private _dbs : any[];
-  private _appDB : any;
-  private location = location; // expose window.location
+  _config : any;
+  _servers : any[];
+  _dbs : any[];
+  _appDB : any;
+  location = location; // expose window.location
 
   constructor( private _router : Router, private http:Http,  private _configurationService: ConfigurationService  ) {
     this.init();

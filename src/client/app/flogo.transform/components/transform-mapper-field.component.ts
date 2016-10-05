@@ -46,7 +46,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     ngOnInit() {
     }
 
-    onMouseLeave() {
+    onMouseLeave(tile:string, field:string) {
        this.emittItemOver('', '');
         this.overInput = false;
     }
@@ -176,7 +176,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
         return true;
     }
 
-    clickRemove() {
+    clickRemove(event) {
         this.selectedValue = '';
         this.showList = false;
 

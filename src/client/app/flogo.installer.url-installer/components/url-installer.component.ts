@@ -16,11 +16,12 @@ const PLACEHOLDER = {
 } )
 export class FlogoInstallerUrlComponent implements OnChanges {
 
-  private installType : string;
-  private placeholder : string;
-  private sourceUrl : string;
-  private onInstallEvent = new EventEmitter();
-  private disableInstall : boolean;
+  installType : string;
+  placeholder : string;
+  sourceUrl : string;
+  onInstallEvent = new EventEmitter();
+  disableInstall : boolean;
+  status : string;
 
   constructor() {
     this.disableInstall = false;

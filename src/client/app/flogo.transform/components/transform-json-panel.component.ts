@@ -15,7 +15,7 @@ export class TransformJsonPanelComponent implements OnChanges {
     isCollapsed:boolean = true;
     currentSchema:string = '';
 
-    private toggledControl:EventEmitter<any> = new EventEmitter();
+    toggledControl:EventEmitter<any> = new EventEmitter();
 
     ngOnInit() {
         if(this.isInput) {

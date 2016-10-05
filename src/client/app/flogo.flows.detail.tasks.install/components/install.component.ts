@@ -9,18 +9,18 @@ import { Component, EventEmitter } from '@angular/core';
 export class FlogoFlowsDetailTasksInstallComponent {
 
   public activities : any[] = [];
-  private isActivated = false;
+  public isActivated = false;
   onInstalled = new EventEmitter();
 
   constructor() {
     this.isActivated = false;
   }
 
-  private openModal() {
+  public openModal() {
     this.isActivated = true;
   }
 
-  private onInstalledAction( response : any ) {
+  public onInstalledAction( response : any ) {
     // bubble the event.
     this.onInstalled.emit( response );
   }

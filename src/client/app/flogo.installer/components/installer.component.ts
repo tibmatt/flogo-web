@@ -35,7 +35,7 @@ export class FlogoInstallerComponent implements OnChanges {
   isActivatedUpdate = new EventEmitter();
   onInstalled = new EventEmitter();
 
-  _query = '';
+  query = '';
   _title = '';
 
   _status = FLOGO_INSTALLER_STATUS_IDLE;
@@ -101,18 +101,18 @@ export class FlogoInstallerComponent implements OnChanges {
     }
   }
 
-  openModal() {
+  openModal(event? : any) {
     console.log( 'Open Modal.' );
     this._status = FLOGO_INSTALLER_STATUS_STANDBY;
     this.modal.open();
   }
 
-  closeModal() {
+  closeModal(event? : any) {
     console.log( 'Close Modal.' );
     this.modal.close();
   }
 
-  onModalCloseOrDismiss() {
+  onModalCloseOrDismiss(event? : any) {
     console.log( 'On Modal Close.' );
     this._isActivated = false;
     this._status = FLOGO_INSTALLER_STATUS_IDLE;

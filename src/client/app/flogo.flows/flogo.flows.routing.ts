@@ -1,11 +1,14 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
+
 import { FlogoFlowsComponent } from './components/flows.component';
 
 const routes: Routes = [
   {
-    path: '',
+    canActivate: [ ConfigurationLoadedGuard ],
+    path: 'flows',
     component: FlogoFlowsComponent
   }
 ];

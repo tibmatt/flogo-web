@@ -12,12 +12,12 @@ import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 )
 
 export class FlogoFlowsDetailTasksDetail {
-  private _flowId:string;
-  private _task : any;
-  private _step : any;
-  private _context: any;
+  _flowId:string;
+  _task : any;
+  _step : any;
+  _context: any;
   private _subscriptions : any;
-  private _selectTaskMsg : any;
+  _selectTaskMsg : any;
 
   constructor( private _postService : PostService ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );

@@ -16,19 +16,25 @@
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "suppressImplicitAnyIndexErrors": true,
-    "outDir": "./compiled"
+    "suppressImplicitAnyIndexErrors": true
   },
-  "include":[
-    "./src/client/",
-    "./typings/index.d.ts"
+  "files": [
+    "main.module.ts",
+    "main.aot.ts"
+  ],
+  "include": [
+    "../../../../typings/index.d.ts",
+    "app/**/*",
+    "common/**/*"
   ],
   "exclude": [
-    "src/client/node_modules/**/*"
+    "node_modules",
+    "../../../../typings/node/index.d.ts",
+    "./**/*.spec.ts"
   ],
   "compileOnSave": false,
   "angularCompilerOptions": {
-    "genDir": "./aot",
+    "genDir": "aot",
     "skipMetadataEmit" : true
   }
 }

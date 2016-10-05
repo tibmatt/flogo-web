@@ -8,6 +8,7 @@ import {CommonModule as FlogoCommonModule} from '../../common/common.module';
 import {FlogoFormBuilderCommon as FlogoFormBuilderCommonService} from './form-builder.common';
 
 import {
+  FlogoFormBuilderFieldsBase,
   FlogoFormBuilderFieldsListBox,
   FlogoFormBuilderFieldsNumber,
   FlogoFormBuilderFieldsObject,
@@ -29,6 +30,7 @@ import {FlogoFormBuilderComponent} from './components/form-builder.component';
     FlogoCommonModule
   ],
   declarations: [
+    FlogoFormBuilderFieldsBase,
     FlogoFormBuilderFieldsListBox,
     FlogoFormBuilderFieldsNumber,
     FlogoFormBuilderFieldsObject,

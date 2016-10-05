@@ -15,6 +15,12 @@ import {
 } )
 export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent {
 
+  query : string;
+  status : string;
+  _categories = <string[]>[];
+  _installables = <any[]>[];
+  installables = <any[]>[];
+
   constructor( private _restAPIActivitiesService : RESTAPIActivitiesService ) {
     super();
 

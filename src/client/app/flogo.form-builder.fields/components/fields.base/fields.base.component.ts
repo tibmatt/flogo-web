@@ -2,6 +2,7 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../../common/constants';
 import {Component} from '@angular/core';
 
 @Component({
+  template: '',
   inputs:['_info:info','_fieldObserver:fieldObserver']
 })
 export class FlogoFormBuilderFieldsBase{

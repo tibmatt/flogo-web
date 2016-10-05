@@ -3,7 +3,6 @@
 /// <reference path="globals/jquery/index.d.ts" />
 /// <reference path="globals/lodash/index.d.ts" />
 /// <reference path="globals/moment/index.d.ts" />
-/// <reference path="globals/node/index.d.ts" />
 /// <reference path="globals/postal/index.d.ts" />
 /// <reference path="globals/pouchdb-adapter-websql/index.d.ts" />
 /// <reference path="globals/pouchdb-browser/index.d.ts" />

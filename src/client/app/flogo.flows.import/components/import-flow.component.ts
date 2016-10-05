@@ -11,8 +11,8 @@ import { notification } from '../../../common/utils';
 } )
 export class FlogoFlowsImport {
   private _elmRef : ElementRef;
-  private onError : EventEmitter<any>;
-  private onSuccess : EventEmitter<any>;
+  onError : EventEmitter<any>;
+  onSuccess : EventEmitter<any>;
 
   constructor( elementRef : ElementRef, private _flowsAPIs : RESTAPIFlowsService ) {
     this._elmRef = elementRef;
@@ -20,7 +20,7 @@ export class FlogoFlowsImport {
     this.onSuccess = new EventEmitter<any>();
   }
 
-  private selectFile( evt : any ) {
+  public selectFile( evt : any ) {
     let fileElm = jQuery( this._elmRef.nativeElement )
       .find( '.flogo-flows-import-input-file' );
 
@@ -35,7 +35,7 @@ export class FlogoFlowsImport {
     // fileElm.click();
   }
 
-  private onFileChange( evt : any ) {
+  public onFileChange( evt : any ) {
     let importFile = <File> _.get( evt, 'target.files[0]' );
 
     if ( _.isUndefined( importFile ) ) {

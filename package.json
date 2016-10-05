@@ -52,6 +52,5 @@
     "vinyl-fs": "^2.4.3",
     "webdriver-manager": "^10.2.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

@@ -36,6 +36,6 @@ import {Observable} from 'rxjs/Observable';
 })
 export class LoadingIndicatorComponent {
   @Input()
-  public active: Observable<boolean> | boolean;
+  public active: Observable<any> | any;
 
 }

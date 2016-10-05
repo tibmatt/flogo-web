@@ -11,8 +11,8 @@ import { Component, OnChanges, SimpleChange, EventEmitter } from '@angular/core'
 export class FlogoInstallerListViewItemComponent implements OnChanges {
 
   item : any;
-  private _item : any;
-  private onItemAction = new EventEmitter();
+  _item : any;
+  onItemAction = new EventEmitter();
 
   constructor() {
     this.init();

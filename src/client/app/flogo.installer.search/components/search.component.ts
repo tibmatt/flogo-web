@@ -11,10 +11,10 @@ const PLACEHOLDER = 'SEARCH';
   styleUrls : [ 'search.component.css' ]
 } )
 export class FlogoInstallerSearchComponent implements OnChanges {
-  private placeholder = PLACEHOLDER;
-  private _searchQuery = '';
-  private query : string;
-  private queryUpdate = new EventEmitter();
+  placeholder = PLACEHOLDER;
+  _searchQuery = '';
+  query : string;
+  queryUpdate = new EventEmitter();
 
   constructor() {
     this.init();

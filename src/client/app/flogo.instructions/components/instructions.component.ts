@@ -14,14 +14,14 @@ export class FlogoInstructionsComponent implements OnChanges {
     @ViewChild( 'instructionsModal' ) modal : ModalComponent;
     isActivated : boolean;
     onClosedModal = new EventEmitter();
-    steps:any[] = [
+    steps = [
         {title:'Configure the trigger', description: '', icon: 'instructions-step-1', screenshot:'graphic-1.svg'} ,
         {title:'Add and configure activities', description: '', icon: 'instructions-step-2', screenshot:'graphic-2.svg'} ,
         {title:'Run and test at any time', description: '', icon: 'instructions-step-3', screenshot:'graphic-3.svg'} ,
         {title:'Build and run', description: '', icon: 'instructions-step-4', screenshot:'graphic-4.svg'}
     ];
     currentIndex : number;
-    currentStep :any[];
+    currentStep : any;
     STEPS_LENGTH = this.steps.length - 1;
 
     constructor( ) {

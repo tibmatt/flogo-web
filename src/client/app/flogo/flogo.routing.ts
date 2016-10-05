@@ -2,12 +2,13 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { FlogoFlowsComponent } from "../flogo.flows/components/flows.component";
+import { FlogoFlowsDetail as FlogoFlowsDetailComponent } from "../flogo.flows.detail/components/flow-detail.component";
 import { FlogoConfigComponent } from "../flogo.config/components/config.component";
 
 import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
 
 export const appRoutes: Routes = [
-  {
+/*  {
     path: 'flows',
     canActivate: [ ConfigurationLoadedGuard ],
     //name: "FlogoFlows",
@@ -20,20 +21,17 @@ export const appRoutes: Routes = [
     canActivate: [ ConfigurationLoadedGuard ],
     //name:"FlogoFlowDetail",
     loadChildren: '/app/flogo.flows.detail/flogo.flows.detail.module#FlogoFlowsDetailModule'
-    //component: FlogoCanvasComponent
   },
   {
     path: '_config',
     //name: "FlogoDevConfig",
     loadChildren: '/app/flogo.config/flogo.config.module#ConfigModule',
-    canActivate: [ ConfigurationLoadedGuard ],
-    //component: FlogoConfigComponent
-  },
+    canActivate: [ ConfigurationLoadedGuard ]
+  },*/
   {
     path: '',
     redirectTo: 'flows',
     pathMatch: 'full'
-    //name: "FlogoHome",
   }
 ];
 

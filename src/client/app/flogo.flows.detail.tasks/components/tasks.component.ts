@@ -17,7 +17,7 @@ export class FlogoFlowsDetailTasks {
   public filteredTasks : any[] = [];
   private _filterQuery : string = null;
 
-  private tasks : any[] = [];
+  public tasks : any[] = [];
 
   private _subscriptions : any;
   private _addTaskMsg : any;
@@ -117,7 +117,7 @@ export class FlogoFlowsDetailTasks {
     }
   }
 
-  private onInstalledAction( response : any ) {
+  public onInstalledAction( response : any ) {
     console.group( `[FlogoFlowsDetailTasks] onInstalled` );
     console.log( response );
     console.groupEnd();

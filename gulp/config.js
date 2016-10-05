@@ -68,7 +68,6 @@ export const CONFIG = {
 
         // Not required as we're building self-executing bundles
         // 'node_modules/systemjs/dist/system-polyfills.src.js',
-        // 'node_modules/systemjs/dist/system.src.js',
 
         // needs to be loaded after es6-shim and es6-promise
         'node_modules/zone.js/dist/zone.min.js',

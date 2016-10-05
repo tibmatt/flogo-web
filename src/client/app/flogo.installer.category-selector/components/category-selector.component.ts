@@ -10,7 +10,8 @@ import { Component, EventEmitter, SimpleChange, OnChanges } from '@angular/core'
 } )
 export class FlogoInstallerCategorySelectorComponent implements OnChanges {
 
-  private categorySelected = new EventEmitter();
+  categories: any[];
+  categorySelected = new EventEmitter();
 
   constructor() {
     this.init();

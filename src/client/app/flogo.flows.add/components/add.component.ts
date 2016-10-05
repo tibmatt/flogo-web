@@ -13,7 +13,7 @@ export class FlogoFlowsAdd {
     public flowName: string;
     public flowDescription: string;
 
-    private flowInfo : any = {};
+    public flowInfo : any = {};
     private _sending = true;
 
     constructor(private _postService: PostService) {
@@ -33,7 +33,7 @@ export class FlogoFlowsAdd {
             // omit
         }
     }
-    private closeAddFlowModal() {
+    public closeAddFlowModal() {
         this.flowInfo = {};
         this.modal.close();
         this._sending = true;

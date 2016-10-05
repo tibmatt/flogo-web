@@ -9,8 +9,9 @@ import { Component, OnChanges, SimpleChange, EventEmitter } from '@angular/core'
   styleUrls : [ 'list-view.component.css' ]
 } )
 export class FlogoInstallerListViewComponent implements OnChanges {
-  private _installables : any[];
-  private itemAction = new EventEmitter();
+  installables : any[];
+  _installables : any[];
+  itemAction = new EventEmitter();
 
   constructor() {
     this.init();

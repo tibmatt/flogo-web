@@ -13,7 +13,7 @@ import { RESTAPITriggersService } from '../../../common/services/restapi/trigger
   }
 )
 export class FlogoFlowsDetailTriggers {
-  private triggers : any;
+  public triggers : any;
   private _subscriptions : any;
   private _addTriggerMsg : any;
   private _selectTriggerMsg : any;
@@ -100,7 +100,7 @@ export class FlogoFlowsDetailTriggers {
       );
   }
 
-  private onInstalledAction( response : any ) {
+  public onInstalledAction( response : any ) {
     console.group( `[FlogoFlowsDetailTriggers] onInstalled` );
     console.log( response );
     console.groupEnd();

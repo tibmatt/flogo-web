@@ -25,6 +25,7 @@ export class FlogoFormBuilderComponent{
   _fieldsErrors:string[];
   _branchConfigs:any[]; // force the fields update by taking the advantage of ngFor
   _flowId:string;
+  hasErrors : boolean = false;
 
   constructor(private _postService: PostService) {
     this._initSubscribe();
@@ -181,7 +182,7 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes:any) {
     this._setupEnvironment();
   }
 

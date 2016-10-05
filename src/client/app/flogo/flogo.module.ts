@@ -6,6 +6,11 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 
+import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
+import { FlogoFlowsDetailModule } from '../flogo.flows.detail/flogo.flows.detail.module';
+import { ConfigModule as FlogoConfigModule } from '../flogo.config/flogo.config.module';
+
+
 import { FlogoAppComponent }   from './components/flogo.component';
 import { FlogoNavbarComponent }   from './components/navbar.component';
 
@@ -17,6 +22,9 @@ import {routing, appRoutingProviders} from "./flogo.routing";
     FormsModule,
     Ng2Bs3ModalModule,
     FlogoCommonModule,
+    FlogoFlowsModule,
+    FlogoFlowsDetailModule,
+    FlogoConfigModule,
     routing
   ],
   declarations: [
