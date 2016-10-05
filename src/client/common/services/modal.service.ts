@@ -14,7 +14,7 @@ export class FlogoModal {
     [key : string] : string;
     }) {
       var options = {primary: this.translate.get('MODAL:DELETE')['value'], secondary:this.translate.get('MODAL:CANCEL')['value']};
-      return this.confirm(this.translate.get('MODAL:CONFIRM_DELETION')['value'], message, options);
+      return this.confirm(this.translate.get('MODAL:CONFIRM-DELETION')['value'], message, options);
     }
     confirm(title, message, options : IOptions, styles?: {
         [key : string] : string;

@@ -7,7 +7,7 @@
       <header class="flogo-flow-detail-header col-sm-10">
         <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
-           placeholder="{{ translate.get('CANVAS:ADD_FLOWS_DESCRIPTION').value }}"
+           placeholder="{{ translate.get('CANVAS:ADD-FLOW-DESCRIPTION').value }}"
            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
 
@@ -18,14 +18,14 @@
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-pencil fa-fw"></i>
                 <a [href]="downloadLink" download>{{ 'CANVAS:BUILD' | translate }}</a>
                 <ul class="flogo-flow-detail-menu-item-choices">
-                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=386'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:X86_LINUX' | translate }} </span></label></a></li>
-                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=arm'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:X86_LINUX' | translate }}</span></label></a></li>
-                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=darwin&arch=amd64'"><label class="flogo-flow-detail-menu-item-choice-text"><span>Darwin/OSX</span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=386'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:X86-LINUX' | translate }} </span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=arm'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:ARM-LINUX' | translate }}</span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=darwin&arch=amd64'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:DARWIN-OSX' | translate }}</span></label></a></li>
                 </ul>
               </li>
-              <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">{{ 'CANVAS:MAKE_A_COPY' | translate }}</a></li>
-              <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportFlow()"><i class="fa fa-cloud-download fa-fw"></i> {{ 'CANVAS:EXPORT_FOR_CLI' | translate }}</a></li>
-              <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>{{ 'CANVAS:EXPORT_FOR_WEB_UI' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">{{ 'CANVAS:COPY' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportFlow()"><i class="fa fa-cloud-download fa-fw"></i> {{ 'CANVAS:EXPORT-FOR-CLI' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>{{ 'CANVAS:EXPORT-FOR-WEB-UI' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">{{ 'CANVAS:DELETE' | translate }}</a></li>
             </ul>
           </div>

@@ -85,7 +85,7 @@ export class FlogoFlowsComponet{
                 items: {}
             };
             this._flow.createFlow(_.clone(request)).then((response)=>{
-                let message = this.translate.get('FLOWS:FLOW_WAS_CREATED_SUCCESSFULLY');
+                let message = this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
                 notification(message['value'], 'success', 3000);
                 resolve(response);
             }).catch((err)=>{
@@ -127,10 +127,10 @@ export class FlogoFlowsComponet{
             if(res) {
                 this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
                     this.getAllFlows();
-                    let message = this.translate.get('FLOWS:FLOW_WAS_DELETED_SUCCESSFULLY');
+                    let message = this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
                     notification(message['value'], 'success', 3000);
                 }).catch((err)=> {
-                    let message = this.translate.get('FLOWS:REMOVE_FLOW_ERROR', {value:err});
+                    let message = this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', {value:err});
                     notification(message['value'], 'error');
                 });
             } else {
@@ -160,7 +160,7 @@ export class FlogoFlowsComponet{
     }
 
   onFlowImportSuccess( result : any ) {
-      let message = this.translate.get('FLOWS:IMPORT_FLOW_SUCCESSFULLY');
+      let message = this.translate.get('FLOWS:SUCCESS-MESSAGE-IMPORT');
       notification( message['value'], 'success', 3000 );
       this.getAllFlows();
   }
@@ -170,7 +170,7 @@ export class FlogoFlowsComponet{
     statusText : string;
     response : any
   } ) {
-   let message = this.translate.get('FLOWS:IMPORT_FLOW_ERROR', {value: err.response});
+   let message = this.translate.get('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
     notification( message['value'], 'error' );
   }
 

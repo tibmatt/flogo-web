@@ -32,7 +32,7 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
       // TODO
       //  better handler of invalid JSON?
       //  for the moment, keep the value even though it's not valid JSON, and ensure string format
-      this._errorMessage = this.translate.get('FIELDS-TEXTAREA:INVALID_JSON',{value:this._info.title})['value'];
+      this._errorMessage = this.translate.get('FIELDS-TEXTAREA:INVALID-JSON',{value:this._info.title})['value'];
       this._hasError = true;
       invalidJSON = true;
       this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}) );

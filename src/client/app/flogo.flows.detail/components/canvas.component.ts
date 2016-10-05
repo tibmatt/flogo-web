@@ -172,11 +172,11 @@ export class FlogoCanvasComponent implements  OnChanges {
     private changeFlowDetail($event, property) {
         return new Promise((resolve, reject)=> {
             this._updateFlow(this.flow).then((response: any)=> {
-                let message = this.translate.get('CANVAS:UPDATE_FLOW_SUCCESSFULLY',{value: property});
+                let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
                  notification(message['value'], 'success', 3000);
                  resolve(response);
             }).catch((err)=> {
-                let message = this.translate.get('CANVAS:UPDATE_FLOW_ERROR',{value: property});
+                let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
                 notification(message['value'], 'error');
                 reject(err);
             });
@@ -534,7 +534,7 @@ export class FlogoCanvasComponent implements  OnChanges {
           console.error( err );
           // TODO
           //  more specific error message?
-          let message = this.translate.get('CANVAS:SOMETHING_WRONG');
+          let message = this.translate.get('CANVAS:ERROR-MESSAGE');
           notification(message['value'],'error');
           return err;
         }
@@ -619,19 +619,19 @@ export class FlogoCanvasComponent implements  OnChanges {
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
-                            message = translator.get('CANVAS:FLOW_COMPLETED');
+                            message = translator.get('CANVAS:SUCCESS-MESSAGE-COMPLETED');
                             notification(message['value'], 'success', 3000);
                             done( timer, rsp );
                             break;
                           case '600':
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
-                            message = translator.get('CANVAS:FLOW_HAS_BEEN_CANCELED');
+                            message = translator.get('CANVAS:FLOW-CANCELED');
                             notification(message['value'], 'warning', 3000);
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
-                            message = translator.get('CANVAS:FLOW_IS_FAILED_WITH_ERROR_CODE_700');
+                            message = translator.get('CANVAS:ERROR-MESSAGE-FAILED');
                             notification(message['value'], 'error');
                             done( timer, rsp );
                             break;

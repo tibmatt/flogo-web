@@ -37,7 +37,7 @@ export class FlogoFormBuilderConfigurationBranchComponent {
     var info = {
       name:       'condition',
       id:         branchInfo.id,
-      title:      translator.get('FORM-BUILDER-CONFIGURATION_BRANCH:IF')['value'],
+      title:      translator.get('FORM-BUILDER-CONFIGURATION-BRANCH:IF')['value'],
       value:      branchInfo.condition,
       required:   true,
       placeholder: '',

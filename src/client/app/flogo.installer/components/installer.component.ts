@@ -64,8 +64,8 @@ export class FlogoInstallerComponent implements OnChanges {
     private _triggersAPIs : RESTAPITriggersService,
     private _activitiesAPIs : RESTAPIActivitiesService,
     public translate: TranslateService) {
-    ACTIVITY_TITLE = translate.get('INSTALLER:DOWNLOAD_TILES')['value'];
-    TRIGGER_TITLE = translate.get('INSTALLER:DOWNLOAD_TRIGGERS')['value'];
+    ACTIVITY_TITLE = translate.get('INSTALLER:DOWNLOAD-TILES')['value'];
+    TRIGGER_TITLE = translate.get('INSTALLER:DOWNLOAD-TRIGGERS')['value'];
     this.init();
   }
 
@@ -165,13 +165,13 @@ export class FlogoInstallerComponent implements OnChanges {
           console.group( `[FlogoInstallerComponent] onResponse` );
           if ( response.fail.length ) {
             let parameters = `${_.capitalize( self._installType )}`;
-            let message = this.translate.get('INSTALLER:INSTALLATION_FAILED', {value:parameters});
+            let message = this.translate.get('INSTALLER:ERROR-MESSAGE-INSTALLATION', {value:parameters});
             notification(message['value'], 'error' );
             //notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
             //console.error( `${_.capitalize( self._installType )} [ ${url} ] installation failed.` );
           } else {
             let parameters = `${_.capitalize( self._installType )}`;
-            let message = this.translate.get('INSTALLER:INSTALLED', {value:parameters});
+            let message = this.translate.get('INSTALLER:SUCCESS-MESSAGE-INSTALLATION', {value:parameters});
             notification( message['value'], 'success', 3000 );
             //notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
             //console.log( `${_.capitalize( self._installType )} [ ${url} ] installed.` );
@@ -188,7 +188,7 @@ export class FlogoInstallerComponent implements OnChanges {
         .catch( ( err ) => {
           console.error( err );
           let parameters = `${_.capitalize( self._installType )}`;
-          let message = this.translate.get('INSTALLER:INSTALLATION_FAILED', {value:parameters});
+          let message = this.translate.get('INSTALLER:ERROR-MESSAGE-INSTALLATION', {value:parameters});
           notification(message['value'], 'error' );
           self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
           console.groupEnd();

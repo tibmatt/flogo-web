@@ -870,7 +870,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleUpdateNodeMenus( nodeMenus : any ) {
     let diagram = this;
-    let textAddBranch = this.translate.get('DIAGRAM:ADD_BRANCH')['value'];
+    let textAddBranch = this.translate.get('DIAGRAM:ADD-BRANCH')['value'];
     let textTransform = this.translate.get('DIAGRAM:TRANSFORM')['value'];
     let textDelete = this.translate.get('DIAGRAM:DELETE')['value'];
 

@@ -44,9 +44,9 @@ export class FlogoInstallerBaseComponent implements OnChanges {
     return Promise.resolve( [
       translator.get('INSTALLER:REQUESTS')['value'],
       translator.get('INSTALLER:OPTIMIZATIONS')['value'],
-      translator.get('INSTALLER:CONNECT_TO_DEVICES')['value'],
-      translator.get('INSTALLER:FRAMEWORK_ADAPTORS')['value'],
-      translator.get('INSTALLER:WEB_ADAPTORS')['value'],
+      translator.get('INSTALLER:CONNECT-TO-DEVICES')['value'],
+      translator.get('INSTALLER:FRAMEWORK-ADAPTORS')['value'],
+      translator.get('INSTALLER:WEB-ADAPTORS')['value'],
       translator.get('INSTALLER:UNCATEGORIZED')['value']
     ] );
   }
