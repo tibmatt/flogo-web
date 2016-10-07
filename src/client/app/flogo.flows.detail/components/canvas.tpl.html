@@ -23,8 +23,7 @@
                 </ul>
               </li>
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">Make a copy</a></li>
-              <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportFlow()"><i class="fa fa-cloud-download fa-fw"></i>Export for CLI</a></li>
-              <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportTrigger()"><i class="fa fa-cloud-download fa-fw"></i>Export trigger</a></li>
+              <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportTriggerAndFlow()"><i class="fa fa-cloud-download fa-fw"></i>Export for CLI</a></li>
               <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>Export for web UI</a></li>
               <li class="flogo-flow-detail-menu-item"><a (click)="activateInstructions($event)"><i class="fa fa-question-circle fa-fw"></i>Show instructions</a></li>
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">Delete</a></li>

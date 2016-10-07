@@ -893,17 +893,32 @@ export class FlogoCanvasComponent implements  OnChanges {
       return this._exportTrigger.bind(this);
   }
 
+  exportTriggerAndFlow() {
+      return this._exportTriggerAndFlow.bind(this);
+  }
+
+  private _exportTriggerAndFlow()   {
+      let flow = this._exportFlow();
+      let trigger = this._exportTrigger();
+
+      return new Promise((resolve, reject) => {
+          Promise.all([trigger, flow]).then((values) => {
+              resolve(values);
+          });
+      });
+  }
+
   private _exportFlow() {
     return new Promise((resolve, reject) => {
       let jsonFlow = flogoFlowToJSON( this.flow );
-      resolve(jsonFlow.flow);
+      return resolve({fileName: 'flow.json', data:jsonFlow.flow});
     });
   }
 
   private _exportTrigger()  {
       return new Promise((resolve, reject) => {
           let jsonTrigger = triggerFlowToJSON(this.flow)
-          resolve(jsonTrigger);
+          resolve({fileName:'trigger.json', data:jsonTrigger});
       });
   }
 
