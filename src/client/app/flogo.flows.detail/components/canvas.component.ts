@@ -885,13 +885,6 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
   }
 
-  exportFlow () {
-    return this._exportFlow.bind(this);
-  }
-
-  exportTrigger()   {
-      return this._exportTrigger.bind(this);
-  }
 
   exportTriggerAndFlow() {
       return this._exportTriggerAndFlow.bind(this);
@@ -902,7 +895,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       let trigger = this._exportTrigger();
 
       return new Promise((resolve, reject) => {
-          Promise.all([trigger, flow]).then((values) => {
+          Promise.all([flow, trigger]).then((values) => {
               resolve(values);
           });
       });

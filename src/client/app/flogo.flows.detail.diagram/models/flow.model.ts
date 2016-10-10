@@ -52,10 +52,14 @@ interface flowToJSON_Flow {
   flow : flowToJSON_FlowInfo;
 }
 
-interface triggerToJSON_Flow {
+interface triggerToJSON_TriggerInfo {
   name: string,
   settings: any,
   endpoints: any
+}
+
+interface triggerToJSON_Trigger {
+  triggers: triggerToJSON_TriggerInfo[]
 }
 
 interface flowToJSON_FlowInfo {
@@ -96,32 +100,34 @@ interface flowToJSON_InputFlow {
   [key : string] : any;
 }
 
-export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : any {
-       let result = {}, trigger:any;
+export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : triggerToJSON_Trigger {
+       let result:triggerToJSON_Trigger, rootTask:any;
 
        _.forOwn(flow.items, function (value, key) {
           if(value.type == FLOGO_TASK_TYPE.TASK_ROOT) {
-              trigger = _.cloneDeep(value);
+              rootTask = _.cloneDeep(value);
               return false;
           } else {
             return true;
           }
       });
 
-      if(trigger) {
+      if(rootTask) {
           let settings = {};
           let endpoint = {};
           let endpoints = [];
 
-          if(trigger.settings) {
-              trigger.settings.forEach((setting) => {
+          if(rootTask.settings) {
+              rootTask.settings.forEach((setting) => {
                   settings[setting.name] = setting.value;
               });
           }
 
-          if(trigger.endpoint&&trigger.settings) {
-              trigger.endpoint.settings.forEach((setting) => {
+          if(rootTask.endpoint&&rootTask.settings) {
+              rootTask.endpoint.settings.forEach((setting) => {
+                if(setting.value && typeof setting.value !== 'undefined') {
                   endpoint[setting.name] = setting.value;
+                }
               });
           }
 
@@ -131,15 +137,14 @@ export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : any {
               endpoints.push(endpoint);
           }
 
-          result = {
-               triggers: [
-                 {
-                   name: trigger.triggerType,
-                   settings: settings,
-                   endpoints: endpoints
-                 }
-               ]
+          let trigger: triggerToJSON_TriggerInfo;
+          trigger = {
+            name: rootTask.triggerType,
+            settings: settings,
+            endpoints: endpoints
           }
+
+          result = { triggers: [ trigger ] };
       }
 
       return result;
