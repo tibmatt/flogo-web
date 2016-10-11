@@ -79,6 +79,34 @@ function filterFlows(query){
     });
 }
 
+function getIdsInstalledActivities() {
+  return new Promise( (resolve, reject) => {
+    activitiesDBService.allDocs({ include_docs: true })
+      .then( (activities)=> {
+        let all = activities.map((activity)=> {
+          return  {name: activity._id};
+        });
+        resolve(all);
+      }).catch((err)=>{
+          reject(err);
+      });
+  });
+}
+
+function getIdsInstalledTriggers() {
+  return new Promise( (resolve, reject) => {
+    triggersDBService.allDocs({ include_docs: true })
+      .then( (activities)=> {
+        let all = activities.map((activity)=> {
+          return  {name: activity._id};
+        });
+        resolve(all);
+      }).catch((err)=>{
+      reject(err);
+    });
+  });
+}
+
 function createFlow(flowObj){
   return new Promise((resolve, reject)=>{
     _dbService.create(flowObj).then((response)=>{
@@ -332,6 +360,22 @@ function * importFlowFromJson( next ) {
         this.throw( 400, 'Invalid JSON data.' );
       }
 
+      try {
+        let activities = yield getIdsInstalledActivities();
+        let triggers  = yield getIdsInstalledTriggers();
+
+        let tilesMainFlow = yield getTilesFromFlowItems(_.get(imported, 'items', []));
+        let tilesErrorFlow = yield getTilesFromFlowItems(_.get(imported, 'errorHandler.items', []));
+
+        let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
+          return elem.name + elem.type;
+        });
+
+      } catch(err) {
+        this.throw(err);
+      }
+
+
       // create the flow with the parsed imported data
       let createFlowResult;
       try {
@@ -350,6 +394,37 @@ function * importFlowFromJson( next ) {
   }
 
   yield next;
+}
+
+function getTilesFromFlowItems(items) {
+
+  return new Promise( (resolve, reject) => {
+    let tiles = [];
+
+    for(var key in items)  {
+      let item = items[key];
+
+      if(item.type == FLOGO_TASK_TYPE.TASK_ROOT || item.type == FLOGO_TASK_TYPE.TASK) {
+        if(item.triggerType&&item.triggerType=='__error-trigger') {
+          console.log('Ignoring error trigger')
+        }else {
+          let tile = {
+              type: item.type,
+              name: item.triggerType || item.activityType }
+            ;
+          let index = tiles.findIndex((obj)=> {
+            return tile.type == obj.type && tile.name == obj.name;
+          });
+          if(index == -1) {
+            tiles.push(tile);
+          }
+        }
+
+      }
+    }
+    resolve(tiles);
+  });
+
 }
 
 /**
