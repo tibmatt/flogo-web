@@ -894,11 +894,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       let flow = this._exportFlow();
       let trigger = this._exportTrigger();
 
-      return new Promise((resolve, reject) => {
-          Promise.all([flow, trigger]).then((values) => {
-              resolve(values);
-          });
-      });
+      return Promise.all([trigger, flow]);
   }
 
   private _exportFlow() {

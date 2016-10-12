@@ -18,9 +18,6 @@ export class JsonDownloader {
   }
 
   ngOnInit() {
-    this._link = document.createElement('a');
-    this._link.setAttribute('download', 'flow.json');
-    this._link.style.display = 'none';
   }
 
   onClick() {
@@ -30,6 +27,11 @@ export class JsonDownloader {
 
           if(result) {
               outputs = (result.constructor == Array) ? result : [result];
+
+              this._link = document.createElement('a');
+              this._link.setAttribute('download', 'flow.json');
+              this._link.style.display = 'none';
+              document.body.appendChild(this._link);
           }
 
           outputs.forEach((output)=> {
@@ -42,12 +44,12 @@ export class JsonDownloader {
               if (!('download' in this._link)) {
                   this._link.setAttribute('target', '_blank');
               }
-              document.body.appendChild(this._link);
               this._link.click();
-              document.body.removeChild(this._link);
           })
 
-
+          if(result) {
+              document.body.removeChild(this._link);
+          }
 
       });
   }
