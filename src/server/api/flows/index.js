@@ -368,25 +368,17 @@ function * importFlowFromJson( next ) {
 
       let activities = yield getActivities();
       let triggers  = yield getTriggers();
+      let validateErrors = [];
 
-      let errors = validateTriggersAndActivities(imported, triggers, activities);
-      if(errors.length) {
-        let errorMessage = 'The following triggers/activities are not installed on design time server:';
-        let tiles = ''
-        errors.forEach((item) => {
-          if(tiles) {
-            tiles += ',';
-          }
-          tiles += item.name;
-        });
-        if (tiles) {
-          errorMessage += '[' + tiles + ']';
-        }
-
+      try {
+        validateErrors = validateTriggersAndActivities(imported, triggers, activities);
+      }catch (err) {
+        this.throw(err);
+      }
+      if(validateErrors.length) {
+        let errorMessage = `Error - The following triggers/activities are not installed on design time server: [${validateErrors.join(", ")}]`;
         this.throw(400, errorMessage);
       }
-
-
 
       // create the flow with the parsed imported data
       let createFlowResult;
@@ -412,22 +404,12 @@ function validateTriggersAndActivities (flow, triggers, activities) {
   let errors = [];
 
   try {
-
     let installedTiles = triggers.concat(activities);
-
     let tilesMainFlow = getTilesFromFlow(_.get(flow, 'items', []));
     let tilesErrorFlow = getTilesFromFlow(_.get(flow, 'errorHandler.items', []));
-
     let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
       return elem.name + elem.type;
     });
-
-    console.log('activities....');
-    console.log(activities);
-    console.log('triggers....');
-    console.log(triggers);
-    console.log('all tiles in flow....');
-    console.log(allTilesFlow);
 
     allTilesFlow.forEach( (tile) => {
       let index = installedTiles.findIndex((installed)=> {
@@ -435,12 +417,9 @@ function validateTriggersAndActivities (flow, triggers, activities) {
       });
 
       if(index == -1) {
-        errors.push(tile);
+        errors.push(tile.name);
       }
     });
-    console.log('errors...');
-    console.log(errors);
-
   } catch(err) {
     this.throw(err);
   }
