@@ -38,7 +38,7 @@ import {
 } from '../../../common/utils';
 
 import { Contenteditable, JsonDownloader } from '../../../common/directives';
-import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
+import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 
 interface HandlerInfo {
@@ -885,15 +885,30 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
   }
 
-  exportFlow () {
-    return this._exportFlow.bind(this);
+
+  exportTriggerAndFlow() {
+      return this._exportTriggerAndFlow.bind(this);
+  }
+
+  private _exportTriggerAndFlow()   {
+      let flow = this._exportFlow();
+      let trigger = this._exportTrigger();
+
+      return Promise.all([trigger, flow]);
   }
 
   private _exportFlow() {
     return new Promise((resolve, reject) => {
       let jsonFlow = flogoFlowToJSON( this.flow );
-      resolve(jsonFlow.flow);
+      return resolve({fileName: 'flow.json', data:jsonFlow.flow});
     });
+  }
+
+  private _exportTrigger()  {
+      return new Promise((resolve, reject) => {
+          let jsonTrigger = triggerFlowToJSON(this.flow)
+          resolve({fileName:'trigger.json', data:jsonTrigger});
+      });
   }
 
   private _addTriggerFromDiagram( data : any, envelope : any ) {
