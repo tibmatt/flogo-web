@@ -79,12 +79,15 @@ function filterFlows(query){
     });
 }
 
-function getIdsInstalledActivities() {
+function getActivities() {
   return new Promise( (resolve, reject) => {
     activitiesDBService.allDocs({ include_docs: true })
       .then( (activities)=> {
         let all = activities.map((activity)=> {
-          return  {name: activity._id};
+          return  {
+            name: activity._id,
+            type: FLOGO_TASK_TYPE.TASK
+          };
         });
         resolve(all);
       }).catch((err)=>{
@@ -93,12 +96,15 @@ function getIdsInstalledActivities() {
   });
 }
 
-function getIdsInstalledTriggers() {
+function getTriggers() {
   return new Promise( (resolve, reject) => {
     triggersDBService.allDocs({ include_docs: true })
       .then( (activities)=> {
         let all = activities.map((activity)=> {
-          return  {name: activity._id};
+          return  {
+            name: activity._id,
+            type: FLOGO_TASK_TYPE.TASK_ROOT
+          };
         });
         resolve(all);
       }).catch((err)=>{
@@ -360,20 +366,26 @@ function * importFlowFromJson( next ) {
         this.throw( 400, 'Invalid JSON data.' );
       }
 
-      try {
-        let activities = yield getIdsInstalledActivities();
-        let triggers  = yield getIdsInstalledTriggers();
+      let activities = yield getActivities();
+      let triggers  = yield getTriggers();
 
-        let tilesMainFlow = yield getTilesFromFlowItems(_.get(imported, 'items', []));
-        let tilesErrorFlow = yield getTilesFromFlowItems(_.get(imported, 'errorHandler.items', []));
-
-        let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
-          return elem.name + elem.type;
+      let errors = validateTriggersAndActivities(imported, triggers, activities);
+      if(errors.length) {
+        let errorMessage = 'The following triggers/activities are not installed on design time server:';
+        let tiles = ''
+        errors.forEach((item) => {
+          if(tiles) {
+            tiles += ',';
+          }
+          tiles += item.name;
         });
+        if (tiles) {
+          errorMessage += '[' + tiles + ']';
+        }
 
-      } catch(err) {
-        this.throw(err);
+        this.throw(400, errorMessage);
       }
+
 
 
       // create the flow with the parsed imported data
@@ -396,9 +408,47 @@ function * importFlowFromJson( next ) {
   yield next;
 }
 
-function getTilesFromFlowItems(items) {
+function validateTriggersAndActivities (flow, triggers, activities) {
+  let errors = [];
 
-  return new Promise( (resolve, reject) => {
+  try {
+
+    let installedTiles = triggers.concat(activities);
+
+    let tilesMainFlow = getTilesFromFlow(_.get(flow, 'items', []));
+    let tilesErrorFlow = getTilesFromFlow(_.get(flow, 'errorHandler.items', []));
+
+    let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
+      return elem.name + elem.type;
+    });
+
+    console.log('activities....');
+    console.log(activities);
+    console.log('triggers....');
+    console.log(triggers);
+    console.log('all tiles in flow....');
+    console.log(allTilesFlow);
+
+    allTilesFlow.forEach( (tile) => {
+      let index = installedTiles.findIndex((installed)=> {
+        return installed.name == tile.name && installed.type == tile.type;
+      });
+
+      if(index == -1) {
+        errors.push(tile);
+      }
+    });
+    console.log('errors...');
+    console.log(errors);
+
+  } catch(err) {
+    this.throw(err);
+  }
+
+  return errors;
+}
+
+function getTilesFromFlow(items) {
     let tiles = [];
 
     for(var key in items)  {
@@ -410,8 +460,9 @@ function getTilesFromFlowItems(items) {
         }else {
           let tile = {
               type: item.type,
-              name: item.triggerType || item.activityType }
-            ;
+              name: item.triggerType || item.activityType,
+              homepage: item.homepage || ''
+          };
           let index = tiles.findIndex((obj)=> {
             return tile.type == obj.type && tile.name == obj.name;
           });
@@ -422,8 +473,8 @@ function getTilesFromFlowItems(items) {
 
       }
     }
-    resolve(tiles);
-  });
+
+  return tiles;
 
 }
 
