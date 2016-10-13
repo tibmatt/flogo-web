@@ -17,6 +17,9 @@
     },
     'ng2-bs3-modal': {
       defaultExtension: false
+    },
+    'ng2-translate': {
+      defaultExtension: false
     }
   };
 
