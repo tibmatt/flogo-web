@@ -375,9 +375,9 @@ function * importFlowFromJson( next ) {
       }catch (err) {
         this.throw(err);
       }
-      if(validateErrors.length) {
-        let errorMessage = `Error - The following triggers/activities are not installed on design time server: [${validateErrors.join(", ")}]`;
-        this.throw(400, errorMessage);
+      if(validateErrors.hasErrors) {
+        let message = getMessageNotInstalled(validateErrors.triggers, validateErrors.activities);
+        this.throw(400, message);
       }
 
       // create the flow with the parsed imported data
@@ -400,8 +400,32 @@ function * importFlowFromJson( next ) {
   yield next;
 }
 
+function getMessageNotInstalled(triggers, activities) {
+  let messageTriggers = "", messageActivities="";
+  let isSingular  = true;
+
+  if(triggers.length) {
+    messageTriggers  = `trigger "${triggers.join(", ")}"` ;
+  }
+
+  if(activities.length) {
+    if(activities.length > 1) {
+      isSingular = false;
+    }
+    messageActivities   = `${isSingular ? "activity" : "activities"} "${activities.join(", ")}"` ;
+  }
+
+  if(messageTriggers && messageActivities) {
+    isSingular = false;
+  }
+  let message = `${messageTriggers}${ messageTriggers && messageActivities ? " and " + messageActivities : messageActivities}` ;
+  let returnMessage =  `The flow could not be imported, the ${message} ${isSingular ? 'is' : 'are'} not installed`;
+
+  return returnMessage;
+}
+
 function validateTriggersAndActivities (flow, triggers, activities) {
-  let errors = [];
+  let validate = { activities: [], triggers: [], hasErrors: false};
 
   try {
     let installedTiles = triggers.concat(activities);
@@ -417,14 +441,19 @@ function validateTriggersAndActivities (flow, triggers, activities) {
       });
 
       if(index == -1) {
-        errors.push(tile.name);
+        validate.hasErrors = true;
+        if(tile.type == FLOGO_TASK_TYPE.TASK_ROOT) {
+          validate.triggers.push(tile.name);
+        } else {
+          validate.activities.push(tile.name);
+        }
       }
     });
   } catch(err) {
     this.throw(err);
   }
 
-  return errors;
+  return validate;
 }
 
 function getTilesFromFlow(items) {
