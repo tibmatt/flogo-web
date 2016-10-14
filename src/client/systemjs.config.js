@@ -38,6 +38,8 @@
       '@angular': '/node_modules/@angular',
       'ng2-translate': '/node_modules/ng2-translate'
     };
+    
+    delete packages['ng2-translate'];
 
   } else {
 
