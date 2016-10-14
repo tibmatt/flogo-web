@@ -5,6 +5,7 @@ import { TileInOutInfo } from '../models/tile-in-out-info.model';
 const NESTABLE_ATTRIBUTE_TYPES = [
   FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT].toLowerCase(),
   FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS].toLowerCase(),
+  FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.ANY].toLowerCase()
 ];
 
 export function mappingValidator(tileInfo:TileInOutInfo, mapping:any) {

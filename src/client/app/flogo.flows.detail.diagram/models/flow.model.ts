@@ -52,6 +52,16 @@ interface flowToJSON_Flow {
   flow : flowToJSON_FlowInfo;
 }
 
+interface triggerToJSON_TriggerInfo {
+  name: string,
+  settings: any,
+  endpoints: any
+}
+
+interface triggerToJSON_Trigger {
+  triggers: triggerToJSON_TriggerInfo[]
+}
+
 interface flowToJSON_FlowInfo {
   type : number,
   name : string;
@@ -88,6 +98,56 @@ interface flowToJSON_InputFlow {
     [key : string] : any;
   }[];
   [key : string] : any;
+}
+
+export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : triggerToJSON_Trigger {
+       let result:triggerToJSON_Trigger, rootTask:any;
+
+       _.forOwn(flow.items, function (value, key) {
+          if(value.type == FLOGO_TASK_TYPE.TASK_ROOT) {
+              rootTask = _.cloneDeep(value);
+              return false;
+          } else {
+            return true;
+          }
+      });
+
+      if(rootTask) {
+          let settings = {};
+          let endpoint = {};
+          let endpoints = [];
+
+          if(rootTask.settings) {
+              rootTask.settings.forEach((setting) => {
+                  settings[setting.name] = setting.value;
+              });
+          }
+
+          if(rootTask.endpoint&&rootTask.settings) {
+              rootTask.endpoint.settings.forEach((setting) => {
+                if(setting.value && typeof setting.value !== 'undefined') {
+                  endpoint[setting.name] = setting.value;
+                }
+              });
+          }
+
+          if(_.isEmpty(endpoint)) {
+              endpoints = null;
+          } else {
+              endpoints.push(endpoint);
+          }
+
+          let trigger: triggerToJSON_TriggerInfo;
+          trigger = {
+            name: rootTask.triggerType,
+            settings: settings,
+            endpoints: endpoints
+          }
+
+          result = { triggers: [ trigger ] };
+      }
+
+      return result;
 }
 
 /**
