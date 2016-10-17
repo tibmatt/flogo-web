@@ -370,6 +370,8 @@ function * importFlowFromJson( next ) {
 
       try {
         validateErrors = validateTriggersAndActivities(imported, triggers, activities);
+        console.log('validate errors is');
+        console.log(validateErrors);
       }catch (err) {
         this.throw(err);
       }
@@ -409,12 +411,20 @@ function validateTriggersAndActivities (flow, triggers, activities) {
   let validate = { activities: [], triggers: [], hasErrors: false};
 
   try {
+    console.log('triggers are');
+    console.log(triggers);
+
+    console.log('activities');
+    console.log(activities);
+
     let installedTiles = triggers.concat(activities);
     let tilesMainFlow = getTilesFromFlow(_.get(flow, 'items', []));
     let tilesErrorFlow = getTilesFromFlow(_.get(flow, 'errorHandler.items', []));
     let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
       return elem.name + elem.type;
     });
+    console.log('All tiles flow');
+    console.log(allTilesFlow);
 
     allTilesFlow.forEach( (tile) => {
       let index = installedTiles.findIndex((installed)=> {

@@ -38,8 +38,20 @@ export class FlogoFlowsImport {
   getErrorMessageActivitiesNotInstalled(errors) {
     let errorMessage = '';
     let details = errors.details;
+    let errorTriggers = '';
+    let errorActivities = '';
 
-    errorMessage = `Flow could not be imported, the following triggers/activities are not installed "${details.triggers.concat(details.activities).join(', ')}"`;
+    if(details.triggers.length) {
+      errorTriggers = ` Trigger: "${details.triggers.join(',')}"`;
+    }
+
+    if(details.activities.length) {
+      if(errorTriggers) {
+        errorActivities += ",";
+      }
+      errorActivities += `Activities: "${details.activities.join(',')}"`;
+    }
+    errorMessage = `Flow could not be imported, some triggers/activities are not installed.${errorTriggers} ${errorActivities}`;
 
     return errorMessage;
   }
