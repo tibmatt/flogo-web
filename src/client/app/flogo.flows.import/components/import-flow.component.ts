@@ -35,6 +35,15 @@ export class FlogoFlowsImport {
     // fileElm.click();
   }
 
+  getErrorMessageActivitiesNotInstalled(errors) {
+    let errorMessage = '';
+    let details = errors.details;
+
+    errorMessage = `Flow could not be imported, the following triggers/activities are not installed "${details.triggers.concat(details.activities).join(', ')}"`;
+
+    return errorMessage;
+  }
+
   private onFileChange( evt : any ) {
     let importFile = <File> _.get( evt, 'target.files[0]' );
 
@@ -46,8 +55,19 @@ export class FlogoFlowsImport {
           this.onSuccess.emit( result );
         } )
         .catch( ( err : any )=> {
-          console.error( err );
-          this.onError.emit( err );
+          let objError;
+          try {
+            objError = JSON.parse(err.response);
+          }catch(exc) {
+            objError = {};
+          }
+
+          if(objError.type == 1) {
+            let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
+            this.onError.emit( {response: errorMessage} );
+          } else {
+            this.onError.emit( err );
+          }
         } );
     }
   }

@@ -345,9 +345,7 @@ function * importFlowFromJson( next ) {
       console.error( '[ERROR]: ', importedFile );
       this.throw( 400, 'Unsupported file type: ' + importedFile.type + '; Support application/json only.' );
     } else {
-
       /* processing the imported file */
-
       let imported;
 
       // read file data into string
@@ -376,52 +374,35 @@ function * importFlowFromJson( next ) {
         this.throw(err);
       }
       if(validateErrors.hasErrors) {
-        let message = getMessageNotInstalled(validateErrors.triggers, validateErrors.activities);
-        this.throw(400, message);
+        let details = {
+          type: 1,
+          message: 'Flow could not be imported, missing triggers/activities',
+          details: {
+            activities: validateErrors.activities,
+            triggers: validateErrors.triggers
+          }
+        };
+        this.response.status = 400;
+        this.body = details;
+        //this.throw(400, details);
+      } else {
+        // create the flow with the parsed imported data
+        let createFlowResult;
+        try {
+          createFlowResult = yield createFlow( imported );
+        } catch ( err ) {
+          console.error( '[ERROR]: ', err );
+          this.throw( 500, 'Fail to create flow.', { expose : true } );
+        }
+        this.body = createFlowResult;
       }
-
-      // create the flow with the parsed imported data
-      let createFlowResult;
-      try {
-        createFlowResult = yield createFlow( imported );
-      } catch ( err ) {
-        console.error( '[ERROR]: ', err );
-        this.throw( 500, 'Fail to create flow.', { expose : true } );
-      }
-
-      this.body = createFlowResult;
     }
-
   } else {
     console.log( this.request.body.files );
     this.throw( 400, 'Invalid file.' );
   }
 
   yield next;
-}
-
-function getMessageNotInstalled(triggers, activities) {
-  let messageTriggers = "", messageActivities="";
-  let isSingular  = true;
-
-  if(triggers.length) {
-    messageTriggers  = `trigger "${triggers.join(", ")}"` ;
-  }
-
-  if(activities.length) {
-    if(activities.length > 1) {
-      isSingular = false;
-    }
-    messageActivities   = `${isSingular ? "activity" : "activities"} "${activities.join(", ")}"` ;
-  }
-
-  if(messageTriggers && messageActivities) {
-    isSingular = false;
-  }
-  let message = `${messageTriggers}${ messageTriggers && messageActivities ? " and " + messageActivities : messageActivities}` ;
-  let returnMessage =  `The flow could not be imported, the ${message} ${isSingular ? 'is' : 'are'} not installed`;
-
-  return returnMessage;
 }
 
 function validateTriggersAndActivities (flow, triggers, activities) {
