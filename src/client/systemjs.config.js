@@ -19,7 +19,7 @@
       defaultExtension: false
     },
     'ng2-translate': {
-      defaultExtension: false
+      defaultExtension: 'js'
     }
   };
 
@@ -29,17 +29,20 @@
 
   if(isDevEnv) {
     paths = {
-      'main': '/main'
+      'main': '/main',
+      'n:*': '/node_modules/*'
     };
 
     // map tells the System loader where to look for things
     // load angular from node_modules folder
     map = {
-      '@angular': '/node_modules/@angular',
-      'ng2-translate': '/node_modules/ng2-translate'
+      '@angular': 'n:@angular',
+      'ng2-translate': 'n:ng2-translate'
     };
-    
-    delete packages['ng2-translate'];
+
+    packages['ng2-translate'].main =  'bundles/ng2-translate';
+
+    //delete packages['ng2-translate'];
 
   } else {
 

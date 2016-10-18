@@ -52,7 +52,7 @@ export const CONFIG = {
 
       'node_modules/rxjs/bundles/Rx.js',
       'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
-      'node_modules/ng2-translate/ng2-translate.js',
+      //'node_modules/ng2-translate/bundles/ng2-translate.js',
 
       'dev.env.js',
       'systemjs.config.js'
