@@ -6,6 +6,7 @@ import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
+var cors =  require('koa-cors');
 
 import { inspectObj } from './common/utils';
 import {config, triggersDBService, activitiesDBService} from './config/app-config';
@@ -78,6 +79,8 @@ function initServer() {
     app = koa();
 
     let port = config.app.port;
+
+    app.use(cors());
 
     api( app, router );
 
