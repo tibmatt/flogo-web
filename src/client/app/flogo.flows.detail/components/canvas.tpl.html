@@ -6,27 +6,29 @@
 
       <header class="flogo-flow-detail-header col-sm-10">
         <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
-        <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description" placeholder="Add flow's description" (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+        <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
+           placeholder="{{ translate.get('CANVAS:ADD-FLOW-DESCRIPTION').value }}"
+           (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
 
       <div class="col-sm-2">
-        
+
         <div class="flogo-flow-detail-menu">
           <div class="flogo-flow-detail-menu-list-wrapper">
             <ul class="flogo-flow-detail-menu-list">
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-pencil fa-fw"></i>
-                <a [href]="downloadLink" download>Build</a>
+                <a [href]="downloadLink" download>{{ 'CANVAS:BUILD' | translate }}</a>
                 <ul class="flogo-flow-detail-menu-item-choices">
-                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=386'"><label class="flogo-flow-detail-menu-item-choice-text"><span>x86/Linux</span></label></a></li>
-                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=arm'"><label class="flogo-flow-detail-menu-item-choice-text"><span>ARM/Linux</span></label></a></li>
-                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=darwin&arch=amd64'"><label class="flogo-flow-detail-menu-item-choice-text"><span>Darwin/OSX</span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=386'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:X86-LINUX' | translate }} </span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=linux&arch=arm'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:ARM-LINUX' | translate }}</span></label></a></li>
+                  <li class="flogo-flow-detail-menu-item-choice"><a [href]="downloadLink+'?os=darwin&arch=amd64'"><label class="flogo-flow-detail-menu-item-choice-text"><span>{{ 'CANVAS:DARWIN-OSX' | translate }}</span></label></a></li>
                 </ul>
               </li>
-              <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">Make a copy</a></li>
-              <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportTriggerAndFlow()"><i class="fa fa-cloud-download fa-fw"></i>Export for CLI</a></li>
-              <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>Export for web UI</a></li>
-              <li class="flogo-flow-detail-menu-item"><a (click)="activateInstructions($event)"><i class="fa fa-question-circle fa-fw"></i>Show instructions</a></li>
-              <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">Delete</a></li>
+              <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">{{ 'CANVAS:COPY' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportTriggerAndFlow()"><i class="fa fa-cloud-download fa-fw"></i> {{ 'CANVAS:EXPORT-FOR-CLI' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>{{ 'CANVAS:EXPORT-FOR-WEB-UI' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><a (click)="activateInstructions($event)"><i class="fa fa-question-circle fa-fw"></i>{{ 'CANVAS:SHOW-INSTRUCTIONS' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">{{ 'CANVAS:DELETE' | translate }}</a></li>
             </ul>
           </div>
         </div>
@@ -45,6 +47,7 @@
 
 
     <!-- the mock section below should be removed later-->
+    <!--
     <section class="container-fluid" style="display: none; width: 100%;">
       <section class="row">
         <header>
@@ -81,7 +84,6 @@
         </div>
 
         <div class="col-xs-12">
-          <!-- TODO: replace [innerHTML] with [textContent] https://github.com/angular/angular/issues/8413 -->
           <pre><code [innerHTML]="_steps | json"></code></pre>
         </div>
 
@@ -96,12 +98,12 @@
         </div>
 
         <div class="col-xs-12">
-          <!-- TODO: replace [innerHTML] with [textContent] https://github.com/angular/angular/issues/8413 -->
           <pre><code [innerHTML]="_mockProcess | json"></code></pre>
         </div>
 
       </section>
-    </section>
+      </section>
+    -->
 
 
     <flogo-flows-detail-error-panel>

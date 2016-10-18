@@ -1,4 +1,5 @@
 import { Component, OnChanges, SimpleChange, EventEmitter } from '@angular/core';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component( {
   selector : 'flogo-installer-list-view-item',
@@ -7,7 +8,8 @@ import { Component, OnChanges, SimpleChange, EventEmitter } from '@angular/core'
   inputs : [ 'item: flogoItem' ],
   outputs : [ 'onItemAction: flogoOnItemAction' ],
   templateUrl : 'item.tpl.html',
-  styleUrls : [ 'item.component.css' ]
+  styleUrls : [ 'item.component.css' ],
+  pipes: [TranslatePipe]
 } )
 export class FlogoInstallerListViewItemComponent implements OnChanges {
 
@@ -15,7 +17,7 @@ export class FlogoInstallerListViewItemComponent implements OnChanges {
   private _item : any;
   private onItemAction = new EventEmitter();
 
-  constructor() {
+  constructor(public translate: TranslateService) {
     this.init();
   }
 
@@ -57,12 +59,13 @@ export class FlogoInstallerListViewItemComponent implements OnChanges {
 /* utility functions */
 
 function itemToViewItem( item : any ) {
+
   let viewItem = {
     displayName : item.title || item.name,
     description : item.description,
     version : item.version,
     icon : '',
-    author : `Created by ${item.author}`,
+    author : `${item.author}`,
     createTime : moment( item.createTime )
       .fromNow(),
     isInstalled : item.isInstalled

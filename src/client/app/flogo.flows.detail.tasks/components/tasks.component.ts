@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { RouteParams } from '@angular/router-deprecated';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 import {
   FlogoFlowsDetailTasksInstallComponent
@@ -14,7 +15,8 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
     moduleId : module.id,
     directives: [FlogoFlowsDetailTasksInstallComponent],
     templateUrl : 'tasks.tpl.html',
-    styleUrls : [ 'tasks.component.css' ]
+    styleUrls : [ 'tasks.component.css' ],
+    pipes: [TranslatePipe]
   }
 )
 
@@ -27,7 +29,10 @@ export class FlogoFlowsDetailTasks {
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( private _postService : PostService, private _routeParams : RouteParams, private _restAPIActivitiesService: RESTAPIActivitiesService) {
+  constructor( private _postService : PostService,
+               private _routeParams : RouteParams,
+               private _restAPIActivitiesService: RESTAPIActivitiesService,
+               public translate: TranslateService) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     console.log( this._routeParams );

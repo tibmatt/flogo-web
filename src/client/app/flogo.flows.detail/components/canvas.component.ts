@@ -11,6 +11,7 @@ import {TransformComponent as FlogoTransformComponent} from '../../flogo.transfo
 import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component';
 import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 
 import {
@@ -52,7 +53,8 @@ interface HandlerInfo {
   directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoInstructionsComponent ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
-  providers: [ FlogoModal ]
+  providers: [ FlogoModal ],
+  pipes: [TranslatePipe]
 } )
 @CanActivate((next) => {
   return isConfigurationLoaded();
@@ -106,13 +108,16 @@ export class FlogoCanvasComponent implements  OnChanges {
   public downloadLink: string;
   public isInstructionsActivated: boolean  = false;
 
-  constructor(private _postService: PostService,
-              private _restAPIService: RESTAPIService,
-              private _restAPIFlowsService: RESTAPIFlowsService,
-              private _router: Router,
-              private _flogoModal: FlogoModal,
-              private _routerParams: RouteParams) {
-    this._hasUploadedProcess = false;
+  constructor(
+    private _postService: PostService,
+    private _restAPIService: RESTAPIService,
+    private _restAPIFlowsService: RESTAPIFlowsService,
+    private _router: Router,
+    private _flogoModal: FlogoModal,
+    private _routerParams: RouteParams,
+    public translate: TranslateService
+  ) {
+    this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
 
     // TODO
@@ -165,13 +170,14 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
     private changeFlowDetail($event, property) {
-
         return new Promise((resolve, reject)=> {
             this._updateFlow(this.flow).then((response: any)=> {
-                notification(`Update flow's ${property} successfully!`, 'success', 3000);
-                resolve(response);
+                let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
+                 notification(message['value'], 'success', 3000);
+                 resolve(response);
             }).catch((err)=> {
-                notification(`Update flow's ${property} error: ${err}`, 'error');
+                let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                notification(message['value'], 'error');
                 reject(err);
             });
         })
@@ -528,7 +534,8 @@ export class FlogoCanvasComponent implements  OnChanges {
           console.error( err );
           // TODO
           //  more specific error message?
-          notification('Ops! something wrong! :(', 'error');
+          let message = this.translate.get('CANVAS:ERROR-MESSAGE');
+          notification(message['value'],'error');
           return err;
         }
       );
@@ -578,11 +585,14 @@ export class FlogoCanvasComponent implements  OnChanges {
               }
               trials++;
 
+              let translator = this.translate;
+
               self._restAPIService.instances.getStatusByInstanceID( processInstanceID )
                 .then(
                   ( rsp : any ) => {
                     ( // logging the response of each trial
                       function ( n : number ) {
+                          let message:any = {};
 
                         switch ( rsp.status ) {
                           case '0':
@@ -609,17 +619,20 @@ export class FlogoCanvasComponent implements  OnChanges {
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
-                            notification('Flow completed! ^_^', 'success', 3000);
+                            message = translator.get('CANVAS:SUCCESS-MESSAGE-COMPLETED');
+                            notification(message['value'], 'success', 3000);
                             done( timer, rsp );
                             break;
                           case '600':
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
-                            notification('Flow has been cancelled.', 'warning', 3000);
+                            message = translator.get('CANVAS:FLOW-CANCELED');
+                            notification(message['value'], 'warning', 3000);
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
-                            notification('Flow is failed with error code 700.', 'error');
+                            message = translator.get('CANVAS:ERROR-MESSAGE-FAILED');
+                            notification(message['value'], 'error');
                             done( timer, rsp );
                             break;
                           case null :

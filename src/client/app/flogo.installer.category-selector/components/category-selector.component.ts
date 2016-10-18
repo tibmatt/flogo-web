@@ -1,4 +1,5 @@
 import { Component, EventEmitter, SimpleChange, OnChanges } from '@angular/core';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component( {
   selector : 'flogo-installer-category-selector',
@@ -7,13 +8,14 @@ import { Component, EventEmitter, SimpleChange, OnChanges } from '@angular/core'
   inputs : [ 'categories: flogoCategories' ],
   outputs : [ 'categorySelected: flogoOnCategorySelected' ],
   templateUrl : 'category-selector.tpl.html',
-  styleUrls : [ 'category-selector.component.css' ]
+  styleUrls : [ 'category-selector.component.css' ],
+  pipes: [TranslatePipe]
 } )
 export class FlogoInstallerCategorySelectorComponent implements OnChanges {
 
   private categorySelected = new EventEmitter();
 
-  constructor() {
+  constructor(public translate: TranslateService) {
     this.init();
   }
 

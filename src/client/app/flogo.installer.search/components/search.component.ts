@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
-const PLACEHOLDER = 'SEARCH';
 
 @Component( {
   selector : 'flogo-installer-search',
@@ -9,15 +9,17 @@ const PLACEHOLDER = 'SEARCH';
   templateUrl : 'search.tpl.html',
   inputs : [ 'query: flogoSearchQuery' ],
   outputs : [ 'queryUpdate: flogoSearchQueryChange' ],
-  styleUrls : [ 'search.component.css' ]
+  styleUrls : [ 'search.component.css' ],
+  pipes: [TranslatePipe]
 } )
 export class FlogoInstallerSearchComponent implements OnChanges {
-  private placeholder = PLACEHOLDER;
+  public placeholder = '';
   private _searchQuery = '';
   private query : string;
   private queryUpdate = new EventEmitter();
 
-  constructor() {
+  constructor(translate: TranslateService) {
+    this.placeholder = translate.get('SEARCH:SEARCH')['value'];
     this.init();
   }
 

@@ -1,9 +1,11 @@
 import {provide, enableProdMode, ComponentRef} from '@angular/core';
+import { HTTP_PROVIDERS, Http } from '@angular/http';
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {APP_BASE_HREF} from '@angular/common'
 import {FlogoAppComponent} from './app/flogo/components/flogo.component';
 import { appInjector } from './common/services/injector.service';
+import { TRANSLATE_PROVIDERS, TranslateService, TranslatePipe, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 
 if(typeof window['DEV'] != 'undefined' && window['DEV']) {
   console.log('Development env ON');
@@ -12,7 +14,13 @@ if(typeof window['DEV'] != 'undefined' && window['DEV']) {
 }
 
 bootstrap(FlogoAppComponent, [
-  ROUTER_PROVIDERS,
+    HTTP_PROVIDERS,
+    ROUTER_PROVIDERS,
+    provide(TranslateLoader, {
+        useFactory: (http: Http) => new TranslateStaticLoader(http, '/i18n', '.json'),
+        deps: [Http]
+    }),
+    TranslateService,
   provide(APP_BASE_HREF, { useValue: '/'})
 ])
 .then((appRef: ComponentRef<any>) => {

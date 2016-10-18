@@ -2,9 +2,10 @@
     <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
     <div class="flogo-flows-welcomeContainer clearfix">
         <div class="flogo-welcome-msg">
-            <p class="flogo-welcomeMsg-header">Welcome back</p>
-            <p class="flogo-welcomeMsg-description">We have got some new instructional videos you can check out that can help you&#46;</p>
-            <a href="http://www.youtube.com" target="_blank"><img src="/assets/svg/flogo.video.icon.svg"> Featured Video tutorial</a>
+
+            <p class="flogo-welcomeMsg-header">{{ 'FLOWS:WELCOME-BACK' | translate }}</p>
+            <p class="flogo-welcomeMsg-description">{{ 'FLOWS:NEW-INSTRUCTIONS' | translate }}</p>
+            <a href="http://www.youtube.com" target="_blank"><img src="/assets/svg/flogo.video.icon.svg"> {{ 'FLOWS:FEATURED-VIDEO-TUTORIAL' | translate }} </a>
         </div>
         <div class="flogo-mascot">
             <img src="/assets/svg/flogo-flynn.png" class="flogo-flows-mascotImg">
@@ -13,7 +14,7 @@
     <div class="flogo-flows-container-header">
         <div class="container-fluid">
             <div class="flogo-flows-container-header-container">
-                <h3 class="flogo-flows-container-title">My Flows</h3>
+                <h3 class="flogo-flows-container-title">{{ 'FLOWS:MY-FLOWS' | translate }}</h3>
             </div>
         </div>
 
@@ -32,7 +33,7 @@
                         <header class="flogo-flows-container-list-detail-name" [title]="flow.name">{{flow.name}}</header>
                         <section class="flogo-flows-container-list-detail-info">
                             <p class="flogo-flows-container-list-detail-description" [title]="flow.description">{{flow.description}}</p>
-                            <i class="flogo-flows-container-list-detail-creatTime">Created {{flow.created_at}}</i>
+                            <i class="flogo-flows-container-list-detail-creatTime"> {{ 'FLOWS:CREATED' | translate:{value:flow.created_at} }} </i>
                         </section>
                     </a>
                     <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow, $event)"></span>
@@ -40,17 +41,4 @@
             </li>
         </ul>
     </div>
-    
 </div>
-<!--
-<footer class="flogo-flows-footerContainer">
-        <div class="flogo-flows-footerText">
-            <p class="flogo-flows-copyright">Copyright &copy; 2016 TIBCO Software Inc. All rights reserved.</p>
-            <div class="flogo-flows-footerPrivacy">
-                <a href="http://www.tibco.com/company/privacy-cma" target="_new" class="flogo-flows-privacyText">Privacy Policy</a>
-                <a href="http://www.tibco.com/company/termsofuse" target="_new" class="flogo-flows-privacyText">Terms of Use</a>
-                <a href="http://www.tibco.com/trademarks" target="_new" class="flogo-flows-privacyText">Trademarks</a>
-            </div>
-        </div>
-    </footer>
-    -->

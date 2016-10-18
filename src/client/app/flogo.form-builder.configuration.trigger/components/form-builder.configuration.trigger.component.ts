@@ -1,4 +1,5 @@
 import {Component, SimpleChange} from '@angular/core';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 import {
   FlogoFormBuilderFieldsRadio as FieldRadio,
@@ -17,6 +18,7 @@ import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.comm
     templateUrl: 'form-builder.configuration.trigger.tpl.html',
     directives: [FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldObject, FieldListBox],
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes'],
+    pipes: [TranslatePipe],
     providers: [FlogoFormBuilderCommon]
 })
 export class FlogoFormBuilderConfigurationTriggerComponent {
@@ -24,7 +26,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
   _attributes: any;
   fields:any;
 
-  constructor(private _commonService: FlogoFormBuilderCommon) {
+  constructor(private _commonService: FlogoFormBuilderCommon, public translate: TranslateService) {
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
