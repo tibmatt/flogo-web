@@ -3,7 +3,7 @@
     <div class="flogo-transform-modal__header" [class.is-delete-open]="showDeleteConfirmation">
       <div class="flogo-transform-header">
         <div class="flogo-transform-header__title">
-          <h2 class="flogo-transform-modal__header-title">Transformation</h2>
+          <h2 class="flogo-transform-modal__header-title">{{ 'TRANSFORM:TRANSFORMATION' | translate }}</h2>
         </div>
         <div class="flogo-transform-header__main-actions">
           <button class="flogo-btn-link flogo-transform-delete-btn" (click)="openDeleteConfirmation($event)">
@@ -11,16 +11,16 @@
           </button>
           <button class="tc-buttons tc-buttons-primary flogo-transform-save-btn"
                   [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
-                  (click)="saveTransform()">Save
+                  (click)="saveTransform()">{{ 'TRANSFORM:SAVE' | translate }}
           </button>
           <div class="flogo-transform-confirm-delete" #deleteContainer>
-            <span class="text">Are you sure?</span>
-            <button class="delete-btn" (click)="deleteTransform()">Yes</button>
-            <button class="delete-btn" (click)="cancelDeleteConfirmation()">No</button>
+            <span class="text">{{ 'TRANSFORM:CONFIRMATION-MESSAGE' | translate }} </span>
+            <button class="delete-btn" (click)="deleteTransform()"> {{ 'TRANSFORM:YES' | translate }} </button>
+            <button class="delete-btn" (click)="cancelDeleteConfirmation()">{{ 'TRANSFORM:NO' | translate }}</button>
           </div>
         </div>
         <button class="flogo-transform-modal__close" (click)="cancel()">
-          <span aria-hidden="true" class="sr-only">Close</span>
+          <span aria-hidden="true" class="sr-only">{{ 'TRANSFORM:CLOSE' | translate }}</span>
         </button>
       </div>
     </div>

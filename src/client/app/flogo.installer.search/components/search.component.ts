@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
-
-const PLACEHOLDER = 'SEARCH';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component( {
   selector : 'flogo-installer-search',
@@ -11,12 +10,13 @@ const PLACEHOLDER = 'SEARCH';
   styleUrls : [ 'search.component.css' ]
 } )
 export class FlogoInstallerSearchComponent implements OnChanges {
-  placeholder = PLACEHOLDER;
+  placeholder = '';
   _searchQuery = '';
   query : string;
   queryUpdate = new EventEmitter();
 
-  constructor() {
+  constructor(_translate: TranslateService) {
+    this.placeholder = _translate.instant('SEARCH:SEARCH');
     this.init();
   }
 

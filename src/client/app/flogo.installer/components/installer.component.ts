@@ -2,14 +2,15 @@ import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@an
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 import { notification } from '../../../common/utils';
 import {
   FLOGO_INSTALLER_STATUS_STANDBY, FLOGO_INSTALLER_STATUS_IDLE,
   FLOGO_INSTALLER_STATUS_INSTALL_FAILED, FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS, FLOGO_INSTALLER_STATUS_INSTALLING
 } from '../constants';
 
-const ACTIVITY_TITLE = 'Download Tiles';
-const TRIGGER_TITLE = 'Download Triggers';
+let ACTIVITY_TITLE = '';
+let TRIGGER_TITLE = '';
 
 @Component( {
   selector : 'flogo-installer',
@@ -46,7 +47,10 @@ export class FlogoInstallerComponent implements OnChanges {
 
   constructor(
     private _triggersAPIs : RESTAPITriggersService,
-    private _activitiesAPIs : RESTAPIActivitiesService ) {
+    private _activitiesAPIs : RESTAPIActivitiesService,
+    private _translate : TranslateService) {
+    ACTIVITY_TITLE = _translate.instant('INSTALLER:DOWNLOAD-TILES');
+    TRIGGER_TITLE = _translate.instant('INSTALLER:DOWNLOAD-TRIGGERS');
     this.init();
   }
 
@@ -145,11 +149,17 @@ export class FlogoInstallerComponent implements OnChanges {
         .then( ( response )=> {
           console.group( `[FlogoInstallerComponent] onResponse` );
           if ( response.fail.length ) {
-            notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
-            console.error( `${_.capitalize( self._installType )} [ ${url} ] installation failed.` );
+            let parameters = `${_.capitalize( self._installType )}`;
+            let message = this._translate.instant('INSTALLER:ERROR-MESSAGE-INSTALLATION', {value:parameters});
+            notification(message, 'error' );
+            //notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
+            //console.error( `${_.capitalize( self._installType )} [ ${url} ] installation failed.` );
           } else {
-            notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
-            console.log( `${_.capitalize( self._installType )} [ ${url} ] installed.` );
+            let parameters = `${_.capitalize( self._installType )}`;
+            let message = this._translate.instant('INSTALLER:SUCCESS-MESSAGE-INSTALLATION', {value:parameters});
+            notification( message, 'success', 3000 );
+            //notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
+            //console.log( `${_.capitalize( self._installType )} [ ${url} ] installed.` );
           }
           console.groupEnd();
           return response;
@@ -162,7 +172,9 @@ export class FlogoInstallerComponent implements OnChanges {
         } )
         .catch( ( err ) => {
           console.error( err );
-          notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
+          let parameters = `${_.capitalize( self._installType )}`;
+          let message = this._translate.instant('INSTALLER:ERROR-MESSAGE-INSTALLATION', {value:parameters});
+          notification(message, 'error' );
           self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
           console.groupEnd();
         } );

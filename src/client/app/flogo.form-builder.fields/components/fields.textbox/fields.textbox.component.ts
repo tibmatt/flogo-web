@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
+import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder-fields-textbox',
@@ -14,8 +15,8 @@ export class FlogoFormBuilderFieldsTextBox  extends FlogoFormBuilderFieldsBase {
   _fieldObserver:any;
 
 
-  constructor() {
-    super();
+  constructor(_translate: TranslateService) {
+    super(_translate);
   }
 
   ngOnInit() {

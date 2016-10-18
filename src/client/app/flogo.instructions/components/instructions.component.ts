@@ -15,8 +15,8 @@ export class FlogoInstructionsComponent implements OnChanges {
     isActivated : boolean;
     onClosedModal = new EventEmitter();
     steps = [
-        {title:'Configure the trigger', description: '', icon: 'instructions-step-1', screenshot:'graphic-1.svg'} ,
-        {title:'Add and configure activities', description: '', icon: 'instructions-step-2', screenshot:'graphic-2.svg'} ,
+        {title:'Configure the trigger', description: '', icon: 'instructions-step-1', screenshot:'graphic-1.jpg'} ,
+        {title:'Add and configure activities', description: '', icon: 'instructions-step-2', screenshot:'graphic-2.jpg'} ,
         {title:'Run and test at any time', description: '', icon: 'instructions-step-3', screenshot:'graphic-3.svg'} ,
         {title:'Build and run', description: '', icon: 'instructions-step-4', screenshot:'graphic-4.svg'}
     ];

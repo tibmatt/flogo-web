@@ -9,6 +9,7 @@ import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
 import {LoadingStatusService} from "../../../common/services/loading-status.service";
+import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-flows',
@@ -16,7 +17,7 @@ import {LoadingStatusService} from "../../../common/services/loading-status.serv
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css']
  })
-export class FlogoFlowsComponent{
+export class FlogoFlowsComponent {
     private _sub: any;
     public flows: any[] = [];
     public isInstructionsActivated:boolean  = false;
@@ -27,7 +28,8 @@ export class FlogoFlowsComponent{
         private _postService: PostService,
         private _flogoModal: FlogoModal,
         private _router: Router,
-        private _loadingStatusService : LoadingStatusService
+        private _loadingStatusService : LoadingStatusService,
+        public translate: TranslateService
     ){
         this.getAllFlows();
         this.initSubscribe();
@@ -76,10 +78,12 @@ export class FlogoFlowsComponent{
                 items: {}
             };
             this._flow.createFlow(_.clone(request)).then((response)=>{
-                notification('Flow was created successfully!', 'success', 3000);
+                let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
+                notification(message, 'success', 3000);
                 resolve(response);
             }).catch((err)=>{
-                notification(`Create flow error: ${err}`, 'error');
+                let message = this.translate.instant('FLOWS:CREATE_FLOW_ERROR', err);
+                notification(message, 'error');
                 reject(err);
             });
         }).then(()=>{
@@ -114,9 +118,11 @@ export class FlogoFlowsComponent{
             if(res) {
                 this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
                     this.getAllFlows();
-                    notification('Flow was deleted successfully!', 'success', 3000);
+                    let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
+                    notification(message, 'success', 3000);
                 }).catch((err)=> {
-                    notification(`Remove flow error: ${err}`, 'error');
+                    let message = this.translate.instant('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', {value:err});
+                    notification(message, 'error');
                 });
             } else {
                 // omit
@@ -145,8 +151,9 @@ export class FlogoFlowsComponent{
     }
 
   onFlowImportSuccess( result : any ) {
-    notification( `Import flow successfully!`, 'success', 3000 );
-    this.getAllFlows();
+      let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-IMPORT');
+      notification( message, 'success', 3000 );
+      this.getAllFlows();
   }
 
   onFlowImportError( err : {
@@ -154,7 +161,8 @@ export class FlogoFlowsComponent{
     statusText : string;
     response : any
   } ) {
-    notification( `${err.response}`, 'error' );
+   let message = this.translate.instant('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
+    notification( message, 'error' );
   }
 
 

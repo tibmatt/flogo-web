@@ -50,6 +50,7 @@ export const CONFIG = {
       'node_modules/moment/min/moment-with-locales.min.js',
 
       'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
+      //'node_modules/ng2-translate/bundles/ng2-translate.js',
 
       'dev.env.js',
       'systemjs.config.js',

@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
+import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder-fields-number',
@@ -13,8 +14,8 @@ export class FlogoFormBuilderFieldsNumber extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any
 
-  constructor() {
-    super();
+  constructor(_translate: TranslateService) {
+    super(_translate);
   }
 
 }

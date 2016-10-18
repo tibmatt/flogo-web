@@ -2,7 +2,7 @@ import {Component, SimpleChange} from '@angular/core';
 
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
 import {FlogoFormBuilderFieldsListBox as FieldListBox} from '../../flogo.form-builder.fields/components/fields.listbox/fields.listbox.component';
-import { convertTaskID, parseMapping } from "../../../common/utils";
+import {convertTaskID, parseMapping} from "../../../common/utils";
 
 @Component({
     selector: 'flogo-form-builder-task-configuration',

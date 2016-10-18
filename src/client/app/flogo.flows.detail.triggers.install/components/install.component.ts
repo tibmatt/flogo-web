@@ -4,7 +4,7 @@ import { Component, EventEmitter } from '@angular/core';
   selector : 'flogo-flows-detail-triggers-install',
   outputs : [ 'onInstalled: flogoOnInstalled' ],
   moduleId : module.id,
-  templateUrl : 'install.tpl.html',
+  templateUrl : 'install.tpl.html'
 } )
 export class FlogoFlowsDetailTriggersInstallComponent {
 

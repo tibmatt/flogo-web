@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import { TranslateService } from 'ng2-translate/ng2-translate';
+
 import {
   FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
   FLOGO_INSTALLER_STATUS_INSTALL_FAILED
@@ -21,8 +23,9 @@ export class FlogoInstallerTriggerComponent extends FlogoInstallerBaseComponent 
   _installables = <any[]>[];
   installables = <any[]>[];
 
-  constructor( private _restAPITriggersService : RESTAPITriggersService ) {
-    super();
+  constructor( private _restAPITriggersService : RESTAPITriggersService,
+              public translate: TranslateService) {
+    super(translate);
 
     this.init();
   }

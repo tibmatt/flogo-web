@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
+import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder-fields-textarea',
@@ -14,8 +15,8 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
   _fieldObserver:any;
   _value:any;
 
-  constructor() {
-    super();
+  constructor(_translate:TranslateService) {
+    super(_translate);
   }
 
   onChangeField(event:any){
@@ -28,7 +29,7 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
       // TODO
       //  better handler of invalid JSON?
       //  for the moment, keep the value even though it's not valid JSON, and ensure string format
-      this._errorMessage = this._info.title + ' invalid JSON';
+      this._errorMessage = this._translate.instant('FIELDS-TEXTAREA:INVALID-JSON',{value:this._info.title});
       this._hasError = true;
       invalidJSON = true;
       this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}) );

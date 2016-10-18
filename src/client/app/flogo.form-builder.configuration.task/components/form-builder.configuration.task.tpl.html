@@ -1,7 +1,7 @@
 <div>
 
   <div class="flogo-common-edit-panel__container">
-    <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.inputs.length">Input</h3>
+    <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.inputs.length">{{ 'FORM-BUILDER-CONFIGURATION-TASK:INPUT' | translate }}</h3>
     <div *ngFor="let item of fields.inputs; let index = index" class="">
 
       <div *ngIf="getControlByType(item).control == 'FieldTextBox'">
@@ -31,7 +31,7 @@
 
     </div>
 
-    <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.outputs.length">Output</h3>
+    <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.outputs.length">{{ 'FORM-BUILDER-CONFIGURATION-TASK:OUTPUT' | translate }}</h3>
     <div *ngFor="let item of fields.outputs" class="flogo-task-container__output">
 
       <div *ngIf="getControlByType(item).control == 'FieldTextBox'">

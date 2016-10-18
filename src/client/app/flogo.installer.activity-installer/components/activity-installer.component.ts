@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import {TranslateService} from 'ng2-translate/ng2-translate';
+
 import {
   FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
   FLOGO_INSTALLER_STATUS_INSTALL_FAILED
@@ -11,7 +13,7 @@ import {
   moduleId : module.id,
   templateUrl : 'activity-installer.tpl.html',
   inputs : [ 'query: flogoSearchQuery', 'status: flogoInstallerStatus' ],
-  styleUrls : [ 'activity-installer.component.css' ]
+  styleUrls : [ 'activity-installer.component.css' ],
 } )
 export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent {
 
@@ -21,8 +23,8 @@ export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent
   _installables = <any[]>[];
   installables = <any[]>[];
 
-  constructor( private _restAPIActivitiesService : RESTAPIActivitiesService ) {
-    super();
+  constructor( private _restAPIActivitiesService : RESTAPIActivitiesService, public translate: TranslateService ) {
+    super(translate);
 
     this.init();
   }

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 
+import { TranslateService } from 'ng2-translate/ng2-translate';
+
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
 
 @Component(
@@ -12,7 +14,6 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
     styleUrls : [ 'tasks.component.css' ]
   }
 )
-
 export class FlogoFlowsDetailTasks {
   public filteredTasks : any[] = [];
   private _filterQuery : string = null;
@@ -22,7 +23,7 @@ export class FlogoFlowsDetailTasks {
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( private _postService : PostService,  private _restAPIActivitiesService: RESTAPIActivitiesService) {
+  constructor( private _postService : PostService,  private _restAPIActivitiesService: RESTAPIActivitiesService ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     this.initSubscribe();

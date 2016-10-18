@@ -6,7 +6,7 @@ import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
 import { InstallerModule as FlogoInstallerModule } from '../flogo.installer/flogo.installer.module';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform/flogo.transform.module';
-import {InstructionsModule as FlogoInstructionsModule} from '../flogo.instructions/flogo.instructions.module';
+import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
 
 import { FlogoCanvasComponent } from './components/canvas.component';
 

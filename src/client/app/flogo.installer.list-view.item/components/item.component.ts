@@ -56,12 +56,13 @@ export class FlogoInstallerListViewItemComponent implements OnChanges {
 /* utility functions */
 
 function itemToViewItem( item : any ) {
+
   let viewItem = {
     displayName : item.title || item.name,
     description : item.description,
     version : item.version,
     icon : '',
-    author : `Created by ${item.author}`,
+    author : `${item.author}`,
     createTime : moment( item.createTime )
       .fromNow(),
     isInstalled : item.isInstalled

@@ -1,3 +1,4 @@
+
 import { Component, Input, OnChanges, EventEmitter } from '@angular/core';
 
 @Component({
@@ -17,10 +18,14 @@ export class TransformJsonPanelComponent implements OnChanges {
 
     toggledControl:EventEmitter<any> = new EventEmitter();
 
+    constructor() {
+
+    }
+
     ngOnInit() {
         if(this.isInput) {
             this.currentSchema = this.getFormattedHTMLInput(this.schema, '');
-        }else {
+        } else {
             this.currentSchema = this.getFormattedHTMLOutput(this.schema, '','');
         }
     }

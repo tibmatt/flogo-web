@@ -1,5 +1,6 @@
 import {Component, SimpleChange} from '@angular/core';
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
+import {  TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
     selector: 'flogo-form-builder-branch-configuration',
@@ -12,7 +13,7 @@ export class FlogoFormBuilderConfigurationBranchComponent {
   _attributes: any;
   fields:any;
 
-  constructor(private _commonService: FlogoFormBuilderCommon) {
+  constructor(private _commonService: FlogoFormBuilderCommon, public translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -24,10 +25,11 @@ export class FlogoFormBuilderConfigurationBranchComponent {
 
 
   getBranchInfo( branchInfo : any ) {
+      let translator = this.translate;
     var info = {
       name:       'condition',
       id:         branchInfo.id,
-      title:      'If',
+      title:      translator.get('FORM-BUILDER-CONFIGURATION-BRANCH:IF')['value'],
       value:      branchInfo.condition,
       required:   true,
       placeholder: '',

@@ -1,6 +1,7 @@
 import {Component, OnChanges, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { PostService } from '../../../common/services/post.service';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 
 import {
@@ -26,7 +27,7 @@ import {
   attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
 } from '../../../common/utils';
 
-import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
+import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 
 interface HandlerInfo {
@@ -38,7 +39,7 @@ interface HandlerInfo {
   selector: 'flogo-canvas',
   moduleId: module.id,
   templateUrl: 'canvas.tpl.html',
-  styleUrls: [ 'canvas.component.css' ],
+  styleUrls: [ 'canvas.component.css' ]
 } )
 
 export class FlogoCanvasComponent implements OnInit {
@@ -86,8 +87,10 @@ export class FlogoCanvasComponent implements OnInit {
               private _restAPIFlowsService: RESTAPIFlowsService,
               private _router: Router,
               private _flogoModal: FlogoModal,
-              private _route: ActivatedRoute) {
-    this._hasUploadedProcess = false;
+              private _route: ActivatedRoute,
+              public translate: TranslateService
+  ) {
+    this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
 
     // TODO
@@ -142,17 +145,18 @@ export class FlogoCanvasComponent implements OnInit {
         });
   }
 
-  private changeFlowDetail($event, property) {
-
-      return new Promise((resolve, reject)=> {
-          this._updateFlow(this.flow).then((response: any)=> {
-              notification(`Update flow's ${property} successfully!`, 'success', 3000);
-              resolve(response);
-          }).catch((err)=> {
-              notification(`Update flow's ${property} error: ${err}`, 'error');
-              reject(err);
-          });
-      })
+    private changeFlowDetail($event, property) {
+        return new Promise((resolve, reject)=> {
+            this._updateFlow(this.flow).then((response: any)=> {
+                let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
+                 notification(message, 'success', 3000);
+                 resolve(response);
+            }).catch((err)=> {
+                let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                notification(message, 'error');
+                reject(err);
+            });
+        })
 
   }
 
@@ -506,7 +510,8 @@ export class FlogoCanvasComponent implements OnInit {
           console.error( err );
           // TODO
           //  more specific error message?
-          notification('Ops! something wrong! :(', 'error');
+          let message = this.translate.instant('CANVAS:ERROR-MESSAGE');
+          notification(message,'error');
           return err;
         }
       );
@@ -556,11 +561,14 @@ export class FlogoCanvasComponent implements OnInit {
               }
               trials++;
 
+              let translator = this.translate;
+
               self._restAPIService.instances.getStatusByInstanceID( processInstanceID )
                 .then(
                   ( rsp : any ) => {
                     ( // logging the response of each trial
                       function ( n : number ) {
+                          let message:any = {};
 
                         switch ( rsp.status ) {
                           case '0':
@@ -587,17 +595,20 @@ export class FlogoCanvasComponent implements OnInit {
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
-                            notification('Flow completed! ^_^', 'success', 3000);
+                            message = translator.instant('CANVAS:SUCCESS-MESSAGE-COMPLETED');
+                            notification(message, 'success', 3000);
                             done( timer, rsp );
                             break;
                           case '600':
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
-                            notification('Flow has been cancelled.', 'warning', 3000);
+                            message = translator.instant('CANVAS:FLOW-CANCELED');
+                            notification(message, 'warning', 3000);
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
-                            notification('Flow is failed with error code 700.', 'error');
+                            message = translator.instant('CANVAS:ERROR-MESSAGE-FAILED');
+                            notification(message, 'error');
                             done( timer, rsp );
                             break;
                           case null :
@@ -863,15 +874,30 @@ export class FlogoCanvasComponent implements OnInit {
     }
   }
 
-  exportFlow () {
-    return this._exportFlow.bind(this);
+
+  exportTriggerAndFlow() {
+      return this._exportTriggerAndFlow.bind(this);
+  }
+
+  private _exportTriggerAndFlow()   {
+      let flow = this._exportFlow();
+      let trigger = this._exportTrigger();
+
+      return Promise.all([trigger, flow]);
   }
 
   private _exportFlow() {
     return new Promise((resolve, reject) => {
       let jsonFlow = flogoFlowToJSON( this.flow );
-      resolve(jsonFlow.flow);
+      return resolve({fileName: 'flow.json', data:jsonFlow.flow});
     });
+  }
+
+  private _exportTrigger()  {
+      return new Promise((resolve, reject) => {
+          let jsonTrigger = triggerFlowToJSON(this.flow)
+          resolve({fileName:'trigger.json', data:jsonTrigger});
+      });
   }
 
   private _addTriggerFromDiagram( data : any, envelope : any ) {

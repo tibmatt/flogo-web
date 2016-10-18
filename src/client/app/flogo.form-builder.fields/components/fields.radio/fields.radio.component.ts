@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
+import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder-fields-radio',
@@ -13,5 +14,8 @@ export class FlogoFormBuilderFieldsRadio extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any;
   _index: number;
+  constructor(_translate: TranslateService) {
+    super(_translate);
+  }
 
 }

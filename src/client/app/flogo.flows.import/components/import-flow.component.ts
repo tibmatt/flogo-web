@@ -35,7 +35,29 @@ export class FlogoFlowsImport {
     // fileElm.click();
   }
 
-  public onFileChange( evt : any ) {
+  getErrorMessageActivitiesNotInstalled(errors) {
+    let errorMessage = '';
+    let details = errors.details;
+    let errorTriggers = '';
+    let errorActivities = '';
+
+    if(details.triggers.length) {
+      errorTriggers = ` Missing trigger: "${details.triggers[0]}".`;
+    }
+
+    if(details.activities.length) {
+      let activities = details.activities.map((item) => {
+        return `"${item}"`
+      })
+
+      errorActivities += `Missing Activities: ${activities.join(', ')}`;
+    }
+    errorMessage = `Flow could not be imported, some triggers/activities are not installed.${errorTriggers} ${errorActivities}`;
+
+    return errorMessage;
+  }
+
+  private onFileChange( evt : any ) {
     let importFile = <File> _.get( evt, 'target.files[0]' );
 
     if ( _.isUndefined( importFile ) ) {
@@ -46,8 +68,19 @@ export class FlogoFlowsImport {
           this.onSuccess.emit( result );
         } )
         .catch( ( err : any )=> {
-          console.error( err );
-          this.onError.emit( err );
+          let objError;
+          try {
+            objError = JSON.parse(err.response);
+          }catch(exc) {
+            objError = {};
+          }
+
+          if(objError.type == 1) {
+            let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
+            this.onError.emit( {response: errorMessage} );
+          } else {
+            this.onError.emit( err );
+          }
         } );
     }
   }

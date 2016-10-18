@@ -1,4 +1,5 @@
 import { Component, EventEmitter } from '@angular/core';
+import { FlogoInstallerComponent } from '../../flogo.installer/components/installer.component';
 
 @Component( {
   selector : 'flogo-flows-detail-tasks-install',

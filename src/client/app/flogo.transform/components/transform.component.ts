@@ -24,7 +24,7 @@ interface TransformData {
   styleUrls: ['transform.component.css'],
   inputs:['flowId'],
   moduleId: module.id,
-  templateUrl: 'transform.tpl.html',
+  templateUrl: 'transform.tpl.html'
 })
 export class TransformComponent implements OnDestroy {
   fieldsConnections:any[] = [];

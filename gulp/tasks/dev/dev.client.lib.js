@@ -49,6 +49,6 @@ gulp.task('dev.client.lib.rxjs', () => {
     }
   });
 
-  builder.bundle('rxjs', path.join(clientPath, 'node_modules', '.tmp', 'Rx.js'), options);
+  builder.bundle('rxjs', path.join(clientPath, 'node_modules', '_tmp', 'Rx.js'), options);
 
 });

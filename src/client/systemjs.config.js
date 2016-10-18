@@ -17,7 +17,10 @@
     //},
     'ng2-bs3-modal': {
       defaultExtension: false
-    }
+    }//,
+    //'ng2-translate': {
+    //  defaultExtension: 'js'
+   // }
   };
 
   var paths;
@@ -26,15 +29,19 @@
 
   if(isDevEnv) {
     paths = {
-      'main': '/main'
+      'main': '/main',
+      'n:*': '/node_modules/*',
+      "ng2-translate/ng2-translate": "/node_modules/ng2-translate/bundles/ng2-translate.js"
     };
 
     // map tells the System loader where to look for things
     // load angular from node_modules folder
     map = {
-      '@angular': '/node_modules/@angular'//,
-      //'rxjs': '/node_modules/rxjs'
+      '@angular': 'n:@angular',
+      //'ng2-translate': 'n:ng2-translate'
     };
+
+    //packages['ng2-translate'].main =  'bundles/ng2-translate';
 
   } else {
 
@@ -48,7 +55,8 @@
       'main': 'dist/public/build',
       'rxjs': 'n:rxjs',
       'ng2-bs3-modal': 'n:ng2-bs3-modal',
-      '@angular': 'n:@angular'
+      '@angular': 'n:@angular',
+      'ng2-translate': 'n:ng2-translate'
     };
 
     defaultJSExtensions = false;

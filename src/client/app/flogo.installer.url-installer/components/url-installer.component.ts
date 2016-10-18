@@ -1,9 +1,10 @@
 import { Component, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
 import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../../flogo.installer/constants';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
-const PLACEHOLDER = {
-  activity : `Install activity from URL.`,
-  trigger : `Install trigger from URL.`
+let PLACEHOLDER = {
+  activity : '',
+  trigger : ''
 };
 
 @Component( {
@@ -23,8 +24,12 @@ export class FlogoInstallerUrlComponent implements OnChanges {
   disableInstall : boolean;
   status : string;
 
-  constructor() {
+  constructor(translate: TranslateService) {
     this.disableInstall = false;
+    PLACEHOLDER = {
+      activity : translate.instant('URL-INSTALLER:ACTIVITY'),
+      trigger : translate.instant('URL-INSTALLER:TRIGGER')
+    };
   }
 
   ngOnChanges( changes : {

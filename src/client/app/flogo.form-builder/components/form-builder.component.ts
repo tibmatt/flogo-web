@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs/Rx';
 import { PUB_EVENTS } from '../messages';
 import { FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
 import { convertTaskID, normalizeTaskName, getDefaultValue } from "../../../common/utils";
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder',
@@ -27,7 +28,7 @@ export class FlogoFormBuilderComponent{
   _flowId:string;
   hasErrors : boolean = false;
 
-  constructor(private _postService: PostService) {
+  constructor(private _postService: PostService, private _translate: TranslateService) {
     this._initSubscribe();
     this._setFieldsObservers();
   }
@@ -196,7 +197,7 @@ export class FlogoFormBuilderComponent{
         ) ) {
 
         //  add configure required msg;
-        warnings.push({ msg : 'Configure Required' });
+        warnings.push({ msg : this._translate.instant('FORM-BUILDER:CONFIGURE-REQUIRED') });
         return true;
       }
 
