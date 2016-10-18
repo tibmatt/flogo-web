@@ -42,14 +42,15 @@ export class FlogoFlowsImport {
     let errorActivities = '';
 
     if(details.triggers.length) {
-      errorTriggers = ` Trigger: "${details.triggers.join(',')}"`;
+      errorTriggers = ` Missing trigger: "${details.triggers[0]}".`;
     }
 
     if(details.activities.length) {
-      if(errorTriggers) {
-        errorActivities += ",";
-      }
-      errorActivities += `Activities: "${details.activities.join(',')}"`;
+      let activities = details.activities.map((item) => {
+        return `"${item}"`
+      })
+
+      errorActivities += `Missing Activities: ${activities.join(', ')}`;
     }
     errorMessage = `Flow could not be imported, some triggers/activities are not installed.${errorTriggers} ${errorActivities}`;
 
