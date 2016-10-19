@@ -71,6 +71,37 @@ export class RESTAPIFlowsService{
     return this._db.getFlow( id );
   }
 
+  uploadFlowToImport(flow:any) {
+
+      let body = JSON.stringify(
+          {
+            "flow" : flow
+          }
+      );
+
+      let headers = new Headers(
+          {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json'
+          }
+      );
+
+      let options = new RequestOptions( { headers : headers } );
+
+
+      return this.http.post( '/v1/api/flows/json', body, options )
+          .toPromise()
+          .then(
+              rsp => {
+                if ( rsp.text() ) {
+                  return rsp.json();
+                } else {
+                  return rsp;
+                }
+              }
+          );
+  }
+
   uploadFlow( process : any ) {
     //  upload current flow to process service server
 
@@ -154,7 +185,7 @@ export class RESTAPIFlowsService{
         }
       };
 
-      xhr.open( 'POST', '/v1/api/flows/json', true );
+      xhr.open( 'POST', '/v1/api/flows/json-file', true );
       xhr.send( formData );
     } );
   }
