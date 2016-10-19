@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPISamplesService } from '../../../common/services/restapi/samples-api.service';
+import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 
 @Component( {
   selector : 'flogo-samples-installer',
@@ -10,15 +11,19 @@ import { RESTAPISamplesService } from '../../../common/services/restapi/samples-
   inputs : [ 'samples' ],
   styleUrls : [ 'samples-installer.component.css' ],
   pipes: [TranslatePipe],
-  providers:[RESTAPISamplesService]
+  providers:[RESTAPISamplesService,RESTAPIFlowsService]
 } )
 export class FlogoSamplesInstallerComponent implements OnChanges {
   public placeholder = '';
   private samples : any = [];
-  public currentProgress : string = '0%';
+  public currentProgress : number = 10;
+  public currentPercentage: string = '';
   public currentSample = {name:''};
+  public isDone:  boolean = false;
 
-  constructor(translate: TranslateService, public _APISamples: RESTAPISamplesService) {
+  constructor(translate: TranslateService,
+             public _APISamples: RESTAPISamplesService,
+             public _APIFlows: RESTAPIFlowsService) {
     this.init();
   }
 
@@ -27,17 +32,41 @@ export class FlogoSamplesInstallerComponent implements OnChanges {
   }
 
   installSamples(samples) {
-    let progress = 0;
+    let counter = 1;
 
     if(typeof samples !== 'undefined') {
 
       this.samples.forEach((sample) => {
-        this.currentSample = sample;
         this._APISamples.getSample(sample.url)
-            .then((res:any)=> {
-              progress += 10;
-              this.currentProgress = `${progress}%`
-            })
+            .then((flow:any)=> {
+
+              ((counter, pro) => {
+                   setTimeout(() => {
+
+                    this._APIFlows.uploadFlowToImport(flow)
+                        .then((res)=> {
+                          this.currentPercentage = `${pro}%`;
+                          this.currentSample = sample;
+                        }).
+                        catch((err)=> {
+                        console.log(err);
+                        });
+
+                    if(pro >= 100)    {
+                        setTimeout(()=> {
+                            this.isDone = true;
+                        },3000);
+                    }
+
+
+                  }, counter * 1000)
+
+               }) (counter, this.currentProgress);
+
+                this.currentProgress += 10;
+                counter +=1;
+
+            });
       });
     }
 

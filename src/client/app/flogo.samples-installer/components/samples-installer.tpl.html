@@ -1,13 +1,12 @@
-<div class="flogo-samples-installer">
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped active" role="progressbar"
-          aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" [style.width]="currentProgress">
-        {{currentProgress}}
-        </div>
+<div class="flogo-samples-installer" *ngIf="!isDone">
+    <div class="flogo-samples-installer-title">
+        <h2>Installing samples...</h2>
     </div>
-    <div>
-        <h2>Installing samples</h2>
-        <h3>{{currentSample.name}}</h3>
+    <div class="progress flogo-samples-installer-progress">
+        <div class="progress-bar progress-bar-striped flogo-samples-installer-progress-text active" role="progressbar"
+          aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercentage">
+        {{currentPercentage}}
+        </div>
     </div>
 </div>
 
