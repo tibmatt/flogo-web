@@ -43,7 +43,14 @@ export class FlogoFlowsComponet{
         private _router: Router,
         public translate: TranslateService
     ){
-        this.getAllFlows();
+
+        this.getAllFlows()
+            .then(() => {
+                if(this.canInstallSamples()) {
+                    this.installSamples();
+                }
+            })
+
         this.initSubscribe();
         setTimeout(() => {
            this.showInstructions();
@@ -140,6 +147,53 @@ export class FlogoFlowsComponet{
             }
         });
     }
+
+    canInstallSamples() {
+        return !this.flows.length;
+    }
+
+    onInstallationIsDone() {
+        this.getAllFlows();
+    }
+
+    installSamples() {
+
+        this.samples = [
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            },
+            {
+                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
+            }
+        ];
+
+
+    }
+
     getAllFlows(){
         return new Promise((resolve, reject)=>{
             this._flow.getFlows().then((response:any)=>{
@@ -154,52 +208,6 @@ export class FlogoFlowsComponet{
                     let timeStr = ''+time.getFullYear()+this._toDouble(time.getMonth()+1)+this._toDouble(time.getDate())+' '+ this._toDouble(time.getHours())+':'+this._toDouble(time.getMinutes())+':'+this._toDouble(time.getSeconds());
                     flow.created_at = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
                 });
-
-                if(!this.flows.length) {
-                    this.samples = [
-                        {
-                            name: 'AWT IOT sample 8',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 9',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 100',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 1',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 2',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 3',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 4',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 5',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 6',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        },
-                        {
-                            name: 'Otr sample 7',
-                            url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-                        }
-                    ];
-                }
-
                 resolve(response);
             }).catch((err)=>{
                 reject(err);

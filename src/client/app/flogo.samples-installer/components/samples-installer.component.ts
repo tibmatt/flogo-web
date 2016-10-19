@@ -9,6 +9,7 @@ import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.
   directives : [],
   templateUrl : 'samples-installer.tpl.html',
   inputs : [ 'samples' ],
+  outputs: ['installationIsDone']  ,
   styleUrls : [ 'samples-installer.component.css' ],
   pipes: [TranslatePipe],
   providers:[RESTAPISamplesService,RESTAPIFlowsService]
@@ -18,8 +19,9 @@ export class FlogoSamplesInstallerComponent implements OnChanges {
   private samples : any = [];
   public currentProgress : number = 10;
   public currentPercentage: string = '';
-  public currentSample = {name:''};
+  public currentSample:any = null;
   public isDone:  boolean = false;
+  public installationIsDone = new EventEmitter();
 
   constructor(translate: TranslateService,
              public _APISamples: RESTAPISamplesService,
@@ -55,11 +57,12 @@ export class FlogoSamplesInstallerComponent implements OnChanges {
                     if(pro >= 100)    {
                         setTimeout(()=> {
                             this.isDone = true;
-                        },3000);
+                            this.installationIsDone.emit();
+                        },2000);
                     }
 
 
-                  }, counter * 1000)
+                  }, counter * 500)
 
                }) (counter, this.currentProgress);
 
@@ -72,21 +75,12 @@ export class FlogoSamplesInstallerComponent implements OnChanges {
 
   }
 
-
-  /*
-  onSearchQueryChange( newQuery : string ) {
-    this._searchQuery = newQuery;
-    this.queryUpdate.emit( this._searchQuery );
-  }
-  */
-
   ngOnChanges( changes : {
     [key : string] : SimpleChange
   } ) {
 
     if ( _.has( changes, 'samples' ) ) {
       let currentValue = changes[ 'samples' ].currentValue;
-      console.log('The current samples is:');
       this.installSamples(currentValue);
     }
 
