@@ -11,14 +11,21 @@
             <img src="/assets/svg/flogo-flynn.png" class="flogo-flows-mascotImg">
         </div>
     </div>
+
+
+    <div class="row" *ngIf="samples">
+        <flogo-samples-installer class="col-md-4 col-md-offset-4" [samples]="samples"></flogo-samples-installer>
+    </div>
+
     <div class="flogo-flows-container-header">
         <div class="container-fluid">
             <div class="flogo-flows-container-header-container">
                 <h3 class="flogo-flows-container-title">{{ 'FLOWS:MY-FLOWS' | translate }}</h3>
             </div>
         </div>
-
     </div>
+
+
     <div class="flogo-flows-container-body container-fluid">
         <ul class="flogo-flows-container-lists row">
             <li class="flogo-flows-container-list-col">
@@ -42,9 +49,6 @@
         </ul>
     </div>
 
-    <div class="row">
-        <flogo-samples-installer class="col-md-4 col-md-offset-4" [samples]="samples"></flogo-samples-installer>
-    </div>
 
 
 
