@@ -333,6 +333,45 @@ function * exportFlowInJsonById( next ) {
   yield next;
 }
 
+function * createFlowFromJson(context,imported, next ) {
+  let activities = yield getActivities();
+  let triggers  = yield getTriggers();
+  let validateErrors = [];
+
+  try {
+    validateErrors = validateTriggersAndActivities(imported, triggers, activities);
+    console.log('validate errors is');
+    console.log(validateErrors);
+  }catch (err) {
+    context.throw(err);
+  }
+  if(validateErrors.hasErrors) {
+    let details = {
+      type: 1,
+      message: 'Flow could not be imported, missing triggers/activities',
+      details: {
+        activities: validateErrors.activities,
+        triggers: validateErrors.triggers
+      }
+    };
+    context.response.status = 400;
+    context.body = details;
+    //this.throw(400, details);
+  } else {
+    // create the flow with the parsed imported data
+    let createFlowResult;
+    try {
+      createFlowResult = yield createFlow( imported );
+    } catch ( err ) {
+      console.error( '[ERROR]: ', err );
+      this.throw( 500, 'Fail to create flow.', { expose : true } );
+    }
+    context.body = createFlowResult;
+  }
+
+  return next;
+}
+
 function * importFlowFromJson( next ) {
   console.log( '[INFO] Import flow from JSON' );
 
@@ -364,40 +403,8 @@ function * importFlowFromJson( next ) {
         this.throw( 400, 'Invalid JSON data.' );
       }
 
-      let activities = yield getActivities();
-      let triggers  = yield getTriggers();
-      let validateErrors = [];
+      yield createFlowFromJson(this,imported,next);
 
-      try {
-        validateErrors = validateTriggersAndActivities(imported, triggers, activities);
-        console.log('validate errors is');
-        console.log(validateErrors);
-      }catch (err) {
-        this.throw(err);
-      }
-      if(validateErrors.hasErrors) {
-        let details = {
-          type: 1,
-          message: 'Flow could not be imported, missing triggers/activities',
-          details: {
-            activities: validateErrors.activities,
-            triggers: validateErrors.triggers
-          }
-        };
-        this.response.status = 400;
-        this.body = details;
-        //this.throw(400, details);
-      } else {
-        // create the flow with the parsed imported data
-        let createFlowResult;
-        try {
-          createFlowResult = yield createFlow( imported );
-        } catch ( err ) {
-          console.error( '[ERROR]: ', err );
-          this.throw( 500, 'Fail to create flow.', { expose : true } );
-        }
-        this.body = createFlowResult;
-      }
     }
   } else {
     console.log( this.request.body.files );
