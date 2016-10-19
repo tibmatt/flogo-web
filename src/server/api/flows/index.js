@@ -148,6 +148,7 @@ export function flows(app, router){
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
 
+  router.post(basePath+'/flows/json-file', importFlowFromJsonFile);
   router.post(basePath+'/flows/json', importFlowFromJson);
   router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
@@ -371,9 +372,35 @@ function * createFlowFromJson(context,imported, next ) {
 
   return next;
 }
-
-function * importFlowFromJson( next ) {
+function * importFlowFromJson(next ) {
   console.log( '[INFO] Import flow from JSON' );
+
+  let flow = _.get( this, 'request.body.flow' );
+
+  if ( _.isObject( flow ) && !_.isEmpty( flow ) ) {
+      let imported = flow;
+    console.log('IMPORTED IS');
+    console.log(imported);
+
+    /*
+      try {
+        imported = JSON.parse( flow );
+      } catch ( err ) {
+        console.error( '[ERROR]: ', err );
+        this.throw( 400, 'Invalid JSON data.' );
+      }
+      */
+      yield createFlowFromJson(this,imported,next);
+
+  } else {
+    this.throw( 400, 'Flow is empty' );
+  }
+
+  yield next;
+}
+
+function * importFlowFromJsonFile( next ) {
+  console.log( '[INFO] Import flow from JSON File' );
 
   let importedFile = _.get( this, 'request.body.files.importFile' );
 
