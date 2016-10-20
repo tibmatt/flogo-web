@@ -1,10 +1,12 @@
 import 'babel-polyfill';
 import path from 'path';
+import request from 'co-request';
 
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
+var fs = require('fs');
 import compress from 'koa-compress';
 
 import { inspectObj } from './common/utils';
@@ -12,6 +14,7 @@ import {config, triggersDBService, activitiesDBService} from './config/app-confi
 import {api} from './api';
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
 import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
+import {createFlowFromJson} from './api/flows/index';
 
 // TODO Need to use cluster to improve the performance
 
@@ -143,4 +146,20 @@ function showInitBanner() {
   console.log("=============================================================================================");
   console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
   console.log("=============================================================================================");
+  installSamples();
+}
+
+function  installSamples() {
+  var samples = JSON.parse(fs.readFileSync(path.join(__dirname,'config/samples.json'), 'utf8'));
+
+  samples.forEach( (sample)=> {
+      request({ uri: sample.url, method: 'GET', json: true })
+        .then((res) => {
+            createFlowFromJson(res.body)
+              .then(()=> {
+                console.log('Installed:', sample.url);
+             })
+        })
+  });
+
 }

@@ -57,7 +57,7 @@ export class FlogoSamplesInstallerComponent implements OnChanges {
                     if(pro >= 100)    {
                         setTimeout(()=> {
                             this.isDone = true;
-                            this.installationIsDone.emit();
+                            this.installationIsDone.emit(true);
                         },2000);
                     }
 

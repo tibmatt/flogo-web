@@ -79,7 +79,7 @@ function filterFlows(query){
     });
 }
 
-function getActivities() {
+export function getActivities() {
   return new Promise( (resolve, reject) => {
     activitiesDBService.allDocs({ include_docs: true })
       .then( (activities)=> {
@@ -96,7 +96,7 @@ function getActivities() {
   });
 }
 
-function getTriggers() {
+export function getTriggers() {
   return new Promise( (resolve, reject) => {
     triggersDBService.allDocs({ include_docs: true })
       .then( (activities)=> {
@@ -334,69 +334,93 @@ function * exportFlowInJsonById( next ) {
   yield next;
 }
 
-function * createFlowFromJson(context,imported, next ) {
-  let activities = yield getActivities();
-  let triggers  = yield getTriggers();
-  let validateErrors = [];
+function validateFlow(flow, activities, triggers) {
+  return new Promise((resolve, reject) => {
+    let validateErrors = [];
 
-  try {
-    validateErrors = validateTriggersAndActivities(imported, triggers, activities);
-    console.log('validate errors is');
-    console.log(validateErrors);
-  }catch (err) {
-    context.throw(err);
-  }
-  if(validateErrors.hasErrors) {
-    let details = {
-      type: 1,
-      message: 'Flow could not be imported, missing triggers/activities',
-      details: {
-        activities: validateErrors.activities,
-        triggers: validateErrors.triggers
-      }
-    };
-    context.response.status = 400;
-    context.body = details;
-    //this.throw(400, details);
-  } else {
-    // create the flow with the parsed imported data
-    let createFlowResult;
     try {
-      createFlowResult = yield createFlow( imported );
-    } catch ( err ) {
-      console.error( '[ERROR]: ', err );
-      this.throw( 500, 'Fail to create flow.', { expose : true } );
+      validateErrors = validateTriggersAndActivities(flow, triggers, activities);
+    }catch (err) {
+      //context.throw(err);
+      resolve({status:500, details:err});
     }
-    context.body = createFlowResult;
-  }
-
-  return next;
+    if(validateErrors.hasErrors) {
+      let details = {
+        type: 1,
+        message: 'Flow could not be imported, missing triggers/activities',
+        details: {
+          activities: validateErrors.activities,
+          triggers: validateErrors.triggers
+        }
+      };
+      //context.response.status = 400;
+      //context.body = details;
+      //this.throw(400, details);
+      resolve({status:400, details:details})
+    }
+    resolve({status:200})
+  });
 }
+
+export function  createFlowFromJson(imported ) {
+  return new Promise( (resolve, reject) => {
+    let activities, triggers;
+    getActivities()
+      .then((items)=> {
+        activities = items;
+        getTriggers()
+          .then((items)=>{
+            triggers = items;
+            validateFlow(imported,activities,triggers)
+              .then((res) => {
+                console.log('The flow validate is');
+                console.log(res);
+                //this.response.status = res.status;
+
+                if(res.status == 200) {
+                  console.log('El status es 200');
+                  createFlow( imported )
+                    .then((createFlowResult)=> {
+                      console.log('Creado el flow');
+                      console.log(createFlowResult);
+                      //this.body = createFlowResult;
+                      resolve({status: res.status, details:createFlowResult});
+                    })
+                    .catch((err) => {
+                      this.throw( 500, 'Fail to create flow.', { expose : true } );
+                    });
+                }else {
+                  resolve(res);
+                }
+              });
+
+          })
+      })
+
+
+
+   });
+}
+
 function * importFlowFromJson(next ) {
   console.log( '[INFO] Import flow from JSON' );
-
   let flow = _.get( this, 'request.body.flow' );
 
   if ( _.isObject( flow ) && !_.isEmpty( flow ) ) {
       let imported = flow;
-    console.log('IMPORTED IS');
-    console.log(imported);
+      console.log('IMPORTED IS');
+      console.log(imported);
 
-    /*
-      try {
-        imported = JSON.parse( flow );
-      } catch ( err ) {
-        console.error( '[ERROR]: ', err );
-        this.throw( 400, 'Invalid JSON data.' );
-      }
-      */
-      yield createFlowFromJson(this,imported,next);
+      let responseCreateFlow = yield createFlowFromJson(imported)
+      this.body = responseCreateFlow.details;
+      this.response.status = responseCreateFlow.status;
 
   } else {
     this.throw( 400, 'Flow is empty' );
   }
 
-  yield next;
+  yield  next;
+
 }
 
 function * importFlowFromJsonFile( next ) {
@@ -430,8 +454,9 @@ function * importFlowFromJsonFile( next ) {
         this.throw( 400, 'Invalid JSON data.' );
       }
 
-      yield createFlowFromJson(this,imported,next);
-
+      let responseCreateFlow = yield createFlowFromJson(imported);
+      this.body = responseCreateFlow.details;
+      this.response.status = responseCreateFlow.status;
     }
   } else {
     console.log( this.request.body.files );
