@@ -15,7 +15,6 @@ import {FlogoModal} from '../../../common/services/modal.service';
 import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
-import { FlogoSamplesInstallerComponent } from '../../flogo.samples-installer/components/samples-installer.component'
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
@@ -23,7 +22,7 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport,FlogoInstructionsComponent, FlogoSamplesInstallerComponent],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport,FlogoInstructionsComponent ],
   pipes: [TranslatePipe],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
