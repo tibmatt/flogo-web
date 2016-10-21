@@ -261,4 +261,14 @@ export class DBService{
     });
     return db;
   }
+
+
+  areSamplesInstalled() {
+    return this._db.get('_local/samples_installed');
+  }
+
+  markSamplesAsInstalled() {
+    this._db.put({_id: '_local/samples_installed'});
+  }
+
 }

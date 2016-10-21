@@ -373,21 +373,13 @@ export function  createFlowFromJson(imported ) {
             triggers = items;
             validateFlow(imported,activities,triggers)
               .then((res) => {
-                console.log('The flow validate is');
-                console.log(res);
-                //this.response.status = res.status;
-
                 if(res.status == 200) {
-                  console.log('El status es 200');
                   createFlow( imported )
                     .then((createFlowResult)=> {
-                      console.log('Creado el flow');
-                      console.log(createFlowResult);
-                      //this.body = createFlowResult;
                       resolve({status: res.status, details:createFlowResult});
                     })
                     .catch((err) => {
-                      this.throw( 500, 'Fail to create flow.', { expose : true } );
+                      resolve( {status:500, details: {message:'Fail to create flow.', expose : true} } );
                     });
                 }else {
                   resolve(res);
@@ -470,20 +462,12 @@ function validateTriggersAndActivities (flow, triggers, activities) {
   let validate = { activities: [], triggers: [], hasErrors: false};
 
   try {
-    console.log('triggers are');
-    console.log(triggers);
-
-    console.log('activities');
-    console.log(activities);
-
     let installedTiles = triggers.concat(activities);
     let tilesMainFlow = getTilesFromFlow(_.get(flow, 'items', []));
     let tilesErrorFlow = getTilesFromFlow(_.get(flow, 'errorHandler.items', []));
     let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
       return elem.name + elem.type;
     });
-    console.log('All tiles flow');
-    console.log(allTilesFlow);
 
     allTilesFlow.forEach( (tile) => {
       let index = installedTiles.findIndex((installed)=> {

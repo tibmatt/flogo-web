@@ -10,7 +10,7 @@ var fs = require('fs');
 import compress from 'koa-compress';
 
 import { inspectObj } from './common/utils';
-import {config, triggersDBService, activitiesDBService} from './config/app-config';
+import {config, triggersDBService, activitiesDBService, dbService} from './config/app-config';
 import {api} from './api';
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
 import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
@@ -136,30 +136,64 @@ function initServer() {
 
     app.listen( port, ()=> {
       console.log( `[log] start web server done.` );
-      showInitBanner();
+      installSamples();
       resolve( app );
     } );
   } );
 }
 
-function showInitBanner() {
+function showBanner() {
   console.log("=============================================================================================");
   console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
   console.log("=============================================================================================");
-  installSamples();
 }
 
-function  installSamples() {
+function installSamples() {
+  dbService.areSamplesInstalled()
+    .catch((err)=> {
+      if(err.status == 404) {
+        downloadSamplesAndInstall()
+          .then((results) => {
+            let allSamplesInstalled = true;
+            results.forEach((result) => {
+              if(!result.installed) {
+                allSamplesInstalled = false;
+                console.log('The sample:' + sample.url + ' could not be installed');
+              }
+            });
+            if(allSamplesInstalled) {
+              console.log('All samples were installed correctly');
+            }
+            dbService.markSamplesAsInstalled();
+            showBanner();
+          });
+      }
+    });
+}
+
+function  downloadSamplesAndInstall() {
   var samples = JSON.parse(fs.readFileSync(path.join(__dirname,'config/samples.json'), 'utf8'));
+  let promises = [];
 
   samples.forEach( (sample)=> {
+
+    let promise = new Promise((resolve, reject) => {
       request({ uri: sample.url, method: 'GET', json: true })
-        .then((res) => {
-            createFlowFromJson(res.body)
-              .then(()=> {
-                console.log('Installed:', sample.url);
-             })
-        })
+      .then((res) => {
+        createFlowFromJson(res.body)
+          .then((res) => {
+            if(res.status !== 200) {
+              resolve({installed:false, sample: sample.url});
+            } else {
+              resolve({installed:true ,sample: sample.url});
+            }
+          })
+      });
+
+    });
+
+    promises.push(promise);
   });
 
+  return Promise.all(promises);
 }
