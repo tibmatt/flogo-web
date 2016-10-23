@@ -24,6 +24,20 @@ export function activities(app, router){
   router.delete(basePath+"/activities", deleteActivities);
 }
 
+/**
+ * @swagger
+ * /activities:
+ *  get:
+ *    tags:
+ *      - Activity
+ *    responses:
+ *      200:
+ *        description: List all activities installed on the engine
+ *        schema:
+ *          type: array
+ *          items:
+ *            $ref: '#/definitions/Activity'
+ */
 function* getActivities(next){
   let data = yield activitiesDBService.allDocs({ include_docs: true })
     .then(activities => activities.map(activity => {
@@ -33,7 +47,42 @@ function* getActivities(next){
   this.body = data;
   yield next;
 }
+/**
+ * @swagger
+ * definition:
+ *  Activity:
+ *    type: object
+ *    properties:
+ *      _id:
+ *        type: string
+ *      name:
+ *        type: string
+ *      version:
+ *        type: string
+ *      description:
+ *        type: string
+ *      title:
+ *        type: string
+ */
 
+/**
+ * @swagger
+ * /activities:
+ *  post:
+ *    tags:
+ *      - Activity
+ *    summary: Install new activities
+ *    parameters:
+ *      - name: urls
+ *        in: body
+ *        description: Urls of the activities to be installed
+ *        required: true
+ *        schema:
+ *          $ref: '#/definitions/Urls'
+ *    responses:
+ *      200:
+ *        description: 'Activity installed successfully'
+ */
 function* installActivities( next ) {
   let urls = preProcessURLs( this.request.body.urls );
   console.log( '[log] Install Activities' );
@@ -141,7 +190,38 @@ function* installActivities( next ) {
 
   yield next;
 }
+/**
+ * @swagger
+ * definition:
+ *  Urls:
+ *    type: object
+ *    properties:
+ *      urls:
+ *        type: array
+ *        items:
+ *          type: string
+ *
+ */
 
+/**
+ *
+ * @swagger
+ * /activities:
+ *    delete:
+ *      tags:
+ *        - Activity
+ *      description: Uninstall activities from engine
+ *      parameters:
+ *        - name: urls
+ *          in: body
+ *          description: Urls of the activities to be uninstalled
+ *          required: true
+ *          schema:
+ *            $ref: '#/definitions/Urls'
+ *      responses:
+ *        '200':
+ *          description: 'Activity uninstalled successfully'
+ */
 function* deleteActivities(next){
   console.log( '------- ------- -------' );
   console.log( 'Delete Activities' );

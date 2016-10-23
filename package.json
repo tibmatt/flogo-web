@@ -48,5 +48,8 @@
     "typescript": "^1.8.10",
     "vinyl-fs": "^2.4.3",
     "webdriver-manager": "^10.2.1"
+  },
+  "dependencies": {
+    "swagger-koa": "^1.0.10"
   }
 }
