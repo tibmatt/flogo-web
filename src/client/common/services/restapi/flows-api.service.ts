@@ -75,7 +75,6 @@ export class RESTAPIFlowsService{
     //  upload current flow to process service server
 
     let body = JSON.stringify( process );
-    console.log('[JSON REQUEST] '+ body);
     let headers = new Headers(
       {
         'Content-Type' : 'application/json',
