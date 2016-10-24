@@ -8,6 +8,7 @@ var router = require('koa-router')();
 import bodyParser from 'koa-body';
 var fs = require('fs');
 import compress from 'koa-compress';
+import _ from 'lodash';
 
 import { inspectObj } from './common/utils';
 import {config, triggersDBService, activitiesDBService, dbService} from './config/app-config';
@@ -150,21 +151,25 @@ function showBanner() {
 
 function installSamples() {
   dbService.areSamplesInstalled()
+    .then((res)=> {
+      console.log('Samples previously installed');
+    })
     .catch((err)=> {
       if(err.status == 404) {
+        console.log('Installing samples');
         downloadSamplesAndInstall()
           .then((results) => {
             let allSamplesInstalled = true;
             results.forEach((result) => {
               if(!result.installed) {
                 allSamplesInstalled = false;
-                console.log('The sample:' + sample.url + ' could not be installed');
+                console.log('The sample:' + result.sample + ' could not be installed, check if the url is right');
               }
             });
             if(allSamplesInstalled) {
               console.log('All samples were installed correctly');
             }
-            dbService.markSamplesAsInstalled();
+            //dbService.markSamplesAsInstalled();
             showBanner();
           });
       }
@@ -180,14 +185,24 @@ function  downloadSamplesAndInstall() {
     let promise = new Promise((resolve, reject) => {
       request({ uri: sample.url, method: 'GET', json: true })
       .then((res) => {
-        createFlowFromJson(res.body)
-          .then((res) => {
-            if(res.status !== 200) {
-              resolve({installed:false, sample: sample.url});
-            } else {
-              resolve({installed:true ,sample: sample.url});
-            }
-          })
+        if(_.isEmpty(res.body)) {
+          console.log('Error downloading ' + sample.url + ' check if the url is right');
+          resolve({installed:false, sample: sample.url});
+        } else {
+          createFlowFromJson(res.body)
+            .then((res) => {
+              if (res.status !== 200) {
+                console.log(res);
+                resolve({installed: false, sample: sample.url});
+              } else {
+                resolve({installed: true, sample: sample.url});
+              }
+            })
+            .catch((err)=> {
+              console.log('ERROR  installing:', err);
+              resolve({installed: false, sample: sample.url});
+            })
+        }
       });
 
     });
