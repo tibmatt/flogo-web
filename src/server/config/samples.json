@@ -1,6 +1,11 @@
 [
   {
-    "url": "https://github.com/TIBCOSoftware/flogo/blob/master/samples/raspberry_iot/web/raspberry_iot.json"
-
+    "url": "https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/helloworld/web/helloWorld.json"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/raspberry_iot/web/raspberry_iot.json"
   }
 ]
