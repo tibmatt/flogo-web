@@ -1,27 +1,22 @@
 import 'babel-polyfill';
 import path from 'path';
-import request from 'co-request';
+var fs = require('fs');
 
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
-var fs = require('fs');
 import compress from 'koa-compress';
-import _ from 'lodash';
 
-import { inspectObj } from './common/utils';
-import {config, triggersDBService, activitiesDBService, flowsDBService,  dbService} from './config/app-config';
+import {config, triggersDBService, activitiesDBService, flowsDBService} from './config/app-config';
 import {api} from './api';
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
-import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
-import {createFlowFromJson} from './api/flows/index';
+import { installAndConfigureTasks, loadTasksToEngines, installSamples } from './modules/init'
+
 
 // TODO Need to use cluster to improve the performance
 
 let app;
-let samplesVersion = 'master';
-
 /**
  * Server start logic
  *
@@ -40,7 +35,11 @@ if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
     .then(() => loadTasksToEngines());
 } else {
   startConfig = startConfig
-                .then(installAndConfigureTasks)
+                .then(installAndConfigureTasks);
+
+  if ( process.env['FLOGO_INSTALL_SAMPLES'] ) {
+    startConfig = startConfig.then(installSamples);
+  }
 
 }
 
@@ -49,8 +48,6 @@ startConfig
     return getInitialisedTestEngine();
   } )
   .then( ( testEngine ) => {
-    samplesVersion = testEngine.options.libVersion || 'master';
-    samplesVersion = (samplesVersion == 'latest') ? 'master' : samplesVersion;
     console.log('############ TEST ENGINE ####################');
     console.log('~~~ ACTIVITIES ~~~');
     console.log(testEngine.installedActivites);
@@ -75,7 +72,6 @@ startConfig
     console.log( `[log] start web server...` );
     return initServer();
   } )
-  .then(installSamples)
   .then(showBanner)
   .catch( ( err )=> {
     console.log( err );
@@ -156,78 +152,4 @@ function showBanner() {
   console.log("=============================================================================================");
   console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
   console.log("=============================================================================================");
-}
-
-function installSamples() {
-  return new Promise((resolve, reject) => {
-
-    dbService.areSamplesInstalled()
-      .then((res)=> {
-        console.log('Samples previously installed');
-        resolve();
-      })
-      .catch((err)=> {
-        if(err.status == 404) {
-          console.log('Installing samples');
-          downloadSamplesAndInstall()
-            .then((results) => {
-              let allSamplesInstalled = true;
-              results.forEach((result) => {
-                if(!result.installed) {
-                  allSamplesInstalled = false;
-                  console.log('Sample:' + result.sample + ' could not be installed, check if the url is right');
-                }else {
-                  console.log('Sample:' + result.sample + ' installed correctly');
-                }
-              });
-              if(allSamplesInstalled) {
-                console.log('All samples were installed correctly');
-              }
-              dbService.markSamplesAsInstalled();
-              resolve();
-            });
-        }
-      });
-
-  });
-
-
-}
-
-function  downloadSamplesAndInstall() {
-  var samples = JSON.parse(fs.readFileSync(path.join(__dirname,'config/samples.json'), 'utf8'));
-  let promises = [];
-
-  samples.forEach( (sample)=> {
-    sample.url = sample.url.replace('{version}', samplesVersion);
-
-    let promise = new Promise((resolve, reject) => {
-      request({ uri: sample.url, method: 'GET', json: true })
-      .then((res) => {
-        if(_.isEmpty(res.body)) {
-          console.log('Error downloading ' + sample.url + ' check if the url is right');
-          resolve({installed:false, sample: sample.url});
-        } else {
-          createFlowFromJson(res.body)
-            .then((res) => {
-              if (res.status !== 200) {
-                console.log(res);
-                resolve({installed: false, sample: sample.url});
-              } else {
-                resolve({installed: true, sample: sample.url});
-              }
-            })
-            .catch((err)=> {
-              console.log('ERROR  installing:', err);
-              resolve({installed: false, sample: sample.url});
-            })
-        }
-      });
-
-    });
-
-    promises.push(promise);
-  });
-
-  return Promise.all(promises);
 }

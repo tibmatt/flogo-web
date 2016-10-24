@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { extractDomain } from '../common/utils';
 import _ from 'lodash';
@@ -306,4 +307,15 @@ export function setConfiguration(newSettings) {
 
 export function resetConfiguration() {
   config = _.cloneDeep(originalConfig);
+}
+
+
+export function loadSamplesConfig() {
+  let samples = [];
+  try {
+    samples = JSON.parse(fs.readFileSync(path.join(__dirname, 'samples.json'), 'utf8'));
+  } catch(e) {
+    // nothing to do
+  }
+  return samples;
 }
