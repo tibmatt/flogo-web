@@ -20,6 +20,7 @@ import {createFlowFromJson} from './api/flows/index';
 // TODO Need to use cluster to improve the performance
 
 let app;
+let samplesVersion = 'master';
 
 /**
  * Server start logic
@@ -48,6 +49,8 @@ startConfig
     return getInitialisedTestEngine();
   } )
   .then( ( testEngine ) => {
+    samplesVersion = testEngine.options.libVersion || 'master';
+    samplesVersion = (samplesVersion == 'latest') ? 'master' : samplesVersion;
     console.log('############ TEST ENGINE ####################');
     console.log('~~~ ACTIVITIES ~~~');
     console.log(testEngine.installedActivites);
@@ -172,7 +175,9 @@ function installSamples() {
               results.forEach((result) => {
                 if(!result.installed) {
                   allSamplesInstalled = false;
-                  console.log('The sample:' + result.sample + ' could not be installed, check if the url is right');
+                  console.log('Sample:' + result.sample + ' could not be installed, check if the url is right');
+                }else {
+                  console.log('Sample:' + result.sample + ' installed correctly');
                 }
               });
               if(allSamplesInstalled) {
@@ -194,6 +199,7 @@ function  downloadSamplesAndInstall() {
   let promises = [];
 
   samples.forEach( (sample)=> {
+    sample.url = sample.url.replace('{version}', samplesVersion);
 
     let promise = new Promise((resolve, reject) => {
       request({ uri: sample.url, method: 'GET', json: true })
