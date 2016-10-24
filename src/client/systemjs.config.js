@@ -31,7 +31,7 @@
     paths = {
       'main': '/main',
       'n:*': '/node_modules/*',
-      "ng2-translate/ng2-translate": "/node_modules/ng2-translate/bundles/ng2-translate.js"
+      "ng2-translate/ng2-translate": "/node_modules/ng2-translate/bundles/index.js"
     };
 
     // map tells the System loader where to look for things
