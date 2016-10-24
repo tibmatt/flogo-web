@@ -264,11 +264,11 @@ export class DBService{
 
 
   areSamplesInstalled() {
-    return this._db.get('_local/samples_installed10');
+    return this._db.get('_local/installed_samples');
   }
 
   markSamplesAsInstalled() {
-    this._db.put({_id: '_local/samples_installed10'});
+    this._db.put({_id: '_local/installed_samples'});
   }
 
 }

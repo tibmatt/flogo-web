@@ -11,7 +11,7 @@ import compress from 'koa-compress';
 import _ from 'lodash';
 
 import { inspectObj } from './common/utils';
-import {config, triggersDBService, activitiesDBService, dbService} from './config/app-config';
+import {config, triggersDBService, activitiesDBService, flowsDBService,  dbService} from './config/app-config';
 import {api} from './api';
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
 import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
@@ -35,9 +35,12 @@ if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
   startConfig = startConfig
     .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
     .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
+    .then(() => flowsDBService.verifyInitialDataLoad(path.resolve('db-init/installed-flows.init')))
     .then(() => loadTasksToEngines());
 } else {
-  startConfig = startConfig.then(installAndConfigureTasks);
+  startConfig = startConfig
+                .then(installAndConfigureTasks)
+
 }
 
 startConfig
@@ -69,6 +72,8 @@ startConfig
     console.log( `[log] start web server...` );
     return initServer();
   } )
+  .then(installSamples)
+  .then(showBanner)
   .catch( ( err )=> {
     console.log( err );
     throw err;
@@ -137,7 +142,8 @@ function initServer() {
 
     app.listen( port, ()=> {
       console.log( `[log] start web server done.` );
-      installSamples();
+
+
       resolve( app );
     } );
   } );
@@ -150,30 +156,37 @@ function showBanner() {
 }
 
 function installSamples() {
-  dbService.areSamplesInstalled()
-    .then((res)=> {
-      console.log('Samples previously installed');
-    })
-    .catch((err)=> {
-      if(err.status == 404) {
-        console.log('Installing samples');
-        downloadSamplesAndInstall()
-          .then((results) => {
-            let allSamplesInstalled = true;
-            results.forEach((result) => {
-              if(!result.installed) {
-                allSamplesInstalled = false;
-                console.log('The sample:' + result.sample + ' could not be installed, check if the url is right');
+  return new Promise((resolve, reject) => {
+
+    dbService.areSamplesInstalled()
+      .then((res)=> {
+        console.log('Samples previously installed');
+        resolve();
+      })
+      .catch((err)=> {
+        if(err.status == 404) {
+          console.log('Installing samples');
+          downloadSamplesAndInstall()
+            .then((results) => {
+              let allSamplesInstalled = true;
+              results.forEach((result) => {
+                if(!result.installed) {
+                  allSamplesInstalled = false;
+                  console.log('The sample:' + result.sample + ' could not be installed, check if the url is right');
+                }
+              });
+              if(allSamplesInstalled) {
+                console.log('All samples were installed correctly');
               }
+              dbService.markSamplesAsInstalled();
+              resolve();
             });
-            if(allSamplesInstalled) {
-              console.log('All samples were installed correctly');
-            }
-            //dbService.markSamplesAsInstalled();
-            showBanner();
-          });
-      }
-    });
+        }
+      });
+
+  });
+
+
 }
 
 function  downloadSamplesAndInstall() {

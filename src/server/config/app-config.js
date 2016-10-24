@@ -262,6 +262,7 @@ export {
 
 let triggersDBService = new DBService(config.triggers.db);
 let activitiesDBService = new DBService(config.activities.db);
+let flowsDBService = new DBService(config.db);
 let dbService = new DBService(config.db);
 
 let engines = {
@@ -271,6 +272,9 @@ let engines = {
 
 export {
   triggersDBService
+};
+export {
+  flowsDBService
 };
 export {
   activitiesDBService
