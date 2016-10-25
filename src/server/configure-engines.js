@@ -1,5 +1,7 @@
-import {installAndConfigureTasks} from './modules/init';
+
+import {installAndConfigureTasks,installSamples} from './modules/init';
 import {getInitialisedTestEngine,getInitialisedBuildEngine} from './modules/engine';
+
 installAndConfigureTasks()
   .then(()=> {
     console.log("[log] init test engine done");
@@ -9,7 +11,10 @@ installAndConfigureTasks()
     console.log("[log] init test engine done");
     return getInitialisedBuildEngine();
   })
+  .then(() => {
+    return installSamples();
+  })
   .catch(error => {
     console.error(error);
     console.error(error.stack);
-  })
+  });
