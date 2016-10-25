@@ -14,6 +14,12 @@ var helpers = require('./helpers');
 describe('flogo web', function () {
   var flowName = 'My test flow';
 
+  beforeAll(function() {
+    browser.get(`http://${HOST}:${PORT}`);
+    browser.executeScript('localStorage.setItem("flogo-show-instructions","true");');
+  });
+
+
   it('should create a flow', function () {
     browser.get(`http://${HOST}:${PORT}`);
     loadingIndicator.wait();

@@ -3,6 +3,8 @@ import { FlogoInstallerCategorySelectorComponent } from '../../flogo.installer.c
 import { FlogoInstallerListViewComponent } from '../../flogo.installer.list-view/components/list-view.component';
 import { FlogoInstallerBaseComponent } from '../../flogo.installer.base-installer/components/base-installer.component';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+
 import {
   FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
   FLOGO_INSTALLER_STATUS_INSTALL_FAILED
@@ -17,12 +19,14 @@ import {
   ],
   templateUrl : 'activity-installer.tpl.html',
   inputs : [ 'query: flogoSearchQuery', 'status: flogoInstallerStatus' ],
-  styleUrls : [ 'activity-installer.component.css' ]
+  styleUrls : [ 'activity-installer.component.css' ],
+  pipes: [TranslatePipe]
 } )
 export class FlogoInstallerActivityComponent extends FlogoInstallerBaseComponent {
 
-  constructor( private _restAPIActivitiesService : RESTAPIActivitiesService ) {
-    super();
+  constructor( private _restAPIActivitiesService : RESTAPIActivitiesService,
+               public translate: TranslateService) {
+    super(translate);
 
     this.init();
   }

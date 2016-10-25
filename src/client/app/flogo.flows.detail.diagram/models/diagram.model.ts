@@ -12,6 +12,7 @@ import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { genBranchLine } from '../../../common/utils';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 //import * as moment from 'moment';
 
@@ -64,6 +65,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   constructor( diagram : IFlogoFlowDiagram,
     private tasks : IFlogoFlowDiagramTaskDictionary,
+   public translate: TranslateService,
     private elm ? : HTMLElement,
     private diagramType? : string) {
     this.updateDiagram( diagram );
@@ -868,13 +870,16 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleUpdateNodeMenus( nodeMenus : any ) {
     let diagram = this;
+    let textAddBranch = this.translate.get('DIAGRAM:ADD-BRANCH')['value'];
+    let textTransform = this.translate.get('DIAGRAM:TRANSFORM')['value'];
+    let textDelete = this.translate.get('DIAGRAM:DELETE')['value'];
 
     nodeMenus.html( ( nodeInfo : any, ignore : number, idxInTotalNodes : number ) => {
-      let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i ${diagram.ng2StyleAttr} class="fa fa-plus"></i>Add branch</li>`;
+      let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i ${diagram.ng2StyleAttr} class="fa fa-plus"></i>${textAddBranch}</li>`;
 
-      let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i>Transform</li>`;
+      let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i>${textTransform}</li>`;
 
-      let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i ${diagram.ng2StyleAttr} class="fa fa-trash-o"></i>Delete</li>`;
+      let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i ${diagram.ng2StyleAttr} class="fa fa-trash-o"></i>${textDelete}</li>`;
 
       let tplGear = `<span ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuGear}"></span>`;
 

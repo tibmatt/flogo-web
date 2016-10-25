@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 export interface IOptions {
   primary?: string
@@ -7,13 +8,13 @@ export interface IOptions {
 
 @Injectable()
 export class FlogoModal {
-    constructor() {
+    constructor(public translate: TranslateService) {
     }
   confirmDelete(message, styles?: {
     [key : string] : string;
     }) {
-      var options = {primary: 'DELETE', secondary:'CANCEL'};
-      return this.confirm('Confirm deletion', message, options);
+      var options = {primary: this.translate.get('MODAL:DELETE')['value'], secondary:this.translate.get('MODAL:CANCEL')['value']};
+      return this.confirm(this.translate.get('MODAL:CONFIRM-DELETION')['value'], message, options);
     }
     confirm(title, message, options : IOptions, styles?: {
         [key : string] : string;

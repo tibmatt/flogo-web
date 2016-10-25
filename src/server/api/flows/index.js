@@ -79,6 +79,40 @@ function filterFlows(query){
     });
 }
 
+function getActivities() {
+  return new Promise( (resolve, reject) => {
+    activitiesDBService.allDocs({ include_docs: true })
+      .then( (activities)=> {
+        let all = activities.map((activity)=> {
+          return  {
+            name: activity._id,
+            type: FLOGO_TASK_TYPE.TASK
+          };
+        });
+        resolve(all);
+      }).catch((err)=>{
+          reject(err);
+      });
+  });
+}
+
+function getTriggers() {
+  return new Promise( (resolve, reject) => {
+    triggersDBService.allDocs({ include_docs: true })
+      .then( (activities)=> {
+        let all = activities.map((activity)=> {
+          return  {
+            name: activity._id,
+            type: FLOGO_TASK_TYPE.TASK_ROOT
+          };
+        });
+        resolve(all);
+      }).catch((err)=>{
+      reject(err);
+    });
+  });
+}
+
 function createFlow(flowObj){
   return new Promise((resolve, reject)=>{
     _dbService.create(flowObj).then((response)=>{
@@ -577,9 +611,7 @@ function * importFlowFromJson( next ) {
       console.error( '[ERROR]: ', importedFile );
       this.throw( 400, 'Unsupported file type: ' + importedFile.type + '; Support application/json only.' );
     } else {
-
       /* processing the imported file */
-
       let imported;
 
       // read file data into string
@@ -598,24 +630,117 @@ function * importFlowFromJson( next ) {
         this.throw( 400, 'Invalid JSON data.' );
       }
 
-      // create the flow with the parsed imported data
-      let createFlowResult;
+      let activities = yield getActivities();
+      let triggers  = yield getTriggers();
+      let validateErrors = [];
+
       try {
-        createFlowResult = yield createFlow( imported );
-      } catch ( err ) {
-        console.error( '[ERROR]: ', err );
-        this.throw( 500, 'Fail to create flow.', { expose : true } );
+        validateErrors = validateTriggersAndActivities(imported, triggers, activities);
+        console.log('validate errors is');
+        console.log(validateErrors);
+      }catch (err) {
+        this.throw(err);
       }
-
-      this.body = createFlowResult;
+      if(validateErrors.hasErrors) {
+        let details = {
+          type: 1,
+          message: 'Flow could not be imported, missing triggers/activities',
+          details: {
+            activities: validateErrors.activities,
+            triggers: validateErrors.triggers
+          }
+        };
+        this.response.status = 400;
+        this.body = details;
+        //this.throw(400, details);
+      } else {
+        // create the flow with the parsed imported data
+        let createFlowResult;
+        try {
+          createFlowResult = yield createFlow( imported );
+        } catch ( err ) {
+          console.error( '[ERROR]: ', err );
+          this.throw( 500, 'Fail to create flow.', { expose : true } );
+        }
+        this.body = createFlowResult;
+      }
     }
-
   } else {
     console.log( this.request.body.files );
     this.throw( 400, 'Invalid file.' );
   }
 
   yield next;
+}
+
+function validateTriggersAndActivities (flow, triggers, activities) {
+  let validate = { activities: [], triggers: [], hasErrors: false};
+
+  try {
+    console.log('triggers are');
+    console.log(triggers);
+
+    console.log('activities');
+    console.log(activities);
+
+    let installedTiles = triggers.concat(activities);
+    let tilesMainFlow = getTilesFromFlow(_.get(flow, 'items', []));
+    let tilesErrorFlow = getTilesFromFlow(_.get(flow, 'errorHandler.items', []));
+    let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
+      return elem.name + elem.type;
+    });
+    console.log('All tiles flow');
+    console.log(allTilesFlow);
+
+    allTilesFlow.forEach( (tile) => {
+      let index = installedTiles.findIndex((installed)=> {
+        return installed.name == tile.name && installed.type == tile.type;
+      });
+
+      if(index == -1) {
+        validate.hasErrors = true;
+        if(tile.type == FLOGO_TASK_TYPE.TASK_ROOT) {
+          validate.triggers.push(tile.name);
+        } else {
+          validate.activities.push(tile.name);
+        }
+      }
+    });
+  } catch(err) {
+    this.throw(err);
+  }
+
+  return validate;
+}
+
+function getTilesFromFlow(items) {
+    let tiles = [];
+
+    for(var key in items)  {
+      let item = items[key];
+
+      if(item.type == FLOGO_TASK_TYPE.TASK_ROOT || item.type == FLOGO_TASK_TYPE.TASK) {
+        if(item.triggerType&&item.triggerType=='__error-trigger') {
+          console.log('Ignoring error trigger')
+        }else {
+          let tile = {
+              type: item.type,
+              name: item.triggerType || item.activityType,
+              homepage: item.homepage || ''
+          };
+          let index = tiles.findIndex((obj)=> {
+            return tile.type == obj.type && tile.name == obj.name;
+          });
+          if(index == -1) {
+            tiles.push(tile);
+          }
+        }
+
+      }
+    }
+
+  return tiles;
+
 }
 
 /**

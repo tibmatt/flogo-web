@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {FlogoFormBuilderFieldsBase} from '../fields.base/fields.base.component';
 import {DEFAULT_VALUES_OF_TYPES as DEFAULT_VALUES} from '../../../../common/constants'
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 const EMPTY_OPTION = '<empty>';
 
@@ -11,7 +12,8 @@ const EMPTY_OPTION = '<empty>';
   moduleId: module.id,
   templateUrl: 'fields.listbox.tpl.html',
   directives: [ROUTER_DIRECTIVES],
-  inputs:['_info:info','_fieldObserver:fieldObserver']
+  inputs:['_info:info','_fieldObserver:fieldObserver'],
+  pipes: [TranslatePipe]
 })
 
 export class FlogoFormBuilderFieldsListBox  extends FlogoFormBuilderFieldsBase {
@@ -20,8 +22,8 @@ export class FlogoFormBuilderFieldsListBox  extends FlogoFormBuilderFieldsBase {
   options:any[] = [];
 
 
-  constructor() {
-    super();
+  constructor(public translate: TranslateService) {
+    super(translate);
   }
 
   ngOnInit() {

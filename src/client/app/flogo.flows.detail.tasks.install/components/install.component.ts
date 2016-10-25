@@ -1,11 +1,13 @@
 import { Component, EventEmitter } from '@angular/core';
 import { FlogoInstallerComponent } from '../../flogo.installer/components/installer.component';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component( {
   selector : 'flogo-flows-detail-tasks-install',
   directives : [ FlogoInstallerComponent ],
   outputs : [ 'onInstalled: flogoOnInstalled' ],
   moduleId : module.id,
+  pipes: [TranslatePipe],
   templateUrl : 'install.tpl.html',
 } )
 export class FlogoFlowsDetailTasksInstallComponent {
@@ -14,7 +16,7 @@ export class FlogoFlowsDetailTasksInstallComponent {
   private isActivated = false;
   onInstalled = new EventEmitter();
 
-  constructor() {
+  constructor(public translate: TranslateService) {
     this.isActivated = false;
   }
 

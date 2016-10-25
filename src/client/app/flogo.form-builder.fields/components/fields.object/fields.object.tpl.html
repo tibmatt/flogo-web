@@ -2,7 +2,7 @@
 
   <div class="flogo-fields-header-field">
     <label class="control-label">{{_info.title}}</label>
-    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >Optional</label>
+    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >{{ 'FIELDS:OPTIONAL' | translate }}</label>
   </div>
 
   <textarea rows="5"

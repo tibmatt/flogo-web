@@ -1,8 +1,10 @@
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../../common/constants';
 import {Component} from '@angular/core';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
-  inputs:['_info:info','_fieldObserver:fieldObserver']
+  inputs:['_info:info','_fieldObserver:fieldObserver'],
+  pipes: [TranslatePipe]
 })
 export class FlogoFormBuilderFieldsBase{
   _info:any;
@@ -10,7 +12,7 @@ export class FlogoFormBuilderFieldsBase{
   _errorMessage:string;
   _fieldObserver: any;
 
-  constructor() {
+  constructor(public translate: TranslateService) {
     this._hasError = false;
   }
 
@@ -39,8 +41,10 @@ export class FlogoFormBuilderFieldsBase{
     var value = event.target.value || '';
 
     if(this._info.required) {
+      debugger;
       if(!value.trim()) {
-        this._errorMessage = this._info.title + ' is required';
+        //this._errorMessage = this._info.title + ' is required';
+        this._errorMessage = this.translate.get('FIELDS-BASE:TITLE-REQUIRED', {value: this._info.title})['value'];
         this._hasError = true;
         this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}) );
         return;
