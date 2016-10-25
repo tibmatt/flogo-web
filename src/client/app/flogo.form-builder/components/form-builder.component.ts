@@ -188,7 +188,7 @@ export class FlogoFormBuilderComponent{
     });
 
     if(item) {
-      item.value = changedObject.value
+      item.value = _.isEmpty(changedObject.value) ? null :changedObject.value;
     }
 
   }

@@ -76,3 +76,5 @@ contrib/
 .vscode/
 .build-cache
 submodules/
+Dockerfile
+docker-start.sh

@@ -79,7 +79,7 @@ function filterFlows(query){
     });
 }
 
-function getActivities() {
+export function getActivities() {
   return new Promise( (resolve, reject) => {
     activitiesDBService.allDocs({ include_docs: true })
       .then( (activities)=> {
@@ -96,7 +96,7 @@ function getActivities() {
   });
 }
 
-function getTriggers() {
+export function getTriggers() {
   return new Promise( (resolve, reject) => {
     triggersDBService.allDocs({ include_docs: true })
       .then( (activities)=> {
@@ -148,6 +148,7 @@ export function flows(app, router){
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
 
+  router.post(basePath+'/flows/json-file', importFlowFromJsonFile);
   router.post(basePath+'/flows/json', importFlowFromJson);
   router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
@@ -572,6 +573,66 @@ function * exportFlowInJsonById( next ) {
  *            type: object
  */
 
+function validateFlow(flow, activities, triggers) {
+  return new Promise((resolve, reject) => {
+    let validateErrors = [];
+
+    try {
+      validateErrors = validateTriggersAndActivities(flow, triggers, activities);
+    }catch (err) {
+      //context.throw(err);
+      resolve({status:500, details:err});
+    }
+    if(validateErrors.hasErrors) {
+      let details = {
+        type: 1,
+        message: 'Flow could not be imported, missing triggers/activities',
+        details: {
+          activities: validateErrors.activities,
+          triggers: validateErrors.triggers
+        }
+      };
+      //context.response.status = 400;
+      //context.body = details;
+      //this.throw(400, details);
+      resolve({status:400, details:details})
+    }
+    resolve({status:200})
+  });
+}
+
+export function  createFlowFromJson(imported ) {
+  return new Promise( (resolve, reject) => {
+    let activities, triggers;
+    getActivities()
+      .then((items)=> {
+        activities = items;
+        getTriggers()
+          .then((items)=>{
+            triggers = items;
+            validateFlow(imported,activities,triggers)
+              .then((res) => {
+                if(res.status == 200) {
+                  createFlow( imported )
+                    .then((createFlowResult)=> {
+                      resolve({status: res.status, details:createFlowResult});
+                    })
+                    .catch((err) => {
+                      resolve( {status:500, details: {message:'Fail to create flow.', expose : true} } );
+                    });
+                }else {
+                  resolve(res);
+                }
+              });
+
+          })
+      })
+
+
+
+   });
+}
+
 /**
  * @swagger
  *  /flows/json:
@@ -584,7 +645,10 @@ function * exportFlowInJsonById( next ) {
  *          in: body
  *          required: true
  *          schema:
- *            $ref: '#/definitions/Flow'
+ *            type: object
+ *            properties:
+ *              flow:
+ *                $ref: '#/definitions/Flow'
  *      responses:
  *        '200':
  *          description: Flow imported successfully.
@@ -599,8 +663,29 @@ function * exportFlowInJsonById( next ) {
  *              rev:
  *                type: string
  */
-function * importFlowFromJson( next ) {
+function * importFlowFromJson(next ) {
   console.log( '[INFO] Import flow from JSON' );
+  let flow = _.get( this, 'request.body.flow' );
+
+  if ( _.isObject( flow ) && !_.isEmpty( flow ) ) {
+      let imported = flow;
+      console.log('IMPORTED IS');
+      console.log(imported);
+
+      let responseCreateFlow = yield createFlowFromJson(imported);
+      this.body = responseCreateFlow.details;
+      this.response.status = responseCreateFlow.status;
+
+  } else {
+    this.throw( 400, 'Flow is empty' );
+  }
+
+  yield  next;
+
+}
+
+function * importFlowFromJsonFile( next ) {
+  console.log( '[INFO] Import flow from JSON File' );
 
   let importedFile = _.get( this, 'request.body.files.importFile' );
 
@@ -630,40 +715,9 @@ function * importFlowFromJson( next ) {
         this.throw( 400, 'Invalid JSON data.' );
       }
 
-      let activities = yield getActivities();
-      let triggers  = yield getTriggers();
-      let validateErrors = [];
-
-      try {
-        validateErrors = validateTriggersAndActivities(imported, triggers, activities);
-        console.log('validate errors is');
-        console.log(validateErrors);
-      }catch (err) {
-        this.throw(err);
-      }
-      if(validateErrors.hasErrors) {
-        let details = {
-          type: 1,
-          message: 'Flow could not be imported, missing triggers/activities',
-          details: {
-            activities: validateErrors.activities,
-            triggers: validateErrors.triggers
-          }
-        };
-        this.response.status = 400;
-        this.body = details;
-        //this.throw(400, details);
-      } else {
-        // create the flow with the parsed imported data
-        let createFlowResult;
-        try {
-          createFlowResult = yield createFlow( imported );
-        } catch ( err ) {
-          console.error( '[ERROR]: ', err );
-          this.throw( 500, 'Fail to create flow.', { expose : true } );
-        }
-        this.body = createFlowResult;
-      }
+      let responseCreateFlow = yield createFlowFromJson(imported);
+      this.body = responseCreateFlow.details;
+      this.response.status = responseCreateFlow.status;
     }
   } else {
     console.log( this.request.body.files );
@@ -677,20 +731,12 @@ function validateTriggersAndActivities (flow, triggers, activities) {
   let validate = { activities: [], triggers: [], hasErrors: false};
 
   try {
-    console.log('triggers are');
-    console.log(triggers);
-
-    console.log('activities');
-    console.log(activities);
-
     let installedTiles = triggers.concat(activities);
     let tilesMainFlow = getTilesFromFlow(_.get(flow, 'items', []));
     let tilesErrorFlow = getTilesFromFlow(_.get(flow, 'errorHandler.items', []));
     let allTilesFlow = _.uniqBy(tilesMainFlow.concat(tilesErrorFlow), (elem) => {
       return elem.name + elem.type;
     });
-    console.log('All tiles flow');
-    console.log(allTilesFlow);
 
     allTilesFlow.forEach( (tile) => {
       let index = installedTiles.findIndex((installed)=> {

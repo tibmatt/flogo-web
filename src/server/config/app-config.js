@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { extractDomain } from '../common/utils';
 import _ from 'lodash';
@@ -262,6 +263,7 @@ export {
 
 let triggersDBService = new DBService(config.triggers.db);
 let activitiesDBService = new DBService(config.activities.db);
+let flowsDBService = new DBService(config.db);
 let dbService = new DBService(config.db);
 
 let engines = {
@@ -271,6 +273,9 @@ let engines = {
 
 export {
   triggersDBService
+};
+export {
+  flowsDBService
 };
 export {
   activitiesDBService
@@ -302,4 +307,15 @@ export function setConfiguration(newSettings) {
 
 export function resetConfiguration() {
   config = _.cloneDeep(originalConfig);
+}
+
+
+export function loadSamplesConfig() {
+  let samples = [];
+  try {
+    samples = JSON.parse(fs.readFileSync(path.join(__dirname, 'samples.json'), 'utf8'));
+  } catch(e) {
+    // nothing to do
+  }
+  return samples;
 }
