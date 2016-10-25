@@ -23,7 +23,7 @@ export class FlogoFlowsDetailTasks {
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( private _postService : PostService,  private _restAPIActivitiesService: RESTAPIActivitiesService ) {
+  constructor( public translate : TranslateService, private _postService : PostService,  private _restAPIActivitiesService: RESTAPIActivitiesService ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     this.initSubscribe();

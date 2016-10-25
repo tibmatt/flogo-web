@@ -7,7 +7,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import {CONFIG} from '../../config';
 
 let tsProject = ts.createProject('tsconfig.json', {
-  typescript: require('typescript')
+  //typescript: require('typescript')
 });
 
 /**
@@ -19,7 +19,7 @@ gulp.task('dev.client.typescript', 'Compile typescript sources to build dir', []
   return gulp.src(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client})
     .pipe(sourcemaps.init())
     .pipe(changed(dest, {extension: '.js'}))
-    .pipe(ts(tsProject))
+    .pipe(tsProject())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(dest));
 });

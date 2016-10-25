@@ -11,11 +11,11 @@
     <modal-body>
         <div class="form-group">
             <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
-            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="{{ translate.get('ADD:GIVE-YOUR-FLOW-A-NAME').value }}">
+            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="{{ translate.instant('ADD:GIVE-YOUR-FLOW-A-NAME') }}">
         </div>
         <div class="form-group">
             <label for="flowDescription" class="h4">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>
-            <textarea class="form-control" [(ngModel)]="flowInfo.description" rows="3" id="flowDescription" placeholder="{{ translate.get('ADD:ADD-FLOW-DESCRIPTION').value }}"></textarea>
+            <textarea class="form-control" [(ngModel)]="flowInfo.description" rows="3" id="flowDescription" placeholder="{{ translate.instant('ADD:ADD-FLOW-DESCRIPTION') }}"></textarea>
         </div>
     </modal-body>
     <modal-footer>

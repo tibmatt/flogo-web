@@ -7,7 +7,7 @@
       <header class="flogo-flow-detail-header col-sm-10">
         <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
-           placeholder="{{ translate.get('CANVAS:ADD-FLOW-DESCRIPTION').value }}"
+           placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
 

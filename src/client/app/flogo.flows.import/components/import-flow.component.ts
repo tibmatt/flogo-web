@@ -57,7 +57,7 @@ export class FlogoFlowsImport {
     return errorMessage;
   }
 
-  private onFileChange( evt : any ) {
+  public onFileChange( evt : any ) {
     let importFile = <File> _.get( evt, 'target.files[0]' );
 
     if ( _.isUndefined( importFile ) ) {
