@@ -41,7 +41,6 @@ export class FlogoFormBuilderFieldsBase{
     var value = event.target.value || '';
 
     if(this._info.required) {
-      debugger;
       if(!value.trim()) {
         //this._errorMessage = this._info.title + ' is required';
         this._errorMessage = this.translate.get('FIELDS-BASE:TITLE-REQUIRED', {value: this._info.title})['value'];
