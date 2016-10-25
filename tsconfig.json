@@ -15,11 +15,11 @@
     "noImplicitReturns": true,
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": [
+      "node"
+    ]
   },
-   "types": [
-    "node"
-  ],
   "exclude":[
     "node_modules",
     "src/client/node_modules",
