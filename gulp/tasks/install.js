@@ -16,6 +16,13 @@ gulp.task('install.client', 'Install client dependencies', () =>{
 });
 
 /**
+ * Install client dependencies
+ */
+gulp.task('install.client.dist', 'Install client dependencies', () =>{
+  return cp.execSync('npm install', {cwd: CONFIG.paths.dist.public});
+});
+
+/**
  * Install server dependencies
  */
 gulp.task('install.server', 'Install server dependencies', () => {

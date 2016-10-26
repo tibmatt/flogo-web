@@ -1,4 +1,5 @@
 import cp from 'child_process';
+import http from 'http';
 
 import gulp from 'gulp';
 
@@ -27,7 +28,8 @@ gulp.task('dist.build-engines', 'Starts server app and db in production mode', [
       console.log('dist.build-engines Finished');
       cb();
 
-    });
+    })
+    .catch(e => cb(e));
 
 });
 
@@ -62,7 +64,7 @@ function DB() {
           return resolve(dbProcess);
         }
 
-        let timeout = setTimeout(() => reject(new Error('DB process start timed out')), 10000);
+        //let timeout = setTimeout(() => reject(new Error('DB process start timed out')), 10000);
         dbProcess = cp.spawn('npm', ['run', 'start-db'], {
           cwd: CONFIG.paths.dist.server,
           detached: true,
@@ -70,11 +72,28 @@ function DB() {
         });
 
         dbProcess.stdout.on('data', function (data) {
-          if (/\[info\] pouchdb-server has started/.test(data)) {
-            clearTimeout(timeout);
-            resolve(dbProcess);
-          }
+          console.log('[DB Output:]', data.toString());
         });
+
+        let pingAttempt = 1;
+        let MAX_ATTEMPTS = 10;
+        (function attemptToPingDb() {
+          console.log('Waiting for DB: ' + pingAttempt);
+          pingDb()
+            .then(r => {
+              console.log('DB reached, response: ', r);
+              resolve(dbProcess)
+            })
+            .catch(e => {
+              console.log(`Db reach attempt ${pingAttempt} failed with response`, e);
+              pingAttempt++;
+              if(pingAttempt < MAX_ATTEMPTS) {
+                setTimeout(() => attemptToPingDb(), 5000);
+              } else {
+                reject(new Error('DB process start timed out'));
+              }
+            });
+        })();
 
       });
 
@@ -85,5 +104,25 @@ function DB() {
       }
     }
   };
+
+}
+
+function pingDb() {
+
+  return new Promise((resolve, reject) => {
+    http.get('http://127.0.0.1:5984/_all_dbs', response => {
+      var body = '';
+      response.on('data', function(d) {
+          body += d;
+      });
+      response.on('end', function() {
+          // Data reception is done, do whatever with it!
+          //var parsed = JSON.parse(body);
+          resolve(body);
+      });
+    }).on('error', (e) => {
+      reject(e);
+    });
+  });
 
 }

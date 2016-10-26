@@ -9,7 +9,7 @@ import del from 'del';
 gulp.task('clean', 'Delete application files from client and server dist folders to have a clean state for build process', ['clean.client', 'clean.server']);
 
 gulp.task('clean.client', 'Delete application files from client dist folder', () => {
-  return del.sync(['**/*', '!web.log', '!engine.log'], {cwd: CONFIG.paths.dist.public});
+  return del.sync(['**/*', '!node_modules/**', '!web.log', '!engine.log'], {cwd: CONFIG.paths.dist.public});
 });
 
 gulp.task('clean.server', 'Delete application files from server dist folder', () => {

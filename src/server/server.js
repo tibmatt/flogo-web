@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 import path from 'path';
+var fs = require('fs');
 
 import koa from 'koa';
 import koaStatic from 'koa-static';
@@ -7,16 +8,15 @@ var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
 
-import { inspectObj } from './common/utils';
-import {config, triggersDBService, activitiesDBService} from './config/app-config';
+import {config, triggersDBService, activitiesDBService, flowsDBService} from './config/app-config';
 import {api} from './api';
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
-import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
+import { installAndConfigureTasks, loadTasksToEngines, installSamples } from './modules/init'
+
 
 // TODO Need to use cluster to improve the performance
 
 let app;
-
 /**
  * Server start logic
  *
@@ -31,9 +31,16 @@ if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
   startConfig = startConfig
     .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
     .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
+    .then(() => flowsDBService.verifyInitialDataLoad(path.resolve('db-init/installed-flows.init')))
     .then(() => loadTasksToEngines());
 } else {
-  startConfig = startConfig.then(installAndConfigureTasks);
+  startConfig = startConfig
+                .then(installAndConfigureTasks);
+
+  if ( process.env['FLOGO_INSTALL_SAMPLES'] ) {
+    startConfig = startConfig.then(installSamples);
+  }
+
 }
 
 startConfig
@@ -65,6 +72,7 @@ startConfig
     console.log( `[log] start web server...` );
     return initServer();
   } )
+  .then(showBanner)
   .catch( ( err )=> {
     console.log( err );
     throw err;
@@ -133,13 +141,14 @@ function initServer() {
 
     app.listen( port, ()=> {
       console.log( `[log] start web server done.` );
-      showInitBanner();
+
+
       resolve( app );
     } );
   } );
 }
 
-function showInitBanner() {
+function showBanner() {
   console.log("=============================================================================================");
   console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
   console.log("=============================================================================================");
