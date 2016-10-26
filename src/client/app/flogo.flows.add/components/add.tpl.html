@@ -11,7 +11,8 @@
     <modal-body>
         <div class="form-group">
             <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
-            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="{{ translate.get('ADD:GIVE-YOUR-FLOW-A-NAME').value }}">
+            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" (keyup)="onChangeFlowName($event)" placeholder="{{ translate.get('ADD:GIVE-YOUR-FLOW-A-NAME').value }}">
+            <label *ngIf="flowNameExists" for="flowName" class="flogo-flows-add-error">{{ 'ADD:FLOW-NAME-EXISTS' | translate }} </label>
         </div>
         <div class="form-group">
             <label for="flowDescription" class="h4">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>

@@ -5,6 +5,7 @@
   "ADD:FILTER-TASKS":"Filter tasks",
   "ADD:FLOW-DESCRIPTION":"Flow description",
   "ADD:FLOW-NAME":"Flow name",
+  "ADD:FLOW-NAME-EXISTS":"Flow with same name exists, please choose another name.",
   "ADD:GIVE-YOUR-FLOW-A-NAME": "Give your flow a name",
   "ADD:SAVE":"SAVE",
   "CANVAS:ADD-FLOW-DESCRIPTION": "Add flow's description",
