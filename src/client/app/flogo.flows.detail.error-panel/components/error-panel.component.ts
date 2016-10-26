@@ -23,6 +23,7 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
   isClosing: boolean = false;
 
   isScreenScrolled: boolean  = false;
+  imgErrorHandler : string = "/assets/svg/error-icon-info.svg";
 
   private subscriptions : Array<any>;
 
@@ -42,8 +43,10 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
 
       if(this.isOpen) {
         this.postService.publish( _.assign( {}, PUB_EVENTS.openPanel, { data : {} } ) );
+        this.imgErrorHandler = "/assets/svg/error-icon-close.svg"
       } else {
         this.postService.publish( _.assign( {}, PUB_EVENTS.closePanel, { data : {} } ) );
+        this.imgErrorHandler = "/assets/svg/error-icon-info.svg";
       }
 
     }, 100);
