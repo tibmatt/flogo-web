@@ -139,6 +139,7 @@ export function flows(app, router){
   }
 
   router.get(basePath+"/flows", getFlows);
+  router.get(basePath+"/flows/byname", getFlowByName);
   router.post(basePath+"/flows", createFlows);
   router.delete(basePath+"/flows", deleteFlows);
 
@@ -229,6 +230,22 @@ function * addTrigger(next){
 
   this.body = response;
 }
+
+function * getFlowByName(next) {
+  let params = _.assign({},{value:''}, this.request.body || {}, this.query)
+  console.log('The params are');
+  console.log(params);
+  let flow = yield _getFlowByName(params.value);
+
+  if(!flow) {
+    if(!flow) { this.throw(ERROR_CODE_BADINPUT, ERROR_FLOW_NOT_FOUND, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} ); }
+  }else {
+    this.body = flow;
+  }
+
+  yield next;
+}
+
 
 function * addActivity(next){
   let response = {};
@@ -556,6 +573,24 @@ function _getActivityByName(activityName) {
   return new Promise(function (resolve, reject) {
     _dbActivities.db
       .query(function(doc, emit) {emit(doc._id);}, {key:activity, include_docs:true})
+      .then(function (response) {
+        let rows = response&&response.rows||[];
+        let doc = rows.length > 0 ? rows[0].doc : null;
+        resolve(doc);
+
+      }).catch(function (err) {
+      reject(err);
+    });
+  });
+}
+
+function _getFlowByName(value) {
+  let _dbFlows = dbService;
+  let searchValue = value;
+
+  return new Promise(function (resolve, reject) {
+    _dbFlows.db
+      .query(function(doc, emit) {emit(doc.name);}, {key:searchValue, include_docs:true})
       .then(function (response) {
         let rows = response&&response.rows||[];
         let doc = rows.length > 0 ? rows[0].doc : null;
