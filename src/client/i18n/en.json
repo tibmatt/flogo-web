@@ -36,6 +36,7 @@
   "FLOGO:LINK-PRIVACY-POLICY": "Privacy Policy",
   "FLOGO:LINK-TERMS-OF-USE": "Terms of Use",
   "FLOGO:LINK-TRADEMARKS": "Trademarks",
+  "FLOW-NAME:RENAME": "Rename flow",
   "FLOWS:CREATED": "Created {{value}}",
   "FLOWS:ERROR-MESSAGE-IMPORT":"{{value}}",
   "FLOWS:ERROR-MESSAGE-REMOVE-FLOW": "Remove flow error: {{value}}",

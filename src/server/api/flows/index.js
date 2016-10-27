@@ -40,8 +40,6 @@ function getAllFlows(){
         }
       });
       resolve(allFlows);
-      // console.log(allFlows);
-      //this.body = allFlows;
     }).catch((err)=>{
       reject(err);
     });
@@ -155,17 +153,12 @@ export function flows(app, router){
 }
 
 function* getFlows(next){
-  console.log("getFlows, next: ", next);
-  //this.body = 'getFlows';
-
   let data = [];
   if (!_.isEmpty(this.query)) {
     data = yield filterFlows(this.query);
   } else {
     data = yield getAllFlows();
   }
-  //yield next;
-  console.log(data);
   this.body = data;
 }
 
@@ -185,7 +178,6 @@ function* createFlows(next){
     flowObj.$table = _dbService.getIdentifier("FLOW");
     flowObj.paths = {};
     flowObj.items = {};
-    console.log(flowObj);
     let res = yield createFlow(flowObj);
     this.body = res;
   }catch(err){
@@ -205,7 +197,6 @@ function* deleteFlows(next){
 
 function * addTrigger(next){
   let response = {};
-  console.log('ADDKING TRIGGER...........');
   //TODO validate this query is json
   var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
 
@@ -233,8 +224,6 @@ function * addTrigger(next){
 
 function * getFlowByName(next) {
   let params = _.assign({},{value:''}, this.request.body || {}, this.query)
-  console.log('The params are');
-  console.log(params);
   let flow = yield _getFlowByName(params.value);
 
   if(!flow) {
@@ -417,9 +406,6 @@ function * importFlowFromJson(next ) {
 
   if ( _.isObject( flow ) && !_.isEmpty( flow ) ) {
       let imported = flow;
-      console.log('IMPORTED IS');
-      console.log(imported);
-
       let responseCreateFlow = yield createFlowFromJson(imported)
       this.body = responseCreateFlow.details;
       this.response.status = responseCreateFlow.status;
@@ -436,6 +422,8 @@ function * importFlowFromJsonFile( next ) {
   console.log( '[INFO] Import flow from JSON File' );
 
   let importedFile = _.get( this, 'request.body.files.importFile' );
+  let params = _.get(this, 'request.query', {});
+
 
   if ( _.isObject( importedFile ) && !_.isEmpty( importedFile ) ) {
 
@@ -458,6 +446,9 @@ function * importFlowFromJsonFile( next ) {
       // parse file date to object
       try {
         imported = JSON.parse( imported );
+        if(params['name']) {
+          imported.name = params.name;
+        }
       } catch ( err ) {
         console.error( '[ERROR]: ', err );
         this.throw( 400, 'Invalid JSON data.' );
@@ -586,11 +577,11 @@ function _getActivityByName(activityName) {
 
 function _getFlowByName(value) {
   let _dbFlows = dbService;
-  let searchValue = value;
+  let searchValue = value.toLowerCase();
 
   return new Promise(function (resolve, reject) {
     _dbFlows.db
-      .query(function(doc, emit) {emit(doc.name);}, {key:searchValue, include_docs:true})
+      .query(function(doc, emit) {emit(doc.name.toLowerCase());}, {key:searchValue, include_docs:true})
       .then(function (response) {
         let rows = response&&response.rows||[];
         let doc = rows.length > 0 ? rows[0].doc : null;

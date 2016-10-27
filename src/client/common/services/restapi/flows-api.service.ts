@@ -170,7 +170,7 @@ export class RESTAPIFlowsService{
       );
   }
 
-  importFlow( importFile : File ) {
+  importFlow( importFile : File, flowName:string ) {
     return new Promise( ( resolve, reject ) => {
       var formData = new FormData();
       var xhr = new XMLHttpRequest();
@@ -193,8 +193,8 @@ export class RESTAPIFlowsService{
           }
         }
       };
-
-      xhr.open( 'POST', '/v1/api/flows/json-file', true );
+      let url = '/v1/api/flows/json-file' + (flowName ? '?name='+ flowName : '') ;
+      xhr.open( 'POST', url, true );
       xhr.send( formData );
     } );
   }
