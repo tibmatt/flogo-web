@@ -1,0 +1,44 @@
+
+.flogo-flows-flow-name-save, .flogo-flows-flow-name-cancel{
+  width: 122px;
+  height: 45px;
+  font-size: 16px;
+}
+.flogo-flows-flow-name-cancel{
+  border: solid 2px #0081cb;
+  background: #fff;
+  color: #0081cb;
+  &:hover{
+    border-radius: 4px;
+  }
+  &:active{
+    color: #fff;
+    border-radius: 4px;
+    background-color: #062e79;
+    border: solid 2px #062e79;;
+  }
+}
+.flogo-flows-flow-name-save{
+  background-color: rgba(0, 129, 203, 0.5);
+  border: none;
+  color: #fff;
+  cursor: not-allowed;
+  &.allowed{
+    cursor: pointer;
+    opacity: 1;
+    background-color: #0081cb;
+    &:hover{
+      border-radius: 4px;
+      background-color: #0081cb;
+    }
+    &:active{
+      color: #fff;
+      border-radius: 4px;
+      background-color: #062e79;
+      border: solid 2px #062e79;;
+    }
+  }
+}
+.flogo-flows-flow-name-error {
+  color: red
+}
