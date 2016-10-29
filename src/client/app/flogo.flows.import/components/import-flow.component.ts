@@ -88,8 +88,22 @@ export class FlogoFlowsImport {
           }catch(exc) {
             objError = {};
           }
+          let errorCode = objError.details&&objError.details.ERROR_CODE || '';
 
-          if(err.status == 409) {
+          switch (errorCode) {
+            case 'NAME_EXISTS':
+              this.showFileNameDialog = true;
+                  break;
+            case 'ERROR_VALIDATION':
+              let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
+              this.onError.emit( {response: errorMessage} );
+                  break;
+            default:
+              this.onError.emit( err );
+          }
+
+          /*
+          if(err.type == 'NAME_EXISTS') {
             this.showFileNameDialog = true;
           }
           else {
@@ -100,6 +114,7 @@ export class FlogoFlowsImport {
               this.onError.emit( err );
             }
           }
+          */
 
 
         } );

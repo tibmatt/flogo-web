@@ -58,5 +58,6 @@ export class FlogoFlowsAdd {
     }
 
     public onChangeFlowName(event) {
+        this.flowNameExists = false;
     }
 }

@@ -97,7 +97,6 @@ export class DBService{
             doc['created_at'] = new Date().toISOString();
           }
           this._db.put(doc).then((response)=>{
-            //console.log("response: ", response);
             resolve(response);
           }).catch((err)=>{
             console.error(err);
@@ -106,7 +105,7 @@ export class DBService{
         })
         .catch((err)=> {
           let response = _.assign({},{status:500}, err);
-          if(err.status == 409) {
+          if(err.details.ERROR_CODE == 'NAME_EXISTS') {
             response.message = "Flow's name exists, please choose another name";
           }
           reject(response);
@@ -133,7 +132,8 @@ export class DBService{
           if(doc == null) {
             resolve({status:200, message:"Document doesn't exists"});
           } else {
-            reject({status:409, message:"Fail - Another document exists with the same name"});
+            reject({status:400, details: {message:"Fail - Another document exists with the same name",
+                    ERROR_CODE:"NAME_EXISTS"}});
           }
         }).catch(function (err) {
         reject({status:500, message: err.message});
@@ -176,7 +176,6 @@ export class DBService{
           _.assign( dbDoc, doc );
 
           return this._db.put( dbDoc ).then((response)=>{
-            console.log("response: ", response);
             resolve(response);
           }).catch((err)=>{
             console.error(err);
@@ -193,7 +192,6 @@ export class DBService{
     return new Promise((resolve, reject)=>{
       let ops = _.merge({}, defaultOptions, options||{});
       this._db.allDocs(ops).then((response)=>{
-        //console.log("[allDocs]response: ", response);
         let res = [];
         if(ops.include_docs){
           let rows = response&&response.rows||[];

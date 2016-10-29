@@ -151,7 +151,7 @@ export function flows(app, router){
   router.post(basePath+"/flows/activities", addActivity);
 
   router.post(basePath+'/flows/json-file', importFlowFromJsonFile);
-  router.post(basePath+'/flows/json', importFlowFromJson);
+  //router.post(basePath+'/flows/json', importFlowFromJson);
   router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
@@ -184,11 +184,13 @@ function* createFlows(next){
     let res = yield createFlow(flowObj);
     this.body = res;
   }catch(err){
+    /*
     var error = {
       code: 500,
       message: err.message
     };
-    this.body = error;
+    */
+    this.body = err;
   }
 }
 
@@ -351,28 +353,28 @@ function validateFlow(flow, activities, triggers) {
     try {
       validateErrors = validateTriggersAndActivities(flow, triggers, activities);
     }catch (err) {
-      //context.throw(err);
       resolve({status:500, details:err});
     }
     if(validateErrors.hasErrors) {
       let details = {
-        type: 1,
-        message: 'Flow could not be imported, missing triggers/activities',
         details: {
+          message: "Flow could not be imported, missing triggers/activities",
           activities: validateErrors.activities,
-          triggers: validateErrors.triggers
+          triggers: validateErrors.triggers,
+          ERROR_CODE: "ERROR_VALIDATION"
         }
       };
-      resolve({status:406, details:details})
+      reject({status:400, details:details})
+    }else {
+      resolve({status:200})
     }
-    resolve({status:200})
   });
 }
 
 export function  createFlowFromJson(imported ) {
   return new Promise( (resolve, reject) => {
     let activities, triggers;
-    getActivities()
+     getActivities()
       .then((items)=> {
         activities = items;
         getTriggers()
@@ -386,11 +388,14 @@ export function  createFlowFromJson(imported ) {
                       resolve({status: res.status, details:createFlowResult});
                     })
                     .catch((err) => {
-                      resolve( {status:err.status || 500, details: {message: err.message || 'Fail to create flow.', expose : true} } );
+                      resolve( {status:err.status || 500, details: err.details } );
                     });
                 }else {
                   resolve(res);
                 }
+              })
+              .catch((err) => {
+                reject(err);
               });
 
           })
@@ -401,23 +406,33 @@ export function  createFlowFromJson(imported ) {
    });
 }
 
+/*
 function * importFlowFromJson(next ) {
   console.log( '[INFO] Import flow from JSON' );
   let flow = _.get( this, 'request.body.flow' );
 
   if ( _.isObject( flow ) && !_.isEmpty( flow ) ) {
       let imported = flow;
-      let responseCreateFlow = yield createFlowFromJson(imported)
-      this.body = responseCreateFlow.details;
-      this.response.status = responseCreateFlow.status;
+      createFlowFromJson(imported)
+        .then((res)=> {
+          console.log('todo ok');
+          this.body  = res;
+        })
+        .catch((err)=> {
+          console.log('Rejecting final---');
+          console.log(err);
+          this.throw(400, '');
+        })
+
+      //this.body = responseCreateFlow.details;
+      //this.response.status = responseCreateFlow.status;
 
   } else {
     this.throw( 400, 'Flow is empty' );
   }
-
   yield  next;
-
 }
+*/
 
 function * importFlowFromJsonFile( next ) {
   console.log( '[INFO] Import flow from JSON File' );
@@ -456,9 +471,11 @@ function * importFlowFromJsonFile( next ) {
       }
 
       let responseCreateFlow = yield createFlowFromJson(imported);
-      this.body = responseCreateFlow.details;
-      responseCreateFlow.status;
+      console.log('------');
+      console.log(responseCreateFlow);
+      this.body = responseCreateFlow;
       this.response.status = responseCreateFlow.status;
+
     }
   } else {
     this.throw( 400, 'Invalid file.' );
