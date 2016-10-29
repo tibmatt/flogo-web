@@ -112,12 +112,15 @@ export function getTriggers() {
 }
 
 function createFlow(flowObj){
+
   return new Promise((resolve, reject)=>{
-    _dbService.create(flowObj).then((response)=>{
-      resolve(response);
-    }).catch((err)=>{
-      reject(err);
-    });
+    _dbService.create(flowObj)
+              .then((response)=>{
+                      resolve(response);
+              })
+              .catch((err)=>{
+                reject(err);
+              });
   });
 }
 
@@ -224,12 +227,13 @@ function * addTrigger(next){
 
 function * getFlowByName(next) {
   let params = _.assign({},{value:''}, this.request.body || {}, this.query)
-  let flow = yield _getFlowByName(params.value);
 
-  if(!flow) {
-    if(!flow) { this.throw(ERROR_CODE_BADINPUT, ERROR_FLOW_NOT_FOUND, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} ); }
+  var response = yield _getFlowByName(params.value);
+
+  if (response.status == 200) {
+    this.body = response.flow;
   }else {
-    this.body = flow;
+    this.throw(response.status, response.message, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} );
   }
 
   yield next;
@@ -359,10 +363,7 @@ function validateFlow(flow, activities, triggers) {
           triggers: validateErrors.triggers
         }
       };
-      //context.response.status = 400;
-      //context.body = details;
-      //this.throw(400, details);
-      resolve({status:400, details:details})
+      resolve({status:406, details:details})
     }
     resolve({status:200})
   });
@@ -385,7 +386,7 @@ export function  createFlowFromJson(imported ) {
                       resolve({status: res.status, details:createFlowResult});
                     })
                     .catch((err) => {
-                      resolve( {status:500, details: {message:'Fail to create flow.', expose : true} } );
+                      resolve( {status:err.status || 500, details: {message: err.message || 'Fail to create flow.', expose : true} } );
                     });
                 }else {
                   resolve(res);
@@ -456,10 +457,10 @@ function * importFlowFromJsonFile( next ) {
 
       let responseCreateFlow = yield createFlowFromJson(imported);
       this.body = responseCreateFlow.details;
+      responseCreateFlow.status;
       this.response.status = responseCreateFlow.status;
     }
   } else {
-    console.log( this.request.body.files );
     this.throw( 400, 'Invalid file.' );
   }
 
@@ -506,7 +507,6 @@ function getTilesFromFlow(items) {
 
       if(item.type == FLOGO_TASK_TYPE.TASK_ROOT || item.type == FLOGO_TASK_TYPE.TASK) {
         if(item.triggerType&&item.triggerType=='__error-trigger') {
-          console.log('Ignoring error trigger')
         }else {
           let tile = {
               type: item.type,
@@ -585,12 +585,18 @@ function _getFlowByName(value) {
       .then(function (response) {
         let rows = response&&response.rows||[];
         let doc = rows.length > 0 ? rows[0].doc : null;
-        resolve(doc);
-
-      }).catch(function (err) {
-      reject(err);
+        if(doc == null) {
+          resolve({status:404, message: 'Flow not found', flow:null});
+        } else {
+          resolve({status:200, flow:doc});
+        }
+      })
+      .catch(function (err) {
+         reject({status:500, message:'Error getting the flow', flow:null});
     });
+
   });
+
 }
 
 

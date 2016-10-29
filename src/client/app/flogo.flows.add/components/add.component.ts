@@ -34,7 +34,6 @@ export class FlogoFlowsAdd {
             })
             .catch((err) => {
                 // flow name doesn't exists
-                if(err.status == 400) {
                     this.flowNameExists = false;
                     if (this._sending) {
                         this._sending = false;
@@ -45,7 +44,6 @@ export class FlogoFlowsAdd {
                     } else {
                         // omit
                     }
-                }
 
             });
 

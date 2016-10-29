@@ -16,7 +16,7 @@ import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.
 export class FlogoFlowsFlowName implements OnChanges {
     show:boolean = false;
     repeatedName:string='';
-    correctName: EventEmitter<string> = new EventEmitter();
+    correctName: EventEmitter<any> = new EventEmitter();
     close: EventEmitter<boolean> = new EventEmitter();
     public flowName: string;
     public flowNameExists = true;

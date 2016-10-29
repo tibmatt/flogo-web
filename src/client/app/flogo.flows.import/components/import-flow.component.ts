@@ -89,12 +89,19 @@ export class FlogoFlowsImport {
             objError = {};
           }
 
-          if(objError.type == 1) {
-            let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
-            this.onError.emit( {response: errorMessage} );
-          } else {
-            this.onError.emit( err );
+          if(err.status == 409) {
+            this.showFileNameDialog = true;
           }
+          else {
+           if(err.status == 406) {
+              let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
+              this.onError.emit( {response: errorMessage} );
+           } else {
+              this.onError.emit( err );
+            }
+          }
+
+
         } );
 }
 
@@ -107,26 +114,17 @@ export class FlogoFlowsImport {
       var reader = new FileReader();
       reader.onload  = ((theFile)=> {
         return (e)=> {
-          let flow = JSON.parse(e.target.result);
-          this.repeatedName = flow.name;
+          try {
+            let flow = JSON.parse(e.target.result);
+            this.repeatedName = flow.name;
+          }catch(err) {
+          }
 
-          this._flowsAPIs.getFlowByName(flow.name)
-              .then((flow:any) => {
-                this.showFileNameDialog = true;
-              })
-              .catch((err)=> {
-                // flow name doesnt exists
-                this.uploadFlow(this.importFile, null);
-              });
+          this.uploadFlow(this.importFile, null);
         }
       })(this.importFile);
 
       reader.readAsText(this.importFile);
-
-
-      /*
-
-      */
     }
   }
 }
