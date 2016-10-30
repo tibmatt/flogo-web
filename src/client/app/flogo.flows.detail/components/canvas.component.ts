@@ -90,6 +90,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   _processInstanceID: string;
   _restartProcessInstanceID: string;
   _isDiagramEdited:boolean;
+  flowName:string;
 
   // TODO
   //  may need better implementation
@@ -140,6 +141,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     this.getFlow(this.flowId)
       .then((res: any)=> {
         this.flow = res.flow;
+        this.flowName = this.flow.name;
         this.handlers = {
           'root': res.root,
           'errorHandler': res.errorHandler
@@ -258,21 +260,23 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
 
-    public changeFlowDetailName($event, property) {
+    public changeFlowDetailName(name, property) {
         return new Promise((resolve, reject)=> {
-            if($event == this.flow.name) {
+            if(name == this.flowName) {
                 resolve(true);
             }else {
-                this._restAPIFlowsService.getFlowByName($event)
+                this._restAPIFlowsService.getFlowByName(name)
                     .then((doc) => {
-                        let message = this.translate.get('CANVAS:FLOW-NAME-EXISTS',{value: $event});
+                        let message = this.translate.get('CANVAS:FLOW-NAME-EXISTS',{value: name});
+                        this.flow.name = this.flowName;
                         notification(message['value'], 'error');
-                        reject(doc);
+                        resolve(doc);
                     })
                     .catch((err)=> {
-                        this.flow.name = $event;
+                        this.flow.name = name;
                         this._updateFlow(this.flow).then((response: any)=> {
                             let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
+                            this.flowName = this.flow.name;
                             notification(message['value'], 'success', 3000);
                             resolve(response);
                         }).catch((err)=> {
