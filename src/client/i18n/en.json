@@ -14,6 +14,7 @@
   "CANVAS:COPY": "Make a copy",
   "CANVAS:DARWIN-OSX": "Darwin/OSX",
   "CANVAS:DELETE": "Delete",
+  "CANVAS:FLOW-NAME-EXISTS":"Flow with name {{value}} exists, please choose another name.",
   "CANVAS:ERROR-MESSAGE-FAILED": "Flow has failed with error code 700",
   "CANVAS:ERROR-MESSAGE": "Oops! something went wrong! :(",
   "CANVAS:ERROR-MESSAGE-UPDATE": "Update flow's {{value}} error",

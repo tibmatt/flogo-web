@@ -17,7 +17,7 @@ export class FlogoFlowsFlowName implements OnChanges {
     show:boolean = false;
     repeatedName:string='';
     correctName: EventEmitter<any> = new EventEmitter();
-    close: EventEmitter<boolean> = new EventEmitter();
+    close: EventEmitter<any> = new EventEmitter();
     public flowName: string;
     public flowNameExists = true;
     public nameModified = false;

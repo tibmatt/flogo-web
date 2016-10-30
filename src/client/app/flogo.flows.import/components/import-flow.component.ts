@@ -100,6 +100,7 @@ export class FlogoFlowsImport {
                   break;
             default:
               this.onError.emit( err );
+                  break;
           }
 
           /*

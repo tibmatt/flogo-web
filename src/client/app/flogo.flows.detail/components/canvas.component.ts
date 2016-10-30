@@ -184,6 +184,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     }
 
+
   private getFlow(id: string) {
     let diagram: IFlogoFlowDiagram;
     let errorDiagram: IFlogoFlowDiagram;
@@ -255,6 +256,34 @@ export class FlogoCanvasComponent implements  OnChanges {
   ngOnChanges(changes:any) {
 
   }
+
+
+    public changeFlowDetailName($event, property) {
+        return new Promise((resolve, reject)=> {
+            if($event == this.flow.name) {
+                resolve(true);
+            }else {
+                this._restAPIFlowsService.getFlowByName($event)
+                    .then((doc) => {
+                        let message = this.translate.get('CANVAS:FLOW-NAME-EXISTS',{value: $event});
+                        notification(message['value'], 'error');
+                        reject(doc);
+                    })
+                    .catch((err)=> {
+                        this.flow.name = $event;
+                        this._updateFlow(this.flow).then((response: any)=> {
+                            let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
+                            notification(message['value'], 'success', 3000);
+                            resolve(response);
+                        }).catch((err)=> {
+                            let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                            notification(message['value'], 'error');
+                            reject(err);
+                        });
+                    });
+            }
+        })
+    }
 
   private initSubscribe() {
     this._subscriptions = [];
