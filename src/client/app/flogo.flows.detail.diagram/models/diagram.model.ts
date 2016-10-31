@@ -131,7 +131,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           let rowLenDiff = rowLen - paddedRow.length;
           let paddingArr = _.fill( Array( rowLenDiff ), '_' );
-          outputMatrix.push( paddedRow.concat( paddingArr ) );
+          outputMatrix.push( paddedRow.concat( <string[]>paddingArr ) );
 
         } else {
           // TODO
