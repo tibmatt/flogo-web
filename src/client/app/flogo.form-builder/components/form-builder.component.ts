@@ -5,6 +5,7 @@ import { PUB_EVENTS } from '../messages';
 import { FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
 import { convertTaskID, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 import { TranslateService } from 'ng2-translate/ng2-translate';
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'flogo-form-builder',
@@ -28,9 +29,21 @@ export class FlogoFormBuilderComponent{
   _flowId:string;
   hasErrors : boolean = false;
 
-  constructor(private _postService: PostService, private _translate: TranslateService) {
+  constructor(public route: ActivatedRoute, private _postService: PostService, private _translate: TranslateService) {
     this._initSubscribe();
     this._setFieldsObservers();
+
+    // same as onDestroy since router is reusing the components instead of destroying them
+    // see: https://github.com/angular/angular/issues/7757#issuecomment-236737846
+    this.route.params.subscribe(
+      params => {
+        if ( this._hasChanges ) {
+          this._saveChangesToFlow();
+        }
+        this._hasChanges = false;
+      }
+    );
+
   }
 
   private _initSubscribe() {
@@ -45,7 +58,6 @@ export class FlogoFormBuilderComponent{
   }
 
   ngOnDestroy() {
-
     if ( this._hasChanges ) {
       this._saveChangesToFlow();
     }

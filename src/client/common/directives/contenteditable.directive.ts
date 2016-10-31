@@ -1,4 +1,6 @@
-import {Directive, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange} from '@angular/core';
+import {
+  Directive, ElementRef, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChanges
+} from '@angular/core';
 import {RESTAPIFlowsService} from '../services/restapi/flows-api.service';
 
 @Directive({
@@ -11,13 +13,13 @@ import {RESTAPIFlowsService} from '../services/restapi/flows-api.service';
     },
     providers: [RESTAPIFlowsService]
 })
-export class Contenteditable {
+export class Contenteditable implements OnInit, OnChanges {
     private _el: HTMLElement;
     private $el: any;
     private colorFlag: boolean;
 
-    @Input()
-        myContenteditable: string;
+    @Input('myContenteditable')
+        content: string;
     @Input()
         placeholder: string;
 
@@ -29,7 +31,7 @@ export class Contenteditable {
         this.$el = jQuery(this._el);
     }
     ngOnInit() {
-        if(this.myContenteditable != undefined) this.$el.html(this.myContenteditable);
+        if(this.content != undefined) this.$el.html(this.content);
         this.$el.attr('contenteditable', 'true');
         this.$el.css({'paddingRight': '38px', 'marginLeft': '-10px', 'paddingLeft': '10px', 'borderRadius': '4px', 'outline': 'none','lineHeight': parseInt(this.$el.css('lineHeight')) - 2 + 'px', 'border': '1px solid transparent'});
         this._initPlaceholder();
@@ -37,6 +39,12 @@ export class Contenteditable {
         if(origColor == 'rgb(255, 255, 255)') {
             this.colorFlag = true;
         }
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+      let contentChanges = changes['content'];
+      if(contentChanges.currentValue && contentChanges.currentValue != contentChanges.previousValue) {
+        this.$el.html(this.content)
+      }
     }
     onMouseEnter() {
         if(document.activeElement != this._el) {
@@ -65,9 +73,9 @@ export class Contenteditable {
         if(this.placeholder || this.$el.text() !== '') {
             this.$el.css({'background': '', 'border': '1px solid transparent'});
             if(this.colorFlag)  this.$el.css('color', 'rgb(255, 255, 255)');
-            if(this.$el.text() === '' && this.myContenteditable === undefined) {
+            if(this.$el.text() === '' && this.content === undefined) {
                 // omit
-            } else if(this.$el.text() !== this.myContenteditable) {
+            } else if(this.$el.text() !== this.content) {
                 this.myContenteditableChange.emit(this.$el.text());
             }
             this._initPlaceholder();
