@@ -140,7 +140,6 @@ export function flows(app, router){
   }
 
   router.get(basePath+"/flows", getFlows);
-  router.get(basePath+"/flows/byname", getFlowByName);
   router.post(basePath+"/flows", createFlows);
   router.delete(basePath+"/flows", deleteFlows);
 
@@ -150,19 +149,31 @@ export function flows(app, router){
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
 
-  router.post(basePath+'/flows/json-file', importFlowFromJsonFile);
-  //router.post(basePath+'/flows/json', importFlowFromJson);
+  router.post(basePath+'/flows/json', importFlowFromJsonFile);
   router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
 function* getFlows(next){
   let data = [];
-  if (!_.isEmpty(this.query)) {
-    data = yield filterFlows(this.query);
-  } else {
-    data = yield getAllFlows();
+  let params = _.assign({},{name:''}, this.request.body || {}, this.query)
+
+  if(params.name) {
+    var response = yield _getFlowByName(params.name);
+    if (response.status == 200) {
+      this.body = [response.flow];
+    }else {
+      this.throw(response.status, response.message, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} );
+    }
+  }else {
+    if (!_.isEmpty(this.query)) {
+      data = yield filterFlows(this.query);
+    } else {
+      data = yield getAllFlows();
+    }
+
+    this.body = data;
   }
-  this.body = data;
+
 }
 
 function* createFlows(next){
@@ -226,21 +237,6 @@ function * addTrigger(next){
 
   this.body = response;
 }
-
-function * getFlowByName(next) {
-  let params = _.assign({},{value:''}, this.request.body || {}, this.query)
-
-  var response = yield _getFlowByName(params.value);
-
-  if (response.status == 200) {
-    this.body = response.flow;
-  }else {
-    this.throw(response.status, response.message, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} );
-  }
-
-  yield next;
-}
-
 
 function * addActivity(next){
   let response = {};
@@ -405,34 +401,6 @@ export function  createFlowFromJson(imported ) {
 
    });
 }
-
-/*
-function * importFlowFromJson(next ) {
-  console.log( '[INFO] Import flow from JSON' );
-  let flow = _.get( this, 'request.body.flow' );
-
-  if ( _.isObject( flow ) && !_.isEmpty( flow ) ) {
-      let imported = flow;
-      createFlowFromJson(imported)
-        .then((res)=> {
-          console.log('todo ok');
-          this.body  = res;
-        })
-        .catch((err)=> {
-          console.log('Rejecting final---');
-          console.log(err);
-          this.throw(400, '');
-        })
-
-      //this.body = responseCreateFlow.details;
-      //this.response.status = responseCreateFlow.status;
-
-  } else {
-    this.throw( 400, 'Flow is empty' );
-  }
-  yield  next;
-}
-*/
 
 function * importFlowFromJsonFile( next ) {
   console.log( '[INFO] Import flow from JSON File' );
