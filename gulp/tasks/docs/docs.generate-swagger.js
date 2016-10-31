@@ -28,14 +28,7 @@ gulp.task('docs.generate-swagger', 'Generate Swagger file', cb => {
       ]
     },
     apis: [
-      CONFIG.paths.source.server + '/api/activities/index.js',
-      CONFIG.paths.source.server + '/api/configuration/index.js',
-      CONFIG.paths.source.server + '/api/engine/index.js',
-      CONFIG.paths.source.server + '/api/flows/index.js',
-      CONFIG.paths.source.server + '/api/flows.detail/index.js',
-      CONFIG.paths.source.server + '/api/flows.run/index.js',
-      CONFIG.paths.source.server + '/api/ping/index.js',
-      CONFIG.paths.source.server + '/api/triggers/index.js',
+      CONFIG.paths.source.server + '/api/**/index.js',
     ], // Path to the API docs
   };
 
