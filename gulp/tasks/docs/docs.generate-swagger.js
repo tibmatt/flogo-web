@@ -6,7 +6,7 @@ var fs = require('fs');
 /**
  * Generate the Swagger file
  */
-gulp.task('generate.swagger', 'Generate Swagger file', cb => {
+gulp.task('docs.generate-swagger', 'Generate Swagger file', cb => {
   var options = {
     swaggerDefinition: {
       info: {
