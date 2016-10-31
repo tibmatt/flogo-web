@@ -13,7 +13,7 @@ gulp.task('docs.generate-swagger', 'Generate Swagger file', cb => {
         title: 'Flogo-Web API documentation', // Title
         version: '1.0.0', // Version
       },
-      host: '127.0.0.1:3000',
+      host: CONFIG.host,
       basePath: '/v1/api',
       schemes: [
         'http'
