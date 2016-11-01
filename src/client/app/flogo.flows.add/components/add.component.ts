@@ -32,7 +32,6 @@ export class FlogoFlowsAdd {
         this.APIFlows.getFlowByName(this.flowInfo.name)
             .then((res) => {
                 let results;
-                debugger;
                 try {
                     results = JSON.parse(res['_body']);
                 }catch(err) {
