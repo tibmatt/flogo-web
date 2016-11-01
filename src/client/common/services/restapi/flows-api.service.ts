@@ -164,6 +164,7 @@ export class RESTAPIFlowsService{
         }
       };
       let url = '/v1/api/flows/json' + (flowName ? '?name='+ flowName : '') ;
+
       xhr.open( 'POST', url, true );
       xhr.send( formData );
     } );

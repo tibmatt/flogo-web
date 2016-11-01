@@ -155,7 +155,6 @@ export function flows(app, router){
 
 function* getFlows(next){
   let data = [];
-  let params = _.assign({},{name:''}, this.request.body || {}, this.query)
 
     if (!_.isEmpty(this.query)) {
       data = yield filterFlows(this.query);
