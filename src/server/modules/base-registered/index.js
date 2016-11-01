@@ -19,6 +19,10 @@ const defaultOptions = {
   jsonTplName: 'package.tpl.json'
 };
 
+export function syncDb() {
+
+}
+
 /**
  * Base class of registered
  */
@@ -359,6 +363,42 @@ export class BaseRegistered{
     }
 
     return packageJSON;
+  }
+
+  syncDb(originalItems) {
+    console.log("[debug]updateDB");
+
+    originalItems = originalItems || [];
+    // new activities generate from package.json
+    let items = {};
+
+    // generate all the activity docs
+    originalItems.forEach(item => {
+      let info = item.ui;
+      let version = info && info.version ? info.version : item.version;
+      let id = BaseRegistered.generateID(item.name, version);
+
+      items[id] = BaseRegistered.constructItem({
+        'id': id,
+        'where': item.path,
+        'name': item.name,
+        'version': version,
+        'description': info.description,
+        'keywords': item.keywords || [],
+        'author': info.author,
+        'schema': info
+      });
+
+    });
+
+    // console.log("!!!!!!!!activityDocs: ", activityDocs);
+
+    return BaseRegistered.saveItems(this.dbService, items)
+      .then((result) => {
+        console.log(`[info] updateDB done.`);
+        return result;
+      })
+
   }
 
   updateDB(){

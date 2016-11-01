@@ -1,8 +1,8 @@
 
-import {installAndConfigureTasks,installSamples} from './modules/init';
+import {syncTasks,installSamples} from './modules/init';
 import {getInitialisedTestEngine,getInitialisedBuildEngine} from './modules/engine';
 
-installAndConfigureTasks()
+syncTasks()
   .then(()=> {
     console.log("[log] init test engine done");
     return getInitialisedTestEngine();

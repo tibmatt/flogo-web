@@ -1,0 +1,24 @@
+{
+  "name": "tibco-iot",
+  "version": "0.0.1",
+  "title": "IOT Palette",
+  "description": "Simple IOT Palette",
+  "extensions": {
+    "activities": [
+      {
+        "name": "AWS Activity",
+        "path": "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot"
+      },
+      {
+        "name": "CoAP Activity",
+        "path": "github.com/TIBCOSoftware/flogo-contrib/activity/coap"
+      }
+    ],
+    "triggers": [
+      {
+        "name": "CoAP Trigger",
+        "path": "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
+      }
+    ]
+  }
+}

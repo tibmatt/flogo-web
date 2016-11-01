@@ -15,7 +15,7 @@ import {RegisterTriggers} from '../triggers';
  * 4. configure the server and start listening
  */
 
-export function installAndConfigureTasks() {
+export function syncTasks(engine) {
   let registerActivitiesPromise = (() => {
     return new Promise( ( resolve, reject ) => {
       const reg = new RegisterActivities( activitiesDBService, {
@@ -25,7 +25,9 @@ export function installAndConfigureTasks() {
         customConfig : config.activities.contrib
       } );
 
-      return reg.register()
+      //return reg.register()
+      return reg.cleanDB()
+        .then(() => reg.syncDb(engine.getActivities()))
         .then( ()=> {
           console.log( "[success]registerActivities success" );
           resolve( true );
@@ -46,7 +48,9 @@ export function installAndConfigureTasks() {
         customConfig : config.triggers.contrib
       } );
 
-      return reg.register()
+      //return reg.register()
+      return reg.cleanDB()
+        .then(() => reg.syncDb(engine.getTriggers()))
         .then( ()=> {
           console.log( "[success]registerTriggers success" );
           resolve( true );

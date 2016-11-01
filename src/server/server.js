@@ -9,14 +9,19 @@ import bodyParser from 'koa-body';
 import compress from 'koa-compress';
 var cors =  require('koa-cors');
 
-import {config, triggersDBService, activitiesDBService, flowsDBService} from './config/app-config';
+import {config} from './config/app-config';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
-import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
-import { installAndConfigureTasks, loadTasksToEngines, installSamples } from './modules/init';
-
+import { syncTasks, installSamples } from './modules/init';
+import { isDirectory, createFolder as createDirectory } from './common/utils'
 
 // TODO Need to use cluster to improve the performance
+
+// Where we store the local files
+const LOCAL_DIR = 'local/engines';
+if(!isDirectory(LOCAL_DIR)) {
+  createDirectory(LOCAL_DIR)
+}
 
 let app;
 
@@ -30,52 +35,77 @@ let app;
  * 4. configure the server and start listening
  */
 
-let startConfig = Promise.resolve(true);
-if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
-  startConfig = startConfig
-    .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
-    .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
-    .then(() => flowsDBService.verifyInitialDataLoad(path.resolve('db-init/installed-flows.init')))
-    .then(() => loadTasksToEngines());
-} else {
-  startConfig = startConfig
-                .then(installAndConfigureTasks);
 
-  if ( process.env['FLOGO_INSTALL_SAMPLES'] ) {
-    startConfig = startConfig.then(installSamples);
-  }
+// if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
+//   startConfig = startConfig
+//     .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
+//     .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
+//     .then(() => flowsDBService.verifyInitialDataLoad(path.resolve('db-init/installed-flows.init')))
+//     .then(() => loadTasksToEngines());
+// } else {
+//   startConfig = startConfig
+//                 .then(syncTasks);
+//
+//   if ( process.env['FLOGO_INSTALL_SAMPLES'] ) {
+//     startConfig = startConfig.then(installSamples);
+//   }
+//
+// }
+//
+// startConfig
+//   .then( ()=> {
+//     return getInitialisedTestEngine();
+//   } )
+//   .then( ( testEngine ) => {
+//     console.log('############ TEST ENGINE ####################');
+//     console.log('~~~ ACTIVITIES ~~~');
+//     console.log(testEngine.installedActivites);
+//     console.log('~~~ Triggers ~~~');
+//     console.log(testEngine.installedTriggers);
+//     return testEngine.build()
+//       .then( ()=> {
+//         console.log( "[log] build test engine done." );
+//         return testEngine.start();
+//       } );
+//   } )
+//   .then( ()=> {
+//     console.log( "[log] start test engine done" );
+//     return getInitialisedBuildEngine();
+//   } )
+//   .then( ( buildEngine )=> {
+//     console.log('############ BUILD ENGINE ####################');
+//     console.log('~~~ ACTIVITIES ~~~');
+//     console.log(buildEngine.installedActivites);
+//     console.log('~~~ Triggers ~~~');
+//     console.log(buildEngine.installedTriggers);
+//     console.log( `[log] start web server...` );
+//     return initServer();
+//   } )
+let Engine = require('./modules/engine/engine');
 
-}
+let engine = new Engine(config.defaultEngine.path);
 
-startConfig
-  .then( ()=> {
-    return getInitialisedTestEngine();
-  } )
-  .then( ( testEngine ) => {
-    console.log('############ TEST ENGINE ####################');
-    console.log('~~~ ACTIVITIES ~~~');
-    console.log(testEngine.installedActivites);
-    console.log('~~~ Triggers ~~~');
-    console.log(testEngine.installedTriggers);
-    return testEngine.build()
-      .then( ()=> {
-        console.log( "[log] build test engine done." );
-        return testEngine.start();
-      } );
-  } )
-  .then( ()=> {
-    console.log( "[log] start test engine done" );
-    return getInitialisedBuildEngine();
-  } )
-  .then( ( buildEngine )=> {
-    console.log('############ BUILD ENGINE ####################');
-    console.log('~~~ ACTIVITIES ~~~');
-    console.log(buildEngine.installedActivites);
-    console.log('~~~ Triggers ~~~');
-    console.log(buildEngine.installedTriggers);
-    console.log( `[log] start web server...` );
-    return initServer();
-  } )
+engine.exists()
+  .then(function(engineExists){
+    if(!engineExists) {
+      console.info('Engine does not exist. Creating...');
+      return engine.create()
+        .then(() => {
+          console.info('New engine created');
+          // TODO: add pallette version
+          let palettePath = path.resolve('config', config.defaultEngine.defaultPalette);
+          console.info('Will install palette at ' + palettePath);
+          return engine.installPalette(palettePath);
+        })
+    }
+  })
+  .then(() => engine.load())
+  .then(console.log)
+  .then(() => syncTasks(engine))
+  .then(() => initServer())
+  .then(() => {
+    process.env['FLOGO_INSTALL_SAMPLES'] ? installSamples() : null
+  })
   .then((server) => {
     initWebsocketApi(server);
   })

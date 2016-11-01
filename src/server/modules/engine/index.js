@@ -18,7 +18,6 @@ import {
   splitLines
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
-import { list as flogoList } from './commands';
 
 import { engineLogger } from '../../common/logger'
 
@@ -1041,27 +1040,6 @@ export class Engine {
       }
 
     } );
-  }
-
-  loadInfoFromExisting() {
-    return flogoList(path.join( this.enginePath, this.options.name ))
-      .then(data => {
-        this.installedActivites = mapTasks(data.activities);
-        this.installedTriggers = mapTasks(data.triggers);
-
-        console.log('<Installed activities>');
-        console.log(this.installedActivites);
-        console.log('<Installed triggers>');
-        console.log(this.installedTriggers);
-
-      });
-
-    function mapTasks(tasks) {
-      return _.fromPairs(tasks.map(
-        task => [task.name, { path: task.path, version: tasks.version}]
-      ));
-    }
-
   }
 
 }

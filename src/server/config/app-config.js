@@ -31,6 +31,10 @@ let config = {
     cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
   },
+  defaultEngine: {
+    path: 'local/engines/flogo-web',
+    defaultPalette: 'default-palette.json',
+  },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
     defaultPath: "../../submodules/flogo-contrib/activity",
