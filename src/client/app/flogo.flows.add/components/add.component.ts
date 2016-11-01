@@ -4,6 +4,7 @@ import {PUB_EVENTS} from '../message';
 import {MODAL_DIRECTIVES, ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { notification } from '../../../common/utils';
 
 @Component({
     selector: 'flogo-flows-add',
@@ -30,10 +31,17 @@ export class FlogoFlowsAdd {
     public sendAddFlowMsg() {
         this.APIFlows.getFlowByName(this.flowInfo.name)
             .then((res) => {
-                this.flowNameExists = true;
-            })
-            .catch((err) => {
-                // flow name doesn't exists
+                let results;
+                debugger;
+                try {
+                    results = JSON.parse(res['_body']);
+                }catch(err) {
+                    results = [];
+                }
+
+                if(!_.isEmpty(results)) {
+                    this.flowNameExists = true;
+                }else {
                     this.flowNameExists = false;
                     if (this._sending) {
                         this._sending = false;
@@ -44,7 +52,11 @@ export class FlogoFlowsAdd {
                     } else {
                         // omit
                     }
-
+                }
+            })
+            .catch((err) => {
+                let message = this.translate.get('CANVAS:ERROR-GETTING-FLOW-NAME');
+                notification(message['value'], 'error');
             });
 
 

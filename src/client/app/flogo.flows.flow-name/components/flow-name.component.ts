@@ -2,6 +2,7 @@ import { Component, ViewChild, SimpleChange, OnChanges,EventEmitter } from '@ang
 import {MODAL_DIRECTIVES, ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { notification } from '../../../common/utils';
 
 @Component({
     selector: 'flogo-flows-flow-name',
@@ -31,12 +32,23 @@ export class FlogoFlowsFlowName implements OnChanges {
     public sendAddFlowMsg() {
         this.APIFlows.getFlowByName(this.repeatedName)
             .then((res) => {
-                this.flowNameExists = true;
-                this.nameModified = false;
+                let results;
+                try {
+                    results = JSON.parse(res['_body']);
+                }catch(err) {
+                    results = [];
+                }
+                if(!_.isEmpty(results)) {
+                    this.flowNameExists = true;
+                    this.nameModified = false;
+                }else {
+                    this.correctName.emit(this.repeatedName);
+                    this.closeModal();
+                }
             })
             .catch((err) => {
-                this.correctName.emit(this.repeatedName);
-                this.closeModal();
+                let message = this.translate.get('FLOW-NAME:GETTING-FLOW-NAME');
+                notification(message['value'], 'error');
             });
 
 

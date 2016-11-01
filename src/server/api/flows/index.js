@@ -52,18 +52,18 @@ function getAllFlows(){
  * @returns {*}
  */
 function filterFlows(query){
-  query = _.assign({}, query);
+  query = _.assign({}, {name:''}, query);
 
   let options = {
     include_docs: true,
     startKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}`,
     endKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}\uffff`,
-    key: query.name
+    key: query.name.toLowerCase()
   };
 
   // TODO:  repplace with a persistent query: https://pouchdb.com/guides/queries.html
   return _dbService.db
-    .query(function(doc, emit) { emit(doc.name); }, options)
+    .query(function(doc, emit) { emit(doc.name.toLowerCase()); }, options)
     .then((response) => {
       let allFlows = [];
       let rows = response&&response.rows||[];
@@ -157,14 +157,6 @@ function* getFlows(next){
   let data = [];
   let params = _.assign({},{name:''}, this.request.body || {}, this.query)
 
-  if(params.name) {
-    var response = yield _getFlowByName(params.name);
-    if (response.status == 200) {
-      this.body = [response.flow];
-    }else {
-      this.throw(response.status, response.message, { details:{ type:ERROR_FLOW_NOT_FOUND, message:ERROR_FLOW_NOT_FOUND}} );
-    }
-  }else {
     if (!_.isEmpty(this.query)) {
       data = yield filterFlows(this.query);
     } else {
@@ -172,8 +164,6 @@ function* getFlows(next){
     }
 
     this.body = data;
-  }
-
 }
 
 function* createFlows(next){
@@ -439,8 +429,6 @@ function * importFlowFromJsonFile( next ) {
       }
 
       let responseCreateFlow = yield createFlowFromJson(imported);
-      console.log('------');
-      console.log(responseCreateFlow);
       this.body = responseCreateFlow;
       this.response.status = responseCreateFlow.status;
 
@@ -451,6 +439,8 @@ function * importFlowFromJsonFile( next ) {
 
   yield next;
 }
+
+
 
 function validateTriggersAndActivities (flow, triggers, activities) {
   let validate = { activities: [], triggers: [], hasErrors: false};

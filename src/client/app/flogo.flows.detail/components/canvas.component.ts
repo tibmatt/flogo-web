@@ -267,23 +267,36 @@ export class FlogoCanvasComponent implements  OnChanges {
             }else {
                 this._restAPIFlowsService.getFlowByName(name)
                     .then((doc) => {
-                        let message = this.translate.get('CANVAS:FLOW-NAME-EXISTS',{value: name});
-                        this.flow.name = this.flowName;
-                        notification(message['value'], 'error');
-                        resolve(doc);
+                        let results;
+                        try {
+                            results = JSON.parse(doc['_body']);
+                        }catch(err) {
+                            results = [];
+                        }
+
+                        if(!_.isEmpty(results)) {
+                            let message = this.translate.get('CANVAS:FLOW-NAME-EXISTS',{value: name});
+                            this.flow.name = this.flowName;
+                            notification(message['value'], 'error');
+                            resolve(doc);
+                        }else {
+                            this.flow.name = name;
+                            this._updateFlow(this.flow).then((response: any)=> {
+                                let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
+                                this.flowName = this.flow.name;
+                                notification(message['value'], 'success', 3000);
+                                resolve(response);
+                            }).catch((err)=> {
+                                let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                                notification(message['value'], 'error');
+                                reject(err);
+                            });
+                        }
                     })
                     .catch((err)=> {
-                        this.flow.name = name;
-                        this._updateFlow(this.flow).then((response: any)=> {
-                            let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
-                            this.flowName = this.flow.name;
-                            notification(message['value'], 'success', 3000);
-                            resolve(response);
-                        }).catch((err)=> {
-                            let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
-                            notification(message['value'], 'error');
-                            reject(err);
-                        });
+                        let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                        notification(message['value'], 'error');
+                        reject(err);
                     });
             }
         })

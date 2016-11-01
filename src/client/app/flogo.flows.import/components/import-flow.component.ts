@@ -103,21 +103,6 @@ export class FlogoFlowsImport {
                   break;
           }
 
-          /*
-          if(err.type == 'NAME_EXISTS') {
-            this.showFileNameDialog = true;
-          }
-          else {
-           if(err.status == 406) {
-              let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
-              this.onError.emit( {response: errorMessage} );
-           } else {
-              this.onError.emit( err );
-            }
-          }
-          */
-
-
         } );
 }
 
