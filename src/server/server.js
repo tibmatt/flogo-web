@@ -79,7 +79,10 @@ startConfig
   .then((server) => {
     initWebsocketApi(server);
   })
-  .then(showBanner)
+  .then(() => {
+    console.log('flogo-web::server::ready');
+    showBanner();
+  })
   .catch( ( err )=> {
     console.log( err );
     throw err;

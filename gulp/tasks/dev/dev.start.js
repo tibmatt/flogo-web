@@ -22,7 +22,7 @@ gulp.task('dev.start', 'Starts server app and db for development', () => {
     watch: CONFIG.paths.serverWatch.map(watchPath => path.join(CONFIG.paths.dist.server, watchPath)),
     stdout: false
   })
-    .on('stdout', function (stdout) {
+    .on('stdout', function(stdout) {
       process.stdout.write(stdout);
       const isReady = stdout.toString().includes(FLOGO_WEB_READY);
       if (isReady && browserSync.has('flogo-web')) {
