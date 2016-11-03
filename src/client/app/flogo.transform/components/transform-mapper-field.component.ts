@@ -79,14 +79,15 @@ export class TransformMapperField implements  OnChanges, OnInit {
       this.emitChange(value);
     }
 
-    emitChange(value:string) {
+    emitChange(value:string, isInit?:boolean) {
         this.validateField(value);
 
         this.mappingChange.emit({
             field: this.tile.name,
             value:value,
             hasError: this.hasError,
-            errors: this.errors
+            errors: this.errors,
+            isInit: isInit
         });
     }
 
@@ -141,6 +142,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     }
 
     ngOnChanges(changes:any) {
+      let isInit = true;
 
         let mapping = this.mappings.find((item) => {
             return item.mapTo == this.tile.name;
@@ -148,7 +150,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
 
         if(mapping) {
             this.selectedValue = mapping.value;
-            this.emitChange(this.selectedValue);
+            this.emitChange(this.selectedValue, isInit);
 
         }
 

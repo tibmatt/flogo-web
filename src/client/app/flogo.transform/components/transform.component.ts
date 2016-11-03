@@ -120,7 +120,7 @@ export class TransformComponent implements OnDestroy {
 
     this.fieldsConnections[change.field] = {value: change.value, mapTo: change.field, hasError: change.hasError};
     this.isValid = this.checkIsValid();
-    this.isDirty = true;
+    this.isDirty = !change.isInit;
 
     if(this.isValid) {
        this.data.result = this.getResult();
