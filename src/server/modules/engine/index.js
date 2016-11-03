@@ -19,6 +19,8 @@ import {
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
 import { list as flogoList } from './commands';
 
+import { engineLogger } from '../../common/logger'
+
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const execSync = require('child_process').execSync;
@@ -988,8 +990,12 @@ export class Engine {
         } );
 
         // log engine output
-        engineProcess.stdout.pipe( logStream );
-        engineProcess.stderr.pipe( logStream );
+        engineProcess.stdout.on('data', data => {
+          engineLogger.info(data.toString());
+        });
+        engineProcess.stderr.on('data', data => {
+          engineLogger.error(data.toString());
+        });
 
         successHandler();
       }
