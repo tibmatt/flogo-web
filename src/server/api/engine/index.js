@@ -13,6 +13,30 @@ export function engine(app, router){
 
 }
 
+/**
+ * @swagger
+ *  /engine/restart:
+ *    get:
+ *      tags:
+ *        - Engine
+ *      responses:
+ *        200:
+ *          description: Engine restarted sucessfully.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: number
+ *                default: 200
+ *        500:
+ *          description: Error restarting the engine.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: number
+ *                default: 500
+ */
 function* restartEngine(next){
   console.log('Restart Engine');
   let data = {

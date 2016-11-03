@@ -153,6 +153,21 @@ export function flows(app, router){
   router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
+/**
+ * @swagger
+ *  /flows:
+ *    get:
+ *      tags:
+ *        - Flow
+ *      summary: Get all the flows information.
+ *      responses:
+ *        200:
+ *          description: "Flows' information obtained successfully."
+ *          schema:
+ *            type: array
+ *            items:
+ *              $ref: '#/definitions/Full-Flow'
+ */
 function* getFlows(next){
   console.log("getFlows, next: ", next);
   //this.body = 'getFlows';
@@ -167,7 +182,87 @@ function* getFlows(next){
   console.log(data);
   this.body = data;
 }
+/**
+ * @swagger
+ * definition:
+ *  Full-Flow:
+ *    type: object
+ *    properties:
+ *      name:
+ *        type: string
+ *      description:
+ *        type: string
+ *      paths:
+ *        type: object
+ *        properties:
+ *          root:
+ *            type: object
+ *            properties:
+ *              is:
+ *                type: string
+ *          nodes:
+ *            type: object
+ *      items:
+ *        type: object
+ *      $table:
+ *        type: string
+ *      errorHandler:
+ *        type: object
+ *        properties:
+ *          paths:
+ *            type: object
+ *            properties:
+ *              root:
+ *                type: object
+ *                properties:
+ *                  is:
+ *                    type: string
+ *          items:
+ *            type: object
+ *      created_at:
+ *        type: string
+ *        format: dateTime
+ *      updated_at:
+ *        type: string
+ *        format: dateTime
+ *      _id:
+ *        type: string
+ *      _rev:
+ *        type: string
+ */
 
+/**
+ * @swagger
+ *  /flows:
+ *    post:
+ *      tags:
+ *        - Flow
+ *      summary: Add a new flow.
+ *      parameters:
+ *        - name: New Flow
+ *          in: body
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *              description:
+ *                type: string
+ *      responses:
+ *        '200':
+ *          description: Flow added successfully.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              ok:
+ *                type: boolean
+ *              id:
+ *                type: string
+ *                description: The new flow's ID
+ *              rev:
+ *                type: string
+ */
 function* createFlows(next){
   console.log("createFlows");
   try{
@@ -196,12 +291,63 @@ function* createFlows(next){
   }
 }
 
+/**
+ * @swagger
+ *  /flows:
+ *    delete:
+ *      tags:
+ *        - Flow
+ *      summary: Not implemented yet.
+ *      responses:
+ *        '200':
+ *          description: Flow deleted successfully
+ *          schema:
+ *            type: string
+ *            default: deleteFlows
+ */
 function* deleteFlows(next){
   console.log("deleteFlows");
   this.body = 'deleteFlows';
   yield next;
 }
 
+/**
+ * @swagger
+ *  /flows/triggers:
+ *    post:
+ *      tags:
+ *        - Trigger
+ *        - Flow
+ *      summary: Add a new trigger to the flow
+ *      parameters:
+ *        - name: New trigger
+ *          in: body
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *                description: Trigger name
+ *              flowId:
+ *                type: string
+ *                description: Flow's ID
+ *      responses:
+ *        '200':
+ *          description: Trigger added successfully.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: number
+ *                default: 200
+ *              id:
+ *                type: string
+ *                description: Flow's ID
+ *              name:
+ *                type: string
+ *                description: Flow's name
+ */
 function * addTrigger(next){
   let response = {};
   console.log('ADDKING TRIGGER...........');
@@ -230,6 +376,43 @@ function * addTrigger(next){
   this.body = response;
 }
 
+/**
+ * @swagger
+ *  /flows/activities:
+ *    post:
+ *      tags:
+ *        - Flow
+ *        - Activity
+ *      summary: Add a new activity to an specific flow.
+ *      parameters:
+ *        - name: New Activity
+ *          in: body
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *                description: New activity's name
+ *              flowId:
+ *                type: string
+ *                description: Flow's ID
+ *      responses:
+ *        '200':
+ *          description: Activity added successfully.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: number
+ *                default: 200
+ *              id:
+ *                type: string
+ *                description: Flow's ID
+ *              name:
+ *                type: string
+ *                description: Flow's name
+ */
 function * addActivity(next){
   let response = {};
   var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
@@ -262,6 +445,24 @@ function * addActivity(next){
   yield next;
 }
 
+/**
+ * @swagger
+ *  /flows/{flowId}/json:
+ *    get:
+ *      tags:
+ *        - Flow
+ *      summary: Obtain the information of a specific Flow in JSON format
+ *      parameters:
+ *        - name: flowId
+ *          in: path
+ *          required: true
+ *          type: string
+ *      responses:
+ *        200:
+ *          description: Flow information obtained successfully
+ *          schema:
+ *            $ref: '#/definitions/Flow'
+ */
 function * exportFlowInJsonById( next ) {
   console.log( '[INFO] Export flow in JSON by ID' );
 
@@ -333,6 +534,44 @@ function * exportFlowInJsonById( next ) {
 
   yield next;
 }
+/**
+ * @swagger
+ * definition:
+ *  Flow:
+ *    type: object
+ *    properties:
+ *      name:
+ *        type: string
+ *      description:
+ *        type: string
+ *      paths:
+ *        type: object
+ *        properties:
+ *          root:
+ *            type: object
+ *            properties:
+ *              is:
+ *                type: string
+ *          nodes:
+ *            type: object
+ *      items:
+ *        type: object
+ *      $table:
+ *        type: string
+ *      errorHandler:
+ *        type: object
+ *        properties:
+ *          paths:
+ *            type: object
+ *            properties:
+ *              root:
+ *                type: object
+ *                properties:
+ *                  is:
+ *                    type: string
+ *          items:
+ *            type: object
+ */
 
 function validateFlow(flow, activities, triggers) {
   return new Promise((resolve, reject) => {
@@ -394,6 +633,36 @@ export function  createFlowFromJson(imported ) {
    });
 }
 
+/**
+ * @swagger
+ *  /flows/json:
+ *    post:
+ *      tags:
+ *        - Flow
+ *      summary: Import a flow from a json
+ *      parameters:
+ *        - name: Flow
+ *          in: body
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              flow:
+ *                $ref: '#/definitions/Flow'
+ *      responses:
+ *        '200':
+ *          description: Flow imported successfully.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              ok:
+ *                type: boolean
+ *              id:
+ *                type: string
+ *                description: Flow's ID
+ *              rev:
+ *                type: string
+ */
 function * importFlowFromJson(next ) {
   console.log( '[INFO] Import flow from JSON' );
   let flow = _.get( this, 'request.body.flow' );
@@ -403,7 +672,7 @@ function * importFlowFromJson(next ) {
       console.log('IMPORTED IS');
       console.log(imported);
 
-      let responseCreateFlow = yield createFlowFromJson(imported)
+      let responseCreateFlow = yield createFlowFromJson(imported);
       this.body = responseCreateFlow.details;
       this.response.status = responseCreateFlow.status;
 
