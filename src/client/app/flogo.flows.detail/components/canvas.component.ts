@@ -107,6 +107,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   public exportLink: string;
   public downloadLink: string;
   public isInstructionsActivated: boolean  = false;
+  public isSelectedLogs: boolean = false;
 
   constructor(
     private _postService: PostService,
@@ -182,6 +183,10 @@ export class FlogoCanvasComponent implements  OnChanges {
             });
         })
 
+    }
+
+    public toggleSelectedLogs() {
+        this.isSelectedLogs = !this.isSelectedLogs;
     }
 
   private getFlow(id: string) {
