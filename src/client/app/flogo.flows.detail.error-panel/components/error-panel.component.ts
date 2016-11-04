@@ -32,7 +32,7 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
   }
 
   public openLogs() {
-    window.open('/logs');
+    window.open('http://localhost:3012');
   }
 
   public toggle() {
