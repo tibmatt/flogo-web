@@ -2,10 +2,6 @@
   <div class="layout__main" #overlay (click)="($event.target == overlay || $event.target == wrapper) && close()">
     <div class="wrapper" #wrapper>
         <div class="actions-container">
-            <button class="tc-buttons tc-buttons-primary toggle-button action-button"
-                    (click)="openLogs()" >
-                <span class="glyphicon glyphicon-th"></span>
-            </button>
             <button (click)="toggle()" class="tc-buttons tc-buttons-primary toggle-button action-button" [class.toggle-button-open]="isOpen" >
               <img [src]="imgErrorHandler">
             </button>

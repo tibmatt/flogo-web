@@ -4,14 +4,21 @@
 
     <section class="flogo-flow-detail">
 
-      <header class="flogo-flow-detail-header col-sm-10">
+      <header class="flogo-flow-detail-header col-sm-9">
         <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
            placeholder="{{ translate.get('CANVAS:ADD-FLOW-DESCRIPTION').value }}"
            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
 
-      <div class="col-sm-2">
+
+      <div class="col-sm-3 flogo-flow-detail-menu-container">
+
+        <div class="flogo-flow-detail-log-button-container">
+          <button class="tc-buttons flogo-flow-detail-log-button" title="Show logs">
+            <span class="glyphicon glyphicon-th"></span>
+          </button>
+        </div>
 
         <div class="flogo-flow-detail-menu">
           <div class="flogo-flow-detail-menu-list-wrapper">
