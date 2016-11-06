@@ -1,0 +1,70 @@
+const fs = require('fs');
+const path = require('path');
+const spawn = require('child_process').spawn;
+
+const ps = require('ps-node');
+
+import {isExisted} from '../../../common/utils';
+
+module.exports = {
+  start(enginePath, engineName, options) {
+    console.log( `[info] starting engine ${engineName}` );
+
+    return new Promise( ( resolve, reject ) => {
+
+      let binPath = path.join(enginePath, 'bin');
+      console.log( "[info] defaultEngineBinPath: ", binPath );
+      let command = `./${engineName}`;
+      console.log( "[info] command: ", command );
+
+      let logFile = path.join(options.logPath, engineName + '.log' );
+
+      let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
+      console.log( "[info] engine logFile: ", logFile );
+
+      if ( !isExisted( path.join( binPath, engineName ) ) ) {
+        console.log( `[error] engine ${engineName} doesn't exist` );
+        reject( new Error( `[error] engine ${engineName} doesn't exist` ) );
+      } else {
+
+        let engineProcess = spawn( command, {
+          cwd : binPath
+        } );
+
+        // log engine output
+        engineProcess.stdout.pipe( logStream );
+        engineProcess.stderr.pipe( logStream );
+
+        resolve(engineProcess);
+      }
+    } );
+  },
+  stop(name) {
+    return new Promise(function (resolve, reject) {
+      ps.lookup({
+        command: name
+      }, function(err, resultList) {
+        if (err) {
+          return reject(new Error(err));
+        }
+
+        let process = resultList.shift();
+        if(process) {
+          console.log( '[info] Stop engine PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments );
+          ps.kill(process.pid, function( err ) {
+            if (err) {
+              return reject(new Error( err ));
+            } else {
+              console.log( '[info] Stop engine Process %s has been killed!', pid );
+              resolve(true);
+            }
+          });
+        } else {
+          resolve(false);
+        }
+
+      });
+
+    });
+  }
+};

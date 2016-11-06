@@ -1,5 +1,4 @@
 import 'babel-polyfill';
-import path from 'path';
 var fs = require('fs');
 
 import koa from 'koa';
@@ -13,6 +12,8 @@ import {config} from './config/app-config';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
 import { syncTasks, installSamples } from './modules/init';
+import { syncTasks, installSamples, getInitializedEngine } from './modules/init'
+
 import { isDirectory, createFolder as createDirectory } from './common/utils'
 
 // TODO Need to use cluster to improve the performance
@@ -64,12 +65,12 @@ let app;
 //     console.log(testEngine.installedTriggers);
 //     return testEngine.build()
 //       .then( ()=> {
-//         console.log( "[log] build test engine done." );
+//         console.log( '[log] build test engine done.' );
 //         return testEngine.start();
 //       } );
 //   } )
 //   .then( ()=> {
-//     console.log( "[log] start test engine done" );
+//     console.log( '[log] start test engine done' );
 //     return getInitialisedBuildEngine();
 //   } )
 //   .then( ( buildEngine )=> {
@@ -81,27 +82,13 @@ let app;
 //     console.log( `[log] start web server...` );
 //     return initServer();
 //   } )
-let Engine = require('./modules/engine/engine');
 
-let engine = new Engine(config.defaultEngine.path);
-
-engine.exists()
-  .then(function(engineExists){
-    if(!engineExists) {
-      console.info('Engine does not exist. Creating...');
-      return engine.create()
-        .then(() => {
-          console.info('New engine created');
-          // TODO: add pallette version
-          let palettePath = path.resolve('config', config.defaultEngine.defaultPalette);
-          console.info('Will install palette at ' + palettePath);
-          return engine.installPalette(palettePath);
-        })
-    }
-  })
-  .then(() => engine.load())
-  .then(console.log)
-  .then(() => syncTasks(engine))
+ getInitializedEngine(config.defaultEngine.path)
+   .then(engine => {
+     return engine.build()
+       .then(() => engine.start())
+       .then(() => syncTasks(engine));
+   })
   .then(() => initServer())
   .then(() => {
     process.env['FLOGO_INSTALL_SAMPLES'] ? installSamples() : null
