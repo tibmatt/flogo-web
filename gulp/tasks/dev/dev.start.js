@@ -9,6 +9,8 @@ import {CONFIG} from '../../config';
 const browserSync = require('browser-sync');
 const FLOGO_WEB_READY = 'flogo-web::server::ready';
 
+let browserSyncInstance = null;
+
 /**
  * Starts the server for development
  */
@@ -24,10 +26,19 @@ gulp.task('dev.start', 'Starts server app and db for development', () => {
   })
     .on('stdout', function(stdout) {
       process.stdout.write(stdout);
-      const isReady = stdout.toString().includes(FLOGO_WEB_READY);
-      if (isReady && browserSync.has('flogo-web')) {
-        browserSync.get('flogo-web').init({
-          proxy: {
+      if(browserSyncInstance) {
+        return;
+      }
+
+      const isServerReady = stdout.toString().includes(FLOGO_WEB_READY);
+      if (isServerReady && browserSync.has('flogo-web')) {
+        browserSyncInstance = browserSync.get('flogo-web');
+        if (browserSyncInstance.active) {
+          // already initialized, nothing to do here
+          return;
+        }
+        browserSyncInstance.init({
+          proxy:  {
             target: CONFIG.host
           }
         });

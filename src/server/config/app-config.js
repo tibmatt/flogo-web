@@ -100,30 +100,7 @@ let config = {
         ignore: true
       }
     },
-    triggers: [{
-      "name": "tibco-mqtt",
-      "settings": {
-        "topic": "flogo/#",
-        "broker": "tcp://192.168.1.12:1883",
-        "id": "flogoEngine",
-        "user": "",
-        "password": "",
-        "store": "",
-        "qos": "0",
-        "cleansess": "false"
-      },
-      "endpoints": null
-    }, {
-      "name": "tibco-rest",
-      "settings": {
-        "port": "9990"
-      },
-      "endpoints": null
-    }, {
-      "name": "tibco-timer",
-      "settings": {},
-      "endpoints": null
-    }],
+    triggers: [],
     config: {
       "loglevel": "DEBUG",
       "disableTriggerValidation": true,

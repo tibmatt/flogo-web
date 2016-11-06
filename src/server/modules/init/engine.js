@@ -35,7 +35,7 @@ export function getInitializedEngine(enginePath) {
         // update triggers.json
         engine.updateTriggersConfig({
           'triggers': config.testEngine.triggers
-        })
+        }, {overwrite: true})
       ]);
     })
     .then(() => engine);

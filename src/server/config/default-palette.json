@@ -1,24 +1,68 @@
 {
-  "name": "tibco-iot",
-  "version": "0.0.1",
-  "title": "IOT Palette",
-  "description": "Simple IOT Palette",
-  "extensions": {
-    "activities": [
-      {
-        "name": "AWS Activity",
-        "path": "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot"
-      },
-      {
-        "name": "CoAP Activity",
-        "path": "github.com/TIBCOSoftware/flogo-contrib/activity/coap"
-      }
-    ],
-    "triggers": [
-      {
-        "name": "CoAP Trigger",
-        "path": "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
-      }
-    ]
-  }
+    "name": "default",
+    "version": "0.0.1",
+    "title": "Default Palette",
+    "description": "Default flogo palette",
+    "extensions": {
+        "activities": [
+            {
+                "name": "tibco-app",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/app"
+            },
+            {
+                "name": "tibco-awsiot",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot"
+            },
+            {
+                "name": "tibco-coap",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/coap"
+            },
+            {
+                "name": "tibco-counter",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/counter"
+            },
+            {
+                "name": "tibco-error",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/error"
+            },
+            {
+                "name": "tibco-log",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
+            },
+            {
+                "name": "tibco-reply",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/reply"
+            },
+            {
+                "name": "tibco-rest",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
+            },
+            {
+                "name": "tibco-twilio",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
+            },
+            {
+                "name": "sendWSMessage",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
+            }
+        ],
+        "triggers": [
+            {
+                "name": "tibco-coap",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
+            },
+            {
+                "name": "tibco-mqtt",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt"
+            },
+            {
+                "name": "tibco-rest",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
+            },
+            {
+                "name": "tibco-timer",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
+            }
+        ]
+    }
 }
