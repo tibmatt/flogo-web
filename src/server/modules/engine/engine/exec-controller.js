@@ -4,7 +4,7 @@ const spawn = require('child_process').spawn;
 
 const ps = require('ps-node');
 
-import {isExisted} from '../../../common/utils';
+import {fileExists} from '../../../common/utils';
 
 module.exports = {
   start(enginePath, engineName, options) {
@@ -22,7 +22,7 @@ module.exports = {
       let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
       console.log( "[info] engine logFile: ", logFile );
 
-      if ( !isExisted( path.join( binPath, engineName ) ) ) {
+      if ( !fileExists( path.join( binPath, engineName ) ) ) {
         console.log( `[error] engine ${engineName} doesn't exist` );
         reject( new Error( `[error] engine ${engineName} doesn't exist` ) );
       } else {

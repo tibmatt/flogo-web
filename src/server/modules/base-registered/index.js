@@ -4,7 +4,7 @@ import npm from 'npm';
 import _ from 'lodash';
 import fs from 'fs';
 import {DBService} from '../../common/db.service';
-import {isDirectory, isExisted, readDirectoriesSync} from '../../common/utils';
+import {isDirectory, fileExists, readDirectoriesSync} from '../../common/utils';
 import {config} from '../../config/app-config';
 import { DEFAULT_SCHEMA_ROOT_FOLDER_NAME } from '../../common/constants';
 
@@ -297,7 +297,7 @@ export class BaseRegistered{
     return new Promise((resolve, reject)=>{
       try {
         let nodeModulesPath = path.join(this._packageJSONFolderPath, 'node_modules');
-        if(isExisted(nodeModulesPath)){
+        if(fileExists(nodeModulesPath)){
           execSync(`rm -rf ${nodeModulesPath}`);
         }
         console.log("[Success]cleanNodeModules finished!, type: ", this._options.type);
@@ -331,10 +331,10 @@ export class BaseRegistered{
 
           // TODO need to improve, provide better way
 
-          if(isExisted(path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+          if(fileExists(path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
             design_package_json = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
             value = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
-          }else if(isExisted(path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+          }else if(fileExists(path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
             design_package_json = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
             value = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
           }else{

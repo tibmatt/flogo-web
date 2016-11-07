@@ -8,7 +8,7 @@ import {
   engines
 } from '../../config/app-config';
 import {
-  isExisted,
+  fileExists,
   readJSONFileSync,
   writeJSONFileSync,
   runShellCMD,
@@ -159,7 +159,7 @@ export class Engine {
       self.stop()
         .then( ()=> {
           // remove the engine folder
-          if ( isExisted( engineFolder ) ) {
+          if ( fileExists( engineFolder ) ) {
             return runShellCMD( 'rm', [ '-rf', engineFolder ] )
           }
         } )
@@ -977,7 +977,7 @@ export class Engine {
       let logFile = path.join( config.publicPath, self.options.name + '.log' );
       console.log( "[info] engine logFile: ", logFile );
 
-      if ( !isExisted( path.join( defaultEngineBinPath, command ) ) ) {
+      if ( !fileExists( path.join( defaultEngineBinPath, command ) ) ) {
 
         console.log( `[error] engine ${self.options.name} doesn't exist` );
         errorHandler( new Error( `[error] engine ${self.options.name} doesn't exist` ) );
