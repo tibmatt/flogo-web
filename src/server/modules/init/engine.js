@@ -1,4 +1,4 @@
-let Engine = require('../engine/engine');
+import {Engine} from '../engine/engine';
 import {config} from '../../config/app-config';
 import path from 'path';
 

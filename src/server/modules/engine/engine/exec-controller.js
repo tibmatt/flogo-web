@@ -8,12 +8,15 @@ import {fileExists} from '../../../common/utils/file';
 
 module.exports = {
   start(enginePath, engineName, options) {
+    options = Object.assign({}, { binDir: 'bin' }, options);
+
     console.log( `[info] starting engine ${engineName}` );
 
     return new Promise( ( resolve, reject ) => {
 
-      let binPath = path.join(enginePath, 'bin');
+      let binPath = path.join(enginePath, options.binDir);
       console.log( "[info] defaultEngineBinPath: ", binPath );
+      // TODO: cross platform execution?
       let command = `./${engineName}`;
       console.log( "[info] command: ", command );
 
@@ -40,6 +43,7 @@ module.exports = {
     } );
   },
   stop(name) {
+
     return new Promise(function (resolve, reject) {
       ps.lookup({
         command: name
@@ -55,7 +59,7 @@ module.exports = {
             if (err) {
               return reject(new Error( err ));
             } else {
-              console.log( '[info] Stop engine Process %s has been killed!', pid );
+              console.log( '[info] Stop engine Process %s has been killed!', process.pid );
               resolve(true);
             }
           });

@@ -1,16 +1,13 @@
 import path from 'path';
 import fs from 'fs';
+import fse from 'fs-extra';
 
-import {runShellCMD} from '../utils';
+import {isJSON} from '../utils';
 
 export function isDirectory( testedPath ) {
   if ( fileExists( testedPath ) ) {
     let stats = fs.statSync( testedPath );
-    if ( stats.isDirectory() ) {
-      return true
-    } else {
-      return false;
-    }
+    return stats.isDirectory();
   } else {
     return undefined;
   }
@@ -75,7 +72,7 @@ export function readJSONFile( JSONPath ) {
  * @param name {string|RegExp} name of the file
  * @returns {Promise<String>} resolves to absolute path to file or null if no file found with the provided name
  */
-export function findLastCreatedFile(where, name) {
+export function findMostRecentFile(where, name) {
 
   if (typeof name === 'string') {
     name = new RegExp(name);
@@ -142,37 +139,32 @@ export function writeJSONFile( JSONPath, data ) {
 
 /**
  * Create the given folder using `mkdir` command
- * TODO: cross platform support?
  * @param folderPath
  * @returns {Promise}
  */
 export function createFolder( folderPath ) {
   return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'mkdir', [ '-p', folderPath ] )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
-        reject( err );
-      } );
+    fse.ensureDir(folderPath, function (err) {
+      if (err) {
+        reject(new Error(error));
+      } else {
+        resolve();
+      }
+    });
   } );
 }
 
 /**
  * Remove the given folder using `rm -rf`
- * TODO: cross platform support?
  * @param folderPath
  * @returns {Promise}
  */
 export function rmFolder( folderPath ) {
-  return new Promise( ( resolve, reject )=> {
-    runShellCMD( 'rm', [ '-rf', folderPath ] )
-      .then( ()=> {
-        resolve( true );
-      } )
-      .catch( ( err )=> {
-        reject( err );
-      } );
+  return new Promise( ( resolve, reject ) => {
+    fse.remove(folderPath, function (err) {
+      if (err) return reject(err);
+      resolve();
+    });
   } );
 }
 
@@ -188,3 +180,38 @@ export function fileExists(testedPath ) {
   }
 }
 
+
+export function copyFile(source, target) {
+  return new Promise(function(resolve, reject) {
+    fse.copy(source, target, function(error) {
+      if(!error) {
+        resolve();
+      } else {
+        reject(new Error(error));
+      }
+    });
+  });
+}
+
+export function changePermissions(filePath, permissions) {
+  return new Promise(function (resolve, reject) {
+    fs.chmod(filePath, permissions, function(err) {
+      if (err) {
+        reject(new Error(err));
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+export function listFiles(dir) {
+  return new Promise(function (resolve, reject) {
+    fs.readdir(dir, (err, files) => {
+      if(err) {
+        return reject(new Error(err));
+      }
+      return resolve(files);
+    })
+  });
+}

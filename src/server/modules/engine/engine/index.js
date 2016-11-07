@@ -1,16 +1,24 @@
 const path = require('path');
 
 import {config} from '../../../config/app-config';
-import {fileExists, rmFolder} from '../../../common/utils/file';
+import {createFolder as ensureDir} from '../../../common/utils/file';
+
+import {removeDir} from './file-utils';
 
 const loader = require('./loader');
 const commander = require('./commander');
 const configUpdater = require('./config-updater');
 const exec = require('./exec-controller');
 
+const DIR_TEST_BIN = 'bin-test';
+const DIR_BUILD_BIN = 'bin-build';
+
+const TYPE_TEST = 'test';
+const TYPE_BUILD = 'build';
+
 //TODO: status
 
-module.exports = class Engine {
+class Engine {
 
   constructor(path) {
     this.path = path;
@@ -27,7 +35,16 @@ module.exports = class Engine {
 
   create() {
     // todo: add support for lib version
-    return commander.create(this.path);
+    return commander
+      .create(this.path)
+      .then(() => Promise.all(
+        [
+          DIR_TEST_BIN,
+          DIR_BUILD_BIN
+        ].map(
+          dir => ensureDir(path.resolve(this.path, dir))
+        )
+      ));
   }
 
   exists() {
@@ -54,11 +71,24 @@ module.exports = class Engine {
     return this.tasks.triggers;
   }
 
+  /**
+   *
+   * @param config
+   * @param options
+   * @param options.type build or test
+   * @returns {*}
+   */
   updateConfig(config, options = {}) {
     //this.isProcessing = true;
     //this.status = FLOGO_ENGINE_STATUS.UPDATING_CONFIG_JSON;
 
-    return configUpdater.update.config(this.path, config, options)
+    options = Object.assign({}, {type: TYPE_TEST}, options);
+    // using bin instead of DIR_BUILD_BIN since there seems to be no options to specify different trigger config location for build
+    options.target = options.type == TYPE_BUILD ? 'bin' : DIR_TEST_BIN;
+    delete options.type;
+
+    return ensureDir(path.join(this.path, options.target))
+      .then(() => configUpdater.update.config(this.path, config, options))
       .catch(err => {
         return Promise.reject(err);
       });
@@ -76,20 +106,44 @@ module.exports = class Engine {
     //this.isProcessing = true;
     //this.status = FLOGO_ENGINE_STATUS.UPDATING_TRIGGER_JSON;
 
-    return configUpdater.update.triggersConfig(this.path, config, options)
+    options = Object.assign({}, {type: TYPE_TEST}, options);
+    // using bin instead of DIR_BUILD_BIN since there seems to be no options to specify different trigger config location for build
+    options.target = options.type == TYPE_BUILD ? 'bin' : DIR_TEST_BIN;
+    delete options.type;
+
+    return ensureDir(path.join(this.path, options.target))
+      .then(() => configUpdater.update.triggersConfig(this.path, config, options))
       .catch(err => {
         return Promise.reject(err);
       });
 
   }
 
-  build() {
-    return commander.build(this.path);
+  build(options) {
+    options = Object.assign({}, {type: TYPE_TEST}, options);
+
+    let buildTargetDir;
+    if (options.type == TYPE_BUILD) {
+      buildTargetDir = DIR_BUILD_BIN;
+      // using bin instead of DIR_BUILD_BIN since there seems to be no options to specify different trigger config location for build
+      //options.configDir = DIR_BUILD_BIN;
+    } else {
+      buildTargetDir = DIR_TEST_BIN;
+    }
+
+    delete options.type;
+    options.target = path.join(this.path, buildTargetDir);
+
+    return ensureDir(options.target)
+      .then(() => commander.build(this.path, options));
   }
 
   start() {
     // todo: inject logger instead?
-    return exec.start(this.path, this.getName(), { logPath: config.publicPath })
+    return exec.start(this.path, this.getName(), {
+      binDir: DIR_TEST_BIN,
+      logPath: config.publicPath
+    })
   }
 
   stop() {
@@ -101,11 +155,32 @@ module.exports = class Engine {
   }
 
   remove() {
-    if(fileExists(this.path)) {
-      return rmFolder(this.path);
-    } else {
-      return Promise.resolve(true);
-    }
+    return removeDir(this.path);
   }
 
-};
+  deleteAllInstalledFlows() {
+    return loader
+      .readAllFlowNames(this.path)
+        .then(installedFlows => installedFlows.reduce((promise, flowName) => {
+          return promise.then(commander.delete.flow(this.path, flowName));
+        }, Promise.resolve(true)))
+  }
+
+  /**
+   * Add a flow to engine
+   * @param {string|Path} flowPath - the path to flow json
+   * @param {string} [flowName] - the name of this flow
+   * @return {boolean} if successful, return true, otherwise return false
+   */
+  addFlow(flowPath){
+      return commander.add.flow(this.path, flowPath);
+  }
+
+}
+
+// export type constants for outside use
+Engine.TYPE_TEST = TYPE_TEST;
+Engine.TYPE_BUILD = TYPE_BUILD;
+
+export {Engine, TYPE_TEST, TYPE_BUILD};
+export default Engine;

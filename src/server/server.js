@@ -6,21 +6,20 @@ import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
-var cors =  require('koa-cors');
+var cors = require('koa-cors');
 
 import {config} from './config/app-config';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
-import { syncTasks, installSamples } from './modules/init';
-import { syncTasks, installSamples, getInitializedEngine } from './modules/init'
+import {syncTasks, installSamples, getInitializedEngine} from './modules/init';
 
-import { isDirectory, createFolder as createDirectory } from './common/utils'
+import {isDirectory, createFolder as createDirectory} from './common/utils'
 
 // TODO Need to use cluster to improve the performance
 
 // Where we store the local files
 const LOCAL_DIR = 'local/engines';
-if(!isDirectory(LOCAL_DIR)) {
+if (!isDirectory(LOCAL_DIR)) {
   createDirectory(LOCAL_DIR)
 }
 
@@ -83,32 +82,33 @@ let app;
 //     return initServer();
 //   } )
 
- getInitializedEngine(config.defaultEngine.path)
-   .then(engine => {
-     return engine.build()
-       .then(() => engine.start())
-       .then(() => syncTasks(engine));
-   })
-  .then(() => initServer())
-  .then(() => {
-    process.env['FLOGO_INSTALL_SAMPLES'] ? installSamples() : null
+getInitializedEngine(config.defaultEngine.path)
+  .then(engine => {
+    return engine.build()
+      .then(() => engine.stop())
+      .then(() => engine.start())
+      .then(() => syncTasks(engine));
   })
+  .then(() => initServer())
   .then((server) => {
     initWebsocketApi(server);
+  })
+  .then(() => {
+    process.env['FLOGO_INSTALL_SAMPLES'] ? installSamples() : null
   })
   .then(() => {
     console.log('flogo-web::server::ready');
     showBanner();
   })
-  .catch( ( err )=> {
-    console.log( err );
+  .catch((err)=> {
+    console.log(err);
     throw err;
-  } );
+  });
 
 
 function initServer() {
 
-  return new Promise( ( resolve, reject )=> {
+  return new Promise((resolve, reject)=> {
 
     app = koa();
 
@@ -116,64 +116,64 @@ function initServer() {
 
     app.use(cors());
 
-    api( app, router );
+    api(app, router);
 
     // make sure deep link it works
-    app.use( function *( next ) {
-      var path = this.path.endsWith( '/' ) ? this.path.substring( 0, this.path.length - 1 ) : this.path;
+    app.use(function *(next) {
+      var path = this.path.endsWith('/') ? this.path.substring(0, this.path.length - 1) : this.path;
 
       // not include restful api
-      if ( !/\/[^\/]+\.[^.\/]+$/i.test( path ) && path.toLowerCase()
-          .search( '/api/' ) === -1 ) {
+      if (!/\/[^\/]+\.[^.\/]+$/i.test(path) && path.toLowerCase()
+          .search('/api/') === -1) {
         this.path = '/';
       }
       yield  next;
-    } );
+    });
 
     // compress
-    app.use( compress( {
-      filter : function ( content_type ) {
-        return /text/i.test( content_type )
+    app.use(compress({
+      filter: function (content_type) {
+        return /text/i.test(content_type)
       },
-      threshold : 2048,
-      flush : require( 'zlib' ).Z_SYNC_FLUSH
-    } ) );
+      threshold: 2048,
+      flush: require('zlib').Z_SYNC_FLUSH
+    }));
 
     // server static resources
-    app.use( koaStatic( config.publicPath, { maxage : config.app.cacheTime } ) );
-    app.use( bodyParser( { multipart : true } ) );
+    app.use(koaStatic(config.publicPath, {maxage: config.app.cacheTime}));
+    app.use(bodyParser({multipart: true}));
 
-    app.on( 'error', function ( err ) {
-      if ( 401 == err.status ) {
+    app.on('error', function (err) {
+      if (401 == err.status) {
         return;
       }
-      if ( 404 == err.status ) {
+      if (404 == err.status) {
         return;
       }
 
-      console.error( err.toString() );
-      reject( err );
-    } );
+      console.error(err.toString());
+      reject(err);
+    });
 
-    app.use( router.routes() );
+    app.use(router.routes());
 
     // logger
-    app.use( function *( next ) {
+    app.use(function *(next) {
       var start = new Date;
       yield next;
       var ms = new Date - start;
-      console.log( '%s %s - %s', this.method, this.url, ms );
-      console.log( this.body );
-      console.log( this.request.body );
-    } );
+      console.log('%s %s - %s', this.method, this.url, ms);
+      console.log(this.body);
+      console.log(this.request.body);
+    });
 
     var server = require('http').createServer(app.callback());
-    server.listen( port, ()=> {
-      console.log( `[log] start web server done.` );
+    server.listen(port, ()=> {
+      console.log(`[log] start web server done.`);
 
-      resolve( server );
-    } );
-  } );
+      resolve(server);
+    });
+  });
 }
 
 function showBanner() {

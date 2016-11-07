@@ -5,10 +5,17 @@ import find from 'lodash/find';
 
 import {readJSONFile, writeJSONFile} from '../../../common/utils';
 
+const defaultOptions = {
+  overwrite: false,
+  target: 'bin'
+};
+
 module.exports = {
   update: {
     config(enginePath, configData, options = {}) {
-      let binPath = path.join(enginePath, 'bin');
+      options = Object.assign({}, defaultOptions, options);
+
+      let binPath = path.join(enginePath, options.target);
       let configJSONPath = path.join(binPath, 'config.json');
 
       let promise = Promise.resolve(configData);
@@ -30,7 +37,9 @@ module.exports = {
         })
     },
     triggersConfig(enginePath, triggersData, options = {}) {
-      let binPath = path.join(enginePath, 'bin');
+      options = Object.assign({}, defaultOptions, options);
+
+      let binPath = path.join(enginePath, options.target);
       let triggersJSONPath = path.join(binPath, 'triggers.json');
 
       console.log("[debug][engine->updateTriggerJSON], options: ", options);

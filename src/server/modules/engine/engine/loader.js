@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 
+import {readJSONFile, listFiles} from '../../../common/utils/file';
+
 const TASK_SRC_ROOT = 'vendor/src';
 const DIR_NAME_UI = 'ui';
 
@@ -40,28 +42,14 @@ module.exports = {
         };
       });
     });
+  },
+  readAllFlowNames(enginePath) {
+    return listFiles(path.resolve(enginePath, 'flows'));
   }
 };
 
 function readFlogo(enginePath) {
-  return readJson(path.join(enginePath, 'flogo.json'));
-}
-
-function readJson(jsonPath) {
-  return new Promise(function readPromise(resolve, reject) {
-    fs.readFile(jsonPath, function readHandler(err, data) {
-      if (err) {
-        return reject(err);
-      }
-
-      try {
-        resolve(JSON.parse(data));
-      } catch (err) {
-        reject(err);
-      }
-
-    });
-  });
+  return readJSONFile(path.join(enginePath, 'flogo.json'));
 }
 
 function _readTasks(enginePath, type, data) {
@@ -71,8 +59,8 @@ function _readTasks(enginePath, type, data) {
 
   return Promise.all(data.map(function (taskInfo) {
     return Promise.all([
-      readJson(path.join(enginePath, TASK_SRC_ROOT, taskInfo.path, `${type}.json`)),
-      readJson(path.join(enginePath, TASK_SRC_ROOT, taskInfo.path, DIR_NAME_UI, `${type}.json`))
+      readJSONFile(path.join(enginePath, TASK_SRC_ROOT, taskInfo.path, `${type}.json`)),
+      readJSONFile(path.join(enginePath, TASK_SRC_ROOT, taskInfo.path, DIR_NAME_UI, `${type}.json`))
     ])
     .then(schemas => Object.assign({}, taskInfo, {
       rt: schemas[0],
