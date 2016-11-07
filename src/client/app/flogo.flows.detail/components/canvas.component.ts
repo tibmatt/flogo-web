@@ -188,10 +188,16 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
 
     public toggleSelectedLogs() {
+        let route = '';
+
         this.isSelectedLogs = !this.isSelectedLogs;
         if(this.isSelectedLogs) {
-            this._router.navigate( [ 'FlogoLogs' ] )
+            route =  'FlogoLogs';
+        }else {
+            route = 'FlogoFlowsDetailDefault';
         }
+
+        this._router.navigate( [ route] )
     }
 
     public resetLogsState() {
