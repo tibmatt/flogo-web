@@ -1,6 +1,7 @@
 const path = require('path');
 
 import {config} from '../../../config/app-config';
+import {fileExists, rmFolder} from '../../../common/utils/file';
 
 const loader = require('./loader');
 const commander = require('./commander');
@@ -97,6 +98,14 @@ module.exports = class Engine {
 
   getName() {
     return path.parse(this.path).name;
+  }
+
+  remove() {
+    if(fileExists(this.path)) {
+      return rmFolder(this.path);
+    } else {
+      return Promise.resolve(true);
+    }
   }
 
 };

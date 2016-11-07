@@ -10,7 +10,6 @@ export function getInitializedEngine(enginePath) {
   }
 
   let engine = new Engine(enginePath);
-  engineRegistry[enginePath] = engine;
 
   return engine.exists()
     .then(function(engineExists){
@@ -24,6 +23,13 @@ export function getInitializedEngine(enginePath) {
             console.info('Will install palette at ' + palettePath);
             return engine.installPalette(palettePath);
           })
+          .catch(error => {
+            console.error('Error initializing engine. Will try to clean up');
+            return engine.remove().then(() => {
+              console.log('Successful clean');
+              throw new Error(error);
+            })
+          });
       }
     })
     .then(() => engine.load())
@@ -38,8 +44,10 @@ export function getInitializedEngine(enginePath) {
         }, {overwrite: true})
       ]);
     })
-    .then(() => engine);
-
+    .then(() =>  {
+      engineRegistry[enginePath] = engine;
+      return engine;
+    });
 
 }
 

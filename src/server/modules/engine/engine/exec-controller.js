@@ -4,7 +4,7 @@ const spawn = require('child_process').spawn;
 
 const ps = require('ps-node');
 
-import {fileExists} from '../../../common/utils';
+import {fileExists} from '../../../common/utils/file';
 
 module.exports = {
   start(enginePath, engineName, options) {

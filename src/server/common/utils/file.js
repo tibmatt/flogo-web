@@ -176,6 +176,9 @@ export function rmFolder( folderPath ) {
   } );
 }
 
+/**
+ * TODO: async version?
+ */
 export function fileExists(testedPath ) {
   try {
     fs.accessSync( testedPath, fs.F_OK );
