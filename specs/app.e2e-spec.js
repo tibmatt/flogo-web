@@ -1,7 +1,7 @@
 'use strict';
 
 const HOST = process.env.FLOGO_HOST || 'localhost';
-const PORT = process.env.FLOGO_PORT || '3010';
+const PORT = process.env.FLOGO_PORT || '3303';
 
 const MS_WAIT_FOR_ANIMATION = 500;
 const ROOT_DIAGRAM_ID = 'root';

@@ -153,6 +153,6 @@ function initServer() {
 
 function showBanner() {
   console.log("=============================================================================================");
-  console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
+  console.log(`[success] open http://localhost:${config.app.port} or http://localhost:${config.app.port}/_config in your browser`);
   console.log("=============================================================================================");
 }
