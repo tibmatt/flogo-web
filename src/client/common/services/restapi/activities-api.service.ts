@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { FlogoDBService } from '../db.service';
 import { activitySchemaToTask } from '../../utils';
 import { Http, Headers, RequestOptions } from '@angular/http';
 
 @Injectable()
 export class RESTAPIActivitiesService {
-  constructor( private _db : FlogoDBService, private _http : Http ) {
+  constructor( private _http : Http ) {
   }
 
   getActivities() {
@@ -23,10 +22,6 @@ export class RESTAPIActivitiesService {
         } else
           return response;
       });
-  }
-
-  getInstallableActivities() {
-    return this._db.getInstallableActivities();
   }
 
   installActivities( urls : string[] ) {
