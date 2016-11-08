@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { TranslatePipe } from 'ng2-translate/ng2-translate';
+import { LogService } from '../../../common/services/log.service';
 
 @Component(
   {
@@ -15,7 +16,8 @@ import { TranslatePipe } from 'ng2-translate/ng2-translate';
 export class FlogoLogs {
     messages: string[];
 
-  constructor( ) {
+  constructor(public logService: LogService ) {
+      /*
       this.messages = [];
       var host = 'localhost';
       var ws = new WebSocket('ws://' + host + ':3011');
@@ -28,6 +30,7 @@ export class FlogoLogs {
               console.error(e);
           }
       };
+      */
   }
 
 
@@ -35,17 +38,14 @@ export class FlogoLogs {
   }
 
   appendLog(logData) {
+      /*
       let message = {
           level: logData.level,
           timestamp: new Date(logData.timestamp).toString().substring(0,25),
           message: logData.message
       }
-
       this.messages.push(message);
-    //message = message.replace(/(?:\r\n|\r|\n)/g, '<br />');
-    //if(window.ansi_up) {
-    //    message = ansi_up.ansi_to_html(message);
-    //}
+      */
   }
 
 
