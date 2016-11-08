@@ -1,3 +1,8 @@
 <div class="flogo-logs">
-    <h1>Logs</h1>
+    <h1>Debug</h1>
+    <div *ngFor="let message of messages" class="log-container">
+        <div class="log-timestap">{{message.timestamp}}</div>
+        <div class="log-level">{{message.level}}</div>
+        <div class="log-message">{{message.message}}</div>
+    </div>
 </div>
