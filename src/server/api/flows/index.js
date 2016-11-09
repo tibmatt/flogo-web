@@ -638,16 +638,14 @@ export function  createFlowFromJson(imported ) {
  *      tags:
  *        - Flow
  *      summary: Import a flow from a json
+ *      consumes:
+ *        - multipart/form-data
  *      parameters:
  *        - name: Flow
- *          in: body
+ *          in: formData
  *          required: true
  *          description: The flow has to be uploaded as a file
- *          schema:
- *            type: object
- *            properties:
- *              flow:
- *                $ref: '#/definitions/Flow'
+ *          type: file
  *      responses:
  *        '200':
  *          description: Flow imported successfully.
