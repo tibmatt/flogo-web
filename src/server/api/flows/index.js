@@ -53,6 +53,7 @@ function getAllFlows(){
  */
 function filterFlows(query){
   query = _.assign({}, {name:''}, query);
+  query.name = query.name.trim();
 
   let options = {
     include_docs: true,
@@ -690,7 +691,7 @@ function * importFlowFromJsonFile( next ) {
       try {
         imported = JSON.parse( imported );
         if(params['name']) {
-          imported.name = params.name;
+          imported.name = params.name.trim();
         }
       } catch ( err ) {
         console.error( '[ERROR]: ', err );
