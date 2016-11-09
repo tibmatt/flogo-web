@@ -158,6 +158,23 @@ export function flowsDetail(app, router){
   router.get(basePath+"/flows/:id/build", getBuild);
 }
 
+/**
+ * @swagger
+ *  /flows/{flowId}/build:
+ *    get:
+ *      tags:
+ *        - Flow
+ *      summary: Builds the flow for external usage.
+ *      parameters:
+ *        - name: flowId
+ *          in: path
+ *          required: true
+ *          type: string
+ *          description: Encoded ID required for the Flow Building
+ *      responses:
+ *        200:
+ *          description: Flow built successfully
+ */
 function* getBuild(next){
 
   console.log("getBuild");

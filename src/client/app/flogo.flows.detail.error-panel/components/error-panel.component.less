@@ -3,7 +3,11 @@
 @hide-position: translateY(~"calc(100% - " @open-button-height ~")");
 
 .toggle-button {
-  min-width: 180px;
+  min-width: 55px;
+  height: 55px;
+  padding:3px 10px;
+  border-radius: 5px;
+  margin-left: 35px;
 
   &__icon {
     margin-left: 5px;
@@ -11,9 +15,15 @@
 
 }
 
+.toggle-button-open{
+  position: relative;
+  top:10px;
+  z-index: 3;
+}
+
 :host {
   position: fixed;
-  bottom: 60px;
+  bottom: 70px;
   pointer-events: none;
   width: 100%;
   z-index: 2;

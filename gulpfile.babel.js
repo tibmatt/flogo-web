@@ -69,5 +69,11 @@ gulp.task('release', '', cb => {
 
 });
 
+gulp.task('docs', 'Documentation for Flogo-web', cb => {
+  runSequence(
+    'docs.generate-swagger',
+    cb);
+});
+
 
 
