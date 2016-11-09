@@ -133,7 +133,7 @@ export class FlogoFlowsComponet{
 
         this._flogoModal.confirmDelete('Are you sure you want to delete ' + flow.name + ' flow?').then((res) => {
             if(res) {
-                this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
+                this._flow.deleteFlow(flow._id).then(()=> {
                     this.getAllFlows();
                     let message = this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
                     notification(message['value'], 'success', 3000);
