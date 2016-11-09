@@ -31,7 +31,7 @@ export class RESTAPIFlowsService{
     let options = new RequestOptions({headers: headers});
     let body = JSON.stringify(flowObj);
 
-    return this.http.post('v1/api/flows/update', body, options).toPromise();
+    return this.http.post('/v1/api/flows/update', body, options).toPromise();
   }
 
   deleteFlow(flowId) {
@@ -39,7 +39,7 @@ export class RESTAPIFlowsService{
   }
 
   getFlow( id : string ) {
-    return this.http.get('v1/api/flows/' + id + '/json').toPromise()
+    return this.http.get('/v1/api/flows/' + id + '/json').toPromise()
       .then(response=>{
         if(response.text())
           return response.json();
