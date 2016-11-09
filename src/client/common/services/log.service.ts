@@ -19,13 +19,24 @@ export class LogService {
                 console.error(e);
             }
         };
+
     }
 
     appendLog(logData) {
+        if(logData.length) {
+            logData.forEach((data)=> {
+                this.addLine(data);
+            })
+        }else {
+            this.addLine(logData);
+        }
+    }
+
+    addLine(data) {
         let message = {
-            level: logData.level,
-            timestamp: new Date(logData.timestamp).toString().substring(0,25),
-            message: logData.message
+            level: data.level,
+            timestamp: new Date(data.timestamp).toString().substring(0,25),
+            message: data.message
         }
 
         this.lines.push(message);

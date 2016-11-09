@@ -13,6 +13,25 @@ export function init() {
     });
   };
 
+
+  wss.on('connection', (ws)=> {
+    var options = {
+      limit:10,
+      start:0,
+      order:'desc',
+      fields: ['level','timestamp','message']
+    };
+
+    engineLogger.query(options, (err, results) => {
+      if (err) {
+        console.log(err) ;
+      }
+      var docs = results['file'] || [];
+      ws.send(JSON.stringify(docs));
+    });
+
+  });
+
   engineLogger.stream({start: -1})
     .on('log', function (logData) {
       wss.broadcast(JSON.stringify({
