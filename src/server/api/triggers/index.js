@@ -43,7 +43,7 @@ function* getTriggers(next){
 
   data = yield triggersDBService.allDocs({ include_docs: true })
     .then(triggers => triggers.map(trigger => {
-      return Object.assign({}, _.pick(trigger, ['_id', 'name', 'title', 'version', 'description']), { title: _.get(trigger, 'schema.title')});
+      return trigger.schema;
     }));
 
   this.body = data;

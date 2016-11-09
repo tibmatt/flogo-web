@@ -1,14 +1,28 @@
 import {Injectable} from '@angular/core';
-import {FlogoDBService} from '../db.service';
+import { activitySchemaToTrigger } from '../../utils';
 import { Http, Headers, RequestOptions } from '@angular/http';
 
 @Injectable()
 export class  RESTAPITriggersService {
-  constructor( private _db : FlogoDBService, private _http : Http ) {
+  constructor( private _http : Http ) {
   }
 
   getTriggers() {
-    return this._db.getAllTriggers();
+    return this._http.get('/v1/api/triggers').toPromise()
+      .then(response=> {
+        if (response.text()) {
+          return _.map(response.json(), trigger => {
+            return _.assign(activitySchemaToTrigger(trigger), {
+              where : trigger.where,
+              // TODO fix this installed status.
+              // as of now, whatever can be read from db, should have been installed.
+              installed : true
+            })
+          });
+        } else {
+          return response;
+        }
+      });
   }
 
   installTriggers( urls : string[] ) {
