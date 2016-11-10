@@ -188,9 +188,12 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
 
     public toggleSelectedLogs() {
-        let route = '';
-
         this.isSelectedLogs = !this.isSelectedLogs;
+        this.navigateToLogs();
+    }
+
+    public navigateToLogs() {
+        let route = '';
         if(this.isSelectedLogs) {
             route =  'FlogoLogs';
         }else {
@@ -202,6 +205,11 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     public resetLogsState() {
         this.isSelectedLogs = false;
+    }
+
+    public showLogs() {
+        this.isSelectedLogs = true;
+        this.navigateToLogs();
     }
 
   private getFlow(id: string) {
@@ -337,6 +345,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _runFromTrigger(data? : any ) {
 
+    this.showLogs();
     this._isDiagramEdited = false;
     let diagramId = 'root';
 
@@ -1389,6 +1398,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _runFromThisTile(data:any, envelope:any) {
+      this.showLogs();
     let diagramId : string = 'root';
     let currentDiagram = this.handlers[diagramId];
 
