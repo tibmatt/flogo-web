@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { activitySchemaToTask } from '../../utils';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class RESTAPIActivitiesService {
