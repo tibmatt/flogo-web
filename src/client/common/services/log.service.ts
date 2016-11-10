@@ -25,8 +25,12 @@ export class LogService {
     appendLog(logData) {
         if(logData.length) {
             logData.forEach((data)=> {
-                this.addLine(data);
-            })
+              // split lines
+              let lines = (data.message || '').match(/[^\r\n]+/g);
+              lines.forEach((line) => {
+                this.addLine(Object.assign({}, data, {message: line}));
+              });
+            });
         }else {
             this.addLine(logData);
         }
