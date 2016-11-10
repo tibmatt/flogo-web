@@ -211,8 +211,6 @@ function preProcessURLs( urls ) {
  *  Trigger:
  *    type: object
  *    properties:
- *      _id:
- *        type: string
  *      name:
  *        type: string
  *      version:
@@ -221,5 +219,20 @@ function preProcessURLs( urls ) {
  *        type: string
  *      title:
  *        type: string
+ *      settings:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      outputs:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      endpoint:
+ *        type: object
+ *        properties:
+ *          settings:
+ *            type: array
+ *            items:
+ *              $ref: '#/definitions/Attribute'
  */
 

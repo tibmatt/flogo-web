@@ -53,8 +53,6 @@ function* getActivities(next){
  *  Activity:
  *    type: object
  *    properties:
- *      _id:
- *        type: string
  *      name:
  *        type: string
  *      version:
@@ -63,6 +61,14 @@ function* getActivities(next){
  *        type: string
  *      title:
  *        type: string
+ *      inputs:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      outputs:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
  */
 
 /**
