@@ -38,7 +38,7 @@
     "pouchdb-load": "^1.4.6",
     "pouchdb-server": "^1.1.1",
     "semver": "^5.2.0",
-    "winston": "^2.3.0",
-    "ws": "^1.1.1"
+    "socket.io": "1.5.1",
+    "winston": "^2.3.0"
   }
 }

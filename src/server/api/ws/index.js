@@ -1,20 +1,11 @@
 import {engineLogger} from '../../common/logger';
 
-const WebSocketServer = require('ws').Server;
-
 // TODO: inject config
-export function init() {
-  const wss = new WebSocketServer({port: 3011});
+export function init(server) {
+  const io = require('socket.io')(server);
 
-  // Broadcast to all.
-  wss.broadcast = function broadcast(data) {
-    wss.clients.forEach(function each(client) {
-      client.send(data);
-    });
-  };
-
-
-  wss.on('connection', (ws)=> {
+  io.on('connection', (ws)=> {
+    console.log('Connecting socket.io .........');
     var options = {
       limit:10,
       start:0,
@@ -27,14 +18,14 @@ export function init() {
         console.log(err) ;
       }
       var docs = results['file'] || [];
-      ws.send(JSON.stringify(docs));
+      ws.emit('on-connecting',JSON.stringify(docs));
     });
 
   });
 
   engineLogger.stream({start: -1})
     .on('log', function (logData) {
-      wss.broadcast(JSON.stringify({
+      io.emit('on-log',JSON.stringify({
         level: logData.level,
         message: logData.message,
         timestamp: logData.timestamp

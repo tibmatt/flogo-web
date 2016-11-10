@@ -7,19 +7,19 @@ export class LogService {
 
     constructor() {
         this.lines = [];
+        var socket = io();
+        socket.on('on-connecting', this.onData.bind(this));
+        socket.on('on-log', this.onData.bind(this));
+    }
 
-        var host = 'localhost';
-        var ws = new WebSocket('ws://' + host + ':3011');
-        ws.onmessage = (event) => {
-            console.info('Received message', new Date());
-            try {
-                var data = JSON.parse(event.data);
-                this.appendLog(data);
-            } catch(e) {
-                console.error(e);
-            }
-        };
-
+    onData(msg) {
+        console.info('Received message', new Date());
+        try {
+            var data = JSON.parse(msg);
+            this.appendLog(data);
+        } catch(e) {
+            console.error(e);
+        }
     }
 
     appendLog(logData) {

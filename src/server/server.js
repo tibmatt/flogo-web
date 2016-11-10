@@ -18,6 +18,8 @@ import { installAndConfigureTasks, loadTasksToEngines, installSamples } from './
 // TODO Need to use cluster to improve the performance
 
 let app;
+
+
 /**
  * Server start logic
  *
@@ -73,8 +75,8 @@ startConfig
     console.log( `[log] start web server...` );
     return initServer();
   } )
-  .then(() => {
-    initWebsocketApi();
+  .then((server) => {
+    initWebsocketApi(server);
   })
   .then(showBanner)
   .catch( ( err )=> {
@@ -142,10 +144,11 @@ function initServer() {
       console.log( this.request.body );
     } );
 
-
-    app.listen( port, ()=> {
+    var server = require('http').createServer(app.callback());
+    server.listen( port, ()=> {
       console.log( `[log] start web server done.` );
-      resolve( app );
+
+      resolve( server );
     } );
   } );
 }
