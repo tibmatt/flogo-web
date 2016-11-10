@@ -39,11 +39,11 @@ export class LogService {
     addLine(data) {
         let message = {
             level: data.level,
-            timestamp: new Date(data.timestamp).toString().substring(0,25),
+            timestamp: moment(data.timestamp).format('HH:mm:ss.SSS ll'),
             message: data.message
-        }
+        };
 
-        this.lines.push(message);
+        this.lines.unshift(message);
     }
 
 

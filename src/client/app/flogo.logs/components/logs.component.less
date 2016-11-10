@@ -22,6 +22,12 @@
   color: #444;
   font-size: @info-font-size;
   line-height: 1.4;
+
+  &--error {
+    font-weight: bold;
+    color: rgb(189, 9, 0);
+  }
+
 }
 
 .flogo-logs__content {
@@ -37,8 +43,9 @@
   }
 
   .log-line__message {
-    flex-basis: 100%;
     padding: @horizontal-padding;
+    width: 100%;
+    word-wrap: break-word;
   }
 
   .log-line__timestamp {
@@ -53,6 +60,5 @@
     padding-right: @horizontal-padding;
     text-align: right;
   }
-
 
 }
