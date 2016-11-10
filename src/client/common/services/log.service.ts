@@ -34,6 +34,8 @@ export class LogService {
         } else {
             this.addLine(logData);
         }
+
+        this.lines = this.lines.slice();
     }
 
     addLine(data) {

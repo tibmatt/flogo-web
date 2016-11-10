@@ -1,9 +1,10 @@
 <div class="flogo-logs">
   <div class="flogo-logs__header">
     <h1 class="flogo-logs__header__title">Debug logs</h1>
+    <div ><input type="text" (keyup)="onKeyUp($event)" class="flogo-logs__header__search" placeholder="Filter" /></div>
   </div>
   <div class="flogo-logs__content">
-    <div *ngFor="let message of logService.lines" class="log-line">
+    <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
       <div class="log-line__timestamp">{{message.timestamp}}</div>
       <div class="log-line__level" [class.log-line__level--error]="message.level=='error'">{{message.level}}</div>
       <div class="log-line__message">{{message.message}}</div>

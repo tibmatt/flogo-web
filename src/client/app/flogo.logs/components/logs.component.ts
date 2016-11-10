@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { TranslatePipe } from 'ng2-translate/ng2-translate';
 import { LogService } from '../../../common/services/log.service';
+import { SearchPipe } from './search.component';
 
 @Component(
   {
@@ -9,24 +10,17 @@ import { LogService } from '../../../common/services/log.service';
     moduleId : module.id,
     directives: [],
     templateUrl : 'logs.tpl.html',
-    pipes: [TranslatePipe],
+    pipes: [TranslatePipe, SearchPipe],
     styleUrls : [ 'logs.component.css' ]
   }
 )
 export class FlogoLogs {
     messages: string[];
+    searchValue: string = '';
 
   constructor(public logService: LogService ) {
   }
-
-  ngOnDestroy() {
+  public onKeyUp(event) {
+     this.searchValue = event.target.value;
   }
-
-  appendLog(logData) {
-  }
-
-
-
-
-
 }

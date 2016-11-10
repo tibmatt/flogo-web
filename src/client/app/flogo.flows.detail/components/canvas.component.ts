@@ -13,7 +13,7 @@ import { FlogoInstructionsComponent } from '../../flogo.instructions/components/
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import {FlogoLogs} from '../../flogo.logs/components/logs.component';
-
+import { LogService } from '../../../common/services/log.service';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -118,7 +118,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     private _router: Router,
     private _flogoModal: FlogoModal,
     private _routerParams: RouteParams,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public logService: LogService
   ) {
     this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
