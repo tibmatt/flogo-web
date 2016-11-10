@@ -14,7 +14,6 @@ export class RESTAPIActivitiesService {
         if (response.text()) {
           return _.map(response.json(), (activity)=> {
             return _.assign(activitySchemaToTask(activity), {
-              where: activity.where,
               // TODO fix this installed status.
               // as of now, whatever can be read from db, should have been installed.
               installed: true

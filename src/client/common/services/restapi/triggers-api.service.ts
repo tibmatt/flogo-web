@@ -14,7 +14,6 @@ export class  RESTAPITriggersService {
         if (response.text()) {
           return _.map(response.json(), trigger => {
             return _.assign(activitySchemaToTrigger(trigger), {
-              where : trigger.where,
               // TODO fix this installed status.
               // as of now, whatever can be read from db, should have been installed.
               installed : true
