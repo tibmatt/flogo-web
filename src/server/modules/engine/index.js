@@ -14,7 +14,8 @@ import {
   runShellCMD,
   readJSONFile,
   writeJSONFile,
-  inspectObj
+  inspectObj,
+  splitLines
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
 import { list as flogoList } from './commands';
@@ -975,7 +976,6 @@ export class Engine {
       console.log( "[info] command: ", command );
 
       let logFile = path.join( config.publicPath, self.options.name + '.log' );
-      let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
       console.log( "[info] engine logFile: ", logFile );
 
       if ( !isExisted( path.join( defaultEngineBinPath, command ) ) ) {
@@ -991,10 +991,12 @@ export class Engine {
 
         // log engine output
         engineProcess.stdout.on('data', data => {
-          engineLogger.info(data.toString());
+          splitLines(data.toString())
+            .forEach(line => engineLogger.info(line));
         });
         engineProcess.stderr.on('data', data => {
-          engineLogger.error(data.toString());
+          splitLines(data.toString())
+            .forEach(line => engineLogger.error(line));
         });
 
         successHandler();

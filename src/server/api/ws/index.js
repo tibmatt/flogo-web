@@ -18,7 +18,7 @@ export function init(server) {
         console.log(err) ;
       }
       var docs = results['file'] || [];
-      ws.emit('on-connecting',JSON.stringify(docs));
+      ws.emit('on-connecting', JSON.stringify(docs));
     });
 
   });

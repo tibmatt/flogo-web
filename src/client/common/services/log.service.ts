@@ -31,7 +31,7 @@ export class LogService {
                 this.addLine(Object.assign({}, data, {message: line}));
               });
             });
-        }else {
+        } else {
             this.addLine(logData);
         }
     }
