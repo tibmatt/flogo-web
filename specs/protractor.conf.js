@@ -15,5 +15,6 @@ exports.config = {
   },
   onPrepare: function(){
     browser.manage().timeouts().implicitlyWait(500);
+    browser.manage().window().setSize(1600, 1000);
   }
 };
