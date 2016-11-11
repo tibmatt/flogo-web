@@ -30,6 +30,7 @@
 /// <reference path="main/ambient/run-sequence/index.d.ts" />
 /// <reference path="main/ambient/selenium-webdriver/index.d.ts" />
 /// <reference path="main/ambient/serve-static/index.d.ts" />
+/// <reference path="main/ambient/socket.io-client/index.d.ts" />
 /// <reference path="main/ambient/systemjs/index.d.ts" />
 /// <reference path="main/ambient/through2/index.d.ts" />
 /// <reference path="main/ambient/vinyl-source-stream/index.d.ts" />
