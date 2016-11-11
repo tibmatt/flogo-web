@@ -1,14 +1,14 @@
 @info-font-size: 11px;
-@info-font-color: #444;
-@info-bg-color: #f4f4f4;
+@info-font-color: #f1f1f1;
+@info-bg-color: #000;
 
 @horizontal-padding: 5px;
 
 .flogo-logs__header {
   display:flex;
   flex-direction: row;
-  color: #fff;
-  background-color: #8a90ae;
+  color: #8a90ae;
+  background-color: #272626;
   padding: 33px 17px 28px;
 
   .flogo-logs__header__title {
@@ -29,7 +29,7 @@
 
 .flogo-logs-info() {
   background-color: @info-bg-color;
-  color: #444;
+  color: #bdbdbd;
   font-size: @info-font-size;
   line-height: 1.4;
 
@@ -43,7 +43,8 @@
 .flogo-logs__content {
 
   .log-line {
-    color: #666;
+    background-color: #000;
+    color: #fff;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
