@@ -40,8 +40,6 @@ function getAllFlows(){
         }
       });
       resolve(allFlows);
-      // console.log(allFlows);
-      //this.body = allFlows;
     }).catch((err)=>{
       reject(err);
     });
@@ -54,18 +52,19 @@ function getAllFlows(){
  * @returns {*}
  */
 function filterFlows(query){
-  query = _.assign({}, query);
+  query = _.assign({}, {name:''}, query);
+  query.name = query.name.trim();
 
   let options = {
     include_docs: true,
     startKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}`,
     endKey: `${FLOW}${DELIMITER}${DEFAULT_USER_ID}${DELIMITER}\uffff`,
-    key: query.name
+    key: query.name.toLowerCase()
   };
 
   // TODO:  repplace with a persistent query: https://pouchdb.com/guides/queries.html
   return _dbService.db
-    .query(function(doc, emit) { emit(doc.name); }, options)
+    .query(function(doc, emit) { emit(doc.name.toLowerCase()); }, options)
     .then((response) => {
       let allFlows = [];
       let rows = response&&response.rows||[];
@@ -114,12 +113,15 @@ export function getTriggers() {
 }
 
 function createFlow(flowObj){
+
   return new Promise((resolve, reject)=>{
-    _dbService.create(flowObj).then((response)=>{
-      resolve(response);
-    }).catch((err)=>{
-      reject(err);
-    });
+    _dbService.create(flowObj)
+              .then((response)=>{
+                      resolve(response);
+              })
+              .catch((err)=>{
+                reject(err);
+              });
   });
 }
 
@@ -153,8 +155,7 @@ export function flows(app, router){
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
 
-  router.post(basePath+'/flows/json-file', importFlowFromJsonFile);
-  router.post(basePath+'/flows/json', importFlowFromJson);
+  router.post(basePath+'/flows/json', importFlowFromJsonFile);
   router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
@@ -174,18 +175,15 @@ export function flows(app, router){
  *              $ref: '#/definitions/Full-Flow'
  */
 function* getFlows(next){
-  console.log("getFlows, next: ", next);
-  //this.body = 'getFlows';
-
   let data = [];
-  if (!_.isEmpty(this.query)) {
-    data = yield filterFlows(this.query);
-  } else {
-    data = yield getAllFlows();
-  }
-  //yield next;
-  console.log(data);
-  this.body = data;
+
+    if (!_.isEmpty(this.query)) {
+      data = yield filterFlows(this.query);
+    } else {
+      data = yield getAllFlows();
+    }
+
+    this.body = data;
 }
 /**
  * @swagger
@@ -284,15 +282,16 @@ function* createFlows(next){
     flowObj.$table = _dbService.getIdentifier("FLOW");
     flowObj.paths = {};
     flowObj.items = {};
-    console.log(flowObj);
     let res = yield createFlow(flowObj);
     this.body = res;
   }catch(err){
+    /*
     var error = {
       code: 500,
       message: err.message
     };
-    this.body = error;
+    */
+    this.body = err;
   }
 }
 
@@ -414,7 +413,6 @@ function* deleteFlows(next) {
  */
 function * addTrigger(next){
   let response = {};
-  console.log('ADDKING TRIGGER...........');
   //TODO validate this query is json
   var params = _.assign({},{name:'', flowId:''}, this.request.body || {}, this.query);
 
@@ -644,31 +642,28 @@ function validateFlow(flow, activities, triggers) {
     try {
       validateErrors = validateTriggersAndActivities(flow, triggers, activities);
     }catch (err) {
-      //context.throw(err);
       resolve({status:500, details:err});
     }
     if(validateErrors.hasErrors) {
       let details = {
-        type: 1,
-        message: 'Flow could not be imported, missing triggers/activities',
         details: {
+          message: "Flow could not be imported, missing triggers/activities",
           activities: validateErrors.activities,
-          triggers: validateErrors.triggers
+          triggers: validateErrors.triggers,
+          ERROR_CODE: "ERROR_VALIDATION"
         }
       };
-      //context.response.status = 400;
-      //context.body = details;
-      //this.throw(400, details);
-      resolve({status:400, details:details})
+      reject({status:400, details:details})
+    }else {
+      resolve({status:200})
     }
-    resolve({status:200})
   });
 }
 
 export function  createFlowFromJson(imported ) {
   return new Promise( (resolve, reject) => {
     let activities, triggers;
-    getActivities()
+     getActivities()
       .then((items)=> {
         activities = items;
         getTriggers()
@@ -682,11 +677,14 @@ export function  createFlowFromJson(imported ) {
                       resolve({status: res.status, details:createFlowResult});
                     })
                     .catch((err) => {
-                      resolve( {status:500, details: {message:'Fail to create flow.', expose : true} } );
+                      resolve( {status:err.status || 500, details: err.details } );
                     });
                 }else {
                   resolve(res);
                 }
+              })
+              .catch((err) => {
+                reject(err);
               });
 
           })
@@ -704,15 +702,14 @@ export function  createFlowFromJson(imported ) {
  *      tags:
  *        - Flow
  *      summary: Import a flow from a json
+ *      consumes:
+ *        - multipart/form-data
  *      parameters:
  *        - name: Flow
- *          in: body
+ *          in: formData
  *          required: true
- *          schema:
- *            type: object
- *            properties:
- *              flow:
- *                $ref: '#/definitions/Flow'
+ *          description: The flow has to be uploaded as a file
+ *          type: file
  *      responses:
  *        '200':
  *          description: Flow imported successfully.
@@ -727,31 +724,12 @@ export function  createFlowFromJson(imported ) {
  *              rev:
  *                type: string
  */
-function * importFlowFromJson(next ) {
-  console.log( '[INFO] Import flow from JSON' );
-  let flow = _.get( this, 'request.body.flow' );
-
-  if ( _.isObject( flow ) && !_.isEmpty( flow ) ) {
-      let imported = flow;
-      console.log('IMPORTED IS');
-      console.log(imported);
-
-      let responseCreateFlow = yield createFlowFromJson(imported);
-      this.body = responseCreateFlow.details;
-      this.response.status = responseCreateFlow.status;
-
-  } else {
-    this.throw( 400, 'Flow is empty' );
-  }
-
-  yield  next;
-
-}
-
 function * importFlowFromJsonFile( next ) {
   console.log( '[INFO] Import flow from JSON File' );
 
   let importedFile = _.get( this, 'request.body.files.importFile' );
+  let params = _.get(this, 'request.query', {});
+
 
   if ( _.isObject( importedFile ) && !_.isEmpty( importedFile ) ) {
 
@@ -774,22 +752,27 @@ function * importFlowFromJsonFile( next ) {
       // parse file date to object
       try {
         imported = JSON.parse( imported );
+        if(params['name']) {
+          imported.name = params.name.trim();
+        }
       } catch ( err ) {
         console.error( '[ERROR]: ', err );
         this.throw( 400, 'Invalid JSON data.' );
       }
 
       let responseCreateFlow = yield createFlowFromJson(imported);
-      this.body = responseCreateFlow.details;
+      this.body = responseCreateFlow;
       this.response.status = responseCreateFlow.status;
+
     }
   } else {
-    console.log( this.request.body.files );
     this.throw( 400, 'Invalid file.' );
   }
 
   yield next;
 }
+
+
 
 function validateTriggersAndActivities (flow, triggers, activities) {
   let validate = { activities: [], triggers: [], hasErrors: false};
@@ -831,7 +814,6 @@ function getTilesFromFlow(items) {
 
       if(item.type == FLOGO_TASK_TYPE.TASK_ROOT || item.type == FLOGO_TASK_TYPE.TASK) {
         if(item.triggerType&&item.triggerType=='__error-trigger') {
-          console.log('Ignoring error trigger')
         }else {
           let tile = {
               type: item.type,
@@ -898,6 +880,30 @@ function _getActivityByName(activityName) {
       reject(err);
     });
   });
+}
+
+function _getFlowByName(value) {
+  let _dbFlows = dbService;
+  let searchValue = value.toLowerCase();
+
+  return new Promise(function (resolve, reject) {
+    _dbFlows.db
+      .query(function(doc, emit) {emit(doc.name.toLowerCase());}, {key:searchValue, include_docs:true})
+      .then(function (response) {
+        let rows = response&&response.rows||[];
+        let doc = rows.length > 0 ? rows[0].doc : null;
+        if(doc == null) {
+          resolve({status:404, message: 'Flow not found', flow:null});
+        } else {
+          resolve({status:200, flow:doc});
+        }
+      })
+      .catch(function (err) {
+         reject({status:500, message:'Error getting the flow', flow:null});
+    });
+
+  });
+
 }
 
 

@@ -12,7 +12,7 @@ var loadingIndicator = require('./pages/loading-indicator');
 var helpers = require('./helpers');
 
 describe('flogo web', function () {
-  var flowName = 'My test flow';
+  var flowName = 'My test flow' + (new Date().getTime() / 1000);
 
   beforeAll(function() {
     browser.get(`http://${HOST}:${PORT}`);
@@ -41,8 +41,8 @@ describe('flogo web', function () {
     var flow = flowList.getFlow(0);
     expect(flow.getName()).toEqual(flowName);
 
+    browser.sleep(6000);
     flow.click();
-
     let flowTitle = flowPage.flowTitle.get();
     browser.wait(protractor.ExpectedConditions.presenceOf(flowTitle));
     expect(flowTitle.getText()).toEqual(flowName);
@@ -132,7 +132,7 @@ describe('flogo web', function () {
 
     expect(transform.tileHasTransformBadge(flowPage.tasks.findOne('log pet', ROOT_DIAGRAM_ID))).toBeTruthy();
 
-  });
+  },80000);
 
   it('should run succesfully from trigger', function () {
     browser.ignoreSynchronization = true;
@@ -161,7 +161,7 @@ describe('flogo web', function () {
       });
 
 
-  })
+  },80000)
 
 
 });

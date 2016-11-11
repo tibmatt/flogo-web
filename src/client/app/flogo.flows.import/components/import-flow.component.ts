@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter } from '@angular/core';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { notification } from '../../../common/utils';
 import { TranslatePipe } from 'ng2-translate/ng2-translate';
+import {FlogoFlowsFlowName} from '../../flogo.flows.flow-name/components/flow-name.component';
 
 @Component( {
   selector : 'flogo-flows-import',
@@ -9,12 +10,16 @@ import { TranslatePipe } from 'ng2-translate/ng2-translate';
   templateUrl : 'import-flow.tpl.html',
   styleUrls : [ 'import-flow.component.css' ],
   pipes: [TranslatePipe],
+  directives:[FlogoFlowsFlowName],
   outputs : [ 'onError:importError', 'onSuccess:importSuccess' ]
 } )
 export class FlogoFlowsImport {
   private _elmRef : ElementRef;
   private onError : EventEmitter<any>;
   private onSuccess : EventEmitter<any>;
+  public showFileNameDialog:boolean = false;
+  public repeatedName:string = '';
+  public importFile:any;
 
   constructor( elementRef : ElementRef, private _flowsAPIs : RESTAPIFlowsService ) {
     this._elmRef = elementRef;
@@ -59,14 +64,21 @@ export class FlogoFlowsImport {
     return errorMessage;
   }
 
-  private onFileChange( evt : any ) {
-    let importFile = <File> _.get( evt, 'target.files[0]' );
+  onCorrectName(name:string) {
+    this.resetValidationFlags();
+    this.uploadFlow(this.importFile, name);
+  }
+  onClose(closed:boolean) {
+    this.resetValidationFlags();
+  }
+  resetValidationFlags() {
+    this.showFileNameDialog = false;
+    this.repeatedName = '';
+  }
+  uploadFlow(flow,flowName) {
+    let promise = this._flowsAPIs.importFlow(flow,flowName);
 
-    if ( _.isUndefined( importFile ) ) {
-      console.error( 'Invalid file to import' );
-    } else {
-      this._flowsAPIs.importFlow( importFile )
-        .then( ( result : any )=> {
+     promise.then( ( result : any )=> {
           this.onSuccess.emit( result );
         } )
         .catch( ( err : any )=> {
@@ -76,14 +88,44 @@ export class FlogoFlowsImport {
           }catch(exc) {
             objError = {};
           }
+          let errorCode = objError.details&&objError.details.ERROR_CODE || '';
 
-          if(objError.type == 1) {
-            let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
-            this.onError.emit( {response: errorMessage} );
-          } else {
-            this.onError.emit( err );
+          switch (errorCode) {
+            case 'NAME_EXISTS':
+              this.showFileNameDialog = true;
+                  break;
+            case 'ERROR_VALIDATION':
+              let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
+              this.onError.emit( {response: errorMessage} );
+                  break;
+            default:
+              this.onError.emit( err );
+                  break;
           }
+
         } );
+}
+
+  private onFileChange( evt : any ) {
+    this.importFile = <File> _.get( evt, 'target.files[0]' );
+
+    if ( _.isUndefined( this.importFile ) ) {
+      console.error( 'Invalid file to import' );
+    } else {
+      var reader = new FileReader();
+      reader.onload  = ((theFile)=> {
+        return (e)=> {
+          try {
+            let flow = JSON.parse(e.target.result);
+            this.repeatedName = flow.name;
+          }catch(err) {
+          }
+
+          this.uploadFlow(this.importFile, null);
+        }
+      })(this.importFile);
+
+      reader.readAsText(this.importFile);
     }
   }
 }

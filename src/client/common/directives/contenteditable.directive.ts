@@ -11,7 +11,7 @@ import {RESTAPIFlowsService} from '../services/restapi/flows-api.service';
     },
     providers: [RESTAPIFlowsService]
 })
-export class Contenteditable {
+export class Contenteditable implements OnChanges {
     private _el: HTMLElement;
     private $el: any;
     private colorFlag: boolean;
@@ -28,6 +28,16 @@ export class Contenteditable {
         this._el = el.nativeElement;
         this.$el = jQuery(this._el);
     }
+
+    ngOnChanges( changes : { [key : string] : SimpleChange } )
+    {
+            if(_.has(changes, 'myContenteditable')) {
+                if(changes['myContenteditable'].currentValue ) {
+                    this.$el.html(changes['myContenteditable'].currentValue);
+                }
+            }
+    }
+
     ngOnInit() {
         if(this.myContenteditable != undefined) this.$el.html(this.myContenteditable);
         this.$el.attr('contenteditable', 'true');
