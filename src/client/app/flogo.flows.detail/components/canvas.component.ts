@@ -29,6 +29,7 @@ import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
 import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
 import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS} from '../../flogo.flows.detail.error-panel/messages'
+import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
@@ -110,6 +111,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   public downloadLink: string;
   public isInstructionsActivated: boolean  = false;
   public isSelectedLogs: boolean = false;
+  public isLogsMaximized: boolean = false;
 
   constructor(
     private _postService: PostService,
@@ -309,6 +311,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback : this._changeTileDetail.bind( this ) } ),
       _.assign( {}, FLOGO_ERROR_PANEL_SUB_EVENTS.openPanel, { callback : this._errorPanelStatusChanged.bind( this, true ) } ),
       _.assign( {}, FLOGO_ERROR_PANEL_SUB_EVENTS.closePanel, { callback : this._errorPanelStatusChanged.bind( this, false ) } ),
+      _.assign( {}, FLOGO_LOGS_SUB_EVENTS.logResize, { callback : this.logResize.bind( this) } ),
     ];
 
     _.each(
@@ -1702,6 +1705,11 @@ export class FlogoCanvasComponent implements  OnChanges {
     }
 
     console.groupEnd();
+  }
+
+  private logResize(data:any, envelope:any)   {
+      this.isLogsMaximized = (data.action === 'grow') ;
+      console.log(this.isLogsMaximized);
   }
 
   private _errorPanelStatusChanged(isOpened: boolean, data: any, envelope: any) {

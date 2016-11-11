@@ -13,10 +13,17 @@
 
 .canvas-flow {
   display: flex;
-  width: 100%;
+  width: 77.5%;
   flex-direction: column;
   z-index: 1;
   /*overflow: auto;*/
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.canvas-flow-minimized {
+  width: 30%;
 }
 
 .canvas-right-container {
@@ -27,6 +34,14 @@
   border-left: solid 1px #B5B5B5;
   background: #fff;
   position: relative;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.canvas-right-container-maximized {
+  width: 70%;
+  background-color: #000;
 }
 
 .flogo-flow-detail {

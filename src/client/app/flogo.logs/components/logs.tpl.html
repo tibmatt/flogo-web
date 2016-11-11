@@ -1,4 +1,4 @@
-<div class="flogo-logs">
+<div class="flogo-logs" (mouseenter)="resizePanel('grow')" (mouseleave)="resizePanel('shrink')">
   <div class="flogo-logs__header">
     <h1 class="flogo-logs__header__title">Debug logs</h1>
     <div ><input type="text" (keyup)="onKeyUp($event)" class="flogo-logs__header__search" placeholder="Filter" /></div>
