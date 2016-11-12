@@ -24,8 +24,11 @@ export class FlogoFormBuilderConfigurationTaskComponent {
   _attributes: any;
   _task:any;
   fields:any;
+  directions: any;
+
 
   constructor(private _commonService: FlogoFormBuilderCommon, public translate: TranslateService) {
+    this.directions = _commonService.getParameterDirections();
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
@@ -38,13 +41,8 @@ export class FlogoFormBuilderConfigurationTaskComponent {
   ngOnInit() {
   }
 
-  getControlByType(item:any) :any {
-
-    if(item.allowed) {
-      return {control: 'FieldListBox'};
-    }
-
-    return this._commonService.getControlByType(item.type);
+  getControlByType(item:any, parameterDirection?:string) :any {
+    return this._commonService.getControlByType(item, parameterDirection);
   }
 
   _getMappingValue(info:any) {
