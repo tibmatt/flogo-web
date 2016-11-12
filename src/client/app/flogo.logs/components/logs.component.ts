@@ -18,6 +18,7 @@ import { PUB_EVENTS } from '../messages';
 export class FlogoLogs {
     messages: string[];
     searchValue: string = '';
+    isMaximized: boolean = false;
 
   constructor(public logService: LogService, public postService: PostService ) {
   }
@@ -27,6 +28,7 @@ export class FlogoLogs {
   }
 
   public resizePanel(action)   {
+      this.isMaximized = (action === 'grow');
       this.postService.publish(
           _.assign({}, PUB_EVENTS.logResize, {data: {action:action}})
       )

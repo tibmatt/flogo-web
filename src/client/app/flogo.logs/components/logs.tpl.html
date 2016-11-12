@@ -1,9 +1,17 @@
 <div class="flogo-logs" (mouseenter)="resizePanel('grow')" (mouseleave)="resizePanel('shrink')">
-  <div class="flogo-logs__header">
-    <h1 class="flogo-logs__header__title">Debug logs</h1>
-    <div ><input type="text" (keyup)="onKeyUp($event)" class="flogo-logs__header__search" placeholder="Filter" /></div>
+  <div class="header">
+    <div class="title">
+      <div class="icon"><span class="glyphicon glyphicon-th-list"></span> </div>
+      <div class="caption">Debug logs</div>
+    </div>
+
+    <div class="search">
+      <input class="form-control tc-inputs" type="text" (keyup)="onKeyUp($event)"  placeholder="Filter" />
+    </div>
+
   </div>
   <div class="flogo-logs__content">
+
     <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
       <div class="log-line__timestamp">{{message.timestamp}}</div>
       <div class="log-line__level" [class.log-line__level--error]="message.level=='error'">{{message.level}}</div>
