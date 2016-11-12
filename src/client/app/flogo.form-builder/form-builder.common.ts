@@ -60,7 +60,7 @@ export class FlogoFormBuilderCommon {
     }
   }
 
-  getControlByType(item:any, paramDirection:string) {
+  getControlByType(item:any, paramDirection?:string) {
     let control:string = '';
 
     switch(this._mapTypeToConstant(item.type)) {

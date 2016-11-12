@@ -41,7 +41,7 @@ export class FlogoFormBuilderConfigurationTaskComponent {
   ngOnInit() {
   }
 
-  getControlByType(item:any, parameterDirection:string) :any {
+  getControlByType(item:any, parameterDirection?:string) :any {
     return this._commonService.getControlByType(item, parameterDirection);
   }
 
