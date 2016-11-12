@@ -43,7 +43,7 @@ function* getTriggers(next){
 
   data = yield triggersDBService.allDocs({ include_docs: true })
     .then(triggers => triggers.map(trigger => {
-      return Object.assign({}, _.pick(trigger, ['_id', 'name', 'title', 'version', 'description']), { title: _.get(trigger, 'schema.title')});
+      return trigger.schema;
     }));
 
   this.body = data;
@@ -211,8 +211,6 @@ function preProcessURLs( urls ) {
  *  Trigger:
  *    type: object
  *    properties:
- *      _id:
- *        type: string
  *      name:
  *        type: string
  *      version:
@@ -221,5 +219,20 @@ function preProcessURLs( urls ) {
  *        type: string
  *      title:
  *        type: string
+ *      settings:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      outputs:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      endpoint:
+ *        type: object
+ *        properties:
+ *          settings:
+ *            type: array
+ *            items:
+ *              $ref: '#/definitions/Attribute'
  */
 

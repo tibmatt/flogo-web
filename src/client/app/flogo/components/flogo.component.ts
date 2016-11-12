@@ -5,7 +5,6 @@ import {FlogoFlowsComponet} from '../../flogo.flows/components/flows.component';
 import {FlogoCanvasComponent} from '../../flogo.flows.detail/components/canvas.component';
 import {FlogoFormBuilderComponent} from "../../flogo.form-builder/components/form-builder.component";
 import {PostService} from '../../../common/services/post.service';
-import { FlogoDBService } from '../../../common/services/db.service';
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { HTTP_PROVIDERS } from '@angular/http';
 import { RESTAPITest } from '../../../common/services/rest-api-test.spec';
@@ -25,7 +24,7 @@ import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
   styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
   pipes: [TranslatePipe],
-  providers: [PostService,FlogoDBService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService, ConfigurationService]
+  providers: [PostService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService, ConfigurationService]
 })
 
 @RouteConfig([

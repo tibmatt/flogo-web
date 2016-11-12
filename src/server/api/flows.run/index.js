@@ -434,6 +434,7 @@ function* stepsInstance(next) {
  * definition:
  *  Attribute:
  *    type: object
+ *    required: [ name, type ]
  *    properties:
  *      name:
  *        type: string
@@ -441,6 +442,14 @@ function* stepsInstance(next) {
  *        type: string
  *      value:
  *        type: string
+ *      required:
+ *        type: boolean
+ *        description: Just required when the value is true
+ *      allowed:
+ *        type: array
+ *        description: An array of the possible options
+ *        items:
+ *          type: string
  */
 
 /**

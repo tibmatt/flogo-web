@@ -135,6 +135,10 @@ function updateFlow(flowObj){
   });
 }
 
+function deleteFlow(flowInfo) {
+  return _dbService.remove(flowInfo.id, flowInfo.rev);
+}
+
 export function flows(app, router){
   if(!app){
     console.error("[Error][api/activities/index.js]You must pass app");
@@ -142,7 +146,8 @@ export function flows(app, router){
 
   router.get(basePath+"/flows", getFlows);
   router.post(basePath+"/flows", createFlows);
-  router.delete(basePath+"/flows", deleteFlows);
+  router.post(basePath+"/flows/update", updateFlows);
+  router.del(basePath+"/flows/:id", deleteFlows);
 
   // {
   //   name: "tibco-mqtt"
@@ -292,22 +297,81 @@ function* createFlows(next){
 
 /**
  * @swagger
- *  /flows:
+ * /flows/update:
+ *    post:
+ *      tags:
+ *        - Flow
+ *      summary: Update a flow
+ *      parameters:
+ *        - name: Updated flow
+ *          description: Updated flow with the same ID and REV value as the one to be updated.
+ *          in: body
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              flow:
+ *                $ref: '#/definitions/Full-Flow'
+ *      responses:
+ *        200:
+ *          description: Flow updated successfully
+ */
+function* updateFlows(next) {
+  console.log('[INFO] Updating a flow');
+  try {
+    let data = this.request.body || {};
+    if (typeof this.request.body == 'string') {
+      if (isJSON(this.request.body)) {
+        data = JSON.parse(this.request.body);
+      }
+    }
+    let flowObj = data;
+    let res = yield updateFlow(flowObj);
+    this.body = res;
+  } catch (err) {
+    this.body = {
+      code: 500,
+      message: err.message
+    };
+  }
+}
+
+/**
+ * @swagger
+ *  /flows/{flowId}:
  *    delete:
  *      tags:
  *        - Flow
- *      summary: Not implemented yet.
+ *      summary: Delete a flow.
+ *      parameters:
+ *        - name: flowId
+ *          in: path
+ *          required: true
+ *          type: string
+ *          description: ID of the flow to be deleted.
  *      responses:
  *        '200':
  *          description: Flow deleted successfully
  *          schema:
- *            type: string
- *            default: deleteFlows
+ *            type: object
  */
-function* deleteFlows(next){
-  console.log("deleteFlows");
-  this.body = 'deleteFlows';
-  yield next;
+function* deleteFlows(next) {
+  try {
+    console.log('[INFO] Deleting a flow with ID: ' + this.params.id);
+    let flow = yield _getFlowById(this.params.id);
+
+    let flowInfo = {
+      id: flow._id,
+      rev: flow._rev
+    };
+    let res = yield deleteFlow(flowInfo);
+    this.body = res;
+  } catch (err) {
+    this.body = {
+      code: 500,
+      message: err.message
+    };
+  }
 }
 
 /**
@@ -494,7 +558,7 @@ function * exportFlowInJsonById( next ) {
       // processing the flow information to omit unwanted fields
       this.body = _.omitBy( flowInfo, ( propVal, propName ) => {
 
-        if ( [ '_id', '_rev', '_conflicts', 'updated_at', 'created_at' ].indexOf( propName ) !== -1 ) {
+        if ( ['_conflicts', 'updated_at', 'created_at'].indexOf( propName ) !== -1 ) {
           return true;
         }
 
