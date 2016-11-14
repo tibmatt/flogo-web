@@ -50,6 +50,9 @@ let config = {
       },
       "sendWSMessage":{
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
+      },
+      "tibco-gpio": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/gpio"
       }
     },
     contrib: {}
