@@ -152,6 +152,7 @@ function initServer() {
 }
 
 function showBanner() {
+  console.log('flogo-web::server::ready');
   console.log("=============================================================================================");
   console.log(`[success] open http://localhost:${config.app.port} or http://localhost:${config.app.port}/_config in your browser`);
   console.log("=============================================================================================");
