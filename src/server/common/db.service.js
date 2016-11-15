@@ -112,9 +112,6 @@ export class DBService{
         })
 
 
-
-
-
     });
   }
 
@@ -125,7 +122,7 @@ export class DBService{
     let searchName = (name||'').toLowerCase().trim();
     return new Promise((resolve, reject) => {
       this._db
-        .query(function(doc, emit) {emit(doc.name.toLowerCase().trim());}, {key:searchName, include_docs:true})
+        .query(function(doc, emit) {emit((doc.name||'').toLowerCase().trim());}, {key:searchName, include_docs:true})
         .then((response) => {
           let rows = response&&response.rows||[];
           let doc = rows.length > 0 ? rows[0].doc : null;

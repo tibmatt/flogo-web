@@ -64,7 +64,7 @@ function filterFlows(query){
 
   // TODO:  repplace with a persistent query: https://pouchdb.com/guides/queries.html
   return _dbService.db
-    .query(function(doc, emit) { emit(doc.name.toLowerCase()); }, options)
+    .query(function(doc, emit) { emit((doc.name||'').toLowerCase()); }, options)
     .then((response) => {
       let allFlows = [];
       let rows = response&&response.rows||[];
@@ -79,60 +79,31 @@ function filterFlows(query){
 }
 
 export function getActivities() {
-  return new Promise( (resolve, reject) => {
-    activitiesDBService.allDocs({ include_docs: true })
-      .then( (activities)=> {
-        let all = activities.map((activity)=> {
-          return  {
-            name: activity._id,
-            type: FLOGO_TASK_TYPE.TASK
-          };
-        });
-        resolve(all);
-      }).catch((err)=>{
-          reject(err);
+  return activitiesDBService.allDocs({ include_docs: true })
+    .then( (activities)=> {
+      return activities.map((activity)=> {
+        return  {
+          name: activity._id,
+          type: FLOGO_TASK_TYPE.TASK
+        };
       });
   });
 }
 
 export function getTriggers() {
-  return new Promise( (resolve, reject) => {
-    triggersDBService.allDocs({ include_docs: true })
-      .then( (activities)=> {
-        let all = activities.map((activity)=> {
-          return  {
-            name: activity._id,
-            type: FLOGO_TASK_TYPE.TASK_ROOT
-          };
-        });
-        resolve(all);
-      }).catch((err)=>{
-      reject(err);
+  return triggersDBService.allDocs({ include_docs: true })
+    .then( (activities)=> {
+      return activities.map(activity => ({
+        name: activity._id,
+        type: FLOGO_TASK_TYPE.TASK_ROOT
+      }));
     });
-  });
+
 }
 
-function createFlow(flowObj){
-
-  return new Promise((resolve, reject)=>{
-    _dbService.create(flowObj)
-              .then((response)=>{
-                      resolve(response);
-              })
-              .catch((err)=>{
-                reject(err);
-              });
-  });
-}
 
 function updateFlow(flowObj){
-  return new Promise((resolve, reject)=>{
-    _dbService.update(flowObj).then((response)=>{
-      resolve(response);
-    }).catch((err)=>{
-      reject(err);
-    });
-  });
+  return _dbService.update(flowObj);
 }
 
 function deleteFlow(flowInfo) {
@@ -155,7 +126,6 @@ export function flows(app, router){
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
 
-  router.post(basePath+'/flows/json', importFlowFromJsonFile);
   router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
@@ -268,31 +238,70 @@ function* getFlows(next){
  */
 function* createFlows(next){
   console.log("createFlows");
-  try{
-    let data = this.request.body||{};
-    if(typeof this.request.body == 'string'){
-      if(isJSON(this.request.body)){
-        data = JSON.parse(this.request.body);
-      }
+  try {
+    let data = retrieveFlowDataFromRequest(this);
+    this.body = yield createFlow(data);
+
+    if(this.body && this.body.status) {
+      this.response.status = this.body.status;
     }
-    let flowObj = {};
-    flowObj.name = data.name||"";
-    flowObj.description = data.description || "";
-    flowObj._id = _dbService.generateFlowID();
-    flowObj.$table = _dbService.getIdentifier("FLOW");
-    flowObj.paths = {};
-    flowObj.items = {};
-    let res = yield createFlow(flowObj);
-    this.body = res;
-  }catch(err){
-    /*
-    var error = {
-      code: 500,
-      message: err.message
-    };
-    */
+
+  } catch(err){
+    console.error(err);
+    this.status = 400;
     this.body = err;
+    //this.throw(400, 'error', err);
   }
+}
+
+function retrieveFlowDataFromRequest(ctx) {
+  let data = ctx.request.body||{};
+  if (ctx.headers['content-type'].startsWith('multipart/form-data')) {
+
+    console.log( '[INFO] Import flow from JSON File' );
+
+    let importedFile = _.get(ctx, 'request.body.files.importFile');
+    let params = ctx.query || {};
+
+    if ( _.isObject( importedFile ) && !_.isEmpty( importedFile ) ) {
+
+      // only support `application/json`
+      if ( importedFile.type !== 'application/json' ) {
+        console.error( '[ERROR]: ', importedFile );
+        ctx.throw( 400, 'Unsupported file type: ' + importedFile.type + '; Support application/json only.' );
+      } else {
+        /* processing the imported file */
+
+        let fileContent;
+        // read file data into string
+        try {
+          // TODO remove synchronous method
+          fileContent = readFileSync( importedFile.path, { encoding : 'utf-8' } );
+        } catch ( err ) {
+          console.error( '[ERROR]: ', err );
+          ctx.throw( 500, 'Cannot read the uploaded file.', { expose : true } );
+        }
+
+        // parse file date to object
+        try {
+          data = JSON.parse( fileContent );
+          if(params.name) {
+            data.name = params.name.trim();
+          }
+        } catch ( err ) {
+          console.error( '[ERROR]: ', err );
+          ctx.throw( 400, 'Invalid JSON data.' );
+        }
+
+      }
+    } else {
+      ctx.throw( 400, 'Invalid file.' );
+    }
+
+  } else if(typeof data == 'string' && isJSON(data)) {
+    data = JSON.parse(data);
+  }
+  return data;
 }
 
 /**
@@ -558,7 +567,7 @@ function * exportFlowInJsonById( next ) {
       // processing the flow information to omit unwanted fields
       this.body = _.omitBy( flowInfo, ( propVal, propName ) => {
 
-        if ( ['_conflicts', 'updated_at', 'created_at'].indexOf( propName ) !== -1 ) {
+        if ( ['_id', '_rev', '_conflicts', 'updated_at', 'created_at'].indexOf( propName ) !== -1 ) {
           return true;
         }
 
@@ -647,7 +656,7 @@ function validateFlow(flow, activities, triggers) {
     if(validateErrors.hasErrors) {
       let details = {
         details: {
-          message: "Flow could not be imported, missing triggers/activities",
+          message: "Flow could not be created/imported, missing triggers/activities",
           activities: validateErrors.activities,
           triggers: validateErrors.triggers,
           ERROR_CODE: "ERROR_VALIDATION"
@@ -660,39 +669,43 @@ function validateFlow(flow, activities, triggers) {
   });
 }
 
-export function  createFlowFromJson(imported ) {
-  return new Promise( (resolve, reject) => {
-    let activities, triggers;
-     getActivities()
-      .then((items)=> {
-        activities = items;
-        getTriggers()
-          .then((items)=>{
-            triggers = items;
-            validateFlow(imported,activities,triggers)
-              .then((res) => {
-                if(res.status == 200) {
-                  createFlow( imported )
-                    .then((createFlowResult)=> {
-                      resolve({status: res.status, details:createFlowResult});
-                    })
-                    .catch((err) => {
-                      resolve( {status:err.status || 500, details: err.details } );
-                    });
-                }else {
-                  resolve(res);
-                }
-              })
-              .catch((err) => {
-                reject(err);
-              });
+export function createFlow(data) {
 
+  let defaultFlowData = {
+    name: 'Unnamed',
+    description: '',
+    paths: {},
+    items: {}
+  };
+
+  // TODO: does not need to load activities and triggers if imported flow does not have them
+  return Promise.all([
+    getActivities(),
+    getTriggers(),
+  ])
+    .then(connectors =>{
+      let [activities, triggers] = connectors;
+      _.defaults(data, defaultFlowData);
+      data._id = _dbService.generateFlowID();
+      data.$table = _dbService.getIdentifier('FLOW');
+      return validateFlow(data, activities, triggers);
+    })
+    .then(res => {
+      console.log('CREATING with ', data);
+      if(res.status == 200) {
+
+        return _dbService.create( data )
+          .then((createFlowResult)=> {
+            return ({status: res.status, details:createFlowResult});
           })
-      })
+          .catch((err) => {
+            return Promise.reject({status:err.status || 500, details: err.details });
+          });
+      } else {
+       return res;
+      }
+    });
 
-
-
-   });
 }
 
 /**
@@ -760,7 +773,7 @@ function * importFlowFromJsonFile( next ) {
         this.throw( 400, 'Invalid JSON data.' );
       }
 
-      let responseCreateFlow = yield createFlowFromJson(imported);
+      let responseCreateFlow = yield createFlow(imported);
       this.body = responseCreateFlow;
       this.response.status = responseCreateFlow.status;
 
