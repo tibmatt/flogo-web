@@ -25,7 +25,7 @@ Application and services will be started, when you see the following banner in t
 
 ```
 =============================================================================================
-[success] open http://localhost:3010 or http://localhost:3010/_config in your browser
+[success] open http://localhost:3303 or http://localhost:3303/_config in your browser
 =============================================================================================
 ```
 ## Trouble shooting
