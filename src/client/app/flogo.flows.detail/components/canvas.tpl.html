@@ -2,6 +2,7 @@
 
   <div class="canvas-flow" [ngClass]="{'canvas-flow-minimized':isLogsMaximized}">
 
+
     <section class="flogo-flow-detail">
 
       <header class="flogo-flow-detail-header col-sm-9">
@@ -49,71 +50,14 @@
                                [id]="'root'"
                                data-flogo-diagram-id="root">
     </flogo-canvas-flow-diagram>
+
+
+    <flogo-footer class="footer-wrapper"></flogo-footer>
+
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
     <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
-
-
-    <!-- the mock section below should be removed later-->
-    <!--
-    <section class="container-fluid" style="display: none; width: 100%;">
-      <section class="row">
-        <header>
-          <h3>Mock Area in Canvas component</h3>
-          <button type="button" class="btn btn-default" (click)="MOCK=!MOCK">Display</button>
-        </header>
-      </section>
-
-      <section class="row" [hidden]="!MOCK">
-        <div class="col-xs-12">
-          <header><h4>Actions</h4></header>
-        </div>
-
-        <div class="col-xs-12">
-          <button type="button" class="btn btn-warning" (click)="uploadProcess()"
-                  [disabled]="_uploadingProcess">Upload process
-          </button>
-          <button type="button" class="btn btn-default" (click)="startAndMonitorProcess()"
-                  [disabled]="_startingProcess" [hidden]="!_hasUploadedProcess">Start process
-          </button>
-          <button type="button" class="btn btn-default" (click)="mockGetSteps()"
-                  [disabled]="_mockGettingStepsProcess" [hidden]="!_hasUploadedProcess">Get steps
-          </button>
-        </div>
-
-      </section>
-
-      <section class="row" [hidden]="!MOCK || !_steps">
-
-        <div class="col-xs-12">
-          <header>
-            <h4>Steps</h4>
-          </header>
-        </div>
-
-        <div class="col-xs-12">
-          <pre><code [innerHTML]="_steps | json"></code></pre>
-        </div>
-
-      </section>
-
-      <section class="row" [hidden]="!MOCK">
-
-        <div class="col-xs-12">
-          <header>
-            <h4>Process.json</h4>
-          </header>
-        </div>
-
-        <div class="col-xs-12">
-          <pre><code [innerHTML]="_mockProcess | json"></code></pre>
-        </div>
-
-      </section>
-      </section>
-    -->
-
 
     <flogo-flows-detail-error-panel>
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
@@ -123,7 +67,8 @@
 
   </div>
 
-  <div class="canvas-right-container" [ngClass]="{'canvas-right-container-maximized':isLogsMaximized}">
+  <div class="canvas-right-container"
+       [ngClass]="{'canvas-right-container-maximized':isLogsMaximized, 'canvas-right-container-logs':isSelectedLogs}">
     <router-outlet></router-outlet>
   </div>
 

@@ -13,6 +13,7 @@ import { FlogoInstructionsComponent } from '../../flogo.instructions/components/
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import {FlogoLogs} from '../../flogo.logs/components/logs.component';
+import {FlogoFooter} from '../../flogo.footer/components/footer.component';
 import { LogService } from '../../../common/services/log.service';
 
 import {
@@ -52,7 +53,7 @@ interface HandlerInfo {
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoInstructionsComponent ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoInstructionsComponent, FlogoFooter ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ],
