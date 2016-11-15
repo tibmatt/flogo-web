@@ -3,8 +3,12 @@
 @info-bg-color: #666;
 
 @horizontal-padding: 5px;
+:host {
+  flex: 1;
+}
 
 .flogo-logs {
+  height: 100%;
 
   .header {
     color: #8a90ae;
@@ -64,6 +68,7 @@
 
   .flogo-logs__content {
     background-color: @info-bg-color;
+    height: 100%;
 
     .log-line {
       color: #fff;

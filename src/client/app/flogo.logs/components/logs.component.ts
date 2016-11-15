@@ -27,7 +27,7 @@ export class FlogoLogs {
      this.searchValue = event.target.value;
   }
 
-  public resizePanel(action)   {
+  public resizePanel(event,action)   {
       this.isMaximized = (action === 'grow');
       this.postService.publish(
           _.assign({}, PUB_EVENTS.logResize, {data: {action:action}})
