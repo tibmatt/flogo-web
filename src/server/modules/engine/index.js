@@ -989,15 +989,7 @@ export class Engine {
           cwd : defaultEngineBinPath
         } );
 
-        // log engine output
-        engineProcess.stdout.on('data', data => {
-          splitLines(data.toString())
-            .forEach(line => engineLogger.info(line));
-        });
-        engineProcess.stderr.on('data', data => {
-          splitLines(data.toString())
-            .forEach(line => engineLogger.error(line));
-        });
+        engineLogger.register(engineProcess.stdout, engineProcess.stderr);
 
         successHandler();
       }

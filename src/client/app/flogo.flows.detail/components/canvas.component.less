@@ -13,7 +13,7 @@
 
 .footer-wrapper {
   width: 77.5%;
-  z-index: 100
+  z-index: 3
 }
 
 .canvas-flow {
@@ -37,7 +37,7 @@
   border-left: solid 1px #B5B5B5;
   background: #fff;
   position: relative;
-  z-index: 200;
+  z-index: 4;
 
   -webkit-transition: width .5s; /* Safari */
   transition: width .5s;
@@ -51,10 +51,16 @@
   z-index: 100;
   height: 100%;
   overflow: scroll;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
 }
 
 .canvas-right-container-logs {
   flex:1;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
 }
 
 .flogo-flow-detail {
@@ -94,6 +100,7 @@
 .flogo-flow-detail-menu-container {
   display: flex;
   justify-content: flex-end;
+  z-index: 5;
 }
 
 .flogo-flow-detail-log-button-container {
@@ -140,7 +147,7 @@
   }
   .flogo-flow-detail-menu-list-wrapper{
     position: absolute;
-    z-index: 10;
+    //z-index: 1000;
     top: 11px;
     left: 20px;
     overflow: hidden;
