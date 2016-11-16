@@ -30,17 +30,20 @@ export class FlogoFlowsAdd {
 
     public sendAddFlowMsg() {
         this.APIFlows.getFlowByName(this.flowInfo.name)
-            .then((res) => {
+              .then((res) => {
                 let results;
                 try {
                     results = JSON.parse(res['_body']);
                 }catch(err) {
                     results = [];
                 }
+                console.log('RESULTS', res);
 
                 if(!_.isEmpty(results)) {
-                    this.flowNameExists = true;
-                }else {
+                  console.log('EXIST');
+                  this.flowNameExists = true;
+                } else {
+                    console.log('DOES NOT EXIST');
                     this.flowNameExists = false;
                     if (this._sending) {
                         this._sending = false;

@@ -41,6 +41,7 @@
   "FLOW-NAME:RENAME": "Rename flow",
   "FLOW-NAME:GETTING-FLOW-NAME": "Error getting flow name",
   "FLOWS:CREATED": "Created {{value}}",
+  "FLOWS:CREATE_FLOW_ERROR": "An error occurred creating the flow",
   "FLOWS:ERROR-MESSAGE-IMPORT":"{{value}}",
   "FLOWS:ERROR-MESSAGE-REMOVE-FLOW": "Remove flow error: {{value}}",
   "FLOWS:FEATURED-VIDEO-TUTORIAL": "Featured Video tutorial",
