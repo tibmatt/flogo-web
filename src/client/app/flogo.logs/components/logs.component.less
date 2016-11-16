@@ -1,6 +1,6 @@
 @info-font-size: 11px;
 @info-font-color: #f1f1f1;
-@info-bg-color: #666;
+@info-bg-color: #676a6d;
 
 @horizontal-padding: 5px;
 :host {
@@ -26,6 +26,13 @@
         padding: 13px 13px;
         background-color: #d8d8d8;
         color: #000;
+
+        img {
+          margin-top: -11px;
+          margin-left: -11px;
+        }
+
+
       }
 
       .caption {
@@ -55,7 +62,7 @@
 
   .flogo-logs-info() {
     background-color: @info-bg-color;
-    color: #bdbdbd;
+    color: #79b8dc;
     font-size: @info-font-size;
     line-height: 1.4;
 
@@ -69,6 +76,7 @@
   .flogo-logs__content {
     background-color: @info-bg-color;
     height: 100%;
+    padding: 10px;
 
     .log-line {
       color: #fff;

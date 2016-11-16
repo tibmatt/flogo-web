@@ -1,12 +1,14 @@
 <div class="flogo-logs"   (mouseenter)="resizePanel($event,'grow')" (mouseleave)="resizePanel($event,'shrink')">
   <div class="header">
     <div class="title">
-      <div class="icon"><span class="glyphicon glyphicon-th-list"></span> </div>
+      <div class="icon">
+        <img src="/assets/svg/flogo-logs-debug-button-unselected.svg" alt="">
+      </div>
       <div class="caption">Debug logs</div>
     </div>
 
     <div class="search">
-      <input class="form-control tc-inputs" type="text" (keyup)="onKeyUp($event)"  placeholder="Filter" />
+      <input class="form-control" type="text" (keyup)="onKeyUp($event)"  placeholder="Filter" />
     </div>
 
   </div>
@@ -14,7 +16,7 @@
 
     <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
       <div class="log-line__timestamp">{{message.timestamp}}</div>
-      <div class="log-line__level" [class.log-line__level--error]="message.level=='error'">{{message.level}}</div>
+      <div class="log-line__level" [class.log-line__level--error]="message.level=='error'"><img src="/assets/svg/flogo-logs-{{message.level}}.svg" /></div>
       <div class="log-line__message">{{message.message}}</div>
     </div>
   </div>

@@ -19,7 +19,8 @@
           <button class="btn flogo-flow-detail-log-button"
                   [ngClass]="{'flogo-flow-detail-log-button-selected': isSelectedLogs}"
                   (click)="toggleSelectedLogs()" title="Show logs">
-            <span class="glyphicon glyphicon-th-list"></span>
+            <img *ngIf="!isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-unselected.svg" alt="">
+            <img *ngIf="isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-selected.svg" alt="">
           </button>
         </div>
 

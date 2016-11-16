@@ -105,25 +105,31 @@
 
 .flogo-flow-detail-log-button-container {
   margin-top: 36px;
-  width: 29px;
-  height: 43px;
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
 }
 
 .flogo-flow-detail-log-button {
   background-color: white;
-  height: 43px;
-  width: 29px;
+  height: 40px;
+  width: 40px;
   padding-left: 0;
   padding-right: 0;
   border: 2px solid #d8d8d8;
   color: #7ab8dc;
   border-radius: 7px;
+
+  img {
+    border: 0;
+    margin-top: -9px;
+    margin-left: -3px;
+  }
 }
 
 .flogo-flow-detail-log-button-selected {
-  border-color: #79b8dc;
-  background-color: #79b8dc;
+  //border-color: #79b8dc;
+  //background-color: #79b8dc;
   color: white;
 }
 
@@ -165,6 +171,7 @@
     transform: translate(-100%, -100%);
     border: solid 1px #727272;
     transition: all 300ms linear;
+    z-index: 10000;
   }
   .flogo-flow-detail-menu-item{
     padding: 6px 15px;
