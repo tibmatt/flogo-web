@@ -140,7 +140,7 @@ export class RESTAPIFlowsService{
           }
         }
       };
-      let url = '/v1/api/flows' + (flowName ? '?name='+ flowName : '') ;
+      let url = '/v1/api/flows/upload' + (flowName ? '?name='+ flowName : '') ;
 
       xhr.open( 'POST', url, true );
       xhr.send( formData );

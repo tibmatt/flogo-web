@@ -62,7 +62,7 @@ function filterFlows(query){
     key: query.name.toLowerCase()
   };
 
-  // TODO:  repplace with a persistent query: https://pouchdb.com/guides/queries.html
+  // TODO:  replace with a persistent query: https://pouchdb.com/guides/queries.html
   return _dbService.db
     .query(function(doc, emit) { emit((doc.name||'').toLowerCase()); }, options)
     .then((response) => {
@@ -117,6 +117,7 @@ export function flows(app, router){
 
   router.get(basePath+"/flows", getFlows);
   router.post(basePath+"/flows", createFlows);
+  router.post(basePath+"/flows/upload", createFlows);
   router.post(basePath+"/flows/update", updateFlows);
   router.del(basePath+"/flows/:id", deleteFlows);
 
@@ -210,11 +211,13 @@ function* getFlows(next){
  *    post:
  *      tags:
  *        - Flow
- *      summary: Add a new flow.
+ *      consumes:
+ *        - application/json
+ *      summary: Create or import a new flow.
  *      parameters:
  *        - name: New Flow
  *          in: body
- *          required: true
+ *          required: false
  *          schema:
  *            type: object
  *            properties:
@@ -222,6 +225,41 @@ function* getFlows(next){
  *                type: string
  *              description:
  *                type: string
+ *        - name: Flow
+ *          in: formData
+ *          required: false
+ *          description: The flow has to be uploaded as a file
+ *          type: file
+ *      responses:
+ *        '200':
+ *          description: Flow added successfully.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              ok:
+ *                type: boolean
+ *              id:
+ *                type: string
+ *                description: The new flow's ID
+ *              rev:
+ *                type: string
+ */
+
+/**
+ * @swagger
+ *  /flows/upload:
+ *    post:
+ *      tags:
+ *        - Flow
+ *      consumes:
+ *        - multipart/form-data
+ *      summary: Create a new flow by importing the data from a file.
+ *      parameters:
+ *        - name: Flow
+ *          in: formData
+ *          required: false
+ *          description: The flow has to be uploaded as a file
+ *          type: file
  *      responses:
  *        '200':
  *          description: Flow added successfully.
@@ -707,85 +745,6 @@ export function createFlow(data) {
     });
 
 }
-
-/**
- * @swagger
- *  /flows/json:
- *    post:
- *      tags:
- *        - Flow
- *      summary: Import a flow from a json
- *      consumes:
- *        - multipart/form-data
- *      parameters:
- *        - name: Flow
- *          in: formData
- *          required: true
- *          description: The flow has to be uploaded as a file
- *          type: file
- *      responses:
- *        '200':
- *          description: Flow imported successfully.
- *          schema:
- *            type: object
- *            properties:
- *              ok:
- *                type: boolean
- *              id:
- *                type: string
- *                description: Flow's ID
- *              rev:
- *                type: string
- */
-function * importFlowFromJsonFile( next ) {
-  console.log( '[INFO] Import flow from JSON File' );
-
-  let importedFile = _.get( this, 'request.body.files.importFile' );
-  let params = _.get(this, 'request.query', {});
-
-
-  if ( _.isObject( importedFile ) && !_.isEmpty( importedFile ) ) {
-
-    // only support `application/json`
-    if ( importedFile.type !== 'application/json' ) {
-      console.error( '[ERROR]: ', importedFile );
-      this.throw( 400, 'Unsupported file type: ' + importedFile.type + '; Support application/json only.' );
-    } else {
-      /* processing the imported file */
-      let imported;
-
-      // read file data into string
-      try {
-        imported = readFileSync( importedFile.path, { encoding : 'utf-8' } );
-      } catch ( err ) {
-        console.error( '[ERROR]: ', err );
-        this.throw( 500, 'Cannot read the uploaded file.', { expose : true } );
-      }
-
-      // parse file date to object
-      try {
-        imported = JSON.parse( imported );
-        if(params['name']) {
-          imported.name = params.name.trim();
-        }
-      } catch ( err ) {
-        console.error( '[ERROR]: ', err );
-        this.throw( 400, 'Invalid JSON data.' );
-      }
-
-      let responseCreateFlow = yield createFlow(imported);
-      this.body = responseCreateFlow;
-      this.response.status = responseCreateFlow.status;
-
-    }
-  } else {
-    this.throw( 400, 'Invalid file.' );
-  }
-
-  yield next;
-}
-
-
 
 function validateTriggersAndActivities (flow, triggers, activities) {
   let validate = { activities: [], triggers: [], hasErrors: false};
