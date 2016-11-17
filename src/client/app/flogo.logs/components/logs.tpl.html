@@ -4,12 +4,14 @@
       <div class="icon">
         <img src="/assets/svg/flogo-logs-icon.svg" alt="">
       </div>
-      <div class="caption">Debug logs</div>
+      <div class="caption">
+        <div>Debug Logs</div>
+        <div class="sub-title">Engine logs</div>
+      </div>
     </div>
 
     <div class="search form-group">
       <div class="input-group">
-        <!--<input type="text" class="form-control" placeholder="Search" id="inputGroup"/>-->
         <input class="form-control" type="text"  (keyup)="onKeyUp($event)"  placeholder="Filter" />
         <span class="input-group-addon">
           <img src="/assets/svg/flogo-logs-copy.svg" alt="">
