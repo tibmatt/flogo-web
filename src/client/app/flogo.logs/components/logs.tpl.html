@@ -2,18 +2,26 @@
   <div class="header">
     <div class="title">
       <div class="icon">
-        <img src="/assets/svg/flogo-logs-debug-button-unselected.svg" alt="">
+        <img src="/assets/svg/flogo-logs-icon.svg" alt="">
       </div>
       <div class="caption">Debug logs</div>
     </div>
 
-    <div class="search">
-      <input class="form-control" type="text" (keyup)="onKeyUp($event)"  placeholder="Filter" />
+    <div class="search form-group">
+      <div class="input-group">
+        <!--<input type="text" class="form-control" placeholder="Search" id="inputGroup"/>-->
+        <input class="form-control" type="text"  (keyup)="onKeyUp($event)"  placeholder="Filter" />
+        <span class="input-group-addon">
+          <img src="/assets/svg/flogo-logs-copy.svg" alt="">
+        </span>
     </div>
 
   </div>
-  <div class="flogo-logs__content">
 
+
+</div>
+
+  <div class="flogo-logs__content">
     <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
       <div class="log-line__timestamp">{{message.timestamp}}</div>
       <div class="log-line__level" [class.log-line__level--error]="message.level=='error'"><img src="/assets/svg/flogo-logs-{{message.level}}.svg" /></div>
