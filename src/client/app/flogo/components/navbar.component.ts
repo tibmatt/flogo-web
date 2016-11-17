@@ -1,13 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {FlogoInstructionsComponent} from '../../flogo.instructions/components/instructions.component';
+import {TranslatePipe} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-navbar',
   moduleId: module.id,
   templateUrl: 'navbar.tpl.html',
   styleUrls: ['navbar.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoInstructionsComponent]
+  directives: [ROUTER_DIRECTIVES, FlogoInstructionsComponent],
+  pipes: [TranslatePipe]
 })
 
 export class FlogoNavbarComponent implements OnInit {
