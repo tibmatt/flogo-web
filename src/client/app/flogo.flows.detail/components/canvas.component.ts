@@ -209,6 +209,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     public resetLogsState() {
         this.isSelectedLogs = false;
+        this.navigateToLogs();
     }
 
     public showLogs() {
@@ -1539,6 +1540,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   private _selectTransformFromDiagram(data:any, envelope:any) {
     let diagramId:string = data.id;
     let previousTiles:any;
+    this.resetLogsState();
 
     let selectedNode = data.node;
 

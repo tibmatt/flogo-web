@@ -15,14 +15,7 @@
 
       <div class="col-sm-3 flogo-flow-detail-menu-container">
 
-        <div class="flogo-flow-detail-log-button-container">
-          <button class="btn flogo-flow-detail-log-button"
-                  [ngClass]="{'flogo-flow-detail-log-button-selected': isSelectedLogs}"
-                  (click)="toggleSelectedLogs()" title="Show logs">
-            <img *ngIf="!isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-unselected.svg" alt="">
-            <img *ngIf="isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-selected.svg" alt="">
-          </button>
-        </div>
+
 
         <div class="flogo-flow-detail-menu">
           <div class="flogo-flow-detail-menu-list-wrapper">
@@ -43,6 +36,16 @@
             </ul>
           </div>
         </div>
+
+        <div class="flogo-flow-detail-log-button-container">
+          <button class="btn flogo-flow-detail-log-button"
+                  [ngClass]="{'flogo-flow-detail-log-button-selected': isSelectedLogs}"
+                  (click)="toggleSelectedLogs()" title="Show logs">
+            <img *ngIf="!isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-unselected.svg" alt="">
+            <img *ngIf="isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-selected.svg" alt="">
+          </button>
+        </div>
+
       </div>
 
     </section>
