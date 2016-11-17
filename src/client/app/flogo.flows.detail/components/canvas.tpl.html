@@ -27,7 +27,6 @@
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">{{ 'CANVAS:COPY' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportTriggerAndFlow()"><i class="fa fa-cloud-download fa-fw"></i> {{ 'CANVAS:EXPORT-FOR-CLI' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>{{ 'CANVAS:EXPORT-FOR-WEB-UI' | translate }}</a></li>
-              <li class="flogo-flow-detail-menu-item"><a (click)="activateInstructions($event)"><i class="fa fa-question-circle fa-fw"></i>{{ 'CANVAS:SHOW-INSTRUCTIONS' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">{{ 'CANVAS:DELETE' | translate }}</a></li>
             </ul>
           </div>
@@ -42,9 +41,6 @@
     </flogo-canvas-flow-diagram>
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
-
-    <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
-
 
     <!-- the mock section below should be removed later-->
     <!--

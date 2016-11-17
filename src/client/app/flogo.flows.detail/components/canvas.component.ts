@@ -9,10 +9,8 @@ import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/t
 import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
 import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
 import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component';
-import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
-
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -50,7 +48,7 @@ interface HandlerInfo {
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoInstructionsComponent ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ],
@@ -107,7 +105,6 @@ export class FlogoCanvasComponent implements  OnChanges {
   public mockProcess: any;
   public exportLink: string;
   public downloadLink: string;
-  public isInstructionsActivated: boolean  = false;
 
   constructor(
     private _postService: PostService,
@@ -157,10 +154,6 @@ export class FlogoCanvasComponent implements  OnChanges {
         this.clearAllRunStatus();
 
         this.initSubscribe();
-
-        setTimeout(() => {
-          this.showInstructions();
-        }, 500);
 
         this._updateFlow(this.flow).then(()=> {
           this.loading = false;
@@ -1996,23 +1989,6 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     console.groupEnd();
   }
-
-  showInstructions() {
-    let instructions:any = localStorage.getItem('flogo-show-instructions');
-    if(_.isEmpty(instructions)) {
-      localStorage.setItem('flogo-show-instructions', new Date().toString());
-      this.isInstructionsActivated = true;
-    }
-    return this.isInstructionsActivated;
-  }
-
-  public onClosedInstructions(closed) {
-      this.isInstructionsActivated = false;
-    }
-
-  public activateInstructions() {
-      this.isInstructionsActivated = true;
-    }
 
 
 }

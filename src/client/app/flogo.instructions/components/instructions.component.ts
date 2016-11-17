@@ -1,8 +1,5 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
-import { Router } from '@angular/router-deprecated';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { notification } from '../../../common/utils';
-
 
 @Component( {
     selector : 'flogo-instructions',
@@ -19,15 +16,13 @@ export class FlogoInstructionsComponent implements OnChanges {
 
     @ViewChild( 'instructionsModal' ) modal : ModalComponent;
 
-    installType : string;
     isActivated : boolean;
-    onInstalled = new EventEmitter();
     onClosedModal = new EventEmitter();
     steps:any[] = [
-        {title:'Configure the trigger', description: '', icon: 'instructions-step-1', screenshot:'graphic-1.jpg'} ,
-        {title:'Add and configure activities', description: '', icon: 'instructions-step-2', screenshot:'graphic-2.jpg'} ,
-        {title:'Run and test at any time', description: '', icon: 'instructions-step-3', screenshot:'graphic-3.svg'} ,
-        {title:'Build and run', description: '', icon: 'instructions-step-4', screenshot:'graphic-4.svg'}
+        {title:'Configure the trigger', description: '', screenshot:'flogo.instructions.screen-1@3x.png'} ,
+        {title:'Add and configure activities', description: '', screenshot:'flogo.instructions.screen-2@3x.png'} ,
+        {title:'Run and test at any time', description: '', screenshot:'flogo.instructions.screen-3@3x.png'} ,
+        {title:'Build and run', description: '', screenshot:'flogo.instructions.screen-4@3x.png'}
     ];
     currentIndex : number;
     currentStep :any[];
