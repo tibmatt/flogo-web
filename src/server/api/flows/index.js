@@ -605,7 +605,7 @@ function * exportFlowInJsonById( next ) {
       // processing the flow information to omit unwanted fields
       this.body = _.omitBy( flowInfo, ( propVal, propName ) => {
 
-        if ( ['_id', '_rev', '_conflicts', 'updated_at', 'created_at'].indexOf( propName ) !== -1 ) {
+        if ( ['_conflicts', 'updated_at', 'created_at'].indexOf( propName ) !== -1 ) {
           return true;
         }
 
