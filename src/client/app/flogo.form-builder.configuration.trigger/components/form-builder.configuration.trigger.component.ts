@@ -19,7 +19,8 @@ import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.comm
     directives: [FieldRadio, FieldTextBox, FieldTextArea, FieldNumber, FieldObject, FieldListBox],
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes'],
     pipes: [TranslatePipe],
-    providers: [FlogoFormBuilderCommon]
+    providers: [FlogoFormBuilderCommon],
+    styleUrls: ['form-builder.configuration.trigger.css']
 })
 export class FlogoFormBuilderConfigurationTriggerComponent {
   _fieldObserver : any;

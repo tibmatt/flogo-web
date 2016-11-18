@@ -49,44 +49,43 @@ flogo-flows-import:hover{
   padding-bottom: 60px;
   width:100%;
 }
-.flogo-welcome-msg{
-  /*width: 50%;*/
+.flogo-welcome-msg {
   height:100%;
   overflow: hidden;
   float: left;
   padding: 0 5% 0 10%;
 }
-.flogo-welcomeMsg-header{
-  /*width: 50%;*/
+.flogo-welcomeMsg-header {
   height: 64px;
-  font-family: "Source Sans Pro";
   font-size: 48px;
   font-weight: 300;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.33;
-  letter-spacing: 0.9px;
+  letter-spacing: 1px;
   color: #666666;
-  margin-bottom: 0px;
+  margin-top: 1.2em;
+  margin-bottom: 0;
 }
 .flogo-welcomeMsg-description{
-  /*width: 680px;*/
-  height: 32px;
-  font-family: "Source Sans Pro";
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.14;
-  letter-spacing: 0.3px;
   color: #666666;
+  font-size: 14px;
+  line-height: 1.1;
+  margin-top: 10px;
+  margin-bottom: 15px;
   word-wrap: break-word;
 }
-.flogo-mascot{
+
+.flogo-welcomeMsg-link {
+  img, span {
+    vertical-align: middle;
+  }
+  img {
+    margin-right: 3px;
+  }
+}
+
+.flogo-mascot {
   float:left;
-  margin-top:10px;
- /* width: 300px;
-  height: 200px; */
+  margin-top: 24px;
   object-fit: contain;
 }
 
@@ -131,7 +130,6 @@ flogo-flows-import:hover{
     list-style: none;
     background-color: @card-bg-color;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-    /*width: @card-width;*/
     height: @card-height;
     position: relative;
     width: 200px;
