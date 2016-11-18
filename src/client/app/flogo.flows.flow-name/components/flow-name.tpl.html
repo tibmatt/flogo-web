@@ -1,0 +1,16 @@
+<modal [size]="'sm'" #flowNameModal>
+    <modal-header>
+        <h3>{{ 'FLOW-NAME:RENAME' | translate }}</h3>
+    </modal-header>
+    <modal-body>
+        <div class="form-group">
+            <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
+            <input type="text" [(ngModel)]="repeatedName" class="form-control" id="flowName" (keyup)="onChangeFlowName($event)" placeholder="{{ translate.get('ADD:GIVE-YOUR-FLOW-A-NAME').value }}">
+            <label *ngIf="flowNameExists" for="flowName" class="flogo-flows-flow-name-error">{{ 'ADD:FLOW-NAME-EXISTS' | translate }} </label>
+        </div>
+    </modal-body>
+    <modal-footer>
+        <button type="button" class="flogo-flows-flow-name-cancel" data-dismiss="modal" (click)="closeModal()">{{ 'ADD:CANCEL' | translate }} </button>
+        <button type="button" class="flogo-flows-flow-name-save" [ngClass]="{allowed: repeatedName&&nameModified}" (click)="repeatedName&&sendAddFlowMsg()">{{ 'ADD:SAVE' | translate }} </button>
+    </modal-footer>
+</modal>

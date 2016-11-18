@@ -7,6 +7,7 @@ import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
+var cors =  require('koa-cors');
 
 import {config, triggersDBService, activitiesDBService, flowsDBService} from './config/app-config';
 import {api} from './api';
@@ -93,6 +94,8 @@ function initServer() {
 
     let port = config.app.port;
 
+    app.use(cors());
+
     api( app, router );
 
     // make sure deep link it works
@@ -154,7 +157,8 @@ function initServer() {
 }
 
 function showBanner() {
+  console.log('flogo-web::server::ready');
   console.log("=============================================================================================");
-  console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
+  console.log(`[success] open http://localhost:${config.app.port} or http://localhost:${config.app.port}/_config in your browser`);
   console.log("=============================================================================================");
 }

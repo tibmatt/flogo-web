@@ -90,29 +90,7 @@ export class FlogoFormBuilderComponent{
         this._hasChanges  = false;
       }
     }));
-
-
   }
-
-  /*
-  _saveTriggerChangesToFlow() {
-    //let currentOutputs = this._attributesTrigger.outputs;
-
-    let state = {
-      taskId: this._task.id,
-      endpointSettings: this._getCurrentTaskState(this._attributes.endpointSettings),
-      outputs: this._getCurrentTaskState(this._attributes.outputs),
-      settings: this._getCurrentTaskState(this._attributes.settings)
-    };
-
-    this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
-      data: state,
-      done: ()=> {
-        this._hasChanges  = false;
-      }
-    }));
-  }
-  */
 
   _saveBranchChangesToFlow() {
     let diagramId = this._flowId;

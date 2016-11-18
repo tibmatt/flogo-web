@@ -29,7 +29,7 @@ export const CONFIG = {
     // directories that should be watched by running server so it restarts if something changes
     serverWatch: ['api', 'common', 'config', 'modules', 'server.js']
   },
-  host: 'localhost:3010',
+  host: 'localhost:3303',
   libs: {
     js: [
       'node_modules/es6-shim/es6-shim.js',

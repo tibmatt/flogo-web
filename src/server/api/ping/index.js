@@ -37,7 +37,35 @@ function* pingConfiguration(next) {
   yield next;
 }
 */
-
+/**
+ * @swagger
+ *  /ping/service:
+ *    post:
+ *      tags:
+ *        - Ping
+ *      summary: Validate id the current configuration is working properly.
+ *      parameters:
+ *        - name: config
+ *          in: body
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              config:
+ *                $ref: '#/definitions/Service'
+ *
+ *      responses:
+ *        '200':
+ *          description: Everything Ok
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: string
+ *                default: ok
+ *        '500':
+ *          description: Error on configuration
+ */
 function* pingService(next){
 
   try{
@@ -72,4 +100,29 @@ function* pingService(next){
 
   yield next;
 }
-
+/**
+ * @swagger
+ * definition:
+ *  Service:
+ *    type: object
+ *    properties:
+ *      protocol:
+ *        type: string
+ *      host:
+ *        type: string
+ *      port:
+ *        type: string
+ *      testPath:
+ *        type: string
+ *      name:
+ *        type: string
+ *      label:
+ *        type: string
+ *      bd:
+ *        type: object
+ *        properties:
+ *          port:
+ *            type: string
+ *          name:
+ *            type: string
+ */

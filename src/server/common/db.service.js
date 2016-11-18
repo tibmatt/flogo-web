@@ -85,21 +85,55 @@ export class DBService{
         reject("[Error]doc.$table is required.");
       }
 
-      // if this doc don't have id, generate an id for it
-      if(!doc._id){
-        doc._id = this.generateID();
-        console.log("[warning]We generate an id for you, but suggest you give a meaningful id to this document.");
-      }
+      this.failWhenNameExists(doc.name)
+        .then(()=> {
+          // if this doc don't have id, generate an id for it
+          if(!doc._id){
+            doc._id = this.generateID();
+            console.log("[warning]We generate an id for you, but suggest you give a meaningful id to this document.");
+          }
 
-      if(!doc['created_at']){
-        doc['created_at'] = new Date().toISOString();
-      }
-      this._db.put(doc).then((response)=>{
-        console.log("response: ", response);
-        resolve(response);
-      }).catch((err)=>{
-        console.error(err);
-        reject(err);
+          if(!doc['created_at']){
+            doc['created_at'] = new Date().toISOString();
+          }
+          this._db.put(doc).then((response)=>{
+            resolve(response);
+          }).catch((err)=>{
+            console.error(err);
+            reject(err);
+          });
+        })
+        .catch((err)=> {
+          let response = _.assign({},{status:500}, err);
+          if(err.details.ERROR_CODE == 'NAME_EXISTS') {
+            response.message = "Flow's name exists, please choose another name";
+          }
+          reject(response);
+        })
+
+
+    });
+  }
+
+  /**
+   * Get a document searching by name
+   */
+  failWhenNameExists(name) {
+    let searchName = (name||'').toLowerCase().trim();
+    return new Promise((resolve, reject) => {
+      this._db
+        .query(function(doc, emit) {emit((doc.name||'').toLowerCase().trim());}, {key:searchName, include_docs:true})
+        .then((response) => {
+          let rows = response&&response.rows||[];
+          let doc = rows.length > 0 ? rows[0].doc : null;
+          if(doc == null) {
+            resolve({status:200, message:"Document doesn't exists"});
+          } else {
+            reject({status:400, details: {message:"Fail - Another document exists with the same name",
+                    ERROR_CODE:"NAME_EXISTS"}});
+          }
+        }).catch(function (err) {
+        reject({status:500, message: err.message});
       });
     });
   }
@@ -139,7 +173,6 @@ export class DBService{
           _.assign( dbDoc, doc );
 
           return this._db.put( dbDoc ).then((response)=>{
-            console.log("response: ", response);
             resolve(response);
           }).catch((err)=>{
             console.error(err);
@@ -156,7 +189,6 @@ export class DBService{
     return new Promise((resolve, reject)=>{
       let ops = _.merge({}, defaultOptions, options||{});
       this._db.allDocs(ops).then((response)=>{
-        //console.log("[allDocs]response: ", response);
         let res = [];
         if(ops.include_docs){
           let rows = response&&response.rows||[];

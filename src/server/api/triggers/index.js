@@ -23,18 +23,51 @@ export function triggers(app, router){
   router.delete(basePath+"/triggers", deleteTriggers);
 }
 
+/**
+ * @swagger
+ *  /triggers:
+ *    get:
+ *      tags:
+ *        - Trigger
+ *      summary: Get all the triggers installed in the engine.
+ *      responses:
+ *        '200':
+ *          description: All triggers obtained successfully.
+ *          schema:
+ *            type: array
+ *            items:
+ *              $ref: '#/definitions/Trigger'
+ */
 function* getTriggers(next){
   let data = [];
 
   data = yield triggersDBService.allDocs({ include_docs: true })
     .then(triggers => triggers.map(trigger => {
-      return Object.assign({}, _.pick(trigger, ['_id', 'name', 'title', 'version', 'description']), { title: _.get(trigger, 'schema.title')});
+      return trigger.schema;
     }));
 
   this.body = data;
   yield next;
 }
 
+/**
+ * @swagger
+ * /triggers:
+ *    post:
+ *      tags:
+ *        - Trigger
+ *      summary: Install new Triggers in the engine
+ *      parameters:
+ *        - name: urls
+ *          in: body
+ *          description: Urls to the triggers to be installed
+ *          required: true
+ *          schema:
+ *            $ref: '#/definitions/Urls'
+ *      responses:
+ *        '200':
+ *          description: New triggers installed successfully
+ */
 function* installTriggers( next ) {
   let urls = preProcessURLs( this.request.body.urls );
 
@@ -146,6 +179,17 @@ function* installTriggers( next ) {
   yield next;
 }
 
+/**
+ * @swagger
+ *  /triggers:
+ *    delete:
+ *      tags:
+ *        - Trigger
+ *      summary: Not implemented yet
+ *      responses:
+ *        '200':
+ *          description: To be defined
+ */
 function* deleteTriggers( next ) {
 
   console.log( '------- ------- -------' );
@@ -156,9 +200,39 @@ function* deleteTriggers( next ) {
 
   yield next;
 }
-
 function preProcessURLs( urls ) {
   'use strict';
   // TODO
   return urls;
 }
+/**
+ * @swagger
+ * definition:
+ *  Trigger:
+ *    type: object
+ *    properties:
+ *      name:
+ *        type: string
+ *      version:
+ *        type: string
+ *      description:
+ *        type: string
+ *      title:
+ *        type: string
+ *      settings:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      outputs:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      endpoint:
+ *        type: object
+ *        properties:
+ *          settings:
+ *            type: array
+ *            items:
+ *              $ref: '#/definitions/Attribute'
+ */
+

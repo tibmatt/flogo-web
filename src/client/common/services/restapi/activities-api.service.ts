@@ -1,18 +1,27 @@
 import { Injectable } from '@angular/core';
-import { FlogoDBService } from '../db.service';
+import { activitySchemaToTask } from '../../utils';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class RESTAPIActivitiesService {
-  constructor( private _db : FlogoDBService, private _http : Http ) {
+  constructor( private _http : Http ) {
   }
 
   getActivities() {
-    return this._db.getAllActivities();
-  }
-
-  getInstallableActivities() {
-    return this._db.getInstallableActivities();
+    return this._http.get('/v1/api/activities').toPromise()
+      .then(response=> {
+        if (response.text()) {
+          return _.map(response.json(), (activity)=> {
+            return _.assign(activitySchemaToTask(activity), {
+              // TODO fix this installed status.
+              // as of now, whatever can be read from db, should have been installed.
+              installed: true
+            })
+          });
+        } else
+          return response;
+      });
   }
 
   installActivities( urls : string[] ) {

@@ -18,7 +18,7 @@ let FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost"
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
 
-
+let appPort = process.env.PORT || 3303;
 
 let config = {
   db: 'http://localhost:5984/flogo-web',
@@ -27,7 +27,7 @@ let config = {
   libVersion: process.env.FLOGO_LIB_VERSION,
   app: {
     basePath: '/v1/api',
-    port: process.env.PORT || 3010,
+    port: appPort,
     cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
   },
@@ -50,6 +50,9 @@ let config = {
       },
       "sendWSMessage":{
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
+      },
+      "tibco-gpio": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/gpio"
       }
     },
     contrib: {}
@@ -240,7 +243,7 @@ let config = {
   webServer: {
     protocol: 'http',
     host: FLOW_WEB_HOST,
-    port: "3010",
+    port: appPort,
     testPath: ''
   },
   engine: {

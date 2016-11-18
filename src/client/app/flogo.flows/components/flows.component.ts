@@ -44,12 +44,7 @@ export class FlogoFlowsComponet{
         public translate: TranslateService
     ){
 
-        this.getAllFlows()
-            .then(() => {
-                if(this.canInstallSamples()) {
-                    this.installSamples();
-                }
-            })
+        this.getAllFlows();
 
         this.initSubscribe();
         setTimeout(() => {
@@ -134,7 +129,7 @@ export class FlogoFlowsComponet{
 
         this._flogoModal.confirmDelete('Are you sure you want to delete ' + flow.name + ' flow?').then((res) => {
             if(res) {
-                this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
+                this._flow.deleteFlow(flow._id).then(()=> {
                     this.getAllFlows();
                     let message = this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
                     notification(message['value'], 'success', 3000);
@@ -156,43 +151,6 @@ export class FlogoFlowsComponet{
         this.getAllFlows();
     }
 
-    installSamples() {
-
-        this.samples = [
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            },
-            {
-                url: 'https://raw.githubusercontent.com/TIBCOSoftware/flogo/master/samples/aws_iot/web/aws_iot.json'
-            }
-        ];
-
-
-    }
 
     getAllFlows(){
         return new Promise((resolve, reject)=>{
