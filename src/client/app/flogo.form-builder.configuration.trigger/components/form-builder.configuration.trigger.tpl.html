@@ -1,7 +1,7 @@
 <div>
   <div  class="flogo-common-edit-panel__container">
     <!--// TODO: extract field creation to single component to simplify these templates -->
-    <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.settings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:SETTINGS' | translate }}</h3>
+    <h3 class="flogo-common-edit-panel__legend"  *ngIf="fields.settings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:SETTINGS' | translate }}</h3>
     <div *ngFor="let item of fields.settings; let index = index" class="">
 
       <div *ngIf="getControlByType(item,directions.input).control == 'FieldTextBox'">
@@ -30,7 +30,7 @@
 
     </div>
 
-    <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.endpointSettings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:ENDPOINT' | translate }}</h3>
+    <h3 class="flogo-common-edit-panel__legend" *ngIf="fields.endpointSettings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:ENDPOINT' | translate }}</h3>
     <div *ngFor="let item of fields.endpointSettings; let index = index" class="">
 
       <div *ngIf="getControlByType(item,directions.input).control == 'FieldTextBox'">
@@ -59,7 +59,15 @@
 
     </div>
 
-    <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.outputs.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:OUTPUTS' | translate }}</h3>
+    <h3 class="flogo-common-edit-panel__legend" *ngIf="fields.outputs.length">
+      {{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:OUTPUTS' | translate }}
+      <div class="flogo-common-edit-panel-info">
+        <img src="/assets/svg/flogo.form-builder.info.icon--gray.svg" class="flogo-common-edit-panel-info__btn">
+        <div class="flogo-common-edit-panel-info__content-wrapper">
+          <div class="flogo-common-edit-panel-info__content">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:OUTPUTS-INFO' | translate }}</div>
+        </div>
+      </div>
+    </h3>
     <div *ngFor="let item of fields.outputs; let index= index" class="">
 
       <div *ngIf="getControlByType(item,directions.output).control == 'FieldTextBox'">

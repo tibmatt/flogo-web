@@ -15,7 +15,6 @@ import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import {FlogoModal} from '../../../common/services/modal.service';
 import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
-import { FlogoInstructionsComponent } from '../../flogo.instructions/components/instructions.component';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
@@ -23,7 +22,7 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport,FlogoInstructionsComponent, FlogoFooter ],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter ],
   pipes: [TranslatePipe],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
@@ -33,7 +32,6 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 export class FlogoFlowsComponet{
     private _sub: any;
     public flows: any[] = [];
-    public isInstructionsActivated:boolean  = false;
     public samples: any;
 
     constructor(
@@ -47,29 +45,8 @@ export class FlogoFlowsComponet{
         this.getAllFlows();
 
         this.initSubscribe();
-        setTimeout(() => {
-           this.showInstructions();
-       },500);
     }
-    showInstructions() {
-       let instructions:any = localStorage.getItem('flogo-show-instructions');
 
-       if(_.isEmpty(instructions)) {
-           localStorage.setItem('flogo-show-instructions', new Date().toString());
-           this.isInstructionsActivated = true;
-       }
-
-       return this.isInstructionsActivated;
-   }
-
-
-   public onClosedInstructions(closed) {
-       this.isInstructionsActivated = false;
-   }
-
-   public activateInstructions() {
-       this.isInstructionsActivated = true;
-   }
     private initSubscribe() {
         this._sub = this._postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, {
             callback: this._addFlowMsg.bind(this)
