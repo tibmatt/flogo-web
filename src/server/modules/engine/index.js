@@ -14,10 +14,13 @@ import {
   runShellCMD,
   readJSONFile,
   writeJSONFile,
-  inspectObj
+  inspectObj,
+  splitLines
 } from '../../common/utils';
 import { FLOGO_ENGINE_STATUS } from '../../common/constants';
 import { list as flogoList } from './commands';
+
+import { engineLogger } from '../../common/logger'
 
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
@@ -973,7 +976,6 @@ export class Engine {
       console.log( "[info] command: ", command );
 
       let logFile = path.join( config.publicPath, self.options.name + '.log' );
-      let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
       console.log( "[info] engine logFile: ", logFile );
 
       if ( !isExisted( path.join( defaultEngineBinPath, command ) ) ) {
@@ -987,9 +989,7 @@ export class Engine {
           cwd : defaultEngineBinPath
         } );
 
-        // log engine output
-        engineProcess.stdout.pipe( logStream );
-        engineProcess.stderr.pipe( logStream );
+        engineLogger.register(engineProcess.stdout, engineProcess.stderr);
 
         successHandler();
       }

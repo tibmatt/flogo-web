@@ -11,12 +11,22 @@
   }
 }
 
+.footer-wrapper {
+  width: 100%;
+  z-index: 3
+}
+
 .canvas-flow {
   display: flex;
-  width: 100%;
+  width: 77.5%;
   flex-direction: column;
-  z-index: 1;
-  /*overflow: auto;*/
+  //z-index: 1;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.canvas-flow-minimized {
 }
 
 .canvas-right-container {
@@ -27,6 +37,29 @@
   border-left: solid 1px #B5B5B5;
   background: #fff;
   position: relative;
+  //z-index: 4;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.canvas-right-container-maximized {
+  width: 70%;
+  background-color: #666;
+  position: fixed;
+  right: 0;
+  z-index: 10;
+  height: 100%;
+  overflow: scroll;
+  border: 0;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.canvas-right-container-logs {
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
 }
 
 .flogo-flow-detail {
@@ -63,12 +96,48 @@
   cursor: pointer;
 }
 
+.flogo-flow-detail-menu-container {
+  display: flex;
+  justify-content: flex-end;
+  z-index: 5;
+}
+
+.flogo-flow-detail-log-button-container {
+  margin-top: 36px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.flogo-flow-detail-log-button {
+  background-color: white;
+  height: 40px;
+  width: 40px;
+  padding-left: 0;
+  padding-right: 0;
+  border: 2px solid #d8d8d8;
+  color: #7ab8dc;
+  border-radius: 7px;
+
+  img {
+    border: 0;
+    margin-top: -9px;
+    margin-left: -3px;
+  }
+}
+
+.flogo-flow-detail-log-button-selected {
+  //border-color: #79b8dc;
+  //background-color: #79b8dc;
+  color: white;
+}
+
 .flogo-flow-detail-menu{
   height: 43px;
   width: 29px;
   margin-right: 15px;
   margin-top: 36px;
-  float: right;
+  //float: right;
   position: relative;
   background: url("/assets/svg/flogo.flows.detail.menu.icon.svg") left top no-repeat;
   &:hover, &:active{
@@ -83,7 +152,7 @@
   }
   .flogo-flow-detail-menu-list-wrapper{
     position: absolute;
-    z-index: 10;
+    //z-index: 1000;
     top: 11px;
     left: 20px;
     overflow: hidden;

@@ -11,13 +11,16 @@ var cors =  require('koa-cors');
 
 import {config, triggersDBService, activitiesDBService, flowsDBService} from './config/app-config';
 import {api} from './api';
+import {init as initWebsocketApi} from './api/ws';
 import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
-import { installAndConfigureTasks, loadTasksToEngines, installSamples } from './modules/init'
+import { installAndConfigureTasks, loadTasksToEngines, installSamples } from './modules/init';
 
 
 // TODO Need to use cluster to improve the performance
 
 let app;
+
+
 /**
  * Server start logic
  *
@@ -73,6 +76,9 @@ startConfig
     console.log( `[log] start web server...` );
     return initServer();
   } )
+  .then((server) => {
+    initWebsocketApi(server);
+  })
   .then(showBanner)
   .catch( ( err )=> {
     console.log( err );
@@ -141,12 +147,11 @@ function initServer() {
       console.log( this.request.body );
     } );
 
-
-    app.listen( port, ()=> {
+    var server = require('http').createServer(app.callback());
+    server.listen( port, ()=> {
       console.log( `[log] start web server done.` );
 
-
-      resolve( app );
+      resolve( server );
     } );
   } );
 }

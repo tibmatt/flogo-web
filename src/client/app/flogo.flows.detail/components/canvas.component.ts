@@ -11,6 +11,9 @@ import {TransformComponent as FlogoTransformComponent} from '../../flogo.transfo
 import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import {FlogoLogs} from '../../flogo.logs/components/logs.component';
+import {FlogoFooter} from '../../flogo.footer/components/footer.component';
+import { LogService } from '../../../common/services/log.service';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -26,6 +29,7 @@ import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
 import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
 import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS} from '../../flogo.flows.detail.error-panel/messages'
+import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
@@ -48,7 +52,7 @@ interface HandlerInfo {
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader ],
+  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoFooter ],
   templateUrl: 'canvas.tpl.html',
   styleUrls: [ 'canvas.component.css' ],
   providers: [ FlogoModal ],
@@ -63,7 +67,8 @@ interface HandlerInfo {
     {path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggers},
     {path: '/trigger/:id', name: 'FlogoFlowsDetailTriggerDetail', component: FlogoFlowsDetailTriggersDetail},
     {path: '/task/add', name: 'FlogoFlowsDetailTaskAdd', component: FlogoFlowsDetailTasks},
-    {path: '/task/:id', name: 'FlogoFlowsDetailTaskDetail', component: FlogoFlowsDetailTasksDetail}
+    {path: '/task/:id', name: 'FlogoFlowsDetailTaskDetail', component: FlogoFlowsDetailTasksDetail},
+    {path: '/logs', name: 'FlogoLogs', component: FlogoLogs}
 ])
 
 export class FlogoCanvasComponent implements  OnChanges {
@@ -105,6 +110,9 @@ export class FlogoCanvasComponent implements  OnChanges {
   public mockProcess: any;
   public exportLink: string;
   public downloadLink: string;
+  public isInstructionsActivated: boolean  = false;
+  public isSelectedLogs: boolean = false;
+  public isLogsMaximized: boolean = false;
 
   constructor(
     private _postService: PostService,
@@ -113,7 +121,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     private _router: Router,
     private _flogoModal: FlogoModal,
     private _routerParams: RouteParams,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public logService: LogService
   ) {
     this._hasUploadedProcess = false ;
     this._isDiagramEdited = false;
@@ -160,6 +169,8 @@ export class FlogoCanvasComponent implements  OnChanges {
           this._mockLoading = false;
         });
 
+        this.resetLogsState();
+
       });
 
   }
@@ -179,6 +190,31 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     }
 
+    public toggleSelectedLogs() {
+        this.isSelectedLogs = !this.isSelectedLogs;
+        this.navigateToLogs();
+    }
+
+    public navigateToLogs() {
+        let route = '';
+        if(this.isSelectedLogs) {
+            route =  'FlogoLogs';
+        }else {
+            route = 'FlogoFlowsDetailDefault';
+        }
+
+        this._router.navigate( [ route] )
+    }
+
+    public resetLogsState() {
+        this.isSelectedLogs = false;
+        this.navigateToLogs();
+    }
+
+    public showLogs() {
+        this.isSelectedLogs = true;
+        this.navigateToLogs();
+    }
 
   private getFlow(id: string) {
     let diagram: IFlogoFlowDiagram;
@@ -319,6 +355,7 @@ export class FlogoCanvasComponent implements  OnChanges {
       _.assign( {}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback : this._changeTileDetail.bind( this ) } ),
       _.assign( {}, FLOGO_ERROR_PANEL_SUB_EVENTS.openPanel, { callback : this._errorPanelStatusChanged.bind( this, true ) } ),
       _.assign( {}, FLOGO_ERROR_PANEL_SUB_EVENTS.closePanel, { callback : this._errorPanelStatusChanged.bind( this, false ) } ),
+      _.assign( {}, FLOGO_LOGS_SUB_EVENTS.logResize, { callback : this.logResize.bind( this) } ),
     ];
 
     _.each(
@@ -587,6 +624,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     opt? : any
   ) : Promise<any> {
     processInstanceID = processInstanceID || this._processInstanceID;
+      let that = this;
     opt = _.assign(
       {}, {
         maxTrials : 20,
@@ -666,12 +704,14 @@ export class FlogoCanvasComponent implements  OnChanges {
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
                             message = translator.get('CANVAS:FLOW-CANCELED');
                             notification(message['value'], 'warning', 3000);
+                           that.showLogs();
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
                             message = translator.get('CANVAS:ERROR-MESSAGE-FAILED');
                             notification(message['value'], 'error');
+                            that.showLogs();
                             done( timer, rsp );
                             break;
                           case null :
@@ -969,6 +1009,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
+      this.resetLogsState();
     this._router.navigate( [ 'FlogoFlowsDetailTriggerAdd' ] )
       .then(
         () => {
@@ -1013,6 +1054,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     tasks[ trigger.id ] = trigger;
 
+      this.resetLogsState();
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
         ()=> {
@@ -1045,6 +1087,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
+      this.resetLogsState();
     this._router.navigate( [ 'FlogoFlowsDetailTaskAdd' ] )
       .then(
         () => {
@@ -1111,6 +1154,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
       this.handlers[diagramId].tasks[ task.id ] = task;
 
+        this.resetLogsState();
       this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
         .then(
           ()=> {
@@ -1151,6 +1195,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( envelope );
 
 
+      this.resetLogsState();
     this._router.navigate(
       [
         'FlogoFlowsDetailTaskDetail',
@@ -1234,6 +1279,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( envelope );
 
 
+      this.resetLogsState();
     this._router.navigate(
       [
         'FlogoFlowsDetailTaskDetail',
@@ -1298,6 +1344,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     this.tasks[ data.task.id ] = data.task;
 
+      this.resetLogsState();
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
         ()=> {
@@ -1536,6 +1583,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   private _selectTransformFromDiagram(data:any, envelope:any) {
     let diagramId:string = data.id;
     let previousTiles:any;
+    this.resetLogsState();
 
     let selectedNode = data.node;
 
@@ -1687,6 +1735,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                       this._isDiagramEdited = true;
 
                       if (_shouldGoBack) {
+                          this.resetLogsState();
                         this._router.navigate( [
                           'FlogoFlowsDetailDefault'
                         ] );
@@ -1704,6 +1753,11 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.groupEnd();
   }
 
+  private logResize(data:any, envelope:any)   {
+      this.isLogsMaximized = (data.action === 'grow') ;
+      console.log(this.isLogsMaximized);
+  }
+
   private _errorPanelStatusChanged(isOpened: boolean, data: any, envelope: any) {
 
     console.group('Close/open error panel from error panel');
@@ -1717,6 +1771,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
 
+      this.resetLogsState();
     this._router.navigate([
       'FlogoFlowsDetailDefault'
     ]);
@@ -1778,6 +1833,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     previousNodes.pop(); // ignore last item as it is the very same selected node
     let previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
 
+      this.resetLogsState();
     this._router.navigate(
       [
         'FlogoFlowsDetailTaskDetail',

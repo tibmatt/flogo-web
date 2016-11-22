@@ -24,12 +24,15 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
 
   isScreenScrolled: boolean  = false;
   imgErrorHandler : string = "/assets/svg/error-icon-info.svg";
-  
 
   private subscriptions : Array<any>;
 
   constructor(private postService: PostService, public translate: TranslateService){
     this.initSubscribe();
+  }
+
+  public openLogs() {
+    window.open('http://localhost:3012');
   }
 
   public toggle() {

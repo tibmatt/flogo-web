@@ -505,3 +505,12 @@ export function gitUpdate( folderPath ) {
 export function inspectObj( obj ) {
   console.log( inspect( obj, { depth : 7, color : true } ) );
 }
+
+export function splitLines(str) {
+  let lines = (str||'').match(/[^\r\n]+/g);
+  return lines || [];
+}
+
+export function cleanAsciiColors(line) {
+  return line.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,"");
+}

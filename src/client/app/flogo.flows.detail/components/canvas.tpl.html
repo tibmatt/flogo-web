@@ -1,17 +1,21 @@
 <div *ngIf="!_mockLoading" [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">
 
-  <div class="canvas-flow">
+  <div class="canvas-flow" [ngClass]="{'canvas-flow-minimized':isLogsMaximized}">
+
 
     <section class="flogo-flow-detail">
 
-      <header class="flogo-flow-detail-header col-sm-10">
-        <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetailName($event,'name')"></h3>
+      <header class="flogo-flow-detail-header col-sm-9">
+        <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
            placeholder="{{ translate.get('CANVAS:ADD-FLOW-DESCRIPTION').value }}"
            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
 
-      <div class="col-sm-2">
+
+      <div class="col-sm-3 flogo-flow-detail-menu-container">
+
+
 
         <div class="flogo-flow-detail-menu">
           <div class="flogo-flow-detail-menu-list-wrapper">
@@ -31,6 +35,16 @@
             </ul>
           </div>
         </div>
+
+        <div class="flogo-flow-detail-log-button-container">
+          <button class="btn flogo-flow-detail-log-button"
+                  [ngClass]="{'flogo-flow-detail-log-button-selected': isSelectedLogs}"
+                  (click)="toggleSelectedLogs()" title="Show logs">
+            <img *ngIf="!isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-unselected.svg" alt="">
+            <img *ngIf="isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-selected.svg" alt="">
+          </button>
+        </div>
+
       </div>
 
     </section>
@@ -39,68 +53,13 @@
                                [id]="'root'"
                                data-flogo-diagram-id="root">
     </flogo-canvas-flow-diagram>
+
+    <flogo-footer class="footer-wrapper"></flogo-footer>
+
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
-    <!-- the mock section below should be removed later-->
-    <!--
-    <section class="container-fluid" style="display: none; width: 100%;">
-      <section class="row">
-        <header>
-          <h3>Mock Area in Canvas component</h3>
-          <button type="button" class="btn btn-default" (click)="MOCK=!MOCK">Display</button>
-        </header>
-      </section>
-
-      <section class="row" [hidden]="!MOCK">
-        <div class="col-xs-12">
-          <header><h4>Actions</h4></header>
-        </div>
-
-        <div class="col-xs-12">
-          <button type="button" class="btn btn-warning" (click)="uploadProcess()"
-                  [disabled]="_uploadingProcess">Upload process
-          </button>
-          <button type="button" class="btn btn-default" (click)="startAndMonitorProcess()"
-                  [disabled]="_startingProcess" [hidden]="!_hasUploadedProcess">Start process
-          </button>
-          <button type="button" class="btn btn-default" (click)="mockGetSteps()"
-                  [disabled]="_mockGettingStepsProcess" [hidden]="!_hasUploadedProcess">Get steps
-          </button>
-        </div>
-
-      </section>
-
-      <section class="row" [hidden]="!MOCK || !_steps">
-
-        <div class="col-xs-12">
-          <header>
-            <h4>Steps</h4>
-          </header>
-        </div>
-
-        <div class="col-xs-12">
-          <pre><code [innerHTML]="_steps | json"></code></pre>
-        </div>
-
-      </section>
-
-      <section class="row" [hidden]="!MOCK">
-
-        <div class="col-xs-12">
-          <header>
-            <h4>Process.json</h4>
-          </header>
-        </div>
-
-        <div class="col-xs-12">
-          <pre><code [innerHTML]="_mockProcess | json"></code></pre>
-        </div>
-
-      </section>
-      </section>
-    -->
-
+    <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
 
     <flogo-flows-detail-error-panel>
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
@@ -110,7 +69,8 @@
 
   </div>
 
-  <div class="canvas-right-container">
+  <div class="canvas-right-container"
+       [ngClass]="{'canvas-right-container-maximized':isLogsMaximized, 'canvas-right-container-logs':isSelectedLogs}">
     <router-outlet></router-outlet>
   </div>
 

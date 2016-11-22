@@ -1,10 +1,11 @@
-<div class="layout" [class.layout--scrolled]="isScreenScrolled">
+<div class="layout" [class.layout--scrolled]="isScreenScrolled" >
   <div class="layout__main" #overlay (click)="($event.target == overlay || $event.target == wrapper) && close()">
     <div class="wrapper" #wrapper>
-      <button (click)="toggle()" class="tc-buttons tc-buttons-primary toggle-button" [class.toggle-button-open]="isOpen" >
-        <img [src]="imgErrorHandler">
-        <!--<i class="fa toggle-button__icon" [class.fa-caret-up]="!isOpen" [class.fa-caret-down]="isOpen" ></i>-->
-      </button>
+        <div class="actions-container">
+            <button (click)="toggle()" class="tc-buttons tc-buttons-primary toggle-button action-button" [class.toggle-button-open]="isOpen" >
+              <img [src]="imgErrorHandler">
+            </button>
+        </div>
       <div class="error-panel">
         <div class="error-panel__content" *ngIf="isOpen || isOpening || isClosing">
           <ng-content></ng-content>

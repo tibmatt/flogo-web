@@ -14,6 +14,7 @@ import { RESTAPITriggersService } from '../../../common/services/restapi/trigger
 import { FlogoConfigComponent } from '../../flogo.config/components/config.component';
 import { RESTAPIConfigurationService } from '../../../common/services/restapi/configuration-api-service';
 import { ConfigurationService } from '../../../common/services/configuration.service';
+import { LogService } from '../../../common/services/log.service';
 import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
 import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
 
@@ -24,7 +25,7 @@ import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
   styleUrls: [ 'flogo.component.css' ],
   directives: [ROUTER_DIRECTIVES, FlogoNavbarComponent],
   pipes: [TranslatePipe],
-  providers: [PostService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService, ConfigurationService]
+  providers: [PostService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService, ConfigurationService, LogService]
 })
 
 @RouteConfig([

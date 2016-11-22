@@ -8,6 +8,7 @@ import {RESTAPIActivitiesService} from '../../../common/services/restapi/activit
 import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
 import { flogoIDEncode , notification } from '../../../common/utils';
 import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
+import {FlogoFooter} from '../../flogo.footer/components/footer.component';
 
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
@@ -21,7 +22,7 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter ],
   pipes: [TranslatePipe],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
 })
