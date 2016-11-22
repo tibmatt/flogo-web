@@ -393,7 +393,6 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private _runFromTrigger(data? : any ) {
 
-    this.showLogs();
     this._isDiagramEdited = false;
     let diagramId = 'root';
 
@@ -625,6 +624,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     opt? : any
   ) : Promise<any> {
     processInstanceID = processInstanceID || this._processInstanceID;
+      let that = this;
     opt = _.assign(
       {}, {
         maxTrials : 20,
@@ -704,12 +704,14 @@ export class FlogoCanvasComponent implements  OnChanges {
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
                             message = translator.get('CANVAS:FLOW-CANCELED');
                             notification(message['value'], 'warning', 3000);
+                           that.showLogs();
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
                             message = translator.get('CANVAS:ERROR-MESSAGE-FAILED');
                             notification(message['value'], 'error');
+                            that.showLogs();
                             done( timer, rsp );
                             break;
                           case null :
@@ -1446,7 +1448,6 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private _runFromThisTile(data:any, envelope:any) {
-      this.showLogs();
     let diagramId : string = 'root';
     let currentDiagram = this.handlers[diagramId];
 

@@ -39,17 +39,9 @@ export class FlogoLogs {
       )
   }
 
-    public getIconByLevel(item) {
-        let path = '/assets/svg/flogo-logs-';
-        let image = '';
 
-        if(item.message.indexOf('▶ ERROR') !== -1  || item.message.indexOf('▶ WARNI') !== -1) {
-            image = `${path}error.svg`;
-        } else {
-            image = `${path}empty.png`;
-        }
-
-        return image;
+    public isError(item) {
+        return (item.message.indexOf('▶ ERROR') !== -1  || item.message.indexOf('▶ WARNI') !== -1);
     }
 
 }
