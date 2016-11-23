@@ -28,11 +28,6 @@ export class FlogoLogs {
   }
 
   public resizePanel(event,action)   {
-      if(event.type == 'mouseleave') {
-          if(event.toElement == null) {
-              return;
-          }
-      }
       this.isMaximized = (action === 'grow');
       this.postService.publish(
           _.assign({}, PUB_EVENTS.logResize, {data: {action:action}})
