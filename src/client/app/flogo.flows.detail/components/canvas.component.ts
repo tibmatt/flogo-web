@@ -169,7 +169,7 @@ export class FlogoCanvasComponent implements  OnChanges {
           this._mockLoading = false;
         });
 
-        this.resetLogsState();
+        this.showLogs(false);
 
       });
 
@@ -190,30 +190,17 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     }
 
-    public toggleSelectedLogs() {
-        this.isSelectedLogs = !this.isSelectedLogs;
-        this.navigateToLogs();
-    }
-
-    public navigateToLogs() {
+    public showLogs(show) {
         let route = '';
-        if(this.isSelectedLogs) {
+        this.isSelectedLogs = show;
+        if(show) {
             route =  'FlogoLogs';
+            this._cleanSelectionStatus();
         }else {
+            this.isLogsMaximized = false;
             route = 'FlogoFlowsDetailDefault';
         }
-
         this._router.navigate( [ route] )
-    }
-
-    public resetLogsState() {
-        this.isSelectedLogs = false;
-        this.navigateToLogs();
-    }
-
-    public showLogs() {
-        this.isSelectedLogs = true;
-        this.navigateToLogs();
     }
 
   private getFlow(id: string) {
@@ -704,14 +691,14 @@ export class FlogoCanvasComponent implements  OnChanges {
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
                             message = translator.get('CANVAS:FLOW-CANCELED');
                             notification(message['value'], 'warning', 3000);
-                           that.showLogs();
+                           that.showLogs(true);
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
                             message = translator.get('CANVAS:ERROR-MESSAGE-FAILED');
                             notification(message['value'], 'error');
-                            that.showLogs();
+                            that.showLogs(true);
                             done( timer, rsp );
                             break;
                           case null :
@@ -1009,7 +996,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-      this.resetLogsState();
+      this.showLogs(false);
     this._router.navigate( [ 'FlogoFlowsDetailTriggerAdd' ] )
       .then(
         () => {
@@ -1054,7 +1041,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     tasks[ trigger.id ] = trigger;
 
-      this.resetLogsState();
+      this.showLogs(false);
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
         ()=> {
@@ -1087,7 +1074,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-      this.resetLogsState();
+      this.showLogs(false);
     this._router.navigate( [ 'FlogoFlowsDetailTaskAdd' ] )
       .then(
         () => {
@@ -1154,7 +1141,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
       this.handlers[diagramId].tasks[ task.id ] = task;
 
-        this.resetLogsState();
+        this.showLogs(false);
       this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
         .then(
           ()=> {
@@ -1195,7 +1182,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( envelope );
 
 
-      this.resetLogsState();
+      this.showLogs(false);
     this._router.navigate(
       [
         'FlogoFlowsDetailTaskDetail',
@@ -1279,7 +1266,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( envelope );
 
 
-      this.resetLogsState();
+    this.showLogs(false);
     this._router.navigate(
       [
         'FlogoFlowsDetailTaskDetail',
@@ -1344,7 +1331,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     this.tasks[ data.task.id ] = data.task;
 
-      this.resetLogsState();
+    this.showLogs(false);
     this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
       .then(
         ()=> {
@@ -1583,7 +1570,7 @@ export class FlogoCanvasComponent implements  OnChanges {
   private _selectTransformFromDiagram(data:any, envelope:any) {
     let diagramId:string = data.id;
     let previousTiles:any;
-    this.resetLogsState();
+    this.showLogs(false);
 
     let selectedNode = data.node;
 
@@ -1735,7 +1722,7 @@ export class FlogoCanvasComponent implements  OnChanges {
                       this._isDiagramEdited = true;
 
                       if (_shouldGoBack) {
-                          this.resetLogsState();
+                          this.showLogs(false);
                         this._router.navigate( [
                           'FlogoFlowsDetailDefault'
                         ] );
@@ -1758,20 +1745,22 @@ export class FlogoCanvasComponent implements  OnChanges {
       console.log(this.isLogsMaximized);
   }
 
+    private _cleanSelectionStatus() {
+        let allNodes = _.reduce(this.handlers, (allNodes, handle) => {
+            return _.assign(allNodes, _.get(handle, 'diagram.nodesOfAddType', {}), _.get(handle, 'diagram.nodes', {}));
+        }, {});
+        _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
+
+        this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+    }
+
   private _errorPanelStatusChanged(isOpened: boolean, data: any, envelope: any) {
 
     console.group('Close/open error panel from error panel');
 
     // clean selection status
-
-    let allNodes = _.reduce(this.handlers, (allNodes, handle) => {
-      return _.assign(allNodes, _.get(handle, 'diagram.nodesOfAddType', {}), _.get(handle, 'diagram.nodes', {}));
-    }, {});
-    _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
-
-    this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
-
-      this.resetLogsState();
+      this._cleanSelectionStatus();
+      this.showLogs(false);
     this._router.navigate([
       'FlogoFlowsDetailDefault'
     ]);
@@ -1833,7 +1822,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     previousNodes.pop(); // ignore last item as it is the very same selected node
     let previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
 
-      this.resetLogsState();
+      this.showLogs(false);
     this._router.navigate(
       [
         'FlogoFlowsDetailTaskDetail',
