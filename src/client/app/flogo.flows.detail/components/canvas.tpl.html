@@ -1,7 +1,7 @@
 <div *ngIf="!_mockLoading" [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">
 
-  <div class="canvas-flow" [ngClass]="{'canvas-flow-minimized':isLogsMaximized}">
-
+  <div class="canvas-flow" >
+    <!--[ngClass]="{'canvas-flow-minimized':isLogsMaximized}">-->
 
     <section class="flogo-flow-detail">
 
@@ -66,8 +66,7 @@
 
   </div>
 
-  <div class="canvas-right-container"
-       [ngClass]="{'canvas-right-container-maximized':isLogsMaximized, 'canvas-right-container-logs':isSelectedLogs}">
+  <div class="canvas-right-container">
     <router-outlet></router-outlet>
   </div>
 

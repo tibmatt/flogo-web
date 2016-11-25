@@ -4,13 +4,30 @@
 
 @horizontal-padding: 5px;
 :host {
-  flex: 1;
+  //flex: 1;
+   position: fixed;
+  right: 10px;
+  //left: 600px;
+  width: 22.5%;
+  min-width: 321px;
+  z-index: 1;
+  top: 54px;
+  //background-color: yellow;
+  //padding: 5px;
+  height: ~"calc(100vh - 54px)";
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
 }
 
 .flogo-logs {
-  //height: 100%;
-  flex:1;
+  position: relative;
   height: 100%;
+  //background-color: blue;
+  //padding: 10px;
+  //overflow: scroll;
+  display: flex;
+  flex-direction: column;
 
   .header {
     color: #8a90ae;
@@ -91,8 +108,12 @@
 
   .flogo-logs__content {
     background-color: @info-bg-color;
-    height: 100%;
+    //height: 80vh;
+    //height: 200px;
+    flex: 1;
     padding: 15px;
+    //border: 4px solid red;
+    overflow: scroll;
 
     .log-line {
       color: #fff;
@@ -130,3 +151,4 @@
   }
 
 }
+

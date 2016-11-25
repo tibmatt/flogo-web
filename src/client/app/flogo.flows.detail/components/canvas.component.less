@@ -3,6 +3,7 @@
   align-items: stretch;
   width: 100%;
   flex-grow: 2;
+  margin-top: 54px;
 
   > div {
     display: flex;
@@ -11,9 +12,10 @@
   }
 }
 
+
 .footer-wrapper {
   width: 100%;
-  z-index: 3
+  z-index: 1
 }
 
 .canvas-flow {
@@ -44,7 +46,8 @@
 }
 
 .canvas-right-container-maximized {
-  width: 70%;
+  width: 800px;
+ /* width: 70%;
   background-color: #666;
   position: fixed;
   right: 0;
@@ -52,6 +55,7 @@
   height: 100%;
   overflow: scroll;
   border: 0;
+  */
 
   -webkit-transition: width .5s; /* Safari */
   transition: width .5s;
@@ -99,7 +103,11 @@
 .flogo-flow-detail-menu-container {
   display: flex;
   justify-content: flex-end;
-  z-index: 5;
+  //z-index: 2;
+}
+
+.flogo-flow-detail-menu-container:hover {
+  z-index: 20;
 }
 
 .flogo-flow-detail-log-button-container {
