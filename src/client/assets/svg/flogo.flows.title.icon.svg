@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 40 (33762) - http://www.bohemiancoding.com/sketch -->
+    <title>7A174318-0E5B-480E-A142-5A5C686ED523</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <path d="M19.305533,3.48479718 L19.305533,1.04083775 C19.305533,0.465805054 18.8397561,0 18.2651911,0 L6.04034191,0 C5.45976834,0 5,0.465998932 5,1.04083775 L5,12.9591623 C5,13.5341949 5.46577694,14 6.04034191,14 L18.2651911,14 C18.8457647,14 19.305533,13.5340011 19.305533,12.9591623 L19.305533,11.0600559 L20.974593,7.27242654 L19.305533,3.48479718 Z" id="path-1"></path>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="-1.5" y="-1.5" width="19" height="17">
+            <rect x="3.5" y="-1.5" width="19" height="17" fill="white"></rect>
+            <use xlink:href="#path-1" fill="black"></use>
+        </mask>
+        <path d="M14.305533,3.48479718 L14.305533,1.04083775 C14.305533,0.465805054 13.8397561,0 13.2651911,0 L1.04034191,0 C0.459768343,0 0,0.465998932 0,1.04083775 L0,12.9591623 C0,13.5341949 0.465776937,14 1.04034191,14 L13.2651911,14 C13.8457647,14 14.305533,13.5340011 14.305533,12.9591623 L14.305533,11.0600559 L15.974593,7.27242654 L14.305533,3.48479718 Z" id="path-3"></path>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="-1.5" y="-1.5" width="19" height="17">
+            <rect x="-1.5" y="-1.5" width="19" height="17" fill="white"></rect>
+            <use xlink:href="#path-3" fill="black"></use>
+        </mask>
+    </defs>
+    <g id="All-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Flogo_LandingPage-Option-2" transform="translate(-505.000000, -486.000000)">
+            <g id="sampleflow" transform="translate(505.000000, 486.000000)">
+                <rect id="Rectangle" fill="#79B8DC" x="0" y="0" width="32" height="32" rx="5"></rect>
+                <g id="Group-2" transform="translate(3.000000, 9.000000)">
+                    <path d="M24.305533,3.48479718 L24.305533,1.04083775 C24.305533,0.465805054 23.8397561,0 23.2651911,0 L11.0403419,0 C10.4597683,0 10,0.465998932 10,1.04083775 L10,12.9591623 C10,13.5341949 10.4657769,14 11.0403419,14 L23.2651911,14 C23.8457647,14 24.305533,13.5340011 24.305533,12.9591623 L24.305533,11.0600559 L25.974593,7.27242654 L24.305533,3.48479718 Z" id="tile-copy" fill="#FFFFFF"></path>
+                    <g id="tile">
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <use stroke="#79B8DC" mask="url(#mask-2)" stroke-width="3" xlink:href="#path-1"></use>
+                    </g>
+                    <g id="tile-copy-2">
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                        <use stroke="#79B8DC" mask="url(#mask-4)" stroke-width="3" xlink:href="#path-3"></use>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
