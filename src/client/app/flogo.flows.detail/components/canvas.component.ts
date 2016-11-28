@@ -1742,7 +1742,6 @@ export class FlogoCanvasComponent implements  OnChanges {
 
   private logResize(data:any, envelope:any)   {
       this.isLogsMaximized = (data.action === 'grow') ;
-      console.log(this.isLogsMaximized);
   }
 
     private _cleanSelectionStatus() {
