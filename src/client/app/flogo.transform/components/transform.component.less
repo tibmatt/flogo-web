@@ -69,14 +69,11 @@
   display: flex;
   flex: 1;
   justify-content: space-between;
-  //flex-wrap: wrap;
 }
 
 .flogo-transform-modal__content .col {
-  //width: 28%;
   display: flex;
-  flex-direction: column;
-  background-color: #eceff4;
+  display: -webkit-flex;
 
   .flogo-transform-modal__content-json-panel {
     height: 100%;
@@ -239,9 +236,8 @@
 
 .mappings-container {
   display:flex;
-  flex-direction: column;
-  flex: 0.9 0.9;
-  align-items: center;
+  display: -webkit-flex;
+  align-items: start;
 }
 
 .mappings-container__header {
@@ -249,7 +245,6 @@
 }
 
 .mappings-container__main {
-  flex: 0 0 63%;
   overflow: auto;
 }
 
