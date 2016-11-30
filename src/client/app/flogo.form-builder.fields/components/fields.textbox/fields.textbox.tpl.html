@@ -10,6 +10,7 @@
          (keyup)="onKeyUp($event)"
          (focus)="onFocus($event)"
          (change)="onValidate($event)"
+         (blur)="onBlur($event)"
          [readonly]="isReadOnly()">
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>

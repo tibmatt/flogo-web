@@ -12,6 +12,7 @@
             [placeholder]="_info.placeholder"
             class="form-control tc-text-areas tc-text-area" [(ngModel)]="_value"
             (change)="onValidate($event)"
+            (blur)="onBlur($event)"
             [readonly]="isReadOnly()"></textarea>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>

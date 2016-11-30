@@ -12,6 +12,7 @@
             [placeholder]="_info.placeholder"
             class="form-control tc-text-areas tc-text-area"
             [(ngModel)]="_value"
+            (blur)="onBlur($event)"
             (change)="onValidate($event)"
             [readonly]="isReadOnly()"></textarea>
 

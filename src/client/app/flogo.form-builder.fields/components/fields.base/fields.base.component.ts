@@ -89,6 +89,10 @@ export class FlogoFormBuilderFieldsBase{
     this.publishNextChange();
   }
 
+  onBlur(event) {
+    this.publishNextChange();
+  }
+
 
 
 
