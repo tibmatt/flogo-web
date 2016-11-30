@@ -25,6 +25,14 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
   onChangeField(event:any){
     let invalidJSON = false;
     let value : any = null;
+
+    if(event.key == "Escape") {
+      this._info = Object.assign({}, this.originalInfo);
+      this._value = this._info.value;
+      this.publishNextChange();
+      return;
+    }
+
     try {
       value = JSON.parse(event.target.value);
     } catch(e) {

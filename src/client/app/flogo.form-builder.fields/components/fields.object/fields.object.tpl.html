@@ -6,7 +6,8 @@
   </div>
 
   <textarea rows="5"
-            (keyup)="onChangeField($event)"
+            (keyup)="onKeyUp($event)"
+            (focus)="onFocus($event)"
             [class.error]="_hasError"
             [placeholder]="_info.placeholder"
             class="form-control tc-text-areas tc-text-area"

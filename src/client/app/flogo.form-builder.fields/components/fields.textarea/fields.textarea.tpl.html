@@ -7,6 +7,7 @@
 
   <textarea name="" id="objectField" rows="5"
             (keyup)="onChangeField($event)"
+            (focus)="onFocus($event)"
             [class.error]="_hasError"
             [placeholder]="_info.placeholder"
             class="form-control tc-text-areas tc-text-area" [(ngModel)]="_value"
