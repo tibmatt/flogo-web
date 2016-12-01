@@ -30,14 +30,6 @@ script:
   - popd
 after_script:
   - "[ -f \"${HOME}/.netrc\" ] && rm -f ${HOME}/.netrc"
-deploy:
-  provider: releases
-  api_key: "${GITHUB_OAUTH_TOKEN}"
-  file: "${TRAVIS_BUILD_DIR}/flogo-cicd/submodules/flogo-web/dist/docker-compose.yml"
-  file: "${TRAVIS_BUILD_DIR}/flogo-cicd/submodules/flogo-web/dist/docker-compose-start.sh"
-  skip_cleanup: true
-  on:
-    tags: true
 after_success:
   - "if [ \"${TRAVIS_BRANCH}\" == \"master\" ]; then
     docker login -u=\"${DOCKER_USERNAME}\" -p=\"${DOCKER_PASSWORD}\" ;
