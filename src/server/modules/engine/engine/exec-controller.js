@@ -15,28 +15,21 @@ module.exports = {
     return new Promise( ( resolve, reject ) => {
 
       let binPath = path.join(enginePath, options.binDir);
-      console.log( "[info] defaultEngineBinPath: ", binPath );
+      console.log( '[info] defaultEngineBinPath: ', binPath );
       // TODO: cross platform execution?
       let command = `./${engineName}`;
-      console.log( "[info] command: ", command );
-
-      let logFile = path.join(options.logPath, engineName + '.log' );
-
-      let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
-      console.log( "[info] engine logFile: ", logFile );
+      console.log( '[info] command: ', command );
 
       if ( !fileExists( path.join( binPath, engineName ) ) ) {
         console.log( `[error] engine ${engineName} doesn't exist` );
         reject( new Error( `[error] engine ${engineName} doesn't exist` ) );
       } else {
 
-        let engineProcess = spawn( command, {
+        let engineProcess = spawn(command, {
           cwd : binPath
-        } );
+        });
 
-        // log engine output
-        engineProcess.stdout.pipe( logStream );
-        engineProcess.stderr.pipe( logStream );
+        _setupLogging(engineProcess, engineName, options);
 
         resolve(engineProcess);
       }
@@ -72,3 +65,19 @@ module.exports = {
     });
   }
 };
+
+function _setupLogging(engineProcess, engineName, options) {
+  if (options.logger) {
+    let logger = options.logger;
+    logger.registerDataStream(engineProcess.stdout, engineProcess.stderr);
+  } else if (options.logPath) {
+    let logFile = path.join(options.logPath, engineName + '.log' );
+    let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
+    console.log( '[info] engine logFile: ', logFile );
+    // log engine output
+    engineProcess.stdout.pipe( logStream );
+    engineProcess.stderr.pipe( logStream );
+  } else {
+    console.warn('[warning] no logging setup for engine run');
+  }
+}

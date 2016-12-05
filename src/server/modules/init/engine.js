@@ -1,4 +1,5 @@
 import {Engine} from '../engine/engine';
+import {engineLogger} from '../../common/logger';
 import {config} from '../../config/app-config';
 import path from 'path';
 
@@ -9,7 +10,7 @@ export function getInitializedEngine(enginePath) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
 
-  let engine = new Engine(enginePath);
+  let engine = new Engine(enginePath, engineLogger);
 
   return engine.exists()
     .then(function(engineExists){

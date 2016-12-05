@@ -988,7 +988,7 @@ export class Engine {
           cwd : defaultEngineBinPath
         } );
 
-        engineLogger.register(engineProcess.stdout, engineProcess.stderr);
+        engineLogger.registerDataStream(engineProcess.stdout, engineProcess.stderr);
 
         successHandler();
       }

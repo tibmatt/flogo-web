@@ -20,12 +20,13 @@ const TYPE_BUILD = 'build';
 
 class Engine {
 
-  constructor(path) {
+  constructor(path, runLogger) {
     this.path = path;
     this.tasks = {
       activities: [],
       triggers: []
-    }
+    };
+    this.runLogger = runLogger;
   }
 
   load() {
@@ -142,7 +143,8 @@ class Engine {
     // todo: inject logger instead?
     return exec.start(this.path, this.getName(), {
       binDir: DIR_TEST_BIN,
-      logPath: config.publicPath
+      logPath: config.publicPath,
+      logger: this.runLogger
     })
   }
 
