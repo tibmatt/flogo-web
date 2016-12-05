@@ -726,6 +726,7 @@ export function createFlow(data) {
       _.defaults(data, defaultFlowData);
       data._id = _dbService.generateFlowID();
       data.$table = _dbService.getIdentifier('FLOW');
+      delete data._rev;
       return validateFlow(data, activities, triggers);
     })
     .then(res => {

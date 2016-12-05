@@ -46,7 +46,6 @@ export const CONFIG = {
       'node_modules/d3/d3.js',
       'node_modules/lodash/lodash.js',
       'node_modules/postal/lib/postal.js',
-      'node_modules/pouchdb/dist/pouchdb.js',
       'node_modules/bootstrap/dist/js/bootstrap.js',
       'node_modules/moment/min/moment-with-locales.min.js',
 
@@ -78,7 +77,6 @@ export const CONFIG = {
         'node_modules/d3/d3.min.js',
         'node_modules/lodash/lodash.min.js',
         'node_modules/postal/lib/postal.min.js',
-        'node_modules/pouchdb/dist/pouchdb.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/moment/min/moment-with-locales.min.js'
       ],
