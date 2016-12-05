@@ -137,15 +137,14 @@
     height: @card-height;
     position: relative;
     width: 200px;
+    transition: box-shadow 300ms ease;
 
     &:hover{
-      background-color: @card-bg-color-hover;
+      box-shadow: 0 0 5px 3px #7ab8dc;
       .flogo-flows-container-list-detail-trash{
         opacity: 1;
       }
-      .flogo-flows-container-list-detail-description:before {
-        background: @card-bg-color-hover;
-      }
+
     }
   }
 
