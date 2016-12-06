@@ -11,10 +11,27 @@ export function getInitializedEngine(enginePath) {
   }
 
   let engine = new Engine(enginePath, engineLogger);
+  engineRegistry[enginePath] = engine;
 
+  return initEngine(engine)
+    .then(() =>  {
+    engineRegistry[enginePath] = engine;
+    return engine;
+  });
+
+}
+
+export function initEngine(engine, options) {
+  let forceInit = options && options.forceCreate;
   return engine.exists()
     .then(function(engineExists){
-      if(!engineExists) {
+      if (engineExists && forceInit) {
+        return engine.remove().then(() => true);
+      }
+      return !engineExists || forceInit;
+    })
+    .then(create => {
+      if(create) {
         console.info('Engine does not exist. Creating...');
         return engine.create()
           .then(() => {
@@ -45,11 +62,6 @@ export function getInitializedEngine(enginePath) {
         }, {overwrite: true})
       ]);
     })
-    .then(() =>  {
-      engineRegistry[enginePath] = engine;
-      return engine;
-    });
-
 }
 
 

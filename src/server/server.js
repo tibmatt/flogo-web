@@ -8,7 +8,7 @@ import bodyParser from 'koa-body';
 import compress from 'koa-compress';
 var cors = require('koa-cors');
 
-import {config} from './config/app-config';
+import {config, flowsDBService} from './config/app-config';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
 import {syncTasks, installSamples, getInitializedEngine} from './modules/init';
@@ -24,7 +24,6 @@ if (!isDirectory(LOCAL_DIR)) {
 }
 
 let app;
-
 
 /**
  * Server start logic
@@ -82,7 +81,9 @@ let app;
 //     return initServer();
 //   } )
 
-getInitializedEngine(config.defaultEngine.path)
+getInitializedEngine(config.defaultEngine.path, {
+  forceCreate: process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
+})
   .then(engine => {
     return engine.build()
       .then(() => engine.stop())
@@ -93,9 +94,12 @@ getInitializedEngine(config.defaultEngine.path)
   .then((server) => {
     initWebsocketApi(server);
   })
-  .then(() => {
-    process.env['FLOGO_INSTALL_SAMPLES'] ? installSamples() : null
-  })
+  .then(() => process.env['FLOGO_WEB_INSTALL_SAMPLES'] ?
+      flowsDBService
+        .verifyInitialDataLoad(path.resolve('db-init/installed-flows.init'))
+        .then(() => installSamples())
+      : null
+  )
   .then(() => {
     console.log('flogo-web::server::ready');
     showBanner();

@@ -48,6 +48,14 @@ class Engine {
       ));
   }
 
+  remove() {
+    let deleteDir = () => removeDir(this.path);
+
+    return this.stop()
+      .then(deleteDir)
+      .catch(() => Promise.resolve(deleteDir()));
+  }
+
   exists() {
     return loader.exists(this.path);
   }
@@ -140,7 +148,6 @@ class Engine {
   }
 
   start() {
-    // todo: inject logger instead?
     return exec.start(this.path, this.getName(), {
       binDir: DIR_TEST_BIN,
       logPath: config.publicPath,
@@ -154,10 +161,6 @@ class Engine {
 
   getName() {
     return path.parse(this.path).name;
-  }
-
-  remove() {
-    return removeDir(this.path);
   }
 
   deleteAllInstalledFlows() {
