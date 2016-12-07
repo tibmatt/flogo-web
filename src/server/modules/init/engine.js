@@ -5,7 +5,7 @@ import path from 'path';
 
 let engineRegistry = {};
 
-export function getInitializedEngine(enginePath) {
+export function getInitializedEngine(enginePath, opts) {
   if (engineRegistry[enginePath]) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
@@ -13,7 +13,7 @@ export function getInitializedEngine(enginePath) {
   let engine = new Engine(enginePath, engineLogger);
   engineRegistry[enginePath] = engine;
 
-  return initEngine(engine)
+  return initEngine(engine, opts)
     .then(() =>  {
     engineRegistry[enginePath] = engine;
     return engine;

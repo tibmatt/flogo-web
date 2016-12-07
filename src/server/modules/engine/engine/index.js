@@ -60,10 +60,6 @@ class Engine {
     return loader.exists(this.path);
   }
 
-  installPalette(palettePath, options) {
-    return commander.add.palette(this.path, palettePath, options);
-  }
-
   getTasks() {
     return this.tasks;
   }
@@ -78,6 +74,14 @@ class Engine {
 
   getTriggers() {
     return this.tasks.triggers;
+  }
+
+  hasActivity(nameOrPath) {
+    return this._hasItem(this.getActivities(), nameOrPath);
+  }
+
+  hasTrigger(nameOrPath) {
+    return this._hasItem(this.getTriggers(), nameOrPath);
   }
 
   /**
@@ -163,14 +167,6 @@ class Engine {
     return path.parse(this.path).name;
   }
 
-  deleteAllInstalledFlows() {
-    return loader
-      .readAllFlowNames(this.path)
-        .then(installedFlows => installedFlows.reduce((promise, flowName) => {
-          return promise.then(commander.delete.flow(this.path, flowName));
-        }, Promise.resolve(true)))
-  }
-
   /**
    * Add a flow to engine
    * @param {string|Path} flowPath - the path to flow json
@@ -179,6 +175,90 @@ class Engine {
    */
   addFlow(flowPath){
       return commander.add.flow(this.path, flowPath);
+  }
+
+  deleteAllInstalledFlows() {
+    return loader
+      .readAllFlowNames(this.path)
+      .then(installedFlows => installedFlows.reduce((promise, flowName) => {
+        return promise.then(commander.delete.flow(this.path, flowName));
+      }, Promise.resolve(true)))
+  }
+
+  /**
+   * Add/install a palette
+   * @param palettePath Path to palette
+   * @param options
+   * @param options.version {string} version
+   * @param options.noReload {boolean} Skip engine data reload
+   */
+  installPalette(palettePath, options) {
+    return this._installItem('palette', palettePath, options);
+  }
+
+  /**
+   * Add/install a trigger
+   * @param triggerPath Remote url or use local://path for local items
+   * @param options
+   * @param options.version {string} trigger versions
+   * @param options.noReload {boolean} Skip engine data reload
+   */
+  addTrigger(triggerPath, options) {
+    return this._installItem('trigger', triggerPath, options);
+  }
+
+  /**
+   * Add/install an activity
+   * @param activityPath Remote url or use local://path for local items
+   * @param options
+   * @param options.version {string} trigger versions
+   * @param options.noReload {boolean} Skip engine data reload
+   */
+  addActivity(activityPath, options) {
+    return this._installItem('activity', activityPath, options);
+  }
+
+  /**
+   * Delete an installed trigger
+   * @param {string} nameOrPath Trigger name or path (remote url or local://path)
+   * @param options
+   * @param options.noReload {boolean} Skip engine data reload
+   */
+  deleteTrigger(nameOrPath, options) {
+    return this._deleteItem('trigger', nameOrPath, options);
+  }
+
+  /**
+   * Delete an installed activity
+   * @param {string} nameOrPath Trigger name or path (remote url or local://path)
+   * @param options
+   * @param options.noReload {boolean} Skip engine data reload
+   */
+  deleteActivity(nameOrPath, options) {
+    return this._deleteItem('activity', nameOrPath, options);
+  }
+
+  _deleteItem(itemType, nameOrPath, options) {
+    let promise = commander.delete[itemType](this.path, nameOrPath);
+    let shouldReload = !(options && options.noReload);
+    if (shouldReload) {
+      promise = promise.then(() => this.load());
+    }
+    return promise;
+  }
+
+  _installItem(itemType, path, options) {
+    let promise = commander.add[itemType](this.path, path);
+    let shouldReload = !(options && options.noReload);
+    if (shouldReload) {
+      promise = promise.then(() => this.load());
+    }
+    return promise;
+  }
+
+  _hasItem(where, nameOrPath) {
+    let item = (where || []).find(item => item.name == nameOrPath || item.path === nameOrPath)
+    return !!item;
   }
 
 }

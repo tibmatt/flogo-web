@@ -33,7 +33,7 @@ let config = {
   },
   defaultEngine: {
     path: 'local/engines/flogo-web',
-    defaultPalette: 'default-palette.json',
+    defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
   },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
