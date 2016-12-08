@@ -90,20 +90,12 @@ System.config({
     'rxjs': {
       defaultExtension: 'js'
     }
-  },
-
-  // a bug with karma-coverage and system.js
-  meta: {
-    'app/*': {
-      format: 'register'
-    }
   }
-
 });
 
 Promise.all([
- System.import('@angular/core/testing'),
- System.import('@angular/platform-browser-dynamic/testing')
+  System.import('@angular/core/testing'),
+  System.import('@angular/platform-browser-dynamic/testing')
 ])
   .then(function (providers) {
     var testing = providers[0];
