@@ -7,18 +7,29 @@
 }
 
 .flogo-common-edit-panel__head {
-  background-color: #fe883b;
-  padding-top: 33px;
+  background-color: #4e7ead;
+  color: #fff;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  justify-content: space-around;
+  .flogo-common-edit-panel__head-title{
+    float: left;
+    width: 50%;
+  }
+  .flogo-common-edit-panel__head-subtitle{
+    float: left;
+  }
 }
 
-.flogo-common-edit-panel__head-title:before {
-  content: "";
-  background: #fff url("/assets/svg/flogo.flows.detail.add.cross.icon.svg") center center/50% no-repeat;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 15px;
-  text-align: center;
-  vertical-align: middle;
+.flogo-common-edit-panel__head-wrapper{
+  .flogo-icon-add {
+    border: solid 1.3px #fff;
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+    padding: 10px;
+    position: relative;
+    top: 7px;
+  }
 }
