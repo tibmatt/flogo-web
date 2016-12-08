@@ -11,7 +11,7 @@
     "start-server": "npm run start-prod-server",
     "start-dev-server": "babel-node server.js",
     "start-prod-server": "node server.js",
-    "dump-db": "mkdir db-init && pouchdb-dump http://0.0.0.0:5984/flogo-web-activities > db-init/installed-activities.init && pouchdb-dump http://0.0.0.0:5984/flogo-web-triggers > db-init/installed-triggers.init   && pouchdb-dump http://0.0.0.0:5984/flogo-web > db-init/installed-flows.init"
+    "dump-db": "mkdir db-init && pouchdb-dump http://0.0.0.0:5984/flogo-web > db-init/installed-flows.init"
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {

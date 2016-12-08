@@ -26,6 +26,10 @@
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/error"
             },
             {
+                "name": "tibco-gpio",
+                "path": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio"
+            },
+            {
                 "name": "tibco-log",
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
             },

@@ -11,17 +11,9 @@ var cors = require('koa-cors');
 import {config, flowsDBService} from './config/app-config';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
-import {syncTasks, installSamples, getInitializedEngine} from './modules/init';
-
-import {isDirectory, createFolder as createDirectory} from './common/utils'
+import {syncTasks, installSamples, getInitializedEngine, ensureDefaultDirs} from './modules/init';
 
 // TODO Need to use cluster to improve the performance
-
-// Where we store the local files
-const LOCAL_DIR = 'local/engines';
-if (!isDirectory(LOCAL_DIR)) {
-  createDirectory(LOCAL_DIR)
-}
 
 let app;
 
@@ -34,56 +26,10 @@ let app;
  * 4. configure the server and start listening
  */
 
-
-// if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
-//   startConfig = startConfig
-//     .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
-//     .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
-//     .then(() => flowsDBService.verifyInitialDataLoad(path.resolve('db-init/installed-flows.init')))
-//     .then(() => loadTasksToEngines());
-// } else {
-//   startConfig = startConfig
-//                 .then(syncTasks);
-//
-//   if ( process.env['FLOGO_INSTALL_SAMPLES'] ) {
-//     startConfig = startConfig.then(installSamples);
-//   }
-//
-// }
-//
-// startConfig
-//   .then( ()=> {
-//     return getInitialisedTestEngine();
-//   } )
-//   .then( ( testEngine ) => {
-//     console.log('############ TEST ENGINE ####################');
-//     console.log('~~~ ACTIVITIES ~~~');
-//     console.log(testEngine.installedActivites);
-//     console.log('~~~ Triggers ~~~');
-//     console.log(testEngine.installedTriggers);
-//     return testEngine.build()
-//       .then( ()=> {
-//         console.log( '[log] build test engine done.' );
-//         return testEngine.start();
-//       } );
-//   } )
-//   .then( ()=> {
-//     console.log( '[log] start test engine done' );
-//     return getInitialisedBuildEngine();
-//   } )
-//   .then( ( buildEngine )=> {
-//     console.log('############ BUILD ENGINE ####################');
-//     console.log('~~~ ACTIVITIES ~~~');
-//     console.log(buildEngine.installedActivites);
-//     console.log('~~~ Triggers ~~~');
-//     console.log(buildEngine.installedTriggers);
-//     console.log( `[log] start web server...` );
-//     return initServer();
-//   } )
-
-getInitializedEngine(config.defaultEngine.path, {
-  forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
-})
+ensureDefaultDirs()
+  .then(() => getInitializedEngine(config.defaultEngine.path, {
+      forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
+  }))
   .then(engine => {
     return engine.build()
       .then(() => engine.stop())

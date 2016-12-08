@@ -9,18 +9,23 @@ import {CONFIG} from '../../config';
 const DEFAULT_PALETTE_FILENAME = 'default-palette.json';
 const MEDIA_TYPE_RAW = 'application/vnd.github.v3.raw+json';
 const REPO = 'TIBCOSoftware/flogo-contrib';
-const GITHUB_TOKEN = process.env['FLOGO_GITHUB_TOKEN'];
+const GITHUB_TOKEN = process.env['FLOGO_WEB_GITHUB_TOKEN'] || process.env['GITHUB_USER_TOKEN'] || process.env['GITHUB_TOKEN'];
+const target = process.env.DIST_BUILD ? CONFIG.paths.dist.server : CONFIG.paths.source.server;
 
 /**
  *
  */
 gulp.task('palette.build', 'Build default palette', [], cb => {
 
+  if (!GITHUB_TOKEN) {
+    throw new Error('GITHUB TOKEN not found');
+  }
+
   Promise.all([
     getAll('activity'),
     getAll('trigger')
   ])
-    .then(all => makePalette.apply(null, all))
+    .then(([activities, triggers]) => makePalette(activities, triggers))
     .then(result => writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), result))
     .then(() => cb())
     .catch(err => {

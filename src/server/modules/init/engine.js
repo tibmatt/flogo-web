@@ -1,10 +1,18 @@
+import path from 'path';
+
 import {Engine} from '../engine/engine';
 import {engineLogger} from '../../common/logger';
 import {config} from '../../config/app-config';
-import path from 'path';
 
 let engineRegistry = {};
 
+/**
+ * Gets initialized engine
+ * @param enginePath {string} name/path of the engine
+ * @param opts {object}
+ * @param opts.forceCreate {boolean} default false
+ * @returns {*}
+ */
 export function getInitializedEngine(enginePath, opts) {
   if (engineRegistry[enginePath]) {
     return Promise.resolve(engineRegistry[enginePath]);

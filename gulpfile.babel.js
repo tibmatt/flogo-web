@@ -63,6 +63,7 @@ gulp.task('dev', 'Build and start in development mode', cb => {
 gulp.task('release', '', cb => {
   runSequence(
     'prod.build',
+    'palette.build',
     'dist.support-files',
     'dist.build-engines',
     cb);
