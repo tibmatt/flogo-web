@@ -107,8 +107,16 @@ System.config({
 Promise.all([
   System.import('@angular/core/testing'),
   System.import('@angular/platform-browser-dynamic/testing')
-  /*System.import('angular2/platform-browser-dynamic/testing')*/
-]).then(function (modules) {
+])
+  .then(function (providers) {
+    var testing = providers[0];
+    var testingBrowser = providers[1];
+
+    testing.setBaseTestProviders(testingBrowser.TEST_BROWSER_DYNAMIC_PLATFORM_PROVIDERS,
+      testingBrowser.TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS);
+  })
+/*.then(function (modules) {
+  console.log(modules);
   var browser_adapter = modules[0];
   var providers = modules[1];
   var testing = modules[2];
@@ -116,7 +124,8 @@ Promise.all([
     providers.TEST_BROWSER_APPLICATION_PROVIDERS);
 
   browser_adapter.BrowserDomAdapter.makeCurrent();
-}).then(function () {
+})*/
+.then(function () {
     return Promise.all(
       Object.keys(window.__karma__.files) // All files served by Karma.
         .filter(onlySpecFiles)

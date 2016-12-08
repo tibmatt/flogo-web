@@ -6,20 +6,31 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
     // files needed by angular js plus application and test files
     files: [
-      {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
+      //Polyfills
       'node_modules/es6-shim/es6-shim.js',
-      'node_modules/zone.js/dist/zone.js',
-      'node_modules/zone.js/dist/long-stack-trace-zone.js',
-      'node_modules/zone.js/dist/jasmine-patch.js',
-      'node_modules/systemjs/dist/system.src.js',
-      'node_modules/systemjs/dist/system-polyfills.js',
-      {pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false, served: true},
       'node_modules/reflect-metadata/Reflect.js',
+      // System.js
+      'node_modules/systemjs/dist/system-polyfills.js',
+      'node_modules/systemjs/dist/system.src.js',
+      // zone.js dependencies
+                  //'node_modules/zone.js/dist/long-stack-trace-zone.js',
+      'node_modules/zone.js/dist/zone.js',
+      'node_modules/zone.js/dist/jasmine-patch.js',
+      'node_modules/zone.js/dist/async-test.js',
+      'node_modules/zone.js/dist/fake-async-test.js',
+      // rxjs dependencies
+      {pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false /*, served: true*/},
+      {pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false /*, served: true*/},
+      // helper
+      {pattern:'test-main.js', included: true, watched: true},
+      // angular dependencies
+      {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
+      {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
+      // our application
       {pattern: 'app/**/*.js', included: false, watched: true},
       {pattern: 'app/**/*.spec.js', included: false, watched: true},
       {pattern: 'app/**/*.ts', included: false, watched: false},
       {pattern: 'app/**/*.js.map', included: false, watched: false},
-      'test-main.js'
     ],
     // exclude angular 2 test files
     exclude: [
