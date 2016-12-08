@@ -20,7 +20,7 @@
         </div>
     </modal-body>
     <modal-footer>
-        <button type="button" class="flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }} </button>
-        <button type="button" class="flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name&&!flowNameExists}" (click)="flowInfo.name&&sendAddFlowMsg()">{{ 'ADD:SAVE' | translate }} </button>
+        <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }} </button>
+        <button type="button" class="flogo-button--default flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name&&!flowNameExists}" (click)="flowInfo.name&&sendAddFlowMsg()">{{ 'ADD:CREATE' | translate }} </button>
     </modal-footer>
 </modal>
