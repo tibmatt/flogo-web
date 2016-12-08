@@ -1,5 +1,6 @@
-@color-error: #ff6f6f;
-@color-error--selected: #801515;
+@import "_variables";
+@color-error: @color-danger;
+@color-error--selected: #a23746;
 
 @font-face{
   font-family: SourceSansPro-Regular;
@@ -104,13 +105,13 @@
     border: none;
     &[data-flogo-node-type="node_root"], &[data-flogo-node-type="node"] {
       .flogo-flows-detail-diagram-node-detail {
-        background: #4e7ead;
-        color: #fff;
+        background: @color-tile-selected;
+        color: white;
         //border: solid 1px #70abcc;
       }
     }
     &:before{
-      background: #4e7ead;
+      background: @color-tile-selected;
     }
     &[data-flogo-node-type="node_root_error_new"] {
       &:before,
@@ -191,7 +192,6 @@
 
     left: 103px;
     background-color: #79b8dc;
-    border: 1px solid #79b8dc;
     width: 162px;
     transition-delay: 200ms;
 
@@ -229,7 +229,7 @@
     background: #FFF;
     box-shadow: 1px -2px 1px 0 rgba(0, 0, 0, 0.1);
     transform: rotate(62.8deg) skewX(35deg);
-    transition: all 250ms linear;
+
 
     [data-flogo-node-type="node_add"]&,
     [data-flogo-node-type="node_root_new"]& {
@@ -309,7 +309,7 @@
     cursor: pointer;
   }
 
-  &[data-flogo-node-type="node_root"], &[data-flogo-node-type="node"] {
+  &[data-flogo-node-type="node"] {
     .flogo-flows-detail-diagram-node-detail{
       background: linear-gradient(to right, #eee, #fff, #fff), #fff;
     }
@@ -327,7 +327,7 @@
     width: 100%;
     height: 100%;
     padding: 0 5px;
-    transition: all 250ms linear;
+
     cursor: pointer;
 
     .flogo-flows-detail-diagram-node-detail-icon {
@@ -342,6 +342,7 @@
     .flogo-flows-detail-diagram-node-detail  {
       background: @color-error;
       cursor: default;
+      color: #fff;
     }
   }
 
@@ -392,7 +393,8 @@
     padding: 0;
     height: 100%;
     width: 98px;
-    //border: 1px solid #79b8dc;
+    border-top: solid 1px #E0E0E0;
+
     background: #fff;
     //box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.5);
     transition: all 250ms linear;

@@ -50,8 +50,19 @@
 }
 .flogo-common-edit-panel__head.flogo-common-edit-panel__head-branch{
   background: #8a90ae;
+  height: 64.1px;
+  color: #fff;
+  .flogo-common-edit-panel__head-wrapper{
+    justify-content: center;
+  }
 }
 .flogo-common-edit-panel__head-wrapper{
+  height: inherit;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  justify-content: space-around;
+
   .trigger, .task, .branch{
     &:before{
       float: left;
@@ -59,43 +70,43 @@
       content: "";
     }
   }
+
   .trigger{
-    padding-top: 21px;
-    padding-bottom: 6px;
     &:before{
-      background: url("/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg") no-repeat left bottom/46px 46px;
-      width: 46px;
-      height: 54px;
-    }
-    .flogo-common-edit-panel__head-read-detail:before{
-      background: url("/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg") no-repeat center/46px
+      background: url("/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg") no-repeat left bottom/40px 40px;
+      width: 40px;
+      height: 40px;
+      position: relative;
+      top: 5px;
     }
   }
+
   .task{
-    padding-top: 21px;
-    padding-bottom: 6px;
     &:before{
       background: url("/assets/svg/flogo.icon.gears.circle.svg") no-repeat left bottom/40px 40px;
       width: 40px;
       height: 50px;
-    }
-    .flogo-common-edit-panel__head-read-detail:before{
-      background: url("/assets/svg/flogo.icon.gears.circle.svg") no-repeat center/46px 46px;
+      bottom: 4px;
+      position: relative;
     }
   }
+
   .branch{
-    padding-top: 33px;
-    &:before{
-      background: #fff url("/assets/svg/flogo.flows.detail.add.cross.gray.icon.svg") no-repeat center/50%;
-      width: 40px;
-      height: 40px;
+    .flogo-icon-add{
+      border: solid 1.3px white;
       border-radius: 50%;
+      float: left;
+      margin-right: 7px;
+      padding: 10px;
+      position: relative;
+      top: 5px;
     }
     &.change{
       padding-top: 30px;
       padding-bottom: 10px;
     }
   }
+
   .flogo-common-edit-panel__head-title,
   .flogo-common-edit-panel__head-subtitle{
     margin-right: 20px;
@@ -103,82 +114,33 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
   .flogo-common-edit-panel__head-titles{
     margin-left: 60px;
   }
+
   .flogo-common-edit-panel__head-subtitle{
     margin-top: -3px;
-    font-size: 15px;
+    font-size: 14px;
     letter-spacing: 0.3px;
   }
+
   button{
-    width: 140px;
-    height: 45px;
-    color: #fff;
-    margin-top: 14px;
-    margin-bottom: 14px;
+    width: 48%;
+    height: 40px;
     outline: none;
     &.disabled{
       cursor: not-allowed;
     }
   }
-  .flogo-form-builder-buttons-primary-call{
-    background: #fe883b;
-    border: 1px solid #fff;
-    &:hover{
-      border-radius: 4px;
-    }
-    &:active{
-      border-radius: 4px;
-      background: #fff;
-      color: #fe883b;
-    }
-    &.disabled{
-      background: #ffc49d;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-    }
-    &.center{
-      display: block;
-      margin: 14px auto;
-    }
-  }
+
   .left{
     float: left;
   }
   .right{
     float: right;
   }
-  .flogo-form-builder-buttons-primary{
-    background: #138ace;
-    border: 1px solid #fff;
-    &:hover{
-      border-radius: 4px;
-    }
-    &:active{
-      border-radius: 4px;
-      background: #fff;
-      color: #138ace;
-    }
-    &.disabled{
-      opacity: 0.4;
-    }
-  }
-  .flogo-form-builder-buttons-secondary{
-    background: transparent;
-    border: 1px solid #fff;
-    &:hover{
-      border-radius: 4px;
-    }
-    &:active{
-      border-radius: 4px;
-      background: #fff;
-      color: #79b8dc;
-    }
-    &.disabled{
-      background-color: rgba(255, 255, 255, 0.4);
-      border: solid 1px rgba(255, 255, 255, 0.5);
-    }
-  }
+
   .flogo-common-edit-panel__head-read{
     position: absolute;
     top: 25px;
@@ -201,9 +163,14 @@
     display: block;
     height: 100%;
     width: 100%;
-    background: url("/assets/svg/flogo.form-builder.info.icon.svg") no-repeat;
+    position: relative;
+    bottom: 10px;
+    &:hover{
+      text-decoration: none;
+    }
   }
-  .flogo-common-edit-panel__head-read-detail-wrapper{
+
+  .flogo-common-edit-panel__head-read-detail-wrapper {
     position: absolute;
     top: 0;
     right: 27px;
@@ -212,26 +179,20 @@
     overflow: hidden;
     opacity: 0;
     transition: all 300ms linear 200ms;
-  }
-  .flogo-common-edit-panel__head-read-detail{
-    padding: 0 20px 20px;
-    width: 100%;
-    border-radius: 2px;
-    background: #fff;
     box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
-    border: solid 1px #727272;
-    color: #666;
-    transform: translate(100%, -100%);
-    transition: all 300ms linear 200ms;
-    &:before{
-      content: '';
-      float: left;
-      width: 46px;
-      height: 46px;
-      margin-top: 20px;
-      background-size: 46px;
+
+    .flogo-common-edit-panel__head-read-detail {
+      padding: 0 20px 20px;
+      width: 100%;
+      border-radius: 2px;
+      background: #fff;
+      border: solid 1px #d8d8d8;
+      color: #666;
+      transform: translate(100%, -100%);
+      transition: all 300ms linear 200ms;
     }
   }
+
   .flogo-common-edit-panel__head-read-detail-close{
     position: absolute;
     top: 10px;
@@ -243,7 +204,6 @@
     }
   }
   .flogo-common-edit-panel__head-read-titles{
-    padding-left: 71px;
     .flogo-common-edit-panel__head-read-title,
     .flogo-common-edit-panel__head-read-creator{
       overflow: hidden;
