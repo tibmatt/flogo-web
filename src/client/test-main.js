@@ -9,24 +9,44 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 __karma__.loaded = function () {
 };
 
+function isJsFile(path) {
+  return path.slice(-3) == '.js';
+}
+
+function isSpecFile(path) {
+  return path.slice(-8) == '.spec.js';
+}
+
+function isBuiltFile(path) {
+  var builtPath = '/base/app';
+  let is = isJsFile(path) && (path.substr(0, builtPath.length) == builtPath);
+  console.log(path+ '-' + is);
+  return is;
+}
+
+var allSpecFiles = Object.keys(window.__karma__.files)
+  .filter(isSpecFile)
+  .filter(isBuiltFile);
+
+
 System.config({
   baseURL: '/base/'
 });
 
-//bagin change
-//baseURL: '/base/',
 System.config({
 
   map: {
+    /*'test': 'test',*/
     'rxjs': 'node_modules/rxjs',
     '@angular': 'node_modules/@angular',
-    'app': 'dist'
+    'app': 'app'
   },
   packages: {
-    'app': {
+    /*
+    'test': {
       main: 'main.js',
       defaultExtension: 'js'
-    },
+    },*/
     '@angular/core': {
       main: 'index.js',
       defaultExtension: 'js'
@@ -72,28 +92,6 @@ System.config({
     }
   },
 
-  /*
-  baseURL: '/base/',
-  defaultJSExtensions: true,
-  paths: {
-    'npm:': 'node_modules/',
-    //'angular2/*': 'node_modules/@angular/*.js',
-    'rxjs/*': 'node_modules/rxjs/*.js'
-  },
-  map: {
-    '@angular/core': 'npm:@angular/core/core.umd.js',
-    '@angular/common': 'npm:@angular/common/common.umd.js',
-    '@angular/compiler': 'npm:@angular/compiler/compiler.umd.js',
-    '@angular/platform-browser': 'npm:@angular/platform-browser/platform-browser.umd.js',
-    '@angular/platform-browser-dynamic': 'npm:@angular/platform-browser-dynamic/platform-browser-dynamic.umd.js',
-    // angular testing umd bundles
-    '@angular/core/testing': 'npm:@angular/core/bundles/core-testing.umd.js',
-    '@angular/common/testing': 'npm:@angular/common/bundles/common-testing.umd.js',
-    '@angular/compiler/testing': 'npm:@angular/compiler/bundles/compiler-testing.umd.js',
-    '@angular/platform-browser/testing': 'npm:@angular/platform-browser/bundles/platform-browser-testing.umd.js',
-    '@angular/platform-browser-dynamic/testing': 'npm:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic-testing.umd.js',
-  },
-  */
   // a bug with karma-coverage and system.js
   meta: {
     'app/*': {
@@ -103,10 +101,9 @@ System.config({
 
 });
 
-//System.import('angular2/src/platform/browser/browser_adapter'),
 Promise.all([
-  System.import('@angular/core/testing'),
-  System.import('@angular/platform-browser-dynamic/testing')
+ System.import('@angular/core/testing'),
+ System.import('@angular/platform-browser-dynamic/testing')
 ])
   .then(function (providers) {
     var testing = providers[0];
@@ -115,18 +112,19 @@ Promise.all([
     testing.setBaseTestProviders(testingBrowser.TEST_BROWSER_DYNAMIC_PLATFORM_PROVIDERS,
       testingBrowser.TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS);
   })
-/*.then(function (modules) {
-  console.log(modules);
-  var browser_adapter = modules[0];
-  var providers = modules[1];
-  var testing = modules[2];
-  testing.setBaseTestProviders(providers.TEST_BROWSER_PLATFORM_PROVIDERS,
-    providers.TEST_BROWSER_APPLICATION_PROVIDERS);
+  .then(function () {
+    // Finally, load all spec files.
+    // This will run the tests directly.
+    return Promise.all(
+      allSpecFiles.map(function (moduleName) {
+        return System.import(moduleName);
+      }));
+  }).then(__karma__.start, __karma__.error);
 
-  browser_adapter.BrowserDomAdapter.makeCurrent();
-})*/
+/*
 .then(function () {
     return Promise.all(
+
       Object.keys(window.__karma__.files) // All files served by Karma.
         .filter(onlySpecFiles)
         .map(file2moduleName)
@@ -139,6 +137,8 @@ Promise.all([
             }
           });
         }));
+
+
   })
   .then(function () {
     __karma__.start();
@@ -161,3 +161,4 @@ function file2moduleName(filePath) {
     .replace(/\/lib\//, '/')
     .replace(/\.\w*$/, '');
 }
+*/

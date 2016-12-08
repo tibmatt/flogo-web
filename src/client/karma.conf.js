@@ -2,7 +2,7 @@
 
 module.exports = function (config) {
   config.set({
-    basePath: './',
+    basePath: '',
     frameworks: ['jasmine'],
     // files needed by angular js plus application and test files
     files: [
@@ -27,29 +27,25 @@ module.exports = function (config) {
       {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
       {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
       // our application
+      {pattern: 'main.js', included: false, watched: true},
       {pattern: 'app/**/*.js', included: false, watched: true},
-      {pattern: 'app/**/*.spec.js', included: false, watched: true},
-      {pattern: 'app/**/*.ts', included: false, watched: false},
-      {pattern: 'app/**/*.js.map', included: false, watched: false},
+                 //{pattern: 'app/**/*.js.map', included: false, watched: false},
+      // paths loaded via Angular's component compiler
+      // (these paths need to be rewritten, see proxies section)
+      {pattern: 'app/**/*.html', included: false, watched: true},
+      {pattern: 'app/**/*.css', included: false, watched: true}
     ],
     // exclude angular 2 test files
     exclude: [
       'node_modules/@angular/**/*_spec.js'
     ],
+    // proxied base paths
+    /*proxies: {
+      // required for component assests fetched by Angular's compiler
+      "/app/": "/base/app/"
+    },*/
     // enable coverage module
-    reporters: ['progress', 'coverage'],
-    // remove test files from coverage and add javascript files to source map module
-    preprocessors: {
-      'app/**/!(*.spec).js': ['coverage'],
-      'app/**/*.js': ['sourcemap']
-    },
-    // generate coverage report in json format
-    coverageReporter: {
-      dir: 'report/',
-      reporters: [
-        {type: 'json', subdir: 'coverage'}
-      ]
-    },
+    reporters: ['spec'],
     port: 9876,
     colors: true,
     autoWatch: false,
