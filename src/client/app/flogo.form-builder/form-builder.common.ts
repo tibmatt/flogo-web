@@ -20,7 +20,6 @@ export class FlogoFormBuilderCommon {
   }
 
   _getArray(obj:any) {
-
     if(!Array.isArray(obj)) {
       return [];
     }
@@ -35,7 +34,9 @@ export class FlogoFormBuilderCommon {
         return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
 
       case 'number':
+      case 'integer':
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
+      case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
         return FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER;
 
       case 'boolean':
@@ -69,6 +70,7 @@ export class FlogoFormBuilderCommon {
         break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
+      case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
         control = 'FieldNumber';
         break;
 
