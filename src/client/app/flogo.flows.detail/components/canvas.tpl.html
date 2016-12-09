@@ -45,12 +45,14 @@
 
     </section>
 
-    <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
-                               [id]="'root'"
-                               data-flogo-diagram-id="root">
-    </flogo-canvas-flow-diagram>
+    <div class="flogo-flow-container">
+      <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
+                                 [id]="'root'"
+                                 data-flogo-diagram-id="root">
+      </flogo-canvas-flow-diagram>
 
-    <flogo-footer class="footer-wrapper"></flogo-footer>
+      <flogo-footer class="footer-wrapper"></flogo-footer>
+    </div>
 
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>

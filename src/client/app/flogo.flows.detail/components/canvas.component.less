@@ -1,3 +1,4 @@
+@import "_variables";
 :host {
   display: flex;
   align-items: stretch;
@@ -26,6 +27,13 @@
 
   -webkit-transition: width .5s; /* Safari */
   transition: width .5s;
+}
+
+.flogo-flow-container {
+  height: @size-height-right-container;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .canvas-flow-minimized {
