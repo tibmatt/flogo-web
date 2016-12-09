@@ -22,7 +22,7 @@ module.exports = function (config) {
       {pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false /*, served: true*/},
       {pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false /*, served: true*/},
       // helper
-      {pattern:'test-main.js', included: true, watched: true},
+      {pattern:'karma.helper.js', included: true, watched: true},
       // angular dependencies
       {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
       {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},

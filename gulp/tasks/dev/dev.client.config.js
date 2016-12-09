@@ -7,6 +7,6 @@ import {CONFIG} from '../../config';
  */
 gulp.task('dev.client.config', 'Copies config files to client dist folder', () => {
   let base = CONFIG.paths.source.client;
-  return gulp.src(['dev.env.js', 'systemjs.config.js', 'package.json'], {cwd: base, base: base})
+  return gulp.src(['dev.env.js', 'systemjs.config.js', 'karma.conf.js', 'karma.helper.js', 'package.json'], {cwd: base, base: base})
     .pipe(gulp.dest(CONFIG.paths.dist.public));
 });

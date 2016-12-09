@@ -19,9 +19,7 @@ function isSpecFile(path) {
 
 function isBuiltFile(path) {
   var builtPath = '/base/app';
-  let is = isJsFile(path) && (path.substr(0, builtPath.length) == builtPath);
-  console.log(path+ '-' + is);
-  return is;
+  return isJsFile(path) && (path.substr(0, builtPath.length) == builtPath);
 }
 
 var allSpecFiles = Object.keys(window.__karma__.files)
@@ -36,17 +34,11 @@ System.config({
 System.config({
 
   map: {
-    /*'test': 'test',*/
     'rxjs': 'node_modules/rxjs',
     '@angular': 'node_modules/@angular',
     'app': 'app'
   },
   packages: {
-    /*
-    'test': {
-      main: 'main.js',
-      defaultExtension: 'js'
-    },*/
     '@angular/core': {
       main: 'index.js',
       defaultExtension: 'js'
@@ -113,44 +105,3 @@ Promise.all([
       }));
   }).then(__karma__.start, __karma__.error);
 
-/*
-.then(function () {
-    return Promise.all(
-
-      Object.keys(window.__karma__.files) // All files served by Karma.
-        .filter(onlySpecFiles)
-        .map(file2moduleName)
-        .map(function (path) {
-          return System.import(path).then(function (module) {
-            if (module.hasOwnProperty('main')) {
-              module.main();
-            } else {
-              throw new Error('Module ' + path + ' does not implement main() method.');
-            }
-          });
-        }));
-
-
-  })
-  .then(function () {
-    __karma__.start();
-  }, function (error) {
-    console.error(error.stack || error);
-    __karma__.start();
-  });
-
-// filter test files
-function onlySpecFiles(path) {
-  return /spec\.js$/.test(path);
-}
-
-// Normalize paths to module names.
-function file2moduleName(filePath) {
-  return filePath.replace(/\\/g, '/')
-    .replace(/.*\/modules\//, '')
-    .replace(/.*\/dist\/js\/dev\/es5\//, '')
-    .replace(/\/web\//, '/')
-    .replace(/\/lib\//, '/')
-    .replace(/\.\w*$/, '');
-}
-*/
