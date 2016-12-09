@@ -6,7 +6,8 @@
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "test": "karma start karma.conf.js"
   },
   "author": "Shaoke Xu<shaoxu@tibco.com>",
   "devDependencies": {

@@ -54,6 +54,6 @@ module.exports = function (config) {
       'Chrome'
     ],
     logLevel: config.LOG_INFO,
-    singleRun: true
+    singleRun: false
   });
 };
