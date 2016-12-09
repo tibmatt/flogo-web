@@ -1,7 +1,7 @@
 import {config, activitiesDBService} from '../../config/app-config';
 import { TYPE_ACTIVITY, DEFAULT_PATH_ACTIVITY } from '../../common/constants';
 import { inspectObj } from '../../common/utils';
-import { getInitializedEngine } from '../../modules/init';
+import { getInitializedEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import path from 'path';
 

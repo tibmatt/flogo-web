@@ -16,7 +16,7 @@ import {
   constructGitHubPath,
   runShellCMD
 } from '../../common/utils';
-import {getInitializedEngine} from "../init/engine";
+import {getInitializedEngine} from "../engine/registry";
 import {syncTasks} from "../init/sync-tasks";
 
 // TODO
@@ -172,7 +172,7 @@ function installFromGitHub( opts ) {
       if(engine[`has${typeName}`](url)) {
         initPromise = engine[`delete${typeName}`](url);
       }
-      return initPromise.then(() => engine[`add${typeName}`](url));
+      return initPromise.then(() => engine[`add${typeName}`](url, {version: 'latest'}));
 
     };
   }

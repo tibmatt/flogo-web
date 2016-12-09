@@ -3,7 +3,7 @@ import { TYPE_TRIGGER, DEFAULT_PATH_TRIGGER } from '../../common/constants';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import { inspectObj } from '../../common/utils';
 import path from 'path';
-import { getInitializedEngine } from '../../modules/init';
+import { getInitializedEngine } from '../../modules/engine';
 
 let basePath = config.app.basePath;
 

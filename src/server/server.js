@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 var fs = require('fs');
+var path = require('path');
 
 import koa from 'koa';
 import koaStatic from 'koa-static';
@@ -41,11 +42,9 @@ ensureDefaultDirs()
   .then((server) => {
     initWebsocketApi(server);
   })
-  .then(() => process.env['FLOGO_WEB_INSTALL_SAMPLES'] ?
-      flowsDBService
+  .then(() => flowsDBService
         .verifyInitialDataLoad(path.resolve('db-init/installed-flows.init'))
-        .then(() => installSamples())
-      : null
+        .then(() => process.env['FLOGO_WEB_INSTALL_SAMPLES'] ? installSamples() : null)
   )
   .then(() => {
     console.log('flogo-web::server::ready');

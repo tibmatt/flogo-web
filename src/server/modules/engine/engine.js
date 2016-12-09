@@ -1,7 +1,7 @@
 const path = require('path');
 
-import {config} from '../../../config/app-config';
-import {createFolder as ensureDir} from '../../../common/utils/file';
+import {config} from '../../config/app-config';
+import {createFolder as ensureDir} from '../../common/utils/file';
 
 import {removeDir} from './file-utils';
 
@@ -20,12 +20,13 @@ const TYPE_BUILD = 'build';
 
 class Engine {
 
-  constructor(path, runLogger) {
+  constructor(path, libVersion, runLogger) {
     this.path = path;
     this.tasks = {
       activities: [],
       triggers: []
     };
+    this.libVersion = libVersion;
     this.runLogger = runLogger;
   }
 
@@ -36,6 +37,7 @@ class Engine {
 
   create() {
     // todo: add support for lib version
+    let options = { libVersion: this.libVersion };
     return commander
       .create(this.path)
       .then(() => Promise.all(
@@ -193,6 +195,7 @@ class Engine {
    * @param options.noReload {boolean} Skip engine data reload
    */
   installPalette(palettePath, options) {
+    options = Object.assign({ version: this.libVersion }, options);
     return this._installItem('palette', palettePath, options);
   }
 
@@ -248,7 +251,8 @@ class Engine {
   }
 
   _installItem(itemType, path, options) {
-    let promise = commander.add[itemType](this.path, path);
+    options = Object.assign({ version: this.libVersion }, options);
+    let promise = commander.add[itemType](this.path, path, options);
     let shouldReload = !(options && options.noReload);
     if (shouldReload) {
       promise = promise.then(() => this.load());

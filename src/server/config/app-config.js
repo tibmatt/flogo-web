@@ -24,7 +24,7 @@ let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
   publicPath: publicPath,
-  libVersion: process.env.FLOGO_LIB_VERSION,
+  libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
   app: {
     basePath: '/v1/api',
     port: appPort,
@@ -297,6 +297,7 @@ export function resetConfiguration() {
 export function loadSamplesConfig() {
   let samples = [];
   try {
+    //TODO: replace for async version
     samples = JSON.parse(fs.readFileSync(path.join(__dirname, 'samples.json'), 'utf8'));
   } catch(e) {
     // nothing to do

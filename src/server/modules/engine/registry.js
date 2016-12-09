@@ -1,6 +1,6 @@
 import path from 'path';
 
-import {Engine} from '../engine/engine';
+import {Engine} from './engine';
 import {engineLogger} from '../../common/logger';
 import {config} from '../../config/app-config';
 
@@ -18,7 +18,7 @@ export function getInitializedEngine(enginePath, opts) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
 
-  let engine = new Engine(enginePath, engineLogger);
+  let engine = new Engine(enginePath, opts.libVersion||config.libVersion, engineLogger);
   engineRegistry[enginePath] = engine;
 
   return initEngine(engine, opts)

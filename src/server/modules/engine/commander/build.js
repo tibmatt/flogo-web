@@ -1,4 +1,4 @@
-import {runShellCMD, copyFile, changePermissions, findMostRecentFile} from '../../../../common/utils';
+import {runShellCMD, copyFile, changePermissions, findMostRecentFile} from '../../../common/utils';
 var path = require('path');
 
 /**

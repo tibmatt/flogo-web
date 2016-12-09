@@ -1,4 +1,4 @@
-import {fileExists, rmFolder} from '../../../common/utils/file';
+import {fileExists, rmFolder} from '../../common/utils/file';
 
 export function removeDir(dirpath) {
   if(fileExists(dirpath)) {

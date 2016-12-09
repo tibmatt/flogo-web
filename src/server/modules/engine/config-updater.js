@@ -3,7 +3,7 @@ import path from 'path';
 import merge from 'lodash/merge';
 import find from 'lodash/find';
 
-import {readJSONFile, writeJSONFile} from '../../../common/utils';
+import {readJSONFile, writeJSONFile} from '../../common/utils';
 
 const defaultOptions = {
   overwrite: false,

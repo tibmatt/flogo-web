@@ -1,5 +1,5 @@
 import {config} from '../../config/app-config';
-import { getInitializedEngine } from '../../modules/init';
+import { getInitializedEngine } from '../../modules/engine';
 
 let basePath = config.app.basePath;
 

@@ -1,8 +1,8 @@
 import {config, dbService} from '../../config/app-config';
-import {getInitializedEngine} from '../../modules/init/engine';
+import {getInitializedEngine} from '../../modules/engine/registry';
 import {flogoFlowToJSON} from '../../common/flow.model';
 import {flogoIDDecode} from '../../common/utils';
-import Engine from '../../modules/engine/engine';
+import {Engine} from '../../modules/engine';
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';

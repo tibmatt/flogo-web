@@ -1,5 +1,7 @@
 import fs from 'fs';
 
+import {fileExists} from './utils/file';
+
 import _ from 'lodash';
 import Pouchdb from 'pouchdb';
 import pouchDbLoad from 'pouchdb-load';
@@ -246,6 +248,11 @@ export class DBService{
    * @param dumpPath path to dump file
    */
   verifyInitialDataLoad(dumpPath) {
+
+    if(!fileExists(dumpPath)) {
+      console.warn(`[warn] Did not try to load dump to db, path "${dumpPath}" does not exist`);
+      return Promise.resolve(false);
+    }
 
     let db = this._db;
     return db.get('_local/initial_load_complete')

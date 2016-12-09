@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 
-import {readJSONFile, listFiles} from '../../../common/utils/file';
+import {readJSONFile, listFiles} from '../../common/utils/file';
 
 const TASK_SRC_ROOT = 'vendor/src';
 const DIR_NAME_UI = 'ui';

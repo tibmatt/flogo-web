@@ -1,4 +1,4 @@
-import {runShellCMD} from '../../../../common/utils';
+import {runShellCMD} from '../../../common/utils';
 import {build} from './build';
 
 var path = require('path');
@@ -9,7 +9,7 @@ module.exports = {
     let enginePathInfo = path.parse(enginePath);
 
     let command = ['create'];
-    if(options.libVersion) {
+    if(options.libVersion && options.libVersion != 'latest') {
       command.push('-flv', options.libVersion);
     }
     command.push(enginePathInfo.name);
@@ -47,7 +47,7 @@ module.exports = {
 function _addItem(enginePath, itemType, itemPath, options) {
   options = options || {};
   let commandParams = ['add'];
-  if (options.version) {
+  if (options.version && options.version != 'latest') {
     commandParams.push('-v', options.version);
   }
   commandParams = commandParams.concat([itemType, itemPath]);
