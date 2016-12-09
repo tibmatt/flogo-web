@@ -13,7 +13,7 @@ let engineRegistry = {};
  * @param opts.forceCreate {boolean} default false
  * @returns {*}
  */
-export function getInitializedEngine(enginePath, opts) {
+export function getInitializedEngine(enginePath, opts = {}) {
   if (engineRegistry[enginePath]) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
@@ -21,14 +21,22 @@ export function getInitializedEngine(enginePath, opts) {
   let engine = new Engine(enginePath, opts.libVersion||config.libVersion, engineLogger);
   engineRegistry[enginePath] = engine;
 
+  console.time('EngineInit');
   return initEngine(engine, opts)
     .then(() =>  {
-    engineRegistry[enginePath] = engine;
-    return engine;
-  });
+      engineRegistry[enginePath] = engine;
+      console.timeEnd('EngineInit');
+      return engine;
+    });
 
 }
 
+/**
+ *
+ * @param engine {Engine}
+ * @param options
+ * @returns {*}
+ */
 export function initEngine(engine, options) {
   let forceInit = options && options.forceCreate;
   return engine.exists()

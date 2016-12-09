@@ -38,8 +38,9 @@ class Engine {
   create() {
     // todo: add support for lib version
     let options = { libVersion: this.libVersion };
+    console.time('engine:create');
     return commander
-      .create(this.path)
+      .create(this.path, options)
       .then(() => Promise.all(
         [
           DIR_TEST_BIN,
@@ -47,7 +48,11 @@ class Engine {
         ].map(
           dir => ensureDir(path.resolve(this.path, dir))
         )
-      ));
+      ))
+      .then(result => {
+        console.timeEnd('engine:create');
+        return result;
+      });
   }
 
   remove() {
@@ -251,13 +256,18 @@ class Engine {
   }
 
   _installItem(itemType, path, options) {
+    let label = `engine:install:${itemType}`;
+    console.time(label);
     options = Object.assign({ version: this.libVersion }, options);
     let promise = commander.add[itemType](this.path, path, options);
     let shouldReload = !(options && options.noReload);
     if (shouldReload) {
       promise = promise.then(() => this.load());
     }
-    return promise;
+    return promise.then(result => {
+      console.timeEnd(label);
+      return result;
+    });
   }
 
   _hasItem(where, nameOrPath) {
