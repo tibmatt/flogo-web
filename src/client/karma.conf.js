@@ -12,6 +12,8 @@ module.exports = function (config) {
       // System.js
       'node_modules/systemjs/dist/system-polyfills.js',
       'node_modules/systemjs/dist/system.src.js',
+      // lodash
+      'node_modules/lodash/lodash.js',
       // zone.js dependencies
                   //'node_modules/zone.js/dist/long-stack-trace-zone.js',
       'node_modules/zone.js/dist/zone.js',
@@ -22,28 +24,32 @@ module.exports = function (config) {
       {pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false /*, served: true*/},
       {pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false /*, served: true*/},
       // helper
-      {pattern:'karma.helper.js', included: true, watched: true},
+      //{pattern:'karma.helper.js', included: true, watched: true},
       // angular dependencies
       {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
       {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
       // our application
       {pattern: 'main.js', included: false, watched: true},
-      {pattern: 'app/**/*.js', included: false, watched: true},
-                 //{pattern: 'app/**/*.js.map', included: false, watched: false},
+      {pattern: '*(app|common)/**/**.js', included: false, watched: true},
+      {pattern: '*(app|common)/**/**.js.map', included: false, watched: true},
       // paths loaded via Angular's component compiler
       // (these paths need to be rewritten, see proxies section)
       {pattern: 'app/**/*.html', included: false, watched: true},
-      {pattern: 'app/**/*.css', included: false, watched: true}
+      {pattern: 'app/**/*.css', included: false, watched: true},
+      // helper
+      {pattern:'karma.helper.js', included: true, watched: true}
     ],
     // exclude angular 2 test files
     exclude: [
-      'node_modules/@angular/**/*_spec.js'
+      'node_modules/@angular/**/*_spec.js',
+      'common/services/rest-api-test.spec.js'
     ],
     // proxied base paths
-    /*proxies: {
+    proxies: {
       // required for component assests fetched by Angular's compiler
-      "/app/": "/base/app/"
-    },*/
+      "/app/": "/base/app/",
+      "/common/": "/base/common/"
+    },
     // enable coverage module
     reporters: ['spec'],
     port: 9876,
@@ -54,6 +60,6 @@ module.exports = function (config) {
       'Chrome'
     ],
     logLevel: config.LOG_INFO,
-    singleRun: false
+    singleRun: true
   });
 };

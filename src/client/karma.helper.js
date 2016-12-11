@@ -19,7 +19,12 @@ function isSpecFile(path) {
 
 function isBuiltFile(path) {
   var builtPath = '/base/app';
-  return isJsFile(path) && (path.substr(0, builtPath.length) == builtPath);
+  var commonPath = '/base/common';
+
+  return  isJsFile(path) && (
+          (path.substr(0, builtPath.length) == builtPath) ||
+          (path.substr(0, commonPath.length) == commonPath)
+         );
 }
 
 var allSpecFiles = Object.keys(window.__karma__.files)
@@ -36,10 +41,23 @@ System.config({
   map: {
     'rxjs': 'node_modules/rxjs',
     '@angular': 'node_modules/@angular',
-    'app': 'app'
+    'app': 'app',
+    'common': 'common'
   },
   packages: {
+    'app': {
+      main: 'index.js',
+      defaultExtension: 'js'
+    },
+    'common': {
+      main: 'index.js',
+      defaultExtension: 'js'
+    },
     '@angular/core': {
+      main: 'index.js',
+      defaultExtension: 'js'
+    },
+    '@angular/http': {
       main: 'index.js',
       defaultExtension: 'js'
     },
@@ -82,7 +100,8 @@ System.config({
     'rxjs': {
       defaultExtension: 'js'
     }
-  }
+  },
+  files: ['common/utils.js']
 });
 
 Promise.all([
