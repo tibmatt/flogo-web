@@ -3,7 +3,7 @@ import { provide } from '@angular/core';
 import { parseMapping } from './utils';
 
 
-describe('ParseMapping function', ()=> {
+describe('Function: ParseMapping', ()=> {
 
     describe('Evaluating an activity', () => {
         beforeEach(() => {
@@ -51,7 +51,7 @@ describe('ParseMapping function', ()=> {
             expect(parsedMapping).toBeNull();
         });
 
-        it('On unclosed curly braces', ()=> {
+        it('On unclosed curly braces should return null', ()=> {
             let parsedMapping:any = parseMapping("{A.pathParams");
             expect(parsedMapping).toBeNull();
         });
