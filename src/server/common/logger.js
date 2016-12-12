@@ -20,29 +20,33 @@ function isDebug(line) {
 }
 
 
-logger.register = (stdout, stderr)=> {
+logger.registerDataStream = (stdout, stderr) => {
 
-  stdout.on('data', data => {
-    splitLines(data.toString())
-      .forEach(line => {
-        line = cleanAsciiColors(line);
-        logger.info(line)
-      });
-  });
-
-  stderr.on('data', data => {
-    splitLines(data.toString())
-      .forEach(line => {
-        line = cleanAsciiColors(line);
-        if(isDebug(line)) {
+  if (stdout) {
+    stdout.on('data', data => {
+      splitLines(data.toString())
+        .forEach(line => {
+          line = cleanAsciiColors(line);
           logger.info(line)
-        }else {
-          logger.error(line);
-        }
-      });
-  });
+        });
+    });
+  }
 
-}
+  if (stderr) {
+    stderr.on('data', data => {
+      splitLines(data.toString())
+        .forEach(line => {
+          line = cleanAsciiColors(line);
+          if(isDebug(line)) {
+            logger.info(line)
+          }else {
+            logger.error(line);
+          }
+        });
+    });
+  }
+
+};
 
 
 export const engineLogger = logger;

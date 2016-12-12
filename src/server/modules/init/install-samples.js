@@ -54,7 +54,9 @@ function downloadSamplesAndInstall(samplesVersion) {
   let promises = [];
 
   samples.forEach((sample)=> {
+    console.log(`Samples version ${samplesVersion}`);
     sample.url = sample.url.replace('{version}', samplesVersion);
+    console.log("Will download", sample.url);
 
     let promise = new Promise((resolve, reject) => {
       request({uri: sample.url, method: 'GET', json: true})

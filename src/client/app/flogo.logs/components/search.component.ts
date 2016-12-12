@@ -4,7 +4,8 @@ import {Pipe} from "@angular/core";
     name: "logsSearch"
 })
 export class SearchPipe{
-    transform(value, term:string){
-        return value.filter((item)=> item.message.toLowerCase().indexOf(term.toLowerCase()) !== -1 );
+    transform(value, term:string) {
+      term = term.toLowerCase();
+        return value.filter(item => (item.message||'').toLowerCase().indexOf(term) !== -1 );
     }
 }
