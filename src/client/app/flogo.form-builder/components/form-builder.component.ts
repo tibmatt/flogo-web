@@ -67,49 +67,57 @@ export class FlogoFormBuilderComponent{
   }
 
   _saveActivityChangesToFlow() {
-    var state = {
-      taskId: this._task.id,
-      warnings: []
-    };
+    return new Promise((resolve, reject)=> {
+        var state = {
+          taskId: this._task.id,
+          warnings: []
+        };
 
-    if(this._context.isTask) {
-      state['inputs'] = this._getCurrentTaskState(this._attributes.inputs);
-      state['warnings'] = this.verifyRequiredFields(this._task);
-    }
+        if(this._context.isTask) {
+          state['inputs'] = this._getCurrentTaskState(this._attributes.inputs);
+          state['warnings'] = this.verifyRequiredFields(this._task);
+        }
 
-    if(this._context.isTrigger) {
-      state['endpointSettings'] = this._getCurrentTaskState(this._attributes.endpointSettings || []);
-      state['outputs'] = this._getCurrentTaskState(this._attributes.outputs || []);
-      state['settings'] = this._getCurrentTaskState(this._attributes.settings || []);
-    }
+        if(this._context.isTrigger) {
+          state['endpointSettings'] = this._getCurrentTaskState(this._attributes.endpointSettings || []);
+          state['outputs'] = this._getCurrentTaskState(this._attributes.outputs || []);
+          state['settings'] = this._getCurrentTaskState(this._attributes.settings || []);
+        }
 
 
-    this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
-      data: _.assign({},{id: this._flowId}, state) ,
-      done: ()=> {
-        this._hasChanges  = false;
-      }
-    }));
+        this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
+          data: _.assign({},{id: this._flowId}, state) ,
+          done: ()=> {
+            this._hasChanges  = false;
+            resolve();
+          }
+        }));
+    });
   }
 
   _saveBranchChangesToFlow() {
-    let diagramId = this._flowId;
+    return new Promise((resolve, reject) => {
+        let diagramId = this._flowId;
 
-    let self = this;
-    let branchInfo = this._branchConfigs[ 0 ];
-    let state = {
-      taskId : branchInfo.id,
-      id: diagramId,
-      condition : self.convertBranchConditionToInternal( branchInfo.condition,
-        _.get( self, '_context.contextData.previousTiles', [] ) )
-    };
+        let self = this;
+        let branchInfo = this._branchConfigs[ 0 ];
+        let state = {
+          taskId : branchInfo.id,
+          id: diagramId,
+          condition : self.convertBranchConditionToInternal( branchInfo.condition,
+            _.get( self, '_context.contextData.previousTiles', [] ) )
+        };
 
-    this._postService.publish( _.assign( {}, PUB_EVENTS.taskDetailsChanged, {
-      data : state,
-      done : ()=> {
-        this._hasChanges = false;
-      }
-    } ) );
+        this._postService.publish( _.assign( {}, PUB_EVENTS.taskDetailsChanged, {
+          data : state,
+          done : ()=> {
+            this._hasChanges = false;
+            resolve();
+          }
+        }));
+
+    });
+
   }
 
 
@@ -148,6 +156,8 @@ export class FlogoFormBuilderComponent{
 
       if(param.payload.isTask || param.payload.isTrigger) {
           this._updateAttributeByUserChanges(_.get(this._attributes,param.payload.structure,[]), param.payload);
+          this.saveChanges();
+
       }
     });
 
@@ -157,6 +167,7 @@ export class FlogoFormBuilderComponent{
       } )
       .subscribe( ( param : any ) => {
         this._branchConfigs[ 0 ].condition = param.payload.value;
+        this.saveChanges();
       } );
   }
 
@@ -352,14 +363,15 @@ export class FlogoFormBuilderComponent{
 
   private _saveChangesToFlow() {
     if ( this._context.isTask || this._context.isTrigger) {
-      this._saveActivityChangesToFlow();
+      return this._saveActivityChangesToFlow();
     }  else if ( this._context.isBranch ) {
-      this._saveBranchChangesToFlow();
+      return this._saveBranchChangesToFlow();
     }
   }
 
   saveChanges( event? : any ) {
-    this._saveChangesToFlow();
+    console.log('Saving changes');
+    return this._saveChangesToFlow();
   }
 
   changeTaskDetail(content: any, proper: string) {
