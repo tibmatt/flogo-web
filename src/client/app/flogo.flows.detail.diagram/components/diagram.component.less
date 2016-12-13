@@ -1,5 +1,6 @@
-@color-error: #ff6f6f;
-@color-error--selected: #801515;
+@import "_variables";
+@color-error: @color-danger;
+@color-error--selected: #a23746;
 
 @font-face{
   font-family: SourceSansPro-Regular;
@@ -32,12 +33,10 @@
 :host {
   display: flex;
   width: 100%;
-  flex-grow: 3;
-  overflow: auto;
   background-color: #eeeded;
+  position: relative;
   z-index: 1;
-  //margin-bottom: 50px;
-
+  min-height: ~'calc(100% - 55px)';
 }
 
 .flogo-flows-detail-diagram {
@@ -102,13 +101,15 @@
     box-shadow: 0 5px 14px 0 rgba(0, 0, 0, 0.3);
     z-index: 10;
     border: none;
-    .flogo-flows-detail-diagram-node-detail{
-      background: #79b8dc;
-      color: #fff;
-      //border: solid 1px #70abcc;
+    &[data-flogo-node-type="node_root"], &[data-flogo-node-type="node"] {
+      .flogo-flows-detail-diagram-node-detail {
+        background: @color-tile-selected;
+        color: white;
+        //border: solid 1px #70abcc;
+      }
     }
     &:before{
-      background: #79b8dc;
+      background: @color-tile-selected;
     }
     &[data-flogo-node-type="node_root_error_new"] {
       &:before,
@@ -120,12 +121,8 @@
     &[data-flogo-node-type="node_root_new"] {
       opacity: 1;
 
-      &:before {
-        background: #FE883B;
-      }
-
       .flogo-flows-detail-diagram-node-detail {
-        background-color: #FE883B;
+        background-color: #4e7ead;
         border: none;
 
         &:before {
@@ -155,13 +152,16 @@
   }
   &.flogo-flows-detail-diagram-node-run{
     &:before{
-      background: #def2fd;
-      //background-image: linear-gradient(to right, #def2fd, #def2fd);
+      background: #DEF2FE;
+      border-top: solid 1.6px #8FC5E4;
+      border-right: solid 1.6px #8FC5E4;
     }
-    .flogo-flows-detail-diagram-node-detail {
-      background: #def2fd;
-      //background-image: linear-gradient(to right, #d0e7f4, #def2fd);
-      box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+    &[data-flogo-node-type="node_root"], &[data-flogo-node-type="node"] {
+      .flogo-flows-detail-diagram-node-detail {
+        background: linear-gradient(to right, #d0e7f4, #def2fd, #DEF2FE), #DEF2FE;
+        border: solid 1.6px #8FC5E4;
+        box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+      }
     }
 
   }
@@ -190,7 +190,6 @@
 
     left: 103px;
     background-color: #79b8dc;
-    border: 1px solid #79b8dc;
     width: 162px;
     transition-delay: 200ms;
 
@@ -216,7 +215,7 @@
 
   &:before{
     position: absolute;
-    left: 93px;
+    left: 94px;
     top: 43px;
     z-index: 3;
     content: '';
@@ -227,8 +226,8 @@
     //background: linear-gradient(to top right, transparent, transparent, transparent, #FFF, #FFF, #FFF);
     background: #FFF;
     box-shadow: 1px -2px 1px 0 rgba(0, 0, 0, 0.1);
-    transform: rotate(63deg) skewX(35deg);
-    transition: all 250ms linear;
+    transform: rotate(62.8deg) skewX(35deg);
+
 
     [data-flogo-node-type="node_add"]&,
     [data-flogo-node-type="node_root_new"]& {
@@ -292,6 +291,9 @@
       line-height: 110px;
       color: #b6d9ed;
     }
+    &:hover{
+      box-shadow: 3px 3px 8px 0 rgba(0, 0, 0, 0.3);
+    }
   }
   &[data-flogo-node-type="node_holder"]{
     background-color: rgba(179, 214, 233, 0.9);
@@ -305,7 +307,14 @@
     cursor: pointer;
   }
 
+  &[data-flogo-node-type="node"] {
+    .flogo-flows-detail-diagram-node-detail{
+      background: linear-gradient(to right, #eee, #fff, #fff), #fff;
+    }
+  }
+
   .flogo-flows-detail-diagram-node-detail{
+    background: #fff;
     position: absolute;
     top: 0;
     left: 0;
@@ -313,12 +322,10 @@
     box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.3);
     //border: solid 0.5px #f4f4f4;
     border-radius: 10px;
-    //background-image: linear-gradient(to right, #f4f4f4, #ffffff);
-    background: #fff;
     width: 100%;
     height: 100%;
     padding: 0 5px;
-    transition: all 250ms linear;
+
     cursor: pointer;
 
     .flogo-flows-detail-diagram-node-detail-icon {
@@ -333,6 +340,7 @@
     .flogo-flows-detail-diagram-node-detail  {
       background: @color-error;
       cursor: default;
+      color: #fff;
     }
   }
 
@@ -383,7 +391,9 @@
     padding: 0;
     height: 100%;
     width: 98px;
-    //border: 1px solid #79b8dc;
+    border-top: solid 1.3px @color-secondary;
+    border-bottom: solid 1.3px @color-secondary;
+
     background: #fff;
     //box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.5);
     transition: all 250ms linear;
@@ -467,7 +477,7 @@
 
     .flogo-flows-detail-diagram-node-menu-gear {
       background-position: center center;
-      background-color: rgba(179, 214, 233, 0.9);
+      background-color: @color-secondary;
       opacity: 0;
       transition: opacity 250ms linear;
     }
