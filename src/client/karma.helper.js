@@ -101,7 +101,7 @@ System.config({
       defaultExtension: 'js'
     }
   },
-  files: ['common/utils.js']
+  files: [/*'common/utils.js'*/]
 });
 
 Promise.all([

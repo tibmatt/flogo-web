@@ -1,5 +1,4 @@
 import {Directive, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange} from '@angular/core';
-import {RESTAPIFlowsService} from '../services/restapi/flows-api.service';
 
 @Directive({
     selector: '[myContenteditable]',
@@ -9,7 +8,7 @@ import {RESTAPIFlowsService} from '../services/restapi/flows-api.service';
         '(focus)': 'onFocus()',
         '(blur)': 'onBlur()'
     },
-    providers: [RESTAPIFlowsService]
+    providers: []
 })
 export class Contenteditable implements OnChanges {
     private _el: HTMLElement;
@@ -24,7 +23,7 @@ export class Contenteditable implements OnChanges {
     @Output()
         myContenteditableChange = new EventEmitter();
 
-    constructor(private el: ElementRef, private _flow: RESTAPIFlowsService) {
+    constructor(private el: ElementRef ) {
         this._el = el.nativeElement;
         this.$el = jQuery(this._el);
     }

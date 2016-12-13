@@ -14,6 +14,8 @@ module.exports = function (config) {
       'node_modules/systemjs/dist/system.src.js',
       // lodash
       'node_modules/lodash/lodash.js',
+      // jquery
+      'https://code.jquery.com/jquery-1.11.2.min.js',
       // zone.js dependencies
                   //'node_modules/zone.js/dist/long-stack-trace-zone.js',
       'node_modules/zone.js/dist/zone.js',
