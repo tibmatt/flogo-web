@@ -7,8 +7,6 @@ import {engine} from './engine';
 import {ping} from './ping';
 import {configuration} from './configuration';
 import {flowsRun} from './flows.run';
-import {samples} from './samples';
-import {logs} from './logs';
 
 export function api(app, router) {
   errorHandler(app, router);
@@ -19,7 +17,5 @@ export function api(app, router) {
   engine(app, router);
   ping(app, router);
   flowsRun(app, router);
-  samples(app, router);
-  logs(app, router);
   configuration(app, router);
 }

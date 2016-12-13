@@ -85,7 +85,7 @@ function DB() {
               resolve(dbProcess)
             })
             .catch(e => {
-              console.log(`Db reach attempt ${pingAttempt} failed with response`, e);
+              console.log(`Db reach attempt ${pingAttempt} failed`);
               pingAttempt++;
               if(pingAttempt < MAX_ATTEMPTS) {
                 setTimeout(() => attemptToPingDb(), 5000);
@@ -110,6 +110,7 @@ function DB() {
 function pingDb() {
 
   return new Promise((resolve, reject) => {
+    //todo inject host/port
     http.get('http://127.0.0.1:5984/_all_dbs', response => {
       var body = '';
       response.on('data', function(d) {

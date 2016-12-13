@@ -1,8 +1,9 @@
 import {engineLogger} from '../../common/logger';
+const socketIo = require('socket.io');
 
 // TODO: inject config
 export function init(server) {
-  const io = require('socket.io')(server);
+  const io = socketIo(server);
 
   io.on('connection', (ws)=> {
     console.log('Connecting socket.io .........');
