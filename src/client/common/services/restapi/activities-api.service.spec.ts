@@ -403,7 +403,6 @@ describe('Service: RESTAPIActivitiesService', ()=> {
     ];
 
     beforeEachProviders(() => [
-        /*HTTP_PROVIDERS,*/
         RESTAPIActivitiesService,
         MockBackend,
         BaseRequestOptions,
