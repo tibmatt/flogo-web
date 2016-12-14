@@ -43,9 +43,13 @@ System.config({
     '@angular': 'node_modules/@angular',
     'app': 'app',
     'common': 'common',
-    'ng2-bs3-modal': 'node_modules/ng2-bs3-modal'
+    'ng2-bs3-modal': 'node_modules/ng2-bs3-modal',
+    'ng2-translate': 'node_modules/ng2-translate'
   },
   packages: {
+    'ng2-translate': {
+      defaultExtension: 'js'
+    },
     'ng2-bs3-modal': {
       defaultExtension: 'js'
     },

@@ -30,6 +30,9 @@ module.exports = function (config) {
       { pattern: 'node_modules/ng2-bs3-modal/components/*.js', included: false, watched: false },
       { pattern: 'node_modules/ng2-bs3-modal/directives/*.js', included: false, watched: false },
       { pattern: 'node_modules/ng2-bs3-modal/ng2-bs3-modal.js', included: false, watched: false   },
+      // ng2-translate
+      { pattern: 'node_modules/ng2-translate/ng2-translate.js', included: false, watched: false },
+      { pattern: 'node_modules/ng2-translate/src/*.js', included: false, watched: false },
       // our application
       {pattern: 'main.js', included: false, watched: true},
       {pattern: '*(app|common)/**/**.js', included: false, watched: true},
@@ -53,7 +56,6 @@ module.exports = function (config) {
       "/common/": "/base/common/",
       "/assets/": "/base/assets/"
     },
-    // enable coverage module
     reporters: ['spec'],
     port: 9876,
     colors: true,

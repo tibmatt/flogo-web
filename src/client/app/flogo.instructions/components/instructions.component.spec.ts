@@ -3,6 +3,8 @@ import { FlogoInstructionsComponent } from './instructions.component';
 import { describe, beforeEach, beforeEachProviders, it, inject, expect, injectAsync } from '@angular/core/testing';
 import { TestComponentBuilder } from '@angular/compiler/testing';
 import { By } from '@angular/platform-browser';
+import { TranslateService, TranslateLoader } from 'ng2-translate/ng2-translate';
+import { HTTP_PROVIDERS } from '@angular/http';
 
 
 describe('Component: FlogoInstructions Modal', ()=> {
@@ -10,7 +12,10 @@ describe('Component: FlogoInstructions Modal', ()=> {
 
     //setup
     beforeEachProviders(()=> [
+        HTTP_PROVIDERS,
         TestComponentBuilder,
+        TranslateService,
+        TranslateLoader,
         FlogoInstructionsComponent
     ]);
 
