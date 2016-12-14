@@ -1,6 +1,6 @@
 import { provide } from '@angular/core';
-import { Http, HTTP_PROVIDERS, BaseRequestOptions, Response } from '@angular/http';
-import { describe, beforeEachProviders, it, inject, expect } from '@angular/core/testing';
+import { Http, HTTP_PROVIDERS, BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
+import { describe, beforeEach, beforeEachProviders, it, inject, expect } from '@angular/core/testing';
 import { RESTAPIActivitiesService } from './activities-api.service';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 
@@ -418,7 +418,8 @@ describe('Service: RESTAPIActivitiesService', ()=> {
 
     it('Should transform the 11 activities', (done)=> {
         mockbackend.connections.subscribe(connection => {
-            connection.mockRespond(new Response({body: JSON.stringify(mockActivities)}));
+            let options = new ResponseOptions({body: JSON.stringify(mockActivities)});
+            connection.mockRespond(new Response(options));
         });
 
         service.getActivities()
@@ -430,7 +431,8 @@ describe('Service: RESTAPIActivitiesService', ()=> {
 
     it('Should add the "installed" field to all items', (done)=> {
         mockbackend.connections.subscribe(connection => {
-            connection.mockRespond(new Response({body: JSON.stringify(mockActivities)}));
+            let options = new ResponseOptions({body: JSON.stringify(mockActivities)});
+            connection.mockRespond(new Response(options));
         });
 
         service.getActivities()

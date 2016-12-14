@@ -16,9 +16,6 @@ module.exports = function (config) {
       'node_modules/lodash/lodash.js',
       // jquery
       'https://code.jquery.com/jquery-1.11.2.min.js',
-      // zone.js dependencies
-                  //'node_modules/zone.js/dist/long-stack-trace-zone.js',
-      'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.js',
       'node_modules/zone.js/dist/zone.js',
       'node_modules/zone.js/dist/jasmine-patch.js',
       'node_modules/zone.js/dist/async-test.js',
@@ -26,8 +23,6 @@ module.exports = function (config) {
       // rxjs dependencies
       {pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false /*, served: true*/},
       {pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false /*, served: true*/},
-      // helper
-      //{pattern:'karma.helper.js', included: true, watched: true},
       // angular dependencies
       {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
       {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},

@@ -1,6 +1,6 @@
 import {Component, Output, EventEmitter} from '@angular/core';
 import { Contenteditable } from './contenteditable.directive';
-import { describe, beforeEachProviders, it, inject, expect, injectAsync } from '@angular/core/testing';
+import { describe, beforeEach, beforeEachProviders, it, inject, expect, injectAsync } from '@angular/core/testing';
 import { TestComponentBuilder } from '@angular/compiler/testing';
 import { By } from '@angular/platform-browser';
 

@@ -43,28 +43,16 @@ System.config({
     '@angular': 'node_modules/@angular',
     'app': 'app',
     'common': 'common',
-    //'assets': 'assets',
     'ng2-bs3-modal': 'node_modules/ng2-bs3-modal'
   },
-  /*meta: {
-    'ng2-bs3-modal': {
-      format: 'register'
-    }
-  },*/
   packages: {
     'ng2-bs3-modal': {
       defaultExtension: 'js'
     },
     'app': {
-      //main: 'index.js',
       defaultExtension: 'js'
     },
-    /*'assets': {
-      main: 'index.js',
-      defaultExtension: 'js'
-    },*/
     'common': {
-      //main: 'index.js',
       defaultExtension: 'js'
     },
     '@angular/core': {
@@ -115,7 +103,7 @@ System.config({
       defaultExtension: 'js'
     }
   },
-  files: [/*'common/utils.js'*/]
+  files: []
 });
 
 Promise.all([
