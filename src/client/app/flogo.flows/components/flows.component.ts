@@ -6,13 +6,13 @@ import {ROUTER_DIRECTIVES, Router, CanActivate} from '@angular/router-deprecated
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
 import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
-import { flogoIDEncode , notification } from '../../../common/utils';
+import { notification } from '../../../common/utils';
 import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 import {FlogoFooter} from '../../flogo.footer/components/footer.component';
+import {FlogoListComponent} from '../../flogo.flows.list/components/flow-list.component';
 
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
-import {FlogoModal} from '../../../common/services/modal.service';
 import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
@@ -22,9 +22,9 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter ],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter, FlogoListComponent ],
   pipes: [TranslatePipe],
-  providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService, FlogoModal]
+  providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService]
 })
 @CanActivate((next) => {
     return isConfigurationLoaded();
@@ -37,8 +37,6 @@ export class FlogoFlowsComponet{
     constructor(
         private _flow:RESTAPIFlowsService,
         private _postService: PostService,
-        private _flogoModal: FlogoModal,
-        private _router: Router,
         public translate: TranslateService
     ){
 
@@ -79,45 +77,6 @@ export class FlogoFlowsComponet{
             }).catch((err)=>{
                 console.error(err);
             });
-    }
-
-  openFlow( flowId : string, evt : Event ) {
-
-    if ( _.isFunction( _.get( evt, 'stopPropagation' ) ) ) {
-      evt.stopPropagation();
-    }
-
-    this._router.navigate( [
-      'FlogoFlowDetail',
-      { id : flogoIDEncode( flowId ) }
-    ] )
-      .catch( ( err : any )=> {
-        console.error( err );
-      } );
-
-  }
-
-    // delete a flow
-    deleteFlow( flow: any, evt: Event) {
-
-        if ( _.isFunction( _.get( evt, 'stopPropagation' ) ) ) {
-          evt.stopPropagation();
-        }
-
-        this._flogoModal.confirmDelete('Are you sure you want to delete ' + flow.name + ' flow?').then((res) => {
-            if(res) {
-                this._flow.deleteFlow(flow._id).then(()=> {
-                    this.getAllFlows();
-                    let message = this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
-                    notification(message['value'], 'success', 3000);
-                }).catch((err)=> {
-                    let message = this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', {value:err});
-                    notification(message['value'], 'error');
-                });
-            } else {
-                // omit
-            }
-        });
     }
 
     canInstallSamples() {
@@ -168,9 +127,7 @@ export class FlogoFlowsComponet{
 
     // export flogoIDEncode
     // mainly for Route Link
-    flogoIDEncode( id ) {
-        return flogoIDEncode( id );
-    }
+
     private _toDouble(num) {
         return num > 9? num: '0' + num;
     }
