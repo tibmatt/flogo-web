@@ -1,2 +1,13 @@
 #Run unit tests
-cd ../../dist/public/ && npm run test
+
+Navigate to the public directory:
+
+```
+cd <project root>/dist/public 
+```
+
+Run:
+
+```
+npm run test
+```
