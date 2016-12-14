@@ -18,6 +18,7 @@ module.exports = function (config) {
       'https://code.jquery.com/jquery-1.11.2.min.js',
       // zone.js dependencies
                   //'node_modules/zone.js/dist/long-stack-trace-zone.js',
+      'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.js',
       'node_modules/zone.js/dist/zone.js',
       'node_modules/zone.js/dist/jasmine-patch.js',
       'node_modules/zone.js/dist/async-test.js',
@@ -30,14 +31,18 @@ module.exports = function (config) {
       // angular dependencies
       {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
       {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
+      // ng2-bs3-modal
+      { pattern: 'node_modules/ng2-bs3-modal/components/*.js', included: false, watched: false },
+      { pattern: 'node_modules/ng2-bs3-modal/directives/*.js', included: false, watched: false },
+      { pattern: 'node_modules/ng2-bs3-modal/ng2-bs3-modal.js', included: false, watched: false   },
       // our application
       {pattern: 'main.js', included: false, watched: true},
       {pattern: '*(app|common)/**/**.js', included: false, watched: true},
       {pattern: '*(app|common)/**/**.js.map', included: false, watched: true},
       // paths loaded via Angular's component compiler
       // (these paths need to be rewritten, see proxies section)
-      {pattern: 'app/**/*.html', included: false, watched: true},
-      {pattern: 'app/**/*.css', included: false, watched: true},
+      {pattern: 'app/**/*.*(html|css)', included: false, watched: true},
+      {pattern: 'assets/**/*.*(png|svg)', included: false, watched: true},
       // helper
       {pattern:'karma.helper.js', included: true, watched: true}
     ],
@@ -50,7 +55,8 @@ module.exports = function (config) {
     proxies: {
       // required for component assests fetched by Angular's compiler
       "/app/": "/base/app/",
-      "/common/": "/base/common/"
+      "/common/": "/base/common/",
+      "/assets/": "/base/assets/"
     },
     // enable coverage module
     reporters: ['spec'],

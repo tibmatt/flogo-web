@@ -42,15 +42,29 @@ System.config({
     'rxjs': 'node_modules/rxjs',
     '@angular': 'node_modules/@angular',
     'app': 'app',
-    'common': 'common'
+    'common': 'common',
+    //'assets': 'assets',
+    'ng2-bs3-modal': 'node_modules/ng2-bs3-modal'
   },
+  /*meta: {
+    'ng2-bs3-modal': {
+      format: 'register'
+    }
+  },*/
   packages: {
-    'app': {
-      main: 'index.js',
+    'ng2-bs3-modal': {
       defaultExtension: 'js'
     },
-    'common': {
+    'app': {
+      //main: 'index.js',
+      defaultExtension: 'js'
+    },
+    /*'assets': {
       main: 'index.js',
+      defaultExtension: 'js'
+    },*/
+    'common': {
+      //main: 'index.js',
       defaultExtension: 'js'
     },
     '@angular/core': {

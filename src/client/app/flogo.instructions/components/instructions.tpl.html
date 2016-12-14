@@ -21,13 +21,13 @@
     </div>
 
     <div class="flogo-instructions-footer">
-      <button type="button" *ngIf="currentIndex > 0" class="tc-buttons-primary"
+      <button type="button" *ngIf="currentIndex > 0" id="buttonBack" class="tc-buttons-primary"
               (click)="clickBack($event)">BACK
       </button>
-      <button type="button" *ngIf="currentIndex < STEPS_LENGTH " class="tc-buttons-primary"
+      <button type="button" *ngIf="currentIndex < STEPS_LENGTH " id="buttonNext" class="tc-buttons-primary"
               (click)="clickNext($event)">NEXT
       </button>
-      <button type="button" *ngIf="currentIndex == STEPS_LENGTH" class="tc-buttons-primary"
+      <button type="button" *ngIf="currentIndex == STEPS_LENGTH" id="buttonClose" class="tc-buttons-primary"
               (click)="closeModal()">CLOSE
       </button>
     </div>
