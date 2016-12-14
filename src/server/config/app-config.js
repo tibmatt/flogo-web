@@ -24,12 +24,16 @@ let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
   publicPath: publicPath,
-  libVersion: process.env.FLOGO_LIB_VERSION,
+  libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
   app: {
     basePath: '/v1/api',
     port: appPort,
     cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
+  },
+  defaultEngine: {
+    path: 'local/engines/flogo-web',
+    defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
   },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
@@ -96,30 +100,7 @@ let config = {
         ignore: true
       }
     },
-    triggers: [{
-      "name": "tibco-mqtt",
-      "settings": {
-        "topic": "flogo/#",
-        "broker": "tcp://192.168.1.12:1883",
-        "id": "flogoEngine",
-        "user": "",
-        "password": "",
-        "store": "",
-        "qos": "0",
-        "cleansess": "false"
-      },
-      "endpoints": null
-    }, {
-      "name": "tibco-rest",
-      "settings": {
-        "port": "9990"
-      },
-      "endpoints": null
-    }, {
-      "name": "tibco-timer",
-      "settings": {},
-      "endpoints": null
-    }],
+    triggers: [],
     config: {
       "loglevel": "DEBUG",
       "disableTriggerValidation": true,
@@ -316,6 +297,7 @@ export function resetConfiguration() {
 export function loadSamplesConfig() {
   let samples = [];
   try {
+    //TODO: replace for async version
     samples = JSON.parse(fs.readFileSync(path.join(__dirname, 'samples.json'), 'utf8'));
   } catch(e) {
     // nothing to do

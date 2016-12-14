@@ -37,8 +37,7 @@
           <button class="btn flogo-flow-detail-log-button"
                   [ngClass]="{'flogo-flow-detail-log-button-selected': isSelectedLogs}"
                   (click)="showLogs(!isSelectedLogs)" title="Show logs">
-            <img *ngIf="!isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-unselected.svg" alt="">
-            <img *ngIf="isSelectedLogs" src="/assets/svg/flogo-logs-debug-button-selected.svg" alt="">
+            <i class="flogo-icon-debug"></i>
           </button>
         </div>
 
@@ -46,12 +45,14 @@
 
     </section>
 
-    <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
-                               [id]="'root'"
-                               data-flogo-diagram-id="root">
-    </flogo-canvas-flow-diagram>
+    <div class="flogo-flow-container">
+      <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
+                                 [id]="'root'"
+                                 data-flogo-diagram-id="root">
+      </flogo-canvas-flow-diagram>
 
-    <flogo-footer class="footer-wrapper"></flogo-footer>
+      <flogo-footer class="footer-wrapper"></flogo-footer>
+    </div>
 
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
@@ -62,7 +63,6 @@
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
                                  [id]="'errorHandler'"
                                  data-flogo-diagram-id="root"></flogo-canvas-flow-diagram>
-      <flogo-footer></flogo-footer>
     </flogo-flows-detail-error-panel>
 
   </div>

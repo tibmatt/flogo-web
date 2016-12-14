@@ -1,11 +1,9 @@
 import {config, activitiesDBService} from '../../config/app-config';
 import { TYPE_ACTIVITY, DEFAULT_PATH_ACTIVITY } from '../../common/constants';
 import { inspectObj } from '../../common/utils';
-import { getInitialisedTestEngine } from '../../modules/engine';
+import { getInitializedEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
-import _ from 'lodash';
 import path from 'path';
-import semver from 'semver';
 
 let basePath = config.app.basePath;
 
@@ -93,15 +91,9 @@ function* installActivities( next ) {
   let urls = preProcessURLs( this.request.body.urls );
   console.log( '[log] Install Activities' );
   inspectObj( urls );
-  let results = yield remoteInstaller.install( urls );
-  console.log( '[log] Installation results' );
-  inspectObj( {
-    success : results.success,
-    fail : results.fail
-  } );
 
-  let testEngine = yield getInitialisedTestEngine();
-
+  let testEngine = yield getInitializedEngine(config.defaultEngine.path);
+  let results = {};
   if ( testEngine ) {
 
     console.log( `[log] adding activities to test engine...` );
@@ -114,63 +106,12 @@ function* installActivities( next ) {
 
     try {
 
-      const addActivitiesResult = [];
-
-      for ( let successItemURL of results.success ) {
-
-        console.log( `[log] adding ${ successItemURL } to test engine ...` );
-        const item = results.details[ successItemURL ];
-        const itemInfoToInstall = {
-          name : item.schema.name || item.package.name,
-          path : item.path,
-          version : item.package.version || item.schema.version
-        };
-
-        inspectObj( itemInfoToInstall );
-
-        let addActivityResult = yield new Promise( ( resolve, reject )=> {
-
-          const addOnError = ( err )=> {
-            // if error happens, just note it down and report adding activity failed.
-            console.log(
-              `[error] failed to add activity ${ itemInfoToInstall.name } [${ itemInfoToInstall.path }]` );
-            console.log( err );
-            resolve( false );
-          };
-
-          const hasActivity = testEngine.hasActivity( itemInfoToInstall.name, itemInfoToInstall.path );
-
-          inspectObj( hasActivity );
-
-          if ( hasActivity.exists ) {
-            if ( hasActivity.samePath && hasActivity.version && itemInfoToInstall.version &&
-              semver.lte( itemInfoToInstall.version, hasActivity.version ) ) {
-              console.log(
-                `[log] skip adding exists activity ${ itemInfoToInstall.name } (${ itemInfoToInstall.version }) [${ itemInfoToInstall.path }]` );
-              resolve( true );
-            } else {
-              // else delete the activity before install
-              return testEngine.deleteActivity( itemInfoToInstall.name )
-                .then( ()=> {
-                  return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path,
-                    itemInfoToInstall.version );
-                } )
-                .then( ()=> {
-                  resolve( true );
-                } )
-                .catch( addOnError );
-            }
-          } else {
-            return testEngine.addActivity( itemInfoToInstall.name, itemInfoToInstall.path, itemInfoToInstall.version )
-              .then( ()=> {
-                resolve( true );
-              } )
-              .catch( addOnError );
-          }
-        } );
-
-        addActivitiesResult.push( addActivityResult );
-      }
+      results = yield remoteInstaller.install( urls, {engine: testEngine} );
+      console.log( '[log] Installation results' );
+      inspectObj( {
+        success : results.success,
+        fail : results.fail
+      } );
     } catch ( err ) {
       console.error( `[error] add activities to test engine` );
       console.error( err );
@@ -210,6 +151,7 @@ function* installActivities( next ) {
  */
 
 /**
+ * TODO: unimplemented, should return proper http status
  *
  * @swagger
  * /activities:

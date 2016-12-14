@@ -7,13 +7,13 @@
   },
   "scripts": {
     "start": "concurrently \"pouchdb-server --host 0.0.0.0 -p 5984 -d './docker-shared'\" \"node server.js\"",
-    "start-db": "pouchdb-server -p 5984 -d ./docker-shared --host 0.0.0.0",
+    "start-db": "pouchdb-server -n -p 5984 -d ./docker-shared --host 0.0.0.0",
     "start-server": "npm run start-prod-server",
     "start-dev-server": "babel-node server.js",
     "start-prod-server": "node server.js",
-    "dump-db": "mkdir db-init && pouchdb-dump http://0.0.0.0:5984/flogo-web-activities > db-init/installed-activities.init && pouchdb-dump http://0.0.0.0:5984/flogo-web-triggers > db-init/installed-triggers.init   && pouchdb-dump http://0.0.0.0:5984/flogo-web > db-init/installed-flows.init"
+    "dump-db": "mkdir db-init && pouchdb-dump http://0.0.0.0:5984/flogo-web > db-init/installed-flows.init"
   },
-  "author": "Shaoke Xu<shaoxu@tibco.com>",
+  "author": "TIBCO Software Inc.",
   "devDependencies": {
     "pouchdb-dump-cli": "^2.0.4"
   },
@@ -38,6 +38,7 @@
     "pouchdb": "^5.3.1",
     "pouchdb-load": "^1.4.6",
     "pouchdb-server": "^1.1.1",
+    "ps-node": "^0.1.4",
     "semver": "^5.2.0",
     "socket.io": "1.5.1",
     "winston": "^2.3.0"

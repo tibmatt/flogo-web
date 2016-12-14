@@ -4,7 +4,7 @@ import npm from 'npm';
 import _ from 'lodash';
 import fs from 'fs';
 import {DBService} from '../../common/db.service';
-import {isDirectory, isExisted, readDirectoriesSync} from '../../common/utils';
+import {isDirectory, fileExists, readDirectoriesSync} from '../../common/utils';
 import {config} from '../../config/app-config';
 import { DEFAULT_SCHEMA_ROOT_FOLDER_NAME } from '../../common/constants';
 
@@ -18,6 +18,10 @@ const defaultOptions = {
   path: 'modules/base-registered',
   jsonTplName: 'package.tpl.json'
 };
+
+export function syncDb() {
+
+}
 
 /**
  * Base class of registered
@@ -293,7 +297,7 @@ export class BaseRegistered{
     return new Promise((resolve, reject)=>{
       try {
         let nodeModulesPath = path.join(this._packageJSONFolderPath, 'node_modules');
-        if(isExisted(nodeModulesPath)){
+        if(fileExists(nodeModulesPath)){
           execSync(`rm -rf ${nodeModulesPath}`);
         }
         console.log("[Success]cleanNodeModules finished!, type: ", this._options.type);
@@ -327,10 +331,10 @@ export class BaseRegistered{
 
           // TODO need to improve, provide better way
 
-          if(isExisted(path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+          if(fileExists(path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
             design_package_json = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
             value = path.join(itemPath, DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
-          }else if(isExisted(path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
+          }else if(fileExists(path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json'))){
             design_package_json = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
             value = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
           }else{
@@ -359,6 +363,42 @@ export class BaseRegistered{
     }
 
     return packageJSON;
+  }
+
+  syncDb(originalItems) {
+    console.log("[debug]updateDB");
+
+    originalItems = originalItems || [];
+    // new activities generate from package.json
+    let items = {};
+
+    // generate all the activity docs
+    originalItems.forEach(item => {
+      let info = item.ui;
+      let version = info && info.version ? info.version : item.version;
+      let id = BaseRegistered.generateID(item.name, version);
+
+      items[id] = BaseRegistered.constructItem({
+        'id': id,
+        'where': item.path,
+        'name': item.name,
+        'version': version,
+        'description': info.description,
+        'keywords': item.keywords || [],
+        'author': info.author,
+        'schema': info
+      });
+
+    });
+
+    // console.log("!!!!!!!!activityDocs: ", activityDocs);
+
+    return BaseRegistered.saveItems(this.dbService, items)
+      .then((result) => {
+        console.log(`[info] updateDB done.`);
+        return result;
+      })
+
   }
 
   updateDB(){

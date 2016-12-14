@@ -1,44 +1,26 @@
+@import "_variables";
 
-.flogo-flows-add-save, .flogo-flows-add-cancel{
-  width: 122px;
-  height: 45px;
+.flogo-flows-add-save, .flogo-flows-add-cancel {
+  width: 124px;
+  height: 40px;
   font-size: 16px;
 }
-.flogo-flows-add-cancel{
-  border: solid 2px #0081cb;
-  background: #fff;
-  color: #0081cb;
-  &:hover{
-    border-radius: 4px;
-  }
-  &:active{
-    color: #fff;
-    border-radius: 4px;
-    background-color: #062e79;
-    border: solid 2px #062e79;;
-  }
-}
-.flogo-flows-add-save{
-  background-color: rgba(0, 129, 203, 0.5);
-  border: none;
-  color: #fff;
+
+.flogo-flows-add-save {
+  margin-left: 20px;
   cursor: not-allowed;
-  &.allowed{
+  opacity: .5;
+  &.allowed {
     cursor: pointer;
     opacity: 1;
-    background-color: #0081cb;
-    &:hover{
-      border-radius: 4px;
-      background-color: #0081cb;
-    }
-    &:active{
-      color: #fff;
-      border-radius: 4px;
-      background-color: #062e79;
-      border: solid 2px #062e79;;
-    }
+    background-color: @color-button-active;
   }
 }
+
 .flogo-flows-add-error {
   color: red
+}
+
+.flogo-icon-add {
+  font-size: 16px;
 }

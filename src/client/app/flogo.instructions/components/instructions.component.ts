@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { TranslatePipe } from 'ng2-translate/ng2-translate';
 
 @Component( {
     selector : 'flogo-instructions',
@@ -10,7 +11,8 @@ import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
     templateUrl : 'instructions.tpl.html',
     inputs : ['isActivated'],
     outputs : ['onClosedModal: flogoOnClosedModal'],
-    styleUrls : [ 'instructions.component.css' ]
+    styleUrls : [ 'instructions.component.css' ],
+    pipes: [TranslatePipe]
 } )
 export class FlogoInstructionsComponent implements OnChanges {
 
@@ -28,7 +30,7 @@ export class FlogoInstructionsComponent implements OnChanges {
     currentStep :any[];
     STEPS_LENGTH = this.steps.length - 1;
 
-    constructor( ) {
+    constructor() {
         this.init();
     }
 

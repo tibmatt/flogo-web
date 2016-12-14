@@ -11,15 +11,13 @@ import _ from 'lodash';
 import path from 'path';
 import { BaseRegistered } from '../../modules/base-registered';
 import {
-  readJSONFileSync,
   isGitHubURL,
   parseGitHubURL,
   constructGitHubPath,
-  constructGitHubRepoURL,
-  isInGitHubRepo,
   runShellCMD
 } from '../../common/utils';
-import { GitHubRepoDownloader } from '../github-repo-downloader';
+import {getInitializedEngine} from "../engine/registry";
+import {syncTasks} from "../init/sync-tasks";
 
 // TODO
 // update this information. the `somefile.json` and `aFloder` are only for testing.
@@ -27,6 +25,8 @@ import { GitHubRepoDownloader } from '../github-repo-downloader';
 // const SCHEMA_FILE_NAME_TRIGGER = 'somefile.json';
 // const SCHEMA_FILE_NAME_ACTIVITY = 'somefile.json';
 // const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'aFolder';
+
+//TODO clean dead code
 
 /**
  * Remote Installer class
@@ -45,7 +45,7 @@ export class RemoteInstaller {
     this.opts = _.assign( {}, defaultOpts, opts );
   }
 
-  install( sourceURLs ) {
+  install( sourceURLs, opts ) {
     return new Promise( ( resolve, reject )=> {
 
       // parse the URL
@@ -66,7 +66,7 @@ export class RemoteInstaller {
         default : null
       };
 
-      this.installFromGitHub( parsedURLs.github )
+      this.installFromGitHub( parsedURLs.github, opts )
         .then( ( githubResult )=> {
           result.github = githubResult;
 
@@ -81,13 +81,13 @@ export class RemoteInstaller {
 
           // TODO
           //  need to merge and include the installed success ones and failed ones.
-
-
-          return {
-            success : _.union( result.github.success, result.default.success ),
-            fail : _.union( result.github.fail, result.default.fail ),
-            details : _.assign( {}, result.github.details, result.default.details )
-          };
+          return opts.engine.load()
+            .then(() => syncTasks(opts.engine))
+            .then(() => ({
+              success : _.union( result.github.success, result.default.success ),
+              fail : _.union( result.github.fail, result.default.fail ),
+              details : _.assign( {}, result.github.details, result.default.details )
+            }));
         } )
         .then( resolve )
         .catch( ( err ) => {
@@ -97,13 +97,13 @@ export class RemoteInstaller {
     } );
   }
 
-  installFromGitHub( sourceURLs ) {
+  installFromGitHub( sourceURLs, opts ) {
     return new Promise( ( resolve, reject )=> {
       console.log( '[log] Install from GitHub' );
       console.log( sourceURLs );
 
       let installPromise = null;
-      let opts = _.assign( { sourceURLs }, this.opts );
+      let opts = _.assign( { sourceURLs }, this.opts, opts );
 
       switch ( opts.type ) {
         case TYPE_ACTIVITY:
@@ -150,167 +150,34 @@ export class RemoteInstaller {
 // install item from GitHub
 function installFromGitHub( opts ) {
 
-  // const opts = {
-  //   sourceURLs, schemaFileName, dbService, type
-  // };
+  let urls =  _.map( opts.sourceURLs, sourceURL => constructGitHubPath( parseGitHubURL( sourceURL ) ) );
 
-  const repoDownloader = new GitHubRepoDownloader( {
-    type : opts.type,
-    cacheFolder : opts.gitRepoCachePath
-  } );
+  let getEngine = opts.engine ? Promise.resolve(opts.engine) : getInitializedEngine(config.defaultEngine.path);
 
-  return repoDownloader.download(
-    _.map( opts.sourceURLs, sourceURL => constructGitHubRepoURL( parseGitHubURL( sourceURL ) ) ) )
-    .then( ( result )=> {
+  return getEngine
+    .then(engine => {
+      let installTask = __makeInstallProcess(engine);
+      // install one after the other
+      return urls.reduce((promise, url) => {
+        return promise.then(() => installTask(url))
+      }, Promise.resolve(true));
 
-      // console.log( `[TODO] download result: ` );
-      // _.each( result, ( item )=> {
-      //   let repoPath = path.join( repoDownloader.cacheTarget,
-      //     GitHubRepoDownloader.getTargetPath( item.repo ) );
-      //   console.log(
-      //     `---> url: ${item.repo}\n${item.result || item.error}\n${repoPath}\n<---` );
-      // } );
+    });
 
-      // reduce the sourceURLs to a downloadResult
-      // create raw data for further processing.
-      return _.reduce( opts.sourceURLs, ( dlResult, sourceURL ) => {
+  function __makeInstallProcess(engine) {
 
-        let repoPath = '';
-        const githubInfo = parseGitHubURL( sourceURL );
-        const item = {
-          path : constructGitHubPath( githubInfo ),
-          sourceURL : sourceURL,
-          package : '', // package.json, to be added later
-          schema : '', // schema.json, activity.json or trigger.json, to be added later
-          downloaded : false,
-          installed : false,
-          savedToDB : false
-        };
+    let typeName = opts.type == TYPE_TRIGGER ? 'Trigger': 'Activity';
+    return url => {
+      let initPromise = Promise.resolve(true);
+      if(engine[`has${typeName}`](url)) {
+        initPromise = engine[`delete${typeName}`](url);
+      }
+      return initPromise.then(() => engine[`add${typeName}`](url, {version: 'latest'}));
 
-        // check if the given sourceURL belongs to a successfully downloaded repo
-        const isAvailable = _.some( result, ( item ) => {
-          if ( isInGitHubRepo( item.repo, sourceURL ) && !item.error ) {
-            repoPath = path.join( repoDownloader.cacheTarget,
-              GitHubRepoDownloader.getTargetPath( item.repo ) );
+    };
+  }
 
-            return true;
-          }
 
-          return false;
-        } );
-
-        // get package.json && schema.json
-        if ( isAvailable && repoPath ) {
-          const extraPath = githubInfo.extraPath || '';
-          const packageJSONPath = path.join( repoPath, extraPath, opts.schemaRootFolderName,
-            'package.json' );
-          const schemaJSONPath = path.join( repoPath, extraPath, opts.schemaRootFolderName,
-            opts.schemaFileName );
-
-          try {
-            // console.error( `[log] reading ${packageJSONPath}` );
-            item.package = readJSONFileSync( packageJSONPath );
-          } catch ( e ) {
-            console.error( `[error] reading ${packageJSONPath}: ` );
-            console.error( e );
-          }
-
-          try {
-            // console.error( `[log] reading ${schemaJSONPath}` );
-            item.schema = readJSONFileSync( schemaJSONPath );
-
-            // at this step, should be save to mark the item has been downloaded.
-            item.downloaded = true;
-          } catch ( e ) {
-            console.error( `[error] reading ${schemaJSONPath}: ` );
-            console.error( e );
-          }
-        }
-
-        dlResult.push( item );
-
-        return dlResult;
-      }, [] );
-    } )
-
-    // process raw items
-    .then( rawItems => {
-      return _.map( rawItems, rawItem => {
-        return {
-          raw : rawItem,
-          dbItem : processItemFromGitHub( rawItem )
-        };
-      } );
-    } )
-
-    // install the given items using `npm` commands to the registered modules folder
-    .then( items => {
-      return sequentiallyInstall( items, {
-        registerPath : opts.registerPath,
-        // repo root folder including git repo cache root + type folder
-        repoRoot : path.join( opts.gitRepoCachePath, opts.type.toLocaleLowerCase() ),
-        schemaRootFolderName : opts.schemaRootFolderName
-      } );
-    } )
-
-    // update installation results in items.
-    .then( installedResult => {
-
-      return _.map( installedResult.items, ( item, idx ) => {
-        item.raw.installed = installedResult.results[ idx ];
-        return item;
-      } );
-
-    } )
-
-    // save items to db
-    .then( items => {
-
-      // construct items for saving
-      //    1. filter null items
-      //    2. create a map
-      let itemsToSave = _.reduce( items, ( itemDict, item ) => {
-
-        // only save the item has dbItem configuration and installed into the server's activity/trigger repo
-        if ( !_.isNil( item.dbItem ) && item.raw.installed ) {
-          itemDict[ item.dbItem[ '_id' ] ] = item.dbItem;
-          item.raw.savedToDB = true;
-        }
-
-        return itemDict;
-      }, {} );
-
-      return BaseRegistered.saveItems( opts.dbService, itemsToSave, true )
-        .then( ( result ) => {
-          return {
-            saveResult : result,
-            items
-          }
-        } );
-    } )
-
-    // finally return ture once finished.
-    .then( result => {
-      return _.reduce( result.items, ( installResult, item ) => {
-
-        if ( item.raw.savedToDB && result.saveResult === true ) {
-          installResult.success.push( item.raw.sourceURL );
-        } else {
-          installResult.fail.push( item.raw.sourceURL );
-        }
-
-        installResult.details[ item.raw.sourceURL ] = item.raw;
-        return installResult;
-      }, {
-        success : [],
-        fail : [],
-        details : {}
-      } );
-    } )
-    .catch( ( err )=> {
-      console.log( `[error] error on installFromGitHub` );
-      throw err;
-    } );
 }
 
 // shorthand function to install triggers from GitHub

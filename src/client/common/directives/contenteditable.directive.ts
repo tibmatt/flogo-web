@@ -57,14 +57,22 @@ export class Contenteditable implements OnChanges {
     }
     onMouseLeave() {
         if(document.activeElement != this._el) {
-            this.$el.css({'background': '', 'border': '1px solid transparent'});
+            this.$el.css({
+              'background': '',
+              'border': '1px solid transparent',
+            });
             if(this.colorFlag)  this.$el.css('color', 'rgb(255, 255, 255)');
         } else {
             // omit
         }
     }
     onFocus() {
-        this.$el.css({'background': '#fff', 'border': '1px solid #0082d5'});
+        this.$el.css({
+          'background': '#fff',
+          'border': '1px solid #0082d5',
+          'overflow': 'auto',
+          'text-overflow': 'clip'
+        });
         if(this.colorFlag)  this.$el.css('color', 'rgb(102, 102, 102)');
         if(this.$el.find('span')) {
             this.$el.find('span').eq(0).remove();
@@ -72,7 +80,13 @@ export class Contenteditable implements OnChanges {
     }
     onBlur() {
         if(this.placeholder || this.$el.text() !== '') {
-            this.$el.css({'background': '', 'border': '1px solid transparent'});
+            this.$el.css({
+              'background': '',
+              'border': '1px solid transparent',
+              'overflow': 'hidden',
+              'text-overflow': 'ellipsis',
+            }).scrollLeft(0);
+
             if(this.colorFlag)  this.$el.css('color', 'rgb(255, 255, 255)');
             if(this.$el.text() === '' && this.myContenteditable === undefined) {
                 // omit
