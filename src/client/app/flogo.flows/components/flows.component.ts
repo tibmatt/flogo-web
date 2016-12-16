@@ -1,4 +1,4 @@
-import {Component, Injector} from '@angular/core';
+import {Component, Injector, ViewChild, ElementRef, Renderer} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router, CanActivate} from '@angular/router-deprecated';
 
 //import * as moment from 'moment';
@@ -7,6 +7,7 @@ import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.se
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
 import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
 import { notification } from '../../../common/utils';
+import { FlogoAppList } from '../../flogo.app.list/components/app.list.component';
 import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 import {FlogoFooter} from '../../flogo.footer/components/footer.component';
 import {FlogoListComponent} from '../../flogo.flows.list/components/flow-list.component';
@@ -22,7 +23,7 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter, FlogoListComponent ],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter, FlogoListComponent, FlogoAppList ],
   pipes: [TranslatePipe],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService]
 })
@@ -30,19 +31,27 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
     return isConfigurationLoaded();
 })
 export class FlogoFlowsComponet{
+    @ViewChild('appList') appList: ElementRef;
     private _sub: any;
     public flows: any[] = [];
     public samples: any;
+    public apps = ['Refrigerated Containers', 'Sample C', 'Sample A'];
 
     constructor(
         private _flow:RESTAPIFlowsService,
         private _postService: PostService,
-        public translate: TranslateService
+        public translate: TranslateService,
+        public renderer: Renderer
     ){
 
         this.getAllFlows();
 
         this.initSubscribe();
+    }
+
+    onAdd(event) {
+
+        this.appList['addApp']();
     }
 
     private initSubscribe() {

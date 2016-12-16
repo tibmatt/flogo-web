@@ -1,0 +1,6 @@
+<div class="app-list">
+    <ul>
+        <li [class.selected]="app == selectedApp"
+            *ngFor="let app of applications" (click)="onSelectApp(app)">{{app}}</li>
+    </ul>
+</div>

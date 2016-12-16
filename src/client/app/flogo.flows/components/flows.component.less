@@ -1,8 +1,8 @@
 @import "_variables";
 
 :host {
-  display: flex;
-  flex: auto;
+  //display: flex;
+  //flex: auto;
   margin:0 auto;
   width:100%;
   position: relative;
@@ -30,6 +30,49 @@
 .flogo-flows-container {
   display: flex;
   flex-direction: column;
+}
+
+.flogo-flows-main {
+  display: flex;
+}
+
+.flogo-flows-side {
+  display:flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-left: 15px;
+  color:#fff;
+
+  .title {
+    font-size: 1.5em
+  }
+
+  .add {
+    cursor: pointer;
+    margin-right: 30px;
+    width:30px;
+    height:30px;
+    background-color:#269ed8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-weight: normal;
+    font-size: 12px;
+
+    span {
+      top: 0;
+    }
+  }
+
+
+}
+
+.flogo-flows-container-main {
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
 
@@ -49,7 +92,8 @@
   height:100%;
   overflow: hidden;
   float: left;
-  padding: 0 5% 0 10%;
+  padding-left:50px;
+  //padding: 0 5% 0 10%;
 }
 .flogo-welcomeMsg-header {
   height: 64px;
@@ -80,7 +124,7 @@
 }
 
 .flogo-mascot {
-  min-width: 18em;
+  //min-width: 18em;
   float:left;
   margin-top: 24px;
   object-fit: contain;
