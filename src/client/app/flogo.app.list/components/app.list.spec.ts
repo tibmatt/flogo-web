@@ -43,27 +43,66 @@ describe('FlogoAppList component', () => {
 
                 fixture.detectChanges();
                 let listItems = fixture.debugElement.queryAll(By.css('ul li'));
-                expect(listItems[0].nativeElement.innerHTML).toEqual('Sample app');
+                expect(listItems[0].nativeElement.innerText.trim()).toEqual('Sample app');
                 done();
             });
     });
 
 
-    xit('Should add an application', (done)=> {
+    it('Should add an application', (done)=> {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
-                appList.applications = applications;
-
-                fixture.detectChanges();
-                appList.add('Sample App D');
-
-                let listItems = fixture.debugElement.queryAll(By.css('ul li'));
-                expect(].nativeElement.innerHTML).toEqual('Sample app A');
-                expect(listItems[1].nativeElement.innerHTML).toEqual('Sample app B');
-                expect(listItems[2].nativeElement.innerHTML).toEqual('Sample app C');
+                appList.applications = [];
+                appList.add();
+                expect(appList.applications.length).toEqual(1);
                 done();
             });
     });
+
+    it('Should generate correct application name', (done)=> {
+        createComponent()
+            .then(fixture => {
+                let appList = fixture.componentInstance;
+                appList.applications = ['Untitled App'];
+                appList.add();
+                expect(appList.applications[0]).toEqual('Untitled App (1)');
+                done();
+            });
+    });
+
+    it('On add application, should emit the added application to the host', (done)=> {
+        createComponent()
+            .then(fixture => {
+                let appList = fixture.componentInstance;
+                appList.applications = [''];
+
+                appList.onAddedApp.subscribe((app)=> {
+                    expect(app).toEqual('Untitled App');
+                    done();
+                });
+
+                appList.add();
+            });
+    });
+
+    it('On selected application, should emit the selected application to the host', done=> {
+        createComponent()
+            .then(fixture => {
+                let appList = fixture.componentInstance;
+                appList.applications = ['Sample app'];
+
+                fixture.detectChanges();
+                let listItems = fixture.debugElement.query(By.css('ul li'));
+                appList.onSelectedApp.subscribe((app)=> {
+                    expect(app).toEqual('Sample app');
+                    done();
+                });
+
+                listItems.nativeElement.click();
+                fixture.detectChanges();
+            });
+    });
+
 
 });
