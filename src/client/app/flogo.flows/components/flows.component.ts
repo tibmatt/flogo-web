@@ -50,8 +50,7 @@ export class FlogoFlowsComponet{
     }
 
     onAdd(event) {
-
-        this.appList['addApp']();
+        this.appList['add']();
     }
 
     private initSubscribe() {

@@ -13,31 +13,47 @@ const UNTITLED_APP = 'Untitled App';
 export class FlogoAppList {
     @Input() applications: string[];
     @Output() onSelectedApp:EventEmitter<string> = new EventEmitter<string>();
+    @Output() onAddedApp:EventEmitter<string> = new EventEmitter<string>();
+    @Output() onDeletedApp:EventEmitter<string> = new EventEmitter<string>();
     selectedApp:string = '';
+    overApp:string = '';
 
     onSelectApp(app:string) {
         this.selectedApp = app;
         this.onSelectedApp.emit(app);
     }
 
-    public addApp() {
-        this._addApp();
+    onDeleteApp(app:string) {
+        this.onDeletedApp.emit(app);
     }
 
-    public _addApp() {
+    public add() {
+        this._add();
+    }
+
+    public _add() {
         let newApp:string = this.getNewAppName(UNTITLED_APP);
-        this.applications.push(newApp);
+        this.applications.unshift(newApp);
+        this.onAddedApp.emit(newApp);
         this.onSelectApp(newApp);
     }
 
     getNewAppName(name:string, count = 0) {
-        let appName:string = name +  (count > 0 ?   ` ${count}` : '');
+        let appName:string = name +  (count > 0 ?   ` (${count})` : '');
 
         if(this.applications.indexOf(appName) !== -1) {
             return this.getNewAppName(name , ++count);
         } else {
             return appName;
         }
+    }
+
+    onMouseOver(app:string) {
+        this.overApp = app;
+    }
+
+    onMouseOut() {
+        this.overApp = '';
     }
 
 }
