@@ -35,7 +35,8 @@ export class FlogoFlowsComponet{
     private _sub: any;
     public flows: any[] = [];
     public samples: any;
-    public apps = ['Refrigerated Containers', 'Sample C', 'Sample A'];
+
+    public mockApps = ['Refrigerated Containers', 'Sample C', 'Sample A'];
 
     constructor(
         private _flow:RESTAPIFlowsService,

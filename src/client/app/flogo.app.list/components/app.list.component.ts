@@ -1,4 +1,5 @@
 import { Component, EventEmitter,  Input, OnChanges, Output, SimpleChange,  } from '@angular/core';
+import {FlogoModal} from '../../../common/services/modal.service';
 import { By } from '@angular/platform-browser';
 
 const UNTITLED_APP = 'Untitled App';
@@ -8,7 +9,9 @@ const UNTITLED_APP = 'Untitled App';
     moduleId: module.id,
     templateUrl: 'app.list.tpl.html',
     styleUrls: ['app.list.css'],
-    directives: []
+    directives: [],
+    providers: [FlogoModal]
+
 })
 export class FlogoAppList {
     @Input() applications: string[];
@@ -18,14 +21,27 @@ export class FlogoAppList {
     selectedApp:string = '';
     overApp:string = '';
 
+    constructor(public flogoModal: FlogoModal) {
+
+    }
+
     onSelectApp(app:string) {
         this.selectedApp = app;
         this.onSelectedApp.emit(app);
     }
 
     onDeleteApp(app:string) {
-        this.onDeletedApp.emit(app);
+
+        this.flogoModal.confirmDelete('Are you sure you want to delete ' + app +  ' application?').then((res) => {
+            if (res) {
+                this._delete(app);
+            } else {
+                // omit
+            }
+        });
+
     }
+
 
     public add() {
         this._add();
@@ -36,6 +52,12 @@ export class FlogoAppList {
         this.applications.unshift(newApp);
         this.onAddedApp.emit(newApp);
         this.onSelectApp(newApp);
+    }
+
+    private _delete(app:string) {
+        _.pull(this.applications, app);
+        this.onDeletedApp.emit(app);
+        this.selectedApp = this.overApp = '';
     }
 
     getNewAppName(name:string, count = 0) {
