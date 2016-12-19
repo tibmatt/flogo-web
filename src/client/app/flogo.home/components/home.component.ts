@@ -1,8 +1,11 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component, OnChanges, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RouteConfig, RouterOutlet, RouteParams, Router, CanActivate } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
-import { FlogoApplicationAddComponent } from '../../flogo.app.add/components/add.component';
+import { FlogoApplicationDetailsComponent } from '../../flogo.app.details/components/details.component';
+import { FlogoAppListComponent } from '../../flogo.app.list/components/app.list.component';
+import { FlogoMainComponent } from '../../flogo.main/components/main.component';
+import { IFlogoApplicationModel } from '../../../common/application.model';
 
 import {
     notification,
@@ -15,23 +18,26 @@ import { FlogoModal } from '../../../common/services/modal.service';
 @Component( {
     selector: 'flogo-home',
     moduleId: module.id,
-    directives: [ RouterOutlet, Contenteditable, FlogoApplicationAddComponent ],
+    directives: [ RouterOutlet, Contenteditable, FlogoAppListComponent ],
     templateUrl: 'home.tpl.html',
     styleUrls: [ 'home.component.css' ],
     providers: [ FlogoModal ],
     pipes: [TranslatePipe]
 } )
 @CanActivate((next) => {
-    console.log('loading.....');
     return isConfigurationLoaded();
 })
 
 
 @RouteConfig([
-    {path: '/', name: 'FlogoApplicationAdd', component: FlogoApplicationAddComponent, useAsDefault: true}
+    {path: '/', name: 'FlogoMain', component: FlogoMainComponent, useAsDefault: true},
+    {path: '/application/:id', name: 'FlogoApplicationDetails', component: FlogoApplicationDetailsComponent }
 ])
 
-export class FlogoHomeComponent {
+export class FlogoHomeComponent implements  OnInit {
+    @ViewChild('appList') appList: ElementRef;
+    mockApps: Array<IFlogoApplicationModel> = [];
+    selectedApp:IFlogoApplicationModel = null;
 
     constructor(
         private _router: Router,
@@ -39,7 +45,38 @@ export class FlogoHomeComponent {
         private _routerParams: RouteParams,
         public translate: TranslateService
     ) {
-        console.log('Hello flogo home component');
+    }
+
+    ngOnInit() {
+        this.mockApps.push(
+            <IFlogoApplicationModel> {
+                id: "1",
+                name: "Sample Application",
+                version: "0.0.1",
+                description: "My App",
+                createdAt: "2016-12-16T00:24:26+00:00",
+                updatedAt: "2016-12-16T00:24:26+00:00"
+            });
+
+    }
+
+    onAdd(event) {
+        this.appList['add']();
+    }
+
+    onSelectedApp(application:IFlogoApplicationModel) {
+        this.selectedApp = application;
+        console.log('Antes de navegar');
+
+        this._router.navigate([
+            'FlogoApplicationDetails',
+            {id: application.id,
+             application: application}
+        ]);
+    }
+
+    onDeletedApp(application:IFlogoApplicationModel) {
+        this._router.navigate(['FlogoMain']);
     }
 
 }
