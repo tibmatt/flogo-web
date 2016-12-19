@@ -1,4 +1,4 @@
-import {Component, Injector, ViewChild, ElementRef, Renderer} from '@angular/core';
+import {Component, Injector, ViewChild, ElementRef, Renderer, OnInit} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router, CanActivate} from '@angular/router-deprecated';
 
 //import * as moment from 'moment';
@@ -17,6 +17,7 @@ import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
 import { FlogoFlowsImport } from '../../flogo.flows.import/components/import-flow.component';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import { IFlogoApplicationModel } from '../../../common/application.model';
 
 @Component({
   selector: 'flogo-flows',
@@ -30,13 +31,26 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 @CanActivate((next) => {
     return isConfigurationLoaded();
 })
-export class FlogoFlowsComponet{
+export class FlogoFlowsComponet implements OnInit {
     @ViewChild('appList') appList: ElementRef;
     private _sub: any;
     public flows: any[] = [];
     public samples: any;
+    mockApps: Array<IFlogoApplicationModel> = [];
 
-    public mockApps = ['Refrigerated Containers', 'Sample C', 'Sample A'];
+    ngOnInit() {
+
+        this.mockApps.push(
+            {
+                id: "123",
+                name: "Sample Application",
+                version: "0.0.1",
+                description: "My App",
+                createdAt: "2016-12-16T00:24:26+00:00",
+                updatedAt: "2016-12-16T00:24:26+00:00"
+            });
+
+    }
 
     constructor(
         private _flow:RESTAPIFlowsService,

@@ -4,11 +4,38 @@ import { TestComponentBuilder } from '@angular/compiler/testing';
 import { TranslateService, TranslateLoader } from 'ng2-translate/ng2-translate';
 import { By } from '@angular/platform-browser';
 import {FlogoModal} from '../../../common/services/modal.service';
+import { IFlogoApplicationModel } from '../../../common/application.model';
 import { HTTP_PROVIDERS } from '@angular/http';
 
 
 describe('FlogoAppList component', () => {
-    let applications = ['Sample app C', 'Sample app A', 'Sample app B'];
+    let applications = [
+        {
+            id: "1",
+            name: "Sample Application 1",
+            version: "0.0.1",
+            description: "My App",
+            createdAt: "2016-12-16T00:24:26+00:00",
+            updatedAt: "2016-12-16T00:24:26+00:00"
+        },
+        {
+            id: "2",
+            name: "Sample Application 2",
+            version: "0.0.1",
+            description: "My App",
+            createdAt: "2016-12-16T00:24:26+00:00",
+            updatedAt: "2016-12-16T00:24:26+00:00"
+        },
+        {
+            id: "3",
+            name: "Sample Application 3",
+            version: "0.0.1",
+            description: "My App",
+            createdAt: "2016-12-16T00:24:26+00:00",
+            updatedAt: "2016-12-16T00:24:26+00:00"
+        }
+
+    ];
     let tcb: TestComponentBuilder;
 
     function createComponent() {
@@ -46,11 +73,20 @@ describe('FlogoAppList component', () => {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
-                appList.applications = ['Sample app'];
+                appList.applications = [
+                    {
+                        id: "123",
+                        name: "Sample Application",
+                        version: "0.0.1",
+                        description: "My App",
+                        createdAt: "2016-12-16T00:24:26+00:00",
+                        updatedAt: "2016-12-16T00:24:26+00:00"
+                    }
+                ];
 
                 fixture.detectChanges();
                 let listItems = fixture.debugElement.queryAll(By.css('ul li'));
-                expect(listItems[0].nativeElement.innerText.trim()).toEqual('Sample app');
+                expect(listItems[0].nativeElement.innerText.trim()).toEqual('Sample Application');
                 done();
             });
     });
@@ -71,9 +107,18 @@ describe('FlogoAppList component', () => {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
-                appList.applications = ['Untitled App'];
+                appList.applications = [
+                    {
+                        id: "123",
+                        name: "Untitled App",
+                        version: "0.0.1",
+                        description: "My App",
+                        createdAt: "2016-12-16T00:24:26+00:00",
+                        updatedAt: "2016-12-16T00:24:26+00:00"
+                    }
+                ];
                 appList.add();
-                expect(appList.applications[0]).toEqual('Untitled App (1)');
+                expect(appList.applications[0].name).toEqual('Untitled App (1)');
                 done();
             });
     });
@@ -85,7 +130,7 @@ describe('FlogoAppList component', () => {
                 appList.applications = [''];
 
                 appList.onAddedApp.subscribe((app)=> {
-                    expect(app).toEqual('Untitled App');
+                    expect(app.name).toEqual('Untitled App');
                     done();
                 });
 
@@ -97,12 +142,21 @@ describe('FlogoAppList component', () => {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
-                appList.applications = ['Sample app'];
+                appList.applications = [
+                    {
+                        id: "123",
+                        name: "Sample Application",
+                        version: "0.0.1",
+                        description: "My App",
+                        createdAt: "2016-12-16T00:24:26+00:00",
+                        updatedAt: "2016-12-16T00:24:26+00:00"
+                    }
+                ];
 
                 fixture.detectChanges();
                 let listItems = fixture.debugElement.query(By.css('ul li'));
                 appList.onSelectedApp.subscribe((app)=> {
-                    expect(app).toEqual('Sample app');
+                    expect(app.name).toEqual('Sample Application');
                     done();
                 });
 
@@ -115,7 +169,16 @@ describe('FlogoAppList component', () => {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
-                appList.applications = ['Sample app'];
+                appList.applications = [
+                    {
+                        id: "123",
+                        name: "Sample Application",
+                        version: "0.0.1",
+                        description: "My App",
+                        createdAt: "2016-12-16T00:24:26+00:00",
+                        updatedAt: "2016-12-16T00:24:26+00:00"
+                    }
+                ];
 
                 fixture.detectChanges();
                 let listItem = fixture.debugElement.query(By.css('ul li'));
@@ -138,7 +201,16 @@ describe('FlogoAppList component', () => {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
-                appList.applications = ['A cool application'];
+                appList.applications = [
+                    {
+                        id: "123",
+                        name: "A cool application",
+                        version: "0.0.1",
+                        description: "My App",
+                        createdAt: "2016-12-16T00:24:26+00:00",
+                        updatedAt: "2016-12-16T00:24:26+00:00"
+                    }
+                ];
 
                 // mock confirmDelete
                 appList.flogoModal.confirmDelete =  (message) => {
@@ -146,7 +218,7 @@ describe('FlogoAppList component', () => {
                 };
 
                 appList.onDeletedApp.subscribe((app) => {
-                    expect(app).toEqual('A cool application');
+                    expect(app.name).toEqual('A cool application');
                     done();
                 });
 
