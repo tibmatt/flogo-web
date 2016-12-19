@@ -122,7 +122,7 @@ describe('FlogoAppList component', () => {
 
                 let element = listItem.nativeElement;
                 element.addEventListener('mouseover', (a) => {
-                    fixture.detectChanges();
+                    //fixture.detectChanges();
                     let deleteIcon = fixture.debugElement.query(By.css('li span'));
 
                     expect(deleteIcon).not.toBeNull();
