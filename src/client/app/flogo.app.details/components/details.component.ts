@@ -1,7 +1,8 @@
-import { Component, OnChanges } from '@angular/core';
-import { CanActivate } from '@angular/router-deprecated';
+import { Component, OnChanges, OnInit } from '@angular/core';
+import { CanActivate,  RouteParams } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import { IFlogoApplicationModel } from '../../../common/application.model';
 
 import {
     notification,
@@ -12,11 +13,11 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 
 @Component( {
-    selector: 'flogo-app-add',
+    selector: 'flogo-app-details',
     moduleId: module.id,
     directives: [ Contenteditable ],
-    templateUrl: 'add.tpl.html',
-    styleUrls: [ 'add.component.css' ],
+    templateUrl: 'details.tpl.html',
+    styleUrls: [ 'details.component.css' ],
     providers: [ FlogoModal ],
     pipes: [TranslatePipe]
 } )
@@ -25,12 +26,16 @@ import { FlogoModal } from '../../../common/services/modal.service';
 })
 
 
-export class FlogoApplicationAddComponent {
+
+export class FlogoApplicationDetailsComponent /*implements OnActivate*/  {
+    application: IFlogoApplicationModel = null;
+
     constructor(
         private _flogoModal: FlogoModal,
+        private _routeParams: RouteParams,
         public translate: TranslateService
     ) {
-        console.log('Hello flogo app component');
+        this.application = <IFlogoApplicationModel> this._routeParams.params['application'];
     }
 
 }

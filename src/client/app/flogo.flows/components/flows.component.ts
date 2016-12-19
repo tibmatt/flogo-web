@@ -7,7 +7,6 @@ import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.se
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
 import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
 import { notification } from '../../../common/utils';
-import { FlogoAppList } from '../../flogo.app.list/components/app.list.component';
 import {FlogoFlowsAdd} from '../../flogo.flows.add/components/add.component';
 import {FlogoFooter} from '../../flogo.footer/components/footer.component';
 import {FlogoListComponent} from '../../flogo.flows.list/components/flow-list.component';
@@ -24,7 +23,7 @@ import { IFlogoApplicationModel } from '../../../common/application.model';
   moduleId: module.id,
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.css'],
-  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter, FlogoListComponent, FlogoAppList ],
+  directives: [ROUTER_DIRECTIVES, FlogoFlowsAdd, FlogoFlowsImport, FlogoFooter, FlogoListComponent ],
   pipes: [TranslatePipe],
   providers: [RESTAPIFlowsService, RESTAPIActivitiesService, RESTAPITriggersService]
 })
@@ -32,24 +31,11 @@ import { IFlogoApplicationModel } from '../../../common/application.model';
     return isConfigurationLoaded();
 })
 export class FlogoFlowsComponet implements OnInit {
-    @ViewChild('appList') appList: ElementRef;
     private _sub: any;
     public flows: any[] = [];
     public samples: any;
-    mockApps: Array<IFlogoApplicationModel> = [];
 
     ngOnInit() {
-
-        this.mockApps.push(
-            {
-                id: "123",
-                name: "Sample Application",
-                version: "0.0.1",
-                description: "My App",
-                createdAt: "2016-12-16T00:24:26+00:00",
-                updatedAt: "2016-12-16T00:24:26+00:00"
-            });
-
     }
 
     constructor(
@@ -58,15 +44,10 @@ export class FlogoFlowsComponet implements OnInit {
         public translate: TranslateService,
         public renderer: Renderer
     ){
-
         this.getAllFlows();
-
         this.initSubscribe();
     }
 
-    onAdd(event) {
-        this.appList['add']();
-    }
 
     private initSubscribe() {
         this._sub = this._postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, {

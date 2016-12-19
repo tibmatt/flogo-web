@@ -1,5 +1,5 @@
 import { describe, beforeEach, beforeEachProviders, it, inject, expect, injectAsync} from '@angular/core/testing';
-import { FlogoAppList } from './app.list.component';
+import { FlogoAppListComponent } from './app.list.component';
 import { TestComponentBuilder } from '@angular/compiler/testing';
 import { TranslateService, TranslateLoader } from 'ng2-translate/ng2-translate';
 import { By } from '@angular/platform-browser';
@@ -39,7 +39,7 @@ describe('FlogoAppList component', () => {
     let tcb: TestComponentBuilder;
 
     function createComponent() {
-        return tcb.createAsync(FlogoAppList);
+        return tcb.createAsync(FlogoAppListComponent);
     }
 
     //setup
@@ -49,7 +49,7 @@ describe('FlogoAppList component', () => {
         TranslateService,
         TranslateLoader,
         FlogoModal,
-        FlogoAppList
+        FlogoAppListComponent
     ]);
 
     beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {

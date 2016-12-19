@@ -18,6 +18,7 @@ import { LogService } from '../../../common/services/log.service';
 import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
 import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
 import { FlogoHomeComponent } from '../../flogo.home/components/home.component';
+//import { FlogoApplicationDetailsComponent } from '../../flogo.app.details/components/details.component';
 
 @Component({
   selector: 'flogo-app',
@@ -54,7 +55,7 @@ import { FlogoHomeComponent } from '../../flogo.home/components/home.component';
   },
   {
     path: '/home/...', name: 'FlogoHomeComponent', component: FlogoHomeComponent
-  },
+  }
 ])
 
 export class FlogoAppComponent{

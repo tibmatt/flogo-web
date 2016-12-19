@@ -4,5 +4,5 @@ export interface IFlogoApplicationModel {
     version: string,
     description: string,
     createdAt: string,
-    updateAt: string
+    updatedAt: string
 }

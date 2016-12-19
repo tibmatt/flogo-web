@@ -14,7 +14,7 @@ const UNTITLED_APP = 'Untitled App';
     providers: [FlogoModal]
 
 })
-export class FlogoAppList {
+export class FlogoAppListComponent {
     @Input() applications: Array<IFlogoApplicationModel>;
     @Output() onSelectedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
     @Output() onAddedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
@@ -49,14 +49,13 @@ export class FlogoAppList {
 
     public _add() {
         let application = <IFlogoApplicationModel> {
-            id: 1,
+            id: this.applications.length + 1,
             name: this.getNewAppName(UNTITLED_APP),
             version: '',
             description: '',
             createdAt: '',
             updatedAt: ''
         };
-
 
         this.applications.unshift(application);
         this.onAddedApp.emit(application);
