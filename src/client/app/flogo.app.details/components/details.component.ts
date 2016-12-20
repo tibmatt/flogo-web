@@ -1,8 +1,9 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { CanActivate,  RouteParams } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel } from '../../../common/application.model';
+import { timeString } from '../../../common/utils';
 
 import {
     notification,
@@ -27,15 +28,22 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 
 
-export class FlogoApplicationDetailsComponent /*implements OnActivate*/  {
+export class FlogoApplicationDetailsComponent   {
+    @ViewChild('appName') appName: ElementRef;
     application: IFlogoApplicationModel = null;
+    createdAtFormatted: any;
 
     constructor(
         private _flogoModal: FlogoModal,
         private _routeParams: RouteParams,
-        public translate: TranslateService
+        public translate: TranslateService,
+        private renderer: Renderer
     ) {
-        this.application = <IFlogoApplicationModel> this._routeParams.params['application'];
+        this.application = this._routeParams.params['application'] as IFlogoApplicationModel;
+
+        // format create at
+        let timeStr = timeString(this.application.createdAt);
+        this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
     }
 
 }

@@ -53,8 +53,8 @@ export class FlogoAppListComponent {
             name: this.getNewAppName(UNTITLED_APP),
             version: '',
             description: '',
-            createdAt: '',
-            updatedAt: ''
+            createdAt: new Date(),
+            updatedAt: null
         };
 
         this.applications.unshift(application);

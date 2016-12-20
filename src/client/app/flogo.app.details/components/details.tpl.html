@@ -1,8 +1,13 @@
 <div class="flogo-app-details">
     <div>
-        <input type="text" [(ngModel)]="application.name" id="appName">
+        <input type="text" #appName [(ngModel)]="application.name" id="appName">
         <button class="btn btn-primary btn-lg build">Build</button>
     </div>
-    <label for="appName" class="created">Created</label>
+    <label for="appName" class="created">Created {{createdAtFormatted}}</label>
+
+    <div class="description">
+        <a href="">Add description</a>
+    </div>
+
 
 </div>

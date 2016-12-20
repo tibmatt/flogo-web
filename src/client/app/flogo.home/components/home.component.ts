@@ -54,8 +54,8 @@ export class FlogoHomeComponent implements  OnInit {
                 name: "Sample Application",
                 version: "0.0.1",
                 description: "My App",
-                createdAt: "2016-12-16T00:24:26+00:00",
-                updatedAt: "2016-12-16T00:24:26+00:00"
+                createdAt: new Date(),
+                updatedAt: null
             });
 
     }
@@ -66,7 +66,6 @@ export class FlogoHomeComponent implements  OnInit {
 
     onSelectedApp(application:IFlogoApplicationModel) {
         this.selectedApp = application;
-        console.log('Antes de navegar');
 
         this._router.navigate([
             'FlogoApplicationDetails',

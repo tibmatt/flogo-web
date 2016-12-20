@@ -3,6 +3,6 @@ export interface IFlogoApplicationModel {
     name: string,
     version: string,
     description: string,
-    createdAt: string,
-    updatedAt: string
+    createdAt: any,
+    updatedAt: any
 }
