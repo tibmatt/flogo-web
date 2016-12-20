@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
+import { Component, OnChanges, AfterViewInit, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { CanActivate,  RouteParams } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
@@ -28,7 +28,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 
 
-export class FlogoApplicationDetailsComponent   {
+export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     @ViewChild('appName') appName: ElementRef;
     application: IFlogoApplicationModel = null;
     createdAtFormatted: any;
@@ -44,6 +44,10 @@ export class FlogoApplicationDetailsComponent   {
         // format create at
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
+    }
+
+    ngAfterViewInit() {
+        this.renderer.invokeElementMethod(this.appName.nativeElement, 'focus',[]);
     }
 
 }
