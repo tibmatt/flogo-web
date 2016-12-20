@@ -30,8 +30,10 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     @ViewChild('appName') appName: ElementRef;
+    @ViewChild('appDescription') appDescription: ElementRef;
     application: IFlogoApplicationModel = null;
     createdAtFormatted: any;
+    enableDescription: boolean = false;
 
     constructor(
         private _flogoModal: FlogoModal,
@@ -44,10 +46,26 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
         // format create at
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
+
+
+        this.enableDescription = (this.application.description) ? true : false;
     }
 
     ngAfterViewInit() {
         this.renderer.invokeElementMethod(this.appName.nativeElement, 'focus',[]);
+    }
+
+    activateDescription() {
+        this.enableDescription = true;
+        setTimeout(()=> {
+            this.renderer.invokeElementMethod(this.appDescription.nativeElement, 'focus',[]);
+        }, 100);
+    }
+
+    onDescriptionBlur(event) {
+        if(!this.application.description) {
+            this.enableDescription = false;
+        }
     }
 
 }
