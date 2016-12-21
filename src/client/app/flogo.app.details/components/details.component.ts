@@ -49,8 +49,6 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
         if(this.application.updatedAt == null) {
             this.editingName = true;
         }
-
-
     }
 
     ngAfterViewInit() {
@@ -95,6 +93,16 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
         },0);
     }
 
+    onKeyUpName(event) {
+        if(event.code == "Escape") {
+            this.editingName = false;
+        }
+    }
 
+    onKeyUpDescription(event) {
+        if(event.code == "Escape") {
+            this.editingDescription = false;
+        }
+    }
 
 }
