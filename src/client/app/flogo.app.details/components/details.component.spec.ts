@@ -64,6 +64,17 @@ describe('FlogoApplicationDetails component', () => {
     });
 
 
+    it('Should display creation date', (done) => {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                let creation = fixture.debugElement.query(By.css('.created > span'));
+                expect(creation.nativeElement.innerText).toEqual('a few seconds ago');
+                done();
+            });
+    });
+
+
 
 
 });

@@ -6,10 +6,12 @@
                (blur)="onInputNameBlur($event)"
                (keyup)="onKeyUpName($event)"
                id="appName" />
-        <label class="applicationLabel" *ngIf="!editingName" (click)="onClickLabelName($event)">{{application.name}}</label>
+        <label class="applicationLabel"
+               *ngIf="!editingName"
+               (click)="onClickLabelName($event)">{{application.name}}</label>
         <button class="btn btn-primary btn-lg build">Build</button>
     </div>
-    <label for="appName" class="created">{{ 'FLOWS:CREATED' | translate:{value:createdAtFormatted} }} </label>
+    <label for="appName" class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}</span> </label>
     <div class="description">
         <a *ngIf="!application.description && editingDescription == false" (click)="onClickAddDescription($event)" >Add description</a>
         <input *ngIf="editingDescription" type="text" #appDescription

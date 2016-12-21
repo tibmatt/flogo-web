@@ -42,10 +42,6 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 
-        // show input description
-        //this.editingDescription = this.application.description ? false : true;
-        //alert(this.editingDescription);
-
         if(this.application.updatedAt == null) {
             this.editingName = true;
         }
