@@ -16,7 +16,7 @@ describe('FlogoApplicationDetails component', () => {
         id: "1",
         name: "Cool Application",
         version: "0.0.1",
-        description: "My App",
+        description: null,
         createdAt: new Date(),
         updatedAt: null
     };
@@ -68,10 +68,35 @@ describe('FlogoApplicationDetails component', () => {
         createComponent()
             .then(fixture => {
                 fixture.detectChanges();
-                let creation = fixture.debugElement.query(By.css('.created > span'));
+                let creation = fixture.debugElement.query(By.css('.created span'));
                 expect(creation.nativeElement.innerText).toEqual('a few seconds ago');
                 done();
             });
+    });
+
+    it('Click on Add description should show description input field', (done) => {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                let inputDescription;
+
+                // because description field is empty, anchor add description should be present
+                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                expect(addDescription).toBeDefined();
+
+                // input description doesn't should be present
+                inputDescription = fixture.debugElement.query(By.css('#appDescription'));
+                expect(inputDescription).toBeNull();
+
+                addDescription.nativeElement.click();
+                fixture.detectChanges();
+
+                // after click on add description, input appDescription should be present
+                inputDescription = fixture.debugElement.query(By.css('#appDescription'));
+                expect(inputDescription).toBeDefined();
+                done();
+            })
+
     });
 
 
