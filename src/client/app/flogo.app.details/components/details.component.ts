@@ -24,9 +24,6 @@ import { Contenteditable, JsonDownloader } from '../../../common/directives';
 @CanActivate((next) => {
     return isConfigurationLoaded();
 })
-
-
-
 export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     @ViewChild('appName') appName: ElementRef;
     @ViewChild('appDescription') appDescription: ElementRef;
