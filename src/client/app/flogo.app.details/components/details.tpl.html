@@ -1,16 +1,23 @@
 <div class="flogo-app-details">
     <div>
-        <input type="text" #appName [(ngModel)]="application.name" id="appName" />
+        <input *ngIf="editingName" type="text" #appName
+               [(ngModel)]="application.name"
+               (ngModelChange)="onInputNameChange($event)"
+               (blur)="onInputNameBlur($event)"
+               id="appName" />
+        <label class="applicationLabel" *ngIf="!editingName" (click)="onClickLabelName($event)">{{application.name}}</label>
         <button class="btn btn-primary btn-lg build">Build</button>
     </div>
     <label for="appName" class="created">Created {{createdAtFormatted}}</label>
 
     <div class="description">
-        <a *ngIf="!enableDescription" (click)="activateDescription($event)" >Add description</a>
-
-        <input *ngIf="enableDescription" #appDescription (blur)="onDescriptionBlur($event)"
-               type="text" placeholder="Description" [(ngModel)]="application.description" />
+        <a *ngIf="!application.description && editingDescription == false" (click)="onClickAddDescription($event)" >Add description</a>
+        <input *ngIf="editingDescription" type="text" #appDescription
+               (blur)="onInputDescriptionBlur($event)"
+               placeholder="Description"
+               [(ngModel)]="application.description" />
+        <label class="descriptionLabel"
+               *ngIf="!editingDescription && application.description"
+               (click)="onClickLabelDescription($event)"><span>Description: </span>{{application.description}}</label>
     </div>
-
-
 </div>

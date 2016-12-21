@@ -10,7 +10,6 @@ import {
 } from '../../../common/utils';
 
 import { Contenteditable, JsonDownloader } from '../../../common/directives';
-import { FlogoModal } from '../../../common/services/modal.service';
 
 
 @Component( {
@@ -19,7 +18,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
     directives: [ Contenteditable ],
     templateUrl: 'details.tpl.html',
     styleUrls: [ 'details.component.css' ],
-    providers: [ FlogoModal ],
+    providers: [],
     pipes: [TranslatePipe]
 } )
 @CanActivate((next) => {
@@ -33,39 +32,72 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     @ViewChild('appDescription') appDescription: ElementRef;
     application: IFlogoApplicationModel = null;
     createdAtFormatted: any;
-    enableDescription: boolean = false;
+    editingDescription: boolean = false;
+    editingName: boolean = false;
 
     constructor(
-        private _flogoModal: FlogoModal,
         private _routeParams: RouteParams,
         public translate: TranslateService,
         private renderer: Renderer
     ) {
-        this.application = this._routeParams.params['application'] as IFlogoApplicationModel;
-
+        this.application = this._routeParams.params["application"] as IFlogoApplicationModel;
         // format create at
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 
+        // show input description
+        //this.editingDescription = this.application.description ? false : true;
+        //alert(this.editingDescription);
 
-        this.enableDescription = (this.application.description) ? true : false;
+        if(this.application.updatedAt == null) {
+            this.editingName = true;
+        }
+
+
     }
 
     ngAfterViewInit() {
-        this.renderer.invokeElementMethod(this.appName.nativeElement, 'focus',[]);
-    }
-
-    activateDescription() {
-        this.enableDescription = true;
-        setTimeout(()=> {
-            this.renderer.invokeElementMethod(this.appDescription.nativeElement, 'focus',[]);
-        }, 100);
-    }
-
-    onDescriptionBlur(event) {
-        if(!this.application.description) {
-            this.enableDescription = false;
+        if(this.application.updatedAt == null) {
+           this.renderer.invokeElementMethod(this.appName.nativeElement, 'focus',[]);
         }
     }
+
+    onClickAddDescription(event) {
+        this.editingDescription = true;
+        // wait to refresh view
+        setTimeout(()=> {
+            this.renderer.invokeElementMethod(this.appDescription.nativeElement, 'focus',[]);
+        }, 0);
+    }
+
+    onInputDescriptionBlur(event) {
+        this.editingDescription = false;
+    }
+
+    onInputNameChange(event) {
+        this.application.updatedAt = new Date();
+    }
+
+    onInputNameBlur(event) {
+        if(this.application.name) {
+            this.editingName = false;
+        }
+    }
+
+    onClickLabelName(event) {
+        this.editingName = true;
+        setTimeout(()=> {
+            this.renderer.invokeElementMethod(this.appName.nativeElement, 'focus',[]);
+        },0);
+    }
+
+    onClickLabelDescription(event) {
+        this.editingDescription = true;
+        setTimeout(()=> {
+            this.renderer.invokeElementMethod(this.appDescription.nativeElement, 'focus',[]);
+        },0);
+    }
+
+
 
 }
