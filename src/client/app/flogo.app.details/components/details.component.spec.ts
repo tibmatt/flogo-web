@@ -126,6 +126,23 @@ describe('FlogoApplicationDetails component (pristine state)', () => {
     });
 
 
+    it('When done editing name input, name should be visible as a label', (done) => {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                let appDetails = fixture.componentInstance;
+                appDetails.application.name = 'A cool application';
+                appDetails.editingName = false;
+                fixture.detectChanges();
+
+                let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
+                let labelElement = labelName.nativeElement;
+                expect(labelElement.innerText).toEqual('A cool application');
+                done();
+            });
+    });
+
+
 
 
 
