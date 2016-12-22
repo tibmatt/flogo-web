@@ -26,7 +26,7 @@ export class RESTAPIApplicationsService {
               updatedAt: new Date()
           },
           {
-              id: "2",
+              id: "3",
               name: "Sample Application 3",
               version: "0.0.1",
               description: "My App",
@@ -94,6 +94,17 @@ export class RESTAPIApplicationsService {
 
   add(application:IFlogoApplicationModel)   {
       this.mockApplications.unshift(application);
+  }
+
+  delete(id:string)   {
+      _.remove(this.mockApplications, (n:IFlogoApplicationModel)=> {
+          return n.id === id;
+      });
+
+      return new Promise((resolve, reject)=> {
+          resolve(true);
+      });
+
   }
 
 

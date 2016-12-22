@@ -75,8 +75,11 @@ export class FlogoHomeComponent implements  OnInit {
         ]);
     }
 
-    onDeletedApp(application:IFlogoApplicationModel) {
-        this._router.navigate(['FlogoMain']);
+    onDeletedApp(id) {
+        this.apiApplications.delete(id)
+            .then(()=> {
+                this._router.navigate(['FlogoMain']);
+            });
     }
 
 }

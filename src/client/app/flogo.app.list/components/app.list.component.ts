@@ -18,7 +18,7 @@ export class FlogoAppListComponent {
     @Input() applications: Array<IFlogoApplicationModel>;
     @Output() onSelectedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
     @Output() onAddedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
-    @Output() onDeletedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
+    @Output() onDeletedApp:EventEmitter<string> = new EventEmitter<string>();
     selectedApp:IFlogoApplicationModel;
     overApp:IFlogoApplicationModel;
 
@@ -34,7 +34,7 @@ export class FlogoAppListComponent {
 
         this.flogoModal.confirmDelete('Are you sure you want to delete ' + app.name +  ' application?').then((res) => {
             if (res) {
-                this._delete(app);
+                this._delete(app.id);
             } else {
                 // omit
             }
@@ -61,12 +61,8 @@ export class FlogoAppListComponent {
         this.onSelectApp(application);
     }
 
-    private _delete(app:IFlogoApplicationModel) {
-        _.remove(this.applications, (n:IFlogoApplicationModel)=> {
-            return n.name === app.name;
-        });
-
-        this.onDeletedApp.emit(app);
+    private _delete(id:string) {
+        this.onDeletedApp.emit(id);
         this.selectedApp = this.overApp = null;
     }
 

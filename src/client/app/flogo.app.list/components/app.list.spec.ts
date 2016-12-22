@@ -186,7 +186,7 @@ describe('FlogoAppList component', () => {
             });
     });
 
-    it('On delete application, should emit the deleted application to the host', done => {
+    it('On delete application, should emit the deleted id application to the host', done => {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
@@ -206,8 +206,8 @@ describe('FlogoAppList component', () => {
                     return Promise.resolve(true);
                 };
 
-                appList.onDeletedApp.subscribe((app) => {
-                    expect(app.name).toEqual('A cool application');
+                appList.onDeletedApp.subscribe((id:string) => {
+                    expect(id).toEqual('123');
                     done();
                 });
 
