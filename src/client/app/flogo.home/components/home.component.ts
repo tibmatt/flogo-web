@@ -6,6 +6,7 @@ import { FlogoApplicationDetailsComponent } from '../../flogo.app.details/compon
 import { FlogoAppListComponent } from '../../flogo.app.list/components/app.list.component';
 import { FlogoMainComponent } from '../../flogo.main/components/main.component';
 import { IFlogoApplicationModel } from '../../../common/application.model';
+import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 import {
     notification,
@@ -21,8 +22,8 @@ import { FlogoModal } from '../../../common/services/modal.service';
     directives: [ RouterOutlet, Contenteditable, FlogoAppListComponent ],
     templateUrl: 'home.tpl.html',
     styleUrls: [ 'home.component.css' ],
-    providers: [ FlogoModal ],
-    pipes: [TranslatePipe]
+    providers: [ FlogoModal, RESTAPIApplicationsService ],
+    pipes: [TranslatePipe ]
 } )
 @CanActivate((next) => {
     return isConfigurationLoaded();
@@ -43,25 +44,25 @@ export class FlogoHomeComponent implements  OnInit {
         private _router: Router,
         private _flogoModal: FlogoModal,
         private _routerParams: RouteParams,
-        public translate: TranslateService
+        public translate: TranslateService,
+        public apiApplications: RESTAPIApplicationsService
     ) {
     }
 
     ngOnInit() {
-        this.mockApps.push(
-            <IFlogoApplicationModel> {
-                id: "1",
-                name: "Sample Application",
-                version: "0.0.1",
-                description: "My App",
-                createdAt: new Date(),
-                updatedAt: new Date()
+        this.apiApplications.list()
+            .then((applications)=> {
+                this.mockApps = applications;
             });
-
     }
 
     onAdd(event) {
         this.appList['add']();
+    }
+
+
+    onAddedApp(application:IFlogoApplicationModel) {
+        this.apiApplications.add(application);
     }
 
     onSelectedApp(application:IFlogoApplicationModel) {

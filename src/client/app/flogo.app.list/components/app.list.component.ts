@@ -57,9 +57,7 @@ export class FlogoAppListComponent {
             updatedAt: null
         };
 
-        this.applications.unshift(application);
         this.onAddedApp.emit(application);
-
         this.onSelectApp(application);
     }
 

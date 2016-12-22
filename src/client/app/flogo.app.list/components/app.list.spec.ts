@@ -92,16 +92,6 @@ describe('FlogoAppList component', () => {
     });
 
 
-    it('Should add an application', (done)=> {
-        createComponent()
-            .then(fixture => {
-                let appList = fixture.componentInstance;
-                appList.applications = [];
-                appList.add();
-                expect(appList.applications.length).toEqual(1);
-                done();
-            });
-    });
 
     it('Should generate correct application name', (done)=> {
         createComponent()
@@ -117,8 +107,7 @@ describe('FlogoAppList component', () => {
                         updatedAt: "2016-12-16T00:24:26+00:00"
                     }
                 ];
-                appList.add();
-                expect(appList.applications[0].name).toEqual('Untitled App (1)');
+                expect(appList.getNewAppName('Untitled App')).toEqual('Untitled App (1)');
                 done();
             });
     });

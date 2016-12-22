@@ -7,6 +7,7 @@
         </div>
         <hr>
         <flogo-app-list #appList [applications]="mockApps"
+                        (onAddedApp)="onAddedApp($event)"
                         (onDeletedApp)="onDeletedApp($event)"
                         (onSelectedApp)="onSelectedApp($event)"></flogo-app-list>
     </div>
