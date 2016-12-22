@@ -90,13 +90,13 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     }
 
     onKeyUpName(event) {
-        if(event.code == "Escape") {
+        if(event.code == "Enter") {
             this.editingName = false;
         }
     }
 
     onKeyUpDescription(event) {
-        if(event.code == "Escape") {
+        if(event.code == "Enter") {
             this.editingDescription = false;
         }
     }

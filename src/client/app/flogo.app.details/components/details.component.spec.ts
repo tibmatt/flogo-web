@@ -9,14 +9,14 @@ import { ROUTER_PROVIDERS } from '@angular/router';
 import { RouteParams } from '@angular/router-deprecated';
 
 
-describe('FlogoApplicationDetails component', () => {
+describe('FlogoApplicationDetails component (pristine state)', () => {
     let tcb: TestComponentBuilder;
 
     let mockApplication = {
         id: "1",
-        name: "Cool Application",
+        name: "Untitled Application",
         version: "0.0.1",
-        description: null,
+        description: '',
         createdAt: new Date(),
         updatedAt: null
     };
@@ -96,8 +96,36 @@ describe('FlogoApplicationDetails component', () => {
                 expect(inputDescription).toBeDefined();
                 done();
             })
-
     });
+
+    it('When description field is empty, Add description link should be visible', (done) => {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                // because description field is empty, anchor add description should be present
+                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                expect(addDescription).toBeDefined();
+                done();
+            });
+    });
+
+    it('When done editing description input, description should be visible as a label', (done) => {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                let appDetails = fixture.componentInstance;
+                appDetails.application.description = 'A brief description';
+                appDetails.editingDescription = false;
+                fixture.detectChanges();
+
+                let labelDescription = fixture.debugElement.query(By.css('.descriptionLabel'));
+                let labelElement = labelDescription.nativeElement;
+                expect(labelElement.innerText).toEqual('Description: A brief description');
+                done();
+            });
+    });
+
+
 
 
 

@@ -18,6 +18,7 @@
                (blur)="onInputDescriptionBlur($event)"
                placeholder="Description"
                (keyup)="onKeyUpDescription($event)"
+               id="appDescription"
                [(ngModel)]="application.description" />
         <label class="descriptionLabel"
                *ngIf="!editingDescription && application.description"
