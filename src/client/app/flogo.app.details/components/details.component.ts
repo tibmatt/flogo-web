@@ -38,12 +38,18 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
         private renderer: Renderer
     ) {
         this.application = this._routeParams.params["application"] as IFlogoApplicationModel;
+        this.init();
+    }
+
+    init() {
         // format create at
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 
         if(this.application.updatedAt == null) {
             this.editingName = true;
+        }else {
+            this.editingName = false;
         }
     }
 

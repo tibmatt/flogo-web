@@ -37,7 +37,7 @@ describe('FlogoApplicationDetails component (pristine state)', () => {
     ]);
 
     beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {
-        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000;
         tcb = _tcb;
     }));
 
@@ -142,9 +142,38 @@ describe('FlogoApplicationDetails component (pristine state)', () => {
             });
     });
 
+    it('When description field is not empty, Add description link should not be visible', (done) => {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                let appDetails = fixture.componentInstance;
+                appDetails.application.description = 'A brief description';
+                appDetails.init();
+                fixture.detectChanges();
 
+                // because description field is not empty, anchor add description should not be present
+                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                expect(addDescription).toBeNull();
+                done();
+            });
+    });
 
+    it("If updatedAt field is not null, the name of the component should be shown as a label", (done)=> {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                let appDetails = fixture.componentInstance;
+                appDetails.application.name = 'Untitled Application';
+                appDetails.application.updatedAt = new Date();
+                appDetails.init();
+                fixture.detectChanges();
 
-
-
+                let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
+                let labelElement = labelName.nativeElement;
+                expect(labelElement.innerText).toEqual('Untitled Application');
+                done();
+            })
+    });
 });
+
+
