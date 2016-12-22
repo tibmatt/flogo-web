@@ -9,7 +9,7 @@ import { ROUTER_PROVIDERS } from '@angular/router';
 import { RouteParams } from '@angular/router-deprecated';
 
 
-describe('FlogoApplicationDetails component (pristine state)', () => {
+describe('FlogoApplicationDetails component', () => {
     let tcb: TestComponentBuilder;
 
     let mockApplication = {

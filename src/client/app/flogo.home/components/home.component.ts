@@ -55,7 +55,7 @@ export class FlogoHomeComponent implements  OnInit {
                 version: "0.0.1",
                 description: "My App",
                 createdAt: new Date(),
-                updatedAt: null
+                updatedAt: new Date()
             });
 
     }
