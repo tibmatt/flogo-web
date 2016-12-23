@@ -1,6 +1,6 @@
 <div class="flogo-app-details">
     <div>
-        <input *ngIf="editingName" type="text" #appName
+        <input *ngIf="editingName" type="text" #appInputName
                [(ngModel)]="application.name"
                (ngModelChange)="onInputNameChange($event)"
                (blur)="onInputNameBlur($event)"
@@ -8,20 +8,21 @@
                id="appName" />
         <label class="applicationLabel"
                *ngIf="!editingName"
-               (click)="onClickLabelName($event)">{{application.name}}</label>
+               (click)="onClickLabelName($event)">{{application?.name}}</label>
         <button class="btn btn-primary btn-lg build">Build</button>
     </div>
     <label for="appName" class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}</span> </label>
     <div class="description">
-        <a *ngIf="!application.description && editingDescription == false" (click)="onClickAddDescription($event)" >Add description</a>
-        <input *ngIf="editingDescription" type="text" #appDescription
+        <a *ngIf="application && !application.description && editingDescription == false"
+           (click)="onClickAddDescription($event)" >Add description</a>
+        <input *ngIf="editingDescription" type="text" #appInputDescription
                (blur)="onInputDescriptionBlur($event)"
                placeholder="Description"
                (keyup)="onKeyUpDescription($event)"
                id="appDescription"
                [(ngModel)]="application.description" />
         <label class="descriptionLabel"
-               *ngIf="!editingDescription && application.description"
-               (click)="onClickLabelDescription($event)"><span>Description: </span>{{application.description}}</label>
+               *ngIf="!editingDescription && application?.description"
+               (click)="onClickLabelDescription($event)"><span>Description: </span>{{application?.description}}</label>
     </div>
 </div>

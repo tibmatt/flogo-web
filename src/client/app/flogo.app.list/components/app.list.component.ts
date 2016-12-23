@@ -2,6 +2,7 @@ import { Component, EventEmitter,  Input, OnChanges, Output, SimpleChange,  } fr
 import {FlogoModal} from '../../../common/services/modal.service';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { By } from '@angular/platform-browser';
+import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 const UNTITLED_APP = 'Untitled App';
 
@@ -11,18 +12,23 @@ const UNTITLED_APP = 'Untitled App';
     templateUrl: 'app.list.tpl.html',
     styleUrls: ['app.list.css'],
     directives: [],
-    providers: [FlogoModal]
+    providers: [FlogoModal ]
 
 })
 export class FlogoAppListComponent {
-    @Input() applications: Array<IFlogoApplicationModel>;
     @Output() onSelectedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
     @Output() onAddedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
-    @Output() onDeletedApp:EventEmitter<string> = new EventEmitter<string>();
+    @Output() onDeletedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
+
+    public applications: Array<IFlogoApplicationModel> = [];
     selectedApp:IFlogoApplicationModel;
     overApp:IFlogoApplicationModel;
 
-    constructor(public flogoModal: FlogoModal) {
+    constructor(public flogoModal: FlogoModal, private apiApplications: RESTAPIApplicationsService) {
+        this.apiApplications.list()
+            .then((applications:Array<IFlogoApplicationModel>)=> {
+                this.applications = applications;
+            })
     }
 
     onSelectApp(app:IFlogoApplicationModel) {
@@ -34,51 +40,29 @@ export class FlogoAppListComponent {
 
         this.flogoModal.confirmDelete('Are you sure you want to delete ' + app.name +  ' application?').then((res) => {
             if (res) {
-                this._delete(app.id);
+                this._delete(app);
             } else {
-                // omit
             }
         });
 
     }
 
-
-    public add() {
-        this._add();
-    }
-
-    public _add() {
-        let application = <IFlogoApplicationModel> {
-            id: this.applications.length + 1,
-            name: this.getNewAppName(UNTITLED_APP),
-            version: '',
-            description: '',
-            createdAt: new Date(),
-            updatedAt: null
-        };
-
-        this.onAddedApp.emit(application);
-        this.onSelectApp(application);
-    }
-
-    private _delete(id:string) {
-        this.onDeletedApp.emit(id);
-        this.selectedApp = this.overApp = null;
-    }
-
-    getNewAppName(name:string, count = 0) {
-        let appName:string = name +  (count > 0 ?   ` (${count})` : '');
-        let found: IFlogoApplicationModel;
-
-        found = this.applications.find((app: IFlogoApplicationModel)=> {
-                return app.name == appName;
+    onAdd(event) {
+        this.apiApplications.add()
+            .then((application:IFlogoApplicationModel)=> {
+                this.onAddedApp.emit(application);
+                this.onSelectApp(application);
             });
+    }
 
-        if(found) {
-            return this.getNewAppName(name , ++count);
-        } else {
-            return appName;
-        }
+
+    private _delete(application:IFlogoApplicationModel) {
+        this.apiApplications.delete(application.id)
+            .then(()=> {
+                this.onDeletedApp.emit(application);
+                this.selectedApp = null;
+                this.overApp = null;
+            });
     }
 
     onMouseOver(app: IFlogoApplicationModel) {

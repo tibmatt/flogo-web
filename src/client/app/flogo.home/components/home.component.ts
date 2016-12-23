@@ -6,7 +6,6 @@ import { FlogoApplicationDetailsComponent } from '../../flogo.app.details/compon
 import { FlogoAppListComponent } from '../../flogo.app.list/components/app.list.component';
 import { FlogoMainComponent } from '../../flogo.main/components/main.component';
 import { IFlogoApplicationModel } from '../../../common/application.model';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 import {
     notification,
@@ -22,7 +21,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
     directives: [ RouterOutlet, Contenteditable, FlogoAppListComponent ],
     templateUrl: 'home.tpl.html',
     styleUrls: [ 'home.component.css' ],
-    providers: [ FlogoModal, RESTAPIApplicationsService ],
+    providers: [ FlogoModal ],
     pipes: [TranslatePipe ]
 } )
 @CanActivate((next) => {
@@ -37,49 +36,25 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 export class FlogoHomeComponent implements  OnInit {
     @ViewChild('appList') appList: ElementRef;
-    mockApps: Array<IFlogoApplicationModel> = [];
-    selectedApp:IFlogoApplicationModel = null;
 
     constructor(
         private _router: Router,
-        private _flogoModal: FlogoModal,
-        private _routerParams: RouteParams,
-        public translate: TranslateService,
-        public apiApplications: RESTAPIApplicationsService
+        public translate: TranslateService
     ) {
     }
 
     ngOnInit() {
-        this.apiApplications.list()
-            .then((applications)=> {
-                this.mockApps = applications;
-            });
-    }
-
-    onAdd(event) {
-        this.appList['add']();
     }
 
 
     onAddedApp(application:IFlogoApplicationModel) {
-        this.apiApplications.add(application);
     }
 
     onSelectedApp(application:IFlogoApplicationModel) {
-        this.selectedApp = application;
-
-        this._router.navigate([
-            'FlogoApplicationDetails',
-            {id: application.id,
-             application: application}
-        ]);
+        this._router.navigate([ 'FlogoApplicationDetails', {id: application.id} ]);
     }
 
-    onDeletedApp(id) {
-        this.apiApplications.delete(id)
-            .then(()=> {
-                this._router.navigate(['FlogoMain']);
-            });
+    onDeletedApp(application:IFlogoApplicationModel) {
     }
 
 }

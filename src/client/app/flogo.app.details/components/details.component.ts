@@ -1,9 +1,10 @@
-import { Component, OnChanges, AfterViewInit, ViewChild, ElementRef, Renderer } from '@angular/core';
+import { Component, OnChanges, AfterViewInit, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { CanActivate,  RouteParams } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
+import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 import {
     notification,
@@ -24,9 +25,9 @@ import { Contenteditable, JsonDownloader } from '../../../common/directives';
 @CanActivate((next) => {
     return isConfigurationLoaded();
 })
-export class FlogoApplicationDetailsComponent implements AfterViewInit  {
-    @ViewChild('appName') appName: ElementRef;
-    @ViewChild('appDescription') appDescription: ElementRef;
+export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  {
+    @ViewChild('appInputName') appInputName: ElementRef;
+    @ViewChild('appInputDescription') appInputDescription: ElementRef;
     application: IFlogoApplicationModel = null;
     createdAtFormatted: any;
     editingDescription: boolean = false;
@@ -35,14 +36,18 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     constructor(
         private _routeParams: RouteParams,
         public translate: TranslateService,
-        private renderer: Renderer
+        private renderer: Renderer,
+        private apiApplications: RESTAPIApplicationsService
     ) {
-        this.application = this._routeParams.params["application"] as IFlogoApplicationModel;
-        this.init();
+
+        // get application details by id
+        this.apiApplications.get(this._routeParams.params['id'])
+            .then((application:IFlogoApplicationModel)=> {
+                this.application = application;
+            });
     }
 
-    init() {
-        // format create at
+    ngOnInit() {
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 
@@ -53,9 +58,10 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
         }
     }
 
+
     ngAfterViewInit() {
         if(this.application.updatedAt == null) {
-           this.renderer.invokeElementMethod(this.appName.nativeElement, 'focus',[]);
+            this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
         }
     }
 
@@ -63,7 +69,7 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
         this.editingDescription = true;
         // wait to refresh view
         setTimeout(()=> {
-            this.renderer.invokeElementMethod(this.appDescription.nativeElement, 'focus',[]);
+            this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
         }, 0);
     }
 
@@ -72,6 +78,7 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     }
 
     onInputNameChange(event) {
+        debugger;
         this.application.updatedAt = new Date();
     }
 
@@ -84,14 +91,14 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit  {
     onClickLabelName(event) {
         this.editingName = true;
         setTimeout(()=> {
-            this.renderer.invokeElementMethod(this.appName.nativeElement, 'focus',[]);
+            this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
         },0);
     }
 
     onClickLabelDescription(event) {
         this.editingDescription = true;
         setTimeout(()=> {
-            this.renderer.invokeElementMethod(this.appDescription.nativeElement, 'focus',[]);
+            this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
         },0);
     }
 

@@ -19,6 +19,7 @@ import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common
 import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
 import { FlogoHomeComponent } from '../../flogo.home/components/home.component';
 //import { FlogoApplicationDetailsComponent } from '../../flogo.app.details/components/details.component';
+import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 @Component({
   selector: 'flogo-app',
@@ -29,7 +30,7 @@ import { FlogoHomeComponent } from '../../flogo.home/components/home.component';
   pipes: [TranslatePipe],
   providers: [PostService, RESTAPIService, RESTAPIFlowsService, RESTAPIActivitiesService,
               RESTAPITriggersService, HTTP_PROVIDERS, RESTAPIConfigurationService,
-              ConfigurationService, LogService]
+              ConfigurationService, LogService, RESTAPIActivitiesService, RESTAPIApplicationsService]
 })
 
 @RouteConfig([
@@ -58,7 +59,7 @@ import { FlogoHomeComponent } from '../../flogo.home/components/home.component';
   }
 ])
 
-export class FlogoAppComponent{
+export class FlogoAppComponent {
   constructor(translate: TranslateService){
     var userLang = navigator.language.split('-')[0]; // use navigator lang if available
     userLang = /(fr|en)/gi.test(userLang) ? userLang : 'en';
