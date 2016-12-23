@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import {FlogoModal} from '../../../common/services/modal.service';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { HTTP_PROVIDERS } from '@angular/http';
+import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 
 describe('FlogoAppList component', () => {
@@ -49,7 +50,8 @@ describe('FlogoAppList component', () => {
         TranslateService,
         TranslateLoader,
         FlogoModal,
-        FlogoAppListComponent
+        FlogoAppListComponent,
+        RESTAPIApplicationsService
     ]);
 
     beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {
@@ -93,37 +95,23 @@ describe('FlogoAppList component', () => {
 
 
 
-    it('Should generate correct application name', (done)=> {
-        createComponent()
-            .then(fixture => {
-                let appList = fixture.componentInstance;
-                appList.applications = [
-                    {
-                        id: "123",
-                        name: "Untitled App",
-                        version: "0.0.1",
-                        description: "My App",
-                        createdAt: "2016-12-16T00:24:26+00:00",
-                        updatedAt: "2016-12-16T00:24:26+00:00"
-                    }
-                ];
-                expect(appList.getNewAppName('Untitled App')).toEqual('Untitled App (1)');
-                done();
-            });
-    });
+
 
     it('On add application, should emit the added application to the host', (done)=> {
         createComponent()
             .then(fixture => {
                 let appList = fixture.componentInstance;
                 appList.applications = [''];
+                appList.apiApplications.add = () => {
+                    return Promise.resolve({'name':'Untitled App'});
+                }
 
                 appList.onAddedApp.subscribe((app)=> {
                     expect(app.name).toEqual('Untitled App');
                     done();
                 });
 
-                appList.add();
+                appList.onAdd(null);
             });
     });
 
@@ -206,8 +194,8 @@ describe('FlogoAppList component', () => {
                     return Promise.resolve(true);
                 };
 
-                appList.onDeletedApp.subscribe((id:string) => {
-                    expect(id).toEqual('123');
+                appList.onDeletedApp.subscribe((application:IFlogoApplicationModel) => {
+                    expect(application.id).toEqual('123');
                     done();
                 });
 

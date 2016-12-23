@@ -7,19 +7,11 @@ import { HTTP_PROVIDERS } from '@angular/http';
 import { FlogoApplicationDetailsComponent } from './details.component';
 import { ROUTER_PROVIDERS } from '@angular/router';
 import { RouteParams } from '@angular/router-deprecated';
-
+import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
+import { RESTAPIApplicationsServiceMock } from '../../../common/services/restapi/applications-api.service.mock';
 
 describe('FlogoApplicationDetails component', () => {
     let tcb: TestComponentBuilder;
-
-    let mockApplication = {
-        id: "1",
-        name: "Untitled Application",
-        version: "0.0.1",
-        description: '',
-        createdAt: new Date(),
-        updatedAt: null
-    };
 
     function createComponent() {
         return tcb.createAsync(FlogoApplicationDetailsComponent);
@@ -32,12 +24,12 @@ describe('FlogoApplicationDetails component', () => {
         TestComponentBuilder,
         TranslateService,
         TranslateLoader,
-        provide(RouteParams, { useValue: new RouteParams({ application: mockApplication }) }),
+        provide(RouteParams, { useValue: new RouteParams({ id: '1' }) }),
+        provide(RESTAPIApplicationsService, { useClass: RESTAPIApplicationsServiceMock }),
         FlogoApplicationDetailsComponent
     ]);
 
     beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {
-        window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000;
         tcb = _tcb;
     }));
 
@@ -148,7 +140,6 @@ describe('FlogoApplicationDetails component', () => {
                 fixture.detectChanges();
                 let appDetails = fixture.componentInstance;
                 appDetails.application.description = 'A brief description';
-                appDetails.init();
                 fixture.detectChanges();
 
                 // because description field is not empty, anchor add description should not be present
@@ -158,14 +149,39 @@ describe('FlogoApplicationDetails component', () => {
             });
     });
 
+});
+
+
+describe('FlogoApplicationDetails component', () => {
+    let tcb: TestComponentBuilder;
+
+    function createComponent() {
+        return tcb.createAsync(FlogoApplicationDetailsComponent);
+    }
+
+    //setup
+    beforeEachProviders(()=> [
+        HTTP_PROVIDERS,
+        ROUTER_PROVIDERS,
+        TestComponentBuilder,
+        TranslateService,
+        TranslateLoader,
+        provide(RouteParams, { useValue: new RouteParams({ id: '2' }) }),
+        provide(RESTAPIApplicationsService, { useClass: RESTAPIApplicationsServiceMock }),
+        FlogoApplicationDetailsComponent
+    ]);
+
+    beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {
+        tcb = _tcb;
+    }));
+
+
     it("If updatedAt field is not null, the name of the component should be shown as a label", (done)=> {
         createComponent()
             .then(fixture => {
                 fixture.detectChanges();
                 let appDetails = fixture.componentInstance;
                 appDetails.application.name = 'Untitled Application';
-                appDetails.application.updatedAt = new Date();
-                appDetails.init();
                 fixture.detectChanges();
 
                 let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
@@ -174,6 +190,5 @@ describe('FlogoApplicationDetails component', () => {
                 done();
             })
     });
+
 });
-
-
