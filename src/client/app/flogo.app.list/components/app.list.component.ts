@@ -4,7 +4,6 @@ import { IFlogoApplicationModel } from '../../../common/application.model';
 import { By } from '@angular/platform-browser';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
-const UNTITLED_APP = 'Untitled App';
 
 @Component({
     selector: 'flogo-app-list',

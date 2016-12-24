@@ -25,4 +25,7 @@
                *ngIf="!editingDescription && application?.description"
                (click)="onClickLabelDescription($event)"><span>Description: </span>{{application?.description}}</label>
     </div>
+    <div class="flows">
+        <flogo-app-flows [flows]="application.flows"></flogo-app-flows>
+    </div>
 </div>

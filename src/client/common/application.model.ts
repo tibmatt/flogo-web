@@ -4,5 +4,12 @@ export interface IFlogoApplicationModel {
     version: string,
     description: string,
     createdAt: any,
-    updatedAt: any
+    updatedAt: any,
+    flows?: IFlogoApplicationFlowModel[]
+}
+
+export interface IFlogoApplicationFlowModel {
+    id: string,
+    name: string,
+    description: string
 }

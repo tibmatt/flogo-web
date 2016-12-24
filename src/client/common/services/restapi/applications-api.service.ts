@@ -15,7 +15,19 @@ export class RESTAPIApplicationsService {
             version: "0.0.1",
             description: "My App",
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            flows: [
+                {
+                    id: '897',
+                    name: 'Manually adjust temperature',
+                    description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo'
+                },
+                {
+                    id: '987',
+                    name: 'Raise temperature & notifiy operator',
+                    description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt'
+                }
+            ]
         },
         {
             id: "2",

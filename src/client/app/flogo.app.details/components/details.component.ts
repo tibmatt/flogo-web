@@ -5,21 +5,20 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
+import { FlogoApplicationFlowsComponent } from '../../flogo.app.flows/components/flows.component';
 
 import {
     notification,
 } from '../../../common/utils';
 
-import { Contenteditable, JsonDownloader } from '../../../common/directives';
 
 
 @Component( {
     selector: 'flogo-app-details',
     moduleId: module.id,
-    directives: [ Contenteditable ],
     templateUrl: 'details.tpl.html',
     styleUrls: [ 'details.component.css' ],
-    providers: [],
+    directives: [FlogoApplicationFlowsComponent],
     pipes: [TranslatePipe]
 } )
 @CanActivate((next) => {
@@ -39,11 +38,11 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         private renderer: Renderer,
         private apiApplications: RESTAPIApplicationsService
     ) {
-
         // get application details by id
         this.apiApplications.get(this._routeParams.params['id'])
             .then((application:IFlogoApplicationModel)=> {
                 this.application = application;
+                this.application.flows = this.application.flows || [];
             });
     }
 
@@ -78,7 +77,6 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     }
 
     onInputNameChange(event) {
-        debugger;
         this.application.updatedAt = new Date();
     }
 
