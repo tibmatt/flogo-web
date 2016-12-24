@@ -9,7 +9,7 @@
         <label class="applicationLabel"
                *ngIf="!editingName"
                (click)="onClickLabelName($event)">{{application?.name}}</label>
-        <button class="btn btn-primary btn-lg build">Build</button>
+        <button class="btn btn-primary btn-md build">Build</button>
     </div>
     <label for="appName" class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}</span> </label>
     <div class="description">
@@ -25,6 +25,11 @@
                *ngIf="!editingDescription && application?.description"
                (click)="onClickLabelDescription($event)"><span>Description: </span>{{application?.description}}</label>
     </div>
+
+    <div class="toolbar">
+        <p>Toolbar</p>
+    </div>
+
     <div class="flows">
         <flogo-app-flows [flows]="application.flows"></flogo-app-flows>
     </div>
