@@ -4,8 +4,7 @@ import { isConfigurationLoaded } from '../../../common/services/configurationLoa
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-
-
+import { timeString } from '../../../common/utils';
 
 
 @Component( {
@@ -36,6 +35,10 @@ export class FlogoApplicationFlowsComponent implements AfterViewInit, OnInit  {
 
 
     ngAfterViewInit() {
+    }
+
+    formatDate(date) {
+        return moment(date).format("MM-DD-YYYY");
     }
 
 }

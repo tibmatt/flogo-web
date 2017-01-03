@@ -131,7 +131,5 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         }else {
             this.flows = this.getOriginalFlows();
         }
-        debugger;
     }
-
 }

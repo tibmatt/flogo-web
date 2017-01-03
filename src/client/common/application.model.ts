@@ -11,5 +11,6 @@ export interface IFlogoApplicationModel {
 export interface IFlogoApplicationFlowModel {
     id: string,
     name: string,
-    description: string
+    description: string,
+    createdAt: any
 }

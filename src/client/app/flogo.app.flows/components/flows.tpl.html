@@ -5,8 +5,14 @@
                <img src="/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg" alt="Trigger">
            </div>
            <div class="flow-info">
-               <p>{{flow.name}}</p>
-               <p [title]="flow.description">{{flow.description}}</p>
+               <div class="header">
+                   <div class="title">{{flow.name}}</div>
+                   <div class="options">
+                       <span>Created {{formatDate(flow.createdAt)}}</span>
+                       <span class="glyphicon glyphicon-option-vertical menu"> </span>
+                   </div>
+               </div>
+               <div [title]="flow.description" class="description">{{flow.description}}</div>
            </div>
         </div>
     </div>
