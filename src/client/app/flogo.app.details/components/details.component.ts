@@ -30,6 +30,7 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     @ViewChild('appInputDescription') appInputDescription: ElementRef;
     application: IFlogoApplicationModel = null;
     createdAtFormatted: any;
+    updateAtFormatted: any;
     editingDescription: boolean = false;
     editingName: boolean = false;
     flows: Array<IFlogoApplicationFlowModel> = [];
@@ -53,10 +54,13 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 
+
         if(this.application.updatedAt == null) {
             this.editingName = true;
+            this.updateAtFormatted = null;
         }else {
             this.editingName = false;
+            this.updateAtFormatted = moment(timeString(this.application.updatedAt), 'YYYYMMDD hh:mm:ss').fromNow();
         }
     }
 

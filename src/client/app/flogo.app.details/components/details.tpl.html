@@ -11,7 +11,8 @@
                (click)="onClickLabelName($event)">{{application?.name}}</label>
         <button class="btn btn-primary btn-md build">Build</button>
     </div>
-    <label for="appName" class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}</span> </label>
+    <label class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}.</span> </label>
+    <label *ngIf="updateAtFormatted" class="created">{{ 'FLOWS:UPDATED' | translate:{value:''} }}<span>{{updateAtFormatted}}.</span> </label>
     <div class="description">
         <a *ngIf="application && !application.description && editingDescription == false"
            (click)="onClickAddDescription($event)" >Add description</a>
