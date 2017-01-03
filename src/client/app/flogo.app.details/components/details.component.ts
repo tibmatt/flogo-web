@@ -120,8 +120,10 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     }
 
     onChangedSearch(search) {
-        if(search){
-            let filtered =  this.flows.filter((flow:IFlogoApplicationFlowModel)=> {
+        let flows = this.application.flows || [];
+
+        if(search && flows.length){
+            let filtered =  flows.filter((flow:IFlogoApplicationFlowModel)=> {
                 return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
                        (flow.description || '').toLowerCase().includes(search.toLowerCase())
             });
