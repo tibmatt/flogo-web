@@ -16,7 +16,27 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
             version: "0.0.1",
             description: null, /* should be null for test */
             createdAt: new Date(),
-            updatedAt: null   /* should be null for test */
+            updatedAt: null,   /* should be null for test */
+            flows: [
+                {
+                    id: '897',
+                    name: 'Manually adjust temperature',
+                    description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
+                    createdAt: new Date()
+                },
+                {
+                    id: '987',
+                    name: 'Raise temperature & notifiy operator',
+                    description: 'A basic flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+                    createdAt: new Date()
+                },
+                {
+                    id: '879',
+                    name: 'Log temperature',
+                    description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+                    createdAt: new Date()
+                }
+            ]
         },
         {
             id: "2",
