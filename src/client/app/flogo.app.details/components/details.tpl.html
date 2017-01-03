@@ -27,7 +27,8 @@
     </div>
 
     <div class="toolbar">
-        <div class="search">Search</div>
+        <flogo-app-search [placeholder]="'Search'" (changedSearch)="onChangedSearch($event)"
+                          class="search"></flogo-app-search>
         <div class="commands">
             <span class="new-flow">New flow</span>
             <span class="import">Import</span>
@@ -35,6 +36,6 @@
     </div>
 
     <div class="flows">
-        <flogo-app-flows [flows]="application.flows"></flogo-app-flows>
+        <flogo-app-flows [flows]="flows"></flogo-app-flows>
     </div>
 </div>

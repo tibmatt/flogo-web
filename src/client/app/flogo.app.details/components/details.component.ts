@@ -2,10 +2,11 @@ import { Component, OnChanges, AfterViewInit, OnInit, ViewChild, ElementRef, Ren
 import { CanActivate,  RouteParams } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationModel } from '../../../common/application.model';
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { FlogoApplicationFlowsComponent } from '../../flogo.app.flows/components/flows.component';
+import { FlogoApplicationSearch } from '../../flogo.app.search/components/search.component';
 
 import {
     notification,
@@ -18,7 +19,7 @@ import {
     moduleId: module.id,
     templateUrl: 'details.tpl.html',
     styleUrls: [ 'details.component.css' ],
-    directives: [FlogoApplicationFlowsComponent],
+    directives: [FlogoApplicationFlowsComponent, FlogoApplicationSearch],
     pipes: [TranslatePipe]
 } )
 @CanActivate((next) => {
@@ -31,6 +32,8 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     createdAtFormatted: any;
     editingDescription: boolean = false;
     editingName: boolean = false;
+    flows: Array<IFlogoApplicationFlowModel> = [];
+
 
     constructor(
         private _routeParams: RouteParams,
@@ -42,7 +45,7 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         this.apiApplications.get(this._routeParams.params['id'])
             .then((application:IFlogoApplicationModel)=> {
                 this.application = application;
-                this.application.flows = this.application.flows || [];
+                this.flows = this.getOriginalFlows();
             });
     }
 
@@ -55,6 +58,10 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         }else {
             this.editingName = false;
         }
+    }
+
+    getOriginalFlows() {
+        return _.clone(this.application.flows || []);
     }
 
 
@@ -110,6 +117,21 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         if(event.code == "Enter") {
             this.editingDescription = false;
         }
+    }
+
+    onChangedSearch(search) {
+        if(search){
+            let filtered =  this.flows.filter((flow:IFlogoApplicationFlowModel)=> {
+                return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
+                       (flow.description || '').toLowerCase().includes(search.toLowerCase())
+            });
+
+            this.flows = filtered || [];
+
+        }else {
+            this.flows = this.getOriginalFlows();
+        }
+        debugger;
     }
 
 }
