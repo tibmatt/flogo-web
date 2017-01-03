@@ -25,12 +25,12 @@ export class RESTAPIApplicationsService {
                 {
                     id: '987',
                     name: 'Raise temperature & notifiy operator',
-                    description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt'
+                    description: 'A basic flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt'
                 },
                 {
                     id: '879',
                     name: 'Log temperature',
-                    description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt'
+                    description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt'
                 }
             ]
         },
