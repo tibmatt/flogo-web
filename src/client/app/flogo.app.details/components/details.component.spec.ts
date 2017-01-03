@@ -61,7 +61,7 @@ describe('FlogoApplicationDetails component', () => {
             .then(fixture => {
                 fixture.detectChanges();
                 let creation = fixture.debugElement.query(By.css('.created span'));
-                expect(creation.nativeElement.innerText).toEqual('a few seconds ago');
+                expect(creation.nativeElement.innerText).toEqual('a few seconds ago.');
                 done();
             });
     });
@@ -145,6 +145,16 @@ describe('FlogoApplicationDetails component', () => {
                 // because description field is not empty, anchor add description should not be present
                 let addDescription = fixture.debugElement.query(By.css('.description > a'));
                 expect(addDescription).toBeNull();
+                done();
+            });
+    });
+
+    it('Should render 3 flows', (done)=> {
+        createComponent()
+            .then(fixture => {
+                fixture.detectChanges();
+                let flows = fixture.debugElement.queryAll(By.css('.flows-container > .flow'));
+                expect(flows.length).toEqual(3);
                 done();
             });
     });
