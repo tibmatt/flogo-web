@@ -24,7 +24,7 @@ export class FlogoAppListComponent {
     selectedApp:IFlogoApplicationModel;
     overApp:IFlogoApplicationModel;
 
-    constructor(public flogoModal: FlogoModal, private apiApplications: RESTAPIApplicationsService, public _router: Router) {
+    constructor(public flogoModal: FlogoModal, private apiApplications: RESTAPIApplicationsService /*, public _router: Router*/) {
         this.apiApplications.list()
             .then((applications:Array<IFlogoApplicationModel>)=> {
                 this.applications = applications;
@@ -62,7 +62,7 @@ export class FlogoAppListComponent {
                 this.onDeletedApp.emit(application);
                 this.selectedApp = null;
                 this.overApp = null;
-                this._router.navigate([ 'FlogoHomeComponent', {id: application.id} ]);
+                //this._router.navigate([ 'FlogoHomeComponent', {id: application.id} ]);
             });
     }
 

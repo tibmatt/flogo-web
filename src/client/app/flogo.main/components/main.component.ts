@@ -11,14 +11,12 @@ import {
     notification,
 } from '../../../common/utils';
 
-import { Contenteditable, JsonDownloader } from '../../../common/directives';
 import { FlogoModal } from '../../../common/services/modal.service';
 
 
 @Component( {
     selector: 'flogo-main',
     moduleId: module.id,
-    directives: [ Contenteditable ],
     templateUrl: 'main.tpl.html',
     styleUrls: [ 'main.component.css' ],
     providers: [ FlogoModal, RESTAPIApplicationsService ],
@@ -26,6 +24,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
     directives: [FlogoApplicationSearch, FlogoApplicationFlowsComponent]
 } )
 @CanActivate((next) => {
+
     return isConfigurationLoaded();
 })
 
@@ -49,7 +48,7 @@ export class FlogoMainComponent implements OnInit {
             });
 
         this.applicationServiceAPI.allFlows()
-            .then((flows)=> {
+            .then((flows: Array<IFlogoApplicationFlowModel>)=> {
                 this.originalFlows = flows;
                 this.flows = this.getOriginalFlows();
             });

@@ -55,6 +55,7 @@ export class FlogoHomeComponent implements  OnInit {
     }
 
     onDeletedApp(application:IFlogoApplicationModel) {
+        this._router.navigate([ 'FlogoHomeComponent' ]);
     }
 
 }
