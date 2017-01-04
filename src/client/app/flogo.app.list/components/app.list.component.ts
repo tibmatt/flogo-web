@@ -1,4 +1,5 @@
 import { Component, EventEmitter,  Input, OnChanges, Output, SimpleChange,  } from '@angular/core';
+import { Router } from '@angular/router-deprecated';
 import {FlogoModal} from '../../../common/services/modal.service';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { By } from '@angular/platform-browser';
@@ -23,7 +24,7 @@ export class FlogoAppListComponent {
     selectedApp:IFlogoApplicationModel;
     overApp:IFlogoApplicationModel;
 
-    constructor(public flogoModal: FlogoModal, private apiApplications: RESTAPIApplicationsService) {
+    constructor(public flogoModal: FlogoModal, private apiApplications: RESTAPIApplicationsService, public _router: Router) {
         this.apiApplications.list()
             .then((applications:Array<IFlogoApplicationModel>)=> {
                 this.applications = applications;
@@ -61,6 +62,7 @@ export class FlogoAppListComponent {
                 this.onDeletedApp.emit(application);
                 this.selectedApp = null;
                 this.overApp = null;
+                this._router.navigate([ 'FlogoHomeComponent', {id: application.id} ]);
             });
     }
 

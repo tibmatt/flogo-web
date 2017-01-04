@@ -1,1 +1,38 @@
-<h1>MAIN COMPONENT</h1>
+<div class="flogo-main">
+    <div class="header">
+        <div class="welcome">
+            <p class="welcome-message">Welcome back</p>
+            <p class="description-message">We have got some new instructional videos you can check out that can help you</p>
+            <a class="" href="https://www.youtube.com/watch?v=OHX4kKVdI28&amp;feature=youtu.be" target="_blank">
+               <img src="/assets/svg/flogo.video.icon.svg"> <span>Featured Video tutorial</span>
+            </a>
+        </div>
+        <div class="flogo-mascot">
+            <object class="flogo-flows-mascotImg" data="/assets/svg/flogo-flynn.svg" type="image/svg+xml">
+                <img src="/assets/svg/flogo-flynn.svg"/>
+            </object>
+        </div>
+    </div>
+
+    <div class="recent">
+        <p>Recently Modified:</p>
+        <ul>
+            <li *ngFor="let item of recent">
+                {{item.application}}
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                {{item.flow}}
+            </li>
+        </ul>
+    </div>
+
+    <div class="search">
+        <flogo-app-search [placeholder]="'Search all flows'" (changedSearch)="onChangedSearch($event)"
+                          class="search"></flogo-app-search>
+    </div>
+
+    <div class="flows">
+        <flogo-app-flows [flows]="flows"></flogo-app-flows>
+    </div>
+
+
+</div>

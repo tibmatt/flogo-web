@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { IFlogoApplicationModel } from '../../../common/application.model';
-//import IfStatement = ts.IfStatement;
 
 const UNTITLED_APP = 'Untitled App';
 
@@ -105,12 +104,53 @@ export class RESTAPIApplicationsService {
         }
     ];
 
+
+    private recent: Array<any> = [
+        {
+            application: "Refrigerated containers",
+            flow: "Lower temperature & notify operator"
+        },
+        {
+            application: "Refrigerated containers",
+            flow: "Log temperature"
+        },
+        {
+            application: "Robotic take-over",
+            flow: "Monitor weapon production status"
+        }
+    ];
+
+
   constructor(public _http : Http ) {
+  }
+
+  recentFlows()   {
+      return new Promise((resolve, reject)=> {
+          resolve(this.recent);
+      });
   }
 
   list() {
       return new Promise((resolve, reject)=> {
           resolve(this.applications);
+      });
+  }
+
+  allFlows()   {
+      let flows = [];
+
+      return new Promise((resolve, reject)=> {
+          this.applications.forEach((application)=> {
+              debugger;
+
+              if(application.flows && application.flows.length) {
+                  flows = flows.concat(application.flows);
+              }
+
+
+          });
+
+          resolve(flows);
       });
   }
 
