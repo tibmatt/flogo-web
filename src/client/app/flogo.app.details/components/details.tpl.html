@@ -16,12 +16,13 @@
     <div class="description">
         <a *ngIf="application && !application.description && editingDescription == false"
            (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
-        <input *ngIf="editingDescription" type="text" #appInputDescription
+        <textarea *ngIf="editingDescription" #appInputDescription
                (blur)="onInputDescriptionBlur($event)"
                placeholder="Description"
+               rows="3"
                (keyup)="onKeyUpDescription($event)"
                id="appDescription"
-               [(ngModel)]="application.description" />
+               [(ngModel)]="application.description" ></textarea>
         <label class="descriptionLabel"
                *ngIf="!editingDescription && application?.description"
                (click)="onClickLabelDescription($event)"><span>{{ 'DETAILS:DESCRIPTION' | translate }}:</span>{{application?.description}}</label>

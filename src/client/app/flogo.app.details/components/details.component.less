@@ -1,4 +1,5 @@
 @action-fore-color: #449ed8;
+@width-inputs: 60%;
 
 .flogo-app-details {
   color: #bbbcbe;
@@ -8,12 +9,26 @@
     color: #269ed8;
     display: block;
   }
+  .applicationLabel, .descriptionLabel {
+    cursor: pointer;
+  }
 
   input,
   .applicationLabel {
     font-size: 2em;
-    width: 60%;
+    width: @width-inputs;
   }
+
+  textarea {
+    width: @width-inputs;
+  }
+
+  input, textarea {
+    font-size: 1.5em;
+    color: #000;
+    outline-style: none;
+  }
+
 
   .descriptionLabel {
     font-size: 1.3em;

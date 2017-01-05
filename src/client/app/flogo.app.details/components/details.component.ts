@@ -123,9 +123,6 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     }
 
     onKeyUpDescription(event) {
-        if(event.code == "Enter") {
-            this.editingDescription = false;
-        }
     }
 
     onChangedSearch(search) {
