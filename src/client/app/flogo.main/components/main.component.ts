@@ -34,6 +34,7 @@ export class FlogoMainComponent implements OnInit {
     flows: Array<IFlogoApplicationFlowModel> = [];
     originalFlows: Array<IFlogoApplicationFlowModel> = [];
     application: IFlogoApplicationModel = null;
+    searchPlaceHolder:string = '';
     constructor(
         private _flogoModal: FlogoModal,
         public translate: TranslateService,
@@ -42,6 +43,7 @@ export class FlogoMainComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.searchPlaceHolder = this.translate.get('FLOWS:SEARCH')['value'];
         this.applicationServiceAPI.recentFlows()
             .then((flows: Array<any>)=> {
                 this.recent = flows;

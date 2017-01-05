@@ -3,6 +3,7 @@ import { Router } from '@angular/router-deprecated';
 import {FlogoModal} from '../../../common/services/modal.service';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { By } from '@angular/platform-browser';
+import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 
@@ -12,6 +13,7 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
     templateUrl: 'app.list.tpl.html',
     styleUrls: ['app.list.css'],
     directives: [],
+    pipes: [TranslatePipe],
     providers: [FlogoModal ]
 
 })
@@ -24,7 +26,9 @@ export class FlogoAppListComponent {
     selectedApp:IFlogoApplicationModel;
     overApp:IFlogoApplicationModel;
 
-    constructor(public flogoModal: FlogoModal, private apiApplications: RESTAPIApplicationsService /*, public _router: Router*/) {
+    constructor(public flogoModal: FlogoModal,
+                public translate: TranslateService,
+                private apiApplications: RESTAPIApplicationsService) {
         this.apiApplications.list()
             .then((applications:Array<IFlogoApplicationModel>)=> {
                 this.applications = applications;

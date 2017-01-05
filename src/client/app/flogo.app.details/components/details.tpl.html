@@ -24,7 +24,7 @@
                [(ngModel)]="application.description" />
         <label class="descriptionLabel"
                *ngIf="!editingDescription && application?.description"
-               (click)="onClickLabelDescription($event)"><span>{{ 'DETAILS:DESCRIPTION' | translate }}: </span>{{application?.description}}</label>
+               (click)="onClickLabelDescription($event)"><span>{{ 'DETAILS:DESCRIPTION' | translate }}:</span>{{application?.description}}</label>
     </div>
 
     <div class="toolbar">

@@ -112,7 +112,7 @@ describe('FlogoApplicationDetails component', () => {
 
                 let labelDescription = fixture.debugElement.query(By.css('.descriptionLabel'));
                 let labelElement = labelDescription.nativeElement;
-                expect(labelElement.innerText).toEqual('Description: A brief description');
+                expect(labelElement.innerText.indexOf('A brief description')).not.toEqual(-1);
                 done();
             });
     });
