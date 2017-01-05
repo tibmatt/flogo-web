@@ -1,3 +1,5 @@
+@action-fore-color: #449ed8;
+
 .flogo-app-details {
   color: #bbbcbe;
   margin-left: 20px;
@@ -43,7 +45,7 @@
     }
 
     .commands {
-      color: #449ed8;
+      color: @action-fore-color;
 
       span {
         cursor: pointer;
@@ -60,7 +62,7 @@
         font-family: "Glyphicons Halflings";
         position: relative;
         top: 2px;
-        color:#449ed8;
+        color:@action-fore-color;
         cursor: pointer;
       }
 
@@ -73,6 +75,16 @@
       }
 
     }
+  }
+
+  hr {
+    border-top: 1px solid #d1d3d4;
+    margin-right: 60px;
+  }
+
+  .action {
+    color:@action-fore-color;
+    cursor: pointer;
   }
 
 }

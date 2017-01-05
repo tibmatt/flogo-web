@@ -141,13 +141,9 @@ export class RESTAPIApplicationsService {
 
       return new Promise((resolve, reject)=> {
           this.applications.forEach((application)=> {
-              debugger;
-
               if(application.flows && application.flows.length) {
                   flows = flows.concat(application.flows);
               }
-
-
           });
 
           resolve(flows);

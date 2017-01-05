@@ -29,6 +29,7 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     @ViewChild('appInputName') appInputName: ElementRef;
     @ViewChild('appInputDescription') appInputDescription: ElementRef;
     application: IFlogoApplicationModel = null;
+    searchPlaceHolder:string = '';
     createdAtFormatted: any;
     updateAtFormatted: any;
     editingDescription: boolean = false;
@@ -42,6 +43,8 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         private renderer: Renderer,
         private apiApplications: RESTAPIApplicationsService
     ) {
+
+
         // get application details by id
         this.apiApplications.get(this._routeParams.params['id'])
             .then((application:IFlogoApplicationModel)=> {
@@ -51,6 +54,8 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     }
 
     ngOnInit() {
+        this.searchPlaceHolder = this.translate.get('DETAILS:SEARCH')['value'];
+
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 

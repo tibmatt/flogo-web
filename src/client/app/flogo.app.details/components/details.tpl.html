@@ -9,13 +9,13 @@
         <label class="applicationLabel"
                *ngIf="!editingName"
                (click)="onClickLabelName($event)">{{application?.name}}</label>
-        <button class="btn btn-primary btn-md build">Build</button>
+        <button class="btn btn-primary btn-md build">{{ 'DETAILS:BUILD' | translate }}</button>
     </div>
     <label class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}.</span> </label>
     <label *ngIf="updateAtFormatted" class="created">{{ 'FLOWS:UPDATED' | translate:{value:''} }}<span>{{updateAtFormatted}}.</span> </label>
     <div class="description">
         <a *ngIf="application && !application.description && editingDescription == false"
-           (click)="onClickAddDescription($event)" >Add description</a>
+           (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
         <input *ngIf="editingDescription" type="text" #appInputDescription
                (blur)="onInputDescriptionBlur($event)"
                placeholder="Description"
@@ -24,16 +24,21 @@
                [(ngModel)]="application.description" />
         <label class="descriptionLabel"
                *ngIf="!editingDescription && application?.description"
-               (click)="onClickLabelDescription($event)"><span>Description: </span>{{application?.description}}</label>
+               (click)="onClickLabelDescription($event)"><span>{{ 'DETAILS:DESCRIPTION' | translate }}: </span>{{application?.description}}</label>
     </div>
 
     <div class="toolbar">
-        <flogo-app-search [placeholder]="'Search'" (changedSearch)="onChangedSearch($event)"
+        <flogo-app-search [placeholder]="searchPlaceHolder" (changedSearch)="onChangedSearch($event)"
                           class="search"></flogo-app-search>
         <div class="commands">
-            <span class="new-flow">New flow</span>
-            <span class="import">Import</span>
+            <span class="new-flow">{{ 'DETAILS:NEW-FLOW' | translate }}</span>
+            <span class="import">{{ 'DETAILS:IMPORT' | translate }}</span>
         </div>
+    </div>
+
+    <div *ngIf="!flows.length">
+        <hr>
+        <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}<span class="action">&nbsp;{{'DETAILS:CREATE-A-FLOW' | translate}}</span> </p>
     </div>
 
     <div class="flows">
