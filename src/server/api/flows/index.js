@@ -21,6 +21,26 @@ const ERROR_WRITING_DATABASE   = 'ERROR_WRITING_DATABASE';
 const ERROR_CODE_BADINPUT      = 400;
 const ERROR_CODE_SERVERERROR   = 500;
 
+export function flows(app, router){
+  if(!app){
+    console.error("[Error][api/activities/index.js]You must pass app");
+  }
+
+  router.get(basePath+"/flows", getFlows);
+  router.post(basePath+"/flows", createFlows);
+  router.post(basePath+"/flows/upload", createFlows);
+  router.post(basePath+"/flows/update", updateFlows);
+  router.del(basePath+"/flows/:id", deleteFlows);
+
+  // {
+  //   name: "tibco-mqtt"
+  // }
+  router.post(basePath+"/flows/triggers", addTrigger);
+  router.post(basePath+"/flows/activities", addActivity);
+
+  router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
+}
+
 
 function getAllFlows(){
   let options = {
@@ -108,26 +128,6 @@ function updateFlow(flowObj){
 
 function deleteFlow(flowInfo) {
   return _dbService.remove(flowInfo.id, flowInfo.rev);
-}
-
-export function flows(app, router){
-  if(!app){
-    console.error("[Error][api/activities/index.js]You must pass app");
-  }
-
-  router.get(basePath+"/flows", getFlows);
-  router.post(basePath+"/flows", createFlows);
-  router.post(basePath+"/flows/upload", createFlows);
-  router.post(basePath+"/flows/update", updateFlows);
-  router.del(basePath+"/flows/:id", deleteFlows);
-
-  // {
-  //   name: "tibco-mqtt"
-  // }
-  router.post(basePath+"/flows/triggers", addTrigger);
-  router.post(basePath+"/flows/activities", addActivity);
-
-  router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
 /**

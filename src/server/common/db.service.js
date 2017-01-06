@@ -13,14 +13,17 @@ const DIAGRAM = 'diagram';
 const DELIMITER = ":";
 const DEFAULT_USER_ID = 'flogoweb-admin';
 
-// TODO need to research how to implement private property and function on ES6
-export class DBService{
+export class DBService {
 
   constructor(name, options){
     console.log("DBService initial, name: ", name);
+    this.name = name;
     this.options = options;
-    this._db = this._initDB(name, options);
     this._sync = null;
+  }
+
+  init() {
+    return this._initDB(this.name, this.options).then(() => this.db);
   }
 
   getIdentifier(identifier){
@@ -82,10 +85,11 @@ export class DBService{
     return new Promise((resolve, reject)=>{
       if(!doc) reject("Please pass doc");
 
-      if(!doc.$table){
-        console.error("[Error]doc.$table is required. You must pass. ", doc);
-        reject("[Error]doc.$table is required.");
-      }
+      // TODO: i see no reason for this? perhaps we wanted to have only one database at the beggining? need to investigate further, commenting out for now
+      // if(!doc.$table){
+      //   console.error("[Error]doc.$table is required. You must pass. ", doc);
+      //   reject("[Error]doc.$table is required.");
+      // }
 
       this.failWhenNameExists(doc.name)
         .then(()=> {
@@ -293,12 +297,16 @@ export class DBService{
   _initDB(name, options){
     let db = new Pouchdb(name);
     // PouchDB will be initialled when you call it. So this code is to make sure db is created
-    db.info().then((response)=>{
-      console.log("[_initDB][response]", response);
-    }).catch((error)=>{
-      console.log("[_initDB][error]", error);
-    });
-    return db;
+    return db
+      .info()
+      .then((response)=>{
+        this._db = db;
+        console.log("[_initDB][response]", response);
+        return db;
+      })
+      .catch((error)=>{
+        console.log("[_initDB][error]", error);
+      });
   }
 
 

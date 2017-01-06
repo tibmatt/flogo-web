@@ -10,6 +10,7 @@ import compress from 'koa-compress';
 var cors = require('koa-cors');
 
 import {config, flowsDBService} from './config/app-config';
+import {initAllDbs} from './common/db/init-all';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
 import {syncTasks, installSamples, getInitializedEngine, ensureDefaultDirs} from './modules/init';
@@ -35,7 +36,10 @@ ensureDefaultDirs()
     return engine.build()
       .then(() => engine.stop())
       .then(() => engine.start())
-      .then(() => syncTasks(engine))//;
+      .then(() =>
+        initAllDbs()
+          .then(() => syncTasks(engine))
+      )//;
       .then(() => {console.log(engine.getTasks())})
   })
   .then(() => initServer())
@@ -101,7 +105,7 @@ function initServer() {
         return;
       }
 
-      console.error(err.toString());
+      console.error(err);
       reject(err);
     });
 
