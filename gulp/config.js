@@ -1,6 +1,7 @@
 import path from 'path';
 
 const source = 'src';
+
 const dist = process.env.DIST_BUILD ? 'dist/build' : 'dist';
 
 const sourcePaths = {
@@ -19,7 +20,7 @@ export const CONFIG = {
       server: path.join(dist, 'server'),
       packages: path.join(dist, 'packages')
     },
-    ts: ['../../typings/index.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
+    ts: ['../../typings/index.d.ts', '**/*.ts', '!**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
     less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
     assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
@@ -29,7 +30,7 @@ export const CONFIG = {
     // directories that should be watched by running server so it restarts if something changes
     serverWatch: ['api', 'common', 'config', 'modules', 'server.js']
   },
-  host: 'localhost:3010',
+  host: 'localhost:3303',
   libs: {
     js: [
       'node_modules/core-js/client/shim.min.js',
@@ -45,7 +46,6 @@ export const CONFIG = {
       'node_modules/d3/d3.js',
       'node_modules/lodash/lodash.js',
       'node_modules/postal/lib/postal.js',
-      'node_modules/pouchdb/dist/pouchdb.js',
       'node_modules/bootstrap/dist/js/bootstrap.js',
       'node_modules/moment/min/moment-with-locales.min.js',
 
@@ -77,7 +77,6 @@ export const CONFIG = {
         'node_modules/d3/d3.min.js',
         'node_modules/lodash/lodash.min.js',
         'node_modules/postal/lib/postal.min.js',
-        'node_modules/pouchdb/dist/pouchdb.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/moment/min/moment-with-locales.min.js'
       ],

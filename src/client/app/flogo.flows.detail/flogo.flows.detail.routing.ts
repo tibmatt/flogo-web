@@ -8,6 +8,7 @@ import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/compone
 import { FlogoFlowsDetailTriggersDetail } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
 import { FlogoFlowsDetailTasksDetail } from '../flogo.flows.detail.tasks.detail/components/detail.component';
+import { FlogoLogs } from '../flogo.logs/components/logs.component';
 import { FlogoCanvasComponent } from "./components/canvas.component";
 
 const routes: Routes = [
@@ -20,7 +21,8 @@ const routes: Routes = [
       {path: 'trigger/add', component: FlogoFlowsDetailTriggers},
       {path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetail},
       {path: 'task/add', component: FlogoFlowsDetailTasks},
-      {path: 'task/:id', component: FlogoFlowsDetailTasksDetail}
+      {path: 'task/:id', component: FlogoFlowsDetailTasksDetail},
+      {path: 'logs', component: FlogoLogs}
     ]
   }
 ];

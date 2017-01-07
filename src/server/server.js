@@ -1,17 +1,18 @@
 import 'babel-polyfill';
-import path from 'path';
+var fs = require('fs');
+var path = require('path');
 
 import koa from 'koa';
 import koaStatic from 'koa-static';
 var router = require('koa-router')();
 import bodyParser from 'koa-body';
 import compress from 'koa-compress';
+var cors = require('koa-cors');
 
-import { inspectObj } from './common/utils';
-import {config, triggersDBService, activitiesDBService} from './config/app-config';
+import {config, flowsDBService} from './config/app-config';
 import {api} from './api';
-import { getInitialisedTestEngine, getInitialisedBuildEngine } from './modules/engine';
-import { installAndConfigureTasks, loadTasksToEngines } from './modules/init'
+import {init as initWebsocketApi} from './api/ws';
+import {syncTasks, installSamples, getInitializedEngine, ensureDefaultDirs} from './modules/init';
 
 // TODO Need to use cluster to improve the performance
 
@@ -26,121 +27,108 @@ let app;
  * 4. configure the server and start listening
  */
 
-let startConfig = Promise.resolve(true);
-if ( process.env[ 'FLOGO_NO_ENGINE_RECREATION' ] ) {
-  startConfig = startConfig
-    .then(() => triggersDBService.verifyInitialDataLoad(path.resolve('db-init/installed-triggers.init')))
-    .then(() => activitiesDBService.verifyInitialDataLoad(path.resolve('db-init/installed-activities.init')))
-    .then(() => loadTasksToEngines());
-} else {
-  startConfig = startConfig.then(installAndConfigureTasks);
-}
-
-startConfig
-  .then( ()=> {
-    return getInitialisedTestEngine();
-  } )
-  .then( ( testEngine ) => {
-    console.log('############ TEST ENGINE ####################');
-    console.log('~~~ ACTIVITIES ~~~');
-    console.log(testEngine.installedActivites);
-    console.log('~~~ Triggers ~~~');
-    console.log(testEngine.installedTriggers);
-    return testEngine.build()
-      .then( ()=> {
-        console.log( "[log] build test engine done." );
-        return testEngine.start();
-      } );
-  } )
-  .then( ()=> {
-    console.log( "[log] start test engine done" );
-    return getInitialisedBuildEngine();
-  } )
-  .then( ( buildEngine )=> {
-    console.log('############ BUILD ENGINE ####################');
-    console.log('~~~ ACTIVITIES ~~~');
-    console.log(buildEngine.installedActivites);
-    console.log('~~~ Triggers ~~~');
-    console.log(buildEngine.installedTriggers);
-    console.log( `[log] start web server...` );
-    return initServer();
-  } )
-  .catch( ( err )=> {
-    console.log( err );
+ensureDefaultDirs()
+  .then(() => getInitializedEngine(config.defaultEngine.path, {
+      forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
+  }))
+  .then(engine => {
+    return engine.build()
+      .then(() => engine.stop())
+      .then(() => engine.start())
+      .then(() => syncTasks(engine))//;
+      .then(() => {console.log(engine.getTasks())})
+  })
+  .then(() => initServer())
+  .then((server) => {
+    initWebsocketApi(server);
+  })
+  .then(() => flowsDBService
+        .verifyInitialDataLoad(path.resolve('db-init/installed-flows.init'))
+        .then(() => process.env['FLOGO_WEB_INSTALL_SAMPLES'] ? installSamples() : null)
+  )
+  .then(() => {
+    console.log('flogo-web::server::ready');
+    showBanner();
+  })
+  .catch((err)=> {
+    console.log(err);
     throw err;
-  } );
+  });
 
 
 function initServer() {
 
-  return new Promise( ( resolve, reject )=> {
+  return new Promise((resolve, reject)=> {
 
     app = koa();
 
     let port = config.app.port;
 
-    api( app, router );
+    app.use(cors());
+
+    api(app, router);
 
     // make sure deep link it works
-    app.use( function *( next ) {
-      var path = this.path.endsWith( '/' ) ? this.path.substring( 0, this.path.length - 1 ) : this.path;
+    app.use(function *(next) {
+      var path = this.path.endsWith('/') ? this.path.substring(0, this.path.length - 1) : this.path;
 
       // not include restful api
-      if ( !/\/[^\/]+\.[^.\/]+$/i.test( path ) && path.toLowerCase()
-          .search( '/api/' ) === -1 ) {
+      if (!/\/[^\/]+\.[^.\/]+$/i.test(path) && path.toLowerCase()
+          .search('/api/') === -1) {
         this.path = '/';
       }
       yield  next;
-    } );
+    });
 
     // compress
-    app.use( compress( {
-      filter : function ( content_type ) {
-        return /text/i.test( content_type )
+    app.use(compress({
+      filter: function (content_type) {
+        return /text/i.test(content_type)
       },
-      threshold : 2048,
-      flush : require( 'zlib' ).Z_SYNC_FLUSH
-    } ) );
+      threshold: 2048,
+      flush: require('zlib').Z_SYNC_FLUSH
+    }));
 
     // server static resources
-    app.use( koaStatic( config.publicPath, { maxage : config.app.cacheTime } ) );
-    app.use( bodyParser( { multipart : true } ) );
+    app.use(koaStatic(config.publicPath, {maxage: config.app.cacheTime}));
+    app.use(bodyParser({multipart: true}));
 
-    app.on( 'error', function ( err ) {
-      if ( 401 == err.status ) {
+    app.on('error', function (err) {
+      if (401 == err.status) {
         return;
       }
-      if ( 404 == err.status ) {
+      if (404 == err.status) {
         return;
       }
 
-      console.error( err.toString() );
-      reject( err );
-    } );
+      console.error(err.toString());
+      reject(err);
+    });
 
-    app.use( router.routes() );
+    app.use(router.routes());
 
     // logger
-    app.use( function *( next ) {
+    app.use(function *(next) {
       var start = new Date;
       yield next;
       var ms = new Date - start;
-      console.log( '%s %s - %s', this.method, this.url, ms );
-      console.log( this.body );
-      console.log( this.request.body );
-    } );
+      console.log('%s %s - %s', this.method, this.url, ms);
+      console.log(this.body);
+      console.log(this.request.body);
+    });
 
+    var server = require('http').createServer(app.callback());
+    server.listen(port, ()=> {
+      console.log(`[log] start web server done.`);
 
-    app.listen( port, ()=> {
-      console.log( `[log] start web server done.` );
-      showInitBanner();
-      resolve( app );
-    } );
-  } );
+      resolve(server);
+    });
+  });
 }
 
-function showInitBanner() {
+function showBanner() {
+  console.log('flogo-web::server::ready');
   console.log("=============================================================================================");
-  console.log("[success] open http://localhost:3010 or http://localhost:3010/_config in your browser");
+  console.log(`[success] open http://localhost:${config.app.port} or http://localhost:${config.app.port}/_config in your browser`);
   console.log("=============================================================================================");
 }

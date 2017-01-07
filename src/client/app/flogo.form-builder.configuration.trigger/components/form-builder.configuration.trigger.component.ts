@@ -6,14 +6,17 @@ import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.comm
     selector: 'flogo-form-builder-trigger-configuration',
     moduleId: module.id,
     templateUrl: 'form-builder.configuration.trigger.tpl.html',
-    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes']
+    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes'],
+    styleUrls: ['form-builder.configuration.trigger.css']
 })
 export class FlogoFormBuilderConfigurationTriggerComponent {
   _fieldObserver : any;
   _attributes: any;
   fields:any;
+  directions:any;
 
   constructor(private _commonService: FlogoFormBuilderCommon) {
+    this.directions = _commonService.getParameterDirections();
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
@@ -27,13 +30,9 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
   ngOnInit() {
   }
 
-  getControlByType(item:any) :any {
+  getControlByType(item:any, parameterDirection?:string) :any {
 
-    if(item.allowed) {
-      return {control: 'FieldListBox'};
-    }
-
-    return this._commonService.getControlByType(item.type);
+    return this._commonService.getControlByType(item,parameterDirection);
   }
 
   //TODO define interface

@@ -40,17 +40,17 @@ You need to set the following environment variables (adjust them accordingly):
 - SLACK_API_TOKEN=<YOUR-SLACK-TOKEN>
 - FLOGO_PROTOCOL=http
 - FLOGO_HOSTNAME=localhost
-- FLOGO_PORT=3010 (leave it out to use implicit port)
+- FLOGO_PORT=3303 (leave it out to use implicit port)
 - FLOGO_PATH='/v1/api'
 
 To start the application, in terminal cd to slack-integration project root and execute:
 
 ```
-SLACK_API_TOKEN=<YOUR-SLACK-TOKEN> FLOGO_PROTOCOL=http FLOGO_HOSTNAME=localhost FLOGO_PORT=3010 FLOGO_PATH='/v1/api'
+SLACK_API_TOKEN=<YOUR-SLACK-TOKEN> FLOGO_PROTOCOL=http FLOGO_HOSTNAME=localhost FLOGO_PORT=3303 FLOGO_PATH='/v1/api'
 ```
 
 
 You can also define the variables each time right before starting the application to avoid setting global env variables or to override them:
 ```
-SLACK_API_TOKEN=<YOUR-SLACK-TOKEN> FLOGO_PROTOCOL=http FLOGO_HOSTNAME=localhost FLOGO_PORT=3010 FLOGO_PATH='/v1/api' node ./src
+SLACK_API_TOKEN=<YOUR-SLACK-TOKEN> FLOGO_PROTOCOL=http FLOGO_HOSTNAME=localhost FLOGO_PORT=3303 FLOGO_PATH='/v1/api' node ./src
 ```

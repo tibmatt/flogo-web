@@ -1,4 +1,4 @@
-import { NgModule }      from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import {RESTAPIService} from './services/rest-api.service';
 import {RESTAPIActivitiesService} from './services/restapi/activities-api.service';
@@ -7,10 +7,10 @@ import {RESTAPIFlowsService} from './services/restapi/flows-api.service';
 import {RESTAPITriggersService} from './services/restapi/triggers-api.service';
 import {FlogoModal} from './services/modal.service';
 import {ConfigurationService} from './services/configuration.service';
-import {FlogoDBService} from './services/db.service';
 import {PostService} from './services/post.service';
 import {ConfigurationLoadedGuard} from './services/configuration-loaded-guard.service';
 import {LoadingStatusService} from './services/loading-status.service';
+import {LogService} from './services/log.service';
 
 @NgModule({
   providers: [ // services
@@ -21,10 +21,10 @@ import {LoadingStatusService} from './services/loading-status.service';
     RESTAPITriggersService,
     FlogoModal,
     ConfigurationService,
-    FlogoDBService,
     PostService,
     ConfigurationLoadedGuard,
-    LoadingStatusService
+    LoadingStatusService,
+    LogService
   ]
 })
 export class CoreModule { }

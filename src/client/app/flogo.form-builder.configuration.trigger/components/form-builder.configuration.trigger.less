@@ -1,0 +1,56 @@
+.flogo-common-edit-panel-info {
+  position: relative;
+  text-transform: none;
+  float: right;
+
+  .flogo-common-edit-panel-info__btn {
+    cursor: help;
+    height: 14px;
+    width: 14px;
+    margin-left: 5px;
+    text-align: center;
+    vertical-align: middle;
+    margin-top: -2px;
+  }
+
+}
+
+.flogo-common-edit-panel-info__content-wrapper {
+  background-color: transparent;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 20px;
+  top: 0;
+  transition: all 300ms linear 200ms;
+  width: 0;
+  z-index: 1;
+}
+
+.flogo-common-edit-panel-info__content {
+  background-color: #fff;
+  border: solid 1px #727272;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+  color: #666;
+  padding: 20px;
+  right: 0;
+  transform: translate(100%, -100%);
+  transition: all 300ms linear 200ms;
+  width: 100%;
+  z-index: 1;
+}
+
+
+.flogo-common-edit-panel-info:hover {
+
+  .flogo-common-edit-panel-info__content-wrapper {
+    opacity: 1;
+    width: 200px;
+  }
+
+  .flogo-common-edit-panel-info__content {
+    transform: translate(0, 0);
+  }
+
+}

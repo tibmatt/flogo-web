@@ -1,76 +1,63 @@
 import { Injectable } from '@angular/core';
-import { FlogoDBService } from '../db.service';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class RESTAPIFlowsService{
-  constructor(private _db: FlogoDBService, private http:Http){
+  constructor(private http:Http){
   }
 
-  createFlow(flowObj: any){
-    flowObj._id = this._db.generateFlowID();
+  createFlow(flowObj: any) {
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify(flowObj);
 
-    flowObj.$table = this._db.FLOW;
-
-    return new Promise((resolve, reject)=>{
-      this._db.create(flowObj).then((response)=>{
-          resolve(response);
-      }).catch((err)=>{
-          reject(err);
-      });
-    });
+    return this.http.post('/v1/api/flows', body, options).toPromise();
   }
 
-  getFlows(){
-    return new Promise((resolve, reject)=>{
-      // TODO need to change ${this._db.DEFAULT_USER_ID} to correct userID
-      let options = {
-        include_docs: true,
-        startKey: `${this._db.FLOW}${this._db.DELIMITER}${this._db.DEFAULT_USER_ID}${this._db.DELIMITER}`,
-        endKey: `${this._db.FLOW}${this._db.DELIMITER}${this._db.DEFAULT_USER_ID}${this._db.DELIMITER}\uffff`
-      };
-      this._db.allDocs(options).then((response:any)=>{
-        let allFlows = [];
-        let rows = response&&response.rows||[];
-        rows.forEach((item)=>{
-          // if this item's tabel is this._db.FLOW
-          if(item&&item.doc&&item.doc.$table === this._db.FLOW){
-            allFlows.push(item.doc);
-          }
-        });
-        resolve(allFlows);
-      }).catch((err)=>{
-        reject(err);
+  getFlows() {
+    return this.http.get('/v1/api/flows').toPromise()
+      .then(response=> {
+        if (response.text()) {
+          return response.json();
+        } else {
+          return response;
+        }
       });
-    });
   }
 
   updateFlow(flowObj: Object){
-    return new Promise((resolve, reject)=>{
-      this._db.update(flowObj).then((response)=>{
-        resolve(response);
-      }).catch((err)=>{
-        reject(err);
-      })
-    });
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify(flowObj);
+
+    return this.http.post('/v1/api/flows/update', body, options).toPromise();
   }
 
-  deleteFlow(...args: any[]){
-    let parameters = arguments;
-    return new Promise((resolve, reject)=>{
-      this._db.remove.apply(this,parameters).then((response)=>{
-        resolve(response);
-      }).catch((err)=>{
-        reject(err);
-      })
-    });
+  deleteFlow(flowId) {
+    return this.http.delete('/v1/api/flows/' + flowId).toPromise();
   }
 
   getFlow( id : string ) {
-    return this._db.getFlow( id );
+    return this.http.get('/v1/api/flows/' + id + '/json').toPromise()
+      .then(response=>{
+        if(response.text())
+          return response.json();
+        else
+          return response;
+      });
   }
 
+
+  getFlowByName( flowName : string ) {
+        let headers = new Headers(
+            {
+                'Accept' : 'application/json'
+            }
+        );
+        let options = new RequestOptions( { headers : headers } );
+        return this.http.get('/v1/api/flows?name='+flowName, options ).toPromise()
+  }
   uploadFlow( process : any ) {
     //  upload current flow to process service server
 
@@ -130,7 +117,7 @@ export class RESTAPIFlowsService{
       );
   }
 
-  importFlow( importFile : File ) {
+  importFlow( importFile : File, flowName:string ) {
     return new Promise( ( resolve, reject ) => {
       var formData = new FormData();
       var xhr = new XMLHttpRequest();
@@ -153,8 +140,9 @@ export class RESTAPIFlowsService{
           }
         }
       };
+      let url = '/v1/api/flows/upload' + (flowName ? '?name='+ flowName : '') ;
 
-      xhr.open( 'POST', '/v1/api/flows/json', true );
+      xhr.open( 'POST', url, true );
       xhr.send( formData );
     } );
   }

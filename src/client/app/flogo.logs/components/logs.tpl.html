@@ -1,0 +1,36 @@
+<div class="flogo-logs"
+     (mouseenter)="resizePanel($event,'grow')" (mouseleave)="resizePanel($event,'shrink')">
+  <div class="header">
+    <div class="title">
+      <div class="icon">
+        <img src="/assets/svg/flogo-logs-icon.svg" alt="">
+      </div>
+      <div class="caption">
+        <div>Debug Logs</div>
+        <div class="sub-title">Engine logs</div>
+      </div>
+    </div>
+
+    <div class="search form-group">
+      <div class="input-group">
+        <input class="form-control" type="text"  (keyup)="onKeyUp($event)"  placeholder="Filter" />
+        <span class="input-group-addon">
+          <img src="/assets/svg/flogo-logs-copy.svg" alt="">
+        </span>
+    </div>
+
+  </div>
+
+
+</div>
+
+  <div class="flogo-logs__content">
+    <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
+      <div class="log-line__timestamp">{{message.timestamp}}</div>
+      <div class="log-line__level" [class.log-line__level--error]="message.level=='error'">
+        <img *ngIf="isError(message)" src="/assets/svg/flogo-logs-error.svg" />
+      </div>
+      <div class="log-line__message">{{message.message}}</div>
+    </div>
+  </div>
+</div>

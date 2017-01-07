@@ -9,6 +9,8 @@ import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
 import { FlogoFlowsDetailModule } from '../flogo.flows.detail/flogo.flows.detail.module';
 import { ConfigModule as FlogoConfigModule } from '../flogo.config/flogo.config.module';
+import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
+import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 
 
 import { FlogoAppComponent }   from './components/flogo.component';
@@ -25,6 +27,8 @@ import {routing, appRoutingProviders} from "./flogo.routing";
     FlogoFlowsModule,
     FlogoFlowsDetailModule,
     FlogoConfigModule,
+    FlogoInstructionsModule,
+    FlogoFooterModule,
     routing
   ],
   declarations: [

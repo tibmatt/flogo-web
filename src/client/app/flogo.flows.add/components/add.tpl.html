@@ -1,6 +1,6 @@
 <!--<div class="flogo-flows-container-box-add btn btn-default" (click)="modal.open()">-->
 <div class="flogo-common-flows-new-flow" (click)="modal.open()">
-    <img class="flogo-common-flows-new-flow__icon" src="/assets/svg/flogo.flows.add.btn.svg">
+    <i class="flogo-icon-add"></i>
     <p class="flogo-common-flows-new-flow__text">{{ 'ADD:CREATE-NEW-FLOW' | translate }} </p>
 </div>
 
@@ -11,7 +11,8 @@
     <modal-body>
         <div class="form-group">
             <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
-            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" placeholder="{{ translate.instant('ADD:GIVE-YOUR-FLOW-A-NAME') }}">
+            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" (keyup)="onChangeFlowName($event)" placeholder="{{ translate.instant('ADD:GIVE-YOUR-FLOW-A-NAME') }}">
+            <label *ngIf="flowNameExists" for="flowName" class="flogo-flows-add-error">{{ 'ADD:FLOW-NAME-EXISTS' | translate }} </label>
         </div>
         <div class="form-group">
             <label for="flowDescription" class="h4">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>
@@ -19,7 +20,7 @@
         </div>
     </modal-body>
     <modal-footer>
-        <button type="button" class="flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }} </button>
-        <button type="button" class="flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name}" (click)="flowInfo.name&&sendAddFlowMsg()">{{ 'ADD:SAVE' | translate }} </button>
+        <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }} </button>
+        <button type="button" class="flogo-button--default flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name&&!flowNameExists}" (click)="flowInfo.name&&sendAddFlowMsg()">{{ 'ADD:CREATE' | translate }} </button>
     </modal-footer>
 </modal>

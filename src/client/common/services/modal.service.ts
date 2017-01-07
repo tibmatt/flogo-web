@@ -29,8 +29,8 @@ export class FlogoModal {
                 <div class="flogo-common-service-modal-detail fade clearfix" style="${style}">
                     <div class="flogo-common-service-modal-confirm">${title}</div>
                     <div class="flogo-common-service-modal-message">${message}</div>
-                    <button class="flogo-common-service-modal-button flogo-common-service-modal-button-primary">${buttons.primary}</button>
-                    <button class="flogo-common-service-modal-button flogo-common-service-modal-button-secondary">${buttons.secondary}</button>
+                    <button class="flogo-common-service-modal-button flogo-button--default">${buttons.primary}</button>
+                    <button class="flogo-common-service-modal-button flogo-button--secondary">${buttons.secondary}</button>
                 </div>
             </div>
         `);

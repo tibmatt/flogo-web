@@ -1,7 +1,4 @@
-import {
-  Directive, ElementRef, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChanges
-} from '@angular/core';
-import {RESTAPIFlowsService} from '../services/restapi/flows-api.service';
+import {Directive, ElementRef, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChange} from '@angular/core';
 
 @Directive({
     selector: '[myContenteditable]',
@@ -11,27 +8,36 @@ import {RESTAPIFlowsService} from '../services/restapi/flows-api.service';
         '(focus)': 'onFocus()',
         '(blur)': 'onBlur()'
     },
-    providers: [RESTAPIFlowsService]
+    providers: []
 })
 export class Contenteditable implements OnInit, OnChanges {
     private _el: HTMLElement;
     private $el: any;
     private colorFlag: boolean;
 
-    @Input('myContenteditable')
-        content: string;
+    @Input()
+        myContenteditable: string;
     @Input()
         placeholder: string;
 
     @Output()
         myContenteditableChange = new EventEmitter();
 
-    constructor(private el: ElementRef, private _flow: RESTAPIFlowsService) {
+    constructor(private el: ElementRef ) {
         this._el = el.nativeElement;
         this.$el = jQuery(this._el);
     }
+
+    ngOnChanges( changes : { [key : string] : SimpleChange } )  {
+            if(_.has(changes, 'myContenteditable')) {
+                if(changes['myContenteditable'].currentValue ) {
+                    this.$el.html(changes['myContenteditable'].currentValue);
+                }
+            }
+    }
+
     ngOnInit() {
-        if(this.content != undefined) this.$el.html(this.content);
+        if(this.myContenteditable != undefined) this.$el.html(this.myContenteditable);
         this.$el.attr('contenteditable', 'true');
         this.$el.css({'paddingRight': '38px', 'marginLeft': '-10px', 'paddingLeft': '10px', 'borderRadius': '4px', 'outline': 'none','lineHeight': parseInt(this.$el.css('lineHeight')) - 2 + 'px', 'border': '1px solid transparent'});
         this._initPlaceholder();
@@ -39,12 +45,6 @@ export class Contenteditable implements OnInit, OnChanges {
         if(origColor == 'rgb(255, 255, 255)') {
             this.colorFlag = true;
         }
-    }
-    ngOnChanges(changes: SimpleChanges): void {
-      let contentChanges = changes['content'];
-      if(contentChanges.currentValue && contentChanges.currentValue != contentChanges.previousValue) {
-        this.$el.html(this.content)
-      }
     }
     onMouseEnter() {
         if(document.activeElement != this._el) {
@@ -56,14 +56,22 @@ export class Contenteditable implements OnInit, OnChanges {
     }
     onMouseLeave() {
         if(document.activeElement != this._el) {
-            this.$el.css({'background': '', 'border': '1px solid transparent'});
+            this.$el.css({
+              'background': '',
+              'border': '1px solid transparent',
+            });
             if(this.colorFlag)  this.$el.css('color', 'rgb(255, 255, 255)');
         } else {
             // omit
         }
     }
     onFocus() {
-        this.$el.css({'background': '#fff', 'border': '1px solid #0082d5'});
+        this.$el.css({
+          'background': '#fff',
+          'border': '1px solid #0082d5',
+          'overflow': 'auto',
+          'text-overflow': 'clip'
+        });
         if(this.colorFlag)  this.$el.css('color', 'rgb(102, 102, 102)');
         if(this.$el.find('span')) {
             this.$el.find('span').eq(0).remove();
@@ -71,11 +79,17 @@ export class Contenteditable implements OnInit, OnChanges {
     }
     onBlur() {
         if(this.placeholder || this.$el.text() !== '') {
-            this.$el.css({'background': '', 'border': '1px solid transparent'});
+            this.$el.css({
+              'background': '',
+              'border': '1px solid transparent',
+              'overflow': 'hidden',
+              'text-overflow': 'ellipsis',
+            }).scrollLeft(0);
+
             if(this.colorFlag)  this.$el.css('color', 'rgb(255, 255, 255)');
-            if(this.$el.text() === '' && this.content === undefined) {
+            if(this.$el.text() === '' && this.myContenteditable === undefined) {
                 // omit
-            } else if(this.$el.text() !== this.content) {
+            } else if(this.$el.text() !== this.myContenteditable) {
                 this.myContenteditableChange.emit(this.$el.text());
             }
             this._initPlaceholder();

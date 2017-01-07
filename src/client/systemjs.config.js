@@ -17,10 +17,14 @@
     //},
     'ng2-bs3-modal': {
       defaultExtension: false
-    }//,
+    },
     //'ng2-translate': {
     //  defaultExtension: 'js'
-   // }
+    //},
+    'socket.io-client': {
+      defaultExtension: 'js',
+      main: 'socket.io.js'
+    }
   };
 
   var paths;
@@ -38,7 +42,8 @@
     // load angular from node_modules folder
     map = {
       '@angular': 'n:@angular',
-      //'ng2-translate': 'n:ng2-translate'
+      //'ng2-translate': 'n:ng2-translate',
+      'socket.io-client': 'n:socket.io-client'
     };
 
     //packages['ng2-translate'].main =  'bundles/ng2-translate';
@@ -56,7 +61,8 @@
       'rxjs': 'n:rxjs',
       'ng2-bs3-modal': 'n:ng2-bs3-modal',
       '@angular': 'n:@angular',
-      'ng2-translate': 'n:ng2-translate'
+      'ng2-translate': 'n:ng2-translate',
+      'socket.io-client': 'n:socket.io-client'
     };
 
     defaultJSExtensions = false;

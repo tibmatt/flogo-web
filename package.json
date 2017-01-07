@@ -46,6 +46,7 @@
     "protractor": "^4.0.2",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.5",
+    "swagger-jsdoc": "^1.7.0",
     "systemjs-builder": "^0.15.32",
     "tslint": "^3.5.0",
     "typescript": "^2.0.3",
@@ -53,5 +54,7 @@
     "vinyl-fs": "^2.4.3",
     "webdriver-manager": "^10.2.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/socket.io-client": "^1.4.29"
+  }
 }

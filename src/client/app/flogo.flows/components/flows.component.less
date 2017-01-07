@@ -1,5 +1,5 @@
 :host {
-  /*display: flex;*/
+  display: flex;
   flex: auto;
   margin:0 auto;
   width:100%;
@@ -25,17 +25,18 @@
   }
 }
 
-.flogo-flows-container{
-  background: #eeeded;
+.flogo-flows-footer-wrapper {
+  position: relative;
   width: 100%;
-  margin-bottom: 60px;
-}
-
-flogo-flows-import:hover{
-  background-color: #fff;
+  bottom: 0
 }
 
 
+.flogo-flows-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 
 .flogo-flows-container-title{
   display: inline-block;
@@ -49,50 +50,50 @@ flogo-flows-import:hover{
   padding-bottom: 60px;
   width:100%;
 }
-.flogo-welcome-msg{
-  /*width: 50%;*/
+.flogo-welcome-msg {
   height:100%;
   overflow: hidden;
   float: left;
-  padding: 0 10%;
+  padding: 0 5% 0 10%;
 }
-.flogo-welcomeMsg-header{
-  /*width: 50%;*/
+.flogo-welcomeMsg-header {
   height: 64px;
-  font-family: "Source Sans Pro";
   font-size: 48px;
   font-weight: 300;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.33;
-  letter-spacing: 0.9px;
+  letter-spacing: 1px;
   color: #666666;
-  margin-bottom: 0px;
+  margin-top: 1.2em;
+  margin-bottom: 0;
 }
 .flogo-welcomeMsg-description{
-  /*width: 680px;*/
-  height: 32px;
-  font-family: "Source Sans Pro";
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.14;
-  letter-spacing: 0.3px;
   color: #666666;
+  font-size: 14px;
+  line-height: 1.1;
+  margin-top: 10px;
+  margin-bottom: 15px;
   word-wrap: break-word;
 }
-.flogo-mascot{
+
+.flogo-welcomeMsg-link {
+  img, span {
+    vertical-align: middle;
+  }
+  img {
+    margin-right: 3px;
+  }
+}
+
+.flogo-mascot {
+  min-width: 18em;
   float:left;
-  margin-top:10px;
-  width: 300px;
-  height: 200px;
+  margin-top: 24px;
   object-fit: contain;
 }
 
 .flogo-flows-mascotImg{
-  width:300px;
-  height: 260px;
+  height: 100%;
+  width:  100%;
 }
 
 .flogo-flows-container-header {
@@ -110,9 +111,10 @@ flogo-flows-import:hover{
 }
 
 .flogo-flows-container-body {
+  flex-grow: 1;
   margin: 0 auto;
-  width: 90%;
   padding: 0 4%;
+  width: 90%;
 }
 
 .flogo-flows-container-lists{
@@ -131,19 +133,17 @@ flogo-flows-import:hover{
     list-style: none;
     background-color: @card-bg-color;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-    /*width: @card-width;*/
     height: @card-height;
     position: relative;
     width: 200px;
+    transition: box-shadow 300ms ease;
 
     &:hover{
-      background-color: @card-bg-color-hover;
+      box-shadow: 0 0 5px 3px #7ab8dc;
       .flogo-flows-container-list-detail-trash{
         opacity: 1;
       }
-      .flogo-flows-container-list-detail-description:before {
-        background: @card-bg-color-hover;
-      }
+
     }
   }
 
@@ -173,6 +173,7 @@ flogo-flows-import:hover{
       background-size: 16px;
     }
   }
+
   .flogo-flows-container-list-detail-name{
     display: block;
     margin-bottom: 3px;
@@ -204,7 +205,7 @@ flogo-flows-import:hover{
     vertical-align: middle;
     width: 100%;
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.2;
     max-height: 4.8em;
     overflow: hidden;
@@ -248,59 +249,6 @@ flogo-flows-import:hover{
   margin: @card-gutter-horizontal @card-gutter-vertical;
   width: 200px;
   height: 200px;
-}
-
-.flogo-flows-footerContainer{
-  width: 100%;
-  height:60px;
-  border:1px solid #b6b6b6;
-  position: absolute;
-  bottom:0px;
-  padding:0px 70px;
-  background: #eeeded;
-}
-
-.flogo-flows-footerText{
-  height:20px;
-  padding:3px 0px;
-}
-
-.flogo-flows-copyright{
-  width: 550.5px;
-  height: 20px;
-  font-family: "Source Sans Pro";
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.43;
-  letter-spacing: 0.8px;
-  color: #727272;
-  display: inline-block;
-}
-
-.flogo-flows-privacyText{
-  font-family: "Source Sans Pro";
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.43;
-  letter-spacing: 0.8px;
-  text-align: right;
-  color: #727272;
-  border-right:1px solid #727272;
-  text-decoration: none;
-  cursor: pointer;
-  padding:2px 17px;
-}
-
-.flogo-flows-footerPrivacy{
-  float:right;
-  width:422px;
-  height: 20px;
-  margin:10px 0px;
-  padding:2px 0px;
 }
 
 

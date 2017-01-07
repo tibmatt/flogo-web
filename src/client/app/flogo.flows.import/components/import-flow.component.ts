@@ -10,25 +10,28 @@ import { notification } from '../../../common/utils';
   outputs : [ 'onError:importError', 'onSuccess:importSuccess' ]
 } )
 export class FlogoFlowsImport {
-  private _elmRef : ElementRef;
-  onError : EventEmitter<any>;
-  onSuccess : EventEmitter<any>;
+  private _elmRef: ElementRef;
+  public onError: EventEmitter<any>;
+  public onSuccess: EventEmitter<any>;
+  public showFileNameDialog: boolean = false;
+  public repeatedName: string = '';
+  public importFile: any;
 
-  constructor( elementRef : ElementRef, private _flowsAPIs : RESTAPIFlowsService ) {
+  constructor(elementRef: ElementRef, private _flowsAPIs: RESTAPIFlowsService) {
     this._elmRef = elementRef;
     this.onError = new EventEmitter<any>();
     this.onSuccess = new EventEmitter<any>();
   }
 
-  public selectFile( evt : any ) {
-    let fileElm = jQuery( this._elmRef.nativeElement )
-      .find( '.flogo-flows-import-input-file' );
+  public selectFile(evt: any) {
+    let fileElm = jQuery(this._elmRef.nativeElement)
+      .find('.flogo-flows-import-input-file');
 
     // clean the previous selected file
     try {
-      fileElm.val( '' );
-    } catch ( err ) {
-      console.error( err );
+      fileElm.val('');
+    } catch (err) {
+      console.error(err);
     }
 
     // trigger the file input.
@@ -41,11 +44,11 @@ export class FlogoFlowsImport {
     let errorTriggers = '';
     let errorActivities = '';
 
-    if(details.triggers.length) {
+    if (details.triggers.length) {
       errorTriggers = ` Missing trigger: "${details.triggers[0]}".`;
     }
 
-    if(details.activities.length) {
+    if (details.activities.length) {
       let activities = details.activities.map((item) => {
         return `"${item}"`
       })
@@ -57,31 +60,73 @@ export class FlogoFlowsImport {
     return errorMessage;
   }
 
-  public onFileChange( evt : any ) {
-    let importFile = <File> _.get( evt, 'target.files[0]' );
 
-    if ( _.isUndefined( importFile ) ) {
-      console.error( 'Invalid file to import' );
-    } else {
-      this._flowsAPIs.importFlow( importFile )
-        .then( ( result : any )=> {
-          this.onSuccess.emit( result );
-        } )
-        .catch( ( err : any )=> {
-          let objError;
-          try {
-            objError = JSON.parse(err.response);
-          }catch(exc) {
-            objError = {};
-          }
+  onCorrectName(name: string) {
+    this.resetValidationFlags();
+    this.uploadFlow(this.importFile, name);
+  }
 
-          if(objError.type == 1) {
+  onClose(closed: boolean) {
+    this.resetValidationFlags();
+  }
+
+  resetValidationFlags() {
+    this.showFileNameDialog = false;
+    this.repeatedName = '';
+  }
+
+  uploadFlow(flow, flowName) {
+    let promise = this._flowsAPIs.importFlow(flow, flowName);
+
+    promise.then((result: any) => {
+      this.onSuccess.emit(result);
+    })
+      .catch((err: any) => {
+        let objError;
+        try {
+          objError = JSON.parse(err.response);
+        } catch (exc) {
+          objError = {};
+        }
+        let errorCode = objError.details && objError.details.ERROR_CODE || '';
+
+        switch (errorCode) {
+          case 'NAME_EXISTS':
+            this.showFileNameDialog = true;
+            break;
+          case 'ERROR_VALIDATION':
             let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
-            this.onError.emit( {response: errorMessage} );
-          } else {
-            this.onError.emit( err );
+            this.onError.emit({response: errorMessage});
+            break;
+          default:
+            this.onError.emit(err);
+            break;
+        }
+
+      });
+  }
+
+  private onFileChange(evt: any) {
+    this.importFile = <File> _.get(evt, 'target.files[0]');
+
+    if (_.isUndefined(this.importFile)) {
+      console.error('Invalid file to import');
+    } else {
+      var reader = new FileReader();
+      reader.onload = ((theFile) => {
+        return (e) => {
+          try {
+            let flow = JSON.parse(e.target.result);
+            this.repeatedName = flow.name;
+          } catch (err) {
           }
-        } );
+
+          this.uploadFlow(this.importFile, null);
+        }
+      })(this.importFile);
+
+      reader.readAsText(this.importFile);
     }
   }
+
 }

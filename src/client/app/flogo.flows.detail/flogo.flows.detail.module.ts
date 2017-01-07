@@ -7,6 +7,8 @@ import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-build
 import { InstallerModule as FlogoInstallerModule } from '../flogo.installer/flogo.installer.module';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform/flogo.transform.module';
 import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
+import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
+import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 
 import { FlogoCanvasComponent } from './components/canvas.component';
 
@@ -33,6 +35,8 @@ import { routing } from './flogo.flows.detail.routing';
     FlogoInstallerModule,
     FlogoTransformModule,
     FlogoInstructionsModule,
+    FlogoFooterModule,
+    FlogoLogsModule,
     routing
   ],
   declarations: [

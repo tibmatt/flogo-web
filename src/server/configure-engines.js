@@ -1,15 +1,18 @@
-import {installAndConfigureTasks} from './modules/init';
-import {getInitialisedTestEngine,getInitialisedBuildEngine} from './modules/engine';
-installAndConfigureTasks()
-  .then(()=> {
-    console.log("[log] init test engine done");
-    return getInitialisedTestEngine();
+import {config} from './config/app-config';
+import {syncTasks,installSamples,getInitializedEngine,ensureDefaultDirs} from './modules/init';
+
+ensureDefaultDirs()
+  .then(() => getInitializedEngine(config.defaultEngine.path, {
+    forceCreate: true
+  }))
+  .then(engine => {
+    return syncTasks(engine);
   })
-  .then((testEngine) => {
+  .then(() => {
     console.log("[log] init test engine done");
-    return getInitialisedBuildEngine();
+    return installSamples();
   })
   .catch(error => {
     console.error(error);
     console.error(error.stack);
-  })
+  });

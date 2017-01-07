@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { extractDomain } from '../common/utils';
 import _ from 'lodash';
@@ -17,18 +18,22 @@ let FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost"
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
 
-
+let appPort = process.env.PORT || 3303;
 
 let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
   publicPath: publicPath,
-  libVersion: process.env.FLOGO_LIB_VERSION,
+  libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
   app: {
     basePath: '/v1/api',
-    port: process.env.PORT || 3010,
+    port: appPort,
     cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
+  },
+  defaultEngine: {
+    path: 'local/engines/flogo-web',
+    defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
   },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
@@ -49,6 +54,9 @@ let config = {
       },
       "sendWSMessage":{
         path: "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
+      },
+      "tibco-gpio": {
+        path: "github.com/TIBCOSoftware/flogo-contrib/activity/gpio"
       }
     },
     contrib: {}
@@ -92,30 +100,7 @@ let config = {
         ignore: true
       }
     },
-    triggers: [{
-      "name": "tibco-mqtt",
-      "settings": {
-        "topic": "flogo/#",
-        "broker": "tcp://192.168.1.12:1883",
-        "id": "flogoEngine",
-        "user": "",
-        "password": "",
-        "store": "",
-        "qos": "0",
-        "cleansess": "false"
-      },
-      "endpoints": null
-    }, {
-      "name": "tibco-rest",
-      "settings": {
-        "port": "9990"
-      },
-      "endpoints": null
-    }, {
-      "name": "tibco-timer",
-      "settings": {},
-      "endpoints": null
-    }],
+    triggers: [],
     config: {
       "loglevel": "DEBUG",
       "disableTriggerValidation": true,
@@ -239,7 +224,7 @@ let config = {
   webServer: {
     protocol: 'http',
     host: FLOW_WEB_HOST,
-    port: "3010",
+    port: appPort,
     testPath: ''
   },
   engine: {
@@ -262,6 +247,7 @@ export {
 
 let triggersDBService = new DBService(config.triggers.db);
 let activitiesDBService = new DBService(config.activities.db);
+let flowsDBService = new DBService(config.db);
 let dbService = new DBService(config.db);
 
 let engines = {
@@ -271,6 +257,9 @@ let engines = {
 
 export {
   triggersDBService
+};
+export {
+  flowsDBService
 };
 export {
   activitiesDBService
@@ -302,4 +291,16 @@ export function setConfiguration(newSettings) {
 
 export function resetConfiguration() {
   config = _.cloneDeep(originalConfig);
+}
+
+
+export function loadSamplesConfig() {
+  let samples = [];
+  try {
+    //TODO: replace for async version
+    samples = JSON.parse(fs.readFileSync(path.join(__dirname, 'samples.json'), 'utf8'));
+  } catch(e) {
+    // nothing to do
+  }
+  return samples;
 }

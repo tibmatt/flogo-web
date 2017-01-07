@@ -22,6 +22,7 @@ export class FlogoFlowsComponent {
     public flows: any[] = [];
     public isInstructionsActivated:boolean  = false;
     public isLoading : Observable<boolean>
+    public samples: any;
 
     constructor(
         private _flow:RESTAPIFlowsService,
@@ -31,34 +32,11 @@ export class FlogoFlowsComponent {
         private _loadingStatusService : LoadingStatusService,
         public translate: TranslateService
     ){
-        this.getAllFlows();
-        this.initSubscribe();
-        setTimeout(() => {
-           this.showInstructions();
-       },500);
-
+      this.getAllFlows();
+      this.initSubscribe();
       this.isLoading = _loadingStatusService.status;
-
     }
 
-    public showInstructions() {
-       let instructions:any = localStorage.getItem('flogo-show-instructions');
-
-       if(_.isEmpty(instructions)) {
-           localStorage.setItem('flogo-show-instructions', new Date().toString());
-           this.isInstructionsActivated = true;
-       }
-
-       return this.isInstructionsActivated;
-   }
-
-   public onClosedInstructions(closed) {
-       this.isInstructionsActivated = false;
-   }
-
-   public activateInstructions() {
-       this.isInstructionsActivated = true;
-   }
     private initSubscribe() {
         this._sub = this._postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, {
             callback: this._addFlowMsg.bind(this)
@@ -116,7 +94,7 @@ export class FlogoFlowsComponent {
 
         this._flogoModal.confirmDelete('Are you sure you want to delete ' + flow.name + ' flow?').then((res) => {
             if(res) {
-                this._flow.deleteFlow(flow._id, flow._rev).then(()=> {
+                this._flow.deleteFlow(flow._id).then(()=> {
                     this.getAllFlows();
                     let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
                     notification(message, 'success', 3000);
@@ -129,6 +107,16 @@ export class FlogoFlowsComponent {
             }
         });
     }
+
+    canInstallSamples() {
+        return !this.flows.length;
+    }
+
+    onInstallationIsDone() {
+        this.getAllFlows();
+    }
+
+
     getAllFlows(){
         return new Promise((resolve, reject)=>{
             this._flow.getFlows().then((response:any)=>{

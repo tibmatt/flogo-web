@@ -3,6 +3,14 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
 
 @Injectable()
 export class FlogoFormBuilderCommon {
+  directions = {
+    output: 'output',
+    input: 'input'
+  };
+
+  getParameterDirections() {
+    return this.directions;
+  }
 
 
   getStructureFromAttributes(structure:string, attributes:any) {
@@ -12,7 +20,6 @@ export class FlogoFormBuilderCommon {
   }
 
   _getArray(obj:any) {
-
     if(!Array.isArray(obj)) {
       return [];
     }
@@ -27,49 +34,74 @@ export class FlogoFormBuilderCommon {
         return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
 
       case 'number':
+      case 'integer':
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
+      case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
         return FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
       case 'boolean':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
         return FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
       case 'object':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
         return FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
       case 'map':
       case 'params':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
         return FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS;
+
+      case 'any':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
+            return FLOGO_TASK_ATTRIBUTE_TYPE.ANY;
 
       default:
         return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
     }
   }
 
-  getControlByType(type:string) {
+  getControlByType(item:any, paramDirection?:string) {
+    let control:string = '';
 
-    switch(this._mapTypeToConstant(type)) {
-
+    switch(this._mapTypeToConstant(item.type)) {
       case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
-        return {control: 'FieldTextBox'};
+        control =  'FieldTextBox';
+        break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
-        return {control:'FieldNumber'};
+      case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
+        control = 'FieldNumber';
+        break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
-        return {control:'FieldRadio'};
+        control='FieldRadio';
+        break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-        return {control:'FieldTextArea'};
+        control='FieldTextArea';
+        break;
+
+      case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
+        control='FieldTextArea';
+        break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
-        return {control:'FieldObject'};
+        control='FieldObject';
+        break;
 
       default:
-        return {control:'FieldTextBox'};
+        control='FieldTextBox';
+        break;
     }
+
+    if(paramDirection == this.directions.output && item.type == FLOGO_TASK_ATTRIBUTE_TYPE.STRING) {
+      control = 'FieldTextArea';
+    }
+
+    if(item.allowed) { control= 'FieldListBox'; }
+
+    return {control};
 
   }
 

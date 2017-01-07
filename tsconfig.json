@@ -26,6 +26,7 @@
   ],
   "exclude": [
     "src/client/**/main.aot.ts",
+    "src/client/**/*.spec.ts",
     "node_modules",
     "src/client/.tmp",
     "src/client/node_modules",

@@ -1,3 +1,5 @@
+@import "_variables";
+
 :host {
   display: inline-block;
   position: relative;
@@ -5,7 +7,7 @@
   width:100%;
   margin:0 auto;
   text-align: center;
-  height: 98px;
+  height: 94px;
   :hover {
     /*color: #fff;*/
   }
@@ -37,8 +39,10 @@
   font-stretch: normal;
   letter-spacing: 0.4px;
   color: #0081cb;
-  margin-top:20px;
-  transition: color 200ms ease-in-out;
+  padding-top: 27px;
+  transition: color 100ms ease-in-out;
+  width: inherit;
+  height: inherit;
 
   > .fa {
     font-size: 18px;
@@ -46,4 +50,13 @@
     left: 0;
     bottom: 8px;
   }
+
+  &:hover{
+    background-color: #ffffff;
+    color: #36bfbb;
+  }
+}
+
+.flogo-icon-download{
+  font-size: 16px;
 }

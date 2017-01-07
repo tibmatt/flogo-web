@@ -1,8 +1,10 @@
+@import "_variables";
 :host {
   display: flex;
   align-items: stretch;
   width: 100%;
   flex-grow: 2;
+  height: calc(100vh - 54px);
 
   > div {
     display: flex;
@@ -11,12 +13,28 @@
   }
 }
 
+
+.footer-wrapper {
+  width: 100%;
+  //z-index: 1
+}
+
 .canvas-flow {
   display: flex;
-  width: 100%;
+  width: 77.5%;
   flex-direction: column;
-  z-index: 1;
-  /*overflow: auto;*/
+  //z-index: 1;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.flogo-flow-container {
+  flex: 1;
+  overflow: auto;
+}
+
+.canvas-flow-minimized {
 }
 
 .canvas-right-container {
@@ -24,9 +42,34 @@
   width: 22.5%;
   min-width: 321px;
   flex-direction: column;
-  border-left: solid 1px #B5B5B5;
+  box-shadow: -2px -2px 4px 0 rgba(0, 0, 0, 0.1);
   background: #fff;
   position: relative;
+  z-index: 1;
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.canvas-right-container-maximized {
+  width: 800px;
+ /* width: 70%;
+  background-color: #666;
+  position: fixed;
+  right: 0;
+  z-index: 10;
+  height: 100%;
+  overflow: scroll;
+  border: 0;
+  */
+
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
+}
+
+.canvas-right-container-logs {
+  -webkit-transition: width .5s; /* Safari */
+  transition: width .5s;
 }
 
 .flogo-flow-detail {
@@ -63,12 +106,47 @@
   cursor: pointer;
 }
 
+.flogo-flow-detail-menu-container {
+  display: flex;
+  justify-content: flex-end;
+  //z-index: 2;
+}
+
+.flogo-flow-detail-menu-container:hover {
+  z-index: 2;
+}
+
+.flogo-flow-detail-log-button-container {
+  margin-top: 36px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.flogo-flow-detail-log-button {
+  background-color: white;
+  height: 42px;
+  width: 42px;
+  border: 2px solid #d8d8d8;
+  color: #7ab8dc;
+  border-radius: 7px;
+  font-size: 1.3em;
+  padding: 6.1px 0;
+  text-align: center;
+}
+
+.flogo-flow-detail-log-button-selected {
+  border-color: #79b8dc;
+  background-color: #79b8dc;
+  color: white;
+}
+
 .flogo-flow-detail-menu{
   height: 43px;
   width: 29px;
   margin-right: 15px;
   margin-top: 36px;
-  float: right;
+  //float: right;
   position: relative;
   background: url("/assets/svg/flogo.flows.detail.menu.icon.svg") left top no-repeat;
   &:hover, &:active{
@@ -83,9 +161,8 @@
   }
   .flogo-flow-detail-menu-list-wrapper{
     position: absolute;
-    z-index: 10;
     top: 11px;
-    left: 20px;
+    right: 10px;
     overflow: hidden;
     width: 0;
     transition: all 300ms linear;

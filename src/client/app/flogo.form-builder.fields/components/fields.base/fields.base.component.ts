@@ -11,8 +11,9 @@ export class FlogoFormBuilderFieldsBase{
   _hasError:boolean = false;
   _errorMessage:string;
   _fieldObserver: any;
+  originalInfo: any;
 
-  constructor(protected _translate: TranslateService) {
+  constructor(public translate: TranslateService) {
     this._hasError = false;
   }
 
@@ -42,8 +43,7 @@ export class FlogoFormBuilderFieldsBase{
 
     if(this._info.required) {
       if(!value.trim()) {
-        //this._errorMessage = this._info.title + ' is required';
-        this._errorMessage = this._translate.instant('FIELDS-BASE:TITLE-REQUIRED', {value: this._info.title});
+        this._errorMessage = this.translate.instant('FIELDS-BASE:TITLE-REQUIRED', {value: this._info.title});
         this._hasError = true;
         this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}) );
         return;
@@ -58,7 +58,7 @@ export class FlogoFormBuilderFieldsBase{
           this._hasError = true;
           this._errorMessage = this._info.validationMessage;
           this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}));
-        } else {
+        }else {
           this._hasError = false;
           this._fieldObserver.next(this._getMessage('validation', {status:'ok',field: this._info.name}));
 
@@ -70,6 +70,32 @@ export class FlogoFormBuilderFieldsBase{
     var re = new RegExp(this._info.validation);
     return re.test(value);
   }
+
+  onFocus(event) {
+    this.originalInfo = Object.assign({},this._info);
+  }
+
+
+  onKeyUp(event) {
+    if(event.key == "Escape") {
+      this._info = Object.assign({}, this.originalInfo);
+      if(this['_value']) {
+        this['_value'] = this._info.value;
+      }
+      this.publishNextChange();
+      return;
+    }
+
+    this._info.value = event.target.value;
+    this.publishNextChange();
+  }
+
+  onBlur(event) {
+    this.publishNextChange();
+  }
+
+
+
 
 
 }

@@ -6,12 +6,20 @@
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "test": "karma start karma.conf.js"
   },
   "author": "Shaoke Xu<shaoxu@tibco.com>",
   "devDependencies": {
     "@angular/compiler-cli": "2.1.0",
     "@angular/platform-server": "2.1.0",
+    "jasmine-core": "2.4.1",
+    "jasmine-spec-reporter": "^2.4.0",
+    "karma-spec-reporter": "0.0.26",
+    "karma": "^0.13.21",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-jasmine": "^0.3.7",
+    "karma-sourcemap-loader": "^0.3.7",
     "rollup": "^0.36.1",
     "rollup-plugin-commonjs": "^5.0.4",
     "rollup-plugin-node-resolve": "^2.0.0",
@@ -37,10 +45,10 @@
     "ng2-bs3-modal": "^0.10.4",
     "ng2-translate": "^3.1.2",
     "postal": "^1.0.8",
-    "pouchdb": "5.3.1",
-    "reflect-metadata": "^0.1.8",
+    "reflect-metadata": "0.1.8",
     "rxjs": "5.0.0-beta.12",
+    "socket.io-client": "~1.5.1",
     "systemjs": "0.19.39",
-    "zone.js": "^0.6.25"
+    "zone.js": "0.6.25"
   }
 }

@@ -1,11 +1,12 @@
-import {config, dbService, triggersDBService, engines} from '../../config/app-config';
-import {DBService} from '../../common/db.service';
+import {config, dbService} from '../../config/app-config';
+import {getInitializedEngine} from '../../modules/engine/registry';
 import {flogoFlowToJSON} from '../../common/flow.model';
-import {flogoIDDecode, findLastCreatedFile, writeJSONFileSync} from '../../common/utils';
+import {flogoIDDecode} from '../../common/utils';
+import {Engine} from '../../modules/engine';
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
-import fse from 'fs-extra'
+import fse from 'fs-extra';
 
 let basePath = config.app.basePath;
 
@@ -62,113 +63,100 @@ function generateTriggerJSON(doc, flowName){
 
   trigger.endpoints.push(endpoint);
 
-  console.log("[info]generateTriggerJSON, trigger: ", trigger);
+  console.log('[info]generateTriggerJSON, trigger: ', trigger);
   return trigger;
 }
 
-function _determineBuildExecutableNamePattern(name, compileOptions) {
-  let executableName = name;
-  if(compileOptions.os && compileOptions.arch) {
-    executableName = `${executableName}-${compileOptions.os}-${compileOptions.arch}`;
-  } else if (compileOptions.os) {
-    executableName = `${executableName}-${compileOptions.os}`;
-  } else if (compileOptions.arch) {
-    executableName = `${executableName}-.*-${compileOptions.arch}`;
-  }
-  return executableName;
-}
-
-function generateBuild(id, compileOptions){
+function generateBuild(id, compileOptions) {
   compileOptions = compileOptions || {};
-  return new Promise((resolve, reject)=> {
-    console.log('generateBuild');
+  console.log('generateBuild');
 
-    let flowID = flogoIDDecode(id);
-    console.log('id: ', id);
-    console.log('flowID: ', flowID);
-    _dbService.db.get(flowID).then((doc)=>{
+  let flowID = flogoIDDecode(id);
+  console.log('id: ', id);
+  console.log('flowID: ', flowID);
+  return _dbService.db.get(flowID)
+    .then((doc)=> {
       console.log(doc);
 
       let flowJSON = flogoFlowToJSON(doc);
       console.log(flowJSON);
 
-      if(engines.build){
-        console.log("build engine, build.enginePath", engines.build.enginePath);
-        let engineFolderPath = path.join(engines.build.enginePath, engines.build.options.name);
+      // step1: add flow.json
+      let flowName = 'flow';
+      let tmpFlowJSONPath = path.join(config.rootPath, 'tmp', `${flowName}.json`);
 
-        // step1: add flow.json
-        let tmpFlowJSONPath = path.join(config.rootPath, 'tmp', 'flow.json');
-        fse.outputJSONSync(tmpFlowJSONPath, flowJSON.flow);
-        engines.build.deleteAllFlows();
-        let flowName = engines.build.addFlow('file://'+tmpFlowJSONPath);
-        // step2: update config.json
-        engines.build.updateConfigJSON(config.buildEngine.config, true);
-        // step3: update trigger.json
-        let triggerJSON = generateTriggerJSON(doc, flowName);
+      // todo: remove sync method
+      fse.outputJSONSync(tmpFlowJSONPath, flowJSON.flow);
 
-        let triggersJSON = {
-          "triggers": [
-          ]
-        };
-        triggersJSON.triggers.push(triggerJSON);
-        engines.build.updateTriggerJSON(triggersJSON, true);
+      let triggerJSON = generateTriggerJSON(doc, flowName);
+      let triggersJSON = {
+        'triggers': []
+      };
+      triggersJSON.triggers.push(triggerJSON);
+      return getInitializedEngine(config.defaultEngine.path)
+        .then(engine => ({
+          engine,
+          flowJsonPath: tmpFlowJSONPath,
+          triggersConfig: triggersJSON
+        }));
 
-        // step4: build
-        engines.build.build( {
+    })
+    .then(data => {
+      let engine = data.engine;
+      return engine.deleteAllInstalledFlows()
+        .then(() => engine.addFlow('file://' + data.flowJsonPath))
+        .then(() => {
+          return Promise.all([
+            // step2: update config.json
+            engine.updateConfig(config.buildEngine.config, {type: Engine.TYPE_BUILD, overwrite: true}),
+            // step3: update trigger.json
+            engine.updateTriggersConfig(data.triggersConfig, {type: Engine.TYPE_BUILD, overwrite: true})
+          ])
+        })
+        .then(() => engine.build({
           optimize: true,
           incorporateConfig: true,
-          compile: compileOptions
-        } )
-          .then( ()=> {
-            // setp 5: return file
-            let binPath = path.join( engineFolderPath, 'bin' );
-            let executableName = _determineBuildExecutableNamePattern( engines.build.options.name, compileOptions );
-            console.log( `[log] execName: ${executableName}` );
-            // if no compile options provided or both options provided we can skip the search for generated binary since we have the exact name
-            let isDefaultCompile = !compileOptions.os && !compileOptions.arch;
-            if ( isDefaultCompile || (compileOptions.os && compileOptions.arch) ) {
-              console.log( '[debug] Default compile, grab file directly' );
-              let data = fs.readFileSync( path.join( binPath, executableName ) );
-              return resolve( data );
-            } else {
-              console.log( '[debug] Find file' );
-              return findLastCreatedFile( binPath, new RegExp( executableName ) )
-                .then( buildEnginePath => {
-                  console.log( '[log] Found: ' + JSON.stringify( buildEnginePath ) );
-                  let data = fs.readFileSync( buildEnginePath );
-                  resolve( data );
-                } );
-            }
-          } )
-          .catch( reject );
-      }else{
-        reject(err);
-      }
-
-    }).catch((err)=>{
-      reject(err);
+          compile: compileOptions,
+          type: Engine.TYPE_BUILD
+        }));
     })
-  });
+    .then(result => {
+      return fs.readFileSync(result.path);
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
 }
 
 export function flowsDetail(app, router){
   if(!app){
-    console.error("[Error][api/flows.detail/index.js]You must pass app");
+    console.error('[Error][api/flows.detail/index.js]You must pass app');
   }
-  router.get(basePath+"/flows/:id/build", getBuild);
+  router.get(basePath+'/flows/:id/build', getBuild);
 }
 
+/**
+ * @swagger
+ *  /flows/{flowId}/build:
+ *    get:
+ *      tags:
+ *        - Flow
+ *      summary: Builds the flow for external usage.
+ *      parameters:
+ *        - name: flowId
+ *          in: path
+ *          required: true
+ *          type: string
+ *          description: Encoded ID required for the Flow Building
+ *      responses:
+ *        200:
+ *          description: Flow built successfully
+ */
 function* getBuild(next){
 
-  console.log("getBuild");
+  console.log('getBuild');
 
-  //let engineDirPath = path.resolve(config.rootPath, config.testEngine.path);
-  //engineDirPath = path.join(engineDirPath, config.testEngine.name);
-  //let engineFilePath = path.join(engineDirPath, 'bin', config.testEngine.name);
-  //
-  //let data = fs.readFileSync(engineFilePath);
-
-  //console.log("data: ", data);
   let id = this.params.id;
 
   let compileOptions;
@@ -180,13 +168,7 @@ function* getBuild(next){
     };
   }
 
-  let data = yield generateBuild(id, compileOptions);
+  this.body = yield generateBuild(id, compileOptions);
 
-  //data = yield _dbService.allDocs({ include_docs: true })
-  //  .then(res => res.rows || [])
-  //  .then(rows => rows.map(row => row.doc ? _.pick(row.doc, ['_id', 'name', 'version', 'description']) : []));
-  //
-  //console.log(data);
-  this.body = data;
   yield next;
 }

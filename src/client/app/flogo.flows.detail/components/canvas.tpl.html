@@ -1,18 +1,18 @@
 <div [hidden]="_mockLoading">
 
-  <div *ngIf="!_mockLoading" class="canvas-flow">
+  <div class="canvas-flow" *ngIf="flow">
 
     <section class="flogo-flow-detail">
 
-      <header class="flogo-flow-detail-header col-sm-10">
+      <header class="flogo-flow-detail-header col-sm-9">
         <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
            placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
 
-      <div class="col-sm-2">
 
+      <div class="col-sm-3 flogo-flow-detail-menu-container">
         <div class="flogo-flow-detail-menu">
           <div class="flogo-flow-detail-menu-list-wrapper">
             <ul class="flogo-flow-detail-menu-list">
@@ -27,84 +27,36 @@
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-clone fa-fw"></i><a disabled href="javascript:void(0);">{{ 'CANVAS:COPY' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportTriggerAndFlow()"><i class="fa fa-cloud-download fa-fw"></i> {{ 'CANVAS:EXPORT-FOR-CLI' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>{{ 'CANVAS:EXPORT-FOR-WEB-UI' | translate }}</a></li>
-              <li class="flogo-flow-detail-menu-item"><a (click)="activateInstructions($event)"><i class="fa fa-question-circle fa-fw"></i>{{ 'CANVAS:SHOW-INSTRUCTIONS' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><i class="fa fa-trash fa-fw"></i><a href="javascript:void(0);">{{ 'CANVAS:DELETE' | translate }}</a></li>
             </ul>
           </div>
         </div>
+
+        <div class="flogo-flow-detail-log-button-container">
+          <button class="btn flogo-flow-detail-log-button"
+                  [ngClass]="{'flogo-flow-detail-log-button-selected': isSelectedLogs}"
+                  (click)="showLogs(!isSelectedLogs)" title="Show logs">
+            <i class="flogo-icon-debug"></i>
+          </button>
+        </div>
+
       </div>
 
     </section>
 
-    <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
-                               [id]="'root'"
-                               data-flogo-diagram-id="root">
-    </flogo-canvas-flow-diagram>
+    <div class="flogo-flow-container">
+      <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
+                                 [id]="'root'"
+                                 data-flogo-diagram-id="root">
+      </flogo-canvas-flow-diagram>
+
+      <flogo-footer class="footer-wrapper"></flogo-footer>
+    </div>
+
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
     <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
-
-
-    <!-- the mock section below should be removed later-->
-    <!--
-    <section class="container-fluid" style="display: none; width: 100%;">
-      <section class="row">
-        <header>
-          <h3>Mock Area in Canvas component</h3>
-          <button type="button" class="btn btn-default" (click)="MOCK=!MOCK">Display</button>
-        </header>
-      </section>
-
-      <section class="row" [hidden]="!MOCK">
-        <div class="col-xs-12">
-          <header><h4>Actions</h4></header>
-        </div>
-
-        <div class="col-xs-12">
-          <button type="button" class="btn btn-warning" (click)="uploadProcess()"
-                  [disabled]="_uploadingProcess">Upload process
-          </button>
-          <button type="button" class="btn btn-default" (click)="startAndMonitorProcess()"
-                  [disabled]="_startingProcess" [hidden]="!_hasUploadedProcess">Start process
-          </button>
-          <button type="button" class="btn btn-default" (click)="mockGetSteps()"
-                  [disabled]="_mockGettingStepsProcess" [hidden]="!_hasUploadedProcess">Get steps
-          </button>
-        </div>
-
-      </section>
-
-      <section class="row" [hidden]="!MOCK || !_steps">
-
-        <div class="col-xs-12">
-          <header>
-            <h4>Steps</h4>
-          </header>
-        </div>
-
-        <div class="col-xs-12">
-          <pre><code [innerHTML]="_steps | json"></code></pre>
-        </div>
-
-      </section>
-
-      <section class="row" [hidden]="!MOCK">
-
-        <div class="col-xs-12">
-          <header>
-            <h4>Process.json</h4>
-          </header>
-        </div>
-
-        <div class="col-xs-12">
-          <pre><code [innerHTML]="_mockProcess | json"></code></pre>
-        </div>
-
-      </section>
-      </section>
-    -->
-
 
     <flogo-flows-detail-error-panel>
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"

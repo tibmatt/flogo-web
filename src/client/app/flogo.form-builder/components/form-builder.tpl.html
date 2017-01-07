@@ -9,7 +9,9 @@
         <!-- PANEL TITLES -->
         <div  *ngIf="_task && (_context.isTask || _context.isTrigger)" [ngClass]="{trigger:_context.isTrigger, task: _context.isTask}">
           <div class="flogo-common-edit-panel__head-read">
-            <a  class="flogo-common-edit-panel__head-read-icon" [href]="_task.homepage? _task.homepage : 'javascript:;'" target="_blank"></a>
+            <a  class="flogo-common-edit-panel__head-read-icon" [href]="_task.homepage? _task.homepage : 'javascript:;'" target="_blank">
+              <i class="flogo-icon-info"></i>
+            </a>
             <div class="flogo-common-edit-panel__head-read-detail-wrapper">
               <div  class="flogo-common-edit-panel__head-read-detail">
                 <!--<i class="fa fa-times flogo-common-edit-panel__head-read-detail-close" aria-hidden="true"></i>-->
@@ -28,32 +30,30 @@
         </div>
 
         <div *ngIf="_context.isBranch" class="branch" [class.change]="_hasChanges">
+          <i class="flogo-icon-add"></i>
           <h3 class="flogo-common-edit-panel__head-title">{{ 'FORM-BUILDER:CONFIGURE-BRANCH' | translate }}</h3>
+          <div class="flogo-common-edit-panel__head-subtitle">{{ 'FORM-BUILDER:HINT-CONFIGURE-BRANCH' | translate }}</div>
         </div>
         <!-- PANEL BUTTONS -->
         <div *ngIf="_context.isTrigger" class="clearfix">
-          <button  class="flogo-form-builder-buttons-primary-call flogo-btn-run-from-trigger left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+
+          <button  class="flogo-button--accent left"
+                   [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length"
+                   [disabled]="!_canRunFromThisTile || _fieldsErrors.length"
+                   [hidden]="_hasChanges" (click)="runFromThisTile($event)">
             {{ 'FORM-BUILDER:RUN-FROM-TRIGGER' | translate }}
           </button>
-          <button class="flogo-form-builder-buttons-primary flogo-form-builder-buttons-save left" [hidden]="!_hasChanges" (click)="saveChanges($event)">{{ 'FORM-BUILDER:SAVE' | translate }}</button>
-          <button class="flogo-form-builder-buttons-secondary right" [hidden]="!_hasChanges" (click)="cancelEdit($event)">{{ 'FORM-BUILDER:CANCEL' | translate }}</button>
         </div>
 
         <div *ngIf="_context.isTask" class="clearfix">
-          <button  class="flogo-form-builder-buttons-primary-call left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length" [disabled]="!_canRunFromThisTile || _fieldsErrors.length" [hidden]="_hasChanges" (click)="runFromThisTile($event)">
+          <button  class="flogo-button--default left" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length"
+                   [disabled]="!_canRunFromThisTile || _fieldsErrors.length"  (click)="runFromThisTile($event)">
             {{ 'FORM-BUILDER:RUN-FROM-TILE' | translate }}
           </button>
-          <button class="flogo-form-builder-buttons-primary flogo-btn-run-from-trigger right" [hidden]="_hasChanges" (click)="runFromTrigger($event)">{{ 'FORM-BUILDER:RUN-FROM-TRIGGER' | translate }}</button>
-          <button class="flogo-form-builder-buttons-primary flogo-form-builder-buttons-save left" [hidden]="!_hasChanges" (click)="saveChanges($event)">{{ 'FORM-BUILDER:SAVE' | translate }}</button>
-          <button class="flogo-form-builder-buttons-secondary right" [hidden]="!_hasChanges" (click)="cancelEdit($event)">{{ 'FORM-BUILDER:CANCEL' | translate }}</button>
+          <button class="flogo-button--accent right"
+                  (click)="runFromTrigger($event)">{{ 'FORM-BUILDER:RUN-FROM-TRIGGER' | translate }}</button>
         </div>
 
-        <div *ngIf="_context.isBranch" class="clearfix">
-          <button [hidden]="!_hasChanges"  class="flogo-form-builder-buttons-primary flogo-form-builder-buttons-save left" (click)="saveChanges($event)">
-            {{ 'FORM-BUILDER:SAVE' | translate }}
-          </button>
-          <button [hidden]="!_hasChanges" class="flogo-form-builder-buttons-secondary right" (click)="cancelEdit($event)">{{ 'FORM-BUILDER:CANCEL' | translate }}</button>
-        </div>
       </div>
     </div>
 

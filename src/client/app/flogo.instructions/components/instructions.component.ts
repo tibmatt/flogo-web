@@ -12,19 +12,20 @@ import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 export class FlogoInstructionsComponent implements OnChanges {
 
     @ViewChild( 'instructionsModal' ) modal : ModalComponent;
+
     isActivated : boolean;
     onClosedModal = new EventEmitter();
     steps = [
-        {title:'Configure the trigger', description: '', icon: 'instructions-step-1', screenshot:'graphic-1.jpg'} ,
-        {title:'Add and configure activities', description: '', icon: 'instructions-step-2', screenshot:'graphic-2.jpg'} ,
-        {title:'Run and test at any time', description: '', icon: 'instructions-step-3', screenshot:'graphic-3.svg'} ,
-        {title:'Build and run', description: '', icon: 'instructions-step-4', screenshot:'graphic-4.svg'}
+        {title:'Configure the trigger', description: '', screenshot:'flogo.instructions.screen-1@3x.png'} ,
+        {title:'Add and configure activities', description: '', screenshot:'flogo.instructions.screen-2@3x.png'} ,
+        {title:'Run and test at any time', description: '', screenshot:'flogo.instructions.screen-3@3x.png'} ,
+        {title:'Build and run', description: '', screenshot:'flogo.instructions.screen-4@3x.png'}
     ];
     currentIndex : number;
     currentStep : any;
     STEPS_LENGTH = this.steps.length - 1;
 
-    constructor( ) {
+    constructor() {
         this.init();
     }
 

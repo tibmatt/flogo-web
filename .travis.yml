@@ -11,6 +11,7 @@ git:
 # Do a github login using token
 before_install:
   - "echo -e \"machine github.com\n  login ${GITHUB_USER_TOKEN}\" >> ~/.netrc"
+  - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}" ;
 
 script: 
   - touch flogo-web.tgz
@@ -29,17 +30,9 @@ script:
   - popd
 after_script:
   - "[ -f \"${HOME}/.netrc\" ] && rm -f ${HOME}/.netrc"
-deploy:
-  provider: releases
-  api_key: "${GITHUB_OAUTH_TOKEN}"
-  file: "${TRAVIS_BUILD_DIR}/flogo-cicd/submodules/flogo-web/dist/docker-compose.yml"
-  file: "${TRAVIS_BUILD_DIR}/flogo-cicd/submodules/flogo-web/dist/docker-compose-start.sh"
-  skip_cleanup: true
-  on:
-    tags: true
 after_success:
   - "if [ \"${TRAVIS_BRANCH}\" == \"master\" ]; then
     docker login -u=\"${DOCKER_USERNAME}\" -p=\"${DOCKER_PASSWORD}\" ;
     source ${TRAVIS_BUILD_DIR}/flogo-cicd/scripts/init.sh ;
-    flogo::module::postbuild flogo-web ;
+    flogo::module::postbuild flogo-web flogo-web;
     fi"

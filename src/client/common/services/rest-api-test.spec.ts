@@ -109,7 +109,7 @@ export class RESTAPITest{
       return new Promise((resolve, reject)=>{
         let id = response.id;
         let rev = response.rev;
-        this._flow.deleteFlow(id, rev).then((response)=>{
+        this._flow.deleteFlow(id).then((response)=>{
           this.print('remove flow successful',{id: id, rev: rev}, response);
           resolve(response);
         }).catch((err)=>{

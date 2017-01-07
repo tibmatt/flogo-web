@@ -3,7 +3,13 @@
 @hide-position: translateY(~"calc(100% - " @open-button-height ~")");
 
 .toggle-button {
-  min-width: 180px;
+  background: #36bfbb;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  min-width: 55px;
+  height: 55px;
+  padding:3px 10px;
+  border-radius: 5px;
+  margin-left: 35px;
 
   &__icon {
     margin-left: 5px;
@@ -11,12 +17,18 @@
 
 }
 
+.toggle-button--open{
+  position: relative;
+  top:10px;
+  z-index: 3;
+}
+
 :host {
   position: fixed;
   bottom: 0;
   pointer-events: none;
-  width: 100%;
-  z-index: 2;
+  //width: 100%;
+  z-index: 1;
 }
 
 .layout {
@@ -52,7 +64,7 @@
 .layout__side {
   flex-direction: column;
   min-width: 321px;
-  width: 22.5%;
+  width: 29%;
 }
 
 .wrapper {
@@ -76,18 +88,26 @@
   //display: none;
 }
 
+
+
 :host.is-open,
 :host.is-opening,
 :host.is-closing {
   height: 100%;
+  width: 100%;
 
   .layout__main {
-    background-color: rgba(113, 113, 113, 0.75);
+
   }
 
   .error-panel {
-    -webkit-box-shadow: -4px -2px 15px rgba(0,0,0,.5);
-    box-shadow: -4px -2px 15px rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.33);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.33);
+    .error-panel__content{
+      .flogo-flows-detail-diagram{
+        background: #fff;
+      }
+    }
   }
 
   .wrapper {
@@ -117,4 +137,17 @@
     transform: @hide-position;
   }
 
+}
+
+.actions-container {
+  margin-top: -78.5px;
+}
+
+.action-button {
+  display: block;
+  margin-top: 0;
+}
+
+a:link {
+  color:white;
 }

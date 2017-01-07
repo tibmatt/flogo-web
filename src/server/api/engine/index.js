@@ -1,6 +1,5 @@
 import {config} from '../../config/app-config';
-import { getInitialisedTestEngine, getInitialisedBuildEngine } from '../../modules/engine';
-import _ from 'lodash';
+import { getInitializedEngine } from '../../modules/engine';
 
 let basePath = config.app.basePath;
 
@@ -13,26 +12,44 @@ export function engine(app, router){
 
 }
 
-function* restartEngine(next){
+/**
+ * @swagger
+ *  /engine/restart:
+ *    get:
+ *      tags:
+ *        - Engine
+ *      responses:
+ *        200:
+ *          description: Engine restarted sucessfully.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: number
+ *                default: 200
+ *        500:
+ *          description: Error restarting the engine.
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: number
+ *                default: 500
+ */
+function* restartEngine(next) {
   console.log('Restart Engine');
   let data = {
     status: 200
   };
 
   try{
-    let name = this.query&&this.query.name? this.query&&this.query.name: "test";
+    let engine = getInitializedEngine(config.defaultEngine.path);
 
-    let testEngine = yield getInitialisedTestEngine();
-
-    if ( name == "build" ) {
-      testEngine = yield getInitialisedBuildEngine();
-    }
-
-    let stopTestEngineResult = yield testEngine.stop();
+    let stopTestEngineResult = yield engine.stop();
     let startTestEngineResult = false;
 
     if (stopTestEngineResult) {
-      startTestEngineResult = yield testEngine.start();
+      startTestEngineResult = yield engine.start();
     } else {
       data.status = 500;
       console.log("[error] didn't stop successful");
@@ -45,7 +62,7 @@ function* restartEngine(next){
 
     this.body = data;
     yield next;
-  }catch(err){
+  } catch(err) {
     console.log("[error][restartEngine]: ", err);
     data.status = 500;
     this.body = data;
