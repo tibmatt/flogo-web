@@ -61,7 +61,7 @@ export class FlogoFlowsAdd {
 
 
     }
-    private closeAddFlowModal() {
+    public closeAddFlowModal() {
         this.flowInfo = {};
         this.modal.close();
         this._sending = true;

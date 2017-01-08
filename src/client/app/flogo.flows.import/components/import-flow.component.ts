@@ -106,7 +106,7 @@ export class FlogoFlowsImport {
       });
   }
 
-  private onFileChange(evt: any) {
+  onFileChange(evt: any) {
     this.importFile = <File> _.get(evt, 'target.files[0]');
 
     if (_.isUndefined(this.importFile)) {

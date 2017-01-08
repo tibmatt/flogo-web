@@ -11,10 +11,17 @@ export default {
   plugins: [
       nodeResolve({jsnext: true, module: true}),
       commonjs({
-        include: [
-          'node_modules/rxjs/**',
-          'node_modules/ng2-bs3-modal/**'
-        ],
+        include: 'node_modules/**',
+        // include: [
+        //   'node_modules/rxjs/**',
+        //   'node_modules/ng2-bs3-modal/ng2-bs2-modal.js'
+        // ],
+        namedExports: {
+          // left-hand side can be an absolute path, a path
+          // relative to the current directory, or the name
+          // of a module in node_modules
+          'node_modules/ng2-bs3-modal/ng2-bs3-modal.js': [ 'ModalComponent' ],
+        }
       }),
       uglify()
   ]

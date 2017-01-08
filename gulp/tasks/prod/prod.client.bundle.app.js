@@ -74,13 +74,33 @@ gulp.task('prod.client.bundle.app.aot-compile',  false, cb => {
 });
 
 gulp.task('prod.client.bundle.app.rollup',  false, cb => {
-  child_process.exec('node_modules/.bin/rollup -c rollup.js',
-  { cwd: path.join(CONFIG.paths.source.client) },
-  function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
+
+  let child = child_process.spawn('node_modules/.bin/rollup', ['-c', 'rollup.js'], {cwd: path.join(CONFIG.paths.source.client)});
+
+  child.stdout.on('data', function (data) {
+    console.log(data.toString());
   });
+
+  child.stderr.on('data', function (data) {
+    console.error(data.toString());
+  });
+
+  child.on('close', function (code) {
+    console.log('rollup exited with code' + code);
+    if (code) {
+      cb(code);
+    } else {
+      cb();
+    }
+  });
+
+  // child_process.exec('node_modules/.bin/rollup -c rollup.js',
+  // {  maxBuffer: 1024 * 500, cwd: path.join(CONFIG.paths.source.client) },
+  // function (err, stdout, stderr) {
+  //   console.log(stdout);
+  //   console.log(stderr);
+  //   cb(err);
+  // });
 });
 
 gulp.task('prod.client.bundle.app.copy-bundle',  false, () => {

@@ -15,9 +15,9 @@ export class FlogoFlowsFlowNameComponent implements OnChanges {
     show:boolean = false;
     @Input()
     repeatedName:string='';
-    @Output
+    @Output()
     correctName: EventEmitter<any> = new EventEmitter();
-    @Output
+    @Output()
     close: EventEmitter<any> = new EventEmitter();
     public flowName: string;
     public flowNameExists = true;
@@ -48,13 +48,14 @@ export class FlogoFlowsFlowNameComponent implements OnChanges {
             })
             .catch((err) => {
                 let message = this.translate.instant('FLOW-NAME:GETTING-FLOW-NAME');
-                notification(instant, 'error');
+                notification(message, 'error');
             });
 
 
 
     }
-    private closeModal() {
+
+    public closeModal() {
         this.repeatedName = '';
         this.flowNameModal.close();
         this.close.emit(true);

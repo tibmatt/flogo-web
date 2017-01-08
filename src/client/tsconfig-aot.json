@@ -16,6 +16,7 @@
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "suppressImplicitAnyIndexErrors": true
   },
   "files": [
@@ -24,17 +25,18 @@
   ],
   "include": [
     "../../../../typings/index.d.ts",
+    "../../../../node_modules/@types",
+    "node_modules",
     "app/**/*",
     "common/**/*"
   ],
   "exclude": [
     "node_modules",
-    "../../../../typings/node/index.d.ts",
     "./**/*.spec.ts"
   ],
   "compileOnSave": false,
   "angularCompilerOptions": {
     "genDir": "aot",
-    "skipMetadataEmit" : true
+    "skipMetadataEmit": true
   }
 }

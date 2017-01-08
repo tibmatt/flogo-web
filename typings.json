@@ -6,14 +6,6 @@
     "lodash": "registry:dt/lodash#4.14.0+20161004174455",
     "moment": "registry:dt/moment#2.11.1+20160829143156",
     "node": "registry:dt/node#6.0.0+20160928143418",
-    "postal": "registry:dt/postal#1.0.8+20160425155829",
-    "pouchdb": "registry:dt/pouchdb#5.4.4+20160724064500",
-    "pouchdb-adapter-websql": "registry:dt/pouchdb-adapter-websql#5.4.4+20160724064500",
-    "pouchdb-browser": "registry:dt/pouchdb-browser#5.4.4+20160724064500",
-    "pouchdb-core": "registry:dt/pouchdb-core#5.4.4+20160919190957",
-    "pouchdb-http": "registry:dt/pouchdb-http#5.4.4+20160724064500",
-    "pouchdb-mapreduce": "registry:dt/pouchdb-mapreduce#5.4.4+20160724064500",
-    "pouchdb-node": "registry:dt/pouchdb-node#5.4.4+20160724064500",
-    "pouchdb-replication": "registry:dt/pouchdb-replication#5.4.4+20160724064500"
+    "postal": "registry:dt/postal#1.0.8+20160425155829"
   }
 }

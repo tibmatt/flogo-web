@@ -48,6 +48,7 @@ export const CONFIG = {
       'node_modules/postal/lib/postal.js',
       'node_modules/bootstrap/dist/js/bootstrap.js',
       'node_modules/moment/min/moment-with-locales.min.js',
+      'node_modules/socket.io-client/socket.io.js',
 
       'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
       //'node_modules/ng2-translate/bundles/ng2-translate.js',
@@ -78,7 +79,8 @@ export const CONFIG = {
         'node_modules/lodash/lodash.min.js',
         'node_modules/postal/lib/postal.min.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
-        'node_modules/moment/min/moment-with-locales.min.js'
+        'node_modules/moment/min/moment-with-locales.min.js',
+        'node_modules/socket.io-client/socket.io.js',
       ],
       js: [
         'js/lib.bundle.js',
