@@ -24,9 +24,8 @@
     "main.aot.ts"
   ],
   "include": [
-    "../../../../typings/index.d.ts",
-    "../../../../node_modules/@types",
-    "node_modules",
+    "shims.d.ts",
+    "node_modules/@types",
     "app/**/*",
     "common/**/*"
   ],

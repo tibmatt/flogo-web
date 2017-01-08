@@ -17,8 +17,6 @@
   },
   "author": "Shaoke Xu<shaoxu@tibco.com>",
   "devDependencies": {
-    "@types/node": "^6.0.36",
-    "@types/socket.io-client": "^1.4.29",
     "babel-core": "^6.10.4",
     "babel-plugin-transform-runtime": "6.9.0",
     "babel-polyfill": "6.9.1",

@@ -15,22 +15,22 @@
     "noImplicitReturns": true,
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
+    "suppressImplicitAnyIndexErrors": true,
+    "typeRoots" : [
+      "./node_modules/@types"
+    ]
   },
-  "typeRoots": [ "node_modules/@types/" ],
-   "types": [
-    "node"
-  ],
   "include": [
+    "shims.d.ts",
     "node_modules/@types"
   ],
   "exclude": [
-    "src/client/**/*.spec.ts",
+    ".tmp",
+    "main.aot.ts",
     "node_modules",
-    "src/client/.tmp",
-    "src/client/node_modules",
-    "**/node_modules"
+    "./**/*.spec.ts"
   ],
   "compileOnSave": false
 }

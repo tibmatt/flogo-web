@@ -43,7 +43,7 @@ gulp.task('prod.client.bundle.app.inline-styles',  false, () => {
 
   let componentFilter = filter('**/*.component.{js,ts}', {restore: true});
 
-  return gulp.src(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client})
+  return gulp.src(CONFIG.paths.ts.prod, {cwd: CONFIG.paths.source.client})
     .pipe(componentFilter)
     .pipe(inlineTemplate({
       useRelativePaths: true,
