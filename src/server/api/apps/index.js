@@ -1,76 +1,73 @@
-import {config} from '../../config/app-config';
-import {AppManager} from '../../modules/apps';
-import {ErrorManager, ERROR_TYPES} from '../../common/errors';
+import { config } from '../../config/app-config';
+import { AppManager } from '../../modules/apps';
+import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
-let basePath = config.app.basePath;
+const basePath = config.app.basePath;
 
 export function apps(app, router) {
   if (!app) {
     console.error(new Error('Missing app" parameter'));
   }
 
-  router.get(basePath + '/apps', listApps);
-  router.post(basePath + '/apps', createApp);
+  router.get(`${basePath}/apps`, listApps);
+  router.post(`${basePath}/apps`, createApp);
 
-  router.get(basePath + '/apps/:appId', getApp);
+  router.get(`${basePath}/apps/:appId`, getApp);
 }
+export default apps;
 
 /**
  */
 function* listApps() {
-
-  let searchTerms = {};
-  let filterName = this.request.query['filter[name]'];
+  const searchTerms = {};
+  const filterName = this.request.query['filter[name]'];
   if (filterName) {
     searchTerms.name = filterName;
   }
 
-  let apps = yield AppManager.find(searchTerms, {withFlows: true});
+  const foundApps = yield AppManager.find(searchTerms);
   this.body = {
-    data: apps || []
+    data: foundApps || [],
   };
 }
 
 function* createApp() {
   // throw error if it is not json?
-  let data = this.request.body || {};
+  const data = this.request.body || {};
 
   try {
-
-    let app = yield AppManager.create(data);
+    const app = yield AppManager.create(data);
     this.body = {
-      data: app
+      data: app,
     };
-
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
-      error = ErrorManager.createRestError('Validation error in /apps getApp', {
+      throw ErrorManager.createRestError('Validation error in /apps getApp', {
         status: 400,
         title: 'Validation error',
         detail: 'There were one or more validation problems',
-        meta: ErrorManager.validationToRestErrors(error.details.errors)
+        meta: ErrorManager.validationToRestErrors(error.details.errors),
       });
     }
 
     throw error;
   }
-
 }
 
 function* getApp() {
-  let appId = this.params.appId;
+  const appId = this.params.appId;
 
-  let app = yield AppManager.findOne(appId, {withFlows: 'short'});
+  const app = yield AppManager.findOne(appId, { withFlows: 'short' });
 
   if (!app) {
     throw ErrorManager.createRestNotFoundError('Application not found', {
       title: 'Application not found',
-      detail: 'No application with the specified id'
+      detail: 'No application with the specified id',
     });
   }
 
   this.body = {
-    data: app
+    data: app,
   };
 }
 
