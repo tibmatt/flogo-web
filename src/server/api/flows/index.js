@@ -1,7 +1,8 @@
-import {config, dbService, triggersDBService, activitiesDBService, flowExport} from '../../config/app-config';
-import {DBService} from '../../common/db.service';
-import {isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID} from '../../common/utils';
-import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
+import { config, dbService, triggersDBService, activitiesDBService, flowExport } from '../../config/app-config';
+import { DBService} from '../../common/db.service';
+import { FlowsManager } from '../../modules/flows';
+import { isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID } from '../../common/utils';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE, DEFAULT_APP_ID } from '../../common/constants';
 import _ from 'lodash';
 import * as flowUtils from './flows.utils';
 import { readFileSync } from 'fs';
@@ -20,6 +21,28 @@ const ERROR_MISSING_TRIGGER    = 'MISSING_TRIGGER';
 const ERROR_WRITING_DATABASE   = 'ERROR_WRITING_DATABASE';
 const ERROR_CODE_BADINPUT      = 400;
 const ERROR_CODE_SERVERERROR   = 500;
+
+export function flows(app, router){
+  if(!app){
+    console.error("[Error][api/activities/index.js]You must pass app");
+  }
+
+  router.get(basePath+"/flows", getFlows);
+  router.post(basePath+"/flows", createFlows);
+  router.post(basePath+"/flows/upload", createFlows);
+  router.post(basePath+"/flows/update", updateFlows);
+  router.del(basePath+"/flows/:id", deleteFlows);
+
+  router.get(`${basePath}/flows/recent`, getRecentFlows);
+
+  // {
+  //   name: "tibco-mqtt"
+  // }
+  router.post(basePath+"/flows/triggers", addTrigger);
+  router.post(basePath+"/flows/activities", addActivity);
+
+  router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
+}
 
 
 function getAllFlows(){
@@ -102,32 +125,12 @@ export function getTriggers() {
 }
 
 
-function updateFlow(flowObj){
-  return _dbService.update(flowObj);
+function updateFlow(flowObj) {
+  return _dbService.update(Object.assign({appId: DEFAULT_APP_ID}, flowObj));
 }
 
 function deleteFlow(flowInfo) {
   return _dbService.remove(flowInfo.id, flowInfo.rev);
-}
-
-export function flows(app, router){
-  if(!app){
-    console.error("[Error][api/activities/index.js]You must pass app");
-  }
-
-  router.get(basePath+"/flows", getFlows);
-  router.post(basePath+"/flows", createFlows);
-  router.post(basePath+"/flows/upload", createFlows);
-  router.post(basePath+"/flows/update", updateFlows);
-  router.del(basePath+"/flows/:id", deleteFlows);
-
-  // {
-  //   name: "tibco-mqtt"
-  // }
-  router.post(basePath+"/flows/triggers", addTrigger);
-  router.post(basePath+"/flows/activities", addActivity);
-
-  router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
 }
 
 /**
@@ -290,6 +293,14 @@ function* createFlows(next){
     this.body = err;
     //this.throw(400, 'error', err);
   }
+}
+
+function* getRecentFlows() {
+  const limit = this.query.limit || 10;
+  const foundApps = yield FlowsManager.findRecent({ limit });
+  this.body = {
+    data: foundApps || [],
+  };
 }
 
 function retrieveFlowDataFromRequest(ctx) {
@@ -605,7 +616,7 @@ function * exportFlowInJsonById( next ) {
       // processing the flow information to omit unwanted fields
       this.body = _.omitBy( flowInfo, ( propVal, propName ) => {
 
-        if ( ['_conflicts', 'updated_at', 'created_at'].indexOf( propName ) !== -1 ) {
+        if ( ['_conflicts', 'updated_at', 'created_at', 'appId'].indexOf( propName ) !== -1 ) {
           return true;
         }
 
@@ -727,6 +738,12 @@ export function createFlow(data) {
       data._id = _dbService.generateFlowID();
       data.$table = _dbService.getIdentifier('FLOW');
       delete data._rev;
+
+      // TODO: validate appId exists
+      if (!data.appId) {
+        data.appId = DEFAULT_APP_ID;
+      }
+
       return validateFlow(data, activities, triggers);
     })
     .then(res => {

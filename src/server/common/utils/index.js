@@ -43,11 +43,13 @@ export function atob( str ) {
  */
 export function isJSON( str ) {
   try {
-    return JSON.parse( str );
-  } catch ( e ) {
+    return JSON.parse(str);
+  } catch (e) {
     return undefined;
   }
 }
+
+export let parseJSON = isJSON;
 
 export function flogoIDEncode( id ) {
   return btoa( id )
