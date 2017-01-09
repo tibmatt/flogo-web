@@ -7,7 +7,7 @@ import { DEFAULT_APP_ID } from '../../common/constants';
 
 import { appsDBService } from '../../config/app-config';
 import { VIEWS } from '../../common/db/apps';
-import { ErrorManager } from '../../common/errors';
+import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { FlowsManager } from '../flows';
 
@@ -78,26 +78,40 @@ export class AppsManager {
 
   /**
    *
-   * @param app
    * @param appId if not provided will try to use app.id
+   * @param newData {object}
    */
-  static update(app, appId = null) {
-    /*
-     1. validate structure
-     2. validate name is unique (except for this same app)
-     4. store
-     */
+  static update(appId, newData) {
+    return appsDBService.db.get(appId)
+      .then((response) => {
+        const cleanNewData = cleanInput(newData);
+        let app = Object.assign(response, cleanNewData);
+
+        return validate(app).then(() => {
+          app = build(app);
+          return appsDBService.db
+            .put(app)
+            .then(saveResponse => AppsManager.findOne(saveResponse.id));
+        });
+      });
   }
 
-  static save(app, appId = null) {
-
-
-  }
-
-  static delete(appId) {
-    /* 1. delete related flows
-     2. delete this app
-     */
+  /**
+   * Delete an app.
+   * Will also delete related flows
+   * @param appId {string} appId
+   */
+  static remove(appId) {
+    return FlowsManager.removeByAppId(appId)
+      .then(() => appsDBService.db.get(appId)
+          .then(app => appsDBService.db.remove(app))
+          .then(() => true)
+          .catch((err) => {
+            if (err.name === 'not_found') {
+              return Promise.resolve(null);
+            }
+            throw err;
+          }));
   }
 
   /**
@@ -251,9 +265,10 @@ function validate(app) {
 
   if (appName) {
     promise = appsDBService
-      .db.query(`views/${VIEWS.name}`, { key: appName })
+      .db.query(`views/${VIEWS.name}`, { key: appName.trim().toLowerCase() })
       .then((result) => {
-        const rows = result.rows ? result.rows.filter(row => row.id !== app.id) : [];
+        console.log(result.rows);
+        const rows = result.rows ? result.rows.filter(row => row.id !== app._id) : [];
         if (rows.length) {
           errors.push({
             property: 'name',

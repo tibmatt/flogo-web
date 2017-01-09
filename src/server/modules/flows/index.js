@@ -37,8 +37,26 @@ export class FlowsManager {
     // TODO
   }
 
-  static delete(flowId) {
+  static remove(flowId) {
     // TODO
+  }
+
+  /**
+   * Remove all flows with the specified id
+   * @param appId {string} app id
+   * @return Promise<int> number of flows deleted
+   */
+  static removeByAppId(appId) {
+    return flowsDBService.db
+      .query(`views/${VIEWS.appId}`, { key: appId, include_docs: true })
+      .then((result) => {
+        if (!result.total_rows) {
+          return 0;
+        }
+        const flows = result.rows.map(row => Object.assign({ _deleted: true }, row.doc));
+        return flowsDBService.db.bulkDocs(flows)
+          .then(deleteResult => deleteResult.filter(row => row.ok).length);
+      });
   }
 
   /**
