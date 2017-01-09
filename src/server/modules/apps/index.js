@@ -252,7 +252,7 @@ export class AppsManager {
 export default AppsManager;
 
 function getAppNameForSearch(rawName) {
-  return rawName ? lowerCase(rawName.trim()) : undefined;
+  return rawName ? rawName.trim().toLowerCase() : undefined;
 }
 
 function validate(app) {
@@ -273,7 +273,6 @@ function validate(app) {
     promise = appsDBService
       .db.query(`views/${VIEWS.name}`, { key: appName.trim().toLowerCase() })
       .then((result) => {
-        console.log(result.rows);
         const rows = result.rows ? result.rows.filter(row => row.id !== app._id) : [];
         if (rows.length) {
           errors.push({
