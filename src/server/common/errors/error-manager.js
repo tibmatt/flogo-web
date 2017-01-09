@@ -3,6 +3,14 @@ import {ERROR_TYPES} from './error-types';
 
 export class ErrorManager {
 
+  /**
+   *
+   * @param message {string}
+   * @param options {object}
+   * @param options.type {string} error type (see error constants)
+   * @param options.details {object}
+   * @return {FlogoError}
+   */
   static makeError(message, options) {
     return new FlogoError(message, options);
   }

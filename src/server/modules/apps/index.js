@@ -93,6 +93,12 @@ export class AppsManager {
             .put(app)
             .then(saveResponse => AppsManager.findOne(saveResponse.id));
         });
+      })
+      .catch((error) => {
+        if (error.name === 'not_found') {
+          throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+        }
+        throw error;
       });
   }
 

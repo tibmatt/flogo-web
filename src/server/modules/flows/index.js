@@ -175,64 +175,6 @@ export class FlowsManager {
 }
 export default FlowsManager;
 
-function getFlowNameForSearch(rawName) {
-  return rawName ? lowerCase(rawName.trim()) : undefined;
-}
-
-function validate(app) {
-  const errors = [];
-  let promise = Promise.resolve(true);
-
-  const appName = getFlowNameForSearch(app.name);
-  if (!appName) {
-    errors.push({
-      property: 'name',
-      title: 'Name cannot be empty',
-      value: app.name,
-      type: CONSTRAINTS.REQUIRED,
-    });
-  }
-
-  if (appName) {
-    promise = appsDBService
-      .db.query(`views/${VIEWS.name}`, { key: appName })
-      .then((result) => {
-        const rows = result.rows ? result.rows.filter(row => row.id !== app.id) : [];
-        if (rows.length) {
-          errors.push({
-            property: 'name',
-            title: 'Name already exists',
-            detail: 'There\'s another app with that name',
-            value: app.name,
-            type: CONSTRAINTS.UNIQUE,
-          });
-        }
-      });
-  }
-
-  return promise.then(() => {
-    if (errors.length) {
-      throw ErrorManager.createValidationError(errors[0].message || 'Validation errors', errors);
-    } else {
-      return true;
-    }
-  });
-}
-
-function cleanInput(app) {
-  const cleanedApp = pick(app, EDITABLE_FIELDS);
-  cleanedApp.name = app.name ? app.name.trim() : app.name;
-  return cleanedApp;
-}
-
-function build(app) {
-  const now = (new Date()).toISOString();
-  return defaults(
-    { normalizedName: kebabCase(app.name).trim() },
-    app,
-    { updatedAt: now, createdAt: now, version: null },
-  );
-}
 
 function cleanForOutput(flow, fields) {
   let cleanFlow = Object.assign({
