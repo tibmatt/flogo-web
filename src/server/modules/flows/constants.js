@@ -1,8 +1,4 @@
-export const EDITABLE_FIELDS = [
-  'name',
-  'version',
-  'description',
-];
+export const EDITABLE_FIELDS = [];
 
 export const PUBLISH_FIELDS_SHORT = [
   'id',
@@ -10,6 +6,7 @@ export const PUBLISH_FIELDS_SHORT = [
   'description',
   'createdAt',
   'updatedAt',
+  'appId',
 ];
 
 // same for now
@@ -19,5 +16,6 @@ export const PUBLISH_FIELDS_LONG = [
   'description',
   'createdAt',
   'updatedAt',
+  'appId',
 ];
 

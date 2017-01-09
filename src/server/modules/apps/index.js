@@ -3,6 +3,8 @@ import defaults from 'lodash/defaults';
 import kebabCase from 'lodash/kebabCase';
 import lowerCase from 'lodash/lowerCase';
 
+import { DEFAULT_APP_ID } from '../../common/constants';
+
 import { appsDBService } from '../../config/app-config';
 import { VIEWS } from '../../common/db/apps';
 import { ErrorManager } from '../../common/errors';
@@ -55,13 +57,13 @@ const PUBLISH_FIELDS = [
 ];
 
 const DEFAULT_APP = {
-  _id: 'DEFAULT-APP',
+  _id: DEFAULT_APP_ID,
   name: 'Default app',
   description: 'App created by default',
   version: '0.0.1',
 };
 
-export class AppManager {
+export class AppsManager {
 
   static create(app) {
     let cleanApp = cleanInput(app);
@@ -70,7 +72,7 @@ export class AppManager {
       cleanApp = build(app);
       return appsDBService.db
         .post(cleanApp)
-        .then(response => AppManager.findOne(response.id));
+        .then(response => AppsManager.findOne(response.id));
     });
   }
 
@@ -126,23 +128,7 @@ export class AppManager {
       .then(result => (result.rows || [])
         .map(appRow => cleanForOutput(appRow.doc)),
       )
-      .then((apps) => {
-        if (withFlows) {
-          // TODO: get related flows
-          return Promise.all(apps.map(app => getFlowsForApp(app.id, withFlows)
-            .then((flows) => {
-              const augmentedApp = app;
-              augmentedApp.flows = flows;
-              return augmentedApp;
-            })));
-        }
-        return apps;
-      });
-
-    /*
-     1. findAllApps with terms
-     2. if withFlows retrieve flows for each app based on withflows value
-     */
+      .then(apps => (withFlows ? augmentWithFlows(apps, withFlows) : apps));
   }
 
   /**
@@ -172,8 +158,10 @@ export class AppManager {
           appPromise = appPromise.then((app) => {
             const augmentedApp = app;
             return getFlowsForApp(app.id, withFlows)
-              .then((flows) => { augmentedApp.flows = flows; })
-              .then(() => augmentedApp);
+              .then((flows) => {
+                augmentedApp.flows = flows;
+                return augmentedApp;
+              });
           });
         }
         return appPromise;
@@ -187,11 +175,42 @@ export class AppManager {
   }
 
   /**
-   * Alias for AppManager::find
+   * Fetch many apps by their id
+   *
+   * Options:
+   *    * ## options
+   *    - withFlows {boolean|string} get also all the related flows. Possible values:
+   *      - short {string} - get short version of the flows
+   *      - full {string} -  get full version of the flows
+   *      - true {boolean} - same as 'short'
+   *      - false {boolean} - do not get the flows
+   * @param appIds {string[]} ids of the apps to fetch
+   * @param options
+   * @param options.withFlows retrieve flows
+   */
+  static fetchManyById(appIds = [], { withFlows } = { withFlows: false }) {
+    return appsDBService.db
+      .allDocs({
+        keys: appIds,
+        include_docs: true,
+      })
+      .then(result => (result.rows || [])
+        .filter((appRow) => {
+          const isError = appRow.error;
+          const isDeleted = appRow.value && appRow.value.deleted;
+          return !isError && !isDeleted;
+        })
+        .map(appRow => cleanForOutput(appRow.doc)),
+      )
+      .then(apps => (withFlows ? augmentWithFlows(apps, withFlows) : apps));
+  }
+
+  /**
+   * Alias for AppsManager::find
    * @param args
    */
   static list(...args) {
-    return AppManager.find(args);
+    return AppsManager.find(args);
   }
 
   static ensureDefaultApp() {
@@ -210,7 +229,7 @@ export class AppManager {
   }
 
 }
-export default AppManager;
+export default AppsManager;
 
 function getAppNameForSearch(rawName) {
   return rawName ? lowerCase(rawName.trim()) : undefined;
@@ -278,4 +297,13 @@ function cleanForOutput(app) {
 
 function getFlowsForApp(appId, type) {
   return FlowsManager.find({ appId }, { fields: type });
+}
+
+function augmentWithFlows(apps, flowFields) {
+  return Promise.all(apps.map(app => getFlowsForApp(app.id, flowFields)
+    .then((flows) => {
+      const augmentedApp = app;
+      augmentedApp.flows = flows;
+      return augmentedApp;
+    })));
 }

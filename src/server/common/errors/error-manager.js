@@ -50,11 +50,7 @@ export class ErrorManager {
    */
   static createRestNotFoundError(message = 'Resource not found', details) {
     details = Object.assign({}, { status: 404, code: ERROR_TYPES.COMMON.NOT_FOUND, title: 'Resource not found' }, details);
-
-    return ErrorManager.createRestError(message, {
-      type: ERROR_TYPES,
-      details
-    });
+    return ErrorManager.createRestError(message, details);
   }
 
   static validationToRestErrors(validationErrors = []) {

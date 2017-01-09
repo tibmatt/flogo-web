@@ -12,7 +12,12 @@ const views = [
   },
   {
     key: VIEWS.updatedAt,
-    map: function (doc) { emit(doc.updatedAt); }.toString(),
+    // TODO update to updatedAt through the application
+    map: function (doc) {
+      if (doc.updated_at) {
+        emit(doc.updated_at || doc.updatedAt);
+      }
+    }.toString(),
   },
 ];
 

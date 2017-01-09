@@ -2,11 +2,15 @@ import pick from 'lodash/pick';
 import defaults from 'lodash/defaults';
 import kebabCase from 'lodash/kebabCase';
 import lowerCase from 'lodash/lowerCase';
+import uniq from 'lodash/uniq';
+import keyBy from 'lodash/keyBy';
 
 import { flowsDBService } from '../../config/app-config';
 import { VIEWS } from '../../common/db/flows';
 import { ErrorManager } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
+
+import { AppsManager } from '../apps';
 
 import { PUBLISH_FIELDS_LONG, PUBLISH_FIELDS_SHORT } from './constants';
 
@@ -41,7 +45,9 @@ export class FlowsManager {
    * List or find all apps
    *
    * ## searchTerms
-   * - name {string} find by name with exactly this name (case insensitive)
+   * - appId {string} find by app id with exactly this appId
+   * - name {string} find by name with exactly this name (case insensitive). If used along with appId will apply appId
+   *    before name. Causing the name lookup to be inside the specified appId context.
    *
    * ## options
    * - fields {boolean|string} Possible values:
@@ -56,20 +62,54 @@ export class FlowsManager {
    * @params terms.appId {string} id of the app
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'short' version
-   * @params options.withApp {boolean} fetch related app. Default false.
+   * @params options.withApps {boolean} fetch related app. Default false.
    */
-  static find(terms = {}, { fields, withApp } = { fields: 'short', withApp: false }) {
-    const options = { include_docs: true };
+  static find(terms = {}, options) {
+    const { fields, withApps } = Object.assign({ fields: 'short', withApps: false }, options);
+
+    const queryOpts = { include_docs: true };
     // todo: include name
     if (terms.appId) {
-      options.key = terms.appId;
+      queryOpts.key = terms.appId;
     }
     return flowsDBService.db
-      .query(`views/${VIEWS.appId}`, options)
+      .query(`views/${VIEWS.appId}`, queryOpts)
       .then(result => (result.rows || [])
         .map(flowRow => cleanForOutput(flowRow.doc, fields)),
-      );
-    // TODO: get app
+      )
+      .then(flows => (withApps ? augmentWithApps(flows) : flows));
+  }
+
+  /**
+   * List or find last updated flows
+
+   * ## options
+   * - fields {boolean|string} Possible values:
+   *    - short {string} - get short version of the flows
+   *    - full {string} -  get full version of the flows
+   *    - raw {string} (deprecated) -  get raw version from db
+   *    - true {boolean} - same as 'short'
+   *    - false {boolean} - do not get the flows
+   *
+   * @params options
+   * @params options.fields {string} which fields to retrieve, defaults to 'short' version
+   * @params options.withApps {boolean} fetch related app. Default false.
+   */
+  static findRecent(options) {
+    const {
+      limit, fields, withApps,
+    } = Object.assign({}, { limit: 10, fields: 'short', withApps: true }, options);
+
+    return flowsDBService.db
+      .query(`views/${VIEWS.updatedAt}`, {
+        limit,
+        descending: true,
+        include_docs: true,
+      })
+      .then(result => (result.rows || [])
+        .map(flowRow => cleanForOutput(flowRow.doc, fields)),
+      )
+      .then(flows => (withApps ? augmentWithApps(flows) : flows));
   }
 
   /**
@@ -86,7 +126,8 @@ export class FlowsManager {
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    * @params options.withApp {boolean} fetch related app. Default false.
    */
-  static findOne(flowId, { fields, withApp } = { fields: 'full', withApp: false }) {
+  static findOne(flowId, options) {
+    const { fields, withApp } = Object.assign({ fields: 'full', withApp: false }, options);
     /*
      1. find app with the specified id
      1.1 if app exists retrieve related flows if applicable (based on withflows)
@@ -106,7 +147,7 @@ export class FlowsManager {
   }
 
   /**
-   * Alias for AppManager::find
+   * Alias for AppsManager::find
    * @param args
    */
   static list(...args) {
@@ -190,3 +231,10 @@ function cleanForOutput(flow, fields) {
   return cleanFlow;
 }
 
+
+function augmentWithApps(flows = []) {
+  const appIds = uniq(flows.map(flow => flow.appId));
+  return AppsManager.fetchManyById(appIds, { withFlows: false })
+    .then(allApps => keyBy(allApps, 'id'))
+    .then(appsMap => flows.map(flow => Object.assign({ app: appsMap[flow.appId] || null }, flow)));
+}

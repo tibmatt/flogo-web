@@ -1,4 +1,4 @@
-import { AppManager } from '../apps';
+import { AppsManager } from '../apps';
 
 export function installDefaults() {
   return Promise.resolve([
@@ -7,5 +7,5 @@ export function installDefaults() {
 }
 
 export function installDefaultApps() {
-  return AppManager.ensureDefaultApp();
+  return AppsManager.ensureDefaultApp();
 }

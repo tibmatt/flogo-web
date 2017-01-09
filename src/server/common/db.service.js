@@ -99,9 +99,9 @@ export class DBService {
             console.log("[warning]We generate an id for you, but suggest you give a meaningful id to this document.");
           }
 
-          if(!doc['created_at']){
-            doc['created_at'] = new Date().toISOString();
-          }
+          doc['created_at'] = new Date().toISOString();
+          doc['updated_at'] = new Date().toISOString();
+
           this._db.put(doc).then((response)=>{
             resolve(response);
           }).catch((err)=>{
@@ -168,9 +168,8 @@ export class DBService {
         reject("[Error]doc.$table is required.");
       }
 
-      if(!doc['updated_at']){
-        doc['updated_at'] = new Date().toISOString();
-      }
+      doc.updated_at = new Date().toISOString();
+
       this._db.get(doc._id).then(
         ( dbDoc )=> {
 

@@ -1,5 +1,5 @@
 import { config } from '../../config/app-config';
-import { AppManager } from '../../modules/apps';
+import { AppsManager } from '../../modules/apps';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
 const basePath = config.app.basePath;
@@ -25,7 +25,7 @@ function* listApps() {
     searchTerms.name = filterName;
   }
 
-  const foundApps = yield AppManager.find(searchTerms);
+  const foundApps = yield AppsManager.find(searchTerms);
   this.body = {
     data: foundApps || [],
   };
@@ -36,7 +36,7 @@ function* createApp() {
   const data = this.request.body || {};
 
   try {
-    const app = yield AppManager.create(data);
+    const app = yield AppsManager.create(data);
     this.body = {
       data: app,
     };
@@ -57,7 +57,7 @@ function* createApp() {
 function* getApp() {
   const appId = this.params.appId;
 
-  const app = yield AppManager.findOne(appId, { withFlows: 'short' });
+  const app = yield AppsManager.findOne(appId, { withFlows: 'short' });
 
   if (!app) {
     throw ErrorManager.createRestNotFoundError('Application not found', {
