@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import {RESTAPIService} from './services/rest-api.service';
+import {RESTAPIApplicationsService} from './services/restapi/applications-api.service';
 import {RESTAPIActivitiesService} from './services/restapi/activities-api.service';
 import {RESTAPIConfigurationService} from './services/restapi/configuration-api-service';
 import {RESTAPIFlowsService} from './services/restapi/flows-api.service';
@@ -15,6 +16,7 @@ import {LogService} from './services/log.service';
 @NgModule({
   providers: [ // services
     RESTAPIService,
+    RESTAPIApplicationsService,
     RESTAPIActivitiesService,
     RESTAPIConfigurationService,
     RESTAPIFlowsService,

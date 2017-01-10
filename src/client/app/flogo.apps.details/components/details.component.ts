@@ -1,29 +1,17 @@
-import { Component, OnChanges, AfterViewInit, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { CanActivate,  RouteParams } from '@angular/router-deprecated';
-import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
-import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import { Component, AfterViewInit, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-import { FlogoApplicationFlowsComponent } from '../../flogo.apps.flows/components/flows.component';
-import { FlogoApplicationSearch } from '../../flogo.apps.search/components/search.component';
-
-import {
-    notification,
-} from '../../../common/utils';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 
 
-@Component( {
+@Component({
     selector: 'flogo-app-details',
     moduleId: module.id,
     templateUrl: 'details.tpl.html',
-    styleUrls: [ 'details.component.css' ],
-    directives: [FlogoApplicationFlowsComponent, FlogoApplicationSearch],
-    pipes: [TranslatePipe]
-} )
-@CanActivate((next) => {
-    return isConfigurationLoaded();
+    styleUrls: [ 'details.component.css' ]
 })
 export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  {
     @ViewChild('appInputName') appInputName: ElementRef;
@@ -38,36 +26,43 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
 
 
     constructor(
-        private _routeParams: RouteParams,
+        private route: ActivatedRoute,
         public translate: TranslateService,
         private renderer: Renderer,
         private apiApplications: RESTAPIApplicationsService
-    ) {
+    ) { }
 
+  ngOnInit() {
 
-        // get application details by id
-        this.apiApplications.get(this._routeParams.params['id'])
-            .then((application:IFlogoApplicationModel)=> {
-                this.application = application;
-                this.flows = this.getOriginalFlows();
-            });
-    }
-
-    ngOnInit() {
-        this.searchPlaceHolder = this.translate.get('DETAILS:SEARCH')['value'];
+    // get application details by id
+    this.apiApplications.get(this.route.snapshot.params['id'])
+      .then((application: IFlogoApplicationModel) => {
+        console.log('App ID', this.route.snapshot.params['id']);
+        console.log('Application', application);
+        this.application = application;
+        this.flows = this.getOriginalFlows();
+      })
+      .then(() => {
+        this.searchPlaceHolder = this.translate.instant('DETAILS:SEARCH');
 
         let timeStr = timeString(this.application.createdAt);
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 
 
-        if(this.application.updatedAt == null) {
-            this.editingName = true;
-            this.updateAtFormatted = null;
-        }else {
-            this.editingName = false;
-            this.updateAtFormatted = moment(timeString(this.application.updatedAt), 'YYYYMMDD hh:mm:ss').fromNow();
+        if (this.application.updatedAt == null) {
+          this.editingName = true;
+          this.updateAtFormatted = null;
+        } else {
+          this.editingName = false;
+          this.updateAtFormatted = moment(timeString(this.application.updatedAt), 'YYYYMMDD hh:mm:ss').fromNow();
         }
-    }
+      })
+      .then(() => {
+        if(this.application.updatedAt == null) {
+          this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
+        }
+      });
+  }
 
     getOriginalFlows() {
         return _.clone(this.application.flows || []);
@@ -75,9 +70,9 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
 
 
     ngAfterViewInit() {
-        if(this.application.updatedAt == null) {
-            this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-        }
+        // if(this.application.updatedAt == null) {
+        //     this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
+        // }
     }
 
     onClickAddDescription(event) {

@@ -1,9 +1,7 @@
-import { Component, EventEmitter,  Input, OnChanges, Output, SimpleChange,  } from '@angular/core';
-import { Router } from '@angular/router-deprecated';
-import {FlogoModal} from '../../../common/services/modal.service';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FlogoModal } from '../../../common/services/modal.service';
 import { IFlogoApplicationModel } from '../../../common/application.model';
-import { By } from '@angular/platform-browser';
-import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 
@@ -11,11 +9,7 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
     selector: 'flogo-app-list',
     moduleId: module.id,
     templateUrl: 'app.list.tpl.html',
-    styleUrls: ['app.list.css'],
-    directives: [],
-    pipes: [TranslatePipe],
-    providers: [FlogoModal ]
-
+    styleUrls: ['app.list.css']
 })
 export class FlogoAppListComponent {
     @Output() onSelectedApp:EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
