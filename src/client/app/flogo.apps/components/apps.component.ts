@@ -2,9 +2,9 @@ import { Component, OnChanges, OnInit, ViewChild, ElementRef } from '@angular/co
 import { RouteConfig, RouterOutlet, RouteParams, Router, CanActivate } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
-import { FlogoApplicationDetailsComponent } from '../../flogo.app.details/components/details.component';
-import { FlogoAppListComponent } from '../../flogo.app.list/components/app.list.component';
-import { FlogoMainComponent } from '../../flogo.main/components/main.component';
+import { FlogoApplicationDetailsComponent } from '../../flogo.apps.details/components/details.component';
+import { FlogoAppListComponent } from '../../flogo.apps.list/components/app.list.component';
+import { FlogoMainComponent } from '../../flogo.apps.main/components/main.component';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 
 import {
@@ -16,11 +16,11 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 
 @Component( {
-    selector: 'flogo-home',
+    selector: 'flogo-apps',
     moduleId: module.id,
     directives: [ RouterOutlet, Contenteditable, FlogoAppListComponent ],
-    templateUrl: 'home.tpl.html',
-    styleUrls: [ 'home.component.css' ],
+    templateUrl: 'apps.tpl.html',
+    styleUrls: [ 'apps.component.css' ],
     providers: [ FlogoModal ],
     pipes: [TranslatePipe ]
 } )
@@ -30,11 +30,11 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 
 @RouteConfig([
-    {path: '/', name: 'FlogoMain', component: FlogoMainComponent, useAsDefault: true},
-    {path: '/application/:id', name: 'FlogoApplicationDetails', component: FlogoApplicationDetailsComponent }
+    {path: '/apps', name: 'FlogoMain', component: FlogoMainComponent, useAsDefault: true},
+    {path: '/apps/:id', name: 'FlogoApplicationDetails', component: FlogoApplicationDetailsComponent }
 ])
 
-export class FlogoHomeComponent implements  OnInit {
+export class FlogoAppsComponent implements  OnInit {
     @ViewChild('appList') appList: ElementRef;
 
     constructor(
@@ -55,7 +55,7 @@ export class FlogoHomeComponent implements  OnInit {
     }
 
     onDeletedApp(application:IFlogoApplicationModel) {
-        this._router.navigate([ 'FlogoHomeComponent' ]);
+        this._router.navigate([ 'FlogoAppsComponent' ]);
     }
 
 }
