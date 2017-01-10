@@ -77,9 +77,9 @@ module.exports = function(config) {
       { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false },
 
       // ng2-bs3-modal
-      //{pattern: 'node_modules/ng2-bs3-modal/components/*.js', included: false, watched: false},
-      //{pattern: 'node_modules/ng2-bs3-modal/directives/*.js', included: false, watched: false},
-      //{pattern: 'node_modules/ng2-bs3-modal/ng2-bs3-modal.js', included: false, watched: false},
+      {pattern: 'node_modules/ng2-bs3-modal/components/*.js', included: false, watched: false},
+      {pattern: 'node_modules/ng2-bs3-modal/directives/*.js', included: false, watched: false},
+      {pattern: 'node_modules/ng2-bs3-modal/ng2-bs3-modal.js', included: false, watched: false},
 
       // ng2-translate
       {pattern: 'node_modules/ng2-translate/ng2-translate.js', included: false, watched: false},
@@ -103,6 +103,8 @@ module.exports = function(config) {
       // (these paths need to be rewritten, see proxies section)
       { pattern: appBase + '**/*.*(html|css)', included: false, watched: true },
       { pattern: appBase + '**/*.*(png|svg)', included: false, watched: true },
+      { pattern: appAssets + '**/*.*(html|css)', included: false, watched: true },
+      { pattern: appAssets + '**/*.*(png|svg)', included: false, watched: true },
 
       // Paths for debugging with source maps in dev tools
       //{ pattern: appSrcBase + '**/*.ts', included: false, watched: false },
@@ -114,7 +116,7 @@ module.exports = function(config) {
     // Proxied base paths for loading assets
     proxies: {
       // required for component assets fetched by Angular's compiler
-      "/app/": appAssets,
+      "/app/": "/base/"+appAssets,
       "/common/": "/base/common/",
       "/assets/": "/base/assets/"
     },

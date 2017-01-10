@@ -1,19 +1,48 @@
-import {Component, Output, EventEmitter} from '@angular/core';
+//import {Component, Output, EventEmitter} from '@angular/core';
+
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By }              from '@angular/platform-browser';
+import { DebugElement }    from '@angular/core';
+import { TranslateModule, TranslateService, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { Http } from '@angular/http'
+
 import { FlogoInstructionsComponent } from './instructions.component';
-import { describe, beforeEach, beforeEachProviders, it, inject, expect, injectAsync } from '@angular/core/testing';
-import { TestComponentBuilder } from '@angular/compiler/testing';
-import { By } from '@angular/platform-browser';
-import { TranslateService, TranslateLoader } from 'ng2-translate/ng2-translate';
-import { HTTP_PROVIDERS } from '@angular/http';
 
 
 describe('Component: FlogoInstructions Modal', ()=> {
-    let tcb: TestComponentBuilder;
+
+  let comp:    FlogoInstructionsComponent;
+  let fixture: ComponentFixture<FlogoInstructionsComponent>;
+  let de:      DebugElement;
+  let el:      HTMLElement;
+
+  // synchronous beforeEach
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot({
+        provide: TranslateLoader,
+        useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
+        deps: [Http]
+      })],
+      declarations: [ FlogoInstructionsComponent, ModalComponent ], // declare the test component
+    });  // compile template and css
+  });
+  it('When load, should select by default the step number 1', done => {
+
+    TestBed.compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(FlogoInstructionsComponent);
+        comp = fixture.componentInstance; // FlogoInstructionsComponent test instance
+        de = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
+        el = de.nativeElement;
+        expect(de.nativeElement.innerHTML).toEqual('1');
+      });
+  });
+    /*let tcb: TestComponentBuilder;
 
     //setup
     beforeEachProviders(()=> [
-        HTTP_PROVIDERS,
-        TestComponentBuilder,
         TranslateService,
         TranslateLoader,
         FlogoInstructionsComponent
@@ -96,8 +125,5 @@ describe('Component: FlogoInstructions Modal', ()=> {
                 expect(selected.nativeElement.innerHTML).toEqual('3');
                 done();
             });
-    });
-
-
-
+    });*/
 });
