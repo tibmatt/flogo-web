@@ -9,7 +9,7 @@ import { timeString } from '../../../common/utils';
 
 
 @Component( {
-    selector: 'flogo-app-flows',
+    selector: 'flogo-apps-flows',
     moduleId: module.id,
     directives: [],
     templateUrl: 'flows.tpl.html',

@@ -3,7 +3,7 @@ import { CanActivate } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 
 @Component({
-    selector: 'flogo-app-search',
+    selector: 'flogo-apps-search',
     moduleId: module.id,
     templateUrl: 'search.tpl.html',
     styleUrls:['search.component.css']

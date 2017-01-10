@@ -15,7 +15,7 @@ import {
 
 
 @Component( {
-    selector: 'flogo-app-details',
+    selector: 'flogo-apps-details',
     moduleId: module.id,
     templateUrl: 'details.tpl.html',
     styleUrls: [ 'details.component.css' ],

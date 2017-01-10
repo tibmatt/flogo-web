@@ -8,7 +8,7 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
 
 
 @Component({
-    selector: 'flogo-app-list',
+    selector: 'flogo-apps-list',
     moduleId: module.id,
     templateUrl: 'app.list.tpl.html',
     styleUrls: ['app.list.css'],
