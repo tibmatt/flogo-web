@@ -1,8 +1,8 @@
+import {} from 'jasmine';
 import { parseMapping } from './utils';
 
 
 describe('Function: ParseMapping', ()=> {
-
     describe('Evaluating an activity', () => {
         beforeEach(() => {
             this.parsedMapping = parseMapping("{A20.message}.category.id");
