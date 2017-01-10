@@ -1,5 +1,3 @@
-import { beforeEachProviders, it, describe, expect, inject, beforeEach } from '@angular/core/testing';
-import { provide } from '@angular/core';
 import { parseMapping } from './utils';
 
 
