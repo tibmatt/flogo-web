@@ -82,8 +82,9 @@ module.exports = function(config) {
       {pattern: 'node_modules/ng2-bs3-modal/ng2-bs3-modal.js', included: false, watched: false},
 
       // ng2-translate
-      {pattern: 'node_modules/ng2-translate/ng2-translate.js', included: false, watched: false},
-      {pattern: 'node_modules/ng2-translate/src/*.js', included: false, watched: false},
+      {pattern: 'node_modules/ng2-translate/bundles/ng2-translate.umd.js', included: false, watched: false},
+      //{pattern: 'node_modules/ng2-translate/ng2-translate.js', included: false, watched: false},
+      //{pattern: 'node_modules/ng2-translate/src/*.js', included: false, watched: false},
 
       { pattern: 'systemjs.config.test.js', included: false, watched: false },
       //{ pattern: 'systemjs.config.extras.js', included: false, watched: false },

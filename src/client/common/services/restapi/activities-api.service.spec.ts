@@ -1,4 +1,3 @@
-import { provide } from '@angular/core';
 import { Http,  BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
 import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RESTAPIActivitiesService } from './activities-api.service';
@@ -423,7 +422,7 @@ describe('Service: RESTAPIActivitiesService', ()=> {
     beforeEach(inject([RESTAPIActivitiesService, MockBackend], (serviceAPI: RESTAPIActivitiesService, mock: MockBackend)=> {
         service = serviceAPI;
         mockbackend = mock;
-    });
+    }));
 
 
     it('Should transform the 11 activities', (done)=> {

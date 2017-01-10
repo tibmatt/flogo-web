@@ -1,9 +1,7 @@
-//import {Component, Output, EventEmitter} from '@angular/core';
-
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By }              from '@angular/platform-browser';
 import { DebugElement }    from '@angular/core';
-import { TranslateModule, TranslateService, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule, TranslateService, TranslateLoader, TranslateStaticLoader, TranslatePipe } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http } from '@angular/http'
 
@@ -19,6 +17,7 @@ describe('Component: FlogoInstructions Modal', ()=> {
 
   // synchronous beforeEach
   beforeEach(() => {
+
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot({
         provide: TranslateLoader,
@@ -27,18 +26,34 @@ describe('Component: FlogoInstructions Modal', ()=> {
       })],
       declarations: [ FlogoInstructionsComponent, ModalComponent ], // declare the test component
     });  // compile template and css
+
+      /*
+    TestBed.configureTestingModule({
+        declarations: [ FlogoInstructionsComponent, ModalComponent ], // declare the test component
+        providers: [ TranslateService, TranslateLoader ]
+    })
+    */
+
+
+
   });
+
   it('When load, should select by default the step number 1', done => {
 
     TestBed.compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(FlogoInstructionsComponent);
         comp = fixture.componentInstance; // FlogoInstructionsComponent test instance
+        //console.log(comp);
+        fixture.detectChanges();
         de = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
+
         el = de.nativeElement;
         expect(de.nativeElement.innerHTML).toEqual('1');
+        done();
       });
   });
+
     /*let tcb: TestComponentBuilder;
 
     //setup
@@ -125,4 +140,6 @@ describe('Component: FlogoInstructions Modal', ()=> {
                 done();
             });
     });*/
+
+
 });
