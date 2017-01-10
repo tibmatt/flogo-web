@@ -21,7 +21,7 @@ export const CONFIG = {
       packages: path.join(dist, 'packages')
     },
     ts: {
-      dev: ['**/*.ts', '!**/*.spec.ts', '!**/*.e2e.ts', '!main.aot.ts', '!node_modules/**/*.ts'],
+      dev: ['**/*.ts', '!**/*.e2e.ts', '!main.aot.ts', '!node_modules/**/*.ts'],
       prod: ['**/*.ts', '!**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
     },
     less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
