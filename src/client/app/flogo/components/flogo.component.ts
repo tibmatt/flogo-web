@@ -17,8 +17,8 @@ import { ConfigurationService } from '../../../common/services/configuration.ser
 import { LogService } from '../../../common/services/log.service';
 import { formatServerConfiguration, getFlogoGlobalConfig } from '../../../common/utils';
 import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
-import { FlogoHomeComponent } from '../../flogo.home/components/home.component';
-//import { FlogoApplicationDetailsComponent } from '../../flogo.app.details/components/details.component';
+import { FlogoAppsComponent } from '../../flogo.apps/components/apps.component';
+//import { FlogoApplicationDetailsComponent } from '../../flogo.apps.details/components/details.component';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
 @Component({
@@ -35,10 +35,7 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
 
 @RouteConfig([
   {
-    path: '/', name: "FlogoHome", component:FlogoFlowsComponet
-  },
-  {
-    path: '/flows', name: "FlogoFlows", component:FlogoFlowsComponet, useAsDefault: true
+    path: '/...', name: "FlogoHome", component:FlogoAppsComponent, useAsDefault: true
   },
   {
     path:'/flows/:id/...', name:"FlogoFlowDetail", component: FlogoCanvasComponent
@@ -53,9 +50,6 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
   //  temp config page to change server URL settings
   {
     path: '/_config', name: "FlogoDevConfig", component:FlogoConfigComponent
-  },
-  {
-    path: '/home/...', name: 'FlogoHomeComponent', component: FlogoHomeComponent
   }
 ])
 
