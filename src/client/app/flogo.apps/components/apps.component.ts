@@ -55,7 +55,7 @@ export class FlogoAppsComponent implements  OnInit {
     }
 
     onDeletedApp(application:IFlogoApplicationModel) {
-        this._router.navigate([ 'FlogoAppsComponent' ]);
+        this._router.navigate([ 'FlogoHome' ]);
     }
 
 }
