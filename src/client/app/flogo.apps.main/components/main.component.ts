@@ -3,8 +3,8 @@ import { CanActivate } from '@angular/router-deprecated';
 import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
 import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-import { FlogoApplicationSearch } from '../../flogo.app.search/components/search.component';
-import { FlogoApplicationFlowsComponent } from '../../flogo.app.flows/components/flows.component';
+import { FlogoApplicationSearch } from '../../flogo.apps.search/components/search.component';
+import { FlogoApplicationFlowsComponent } from '../../flogo.apps.flows/components/flows.component';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 
 import {

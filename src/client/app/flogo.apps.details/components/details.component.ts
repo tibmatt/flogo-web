@@ -5,8 +5,8 @@ import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-import { FlogoApplicationFlowsComponent } from '../../flogo.app.flows/components/flows.component';
-import { FlogoApplicationSearch } from '../../flogo.app.search/components/search.component';
+import { FlogoApplicationFlowsComponent } from '../../flogo.apps.flows/components/flows.component';
+import { FlogoApplicationSearch } from '../../flogo.apps.search/components/search.component';
 
 import {
     notification,
