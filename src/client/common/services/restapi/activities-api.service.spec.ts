@@ -1,13 +1,12 @@
-/*
 import { provide } from '@angular/core';
-import { Http, HTTP_PROVIDERS, BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
-import { describe, beforeEach, beforeEachProviders, it, inject, expect } from '@angular/core/testing';
+import { Http,  BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
+import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RESTAPIActivitiesService } from './activities-api.service';
-import { MockBackend, MockConnection } from '@angular/http/testing';
+import { MockBackend } from '@angular/http/testing';
 
 
 describe('Service: RESTAPIActivitiesService', ()=> {
-    let mockbackend, service;
+    let mockbackend, service = null;
     let mockActivities = [
         {
             "name": "sendWSMessage",
@@ -403,19 +402,29 @@ describe('Service: RESTAPIActivitiesService', ()=> {
         }
     ];
 
-    beforeEachProviders(() => [
-        RESTAPIActivitiesService,
-        MockBackend,
-        BaseRequestOptions,
-        provide(Http, {
-            useFactory: (backend, options) => new Http(backend, options),
-            deps: [MockBackend, BaseRequestOptions]})
-    ]);
+    beforeEach(()=> {
+        TestBed.configureTestingModule({
+            providers: [
+                MockBackend,
+                BaseRequestOptions,
+                {
+                    provide: Http,
+                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
+                        return new Http(backendInstance, defaultOptions);
+                    },
+                    deps: [MockBackend, BaseRequestOptions]
+                },
+                RESTAPIActivitiesService
+            ]
+        })
 
-    beforeEach(inject([MockBackend, RESTAPIActivitiesService], (_mockbackend,  _service) => {
-        mockbackend = _mockbackend;
-        service = _service;
-    }));
+    });
+
+    beforeEach(inject([RESTAPIActivitiesService, MockBackend], (serviceAPI: RESTAPIActivitiesService, mock: MockBackend)=> {
+        service = serviceAPI;
+        mockbackend = mock;
+    });
+
 
     it('Should transform the 11 activities', (done)=> {
         mockbackend.connections.subscribe(connection => {
@@ -428,6 +437,7 @@ describe('Service: RESTAPIActivitiesService', ()=> {
                 expect(res.length).toEqual(11);
                 done();
         });
+
     });
 
     it('Should add the "installed" field to all items', (done)=> {
@@ -444,7 +454,7 @@ describe('Service: RESTAPIActivitiesService', ()=> {
                 done();
         });
     });
+
 });
-*/
 
 
