@@ -1,23 +1,23 @@
-import { Component, ViewChild, SimpleChange, OnChanges,EventEmitter } from '@angular/core';
-import {MODAL_DIRECTIVES, ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import {Component, ViewChild, SimpleChange, OnChanges, EventEmitter, Input, Output} from '@angular/core';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { notification } from '../../../common/utils';
 
 @Component({
     selector: 'flogo-flows-flow-name',
     moduleId: module.id,
-    inputs: ['show','repeatedName'],
-    outputs: ['correctName','close'],
     templateUrl: 'flow-name.tpl.html',
-    styleUrls: ['flow-name.component.css'],
-    directives: [MODAL_DIRECTIVES],
-    pipes: [TranslatePipe]
+    styleUrls: ['flow-name.component.css']
 })
-export class FlogoFlowsFlowName implements OnChanges {
+export class FlogoFlowsFlowNameComponent implements OnChanges {
+    @Input()
     show:boolean = false;
+    @Input()
     repeatedName:string='';
+    @Output()
     correctName: EventEmitter<any> = new EventEmitter();
+    @Output()
     close: EventEmitter<any> = new EventEmitter();
     public flowName: string;
     public flowNameExists = true;
@@ -47,14 +47,15 @@ export class FlogoFlowsFlowName implements OnChanges {
                 }
             })
             .catch((err) => {
-                let message = this.translate.get('FLOW-NAME:GETTING-FLOW-NAME');
-                notification(message['value'], 'error');
+                let message = this.translate.instant('FLOW-NAME:GETTING-FLOW-NAME');
+                notification(message, 'error');
             });
 
 
 
     }
-    private closeModal() {
+
+    public closeModal() {
         this.repeatedName = '';
         this.flowNameModal.close();
         this.close.emit(true);

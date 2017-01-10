@@ -1,18 +1,13 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
-import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslatePipe } from 'ng2-translate/ng2-translate';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component( {
     selector : 'flogo-instructions',
     moduleId : module.id,
-    directives : [
-        MODAL_DIRECTIVES
-    ],
     templateUrl : 'instructions.tpl.html',
     inputs : ['isActivated'],
     outputs : ['onClosedModal: flogoOnClosedModal'],
-    styleUrls : [ 'instructions.component.css' ],
-    pipes: [TranslatePipe]
+    styleUrls : [ 'instructions.component.css' ]
 } )
 export class FlogoInstructionsComponent implements OnChanges {
 
@@ -20,14 +15,14 @@ export class FlogoInstructionsComponent implements OnChanges {
 
     isActivated : boolean;
     onClosedModal = new EventEmitter();
-    steps:any[] = [
+    steps = [
         {title:'Configure the trigger', description: '', screenshot:'flogo.instructions.screen-1@3x.png'} ,
         {title:'Add and configure activities', description: '', screenshot:'flogo.instructions.screen-2@3x.png'} ,
         {title:'Run and test at any time', description: '', screenshot:'flogo.instructions.screen-3@3x.png'} ,
         {title:'Build and run', description: '', screenshot:'flogo.instructions.screen-4@3x.png'}
     ];
     currentIndex : number;
-    currentStep :any[];
+    currentStep : any;
     STEPS_LENGTH = this.steps.length - 1;
 
     constructor() {
@@ -72,7 +67,6 @@ export class FlogoInstructionsComponent implements OnChanges {
     }
 
     openModal() {
-        console.log( 'Open Modal.' );
         this.init();
         this.modal.open('lg');
     }

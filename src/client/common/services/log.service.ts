@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as io from 'socket.io-client';
+//import { connect as ioConnect } from 'socket.io-client';
 
 @Injectable()
 export class LogService {
@@ -8,7 +8,7 @@ export class LogService {
 
     constructor() {
         this.lines = [];
-        var socket = io();
+        let socket = io();
         socket.on('on-connecting', this.onData.bind(this));
         socket.on('on-log', this.onData.bind(this));
     }
@@ -16,7 +16,7 @@ export class LogService {
     onData(msg) {
         console.info('Received message', new Date());
         try {
-            var data = JSON.parse(msg);
+            let data = JSON.parse(msg);
             this.appendLog(data);
         } catch(e) {
             console.error(e);

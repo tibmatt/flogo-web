@@ -20,7 +20,10 @@ export const CONFIG = {
       server: path.join(dist, 'server'),
       packages: path.join(dist, 'packages')
     },
-    ts: ['../../typings/browser.d.ts', '**/*.ts', '**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
+    ts: {
+      dev: ['**/*.ts', '!**/*.e2e.ts', '!main.aot.ts', '!node_modules/**/*.ts'],
+      prod: ['**/*.ts', '!**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
+    },
     less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
     assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
@@ -33,14 +36,13 @@ export const CONFIG = {
   host: 'localhost:3303',
   libs: {
     js: [
-      'node_modules/es6-shim/es6-shim.js',
-      'node_modules/es6-promise/dist/es6-promise.js',
+      'node_modules/core-js/client/shim.min.js',
       'node_modules/reflect-metadata/Reflect.js',
 
       'node_modules/systemjs/dist/system-polyfills.src.js',
       'node_modules/systemjs/dist/system.src.js',
 
-      // needs to be loaded after es6-shim and es6-promise
+      // needs to be loaded after core-js
       'node_modules/zone.js/dist/zone.js',
 
       'node_modules/jquery/dist/jquery.js',
@@ -49,13 +51,15 @@ export const CONFIG = {
       'node_modules/postal/lib/postal.js',
       'node_modules/bootstrap/dist/js/bootstrap.js',
       'node_modules/moment/min/moment-with-locales.min.js',
+      'node_modules/socket.io-client/socket.io.js',
 
-      'node_modules/rxjs/bundles/Rx.js',
       'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
       //'node_modules/ng2-translate/bundles/ng2-translate.js',
 
       'dev.env.js',
-      'systemjs.config.js'
+      'systemjs.config.js',
+
+      'node_modules/_tmp/Rx.js'
     ],
     styles: [
       'node_modules/bootstrap/dist/css/**/*',
@@ -69,7 +73,6 @@ export const CONFIG = {
 
         // Not required as we're building self-executing bundles
         // 'node_modules/systemjs/dist/system-polyfills.src.js',
-        // 'node_modules/systemjs/dist/system.src.js',
 
         // needs to be loaded after es6-shim and es6-promise
         'node_modules/zone.js/dist/zone.min.js',
@@ -79,7 +82,8 @@ export const CONFIG = {
         'node_modules/lodash/lodash.min.js',
         'node_modules/postal/lib/postal.min.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
-        'node_modules/moment/min/moment-with-locales.min.js'
+        'node_modules/moment/min/moment-with-locales.min.js',
+        'node_modules/socket.io-client/socket.io.js',
       ],
       js: [
         'js/lib.bundle.js',
