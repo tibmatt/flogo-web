@@ -22,7 +22,7 @@ class Container {
 }
 
 describe('Directive: Contenteditable', ()=> {
-    let fixture: ComponentFixture<Container>, de: DebugElement, container: DebugElement, element: HTMLElement;
+    let fixture: ComponentFixture<Container>, de: DebugElement, container: Container, element: HTMLElement;
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [ Contenteditable, Container ]
