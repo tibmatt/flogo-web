@@ -25,6 +25,7 @@ export const CONFIG = {
       prod: ['**/*.ts', '!**/*.spec.ts', '!**/*.e2e.ts', '!node_modules/**/*.ts'],
     },
     less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
+    clientConfig: ['dev.env.js', 'systemjs.*.js', 'karma.conf.js', 'karma-test-shim.js', 'package.json'],
     assets: ['**/*', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
