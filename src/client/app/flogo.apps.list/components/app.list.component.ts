@@ -29,7 +29,7 @@ export class FlogoAppListComponent {
     constructor(public flogoModal: FlogoModal,
                 public translate: TranslateService,
                 private apiApplications: RESTAPIApplicationsService) {
-        this.apiApplications.list()
+        this.apiApplications.getAllApps()
             .then((applications:Array<IFlogoApplicationModel>)=> {
                 this.applications = applications;
             })
@@ -41,18 +41,16 @@ export class FlogoAppListComponent {
     }
 
     confirmDelete(app:IFlogoApplicationModel) {
-
         this.flogoModal.confirmDelete('Are you sure you want to delete ' + app.name +  ' application?').then((res) => {
             if (res) {
                 this._delete(app);
             } else {
             }
         });
-
     }
 
     onAdd(event) {
-        this.apiApplications.add()
+        this.apiApplications.createNewApp()
             .then((application:IFlogoApplicationModel)=> {
                 this.onAddedApp.emit(application);
                 this.onSelectApp(application);
@@ -61,7 +59,7 @@ export class FlogoAppListComponent {
 
 
     private _delete(application:IFlogoApplicationModel) {
-        this.apiApplications.delete(application.id)
+        this.apiApplications.deleteApp(application.id)
             .then(()=> {
                 this.onDeletedApp.emit(application);
                 this.selectedApp = null;

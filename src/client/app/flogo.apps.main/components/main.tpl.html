@@ -18,9 +18,9 @@
         <p>{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}:</p>
         <ul>
             <li *ngFor="let item of recent">
-                {{item.application}}
+                {{item.app.name}}
                 <span class="glyphicon glyphicon-chevron-right"></span>
-                {{item.flow}}
+                {{item.name}}
             </li>
         </ul>
     </div>

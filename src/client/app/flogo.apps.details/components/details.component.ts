@@ -44,29 +44,29 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         private apiApplications: RESTAPIApplicationsService
     ) {
 
-
         // get application details by id
-        this.apiApplications.get(this._routeParams.params['id'])
+        this.apiApplications.getApp(this._routeParams.params['id'])
             .then((application:IFlogoApplicationModel)=> {
                 this.application = application;
                 this.flows = this.getOriginalFlows();
+
+                this.init();
             });
     }
 
-    ngOnInit() {
+    init() {
         this.searchPlaceHolder = this.translate.get('DETAILS:SEARCH')['value'];
-
-        let timeStr = timeString(this.application.createdAt);
+        let timeStr = this.application.createdAt;
         this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
-
 
         if(this.application.updatedAt == null) {
             this.editingName = true;
             this.updateAtFormatted = null;
         }else {
             this.editingName = false;
-            this.updateAtFormatted = moment(timeString(this.application.updatedAt), 'YYYYMMDD hh:mm:ss').fromNow();
+            this.updateAtFormatted = moment(this.application.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
         }
+        this.setFocusOnInput();
     }
 
     getOriginalFlows() {
@@ -74,7 +74,7 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     }
 
 
-    ngAfterViewInit() {
+    setFocusOnInput() {
         if(this.application.updatedAt == null) {
             this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
         }
