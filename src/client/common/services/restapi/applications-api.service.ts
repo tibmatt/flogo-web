@@ -124,24 +124,21 @@ export class RESTAPIApplicationsService {
   constructor(public _http : Http ) {
   }
 
-  recentFlows()   {
-      return new Promise((resolve, reject)=> {
-          resolve(this.recent);
-      });
+  recentFlows() {
+    return this._http.get('/v1/api/flows/recent').toPromise()
+      .then(response=> response.json().data);
   }
 
-  list() {
-    return new Promise((resolve, reject) => {
-      this._http.get('/v1/api/apps').toPromise()
-        .then(response => {
-          if (response.text()) {
-            let apps: Array<IFlogoApplicationModel> = response.json().data;
-            resolve(apps);
-          } else {
-            reject(response)
-          }
-        });
-    });
+  getAllApps() {
+    return this._http.get('/v1/api/apps').toPromise()
+      .then(response => {
+        if (response.text()) {
+          let apps: Array<IFlogoApplicationModel> = response.json().data;
+          return apps;
+        } else {
+          return response;
+        }
+      });
   }
 
   allFlows()   {
@@ -158,54 +155,53 @@ export class RESTAPIApplicationsService {
       });
   }
 
-  add()   {
-      let application: any =  {
-          id: this.applications.length + 1,
-          name: this.getNewAppName(UNTITLED_APP),
-          version: '',
-          description: '',
-          createdAt: new Date(),
-          updatedAt: null
+  createNewApp(): Promise<any> {
+    return this.getNewAppName(UNTITLED_APP).then( appName => {
+      let application: any = {
+        name: appName,
+        version: '',
+        description: ''
       };
-      this.applications.unshift(application);
 
-      return new Promise((resolve, reject)=> {
-          resolve(application);
-      });
+      let headers = new Headers({'Content-Type': 'application/json'});
+      let options = new RequestOptions({headers: headers});
+      let body = JSON.stringify(application);
+
+      return this._http.post('/v1/api/apps', body, options).toPromise()
+       .then(response => response.json().data);
+    })
   }
 
-  delete(id:string)   {
-      _.remove(this.applications, (n:IFlogoApplicationModel)=> {
-          return n.id === id;
-      });
-
-      return new Promise((resolve, reject)=> {
-          resolve(true);
-      });
+  deleteApp(appId:string)   {
+    return this._http.delete('/v1/api/apps/' + appId).toPromise();
   }
 
-  get(id:string)   {
-      let application = this.applications.find((item)=> {
-          return item.id == id;
-      });
-
-      return new Promise((resolve, reject)=> {
-          resolve(application);
-      });
-  }
-
-    getNewAppName(name:string, count = 0) {
-        let appName:string = name +  (count > 0 ?   ` (${count})` : '');
-        let found: IFlogoApplicationModel;
-
-        found = this.applications.find((app: IFlogoApplicationModel)=> {
-            return app.name == appName;
-        });
-
-        if(found) {
-            return this.getNewAppName(name , ++count);
+  getApp(appId: string) {
+    return this._http.get('/v1/api/apps/' + appId).toPromise()
+      .then(response => {
+        if (response.text()) {
+          let app: IFlogoApplicationModel = response.json().data;
+          return app;
         } else {
-            return appName;
+          return response;
         }
-    }
+      });
+  }
+
+  getNewAppName(name: string, count = 0) {
+    let appName: string = name + (count > 0 ? ` (${count})` : '');
+    let found: IFlogoApplicationModel;
+
+    return this.getAllApps().then((apps:Array<IFlogoApplicationModel>) => {
+      found = _.find(apps, (app: IFlogoApplicationModel) => {
+        return app.name == appName;
+      });
+      if (found) {
+        return this.getNewAppName(name, ++count);
+      } else {
+        return appName;
+      }
+    });
+
+  }
 }
