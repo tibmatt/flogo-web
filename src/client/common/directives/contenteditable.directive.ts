@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange} from '@angular/core';
+import {Directive, ElementRef, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChange} from '@angular/core';
 
 @Directive({
     selector: '[myContenteditable]',
@@ -10,7 +10,7 @@ import {Directive, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleCha
     },
     providers: []
 })
-export class Contenteditable implements OnChanges {
+export class Contenteditable implements OnInit, OnChanges {
     private _el: HTMLElement;
     private $el: any;
     private colorFlag: boolean;
@@ -28,8 +28,7 @@ export class Contenteditable implements OnChanges {
         this.$el = jQuery(this._el);
     }
 
-    ngOnChanges( changes : { [key : string] : SimpleChange } )
-    {
+    ngOnChanges( changes : { [key : string] : SimpleChange } )  {
             if(_.has(changes, 'myContenteditable')) {
                 if(changes['myContenteditable'].currentValue ) {
                     this.$el.html(changes['myContenteditable'].currentValue);

@@ -7,7 +7,6 @@ import { mappingsValidateField } from '../validators/validators';
     },
     selector: 'flogo-transform-mapper-field',
     moduleId: module.id,
-    directives: [],
     styleUrls: ['transform-mapper-field.component.css'],
     templateUrl: 'transform-mapper-field.tpl.html'
 })
@@ -47,7 +46,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     ngOnInit() {
     }
 
-    onMouseLeave() {
+    onMouseLeave(tile:string, field:string) {
        this.emittItemOver('', '');
         this.overInput = false;
     }
@@ -80,14 +79,15 @@ export class TransformMapperField implements  OnChanges, OnInit {
       this.emitChange(value);
     }
 
-    emitChange(value:string) {
+    emitChange(value:string, isInit?:boolean) {
         this.validateField(value);
 
         this.mappingChange.emit({
             field: this.tile.name,
             value:value,
             hasError: this.hasError,
-            errors: this.errors
+            errors: this.errors,
+            isInit: isInit
         });
     }
 
@@ -142,6 +142,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
     }
 
     ngOnChanges(changes:any) {
+      let isInit = true;
 
         let mapping = this.mappings.find((item) => {
             return item.mapTo == this.tile.name;
@@ -149,7 +150,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
 
         if(mapping) {
             this.selectedValue = mapping.value;
-            this.emitChange(this.selectedValue);
+            this.emitChange(this.selectedValue, isInit);
 
         }
 
@@ -177,7 +178,7 @@ export class TransformMapperField implements  OnChanges, OnInit {
         return true;
     }
 
-    clickRemove() {
+    clickRemove(event) {
         this.selectedValue = '';
         this.showList = false;
 

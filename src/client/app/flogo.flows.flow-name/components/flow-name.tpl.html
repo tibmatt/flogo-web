@@ -5,7 +5,7 @@
     <modal-body>
         <div class="form-group">
             <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
-            <input type="text" [(ngModel)]="repeatedName" class="form-control" id="flowName" (keyup)="onChangeFlowName($event)" placeholder="{{ translate.get('ADD:GIVE-YOUR-FLOW-A-NAME').value }}">
+            <input type="text" [(ngModel)]="repeatedName" class="form-control" id="flowName" (keyup)="onChangeFlowName($event)" placeholder="{{ translate.instant('ADD:GIVE-YOUR-FLOW-A-NAME') }}">
             <label *ngIf="flowNameExists" for="flowName" class="flogo-flows-flow-name-error">{{ 'ADD:FLOW-NAME-EXISTS' | translate }} </label>
         </div>
     </modal-body>

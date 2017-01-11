@@ -1,18 +1,7 @@
-import { Component, OnChanges } from '@angular/core';
-import { RouteConfig, RouterOutlet, RouteParams, Router, CanActivate } from '@angular/router-deprecated';
-import {PostService} from '../../../common/services/post.service';
-import { FlogoFlowsDetailDiagramComponent } from '../../flogo.flows.detail.diagram/components';
-import {FlogoFlowsDetail} from './flow-detail.component';
-import {FlogoFlowsDetailTriggers} from '../../flogo.flows.detail.triggers/components/triggers.component';
-import {FlogoFlowsDetailTriggersDetail} from '../../flogo.flows.detail.triggers.detail/components/detail.component';
-import {FlogoFlowsDetailTasks} from '../../flogo.flows.detail.tasks/components/tasks.component';
-import {FlogoFlowsDetailTasksDetail} from '../../flogo.flows.detail.tasks.detail/components/detail.component';
-import {TransformComponent as FlogoTransformComponent} from '../../flogo.transform/components/transform.component';
-import {FlogoFlowsDetailErrorPanel as ErrorPanel} from '../../flogo.flows.detail.error-panel/components/error-panel.component';
-import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
-import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
-import {FlogoLogs} from '../../flogo.logs/components/logs.component';
-import {FlogoFooter} from '../../flogo.footer/components/footer.component';
+import {Component, OnChanges, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import { PostService } from '../../../common/services/post.service';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 import { LogService } from '../../../common/services/log.service';
 
 import {
@@ -33,14 +22,12 @@ import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
-import { FlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
   attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
 } from '../../../common/utils';
 
-import { Contenteditable, JsonDownloader } from '../../../common/directives';
 import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 
@@ -52,26 +39,11 @@ interface HandlerInfo {
 @Component( {
   selector: 'flogo-canvas',
   moduleId: module.id,
-  directives: [ RouterOutlet, FlogoFlowsDetailDiagramComponent, FlogoTransformComponent, ErrorPanel, Contenteditable, JsonDownloader, FlogoFooter ],
   templateUrl: 'canvas.tpl.html',
-  styleUrls: [ 'canvas.component.css' ],
-  providers: [ FlogoModal ],
-  pipes: [TranslatePipe]
+  styleUrls: [ 'canvas.component.css' ]
 } )
-@CanActivate((next) => {
-  return isConfigurationLoaded();
-})
 
-@RouteConfig([
-    {path: '/', name: 'FlogoFlowsDetailDefault', component: FlogoFlowsDetail, useAsDefault: true},
-    {path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggers},
-    {path: '/trigger/:id', name: 'FlogoFlowsDetailTriggerDetail', component: FlogoFlowsDetailTriggersDetail},
-    {path: '/task/add', name: 'FlogoFlowsDetailTaskAdd', component: FlogoFlowsDetailTasks},
-    {path: '/task/:id', name: 'FlogoFlowsDetailTaskDetail', component: FlogoFlowsDetailTasksDetail},
-    {path: '/logs', name: 'FlogoLogs', component: FlogoLogs}
-])
-
-export class FlogoCanvasComponent implements  OnChanges {
+export class FlogoCanvasComponent implements OnInit {
   public flow: any;
   public flowId: string;
   public mainHandler:HandlerInfo;
@@ -120,7 +92,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     private _restAPIFlowsService: RESTAPIFlowsService,
     private _router: Router,
     private _flogoModal: FlogoModal,
-    private _routerParams: RouteParams,
+    private _route: ActivatedRoute,
     public translate: TranslateService,
     public logService: LogService
   ) {
@@ -130,77 +102,86 @@ export class FlogoCanvasComponent implements  OnChanges {
     // TODO
     //  Remove this mock
     this._mockLoading = true;
-    this.flowId = this._routerParams.params['id'];
-
-    this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
-
-    this.loading = true;
-
-    try {
-      this.flowId = flogoIDDecode(this.flowId);
-    } catch (e) {
-      console.warn(e);
-    }
-
-    this.exportLink = `/v1/api/flows/${this.flowId}/json`;
-
-    this.getFlow(this.flowId)
-      .then((res: any)=> {
-        this.flow = res.flow;
-        this.flowName = this.flow.name;
-        this.handlers = {
-          'root': res.root,
-          'errorHandler': res.errorHandler
-        };
-
-
-        this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
-        this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
-        this.mainHandler = this.handlers['root'];
-        this.errorHandler = this.handlers['errorHandler'];
-
-
-        this.clearAllRunStatus();
-
-        this.initSubscribe();
-
-        this._updateFlow(this.flow).then(()=> {
-          this.loading = false;
-          this._mockLoading = false;
-        });
-
-        this.showLogs(false);
-
-      });
 
   }
 
-    private changeFlowDetail($event, property) {
+  public ngOnInit() {
+      this.flowId = this._route.snapshot.params['id'];
+
+      this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
+
+      this.loading = true;
+
+      try {
+        this.flowId = flogoIDDecode(this.flowId);
+      } catch (e) {
+        console.warn(e);
+      }
+
+      this.exportLink = `/v1/api/flows/${this.flowId}/json`;
+
+      this.getFlow(this.flowId)
+        .then((res: any)=> {
+          this.flow = res.flow;
+          this.flowName = this.flow.name;
+          this.handlers = {
+            'root': res.root,
+            'errorHandler': res.errorHandler
+          };
+
+
+          this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
+          this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
+          this.mainHandler = this.handlers['root'];
+          this.errorHandler = this.handlers['errorHandler'];
+
+
+          this.clearAllRunStatus();
+
+          this.initSubscribe();
+
+          setTimeout(() => {
+            this.showInstructions();
+          }, 500);
+
+          this._updateFlow(this.flow).then(()=> {
+            this.loading = false;
+            this._mockLoading = false;
+          });
+
+          //this.showLogs(false);
+
+        });
+  }
+
+  private changeFlowDetail($event, property) {
         return new Promise((resolve, reject)=> {
             this._updateFlow(this.flow).then((response: any)=> {
-                let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
-                 notification(message['value'], 'success', 3000);
+                let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
+                 notification(message, 'success', 3000);
                  resolve(response);
             }).catch((err)=> {
-                let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
-                notification(message['value'], 'error');
+                let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                notification(message, 'error');
                 reject(err);
             });
         })
 
-    }
+  }
 
     public showLogs(show) {
-        let route = '';
+        let route = [];
         this.isSelectedLogs = show;
         if(show) {
-            route =  'FlogoLogs';
-            this._cleanSelectionStatus();
-        }else {
-            this.isLogsMaximized = false;
-            route = 'FlogoFlowsDetailDefault';
+            //route =  'FlogoLogs';
+          route = ['logs'];
+          this._cleanSelectionStatus();
+        } else {
+          this.isLogsMaximized = false;
+          //route = 'FlogoFlowsDetailDefault';
         }
-        this._router.navigate( [ route] )
+        this._navigateFromModuleRoot(route);
+        //this._router.navigate( [ route] )
     }
 
   private getFlow(id: string) {
@@ -280,7 +261,7 @@ export class FlogoCanvasComponent implements  OnChanges {
         return new Promise((resolve, reject)=> {
             if(name == this.flowName) {
                 resolve(true);
-            }else {
+            } else {
                 this._restAPIFlowsService.getFlowByName(name)
                     .then((doc) => {
                         let results;
@@ -291,27 +272,27 @@ export class FlogoCanvasComponent implements  OnChanges {
                         }
 
                         if(!_.isEmpty(results)) {
-                            let message = this.translate.get('CANVAS:FLOW-NAME-EXISTS',{value: name});
+                            let message = this.translate.instant('CANVAS:FLOW-NAME-EXISTS',{value: name});
                             this.flow.name = this.flowName;
-                            notification(message['value'], 'error');
+                            notification(message, 'error');
                             resolve(doc);
                         }else {
                             this.flow.name = name;
                             this._updateFlow(this.flow).then((response: any)=> {
-                                let message = this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
+                                let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
                                 this.flowName = this.flow.name;
-                                notification(message['value'], 'success', 3000);
+                                notification(message, 'success', 3000);
                                 resolve(response);
                             }).catch((err)=> {
-                                let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
-                                notification(message['value'], 'error');
+                                let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                                notification(message, 'error');
                                 reject(err);
                             });
                         }
                     })
                     .catch((err)=> {
-                        let message = this.translate.get('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
-                        notification(message['value'], 'error');
+                        let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE',{value: property});
+                        notification(message, 'error');
                         reject(err);
                     });
             }
@@ -361,7 +342,11 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
   isOnDefaultRoute() {
-    return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
+    console.log(this._router.url);
+    return true;
+    //this._router.createUrlTree([/]);
+    //this._router.isActive()
+    //return this._router.isRouteActive(this._router.generate(['FlogoFlowsDetailDefault']));
   }
 
   // TODO
@@ -597,8 +582,8 @@ export class FlogoCanvasComponent implements  OnChanges {
           console.error( err );
           // TODO
           //  more specific error message?
-          let message = this.translate.get('CANVAS:ERROR-MESSAGE');
-          notification(message['value'],'error');
+          let message = this.translate.instant('CANVAS:ERROR-MESSAGE');
+          notification(message,'error');
           return err;
         }
       );
@@ -611,7 +596,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     opt? : any
   ) : Promise<any> {
     processInstanceID = processInstanceID || this._processInstanceID;
-      let that = this;
+    let that = this;
     opt = _.assign(
       {}, {
         maxTrials : 20,
@@ -683,21 +668,21 @@ export class FlogoCanvasComponent implements  OnChanges {
                             break;
                           case '500':
                             console.log( `[PROC STATE][${n}] Process finished.` );
-                            message = translator.get('CANVAS:SUCCESS-MESSAGE-COMPLETED');
-                            notification(message['value'], 'success', 3000);
+                            message = translator.instant('CANVAS:SUCCESS-MESSAGE-COMPLETED');
+                            notification(message, 'success', 3000);
                             done( timer, rsp );
                             break;
                           case '600':
                             console.log( `[PROC STATE][${n}] Process has been cancelled.` );
-                            message = translator.get('CANVAS:FLOW-CANCELED');
-                            notification(message['value'], 'warning', 3000);
-                           that.showLogs(true);
+                            message = translator.instant('CANVAS:FLOW-CANCELED');
+                            notification(message, 'warning', 3000);
+                            that.showLogs(true);
                             done( timer, rsp );
                             break;
                           case '700':
                             console.log( `[PROC STATE][${n}] Process is failed.` );
-                            message = translator.get('CANVAS:ERROR-MESSAGE-FAILED');
-                            notification(message['value'], 'error');
+                            message = translator.instant('CANVAS:ERROR-MESSAGE-FAILED');
+                            notification(message, 'error');
                             that.showLogs(true);
                             done( timer, rsp );
                             break;
@@ -996,8 +981,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-      this.showLogs(false);
-    this._router.navigate( [ 'FlogoFlowsDetailTriggerAdd' ] )
+    this.showLogs(false);
+    this._navigateFromModuleRoot(['trigger', 'add'])
       .then(
         () => {
           console.group( 'after navigation' );
@@ -1041,8 +1026,8 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     tasks[ trigger.id ] = trigger;
 
-      this.showLogs(false);
-    this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+    this.showLogs(false);
+    this._navigateFromModuleRoot()
       .then(
         ()=> {
           this._postService.publish(
@@ -1074,8 +1059,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( data );
     console.log( envelope );
 
-      this.showLogs(false);
-    this._router.navigate( [ 'FlogoFlowsDetailTaskAdd' ] )
+    this.showLogs(false);
+    this._navigateFromModuleRoot( [ 'task', 'add' ] )
       .then(
         () => {
           console.group( 'after navigation' );
@@ -1141,8 +1126,8 @@ export class FlogoCanvasComponent implements  OnChanges {
 
       this.handlers[diagramId].tasks[ task.id ] = task;
 
-        this.showLogs(false);
-      this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+      this.showLogs(false);
+      this._navigateFromModuleRoot()
         .then(
           ()=> {
             this._postService.publish(
@@ -1182,13 +1167,8 @@ export class FlogoCanvasComponent implements  OnChanges {
     console.log( envelope );
 
 
-      this.showLogs(false);
-    this._router.navigate(
-      [
-        'FlogoFlowsDetailTaskDetail',
-        { id : data.node.taskID }
-      ]
-      )
+    this.showLogs(false);
+    this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
           console.group( 'after navigation' );
@@ -1267,12 +1247,7 @@ export class FlogoCanvasComponent implements  OnChanges {
 
 
     this.showLogs(false);
-    this._router.navigate(
-      [
-        'FlogoFlowsDetailTaskDetail',
-        { id : data.node.taskID }
-      ]
-      )
+    this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
           console.group( 'after navigation' );
@@ -1332,7 +1307,7 @@ export class FlogoCanvasComponent implements  OnChanges {
     this.tasks[ data.task.id ] = data.task;
 
     this.showLogs(false);
-    this._router.navigate( [ 'FlogoFlowsDetailDefault' ] )
+    this._navigateFromModuleRoot()
       .then(
         ()=> {
           this._postService.publish(
@@ -1722,10 +1697,8 @@ export class FlogoCanvasComponent implements  OnChanges {
                       this._isDiagramEdited = true;
 
                       if (_shouldGoBack) {
-                          this.showLogs(false);
-                        this._router.navigate( [
-                          'FlogoFlowsDetailDefault'
-                        ] );
+                        this.showLogs(false);
+                        this._navigateFromModuleRoot();
                       }
                     }
                   }
@@ -1741,28 +1714,36 @@ export class FlogoCanvasComponent implements  OnChanges {
   }
 
   private logResize(data:any, envelope:any)   {
-      this.isLogsMaximized = (data.action === 'grow') ;
+    this.isLogsMaximized = (data.action === 'grow') ;
   }
 
-    private _cleanSelectionStatus() {
-        let allNodes = _.reduce(this.handlers, (allNodes, handle) => {
-            return _.assign(allNodes, _.get(handle, 'diagram.nodesOfAddType', {}), _.get(handle, 'diagram.nodes', {}));
-        }, {});
-        _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
+  private _cleanSelectionStatus() {
+    let allNodes = _.reduce(this.handlers, (allNodes, handle) => {
+      return _.assign(allNodes, _.get(handle, 'diagram.nodesOfAddType', {}), _.get(handle, 'diagram.nodes', {}));
+    }, {});
+    _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
 
-        this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
-    }
+    this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+  }
 
   private _errorPanelStatusChanged(isOpened: boolean, data: any, envelope: any) {
 
     console.group('Close/open error panel from error panel');
 
     // clean selection status
-      this._cleanSelectionStatus();
-      this.showLogs(false);
-    this._router.navigate([
-      'FlogoFlowsDetailDefault'
-    ]);
+
+    let allNodes = _.reduce(this.handlers, (allNodes, handle) => {
+      return _.assign(allNodes, _.get(handle, 'diagram.nodesOfAddType', {}), _.get(handle, 'diagram.nodes', {}));
+    }, {});
+    _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
+
+    this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
+
+    // clean selection status
+    this._cleanSelectionStatus();
+    this.showLogs(false);
+
+    this._navigateFromModuleRoot();
 
     console.groupEnd();
 
@@ -1821,13 +1802,9 @@ export class FlogoCanvasComponent implements  OnChanges {
     previousNodes.pop(); // ignore last item as it is the very same selected node
     let previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
 
-      this.showLogs(false);
-    this._router.navigate(
-      [
-        'FlogoFlowsDetailTaskDetail',
-        { id : data.node.taskID }
-      ]
-      )
+    this.showLogs(false);
+
+    this._navigateFromModuleRoot([ 'task', data.node.taskID ])
       .then(
         () => {
           console.group('after navigation');
@@ -2033,6 +2010,33 @@ export class FlogoCanvasComponent implements  OnChanges {
 
     console.groupEnd();
   }
+
+  /**
+   *
+   * @param urlParts empty to navigate to module root
+   * @returns {Promise<boolean>}
+   * @private
+   */
+  private _navigateFromModuleRoot(urlParts = []) {
+    return this._router.navigate( [ '/flows', flogoIDEncode(this.flowId), ...urlParts ] );
+  }
+
+  showInstructions() {
+    let instructions:any = localStorage.getItem('flogo-show-instructions');
+    if(_.isEmpty(instructions)) {
+      localStorage.setItem('flogo-show-instructions', new Date().toString());
+      this.isInstructionsActivated = true;
+    }
+    return this.isInstructionsActivated;
+  }
+
+  public onClosedInstructions(closed) {
+      this.isInstructionsActivated = false;
+    }
+
+  public activateInstructions() {
+      this.isInstructionsActivated = true;
+    }
 
 
 }
