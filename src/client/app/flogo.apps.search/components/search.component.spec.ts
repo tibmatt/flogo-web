@@ -1,51 +1,46 @@
-// import { describe, beforeEach, beforeEachProviders, it, inject, expect, injectAsync} from '@angular/core/testing';
-// import { FlogoApplicationSearch  } from './search.component';
-// import { TestComponentBuilder } from '@angular/compiler/testing';
-// import { TranslateService, TranslateLoader } from 'ng2-translate/ng2-translate';
-// import { By } from '@angular/platform-browser';
-// import { IFlogoApplicationModel } from '../../../common/application.model';
-// import { HTTP_PROVIDERS } from '@angular/http';
-//
-//
-// describe('FlogoApplicationSearch component', () => {
-//     let tcb: TestComponentBuilder;
-//
-//     function createComponent() {
-//         return tcb.createAsync(FlogoApplicationSearch);
-//     }
-//
-//     //setup
-//     beforeEachProviders(()=> [
-//         HTTP_PROVIDERS,
-//         TestComponentBuilder,
-//         TranslateService,
-//         TranslateLoader,
-//         FlogoApplicationSearch
-//     ]);
-//
-//     beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {
-//         tcb = _tcb;
-//     }));
-//
-//
-//
-//     it('On key press should emit the changedSearch event', done => {
-//         createComponent()
-//             .then(fixture => {
-//                 let searchComponent = fixture.componentInstance;
-//
-//                 searchComponent.changedSearch.subscribe(() => {
-//                     done();
-//                 });
-//
-//                 fixture.detectChanges();
-//                 let input = fixture.debugElement.query(By.css('input'));
-//
-//                 let element = input.nativeElement;
-//                 let event = new Event('keyup');
-//                 element.dispatchEvent(event);
-//             });
-//     });
-//
-//
-// });
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
+import {DebugElement}    from '@angular/core';
+import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-translate/ng2-translate';
+import {Http} from '@angular/http';
+
+import {FlogoApplicationSearch} from './search.component';
+
+describe('FlogoApplicationSearch component', () => {
+  let comp: FlogoApplicationSearch, fixture: ComponentFixture<FlogoApplicationSearch>,
+    de: DebugElement, el: HTMLElement;
+
+  function compileComponent() {
+    return TestBed.compileComponents();
+  }
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot({
+        provide: TranslateLoader,
+        useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
+        deps: [Http]
+      })],
+      declarations: [FlogoApplicationSearch] // declare the test component
+    });
+  });
+
+  it('On key press should emit the changedSearch event', done => {
+    compileComponent()
+      .then(() => {
+        fixture = TestBed.createComponent(FlogoApplicationSearch);
+        comp = fixture.componentInstance;
+
+        comp.changedSearch.subscribe(() => {
+          done();
+        });
+
+        fixture.detectChanges();
+        de = fixture.debugElement.query(By.css('input'));
+        el = de.nativeElement;
+        let event = new Event('keyup');
+        el.dispatchEvent(event);
+      });
+  });
+
+});
