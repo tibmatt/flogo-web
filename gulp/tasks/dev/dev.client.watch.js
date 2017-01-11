@@ -11,6 +11,7 @@ gulp.task('dev.client.watch', 'Watch client sources and execute the dev tasks wh
   gulp.watch(CONFIG.paths.ts.dev, {cwd: CONFIG.paths.source.client}, ['dev.client.typescript']);
   gulp.watch(CONFIG.paths.less, {cwd: CONFIG.paths.source.client}, ['dev.client.styles']);
   gulp.watch(CONFIG.paths.assets, {cwd: CONFIG.paths.source.client}, ['dev.client.assets']);
+  gulp.watch(CONFIG.paths.clientConfig, {cwd: CONFIG.paths.source.client}, ['dev.client.config']);
 
   //reload browser when these files changes
   var files = [

@@ -36,7 +36,12 @@ var allSpecFiles = Object.keys(window.__karma__.files)
 System.config({
   baseURL: 'base',
   // Extend usual application package list with test folder
-  packages: { 'testing': { main: 'index.js', defaultExtension: 'js' } },
+  packages: {
+    'testing': { main: 'index.js', defaultExtension: 'js' },
+    'ng2-translate': {
+      defaultExtension: 'js'
+    }
+  },
 
   // Assume npm: is set in `paths` in systemjs.config
   // Map the angular testing umd bundles
@@ -49,7 +54,8 @@ System.config({
     '@angular/http/testing': 'npm:@angular/http/bundles/http-testing.umd.js',
     '@angular/router/testing': 'npm:@angular/router/bundles/router-testing.umd.js',
     '@angular/forms/testing': 'npm:@angular/forms/bundles/forms-testing.umd.js',
-    'ng2-bs3-modal/ng2-bs3-modal' : 'npm:ng2-bs3-modal/ng2-bs3-modal.js'
+    'ng2-bs3-modal/ng2-bs3-modal' : 'npm:ng2-bs3-modal/ng2-bs3-modal.js',
+    'ng2-translate/ng2-translate' : 'npm:ng2-translate/bundles/ng2-translate.umd.js'
   },
 });
 
