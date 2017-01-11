@@ -29,17 +29,8 @@ export class RESTAPIApplicationsService {
   }
 
   allFlows()   {
-      let flows = [];
-
-      return new Promise((resolve, reject)=> {
-          this.applications.forEach((application)=> {
-              if(application.flows && application.flows.length) {
-                  flows = flows.concat(application.flows);
-              }
-          });
-
-          resolve(flows);
-      });
+    return this._http.get('/v1/api/flows').toPromise()
+      .then(response=> response.json());
   }
 
   createNewApp(): Promise<any> {
