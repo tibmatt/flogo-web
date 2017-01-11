@@ -1,11 +1,11 @@
 import { Component, AfterViewInit, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params as RouteParams } from '@angular/router';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-
+import 'rxjs/add/operator/switchMap';
 
 @Component({
     selector: 'flogo-app-details',
@@ -30,37 +30,42 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         public translate: TranslateService,
         private renderer: Renderer,
         private apiApplications: RESTAPIApplicationsService
-    ) { }
+    ) {
+      this.restoreState();
+    }
 
   ngOnInit() {
 
-    // get application details by id
-    this.apiApplications.get(this.route.snapshot.params['id'])
-      .then((application: IFlogoApplicationModel) => {
-        console.log('App ID', this.route.snapshot.params['id']);
-        console.log('Application', application);
-        this.application = application;
-        this.flows = this.getOriginalFlows();
-      })
-      .then(() => {
-        this.searchPlaceHolder = this.translate.instant('DETAILS:SEARCH');
+    this.route.params
+      .switchMap((params: RouteParams) => params['id'])
+      .subscribe((appId: string) => {
+        this.restoreState();
+        this.apiApplications.get(appId)
+          .then((application: IFlogoApplicationModel) => {
+            this.application = application;
+            this.flows = this.getOriginalFlows();
+          })
+          .then(() => {
+            this.searchPlaceHolder = this.translate.instant('DETAILS:SEARCH');
 
-        let timeStr = timeString(this.application.createdAt);
-        this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
+            let timeStr = timeString(this.application.createdAt);
+            this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
 
 
-        if (this.application.updatedAt == null) {
-          this.editingName = true;
-          this.updateAtFormatted = null;
-        } else {
-          this.editingName = false;
-          this.updateAtFormatted = moment(timeString(this.application.updatedAt), 'YYYYMMDD hh:mm:ss').fromNow();
-        }
-      })
-      .then(() => {
-        if(this.application.updatedAt == null) {
-          this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-        }
+            if (this.application.updatedAt == null) {
+              this.editingName = true;
+              this.updateAtFormatted = null;
+            } else {
+              this.editingName = false;
+              this.updateAtFormatted = moment(timeString(this.application.updatedAt), 'YYYYMMDD hh:mm:ss').fromNow();
+            }
+          })
+          .then(() => {
+            if (this.application.updatedAt == null) {
+              this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus', []);
+            }
+          });
+
       });
   }
 
@@ -135,4 +140,15 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
             this.flows = this.getOriginalFlows();
         }
     }
+
+  private restoreState() {
+    this.application = null;
+    this.searchPlaceHolder = '';
+    this.createdAtFormatted = null;
+    this.updateAtFormatted = null;
+    this.editingDescription = false;
+    this.editingName  = false;
+    this.flows = [];
+  }
+
 }
