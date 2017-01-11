@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By }              from '@angular/platform-browser';
 import { DebugElement }    from '@angular/core';
-import { TranslateModule, TranslateService, TranslateLoader, TranslateStaticLoader, TranslatePipe } from 'ng2-translate/ng2-translate';
+import { TranslateModule,  TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http } from '@angular/http'
 
@@ -27,19 +27,9 @@ describe('Component: FlogoInstructions Modal', ()=> {
       declarations: [ FlogoInstructionsComponent, ModalComponent ], // declare the test component
     });  // compile template and css
 
-      /*
-    TestBed.configureTestingModule({
-        declarations: [ FlogoInstructionsComponent, ModalComponent ], // declare the test component
-        providers: [ TranslateService, TranslateLoader ]
-    })
-    */
-
-
-
   });
 
   it('When load, should select by default the step number 1', done => {
-
     TestBed.compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(FlogoInstructionsComponent);
@@ -54,35 +44,12 @@ describe('Component: FlogoInstructions Modal', ()=> {
       });
   });
 
-    /*let tcb: TestComponentBuilder;
 
-    //setup
-    beforeEachProviders(()=> [
-        TranslateService,
-        TranslateLoader,
-        FlogoInstructionsComponent
-    ]);
+    it('When load, back button must not exist and next button should exist', done => {
 
-    beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {
-        tcb = _tcb;
-    }));
-
-
-   it('When load, should select by default the step number 1', done => {
-        tcb.createAsync(FlogoInstructionsComponent)
-            .then(fixture => {
-                let selected: any;
-                fixture.detectChanges();
-                selected = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
-                expect(selected.nativeElement.innerHTML).toEqual('1');
-                done();
-            });
-    });
-
-    xit('When load, back button must not exist and next button should exist', done => {
-
-        tcb.createAsync(FlogoInstructionsComponent)
-            .then(fixture => {
+        TestBed.compileComponents()
+            .then(() => {
+                fixture = TestBed.createComponent(FlogoInstructionsComponent);
                 fixture.detectChanges();
                 let backButton = fixture.debugElement.query(By.css('#buttonBack'));
                 expect(backButton).toBeNull();
@@ -92,9 +59,10 @@ describe('Component: FlogoInstructions Modal', ()=> {
             });
     });
 
-    xit('Click on next  should move to step 2', done => {
-        tcb.createAsync(FlogoInstructionsComponent)
-            .then(fixture => {
+    it('Click on next  should move to step 2', done => {
+        TestBed.compileComponents()
+            .then(() => {
+                fixture = TestBed.createComponent(FlogoInstructionsComponent);
                 let instructions = fixture.componentInstance;
                 fixture.detectChanges();
 
@@ -110,9 +78,10 @@ describe('Component: FlogoInstructions Modal', ()=> {
             });
     });
 
-    xit('When last step is selected, close button should exist', done => {
-        tcb.createAsync(FlogoInstructionsComponent)
-            .then(fixture => {
+    it('When last step is selected, close button should exist', done => {
+        TestBed.compileComponents()
+            .then(() => {
+                fixture = TestBed.createComponent(FlogoInstructionsComponent);
                 let instructions = fixture.componentInstance;
                 instructions.currentIndex = instructions.steps.length -1;
 
@@ -123,9 +92,10 @@ describe('Component: FlogoInstructions Modal', ()=> {
             });
     });
 
-    xit('Click on back  should move to step 3', done => {
-        tcb.createAsync(FlogoInstructionsComponent)
-            .then(fixture => {
+    it('Click on back  should move to step 3', done => {
+        TestBed.compileComponents()
+            .then(() => {
+                fixture = TestBed.createComponent(FlogoInstructionsComponent);
                 let instructions = fixture.componentInstance;
                 instructions.currentIndex = instructions.steps.length -1;
                 fixture.detectChanges();
@@ -139,7 +109,6 @@ describe('Component: FlogoInstructions Modal', ()=> {
                 expect(selected.nativeElement.innerHTML).toEqual('3');
                 done();
             });
-    });*/
-
+    });
 
 });
