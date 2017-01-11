@@ -66,8 +66,8 @@ describe('FlogoAppList component', () => {
         comp.applications = applications;
 
         fixture.detectChanges();
-        de = fixture.debugElement.queryAll(By.css('ul li'));
-        expect(de.length).toEqual(3);
+        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('ul li'));
+        expect(res.length).toEqual(3);
         done();
       });
   });
@@ -89,8 +89,8 @@ describe('FlogoAppList component', () => {
         ];
 
         fixture.detectChanges();
-        de = fixture.debugElement.queryAll(By.css('ul li'));
-        el = de[0].nativeElement;
+        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('ul li'));
+        el = res[0].nativeElement;
         expect(el.innerText.trim()).toEqual('Sample Application');
         done();
       });
@@ -101,7 +101,7 @@ describe('FlogoAppList component', () => {
       .then(() => {
         fixture = TestBed.createComponent(FlogoAppListComponent);
         comp = fixture.componentInstance;
-        comp.applications = [''];
+        comp.applications = null;
         comp.apiApplications.add = () => {
           return Promise.resolve({'name': 'Untitled App'});
         };

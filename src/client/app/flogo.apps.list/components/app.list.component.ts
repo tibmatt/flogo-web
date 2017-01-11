@@ -22,7 +22,7 @@ export class FlogoAppListComponent {
 
     constructor(public flogoModal: FlogoModal,
                 public translate: TranslateService,
-                private apiApplications: RESTAPIApplicationsService) {
+                public apiApplications: RESTAPIApplicationsService) {
         this.apiApplications.list()
             .then((applications:Array<IFlogoApplicationModel>)=> {
                 this.applications = applications;

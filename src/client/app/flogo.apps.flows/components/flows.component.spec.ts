@@ -4,7 +4,6 @@ import {Component, Output, EventEmitter, DebugElement}    from '@angular/core';
 import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-translate/ng2-translate';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import {Http} from '@angular/http';
-
 import {FlogoApplicationFlowsComponent} from './flows.component';
 
 @Component({
@@ -13,8 +12,7 @@ import {FlogoApplicationFlowsComponent} from './flows.component';
                 <div class="flows">
                     <flogo-app-flows [flows]="flows"></flogo-app-flows>
                 </div>
-            `,
-  directives: [FlogoApplicationFlowsComponent]
+            `
 })
 class Container {
   @Output() changes = new EventEmitter();
@@ -52,7 +50,7 @@ class Container {
 }
 
 describe('Application flows', () => {
-  let fixture: ComponentFixture<FlogoApplicationFlowsComponent>,
+  let fixture: ComponentFixture<Container>,
     de:      DebugElement, el:      HTMLElement;
   function compileComponent() {
     return TestBed.compileComponents();
@@ -74,8 +72,8 @@ describe('Application flows', () => {
       .then(() => {
         fixture = TestBed.createComponent(Container);
         fixture.detectChanges();
-        de = fixture.debugElement.queryAll(By.css('.flows-container > .flow'));
-        expect(de.length).toEqual(4);
+        let res:Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flows-container > .flow'));
+        expect(res.length).toEqual(4);
         done();
       });
   });
@@ -97,8 +95,8 @@ describe('Application flows', () => {
       .then(() => {
         fixture = TestBed.createComponent(Container);
         fixture.detectChanges();
-        de = fixture.debugElement.queryAll(By.css('.description'));
-        el = de[1].nativeElement;
+        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.description'));
+        el = res[1].nativeElement;
         expect(el.innerText).toEqual('A basic flow for apietusam');
         done();
       });
