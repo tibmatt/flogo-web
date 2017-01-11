@@ -25,8 +25,7 @@ This difference is important because for those loaded via import they need to be
 This configuration will be different depending on the module format the library is provided (commonjs, amd, system, etc.),
 see [SystemJs documentation](https://github.com/systemjs/systemjs) for more information.
 
-For production these kind of libraries should be automatically found and bundled by systemjs-builder when building for production
-just by using systemjs config, but for development environment it may be required to add the library files via html script tags.
+For production these kind of libraries should be automatically found and bundled by _rollup_  and _angular-cli_ when building for production, but for development environment it may be required to add the library files via html script tags.
 
 - Open `/src/client/systemjs.config.js` and add the configurations for your new library for both production and development environment.
 - If required to manually load the library files into the app (via an html script tag) open `/gulp/config.js` and add the library file(s) to `js` property of `CONFIG.libs`.

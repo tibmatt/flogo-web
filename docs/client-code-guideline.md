@@ -1,9 +1,7 @@
-**Because Angular 2.0 not release, This is Draft version**
-
-# Readme
+# Client application coding  guidelines
 A style guide for syntax, conventions, and structuring Angular applications 
   
-##Required Libraries and Tools for Developers and QA   
+## Required Libraries and Tools for Developers and QA   
 You must have the following installed on your machine:
    
 ### Libraries   
@@ -18,7 +16,6 @@ Refer to the following style guides if need be:
 
 - [JavaScript Style Guide](https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml)
 - [HTML/CSS Style Guide](https://google-styleguide.googlecode.com/svn/trunk/htmlcssguide.xml)
-- [AngularJS 1.x Style Guide](https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md)
 - [AngularJS 2.x Style Guide](https://github.com/johnpapa/angular-styleguide/blob/master/a2/README.md)
 	
 
@@ -30,7 +27,7 @@ Refer to the following style guides if need be:
 1. component
 2. directive
 3. service
-4. filter
+4. pipe
 5. spec
 6. lang
 7. e2e

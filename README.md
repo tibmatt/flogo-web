@@ -36,6 +36,6 @@ Application and services will be started, when you see the following banner in t
 ## Known Issues
 See list [here](https://github.com/TIBCOSoftware/flogo-web/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
 
-## Upcoming features
+## Development and testing
 
-1. flogo engine auto restart
+See [DEVELOPER.md](DEVELOPER.md)
