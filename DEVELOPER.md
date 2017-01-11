@@ -1,0 +1,220 @@
+# Building and Testing Flogo Web
+
+This document describes how to set up your development environment to build, run and test flogo web.
+
+* [Prerequisite Software](#prerequisite-software)
+* [Getting the Sources](#getting-the-sources)
+* [Getting the Images](#getting-the-images)
+* [Setting Up the Build Environment](#setting-up-the-build-environment)
+* [Running the Application](#running-the-application)
+* [Running Tests Locally](#running-tests-locally)
+* [Troubleshooting and Known Issues](#troubleshooting-and-known-issues)
+
+
+## Prerequisite Software
+- git
+- Docker and docker-compose for Mac or Windows or Linux (https://www.docker.com) 1.12.0-rc4-beta20 or later
+- For windows you will need basic support for bash scripting, you can use git's bash replacement or any other terminal emulator instead of the dos/window standard command line
+
+- For local mode only:
+  - GO Lang 1.7 - Follow the instructions here https://golang.org/doc/install
+    - Make sure you add $GOPATH/bin to your $PATH variable. Instructions related to the $GOPATH variable are found in the above link in the "Test your installation" section.
+  - GB - Follow instructions from here: https://getgb.io
+  - Node JS 6.4.0 - Download it from here https://nodejs.org/en/download/releases/
+  - Install the flogo cli tool: https://github.com/TIBCOSoftware/flogo-cli
+
+## Getting the Sources
+
+### Make sure you have git access for following repositories:
+
+1. [flogo-web](https://github.com/TIBCOSoftware/flogo-web.git)
+1. [flogo-cicd](https://github.com/TIBCOSoftware/flogo-cicd.git)
+
+### Get the Source Code
+
+After you get git access, clone the [flogo-web repository](https://github.com/TIBCOSoftware/flogo-web.git)
+and the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd.git)
+
+```sh
+git clone https://github.com/TIBCOSoftware/flogo-web.git
+git clone https://github.com/TIBCOSoftware/flogo-cicd.git
+```
+
+## Getting the Images
+
+The development environment depends on the flogo-base docker image and the flogo services images (flow-service and state-service), if you have access to TIBCO's reldocker or flogo's private dockerhub you can pull the images from them, otherwise you will need to build the images locally.
+
+Chose and follow **one** of these methods to get the images:
+
+1. Pull from dockerhub
+1. Pull from TIBCO reldocker
+1. Build the images locally
+
+### Method 1: Pull from dockerhub
+
+In your terminal log into docker hub
+```
+docker login
+```
+
+After you authenticated, pull the images.
+
+Pull the base image
+```sh
+docker pull flogo/flogo-base
+```
+
+Pull the state service image
+```sh
+docker pull flogo/state-service
+```
+
+Pull the flow service image
+```sh
+docker pull flogo/flow-service
+```
+
+### Method 2: Pull from TIBCO reldocker
+
+In your terminal login to reldocker using you LDAP credentials
+```sh
+docker login reldocker.tibco.com
+```
+
+After you authenticated, pull the images:
+
+Pull the base image
+```sh
+docker pull reldocker.tibco.com/flogo/flogo-base:latest
+```
+
+Rename the base image:
+```sh
+docker tag reldocker.tibco.com/flogo/flogo-base:latest flogo/flogo-base:latest 
+```
+
+Pull the state service image
+```sh
+docker pull reldocker.tibco.com/flogo/state-service:latest
+```
+
+Rename the state service image:
+```sh
+docker tag reldocker.tibco.com/flogo/state-service:latest flogo/sate-service:latest 
+```
+
+Pull the flow service image
+```sh
+docker pull reldocker.tibco.com/flogo/flow-service:latest
+```
+
+Rename the flow service image:
+```sh
+docker tag reldocker.tibco.com/flogo/flow-service:latest flogo/flow-service:latest 
+```
+
+### Method 3: Build the images locally
+
+Follow the instructions in https://github.com/TIBCOSoftware/flogo-cicd using the private registry method and build *only* the following images (in the specified order, do not use the "build-all.sh" script):
+
+1. flogo/flogo-base
+1. flogo/go-builder
+1. flogo/state-service
+1. flogo/flow-service
+
+Run `docker images` to make sure they were correctly built.
+
+## Setting Up the Build Environment
+
+Open a terminal and run the following command replacing the actual path where you cloned the flogo-web repository. This will tell the start script where to look for the source code.
+
+```sh
+export FLOGO_WEB_DEV_ROOT=<path where you cloned flogo-web>
+```
+
+Example:
+```sh
+export FLOGO_WEB_DEV_ROOT=/home/user/projects/flogo-web
+```
+
+You can add the export sentence to your profile to avoid manually executing it each time you open a terminal. 
+
+*TIP:* You can add an alias to your profile for easier flogo start, for example:
+
+```sh
+alias fg-dev="bash <path where you cloned flogo-cicd>/docker/flogo-web/dev.sh"
+```
+
+That way you will only need to run `fg-dev start local` instead of the long path.
+
+
+## Running the Application
+
+You can:
+- Run flogo-web locally or
+- Run flogo-web inside a docker-container (recommended for windows users)
+
+### Run flogo-web locally
+
+1. `cd` to the directory where you cloned the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd.git) or clone it if you haven't already.
+1. Run
+```sh
+./docker/flogo-web/dev.sh start local
+```
+
+Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
+
+```
+
+=============================================================================================
+[success] open http://localhost:3010 or http://localhost:3010/_config in your browser
+=============================================================================================
+
+```
+
+### Run flogo-web in a docker container
+
+1. `cd` to the directory where you cloned the [flogo-cicd repository](https://github.com/TIBCOSoftware/flogo-cicd.git) or clone it if you haven't already.
+1. Run
+```sh
+./docker/flogo-web/dev.sh start container
+```
+
+Application and services will be started, when you see the following banner in the console flogo will be ready to be used in your browser:
+
+```
+
+=============================================================================================
+[success] open http://localhost:3010 or http://localhost:3010/_config in your browser
+=============================================================================================
+
+```
+
+## Running Tests Locally
+
+*TBA*
+
+### Running Client Unit Tests
+<!-- TODO: How to build the client app only without starting the application? -->
+
+Start the application. See [Running the Application](#running-the-application) 
+
+Navigate to the generated dist directory
+
+```sh
+cd <project root>/dist/public 
+```
+
+Run:
+
+```sh
+npm test
+```
+
+
+## Troubleshooting and Known Issues
+
+## Running issues
+
+Try deleting the `dist` folder inside your flogo-web copy and start the application again.
+
