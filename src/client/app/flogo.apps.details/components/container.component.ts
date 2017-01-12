@@ -24,11 +24,10 @@ export class FlogoApplicationContainerComponent implements  OnInit {
     }
 
     ngOnInit() {
-      let appId: string;
 
       this.route.params
-      .switchMap((params: RouteParams) => {appId = params['id']; return appId})
-      .subscribe(() => {
+      .map((params: RouteParams) =>  params['id'] )
+      .subscribe((appId:string) => {
         this.apiApplications.get(appId)
           .then((application: IFlogoApplicationModel) => {
             this.application = application;
