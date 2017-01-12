@@ -23,6 +23,10 @@
     ]
   },
   "include": [
+    "main.ts",
+    "main.module.ts",
+    "app/**/*.ts",
+    "common/**/*.ts",
     "shims.d.ts",
     "node_modules/@types"
   ],
