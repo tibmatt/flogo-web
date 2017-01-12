@@ -8,7 +8,8 @@ import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 
 import { FlogoAppsComponent } from './components/apps.component';
 import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
-import { FlogoApplicationDetailsComponent } from '../flogo.apps.details/components/details.component';
+import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
+import { FlogoApplicationComponent } from '../flogo.apps.details/components/application.component';
 import { FlogoApplicationFlowsComponent } from '../flogo.apps.flows/components/flows.component';
 import { FlogoAppListComponent } from '../flogo.apps.list/components/app.list.component';
 import { FlogoApplicationSearch } from '../flogo.apps.search/components/search.component';
@@ -26,7 +27,8 @@ import {routing, appRoutingProviders} from "./flogo.apps.routing";
   declarations: [
     FlogoAppsComponent,
     FlogoMainComponent,
-    FlogoApplicationDetailsComponent,
+    FlogoApplicationComponent,
+    FlogoApplicationContainerComponent,
     FlogoApplicationFlowsComponent,
     FlogoAppListComponent,
     FlogoApplicationSearch
