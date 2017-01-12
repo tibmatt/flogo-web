@@ -1,10 +1,8 @@
-import { beforeEachProviders, it, describe, expect, inject, beforeEach } from '@angular/core/testing';
-import { provide } from '@angular/core';
+import {} from 'jasmine';
 import { parseMapping } from './utils';
 
 
 describe('Function: ParseMapping', ()=> {
-
     describe('Evaluating an activity', () => {
         beforeEach(() => {
             this.parsedMapping = parseMapping("{A20.message}.category.id");

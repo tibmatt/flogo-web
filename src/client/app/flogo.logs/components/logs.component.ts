@@ -1,8 +1,6 @@
-import {Component, HostBinding, ElementRef, Renderer} from '@angular/core';
-import {TranslatePipe} from 'ng2-translate/ng2-translate';
+import {Component, ElementRef, Renderer} from '@angular/core';
 import {PostService} from '../../../common/services/post.service';
 import {LogService} from '../../../common/services/log.service';
-import {SearchPipe} from './search.component';
 import {PUB_EVENTS} from '../messages';
 
 const MAXIMIZED_WIDTH = '800px';
@@ -10,9 +8,7 @@ const MAXIMIZED_WIDTH = '800px';
   {
     selector: 'flogo-logs',
     moduleId: module.id,
-    directives: [],
     templateUrl: 'logs.tpl.html',
-    pipes: [TranslatePipe, SearchPipe],
     styleUrls: ['logs.component.css']
   }
 )

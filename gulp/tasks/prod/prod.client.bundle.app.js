@@ -1,60 +1,49 @@
 import path from  'path';
 import fs from 'fs';
+import child_process from 'child_process';
+import del from 'del';
 
 import gulp from 'gulp';
 import inlineTemplate from 'gulp-inline-ng2-template';
-import ts from 'gulp-typescript';
 import filter from 'gulp-filter';
+import runSequence from 'run-sequence';
+import rename from 'gulp-rename';
 
 import less from 'less';
 
-import {CONFIG} from '../../config'
+import {CONFIG} from '../../config';
+
+const TMP_FOLDER = '.tmp';
 
 /**
  * Generate app bundle file.
  * Makes a single javascript file from app and library sources.
  */
-gulp.task('prod.client.bundle.app', false, ['prod.client.bundle.app.ts'], cb => {
+gulp.task('prod.client.bundle.app', false, [], cb => {
 
-  let Builder = require('systemjs-builder');
-  let builder = new Builder('', path.join(CONFIG.paths.source.client, 'systemjs.config.js'));
+  runSequence(
+    'prod.client.bundle.app.clean-tmp',
+    'prod.client.bundle.app.inline-styles',
+    'prod.client.bundle.app.copy-tsconfig',
+    'prod.client.bundle.app.aot-compile',
+    'prod.client.bundle.app.rollup',
+    'prod.client.bundle.app.copy-bundle',
+    cb);
 
+});
 
-  builder.config({
-    map: {
-      main: path.join(CONFIG.paths.dist.public, 'build')
-    },
-    packages: {
-      main: {
-        main: 'main',
-        defaultExtension: 'js'
-      }
-    }
-  });
-
-  Promise.all([
-    // app bundle
-    builder.buildStatic('main/main.js + main/app/**/**.js + main/common/**/**.js', path.join(CONFIG.paths.dist.public, 'app.bundle.js'), {minify: true, sourceMaps: true, lowResSourceMaps: true, encodeNames: true, rollup: true})
-  ])
-    .then(() => cb())
-    .catch(err => cb(err))
-  ;
-
+gulp.task('prod.client.bundle.app.clean-tmp', 'Delete tmp folder', () => {
+  return del.sync([`${TMP_FOLDER}/**/*`], {cwd: CONFIG.paths.source.client});
 });
 
 /**
  * Compile app's typescript files to javascript and inline html templates and styles
  */
-gulp.task('prod.client.bundle.app.ts', false, () => {
-
-  let tsProject = ts.createProject('tsconfig.json', {
-    typescript: require('typescript')
-    //outFile: CONFIG.bundles.app
-  });
+gulp.task('prod.client.bundle.app.inline-styles',  false, () => {
 
   let componentFilter = filter('**/*.component.{js,ts}', {restore: true});
 
-  return gulp.src(CONFIG.paths.ts, {cwd: CONFIG.paths.source.client})
+  return gulp.src(CONFIG.paths.ts.prod, {cwd: CONFIG.paths.source.client})
     .pipe(componentFilter)
     .pipe(inlineTemplate({
       useRelativePaths: true,
@@ -63,11 +52,61 @@ gulp.task('prod.client.bundle.app.ts', false, () => {
       styleProcessor: processLess
     }))
     .pipe(componentFilter.restore)
-    .pipe(ts(tsProject))
-    //.pipe(uglify({mangle:false}))
-    //.pipe(concat(CONFIG.bundles.app))
-    .pipe(gulp.dest(path.join(CONFIG.paths.dist.public, 'build')));
+    .pipe(gulp.dest(path.join(CONFIG.paths.source.client, TMP_FOLDER, 'compiled')));
 
+});
+
+gulp.task('prod.client.bundle.app.copy-tsconfig',  false, () => {
+  return gulp.src(path.join(CONFIG.paths.source.client, 'tsconfig-aot.json'))
+    .pipe(rename('tsconfig-aot.json'))
+    .pipe(gulp.dest(path.join(CONFIG.paths.source.client, TMP_FOLDER, 'compiled')));
+
+});
+
+gulp.task('prod.client.bundle.app.aot-compile',  false, cb => {
+  child_process.exec('../../node_modules/.bin/ngc -p tsconfig-aot.json',
+    { cwd: path.join(CONFIG.paths.source.client, TMP_FOLDER, 'compiled') },
+    function (err, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      cb(err);
+    });
+});
+
+gulp.task('prod.client.bundle.app.rollup',  false, cb => {
+
+  let child = child_process.spawn('node_modules/.bin/rollup', ['-c', 'rollup.js'], {cwd: path.join(CONFIG.paths.source.client)});
+
+  child.stdout.on('data', function (data) {
+    console.log(data.toString());
+  });
+
+  child.stderr.on('data', function (data) {
+    console.error(data.toString());
+  });
+
+  child.on('close', function (code) {
+    console.log('rollup exited with code' + code);
+    if (code) {
+      cb(code);
+    } else {
+      cb();
+    }
+  });
+
+  // child_process.exec('node_modules/.bin/rollup -c rollup.js',
+  // {  maxBuffer: 1024 * 500, cwd: path.join(CONFIG.paths.source.client) },
+  // function (err, stdout, stderr) {
+  //   console.log(stdout);
+  //   console.log(stderr);
+  //   cb(err);
+  // });
+});
+
+gulp.task('prod.client.bundle.app.copy-bundle',  false, () => {
+  return gulp.src(path.join(CONFIG.paths.source.client, TMP_FOLDER, 'dist/build.js'))
+    .pipe(rename(CONFIG.bundles.app))
+    .pipe(gulp.dest(path.join(CONFIG.paths.dist.public)));
 });
 
 function convertExtensions(ext, path) {
@@ -85,9 +124,12 @@ function convertExtensions(ext, path) {
 
 }
 
-function processLess(path, fileContent, cb) {
+function processLess(path, ext, fileContent, cb) {
 
-  less.render(fileContent, {paths: CONFIG.paths.lessImports}, (err, output) => {
+  less.render(fileContent, {
+    paths: CONFIG.paths.lessImports,
+    compress: true
+  }, (err, output) => {
     onRender(err, output ? output.css : null);
   });
 

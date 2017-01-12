@@ -1,21 +1,17 @@
 import {Component, Input} from '@angular/core';
-import {ROUTER_DIRECTIVES, Router, CanActivate} from '@angular/router-deprecated';
+import {Router} from '@angular/router';
 
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
 import {flogoIDEncode, notification} from '../../../common/utils';
 import {FlogoModal} from '../../../common/services/modal.service';
-import {TranslatePipe, TranslateService} from 'ng2-translate/ng2-translate';
+import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flow-list',
   moduleId: module.id,
   templateUrl: 'flow-list.tpl.html',
-  styleUrls: ['flow-list.component.css'],
-  directives: [ROUTER_DIRECTIVES],
-  pipes: [TranslatePipe],
-  providers: [FlogoModal, RESTAPIFlowsService]
+  styleUrls: ['flow-list.component.css']
 })
-
 export class FlogoListComponent {
   @Input() public flows: any;
 
@@ -30,11 +26,8 @@ export class FlogoListComponent {
     if (_.isFunction(_.get(evt, 'stopPropagation'))) {
       evt.stopPropagation();
     }
-
-    this._router.navigate([
-      'FlogoFlowDetail',
-      {id: flogoIDEncode(flowId)}
-    ])
+  // TODO: fix routing
+    this._router.navigate([ '/flows', flogoIDEncode(flowId) ])
       .catch((err: any) => {
         console.error(err);
       });
@@ -73,11 +66,11 @@ export class FlogoListComponent {
       if (res) {
         this._flow.deleteFlow(flow._id).then(() => {
           this.getAllFlows();
-          let message = this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
-          notification(message['value'], 'success', 3000);
+          let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
+          notification(message, 'success', 3000);
         }).catch((err) => {
-          let message = this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', {value: err});
-          notification(message['value'], 'error');
+          let message = this.translate.instant('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', {value: err});
+          notification(message, 'error');
         });
       } else {
         // omit

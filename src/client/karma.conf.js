@@ -1,72 +1,136 @@
-'use strict';
+module.exports = function(config) {
 
-module.exports = function (config) {
+  var appBase    = 'common/';      // transpiled app JS and map files
+  var appSrcBase = 'common/';      // app source TS files
+  var appAssets  = 'app/'; // component assets fetched by Angular's compiler
+
+  // Testing helpers (optional) are conventionally in a folder called `testing`
+  var testingBase    = 'testing/'; // transpiled test JS and map files
+  var testingSrcBase = 'testing/'; // test source TS files
+
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
-    // files needed by angular js plus application and test files
+
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter')
+    ],
+
+
+    client: {
+      builtPaths: [appBase, appAssets, testingBase], // add more spec base paths as needed
+      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
+
+    customLaunchers: {
+      // From the CLI. Not used here but interesting
+      // chrome setup for travis CI using chromium
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
     files: [
-      //Polyfills
-      'node_modules/es6-shim/es6-shim.js',
-      'node_modules/reflect-metadata/Reflect.js',
-      // System.js
-      'node_modules/systemjs/dist/system-polyfills.js',
+      // System.js for module loading
       'node_modules/systemjs/dist/system.src.js',
+
+      // Polyfills
+      'node_modules/core-js/client/shim.js',
+
+      // todo: necessary?
+      'node_modules/reflect-metadata/Reflect.js',
+
       // lodash
       'node_modules/lodash/lodash.js',
-      // jquery
-      'https://code.jquery.com/jquery-1.11.2.min.js',
-      // moment
-      'node_modules/moment/moment.js',
+
+      // zone.js
       'node_modules/zone.js/dist/zone.js',
+      'node_modules/zone.js/dist/long-stack-trace-zone.js',
+      'node_modules/zone.js/dist/proxy.js',
+      'node_modules/zone.js/dist/sync-test.js',
       'node_modules/zone.js/dist/jasmine-patch.js',
       'node_modules/zone.js/dist/async-test.js',
       'node_modules/zone.js/dist/fake-async-test.js',
-      // rxjs dependencies
-      {pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false /*, served: true*/},
-      {pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false /*, served: true*/},
-      // angular dependencies
-      {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
-      {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
+
+      // jquery
+      'node_modules/jquery/dist/jquery.js',
+
+      'node_modules/d3/d3.js',
+      'node_modules/lodash/lodash.js',
+      'node_modules/postal/lib/postal.js',
+      'node_modules/bootstrap/dist/js/bootstrap.js',
+      'node_modules/moment/min/moment-with-locales.min.js',
+      'node_modules/socket.io-client/socket.io.js',
+
+      'node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.min.js',
+
+      // RxJs
+      { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
+
+      // Paths loaded via module imports:
+      // Angular itself
+      { pattern: 'node_modules/@angular/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false },
+
       // ng2-bs3-modal
-      { pattern: 'node_modules/ng2-bs3-modal/components/*.js', included: false, watched: false },
-      { pattern: 'node_modules/ng2-bs3-modal/directives/*.js', included: false, watched: false },
-      { pattern: 'node_modules/ng2-bs3-modal/ng2-bs3-modal.js', included: false, watched: false   },
+      {pattern: 'node_modules/ng2-bs3-modal/components/*.js', included: false, watched: false},
+      {pattern: 'node_modules/ng2-bs3-modal/directives/*.js', included: false, watched: false},
+      {pattern: 'node_modules/ng2-bs3-modal/ng2-bs3-modal.js', included: false, watched: false},
+
       // ng2-translate
-      { pattern: 'node_modules/ng2-translate/ng2-translate.js', included: false, watched: false },
-      { pattern: 'node_modules/ng2-translate/src/*.js', included: false, watched: false },
-      // our application
-      {pattern: 'main.js', included: false, watched: true},
-      {pattern: '*(app|common)/**/**.js', included: false, watched: true},
-      {pattern: '*(app|common)/**/**.js.map', included: false, watched: true},
-      // paths loaded via Angular's component compiler
+      {pattern: 'node_modules/ng2-translate/bundles/ng2-translate.umd.js', included: false, watched: false},
+
+      { pattern: 'systemjs.config.test.js', included: false, watched: false },
+      'karma-test-shim.js', // optionally extend SystemJS mapping e.g., with barrels
+
+      //{ pattern: 'node_modules/_tmp/Rx.js', included: true, watched: false },
+
+      // transpiled application & spec code paths loaded via module imports
+      { pattern: appBase + '**/*.js', included: false, watched: true },
+      { pattern: testingBase + '**/*.js', included: false, watched: true },
+      // TODO: verify
+      { pattern: 'main.js', included: false, watched: true },
+      { pattern: '*(app|common)/**/**.js', included: false, watched: true },
+      { pattern: '*(app|common)/**/**.js.map', included: false, watched: true },
+
+      // Asset (HTML & CSS) paths loaded via Angular's component compiler
       // (these paths need to be rewritten, see proxies section)
-      {pattern: 'app/**/*.*(html|css)', included: false, watched: true},
-      {pattern: 'assets/**/*.*(png|svg)', included: false, watched: true},
-      // helper
-      {pattern:'karma.helper.js', included: true, watched: true}
+      { pattern: appBase + '**/*.*(html|css)', included: false, watched: true },
+      { pattern: appBase + '**/*.*(png|svg)', included: false, watched: true },
+      { pattern: appAssets + '**/*.*(html|css)', included: false, watched: true },
+      { pattern: appAssets + '**/*.*(png|svg)', included: false, watched: true },
+
+      // Paths for debugging with source maps in dev tools
+      //{ pattern: appSrcBase + '**/*.ts', included: false, watched: false },
+      //{ pattern: appBase + '**/*.js.map', included: false, watched: false },
+      //{ pattern: testingSrcBase + '**/*.ts', included: false, watched: false },
+      //{ pattern: testingBase + '**/*.js.map', included: false, watched: false}
     ],
-    // exclude angular 2 test files
+
+    // Proxied base paths for loading assets
+    proxies: {
+      // required for component assets fetched by Angular's compiler
+      "/app/": "/base/"+appAssets,
+      "/common/": "/base/common/",
+      "/assets/": "/base/assets/"
+    },
+
     exclude: [
       'node_modules/@angular/**/*_spec.js',
       'common/services/rest-api-test.spec.js'
     ],
-    // proxied base paths
-    proxies: {
-      // required for component assests fetched by Angular's compiler
-      "/app/": "/base/app/",
-      "/common/": "/base/common/",
-      "/assets/": "/base/assets/"
-    },
-    reporters: ['spec'],
+    preprocessors: {},
+    reporters: ['progress', 'kjhtml'],
+
     port: 9876,
     colors: true,
-    autoWatch: false,
-    // use Chrome to launch the tests
-    browsers: [
-      'Chrome'
-    ],
     logLevel: config.LOG_INFO,
-    singleRun: true
-  });
+    autoWatch: true,
+    browsers: ['Chrome'],
+    singleRun: false
+  })
 };

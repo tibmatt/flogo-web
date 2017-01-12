@@ -27,7 +27,7 @@ export class FlogoFormBuilderCommon {
     return obj;
   }
 
-  _mapTypeToConstant(type:string|FLOGO_TASK_ATTRIBUTE_TYPE) {
+  _mapTypeToConstant(type:string|FLOGO_TASK_ATTRIBUTE_TYPE) : FLOGO_TASK_ATTRIBUTE_TYPE {
     switch(type) {
       case 'string':
       case FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
@@ -63,8 +63,9 @@ export class FlogoFormBuilderCommon {
 
   getControlByType(item:any, paramDirection?:string) {
     let control:string = '';
+    let typeAsConstant:FLOGO_TASK_ATTRIBUTE_TYPE = this._mapTypeToConstant(item.type);
 
-    switch(this._mapTypeToConstant(item.type)) {
+    switch(typeAsConstant) {
       case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
         control =  'FieldTextBox';
         break;

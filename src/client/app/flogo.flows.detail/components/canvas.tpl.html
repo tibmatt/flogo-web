@@ -1,14 +1,13 @@
-<div *ngIf="!_mockLoading" [ngClass]="{'flogo-canvas-maximum': isOnDefaultRoute()}">
+<div [hidden]="_mockLoading">
 
-  <div class="canvas-flow" >
-    <!--[ngClass]="{'canvas-flow-minimized':isLogsMaximized}">-->
+  <div class="canvas-flow" *ngIf="flow">
 
     <section class="flogo-flow-detail">
 
       <header class="flogo-flow-detail-header col-sm-9">
         <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
         <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
-           placeholder="{{ translate.get('CANVAS:ADD-FLOW-DESCRIPTION').value }}"
+           placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </header>
 
@@ -66,7 +65,6 @@
     </flogo-flows-detail-error-panel>
 
   </div>
-
   <div class="canvas-right-container">
     <router-outlet></router-outlet>
   </div>

@@ -1,29 +1,18 @@
-import { Component, OnChanges, AfterViewInit, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { CanActivate,  RouteParams } from '@angular/router-deprecated';
-import { isConfigurationLoaded } from '../../../common/services/configurationLoaded.service';
-import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import { Component, AfterViewInit, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
+import { ActivatedRoute, Params as RouteParams } from '@angular/router';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-import { FlogoApplicationFlowsComponent } from '../../flogo.apps.flows/components/flows.component';
-import { FlogoApplicationSearch } from '../../flogo.apps.search/components/search.component';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import {
-    notification,
-} from '../../../common/utils';
-
-
+import 'rxjs/add/operator/switchMap';
+import moment = require("moment");
 
 @Component( {
     selector: 'flogo-apps-details',
     moduleId: module.id,
     templateUrl: 'details.tpl.html',
-    styleUrls: [ 'details.component.css' ],
-    directives: [FlogoApplicationFlowsComponent, FlogoApplicationSearch],
-    pipes: [TranslatePipe]
-} )
-@CanActivate((next) => {
-    return isConfigurationLoaded();
+    styleUrls: [ 'details.component.css' ]
 })
 export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  {
     @ViewChild('appInputName') appInputName: ElementRef;
@@ -38,46 +27,58 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
 
 
     constructor(
-        private _routeParams: RouteParams,
+        private route: ActivatedRoute,
         public translate: TranslateService,
         private renderer: Renderer,
         private apiApplications: RESTAPIApplicationsService
     ) {
-
-        // get application details by id
-        this.apiApplications.getApp(this._routeParams.params['id'])
-            .then((application:IFlogoApplicationModel)=> {
-                this.application = application;
-                this.flows = this.getOriginalFlows();
-
-                this.init();
-            });
+      this.restoreState();
     }
 
-    init() {
-        this.searchPlaceHolder = this.translate.get('DETAILS:SEARCH')['value'];
-        let timeStr = this.application.createdAt;
-        this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
+  ngOnInit() {
 
-        if(this.application.updatedAt == null) {
-            this.editingName = true;
-            this.updateAtFormatted = null;
-        }else {
-            this.editingName = false;
-            this.updateAtFormatted = moment(this.application.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
-        }
-        this.setFocusOnInput();
-    }
+    this.route.params
+      .switchMap((params: RouteParams) => params['id'])
+      .subscribe((appId: string) => {
+        this.restoreState();
+        this.apiApplications.getApp(appId)
+          .then((application: IFlogoApplicationModel) => {
+            this.application = application;
+            this.flows = this.getOriginalFlows();
+          })
+          .then(() => {
+            this.searchPlaceHolder = this.translate.instant('DETAILS:SEARCH');
+
+            let timeStr = this.application.createdAt;
+            this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
+
+
+            if (this.application.updatedAt == null) {
+              this.editingName = true;
+              this.updateAtFormatted = null;
+            } else {
+              this.editingName = false;
+              this.updateAtFormatted = moment(this.application.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
+            }
+          })
+          .then(() => {
+            if (this.application.updatedAt == null) {
+              this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus', []);
+            }
+          });
+
+      });
+  }
 
     getOriginalFlows() {
         return _.clone(this.application.flows || []);
     }
 
 
-    setFocusOnInput() {
-        if(this.application.updatedAt == null) {
-            this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-        }
+    ngAfterViewInit() {
+        // if(this.application.updatedAt == null) {
+        //     this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
+        // }
     }
 
     onClickAddDescription(event) {
@@ -140,4 +141,15 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
             this.flows = this.getOriginalFlows();
         }
     }
+
+  private restoreState() {
+    this.application = null;
+    this.searchPlaceHolder = '';
+    this.createdAtFormatted = null;
+    this.updateAtFormatted = null;
+    this.editingDescription = false;
+    this.editingName  = false;
+    this.flows = [];
+  }
+
 }
