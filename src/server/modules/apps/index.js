@@ -66,10 +66,11 @@ const DEFAULT_APP = {
 export class AppsManager {
 
   static create(app) {
-    let cleanApp = cleanInput(app);
+    const inputData = app;
+    let cleanApp = cleanInput(inputData);
 
     return validate(cleanApp).then(() => {
-      cleanApp = build(app);
+      cleanApp = build(cleanApp);
       return appsDBService.db
         .post(cleanApp)
         .then(response => AppsManager.findOne(response.id));
