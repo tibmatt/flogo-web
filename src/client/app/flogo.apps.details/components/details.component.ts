@@ -6,7 +6,6 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import 'rxjs/add/operator/switchMap';
-import moment = require("moment");
 
 @Component( {
     selector: 'flogo-apps-details',
@@ -36,10 +35,11 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     }
 
   ngOnInit() {
+    let appId:string;
 
     this.route.params
-      .switchMap((params: RouteParams) => params['id'])
-      .subscribe((appId: string) => {
+      .switchMap((params: RouteParams) => {appId = params['id']; return appId})
+      .subscribe(() => {
         this.restoreState();
         this.apiApplications.getApp(appId)
           .then((application: IFlogoApplicationModel) => {
@@ -89,19 +89,30 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
         }, 0);
     }
 
-    onInputDescriptionBlur(event) {
-        this.editingDescription = false;
-    }
+  onInputDescriptionBlur(event) {
+    this.editingDescription = false;
+    let app:IFlogoApplicationModel = this.application;
+    this.apiApplications.updateApp(app.id, _.pick(app, ['name', 'description'])).then(app=>{
+      this.updateAtFormatted = moment(app.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
+      console.log(this.updateAtFormatted);
+      console.log(app.updatedAt);
+    });
+  }
 
     onInputNameChange(event) {
         this.application.updatedAt = new Date();
     }
 
-    onInputNameBlur(event) {
-        if(this.application.name) {
-            this.editingName = false;
-        }
+  onInputNameBlur(event) {
+    let app:IFlogoApplicationModel = this.application;
+    if (app.name) {
+      this.editingName = false;
+      this.apiApplications.updateApp(app.id, _.pick(app, 'name')).then(app => {
+        this.updateAtFormatted = moment(app.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
+        console.log(this.updateAtFormatted);
+      });
     }
+  }
 
     onClickLabelName(event) {
         this.editingName = true;
