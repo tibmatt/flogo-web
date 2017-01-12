@@ -263,55 +263,9 @@ describe('FlogoApplicationDetails component', () => {
                      expect(labelElement.innerText).toEqual('Untitled Application');
                      done();
                  });
-
                  fixture.detectChanges();
                  params.next({'id':Promise.resolve(2)});
              })
      });
-
-
 });
 
-
-
-//
-// describe('FlogoApplicationDetails component', () => {
-//     let tcb: TestComponentBuilder;
-//
-//     function createComponent() {
-//         return tcb.createAsync(FlogoApplicationDetailsComponent);
-//     }
-//
-//     //setup
-//     beforeEachProviders(()=> [
-//         HTTP_PROVIDERS,
-//         ROUTER_PROVIDERS,
-//         TestComponentBuilder,
-//         TranslateService,
-//         TranslateLoader,
-//         provide(RouteParams, { useValue: new RouteParams({ id: '2' }) }),
-//         provide(RESTAPIApplicationsService, { useClass: RESTAPIApplicationsServiceMock }),
-//         FlogoApplicationDetailsComponent
-//     ]);
-//
-//     beforeEach(inject([TestComponentBuilder], (_tcb:TestComponentBuilder) => {
-//         tcb = _tcb;
-//     }));
-//
-//
-//     it("If updatedAt field is not null, the name of the component should be shown as a label", (done)=> {
-//         createComponent()
-//             .then(fixture => {
-//                 fixture.detectChanges();
-//                 let appDetails = fixture.componentInstance;
-//                 appDetails.application.name = 'Untitled Application';
-//                 fixture.detectChanges();
-//
-//                 let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
-//                 let labelElement = labelName.nativeElement;
-//                 expect(labelElement.innerText).toEqual('Untitled Application');
-//                 done();
-//             })
-//     });
-//
-// });
