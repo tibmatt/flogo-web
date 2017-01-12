@@ -23,10 +23,7 @@ export class FlogoAppListComponent {
     constructor(public flogoModal: FlogoModal,
                 public translate: TranslateService,
                 private apiApplications: RESTAPIApplicationsService) {
-        this.apiApplications.getAllApps()
-            .then((applications:Array<IFlogoApplicationModel>)=> {
-                this.applications = applications;
-            })
+        this.listAllApps();
     }
 
     onSelectApp(app:IFlogoApplicationModel) {
@@ -46,21 +43,29 @@ export class FlogoAppListComponent {
     onAdd(event) {
         this.apiApplications.createNewApp()
             .then((application:IFlogoApplicationModel)=> {
+                this.listAllApps();
                 this.onAddedApp.emit(application);
                 this.onSelectApp(application);
             });
     }
 
+  listAllApps() {
+    this.apiApplications.getAllApps()
+      .then((applications: Array<IFlogoApplicationModel>) => {
+        this.applications = applications;
+      })
+  }
 
-    private _delete(application:IFlogoApplicationModel) {
-        this.apiApplications.deleteApp(application.id)
-            .then(()=> {
-                this.onDeletedApp.emit(application);
-                this.selectedApp = null;
-                this.overApp = null;
-                //this._router.navigate([ 'FlogoHomeComponent', {id: application.id} ]);
-            });
-    }
+  private _delete(application: IFlogoApplicationModel) {
+    this.apiApplications.deleteApp(application.id)
+      .then(() => {
+        this.listAllApps();
+        this.onDeletedApp.emit(application);
+        this.selectedApp = null;
+        this.overApp = null;
+        //this._router.navigate([ 'FlogoHomeComponent', {id: application.id} ]);
+      });
+  }
 
     onMouseOver(app: IFlogoApplicationModel) {
         this.overApp = app;
