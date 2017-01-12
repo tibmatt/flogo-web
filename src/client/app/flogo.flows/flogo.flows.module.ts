@@ -33,5 +33,12 @@ import { routing } from './flogo.flows.routing';
     FlogoFlowsFlowNameComponent,
     FlogoListComponent,
   ],
+  exports:[
+    FlogoFlowsComponent,
+    FlogoFlowsAddComponent,
+    FlogoFlowsImportComponent,
+    FlogoFlowsFlowNameComponent,
+    FlogoListComponent,
+  ]
 })
 export class FlowsModule {}

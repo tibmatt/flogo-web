@@ -32,6 +32,7 @@
         <flogo-apps-search [placeholder]="searchPlaceHolder" (changedSearch)="onChangedSearch($event)"
                            class="search"></flogo-apps-search>
         <div class="commands">
+          <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
             <span class="new-flow">{{ 'DETAILS:NEW-FLOW' | translate }}</span>
             <span class="import">{{ 'DETAILS:IMPORT' | translate }}</span>
         </div>

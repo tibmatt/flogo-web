@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
 import {PostService} from '../../../common/services/post.service';
 import {PUB_EVENTS} from '../message';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
@@ -13,6 +13,7 @@ import { notification } from '../../../common/utils';
     styleUrls: ['add.component.css']
 })
 export class FlogoFlowsAdd {
+  @Input() public appId: string;
     public flowName: string;
     public flowDescription: string;
 
@@ -43,6 +44,7 @@ export class FlogoFlowsAdd {
                 } else {
                     console.log('DOES NOT EXIST');
                     this.flowNameExists = false;
+                    this.flowInfo.appId = this.appId;
                     if (this._sending) {
                         this._sending = false;
                         this._postService.publish(
