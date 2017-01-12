@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
+import { Component, Output, AfterViewInit, OnInit, OnDestroy, ViewChild, ElementRef, Renderer, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Params as RouteParams } from '@angular/router';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { timeString } from '../../../common/utils';
@@ -13,16 +13,18 @@ import 'rxjs/add/operator/switchMap';
     templateUrl: 'details.tpl.html',
     styleUrls: [ 'details.component.css' ]
 })
-export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  {
+export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit, OnDestroy  {
     @ViewChild('appInputName') appInputName: ElementRef;
     @ViewChild('appInputDescription') appInputDescription: ElementRef;
-    application: IFlogoApplicationModel = null;
+    @Output() onParamChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public application: IFlogoApplicationModel = null;
     searchPlaceHolder:string = '';
     createdAtFormatted: any;
     updateAtFormatted: any;
     editingDescription: boolean = false;
     editingName: boolean = false;
     flows: Array<IFlogoApplicationFlowModel> = [];
+    subscription: any;
 
 
     constructor(
@@ -34,10 +36,14 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
       this.restoreState();
     }
 
-  ngOnInit() {
+    ngOnDestroy() {
+    }
 
+  ngOnInit() {
     this.route.params
-      .switchMap((params: RouteParams) => params['id'])
+      .switchMap((params: RouteParams) => {
+          return params['id'];
+      } )
       .subscribe((appId: string) => {
         this.restoreState();
         this.apiApplications.get(appId)
@@ -62,9 +68,14 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
           })
           .then(() => {
             if (this.application.updatedAt == null) {
-              this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus', []);
+                if(!_.isNil(this.appInputName)) {
+                    this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus', []);
+                }
             }
-          });
+          })
+            .then(()=> {
+              this.onParamChanged.emit(true);
+            })
 
       });
   }
@@ -75,16 +86,15 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
 
 
     ngAfterViewInit() {
-        // if(this.application.updatedAt == null) {
-        //     this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-        // }
     }
 
     onClickAddDescription(event) {
         this.editingDescription = true;
         // wait to refresh view
         setTimeout(()=> {
-            this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
+            if(!_.isNil(this.appInputDescription)) {
+                this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
+            }
         }, 0);
     }
 
@@ -93,6 +103,7 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     }
 
     onInputNameChange(event) {
+        //console.log(event);
         this.application.updatedAt = new Date();
     }
 
@@ -105,14 +116,18 @@ export class FlogoApplicationDetailsComponent implements AfterViewInit, OnInit  
     onClickLabelName(event) {
         this.editingName = true;
         setTimeout(()=> {
-            this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
+            if(!_.isNil(this.appInputName)) {
+                this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
+            }
         },0);
     }
 
     onClickLabelDescription(event) {
         this.editingDescription = true;
         setTimeout(()=> {
-            this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
+            if(!_.isNil(this.appInputDescription)) {
+                this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
+            }
         },0);
     }
 
