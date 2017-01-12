@@ -66,6 +66,15 @@ export class RESTAPIApplicationsService {
       });
   }
 
+  updateApp(appId:string, app:any){
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify(app);
+
+    return this._http.patch('/v1/api/apps/' + appId, body, options).toPromise()
+      .then(response => response.json().data);
+  }
+
   getNewAppName(name: string, count = 0) {
     let appName: string = name + (count > 0 ? ` (${count})` : '');
     let found: IFlogoApplicationModel;
