@@ -260,7 +260,7 @@ describe('FlogoApplicationComponent component', () => {
      });
 
 
-     xit('Should render 3 flows', (done)=> {
+     it('Should render 3 flows', (done)=> {
          createComponent()
              .then(() => {
                  fixture = TestBed.createComponent(FlogoApplicationComponent);
@@ -277,7 +277,7 @@ describe('FlogoApplicationComponent component', () => {
              });
      });
 
-     xit("If updatedAt field is not null, the name of the component should be shown as a label", (done)=> {
+     it("If updatedAt field is not null, the name of the component should be shown as a label", (done)=> {
          createComponent()
              .then(() => {
                  fixture = TestBed.createComponent(FlogoApplicationComponent);
@@ -285,6 +285,7 @@ describe('FlogoApplicationComponent component', () => {
 
                  comp.application = application;
                  comp.application.name = 'Untitled Application';
+                 comp.application.updatedAt = new Date();
                  comp.updateChanges();
 
                      fixture.detectChanges();
