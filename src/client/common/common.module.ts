@@ -6,7 +6,7 @@ import { Http, HttpModule as NgHttpModule } from '@angular/http'
 
 
 import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components'
-import { Contenteditable, JsonDownloader } from './directives';
+import { Contenteditable, JsonDownloader, DoFocusDirective } from './directives';
 import { LoadingIndicatorComponent } from "./components/loading-indicator.component";
 
 export function createTranslateLoader(http: Http) {
@@ -18,7 +18,8 @@ const ALL_MODULE_DECLARABLES = [
   ...INFORMATION_POPUP_DIRECTIVES,
   Contenteditable,
   JsonDownloader,
-  LoadingIndicatorComponent
+  LoadingIndicatorComponent,
+  DoFocusDirective
 ];
 
 @NgModule({ // module dependencies

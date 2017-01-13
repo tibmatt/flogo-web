@@ -52,14 +52,6 @@ export class FlogoApplicationComponent implements OnChanges {
         if (this.application.updatedAt == null) {
             this.editingName = true;
             this.updateAtFormatted = null;
-
-            setTimeout(()=> {
-                if(!_.isNil(this.appInputName)) {
-                    this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-                }
-            }, 0);
-
-
         } else {
             this.editingName = false;
             this.updateAtFormatted = moment(this.application.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
@@ -77,12 +69,6 @@ export class FlogoApplicationComponent implements OnChanges {
 
   onClickAddDescription(event) {
         this.editingDescription = true;
-        // wait to refresh view
-        setTimeout(()=> {
-            if(!_.isNil(this.appInputDescription)) {
-                this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
-            }
-        }, 0);
   }
 
   onInputDescriptionBlur(event) {
@@ -101,20 +87,10 @@ export class FlogoApplicationComponent implements OnChanges {
 
   onClickLabelName(event) {
      this.editingName = true;
-     setTimeout(()=> {
-         if(!_.isNil(this.appInputName)) {
-            this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-         }
-     },0);
   }
 
     onClickLabelDescription(event) {
         this.editingDescription = true;
-        setTimeout(()=> {
-            if(!_.isNil(this.appInputDescription)) {
-                this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
-            }
-        },0);
     }
 
     onKeyUpName(event) {
