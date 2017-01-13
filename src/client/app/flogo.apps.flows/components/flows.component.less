@@ -1,23 +1,21 @@
 .flogo-app-flows {
 
   .flows-container {
-    margin-left: -45px;
     color: #666;
 
     .flow {
-      display: flex;
+      position: relative;
       margin-top: 10px;
       cursor: pointer;
 
       .trigger-info {
         background-color: #ff7c35;
-        flex: 0 1 44px;
+        width: 44px;
         height: 70px;
-        left: 45px;
-        position: relative;
-        top: 15px;
+        position: absolute;
         z-index: 2;
         border-radius: 5px 0 0 5px;
+        top: 15px;
 
         &:after {
           content: "";
@@ -41,14 +39,13 @@
       .flow-info {
         background-color: #fff;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
-        flex: 0 1 900px;
+        width: 900px;
         height: 100px;
-        z-index: 1;
         padding-left: 34px;
         padding-top: 5px;
-        left: 45px;
         position: relative;
         border-radius: 4px;
+        margin-left: 44px;
 
         &:hover {
           box-shadow: 0 0 5px 0 #79b8dc;
