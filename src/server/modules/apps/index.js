@@ -298,7 +298,9 @@ function validate(app) {
 
 function cleanInput(app) {
   const cleanedApp = pick(app, EDITABLE_FIELDS);
-  cleanedApp.name = app.name ? app.name.trim() : app.name;
+  if (cleanedApp.name) {
+    cleanedApp.name = cleanedApp.name.trim();
+  }
   return cleanedApp;
 }
 

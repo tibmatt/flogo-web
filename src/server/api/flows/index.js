@@ -337,6 +337,9 @@ function retrieveFlowDataFromRequest(ctx) {
           if(params.name) {
             data.name = params.name.trim();
           }
+          if(params.appId) {
+            data.appId = params.appId;
+          }
         } catch ( err ) {
           console.error( '[ERROR]: ', err );
           ctx.throw( 400, 'Invalid JSON data.' );
