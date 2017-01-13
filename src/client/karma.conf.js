@@ -11,7 +11,8 @@ module.exports = function(config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      require('karma-jasmine-html-reporter')
+      require('karma-jasmine-html-reporter'),
+      require('karma-spec-reporter'),
     ],
 
 
@@ -115,7 +116,7 @@ module.exports = function(config) {
       'common/services/rest-api-test.spec.js'
     ],
     preprocessors: {},
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['kjhtml', 'spec'],
 
     port: 9876,
     colors: true,

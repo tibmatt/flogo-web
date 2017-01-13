@@ -15,6 +15,12 @@ import { FormsModule } from '@angular/forms';
 import {APP_BASE_HREF} from '@angular/common'
 import { Subject } from 'rxjs/Subject';
 
+import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+
+import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
+import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
+import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
+
 describe('FlogoApplicationContainerComponent component', () => {
     let params: Subject<Params>;
     let comp:    FlogoApplicationContainerComponent, fixture: ComponentFixture<FlogoApplicationContainerComponent>,
@@ -31,7 +37,11 @@ describe('FlogoApplicationContainerComponent component', () => {
                 TranslateModule.forRoot({
                 provide: TranslateLoader,
                 useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-                deps: [Http]
+                deps: [Http],
+                Ng2Bs3ModalModule,
+                FlogoCoreModule,
+                FlogoCommonModule,
+                FlogoFlowsModule
             })],
             declarations: [ FlogoApplicationContainerComponent, ModalComponent,
                 FlogoApplicationSearch, FlogoApplicationFlowsComponent, FlogoApplicationComponent], // declare the test component

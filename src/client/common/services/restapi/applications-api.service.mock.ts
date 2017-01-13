@@ -52,13 +52,13 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
       super(_http);
   }
 
-  list() {
+  getAllApps() {
       return new Promise((resolve, reject)=> {
           resolve(this.mockApplications);
       });
   }
 
-  add()   {
+  createNewApp()   {
       let application:any = {
           id: this.mockApplications.length + 1,
           name: this.getNewAppName(UNTITLED_APP),
@@ -74,7 +74,7 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
       });
   }
 
-  delete(id:string)   {
+  deleteApp(id:string)   {
       _.remove(this.mockApplications, (n:IFlogoApplicationModel)=> {
           return n.id === id;
       });
@@ -84,7 +84,7 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
       });
   }
 
-  get(id:string)   {
+  getApp(id:string)   {
       let application = this.mockApplications.find((item)=> {
           return item.id == id;
       });

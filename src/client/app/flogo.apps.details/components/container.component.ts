@@ -3,7 +3,6 @@ import { ActivatedRoute, Params as RouteParams } from '@angular/router';
 import { IFlogoApplicationModel} from '../../../common/application.model';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
-import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/switch';
 import 'rxjs/add/operator/map';
 
@@ -28,7 +27,7 @@ export class FlogoApplicationContainerComponent implements  OnInit {
       this.route.params
       .map((params: RouteParams) =>  params['id'] )
       .subscribe((appId:string) => {
-        this.apiApplications.get(appId)
+        this.apiApplications.getApp(appId)
           .then((application: IFlogoApplicationModel) => {
             this.application = application;
           })
