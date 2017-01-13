@@ -1,6 +1,5 @@
-import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { By }              from '@angular/platform-browser';
-import { DebugElement }    from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA }    from '@angular/core';
 import { TranslateModule,  TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http } from '@angular/http';
@@ -15,16 +14,16 @@ import { FormsModule } from '@angular/forms';
 import {APP_BASE_HREF} from '@angular/common'
 import { Subject } from 'rxjs/Subject';
 
-import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-
 import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
+import { FlogoFlowsAdd } from '../../flogo.flows.add/components/add.component';
+import { PostService } from '../../../common/services/post.service';
+import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 
 describe('FlogoApplicationContainerComponent component', () => {
     let params: Subject<Params>;
-    let comp:    FlogoApplicationContainerComponent, fixture: ComponentFixture<FlogoApplicationContainerComponent>,
-        de:      DebugElement, el:      HTMLElement;
+    let comp:    FlogoApplicationContainerComponent, fixture: ComponentFixture<FlogoApplicationContainerComponent>;
     function createComponent() {
         return TestBed.compileComponents();
     }
@@ -38,18 +37,20 @@ describe('FlogoApplicationContainerComponent component', () => {
                 provide: TranslateLoader,
                 useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
                 deps: [Http],
-                Ng2Bs3ModalModule,
                 FlogoCoreModule,
                 FlogoCommonModule,
-                FlogoFlowsModule
+                  FlogoFlowsModule
             })],
             declarations: [ FlogoApplicationContainerComponent, ModalComponent,
-                FlogoApplicationSearch, FlogoApplicationFlowsComponent, FlogoApplicationComponent], // declare the test component
+                FlogoApplicationSearch, FlogoApplicationFlowsComponent, FlogoApplicationComponent, FlogoFlowsAdd], // declare the test component
             providers: [
                 {provide: RESTAPIApplicationsService, useClass: RESTAPIApplicationsServiceMock },
+              {provide: PostService, useClass: PostService },
+              {provide: RESTAPIFlowsService, useClass: RESTAPIFlowsService },
                 {provide: APP_BASE_HREF, useValue : '/' },
                 {provide: ActivatedRoute, useValue: { params: params }  }
-            ]
+            ],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA]
         });
 
     });
