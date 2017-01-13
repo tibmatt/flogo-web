@@ -4,7 +4,7 @@ import { IFlogoApplicationFlowModel } from '../../../common/application.model';
 
 
 @Component( {
-    selector: 'flogo-app-flows',
+    selector: 'flogo-apps-flows',
     moduleId: module.id,
     templateUrl: 'flows.tpl.html',
     styleUrls: [ 'flows.component.css' ]

@@ -18,20 +18,20 @@
         <p>{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}:</p>
         <ul>
             <li *ngFor="let item of recent">
-                {{item.application}}
+                {{item.app.name}}
                 <span class="glyphicon glyphicon-chevron-right"></span>
-                {{item.flow}}
+                {{item.name}}
             </li>
         </ul>
     </div>
 
     <div class="search">
-        <flogo-app-search [placeholder]="searchPlaceHolder" (changedSearch)="onChangedSearch($event)"
-                          class="search"></flogo-app-search>
+        <flogo-apps-search [placeholder]="searchPlaceHolder" (changedSearch)="onChangedSearch($event)"
+                           class="search"></flogo-apps-search>
     </div>
 
     <div class="flows">
-        <flogo-app-flows [flows]="flows"></flogo-app-flows>
+        <flogo-apps-flows [flows]="flows"></flogo-apps-flows>
     </div>
 
 

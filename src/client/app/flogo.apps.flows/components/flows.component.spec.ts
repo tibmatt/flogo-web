@@ -10,7 +10,7 @@
 //     selector: 'container',
 //     template: `
 //                 <div class="flows">
-//                     <flogo-app-flows [flows]="flows"></flogo-app-flows>
+//                     <flogo-apps-flows [flows]="flows"></flogo-apps-flows>
 //                 </div>
 //             `,
 //     directives: [FlogoApplicationFlowsComponent]

@@ -7,7 +7,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
 
 
 @Component( {
-    selector: 'flogo-main',
+    selector: 'flogo-apps-main',
     moduleId: module.id,
     templateUrl: 'main.tpl.html',
     styleUrls: [ 'main.component.css' ]

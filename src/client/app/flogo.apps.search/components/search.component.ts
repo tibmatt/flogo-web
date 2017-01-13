@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'flogo-app-search',
+    selector: 'flogo-apps-search',
     moduleId: module.id,
     templateUrl: 'search.tpl.html',
     styleUrls:['search.component.css']
