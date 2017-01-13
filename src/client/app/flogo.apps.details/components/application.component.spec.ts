@@ -109,7 +109,7 @@ describe('FlogoApplicationComponent component', () => {
             });
     });
 
-    xit("If updatedAt field is null,component will init passing the focus to the input name", (done)=> {
+    it("If updatedAt field is null,component will init passing the focus to the input name", (done)=> {
          createComponent()
              .then(()=> {
                  fixture = TestBed.createComponent(FlogoApplicationComponent);
