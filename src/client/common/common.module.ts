@@ -5,9 +5,9 @@ import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-tra
 import { Http, HttpModule as NgHttpModule } from '@angular/http'
 
 
-import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components'
-import { Contenteditable, JsonDownloader, DoFocusDirective } from './directives';
+import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components';
 import { TimeFromNowPipe } from './pipes';
+import { Contenteditable, JsonDownloader, AutofocusDirective } from './directives';
 import { LoadingIndicatorComponent } from "./components/loading-indicator.component";
 
 export function createTranslateLoader(http: Http) {
@@ -20,8 +20,8 @@ const ALL_MODULE_DECLARABLES = [
   Contenteditable,
   JsonDownloader,
   LoadingIndicatorComponent,
-  DoFocusDirective,
-  TimeFromNowPipe
+  AutofocusDirective,
+  TimeFromNowPipe,
 ];
 
 @NgModule({ // module dependencies

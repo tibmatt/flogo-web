@@ -1,7 +1,7 @@
 <div class="flogo-app-details-item">
     <div>
         <input *ngIf="editingName" type="text" #appInputName
-               doFocus
+               autofocus
                [(ngModel)]="application.name"
                (ngModelChange)="onInputNameChange($event)"
                (blur)="onInputNameBlur($event)"
@@ -18,7 +18,7 @@
         <a *ngIf="application && !application.description && editingDescription == false"
            (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
         <textarea *ngIf="editingDescription" #appInputDescription
-                  doFocus
+                  autofocus
                (blur)="onInputDescriptionBlur($event)"
                placeholder="Description"
                rows="3"
