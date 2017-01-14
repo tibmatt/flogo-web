@@ -4,7 +4,6 @@ import {Injectable} from '@angular/core';
 export class PostService{
 
   constructor(){
-    console.log("PostService");
     if(!postal){
       console.error("PostService is depended on postal, it seems you didn't load postal");
     }

@@ -1,9 +1,8 @@
-import { Component, Output, Input, SimpleChange, OnChanges , ViewChild, ElementRef, Renderer, EventEmitter } from '@angular/core';
-import { ActivatedRoute, Params as RouteParams } from '@angular/router';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
-import { timeString } from '../../../common/utils';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
+import { Component, Input, SimpleChange, OnChanges , ViewChild, ElementRef, EventEmitter } from '@angular/core';
+
 import { TranslateService } from 'ng2-translate/ng2-translate';
+
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 
 @Component({
     selector: 'flogo-app-details-item',
@@ -14,20 +13,16 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 export class FlogoApplicationComponent implements OnChanges {
     @ViewChild('appInputName') appInputName: ElementRef;
     @ViewChild('appInputDescription') appInputDescription: ElementRef;
-    @Output() onParamChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Input() application: IFlogoApplicationModel;
-    searchPlaceHolder:string = '';
+    searchPlaceHolder:string;
     createdAtFormatted: any;
     updateAtFormatted: any;
-    editingDescription: boolean = false;
-    editingName: boolean = false;
+    editingDescription: boolean;
+    editingName: boolean;
     flows: Array<IFlogoApplicationFlowModel> = [];
-    subscription: any;
-
 
     constructor(
-        public translate: TranslateService,
-        private renderer: Renderer,
+        public translate: TranslateService
     ) {
         this.searchPlaceHolder = this.translate.instant('DETAILS:SEARCH');
     }
@@ -60,6 +55,10 @@ export class FlogoApplicationComponent implements OnChanges {
 
 
   ngOnInit() {
+      this.editingDescription = false;
+      this.editingName = false;
+      this.searchPlaceHolder= '';
+      //this.flows = [];
   }
 
   getOriginalFlows() {

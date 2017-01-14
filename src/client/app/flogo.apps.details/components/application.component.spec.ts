@@ -1,14 +1,8 @@
 import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { By }              from '@angular/platform-browser';
-import { DebugElement }    from '@angular/core';
+import {  Component, DebugElement, EventEmitter }    from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Http } from '@angular/http';
-import { ActivatedRoute, Params, RouterModule } from '@angular/router';
-
-import {APP_BASE_HREF} from '@angular/common'
-
-import { Subject } from 'rxjs/Subject';
-
 import { TranslateModule,  TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 
@@ -19,19 +13,16 @@ import { FlogoApplicationContainerComponent } from './container.component';
 import { FlogoApplicationComponent } from './application.component';
 import { FlogoApplicationSearch } from '../../flogo.apps.search/components/search.component';
 import { FlogoApplicationFlowsComponent } from '../../flogo.apps.flows/components/flows.component';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-import { RESTAPIApplicationsServiceMock } from '../../../common/services/restapi/applications-api.service.mock';
 
 
-describe('FlogoApplicationComponent component', () => {
-    let params: Subject<Params>;
-    let comp:    FlogoApplicationComponent, fixture: ComponentFixture<FlogoApplicationComponent>,
-        de:      DebugElement, el:      HTMLElement;
-    function createComponent() {
-        return TestBed.compileComponents();
-    }
-
-    let application = {
+@Component({
+    selector: 'container',
+    template: `
+            <flogo-app-details-item [application]="application"></flogo-app-details-item>
+            `
+})
+class Container {
+    application = {
         id: "1",
         name: "Sample Application 1",
         version: "0.0.1",
@@ -60,12 +51,20 @@ describe('FlogoApplicationComponent component', () => {
         ]
     };
 
+}
+
+
+describe('FlogoApplicationComponent component', () => {
+    let application = null;
+    let comp:    Container, fixture: ComponentFixture<Container>;
+    function createComponent() {
+        return TestBed.compileComponents();
+    }
+
   beforeEach(() => {
-    params = new Subject<Params>();
     TestBed.configureTestingModule({
       imports: [FormsModule,
         Ng2Bs3ModalModule,
-        RouterModule.forRoot([]),
         TranslateModule.forRoot({
           provide: TranslateLoader,
           useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
@@ -77,227 +76,200 @@ describe('FlogoApplicationComponent component', () => {
         FlogoFlowsModule
       ],
       declarations: [
-        FlogoApplicationContainerComponent,
         FlogoApplicationSearch,
         FlogoApplicationFlowsComponent,
-        FlogoApplicationComponent
+        FlogoApplicationComponent,
+        Container,
       ], // declare the test component
-      providers: [
-        {provide: RESTAPIApplicationsService, useClass: RESTAPIApplicationsServiceMock},
-        {provide: APP_BASE_HREF, useValue: '/'},
-        {provide: ActivatedRoute, useValue: {params: params}}
-      ]
+      providers: []
     });
 
   });
 
-
     it('Should display the name correctly when the binding changes', (done)=> {
         createComponent()
             .then(() => {
-                fixture = TestBed.createComponent(FlogoApplicationComponent);
+                fixture = TestBed.createComponent(Container);
                 comp = fixture.componentInstance;
-
-                comp.application = application;
-                comp.editingName = true;
                 comp.application.name = 'Sample Application 2';
                 fixture.detectChanges();
 
-                let inputName = fixture.debugElement.query(By.css('#appName'));
-                expect(inputName.nativeElement.attributes['ng-reflect-model'].value).toEqual('Sample Application 2');
+                let inputName = fixture.debugElement.query(By.css('.applicationLabel'));
+                if(inputName) {
+                    expect(inputName.nativeElement.innerText).toEqual('Sample Application 2');
+                    done();
+                }
+
+            });
+    });
+
+
+    it('Should display creation date', (done) => {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
+
+                fixture.detectChanges();
+                let creation = fixture.debugElement.query(By.css('.created span'));
+                if(creation) {
+                    expect(creation.nativeElement.innerText).toEqual('a few seconds ago.');
+                    done();
+                }
+
+            });
+    });
+
+    it('Click on Add description should show description input field', (done) => {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
+
+                fixture.detectChanges();
+                let inputDescription;
+
+                // because description field is empty, anchor add description should be present
+                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                expect(addDescription).toBeDefined();
+
+                // input description doesn't should be present
+                inputDescription = fixture.debugElement.query(By.css('#appDescription'));
+                expect(inputDescription).toBeNull();
+
+                addDescription.nativeElement.click();
+                fixture.detectChanges();
+
+                // after click on add description, input appDescription should be present
+                inputDescription = fixture.debugElement.query(By.css('#appDescription'));
+                expect(inputDescription).toBeDefined();
                 done();
             });
     });
 
-    it("If updatedAt field is null,component will init passing the focus to the input name", (done)=> {
-         createComponent()
-             .then(()=> {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
 
-                 comp.application = application;
-                 comp.updateChanges();
+   it('When description field is empty, Add description link should be visible', (done) => {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
+                fixture.detectChanges();
 
-                 fixture.detectChanges();
-                 console.log(document.activeElement.id);
-                 expect(document.activeElement.id).toEqual('appName');
-                 done();
+                // because description field is empty, anchor add description should be present
+                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                if(addDescription) {
+                    expect(addDescription).toBeDefined();
+                    done();
+                }
+            });
+    });
 
-             })
-     });
+    it('When done editing description input, description should be visible as a label', (done) => {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
+                fixture.detectChanges();
 
-    it('Should display creation date', (done) => {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
+                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                if(addDescription) {
+                    addDescription.nativeElement.click();
+                    comp.application.description = 'A brief description';
+                    fixture.detectChanges();
 
-                 comp.application = application;
-                 comp.updateChanges();
+                    let inputDescription = fixture.debugElement.query(By.css('#appDescription'));
+                    inputDescription.nativeElement.blur();
+                    fixture.detectChanges();
 
-                 fixture.detectChanges();
-                 let creation = fixture.debugElement.query(By.css('.created span'));
-                 expect(creation.nativeElement.innerText).toEqual('a few seconds ago.');
-                 done();
+                    let labelDescription = fixture.debugElement.query(By.css('.descriptionLabel'));
+                    if(labelDescription) {
+                        expect(labelDescription.nativeElement.innerText.indexOf('A brief description')).not.toEqual(-1);
+                        done();
+                    }
+                }
+            });
+    });
 
-             });
-     });
+    it('When done editing name input, name should be visible as a label', (done) => {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
+                fixture.detectChanges();
 
-
-    it('Click on Add description should show description input field', (done) => {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
-
-
-                 comp.application = application;
-                 comp.updateChanges();
-
-                 fixture.detectChanges();
-                 let inputDescription;
-
-                 // because description field is empty, anchor add description should be present
-                 let addDescription = fixture.debugElement.query(By.css('.description > a'));
-                 expect(addDescription).toBeDefined();
-
-                 // input description doesn't should be present
-                 inputDescription = fixture.debugElement.query(By.css('#appDescription'));
-                 expect(inputDescription).toBeNull();
-
-                 addDescription.nativeElement.click();
-                 fixture.detectChanges();
-
-                 // after click on add description, input appDescription should be present
-                 inputDescription = fixture.debugElement.query(By.css('#appDescription'));
-                 expect(inputDescription).toBeDefined();
-                 done();
-             });
-     });
-
-     it('When description field is empty, Add description link should be visible', (done) => {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
-                 comp.application = application;
-                 comp.updateChanges();
-                 fixture.detectChanges();
-
-                 // because description field is empty, anchor add description should be present
-                 let addDescription = fixture.debugElement.query(By.css('.description > a'));
-                 expect(addDescription).toBeDefined();
-                 done();
-             });
-     });
+                let labelApp = fixture.debugElement.query(By.css('.applicationLabel'));
+                if(labelApp) {
+                    labelApp.nativeElement.click();
+                    comp.application.name = 'A cool application';
+                    fixture.detectChanges();
 
 
-     it('When done editing description input, description should be visible as a label', (done) => {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
-                 comp.application = application;
-                 comp.updateChanges();
-                 fixture.detectChanges();
+                    let inputName = fixture.debugElement.query(By.css('#appName'));
+                    if(inputName) {
+                        inputName.nativeElement.blur();
+                        fixture.detectChanges();
+                        let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
+                        expect(labelName.nativeElement.innerText).toEqual('A cool application');
+                        done();
+                    }
+                }
+            });
+    });
 
-                 let appDetails = fixture.componentInstance;
-                 appDetails.application.description = 'A brief description';
-                 appDetails.editingDescription = false;
-                 fixture.detectChanges();
+    it('When description field is not empty, Add description link should not be visible', (done) => {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
 
-                 let labelDescription = fixture.debugElement.query(By.css('.descriptionLabel'));
-                 let labelElement = labelDescription.nativeElement;
-                 expect(labelElement.innerText.indexOf('A brief description')).not.toEqual(-1);
-                 done();
+                fixture.detectChanges();
+                let appDetails = fixture.componentInstance;
+                appDetails.application.description = 'A brief description';
+                fixture.detectChanges();
 
-             });
-     });
+                // because description field is not empty, anchor add description should not be present
+                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                expect(addDescription).toBeNull();
+                done();
 
+            });
+    });
 
-     it('When done editing name input, name should be visible as a label', (done) => {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
-                 comp.application = application;
-                 comp.updateChanges();
-                 fixture.detectChanges();
+    it('Should render 3 flows', (done)=> {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
 
-                 let appDetails = fixture.componentInstance;
-                 appDetails.application.name = 'A cool application';
-                 appDetails.editingName = false;
-                 fixture.detectChanges();
+                fixture.detectChanges();
+                let flows = fixture.debugElement.queryAll(By.css('.flows-container > .flow'));
+                if(flows) {
+                    expect(flows.length).toEqual(3);
+                    done();
+                }
 
-                 let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
-                 let labelElement = labelName.nativeElement;
-                 expect(labelElement.innerText).toEqual('A cool application');
-                 done();
+            });
+    });
 
-             });
-     });
+    it("If updatedAt field is not null, the name of the component should be shown as a label", (done)=> {
+        createComponent()
+            .then(() => {
+                fixture = TestBed.createComponent(Container);
+                comp = fixture.componentInstance;
 
-     it('When description field is not empty, Add description link should not be visible', (done) => {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
+                comp.application.name = 'Untitled Application';
+                comp.application.updatedAt = new Date();
 
-                 comp.application = application;
-                 comp.updateChanges();
+                fixture.detectChanges();
 
-                     fixture.detectChanges();
-                     let appDetails = fixture.componentInstance;
-                     appDetails.application.description = 'A brief description';
-                     fixture.detectChanges();
+                let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
+                let labelElement = labelName.nativeElement;
+                if(labelElement) {
+                    expect(labelElement.innerText).toEqual('Untitled Application');
+                    done();
+                }
+            })
+    });
 
-                     // because description field is not empty, anchor add description should not be present
-                     let addDescription = fixture.debugElement.query(By.css('.description > a'));
-                     expect(addDescription).toBeNull();
-                     done();
-
-             });
-     });
-
-
-     it('Should render 3 flows', (done)=> {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
-
-                 comp.application = application;
-                 comp.updateChanges();
-
-                 fixture.detectChanges();
-                 let flows = fixture.debugElement.queryAll(By.css('.flows-container > .flow'));
-                 expect(flows.length).toEqual(3);
-                 done();
-
-             });
-     });
-
-     it("If updatedAt field is not null, the name of the component should be shown as a label", (done)=> {
-         createComponent()
-             .then(() => {
-                 fixture = TestBed.createComponent(FlogoApplicationComponent);
-                 comp = fixture.componentInstance;
-
-                 comp.application = application;
-                 comp.application.name = 'Untitled Application';
-                 comp.application.updatedAt = new Date();
-                 comp.updateChanges();
-
-                     fixture.detectChanges();
-                     //let appDetails = fixture.componentInstance;
-                     //appDetails.application.name = 'Untitled Application';
-                     //fixture.detectChanges();
-
-                     let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
-                     let labelElement = labelName.nativeElement;
-                     expect(labelElement.innerText).toEqual('Untitled Application');
-                     done();
-             })
-     });
 });
 

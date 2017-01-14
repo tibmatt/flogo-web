@@ -34,7 +34,6 @@ describe('Component: FlogoInstructions Modal', ()=> {
       .then(() => {
         fixture = TestBed.createComponent(FlogoInstructionsComponent);
         comp = fixture.componentInstance; // FlogoInstructionsComponent test instance
-        //console.log(comp);
         fixture.detectChanges();
         de = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
 
