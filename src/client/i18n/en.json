@@ -49,6 +49,7 @@
   "FLOGO:LINK-TRADEMARKS": "Trademarks",
   "FLOW-NAME:RENAME": "Rename flow",
   "FLOW-NAME:GETTING-FLOW-NAME": "Error getting flow name",
+  "FLOWS:ALL": "All Flows",
   "FLOWS:CREATED": "Created {{value}}",
   "FLOWS:CREATE_FLOW_ERROR": "An error occurred creating the flow",
   "FLOWS:ERROR-MESSAGE-IMPORT":"{{value}}",
