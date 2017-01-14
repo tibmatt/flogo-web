@@ -1,26 +1,30 @@
 <!--<div class="flogo-flows-container-box-add btn btn-default" (click)="modal.open()">-->
 <div class="flogo-common-flows-new-flow" (click)="modal.open()">
-    <i class="flogo-icon-add"></i>
-    <p class="flogo-common-flows-new-flow__text">{{ 'ADD:CREATE-NEW-FLOW' | translate }} </p>
+  <i class="flogo-icon-add"></i>
+  <p class="flogo-common-flows-new-flow__text">{{ 'ADD:CREATE-NEW-FLOW' | translate }} </p>
 </div>
-
 <modal [size]="'sm'" #modal>
+  <form novalidate [formGroup]="flow" (ngSubmit)="createFlow(flow)">
     <modal-header>
-        <h3>{{ 'ADD:CREATE-NEW-FLOW' | translate }}</h3>
+      <h3>{{ 'ADD:CREATE-NEW-FLOW' | translate }}</h3>
     </modal-header>
     <modal-body>
-        <div class="form-group">
-            <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
-            <input type="text" [(ngModel)]="flowInfo.name" class="form-control" id="flowName" (keyup)="onChangeFlowName($event)" placeholder="{{ translate.instant('ADD:GIVE-YOUR-FLOW-A-NAME') }}">
-            <label *ngIf="flowNameExists" for="flowName" class="flogo-flows-add-error">{{ 'ADD:FLOW-NAME-EXISTS' | translate }} </label>
-        </div>
-        <div class="form-group">
-            <label for="flowDescription" class="h4">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>
-            <textarea class="form-control" [(ngModel)]="flowInfo.description" rows="3" id="flowDescription" placeholder="{{ translate.instant('ADD:ADD-FLOW-DESCRIPTION') }}"></textarea>
-        </div>
+      <div class="form-group">
+        <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
+        <input type="text" class="form-control" id="flowName" formControlName="name" asyncValidator placeholder="{{ translate.instant('ADD:GIVE-YOUR-FLOW-A-NAME') }}">
+        <label *ngIf="flow.get('name').errors?.uniqueInvalid" for="flowName" class="flogo-flows-add-error">{{ 'ADD:FLOW-NAME-EXISTS' | translate}}</label>
+      </div>
+      <div class="form-group">
+        <label for="flowDescription" class="h4">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>
+        <textarea class="form-control" formControlName="description" rows="3" id="flowDescription" placeholder="{{ translate.instant('ADD:ADD-FLOW-DESCRIPTION') }}"></textarea>
+      </div>
     </modal-body>
     <modal-footer>
-        <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }} </button>
-        <button type="button" class="flogo-button--default flogo-flows-add-save" [ngClass]="{allowed: flowInfo.name&&!flowNameExists}" (click)="flowInfo.name&&sendAddFlowMsg()">{{ 'ADD:CREATE' | translate }} </button>
+      <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
+    </button>
+      <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="flow.invalid">
+            {{ 'ADD:CREATE' | translate }}
+    </button>
     </modal-footer>
+  </form>
 </modal>

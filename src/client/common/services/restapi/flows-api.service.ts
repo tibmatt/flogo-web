@@ -49,15 +49,14 @@ export class RESTAPIFlowsService{
   }
 
 
-  getFlowByName( flowName : string ) {
-        let headers = new Headers(
-            {
-                'Accept' : 'application/json'
-            }
-        );
-        let options = new RequestOptions( { headers : headers } );
-        return this.http.get('/v1/api/flows?name='+flowName, options ).toPromise()
+  getFlowByName(flowName: string) {
+    let headers = new Headers({ Accept: 'application/json' });
+    let options = new RequestOptions({ headers });
+    return this.http.get(`/v1/api/flows?name=${flowName}`, options)
+      .map((res: Response) => res.json())
+      .toPromise();
   }
+
   uploadFlow( process : any ) {
     //  upload current flow to process service server
 
