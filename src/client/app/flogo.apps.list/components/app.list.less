@@ -45,10 +45,9 @@
   }
 
   .applications {
-    height: calc(100% - 54px);
     overflow: auto;
     color: #fff;
-    margin: 0 auto;
+    margin: 0 -15px;
 
     ul {
       list-style-type: none;
@@ -61,28 +60,30 @@
       }
 
       li {
-        border-top: 1px solid #dcdbde;
-        //line-height: 2.3em;
+        border-top: 1px solid #d8d8d8;
+        font-size: 1em;
+        font-weight: bold;
+        letter-spacing: .5px;
         height: 50px;
         margin: 0 @margin-top;
         padding-top: @margin-top;
+        padding-left: @margin-top;
+        &:hover{
+          color: #fff;
+          background-color: #7ab8dd;
+          border-top: 0;
+          cursor: pointer;
+          margin: 0;
+          padding-left: 30px;
+        }
       }
 
       .selected {
         background-color: #7ab8dd;
         font-weight: bold;
-        padding-left: 15px;
+        padding-left: 30px;
         margin: 0;
         border-top: 0;
-      }
-
-      li:hover {
-        color: #fff;
-        background-color: #7ab8dd;
-        border-top: 0;
-        padding-left: 15px;
-        cursor: pointer;
-        margin: 0;
       }
 
       li > span {
