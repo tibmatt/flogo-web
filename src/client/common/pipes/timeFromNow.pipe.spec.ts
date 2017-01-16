@@ -35,4 +35,15 @@ describe('Pipe: timeFromNow', () => {
     done();
   });
 
+  it('Changing the dateCreated should update the text', done => {
+    fixture = TestBed.createComponent(Container);
+    container = fixture.componentInstance;
+    container.dateCreated.setHours(container.dateCreated.getHours() - 1);
+    fixture.detectChanges();
+    let de = fixture.debugElement.query(By.css('span'));
+    let elText = de.nativeElement.innerHTML;
+    expect(elText).toEqual('an hour ago');
+    done();
+  });
+
 });
