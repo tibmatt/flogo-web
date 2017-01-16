@@ -2,33 +2,40 @@
 @width-inputs: 60%;
 
 .flogo-app-details-item {
-  color: #bbbcbe;
+  color: #666;
   margin-left: 20px;
 
-  a {
-    color: #269ed8;
-    display: block;
+  .flogo-app-details__header {
+    margin-left: -35px;
+    padding: 2em 0;
+    background: #fff;
+
+    .flogo-app-details__header__name {
+      font-size: 1.5em;
+      letter-spacing: .4px;
+      font-weight: normal;
+    }
+
+    .flogo-app-details__header__creation-date, .flogo-app-details__header__description {
+      font-size: 0.875em;
+      letter-spacing: .2px;
+      line-height: 1.14;
+    }
+
+    .flogo-app-details__header__description-container {
+      margin-top: 22px;
+    }
+
   }
+
+  .flogo-app-details-btn {
+    min-width: 124px;
+    height: 40px;
+  }
+
   .applicationLabel, .descriptionLabel {
     cursor: pointer;
   }
-
-  input,
-  .applicationLabel {
-    font-size: 2em;
-    width: @width-inputs;
-  }
-
-  textarea {
-    width: @width-inputs;
-  }
-
-  input, textarea {
-    font-size: 1.5em;
-    color: #000;
-    outline-style: none;
-  }
-
 
   .descriptionLabel {
     font-size: 1.3em;
@@ -37,68 +44,17 @@
     }
   }
 
-  .build  {
-    float: right;
-    margin-right: 80px;
-  }
-
-  .created {
-  }
-
-  .description {
-    margin-top: 10px;
-  }
-
-  .toolbar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-right: 80px;
-    margin-top: 10px;
-
-    .search {
+  .flogo-app-details__toolbar {
+    margin-top: 2em;
+    .flogo-app-details__toolbar__title {
+      font-size: 1.125em;
+      line-height: 1;
+      letter-spacing: .3px;
     }
-
-    .commands {
-      color: @action-fore-color;
-
-      span {
-        cursor: pointer;
-      }
-
-      span:nth-of-type(2) {
-        border-left: 1px solid #d2d4d5;
-        margin-left: 20px;
-        padding-left: 28px;
-      }
-
-      span:before {
-        left: -5px;
-        font-family: "Glyphicons Halflings";
-        position: relative;
-        top: 2px;
-        color:@action-fore-color;
-        cursor: pointer;
-      }
-
-      .import:before {
-        content: "\e167";
-      }
-
-      .new-flow:before {
-        content: "\2b";
-      }
-
-    }
-  }
-
-  hr {
-    border-top: 1px solid #d1d3d4;
-    margin-right: 60px;
   }
 
   .action {
-    color:@action-fore-color;
+    color: @action-fore-color;
     cursor: pointer;
   }
 
