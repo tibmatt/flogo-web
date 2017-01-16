@@ -48,9 +48,11 @@
                            class="search"></flogo-apps-search>
       </div>
     </div>
-      <div class="commands col-md-4">
+    <div class="commands row">
+      <div class="col-md-4">
         <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
       </div>
+    </div>
 
     <div *ngIf="!flows.length">
       <hr>
