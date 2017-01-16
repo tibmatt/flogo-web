@@ -1,31 +1,25 @@
-import { Component, Input, AfterViewInit, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationFlowModel } from '../../../common/application.model';
 
+import { IFlogoApplicationFlowModel as FlowModel } from './../../../common/application.model';
 
-@Component( {
-    selector: 'flogo-apps-flows',
-    moduleId: module.id,
-    templateUrl: 'flows.tpl.html',
-    styleUrls: [ 'flows.component.css' ]
-} )
-export class FlogoApplicationFlowsComponent implements AfterViewInit, OnInit  {
-    @Input() flows: Array<IFlogoApplicationFlowModel> = [];
+@Component({
+  selector: 'flogo-apps-flows',
+  moduleId: module.id,
+  templateUrl: 'flows.tpl.html',
+  styleUrls: ['flows.component.css']
+})
+export class FlogoApplicationFlowsComponent {
+  @Input()
+  public flows: Array<FlowModel> = [];
+  @Output()
+  public flowSelected: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
 
-    constructor(
-        public translate: TranslateService
-    ) {
-    }
+  constructor(public translate: TranslateService) {
+  }
 
-    ngOnInit() {
-    }
+  select(flow: FlowModel) {
+    this.flowSelected.emit(flow);
+  }
 
-
-    ngAfterViewInit() {
-    }
-
-    formatDate(date) {
-        return moment(date).format('MM-DD-YYYY');
-    }
-''
 }

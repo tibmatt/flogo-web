@@ -4,6 +4,11 @@ import { Directive, forwardRef } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
+import takeUntil from 'rxjs';
+import take from 'rxjs';
+import debounceTime from 'rxjs';
+import switchMap from 'rxjs';
+
 export class UniqueNameValidator {
 
   static make(flowsService: RESTAPIFlowsService): AsyncValidatorFn {

@@ -116,7 +116,7 @@ export class RESTAPIFlowsService{
       );
   }
 
-  importFlow( importFile : File, flowName:string ) {
+  importFlow( importFile : File, appId : string, flowName?:string ) {
     return new Promise( ( resolve, reject ) => {
       var formData = new FormData();
       var xhr = new XMLHttpRequest();
@@ -139,7 +139,7 @@ export class RESTAPIFlowsService{
           }
         }
       };
-      let url = '/v1/api/flows/upload' + (flowName ? '?name='+ flowName : '') ;
+      let url = `/v1/api/flows/upload?appId=${appId}` + (flowName ? '&name='+ flowName : '') ;
 
       xhr.open( 'POST', url, true );
       xhr.send( formData );

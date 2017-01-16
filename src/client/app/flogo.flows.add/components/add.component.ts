@@ -18,8 +18,6 @@ import { UniqueNameValidator } from './../validators/unique-name.validator';
     styleUrls: ['add.component.css']
 })
 export class FlogoFlowsAdd {
-  @Input()
-  public appId: string;
   @ViewChild('modal')
   public modal: ModalComponent;
   public flow: FormGroup;

@@ -32,3 +32,4 @@ describe('Directive: autofocus', () => {
     done();
   });
 
+});

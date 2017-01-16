@@ -1,8 +1,9 @@
-import { Component, Input, SimpleChange, OnChanges , ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Component, Input, Output, SimpleChange, OnChanges , ViewChild, ElementRef, EventEmitter } from '@angular/core';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
+import { notification } from '../../../common/utils';
 
 @Component({
     selector: 'flogo-app-details-item',
@@ -14,6 +15,10 @@ export class FlogoApplicationComponent implements OnChanges {
     @ViewChild('appInputName') appInputName: ElementRef;
     @ViewChild('appInputDescription') appInputDescription: ElementRef;
     @Input() application: IFlogoApplicationModel;
+    @Output()
+    public flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
+    @Output()
+    public flowAdded: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
     searchPlaceHolder:string;
     editingDescription: boolean;
     editingName: boolean;
@@ -37,13 +42,7 @@ export class FlogoApplicationComponent implements OnChanges {
 
     updateChanges() {
         this.flows = this.getOriginalFlows();
-
-
-        if (this.application.updatedAt == null) {
-            this.editingName = true;
-        } else {
-            this.editingName = false;
-        }
+        this.editingName = this.application.updatedAt == null;
     }
 
 
@@ -108,6 +107,25 @@ export class FlogoApplicationComponent implements OnChanges {
         }else {
             this.flows = this.getOriginalFlows();
         }
+    }
+
+    onFlowSelected(flow) {
+      this.flowSelected.emit(flow);
+    }
+
+    onFlowImportSuccess( result : any ) {
+      let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-IMPORT');
+      notification( message, 'success', 3000 );
+      this.flowAdded.emit(result);
+    }
+
+    onFlowImportError( err : {
+      status : string;
+      statusText : string;
+      response : any
+    } ) {
+    let message = this.translate.instant('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
+      notification( message, 'error' );
     }
 
 }
