@@ -15,8 +15,6 @@ export class FlogoApplicationComponent implements OnChanges {
     @ViewChild('appInputDescription') appInputDescription: ElementRef;
     @Input() application: IFlogoApplicationModel;
     searchPlaceHolder:string;
-    createdAtFormatted: any;
-    updateAtFormatted: any;
     editingDescription: boolean;
     editingName: boolean;
     flows: Array<IFlogoApplicationFlowModel> = [];
@@ -40,16 +38,11 @@ export class FlogoApplicationComponent implements OnChanges {
     updateChanges() {
         this.flows = this.getOriginalFlows();
 
-        let timeStr = this.application.createdAt;
-        this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
-
 
         if (this.application.updatedAt == null) {
             this.editingName = true;
-            this.updateAtFormatted = null;
         } else {
             this.editingName = false;
-            this.updateAtFormatted = moment(this.application.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
         }
     }
 

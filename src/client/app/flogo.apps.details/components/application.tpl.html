@@ -12,8 +12,8 @@
                (click)="onClickLabelName($event)">{{application?.name}}</label>
         <button class="btn btn-primary btn-md build">{{ 'DETAILS:BUILD' | translate }}</button>
     </div>
-    <label class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}.</span> </label>
-    <label *ngIf="updateAtFormatted" class="created">{{ 'FLOWS:UPDATED' | translate:{value:''} }}<span>{{updateAtFormatted}}.</span> </label>
+    <label class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span> </label>
+    <label *ngIf="application && application.updatedAt" class="created">{{ 'FLOWS:UPDATED' | translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
     <div class="description">
         <a *ngIf="application && !application.description && editingDescription == false"
            (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
