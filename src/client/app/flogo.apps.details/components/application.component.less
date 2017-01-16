@@ -11,6 +11,7 @@
     background: #fff;
 
     .flogo-app-details__header__name {
+      margin-top: .3em;
       font-size: 1.5em;
       letter-spacing: .4px;
       font-weight: normal;
@@ -58,4 +59,21 @@
     cursor: pointer;
   }
 
+  .error-msg{
+    display: none;
+  }
+
+  .error{
+    color: #ee3342;
+    position: relative;
+    .error-msg{
+      position: absolute;
+      display: block;
+      font-size: .625em;
+      letter-spacing: .2px;
+    }
+    .flogo-app-details__header__name{
+      color: #ee3342;
+    }
+  }
 }

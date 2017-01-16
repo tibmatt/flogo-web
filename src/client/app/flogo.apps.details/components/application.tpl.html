@@ -1,7 +1,8 @@
 <div class="flogo-app-details-item">
   <div class="flogo-app-details__header row">
     <div class="col-sm-8 col-md-offset-1">
-      <div class="flogo-app-details__header__name-container">
+      <div class="flogo-app-details__header__name-container error">
+        <span class="error-msg">Name already exist</span>
         <input *ngIf="editingName" type="text" #appInputName
                [(ngModel)]="application.name"
                (ngModelChange)="onInputNameChange($event)"
