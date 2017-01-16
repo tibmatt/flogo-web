@@ -780,3 +780,13 @@ export function timeString(date) {
 export function toDouble(num:number) {
   return num > 9? num: '0' + num;
 }
+
+export function getDiffSecondBetweenDates(beginDate:any, endDate:any) {
+  if(beginDate == null || endDate == null) {
+    return 0;
+  }
+  var a = moment(beginDate);
+  var b = moment(endDate);
+
+  return a.diff(b) / 1000;
+}

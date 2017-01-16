@@ -3,6 +3,9 @@ import { Component, Input, SimpleChange, OnChanges , ViewChild, ElementRef, Even
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
+import { getDiffSecondBetweenDates } from '../../../common/utils';
+
+const MAX_SECONDS_TO_ASK_FLOW_NAME = 5;
 
 @Component({
     selector: 'flogo-app-details-item',
@@ -37,13 +40,8 @@ export class FlogoApplicationComponent implements OnChanges {
 
     updateChanges() {
         this.flows = this.getOriginalFlows();
-
-
-        if (this.application.updatedAt == null) {
-            this.editingName = true;
-        } else {
-            this.editingName = false;
-        }
+        let seconds = getDiffSecondBetweenDates(Date.now(), this.application.updatedAt);
+        this.editingName = seconds <= MAX_SECONDS_TO_ASK_FLOW_NAME;
     }
 
 
@@ -51,7 +49,6 @@ export class FlogoApplicationComponent implements OnChanges {
       this.editingDescription = false;
       this.editingName = false;
       this.searchPlaceHolder= '';
-      //this.flows = [];
   }
 
   getOriginalFlows() {
