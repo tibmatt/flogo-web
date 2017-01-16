@@ -64,13 +64,39 @@
           }
         }
 
-        .options {
+        .menu {
           position: absolute;
           right: 15px;
           margin-top: 1em;
-          .menu {
+
+          .menu__options {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            width: 129px;
+            height: 94px;
+            border-radius: 2px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+            top: 0;
+            left: 15px;
+            animation: grow 300ms ease-in;
+            .menu__options__list {
+              list-style: none;
+            }
             &:hover {
+              ~ .menu__btn {
+                color: #79b8dc;
+              }
+            }
+          }
+
+          &:hover {
+            .menu__btn {
               color: #79b8dc;
+            }
+            .menu__options {
+              display: block;
             }
           }
         }
@@ -101,4 +127,20 @@
     }
   }
 
+}
+
+@keyframes grow {
+  0%{
+    color: transparent;
+    width: 0;
+    height: 0;
+  }
+  90%{
+    color: transparent;
+    width: 129px;
+    height: 94px;
+  }
+  100%{
+    color: #666;
+  }
 }
