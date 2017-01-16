@@ -29,6 +29,7 @@
   "CANVAS:X86-LINUX": "x86/Linux",
   "CATEGORY-SELECTOR:CATEGORY": "CATEGORY",
   "DETAILS:ADD-DESCRIPTION": "Add description",
+  "DETAILS:FLOWS": "Flows",
   "DETAILS:IMPORT": "Import",
   "DETAILS:DESCRIPTION": "Description",
   "DETAILS:NEW-FLOW": "New flow",
