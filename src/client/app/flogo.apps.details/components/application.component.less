@@ -14,7 +14,10 @@
       margin-top: .3em;
       font-size: 1.5em;
       letter-spacing: .4px;
-      font-weight: normal;
+    }
+    .flogo-app-details__header__name--edit {
+      font-size: 1.5em;
+      width: 100%;
     }
 
     .flogo-app-details__header__creation-date, .flogo-app-details__header__description {
@@ -25,6 +28,11 @@
 
     .flogo-app-details__header__description-container {
       margin-top: 22px;
+      .flogo-app-details__header__description--edit{
+        font-size: .875em;
+        width: 100%;
+        resize: none;
+      }
     }
 
   }
@@ -80,14 +88,15 @@
     display: none;
   }
 
-  .error {
+  .flogo-input-error {
     color: #ee3342;
     position: relative;
-    .error-msg {
+    .flogo-input-error-msg {
       position: absolute;
       display: block;
       font-size: .625em;
       letter-spacing: .2px;
+      top: -15px;
     }
     .flogo-app-details__header__name {
       color: #ee3342;

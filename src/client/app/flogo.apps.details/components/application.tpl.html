@@ -1,8 +1,7 @@
 <div class="flogo-app-details-item">
   <div class="flogo-app-details__header row">
     <div class="col-sm-8 col-md-offset-1">
-      <div class="flogo-app-details__header__name-container error">
-        <span class="error-msg">Name already exist</span>
+      <div class="flogo-app-details__header__name-container">
         <input *ngIf="editingName" type="text" #appInputName
                [(ngModel)]="application.name"
                (ngModelChange)="onInputNameChange($event)"
@@ -23,9 +22,7 @@
         <a *ngIf="application && !application.description && editingDescription == false" class="flogo-link"
            (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
         <textarea *ngIf="editingDescription" #appInputDescription
-                  (blur)="onInputDescriptionBlur($event)"
-                  placeholder="Description"
-                  rows="3"
+                  (blur)="onInputDescriptionBlur($event)" placeholder="Description" rows="2"
                   (keyup)="onKeyUpDescription($event)"
                   id="appDescription" class="flogo-app-details__header__description--edit"
                   [(ngModel)]="application.description"></textarea>
