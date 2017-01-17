@@ -49,9 +49,13 @@
                            class="search"></flogo-apps-search>
       </div>
     </div>
-    <div class="commands row">
+
+    <div class="row">
       <div class="col-md-4">
-        <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+        <div class="commands">
+          <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+          <flogo-flows-import></flogo-flows-import>
+        </div>
       </div>
     </div>
 

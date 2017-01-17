@@ -29,6 +29,26 @@
 
   }
 
+  .flogo-app-details__content {
+    .commands {
+      display: flex;
+      border: dashed 3px #ccc;
+      padding: 0;
+      margin: 2em 0;
+      position: relative;
+      &:before {
+        content: "";
+        position: absolute;
+        width: 3px;
+        height: 73%;
+        background: #ccc;
+        left: 50%;
+        bottom: 16%;
+        z-index: 1;
+      }
+    }
+  }
+
   .flogo-app-details-btn {
     min-width: 124px;
     height: 40px;
@@ -59,20 +79,20 @@
     cursor: pointer;
   }
 
-  .error-msg{
+  .error-msg {
     display: none;
   }
 
-  .error{
+  .error {
     color: #ee3342;
     position: relative;
-    .error-msg{
+    .error-msg {
       position: absolute;
       display: block;
       font-size: .625em;
       letter-spacing: .2px;
     }
-    .flogo-app-details__header__name{
+    .flogo-app-details__header__name {
       color: #ee3342;
     }
   }
