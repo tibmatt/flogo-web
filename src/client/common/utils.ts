@@ -788,7 +788,7 @@ export function toDouble(num:number) {
  * @param endDate: Final date
  * @param timeUnit: Measurement unit
  */
-export function diffDates(beginDate:any, endDate:any, timeUnit:string) {
+export function diffDates(beginDate:any, endDate:any, timeUnit:any) {
   let begin = moment(beginDate);
   let end  = moment(endDate);
 
