@@ -9,7 +9,7 @@
                (blur)="onInputNameBlur($event)"
                (keyup)="onKeyUpName($event)"
                id="appName" class="flogo-app-details__header__name--edit"/>
-        <label class="flogo-app-details__header__name applicationLabel"
+        <label class="flogo-app-details__header__name is-clickable"
                *ngIf="!editingName"
                (click)="onClickLabelName($event)">{{application?.name}}</label>
       </div>
@@ -29,7 +29,7 @@
                   (keyup)="onKeyUpDescription($event)"
                   id="appDescription" class="flogo-app-details__header__description--edit"
                   [(ngModel)]="application.description"></textarea>
-        <label class="flogo-app-details__header__description descriptionLabel"
+        <label class="flogo-app-details__header__description is-clickable"
                *ngIf="!editingDescription && application?.description"
                (click)="onClickLabelDescription($event)">{{application?.description}}</label>
       </div>
@@ -61,11 +61,10 @@
 
     <div *ngIf="!flows.length">
       <hr>
-      <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}<span
-        class="action">&nbsp;{{'DETAILS:CREATE-A-FLOW' | translate}}</span></p>
+      <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}</p>
     </div>
 
-    <div class="flows">
+    <div class="flogo-app-details__content__flows">
       <flogo-apps-flows [flows]="flows"></flogo-apps-flows>
     </div>
 
