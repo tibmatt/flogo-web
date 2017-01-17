@@ -90,6 +90,7 @@ export class AppsManager {
 
         return validate(app).then(() => {
           app = build(app);
+          app.updatedAt = (new Date()).toISOString();
           return appsDBService.db
             .put(app)
             .then(saveResponse => AppsManager.findOne(saveResponse.id));
@@ -309,7 +310,7 @@ function build(app) {
   return defaults(
     { normalizedName: kebabCase(app.name).trim() },
     app,
-    { updatedAt: now, createdAt: now, version: null },
+    { createdAt: now, updatedAt: null, version: null },
   );
 }
 

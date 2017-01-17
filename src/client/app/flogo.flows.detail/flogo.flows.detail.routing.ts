@@ -11,7 +11,7 @@ import { FlogoFlowsDetailTasksDetail } from '../flogo.flows.detail.tasks.detail/
 import { FlogoLogs } from '../flogo.logs/components/logs.component';
 import { FlogoCanvasComponent } from "./components/canvas.component";
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'flows/:id',
     component: FlogoCanvasComponent,

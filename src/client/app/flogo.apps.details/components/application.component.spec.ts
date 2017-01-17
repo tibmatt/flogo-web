@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { By }              from '@angular/platform-browser';
-import {  Component, DebugElement, EventEmitter }    from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, DebugElement, EventEmitter, NO_ERRORS_SCHEMA }    from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Http } from '@angular/http';
 import { TranslateModule,  TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
@@ -63,7 +63,9 @@ describe('FlogoApplicationComponent component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule,
+      imports: [
+        //FormsModule,
+        //ReactiveFormsModule,
         Ng2Bs3ModalModule,
         TranslateModule.forRoot({
           provide: TranslateLoader,
@@ -81,7 +83,8 @@ describe('FlogoApplicationComponent component', () => {
         FlogoApplicationComponent,
         Container,
       ], // declare the test component
-      providers: []
+      providers: [],
+        schemas: [ NO_ERRORS_SCHEMA ]
     });
 
   });

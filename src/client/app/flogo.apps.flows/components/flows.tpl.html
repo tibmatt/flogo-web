@@ -1,6 +1,6 @@
 <div class="flogo-app-flows">
     <div class="flows-container">
-        <div *ngFor="let flow of flows" class="flow">
+        <div *ngFor="let flow of flows" class="flow" (click)="select(flow)">
            <div class="trigger-info">
                <img src="/assets/svg/flogo.flows.detail.diagram.trigger.icon.svg" alt="Trigger">
            </div>
@@ -8,7 +8,7 @@
                <div class="header">
                    <div class="title">{{flow.name}}</div>
                    <div class="options">
-                       <span>{{ 'FLOWS:CREATED' | translate:{value:''} }} {{formatDate(flow.created_at)}}</span>
+                       <span>{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.created_at | date }}</span>
                        <span class="glyphicon glyphicon-option-vertical menu"> </span>
                    </div>
                </div>

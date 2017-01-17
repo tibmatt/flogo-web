@@ -56,15 +56,14 @@ export class RESTAPIFlowsService{
   }
 
 
-  getFlowByName( flowName : string ) {
-        let headers = new Headers(
-            {
-                'Accept' : 'application/json'
-            }
-        );
-        let options = new RequestOptions( { headers : headers } );
-        return this.http.get('/v1/api/flows?name='+flowName, options ).toPromise()
+  getFlowByName(flowName: string) {
+    let headers = new Headers({ Accept: 'application/json' });
+    let options = new RequestOptions({ headers });
+    return this.http.get(`/v1/api/flows?name=${flowName}`, options)
+      .map((res: Response) => res.json())
+      .toPromise();
   }
+
   uploadFlow( process : any ) {
     //  upload current flow to process service server
 
@@ -124,7 +123,7 @@ export class RESTAPIFlowsService{
       );
   }
 
-  importFlow( importFile : File, flowName:string ) {
+  importFlow( importFile : File, appId : string, flowName?:string ) {
     return new Promise( ( resolve, reject ) => {
       var formData = new FormData();
       var xhr = new XMLHttpRequest();
@@ -147,7 +146,7 @@ export class RESTAPIFlowsService{
           }
         }
       };
-      let url = '/v1/api/flows/upload' + (flowName ? '?name='+ flowName : '') ;
+      let url = `/v1/api/flows/upload?appId=${appId}` + (flowName ? '&name='+ flowName : '') ;
 
       xhr.open( 'POST', url, true );
       xhr.send( formData );
