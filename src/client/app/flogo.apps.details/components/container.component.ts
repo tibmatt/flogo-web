@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
@@ -17,7 +17,7 @@ import 'rxjs/add/operator/map';
   templateUrl: 'container.tpl.html',
   styleUrls: []
 })
-export class FlogoApplicationContainerComponent implements OnInit {
+export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   public application: IFlogoApplicationModel = null;
   private subscriptions: any;
 
@@ -40,6 +40,14 @@ export class FlogoApplicationContainerComponent implements OnInit {
       });
   }
 
+  public ngOnDestroy() {
+    // cancel subscribtions
+    _.each(this.subscriptions, sub => {
+        this.postService.unsubscribe(sub);
+      }
+    );
+  }
+
   public onFlowSelected(flow) {
     console.log('onFlowSelected', flow);
     this.router.navigate(['/flows', flogoIDEncode(flow.id)]);
@@ -50,9 +58,9 @@ export class FlogoApplicationContainerComponent implements OnInit {
   }
 
   private initSubscribe() {
-    this.subscriptions = this.postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, {
-      callback: this.onAddFlow.bind(this)
-    }));
+    this.subscriptions = [
+      this.postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, { callback: this.onAddFlow.bind(this) }))
+    ]
   }
 
   private onAddFlow(data: any) {
