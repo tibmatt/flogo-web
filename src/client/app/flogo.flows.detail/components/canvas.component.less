@@ -1,4 +1,8 @@
 @import "_variables";
+
+@flogo-flow-detail-header-selected-color:#1573ca;
+@flogo-flow-detail-header-unselected-color:#666666;
+
 :host {
   display: flex;
   align-items: stretch;
@@ -75,35 +79,6 @@
 .flogo-flow-detail {
   background-color: #FAFAFA;
 }
-
-/*
-.flogo-flow-detail-header {
-  padding: 20px 0 30px 30px;
-
-  .flogo-flow-detail-header-back {
-    display: flex;
-    flex-direction: row;
-
-    .flogo-flow-detail-header-back-icon {
-      cursor: pointer;
-      height: 20px;
-      width: 20px;
-      margin-top: 10px;
-      &.mouse-over {
-        background: url("/assets/svg/up.svg") left top no-repeat;
-      }
-      &.mouse-out {
-        background: url("/assets/svg/up-disabled.svg") left top no-repeat;
-      }
-    }
-
-    .flogo-flow-detail-header-back-app-name {
-      color: red;
-    }
-
-  }
-}
-*/
 
 .flogo-flow-detail-name {
   font-size: 24px;
@@ -277,6 +252,7 @@
   }
 }
 
+
 .flogo-flow-detail-header {
   padding: 20px 0 30px 30px;
 
@@ -288,17 +264,24 @@
       cursor: pointer;
       width: 20px;
       margin-top: 10px;
+
+      li {
+        font-size: 30px;
+        position: absolute;
+        top: 20px;
+      }
+
       &.mouse-over {
-        background: url("/assets/svg/up.svg") left top no-repeat;
+        color: @flogo-flow-detail-header-selected-color;
       }
       &.mouse-out {
-        background: url("/assets/svg/up-disabled.svg") left top no-repeat;
+        color: @flogo-flow-detail-header-unselected-color;
       }
     }
 
     .flogo-flow-detail-header-back-app-name {
       cursor: pointer;
-      color: #1573ca;
+      color: @flogo-flow-detail-header-selected-color;
       &.mouse-over {
         text-decoration: underline;
       }
