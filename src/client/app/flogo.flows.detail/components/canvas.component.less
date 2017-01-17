@@ -76,9 +76,34 @@
   background-color: #FAFAFA;
 }
 
+/*
 .flogo-flow-detail-header {
   padding: 20px 0 30px 30px;
+
+  .flogo-flow-detail-header-back {
+    display: flex;
+    flex-direction: row;
+
+    .flogo-flow-detail-header-back-icon {
+      cursor: pointer;
+      height: 20px;
+      width: 20px;
+      margin-top: 10px;
+      &.mouse-over {
+        background: url("/assets/svg/up.svg") left top no-repeat;
+      }
+      &.mouse-out {
+        background: url("/assets/svg/up-disabled.svg") left top no-repeat;
+      }
+    }
+
+    .flogo-flow-detail-header-back-app-name {
+      color: red;
+    }
+
+  }
 }
+*/
 
 .flogo-flow-detail-name {
   font-size: 24px;
@@ -249,5 +274,35 @@
         transform: rotate(-45deg);
       }
     }
+  }
+}
+
+.flogo-flow-detail-header {
+  padding: 20px 0 30px 30px;
+
+  .flogo-flow-detail-header-back {
+    display: flex;
+    flex-direction: row;
+
+    .flogo-flow-detail-header-back-icon {
+      cursor: pointer;
+      width: 20px;
+      margin-top: 10px;
+      &.mouse-over {
+        background: url("/assets/svg/up.svg") left top no-repeat;
+      }
+      &.mouse-out {
+        background: url("/assets/svg/up-disabled.svg") left top no-repeat;
+      }
+    }
+
+    .flogo-flow-detail-header-back-app-name {
+      cursor: pointer;
+      color: #1573ca;
+      &.mouse-over {
+        text-decoration: underline;
+      }
+    }
+
   }
 }

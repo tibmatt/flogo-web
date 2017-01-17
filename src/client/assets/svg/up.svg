@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="9px" height="16px" viewBox="0 0 9 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>FCE5F41C-1008-49A4-8003-2BB04617DE7E</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <polygon id="path-1" points="0 15.9796414 8.86363636 15.9796414 8.86363636 5.51724133e-05 0 5.51724133e-05"></polygon>
+    </defs>
+    <g id="All-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Flogo_Hover-and-Add-Task" transform="translate(-50.000000, -92.000000)">
+            <g id="flow-title" transform="translate(0.000000, 65.000000)">
+                <g id="up" transform="translate(50.000000, 27.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Clip-2"></g>
+                    <path d="M8.04545455,15.9796414 C7.83872727,15.9796414 7.632,15.9010207 7.47272727,15.7432276 L0.245454545,8.58102069 C0.0883636364,8.42543448 0,8.21246897 0,7.98984828 C0,7.76722759 0.0883636364,7.55453793 0.245454545,7.39895172 L7.47272727,0.236468966 C7.79590909,-0.0835310345 8.31409091,-0.0780137931 8.62990909,0.248331034 C8.94627273,0.574675862 8.94081818,1.09881379 8.61818182,1.41853793 L1.98736364,7.98984828 L8.61818182,14.5608828 C8.94081818,14.8808828 8.94627273,15.4047448 8.62990909,15.7313655 C8.46981818,15.8966069 8.25736364,15.9796414 8.04545455,15.9796414" id="Fill-1" fill="#79B8DC" mask="url(#mask-2)"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

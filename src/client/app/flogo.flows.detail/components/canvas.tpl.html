@@ -5,10 +5,23 @@
     <section class="flogo-flow-detail">
 
       <header class="flogo-flow-detail-header col-sm-9">
-        <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
-        <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
-           placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
-           (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+        <div class="flogo-flow-detail-header-back">
+          <div [ngClass]="{'flogo-flow-detail-header-back-icon':true,'mouse-over':backControlOver, 'mouse-out':!backControlOver}"
+               (mouseover)="onMouseOverBackControl()"
+               (mouseout)="onMouseOutBackControl()"
+               (click)="navigateToApp()">
+          </div>
+          <div class="">
+            <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
+              <span>in</span> <span (click)="navigateToApp()"
+                       [ngClass]="{'flogo-flow-detail-header-back-app-name':true, 'mouse-over': backControlOver}"
+                       (mouseover)="onMouseOverBackControl()"
+                       (mouseout)="onMouseOutBackControl()">{{flow.application.name}}</span>
+            <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
+            placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
+            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+          </div>
+        </div>
       </header>
 
 

@@ -41,8 +41,15 @@ export class RESTAPIFlowsService{
   getFlow( id : string ) {
     return this.http.get('/v1/api/flows/' + id + '/json').toPromise()
       .then(response=>{
-        if(response.text())
-          return response.json();
+        if(response.text()) {
+            let flow = response.json();
+            // temporary injection of application values
+            flow.application = {
+                id: 'DEFAULT-APP',
+                name: 'test application'
+            }
+            return flow;
+        }
         else
           return response;
       });
