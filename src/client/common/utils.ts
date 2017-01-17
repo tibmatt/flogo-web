@@ -781,12 +781,17 @@ export function toDouble(num:number) {
   return num > 9? num: '0' + num;
 }
 
-export function getDiffSecondBetweenDates(beginDate:any, endDate:any) {
-  if(beginDate == null || endDate == null) {
-    return 0;
-  }
-  var a = moment(beginDate);
-  var b = moment(endDate);
+/**
+ * Get the difference between two dates
+ *
+ * @param beginDate: Inital date
+ * @param endDate: Final date
+ * @param timeUnit: Measurement unit
+ */
+export function diffDates(beginDate:any, endDate:any, timeUnit:string) {
+  let begin = moment(beginDate);
+  let end  = moment(endDate);
 
-  return a.diff(b) / 1000;
+  return begin.diff(end, timeUnit);
+
 }

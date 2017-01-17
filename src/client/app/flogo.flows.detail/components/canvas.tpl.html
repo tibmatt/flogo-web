@@ -5,11 +5,13 @@
     <section class="flogo-flow-detail">
 
       <header class="flogo-flow-detail-header col-sm-9">
+
         <div class="flogo-flow-detail-header-back">
           <div [ngClass]="{'flogo-flow-detail-header-back-icon':true,'mouse-over':backControlOver, 'mouse-out':!backControlOver}"
                (mouseover)="onMouseOverBackControl()"
                (mouseout)="onMouseOutBackControl()"
                (click)="navigateToApp()">
+            <li class="fa fa-angle-left"></li>
           </div>
           <div class="">
             <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
@@ -22,6 +24,8 @@
             (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
           </div>
         </div>
+
+
       </header>
 
 
