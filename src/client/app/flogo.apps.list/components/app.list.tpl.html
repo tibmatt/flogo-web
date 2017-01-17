@@ -10,7 +10,7 @@
       <li *ngFor="let app of applications" [class.selected]="app.name == selectedApp?.name"
           class="apps-list__element" (click)="onSelectApp(app)">
         {{app.name}}
-          <span class="glyphicon glyphicon-trash apps-list__delete-btn" (click)="confirmDelete(app)"></span>
+          <span class="flogo-icon-delete apps-list__delete-btn" (click)="confirmDelete(app)"></span>
       </li>
     </ul>
   </div>
