@@ -81,12 +81,21 @@
             top: 0;
             left: 15px;
             animation: grow 300ms ease-in;
-            .menu__options__list {
-              list-style: none;
-            }
             &:hover {
               ~ .menu__btn {
                 color: #79b8dc;
+              }
+            }
+
+            .menu__options__list {
+              list-style: none;
+              font-size: .875em;
+              margin: 0;
+              .menu__options__list__element {
+                padding: 3px 0;
+                .flogo-icon {
+                  margin-right: 10px;
+                }
               }
             }
           }
@@ -130,17 +139,9 @@
 }
 
 @keyframes grow {
-  0% {
-    color: transparent;
+  from {
+    font-size: 0;
     width: 0;
     height: 0;
-  }
-  90% {
-    color: transparent;
-    width: 129px;
-    height: 94px;
-  }
-  100% {
-    color: #666;
   }
 }
