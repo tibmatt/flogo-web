@@ -3,7 +3,11 @@ import { Component, Input, Output, SimpleChange, OnChanges , ViewChild, ElementR
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
-import { notification } from '../../../common/utils';
+
+import { diffDates, notification } from '../../../common/utils';
+
+const MAX_SECONDS_TO_ASK_FLOW_NAME = 5;
+
 
 @Component({
     selector: 'flogo-app-details-item',
@@ -42,15 +46,20 @@ export class FlogoApplicationComponent implements OnChanges {
 
     updateChanges() {
         this.flows = this.getOriginalFlows();
-        this.editingName = this.application.updatedAt == null;
+        this.editingName = false;
+        
+        if (this.application.updatedAt) {
+            let seconds = diffDates(Date.now(), this.application.updatedAt, 'seconds');
+            this.editingName = seconds <= MAX_SECONDS_TO_ASK_FLOW_NAME;
+        }
     }
+
 
 
   ngOnInit() {
       this.editingDescription = false;
       this.editingName = false;
       this.searchPlaceHolder= '';
-      //this.flows = [];
   }
 
   getOriginalFlows() {

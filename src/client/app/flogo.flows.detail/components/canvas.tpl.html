@@ -5,10 +5,22 @@
     <section class="flogo-flow-detail">
 
       <header class="flogo-flow-detail-header col-sm-9">
-        <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
-        <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
-           placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
-           (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+        <div class="flogo-flow-detail-header-back"
+             [ngClass]="{'--hover':backToAppHover}"
+             (mouseover)="onMouseOverBackControl()"
+             (mouseout)="onMouseOutBackControl()">
+          <div class="flogo-flow-detail-header-back-icon" (click)="navigateToApp()">
+            <li class="fa fa-angle-left"></li>
+          </div>
+          <div class="">
+            <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
+              <span>in</span> <span (click)="navigateToApp()"
+                                    class="flogo-flow-detail-header-back-app-name">{{flow.app.name}}</span>
+            <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
+            placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
+            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+          </div>
+        </div>
       </header>
 
 
