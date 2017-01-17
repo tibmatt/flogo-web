@@ -1,17 +1,20 @@
-<div class="application-list">
-    <div class="header-list">
-        <div class="title">{{ 'APP-LIST:MY-APPS' | translate }}</div>
-        <div class="add" (click)="onAdd($event)"><span class="glyphicon glyphicon-plus" ></span></div>
-    </div>
-    <div class="applications">
-        <ul (mouseout)="onMouseOut()">
-            <li *ngFor="let app of applications" [class.selected]="app.name == selectedApp?.name"
-                (mouseover)="onMouseOver(app)" (click)="onSelectApp(app)">
-                {{app.name}}
-                <span [hidden]="app.name !== overApp?.name " class="glyphicon glyphicon-trash" (click)="confirmDelete(app)"></span>
-            </li>
-        </ul>
-    </div>
+<div class="flogo-app-list">
+
+  <div class="flogo-app-list__header">
+    <div class="title">{{ 'APP-LIST:MY-APPS' | translate }}</div>
+    <div class="flogo-btn--add-app" (click)="onAdd($event)"><i class="flogo-icon-add"></i></div>
+  </div>
+
+  <div class="flogo-app-list__content">
+    <ul class="apps-list">
+      <li *ngFor="let app of applications" [class.selected]="app.name == selectedApp?.name"
+          class="apps-list__element" (click)="onSelectApp(app)">
+        {{app.name}}
+          <span class="glyphicon glyphicon-trash apps-list__delete-btn" (click)="confirmDelete(app)"></span>
+      </li>
+    </ul>
+  </div>
+
 </div>
 
 
