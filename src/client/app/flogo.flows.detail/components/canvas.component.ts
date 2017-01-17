@@ -66,7 +66,7 @@ export class FlogoCanvasComponent implements OnInit {
   _restartProcessInstanceID: string;
   _isDiagramEdited:boolean;
   flowName:string;
-  backControlOver:boolean;
+  backToAppHover:boolean;
 
   // TODO
   //  may need better implementation
@@ -108,7 +108,7 @@ export class FlogoCanvasComponent implements OnInit {
 
   public ngOnInit() {
       this.flowId = this._route.snapshot.params['id'];
-      this.backControlOver = false;
+      this.backToAppHover = false;
 
       this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
 
@@ -2045,11 +2045,11 @@ export class FlogoCanvasComponent implements OnInit {
   }
 
   public onMouseOverBackControl()   {
-      this.backControlOver = true;
+      this.backToAppHover = true;
   }
 
   public onMouseOutBackControl()   {
-      this.backControlOver = false;
+      this.backToAppHover = false;
   }
 
 

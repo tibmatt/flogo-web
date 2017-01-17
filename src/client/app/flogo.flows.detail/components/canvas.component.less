@@ -269,12 +269,6 @@
         font-size: 30px;
         position: absolute;
         top: 20px;
-      }
-
-      &.mouse-over {
-        color: @flogo-flow-detail-header-selected-color;
-      }
-      &.mouse-out {
         color: @flogo-flow-detail-header-unselected-color;
       }
     }
@@ -282,10 +276,15 @@
     .flogo-flow-detail-header-back-app-name {
       cursor: pointer;
       color: @flogo-flow-detail-header-selected-color;
-      &.mouse-over {
-        text-decoration: underline;
-      }
     }
 
+    &.--hover {
+      .flogo-flow-detail-header-back-app-name {
+        text-decoration: underline;
+      }
+      .flogo-flow-detail-header-back-icon li {
+        color: @flogo-flow-detail-header-selected-color;
+      }
+    }
   }
 }
