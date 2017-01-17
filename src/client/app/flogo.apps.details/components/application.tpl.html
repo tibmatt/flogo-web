@@ -3,6 +3,7 @@
     <div class="col-sm-8 col-md-offset-1">
       <div class="flogo-app-details__header__name-container">
         <input *ngIf="editingName" type="text" #appInputName
+               doFocus
                [(ngModel)]="application.name"
                (ngModelChange)="onInputNameChange($event)"
                (blur)="onInputNameBlur($event)"
@@ -13,15 +14,16 @@
                (click)="onClickLabelName($event)">{{application?.name}}</label>
       </div>
 
-      <div class="flogo-app-details__header__creation-date-container">
-        <label class="flogo-app-details__header__creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{createdAtFormatted}}.</span>
-        </label>
+      <div class="flogo-app-details__header__date-container">
+        <label class="flogo-app-details__header__date">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span> </label>
+        <label *ngIf="application && application.updatedAt" class="flogo-app-details__header__date">{{ 'FLOWS:UPDATED' | translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
       </div>
 
       <div class="flogo-app-details__header__description-container">
         <a *ngIf="application && !application.description && editingDescription == false" class="flogo-link"
            (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
         <textarea *ngIf="editingDescription" #appInputDescription
+                  doFocus
                   (blur)="onInputDescriptionBlur($event)" placeholder="Description" rows="2"
                   (keyup)="onKeyUpDescription($event)"
                   id="appDescription" class="flogo-app-details__header__description--edit"

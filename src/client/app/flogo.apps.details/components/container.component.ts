@@ -1,9 +1,9 @@
-import { Component, Output, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params as RouteParams } from '@angular/router';
+
 import { IFlogoApplicationModel} from '../../../common/application.model';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 
-import 'rxjs/add/operator/switch';
 import 'rxjs/add/operator/map';
 
 @Component({
@@ -13,7 +13,6 @@ import 'rxjs/add/operator/map';
     styleUrls: []
 })
 export class FlogoApplicationContainerComponent implements  OnInit {
-    @Output() onParamChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
     public application: IFlogoApplicationModel = null;
 
     constructor(
@@ -23,7 +22,6 @@ export class FlogoApplicationContainerComponent implements  OnInit {
     }
 
     ngOnInit() {
-
       this.route.params
       .map((params: RouteParams) =>  params['id'] )
       .subscribe((appId:string) => {
@@ -31,9 +29,6 @@ export class FlogoApplicationContainerComponent implements  OnInit {
           .then((application: IFlogoApplicationModel) => {
             this.application = application;
           })
-          .then(()=> {
-              this.onParamChanged.emit(true);
-            })
       });
     }
 

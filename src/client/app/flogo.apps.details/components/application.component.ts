@@ -1,9 +1,8 @@
-import { Component, Output, Input, SimpleChange, OnChanges , ViewChild, ElementRef, Renderer, EventEmitter } from '@angular/core';
-import { ActivatedRoute, Params as RouteParams } from '@angular/router';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
-import { timeString } from '../../../common/utils';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
+import { Component, Input, SimpleChange, OnChanges , ViewChild, ElementRef, EventEmitter } from '@angular/core';
+
 import { TranslateService } from 'ng2-translate/ng2-translate';
+
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 
 @Component({
     selector: 'flogo-app-details-item',
@@ -14,20 +13,14 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 export class FlogoApplicationComponent implements OnChanges {
     @ViewChild('appInputName') appInputName: ElementRef;
     @ViewChild('appInputDescription') appInputDescription: ElementRef;
-    @Output() onParamChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Input() application: IFlogoApplicationModel;
-    searchPlaceHolder:string = '';
-    createdAtFormatted: any;
-    updateAtFormatted: any;
-    editingDescription: boolean = false;
-    editingName: boolean = false;
+    searchPlaceHolder:string;
+    editingDescription: boolean;
+    editingName: boolean;
     flows: Array<IFlogoApplicationFlowModel> = [];
-    subscription: any;
-
 
     constructor(
-        public translate: TranslateService,
-        private renderer: Renderer,
+        public translate: TranslateService
     ) {
         this.searchPlaceHolder = this.translate.instant('DETAILS:SEARCH');
     }
@@ -45,29 +38,20 @@ export class FlogoApplicationComponent implements OnChanges {
     updateChanges() {
         this.flows = this.getOriginalFlows();
 
-        let timeStr = this.application.createdAt;
-        this.createdAtFormatted = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
-
 
         if (this.application.updatedAt == null) {
             this.editingName = true;
-            this.updateAtFormatted = null;
-
-            setTimeout(()=> {
-                if(!_.isNil(this.appInputName)) {
-                    this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-                }
-            }, 0);
-
-
         } else {
             this.editingName = false;
-            this.updateAtFormatted = moment(this.application.updatedAt, 'YYYYMMDD hh:mm:ss').fromNow();
         }
     }
 
 
   ngOnInit() {
+      this.editingDescription = false;
+      this.editingName = false;
+      this.searchPlaceHolder= '';
+      //this.flows = [];
   }
 
   getOriginalFlows() {
@@ -77,12 +61,6 @@ export class FlogoApplicationComponent implements OnChanges {
 
   onClickAddDescription(event) {
         this.editingDescription = true;
-        // wait to refresh view
-        setTimeout(()=> {
-            if(!_.isNil(this.appInputDescription)) {
-                this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
-            }
-        }, 0);
   }
 
   onInputDescriptionBlur(event) {
@@ -101,20 +79,10 @@ export class FlogoApplicationComponent implements OnChanges {
 
   onClickLabelName(event) {
      this.editingName = true;
-     setTimeout(()=> {
-         if(!_.isNil(this.appInputName)) {
-            this.renderer.invokeElementMethod(this.appInputName.nativeElement, 'focus',[]);
-         }
-     },0);
   }
 
     onClickLabelDescription(event) {
         this.editingDescription = true;
-        setTimeout(()=> {
-            if(!_.isNil(this.appInputDescription)) {
-                this.renderer.invokeElementMethod(this.appInputDescription.nativeElement, 'focus',[]);
-            }
-        },0);
     }
 
     onKeyUpName(event) {
