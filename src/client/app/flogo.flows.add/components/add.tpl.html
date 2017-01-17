@@ -22,7 +22,7 @@
     <modal-footer>
       <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
     </button>
-      <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="flow.invalid">
+    <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="!flow.valid">
             {{ 'ADD:CREATE' | translate }}
     </button>
     </modal-footer>

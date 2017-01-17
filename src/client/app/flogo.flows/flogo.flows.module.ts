@@ -8,7 +8,7 @@ import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instruct
 import { CommonModule as FlogoCommonModule } from '../../common/common.module'
 
 import { FlogoFlowsComponent }   from './components/flows.component';
-import { FlogoFlowsAdd as FlogoFlowsAddComponent } from '../flogo.flows.add/components/add.component';
+import { FlogoFlowsAddComponent as FlogoFlowsAddComponent } from '../flogo.flows.add/components/add.component';
 import { FlogoFlowsImport as FlogoFlowsImportComponent } from '../flogo.flows.import/components/import-flow.component';
 import { FlogoFlowsFlowNameComponent } from '../flogo.flows.flow-name/components/flow-name.component';
 import { FlogoListComponent } from '../flogo.flows.list/components/flow-list.component';

@@ -1,13 +1,12 @@
-import { RESTAPIFlowsService } from './../../../common/services/restapi/flows-api.service';
+import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { Subject } from 'rxjs/Subject';
-import { Directive, forwardRef } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
-import takeUntil from 'rxjs';
-import take from 'rxjs';
-import debounceTime from 'rxjs';
-import switchMap from 'rxjs';
+import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/switchMap';
 
 export class UniqueNameValidator {
 
