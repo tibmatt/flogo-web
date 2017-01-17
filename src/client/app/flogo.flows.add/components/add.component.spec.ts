@@ -140,10 +140,6 @@ describe('Component: FlogoFlowsAdd', () => {
     expect(messageData.name).toBe(testFlow.name);
     expect(messageData.description).toBe(testFlow.description);
 
-    //});
-
-    //tick(1000);
-
 
   }));
 

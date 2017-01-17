@@ -45,7 +45,7 @@ export class FlogoApplicationContainerComponent implements OnInit {
     this.router.navigate(['/flows', flogoIDEncode(flow.id)]);
   }
 
-  public onFlowAdded() {
+  public onFlowAdded(event) {
     this.loadApp(this.application.id);
   }
 
