@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'timeFromNow'
 })
 export class TimeFromNowPipe implements  PipeTransform {
-  transform(value: any, format = 'YYYYMMDD hh:mm:ss') : string {
-    return moment(value, format).fromNow();
+  transform(value: any) : string {
+    return moment(value).fromNow();
   }
 }
