@@ -5,7 +5,6 @@
     <section class="flogo-flow-detail">
 
       <header class="flogo-flow-detail-header col-sm-9">
-
         <div class="flogo-flow-detail-header-back"
              [ngClass]="{'--hover':backToAppHover}"
              (mouseover)="onMouseOverBackControl()"
@@ -16,14 +15,12 @@
           <div class="">
             <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
               <span>in</span> <span (click)="navigateToApp()"
-                                    class="flogo-flow-detail-header-back-app-name">{{flow.application.name}}</span>
+                                    class="flogo-flow-detail-header-back-app-name">{{flow.app.name}}</span>
             <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
             placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
             (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
           </div>
         </div>
-
-
       </header>
 
 

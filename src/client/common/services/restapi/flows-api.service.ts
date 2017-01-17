@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import {RESTAPIApplicationsService} from './applications-api.service';
 
 @Injectable()
 export class RESTAPIFlowsService{
-  constructor(private http:Http){
+  constructor(private http:Http, private APIApplicationService:RESTAPIApplicationsService){
   }
 
   createFlow(flowObj: any) {
@@ -43,12 +44,11 @@ export class RESTAPIFlowsService{
       .then(response=>{
         if(response.text()) {
             let flow = response.json();
-            // temporary injection of application values
-            flow.application = {
-                id: 'DEFAULT-APP',
-                name: 'test application'
-            }
-            return flow;
+            return this.APIApplicationService.getApp(flow.appId || 'DEFAULT-APP')
+                .then ((app)=> {
+                    flow.app = app;
+                    return flow;
+                })
         }
         else
           return response;

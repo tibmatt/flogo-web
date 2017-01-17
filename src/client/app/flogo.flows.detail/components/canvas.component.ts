@@ -2041,7 +2041,7 @@ export class FlogoCanvasComponent implements OnInit {
     }
 
   public navigateToApp()   {
-      this._router.navigate(['/apps', this.flow.application.id]);
+      this._router.navigate(['/apps', this.flow.app.id]);
   }
 
   public onMouseOverBackControl()   {
