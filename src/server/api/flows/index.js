@@ -50,18 +50,12 @@ function* getFlow() {
   const flowId = this.params.flowId;
 
   const flow = yield FlowsManager.findOne(flowId);
-  // TODO implement options
-  //const flow = yield FlowsManager.findOne(flowId, {fields: 'raw', withApp: 'short'});
   if(!flow) {
     throw ErrorManager.createRestNotFoundError('Flow not found', {
       title: 'Flow not found',
       detail: 'No flow with the specified id'
     });
   }
-
-  // TODO unify id field on client/server
-  //flow._id = flow._id || flow.id;
-  //delete flow.id;
 
   this.body = {
     data: flow
@@ -411,9 +405,7 @@ function* updateFlows(next) {
       }
     }
 
-    // TODO add clean method
-    //data._id = data._id || data.id;
-    //delete data.id;
+    delete data.app;
 
     let flowObj = data;
     let res = yield updateFlow(flowObj);

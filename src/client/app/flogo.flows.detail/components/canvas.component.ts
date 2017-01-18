@@ -23,7 +23,6 @@ import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
-import { RESTAPIApplicationsService} from '../../../common/services/restapi/applications-api.service';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
@@ -69,7 +68,6 @@ export class FlogoCanvasComponent implements OnInit {
   _isDiagramEdited:boolean;
   flowName:string;
   backToAppHover:boolean;
-  applicationName: string;
 
   // TODO
   //  may need better implementation
@@ -94,7 +92,6 @@ export class FlogoCanvasComponent implements OnInit {
     private _postService: PostService,
     private _restAPIService: RESTAPIService,
     private _restAPIFlowsService: RESTAPIFlowsService,
-    private _restAPIApplicationsService: RESTAPIApplicationsService,
     private _router: Router,
     private _flogoModal: FlogoModal,
     private _route: ActivatedRoute,
@@ -206,13 +203,6 @@ export class FlogoCanvasComponent implements OnInit {
                   // initialisation
                   console.group('Initialise canvas component');
                   flow = rsp;
-
-                  // Get application name
-                  this._restAPIApplicationsService.getApp(flow.appId || 'DEFAULT-APP')
-                    .then ((app:IFlogoApplicationModel)=> {
-                      this.applicationName = app.name;
-                    });
-
                   tasks = flow.items;
                   if (_.isEmpty(flow.paths)) {
                     diagram = flow.paths = <IFlogoFlowDiagram>{
