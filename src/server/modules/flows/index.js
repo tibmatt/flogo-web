@@ -134,11 +134,6 @@ export class FlowsManager {
    *
    * Options:
    *    * ## options
-   *    - withFlows {boolean|string} get also all the related flows. Possible values:
-   *      - short {string} - get short version of the flows
-   *      - full {string} -  get full version of the flows
-   *      - true {boolean} - same as 'short'
-   *      - false {boolean} - do not get the flows
    * @params flowId {string} flow id
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
@@ -147,8 +142,7 @@ export class FlowsManager {
   static findOne(flowId, options) {
     const { fields, withApp } = Object.assign({ fields: 'full', withApp: false }, options);
     /*
-     1. find app with the specified id
-     1.1 if app exists retrieve related flows if applicable (based on withflows)
+     1. find flow with the specified id
      */
     // TODO: handle not found
     return flowsDBService.db.get(flowId)

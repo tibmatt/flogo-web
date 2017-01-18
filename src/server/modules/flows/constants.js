@@ -17,5 +17,10 @@ export const PUBLISH_FIELDS_LONG = [
   'createdAt',
   'updatedAt',
   'appId',
+  'items',
+  '$table',
+  'paths',
+  'errorHandler',
+  '_rev'
 ];
 

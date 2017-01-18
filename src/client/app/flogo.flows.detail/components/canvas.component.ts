@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { PostService } from '../../../common/services/post.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { LogService } from '../../../common/services/log.service';
+import { IFlogoApplicationModel } from '../../../common/application.model';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -22,6 +23,7 @@ import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIService } from '../../../common/services/rest-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { RESTAPIApplicationsService} from '../../../common/services/restapi/applications-api.service';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../../common/constants';
 import {
   flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
@@ -67,6 +69,7 @@ export class FlogoCanvasComponent implements OnInit {
   _isDiagramEdited:boolean;
   flowName:string;
   backToAppHover:boolean;
+  applicationName: string;
 
   // TODO
   //  may need better implementation
@@ -91,6 +94,7 @@ export class FlogoCanvasComponent implements OnInit {
     private _postService: PostService,
     private _restAPIService: RESTAPIService,
     private _restAPIFlowsService: RESTAPIFlowsService,
+    private _restAPIApplicationsService: RESTAPIApplicationsService,
     private _router: Router,
     private _flogoModal: FlogoModal,
     private _route: ActivatedRoute,
@@ -131,7 +135,6 @@ export class FlogoCanvasComponent implements OnInit {
             'errorHandler': res.errorHandler
           };
 
-
           this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
           this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
           this.mainHandler = this.handlers['root'];
@@ -156,7 +159,7 @@ export class FlogoCanvasComponent implements OnInit {
         });
   }
 
-  private changeFlowDetail($event, property) {
+  public changeFlowDetail($event, property) {
         return new Promise((resolve, reject)=> {
             this._updateFlow(this.flow).then((response: any)=> {
                 let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
@@ -199,13 +202,16 @@ export class FlogoCanvasComponent implements OnInit {
       this._restAPIFlowsService.getFlow(id)
           .then(
               (rsp: any)=> {
-
-
                 if (!_.isEmpty(rsp)) {
                   // initialisation
                   console.group('Initialise canvas component');
-
                   flow = rsp;
+
+                  // Get application name
+                  this._restAPIApplicationsService.getApp(flow.appId || 'DEFAULT-APP')
+                    .then ((app:IFlogoApplicationModel)=> {
+                      this.applicationName = app.name;
+                    });
 
                   tasks = flow.items;
                   if (_.isEmpty(flow.paths)) {
@@ -243,7 +249,9 @@ export class FlogoCanvasComponent implements OnInit {
                     diagram: errorDiagram, tasks: errorTasks
                   }
                 });
+
               }
+
           )
           .catch(
               (err: any)=> {
@@ -2041,7 +2049,7 @@ export class FlogoCanvasComponent implements OnInit {
     }
 
   public navigateToApp()   {
-      this._router.navigate(['/apps', this.flow.app.id]);
+      this._router.navigate(['/apps', this.flow.appId]);
   }
 
   public onMouseOverBackControl()   {
