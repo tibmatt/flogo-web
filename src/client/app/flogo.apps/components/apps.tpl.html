@@ -1,14 +1,18 @@
 <div class="flogo-apps">
 
-    <div class="application-list">
-        <flogo-apps-list #appList
-                         (onAddedApp)="onAddedApp($event)"
-                         (onDeletedApp)="onDeletedApp($event)"
-                         (onSelectedApp)="onSelectedApp($event)"></flogo-apps-list>
+  <div class="flogo-apps__list">
+    <div class="container-fluid">
+      <flogo-apps-list #appList
+                       (onAddedApp)="onAddedApp($event)"
+                       (onDeletedApp)="onDeletedApp($event)"
+                       (onSelectedApp)="onSelectedApp($event)"></flogo-apps-list>
     </div>
+  </div>
 
-    <div class="main">
-        <router-outlet></router-outlet>
+  <div class="flogo-apps__main">
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
     </div>
+  </div>
 
 </div>

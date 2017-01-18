@@ -23,15 +23,11 @@ export class FlogoApplicationComponent implements OnChanges {
     public flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
     @Output()
     public flowAdded: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
-    searchPlaceHolder:string;
     editingDescription: boolean;
     editingName: boolean;
     flows: Array<IFlogoApplicationFlowModel> = [];
 
-    constructor(
-        public translate: TranslateService
-    ) {
-        this.searchPlaceHolder = this.translate.instant('DETAILS:SEARCH');
+    constructor(public translate: TranslateService) {
     }
 
     ngOnChanges(
@@ -47,7 +43,7 @@ export class FlogoApplicationComponent implements OnChanges {
     updateChanges() {
         this.flows = this.getOriginalFlows();
         this.editingName = false;
-        
+
         if (this.application.updatedAt) {
             let seconds = diffDates(Date.now(), this.application.updatedAt, 'seconds');
             this.editingName = seconds <= MAX_SECONDS_TO_ASK_FLOW_NAME;
@@ -59,7 +55,6 @@ export class FlogoApplicationComponent implements OnChanges {
   ngOnInit() {
       this.editingDescription = false;
       this.editingName = false;
-      this.searchPlaceHolder= '';
   }
 
   getOriginalFlows() {

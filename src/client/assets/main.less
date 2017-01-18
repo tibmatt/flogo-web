@@ -62,10 +62,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+a , .flogo-link{
   color: @color-link;
   cursor: pointer;
   &:hover{
+    text-decoration: none;
     color: @color-link-hover;
   }
   &:active{
@@ -167,6 +168,9 @@ label {
   color: #cad3df;
 }
 
+.flogo-icon{
+  margin-right: 10px;
+}
 /*---------------------------*\
   TIBCO Cloud UI Pattern adjustments
 \*---------------------------*/
@@ -184,7 +188,7 @@ label {
 
 /* The spin loading styles */
 .flogo-spin-loading-bg {
-  background: #fafafa;
+  background: #f4f4f4;
   width: 100%;
 }
 .flogo-spin-loading {
@@ -565,14 +569,12 @@ label {
 
 .flogo-common-flows-new-flow {
   background: transparent;
-  /*border-radius: 4px;*/
   color: #0081cb;
   cursor: pointer;
   font-size: 14px;
-  padding: 30px 27px;
   text-align: center;
   width: 100%;
-  border-bottom: 2px solid #ccc;
+  padding: 10px;
 
   &:hover{
     background: #fff;

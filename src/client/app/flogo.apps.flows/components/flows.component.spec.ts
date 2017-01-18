@@ -72,7 +72,7 @@ describe('Application flows', () => {
       .then(() => {
         fixture = TestBed.createComponent(Container);
         fixture.detectChanges();
-        let res:Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flows-container > .flow'));
+        let res:Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow'));
         expect(res.length).toEqual(4);
         done();
       });
@@ -83,7 +83,7 @@ describe('Application flows', () => {
       .then(() => {
         fixture = TestBed.createComponent(Container);
         fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('.title:nth-of-type(1)'));
+        de = fixture.debugElement.query(By.css('.flogo-flow-name:nth-of-type(1)'));
         el = de.nativeElement;
         expect(el.innerText).toEqual('Manually Adjust Temperature');
         done();
@@ -95,7 +95,7 @@ describe('Application flows', () => {
       .then(() => {
         fixture = TestBed.createComponent(Container);
         fixture.detectChanges();
-        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.description'));
+        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow-description'));
         el = res[1].nativeElement;
         expect(el.innerText).toEqual('A basic flow for apietusam');
         done();

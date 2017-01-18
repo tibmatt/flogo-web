@@ -1,8 +1,7 @@
-<!--<div class="flogo-flows-container-box-add btn btn-default" (click)="modal.open()">-->
 <div class="flogo-common-flows-new-flow" (click)="modal.open()">
-  <i class="flogo-icon-add"></i>
-  <p class="flogo-common-flows-new-flow__text">{{ 'ADD:CREATE-NEW-FLOW' | translate }} </p>
+  <span class="flogo-common-flows-new-flow__text"><i class="flogo-icon flogo-icon-add"></i>{{ 'ADD:CREATE-NEW-FLOW' | translate }} </span>
 </div>
+
 <modal [size]="'sm'" #modal>
   <form novalidate [formGroup]="flow" (ngSubmit)="createFlow(flow)">
     <modal-header>
@@ -21,10 +20,10 @@
     </modal-body>
     <modal-footer>
       <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
-    </button>
-    <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="!flow.valid">
-            {{ 'ADD:CREATE' | translate }}
-    </button>
+      </button>
+      <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="!flow.valid">
+        {{ 'ADD:CREATE' | translate }}
+      </button>
     </modal-footer>
   </form>
 </modal>

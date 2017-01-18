@@ -97,7 +97,7 @@ describe('FlogoApplicationComponent component', () => {
                 comp.application.name = 'Sample Application 2';
                 fixture.detectChanges();
 
-                let inputName = fixture.debugElement.query(By.css('.applicationLabel'));
+                let inputName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
                 if(inputName) {
                     expect(inputName.nativeElement.innerText).toEqual('Sample Application 2');
                     done();
@@ -114,7 +114,7 @@ describe('FlogoApplicationComponent component', () => {
                 comp = fixture.componentInstance;
 
                 fixture.detectChanges();
-                let creation = fixture.debugElement.query(By.css('.created span'));
+                let creation = fixture.debugElement.query(By.css('.flogo-app-header__date--creation span'));
                 if(creation) {
                     expect(creation.nativeElement.innerText).toEqual('a few seconds ago.');
                     done();
@@ -133,7 +133,7 @@ describe('FlogoApplicationComponent component', () => {
                 let inputDescription;
 
                 // because description field is empty, anchor add description should be present
-                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                let addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
                 expect(addDescription).toBeDefined();
 
                 // input description doesn't should be present
@@ -159,7 +159,7 @@ describe('FlogoApplicationComponent component', () => {
                 fixture.detectChanges();
 
                 // because description field is empty, anchor add description should be present
-                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                let addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
                 if(addDescription) {
                     expect(addDescription).toBeDefined();
                     done();
@@ -174,7 +174,7 @@ describe('FlogoApplicationComponent component', () => {
                 comp = fixture.componentInstance;
                 fixture.detectChanges();
 
-                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                let addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
                 if(addDescription) {
                     addDescription.nativeElement.click();
                     comp.application.description = 'A brief description';
@@ -184,7 +184,7 @@ describe('FlogoApplicationComponent component', () => {
                     inputDescription.nativeElement.blur();
                     fixture.detectChanges();
 
-                    let labelDescription = fixture.debugElement.query(By.css('.descriptionLabel'));
+                    let labelDescription = fixture.debugElement.query(By.css('.flogo-app-header__description'));
                     if(labelDescription) {
                         expect(labelDescription.nativeElement.innerText.indexOf('A brief description')).not.toEqual(-1);
                         done();
@@ -200,7 +200,7 @@ describe('FlogoApplicationComponent component', () => {
                 comp = fixture.componentInstance;
                 fixture.detectChanges();
 
-                let labelApp = fixture.debugElement.query(By.css('.applicationLabel'));
+                let labelApp = fixture.debugElement.query(By.css('.flogo-app-header__name'));
                 if(labelApp) {
                     labelApp.nativeElement.click();
                     comp.application.name = 'A cool application';
@@ -211,7 +211,7 @@ describe('FlogoApplicationComponent component', () => {
                     if(inputName) {
                         inputName.nativeElement.blur();
                         fixture.detectChanges();
-                        let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
+                        let labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
                         expect(labelName.nativeElement.innerText).toEqual('A cool application');
                         done();
                     }
@@ -231,7 +231,7 @@ describe('FlogoApplicationComponent component', () => {
                 fixture.detectChanges();
 
                 // because description field is not empty, anchor add description should not be present
-                let addDescription = fixture.debugElement.query(By.css('.description > a'));
+                let addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
                 expect(addDescription).toBeNull();
                 done();
 
@@ -245,7 +245,7 @@ describe('FlogoApplicationComponent component', () => {
                 comp = fixture.componentInstance;
 
                 fixture.detectChanges();
-                let flows = fixture.debugElement.queryAll(By.css('.flows-container > .flow'));
+                let flows = fixture.debugElement.queryAll(By.css('.flogo-flow'));
                 if(flows) {
                     expect(flows.length).toEqual(3);
                     done();
@@ -265,7 +265,7 @@ describe('FlogoApplicationComponent component', () => {
 
                 fixture.detectChanges();
 
-                let labelName = fixture.debugElement.query(By.css('.applicationLabel'));
+                let labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
                 let labelElement = labelName.nativeElement;
                 if(labelElement) {
                     expect(labelElement.innerText).toEqual('Untitled Application');

@@ -1,52 +1,77 @@
-<div class="flogo-app-details-item">
-    <div>
+ <div class="flogo-app-header row">
+    <div class="col-sm-7 col-md-offset-1">
+      <div class="flogo-app-header__name-container">
         <input *ngIf="editingName" type="text" #appInputName
                autofocus
                [(ngModel)]="application.name"
                (ngModelChange)="onInputNameChange($event)"
                (blur)="onInputNameBlur($event)"
                (keyup)="onKeyUpName($event)"
-               id="appName" />
-        <label class="applicationLabel"
+               id="appName" class="flogo-app-header__name--edit"/>
+        <label class="flogo-app-header__name is-clickable"
                *ngIf="!editingName"
                (click)="onClickLabelName($event)">{{application?.name}}</label>
-        <button class="btn btn-primary btn-md build">{{ 'DETAILS:BUILD' | translate }}</button>
-    </div>
-    <label class="created">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span> </label>
-    <label *ngIf="application && application.updatedAt" class="created">{{ 'FLOWS:UPDATED' | translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
-    <div class="description">
-        <a *ngIf="application && !application.description && editingDescription == false"
+      </div>
+
+      <div class="flogo-app-header__date-container">
+        <label class="flogo-app-header__date--creation">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span>
+        </label>
+        <label *ngIf="application && application.updatedAt" class="flogo-app-header__date--update">{{ 'FLOWS:UPDATED' |
+          translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
+      </div>
+
+      <div class="flogo-app-header__description-container">
+        <a *ngIf="application && !application.description && editingDescription == false" class="flogo-link"
            (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
         <textarea *ngIf="editingDescription" #appInputDescription
                   autofocus
-               (blur)="onInputDescriptionBlur($event)"
-               placeholder="Description"
-               rows="3"
-               (keyup)="onKeyUpDescription($event)"
-               id="appDescription"
-               [(ngModel)]="application.description" ></textarea>
-        <label class="descriptionLabel"
+                  (blur)="onInputDescriptionBlur($event)"
+                  placeholder="Description"
+                  rows="2"
+                  id="appDescription" class="flogo-app-header__description--edit"
+                  [(ngModel)]="application.description">
+        </textarea>
+        <label class="flogo-app-header__description is-clickable"
                *ngIf="!editingDescription && application?.description"
-               (click)="onClickLabelDescription($event)"><span>{{ 'DETAILS:DESCRIPTION' | translate }}:</span>{{application?.description}}</label>
+               (click)="onClickLabelDescription($event)">{{application?.description}}</label>
+      </div>
     </div>
+    <div class="col-sm-2">
+      <button class="flogo-button--build-app flogo-button--default">{{ 'DETAILS:BUILD' | translate }}</button>
+    </div>
+  </div>
 
-    <div class="toolbar">
-        <flogo-apps-search [placeholder]="searchPlaceHolder" (changedSearch)="onChangedSearch($event)"
-                           class="search"></flogo-apps-search>
-        <div class="commands">
-            <flogo-flows-add></flogo-flows-add>
-            <flogo-flows-import [appId]="application?.id" (importSuccess)="onFlowImportSuccess($event)" (importError)="onFlowImportError($event)"></flogo-flows-import>
-            <span class="new-flow">{{ 'DETAILS:NEW-FLOW' | translate }}</span>
-            <span class="import">{{ 'DETAILS:IMPORT' | translate }}</span>
+  <div class="flogo-app-content row">
+    <div class="col-md-9 col-md-offset-1">
+      <div class="row">
+        <div class="col-sm-3">
+          <span class="flogo-app-title">{{ 'DETAILS:FLOWS' | translate }}</span>
         </div>
-    </div>
+        <div class="col-sm-4 col-sm-offset-5">
+          <flogo-apps-search (changedSearch)="onChangedSearch($event)"
+                             class="search"></flogo-apps-search>
+        </div>
+      </div>
 
-    <div *ngIf="!flows.length">
+      <div class="row">
+        <div class="col-md-7 col-lg-5">
+          <div class="flogo-commands">
+            <flogo-flows-add></flogo-flows-add>
+            <flogo-flows-import [appId]="application?.id" (importSuccess)="onFlowImportSuccess($event)"
+                                (importError)="onFlowImportError($event)"></flogo-flows-import>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!flows.length">
         <hr>
-        <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}<span class="action">&nbsp;{{'DETAILS:CREATE-A-FLOW' | translate}}</span> </p>
-    </div>
+        <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}</p>
+      </div>
 
-    <div class="flows">
+
+      <div class="flogo-app-content__flows">
         <flogo-apps-flows [flows]="flows" (flowSelected)="onFlowSelected($event)"></flogo-apps-flows>
+      </div>
+
     </div>
-</div>
+  </div>

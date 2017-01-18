@@ -18,7 +18,6 @@ export class FlogoAppListComponent implements OnInit {
 
   public applications: Array<IFlogoApplicationModel> = [];
   selectedApp: IFlogoApplicationModel;
-  overApp: IFlogoApplicationModel;
 
   constructor(public flogoModal: FlogoModal,
               public translate: TranslateService,
@@ -65,17 +64,8 @@ export class FlogoAppListComponent implements OnInit {
         this.listAllApps();
         this.onDeletedApp.emit(application);
         this.selectedApp = null;
-        this.overApp = null;
         //this._router.navigate([ 'FlogoHomeComponent', {id: application.id} ]);
       })
-  }
-
-  onMouseOver(app: IFlogoApplicationModel) {
-    this.overApp = app;
-  }
-
-  onMouseOut() {
-    this.overApp = null;
   }
 
 }
