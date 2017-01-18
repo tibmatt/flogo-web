@@ -17,33 +17,35 @@
     </div>
   </div>
 
-  <div class="col-md-9 col-md-offset-1">
-    <h3 class="flogo-main__subtitle">{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}</h3>
-    <div class="recent-flows">
-      <ul class="recent-flows__list">
-        <li *ngFor="let item of recent">
-          <a href="" class="recent-flows__list__flow">{{item.name}}</a>
-          in
-          <a href="" class="recent-flows__list__app">{{item.app.name}}</a>
-        </li>
-      </ul>
-    </div>
-
-
-    <div class="flows">
-      <div class="row">
-        <div class="col-sm-3">
-          <h3 class="flogo-main__subtitle">{{ 'FLOWS:ALL' | translate }}</h3>
-        </div>
-        <div class="search col-sm-3 col-sm-offset-6">
-          <flogo-apps-search (changedSearch)="onChangedSearch($event)"
-                             class="search"></flogo-apps-search>
-        </div>
+  <div class="row">
+    <div class="col-md-9 col-md-offset-1">
+      <h3 class="flogo-main__subtitle">{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}</h3>
+      <div class="recent-flows">
+        <ul class="recent-flows__list">
+          <li *ngFor="let item of recent">
+            <a href="" class="recent-flows__list__flow">{{item.name}}</a>
+            in
+            <a href="" class="recent-flows__list__app">{{item.app.name}}</a>
+          </li>
+        </ul>
       </div>
 
-      <flogo-apps-flows [flows]="flows"></flogo-apps-flows>
+
+      <div class="flows">
+        <div class="row">
+          <div class="col-sm-3">
+            <h3 class="flogo-main__subtitle">{{ 'FLOWS:ALL' | translate }}</h3>
+          </div>
+          <div class="search col-sm-3 col-sm-offset-6">
+            <flogo-apps-search (changedSearch)="onChangedSearch($event)"
+                               class="search"></flogo-apps-search>
+          </div>
+        </div>
+
+        <flogo-apps-flows [flows]="flows"></flogo-apps-flows>
+      </div>
+
+
     </div>
-
-
   </div>
 </div>
