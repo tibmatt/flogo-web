@@ -245,7 +245,7 @@ describe('FlogoApplicationComponent component', () => {
                 comp = fixture.componentInstance;
 
                 fixture.detectChanges();
-                let flows = fixture.debugElement.queryAll(By.css('.flogo-app-content__flows > .flow'));
+                let flows = fixture.debugElement.queryAll(By.css('.flow'));
                 if(flows) {
                     expect(flows.length).toEqual(3);
                     done();
