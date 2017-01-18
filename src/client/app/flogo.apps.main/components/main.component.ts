@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 
@@ -17,17 +16,14 @@ export class FlogoMainComponent implements OnInit {
     flows: Array<IFlogoApplicationFlowModel> = [];
     originalFlows: Array<IFlogoApplicationFlowModel> = [];
     application: IFlogoApplicationModel = null;
-    searchPlaceHolder:string = '';
 
     constructor(
         private _flogoModal: FlogoModal,
-        public translate: TranslateService,
         public applicationServiceAPI: RESTAPIApplicationsService
     ) {
     }
 
     ngOnInit() {
-        this.searchPlaceHolder = this.translate.instant('FLOWS:SEARCH');
         this.applicationServiceAPI.recentFlows()
             .then((flows: Array<any>)=> {
                 this.recent = flows;
