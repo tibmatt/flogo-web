@@ -1,106 +1,100 @@
 @action-fore-color: #449ed8;
 @width-inputs: 60%;
 
-.flogo-app-details-item {
+&:host {
   color: #666;
-  margin-left: 20px;
+}
 
-  .flogo-app-details__header {
-    margin-left: -35px;
-    padding: 2em 15px;
-    background: #fff;
+.flogo-app-header {
+  padding: 2em 0;
+  background: #fff;
 
-    .flogo-app-details__header__name {
-      margin-top: .3em;
-      font-size: 1.5em;
-      letter-spacing: .4px;
-    }
-    .flogo-app-details__header__name--edit {
-      font-size: 1.5em;
+  .flogo-app-header__name {
+    margin-top: .3em;
+    font-size: 1.5em;
+    letter-spacing: .4px;
+  }
+  .flogo-app-header__name--edit {
+    font-size: 1.5em;
+    width: 100%;
+  }
+
+  .flogo-app-header__date-container, .flogo-app-header__description {
+    font-size: 0.875em;
+    letter-spacing: .2px;
+    line-height: 1.14;
+  }
+
+  .flogo-app-header__description-container {
+    margin-top: 22px;
+    .flogo-app-header__description--edit {
+      font-size: .875em;
       width: 100%;
-    }
-
-    .flogo-app-details__header__date, .flogo-app-details__header__description {
-      font-size: 0.875em;
-      letter-spacing: .2px;
-      line-height: 1.14;
-    }
-
-    .flogo-app-details__header__description-container {
-      margin-top: 22px;
-      .flogo-app-details__header__description--edit{
-        font-size: .875em;
-        width: 100%;
-        resize: none;
-      }
-    }
-
-  }
-
-  .flogo-app-details__content {
-    .commands {
-      display: flex;
-      border: dashed 3px #ccc;
-      padding: 0;
-      margin: 1.25em 0;
-      position: relative;
-      &:before {
-        content: "";
-        position: absolute;
-        width: 3px;
-        height: 73%;
-        background: #ccc;
-        left: 50%;
-        bottom: 16%;
-        z-index: 1;
-      }
-    }
-
-    .flogo-app-details__content__flows{
-      padding-bottom: 50px;
+      resize: none;
     }
   }
 
-  .flogo-app-details-btn {
-    min-width: 124px;
-    height: 40px;
-    float: right;
-  }
+}
 
-  .is-clickable {
-    cursor: pointer;
-  }
+.flogo-app-content {
+  padding: 2em 0;
 
-  .flogo-app-details__toolbar {
-    margin-top: 2em;
-    .flogo-app-details__toolbar__title {
-      font-size: 1.125em;
-      line-height: 1;
-      letter-spacing: .3px;
-    }
-  }
-
-  .action {
-    color: @action-fore-color;
-    cursor: pointer;
-  }
-
-  .error-msg {
-    display: none;
-  }
-
-  .flogo-input-error {
-    color: #ee3342;
+  .flogo-commands {
+    display: flex;
+    border: dashed 3px #ccc;
+    padding: 0;
+    margin: 1.25em 0;
     position: relative;
-    .flogo-input-error-msg {
+    &:before {
+      content: "";
       position: absolute;
-      display: block;
-      font-size: .625em;
-      letter-spacing: .2px;
-      top: -15px;
-    }
-    .flogo-app-details__header__name {
-      color: #ee3342;
+      width: 3px;
+      height: 73%;
+      background: #ccc;
+      left: 50%;
+      bottom: 16%;
+      z-index: 1;
     }
   }
 }
+
+.flogo-button--build-app {
+  min-width: 124px;
+  height: 40px;
+  float: right;
+}
+
+.is-clickable {
+  cursor: pointer;
+}
+
+.flogo-app-title {
+  font-size: 1.125em;
+  line-height: 1;
+  letter-spacing: .3px;
+}
+
+.action {
+  color: @action-fore-color;
+  cursor: pointer;
+}
+
+.error-msg {
+  display: none;
+}
+
+.flogo-input-error {
+  color: #ee3342;
+  position: relative;
+  .flogo-input-error-msg {
+    position: absolute;
+    display: block;
+    font-size: .625em;
+    letter-spacing: .2px;
+    top: -15px;
+  }
+  .flogo-app-header__name {
+    color: #ee3342;
+  }
+}
+
