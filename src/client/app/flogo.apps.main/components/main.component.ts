@@ -54,7 +54,11 @@ export class FlogoMainComponent implements OnInit {
     }
 
     getOriginalFlows() {
-        return _.clone(this.originalFlows || []);
+        let flows = _.clone(this.originalFlows || []);
+        return _.forEach(flows, function (flow:any) {
+          flow.createdAt = flow.created_at;
+          delete flow.created_at;
+        });
     }
 
 }
