@@ -50,7 +50,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
 
   public onFlowSelected(flow) {
     console.log('onFlowSelected', flow);
-    this.router.navigate(['/flows', flogoIDEncode(flow.id)]);
+    this.router.navigate(['/flows', flogoIDEncode(flow._id)]);
   }
 
   public onFlowAdded(event) {

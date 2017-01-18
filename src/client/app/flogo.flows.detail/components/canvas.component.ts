@@ -536,7 +536,6 @@ export class FlogoCanvasComponent implements OnInit {
     }
 
     this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
-
     return this._restAPIFlowsService.startFlow(
         id || this._currentProcessID, initData || []
       )
