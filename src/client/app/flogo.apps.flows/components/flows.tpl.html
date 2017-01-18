@@ -1,41 +1,35 @@
-<div class="flogo-app-flows">
+<div *ngFor="let flow of flows" class="flogo-flow" (click)="select(flow)">
 
-  <div class="flows-container">
-
-
-    <div *ngFor="let flow of flows" class="flow" (click)="select(flow)">
-
-      <div class="trigger-info">
-        <i class="flogo-icon-trigger"></i>
-      </div>
-
-      <div class="flow-info">
-
-        <div class="header">
-          <div class="title">{{flow.name}}</div>
-          <div class="menu">
-            <div class="menu__options">
-              <ul class="menu__options__list">
-                <li class="menu__options__list__element">
-                  <a href=""><i class="flogo-icon flogo-icon-edit"></i>Rename</a>
-                </li>
-                <li class="menu__options__list__element">
-                  <a href=""><i class="flogo-icon flogo-icon-export"></i>Export</a>
-                </li>
-                <li class="menu__options__list__element">
-                  <a href=""><i class="flogo-icon flogo-icon-delete"></i>Delete</a>
-                </li>
-              </ul>
-            </div>
-            <span class="glyphicon glyphicon-option-vertical menu__btn"> </span>
-          </div>
-        </div>
-
-        <div [title]="flow.description" class="description">{{flow.description}}</div>
-        <span class="creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.created_at | date }}</span>
-
-      </div>
-
-    </div>
+  <div class="flogo-flow-trigger">
+    <i class="flogo-icon-trigger"></i>
   </div>
+
+  <div class="flogo-flow-info">
+
+    <div class="flogo-flow-header">
+      <div class="flogo-flow-name">{{flow.name}}</div>
+      <div class="flogo-flow-menu">
+        <div class="flogo-flow-menu__options">
+          <ul class="flogo-flow-menu__options__list">
+            <li class="flogo-flow-menu__options__list__element">
+              <a href=""><i class="flogo-icon flogo-icon-edit"></i>Rename</a>
+            </li>
+            <li class="flogo-flow-menu__options__list__element">
+              <a href=""><i class="flogo-icon flogo-icon-export"></i>Export</a>
+            </li>
+            <li class="flogo-flow-menu__options__list__element">
+              <a href=""><i class="flogo-icon flogo-icon-delete"></i>Delete</a>
+            </li>
+          </ul>
+        </div>
+        <span class="glyphicon glyphicon-option-vertical menu__btn"> </span>
+      </div>
+    </div>
+
+    <div [title]="flow.description" class="flogo-flow-description">{{flow.description}}</div>
+    <span
+      class="flogo-flow-creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.created_at | date }}</span>
+
+  </div>
+
 </div>

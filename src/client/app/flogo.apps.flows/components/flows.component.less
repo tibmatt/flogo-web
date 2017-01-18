@@ -1,138 +1,130 @@
-.flogo-app-flows {
+.flogo-flow {
+  position: relative;
+  margin-top: 10px;
+  cursor: pointer;
 
-  .flows-container {
-    color: #666;
+  .flogo-flow-trigger {
+    background-color: #ff7c35;
+    width: 44px;
+    height: 70px;
+    position: absolute;
+    z-index: 2;
+    border-radius: 5px 0 0 5px;
+    top: 15px;
 
-    .flow {
-      position: relative;
-      margin-top: 10px;
-      cursor: pointer;
+    &:after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-top: 35px solid transparent;
+      border-left: 14px solid #FF7C35;
+      border-bottom: 35px solid transparent;
+      position: absolute;
+      left: 44px;
+    }
 
-      .trigger-info {
-        background-color: #ff7c35;
-        width: 44px;
-        height: 70px;
+    .flogo-icon-trigger {
+      position: absolute;
+      top: 30%;
+      left: 34%;
+      color: #fff;
+      font-size: 1.6em;
+    }
+  }
+  .flogo-flow-info {
+    background-color: #fff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+    height: 100px;
+    padding-left: 34px;
+    padding-top: 5px;
+    position: relative;
+    border-radius: 4px;
+    margin-left: 44px;
+
+    &:hover {
+      box-shadow: 0 0 5px 0 #79b8dc;
+    }
+
+    .flogo-flow-header {
+      display: flex;
+
+      .flogo-flow-name {
+        font-size: 1em;
+        text-transform: capitalize;
+        font-weight: bold;
+        letter-spacing: .5px;
+        margin-bottom: 0;
+        margin-top: 15px;
+        width: 640px;
+      }
+    }
+
+    .flogo-flow-menu {
+      position: absolute;
+      right: 15px;
+      margin-top: 1em;
+
+      .flogo-flow-menu__options {
+        display: none;
         position: absolute;
-        z-index: 2;
-        border-radius: 5px 0 0 5px;
-        top: 15px;
-
-        &:after {
-          content: "";
-          width: 0;
-          height: 0;
-          border-top: 35px solid transparent;
-          border-left: 14px solid #FF7C35;
-          border-bottom: 35px solid transparent;
-          position: absolute;
-          left: 44px;
+        z-index: 1;
+        width: 129px;
+        height: 94px;
+        border-radius: 2px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+        top: 0;
+        left: 15px;
+        animation: grow 300ms ease-in;
+        &:hover {
+          ~ .menu__btn {
+            color: #79b8dc;
+          }
         }
 
-        .flogo-icon-trigger {
-          position: absolute;
-          top: 30%;
-          left: 34%;
-          color: #fff;
-          font-size: 1.6em;
+        .flogo-flow-menu__options__list {
+          list-style: none;
+          font-size: .875em;
+          margin: 0;
+          .flogo-flow-menu__options__list__element {
+            padding: 3px 0;
+          }
         }
       }
-      .flow-info {
-        background-color: #fff;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
-        height: 100px;
-        padding-left: 34px;
-        padding-top: 5px;
-        position: relative;
-        border-radius: 4px;
-        margin-left: 44px;
 
-        &:hover {
-          box-shadow: 0 0 5px 0 #79b8dc;
+      &:hover {
+        .menu__btn {
+          color: #79b8dc;
         }
-
-        .header {
-          display: flex;
-
-          .title {
-            font-size: 1em;
-            text-transform: capitalize;
-            font-weight: bold;
-            letter-spacing: .5px;
-            margin-bottom: 0;
-            margin-top: 15px;
-            width: 640px;
-          }
-        }
-
-        .menu {
-          position: absolute;
-          right: 15px;
-          margin-top: 1em;
-
-          .menu__options {
-            display: none;
-            position: absolute;
-            z-index: 1;
-            width: 129px;
-            height: 94px;
-            border-radius: 2px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
-            top: 0;
-            left: 15px;
-            animation: grow 300ms ease-in;
-            &:hover {
-              ~ .menu__btn {
-                color: #79b8dc;
-              }
-            }
-
-            .menu__options__list {
-              list-style: none;
-              font-size: .875em;
-              margin: 0;
-              .menu__options__list__element {
-                padding: 3px 0;
-              }
-            }
-          }
-
-          &:hover {
-            .menu__btn {
-              color: #79b8dc;
-            }
-            .menu__options {
-              display: block;
-            }
-          }
-        }
-
-        .description {
-          margin-top: 5px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-size: 0.875em;
+        .flogo-flow-menu__options {
           display: block;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          width: 500px;
-          line-height: 1.14;
-          letter-spacing: .2px;
-        }
-
-        .creation-date {
-          float: right;
-          margin: 0 2em;
-          font-size: 0.625em;
-          letter-spacing: .6px;
-          font-style: italic;
-          position: relative;
-          top: 10px;
         }
       }
     }
-  }
 
+    .flogo-flow-description {
+      margin-top: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.875em;
+      display: block;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      width: 500px;
+      line-height: 1.14;
+      letter-spacing: .2px;
+    }
+
+    .flogo-flow-creation-date {
+      float: right;
+      margin: 0 2em;
+      font-size: 0.625em;
+      letter-spacing: .6px;
+      font-style: italic;
+      position: relative;
+      top: 10px;
+    }
+  }
 }
 
 @keyframes grow {
