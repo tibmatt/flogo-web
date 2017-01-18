@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import {RESTAPIApplicationsService} from './applications-api.service';
 
 @Injectable()
 export class RESTAPIFlowsService{
-  constructor(private http:Http){
+  constructor(private http:Http, private APIApplicationService:RESTAPIApplicationsService){
   }
 
   createFlow(flowObj: any) {
@@ -41,23 +42,28 @@ export class RESTAPIFlowsService{
   getFlow( id : string ) {
     return this.http.get('/v1/api/flows/' + id + '/json').toPromise()
       .then(response=>{
-        if(response.text())
-          return response.json();
+        if(response.text()) {
+            let flow = response.json();
+            return this.APIApplicationService.getApp(flow.appId || 'DEFAULT-APP')
+                .then ((app)=> {
+                    flow.app = app;
+                    return flow;
+                })
+        }
         else
           return response;
       });
   }
 
 
-  getFlowByName( flowName : string ) {
-        let headers = new Headers(
-            {
-                'Accept' : 'application/json'
-            }
-        );
-        let options = new RequestOptions( { headers : headers } );
-        return this.http.get('/v1/api/flows?name='+flowName, options ).toPromise()
+  getFlowByName(flowName: string) {
+    let headers = new Headers({ Accept: 'application/json' });
+    let options = new RequestOptions({ headers });
+    return this.http.get(`/v1/api/flows?name=${flowName}`, options)
+      .map((res: Response) => res.json())
+      .toPromise();
   }
+
   uploadFlow( process : any ) {
     //  upload current flow to process service server
 
@@ -117,7 +123,7 @@ export class RESTAPIFlowsService{
       );
   }
 
-  importFlow( importFile : File, flowName:string ) {
+  importFlow( importFile : File, appId : string, flowName?:string ) {
     return new Promise( ( resolve, reject ) => {
       var formData = new FormData();
       var xhr = new XMLHttpRequest();
@@ -140,7 +146,7 @@ export class RESTAPIFlowsService{
           }
         }
       };
-      let url = '/v1/api/flows/upload' + (flowName ? '?name='+ flowName : '') ;
+      let url = `/v1/api/flows/upload?appId=${appId}` + (flowName ? '&name='+ flowName : '') ;
 
       xhr.open( 'POST', url, true );
       xhr.send( formData );

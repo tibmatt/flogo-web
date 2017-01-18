@@ -3,7 +3,7 @@
   <div class="flows-container">
 
 
-    <div *ngFor="let flow of flows" class="flow">
+    <div *ngFor="let flow of flows" class="flow" (click)="select(flow)">
 
       <div class="trigger-info">
         <i class="flogo-icon-trigger"></i>
@@ -32,8 +32,7 @@
         </div>
 
         <div [title]="flow.description" class="description">{{flow.description}}</div>
-        <span
-          class="creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{formatDate(flow.created_at)}}</span>
+        <span class="creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.created_at | date }}</span>
 
       </div>
 

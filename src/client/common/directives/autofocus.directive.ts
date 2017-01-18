@@ -1,9 +1,9 @@
 import {Directive, ElementRef, Renderer, AfterContentInit} from '@angular/core';
 @Directive({
-  selector: '[doFocus]'
+  selector: '[autofocus]'
 })
 
-export class DoFocusDirective implements AfterContentInit {
+export class AutofocusDirective implements AfterContentInit {
 
   constructor(private _el: ElementRef, private renderer: Renderer) {
   }

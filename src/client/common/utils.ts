@@ -780,3 +780,18 @@ export function timeString(date) {
 export function toDouble(num:number) {
   return num > 9? num: '0' + num;
 }
+
+/**
+ * Get the difference between two dates
+ *
+ * @param beginDate: Inital date
+ * @param endDate: Final date
+ * @param timeUnit: Measurement unit
+ */
+export function diffDates(beginDate:any, endDate:any, timeUnit:any) {
+  let begin = moment(beginDate);
+  let end  = moment(endDate);
+
+  return begin.diff(end, timeUnit);
+
+}

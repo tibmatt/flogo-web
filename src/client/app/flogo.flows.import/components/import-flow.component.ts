@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { notification } from '../../../common/utils';
 
@@ -6,21 +6,24 @@ import { notification } from '../../../common/utils';
   selector : 'flogo-flows-import',
   moduleId : module.id,
   templateUrl : 'import-flow.tpl.html',
-  styleUrls : [ 'import-flow.component.css' ],
-  outputs : [ 'onError:importError', 'onSuccess:importSuccess' ]
+  styleUrls : [ 'import-flow.component.css' ]
 } )
 export class FlogoFlowsImport {
-  private _elmRef: ElementRef;
-  public onError: EventEmitter<any>;
-  public onSuccess: EventEmitter<any>;
+  @Input()
+  public appId : string;
+  @Output()
+  public importError: EventEmitter<any>;
+  @Output()
+  public importSuccess: EventEmitter<any>;
   public showFileNameDialog: boolean = false;
   public repeatedName: string = '';
   public importFile: any;
+  private _elmRef: ElementRef;
 
   constructor(elementRef: ElementRef, private _flowsAPIs: RESTAPIFlowsService) {
     this._elmRef = elementRef;
-    this.onError = new EventEmitter<any>();
-    this.onSuccess = new EventEmitter<any>();
+    this.importError = new EventEmitter<any>();
+    this.importSuccess = new EventEmitter<any>();
   }
 
   public selectFile(evt: any) {
@@ -76,10 +79,10 @@ export class FlogoFlowsImport {
   }
 
   uploadFlow(flow, flowName) {
-    let promise = this._flowsAPIs.importFlow(flow, flowName);
+    let promise = this._flowsAPIs.importFlow(flow, this.appId, flowName);
 
     promise.then((result: any) => {
-      this.onSuccess.emit(result);
+      this.importSuccess.emit(result);
     })
       .catch((err: any) => {
         let objError;
@@ -96,10 +99,10 @@ export class FlogoFlowsImport {
             break;
           case 'ERROR_VALIDATION':
             let errorMessage = this.getErrorMessageActivitiesNotInstalled(objError);
-            this.onError.emit({response: errorMessage});
+            this.importError.emit({response: errorMessage});
             break;
           default:
-            this.onError.emit(err);
+            this.importError.emit(err);
             break;
         }
 

@@ -22,12 +22,12 @@ export class FlogoAppsComponent {
   onAddedApp(application: IFlogoApplicationModel) {
   }
 
-  // TODO: fix routing
+
   onSelectedApp(application: IFlogoApplicationModel) {
     this._router.navigate(['/apps', application.id]);
   }
 
-  // TODO: fix routing
+
   onDeletedApp(application: IFlogoApplicationModel) {
     this._router.navigate(['/apps']);
 

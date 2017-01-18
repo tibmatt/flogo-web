@@ -34,6 +34,7 @@ export class FlogoAppListComponent implements OnInit {
   }
 
   confirmDelete(app: IFlogoApplicationModel) {
+    // TODO: i18n
     this.flogoModal.confirmDelete('Are you sure you want to delete ' + app.name + ' application?').then((res) => {
       if (res) {
         this._delete(app);

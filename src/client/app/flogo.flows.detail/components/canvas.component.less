@@ -1,4 +1,8 @@
 @import "_variables";
+
+@flogo-flow-detail-header-selected-color:#1573ca;
+@flogo-flow-detail-header-unselected-color:#666666;
+
 :host {
   display: flex;
   align-items: stretch;
@@ -74,10 +78,6 @@
 
 .flogo-flow-detail {
   background-color: #FAFAFA;
-}
-
-.flogo-flow-detail-header {
-  padding: 20px 0 30px 30px;
 }
 
 .flogo-flow-detail-name {
@@ -239,6 +239,43 @@
         border-right: none;
         opacity: 0;
         transform: rotate(-45deg);
+      }
+    }
+  }
+}
+
+
+.flogo-flow-detail-header {
+  padding: 20px 0 30px 30px;
+
+  .flogo-flow-detail-header-back {
+    display: flex;
+    flex-direction: row;
+
+    .flogo-flow-detail-header-back-icon {
+      cursor: pointer;
+      width: 20px;
+      margin-top: 10px;
+
+      li {
+        font-size: 30px;
+        position: absolute;
+        top: 20px;
+        color: @flogo-flow-detail-header-unselected-color;
+      }
+    }
+
+    .flogo-flow-detail-header-back-app-name {
+      cursor: pointer;
+      color: @flogo-flow-detail-header-selected-color;
+    }
+
+    &.--hover {
+      .flogo-flow-detail-header-back-app-name {
+        text-decoration: underline;
+      }
+      .flogo-flow-detail-header-back-icon li {
+        color: @flogo-flow-detail-header-selected-color;
       }
     }
   }
