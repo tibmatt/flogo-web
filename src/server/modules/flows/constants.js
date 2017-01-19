@@ -1,7 +1,7 @@
 export const EDITABLE_FIELDS = [];
 
 export const PUBLISH_FIELDS_SHORT = [
-  '_id',
+  'id',
   'name',
   'description',
   'createdAt',
