@@ -1,7 +1,9 @@
 .flogo-flow {
   position: relative;
+  opacity: 0;
   margin-top: 10px;
   cursor: pointer;
+  animation: list-elements 700ms ease-out forwards;
 
   .flogo-flow-trigger {
     background-color: #ff7c35;
@@ -132,5 +134,14 @@
     font-size: 0;
     width: 0;
     height: 0;
+  }
+}
+
+@keyframes list-elements {
+  0%{
+    transform: translateY(70px);
+  }
+  100%{
+    opacity: 1;
   }
 }
