@@ -28,7 +28,7 @@ export class FlogoMainComponent implements OnInit {
         this.applicationServiceAPI.recentFlows()
             .then((flows: Array<any>)=> {
               flows = flows.length <= 5 ? flows : _.slice(flows, 0, 5);
-              this.recent = _.forEach(flows, flow=>{flow.encodedId = flogoIDEncode(flow.id)})
+              this.recent = _.forEach(flows, flow => {flow.encodedId = flogoIDEncode(flow.id)})
             });
 
         this.applicationServiceAPI.allFlows()
@@ -57,7 +57,7 @@ export class FlogoMainComponent implements OnInit {
 
     getOriginalFlows() {
         let flows = _.clone(this.originalFlows || []);
-        return _.forEach(flows, function (flow:any) {
+        return _.forEach(flows, (flow:any) => {
           flow.createdAt = flow.created_at;
           delete flow.created_at;
         });
