@@ -11,16 +11,14 @@ export const PUBLISH_FIELDS_SHORT = [
 
 // same for now
 export const PUBLISH_FIELDS_LONG = [
-  '_id',
+  'id',
   'name',
   'description',
   'createdAt',
   'updatedAt',
   'appId',
   'items',
-  '$table',
   'paths',
   'errorHandler',
-  '_rev'
 ];
 

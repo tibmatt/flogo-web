@@ -9,7 +9,7 @@ export interface IFlogoApplicationModel {
 }
 
 export interface IFlogoApplicationFlowModel {
-    _id: string,
+    id: string,
     name: string,
     description: string,
     createdAt: any
