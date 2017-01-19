@@ -23,9 +23,9 @@
       <div class="recent-flows">
         <ul class="recent-flows__list">
           <li *ngFor="let item of recent">
-            <a href="" class="recent-flows__list__flow">{{item.name}}</a>
+            <a [routerLink]="['/flows', item.encodedId]" class="recent-flows__list__flow">{{item.name}}</a>
             in
-            <a href="" class="recent-flows__list__app">{{item.app.name}}</a>
+            <a [routerLink]="['/apps', item.app.id]" class="recent-flows__list__app">{{item.app.name}}</a>
           </li>
         </ul>
       </div>
