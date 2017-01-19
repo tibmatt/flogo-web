@@ -1,6 +1,7 @@
 import { config, dbService, triggersDBService, activitiesDBService, flowExport } from '../../config/app-config';
 import { DBService} from '../../common/db.service';
 import { FlowsManager } from '../../modules/flows';
+import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { isJSON, flogoIDEncode, flogoIDDecode, flogoGenTaskID, genNodeID } from '../../common/utils';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE,FLOGO_TASK_ATTRIBUTE_TYPE, DEFAULT_APP_ID } from '../../common/constants';
 import _ from 'lodash';
@@ -41,7 +42,24 @@ export function flows(app, router){
   router.post(basePath+"/flows/triggers", addTrigger);
   router.post(basePath+"/flows/activities", addActivity);
 
-  router.get(basePath+'/flows/:id/json', exportFlowInJsonById);
+  router.get(basePath+'/flows/:flowId/json', exportFlowInJsonById);
+  router.get(basePath+'/flows/:flowId', getFlow);
+}
+
+function* getFlow() {
+  const flowId = this.params.flowId;
+
+  const flow = yield FlowsManager.findOne(flowId, {fields: 'raw', withApp:true});
+  if(!flow) {
+    throw ErrorManager.createRestNotFoundError('Flow not found', {
+      title: 'Flow not found',
+      detail: 'No flow with the specified id'
+    });
+  }
+
+  this.body = {
+    data: flow
+  }
 }
 
 
@@ -386,6 +404,9 @@ function* updateFlows(next) {
         data = JSON.parse(this.request.body);
       }
     }
+
+    delete data.app;
+
     let flowObj = data;
     let res = yield updateFlow(flowObj);
     this.body = res;
@@ -589,7 +610,7 @@ function * addActivity(next){
 function * exportFlowInJsonById( next ) {
   console.log( '[INFO] Export flow in JSON by ID' );
 
-  let flowId = _.get( this, 'params.id' );
+  let flowId = _.get( this, 'params.flowId' );
   let errMsg = {
     'INVALID_PARAMS' : 'Invalid flow id.',
     'FLOW_NOT_FOUND' : 'Cannot find flow [___FLOW_ID___].'

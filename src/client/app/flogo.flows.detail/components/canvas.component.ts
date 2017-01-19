@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { PostService } from '../../../common/services/post.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { LogService } from '../../../common/services/log.service';
+import { IFlogoApplicationModel } from '../../../common/application.model';
 
 import {
   IFlogoFlowDiagramTaskDictionary,
@@ -131,7 +132,6 @@ export class FlogoCanvasComponent implements OnInit {
             'errorHandler': res.errorHandler
           };
 
-
           this.tasks = this.handlers['root'].tasks; //  res.root.tasks;
           this.diagram = this.handlers['errorHandler'].diagram; // res.root.diagram;
           this.mainHandler = this.handlers['root'];
@@ -156,7 +156,7 @@ export class FlogoCanvasComponent implements OnInit {
         });
   }
 
-  private changeFlowDetail($event, property) {
+  public changeFlowDetail($event, property) {
         return new Promise((resolve, reject)=> {
             this._updateFlow(this.flow).then((response: any)=> {
                 let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE',{value: property});
@@ -199,14 +199,10 @@ export class FlogoCanvasComponent implements OnInit {
       this._restAPIFlowsService.getFlow(id)
           .then(
               (rsp: any)=> {
-
-
                 if (!_.isEmpty(rsp)) {
                   // initialisation
                   console.group('Initialise canvas component');
-
                   flow = rsp;
-
                   tasks = flow.items;
                   if (_.isEmpty(flow.paths)) {
                     diagram = flow.paths = <IFlogoFlowDiagram>{
@@ -243,7 +239,9 @@ export class FlogoCanvasComponent implements OnInit {
                     diagram: errorDiagram, tasks: errorTasks
                   }
                 });
+
               }
+
           )
           .catch(
               (err: any)=> {
@@ -528,7 +526,6 @@ export class FlogoCanvasComponent implements OnInit {
     }
 
     this._postService.publish( FLOGO_DIAGRAM_PUB_EVENTS.render );
-
     return this._restAPIFlowsService.startFlow(
         id || this._currentProcessID, initData || []
       )
@@ -2041,7 +2038,7 @@ export class FlogoCanvasComponent implements OnInit {
     }
 
   public navigateToApp()   {
-      this._router.navigate(['/apps', this.flow.app.id]);
+      this._router.navigate(['/apps', this.flow.appId]);
   }
 
   public onMouseOverBackControl()   {
