@@ -49,7 +49,7 @@ export function flows(app, router){
 function* getFlow() {
   const flowId = this.params.flowId;
 
-  const flow = yield FlowsManager.findOne(flowId);
+  const flow = yield FlowsManager.findOne(flowId, {withApp:true});
   if(!flow) {
     throw ErrorManager.createRestNotFoundError('Flow not found', {
       title: 'Flow not found',

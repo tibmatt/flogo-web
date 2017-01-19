@@ -132,8 +132,6 @@ export class FlowsManager {
 
   /**
    *
-   * Options:
-   *    * ## options
    * @params flowId {string} flow id
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
@@ -147,8 +145,21 @@ export class FlowsManager {
     // TODO: handle not found
     return flowsDBService.db.get(flowId)
       .then((response) => {
-        const appPromise = cleanForOutput(response, fields);
-        return appPromise;
+        const cleanFlow = Promise.resolve(cleanForOutput(response, fields));
+        let flowPromise = Promise.resolve(cleanFlow);
+
+        if(withApp) {
+          flowPromise = flowPromise.then((flow) => {
+            const augmentedFlow = flow;
+            let withFlows = false;
+            return AppsManager.findOne(flow.appId, withFlows)
+              .then((app)=> {
+                augmentedFlow.app = app;
+                return augmentedFlow;
+              });
+          });
+        }
+        return flowPromise;
       })
       .catch((err) => {
         if (err.name === 'not_found') {

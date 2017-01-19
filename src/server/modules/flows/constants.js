@@ -13,7 +13,6 @@ export const PUBLISH_FIELDS_SHORT = [
 export const PUBLISH_FIELDS_LONG = [
   '_id',
   'name',
-  'app',
   'description',
   'createdAt',
   'updatedAt',
