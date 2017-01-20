@@ -61,7 +61,7 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
   createNewApp()   {
       let application:any = {
           id: this.mockApplications.length + 1,
-          name: this.getNewAppName(UNTITLED_APP),
+          name: this.determineUniqueName(UNTITLED_APP),
           version: '',
           description: '',
           createdAt: new Date(),
@@ -94,7 +94,7 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
       });
   }
 
-    getNewAppName(name:string, count = 0) {
+    determineUniqueName(name:string, count = 0) {
         let appName:string = name +  (count > 0 ?   ` (${count})` : '');
         let found: IFlogoApplicationModel;
 
@@ -103,7 +103,7 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
         });
 
         if(found) {
-            return this.getNewAppName(name , ++count);
+            return this.determineUniqueName(name , ++count);
         } else {
             return appName;
         }

@@ -15,7 +15,9 @@ import { FlogoApplicationFlowsComponent } from '../flogo.apps.flows/components/f
 import { FlogoAppListComponent } from '../flogo.apps.list/components/app.list.component';
 import { FlogoApplicationSearch } from '../flogo.apps.search/components/search.component';
 
-import {routing, appRoutingProviders} from "./flogo.apps.routing";
+import { AppDetailService } from './services/apps.service';
+
+import {routing, appRoutingProviders} from './flogo.apps.routing';
 
 @NgModule({
   imports: [
@@ -36,6 +38,9 @@ import {routing, appRoutingProviders} from "./flogo.apps.routing";
     FlogoApplicationSearch
   ],
   bootstrap: [FlogoAppsComponent],
-  providers: [appRoutingProviders]
+  providers: [
+    appRoutingProviders,
+    AppDetailService
+  ]
 })
 export class FlogoAppsModule {}

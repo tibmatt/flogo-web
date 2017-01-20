@@ -46,6 +46,11 @@ export class FlogoFlowsAddComponent {
       this.closeAddFlowModal();
     }
 
+    public open() {
+      this.resetForm();
+      this.modal.open();
+    }
+
     public closeAddFlowModal() {
         this.resetForm();
         this.modal.close();
