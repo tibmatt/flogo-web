@@ -12,6 +12,8 @@
     </div>
   </div>
 
+  <input type="file" (change)="onFileSelected($event)">
+
   <div class="flogo-app-list__content">
     <ul class="apps-list">
       <li *ngFor="let app of applications" [class.selected]="app.id == currentApp?.id"

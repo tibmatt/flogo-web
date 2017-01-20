@@ -13,6 +13,7 @@
   "APP-LIST-POPUP:CONFIRM-MESSAGE-DELETE":"Delete App and all included flows?",
   "APP-LIST-POPUP:DELETE-CANCEL": "Cancel",
   "APP-LIST-POPUP:DELETE-CONFIRM": "Yes, Delete",
+  "APP-LIST:SUCCESSFULLY-IMPORTED": "Application imported successfully",
   "APP-DETAILS:DELETE-APP": "Delete App",
   "APP-DETAIL:ERROR-UNIQUE-NAME": "There's already an application with that name",
   "APP-DETAIL:CONFIRM_DELETE": "Are you sure you want to delete the application \"{{appName}}\"?",
