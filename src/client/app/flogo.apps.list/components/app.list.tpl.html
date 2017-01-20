@@ -7,10 +7,10 @@
 
   <div class="flogo-app-list__content">
     <ul class="apps-list">
-      <li *ngFor="let app of applications" [class.selected]="app.name == selectedApp?.name"
+      <li *ngFor="let app of applications" [class.selected]="app.id == currentApp?.id"
           class="apps-list__element" (click)="onSelectApp(app)">
-        {{app.name}}
-          <span class="flogo-icon-delete apps-list__delete-btn" (click)="confirmDelete(app)"></span>
+        {{ app.id == currentApp?.id ? currentApp.name :  app.name }}
+          <span class="flogo-icon-delete apps-list__delete-btn" (click)="confirmDelete($event, app)"></span>
       </li>
     </ul>
   </div>

@@ -8,6 +8,7 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { PostService } from '../../../common/services/post.service'
 import { PUB_EVENTS as SUB_EVENTS } from '../../flogo.flows.add/message';
+import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
 
 import 'rxjs/add/operator/map';
 
@@ -18,14 +19,14 @@ import 'rxjs/add/operator/map';
   styleUrls: []
 })
 export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
-  public application: IFlogoApplicationModel = null;
+  public appDetail: ApplicationDetail = null;
   private subscriptions: any;
 
   constructor(
     public translate: TranslateService,
     private router : Router,
     private route: ActivatedRoute,
-    private apiApplications: RESTAPIApplicationsService,
+    private appService: AppDetailService,
     private flowsService: RESTAPIFlowsService,
     private postService: PostService
   ) {
@@ -34,10 +35,13 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.route.params
-      .map((params: RouteParams) => params['id'])
+      .map((params: RouteParams) => params['appId'])
       .subscribe((appId: string) => {
-        this.loadApp(appId);
+        this.appService.load(appId);
       });
+
+    this.appService.currentApp()
+      .subscribe((appDetail: ApplicationDetail) => { this.appDetail = _.cloneDeep(appDetail) });
   }
 
   public ngOnDestroy() {
@@ -49,12 +53,11 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   }
 
   public onFlowSelected(flow) {
-    console.log('onFlowSelected', flow);
     this.router.navigate(['/flows', flogoIDEncode(flow.id)]);
   }
 
   public onFlowAdded(event) {
-    this.loadApp(this.application.id);
+    this.appService.reload();
   }
 
   private initSubscribe() {
@@ -67,7 +70,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
     let request = {
       name: data.name,
       description: data.description,
-      appId: this.application.id,
+      appId: this.appDetail.app.id,
       paths: {},
       items: {}
     };
@@ -75,19 +78,12 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
       let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
       notification(message, 'success', 3000);
     })
-      .then(() => this.loadApp(this.application.id))
+      .then(() => this.appService.reload())
       .catch((err) => {
         let message = this.translate.instant('FLOWS:CREATE_FLOW_ERROR', err);
         notification(message, 'error');
         console.error(err);
       });
-  }
-
-  private loadApp(appId) {
-    this.apiApplications.getApp(appId)
-      .then((application: IFlogoApplicationModel) => {
-        this.application = application;
-      })
   }
 
 }

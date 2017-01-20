@@ -73,7 +73,7 @@ export class AppsManager {
       cleanApp = build(cleanApp);
       return appsDBService.db
         .post(cleanApp)
-        .then(response => AppsManager.findOne(response.id));
+        .then(response => AppsManager.findOne(response.id, { withFlows: true }));
     });
   }
 
@@ -93,10 +93,11 @@ export class AppsManager {
           app.updatedAt = (new Date()).toISOString();
           return appsDBService.db
             .put(app)
-            .then(saveResponse => AppsManager.findOne(saveResponse.id));
+            .then(saveResponse => AppsManager.findOne(saveResponse.id, { withFlows: true }));
         });
       })
       .catch((error) => {
+      // TODO: if conflict: repeat
         if (error.name === 'not_found') {
           throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }

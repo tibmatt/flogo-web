@@ -1,14 +1,19 @@
-import {Directive, ElementRef, Renderer, AfterContentInit} from '@angular/core';
+import {AfterContentInit, Directive, Input, ElementRef, Renderer } from '@angular/core';
 @Directive({
-  selector: '[autofocus]'
+  selector: '[fgAutofocus]'
 })
 
 export class AutofocusDirective implements AfterContentInit {
+
+  @Input()
+  shouldAutofocus: boolean = true;
 
   constructor(private _el: ElementRef, private renderer: Renderer) {
   }
 
   ngAfterContentInit() {
-    this.renderer.invokeElementMethod(this._el.nativeElement, 'focus');
+    if (this.shouldAutofocus) {
+      this.renderer.invokeElementMethod(this._el.nativeElement, 'focus');
+    }
   }
 }
