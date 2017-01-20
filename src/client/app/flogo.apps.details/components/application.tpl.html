@@ -1,6 +1,6 @@
  <div class="flogo-app-header row">
     <div class="col-sm-7 col-md-offset-1">
-      <div *ngIf="state?.name.hasErrors && state?.name.errors.notUnique">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
+      <div *ngIf="state?.name.hasErrors && state?.name.errors['notUnique']">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
       <div class="flogo-app-header__name-container">
         <input *ngIf="isNameInEditMode" type="text" #appInputName
                fgAutofocus
@@ -35,7 +35,7 @@
                   id="appDescription" class="flogo-app-header__description--edit">
         </textarea>
         <label class="flogo-app-header__description is-clickable"
-               *ngIf="!isDescriptionInEditMode && editableDescription"
+               *ngIf="!isDescriptionInEditMode && !!editableDescription"
                (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
       </div>
     </div>
