@@ -1,0 +1,40 @@
+:host(.alwaysVisible) {
+  visibility: visible !important;
+}
+
+.popup-container {
+
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 30px;
+  border: 1px solid #d8d8d8;
+  padding: 40px;
+  background: #fff;
+  box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.33);
+
+  .popup-content {
+    color: #d0021b;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 2em;
+  }
+  .popup-btn {
+    padding: 7px 0;
+    text-align: center;
+    width: 45%;
+    font-weight: normal;
+  }
+
+  .popup-btn.popup-btn-primary {
+    background: #d0011b;
+    color: #fff;
+    float: right;
+    border: none;
+    padding: 9px 0;
+  }
+
+  .popup-btn.popup-btn-secondary {
+    float: left;
+  }
+}

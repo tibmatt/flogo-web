@@ -1,5 +1,4 @@
-import {Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges} from '@angular/core';
-import {FlogoModal} from '../../../common/services/modal.service';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 import {IFlogoApplicationModel} from '../../../common/application.model';
 import {TranslateService} from 'ng2-translate/ng2-translate';
 import {RESTAPIApplicationsService} from '../../../common/services/restapi/applications-api.service';
@@ -19,8 +18,7 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
 
   public applications: Array<IFlogoApplicationModel> = [];
 
-  constructor(public flogoModal: FlogoModal,
-              public translate: TranslateService,
+  constructor(public translate: TranslateService,
               private apiApplications: RESTAPIApplicationsService) {
   }
 
@@ -41,25 +39,17 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
     }
   }
 
-  onSelectApp(app: IFlogoApplicationModel) {
-    this.onSelectedApp.emit(app);
+  onSelectApp(event: Event, removeBox: ElementRef, app: IFlogoApplicationModel) {
+    if (!(event.target == removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
+      this.appSelected(app);
+    }
   }
 
-  confirmDelete(event:Event, app: IFlogoApplicationModel) {
-    // TODO: i18n
-    event.stopPropagation();
-    this.flogoModal.confirmDelete('Are you sure you want to delete ' + app.name + ' application?').then((res) => {
-      if (res) {
-        this.remove(app);
-      }
-    });
-  }
-
-  onAdd(event) {
+  onAdd() {
     this.apiApplications.createNewApp()
       .then((application: IFlogoApplicationModel) => {
         this.onAddedApp.emit(application);
-        this.onSelectApp(application);
+        this.appSelected(application);
       }).then(() => this.listAllApps());
   }
 
@@ -70,12 +60,16 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
       })
   }
 
-  private remove(application: IFlogoApplicationModel) {
+  remove(application: IFlogoApplicationModel) {
     this.apiApplications.deleteApp(application.id)
       .then(() => {
         this.listAllApps();
         this.onDeletedApp.emit(application);
       })
+  }
+
+  private appSelected(app) {
+    this.onSelectedApp.emit(app);
   }
 
 }

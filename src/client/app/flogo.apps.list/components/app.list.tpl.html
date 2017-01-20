@@ -8,20 +8,23 @@
         <i class="flogo-icon flogo-icon-import"></i><span>Import</span>
       </button>
       -->
-      <button class="flogo-button--add-app" (click)="onAdd($event)"><i class="flogo-icon-add"></i></button>
+      <button class="flogo-button--add-app" (click)="onAdd()"><i class="flogo-icon-add"></i></button>
     </div>
   </div>
 
   <div class="flogo-app-list__content">
     <ul class="apps-list">
       <li *ngFor="let app of applications" [class.selected]="app.id == currentApp?.id"
-          class="apps-list__element" (click)="onSelectApp(app)">
-        {{ app.id == currentApp?.id ? currentApp.name :  app.name }}
-          <span class="flogo-icon-delete apps-list__delete-btn" (click)="confirmDelete($event, app)"></span>
+          class="apps-list__element" (click)="onSelectApp($event, deleteBox, app)">
+        <div class="app-list__app-name">
+          {{ app.id == currentApp?.id ? currentApp.name : app.name }}
+          <flogo-app-delete-popover #deleteBox class="apps-list__delete-btn" (confirmDel)="remove($event)"
+                                  [app]="app">
+          </flogo-app-delete-popover>
+        </div>
       </li>
     </ul>
   </div>
 
 </div>
-
 
