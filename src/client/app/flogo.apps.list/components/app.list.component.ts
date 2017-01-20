@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges} from '@angular/core';
 import {FlogoModal} from '../../../common/services/modal.service';
 import {IFlogoApplicationModel} from '../../../common/application.model';
 import {TranslateService} from 'ng2-translate/ng2-translate';
@@ -11,13 +11,13 @@ import {RESTAPIApplicationsService} from '../../../common/services/restapi/appli
   templateUrl: 'app.list.tpl.html',
   styleUrls: ['app.list.css']
 })
-export class FlogoAppListComponent implements OnInit {
+export class FlogoAppListComponent implements OnInit, OnChanges {
+  @Input() currentApp: IFlogoApplicationModel;
   @Output() onSelectedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
   @Output() onAddedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
   @Output() onDeletedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
   public applications: Array<IFlogoApplicationModel> = [];
-  selectedApp: IFlogoApplicationModel;
 
   constructor(public flogoModal: FlogoModal,
               public translate: TranslateService,
@@ -28,17 +28,29 @@ export class FlogoAppListComponent implements OnInit {
     this.listAllApps();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    let change = changes['currentApp'];
+    if (change) {
+      let prevId = change.previousValue && change.previousValue.id;
+      let currentId = change.currentValue && change.currentValue.id;
+
+      if (prevId != currentId) {
+        this.listAllApps();
+      }
+
+    }
+  }
+
   onSelectApp(app: IFlogoApplicationModel) {
-    this.selectedApp = app;
     this.onSelectedApp.emit(app);
   }
 
-  confirmDelete(app: IFlogoApplicationModel) {
+  confirmDelete(event:Event, app: IFlogoApplicationModel) {
     // TODO: i18n
+    event.stopPropagation();
     this.flogoModal.confirmDelete('Are you sure you want to delete ' + app.name + ' application?').then((res) => {
       if (res) {
-        this._delete(app);
-      } else {
+        this.remove(app);
       }
     });
   }
@@ -58,13 +70,11 @@ export class FlogoAppListComponent implements OnInit {
       })
   }
 
-  private _delete(application: IFlogoApplicationModel) {
+  private remove(application: IFlogoApplicationModel) {
     this.apiApplications.deleteApp(application.id)
       .then(() => {
         this.listAllApps();
         this.onDeletedApp.emit(application);
-        this.selectedApp = null;
-        //this._router.navigate([ 'FlogoHomeComponent', {id: application.id} ]);
       })
   }
 

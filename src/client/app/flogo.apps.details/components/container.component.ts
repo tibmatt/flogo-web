@@ -35,7 +35,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.route.params
-      .map((params: RouteParams) => params['id'])
+      .map((params: RouteParams) => params['appId'])
       .subscribe((appId: string) => {
         this.appService.load(appId);
       });
