@@ -10,6 +10,7 @@
   "ADD:GIVE-YOUR-FLOW-A-NAME": "Give your flow a name",
   "CANVAS:ADD-FLOW-DESCRIPTION": "Add flow's description",
   "APP-LIST:MY-APPS": "My Apps",
+  "APP-DETAILS:DELETE-APP": "Delete App",
   "CANVAS:ARM-LINUX": "ARM/Linux",
   "CANVAS:BUILD": "Build",
   "CANVAS:COPY": "Make a copy",
