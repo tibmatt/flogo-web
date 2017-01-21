@@ -27,8 +27,9 @@ export class FlogoMainComponent implements OnInit {
     ngOnInit() {
         this.applicationServiceAPI.recentFlows()
             .then((flows: Array<any>)=> {
-              flows = flows.length <= 3 ? flows : _.slice(flows, 0, 3);
-              this.recent = _.forEach(flows, flow => {flow.encodedId = flogoIDEncode(flow.id)})
+              flows = flows.length <= 3 ? flows : flows.slice(0,3);
+              flows.forEach(flow=>{flow.encodedId = flogoIDEncode(flow.id)});
+              this.recent = flows;
             });
 
         this.applicationServiceAPI.allFlows()
