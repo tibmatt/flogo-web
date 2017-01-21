@@ -34,6 +34,13 @@
     }
   }
 
+  .flogo-app-header__options {
+    display: flex;
+    justify-content: flex-end;
+    @media (max-width: 1200px) {
+      display: block;
+    }
+  }
 }
 
 .flogo-app-content {
@@ -58,10 +65,12 @@
   }
 }
 
-.flogo-button--build-app {
+.flogo-button {
   min-width: 124px;
   height: 40px;
-  float: right;
+  &:nth-child(2) {
+    margin: 0 15px;
+  }
 }
 
 .is-clickable {
@@ -87,14 +96,51 @@
   color: #ee3342;
   position: relative;
   .flogo-input-error-msg {
+    color: #fff;
     position: absolute;
-    display: block;
-    font-size: .625em;
+    font-size: .875em;
     letter-spacing: .2px;
-    top: -15px;
+    bottom: 50px;
+    background-color: #ee3342;
+    padding: 1em;
+    z-index: 3;
+    transform: scale(0, 0);
+    animation: popup 500ms ease-out forwards;
+
+    &:before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 10px solid #ee3342;
+      bottom: -10px;
+      left: 30%;
+      transform: translateY(-10px);
+      animation: downElement 150ms ease-in forwards;
+      animation-delay: 350ms;
+    }
   }
   .flogo-app-header__name {
     color: #ee3342;
   }
 }
 
+@keyframes popup {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.05, 1.05);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes downElement {
+  to {
+    transform: translateY(0);
+  }
+}
