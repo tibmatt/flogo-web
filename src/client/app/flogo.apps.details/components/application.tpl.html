@@ -10,7 +10,7 @@
                (editableInputCancel)="onNameCancel()"
                id="appName" class="flogo-app-header__name--edit"/>
 
-      <label class="flogo-app-header__name is-clickable"
+      <label class="flogo-app-header__name is-editable"
              *ngIf="!isNameInEditMode"
              (click)="onClickLabelName($event)">{{editableName}}</label>
     </div>
@@ -36,7 +36,7 @@
                   id="appDescription" class="flogo-app-header__description--edit">
         </textarea>
 
-      <label class="flogo-app-header__description is-clickable"
+      <label class="flogo-app-header__description is-editable"
              *ngIf="!isDescriptionInEditMode && !!editableDescription"
              (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
     </div>
