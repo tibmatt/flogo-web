@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import {RESTAPIApplicationsService} from './applications-api.service';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class RESTAPIFlowsService{
-  constructor(private http:Http, private APIApplicationService:RESTAPIApplicationsService){
+  constructor(private http:Http ){
   }
 
   createFlow(flowObj: any) {
@@ -40,15 +40,10 @@ export class RESTAPIFlowsService{
   }
 
   getFlow( id : string ) {
-    return this.http.get('/v1/api/flows/' + id + '/json').toPromise()
+    return this.http.get('/v1/api/flows/' + id).toPromise()
       .then(response=>{
         if(response.text()) {
-            let flow = response.json();
-            return this.APIApplicationService.getApp(flow.appId || 'DEFAULT-APP')
-                .then ((app)=> {
-                    flow.app = app;
-                    return flow;
-                })
+            return response.json().data;
         }
         else
           return response;

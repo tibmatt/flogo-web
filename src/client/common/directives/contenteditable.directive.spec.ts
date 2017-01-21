@@ -30,7 +30,7 @@ describe('Directive: Contenteditable', ()=> {
     });
 
 
-    it('Changing the model variable should change the inner text', done => {
+    it('Changing the model variable should change the inner text', () => {
         fixture = TestBed.createComponent(Container);
         container = fixture.componentInstance;
         de = fixture.debugElement.query(By.directive(Contenteditable));
@@ -38,7 +38,6 @@ describe('Directive: Contenteditable', ()=> {
         container.name = 'a new name';
         fixture.detectChanges();
         expect(element.innerText).toBe('a new name');
-        done();
     });
 
     it('Blur event should emit the edited value', done => {
@@ -54,11 +53,12 @@ describe('Directive: Contenteditable', ()=> {
         });
 
         let h3Element = h3Debug.nativeElement;
-        if(h3Element) {
-            h3Element.focus();
-            h3Element.innerHTML = 'A new value';
-            h3Element.blur();
-        }
+        h3Debug.triggerEventHandler('focus', null);
+        fixture.detectChanges();
+        h3Element.innerHTML = 'A new value';
+        h3Debug.triggerEventHandler('blur', null);
+        fixture.detectChanges();
+
     });
 });
 

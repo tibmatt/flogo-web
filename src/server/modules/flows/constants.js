@@ -17,5 +17,8 @@ export const PUBLISH_FIELDS_LONG = [
   'createdAt',
   'updatedAt',
   'appId',
+  'items',
+  'paths',
+  'errorHandler',
 ];
 

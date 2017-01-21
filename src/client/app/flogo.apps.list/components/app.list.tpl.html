@@ -3,7 +3,7 @@
   <div class="flogo-app-list__header">
     <div class="title">{{ 'APP-LIST:MY-APPS' | translate }}</div>
     <div>
-      <button class="flogo-button--import-app draw">
+      <button class="flogo-button--import-app">
         <i class="flogo-icon flogo-icon-download"></i><span>Import</span>
       </button>
       <button class="flogo-button--add-app" (click)="onAdd($event)"><i class="flogo-icon-add"></i></button>
@@ -12,10 +12,10 @@
 
   <div class="flogo-app-list__content">
     <ul class="apps-list">
-      <li *ngFor="let app of applications" [class.selected]="app.name == selectedApp?.name"
+      <li *ngFor="let app of applications" [class.selected]="app.id == currentApp?.id"
           class="apps-list__element" (click)="onSelectApp(app)">
-        {{app.name}}
-        <span class="flogo-icon-delete apps-list__delete-btn" (click)="confirmDelete(app)"></span>
+        {{ app.id == currentApp?.id ? currentApp.name :  app.name }}
+          <span class="flogo-icon-delete apps-list__delete-btn" (click)="confirmDelete($event, app)"></span>
       </li>
     </ul>
   </div>

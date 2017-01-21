@@ -1,8 +1,19 @@
-import { Component, Input, Output, SimpleChange, OnChanges , ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  SimpleChanges,
+  OnChanges,
+  OnInit,
+  ViewChild,
+  EventEmitter
+} from '@angular/core';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
+import { AppDetailService, ApplicationDetail, ApplicationDetailState } from '../../flogo.apps/services/apps.service';
+import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
 
 import { diffDates, notification } from '../../../common/utils';
 
@@ -10,126 +21,164 @@ const MAX_SECONDS_TO_ASK_FLOW_NAME = 5;
 
 
 @Component({
-    selector: 'flogo-app-details-item',
-    moduleId: module.id,
-    templateUrl: 'application.tpl.html',
-    styleUrls: [ 'application.component.css' ]
+  selector: 'flogo-apps-details-application',
+  moduleId: module.id,
+  templateUrl: 'application.tpl.html',
+  styleUrls: ['application.component.css']
 })
-export class FlogoApplicationComponent implements OnChanges {
-    @ViewChild('appInputName') appInputName: ElementRef;
-    @ViewChild('appInputDescription') appInputDescription: ElementRef;
-    @Input() application: IFlogoApplicationModel;
-    @Output()
-    public flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
-    @Output()
-    public flowAdded: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
-    editingDescription: boolean;
-    editingName: boolean;
-    flows: Array<IFlogoApplicationFlowModel> = [];
+export class FlogoApplicationComponent implements OnChanges, OnInit {
+  @ViewChild(FlogoFlowsAddComponent) addFlow: FlogoFlowsAddComponent;
+  @Input() appDetail: ApplicationDetail;
 
-    constructor(public translate: TranslateService) {
-    }
+  @Output() flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
+  @Output() flowAdded: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
 
-    ngOnChanges(
-        changes : {
-            [ propKey : string ] : SimpleChange
-        }
-    ) {
-        if(changes['application'].currentValue) {
-            this.updateChanges();
-        }
-    }
+  application: IFlogoApplicationModel;
+  state: ApplicationDetailState;
 
-    updateChanges() {
-        this.flows = this.getOriginalFlows();
-        this.editingName = false;
+  isNameInEditMode: boolean;
+  autofocusName: boolean = true;
+  editableName: string;
 
-        if (this.application.updatedAt) {
-            let seconds = diffDates(Date.now(), this.application.updatedAt, 'seconds');
-            this.editingName = seconds <= MAX_SECONDS_TO_ASK_FLOW_NAME;
-        }
-    }
+  isDescriptionInEditMode: boolean;
+  editableDescription: string;
 
+  flows: Array<IFlogoApplicationFlowModel> = [];
 
+  isNewApp: boolean = false;
+
+  constructor(public translate: TranslateService,
+              private appDetailService: AppDetailService) {
+  }
 
   ngOnInit() {
-      this.editingDescription = false;
-      this.editingName = false;
+    this.isDescriptionInEditMode = false;
+    this.isNameInEditMode = false;
   }
 
-  getOriginalFlows() {
-     return _.clone(this.application.flows || []);
+  ngOnChanges(changes: SimpleChanges) {
+    let change = changes['appDetail'];
+    if (change.currentValue) {
+      this.application = this.appDetail.app;
+      this.state = this.appDetail.state;
+      this.flows = this.extractFlows();
+
+      let prevValue = change.previousValue;
+      let isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id != this.application.id;
+      if (isDifferentApp) {
+        this.appUpdated();
+      } else {
+        this.appDetailChanged();
+      }
+    }
   }
 
+  openCreateFlow() {
+    this.addFlow.open();
+  }
 
   onClickAddDescription(event) {
-        this.editingDescription = true;
+    this.isDescriptionInEditMode = true;
   }
 
-  onInputDescriptionBlur(event) {
-    this.editingDescription = false;
+  onNameSave() {
+    let editableName = this.editableName || '';
+    editableName = editableName.trim();
+    if (!editableName) {
+      return;
+    }
+    this.isNameInEditMode = false;
+    this.appDetailService.update('name', editableName);
   }
 
-  onInputNameChange(event) {
-     this.application.updatedAt = new Date();
+  onNameCancel() {
+    this.isNameInEditMode = false;
+    this.appDetailService.cancelUpdate('name');
+    this.editableName = this.application.name;
   }
 
-  onInputNameBlur(event) {
-     if(this.application.name) {
-        this.editingName = false;
-     }
+  onDescriptionSave() {
+    this.isDescriptionInEditMode = false;
+    this.appDetailService.update('description', this.editableDescription);
   }
 
-  onClickLabelName(event) {
-     this.editingName = true;
+  onDescriptionCancel() {
+    this.isDescriptionInEditMode = false;
+    this.appDetailService.cancelUpdate('description');
+    this.editableDescription = this.application.description;
   }
 
-    onClickLabelDescription(event) {
-        this.editingDescription = true;
+  onClickLabelDescription() {
+    this.isDescriptionInEditMode = true;
+  }
+
+  onClickLabelName() {
+    this.isNameInEditMode = true;
+  }
+
+  onChangedSearch(search) {
+    let flows = this.application.flows || [];
+
+    if (search && flows.length) {
+      let filtered = flows.filter((flow: IFlogoApplicationFlowModel) => {
+        return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
+          (flow.description || '').toLowerCase().includes(search.toLowerCase())
+      });
+
+      this.flows = filtered || [];
+
+    } else {
+      this.flows = this.extractFlows();
     }
+  }
 
-    onKeyUpName(event) {
-        if(event.code == "Enter") {
-            this.editingName = false;
-        }
-    }
+  onFlowSelected(flow) {
+    this.flowSelected.emit(flow);
+  }
 
-    onKeyUpDescription(event) {
-    }
+  onFlowImportSuccess(result: any) {
+    let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-IMPORT');
+    notification(message, 'success', 3000);
+    this.flowAdded.emit(result);
+  }
 
-    onChangedSearch(search) {
-        let flows = this.application.flows || [];
-
-        if(search && flows.length){
-            let filtered =  flows.filter((flow:IFlogoApplicationFlowModel)=> {
-                return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
-                       (flow.description || '').toLowerCase().includes(search.toLowerCase())
-            });
-
-            this.flows = filtered || [];
-
-        }else {
-            this.flows = this.getOriginalFlows();
-        }
-    }
-
-    onFlowSelected(flow) {
-      this.flowSelected.emit(flow);
-    }
-
-    onFlowImportSuccess( result : any ) {
-      let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-IMPORT');
-      notification( message, 'success', 3000 );
-      this.flowAdded.emit(result);
-    }
-
-    onFlowImportError( err : {
-      status : string;
-      statusText : string;
-      response : any
-    } ) {
+  onFlowImportError(err: {
+    status: string;
+    statusText: string;
+    response: any
+  }) {
     let message = this.translate.instant('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
-      notification( message, 'error' );
+    notification(message, 'error');
+  }
+
+  private appUpdated() {
+    this.isDescriptionInEditMode = false;
+
+    this.editableName = this.application.name;
+    this.editableDescription = this.application.description;
+
+    this.isNameInEditMode = false;
+    this.isNewApp = !this.application.updatedAt;
+    if (this.isNewApp) {
+      let secondsSinceCreation = diffDates(Date.now(), this.application.createdAt, 'seconds');
+      this.isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_FLOW_NAME;
+      this.isNameInEditMode = this.isNewApp;
     }
+
+  }
+
+  private appDetailChanged() {
+    if (this.state.name.hasErrors) {
+      this.isNameInEditMode = true;
+      this.autofocusName = false;
+      setTimeout(() => this.autofocusName = true, 100);
+    } else if (!this.state.name.pendingSave) {
+      this.editableName = this.application.name;
+    }
+  }
+
+  private extractFlows() {
+    return _.clone(this.application.flows || []);
+  }
 
 }

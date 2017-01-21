@@ -93,7 +93,7 @@ export class FlowsManager {
     return flowsDBService.db
       .query(`views/${VIEWS.appId}`, queryOpts)
       .then(result => (result.rows || [])
-        .map(flowRow => cleanForOutput(flowRow.doc, fields)),
+        .map(flowRow => cleanForOutput(flowRow.doc, fields))
       )
       .then(flows => (withApps ? augmentWithApps(flows) : flows));
   }
@@ -131,14 +131,15 @@ export class FlowsManager {
   }
 
   /**
+   * Find flow with the specified id
    *
    * Options:
    *    * ## options
-   *    - withFlows {boolean|string} get also all the related flows. Possible values:
-   *      - short {string} - get short version of the flows
-   *      - full {string} -  get full version of the flows
-   *      - true {boolean} - same as 'short'
-   *      - false {boolean} - do not get the flows
+   *    - fields {boolean|string} Possible values:
+   *      - short {string} - get short version of the flow
+   *      - full {string} -  get full version of the flow
+   *      - raw {string} (deprecated) -  get raw version of flow
+   *    - withApp {boolean} get also the related app.
    * @params flowId {string} flow id
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
@@ -146,15 +147,11 @@ export class FlowsManager {
    */
   static findOne(flowId, options) {
     const { fields, withApp } = Object.assign({ fields: 'full', withApp: false }, options);
-    /*
-     1. find app with the specified id
-     1.1 if app exists retrieve related flows if applicable (based on withflows)
-     */
     // TODO: handle not found
     return flowsDBService.db.get(flowId)
-      .then((response) => {
-        const appPromise = cleanForOutput(response, fields);
-        return appPromise;
+      .then((flow) => {
+        return Promise.resolve(cleanForOutput(flow, fields))
+          .then(flow => withApp ? augmentWithApp(flow, { withFlows: false } ): flow);
       })
       .catch((err) => {
         if (err.name === 'not_found') {
@@ -183,6 +180,10 @@ function cleanForOutput(flow, fields) {
     createdAt: flow.createdAt || flow.created_at,
   }, flow);
 
+  if(fields == 'raw') {
+    return flow;
+  }
+
   if (fields === 'short') {
     cleanFlow = pick(cleanFlow, PUBLISH_FIELDS_SHORT);
   } else if (fields === 'full') {
@@ -197,4 +198,13 @@ function augmentWithApps(flows = []) {
   return AppsManager.fetchManyById(appIds, { withFlows: false })
     .then(allApps => keyBy(allApps, 'id'))
     .then(appsMap => flows.map(flow => Object.assign({ app: appsMap[flow.appId] || null }, flow)));
+}
+
+function augmentWithApp(flow, options) {
+  const augmentedFlow = flow;
+  return AppsManager.findOne(flow.appId, options )
+    .then((app)=> {
+      augmentedFlow.app = app;
+      return augmentedFlow;
+    });
 }

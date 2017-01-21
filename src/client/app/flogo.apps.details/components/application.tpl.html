@@ -1,17 +1,18 @@
 <div class="flogo-app-header row">
   <div class="col-xs-6 col-md-5 col-lg-4 col-md-offset-1">
-    <div class="flogo-app-header__name-container flogo-input-error">
-      <span class="flogo-input-error-msg">That app name already exist. Pick a unique name.</span>
-      <input *ngIf="editingName" type="text" #appInputName
-             autofocus
-             [(ngModel)]="application.name"
-             (ngModelChange)="onInputNameChange($event)"
-             (blur)="onInputNameBlur($event)"
-             (keyup)="onKeyUpName($event)"
-             id="appName" class="flogo-app-header__name--edit"/>
+    <div class="flogo-app-header__name-container" [ngClass]="{'flogo-input-error': state?.name.hasErrors}">
+      <div class="flogo-input-error-msg" *ngIf="state?.name.hasErrors && state?.name.errors['notUnique']">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
+        <input *ngIf="isNameInEditMode" type="text" #appInputName
+               fgAutofocus
+               [(ngModel)]="editableName"
+               fgEditableInput
+               (editableInputSave)="onNameSave()"
+               (editableInputCancel)="onNameCancel()"
+               id="appName" class="flogo-app-header__name--edit"/>
+
       <label class="flogo-app-header__name is-clickable"
-             *ngIf="!editingName"
-             (click)="onClickLabelName($event)">{{application?.name}}</label>
+             *ngIf="!isNameInEditMode"
+             (click)="onClickLabelName($event)">{{editableName}}</label>
     </div>
 
     <div class="flogo-app-header__date-container">
@@ -22,19 +23,22 @@
     </div>
 
     <div class="flogo-app-header__description-container">
-      <a *ngIf="application && !application.description && editingDescription == false" class="flogo-link"
+      <a *ngIf="application && !editableDescription && !isDescriptionInEditMode" class="flogo-link"
          (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
-      <textarea *ngIf="editingDescription" #appInputDescription
-                autofocus
-                (blur)="onInputDescriptionBlur($event)"
-                placeholder="Description"
-                rows="2"
-                id="appDescription" class="flogo-app-header__description--edit"
-                [(ngModel)]="application.description">
+        <textarea *ngIf="isDescriptionInEditMode" #appInputDescription
+                  fgAutofocus
+                  placeholder="Description"
+                  rows="3"
+                  [(ngModel)]="editableDescription"
+                  fgEditableInput
+                  (editableInputSave)="onDescriptionSave()"
+                  (editableInputCancel)="onDescriptionCancel()"
+                  id="appDescription" class="flogo-app-header__description--edit">
         </textarea>
+
       <label class="flogo-app-header__description is-clickable"
-             *ngIf="!editingDescription && application?.description"
-             (click)="onClickLabelDescription($event)">{{application?.description}}</label>
+             *ngIf="!isDescriptionInEditMode && !!editableDescription"
+             (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
     </div>
   </div>
   <div class="col-xs-6 col-md-6 col-lg-5">
@@ -81,7 +85,7 @@
 
     <div *ngIf="!flows.length">
       <hr>
-      <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}</p>
+        <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}<span class="action" (click)="openCreateFlow()">&nbsp;{{'DETAILS:CREATE-A-FLOW' | translate}}</span></p>
     </div>
 
 
