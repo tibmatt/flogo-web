@@ -10,12 +10,13 @@
   background: #fff;
 
   .flogo-app-header__name {
-    margin-top: .3em;
     font-size: 1.5em;
     letter-spacing: .4px;
   }
   .flogo-app-header__name--edit {
+    margin-bottom: 5px;
     font-size: 1.5em;
+    letter-spacing: .4px;
     width: 100%;
   }
 
@@ -76,10 +77,10 @@
 
 .is-editable {
   cursor: text;
-  padding: 3px;
+  padding: 4px;
   &:hover {
     border: solid 1px #ccc;
-    padding: 2px;
+    padding: 3px;
     width: 100%;
   }
 }
@@ -107,7 +108,7 @@
     position: absolute;
     font-size: .875em;
     letter-spacing: .2px;
-    bottom: 50px;
+    bottom: 55px;
     background-color: #ee3342;
     padding: 1em;
     z-index: 3;
@@ -125,8 +126,7 @@
       bottom: -10px;
       left: 30%;
       transform: translateY(-10px);
-      animation: downElement 150ms ease-in forwards;
-      animation-delay: 350ms;
+      animation: downElement 150ms 510ms ease-in forwards;
     }
   }
   .flogo-app-header__name {
