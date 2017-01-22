@@ -3,6 +3,7 @@ import { RESTAPIApplicationsService } from '../../../common/services/restapi/app
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 
 import { FlogoModal } from '../../../common/services/modal.service';
+import {flogoIDEncode} from "../../../common/utils";
 
 
 @Component( {
@@ -26,7 +27,9 @@ export class FlogoMainComponent implements OnInit {
     ngOnInit() {
         this.applicationServiceAPI.recentFlows()
             .then((flows: Array<any>)=> {
-                this.recent = flows;
+              flows = flows.length <= 3 ? flows : flows.slice(0,3);
+              flows.forEach(flow=>{flow.encodedId = flogoIDEncode(flow.id)});
+              this.recent = flows;
             });
 
         this.applicationServiceAPI.allFlows()
@@ -55,7 +58,7 @@ export class FlogoMainComponent implements OnInit {
 
     getOriginalFlows() {
         let flows = _.clone(this.originalFlows || []);
-        return _.forEach(flows, function (flow:any) {
+        return _.forEach(flows, (flow:any) => {
           flow.createdAt = flow.created_at;
           delete flow.created_at;
         });

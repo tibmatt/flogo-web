@@ -1,5 +1,4 @@
-<div *ngFor="let flow of flows" class="flogo-flow" (click)="select(flow)">
-
+<div *ngFor="let flow of flows; let i = index" class="flogo-flow" (click)="select(flow)" [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
   <div class="flogo-flow-trigger">
     <i class="flogo-icon-trigger"></i>
   </div>
