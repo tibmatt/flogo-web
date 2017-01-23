@@ -50,10 +50,13 @@
       transition-delay: 200ms;
       margin-top: 5px;
       &:hover {
-        margin-top: 5px;
         border: solid 1px;
         border-radius: 4px;
         width: 86px;
+      }
+      .flogo-icon{
+        position: relative;
+        top: 1px;
       }
       span{
         font-size: .875em;
@@ -74,6 +77,7 @@
       .apps-list__element:hover + .apps-list__element,
       .apps-list__element.selected + .apps-list__element {
         border-top: 0;
+        padding-top: 16px;
       }
 
       .apps-list__element {
@@ -84,8 +88,8 @@
         letter-spacing: .5px;
         height: 50px;
         margin: 0 @margin-top;
-        padding-top: @margin-top;
-        padding-left: @margin-top;
+        padding-top: 15px;
+        padding-left: 15px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -94,6 +98,7 @@
           color: #fff;
           background-color: #7ab8dd;
           border-top: 0;
+          padding-top: 16px;
           cursor: pointer;
           margin: 0;
           padding-left: 30px;
