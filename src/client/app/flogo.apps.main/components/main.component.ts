@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 
@@ -13,6 +14,7 @@ import {flogoIDEncode} from "../../../common/utils";
     styleUrls: [ 'main.component.css' ]
 } )
 export class FlogoMainComponent implements OnInit {
+  @Output() flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
     public recent : Array<any> = [];
     flows: Array<IFlogoApplicationFlowModel> = [];
     originalFlows: Array<IFlogoApplicationFlowModel> = [];
@@ -20,6 +22,7 @@ export class FlogoMainComponent implements OnInit {
 
     constructor(
         private _flogoModal: FlogoModal,
+        private router: Router,
         public applicationServiceAPI: RESTAPIApplicationsService
     ) {
     }
@@ -63,5 +66,9 @@ export class FlogoMainComponent implements OnInit {
           delete flow.created_at;
         });
     }
+
+  onFlowSelected(flow) {
+    this.router.navigate(['/flows', flogoIDEncode(flow._id)]);
+  }
 
 }
