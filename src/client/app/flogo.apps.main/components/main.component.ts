@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 
@@ -20,6 +21,7 @@ export class FlogoMainComponent implements OnInit {
 
     constructor(
         private _flogoModal: FlogoModal,
+        private router: Router,
         public applicationServiceAPI: RESTAPIApplicationsService
     ) {
     }
@@ -63,5 +65,9 @@ export class FlogoMainComponent implements OnInit {
           delete flow.created_at;
         });
     }
+
+  onFlowSelected(flow) {
+    this.router.navigate(['/flows', flogoIDEncode(flow._id)]);
+  }
 
 }
