@@ -1,0 +1,156 @@
+@action-fore-color: #449ed8;
+@width-inputs: 60%;
+
+&:host {
+  color: #666;
+}
+
+.flogo-app-header {
+  padding: 1.5em 0;
+  background: #fff;
+
+  .flogo-app-header__name {
+    font-size: 1.5em;
+    letter-spacing: .4px;
+  }
+  .flogo-app-header__name--edit {
+    margin-bottom: 5px;
+    font-size: 1.5em;
+    letter-spacing: .4px;
+    width: 100%;
+    padding: 0;
+  }
+
+  .flogo-app-header__date-container, .flogo-app-header__description {
+    font-size: 0.875em;
+    letter-spacing: .2px;
+    line-height: 1.14;
+  }
+
+  .flogo-app-header__description-container {
+    margin: .625em 0;
+    .flogo-app-header__description--edit {
+      font-size: .875em;
+      width: 100%;
+      resize: none;
+    }
+  }
+
+  .flogo-app-header__options {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    @media (max-width: 1200px) {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.flogo-app-content {
+  padding: 2em 0;
+
+  .flogo-commands {
+    display: flex;
+    border: dashed 3px #ccc;
+    padding: 0;
+    margin: 1.25em 0;
+    position: relative;
+    &:before {
+      content: "";
+      position: absolute;
+      width: 3px;
+      height: 73%;
+      background: #ccc;
+      left: 50%;
+      bottom: 16%;
+      z-index: 1;
+    }
+  }
+}
+
+.flogo-button {
+  text-transform: uppercase;
+  min-width: 124px;
+  height: 40px;
+  &:nth-child(2) {
+    margin: 0 15px;
+  }
+}
+
+.is-editable {
+  cursor: text;
+  padding: 1px;
+  margin: 0 -1px;
+  &:hover {
+    border: solid 1px #ccc;
+    padding: 0;
+    width: 100%;
+  }
+}
+
+.flogo-app-title {
+  font-size: 1.125em;
+  line-height: 1;
+  letter-spacing: .3px;
+}
+
+.action {
+  color: @action-fore-color;
+  cursor: pointer;
+}
+
+.error-msg {
+  display: none;
+}
+
+.flogo-input-error {
+  color: #ee3342;
+  position: relative;
+  .flogo-input-error-msg {
+    color: #fff;
+    position: absolute;
+    font-size: .875em;
+    letter-spacing: .2px;
+    bottom: 55px;
+    background-color: #ee3342;
+    padding: 1em;
+    z-index: 3;
+    transform: scale(0, 0);
+    animation: popup 500ms ease-out forwards;
+
+    &:before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 10px solid #ee3342;
+      bottom: -10px;
+      left: 30%;
+      transform: translateY(-10px);
+      animation: downElement 150ms 510ms ease-in forwards;
+    }
+  }
+  .flogo-app-header__name {
+    color: #ee3342;
+  }
+}
+
+@keyframes popup {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.05, 1.05);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes downElement {
+  to {
+    transform: translateY(0);
+  }
+}

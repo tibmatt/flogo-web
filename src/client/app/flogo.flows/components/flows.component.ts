@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+
 import {Observable} from 'rxjs/Observable';
+import {Component} from '@angular/core';
+
+//import * as moment from 'moment';
 
 import {RESTAPIFlowsService} from '../../../common/services/restapi/flows-api.service';
-import {flogoIDEncode , notification} from '../../../common/utils';
+import {notification} from '../../../common/utils';
 
 import {PostService} from '../../../common/services/post.service'
 import {PUB_EVENTS as SUB_EVENTS} from '../../flogo.flows.add/message';
-import {FlogoModal} from '../../../common/services/modal.service';
 import {LoadingStatusService} from "../../../common/services/loading-status.service";
 import {TranslateService} from 'ng2-translate/ng2-translate';
 
@@ -21,16 +22,14 @@ export class FlogoFlowsComponent {
     private _sub: any;
     public flows: any[] = [];
     public isInstructionsActivated:boolean  = false;
-    public isLoading : Observable<boolean>
+    public isLoading : Observable<boolean>;
     public samples: any;
 
     constructor(
         private _flow:RESTAPIFlowsService,
         private _postService: PostService,
-        private _flogoModal: FlogoModal,
-        private _router: Router,
-        private _loadingStatusService : LoadingStatusService,
-        public translate: TranslateService
+        public translate: TranslateService,
+        private _loadingStatusService : LoadingStatusService
     ){
       this.getAllFlows();
       this.initSubscribe();
@@ -69,43 +68,6 @@ export class FlogoFlowsComponent {
             }).catch((err)=>{
                 console.error(err);
             });
-    }
-
-  openFlow( flowId : string, evt : Event ) {
-
-    if ( _.isFunction( _.get( evt, 'stopPropagation' ) ) ) {
-      evt.stopPropagation();
-    }
-
-    this._loadingStatusService.start();
-    this._router.navigate( [ '/flows', flogoIDEncode(flowId) ] )
-      .catch( ( err : any )=> {
-        console.error( err );
-      } );
-
-  }
-
-    // delete a flow
-    deleteFlow( flow: any, evt: Event) {
-
-        if ( _.isFunction( _.get( evt, 'stopPropagation' ) ) ) {
-          evt.stopPropagation();
-        }
-
-        this._flogoModal.confirmDelete('Are you sure you want to delete ' + flow.name + ' flow?').then((res) => {
-            if(res) {
-                this._flow.deleteFlow(flow._id).then(()=> {
-                    this.getAllFlows();
-                    let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
-                    notification(message, 'success', 3000);
-                }).catch((err)=> {
-                    let message = this.translate.instant('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', {value:err});
-                    notification(message, 'error');
-                });
-            } else {
-                // omit
-            }
-        });
     }
 
     canInstallSamples() {
@@ -156,9 +118,7 @@ export class FlogoFlowsComponent {
 
     // export flogoIDEncode
     // mainly for Route Link
-    flogoIDEncode( id ) {
-        return flogoIDEncode( id );
-    }
+
     private _toDouble(num) {
         return num > 9? num: '0' + num;
     }

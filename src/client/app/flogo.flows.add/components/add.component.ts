@@ -1,10 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import {PostService} from '../../../common/services/post.service';
-import {PUB_EVENTS} from '../message';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
+
+import { PostService } from '../../../common/services/post.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
-import { notification } from '../../../common/utils';
+import { PUB_EVENTS } from '../message';
+import { UniqueNameValidator } from '../validators/unique-name.validator';
+
 
 @Component({
     selector: 'flogo-flows-add',
@@ -12,63 +15,45 @@ import { notification } from '../../../common/utils';
     templateUrl: 'add.tpl.html',
     styleUrls: ['add.component.css']
 })
-export class FlogoFlowsAdd {
-    public flowName: string;
-    public flowDescription: string;
+export class FlogoFlowsAddComponent {
+  @ViewChild('modal')
+  public modal: ModalComponent;
+  public flow: FormGroup;
 
-    public flowInfo : any = {};
-    private _sending = true;
-    public flowNameExists = false;
-
-    constructor(private _postService: PostService, public translate: TranslateService, public APIFlows: RESTAPIFlowsService) {
+    constructor(public translate: TranslateService,
+      private postService: PostService,
+      private flowsService: RESTAPIFlowsService,
+      private formBuilder: FormBuilder
+    ) {
+      this.resetForm();
     }
 
-    @ViewChild('modal')
-        modal: ModalComponent;
-
-    public sendAddFlowMsg() {
-        this.APIFlows.getFlowByName(this.flowInfo.name)
-              .then((res) => {
-                let results;
-                try {
-                    results = JSON.parse(res['_body']);
-                }catch(err) {
-                    results = [];
-                }
-                console.log('RESULTS', res);
-
-                if(!_.isEmpty(results)) {
-                  console.log('EXIST');
-                  this.flowNameExists = true;
-                } else {
-                    console.log('DOES NOT EXIST');
-                    this.flowNameExists = false;
-                    if (this._sending) {
-                        this._sending = false;
-                        this._postService.publish(
-                            _.assign({}, PUB_EVENTS.addFlow, {data: this.flowInfo})
-                        );
-                        this.closeAddFlowModal();
-                    } else {
-                        // omit
-                    }
-                }
-            })
-            .catch((err) => {
-                let message = this.translate.instant('CANVAS:ERROR-GETTING-FLOW-NAME');
-                notification(message, 'error');
-            });
-
-
+    private resetForm() {
+      this.flow = this.formBuilder.group({
+        name: ['', [],
+          Validators.composeAsync([
+            // we need to wrap into a compose async validator, otherwise async validators overwrite sync validators
+            (control: AbstractControl) => Promise.resolve(Validators.required(control)),
+            UniqueNameValidator.make(this.flowsService)
+          ])
+        ],
+        description: ['']
+      });
     }
+
+    public createFlow({ value, valid }: { value: { name: string, description?: string }, valid: boolean }) {
+      this.postService.publish(_.assign({}, PUB_EVENTS.addFlow, {data: value}));
+      this.closeAddFlowModal();
+    }
+
+    public open() {
+      this.resetForm();
+      this.modal.open();
+    }
+
     public closeAddFlowModal() {
-        this.flowInfo = {};
+        this.resetForm();
         this.modal.close();
-        this._sending = true;
-        this.flowNameExists = false;
     }
 
-    public onChangeFlowName(event) {
-        this.flowNameExists = false;
-    }
 }

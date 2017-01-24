@@ -1,8 +1,7 @@
 <label class="flogo-flows-import-label" (click)="selectFile($event)">
-    <i class="flogo-icon-download"></i>
-    <p class="flogo-common-flows-new-flow__text">{{ 'IMPORT-FLOW:IMPORT-FLOW' | translate }}</p>
-    <!--<i class="fa fa-cloud-upload"></i>Import a flow-->
-    <input class="flogo-flows-import-input-file" type="file" accept="application/json" hidden (change)="onFileChange($event)" name="importFile">
+  <span class="flogo-common-flows-new-flow__text"><i class="flogo-icon flogo-icon-download"></i>{{ 'IMPORT-FLOW:IMPORT-FLOW' | translate }}</span>
+  <input class="flogo-flows-import-input-file" type="file" accept="application/json" hidden
+         (change)="onFileChange($event)" name="importFile">
 </label>
 
 <flogo-flows-flow-name class="flogo-flows-container-new__option"

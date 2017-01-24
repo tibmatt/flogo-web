@@ -1,0 +1,51 @@
+<div class="flogo-main">
+
+
+  <div class="header row">
+    <div class="col-md-7 col-md-offset-1">
+      <p class="welcome-message">{{ 'FLOWS:WELCOME-BACK' | translate }}</p>
+      <p class="description-message">{{ 'FLOWS:NEW-INSTRUCTIONS' | translate }}</p>
+      <a class="flogo-link header__link" href="https://www.youtube.com/watch?v=OHX4kKVdI28&amp;feature=youtu.be"
+         target="_blank">
+        <span><i class="flogo-icon flogo-icon-video"></i>{{ 'FLOWS:FEATURED-VIDEO-TUTORIAL' | translate }}</span>
+      </a>
+    </div>
+    <div class="flogo-mascot col-md-4">
+      <object class="flogo-flows-mascotImg" data="/assets/svg/flogo-flynn.svg" type="image/svg+xml">
+        <img src="/assets/svg/flogo-flynn.svg"/>
+      </object>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h3 class="flogo-main__subtitle">{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}</h3>
+      <div class="recent-flows">
+        <ul class="recent-flows__list">
+          <li *ngFor="let item of recent">
+            <a [routerLink]="['/flows', item.encodedId]" class="recent-flows__list__flow">{{item.name}}</a>
+            in
+            <a [routerLink]="['/apps', item.app.id]" class="recent-flows__list__app">{{item.app.name}}</a>
+          </li>
+        </ul>
+      </div>
+
+
+      <div class="flows">
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <h3 class="flogo-main__subtitle">{{ 'FLOWS:ALL' | translate }}</h3>
+            </div>
+            <div class="search col-xs-6 col-md-5 col-lg-3 col-md-offset-4 col-lg-offset-6">
+              <flogo-apps-search (changedSearch)="onChangedSearch($event)"
+                                 class="search"></flogo-apps-search>
+            </div>
+          </div>
+
+        <flogo-apps-flows [flows]="flows" (flowSelected)="onFlowSelected($event)"></flogo-apps-flows>
+      </div>
+
+
+    </div>
+  </div>
+</div>

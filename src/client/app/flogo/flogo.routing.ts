@@ -30,7 +30,7 @@ export const appRoutes: Routes = [
   },*/
   {
     path: '',
-    redirectTo: 'flows',
+    redirectTo: 'apps',
     pathMatch: 'full'
   }
 ];

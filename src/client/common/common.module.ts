@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { Http, HttpModule as NgHttpModule } from '@angular/http'
 
 
-import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components'
-import { Contenteditable, JsonDownloader } from './directives';
+import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components';
+import { TimeFromNowPipe } from './pipes';
+import { Contenteditable, JsonDownloader, AutofocusDirective, EditableInputDirective } from './directives';
 import { LoadingIndicatorComponent } from "./components/loading-indicator.component";
 
 export function createTranslateLoader(http: Http) {
@@ -18,7 +20,10 @@ const ALL_MODULE_DECLARABLES = [
   ...INFORMATION_POPUP_DIRECTIVES,
   Contenteditable,
   JsonDownloader,
-  LoadingIndicatorComponent
+  LoadingIndicatorComponent,
+  AutofocusDirective,
+  EditableInputDirective,
+  TimeFromNowPipe,
 ];
 
 @NgModule({ // module dependencies
@@ -35,7 +40,9 @@ const ALL_MODULE_DECLARABLES = [
   exports: [
     ...ALL_MODULE_DECLARABLES,
     Ng2Bs3ModalModule,
-    TranslateModule
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class CommonModule { }

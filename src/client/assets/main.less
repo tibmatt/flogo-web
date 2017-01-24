@@ -21,6 +21,7 @@ html {
 
 body {
   width: 100%;
+  min-height: 100%;
 }
 
 /* Box-sizing border-box */
@@ -61,10 +62,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+a , .flogo-link{
   color: @color-link;
   cursor: pointer;
   &:hover{
+    text-decoration: none;
     color: @color-link-hover;
   }
   &:active{
@@ -166,6 +168,9 @@ label {
   color: #cad3df;
 }
 
+.flogo-icon{
+  margin-right: 10px;
+}
 /*---------------------------*\
   TIBCO Cloud UI Pattern adjustments
 \*---------------------------*/
@@ -183,7 +188,7 @@ label {
 
 /* The spin loading styles */
 .flogo-spin-loading-bg {
-  background: #fafafa;
+  background: #f4f4f4;
   width: 100%;
 }
 .flogo-spin-loading {
@@ -564,14 +569,12 @@ label {
 
 .flogo-common-flows-new-flow {
   background: transparent;
-  /*border-radius: 4px;*/
   color: #0081cb;
   cursor: pointer;
   font-size: 14px;
-  padding: 30px 27px;
   text-align: center;
   width: 100%;
-  border-bottom: 2px solid #ccc;
+  padding: 10px;
 
   &:hover{
     background: #fff;
@@ -589,6 +592,68 @@ label {
   line-height: 18px;
   margin: 0;
   width: 100%;
+}
+
+.flogo-flow-detail-menu{
+  height: 43px;
+  width: 29px;
+  position: relative;
+  background: url("/assets/svg/flogo.flows.detail.menu.icon.svg") left top no-repeat;
+  &:hover, &:active{
+    background: url("/assets/svg/flogo.flows.detail.menu.hover.icon.svg") left top no-repeat;
+    .flogo-flow-detail-menu-list-wrapper{
+      transform: scale(1, 1);
+    }
+    .flogo-flow-detail-menu-list{
+      opacity: 1;
+    }
+  }
+  .flogo-flow-detail-menu-list-wrapper{
+    border: solid 1px #727272;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+    color: #666;
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    overflow: hidden;
+    transform: scale(0,0);
+    transform-origin: right top;
+    transition: all 300ms linear;
+  }
+  .flogo-flow-detail-menu-list{
+    background-color: #ffffff;
+    margin: 0;
+    padding-left: 10px;
+    opacity: 0;
+    width: 150px;
+  }
+  .flogo-flow-detail-menu-item{
+    padding: 5px;
+    margin: 0;
+    list-style: none;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .flogo-flow-detail-menu-item-choices{
+    margin: 0;
+  }
+  .flogo-flow-detail-menu-item-choice{
+    margin-top: 2px;
+    list-style: none;
+  }
+  .flogo-flow-detail-menu-item-choice-text{
+    margin: 0;
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+    &:hover{
+      color: #666;
+      &:hover{
+        border-color: #666;
+      }
+    }
+  }
 }
 
 .flogo-button--default{

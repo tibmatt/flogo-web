@@ -1,12 +1,8 @@
 module.exports = function(config) {
 
-  var appBase    = 'common/';      // transpiled app JS and map files
-  var appSrcBase = 'common/';      // app source TS files
-  var appAssets  = 'app/'; // component assets fetched by Angular's compiler
-
-  // Testing helpers (optional) are conventionally in a folder called `testing`
-  var testingBase    = 'testing/'; // transpiled test JS and map files
-  var testingSrcBase = 'testing/'; // test source TS files
+  var appBase      = 'app/'; // component assets fetched by Angular's compiler
+  var appCommon    = 'common/';      // transpiled app JS and map files
+  var appAssets    = 'assets/';      // transpiled app JS and map files
 
   config.set({
     basePath: '',
@@ -15,12 +11,13 @@ module.exports = function(config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      require('karma-jasmine-html-reporter')
+      require('karma-jasmine-html-reporter'),
+      require('karma-spec-reporter'),
     ],
 
 
     client: {
-      builtPaths: [appBase, appAssets, testingBase], // add more spec base paths as needed
+      builtPaths: [appBase, appCommon, appAssets ], // add more spec base paths as needed
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
 
@@ -87,11 +84,8 @@ module.exports = function(config) {
       { pattern: 'systemjs.config.test.js', included: false, watched: false },
       'karma-test-shim.js', // optionally extend SystemJS mapping e.g., with barrels
 
-      //{ pattern: 'node_modules/_tmp/Rx.js', included: true, watched: false },
-
       // transpiled application & spec code paths loaded via module imports
-      { pattern: appBase + '**/*.js', included: false, watched: true },
-      { pattern: testingBase + '**/*.js', included: false, watched: true },
+      { pattern: appCommon + '**/*.js', included: false, watched: true },
       // TODO: verify
       { pattern: 'main.js', included: false, watched: true },
       { pattern: '*(app|common)/**/**.js', included: false, watched: true },
@@ -100,13 +94,11 @@ module.exports = function(config) {
       // Asset (HTML & CSS) paths loaded via Angular's component compiler
       // (these paths need to be rewritten, see proxies section)
       { pattern: appBase + '**/*.*(html|css)', included: false, watched: true },
-      { pattern: appBase + '**/*.*(png|svg)', included: false, watched: true },
-      { pattern: appAssets + '**/*.*(html|css)', included: false, watched: true },
       { pattern: appAssets + '**/*.*(png|svg)', included: false, watched: true },
 
       // Paths for debugging with source maps in dev tools
       //{ pattern: appSrcBase + '**/*.ts', included: false, watched: false },
-      //{ pattern: appBase + '**/*.js.map', included: false, watched: false },
+      //{ pattern: appCommon + '**/*.js.map', included: false, watched: false },
       //{ pattern: testingSrcBase + '**/*.ts', included: false, watched: false },
       //{ pattern: testingBase + '**/*.js.map', included: false, watched: false}
     ],
@@ -114,7 +106,7 @@ module.exports = function(config) {
     // Proxied base paths for loading assets
     proxies: {
       // required for component assets fetched by Angular's compiler
-      "/app/": "/base/"+appAssets,
+      "/app/": "/base/"+appBase,
       "/common/": "/base/common/",
       "/assets/": "/base/assets/"
     },
@@ -124,7 +116,7 @@ module.exports = function(config) {
       'common/services/rest-api-test.spec.js'
     ],
     preprocessors: {},
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['kjhtml', 'spec'],
 
     port: 9876,
     colors: true,

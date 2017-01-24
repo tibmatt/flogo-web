@@ -35,6 +35,10 @@ let config = {
     path: 'local/engines/flogo-web',
     defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
   },
+  /* apps module config */
+  apps: {
+    db: "http://localhost:5984/flogo-apps"
+  },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
     defaultPath: "../../submodules/flogo-contrib/activity",
@@ -101,6 +105,7 @@ let config = {
       }
     },
     triggers: [],
+    // TODO: move everything to env vars?
     config: {
       "loglevel": "DEBUG",
       "disableTriggerValidation": true,
@@ -248,7 +253,8 @@ export {
 let triggersDBService = new DBService(config.triggers.db);
 let activitiesDBService = new DBService(config.activities.db);
 let flowsDBService = new DBService(config.db);
-let dbService = new DBService(config.db);
+let appsDBService = new DBService(config.apps.db);
+let dbService = flowsDBService;
 
 let engines = {
   "test": undefined,
@@ -263,6 +269,9 @@ export {
 };
 export {
   activitiesDBService
+};
+export {
+  appsDBService
 };
 export {
   dbService

@@ -23,14 +23,17 @@
     ]
   },
   "include": [
+    "main.ts",
+    "main.module.ts",
+    "app/**/*.ts",
+    "common/**/*.ts",
     "shims.d.ts",
     "node_modules/@types"
   ],
   "exclude": [
     ".tmp",
     "main.aot.ts",
-    "node_modules",
-    "./**/*.spec.ts"
+    "node_modules"
   ],
   "compileOnSave": false
 }

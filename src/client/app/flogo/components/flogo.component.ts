@@ -12,6 +12,26 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
   styleUrls: [ 'flogo.component.css' ]
 })
 
+// @RouteConfig([
+//   {
+//     path: '/...', name: "FlogoHome", component:FlogoAppsComponent, useAsDefault: true
+//   },
+//   {
+//     path:'/flows/:id/...', name:"FlogoFlowDetail", component: FlogoCanvasComponent
+//   },
+//   {
+//     path:'/task', name: 'FlogoTask', component: FlogoFormBuilderComponent
+//   },
+//   {
+//     path:'/rest-api-test', name: 'FlogoRESTAPITest', component: RESTAPITest
+//   },
+//   // TODO
+//   //  temp config page to change server URL settings
+//   {
+//     path: '/_config', name: "FlogoDevConfig", component:FlogoConfigComponent
+//   }
+// ])
+
 export class FlogoAppComponent {
 
   public isPageLoading : Observable<boolean>;

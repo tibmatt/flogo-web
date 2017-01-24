@@ -766,3 +766,18 @@ export function updateBranchNodesRunStatus( nodes : IFlogoFlowDiagramNodeDiction
   } );
 
 }
+
+/**
+ * Get the difference between two dates
+ *
+ * @param beginDate: Inital date
+ * @param endDate: Final date
+ * @param timeUnit: Measurement unit
+ */
+export function diffDates(beginDate:any, endDate:any, timeUnit:any) {
+  let begin = moment(beginDate);
+  let end  = moment(endDate);
+
+  return begin.diff(end, timeUnit);
+
+}

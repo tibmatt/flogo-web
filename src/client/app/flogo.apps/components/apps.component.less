@@ -1,0 +1,29 @@
+:host {
+  height: 100%;
+}
+
+.flogo-apps {
+  display: flex;
+  height: 100%;
+
+  .flogo-apps__list{
+    background: #4e7ead;
+    width: 20%;
+    min-width: 305px;
+  }
+
+  .flogo-apps__main{
+    width: 80%;
+  }
+
+  @media (max-width: 992px) {
+    flex-direction: column;
+    .flogo-apps__list{
+      width: 100%;
+    }
+
+    .flogo-apps__main{
+      width: 100%;
+    }
+  }
+}

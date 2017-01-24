@@ -1,0 +1,34 @@
+<div *ngFor="let flow of flows; let i = index" class="flogo-flow" (click)="select(flow)" [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
+  <div class="flogo-flow-trigger">
+    <i class="flogo-icon-trigger"></i>
+  </div>
+
+  <div class="flogo-flow-info">
+
+    <div class="flogo-flow-header">
+      <div class="flogo-flow-name">{{ flow.name }}</div>
+      <div class="flogo-flow-menu">
+        <div class="flogo-flow-menu__options">
+          <ul class="flogo-flow-menu__options__list">
+            <li class="flogo-flow-menu__options__list__element">
+              <a href=""><i class="flogo-icon flogo-icon-edit"></i>Rename</a>
+            </li>
+            <li class="flogo-flow-menu__options__list__element">
+              <a href=""><i class="flogo-icon flogo-icon-export"></i>Export</a>
+            </li>
+            <li class="flogo-flow-menu__options__list__element">
+              <a href=""><i class="flogo-icon flogo-icon-delete"></i>Delete</a>
+            </li>
+          </ul>
+        </div>
+        <span class="glyphicon glyphicon-option-vertical menu__btn"> </span>
+      </div>
+    </div>
+
+    <div [title]="flow.description" class="flogo-flow-description">{{ flow.description }}</div>
+    <span
+      class="flogo-flow-creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.createdAt | date }}</span>
+
+  </div>
+
+</div>

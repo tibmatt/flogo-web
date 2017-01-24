@@ -1,4 +1,8 @@
 @import "_variables";
+
+@flogo-flow-detail-header-selected-color:#1573ca;
+@flogo-flow-detail-header-unselected-color:#666666;
+
 :host {
   display: flex;
   align-items: stretch;
@@ -76,10 +80,6 @@
   background-color: #FAFAFA;
 }
 
-.flogo-flow-detail-header {
-  padding: 20px 0 30px 30px;
-}
-
 .flogo-flow-detail-name {
   font-size: 24px;
   color: #666666;
@@ -142,111 +142,41 @@
 }
 
 .flogo-flow-detail-menu{
-  height: 43px;
-  width: 29px;
   margin-right: 15px;
   margin-top: 36px;
-  //float: right;
-  position: relative;
-  background: url("/assets/svg/flogo.flows.detail.menu.icon.svg") left top no-repeat;
-  &:hover, &:active{
-    background: url("/assets/svg/flogo.flows.detail.menu.hover.icon.svg") left top no-repeat;
-    .flogo-flow-detail-menu-list-wrapper{
-      width: 200px;
-    }
-    .flogo-flow-detail-menu-list{
-      transform: translate(0, 0);
-      opacity: 1;
-    }
-  }
-  .flogo-flow-detail-menu-list-wrapper{
-    position: absolute;
-    top: 11px;
-    right: 10px;
-    overflow: hidden;
-    width: 0;
-    transition: all 300ms linear;
-  }
-  .flogo-flow-detail-menu-list{
-    opacity: 0;
-    width: 200px;
-    margin: 0;
-    padding: 0;
-    border-radius: 2px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
-    transform: translate(-100%, -100%);
-    border: solid 1px #727272;
-    transition: all 300ms linear;
-  }
-  .flogo-flow-detail-menu-item{
-    padding: 6px 15px;
-    margin: 0;
-    list-style: none;
-    font-size: 18px;
-    color: #727272;
-    cursor: pointer;
-    a{
-      color: #727272;
-      &:hover{
-        color: #666;
-      }
-    }
-    &:hover{
-      background: #ececec;
-    }
-    i{margin-right: 5px}
-  }
-  .flogo-flow-detail-menu-item-choices{
-    margin: 0;
-  }
-  .flogo-flow-detail-menu-item-choice{
-    margin-top: 2px;
-    list-style: none;
-  }
-  .flogo-flow-detail-menu-item-choice-text{
-    margin: 0;
-    cursor: pointer;
-    font-size: 16px;
-    position: relative;
-    &:hover{
-      color: #666;
-      &:hover{
-        border-color: #666;
-      }
-    }
-    /*Disable checkboxes for now*/
-    /*&:before{
-      content: '';
-      display: inline-block;
-      border: 1px solid #8493a8;
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-      margin-right: 3px;
-      cursor: pointer;
-      vertical-align: middle;
-    }*/
+}
 
-    input[type="checkbox"] {
-      display: none;
-      &:checked + span:after {
-        opacity: 1;
+.flogo-flow-detail-header {
+  padding: 20px 0 30px 30px;
+
+  .flogo-flow-detail-header-back {
+    display: flex;
+    flex-direction: row;
+
+    .flogo-flow-detail-header-back-icon {
+      cursor: pointer;
+      width: 20px;
+      margin-top: 10px;
+
+      li {
+        font-size: 30px;
+        position: absolute;
+        top: 20px;
+        color: @flogo-flow-detail-header-unselected-color;
       }
     }
-    span{
-      &:after{
-        content: '';
-        position: absolute;
-        left: 1px;
-        top: 8px;
-        width: 11px;
-        height: 7px;
-        border: 3px solid #0081cb;
-        border-top: none;
-        border-right: none;
-        opacity: 0;
-        transform: rotate(-45deg);
+
+    .flogo-flow-detail-header-back-app-name {
+      cursor: pointer;
+      color: @flogo-flow-detail-header-selected-color;
+    }
+
+    &.--hover {
+      .flogo-flow-detail-header-back-app-name {
+        text-decoration: underline;
+      }
+      .flogo-flow-detail-header-back-icon li {
+        color: @flogo-flow-detail-header-selected-color;
       }
     }
   }
