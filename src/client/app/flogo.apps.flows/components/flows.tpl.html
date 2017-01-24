@@ -6,7 +6,7 @@
   <div class="flogo-flow-info">
 
     <div class="flogo-flow-header">
-      <div class="flogo-flow-name">{{flow.name}}</div>
+      <div class="flogo-flow-name">{{ flow.name }}</div>
       <div class="flogo-flow-menu">
         <div class="flogo-flow-menu__options">
           <ul class="flogo-flow-menu__options__list">
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div [title]="flow.description" class="flogo-flow-description">{{flow.description}}</div>
+    <div [title]="flow.description" class="flogo-flow-description">{{ flow.description }}</div>
     <span
       class="flogo-flow-creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.createdAt | date }}</span>
 

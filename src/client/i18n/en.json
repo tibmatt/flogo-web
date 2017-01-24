@@ -12,6 +12,7 @@
   "APP-LIST:MY-APPS": "My Apps",
   "APP-DETAILS:DELETE-APP": "Delete App",
   "APP-DETAIL:ERROR-UNIQUE-NAME": "There's already an application with that name",
+  "APP-DETAIL:CONFIRM_DELETE": "Are you sure you want to delete the application \"{{appName}}\"?",
   "CANVAS:ARM-LINUX": "ARM/Linux",
   "CANVAS:BUILD": "Build",
   "CANVAS:COPY": "Make a copy",

@@ -41,7 +41,18 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
       });
 
     this.appService.currentApp()
-      .subscribe((appDetail: ApplicationDetail) => { this.appDetail = _.cloneDeep(appDetail) });
+      .subscribe((appDetail: ApplicationDetail) => {
+        if (!appDetail) {
+          // not initialized yet
+          this.appDetail = null;
+          return;
+        } else if (!appDetail.app) {
+          // no app anymore, good bye
+          this.router.navigate(['/']);
+          return;
+        }
+        this.appDetail = _.cloneDeep(appDetail);
+      });
   }
 
   public ngOnDestroy() {

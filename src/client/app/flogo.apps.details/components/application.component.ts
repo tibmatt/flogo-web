@@ -1,12 +1,11 @@
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { AppDetailService, ApplicationDetail, ApplicationDetailState } from '../../flogo.apps/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
 
 import { diffDates, notification } from '../../../common/utils';
+import { FlogoModal } from '../../../common/services/modal.service';
 
 const MAX_SECONDS_TO_ASK_FLOW_NAME = 5;
 
@@ -41,8 +40,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
-              private router: Router,
-              private apiApplications: RESTAPIApplicationsService) {
+              public flogoModal: FlogoModal) {
   }
 
   ngOnInit() {
@@ -146,10 +144,12 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   }
 
   onDeleteApp(application) {
-    this.apiApplications.deleteApp(application.id)
-      .then(() => {
-          this.router.navigate(['/']);
-      })
+    let message = this.translate.instant('APP-DETAIL:CONFIRM_DELETE', { appName: application.name })
+    this.flogoModal.confirmDelete(message).then((res) => {
+      if (res) {
+        this.appDetailService.deleteApp();
+      }
+    });
   }
 
   private appUpdated() {

@@ -121,6 +121,21 @@ export class AppDetailService {
     this.currentApp$.next(nextApp);
   }
 
+  public deleteApp() {
+    const currentApp = this.currentApp$.getValue().app;
+    if (!currentApp) {
+      return;
+    }
+    this.appsApiService.deleteApp(currentApp.id)
+      .then(() => {
+        this.currentApp$.next(<ApplicationDetail>_.defaultsDeep({}, {
+          // todo better signal app was deleted
+          app: null,
+          state: DEFAULT_STATE
+        }));
+      });
+  }
+
   private transformErrors(errors:ApiError[]) : {[key:string]: boolean} {
     let firstError = errors[0];
     if (firstError && firstError.status == 500) {
