@@ -39,7 +39,7 @@ ensureDefaultDirs()
       .then(() =>
         initAllDbs()
           .then(() => syncTasks(engine))
-      )//;
+      )
       .then(() => {console.log(engine.getTasks())})
   })
   .then(() => initServer())

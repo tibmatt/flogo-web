@@ -26,27 +26,21 @@
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/error"
             },
             {
-                "name": "tibco-gpio",
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio"
             },
             {
-                "name": "tibco-log",
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
             },
             {
-                "name": "tibco-reply",
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/reply"
             },
             {
-                "name": "tibco-rest",
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/rest"
             },
             {
-                "name": "tibco-twilio",
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
             },
             {
-                "name": "sendWSMessage",
                 "path": "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
             }
         ],
