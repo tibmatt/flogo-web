@@ -6,7 +6,7 @@
   animation: list-elements 700ms ease-out forwards;
 
   &:hover {
-    .flogo-flow-info{
+    .flogo-flow-info {
       box-shadow: 0 0 5px 0 #79b8dc;
     }
   }
@@ -69,17 +69,18 @@
       margin-top: 1em;
 
       .flogo-flow-menu__options {
-        display: none;
-        position: absolute;
-        z-index: 1;
-        width: 129px;
-        height: 94px;
-        border-radius: 2px;
         background-color: #ffffff;
+        border-radius: 2px;
         box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+        position: absolute;
         top: -7px;
-        left: 15px;
-        animation: grow 300ms ease-in;
+        right: 15px;
+        height: 94px;
+        width: 129px;
+        z-index: 1;
+        transform: scale(0, 0);
+        transform-origin: top right;
+        transition: all 300ms ease-in;
         &:hover {
           ~ .menu__btn {
             color: #79b8dc;
@@ -101,7 +102,7 @@
           color: #79b8dc;
         }
         .flogo-flow-menu__options {
-          display: block;
+          transform: scale(1, 1);
         }
       }
     }
@@ -131,19 +132,11 @@
   }
 }
 
-@keyframes grow {
-  from {
-    font-size: 0;
-    width: 0;
-    height: 0;
-  }
-}
-
 @keyframes list-elements {
-  from{
+  from {
     transform: translateY(70px);
   }
-  to{
+  to {
     opacity: 1;
   }
 }
