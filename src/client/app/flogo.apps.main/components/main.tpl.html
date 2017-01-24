@@ -2,7 +2,7 @@
 
 
   <div class="header row">
-    <div class="col-md-6 col-md-offset-1">
+    <div class="col-md-7 col-md-offset-1">
       <p class="welcome-message">{{ 'FLOWS:WELCOME-BACK' | translate }}</p>
       <p class="description-message">{{ 'FLOWS:NEW-INSTRUCTIONS' | translate }}</p>
       <a class="flogo-link header__link" href="https://www.youtube.com/watch?v=OHX4kKVdI28&amp;feature=youtu.be"
@@ -18,7 +18,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-9 col-md-offset-1">
+    <div class="col-md-10 col-md-offset-1">
       <h3 class="flogo-main__subtitle">{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}</h3>
       <div class="recent-flows">
         <ul class="recent-flows__list">
@@ -33,10 +33,10 @@
 
       <div class="flows">
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-xs-6 col-md-3">
               <h3 class="flogo-main__subtitle">{{ 'FLOWS:ALL' | translate }}</h3>
             </div>
-            <div class="search col-sm-3 col-sm-offset-6">
+            <div class="search col-xs-6 col-md-5 col-lg-3 col-md-offset-4 col-lg-offset-6">
               <flogo-apps-search (changedSearch)="onChangedSearch($event)"
                                  class="search"></flogo-apps-search>
             </div>
