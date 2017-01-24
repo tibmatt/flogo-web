@@ -1,16 +1,7 @@
-import {
-  Component,
-  Input,
-  Output,
-  SimpleChanges,
-  OnChanges,
-  OnInit,
-  ViewChild,
-  EventEmitter
-} from '@angular/core';
-
+import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { AppDetailService, ApplicationDetail, ApplicationDetailState } from '../../flogo.apps/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
@@ -32,6 +23,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
   @Output() flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
   @Output() flowAdded: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
+  @Output() onDeletedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
   application: IFlogoApplicationModel;
   state: ApplicationDetailState;
@@ -48,7 +40,9 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   isNewApp: boolean = false;
 
   constructor(public translate: TranslateService,
-              private appDetailService: AppDetailService) {
+              private appDetailService: AppDetailService,
+              private router: Router,
+              private apiApplications: RESTAPIApplicationsService) {
   }
 
   ngOnInit() {
@@ -149,6 +143,13 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   }) {
     let message = this.translate.instant('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
     notification(message, 'error');
+  }
+
+  onDeleteApp(application) {
+    this.apiApplications.deleteApp(application.id)
+      .then(() => {
+          this.router.navigate(['/']);
+      })
   }
 
   private appUpdated() {
