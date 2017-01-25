@@ -5,6 +5,7 @@ import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-trans
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import {Http} from '@angular/http';
 import {FlogoApplicationFlowsComponent} from './flows.component';
+import { FlogoModal } from '../../../common/services/modal.service';
 
 @Component({
   selector: 'container',
@@ -17,6 +18,33 @@ import {FlogoApplicationFlowsComponent} from './flows.component';
 class Container {
   @Output() changes = new EventEmitter();
   flows: Array<any> = [
+    {
+      id: '879',
+      name: 'Log temperature',
+      description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+      createdAt: new Date()
+    },
+    {
+      id: '869',
+      name: 'Log temperature 2',
+      description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
+      createdAt: new Date()
+    },
+    {
+      id: '897',
+      name: 'Manually adjust temperature',
+      description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
+      createdAt: new Date()
+    },
+    {
+      id: '987',
+      name: 'Raise temperature & notifiy operator',
+      description: 'A basic flow for apietusam',
+      createdAt: new Date()
+    }
+  ];
+
+  flowsDisorder: Array<any> = [
     {
       id: '897',
       name: 'Manually adjust temperature',
@@ -37,7 +65,7 @@ class Container {
     },
     {
       id: '869',
-      name: 'Log temperature 2',
+      name: 'Try to find pet',
       description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
       createdAt: new Date()
     }
@@ -63,8 +91,23 @@ describe('Application flows', () => {
         useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
         deps: [Http]
       })],
-      declarations: [ FlogoApplicationFlowsComponent, ModalComponent, Container ] // declare the test component
+      declarations: [ FlogoApplicationFlowsComponent, ModalComponent, Container ], // declare the test component
+      providers: [FlogoModal]
     });
+  });
+
+  it('Should order the flows in alphabetical order', done => {
+    compileComponent()
+      .then(() => {
+        fixture = TestBed.createComponent(Container);
+        let comp = fixture.componentInstance;
+        comp.flows = comp.flowsDisorder;
+        fixture.detectChanges();
+        let res = fixture.debugElement.queryAll(By.css('.flogo-flow-name'));
+        let nameList = res.map(element => element.nativeElement.innerHTML);
+        expect(nameList).toEqual(['Log temperature', 'Manually adjust temperature', 'Raise temperature &amp; notifiy operator', 'Try to find pet']);
+        done();
+      });
   });
 
   it('Should render 4 flows', done => {
@@ -85,7 +128,7 @@ describe('Application flows', () => {
         fixture.detectChanges();
         de = fixture.debugElement.query(By.css('.flogo-flow-name:nth-of-type(1)'));
         el = de.nativeElement;
-        expect(el.innerText).toEqual('Manually Adjust Temperature');
+        expect(el.innerText).toEqual('Log Temperature');
         done();
       });
   });
@@ -96,7 +139,7 @@ describe('Application flows', () => {
         fixture = TestBed.createComponent(Container);
         fixture.detectChanges();
         let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow-description'));
-        el = res[1].nativeElement;
+        el = res[3].nativeElement;
         expect(el.innerText).toEqual('A basic flow for apietusam');
         done();
       });

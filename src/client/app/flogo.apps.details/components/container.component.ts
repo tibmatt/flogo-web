@@ -71,6 +71,12 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
     this.appService.reload();
   }
 
+  public onFlowDeleted(flow){
+    this.flowsService.deleteFlow(flow.id).then(()=>{
+      this.appService.reload();
+    });
+  }
+
   private initSubscribe() {
     this.subscriptions = [
       this.postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, { callback: this.onAddFlow.bind(this) }))

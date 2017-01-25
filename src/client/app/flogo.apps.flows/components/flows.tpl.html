@@ -1,4 +1,5 @@
-<div *ngFor="let flow of flows; let i = index" class="flogo-flow" (click)="select(flow)" [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
+<div *ngFor="let flow of flows; let i = index; trackBy: trackByFlowId" class="flogo-flow" (click)="onSelect(flow)"
+     [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
   <div class="flogo-flow-trigger">
     <i class="flogo-icon-trigger"></i>
   </div>
@@ -10,18 +11,23 @@
       <div class="flogo-flow-menu">
         <div class="flogo-flow-menu__options">
           <ul class="flogo-flow-menu__options__list">
+            <!--
             <li class="flogo-flow-menu__options__list__element">
-              <a href=""><i class="flogo-icon flogo-icon-edit"></i>Rename</a>
+              <i class="flogo-icon flogo-icon-edit"></i>
+              {{ 'FLOWS:OPTION-RENAME' | translate}}
             </li>
             <li class="flogo-flow-menu__options__list__element">
-              <a href=""><i class="flogo-icon flogo-icon-export"></i>Export</a>
+              <i class="flogo-icon flogo-icon-export"></i>
+              {{ 'FLOWS:OPTION-EXPORT' | translate}}
             </li>
-            <li class="flogo-flow-menu__options__list__element">
-              <a href=""><i class="flogo-icon flogo-icon-delete"></i>Delete</a>
+            -->
+            <li class="flogo-flow-menu__options__list__element" (click)="onDeleteFlow($event, flow)">
+              <i class="flogo-icon flogo-icon-delete"></i>
+              {{ 'FLOWS:OPTION-DELETE' | translate}}
             </li>
           </ul>
         </div>
-        <span class="glyphicon glyphicon-option-vertical menu__btn"> </span>
+        <i class="flogo-icon-kebabmenu menu__btn"> </i>
       </div>
     </div>
 
