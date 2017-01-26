@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
+import {Http, Headers, RequestOptions, Response, URLSearchParams} from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { IFlogoApplicationModel } from '../../application.model';
-import { uploadFile } from '../../utils';
+import { ErrorService } from '../../../common/services/error.service';
 
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
 export class RESTAPIApplicationsService {
 
-  constructor(private http : Http ) {
+  constructor(private http : Http, private errorService: ErrorService ) {
   }
 
   recentFlows() {
@@ -111,11 +111,17 @@ export class RESTAPIApplicationsService {
   }
 
   uploadApplication( file : File, appName : string = '') {
-    let url = `/v1/api/apps/import` ;
-    url +=  (appName) ? `?appName=${appName}` : '';
-    return uploadFile(url, file)
-              .then(response => this.extractData(<Response>response) )
-              .catch(error => this.handleError(<Response>error) );
+    let formData: FormData = new FormData();
+    formData.append('importFile', file, file.name);
+
+    let searchParams = new URLSearchParams();
+    searchParams.set('appName', appName);
+    let headers = new Headers({ Accept: 'application/json' });
+    let requestOptions = new RequestOptions({ headers, search: searchParams });
+
+    return this.http.post('/v1/api/apps/import', formData, requestOptions).toPromise()
+              .then(response => this.extractData(response) )
+              .catch(error => this.handleError(error) );
   }
 
 
@@ -127,7 +133,7 @@ export class RESTAPIApplicationsService {
   private handleError (error: Response | any) {
     if (error instanceof Response) {
       const body = error.json();
-      const errs = body.errors || [body];
+      const errs = this.errorService.transformErrors(body.errors || [body]);
       return Promise.reject(errs);
     } else {
       return Promise.reject(new Error('Unknown error'));
