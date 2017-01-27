@@ -52,14 +52,12 @@ export class TransformMapperComponent implements OnChanges {
         let nextValue = mappingsChange.currentValue;
         let currentEditorValue:any = null;
         try {
-            //##currentEditorValue = JSON.parse(this.editor.value);
             currentEditorValue =  this.transformationJSON;
         } catch (e) { // current val is just not valid json
         }
 
         if (!_.isEqual(mappingsChange.previousValue, nextValue) && !_.isEqual(nextValue, currentEditorValue)) {
             let stringified = JSON.stringify(nextValue || [], null, 2);
-            //##this.editor.updateValue(stringified, {onlySelf: true, emitEvent: false});
         }
     }
 

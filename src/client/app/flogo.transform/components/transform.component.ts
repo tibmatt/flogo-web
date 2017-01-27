@@ -1,9 +1,9 @@
-import {Component, ViewChild, ElementRef, OnDestroy, HostListener} from '@angular/core';
+import {Component, ViewChild, ElementRef, Input, OnDestroy, HostListener} from '@angular/core';
 
 import {PostService} from '../../../common/services/post.service';
 
 import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYPE, FLOGO_ERROR_ROOT_NAME as ERROR_ROOT_NAME} from '../../../common/constants';
-import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL} from '../constants';
+import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT} from '../constants';
 import {PUB_EVENTS, SUB_EVENTS} from '../messages';
 
 import {normalizeTaskName, convertTaskID} from '../../../common/utils';
@@ -22,21 +22,22 @@ interface TransformData {
 @Component({
   selector: 'flogo-transform',
   styleUrls: ['transform.component.css'],
-  inputs:['flowId'],
   moduleId: module.id,
   templateUrl: 'transform.tpl.html'
 })
 export class TransformComponent implements OnDestroy {
-  fieldsConnections:any[] = [];
+  fieldsConnections:any = {};
   isValid:boolean;
   isDirty:boolean;
   isCollapsedOutput:boolean = true;
   isCollapsedInput:boolean = true;
   currentFieldSelected:any = {};
+  @Input()
   flowId:string;
 
   errors:any;
 
+  // TODO: use angular animation API? It was not available when this was first implemented
   // two variables control the display of the modal to support animation when opening and closing
   active:boolean = false; // controls the rendering of the content of the modal
   out:boolean = false; // controls the in/out transition of the modal
@@ -65,10 +66,6 @@ export class TransformComponent implements OnDestroy {
 
   onSelectedItem(params:any) {
     this.currentFieldSelected = params;
-  }
-
-  private raisedByThisDiagram(id:string) {
-    return this.flowId === (id || '');
   }
 
   removeError(change:any) {
@@ -135,7 +132,7 @@ export class TransformComponent implements OnDestroy {
       if(this.fieldsConnections.hasOwnProperty(key)) {
         if(!this.fieldsConnections[key].hasError && this.fieldsConnections[key].value) {
           results.push({
-            type: 1,
+            type: TYPE_ATTR_ASSIGNMENT,
             mapTo: this.fieldsConnections[key].mapTo,
             value: this.fieldsConnections[key].value
           });
@@ -214,6 +211,10 @@ export class TransformComponent implements OnDestroy {
 
     this._subscriptions = subHandlers.map(handler => this._postService.subscribe(handler));
 
+  }
+
+  private raisedByThisDiagram(id:string) {
+    return this.flowId === (id || '');
   }
 
   private cancelSubscriptions() {
@@ -349,6 +350,7 @@ export class TransformComponent implements OnDestroy {
     this.isDirty = false;
     this.errors = null;
     this.showDeleteConfirmation = false;
+    this.fieldsConnections = {};
   }
 
   private open() {
