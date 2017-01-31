@@ -948,6 +948,27 @@ export class FlogoCanvasComponent implements OnInit {
     }
   }
 
+  deleteFlow() {
+    let message = this.translate.instant('FLOWS:CONFIRM_DELETE', {flowName: this.flow.name});
+    this._flogoModal.confirmDelete(message)
+      .then((res) => {
+        if (res) {
+          this._restAPIFlowsService.deleteFlow(this.flowId)
+            .then(() => {
+              this.navigateToApp();
+            })
+            .then(() => {
+              let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
+              notification(message, 'success', 3000);
+            })
+            .catch(err => {
+              let message = this.translate.instant('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err);
+              notification(message, 'error');
+              console.error(err);
+            });
+        }
+      })
+  }
 
   exportTriggerAndFlow() {
       return this._exportTriggerAndFlow.bind(this);

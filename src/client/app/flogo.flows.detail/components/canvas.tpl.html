@@ -11,7 +11,7 @@
                (click)="navigateToApp()"
                (mouseover)="onMouseOverBackControl()"
                (mouseout)="onMouseOutBackControl()">
-            <li class="fa fa-angle-left"></li>
+            <i class="flogo-icon flogo-icon-back"></i>
           </div>
           <div class="">
             <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetail($event, 'name')"></h3>
@@ -29,6 +29,7 @@
 
       <div class="col-sm-3 flogo-flow-detail-menu-container">
         <div class="flogo-flow-detail-menu">
+          <i class="flogo-icon-kebabmenu"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">
             <ul class="flogo-flow-detail-menu-list">
               <li class="flogo-flow-detail-menu-item">
@@ -42,7 +43,7 @@
               <li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><a [jsonDownloader]="exportTriggerAndFlow()"><i class="fa fa-cloud-download fa-fw"></i> {{ 'CANVAS:EXPORT-FOR-CLI' | translate }}</a></li>
               <li class="flogo-flow-detail-menu-item"><a [href]="exportLink" download><i class="fa fa-cloud-download fa-fw"></i>{{ 'CANVAS:EXPORT-FOR-WEB-UI' | translate }}</a></li>
-              <li class="flogo-flow-detail-menu-item"><a href="javascript:void(0);"><i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}</a></li>
+              <li class="flogo-flow-detail-menu-item"><a (click)="deleteFlow()" href="javascript:void(0);"><i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}</a></li>
             </ul>
           </div>
         </div>

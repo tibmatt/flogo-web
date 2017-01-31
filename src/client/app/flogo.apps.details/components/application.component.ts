@@ -1,4 +1,5 @@
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
+
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { AppDetailService, ApplicationDetail, ApplicationDetailState } from '../../flogo.apps/services/apps.service';
@@ -22,6 +23,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
   @Output() flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
   @Output() flowAdded: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
+  @Output() flowDeleted: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
   @Output() onDeletedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
   application: IFlogoApplicationModel;
@@ -126,6 +128,10 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
   onFlowSelected(flow) {
     this.flowSelected.emit(flow);
+  }
+
+  onFlowDelete(flow){
+    this.flowDeleted.emit(flow);
   }
 
   onFlowImportSuccess(result: any) {

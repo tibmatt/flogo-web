@@ -1,8 +1,5 @@
 @import "_variables";
 
-@flogo-flow-detail-header-selected-color:#1573ca;
-@flogo-flow-detail-header-unselected-color:#666666;
-
 :host {
   display: flex;
   align-items: stretch;
@@ -78,12 +75,16 @@
 
 .flogo-flow-detail {
   background-color: #FAFAFA;
+  height: 113px;
+  display: flex;
+  align-items: center;
 }
 
 .flogo-flow-detail-name {
   font-size: 24px;
-  color: #666666;
+  color: @color-plane;
   margin: 0;
+  margin-bottom: -5px;
   line-height: 1.5;
 }
 
@@ -117,7 +118,6 @@
 }
 
 .flogo-flow-detail-log-button-container {
-  margin-top: 36px;
   width: 40px;
   height: 40px;
   margin-right: 10px;
@@ -143,11 +143,13 @@
 
 .flogo-flow-detail-menu{
   margin-right: 15px;
-  margin-top: 36px;
 }
 
 .flogo-flow-detail-header {
-  padding: 20px 0 30px 30px;
+
+  .flogo-flow-detail-name + span{
+    font-size: .875em;
+  }
 
   .flogo-flow-detail-header-back {
     display: flex;
@@ -155,28 +157,28 @@
 
     .flogo-flow-detail-header-back-icon {
       cursor: pointer;
-      width: 20px;
       margin-top: 10px;
 
-      li {
-        font-size: 30px;
-        position: absolute;
-        top: 20px;
-        color: @flogo-flow-detail-header-unselected-color;
+      .flogo-icon-back {
+        font-size: 1.2em;
+        padding: 0 10px;
+        color: @color-secondary;
       }
     }
 
     .flogo-flow-detail-header-back-app-name {
+      font-size: .875em;
+      color: @color-secondary;
       cursor: pointer;
-      color: @flogo-flow-detail-header-selected-color;
     }
 
     &.--hover {
       .flogo-flow-detail-header-back-app-name {
-        text-decoration: underline;
+        color: @color-primary;
+        font-weight: bold;
       }
-      .flogo-flow-detail-header-back-icon li {
-        color: @flogo-flow-detail-header-selected-color;
+      .flogo-flow-detail-header-back-icon .flogo-icon {
+        color: @color-primary
       }
     }
   }
