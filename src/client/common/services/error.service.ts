@@ -1,39 +1,29 @@
 import { Injectable } from '@angular/core';
-import { CODE_ERRORS, CODE_BROKEN_RULE } from './../constants';
+import { ERROR_CODE, ERROR_CONSTRAINT } from './../constants';
+
+const ERROR_MAP = {
+  [ERROR_CODE.UNIQUE]: ERROR_CONSTRAINT.NOT_UNIQUE,
+  [ERROR_CODE.NOT_INSTALLED_ACTIVITY]: ERROR_CONSTRAINT.NOT_INSTALLED_ACTIVITY,
+  [ERROR_CODE.NOT_INSTALLED_TRIGGER]: ERROR_CONSTRAINT.NOT_INSTALLED_TRIGGER,
+  [ERROR_CODE.WRONG_INPUT_JSON_FILE]: ERROR_CONSTRAINT.WRONG_INPUT_JSON_FILE,
+};
 
 @Injectable()
 export class ErrorService {
 
-  constructor() {
-  }
-
-  public transformErrors(errors:any[]) : {[key:string]: boolean} {
+  public transformRestErrors(errors: {code: string, status: number|string}[]): {[key: string]: boolean} {
     let firstError = errors[0];
-    if (firstError && firstError.status == 500) {
+    if (firstError && (firstError.status === 500 || firstError.status === '500')) {
       // internal error
-      return {unknown: true};
+      return { unknown: true };
     }
 
     let transformed = {};
     errors.forEach(error => {
-      switch (error.code) {
-        case CODE_ERRORS.UNIQUE:
-          transformed[CODE_BROKEN_RULE.NOT_UNIQUE] = true;
-          break;
-
-        case CODE_ERRORS.NOT_INSTALLED_ACTIVITY:
-          transformed[CODE_BROKEN_RULE.NOT_INSTALLED_ACTIVITY] = true;
-          break;
-
-        case CODE_ERRORS.NOT_INSTALLED_TRIGGER:
-          transformed[CODE_BROKEN_RULE.NOT_INSTALLED_TRIGGER] = true;
-          break;
-
-        case CODE_ERRORS.WRONG_INPUT_JSON_FILE:
-          transformed[CODE_BROKEN_RULE.WRONG_INPUT_JSON_FILE] = true;
-          break;
+      const constraint = ERROR_MAP[error.code];
+      if (constraint) {
+        transformed[constraint] = true;
       }
-
     });
 
     return transformed;

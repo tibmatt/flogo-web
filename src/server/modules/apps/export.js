@@ -1,5 +1,4 @@
 import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
 import cloneDeep from 'lodash/cloneDeep';
 
 /**
@@ -13,9 +12,9 @@ export function consolidateFlowsAndTriggers(flowsData = []) {
   const triggers = [];
   const flows = [];
 
-  const findExistingTriggerEntry = trigger => triggers.find(entry =>
-    // same trigger if same ref and same settings
-     entry.ref === trigger.ref && isEqual(trigger.data.settings, entry.data.settings));
+  // same trigger if same ref and same settings
+  const findExistingTriggerEntry = trigger => triggers.find(
+    entry => entry.ref === trigger.ref && isEqual(trigger.settings, entry.settings));
 
   flowsData
     .forEach((flowData) => {
@@ -26,14 +25,14 @@ export function consolidateFlowsAndTriggers(flowsData = []) {
       }
 
       const triggerEntry = determineTriggerEntry(trigger);
-      const triggerEndpoints = trigger.data.endpoints || [];
-      const endpointsEntry = triggerEndpoints[0] || { settings: {} };
-      triggerEntry.data.endpoints.push(endpointsEntry);
+      const triggerEndpoints = trigger.handlers || [];
+      const handlersEntry = triggerEndpoints[0] || { settings: {} };
+      triggerEntry.handlers.push(handlersEntry);
 
       // link trigger to flow/action
       if (flowData.flow) {
         flows.push(flow);
-        endpointsEntry.actionId = flow.id;
+        handlersEntry.actionId = flow.id;
       }
     });
 
@@ -45,10 +44,11 @@ export function consolidateFlowsAndTriggers(flowsData = []) {
   function determineTriggerEntry(trigger) {
     // find if we have already processed another instance of the same trigger
     let triggerEntry = findExistingTriggerEntry(trigger);
+    // todo: make sure trigger id is unique
     if (!triggerEntry) {
       // no previous entry for this trigger, we need to create one
       triggerEntry = cloneDeep(trigger);
-      triggerEntry.data.endpoints = [];
+      triggerEntry.handlers = [];
       triggers.push(triggerEntry);
     }
     return triggerEntry;

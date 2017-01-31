@@ -66,7 +66,6 @@
   "FLOWS:CONFIRM_DELETE": "Are you sure you want to delete the flow \"{{flowName}}\"?",
   "FLOWS:CREATED": "Created {{value}}",
   "FLOWS:CREATE_FLOW_ERROR": "An error occurred creating the flow",
-  "FLOWS:ERROR-MESSAGE-IMPORT":"{{value}}",
   "FLOWS:ERROR-MESSAGE-REMOVE-FLOW": "Remove flow error: {{value}}",
   "FLOWS:FEATURED-VIDEO-TUTORIAL": "Featured Video tutorial",
   "FLOWS:MY-FLOWS": "My Flows",

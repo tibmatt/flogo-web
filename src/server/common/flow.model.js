@@ -14,9 +14,8 @@ const DEFAULT_FLOW_MODEL_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/fl
  * set to false. Defaults to true.
  * @return {{}}
  */
-export function flogoFlowToJSON(inFlow, options = { useRef : true }) {
-
-  const REF_FIELD = options.useRef ? { NAME: 'activityRef', FROM: 'where' } : { NAME: 'activityType', FROM: 'activityType' };
+export function flogoFlowToJSON(inFlow, options = { useRef: true }) {
+  const REF_FIELD = options.useRef ? { NAME: 'activityRef', FROM: '__schema.where' } : { NAME: 'activityType', FROM: 'activityType' };
 
   var DEBUG = false;
   var INFO = true;
@@ -135,7 +134,7 @@ export function flogoFlowToJSON(inFlow, options = { useRef : true }) {
           var taskInfo = {};
           taskInfo.id = convertTaskID(task.id);
           taskInfo.name = _.get(task, 'name', '');
-          taskInfo[REF_FIELD.NAME] = task[REF_FIELD.FROM];
+          taskInfo[REF_FIELD.NAME] = _.get(task, REF_FIELD.FROM);
           taskInfo.type = task.type;
           taskInfo.attributes = _parseFlowAttributes(_.get(task, 'attributes.inputs'));
           var inputMappings = _parseFlowMappings(_.get(task, 'inputMappings'));
@@ -278,57 +277,43 @@ export function flogoFlowToJSON(inFlow, options = { useRef : true }) {
  * @params.useRef {boolean} (Deprecated) Toggles between using triggerRef and triggerType.
  * Exists for historical reasons, allows to output flow format for older engine versions when
  * set to false. Defaults to true.
- * @return {object} exported tirgger object for the flow
+ * @return {object} exported trigger object for the flow
  */
 export function flogoTriggerToJSON(flow) {
-  let result;
-  let rootTask;
 
-  _.forOwn(flow.items, function (value, key) {
-    if (value.type == FLOGO_TASK_TYPE.TASK_ROOT) {
-      rootTask = _.cloneDeep(value);
-      return false;
-    } else {
-      return true;
-    }
-  });
+  let rootTask = _.find(flow.items, value => value.type === FLOGO_TASK_TYPE.TASK_ROOT);
+  if (!rootTask) {
+    return null;
+  }
+  rootTask = _.cloneDeep(rootTask);
 
-  if (rootTask) {
-    let settings = {};
-    let endpoint = {};
-    let endpoints = [];
+  const settings = {};
+  const handlerSettings = {};
+  let handlers = [];
 
-    if (rootTask.settings) {
-      rootTask.settings.forEach((setting) => {
-        settings[setting.name] = setting.value;
-      });
-    }
-
-    if (rootTask.endpoint && rootTask.settings) {
-      rootTask.endpoint.settings.forEach((setting) => {
-        if (setting.value && typeof setting.value !== 'undefined') {
-          endpoint[setting.name] = setting.value;
-        }
-      });
-    }
-
-    if (_.isEmpty(endpoint)) {
-      endpoints = null;
-    } else {
-      endpoints.push(endpoint);
-    }
-
-    const trigger = {
-      id: _.snakeCase(rootTask.name),
-      ref: rootTask.where,
-      // name: rootTask.triggerType,
-      data: {
-        settings,
-        endpoints,
-      },
-    };
-    result = trigger;
+  if (rootTask.settings) {
+    rootTask.settings.forEach((setting) => {
+      settings[setting.name] = setting.value;
+    });
   }
 
-  return result;
+  if (rootTask.endpoint && rootTask.endpoint.settings) {
+    rootTask.endpoint.settings.forEach((setting) => {
+      handlerSettings[setting.name] = setting.value && typeof setting.value !== 'undefined' ? setting.value : null;
+    });
+  }
+
+  if (_.isEmpty(handlerSettings)) {
+    handlers = null;
+  } else {
+    handlers.push({ settings: handlerSettings });
+  }
+
+  return {
+    id: _.snakeCase(rootTask.name),
+    ref: _.get(rootTask, '__schema.where'),
+    // name: rootTask.triggerType,
+    settings,
+    handlers,
+  };
 }

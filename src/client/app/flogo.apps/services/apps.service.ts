@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs/Rx';
+import { BehaviorSubject, Observable } from 'rxjs/Rx';
 
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-import { ApiError } from '../../../common/services/restapi/restapi.model';
-import { ErrorService } from '../../../common/services/error.service';;
+import { ErrorService } from '../../../common/services/error.service';
 
 const DEFAULT_STATE = {
   name: {
@@ -23,18 +22,18 @@ export interface ApplicationDetailState {
   name: {
     pendingSave: boolean,
     hasErrors: boolean,
-    errors: {[key:string]: boolean}
-  },
+    errors: {[key: string]: boolean}
+  };
   description: {
     pendingSave: boolean,
     hasErrors: boolean,
-    errors: {[key:string]: boolean}
-  }
+    errors: {[key: string]: boolean}
+  };
 }
 
 export interface ApplicationDetail {
-  app: IFlogoApplicationModel,
-  state: ApplicationDetailState
+  app: IFlogoApplicationModel;
+  state: ApplicationDetailState;
 }
 
 @Injectable()
@@ -43,14 +42,14 @@ export class AppDetailService {
   private currentApp$ = new BehaviorSubject<ApplicationDetail>(undefined);
   private fetching: boolean;
 
-  constructor(private appsApiService : RESTAPIApplicationsService, private errorService: ErrorService) {
+  constructor(private appsApiService: RESTAPIApplicationsService, private errorService: ErrorService) {
   }
 
-  public currentApp() :Observable<ApplicationDetail> {
+  public currentApp(): Observable<ApplicationDetail> {
     return this.currentApp$.asObservable();
   }
 
-  public load(appId:string) {
+  public load(appId: string) {
     this.fetchApp(appId).then(app => {
       this.currentApp$.next(<ApplicationDetail>_.defaultsDeep({}, {
         app,
@@ -83,7 +82,7 @@ export class AppDetailService {
     this.appsApiService
       .updateApp(appToUpdate.app.id, {[prop]: value})
       .then(updatedApp => {
-        if(!isRequestStillApplicable(appToUpdateId)) {
+        if (!isRequestStillApplicable(appToUpdateId)) {
           return;
         }
         let nextApp = this.getCurrentAsEditable();
@@ -96,23 +95,23 @@ export class AppDetailService {
         this.currentApp$.next(nextApp);
       })
       .catch(errors => {
-        if(!isRequestStillApplicable(appToUpdateId)) {
+        if (!isRequestStillApplicable(appToUpdateId)) {
           return;
         }
         let nextApp = this.getCurrentAsEditable();
         nextApp.state[prop] = {
           pendingSave: false,
           hasErrors: !!errors.length,
-          errors: this.errorService.transformErrors(errors)
+          errors: this.errorService.transformRestErrors(errors)
         };
         this.currentApp$.next(nextApp);
       });
 
-    let isRequestStillApplicable = (forAppId:string) => {
+    let isRequestStillApplicable = (forAppId: string) => {
       let nextApp = this.currentApp$.getValue();
       // make sure current app has not changed
-      return nextApp.app.id == forAppId;
-    }
+      return nextApp.app.id === forAppId;
+    };
 
   }
 
@@ -141,10 +140,10 @@ export class AppDetailService {
     return this.appsApiService.export(this.currentApp$.getValue().app.id);
   }
 
-  private fetchApp(appId:string) {
+  private fetchApp(appId: string) {
     this.fetching = true;
     return this.appsApiService.getApp(appId)
-      .then((app :IFlogoApplicationModel) => {
+      .then((app: IFlogoApplicationModel) => {
         this.fetching = false;
         return app;
       });

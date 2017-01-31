@@ -2,9 +2,9 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, OnChanges, Output, 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel } from '../../../common/application.model';
-import { RESTAPIApplicationsService}  from '../../../common/services/restapi/applications-api.service';
+import { RESTAPIApplicationsService }  from '../../../common/services/restapi/applications-api.service';
 import { notification } from '../../../common/utils';
-import { CODE_BROKEN_RULE } from '../../../common/constants';
+import { ERROR_CONSTRAINT } from '../../../common/constants';
 
 @Component({
   selector: 'flogo-apps-list',
@@ -35,7 +35,7 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
       let prevId = change.previousValue && change.previousValue.id;
       let currentId = change.currentValue && change.currentValue.id;
 
-      if (prevId != currentId) {
+      if (prevId !== currentId) {
         this.listAllApps();
       }
 
@@ -43,13 +43,13 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
   }
 
   onSelectApp(event: Event, removeBox: ElementRef, app: IFlogoApplicationModel) {
-    if (!(event.target == removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
+    if (!(event.target === removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
       this.appSelected(app);
     }
   }
 
   onImportFileSelected(event) {
-    let file = <File> _.get(event,'target.files[0]');
+    let file = <File> _.get(event, 'target.files[0]');
 
     // clean input file value
     event.target.value = '';
@@ -68,19 +68,22 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
   }
 
   getErrorMessage(error) {
-    if(error[CODE_BROKEN_RULE.WRONG_INPUT_JSON_FILE]) {
-      return this.translate.instant('APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE');
+    // todo: multiple error messages?
+    // todo: error detail
+    let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
+    if (error[ERROR_CONSTRAINT.WRONG_INPUT_JSON_FILE]) {
+      message = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
     }
 
-    if(error[CODE_BROKEN_RULE.NOT_INSTALLED_ACTIVITY]) {
-      return this.translate.instant('APP-LIST:BROKEN_RULE_NOT_INSTALLED_ACTIVITY');
+    if (error[ERROR_CONSTRAINT.NOT_INSTALLED_ACTIVITY]) {
+      message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_ACTIVITY';
     }
 
-    if(error[CODE_BROKEN_RULE.NOT_INSTALLED_TRIGGER]) {
-      return this.translate.instant('APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER');
+    if (error[ERROR_CONSTRAINT.NOT_INSTALLED_TRIGGER]) {
+      message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
     }
 
-    return this.translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
+    return this.translate.instant(message);
   }
 
   onAdd() {
@@ -95,7 +98,7 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
     this.apiApplications.getAllApps()
       .then((applications: Array<IFlogoApplicationModel>) => {
         this.applications = applications;
-      })
+      });
   }
 
   remove(application: IFlogoApplicationModel) {
@@ -103,7 +106,7 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
       .then(() => {
         this.listAllApps();
         this.onDeletedApp.emit(application);
-      })
+      });
   }
 
   private appSelected(app) {
