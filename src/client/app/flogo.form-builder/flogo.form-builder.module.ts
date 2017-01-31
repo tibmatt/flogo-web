@@ -41,7 +41,7 @@ import {FlogoFormBuilderComponent} from './components/form-builder.component';
     TaskDirective,
     BranchDirective,
     FlogoFormBuilderComponent
-  ],
+],
   exports: [
     FlogoFormBuilderComponent
   ],
