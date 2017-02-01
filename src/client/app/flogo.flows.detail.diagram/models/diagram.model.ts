@@ -11,8 +11,8 @@ import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } 
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
-import { genBranchLine } from '../../../common/utils';
-import { TranslatePipe, TranslateService } from 'ng2-translate/ng2-translate';
+import { genBranchLine } from '../utils';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 //import * as moment from 'moment';
 
@@ -753,8 +753,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           }
         } );
 
-        let thisBranchLineHeight = rowHeight * level - 31;
-        let branchLines = genBranchLine( { svgHeight : thisBranchLineHeight } );
+        let defaultLevel = 1;
+        let branchOverlap = 31; //branch overlap with mother tile
+        let thisBranchLineHeight = rowHeight * level - branchOverlap;
+        let branchLines = genBranchLine( {
+          svgHeight : thisBranchLineHeight,
+          defaultHeight: rowHeight * defaultLevel - branchOverlap
+        } );
 
         return _.map( [
           {
