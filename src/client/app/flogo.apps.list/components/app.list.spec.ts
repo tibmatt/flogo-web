@@ -5,8 +5,8 @@ import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-trans
 import {Http} from '@angular/http';
 
 import {FlogoAppListComponent} from './app.list.component';
+import {FlogoAppDeletePopoverComponent} from './delete.popover.component';
 import {IFlogoApplicationModel} from '../../../common/application.model';
-import {FlogoModal} from '../../../common/services/modal.service';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { RESTAPIApplicationsServiceMock } from '../../../common/services/restapi/applications-api.service.mock';
 
@@ -51,9 +51,8 @@ describe('FlogoAppList component', () => {
         useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
         deps: [Http]
       })],
-      declarations: [FlogoAppListComponent, FlogoAppListComponent], // declare the test component
+      declarations: [FlogoAppListComponent, FlogoAppDeletePopoverComponent], // declare the test component
       providers: [
-        {provide: FlogoModal, useClass: FlogoModal},
         {provide: RESTAPIApplicationsService, useClass: RESTAPIApplicationsServiceMock}
       ]
     });
@@ -191,11 +190,6 @@ describe('FlogoAppList component', () => {
           }
         ];
 
-        // mock confirmDelete
-        comp.flogoModal.confirmDelete = () => {
-          return Promise.resolve(true);
-        };
-
         comp.onDeletedApp.subscribe((application: IFlogoApplicationModel) => {
           expect(application.id).toEqual('123');
           done();
@@ -210,6 +204,10 @@ describe('FlogoAppList component', () => {
           //fixture.detectChanges();
           let deleteIcon = fixture.debugElement.query(By.css('li span'));
           let element = deleteIcon.nativeElement;
+          element.click();
+          fixture.detectChanges();
+          let confirmDelete = fixture.debugElement.query(By.css('li .popup-btn-primary'));
+          element = confirmDelete.nativeElement;
           element.click();
         });
 

@@ -65,7 +65,6 @@
   }
 
   .flogo-app-list__content {
-    overflow: auto;
     color: #fff;
     margin: 0 -15px;
 
@@ -74,35 +73,39 @@
       margin: 0;
       padding-left: 0;
 
-      .apps-list__element:hover + .apps-list__element,
-      .apps-list__element.selected + .apps-list__element {
+      .apps-list__element:hover + .apps-list__element .app-list__app-name,
+      .apps-list__element.selected + .apps-list__element .app-list__app-name {
         border-top: 0;
         padding-top: 16px;
       }
 
       .apps-list__element {
         position: relative;
-        border-top: 1px solid #d8d8d8;
         font-size: 1em;
         font-weight: bold;
         letter-spacing: .5px;
         height: 50px;
-        margin: 0 @margin-top;
-        padding-top: 15px;
-        padding-left: 15px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        padding: 0 @margin-top;
+        margin: 0;
+
+        .app-list__app-name {
+          padding-top: @margin-top;
+          padding-left: @margin-top;
+          border-top: 1px solid #d8d8d8;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
 
         &:hover {
           color: #fff;
           background-color: #7ab8dd;
-          border-top: 0;
-          padding-top: 16px;
           cursor: pointer;
-          margin: 0;
-          padding-left: 30px;
-          padding-right: 50px;
+
+          .app-list__app-name {
+            border-top: 0;
+            padding-top: 16px;
+          }
+
           .apps-list__delete-btn {
             visibility: visible;
           }
@@ -112,16 +115,18 @@
       .selected {
         background-color: #7ab8dd;
         font-weight: bold;
-        padding: 15px 30px 0;
-        margin: 0;
-        border-top: 0;
+
+        .app-list__app-name {
+          border-top: 0;
+          padding-top: 16px;
+        }
       }
 
       .apps-list__delete-btn {
         position: absolute;
         visibility: hidden;
         right: 26px;
-        top: 18px;
+        top: 16px;
         cursor: pointer;
       }
 
