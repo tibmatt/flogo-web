@@ -94,9 +94,9 @@ module.exports = function(config) {
       // Asset (HTML & CSS) paths loaded via Angular's component compiler
       // (these paths need to be rewritten, see proxies section)
       { pattern: appBase + '**/*.*(html|css)', included: false, watched: true },
-      { pattern: appAssets + '**/*.*(png|svg)', included: false, watched: true },
-
+      { pattern: appAssets + '**/*.*(png|svg)', included: false, watched: true }
       // Paths for debugging with source maps in dev tools
+      //
       //{ pattern: appSrcBase + '**/*.ts', included: false, watched: false },
       //{ pattern: appCommon + '**/*.js.map', included: false, watched: false },
       //{ pattern: testingSrcBase + '**/*.ts', included: false, watched: false },

@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
 import {Router, NavigationEnd, NavigationCancel} from '@angular/router';
-import {LoadingStatusService} from '../../../common/services/loading-status.service';
 
-import {Observable} from 'rxjs/Observable';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import {LoadingStatusService} from '../../../common/services/loading-status.service';
+import { LanguageService } from '../../../common/services/language.service';
+import { Observable } from 'rxjs/Observable';
+
 
 @Component({
   selector: 'flogo-app',
@@ -12,31 +13,14 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
   styleUrls: [ 'flogo.component.css' ]
 })
 
-// @RouteConfig([
-//   {
-//     path: '/...', name: "FlogoHome", component:FlogoAppsComponent, useAsDefault: true
-//   },
-//   {
-//     path:'/flows/:id/...', name:"FlogoFlowDetail", component: FlogoCanvasComponent
-//   },
-//   {
-//     path:'/task', name: 'FlogoTask', component: FlogoFormBuilderComponent
-//   },
-//   {
-//     path:'/rest-api-test', name: 'FlogoRESTAPITest', component: RESTAPITest
-//   },
-//   // TODO
-//   //  temp config page to change server URL settings
-//   {
-//     path: '/_config', name: "FlogoDevConfig", component:FlogoConfigComponent
-//   }
-// ])
-
 export class FlogoAppComponent {
 
   public isPageLoading : Observable<boolean>;
 
-  constructor(private router : Router, private loadingStatusService : LoadingStatusService, translate: TranslateService){
+  constructor(public router : Router,
+              public loadingStatusService : LoadingStatusService,
+              public languageService: LanguageService){
+
     this.isPageLoading = this.loadingStatusService.status;
 
     this.router.events.subscribe((event:any):void => {
@@ -45,12 +29,9 @@ export class FlogoAppComponent {
       }
     });
 
-    var userLang = navigator.language.split('-')[0]; // use navigator lang if available
-    userLang = /(fr|en)/gi.test(userLang) ? userLang : 'en';
-
-    // this language will be used as a fallback when a translation isn't found in the current language
-    translate.setDefaultLang('en');
-    // the lang to use, if the lang isn't available, it will use the current loader to get them
-    translate.use(userLang);
+    this.languageService.configureLanguage();
   }
+
+
+
 }
