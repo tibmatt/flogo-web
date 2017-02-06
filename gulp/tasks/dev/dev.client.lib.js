@@ -14,12 +14,7 @@ const DEPENDENCIES_DIRNAME = 'node_modules';
  * Link third party libs to build folder
  */
 gulp.task('dev.client.lib', 'Link third party libs to build folder',
-  ['dev.client.lib.rxjs'],
-  () => {
-    del.sync([path.join(CONFIG.paths.dist.public, DEPENDENCIES_DIRNAME)]);
-    return vinyl.src(path.join(CONFIG.paths.source.client, DEPENDENCIES_DIRNAME), {followSymlinks: false})
-      .pipe(vinyl.symlink(CONFIG.paths.dist.public));
-  });
+  ['dev.client.lib.rxjs']);
 
 // avoid multiple requests in development mode for rxjs
 gulp.task('dev.client.lib.rxjs', () => {

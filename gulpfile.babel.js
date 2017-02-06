@@ -54,7 +54,24 @@ gulp.task('dev', 'Build and start in development mode', cb => {
     'clean',
     'dev.build',
     'dev.watch',
+    'install.server.dist',
+    'install.client.dist',
     'dev.start',
+    cb
+  );
+
+});
+
+/**
+ * Build in development mode and watch for changes.
+ * Does not install distribution dependencies nor starts the server app.
+ */
+gulp.task('dev-watch', 'Build in development mode and watch for changes', cb => {
+
+  runSequence(
+    'clean',
+    'dev.build',
+    'dev.watch',
     cb
   );
 
