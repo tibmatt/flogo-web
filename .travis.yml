@@ -13,15 +13,15 @@ before_install:
   - "echo -e \"machine github.com\n  login ${GITHUB_USER_TOKEN}\" >> ~/.netrc"
   - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}" ;
 
-script: 
+script:
   - touch flogo-web.tgz
   - tar cvfz flogo-web.tgz --exclude=flogo-web.tgz .
   - find . -not -name "flogo-web.tgz" -not  -name "\." -not -name "\.\."  -print0 | xargs -0 rm -rf --
   - "git ls-remote --exit-code https://github.com/TIBCOSoftware/flogo-cicd.git ${TRAVIS_BRANCH} ;
-    if [ $? -eq 0 ]; then 
+    if [ $? -eq 0 ]; then
         echo \"Branch ${TRAVIS_BRANCH} found on flogo-cicd\" ;
         git clone https://github.com/TIBCOSoftware/flogo-cicd.git --branch ${TRAVIS_BRANCH} --single-branch flogo-cicd ;
-    else 
+    else
         echo \"Branch ${TRAVIS_BRANCH} not found on flogo-cicd using master\" ;
         git clone https://github.com/TIBCOSoftware/flogo-cicd.git flogo-cicd ;
     fi"
@@ -34,5 +34,5 @@ after_success:
   - "if [ \"${TRAVIS_BRANCH}\" == \"master\" ]; then
     docker login -u=\"${DOCKER_USERNAME}\" -p=\"${DOCKER_PASSWORD}\" ;
     source ${TRAVIS_BUILD_DIR}/flogo-cicd/scripts/init.sh ;
-    flogo::module::postbuild flogo-web flogo-web;
+    flogo::module::postbuild flogo-web flogo-docker;
     fi"
