@@ -14,8 +14,8 @@ export class FlogoFormBuilderFieldsNumber extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any
 
-  constructor(_translate: TranslateService) {
-    super(_translate);
+  constructor(public translate: TranslateService) {
+    super(translate);
   }
 
 }

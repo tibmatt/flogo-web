@@ -14,8 +14,8 @@ export class FlogoFormBuilderFieldsRadio extends FlogoFormBuilderFieldsBase {
   _info:any;
   _fieldObserver:any;
   _index: number;
-  constructor(_translate: TranslateService) {
-    super(_translate);
+  constructor(public translate: TranslateService) {
+    super(translate);
   }
 
 }

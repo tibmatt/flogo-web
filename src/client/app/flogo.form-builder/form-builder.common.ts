@@ -84,9 +84,6 @@ export class FlogoFormBuilderCommon {
         break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
-        control='FieldTextArea';
-        break;
-
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
         control='FieldObject';
         break;
@@ -97,7 +94,7 @@ export class FlogoFormBuilderCommon {
     }
 
     if(paramDirection == this.directions.output && item.type == FLOGO_TASK_ATTRIBUTE_TYPE.STRING) {
-      control = 'FieldTextArea';
+      control = 'FieldObject';
     }
 
     if(item.allowed) { control= 'FieldListBox'; }
