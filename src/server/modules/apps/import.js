@@ -6,7 +6,7 @@ import flattenDeep from 'lodash/flattenDeep';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { TriggerManager } from './../../modules/triggers/';
 import { ActivitiesManager } from './../../modules/activities/';
-import { genNodeID, flogoGenTriggerID, flogoGenTaskID, flogoIDEncode } from './../../common/utils';
+import { genNodeID, flogoGenTriggerID, flogoGenBranchID, flogoGenTaskID, flogoIDEncode } from './../../common/utils';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../../common/constants';
 import { CONSTRAINTS } from '../../common/validation';
 import { createFlow } from './../../api/flows';
@@ -378,7 +378,7 @@ class NodeFactory {
     return Object.assign({}, { id: genNodeID(), __status: status, children: [], parents: [] });
   }
   static makeBranch() {
-    return Object.assign({}, this.getSharedProperties(), { type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH, taskID: flogoGenTriggerID() });
+    return Object.assign({}, this.getSharedProperties(), { type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH, taskID: flogoGenBranchID() });
   }
 }
 

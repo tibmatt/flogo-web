@@ -109,6 +109,10 @@ export function flogoGenTriggerID() {
   return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
 }
 
+export function flogoGenBranchID() {
+  return flogoIDEncode( `Flogo::Branch::${Date.now()}` );
+}
+
 export function genNodeID( items ) {
 
 
