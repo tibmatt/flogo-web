@@ -101,7 +101,7 @@ docker pull reldocker.tibco.com/flogo/state-service:latest
 
 Rename the state service image:
 ```sh
-docker tag reldocker.tibco.com/flogo/state-service:latest flogo/sate-service:latest 
+docker tag reldocker.tibco.com/flogo/state-service:latest flogo/state-service:latest 
 ```
 
 Pull the flow service image
