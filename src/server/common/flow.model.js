@@ -1,11 +1,22 @@
-"use strict";
+import _ from 'lodash';
+
 import { flogoIDEncode, convertTaskID } from '../common/utils';
-import { FLOGO_PROCESS_TYPE, FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../common/constants';
-import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../common/constants';
+import { FLOGO_PROCESS_TYPE, FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../common/constants';
 
-import _ from "lodash";
+const DEFAULT_FLOW_MODEL_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
-export function flogoFlowToJSON(inFlow) {
+/**
+ *
+ * @param inFlow
+ * @param options {object} optional
+ * @params.useRef {boolean} (Deprecated) Toggles between using activityRef and activityType.
+ * Exists for historical reasons, allows to output flow format for older engine versions when
+ * set to false. Defaults to true.
+ * @return {{}}
+ */
+export function flogoFlowToJSON(inFlow, options = { useRef: true }) {
+  const REF_FIELD = options.useRef ? { NAME: 'activityRef', FROM: '__schema.where' } : { NAME: 'activityType', FROM: 'activityType' };
+
   var DEBUG = false;
   var INFO = true;
   var linkIDCounter = 0;
@@ -30,10 +41,15 @@ export function flogoFlowToJSON(inFlow) {
     DEBUG && console.warn('Invalid items information in the given flow');
     DEBUG && console.log(inFlow);
     return flowJSON;
-  }
+  }// explicit name?
   flowJSON.id = flogoIDEncode(flowID);
   flowJSON.name = _.get(inFlow, 'name', '');
   flowJSON.description = _.get(inFlow, 'description', '');
+  if (options.useRef) {
+    flowJSON.id = flowJSON.name ? _.snakeCase(flowJSON.name) : flowJSON.id;
+    flowJSON.ref = DEFAULT_FLOW_MODEL_REF;
+  }
+
   flowJSON.flow = (function _parseFlowInfo() {
     var flow = {};
     flow.name = flowJSON.name;
@@ -44,7 +60,7 @@ export function flogoFlowToJSON(inFlow) {
       var rootTask = {
         id: 1,
         type: FLOGO_TASK_TYPE.TASK,
-        activityType: '',
+        [REF_FIELD.NAME]: '', // activityRef or activityType
         name: 'root',
         tasks: [],
         links: []
@@ -73,7 +89,7 @@ export function flogoFlowToJSON(inFlow) {
       let errorTask = {
         id : convertTaskID(rootNode.taskID), // TODO
         type : FLOGO_TASK_TYPE.TASK, // this is 1
-        activityType : '',
+        [REF_FIELD.NAME]: '',
         name : 'error_root',
         tasks : [],
         links : []
@@ -118,8 +134,8 @@ export function flogoFlowToJSON(inFlow) {
           var taskInfo = {};
           taskInfo.id = convertTaskID(task.id);
           taskInfo.name = _.get(task, 'name', '');
+          taskInfo[REF_FIELD.NAME] = _.get(task, REF_FIELD.FROM);
           taskInfo.type = task.type;
-          taskInfo.activityType = task.activityType;
           taskInfo.attributes = _parseFlowAttributes(_.get(task, 'attributes.inputs'));
           var inputMappings = _parseFlowMappings(_.get(task, 'inputMappings'));
           if (!_.isEmpty(inputMappings)) {
@@ -243,5 +259,61 @@ export function flogoFlowToJSON(inFlow) {
 
   }
 
+  if (options.useRef) {
+    delete flowJSON.flow.name;
+    delete flowJSON.flow.model;
+    flowJSON.data = {
+      flow: flowJSON.flow,
+    };
+    delete flowJSON.flow;
+  }
+
   return flowJSON;
+}
+
+/**
+ * @param flow
+ * @param options
+ * @params.useRef {boolean} (Deprecated) Toggles between using triggerRef and triggerType.
+ * Exists for historical reasons, allows to output flow format for older engine versions when
+ * set to false. Defaults to true.
+ * @return {object} exported trigger object for the flow
+ */
+export function flogoTriggerToJSON(flow) {
+
+  let rootTask = _.find(flow.items, value => value.type === FLOGO_TASK_TYPE.TASK_ROOT);
+  if (!rootTask) {
+    return null;
+  }
+  rootTask = _.cloneDeep(rootTask);
+
+  const settings = {};
+  const handlerSettings = {};
+  let handlers = [];
+
+  if (rootTask.settings) {
+    rootTask.settings.forEach((setting) => {
+      settings[setting.name] = setting.value;
+    });
+  }
+
+  if (rootTask.endpoint && rootTask.endpoint.settings) {
+    rootTask.endpoint.settings.forEach((setting) => {
+      handlerSettings[setting.name] = setting.value && typeof setting.value !== 'undefined' ? setting.value : null;
+    });
+  }
+
+  if (_.isEmpty(handlerSettings)) {
+    handlers = null;
+  } else {
+    handlers.push({ settings: handlerSettings });
+  }
+
+  return {
+    id: _.snakeCase(rootTask.name),
+    ref: _.get(rootTask, '__schema.where'),
+    // name: rootTask.triggerType,
+    settings,
+    handlers,
+  };
 }

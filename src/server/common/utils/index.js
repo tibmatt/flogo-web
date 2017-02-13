@@ -6,6 +6,7 @@ import { inspect } from 'util';
 import { FLOGO_TASK_TYPE } from '../constants';
 
 export * from './file';
+export * from './request';
 
 export function extractDomain(url) {
   var domain;
@@ -106,6 +107,10 @@ export function flogoGenTaskID( items ) {
 
 export function flogoGenTriggerID() {
   return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
+}
+
+export function flogoGenBranchID() {
+  return flogoIDEncode( `Flogo::Branch::${Date.now()}` );
 }
 
 export function genNodeID( items ) {

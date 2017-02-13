@@ -9,6 +9,7 @@ import {FlogoAppDeletePopoverComponent} from './delete.popover.component';
 import {IFlogoApplicationModel} from '../../../common/application.model';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { RESTAPIApplicationsServiceMock } from '../../../common/services/restapi/applications-api.service.mock';
+import { ErrorService } from '../../../common/services/error.service';
 
 describe('FlogoAppList component', () => {
   let applications = [
@@ -53,6 +54,7 @@ describe('FlogoAppList component', () => {
       })],
       declarations: [FlogoAppListComponent, FlogoAppDeletePopoverComponent], // declare the test component
       providers: [
+        {provide: ErrorService, useClass: ErrorService},
         {provide: RESTAPIApplicationsService, useClass: RESTAPIApplicationsServiceMock}
       ]
     });

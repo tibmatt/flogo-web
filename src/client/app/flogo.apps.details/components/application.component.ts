@@ -67,6 +67,16 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     }
   }
 
+  appExporter() {
+    return () => this.appDetailService.toEngineSpec()
+      .then(engineApp => {
+        return [{
+          fileName: 'app.json',
+          data: engineApp
+        }];
+      });
+  }
+
   openCreateFlow() {
     this.addFlow.open();
   }
@@ -145,8 +155,8 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     statusText: string;
     response: any
   }) {
-    let message = this.translate.instant('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
-    notification(message, 'error');
+    // let message = this.translate.instant('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
+    notification(err.response, 'error');
   }
 
   onDeleteApp(application) {

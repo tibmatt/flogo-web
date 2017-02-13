@@ -13,6 +13,7 @@ import {ConfigurationLoadedGuard} from './services/configuration-loaded-guard.se
 import {LoadingStatusService} from './services/loading-status.service';
 import {LogService} from './services/log.service';
 import { LanguageService } from './services/language.service';
+import { ErrorService } from './services/error.service';
 
 @NgModule({
   providers: [ // services
@@ -28,7 +29,8 @@ import { LanguageService } from './services/language.service';
     ConfigurationLoadedGuard,
     LoadingStatusService,
     LogService,
-    LanguageService
+    LanguageService,
+    ErrorService,
   ]
 })
 export class CoreModule { }

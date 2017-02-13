@@ -2,7 +2,6 @@
  * Enumerations
  */
 
-import {REGEX_INPUT_VALUE_EXTERNAL} from "../app/flogo.transform/constants";
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
   TASK,
@@ -53,3 +52,18 @@ export const FLOGO_ERROR_ROOT_NAME = '__error-trigger';
 
 export * from '../app/flogo.flows.detail.diagram/constants';
 export {REGEX_INPUT_VALUE_EXTERNAL as FLOGO_AUTOMAPPING_FORMAT} from '../app/flogo.transform/constants';
+
+export const ERROR_CODE = {
+  REQUIRED: 'RequiredProperty',
+  UNIQUE: 'UniqueValue',
+  NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
+  NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
+  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
+};
+
+export const ERROR_CONSTRAINT = {
+  NOT_UNIQUE: 'notUnique',
+  NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
+  NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
+  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
+};

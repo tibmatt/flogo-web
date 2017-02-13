@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import defaults from 'lodash/defaults';
 import kebabCase from 'lodash/kebabCase';
-import lowerCase from 'lodash/lowerCase';
+import toInteger from 'lodash/toInteger';
 
 import { DEFAULT_APP_ID } from '../../common/constants';
 
@@ -10,6 +10,8 @@ import { VIEWS } from '../../common/db/apps';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { FlowsManager } from '../flows';
+import { importFlows } from './import';
+import { consolidateFlowsAndTriggers } from './export';
 
 /*
 app:
@@ -67,14 +69,63 @@ export class AppsManager {
 
   static create(app) {
     const inputData = app;
-    let cleanApp = cleanInput(inputData);
+    const cleanApp = cleanInput(inputData);
 
     return validate(cleanApp).then(() => {
-      cleanApp = build(cleanApp);
-      return appsDBService.db
-        .post(cleanApp)
+      return ensureUniqueName(cleanApp.name)
+        .then((uniqueName) => {
+          cleanApp.name = uniqueName;
+          return build(cleanApp);
+        })
+        .then(builtApp => appsDBService.db.post(builtApp))
         .then(response => AppsManager.findOne(response.id, { withFlows: true }));
     });
+  }
+
+  // TODO documentation
+  static import(importedJSON) {
+
+    return this.create(importedJSON)
+           .then((app) => {
+             let { triggers, actions } = importedJSON;
+             let importedFlows = Object.assign({}, { createdApp: app }, { triggers, actions });
+             return importFlows(importedFlows);
+           })
+          .catch((error) => {
+            throw error;
+          });
+  }
+
+  /**
+   * Export an app to the schema expected by cli
+   * This will export apps and flows
+   * @param appId {string} app to export
+   * @return {object} exported object
+   * @throws Not found error if app not found
+   */
+  static export(appId) {
+    return AppsManager.findOne(appId, { withFlows: 'raw' })
+      .then((app) => {
+        if (!app) {
+          throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+        }
+        return Promise.all([
+          app,
+          FlowsManager.convertManyToCliSchema({ appId }),
+        ]);
+      })
+      .then((data) => {
+        const [app, flowsData] = data;
+        const consolidatedData = consolidateFlowsAndTriggers(flowsData);
+        return {
+          name: app.name,
+          type: 'flogo:app',
+          version: app.version || '0.0.1',
+          description: app.description,
+          triggers: consolidatedData.triggers,
+          actions: consolidatedData.flows,
+        };
+      });
   }
 
   /**
@@ -272,7 +323,7 @@ function validate(app) {
     });
   }
 
-  if (appName) {
+  if (appName && (app.id || app._id)) {
     promise = appsDBService
       .db.query(`views/${VIEWS.name}`, { key: appName.trim().toLowerCase() })
       .then((result) => {
@@ -331,4 +382,27 @@ function augmentWithFlows(apps, flowFields) {
       augmentedApp.flows = flows;
       return augmentedApp;
     })));
+}
+
+function ensureUniqueName(forName) {
+  const normalizedName = forName.trim().toLowerCase();
+  const namePattern = new RegExp(`^${normalizedName}(\\s\\((\\d+)\\))?$`);
+  return appsDBService
+    .db.query(`views/${VIEWS.name}`, { startkey: normalizedName, endkey: `${normalizedName}\uffff` })
+    .then((result) => {
+      const rows = result.rows || [];
+      const greatestIndex = findGreatestNameIndex(rows);
+      return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
+    });
+
+  function findGreatestNameIndex(rows) {
+    return rows.reduce((greatest, row) => {
+      const matches = namePattern.exec(row.key);
+      if (matches) {
+        const index = toInteger(matches[2]);
+        return index > greatest ? index : greatest;
+      }
+      return greatest;
+    }, -1);
+  }
 }
