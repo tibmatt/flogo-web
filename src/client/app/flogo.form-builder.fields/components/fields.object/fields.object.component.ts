@@ -16,8 +16,8 @@ export class FlogoFormBuilderFieldsObject  extends FlogoFormBuilderFieldsBase {
   _value:string;
 
 
-  constructor(_translate: TranslateService) {
-    super(_translate);
+  constructor(public translate: TranslateService) {
+    super(translate);
   }
 
 

@@ -19,8 +19,8 @@ export class FlogoFormBuilderFieldsListBox  extends FlogoFormBuilderFieldsBase {
   options:any[] = [];
 
 
-  constructor(_translate: TranslateService) {
-    super(_translate);
+  constructor(public translate: TranslateService) {
+    super(translate);
   }
 
   ngOnInit() {

@@ -15,8 +15,8 @@ export class FlogoFormBuilderFieldsTextBox  extends FlogoFormBuilderFieldsBase {
   _fieldObserver:any;
 
 
-  constructor(_translate: TranslateService) {
-    super(_translate);
+  constructor(public translate: TranslateService) {
+    super(translate);
   }
 
   ngOnInit() {

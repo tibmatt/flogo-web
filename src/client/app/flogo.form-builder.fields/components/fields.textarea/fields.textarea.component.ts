@@ -14,55 +14,65 @@ export class FlogoFormBuilderFieldsTextArea  extends FlogoFormBuilderFieldsBase 
   _info:any;
   _fieldObserver:any;
   _value:any;
-  _translate:TranslateService;
 
-  constructor(_translate:TranslateService) {
-    super(_translate);
+  constructor(public translate:TranslateService) {
+    super(translate);
   }
 
   onChangeField(event:any){
-    let invalidJSON = false;
-    let value : any = null;
-
     if(event.key == "Escape") {
       this._info = Object.assign({}, this.originalInfo);
       this._value = this._info.value;
       this.publishNextChange();
       return;
     }
-
-    try {
-      value = JSON.parse(event.target.value);
-    } catch(e) {
-      // invalid json
-      // TODO
-      //  better handler of invalid JSON?
-      //  for the moment, keep the value even though it's not valid JSON, and ensure string format
-      this._errorMessage = this._translate.instant('FIELDS-TEXTAREA:INVALID-JSON',{value:this._info.title});
-      this._hasError = true;
-      invalidJSON = true;
-      this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}) );
-
-      value = '' + event.target.value;
-    }
-    if(!invalidJSON) {
-      this._hasError = false;
-      this._fieldObserver.next(this._getMessage('validation', {status:'ok',field: this._info.name}) );
-    }
-    this._info.value = value;
+    this._info.value = this.getValidatedValue(event.target.value, true, true);
     this.publishNextChange();
   }
 
   ngOnInit() {
+    if (this._info.value && (this._info.isTrigger || (this._info.isTask && this._info.direction === 'input'))) {
+      this._value = this.getValidatedValue(this._info.value, false, false);
+    }
+  }
 
-    // primitive values could be assigned directly instead of using JSON.stringify, for avoiding the extra " marks
-    // also ensure the value is in string format
-    if ( _.isNumber( this._info.value ) || _.isString( this._info.value ) || _.isBoolean( this._info.value ) ) {
-      this._value = '' + this._info.value;
-    } else if ( this._info.value ) {
-      this._value = JSON.stringify( this._info.value );
+  getValidatedValue(value: string, toJSON: boolean, notify: boolean = false): string {
+    let validatedValue: string;
+    let hasError: boolean = false;
+
+    try {
+      if (value){
+        if(toJSON) {
+          validatedValue = JSON.parse(value);
+        } else {
+          if ( _.isNumber( this._info.value ) || _.isString( this._info.value ) || _.isBoolean( this._info.value ) ) {
+            validatedValue = '' + this._info.value;
+            hasError = true;
+          } else {
+            validatedValue = JSON.stringify(value);
+          }
+        }
+      } else {
+        validatedValue = '';
+      }
+    } catch(err) {
+      validatedValue = '' + value;
+      hasError = true;
     }
 
+    this._hasError = hasError;
+    if (hasError) {
+      this._errorMessage = this.translate.instant('FIELDS-TEXTAREA:INVALID-JSON',{value:this._info.title});
+      if(notify) {
+        this._fieldObserver.next(this._getMessage('validation', {status:'error',field: this._info.name}) );
+      }
+    } else {
+      this._errorMessage = '';
+      if(notify) {
+        this._fieldObserver.next(this._getMessage('validation', {status:'ok',field: this._info.name}) );
+      }
+    }
+    return validatedValue;
   }
 
 }
