@@ -11,7 +11,6 @@ var cors = require('koa-cors');
 
 import {config, flowsDBService} from './config/app-config';
 import {initAllDbs} from './common/db/init-all';
-import { createViews } from './common/db/create-views';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
 import {syncTasks, installSamples, installDefaults, getInitializedEngine, ensureDefaultDirs} from './modules/init';
@@ -40,7 +39,6 @@ ensureDefaultDirs()
       .then(() =>
         initAllDbs()
           .then(() => syncTasks(engine))
-          .then(() => createViews())
       )
       .then(() => { console.log(engine.getTasks()) })
   })

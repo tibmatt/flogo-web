@@ -2,6 +2,7 @@ import path from 'path';
 
 import 'babel-polyfill';
 import {config, activitiesDBService, triggersDBService} from '../../config/app-config';
+import { createViews } from './../../common/db/create-views';
 
 import {RegisterActivities} from '../activities/register-activites';
 import {RegisterTriggers} from '../triggers/register-triggers';
@@ -62,7 +63,8 @@ export function syncTasks(engine) {
     } );
   })();
 
-  return Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] );
+  return Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] )
+    .then(() => createViews())
 
 }
 

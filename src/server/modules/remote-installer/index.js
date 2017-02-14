@@ -98,12 +98,13 @@ export class RemoteInstaller {
   }
 
   installFromGitHub( sourceURLs, opts ) {
+    let options = opts;
     return new Promise( ( resolve, reject )=> {
       console.log( '[log] Install from GitHub' );
       console.log( sourceURLs );
 
       let installPromise = null;
-      let opts = _.assign( { sourceURLs }, this.opts, opts );
+      let opts = _.assign( { sourceURLs }, this.opts, options );
 
       switch ( opts.type ) {
         case TYPE_ACTIVITY:
