@@ -5,6 +5,7 @@ import { Http } from '@angular/http';
 
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { Observable } from 'rxjs/Observable';
 
 import { PostService } from '../../../common/services/post.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
@@ -12,7 +13,7 @@ import { CommonModule as FlogoCommonModule } from '../../../common/common.module
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
 import { PUB_EVENTS } from '../message';
 import { FlogoFlowsAddComponent } from './add.component';
-import { Observable } from 'rxjs/Rx';
+
 const EXISTING_FLOW_NAME = 'existing';
 let flowsServiceStub = {
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';

@@ -1,15 +1,13 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { Http } from '@angular/http';
 
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
-//import { Observable } from 'rxjs/Rx';
 
 import { PostService } from '../../../common/services/post.service';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
-import { PUB_EVENTS } from '../messages';
 import { TransformComponent } from './transform.component';
 import { ErrorDisplayComponent } from './error-display.component';
 import { HelpComponent } from './help.component';

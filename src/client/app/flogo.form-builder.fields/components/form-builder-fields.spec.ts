@@ -1,10 +1,8 @@
-import { ComponentFixture, TestBed, async, tick, fakeAsync } from '@angular/core/testing';
-import { By }              from '@angular/platform-browser';
-import { Component, DebugElement, EventEmitter, NO_ERRORS_SCHEMA }    from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { Component }    from '@angular/core';
 import { Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
-import { ReplaySubject } from 'rxjs/Rx';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';

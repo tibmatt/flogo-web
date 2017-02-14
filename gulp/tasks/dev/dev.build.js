@@ -6,7 +6,6 @@ gulp.task('dev.build', 'Build client and server app for development', cb => runS
 gulp.task('dev.client.build', 'Build client app for development', (cb)=> {
   return runSequence(
     'install.client.dev',
-    'dev.client.lib',
     'dev.client.config',
     'dev.client.styles',
     'dev.client.typescript',

@@ -1,7 +1,16 @@
 import {Component, Input, OnInit, DoCheck, OnDestroy} from '@angular/core';
 import {Http, Headers, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import {BehaviorSubject,Subscription} from "rxjs/Rx";
+
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/retry';
+import 'rxjs/add/operator/switch';
+''
 import { getURL } from '../../../common/utils';
 
 const PING_INTERVAL_MS = 2500;
@@ -44,8 +53,7 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
 
     configChangeStream.subscribe(() => this.status = null);
 
-    this.subscription = Observable
-      .interval(PING_INTERVAL_MS)
+    this.subscription = IntervalObservable.create(PING_INTERVAL_MS)
       .combineLatest(configChangeStream)
       .map(combined => combined[1])
       .map((config:IUrlConfig) => {

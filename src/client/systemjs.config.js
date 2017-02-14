@@ -10,9 +10,6 @@
   // packages tells the System loader how to load when no filename and/or no extension
   // REMEMBER to also add your add library to be loaded in map config in production section below
   var packages = {
-    'ng2-bs3-modal': {
-      defaultExtension: false
-    },
     '@angular/common': {
       main: 'bundles/common.umd.js',
       defaultExtension: 'js'
@@ -44,20 +41,26 @@
     '@angular/router': {
       main: 'bundles/router.umd.js',
       defaultExtension: 'js'
+    },
+    'ng2-bs3-modal': {
+      defaultExtension: false
+    },
+    'rxjs': {
+      defaultExtension: 'js'
     }
-
   };
 
   var paths = {
     'main': '/main',
-    'n:*': '/node_modules/*',
-    "ng2-translate/ng2-translate": "/node_modules/ng2-translate/bundles/index.js"
+    'npm:*': '/node_modules/*',
+    'ng2-translate/ng2-translate': '/node_modules/ng2-translate/bundles/index.js'
   };
 
   // map tells the System loader where to look for things
   // load angular from node_modules folder
   var map = {
-    '@angular': 'n:@angular'
+    '@angular': 'npm:@angular',
+    'rxjs': 'npm:rxjs',
   };
 
   var config = {

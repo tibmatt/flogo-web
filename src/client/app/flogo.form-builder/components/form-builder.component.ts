@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PostService} from '../../../common/services/post.service';
-import { ReplaySubject } from 'rxjs/Rx';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PUB_EVENTS } from '../messages';
 import { FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
 import { convertTaskID, normalizeTaskName, getDefaultValue } from "../../../common/utils";

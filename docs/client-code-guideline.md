@@ -61,6 +61,41 @@ app
 2. If name more than one word, use - to connect them. For example `app-detail.component.ts`
 1. The `messages.ts` holds the information of publish/subscribe events of a module (outgoing/incoming messages)
 
+### Using rxjs
+
+There are few special considerations when using [rxjs](https://github.com/ReactiveX/rxjs) in flogo-web:
+
+#### Never import from `rxjs/Rx`
+
+The RxJS library is large. Importing the `rxjs/Rx` package will import the whole RxJS library into the application,
+this will result in increased page loading times as the application will be forced to download resources it is not going to use.
+
+Instead, when you need to use of the RxJS library import directly from the modules, examples:
+
+```javascript
+// WRONG, this will load the whole RxJS libray
+import { Observable, BehaviorSubject } from 'rxjs/Rx';
+
+// Correct, importing from each module 
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+```
+
+
+#### Only add the operators you use
+
+Each code file should add the operators it needs by importing from an RxJS library. Make sure you only add the operators you use,
+as any added operators will be included in the final production bundle.
+
+```js
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/map';
+```
+
+
 #### The messaging mechanism and `messages.ts` file
 
 Modules communicating through messaging mechanism using the `common/services/post.services.ts`, which is based on [`Postal`](https://www.npmjs.com/package/postal).
@@ -104,7 +139,7 @@ export const SUB_EVENTS = {
 
 ```
 
-___Note___ that the commented `data` field is used to provide an exmaple of the required information of that message, and the `topic` field is prefixed with `public-`.
+___Note___ that the commented `data` field is used to provide an example of the required information of that message, and the `topic` field is prefixed with `public-`.
 
 
 ##### Example of usage
