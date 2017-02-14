@@ -14,6 +14,7 @@ import {initAllDbs} from './common/db/init-all';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
 import {syncTasks, installSamples, installDefaults, getInitializedEngine, ensureDefaultDirs} from './modules/init';
+import { createViews } from './common/db/create-views';
 
 // TODO Need to use cluster to improve the performance
 
@@ -39,6 +40,7 @@ ensureDefaultDirs()
       .then(() =>
         initAllDbs()
           .then(() => syncTasks(engine))
+          .then(() => createViews())
       )
       .then(() => { console.log(engine.getTasks()) })
   })

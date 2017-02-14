@@ -82,7 +82,7 @@ export class RemoteInstaller {
           // TODO
           //  need to merge and include the installed success ones and failed ones.
           return opts.engine.load()
-            .then(() => syncTasks(opts.engine))
+            .then(() => syncTasks(opts.engine, true))
             .then(() => ({
               success : _.union( result.github.success, result.default.success ),
               fail : _.union( result.github.fail, result.default.fail ),
@@ -97,8 +97,7 @@ export class RemoteInstaller {
     } );
   }
 
-  installFromGitHub( sourceURLs, opts ) {
-    let options = opts;
+  installFromGitHub( sourceURLs, options ) {
     return new Promise( ( resolve, reject )=> {
       console.log( '[log] Install from GitHub' );
       console.log( sourceURLs );

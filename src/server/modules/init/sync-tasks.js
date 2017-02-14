@@ -2,7 +2,6 @@ import path from 'path';
 
 import 'babel-polyfill';
 import {config, activitiesDBService, triggersDBService} from '../../config/app-config';
-import { createViews } from './../../common/db/create-views';
 
 import {RegisterActivities} from '../activities/register-activites';
 import {RegisterTriggers} from '../triggers/register-triggers';
@@ -16,7 +15,9 @@ import {RegisterTriggers} from '../triggers/register-triggers';
  * 4. configure the server and start listening
  */
 
-export function syncTasks(engine) {
+export function syncTasks(engine, ignoreViews) {
+  ignoreViews = ignoreViews || false;
+
   let registerActivitiesPromise = (() => {
     return new Promise( ( resolve, reject ) => {
       const reg = new RegisterActivities( activitiesDBService, {
@@ -27,7 +28,7 @@ export function syncTasks(engine) {
       } );
 
       //return reg.register()
-      return reg.cleanDB()
+      return reg.cleanDB(ignoreViews)
         .then(() => reg.syncDb(engine.getActivities()))
         .then( ()=> {
           console.log( "[success]registerActivities success" );
@@ -50,7 +51,7 @@ export function syncTasks(engine) {
       } );
 
       //return reg.register()
-      return reg.cleanDB()
+      return reg.cleanDB(ignoreViews)
         .then(() => reg.syncDb(engine.getTriggers()))
         .then( ()=> {
           console.log( "[success]registerTriggers success" );
@@ -63,8 +64,8 @@ export function syncTasks(engine) {
     } );
   })();
 
-  return Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] )
-    .then(() => createViews())
+  return Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] );
+
 
 }
 

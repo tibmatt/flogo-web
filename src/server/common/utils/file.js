@@ -146,7 +146,7 @@ export function createFolder( folderPath ) {
   return new Promise( ( resolve, reject )=> {
     fse.ensureDir(folderPath, function (err) {
       if (err) {
-        reject(new Error(error));
+        reject(new Error(err));
       } else {
         resolve();
       }
