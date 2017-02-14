@@ -1,7 +1,7 @@
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { Subject } from 'rxjs/Subject';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/take';

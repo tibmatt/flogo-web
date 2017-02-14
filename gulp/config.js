@@ -58,9 +58,7 @@ export const CONFIG = {
       //'node_modules/ng2-translate/bundles/ng2-translate.js',
 
       'dev.env.js',
-      'systemjs.config.js',
-
-      'node_modules/_tmp/Rx.js'
+      'systemjs.config.js'
     ],
     styles: [
       'node_modules/bootstrap/dist/css/**/*',
