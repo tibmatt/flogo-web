@@ -310,7 +310,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   private _handleUpdateRows( rows : any ) {
-    rows.classed( 'updated', true );
+    rows
+      .classed( 'updated', true )
+      .style( 'z-index', ( d : any, row : number ) => rows.size() - row ); // the earlier rendered row is higher
 
     let tasks = this._bindDataToNodes( rows );
 
@@ -489,13 +491,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
             let doneFlag = false;
-            d3.select( diagram.elm )
-              .selectAll( `.${CLS.diagramRow}` )
-              .each( function ( rowNodesIDs : string[], row : number ) {
+            let rowsInTheDiagram = d3.select( diagram.elm ).selectAll( `.${CLS.diagramRow}` );
+
+            rowsInTheDiagram.each( function ( rowNodesIDs : string[], row : number ) {
                 if ( !doneFlag && rowNodesIDs.indexOf( d.id ) !== -1 ) {
                   d3.select( this )
                     .classed( CLS.diagramNodeBranchHover, true )
-                    .style( 'z-index', () => rows.size() + 1 );
+                    .style( 'z-index', () => rowsInTheDiagram.size() + 1 );
                   doneFlag = true;
                 }
               } );
@@ -526,12 +528,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
           if ( d.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
             let doneFlag = false;
-            d3.select( diagram.elm )
-              .selectAll( `.${CLS.diagramRow}` )
-              .each( function ( rowNodesIDs : string[], row : number ) {
+            let rowsInTheDiagram = d3.select( diagram.elm ).selectAll( `.${CLS.diagramRow}` );
+
+            rowsInTheDiagram.each( function ( rowNodesIDs : string[], row : number ) {
                 if ( !doneFlag && rowNodesIDs.indexOf( d.id ) !== -1 ) {
                   d3.select( this )
-                    .style( 'z-index', () => rows.size() - row );
+                    .style( 'z-index' , () => rowsInTheDiagram.size() - row );
                   doneFlag = true;
                 }
               } );
@@ -710,6 +712,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     nodeDetails = rows.selectAll( `.${CLS.diagramNodeDetail}` );
 
+    let nodeParents = [];
+    let numOfChildren:number;
     nodeDetails.html( ( taskInfo : {
       name : string;
       desc : string;
@@ -734,6 +738,12 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           id : taskInfo.nodeInfo.parents[ 0 ]
         };
 
+        if(nodeParents.indexOf(thisBranchParent.id) == -1){
+          nodeParents.push(thisBranchParent.id);
+          numOfChildren = 1;
+        }else{
+          numOfChildren++;
+        }
         // TODO
         //  change to other Array API like some to optimise? but need to manually call d3 API to get the data..
         rows.each( function ( rowNodesIDs : string[], row:number ) {
@@ -753,7 +763,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           }
         } );
 
-        let defaultLevel = 1;
+        let defaultLevel = numOfChildren == 1 ? level : 1;
         let branchOverlap = 31; //branch overlap with mother tile
         let thisBranchLineHeight = rowHeight * level - branchOverlap;
         let branchLines = genBranchLine( {
