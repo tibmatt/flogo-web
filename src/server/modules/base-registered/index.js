@@ -133,13 +133,12 @@ export class BaseRegistered{
         } );
       } )
       .then( ( itemDocs ) => {
-        return _.filter( itemDocs, itemDoc => !_.isNull( itemDoc ) );
+        return _.filter( itemDocs, itemDoc => !_.isNull( itemDoc ) && itemDoc._id !== '_design/views' );
       } )
 
       // update or remove item
       // `updateOnly` will skip the `remove other items` part.
       .then( ( oldItems ) => {
-
         console.log( '[info] update or remove item' );
 
         return Promise.all( _.map( oldItems, ( oldItem ) => {
@@ -242,7 +241,7 @@ export class BaseRegistered{
   clean(){
     //console.log("-------clean");
     return new Promise((resolve, reject)=>{
-      this.cleanDB()
+      this.cleanDB(true)
         .then((result)=>{
           return this.cleanNodeModules();
         })
@@ -255,12 +254,18 @@ export class BaseRegistered{
     });
   }
 
-  cleanDB(){
+  cleanDB(ignoreViews){
     return new Promise((resolve, reject)=>{
       this._dbService.db.allDocs({include_docs: true}).then((result)=>{
         console.log("[info]cleanDB, type: ", this._options.type);
         let docs = result&&result.rows||[];
         let deletedDocs = [];
+
+        if(ignoreViews) {
+          docs = docs.filter(doc => {
+            return doc.id !== '_design/views';
+          });
+        }
 
         if(docs.length === 0){
           console.log("[success]cleanDB finished!, empty docs type: ", this._options.type);
@@ -274,7 +279,6 @@ export class BaseRegistered{
             doc._deleted = true;
             deletedDocs.push(doc);
           }
-          //console.log(doc);
         });
 
         //console.log(deletedDocs);

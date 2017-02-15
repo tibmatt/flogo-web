@@ -11,10 +11,10 @@ var cors = require('koa-cors');
 
 import {config, flowsDBService} from './config/app-config';
 import {initAllDbs} from './common/db/init-all';
-import { createViews } from './common/db/create-views';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
 import {syncTasks, installSamples, installDefaults, getInitializedEngine, ensureDefaultDirs} from './modules/init';
+import { createViews } from './common/db/create-views';
 
 // TODO Need to use cluster to improve the performance
 

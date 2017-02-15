@@ -8,7 +8,7 @@ ensureDefaultDirs()
   }))
   .then(engine => {
     return initAllDbs()
-      .then(() => syncTasks(engine));
+      .then(() => syncTasks(engine, true));
   })
   .then(() => {
     console.log("[log] init test engine done");
