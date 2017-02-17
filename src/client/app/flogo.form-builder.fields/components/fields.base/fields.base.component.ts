@@ -85,9 +85,10 @@ export class FlogoFormBuilderFieldsBase{
       this.publishNextChange();
       return;
     }
-
     this._info.value = event.target.value;
     this.publishNextChange();
+
+    this.onValidate(event);
   }
 
   onBlur(event) {

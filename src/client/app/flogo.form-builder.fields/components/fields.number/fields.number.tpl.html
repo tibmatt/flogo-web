@@ -10,6 +10,7 @@
          (focus)="onFocus($event)"
          [placeholder]="_info.placeholder"
          (change)="onValidate($event)"
+         [id]="_info.name"
          (blur)="onBlur($event)"
          [readonly]="isReadOnly()">
   <div *ngIf="_hasError && _errorMessage" class="control-group error">

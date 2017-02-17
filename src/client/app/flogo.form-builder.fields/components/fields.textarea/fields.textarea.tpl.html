@@ -5,7 +5,7 @@
     <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >{{ 'FIELDS:OPTIONAL' | translate }}</label>
   </div>
 
-  <textarea name="" id="objectField" rows="5"
+  <textarea name="" [id]="this._info.name" rows="5"
             (keyup)="onChangeField($event)"
             (focus)="onFocus($event)"
             [class.error]="_hasError"
