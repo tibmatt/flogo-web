@@ -14,7 +14,6 @@ export class LogService {
     }
 
     onData(msg) {
-        console.info('Received message', new Date());
         try {
             let data = JSON.parse(msg);
             this.appendLog(data);

@@ -14,19 +14,19 @@ import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from 
  * Type definitions for flowToJSON util function
  */
 
-interface flowToJSON_Attribute {
+export interface flowToJSON_Attribute {
   name : string;
   type : string;
   value : string;
 }
 
-interface flowToJSON_Mapping {
+export interface flowToJSON_Mapping {
   type : number;
   value : string;
   mapTo : string;
 }
 
-interface flowToJSON_Task {
+export interface flowToJSON_Task {
   id : number;
   type : number;
   activityType : string;
@@ -36,7 +36,7 @@ interface flowToJSON_Task {
   ouputMappings : flowToJSON_Mapping[];
 }
 
-interface flowToJSON_Link {
+export interface flowToJSON_Link {
   id : number;
   type : number;
   from : number;
@@ -45,24 +45,24 @@ interface flowToJSON_Link {
   value? : any;
 }
 
-interface flowToJSON_Flow {
+export interface flowToJSON_Flow {
   id : string;
   name : string;
   description : string;
   flow : flowToJSON_FlowInfo;
 }
 
-interface triggerToJSON_TriggerInfo {
+export interface triggerToJSON_TriggerInfo {
   name: string,
   settings: any,
   endpoints: any
 }
 
-interface triggerToJSON_Trigger {
+export interface triggerToJSON_Trigger {
   triggers: triggerToJSON_TriggerInfo[]
 }
 
-interface flowToJSON_FlowInfo {
+export interface flowToJSON_FlowInfo {
   type : number,
   name : string;
   model : string;
@@ -72,7 +72,7 @@ interface flowToJSON_FlowInfo {
   explicitReply?: boolean
 }
 
-interface flowToJSON_RootTask {
+export interface flowToJSON_RootTask {
   id : number;
   type : number;
   activityType : string;
@@ -81,7 +81,7 @@ interface flowToJSON_RootTask {
   links : flowToJSON_Link[];
 }
 
-interface flowToJSON_InputFlow {
+export interface flowToJSON_InputFlow {
   _id : string;
   name? : string;
   description? : string;

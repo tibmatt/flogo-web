@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 
-import {RESTAPIService} from './services/rest-api.service';
 import {RESTAPIApplicationsService} from './services/restapi/applications-api.service';
 import {RESTAPIActivitiesService} from './services/restapi/activities-api.service';
 import {RESTAPIConfigurationService} from './services/restapi/configuration-api-service';
 import {RESTAPIFlowsService} from './services/restapi/flows-api.service';
 import {RESTAPITriggersService} from './services/restapi/triggers-api.service';
+import { RunService } from './services/restapi/run.service';
+import { HttpUtilsService } from './services/restapi/http-utils.service';
 import {FlogoModal} from './services/modal.service';
 import {ConfigurationService} from './services/configuration.service';
 import {PostService} from './services/post.service';
@@ -17,12 +18,13 @@ import { ErrorService } from './services/error.service';
 
 @NgModule({
   providers: [ // services
-    RESTAPIService,
     RESTAPIApplicationsService,
     RESTAPIActivitiesService,
     RESTAPIConfigurationService,
     RESTAPIFlowsService,
     RESTAPITriggersService,
+    RunService,
+    HttpUtilsService,
     FlogoModal,
     ConfigurationService,
     PostService,
@@ -31,6 +33,7 @@ import { ErrorService } from './services/error.service';
     LogService,
     LanguageService,
     ErrorService,
+
   ]
 })
 export class CoreModule { }
