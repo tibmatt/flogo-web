@@ -1,36 +1,47 @@
-<div class="flogo-logs"
-     (mouseenter)="resizePanel($event,'grow')" (mouseleave)="resizePanel($event,'shrink')">
-  <div class="header">
-    <div class="title">
-      <div class="icon">
-        <img src="/assets/svg/flogo-logs-icon.svg" alt="">
-      </div>
-      <div class="caption">
-        <div>Debug Logs</div>
-        <div class="sub-title">Engine logs</div>
-      </div>
+<div class="flogo-logs">
+    <div class="command">
+        <button class="btn log-button"
+            [ngClass]="{'log-button-selected': isSelected}"
+            (click)="showLogs(!isSelected)" title="Show logs">
+            <i class="flogo-icon-log"></i>
+        </button>
     </div>
 
-    <div class="search form-group">
-      <div class="input-group">
-        <input class="form-control" type="text"  (keyup)="onKeyUp($event)"  placeholder="Filter" />
-        <span class="input-group-addon">
-          <img src="/assets/svg/flogo-logs-copy.svg" alt="">
-        </span>
+    <div *ngIf="isSelected" style="position: fixed" class="logs-window" fgDraggable>
+        <div class="header-section">
+            <div class="legend">
+                <div class="title">
+                    <div class="icon">
+                        <i class="flogo-icon-log"></i>
+                    </div>
+                    <div class="caption">
+                        <div>Debug Logs</div>
+                    </div>
+                </div>
+
+                <div class="commands">
+                    <i class="flogo-icon-close" aria-hidden="true" (click)="closeWindow($event)"></i>
+                </div>
+            </div>
+            <div class="search">
+                <input class="form-control" type="text"  (keyup)="onKeyUp($event)"  placeholder="Filter" />
+                <div class="search-button"><i class="flogo-icon-search"></i></div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
+                <div class="log-line__timestamp">{{message.timestamp}}</div>
+                <div class="log-line__level" [class.log-line__level--error]="message.level=='error'">
+                    <img *ngIf="isError(message)" src="/assets/svg/flogo-logs-error.svg" />
+                </div>
+                <div class="log-line__message">{{message.message}}</div>
+            </div>
+        </div>
+
+        <div class="footer-section">&nbsp;</div>
     </div>
 
-  </div>
 
 
-</div>
-
-  <div class="flogo-logs__content">
-    <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
-      <div class="log-line__timestamp">{{message.timestamp}}</div>
-      <div class="log-line__level" [class.log-line__level--error]="message.level=='error'">
-        <img *ngIf="isError(message)" src="/assets/svg/flogo-logs-error.svg" />
-      </div>
-      <div class="log-line__message">{{message.message}}</div>
-    </div>
-  </div>
 </div>

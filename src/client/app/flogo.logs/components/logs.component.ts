@@ -16,6 +16,7 @@ export class FlogoLogs {
   messages: string[];
   searchValue: string = '';
   isMaximized: boolean = false;
+  isSelected: boolean = false;
 
   constructor(public elRef: ElementRef, private renderer: Renderer, public logService: LogService, public postService: PostService) {
   }
@@ -24,17 +25,12 @@ export class FlogoLogs {
     this.searchValue = event.target.value;
   }
 
-  public resizePanel(event, action) {
-    this.isMaximized = (action === 'grow');
-    if (this.isMaximized) {
-      this.renderer.setElementStyle(this.elRef.nativeElement, 'width', MAXIMIZED_WIDTH);
-    } else {
-      this.renderer.setElementStyle(this.elRef.nativeElement, 'width', '');
-    }
+  public showLogs(show) {
+    this.isSelected = show;
+  }
 
-    this.postService.publish(
-      _.assign({}, PUB_EVENTS.logResize, {data: {action: action}})
-    )
+  public closeWindow() {
+    this.isSelected = false;
   }
 
 

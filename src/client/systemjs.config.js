@@ -53,14 +53,14 @@
   var paths = {
     'main': '/main',
     'npm:*': '/node_modules/*',
-    'ng2-translate/ng2-translate': '/node_modules/ng2-translate/bundles/index.js'
+    'ng2-translate/ng2-translate': '/node_modules/ng2-translate/bundles/index.js',
   };
 
   // map tells the System loader where to look for things
   // load angular from node_modules folder
   var map = {
     '@angular': 'npm:@angular',
-    'rxjs': 'npm:rxjs',
+    'rxjs': 'npm:rxjs'
   };
 
   var config = {

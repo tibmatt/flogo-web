@@ -3,8 +3,8 @@
  */
 
 export const PUB_EVENTS = {
-    logResize : {
+    closeLog : {
         channel : 'flogo-logs',
-        topic : 'log-resize'
+        topic : 'log-close'
     }
 };

@@ -49,18 +49,14 @@
         </div>
 
         <div class="flogo-flow-detail-log-button-container">
-          <button class="btn flogo-flow-detail-log-button"
-                  [ngClass]="{'flogo-flow-detail-log-button-selected': isSelectedLogs}"
-                  (click)="showLogs(!isSelectedLogs)" title="Show logs">
-            <i class="flogo-icon-debug"></i>
-          </button>
+          <flogo-logs></flogo-logs>
         </div>
 
       </div>
 
     </section>
 
-    <div class="flogo-flow-container">
+    <div  class="flogo-flow-container">
       <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
                                  [id]="'root'"
                                  data-flogo-diagram-id="root">
