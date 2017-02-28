@@ -34,6 +34,7 @@ const CLS = {
   diagramNodeStatusRun : 'flogo-flows-detail-diagram-node-run',
   diagramNodeStatusHasError : 'flogo-flows-detail-diagram-node-has-error',
   diagramNodeStatusHasWarn : 'flogo-flows-detail-diagram-node-has-warn',
+  diagramLastNode : 'flogo-flows-detail-diagram-node-last-node',
   diagramNodeDetail : 'flogo-flows-detail-diagram-node-detail',
   diagramNodeDetailBranch : 'flogo-flows-detail-diagram-node-detail-branch',
   diagramNodeDetailBranchSelected : 'flogo-flows-detail-diagram-node-detail-branch-selected',
@@ -551,6 +552,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   private _handleUpdateNodes( nodes : any, rows : any ) {
     let diagram = this;
+    let lastNodeInd = this.MAX_ROW_LEN - 1;
 
     // comment out since hover will show the menu
     // nodes.classed( CLS.diagramNodeMenuOpen, false )
@@ -561,7 +563,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         ( d : IFlogoFlowDiagramNode ) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[ d.type ].toLowerCase() );
 
     nodes.each(
-      function ( d : IFlogoFlowDiagramNode ) {
+      function ( d : IFlogoFlowDiagramNode, index: number ) {
         let thisNode = d3.select( this );
         let task = diagram.tasks && diagram.tasks[ d.taskID ];
         let classes : {[key : string] : boolean} = {};
@@ -570,6 +572,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         classes[ CLS.diagramNodeStatusRun ] = false;
         classes[ CLS.diagramNodeStatusHasError ] = false;
         classes[ CLS.diagramNodeStatusHasWarn ] = false;
+        classes[ CLS.diagramLastNode ] = false;
 
         if ( task ) {
           let taskStatus = _getTaskStatus( task );
@@ -577,6 +580,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           classes[ CLS.diagramNodeStatusRun ] = taskStatus[ 'hasRun' ];
           classes[ CLS.diagramNodeStatusHasError ] = taskStatus.hasError;
           classes[ CLS.diagramNodeStatusHasWarn ] = taskStatus.hasWarning;
+          if(index == lastNodeInd) {
+            classes[ CLS.diagramLastNode ] = true;
+          }
           thisNode.classed( classes );
 
         } else {
