@@ -17,16 +17,20 @@ export class FlogoFormBuilderConfigurationTaskComponent {
   fields:any;
   directions: any;
 
-  constructor(private _commonService: FlogoFormBuilderCommon) {
+  constructor(public _commonService: FlogoFormBuilderCommon) {
+    this.fields = { inputs: [], outputs: []};
     this.directions = _commonService.getParameterDirections();
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
+    this.refreshInputs();
+  }
+
+  refreshInputs() {
     this.fields = {
       inputs : this._commonService.getStructureFromAttributes('inputs',  this._attributes),
       outputs: this._commonService.getStructureFromAttributes('outputs', this._attributes),
-    }
-  }
+    }  }
 
   ngOnInit() {
   }
@@ -88,10 +92,6 @@ export class FlogoFormBuilderConfigurationTaskComponent {
     };
 
     info.value = this._getMappingValue(info);
-    //if(!this._context.isTrigger) {
-    //  info.value = this._getMappingValue(info);
-    //}
-
     return _.assign({}, info, this.getControlByType(input));
   }
 

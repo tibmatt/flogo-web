@@ -6,6 +6,7 @@ import { FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
 import { convertTaskID, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { ActivatedRoute } from "@angular/router";
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'flogo-form-builder',
@@ -125,7 +126,6 @@ export class FlogoFormBuilderComponent{
 
   _setFieldsObservers() {
     this._fieldObserver = new ReplaySubject(2);
-
     // handle error status
     this._fieldObserver.filter((param:any) => {
       return param.message == 'validation' && param.payload.status == 'error';

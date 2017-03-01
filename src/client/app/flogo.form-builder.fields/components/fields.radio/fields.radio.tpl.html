@@ -5,7 +5,7 @@
     <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >{{ 'FIELDS:OPTIONAL' | translate }}</label>
   </div>
 
-    <div class="flogo-field-radio__option tc-radio-buttons tc-radio-button">
+    <div class="flogo-field-radio__option tc-radio-buttons tc-radio-button" [id]="_info.name">
       <input type="radio" [name]="'booleanValue'+_index" value=true [id]="'trueValue'+_index+_info.name"
              (change)="onChangeField($event)"
              class="flogo-task-field__boolean_input"

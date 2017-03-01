@@ -4,28 +4,28 @@
     <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.inputs.length">{{ 'FORM-BUILDER-CONFIGURATION-TASK:INPUT' | translate }}</h3>
     <div *ngFor="let item of fields.inputs; let index = index" class="">
 
-      <div *ngIf="getControlByType(item, directions.input).control == 'FieldTextBox'">
+      <div class="input"  *ngIf="getControlByType(item, directions.input).control == 'FieldTextBox'">
         <flogo-form-builder-fields-textbox [info]="getTaskInfo(item, directions.input,'inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
       </div>
 
-      <div *ngIf="getControlByType(item,  directions.input).control == 'FieldListBox'">
+      <div class="input" *ngIf="getControlByType(item,  directions.input).control == 'FieldListBox'">
         <flogo-form-builder-fields-listbox [info]="getTaskInfo(item, directions.input,'inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-listbox>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.input).control == 'FieldNumber'">
+      <div class="input"  *ngIf="getControlByType(item, directions.input).control == 'FieldNumber'">
         <flogo-form-builder-fields-number [info]="getTaskInfo(item, directions.input,'inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.input).control == 'FieldRadio'">
+      <div class="input" *ngIf="getControlByType(item, directions.input).control == 'FieldRadio'">
         <flogo-form-builder-fields-radio [info]="getTaskInfo(item, directions.input,'inputs')" [fieldObserver]="_fieldObserver" [index]="index" ></flogo-form-builder-fields-radio>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.input).control == 'FieldTextArea'">
+      <div class="input" *ngIf="getControlByType(item, directions.input).control == 'FieldTextArea'">
         <flogo-form-builder-fields-textarea [info]="getTaskInfo(item, directions.input,'inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textarea>
       </div>
 
 
-      <div *ngIf="getControlByType(item, directions.input).control == 'FieldObject'">
+      <div class="input" *ngIf="getControlByType(item, directions.input).control == 'FieldObject'">
         <flogo-form-builder-fields-object [info]="getTaskInfo(item, directions.input,'inputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-object>
       </div>
 
@@ -34,30 +34,29 @@
     <h3 class="flogo-common-edit-panel__legend" [hidden]="!fields.outputs.length">{{ 'FORM-BUILDER-CONFIGURATION-TASK:OUTPUT' | translate }}</h3>
     <div *ngFor="let item of fields.outputs" class="flogo-task-container__output">
 
-      <div *ngIf="getControlByType(item, directions.output).control == 'FieldTextBox'">
+      <div class="output" *ngIf="getControlByType(item, directions.output).control == 'FieldTextBox'">
         <flogo-form-builder-fields-textbox [info]="getTaskInfo(item, directions.output,'outputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-textbox>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.output).control == 'FieldListBox'">
+      <div class="output"   *ngIf="getControlByType(item, directions.output).control == 'FieldListBox'">
         <flogo-form-builder-fields-listbox [info]="getTaskInfo(item, directions.output,'outputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-listbox>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.output).control == 'FieldNumber'">
+      <div class="output" *ngIf="getControlByType(item, directions.output).control == 'FieldNumber'">
         <flogo-form-builder-fields-number [info]="getTaskInfo(item, directions.output,'outputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-number>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.output).control == 'FieldRadio'">
+      <div class="output" *ngIf="getControlByType(item, directions.output).control == 'FieldRadio'">
         <flogo-form-builder-fields-radio [info]="getTaskInfo(item, directions.output,'outputs')" [fieldObserver]="_fieldObserver" ></flogo-form-builder-fields-radio>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.output).control == 'FieldTextArea'">
+      <div class="output" *ngIf="getControlByType(item, directions.output).control == 'FieldTextArea'">
         <flogo-form-builder-fields-textarea [info]="getTaskInfo(item, directions.output,'outputs')" [fieldObserver]="_fieldObserver"  ></flogo-form-builder-fields-textarea>
       </div>
 
-      <div *ngIf="getControlByType(item, directions.output).control == 'FieldObject'">
+      <div class="output" *ngIf="getControlByType(item, directions.output).control == 'FieldObject'">
         <flogo-form-builder-fields-object [info]="getTaskInfo(item, directions.output,'outputs')" [fieldObserver]="_fieldObserver"  ></flogo-form-builder-fields-object>
       </div>
-
     </div>
   </div>
 

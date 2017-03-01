@@ -6,6 +6,7 @@
   </div>
 
   <textarea rows="5"
+            [id]="_info.name"
             (keyup)="onKeyUp($event)"
             (focus)="onFocus($event)"
             [class.error]="_hasError"

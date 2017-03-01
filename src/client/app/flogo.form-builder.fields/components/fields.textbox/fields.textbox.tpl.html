@@ -7,6 +7,7 @@
 
   <input type="text" class="form-control tc-inputs" [class.error]="_hasError" [(ngModel)]="_info.value"
          [placeholder]="_info.placeholder"
+         [id]="_info.name"
          (keyup)="onKeyUp($event)"
          (focus)="onFocus($event)"
          (change)="onValidate($event)"
