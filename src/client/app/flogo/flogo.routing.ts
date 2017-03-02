@@ -7,8 +7,6 @@ import { FlogoConfigComponent } from "../flogo.config/components/config.componen
 
 import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
 
-import { ChildWindowTestComponent } from '../../common/services/child-window.service';
-
 export const appRoutes: Routes = [
 /*  {
     path: 'flows',
@@ -30,11 +28,6 @@ export const appRoutes: Routes = [
     loadChildren: '/app/flogo.config/flogo.config.module#ConfigModule',
     canActivate: [ ConfigurationLoadedGuard ]
   },*/
-  //TODO: remove after linking log window
-  {
-    path: 'child-window-test',
-    component: ChildWindowTestComponent,
-  },
   {
     path: '',
     redirectTo: 'apps',
