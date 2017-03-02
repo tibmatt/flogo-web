@@ -13,6 +13,7 @@ import { ConfigModule as FlogoConfigModule } from '../flogo.config/flogo.config.
 import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 
+import { ChildWindowTestComponent } from '../../common/services/child-window.service';
 
 import { FlogoAppComponent }   from './components/flogo.component';
 import { FlogoNavbarComponent }   from './components/navbar.component';
@@ -35,7 +36,8 @@ import {routing, appRoutingProviders} from "./flogo.routing";
   ],
   declarations: [
     FlogoAppComponent,
-    FlogoNavbarComponent
+    FlogoNavbarComponent,
+    ChildWindowTestComponent
   ],
   bootstrap: [FlogoAppComponent],
   providers: [appRoutingProviders]
