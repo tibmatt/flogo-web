@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
-import { SUB_EVENTS, PUB_EVENTS } from '../messages';
+import { SUB_EVENTS } from '../messages';
 
 @Component(
   {
@@ -66,43 +66,7 @@ export class FlogoFlowsDetailTasksDetail {
       envelope.done();
     }
 
-    // TODO
-    //  this mock is to fake the modification of the task information from user
-    // let keepThisInTimeout = this;
-    // setTimeout(
-    //   function () {
-    //     console.log( 'in mock' );
-    //     let modifiedTask = _.cloneDeep( data.task );
-    //
-    //     let petIDInput : any = _.find(
-    //       modifiedTask.attributes.inputs, [
-    //         'name',
-    //         'petId'
-    //       ]
-    //     );
-    //
-    //     if ( petIDInput ) {
-    //       petIDInput.value = petIDInput.value + '001';
-    //     }
-    //
-    //     keepThisInTimeout.sendSelectTaskMsg( modifiedTask );
-    //   }, 2000
-    // );
-
     console.groupEnd();
   }
 
-  sendSelectTaskMsg( task : any ) {
-
-    // TODO
-    console.log( 'sendSelectTaskMsg' );
-
-    this._postService.publish(
-      _.assign(
-        {}, PUB_EVENTS.selectTask, {
-          data : _.assign( {}, this._selectTaskMsg, { task : task } )
-        }
-      )
-    );
-  }
 }

@@ -10,7 +10,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/retry';
 import 'rxjs/add/operator/switch';
-''
+
 import { getURL } from '../../../common/utils';
 
 const PING_INTERVAL_MS = 2500;

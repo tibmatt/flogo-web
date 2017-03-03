@@ -24,6 +24,7 @@ import { FlogoFlowsDetailErrorPanel } from '../flogo.flows.detail.error-panel/co
 import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tasks.install/components/install.component';
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
+import { RunnerService } from './services/runner.service';
 import { routing } from './flogo.flows.detail.routing';
 
 @NgModule({
@@ -54,6 +55,9 @@ import { routing } from './flogo.flows.detail.routing';
 
     FlogoCanvasComponent
 
+  ],
+  providers: [
+    RunnerService
   ],
   bootstrap: [
     FlogoCanvasComponent

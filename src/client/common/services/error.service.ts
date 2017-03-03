@@ -8,6 +8,13 @@ const ERROR_MAP = {
   [ERROR_CODE.WRONG_INPUT_JSON_FILE]: ERROR_CONSTRAINT.WRONG_INPUT_JSON_FILE,
 };
 
+export interface OperationalError extends Error {
+  isOperational: true;
+  details?: {[key:string]: any},
+  // allow custom props
+  [propName:string]: any;
+}
+
 @Injectable()
 export class ErrorService {
 
@@ -28,4 +35,42 @@ export class ErrorService {
 
     return transformed;
   }
+
+  /**
+   * Create an operational error.
+   *
+   * @example
+   *  let error = makeOperationalError('Something happened', 'CustomError', { details: { value: 4, max: 3 } });
+   *  error.name // 'CustomError
+   *  error.details // { value: 4, max: 3}
+   *
+   * @example
+   *  let error = makeOperationalError('Something happened', 'CustomError', { value: 4, max: 3});
+   *  error.name // 'CustomError
+   *  error.details // undefined
+   *  error.value // 4
+   *  error.max // 3
+   *
+   * @param {string} name - Error name
+   * @param {string} message - Error description
+   * @param {object} props [props] - Key value pairs of additional data that will be added as properties of the error that will be created
+   * @return {OperationalError}
+   */
+  public makeOperationalError<T extends OperationalError>(name: string, message: string, props?: {[key:string]: any}): OperationalError {
+    const error = <OperationalError> new Error(message);
+    error.isOperational = true;
+    error.name = name;
+
+    if (props) {
+      Object.keys(props).forEach(key => {
+        // do not override other properties
+        if (!error[key]) {
+          error[key] = props[key];
+        }
+      })
+    }
+
+    return error;
+  }
+
 }
