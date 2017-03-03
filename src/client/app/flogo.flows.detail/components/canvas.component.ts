@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { PostService } from '../../../common/services/post.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { LogService } from '../../../common/services/log.service';
 import { RunnerService, RUN_STATUS_CODE as RUNNER_STATUS, ERRORS as RUNNER_ERRORS, RunOptions, RunProgress, RunProgressStore, Step } from '../services/runner.service';
 import { OperationalError } from '../../../common/services/error.service';
 
@@ -65,11 +64,8 @@ export class FlogoCanvasComponent implements OnInit {
   public exportLink: string;
   public downloadLink: string;
   public isInstructionsActivated: boolean = false;
-  public isSelectedLogs: boolean = false;
-  public isLogsMaximized: boolean = false;
 
   constructor(public translate: TranslateService,
-              public logService: LogService,
               private _postService: PostService,
               private _restAPIFlowsService: RESTAPIFlowsService,
               private _runnerService: RunnerService,
@@ -213,8 +209,7 @@ export class FlogoCanvasComponent implements OnInit {
       _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
       _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.openPanel, { callback: this._errorPanelStatusChanged.bind(this, true) }),
-      _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.closePanel, { callback: this._errorPanelStatusChanged.bind(this, false) }),
-      _.assign({}, FLOGO_LOGS_SUB_EVENTS.logResize, { callback: this.logResize.bind(this) }),
+      _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.closePanel, { callback: this._errorPanelStatusChanged.bind(this, false) })
     ];
 
     _.each(
@@ -317,7 +312,6 @@ export class FlogoCanvasComponent implements OnInit {
 
     // clean selection status
     this._cleanSelectionStatus();
-    this.showLogs(false);
 
     this._navigateFromModuleRoot();
 
@@ -467,7 +461,6 @@ export class FlogoCanvasComponent implements OnInit {
     console.log(data);
     console.log(envelope);
 
-    this.showLogs(false);
     this._navigateFromModuleRoot(['trigger', 'add'])
       .then(
         () => {
@@ -508,7 +501,6 @@ export class FlogoCanvasComponent implements OnInit {
 
     tasks[trigger.id] = trigger;
 
-    this.showLogs(false);
     this._navigateFromModuleRoot()
       .then(
         () => {
@@ -541,7 +533,6 @@ export class FlogoCanvasComponent implements OnInit {
     console.log(data);
     console.log(envelope);
 
-    this.showLogs(false);
     this._navigateFromModuleRoot(['task', 'add'])
       .then(
         () => {
@@ -608,7 +599,6 @@ export class FlogoCanvasComponent implements OnInit {
 
       this.handlers[diagramId].tasks[task.id] = task;
 
-      this.showLogs(false);
       this._navigateFromModuleRoot()
         .then(
           () => {
@@ -645,7 +635,6 @@ export class FlogoCanvasComponent implements OnInit {
     console.log(envelope);
 
 
-    this.showLogs(false);
     this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
@@ -705,7 +694,6 @@ export class FlogoCanvasComponent implements OnInit {
     console.log(envelope);
 
 
-    this.showLogs(false);
     this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
@@ -854,7 +842,6 @@ export class FlogoCanvasComponent implements OnInit {
                   this._isDiagramEdited = true;
 
                   if (_shouldGoBack) {
-                    this.showLogs(false);
                     this._navigateFromModuleRoot();
                   }
                 }
@@ -921,7 +908,6 @@ export class FlogoCanvasComponent implements OnInit {
     previousNodes.pop(); // ignore last item as it is the very same selected node
     let previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
 
-    this.showLogs(false);
 
     this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
@@ -1469,29 +1455,6 @@ export class FlogoCanvasComponent implements OnInit {
     return stepNumber;
   }
 
-  /*-------------------------------*
-   |      LOGS                     |
-   *-------------------------------*/
-
-  public showLogs(show) {
-    let route = [];
-    this.isSelectedLogs = show;
-    if (show) {
-      //route =  'FlogoLogs';
-      route = ['logs'];
-      this._cleanSelectionStatus();
-    } else {
-      this.isLogsMaximized = false;
-      //route = 'FlogoFlowsDetailDefault';
-    }
-    this._navigateFromModuleRoot(route);
-    //this._router.navigate( [ route] )
-  }
-
-  private logResize(data: any, envelope: any) {
-    this.isLogsMaximized = (data.action === 'grow');
-  }
-
 
   // TODO: STILL USED?
   /*-------------------------------*
@@ -1523,7 +1486,6 @@ export class FlogoCanvasComponent implements OnInit {
   private _selectTransformFromDiagram(data: any, envelope: any) {
     let diagramId: string = data.id;
     let previousTiles: any;
-    this.showLogs(false);
 
     let selectedNode = data.node;
 

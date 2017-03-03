@@ -8,7 +8,7 @@ import { Http, HttpModule as NgHttpModule } from '@angular/http'
 
 import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components';
 import { TimeFromNowPipe } from './pipes';
-import { Contenteditable, JsonDownloader, AutofocusDirective, EditableInputDirective } from './directives';
+import { Contenteditable, JsonDownloader, AutofocusDirective, EditableInputDirective, DraggableDirective } from './directives';
 import { LoadingIndicatorComponent } from "./components/loading-indicator.component";
 import { CustomTranslateLoader } from '../common/services/language.service';
 
@@ -20,6 +20,7 @@ const ALL_MODULE_DECLARABLES = [
   JsonDownloader,
   LoadingIndicatorComponent,
   AutofocusDirective,
+  DraggableDirective,
   EditableInputDirective,
   TimeFromNowPipe,
 ];
