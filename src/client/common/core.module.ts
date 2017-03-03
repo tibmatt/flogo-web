@@ -15,6 +15,8 @@ import {LoadingStatusService} from './services/loading-status.service';
 import {LogService} from './services/log.service';
 import { LanguageService } from './services/language.service';
 import { ErrorService } from './services/error.service';
+import { WindowRef } from './services/window-ref';
+import { ChildWindowService } from './services/child-window.service';
 
 @NgModule({
   providers: [ // services
@@ -24,7 +26,9 @@ import { ErrorService } from './services/error.service';
     RESTAPIFlowsService,
     RESTAPITriggersService,
     RunService,
+    ChildWindowService,
     HttpUtilsService,
+    ErrorService,
     FlogoModal,
     ConfigurationService,
     PostService,
@@ -32,8 +36,7 @@ import { ErrorService } from './services/error.service';
     LoadingStatusService,
     LogService,
     LanguageService,
-    ErrorService,
-
+    WindowRef
   ]
 })
 export class CoreModule { }
