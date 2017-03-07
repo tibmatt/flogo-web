@@ -26,9 +26,10 @@ export class ActivitiesManager {
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
-  static find(terms = {}, options ) {
+  static find(terms, options) {
+    terms = terms || {};
     const queryOpts = { include_docs: true };
-    const { fields} = Object.assign({ fields: 'full'}, options);
+    const { fields } = Object.assign({ fields: 'full'}, options);
     let viewName = 'name';
 
     if (terms.whereURL) {

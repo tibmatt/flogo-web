@@ -163,15 +163,15 @@ export class AppsManager {
    */
   static remove(appId) {
     return FlowsManager.removeByAppId(appId)
-      .then(() => appsDBService.db.get(appId)
-          .then(app => appsDBService.db.remove(app))
-          .then(() => true)
-          .catch((err) => {
-            if (err.name === 'not_found') {
-              return Promise.resolve(null);
-            }
-            throw err;
-          }));
+      .then(() => appsDBService.db.get(appId))
+      .then(app => appsDBService.db.remove(app))
+      .then(() => true)
+      .catch((err) => {
+        if (err.name === 'not_found') {
+          return Promise.resolve(null);
+        }
+        throw err;
+      });
   }
 
   /**

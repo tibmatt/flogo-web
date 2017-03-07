@@ -9,7 +9,7 @@ import { ActivitiesManager } from './../../modules/activities/';
 import { genNodeID, flogoGenTriggerID, flogoGenBranchID, flogoGenTaskID, flogoIDEncode } from './../../common/utils';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../../common/constants';
 import { CONSTRAINTS } from '../../common/validation';
-import { createFlow } from './../../api/flows';
+import { FlowsManager } from './../../modules/flows';
 
 // TODO use FlowsManager
 
@@ -39,7 +39,7 @@ class ImportFlows {
         const installedTiles = flattenDeep(triggersAndActivities);
         return makeFlows(this.sourceFlows, installedTiles);
       })
-      .then(flows => Promise.all(flows.map(flow => createFlow(flow))))
+      .then(flows => Promise.all(flows.map(flow => FlowsManager.createRaw(flow))))
       .then(() => ({ createdApp: this.sourceFlows.createdApp }));
 
 

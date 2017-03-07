@@ -1,16 +1,16 @@
-import {config, dbService} from '../../config/app-config';
-import {getInitializedEngine} from '../../modules/engine/registry';
-import {flogoFlowToJSON} from '../../common/flow.model';
-import {flogoIDDecode} from '../../common/utils';
-import {Engine} from '../../modules/engine';
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import fse from 'fs-extra';
 
-let basePath = config.app.basePath;
+import { config } from '../../config/app-config';
+import {getInitializedEngine} from '../../modules/engine/registry';
+import {flogoFlowToJSON} from '../../common/flow.model';
+import {flogoIDDecode} from '../../common/utils';
+import { FlowsManager } from '../../modules/flows';
+import {Engine} from '../../modules/engine';
 
-let _dbService = dbService;
+let basePath = config.app.basePath;
 
 //TODO provide more common
 function getFlatObj(arr){
@@ -74,7 +74,7 @@ function generateBuild(id, compileOptions) {
   let flowID = flogoIDDecode(id);
   console.log('id: ', id);
   console.log('flowID: ', flowID);
-  return _dbService.db.get(flowID)
+  return FlowsManager.findOne(flowID, { fields: 'raw' })
     .then((doc)=> {
       console.log(doc);
 
