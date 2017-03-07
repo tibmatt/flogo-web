@@ -1410,6 +1410,7 @@ function _isTaskHasMapping( taskInfo : any ) : boolean {
 }
 
 function _getRowHeight( elm : HTMLElement, rowClassName : string ) : number {
+  // Need to make sure that the elm is in a visible contianer.
   let rowElm = elm.querySelector( `.${rowClassName}` );
   let clientRect = rowElm.getBoundingClientRect();
 
