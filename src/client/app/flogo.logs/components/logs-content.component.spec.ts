@@ -1,13 +1,10 @@
 import {By} from '@angular/platform-browser';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement}    from '@angular/core';
-import { RouterTestingModule } from "@angular/router/testing";
 import {FlogoLogsContent} from './logs-content.component';
 import {SearchPipe} from './search.pipe';
 import {LogService} from '../log.service';
-import {PostService} from '../../../common/services/post.service';
 
-class MockRouter { public navigate() {}; }
 
 const LOG_LINES = [
   {
@@ -31,14 +28,9 @@ describe('Component: FlogoLogsContent', () => {
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule.withRoutes([
-            { path: '', component: MockRouter }
-          ])
-        ],
+        imports: [],
         declarations: [FlogoLogsContent, SearchPipe],
         providers: [
-          PostService,
           {provide: LogService, useClass: LogServiceMocked}
         ]
       })

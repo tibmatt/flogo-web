@@ -27,6 +27,7 @@ import { WindowRef } from './window-ref';
 export class ChildWindowService {
 
   private window: Window;
+  private childWindow: any = null;
 
   constructor(windowRef: WindowRef, private ngZone: NgZone) {
     this.window = windowRef.nativeWindow;
@@ -42,7 +43,12 @@ export class ChildWindowService {
     if (!nativeWindow) {
       return null;
     }
-    return new ChildWindow(nativeWindow, this.ngZone);
+    this.childWindow =  new ChildWindow(nativeWindow, this.ngZone);
+    return this.childWindow;
+  }
+
+  getChildWindow() {
+    return this.childWindow;
   }
 
   close() {

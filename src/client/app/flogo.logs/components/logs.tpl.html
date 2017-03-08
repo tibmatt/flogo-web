@@ -1,7 +1,7 @@
 <div class="flogo-logs">
     <div class="command">
         <button class="btn log-button"
-            [ngClass]="{'log-button-selected': isOpen}"
+            [ngClass]="{'log-button-selected': isOpen || isChildWindowOpen() }"
             (click)="toggleLogs()" title="Show logs">
             <i class="flogo-icon-log"></i>
         </button>

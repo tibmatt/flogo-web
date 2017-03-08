@@ -8,6 +8,10 @@
   height: 100%;
 }
 
+.flogo-logs-content--full {
+  background-color: @logs-background-content;
+}
+
 .flogo-logs-content {
   display: flex;
   flex-direction: column;
@@ -19,7 +23,6 @@
       background: @logs-background-header;
 
       .legend {
-        cursor: move;
         display: flex;
         justify-content: space-between;
         padding: 12px 16px;
@@ -99,7 +102,6 @@
   .flogo-logs-lines {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
 
     .flogo-logs-info() {
       color: #79b8dc;

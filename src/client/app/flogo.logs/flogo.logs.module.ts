@@ -6,6 +6,7 @@ import {FlogoLogs} from './components/logs.component';
 import {SearchPipe} from './components/search.pipe';
 import {LogService} from './log.service';
 import {FlogoLogsContent} from './components/logs-content.component';
+import {FlogoLogsExternalWindow} from './components/logs-external-window.component';
 import { routing } from './flogo.logs.routing';
 
 @NgModule({
@@ -17,7 +18,8 @@ import { routing } from './flogo.logs.routing';
   declarations: [
     FlogoLogs,
     SearchPipe,
-    FlogoLogsContent
+    FlogoLogsContent,
+    FlogoLogsExternalWindow
   ],
   exports: [
     FlogoLogs

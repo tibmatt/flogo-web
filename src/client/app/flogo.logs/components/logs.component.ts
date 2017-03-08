@@ -18,6 +18,7 @@ export class FlogoLogs {
   childWindow: ChildWindow = null;
 
   constructor(private windowService: ChildWindowService) {
+    this.childWindow = windowService.getChildWindow();
   }
 
   ngOnInit() {
@@ -40,7 +41,13 @@ export class FlogoLogs {
   }
 
   public toggleLogs() {
-    this.isOpen = !this.isOpen;
+    if(this.isChildWindowOpen()) {
+      this.open();
+    }
+    else {
+      this.isOpen = !this.isOpen;
+    }
+
   }
 
   public showLogs() {
@@ -53,7 +60,7 @@ export class FlogoLogs {
 
   // --------- windows service
 
-   get isChildWindowOpen() {
+   public isChildWindowOpen() {
     return this.childWindow && this.childWindow.isOpen();
    }
 
@@ -65,7 +72,7 @@ export class FlogoLogs {
       return this.childWindow.focus();
      }
 
-     this.childWindow = this.windowService.open('/logs', 'logs');
+     this.childWindow = this.windowService.open('/logs?nonav=true', 'logs');
      this.childWindow.closed
        .subscribe(e => {
         this.childWindow = null;

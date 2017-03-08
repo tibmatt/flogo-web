@@ -1,8 +1,5 @@
-import {Component, ElementRef, Renderer, Output, EventEmitter} from '@angular/core';
-import {PostService} from '../../../common/services/post.service';
-import { Router, ActivatedRoute, Params as RouteParams } from '@angular/router';
+import {Component, ElementRef, Renderer, Input, Output, EventEmitter} from '@angular/core';
 import {LogService} from '../log.service';
-import {PUB_EVENTS} from '../messages';
 
 import 'rxjs/add/operator/map';
 
@@ -16,12 +13,11 @@ import 'rxjs/add/operator/map';
 )
 export class FlogoLogsContent {
   @Output() onWindowAction: EventEmitter<string>;
+  @Input() isExternal: boolean = false;
   messages: string[];
   searchValue: string = '';
-  isOnSeparatedWindow: boolean;
 
-  constructor(public logService: LogService,
-              public router: Router) {
+  constructor(public logService: LogService) {
     this.onWindowAction = new EventEmitter();
   }
 
@@ -34,12 +30,6 @@ export class FlogoLogsContent {
 
   maximize() {
     this.onWindowAction.emit('maximize');
-  }
-
-  ngOnInit() {
-    this.router.events.subscribe((val) => {
-      this.isOnSeparatedWindow =  (val.url === '/logs');
-    });
   }
 
   public onKeyUp(event) {
