@@ -1,9 +1,8 @@
 import {Component, ElementRef, Renderer} from '@angular/core';
-import {PostService} from '../../../common/services/post.service';
-import {LogService} from '../../../common/services/log.service';
-import {PUB_EVENTS} from '../messages';
+import {LogService} from '../log.service';
+import {ChildWindowService, ChildWindow} from '../../../common/services/child-window.service';
 
-const MAXIMIZED_WIDTH = '800px';
+
 @Component(
   {
     selector: 'flogo-logs',
@@ -15,28 +14,70 @@ const MAXIMIZED_WIDTH = '800px';
 export class FlogoLogs {
   messages: string[];
   searchValue: string = '';
-  isMaximized: boolean = false;
-  isSelected: boolean = false;
+  isOpen: boolean = false;
+  childWindow: ChildWindow = null;
 
-  constructor(public elRef: ElementRef, private renderer: Renderer, public logService: LogService, public postService: PostService) {
+  constructor(private windowService: ChildWindowService) {
+    this.childWindow = windowService.getChildWindow();
   }
 
-  public onKeyUp(event) {
-    this.searchValue = event.target.value;
+  ngOnInit() {
   }
 
-  public showLogs(show) {
-    this.isSelected = show;
+  public windowAction(event) {
+    switch(event) {
+      case 'close':
+        this.closeLogs();
+        break;
+
+      case 'maximize':
+        this.closeLogs();
+        setTimeout(()=>this.open(),100);
+        break;
+
+      case 'back':
+        break;
+    }
   }
 
-  public closeWindow() {
-    this.isSelected = false;
+  public toggleLogs() {
+    if(this.isChildWindowOpen()) {
+      this.open();
+    }
+    else {
+      this.isOpen = !this.isOpen;
+    }
+
   }
 
-
-  public isError(item) {
-    let message = item.message || '';
-    return (message.indexOf('▶ ERROR') !== -1 || message.indexOf('▶ WARNI') !== -1);
+  public showLogs() {
+    this.isOpen = true;
   }
+
+  public closeLogs() {
+    this.isOpen = false;
+  }
+
+  // --------- windows service
+
+   public isChildWindowOpen() {
+    return this.childWindow && this.childWindow.isOpen();
+   }
+
+   open() {
+     if (!this.windowService.isSupported()){
+      console.log('Child window not supported');
+      return;
+     } else if (this.childWindow && this.childWindow.isOpen()) {
+      return this.childWindow.focus();
+     }
+
+     this.childWindow = this.windowService.open('/logs?nonav=true', 'logs');
+     this.childWindow.closed
+       .subscribe(e => {
+        this.childWindow = null;
+       });
+
+     }
 
 }

@@ -12,7 +12,6 @@ import {ConfigurationService} from './services/configuration.service';
 import {PostService} from './services/post.service';
 import {ConfigurationLoadedGuard} from './services/configuration-loaded-guard.service';
 import {LoadingStatusService} from './services/loading-status.service';
-import {LogService} from './services/log.service';
 import { LanguageService } from './services/language.service';
 import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
@@ -34,7 +33,6 @@ import { ChildWindowService } from './services/child-window.service';
     PostService,
     ConfigurationLoadedGuard,
     LoadingStatusService,
-    LogService,
     LanguageService,
     WindowRef
   ]

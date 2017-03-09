@@ -1,11 +1,9 @@
 import {By} from '@angular/platform-browser';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement}    from '@angular/core';
-
-import {FlogoLogs} from './logs.component';
+import {FlogoLogsContent} from './logs-content.component';
 import {SearchPipe} from './search.pipe';
-import {LogService} from '../../../common/services/log.service';
-import {PostService} from '../../../common/services/post.service';
+import {LogService} from '../log.service';
 
 
 const LOG_LINES = [
@@ -25,21 +23,20 @@ class LogServiceMocked {
   lines = [];
 }
 
-describe('Component: FlogoLogs', () => {
-  let comp: FlogoLogs, fixture: ComponentFixture<FlogoLogs>;
+describe('Component: FlogoLogsContent', () => {
+  let comp: FlogoLogsContent, fixture: ComponentFixture<FlogoLogsContent>;
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
         imports: [],
-        declarations: [FlogoLogs, SearchPipe],
+        declarations: [FlogoLogsContent, SearchPipe],
         providers: [
-          PostService,
           {provide: LogService, useClass: LogServiceMocked}
         ]
       })
       .compileComponents()
       .then(()=>{
-        fixture = TestBed.createComponent(FlogoLogs);
+        fixture = TestBed.createComponent(FlogoLogsContent);
         comp = fixture.componentInstance;
         let logButton = fixture.debugElement.query(By.css('.log-button'));
         logButton.triggerEventHandler('click', null);

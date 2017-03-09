@@ -27,6 +27,7 @@ import { WindowRef } from './window-ref';
 export class ChildWindowService {
 
   private window: Window;
+  private childWindow: any = null;
 
   constructor(windowRef: WindowRef, private ngZone: NgZone) {
     this.window = windowRef.nativeWindow;
@@ -42,7 +43,16 @@ export class ChildWindowService {
     if (!nativeWindow) {
       return null;
     }
-    return new ChildWindow(nativeWindow, this.ngZone);
+    this.childWindow =  new ChildWindow(nativeWindow, this.ngZone);
+    return this.childWindow;
+  }
+
+  getChildWindow() {
+    return this.childWindow;
+  }
+
+  close() {
+    this.window.close();
   }
 
 
@@ -87,41 +97,3 @@ export class ChildWindow {
 
 }
 
-
-
-/// TODO: delete after linking to log component
-@Component({
-  selector: 'child-window-test',
-  template: `
-  <button [disabled]="isOpen" (click)="open()">
-    {{ isOpen ? 'Already opened' : 'Open' }}
-  </button>
-`
-})
-export class ChildWindowTestComponent {
-
-  private childWindow: ChildWindow = null;
-
-  constructor(private windowService: ChildWindowService ) {
-  }
-
-  get isOpen() {
-    return this.childWindow && this.childWindow.isOpen();
-  }
-
-  open() {
-    if (!this.windowService.isSupported()){
-      console.log('Child window not supported');
-      return;
-    } else if (this.childWindow && this.childWindow.isOpen()) {
-      return this.childWindow.focus();
-    }
-
-    this.childWindow = this.windowService.open('/_config', 'config');
-    this.childWindow.closed
-      .subscribe(e => {
-        this.childWindow = null;
-      });
-  }
-
-}
