@@ -2,7 +2,6 @@ import pick from 'lodash/pick';
 import get from 'lodash/get';
 import { PUBLISH_FIELDS_SHORT, PUBLISH_FIELDS_LONG } from './constants';
 import { triggersDBService } from '../../config/app-config';
-import { VIEWS } from '../../common/db/triggers';
 
 export class TriggerManager {
 
@@ -26,9 +25,10 @@ export class TriggerManager {
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
-  static find(terms = {}, options ) {
+  static find(terms, options) {
+    terms = terms || {};
     const queryOpts = { include_docs: true };
-    const { fields} = Object.assign({ fields: 'full'}, options);
+    const { fields } = Object.assign({ fields: 'full'}, options);
     let viewName = 'name';
 
     if (terms.whereURL) {

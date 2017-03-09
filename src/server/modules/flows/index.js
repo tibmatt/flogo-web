@@ -6,6 +6,7 @@ import { flowsDBService } from '../../config/app-config';
 import { VIEWS } from '../../common/db/flows';
 
 import { AppsManager } from '../apps';
+import { FlowsManagementDeprecated } from './flows-management-deprecated';
 
 import { PUBLISH_FIELDS_LONG, PUBLISH_FIELDS_SHORT } from './constants';
 import { convertToCliSchema } from './export';
@@ -16,8 +17,19 @@ import { convertToCliSchema } from './export';
 
 export class FlowsManager {
 
+  /**
+   * Not implemented yet
+   * @param flow
+   */
   static create(flow) {
     // TODO
+  }
+
+  /**
+   * @deprecated
+   */
+  static createRaw(data) {
+    return FlowsManagementDeprecated.createFlow(data);
   }
 
   /**
@@ -29,12 +41,29 @@ export class FlowsManager {
     // TODO
   }
 
+  /**
+   * @deprecated
+   */
+  static updateRaw(flowObj) {
+    return FlowsManagementDeprecated.updateFlow(flowObj);
+  }
+
   static save(flow, flowId = null) {
     // TODO
   }
 
   static remove(flowId) {
-    // TODO
+    return flowsDBService.db.get(flowId)
+      .then((flow) => {
+        return flowsDBService.db.remove(flow)
+          .then(() => flow);
+      })
+      .catch(err => {
+        if (err.name === 'not_found') {
+          return Promise.resolve(null);
+        }
+        throw err;
+      });
   }
 
   /**
@@ -82,15 +111,23 @@ export class FlowsManager {
     const { fields, withApps } = Object.assign({ fields: 'short', withApps: false }, options);
 
     const queryOpts = { include_docs: true };
-    // todo: include name
     if (terms.appId) {
       queryOpts.key = terms.appId;
     }
+
+    const filterNames = (flow) => {
+      if (!terms.name) {
+        return flow;
+      }
+      const flowName = flow.name || '';
+      return terms.name.toLowerCase() === flowName.toLowerCase();
+    };
+
     return flowsDBService.db
       .query(`views/${VIEWS.appId}`, queryOpts)
-      .then(result => (result.rows || [])
-        .map(flowRow => cleanForOutput(flowRow.doc, fields))
-      )
+      .then(result => (result.rows || []).map(row => row.doc))
+      .then(docs => docs.filter(filterNames))
+      .then(docs => docs.map(doc => cleanForOutput(doc, fields)))
       .then(flows => (withApps ? augmentWithApps(flows) : flows));
   }
 
@@ -134,7 +171,7 @@ export class FlowsManager {
    *    - fields {boolean|string} Possible values:
    *      - short {string} - get short version of the flow
    *      - full {string} -  get full version of the flow
-   *      - raw {string} (deprecated) -  get raw version of flow
+   *      - raw {string} (deprecated) -  get raw version of flow (as it is stored in db)
    *    - withApp {boolean} get also the related app.
    * @params flowId {string} flow id
    * @params options
@@ -145,10 +182,8 @@ export class FlowsManager {
     const { fields, withApp } = Object.assign({ fields: 'full', withApp: false }, options);
     // TODO: handle not found
     return flowsDBService.db.get(flowId)
-      .then((flow) => {
-        return Promise.resolve(cleanForOutput(flow, fields))
-          .then(cleanFlow => withApp ? augmentWithApp(cleanFlow, { withFlows: false }) : cleanFlow);
-      })
+      .then(flow => cleanForOutput(flow, fields))
+      .then(cleanFlow => withApp ? augmentWithApp(cleanFlow, { withFlows: false }) : cleanFlow)
       .catch((err) => {
         if (err.name === 'not_found') {
           return Promise.resolve(null);

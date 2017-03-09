@@ -1,4 +1,4 @@
-import {config, activitiesDBService} from '../../config/app-config';
+import { config } from '../../config/app-config';
 import { TYPE_ACTIVITY, DEFAULT_PATH_ACTIVITY } from '../../common/constants';
 import { inspectObj } from '../../common/utils';
 import { getInitializedEngine } from '../../modules/engine';

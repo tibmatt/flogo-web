@@ -133,7 +133,7 @@ export class RESTAPIFlowsService{
 
     let searchParams = new URLSearchParams();
     if(flowName) { searchParams.set('name', flowName); }
-    if(appId)    { searchParams.set('appId', flowName); }
+    if(appId)    { searchParams.set('appId', appId); }
 
     let headers = new Headers({ Accept: 'application/json' });
     let requestOptions = new RequestOptions({ headers, search: searchParams });

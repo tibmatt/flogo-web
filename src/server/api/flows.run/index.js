@@ -1,8 +1,5 @@
 import { config } from '../../config/app-config';
-import { isJSON } from '../../common/utils';
-import _ from 'lodash';
 import request  from 'co-request';
-import path from 'path';
 
 let basePath = config.app.basePath;
 

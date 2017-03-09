@@ -3,7 +3,7 @@ import {config} from '../../config/app-config';
 import request from 'co-request';
 import _ from 'lodash';
 
-import {createFlow} from '../../api/flows/index';
+import { FlowsManager } from '../../modules/flows';
 
 import {dbService, loadSamplesConfig} from '../../config/app-config';
 
@@ -65,7 +65,7 @@ function downloadSamplesAndInstall(samplesVersion) {
             console.log('Error downloading ' + sample.url + ' verify that the url is correct');
             resolve({installed: false, sample: sample.url});
           } else {
-            createFlow(res.body)
+            FlowsManager.createRaw(res.body)
               .then((res) => {
                 if (res.status !== 200) {
                   console.log(res);

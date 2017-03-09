@@ -10,8 +10,10 @@ Pouchdb.plugin(pouchDbLoad);
 const PREFIX_AUTO_GENERATE = 'auto-generate-id';
 const FLOW = 'flows';
 const DIAGRAM = 'diagram';
-const DELIMITER = ":";
+const DELIMITER = ':';
 const DEFAULT_USER_ID = 'flogoweb-admin';
+
+const KEY_INSTALLED_SAMPLES = '_local/installed_samples';
 
 export class DBService {
 
@@ -261,7 +263,8 @@ export class DBService {
     }
 
     let db = this._db;
-    return db.get('_local/initial_load_complete')
+    const KEY_INITIAL_LOAD = '_local/initial_load_complete';
+    return db.get(KEY_INITIAL_LOAD)
       .catch(function (err) {
         if (err.status !== 404) { // 404 means not found
           throw err;
@@ -269,7 +272,7 @@ export class DBService {
         console.log(`Will load from ${dumpPath}`);
         return loadFile(dumpPath)
           .then(content => db.load(content))
-          .then(() => db.put({_id: '_local/initial_load_complete'}));
+          .then(() => db.put({ _id: KEY_INITIAL_LOAD }));
       }).then(function () {
         console.info('Initial db data load completed');
     }).catch(function (err) {
@@ -313,11 +316,11 @@ export class DBService {
 
 
   areSamplesInstalled() {
-    return this._db.get('_local/installed_samples');
+    return this._db.get(KEY_INSTALLED_SAMPLES);
   }
 
   markSamplesAsInstalled() {
-    this._db.put({_id: '_local/installed_samples'});
+    return this._db.put({ _id: KEY_INSTALLED_SAMPLES });
   }
 
 }
