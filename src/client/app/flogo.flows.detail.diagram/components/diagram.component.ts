@@ -83,8 +83,8 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
-    // render on next js cycle
-    setTimeout(() => this._diagram.render(), 200);
+    // Render the diagram on next js cycle such that the diagram elements are added to the DOM.
+    setTimeout(() => this._diagram.render(), 0);
   }
 
   ngOnChanges(
