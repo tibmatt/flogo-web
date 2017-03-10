@@ -1,9 +1,9 @@
-<modal [size]="'lg'" #instructionsModal (onClose)="onModalCloseOrDismiss($event)"
+<modal cssClass="flogo-instructions-modal" #instructionsModal (onClose)="onModalCloseOrDismiss($event)"
        (onDismiss)="onModalCloseOrDismiss($event)">
   <div class="flogo-instructions">
     <div class="flogo-instructions-header">
       <h3 class="flogo-instructions-modal-title">Getting started with Flogo</h3>
-      <i class="flogo-instructions-modal-close" (click)="closeModal()"></i>
+      <i class="flogo-icon-close flogo-instructions-modal-close" (click)="closeModal()"></i>
     </div>
 
     <div class="flogo-instructions-panel">

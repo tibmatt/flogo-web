@@ -5,10 +5,6 @@ import { LoadingStatusService } from '../../../common/services/loading-status.se
 import { LanguageService } from '../../../common/services/language.service';
 import { Observable } from 'rxjs/Observable';
 
-//todo:remove
-import 'rxjs/add/operator/do';
-
-
 @Component({
   selector: 'flogo-app',
   moduleId: module.id,
@@ -40,7 +36,6 @@ export class FlogoAppComponent implements OnInit {
     });
 
     this.activatedRoute.queryParams
-      .do(params => console.log('params', params))
       .subscribe((params: Params) => this.showNav = !params['nonav']);
 
   }
