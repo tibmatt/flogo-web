@@ -2,7 +2,6 @@ import pick from 'lodash/pick';
 import get from 'lodash/get';
 import { PUBLISH_FIELDS_SHORT, PUBLISH_FIELDS_LONG } from './constants';
 import { activitiesDBService } from '../../config/app-config';
-import { VIEWS } from '../../common/db/activities';
 
 export class ActivitiesManager {
 
@@ -28,32 +27,13 @@ export class ActivitiesManager {
    */
   static find(terms, options) {
     terms = terms || {};
-    const queryOpts = { include_docs: true };
     const { fields } = Object.assign({ fields: 'full'}, options);
-    let viewName = 'name';
 
-    if (terms.whereURL) {
-      queryOpts.key = getStringForSearch(terms.whereURL);
-      viewName = 'where';
-    }
-
-    // default view
-    if (terms.name) {
-      queryOpts.key = getStringForSearch(terms.name);
-      viewName = 'name';
-    }
-
-    return activitiesDBService.db
-     .query(`views/${viewName}`, queryOpts)
-     .then(result => (result.rows || [])
-      .map(activityRow => cleanForOutput(activityRow.doc, fields))
-    )
+    return activitiesDBService.db.find(terms)
+      .then(result => (result || [])
+        .map(activityRow => cleanForOutput(activityRow, fields))
+      );
   }
-}
-
-
-function getStringForSearch(search) {
-  return search ? search.trim().toLowerCase() : undefined;
 }
 
 function cleanForOutput(activity, fields) {

@@ -42,8 +42,8 @@ function* listTriggers() {
   const filterName     = this.request.query['filter[name]'];
   const filterWhereURL = this.request.query['filter[whereURL]'];
 
-  if (filterName)     { searchTerms.name     = filterName;     }
-  if (filterWhereURL) { searchTerms.whereURL = filterWhereURL; }
+  if (filterName)     { searchTerms.name  = filterName;     }
+  if (filterWhereURL) { searchTerms.where = filterWhereURL; }
 
   const foundTriggers = yield TriggerManager.find(searchTerms);
   this.body = {

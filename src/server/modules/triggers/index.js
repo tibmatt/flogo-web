@@ -27,32 +27,13 @@ export class TriggerManager {
    */
   static find(terms, options) {
     terms = terms || {};
-    const queryOpts = { include_docs: true };
     const { fields } = Object.assign({ fields: 'full'}, options);
-    let viewName = 'name';
 
-    if (terms.whereURL) {
-      queryOpts.key = getStringForSearch(terms.whereURL);
-      viewName = 'where';
-    }
-
-    // default view
-    if (terms.name) {
-      queryOpts.key = getStringForSearch(terms.name);
-      viewName = 'name';
-    }
-
-    return triggersDBService.db
-     .query(`views/${viewName}`, queryOpts)
-     .then(result => (result.rows || [])
-      .map(triggerRow => cleanForOutput(triggerRow.doc, fields))
-    )
+    return triggersDBService.db.find(terms)
+          .then(result => (result || [])
+            .map(triggerRow => cleanForOutput(triggerRow, fields))
+          );
   }
-}
-
-
-function getStringForSearch(search) {
-  return search ? search.trim().toLowerCase() : undefined;
 }
 
 function cleanForOutput(trigger, fields) {

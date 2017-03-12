@@ -35,6 +35,7 @@
     "koa-router": "^5.4.0",
     "koa-static": "^2.0.0",
     "lodash": "^4.6.1",
+    "nedb": "1.8.0",
     "npm": "^3.8.5",
     "performance-now": "^0.2.0",
     "pouchdb": "^5.3.1",
@@ -49,26 +50,50 @@
     "extends": "airbnb-base",
     "rules": {
       "func-names": "off",
-      "max-len":  ["error", 120, 2, {
-        "ignoreUrls": true,
-        "ignoreComments": false,
-        "ignoreRegExpLiterals": true,
-        "ignoreStrings": true,
-        "ignoreTemplateLiterals": true
-      }],
+      "max-len": [ "error", 120, 2, {
+          "ignoreUrls": true,
+          "ignoreComments": false,
+          "ignoreRegExpLiterals": true,
+          "ignoreStrings": true,
+          "ignoreTemplateLiterals": true
+        }
+      ],
       "no-underscore-dangle": "off",
       "no-plusplus": "off",
       "prefer-default-export": "off",
       "no-console": "off",
       "no-param-reassign": "off",
-      "no-use-before-define": ["error", { "functions": false }],
-      "no-debugger": ["error"],
-      "no-trailing-spaces": ["warn"],
-      "dot-notation": ["warn"],
-      "no-confusing-arrow": ["warn", {"allowParens": true}],
-      "arrow-parens": ["warn", "as-needed"],
-      "class-methods-use-this": ["warn"],
-      "vars-on-top": ["warn"]
+      "no-use-before-define": [
+        "error",
+        {
+          "functions": false
+        }
+      ],
+      "no-debugger": [
+        "error"
+      ],
+      "no-trailing-spaces": [
+        "warn"
+      ],
+      "dot-notation": [
+        "warn"
+      ],
+      "no-confusing-arrow": [
+        "warn",
+        {
+          "allowParens": true
+        }
+      ],
+      "arrow-parens": [
+        "warn",
+        "as-needed"
+      ],
+      "class-methods-use-this": [
+        "warn"
+      ],
+      "vars-on-top": [
+        "warn"
+      ]
     }
   }
 }

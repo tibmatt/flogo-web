@@ -392,7 +392,7 @@ function* exportFlowInJsonById(next) {
       // processing the flow information to omit unwanted fields
       this.body = _.omitBy(flowInfo, (propVal, propName) => {
 
-        if (['_conflicts', 'updated_at', 'created_at', 'appId'].indexOf(propName) !== -1) {
+        if (['_conflicts', 'updatedAt', 'createdAt', 'appId'].indexOf(propName) !== -1) {
           return true;
         }
 
@@ -468,10 +468,10 @@ function* exportFlowInJsonById(next) {
  *                    type: string
  *          items:
  *            type: object
- *      created_at:
+ *      createdAt:
  *        type: string
  *        format: dateTime
- *      updated_at:
+ *      updatedAt:
  *        type: string
  *        format: dateTime
  *      _id:

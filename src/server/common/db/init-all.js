@@ -13,8 +13,6 @@ import {
 export function initAllDbs() {
 
   return Promise.all([
-    activitiesDBService.init(),
-    triggersDBService.init(),
     flowsDBService.init(),
     appsDBService.init()
   ]);

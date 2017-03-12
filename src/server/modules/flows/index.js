@@ -222,7 +222,7 @@ function cleanForOutput(flow, fields) {
   let cleanFlow = Object.assign({
     id: flow.id || flow._id,
     updatedAt: flow.updatedAt || flow.updated_at,
-    createdAt: flow.createdAt || flow.created_at,
+    createdAt: flow.createdAt || flow.created_at
   }, flow);
 
   if (fields === 'raw') {
