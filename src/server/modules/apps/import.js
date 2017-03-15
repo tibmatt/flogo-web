@@ -36,6 +36,7 @@ class ImportFlows {
 
     return Promise.all([getTriggers(this.sourceFlows), getActivities(this.sourceFlows)])
       .then((triggersAndActivities) => {
+
         const installedTiles = flattenDeep(triggersAndActivities);
         return makeFlows(this.sourceFlows, installedTiles);
       })
@@ -280,10 +281,12 @@ class ImportFlows {
                 ],
               } });
         }
-
         return trigger.ref;
       });
-      triggersURL.forEach(url => promises.push(TriggerManager.find({ whereURL: url })));
+
+      triggersURL.forEach(url => {
+        return promises.push(TriggerManager.find({ where: url }));
+      } );
 
       return Promise.all(promises);
     }
@@ -320,7 +323,7 @@ class ImportFlows {
 
           if (processed.indexOf(ref) == -1) {
             processed.push(ref);
-            promises.push(ActivitiesManager.find({ whereURL: ref }));
+            promises.push(ActivitiesManager.find({ where: ref }));
           }
         });
       });
