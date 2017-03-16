@@ -11,6 +11,7 @@ export interface IFlogoFlowDiagramTask {
   type : FLOGO_TASK_TYPE;
   version ? : string;
   name ? : string;
+  ref ? : string;
   description ? : string;
   title ? : string;
   activityType? : string;
@@ -39,6 +40,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   description : string;
   title : string;
   activityType : string;
+  ref: string;
   triggerType : string;
   attributes : IFlogoFlowDiagramTaskAttributes;
   inputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
@@ -70,6 +72,8 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.description = task.description || this.description || '';
     this.title = task.title || this.title || '';
     this.activityType = task.activityType || this.activityType || '';
+    this.ref = task.ref || this.ref || '';
+
     this.triggerType = task.triggerType || this.triggerType || '';
     this.attributes = _.isEmpty( task.attributes ) ?
                       this.attributes || < IFlogoFlowDiagramTaskAttributes > {} :
@@ -116,6 +120,7 @@ export function makeDefaultErrorTrigger(id) : IFlogoFlowDiagramTask {
       value: ''
     }
   ];
+
 
   let errorTrigger = new FlogoFlowDiagramTask({
     id: id,

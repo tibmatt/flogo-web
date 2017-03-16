@@ -201,7 +201,9 @@ export class FlowsManager {
   static convertManyToCliSchema(options = {}) {
     if (options.appId) {
       return FlowsManager.find({ appId: options.appId }, { fields: 'raw' })
-        .then(flows => flows.map(flow => convertToCliSchema(flow)));
+        .then(flows => flows.map(flow => {
+          return convertToCliSchema(flow);
+        }));
     }
     return Promise.resolve([]);
   }

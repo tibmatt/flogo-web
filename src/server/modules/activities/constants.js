@@ -15,7 +15,7 @@ export const PUBLISH_FIELDS_LONG = [
   'version',
   'title',
   'description',
-  'where',
+  'ref',
   'homepage',
   'inputs',
   'outputs'

@@ -10,7 +10,7 @@ export class ActivitiesManager {
    *
    * ## searchTerms
    * - name {string}  find by name with exactly this name (case insensitive)
-   * - where {string} find by url where property with exactly this where property (case insensitive)
+   * - ref {string} find by url ref property with exactly this property (case insensitive)
    * If both search terms are provided search is executed by name
    *
    * ## options
@@ -21,7 +21,7 @@ export class ActivitiesManager {
    *
    * @param terms
    * @params terms.name {string} name of the app
-   * @params terms.where {string} url where property
+   * @params terms.ref {string} url ref property
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
@@ -39,7 +39,7 @@ export class ActivitiesManager {
 function cleanForOutput(activity, fields) {
   let cleanActivity = Object.assign(
     { id: activity.id || activity._id },
-    {where: activity.where, homepage:get(activity, 'schema.homepage', '')},
+    {ref: activity.ref, homepage:get(activity, 'schema.homepage', '')},
     activity.schema
   );
 

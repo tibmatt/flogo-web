@@ -104,7 +104,7 @@ export class BaseRegistered{
   static constructItem( opts ) {
     return {
       _id : opts.id,
-      'where' : opts.where,
+      'ref' : opts.ref,
       'name' : opts.name,
       'version' : opts.version,
       'description' : opts.description,
@@ -387,7 +387,7 @@ export class BaseRegistered{
 
       items[id] = BaseRegistered.constructItem({
         'id': id,
-        'where': item.path,
+        'ref': item.path,
         'name': item.name,
         'version': version,
         'description': info.description,
@@ -399,7 +399,6 @@ export class BaseRegistered{
     });
 
     // console.log("!!!!!!!!activityDocs: ", activityDocs);
-
     return BaseRegistered.saveItems(this.dbService, items)
       .then((result) => {
         console.log(`[info] updateDB done.`);
@@ -442,7 +441,7 @@ export class BaseRegistered{
 
           items[ id ] = BaseRegistered.constructItem( {
             'id' : id,
-            'where' : this._where[ key ],
+            'ref' : this._where[ key ],
             'name' : key,
             'version' : packageJSON.version,
             'description' : packageJSON.description,
