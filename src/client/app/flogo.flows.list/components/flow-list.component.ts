@@ -43,10 +43,10 @@ export class FlogoListComponent {
         response.reverse();
         this.flows = response;
         this.flows.forEach((flow) => {
-          let time = new Date(flow.created_at);
+          let time = new Date(flow.createdAt);
           time = new Date(time.getTime());
           let timeStr = ''+time.getFullYear()+this._toDouble(time.getMonth()+1)+this._toDouble(time.getDate())+' '+ this._toDouble(time.getHours())+':'+this._toDouble(time.getMinutes())+':'+this._toDouble(time.getSeconds());
-          flow.created_at = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
+          flow.createdAt = moment(timeStr, 'YYYYMMDD hh:mm:ss').fromNow();
         });
         resolve(response);
       }).catch((err)=>{

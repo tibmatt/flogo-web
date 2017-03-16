@@ -10,7 +10,7 @@
           <p class="flogo-flows-container-list-detail-description" [title]="flow.description">
             {{flow.description}}</p>
           <i class="flogo-flows-container-list-detail-creatTime"> {{ 'FLOWS:CREATED' |
-            translate:{value:flow.created_at} }} </i>
+            translate:{value:flow.createdAt} }} </i>
         </section>
       </a>
       <span class="flogo-flows-container-list-detail-trash" (click)="deleteFlow(flow, $event)"></span>

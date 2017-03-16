@@ -7,6 +7,10 @@ import {
   DBService
 } from '../common/db.service';
 
+import {
+  DatabaseService
+} from '../common/database.service';
+
 let rootPath = path.normalize(__dirname + '/..');
 
 let publicPath = path.normalize(rootPath+'/../public');
@@ -250,8 +254,8 @@ export {
   originalConfig
 };
 
-let triggersDBService = new DBService(config.triggers.db);
-let activitiesDBService = new DBService(config.activities.db);
+let triggersDBService = new DatabaseService();
+let activitiesDBService = new DatabaseService();
 let flowsDBService = new DBService(config.db);
 let appsDBService = new DBService(config.apps.db);
 let dbService = flowsDBService;

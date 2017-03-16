@@ -1877,11 +1877,11 @@
             }
           }
         },
-        "created_at": {
+        "createdAt": {
           "type": "string",
           "format": "dateTime"
         },
-        "updated_at": {
+        "updatedAt": {
           "type": "string",
           "format": "dateTime"
         },

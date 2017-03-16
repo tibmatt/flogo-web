@@ -4,24 +4,18 @@ import npm from 'npm';
 import _ from 'lodash';
 import fs from 'fs';
 import {DBService} from '../../common/db.service';
+import {DatabaseService} from '../../common/database.service';
 import {isDirectory, fileExists, readDirectoriesSync} from '../../common/utils';
 import {config} from '../../config/app-config';
 import { DEFAULT_SCHEMA_ROOT_FOLDER_NAME } from '../../common/constants';
 
 const execSync = require('child_process').execSync;
 
-const COMPONENT_TYPE = ["trigger", "activity", "model"];
-
-
 // default options
 const defaultOptions = {
   path: 'modules/base-registered',
   jsonTplName: 'package.tpl.json'
 };
-
-export function syncDb() {
-
-}
 
 /**
  * Base class of registered
@@ -46,12 +40,14 @@ export class BaseRegistered{
       throw "dbName is required";
     }
 
+
+
     this._options = _.merge({}, defaultOptions, options);
 
     // store db information
     if(_.isString(dbName)){
       this._dbService = new DBService(dbName);
-    }else if(_.isObject(dbName)&&(dbName instanceof DBService)){
+    }else if(_.isObject(dbName)&&(dbName instanceof DBService || dbName instanceof DatabaseService)){
       this._dbService = dbName;
     }else{
       throw "dbName is required, and it should be a name of DB or an instance of DBService";
@@ -69,6 +65,8 @@ export class BaseRegistered{
     // store the path of runtime(activity runtime, trigger runtime)
     this._where = [];
   }
+
+
 
   register(){
     return new Promise((resolve, reject)=>{
@@ -116,9 +114,26 @@ export class BaseRegistered{
     }
   }
 
-  static saveItems( dbService, items, updateOnly ) {
+  static saveItemsNewDatabase( dbService, items ) {
     let _items = _.cloneDeep( items ); // in order to avoid the changes on the given items.
+    let toInsert = [];
 
+    for(let key in _items) {
+      _items[key].createdAt = new Date().toISOString();
+      _items[key].updatedAt = new Date().toISOString();
+
+      toInsert.push(_items[key]);
+    }
+    return dbService.db.insertBulk(toInsert);
+  }
+
+
+  static saveItems( dbService, items, updateOnly ) {
+    if(dbService instanceof DatabaseService) {
+      return BaseRegistered.saveItemsNewDatabase(dbService, items);
+    }
+
+    let _items = _.cloneDeep( items ); // in order to avoid the changes on the given items.
     // get all of the items in the given db
     return dbService.db.allDocs( { include_docs : true } )
       .then( ( docs )=> {
@@ -169,8 +184,8 @@ export class BaseRegistered{
             // copy the some value from current activity in DB
             newItem[ '_id' ] = oldItem[ '_id' ];
             newItem[ '_rev' ] = oldItem[ '_rev' ];
-            newItem.created_at = oldItem.created_at;
-            newItem.updated_at = new Date().toISOString();
+            newItem.createdAt = oldItem.createdAt;
+            newItem.updatedAt = new Date().toISOString();
 
             // update this item in DB
             return dbService.db.put( _.cloneDeep( newItem ) )
@@ -199,7 +214,7 @@ export class BaseRegistered{
         console.log( '[info] add new items' );
 
         return Promise.all( _.map( newItems, ( newItem ) => {
-          newItem.created_at = new Date().toISOString();
+          newItem.createdAt = new Date().toISOString();
 
           return dbService.db.put( newItem )
             .then( ( response )=> {
@@ -221,22 +236,6 @@ export class BaseRegistered{
       } );
   }
 
-  // watch the activities
-  watch(){
-    this.updateActivitiesDB();
-    // continue watch and also watch te sbudirectories
-    let watchOptions = {
-      persistent: true,
-      recursive: true
-    };
-
-    // start watch the change in activities folder
-    fs.watch(this.activitiesAbsolutePath, watchOptions, (event, filename)=>{
-      // console.log("========event: ", event);
-      // console.log("========filename: ", filename);
-      this.updateActivitiesDB();
-    });
-  }
 
   clean(){
     //console.log("-------clean");
@@ -255,6 +254,10 @@ export class BaseRegistered{
   }
 
   cleanDB(ignoreViews){
+    if(this._dbService instanceof DatabaseService) {
+      return this._dbService.db.removeAll();
+    }
+
     return new Promise((resolve, reject)=>{
       this._dbService.db.allDocs({include_docs: true}).then((result)=>{
         console.log("[info]cleanDB, type: ", this._options.type);
@@ -503,3 +506,4 @@ export class BaseRegistered{
     });
   }
 }
+
