@@ -8,6 +8,11 @@ export class RESTAPIActivitiesService {
   constructor( private _http : Http ) {
   }
 
+  getActivityDetails(activityRefUrl: string) {
+    return this._http.get('/v1/api/activities?filter[ref]=' + activityRefUrl).toPromise()
+      .then(response => response.json().data[0]);
+  }
+
   getActivities() {
     return this._http.get('/v1/api/activities').toPromise()
       .then(response=> {
