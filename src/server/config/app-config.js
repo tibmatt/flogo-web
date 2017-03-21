@@ -15,9 +15,15 @@ let rootPath = path.normalize(__dirname + '/..');
 
 let publicPath = path.normalize(rootPath+'/../public');
 
-let FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
-let FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
-let FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost");
+const FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
+const FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
+const FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost");
+
+const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve('local');
+// Default local/d
+const DB_DIR = process.env.FLOGO_WEB_DBDIR || path.resolve(LOCAL_DIR, 'db');
+
+const logLevel = process.env.FLOGO_WEB_LOGLEVEL || 'debug';
 
 console.log("rootPath: ", rootPath);
 console.log("publicPath: ", publicPath);
@@ -28,9 +34,12 @@ let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
   publicPath: publicPath,
+  logLevel,
+  localPath: LOCAL_DIR,
   libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
   app: {
     basePath: '/v1/api',
+    basePathV2: '/api/v2',
     port: appPort,
     cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
@@ -41,7 +50,8 @@ let config = {
   },
   /* apps module config */
   apps: {
-    db: "http://localhost:5984/flogo-apps"
+    db: "http://localhost:5984/flogo-apps",
+    dbPath: path.resolve(DB_DIR, 'apps.db'),
   },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",

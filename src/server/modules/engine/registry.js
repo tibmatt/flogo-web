@@ -1,7 +1,7 @@
 import path from 'path';
 
 import {Engine} from './engine';
-import {engineLogger} from '../../common/logger';
+import { engineLogger } from '../../common/logging';
 import {config} from '../../config/app-config';
 
 let engineRegistry = {};

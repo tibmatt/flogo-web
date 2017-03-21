@@ -1,9 +1,24 @@
 const Datastore = require('nedb');
 
-class Database {
+function defer() {
+  const defered = {};
+  defered.promise = new Promise((resolve, reject) => {
+    defered.callback = (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    };
+  });
+  return defered;
+}
 
-  constructor(options) {
+export class Database {
+
+  constructor(options, indexes = []) {
     this.collection = new Datastore(options);
+    indexes.forEach(index => this.collection.ensureIndex(index));
   }
 
   allDocs() {
@@ -14,16 +29,16 @@ class Database {
     return Promise.resolve({});
   }
 
+  insert(data) {
+    const deferred = defer();
+    this.collection.insert(data, deferred.callback);
+    return deferred.promise;
+  }
+
   removeAll() {
-    return new Promise((resolve, reject) => {
-      this.collection.remove({}, {multi: true}, function (err, numRemoved) {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(numRemoved);
-        }
-      })
-    });
+    const deferred = defer();
+    this.collection.remove({}, { multi: true }, deferred.callback);
+    return deferred.promise;
   }
 
   insertBulk(items) {
@@ -38,30 +53,32 @@ class Database {
     });
   }
 
-  find(search) {
-    return new Promise((resolve, reject) => {
-      return this.collection.find(search, (err, docs) => {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(docs)
-        }
-      });
-    });
+  find(query, projection = {}) {
+    const deferred = defer();
+    this.collection.find(query, projection, deferred.callback);
+    return deferred.promise;
   }
 
-  remove(doc) {
-    const id = doc._id || null;
+  findOne(query, projection = {}) {
+    const deferred = defer();
+    this.collection.findOne(query, projection, deferred.callback);
+    return deferred.promise;
+  }
 
-    return new Promise((resolve, reject) => {
-      this.collection.remove({_id: id}, {}, function(err, result) {
-        if(err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
+  update(query, update, options) {
+    const deferred = defer();
+    const args = Array.prototype.slice.call(arguments);
+    args.push(deferred.callback);
+    this.collection.update.apply(this.collection, args);
+    return deferred.promise;
+  }
+
+  remove(query, options) {
+    const deferred = defer();
+    const args = Array.prototype.slice.call(arguments);
+    args.push(deferred.callback);
+    this.collection.remove.apply(this.collection, args);
+    return deferred.promise;
   }
 
   put(doc) {

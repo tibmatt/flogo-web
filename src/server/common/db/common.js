@@ -1,5 +1,3 @@
-import {DatabaseService} from '../../common/database.service';
-
 export function initViews(db, viewsData) {
     let views = viewsData.reduce((all, view) => {
       all[view.key] = {
