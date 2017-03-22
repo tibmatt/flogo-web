@@ -101,8 +101,8 @@ export class DBService {
             console.log("[warning]We generate an id for you, but suggest you give a meaningful id to this document.");
           }
 
-          doc['created_at'] = new Date().toISOString();
-          doc['updated_at'] = new Date().toISOString();
+          doc['createdAt'] = new Date().toISOString();
+          doc['updatedAt'] = new Date().toISOString();
 
           this._db.put(doc).then((response)=>{
             resolve(response);
@@ -128,6 +128,7 @@ export class DBService {
    */
   failWhenNameExists(name, appId) {
     let searchName = (name || '').toLowerCase().trim();
+
     return new Promise((resolve, reject) => {
       this._db
         .query(function(doc, emit) { emit((doc.name || '').toLowerCase().trim()); }, { key: searchName, include_docs: true })
@@ -173,7 +174,7 @@ export class DBService {
         reject("[Error]doc.$table is required.");
       }
 
-      doc.updated_at = new Date().toISOString();
+      doc.updatedAt = new Date().toISOString();
 
       this._db.get(doc._id).then(
         ( dbDoc )=> {

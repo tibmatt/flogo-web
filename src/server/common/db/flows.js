@@ -14,8 +14,8 @@ const views = [
     key: VIEWS.updatedAt,
     // TODO update to updatedAt through the application
     map: function (doc) {
-      if (doc.updated_at) {
-        emit(doc.updated_at || doc.updatedAt);
+      if (doc.updatedAt) {
+        emit(doc.updatedAt || doc.updated_at);
       }
     }.toString(),
   },

@@ -40,10 +40,10 @@ export function triggers(app, router){
 function* listTriggers() {
   const searchTerms = {};
   const filterName     = this.request.query['filter[name]'];
-  const filterWhereURL = this.request.query['filter[whereURL]'];
+  const filterWhere = this.request.query['filter[where]'];
 
-  if (filterName)     { searchTerms.name     = filterName;     }
-  if (filterWhereURL) { searchTerms.whereURL = filterWhereURL; }
+  if (filterName)     { searchTerms.name  = filterName;     }
+  if (filterWhere) { searchTerms.where = filterWhere; }
 
   const foundTriggers = yield TriggerManager.find(searchTerms);
   this.body = {

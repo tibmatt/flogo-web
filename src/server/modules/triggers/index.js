@@ -10,7 +10,7 @@ export class TriggerManager {
    *
    * ## searchTerms
    * - name {string}  find by name with exactly this name (case insensitive)
-   * - whereURL {string} find by url where property with exactly this where property (case insensitive)
+   * - where {string} find by url where property with exactly this where property (case insensitive)
    * If both search terms are provided search is executed by name
    *
    * ## options
@@ -21,38 +21,19 @@ export class TriggerManager {
    *
    * @param terms
    * @params terms.name {string} name of the app
-   * @params terms.whereURL {string} url where property
+   * @params terms.where {string} url where property
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
   static find(terms, options) {
     terms = terms || {};
-    const queryOpts = { include_docs: true };
     const { fields } = Object.assign({ fields: 'full'}, options);
-    let viewName = 'name';
 
-    if (terms.whereURL) {
-      queryOpts.key = getStringForSearch(terms.whereURL);
-      viewName = 'where';
-    }
-
-    // default view
-    if (terms.name) {
-      queryOpts.key = getStringForSearch(terms.name);
-      viewName = 'name';
-    }
-
-    return triggersDBService.db
-     .query(`views/${viewName}`, queryOpts)
-     .then(result => (result.rows || [])
-      .map(triggerRow => cleanForOutput(triggerRow.doc, fields))
-    )
+    return triggersDBService.db.find(terms)
+          .then(result => (result || [])
+            .map(triggerRow => cleanForOutput(triggerRow, fields))
+          );
   }
-}
-
-
-function getStringForSearch(search) {
-  return search ? search.trim().toLowerCase() : undefined;
 }
 
 function cleanForOutput(trigger, fields) {

@@ -1,9 +1,4 @@
-import {
-  flowsDBService,
-  activitiesDBService,
-  triggersDBService,
-  appsDBService
-} from '../../config/app-config';
+import { flowsDBService, appsDBService } from '../../config/app-config';
 
 
 /**
@@ -13,8 +8,6 @@ import {
 export function initAllDbs() {
 
   return Promise.all([
-    activitiesDBService.init(),
-    triggersDBService.init(),
     flowsDBService.init(),
     appsDBService.init()
   ]);

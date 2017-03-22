@@ -1,6 +1,7 @@
 //import 'babel-polyfill';
 var fs = require('fs');
 var path = require('path');
+const http = require('http')
 
 import koa from 'koa';
 import koaStatic from 'koa-static';
@@ -16,9 +17,13 @@ import {init as initWebsocketApi} from './api/ws';
 import {syncTasks, installSamples, installDefaults, getInitializedEngine, ensureDefaultDirs} from './modules/init';
 import { createViews } from './common/db/create-views';
 
+import { ErrorManager, ERROR_TYPES } from './common/errors';
+import { logger } from './common/logging';
+
 // TODO Need to use cluster to improve the performance
 
 let app;
+let server;
 
 /**
  * Server start logic
@@ -29,9 +34,9 @@ let app;
  * 4. configure the server and start listening
  */
 
-ensureDefaultDirs()
+export default ensureDefaultDirs()
   .then(() => getInitializedEngine(config.defaultEngine.path, {
-      forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
+    forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
   }))
   .then(engine => {
     return engine.build()
@@ -45,8 +50,13 @@ ensureDefaultDirs()
       .then(() => { console.log(engine.getTasks()) })
   })
   .then(() => initServer())
-  .then((server) => {
-    initWebsocketApi(server);
+  .then((newServer) => {
+    server = newServer;
+    if (!process.env['FLOGO_WEB_DISABLE_WS']) {
+      return initWebsocketApi(newServer);
+    }
+    logger.info('Won\'t start websocket service');
+    return null;
   })
   .then(() => flowsDBService
     .verifyInitialDataLoad(path.resolve('db-init/installed-flows.init'))
@@ -55,8 +65,9 @@ ensureDefaultDirs()
   .then(() => {
     console.log('flogo-web::server::ready');
     showBanner();
+    return { server, app };
   })
-  .catch((err)=> {
+  .catch((err) => {
     console.log(err);
     throw err;
   });
@@ -73,6 +84,12 @@ function initServer() {
     app.use(cors());
 
     api(app, router);
+    router.use(bodyParser({
+      multipart: true,
+      onError() {
+        throw ErrorManager.createRestError('Body parse error', { type: ERROR_TYPES.COMMON.BAD_SYNTAX });
+      },
+    }));
 
     // make sure deep link it works
     app.use(function *(next) {
@@ -97,7 +114,6 @@ function initServer() {
 
     // server static resources
     app.use(koaStatic(config.publicPath, {maxage: config.app.cacheTime}));
-    app.use(bodyParser({multipart: true}));
 
     app.on('error', function (err) {
       if (401 == err.status) {
@@ -123,12 +139,19 @@ function initServer() {
       console.log(this.request.body);
     });
 
-    var server = require('http').createServer(app.callback());
-    server.listen(port, ()=> {
-      console.log(`[log] start web server done.`);
+    let server = http.createServer(app.callback());
 
+    // when server is imported from another module we'll let the other module start the server
+    // this allows us to manually close the server when testing
+    if (!module.parent) {
+      server.listen(port, () => {
+        console.log('[log] start web server done.');
+        resolve(server);
+      });
+    } else {
       resolve(server);
-    });
+    }
+
   });
 }
 

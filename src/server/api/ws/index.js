@@ -1,12 +1,14 @@
-import {engineLogger} from '../../common/logger';
+import {engineLogger} from '../../common/logging';
 const socketIo = require('socket.io');
 
 // TODO: inject config
 export function init(server) {
   const io = socketIo(server);
+  const socketList = [];
 
-  io.on('connection', (ws)=> {
-    console.log('Connecting socket.io .........');
+  io.on('connection', ws => {
+    socketList.push(ws);
+
     var options = {
       limit:10,
       start:0,
@@ -22,14 +24,33 @@ export function init(server) {
       ws.emit('on-connecting', JSON.stringify(docs));
     });
 
+    ws.on('close', () => {
+      socketList.splice(socketList.indexOf(ws), 1);
+    });
+
   });
 
-  engineLogger.stream({start: -1})
-    .on('log', function (logData) {
-      io.emit('on-log',JSON.stringify({
-        level: logData.level,
-        message: logData.message,
-        timestamp: logData.timestamp
-      }));
-    })
+  const logStreamerListener = logData => {
+    io.emit('on-log', JSON.stringify({
+      level: logData.level,
+      message: logData.message,
+      timestamp: logData.timestamp
+    }));
+  };
+
+  const logStream = engineLogger.stream({ start: -1 });
+  logStream.on('log', logStreamerListener);
+
+  let closed = false;
+  server.on('close', () => {
+    if (closed) {
+      return;
+    }
+    closed = true;
+    io.close();
+    logStream.removeListener('log', logStreamerListener);
+    logStream.destroy();
+    socketList.forEach(socket => socket.destroy());
+  });
+
 }
