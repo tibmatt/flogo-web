@@ -15,7 +15,7 @@ const DEFAULT_FLOW_MODEL_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/fl
  * @return {{}}
  */
 export function flogoFlowToJSON(inFlow, options = { useRef: true }) {
-  const REF_FIELD = options.useRef ? { NAME: 'activityRef', FROM: '__schema.where' } : { NAME: 'activityType', FROM: 'activityType' };
+  const REF_FIELD = options.useRef ? { NAME: 'activityRef', FROM: 'ref' } : { NAME: 'activityType', FROM: 'activityType' };
 
   var DEBUG = false;
   var INFO = true;
@@ -177,6 +177,7 @@ export function flogoFlowToJSON(inFlow, options = { useRef: true }) {
     }
   }
   function _isValidInternalTaskInfo(task) {
+
     if (_.isEmpty(task)) {
       DEBUG && console.warn('Empty task');
       return false;
@@ -311,8 +312,7 @@ export function flogoTriggerToJSON(flow) {
 
   return {
     id: _.snakeCase(rootTask.name),
-    ref: _.get(rootTask, '__schema.where'),
-    // name: rootTask.triggerType,
+    ref: _.get(rootTask, 'ref'),
     settings,
     handlers,
   };

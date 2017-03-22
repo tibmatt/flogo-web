@@ -17,7 +17,7 @@ export const PUBLISH_FIELDS_LONG = [
   'title',
   'description',
   'homepage',
-  'where',
+  'ref',
   'settings',
   'outputs',
   'endpoint'

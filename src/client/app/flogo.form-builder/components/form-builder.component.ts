@@ -118,9 +118,7 @@ export class FlogoFormBuilderComponent{
             resolve();
           }
         }));
-
     });
-
   }
 
 

@@ -261,6 +261,7 @@ export class FlogoCanvasComponent implements OnInit {
     // processing this._flow to pure JSON object
     flow = _.cloneDeep(flow);
     cleanPaths(flow.paths);
+    flow.schemas = _.get(this.handlers, 'root.schemas');
 
     if (flow.errorHandler && !_.isEmpty(flow.errorHandler.paths)) {
       cleanPaths(flow.errorHandler.paths);
@@ -493,13 +494,19 @@ export class FlogoCanvasComponent implements OnInit {
     let diagramId = data.id;
     let handler = this.handlers[diagramId];
 
+
+
     if (handler == this.errorHandler) {
       trigger.id = flogoGenTaskID(this._getAllTasks());
     }
-
     let tasks = handler.tasks;
 
+    this.handlers['root']['schemas'] = this.handlers['root']['schemas'] || {};
+    trigger.ref = trigger.ref || trigger['__schema'].ref;
+    this.handlers['root']['schemas'][trigger.ref] = trigger;
+    delete trigger['__schema'];
     tasks[trigger.id] = trigger;
+
 
     this._navigateFromModuleRoot()
       .then(
@@ -598,6 +605,12 @@ export class FlogoCanvasComponent implements OnInit {
         });
 
       this.handlers[diagramId].tasks[task.id] = task;
+
+      this.handlers['root'].schemas = this.handlers['root'].schemas || {};
+      task.ref = task.ref || task['__schema'].ref;
+      this.handlers['root'].schemas[task.ref] = task;
+
+      delete task['__schema'];
 
       this._navigateFromModuleRoot()
         .then(

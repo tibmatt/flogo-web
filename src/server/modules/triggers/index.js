@@ -10,7 +10,7 @@ export class TriggerManager {
    *
    * ## searchTerms
    * - name {string}  find by name with exactly this name (case insensitive)
-   * - where {string} find by url where property with exactly this where property (case insensitive)
+   * - ref {string} find by url ref property with exactly this ref property (case insensitive)
    * If both search terms are provided search is executed by name
    *
    * ## options
@@ -21,7 +21,7 @@ export class TriggerManager {
    *
    * @param terms
    * @params terms.name {string} name of the app
-   * @params terms.where {string} url where property
+   * @params terms.ref {string} url ref property
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
@@ -39,7 +39,7 @@ export class TriggerManager {
 function cleanForOutput(trigger, fields) {
   let cleanTrigger = Object.assign(
     { id: trigger.id || trigger._id },
-    {where: trigger.where, homepage: get(trigger,'schema.homepage','')},
+    {ref: trigger.ref, homepage: get(trigger,'schema.homepage','')},
     trigger.schema
   );
 
