@@ -43,6 +43,7 @@ export class FlogoCanvasComponent implements OnInit {
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
 
+
   private runState = {
     // data
     currentProcessId: <string> null,
@@ -63,6 +64,7 @@ export class FlogoCanvasComponent implements OnInit {
   public loading: boolean;
   public exportLink: string;
   public downloadLink: string;
+  public hasTrigger: boolean;
   public isInstructionsActivated: boolean = false;
 
   constructor(public translate: TranslateService,
@@ -75,7 +77,7 @@ export class FlogoCanvasComponent implements OnInit {
     this._isDiagramEdited = false;
 
     this.loading = true;
-
+    this.hasTrigger = true;
   }
 
   public ngOnInit() {
@@ -105,6 +107,9 @@ export class FlogoCanvasComponent implements OnInit {
 
         this.mainHandler = this.handlers['root'];
         this.errorHandler = this.handlers['errorHandler'];
+        if ( _.isEmpty( this.mainHandler.diagram ) || _.isEmpty( this.mainHandler.diagram.root ) ) {
+          this.hasTrigger = false;
+        }
 
         this.clearAllHandlersRunStatus();
         this.initSubscribe();
@@ -458,7 +463,6 @@ export class FlogoCanvasComponent implements OnInit {
 
   private _addTriggerFromDiagram(data: any, envelope: any) {
     console.group('Add trigger message from diagram');
-
     console.log(data);
     console.log(envelope);
 
@@ -482,6 +486,7 @@ export class FlogoCanvasComponent implements OnInit {
   }
 
   private _addTriggerFromTriggers(data: any, envelope: any) {
+    this.hasTrigger = true;
     console.group('Add trigger message from trigger');
 
     console.log(data);
