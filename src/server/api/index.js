@@ -9,7 +9,7 @@ import { ping } from './ping';
 import { configuration } from './configuration';
 import { flowsRun } from './flows.run';
 
-import { apps as appsV2 } from './apps/index.v2';
+import { registerRoutes as registerRoutesV2 } from './v2';
 
 export function api(app, router) {
   errorHandler(app, router);
@@ -23,6 +23,6 @@ export function api(app, router) {
   flowsRun(app, router);
   configuration(app, router);
 
-  appsV2(router);
+  registerRoutesV2(router);
 }
 export default api;

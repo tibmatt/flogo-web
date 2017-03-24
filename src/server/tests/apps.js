@@ -1,29 +1,36 @@
-import test from 'tape';
-import supertest from 'supertest';
-import enableDestroy from 'server-destroy';
-
-import isArray from 'lodash/isArray';
+import path from 'path';
+import enableDestroy from 'server-destroy'; // eslint-disable-line import/no-extraneous-dependencies
+import chai from 'chai'; // eslint-disable-line import/no-extraneous-dependencies
+import chaiHttp from 'chai-http'; // eslint-disable-line import/no-extraneous-dependencies
 
 import { cleanDb } from './clean-db';
 
-export function appsTests() {
-  let agent;
+const expect = chai.expect;
+chai.use(chaiHttp);
+
+process.env.FLOGO_WEB_DISABLE_WS = process.env.FLOGO_WEB_DISABLE_WS || true;
+process.env.FLOGO_WEB_DBDIR = process.env.FLOGO_WEB_DBDIR || path.resolve('../dist/local/test_db');
+process.env.FLOGO_WEB_LOGLEVEL = process.env.FLOGO_WEB_LOGLEVEL || 'error';
+
+describe('Apps', function () {
   let server;
+  let agent;
 
-  test('setup', t => cleanDb()
-    .then(() => require('../server').default)
-    .then(app => {
-      // server = app.server;
-      server = app.server;
-      enableDestroy(server);
-      agent = supertest(server.listen());
-    })
-    .then(() => t.end()),
-  );
+  before(() => {
+    // When it needs to create an engine it can take really long
+    // so setting up timeout to 10 minutes
+    this.timeout(600000);
+    return cleanDb()
+      .then(() => require('../server').default)
+      .then(app => {
+        // server = app.server;
+        server = app.server;
+        enableDestroy(server);
+        agent = chai.request(server.listen());
+      });
+  });
 
-  test('Apps: Creates an app', t => {
-    t.plan(10);
-
+  it('Should create an app', () => {
     const matchData = {
       id: /\S+/,
       name: 'My app',
@@ -32,158 +39,127 @@ export function appsTests() {
       updatedAt: null,
     };
 
-    agent
+    return agent
       .post('/api/v2/apps')
       .send({
         name: 'My app',
         description: 'My description',
         version: '1.0.0',
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
       .then(res => {
-        t.ok(res.body.data, 'Response contains created app data');
+        expect(res).to.have.status(200);
+        expect(res.body.data).to.be.an('object');
         const data = res.body.data;
-        // assert.match(data, matchData);
-        t.ok(data.id, 'App id was assigned');
-        t.equal(data.name, matchData.name, 'Name is correctly saved');
-        t.equal(data.version, matchData.version, 'Version is correctly saved');
-        t.equal(data.updatedAt, null, 'Updated at is defined but is null');
-        t.ok(data.createdAt, 'CreatedAt data is defined');
+        expect(res.body.data.id).to.exist; // 'App id was assigned');
+        expect(data.name).to.equal(matchData.name); // 'Name is correctly saved');
+        expect(data.version).to.equal(matchData.version); // 'Version is correctly saved');
+        expect(data.updatedAt).to.be.null; // 'Updated at is defined but is null'
+        expect(data.createdAt).to.exist; // 'CreatedAt data is defined');
         return data.id;
       })
-      .then(appId => agent
-        .get(`/api/v2/apps/${appId}`)
-        .timeout({ response: 5000 })
-        .expect('Content-Type', /json/)
-        .expect(200)
+      .then(appId => agent.get(`/api/v2/apps/${appId}`)
         .then(response => {
+          expect(response).to.have.status(200);
           const app = response.body.data;
-          t.equal(app.id, appId, 'App id is present');
-          t.equal(app.description, matchData.description, 'Description is present');
-          t.same(app.triggers, [], 'Triggers is present and empty');
-          t.same(app.actions, [], 'Actions is present and empty');
-        }))
-      .then(() => t.end());
+          expect(app.id).to.equal(appId); // 'App id is present'
+          expect(app.description).to.equal(matchData.description); // 'Description is present'
+          expect(app.triggers).to.be.an('array').and.to.be.empty;  // 'Triggers is present and empty'
+          expect(app.actions).to.be.an('array').and.to.be.empty; // 'Actions is present and empty'
+        }));
   });
 
-  test('Apps: Updates an app', t => {
-    t.plan(5);
-
-    agent
+  it('Should update an app', () => agent
       .post('/api/v2/apps')
       .send({
         name: 'Update my name',
         description: 'Update my description',
         version: '0.1.0',
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
       .then(res => {
+        expect(res).to.have.status(200);
         const body = res.body;
-        t.ok(body.data, 'App was created');
-        t.notOk(body.data.updatedAt, 'Updated date is not set');
+        expect(res.body.data).to.exist;
+        expect(body.data.updatedAt).to.be.null;
         const appId = body.data.id;
         return agent.patch(`/api/v2/apps/${appId}`)
           .send({
             name: 'My name was updated',
             description: 'My description was updated',
             version: '0.2.0',
-          })
-          .timeout({ response: 5000 })
-          .expect('Content-Type', /json/)
-          .expect(200);
+          });
       })
-      .then(({ body }) => {
-        const data = body.data;
-        t.equal(data.name, 'My name was updated', 'Name is correctly updated');
-        t.equal(data.description, 'My description was updated', 'Description is correctly updated');
-        t.equal(data.version, '0.2.0', 'Version is correctly updated');
-      })
-      .then(() => t.end());
-  });
+      .then(req => {
+        expect(req).to.have.status(200);
+        const data = req.body.data;
+        expect(data.name).to.equal('My name was updated');
+        expect(data.description).to.equal('My description was updated');
+        expect(data.version).to.equal('0.2.0');
+        expect(data.updatedAt).to.exist;
+      }),
+  );
 
-  test('Apps: Can filter by exact name', t => {
-    t.plan(4);
-
-    agent
+  it('Should filter apps by exact name', () => agent
       .post('/api/v2/apps')
       .send({ name: 'Filter me' })
-      .expect('Content-Type', /json/)
-      .expect(200)
       .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body.data).to.exist;
         const body = res.body;
-        t.ok(body.data, 'App was created');
         const appId = body.data.id;
         return agent.get('/api/v2/apps')
           .query({ 'filter[name]': 'fIlTER mE' })
-          .timeout(5000)
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .catch(err => t.end(err))
           .then(response => {
+            expect(res).to.have.status(200);
             const data = response.body.data;
-            t.ok(isArray(data), 'Result is a collection');
-            t.same(data.length, 1, 'Only one result');
-            t.same(data[0].id, appId, 'App was correctly filtered');
+            expect(data).to.be.an('array')
+              .and.to.have.lengthOf(1)
+              .and.to.have.deep.property('[0].id', appId);
           });
-      })
-      .catch(err => t.done(err))
-      .then(() => t.end());
+      }),
+  );
 
-  });
-
-  test('Apps: Deletes an app', t => {
-    t.plan(3);
-
-    agent
+  it('Should delete an app', () => agent
       .post('/api/v2/apps')
       .send({ name: 'Delete me' })
-      .expect('Content-Type', /json/)
-      .expect(200)
       .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body.data).to.be.an('object');
         const body = res.body;
-        t.ok(body.data, 'App was created');
         const appId = body.data.id;
         return agent.delete(`/api/v2/apps/${appId}`)
-          .timeout({ response: 5000 })
-          .expect(204)
-          .catch(err => t.end(err))
-          .then((response) => {
-            t.same(response.status, 204, 'App was deleted');
+          .then(delResponse => {
+            expect(delResponse).to.have.status(204);
             return agent.get(`/api/v2/apps/${appId}`)
-              .timeout({ response: 5000 })
-              .expect('Content-Type', /json/)
-              .expect(404)
-              .catch(err => t.end(err))
-              .then(response => t.same(response.status, 404, 'App is not found anymore'));
+              .catch(err => {
+                if (err.response) {
+                  return Promise.resolve(err.response);
+                }
+                return Promise.reject(err);
+              })
+              .then(response => expect(response).to.have.status(404));
           });
-      })
-      .catch(err => t.done(err))
-      .then(() => t.end());
-  });
+      }),
+  );
 
-  test('Apps: Name should be unique', t => {
+  it('Name should be unique', () => {
     const appName = 'Cool app';
 
-    const postAppAndExpectName = (expectName, message) => agent
+    const postAppAndExpectName = (expectName) => agent
       .post('/api/v2/apps')
       .send({ name: appName })
-      .expect(200)
-      .timeout(500)
-      .then(({ body }) => t.equal(body.data.name, expectName, message));
+      .then(response => {
+        expect(response).to.have.status(200);
+        expect(response.body.data.name).to.equal(expectName);
+      });
 
-    t.plan(3);
-    postAppAndExpectName('Cool app', 'When there\'s no name collision name is saved as provided')
+    return postAppAndExpectName('Cool app', 'When there\'s no name collision name is saved as provided')
       .then(() => postAppAndExpectName('Cool app (1)', 'Name collision is automatically resolved for the first time'))
-      .then(() => postAppAndExpectName('Cool app (2)', 'Name collision is automatically resolved subsequently'))
-      .catch(err => t.end(err))
-      .then(() => t.end());
+      .then(() => postAppAndExpectName('Cool app (2)', 'Name collision is automatically resolved subsequently'));
   });
 
-  test('Apps: Not editable fields are ignored when creating and updating', t => {
-    t.plan(10);
-    agent
+  // todo: on update name not unique should throw error
+
+  it('Should ignore non editable fields when creating and updating', () => agent
       .post('/api/v2/apps')
       .send({
         name: 'Test non editable',
@@ -196,44 +172,35 @@ export function appsTests() {
         actions: [{ myFakeAction: true }],
         triggers: [{ myFakeTrigger: true }],
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(({ body }) => {
-        const data = body.data;
-        t.notSame(data.id, 'fakeId', 'Attempt to set id was ignored on creation');
-        t.notSame(data.createdAt, 'fakeCreatedAt', 'Attempt to set createdAt was ignored on creation');
-        t.notSame(data.updatedAt, 'fakeUpdatedAt', 'Attempt to set updatedAt was ignored on creation');
-        t.notSame(data.actions, [{ myFakeAction: true }], 'Attempt to set actions was ignored on creation');
-        t.notSame(data.triggers, [{ myFakeTrigger: true }], 'Attempt to set triggers was ignored on creation');
+      .then(res => {
+        expect(res).to.have.status(200);
+        const data = res.body.data;
+        expect(data.id).to.not.equal('fakeId');
+        expect(data.createdAt).to.not.equal('fakeCreatedAt');
+        expect(data.updatedAt).to.not.equal('fakeUpdatedAt');
+        expect(data.actions).to.not.deep.equal([{ myFakeAction: true }]);
+        expect(data.triggers).to.not.deep.equal([{ myFakeTrigger: true }]);
         return data;
       })
       .then(prevResponse => agent
-          .patch(`/api/v2/apps/${prevResponse.id}`)
-          .send({
-            id: 'fakeId2',
-            createdAt: 'fakeCreatedAt2',
-            updatedAt: 'fakeUpdatedAt2',
-            actions: 'fakeActions2',
-            triggers: 'fakeTriggers2',
-          })
-          .expect(200)
-          .then(({ body }) => {
-            const data = body.data;
-            t.same(data.id, prevResponse.id, 'Attempt to set id was ignored on update');
-            t.same(data.createdAt, prevResponse.createdAt, 'Attempt to set createdAt was ignored on update');
-            t.notSame(data.updatedAt, 'fakeUpdatedAt2', 'Attempt to set updatedAt was ignored on update');
-            t.same(data.actions, prevResponse.actions, 'Attempt to set actions was ignored on update');
-            t.same(data.triggers, prevResponse.triggers, 'Attempt to set triggers was ignored on update');
-          }),
-      )
-      .catch(err => t.end(err))
-      .then(() => {
-        t.end();
-      });
-  });
+        .patch(`/api/v2/apps/${prevResponse.id}`)
+        .send({
+          id: 'fakeId2',
+          createdAt: 'fakeCreatedAt2',
+          updatedAt: 'fakeUpdatedAt2',
+          actions: 'fakeActions2',
+          triggers: 'fakeTriggers2',
+        })
+        .then(res => {
+          expect(res).to.have.status(200);
+          const data = res.body.data;
+          expect(data.id).to.equal(prevResponse.id);
+          expect(data.createdAt).to.equal(prevResponse.createdAt);
+          expect(data.updatedAt).to.not.equal('fakeUpdatedAt2');
+          expect(data.actions).to.deep.equal(prevResponse.actions);
+          expect(data.triggers).to.deep.equal(prevResponse.triggers);
+        }),
+      ),
+  );
+});
 
-  test('teardown', t => {
-    server.destroy();
-    t.end();
-  });
-}
