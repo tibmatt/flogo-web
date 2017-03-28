@@ -38,8 +38,6 @@ describe('Component: FlogoLogsContent', () => {
       .then(()=>{
         fixture = TestBed.createComponent(FlogoLogsContent);
         comp = fixture.componentInstance;
-        let logButton = fixture.debugElement.query(By.css('.log-button'));
-        logButton.triggerEventHandler('click', null);
         done();
       });
   });
