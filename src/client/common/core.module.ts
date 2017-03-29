@@ -5,6 +5,8 @@ import {RESTAPIActivitiesService} from './services/restapi/activities-api.servic
 import {RESTAPIConfigurationService} from './services/restapi/configuration-api-service';
 import {RESTAPIFlowsService} from './services/restapi/flows-api.service';
 import {RESTAPITriggersService} from './services/restapi/triggers-api.service';
+import {RESTAPITriggersService as RESTAPITriggersServiceV2} from './services/restapi/v2/triggers-api.service';
+import {RESTAPIHandlersService as RESTAPIHandlersServiceV2} from './services/restapi/v2/handlers-api.service';
 import { RunService } from './services/restapi/run.service';
 import { HttpUtilsService } from './services/restapi/http-utils.service';
 import {FlogoModal} from './services/modal.service';
@@ -24,6 +26,8 @@ import { ChildWindowService } from './services/child-window.service';
     RESTAPIConfigurationService,
     RESTAPIFlowsService,
     RESTAPITriggersService,
+    RESTAPITriggersServiceV2,
+    RESTAPIHandlersServiceV2,
     RunService,
     ChildWindowService,
     HttpUtilsService,

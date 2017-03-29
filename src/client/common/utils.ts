@@ -207,6 +207,17 @@ export function activitySchemaToTrigger(schema: any) : any {
   return trigger;
 }
 
+export function objectFromArray(arr) {
+  let mappedSettings = {};
+  let settings = arr || [];
+
+  settings.forEach((setting) => {
+    mappedSettings[setting.name] = null;
+  });
+
+  return mappedSettings;
+}
+
 export function normalizeTaskName(taskName:string) {
   return _.kebabCase(taskName);
 }

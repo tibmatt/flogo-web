@@ -20,9 +20,12 @@ import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_P
 import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { RESTAPITriggersService } from '../../../common/services/restapi/v2/triggers-api.service';
+import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE, ERROR_CODE } from '../../../common/constants';
 import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
-  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
+  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus,
+  objectFromArray
 } from '../../../common/utils';
 
 import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
@@ -72,6 +75,8 @@ export class FlogoCanvasComponent implements OnInit {
               private _postService: PostService,
               private _restAPIFlowsService: RESTAPIFlowsService,
               private _flowService: FlowsService,
+              private _restAPITriggersService: RESTAPITriggersService,
+              private _restAPIHandlerService: RESTAPIHandlersService,
               private _runnerService: RunnerService,
               private _router: Router,
               private _flogoModal: FlogoModal,
@@ -446,7 +451,7 @@ export class FlogoCanvasComponent implements OnInit {
     if (handler == this.errorHandler) {
       trigger.id = flogoGenTaskID(this._getAllTasks());
     }
-    let tasks = handler.tasks;
+    let tasks = handler.tasks || [];
 
     this.handlers['root']['schemas'] = this.handlers['root']['schemas'] || {};
     trigger.ref = trigger.ref || trigger['__schema'].ref;
@@ -455,30 +460,47 @@ export class FlogoCanvasComponent implements OnInit {
     tasks[trigger.id] = trigger;
 
 
-    this._navigateFromModuleRoot()
-      .then(
-        () => {
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
-                data: {
-                  id: data.id,
-                  node: data.node,
-                  task: trigger
-                },
-                done: (diagram: IFlogoFlowDiagram) => {
-                  _.assign(handler.diagram, diagram);
-                  this._updateFlow(this.flow);
-                  this._isDiagramEdited = true;
-                }
-              }
-            )
+    let resultCreateTrigger;
+
+    let appId = this.flow.app.id;
+    let triggerInfo = _.pick(data.trigger, ['name', 'ref', 'description']);
+    triggerInfo.settings = objectFromArray(data.trigger.settings || []);
+
+    resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)
+      .then( (triggerResult)=> {
+        let triggerId = triggerResult.id;
+        let settings = objectFromArray(data.trigger.endpoint.settings);
+        let outputs = objectFromArray(data.trigger.outputs);
+        return this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
+      });
+
+    resultCreateTrigger
+      .then(() => {
+        this._navigateFromModuleRoot()
+          .then(
+            () => {
+              this._postService.publish(
+                _.assign(
+                  {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
+                    data: {
+                      id: data.id,
+                      node: data.node,
+                      task: trigger
+                    },
+                    done: (diagram: IFlogoFlowDiagram) => {
+                      _.assign(handler.diagram, diagram);
+                      this._updateFlow(this.flow);
+                      this._isDiagramEdited = true;
+                    }
+                  }
+                )
+              );
+            }
           );
-        }
-      );
+      });
+
 
     console.groupEnd();
-
   }
 
   private _addTaskFromDiagram(data: any, envelope: any) {

@@ -9,6 +9,7 @@ import { TransformModule as FlogoTransformModule } from '../flogo.transform/flog
 import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
 import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
+import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
 
 import { FlogoCanvasComponent } from './components/canvas.component';
 
@@ -42,6 +43,7 @@ import {FlogoFlowService} from "./services/flow.service";
     FlogoTransformModule,
     FlogoInstructionsModule,
     FlogoFooterModule,
+    FlogoFormModule,
     FlogoLogsModule,
     routing
   ],

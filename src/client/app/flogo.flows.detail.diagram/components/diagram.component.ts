@@ -317,12 +317,14 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   private selectModalTrigger( data : any, envelope : any ) {
     this.enabledSelectTrigger = false;
+
     this._postService.publish(
         _.assign(
           {}, PUB_EVENTS_ADD_TRIGGER.addTrigger, {
             data : _.assign( {}, { id: 'root', col: 0, row: 0 },
               { node: this.diagram.nodes[this.diagram.root.is] },
-              { trigger : _.cloneDeep( data.trigger ) } )
+              { trigger : _.cloneDeep( data.trigger ) },
+              { installType: data.installType }),
           }
         )
     );

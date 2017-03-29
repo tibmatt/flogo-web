@@ -107,11 +107,16 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
     this.onInstalled.emit( response );
   }
 
-  sendAddTriggerMsg( trigger : any ) {
+  sendAddTriggerMsg( trigger : any, installType: string ) {
     this.postService.publish(
       _.assign(
         {}, PUB_EVENTS.addTrigger, {
-          data : _.assign( {}, this.addTriggerMsg, { id: 'root' }, { trigger : _.cloneDeep( trigger ) } )
+          data : _.assign(
+            {},
+            this.addTriggerMsg, { id: 'root' },
+            { trigger : _.cloneDeep( trigger ) },
+            { installType: installType }
+          )
         }
       )
     );
