@@ -1,98 +1,98 @@
-<div class="flogo-app-header row">
-  <div class="col-xs-6 col-md-5 col-lg-5 col-md-offset-1">
-    <div class="flogo-app-header__name-container" [ngClass]="{'flogo-input-error': state?.name.hasErrors}">
-      <div class="flogo-input-error-msg" *ngIf="state?.name.hasErrors && state?.name.errors['notUnique']">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
-        <input *ngIf="isNameInEditMode" type="text" #appInputName
-               fgAutofocus
-               [(ngModel)]="editableName"
-               fgEditableInput
-               (editableInputSave)="onNameSave()"
-               (editableInputCancel)="onNameCancel()"
-               id="appName" class="flogo-app-header__name--edit"/>
+<div class="container">
+  <div class="flogo-app-header row">
+    <div class="col-xs-6 col-md-5 col-lg-5 col-md-offset-1">
+      <div class="flogo-app-header__name-container" [ngClass]="{'flogo-input-error': state?.name.hasErrors}">
+        <a routerLink="/apps" class="flogo-app-header__go-back"><i class="flogo-icon flogo-icon-back"></i></a>
+        <div class="flogo-input-error-msg" *ngIf="state?.name.hasErrors && state?.name.errors['notUnique']">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
+          <input *ngIf="isNameInEditMode" type="text" #appInputName
+                 fgAutofocus
+                 [(ngModel)]="editableName"
+                 fgEditableInput
+                 (editableInputSave)="onNameSave()"
+                 (editableInputCancel)="onNameCancel()"
+                 id="appName" class="flogo-app-header__name--edit"/>
 
-      <label class="flogo-app-header__name is-editable"
-             *ngIf="!isNameInEditMode"
-             (click)="onClickLabelName($event)">{{editableName}}</label>
+        <label class="flogo-app-header__name is-editable"
+               *ngIf="!isNameInEditMode"
+               (click)="onClickLabelName($event)">{{editableName}}</label>
+      </div>
+
+      <div class="flogo-app-header__date-container">
+        <label class="flogo-app-header__date--creation">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span>
+        </label>
+        <label *ngIf="application && application.updatedAt" class="flogo-app-header__date--update">{{ 'FLOWS:UPDATED' |
+          translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
+      </div>
+
+      <div class="flogo-app-header__description-container">
+        <a *ngIf="application && !editableDescription && !isDescriptionInEditMode" class="flogo-link"
+           (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
+          <textarea *ngIf="isDescriptionInEditMode" #appInputDescription
+                    fgAutofocus
+                    placeholder="Description"
+                    rows="3"
+                    [(ngModel)]="editableDescription"
+                    fgEditableInput
+                    (editableInputSave)="onDescriptionSave()"
+                    (editableInputCancel)="onDescriptionCancel()"
+                    id="appDescription" class="flogo-app-header__description--edit">
+          </textarea>
+
+        <label class="flogo-app-header__description is-editable"
+               *ngIf="!isDescriptionInEditMode && !!editableDescription"
+               (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
+      </div>
     </div>
-
-    <div class="flogo-app-header__date-container">
-      <label class="flogo-app-header__date--creation">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span>
-      </label>
-      <label *ngIf="application && application.updatedAt" class="flogo-app-header__date--update">{{ 'FLOWS:UPDATED' |
-        translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
-    </div>
-
-    <div class="flogo-app-header__description-container">
-      <a *ngIf="application && !editableDescription && !isDescriptionInEditMode" class="flogo-link"
-         (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
-        <textarea *ngIf="isDescriptionInEditMode" #appInputDescription
-                  fgAutofocus
-                  placeholder="Description"
-                  rows="3"
-                  [(ngModel)]="editableDescription"
-                  fgEditableInput
-                  (editableInputSave)="onDescriptionSave()"
-                  (editableInputCancel)="onDescriptionCancel()"
-                  id="appDescription" class="flogo-app-header__description--edit">
-        </textarea>
-
-      <label class="flogo-app-header__description is-editable"
-             *ngIf="!isDescriptionInEditMode && !!editableDescription"
-             (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
-    </div>
-  </div>
-  <div class="col-xs-6 col-md-6 col-lg-5">
-    <div class="flogo-app-header__options">
-      <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
-        <i class="flogo-icon flogo-icon-export"></i>
-        {{ 'DETAILS:EXPORT' | translate }}
-      </button>
-      <!--<button class="flogo-button flogo-button--default">{{ 'DETAILS:BUILD' | translate }}</button>-->
-      <div class="flogo-flow-detail-menu">
-        <i class="flogo-icon-kebabmenu"></i>
-        <div class="flogo-flow-detail-menu-list-wrapper">
-          <ul class="flogo-flow-detail-menu-list">
-            <li class="flogo-flow-detail-menu-item">
-              <a (click)="onDeleteApp(application)"><i class="flogo-icon flogo-icon-delete"></i>{{'APP-DETAILS:DELETE-APP' | translate}}</a>
-            </li>
-          </ul>
+    <div class="col-xs-6 col-md-5 col-lg-5">
+      <div class="flogo-app-header__options">
+        <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
+          <i class="flogo-icon flogo-icon-export"></i>
+          {{ 'DETAILS:EXPORT' | translate }}
+        </button>
+        <!--<button class="flogo-button flogo-button--default">{{ 'DETAILS:BUILD' | translate }}</button>-->
+        <div class="flogo-flow-detail-menu">
+          <i class="flogo-icon-kebabmenu"></i>
+          <div class="flogo-flow-detail-menu-list-wrapper">
+            <ul class="flogo-flow-detail-menu-list">
+              <li class="flogo-flow-detail-menu-item">
+                <a (click)="onDeleteApp(application)"><i class="flogo-icon flogo-icon-delete"></i>{{'APP-DETAILS:DELETE-APP' | translate}}</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="flogo-app-content row">
-  <div class="col-md-10 col-md-offset-1">
-    <div class="row">
-      <div class="col-sm-3">
-        <span class="flogo-app-title">{{ 'DETAILS:FLOWS' | translate }}</span>
-      </div>
-      <div class="col-sm-4 col-sm-offset-5">
-        <flogo-apps-search (changedSearch)="onChangedSearch($event)"
-                           class="search"></flogo-apps-search>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-7 col-lg-5">
-        <div class="flogo-commands">
-          <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
-          <flogo-flows-import [appId]="application?.id" (importSuccess)="onFlowImportSuccess($event)"
-                              (importError)="onFlowImportError($event)"></flogo-flows-import>
+  <div class="flogo-app-content row">
+    <div class="col-md-10 col-md-offset-1">
+      <!--<div class="row">
+        <div class="col-sm-3">
+          <span class="flogo-app-title">{{ 'DETAILS:FLOWS' | translate }}</span>
         </div>
+        <div class="col-sm-4 col-sm-offset-5">
+          <flogo-apps-search (changedSearch)="onChangedSearch($event)"
+                             class="search"></flogo-apps-search>
+        </div>
+      </div>-->
+
+      <div class="flogo-commands">
+        <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+        <!--<flogo-flows-import [appId]="application?.id" (importSuccess)="onFlowImportSuccess($event)"-->
+                            <!--(importError)="onFlowImportError($event)"></flogo-flows-import>-->
       </div>
+
+      <div class="content-empty" *ngIf="!flows.length">
+        <img src="/assets/svg/flogo.flynn-placeholder.svg">
+        <p class="content-empty__message">No flows found</p>
+        <button class="flogo-button--default content-empty__action" (click)="openCreateFlow()">{{'DETAILS:CREATE-A-FLOW' | translate}}</button>
+      </div>
+
+
+      <div class="flogo-app-content__flows">
+        <flogo-apps-flows [flows]="flows" (flowSelected)="onFlowSelected($event)" (deleteFlow)="onFlowDelete($event)"></flogo-apps-flows>
+      </div>
+
     </div>
-
-    <div *ngIf="!flows.length">
-      <hr>
-        <p>{{'DETAILS:NO-FLOWS-CREATED' | translate}}<span class="action" (click)="openCreateFlow()">&nbsp;{{'DETAILS:CREATE-A-FLOW' | translate}}</span></p>
-    </div>
-
-
-    <div class="flogo-app-content__flows">
-      <flogo-apps-flows [flows]="flows" (flowSelected)="onFlowSelected($event)" (deleteFlow)="onFlowDelete($event)"></flogo-apps-flows>
-    </div>
-
   </div>
 </div>

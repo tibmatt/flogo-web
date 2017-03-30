@@ -6,6 +6,7 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
+import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 
 import { FlogoAppsComponent } from './components/apps.component';
 import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
@@ -27,6 +28,7 @@ import {routing, appRoutingProviders} from './flogo.apps.routing';
     Ng2Bs3ModalModule,
     FlogoFlowsModule,
     FlogoCommonModule,
+    FlogoFooterModule,
     routing
   ],
   declarations: [

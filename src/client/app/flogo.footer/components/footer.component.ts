@@ -7,9 +7,6 @@ import { Component } from '@angular/core';
     styleUrls : [ 'footer.component.css' ]
 })
 export class FlogoFooterComponent {
-    messages: string[];
-    searchValue: string = '';
-    isMaximized: boolean = false;
 
   constructor() {
   }
