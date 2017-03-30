@@ -53,6 +53,9 @@ let config = {
     db: "http://localhost:5984/flogo-apps",
     dbPath: path.resolve(DB_DIR, 'apps.db'),
   },
+  indexer: {
+    dbPath: path.resolve(DB_DIR, 'indexer.db'),
+  },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
     defaultPath: "../../submodules/flogo-contrib/activity",

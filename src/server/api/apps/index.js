@@ -167,7 +167,5 @@ function* exportApp() {
     }
     throw error;
   }
-
-
 }
 

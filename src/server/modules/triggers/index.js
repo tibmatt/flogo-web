@@ -27,13 +27,19 @@ export class TriggerManager {
    */
   static find(terms, options) {
     terms = terms || {};
-    const { fields } = Object.assign({ fields: 'full'}, options);
+    const { fields } = Object.assign({ fields: 'full' }, options);
 
     return triggersDBService.db.find(terms)
           .then(result => (result || [])
-            .map(triggerRow => cleanForOutput(triggerRow, fields))
+            .map(triggerRow => cleanForOutput(triggerRow, fields)),
           );
   }
+
+  static findByRef(ref) {
+    return triggersDBService.db.findOne({ ref })
+      .then(trigger => (trigger ? cleanForOutput(trigger) : null));
+  }
+
 }
 
 function cleanForOutput(trigger, fields) {

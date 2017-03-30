@@ -127,7 +127,8 @@ function initServer() {
       reject(err);
     });
 
-    app.use(router.routes());
+    app.use(router.routes())
+      .use(router.allowedMethods());
 
     // logger
     app.use(function *(next) {

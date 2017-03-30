@@ -1,15 +1,88 @@
+import defaults from 'lodash/defaults';
 import Ajv from 'ajv';
+
+function validate(schema, data, options = {}) {
+  const ajv = new Ajv(options);
+  const valid = ajv.validate(schema, data);
+  return valid ? null : ajv.errors;
+}
 
 class Validator {
 
-  static validate(data) {
-    const ajv = new Ajv({ removeAdditional: true, useDefaults: true, allErrors: true });
-    const valid = ajv.validate(appSchema(), data);
-    return valid ? null : ajv.errors;
+  static validateSimpleApp(data) {
+    return validate(appSchema(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateTriggerCreate(data) {
+    return validate(triggerSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateTriggerUpdate(data) {
+    return validate(triggerSchemaUpdate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateHandler(data) {
+    return validate(handlerEditableSchema(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateFullApp(data, options) {
+    options = defaults({}, options, { removeAdditional: false, useDefaults: false, allErrors: true });
+    console.log(options);
+    return validate(fullAppSchema(), data, options);
   }
 
 }
+
+
 export { Validator };
+
+function triggerSchemaCreate() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
+    type: 'object',
+    required: [
+      'ref',
+      'name',
+    ],
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1,
+      },
+      description: {
+        type: 'string',
+      },
+      ref: {
+        type: 'string',
+      },
+      settings: {
+        type: 'object',
+        default: {},
+      },
+    },
+  };
+}
+
+function triggerSchemaUpdate() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1,
+      },
+      description: {
+        type: 'string',
+      },
+      settings: {
+        type: 'object',
+      },
+    },
+  };
+}
 
 function appSchema() {
   return {
@@ -41,10 +114,26 @@ function appSchema() {
   };
 }
 
-
-function getSchema() {
+function handlerEditableSchema() {
   return {
     $schema: 'http://json-schema.org/draft-04/schema#',
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      settings: {
+        type: 'object',
+      },
+      outputs: {
+        type: 'object',
+      },
+    },
+  };
+}
+
+function fullAppSchema() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
     type: 'object',
     required: [
       'name',
@@ -59,7 +148,7 @@ function getSchema() {
       },
       type: {
         type: 'string',
-        default: 'flogo:uiapp',
+        default: 'flogo:app',
       },
       version: {
         type: 'string',
@@ -68,6 +157,8 @@ function getSchema() {
         type: 'string',
       },
       triggers: {
+        additionalProperties: false,
+        default: [],
         type: 'array',
         items: {
           type: 'object',
@@ -86,6 +177,7 @@ function getSchema() {
               type: 'array',
               items: {
                 type: 'object',
+                additionalProperties: false,
                 properties: {
                   actionId: {
                     type: 'string',
@@ -112,6 +204,7 @@ function getSchema() {
         },
       },
       actions: {
+        default: [],
         type: 'array',
         items: {
           $ref: '#/definitions/ActionFlow',
@@ -121,6 +214,7 @@ function getSchema() {
     definitions: {
       ActionFlow: {
         type: 'object',
+        additionalProperties: false,
         properties: {
           id: {
             type: 'string',
@@ -137,27 +231,6 @@ function getSchema() {
               flow: {
                 $ref: '#/definitions/Flow',
               },
-              ui: {
-                type: 'object',
-                properties: {
-                  triggerId: {
-                    type: 'string',
-                  },
-                  handler: {
-                    type: 'object',
-                    settings: {
-                      type: 'object',
-                      default: {
-                      },
-                    },
-                    outputs: {
-                      type: 'object',
-                      default: {
-                      },
-                    },
-                  },
-                },
-              },
             },
           },
         },
@@ -170,6 +243,7 @@ function getSchema() {
       Flow: {
         title: 'flow',
         type: 'object',
+        additionalProperties: false,
         properties: {
           id: {
             type: 'string',
@@ -359,28 +433,6 @@ function getSchema() {
         },
         required: [
           'flow',
-        ],
-      },
-      FlowCompressed: {
-        type: 'object',
-        properties: {
-          flowCompressed: {
-            type: 'string',
-          },
-        },
-        required: [
-          'flowCompressed',
-        ],
-      },
-      FlowUri: {
-        type: 'object',
-        properties: {
-          flowURI: {
-            type: 'string',
-          },
-        },
-        required: [
-          'flowURI',
         ],
       },
     },

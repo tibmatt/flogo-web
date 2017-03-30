@@ -28,7 +28,6 @@ All notable changes to this project will be documented in this file.
 #### Development
 
 - Added:
-  - [supertest@3.0.0](https://github.com/visionmedia/supertest/tree/v3.0.0) (MIT)
-  - [tap-spec@4.1.1](https://github.com/scottcorgan/tap-spec/tree/4.1.1) (MIT)
-  - [tape@4.6.3](https://github.com/substack/tape/tree/v4.6.3) (MIT)
-
+  - [mocha@3.2.0](https://github.com/mochajs/mocha/tree/v3.2.0) (MIT)
+  - [chai@3.5.0](https://github.com/chaijs/chai/tree/3.5.0) (MIT)
+  - [chai-http@3.0.0](https://github.com/chaijs/chai-http/tree/3.0.0) (MIT)

@@ -1,3 +1,5 @@
+import shortid from 'shortid';
+
 export function initViews(db, viewsData) {
     let views = viewsData.reduce((all, view) => {
       all[view.key] = {
@@ -26,4 +28,13 @@ export function initViews(db, viewsData) {
           return previous.then(() => db.query(`views/${view.key}`, {'stale': 'update_after'}));
         }, Promise.resolve(true));
       });
+}
+
+export function ISONow() {
+  const now = new Date();
+  return now.toISOString();
+}
+
+export function generateShortId() {
+  return shortid.generate();
 }
