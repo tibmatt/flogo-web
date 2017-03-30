@@ -80,7 +80,7 @@ describe('Component: FlogoFlowsAdd', () => {
     fixture = TestBed.createComponent(FlogoFlowsAddComponent);
     comp = fixture.componentInstance;
 
-    const openModalBtnDe = fixture.debugElement.query(By.css('.flogo-common-flows-new-flow'));
+    const openModalBtnDe = fixture.debugElement.query(By.css('.js-open-modal'));
     openModalBtnDe.triggerEventHandler('click', null);
 
     fixture.detectChanges();
