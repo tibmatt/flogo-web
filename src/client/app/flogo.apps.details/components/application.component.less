@@ -1,13 +1,27 @@
+@import "_variables";
+
 @action-fore-color: #449ed8;
 @width-inputs: 60%;
 
-&:host {
+:host {
   color: #666;
+  display: block;
+  background: #fff;
+  min-height: 100%;
+  margin-bottom: -@size-height-footer;
+
+  &:after {
+    content: "";
+    display: block;
+    height: @size-height-footer;
+  }
+
 }
 
 .flogo-app-header {
   padding: 1.5em 0;
   background: #fff;
+  position: relative;
 
   .flogo-app-header__name {
     font-size: 1.5em;
@@ -40,31 +54,35 @@
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    @media (max-width: 1200px) {
-      justify-content: flex-start;
-    }
+    //@media (max-width: 1200px) {
+    //  justify-content: flex-end;
+    //}
   }
+
+  .flogo-app-header__go-back {
+    font-size: 14px;
+    position: absolute;
+    left: -8px;
+    top: 0;
+    height: 2em;
+    vertical-align: middle;
+    padding: 0.2em .3em 0.2em 0.2em;
+
+    .flogo-icon {
+      display: inline-block;
+      vertical-align: text-bottom;
+      line-height: 2.1em;
+    }
+
+  }
+
 }
 
 .flogo-app-content {
-  padding: 2em 0;
+  padding: 1em 0 2.5em;
 
   .flogo-commands {
-    display: flex;
-    border: dashed 3px #ccc;
-    padding: 0;
-    margin: 1.25em 0;
-    position: relative;
-    &:before {
-      content: "";
-      position: absolute;
-      width: 3px;
-      height: 73%;
-      background: #ccc;
-      left: 50%;
-      bottom: 16%;
-      z-index: 1;
-    }
+    text-align: right;
   }
 }
 
@@ -154,4 +172,14 @@
   to {
     transform: translateY(0);
   }
+}
+
+.content-empty {
+  padding-top: 2.8em;
+  text-align: center;
+
+  &__message {
+    font-size: 1.5em;
+  }
+
 }

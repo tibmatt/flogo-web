@@ -13,8 +13,12 @@ const routes: Routes = [
     canActivate: [ ConfigurationLoadedGuard ],
     children: [
       { path: '', component: FlogoMainComponent },
-      { path: ':appId', component: FlogoApplicationContainerComponent }
+      //{ path: ':appId', component: FlogoApplicationContainerComponent }
     ]
+  },
+  {
+    path: 'apps/:appId',
+    component: FlogoApplicationContainerComponent
   }
 ];
 

@@ -16,7 +16,7 @@ import 'rxjs/add/operator/map';
   selector: 'flogo-app-container',
   moduleId: module.id,
   templateUrl: 'container.tpl.html',
-  styleUrls: []
+  styleUrls: ['container.component.css']
 })
 export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   public appDetail: ApplicationDetail = null;
