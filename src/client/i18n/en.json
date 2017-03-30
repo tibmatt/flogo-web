@@ -150,5 +150,9 @@
   "TRIGGERS:HINT-ADD-TRIGGER": "Choose or upload a trigger",
   "TRIGGERS-INSTALL:INSTALL-NEW-TRIGGER":"Install new triggers",
   "URL-INSTALLER:ACTIVITY": "Install activity from URL.",
-  "URL-INSTALLER:TRIGGER": "Install trigger from URL."
+  "URL-INSTALLER:TRIGGER": "Install trigger from URL.",
+  "SELECT-TRIGGER:SELECT-TRIGGER-TO-START": "Select a trigger to get started",
+  "SELECT-TRIGGER:TRIGGER-TYPES": "Trigger types",
+  "SELECT-TRIGGER:INSTALL-NOW": "Install now",
+  "SELECT-TRIGGER:MY-EXISTING-TRIGGERS": "My existing triggers"
 }

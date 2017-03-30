@@ -17,9 +17,11 @@ import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/compone
 import { FlogoFlowsDetailTriggersDetail } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
 import { FlogoFlowsDetailTasksDetail } from '../flogo.flows.detail.tasks.detail/components/detail.component';
+import { FlogoSelectTriggerComponent } from '../flogo.select-trigger/components/select-trigger.component';
 
 import { FlogoFlowsDetailDiagramComponent } from '../flogo.flows.detail.diagram/components/diagram.component';
 import { FlogoFlowsDetailErrorPanel } from '../flogo.flows.detail.error-panel/components/error-panel.component';
+
 
 import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tasks.install/components/install.component';
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
@@ -47,6 +49,7 @@ import {UIModelConverterService} from "./services/ui-model-converter.service";
     FlogoFlowsDetailTriggersDetail,
     FlogoFlowsDetailTasks,
     FlogoFlowsDetailTasksDetail,
+    FlogoSelectTriggerComponent,
 
     FlogoFlowsDetailDiagramComponent,
     FlogoFlowsDetailErrorPanel,

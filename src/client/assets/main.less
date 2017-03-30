@@ -666,6 +666,7 @@ label {
 }
 
 .flogo-button--default{
+  height: @size-height-button;
   color: white;
   background: @color-primary;
   border: none;
@@ -683,6 +684,7 @@ label {
 }
 
 .flogo-button--secondary{
+  height: @size-height-button;
   color: @color-secondary;
   background: white;
   border: solid 2px @color-secondary;
@@ -701,17 +703,19 @@ label {
 }
 
 .flogo-button--accent{
+  height: @size-height-button;
   color: @color-accent;
-  background: white;
+  background-color: transparent;
   border: solid 2px @color-accent;
 
   &:hover{
-    background: @color-accent-light;
+    background-color: transparent;
     border-radius: 4px;
-    color: white;
+    color: @color-accent;
   }
   &:active{
     background: @color-accent-dark;
+    background: @color-accent-light;
     border-radius: 4px;
     color: white;
   }
