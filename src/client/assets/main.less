@@ -13,6 +13,8 @@ div {
 html, body {
   display: flex;
   align-items: stretch;
+  background: @color-bg;
+  width: 100%;
 }
 
 html {
@@ -187,10 +189,6 @@ label {
 /* ================ */
 
 /* The spin loading styles */
-.flogo-spin-loading-bg {
-  background: #f4f4f4;
-  width: 100%;
-}
 .flogo-spin-loading {
   transform: scale(0.5);
   transform-origin: 0 0;
@@ -727,6 +725,31 @@ label {
   }
   &:disabled{
     opacity: .5;
+  }
+}
+
+.flogo-button-squared {
+  background-color: #fff;
+  border-radius: 5px;
+  border: solid 1px #d8d8d8;
+  font-size: .875em;
+  height: 31px;
+  width: 31px;
+
+  .flogo-button-squared__icon {
+    color: #b2d8f2;
+    position: relative;
+    top: 1px;
+  }
+
+  &:hover {
+    background-color: #79b8dc;
+    border: none;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+
+    .flogo-button-squared__icon  {
+      color: #fff;
+    }
   }
 }
 

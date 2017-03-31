@@ -1,40 +1,30 @@
-<div *ngFor="let flow of flows; let i = index; trackBy: trackByFlowId" class="flogo-flow" (click)="onSelect(flow)"
+<div *ngFor="let flow of flows; let i = index; trackBy: trackByFlowId" class="flogo-flow-wrapper" (click)="onSelect(flow)"
      [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
-  <div class="flogo-flow-trigger">
-    <i class="flogo-icon-trigger"></i>
-  </div>
 
-  <div class="flogo-flow-info">
+  <div class="flogo-flow">
 
-    <div class="flogo-flow-header">
-      <div class="flogo-flow-name">{{ flow.name }}</div>
-      <div class="flogo-flow-menu">
-        <div class="flogo-flow-menu__options">
-          <ul class="flogo-flow-menu__options__list">
-            <!--
-            <li class="flogo-flow-menu__options__list__element">
-              <i class="flogo-icon flogo-icon-edit"></i>
-              {{ 'FLOWS:OPTION-RENAME' | translate}}
-            </li>
-            <li class="flogo-flow-menu__options__list__element">
-              <i class="flogo-icon flogo-icon-export"></i>
-              {{ 'FLOWS:OPTION-EXPORT' | translate}}
-            </li>
-            -->
-            <li class="flogo-flow-menu__options__list__element" (click)="onDeleteFlow($event, flow)">
-              <i class="flogo-icon flogo-icon-delete"></i>
-              {{ 'FLOWS:OPTION-DELETE' | translate}}
-            </li>
-          </ul>
-        </div>
-        <i class="flogo-icon-kebabmenu menu__btn"> </i>
-      </div>
+    <h4 class="flogo-flow-title">
+      {{ flow.name }}
+    </h4>
+
+    <p [title]="flow.description" class="flogo-flow-description">
+      {{ flow.description }}
+    </p>
+
+    <span class="flogo-flow-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.createdAt | date }}</span>
+
+    <div class="flogo-flow-menu">
+      <ul class="flogo-flow-menu__options-list">
+          <li class="flogo-flow-menu__options-element" (click)="onDeleteFlow($event, flow)">
+            <i class="flogo-icon flogo-icon-delete"></i>
+            {{ 'FLOWS:OPTION-DELETE' | translate}}
+          </li>
+      </ul>
+      <i class="flogo-icon-kebabmenu flogo-flow-menu__btn"> </i>
     </div>
 
-    <div [title]="flow.description" class="flogo-flow-description">{{ flow.description }}</div>
-    <span
-      class="flogo-flow-creation-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.createdAt | date }}</span>
 
   </div>
+
 
 </div>

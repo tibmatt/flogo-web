@@ -1,146 +1,196 @@
 @import "_variables";
-.flogo-flow {
-  position: relative;
-  opacity: 0;
-  margin-top: 10px;
+@tail-width: 32px;
+@apps__flow-border-color: #d8d8d8;
+@connector-width: 6px;
+
+.flogo-flow-wrapper {
   cursor: pointer;
-  animation: list-elements 500ms ease-out forwards;
+  height: 110px;
+  position: relative;
+  z-index: 0;
+  margin-left: 48px;
+  padding-left: @tail-width;
+
+  // connector to trigger
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -68px;
+    left: -35px;
+    height: 122px;
+    width: 96px;
+
+    background: transparent;
+    border-style: solid;
+    border-color: @apps__flow-border-color;
+    border-width: 0 0 @connector-width @connector-width;
+    border-bottom-left-radius: 4px;
+
+    z-index: -1;
+    pointer-events: none;
+
+  }
+
+  &:first-child:before {
+    height: 80px;
+    top: -26px
+  }
+
+  // left shape (the "tail")
+  &:after {
+    background: url('/assets/img/flogo.apps.flow-tail@1x.png') 8px 0 no-repeat;
+    display: block;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -5px;
+    height: 100%;
+    overflow-x: hidden;
+    width: @tail-width;
+    z-index: 1;
+  }
 
   &:hover {
-    .flogo-flow-info {
+    &:after {
+      background-position-x: -@tail-width + 6px;
+    }
+
+    .flogo-flow {
+      border-color: #fff;
       box-shadow: 0 0 5px 0 #79b8dc;
     }
+
   }
 
-  .flogo-flow-trigger {
-    background-color: #ff7c35;
-    width: 44px;
-    height: 70px;
+}
+
+.flogo-flow {
+  height: 100px;
+  background: #fff;
+  border: 1px solid @apps__flow-border-color;
+  border-left: none;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px 18px;
+  position: relative;
+  transform: translateX(-1px);
+
+  // small square to make a sharp cut in the shadow and make it match
+  // with the left image shadow
+  &:before {
+    display: block;
+    content: "";
     position: absolute;
-    z-index: 2;
-    border-radius: 5px 0 0 5px;
-    top: 15px;
+    background: @color-bg;
+    left: -1px;
+    top: -5px;
+    height: calc(100% + 10px);
+    width: 1px;
+  }
 
-    &:after {
-      content: "";
-      width: 0;
-      height: 0;
-      border-top: 35px solid transparent;
-      border-left: 14px solid #FF7C35;
-      border-bottom: 35px solid transparent;
-      position: absolute;
-      left: 44px;
+}
+
+.flogo-flow-title {
+  display: block;
+  margin: 0 0 6px;
+  // leave space for menu icon at the right
+  padding: 0 25px 0 0;
+  width: 100%;
+
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.25;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  text-transform: capitalize;
+}
+
+.flogo-flow-description {
+  display: block;
+  font-size: 0.875em;
+  margin: 0 0 10px;
+  min-height: 1em;
+  padding: 0;
+  width: 100%;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flogo-flow-date {
+  display: block;
+  text-align: right;
+  font-style: italic;
+  font-size: 0.625em;
+}
+
+
+.flogo-flow-menu {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+
+  &:hover {
+    .flogo-flow-menu__btn {
+      color: #79b8dc;
     }
 
-    .flogo-icon-trigger {
-      position: absolute;
-      top: 30%;
-      left: 34%;
-      color: #fff;
-      font-size: 1.6em;
+    .flogo-flow-menu__options-list {
+      transform: scale(1, 1);
     }
   }
-  .flogo-flow-info {
-    background-color: #fff;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
-    height: 100px;
-    padding-left: 34px;
-    padding-top: 5px;
-    position: relative;
-    border-radius: 4px;
-    margin-left: 44px;
 
-    .flogo-flow-header {
-      display: flex;
+}
 
-      .flogo-flow-name {
-        font-size: 1em;
-        text-transform: capitalize;
-        font-weight: bold;
-        letter-spacing: .5px;
-        margin-bottom: 0;
-        margin-top: 15px;
-        width: 640px;
-      }
-    }
+.flogo-flow-menu__btn {
+  cursor: initial;
+}
 
-    .flogo-flow-menu {
-      position: absolute;
-      right: 15px;
-      margin-top: 1em;
+.flogo-flow-menu__options-list {
+  background-color: #ffffff;
+  border-radius: 2px;
+  border: 1px solid #727272;
+  box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 129px;
+  z-index: 1;
+  transform: scale(0, 0);
+  transform-origin: top right;
+  transition: all 250ms ease-in;
 
-      .flogo-flow-menu__options {
-        background-color: #ffffff;
-        border-radius: 2px;
-        box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
-        position: absolute;
-        top: -7px;
-        right: 15px;
-        width: 129px;
-        z-index: 1;
-        transform: scale(0, 0);
-        transform-origin: top right;
-        transition: all 300ms ease-in;
-        &:hover {
-          ~ .menu__btn {
-            color: #79b8dc;
-          }
-        }
+  list-style: none;
+  font-size: .875em;
+  margin: 0;
+  padding: 0;
 
-        .flogo-flow-menu__options__list {
-          list-style: none;
-          font-size: .875em;
-          margin: 0;
-          padding: 0;
-          .flogo-flow-menu__options__list__element {
-            padding: 3px 0 5px 20px;
-            &:hover{
-              color: @color-secondary;
-            }
-          }
-        }
-      }
-
-      &:hover {
-        .menu__btn {
-          color: #79b8dc;
-        }
-        .flogo-flow-menu__options {
-          transform: scale(1, 1);
-        }
-      }
-    }
-
-    .flogo-flow-description {
-      margin-top: 5px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 0.875em;
-      display: block;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      width: 500px;
-      line-height: 1.14;
-      letter-spacing: .2px;
-    }
-
-    .flogo-flow-creation-date {
-      float: right;
-      margin: 0 2em;
-      font-size: 0.625em;
-      letter-spacing: .6px;
-      font-style: italic;
-      position: relative;
-      top: 10px;
+  &:hover {
+    ~ .flogo-flow-menu__btn {
+      color: #79b8dc;
     }
   }
 }
 
-@keyframes list-elements {
-  from {
-    transform: translateY(70px);
-  }
-  to {
-    opacity: 1;
+.flogo-flow-menu__options-element {
+  padding: 3px 0 5px 20px;
+  &:hover{
+    color: @color-secondary;
   }
 }
+
+
+//@keyframes list-elements {
+//  from {
+//    transform: translateY(70px);
+//  }
+//  to {
+//    opacity: 1;
+//  }
+//}

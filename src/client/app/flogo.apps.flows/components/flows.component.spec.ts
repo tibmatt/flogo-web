@@ -103,8 +103,8 @@ describe('Application flows', () => {
         let comp = fixture.componentInstance;
         comp.flows = comp.flowsDisorder;
         fixture.detectChanges();
-        let res = fixture.debugElement.queryAll(By.css('.flogo-flow-name'));
-        let nameList = res.map(element => element.nativeElement.innerHTML);
+        let res = fixture.debugElement.queryAll(By.css('.flogo-flow-title'));
+        let nameList = res.map(element => element.nativeElement.innerHTML.trim());
         expect(nameList).toEqual(['Log temperature', 'Manually adjust temperature', 'Raise temperature &amp; notifiy operator', 'Try to find pet']);
         done();
       });
@@ -126,7 +126,7 @@ describe('Application flows', () => {
       .then(() => {
         fixture = TestBed.createComponent(Container);
         fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('.flogo-flow-name:nth-of-type(1)'));
+        de = fixture.debugElement.query(By.css('.flogo-flow-title:nth-of-type(1)'));
         el = de.nativeElement;
         expect(el.innerText).toEqual('Log Temperature');
         done();

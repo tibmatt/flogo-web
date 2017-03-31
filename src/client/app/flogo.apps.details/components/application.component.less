@@ -2,11 +2,12 @@
 
 @action-fore-color: #449ed8;
 @width-inputs: 60%;
+@apps__trigger-row-height: 40px;
+@apps__trigger-border-width--empty: 3px;
 
 :host {
   color: #666;
   display: block;
-  background: #fff;
   min-height: 100%;
   margin-bottom: -@size-height-footer;
 
@@ -18,9 +19,12 @@
 
 }
 
-.flogo-app-header {
-  padding: 1.5em 0;
+.flogo-app-header-wrapper {
   background: #fff;
+}
+
+.flogo-app-header {
+  padding: 1em 0;
   position: relative;
 
   .flogo-app-header__name {
@@ -54,9 +58,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    //@media (max-width: 1200px) {
-    //  justify-content: flex-end;
-    //}
+    margin-top: 0.5em;
   }
 
   .flogo-app-header__go-back {
@@ -183,3 +185,108 @@
   }
 
 }
+
+.flogo-flow-group__trigger {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  &:hover .flogo-flow-group__add-flow  {
+    opacity: 1;
+  }
+
+}
+
+.flogo-flow-group__add-flow {
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+  opacity: 0;
+  transition: opacity 250ms;
+}
+
+.flogo-flow-group__flows {
+  margin-top: 12px;
+}
+
+.flogo-trigger {
+  background: #79b8dc;
+  color: #fff;
+  display: inline-block;
+  border-right: none;
+  height: @apps__trigger-row-height;
+  position: relative;
+  padding: 10px 12px 10px 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px 0 0 5px;
+  margin-right: 10px;
+
+  font-size: 0.75em;
+  font-weight: bold;
+
+  line-height: 1.6;
+  vertical-align: middle;
+
+  min-width: 100px;
+  //max-width: 250px;
+
+  .flogo-trigger__text {
+    display: inline-block;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &:after {
+    background: #79b8dc;
+    display: block;
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+
+    -webkit-transform: rotate(45deg) skew(20deg, 20deg);
+    transform: rotate(45deg) skew(20deg, 20deg);
+
+    right: -10px;
+    top: 10px;
+  }
+
+}
+
+.flogo-trigger__icon {
+  display: inline-block;
+  font-size: 1.3em;
+  padding-right: 0.3em;
+  vertical-align: top;
+  margin-top: 0.2em;
+}
+
+.flogo-trigger--empty {
+  background: @color-bg;
+  border: @apps__trigger-border-width--empty dashed #d8d8d8;
+  border-right: none;
+  box-shadow: none;
+  height: @apps__trigger-row-height;
+  padding: 8px;
+  color: #676a6d;
+
+  line-height: 1.5;
+  text-align: center;
+
+  &:after {
+    background: @color-bg;
+    border: 0 dashed #d8d8d8;
+    border-top-width: @apps__trigger-border-width--empty;
+    border-right-width: @apps__trigger-border-width--empty;
+    height: 20px;
+    width: 20px;
+    top: 6px;
+    right: -10px;
+  }
+
+  .flogo-trigger__icon {
+    display: none;
+  }
+
+}
+
