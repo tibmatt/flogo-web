@@ -29,6 +29,8 @@ import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.
 import { RunnerService } from './services/runner.service';
 import { routing } from './flogo.flows.detail.routing';
 import {UIModelConverterService} from "./services/ui-model-converter.service";
+import {APIFlowsService} from "../../common/services/restapi/v2/flows-api.service";
+import {FlogoFlowService} from "./services/flow.service";
 
 @NgModule({
   imports: [
@@ -62,7 +64,9 @@ import {UIModelConverterService} from "./services/ui-model-converter.service";
   ],
   providers: [
     RunnerService,
-    UIModelConverterService
+    UIModelConverterService,
+    APIFlowsService,
+    FlogoFlowService
   ],
   bootstrap: [
     FlogoCanvasComponent
