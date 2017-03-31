@@ -1,10 +1,10 @@
 import pick from 'lodash/pick';
+import omit from 'lodash/omit';
 import mapKeys from 'lodash/mapKeys';
 
 import { apps as appsDb, indexer as indexerDb, dbUtils } from '../../common/db';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
-import { logger } from '../../common/logging';
 import { Validator } from './validator';
 
 import { HandlersManager } from '../apps/handlers';
@@ -60,7 +60,7 @@ export class ActionsManager {
             newAction.appId = appId;
             return storeAsRecent(newAction);
           })
-          .then(() => newAction);
+          .then(() => ActionsManager.findOne(newAction.id));
       });
   }
 
@@ -92,14 +92,27 @@ export class ActionsManager {
   }
 
   static findOne(actionId) {
-    return appsDb.findOne({ 'actions.id': actionId }, { actions: 1 })
+    return appsDb.findOne({ 'actions.id': actionId })
       .then(app => {
         if (!app) {
           return null;
         }
-        const actions = app.actions.find(t => t.id === actionId);
-        actions.appId = app._id;
-        return actions;
+        const action = app.actions.find(t => t.id === actionId);
+        action.appId = app._id;
+
+        let handler = null;
+        const trigger = app.triggers.find(t => {
+          const h = t.handlers.find(a => a.actionId === actionId);
+          if (h) {
+            handler = h;
+          }
+          return h;
+        }) || null;
+
+        app.id = app._id;
+        app = omit(app, ['triggers', 'actions', '_id']);
+
+        return Object.assign({}, action, { app, handler, trigger });
       });
   }
 

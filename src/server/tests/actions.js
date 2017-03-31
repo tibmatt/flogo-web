@@ -13,10 +13,11 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 chai.config.includeStack = true;
 
-describe('Actions', function () {
+describe('Actions:', function () {
   let server;
   let agent;
   let app;
+  let contribTriggersDb = require('../config/app-config').triggersDBService.db;
 
   before(() => {
     // When it needs to create an engine it can take really long
@@ -90,10 +91,10 @@ describe('Actions', function () {
 
   it('Should update an action', () =>
     agent
-      .post(`/api/v2/apps/${app.id}/actions`)
-      .send({
-        name: 'Update my name',
-        description: 'Update my description',
+          .post(`/api/v2/apps/${app.id}/actions`)
+          .send({
+            name: 'Update my name',
+            description: 'Update my description',
         data: { },
       })
     .then(res => {
@@ -203,4 +204,57 @@ describe('Actions', function () {
       }),
     ),
   );
+
+  it('Should include the related app, triggers and handlers information', () => {
+    return prepare()
+      .then(({ action, trigger, handler }) =>
+          agent.get(`/api/v2/actions/${action.id}`)
+            .then(response => {
+              expect(response).to.have.status(200);
+              const data = response.body.data;
+              expect(data.id).to.equal(action.id);
+              expect(data.trigger).to.be.an('object').and.to.have.deep.property('id', trigger.id);
+              expect(data.handler).to.be.an('object').and.to.have.deep.property('actionId', handler.actionId);
+              expect(data.app).to.be.an('object').and.to.have.deep.property('id', app.id);
+            }));
+
+    function prepare() {
+      let action;
+      let trigger;
+      return agent
+        .post(`/api/v2/apps/${app.id}/actions`)
+        .send({
+          name: 'My action',
+          description: 'My description',
+          data: { flow: { rootTask: { id: 1, activityRef: '' } } },
+        })
+        .then(response => {
+          action = response.body.data;
+          return contribTriggersDb.removeAll();
+        })
+        .then(() => contribTriggersDb.insert({ ref: 'github.com/flogo-web/my/trigger' }))
+        .then(contribTrigger => agent.post(`/api/v2/apps/${app.id}/triggers`)
+          .send({
+            name: 'My trigger',
+            description: 'My description',
+            ref: contribTrigger.ref,
+            settings: {
+              key1: 'value',
+              key2: 5,
+            },
+          }))
+        .then(response => {
+          trigger = response.body.data;
+          return agent.put(`/api/v2/triggers/${trigger.id}/handlers/${action.id}`)
+            .send({
+              settings: { my: 'setting' },
+              outputs: { my: 'output', other: 'example' },
+            });
+        })
+        .then(response => {
+          const handler = response.body.data;
+          return { action, trigger, handler };
+        });
+    }
+  });
 });
