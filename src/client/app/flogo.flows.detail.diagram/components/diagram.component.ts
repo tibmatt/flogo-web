@@ -91,7 +91,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     let _enabledSelectTrigger = false;
-
     if ( _.isEmpty( this.diagram ) || _.isEmpty( this.diagram.root ) ) {
       this.diagram = FlogoFlowDiagram.getEmptyDiagram(this.id == 'errorHandler' ? 'error' : null );
       if(this.id == 'errorHandler') {
@@ -105,7 +104,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     // Render the diagram on next js cycle such that the diagram elements are added to the DOM.
     setTimeout(() => {
       this.enabledSelectTrigger = _enabledSelectTrigger;
-      this._diagram.render();
+      // todo: remove once selector is extracted from here
+      if(!_enabledSelectTrigger) {
+        this._diagram.render();
+      }
     }, 0);
   }
 

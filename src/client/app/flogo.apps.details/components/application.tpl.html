@@ -91,27 +91,17 @@
       </div>
     </div>
 
-    <div class="row content-empty" *ngIf="!flows.length">
+    <div class="row content-empty" *ngIf="!flowGroups?.length">
       <img src="/assets/svg/flogo.flynn-placeholder.svg">
       <p class="content-empty__message">No flows found</p>
       <button class="flogo-button--default content-empty__action" (click)="openCreateFlow()">{{'DETAILS:CREATE-A-FLOW' | translate}}</button>
     </div>
 
-    <div class="row flogo-flow-group" *ngIf="flows.length">
-      <div class="col-md-10 col-md-offset-1 col-sm-11 flogo-flow-group__trigger">
-        <div class="flogo-trigger">
-          <i class="flogo-icon-trigger flogo-trigger__icon"></i>
-          <span class="flogo-trigger__text">My trigger</span>
-        </div>
-        <button class="flogo-flow-group__add-flow flogo-button-squared">
-          <i class="flogo-icon-add flogo-button-squared__icon"></i>
-        </button>
-      </div>
-      <div class="col-md-10 col-md-offset-1  col-sm-11 flogo-flow-group__flows">
-        <div class="flogo-app-content__flows">
-          <flogo-apps-flows [flows]="flows" (flowSelected)="onFlowSelected($event)" (deleteFlow)="onFlowDelete($event)"></flogo-apps-flows>
-        </div>
-      </div>
-    </div>
+    <flogo-apps-flows-flow-group *ngFor="let flowGroup of flowGroups"
+                                 [trigger]="flowGroup.trigger" [flows]="flowGroup.flows"
+                                 (flowSelected)="onFlowSelected($event)"
+                                 (deleteFlow)="onFlowDelete($event)"
+    ></flogo-apps-flows-flow-group>
+
   </div>
 </div>

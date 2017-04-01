@@ -20,6 +20,7 @@
   "APP-DETAILS:DELETE-APP": "Delete App",
   "APP-DETAIL:ERROR-UNIQUE-NAME": "There's already an application with that name",
   "APP-DETAIL:CONFIRM_DELETE": "Are you sure you want to delete the application \"{{appName}}\"?",
+  "APP-DETAIL:EMPTY-TRIGGER": "No trigger",
   "CANVAS:ADD-FLOW-DESCRIPTION": "Add flow's description",
   "CANVAS:ARM-LINUX": "ARM/Linux",
   "CANVAS:BUILD": "Build",

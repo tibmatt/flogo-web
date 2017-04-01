@@ -3,8 +3,6 @@ import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { flogoIDEncode, notification } from '../../../common/utils';
-import { IFlogoApplicationModel } from '../../../common/application.model';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { PostService } from '../../../common/services/post.service'
 import { PUB_EVENTS as SUB_EVENTS } from '../../flogo.flows.add/message';
@@ -64,7 +62,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   }
 
   public onFlowSelected(flow) {
-    this.router.navigate(['/flows', flogoIDEncode(flow.id)]);
+    this.router.navigate(['/flows', flow.id]);
   }
 
   public onFlowAdded(event) {

@@ -1,17 +1,20 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import {TranslateService} from 'ng2-translate/ng2-translate';
 import { FlogoModal } from '../../../common/services/modal.service';
-import {IFlogoApplicationFlowModel as FlowModel} from '../../../common/application.model';
+import { IFlogoApplicationFlowModel as FlowModel } from '../../../common/application.model';
+import { Trigger } from '../../../common/application.model';
 
 @Component({
-  selector: 'flogo-apps-flows',
+  selector: 'flogo-apps-flows-flow-group',
   moduleId: module.id,
-  templateUrl: 'flows.tpl.html',
-  styleUrls: ['flows.component.css']
+  templateUrl: 'flow-group.tpl.html',
+  styleUrls: ['flow-group.component.css']
 })
-export class FlogoApplicationFlowsComponent implements OnChanges{
+export class FlowGroupComponent implements OnChanges {
   @Input()
   public flows: Array<FlowModel> = [];
+  @Input()
+  public trigger: Trigger;
   @Output()
   public flowSelected: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
   @Output()
@@ -20,8 +23,10 @@ export class FlogoApplicationFlowsComponent implements OnChanges{
   constructor(public translate: TranslateService, public flogoModal: FlogoModal) {
   }
 
-  ngOnChanges(changes:SimpleChanges){
-    this.flows = _.sortBy(this.flows, flow => flow.name.toLowerCase());
+  ngOnChanges(changes: SimpleChanges){
+    if (changes['flows'] && changes['flows'].currentValue) {
+      this.flows = _.sortBy(this.flows, flow => flow.name.toLowerCase());
+    }
   }
 
   trackByFlowId(index: number, flow: FlowModel) {

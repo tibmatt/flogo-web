@@ -95,11 +95,7 @@ export class FlogoCanvasComponent implements OnInit {
 
     this.loading = true;
 
-    try {
-      this.flowId = flogoIDDecode(this.flowId);
-    } catch (e) {
-      console.warn(e);
-    }
+    this.flowId = this.flowId;
 
     this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
@@ -466,7 +462,7 @@ export class FlogoCanvasComponent implements OnInit {
 
     if(data.installType === 'installed') {
       let appId = this.flow.app.id;
-      let triggerInfo = _.pick(data.trigger, ['name', 'ref', 'description']);
+      let triggerInfo: any = _.pick(data.trigger, ['name', 'ref', 'description']);
       triggerInfo.settings = objectFromArray(data.trigger.settings || []);
 
       resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)

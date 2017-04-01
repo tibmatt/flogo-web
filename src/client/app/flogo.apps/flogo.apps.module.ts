@@ -12,7 +12,7 @@ import { FlogoAppsComponent } from './components/apps.component';
 import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
 import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
 import { FlogoApplicationComponent } from '../flogo.apps.details/components/application.component';
-import { FlogoApplicationFlowsComponent } from '../flogo.apps.flows/components/flows.component';
+import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flogo.apps.flows/components';
 import { FlogoAppListComponent } from '../flogo.apps.list/components/app.list.component';
 import { FlogoAppDeletePopoverComponent } from '../flogo.apps.list/components/delete.popover.component';
 import { FlogoApplicationSearch } from '../flogo.apps.search/components/search.component';
@@ -37,9 +37,10 @@ import {routing, appRoutingProviders} from './flogo.apps.routing';
     FlogoApplicationComponent,
     FlogoApplicationContainerComponent,
     FlogoApplicationFlowsComponent,
+    FlowGroupComponent,
     FlogoAppListComponent,
     FlogoAppDeletePopoverComponent,
-    FlogoApplicationSearch
+    FlogoApplicationSearch,
   ],
   bootstrap: [FlogoAppsComponent],
   providers: [
