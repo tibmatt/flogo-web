@@ -28,6 +28,7 @@ import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notifi
 import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 import { HandlerInfo } from '../models/models';
+import { FlogoFlowService as FlowsService } from '../services/flow.service';
 
 @Component({
   selector: 'flogo-canvas',
@@ -70,6 +71,7 @@ export class FlogoCanvasComponent implements OnInit {
   constructor(public translate: TranslateService,
               private _postService: PostService,
               private _restAPIFlowsService: RESTAPIFlowsService,
+              private _flowService: FlowsService,
               private _runnerService: RunnerService,
               private _router: Router,
               private _flogoModal: FlogoModal,
@@ -96,17 +98,20 @@ export class FlogoCanvasComponent implements OnInit {
 
     this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
-    this.getFlow(this.flowId)
+
+    this._flowService.getFlow(this.flowId)
       .then((res: any) => {
+        const FLOW_HANDLER_TYPE_ROOT = 'root';
+        const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
         this.flow = res.flow;
         this.flowName = this.flow.name;
         this.handlers = {
-          'root': res.root,
-          'errorHandler': res.errorHandler
+          [FLOW_HANDLER_TYPE_ROOT]: res.root,
+          [FLOW_HANDLER_TYPE_ERROR]: res.errorHandler
         };
 
-        this.mainHandler = this.handlers['root'];
-        this.errorHandler = this.handlers['errorHandler'];
+        this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
+        this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
         if ( _.isEmpty( this.mainHandler.diagram ) || _.isEmpty( this.mainHandler.diagram.root ) ) {
           this.hasTrigger = false;
         }
@@ -119,77 +124,14 @@ export class FlogoCanvasComponent implements OnInit {
           this.showInstructions();
         }, 500);
 
-        // todo: why?
-        this._updateFlow(this.flow).then(() => {
-          this.loading = false;
-        });
+        this.loading = false;
+
+        // // todo: why?
+        // this._updateFlow(this.flow).then(() => {
+        //   this.loading = false;
+        // });
 
       });
-  }
-
-  private getFlow(id: string) {
-    let diagram: IFlogoFlowDiagram;
-    let errorDiagram: IFlogoFlowDiagram;
-    let tasks: IFlogoFlowDiagramTaskDictionary;
-    let errorTasks: IFlogoFlowDiagramTaskDictionary;
-    let flow: any;
-
-
-    return new Promise((resolve, reject) => {
-
-      this._restAPIFlowsService.getFlow(id)
-        .then(
-          (rsp: any) => {
-            if (!_.isEmpty(rsp)) {
-              // initialisation
-              console.group('Initialise canvas component');
-              flow = rsp;
-              tasks = flow.items;
-              if (_.isEmpty(flow.paths)) {
-                diagram = flow.paths = <IFlogoFlowDiagram>{
-                  root: {},
-                  nodes: {}
-                };
-              } else {
-                diagram = flow.paths;
-              }
-
-              if (_.isEmpty(flow.errorHandler)) {
-                flow.errorHandler = { paths: {}, items: {} };
-              }
-
-              errorTasks = flow.errorHandler.items;
-              if (_.isEmpty(flow.errorHandler.paths)) {
-                errorDiagram = flow.errorHandler.paths = <IFlogoFlowDiagram>{
-                  root: {},
-                  nodes: {}
-                }
-              } else {
-                errorDiagram = flow.errorHandler.paths;
-              }
-
-
-            }
-
-            resolve({
-              flow,
-              root: {
-                diagram, tasks
-              },
-              errorHandler: {
-                diagram: errorDiagram, tasks: errorTasks
-              }
-            });
-
-          }
-        )
-        .catch(
-          (err: any) => {
-            reject(null);
-          }
-        );
-
-    });
   }
 
   private initSubscribe() {

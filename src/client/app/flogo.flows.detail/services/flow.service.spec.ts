@@ -30,6 +30,8 @@ describe("Service: Flow", function(this: {
       });
   });
 
+
+  // why? null means error? means flow not found?
   it("Should return null when the UI Model Converter service throws an error", ()=>{
     var spyConverterService = <Spy>this.modelConverter.getWebFlowModel;
     spyConverterService.and.throwError("Sample Error");

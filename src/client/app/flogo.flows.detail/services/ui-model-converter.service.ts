@@ -53,8 +53,8 @@ export class UIModelConverterService {
    * }
    *
    *
-   * @param {engineFlowObj} Engine flow model JSON. See mockFlow in ./ui-model-flow.mock.ts
-   * @param {flowTriggerObj} Engine trigger JSON. see mockTrigger in ./ui-model-trigger.mock.ts
+   * @param flowObj - Engine flow model JSON. See mockFlow in ./ui-model-flow.mock.ts
+   * @param triggerObj - Engine trigger JSON. see mockTrigger in ./ui-model-trigger.mock.ts
    * @return {uiFlowObj}
    *
    * getWebFlowModel method can throw the following errors:
@@ -73,7 +73,14 @@ export class UIModelConverterService {
    *
    */
 
+  // todo: define interfaces
   getWebFlowModel(flowObj: any, triggerObj: any) {
+    // todo: do not need to fetch trigger details if it doesn't have a trigger
+    // return Promise.all([fetchTriggersPromise, this.getActivities(flowObj)])
+    //   .then((triggersAndActivities) => {
+    //     let installedContribs = _.flattenDeep(triggersAndActivities);
+    //     return this.processFlowObj(flowObj, triggerObj, installedContribs);
+    //   });
     if(!triggerObj.ref){
       throw this._errorService.makeOperationalError('Trigger: Wrong input json file','Cannot get ref for trigger',
         {
@@ -84,7 +91,8 @@ export class UIModelConverterService {
           value: triggerObj
         });
     } else {
-      return Promise.all([this._triggerService.getTriggerDetails(triggerObj.ref), this.getActivities(flowObj)])
+      const fetchTriggersPromise = triggerObj ? this._triggerService.getTriggerDetails(triggerObj.ref) : [];
+      return Promise.all([fetchTriggersPromise, this.getActivities(flowObj)])
         .then((triggersAndActivities) => {
           let installedTiles = _.flattenDeep(triggersAndActivities);
           return this.processFlowObj(flowObj, triggerObj, installedTiles);
@@ -121,7 +129,7 @@ export class UIModelConverterService {
     return Promise.all(promises);
   }
 
-  processFlowObj(flowJSON, triggerJSON, installedTiles) {
+  processFlowObj(flowJSON, triggerJSON, installedContribs) {
     let endpoints = _.get(triggerJSON, 'handlers', []);
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
@@ -135,8 +143,13 @@ export class UIModelConverterService {
       app: flowJSON.app
     };
 
-    let mainFlowParts = this.getFlowParts(triggerJSON, tasks, links, installedTiles, endpoints[0]);
-    let currentFlow = this.makeFlow(mainFlowParts, flowInfo, installedTiles);
+    let handler = null;
+    if (triggerJSON && triggerJSON.handlers) {
+      handler = triggerJSON.handlers.find(handler => handler.actionId === flowJSON.id);
+    }
+
+    let mainFlowParts = this.getFlowParts(installedContribs, tasks, links, triggerJSON, handler);
+    let currentFlow = this.makeFlow(mainFlowParts, flowInfo, installedContribs);
 
 
     if(flowJSON.data.flow.errorHandlerTask){
@@ -144,7 +157,7 @@ export class UIModelConverterService {
       tasks = _.get(flowJSON, 'data.flow.errorHandlerTask.tasks', []);
       // links tasks of error handler
       links = _.get(flowJSON, 'data.flow.errorHandlerTask.links', []);
-      const errorFlowParts = this.getFlowParts(null, tasks, links, installedTiles, endpoints[0]);
+      const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, null, handler);
 
       currentFlow.errorHandler = this.makeFlow(errorFlowParts, flowInfo);
     }
@@ -202,7 +215,7 @@ export class UIModelConverterService {
     return flow;
   }
 
-  getFlowParts(trigger, tasks, links, installedTiles, endpointSetting) {
+  getFlowParts(installedTiles, tasks, links, trigger, endpointSetting) {
     let nodes = [];
     let items = [];
     let branches = [];
