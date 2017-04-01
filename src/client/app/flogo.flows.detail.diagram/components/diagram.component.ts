@@ -19,7 +19,8 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
     inputs : [
       'tasks',
       'diagram',
-       'id'
+       'id',
+      'appId'
     ]
   }
 )
@@ -28,6 +29,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   public tasks : IFlogoFlowDiagramTaskDictionary;
   public diagram : IFlogoFlowDiagram;
   public id: string;
+  public appId: string;
 
   private _elmRef : ElementRef;
   private _diagram : FlogoFlowDiagram;

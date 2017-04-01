@@ -9,13 +9,19 @@ export class  RESTAPITriggersService {
   }
 
   createTrigger(appId, trigger: any) {
-    debugger;
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
     return this.http.post(`/api/v2/apps/${appId}/triggers`, trigger, options).toPromise()
       .then(response => response.json().data);
+  }
 
+  listTriggersApp(appId) {
+    return this.http.get(`/api/v2/apps/${appId}/triggers`).toPromise()
+      .then(response => {
+        debugger;
+        return response.json().data;
+      });
   }
 
 }

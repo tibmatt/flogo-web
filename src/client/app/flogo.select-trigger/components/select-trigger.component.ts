@@ -7,6 +7,7 @@ import { RESTAPIApplicationsService }  from '../../../common/services/restapi/ap
 import { notification } from '../../../common/utils';
 import { ERROR_CONSTRAINT } from '../../../common/constants';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../../common/services/restapi/v2/triggers-api.service';
 import { PUB_EVENTS } from '../messages';
 
 @Component({
@@ -16,37 +17,28 @@ import { PUB_EVENTS } from '../messages';
   styleUrls: ['select-trigger.css']
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
+  @Input() appId: string;
   public installedTriggers = [];
   public installTriggerActivated = false;
   public onInstalled = new EventEmitter();
   private addTriggerMsg : any;
+  private displayExisting: boolean;
 
   public existingTriggers = [];
 
 
   constructor(public translate: TranslateService,
               private postService: PostService,
-              private triggersService: RESTAPITriggersService) {
+              private triggersService: RESTAPITriggersService,
+              private triggersServiceV2: RESTAPITriggersServiceV2) {
+    this.displayExisting = true;
   }
 
   ngOnInit() {
-    this.loadInstalledTriggers();
   }
 
   getExistingTriggers() {
-    const existing = [
-      {
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/coap'
-      },
-      {
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt'
-      },
-      {
-        ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest'
-      }
-    ];
-
-    return Promise.resolve(existing);
+    return this.triggersServiceV2.listTriggersApp(this.appId);
   }
 
   loadInstalledTriggers() {
@@ -61,6 +53,11 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
       .then((installed) => {
         this.getExistingTriggers()
           .then((triggers) => {
+            debugger;
+            if(!triggers.length)  {
+              this.displayExisting = false;
+            }
+
             const allInstalled = {};
 
             installed.forEach((item) => {
@@ -90,6 +87,9 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if(changes['appId']) {
+      this.loadInstalledTriggers();
+    }
   }
 
 
@@ -108,6 +108,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   sendAddTriggerMsg( trigger : any, installType: string ) {
+    debugger;
     this.postService.publish(
       _.assign(
         {}, PUB_EVENTS.addTrigger, {
