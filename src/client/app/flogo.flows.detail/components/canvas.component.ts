@@ -95,8 +95,6 @@ export class FlogoCanvasComponent implements OnInit {
 
     this.loading = true;
 
-    this.flowId = this.flowId;
-
     this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
 
@@ -215,14 +213,13 @@ export class FlogoCanvasComponent implements OnInit {
       cleanPaths(flow.errorHandler.paths);
     }
 
-    flow = JSON.parse(JSON.stringify(flow));
+    return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
+      console.groupCollapsed('Flow updated');
+      console.log(rsp);
+      console.groupEnd();
+      return rsp;
+    });
 
-    return this._restAPIFlowsService.updateFlow(flow)
-      .then(
-        (rsp: any) => {
-          console.log(rsp);
-        }
-      );
   }
 
   private _getCurrentState(taskID: string) {

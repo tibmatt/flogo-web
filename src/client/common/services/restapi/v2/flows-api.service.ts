@@ -30,6 +30,17 @@ export class APIFlowsService {
       .toPromise();
   }
 
+  updateFlow(flowId, flow) {
+    const actionId = flowId;
+    return this.http.patch(
+      this.httpUtils.apiPrefix(`actions/${actionId}`),
+      flow,
+      this.httpUtils.defaultOptions()
+    )
+      .map(() => true)
+      .toPromise();
+  }
+
   deleteFlow(flowId) {
     const actionId = flowId;
     return this.http.delete(

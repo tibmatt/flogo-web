@@ -1,8 +1,10 @@
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 import {UIModelConverterService} from "./ui-model-converter.service";
-import {IFlogoFlowDiagram} from "../../flogo.flows.detail.diagram/models/diagram.model";
+import { IFlogoFlowDiagram } from "../../flogo.flows.detail.diagram/models/diagram.model";
+import { flogoFlowToJSON } from "../../flogo.flows.detail.diagram/models/flow.model";
 import {IFlogoFlowDiagramTaskDictionary} from "../../flogo.flows.detail.diagram/models/dictionary.model";
 import {APIFlowsService} from "../../../common/services/restapi/v2/flows-api.service";
+import {  } from "../../../common/utils";
 
 interface FlowData {
   flow: any,
@@ -46,6 +48,12 @@ export class FlogoFlowService {
         console.error(error);
         return null;
       });
+  }
+
+  saveFlow(flowId, uiFlow) {
+    const { name, description, flow } = flogoFlowToJSON(uiFlow);
+    const action = { name, description, data: { flow } };
+    return this._flowAPIService.updateFlow(flowId, action);
   }
 
   processFlowModel(model): Promise<FlowData> {

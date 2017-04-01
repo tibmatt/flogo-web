@@ -137,6 +137,7 @@ export class UIModelConverterService {
     let links = _.get(flowJSON, 'data.flow.rootTask.links', []);
 
     let flowInfo = {
+      id: flowJSON.id,
       appId: flowJSON.app.id,
       name: flowJSON.name || flowJSON.id,
       description: flowJSON.description || '',
@@ -151,8 +152,8 @@ export class UIModelConverterService {
     let mainFlowParts = this.getFlowParts(installedContribs, tasks, links, triggerJSON, handler);
     let currentFlow = this.makeFlow(mainFlowParts, flowInfo, installedContribs);
 
-
-    if(flowJSON.data.flow.errorHandlerTask){
+    const flowData = flowJSON.data.flow;
+    if(flowData && flowData.errorHandlerTask){
       // task flows of error handler
       tasks = _.get(flowJSON, 'data.flow.errorHandlerTask.tasks', []);
       // links tasks of error handler
@@ -169,7 +170,7 @@ export class UIModelConverterService {
     let flow: any = {};
     try {
       let {nodes, items, branches} = parts;
-      let {name, description, appId, app} = flowInfo;
+      let {id, name, description, appId, app} = flowInfo;
 
       let nodeTrigger = nodes.find((element) => {
         let nodeType = element.node.type;
@@ -177,6 +178,7 @@ export class UIModelConverterService {
       });
 
       flow = {
+        id,
         name,
         description,
         appId,
@@ -188,6 +190,9 @@ export class UIModelConverterService {
           nodes: {},
         },
         items: {},
+
+        // todo: remove _id, keeping it for now for legacy code that should move to id
+        _id: id,
       };
 
       if(installedTiles) {

@@ -30,7 +30,7 @@ export interface flowToJSON_Task {
   id : number;
   type : number;
   activityType : string;
-  ref? : string;
+  activityRef? : string;
   name? : string;
   attributes : flowToJSON_Attribute[];
   inputMappings : flowToJSON_Mapping [];
@@ -84,7 +84,8 @@ export interface flowToJSON_RootTask {
 }
 
 export interface flowToJSON_InputFlow {
-  _id : string;
+  _id? : string;
+  id? : string;
   name? : string;
   description? : string;
   attributes? : any[];
@@ -174,7 +175,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
   /* validate the required fields */
 
-  let flowID = <string>_.get( inFlow, '_id' );
+  let flowID = inFlow._id || inFlow.id;
 
   if ( _.isEmpty( flowID ) ) {
     DEBUG && console.error( 'No id in the given flow' );
@@ -359,7 +360,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
           taskInfo.name = _.get( task, 'name', '' );
           taskInfo.type = task.type;
           taskInfo.activityType = task.activityType;
-          taskInfo.ref = task.ref;
+          taskInfo.activityRef = task.ref;
 
 
           /* add `inputs` of a task to the `attributes` of the taskInfo in flow.json */

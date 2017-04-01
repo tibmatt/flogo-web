@@ -61,11 +61,11 @@ function getSchema() {
           rootTask: {
             default: {},
             title: 'rootTask',
-            $ref: '#/definitions/Flow/definitions/task',
+            $ref: '#/definitions/Flow/definitions/rootTask',
           },
           errorHandlerTask: {
             title: 'errorHandlerTask',
-            $ref: '#/definitions/Flow/definitions/task',
+            $ref: '#/definitions/Flow/definitions/rootTask',
           },
         },
         required: [
@@ -156,6 +156,60 @@ function getSchema() {
               'id',
               'from',
               'to',
+            ],
+          },
+          rootTask: {
+            title: 'task',
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+              },
+              type: {
+                type: 'integer',
+              },
+              name: {
+                type: 'string',
+              },
+              description: {
+                type: 'string',
+              },
+              activityRef: {
+                type: 'string',
+              },
+              attributes: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/attribute',
+                },
+              },
+              inputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              outputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              tasks: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/task',
+                },
+              },
+              links: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/link',
+                },
+              },
+            },
+            required: [
+              'id',
             ],
           },
           task: {
