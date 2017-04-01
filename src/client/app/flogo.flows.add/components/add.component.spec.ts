@@ -8,7 +8,7 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Observable } from 'rxjs/Observable';
 
 import { PostService } from '../../../common/services/post.service';
-import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
 import { PUB_EVENTS } from '../message';
@@ -65,7 +65,7 @@ describe('Component: FlogoFlowsAdd', () => {
         FlogoFlowsAddComponent
       ], // declare the test component
       providers: [
-        { provide: RESTAPIFlowsService, useValue: flowsServiceStub },
+        { provide: APIFlowsService, useValue: flowsServiceStub },
         { provide: PostService, useValue: postServiceStub }
       ],
       schemas: [NO_ERRORS_SCHEMA]

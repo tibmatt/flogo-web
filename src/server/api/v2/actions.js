@@ -12,7 +12,14 @@ export function actions(router, basePath) {
 
 function* listActions() {
   const appId = this.params.appId;
-  const actionList = yield ActionsManager.list(appId);
+
+  const searchTerms = {};
+  const filterName = this.request.query['filter[name]'];
+  if (filterName) {
+    searchTerms.name = filterName;
+  }
+
+  const actionList = yield ActionsManager.list(appId, searchTerms);
   this.body = {
     data: actionList || [],
   };

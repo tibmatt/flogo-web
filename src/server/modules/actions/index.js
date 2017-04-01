@@ -116,9 +116,16 @@ export class ActionsManager {
       });
   }
 
-  static list(appId) {
+  static list(appId, searchTerms) {
     return appsDb.findOne({ _id: appId })
-      .then(app => (app && app.actions ? app.actions : []));
+      .then(app => (app && app.actions ? app.actions : []))
+      .then(actions => {
+        if (searchTerms && searchTerms.name) {
+          const comparableName = searchTerms.name.trim().toLowerCase();
+          return actions.filter(a => comparableName === a.name.trim().toLowerCase());
+        }
+        return actions;
+      });
   }
 
   static listRecent() {

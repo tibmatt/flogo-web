@@ -37,13 +37,7 @@ export class FlowGroupComponent implements OnChanges {
     this.flowSelected.emit(flow);
   }
 
-  onDeleteFlow(event: Event, flow: FlowModel) {
-    event.stopPropagation();
-    let message = this.translate.instant('FLOWS:CONFIRM_DELETE', {flowName: flow.name});
-    this.flogoModal.confirmDelete(message).then((res) => {
-      if (res) {
-        this.deleteFlow.emit(flow);
-      }
-    });
+  onDeleteFlow(flow: FlowModel) {
+    this.deleteFlow.emit(flow);
   }
 }

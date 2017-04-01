@@ -4,7 +4,7 @@ import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { PostService } from '../../../common/services/post.service';
-import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
 import { PUB_EVENTS } from '../message';
 import { UniqueNameValidator } from '../validators/unique-name.validator';
 
@@ -24,7 +24,7 @@ export class FlogoFlowsAddComponent implements OnChanges {
 
   constructor(public translate: TranslateService,
     private postService: PostService,
-    private flowsService: RESTAPIFlowsService,
+    private flowsService: APIFlowsService,
     private formBuilder: FormBuilder
   ) {
     this.resetForm();
@@ -58,7 +58,7 @@ export class FlogoFlowsAddComponent implements OnChanges {
         Validators.composeAsync([
           // we need to wrap into a compose async validator, otherwise async validators overwrite sync validators
           (control: AbstractControl) => Promise.resolve(Validators.required(control)),
-          UniqueNameValidator.make(this.flowsService, { appId: this.appId })
+          UniqueNameValidator.make(this.flowsService, this.appId)
         ])
       ],
       description: ['']
