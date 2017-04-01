@@ -5,9 +5,14 @@ import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-trans
 import {Http} from '@angular/http';
 
 import { FlogoSelectTriggerComponent } from './select-trigger.component';
-import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+
+import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../../common/services/restapi/v2/triggers-api.service';
+
 import { RESTAPITriggersServiceMock } from '../../../common/services/restapi/triggers-api.service.mock';
+import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2} from '../../../common/services/restapi/v2/triggers-api.service.mock';
+
 import { InstallerModule } from '../../flogo.installer/flogo.installer.module';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../flogo.select-trigger/messages'
@@ -42,7 +47,8 @@ describe('FlogoSelectTrigger component', () => {
       providers: [
         RESTAPIActivitiesService,
         {provide:PostService, useValue: postServiceStub },
-        {provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock}
+        {provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock},
+        {provide: RESTAPITriggersServiceV2, useClass: RESTAPITriggersServiceMockV2}
       ]
     });
   });
