@@ -19,7 +19,6 @@ export class  RESTAPITriggersService {
   listTriggersApp(appId) {
     return this.http.get(`/api/v2/apps/${appId}/triggers`).toPromise()
       .then(response => {
-        debugger;
         return response.json().data;
       });
   }

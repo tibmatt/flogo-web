@@ -53,7 +53,6 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
       .then((installed) => {
         this.getExistingTriggers()
           .then((triggers) => {
-            debugger;
             if(!triggers.length)  {
               this.displayExisting = false;
             }
@@ -67,6 +66,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
             this.existingTriggers = [];
             triggers.forEach((existing)=> {
               const found = allInstalled[existing.ref];
+              found.id = existing.id;
 
               if(found) {
                 this.existingTriggers.push(found);
@@ -108,7 +108,6 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   sendAddTriggerMsg( trigger : any, installType: string ) {
-    debugger;
     this.postService.publish(
       _.assign(
         {}, PUB_EVENTS.addTrigger, {

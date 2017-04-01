@@ -9,7 +9,6 @@ export class  RESTAPIHandlersService {
   }
 
   updateHandler(triggerId, actionId, trigger) {
-    debugger;
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 

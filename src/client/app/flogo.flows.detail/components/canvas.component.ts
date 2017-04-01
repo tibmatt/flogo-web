@@ -461,18 +461,25 @@ export class FlogoCanvasComponent implements OnInit {
 
 
     let resultCreateTrigger;
+    let settings = objectFromArray(data.trigger.endpoint.settings);
+    let outputs = objectFromArray(data.trigger.outputs);
 
-    let appId = this.flow.app.id;
-    let triggerInfo = _.pick(data.trigger, ['name', 'ref', 'description']);
-    triggerInfo.settings = objectFromArray(data.trigger.settings || []);
+    if(data.installType === 'installed') {
+      let appId = this.flow.app.id;
+      let triggerInfo = _.pick(data.trigger, ['name', 'ref', 'description']);
+      triggerInfo.settings = objectFromArray(data.trigger.settings || []);
 
-    resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)
-      .then( (triggerResult)=> {
-        let triggerId = triggerResult.id;
-        let settings = objectFromArray(data.trigger.endpoint.settings);
-        let outputs = objectFromArray(data.trigger.outputs);
-        return this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
-      });
+      resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)
+        .then( (triggerResult)=> {
+          let triggerId = triggerResult.id;
+          return this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
+        });
+    } else {
+      const triggerId = data.trigger.id;
+      resultCreateTrigger = this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
+    }
+
+
 
     resultCreateTrigger
       .then(() => {
