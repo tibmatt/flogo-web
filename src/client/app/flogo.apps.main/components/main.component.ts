@@ -68,11 +68,11 @@ export class FlogoMainComponent implements OnInit {
         this.recent = flows;
       });
 
-    this.applicationServiceAPI.allFlows()
-      .then((flows: Array<IFlogoApplicationFlowModel>) => {
-        this.originalFlows = flows;
-        this.flows = this.getOriginalFlows();
-      });
+    // this.applicationServiceAPI.allFlows()
+    //   .then((flows: Array<IFlogoApplicationFlowModel>) => {
+    //     this.originalFlows = flows;
+    //     this.flows = this.getOriginalFlows();
+    //   });
   }
 
   onFlowSelected(flow) {
