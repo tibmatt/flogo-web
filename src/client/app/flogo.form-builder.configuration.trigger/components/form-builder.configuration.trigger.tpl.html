@@ -48,7 +48,8 @@
 
     </div>
 
-    <h3 class="flogo-common-edit-panel__legend" *ngIf="fields.endpointSettings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:ENDPOINT' | translate }}</h3>
+    <hr>
+
     <div *ngFor="let item of fields.endpointSettings; let index = index" class="">
 
       <div class="endpoint" *ngIf="getControlByType(item,directions.input).control == 'FieldTextBox'">

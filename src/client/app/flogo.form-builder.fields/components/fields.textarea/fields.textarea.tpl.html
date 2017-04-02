@@ -14,6 +14,7 @@
             (change)="onValidate($event)"
             [disabled]="!_info.isEditable"
             [class.is-disabled]="!_info.isEditable"
+            [class.is-disabled-settings]="!_info.isEditable && _info.structure === 'settings'"
             (blur)="onBlur($event)"
             [readonly]="isReadOnly()"></textarea>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">

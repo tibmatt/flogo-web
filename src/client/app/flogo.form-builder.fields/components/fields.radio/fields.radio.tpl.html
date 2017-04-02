@@ -12,6 +12,7 @@
              [disabled]="!_info.isEditable"
              [attr.checked]="( _info.value === true || _info.value == 'true' )? true : null "
              [class.is-disabled]="!_info.isEditable"
+             [class.is-disabled-settings]="!_info.isEditable && _info.structure === 'settings'"
              [readonly]="isReadOnly()">
       <label [attr.for]="'trueValue'+_index+_info.name"><span class="flogo-task-field__boolean__label-text">True</span></label>
     </div>
@@ -23,6 +24,7 @@
              class="flogo-task-field__boolean_input"
              [attr.checked]="( _info.value === false || _info.value == 'false' )? true : null "
              [class.is-disabled]="!_info.isEditable"
+             [class.is-disabled-settings]="!_info.isEditable && _info.structure === 'settings'"
              [readonly]="isReadOnly()">
       <label [attr.for]="'falseValue'+_index+_info.name"><span class="flogo-task-field__boolean__label-text">False</span></label>
 

@@ -12,6 +12,7 @@
             class="btn btn-default dropdown-toggle list-label"
             [disabled]="!_info.isEditable"
             [class.is-disabled]="!_info.isEditable"
+            [class.is-disabled-settings]="!_info.isEditable && _info.structure === 'settings'"
             type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
       <span
         *ngIf="_info.isEditable"
