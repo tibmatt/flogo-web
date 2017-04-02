@@ -1,7 +1,25 @@
 <div>
   <div  class="flogo-common-edit-panel__container">
     <!--// TODO: extract field creation to single component to simplify these templates -->
-    <h3 class="flogo-common-edit-panel__legend"  *ngIf="fields.settings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:SETTINGS' | translate }}</h3>
+    <div class="flogo-common-edit-panel__header">
+      <h3 class="flogo-common-edit-panel__legend"  *ngIf="fields.settings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:SETTINGS' | translate }}</h3>
+
+      <div class="settings__menu">
+        <i class="flogo-icon-edit"></i>
+        <div class="settings__menu__options">
+          <ul class="settings__menu__options__list">
+            <li class="settings__menu__options__list__element">
+              <i class="flogo-icon-edit"></i>
+              <div>Edit for all 5 flows that use this trigger</div>
+            </li>
+            <li class="settings__menu__options__list__element">
+              <i class="fa fa-clone fa-fw"></i>
+              <div>Make a copy</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <div *ngFor="let item of fields.settings; let index = index" class="">
 
       <div class="settings" *ngIf="getControlByType(item,directions.input).control == 'FieldTextBox'">
