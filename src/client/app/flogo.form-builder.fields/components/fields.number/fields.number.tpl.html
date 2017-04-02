@@ -12,6 +12,8 @@
          (change)="onValidate($event)"
          [id]="_info.name"
          (blur)="onBlur($event)"
+         [disabled]="!_info.isEditable"
+         [class.is-disabled]="!_info.isEditable"
          [readonly]="isReadOnly()">
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>

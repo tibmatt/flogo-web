@@ -16,29 +16,39 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
   _context: any;
   fields:any;
   directions:any;
-  numFlowUseTrigger: number;
   messageNumFlowsUsed: string;
+  isEditable: boolean;
 
   constructor(private _commonService: FlogoFormBuilderCommon,
-              public translate: TranslateService,) {
+              public translate: TranslateService) {
+    this.isEditable = false;
     this.directions = _commonService.getParameterDirections();
-    this.numFlowUseTrigger = 1;
-    this.updateMessageNumFlowsUsed();
+    this.updateMessageNumFlowsUsed(1);
   }
 
-  updateMessageNumFlowsUsed() {
-    this.messageNumFlowsUsed = this.translate.instant('FORM-BUILDER-CONFIGURATION-TRIGGER:EDIT', {value: this.numFlowUseTrigger});
+  updateMessageNumFlowsUsed(numFlows) {
+    this.messageNumFlowsUsed = this.translate.instant('FORM-BUILDER-CONFIGURATION-TRIGGER:EDIT', {value: numFlows});
   }
+
+  clickEditForNFlows(event) {
+    this.isEditable = true;
+  }
+
+  clickMakeCopy(event) {
+  }
+
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
+    let numFlows: number;
+
     if(changes['_context']) {
       try {
-        this.numFlowUseTrigger =  this._context.app.triggers[0].handlers.length;
-        this.updateMessageNumFlowsUsed();
+        numFlows =  this._context.app.triggers[0].handlers.length;
       }catch(err) {
-        this.numFlowUseTrigger = 1;
+        numFlows = 1;
         console.log(err);
       }
+      this.updateMessageNumFlowsUsed(numFlows);
     }
     this.fields = {
       endpointSettings: this._commonService.getStructureFromAttributes('endpointSettings', this._attributes),
@@ -51,12 +61,12 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
   }
 
   getControlByType(item:any, parameterDirection?:string) :any {
-
     return this._commonService.getControlByType(item,parameterDirection);
   }
 
   //TODO define interface
   getTriggerInfo(input:any, direction:string, structure:string) : any {
+
     var info = {
       name:       input.name,
       type:       input.type,
@@ -74,7 +84,8 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
       direction: direction || '',
       // subfield where this item is located
       structure: structure || '',
-      allowed: input.allowed
+      allowed: input.allowed,
+      isEditable: this.isEditable
     };
 
     return _.assign({}, info, this.getControlByType(input.type));

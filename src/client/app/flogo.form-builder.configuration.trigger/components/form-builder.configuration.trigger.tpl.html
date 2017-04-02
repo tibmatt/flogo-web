@@ -8,11 +8,11 @@
         <i class="flogo-icon-edit"></i>
         <div class="settings__menu__options">
           <ul class="settings__menu__options__list">
-            <li class="settings__menu__options__list__element">
+            <li class="settings__menu__options__list__element" (click)="clickEditForNFlows($event)">
               <i class="flogo-icon-edit"></i>
               <div>{{messageNumFlowsUsed}}</div>
             </li>
-            <li class="settings__menu__options__list__element">
+            <li class="settings__menu__options__list__element" (click)="clickMakeCopy($event)">
               <i class="fa fa-clone fa-fw"></i>
               <div>{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:COPY' | translate }}</div>
             </li>

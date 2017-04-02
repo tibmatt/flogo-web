@@ -12,6 +12,8 @@
             [placeholder]="_info.placeholder"
             class="form-control tc-text-areas tc-text-area" [(ngModel)]="_value"
             (change)="onValidate($event)"
+            [disabled]="!_info.isEditable"
+            [class.is-disabled]="!_info.isEditable"
             (blur)="onBlur($event)"
             [readonly]="isReadOnly()"></textarea>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">

@@ -7,21 +7,22 @@
 
 
   <div class="dropdown" style="width: 100%">
-    <button style="width: 100%; text-align: left;" class="btn btn-default dropdown-toggle list-label" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <span class="caret list-caret"></span> <span class="">{{_info.value}}</span>
+
+    <button style="width: 100%; text-align: left;"
+            class="btn btn-default dropdown-toggle list-label"
+            [disabled]="!_info.isEditable"
+            [class.is-disabled]="!_info.isEditable"
+            type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span
+        *ngIf="_info.isEditable"
+        class="caret list-caret"></span>
+      <span class="">{{_info.value}}</span>
     </button>
+
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" [id]="_info.name">
       <li *ngFor="let option of options" (click)="onChangeField(option)" style="cursor:pointer;" class="list-label"><a>{{option ? option : "&nbsp;"}}</a></li>
     </ul>
   </div>
-
-  <!--
-  <input type="text" class="form-control tc-inputs" [class.error]="_hasError" [(ngModel)]="_info.value"
-         [placeholder]="_info.placeholder"
-         (keyup)="onChangeField($event)"
-         (change)="onValidate($event)"
-         [readonly]="isReadOnly()">
-  -->
 
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>
