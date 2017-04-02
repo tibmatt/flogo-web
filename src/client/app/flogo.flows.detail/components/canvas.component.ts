@@ -93,29 +93,10 @@ export class FlogoCanvasComponent implements OnInit {
 
     this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
 
-    this.loading = true;
-
     this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
-
-    this._flowService.getFlow(this.flowId)
-      .then((res: any) => {
-        const FLOW_HANDLER_TYPE_ROOT = 'root';
-        const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
-        this.flow = res.flow;
-        this.flowName = this.flow.name;
-        this.handlers = {
-          [FLOW_HANDLER_TYPE_ROOT]: res.root,
-          [FLOW_HANDLER_TYPE_ERROR]: res.errorHandler
-        };
-
-        this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
-        this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-        if ( _.isEmpty( this.mainHandler.diagram ) || _.isEmpty( this.mainHandler.diagram.root ) ) {
-          this.hasTrigger = false;
-        }
-
-        this.clearAllHandlersRunStatus();
+    this._loadFlow(this.flowId)
+      .then(() => {
         this.initSubscribe();
 
         // todo: extract to service?
@@ -123,13 +104,10 @@ export class FlogoCanvasComponent implements OnInit {
           this.showInstructions();
         }, 500);
 
-        this.loading = false;
-
         // // todo: why?
         // this._updateFlow(this.flow).then(() => {
         //   this.loading = false;
         // });
-
       });
   }
 
@@ -220,6 +198,31 @@ export class FlogoCanvasComponent implements OnInit {
       return rsp;
     });
 
+  }
+
+  private _loadFlow(flowId: string) {
+    this.loading = true;
+    return this._flowService.getFlow(flowId)
+      .then((res: any) => {
+        const FLOW_HANDLER_TYPE_ROOT = 'root';
+        const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
+        this.flow = res.flow;
+        this.flowName = this.flow.name;
+        this.handlers = {
+          [FLOW_HANDLER_TYPE_ROOT]: res.root,
+          [FLOW_HANDLER_TYPE_ERROR]: res.errorHandler
+        };
+
+        this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
+        this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
+        if ( _.isEmpty( this.mainHandler.diagram ) || _.isEmpty( this.mainHandler.diagram.root ) ) {
+          this.hasTrigger = false;
+        }
+
+        this.clearAllHandlersRunStatus();
+        this.loading = false;
+
+      });
   }
 
   private _getCurrentState(taskID: string) {
@@ -342,7 +345,7 @@ export class FlogoCanvasComponent implements OnInit {
    * @private
    */
   private _navigateFromModuleRoot(urlParts = []) {
-    return this._router.navigate(['/flows', flogoIDEncode(this.flowId), ...urlParts]);
+    return this._router.navigate(['/flows', this.flowId, ...urlParts]);
   }
 
   /*-------------------------------*
@@ -426,7 +429,6 @@ export class FlogoCanvasComponent implements OnInit {
   }
 
   private _addTriggerFromTriggers(data: any, envelope: any) {
-    this.hasTrigger = true;
     console.group('Add trigger message from trigger');
 
     console.log(data);
@@ -438,8 +440,6 @@ export class FlogoCanvasComponent implements OnInit {
 
     let diagramId = data.id;
     let handler = this.handlers[diagramId];
-
-
 
     if (handler == this.errorHandler) {
       trigger.id = flogoGenTaskID(this._getAllTasks());
@@ -472,32 +472,32 @@ export class FlogoCanvasComponent implements OnInit {
       resultCreateTrigger = this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
     }
 
-
-
     resultCreateTrigger
+      .then(() => this._loadFlow(this.flowId))
       .then(() => {
-        this._navigateFromModuleRoot()
-          .then(
-            () => {
-              this._postService.publish(
-                _.assign(
-                  {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
-                    data: {
-                      id: data.id,
-                      node: data.node,
-                      task: trigger
-                    },
-                    done: (diagram: IFlogoFlowDiagram) => {
-                      _.assign(handler.diagram, diagram);
-                      this._updateFlow(this.flow);
-                      this._isDiagramEdited = true;
-                    }
-                  }
-                )
-              );
-            }
+        this.hasTrigger = true;
+        return this._navigateFromModuleRoot();
+      })
+      .then(
+        () => {
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
+                data: {
+                  id: data.id,
+                  node: data.node,
+                  task: trigger
+                },
+                done: (diagram: IFlogoFlowDiagram) => {
+                  _.assign(handler.diagram, diagram);
+                  this._updateFlow(this.flow);
+                  this._isDiagramEdited = true;
+                }
+              }
+            )
           );
-      });
+        }
+      );
 
 
     console.groupEnd();
