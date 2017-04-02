@@ -1,25 +1,45 @@
 import {Component, SimpleChange} from '@angular/core';
 
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
     selector: 'flogo-form-builder-trigger-configuration',
     moduleId: module.id,
     templateUrl: 'form-builder.configuration.trigger.tpl.html',
-    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes'],
+    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes', '_context:context'],
     styleUrls: ['form-builder.configuration.trigger.css']
 })
 export class FlogoFormBuilderConfigurationTriggerComponent {
   _fieldObserver : any;
   _attributes: any;
+  _context: any;
   fields:any;
   directions:any;
+  numFlowUseTrigger: number;
+  messageNumFlowsUsed: string;
 
-  constructor(private _commonService: FlogoFormBuilderCommon) {
+  constructor(private _commonService: FlogoFormBuilderCommon,
+              public translate: TranslateService,) {
     this.directions = _commonService.getParameterDirections();
+    this.numFlowUseTrigger = 1;
+    this.updateMessageNumFlowsUsed();
+  }
+
+  updateMessageNumFlowsUsed() {
+    this.messageNumFlowsUsed = this.translate.instant('FORM-BUILDER-CONFIGURATION-TRIGGER:EDIT', {value: this.numFlowUseTrigger});
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
+    if(changes['_context']) {
+      try {
+        this.numFlowUseTrigger =  this._context.app.triggers[0].handlers.length;
+        this.updateMessageNumFlowsUsed();
+      }catch(err) {
+        this.numFlowUseTrigger = 1;
+        console.log(err);
+      }
+    }
     this.fields = {
       endpointSettings: this._commonService.getStructureFromAttributes('endpointSettings', this._attributes),
       settings:         this._commonService.getStructureFromAttributes('settings', this._attributes),

@@ -21,6 +21,7 @@ import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { RESTAPITriggersService } from '../../../common/services/restapi/v2/triggers-api.service';
+import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE, ERROR_CODE } from '../../../common/constants';
 import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
@@ -77,6 +78,7 @@ export class FlogoCanvasComponent implements OnInit {
               private _flowService: FlowsService,
               private _restAPITriggersService: RESTAPITriggersService,
               private _restAPIHandlerService: RESTAPIHandlersService,
+              private _restAPIAppsService: AppsApiService,
               private _runnerService: RunnerService,
               private _router: Router,
               private _flogoModal: FlogoModal,
@@ -305,7 +307,8 @@ export class FlogoCanvasComponent implements OnInit {
       isBranch: isBranch,
       isTask: isTask,
       hasProcess: !!this.runState.currentProcessId,
-      isDiagramEdited: this._isDiagramEdited
+      isDiagramEdited: this._isDiagramEdited,
+      app: null
     };
   }
 
@@ -610,7 +613,6 @@ export class FlogoCanvasComponent implements OnInit {
 
   private _selectTriggerFromDiagram(data: any, envelope: any) {
     let diagramId: string = data.id;
-
     console.group('Select trigger message from diagram');
 
     console.log(data);
@@ -622,44 +624,50 @@ export class FlogoCanvasComponent implements OnInit {
         () => {
           console.group('after navigation');
 
-          // Refresh task detail
-          var currentStep = this._getCurrentState(data.node.taskID);
-          var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
-          var context = this._getCurrentContext(data.node.taskID, diagramId);
+          this._restAPIAppsService.getApp(this.flow.app.id)
+            .then((app) => {
+              // Refresh task detail
+              var currentStep = this._getCurrentState(data.node.taskID);
+              var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
+              var context = this._getCurrentContext(data.node.taskID, diagramId);
+              context.app = app;
 
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                data: _.assign({}, data,
-                  { task: currentTask },
-                  { step: currentStep },
-                  { context: context }
-                ),
-                done: () => {
-                  // select task done
-                  //  only need this publish if the trigger has been changed
-                  this._postService.publish(
-                    _.assign(
-                      {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
-                        data: {
-                          node: data.node,
-                          task: this.handlers[diagramId].tasks[data.node.taskID],
-                          id: data.id
-                        },
-                        done: (diagram: IFlogoFlowDiagram) => {
-                          _.assign(this.handlers[diagramId].diagram, diagram);
-                          // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
-                        }
-                      }
-                    )
-                  );
+              this._postService.publish(
+                _.assign(
+                  {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                    data: _.assign({}, data,
+                      { task: currentTask },
+                      { step: currentStep },
+                      { context: context }
+                    ),
+                    done: () => {
+                      // select task done
+                      //  only need this publish if the trigger has been changed
+                      this._postService.publish(
+                        _.assign(
+                          {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
+                            data: {
+                              node: data.node,
+                              task: this.handlers[diagramId].tasks[data.node.taskID],
+                              id: data.id
+                            },
+                            done: (diagram: IFlogoFlowDiagram) => {
+                              _.assign(this.handlers[diagramId].diagram, diagram);
+                              // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
+                            }
+                          }
+                        )
+                      );
 
-                }
-              }
-            )
-          );
+                    }
+                  }
+                )
+              );
 
-          console.groupEnd();
+              console.groupEnd();
+            });
+
+
 
         }
       );

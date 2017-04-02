@@ -59,7 +59,7 @@
 
 
     <div *ngIf="_context.isTrigger">
-      <flogo-form-builder-trigger-configuration  [attributes]="_attributes"  [fieldObserver]="_fieldObserver"></flogo-form-builder-trigger-configuration>
+      <flogo-form-builder-trigger-configuration  [context]="_context" [attributes]="_attributes"  [fieldObserver]="_fieldObserver"></flogo-form-builder-trigger-configuration>
     </div>
 
     <div *ngIf="_context.isTask">
