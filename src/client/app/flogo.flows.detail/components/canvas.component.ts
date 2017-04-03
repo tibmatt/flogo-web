@@ -71,6 +71,8 @@ export class FlogoCanvasComponent implements OnInit {
   public downloadLink: string;
   public hasTrigger: boolean;
   public isInstructionsActivated: boolean = false;
+  public triggerId: string;
+  public app: any;
 
   constructor(public translate: TranslateService,
               private _postService: PostService,
@@ -87,6 +89,8 @@ export class FlogoCanvasComponent implements OnInit {
 
     this.loading = true;
     this.hasTrigger = true;
+    this.triggerId = null
+    this.app = null;
   }
 
   public ngOnInit() {
@@ -611,6 +615,29 @@ export class FlogoCanvasComponent implements OnInit {
 
   }
 
+  private getTriggerCurrentFlow(app, flowId) {
+    let triggerId:any = null;
+
+    let triggers = app.triggers.filter((trigger) => {
+      return trigger.appId === app.id;
+    });
+
+    if(triggers) {
+      triggers.forEach((trigger) => {
+        let handler = trigger.handlers.find((handler) => {
+          return handler.actionId === flowId;
+        });
+
+        if(handler) {
+          triggerId = trigger.id;
+          return triggerId;
+        }
+      });
+    }
+
+    return triggerId;
+  }
+
   private _selectTriggerFromDiagram(data: any, envelope: any) {
     let diagramId: string = data.id;
     console.group('Select trigger message from diagram');
@@ -623,14 +650,19 @@ export class FlogoCanvasComponent implements OnInit {
       .then(
         () => {
           console.group('after navigation');
+          let appPromise = null;
+          appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flow.app.id);
 
-          this._restAPIAppsService.getApp(this.flow.app.id)
+          appPromise
             .then((app) => {
               // Refresh task detail
               var currentStep = this._getCurrentState(data.node.taskID);
               var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
               var context = this._getCurrentContext(data.node.taskID, diagramId);
               context.app = app;
+              this.app = app;
+              this.triggerId = this.getTriggerCurrentFlow(app, this.flow.id);
+
 
               this._postService.publish(
                 _.assign(
@@ -962,35 +994,44 @@ export class FlogoCanvasComponent implements OnInit {
       var changedInputs = data.inputs || {};
       this._updateAttributesChanges(task, changedInputs, 'attributes.inputs');
 
-      /*
-       for(var name in changedInputs) {
-       task.attributes.inputs.forEach((input)=> {
-       if(input.name === name) {
-       input.value =  changedInputs[name];
-       }
-       });
-       }
-       */
     } else if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
+      let updatePromise: any = Promise.resolve(true);
 
-      this._updateAttributesChanges(task, data.settings, 'settings');
-      this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
-      this._updateAttributesChanges(task, data.outputs, 'outputs');
+      if(data.changedStructure === 'settings') {
+        updatePromise = this._restAPITriggersService.updateTrigger(this.triggerId, {settings: data.settings})
+      } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
+        updatePromise = this._restAPIHandlerService.updateHandler(this.triggerId, this.flow.id, {
+          settings: data.endpointSettings,
+          outputs: data.outputs
+        });
 
-      // ensure the persence of the internal properties
-      task.__props = task.__props || {};
+      }
 
-      // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
-      task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
-        let newValue = data.outputs[output.name];
 
-        // undefined is invalid default value, hence filter that out.
-        if (output && !_.isUndefined(newValue)) {
-          output.value = newValue;
-        }
+      updatePromise
+        .then((res) => {
+          this._updateAttributesChanges(task, data.settings, 'settings');
+          this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
+          this._updateAttributesChanges(task, data.outputs, 'outputs');
 
-        return output;
-      });
+          // ensure the persence of the internal properties
+          task.__props = task.__props || {};
+
+          // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
+          task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
+            let newValue = data.outputs[output.name];
+
+            // undefined is invalid default value, hence filter that out.
+            if (output && !_.isUndefined(newValue)) {
+              output.value = newValue;
+            }
+
+            return output;
+          });
+        });
+
+
+
     } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
       task.condition = data.condition;
     }

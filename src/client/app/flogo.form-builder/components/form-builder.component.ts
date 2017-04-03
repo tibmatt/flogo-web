@@ -39,7 +39,7 @@ export class FlogoFormBuilderComponent{
     this.route.params.subscribe(
       params => {
         if ( this._hasChanges ) {
-          this._saveChangesToFlow();
+          this._saveChangesToFlow(null);
         }
         this._hasChanges = false;
       }
@@ -60,7 +60,7 @@ export class FlogoFormBuilderComponent{
 
   ngOnDestroy() {
     if ( this._hasChanges ) {
-      this._saveChangesToFlow();
+      this._saveChangesToFlow(null);
     }
 
     _.each( this._subscriptions, (sub:any) => {
@@ -69,7 +69,7 @@ export class FlogoFormBuilderComponent{
     );
   }
 
-  _saveActivityChangesToFlow() {
+  _saveActivityChangesToFlow(changedStructure: string) {
     return new Promise((resolve, reject)=> {
         var state = {
           taskId: this._task.id,
@@ -89,7 +89,7 @@ export class FlogoFormBuilderComponent{
 
 
         this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
-          data: _.assign({},{id: this._flowId}, state) ,
+          data: _.assign({},{id: this._flowId}, state, {changedStructure: changedStructure}) ,
           done: ()=> {
             this._hasChanges  = false;
             resolve();
@@ -156,7 +156,7 @@ export class FlogoFormBuilderComponent{
 
       if(param.payload.isTask || param.payload.isTrigger) {
           this._updateAttributeByUserChanges(_.get(this._attributes,param.payload.structure,[]), param.payload);
-          this.saveChanges();
+          this.saveChanges(param.payload.structure);
 
       }
     });
@@ -167,7 +167,7 @@ export class FlogoFormBuilderComponent{
       } )
       .subscribe( ( param : any ) => {
         this._branchConfigs[ 0 ].condition = param.payload.value;
-        this.saveChanges();
+        this.saveChanges(null);
       } );
   }
 
@@ -361,18 +361,18 @@ export class FlogoFormBuilderComponent{
 
   }
 
-  private _saveChangesToFlow() {
+  private _saveChangesToFlow(changedStructure) {
     if ( this._context.isTask || this._context.isTrigger) {
-      return this._saveActivityChangesToFlow();
+      return this._saveActivityChangesToFlow(changedStructure);
     }  else if ( this._context.isBranch ) {
       return this._saveBranchChangesToFlow();
     }
     return null;
   }
 
-  saveChanges( event? : any ) {
+  saveChanges(changedStructure) {
     console.log('Saving changes');
-    return this._saveChangesToFlow();
+    return this._saveChangesToFlow(changedStructure);
   }
 
   changeTaskDetail(content: any, proper: string) {
@@ -380,7 +380,12 @@ export class FlogoFormBuilderComponent{
 
     this._postService.publish(_.assign({},PUB_EVENTS.changeTileDetail,
       {
-        data: {content: content, proper: proper, taskId:this._task.id, id:this._flowId}
+        data: {
+          content: content,
+          proper: proper,
+          taskId:this._task.id,
+          id:this._flowId
+        }
       }
     ));
 

@@ -85,7 +85,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
       // subfield where this item is located
       structure: structure || '',
       allowed: input.allowed,
-      isEditable: this.isEditable
+      isEditable:  structure === 'settings' ? this.isEditable : true
     };
 
     return _.assign({}, info, this.getControlByType(input.type));
