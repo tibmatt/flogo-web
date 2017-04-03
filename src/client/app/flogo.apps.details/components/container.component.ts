@@ -3,10 +3,10 @@ import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { flogoIDEncode, notification } from '../../../common/utils';
-import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
 import { PostService } from '../../../common/services/post.service'
 import { PUB_EVENTS as SUB_EVENTS } from '../../flogo.flows.add/message';
 import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
+import { FlowsService } from '../../flogo.apps/services/flows.service';
 
 import 'rxjs/add/operator/map';
 
@@ -25,7 +25,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
     private router : Router,
     private route: ActivatedRoute,
     private appService: AppDetailService,
-    private flowsService: APIFlowsService,
+    private flowsService: FlowsService,
     private postService: PostService
   ) {
     this.initSubscribe();
@@ -54,7 +54,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    // cancel subscribtions
+    // cancel subscriptions
     _.each(this.subscriptions, sub => {
         this.postService.unsubscribe(sub);
       }
@@ -83,10 +83,11 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
 
   private onAddFlow(data: any) {
     const appId = this.appDetail.app.id;
+    const triggerId = data.triggerId;
     this.flowsService.createFlow(appId, {
       name: data.name,
       description: data.description,
-    }).then(() => {
+    }, triggerId).then(() => {
       let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
       notification(message, 'success', 3000);
     })

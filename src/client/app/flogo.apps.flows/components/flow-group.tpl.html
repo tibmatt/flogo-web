@@ -5,7 +5,7 @@
       <span *ngIf="trigger">{{ trigger.name }}</span>
       <span *ngIf="!trigger">{{ 'APP-DETAIL:EMPTY-TRIGGER' | translate }}</span>
     </div>
-    <button class="flogo-flow-group__add-flow flogo-button-squared">
+    <button class="flogo-flow-group__add-flow flogo-button-squared" *ngIf="trigger" (click)="onAddFlow()">
       <i class="flogo-icon-add flogo-button-squared__icon"></i>
     </button>
   </div>

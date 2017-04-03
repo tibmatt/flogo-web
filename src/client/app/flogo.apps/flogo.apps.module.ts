@@ -18,6 +18,7 @@ import { FlogoAppDeletePopoverComponent } from '../flogo.apps.list/components/de
 import { FlogoApplicationSearch } from '../flogo.apps.search/components/search.component';
 
 import { AppDetailService } from './services/apps.service';
+import { FlowsService } from './services/flows.service';
 
 import {routing, appRoutingProviders} from './flogo.apps.routing';
 
@@ -45,7 +46,8 @@ import {routing, appRoutingProviders} from './flogo.apps.routing';
   bootstrap: [FlogoAppsComponent],
   providers: [
     appRoutingProviders,
-    AppDetailService
+    AppDetailService,
+    FlowsService,
   ]
 })
 export class FlogoAppsModule {}

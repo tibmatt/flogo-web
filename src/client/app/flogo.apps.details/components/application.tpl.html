@@ -101,6 +101,7 @@
                                  [trigger]="flowGroup.trigger" [flows]="flowGroup.flows"
                                  (flowSelected)="onFlowSelected($event)"
                                  (deleteFlow)="onFlowDelete($event)"
+                                 (addFlow)="openCreateFlowFromTrigger($event)"
     ></flogo-apps-flows-flow-group>
 
   </div>

@@ -1,7 +1,7 @@
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState,
   FlowGroup, App
@@ -61,6 +61,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
       this.state = this.appDetail.state;
       const flowGroups = this.application ? this.application.flowGroups : null;
       this.flowGroups = flowGroups ? [...this.application.flowGroups] : [];
+      this.flowGroups = _.sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
       // this.flows = this.extractFlows();
 
       let prevValue = change.previousValue;
@@ -85,6 +86,10 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
   openCreateFlow() {
     this.addFlow.open();
+  }
+
+  openCreateFlowFromTrigger(trigger: Trigger){
+    this.addFlow.open(trigger.id);
   }
 
   onClickAddDescription(event) {

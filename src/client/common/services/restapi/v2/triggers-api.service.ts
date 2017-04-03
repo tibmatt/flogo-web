@@ -23,6 +23,12 @@ export class  RESTAPITriggersService {
       });
   }
 
+  getTrigger(triggerId) {
+    return this.http.get(`/api/v2/triggers/${triggerId}`)
+      .toPromise()
+      .then(response => response.json().data);
+  }
+
   updateTrigger(triggerId: string, trigger: any) {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({headers: headers});

@@ -1,6 +1,5 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import {TranslateService} from 'ng2-translate/ng2-translate';
-import { FlogoModal } from '../../../common/services/modal.service';
 import { IFlogoApplicationFlowModel as FlowModel } from '../../../common/application.model';
 import { Trigger } from '../../../common/application.model';
 
@@ -19,8 +18,10 @@ export class FlowGroupComponent implements OnChanges {
   public flowSelected: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
   @Output()
   public deleteFlow: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
+  @Output()
+  public addFlow: EventEmitter<Trigger> = new EventEmitter<Trigger>();
 
-  constructor(public translate: TranslateService, public flogoModal: FlogoModal) {
+  constructor(public translate: TranslateService) {
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -40,4 +41,9 @@ export class FlowGroupComponent implements OnChanges {
   onDeleteFlow(flow: FlowModel) {
     this.deleteFlow.emit(flow);
   }
+
+  onAddFlow() {
+    this.addFlow.emit(this.trigger);
+  }
+
 }
