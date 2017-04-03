@@ -6,10 +6,11 @@ import {Http} from '@angular/http';
 
 import {FlogoAppListComponent} from './app.list.component';
 import {FlogoAppDeletePopoverComponent} from './delete.popover.component';
-import {IFlogoApplicationModel} from '../../../common/application.model';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
-import { RESTAPIApplicationsServiceMock } from '../../../common/services/restapi/applications-api.service.mock';
 import { ErrorService } from '../../../common/services/error.service';
+import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.service";
+import {AppsApiServiceMock} from "../../../common/services/restapi/v2/apps-api.service.mock";
+import {TimeFromNowPipe} from "../../../common/pipes/time-from-now.pipe";
+import {HttpUtilsService} from "../../../common/services/restapi/http-utils.service";
 
 describe('FlogoAppList component', () => {
   let applications = [
@@ -52,10 +53,11 @@ describe('FlogoAppList component', () => {
         useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
         deps: [Http]
       })],
-      declarations: [FlogoAppListComponent, FlogoAppDeletePopoverComponent], // declare the test component
+      declarations: [FlogoAppListComponent, FlogoAppDeletePopoverComponent, TimeFromNowPipe], // declare the test component
       providers: [
+        HttpUtilsService,
         {provide: ErrorService, useClass: ErrorService},
-        {provide: RESTAPIApplicationsService, useClass: RESTAPIApplicationsServiceMock}
+        {provide: AppsApiService, useClass: AppsApiServiceMock}
       ]
     });
   });
@@ -68,7 +70,7 @@ describe('FlogoAppList component', () => {
         comp.applications = applications;
 
         fixture.detectChanges();
-        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('ul li'));
+        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.apps-list__element'));
         expect(res.length).toEqual(3);
         done();
       });
@@ -91,7 +93,7 @@ describe('FlogoAppList component', () => {
         ];
 
         fixture.detectChanges();
-        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('ul li'));
+        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.app-list__app-name'));
         el = res[0].nativeElement;
         expect(el.innerText.trim()).toEqual('Sample Application');
         done();
@@ -132,7 +134,7 @@ describe('FlogoAppList component', () => {
         ];
 
         fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('ul li'));
+        de = fixture.debugElement.query(By.css('.app-list__app-name'));
         comp.onSelectedApp.subscribe((app) => {
           expect(app.name).toEqual('Sample Application');
           done();
@@ -160,13 +162,12 @@ describe('FlogoAppList component', () => {
         ];
 
         fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('ul li'));
+        de = fixture.debugElement.query(By.css('.apps-list__element'));
 
         el = de.nativeElement;
         el.addEventListener('mouseover', () => {
           //fixture.detectChanges();
-          let deleteIcon = fixture.debugElement.query(By.css('li span'));
-
+          let deleteIcon = fixture.debugElement.query(By.css('.apps-list__delete-btn .flogo-icon-delete'));
           expect(deleteIcon).not.toBeNull();
           done();
         });
@@ -176,45 +177,33 @@ describe('FlogoAppList component', () => {
       });
   });
 
-  it('On delete application, should emit the deleted id application to the host', done => {
+  /*xit('On delete application, should deleted the application from the list', done => {
     compileComponent()
       .then(() => {
         fixture = TestBed.createComponent(FlogoAppListComponent);
         comp = fixture.componentInstance;
-        comp.applications = [
-          {
-            id: "123",
-            name: "A cool application",
-            version: "0.0.1",
-            description: "My App",
-            createdAt: "2016-12-16T00:24:26+00:00",
-            updatedAt: "2016-12-16T00:24:26+00:00"
-          }
-        ];
-
-        comp.onDeletedApp.subscribe((application: IFlogoApplicationModel) => {
-          expect(application.id).toEqual('123');
-          done();
-        });
+        comp.applications = applications;
 
         fixture.detectChanges();
-        de = fixture.debugElement.query(By.css('ul li'));
+        let res = fixture.debugElement.queryAll(By.css('.apps-list__element'));
 
-        el = de.nativeElement;
+        el = res[2].nativeElement;
 
         el.addEventListener('mouseover', () => {
           //fixture.detectChanges();
-          let deleteIcon = fixture.debugElement.query(By.css('li span'));
+          let deleteIcon = fixture.debugElement.query(By.css('.flogo-icon-delete'));
           let element = deleteIcon.nativeElement;
           element.click();
           fixture.detectChanges();
-          let confirmDelete = fixture.debugElement.query(By.css('li .popup-btn-primary'));
+          let confirmDelete = fixture.debugElement.query(By.css('.popup-btn-primary'));
           element = confirmDelete.nativeElement;
           element.click();
+          fixture.detectChanges();
+          expect(comp.applications.length).toEqual(0);
         });
 
         let event = new Event('mouseover');
         el.dispatchEvent(event);
       });
-  });
+  });*/
 });

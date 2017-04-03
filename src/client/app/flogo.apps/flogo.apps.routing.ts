@@ -9,12 +9,8 @@ import { FlogoApplicationContainerComponent } from '../flogo.apps.details/compon
 const routes: Routes = [
   {
     path: 'apps',
-    component: FlogoAppsComponent,
+    component: FlogoMainComponent,
     canActivate: [ ConfigurationLoadedGuard ],
-    children: [
-      { path: '', component: FlogoMainComponent },
-      //{ path: ':appId', component: FlogoApplicationContainerComponent }
-    ]
   },
   {
     path: 'apps/:appId',

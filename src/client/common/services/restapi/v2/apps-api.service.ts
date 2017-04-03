@@ -15,6 +15,26 @@ export class AppsApiService {
   constructor(private http: Http, private httpUtils: HttpUtilsService, private errorService: ErrorService ) {
   }
 
+  recentFlows() {
+    return this.http.get(this.apiPrefix('actions/recent')).toPromise()
+      .then(response => response.json().data);
+  }
+
+  createNewApp(): Promise<any> {
+    return this.determineUniqueName(UNTITLED_APP).then(appName => {
+      let application: any = {
+        name: appName,
+        version: '',
+        description: ''
+      };
+
+      let options = this.httpUtils.defaultOptions();
+
+      return this.http.post(this.apiPrefix('apps/'), application, options).toPromise()
+        .then(response => response.json().data);
+    });
+  }
+
   listApps(): Promise<IFlogoApplicationModel[]> {
     return this.http.get(this.apiPrefix('apps'), this.httpUtils.defaultOptions())
       .map(response => response.json())
@@ -68,6 +88,29 @@ export class AppsApiService {
     } else {
       return new Error('Unknown error');
     }
+  }
+
+  determineUniqueName(name: string) {
+    return this.listApps().then((apps: Array<IFlogoApplicationModel>) => {
+      let normalizedName = name.trim().toLowerCase();
+      let possibleMatches = apps
+        .map(app => app.name.trim().toLowerCase())
+        .filter(appName => appName.startsWith(normalizedName));
+
+      if (!possibleMatches.length) {
+        return name;
+      }
+
+      let found = true;
+      let index = 0;
+      while (found) {
+        index++;
+        found = possibleMatches.includes(`${normalizedName} (${index})`);
+      }
+      return `${name} (${index})`;
+
+    });
+
   }
 
 }

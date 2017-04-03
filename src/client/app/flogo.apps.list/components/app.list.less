@@ -6,90 +6,59 @@
 .flogo-app-list {
 
   .flogo-app-list__header {
-    color: #fff;
     display: flex;
     justify-content: space-between;
-    padding: 15px;
+    padding: @margin-top 0;
 
     .title {
-      font-size: 1.5em
+      font-size: 1.5em;
+      margin: 0;
+    }
+    .search {
+      width: 80%;
+    }
+    .flogo-button {
+      width: 45%;
+      margin-left: 4%;
     }
 
-    .flogo-button--add-app {
-      margin-top: 5px;
-      margin-left: 15px;
-    }
-
-    .flogo-button--import-app {
-      background: transparent;
-      border: none;
-      width: 31px;
-      height: 31px;
-      overflow: hidden;
-      transition: width 300ms ease-in;
-      transition-delay: 200ms;
-      margin-top: 5px;
-      &:hover {
-        border: solid 1px;
-        border-radius: 4px;
-        width: 86px;
-      }
-      .flogo-icon{
-        position: relative;
-        top: 1px;
-      }
-      span{
-        font-size: .875em;
-      }
-
-      input {
-        display: none;
-      }
-
+    .app-list__app-import-input {
+      display: none;
     }
   }
 
   .flogo-app-list__content {
-    color: #fff;
-    margin: 0 -15px;
+    margin: 0;
+    margin-bottom: 30px;
 
     .apps-list {
-      list-style-type: none;
-      margin: 0;
-      padding-left: 0;
-
-      .apps-list__element:hover + .apps-list__element .app-list__app-name,
-      .apps-list__element.selected + .apps-list__element .app-list__app-name {
-        border-top: 0;
-        padding-top: 16px;
-      }
 
       .apps-list__element {
-        position: relative;
-        font-size: 1em;
-        font-weight: bold;
-        letter-spacing: .5px;
-        height: 50px;
-        padding: 0 @margin-top;
+        padding: @margin-top;
         margin: 0;
+        margin-bottom: 1em;
+        border-radius: 4px;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.33);
+        border: solid 1px #d8d8d8;
 
-        .app-list__app-name {
-          padding-top: @margin-top;
-          padding-left: @margin-top;
-          border-top: 1px solid #d8d8d8;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        p {
+          margin: 0;
+          margin-bottom: 6px;
+          &.app-list__app-name {
+            font-weight: 700;
+          }
+        }
+
+        .app-list__created-at {
+          font-size: 10px;
+          letter-spacing: 0.6px;
+          margin-right: 10px;
         }
 
         &:hover {
-          color: #fff;
-          background-color: #7ab8dd;
           cursor: pointer;
-
-          .app-list__app-name {
-            border-top: 0;
-            padding-top: 16px;
-          }
+          border-radius: 4px;
+          box-shadow: 0 0 5px 0 #79b8dc;
 
           .apps-list__delete-btn {
             visibility: visible;
@@ -97,24 +66,11 @@
         }
       }
 
-      .selected {
-        background-color: #7ab8dd;
-        font-weight: bold;
-
-        .app-list__app-name {
-          border-top: 0;
-          padding-top: 16px;
-        }
-      }
-
       .apps-list__delete-btn {
         position: absolute;
         visibility: hidden;
-        right: 26px;
-        top: 16px;
         cursor: pointer;
       }
-
     }
   }
 }
