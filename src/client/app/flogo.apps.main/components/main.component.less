@@ -1,12 +1,13 @@
 :host {
   /*Can we make the body's background color to white instead of this?*/
-  min-height: 92%;
   background: #fff;
+  height: 100%;
 }
 
 .flogo-main {
   color: #666;
-
+  height: ~'calc(100% - @{size-height-footer})';
+  //height: ~'calc(100% - 55px)';
   .header {
     display: flex;
     padding: 1em 0;
