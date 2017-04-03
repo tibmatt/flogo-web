@@ -22,7 +22,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   public installTriggerActivated = false;
   public onInstalled = new EventEmitter();
   private addTriggerMsg : any;
-  private displayExisting: boolean;
+  public displayExisting: boolean;
 
   public existingTriggers = [];
 
