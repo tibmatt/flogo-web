@@ -208,7 +208,7 @@ export function activitySchemaToTrigger(schema: any) : any {
 }
 
 // todo: name and location are too general and use case too specific
-export function objectFromArray(arr, copyValues) {
+export function objectFromArray(arr, copyValues?) {
   let mappedSettings = {};
   let settings = arr || [];
 
