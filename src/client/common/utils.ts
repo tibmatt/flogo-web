@@ -208,12 +208,12 @@ export function activitySchemaToTrigger(schema: any) : any {
 }
 
 // todo: name and location are too general and use case too specific
-export function objectFromArray(arr) {
+export function objectFromArray(arr, copyValues) {
   let mappedSettings = {};
   let settings = arr || [];
 
   settings.forEach((setting) => {
-    mappedSettings[setting.name] = null;
+    mappedSettings[setting.name] = copyValues ?  setting.value : null;
   });
 
   return mappedSettings;

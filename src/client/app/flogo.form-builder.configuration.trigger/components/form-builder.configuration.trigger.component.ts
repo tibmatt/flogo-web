@@ -1,4 +1,4 @@
-import {Component, SimpleChange} from '@angular/core';
+import {Component, SimpleChange, Output, EventEmitter} from '@angular/core';
 
 import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
 import { TranslateService } from 'ng2-translate/ng2-translate';
@@ -18,12 +18,14 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
   directions:any;
   messageNumFlowsUsed: string;
   isEditable: boolean;
+  @Output() onTriggerAction : EventEmitter<string>;
 
   constructor(private _commonService: FlogoFormBuilderCommon,
               public translate: TranslateService) {
     this.isEditable = false;
     this.directions = _commonService.getParameterDirections();
     this.updateMessageNumFlowsUsed(1);
+    this.onTriggerAction = new EventEmitter<string>();
   }
 
   updateMessageNumFlowsUsed(numFlows) {
@@ -32,9 +34,11 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
 
   clickEditForNFlows(event) {
     this.isEditable = true;
+    this.onTriggerAction.emit('trigger-edit');
   }
 
   clickMakeCopy(event) {
+    this.onTriggerAction.emit('trigger-copy');
   }
 
 

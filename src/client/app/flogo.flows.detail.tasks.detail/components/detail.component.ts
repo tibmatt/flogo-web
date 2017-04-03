@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
-import { SUB_EVENTS } from '../messages';
+import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 
 @Component(
   {
@@ -47,6 +47,10 @@ export class FlogoFlowsDetailTasksDetail {
         this._postService.unsubscribe( sub );
       }
     );
+  }
+
+  onAction(event) {
+    this._postService.publish( _.assign( {}, PUB_EVENTS.triggerAction, { data : {action: event} } ) );
   }
 
   private _getSelectTaskMsg( data : any, envelope : any ) {

@@ -13,7 +13,7 @@ import { IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram, IFlogoFlowDiagramTa
 import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
 import { SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS, PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS } from '../../flogo.flows.detail.triggers/messages';
 import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks/messages';
-import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
+import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
 import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
 import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS } from '../../flogo.flows.detail.error-panel/messages'
@@ -130,6 +130,7 @@ export class FlogoCanvasComponent implements OnInit {
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTransform, { callback: this._selectTransformFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback: this._selectTriggerFromDiagram.bind(this) }),
       _.assign({}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback: this._addTriggerFromTriggers.bind(this) }),
+      _.assign({}, FLOGO_SELECT_TASKS_SUB_EVENTS.triggerAction , { callback: this._onActionTrigger.bind(this) }),
       _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback: this._runFromTriggerinTile.bind(this) }),
@@ -435,6 +436,41 @@ export class FlogoCanvasComponent implements OnInit {
     console.groupEnd();
   }
 
+  private getSettingsCurrentHandler () {
+    let settings, outputs;
+    for(var key in this.flow.items) {
+      if(this.flow.items[key].type === FLOGO_TASK_TYPE.TASK_ROOT) {
+        settings = objectFromArray(this.flow.items[key].endpoint.settings, true);
+        outputs = objectFromArray(this.flow.items[key].outputs, true);
+      }
+    }
+
+    return {settings, outputs};
+  }
+
+  private _onActionTrigger(data: any, envelope: any) {
+
+    if(data.action === 'trigger-copy') {
+      let trigger = this.getTriggerFromApp(this.app, this.triggerId);
+      let triggerSettings = _.pick(trigger, ['name', 'description', 'ref', 'settings']);
+
+      this._restAPITriggersService.createTrigger(this.app.id, triggerSettings)
+        .then((createdTrigger) => {
+          let settings = this.getSettingsCurrentHandler();
+          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.flow.id, settings );
+        });
+    }
+
+  }
+
+  private getTriggerFromApp(app, triggerId) {
+    let trigger = app.triggers.find((trigger)=> {
+      return trigger.id === triggerId;
+    });
+
+    return trigger;
+  }
+
   private _addTriggerFromTriggers(data: any, envelope: any) {
     console.group('Add trigger message from trigger');
 
@@ -461,13 +497,13 @@ export class FlogoCanvasComponent implements OnInit {
 
 
     let resultCreateTrigger;
-    let settings = objectFromArray(data.trigger.endpoint.settings);
-    let outputs = objectFromArray(data.trigger.outputs);
+    let settings = objectFromArray(data.trigger.endpoint.settings, false);
+    let outputs = objectFromArray(data.trigger.outputs, false);
 
     if(data.installType === 'installed') {
       let appId = this.flow.app.id;
       let triggerInfo: any = _.pick(data.trigger, ['name', 'ref', 'description']);
-      triggerInfo.settings = objectFromArray(data.trigger.settings || []);
+      triggerInfo.settings = objectFromArray(data.trigger.settings || [], false);
 
       resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)
         .then( (triggerResult)=> {
@@ -615,7 +651,7 @@ export class FlogoCanvasComponent implements OnInit {
 
   }
 
-  private getTriggerCurrentFlow(app, flowId) {
+  private getTriggerIdCurrentFlow(app, flowId) {
     let triggerId:any = null;
 
     let triggers = app.triggers.filter((trigger) => {
@@ -661,7 +697,7 @@ export class FlogoCanvasComponent implements OnInit {
               var context = this._getCurrentContext(data.node.taskID, diagramId);
               context.app = app;
               this.app = app;
-              this.triggerId = this.getTriggerCurrentFlow(app, this.flow.id);
+              this.triggerId = this.getTriggerIdCurrentFlow(app, this.flow.id);
 
 
               this._postService.publish(

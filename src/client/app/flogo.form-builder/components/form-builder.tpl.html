@@ -59,7 +59,7 @@
 
 
     <div *ngIf="_context.isTrigger">
-      <flogo-form-builder-trigger-configuration  [context]="_context" [attributes]="_attributes"  [fieldObserver]="_fieldObserver"></flogo-form-builder-trigger-configuration>
+      <flogo-form-builder-trigger-configuration  [context]="_context" [attributes]="_attributes"  [fieldObserver]="_fieldObserver" (onTriggerAction)="onAction($event)"></flogo-form-builder-trigger-configuration>
     </div>
 
     <div *ngIf="_context.isTask">
@@ -67,7 +67,7 @@
     </div>
 
     <div *ngIf="_context.isBranch">
-      <flogo-form-builder-branch-configuration     [attributes]="_branchConfigs"  [fieldObserver]="_fieldObserver"></flogo-form-builder-branch-configuration>
+      <flogo-form-builder-branch-configuration     [attributes]="_branchConfigs"  [fieldObserver]="_fieldObserver"    ></flogo-form-builder-branch-configuration>
     </div>
 
   </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { PostService} from '../../../common/services/post.service';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PUB_EVENTS } from '../messages';
@@ -29,10 +29,13 @@ export class FlogoFormBuilderComponent{
   _branchConfigs:any[]; // force the fields update by taking the advantage of ngFor
   _flowId:string;
   hasErrors : boolean = false;
+  @Output() onBuilderAction: EventEmitter<string>;
 
   constructor(public route: ActivatedRoute, private _postService: PostService, private _translate: TranslateService) {
     this._initSubscribe();
     this._setFieldsObservers();
+
+    this.onBuilderAction = new EventEmitter<string>();
 
     // same as onDestroy since router is reusing the components instead of destroying them
     // see: https://github.com/angular/angular/issues/7757#issuecomment-236737846
@@ -56,6 +59,10 @@ export class FlogoFormBuilderComponent{
         this._subscriptions.push( this._postService.subscribe( sub ) );
       }
     );
+  }
+
+  public onAction(event) {
+    this.onBuilderAction.emit(event);
   }
 
   ngOnDestroy() {
