@@ -22,7 +22,7 @@
         <div class="row">
           <div class="col-md-11">
             <p class="app-list__app-name">{{ app.name }}</p>
-            <p>{{ app.description }}</p>
+            <p>{{ app.description ? app.description : '&nbsp;'}}</p>
           </div>
           <div class="col-md-1">
             <flogo-app-delete-popover #deleteBox class="apps-list__delete-btn" (confirmDel)="remove($event)"
