@@ -8,7 +8,6 @@ import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 
-import { FlogoAppsComponent } from './components/apps.component';
 import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
 import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
 import { FlogoApplicationComponent } from '../flogo.apps.details/components/application.component';
@@ -33,7 +32,6 @@ import {routing, appRoutingProviders} from './flogo.apps.routing';
     routing
   ],
   declarations: [
-    FlogoAppsComponent,
     FlogoMainComponent,
     FlogoApplicationComponent,
     FlogoApplicationContainerComponent,
@@ -43,7 +41,7 @@ import {routing, appRoutingProviders} from './flogo.apps.routing';
     FlogoAppDeletePopoverComponent,
     FlogoApplicationSearch,
   ],
-  bootstrap: [FlogoAppsComponent],
+  bootstrap: [FlogoMainComponent],
   providers: [
     appRoutingProviders,
     AppDetailService,

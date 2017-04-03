@@ -2,9 +2,9 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, OnChanges, Output, 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel } from '../../../common/application.model';
-import { RESTAPIApplicationsService }  from '../../../common/services/restapi/applications-api.service';
 import { notification } from '../../../common/utils';
 import { ERROR_CONSTRAINT } from '../../../common/constants';
+import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.service";
 
 @Component({
   selector: 'flogo-apps-list',
@@ -12,34 +12,18 @@ import { ERROR_CONSTRAINT } from '../../../common/constants';
   templateUrl: 'app.list.tpl.html',
   styleUrls: ['app.list.css']
 })
-export class FlogoAppListComponent implements OnInit, OnChanges {
-  @ViewChild('importInput') importInput: ElementRef;
-  @Input() currentApp: IFlogoApplicationModel;
+export class FlogoAppListComponent implements OnInit {
+  // @ViewChild('importInput') importInput: ElementRef;
   @Output() onSelectedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
-  @Output() onAddedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
-  @Output() onDeletedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
   public applications: Array<IFlogoApplicationModel> = [];
 
   constructor(public translate: TranslateService,
-              private apiApplications: RESTAPIApplicationsService) {
+              private apiApplications: AppsApiService) {
   }
 
   ngOnInit() {
     this.listAllApps();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    let change = changes['currentApp'];
-    if (change) {
-      let prevId = change.previousValue && change.previousValue.id;
-      let currentId = change.currentValue && change.currentValue.id;
-
-      if (prevId !== currentId) {
-        this.listAllApps();
-      }
-
-    }
   }
 
   onSelectApp(event: Event, removeBox: ElementRef, app: IFlogoApplicationModel) {
@@ -48,7 +32,7 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
     }
   }
 
-  onImportFileSelected(event) {
+  /*onImportFileSelected(event) {
     let file = <File> _.get(event, 'target.files[0]');
 
     // clean input file value
@@ -65,7 +49,7 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
       .catch((error) => {
         notification(this.getErrorMessage(error), 'error');
       });
-  }
+  }*/
 
   getErrorMessage(error) {
     // todo: multiple error messages?
@@ -89,13 +73,12 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
   onAdd() {
     this.apiApplications.createNewApp()
       .then((application: IFlogoApplicationModel) => {
-        this.onAddedApp.emit(application);
         this.appSelected(application);
-      }).then(() => this.listAllApps());
+      });
   }
 
   listAllApps() {
-    this.apiApplications.getAllApps()
+    this.apiApplications.listApps()
       .then((applications: Array<IFlogoApplicationModel>) => {
         this.applications = applications;
       });
@@ -105,7 +88,6 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
     this.apiApplications.deleteApp(application.id)
       .then(() => {
         this.listAllApps();
-        this.onDeletedApp.emit(application);
       });
   }
 
