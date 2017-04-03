@@ -6,18 +6,20 @@ import {resultantFlowModelForCanvas} from "./flow-for-canvas.mock";
 import {MockAPIFlowsService} from "../../../common/services/restapi/v2/flows-api.service.mock";
 import {MockBackend} from "@angular/http/testing";
 import {BaseRequestOptions, Http} from "@angular/http";
+import {HttpUtilsService} from "../../../common/services/restapi/http-utils.service";
 
 describe("Service: Flow", function(this: {
   service: FlogoFlowService,
   modelConverter: UIModelConverterService,
   mockRESTAPI: MockAPIFlowsService,
+  utilsService: HttpUtilsService
 }){
 
   beforeEach(()=>{
     this.modelConverter = jasmine.createSpyObj<UIModelConverterService>('converterService', [
       'getWebFlowModel'
     ]);
-    this.mockRESTAPI = new MockAPIFlowsService(new Http(new MockBackend(), new BaseRequestOptions()));
+    this.mockRESTAPI = new MockAPIFlowsService(new Http(new MockBackend(), new BaseRequestOptions()), new HttpUtilsService());
     this.service = new FlogoFlowService(this.mockRESTAPI, this.modelConverter);
   });
 
