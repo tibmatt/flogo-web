@@ -814,9 +814,15 @@ export class FlogoCanvasComponent implements OnInit {
       } else {
         task[data.proper] = data.content;
       }
-      this._updateFlow(this.flow).then(() => {
-        this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-      });
+      let updateObject = {};
+      updateObject[data.proper] = task[data.proper];
+
+      this._restAPITriggersService.updateTrigger(this.triggerId, updateObject)
+        .then((res) => {
+          this._updateFlow(this.flow).then(() => {
+            this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+          });
+        })
     }
   }
 
