@@ -39,6 +39,10 @@
         </div>
       </div>
     </div>
+    <div *ngIf="!applications.length">
+      <div class="app-list__empty-state"></div>
+      <div class="app-list__empty-state__legend">{{ 'APP-LIST:EMPTY' | translate }}</div>
+    </div>
   </div>
 
 </div>

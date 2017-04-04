@@ -69,6 +69,8 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
               found.id = existing.id;
 
               if(found) {
+                found.name = existing.name;
+                found.description = existing.description;
                 this.existingTriggers.push(found);
               }
             });

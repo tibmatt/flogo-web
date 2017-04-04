@@ -23,6 +23,11 @@
         <div class="col-xs-6 col-md-3">
           <h4 class="flogo-main__subtitle">{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}</h4>
           <div class="recent-flows">
+            <div *ngIf="!recent.length">
+              <div class="recent-flows__empty-state"></div>
+              <div class="recent-flows__empty-state__legend">{{ 'FLOWS:EMPTY' | translate }}</div>
+            </div>
+
             <ul class="recent-flows__list">
               <li *ngFor="let item of recent">
                 <p><a [routerLink]="['/flows', item.id]" class="recent-flows__list__flow">{{item.name}}</a></p>
@@ -30,7 +35,10 @@
               </li>
             </ul>
           </div>
+
+
         </div>
+
       </div>
     </div>
   </div>
