@@ -1,8 +1,16 @@
 import defaults from 'lodash/defaults';
 import Ajv from 'ajv';
 
-function validate(schema, data, options = {}) {
+function validate(schema, data, options = {}, customValidations) {
   const ajv = new Ajv(options);
+
+  if (customValidations) {
+    customValidations.forEach(validator => ajv.addKeyword(
+      validator.keyword,
+      { validate: validator.validate, errors: true }),
+    );
+  }
+
   const valid = ajv.validate(schema, data);
   return valid ? null : ajv.errors;
 }
@@ -25,10 +33,36 @@ class Validator {
     return validate(handlerEditableSchema(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
-  static validateFullApp(data, options) {
-    options = defaults({}, options, { removeAdditional: false, useDefaults: false, allErrors: true });
-    console.log(options);
-    return validate(fullAppSchema(), data, options);
+  static validateFullApp(data, contribVerify, options) {
+    options = defaults({}, options, { removeAdditional: false, useDefaults: false, allErrors: true, verbose: true });
+    let customValidations;
+    if (contribVerify) {
+      const makeInstalledValidator = (keyword, collection, type) => {
+        return function validator(schema, vData) {
+          const isInstalled = collection.includes(vData);
+          if (!isInstalled) {
+            validator.errors = [{ keyword, message: `${type} "${vData}" is not installed`, data }];
+          }
+          return isInstalled;
+        };
+      };
+
+      customValidations = [
+        { keyword: 'trigger-installed', validate: makeInstalledValidator('trigger-installed', contribVerify.triggers || [], 'Trigger') },
+        { keyword: 'activity-installed', validate: makeInstalledValidator('activity-installed', contribVerify.activities || [], 'Activity') },
+      ];
+    }
+
+    const errors = validate(fullAppSchema(), data, options, customValidations);
+    if (errors && errors.length > 0) {
+      // get rid of some info we don't want to expose
+      errors.forEach(e => {
+        delete e.params;
+        delete e.schema;
+        delete e.parentSchema;
+      });
+    }
+    return errors;
   }
 
 }
@@ -168,6 +202,7 @@ function fullAppSchema() {
             },
             ref: {
               type: 'string',
+              'x-trigger-installed': true,
             },
             settings: {
               type: 'object',
@@ -268,11 +303,11 @@ function fullAppSchema() {
           },
           rootTask: {
             title: 'rootTask',
-            $ref: '#/definitions/Flow/definitions/task',
+            $ref: '#/definitions/Flow/definitions/rootTask',
           },
           errorHandlerTask: {
             title: 'errorHandlerTask',
-            $ref: '#/definitions/Flow/definitions/task',
+            $ref: '#/definitions/Flow/definitions/rootTask',
           },
         },
         required: [
@@ -386,9 +421,71 @@ function fullAppSchema() {
               },
               activityRef: {
                 type: 'string',
+                'activity-installed': true,
               },
               attributes: {
                 type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/attribute',
+                },
+              },
+              inputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              outputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              tasks: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/task',
+                },
+              },
+              links: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/link',
+                },
+              },
+            },
+            required: [
+              'id',
+              'name',
+              'activityRef',
+            ],
+          },
+          rootTask: {
+            title: 'rootTask',
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+              },
+              type: {
+                type: 'integer',
+              },
+              name: {
+                type: 'string',
+              },
+              title: {
+                type: 'string',
+              },
+              description: {
+                type: 'string',
+              },
+              activityRef: {
+                type: 'string',
+                default: '',
+              },
+              attributes: {
+                type: 'array',
+                default: [],
                 items: {
                   $ref: '#/definitions/Flow/definitions/attribute',
                 },

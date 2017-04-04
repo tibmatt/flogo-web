@@ -4,6 +4,7 @@ import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 export function apps(router, basePath) {
   router.get(`${basePath}/apps`, listApps);
   router.post(`${basePath}/apps`, createApp);
+  router.post(`${basePath}/apps\\:import`, importApp);
 
   // ex. /apps/zA45E:export
   // needs to be registered before .get('/apps/:appId')
@@ -109,6 +110,25 @@ function* deleteApp() {
   }
 
   this.status = 204;
+}
+
+function* importApp() {
+  try {
+    console.log('usinfg', this.request.body);
+    this.body = yield AppsManager.import(this.request.body);
+  } catch (error) {
+    if (error.isOperational) {
+      if (error.type === ERROR_TYPES.COMMON.VALIDATION) {
+        throw ErrorManager.createRestError('Validation error in /apps getApp', {
+          status: 400,
+          title: 'Validation error',
+          detail: 'There were one or more validation problems',
+          meta: error.details.errors,
+        });
+      }
+    }
+    throw error;
+  }
 }
 
 function* exportApp() {

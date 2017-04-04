@@ -15,7 +15,7 @@ import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
-import { FlowsManager } from '../flows';
+import { importApp } from './import.v2';
 
 import { Validator } from './validator';
 
@@ -196,25 +196,7 @@ export class AppsManager {
 
   // TODO documentation
   static import(fromApp) {
-    throw new Error('Not implemented');
-    // const errors = Validator.validate(fromApp, { removeAdditional: true, useDefaults: true });
-    // if (errors) {
-    //   throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
-    // }
-    // // TODO: set ids
-    // // TODO: apply unique names to triggers
-    // // TODO: apply unique names to flows
-    // // TODO: apply unique names to tasks
-
-    // return this.create(importedJSON)
-    //   .then((app) => {
-    //     let { triggers, actions } = importedJSON;
-    //     let importedFlows = Object.assign({}, { createdApp: app }, { triggers, actions });
-    //     return importFlows(importedFlows);
-    //   })
-    //   .catch((error) => {
-    //     throw error;
-    //   });
+    return importApp(fromApp);
   }
 
   /**
@@ -238,7 +220,7 @@ export class AppsManager {
         });
 
         // will strip additional metadata such as createdAt, updatedAt
-        const errors = Validator.validateFullApp(app, { removeAdditional: true, useDefaults: true });
+        const errors = Validator.validateFullApp(app, null, { removeAdditional: true, useDefaults: true });
         if (errors && errors.length > 0) {
           throw ErrorManager.createValidationError('Validation error', { details: errors });
         }
@@ -269,37 +251,6 @@ export class AppsManager {
 
         return app;
       });
-  }
-
-  /**
-   * Fetch many apps by their id
-   *
-   * Options:
-   *    * ## options
-   *    - withFlows {boolean|string} get also all the related flows. Possible values:
-   *      - short {string} - get short version of the flows
-   *      - full {string} -  get full version of the flows
-   *      - true {boolean} - same as 'short'
-   *      - false {boolean} - do not get the flows
-   * @param appIds {string[]} ids of the apps to fetch
-   * @param options
-   * @param options.withFlows retrieve flows
-   */
-  static fetchManyById(appIds = [], { withFlows } = { withFlows: false }) {
-    return appsDBService.db
-      .allDocs({
-        keys: appIds,
-        include_docs: true,
-      })
-      .then(result => (result.rows || [])
-        .filter((appRow) => {
-          const isError = appRow.error;
-          const isDeleted = appRow.value && appRow.value.deleted;
-          return !isError && !isDeleted;
-        })
-        .map(appRow => cleanForOutput(appRow.doc)),
-      )
-      .then(apps => (withFlows ? augmentWithFlows(apps, withFlows) : apps));
   }
 
   static validate(app, { clean } = { clean: false }) {
@@ -361,19 +312,6 @@ function cleanForOutput(app) {
   return pick(cleanedApp, PUBLISH_FIELDS);
 }
 
-function getFlowsForApp(appId, type) {
-  return FlowsManager.find({ appId }, { fields: type });
-}
-
-function augmentWithFlows(apps, flowFields) {
-  return Promise.all(apps.map(app => getFlowsForApp(app.id, flowFields)
-    .then((flows) => {
-      const augmentedApp = app;
-      augmentedApp.flows = flows;
-      return augmentedApp;
-    })));
-}
-
 function nowISO() {
   return (new Date()).toISOString();
 }
@@ -387,3 +325,4 @@ function ensureUniqueName(forName) {
       return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
     });
 }
+
