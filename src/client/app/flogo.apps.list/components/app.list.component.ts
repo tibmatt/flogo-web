@@ -32,24 +32,30 @@ export class FlogoAppListComponent implements OnInit {
     }
   }
 
-  /*onImportFileSelected(event) {
-    let file = <File> _.get(event, 'target.files[0]');
+  onImportFileSelected($event) {
+    let file: File = $event.target.files[0];
+    let fileReader: FileReader = new FileReader();
+    fileReader.onload = this.uploadApp();
+    fileReader.readAsText(file);
+  }
 
-    // clean input file value
-    event.target.value = '';
-
-    this.apiApplications.uploadApplication(file)
-      .then((results: any) => {
-        let createdApp = results.createdApp;
-        this.applications.push(createdApp);
-        let message = this.translate.instant('APP-LIST:SUCCESSFULLY-IMPORTED');
-        this.appSelected(createdApp);
-        notification(message, 'success', 3000);
-      })
-      .catch((error) => {
-        notification(this.getErrorMessage(error), 'error');
-      });
-  }*/
+  uploadApp() {
+    let appListComponent = this;
+    return function(readerEvent){
+      try {
+        let appData = JSON.parse(readerEvent.target.result);
+        appListComponent.apiApplications.uploadApplication(appData)
+          .then((application)=>{
+            appListComponent.applications.push(application);
+            appListComponent.applications = _.sortBy(appListComponent.applications, 'name');
+          }).catch((error)=>{
+          console.log(error);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 
   getErrorMessage(error) {
     // todo: multiple error messages?
@@ -80,7 +86,7 @@ export class FlogoAppListComponent implements OnInit {
   listAllApps() {
     this.apiApplications.listApps()
       .then((applications: Array<IFlogoApplicationModel>) => {
-        this.applications = applications;
+        this.applications = _.sortBy(applications, 'name');
       });
   }
 

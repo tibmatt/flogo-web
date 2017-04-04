@@ -76,6 +76,14 @@ export class AppsApiService {
       .toPromise();
   }
 
+  uploadApplication(application) {
+    let options = this.httpUtils.defaultOptions();
+
+    return this.http.post(this.apiPrefix('apps:import'), application, options).toPromise()
+      .then(response => response.json())
+      .catch(error => Promise.reject(this.extractErrors(error)));
+  }
+
   private apiPrefix(path) {
     return this.httpUtils.apiPrefix(path, 'v2');
   }

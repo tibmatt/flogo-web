@@ -1,17 +1,15 @@
 <div class="flogo-app-list">
   <div class="flogo-app-list__header row">
-    <div class="col-md-2">
+    <div class="col-md-8">
       <h4 class="title">{{ 'APP-LIST:MY-APPS' | translate }}</h4>
-    </div>
-    <div class="col-md-6">
       <!--<flogo-apps-search (changedSearch)="onChangedSearch($event)"
                          class="search pull-right"></flogo-apps-search>-->
     </div>
     <div class="col-md-4">
       <button class="flogo-button flogo-button--secondary" (click)="importInput.click()">
         {{ 'DETAILS:IMPORT' | translate }}
-        <!--<input #importInput type="file" accept="application/json" (change)="onImportFileSelected($event)">-->
-        <input #importInput type="file" class="app-list__app-import-input" accept="application/json">
+        <input #importInput type="file" accept="application/json" class="app-list__app-import-input"
+               (change)="onImportFileSelected($event)">
       </button>
       <button class="flogo-button flogo-button--default" (click)="onAdd()">{{ 'ADD:CREATE' | translate }}</button>
     </div>
