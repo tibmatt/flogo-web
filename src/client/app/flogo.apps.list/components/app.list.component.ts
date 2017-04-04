@@ -48,32 +48,37 @@ export class FlogoAppListComponent implements OnInit {
           .then((application)=>{
             appListComponent.applications.push(application);
             appListComponent.applications = _.sortBy(appListComponent.applications, 'name');
+            appListComponent.notifyUser(true);
           }).catch((error)=>{
-          console.log(error);
+          appListComponent.notifyUser(false, error);
         });
       } catch (error) {
-        console.log(error);
+        appListComponent.notifyUser(false, error);
       }
     }
   }
 
-  getErrorMessage(error) {
-    // todo: multiple error messages?
-    // todo: error detail
+  notifyUser(isImported: boolean, errorDetails?: Error) {
     let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
-    if (error[ERROR_CONSTRAINT.WRONG_INPUT_JSON_FILE]) {
+
+    if(isImported) {
+      message = 'APP-LIST:SUCCESSFULLY-IMPORTED';
+      notification(this.translate.instant(message), 'success', 3000);
+    } else {
+      message = this.getErrorMessage(errorDetails);
+      notification(this.translate.instant(message), 'error');
+    }
+  }
+
+  getErrorMessage(error) {
+    let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
+
+    if(error.name === 'Syntax Error'){
       message = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
+    } else {
+      message = 'APP-LIST:BROKEN_RULE_VALIDATION_ERROR';
     }
-
-    if (error[ERROR_CONSTRAINT.NOT_INSTALLED_ACTIVITY]) {
-      message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_ACTIVITY';
-    }
-
-    if (error[ERROR_CONSTRAINT.NOT_INSTALLED_TRIGGER]) {
-      message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
-    }
-
-    return this.translate.instant(message);
+    return message;
   }
 
   onAdd() {
