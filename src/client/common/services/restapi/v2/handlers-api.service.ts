@@ -17,4 +17,10 @@ export class  RESTAPIHandlersService {
 
   }
 
+  getHandler(triggerId, actionId) {
+    return this.http.get(`/api/v2/triggers/${triggerId}/handlers/${actionId}`).toPromise()
+      .then(response => response.json().data);
+
+  }
+
 }
