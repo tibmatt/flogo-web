@@ -31,7 +31,8 @@
             <ul class="recent-flows__list">
               <li *ngFor="let item of recent">
                 <p><a [routerLink]="['/flows', item.id]" class="recent-flows__list__flow">{{item.name}}</a></p>
-                <p>in <a [routerLink]="['/apps', item.appId]" class="recent-flows__list__app">{{item.appId}}</a></p>
+                <p>in <a [routerLink]="['/apps', item.appId]" class="recent-flows__list__app">{{item.app ? item.app.name
+                  : item.appId}}</a></p>
               </li>
             </ul>
           </div>
