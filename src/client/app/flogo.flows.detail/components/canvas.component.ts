@@ -459,7 +459,11 @@ export class FlogoCanvasComponent implements OnInit {
       this._restAPITriggersService.createTrigger(this.app.id, triggerSettings)
         .then((createdTrigger) => {
           let settings = this.getSettingsCurrentHandler();
-          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.flow.id, settings );
+          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.flow.id, settings )
+            .then((res) => {
+              let message = this.translate.instant('CANVAS:COPIED-TRIGGER');
+              notification(message, 'success', 3000);
+            });
         });
     }
 
