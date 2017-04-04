@@ -11,7 +11,7 @@
         <input #importInput type="file" accept="application/json" class="app-list__app-import-input"
                (change)="onImportFileSelected($event)">
       </button>
-      <button class="flogo-button flogo-button--default" (click)="onAdd()">{{ 'ADD:CREATE' | translate }}</button>
+      <button class="flogo-button flogo-button--default" (click)="onAdd()">{{ 'APP-LIST:NEW' | translate }}</button>
     </div>
   </div>
   <div class="flogo-app-list__content">
@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="!applications.length">
+    <div *ngIf="!applications.length" class="app-list__empty">
       <div class="app-list__empty-state"></div>
       <div class="app-list__empty-state__legend">{{ 'APP-LIST:EMPTY' | translate }}</div>
     </div>
