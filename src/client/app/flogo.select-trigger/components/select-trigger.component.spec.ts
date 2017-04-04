@@ -35,6 +35,21 @@ describe('FlogoSelectTrigger component', () => {
   let comp: FlogoSelectTriggerComponent, fixture: ComponentFixture<FlogoSelectTriggerComponent>,
     de: DebugElement, el: HTMLElement;
 
+  let existingMock = [
+    {
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/coap',
+      name: 'Simple COAP Trigger',
+      description: 'Description of Simple COAP Trigger',
+      id: 1
+    },
+    {
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt',
+      name: 'Receive MQTT Message',
+      description: 'MQTT Message description',
+      id: 2
+    }
+  ];
+
   function compileComponent() {
     return TestBed.compileComponents();
   }
@@ -75,14 +90,7 @@ describe('FlogoSelectTrigger component', () => {
         fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
         comp = fixture.componentInstance;
         let existing =  function() {
-          return Promise.resolve([
-            {
-              ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/coap'
-            },
-            {
-              ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt'
-            },
-          ]);
+          return Promise.resolve(existingMock);
         };
         comp.getExistingTriggers  = existing;
         comp.loadInstalledTriggers()
@@ -100,6 +108,10 @@ describe('FlogoSelectTrigger component', () => {
       .then(() => {
         fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
         comp = fixture.componentInstance;
+        let existing = function () {
+          return Promise.resolve([]);
+        };
+        comp.getExistingTriggers = existing;
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
@@ -117,13 +129,17 @@ describe('FlogoSelectTrigger component', () => {
       .then(() => {
         fixture = TestBed.createComponent(FlogoSelectTriggerComponent);
         comp = fixture.componentInstance;
+        let existing =  function() {
+          return Promise.resolve(existingMock);
+        };
+        comp.getExistingTriggers  = existing;
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
             let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
             res[0].nativeElement.click(res[0]);
             let postService = <PostService>fixture.debugElement.injector.get(PostService);
-            expect(postService['published'].data.trigger.description).toEqual('Simple CoAP Trigger');
+            expect(postService['published'].data.trigger.description).toEqual('Description of Simple COAP Trigger');
             done();
           });
       });
