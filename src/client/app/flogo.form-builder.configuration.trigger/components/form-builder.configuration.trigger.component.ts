@@ -47,7 +47,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
 
     if(changes['_context']) {
       try {
-        numFlows =  this._context.app.triggers[0].handlers.length;
+        numFlows = this._context.currentTrigger.handlers.length;
       }catch(err) {
         numFlows = 1;
         console.log(err);

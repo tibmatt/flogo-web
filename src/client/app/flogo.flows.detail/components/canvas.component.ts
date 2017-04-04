@@ -314,7 +314,8 @@ export class FlogoCanvasComponent implements OnInit {
       isTask: isTask,
       hasProcess: !!this.runState.currentProcessId,
       isDiagramEdited: this._isDiagramEdited,
-      app: null
+      app: null,
+      currentTrigger: null
     };
   }
 
@@ -696,9 +697,10 @@ export class FlogoCanvasComponent implements OnInit {
               var currentStep = this._getCurrentState(data.node.taskID);
               var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
               var context = this._getCurrentContext(data.node.taskID, diagramId);
+              this.triggerId = this.getTriggerIdCurrentFlow(app, this.flow.id);
+              context.currentTrigger = this.getTriggerFromApp(app, this.triggerId);
               context.app = app;
               this.app = app;
-              this.triggerId = this.getTriggerIdCurrentFlow(app, this.flow.id);
 
               this._restAPIHandlerService.getHandler(this.triggerId, this.flow.id)
                 .then((handler) => {
