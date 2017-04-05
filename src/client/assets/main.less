@@ -13,6 +13,8 @@ div {
 html, body {
   display: flex;
   align-items: stretch;
+  background: @color-bg;
+  width: 100%;
 }
 
 html {
@@ -187,10 +189,6 @@ label {
 /* ================ */
 
 /* The spin loading styles */
-.flogo-spin-loading-bg {
-  background: #f4f4f4;
-  width: 100%;
-}
 .flogo-spin-loading {
   transform: scale(0.5);
   transform-origin: 0 0;
@@ -383,7 +381,7 @@ label {
 }
 
 .flogo-common-edit-panel__container {
-  padding: 10px 19px 10px 17px;
+  padding: 0 19px 10px 17px;
   height: @size-height-right-container;
   overflow-y: scroll;
 }
@@ -456,7 +454,7 @@ label {
 }
 
 .flogo-common-edit-panel__container > .flogo-common-edit-panel__legend:first-child {
-  margin-top: -10px;
+  margin-top: -1px;
 }
 
 .flogo-common-edit-panel__head + .flogo-common-edit-panel__legend {
@@ -603,8 +601,8 @@ label {
   justify-content: center;
   align-items: center;
   position: relative;
-  height: 42px;
-  width: 29px;
+  height: 35px;
+  width: 24px;
 
   &:hover, &:active {
     color: #fff;
@@ -666,9 +664,12 @@ label {
 }
 
 .flogo-button--default{
+  height: @size-height-button;
   color: white;
   background: @color-primary;
   border: none;
+  padding-left: 1em;
+  padding-right: 1em;
 
   &:hover{
     border-radius: 4px;
@@ -683,9 +684,12 @@ label {
 }
 
 .flogo-button--secondary{
+  height: @size-height-button;
   color: @color-secondary;
   background: white;
   border: solid 2px @color-secondary;
+  padding-left: 1em;
+  padding-right: 1em;
 
   &:hover{
     border-radius: 4px;
@@ -701,22 +705,51 @@ label {
 }
 
 .flogo-button--accent{
+  height: @size-height-button;
   color: @color-accent;
-  background: white;
+  background-color: transparent;
   border: solid 2px @color-accent;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 
   &:hover{
-    background: @color-accent-light;
+    background-color: transparent;
     border-radius: 4px;
-    color: white;
+    color: @color-accent;
   }
   &:active{
     background: @color-accent-dark;
+    background: @color-accent-light;
     border-radius: 4px;
     color: white;
   }
   &:disabled{
     opacity: .5;
+  }
+}
+
+.flogo-button-squared {
+  background-color: #fff;
+  border-radius: 5px;
+  border: solid 1px #d8d8d8;
+  font-size: .875em;
+  height: 31px;
+  width: 31px;
+
+  .flogo-button-squared__icon {
+    color: #b2d8f2;
+    position: relative;
+    top: 1px;
+  }
+
+  &:hover {
+    background-color: #79b8dc;
+    border: none;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+
+    .flogo-button-squared__icon  {
+      color: #fff;
+    }
   }
 }
 

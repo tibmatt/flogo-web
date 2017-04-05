@@ -13,21 +13,26 @@ import { IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram, IFlogoFlowDiagramTa
 import { SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS, PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS } from '../../flogo.flows.detail.diagram/messages';
 import { SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS, PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS } from '../../flogo.flows.detail.triggers/messages';
 import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks/messages';
-import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
+import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
 import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
 import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS } from '../../flogo.flows.detail.error-panel/messages'
 import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { RESTAPITriggersService } from '../../../common/services/restapi/v2/triggers-api.service';
+import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
+import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
 import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE, ERROR_CODE } from '../../../common/constants';
 import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
-  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus
+  attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus,
+  objectFromArray
 } from '../../../common/utils';
 
 import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { FlogoModal } from '../../../common/services/modal.service';
 import { HandlerInfo } from '../models/models';
+import { FlogoFlowService as FlowsService } from '../services/flow.service';
 
 @Component({
   selector: 'flogo-canvas',
@@ -42,6 +47,7 @@ export class FlogoCanvasComponent implements OnInit {
   public mainHandler: HandlerInfo;
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
+
 
   private runState = {
     // data
@@ -63,11 +69,17 @@ export class FlogoCanvasComponent implements OnInit {
   public loading: boolean;
   public exportLink: string;
   public downloadLink: string;
-  public isInstructionsActivated: boolean = false;
+  public hasTrigger: boolean;
+  public triggerId: string;
+  public app: any;
 
   constructor(public translate: TranslateService,
               private _postService: PostService,
               private _restAPIFlowsService: RESTAPIFlowsService,
+              private _flowService: FlowsService,
+              private _restAPITriggersService: RESTAPITriggersService,
+              private _restAPIHandlerService: RESTAPIHandlersService,
+              private _restAPIAppsService: AppsApiService,
               private _runnerService: RunnerService,
               private _router: Router,
               private _flogoModal: FlogoModal,
@@ -75,116 +87,23 @@ export class FlogoCanvasComponent implements OnInit {
     this._isDiagramEdited = false;
 
     this.loading = true;
-
+    this.hasTrigger = true;
+    this.triggerId = null;
+    this.app = null;
   }
 
   public ngOnInit() {
     this.flowId = this._route.snapshot.params['id'];
     this.backToAppHover = false;
 
-    this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
-
-    this.loading = true;
-
-    try {
-      this.flowId = flogoIDDecode(this.flowId);
-    } catch (e) {
-      console.warn(e);
-    }
+    this.downloadLink = `/api/v2/actions/${this.flowId}/build`;
 
     this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
-    this.getFlow(this.flowId)
-      .then((res: any) => {
-        this.flow = res.flow;
-        this.flowName = this.flow.name;
-        this.handlers = {
-          'root': res.root,
-          'errorHandler': res.errorHandler
-        };
-
-        this.mainHandler = this.handlers['root'];
-        this.errorHandler = this.handlers['errorHandler'];
-
-        this.clearAllHandlersRunStatus();
+    this._loadFlow(this.flowId)
+      .then(() => {
         this.initSubscribe();
-
-        // todo: extract to service?
-        setTimeout(() => {
-          this.showInstructions();
-        }, 500);
-
-        // todo: why?
-        this._updateFlow(this.flow).then(() => {
-          this.loading = false;
-        });
-
       });
-  }
-
-  private getFlow(id: string) {
-    let diagram: IFlogoFlowDiagram;
-    let errorDiagram: IFlogoFlowDiagram;
-    let tasks: IFlogoFlowDiagramTaskDictionary;
-    let errorTasks: IFlogoFlowDiagramTaskDictionary;
-    let flow: any;
-
-
-    return new Promise((resolve, reject) => {
-
-      this._restAPIFlowsService.getFlow(id)
-        .then(
-          (rsp: any) => {
-            if (!_.isEmpty(rsp)) {
-              // initialisation
-              console.group('Initialise canvas component');
-              flow = rsp;
-              tasks = flow.items;
-              if (_.isEmpty(flow.paths)) {
-                diagram = flow.paths = <IFlogoFlowDiagram>{
-                  root: {},
-                  nodes: {}
-                };
-              } else {
-                diagram = flow.paths;
-              }
-
-              if (_.isEmpty(flow.errorHandler)) {
-                flow.errorHandler = { paths: {}, items: {} };
-              }
-
-              errorTasks = flow.errorHandler.items;
-              if (_.isEmpty(flow.errorHandler.paths)) {
-                errorDiagram = flow.errorHandler.paths = <IFlogoFlowDiagram>{
-                  root: {},
-                  nodes: {}
-                }
-              } else {
-                errorDiagram = flow.errorHandler.paths;
-              }
-
-
-            }
-
-            resolve({
-              flow,
-              root: {
-                diagram, tasks
-              },
-              errorHandler: {
-                diagram: errorDiagram, tasks: errorTasks
-              }
-            });
-
-          }
-        )
-        .catch(
-          (err: any) => {
-            reject(null);
-          }
-        );
-
-    });
   }
 
   private initSubscribe() {
@@ -200,6 +119,7 @@ export class FlogoCanvasComponent implements OnInit {
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTransform, { callback: this._selectTransformFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback: this._selectTriggerFromDiagram.bind(this) }),
       _.assign({}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback: this._addTriggerFromTriggers.bind(this) }),
+      _.assign({}, FLOGO_SELECT_TASKS_SUB_EVENTS.triggerAction , { callback: this._onActionTrigger.bind(this) }),
       _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback: this._runFromTriggerinTile.bind(this) }),
@@ -231,7 +151,7 @@ export class FlogoCanvasComponent implements OnInit {
     this._flogoModal.confirmDelete(message)
       .then((res) => {
         if (res) {
-          this._restAPIFlowsService.deleteFlow(this.flowId)
+          this._flowService.deleteFlow(this.flowId)
             .then(() => {
               this.navigateToApp();
             })
@@ -261,19 +181,44 @@ export class FlogoCanvasComponent implements OnInit {
     // processing this._flow to pure JSON object
     flow = _.cloneDeep(flow);
     cleanPaths(flow.paths);
+    flow.schemas = _.get(this.handlers, 'root.schemas');
 
     if (flow.errorHandler && !_.isEmpty(flow.errorHandler.paths)) {
       cleanPaths(flow.errorHandler.paths);
     }
 
-    flow = JSON.parse(JSON.stringify(flow));
+    return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
+      console.groupCollapsed('Flow updated');
+      console.log(rsp);
+      console.groupEnd();
+      return rsp;
+    });
 
-    return this._restAPIFlowsService.updateFlow(flow)
-      .then(
-        (rsp: any) => {
-          console.log(rsp);
+  }
+
+  private _loadFlow(flowId: string) {
+    this.loading = true;
+    return this._flowService.getFlow(flowId)
+      .then((res: any) => {
+        const FLOW_HANDLER_TYPE_ROOT = 'root';
+        const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
+        this.flow = res.flow;
+        this.flowName = this.flow.name;
+        this.handlers = {
+          [FLOW_HANDLER_TYPE_ROOT]: res.root,
+          [FLOW_HANDLER_TYPE_ERROR]: res.errorHandler
+        };
+
+        this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
+        this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
+        if ( _.isEmpty( this.mainHandler.diagram ) || _.isEmpty( this.mainHandler.diagram.root ) ) {
+          this.hasTrigger = false;
         }
-      );
+
+        this.clearAllHandlersRunStatus();
+        this.loading = false;
+
+      });
   }
 
   private _getCurrentState(taskID: string) {
@@ -356,7 +301,9 @@ export class FlogoCanvasComponent implements OnInit {
       isBranch: isBranch,
       isTask: isTask,
       hasProcess: !!this.runState.currentProcessId,
-      isDiagramEdited: this._isDiagramEdited
+      isDiagramEdited: this._isDiagramEdited,
+      app: null,
+      currentTrigger: null
     };
   }
 
@@ -396,7 +343,7 @@ export class FlogoCanvasComponent implements OnInit {
    * @private
    */
   private _navigateFromModuleRoot(urlParts = []) {
-    return this._router.navigate(['/flows', flogoIDEncode(this.flowId), ...urlParts]);
+    return this._router.navigate(['/flows', this.flowId, ...urlParts]);
   }
 
   /*-------------------------------*
@@ -457,7 +404,6 @@ export class FlogoCanvasComponent implements OnInit {
 
   private _addTriggerFromDiagram(data: any, envelope: any) {
     console.group('Add trigger message from diagram');
-
     console.log(data);
     console.log(envelope);
 
@@ -480,6 +426,45 @@ export class FlogoCanvasComponent implements OnInit {
     console.groupEnd();
   }
 
+  private getSettingsCurrentHandler () {
+    let settings, outputs;
+    for(var key in this.flow.items) {
+      if(this.flow.items[key].type === FLOGO_TASK_TYPE.TASK_ROOT) {
+        settings = objectFromArray(this.flow.items[key].endpoint.settings, true);
+        outputs = objectFromArray(this.flow.items[key].outputs, true);
+      }
+    }
+
+    return {settings, outputs};
+  }
+
+  private _onActionTrigger(data: any, envelope: any) {
+
+    if(data.action === 'trigger-copy') {
+      let trigger = this.getTriggerFromApp(this.app, this.triggerId);
+      let triggerSettings = _.pick(trigger, ['name', 'description', 'ref', 'settings']);
+
+      this._restAPITriggersService.createTrigger(this.app.id, triggerSettings)
+        .then((createdTrigger) => {
+          let settings = this.getSettingsCurrentHandler();
+          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.flow.id, settings )
+            .then((res) => {
+              let message = this.translate.instant('CANVAS:COPIED-TRIGGER');
+              notification(message, 'success', 3000);
+            });
+        });
+    }
+
+  }
+
+  private getTriggerFromApp(app, triggerId) {
+    let trigger = app.triggers.find((trigger)=> {
+      return trigger.id === triggerId;
+    });
+
+    return trigger;
+  }
+
   private _addTriggerFromTriggers(data: any, envelope: any) {
     console.group('Add trigger message from trigger');
 
@@ -496,12 +481,40 @@ export class FlogoCanvasComponent implements OnInit {
     if (handler == this.errorHandler) {
       trigger.id = flogoGenTaskID(this._getAllTasks());
     }
+    let tasks = handler.tasks || [];
 
-    let tasks = handler.tasks;
-
+    this.handlers['root']['schemas'] = this.handlers['root']['schemas'] || {};
+    trigger.ref = trigger.ref || trigger['__schema'].ref;
+    this.handlers['root']['schemas'][trigger.ref] = trigger;
+    delete trigger['__schema'];
     tasks[trigger.id] = trigger;
 
-    this._navigateFromModuleRoot()
+
+    let resultCreateTrigger;
+    let settings = objectFromArray(data.trigger.endpoint.settings, false);
+    let outputs = objectFromArray(data.trigger.outputs, false);
+
+    if(data.installType === 'installed') {
+      let appId = this.flow.app.id;
+      let triggerInfo: any = _.pick(data.trigger, ['name', 'ref', 'description']);
+      triggerInfo.settings = objectFromArray(data.trigger.settings || [], false);
+
+      resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)
+        .then( (triggerResult)=> {
+          let triggerId = triggerResult.id;
+          return this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
+        });
+    } else {
+      const triggerId = data.trigger.id;
+      resultCreateTrigger = this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
+    }
+
+    resultCreateTrigger
+      .then(() => this._loadFlow(this.flowId))
+      .then(() => {
+        this.hasTrigger = true;
+        return this._navigateFromModuleRoot();
+      })
       .then(
         () => {
           this._postService.publish(
@@ -523,8 +536,8 @@ export class FlogoCanvasComponent implements OnInit {
         }
       );
 
-    console.groupEnd();
 
+    console.groupEnd();
   }
 
   private _addTaskFromDiagram(data: any, envelope: any) {
@@ -599,6 +612,12 @@ export class FlogoCanvasComponent implements OnInit {
 
       this.handlers[diagramId].tasks[task.id] = task;
 
+      this.handlers['root'].schemas = this.handlers['root'].schemas || {};
+      task.ref = task.ref || task['__schema'].ref;
+      this.handlers['root'].schemas[task.ref] = task;
+
+      delete task['__schema'];
+
       this._navigateFromModuleRoot()
         .then(
           () => {
@@ -626,9 +645,31 @@ export class FlogoCanvasComponent implements OnInit {
 
   }
 
+  private getTriggerIdCurrentFlow(app, flowId) {
+    let triggerId:any = null;
+
+    let triggers = app.triggers.filter((trigger) => {
+      return trigger.appId === app.id;
+    });
+
+    if(triggers) {
+      triggers.forEach((trigger) => {
+        let handler = trigger.handlers.find((handler) => {
+          return handler.actionId === flowId;
+        });
+
+        if(handler) {
+          triggerId = trigger.id;
+          return triggerId;
+        }
+      });
+    }
+
+    return triggerId;
+  }
+
   private _selectTriggerFromDiagram(data: any, envelope: any) {
     let diagramId: string = data.id;
-
     console.group('Select trigger message from diagram');
 
     console.log(data);
@@ -639,45 +680,65 @@ export class FlogoCanvasComponent implements OnInit {
       .then(
         () => {
           console.group('after navigation');
+          let appPromise = null;
+          appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flow.app.id);
 
-          // Refresh task detail
-          var currentStep = this._getCurrentState(data.node.taskID);
-          var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
-          var context = this._getCurrentContext(data.node.taskID, diagramId);
+          appPromise
+            .then((app) => {
+              // Refresh task detail
+              var currentStep = this._getCurrentState(data.node.taskID);
+              var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
+              var context = this._getCurrentContext(data.node.taskID, diagramId);
+              this.triggerId = this.getTriggerIdCurrentFlow(app, this.flow.id);
+              context.currentTrigger = this.getTriggerFromApp(app, this.triggerId);
+              context.app = app;
+              this.app = app;
 
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                data: _.assign({}, data,
-                  { task: currentTask },
-                  { step: currentStep },
-                  { context: context }
-                ),
-                done: () => {
-                  // select task done
-                  //  only need this publish if the trigger has been changed
+              this._restAPIHandlerService.getHandler(this.triggerId, this.flow.id)
+                .then((handler) => {
+                  this._updateAttributesChanges(currentTask, handler.outputs, 'outputs');
+
                   this._postService.publish(
                     _.assign(
-                      {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
-                        data: {
-                          node: data.node,
-                          task: this.handlers[diagramId].tasks[data.node.taskID],
-                          id: data.id
-                        },
-                        done: (diagram: IFlogoFlowDiagram) => {
-                          _.assign(this.handlers[diagramId].diagram, diagram);
-                          // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
+                      {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+                        data: _.assign({}, data,
+                          { task: currentTask },
+                          { step: currentStep },
+                          { context: context }
+                        ),
+                        done: () => {
+                          // select task done
+                          //  only need this publish if the trigger has been changed
+                          this._postService.publish(
+                            _.assign(
+                              {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
+                                data: {
+                                  node: data.node,
+                                  task: this.handlers[diagramId].tasks[data.node.taskID],
+                                  id: data.id
+                                },
+                                done: (diagram: IFlogoFlowDiagram) => {
+                                  _.assign(this.handlers[diagramId].diagram, diagram);
+                                  // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
+                                }
+                              }
+                            )
+                          );
+
                         }
                       }
                     )
                   );
 
-                }
-              }
-            )
-          );
+                });
 
-          console.groupEnd();
+
+
+
+              console.groupEnd();
+            });
+
+
 
         }
       );
@@ -756,9 +817,15 @@ export class FlogoCanvasComponent implements OnInit {
       } else {
         task[data.proper] = data.content;
       }
-      this._updateFlow(this.flow).then(() => {
-        this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-      });
+      let updateObject = {};
+      updateObject[data.proper] = task[data.proper];
+
+      this._restAPITriggersService.updateTrigger(this.triggerId, updateObject)
+        .then((res) => {
+          this._updateFlow(this.flow).then(() => {
+            this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+          });
+        })
     }
   }
 
@@ -972,35 +1039,44 @@ export class FlogoCanvasComponent implements OnInit {
       var changedInputs = data.inputs || {};
       this._updateAttributesChanges(task, changedInputs, 'attributes.inputs');
 
-      /*
-       for(var name in changedInputs) {
-       task.attributes.inputs.forEach((input)=> {
-       if(input.name === name) {
-       input.value =  changedInputs[name];
-       }
-       });
-       }
-       */
     } else if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
+      let updatePromise: any = Promise.resolve(true);
 
-      this._updateAttributesChanges(task, data.settings, 'settings');
-      this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
-      this._updateAttributesChanges(task, data.outputs, 'outputs');
+      if(data.changedStructure === 'settings') {
+        updatePromise = this._restAPITriggersService.updateTrigger(this.triggerId, {settings: data.settings})
+      } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
+        updatePromise = this._restAPIHandlerService.updateHandler(this.triggerId, this.flow.id, {
+          settings: data.endpointSettings,
+          outputs: data.outputs
+        });
 
-      // ensure the persence of the internal properties
-      task.__props = task.__props || {};
+      }
 
-      // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
-      task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
-        let newValue = data.outputs[output.name];
 
-        // undefined is invalid default value, hence filter that out.
-        if (output && !_.isUndefined(newValue)) {
-          output.value = newValue;
-        }
+      updatePromise
+        .then((res) => {
+          this._updateAttributesChanges(task, data.settings, 'settings');
+          this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
+          this._updateAttributesChanges(task, data.outputs, 'outputs');
 
-        return output;
-      });
+          // ensure the persence of the internal properties
+          task.__props = task.__props || {};
+
+          // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
+          task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
+            let newValue = data.outputs[output.name];
+
+            // undefined is invalid default value, hence filter that out.
+            if (output && !_.isUndefined(newValue)) {
+              output.value = newValue;
+            }
+
+            return output;
+          });
+        });
+
+
+
     } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
       task.condition = data.condition;
     }
@@ -1454,30 +1530,6 @@ export class FlogoCanvasComponent implements OnInit {
 
     return stepNumber;
   }
-
-
-  // TODO: STILL USED?
-  /*-------------------------------*
-   |      WALKTHROUGH             |
-   *-------------------------------*/
-
-  showInstructions() {
-    let instructions: any = localStorage.getItem('flogo-show-instructions');
-    if (_.isEmpty(instructions)) {
-      localStorage.setItem('flogo-show-instructions', new Date().toString());
-      this.isInstructionsActivated = true;
-    }
-    return this.isInstructionsActivated;
-  }
-
-  public onClosedInstructions(closed) {
-    this.isInstructionsActivated = false;
-  }
-
-  public activateInstructions() {
-    this.isInstructionsActivated = true;
-  }
-
 
   /*-------------------------------*
    |      TRANSFORM                |

@@ -19,6 +19,7 @@
   width: 100%;
 }
 
+
 .canvas-flow {
   display: flex;
   width: 77.5%;
@@ -27,6 +28,10 @@
 
   -webkit-transition: width .5s; /* Safari */
   transition: width .5s;
+}
+
+.canvas-flow--maximized {
+  width: 100%;
 }
 
 .flogo-flow-container {
@@ -48,6 +53,12 @@
   z-index: 1;
   -webkit-transition: width .5s; /* Safari */
   transition: width .5s;
+}
+
+.canvas-right-container--minimized {
+  width: 0;
+  min-width: 0;
+
 }
 
 .flogo-flow-detail {
@@ -99,7 +110,7 @@
 
 
 .flogo-flow-detail-menu{
-  margin-right: 15px;
+  margin-right: 0.5em;
 }
 
 .flogo-flow-detail-header {

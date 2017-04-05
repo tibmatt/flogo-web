@@ -1,30 +1,46 @@
 <div class="flogo-app-list">
-
-  <div class="flogo-app-list__header">
-    <div class="title">{{ 'APP-LIST:MY-APPS' | translate }}</div>
-    <div>
-
-      <button class="flogo-button--import-app" (click)="importInput.click()">
-        <i class="flogo-icon flogo-icon-import"></i><span>Import</span>
-        <input #importInput type="file" accept="application/json" (change)="onImportFileSelected($event)">
+  <div class="flogo-app-list__header row">
+    <div class="col-md-8">
+      <h4 class="title">{{ 'APP-LIST:MY-APPS' | translate }}</h4>
+      <!--<flogo-apps-search (changedSearch)="onChangedSearch($event)"
+                         class="search pull-right"></flogo-apps-search>-->
+    </div>
+    <div class="col-md-4">
+      <button class="flogo-button flogo-button--secondary" (click)="importInput.click()">
+        {{ 'DETAILS:IMPORT' | translate }}
+        <input #importInput type="file" accept="application/json" class="app-list__app-import-input"
+               (change)="onImportFileSelected($event)">
       </button>
-
-      <button class="flogo-button--add-app" (click)="onAdd()"><i class="flogo-icon-add"></i></button>
+      <button class="flogo-button flogo-button--default" (click)="onAdd()">{{ 'APP-LIST:NEW' | translate }}</button>
     </div>
   </div>
-
   <div class="flogo-app-list__content">
-    <ul class="apps-list">
-      <li *ngFor="let app of applications" [class.selected]="app.id == currentApp?.id"
-          class="apps-list__element" (click)="onSelectApp($event, deleteBox, app)">
-        <div class="app-list__app-name">
-          {{ app.id == currentApp?.id ? currentApp.name : app.name }}
-          <flogo-app-delete-popover #deleteBox class="apps-list__delete-btn" (confirmDel)="remove($event)"
-                                  [app]="app">
-          </flogo-app-delete-popover>
+    <div class="apps-list">
+      <div *ngFor="let app of applications" class="apps-list__element" (click)="onSelectApp($event, deleteBox, app)">
+        <div class="row">
+          <div class="col-md-11">
+            <p class="app-list__app-name">{{ app.name }}</p>
+            <p>{{ app.description ? app.description : '&nbsp;'}}</p>
+          </div>
+          <div class="col-md-1">
+            <flogo-app-delete-popover #deleteBox class="apps-list__delete-btn" (confirmDel)="remove($event)"
+                                      [app]="app">
+            </flogo-app-delete-popover>
+          </div>
         </div>
-      </li>
-    </ul>
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <span class="app-list__created-at">
+              {{ 'FLOWS:CREATED' | translate:{value:''} }}{{ app.createdAt | timeFromNow}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!applications.length" class="app-list__empty">
+      <div class="app-list__empty-state"></div>
+      <div class="app-list__empty-state__legend">{{ 'APP-LIST:EMPTY' | translate }}</div>
+    </div>
   </div>
 
 </div>

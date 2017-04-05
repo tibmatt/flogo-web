@@ -1,0 +1,29 @@
+<div class="form-trigger-header">
+
+  <div class="details">
+
+    <div class="details__icon">
+      <i class="flogo-icon-trigger"></i>
+    </div>
+
+    <div class="details__text">
+      <div class="details__text__name" [(myContenteditable)]="descriptions.name" (myContenteditableChange)="changeDescriptions($event, 'name')"></div>
+      <div class="details__text__description">{{ descriptions?.details }}</div>
+    </div>
+
+    <div class="details__menu">
+      <i class="flogo-icon-kebabmenu"></i>
+      <div class="details__menu__options">
+        <ul class="details__menu__options__list">
+          <li class="details__menu__options__list__element">Update trigger</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="actions">
+    <div *ngFor="let action of actions" class="actions__button">{{action.title}}</div>
+  </div>
+
+</div>

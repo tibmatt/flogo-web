@@ -213,7 +213,7 @@ function processItemFromGitHub( rawItemInfo ) {
 
     itemInfo = BaseRegistered.constructItem( {
       'id' : BaseRegistered.generateID( m.name, m.version ),
-      'where' : rawItemInfo.path,
+      'ref' : rawItemInfo.path,
       'name' : m.name,
       'version' : m.version,
       'description' : m.description,

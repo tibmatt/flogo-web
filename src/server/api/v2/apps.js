@@ -1,16 +1,21 @@
-import { config } from '../../config/app-config';
 import { AppsManager } from '../../modules/apps/index.v2';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
-const basePathV2 = config.app.basePathV2;
+export function apps(router, basePath) {
+  router.get(`${basePath}/apps`, listApps);
+  router.post(`${basePath}/apps`, createApp);
+  router.post(`${basePath}/apps\\:import`, importApp);
 
-export function apps(router) {
-  router.get(`${basePathV2}/apps`, listApps);
-  router.post(`${basePathV2}/apps`, createApp);
+  // ex. /apps/zA45E:export
+  // needs to be registered before .get('/apps/:appId')
+  router.get(`${basePath}/apps/:appId\\:export`, exportApp);
 
-  router.get(`${basePathV2}/apps/:appId`, getApp);
-  router.patch(`${basePathV2}/apps/:appId`, updateApp);
-  router.del(`${basePathV2}/apps/:appId`, deleteApp);
+  router.get(`${basePath}/apps/:appId`, getApp);
+  router.patch(`${basePath}/apps/:appId`, updateApp);
+  router.del(`${basePath}/apps/:appId`, deleteApp);
+
+  // /apps:validate
+  router.post(`${basePath}/apps\\:validate`, validateApp);
 }
 
 function* listApps() {
@@ -25,29 +30,6 @@ function* listApps() {
     data: foundApps || [],
   };
 }
-//
-// function* createApp() {
-//   // throw error if it is not json?
-//   const data = this.request.body || {};
-//
-//   try {
-//     const app = yield AppsManager.create(data);
-//     this.body = {
-//       data: app,
-//     };
-//   } catch (error) {
-//     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
-//       throw ErrorManager.createRestError('Validation error in /apps getApp', {
-//         status: 400,
-//         title: 'Validation error',
-//         detail: 'There were one or more validation problems',
-//         meta: ErrorManager.validationToRestErrors(error.details.errors),
-//       });
-//     }
-//
-//     throw error;
-//   }
-// }
 
 function* createApp() {
   const body = this.request.body;
@@ -58,7 +40,7 @@ function* createApp() {
     };
   } catch (error) {
     if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
-      throw ErrorManager.createRestError('Validation error in /apps getApp', {
+      throw ErrorManager.createRestError('Validation error in /apps createApp', {
         status: 400,
         title: 'Validation error',
         detail: 'There were one or more validation problems',
@@ -130,3 +112,61 @@ function* deleteApp() {
   this.status = 204;
 }
 
+function* importApp() {
+  try {
+    console.log('usinfg', this.request.body);
+    this.body = yield AppsManager.import(this.request.body);
+  } catch (error) {
+    if (error.isOperational) {
+      if (error.type === ERROR_TYPES.COMMON.VALIDATION) {
+        throw ErrorManager.createRestError('Validation error in /apps getApp', {
+          status: 400,
+          title: 'Validation error',
+          detail: 'There were one or more validation problems',
+          meta: error.details.errors,
+        });
+      }
+    }
+    throw error;
+  }
+}
+
+function* exportApp() {
+  const appId = this.params.appId;
+
+  try {
+    this.body = yield AppsManager.export(appId);
+  } catch (error) {
+    if (error.isOperational) {
+      if (error.type === ERROR_TYPES.COMMON.VALIDATION) {
+        throw ErrorManager.createRestError('Validation error in /apps getApp', {
+          status: 400,
+          title: 'Validation error',
+          detail: 'There were one or more validation problems',
+          meta: error.details.errors,
+        });
+      } else if (error.type === ERROR_TYPES.COMMON.NOT_FOUND) {
+        throw ErrorManager.createRestNotFoundError('Application not found', {
+          title: 'Application not found',
+          detail: 'No application with the specified id',
+        });
+      }
+    }
+    throw error;
+  }
+}
+
+function* validateApp() {
+  const data = this.request.body || {};
+  const errors = yield AppsManager.validate(data, { clean: true });
+  this.status = 200;
+  if (errors && errors.length > 0) {
+    this.status = 400;
+    this.body = {
+      errors,
+    };
+  } else {
+    this.status = 200;
+    this.body = data;
+  }
+}

@@ -1,14 +1,17 @@
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
-import { AppDetailService, ApplicationDetail, ApplicationDetailState } from '../../flogo.apps/services/apps.service';
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
+import {
+  AppDetailService, ApplicationDetail, ApplicationDetailState,
+  FlowGroup, App
+} from '../../flogo.apps/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
 
 import { diffDates, notification } from '../../../common/utils';
 import { FlogoModal } from '../../../common/services/modal.service';
 
-const MAX_SECONDS_TO_ASK_FLOW_NAME = 5;
+const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
 
 @Component({
@@ -26,7 +29,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   @Output() flowDeleted: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
   @Output() onDeletedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
-  application: IFlogoApplicationModel;
+  application: App;
   state: ApplicationDetailState;
 
   isNameInEditMode: boolean;
@@ -36,6 +39,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   isDescriptionInEditMode: boolean;
   editableDescription: string;
 
+  flowGroups: Array<FlowGroup> = [];
   flows: Array<IFlogoApplicationFlowModel> = [];
 
   isNewApp: boolean = false;
@@ -55,7 +59,10 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     if (change.currentValue) {
       this.application = this.appDetail.app;
       this.state = this.appDetail.state;
-      this.flows = this.extractFlows();
+      const flowGroups = this.application ? this.application.flowGroups : null;
+      this.flowGroups = flowGroups ? [...this.application.flowGroups] : [];
+      this.flowGroups = _.sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
+      // this.flows = this.extractFlows();
 
       let prevValue = change.previousValue;
       let isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id != this.application.id;
@@ -79,6 +86,10 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
   openCreateFlow() {
     this.addFlow.open();
+  }
+
+  openCreateFlowFromTrigger(trigger: Trigger){
+    this.addFlow.open(trigger.id);
   }
 
   onClickAddDescription(event) {
@@ -178,7 +189,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.isNewApp = !this.application.updatedAt;
     if (this.isNewApp) {
       let secondsSinceCreation = diffDates(Date.now(), this.application.createdAt, 'seconds');
-      this.isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_FLOW_NAME;
+      this.isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
       this.isNameInEditMode = this.isNewApp;
     }
 

@@ -12,8 +12,12 @@
             [placeholder]="_info.placeholder"
             class="form-control tc-text-areas tc-text-area" [(ngModel)]="_value"
             (change)="onValidate($event)"
+            [disabled]="!_info.isEditable"
+            [class.is-disabled]="!_info.isEditable"
+            [class.is-disabled-settings]="!_info.isEditable && _info.structure === 'settings'"
             (blur)="onBlur($event)"
             [readonly]="isReadOnly()"></textarea>
+  <label *ngIf="!_info.isEditable" for="" [class.is-empty]="!_info.value">{{_info.value ? _info.value : '(empty)' }}</label>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>
   </div>

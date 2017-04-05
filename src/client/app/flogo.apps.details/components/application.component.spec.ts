@@ -1,7 +1,6 @@
-import { ComponentFixture, TestBed, async, tick, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { By }              from '@angular/platform-browser';
-import { Component, DebugElement, EventEmitter, NO_ERRORS_SCHEMA }    from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component }    from '@angular/core';
 import { Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
@@ -11,7 +10,7 @@ import { CommonModule as FlogoCommonModule } from '../../../common/common.module
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
 import { FlogoApplicationComponent } from './application.component';
 import { FlogoApplicationSearch } from '../../flogo.apps.search/components/search.component';
-import { FlogoApplicationFlowsComponent } from '../../flogo.apps.flows/components/flows.component';
+import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../../flogo.apps.flows/components';
 import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
 
 
@@ -64,12 +63,13 @@ describe('FlogoApplicationComponent component', () => {
         Ng2Bs3ModalModule,
         FlogoCoreModule,
         FlogoCommonModule,
-        FlogoFlowsModule
+        FlogoFlowsModule,
       ],
       declarations: [
         FlogoApplicationSearch,
         FlogoApplicationFlowsComponent,
         FlogoApplicationComponent,
+        FlowGroupComponent,
         Container,
       ], // declare the test component
       providers: [
@@ -99,10 +99,16 @@ describe('FlogoApplicationComponent component', () => {
     expect(inputName.nativeElement.innerText).toEqual('Sample Application 2');
   });
 
+  xit('When 3 flows provided, it should render 3 flows', () => {
+    let flows = fixture.debugElement.queryAll(By.css('.flogo-flow'));
+    expect(flows.length).toEqual(3);
+  });
+
   it('Should display creation date', () => {
     let creation = fixture.debugElement.query(By.css('.flogo-app-header__date--creation span'));
     expect(creation.nativeElement.innerText).toEqual('a few seconds ago.');
   });
+
 
   it('Click on Add description should show description input field', () => {
     let inputDescription;
@@ -122,7 +128,6 @@ describe('FlogoApplicationComponent component', () => {
     inputDescription = fixture.debugElement.query(By.css('#appDescription'));
     expect(inputDescription).toBeDefined();
   });
-
 
   it('When description field is empty, Add description link should be visible', () => {
     // because description field is empty, anchor add description should be present
@@ -179,11 +184,6 @@ describe('FlogoApplicationComponent component', () => {
     // because description field is not empty, anchor add description should not be present
     let addDescription = fixture.debugElement.query(By.css('.flogo-app-header__description-container > a'));
     expect(addDescription).toBeNull();
-  });
-
-  it('When 3 flows provided, it should render 3 flows', () => {
-    let flows = fixture.debugElement.queryAll(By.css('.flogo-flow'));
-    expect(flows.length).toEqual(3);
   });
 
   it('If it is a new application, its name should be displayed as editable', fakeAsync(() => {
@@ -246,7 +246,8 @@ function makeMockAppDetail() {
           description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
           createdAt: new Date()
         }
-      ]
+      ],
+      flowGroups: []
     },
     state: {
       name: {

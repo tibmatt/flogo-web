@@ -35,7 +35,8 @@ export class FlogoFormBuilderConfigurationBranchComponent {
       placeholder: '',
       isBranch:   true,
       isTrigger: false,
-      isTask: false
+      isTask: false,
+      isEditable: true
     };
 
     return info;

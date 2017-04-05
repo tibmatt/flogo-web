@@ -14,15 +14,15 @@
     "start-debug": "node --debug server.js",
     "start-prod-server": "node server.js",
     "dump-db": "mkdir db-init && pouchdb-dump http://0.0.0.0:5984/flogo-web > db-init/installed-flows.init",
-    "test:api": "node test | tap-spec"
+    "test:api": "mocha"
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0",
     "pouchdb-dump-cli": "^2.0.4",
-    "server-destroy": "^1.0.1",
-    "supertest": "^3.0.0",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.6.3"
+    "server-destroy": "^1.0.1"
   },
   "dependencies": {
     "ajv": "^4.11.5",

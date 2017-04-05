@@ -141,6 +141,7 @@ export function activitySchemaToTask(schema: any) : any {
   let task:any = {
     type: FLOGO_TASK_TYPE.TASK,
     activityType: _.get(schema, 'name', ''),
+    ref: schema.ref,
     name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
@@ -149,8 +150,8 @@ export function activitySchemaToTask(schema: any) : any {
     attributes: {
       inputs: _.get(schema, 'inputs', []),
       outputs: _.get(schema, 'outputs', [])
-    },
-    __schema: _.cloneDeep(schema)
+    }//,
+    //__schema: _.cloneDeep(schema)
   };
 
   _.each(
@@ -176,6 +177,7 @@ export function activitySchemaToTrigger(schema: any) : any {
   let trigger:any = {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
     triggerType: _.get(schema, 'name', ''),
+    ref: schema.ref,
     name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
     version: _.get(schema, 'version', ''),
     title: _.get(schema, 'title', ''),
@@ -183,8 +185,8 @@ export function activitySchemaToTrigger(schema: any) : any {
     homepage: _.get(schema, 'homepage', ''),
     settings: _.get(schema, 'settings', ''),
     outputs: _.get(schema, 'outputs', ''),
-    endpoint: { settings: _.get(schema, 'endpoint.settings', '') },
-    __schema: _.cloneDeep(schema)
+    endpoint: { settings: _.get(schema, 'endpoint.settings', '') } //,
+    //__schema: _.cloneDeep(schema)
   };
 
   _.each(
@@ -203,6 +205,18 @@ export function activitySchemaToTrigger(schema: any) : any {
 
 
   return trigger;
+}
+
+// todo: name and location are too general and use case too specific
+export function objectFromArray(arr, copyValues?) {
+  let mappedSettings = {};
+  let settings = arr || [];
+
+  settings.forEach((setting) => {
+    mappedSettings[setting.name] = copyValues ?  setting.value : null;
+  });
+
+  return mappedSettings;
 }
 
 export function normalizeTaskName(taskName:string) {

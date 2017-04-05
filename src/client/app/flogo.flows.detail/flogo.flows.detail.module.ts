@@ -9,6 +9,7 @@ import { TransformModule as FlogoTransformModule } from '../flogo.transform/flog
 import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
 import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
+import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
 
 import { FlogoCanvasComponent } from './components/canvas.component';
 
@@ -17,15 +18,19 @@ import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/compone
 import { FlogoFlowsDetailTriggersDetail } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
 import { FlogoFlowsDetailTasksDetail } from '../flogo.flows.detail.tasks.detail/components/detail.component';
+import { FlogoSelectTriggerComponent } from '../flogo.select-trigger/components/select-trigger.component';
 
 import { FlogoFlowsDetailDiagramComponent } from '../flogo.flows.detail.diagram/components/diagram.component';
 import { FlogoFlowsDetailErrorPanel } from '../flogo.flows.detail.error-panel/components/error-panel.component';
+
 
 import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tasks.install/components/install.component';
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
 import { RunnerService } from './services/runner.service';
 import { routing } from './flogo.flows.detail.routing';
+import { UIModelConverterService } from "./services/ui-model-converter.service";
+import { FlogoFlowService } from "./services/flow.service";
 
 @NgModule({
   imports: [
@@ -37,6 +42,7 @@ import { routing } from './flogo.flows.detail.routing';
     FlogoTransformModule,
     FlogoInstructionsModule,
     FlogoFooterModule,
+    FlogoFormModule,
     FlogoLogsModule,
     routing
   ],
@@ -46,6 +52,7 @@ import { routing } from './flogo.flows.detail.routing';
     FlogoFlowsDetailTriggersDetail,
     FlogoFlowsDetailTasks,
     FlogoFlowsDetailTasksDetail,
+    FlogoSelectTriggerComponent,
 
     FlogoFlowsDetailDiagramComponent,
     FlogoFlowsDetailErrorPanel,
@@ -57,7 +64,9 @@ import { routing } from './flogo.flows.detail.routing';
 
   ],
   providers: [
-    RunnerService
+    RunnerService,
+    UIModelConverterService,
+    FlogoFlowService
   ],
   bootstrap: [
     FlogoCanvasComponent

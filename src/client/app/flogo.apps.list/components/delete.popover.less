@@ -2,8 +2,13 @@
   visibility: visible !important;
 }
 
+.flogo-icon-delete:hover {
+  color: #79b8dc;
+}
+
 .popup-container {
 
+  min-width: 340px;
   position: absolute;
   z-index: 2;
   top: 0;
@@ -19,22 +24,12 @@
     margin-top: 0;
     margin-bottom: 2em;
   }
+
   .popup-btn {
-    padding: 7px 0;
-    text-align: center;
-    width: 45%;
-    font-weight: normal;
-  }
+    width: 125px;
 
-  .popup-btn.popup-btn-primary {
-    background: #d0011b;
-    color: #fff;
-    float: right;
-    border: none;
-    padding: 9px 0;
-  }
-
-  .popup-btn.popup-btn-secondary {
-    float: left;
+    &.popup-btn-confirm {
+      background-color: #d0011b;
+    }
   }
 }

@@ -1,52 +1,23 @@
 import pick from 'lodash/pick';
 import defaults from 'lodash/defaults';
-import toInteger from 'lodash/toInteger';
 import fromPairs from 'lodash/fromPairs';
 import isEqual from 'lodash/isEqual';
+import normalizeName from 'lodash/snakeCase';
 
 import shortid from 'shortid';
 
 import { DEFAULT_APP_ID } from '../../common/constants';
-
 import { appsDBService } from '../../config/app-config';
-import { VIEWS } from '../../common/db/apps';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
-import { FlowsManager } from '../flows';
-import { importFlows } from './import';
-import { consolidateFlowsAndTriggers } from './export';
-
 import { apps as appStore } from '../../common/db';
 import { logger } from '../../common/logging';
-import { Validator } from './validator';
+import { findGreatestNameIndex } from '../../common/utils/collection';
 
-/*
-app:
-  properties:
-    id:
-      type: string
-    name:
-      type: string
-      required: true
-    normalizedName:
-      type: string
-      readOnly: true
-    version:
-      type: string
-    description:
-      type: string
-    createdAt:
-      type: string
-      format: dateTime
-      readOnly: true
-    updatedAt:
-      type: string
-      format: dateTime
-      readOnly: true
-    flows:
-      type: array
-      readOnly: true
- */
+import { ActionsManager } from '../actions';
+import { importApp } from './import.v2';
+
+import { Validator } from './validator';
 
 const EDITABLE_FIELDS = [
   'name',
@@ -78,7 +49,7 @@ export class AppsManager {
 
   static create(app) {
     let inputData = app;
-    const errors = Validator.validate(inputData);
+    const errors = Validator.validateSimpleApp(inputData);
     if (errors) {
       return Promise.reject(ErrorManager.createValidationError('Validation error', errors));
     }
@@ -122,7 +93,7 @@ export class AppsManager {
           return false;
         }
 
-        const errors = Validator.validate(mergedData);
+        const errors = Validator.validateSimpleApp(mergedData);
         if (errors) {
           throw ErrorManager.createValidationError('Validation error', { details: errors });
         }
@@ -165,9 +136,15 @@ export class AppsManager {
    * @param appId {string} appId
    */
   static remove(appId) {
-    return appStore
-      .remove({ _id: appId })
-      .then(numRemoved => numRemoved > 0);
+    return appStore.remove({ _id: appId })
+      .then(numRemoved => {
+        const wasRemoved = numRemoved > 0;
+        if (wasRemoved) {
+          return ActionsManager.removeFromRecentByAppId(appId)
+            .then(() => wasRemoved);
+        }
+        return wasRemoved;
+      });
   }
 
   /**
@@ -196,13 +173,6 @@ export class AppsManager {
 
     return appStore.find(terms)
       .then(apps => apps.map(cleanForOutput));
-    // todo: clean
-    // return appsDBService.db
-    //   .query(`views/${VIEWS.name}`, options)
-    //   .then(result => (result.rows || [])
-    //     .map(appRow => cleanForOutput(appRow.doc)),
-    //   )
-    //   .then(apps => (withFlows ? augmentWithFlows(apps, withFlows) : apps));
   }
 
   /**
@@ -221,43 +191,12 @@ export class AppsManager {
   static findOne(appId, { withFlows } = { withFlows: false }) {
     return appStore.findOne({ _id: appId })
       .then(app => app ? cleanForOutput(app) : null);
-    // // TODO: clean
-    // return appsDBService.db.get(appId)
-    //   .then((response) => {
-    //     const cleanApp = Promise.resolve(cleanForOutput(response));
-    //     let appPromise = Promise.resolve(cleanApp);
-    //     if (withFlows) {
-    //       appPromise = appPromise.then((app) => {
-    //         const augmentedApp = app;
-    //         return getFlowsForApp(app.id, withFlows)
-    //           .then((flows) => {
-    //             augmentedApp.flows = flows;
-    //             return augmentedApp;
-    //           });
-    //       });
-    //     }
-    //     return appPromise;
-    //   })
-    //   .catch((err) => {
-    //     if (err.name === 'not_found') {
-    //       return Promise.resolve(null);
-    //     }
-    //     throw err;
-    //   });
   }
 
 
   // TODO documentation
-  static import(importedJSON) {
-    return this.create(importedJSON)
-      .then((app) => {
-        let { triggers, actions } = importedJSON;
-        let importedFlows = Object.assign({}, { createdApp: app }, { triggers, actions });
-        return importFlows(importedFlows);
-      })
-      .catch((error) => {
-        throw error;
-      });
+  static import(fromApp) {
+    return importApp(fromApp);
   }
 
   /**
@@ -268,60 +207,58 @@ export class AppsManager {
    * @throws Not found error if app not found
    */
   static export(appId) {
-    throw new Error('Not implemented');
-    // return AppsManager.findOne(appId, { withFlows: 'raw' })
-    //   .then((app) => {
-    //     if (!app) {
-    //       throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
-    //     }
-    //     return Promise.all([
-    //       app,
-    //       FlowsManager.convertManyToCliSchema({ appId }),
-    //     ]);
-    //   })
-    //   .then((data) => {
-    //     const [app, flowsData] = data;
-    //     const consolidatedData = consolidateFlowsAndTriggers(flowsData);
-    //     return {
-    //       name: app.name,
-    //       type: 'flogo:app',
-    //       version: app.version || '0.0.1',
-    //       description: app.description,
-    //       triggers: consolidatedData.triggers,
-    //       actions: consolidatedData.flows,
-    //     };
-    //   });
+    return AppsManager.findOne(appId)
+      .then(app => {
+        if (!app) {
+          throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+        }
+
+        app.type = 'flogo:app';
+        app.actions.forEach(a => {
+          // TODO extract into constant
+          a.ref = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
+        });
+
+        // will strip additional metadata such as createdAt, updatedAt
+        const errors = Validator.validateFullApp(app, null, { removeAdditional: true, useDefaults: true });
+        if (errors && errors.length > 0) {
+          throw ErrorManager.createValidationError('Validation error', { details: errors });
+        }
+
+        const actionMap = new Map(app.actions.map(a => [a.id, a]));
+        let handlers = [];
+        app.triggers.forEach(t => {
+          t.id = normalizeName(t.name);
+          handlers = handlers.concat(t.handlers);
+        });
+
+        // convert to human readable action ids and update handler to point to new action id
+        handlers.forEach(h => {
+          const action = actionMap.get(h.actionId);
+          if (!actionMap) {
+            delete h.actionId;
+            return;
+          }
+          actionMap.delete(h.actionId);
+          action.id = normalizeName(action.name);
+          h.actionId = action.id;
+        });
+
+        // convert orphan actions ids
+        actionMap.forEach(a => {
+          a.id = normalizeName(a.name);
+        });
+
+        return app;
+      });
   }
 
-  /**
-   * Fetch many apps by their id
-   *
-   * Options:
-   *    * ## options
-   *    - withFlows {boolean|string} get also all the related flows. Possible values:
-   *      - short {string} - get short version of the flows
-   *      - full {string} -  get full version of the flows
-   *      - true {boolean} - same as 'short'
-   *      - false {boolean} - do not get the flows
-   * @param appIds {string[]} ids of the apps to fetch
-   * @param options
-   * @param options.withFlows retrieve flows
-   */
-  static fetchManyById(appIds = [], { withFlows } = { withFlows: false }) {
-    return appsDBService.db
-      .allDocs({
-        keys: appIds,
-        include_docs: true,
-      })
-      .then(result => (result.rows || [])
-        .filter((appRow) => {
-          const isError = appRow.error;
-          const isDeleted = appRow.value && appRow.value.deleted;
-          return !isError && !isDeleted;
-        })
-        .map(appRow => cleanForOutput(appRow.doc)),
-      )
-      .then(apps => (withFlows ? augmentWithFlows(apps, withFlows) : apps));
+  static validate(app, { clean } = { clean: false }) {
+    let options;
+    if (clean) {
+      options = { removeAdditional: true, useDefaults: true };
+    }
+    return Promise.resolve(Validator.validateFullApp(app, options));
   }
 
   /**
@@ -375,19 +312,6 @@ function cleanForOutput(app) {
   return pick(cleanedApp, PUBLISH_FIELDS);
 }
 
-function getFlowsForApp(appId, type) {
-  return FlowsManager.find({ appId }, { fields: type });
-}
-
-function augmentWithFlows(apps, flowFields) {
-  return Promise.all(apps.map(app => getFlowsForApp(app.id, flowFields)
-    .then((flows) => {
-      const augmentedApp = app;
-      augmentedApp.flows = flows;
-      return augmentedApp;
-    })));
-}
-
 function nowISO() {
   return (new Date()).toISOString();
 }
@@ -397,19 +321,8 @@ function ensureUniqueName(forName) {
 
   return appStore.find({ name: new RegExp(`^${normalizedName}`, 'i') })
     .then(apps => {
-      const greatestIndex = findGreatestNameIndex(apps);
+      const greatestIndex = findGreatestNameIndex(forName, apps);
       return greatestIndex < 0 ? forName : `${forName} (${greatestIndex + 1})`;
     });
-
-  function findGreatestNameIndex(apps) {
-    const namePattern = new RegExp(`^${normalizedName}(\\s+\\((\\d+)\\))?$`, 'i');
-    return apps.reduce((greatest, app) => {
-      const matches = namePattern.exec(app.name);
-      if (matches) {
-        const index = toInteger(matches[2]);
-        return index > greatest ? index : greatest;
-      }
-      return greatest;
-    }, -1);
-  }
 }
+

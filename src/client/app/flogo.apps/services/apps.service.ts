@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
-import { IFlogoApplicationModel } from '../../../common/application.model';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
+import { IFlogoApplicationModel, Trigger } from '../../../common/application.model';
+import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { ErrorService } from '../../../common/services/error.service';
 
 const DEFAULT_STATE = {
@@ -32,8 +32,18 @@ export interface ApplicationDetailState {
   };
 }
 
+export interface FlowGroup {
+  trigger: Trigger|null;
+  // todo: define interface
+  flows: any[];
+}
+
+export interface App extends IFlogoApplicationModel {
+  flowGroups: FlowGroup[];
+}
+
 export interface ApplicationDetail {
-  app: IFlogoApplicationModel;
+  app: App;
   state: ApplicationDetailState;
 }
 
@@ -43,7 +53,7 @@ export class AppDetailService {
   private currentApp$ = new BehaviorSubject<ApplicationDetail>(undefined);
   private fetching: boolean;
 
-  constructor(private appsApiService: RESTAPIApplicationsService, private errorService: ErrorService) {
+  constructor(private appsApiService: AppsApiService, private errorService: ErrorService) {
   }
 
   public currentApp(): Observable<ApplicationDetail> {
@@ -53,7 +63,7 @@ export class AppDetailService {
   public load(appId: string) {
     this.fetchApp(appId).then(app => {
       this.currentApp$.next(<ApplicationDetail>_.defaultsDeep({}, {
-        app,
+        app: this.transform(app),
         state: DEFAULT_STATE
       }));
     });
@@ -68,7 +78,7 @@ export class AppDetailService {
     this.fetchApp(currentApp.app.id).then(app => {
       const prevApp = this.currentApp$.getValue();
       this.currentApp$.next(<ApplicationDetail>_.defaultsDeep({}, {
-        app,
+        app: this.transform(app),
         state: prevApp.state
       }));
     })
@@ -87,7 +97,7 @@ export class AppDetailService {
           return;
         }
         let nextApp = this.getCurrentAsEditable();
-        nextApp.app = updatedApp;
+        nextApp.app = this.transform(updatedApp);
         nextApp.state[prop] = {
           pendingSave: false,
           hasErrors: false,
@@ -138,7 +148,7 @@ export class AppDetailService {
   }
 
   public toEngineSpec() {
-    return this.appsApiService.export(this.currentApp$.getValue().app.id);
+    return this.appsApiService.exportApp(this.currentApp$.getValue().app.id);
   }
 
   private fetchApp(appId: string) {
@@ -152,6 +162,43 @@ export class AppDetailService {
 
   private getCurrentAsEditable() {
     return _.cloneDeep(this.currentApp$.getValue());
+  }
+
+  private transform(app: IFlogoApplicationModel): App {
+    const triggers = app.triggers || [];
+    const actions = app.actions || [];
+    return <App> Object.assign({}, app, { flowGroups: this.makeFlowGroups(triggers, actions) });
+  }
+
+  private makeFlowGroups(triggers, actions): FlowGroup[] {
+    const actionMap = new Map(<[string, any][]> actions.map(a => [a.id, a]));
+
+    const pullAction = actionId => {
+      let action = actionMap.get(actionId);
+      if (action) {
+        actionMap.delete(actionId);
+      }
+      return action;
+    };
+
+    const triggerGroups = triggers.map(trigger => {
+      return {
+        trigger: trigger,
+        flows: trigger.handlers
+          .map(h => pullAction(h.actionId))
+          .filter(flow => !!flow),
+      }
+    }).filter(triggerGroup => triggerGroup.flows.length > 0);
+
+    // orphan flows
+    if (actionMap.size) {
+      triggerGroups.unshift({
+        trigger: null,
+        flows: Array.from(actionMap.values()),
+      });
+    }
+
+    return triggerGroups;
   }
 
 }

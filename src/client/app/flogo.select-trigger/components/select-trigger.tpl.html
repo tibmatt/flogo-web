@@ -1,0 +1,44 @@
+<flogo-installer [flogoInstallType]="'trigger'" [(flogoIsActivated)]="installTriggerActivated"
+                 (flogoOnInstalled)="onInstalledAction($event)"></flogo-installer>
+
+<div class="flogo-select-trigger">
+  <h1>{{ 'SELECT-TRIGGER:SELECT-TRIGGER-TO-START' | translate }}</h1>
+  <div class="triggers-container">
+
+    <div class="triggers-container__trigger-types">
+      <div class="triggers-container__header">
+        <div>{{ 'SELECT-TRIGGER:TRIGGER-TYPES' | translate }}</div>
+        <div><button (click)="openInstallTriggerWindow()" class="flogo-button--accent">{{ 'SELECT-TRIGGER:INSTALL-NOW' | translate }}</button></div>
+      </div>
+      <hr />
+      <div *ngFor="let trigger of installedTriggers" class="trigger trigger--types">
+        <div class="trigger__content" (click)="sendAddTriggerMsg(trigger, 'installed')">
+          <div class="icon">
+            <i class="flogo-icon-trigger"></i>
+          </div>
+          <div class="label-icon">{{trigger.name}}</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="displayExisting" class="triggers-container__existing-triggers">
+
+      <div class="triggers-container__header">
+        <div>{{'SELECT-TRIGGER:MY-EXISTING-TRIGGERS' | translate}}</div>
+      </div>
+      <hr />
+
+      <ul class="arrow-div">
+        <li *ngFor="let trigger of existingTriggers" (click)="sendAddTriggerMsg(trigger, 'existing')">
+          <div class="icon">
+            <i class="flogo-icon-trigger"></i>
+          </div>
+          <div class="label-icon">{{trigger.name}}</div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+

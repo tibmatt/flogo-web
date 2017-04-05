@@ -40,10 +40,10 @@ export function activities(app, router){
 function* listActivities() {
   const searchTerms = {};
   const filterName     = this.request.query['filter[name]'];
-  const filterWhere = this.request.query['filter[where]'];
+  const filterRef = this.request.query['filter[ref]'];
 
   if (filterName)     { searchTerms.name  = filterName;     }
-  if (filterWhere) { searchTerms.where = filterWhere; }
+  if (filterRef) { searchTerms.ref = filterRef; }
 
   const foundActivities = yield ActivitiesManager.find(searchTerms);
   this.body = {

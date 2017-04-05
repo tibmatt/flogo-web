@@ -1,6 +1,6 @@
 <div [hidden]="loading">
 
-  <div class="canvas-flow" *ngIf="flow && !loading">
+  <div class="canvas-flow" *ngIf="flow && !loading" [ngClass]="{'canvas-flow--maximized': !hasTrigger}" >
 
     <section class="flogo-flow-detail">
 
@@ -59,6 +59,7 @@
     <div  class="flogo-flow-container">
       <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
                                  [id]="'root'"
+                                 [appId]="flow?.app?.id"
                                  data-flogo-diagram-id="root">
       </flogo-canvas-flow-diagram>
 
@@ -68,16 +69,14 @@
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
-    <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
-
-    <flogo-flows-detail-error-panel>
+    <flogo-flows-detail-error-panel *ngIf="hasTrigger">
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
                                  [id]="'errorHandler'"
                                  data-flogo-diagram-id="root"></flogo-canvas-flow-diagram>
     </flogo-flows-detail-error-panel>
 
   </div>
-  <div class="canvas-right-container">
+  <div class="canvas-right-container" [ngClass]="{'canvas-right-container--minimized': !hasTrigger}">
     <router-outlet></router-outlet>
   </div>
 

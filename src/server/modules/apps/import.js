@@ -36,7 +36,6 @@ class ImportFlows {
 
     return Promise.all([getTriggers(this.sourceFlows), getActivities(this.sourceFlows)])
       .then((triggersAndActivities) => {
-
         const installedTiles = flattenDeep(triggersAndActivities);
         return makeFlows(this.sourceFlows, installedTiles);
       })
@@ -45,11 +44,11 @@ class ImportFlows {
 
 
     function makeFlows(flows, installedTiles) {
-
       const actions = flows.actions || [];
       const resultFlows = [];
 
       flows.triggers.forEach((trigger) => {
+
         const endpoints = get(trigger, 'handlers', []);
         // make the flows for this trigger
         endpoints.forEach((endpoint) => {
@@ -67,7 +66,7 @@ class ImportFlows {
           };
 
           const mainFlowParts = getFlowParts(trigger, tasks, links, installedTiles, endpoint);
-          const currentFlow = makeFlow(mainFlowParts, flowInfo);
+          const currentFlow = makeFlow(mainFlowParts, flowInfo, installedTiles);
 
 
           // task flows of error handler
@@ -76,7 +75,7 @@ class ImportFlows {
           links = get(flowActions, 'data.flow.errorHandlerTask.links', []);
           const errorFlowParts = getFlowParts(null, tasks, links, installedTiles, endpoint);
 
-          currentFlow.errorHandler = makeFlow(errorFlowParts, flowInfo);
+          currentFlow.errorHandler = makeFlow(errorFlowParts, flowInfo );
 
           resultFlows.push(currentFlow);
         }); // iterate over endpoints
@@ -84,7 +83,8 @@ class ImportFlows {
       return Promise.resolve(resultFlows);
     }
 
-    function makeFlow(parts, flowInfo) {
+    function makeFlow(parts, flowInfo, installedTiles) {
+
       let flow = {};
       try {
         const { nodes, items, branches } = parts;
@@ -108,12 +108,21 @@ class ImportFlows {
           items: {},
         };
 
+        if(installedTiles) {
+          flow.schemas = {};
+        }
+
         nodes.concat(branches).forEach((element) => {
           flow.paths.nodes[element.node.id] = element.node;
         });
 
         items.forEach((element) => {
           flow.items[element.node.id || element.node.nodeId] = element.node;
+          if(installedTiles) {
+            flow.schemas[element.node.ref] =  installedTiles.find((tile) => {
+              return tile.ref === element.node.ref;
+            });
+          }
         });
       } catch (error) {
         console.error('Error function makeFlow:', error);
@@ -124,6 +133,7 @@ class ImportFlows {
     }
 
     function getFlowParts(trigger, tasks, links, installedTiles, endpointSetting) {
+
       let nodes = [];
       let items = [];
       let branches = [];
@@ -134,7 +144,7 @@ class ImportFlows {
         const rootTrigger = trigger || { isErrorTrigger: true, taskID: flogoIDEncode(`${itemIndex}`), cli: { id: -1 } };
         const nodeTrigger = node.makeTrigger(rootTrigger);
 
-        const installedTrigger = installedTiles.find(tile => trigger && tile.where === trigger.ref);
+        const installedTrigger = installedTiles.find(tile => trigger && tile.ref === trigger.ref);
         if (trigger && !installedTrigger) {
           throw ErrorManager.makeError('Trigger is not installed',
             { type: ERROR_TYPES.COMMON.VALIDATION,
@@ -159,7 +169,7 @@ class ImportFlows {
           const nodeItem = node.makeItem({ taskID: flogoIDEncode(`${itemIndex}`) });
           itemIndex += 1;
 
-          const installedActivity = installedTiles.find(tile => tile.where === task.activityRef);
+          const installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
           if (!installedActivity) {
             throw ErrorManager.makeError('Activity is not installed',
               { type: ERROR_TYPES.COMMON.VALIDATION,
@@ -285,7 +295,7 @@ class ImportFlows {
       });
 
       triggersURL.forEach(url => {
-        return promises.push(TriggerManager.find({ where: url }));
+        return promises.push(TriggerManager.find({ ref: url }));
       } );
 
       return Promise.all(promises);
@@ -323,7 +333,7 @@ class ImportFlows {
 
           if (processed.indexOf(ref) == -1) {
             processed.push(ref);
-            promises.push(ActivitiesManager.find({ where: ref }));
+            promises.push(ActivitiesManager.find({ ref: ref }));
           }
         });
       });
@@ -389,7 +399,8 @@ class ItemFactory {
 
   static getSharedProperties(installed) {
     const defaults = { name: '', title: '', version: '', homepage: '', description: '', installed: true, settings: [], outputs: [], endpoint: { settings: [] } };
-    const item = Object.assign({}, defaults, pick(installed, ['name', 'title', 'version', 'homepage', 'description']), { __schema: installed });
+    const item = Object.assign({}, defaults, pick(installed, ['name', 'ref', 'title', 'version', 'homepage', 'description'])
+      /*, { __schema: installed } */);
     return item;
   }
 

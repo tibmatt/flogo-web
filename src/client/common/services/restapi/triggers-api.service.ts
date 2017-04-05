@@ -8,6 +8,11 @@ export class  RESTAPITriggersService {
   constructor( private _http : Http ) {
   }
 
+  getTriggerDetails(triggerWhereUrl: string) {
+    return this._http.get('/v1/api/triggers?filter[ref]=' + triggerWhereUrl).toPromise()
+      .then(response => response.json().data[0]);
+  }
+
   getTriggers() {
     return this._http.get('/v1/api/triggers').toPromise()
       .then(response=> {

@@ -1,9 +1,11 @@
-import { Component, ElementRef, SimpleChange, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, SimpleChange, AfterViewInit, EventEmitter } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } from '../models';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
+import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../flogo.select-trigger/messages'
+import { PUB_EVENTS as PUB_EVENTS_ADD_TRIGGER } from '../../flogo.flows.detail.triggers/messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FlogoFlowDiagramNode } from '../models/node.model';
@@ -17,7 +19,8 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
     inputs : [
       'tasks',
       'diagram',
-       'id'
+       'id',
+      'appId'
     ]
   }
 )
@@ -26,15 +29,19 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   public tasks : IFlogoFlowDiagramTaskDictionary;
   public diagram : IFlogoFlowDiagram;
   public id: string;
+  public appId: string;
 
   private _elmRef : ElementRef;
   private _diagram : FlogoFlowDiagram;
   private _subscriptions : any[ ];
+  public enabledSelectTrigger: boolean = false;
 
   constructor( elementRef : ElementRef, private _postService : PostService, private _translate : TranslateService ) {
+    this.enabledSelectTrigger = false;
     this._elmRef = elementRef;
     this.initSub();
   }
+
 
   private initSub() {
     if ( _.isEmpty( this._subscriptions ) ) {
@@ -49,6 +56,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     let subs = [
       _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._addTriggerDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._selectTriggerDone.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS_ADD_TRIGGER.addTrigger, { callback : this.selectModalTrigger.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.deleteTask, { callback : this._deleteTaskDone.bind( this ) } ),
@@ -82,10 +90,28 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+    let _enabledSelectTrigger = false;
+    if ( _.isEmpty( this.diagram ) || _.isEmpty( this.diagram.root ) ) {
+      this.diagram = FlogoFlowDiagram.getEmptyDiagram(this.id == 'errorHandler' ? 'error' : null );
+      if(this.id == 'errorHandler') {
+      } else {
+        _enabledSelectTrigger = true;
+      }
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+    } else {
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+    }
     // Render the diagram on next js cycle such that the diagram elements are added to the DOM.
-    setTimeout(() => this._diagram.render(), 0);
+    setTimeout(() => {
+      this.enabledSelectTrigger = _enabledSelectTrigger;
+      // todo: remove once selector is extracted from here
+      if(!_enabledSelectTrigger) {
+        this._diagram.render();
+      }
+    }, 0);
   }
+
+
 
   ngOnChanges(
     changes : {
@@ -290,6 +316,22 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       } );
 
     console.groupEnd();
+  }
+
+
+  private selectModalTrigger( data : any, envelope : any ) {
+    this.enabledSelectTrigger = false;
+
+    this._postService.publish(
+        _.assign(
+          {}, PUB_EVENTS_ADD_TRIGGER.addTrigger, {
+            data : _.assign( {}, { id: 'root', col: 0, row: 0 },
+              { node: this.diagram.nodes[this.diagram.root.is] },
+              { trigger : _.cloneDeep( data.trigger ) },
+              { installType: data.installType }),
+          }
+        )
+    );
   }
 
   private _selectTriggerDone( data : any, envelope : any ) {

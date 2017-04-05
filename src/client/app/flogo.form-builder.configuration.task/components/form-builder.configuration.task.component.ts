@@ -88,7 +88,8 @@ export class FlogoFormBuilderConfigurationTaskComponent {
       direction: direction,
       // subfield where this item is located
       structure: structure,
-      allowed: input.allowed
+      allowed: input.allowed,
+      isEditable: true
     };
 
     info.value = this._getMappingValue(info);

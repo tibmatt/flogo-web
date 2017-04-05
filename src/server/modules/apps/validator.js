@@ -1,15 +1,122 @@
+import defaults from 'lodash/defaults';
 import Ajv from 'ajv';
+
+function validate(schema, data, options = {}, customValidations) {
+  const ajv = new Ajv(options);
+
+  if (customValidations) {
+    customValidations.forEach(validator => ajv.addKeyword(
+      validator.keyword,
+      { validate: validator.validate, errors: true }),
+    );
+  }
+
+  const valid = ajv.validate(schema, data);
+  return valid ? null : ajv.errors;
+}
 
 class Validator {
 
-  static validate(data) {
-    const ajv = new Ajv({ removeAdditional: true, useDefaults: true, allErrors: true });
-    const valid = ajv.validate(appSchema(), data);
-    return valid ? null : ajv.errors;
+  static validateSimpleApp(data) {
+    return validate(appSchema(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateTriggerCreate(data) {
+    return validate(triggerSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateTriggerUpdate(data) {
+    return validate(triggerSchemaUpdate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateHandler(data) {
+    return validate(handlerEditableSchema(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateFullApp(data, contribVerify, options) {
+    options = defaults({}, options, { removeAdditional: false, useDefaults: false, allErrors: true, verbose: true });
+    let customValidations;
+    if (contribVerify) {
+      const makeInstalledValidator = (keyword, collection, type) => {
+        return function validator(schema, vData) {
+          const isInstalled = collection.includes(vData);
+          if (!isInstalled) {
+            validator.errors = [{ keyword, message: `${type} "${vData}" is not installed`, data }];
+          }
+          return isInstalled;
+        };
+      };
+
+      customValidations = [
+        { keyword: 'trigger-installed', validate: makeInstalledValidator('trigger-installed', contribVerify.triggers || [], 'Trigger') },
+        { keyword: 'activity-installed', validate: makeInstalledValidator('activity-installed', contribVerify.activities || [], 'Activity') },
+      ];
+    }
+
+    const errors = validate(fullAppSchema(), data, options, customValidations);
+    if (errors && errors.length > 0) {
+      // get rid of some info we don't want to expose
+      errors.forEach(e => {
+        delete e.params;
+        delete e.schema;
+        delete e.parentSchema;
+      });
+    }
+    return errors;
   }
 
 }
+
+
 export { Validator };
+
+function triggerSchemaCreate() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
+    type: 'object',
+    required: [
+      'ref',
+      'name',
+    ],
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1,
+      },
+      description: {
+        type: 'string',
+      },
+      ref: {
+        type: 'string',
+      },
+      settings: {
+        type: 'object',
+        default: {},
+      },
+    },
+  };
+}
+
+function triggerSchemaUpdate() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1,
+      },
+      description: {
+        type: 'string',
+      },
+      settings: {
+        type: 'object',
+      },
+    },
+  };
+}
 
 function appSchema() {
   return {
@@ -41,10 +148,26 @@ function appSchema() {
   };
 }
 
-
-function getSchema() {
+function handlerEditableSchema() {
   return {
     $schema: 'http://json-schema.org/draft-04/schema#',
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      settings: {
+        type: 'object',
+      },
+      outputs: {
+        type: 'object',
+      },
+    },
+  };
+}
+
+function fullAppSchema() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
     type: 'object',
     required: [
       'name',
@@ -59,7 +182,7 @@ function getSchema() {
       },
       type: {
         type: 'string',
-        default: 'flogo:uiapp',
+        default: 'flogo:app',
       },
       version: {
         type: 'string',
@@ -68,6 +191,8 @@ function getSchema() {
         type: 'string',
       },
       triggers: {
+        additionalProperties: false,
+        default: [],
         type: 'array',
         items: {
           type: 'object',
@@ -77,6 +202,7 @@ function getSchema() {
             },
             ref: {
               type: 'string',
+              'x-trigger-installed': true,
             },
             settings: {
               type: 'object',
@@ -86,6 +212,7 @@ function getSchema() {
               type: 'array',
               items: {
                 type: 'object',
+                additionalProperties: false,
                 properties: {
                   actionId: {
                     type: 'string',
@@ -112,6 +239,7 @@ function getSchema() {
         },
       },
       actions: {
+        default: [],
         type: 'array',
         items: {
           $ref: '#/definitions/ActionFlow',
@@ -121,6 +249,7 @@ function getSchema() {
     definitions: {
       ActionFlow: {
         type: 'object',
+        additionalProperties: false,
         properties: {
           id: {
             type: 'string',
@@ -137,27 +266,6 @@ function getSchema() {
               flow: {
                 $ref: '#/definitions/Flow',
               },
-              ui: {
-                type: 'object',
-                properties: {
-                  triggerId: {
-                    type: 'string',
-                  },
-                  handler: {
-                    type: 'object',
-                    settings: {
-                      type: 'object',
-                      default: {
-                      },
-                    },
-                    outputs: {
-                      type: 'object',
-                      default: {
-                      },
-                    },
-                  },
-                },
-              },
             },
           },
         },
@@ -170,6 +278,7 @@ function getSchema() {
       Flow: {
         title: 'flow',
         type: 'object',
+        additionalProperties: false,
         properties: {
           id: {
             type: 'string',
@@ -194,11 +303,11 @@ function getSchema() {
           },
           rootTask: {
             title: 'rootTask',
-            $ref: '#/definitions/Flow/definitions/task',
+            $ref: '#/definitions/Flow/definitions/rootTask',
           },
           errorHandlerTask: {
             title: 'errorHandlerTask',
-            $ref: '#/definitions/Flow/definitions/task',
+            $ref: '#/definitions/Flow/definitions/rootTask',
           },
         },
         required: [
@@ -312,9 +421,71 @@ function getSchema() {
               },
               activityRef: {
                 type: 'string',
+                'activity-installed': true,
               },
               attributes: {
                 type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/attribute',
+                },
+              },
+              inputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              outputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              tasks: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/task',
+                },
+              },
+              links: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/link',
+                },
+              },
+            },
+            required: [
+              'id',
+              'name',
+              'activityRef',
+            ],
+          },
+          rootTask: {
+            title: 'rootTask',
+            type: 'object',
+            properties: {
+              id: {
+                type: 'integer',
+              },
+              type: {
+                type: 'integer',
+              },
+              name: {
+                type: 'string',
+              },
+              title: {
+                type: 'string',
+              },
+              description: {
+                type: 'string',
+              },
+              activityRef: {
+                type: 'string',
+                default: '',
+              },
+              attributes: {
+                type: 'array',
+                default: [],
                 items: {
                   $ref: '#/definitions/Flow/definitions/attribute',
                 },
@@ -359,28 +530,6 @@ function getSchema() {
         },
         required: [
           'flow',
-        ],
-      },
-      FlowCompressed: {
-        type: 'object',
-        properties: {
-          flowCompressed: {
-            type: 'string',
-          },
-        },
-        required: [
-          'flowCompressed',
-        ],
-      },
-      FlowUri: {
-        type: 'object',
-        properties: {
-          flowURI: {
-            type: 'string',
-          },
-        },
-        required: [
-          'flowURI',
         ],
       },
     },

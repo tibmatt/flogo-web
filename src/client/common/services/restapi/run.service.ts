@@ -133,13 +133,13 @@ export class RunService {
   }
 
   private fetch<T>(path: string): Observable<T> {
-    return this.http.get(this.httpUtils.apiPrefix(path), this.httpUtils.defaultOptions())
+    return this.http.get(this.httpUtils.apiPrefix(path, 'v1'), this.httpUtils.defaultOptions())
       .map(response => response.json());
   }
 
   private post<T>(path: string, body: any): Observable<T>{
     return this.http.post(
-      this.httpUtils.apiPrefix(path),
+      this.httpUtils.apiPrefix(path, 'v1'),
       body,
       this.httpUtils.defaultOptions().merge({
         headers: new Headers({ 'Accept': 'application/json' })

@@ -6,17 +6,18 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
+import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 
-import { FlogoAppsComponent } from './components/apps.component';
 import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
 import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
 import { FlogoApplicationComponent } from '../flogo.apps.details/components/application.component';
-import { FlogoApplicationFlowsComponent } from '../flogo.apps.flows/components/flows.component';
+import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flogo.apps.flows/components';
 import { FlogoAppListComponent } from '../flogo.apps.list/components/app.list.component';
 import { FlogoAppDeletePopoverComponent } from '../flogo.apps.list/components/delete.popover.component';
 import { FlogoApplicationSearch } from '../flogo.apps.search/components/search.component';
 
 import { AppDetailService } from './services/apps.service';
+import { FlowsService } from './services/flows.service';
 
 import {routing, appRoutingProviders} from './flogo.apps.routing';
 
@@ -27,22 +28,24 @@ import {routing, appRoutingProviders} from './flogo.apps.routing';
     Ng2Bs3ModalModule,
     FlogoFlowsModule,
     FlogoCommonModule,
+    FlogoFooterModule,
     routing
   ],
   declarations: [
-    FlogoAppsComponent,
     FlogoMainComponent,
     FlogoApplicationComponent,
     FlogoApplicationContainerComponent,
     FlogoApplicationFlowsComponent,
+    FlowGroupComponent,
     FlogoAppListComponent,
     FlogoAppDeletePopoverComponent,
-    FlogoApplicationSearch
+    FlogoApplicationSearch,
   ],
-  bootstrap: [FlogoAppsComponent],
+  bootstrap: [FlogoMainComponent],
   providers: [
     appRoutingProviders,
-    AppDetailService
+    AppDetailService,
+    FlowsService,
   ]
 })
 export class FlogoAppsModule {}

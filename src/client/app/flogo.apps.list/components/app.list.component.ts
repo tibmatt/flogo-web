@@ -2,9 +2,9 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, OnChanges, Output, 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel } from '../../../common/application.model';
-import { RESTAPIApplicationsService }  from '../../../common/services/restapi/applications-api.service';
 import { notification } from '../../../common/utils';
 import { ERROR_CONSTRAINT } from '../../../common/constants';
+import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.service";
 
 @Component({
   selector: 'flogo-apps-list',
@@ -12,34 +12,18 @@ import { ERROR_CONSTRAINT } from '../../../common/constants';
   templateUrl: 'app.list.tpl.html',
   styleUrls: ['app.list.css']
 })
-export class FlogoAppListComponent implements OnInit, OnChanges {
-  @ViewChild('importInput') importInput: ElementRef;
-  @Input() currentApp: IFlogoApplicationModel;
+export class FlogoAppListComponent implements OnInit {
+  // @ViewChild('importInput') importInput: ElementRef;
   @Output() onSelectedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
-  @Output() onAddedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
-  @Output() onDeletedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
   public applications: Array<IFlogoApplicationModel> = [];
 
   constructor(public translate: TranslateService,
-              private apiApplications: RESTAPIApplicationsService) {
+              private apiApplications: AppsApiService) {
   }
 
   ngOnInit() {
     this.listAllApps();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    let change = changes['currentApp'];
-    if (change) {
-      let prevId = change.previousValue && change.previousValue.id;
-      let currentId = change.currentValue && change.currentValue.id;
-
-      if (prevId !== currentId) {
-        this.listAllApps();
-      }
-
-    }
   }
 
   onSelectApp(event: Event, removeBox: ElementRef, app: IFlogoApplicationModel) {
@@ -48,56 +32,66 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
     }
   }
 
-  onImportFileSelected(event) {
-    let file = <File> _.get(event, 'target.files[0]');
+  onImportFileSelected($event) {
+    let file: File = $event.target.files[0];
+    let fileReader: FileReader = new FileReader();
+    fileReader.onload = this.uploadApp();
+    fileReader.readAsText(file);
+  }
 
-    // clean input file value
-    event.target.value = '';
+  uploadApp() {
+    let appListComponent = this;
+    return function(readerEvent){
+      try {
+        let appData = JSON.parse(readerEvent.target.result);
+        appListComponent.apiApplications.uploadApplication(appData)
+          .then((application)=>{
+            appListComponent.applications.push(application);
+            appListComponent.applications = _.sortBy(appListComponent.applications, 'name');
+            appListComponent.notifyUser(true);
+          }).catch((error)=>{
+          appListComponent.notifyUser(false, error);
+        });
+      } catch (error) {
+        appListComponent.notifyUser(false, error);
+      }
+    }
+  }
 
-    this.apiApplications.uploadApplication(file)
-      .then((results: any) => {
-        let createdApp = results.createdApp;
-        this.applications.push(createdApp);
-        let message = this.translate.instant('APP-LIST:SUCCESSFULLY-IMPORTED');
-        this.appSelected(createdApp);
-        notification(message, 'success', 3000);
-      })
-      .catch((error) => {
-        notification(this.getErrorMessage(error), 'error');
-      });
+  notifyUser(isImported: boolean, errorDetails?: Error) {
+    let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
+
+    if(isImported) {
+      message = 'APP-LIST:SUCCESSFULLY-IMPORTED';
+      notification(this.translate.instant(message), 'success', 3000);
+    } else {
+      message = this.getErrorMessage(errorDetails);
+      notification(this.translate.instant(message), 'error');
+    }
   }
 
   getErrorMessage(error) {
-    // todo: multiple error messages?
-    // todo: error detail
     let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
-    if (error[ERROR_CONSTRAINT.WRONG_INPUT_JSON_FILE]) {
+
+    if(error.name === 'Syntax Error'){
       message = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
+    } else {
+      message = 'APP-LIST:BROKEN_RULE_VALIDATION_ERROR';
     }
-
-    if (error[ERROR_CONSTRAINT.NOT_INSTALLED_ACTIVITY]) {
-      message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_ACTIVITY';
-    }
-
-    if (error[ERROR_CONSTRAINT.NOT_INSTALLED_TRIGGER]) {
-      message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
-    }
-
-    return this.translate.instant(message);
+    return message;
   }
 
   onAdd() {
     this.apiApplications.createNewApp()
       .then((application: IFlogoApplicationModel) => {
-        this.onAddedApp.emit(application);
         this.appSelected(application);
-      }).then(() => this.listAllApps());
+      });
   }
 
   listAllApps() {
-    this.apiApplications.getAllApps()
+    this.apiApplications.listApps()
       .then((applications: Array<IFlogoApplicationModel>) => {
-        this.applications = applications;
+        this.applications = _.sortBy(applications, 'name');
       });
   }
 
@@ -105,7 +99,6 @@ export class FlogoAppListComponent implements OnInit, OnChanges {
     this.apiApplications.deleteApp(application.id)
       .then(() => {
         this.listAllApps();
-        this.onDeletedApp.emit(application);
       });
   }
 

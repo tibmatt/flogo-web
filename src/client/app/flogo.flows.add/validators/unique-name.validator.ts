@@ -1,4 +1,4 @@
-import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
 import { Subject } from 'rxjs/Subject';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -10,13 +10,13 @@ import 'rxjs/add/operator/switchMap';
 
 export class UniqueNameValidator {
 
-  static make(flowsService: RESTAPIFlowsService, options: {appId?: string} = {}): AsyncValidatorFn {
-    return createUniqueNameValidator(flowsService, options);
+  static make(flowsService: APIFlowsService, appId: string): AsyncValidatorFn {
+    return createUniqueNameValidator(flowsService, appId);
   }
 
 }
 
-function createUniqueNameValidator(flowsService: RESTAPIFlowsService, options: {appId?: string} = {}): AsyncValidatorFn {
+function createUniqueNameValidator(flowsService: APIFlowsService, appId: string): AsyncValidatorFn {
 
   // This is used to signal streams to terminate.
   let changed$ = new Subject<any>();
@@ -35,7 +35,7 @@ function createUniqueNameValidator(flowsService: RESTAPIFlowsService, options: {
         if (!value || !value.trim()) {
           return Promise.resolve(null);
         }
-        return flowsService.findFlowsByName(value, options).then(result => {
+        return flowsService.findFlowsByName(value, appId).then(result => {
           let validationResult = null;
           if (result && result.length) {
             validationResult = { uniqueInvalid: true };

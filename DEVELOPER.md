@@ -243,7 +243,20 @@ Breakpoints can be added directly to the javascript source files in `/src/server
 
 Start the application. See [Running the Application](#running-the-application) 
 
-Navigate to the generated dist directory
+Navigate to root project directory
+
+Run:
+
+```sh
+npm test:client
+```
+
+### Running Server Integration Tests
+<!-- TODO: How to build the client app only without starting the application? -->
+
+Build the application and start the database. See [Running the Application](#running-the-application) 
+
+Navigate to the root project directory
 
 ```sh
 cd <project root>/dist/public 
@@ -252,8 +265,19 @@ cd <project root>/dist/public
 Run:
 
 ```sh
-npm test
+npm run test:server
 ```
+
+*WARNING* Running this test will delete your local database, to avoid these specify where you want the application
+to create the temporal test database by passing or setting the `FLOGO_WEB_DBDIR` environment variable.
+
+Example (in linux/mac):
+
+```sh
+FLOGO_WEB_DBDIR="/absolute/path/to/some/dir" npm run test:server
+```
+
+You can also pass/set the `FLOGO_WEB_LOGLEVEL='error'` environment variable to reduce log verbosity.
 
 ## Advanced Usage
 

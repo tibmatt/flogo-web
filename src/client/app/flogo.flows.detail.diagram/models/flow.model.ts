@@ -30,6 +30,7 @@ export interface flowToJSON_Task {
   id : number;
   type : number;
   activityType : string;
+  activityRef? : string;
   name? : string;
   attributes : flowToJSON_Attribute[];
   inputMappings : flowToJSON_Mapping [];
@@ -76,13 +77,15 @@ export interface flowToJSON_RootTask {
   id : number;
   type : number;
   activityType : string;
+  ref? : string;
   name : string;
   tasks : flowToJSON_Task[];
   links : flowToJSON_Link[];
 }
 
 export interface flowToJSON_InputFlow {
-  _id : string;
+  _id? : string;
+  id? : string;
   name? : string;
   description? : string;
   attributes? : any[];
@@ -157,6 +160,7 @@ export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : triggerToJSON_Tri
  * @returns {flowToJSON_Flow}
  */
 export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Flow {
+
   const DEBUG = false;
   const INFO = true;
 
@@ -171,7 +175,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
   /* validate the required fields */
 
-  let flowID = <string>_.get( inFlow, '_id' );
+  let flowID = inFlow._id || inFlow.id;
 
   if ( _.isEmpty( flowID ) ) {
     DEBUG && console.error( 'No id in the given flow' );
@@ -232,6 +236,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
         id : 1,
         type : FLOGO_TASK_TYPE.TASK, // this is 1
         activityType : '',
+        ref: '',
         name : 'root',
         tasks : <flowToJSON_Task[]>[],
         links : <flowToJSON_Link[]>[]
@@ -269,6 +274,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
         id : convertTaskID(rootNode.taskID), // TODO
         type : FLOGO_TASK_TYPE.TASK, // this is 1
         activityType : '',
+        ref: '',
         name : 'error_root',
         tasks : <flowToJSON_Task[]>[],
         links : <flowToJSON_Link[]>[]
@@ -354,6 +360,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
           taskInfo.name = _.get( task, 'name', '' );
           taskInfo.type = task.type;
           taskInfo.activityType = task.activityType;
+          taskInfo.activityRef = task.ref;
 
 
           /* add `inputs` of a task to the `attributes` of the taskInfo in flow.json */
@@ -435,6 +442,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     id : string;
     type : FLOGO_TASK_TYPE;
     activityType? : string;
+    ref? : string;
     [key : string] : any;
   } ) : boolean {
 
@@ -455,7 +463,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
       return false;
     }
 
-    if ( _.isEmpty( task.activityType ) ) {
+    if ( _.isEmpty( task.ref ) ) {
       DEBUG && console.warn( 'Empty task activityType' );
       DEBUG && console.log( task );
       return false;
@@ -553,7 +561,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
     // hardcoding the activity type, for now
     // TODO: maybe the activity should expose a property so we know it can reply?
-    return !!_.find(tasks, task => (<any>task).activityType == 'tibco-reply');
+    return !!_.find(tasks, task => (<any>task).ref == 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
 
   }
 

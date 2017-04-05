@@ -1,4 +1,10 @@
+<flogo-select-trigger *ngIf="id == 'root' && enabledSelectTrigger" [appId]="appId"></flogo-select-trigger>
 <div class="flogo-flows-detail-diagram"
+     *ngIf="!enabledSelectTrigger"
+     [ngClass]="{'flogo-flows-detail-diagram--hidden': enabledSelectTrigger}"
      (flogoAddTask)="addTask($event)"
      (flogoSelectTask)="selectTask($event)"
      (flogoClickNodeMenuItem)="onMenuItemClicked($event)"></div>
+
+
+

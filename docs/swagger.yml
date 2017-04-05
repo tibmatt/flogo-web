@@ -1,0 +1,1025 @@
+swagger: '2.0'
+schemes:
+  - http
+basePath: /api/v2
+produces:
+  - application/json
+consumes:
+  - application/json
+info:
+  version: "2.0.0"
+  title: Flogo rest API
+  description: |-
+
+    Main resources are:
+
+      - Applications (apps)
+      - Triggers
+      - Actions (also known as Flows)
+      - Handlers
+
+    An application is composed of triggers and actions.
+
+    Handlers link triggers to actions, a trigger can be linked to multiple actions inside the same app but an action
+    can only be linked to a single trigger.
+
+    ## Use example
+    Create an app and create an action and a trigger into it.
+    Then link them together.
+
+    ```javascript
+    // (Javascript inspired pseudocode)
+
+    // create the app
+    app = request.post('/apps', appData);
+
+    // create an action
+    action = request.post(`/apps/${app.id}/actions`, actionData);
+
+    // create an trigger
+    trigger = request.post(`/apps/${app.id}/triggers`, triggerData);
+
+    // link the trigger with the action
+    handler = request.post(`/triggers/${trigger.id}/handlers/${action.id}`, handlerData);
+
+    // get the app with action and trigger linked
+    finalApp = request.get('/apps/${app.id}');
+
+    ### App structure example
+    ```json
+    {
+      "id": "aXd345",
+      "name": "myApp",
+      "description": "My flogo application",
+      "type": "flogoweb:app",
+      "updatedAt": "017-07-14T01:00:00+01:00Z",
+      "createdAt": "017-07-14T01:00:00+01:00Z",
+      "version": "0.0.1",
+      "triggers": [{
+        "id": "ad56fgv",
+        "name": "My rest trigger",
+        "description": "My trigger description",
+        "updatedAt": "017-07-14T01:00:00+01:00Z",
+        "createdAt": "017-07-14T01:00:00+01:00Z",
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+        "settings": {
+          "port": "9233"
+        },
+        "handlers": [{
+          "actionId": "cD45ad",
+          "updatedAt": "017-07-14T01:00:00+01:00Z",
+          "createdAt": "017-07-14T01:00:00+01:00Z",
+          "settings": {
+            "method": "GET",
+            "path": "/test"
+          },
+          "outputs": {
+            "result": {}
+          }
+        }]
+      }],
+      "actions": [{
+        "id": "cD45ad",
+        "name": "My flow",
+        "description": "My cool flow",
+        "updatedAt": "017-07-14T01:00:00+01:00Z",
+        "createdAt": "017-07-14T01:00:00+01:00Z",
+        "data": {
+          "flow": {
+            "attributes": [],
+            "rootTask": {
+              "id": 1,
+              "tasks": [{
+                  "id": 2,
+                  "type": 1,
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                  "name": "log attr value",
+                  "description": "",
+                  "attributes": [],
+                  "inputMappings": [{
+                    "type": 1,
+                    "value": "{A2.value}",
+                    "mapTo": "message"
+                  }]
+                },
+                {
+                  "id": 3,
+                  "type": 1,
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+                  "name": "reply",
+                  "description": "",
+                  "attributes": [{
+                    "name": "code",
+                    "type": "integer",
+                    "value": 201
+                  }]
+                }
+              ],
+              "links": [{
+                "id": 1,
+                "type": 0,
+                "name": "",
+                "from": 2,
+                "to": 3
+              }]
+            }
+          }
+        }
+      }]
+    }
+    ```
+
+    ## Error codes
+    Possible error codes
+      - RequiredProperty: Missing or empty value for required property
+      - UniqueValue: Value for property is already present
+
+################################################################################
+#                                   Tags                                       #
+################################################################################
+tags:
+ - name: apps
+ - name: import
+ - name: export
+ - name: flows
+ - name: actions
+ - name: triggers
+ - name: handlers
+
+################################################################################
+#                               Parameters                                     #
+################################################################################
+parameters:
+  appId:
+    name: appId
+    in: path
+    description: The app identifier number
+    type: number
+    required: true
+  actionId:
+    name: actionId
+    in: path
+    description: The action identifier number
+    type: string
+    required: true
+  triggerId:
+    name: triggerId
+    in: path
+    description: The trigger identifier number
+    type: string
+    required: true
+
+################################################################################
+#                                 Paths                                        #
+################################################################################
+paths:
+  /apps:
+    get:
+      summary: Get all apps
+      tags: [apps]
+      parameters:
+        - name: filter[name]
+          in: query
+          description: |-
+            Filter all apps with exactly this name.
+            Useful to avoid app name duplicates
+          required: false
+          type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            required: ["data"]
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/App'
+          examples:
+            application/json: |-
+              {
+                "data": [
+                  {
+                    "id": "123"
+                    "name": "myapp",
+                    "version": "0.0.1",
+                    "description": "My App",
+                    "createdAt": "2016-12-16T00:24:26+00:00",
+                    "updatedAt": "2016-12-16T00:24:26+00:00",
+                    "triggers": [],
+                    "actions": []
+                  },
+                  {
+                    "id": "456",
+                    "name": "myapp2",
+                    "version": "0.0.1",
+                    "description": "My App",
+                    "createdAt": "2016-12-17T10:00:26+00:00",
+                    "updatedAt": "2016-12-18T09:24:26+00:00",
+                    "triggers": [],
+                    "actions": []
+                  }
+                ]
+              }
+    post:
+      summary: Creates a new app
+      description: |-
+        Creates a new app.
+        Name wil be automatically changed if already exists
+      tags: [apps]
+      parameters:
+        - name: app
+          in: body
+          description: App to create
+          required: true
+          schema:
+            $ref: '#/definitions/AppCreate'
+      responses:
+        201:
+          description: App successfully created
+          schema:
+            type: object
+            required: ["data"]
+            properties:
+              data:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/definitions/App'
+          examples:
+            application/json: |-
+                {
+                  "data": {
+                    "id": "123"
+                    "name": "myapp",
+                    "version": "0.0.1",
+                    "description": "My App",
+                    "createdAt": "2016-12-16T00:24:26+00:00",
+                    "updatedAt": "2016-12-16T00:24:26+00:00",
+                    "triggers": [],
+                    "actions": []
+                  }
+                }
+        400:
+          description: error
+          schema:
+            type: object
+            required: ["errors"]
+            # TODO: declare possible errors
+            # - App name already exists
+            # - Importing an app with flows with unrecognized activities/triggers?
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/definitions/ValidationError'
+  /apps/{appId}:
+    parameters:
+      - $ref: '#/parameters/appId'
+    get:
+      summary: Get one app
+      tags: [apps]
+      responses:
+        200:
+          $ref: '#/responses/AppSingle'
+        404:
+          $ref: '#/responses/NotFound'
+    patch:
+      summary: Update and app
+      tags: [apps]
+      parameters:
+        - name: app
+          in: body
+          description: App to update
+          required: true
+          schema:
+            $ref: '#/definitions/AppCreate'
+      responses:
+        200:
+          $ref: '#/responses/AppSingle'
+        404:
+          $ref: '#/responses/NotFound'
+        400:
+          description: Conflict
+          # conflict
+          # TODO: detail errors
+          # - App name already exists
+          # - Updating flows with unrecognized activities/triggers?
+          schema:
+            type: object
+            required: ["errors"]
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/definitions/Error'
+    delete:
+      summary: Delete an app
+      tags: [apps]
+      responses:
+        204:
+          description: App deleted successfully
+        404:
+          $ref: '#/responses/NotFound'
+  /apps/{appId}/triggers:
+    parameters:
+      - $ref: '#/parameters/appId'
+    get:
+      summary: Get all the triggers in an app
+      tags: [apps, triggers]
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            required: ["data"]
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Trigger'
+          examples:
+            application/json: |-
+              {
+                "data": [
+                  {
+                    "id": "my_rest_trigger",
+                    "name": "My rest trigger",
+                    "description": "My trigger description",
+                    "updatedAt": "017-07-14T01:00:00+01:00Z",
+                    "createdAt": "017-07-14T01:00:00+01:00Z",
+                    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+                    "settings": {
+                      "port": "9233"
+                    },
+                    "handlers": [{
+                      "actionId": "my_simple_flow",
+                      "updatedAt": "017-07-14T01:00:00+01:00Z",
+                      "createdAt": "017-07-14T01:00:00+01:00Z",
+                      "settings": {
+                        "method": "GET",
+                        "path": "/test"
+                      },
+                      "outputs": {
+                        "...": {}
+                      }
+                    }]
+                  }
+                ]
+               }
+    post:
+      summary: Create a new trigger
+      tags: [apps, triggers]
+      parameters:
+      - name: trigger
+        in: body
+        description: Trigger to create
+        required: true
+        schema:
+          $ref: '#/definitions/TriggerCreate'
+      responses:
+        200:
+          $ref: '#/responses/TriggerSingle'
+        400:
+          $ref: '#/responses/NotFound'
+        404:
+          $ref: '#/responses/NotFound'
+  /triggers/{triggerId}:
+    parameters:
+      - $ref: '#/parameters/triggerId'
+    get:
+      summary: Get one trigger
+      tags: [apps, triggers]
+      responses:
+        200:
+          $ref: '#/responses/TriggerSingle'
+        404:
+          $ref: '#/responses/NotFound'
+    patch:
+      summary: Update a trigger
+      tags: [triggers]
+      parameters:
+        - name: trigger
+          in: body
+          description: Update a trigger
+          required: true
+          schema:
+            $ref: '#/definitions/TriggerUpdate'
+      responses:
+        201:
+          $ref: '#/responses/TriggerSingle'
+        400:
+          description: Validation error
+          schema:
+            type: object
+            required: ["errors"]
+            properties:
+              errors:
+                type: array
+                items:
+                  - type: object
+        404:
+          $ref: '#/responses/NotFound'
+    delete:
+      summary: Delete a trigger
+      description: Delete a trigger
+      tags: [trigger]
+      responses:
+        204:
+          description: Trigger deleted successfully
+        404:
+          $ref: '#/responses/NotFound'
+  /triggers/{triggerId}/handlers:
+    parameters:
+        - $ref: '#/parameters/triggerId'
+    get:
+      summary: Get all the handlers in a trigger
+      tags: [triggers, handlers]
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            required: ["data"]
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Handler'
+  /triggers/{triggerId}/handlers/{actionId}:
+    parameters:
+      - $ref: '#/parameters/triggerId'
+      - $ref: '#/parameters/actionId'
+    get:
+      summary: Get one handler
+      tags: [triggers, handlers, actions]
+      responses:
+        200:
+          $ref: '#/responses/HandlerSingle'
+        404:
+          $ref: '#/responses/NotFound'
+    put:
+      summary: Create or modify a handler.
+      description: |-
+        If it doesn't exist it will be created.
+
+        If the action is already linked to another trigger/handler it will be unlinked
+        an assign to the current one. Data won't be copied.
+      parameters:
+       - name: handler
+         in: body
+         required: true
+         schema:
+          $ref: '#/definitions/Handler'
+      tags: [triggers, handlers, actions]
+      responses:
+        200:
+          $ref: '#/responses/HandlerSingle'
+        404:
+          $ref: '#/responses/NotFound'
+    delete:
+      summary: Delete a handler
+      description: Delete a trigger
+      tags: [triggers, handlers, actions]
+      responses:
+        204:
+          description: Trigger deleted successfully
+        404:
+          $ref: '#/responses/NotFound'
+  /apps/{appId}/actions:
+    parameters:
+      - $ref: '#/parameters/appId'
+    get:
+      summary: Get all the actions in an app
+      tags: [apps, actions]
+      parameters:
+        - name: filter[name]
+          in: query
+          description: |-
+            Filter all actions with exactly this name.
+            Useful to avoid action name duplicates
+          required: false
+          type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            required: ["data"]
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Action'
+    post:
+      summary: Create a new actions
+      tags: [app, actions]
+      parameters:
+        - name: acton
+          in: body
+          description: Action to create
+          required: true
+          schema:
+            $ref: '#/definitions/Action'
+      responses:
+        201:
+          $ref: '#/responses/ActionSingle'
+        400:
+          # error number: 400, 409, 422?
+          # todo: define schema
+          description: Validation error
+          schema:
+            type: object
+            required: ["errors"]
+            properties:
+              errors:
+                type: array
+                items:
+                  - type: object
+        404:
+          description: Action not found
+          schema:
+            type: object
+            required: ["errors"]
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/definitions/Error'
+  /actions/{actionId}:
+    parameters:
+      - $ref: '#/parameters/actionId'
+    get:
+      summary: Get one action
+      tags: [actions]
+      responses:
+        200:
+          $ref: '#/responses/ActionExtended'
+        404:
+          $ref: '#/responses/NotFound'
+    patch:
+      summary: Update a flow
+      tags: [actions]
+      parameters:
+        - name: action
+          in: body
+          description: Update an action
+          required: true
+          schema:
+            $ref: '#/definitions/Action'
+      responses:
+        201:
+          $ref: '#/responses/ActionExtended'
+        400:
+          description: Validation error
+          schema:
+            type: object
+            required: ["errors"]
+            properties:
+              errors:
+                type: array
+                items:
+                  - type: object
+        404:
+          description: Action not found
+          schema:
+            type: object
+            required: ["errors"]
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/definitions/Error'
+    delete:
+      summary: Delete a flow
+      tags: [actions]
+      responses:
+        204:
+          description: Flow deleted successfully
+        404:
+          $ref: '#/responses/NotFound'
+  /actions/recent:
+    get:
+      summary: Get the most recently updated flows
+      description: |-
+        Fetch the most recently updated actions
+      tags: [actions]
+      responses:
+        200:
+          $ref: '#/responses/ActionCollection'
+  '/apps:import':
+    post:
+      summary: Import from an flogo.json definition
+      tags: [apps, import]
+      responses:
+        201:
+          $ref: '#/responses/AppSingle'
+        400:
+          description: error
+          schema:
+            type: object
+            required: ["errors"]
+            # TODO: declare possible errors
+            # - App name already exists
+            # - Importing an app with flows with unrecognized activities/triggers?
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/definitions/Error'
+  '/apps/{appId}:export':
+    parameters:
+      - $ref: '#/parameters/appId'
+    get:
+      summary: Export app to a flogo.json
+      tags: [apps, export]
+      parameters:
+        - $ref: '#/parameters/appId'
+        - name: app
+          in: formData
+          description: File to import
+          type: file
+        - name: name
+          in: query
+          type: string
+          description: |-
+            Overrides the name for the app. Useful when we want to register an app with a different name from the one in the uplaoded file.
+      responses:
+        200:
+          description: The flogo.json
+          schema:
+            $ref: '#/definitions/FlogoJson'
+        400:
+          description: error
+          schema:
+            type: object
+            required: ["errors"]
+            # TODO: declare possible errors
+            # - App name already exists
+            # - Importing an app with flows with unrecognized activities/triggers?
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/definitions/Error'
+
+################################################################################
+#                                 Responses                                    #
+################################################################################
+responses:
+  AppSingle:
+    description: Successful app response
+    schema:
+      type: object
+      required: ["data"]
+      properties:
+        data:
+          $ref: '#/definitions/App'
+    examples:
+      application/json: |-
+        {
+          "data": {
+            "id": "123"
+            "name": "myapp",
+            "version": "0.0.1",
+            "description": "My App",
+            "createdAt": "2016-12-16T00:24:26+00:00",
+            "updatedAt": "2016-12-16T00:24:26+00:00",
+            "flows": [
+              {
+                "id": "abc",
+                "name": "App test"
+              }
+            ]
+          }
+        }
+  ActionSingle:
+    description: Successful single action response
+    schema:
+      type: object
+      required: ["data"]
+      properties:
+        data:
+          $ref: '#/definitions/Action'
+  ActionExtended:
+    description: Successful single action response including related app,
+      trigger and handler
+    schema:
+      type: object
+      required: ["data"]
+      properties:
+        data:
+          $ref: '#/definitions/ExtendedAction'
+    examples:
+      application/json: |-
+        {
+          "data": {
+            "id": "my_simple_flow",
+            "name": "My simple flow",
+            "description": "A simple description",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/incubator/flow",
+            "updatedAt": "017-07-14T01:00:00+01:00Z",
+            "createdAt": "017-07-14T01:00:00+01:00Z",
+            "trigger": {
+              "id": "my_rest_trigger",
+              "name": "My rest trigger",
+              "description": "My trigger description",
+              "updatedAt": "017-07-14T01:00:00+01:00Z",
+              "createdAt": "017-07-14T01:00:00+01:00Z",
+              "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+              "settings": {
+                "port": "9233"
+              },
+              "handlers": [{
+                "actionId": "my_simple_flow",
+                "updatedAt": "017-07-14T01:00:00+01:00Z",
+                "createdAt": "017-07-14T01:00:00+01:00Z",
+                "settings": {
+                  "method": "GET",
+                  "path": "/test"
+                },
+                "outputs": {
+                  "...": {}
+                }
+              }]
+            },
+            "handler": {
+              "actionId": "my_simple_flow",
+              "updatedAt": "017-07-14T01:00:00+01:00Z",
+              "createdAt": "017-07-14T01:00:00+01:00Z",
+              "settings": {
+                "method": "GET",
+                "path": "/test"
+              },
+              "outputs": {
+                "...": {}
+              }
+            },
+            "data": {
+              "flow": {
+                "attributes": [],
+                "rootTask": {
+                  "id": 1,
+                  "tasks": [{
+                      "id": 2,
+                      "type": 1,
+                      "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                      "name": "log attr value",
+                      "description": "",
+                      "attributes": [],
+                      "inputMappings": [{
+                        "type": 1,
+                        "value": "{A2.value}",
+                        "mapTo": "message"
+                      }]
+                    },
+                    {
+                      "id": 3,
+                      "type": 1,
+                      "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+                      "name": "reply",
+                      "description": "",
+                      "attributes": [{
+                        "name": "code",
+                        "type": "integer",
+                        "value": 201
+                      }]
+                    }
+                  ],
+                  "links": [{
+                    "id": 1,
+                    "type": 0,
+                    "name": "",
+                    "from": 2,
+                    "to": 3
+                  }]
+                }
+              }
+            }
+          }
+        }
+  TriggerSingle:
+    description: Successful trigger response
+    schema:
+      type: object
+      required: ["data"]
+      properties:
+        data:
+          $ref: '#/definitions/Trigger'
+  HandlerSingle:
+    description: Successful single handler response
+    schema:
+      type: object
+      required: ["data"]
+      properties:
+        data:
+          $ref: '#/definitions/Handler'
+  ActionCollection:
+    description: Succesful flow compound
+    schema:
+      type: object
+      required: ["data"]
+      properties:
+        data:
+          $ref: '#/definitions/ArrayOfActions'
+  NotFound:
+    description: Resource not found
+    schema:
+      type: object
+      required: ["errors"]
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/definitions/Error'
+
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  AppCreate:
+    type: object
+    required: ['name']
+    properties:
+      name:
+        type: string
+      version:
+        type: string
+      description:
+        type: string
+  App:
+    type: object
+    required: ['id', 'name']
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      version:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+        readOnly: true
+      updatedAt:
+        type: string
+        format: date-time
+        readOnly: true
+      triggers:
+        type: array
+        items:
+          $ref: '#/definitions/Trigger'
+        readOnly: true
+      actions:
+        type: array
+        items:
+          $ref: '#/definitions/Action'
+        readOnly: true
+  Action:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      ref:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+        readOnly: true
+      updatedAt:
+        type: string
+        format: date-time
+        readOnly: true
+      data:
+        type: object
+        properties:
+          flow:
+            $ref: "#/definitions/Flow"
+  ExtendedAction:
+    allOf:
+      - $ref: "#/definitions/Action"
+      - type: object
+        properties:
+          appId:
+            type: string
+            readOnly: true
+          app:
+            $ref: "#/definitions/App"
+          trigger:
+            $ref: "#/definitions/Trigger"
+          handler:
+            $ref: "#/definitions/Handler"
+  Trigger:
+    type: object
+    required: ['ref']
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      updatedAt:
+        type: string
+        format: date-time
+        readOnly: true
+      createdAt:
+        type: string
+        format: date-time
+        readOnly: true
+      ref:
+        type: string
+        readOnly: true
+      settings:
+        type: object
+      handlers:
+        type: array
+        items:
+          $ref: '#/definitions/Handler'
+        readOnly: true
+  TriggerCreate:
+    type: object
+    required: ['ref', 'name']
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      ref:
+        type: string
+      settings:
+        type: object
+  TriggerUpdate:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      settings:
+        type: object
+  Handler:
+    type: object
+    required: ['actionId']
+    properties:
+      actionId:
+        type: string
+        readOnly: true
+      settings:
+        type: object
+      outputs:
+        type: object
+      updatedAt:
+        type: string
+        format: date-time
+        readOnly: true
+      createdAt:
+        type: string
+        format: date-time
+        readOnly: true
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+        description: The HTTP status code applicable to this problem, expressed as a string value
+      code:
+        type: string
+        description: An application-specific error code, expressed as a string value.
+      title:
+        type: string
+        description: A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem
+      detail:
+        type: string
+        description: A human-readable explanation specific to this occurrence of the problem.
+      meta:
+        type: object
+        description: A meta object containing non-standard meta-information about the error.
+  ValidationError:
+    allOf:
+      - $ref: '#/definitions/Error'
+      - type: object
+        properties:
+          meta:
+            type: object
+            description: A meta object containing the details of the validation problems
+            properties:
+              property:
+                type: string
+              value:
+                type: string
+  Flow:
+    description: Flow from flogo-lib/flogo.json
+    type: object
+  ArrayOfActions:
+    type: array
+    items:
+      $ref: '#/definitions/Action'
+  FlogoJson:
+    description: flogo.json
+    type: object
