@@ -1,4 +1,5 @@
 import toInteger from 'lodash/toInteger';
+import escapeRegexp from 'lodash/escapeRegExp';
 
 /**
  * Find greatest index for ocurrence of "Name" and pattern "Name (number)".
@@ -23,7 +24,9 @@ export function findGreatestNameIndex(name, collection, property = 'name') {
   if (!name || !collection) {
     throw new TypeError('Name and collection params are required');
   }
-  const normalizedName = name.trim().toLowerCase();
+  let normalizedName = name.trim().toLowerCase();
+  normalizedName = escapeRegexp(normalizedName);
+
   const namePattern = new RegExp(`^${normalizedName}(\\s+\\((\\d+)\\))?$`, 'i');
   return collection.reduce((greatest, element) => {
     const matches = namePattern.exec(element[property]);

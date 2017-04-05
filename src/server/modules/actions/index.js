@@ -60,11 +60,10 @@ export class ActionsManager {
         newAction.updatedAt = null;
 
         return appsDb.update({ _id: appId }, { $push: { actions: newAction } })
-          .then(() => {
-            newAction.appId = appId;
-            return storeAsRecent(newAction);
-          })
-          .then(() => ActionsManager.findOne(newAction.id));
+          .then(() => ActionsManager.findOne(newAction.id))
+          .then(storedAction => storeAsRecent(storedAction)
+            .then(() => storedAction),
+          );
       });
   }
 
