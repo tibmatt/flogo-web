@@ -70,7 +70,6 @@ export class FlogoCanvasComponent implements OnInit {
   public exportLink: string;
   public downloadLink: string;
   public hasTrigger: boolean;
-  public isInstructionsActivated: boolean = false;
   public triggerId: string;
   public app: any;
 
@@ -89,7 +88,7 @@ export class FlogoCanvasComponent implements OnInit {
 
     this.loading = true;
     this.hasTrigger = true;
-    this.triggerId = null
+    this.triggerId = null;
     this.app = null;
   }
 
@@ -97,24 +96,13 @@ export class FlogoCanvasComponent implements OnInit {
     this.flowId = this._route.snapshot.params['id'];
     this.backToAppHover = false;
 
-    this.downloadLink = `/v1/api/flows/${this.flowId}/build`;
+    this.downloadLink = `/api/v2/actions/${this.flowId}/build`;
 
     this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
     this._loadFlow(this.flowId)
       .then(() => {
         this.initSubscribe();
-
-        // todo: extract to service?
-        setTimeout(() => {
-          this.showInstructions();
-        }, 500);
-
-
-        // // todo: why?
-        // this._updateFlow(this.flow).then(() => {
-        //   this.loading = false;
-        // });
       });
   }
 
@@ -163,7 +151,7 @@ export class FlogoCanvasComponent implements OnInit {
     this._flogoModal.confirmDelete(message)
       .then((res) => {
         if (res) {
-          this._restAPIFlowsService.deleteFlow(this.flowId)
+          this._flowService.deleteFlow(this.flowId)
             .then(() => {
               this.navigateToApp();
             })
@@ -1542,30 +1530,6 @@ export class FlogoCanvasComponent implements OnInit {
 
     return stepNumber;
   }
-
-
-  // TODO: STILL USED?
-  /*-------------------------------*
-   |      WALKTHROUGH             |
-   *-------------------------------*/
-
-  showInstructions() {
-    let instructions: any = localStorage.getItem('flogo-show-instructions');
-    if (_.isEmpty(instructions)) {
-      localStorage.setItem('flogo-show-instructions', new Date().toString());
-      this.isInstructionsActivated = true;
-    }
-    return this.isInstructionsActivated;
-  }
-
-  public onClosedInstructions(closed) {
-    this.isInstructionsActivated = false;
-  }
-
-  public activateInstructions() {
-    this.isInstructionsActivated = true;
-  }
-
 
   /*-------------------------------*
    |      TRANSFORM                |

@@ -69,8 +69,6 @@
     <flogo-transform [flowId]="'root'"  data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
-    <flogo-instructions [isActivated]="isInstructionsActivated" (flogoOnClosedModal)="onClosedInstructions($event)"></flogo-instructions>
-
     <flogo-flows-detail-error-panel *ngIf="hasTrigger">
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
                                  [id]="'errorHandler'"

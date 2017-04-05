@@ -81,7 +81,7 @@ function getInstalledActivitiesAndTriggers(app) {
   ]).then(([triggers, activities]) => ({ triggers, activities }));
 }
 
-function extractRefs(app) {
+export function extractRefs(app) {
   const allRefs = { triggers: [], activities: [] };
   const triggerRefMap = new Map();
   const triggers = isArray(app.triggers) ? app.triggers : [];

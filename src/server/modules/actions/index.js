@@ -1,5 +1,6 @@
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
+import get from 'lodash/get';
 import mapKeys from 'lodash/mapKeys';
 
 import { apps as appsDb, indexer as indexerDb, dbUtils } from '../../common/db';
@@ -8,6 +9,9 @@ import { CONSTRAINTS } from '../../common/validation';
 import { Validator } from './validator';
 
 import { HandlersManager } from '../apps/handlers';
+import { ActivitiesManager as ContribActivitiesManager } from '../activities';
+import { TriggerManager as ContribTriggersManager } from '../triggers';
+
 
 import { findGreatestNameIndex } from '../../common/utils/collection';
 
@@ -68,7 +72,7 @@ export class ActionsManager {
     return ActionsManager.findOne(actionId)
       .then(existingAction => {
         if (!existingAction) {
-          throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+          throw ErrorManager.makeError('Action not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
         const appId = existingAction.appId;
         actionData = cleanInput(actionData, EDITABLE_FIELDS_UPDATE);
@@ -148,6 +152,61 @@ export class ActionsManager {
       }
       return wasDeleted;
     });
+  }
+
+  static exportToFlow(actionId) {
+    return ActionsManager.findOne(actionId)
+      .then(action => {
+        if (!action) {
+          throw ErrorManager.makeError('Action not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+        }
+
+        const flow = get(action, 'data.flow', {});
+        flow.attributes = flow.attributes || [];
+        flow.name = action.name;
+        // todo: extract constant
+        flow.model = 'tibco-simple';
+        // todo: extract constant
+        flow.type = flow.type || 1;
+
+        const trigger = {
+          ref: action.trigger.ref,
+          settings: action.trigger.settings,
+          endpoints: [{
+            actionType: 'flow',
+            settings: action.handler.settings,
+          }],
+        };
+
+        const tasks = get(flow, 'rootTask.tasks', []);
+
+        // hardcoding the activity type, for now
+        // TODO: maybe the activity should expose a property so we know it can reply?
+        const hasExplicitReply = tasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
+        if (hasExplicitReply) {
+          flow.explicitReply = true;
+        }
+
+        return Promise.all([
+          ContribTriggersManager.findByRef(trigger.ref)
+            .then(contribTrigger => {
+              trigger.name = contribTrigger.name;
+            }),
+          Promise.resolve(true),
+          // ContribActivitiesManager.find()
+          //   .then(contribActivities => new Map(contribActivities.map(a => [a.ref, a.name])))
+          //   .then(contribActivities => {
+          //     const tasks = flow.tasks || [];
+          //     tasks.forEach(t => {
+          //       t.activityType = contribActivities.get(t.ref);
+          //     });
+          //   }),
+        ])
+          .then(() => ({
+            flow,
+            trigger,
+          }));
+      });
   }
 
   static removeFromRecentByAppId(appId) {

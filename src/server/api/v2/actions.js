@@ -1,4 +1,5 @@
 import { ActionsManager } from '../../modules/actions';
+import { ActionCompiler } from '../../modules/engine';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
 export function actions(router, basePath) {
@@ -8,6 +9,8 @@ export function actions(router, basePath) {
   router.get(`${basePath}/actions/recent`, listRecentActions);
   router.patch(`${basePath}/actions/:actionId`, updateAction);
   router.del(`${basePath}/actions/:actionId`, deleteAction);
+
+  router.get(`${basePath}/actions/:actionId/build`, makeBuild);
 }
 
 function* listActions() {
@@ -123,5 +126,33 @@ function* deleteAction() {
   }
 
   this.status = 204;
+}
+
+function* makeBuild(next) {
+  const actionId = this.params.actionId;
+
+  let compileOptions;
+  // TODO: make sure os and arch are valid
+  if (this.query.os || this.query.arch) {
+    const { os, arch } = this.query;
+    compileOptions = { os, arch };
+  }
+
+  const exportedAction = yield ActionsManager.exportToFlow(actionId);
+
+  if (!exportedAction) {
+    throw ErrorManager.createRestNotFoundError('Action not found', {
+      title: 'Action not found',
+      detail: 'No action with the specified id',
+      value: actionId,
+    });
+  }
+
+  const { trigger, flow } = exportedAction;
+  this.body = yield ActionCompiler.compileFlow(trigger, flow, compileOptions);
+  this.type = 'application/octet-stream';
+  this.attachment();
+
+  yield next;
 }
 

@@ -43,10 +43,6 @@ export class FlogoFlowService {
             errorHandler: { diagram: null, tasks: null }
           };
         }
-      })
-      .catch((error)=> {
-        console.error(error);
-        return null;
       });
   }
 
@@ -54,6 +50,10 @@ export class FlogoFlowService {
     const { name, description, flow } = flogoFlowToJSON(uiFlow);
     const action = { name, description, data: { flow } };
     return this._flowAPIService.updateFlow(flowId, action);
+  }
+
+  deleteFlow(flowId) {
+    return this._flowAPIService.deleteFlow(flowId);
   }
 
   processFlowModel(model): Promise<FlowData> {
