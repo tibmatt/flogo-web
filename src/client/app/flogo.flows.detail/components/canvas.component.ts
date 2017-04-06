@@ -687,7 +687,7 @@ export class FlogoCanvasComponent implements OnInit {
             .then((app) => {
               // Refresh task detail
               var currentStep = this._getCurrentState(data.node.taskID);
-              var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
+              var currentTask = this.handlers[diagramId].tasks[data.node.taskID];
               var context = this._getCurrentContext(data.node.taskID, diagramId);
               this.triggerId = this.getTriggerIdCurrentFlow(app, this.flow.id);
               context.currentTrigger = this.getTriggerFromApp(app, this.triggerId);
@@ -714,7 +714,7 @@ export class FlogoCanvasComponent implements OnInit {
                               {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
                                 data: {
                                   node: data.node,
-                                  task: this.handlers[diagramId].tasks[data.node.taskID],
+                                  task: currentTask, // this.handlers[diagramId].tasks[data.node.taskID],
                                   id: data.id
                                 },
                                 done: (diagram: IFlogoFlowDiagram) => {
@@ -1051,7 +1051,6 @@ export class FlogoCanvasComponent implements OnInit {
         });
 
       }
-
 
       updatePromise
         .then((res) => {

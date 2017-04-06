@@ -52,7 +52,9 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
 
     if(changes['_context']) {
       try {
-        numFlows = this._context.currentTrigger.handlers.length;
+        if(this._context.currentTrigger) {
+          numFlows = this._context.currentTrigger.handlers.length;
+        }
       }catch(err) {
         numFlows = 1;
         console.log(err);
@@ -99,7 +101,5 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
 
     return _.assign({}, info, this.getControlByType(input.type));
   }
-
-
 
 }
