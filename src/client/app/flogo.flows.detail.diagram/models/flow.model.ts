@@ -196,6 +196,12 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
   let flowPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( flowPath, 'nodes' );
 
+  /* assign attributes */
+
+  flowJSON.id = flogoIDEncode( flowID ); // convert to URL safe base64 encoded id
+  flowJSON.name = _.get( inFlow, 'name', '' );
+  flowJSON.description = _.get( inFlow, 'description', '' );
+
   if ( _.isEmpty( flowPath ) || _.isEmpty( flowPathRoot ) || _.isEmpty( flowPathNodes ) ) {
     DEBUG && console.warn( 'Invalid path information in the given flow' );
     DEBUG && console.log( inFlow );
@@ -209,12 +215,6 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     DEBUG && console.log( inFlow );
     return flowJSON;
   }
-
-  /* assign attributes */
-
-  flowJSON.id = flogoIDEncode( flowID ); // convert to URL safe base64 encoded id
-  flowJSON.name = _.get( inFlow, 'name', '' );
-  flowJSON.description = _.get( inFlow, 'description', '' );
 
   flowJSON.flow = (function _parseFlowInfo() {
     let flow = <flowToJSON_FlowInfo>{};
