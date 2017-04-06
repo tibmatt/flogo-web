@@ -3,7 +3,6 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { notification } from '../../../common/utils';
-import { ERROR_CONSTRAINT } from '../../../common/constants';
 import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.service";
 
 @Component({
@@ -13,7 +12,7 @@ import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.servi
   styleUrls: ['app.list.css']
 })
 export class FlogoAppListComponent implements OnInit {
-  // @ViewChild('importInput') importInput: ElementRef;
+  @ViewChild('importInput') importInput: ElementRef;
   @Output() onSelectedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
   public applications: Array<IFlogoApplicationModel> = [];
@@ -35,27 +34,25 @@ export class FlogoAppListComponent implements OnInit {
   onImportFileSelected($event) {
     let file: File = $event.target.files[0];
     let fileReader: FileReader = new FileReader();
-    fileReader.onload = this.uploadApp();
+    fileReader.onload = (readerEvent) => this.uploadApp(readerEvent);
     fileReader.readAsText(file);
   }
 
-  uploadApp() {
-    let appListComponent = this;
-    return function(readerEvent){
-      try {
-        let appData = JSON.parse(readerEvent.target.result);
-        appListComponent.apiApplications.uploadApplication(appData)
-          .then((application)=>{
-            appListComponent.applications.push(application);
-            appListComponent.applications = _.sortBy(appListComponent.applications, 'name');
-            appListComponent.notifyUser(true);
-          }).catch((error)=>{
-          appListComponent.notifyUser(false, error);
-        });
-      } catch (error) {
-        appListComponent.notifyUser(false, error);
-      }
+  uploadApp(readerEvent) {
+    try {
+      let appData = JSON.parse(readerEvent.target.result);
+      this.apiApplications.uploadApplication(appData)
+        .then((application)=>{
+          this.applications.push(application);
+          this.applications = _.sortBy(this.applications, 'name');
+          this.notifyUser(true);
+        }).catch((error)=>{
+        this.notifyUser(false, error);
+      });
+    } catch (error) {
+      this.notifyUser(false, error);
     }
+    this.importInput.nativeElement.value = '';
   }
 
   notifyUser(isImported: boolean, errorDetails?: Error) {
@@ -73,10 +70,12 @@ export class FlogoAppListComponent implements OnInit {
   getErrorMessage(error) {
     let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
 
-    if(error.name === 'Syntax Error'){
+    if(error.name === 'SyntaxError'){
       message = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
     } else {
-      message = 'APP-LIST:BROKEN_RULE_VALIDATION_ERROR';
+      if(error[0].status === 400){
+        message = 'APP-LIST:BROKEN_RULE_VALIDATION_ERROR';
+      }
     }
     return message;
   }
