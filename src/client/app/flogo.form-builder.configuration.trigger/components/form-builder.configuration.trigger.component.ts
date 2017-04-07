@@ -33,11 +33,12 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
       this.needEditConfirmation = true;
     } else {
       this.needEditConfirmation = false;
+      this.clickEditForNFlows();
     }
     this.messageNumFlowsUsed = this.translate.instant('FORM-BUILDER-CONFIGURATION-TRIGGER:EDIT', {value: numFlows});
   }
 
-  clickEditForNFlows(event) {
+  clickEditForNFlows(event?) {
     this.isEditable = true;
     this.onTriggerAction.emit('trigger-edit');
   }

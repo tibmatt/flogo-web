@@ -2,7 +2,7 @@
   <div  class="flogo-common-edit-panel__container">
     <!--// TODO: extract field creation to single component to simplify these templates -->
     <div class="flogo-common-edit-panel__header">
-      <h3 class="flogo-common-edit-panel__legend"  *ngIf="fields.settings.length">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:SETTINGS' | translate }}</h3>
+      <h3 class="flogo-common-edit-panel__legend">{{ 'FORM-BUILDER-CONFIGURATION-TRIGGER:SETTINGS' | translate }}</h3>
 
       <div class="settings__menu" *ngIf="needEditConfirmation">
         <i class="flogo-icon-edit"></i>
@@ -18,9 +18,6 @@
             </li>
           </ul>
         </div>
-      </div>
-      <div class="settings__menu" *ngIf="!needEditConfirmation">
-        <i class="flogo-icon-edit" (click)="clickEditForNFlows($event)"></i>
       </div>
     </div>
     <div *ngFor="let item of fields.settings; let index = index" class="">
@@ -51,7 +48,7 @@
 
     </div>
 
-    <hr>
+    <hr *ngIf="fields.endpointSettings.length && fields.settings.length">
 
     <div *ngFor="let item of fields.endpointSettings; let index = index" class="">
 
