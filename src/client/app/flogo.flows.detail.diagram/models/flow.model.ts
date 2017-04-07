@@ -32,6 +32,7 @@ export interface flowToJSON_Task {
   activityType : string;
   activityRef? : string;
   name? : string;
+  description? : string;
   attributes : flowToJSON_Attribute[];
   inputMappings : flowToJSON_Mapping [];
   ouputMappings : flowToJSON_Mapping[];
@@ -358,6 +359,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
           taskInfo.id = convertTaskID( task.id );
           taskInfo.name = _.get( task, 'name', '' );
+          taskInfo.description = _.get( task, 'description', '' );
           taskInfo.type = task.type;
           taskInfo.activityType = task.activityType;
           taskInfo.activityRef = task.ref;

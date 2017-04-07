@@ -70,7 +70,7 @@ export class FlogoCanvasComponent implements OnInit {
   public exportLink: string;
   public downloadLink: string;
   public hasTrigger: boolean;
-  public triggerId: string;
+  public currentTrigger: any;
   public app: any;
 
   constructor(public translate: TranslateService,
@@ -88,7 +88,7 @@ export class FlogoCanvasComponent implements OnInit {
 
     this.loading = true;
     this.hasTrigger = true;
-    this.triggerId = null;
+    this.currentTrigger = null;
     this.app = null;
   }
 
@@ -441,11 +441,11 @@ export class FlogoCanvasComponent implements OnInit {
   private _onActionTrigger(data: any, envelope: any) {
 
     if(data.action === 'trigger-copy') {
-      let trigger = this.getTriggerFromApp(this.app, this.triggerId);
-      let triggerSettings = _.pick(trigger, ['name', 'description', 'ref', 'settings']);
+      let triggerSettings = _.pick(this.currentTrigger, ['name', 'description', 'ref', 'settings']);
 
       this._restAPITriggersService.createTrigger(this.app.id, triggerSettings)
         .then((createdTrigger) => {
+          this.currentTrigger = createdTrigger;
           let settings = this.getSettingsCurrentHandler();
           return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.flow.id, settings )
             .then((res) => {
@@ -455,14 +455,6 @@ export class FlogoCanvasComponent implements OnInit {
         });
     }
 
-  }
-
-  private getTriggerFromApp(app, triggerId) {
-    let trigger = app.triggers.find((trigger)=> {
-      return trigger.id === triggerId;
-    });
-
-    return trigger;
   }
 
   private _addTriggerFromTriggers(data: any, envelope: any) {
@@ -645,28 +637,27 @@ export class FlogoCanvasComponent implements OnInit {
 
   }
 
-  private getTriggerIdCurrentFlow(app, flowId) {
-    let triggerId:any = null;
+  private getTriggerCurrentFlow(app, flowId) {
+    let trigger:any = null;
 
-    let triggers = app.triggers.filter((trigger) => {
-      return trigger.appId === app.id;
-    });
+    let triggers = app.triggers.filter((trigger) => trigger.appId === app.id);
 
     if(triggers) {
-      triggers.forEach((trigger) => {
-        let handler = trigger.handlers.find((handler) => {
+      triggers.forEach((currentTrigger) => {
+        let handlers = currentTrigger.handlers.find((handler) => {
           return handler.actionId === flowId;
         });
 
-        if(handler) {
-          triggerId = trigger.id;
-          return triggerId;
+        if(handlers) {
+          trigger = currentTrigger;
+          return trigger;
         }
       });
     }
 
-    return triggerId;
+    return trigger;
   }
+
 
   private _selectTriggerFromDiagram(data: any, envelope: any) {
     let diagramId: string = data.id;
@@ -689,12 +680,17 @@ export class FlogoCanvasComponent implements OnInit {
               var currentStep = this._getCurrentState(data.node.taskID);
               var currentTask = this.handlers[diagramId].tasks[data.node.taskID];
               var context = this._getCurrentContext(data.node.taskID, diagramId);
-              this.triggerId = this.getTriggerIdCurrentFlow(app, this.flow.id);
-              context.currentTrigger = this.getTriggerFromApp(app, this.triggerId);
+
+              if(!this.currentTrigger) {
+                this.currentTrigger = this.getTriggerCurrentFlow(app, this.flow.id);
+              }
+
+              context.currentTrigger = this.currentTrigger;
+
               context.app = app;
               this.app = app;
 
-              this._restAPIHandlerService.getHandler(this.triggerId, this.flow.id)
+              this._restAPIHandlerService.getHandler(this.currentTrigger.id, this.flow.id)
                 .then((handler) => {
                   this._updateAttributesChanges(currentTask, handler.outputs, 'outputs');
 
@@ -818,14 +814,17 @@ export class FlogoCanvasComponent implements OnInit {
         task[data.proper] = data.content;
       }
       let updateObject = {};
-      updateObject[data.proper] = task[data.proper];
 
-      this._restAPITriggersService.updateTrigger(this.triggerId, updateObject)
-        .then((res) => {
-          this._updateFlow(this.flow).then(() => {
-            this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-          });
-        })
+      this._updateFlow(this.flow).then(() => {
+        this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+      });
+
+      if(task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
+        updateObject[data.proper] = task[data.proper];
+        this._restAPITriggersService.updateTrigger(this.currentTrigger.id, updateObject);
+      }
+
+
     }
   }
 
@@ -1043,9 +1042,9 @@ export class FlogoCanvasComponent implements OnInit {
       let updatePromise: any = Promise.resolve(true);
 
       if(data.changedStructure === 'settings') {
-        updatePromise = this._restAPITriggersService.updateTrigger(this.triggerId, {settings: data.settings})
+        updatePromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings})
       } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
-        updatePromise = this._restAPIHandlerService.updateHandler(this.triggerId, this.flow.id, {
+        updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.flow.id, {
           settings: data.endpointSettings,
           outputs: data.outputs
         });
