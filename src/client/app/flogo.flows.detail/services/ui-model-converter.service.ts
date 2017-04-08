@@ -566,6 +566,7 @@ class ItemFactory {
 
       if (cliValue) {
         newAttribute.value = cliValue.value;
+        newAttribute.required = cliValue.required || false;
       } else {
         // use the value provided by the schema
         newAttribute.value = installedInput.value;

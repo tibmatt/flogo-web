@@ -18,6 +18,7 @@ export interface flowToJSON_Attribute {
   name : string;
   type : string;
   value : string;
+  required: boolean
 }
 
 export interface flowToJSON_Mapping {
@@ -371,9 +372,12 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
             'attributes.inputs' ) );
 
           // filter null/undefined/{}/[]
+          // enabling this block, remove attribute settings, like (required)
+          /*
           taskInfo.attributes = _.filter( taskInfo.attributes, ( attr : any )=> {
             return !(_.isNil( attr.value ) || (_.isObject( attr.value ) && _.isEmpty( attr.value )));
           } );
+          */
 
           /* add inputMappings */
 
@@ -483,6 +487,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
       /* simple validation */
       attr.name = <string>_.get( inAttr, 'name' );
       attr.value = <any>_.get( inAttr, 'value', getDefaultValue( inAttr.type ) );
+      attr.required = !!inAttr.required;
 
       if ( _.isEmpty( attr.name ) ) {
         DEBUG && console.warn( 'Empty attribute name found' );
