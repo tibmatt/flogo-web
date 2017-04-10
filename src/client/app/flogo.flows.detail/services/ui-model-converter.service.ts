@@ -130,6 +130,7 @@ export class UIModelConverterService {
   }
 
   processFlowObj(flowJSON, triggerJSON, installedContribs) {
+    this.itemIndex = 2;
     let endpoints = _.get(triggerJSON, 'handlers', []);
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
