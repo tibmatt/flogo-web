@@ -3,13 +3,7 @@ import path from 'path';
 import { extractDomain } from '../common/utils';
 import _ from 'lodash';
 
-import {
-  DBService
-} from '../common/db.service';
-
-import {
-  DatabaseService
-} from '../common/database.service';
+import { DatabaseService } from '../common/database.service';
 
 let rootPath = path.normalize(__dirname + '/..');
 
@@ -37,6 +31,7 @@ let config = {
   logLevel,
   localPath: LOCAL_DIR,
   defaultAppJsonPath: path.join(rootPath, 'config/sample-app.json'),
+  defaultFlogoDescriptorPath: process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR || path.join(rootPath, 'config/default-flogo.json'),
   libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
   app: {
     basePath: '/v1/api',

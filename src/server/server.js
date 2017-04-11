@@ -9,7 +9,8 @@ import bodyParser from 'koa-body';
 import compress from 'koa-compress';
 var cors = require('koa-cors');
 
-import {config, flowsDBService} from './config/app-config';
+import { config } from './config/app-config';
+
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
 import {syncTasks, getInitializedEngine, ensureDefaultDirs} from './modules/init';

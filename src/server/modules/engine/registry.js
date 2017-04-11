@@ -49,7 +49,7 @@ export function initEngine(engine, options) {
     .then(create => {
       if(create) {
         logger.warn('Engine does not exist. Creating...');
-        return engine.create()
+        return engine.create(config.defaultFlogoDescriptorPath)
           .then(() => {
             logger.info('New engine created');
             // TODO: add palette version
@@ -59,10 +59,10 @@ export function initEngine(engine, options) {
           })
           .catch(error => {
             logger.error('Error initializing engine. Will try to clean up');
-            return engine.remove().then(() => {
-              logger.notice('Successful clean');
-              throw new Error(error);
-            });
+            // return engine.remove().then(() => {
+            //   logger.info('Successful clean');
+            //   throw new Error(error);
+            // });
           });
       }
     })

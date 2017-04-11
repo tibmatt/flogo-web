@@ -35,19 +35,17 @@ class Engine {
       .then(tasksData => this.tasks = tasksData);
   }
 
-  create() {
+  create(flogoDescriptorPath = null) {
     // todo: add support for lib version
-    let options = { libVersion: this.libVersion };
+    const options = { libVersion: this.libVersion };
+    if (flogoDescriptorPath) {
+      options.flogoDescriptor = flogoDescriptorPath;
+    }
     console.time('engine:create');
     return commander
       .create(this.path, options)
       .then(() => Promise.all(
-        [
-          DIR_TEST_BIN,
-          DIR_BUILD_BIN
-        ].map(
-          dir => ensureDir(path.resolve(this.path, dir))
-        )
+        [DIR_TEST_BIN, DIR_BUILD_BIN].map(dir => ensureDir(path.resolve(this.path, dir))),
       ))
       .then(result => {
         console.timeEnd('engine:create');

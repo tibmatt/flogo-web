@@ -25,8 +25,8 @@ export function build(enginePath, opts) {
   let args = _getCommandArgs(opts);
   let env = _getEnv(opts);
 
-  console.log(`[log] Build flogo: "flogo build ${args}" compileOpts:`);
-  return runShellCMD('flogo_old', ['build'].concat(args), {
+  console.log(`[log] Build flogo: "flogoapp build ${args}" compileOpts:`);
+  return runShellCMD('flogo', ['build'].concat(args), {
     cwd: defaultEnginePath,
     env: Object.assign({}, process.env, env)
   })
