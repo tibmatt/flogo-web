@@ -42,7 +42,7 @@ const DEFAULT_APP = {
   _id: DEFAULT_APP_ID,
   name: 'Default app',
   description: 'App created by default',
-  version: '0.0.1',
+  version: DEFAULT_APP_VERSION,
 };
 
 export class AppsManager {
@@ -248,6 +248,10 @@ export class AppsManager {
         actionMap.forEach(a => {
           a.id = normalizeName(a.name);
         });
+
+        if(!app.version) {
+          app.version =  DEFAULT_APP_VERSION;
+        }
 
         return app;
       });
