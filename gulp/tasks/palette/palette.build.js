@@ -25,7 +25,7 @@ gulp.task('palette.build', 'Build default palette', [], cb => {
     getAll('activity'),
     getAll('trigger')
   ])
-    .then(([activities, triggers]) => makePalette(activities, triggers))
+    .then(([activities, triggers]) => makePalette(triggers.concat(activities)))
     .then(result => writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), result))
     .then(() => cb())
     .catch(err => {
@@ -35,16 +35,13 @@ gulp.task('palette.build', 'Build default palette', [], cb => {
 
 });
 
-function makePalette(activities, triggers) {
+function makePalette(extensions) {
   return {
-    'name': 'default',
-    'version': '0.0.1',
-    'title': 'Default Palette',
-    'description': 'Default flogo palette',
-    'extensions': {
-      'activities': activities,
-      'triggers': triggers
-    }
+    name: 'default',
+    version: '0.0.1',
+    title: 'Default Palette',
+    description: 'Default flogo palette',
+    extensions
   };
 }
 
@@ -62,27 +59,23 @@ function writeJsonFile(target, contents) {
 }
 
 function getAll(type) {
-
   return getRepoContents(type)
-    .then(all => {
-      return Promise.all(
+    .then(all => Promise.all(
         all
           .filter(each => each.type == 'dir')
           .map(each => {
-            return getRepoContents(`${each.path}/${type}.json`, {rawContent: true})
-              .then(task => ({
-                name: task.name,
-                path: `github.com/${REPO}/${each.path}`
+            const descriptorPath = `${each.path}/${type}.json`;
+            return getRepoContents(descriptorPath, { rawContent: true })
+              .then(contrib => ({
+                type: type,
+                ref: contrib.ref
               }))
               .catch(err => {
-
+                console.warn(`Error reading descriptor for "${descriptorPath}"`);
               })
           })
           .filter(result => !!result)
-      );
-
-    })
-
+      ))
 }
 
 /**
