@@ -366,40 +366,40 @@ export class FlogoCanvasComponent implements OnInit {
   }
 
   public changeFlowDetailName(name, property) {
-    return new Promise((resolve, reject) => {
-      if (name == this.flowName) {
-        resolve(true);
-      } else {
-        this._restAPIFlowsService.findFlowsByName(name, { appId: this.flow.appId })
-          .then((flows) => {
-            let results = flows || [];
+    if (name == this.flowName) {
+      return Promise.resolve(true);
+    }
 
-            if (!_.isEmpty(results)) {
-              let message = this.translate.instant('CANVAS:FLOW-NAME-EXISTS', { value: name });
-              this.flow.name = this.flowName;
-              notification(message, 'error');
-              resolve(results);
-            } else {
-              this.flow.name = name;
-              this._updateFlow(this.flow).then((response: any) => {
-                let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
-                this.flowName = this.flow.name;
-                notification(message, 'success', 3000);
-                resolve(response);
-              }).catch((err) => {
-                let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
-                notification(message, 'error');
-                reject(err);
-              });
-            }
-          })
-          .catch((err) => {
+    return this._flowService.listFlowsByName(this.flow.appId, name)
+      .then((flows) => {
+        let results = flows || [];
+        if (!_.isEmpty(results)) {
+          if (results[0].id === this.flowId) {
+            return;
+          }
+          let message = this.translate.instant('CANVAS:FLOW-NAME-EXISTS', { value: name });
+          this.flow.name = this.flowName;
+          notification(message, 'error');
+          return results;
+        } else {
+          this.flow.name = name;
+          this._updateFlow(this.flow).then((response: any) => {
+            let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
+            this.flowName = this.flow.name;
+            notification(message, 'success', 3000);
+            return response;
+          }).catch((err) => {
             let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
             notification(message, 'error');
-            reject(err);
+            return Promise.reject(err);
           });
-      }
-    })
+        }
+      })
+      .catch((err) => {
+        let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
+        notification(message, 'error');
+        return Promise.reject(err);
+      });
   }
 
   private _addTriggerFromDiagram(data: any, envelope: any) {

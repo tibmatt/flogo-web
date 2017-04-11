@@ -56,6 +56,10 @@ export class FlogoFlowService {
     return this._flowAPIService.deleteFlow(flowId);
   }
 
+  listFlowsByName(appId, name) {
+    return this._flowAPIService.findFlowsByName(name, appId);
+  }
+
   processFlowModel(model): Promise<FlowData> {
     let diagram: IFlogoFlowDiagram;
     let errorDiagram: IFlogoFlowDiagram;

@@ -36,6 +36,7 @@ let config = {
   publicPath: publicPath,
   logLevel,
   localPath: LOCAL_DIR,
+  defaultAppJsonPath: path.join(rootPath, 'config/sample-app.json'),
   libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
   app: {
     basePath: '/v1/api',
@@ -267,32 +268,27 @@ export {
   originalConfig
 };
 
-let triggersDBService = new DatabaseService();
-let activitiesDBService = new DatabaseService();
-let flowsDBService = new DBService(config.db);
-let appsDBService = new DBService(config.apps.db);
-let dbService = flowsDBService;
+const triggersDBService = new DatabaseService();
+const activitiesDBService = new DatabaseService();
+// let flowsDBService = new DBService(config.db);
+// let appsDBService = new DBService(config.apps.db);
+// let dbService = flowsDBService;
 
 let engines = {
   "test": undefined,
   "build": undefined
 };
 
-export {
-  triggersDBService
-};
-export {
-  flowsDBService
-};
-export {
-  activitiesDBService
-};
-export {
-  appsDBService
-};
-export {
-  dbService
-};
+export { triggersDBService, activitiesDBService };
+// export {
+//   flowsDBService
+// };
+// export {
+//   appsDBService
+// };
+// export {
+//   dbService
+// };
 export {
   engines
 };

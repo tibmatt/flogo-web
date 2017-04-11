@@ -18,7 +18,7 @@ gulp.task('dev.start.db', () => {
 /**
  * Starts the server for development
  */
-gulp.task('dev.start', 'Starts server app and db for development', ['dev.start.db'], () => {
+gulp.task('dev.start', 'Starts server app and db for development', [/*'dev.start.db'*/], () => {
 
   let npmTask = 'start-server';
   if (process.env['FLOGO_DEBUG']) {

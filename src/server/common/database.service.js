@@ -99,6 +99,13 @@ export class Database {
     throw new Error('Bulk method not implemented');
   }
 
+  compact() {
+    return new Promise((resolve, reject) => {
+      this.collection.persistence.compactDatafile();
+      this.collection.on('compaction.done', () => resolve());
+    });
+  }
+
 }
 
 export class DatabaseService {

@@ -9,21 +9,22 @@ import {CONFIG} from '../../config';
  *
  */
 gulp.task('dist.build-engines', 'Starts server app and db in production mode', [], cb => {
-  let db = new DB();
-  db.start()
-    .then(() => {
+  // let db = new DB();
+  // db.start()
+  //   .then(() => {
       console.log('Starting server');
-      return promisifiedExec('node configure-engines.js', {cwd: CONFIG.paths.dist.server});
-    })
+  //    return
+  promisifiedExec('node configure-engines.js', {cwd: CONFIG.paths.dist.server})//;
+    // })
+    // .then(code => {
+    //   console.log(`Build exited with code ${code}`);
+    //   return promisifiedExec('npm run dump-db', {cwd: CONFIG.paths.dist.server});
+    // })
     .then(code => {
-      console.log(`Build exited with code ${code}`);
-      return promisifiedExec('npm run dump-db', {cwd: CONFIG.paths.dist.server});
-    })
-    .then(code => {
-      console.log(`DB dump exited with code ${code}`);
+      //console.log(`DB dump exited with code ${code}`);
 
-      console.log('Stopping db process');
-      db.stop();
+      // console.log('Stopping db process');
+      // db.stop();
 
       console.log('dist.build-engines Finished');
       cb();

@@ -1,0 +1,503 @@
+{
+  "name": "Default app",
+  "type": "flogo:app",
+  "version": "0.0.1",
+  "description": "Sample flogo app",
+  "triggers": [{
+    "id": "receiver",
+    "name": "Receiver",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+    "description": "Simple REST Trigger",
+    "settings": {
+      "port": "9998"
+    },
+    "handlers": [{
+      "actionId": "aws_iot_sample",
+      "settings": {
+        "method": "GET",
+        "path": "/awsiot/status",
+        "autoIdReply": "true",
+        "useReplyHandler": "true"
+      }
+    }]
+  }, {
+    "id": "timer_trigger",
+    "name": "Timer Trigger",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
+    "description": "Simple Timer trigger",
+    "settings": {},
+    "handlers": [{
+      "actionId": "hello_world",
+      "settings": {
+        "repeating": "true",
+        "startDate": "",
+        "hours": "",
+        "minutes": "",
+        "seconds": "15"
+      }
+    }]
+  }, {
+    "id": "receive_http_message",
+    "name": "Receive HTTP Message",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+    "description": "Simple REST Trigger",
+    "settings": {
+      "port": "9999"
+    },
+    "handlers": [{
+      "actionId": "control_home_light",
+      "settings": {
+        "method": "POST",
+        "path": "/lights/status",
+        "autoIdReply": "true",
+        "useReplyHandler": "true"
+      }
+    }]
+  }],
+  "actions": [{
+    "id": "aws_iot_sample",
+    "name": "AWS IOT Sample",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+    "data": {
+      "flow": {
+        "type": 1,
+        "attributes": [],
+        "rootTask": {
+          "id": 1,
+          "type": 1,
+          "tasks": [{
+            "id": 2,
+            "name": "Start processing",
+            "type": 1,
+            "activityType": "tibco-log",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "attributes": [{
+              "name": "message",
+              "value": "Received Rest request and starting trigger",
+              "type": "string"
+            }, {
+              "name": "flowInfo",
+              "value": "true",
+              "type": "boolean"
+            }, {
+              "name": "addToFlow",
+              "value": "true",
+              "type": "boolean"
+            }]
+          }, {
+            "id": 3,
+            "name": "Update",
+            "type": 1,
+            "activityType": "tibco-awsiot",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/awsiot",
+            "attributes": [{
+              "name": "thingName",
+              "value": "flogo_test",
+              "type": "string"
+            }, {
+              "name": "awsEndpoint",
+              "value": "a1njsonnibpa75.iot.us-east-1.amazonaws.com",
+              "type": "string"
+            }, {
+              "name": "desired",
+              "value": {
+                "switch": "on"
+              },
+              "type": "params"
+            }, {
+              "name": "reported",
+              "value": {
+                "switch": "off"
+              },
+              "type": "params"
+            }]
+          }, {
+            "id": 4,
+            "name": "LogStatus",
+            "type": 1,
+            "activityType": "tibco-log",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "attributes": [{
+              "name": "message",
+              "value": "Set Report to off and desired to on",
+              "type": "string"
+            }, {
+              "name": "flowInfo",
+              "value": "true",
+              "type": "boolean"
+            }, {
+              "name": "addToFlow",
+              "value": "true",
+              "type": "boolean"
+            }]
+          }, {
+            "id": 5,
+            "name": "Done",
+            "type": 1,
+            "activityType": "tibco-reply",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+            "attributes": [{
+              "name": "code",
+              "value": "200",
+              "type": "integer"
+            }, {
+              "name": "data",
+              "value": "AWS IOT update successfully",
+              "type": "any"
+            }]
+          }],
+          "links": [{
+            "id": 1,
+            "from": 2,
+            "to": 3,
+            "type": 0
+          }, {
+            "id": 2,
+            "from": 3,
+            "to": 4,
+            "type": 0
+          }, {
+            "id": 3,
+            "from": 4,
+            "to": 5,
+            "type": 0
+          }],
+          "activityRef": "",
+          "attributes": []
+        }
+      }
+    }
+  }, {
+    "id": "hello_world",
+    "name": "HelloWorld",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+    "data": {
+      "flow": {
+        "type": 1,
+        "attributes": [],
+        "rootTask": {
+          "id": 1,
+          "type": 1,
+          "activityType": "",
+          "ref": "",
+          "name": "root",
+          "tasks": [{
+            "id": 2,
+            "name": "Number Counter",
+            "type": 1,
+            "activityType": "tibco-counter",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/counter",
+            "attributes": [{
+              "name": "counterName",
+              "value": "number",
+              "type": "string"
+            }, {
+              "name": "increment",
+              "value": "true",
+              "type": "boolean"
+            }, {
+              "name": "reset",
+              "value": "false",
+              "type": "boolean"
+            }]
+          }, {
+            "id": 3,
+            "name": "Logger",
+            "type": 1,
+            "activityType": "tibco-log",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "attributes": [{
+              "name": "message",
+              "value": "hello world",
+              "type": "string"
+            }, {
+              "name": "flowInfo",
+              "value": "true",
+              "type": "boolean"
+            }, {
+              "name": "addToFlow",
+              "value": "true",
+              "type": "boolean"
+            }]
+          }],
+          "links": [{
+            "id": 1,
+            "from": 2,
+            "to": 3,
+            "type": 0
+          }],
+          "activityRef": "",
+          "attributes": []
+        }
+      }
+    }
+  }, {
+    "id": "control_home_light",
+    "name": "Control home light",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+    "data": {
+      "flow": {
+        "type": 1,
+        "attributes": [],
+        "rootTask": {
+          "id": 1,
+          "type": 1,
+          "activityType": "",
+          "ref": "",
+          "name": "root",
+          "tasks": [{
+            "id": 2,
+            "name": "Received",
+            "type": 1,
+            "activityType": "tibco-log",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "attributes": [{
+              "name": "message",
+              "value": "Received request.",
+              "type": "string"
+            }, {
+              "name": "flowInfo",
+              "value": "true",
+              "type": "boolean"
+            }, {
+              "name": "addToFlow",
+              "value": "true",
+              "type": "boolean"
+            }]
+          }, {
+            "id": 3,
+            "name": "SetToOutput",
+            "type": 1,
+            "activityType": "tibco-gpio",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio",
+            "attributes": [{
+              "name": "method",
+              "value": "Direction",
+              "type": "string"
+            }, {
+              "name": "pinNumber",
+              "value": "23",
+              "type": "integer"
+            }, {
+              "name": "direction",
+              "value": "Output",
+              "type": "string"
+            }, {
+              "name": "state",
+              "value": "",
+              "type": "string"
+            }, {
+              "name": "Pull",
+              "value": "",
+              "type": "string"
+            }]
+          }, {
+            "id": 4,
+            "name": "GetStatus",
+            "type": 1,
+            "activityType": "tibco-gpio",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio",
+            "attributes": [{
+              "name": "method",
+              "value": "Read State",
+              "type": "string"
+            }, {
+              "name": "pinNumber",
+              "value": "23",
+              "type": "integer"
+            }, {
+              "name": "direction",
+              "value": "",
+              "type": "string"
+            }, {
+              "name": "state",
+              "value": "",
+              "type": "string"
+            }, {
+              "name": "Pull",
+              "value": "",
+              "type": "string"
+            }]
+          }, {
+            "id": 5,
+            "name": "SetToOnLog",
+            "type": 1,
+            "activityType": "tibco-log",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "attributes": [{
+              "name": "message",
+              "value": "",
+              "type": "string"
+            }, {
+              "name": "flowInfo",
+              "value": "true",
+              "type": "boolean"
+            }, {
+              "name": "addToFlow",
+              "value": "true",
+              "type": "boolean"
+            }],
+            "inputMappings": [{
+              "type": 1,
+              "value": "{A4.result}",
+              "mapTo": "message"
+            }]
+          }, {
+            "id": 6,
+            "name": "SetToOn",
+            "type": 1,
+            "activityType": "tibco-gpio",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio",
+            "attributes": [{
+              "name": "method",
+              "value": "Set State",
+              "type": "string"
+            }, {
+              "name": "pinNumber",
+              "value": "23",
+              "type": "integer"
+            }, {
+              "name": "direction",
+              "value": "",
+              "type": "string"
+            }, {
+              "name": "state",
+              "value": "High",
+              "type": "string"
+            }, {
+              "name": "Pull",
+              "value": "",
+              "type": "string"
+            }]
+          }, {
+            "id": 7,
+            "name": "Reply To Trigger",
+            "type": 1,
+            "activityType": "tibco-reply",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+            "attributes": [{
+              "name": "code",
+              "value": "200",
+              "type": "integer"
+            }, {
+              "name": "data",
+              "value": "Update light to high successfully",
+              "type": "any"
+            }]
+          }, {
+            "id": 8,
+            "name": "SetToOffLog",
+            "type": 1,
+            "activityType": "tibco-log",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+            "attributes": [{
+              "name": "message",
+              "value": "",
+              "type": "string"
+            }, {
+              "name": "flowInfo",
+              "value": "true",
+              "type": "boolean"
+            }, {
+              "name": "addToFlow",
+              "value": "true",
+              "type": "boolean"
+            }],
+            "inputMappings": [{
+              "type": 1,
+              "value": "{A4.result}",
+              "mapTo": "message"
+            }]
+          }, {
+            "id": 9,
+            "name": "SetToOff",
+            "type": 1,
+            "activityType": "tibco-gpio",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio",
+            "attributes": [{
+              "name": "method",
+              "value": "Set State",
+              "type": "string"
+            }, {
+              "name": "pinNumber",
+              "value": "23",
+              "type": "integer"
+            }, {
+              "name": "direction",
+              "value": "",
+              "type": "string"
+            }, {
+              "name": "state",
+              "value": "Low",
+              "type": "string"
+            }, {
+              "name": "Pull",
+              "value": "",
+              "type": "string"
+            }]
+          }, {
+            "id": 10,
+            "name": "Reply To Trigger (2)",
+            "type": 1,
+            "activityType": "tibco-reply",
+            "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/reply",
+            "attributes": [{
+              "name": "code",
+              "value": "200",
+              "type": "integer"
+            }, {
+              "name": "data",
+              "value": "Update light to low successfully",
+              "type": "any"
+            }]
+          }],
+          "links": [{
+            "id": 1,
+            "from": 2,
+            "to": 3,
+            "type": 0
+          }, {
+            "id": 2,
+            "from": 3,
+            "to": 4,
+            "type": 0
+          }, {
+            "id": 3,
+            "from": 4,
+            "to": 5,
+            "type": 1,
+            "value": "${A4.result}==0"
+          }, {
+            "id": 4,
+            "from": 5,
+            "to": 6,
+            "type": 0
+          }, {
+            "id": 5,
+            "from": 6,
+            "to": 7,
+            "type": 0
+          }, {
+            "id": 6,
+            "from": 4,
+            "to": 8,
+            "type": 1,
+            "value": "${A4.result}==1"
+          }, {
+            "id": 7,
+            "from": 8,
+            "to": 9,
+            "type": 0
+          }, {
+            "id": 8,
+            "from": 9,
+            "to": 10,
+            "type": 0
+          }],
+          "activityRef": "",
+          "attributes": []
+        }
+      }
+    }
+  }]
+}
