@@ -18,6 +18,7 @@ export interface flowToJSON_Attribute {
   name : string;
   type : string;
   value : string;
+  required: boolean
 }
 
 export interface flowToJSON_Mapping {
@@ -32,6 +33,7 @@ export interface flowToJSON_Task {
   activityType : string;
   activityRef? : string;
   name? : string;
+  description? : string;
   attributes : flowToJSON_Attribute[];
   inputMappings : flowToJSON_Mapping [];
   ouputMappings : flowToJSON_Mapping[];
@@ -196,6 +198,12 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
   let flowPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( flowPath, 'nodes' );
 
+  /* assign attributes */
+
+  flowJSON.id = flogoIDEncode( flowID ); // convert to URL safe base64 encoded id
+  flowJSON.name = _.get( inFlow, 'name', '' );
+  flowJSON.description = _.get( inFlow, 'description', '' );
+
   if ( _.isEmpty( flowPath ) || _.isEmpty( flowPathRoot ) || _.isEmpty( flowPathNodes ) ) {
     DEBUG && console.warn( 'Invalid path information in the given flow' );
     DEBUG && console.log( inFlow );
@@ -209,12 +217,6 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     DEBUG && console.log( inFlow );
     return flowJSON;
   }
-
-  /* assign attributes */
-
-  flowJSON.id = flogoIDEncode( flowID ); // convert to URL safe base64 encoded id
-  flowJSON.name = _.get( inFlow, 'name', '' );
-  flowJSON.description = _.get( inFlow, 'description', '' );
 
   flowJSON.flow = (function _parseFlowInfo() {
     let flow = <flowToJSON_FlowInfo>{};
@@ -358,6 +360,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
           taskInfo.id = convertTaskID( task.id );
           taskInfo.name = _.get( task, 'name', '' );
+          taskInfo.description = _.get( task, 'description', '' );
           taskInfo.type = task.type;
           taskInfo.activityType = task.activityType;
           taskInfo.activityRef = task.ref;
@@ -369,9 +372,12 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
             'attributes.inputs' ) );
 
           // filter null/undefined/{}/[]
+          // enabling this block, remove attribute settings, like (required)
+          /*
           taskInfo.attributes = _.filter( taskInfo.attributes, ( attr : any )=> {
             return !(_.isNil( attr.value ) || (_.isObject( attr.value ) && _.isEmpty( attr.value )));
           } );
+          */
 
           /* add inputMappings */
 
@@ -481,6 +487,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
       /* simple validation */
       attr.name = <string>_.get( inAttr, 'name' );
       attr.value = <any>_.get( inAttr, 'value', getDefaultValue( inAttr.type ) );
+      attr.required = !!inAttr.required;
 
       if ( _.isEmpty( attr.name ) ) {
         DEBUG && console.warn( 'Empty attribute name found' );

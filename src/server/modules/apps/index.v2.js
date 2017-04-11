@@ -3,6 +3,7 @@ import defaults from 'lodash/defaults';
 import fromPairs from 'lodash/fromPairs';
 import isEqual from 'lodash/isEqual';
 import normalizeName from 'lodash/snakeCase';
+import escapeRegExp from 'lodash/escapeRegExp';
 
 import shortid from 'shortid';
 
@@ -317,7 +318,8 @@ function nowISO() {
 }
 
 function ensureUniqueName(forName) {
-  const normalizedName = forName.trim().toLowerCase();
+  let normalizedName = forName.trim().toLowerCase();
+  normalizedName = escapeRegExp(normalizedName);
 
   return appStore.find({ name: new RegExp(`^${normalizedName}`, 'i') })
     .then(apps => {

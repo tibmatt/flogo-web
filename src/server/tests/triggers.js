@@ -166,19 +166,21 @@ describe('Triggers', function () {
   );
 
   it('Name should be unique', () => {
-    const triggerName = 'Cool trigger';
-
-    const postTriggerAndExpectName = (expectName) => agent
+    const triggerNames = ['Cool trigger', 'Another type of trigger (1)'];
+    const postTriggerAndExpectName = (sendName, expectName) => agent
       .post(`/api/v2/apps/${app.id}/triggers`)
-      .send({ name: triggerName, ref: contribTrigger.ref })
+      .send({ name: sendName, ref: contribTrigger.ref })
       .then(response => {
         expect(response).to.have.status(200);
         expect(response.body.data.name).to.equal(expectName);
       });
 
-    return postTriggerAndExpectName('Cool trigger', 'When there\'s no name collision name is saved as provided')
-      .then(() => postTriggerAndExpectName('Cool trigger (1)', 'Name collision is automatically resolved for the first time'))
-      .then(() => postTriggerAndExpectName('Cool trigger (2)', 'Name collision is automatically resolved subsequently'));
+    return triggerNames.reduce((chain, triggerName) =>
+      chain
+        .then(() => postTriggerAndExpectName(triggerName, `${triggerName}`, 'When there\'s no name collision name is saved as provided'))
+        .then(() => postTriggerAndExpectName(triggerName, `${triggerName} (1)`, 'Name collision is automatically resolved for the first time'))
+        .then(() => postTriggerAndExpectName(triggerName, `${triggerName} (2)`, 'Name collision is automatically resolved subsequently'))
+      , Promise.resolve(true));
   });
 
   // todo: on update name not unique should throw error

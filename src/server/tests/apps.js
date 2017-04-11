@@ -142,19 +142,21 @@ describe('Apps', function () {
   );
 
   it('Name should be unique', () => {
-    const appName = 'Cool app';
+    const appNames = ['Cool app', 'Another app (1)'];
 
-    const postAppAndExpectName = (expectName) => agent
+    const postAppAndExpectName = (sendName, expectName) => agent
       .post('/api/v2/apps')
-      .send({ name: appName })
+      .send({ name: sendName })
       .then(response => {
         expect(response).to.have.status(200);
         expect(response.body.data.name).to.equal(expectName);
       });
 
-    return postAppAndExpectName('Cool app', 'When there\'s no name collision name is saved as provided')
-      .then(() => postAppAndExpectName('Cool app (1)', 'Name collision is automatically resolved for the first time'))
-      .then(() => postAppAndExpectName('Cool app (2)', 'Name collision is automatically resolved subsequently'));
+    return appNames.reduce((chain, appName) => chain
+        .then(() => postAppAndExpectName(appName, appName, 'When there\'s no name collision name is saved as provided'))
+        .then(() => postAppAndExpectName(appName, `${appName} (1)`, 'Name collision is automatically resolved for the first time'))
+        .then(() => postAppAndExpectName(appName, `${appName} (2)`, 'Name collision is automatically resolved subsequently'))
+      , Promise.resolve(true));
   });
 
   // todo: on update name not unique should throw error

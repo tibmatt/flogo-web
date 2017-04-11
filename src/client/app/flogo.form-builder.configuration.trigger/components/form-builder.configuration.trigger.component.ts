@@ -16,6 +16,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
   _context: any;
   fields:any;
   directions:any;
+  needEditConfirmation: boolean = false;
   messageNumFlowsUsed: string;
   isEditable: boolean;
   @Output() onTriggerAction : EventEmitter<string>;
@@ -24,15 +25,20 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
               public translate: TranslateService) {
     this.isEditable = false;
     this.directions = _commonService.getParameterDirections();
-    this.updateMessageNumFlowsUsed(1);
     this.onTriggerAction = new EventEmitter<string>();
   }
 
   updateMessageNumFlowsUsed(numFlows) {
+    if(numFlows > 1) {
+      this.needEditConfirmation = true;
+    } else {
+      this.needEditConfirmation = false;
+      this.clickEditForNFlows();
+    }
     this.messageNumFlowsUsed = this.translate.instant('FORM-BUILDER-CONFIGURATION-TRIGGER:EDIT', {value: numFlows});
   }
 
-  clickEditForNFlows(event) {
+  clickEditForNFlows(event?) {
     this.isEditable = true;
     this.onTriggerAction.emit('trigger-edit');
   }
@@ -47,7 +53,9 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
 
     if(changes['_context']) {
       try {
-        numFlows = this._context.currentTrigger.handlers.length;
+        if(this._context.currentTrigger) {
+          numFlows = this._context.currentTrigger.handlers.length;
+        }
       }catch(err) {
         numFlows = 1;
         console.log(err);
@@ -94,7 +102,5 @@ export class FlogoFormBuilderConfigurationTriggerComponent {
 
     return _.assign({}, info, this.getControlByType(input.type));
   }
-
-
 
 }

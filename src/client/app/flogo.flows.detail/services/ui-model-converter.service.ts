@@ -130,6 +130,7 @@ export class UIModelConverterService {
   }
 
   processFlowObj(flowJSON, triggerJSON, installedContribs) {
+    this.itemIndex = 2;
     let endpoints = _.get(triggerJSON, 'handlers', []);
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
@@ -566,6 +567,7 @@ class ItemFactory {
 
       if (cliValue) {
         newAttribute.value = cliValue.value;
+        newAttribute.required = cliValue.required || false;
       } else {
         // use the value provided by the schema
         newAttribute.value = installedInput.value;

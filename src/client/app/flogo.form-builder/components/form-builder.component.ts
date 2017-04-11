@@ -7,6 +7,8 @@ import { convertTaskID, normalizeTaskName, getDefaultValue } from "../../../comm
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/filter';
+import {FLOGO_TASK_ATTRIBUTE_TYPE} from "../../../common/constants";
+import {FLOGO_TASK_TYPE} from "../../../common/constants";
 
 @Component({
   selector: 'flogo-form-builder',
@@ -195,9 +197,19 @@ export class FlogoFormBuilderComponent{
 
   private verifyRequiredFields( task : any ) {
     let warnings = [];
+    let inputs = [];
+
+    if(task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
+      inputs = _.get(this._task, 'settings', []);
+      inputs = inputs.concat(_.get(this._task, 'endpoint.settings', []));
+    } else {
+      if(task.type === FLOGO_TASK_TYPE.TASK) {
+        inputs = _.get(this._task, 'attributes.inputs', []);
+      }
+    }
 
     //  verify if all of the required fields are fulfilled.
-    _.some( _.get( this._task, 'attributes.inputs' ), ( input : any ) => {
+    _.some( inputs , ( input : any ) => {
       if ( input.required && ( (<any>_).isNil( input.value )
           || (_.isString( input.value ) && _.isEmpty( input.value ))
         ) ) {
@@ -217,14 +229,10 @@ export class FlogoFormBuilderComponent{
     var taskId   = this._task.id;
     var warnings = this.verifyRequiredFields(this._task);
 
-
      this._postService.publish(_.assign({},PUB_EVENTS.setTaskWarnings, {
       data: {warnings,  taskId, id:this._flowId},
       done: () => {}
       } ));
-
-
-
   }
 
   _setupEnvironment() {
@@ -235,6 +243,14 @@ export class FlogoFormBuilderComponent{
     }
 
     this._canRunFromThisTile =  this._getCanRunFromThisTile();
+
+    let refresTaskWarnings = () => {
+
+      setTimeout(()=> {
+        this._setTaskWarnings();
+      },1000);
+
+    };
 
 
     if(this._context.isTrigger) {
@@ -249,6 +265,7 @@ export class FlogoFormBuilderComponent{
 
       this._attributesOriginal = _.cloneDeep(attributes);
       this._setTriggerEnvironment(attributes);
+      refresTaskWarnings();
       return;
     }
 
@@ -257,9 +274,7 @@ export class FlogoFormBuilderComponent{
       this._attributesOriginal = _.cloneDeep(attributes);
       this._setTaskEnvironment(attributes);
 
-      setTimeout(()=> {
-        this._setTaskWarnings();
-      },1000);
+      refresTaskWarnings();
       return;
     }
 

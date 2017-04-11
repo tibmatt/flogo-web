@@ -60,15 +60,14 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
             const allInstalled = {};
 
             installed.forEach((item) => {
-              allInstalled[item.ref] = item;
+              allInstalled[item.ref] = Object.assign({},item);
             });
 
             this.existingTriggers = [];
             triggers.forEach((existing)=> {
-              const found = allInstalled[existing.ref];
-              found.id = existing.id;
-
+              const found = Object.assign({}, allInstalled[existing.ref]);
               if(found) {
+                found.id = existing.id;
                 found.name = existing.name;
                 found.description = existing.description;
                 this.existingTriggers.push(found);

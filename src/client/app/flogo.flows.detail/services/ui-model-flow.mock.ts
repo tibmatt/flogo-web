@@ -473,17 +473,20 @@ export let mockResultantUIFlow = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 1"
+            "value": "I am here 1",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -516,17 +519,20 @@ export let mockResultantUIFlow = {
           {
             "name": "counterName",
             "type": 0,
-            "value": "counter1"
+            "value": "counter1",
+            "required": false
           },
           {
             "name": "increment",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "reset",
             "type": 3,
-            "value": false
+            "value": false,
+            "required": false
           }
         ],
         "outputs": [
@@ -559,17 +565,20 @@ export let mockResultantUIFlow = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 2"
+            "value": "I am here 2",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -602,17 +611,20 @@ export let mockResultantUIFlow = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 3"
+            "value": "I am here 3",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -795,17 +807,20 @@ export let mockResultantUIFlowWithError = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 1"
+            "value": "I am here 1",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -838,17 +853,20 @@ export let mockResultantUIFlowWithError = {
           {
             "name": "counterName",
             "type": 0,
-            "value": "counter1"
+            "value": "counter1",
+            "required": false
           },
           {
             "name": "increment",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "reset",
             "type": 3,
-            "value": false
+            "value": false,
+            "required": false
           }
         ],
         "outputs": [
@@ -881,17 +899,20 @@ export let mockResultantUIFlowWithError = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 2"
+            "value": "I am here 2",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -924,17 +945,20 @@ export let mockResultantUIFlowWithError = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 3"
+            "value": "I am here 3",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -1073,17 +1097,20 @@ export let mockResultantUIFlowWithError = {
             {
               "name": "message",
               "type": 0,
-              "value": "Error Log 1"
+              "value": "Error Log 1",
+              "required": false
             },
             {
               "name": "flowInfo",
               "type": 3,
-              "value": "true"
+              "value": "true",
+              "required": false
             },
             {
               "name": "addToFlow",
               "type": 3,
-              "value": "true"
+              "value": "true",
+              "required": false
             }
           ],
           "outputs": [
@@ -1253,17 +1280,20 @@ export let mockResultantUIFlowWithTransformations = {
           {
             "name": "message",
             "type": 0,
-            "value": null
+            "value": null,
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -1302,17 +1332,20 @@ export let mockResultantUIFlowWithTransformations = {
           {
             "name": "counterName",
             "type": 0,
-            "value": "counter1"
+            "value": "counter1",
+            "required": false
           },
           {
             "name": "increment",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "reset",
             "type": 3,
-            "value": false
+            "value": false,
+            "required": false
           }
         ],
         "outputs": [
@@ -1345,17 +1378,20 @@ export let mockResultantUIFlowWithTransformations = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 2"
+            "value": "I am here 2",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -1388,17 +1424,20 @@ export let mockResultantUIFlowWithTransformations = {
           {
             "name": "message",
             "type": 0,
-            "value": "I am here 3"
+            "value": "I am here 3",
+            "required": false
           },
           {
             "name": "flowInfo",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           },
           {
             "name": "addToFlow",
             "type": 3,
-            "value": "true"
+            "value": "true",
+            "required": false
           }
         ],
         "outputs": [
@@ -1537,17 +1576,20 @@ export let mockResultantUIFlowWithTransformations = {
             {
               "name": "message",
               "type": 0,
-              "value": "Error Log 1"
+              "value": "Error Log 1",
+              "required": false
             },
             {
               "name": "flowInfo",
               "type": 3,
-              "value": "true"
+              "value": "true",
+              "required": false
             },
             {
               "name": "addToFlow",
               "type": 3,
-              "value": "true"
+              "value": "true",
+              "required": false
             }
           ],
           "outputs": [
