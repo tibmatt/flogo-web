@@ -1,4 +1,4 @@
-import { runShellCMD } from '../../../common/utils';
+import { runShellCMD, parseJSON } from '../../../common/utils';
 import { logger } from '../../../common/logging';
 import { build } from './build';
 
@@ -51,6 +51,10 @@ module.exports = {
     activity(enginePath, activityNameOrPath) {
       return _exec(enginePath, ['del', 'activity', activityNameOrPath]);
     },
+  },
+  list(enginePath) {
+    return _exec(enginePath, ['list', '-json'])
+      .then(output => parseJSON(output));
   },
 };
 

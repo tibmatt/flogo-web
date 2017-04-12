@@ -1,10 +1,10 @@
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-import {readJSONFile, listFiles} from '../../common/utils/file';
+import { readJSONFile, listFiles } from '../../common/utils/file';
+import groupBy from 'lodash/groupBy';
 
 const TASK_SRC_ROOT = 'vendor/src';
-const DIR_NAME_UI = 'ui';
 
 module.exports = {
   exists(enginePath) {
@@ -34,7 +34,7 @@ module.exports = {
     return taskDataPromise.then(function dataTransformer(data) {
       return Promise.all([
         _readTasks(enginePath, 'trigger', data.triggers),
-        _readTasks(enginePath, 'activity', data.activities)
+        _readTasks(enginePath, 'activity', data.activities),
       ]).then(function (result) {
         return {
           triggers: result[0],
@@ -43,9 +43,29 @@ module.exports = {
       });
     });
   },
+  /**
+   *
+   * @param {string} enginePath - path to engine
+   * @param {Object[]} contributions - contributions to read
+   * @param {string} contributions[].type - activity or trigger, any other type will be ignored
+   * @param {string} contributions[].ref - ref to the contribution
+   */
+  loadMetadata(enginePath, contributions) {
+    const groupedByType = groupBy(contributions, 'type');
+    const triggersToRead = groupedByType.trigger || [];
+    const activitiesToRead = groupedByType.activity || [];
+
+    const refToPath = el => ({ path: el.ref });
+
+    return Promise.all([
+      _readTasks(enginePath, 'trigger', triggersToRead.map(refToPath)),
+      _readTasks(enginePath, 'activity', activitiesToRead.map(refToPath)),
+    ])
+      .then(([triggers, activities]) => ({ triggers, activities }));
+  },
   readAllFlowNames(enginePath) {
     return listFiles(path.resolve(enginePath, 'flows'));
-  }
+  },
 };
 
 function readFlogo(enginePath) {

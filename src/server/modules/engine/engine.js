@@ -31,8 +31,12 @@ class Engine {
   }
 
   load() {
-    return loader.readAllTasks(this.path)
-      .then(tasksData => this.tasks = tasksData);
+    return commander.list(this.path)
+      .then(installedContribs => loader.loadMetadata(this.path, installedContribs))
+      .then(contribMetadata => {
+        this.tasks = contribMetadata;
+        return contribMetadata;
+      });
   }
 
   create(flogoDescriptorPath = null) {

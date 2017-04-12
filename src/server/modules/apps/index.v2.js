@@ -7,7 +7,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import shortid from 'shortid';
 
-import { DEFAULT_APP_ID } from '../../common/constants';
+import { DEFAULT_APP_ID, DEFAULT_APP_VERSION } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
