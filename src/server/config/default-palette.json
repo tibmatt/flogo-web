@@ -63,6 +63,10 @@
         {
             "type": "activity",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/wsmessage"
+        },
+        {
+            "type": "action",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
         }
     ]
 }

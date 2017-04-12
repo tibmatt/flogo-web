@@ -5,6 +5,10 @@
   "description": "Default flogo palette",
   "extensions": [
     {
+      "type": "action",
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+    },
+    {
       "type": "activity",
       "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
     },

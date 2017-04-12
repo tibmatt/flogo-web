@@ -25,7 +25,14 @@ gulp.task('palette.build', 'Build default palette', [], cb => {
     getAll('activity'),
     getAll('trigger')
   ])
-    .then(([activities, triggers]) => makePalette(triggers.concat(activities)))
+    .then(([activities, triggers]) => makePalette(
+      triggers
+        .concat(activities)
+        .concat([{
+          type: 'action',
+          ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow'
+        }])
+    ))
     .then(result => writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), result))
     .then(() => cb())
     .catch(err => {
