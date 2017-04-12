@@ -36,7 +36,7 @@ export default ensureDefaultDirs()
   .then(() => getInitializedEngine(config.defaultEngine.path, {
     forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
   }))
-  .then(engine => engine.build()
+  .then(engine => engine.build({ copyFlogoDescriptor: true })
       .then(() => engine.stop())
       .then(() => engine.start())
       .then(() => syncTasks(engine)),

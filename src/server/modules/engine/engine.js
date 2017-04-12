@@ -141,14 +141,20 @@ class Engine {
 
   }
 
+  /**
+   *
+   * @param options
+   * @param {boolean} options.copyFlogoDescriptor
+   * @return {Promise.<TResult>|*}
+   */
   build(options) {
-    options = Object.assign({}, {type: TYPE_TEST}, options);
+    options = Object.assign({}, { type: TYPE_TEST }, options);
 
     let buildTargetDir;
-    if (options.type == TYPE_BUILD) {
+    if (options.type === TYPE_BUILD) {
       buildTargetDir = DIR_BUILD_BIN;
       // using bin instead of DIR_BUILD_BIN since there seems to be no options to specify different trigger config location for build
-      //options.configDir = DIR_BUILD_BIN;
+      // options.configDir = DIR_BUILD_BIN;
     } else {
       buildTargetDir = DIR_TEST_BIN;
     }

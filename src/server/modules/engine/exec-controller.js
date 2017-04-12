@@ -26,7 +26,12 @@ module.exports = {
       } else {
 
         let engineProcess = spawn(command, {
-          cwd : binPath
+          cwd: binPath,
+          env: Object.assign(process.env, {
+            LOG_LEVEL: 'DEBUG',
+            LOG_DATETIME_FORMAT: '',
+            TESTER_ENABLED: 'true',
+          }),
         });
 
         _setupLogging(engineProcess, engineName, options);

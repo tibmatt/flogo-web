@@ -78,6 +78,6 @@ export function initEngine(engine, options) {
       // update config.json, use overwrite mode
       engine.updateConfig(config.testEngine.config, { overwrite: true }),
       // update triggers.json
-      engine.updateTriggersConfig({ triggers: config.testEngine.triggers }, { overwrite: true }),
+      // engine.updateTriggersConfig({ triggers: config.testEngine.triggers }, { overwrite: true }),
     ]));
 }
