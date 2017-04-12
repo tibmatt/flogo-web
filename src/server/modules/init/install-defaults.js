@@ -1,4 +1,6 @@
-import { AppsManager } from '../apps';
+import { AppsManager } from '../apps/index.v2';
+import { config } from '../../config/app-config';
+import { readJSONFile } from '../../common/utils/file';
 
 export function installDefaults() {
   return Promise.resolve([
@@ -7,5 +9,6 @@ export function installDefaults() {
 }
 
 export function installDefaultApps() {
-  return AppsManager.ensureDefaultApp();
+  return readJSONFile(config.defaultAppJsonPath)
+    .then(defaultApp => AppsManager.import(defaultApp));
 }

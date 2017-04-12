@@ -1,4 +1,3 @@
-//import 'babel-polyfill';
 var fs = require('fs');
 var path = require('path');
 const http = require('http')
@@ -11,11 +10,9 @@ import compress from 'koa-compress';
 var cors = require('koa-cors');
 
 import {config, flowsDBService} from './config/app-config';
-import {initAllDbs} from './common/db/init-all';
 import {api} from './api';
 import {init as initWebsocketApi} from './api/ws';
-import {syncTasks, installSamples, installDefaults, getInitializedEngine, ensureDefaultDirs} from './modules/init';
-import { createViews } from './common/db/create-views';
+import {syncTasks, getInitializedEngine, ensureDefaultDirs} from './modules/init';
 
 import { ErrorManager, ERROR_TYPES } from './common/errors';
 import { logger } from './common/logging';
@@ -29,7 +26,7 @@ let server;
  * Server start logic
  *
  * 1. register default activities and triggers.
- * 2. initialise the default engine (the test engine) and build engine.
+ * 2. initialise the default engine (the test engine)
  * 3. start the test engine.
  * 4. configure the server and start listening
  */
@@ -38,17 +35,11 @@ export default ensureDefaultDirs()
   .then(() => getInitializedEngine(config.defaultEngine.path, {
     forceCreate: !!process.env['FLOGO_WEB_ENGINE_FORCE_CREATION']
   }))
-  .then(engine => {
-    return engine.build()
+  .then(engine => engine.build()
       .then(() => engine.stop())
       .then(() => engine.start())
-      .then(() =>
-        initAllDbs()
-          .then(() => syncTasks(engine))
-          .then(() => createViews())
-      )
-      .then(() => { console.log(engine.getTasks()) })
-  })
+      .then(() => syncTasks(engine)),
+  )
   .then(() => initServer())
   .then((newServer) => {
     server = newServer;
@@ -58,17 +49,17 @@ export default ensureDefaultDirs()
     logger.info('Won\'t start websocket service');
     return null;
   })
-  .then(() => flowsDBService
-    .verifyInitialDataLoad(path.resolve('db-init/installed-flows.init'))
-    .then(() => installDefaults())
-    .then(() => installSamples()))
+  // .then(() => flowsDBService
+  //   .verifyInitialDataLoad(path.resolve('db-init/installed-flows.init'))
+  //   .then(() => installDefaults())
+  //   .then(() => installSamples()))
   .then(() => {
     console.log('flogo-web::server::ready');
     showBanner();
     return { server, app };
   })
   .catch((err) => {
-    console.log(err);
+    logger.error(err);
     throw err;
   });
 
@@ -92,7 +83,7 @@ function initServer() {
     }));
 
     // make sure deep link it works
-    app.use(function *(next) {
+    app.use(function* (next) {
       var path = this.path.endsWith('/') ? this.path.substring(0, this.path.length - 1) : this.path;
 
       // not include restful api
@@ -123,7 +114,7 @@ function initServer() {
         return;
       }
 
-      console.error(err);
+      logger.error(err);
       reject(err);
     });
 
@@ -131,13 +122,13 @@ function initServer() {
       .use(router.allowedMethods());
 
     // logger
-    app.use(function *(next) {
-      var start = new Date;
+    app.use(function* (next) {
+      const start = new Date();
       yield next;
-      var ms = new Date - start;
-      console.log('%s %s - %s', this.method, this.url, ms);
-      console.log(this.body);
-      console.log(this.request.body);
+      const ms = new Date() - start;
+      logger.verbose('%s %s - %s', this.method, this.url, ms);
+      logger.verbose(this.body);
+      logger.verbose(this.request.body);
     });
 
     let server = http.createServer(app.callback());
@@ -157,8 +148,13 @@ function initServer() {
 }
 
 function showBanner() {
-  console.log('flogo-web::server::ready');
-  console.log("=============================================================================================");
-  console.log(`[success] open http://localhost:${config.app.port} or http://localhost:${config.app.port}/_config in your browser`);
-  console.log("=============================================================================================");
+  console.log(`
+  ======================================================
+                 ___       __   __   __ TM
+                |__  |    /  \\ / _\` /  \\
+                |    |___ \\__/ \\__| \\__/
+   
+   [success] open http://localhost:3303 in your browser
+  ======================================================
+`);
 }

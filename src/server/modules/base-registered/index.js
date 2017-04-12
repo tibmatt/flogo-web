@@ -1,20 +1,20 @@
-import Pouchdb from 'pouchdb';
 import path from 'path';
 import npm from 'npm';
 import _ from 'lodash';
 import fs from 'fs';
 import {DBService} from '../../common/db.service';
 import {DatabaseService} from '../../common/database.service';
-import {isDirectory, fileExists, readDirectoriesSync} from '../../common/utils';
+import { fileExists, readDirectoriesSync} from '../../common/utils';
 import {config} from '../../config/app-config';
 import { DEFAULT_SCHEMA_ROOT_FOLDER_NAME } from '../../common/constants';
+import { logger } from '../../common/logging';
 
 const execSync = require('child_process').execSync;
 
 // default options
 const defaultOptions = {
   path: 'modules/base-registered',
-  jsonTplName: 'package.tpl.json'
+  jsonTplName: 'package.tpl.json',
 };
 
 /**
@@ -70,15 +70,15 @@ export class BaseRegistered{
 
   register(){
     return new Promise((resolve, reject)=>{
-      this.clean().then(()=>{
-        console.log("[Info]clean success!, type: ", this._options.type);
-        this.updateDB().then(()=>{
+      this.clean().then(() => {
+        logger.info('clean success!, type: ', this._options.type);
+        this.updateDB().then(() => {
           resolve(true);
-        }).catch((err)=>{
+        }).catch((err) => {
           reject(err);
         });
-      }).catch((err)=>{
-        console.error("[Error]clean fail!, type: ", this._options.type);
+      }).catch((err) => {
+        logger.error('clean fail!, type: ', this._options.type);
         reject(err);
       });
     });
@@ -137,12 +137,12 @@ export class BaseRegistered{
     // get all of the items in the given db
     return dbService.db.allDocs( { include_docs : true } )
       .then( ( docs )=> {
-        console.log( '[info] Get all items.' );
-        return docs
+        logger.verbose('Get all items.');
+        return docs;
       } )
       // pre-process the docs
       .then( ( docs ) => {
-        console.log( '[info] pre-process the docs' );
+        logger.verbose('pre-process the docs');
         return _.map( docs.rows, ( row ) => {
           return (row && row.doc) || null;
         } );
@@ -154,7 +154,7 @@ export class BaseRegistered{
       // update or remove item
       // `updateOnly` will skip the `remove other items` part.
       .then( ( oldItems ) => {
-        console.log( '[info] update or remove item' );
+        logger.verbose('update or remove item');
 
         return Promise.all( _.map( oldItems, ( oldItem ) => {
 
@@ -163,16 +163,16 @@ export class BaseRegistered{
           // if this item cannot be found in the activityDocs generated from package.json, then need to be removed
           if ( !newItem ) {
             if ( updateOnly ) {
-              console.log( `[info] ignore exist item [${oldItem[ 'where' ]}] for updating only.` );
+              logger.verbose(`ignore existing item [${oldItem[ 'where' ]}] for updating only.`);
               return null;
             }
             return dbService.db.remove( oldItem )
               .then( ( result ) => {
-                console.log( `[info] delete item [${oldItem[ 'where' ]}] success.` );
+                logger.verbose(`delete item [${oldItem[ 'where' ]}] success.`);
                 return result;
               } )
               .catch( ( err )=> {
-                console.error( "[error] delete item fail.", err );
+                logger.error('delete item fail.', err );
                 throw err;
               } );
           } else {
@@ -190,7 +190,7 @@ export class BaseRegistered{
             // update this item in DB
             return dbService.db.put( _.cloneDeep( newItem ) )
               .then( ( response )=> {
-                console.log( `[info] Update item [${newItem[ 'where' ]}] success.` );
+                logger.verbose(`update item [${newItem[ 'where' ]}] success.`);
                 return response;
               } )
               .then( ( result ) => {
@@ -199,7 +199,7 @@ export class BaseRegistered{
                 return result;
               } )
               .catch( ( err )=> {
-                console.log( `[error] Update item [${newItem[ 'where' ]}] error: `, err );
+                logger.error(`[error] Update item [${newItem[ 'where' ]}] error: `, err);
                 throw err;
               } );
           }
@@ -211,18 +211,18 @@ export class BaseRegistered{
 
       // add new items
       .then( ( newItems )=> {
-        console.log( '[info] add new items' );
+        logger.verbose('add new items');
 
         return Promise.all( _.map( newItems, ( newItem ) => {
           newItem.createdAt = new Date().toISOString();
 
           return dbService.db.put( newItem )
             .then( ( response )=> {
-              console.log( `[info] Add item [${newItem[ 'where' ]}] success.` );
+              logger.verbose(`Add item [${newItem[ 'where' ]}] success.`);
               return response;
             } )
             .catch( ( err )=> {
-              console.log( `[error] Add item [${newItem[ 'where' ]}] error: `, err );
+              logger.error(`[error] Add item [${newItem[ 'where' ]}] error: `, err);
               throw err;
             } );
         } ) );
@@ -231,14 +231,13 @@ export class BaseRegistered{
       // done with true
       .then( () => true )
       .catch( ( err ) => {
-        console.error( `Error in saveItems:\n${ err }` );
+        logger.error( `Error in saveItems:\n${ err }` );
         throw err;
       } );
   }
 
 
   clean(){
-    //console.log("-------clean");
     return new Promise((resolve, reject)=>{
       this.cleanDB(true)
         .then((result)=>{
@@ -260,7 +259,7 @@ export class BaseRegistered{
 
     return new Promise((resolve, reject)=>{
       this._dbService.db.allDocs({include_docs: true}).then((result)=>{
-        console.log("[info]cleanDB, type: ", this._options.type);
+        logger.verbose('cleanDB, type: ', this._options.type);
         let docs = result&&result.rows||[];
         let deletedDocs = [];
 
@@ -270,8 +269,8 @@ export class BaseRegistered{
           });
         }
 
-        if(docs.length === 0){
-          console.log("[success]cleanDB finished!, empty docs type: ", this._options.type);
+        if (docs.length === 0) {
+          logger.verbose('cleanDB finished!, empty docs type: ', this._options.type);
           resolve(result);
         }
 
@@ -286,16 +285,16 @@ export class BaseRegistered{
 
         //console.log(deletedDocs);
         this._dbService.db.bulkDocs(deletedDocs).then((result)=>{
-          console.log("[success]cleanDB finished!, type: ", this._options.type);
+          logger.verbose('cleanDB finished!, type: ', this._options.type);
           resolve(result);
         }).catch((err)=>{
           reject(err);
-          console.error("[error]cleanDB error!, update docs error! type: ", this._options.type, err);
+          logger.error('[error]cleanDB error!, update docs error! type: ', this._options.type, err);
         });
 
       }).catch((err)=>{
-        console.error("[error]cleanDB error!, get docs error! type: ", this._options.type, err);
-        reject(err);
+        logger.error('[error]cleanDB error!, get docs error! type: ', this._options.type, err);
+        logger.error(err);
       });
     });
   }
@@ -307,10 +306,10 @@ export class BaseRegistered{
         if(fileExists(nodeModulesPath)){
           execSync(`rm -rf ${nodeModulesPath}`);
         }
-        console.log("[Success]cleanNodeModules finished!, type: ", this._options.type);
+        logger.verbose('[Success]cleanNodeModules finished!, type: ', this._options.type);
         resolve(true);
-      }catch (err){
-        console.error("[error]cleanNodeModules error!, type: ", this._options.type);
+      } catch (err) {
+        logger.error('[error]cleanNodeModules error!, type: ', this._options.type);
         reject(false);
       }
     });
@@ -320,18 +319,15 @@ export class BaseRegistered{
    *
    */
   updatePackageJSON(dirPath, config, sourcePackageJSON){
-    console.log("[debug]updatePackageJSON");
+    logger.debug('updatePackageJSON');
     let packageJSON = _.cloneDeep(sourcePackageJSON);
     !packageJSON.dependencies ? (packageJSON.dependencies = {}): null;
     // get all the activity package in activitiesPath
     if(dirPath){
       let dirs = readDirectoriesSync(dirPath);
-      //console.log(dirs);
       if(dirs&&dirs.length){
-        // console.log("???????dirs", dirs);
         dirs.forEach((dir, index)=>{
           let itemPath = path.join(dirPath, dir);
-          //console.log("itemPath: ", itemPath);
 
           let design_package_json=null;
           let value = null;
@@ -345,7 +341,7 @@ export class BaseRegistered{
             design_package_json = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME, 'package.json');
             value = path.join(itemPath, 'src', DEFAULT_SCHEMA_ROOT_FOLDER_NAME);
           }else{
-            console.log("[Warning] didn't find design time for this activity");
+            logger.warn("[Warning] didn't find design time for this activity");
           }
 
           if(design_package_json){
@@ -360,7 +356,6 @@ export class BaseRegistered{
           }
 
         });
-        // console.log("++++++packageJSON: ", packageJSON);
       }else{
         //console.log("[info]updatePackageJSON. empty");
       }
@@ -373,7 +368,7 @@ export class BaseRegistered{
   }
 
   syncDb(originalItems) {
-    console.log("[debug]updateDB");
+    logger.verbose('updateDB');
 
     originalItems = originalItems || [];
     // new activities generate from package.json
@@ -402,15 +397,15 @@ export class BaseRegistered{
     // console.log("!!!!!!!!activityDocs: ", activityDocs);
     return BaseRegistered.saveItems(this.dbService, items)
       .then((result) => {
-        console.log(`[info] updateDB done.`);
+        logger.verbose('updateDB done.');
         return result;
-      })
+      });
 
   }
 
   updateDB(){
     return new Promise((resolve, reject)=>{
-      console.log("[debug]updateDB");
+      logger.verbose('updateDB');
       // update activity package.json
       let dependencies;
       if(!process.env[ 'FLOGO_NO_ENGINE_RECREATION' ]) {
@@ -438,17 +433,16 @@ export class BaseRegistered{
           // console.log("schemaJSON: ", schemaJSON);
 
           let id = BaseRegistered.generateID(key, packageJSON.version);
-          console.log("id: ", id);
 
           items[ id ] = BaseRegistered.constructItem( {
-            'id' : id,
-            'ref' : this._where[ key ],
-            'name' : key,
-            'version' : packageJSON.version,
-            'description' : packageJSON.description,
-            'keywords' : packageJSON.keywords || [],
-            'author' : packageJSON.author,
-            'schema' : schemaJSON
+            id : id,
+            ref : this._where[ key ],
+            name : key,
+            version : packageJSON.version,
+            description : packageJSON.description,
+            keywords : packageJSON.keywords || [],
+            author : packageJSON.author,
+            schema : schemaJSON
           } );
         });
 
@@ -456,14 +450,14 @@ export class BaseRegistered{
 
         BaseRegistered.saveItems( this.dbService, items )
           .then( ( result ) => {
-            console.log( `[info] updateDB done.` );
+            logger.verbose('updateDB done.');
             return result;
           })
           .then( resolve )
           .catch( reject );
 
       }).catch((err)=>{
-        console.error("[error]Install error. ", err);
+        logger.error('Install error.', err);
         reject(err);
       });
     });
@@ -489,17 +483,16 @@ export class BaseRegistered{
       this.npmLoad(()=>{
         // Store current working directory
         var currentCWD = process.cwd();
-        console.log("currentCWD: ", currentCWD);
+        logger.verbose('currentCWD: ', currentCWD);
         process.chdir(this._packageJSONFolderPath);
         npm.commands.install(this._packageJSONFolderPath, [], (err, result)=>{
           // Change current working directory back
           process.chdir(currentCWD);
           if(err){
             reject(err);
-            console.log(err);
+            logger.error(err);
           }else{
             resolve(result);
-            //console.log("success: ", result);
           }
         });
       });

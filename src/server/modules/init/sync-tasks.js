@@ -6,6 +6,8 @@ import {config, activitiesDBService, triggersDBService} from '../../config/app-c
 import {RegisterActivities} from '../activities/register-activites';
 import {RegisterTriggers} from '../triggers/register-triggers';
 
+import { logger} from '../../common/logging';
+
 /*
  * Server start logic
  *
@@ -31,11 +33,11 @@ export function syncTasks(engine, ignoreViews) {
       return reg.cleanDB(ignoreViews)
         .then(() => reg.syncDb(engine.getActivities()))
         .then( ()=> {
-          console.log( "[success]registerActivities success" );
+          logger.verbose('registerActivities success');
           resolve( true );
         } )
         .catch( ( err )=> {
-          console.log( "[error]registerActivities error" );
+          logger.error('registerActivities error');
           reject( err );
         } );
     } );
@@ -54,11 +56,11 @@ export function syncTasks(engine, ignoreViews) {
       return reg.cleanDB(ignoreViews)
         .then(() => reg.syncDb(engine.getTriggers()))
         .then( ()=> {
-          console.log( "[success]registerTriggers success" );
+          logger.verbose('registerTriggers success');
           resolve( true );
         } )
         .catch( ( err )=> {
-          console.log( "[error]registerTriggers error" );
+          logger.error('registerTriggers error');
           reject( err );
         } );
     } );

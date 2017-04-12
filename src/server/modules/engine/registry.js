@@ -1,7 +1,7 @@
 import path from 'path';
 
 import {Engine} from './engine';
-import { engineLogger } from '../../common/logging';
+import { logger, engineLogger } from '../../common/logging';
 import {config} from '../../config/app-config';
 
 let engineRegistry = {};
@@ -18,14 +18,14 @@ export function getInitializedEngine(enginePath, opts = {}) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
 
-  let engine = new Engine(enginePath, opts.libVersion||config.libVersion, engineLogger);
+  const engine = new Engine(enginePath, opts.libVersion||config.libVersion, engineLogger);
   engineRegistry[enginePath] = engine;
 
-  console.time('EngineInit');
+  const initTimer = logger.startTimer();
   return initEngine(engine, opts)
-    .then(() =>  {
+    .then(() => {
       engineRegistry[enginePath] = engine;
-      console.timeEnd('EngineInit');
+      initTimer.done('EngineInit');
       return engine;
     });
 
@@ -48,36 +48,36 @@ export function initEngine(engine, options) {
     })
     .then(create => {
       if(create) {
-        console.info('Engine does not exist. Creating...');
+        logger.warn('Engine does not exist. Creating...');
         return engine.create()
           .then(() => {
-            console.info('New engine created');
+            logger.info('New engine created');
             // TODO: add palette version
             let palettePath = path.resolve('config', config.defaultEngine.defaultPalette);
-            console.info('Will install palette at ' + palettePath);
+            logger.info(`Will install palette at ${palettePath}`);
             return engine.installPalette(palettePath);
           })
           .catch(error => {
-            console.error('Error initializing engine. Will try to clean up');
+            logger.error('Error initializing engine. Will try to clean up');
             return engine.remove().then(() => {
-              console.log('Successful clean');
+              logger.notice('Successful clean');
               throw new Error(error);
-            })
+            });
           });
       }
     })
     .then(() => engine.load())
-    .then(console.log)
-    .then(() => {
-      return Promise.all([
-        // update config.json, use overwrite mode
-        engine.updateConfig(config.testEngine.config, {overwrite: true}),
-        // update triggers.json
-        engine.updateTriggersConfig({
-          'triggers': config.testEngine.triggers
-        }, {overwrite: true})
-      ]);
+    .then(installedContribs => {
+      const mapContribs = collection => collection.map(c => ({ path: c.path, version: c.version }));
+      logger.info('installedContributions', {
+        triggers: mapContribs(installedContribs.triggers),
+        activities: mapContribs(installedContribs.activities),
+      });
     })
+    .then(() => Promise.all([
+      // update config.json, use overwrite mode
+      engine.updateConfig(config.testEngine.config, { overwrite: true }),
+      // update triggers.json
+      engine.updateTriggersConfig({ triggers: config.testEngine.triggers }, { overwrite: true }),
+    ]));
 }
-
-

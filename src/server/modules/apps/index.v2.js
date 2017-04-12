@@ -8,7 +8,6 @@ import escapeRegExp from 'lodash/escapeRegExp';
 import shortid from 'shortid';
 
 import { DEFAULT_APP_ID } from '../../common/constants';
-import { appsDBService } from '../../config/app-config';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -270,26 +269,11 @@ export class AppsManager {
     return AppsManager.find(args);
   }
 
-  static ensureDefaultApp() {
-    const db = appsDBService.db;
-
-    db.get('_local/default_installed')
-      .then(() => true)
-      .catch((err) => {
-        if (err.name === 'not_found') {
-          const app = build(DEFAULT_APP);
-          return db.put(app)
-            .then(() => db.put('_local/default_installed'));
-        }
-        throw err;
-      });
-  }
-
 }
 export default AppsManager;
 
 function getAppNameForSearch(rawName) {
-  return rawName ? rawName.trim().toLowerCase() : undefined;
+  return rawName ? escapeRegExp(rawName.trim().toLowerCase()) : undefined;
 }
 
 function cleanInput(app) {
@@ -318,9 +302,7 @@ function nowISO() {
 }
 
 function ensureUniqueName(forName) {
-  let normalizedName = forName.trim().toLowerCase();
-  normalizedName = escapeRegExp(normalizedName);
-
+  const normalizedName = escapeRegExp(forName.trim().toLowerCase());
   return appStore.find({ name: new RegExp(`^${normalizedName}`, 'i') })
     .then(apps => {
       const greatestIndex = findGreatestNameIndex(forName, apps);
