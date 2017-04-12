@@ -56,5 +56,5 @@ function _addItem(enginePath, itemType, itemPath, options) {
 
 function _exec(enginePath, params) {
   console.log(`[info] Exec command: flogo ${params&&params.join(' ')} in ${enginePath}`);
-  return runShellCMD('flogo', params, {cwd: enginePath});
+  return runShellCMD('flogo_old', params, {cwd: enginePath});
 }
