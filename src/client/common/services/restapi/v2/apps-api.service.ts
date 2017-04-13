@@ -84,6 +84,10 @@ export class AppsApiService {
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
+  downloadAppLink(appId: string) {
+    return this.apiPrefix(`apps/${appId}/build`);
+  }
+
   private apiPrefix(path) {
     return this.httpUtils.apiPrefix(path, 'v2');
   }
