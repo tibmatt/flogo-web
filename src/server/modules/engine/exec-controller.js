@@ -5,6 +5,7 @@ const spawn = require('child_process').spawn;
 const ps = require('ps-node');
 
 import {fileExists} from '../../common/utils/file';
+import {config} from '../../config/app-config';
 
 module.exports = {
   start(enginePath, engineName, options) {
@@ -24,14 +25,23 @@ module.exports = {
         console.log( `[error] engine ${engineName} doesn't exist` );
         reject( new Error( `[error] engine ${engineName} doesn't exist` ) );
       } else {
+        const settings = config.buildEngine.config.services || [];
+
+        const stateRecorder = settings.find((service)=> service.name === 'stateRecorder');
+        const engineTester = settings.find((service)=> service.name === 'engineTester');
+
+        const env =  Object.assign( {
+          LOG_LEVEL: 'DEBUG',
+          LOG_DATETIME_FORMAT: '',
+          TESTER_ENABLED: 'true',
+          TESTER_PORT: engineTester.settings.port,
+          TESTER_SR_SERVER: stateRecorder.settings.host + ':' + stateRecorder.settings.port
+        });
 
         let engineProcess = spawn(command, {
           cwd: binPath,
-          env: Object.assign(process.env, {
-            LOG_LEVEL: 'DEBUG',
-            LOG_DATETIME_FORMAT: '',
-            TESTER_ENABLED: 'true',
-          }),
+          env: Object.assign(
+            env, process.env),
         });
 
         _setupLogging(engineProcess, engineName, options);

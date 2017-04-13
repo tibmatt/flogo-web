@@ -13,6 +13,10 @@ const FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
 const FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
 const FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost");
 
+const FLOW_STATE_SERVICE_PORT = process.env.FLOGO_FLOW_STATE_SERVICE_PORT  || '9190';
+const FLOW_SERVICE_PORT = process.env.FLOGO_FLOW_SERVICE_PORT  || '9090';
+const FLOW_TESTER_PORT = process.env.FLOGO_FLOW_TESTER_PORT  || '8080';
+
 const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve('local');
 // Default local/d
 const DB_DIR = process.env.FLOGO_WEB_DBDIR || path.resolve(LOCAL_DIR, 'db');
@@ -143,7 +147,7 @@ let config = {
         "enabled": true,
         "settings": {
           "host": FLOW_STATE_SERVICE_HOST,
-          "port": "9190"
+          "port": FLOW_STATE_SERVICE_PORT
         }
       }, {
         "name": "flowProvider",
@@ -191,17 +195,21 @@ let config = {
         "name": "stateRecorder",
         "enabled": false,
         "settings": {
-          "host": "localhost",
-          "port": "9190"
+          "host": FLOW_STATE_SERVICE_HOST,
+          "port": FLOW_STATE_SERVICE_PORT
         }
       }, {
         "name": "flowProvider",
-        "enabled": true
+        "enabled": true,
+        "settings": {
+          "host" : FLOW_SERVICE_HOST,
+          "port": FLOW_SERVICE_PORT
+        }
       }, {
         "name": "engineTester",
         "enabled": true,
         "settings": {
-          "port": "8081"
+          "port": FLOW_TESTER_PORT
         }
       }]
     }
