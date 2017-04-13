@@ -28,6 +28,11 @@ console.log("publicPath: ", publicPath);
 
 let appPort = process.env.PORT || 3303;
 
+const enginesPath = 'local/engines';
+const enginesRoot = path.join(rootPath, enginesPath);
+const defaultEngineName = 'flogo-web';
+const defaultEngine = `${enginesPath}/${defaultEngineName}`;
+
 let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
@@ -44,8 +49,13 @@ let config = {
     cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
   },
+  exportedAppBuild: path.join(enginesRoot, 'exported-app-build.json'),
+  appBuildEngine: {
+    path: `${enginesPath}/app-build`
+  },
   defaultEngine: {
-    path: 'local/engines/flogo-web',
+    path: defaultEngine,
+    vendorPath: `${defaultEngineName}/vendor`,
     defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
   },
   /* apps module config */

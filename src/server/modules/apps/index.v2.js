@@ -16,6 +16,7 @@ import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
 import { importApp } from './import.v2';
+import { buildApp } from  './build';
 
 import { Validator } from './validator';
 
@@ -197,6 +198,19 @@ export class AppsManager {
   // TODO documentation
   static import(fromApp) {
     return importApp(fromApp);
+  }
+
+  /**
+   * Build an app
+   * @param appId {string} app to build
+   * @params options
+   * @params options.compile.os: target operating system
+   * @params options.compile.arch: target architecture
+   * @return {object} builded app
+   * @throws Not found error if app not found
+   */
+  static build(appId, options) {
+    return buildApp(appId, options);
   }
 
   /**

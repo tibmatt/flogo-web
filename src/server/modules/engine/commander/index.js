@@ -11,6 +11,7 @@ module.exports = {
    * @param options
    * @param {string} [options.libVersion] - specify the flogo-lib version
    * @param {string} [options.flogoDescriptor] - specify the flogo.json to create project from
+   * @param {string} [options.vendor] - specify existing vendor directory to copy
    * @return {*}
    */
   create(enginePath, options) {
@@ -25,6 +26,11 @@ module.exports = {
     if (options.flogoDescriptor) {
       command.push('-f', options.flogoDescriptor);
     }
+
+    if (options.vendor) {
+      command.push('-vendor', options.vendor);
+    }
+
 
     command.push(enginePathInfo.name);
 

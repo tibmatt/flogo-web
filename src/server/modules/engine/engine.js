@@ -39,11 +39,14 @@ class Engine {
       });
   }
 
-  create(flogoDescriptorPath = null) {
+  create(flogoDescriptorPath = null, vendor = null) {
     // todo: add support for lib version
     const options = { libVersion: this.libVersion };
     if (flogoDescriptorPath) {
       options.flogoDescriptor = flogoDescriptorPath;
+    }
+    if(vendor) {
+      options.vendor = vendor;
     }
     console.time('engine:create');
     return commander

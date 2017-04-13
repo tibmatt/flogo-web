@@ -9,6 +9,7 @@ export function apps(router, basePath) {
   // ex. /apps/zA45E:export
   // needs to be registered before .get('/apps/:appId')
   router.get(`${basePath}/apps/:appId\\:export`, exportApp);
+  router.get(`${basePath}/apps/:appId/build`, buildApp);
 
   router.get(`${basePath}/apps/:appId`, getApp);
   router.patch(`${basePath}/apps/:appId`, updateApp);
@@ -129,6 +130,16 @@ function* importApp() {
     }
     throw error;
   }
+}
+
+function* buildApp() {
+  const appId = this.params.appId;
+  const options = { compile: {} };
+
+  options.compile.os = this.query.os     || null;
+  options.compile.arch = this.query.arch || null;
+
+  this.body = yield AppsManager.build(appId, options);
 }
 
 function* exportApp() {

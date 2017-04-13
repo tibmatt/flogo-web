@@ -46,7 +46,7 @@ export class ActionCompiler {
           ]))
           .then(() => engine.build({
             optimize: true,
-            incorporateConfig: true,
+            embedConfig: true,
             compile: compileOptions,
             type: Engine.TYPE_BUILD,
           })),
