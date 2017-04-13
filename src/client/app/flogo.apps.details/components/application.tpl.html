@@ -51,7 +51,20 @@
             <i class="flogo-icon flogo-icon-export"></i>
             {{ 'DETAILS:EXPORT' | translate }}
           </button>
-          <!--<button class="flogo-button flogo-button--default">{{ 'DETAILS:BUILD' | translate }}</button>-->
+          <button class="flogo-button flogo-button--default" (click)="toggleBuildBox()">{{ 'DETAILS:BUILD' | translate }}</button>
+          <div class="flogo-app-detail-build-list-wrapper" [ngClass]="{'active' : isBuildBoxShown}">
+            <ul class="flogo-app-detail-build-list list-unstyled">
+              <li class="flogo-app-detail-build-item">
+                <a [href]="downloadLink+'?os=linux&arch=386'"><span>{{ 'CANVAS:X86-LINUX' | translate }} </span></a>
+              </li>
+              <li class="flogo-app-detail-build-item">
+                <a [href]="downloadLink+'?os=linux&arch=arm'"><span>{{ 'CANVAS:ARM-LINUX' | translate }}</span></a>
+              </li>
+              <li class="flogo-app-detail-build-item">
+                <a [href]="downloadLink+'?os=darwin&arch=amd64'"><span>{{ 'CANVAS:DARWIN-OSX' | translate }}</span></a>
+              </li>
+            </ul>
+          </div>
           <div class="flogo-flow-detail-menu">
             <i class="flogo-icon-kebabmenu"></i>
             <div class="flogo-flow-detail-menu-list-wrapper">

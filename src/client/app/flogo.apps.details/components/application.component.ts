@@ -44,6 +44,9 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
   isNewApp: boolean = false;
 
+  isBuildBoxShown: boolean = false;
+  downloadLink: string;
+
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal) {
@@ -62,6 +65,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
       const flowGroups = this.application ? this.application.flowGroups : null;
       this.flowGroups = flowGroups ? [...this.application.flowGroups] : [];
       this.flowGroups = _.sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
+      this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
       // this.flows = this.extractFlows();
 
       let prevValue = change.previousValue;
@@ -177,6 +181,10 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
         this.appDetailService.deleteApp();
       }
     });
+  }
+
+  toggleBuildBox() {
+    this.isBuildBoxShown = !this.isBuildBoxShown;
   }
 
   private appUpdated() {

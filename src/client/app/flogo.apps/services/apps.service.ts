@@ -151,6 +151,10 @@ export class AppDetailService {
     return this.appsApiService.exportApp(this.currentApp$.getValue().app.id);
   }
 
+  public getDownloadLink(appId: string): string {
+    return this.appsApiService.downloadAppLink(appId);
+  }
+
   private fetchApp(appId: string) {
     this.fetching = true;
     return this.appsApiService.getApp(appId)

@@ -67,8 +67,6 @@ export class FlogoCanvasComponent implements OnInit {
   backToAppHover: boolean;
 
   public loading: boolean;
-  public exportLink: string;
-  public downloadLink: string;
   public hasTrigger: boolean;
   public currentTrigger: any;
   public app: any;
@@ -95,10 +93,6 @@ export class FlogoCanvasComponent implements OnInit {
   public ngOnInit() {
     this.flowId = this._route.snapshot.params['id'];
     this.backToAppHover = false;
-
-    this.downloadLink = `/api/v2/actions/${this.flowId}/build`;
-
-    this.exportLink = `/v1/api/flows/${this.flowId}/json`;
 
     this._loadFlow(this.flowId)
       .then(() => {
