@@ -187,6 +187,10 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.isBuildBoxShown = !this.isBuildBoxShown;
   }
 
+  closeBuildBox() {
+    this.isBuildBoxShown = false;
+  }
+
   private appUpdated() {
     this.isDescriptionInEditMode = false;
 
