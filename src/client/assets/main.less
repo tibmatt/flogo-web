@@ -651,39 +651,44 @@ label {
     color: #fff;
     background: @color-secondary;
     border: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+
     .flogo-flow-detail-menu-list-wrapper {
-      transform: scale(1, 1);
-    }
-    .flogo-flow-detail-menu-list {
-      opacity: 1;
+      -webkit-animation: scale-in-ver-top 300ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+      -moz-animation: scale-in-ver-top 300ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+      animation: scale-in-ver-top 300ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
     }
   }
   .flogo-flow-detail-menu-list-wrapper{
     border: solid 1px #727272;
-    border-radius: 2px;
     box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
     color: #666;
     position: absolute;
-    top: 11px;
-    right: 10px;
+    top: 35px;
+    right: 0px;
     overflow: hidden;
     transform: scale(0,0);
-    transform-origin: right top;
-    transition: all 300ms linear;
   }
   .flogo-flow-detail-menu-list{
     background-color: #ffffff;
     margin: 0;
-    padding-left: 10px;
-    opacity: 0;
-    width: 150px;
+    min-width: 110px;
+    padding: 0;
   }
   .flogo-flow-detail-menu-item{
-    padding: 5px;
     margin: 0;
     list-style: none;
     font-size: 14px;
     cursor: pointer;
+
+    .flogo-flow-detail-menu-anchor{
+      display: block;
+      padding: 10px;
+      padding-left: 15px;
+      white-space: nowrap;
+    }
+
   }
   .flogo-flow-detail-menu-item-choices{
     margin: 0;

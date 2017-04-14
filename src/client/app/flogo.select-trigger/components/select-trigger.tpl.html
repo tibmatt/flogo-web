@@ -11,8 +11,9 @@
         <div><button (click)="openInstallTriggerWindow()" class="flogo-button--accent">{{ 'SELECT-TRIGGER:INSTALL-NOW' | translate }}</button></div>
       </div>
       <hr />
-      <div *ngFor="let trigger of installedTriggers" class="trigger trigger--types">
-        <div class="trigger__content" (click)="sendAddTriggerMsg(trigger, 'installed')">
+      <div *ngFor="let trigger of installedTriggers" class="trigger trigger--types"
+           (click)="sendAddTriggerMsg(trigger, 'installed')">
+        <div class="trigger__content">
           <div class="icon">
             <i class="flogo-icon-trigger"></i>
           </div>
