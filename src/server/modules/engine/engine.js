@@ -31,23 +31,28 @@ class Engine {
   }
 
   load() {
-    return loader.readAllTasks(this.path)
-      .then(tasksData => this.tasks = tasksData);
+    return commander.list(this.path)
+      .then(installedContribs => loader.loadMetadata(this.path, installedContribs))
+      .then(contribMetadata => {
+        this.tasks = contribMetadata;
+        return contribMetadata;
+      });
   }
 
-  create() {
+  create(flogoDescriptorPath = null, vendor = null) {
     // todo: add support for lib version
-    let options = { libVersion: this.libVersion };
+    const options = { libVersion: this.libVersion };
+    if (flogoDescriptorPath) {
+      options.flogoDescriptor = flogoDescriptorPath;
+    }
+    if(vendor) {
+      options.vendor = vendor;
+    }
     console.time('engine:create');
     return commander
       .create(this.path, options)
       .then(() => Promise.all(
-        [
-          DIR_TEST_BIN,
-          DIR_BUILD_BIN
-        ].map(
-          dir => ensureDir(path.resolve(this.path, dir))
-        )
+        [DIR_TEST_BIN, DIR_BUILD_BIN].map(dir => ensureDir(path.resolve(this.path, dir))),
       ))
       .then(result => {
         console.timeEnd('engine:create');
@@ -139,14 +144,20 @@ class Engine {
 
   }
 
+  /**
+   *
+   * @param options
+   * @param {boolean} options.copyFlogoDescriptor
+   * @return {Promise.<TResult>|*}
+   */
   build(options) {
-    options = Object.assign({}, {type: TYPE_TEST}, options);
+    options = Object.assign({}, { type: TYPE_TEST }, options);
 
     let buildTargetDir;
-    if (options.type == TYPE_BUILD) {
+    if (options.type === TYPE_BUILD) {
       buildTargetDir = DIR_BUILD_BIN;
       // using bin instead of DIR_BUILD_BIN since there seems to be no options to specify different trigger config location for build
-      //options.configDir = DIR_BUILD_BIN;
+      // options.configDir = DIR_BUILD_BIN;
     } else {
       buildTargetDir = DIR_TEST_BIN;
     }

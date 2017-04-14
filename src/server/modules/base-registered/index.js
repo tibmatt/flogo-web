@@ -376,20 +376,20 @@ export class BaseRegistered{
 
     // generate all the activity docs
     originalItems.forEach(item => {
-      let info = item.rt;
+      const info = item.rt;
 
-      let version = info && info.version ? info.version : item.version;
-      let id = BaseRegistered.generateID(item.name, version);
+      const version = info && info.version;
+      const id = BaseRegistered.generateID(info.ref, version);
 
       items[id] = BaseRegistered.constructItem({
-        'id': id,
-        'ref': item.path,
-        'name': item.name,
-        'version': version,
-        'description': info.description,
-        'keywords': item.keywords || [],
-        'author': info.author,
-        'schema': info
+        id,
+        ref: info.ref,
+        name: info.name,
+        version,
+        description: info.description,
+        keywords: item.keywords || [],
+        author: info.author,
+        schema: info,
       });
 
     });

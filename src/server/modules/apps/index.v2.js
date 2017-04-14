@@ -7,7 +7,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import shortid from 'shortid';
 
-import { DEFAULT_APP_ID } from '../../common/constants';
+import { DEFAULT_APP_ID, DEFAULT_APP_VERSION } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -16,6 +16,7 @@ import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
 import { importApp } from './import.v2';
+import { buildApp } from  './build';
 
 import { Validator } from './validator';
 
@@ -42,7 +43,7 @@ const DEFAULT_APP = {
   _id: DEFAULT_APP_ID,
   name: 'Default app',
   description: 'App created by default',
-  version: '0.0.1',
+  version: DEFAULT_APP_VERSION,
 };
 
 export class AppsManager {
@@ -200,6 +201,19 @@ export class AppsManager {
   }
 
   /**
+   * Build an app
+   * @param appId {string} app to build
+   * @params options
+   * @params options.compile.os: target operating system
+   * @params options.compile.arch: target architecture
+   * @return {object} builded app
+   * @throws Not found error if app not found
+   */
+  static build(appId, options) {
+    return buildApp(appId, options);
+  }
+
+  /**
    * Export an app to the schema expected by cli
    * This will export apps and flows
    * @param appId {string} app to export
@@ -248,6 +262,10 @@ export class AppsManager {
         actionMap.forEach(a => {
           a.id = normalizeName(a.name);
         });
+
+        if(!app.version) {
+          app.version =  DEFAULT_APP_VERSION;
+        }
 
         return app;
       });

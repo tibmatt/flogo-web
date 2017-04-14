@@ -196,6 +196,7 @@ function fullAppSchema() {
         type: 'array',
         items: {
           type: 'object',
+          additionalProperties: false,
           properties: {
             id: {
               type: 'string',
@@ -203,6 +204,12 @@ function fullAppSchema() {
             ref: {
               type: 'string',
               'x-trigger-installed': true,
+            },
+            name: {
+              type: 'string',
+            },
+            description: {
+              type: 'string',
             },
             settings: {
               type: 'object',
@@ -463,25 +470,13 @@ function fullAppSchema() {
           rootTask: {
             title: 'rootTask',
             type: 'object',
+            additionalProperties: false,
             properties: {
               id: {
                 type: 'integer',
               },
               type: {
                 type: 'integer',
-              },
-              name: {
-                type: 'string',
-              },
-              title: {
-                type: 'string',
-              },
-              description: {
-                type: 'string',
-              },
-              activityRef: {
-                type: 'string',
-                default: '',
               },
               attributes: {
                 type: 'array',

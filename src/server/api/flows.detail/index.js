@@ -115,7 +115,7 @@ function generateBuild(id, compileOptions) {
         })
         .then(() => engine.build({
           optimize: true,
-          incorporateConfig: true,
+          embedConfig: true,
           compile: compileOptions,
           type: Engine.TYPE_BUILD
         }));

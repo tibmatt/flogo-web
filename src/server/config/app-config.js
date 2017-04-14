@@ -3,13 +3,7 @@ import path from 'path';
 import { extractDomain } from '../common/utils';
 import _ from 'lodash';
 
-import {
-  DBService
-} from '../common/db.service';
-
-import {
-  DatabaseService
-} from '../common/database.service';
+import { DatabaseService } from '../common/database.service';
 
 let rootPath = path.normalize(__dirname + '/..');
 
@@ -18,6 +12,10 @@ let publicPath = path.normalize(rootPath+'/../public');
 const FLOW_SERVICE_HOST = process.env.FLOGO_FLOW_SERVICE_HOST || "localhost";
 const FLOW_STATE_SERVICE_HOST = process.env.FLOGO_FLOW_STATE_SERVICE_HOST || "localhost";
 const FLOW_WEB_HOST = extractDomain(process.env.FLOGO_FLOW_WEB_HOST || "localhost");
+
+const FLOW_STATE_SERVICE_PORT = process.env.FLOGO_FLOW_STATE_SERVICE_PORT  || '9190';
+const FLOW_SERVICE_PORT = process.env.FLOGO_FLOW_SERVICE_PORT  || '9090';
+const FLOW_TESTER_PORT = process.env.FLOGO_FLOW_TESTER_PORT  || '8080';
 
 const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve('local');
 // Default local/d
@@ -30,6 +28,11 @@ console.log("publicPath: ", publicPath);
 
 let appPort = process.env.PORT || 3303;
 
+const enginesPath = 'local/engines';
+const enginesRoot = path.join(rootPath, enginesPath);
+const defaultEngineName = 'flogo-web';
+const defaultEngine = `${enginesPath}/${defaultEngineName}`;
+
 let config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath: rootPath,
@@ -37,6 +40,7 @@ let config = {
   logLevel,
   localPath: LOCAL_DIR,
   defaultAppJsonPath: path.join(rootPath, 'config/sample-app.json'),
+  defaultFlogoDescriptorPath: process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR || path.join(rootPath, 'config/default-flogo.json'),
   libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
   app: {
     basePath: '/v1/api',
@@ -45,8 +49,13 @@ let config = {
     cacheTime: 0, //7 * 24 * 60 * 60 * 1000 /* default caching time (7 days) for static files, calculated in milliseconds */
     gitRepoCachePath : path.join( rootPath, 'git-cache' )
   },
+  exportedAppBuild: path.join(enginesRoot, 'exported-app-build.json'),
+  appBuildEngine: {
+    path: `${enginesPath}/app-build`
+  },
   defaultEngine: {
-    path: 'local/engines/flogo-web',
+    path: defaultEngine,
+    vendorPath: `${defaultEngineName}/vendor`,
     defaultPalette: process.env.FLOGO_WEB_DEFAULT_PALETTE || 'default-palette.json',
   },
   /* apps module config */
@@ -148,7 +157,7 @@ let config = {
         "enabled": true,
         "settings": {
           "host": FLOW_STATE_SERVICE_HOST,
-          "port": "9190"
+          "port": FLOW_STATE_SERVICE_PORT
         }
       }, {
         "name": "flowProvider",
@@ -196,17 +205,21 @@ let config = {
         "name": "stateRecorder",
         "enabled": false,
         "settings": {
-          "host": "localhost",
-          "port": "9190"
+          "host": FLOW_STATE_SERVICE_HOST,
+          "port": FLOW_STATE_SERVICE_PORT
         }
       }, {
         "name": "flowProvider",
-        "enabled": true
+        "enabled": true,
+        "settings": {
+          "host" : FLOW_SERVICE_HOST,
+          "port": FLOW_SERVICE_PORT
+        }
       }, {
         "name": "engineTester",
         "enabled": true,
         "settings": {
-          "port": "8081"
+          "port": FLOW_TESTER_PORT
         }
       }]
     }

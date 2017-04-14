@@ -1,36 +1,52 @@
-import {runShellCMD} from '../../../common/utils';
-import {build} from './build';
+import { runShellCMD, parseJSON } from '../../../common/utils';
+import { logger } from '../../../common/logging';
+import { build } from './build';
 
 var path = require('path');
 
 module.exports = {
+  /**
+   *
+   * @param enginePath
+   * @param options
+   * @param {string} [options.libVersion] - specify the flogo-lib version
+   * @param {string} [options.flogoDescriptor] - specify the flogo.json to create project from
+   * @param {string} [options.vendor] - specify existing vendor directory to copy
+   * @return {*}
+   */
   create(enginePath, options) {
     options = options || {};
-    let enginePathInfo = path.parse(enginePath);
+    const enginePathInfo = path.parse(enginePath);
 
-    let command = ['create'];
-    if(options.libVersion && options.libVersion != 'latest') {
+    const command = ['create'];
+    if (options.libVersion && options.libVersion !== 'latest') {
       command.push('-flv', options.libVersion);
     }
+
+    if (options.flogoDescriptor) {
+      command.push('-f', options.flogoDescriptor);
+    }
+
+    if (options.vendor) {
+      command.push('-vendor', options.vendor);
+    }
+
+
     command.push(enginePathInfo.name);
 
     return _exec(enginePathInfo.dir, command);
   },
-  build: build,
+  build,
   add: {
-    flow(enginePath, flowPath) {
-      return _exec(enginePath, ['add', 'flow', flowPath]);
-    },
+    flow: install,
     palette(enginePath, palettePath, options) {
-      return _addItem(enginePath, 'palette', palettePath, options);
+      options = Object.assign({}, options, { isPalette: true });
+      return install(enginePath, palettePath, options);
     },
-    trigger(enginePath, triggerPath, options) {
-      return _addItem(enginePath, 'trigger', triggerPath, options);
-    },
-    activity(enginePath, activityPath, options) {
-      return _addItem(enginePath, 'activity', activityPath, options);
-    },
+    trigger: install,
+    activity: install,
   },
+  install,
   delete: {
     flow(enginePath, flowName) {
       return _exec(enginePath, ['del', 'flow', flowName]);
@@ -40,21 +56,33 @@ module.exports = {
     },
     activity(enginePath, activityNameOrPath) {
       return _exec(enginePath, ['del', 'activity', activityNameOrPath]);
-    }
-  }
+    },
+  },
+  list(enginePath) {
+    return _exec(enginePath, ['list', '-json'])
+      .then(output => parseJSON(output));
+  },
 };
 
-function _addItem(enginePath, itemType, itemPath, options) {
+
+function install(enginePath, contribPath, options) {
   options = options || {};
-  let commandParams = ['add'];
-  if (options.version && options.version != 'latest') {
+  const commandParams = ['install'];
+
+  if (options.version && options.version !== 'latest') {
     commandParams.push('-v', options.version);
   }
-  commandParams = commandParams.concat([itemType, itemPath]);
+
+  if (options.isPalette) {
+    commandParams.push('-p', contribPath);
+  } else {
+    commandParams.push(contribPath);
+  }
+
   return _exec(enginePath, commandParams);
 }
 
 function _exec(enginePath, params) {
-  console.log(`[info] Exec command: flogo ${params&&params.join(' ')} in ${enginePath}`);
-  return runShellCMD('flogo_old', params, {cwd: enginePath});
+  logger.info(`Exec command: flogo ${params && params.join(' ')} in ${enginePath}`);
+  return runShellCMD('flogo', params, { cwd: enginePath });
 }

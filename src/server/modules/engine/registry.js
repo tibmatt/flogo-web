@@ -14,7 +14,7 @@ let engineRegistry = {};
  * @returns {*}
  */
 export function getInitializedEngine(enginePath, opts = {}) {
-  if (engineRegistry[enginePath]) {
+  if (engineRegistry[enginePath] && !opts.forceCreate) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
 
@@ -41,6 +41,7 @@ export function initEngine(engine, options) {
   let forceInit = options && options.forceCreate;
   return engine.exists()
     .then(function(engineExists){
+
       if (engineExists && forceInit) {
         return engine.remove().then(() => true);
       }
@@ -49,9 +50,15 @@ export function initEngine(engine, options) {
     .then(create => {
       if(create) {
         logger.warn('Engine does not exist. Creating...');
-        return engine.create()
+        const defaultFlogoDescriptorPath = ((options && options.defaultFlogoDescriptorPath) || config.defaultFlogoDescriptorPath);
+        const vendor = options && options.vendor;
+        return engine.create(defaultFlogoDescriptorPath, vendor)
           .then(() => {
             logger.info('New engine created');
+            // when vendor provided it's not needed to install a palette
+            if(vendor) {
+              return Promise.resolve(true);
+            }
             // TODO: add palette version
             let palettePath = path.resolve('config', config.defaultEngine.defaultPalette);
             logger.info(`Will install palette at ${palettePath}`);
@@ -59,10 +66,10 @@ export function initEngine(engine, options) {
           })
           .catch(error => {
             logger.error('Error initializing engine. Will try to clean up');
-            return engine.remove().then(() => {
-              logger.notice('Successful clean');
-              throw new Error(error);
-            });
+            // return engine.remove().then(() => {
+            //   logger.info('Successful clean');
+            //   throw new Error(error);
+            // });
           });
       }
     })
@@ -78,6 +85,6 @@ export function initEngine(engine, options) {
       // update config.json, use overwrite mode
       engine.updateConfig(config.testEngine.config, { overwrite: true }),
       // update triggers.json
-      engine.updateTriggersConfig({ triggers: config.testEngine.triggers }, { overwrite: true }),
+      // engine.updateTriggersConfig({ triggers: config.testEngine.triggers }, { overwrite: true }),
     ]));
 }

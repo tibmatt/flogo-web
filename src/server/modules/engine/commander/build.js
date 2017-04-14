@@ -11,33 +11,44 @@ var path = require('path');
  * @param opts.target where to place the generated build. Due to current limitations it will be copied to specified destination.
  * @param opts.configDir directory that contains the configuration to incorporate into the executable
  * @param opts.optimize {boolean} Optimize for embedded flows. Default false.
- * @param opts.incorporateConfig {boolean} incorporate config into application. Default false.
+ * @param opts.embedConfig {boolean} Embed application config into executable. Default false.
  * @param opts.compile.os {string} Target operating system. Default value false. Falsy value will fallback to engine host's default os.
  * @param opts.compile.arch {string} Target compilation architechture. Default value false. Falsy value will fallback to engine host's default arch.
+ * @param opts.copyFlogoDescriptor {boolean} If should also make a copy of the generated flogo.json
  *
  * @returns {Promise<{path: string}>} path to generated binary
  */
 export function build(enginePath, opts) {
-
   const defaultEnginePath = path.join(enginePath);
 
   opts = _mergeOpts(opts);
-  let args = _getCommandArgs(opts);
-  let env = _getEnv(opts);
+
+  const args = _getCommandArgs(opts);
+  const env = _getEnv(opts);
 
   console.log(`[log] Build flogo: "flogo build ${args}" compileOpts:`);
-  return runShellCMD('flogo_old', ['build'].concat(args), {
+
+  const copyFlogoDescriptor = opts.copyFlogoDescriptor;
+  delete opts.copyFlogoDescriptor;
+
+  return runShellCMD('flogo', ['build'].concat(args), {
     cwd: defaultEnginePath,
-    env: Object.assign({}, process.env, env)
+    env: Object.assign({}, process.env, env),
   })
     .then(out => console.log(`[log] build output: ${out}`))
-    .then(() =>  _getGeneratedBinaryPath(enginePath, opts.compile))
+    .then(() => _getGeneratedBinaryPath(enginePath, opts.compile))
     .then(binaryPath => {
-      if(opts.target) {
-       return _copyBinaryToTarget(binaryPath, opts.target);
-      } else {
-        return {path: binaryPath};
+      if (copyFlogoDescriptor) {
+        return copyFile(path.join(enginePath, 'bin', 'flogo.json'), path.join(opts.target, 'flogo.json'))
+          .then(() => binaryPath);
       }
+      return binaryPath;
+    })
+    .then(binaryPath => {
+      if (opts.target) {
+        return _copyBinaryToTarget(binaryPath, opts.target);
+      }
+      return { path: binaryPath };
     });
 
 }
@@ -49,7 +60,7 @@ export function build(enginePath, opts) {
 function _mergeOpts(opts) {
   let defaultOpts = {
     target: undefined,
-    optimize: false, incorporateConfig: false,
+    optimize: false, embedConfig: false,
     configDir: undefined,
     compile: {os: false, arch: false}
   };
@@ -59,10 +70,10 @@ function _mergeOpts(opts) {
 function _getCommandArgs(opts) {
   let args = [
     opts.optimize ? '-o' : '',
-    opts.incorporateConfig ? '-i' : '',
+    opts.embedConfig ? '-e' : '',
   ];
 
-  if(opts.incorporateConfig && opts.configDir) {
+  if(opts.embedConfig && opts.configDir) {
     args.push('-c', opts.configDir)
   }
 
@@ -89,9 +100,9 @@ function _getEnv(opts) {
 }
 
 function _copyBinaryToTarget(binaryPath, targetDir) {
-  let enginePathInfo = path.parse(binaryPath);
-  let from = binaryPath;
-  let to = path.join(targetDir, enginePathInfo.name);
+  const enginePathInfo = path.parse(binaryPath);
+  const from = binaryPath;
+  const to = path.join(targetDir, enginePathInfo.name);
 
   const execPermissions = 0o755;
   return copyFile(from, to)

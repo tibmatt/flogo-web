@@ -105,7 +105,7 @@ export function findMostRecentFile(where, name) {
  * write a JSON file
  * @param {string|Path} JSONPath - the path of JSON file
  * @param {object} data - the JSON data you want to write
- * @return {boolean} if write successful, return ture, otherwise return false
+ * @return {boolean} if write successful, return true, otherwise return false
  */
 export function writeJSONFileSync( JSONPath, data ) {
   try {
