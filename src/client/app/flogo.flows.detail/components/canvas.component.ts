@@ -436,7 +436,6 @@ export class FlogoCanvasComponent implements OnInit {
 
     if(data.action === 'trigger-copy') {
       let triggerSettings = _.pick(this.currentTrigger, ['name', 'description', 'ref', 'settings']);
-
       this._restAPITriggersService.createTrigger(this.app.id, triggerSettings)
         .then((createdTrigger) => {
           this.currentTrigger = createdTrigger;
@@ -445,6 +444,25 @@ export class FlogoCanvasComponent implements OnInit {
             .then((res) => {
               let message = this.translate.instant('CANVAS:COPIED-TRIGGER');
               notification(message, 'success', 3000);
+              this._restAPIAppsService.getApp(this.flow.app.id)
+                .then((app) => {
+                  let updatedTriggerDetails = _.assign({}, this.currentTrigger);
+                  updatedTriggerDetails.handlers.push(_.assign({}, _.pick(res, [
+                    'actionId',
+                    'createdAt',
+                    'outputs',
+                    'settings',
+                    'updatedAt'
+                  ])));
+                  this.currentTrigger = updatedTriggerDetails;
+                  this.app = app;
+                  this._postService.publish(_.assign({}, FLOGO_SELECT_TASKS_PUB_EVENTS.updateTriggerTask, {
+                    data: {
+                      updatedApp: app,
+                      updatedTrigger: updatedTriggerDetails
+                    }
+                  }));
+                });
             });
         });
     }

@@ -31,7 +31,8 @@ export class FlogoFlowsDetailTasksDetail {
     this._subscriptions = [];
 
     let subs = [
-      _.assign( {}, SUB_EVENTS.selectTask, { callback : this._getSelectTaskMsg.bind( this ) } )
+      _.assign( {}, SUB_EVENTS.selectTask, { callback : this._getSelectTaskMsg.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.updateTriggerTask, { callback : this._updateTriggerContext.bind( this ) } )
     ];
 
     _.each(
@@ -71,6 +72,16 @@ export class FlogoFlowsDetailTasksDetail {
     }
 
     console.groupEnd();
+  }
+
+  private _updateTriggerContext(data: any, envelope: any){
+    this._task = _.assign({}, this._task, {
+      name: data.updatedTrigger.name
+    });
+    this._context = _.assign({}, this._context, {
+      app : data.updatedApp,
+      currentTrigger: data.updatedTrigger
+    });
   }
 
 }
