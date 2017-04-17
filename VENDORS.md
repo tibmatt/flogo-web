@@ -1,7 +1,7 @@
 # Third party dependencies change log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## v0.3.3
 
 ### Root Development Dependencies
 - Added:
@@ -23,11 +23,13 @@ All notable changes to this project will be documented in this file.
 
 - Added:
   - [ajv@4.11.5](https://github.com/epoberezkin/ajv/tree/4.11.0) (MIT)
+  - [nedb@1.8.0](https://github.com/louischatriot/nedb/tree/v1.6.0) (MIT)
   - [shortid@2.2.8](https://github.com/dylang/shortid/tree/2.2.8) (MIT)
 
 #### Development
 
 - Added:
-  - [mocha@3.2.0](https://github.com/mochajs/mocha/tree/v3.2.0) (MIT)
   - [chai@3.5.0](https://github.com/chaijs/chai/tree/3.5.0) (MIT)
   - [chai-http@3.0.0](https://github.com/chaijs/chai-http/tree/3.0.0) (MIT)
+  - [mocha@3.2.0](https://github.com/mochajs/mocha/tree/v3.2.0) (MIT)
+  - [server-destroy@1.0.1](https://github.com/isaacs/server-destroy/tree/v1.0.1) (MIT)
