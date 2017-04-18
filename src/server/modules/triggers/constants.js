@@ -20,6 +20,7 @@ export const PUBLISH_FIELDS_LONG = [
   'ref',
   'settings',
   'outputs',
+  'handler',
   'endpoint'
 ];
 
