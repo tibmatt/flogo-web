@@ -4,5 +4,9 @@
   "version": "0.0.1",
   "description": "Empty flogo app",
   "triggers": [],
-  "actions": []
+  "actions": [
+    {
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+    }
+  ]
 }
