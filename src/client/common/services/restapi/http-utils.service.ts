@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Headers, RequestOptions } from '@angular/http';
-export const API_PREFIX = '/v1/api/';
-export const API_PREFIX_V2 = '/api/v2/';
+import {environment} from "../../../environments/environment";
+
+export const domainURL = environment.hostname;
+export const API_PREFIX = domainURL + '/v1/api/';
+export const API_PREFIX_V2 = domainURL + '/api/v2/';
 
 @Injectable()
 export class HttpUtilsService {

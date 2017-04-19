@@ -7,9 +7,9 @@ import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'flogo-app',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'flogo.tpl.html',
-  styleUrls: ['flogo.component.css']
+  styleUrls: ['flogo.component.less']
 })
 
 export class FlogoAppComponent implements OnInit {

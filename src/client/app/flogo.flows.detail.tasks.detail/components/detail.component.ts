@@ -5,9 +5,9 @@ import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 @Component(
   {
     selector : 'flogo-flows-detail-tasks-detail',
-    moduleId : module.id,
+   // moduleId : module.id,
     templateUrl : 'detail.tpl.html',
-    styleUrls : [ 'detail.component.css' ],
+    styleUrls : [ 'detail.component.less' ],
   }
 )
 

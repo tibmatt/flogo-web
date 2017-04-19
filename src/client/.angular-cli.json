@@ -1,0 +1,80 @@
+{
+  "project": {
+    "version": "1.0.0-beta.32.3",
+    "name": "awesome-app"
+  },
+  "apps": [
+    {
+      "root": "",
+      "outDir": "../../dist/public",
+      "assets": [
+        {
+          "glob": "**/*",
+          "input": "./assets/",
+          "output": "./assets/"
+        },
+                {
+          "glob": "favicon.ico",
+          "input": "./",
+          "output": "./"
+        },
+         {
+          "glob": "**/*",
+          "input": "./i18n/",
+          "output": "./i18n/"
+        }
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "styles.less"
+      ],
+      "scripts": [
+        "node_modules/lodash/lodash.js",
+        "node_modules/jquery/dist/jquery.js",
+        "node_modules/postal/lib/postal.js",
+        "node_modules/d3/d3.js",
+        "node_modules/moment/min/moment.min.js",
+        "node_modules/bootstrap/dist/js/bootstrap.min.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "files": "/**/*.ts",
+      "project": "/tsconfig.json"
+    },
+    {
+      "project": "/tsconfig.spec.json"
+    },
+    {
+      "files": "e2e/**/*.ts",
+      "project": "e2e/tsconfig.json"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "less",
+    "component": {
+    }
+  }
+}

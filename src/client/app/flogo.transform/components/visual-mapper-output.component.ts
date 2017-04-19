@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'flogo-transform-visual-mapper-output',
-    moduleId: module.id,
-    styleUrls: ['visual-mapper.component.css'],
+    // moduleId: module.id,
+    styleUrls: ['visual-mapper.component.less'],
     templateUrl: 'visual-mapper-output.tpl.html'
 })
 export class VisualMapperOutputComponent {

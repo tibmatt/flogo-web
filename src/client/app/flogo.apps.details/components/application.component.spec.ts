@@ -38,6 +38,11 @@ class MockAppDetailService extends AppDetailService {
     return null;
   }
 
+  public getDownloadLink(appId: string) {
+    return appId;
+  }
+
+
 }
 
 describe('FlogoApplicationComponent component', () => {

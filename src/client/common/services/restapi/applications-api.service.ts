@@ -4,22 +4,23 @@ import 'rxjs/add/operator/toPromise';
 
 import { IFlogoApplicationModel } from '../../application.model';
 import { ErrorService } from '../../../common/services/error.service';
+import { HttpUtilsService } from './http-utils.service';
 
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
 export class RESTAPIApplicationsService {
 
-  constructor(private http: Http, private errorService: ErrorService ) {
+  constructor(private http: Http, private errorService: ErrorService,private httpUtils: HttpUtilsService) {
   }
 
   recentFlows() {
-    return this.http.get('/v1/api/flows/recent').toPromise()
+    return this.http.get(this.apiPrefix('flows/recent')).toPromise()
       .then(response => response.json().data);
   }
 
   getAllApps(): Promise<IFlogoApplicationModel[]> {
-    return this.http.get('/v1/api/apps').toPromise()
+    return this.http.get(this.apiPrefix('apps')).toPromise()
       .then(response => {
         let appsResponse = response.json();
         return appsResponse && appsResponse.data ? appsResponse.data : [];
@@ -27,7 +28,7 @@ export class RESTAPIApplicationsService {
   }
 
   allFlows()   {
-    return this.http.get('/v1/api/flows').toPromise()
+    return this.http.get(this.apiPrefix('flows')).toPromise()
       .then(response => response.json());
   }
 
@@ -43,17 +44,17 @@ export class RESTAPIApplicationsService {
       let options = new RequestOptions({headers: headers});
       let body = JSON.stringify(application);
 
-      return this.http.post('/v1/api/apps', body, options).toPromise()
+      return this.http.post(this.apiPrefix('apps'), body, options).toPromise()
        .then(response => response.json().data);
     });
   }
 
   deleteApp(appId: string)   {
-    return this.http.delete('/v1/api/apps/' + appId).toPromise();
+    return this.http.delete(this.apiPrefix('apps/' + appId)).toPromise();
   }
 
   getApp(appId: string): Promise<IFlogoApplicationModel> {
-    return this.http.get('/v1/api/apps/' + appId).toPromise()
+    return this.http.get(this.apiPrefix('apps/' + appId)).toPromise()
       .then(response => {
         if (response.text()) {
           let app: IFlogoApplicationModel = response.json().data;
@@ -67,7 +68,7 @@ export class RESTAPIApplicationsService {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({headers: headers});
 
-    return this.http.patch(`/v1/api/apps/${appId}`, app, options).toPromise()
+    return this.http.patch(this.apiPrefix(`apps/${appId}`), app, options).toPromise()
       .then(response => this.extractData(response))
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
@@ -76,7 +77,7 @@ export class RESTAPIApplicationsService {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.get(`/v1/api/apps/${appId}/export`, options).toPromise()
+    return this.http.get(this.apiPrefix(`apps/${appId}/export`), options).toPromise()
       .then(response => response.json())
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
@@ -113,7 +114,7 @@ export class RESTAPIApplicationsService {
     let headers = new Headers({ Accept: 'application/json' });
     let requestOptions = new RequestOptions({ headers, search: searchParams });
 
-    return this.http.post('/v1/api/apps/import', formData, requestOptions).toPromise()
+    return this.http.post(this.apiPrefix('apps/import'), formData, requestOptions).toPromise()
               .then(response => this.extractData(response) )
               .catch(error => Promise.reject(this.extractErrors(error)));
   }
@@ -135,4 +136,7 @@ export class RESTAPIApplicationsService {
     }
   }
 
+  private apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path, 'v1');
+  }
 }

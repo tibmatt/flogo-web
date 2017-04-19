@@ -3,9 +3,9 @@ import {PostService} from '../../../common/services/post.service';
 
 @Component({
   selector: 'flogo-flows-detail-triggers-detail',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'detail.tpl.html',
-  styleUrls: ['detail.component.css']
+  styleUrls: ['detail.component.less']
 })
 
 export class FlogoFlowsDetailTriggersDetail{

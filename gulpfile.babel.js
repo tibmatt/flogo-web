@@ -52,11 +52,12 @@ gulp.task('dev', 'Build and start in development mode', cb => {
 
   runSequence(
     'clean',
-    'dev.build',
-    'dev.watch',
-    'install.server.dist',
-    'install.client.dist',
+    'install.server.dev',
+    'install.client.dev',
+    'dev.server.build',
+    ['dev.server.watch', 'install.server.dist'],
     'dev.start',
+    'dev.client.start',
     cb
   );
 
@@ -70,8 +71,11 @@ gulp.task('dev-watch', 'Build in development mode and watch for changes', cb => 
 
   runSequence(
     'clean',
-    'dev.build',
-    'dev.watch',
+    'install.server.dev',
+    'install.client.dev',
+    'dev.server.build',
+    'dev.server.watch',
+    'dev.client.start',
     cb
   );
 

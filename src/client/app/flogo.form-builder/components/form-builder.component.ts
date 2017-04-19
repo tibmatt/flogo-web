@@ -12,8 +12,8 @@ import {FLOGO_TASK_TYPE} from "../../../common/constants";
 
 @Component({
   selector: 'flogo-form-builder',
-  moduleId: module.id,
-  styleUrls: ['form-builder.css'],
+  // moduleId: module.id,
+  styleUrls: ['form-builder.less'],
   templateUrl: 'form-builder.tpl.html',
   inputs: ['_task:task','_step:step', '_context:context', '_flowId:flowId']
 })

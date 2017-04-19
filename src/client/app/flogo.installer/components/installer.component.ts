@@ -11,7 +11,7 @@ import {
 
 @Component( {
   selector : 'flogo-installer',
-  moduleId : module.id,
+  // moduleId : module.id,
   templateUrl : 'installer.tpl.html',
   inputs : [ 'installType: flogoInstallType', 'isActivated: flogoIsActivated' ],
   outputs : [
@@ -19,7 +19,7 @@ import {
     'isActivatedUpdate: flogoIsActivatedChange',
     'onInstalled: flogoOnInstalled'
   ],
-  styleUrls : [ 'installer.component.css' ]
+  styleUrls : [ 'installer.component.less' ]
 } )
 export class FlogoInstallerComponent implements OnChanges {
 

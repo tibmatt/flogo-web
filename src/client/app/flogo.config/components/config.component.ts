@@ -9,9 +9,9 @@ const SERVERS_ARR = [ 'engine', 'stateServer', 'flowServer' ];
 
 @Component( {
   selector : 'flogo-config',
-  moduleId : module.id,
+  // moduleId : module.id,
   templateUrl : 'config.tpl.html',
-  styleUrls : [ 'config.component.css' ]
+  styleUrls : [ 'config.component.less' ]
 } )
 export class FlogoConfigComponent {
   _config : any;

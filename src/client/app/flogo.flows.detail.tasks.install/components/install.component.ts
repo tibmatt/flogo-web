@@ -4,7 +4,7 @@ import { FlogoInstallerComponent } from '../../flogo.installer/components/instal
 @Component( {
   selector : 'flogo-flows-detail-tasks-install',
   outputs : [ 'onInstalled: flogoOnInstalled' ],
-  moduleId : module.id,
+  // moduleId : module.id,
   templateUrl : 'install.tpl.html',
 } )
 export class FlogoFlowsDetailTasksInstallComponent {

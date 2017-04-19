@@ -5,9 +5,9 @@ import { Trigger } from '../../../common/application.model';
 
 @Component({
   selector: 'flogo-apps-flows-flow-group',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'flow-group.tpl.html',
-  styleUrls: ['flow-group.component.css']
+  styleUrls: ['flow-group.component.less']
 })
 export class FlowGroupComponent implements OnChanges {
   @Input()

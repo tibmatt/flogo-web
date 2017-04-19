@@ -4,8 +4,8 @@ import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder-fields-textarea',
-  styleUrls: ['fields.textarea.css', '../fields.base/fields.base.css'],
-  moduleId: module.id,
+  styleUrls: ['fields.textarea.less', '../fields.base/fields.base.less'],
+  // moduleId: module.id,
   templateUrl: 'fields.textarea.tpl.html',
   inputs:['_info:info','_fieldObserver:fieldObserver']
 })

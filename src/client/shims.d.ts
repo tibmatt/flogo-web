@@ -1,7 +1,8 @@
-import __lodash from 'lodash';
-import __d3 from 'd3';
-import __moment from 'moment';
-
+import * as __lodash from 'lodash';
+import * as __d3 from 'd3';
+import * as __moment from 'moment';
+import * as __jQuery from 'jquery';
+import * as postal from 'postal';
 declare global {
   const _: typeof __lodash;
   const d3: typeof __d3;

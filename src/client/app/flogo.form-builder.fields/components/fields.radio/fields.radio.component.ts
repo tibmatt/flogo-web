@@ -4,8 +4,8 @@ import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder-fields-radio',
-  styleUrls: ['fields.radio.css','../fields.base/fields.base.css'],
-  moduleId: module.id,
+  styleUrls: ['fields.radio.less','../fields.base/fields.base.less'],
+  // moduleId: module.id,
   templateUrl: 'fields.radio.tpl.html',
   inputs:['_info:info','_fieldObserver:fieldObserver', '_index:index']
 })

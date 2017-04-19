@@ -5,10 +5,10 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 @Component( {
   selector : 'flogo-installer-url',
   moduleId : module.id,
-  inputs : [ 'status: flogoInstallerStatus'  ],
+  inputs : [ 'installType: flogoInstallType', 'status: flogoInstallerStatus'  ],
   outputs : [ 'onInstallEvent: flogoOnInstall', 'onCancelEvent: flogoOnCancel' ],
   templateUrl : 'url-installer.tpl.html',
-  styleUrls : [ 'url-installer.component.css' ]
+  styleUrls : [ 'url-installer.component.less' ]
 } )
 export class FlogoInstallerUrlComponent implements OnChanges {
 

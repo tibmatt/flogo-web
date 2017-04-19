@@ -7,9 +7,9 @@ import { RESTAPITriggersService } from '../../../common/services/restapi/trigger
 @Component(
   {
     selector : 'flogo-flows-detail-triggers',
-    moduleId : module.id,
+    // moduleId : module.id,
     templateUrl : 'triggers.tpl.html',
-    styleUrls : [ 'triggers.component.css' ]
+    styleUrls : [ 'triggers.component.less' ]
   }
 )
 export class FlogoFlowsDetailTriggers {

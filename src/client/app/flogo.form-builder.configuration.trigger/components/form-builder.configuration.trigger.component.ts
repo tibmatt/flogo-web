@@ -5,10 +5,10 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
     selector: 'flogo-form-builder-trigger-configuration',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'form-builder.configuration.trigger.tpl.html',
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes', '_context:context'],
-    styleUrls: ['form-builder.configuration.trigger.css']
+    styleUrls: ['form-builder.configuration.trigger.less']
 })
 export class FlogoFormBuilderConfigurationTriggerComponent {
   _fieldObserver : any;

@@ -2,6 +2,7 @@ import { Http,  BaseRequestOptions, Response, ResponseOptions } from '@angular/h
 import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RESTAPIActivitiesService } from './activities-api.service';
 import { MockBackend } from '@angular/http/testing';
+import {HttpUtilsService} from "./http-utils.service";
 
 
 describe('Service: RESTAPIActivitiesService', ()=> {
@@ -414,7 +415,8 @@ describe('Service: RESTAPIActivitiesService', ()=> {
                     },
                     deps: [MockBackend, BaseRequestOptions]
                 },
-                RESTAPIActivitiesService
+                RESTAPIActivitiesService,
+                HttpUtilsService
             ]
         })
 

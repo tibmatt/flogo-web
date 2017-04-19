@@ -4,8 +4,8 @@ import { FormActionsModels, FormDescriptionsModels } from './../models';
 
 @Component({
   selector: 'flogo-form',
-  moduleId: module.id,
-  styleUrls: ['form.css'],
+  // moduleId: module.id,
+  styleUrls: ['form.less'],
   templateUrl: 'form.tpl.html'
 })
 export class FlogoForm {

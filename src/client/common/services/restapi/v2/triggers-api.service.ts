@@ -2,29 +2,32 @@ import {Injectable} from '@angular/core';
 import { activitySchemaToTrigger } from '../../../utils';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import {environment} from "../../../../environments/environment";
+import { HttpUtilsService } from '../http-utils.service';
 
+export const domainURL = environment.hostname;
 @Injectable()
 export class  RESTAPITriggersService {
-  constructor( private http : Http ) {
+  constructor( private http : Http,private httpUtils: HttpUtilsService) {
   }
 
   createTrigger(appId, trigger: any) {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
-    return this.http.post(`/api/v2/apps/${appId}/triggers`, trigger, options).toPromise()
+    return this.http.post(this.apiPrefix(`apps/${appId}/triggers`), trigger, options).toPromise()
       .then(response => response.json().data);
   }
 
   listTriggersApp(appId) {
-    return this.http.get(`/api/v2/apps/${appId}/triggers`).toPromise()
+    return this.http.get(this.apiPrefix(`apps/${appId}/triggers`)).toPromise()
       .then(response => {
         return response.json().data;
       });
   }
 
   getTrigger(triggerId) {
-    return this.http.get(`/api/v2/triggers/${triggerId}`)
+    return this.http.get(this.apiPrefix(`triggers/${triggerId}`))
       .toPromise()
       .then(response => response.json().data);
   }
@@ -33,13 +36,13 @@ export class  RESTAPITriggersService {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({headers: headers});
 
-    return this.http.patch(`/api/v2/triggers/${triggerId}`, trigger, options).toPromise()
+    return this.http.patch(this.apiPrefix(`triggers/${triggerId}`), trigger, options).toPromise()
       .then(response => this.extractData(response))
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
   deleteTrigger(triggerId: string) {
-    return this.http.delete(`/api/v2/triggers/${triggerId}`).toPromise();
+    return this.http.delete(this.apiPrefix(`triggers/${triggerId}`)).toPromise();
   }
 
   private extractData(res: Response) {
@@ -58,7 +61,9 @@ export class  RESTAPITriggersService {
     }
   }
 
-
+  private apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path, 'v2');
+  }
 
 
   }

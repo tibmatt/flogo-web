@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-//import { connect as ioConnect } from 'socket.io-client';
-
+import { connect as ioConnect } from 'socket.io-client';
+import * as io from 'socket.io-client';
 @Injectable()
 export class LogService {
     // TODO define config interface

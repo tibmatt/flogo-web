@@ -36,9 +36,9 @@ import { FlogoFlowService as FlowsService } from '../services/flow.service';
 
 @Component({
   selector: 'flogo-canvas',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'canvas.tpl.html',
-  styleUrls: ['canvas.component.css']
+  styleUrls: ['canvas.component.less']
 })
 
 export class FlogoCanvasComponent implements OnInit {

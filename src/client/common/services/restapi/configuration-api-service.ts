@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import { HttpUtilsService } from './http-utils.service';
 
 @Injectable()
 export class RESTAPIConfigurationService {
-    constructor(private http:Http) {
+
+    constructor(private http:Http,private httpUtils: HttpUtilsService) {
+      console.log("domainURL from environment");
+      //console.log(domainURL);
+
     }
 
     getConfiguration() {
-        return this.http.get('/v1/api/configuration')
+        return this.http.get(this.apiPrefix('configuration'))
                     .toPromise();
+
     }
 
     setConfiguration(configuration:any) {
@@ -17,13 +23,16 @@ export class RESTAPIConfigurationService {
         let options = new RequestOptions({headers: headers});
         let body = JSON.stringify({ configuration:configuration });
 
-        return this.http.post('/v1/api/configuration',body,options)
+        return this.http.post(this.apiPrefix('configuration'),body,options)
                         .toPromise();
     }
 
 
     resetConfiguration() {
-        return this.http.get('/v1/api/configuration/reset')
+        return this.http.get(this.apiPrefix('configuration/reset'))
             .toPromise();
     }
+  private apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path, 'v1');
+  }
 }

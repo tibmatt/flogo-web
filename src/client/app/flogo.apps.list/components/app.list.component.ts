@@ -7,9 +7,9 @@ import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.servi
 
 @Component({
   selector: 'flogo-apps-list',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'app.list.tpl.html',
-  styleUrls: ['app.list.css']
+  styleUrls: ['app.list.less']
 })
 export class FlogoAppListComponent implements OnInit {
   @ViewChild('importInput') importInput: ElementRef;

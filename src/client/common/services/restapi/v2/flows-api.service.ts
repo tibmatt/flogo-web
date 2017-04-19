@@ -13,7 +13,7 @@ export class APIFlowsService {
   getFlow(flowId: string) {
     const actionId = flowId;
     return this.http.get(
-      this.httpUtils.apiPrefix(`actions/${actionId}`),
+     this.httpUtils.apiPrefix(`actions/${actionId}`),
       this.httpUtils.defaultOptions()
     )
       .map(response => response.json().data)
@@ -22,7 +22,7 @@ export class APIFlowsService {
 
   createFlow(appId, flow: {name:string, description?:string, version?: string, data?: { flow: any }}) {
     return this.http.post(
-      this.httpUtils.apiPrefix(`apps/${appId}/actions`),
+     this.httpUtils.apiPrefix(`apps/${appId}/actions`),
       flow,
       this.httpUtils.defaultOptions()
     )
@@ -33,7 +33,7 @@ export class APIFlowsService {
   updateFlow(flowId, flow) {
     const actionId = flowId;
     return this.http.patch(
-      this.httpUtils.apiPrefix(`actions/${actionId}`),
+    this.httpUtils.apiPrefix(`actions/${actionId}`),
       flow,
       this.httpUtils.defaultOptions()
     )
@@ -44,7 +44,7 @@ export class APIFlowsService {
   deleteFlow(flowId) {
     const actionId = flowId;
     return this.http.delete(
-      this.httpUtils.apiPrefix(`actions/${actionId}`),
+    this.httpUtils.apiPrefix(`actions/${actionId}`),
       this.httpUtils.defaultOptions()
     )
       .map(() => true)
@@ -60,7 +60,7 @@ export class APIFlowsService {
       });
 
     return this.http.get(
-      this.httpUtils.apiPrefix(`apps/${appId}/actions`), reqOptions)
+    this.httpUtils.apiPrefix(`apps/${appId}/actions`), reqOptions)
       .map((res: Response) => res.json().data)
       .toPromise();
   }

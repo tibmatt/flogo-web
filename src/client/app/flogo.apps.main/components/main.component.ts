@@ -12,9 +12,9 @@ import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.servi
 
 @Component( {
     selector: 'flogo-apps-main',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'main.tpl.html',
-    styleUrls: [ 'main.component.css' ]
+    styleUrls: [ 'main.component.less' ]
 } )
 export class FlogoMainComponent implements OnInit {
     public recent : Array<any> = [];

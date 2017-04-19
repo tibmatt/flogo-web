@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
+import { HttpUtilsService } from './http-utils.service';
 
 
 @Injectable()
 export class RESTAPIFlowsService{
-  constructor(private http:Http ){
+  constructor(private http:Http,private httpUtils: HttpUtilsService  ){
   }
 
   createFlow(flowObj: any) {
@@ -14,11 +15,11 @@ export class RESTAPIFlowsService{
     let options = new RequestOptions({headers: headers});
     let body = JSON.stringify(flowObj);
 
-    return this.http.post('/v1/api/flows', body, options).toPromise();
+    return this.http.post(this.apiPrefix('flows'), body, options).toPromise();
   }
 
   getFlows() {
-    return this.http.get('/v1/api/flows').toPromise()
+    return this.http.get(this.apiPrefix('flows')).toPromise()
       .then(response=> {
         if (response.text()) {
           return response.json();
@@ -33,15 +34,15 @@ export class RESTAPIFlowsService{
     let options = new RequestOptions({headers: headers});
     let body = JSON.stringify(flowObj);
 
-    return this.http.post('/v1/api/flows/update', body, options).toPromise();
+    return this.http.post(this.apiPrefix('flows/update'), body, options).toPromise();
   }
 
   deleteFlow(flowId) {
-    return this.http.delete('/v1/api/flows/' + flowId).toPromise();
+    return this.http.delete(this.apiPrefix('flows/' + flowId)).toPromise();
   }
 
   getFlow( id : string ) {
-    return this.http.get('/v1/api/flows/' + id).toPromise()
+    return this.http.get(this.apiPrefix('flows/' + id)).toPromise()
       .then(response=>{
         if(response.text()) {
             return response.json().data;
@@ -63,7 +64,7 @@ export class RESTAPIFlowsService{
 
     let requestOptions = new RequestOptions({ headers, search: searchParams });
 
-    return this.http.get(`/v1/api/flows`, requestOptions)
+    return this.http.get(this.apiPrefix(`flows`), requestOptions)
       .map((res: Response) => res.json())
       .toPromise();
   }
@@ -80,7 +81,7 @@ export class RESTAPIFlowsService{
     );
     let options = new RequestOptions( { headers : headers } );
 
-    return this.http.post('/v1/api/flows/run/flows', body, options )
+    return this.http.post(this.apiPrefix('flows/run/flows'), body, options )
       .toPromise().then(
         ( response : Response ) => {
           if ( response.text() ) {
@@ -114,7 +115,7 @@ export class RESTAPIFlowsService{
     let options = new RequestOptions( { headers : headers } );
 
 
-    return this.http.post( '/v1/api/flows/run/flow/start', body, options )
+    return this.http.post(this.apiPrefix('flows/run/flow/start'), body, options )
       .toPromise()
       .then(
         rsp => {
@@ -138,9 +139,13 @@ export class RESTAPIFlowsService{
     let headers = new Headers({ Accept: 'application/json' });
     let requestOptions = new RequestOptions({ headers, search: searchParams });
 
-    return this.http.post('/v1/api/flows/upload', formData, requestOptions).toPromise()
+    return this.http.post(this.apiPrefix('flows/upload'), formData, requestOptions).toPromise()
       .catch(error => Promise.reject(error.json())  );
   }
 
   // restartFlow() TODO need to inject instance related APIs
+
+  private apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path, 'v1');
+  }
 }

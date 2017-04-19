@@ -4,7 +4,7 @@ import 'rxjs/add/operator/toPromise';
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { RESTAPIApplicationsService } from './applications-api.service';
 import { ErrorService } from '../../../common/services/error.service';
-
+import { HttpUtilsService } from './http-utils.service';
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
@@ -49,8 +49,8 @@ export class RESTAPIApplicationsServiceMock  extends RESTAPIApplicationsService 
         }
     ];
 
-  constructor(public _http : Http, errorService: ErrorService ) {
-      super(_http, errorService);
+  constructor(public _http : Http, errorService: ErrorService,httpUtils: HttpUtilsService) {
+      super(_http, errorService, httpUtils);
   }
 
   getAllApps() {

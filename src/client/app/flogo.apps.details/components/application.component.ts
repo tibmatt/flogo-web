@@ -16,9 +16,9 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
 @Component({
   selector: 'flogo-apps-details-application',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'application.tpl.html',
-  styleUrls: ['application.component.css']
+  styleUrls: ['application.component.less']
 })
 export class FlogoApplicationComponent implements OnChanges, OnInit {
   @ViewChild(FlogoFlowsAddComponent) addFlow: FlogoFlowsAddComponent;

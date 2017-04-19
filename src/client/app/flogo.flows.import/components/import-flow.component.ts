@@ -1,12 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { notification } from '../../../common/utils';
-
+import * as jQuery from 'jquery';
 @Component( {
   selector : 'flogo-flows-import',
-  moduleId : module.id,
+  // moduleId : module.id,
   templateUrl : 'import-flow.tpl.html',
-  styleUrls : [ 'import-flow.component.css' ]
+  styleUrls : [ 'import-flow.component.less' ]
 } )
 export class FlogoFlowsImport {
   @Input()
