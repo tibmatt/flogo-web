@@ -20,6 +20,7 @@ import { LanguageService } from './services/language.service';
 import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
 import { ChildWindowService } from './services/child-window.service';
+import {FlowsService} from "./services/flows.service";
 
 @NgModule({
   providers: [ // services
@@ -44,7 +45,8 @@ import { ChildWindowService } from './services/child-window.service';
     ConfigurationLoadedGuard,
     LoadingStatusService,
     LanguageService,
-    WindowRef
+    WindowRef,
+    FlowsService
   ]
 })
 export class CoreModule { }

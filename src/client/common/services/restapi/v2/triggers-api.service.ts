@@ -38,6 +38,10 @@ export class  RESTAPITriggersService {
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
+  deleteTrigger(triggerId: string) {
+    return this.http.delete(`/api/v2/triggers/${triggerId}`).toPromise();
+  }
+
   private extractData(res: Response) {
     let body = res.json();
     // todo: body.data won't always be an object, could be an array

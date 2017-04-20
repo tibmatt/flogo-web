@@ -155,8 +155,8 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.flowSelected.emit(flow);
   }
 
-  onFlowDelete(flow){
-    this.flowDeleted.emit(flow);
+  onFlowDelete(eventData){
+    this.flowDeleted.emit(eventData);
   }
 
   onFlowImportSuccess(result: any) {
