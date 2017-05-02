@@ -5,6 +5,7 @@ import { flogoFlowToJSON } from "../../flogo.flows.detail.diagram/models/flow.mo
 import {IFlogoFlowDiagramTaskDictionary} from "../../flogo.flows.detail.diagram/models/dictionary.model";
 import {APIFlowsService} from "../../../common/services/restapi/v2/flows-api.service";
 import {  } from "../../../common/utils";
+import {FlowsService} from "../../../common/services/flows.service";
 
 interface FlowData {
   flow: any,
@@ -16,11 +17,13 @@ interface FlowData {
     diagram: any,
     tasks: any
   };
-};
+}
 
 @Injectable()
 export class FlogoFlowService {
-  constructor(private _flowAPIService: APIFlowsService, private _converterService: UIModelConverterService) {
+  constructor(private _flowAPIService: APIFlowsService,
+              private _converterService: UIModelConverterService,
+              private _commonFlowsService: FlowsService) {
   }
 
   getFlow(flowId: string): Promise<FlowData> {
@@ -52,8 +55,8 @@ export class FlogoFlowService {
     return this._flowAPIService.updateFlow(flowId, action);
   }
 
-  deleteFlow(flowId) {
-    return this._flowAPIService.deleteFlow(flowId);
+  deleteFlow(flowId, triggerId) {
+    return this._commonFlowsService.deleteFlowWithTrigger(flowId, triggerId);
   }
 
   listFlowsByName(appId, name) {

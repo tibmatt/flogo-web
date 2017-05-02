@@ -145,7 +145,14 @@ export class FlogoCanvasComponent implements OnInit {
     this._flogoModal.confirmDelete(message)
       .then((res) => {
         if (res) {
-          this._flowService.deleteFlow(this.flowId)
+          let appPromise = null;
+          appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flow.app.id);
+
+          appPromise
+            .then((app) => {
+              let triggerDetails = this.getTriggerCurrentFlow(app, this.flow.id);
+              return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
+            })
             .then(() => {
               this.navigateToApp();
             })
@@ -286,9 +293,9 @@ export class FlogoCanvasComponent implements OnInit {
   }
 
   private _getCurrentContext(taskId: any, diagramId: string) {
-    var isTrigger = this.handlers[diagramId].tasks[taskId].type === FLOGO_TASK_TYPE.TASK_ROOT;
-    var isBranch = this.handlers[diagramId].tasks[taskId].type === FLOGO_TASK_TYPE.TASK_BRANCH;
-    var isTask = this.handlers[diagramId].tasks[taskId].type === FLOGO_TASK_TYPE.TASK;
+    let isTrigger = this.handlers[diagramId].tasks[taskId].type === FLOGO_TASK_TYPE.TASK_ROOT;
+    let isBranch = this.handlers[diagramId].tasks[taskId].type === FLOGO_TASK_TYPE.TASK_BRANCH;
+    let isTask = this.handlers[diagramId].tasks[taskId].type === FLOGO_TASK_TYPE.TASK;
 
     return {
       isTrigger: isTrigger,
@@ -422,7 +429,7 @@ export class FlogoCanvasComponent implements OnInit {
 
   private getSettingsCurrentHandler () {
     let settings, outputs;
-    for(var key in this.flow.items) {
+    for(let key in this.flow.items) {
       if(this.flow.items[key].type === FLOGO_TASK_TYPE.TASK_ROOT) {
         settings = objectFromArray(this.flow.items[key].endpoint.settings, true);
         outputs = objectFromArray(this.flow.items[key].outputs, true);

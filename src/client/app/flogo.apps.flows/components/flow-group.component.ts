@@ -16,8 +16,11 @@ export class FlowGroupComponent implements OnChanges {
   public trigger: Trigger;
   @Output()
   public flowSelected: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
-  @Output()
-  public deleteFlow: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
+  @Output() public deleteFlow: EventEmitter<{
+    triggerId: string, flow: FlowModel
+  }> = new EventEmitter<{
+    triggerId: string, flow: FlowModel
+  }>();
   @Output()
   public addFlow: EventEmitter<Trigger> = new EventEmitter<Trigger>();
 
@@ -39,7 +42,7 @@ export class FlowGroupComponent implements OnChanges {
   }
 
   onDeleteFlow(flow: FlowModel) {
-    this.deleteFlow.emit(flow);
+    this.deleteFlow.emit({triggerId: (this.trigger ? this.trigger.id : null), flow: flow});
   }
 
   onAddFlow() {

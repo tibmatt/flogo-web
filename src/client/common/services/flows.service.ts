@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from "@angular/core";
+import {objectFromArray} from "../utils";
 
-import { RESTAPIHandlersService as HandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
-import { APIFlowsService as FlowsApiService } from '../../../common/services/restapi/v2/flows-api.service';
-import { RESTAPITriggersService as TriggersService } from '../../../common/services/restapi/v2/triggers-api.service';
-import { RESTAPITriggersService as ContribTriggersService } from '../../../common/services/restapi/triggers-api.service';
-import { objectFromArray } from '../../../common/utils';
+import { RESTAPIHandlersService as HandlersService } from './restapi/v2/handlers-api.service';
+import { APIFlowsService as FlowsApiService } from './restapi/v2/flows-api.service';
+import { RESTAPITriggersService as TriggersService } from './restapi/v2/triggers-api.service';
+import { RESTAPITriggersService as ContribTriggersService } from './restapi/triggers-api.service';
 
 @Injectable()
 export class FlowsService {
@@ -30,8 +30,27 @@ export class FlowsService {
       })
   }
 
-  public deleteFlow(flowId) {
+  deleteFlow(flowId) {
     return this.flowsService.deleteFlow(flowId);
+  }
+
+  deleteFlowWithTrigger(flowId: string, triggerId: string) {
+    return this.deleteFlow(flowId)
+      .then(() => {
+        if(triggerId){
+          return this.triggersService.getTrigger(triggerId)
+            .then(triggerDetails => {
+              if(triggerDetails.handlers.length === 0) {
+                return this.triggersService.deleteTrigger(triggerDetails.id);
+              } else {
+                return {};
+              }
+            });
+        } else {
+          return {};
+        }
+      })
+      .catch((err) => Promise.reject(err));
   }
 
   private getContribInfo(triggerInstanceId) {
