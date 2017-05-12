@@ -195,14 +195,6 @@ class Engine {
       return commander.add.flow(this.path, flowPath);
   }
 
-  deleteAllInstalledFlows() {
-    return loader
-      .readAllFlowNames(this.path)
-      .then(installedFlows => installedFlows.reduce((promise, flowName) => {
-        return promise.then(commander.delete.flow(this.path, flowName));
-      }, Promise.resolve(true)))
-  }
-
   /**
    * Add/install a palette
    * @param palettePath Path to palette

@@ -2,6 +2,7 @@
   display: block;
   margin: 0;
   padding: 0;
+  color: #666666;
 
   font-family: 'Source Sans Pro', 'Helvetica', 'Arial', sans-serif;
 }
@@ -10,38 +11,36 @@
 @flogo-installer-url-installer-icon-width: 30px;
 @flogo-installer-url-installer-icon-height: @flogo-installer-url-installer-icon-width;
 
-@flogo-installer-url-installer-primary-color: #0081CB;
-
-.flogo-installer-url-installer-download-icon {
-  display: inline-block;
-  width: @flogo-installer-url-installer-icon-size;
-  height: @flogo-installer-url-installer-icon-size;
-  background: url('/assets/svg/flogo.icon.download.svg') no-repeat center center;
-  background-size: @flogo-installer-url-installer-icon-width @flogo-installer-url-installer-icon-height;
-
-  cursor: pointer;
-
-  &.flogo-installer-url-installer-disabled {
-    cursor: progress;
-    background-image: url('/assets/svg/flogo.icon.download.disabled.svg');
-  }
-}
+@flogo-installer-url-installer-primary-color: #cad3df;
 
 .flogo-installer-url-installer-input {
   display: inline-block;
   vertical-align: top;
 
   padding: 10px 22px;
-
-  width: ~ "-moz-calc(100% - @{flogo-installer-url-installer-icon-size})";
-  width: ~"-webkit-calc(100% - @{flogo-installer-url-installer-icon-size})";
-  width: ~"calc(100% - @{flogo-installer-url-installer-icon-size})";
-
+  width: 100%;
   font-size: 15px;
-
+  border-radius: 4px;
   border: solid 1px @flogo-installer-url-installer-primary-color;
+  margin: 2em auto 2em;
 
   &:focus {
     outline: none;
   }
 }
+
+.flogo-installer-url__link {
+  color: #79b8dc;
+}
+
+.flogo-installer-url__button-container {
+  margin: 0.8em 0 0;
+  text-align: right;
+
+  .flogo-installer-url__button {
+    margin: 0 5px;
+    min-width: 124px;
+    height: 35px;
+  }
+}
+

@@ -103,8 +103,7 @@ function generateBuild(id, compileOptions) {
     })
     .then(data => {
       let engine = data.engine;
-      return engine.deleteAllInstalledFlows()
-        .then(() => engine.addFlow('file://' + data.flowJsonPath))
+      return engine.addFlow('file://' + data.flowJsonPath)
         .then(() => {
           return Promise.all([
             // step2: update config.json

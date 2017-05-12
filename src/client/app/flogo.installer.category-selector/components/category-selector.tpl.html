@@ -1,6 +1,0 @@
-<div class="flogo-category-selector-title">{{ 'CATEGORY-SELECTOR:CATEGORY' | translate }}</div>
-<ul class="list-unstyled flogo-category-selector-list">
-  <li class="flogo-category-selector-category" *ngFor="let categoryName of categories; let i = index"
-      [innerHTML]="categoryName" [title]="categoryName"
-      (click)="onCategorySelected(categoryName)"></li>
-</ul>
