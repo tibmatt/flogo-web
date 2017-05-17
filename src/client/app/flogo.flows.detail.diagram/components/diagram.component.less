@@ -2,27 +2,6 @@
 @color-error: @color-danger;
 @color-error--selected: #a23746;
 
-@font-face{
-  font-family: SourceSansPro-Regular;
-  src: url('/assets/fonts/SourceSansPro-Regular.ttf'),
-  url('/assets/fonts/SourceSansPro-Regular.eot');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face{
-  font-family: SourceSansPro-Bold;
-  src: url('/assets/fonts/SourceSansPro-Bold.ttf'),
-  url('/assets/fonts/SourceSansPro-Bold.eot');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face{
-  font-family: SourceSansPro-Semibold;
-  src: url('/assets/fonts/SourceSansPro-Semibold.ttf');
-  font-weight: normal;
-  font-style: normal;
-}
-
 @diagram-node-height: 112px;
 @diagram-placeholder-node-height: 70px;
 @diagram-row-height: 140px;
@@ -79,7 +58,7 @@
 
   white-space: normal;
 
-  font-family: SourceSansPro-Regular;
+  font-family: 'SourceSansPro-Regular';
   font-size: @diagram-node-font-size-large;
   line-height: 1;
   letter-spacing: 1px;
@@ -135,7 +114,7 @@
 
     &.flogo-flows-detail-diagram-node-has-warn {
       .flogo-flows-detail-diagram-node-detail-description {
-        font-family: SourceSansPro-Regular;
+        font-family: 'SourceSansPro-Regular';
         font-size: @diagram-node-font-size-small;
         color: #fff;
       }
@@ -351,7 +330,7 @@
   }
 
   .flogo-flows-detail-diagram-node-detail-title{
-    font-family: SourceSansPro-Bold;
+    font-family: 'SourceSansPro-Bold';
     font-weight: 600;
     padding-bottom: 10px;
     letter-spacing: .4px;
@@ -372,7 +351,7 @@
   }
   &.flogo-flows-detail-diagram-node-has-warn {
     .flogo-flows-detail-diagram-node-detail-description {
-      font-family: SourceSansPro-Semibold;
+      font-family: 'SourceSansPro-Semibold';
       font-size: 11px;
       color: #ff9f00;
     }
