@@ -36,8 +36,7 @@ export class ActionCompiler {
     logger.debug('Will save trigger using config:', triggerJson);
 
     return getInitializedEngine(config.defaultEngine.path)
-      .then(engine => engine.deleteAllInstalledFlows()
-          .then(() => engine.addFlow(`file://${tmpFlowJsonPath}`))
+      .then(engine => engine.addFlow(`file://${tmpFlowJsonPath}`)
           .then(() => Promise.all([
             // step2: update config.json
             engine.updateConfig(config.buildEngine.config, { type: Engine.TYPE_BUILD, overwrite: true }),

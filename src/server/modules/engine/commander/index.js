@@ -48,15 +48,8 @@ module.exports = {
   },
   install,
   delete: {
-    flow(enginePath, flowName) {
-      return _exec(enginePath, ['del', 'flow', flowName]);
-    },
-    trigger(enginePath, triggerNameOrPath) {
-      return _exec(enginePath, ['del', 'trigger', triggerNameOrPath]);
-    },
-    activity(enginePath, activityNameOrPath) {
-      return _exec(enginePath, ['del', 'activity', activityNameOrPath]);
-    },
+    trigger: uninstall,
+    activity: uninstall,
   },
   list(enginePath) {
     return _exec(enginePath, ['list', '-json'])
@@ -80,6 +73,10 @@ function install(enginePath, contribPath, options) {
   }
 
   return _exec(enginePath, commandParams);
+}
+
+function uninstall(enginePath, contribNameOrPath) {
+  return _exec(enginePath, ['uninstall', contribNameOrPath]);
 }
 
 function _exec(enginePath, params) {

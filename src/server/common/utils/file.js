@@ -204,14 +204,3 @@ export function changePermissions(filePath, permissions) {
     });
   });
 }
-
-export function listFiles(dir) {
-  return new Promise(function (resolve, reject) {
-    fs.readdir(dir, (err, files) => {
-      if(err) {
-        return reject(new Error(err));
-      }
-      return resolve(files);
-    })
-  });
-}

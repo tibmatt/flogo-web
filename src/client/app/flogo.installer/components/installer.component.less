@@ -9,7 +9,7 @@
   line-height: 43px;
   font-family: 'Source Sans Pro', 'Helvetica', 'Arial', sans-serif;
 
-  color: #8E9AA8;
+  color: #666666;
 
   margin: 0;
   padding: 0;
@@ -30,4 +30,47 @@
 .flogo-installer-modal-hr {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.flogo-installer__modal-content {
+  text-align: center;
+  color: #666666;
+}
+
+.flogo-installer__modal-content--loading{
+  padding: 40px 0;
+
+  .flogo-spin-loading {
+    transform: scale(0.3);
+    position: initial;
+    height: 60px;
+    margin: 0 auto;
+    margin-left: 45%;
+
+    > div > div {
+      background: #3a94d1;
+    }
+  }
+}
+
+.flogo-installer__information-img {
+  width: 145px;
+  height: 85px;
+  margin: 1.85em auto 0.5em;
+}
+
+.flogo-installer__button-container {
+  margin-top: 1em;
+
+  .flogo-installer__button {
+    margin: 0 5px;
+    min-width: 124px;
+    height: 35px;
+  }
+}
+
+.flogo-installer__modal-content--failed {
+  .flogo-installer__information-text {
+    color: #ee3342;
+  }
 }

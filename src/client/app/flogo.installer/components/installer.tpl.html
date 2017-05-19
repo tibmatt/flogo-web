@@ -1,36 +1,79 @@
-<modal [size]="'lg'" #installerModal (onClose)="onModalCloseOrDismiss($event)"
+<modal [cssClass]="'flogo-installer__modal-dialog'" #installerModal (onClose)="onModalCloseOrDismiss($event)"
        (onDismiss)="onModalCloseOrDismiss($event)">
   <modal-body>
     <i class="flogo-installer-modal-close" (click)="closeModal()"></i>
-    <header class="container-fluid">
-      <div class="row">
-        <div class="col-md-8">
-          <h3 class="flogo-installer-modal-title" [innerHtml]="_title"></h3>
+    <div *ngIf="_status == showBlock.standByMode">
+      <header class="container-fluid">
+        <h3 class="flogo-installer-modal-title">{{'INSTALLER:DOWNLOAD-TITLE' | translate}}</h3>
+      </header>
+
+      <section class="container-fluid">
+        <flogo-installer-url (flogoOnInstall)="onInstallAction($event)"
+                             (flogoOnCancel)="closeModal($event)"
+                             [flogoInstallerStatus]="_status"></flogo-installer-url>
+      </section>
+    </div>
+    <div *ngIf="_status == showBlock.installingMode"
+         class="flogo-spin-loading-bg flogo-installer__modal-content flogo-installer__modal-content--loading">
+      <div class="flogo-spin-loading">
+        <div>
+          <div></div>
         </div>
-        <div class="col-md-4">
-          <flogo-installer-search [(flogoSearchQuery)]="query"></flogo-installer-search>
+        <div>
+          <div></div>
+        </div>
+        <div>
+          <div></div>
+        </div>
+        <div>
+          <div></div>
+        </div>
+        <div>
+          <div></div>
+        </div>
+        <div>
+          <div></div>
+        </div>
+        <div>
+          <div></div>
+        </div>
+        <div>
+          <div></div>
         </div>
       </div>
-      <hr class="flogo-installer-modal-hr"/>
-    </header>
-
-    <section class="container-fluid">
-      <flogo-installer-activity *ngIf="_installType=='activity'" [flogoSearchQuery]="query"
-                                [flogoInstallerStatus]="_status"></flogo-installer-activity>
-      <flogo-installer-trigger *ngIf="_installType=='trigger'" [flogoSearchQuery]="query"
-                               [flogoInstallerStatus]="_status"></flogo-installer-trigger>
-    </section>
-
-    <hr/>
-
-    <section class="container-fluid">
-      <div class="row">
-        <div class="col-md-offset-4 col-md-8">
-          <flogo-installer-url [flogoInstallType]="_installType"
-                               (flogoOnInstall)="onInstallAction($event)"
-                               [flogoInstallerStatus]="_status"></flogo-installer-url>
-        </div>
+      <p>{{'INSTALLER:IN-PROGRESS-INSTALLATION' | translate}}</p>
+    </div>
+    <div *ngIf="_status == showBlock.installSuccessMode"
+         class="flogo-installer__modal-content">
+      <div class="flogo-installer__information-img">
+        <object data="/assets/svg/flogo-installer-success.svg" type="image/svg+xml">
+          <img src="/assets/svg/flogo-installer-success.svg"/>
+        </object>
       </div>
-    </section>
+      <span>
+        {{'INSTALLER:SUCCESS-MESSAGE-INSTALLATION' | translate}}
+      </span>
+      <div class="flogo-installer__button-container">
+        <button class="flogo-installer__button flogo-button--default" (click)="closeModal()">
+          {{'MODAL:OKAY' | translate}}
+        </button>
+      </div>
+    </div>
+    <div *ngIf="_status == showBlock.installFailedMode"
+         class="flogo-installer__modal-content flogo-installer__modal-content--failed">
+      <div class="flogo-installer__information-img">
+        <object data="/assets/svg/flogo-installer-error.svg" type="image/svg+xml">
+          <img src="/assets/svg/flogo-installer-error.svg"/>
+        </object>
+      </div>
+      <span class="flogo-installer__information-text">
+        {{'INSTALLER:ERROR-MESSAGE-INSTALLATION' | translate}}
+      </span>
+      <div class="flogo-installer__button-container">
+        <button class="flogo-installer__button flogo-button--default" (click)="closeModal()">
+          {{'MODAL:OKAY' | translate}}
+        </button>
+      </div>
+    </div>
   </modal-body>
 </modal>

@@ -9,9 +9,6 @@ import {
   FLOGO_INSTALLER_STATUS_INSTALL_FAILED, FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS, FLOGO_INSTALLER_STATUS_INSTALLING
 } from '../constants';
 
-let ACTIVITY_TITLE = '';
-let TRIGGER_TITLE = '';
-
 @Component( {
   selector : 'flogo-installer',
   moduleId : module.id,
@@ -35,9 +32,14 @@ export class FlogoInstallerComponent implements OnChanges {
   _isActivated : boolean;
   isActivatedUpdate = new EventEmitter();
   onInstalled = new EventEmitter();
+  showBlock = {
+    standByMode: FLOGO_INSTALLER_STATUS_STANDBY,
+    installingMode: FLOGO_INSTALLER_STATUS_INSTALLING,
+    installFailedMode: FLOGO_INSTALLER_STATUS_INSTALL_FAILED,
+    installSuccessMode: FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS
+  }
 
   query = '';
-  _title = '';
 
   _status = FLOGO_INSTALLER_STATUS_IDLE;
 
@@ -47,10 +49,7 @@ export class FlogoInstallerComponent implements OnChanges {
 
   constructor(
     private _triggersAPIs : RESTAPITriggersService,
-    private _activitiesAPIs : RESTAPIActivitiesService,
-    private _translate : TranslateService) {
-    ACTIVITY_TITLE = _translate.instant('INSTALLER:DOWNLOAD-TILES');
-    TRIGGER_TITLE = _translate.instant('INSTALLER:DOWNLOAD-TRIGGERS');
+    private _activitiesAPIs : RESTAPIActivitiesService) {
     this.init();
   }
 
@@ -76,18 +75,6 @@ export class FlogoInstallerComponent implements OnChanges {
 
   onInstallTypeChange( newVal ) {
     this._installType = newVal;
-
-    switch ( this._installType ) {
-      case 'activity':
-        this._title = ACTIVITY_TITLE;
-        break;
-      case 'trigger':
-        this._title = TRIGGER_TITLE;
-        break;
-      default:
-        this._title = 'Install';
-        break;
-    }
   }
 
   onActivatedStatusChange( newVal ) {
@@ -146,24 +133,6 @@ export class FlogoInstallerComponent implements OnChanges {
       self._status = FLOGO_INSTALLER_STATUS_INSTALLING;
 
       installAPI( [ url ] )
-        .then( ( response )=> {
-          console.group( `[FlogoInstallerComponent] onResponse` );
-          if ( response.fail.length ) {
-            let parameters = `${_.capitalize( self._installType )}`;
-            let message = this._translate.instant('INSTALLER:ERROR-MESSAGE-INSTALLATION', {value:parameters});
-            notification(message, 'error' );
-            //notification( `${_.capitalize( self._installType )} installation failed.`, 'error' );
-            //console.error( `${_.capitalize( self._installType )} [ ${url} ] installation failed.` );
-          } else {
-            let parameters = `${_.capitalize( self._installType )}`;
-            let message = this._translate.instant('INSTALLER:SUCCESS-MESSAGE-INSTALLATION', {value:parameters});
-            notification( message, 'success', 3000 );
-            //notification( `${_.capitalize( self._installType )} installed.`, 'success', 3000 );
-            //console.log( `${_.capitalize( self._installType )} [ ${url} ] installed.` );
-          }
-          console.groupEnd();
-          return response;
-        } )
         .then( ( response ) => {
           this.onInstalled.emit( response );
           self._status = FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS;
@@ -172,9 +141,6 @@ export class FlogoInstallerComponent implements OnChanges {
         } )
         .catch( ( err ) => {
           console.error( err );
-          let parameters = `${_.capitalize( self._installType )}`;
-          let message = this._translate.instant('INSTALLER:ERROR-MESSAGE-INSTALLATION', {value:parameters});
-          notification(message, 'error' );
           self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
           console.groupEnd();
         } );

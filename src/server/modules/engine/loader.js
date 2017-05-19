@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-import { readJSONFile, listFiles } from '../../common/utils/file';
+import { readJSONFile } from '../../common/utils/file';
 import groupBy from 'lodash/groupBy';
 
 const TASK_SRC_ROOT = 'vendor/src';
@@ -62,10 +62,7 @@ module.exports = {
       _readTasks(enginePath, 'activity', activitiesToRead.map(refToPath)),
     ])
       .then(([triggers, activities]) => ({ triggers, activities }));
-  },
-  readAllFlowNames(enginePath) {
-    return listFiles(path.resolve(enginePath, 'flows'));
-  },
+  }
 };
 
 function readFlogo(enginePath) {
