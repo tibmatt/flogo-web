@@ -15,6 +15,9 @@ export class FlogoAppListComponent implements OnInit {
   @ViewChild('importInput') importInput: ElementRef;
   @Output() onSelectedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 
+  showValidationErrors: boolean;
+  importValidationErrors: any;
+
   public applications: Array<IFlogoApplicationModel> = [];
 
   constructor(public translate: TranslateService,
@@ -62,22 +65,38 @@ export class FlogoAppListComponent implements OnInit {
       message = 'APP-LIST:SUCCESSFULLY-IMPORTED';
       notification(this.translate.instant(message), 'success', 3000);
     } else {
-      message = this.getErrorMessage(errorDetails);
-      notification(this.translate.instant(message), 'error');
+      this.uploadAppErrorHandler(errorDetails);
     }
   }
 
-  getErrorMessage(error) {
+  uploadAppErrorHandler(error) {
     let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
 
     if(error.name === 'SyntaxError'){
       message = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
+      notification(this.translate.instant(message), 'error');
     } else {
       if(error[0].status === 400){
-        message = 'APP-LIST:BROKEN_RULE_VALIDATION_ERROR';
+        if(error[0].meta.details){
+          this.importValidationErrors = error;
+          this.showValidationErrors = true;
+        } else {
+          message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
+          notification(this.translate.instant(message), 'error');
+        }
+      } else if(error.status === 500){
+        message = 'APP-LIST:INTERNAL_ERROR';
+        notification(this.translate.instant(message), 'error');
+      } else {
+        // Last case where we show "Unknown error"
+        notification(this.translate.instant(message), 'error');
       }
     }
-    return message;
+  }
+
+  resetValidationErrors(){
+    this.showValidationErrors = false;
+    this.importValidationErrors = [];
   }
 
   onAdd() {
