@@ -9,10 +9,7 @@ gulp.task('prod.build', 'Build client and server app for production', cb => runS
 
 gulp.task('prod.client.build', 'Build client app for production', cb => runSequence(
   'install.client.dev',
-  //'prod.client.bundle',
   'prod.client.bundle',
-  //'prod.client.less',
-  //'prod.client.index',
   cb
 ));
 
