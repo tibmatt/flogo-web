@@ -7,13 +7,10 @@
   },
   "main": "server.js",
   "scripts": {
-    "start": "concurrently \"pouchdb-server --host 0.0.0.0 -p 5984 -d './docker-shared'\" \"node server.js\"",
-    "start-db": "pouchdb-server -n -p 5984 -d ./docker-shared --host 0.0.0.0",
+    "start": "node server.js",
     "start-server": "node server.js",
-    "start-dev-server": "babel-node server.js",
     "start-debug": "node --debug server.js",
     "start-prod-server": "node server.js",
-    "dump-db": "mkdir db-init && pouchdb-dump http://0.0.0.0:5984/flogo-web > db-init/installed-flows.init",
     "test:api": "mocha"
   },
   "author": "TIBCO Software Inc.",
@@ -21,7 +18,6 @@
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "mocha": "^3.2.0",
-    "pouchdb-dump-cli": "^2.0.4",
     "server-destroy": "^1.0.1"
   },
   "dependencies": {
@@ -44,9 +40,6 @@
     "nedb": "1.8.0",
     "npm": "^3.8.5",
     "performance-now": "^0.2.0",
-    "pouchdb": "^5.3.1",
-    "pouchdb-load": "^1.4.6",
-    "pouchdb-server": "^1.1.1",
     "ps-node": "^0.1.4",
     "semver": "^5.2.0",
     "shortid": "^2.2.8",
@@ -71,7 +64,9 @@
       ],
       "no-underscore-dangle": "off",
       "no-plusplus": "off",
-      "prefer-default-export": "off",
+      "import/prefer-default-export": [
+        "off"
+      ],
       "no-console": "off",
       "no-param-reassign": "off",
       "no-use-before-define": [

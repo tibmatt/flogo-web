@@ -73,7 +73,7 @@ function initServer() {
 
     let port = config.app.port;
 
-    app.use(cors());
+    app.use(cors({ methods: 'GET,HEAD,PATCH,PUT,POST,DELETE' }));
 
     api(app, router);
     router.use(bodyParser({

@@ -1,6 +1,40 @@
 # Third party dependencies change log
 All notable changes to this project will be documented in this file.
 
+## v0.4.0
+
+### Root Development Dependencies
+- Added:
+  - [gulp-plumber@1.1.0](https://github.com/floatdrop/gulp-plumber/tree/v1.1.0) (MIT)
+
+### Client Dependencies
+
+#### Production
+
+[No changes]
+
+#### Development
+
+[No changes]
+
+### Server Dependencies
+
+#### Production
+
+- Removed:
+  - pouchdb
+  - pouchdb-load
+  - pouchdb-server
+
+#### Development
+
+- Removed:
+  - pouchdb-dump-cli
+
+## v0.3.4
+
+[No changes]
+
 ## v0.3.3
 
 ### Root Development Dependencies
