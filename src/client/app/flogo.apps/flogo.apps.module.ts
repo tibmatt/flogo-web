@@ -18,6 +18,8 @@ import { FlogoApplicationSearch } from '../flogo.apps.search/components/search.c
 import { AppDetailService } from './services/apps.service';
 
 import {routing, appRoutingProviders} from './flogo.apps.routing';
+import {FlogoAppImportErrorComponent} from "../flogo.apps.import.error/components/import.error.component";
+import {ImportErrorFormatterService} from "../flogo.apps.import.error/services/message.formatter.service";
 
 @NgModule({
   imports: [
@@ -37,11 +39,13 @@ import {routing, appRoutingProviders} from './flogo.apps.routing';
     FlowGroupComponent,
     FlogoAppListComponent,
     FlogoApplicationSearch,
+    FlogoAppImportErrorComponent
   ],
   bootstrap: [FlogoMainComponent],
   providers: [
     appRoutingProviders,
-    AppDetailService
+    AppDetailService,
+    ImportErrorFormatterService
   ]
 })
 export class FlogoAppsModule {}

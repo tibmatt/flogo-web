@@ -11,6 +11,8 @@ import {AppsApiServiceMock} from "../../../common/services/restapi/v2/apps-api.s
 import {TimeFromNowPipe} from "../../../common/pipes/time-from-now.pipe";
 import {HttpUtilsService} from "../../../common/services/restapi/http-utils.service";
 import {FlogoDeletePopupComponent} from "../../../common/components/delete.popup.component";
+import {FlogoAppImportErrorComponent} from "../../flogo.apps.import.error/components/import.error.component";
+import {ModalComponent} from "ng2-bs3-modal/ng2-bs3-modal";
 
 describe('FlogoAppList component', () => {
   let applications = [
@@ -53,7 +55,7 @@ describe('FlogoAppList component', () => {
         useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
         deps: [Http]
       })],
-      declarations: [FlogoAppListComponent, FlogoDeletePopupComponent, TimeFromNowPipe], // declare the test component
+      declarations: [FlogoAppListComponent, FlogoDeletePopupComponent, TimeFromNowPipe, FlogoAppImportErrorComponent, ModalComponent], // declare the test component
       providers: [
         HttpUtilsService,
         {provide: ErrorService, useClass: ErrorService},
