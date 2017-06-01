@@ -1,12 +1,8 @@
-import path from 'path';
+import { activitiesDBService, triggersDBService } from '../../config/app-config';
 
-import 'babel-polyfill';
-import {config, activitiesDBService, triggersDBService} from '../../config/app-config';
+import { BaseRegistered } from '../base-registered';
 
-import {RegisterActivities} from '../activities/register-activites';
-import {RegisterTriggers} from '../triggers/register-triggers';
-
-import { logger} from '../../common/logging';
+import { logger } from '../../common/logging';
 
 /*
  * Server start logic
@@ -17,57 +13,30 @@ import { logger} from '../../common/logging';
  * 4. configure the server and start listening
  */
 
-export function syncTasks(engine, ignoreViews) {
-  ignoreViews = ignoreViews || false;
+export function syncTasks(engine) {
+  const activitiesRegistrator = new BaseRegistered(activitiesDBService);
+  const registerActivitiesPromise = activitiesRegistrator.clean()
+    .then(() => activitiesRegistrator.syncDb(engine.getActivities()))
+    .then(() => {
+      logger.verbose('registerActivities success');
+      return true;
+    })
+    .catch(err => {
+      logger.error('registerActivities error');
+      return Promise.reject(err);
+    });
 
-  let registerActivitiesPromise = (() => {
-    return new Promise( ( resolve, reject ) => {
-      const reg = new RegisterActivities( activitiesDBService, {
-        defaultPath : path.resolve( config.rootPath, config.activities.defaultPath ),
-        defaultConfig : config.activities.default,
-        customPath : path.resolve( config.rootPath, config.activities.contribPath ),
-        customConfig : config.activities.contrib
-      } );
+  const triggersRegistrator = new BaseRegistered(triggersDBService);
+  const registerTriggersPromise = triggersRegistrator.clean()
+    .then(() => triggersRegistrator.syncDb(engine.getTriggers()))
+    .then(() => {
+      logger.verbose('registerTriggers success');
+      return true;
+    })
+    .catch(err => {
+      logger.error('registerTriggers error');
+      return Promise.reject(err);
+    });
 
-      //return reg.register()
-      return reg.cleanDB(ignoreViews)
-        .then(() => reg.syncDb(engine.getActivities()))
-        .then( ()=> {
-          logger.verbose('registerActivities success');
-          resolve( true );
-        } )
-        .catch( ( err )=> {
-          logger.error('registerActivities error');
-          reject( err );
-        } );
-    } );
-  })();
-
-  let registerTriggersPromise = (()=> {
-    return new Promise( ( resolve, reject ) => {
-      const reg = new RegisterTriggers( triggersDBService, {
-        defaultPath : path.resolve( config.rootPath, config.triggers.defaultPath ),
-        defaultConfig : config.triggers.default,
-        customPath : path.resolve( config.rootPath, config.triggers.contribPath ),
-        customConfig : config.triggers.contrib
-      } );
-
-      //return reg.register()
-      return reg.cleanDB(ignoreViews)
-        .then(() => reg.syncDb(engine.getTriggers()))
-        .then( ()=> {
-          logger.verbose('registerTriggers success');
-          resolve( true );
-        } )
-        .catch( ( err )=> {
-          logger.error('registerTriggers error');
-          reject( err );
-        } );
-    } );
-  })();
-
-  return Promise.all( [ registerActivitiesPromise, registerTriggersPromise ] );
-
-
+  return Promise.all([registerActivitiesPromise, registerTriggersPromise]);
 }
-
