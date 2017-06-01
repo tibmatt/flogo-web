@@ -9,7 +9,7 @@
     "start": "gulp",
     "gulp": "gulp",
     "clean": "rm -rfv `find . -path \"*/node_modules\" -print`",
-    "test:client": "npm --prefix=\"dist/public\" run test",
+    "test:client": "npm --prefix=\"src/client\" run test",
     "test:server": "npm --prefix=\"dist/server\" run test:api -- ./tests",
     "webdriver-manager": "webdriver-manager update && webdriver-manager start",
     "webdriver-manager-update": "webdriver-manager update",

@@ -29,8 +29,8 @@ All notable changes to this project will be documented in this file.
 - Added
   - [@angular/compiler@2.4.0](https://github.com/angular/angular) (MIT)
   - [@angular/cli@1.0.0](https://github.com/angular/angular-cli) (MIT)
-  - [bootstrap-less@3.3.8]() ()
   - [codelyzer@2.0.0](https://github.com/mgechev/codelyzer) (MIT)
+  - [font-awesome@4.7.0](https://github.com/FortAwesome/Font-Awesome) (OFL-1.1 and MIT)
   - [jasmine-spec-reporter@3.2.0](https://github.com/bcaudan/jasmine-spec-reporter) (Apache-2.0)
   - [karma-coverage-istanbul-reporter@0.2.0](https://github.com/mattlewis92/karma-coverage-istanbul-reporter) (MIT)
   - [protractor@5.1.0](https://github.com/angular/protractor) (MIT)

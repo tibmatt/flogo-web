@@ -826,7 +826,7 @@
   font-weight: 600;
 }
 .tc-header .tc-header-logo {
-  background: url('../img/tibco-header-logo.png') no-repeat;
+  /*background: url('../img/tibco-header-logo.png') no-repeat;*/
   width: 268px;
   height: 23px;
   display: block;
