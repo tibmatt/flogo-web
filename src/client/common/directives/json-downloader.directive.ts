@@ -35,7 +35,7 @@ export class JsonDownloader {
           }
 
           outputs.forEach((output)=> {
-              let jsonString = JSON.stringify(output.data);
+              let jsonString = JSON.stringify(output.data, null, 2);
               let dataString = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
 
               this._link.setAttribute('href', dataString);
