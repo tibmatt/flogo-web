@@ -3,9 +3,9 @@ import {PostService} from '../../../common/services/post.service';
 
 @Component({
   selector: 'flogo-canvas',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'flow-detail.tpl.html',
-  styleUrls: ['flow-detail.component.css']
+  styleUrls: ['flow-detail.component.less']
 })
 
 

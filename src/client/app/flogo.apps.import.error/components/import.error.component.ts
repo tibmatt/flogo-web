@@ -7,7 +7,7 @@ import {ImportErrorFormatterService} from "../services/message.formatter.service
   selector : 'flogo-import-error',
   moduleId : module.id,
   templateUrl : 'import.error.tpl.html',
-  styleUrls : [ 'import.error.component.css' ]
+  styleUrls : [ 'import.error.component.less' ]
 } )
 export class FlogoAppImportErrorComponent implements OnChanges{
 

@@ -4,10 +4,10 @@ import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
     selector: 'flogo-transform-json-panel',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'transform-json-panel.tpl.html',
     outputs: ['toggledControl:toggled'],
-    styleUrls: ['transform-json-panel.component.css']
+    styleUrls: ['transform-json-panel.component.less']
 })
 export class TransformJsonPanelComponent implements OnChanges {
     @Input() schema: any = {};

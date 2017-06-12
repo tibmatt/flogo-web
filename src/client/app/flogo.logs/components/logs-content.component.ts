@@ -6,9 +6,9 @@ import 'rxjs/add/operator/map';
 @Component(
   {
     selector: 'flogo-logs-content',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'logs-content.tpl.html',
-    styleUrls: ['logs-content.component.css']
+    styleUrls: ['logs-content.component.less']
   }
 )
 export class FlogoLogsContent {

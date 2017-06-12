@@ -6,9 +6,9 @@ import { notification } from '../../../common/utils';
 
 @Component({
     selector: 'flogo-flows-flow-name',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'flow-name.tpl.html',
-    styleUrls: ['flow-name.component.css']
+    styleUrls: ['flow-name.component.less']
 })
 export class FlogoFlowsFlowNameComponent implements OnChanges {
     @Input()

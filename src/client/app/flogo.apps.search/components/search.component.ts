@@ -3,9 +3,9 @@ import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-apps-search',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'search.tpl.html',
-  styleUrls: ['search.component.css']
+  styleUrls: ['search.component.less']
 })
 export class FlogoApplicationSearch implements DoCheck {
   public placeholder: string = '';

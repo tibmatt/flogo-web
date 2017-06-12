@@ -4,7 +4,7 @@ import {  TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
     selector: 'flogo-form-builder-branch-configuration',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'form-builder.configuration.branch.tpl.html',
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes']
 })

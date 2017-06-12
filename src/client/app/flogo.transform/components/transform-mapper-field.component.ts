@@ -6,8 +6,8 @@ import { mappingsValidateField } from '../validators/validators';
         '(document: click)': 'onClick($event)'
     },
     selector: 'flogo-transform-mapper-field',
-    moduleId: module.id,
-    styleUrls: ['transform-mapper-field.component.css'],
+    // moduleId: module.id,
+    styleUrls: ['transform-mapper-field.component.less'],
     templateUrl: 'transform-mapper-field.tpl.html'
 })
 export class TransformMapperField implements  OnChanges, OnInit {

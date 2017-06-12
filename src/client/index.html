@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>document.write('<base href="' + document.location + '" />');</script>
+  <!--<script>document.write('<base href="' + document.location + '" />');</script>-->
+  <base href="/">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Flogo</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/assets/ui-pattern/css/tibco-cloud-ui-pattern.css">
-  <link rel="stylesheet" href="/assets/main.css">
 </head>
 <body>
 
@@ -42,27 +39,6 @@
     </div>
   </div>
 </flogo-app>
-
-<script>
-  // Fixes undefined module function in SystemJS bundle
-  function module() {
-  }
-</script>
-
-
-<!-- inject:js -->
-<!-- endinject -->
-<!-- Fors systemJs config look into systemjs.config.js -->
-
-
-<script>
-  if(typeof DEV != 'undefined' && DEV) {
-    System.import('main')
-      .catch(function (e) {
-        console.error(e);
-      });
-  }
-</script>
 
 </body>
 </html>

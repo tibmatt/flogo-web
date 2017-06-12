@@ -16,6 +16,7 @@ import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2} from '../..
 import { InstallerModule } from '../../flogo.installer/flogo.installer.module';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../flogo.select-trigger/messages'
+import {HttpUtilsService} from "../../../common/services/restapi/http-utils.service";
 
 let postServiceStub = {
 
@@ -63,7 +64,8 @@ describe('FlogoSelectTrigger component', () => {
         RESTAPIActivitiesService,
         {provide:PostService, useValue: postServiceStub },
         {provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock},
-        {provide: RESTAPITriggersServiceV2, useClass: RESTAPITriggersServiceMockV2}
+        {provide: RESTAPITriggersServiceV2, useClass: RESTAPITriggersServiceMockV2},
+        HttpUtilsService
       ]
     });
   });

@@ -5,9 +5,9 @@ import {SUB_EVENTS, PUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-flows-detail-error-panel',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'error-panel.tpl.html',
-  styleUrls: ['error-panel.component.css']
+  styleUrls: ['error-panel.component.less']
 })
 
 
@@ -46,11 +46,11 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
       if(this.isOpen) {
         this.postService.publish( _.assign( {}, PUB_EVENTS.openPanel, { data : {} } ) );
         this.imgErrorHandler = "/assets/svg/error-icon-close.svg"
-        
+
       } else {
         this.postService.publish( _.assign( {}, PUB_EVENTS.closePanel, { data : {} } ) );
         this.imgErrorHandler = "/assets/svg/error-icon-info.svg";
-        
+
       }
 
     }, 100);

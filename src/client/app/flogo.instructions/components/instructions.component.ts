@@ -3,11 +3,11 @@ import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component( {
     selector : 'flogo-instructions',
-    moduleId : module.id,
+    // moduleId : module.id,
     templateUrl : 'instructions.tpl.html',
     inputs : ['isActivated'],
     outputs : ['onClosedModal: flogoOnClosedModal'],
-    styleUrls : [ 'instructions.component.css' ]
+    styleUrls : [ 'instructions.component.less' ]
 } )
 export class FlogoInstructionsComponent implements OnChanges {
 

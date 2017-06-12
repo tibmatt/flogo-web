@@ -2,19 +2,20 @@ import { Injectable } from '@angular/core';
 import { activitySchemaToTask } from '../../utils';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import { HttpUtilsService } from './http-utils.service';
 
 @Injectable()
 export class RESTAPIActivitiesService {
-  constructor( private _http : Http ) {
+  constructor( private _http : Http,private httpUtils: HttpUtilsService ) {
   }
 
   getActivityDetails(activityRefUrl: string) {
-    return this._http.get('/v1/api/activities?filter[ref]=' + activityRefUrl).toPromise()
+    return this._http.get(this.apiPrefix('activities?filter[ref]=' + activityRefUrl)).toPromise()
       .then(response => response.json().data[0]);
   }
 
   getActivities() {
-    return this._http.get('/v1/api/activities').toPromise()
+    return this._http.get(this.apiPrefix('activities')).toPromise()
       .then(response=> {
         if (response.text()) {
           let data = response.json().data || [];
@@ -43,7 +44,7 @@ export class RESTAPIActivitiesService {
 
     let options = new RequestOptions( { headers : headers } );
 
-    return this._http.post( `/v1/api/activities`, body, options )
+    return this._http.post(this.apiPrefix('activities'), body, options )
       .toPromise()
       .then( rsp => {
         if ( rsp.text() ) {
@@ -52,5 +53,9 @@ export class RESTAPIActivitiesService {
           return rsp;
         }
       } );
+  }
+
+  private apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path, 'v1');
   }
 }

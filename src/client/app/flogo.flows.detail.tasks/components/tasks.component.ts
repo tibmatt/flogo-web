@@ -9,9 +9,9 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
 @Component(
   {
     selector : 'flogo-flows-detail-tasks',
-    moduleId : module.id,
+    // moduleId : module.id,
     templateUrl : 'tasks.tpl.html',
-    styleUrls : [ 'tasks.component.css' ]
+    styleUrls : [ 'tasks.component.less' ]
   }
 )
 export class FlogoFlowsDetailTasks {

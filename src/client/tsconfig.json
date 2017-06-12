@@ -1,39 +1,32 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "baseUrl": "",
     "declaration": false,
-    "removeComments": true,
-    "noLib": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
-    "pretty": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "noImplicitUseStrict": false,
-    "noFallthroughCasesInSwitch": true,
+    "lib": [
+      "es2016",
+      "dom"
+    ],
+    "mapRoot": "./",
+    "module": "es2015",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "typeRoots" : [
-      "./node_modules/@types"
-    ]
+    "outDir": "../dist/out-tsc",
+    "sourceMap": true,
+    "target": "es5"
   },
+  "files": [
+    "main.module.ts"
+  ],
   "include": [
-    "main.ts",
-    "main.module.ts",
-    "app/**/*.ts",
-    "common/**/*.ts",
     "shims.d.ts",
-    "node_modules/@types"
+    "node_modules/@types",
+    "app/**/*",
+    "common/**/*"
   ],
   "exclude": [
-    ".tmp",
-    "main.aot.ts",
-    "node_modules"
-  ],
-  "compileOnSave": false
+    "node_modules",
+    "test.ts",
+    "./**/*.spec.ts"
+  ]
 }

@@ -2,9 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'flogo-transform-visual-mapper',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'visual-mapper.tpl.html',
-    styleUrls: ['visual-mapper.component.css']
+    styleUrls: ['visual-mapper.component.less']
 })
 
 export class VisualMapperComponent {
@@ -34,7 +34,7 @@ export class VisualMapperComponent {
         return tiles;
     }
 
-    focusInputText() {
+    focusInputText(event) {
         this.showList = true;
     }
 
@@ -54,7 +54,7 @@ export class VisualMapperComponent {
         this.input = changes.tileInputInfo.currentValue;
     }
 
-    clickRemove() {
+    clickRemove(event) {
         this.selectedValue = '';
         this.showList = false;
     }

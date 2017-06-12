@@ -7,8 +7,8 @@ const EMPTY_OPTION = '<empty>';
 
 @Component({
   selector: 'flogo-form-builder-fields-listbox',
-  styleUrls: ['fields.listbox.css','../fields.base/fields.base.css'],
-  moduleId: module.id,
+  styleUrls: ['fields.listbox.less','../fields.base/fields.base.less'],
+  // moduleId: module.id,
   templateUrl: 'fields.listbox.tpl.html',
   inputs:['_info:info','_fieldObserver:fieldObserver']
 })

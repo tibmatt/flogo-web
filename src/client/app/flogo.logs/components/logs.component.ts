@@ -6,9 +6,9 @@ import {ChildWindowService, ChildWindow} from '../../../common/services/child-wi
 @Component(
   {
     selector: 'flogo-logs',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'logs.tpl.html',
-    styleUrls: ['logs.component.css']
+    styleUrls: ['logs.component.less']
   }
 )
 export class FlogoLogs {

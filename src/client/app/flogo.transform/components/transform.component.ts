@@ -21,8 +21,8 @@ interface TransformData {
 
 @Component({
   selector: 'flogo-transform',
-  styleUrls: ['transform.component.css'],
-  moduleId: module.id,
+  styleUrls: ['transform.component.less'],
+  // moduleId: module.id,
   templateUrl: 'transform.tpl.html'
 })
 export class TransformComponent implements OnDestroy {

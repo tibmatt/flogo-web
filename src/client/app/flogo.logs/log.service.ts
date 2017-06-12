@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-//import { connect as ioConnect } from 'socket.io-client';
-
+import { environment } from '../../environments/environment';
+import * as io from 'socket.io-client';
 @Injectable()
 export class LogService {
     // TODO define config interface
@@ -8,7 +8,7 @@ export class LogService {
 
     constructor() {
         this.lines = [];
-        let socket = io();
+        let socket = io(environment.hostname);
         socket.on('on-connecting', this.onData.bind(this));
         socket.on('on-log', this.onData.bind(this));
     }

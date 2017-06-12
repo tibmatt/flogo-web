@@ -4,8 +4,8 @@ import { FormActionsModels, FormDescriptionsModels } from './../../flogo.form/mo
 
 @Component({
   selector: 'flogo-form-trigger',
-  moduleId: module.id,
-  styleUrls: ['form.trigger.css'],
+  // moduleId: module.id,
+  styleUrls: ['form.trigger.less'],
   templateUrl: 'form.trigger.tpl.html'
 })
 export class FlogoFormTrigger {

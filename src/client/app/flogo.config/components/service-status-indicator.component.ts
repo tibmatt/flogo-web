@@ -25,7 +25,7 @@ interface IUrlConfig {
 
 @Component({
   selector: 'flogo-config-service-status-indicator',
-  moduleId: module.id,
+  // moduleId: module.id,
   template: `<i [title]="info" class="fa" [style.color]="color"
                 [ngClass]="{'fa-circle': status == 'online' || status == 'offline' || status == 'online-warning', 'fa-circle-o': !status}"></i>`
 })

@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'flogo-navbar',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'navbar.tpl.html',
-  styleUrls: ['navbar.component.css']
+  styleUrls: ['navbar.component.less']
 })
 
 export class FlogoNavbarComponent implements OnInit {

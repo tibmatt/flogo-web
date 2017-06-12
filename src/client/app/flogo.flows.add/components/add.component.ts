@@ -11,9 +11,9 @@ import { UniqueNameValidator } from '../validators/unique-name.validator';
 
 @Component({
     selector: 'flogo-flows-add',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'add.tpl.html',
-    styleUrls: ['add.component.css']
+    styleUrls: ['add.component.less']
 })
 export class FlogoFlowsAddComponent implements OnChanges {
   @ViewChild('modal')

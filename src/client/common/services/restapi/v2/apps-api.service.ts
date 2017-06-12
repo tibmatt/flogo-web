@@ -13,10 +13,12 @@ const UNTITLED_APP = 'Untitled App';
 export class AppsApiService {
 
   constructor(private http: Http, private httpUtils: HttpUtilsService, private errorService: ErrorService ) {
+
+
   }
 
   recentFlows() {
-    return this.http.get(this.apiPrefix('actions/recent')).toPromise()
+    return this.http.get(this.apiPrefix('actions/recent'), this.httpUtils.defaultOptions()).toPromise()
       .then(response => response.json().data);
   }
 

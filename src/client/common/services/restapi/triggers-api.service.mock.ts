@@ -2,11 +2,11 @@ import {Injectable} from '@angular/core';
 import { activitySchemaToTrigger } from '../../utils';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-
+import { HttpUtilsService } from './http-utils.service';
 @Injectable()
 export class  RESTAPITriggersServiceMock {
   private triggers = {};
-  constructor( private _http : Http ) {
+  constructor( private _http : Http, httpUtils: HttpUtilsService  ) {
     this.triggers = [
         {
           "id": "tibco-coap",

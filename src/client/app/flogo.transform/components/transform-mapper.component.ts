@@ -3,9 +3,9 @@ import { TileInOutInfo } from '../models/tile-in-out-info.model';
 
 @Component({
     selector: 'flogo-transform-mapper',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'transform-mapper.tpl.html',
-    styleUrls: ['transform-mapper.component.css']
+    styleUrls: ['transform-mapper.component.less']
 })
 export class TransformMapperComponent implements OnChanges {
     @Output() mappingChange:EventEmitter<any>;

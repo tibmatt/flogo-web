@@ -12,9 +12,9 @@ import { PUB_EVENTS } from '../messages';
 
 @Component({
   selector: 'flogo-select-trigger',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'select-trigger.tpl.html',
-  styleUrls: ['select-trigger.css']
+  styleUrls: ['select-trigger.less']
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   @Input() appId: string;

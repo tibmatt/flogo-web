@@ -2,19 +2,20 @@ import {Injectable} from '@angular/core';
 import { activitySchemaToTrigger } from '../../utils';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import { HttpUtilsService } from './http-utils.service';
 
 @Injectable()
 export class  RESTAPITriggersService {
-  constructor( private _http : Http ) {
+  constructor( private _http : Http,private httpUtils: HttpUtilsService) {
   }
 
   getTriggerDetails(triggerWhereUrl: string) {
-    return this._http.get('/v1/api/triggers?filter[ref]=' + triggerWhereUrl).toPromise()
+    return this._http.get(this.apiPrefix('triggers?filter[ref]=' + triggerWhereUrl)).toPromise()
       .then(response => response.json().data[0]);
   }
 
   getTriggers() {
-    return this._http.get('/v1/api/triggers').toPromise()
+    return this._http.get(this.apiPrefix('triggers')).toPromise()
       .then(response=> {
         if (response.text()) {
           let data = response.json().data || [];
@@ -44,7 +45,7 @@ export class  RESTAPITriggersService {
 
     let options = new RequestOptions( { headers : headers } );
 
-    return this._http.post( `/v1/api/triggers`, body, options )
+    return this._http.post(this.apiPrefix('triggers'), body, options )
       .toPromise()
       .then( rsp => {
         if ( rsp.text() ) {
@@ -53,6 +54,10 @@ export class  RESTAPITriggersService {
           return rsp;
         }
       } );
+  }
+
+  private apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path, 'v1');
   }
 
 }

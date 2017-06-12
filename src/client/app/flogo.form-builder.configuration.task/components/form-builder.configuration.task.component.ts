@@ -6,7 +6,7 @@ import {convertTaskID, parseMapping} from "../../../common/utils";
 
 @Component({
     selector: 'flogo-form-builder-task-configuration',
-    moduleId: module.id,
+    // moduleId: module.id,
     templateUrl: 'form-builder.configuration.task.tpl.html',
     inputs: ['_fieldObserver:fieldObserver','_attributes:attributes', '_task:task']
 })

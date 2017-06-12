@@ -13,9 +13,9 @@ import {Subscription} from "rxjs/Subscription";
 
 @Component({
   selector: 'flogo-app-container',
-  moduleId: module.id,
+  // moduleId: module.id,
   templateUrl: 'container.tpl.html',
-  styleUrls: ['container.component.css']
+  styleUrls: ['container.component.less']
 })
 export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   public appDetail: ApplicationDetail = null;

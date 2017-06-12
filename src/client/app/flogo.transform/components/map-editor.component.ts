@@ -5,8 +5,8 @@ import { jsonValidator, mappingsValidatorFactory } from '../validators/validator
 
 @Component({
   selector: 'flogo-transform-map-editor',
-  moduleId: module.id,
-  styleUrls: ['map-editor.component.css'],
+  // moduleId: module.id,
+  styleUrls: ['map-editor.component.less'],
   templateUrl: 'map-editor.tpl.html'
 })
 export class MapEditorComponent implements OnChanges, OnInit {

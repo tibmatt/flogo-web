@@ -4,8 +4,8 @@ import {TranslateService} from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-form-builder-fields-number',
-  styleUrls: ['fields.number.css','../fields.base/fields.base.css'],
-  moduleId: module.id,
+  styleUrls: ['fields.number.less','../fields.base/fields.base.less'],
+  // moduleId: module.id,
   templateUrl: 'fields.number.tpl.html',
   inputs:['_info:info','_fieldObserver:fieldObserver']
 })
