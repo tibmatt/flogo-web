@@ -97,30 +97,6 @@ class Engine {
   }
 
   /**
-   *
-   * @param config
-   * @param options
-   * @param options.type build or test
-   * @returns {*}
-   */
-  updateConfig(config, options = {}) {
-    //this.isProcessing = true;
-    //this.status = FLOGO_ENGINE_STATUS.UPDATING_CONFIG_JSON;
-
-    options = Object.assign({}, {type: TYPE_TEST}, options);
-    // using bin instead of DIR_BUILD_BIN since there seems to be no options to specify different trigger config location for build
-    options.target = options.type == TYPE_BUILD ? 'bin' : DIR_TEST_BIN;
-    delete options.type;
-
-    return ensureDir(path.join(this.path, options.target))
-      .then(() => configUpdater.update.config(this.path, config, options))
-      .catch(err => {
-        return Promise.reject(err);
-      });
-
-  }
-
-  /**
    * update the triggers.json file in the engine/bin folder.
    * @param {object} config - the json object for triggers.json. Default it will merge with triggers.json then write to triggers.json.
    * @param {Array} config.triggers - the configuration of triggers

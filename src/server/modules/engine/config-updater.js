@@ -12,30 +12,6 @@ const defaultOptions = {
 
 module.exports = {
   update: {
-    config(enginePath, configData, options = {}) {
-      options = Object.assign({}, defaultOptions, options);
-
-      let binPath = path.join(enginePath, options.target);
-      let configJSONPath = path.join(binPath, 'config.json');
-
-      let promise = Promise.resolve(configData);
-      if (!options.overwrite) {
-        promise = readJSONFile(configJSONPath)
-          .then(currentConfig => {
-            return merge({}, currentConfig, configData);
-          });
-      }
-
-      return promise.then(configData => {
-        return writeJSONFile(configJSONPath, configData)
-          .then(() => console.log("[success][engine->updateConfigJSON]"))
-          .then(Promise.resolve(configData));
-      })
-        .catch(err => {
-          console.error("[error][engine->updateConfigJSON] error: ", err);
-          return Promise.reject(err);
-        })
-    },
     triggersConfig(enginePath, triggersData, options = {}) {
       options = Object.assign({}, defaultOptions, options);
 
