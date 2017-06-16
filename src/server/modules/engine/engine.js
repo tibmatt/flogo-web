@@ -7,7 +7,6 @@ import {removeDir} from './file-utils';
 
 const loader = require('./loader');
 const commander = require('./commander');
-const configUpdater = require('./config-updater');
 const exec = require('./exec-controller');
 
 const DIR_TEST_BIN = 'bin-test';
@@ -94,30 +93,6 @@ class Engine {
 
   hasTrigger(nameOrPath) {
     return this._hasItem(this.getTriggers(), nameOrPath);
-  }
-
-  /**
-   * update the triggers.json file in the engine/bin folder.
-   * @param {object} config - the json object for triggers.json. Default it will merge with triggers.json then write to triggers.json.
-   * @param {Array} config.triggers - the configuration of triggers
-   * @param {object} options
-   * @param {boolean} options.overwrite default false - whether use options to overwrite whole triggers.json. This means options == triggers.json
-   */
-  updateTriggersConfig(config, options = {}) {
-    //this.isProcessing = true;
-    //this.status = FLOGO_ENGINE_STATUS.UPDATING_TRIGGER_JSON;
-
-    options = Object.assign({}, {type: TYPE_TEST}, options);
-    // using bin instead of DIR_BUILD_BIN since there seems to be no options to specify different trigger config location for build
-    options.target = options.type == TYPE_BUILD ? 'bin' : DIR_TEST_BIN;
-    delete options.type;
-
-    return ensureDir(path.join(this.path, options.target))
-      .then(() => configUpdater.update.triggersConfig(this.path, config, options))
-      .catch(err => {
-        return Promise.reject(err);
-      });
-
   }
 
   /**

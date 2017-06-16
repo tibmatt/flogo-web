@@ -104,9 +104,6 @@ function generateBuild(id, compileOptions) {
     .then(data => {
       let engine = data.engine;
       return engine.addFlow('file://' + data.flowJsonPath)
-        .then(() => {
-          return engine.updateTriggersConfig(data.triggersConfig, {type: Engine.TYPE_BUILD, overwrite: true});
-        })
         .then(() => engine.build({
           optimize: true,
           embedConfig: true,

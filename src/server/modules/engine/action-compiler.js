@@ -37,7 +37,6 @@ export class ActionCompiler {
 
     return getInitializedEngine(config.defaultEngine.path)
       .then(engine => engine.addFlow(`file://${tmpFlowJsonPath}`)
-          .then(() => engine.updateTriggersConfig(triggerJson, {type: Engine.TYPE_BUILD, overwrite: true}))
           .then(() => engine.build({
             optimize: true,
             embedConfig: true,
