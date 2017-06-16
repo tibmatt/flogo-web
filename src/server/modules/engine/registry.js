@@ -80,11 +80,5 @@ export function initEngine(engine, options) {
         triggers: mapContribs(installedContribs.triggers),
         activities: mapContribs(installedContribs.activities),
       });
-    })
-    .then(() => Promise.all([
-      // update config.json, use overwrite mode
-      engine.updateConfig(config.testEngine.config, { overwrite: true }),
-      // update triggers.json
-      // engine.updateTriggersConfig({ triggers: config.testEngine.triggers }, { overwrite: true }),
-    ]));
+    });
 }
