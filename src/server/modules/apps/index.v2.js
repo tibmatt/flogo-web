@@ -1,4 +1,5 @@
 import pick from 'lodash/pick';
+import get from 'lodash/get';
 import defaults from 'lodash/defaults';
 import fromPairs from 'lodash/fromPairs';
 import isEqual from 'lodash/isEqual';
@@ -261,6 +262,14 @@ export class AppsManager {
         // convert orphan actions ids
         actionMap.forEach(a => {
           a.id = normalizeName(a.name);
+        });
+
+        app.actions.forEach(action => {
+          const tasks = get(action, 'data.flow.rootTask.tasks', []);
+          const hasExplicitReply = tasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
+          if (hasExplicitReply) {
+            action.data.flow.explicitReply = true;
+          }
         });
 
         if(!app.version) {
