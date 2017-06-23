@@ -1,7 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep';
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
-import get from 'lodash/get';
 
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
@@ -17,7 +14,7 @@ import { TriggerManager as ContribTriggersManager } from '../triggers';
 export function importApp(fromApp) {
   const clonedApp = cloneDeep(fromApp);
   // TODO: apply unique names to tasks
-  return getInstalledActivitiesAndTriggers(fromApp)
+  return getInstalledActivitiesAndTriggers()
     .then(installedContribs => {
       const errors = Validator.validateFullApp(clonedApp, installedContribs,
         { removeAdditional: true, useDefaults: true });
@@ -72,14 +69,16 @@ function chainPromises(from, thenDo) {
   return from.reduce((promiseChain, e) => promiseChain.then(() => thenDo(e)), Promise.resolve(true));
 }
 
-function getInstalledActivitiesAndTriggers(app) {
-  const allRefs = extractRefs(app);
+function getInstalledActivitiesAndTriggers() {
   const mapRefs = contribs => contribs.map(c => c.ref);
   return Promise.all([
-    ContribTriggersManager.find(allRefs.triggers).then(mapRefs),
-    ContribActivitiesManager.find(mapRefs).then(mapRefs),
+    ContribTriggersManager.find().then(mapRefs),
+    ContribActivitiesManager.find().then(mapRefs),
   ]).then(([triggers, activities]) => ({ triggers, activities }));
 }
+/*
+
+It is not used for the time being as our activities contribution fetching api's do not have activityRef
 
 export function extractRefs(app) {
   const allRefs = { triggers: [], activities: [] };
@@ -106,4 +105,4 @@ export function extractRefs(app) {
   });
   allRefs.activities = Array.from(activityRefMap.keys());
   return allRefs;
-}
+}*/

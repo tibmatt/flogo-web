@@ -203,7 +203,7 @@ function fullAppSchema() {
             },
             ref: {
               type: 'string',
-              'x-trigger-installed': true,
+              'trigger-installed': true,
             },
             name: {
               type: 'string',
