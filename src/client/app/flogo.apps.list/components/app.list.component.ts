@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { IFlogoApplicationModel } from '../../../common/application.model';
@@ -17,6 +17,7 @@ export class FlogoAppListComponent implements OnInit {
 
   showValidationErrors: boolean;
   importValidationErrors: any;
+  showProfileSeclectionDialog: boolean = false;
 
   public applications: Array<IFlogoApplicationModel> = [];
 
@@ -99,11 +100,19 @@ export class FlogoAppListComponent implements OnInit {
     this.importValidationErrors = [];
   }
 
-  onAdd() {
-    this.apiApplications.createNewApp()
-      .then((application: IFlogoApplicationModel) => {
-        this.appSelected(application);
-      });
+  openProfileSelect(){
+    this.showProfileSeclectionDialog = true;
+  }
+
+  closeModal(){
+    this.showProfileSeclectionDialog = false;
+  }
+
+  onAdd(profileType) {
+   this.apiApplications.createNewApp(profileType).then((application: IFlogoApplicationModel) => {
+      this.closeModal();
+      this.appSelected(application);
+    });
   }
 
   listAllApps() {

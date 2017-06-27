@@ -51,7 +51,11 @@ export class AppsManager {
 
   static create(app) {
     let inputData = app;
-    const errors = Validator.validateSimpleApp(inputData);
+    let isDevice = false;
+    if(inputData.deviceType) {
+      isDevice = true;
+    }
+    const errors = Validator.validateSimpleApp(inputData, isDevice);
     if (errors) {
       return Promise.reject(ErrorManager.createValidationError('Validation error', errors));
     }
@@ -321,7 +325,11 @@ function build(app) {
 
 function cleanForOutput(app) {
   const cleanedApp = Object.assign({ id: app._id }, app);
-  return pick(cleanedApp, PUBLISH_FIELDS);
+  let appDataToSend = pick(cleanedApp, PUBLISH_FIELDS);
+  if(app.deviceType) {
+    appDataToSend.deviceType = app.deviceType;
+  }
+  return appDataToSend;
 }
 
 function nowISO() {
