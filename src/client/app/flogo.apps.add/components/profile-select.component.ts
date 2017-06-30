@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, OnInit, Output, ViewChild} from "@angular/core";
 import {ModalComponent} from "ng2-bs3-modal/ng2-bs3-modal";
 import {EventEmitter} from "@angular/common/src/facade/async";
 import {ProfilesAPIService} from "../../../common/services/restapi/v2/profiles-api.service";
@@ -11,19 +11,18 @@ interface DeviceProfile {
 @Component({
   selector: 'flogo-apps-profile-selection',
   templateUrl: 'profile-selection.tpl.html',
-  outputs: ['onClose', 'onAdd'],
   styleUrls: ['profile-selection.less']
 })
 export class ProfileSelectionComponent implements OnInit{
   @ViewChild('profileSelectionModal') profileSelectionModal: ModalComponent;
 
-  onClose: EventEmitter<any> = new EventEmitter();
-  onAdd: EventEmitter<string> = new EventEmitter();
+  @Output() onClose: EventEmitter<any> = new EventEmitter();
+  @Output() onAdd: EventEmitter<string> = new EventEmitter();
 
   showList: boolean = false;
   devicesList: DeviceProfile[];
 
-  constructor(private _profilesService: ProfilesAPIService) {}
+  constructor(private profilesService: ProfilesAPIService) {}
 
   ngOnInit() {
     this.openModal();
@@ -43,7 +42,7 @@ export class ProfileSelectionComponent implements OnInit{
   }
 
   showDevicesList() {
-    this._profilesService.getProfilesList().then((response) => {
+    this.profilesService.getProfilesList().then((response) => {
       this.showList = true;
       this.devicesList = response;
     });
