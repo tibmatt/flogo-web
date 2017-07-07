@@ -58,4 +58,8 @@ export class FlogoModal {
             });
         });
     }
+
+  isDeviceProfile(deviceType) {
+    return !!deviceType;
+  }
 }
