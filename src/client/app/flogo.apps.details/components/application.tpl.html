@@ -1,97 +1,74 @@
-<div class="flogo-application__main" [ngClass]="{'flogo-application__main--microservice': !isDevice,
-                 'flogo-application__main--device': isDevice}">
-  <div class="flogo-app-header-wrapper">
+<div class="flogo-app-header-wrapper">
 
-    <div class="container flogo-app-header">
-      <div class="row">
-        <div class="col-md-6 col-md-offset-1">
-          <div>
+  <div class="container">
+    <div class="flogo-app-header row">
 
-          </div>
-          <div class="flogo-app-header__name-container" [ngClass]="{'flogo-input-error': state?.name.hasErrors}">
-            <a routerLink="/apps" class="flogo-app-header__go-back"><i class="flogo-icon flogo-icon-back"></i></a>
-            <div class="flogo-input-error-msg" *ngIf="state?.name.hasErrors && state?.name.errors['notUnique']">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
-            <input *ngIf="isNameInEditMode" type="text" #appInputName
-                   fgAutofocus
-                   [(ngModel)]="editableName"
-                   fgEditableInput
-                   (editableInputSave)="onNameSave()"
-                   (editableInputCancel)="onNameCancel()"
-                   id="appName" class="flogo-app-header__name--edit"/>
+      <div *ngIf="application?.type === 'flogo:app'" class="flogo-app-header__edge-icon flogo-app-header__edge-icon--profile">
+        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 653.40485 603.0666"><defs><style>.cls-1{fill:none;}.cls-2{isolation:isolate;}.cls-3{clip-path:url(#clip-path);}.cls-4{clip-path:url(#clip-path-2);}</style><clipPath id="clip-path"><rect class="cls-1" x="5.90633" y="7.87608" width="583.6575" height="583.6575"/></clipPath><clipPath id="clip-path-2"><rect class="cls-1" x="5.91087" y="7.87798" width="580.4103" height="581.15495"/></clipPath></defs><title>profiles</title><rect class="cls-1" x="29.83126" y="29.77713" width="535.81649" height="535.81689"/><path d="M214.73668,229.64274a6.57932,6.57932,0,0,1-8.3269,5.31165,8.56328,8.56328,0,0,1-6.08295-9.02777A144.63089,144.63089,0,0,1,334.24669,108.49791a8.09615,8.09615,0,0,1,6.306,2.95544,5.57155,5.57155,0,0,1,1.87219,4.23456c.51367,4.11328-2.3183,7.22357-6.39386,7.52649A131.2574,131.2574,0,0,0,214.73668,229.64274Zm130.32617-43.33008a8.12437,8.12437,0,0,0-6.31946-2.95538c-15.613,1.24548-30.39459,6.97455-41.9657,17.05927a69.52644,69.52644,0,0,0-22.54755,39.85425,7.48013,7.48013,0,0,0,5.75177,8.65753c4.02155,1.05017,8.17822-1.26569,8.65808-4.94141a56.95685,56.95685,0,0,1,18.188-32.13922,54.33612,54.33612,0,0,1,33.36169-13.471,7.07281,7.07281,0,0,0,6.73187-7.82947A8.217,8.217,0,0,0,345.06285,186.31266Zm-62.86133-2.47742a94.92625,94.92625,0,0,1,56.41614-23.15851c4.0824-.29626,6.90753-3.42,6.39392-7.52649a8.27636,8.27636,0,0,0-8.17822-7.19,108.38231,108.38231,0,0,0-64.67548,26.44385A105.56016,105.56016,0,0,0,237.262,233.43766a8.1112,8.1112,0,0,0,5.73151,9.33075c4.04852.377,7.847-1.63593,8.67834-5.61462A92.15081,92.15081,0,0,1,282.20153,183.83525ZM653.40483,299.477a136.17574,136.17574,0,0,1-136.1261,136.126H494.67839L459.29216,578.99278a31.64918,31.64918,0,0,1-38.31042,23.14453L267.91094,564.3618a31.64926,31.64926,0,0,1-23.14441-38.31042L267.08782,435.603H163.35125C73.23583,435.603,0,362.36729,0,272.25193A163.19336,163.19336,0,0,1,145.65483,109.9896,204.07021,204.07021,0,0,1,326.70244,0C425.80217,0,508.29448,70.51316,526.80767,164.44,597.59307,169.34056,653.40483,227.60264,653.40483,299.477ZM354.72527,541.59849a11.997,11.997,0,1,0,8.77307,14.52209A11.99712,11.99712,0,0,0,354.72527,541.59849Zm136.6366-207.83423L330.46758,294.05821,277.52605,508.58384,438.42034,548.2899,466.22966,435.603l7.15674-29Zm-92.72253-44.08331,31.71851,7.68793a11.15047,11.15047,0,1,0,5.31128-21.65894l-31.725-7.68146a11.14658,11.14658,0,1,0-5.30475,21.65247Zm225.7655,9.79608a105.54639,105.54639,0,0,0-28.8457-72.73035A107.14966,107.14966,0,0,0,524.80474,193.371l-22.155-1.53394L498.355,170.0482a174.99569,174.99569,0,0,0-326.97974-46.66235l-7.18591,13.79675-15.46875,1.64465A134.19322,134.19322,0,0,0,29,272.25193C29,346.33335,89.2697,406.603,163.35125,406.603H274.24456l38.5498-156.2085a31.64913,31.64913,0,0,1,38.3103-23.14441l153.0708,37.77539A31.64923,31.64923,0,0,1,527.31987,303.336L501.83513,406.603h15.4436A107.24734,107.24734,0,0,0,624.40483,299.477Z"/></svg>
+      </div>
 
+      <div *ngIf="application?.type === 'flogo:device'" class="flogo-app-header__edge-icon flogo-app-header__edge-icon--device">
+        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -40 620 620"><title>profiles</title><path d="M621.07869,263.0894a9.97385,9.97385,0,0,0-12.60957-6.40446l-27.03471,8.93841L565.72419,217.6048l26.81013-8.863c.07495-.02422.13154-.07622.20521-.10273l.03314-.011a10.04149,10.04149,0,0,0-6.24233-19.088l-27.06123,8.94631-15.70945-48.01574,26.83562-8.87366a10.04149,10.04149,0,0,0-6.24233-19.088l-26.83817,8.8734L521.79437,83.33366l26.86213-8.8813a10.04149,10.04149,0,0,0-6.24233-19.088l-26.86468,8.8813L494.82211.8927,437.22045,19.93528l-4.25494-13.021A9.93705,9.93705,0,0,0,415.7538,3.704H415.555a10.06637,10.06637,0,0,0-1.71946,9.43551L418.12,26.251,370.34363,42.04537l-4.28451-13.11126A9.99613,9.99613,0,1,0,347.0767,35.207l4.29012,13.11713L303.59045,64.11288l-4.28451-13.11126a9.99617,9.99617,0,1,0-18.98242,6.27318l4.28477,13.11738L236.83752,86.18065l-4.28477-13.10591a9.99345,9.99345,0,1,0-18.97656,6.27343l4.2789,13.11152L170.08434,108.254l-4.28451-13.11152a9.99617,9.99617,0,1,0-18.98242,6.27318l4.29012,13.11152-47.77637,15.79434L99.04665,117.21a9.99341,9.99341,0,1,0-18.97656,6.27318L84.3546,136.595l-26.18378,9.00724L56.02,219.96769l-29.28773,9.681v.0362L6.87038,236.2525a10.04149,10.04149,0,0,0,6.24233,19.088l48.95947-16.18718,8.16165,24.94739,7.54525,23.07319L29.04752,303.28355c-.07495.02422-.13154.07622-.20521.10273l-.03314.011a10.04149,10.04149,0,0,0,6.24233,19.088l48.98522-16.19406-.012-.03645.19935-.06577L99.94322,354.2401,50.98655,370.4283a10.04149,10.04149,0,0,0,6.24233,19.088l48.96253-16.1882L121.90494,421.379,72.92533,437.573a10.04149,10.04149,0,0,0,6.24233,19.088l48.98522-16.19406L140.944,479.56187l37.89092-12.72913L192.57936,508.896a9.99617,9.99617,0,1,0,18.98242-6.27318L197.78313,460.4683l47.7027-16.02836,13.84672,42.38854a9.99609,9.99609,0,1,0,18.98217-6.27343l-13.88623-42.47981,47.7027-16.02836,13.9543,42.71383a9.99341,9.99341,0,1,0,18.97656-6.27318l-13.98259-42.80535,47.69683-16.02836,14.06238,43.03376A9.99252,9.99252,0,1,0,411.81522,436.42l-14.09068-43.13063,47.69709-16.02275,14.17,43.35318a9.99541,9.99541,0,1,0,18.98268-6.26757l-14.19877-43.45591,43.97417-14.7726,14.88528,45.55649a9.99605,9.99605,0,1,0,18.98217-6.27318L527.29793,349.7593l28.77814-9.513,18.21255-6.02055,3.75554-19.11447L583.755,286.044l11.09456-3.66734v-.0362l19.86191-6.56761A10.05777,10.05777,0,0,0,621.07869,263.0894ZM144.42826,435.421l-71.764-219.34623,1.69117-46.90937L149.655,399.6082Zm77.06436-174.36052a187.8934,187.8934,0,0,1,44.224-7.33493c2.0088-.09126,4.01786-.13689,6.01545-.15984-5.68073-13.94486,7.854-29.40806,18.13658-33.38666.18737-1.70111,6.702-14.31043,8.28529-16.78192,1.58333-2.47175,3.79072-2.66013,4.55116-2.43172.76044.234.45963.98758.335,1.19865-.11344.21694-2.37768,3.40783-2.37768,3.40783s-.284.31968-3.08713,4.68066c2.565-2.92245,5.67461-6.35883,7.08766-7.82006,2.57652-2.66013,4.88613-3.09962,5.811-2.62011.91951.47951.36913,1.32994.16468,1.56982-.19859.23963-1.02709,1.09031-1.02709,1.09031s-1.63432,1.66083-11.21361,12.56929c11.71861-12.6264,16.89969-14.3219,17.9951-12.84334,1.08955,1.47831-.53356,2.46-.73214,2.6999-.10222.10834-5.09033,4.83464-10.2997,9.76666a46.71653,46.71653,0,0,1,28.113,3.98982c-.09662-.01708-.19859-.02269-.30081-.03416a47.55649,47.55649,0,0,1,9.61319,6.03355A42.67062,42.67062,0,0,1,355.867,241.05349c.01147.02855.0283.05149.03977.07418,2.42305-15.00662,5.55-38.82649,4.79538-58.2512-1.95221-50.38577-11.57687-74.18856-9.46-75.14758,2.3323-.90192,7.65512-.70206,14.22095,8.71051,6.56583,9.41282,11.93989,29.962,12.2407,52.63471a132.21661,132.21661,0,0,1-2.34938,24.5051c4.78952-14.573,9.64149-31.04085,13.88623-48.69053,8.76761-36.48628,15.2256-73.48063,16.1961-76.67713.97024-3.19089,4.3072-19.1392,13.16-3.65867,26.03057,45.49352-5.86785,114.55606-21.21811,138.16485a269.05531,269.05531,0,0,1-28.61269,36.36086c10.805-10.81134,25.53678-27.79872,42.12444-53.08568,19.69723-30.03033,32.42024-56.92713,39.718-69.23385,2.10542-3.55033,10.07308-15.85144,13.05212,1.00466,8.76786,49.52362-43.59408,98.83616-65.06176,115.1044a144.46874,144.46874,0,0,1-21.89927,13.88776c8.35336-4.15552,19.493-10.41162,28.90764-18.19165C428.925,209.305,467.66121,167.63,473.63689,170.815c3.5641,1.901,3.59775,14.51-8.52925,29.60817-18.14245,22.59266-50.63075,40.31652-74.278,48.28494,29.72493-9.25859,72.14432-28.963,76.01458-24.20225,2.565,3.145-2.25863,14.77821-19.25468,23.97409a109.77949,109.77949,0,0,1-64.65923,12.141c6.20256,5.43422,8.42142,9.78374,10.66883,15.90855a5.28838,5.28838,0,0,1-.25543,1.07884c11.04893.51393,24.25426,1.14181,24.487,1.176.39156.05124,2.84291-.3082,2.89415,1.86095.04538,2.16329-6.62268,4.60062-28.68637,2.24894,18.49985,2.45441,21.49623,2.68843,21.49623,2.68843s1.52088.13715,1.92391.194c.39156.063,1.63993.40533,1.06686,1.54127-.56746,1.13594-3.29719,2.50591-8.05255,2.095-2.61629-.22841-8.54073-.93047-13.48932-1.5869,6.35016,1.76382,6.88372,1.838,6.88372,1.838s4.852,1.12447,5.14692,1.23307c.2952.09687,1.20324.54222.60723,1.32994-.60723.79332-3.01881,2.306-6.6112,1.30725-3.42185-.95342-16.38322-5.10307-18.13658-5.91373-5.448,5.68532-10.25458,8.88742-19.323,11.53048-15.078,4.38954-28.6805,3.8129-41.83485-6.73561l-.06246.01708c-9.56756-6.71266-16.55911-13.19156-22.88659-18.58576a11.62054,11.62054,0,0,1-1.69091-.74769c-8.42728-3.6704-16.15072-6.55283-24.92955-8.09971-2.28693-.17131-4.57411-.30846-6.87811-.39972a188.624,188.624,0,0,0-106.0342,28.044A187.58266,187.58266,0,0,1,221.49262,261.06045ZM566.12722,289.0881,559.815,321.21569,158.69484,455.54214l5.67487-38.88385L567.20988,283.57715Z"/></svg>
+      </div>
 
-            <label class="flogo-app-header__name is-editable"
-                   *ngIf="!isNameInEditMode"
-            (click)="onClickLabelName($event)">{{editableName}}</label>
-            <span *ngIf="isDevice" class="flogo-profile__device-type">{{application.deviceType}}</span>
-          </div>
+      <div class="col-md-1 col-md-offset-1">
+        <a routerLink="/apps" class="flogo-app-header__go-back"><i class="flogo-icon flogo-icon-back"></i></a>
 
-          <div class="flogo-app-header__date-container">
-            <label class="flogo-app-header__date--creation">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span>
-            </label>
-            <label *ngIf="application && application.updatedAt" class="flogo-app-header__date--update">{{ 'FLOWS:EDITED' |
-              translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
-          </div>
+        <div *ngIf="application?.type === 'flogo:app'"
+             class="flogo-app-header__icon flogo-app-header__icon--profile">
+          <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 653.40485 603.0666"><defs><style>.cls-1{fill:none;}.cls-2{isolation:isolate;}.cls-3{clip-path:url(#clip-path);}.cls-4{clip-path:url(#clip-path-2);}</style><clipPath id="clip-path"><rect class="cls-1" x="5.90633" y="7.87608" width="583.6575" height="583.6575"/></clipPath><clipPath id="clip-path-2"><rect class="cls-1" x="5.91087" y="7.87798" width="580.4103" height="581.15495"/></clipPath></defs><title>profiles</title><rect class="cls-1" x="29.83126" y="29.77713" width="535.81649" height="535.81689"/><path d="M214.73668,229.64274a6.57932,6.57932,0,0,1-8.3269,5.31165,8.56328,8.56328,0,0,1-6.08295-9.02777A144.63089,144.63089,0,0,1,334.24669,108.49791a8.09615,8.09615,0,0,1,6.306,2.95544,5.57155,5.57155,0,0,1,1.87219,4.23456c.51367,4.11328-2.3183,7.22357-6.39386,7.52649A131.2574,131.2574,0,0,0,214.73668,229.64274Zm130.32617-43.33008a8.12437,8.12437,0,0,0-6.31946-2.95538c-15.613,1.24548-30.39459,6.97455-41.9657,17.05927a69.52644,69.52644,0,0,0-22.54755,39.85425,7.48013,7.48013,0,0,0,5.75177,8.65753c4.02155,1.05017,8.17822-1.26569,8.65808-4.94141a56.95685,56.95685,0,0,1,18.188-32.13922,54.33612,54.33612,0,0,1,33.36169-13.471,7.07281,7.07281,0,0,0,6.73187-7.82947A8.217,8.217,0,0,0,345.06285,186.31266Zm-62.86133-2.47742a94.92625,94.92625,0,0,1,56.41614-23.15851c4.0824-.29626,6.90753-3.42,6.39392-7.52649a8.27636,8.27636,0,0,0-8.17822-7.19,108.38231,108.38231,0,0,0-64.67548,26.44385A105.56016,105.56016,0,0,0,237.262,233.43766a8.1112,8.1112,0,0,0,5.73151,9.33075c4.04852.377,7.847-1.63593,8.67834-5.61462A92.15081,92.15081,0,0,1,282.20153,183.83525ZM653.40483,299.477a136.17574,136.17574,0,0,1-136.1261,136.126H494.67839L459.29216,578.99278a31.64918,31.64918,0,0,1-38.31042,23.14453L267.91094,564.3618a31.64926,31.64926,0,0,1-23.14441-38.31042L267.08782,435.603H163.35125C73.23583,435.603,0,362.36729,0,272.25193A163.19336,163.19336,0,0,1,145.65483,109.9896,204.07021,204.07021,0,0,1,326.70244,0C425.80217,0,508.29448,70.51316,526.80767,164.44,597.59307,169.34056,653.40483,227.60264,653.40483,299.477ZM354.72527,541.59849a11.997,11.997,0,1,0,8.77307,14.52209A11.99712,11.99712,0,0,0,354.72527,541.59849Zm136.6366-207.83423L330.46758,294.05821,277.52605,508.58384,438.42034,548.2899,466.22966,435.603l7.15674-29Zm-92.72253-44.08331,31.71851,7.68793a11.15047,11.15047,0,1,0,5.31128-21.65894l-31.725-7.68146a11.14658,11.14658,0,1,0-5.30475,21.65247Zm225.7655,9.79608a105.54639,105.54639,0,0,0-28.8457-72.73035A107.14966,107.14966,0,0,0,524.80474,193.371l-22.155-1.53394L498.355,170.0482a174.99569,174.99569,0,0,0-326.97974-46.66235l-7.18591,13.79675-15.46875,1.64465A134.19322,134.19322,0,0,0,29,272.25193C29,346.33335,89.2697,406.603,163.35125,406.603H274.24456l38.5498-156.2085a31.64913,31.64913,0,0,1,38.3103-23.14441l153.0708,37.77539A31.64923,31.64923,0,0,1,527.31987,303.336L501.83513,406.603h15.4436A107.24734,107.24734,0,0,0,624.40483,299.477Z"/></svg>
+        </div>
 
-          <div class="flogo-app-header__description-container">
-            <a *ngIf="application && !editableDescription && !isDescriptionInEditMode" class="flogo-link"
-               (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
-            <textarea *ngIf="isDescriptionInEditMode" #appInputDescription
-                      fgAutofocus
-                      placeholder="Description"
-                      rows="3"
-                      [(ngModel)]="editableDescription"
-                      fgEditableInput
-                      (editableInputSave)="onDescriptionSave()"
-                      (editableInputCancel)="onDescriptionCancel()"
-                      id="appDescription" class="flogo-app-header__description--edit">
+        <div *ngIf="application?.type === 'flogo:device'"
+             class="flogo-app-header__icon flogo-app-header__icon--device">
+          <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -40 620 620"><title>profiles</title><path d="M621.07869,263.0894a9.97385,9.97385,0,0,0-12.60957-6.40446l-27.03471,8.93841L565.72419,217.6048l26.81013-8.863c.07495-.02422.13154-.07622.20521-.10273l.03314-.011a10.04149,10.04149,0,0,0-6.24233-19.088l-27.06123,8.94631-15.70945-48.01574,26.83562-8.87366a10.04149,10.04149,0,0,0-6.24233-19.088l-26.83817,8.8734L521.79437,83.33366l26.86213-8.8813a10.04149,10.04149,0,0,0-6.24233-19.088l-26.86468,8.8813L494.82211.8927,437.22045,19.93528l-4.25494-13.021A9.93705,9.93705,0,0,0,415.7538,3.704H415.555a10.06637,10.06637,0,0,0-1.71946,9.43551L418.12,26.251,370.34363,42.04537l-4.28451-13.11126A9.99613,9.99613,0,1,0,347.0767,35.207l4.29012,13.11713L303.59045,64.11288l-4.28451-13.11126a9.99617,9.99617,0,1,0-18.98242,6.27318l4.28477,13.11738L236.83752,86.18065l-4.28477-13.10591a9.99345,9.99345,0,1,0-18.97656,6.27343l4.2789,13.11152L170.08434,108.254l-4.28451-13.11152a9.99617,9.99617,0,1,0-18.98242,6.27318l4.29012,13.11152-47.77637,15.79434L99.04665,117.21a9.99341,9.99341,0,1,0-18.97656,6.27318L84.3546,136.595l-26.18378,9.00724L56.02,219.96769l-29.28773,9.681v.0362L6.87038,236.2525a10.04149,10.04149,0,0,0,6.24233,19.088l48.95947-16.18718,8.16165,24.94739,7.54525,23.07319L29.04752,303.28355c-.07495.02422-.13154.07622-.20521.10273l-.03314.011a10.04149,10.04149,0,0,0,6.24233,19.088l48.98522-16.19406-.012-.03645.19935-.06577L99.94322,354.2401,50.98655,370.4283a10.04149,10.04149,0,0,0,6.24233,19.088l48.96253-16.1882L121.90494,421.379,72.92533,437.573a10.04149,10.04149,0,0,0,6.24233,19.088l48.98522-16.19406L140.944,479.56187l37.89092-12.72913L192.57936,508.896a9.99617,9.99617,0,1,0,18.98242-6.27318L197.78313,460.4683l47.7027-16.02836,13.84672,42.38854a9.99609,9.99609,0,1,0,18.98217-6.27343l-13.88623-42.47981,47.7027-16.02836,13.9543,42.71383a9.99341,9.99341,0,1,0,18.97656-6.27318l-13.98259-42.80535,47.69683-16.02836,14.06238,43.03376A9.99252,9.99252,0,1,0,411.81522,436.42l-14.09068-43.13063,47.69709-16.02275,14.17,43.35318a9.99541,9.99541,0,1,0,18.98268-6.26757l-14.19877-43.45591,43.97417-14.7726,14.88528,45.55649a9.99605,9.99605,0,1,0,18.98217-6.27318L527.29793,349.7593l28.77814-9.513,18.21255-6.02055,3.75554-19.11447L583.755,286.044l11.09456-3.66734v-.0362l19.86191-6.56761A10.05777,10.05777,0,0,0,621.07869,263.0894ZM144.42826,435.421l-71.764-219.34623,1.69117-46.90937L149.655,399.6082Zm77.06436-174.36052a187.8934,187.8934,0,0,1,44.224-7.33493c2.0088-.09126,4.01786-.13689,6.01545-.15984-5.68073-13.94486,7.854-29.40806,18.13658-33.38666.18737-1.70111,6.702-14.31043,8.28529-16.78192,1.58333-2.47175,3.79072-2.66013,4.55116-2.43172.76044.234.45963.98758.335,1.19865-.11344.21694-2.37768,3.40783-2.37768,3.40783s-.284.31968-3.08713,4.68066c2.565-2.92245,5.67461-6.35883,7.08766-7.82006,2.57652-2.66013,4.88613-3.09962,5.811-2.62011.91951.47951.36913,1.32994.16468,1.56982-.19859.23963-1.02709,1.09031-1.02709,1.09031s-1.63432,1.66083-11.21361,12.56929c11.71861-12.6264,16.89969-14.3219,17.9951-12.84334,1.08955,1.47831-.53356,2.46-.73214,2.6999-.10222.10834-5.09033,4.83464-10.2997,9.76666a46.71653,46.71653,0,0,1,28.113,3.98982c-.09662-.01708-.19859-.02269-.30081-.03416a47.55649,47.55649,0,0,1,9.61319,6.03355A42.67062,42.67062,0,0,1,355.867,241.05349c.01147.02855.0283.05149.03977.07418,2.42305-15.00662,5.55-38.82649,4.79538-58.2512-1.95221-50.38577-11.57687-74.18856-9.46-75.14758,2.3323-.90192,7.65512-.70206,14.22095,8.71051,6.56583,9.41282,11.93989,29.962,12.2407,52.63471a132.21661,132.21661,0,0,1-2.34938,24.5051c4.78952-14.573,9.64149-31.04085,13.88623-48.69053,8.76761-36.48628,15.2256-73.48063,16.1961-76.67713.97024-3.19089,4.3072-19.1392,13.16-3.65867,26.03057,45.49352-5.86785,114.55606-21.21811,138.16485a269.05531,269.05531,0,0,1-28.61269,36.36086c10.805-10.81134,25.53678-27.79872,42.12444-53.08568,19.69723-30.03033,32.42024-56.92713,39.718-69.23385,2.10542-3.55033,10.07308-15.85144,13.05212,1.00466,8.76786,49.52362-43.59408,98.83616-65.06176,115.1044a144.46874,144.46874,0,0,1-21.89927,13.88776c8.35336-4.15552,19.493-10.41162,28.90764-18.19165C428.925,209.305,467.66121,167.63,473.63689,170.815c3.5641,1.901,3.59775,14.51-8.52925,29.60817-18.14245,22.59266-50.63075,40.31652-74.278,48.28494,29.72493-9.25859,72.14432-28.963,76.01458-24.20225,2.565,3.145-2.25863,14.77821-19.25468,23.97409a109.77949,109.77949,0,0,1-64.65923,12.141c6.20256,5.43422,8.42142,9.78374,10.66883,15.90855a5.28838,5.28838,0,0,1-.25543,1.07884c11.04893.51393,24.25426,1.14181,24.487,1.176.39156.05124,2.84291-.3082,2.89415,1.86095.04538,2.16329-6.62268,4.60062-28.68637,2.24894,18.49985,2.45441,21.49623,2.68843,21.49623,2.68843s1.52088.13715,1.92391.194c.39156.063,1.63993.40533,1.06686,1.54127-.56746,1.13594-3.29719,2.50591-8.05255,2.095-2.61629-.22841-8.54073-.93047-13.48932-1.5869,6.35016,1.76382,6.88372,1.838,6.88372,1.838s4.852,1.12447,5.14692,1.23307c.2952.09687,1.20324.54222.60723,1.32994-.60723.79332-3.01881,2.306-6.6112,1.30725-3.42185-.95342-16.38322-5.10307-18.13658-5.91373-5.448,5.68532-10.25458,8.88742-19.323,11.53048-15.078,4.38954-28.6805,3.8129-41.83485-6.73561l-.06246.01708c-9.56756-6.71266-16.55911-13.19156-22.88659-18.58576a11.62054,11.62054,0,0,1-1.69091-.74769c-8.42728-3.6704-16.15072-6.55283-24.92955-8.09971-2.28693-.17131-4.57411-.30846-6.87811-.39972a188.624,188.624,0,0,0-106.0342,28.044A187.58266,187.58266,0,0,1,221.49262,261.06045ZM566.12722,289.0881,559.815,321.21569,158.69484,455.54214l5.67487-38.88385L567.20988,283.57715Z"/></svg>
+        </div>
+
+      </div>
+
+      <div class="col-xs-6 col-md-5 col-lg-5 flogo-app-details">
+        <div class="flogo-app-header__name-container" [ngClass]="{'flogo-input-error': state?.name.hasErrors}">
+          <div class="flogo-input-error-msg" *ngIf="state?.name.hasErrors && state?.name.errors['notUnique']">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
+          <input *ngIf="isNameInEditMode" type="text" #appInputName
+                 fgAutofocus
+                 [(ngModel)]="editableName"
+                 fgEditableInput
+                 (editableInputSave)="onNameSave()"
+                 (editableInputCancel)="onNameCancel()"
+                 id="appName" class="flogo-app-header__name--edit"/>
+
+          <label class="flogo-app-header__name is-editable"
+                 *ngIf="!isNameInEditMode"
+                 (click)="onClickLabelName($event)">{{editableName}}</label>
+        </div>
+
+        <div class="flogo-app-header__date-container">
+          <label class="flogo-app-header__date--creation">{{ 'FLOWS:CREATED' | translate:{value:''} }}<span>{{application?.createdAt | timeFromNow}}.</span>
+          </label>
+          <label *ngIf="application && application.updatedAt" class="flogo-app-header__date--update">{{ 'FLOWS:EDITED' |
+            translate:{value:''} }}<span>{{application.updatedAt | timeFromNow}}.</span> </label>
+        </div>
+
+        <div class="flogo-app-header__description-container">
+          <a *ngIf="application && !editableDescription && !isDescriptionInEditMode" class="flogo-link"
+             (click)="onClickAddDescription($event)">{{ 'DETAILS:ADD-DESCRIPTION' | translate }}</a>
+          <textarea *ngIf="isDescriptionInEditMode" #appInputDescription
+                    fgAutofocus
+                    placeholder="Description"
+                    rows="3"
+                    [(ngModel)]="editableDescription"
+                    fgEditableInput
+                    (editableInputSave)="onDescriptionSave()"
+                    (editableInputCancel)="onDescriptionCancel()"
+                    id="appDescription" class="flogo-app-header__description--edit">
           </textarea>
 
-            <label class="flogo-app-header__description is-editable"
-                   *ngIf="!isDescriptionInEditMode && !!editableDescription"
-                   (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
-          </div>
+          <label class="flogo-app-header__description is-editable"
+                 *ngIf="!isDescriptionInEditMode && !!editableDescription"
+                 (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
         </div>
-        <div class="col-md-4">
-          <div class="flogo-app-header__options">
-            <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
-              {{ 'DETAILS:EXPORT' | translate }}
-            </button>
-            <div (fgClickOutside)="closeBuildBox()">
-              <button class="flogo-button flogo-button--default flogo-app-detail-build-button" (click)="toggleBuildBox()">{{ 'DETAILS:BUILD' | translate }}</button>
-              <div class="flogo-app-detail-build-list-wrapper"
-                   [ngClass]="{'active' : isBuildBoxShown}">
-                <ul class="flogo-app-detail-build-list list-unstyled">
-                  <li class="flogo-app-detail-build-item">
-                    <a class="flogo-app-detail-build-link" (click)="closeBuildBox()" [href]="downloadLink+'?os=linux&arch=386'"><span>{{ 'CANVAS:X86-LINUX' | translate }} </span></a>
-                  </li>
-                  <li class="flogo-app-detail-build-item">
-                    <a class="flogo-app-detail-build-link" (click)="closeBuildBox()" [href]="downloadLink+'?os=linux&arch=arm'"><span>{{ 'CANVAS:ARM-LINUX' | translate }}</span></a>
-                  </li>
-                  <li class="flogo-app-detail-build-item">
-                    <a class="flogo-app-detail-build-link" (click)="closeBuildBox()" [href]="downloadLink+'?os=darwin&arch=amd64'"><span>{{ 'CANVAS:DARWIN-OSX' | translate }}</span></a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="flogo-flow-detail-menu">
-              <i class="flogo-icon-kebabmenu"></i>
-              <div class="flogo-flow-detail-menu-list-wrapper">
-                <ul class="flogo-flow-detail-menu-list">
-                  <li class="flogo-flow-detail-menu-item">
-                    <a (click)="onDeleteApp(application)" class="flogo-flow-detail-menu-anchor">
-                      <i class="flogo-icon flogo-icon-delete"></i>{{'APP-DETAILS:DELETE-APP' | translate}}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="flogo-app-header__filter-container col-md-11 col-md-offset-1">
-          <div class="flogo-app-header__new-flow">
+        <div class="flogo-app-header__filter-container">
+          <div class="col-md-3 flogo-app-header__new-flow">
             <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
             <!--<flogo-flows-import [appId]="application?.id" (importSuccess)="onFlowImportSuccess($event)"-->
             <!--(importError)="onFlowImportError($event)"></flogo-flows-import>-->
@@ -102,26 +79,68 @@
           </div>-->
         </div>
       </div>
-    </div>
+
+
+
+      <div class="col-xs-6 col-md-5 col-lg-5">
+        <div class="flogo-app-header__options">
+          <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
+            {{ 'DETAILS:EXPORT' | translate }}
+          </button>
+          <div (fgClickOutside)="closeBuildBox()">
+            <button class="flogo-button flogo-button--default flogo-app-detail-build-button" (click)="toggleBuildBox()">{{ 'DETAILS:BUILD' | translate }}</button>
+            <div class="flogo-app-detail-build-list-wrapper"
+               [ngClass]="{'active' : isBuildBoxShown}">
+            <ul class="flogo-app-detail-build-list list-unstyled">
+              <li class="flogo-app-detail-build-item">
+                <a class="flogo-app-detail-build-link" (click)="closeBuildBox()" [href]="downloadLink+'?os=linux&arch=386'"><span>{{ 'CANVAS:X86-LINUX' | translate }} </span></a>
+              </li>
+              <li class="flogo-app-detail-build-item">
+                <a class="flogo-app-detail-build-link" (click)="closeBuildBox()" [href]="downloadLink+'?os=linux&arch=arm'"><span>{{ 'CANVAS:ARM-LINUX' | translate }}</span></a>
+              </li>
+              <li class="flogo-app-detail-build-item">
+                <a class="flogo-app-detail-build-link" (click)="closeBuildBox()" [href]="downloadLink+'?os=darwin&arch=amd64'"><span>{{ 'CANVAS:DARWIN-OSX' | translate }}</span></a>
+              </li>
+            </ul>
+          </div>
+          </div>
+          <div class="flogo-flow-detail-menu">
+            <i class="flogo-icon-kebabmenu"></i>
+            <div class="flogo-flow-detail-menu-list-wrapper">
+              <ul class="flogo-flow-detail-menu-list">
+                <li class="flogo-flow-detail-menu-item">
+                  <a (click)="onDeleteApp(application)" class="flogo-flow-detail-menu-anchor">
+                    <i class="flogo-icon flogo-icon-delete"></i>{{'APP-DETAILS:DELETE-APP' | translate}}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>  <!-- end row -->
+
 
   </div>
 
-  <div class="container">
-    <div class="flogo-app-content">
+</div>
 
-      <div class="row content-empty" *ngIf="!flowGroups?.length">
-        <img src="/assets/svg/flogo.flynn-placeholder.svg">
-        <p class="content-empty__message">No flows found</p>
-        <button class="flogo-button--default content-empty__action" (click)="openCreateFlow()">{{'DETAILS:CREATE-A-FLOW' | translate}}</button>
-      </div>
+<div class="container">
+  <div class="flogo-app-content">
 
-      <flogo-apps-flows-flow-group *ngFor="let flowGroup of flowGroups"
-                                   [trigger]="flowGroup.trigger" [flows]="flowGroup.flows"
-                                   (flowSelected)="onFlowSelected($event)"
-                                   (deleteFlow)="onFlowDelete($event)"
-                                   (addFlow)="openCreateFlowFromTrigger($event)"
-      ></flogo-apps-flows-flow-group>
-
+    <div class="row content-empty" *ngIf="!flowGroups?.length">
+      <img src="/assets/svg/flogo.flynn-placeholder.svg">
+      <p class="content-empty__message">No flows found</p>
+      <button class="flogo-button--default content-empty__action" (click)="openCreateFlow()">{{'DETAILS:CREATE-A-FLOW' | translate}}</button>
     </div>
+
+    <flogo-apps-flows-flow-group *ngFor="let flowGroup of flowGroups"
+                                 [trigger]="flowGroup.trigger" [flows]="flowGroup.flows"
+                                 (flowSelected)="onFlowSelected($event)"
+                                 (deleteFlow)="onFlowDelete($event)"
+                                 (addFlow)="openCreateFlowFromTrigger($event)"
+    ></flogo-apps-flows-flow-group>
+
   </div>
 </div>
