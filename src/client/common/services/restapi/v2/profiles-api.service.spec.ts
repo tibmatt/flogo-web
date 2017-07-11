@@ -10,15 +10,15 @@ describe("Service: ProfilesAPIService", ()=>{
     data: [
       {
         type: "Atmel AVR",
-        i18nKey: "ATMEL-AVR"
+        id: "ATMEL-AVR"
       },
       {
         type: "Atmel SAM",
-        i18nKey: "ATMEL-SAM"
+        id: "ATMEL-SAM"
       },
       {
         type: "Espressif 32",
-        i18nKey: "ESPRESSIF-32"
+        id: "ESPRESSIF-32"
       }
     ]
   };
@@ -55,30 +55,6 @@ describe("Service: ProfilesAPIService", ()=>{
     service.getProfilesList()
       .then((res)=> {
         expect(res.length).toEqual(3);
-        done();
-      });
-  });
-
-  it("Should have type property in the response for device entity", (done) => {
-    mockbackend.connections.subscribe(connection => {
-      let options = new ResponseOptions({body: JSON.stringify(sampleApps)});
-      connection.mockRespond(new Response(options));
-    });
-    service.getProfilesList()
-      .then((res)=> {
-        expect(res[0].type).toBeDefined();
-        done();
-      });
-  });
-
-  it("Should have i18nKey property in the response for device entity", (done) => {
-    mockbackend.connections.subscribe(connection => {
-      let options = new ResponseOptions({body: JSON.stringify(sampleApps)});
-      connection.mockRespond(new Response(options));
-    });
-    service.getProfilesList()
-      .then((res)=> {
-        expect(res[0].i18nKey).toBeDefined();
         done();
       });
   });

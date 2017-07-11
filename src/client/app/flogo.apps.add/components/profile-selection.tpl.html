@@ -28,7 +28,7 @@
       </div>
       <ul class="flogo-profile__list list-unstyled clearfix">
         <li *ngFor="let device of devicesList" (click)="onAddProfile(device.type)" class="flogo-profile__list-element">
-          {{'DEVICE-LIST:'+device.i18nKey | translate}}
+          {{device.type}}
         </li>
       </ul>
     </div>

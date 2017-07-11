@@ -6,15 +6,15 @@ export class MockProfilesAPIService extends ProfilesAPIService {
   sampleApps = [
     {
       type: "Atmel AVR",
-      i18nKey: "ATMEL-AVR"
+      id: "ATMEL-AVR"
     },
     {
       type: "Atmel SAM",
-      i18nKey: "ATMEL-SAM"
+      id: "ATMEL-SAM"
     },
     {
       type: "Espressif 32",
-      i18nKey: "ESPRESSIF-32"
+      id: "ESPRESSIF-32"
     }
   ];
 

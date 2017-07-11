@@ -5,7 +5,7 @@ import {ProfilesAPIService} from "../../../common/services/restapi/v2/profiles-a
 
 interface DeviceProfile {
   type: string;
-  i18nKey: string;
+  id: string;
 }
 
 @Component({
