@@ -8,6 +8,7 @@
   display: block;
   min-height: 100%;
   margin-bottom: -@size-height-footer;
+  background-color: @color-app-detail-bg;
 
   &:after {
     content: "";
@@ -17,8 +18,19 @@
 
 }
 
-.flogo-app-header-wrapper {
-  background: #fff;
+.flogo-application__main {
+  background-repeat: no-repeat;
+  background-size: 19%;
+  background-position-y: -6%;
+}
+
+.flogo-application__main--microservice {
+  background-image: url('/assets/svg/bg-microservice.svg');
+}
+
+.flogo-application__main--device {
+  background-image: url('/assets/svg/bg-device.svg');
+  background-position: 94% -18%;
 }
 
 .flogo-app-header {
@@ -41,6 +53,10 @@
     font-size: 0.875em;
     letter-spacing: .2px;
     line-height: 1.14;
+  }
+
+  .flogo-app-header__date-container {
+    opacity: 0.54;
   }
 
   .flogo-app-header__description-container {

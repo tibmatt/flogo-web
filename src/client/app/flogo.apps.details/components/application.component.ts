@@ -1,4 +1,6 @@
-import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
+import {
+  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter
+} from '@angular/core';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
@@ -48,6 +50,8 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   isBuildBoxShown: boolean = false;
   downloadLink: string;
 
+  isDevice: boolean = false;
+
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal,
@@ -69,6 +73,8 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
       this.flowGroups = _.sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
       this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
       // this.flows = this.extractFlows();
+
+      this.isDevice = this.flogoModal.isDeviceProfile(this.application.deviceType);
 
       let prevValue = change.previousValue;
       let isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id != this.application.id;
