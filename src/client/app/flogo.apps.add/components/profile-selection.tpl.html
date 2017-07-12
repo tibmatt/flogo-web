@@ -1,11 +1,13 @@
 <modal [cssClass]="'flogo-common-modal flogo-profile__modal'" #profileSelectionModal (onClose)="onModalCloseOrDismiss()"
-       (onDismiss)="onModalCloseOrDismiss()">
+       (onDismiss)="onModalCloseOrDismiss()"
+       style="animation: downElement 150ms 510ms ease-in forwards;">
   <div class="flogo-profile__modal-body">
     <i class="flogo-icon-close flogo-profile__close" (click)="closeModal()"></i>
     <div *ngIf="!showList">
       <h4 class="flogo-profile__head">{{'PROFILE-MODAL:SELECT_PROFILE' | translate}}</h4>
 
       <div class="flogo-profile__container">
+
         <div class="flogo-profile__section" (click)="showDevicesList()">
           <div class="flogo-profile__tile flogo-profile__device--selectable">
           </div>
@@ -21,6 +23,7 @@
         </div>
       </div>
     </div>
+
     <div *ngIf="showList" class="flogo-profile__list-container">
       <div class="flogo-profile__list-head">
         <div class="flogo-profile__device flogo-profile__modal-thumbnail"></div>

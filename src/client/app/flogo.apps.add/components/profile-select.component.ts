@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, ViewChild} from "@angular/core";
+import {Component, AfterViewInit, Output, ViewChild} from "@angular/core";
 import {ModalComponent} from "ng2-bs3-modal/ng2-bs3-modal";
 import {EventEmitter} from "@angular/common/src/facade/async";
 import {ProfilesAPIService} from "../../../common/services/restapi/v2/profiles-api.service";
@@ -13,7 +13,7 @@ interface DeviceProfile {
   templateUrl: 'profile-selection.tpl.html',
   styleUrls: ['profile-selection.less']
 })
-export class ProfileSelectionComponent implements OnInit{
+export class ProfileSelectionComponent  implements AfterViewInit {
   @ViewChild('profileSelectionModal') profileSelectionModal: ModalComponent;
 
   @Output() onClose: EventEmitter<any> = new EventEmitter();
@@ -24,7 +24,7 @@ export class ProfileSelectionComponent implements OnInit{
 
   constructor(private profilesService: ProfilesAPIService) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.openModal();
   }
 
