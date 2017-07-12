@@ -22,13 +22,16 @@ export class AppsApiService {
       .then(response => response.json().data);
   }
 
-  createNewApp(): Promise<any> {
+  createNewApp(deviceType): Promise<any> {
     return this.determineUniqueName(UNTITLED_APP).then(appName => {
       let application: any = {
         name: appName,
         version: '',
         description: ''
       };
+      if (deviceType != 'microservice') {
+        application.deviceType = deviceType
+      }
 
       let options = this.httpUtils.defaultOptions();
 

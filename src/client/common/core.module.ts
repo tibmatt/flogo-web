@@ -22,6 +22,7 @@ import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
 import { ChildWindowService } from './services/child-window.service';
 import {FlowsService} from "./services/flows.service";
+import {ProfilesAPIService} from "./services/restapi/v2/profiles-api.service";
 
 @NgModule({
   providers: [ // services
@@ -35,6 +36,7 @@ import {FlowsService} from "./services/flows.service";
     RESTAPIHandlersServiceV2,
     AppsApiService,
     APIFlowsService,
+    ProfilesAPIService,
 
     RunService,
     ChildWindowService,

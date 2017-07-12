@@ -17,8 +17,14 @@ function validate(schema, data, options = {}, customValidations) {
 
 class Validator {
 
-  static validateSimpleApp(data) {
-    return validate(appSchema(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  static validateSimpleApp(data, isDeviceType) {
+    let validationSchema;
+    if(isDeviceType) {
+      validationSchema = deviceAppSchema();
+    } else {
+      validationSchema = appSchema();
+    }
+    return validate(validationSchema, data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
   static validateTriggerCreate(data) {
@@ -116,6 +122,39 @@ function triggerSchemaUpdate() {
       },
     },
   };
+}
+
+function deviceAppSchema() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
+    type: 'object',
+    required: [
+      'name',
+      'type',
+      'deviceType'
+    ],
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1
+      },
+      description: {
+        type: 'string',
+      },
+      type: {
+        type: 'string',
+        default: 'flogo:device',
+      },
+      deviceType: {
+        type: 'string'
+      },
+      version: {
+        type: 'string',
+        default: '0.1.0',
+      }
+    }
+  }
 }
 
 function appSchema() {

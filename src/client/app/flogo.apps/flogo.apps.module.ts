@@ -20,6 +20,7 @@ import { AppDetailService } from './services/apps.service';
 import {routing, appRoutingProviders} from './flogo.apps.routing';
 import {FlogoAppImportErrorComponent} from "../flogo.apps.import.error/components/import.error.component";
 import {ImportErrorFormatterService} from "../flogo.apps.import.error/services/message.formatter.service";
+import {ProfileSelectionComponent} from "../flogo.apps.add/components/profile-select.component";
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import {ImportErrorFormatterService} from "../flogo.apps.import.error/services/m
     FlowGroupComponent,
     FlogoAppListComponent,
     FlogoApplicationSearch,
-    FlogoAppImportErrorComponent
+    FlogoAppImportErrorComponent,
+    ProfileSelectionComponent
   ],
   bootstrap: [FlogoMainComponent],
   providers: [

@@ -1,0 +1,36 @@
+<modal [cssClass]="'flogo-common-modal flogo-profile__modal'" #profileSelectionModal (onClose)="onModalCloseOrDismiss()"
+       (onDismiss)="onModalCloseOrDismiss()">
+  <div class="flogo-profile__modal-body">
+    <i class="flogo-icon-close flogo-profile__close" (click)="closeModal()"></i>
+    <div *ngIf="!showList">
+      <h4 class="flogo-profile__head">{{'PROFILE-MODAL:SELECT_PROFILE' | translate}}</h4>
+
+      <div class="flogo-profile__container">
+        <div class="flogo-profile__section" (click)="showDevicesList()">
+          <div class="flogo-profile__tile flogo-profile__device--selectable">
+          </div>
+        </div>
+        <div class="flogo-profile__section" (click)="onAddProfile('microservice')">
+          <div class="flogo-profile__tile flogo-profile__standard--selectable">
+          </div>
+        </div>
+
+        <div class="flogo-profile__labels">
+          <div class="flogo-profile__label flogo-profile__device-label">{{'PROFILE-MODAL:LABEL_DEVICE' | translate}}</div>
+          <div class="flogo-profile__label flogo-profile__standard-label">{{'PROFILE-MODAL:LABEL_STANDARD' | translate}}</div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="showList" class="flogo-profile__list-container">
+      <div class="flogo-profile__list-head">
+        <div class="flogo-profile__device flogo-profile__modal-thumbnail"></div>
+        <h4 class="flogo-profile__head">{{'PROFILE-MODAL:SELECT_DEVICE' | translate}}</h4>
+      </div>
+      <ul class="flogo-profile__list list-unstyled clearfix">
+        <li *ngFor="let device of devicesList" (click)="onAddProfile(device.type)" class="flogo-profile__list-element">
+          {{device.type}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</modal>
