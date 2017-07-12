@@ -2,9 +2,12 @@
                  'flogo-application__main--device': isDevice}">
   <div class="flogo-app-header-wrapper">
 
-    <div class="container">
-      <div class="flogo-app-header row">
-        <div class="col-xs-6 col-md-5 col-md-offset-1">
+    <div class="container flogo-app-header">
+      <div class="row">
+        <div class="col-md-6 col-md-offset-1">
+          <div>
+
+          </div>
           <div class="flogo-app-header__name-container" [ngClass]="{'flogo-input-error': state?.name.hasErrors}">
             <a routerLink="/apps" class="flogo-app-header__go-back"><i class="flogo-icon flogo-icon-back"></i></a>
             <div class="flogo-input-error-msg" *ngIf="state?.name.hasErrors && state?.name.errors['notUnique']">{{ 'APP-DETAIL:ERROR-UNIQUE-NAME' | translate }}</div>
@@ -16,9 +19,11 @@
                    (editableInputCancel)="onNameCancel()"
                    id="appName" class="flogo-app-header__name--edit"/>
 
+
             <label class="flogo-app-header__name is-editable"
                    *ngIf="!isNameInEditMode"
-                   (click)="onClickLabelName($event)">{{editableName}}</label>
+            (click)="onClickLabelName($event)">{{editableName}}</label>
+            <span *ngIf="isDevice" class="flogo-profile__device-type">{{application.deviceType}}</span>
           </div>
 
           <div class="flogo-app-header__date-container">
@@ -46,19 +51,8 @@
                    *ngIf="!isDescriptionInEditMode && !!editableDescription"
                    (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
           </div>
-          <div class="flogo-app-header__filter-container">
-            <div class="col-md-3 flogo-app-header__new-flow">
-              <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
-              <!--<flogo-flows-import [appId]="application?.id" (importSuccess)="onFlowImportSuccess($event)"-->
-              <!--(importError)="onFlowImportError($event)"></flogo-flows-import>-->
-            </div>
-            <!--<div class="col-md-9 col-sm-12">
-              <flogo-apps-search (changedSearch)="onChangedSearch($event)"
-                                 class="search"></flogo-apps-search>
-            </div>-->
-          </div>
         </div>
-        <div class="col-xs-6 col-md-5">
+        <div class="col-md-4">
           <div class="flogo-app-header__options">
             <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
               {{ 'DETAILS:EXPORT' | translate }}
@@ -93,6 +87,19 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="flogo-app-header__filter-container col-md-11 col-md-offset-1">
+          <div class="flogo-app-header__new-flow">
+            <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+            <!--<flogo-flows-import [appId]="application?.id" (importSuccess)="onFlowImportSuccess($event)"-->
+            <!--(importError)="onFlowImportError($event)"></flogo-flows-import>-->
+          </div>
+          <!--<div class="col-md-9 col-sm-12">
+            <flogo-apps-search (changedSearch)="onChangedSearch($event)"
+                               class="search"></flogo-apps-search>
+          </div>-->
         </div>
       </div>
     </div>
