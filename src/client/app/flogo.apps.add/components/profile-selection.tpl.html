@@ -8,19 +8,24 @@
 
       <div class="flogo-profile__container">
 
-        <div class="flogo-profile__section" (click)="showDevicesList()">
-          <div class="flogo-profile__tile flogo-profile__device--selectable">
+        <div class="flogo-profile__section-wrapper">
+          <div class="flogo-profile__section" (click)="showDevicesList()">
+            <div class="flogo-profile__tile flogo-profile__device--selectable">
+            </div>
           </div>
-        </div>
-        <div class="flogo-profile__section" (click)="onAddProfile('microservice')">
-          <div class="flogo-profile__tile flogo-profile__microservice--selectable">
+          <div class="flogo-profile__section" (click)="onAddProfile('microservice')">
+            <div class="flogo-profile__tile flogo-profile__microservice--selectable">
+            </div>
           </div>
         </div>
 
-        <div class="flogo-profile__labels">
-          <div class="flogo-profile__label flogo-profile__device-label">{{'PROFILE-MODAL:LABEL_DEVICE' | translate}}</div>
-          <div class="flogo-profile__label flogo-profile__microservice-label">{{'PROFILE-MODAL:LABEL_MICROSERVICE' | translate}}</div>
+        <div class="flogo-profile__section-wrapper">
+          <div class="flogo-profile__labels">
+            <div class="flogo-profile__label flogo-profile__device-label">{{'PROFILE-MODAL:LABEL_DEVICE' | translate}}</div>
+            <div class="flogo-profile__label flogo-profile__microservice-label">{{'PROFILE-MODAL:LABEL_MICROSERVICE' | translate}}</div>
+          </div>
         </div>
+
       </div>
     </div>
 
