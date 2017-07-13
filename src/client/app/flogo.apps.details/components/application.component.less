@@ -21,8 +21,31 @@
   background: #fff;
 }
 
-.flogo-app-details {
+.flogo-app-details-container {
   padding-left: 0;
+
+  .flogo-app-details {
+    display: flex;
+    padding-left: 0;
+
+    .flogo-app-header__name-container {
+      width: 100%;
+    }
+
+    .flogo-app-details__icon {
+      width: 62px;
+      height: 62px;
+      fill:#fff;
+      background-color:#856cad;
+      margin-right: 10px;
+
+      .flogo-app-details__icon-wrapper {
+        width: 62px;
+        height: 62px;
+      }
+
+    }
+  }
 }
 
 
@@ -59,14 +82,16 @@
   }
 
   .flogo-app-header__edge-icon--profile {
+    pointer-events: none;
     width: 290px;
     height: 268px;
-    left: -140px;
+    left: -100px;
     top: -30px;
     fill: #856cad;
   }
 
   .flogo-app-header__edge-icon--device {
+    pointer-events: none;
     width: 345px;
     height: 286px;
     right: 0;
@@ -153,22 +178,32 @@
     }
   }
 
-  .flogo-app-header__go-back {
-    font-size: 14px;
-    position: absolute;
-    left: -8px;
-    top: 0;
-    height: 2em;
-    vertical-align: middle;
-    padding: 0.2em .3em 0.2em 0.2em;
+  .flogo-app-header__go-back-container {
+    position: relative;
+    left:60px;
+    color: white;
+    background-color: green;
+    width: 50px;
 
-    .flogo-icon {
-      display: inline-block;
-      vertical-align: text-bottom;
-      line-height: 2.1em;
+    .flogo-app-header__go-back {
+      position: absolute;
+      top: 0;
+      height: 2em;
+      vertical-align: middle;
+      padding: 0.2em .3em 0.2em 0.2em;
+
+      font-size: 1.5em;
+      color: #79b8dc;
+
+      .flogo-icon {
+        display: inline-block;
+        vertical-align: text-bottom;
+        line-height: 2.1em;
+      }
     }
-
   }
+
+
 
   .flogo-app-header__new-flow {
       padding: 0;

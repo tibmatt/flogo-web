@@ -1,6 +1,5 @@
 <modal [cssClass]="'flogo-common-modal flogo-profile__modal'" #profileSelectionModal (onClose)="onModalCloseOrDismiss()"
-       (onDismiss)="onModalCloseOrDismiss()"
-       style="animation: downElement 150ms 510ms ease-in forwards;">
+       (onDismiss)="onModalCloseOrDismiss()">
   <div class="flogo-profile__modal-body">
     <i class="flogo-icon-close flogo-profile__close" (click)="closeModal()"></i>
     <div *ngIf="!showList">
