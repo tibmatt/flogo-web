@@ -70,6 +70,8 @@ export class FlogoCanvasComponent implements OnInit {
   flowName: string;
   backToAppHover: boolean;
 
+  isDevice: boolean = false;
+
   public loading: boolean;
   public hasTrigger: boolean;
   public currentTrigger: any;
@@ -222,6 +224,7 @@ export class FlogoCanvasComponent implements OnInit {
 
         this.clearAllHandlersRunStatus();
         this.loading = false;
+        this.isDevice = this._flogoModal.isDeviceProfile(this.flow.app.deviceType);
 
       });
   }
