@@ -12,6 +12,7 @@ import { FlogoApplicationComponent } from './application.component';
 import { FlogoApplicationSearch } from '../../flogo.apps.search/components/search.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../../flogo.apps.flows/components';
 import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
+import {FlogoProfileService} from "../../../common/services/profile.service";
 
 
 @Component({
@@ -75,10 +76,11 @@ describe('FlogoApplicationComponent component', () => {
         FlogoApplicationFlowsComponent,
         FlogoApplicationComponent,
         FlowGroupComponent,
-        Container,
+        Container
       ], // declare the test component
       providers: [
         {provide: AppDetailService, useClass: MockAppDetailService},
+        FlogoProfileService
       ],
       //  schemas: [ NO_ERRORS_SCHEMA ]
     })

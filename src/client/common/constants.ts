@@ -2,6 +2,11 @@
  * Enumerations
  */
 
+export enum FLOGO_PROFILE_TYPE {
+  MICRO_SERVICE,
+  DEVICE
+}
+
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
   TASK,

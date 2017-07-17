@@ -23,6 +23,7 @@ import { WindowRef } from './services/window-ref';
 import { ChildWindowService } from './services/child-window.service';
 import {FlowsService} from "./services/flows.service";
 import {ProfilesAPIService} from "./services/restapi/v2/profiles-api.service";
+import {FlogoProfileService} from "./services/profile.service";
 
 @NgModule({
   providers: [ // services
@@ -50,7 +51,8 @@ import {ProfilesAPIService} from "./services/restapi/v2/profiles-api.service";
     LoadingStatusService,
     LanguageService,
     WindowRef,
-    FlowsService
+    FlowsService,
+    FlogoProfileService
   ]
 })
 export class CoreModule { }
