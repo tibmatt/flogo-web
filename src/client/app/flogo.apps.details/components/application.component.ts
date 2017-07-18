@@ -13,6 +13,8 @@ import { SanitizeService } from '../../../common/services/sanitize.service';
 
 import { diffDates, notification } from '../../../common/utils';
 import { FlogoModal } from '../../../common/services/modal.service';
+import {FLOGO_PROFILE_TYPE} from "../../../common/constants";
+import {FlogoProfileService} from "../../../common/services/profile.service";
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -50,11 +52,13 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   isBuildBoxShown: boolean = false;
   downloadLink: string;
 
-  isDevice: boolean = false;
+  profileType: FLOGO_PROFILE_TYPE;
+  PROFILE_TYPES : typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal,
+              public profileSerivce: FlogoProfileService,
               private sanitizer: SanitizeService) {
   }
 
@@ -74,7 +78,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
       this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
       // this.flows = this.extractFlows();
 
-      this.isDevice = this.flogoModal.isDeviceProfile(this.application.deviceType);
+      this.profileType = this.profileSerivce.getProfileType(this.application);
 
       let prevValue = change.previousValue;
       let isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id != this.application.id;
