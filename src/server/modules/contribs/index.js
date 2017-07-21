@@ -27,6 +27,10 @@ export class ContribsManager {
     return cleanedContribution;
   }
 
+  static find(terms = {}) {
+    return contribsDb.find(terms)
+  }
+
   static create(urls) {
     const install = (contribution => {
       return new Promise((resolve, reject)=> {

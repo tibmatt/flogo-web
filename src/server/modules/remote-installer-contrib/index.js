@@ -4,7 +4,7 @@ import path from 'path';
 import { fromUrl } from 'hosted-git-info';
 import * as URL  from 'url';
 import { http } from 'http';
-import { getFileContent, readJSONFile, writeJSONFile } from '../../common/utils';
+import { getFileContent  } from '../../common/utils';
 import { contribs as contribsDb } from '../../common/db';
 
 

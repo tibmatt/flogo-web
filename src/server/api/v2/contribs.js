@@ -12,7 +12,18 @@ export function contribs(router, basePath){
 }
 
 function *listContribs() {
-  const foundContribs = yield ContribsManager.list();
+  const types = {
+    'trigger': 'flogo:device:trigger',
+    'activity': 'flogo:device:activity',
+  };
+
+  const search = {};
+  const type = this.request.query['filter[type]'];
+  if(type) {
+    search.type = (types[type]? types[type] : type);
+  }
+
+  const foundContribs = yield ContribsManager.find(search);
   this.body = {
     data: foundContribs || [],
   };
