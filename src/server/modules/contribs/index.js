@@ -73,6 +73,10 @@ export class ContribsManager {
     return contribsDb.findOne({name});
   }
 
+  static findByRef(ref) {
+    return contribsDb.findOne({ ref });
+  }
+
   static list() {
     return contribsDb.find({});
   }

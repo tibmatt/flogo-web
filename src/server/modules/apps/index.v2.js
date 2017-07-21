@@ -16,7 +16,7 @@ import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
-import { importApp } from './import.v2';
+import {importApp} from './import.v2';
 import { buildApp } from  './build';
 
 import { Validator } from './validator';
