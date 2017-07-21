@@ -66,6 +66,9 @@ let config = {
   indexer: {
     dbPath: path.resolve(DB_DIR, 'indexer.db'),
   },
+  contribs: {
+    dbPath: path.resolve(DB_DIR, 'contribs.db'),
+  },
   activities: {
     db: "http://localhost:5984/flogo-web-activities",
     defaultPath: "../../submodules/flogo-contrib/activity",

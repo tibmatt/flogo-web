@@ -2,6 +2,7 @@ import { generateShortId, ISONow } from './common';
 
 export { apps } from './apps';
 export { indexer } from './indexer';
+export { contribs } from './contribs';
 
 export const dbUtils = {
   /**

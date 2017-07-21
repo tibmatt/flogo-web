@@ -31,6 +31,15 @@ class Validator {
     return validate(triggerSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
+  static validateTriggerDeviceCreate(data) {
+    return validate(triggerDeviceSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+  static validateActivityDeviceCreate(data) {
+    return validate(activityDeviceSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+  }
+
+
   static validateTriggerUpdate(data) {
     return validate(triggerSchemaUpdate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
@@ -75,6 +84,94 @@ class Validator {
 
 
 export { Validator };
+
+function activityDeviceSchemaCreate() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
+    type: 'object',
+    required: [
+      'ref',
+      'name',
+      'type'
+    ],
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1,
+      },
+      description: {
+        type: 'string',
+      },
+      title: {
+        type: 'string',
+      },
+      type: {
+        type: 'string'
+      },
+      version: {
+        type: 'string'
+      },
+      ref: {
+        type: 'string',
+      },
+      settings: {
+        type: 'array',
+        default: [],
+      },
+      device_support: {
+        type: 'array',
+        default: [],
+      }
+    }
+  };
+}
+
+function triggerDeviceSchemaCreate() {
+  return {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
+    type: 'object',
+    required: [
+      'ref',
+      'name',
+      'type'
+    ],
+    properties: {
+      name: {
+        type: 'string',
+        minLength: 1,
+      },
+      description: {
+        type: 'string',
+      },
+      title: {
+        type: 'string',
+      },
+      type: {
+        type: 'string'
+      },
+      version: {
+        type: 'string'
+      },
+      ref: {
+        type: 'string',
+      },
+      settings: {
+        type: 'array',
+        default: [],
+      },
+      outputs: {
+        type: 'array',
+        default: [],
+      },
+      device_support: {
+        type: 'array',
+        default: [],
+      }
+    }
+  };
+}
 
 function triggerSchemaCreate() {
   return {
