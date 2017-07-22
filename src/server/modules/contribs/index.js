@@ -31,13 +31,13 @@ export class ContribsManager {
     return contribsDb.find(terms)
   }
 
-  static create(urls) {
-    const install = (contribution => {
+  static install(urls) {
+    const installContrib = (contribution => {
       return new Promise((resolve, reject)=> {
-        contribution._id = contribution.ref;
-        return contribsDb.put(contribution)
-          .then((result)=> resolve(contribution))
-          .catch((err)=> reject(contribution));
+        contribution.content._id = contribution.content.ref;
+        return contribsDb.put(contribution.content)
+          .then((result)=> resolve({ref:contribution.ref, status:'success'}))
+          .catch((err)=> resolve({ref:contribution.ref, status: 'fail'}));
       });
     });
 
@@ -46,18 +46,26 @@ export class ContribsManager {
       return RemoteInstallerContrib.getContentFromUrls(urls)
         .then(contributions => {
           const installPromises = [];
+
           contributions.forEach((contribution) => {
-            const cleanContribution = this.cleanInput(contribution.content);
-            const validateFunction = (contribution.type === 'trigger') ? Validator.validateTriggerDeviceCreate : Validator.validateActivityDeviceCreate;
-            const errors = validateFunction(cleanContribution);
-            installPromises.push(errors ? Promise.reject(contribution.content) : install(contribution.content));
+
+            if(contribution.content) {
+              const cleanContribution = this.cleanInput(contribution.content);
+              const validateFunction = (contribution.content.type === 'flogo:device:trigger') ? Validator.validateTriggerDeviceCreate : Validator.validateActivityDeviceCreate;
+              const errors = validateFunction(cleanContribution);
+              installPromises.push(errors ? Promise.resolve({ref: contribution.ref, status: 'fail'}) : installContrib(contribution));
+            } else {
+              installPromises.push({ref: contribution.ref, status: 'fail'})
+            }
           });
-          const mapResponse = (response) => (response || []).map((res) => res.ref);
           Promise.all(installPromises)
-            .then((results) => resolve({success: mapResponse(results), fail: [] }) )
-            .catch(err => resolve({success: [], fail: mapResponse([err]) }));
-        })
-        .catch(err => reject(err));
+            .then((results)=> {
+              const installResults = {success: [], fail: []};
+              installResults.success = results.filter((result)=> result.status == 'success').map((item)=> item.ref);
+              installResults.fail = results.filter((result)=> result.status == 'fail').map((item)=> item.ref);
+              resolve(installResults);
+            });
+        });
     });
   }
 

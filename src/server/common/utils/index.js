@@ -340,3 +340,25 @@ export function splitLines(str) {
 export function cleanAsciiColors(line) {
   return line.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,"");
 }
+
+/**
+ * Get the content of an external file
+ * @param url
+ * @returns {Promise|Promise<T>}
+ */
+export function getRemoteFileContent(url) {
+
+  return new Promise((resolve, reject) => {
+    const lib = url.startsWith('https') ? require('https') : require('http');
+    const request = lib.get(url, (response) => {
+      if (response.statusCode < 200 || response.statusCode > 299) {
+        reject(new Error('Failed to load file, status: ' + response.statusCode));
+      }
+      const body = [];
+      response.on('data', (chunk) => body.push(chunk));
+      response.on('end', () => resolve(body.join('')));
+    });
+    request.on('error', (err) => reject(err))
+  });
+
+}

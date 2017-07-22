@@ -3,6 +3,7 @@ import path from 'path';
 import {Engine} from './engine';
 import { logger, engineLogger } from '../../common/logging';
 import {config} from '../../config/app-config';
+import { installDeviceContributions } from './../init/install-device-contribs';
 
 let engineRegistry = {};
 
@@ -62,7 +63,7 @@ export function initEngine(engine, options) {
             // TODO: add palette version
             let palettePath = path.resolve('config', config.defaultEngine.defaultPalette);
             logger.info(`Will install palette at ${palettePath}`);
-            return engine.installPalette(palettePath);
+            return Promise.all([engine.installPalette(palettePath), installDeviceContributions()]);
           })
           .catch(error => {
             logger.error('Error initializing engine. Will try to clean up');

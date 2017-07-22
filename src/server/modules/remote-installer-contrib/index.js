@@ -1,23 +1,13 @@
-// import { config } from '../../config/app-config';
 import _ from 'lodash';
 import path from 'path';
 import { fromUrl } from 'hosted-git-info';
 import * as URL  from 'url';
-import { http } from 'http';
-import { getFileContent  } from '../../common/utils';
-import { contribs as contribsDb } from '../../common/db';
+import { getRemoteFileContent  } from '../../common/utils';
 
 
 export class RemoteInstallerContrib {
 
   static getRepoUrlParts(url) {
-    url = url || '';
-
-    // If url doesn't have a protocol, add it
-    if (url.toLowerCase().search(/^(http|https)/) == -1){
-      url = 'https://' + url;
-    }
-
     let user = '', repo = '', path = '';
     let normalizedUrl = URL.parse(url);
     const urlItems = (normalizedUrl.path || '').split('/');
@@ -37,43 +27,57 @@ export class RemoteInstallerContrib {
   static getContentFromUrls(sourceURLs) {
     const promises = [];
 
-    return new Promise((resolve, reject) => {
-          sourceURLs.forEach((url) => {
-            const repoUrlParts = this.getRepoUrlParts(url);
-            const repoInfo = fromUrl(repoUrlParts.repoUrl);
-            // get raw url
-            let fileUrl = repoInfo.file(path.join(repoUrlParts.path, 'activity.json'));
-            // fall back
-            let promise = new Promise((resolve, reject)=> {
-              getFileContent(fileUrl)
-                .then((result) => {
-                  resolve({content:JSON.parse(result), type:'activity'})
-                })
-                .catch(err => {
-                  let fileUrl = repoInfo.file(path.join(repoUrlParts.path, 'trigger.json'));
-                  getFileContent(fileUrl)
-                    .then((result) => {
-                      resolve({content:JSON.parse(result), type: 'trigger'})
-                    })
-                    .catch(err => {
-                      reject('Cannot find activity.json or trigger.json');
-                    })
-                });
-            });
+    const urls = sourceURLs.map((url) => {
+      let protocol = '';
+      let sourceURL = (url || '').toLowerCase();
+      // If url doesn't have a protocol, add it
+      if (sourceURL.search(/^(http|https)/) == -1){
+           protocol = 'http://';
+      }
+      return {formatted:`${protocol}${sourceURL}`, original: url};
+    });
 
+    const getJSONContent = function (url) {
+
+      return getRemoteFileContent(url)
+        .then((result)=> JSON.parse(result))
+        .catch(err => Promise.reject(err) );
+    };
+
+    return new Promise((resolve, reject) => {
+          urls.forEach((url) => {
+            let promise = null;
+            // if is a raw url
+            if(url.formatted.endsWith('.json')) {
+              promise = getJSONContent(url.formatted)
+                  .then((result)=> Promise.resolve({content:result, ref: url.original}))
+                  .catch(err=> Promise.resolve({content:null, ref: url.original}));
+            } else {
+              const repoUrlParts = this.getRepoUrlParts(url.formatted);
+              const repoInfo = fromUrl(repoUrlParts.repoUrl);
+              if(!repoInfo) {
+                promise = Promise.resolve({content: null, ref:url.original});
+              } else {
+                // get raw url
+                let fileUrl = repoInfo.file(path.join(repoUrlParts.path, 'activity.json'));
+                // fall back
+                promise = getJSONContent(fileUrl)
+                    .then((result) => Promise.resolve({content:result, ref: url.original}))
+                    .catch(err => {
+                      let fileUrl = repoInfo.file(path.join(repoUrlParts.path, 'trigger.json'));
+                      return getJSONContent(fileUrl)
+                        .then((result) => Promise.resolve({content:result, ref: url.original}))
+                        .catch(err => Promise.resolve({content: null, ref: url.original}) )
+                    });
+              }
+            }
             promises.push(promise);
           }); // end forEach sourceURLS
 
-          const contribs = [];
-          return Promise.all(promises).then(results => {
-            results = results || [];
-            results.forEach((result) => {
-              contribs.push(result);
-            });
-            resolve(contribs);
-          }).catch(err => {
-            reject(new Error(err));
-          });
+          return Promise.all(promises)
+            .then(results => resolve(results))
+            .catch(err => reject(new Error(err)));
+
     });
   }
 

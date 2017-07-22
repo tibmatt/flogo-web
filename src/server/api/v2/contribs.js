@@ -1,6 +1,7 @@
 import { config } from '../../config/app-config';
 import { inspectObj } from '../../common/utils';
 import { ContribsManager  } from '../../modules/contribs/'
+import { ErrorManager } from '../../common/errors';
 import path from 'path';
 
 let basePath = config.app.basePath;
@@ -41,12 +42,23 @@ function* installContribs( next ) {
 
   let results = {};
     try {
-      results = yield ContribsManager.create( urls );
+      results = yield ContribsManager.install( urls );
     } catch ( err ) {
       throw new Error( '[error] Encounter error to add contributions to test engine.' );
     }
 
-  this.body = results;
+  if(results.fail.length) {
+    throw ErrorManager.createRestError('Installation error in /contributions installContribs', {
+      status: 400,
+      title: 'Installation error',
+      detail: 'There were one or more installation contrib problems',
+      meta: results,
+    });
+  }
+
+  this.body =  {
+    data: results
+  };
 
   yield next;
 }
