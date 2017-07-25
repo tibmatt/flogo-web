@@ -28,6 +28,7 @@
     "co-request": "1.0.0",
     "concurrently": "^2.0.0",
     "fs-extra": "^0.30.0",
+    "hosted-git-info": "2.5.0",
     "koa": "^1.2.0",
     "koa-body": "1.6.0",
     "koa-bodyparser": "^2.0.1",

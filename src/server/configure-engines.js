@@ -1,5 +1,5 @@
 import { config } from './config/app-config';
-import { apps, indexer } from './common/db';
+import { apps, indexer, contribs } from './common/db';
 import { syncTasks, installDefaults, getInitializedEngine, ensureDefaultDirs } from './modules/init';
 
 ensureDefaultDirs()
@@ -17,6 +17,7 @@ ensureDefaultDirs()
     Promise.all([
       apps.compact(),
       indexer.compact(),
+      contribs.compact()
     ]);
   })
   .catch(error => {
