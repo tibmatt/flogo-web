@@ -25,6 +25,13 @@ export const FLOGO_FLOW_DIAGRAM_NODE_TYPE = {
   "NODE_ROOT_ERROR_NEW":10
 };
 
+export const FLOGO_PROFILE_TYPES = {
+  0: "MICRO_SERVICE",
+  1: "DEVICE",
+  "MICRO_SERVICE": 0,
+  "DEVICE": 1,
+};
+
 export const FLOGO_TASK_TYPE = {
   0: "TASK_ROOT",
   1: "TASK",

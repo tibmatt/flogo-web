@@ -2,12 +2,15 @@ import pick from 'lodash/pick';
 import mapKeys from 'lodash/mapKeys';
 
 import { TriggerManager as TriggerContribManager } from '../triggers';
+import { ContribsManager as ContribDeviceManager } from '../contribs';
 import { apps as appsDb, dbUtils } from '../../common/db';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { Validator } from './validator';
 
 import { findGreatestNameIndex } from '../../common/utils/collection';
+import { getProfileType } from '../../common/utils/profile';
+import {FLOGO_PROFILE_TYPES} from "../../common/constants";
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
@@ -59,18 +62,26 @@ export class AppsTriggersManager {
       return Promise.reject(ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND }));
     }
 
-    return appsDb.findOne({ _id: appId }, { triggers: 1 })
+    return appsDb.findOne({ _id: appId }, { triggers: 1 , device: 1})
       .then(app => {
         if (!app) {
           throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
 
+        const appProfile = getProfileType(app);
         const errors = Validator.validateTriggerCreate(triggerData);
         if (errors) {
           throw ErrorManager.createValidationError('Validation error', errors);
         }
 
-        return TriggerContribManager.findByRef(triggerData.ref)
+        let triggerContribPromise;
+        if(appProfile === FLOGO_PROFILE_TYPES.MICRO_SERVICE){
+          triggerContribPromise = TriggerContribManager.findByRef(triggerData.ref);
+        } else {
+          triggerContribPromise = ContribDeviceManager.findByRef(triggerData.ref);
+        }
+
+        return triggerContribPromise
           .then(contribTrigger => {
             if (!contribTrigger) {
               throw ErrorManager.createValidationError('Validation error', [{
