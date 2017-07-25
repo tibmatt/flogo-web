@@ -14,6 +14,7 @@ import { FlogoApplicationComponent } from '../flogo.apps.details/components/appl
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flogo.apps.flows/components';
 import { FlogoAppListComponent } from '../flogo.apps.list/components/app.list.component';
 import { FlogoApplicationSearch } from '../flogo.apps.search/components/search.component';
+import { FlogoAppSettingsComponent } from '../flogo.apps.settings/components/settings.component';
 
 import { AppDetailService } from './services/apps.service';
 
@@ -40,6 +41,7 @@ import {ProfileSelectionComponent} from "../flogo.apps.add/components/profile-se
     FlowGroupComponent,
     FlogoAppListComponent,
     FlogoApplicationSearch,
+    FlogoAppSettingsComponent,
     FlogoAppImportErrorComponent,
     ProfileSelectionComponent
   ],

@@ -38,6 +38,7 @@
   "APP-DETAIL:CONFIRM_DELETE": "Are you sure you want to delete the application \"{{appName}}\"?",
   "APP-DETAIL:EMPTY-TRIGGER": "No trigger",
   "APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE":"Delete flow?",
+  "SETTINGS:TITLE":"Settings",
   "CANVAS:ADD-FLOW-DESCRIPTION": "Add flow's description",
   "CANVAS:COPIED-TRIGGER": "Successfully copied",
   "CANVAS:ARM-LINUX": "ARM/Linux",
