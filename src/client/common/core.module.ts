@@ -24,6 +24,7 @@ import { ChildWindowService } from './services/child-window.service';
 import {FlowsService} from "./services/flows.service";
 import {ProfilesAPIService} from "./services/restapi/v2/profiles-api.service";
 import {FlogoProfileService} from "./services/profile.service";
+import {RESTAPIContributionsService} from "./services/restapi/v2/contributions.service";
 
 @NgModule({
   providers: [ // services
@@ -38,6 +39,7 @@ import {FlogoProfileService} from "./services/profile.service";
     AppsApiService,
     APIFlowsService,
     ProfilesAPIService,
+    RESTAPIContributionsService,
 
     RunService,
     ChildWindowService,

@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep';
-import assign from 'lodash/assign';
 
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
@@ -14,6 +13,7 @@ import { TriggerManager as ContribTriggersManager } from '../triggers';
 import { ContribsManager as ContribDeviceManager } from '../contribs';
 import {FLOGO_PROFILE_TYPES} from "../../common/constants";
 import {getProfileType} from "../../common/utils/profile";
+import {getDefaultValueByType} from "../../common/utils/index";
 
 export function importApp(fromApp) {
   const clonedApp = cloneDeep(fromApp);
@@ -29,10 +29,11 @@ export function importApp(fromApp) {
     })
     .then(() => AppsManager.create(clonedApp))
     .then(app => {
-      return ContribDeviceManager.find({type:'flogo:device:activity'})
-        .then(activityContribs => {
+      return Promise.all([ContribDeviceManager.find({type:'flogo:device:trigger'}),
+        ContribDeviceManager.find({type:'flogo:device:activity'})])
+        .then(([triggerContribs, activityContribs]) => {
           if(appProfile === FLOGO_PROFILE_TYPES.DEVICE) {
-            fromApp.triggers = fromApp.triggers.map(trigger => deviceTriggerFormatter(trigger));
+            fromApp.triggers = fromApp.triggers.map(trigger => deviceTriggerFormatter(trigger, triggerContribs));
             fromApp.actions = fromApp.actions.map(action => deviceActionFormatter(action, activityContribs));
           }
           const groups = makeActionGroups(fromApp.triggers, fromApp.actions);
@@ -98,11 +99,21 @@ function getInstalledActivitiesAndTriggers(profileType) {
   return contribPromise.then(([triggers, activities]) => ({ triggers, activities }));
 }
 
-function deviceTriggerFormatter(trigger){
+function deviceTriggerFormatter(trigger, installedTriggers){
+  let triggerSettingsArray = cloneDeep(installedTriggers.find(triggerContrib => trigger.ref === triggerContrib.ref).settings);
+  let fullTriggerSettings = {};
+  triggerSettingsArray.forEach(triggerSetting => {
+    fullTriggerSettings[triggerSetting.name] = getDefaultValueByType(triggerSetting.type);
+    if(trigger.settings[triggerSetting.name]){
+      fullTriggerSettings[triggerSetting.name] = trigger.settings[triggerSetting.name];
+    }
+  });
+  trigger.settings = fullTriggerSettings;
   trigger.handlers = [];
-  trigger.handlers.push(assign({
-    "settings": {}
-  }, {actionId: trigger.actionId}));
+  trigger.handlers.push({
+    "settings": {},
+    actionId: trigger.actionId
+  });
   return trigger;
 }
 
@@ -111,15 +122,14 @@ function deviceActionFormatter(action, installedActivities){
     action.name = action.id;
   }
   if(action.data.flow){
-    action.data.flow.rootTask = assign({
+    action.data.flow.rootTask = {
       id: 1,
       type: 1,
-      links: action.data.flow.links,
-      tasks: action.data.flow.tasks
-    });
+      links: cloneDeep(action.data.flow.links),
+      tasks: cloneDeep(action.data.flow.tasks)
+    };
     action.data.flow.rootTask.tasks = action.data.flow.rootTask.tasks.map(function(task){
-      let attributesArray = assign(installedActivities.find(activity => activity.ref === task.activityRef));
-      attributesArray = attributesArray.settings;
+      let attributesArray = cloneDeep(installedActivities.find(activity => activity.ref === task.activityRef).settings);
       attributesArray = attributesArray.map(function(attribute){
         attribute.value = "";
         if(task.attributes[attribute.name]){

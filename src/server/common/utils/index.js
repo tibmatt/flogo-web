@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { spawn } from 'child_process';
 import { inspect } from 'util';
 
-import { FLOGO_TASK_TYPE } from '../constants';
+import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../constants';
 
 export * from './file';
 export * from './request';
@@ -361,4 +361,24 @@ export function getRemoteFileContent(url) {
     request.on('error', (err) => reject(err))
   });
 
+}
+
+export function getDefaultValueByType(type) {
+  let defaultValues = [];
+  let typeEnum = FLOGO_TASK_ATTRIBUTE_TYPE[type.toUpperCase()];
+
+  if(!typeEnum){
+    typeEnum = FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
+  }
+
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INT] = 0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER] = 0.0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN] = false;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY] = [];
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS] = null;
+
+  return defaultValues[typeEnum];
 }
