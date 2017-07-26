@@ -20,8 +20,11 @@ function *listContribs() {
 
   const search = {};
   const type = this.request.query['filter[type]'];
+  const ref = this.request.query['filter[ref]'];
   if(type) {
     search.type = (types[type]? types[type] : type);
+  } else if(ref){
+    search.ref = ref;
   }
 
   const foundContribs = yield ContribsManager.find(search);

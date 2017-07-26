@@ -69,6 +69,7 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   5: "ARRAY",
   6: "PARAMS",
   7: "ANY",
+  8: "INT",
   "STRING": 0,
   "INTEGER": 1,
   "NUMBER": 2,
@@ -76,7 +77,8 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   "OBJECT": 4,
   "ARRAY": 5,
   "PARAMS": 6,
-  "ANY": 7
+  "ANY": 7,
+  "INT": 8
 };
 
 export const FLOGO_ENGINE_STATUS = {
