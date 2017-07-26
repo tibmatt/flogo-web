@@ -373,6 +373,7 @@ export function getDefaultValueByType(type) {
 
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INT] = 0;
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER] = 0.0;
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN] = false;
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
