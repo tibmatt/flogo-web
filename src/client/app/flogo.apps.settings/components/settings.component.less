@@ -1,3 +1,87 @@
 :host{
 }
 
+.device-properties {
+  display: flex;
+  height: 200px;
+}
+
+
+  .device-properties__header {
+    margin-top: -40px;
+    margin-bottom: 20px;
+  }
+
+  .device-properties__commands {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .device-properties__close {
+    color: #b5b5b5;
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+  }
+
+  .device-properties__categories {
+    width: 20%;
+    border-right: 1px solid grey;
+  }
+
+  .device-properties__categories--selected {
+    background: grey;
+    color: white;
+  }
+
+  .device-properties__categories ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  .device-properties__categories ul li {
+    list-style-type: none;
+    &:hover {
+      background: #d1d3d4;
+      cursor: pointer;
+    }
+  }
+
+.device-properties__settings {
+  margin-left: 30px;
+  width: 80%;
+  overflow: scroll;
+}
+
+  .device-properties__settings input {
+    width: 90%;
+    margin-bottom: 15px;
+  }
+
+  .device-properties__settings--custom {
+    .device-properties__settings;
+  }
+
+
+    .device-properties__settings--custom input{
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .device-properties__settings--custom__key  {
+      width: 20%;
+    }
+
+    .device-properties__settings--custom__separator  {
+      width: 10%;
+      text-align: center;
+    }
+
+    .device-properties__settings--custom__value  {
+      width: 40%;
+    }
+
