@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep';
-import assign from 'lodash/assign';
 
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
@@ -100,9 +99,10 @@ function getInstalledActivitiesAndTriggers(profileType) {
 
 function deviceTriggerFormatter(trigger){
   trigger.handlers = [];
-  trigger.handlers.push(assign({
-    "settings": {}
-  }, {actionId: trigger.actionId}));
+  trigger.handlers.push({
+    "settings": {},
+    actionId: trigger.actionId
+  });
   return trigger;
 }
 
@@ -111,15 +111,14 @@ function deviceActionFormatter(action, installedActivities){
     action.name = action.id;
   }
   if(action.data.flow){
-    action.data.flow.rootTask = assign({
+    action.data.flow.rootTask = {
       id: 1,
       type: 1,
-      links: action.data.flow.links,
-      tasks: action.data.flow.tasks
-    });
+      links: cloneDeep(action.data.flow.links),
+      tasks: cloneDeep(action.data.flow.tasks)
+    };
     action.data.flow.rootTask.tasks = action.data.flow.rootTask.tasks.map(function(task){
-      let attributesArray = assign(installedActivities.find(activity => activity.ref === task.activityRef));
-      attributesArray = attributesArray.settings;
+      let attributesArray = cloneDeep(installedActivities.find(activity => activity.ref === task.activityRef).settings);
       attributesArray = attributesArray.map(function(attribute){
         attribute.value = "";
         if(task.attributes[attribute.name]){
