@@ -8,12 +8,16 @@ import {
 } from "./ui-model-flow.mock";
 import {mockErrorTrigger, mockTrigger, mockTriggerDetails} from "./ui-model-trigger.mock";
 import Spy = jasmine.Spy;
+import {FlogoProfileService} from "../../../common/services/profile.service";
+import {RESTAPIContributionsService} from "../../../common/services/restapi/v2/contributions.service";
 
 describe("Service: UI Model Converter", function(this: {
   service: UIModelConverterService,
   errorService: ErrorService,
   triggerServiceMock: RESTAPITriggersService,
-  activityServiceMock: RESTAPIActivitiesService
+  activityServiceMock: RESTAPIActivitiesService,
+  profileService: FlogoProfileService,
+  contribServiceMock: RESTAPIContributionsService
 }){
 
   beforeEach(()=>{
@@ -23,8 +27,13 @@ describe("Service: UI Model Converter", function(this: {
     this.activityServiceMock = jasmine.createSpyObj<RESTAPIActivitiesService>('activityService', [
       'getActivityDetails'
     ]);
+    this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>('contribService', [
+      'getContributionDetails'
+    ]);
     this.errorService = new ErrorService();
-    this.service = new UIModelConverterService(this.triggerServiceMock, this.activityServiceMock, this.errorService);
+    this.profileService = new FlogoProfileService();
+    this.service = new UIModelConverterService(this.triggerServiceMock,
+      this.activityServiceMock, this.contribServiceMock, this.profileService, this.errorService);
   });
 
   it('Should throw error when trigger does not have a ref', ()=> {
