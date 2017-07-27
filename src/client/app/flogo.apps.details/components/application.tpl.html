@@ -71,16 +71,28 @@
                        (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
               </div>
 
+              <!--
+              <flogo-apps-settings *ngIf="profileType === PROFILE_TYPES.DEVICE"
+                                   (save)="onSaveDeviceSettings($event)"
+                                   [settings]="application?.device?.settings"></flogo-apps-settings>
+                                   -->
+
             </div> <!-- details -->
 
           </div>
-          <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+          <div style="display: flex">
+            <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+            <flogo-apps-settings *ngIf="profileType === PROFILE_TYPES.DEVICE"
+                                 (save)="onSaveDeviceSettings($event)"
+                                 [settings]="application?.device?.settings"></flogo-apps-settings>
+          </div>
         </div>
 
         <!-- commands -->
         <div class="col-md-5">
           <div class="flogo-app-header__options">
-            <flogo-apps-settings></flogo-apps-settings>
+
+
             <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
               {{ 'DETAILS:EXPORT' | translate }}
             </button>

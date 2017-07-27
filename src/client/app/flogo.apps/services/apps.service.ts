@@ -91,6 +91,9 @@ export class AppDetailService {
   public update(prop: string, value: any) {
     const appToUpdate = this.getCurrentAsEditable();
     const appToUpdateId = appToUpdate.app.id;
+    if(!appToUpdate.state[prop]) {
+      appToUpdate.state[prop] = {};
+    }
     appToUpdate.state[prop].pendingSave = true;
     this.currentApp$.next(appToUpdate);
 

@@ -1,61 +1,117 @@
-<button class="flogo-button flogo-button--secondary" (click)="openModal()">
-  {{ 'SETTINGS:TITLE' | translate }}
-</button>
+<button class="flogo-button--flat js-open-modal settings__title" (click)="openModal()">
+  <i class="flogo-icon-settings"></i>{{ 'SETTINGS:TITLE' | translate }}</button>
 
 
-<modal [size]="'sm'" #modal>
-  <i class="flogo-icon-close device-properties__close" (click)="closeModal()"></i>
+<modal cssClass="device-settings-modal" [size]="'sm'" #modal>
     <modal-body>
-      <div class="device-properties__header">
-        <h3>{{ 'SETTINGS:TITLE' | translate }}</h3>
-      </div>
+     <div class="device-settings">
+       <i class="flogo-icon-close device-settings__close" (click)="closeModal()"></i>
+       <div class="device-settings__header">
+         <h3>{{ 'SETTINGS:TITLE' | translate }}</h3>
+       </div>
 
-      <div class="device-properties">
+       <div class="device-settings__container">
+         <div class="device-settings__main">
+           <div class="device-settings__categories">
+             <ul *ngIf="inputSettings">
+               <li *ngFor="let input of inputSettings" class="device-settings__category"
+                   [ngClass]="{'device-settings__category--selected':input.key === selectedInput?.key}"
+                   (click)="selectInput(input)">{{input.key}}</li>
+             </ul>
+           </div>
 
-        <div class="device-properties__categories">
-          <ul *ngIf="inputSettings">
-            <li *ngFor="let input of inputSettings"
-                [ngClass]="{'device-properties__categories--selected':input.key === selectedInput?.key}"
-                (click)="selectInput(input)">{{input.key}}</li>
-          </ul>
-        </div>
+           <div class="device-settings__details" *ngIf="selectedInput && selectedInput.key !== 'other'">
+             <div class="device-settings__property" *ngFor="let key of selectedInput.settings | keys">
+               <label>{{key}}</label>
+               <input type="text" (ngModelChange)="onSettingsChange()" [(ngModel)]="selectedInput.settings[key]" [ngModelOptions]="{standalone: true}" />
+             </div>
+           </div>
 
-        <div class="device-properties__settings" *ngIf="selectedInput && selectedInput.key !== 'other'">
-          <div *ngFor="let key of selectedInput.settings | keys">
-            <div>{{key}}</div>
-            <input type="text" [(ngModel)]="selectedInput.settings[key]" [ngModelOptions]="{standalone: true}" />
-          </div>
-        </div>
+           <div class="device-settings__details" *ngIf="selectedInput && selectedInput.key === 'other'">
+             <div class="device-settings__other-header">Define additional properties here: </div>
+
+             <div *ngFor="let custom of customSettings" class="device-settings__other">
+               <div class="device-settings__other-key">
+                 <input type="text" placeholder="key" (ngModelChange)="onSettingsChange()" [(ngModel)]="custom.key" />
+               </div>
+               <div class="device-settings__other-separator">:</div>
+               <div class="device-settings__other-value">
+                 <input type="text" placeholder="value" (ngModelChange)="onSettingsChange()" [(ngModel)]="custom.value" />
+               </div>
+               <div class="device-settings__other-add device-settings__other-add--hidden">
+                 <i class="flogo-icon-delete" (click)="removeCustom(custom)"></i>
+               </div>
+             </div>
+
+             <!-- new other -->
+             <div class="device-settings__other">
+               <div class="device-settings__other-key">
+                 <input type="text" placeholder="key" (ngModelChange)="onSettingsChange()" [(ngModel)]="otherItem.key" />
+               </div>
+               <div class="device-settings__other-separator">:</div>
+               <div class="device-settings__other-value">
+                 <input type="text" placeholder="value" (ngModelChange)="onSettingsChange()" [(ngModel)]="otherItem.value" />
+               </div>
+               <button class="device-settings__other-add"
+                       [disabled]="!this.otherItem.key && !this.otherItem.value"
+                       (click)="addCustom()">
+                 {{ 'SETTINGS:ADD' | translate }}
+               </button>
+             </div>
+             <!-- /new other -->
+
+           </div>
+         </div>
+       </div>
+
+       <div class="device-settings__commands">
+         <div>
+           <button type="button" class="flogo-button--secondary" data-dismiss="modal" (click)="closeModal()">{{ 'SETTINGS:CANCEL' | translate }}</button>
+           <button type="submit" class="flogo-button--default" (click)="saveChanges()" [disabled]="!hasChanges">
+             {{ 'SETTINGS:SAVE' | translate }}
+           </button>
+         </div>
+       </div>
 
 
-        <div class="device-properties__settings--custom" *ngIf="selectedInput && selectedInput.key === 'other'">
-          <h4>Define additional properties here: </h4>
+       <!--
+       <div class="device-properties">
+         <div class="device-properties__categories">
+           <ul *ngIf="inputSettings">
+             <li *ngFor="let input of inputSettings"
+                 [ngClass]="{'device-properties__categories--selected':input.key === selectedInput?.key}"
+                 (click)="selectInput(input)">{{input.key}}</li>
+           </ul>
+         </div>
 
-          <div *ngFor="let custom of customSettings" style="display: flex">
-            <div class="device-properties__settings--custom__key">
-              <input type="text" placeholder="key" [(ngModel)]="custom.key" />
-            </div>
-
-            <div class="device-properties__settings--custom__separator">:</div>
-
-            <div class="device-properties__settings--custom__value">
-              <input type="text" placeholder="value" [(ngModel)]="custom.value" />
-            </div>
-          </div>
-          <button type="button" class="flogo-button--default" (click)="addCustom()">{{ 'SETTINGS:ADD' | translate }}</button>
-        </div>
-
-      </div>
-
-      <div class="device-properties__commands">
-        <div>
-          <button type="button" class="flogo-button--secondary" data-dismiss="modal" (click)="closeModal()">{{ 'SETTINGS:CANCEL' | translate }}</button>
-          <button type="submit" class="flogo-button--default" [disabled]="false">
-           {{ 'SETTINGS:SAVE' | translate }}
-         </button>
-        </div>
-      </div>
+         <div class="device-properties__settings" *ngIf="selectedInput && selectedInput.key !== 'other'">
+           <div *ngFor="let key of selectedInput.settings | keys">
+             <div>{{key}}</div>
+             <input type="text" (ngModelChange)="onSettingsChange()" [(ngModel)]="selectedInput.settings[key]" [ngModelOptions]="{standalone: true}" />
+           </div>
+         </div>
 
 
+         <div class="device-properties__other" *ngIf="selectedInput && selectedInput.key === 'other'">
+           <h4>Define additional properties here: </h4>
+           <div *ngFor="let custom of customSettings" style="display: flex">
+             <div class="device-properties__key">
+               <input type="text" placeholder="key" (ngModelChange)="onSettingsChange()" [(ngModel)]="custom.key" />
+             </div>
+             <div class="device-properties__separator">:</div>
+             <div class="device-properties__value">
+               <input type="text" placeholder="value" (ngModelChange)="onSettingsChange()" [(ngModel)]="custom.value" />
+             </div>
+           </div>
+           <button type="button" class="flogo-button--default" (click)="addCustom()">{{ 'SETTINGS:ADD' | translate }}</button>
+         </div>
+
+
+       </div>
+       -->
+
+
+
+     </div>
     </modal-body>
 </modal>

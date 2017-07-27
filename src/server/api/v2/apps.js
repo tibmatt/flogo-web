@@ -73,6 +73,7 @@ function* updateApp() {
   try {
     const appId = this.params.appId;
     const data = this.request.body || {};
+
     const app = yield AppsManager.update(appId, data);
 
     this.body = {
