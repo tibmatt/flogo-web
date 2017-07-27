@@ -5,10 +5,11 @@ import fromPairs from 'lodash/fromPairs';
 import isEqual from 'lodash/isEqual';
 import normalizeName from 'lodash/snakeCase';
 import escapeRegExp from 'lodash/escapeRegExp';
+import cloneDeep from 'lodash/cloneDeep';
 
 import shortid from 'shortid';
 
-import { DEFAULT_APP_ID, DEFAULT_APP_VERSION } from '../../common/constants';
+import {DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES} from '../../common/constants';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -20,6 +21,7 @@ import {importApp} from './import.v2';
 import { buildApp } from  './build';
 
 import { Validator } from './validator';
+import {getProfileType} from "../../common/utils/profile";
 
 const EDITABLE_FIELDS = [
   'name',
@@ -232,16 +234,33 @@ export class AppsManager {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
 
-        app.type = 'flogo:app';
+        const DEFAULT_COMMON_VALUES = [{
+          appType: "flogo:app",
+          actionRef: "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+        }, {
+          appType: "flogo:device",
+          actionRef: "github.com/TIBCOSoftware/flogo-contrib/device/action/flow"
+        }];
+
+        const appProfileType = getProfileType(app);
+
+        app.type = DEFAULT_COMMON_VALUES[appProfileType].appType;
         app.actions.forEach(a => {
-          // TODO extract into constant
-          a.ref = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
+          a.ref = DEFAULT_COMMON_VALUES[appProfileType].actionRef;
         });
 
-        // will strip additional metadata such as createdAt, updatedAt
-        const errors = Validator.validateFullApp(app, null, { removeAdditional: true, useDefaults: true });
-        if (errors && errors.length > 0) {
-          throw ErrorManager.createValidationError('Validation error', { details: errors });
+        if(appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
+          let allTriggers = [];
+          app.triggers.forEach(t => {
+            t.handlers.forEach((handler, ind) => {
+              let triggerName = t.name + (ind ? '('+ind+')' : '');
+              allTriggers.push(Object.assign({}, t, {
+                name: triggerName,
+                handlers: [handler]
+              }));
+            });
+          });
+          app.triggers = allTriggers;
         }
 
         const actionMap = new Map(app.actions.map(a => [a.id, a]));
@@ -278,6 +297,34 @@ export class AppsManager {
 
         if(!app.version) {
           app.version =  DEFAULT_APP_VERSION;
+        }
+
+        if(appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
+          app.triggers.forEach(trigger => {
+            trigger.actionId = trigger.handlers[0].actionId;
+            // delete trigger.handlers;
+          });
+          app.actions.forEach(action => {
+            if(action.data.flow){
+              action.data.flow.links = cloneDeep(action.data.flow.rootTask.links);
+              action.data.flow.tasks = cloneDeep(action.data.flow.rootTask.tasks);
+              action.data.flow.tasks.forEach(task => {
+                let attributes = {};
+                task.attributes.forEach(attribute => {
+                  attributes[attribute.name] = attribute.value;
+                });
+                task.attributes = attributes;
+              });
+              // delete action.data.flow.rootTask;
+              // delete action.data.flow.attributes;
+            }
+          });
+        }
+
+        // will strip additional metadata such as createdAt, updatedAt
+        const errors = Validator.validateFullApp(appProfileType, app, null, { removeAdditional: true, useDefaults: true });
+        if (errors && errors.length > 0) {
+          throw ErrorManager.createValidationError('Validation error', { details: errors });
         }
 
         return app;
