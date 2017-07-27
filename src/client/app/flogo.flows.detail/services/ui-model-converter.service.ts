@@ -58,7 +58,7 @@ export class UIModelConverterService {
    *
    * @param flowObj - Engine flow model JSON. See mockFlow in ./ui-model-flow.mock.ts
    * @param triggerObj - Engine trigger JSON. see mockTrigger in ./ui-model-trigger.mock.ts
-   * @return {uiFlowObj}
+   * @return {Promise<Object>}
    *
    * getWebFlowModel method can throw the following errors:
    *
@@ -78,18 +78,18 @@ export class UIModelConverterService {
 
   // todo: define interfaces
   getWebFlowModel(flowObj: any, triggerObj: any) {
-    let converterModelInstance: ModelConverterClass;
+    let converterModelInstance: AbstractModelConverter;
     if(this.profileSerivce.getProfileType(flowObj.app) === FLOGO_PROFILE_TYPE.MICRO_SERVICE){
-      converterModelInstance = new MicroServiceModelConverterClass(this.triggerService, this.activityService, this.errorService);
+      converterModelInstance = new MicroServiceModelConverter(this.triggerService, this.activityService, this.errorService);
     } else {
-      converterModelInstance = new DeviceModelConverterClass(this.contribService, this.errorService);
+      converterModelInstance = new DeviceModelConverter(this.contribService, this.errorService);
     }
     return converterModelInstance.convertToWebFlowModel(flowObj, triggerObj);
   }
 
 }
 
-abstract class ModelConverterClass {
+abstract class AbstractModelConverter {
   errorService: ErrorService;
   itemIndex = 2;
   constructor(errorService: ErrorService){
@@ -349,7 +349,7 @@ abstract class ModelConverterClass {
   }
 }
 
-class MicroServiceModelConverterClass extends ModelConverterClass {
+class MicroServiceModelConverter extends AbstractModelConverter {
   triggerService: RESTAPITriggersService;
   activityService: RESTAPIActivitiesService;
   constructor(triggerService: RESTAPITriggersService,
@@ -390,7 +390,7 @@ class MicroServiceModelConverterClass extends ModelConverterClass {
   }
 }
 
-class DeviceModelConverterClass extends ModelConverterClass {
+class DeviceModelConverter extends AbstractModelConverter {
   contribService: RESTAPIContributionsService;
   constructor(contribService: RESTAPIContributionsService,
               errorService: ErrorService){

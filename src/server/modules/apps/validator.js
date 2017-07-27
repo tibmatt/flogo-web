@@ -801,6 +801,7 @@ function fullDeviceAppSchema() {
       Flow: {
         title: 'flow',
         type: 'object',
+        additionalProperties: false,
         properties: {
           tasks: {
             type: 'array',
