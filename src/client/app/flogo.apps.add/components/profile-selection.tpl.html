@@ -8,7 +8,11 @@
       <div class="flogo-profile__container">
 
         <div class="flogo-profile__section-wrapper">
+          <!--
+          Temporarily avoiding the showDevicesList() call when user clicks on the device icon.
           <div class="flogo-profile__section" (click)="showDevicesList()">
+          -->
+          <div class="flogo-profile__section" (click)="onAddProfile(FLOGO_PROFILE_TYPE.DEVICE, 'Feather M0 WIFI')">
             <div class="flogo-profile__tile flogo-profile__device--selectable">
             </div>
           </div>
