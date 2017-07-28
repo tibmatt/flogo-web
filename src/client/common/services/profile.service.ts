@@ -61,7 +61,9 @@ export class FlogoProfileService {
       if (response.text()) {
         let data = response.json().data || [];
         return _.map(data, (activity:any) => {
-          activity.inputs = activity.settings;
+          if(profile === FLOGO_PROFILE_TYPE.DEVICE) {
+            activity.inputs = activity.settings;
+          }
           return _.assign(activitySchemaToTask(activity), {
             // TODO fix this installed status.
             // as of now, whatever can be read from db, should have been installed.
