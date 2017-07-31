@@ -83,7 +83,7 @@
             <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
               {{ 'DETAILS:EXPORT' | translate }}
             </button>
-            <div (fgClickOutside)="closeBuildBox()">
+            <div (fgClickOutside)="closeBuildBox()" *ngIf="profileType !== PROFILE_TYPES.DEVICE">
               <button class="flogo-button flogo-button--default flogo-app-detail-build-button" (click)="toggleBuildBox()">{{ 'DETAILS:BUILD' | translate }}</button>
               <div class="flogo-app-detail-build-list-wrapper"
                    [ngClass]="{'active' : isBuildBoxShown}">

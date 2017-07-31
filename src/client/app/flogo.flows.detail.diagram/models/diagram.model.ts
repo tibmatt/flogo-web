@@ -8,7 +8,7 @@ import {
 } from '../models';
 import { Selection } from 'd3';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
-import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '../../../common/constants';
 import { FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG } from '../constants';
 import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { genBranchLine } from '../utils';
@@ -67,6 +67,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   constructor( diagram : IFlogoFlowDiagram,
     private tasks : IFlogoFlowDiagramTaskDictionary,
     private translate: TranslateService,
+    private profileType: FLOGO_PROFILE_TYPE,
     private elm ? : HTMLElement,
     private diagramType? : string) {
     this.updateDiagram( diagram );
@@ -898,7 +899,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     nodeMenus.html( ( nodeInfo : any, ignore : number, idxInTotalNodes : number ) => {
       let tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i ${diagram.ng2StyleAttr} class="fa fa-plus"></i>${textAddBranch}</li>`;
 
-      let tplItemTransform = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i>${textTransform}</li>`;
+      let tplItemTransform = (this.profileType !== FLOGO_PROFILE_TYPE.DEVICE) ? `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i>${textTransform}</li>` : '';
 
       let tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i ${diagram.ng2StyleAttr} class="fa fa-trash-o"></i>${textDelete}</li>`;
 

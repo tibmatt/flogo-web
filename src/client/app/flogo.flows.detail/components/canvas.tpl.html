@@ -65,6 +65,8 @@
       <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
                                  [id]="'root'"
                                  [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
+                                 [appId]="flow?.app?.id"
+                                 [profileType]="profileType"
                                  data-flogo-diagram-id="root">
       </flogo-canvas-flow-diagram>
 
@@ -77,6 +79,7 @@
     <flogo-flows-detail-error-panel *ngIf="hasTrigger">
       <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
                                  [id]="'errorHandler'"
+                                 [profileType]="profileType"
                                  data-flogo-diagram-id="root"></flogo-canvas-flow-diagram>
     </flogo-flows-detail-error-panel>
 

@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { PostService} from '../../../common/services/post.service';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE } from '../../../common/constants';
 import { convertTaskID, normalizeTaskName, getDefaultValue } from "../../../common/utils";
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { ActivatedRoute } from "@angular/router";
@@ -32,6 +32,7 @@ export class FlogoFormBuilderComponent{
   _flowId:string;
   hasErrors : boolean = false;
   @Output() onBuilderAction: EventEmitter<string>;
+  PROFILE_TYPES : typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
   constructor(public route: ActivatedRoute, private _postService: PostService, private _translate: TranslateService) {
     this._initSubscribe();
