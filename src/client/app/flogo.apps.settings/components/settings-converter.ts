@@ -70,7 +70,7 @@ export function importSettings(settings: any) {
 }
 
 
-export function convertToDatabaseFormat(settings: Setting[]) {
+export function serializeSettings(settings: Setting[]) {
   let convertedSettings: any = {};
 
   settings.forEach(setting => {

@@ -86,16 +86,19 @@
 
     .device-settings__details {
       width: 100%;
-      height: 100%;
+      height: 390px;
       overflow: scroll;
-      margin: 0 41px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .device-settings__property,
     .device-settings__other
     {
-      margin: 19px 0;
-      width: 96%;
+      margin: 16px 37px;
     }
 
     .device-settings__property label {
@@ -117,18 +120,19 @@
 
 
     .device-settings__other-key  {
-     width: 172px;
+     width: 152px;
     }
 
     .device-settings__other-separator  {
        width: 15px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+       height: 45px;
+       display: flex;
+       justify-content: center;
+       align-items: center;
     }
 
     .device-settings__other-value {
-      width: 172px;
+      width: 152px;
     }
 
     .device-settings__other-add {
@@ -143,6 +147,7 @@
       background-color: #79b8dc;
       font-size: 2em;
       font-weight: bold;
+      margin-left: 13px;
     }
 
     .device-settings__other-add--hidden {
@@ -158,9 +163,11 @@
 
     .device-settings__other-header {
       margin-top: 20px;
+      width: 100%;
       color:#212121;
       font-weight: bold;
       font-size: 1.125em;
+      padding-left: 60px;
     }
 
     .device-settings__comands {

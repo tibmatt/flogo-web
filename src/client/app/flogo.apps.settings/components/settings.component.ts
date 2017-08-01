@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, Pipe, PipeTransform 
 import { Validators, AbstractControl } from '@angular/forms';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { convertToDatabaseFormat, importSettings, KeyValue, Setting, OTHER_CATEGORY } from './settings-converter';
+import { serializeSettings, importSettings, KeyValue, Setting, OTHER_CATEGORY } from './settings-converter';
 
 
 @Component({
@@ -91,7 +91,7 @@ export class FlogoAppSettingsComponent {
 
     this.customSettings.forEach((setting) => otherSettings[setting.key] =  setting.value);
 
-    const databaseFormat = convertToDatabaseFormat(input.concat([{key: OTHER_CATEGORY, settings: otherSettings}]));
+    const databaseFormat = serializeSettings(input.concat([{key: OTHER_CATEGORY, settings: otherSettings}]));
     this.save.emit(databaseFormat);
     this.closeModal();
   }

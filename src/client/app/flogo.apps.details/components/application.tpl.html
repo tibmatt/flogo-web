@@ -70,17 +70,10 @@
                        *ngIf="!isDescriptionInEditMode && !!editableDescription"
                        (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
               </div>
-
-              <!--
-              <flogo-apps-settings *ngIf="profileType === PROFILE_TYPES.DEVICE"
-                                   (save)="onSaveDeviceSettings($event)"
-                                   [settings]="application?.device?.settings"></flogo-apps-settings>
-                                   -->
-
-            </div> <!-- details -->
+            </div> <!-- /details -->
 
           </div>
-          <div style="display: flex">
+          <div class="flogo-app-detail-commands">
             <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
             <flogo-apps-settings *ngIf="profileType === PROFILE_TYPES.DEVICE"
                                  (save)="onSaveDeviceSettings($event)"

@@ -21,7 +21,7 @@
            </div>
 
            <div class="device-settings__details" *ngIf="selectedInput && selectedInput.key !== 'other'">
-             <div class="device-settings__property" *ngFor="let key of selectedInput.settings | keys">
+             <div class="device-settings__property" *ngFor="let key of selectedInput.settings | objectPropertiesPipe">
                <label>{{key}}</label>
                <input type="text" (ngModelChange)="onSettingsChange()" [(ngModel)]="selectedInput.settings[key]" [ngModelOptions]="{standalone: true}" />
              </div>
