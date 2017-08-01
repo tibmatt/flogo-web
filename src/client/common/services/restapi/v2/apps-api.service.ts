@@ -36,6 +36,7 @@ export class AppsApiService {
         application.device = {};
         application.device.profile = profileDetails.profile;
         application.device.deviceType = profileDetails.deviceType;
+        application.device.settings = profileDetails.settings || {};
       }
 
       let options = this.httpUtils.defaultOptions();

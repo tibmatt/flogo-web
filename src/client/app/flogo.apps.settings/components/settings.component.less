@@ -86,14 +86,12 @@
 
     .device-settings__details {
       width: 100%;
-      height: 390px;
       overflow: scroll;
       overflow-x: hidden;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
+
+
 
     .device-settings__property,
     .device-settings__other
@@ -101,7 +99,15 @@
       margin: 16px 37px;
     }
 
+
+    .device-settings__property {
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+
     .device-settings__property label {
+      font-size: 0.875em;
       text-transform: capitalize;
     }
 
@@ -120,7 +126,7 @@
 
 
     .device-settings__other-key  {
-     width: 152px;
+     width: 172px;
     }
 
     .device-settings__other-separator  {
@@ -132,7 +138,7 @@
     }
 
     .device-settings__other-value {
-      width: 152px;
+      width: 172px;
     }
 
     .device-settings__other-add {
@@ -167,7 +173,7 @@
       color:#212121;
       font-weight: bold;
       font-size: 1.125em;
-      padding-left: 60px;
+      padding-left: 40px;
     }
 
     .device-settings__comands {
@@ -188,77 +194,6 @@ ul {
   padding: 0;
   margin: 0;
 }
-
-/*
-
-.device-properties__title {
-  color: #79b8dc;
-  cursor: pointer;
-  background: transparent;
-  margin-left: 0;
-  padding-left: 0;
-  position: relative;
-  .flogo-icon-settings {
-      margin-right: 10px;
-  }
-  &:focus {
-    outline: none;
-  }
-}
-
-.device-properties {
-  display: flex;
-  height: 200px;
-}
-
-
-
-
-
-
-
-
-  .device-properties__categories {
-    width: 20%;
-    border-right: 1px solid grey;
-  }
-
-
-
-  .device-properties__categories ul {
-    padding: 0;
-    margin: 0;
-  }
-
-  .device-properties__categories ul li {
-    list-style-type: none;
-    &:hover {
-      background: #d1d3d4;
-      cursor: pointer;
-    }
-  }
-
-.device-properties__settings {
-  margin-left: 30px;
-  width: 80%;
-  overflow: scroll;
-}
-
-  .device-properties__settings input {
-    width: 90%;
-    margin-bottom: 15px;
-  }
-
-  .device-properties__other {
-    .device-properties__settings;
-  }
-
-
-    .device-properties__other input{
-      width: 100%;
-      margin-bottom: 15px;
-    }
-*/
 
 .settings__title {
   color: #79b8dc;
