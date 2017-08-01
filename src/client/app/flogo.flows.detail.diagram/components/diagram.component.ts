@@ -7,7 +7,7 @@ import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../flogo.select-trigger/messages'
 import { PUB_EVENTS as PUB_EVENTS_ADD_TRIGGER } from '../../flogo.flows.detail.triggers/messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
-import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '../../../common/constants';
 import { FlogoFlowDiagramNode } from '../models/node.model';
 
 @Component(
@@ -20,7 +20,8 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
       'tasks',
       'diagram',
        'id',
-      'appDetails'
+      'appDetails',
+      'appId'
     ]
   }
 )
@@ -29,7 +30,8 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   public tasks : IFlogoFlowDiagramTaskDictionary;
   public diagram : IFlogoFlowDiagram;
   public id: string;
-  public appDetails: string;
+  public appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE};
+  public appId: string;
 
   private _elmRef : ElementRef;
   private _diagram : FlogoFlowDiagram;
@@ -97,9 +99,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       } else {
         _enabledSelectTrigger = true;
       }
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
     } else {
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType, this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
     }
     // Render the diagram on next js cycle such that the diagram elements are added to the DOM.
     setTimeout(() => {

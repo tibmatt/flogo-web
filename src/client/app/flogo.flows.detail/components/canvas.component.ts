@@ -314,7 +314,8 @@ export class FlogoCanvasComponent implements OnInit {
       hasProcess: !!this.runState.currentProcessId,
       isDiagramEdited: this._isDiagramEdited,
       app: null,
-      currentTrigger: null
+      currentTrigger: null,
+      profileType: this.profileType
     };
   }
 

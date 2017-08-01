@@ -62,9 +62,12 @@
     </section>
 
     <div  class="flogo-flow-container">
-      <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
+      <flogo-canvas-flow-diagram *ngIf="mainHandler"
+                                 [tasks]="mainHandler.tasks"
+                                 [diagram]="mainHandler.diagram"
                                  [id]="'root'"
                                  [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
+                                 [appId]="flow?.app?.id"
                                  data-flogo-diagram-id="root">
       </flogo-canvas-flow-diagram>
 
@@ -75,7 +78,10 @@
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
     <flogo-flows-detail-error-panel *ngIf="hasTrigger">
-      <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
+      <flogo-canvas-flow-diagram *ngIf="errorHandler"
+                                 [tasks]="errorHandler.tasks"
+                                 [diagram]="errorHandler.diagram"
+                                 [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
                                  [id]="'errorHandler'"
                                  data-flogo-diagram-id="root"></flogo-canvas-flow-diagram>
     </flogo-flows-detail-error-panel>

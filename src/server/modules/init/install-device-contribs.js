@@ -8,7 +8,7 @@ export function installDeviceContributions() {
   return readJSONFile(config.defaultContribsPath)
     .then((content) => {
       const urls = (content || []).map((item)=> item.ref);
-      return ContribsManager.create(urls)
+      return ContribsManager.install(urls)
         .then((results) => {
           logger.info(`Installing contributions`);
           logger.info(results);
