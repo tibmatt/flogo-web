@@ -21,8 +21,7 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
       'diagram',
        'id',
       'appDetails',
-      'appId',
-      'profileType'
+      'appId'
     ]
   }
 )
@@ -31,9 +30,8 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   public tasks : IFlogoFlowDiagramTaskDictionary;
   public diagram : IFlogoFlowDiagram;
   public id: string;
-  public appDetails: string;
+  public appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE};
   public appId: string;
-  public profileType: FLOGO_PROFILE_TYPE;
 
   private _elmRef : ElementRef;
   private _diagram : FlogoFlowDiagram;
@@ -101,9 +99,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
       } else {
         _enabledSelectTrigger = true;
       }
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.profileType,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
     } else {
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.profileType, this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType, this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
     }
     // Render the diagram on next js cycle such that the diagram elements are added to the DOM.
     setTimeout(() => {
