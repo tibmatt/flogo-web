@@ -70,16 +70,22 @@
                        *ngIf="!isDescriptionInEditMode && !!editableDescription"
                        (click)="onClickLabelDescription($event)">{{ editableDescription }}</label>
               </div>
-
-            </div> <!-- details -->
+            </div> <!-- /details -->
 
           </div>
-          <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+          <div class="flogo-app-detail-commands">
+            <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
+            <flogo-apps-settings *ngIf="profileType === PROFILE_TYPES.DEVICE"
+                                 (save)="onSaveDeviceSettings($event)"
+                                 [settings]="application?.device?.settings"></flogo-apps-settings>
+          </div>
         </div>
 
         <!-- commands -->
         <div class="col-md-5">
           <div class="flogo-app-header__options">
+
+
             <button [jsonDownloader]="appExporter()" class="flogo-button flogo-button--secondary">
               {{ 'DETAILS:EXPORT' | translate }}
             </button>

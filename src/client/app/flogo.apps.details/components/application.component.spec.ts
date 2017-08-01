@@ -13,6 +13,7 @@ import { FlogoApplicationSearch } from '../../flogo.apps.search/components/searc
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../../flogo.apps.flows/components';
 import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
 import {FlogoProfileService} from "../../../common/services/profile.service";
+import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
 
 
 @Component({
@@ -73,6 +74,7 @@ describe('FlogoApplicationComponent component', () => {
       ],
       declarations: [
         FlogoApplicationSearch,
+        FlogoAppSettingsComponent,
         FlogoApplicationFlowsComponent,
         FlogoApplicationComponent,
         FlowGroupComponent,

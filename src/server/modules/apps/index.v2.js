@@ -27,6 +27,7 @@ const EDITABLE_FIELDS = [
   'name',
   'version',
   'description',
+  'device'
 ];
 
 const PUBLISH_FIELDS = [

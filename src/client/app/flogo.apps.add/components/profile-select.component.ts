@@ -55,6 +55,14 @@ export class ProfileSelectionComponent  implements AfterViewInit {
     if(profileType === FLOGO_PROFILE_TYPE.DEVICE){
       profileDetails.profile ="github.com/TIBCOSoftware/flogo-contrib/device/profile/feather_m0_wifi";
       profileDetails.deviceType = profile;
+      profileDetails.settings = {
+        "mqtt:server": "",
+        "mqtt:port": "",
+        "mqtt:user": "",
+        "mqtt:pass": "",
+        "wifi:ssid": "",
+        "wifi:password": ""
+      }
     }
     this.onAdd.emit(profileDetails);
   }

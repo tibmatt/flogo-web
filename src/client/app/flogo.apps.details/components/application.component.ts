@@ -21,7 +21,6 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
 @Component({
   selector: 'flogo-apps-details-application',
-  // moduleId: module.id,
   templateUrl: 'application.tpl.html',
   styleUrls: ['application.component.less']
 })
@@ -133,6 +132,15 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.isDescriptionInEditMode = false;
     this.editableDescription = this.sanitizer.sanitizeHTMLInput(this.editableDescription);
     this.appDetailService.update('description', this.editableDescription);
+  }
+
+  onSaveDeviceSettings(settings: any[]) {
+    if(!this.application.device) {
+      this.application.device = {};
+    }
+
+    this.application.device.settings = settings;
+    this.appDetailService.update('device', this.application.device);
   }
 
   onDescriptionCancel() {
