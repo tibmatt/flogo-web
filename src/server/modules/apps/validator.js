@@ -261,7 +261,8 @@ function deviceAppSchema() {
             type: 'string'
           },
           deviceType: {
-            type: 'string'
+            type: 'string',
+            default: 'Feather M0 WIFI'
           }
         }
       },
