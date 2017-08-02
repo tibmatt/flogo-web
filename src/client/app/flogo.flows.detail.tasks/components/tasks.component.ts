@@ -5,6 +5,7 @@ import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import {FlogoProfileService} from "../../../common/services/profile.service";
+import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
 
 @Component(
   {
@@ -17,6 +18,7 @@ import {FlogoProfileService} from "../../../common/services/profile.service";
 export class FlogoFlowsDetailTasks {
   public filteredTasks : any[] = [];
   private _filterQuery : string = null;
+  public profileType:FLOGO_PROFILE_TYPE;
 
   public tasks : any[] = [];
 
@@ -105,8 +107,10 @@ export class FlogoFlowsDetailTasks {
     console.log( data );
     console.log( envelope );
 
+
     this._addTaskMsg = data;
-    this._loadActivities(this._addTaskMsg.appProfileType);
+    this.profileType = this._addTaskMsg.appProfileType;
+    this._loadActivities(this.profileType);
 
     console.groupEnd();
   }
