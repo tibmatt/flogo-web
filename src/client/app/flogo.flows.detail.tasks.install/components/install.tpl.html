@@ -5,7 +5,9 @@
     {{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}
   </button>
 
-  <flogo-installer [flogoInstallType]="'activity'" [(flogoIsActivated)]="isActivated"
+  <flogo-installer
+    [profileType]="profileType"
+    [flogoInstallType]="'activity'" [(flogoIsActivated)]="isActivated"
                    (flogoOnInstalled)="onInstalledAction($event)"></flogo-installer>
 
 </div>

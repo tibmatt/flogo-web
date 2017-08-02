@@ -1,9 +1,11 @@
-import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild, Input } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { RESTAPIContributionsService } from '../../../common/services/restapi/v2/contributions.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { notification } from '../../../common/utils';
+import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
 import {
   FLOGO_INSTALLER_STATUS_STANDBY, FLOGO_INSTALLER_STATUS_IDLE,
   FLOGO_INSTALLER_STATUS_INSTALL_FAILED, FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS, FLOGO_INSTALLER_STATUS_INSTALLING
@@ -13,7 +15,7 @@ import {
   selector : 'flogo-installer',
   // moduleId : module.id,
   templateUrl : 'installer.tpl.html',
-  inputs : [ 'installType: flogoInstallType', 'isActivated: flogoIsActivated' ],
+  inputs : [ 'installType: flogoInstallType', 'isActivated: flogoIsActivated', 'profileType' ],
   outputs : [
     'installTypeUpdate: flogoInstallTypeChange',
     'isActivatedUpdate: flogoIsActivatedChange',
@@ -26,6 +28,7 @@ export class FlogoInstallerComponent implements OnChanges {
   @ViewChild( 'installerModal' ) modal : ModalComponent;
 
   installType : string;
+  profileType: FLOGO_PROFILE_TYPE;
   _installType : string;
 
   isActivated : boolean;
@@ -49,7 +52,8 @@ export class FlogoInstallerComponent implements OnChanges {
 
   constructor(
     private _triggersAPIs : RESTAPITriggersService,
-    private _activitiesAPIs : RESTAPIActivitiesService) {
+    private _activitiesAPIs : RESTAPIActivitiesService,
+    private contributionsAPIs: RESTAPIContributionsService) {
     this.init();
   }
 
@@ -116,15 +120,20 @@ export class FlogoInstallerComponent implements OnChanges {
 
     let installAPI = null;
 
-    if ( this._installType === 'trigger' ) {
-      installAPI = this._triggersAPIs.installTriggers.bind( this._triggersAPIs );
-    } else if ( this._installType === 'activity' ) {
-      installAPI = this._activitiesAPIs.installActivities.bind( this._activitiesAPIs );
+    if(this.profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
+      if ( this._installType === 'trigger' ) {
+        installAPI = this._triggersAPIs.installTriggers.bind( this._triggersAPIs );
+      } else if ( this._installType === 'activity' ) {
+        installAPI = this._activitiesAPIs.installActivities.bind( this._activitiesAPIs );
+      } else {
+        console.warn( 'Unknown installation type.' );
+        console.groupEnd();
+        return;
+      }
     } else {
-      console.warn( 'Unknown installation type.' );
-      console.groupEnd();
-      return;
+      installAPI = this.contributionsAPIs.installContributions.bind(this.contributionsAPIs);
     }
+
 
     let self = this;
 

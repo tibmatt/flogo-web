@@ -9,6 +9,7 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
 
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../../common/services/restapi/v2/triggers-api.service';
+import { RESTAPIContributionsService } from '../../../common/services/restapi/v2/contributions.service';
 
 import { RESTAPITriggersServiceMock } from '../../../common/services/restapi/triggers-api.service.mock';
 import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2} from '../../../common/services/restapi/v2/triggers-api.service.mock';
@@ -69,6 +70,7 @@ describe('FlogoSelectTrigger component', () => {
         {provide: FlogoProfileService, useClass: FlogoProfileServiceMock},
         {provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock},
         {provide: RESTAPITriggersServiceV2, useClass: RESTAPITriggersServiceMockV2},
+        {provide: RESTAPIContributionsService},
         HttpUtilsService
       ]
     });
