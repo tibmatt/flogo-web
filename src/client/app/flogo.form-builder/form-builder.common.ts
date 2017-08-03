@@ -34,8 +34,10 @@ export class FlogoFormBuilderCommon {
         return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
 
       case 'number':
+      case 'int':
       case 'integer':
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
+      case FLOGO_TASK_ATTRIBUTE_TYPE.INT:
       case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
         return FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER;
 

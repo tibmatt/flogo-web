@@ -1,0 +1,211 @@
+:host{
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+// need to use a string as less throws an error if we try to use /deep/ directly
+@deep: ~"/deep/";
+@{deep} .device-settings-modal {
+  width: 768px !important;
+  height: 560px !important;
+  border-radius: 4px;
+}
+
+
+.device-settings {
+  height: 500px;
+  border: 1px solid  transparent;
+
+  input {
+    border-radius: 2px;
+    border: solid 1px #cad3df;
+    height: 45px;
+    padding: 10px;
+    width: 100%;
+  }
+
+  .device-settings__container {
+    height: 397px;
+    border: 1px solid #0081cb;
+  }
+
+  .device-settings__commands {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 80px;
+  }
+
+  .device-settings__close {
+    color: #b5b5b5;
+    position: fixed;
+    z-index: 1;
+    top: 24px;
+    right: 24px;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+  }
+
+  .device-settings__header {
+    color: #b5b5b5;
+  }
+
+  .device-settings__main {
+    display: flex;
+    height: 100%;
+  }
+
+    .device-settings__categories {
+      width: 230px;
+      border-right: 1px solid #e0e0e0;
+    }
+
+    .device-settings__category {
+      height: 45px;
+      padding-left: 30px;
+      margin: 0;
+      list-style-type: none;
+      text-transform: capitalize;
+      line-height: 1.43;
+      display: flex;
+      align-items: center;
+      color: #727272;
+      &:hover {
+        color: #0081cb;
+        background: rgba(197, 202, 233, 0.2);
+        cursor: pointer;
+      }
+    }
+
+    .device-settings__category--selected {
+      background-color: #cad3df;
+      color: #062e79;
+    }
+
+    .device-settings__details {
+      width: 100%;
+      overflow: scroll;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+
+
+    .device-settings__property,
+    .device-settings__other
+    {
+      margin: 16px 37px;
+    }
+
+
+    .device-settings__property {
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .device-settings__property label {
+      font-size: 0.875em;
+      text-transform: capitalize;
+    }
+
+    .device-settings__other {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .device-settings__property input {
+      width: 100%;
+    }
+
+    .device-settings__property label {
+      color: #212121;
+    }
+
+
+    .device-settings__other-key  {
+     width: 172px;
+    }
+
+    .device-settings__other-separator  {
+       width: 15px;
+       height: 45px;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+    }
+
+    .device-settings__other-value {
+      width: 172px;
+    }
+
+    .device-settings__other-add {
+      border: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 45px;
+      height: 45px;
+      border-radius: 4px;
+      color: #fff;
+      background-color: #79b8dc;
+      font-size: 2em;
+      font-weight: bold;
+      margin-left: 13px;
+    }
+
+    .device-settings__other-add--hidden {
+      background-color: transparent;
+      color: transparent;
+      font-size: 1em;
+
+      &:hover {
+        color: black;
+        cursor: pointer;
+      }
+    }
+
+    .device-settings__other-header {
+      margin-top: 20px;
+      width: 100%;
+      color:#212121;
+      font-weight: bold;
+      font-size: 1.125em;
+      padding-left: 40px;
+    }
+
+    .device-settings__comands {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+
+    }
+
+      .device-settings__commands button {
+        width: 124px;
+        height: 35px;
+      }
+
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+.settings__title {
+  color: #79b8dc;
+  cursor: pointer;
+  background: transparent;
+  margin-left: 0;
+  padding-left: 0;
+  position: relative;
+  .flogo-icon-settings {
+    margin-right: 10px;
+  }
+  &:focus {
+    outline: none;
+  }
+}

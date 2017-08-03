@@ -23,7 +23,7 @@ import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.
 import { RESTAPITriggersService } from '../../../common/services/restapi/v2/triggers-api.service';
 import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
-import { FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE, ERROR_CODE } from '../../../common/constants';
+import {FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE, ERROR_CODE, FLOGO_PROFILE_TYPE} from '../../../common/constants';
 import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
   attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus,
   objectFromArray
@@ -33,6 +33,7 @@ import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.dia
 import { FlogoModal } from '../../../common/services/modal.service';
 import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
+import {FlogoProfileService} from "../../../common/services/profile.service";
 
 interface IPropsToUpdateFormBuilder {
   name: string;
@@ -70,6 +71,9 @@ export class FlogoCanvasComponent implements OnInit {
   flowName: string;
   backToAppHover: boolean;
 
+  profileType: FLOGO_PROFILE_TYPE;
+  PROFILE_TYPES : typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
+
   public loading: boolean;
   public hasTrigger: boolean;
   public currentTrigger: any;
@@ -85,6 +89,7 @@ export class FlogoCanvasComponent implements OnInit {
               private _runnerService: RunnerService,
               private _router: Router,
               private _flogoModal: FlogoModal,
+              private profileService: FlogoProfileService,
               private _route: ActivatedRoute) {
     this._isDiagramEdited = false;
 
@@ -222,6 +227,7 @@ export class FlogoCanvasComponent implements OnInit {
 
         this.clearAllHandlersRunStatus();
         this.loading = false;
+        this.profileType = this.profileService.getProfileType(this.flow.app);
 
       });
   }
@@ -308,7 +314,8 @@ export class FlogoCanvasComponent implements OnInit {
       hasProcess: !!this.runState.currentProcessId,
       isDiagramEdited: this._isDiagramEdited,
       app: null,
-      currentTrigger: null
+      currentTrigger: null,
+      profileType: this.profileType
     };
   }
 
@@ -565,6 +572,8 @@ export class FlogoCanvasComponent implements OnInit {
       .then(
         () => {
           console.group('after navigation');
+
+          data.appProfileType = this.profileType;
 
           this._postService.publish(
             _.assign(

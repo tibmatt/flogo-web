@@ -22,6 +22,9 @@ import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
 import { ChildWindowService } from './services/child-window.service';
 import {FlowsService} from "./services/flows.service";
+import {ProfilesAPIService} from "./services/restapi/v2/profiles-api.service";
+import {FlogoProfileService} from "./services/profile.service";
+import {RESTAPIContributionsService} from "./services/restapi/v2/contributions.service";
 
 @NgModule({
   providers: [ // services
@@ -35,6 +38,8 @@ import {FlowsService} from "./services/flows.service";
     RESTAPIHandlersServiceV2,
     AppsApiService,
     APIFlowsService,
+    ProfilesAPIService,
+    RESTAPIContributionsService,
 
     RunService,
     ChildWindowService,
@@ -48,7 +53,8 @@ import {FlowsService} from "./services/flows.service";
     LoadingStatusService,
     LanguageService,
     WindowRef,
-    FlowsService
+    FlowsService,
+    FlogoProfileService
   ]
 })
 export class CoreModule { }

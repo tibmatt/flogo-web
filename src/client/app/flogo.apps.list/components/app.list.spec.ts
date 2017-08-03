@@ -13,6 +13,7 @@ import {HttpUtilsService} from "../../../common/services/restapi/http-utils.serv
 import {FlogoDeletePopupComponent} from "../../../common/components/delete.popup.component";
 import {FlogoAppImportErrorComponent} from "../../flogo.apps.import.error/components/import.error.component";
 import {ModalComponent} from "ng2-bs3-modal/ng2-bs3-modal";
+import {ProfileSelectionComponent} from "../../flogo.apps.add/components/profile-select.component";
 
 describe('FlogoAppList component', () => {
   let applications = [
@@ -55,7 +56,8 @@ describe('FlogoAppList component', () => {
         useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
         deps: [Http]
       })],
-      declarations: [FlogoAppListComponent, FlogoDeletePopupComponent, TimeFromNowPipe, FlogoAppImportErrorComponent, ModalComponent], // declare the test component
+      declarations: [FlogoAppListComponent, FlogoDeletePopupComponent, TimeFromNowPipe,
+        FlogoAppImportErrorComponent, ModalComponent, ProfileSelectionComponent], // declare the test component
       providers: [
         HttpUtilsService,
         {provide: ErrorService, useClass: ErrorService},

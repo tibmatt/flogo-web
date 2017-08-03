@@ -1,4 +1,6 @@
-import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
+import {
+  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter
+} from '@angular/core';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
@@ -11,13 +13,14 @@ import { SanitizeService } from '../../../common/services/sanitize.service';
 
 import { diffDates, notification } from '../../../common/utils';
 import { FlogoModal } from '../../../common/services/modal.service';
+import {FLOGO_PROFILE_TYPE} from "../../../common/constants";
+import {FlogoProfileService} from "../../../common/services/profile.service";
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
 
 @Component({
   selector: 'flogo-apps-details-application',
-  // moduleId: module.id,
   templateUrl: 'application.tpl.html',
   styleUrls: ['application.component.less']
 })
@@ -48,9 +51,13 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   isBuildBoxShown: boolean = false;
   downloadLink: string;
 
+  profileType: FLOGO_PROFILE_TYPE;
+  PROFILE_TYPES : typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
+
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal,
+              public profileSerivce: FlogoProfileService,
               private sanitizer: SanitizeService) {
   }
 
@@ -69,6 +76,8 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
       this.flowGroups = _.sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
       this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
       // this.flows = this.extractFlows();
+
+      this.profileType = this.profileSerivce.getProfileType(this.application);
 
       let prevValue = change.previousValue;
       let isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id != this.application.id;
@@ -123,6 +132,15 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.isDescriptionInEditMode = false;
     this.editableDescription = this.sanitizer.sanitizeHTMLInput(this.editableDescription);
     this.appDetailService.update('description', this.editableDescription);
+  }
+
+  onSaveDeviceSettings(settings: any[]) {
+    if(!this.application.device) {
+      this.application.device = {};
+    }
+
+    this.application.device.settings = settings;
+    this.appDetailService.update('device', this.application.device);
   }
 
   onDescriptionCancel() {

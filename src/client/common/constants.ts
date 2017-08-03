@@ -2,6 +2,11 @@
  * Enumerations
  */
 
+export enum FLOGO_PROFILE_TYPE {
+  MICRO_SERVICE,
+  DEVICE
+}
+
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
   TASK,
@@ -20,7 +25,8 @@ export enum FLOGO_TASK_ATTRIBUTE_TYPE {
   OBJECT,
   ARRAY,
   PARAMS,
-  ANY
+  ANY,
+  INT
 }
 
 /**
@@ -36,6 +42,7 @@ export const FLOGO_PROCESS_MODELS = {
 let defaultValues = <{[key : number] : any}>{};
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
+defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INT] = 0;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER] = 0.0;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN] = false;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
@@ -66,4 +73,15 @@ export const ERROR_CONSTRAINT = {
   NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
   WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
+};
+
+export const DEFAULT_MQTT_SETTINGS = {
+  "settings": {
+    "mqtt:server": "192.168.50.164",
+    "mqtt:port": "1883",
+    "mqtt:user": "",
+    "mqtt:pass": "",
+    "wifi:ssid": "RT-N600_D8_2G",
+    "wifi:password": "random_7943"
+  }
 };

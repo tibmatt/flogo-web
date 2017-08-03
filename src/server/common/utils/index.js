@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { spawn } from 'child_process';
 import { inspect } from 'util';
 
-import { FLOGO_TASK_TYPE } from '../constants';
+import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../constants';
 
 export * from './file';
 export * from './request';
@@ -339,4 +339,46 @@ export function splitLines(str) {
 
 export function cleanAsciiColors(line) {
   return line.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,"");
+}
+
+/**
+ * Get the content of an external file
+ * @param url
+ * @returns {Promise|Promise<T>}
+ */
+export function getRemoteFileContent(url) {
+
+  return new Promise((resolve, reject) => {
+    const lib = url.startsWith('https') ? require('https') : require('http');
+    const request = lib.get(url, (response) => {
+      if (response.statusCode < 200 || response.statusCode > 299) {
+        reject(new Error('Failed to load file, status: ' + response.statusCode));
+      }
+      const body = [];
+      response.on('data', (chunk) => body.push(chunk));
+      response.on('end', () => resolve(body.join('')));
+    });
+    request.on('error', (err) => reject(err))
+  });
+
+}
+
+export function getDefaultValueByType(type) {
+  let defaultValues = [];
+  let typeEnum = FLOGO_TASK_ATTRIBUTE_TYPE[type.toUpperCase()];
+
+  if(!typeEnum){
+    typeEnum = FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
+  }
+
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INT] = 0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER] = 0.0;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN] = false;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY] = [];
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS] = null;
+
+  return defaultValues[typeEnum];
 }

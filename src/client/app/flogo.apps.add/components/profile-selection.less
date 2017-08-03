@@ -1,0 +1,115 @@
+@import "../../../assets/_variables";
+
+.flogo-profile__modal-body {
+  text-align: center;
+}
+
+.flogo-profile__close {
+  color: #b5b5b5;
+  position: fixed;
+  top: 24px;
+  right: 24px;
+
+  height: 18px;
+  width: 18px;
+
+  cursor: pointer;
+}
+
+.flogo-profile__head {
+  font-size: 24px;
+  color: #666666;
+  letter-spacing: 0.4px;
+}
+
+.flogo-profile__container {
+  padding: 30px 0;
+
+  .flogo-profile__section-wrapper {
+    display: flex;
+
+    .flogo-profile__section {
+      padding: 0;
+      cursor: pointer;
+      overflow: hidden;
+      width: 120px;
+      height: 120px;
+
+      .flogo-profile__button{
+        margin-bottom: 12px;
+      }
+
+      .flogo-profile__label {
+        margin: 0;
+        font-size: 0.9em;
+        line-height: normal;
+      }
+    }
+
+    .flogo-profile__section:nth-of-type(1) {
+      margin-left: 90px;
+    }
+
+    .flogo-profile__section:nth-of-type(2) {
+      margin-left: 53px;
+    }
+
+    .flogo-profile__labels {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: auto;
+      width: 350px;
+      margin-top: 10px;
+      padding: 0
+    }
+  }
+
+
+
+
+
+
+}
+
+.flogo-profile__list-container {
+  text-align: left;
+  padding: 10px;
+
+  .flogo-profile__modal-thumbnail {
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin-right: 20px;
+    background-size: 95%;
+    border-radius: 2px;
+    background-position: 0px;
+  }
+
+  .flogo-profile__list {
+    border: 1px solid @profile-device-color;
+    padding: 10px;
+    padding-right: 5px;
+    height: 230px;
+    overflow-y: auto;
+
+    .flogo-profile__list-element {
+      margin: 0;
+      padding: 4px 12px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(197, 202, 233, 0.5);
+      }
+    }
+  }
+}
+
+.flogo-profile__list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.flogo-profile__list::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+  background-color: rgba(114, 114, 114, 0.2);
+}

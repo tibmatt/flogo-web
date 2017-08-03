@@ -8,6 +8,8 @@ export interface IFlogoApplicationModel {
     flows?: IFlogoApplicationFlowModel[]
     triggers?: Array<Trigger>;
     actions?: Array<Action>;
+    type?: string;
+    device?: any;
 }
 
 export interface IFlogoApplicationFlowModel {

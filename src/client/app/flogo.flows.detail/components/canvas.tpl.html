@@ -2,9 +2,11 @@
 
   <div class="canvas-flow" *ngIf="flow && !loading" [ngClass]="{'canvas-flow--maximized': !hasTrigger}" >
 
-    <section class="flogo-flow-detail">
+    <section class="flogo-flow-detail"
+             [ngClass]="{'flogo-flow-detail__device': profileType === PROFILE_TYPES.DEVICE,
+                         'flogo-flow-detail__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
 
-      <header class="flogo-flow-detail-header col-sm-9">
+      <header class="flogo-flow-detail-header col-sm-10">
         <div class="flogo-flow-detail-header-back"
              [ngClass]="{'--hover':backToAppHover}">
           <div class="flogo-flow-detail-header-back-icon"
@@ -13,21 +15,30 @@
                (mouseout)="onMouseOutBackControl()">
             <i class="flogo-icon flogo-icon-back"></i>
           </div>
-          <div class="">
-            <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name" (myContenteditableChange)="changeFlowDetailName($event, 'name')"></h3>
+          <div class="flogo-profile__tile flogo-profile-detail__thumb"
+               [ngClass]="{'flogo-profile__device': profileType === PROFILE_TYPES.DEVICE,
+                           'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}"></div>
+          <div>
+            <div class="clearfix">
+              <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name"
+                  (myContenteditableChange)="changeFlowDetailName($event, 'name')"></h3>
+              <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{flow.app.device.deviceType}}</span>
+            </div>
+            <div>
               <span>in</span> <span (click)="navigateToApp()"
                                     class="flogo-flow-detail-header-back-app-name"
                                     (mouseover)="onMouseOverBackControl()"
                                     (mouseout)="onMouseOutBackControl()">{{flow.app?.name}}</span>
-            <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
-            placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
-            (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+              <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
+                 placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
+                 (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+            </div>
           </div>
         </div>
       </header>
 
 
-      <div class="col-sm-3 flogo-flow-detail-menu-container">
+      <div class="col-sm-2 flogo-flow-detail-menu-container">
         <div class="flogo-flow-detail-menu">
           <i class="flogo-icon-kebabmenu"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">
@@ -51,8 +62,11 @@
     </section>
 
     <div  class="flogo-flow-container">
-      <flogo-canvas-flow-diagram *ngIf="mainHandler" [tasks]="mainHandler.tasks" [diagram]="mainHandler.diagram"
+      <flogo-canvas-flow-diagram *ngIf="mainHandler"
+                                 [tasks]="mainHandler.tasks"
+                                 [diagram]="mainHandler.diagram"
                                  [id]="'root'"
+                                 [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
                                  [appId]="flow?.app?.id"
                                  data-flogo-diagram-id="root">
       </flogo-canvas-flow-diagram>
@@ -64,7 +78,10 @@
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
     <flogo-flows-detail-error-panel *ngIf="hasTrigger">
-      <flogo-canvas-flow-diagram *ngIf="errorHandler" [tasks]="errorHandler.tasks" [diagram]="errorHandler.diagram"
+      <flogo-canvas-flow-diagram *ngIf="errorHandler"
+                                 [tasks]="errorHandler.tasks"
+                                 [diagram]="errorHandler.diagram"
+                                 [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
                                  [id]="'errorHandler'"
                                  data-flogo-diagram-id="root"></flogo-canvas-flow-diagram>
     </flogo-flows-detail-error-panel>

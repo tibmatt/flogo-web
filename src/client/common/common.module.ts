@@ -13,6 +13,7 @@ import { LoadingIndicatorComponent } from "./components/loading-indicator.compon
 import { CustomTranslateLoader } from './services/language.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import {FlogoDeletePopupComponent} from "./components/delete.popup.component";
+import { ObjectPropertiesPipe } from './pipes/objectProperties.pipe';
 
 
 const ALL_MODULE_DECLARABLES = [
@@ -26,7 +27,8 @@ const ALL_MODULE_DECLARABLES = [
   EditableInputDirective,
   TimeFromNowPipe,
   ClickOutsideDirective,
-  FlogoDeletePopupComponent
+  FlogoDeletePopupComponent,
+  ObjectPropertiesPipe
 ];
 
 @NgModule({ // module dependencies

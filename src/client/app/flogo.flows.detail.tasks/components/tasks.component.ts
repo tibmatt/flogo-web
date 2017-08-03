@@ -4,7 +4,8 @@ import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import {FlogoProfileService} from "../../../common/services/profile.service";
+import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
 
 @Component(
   {
@@ -17,17 +18,19 @@ import { RESTAPIActivitiesService } from '../../../common/services/restapi/activ
 export class FlogoFlowsDetailTasks {
   public filteredTasks : any[] = [];
   private _filterQuery : string = null;
+  public profileType:FLOGO_PROFILE_TYPE;
 
   public tasks : any[] = [];
 
   private _subscriptions : any;
   private _addTaskMsg : any;
 
-  constructor( public translate : TranslateService, private _postService : PostService,  private _restAPIActivitiesService: RESTAPIActivitiesService ) {
+  constructor( public translate : TranslateService,
+               private _postService : PostService,
+               private _profileService: FlogoProfileService ) {
     console.group( 'Constructing FlogoFlowsDetailTasks' );
 
     this.initSubscribe();
-    this._loadActivities();
 
     console.groupEnd();
   }
@@ -80,10 +83,10 @@ export class FlogoFlowsDetailTasks {
     );
   }
 
-  private _loadActivities() {
+  private _loadActivities(profileType) {
     console.log('Loading activities');
 
-    this._restAPIActivitiesService.getActivities()
+    this._profileService.getActivities(profileType)
       .then(
         ( tasks : any )=> {
           this.tasks = tasks;
@@ -104,7 +107,10 @@ export class FlogoFlowsDetailTasks {
     console.log( data );
     console.log( envelope );
 
+
     this._addTaskMsg = data;
+    this.profileType = this._addTaskMsg.appProfileType;
+    this._loadActivities(this.profileType);
 
     console.groupEnd();
   }
@@ -122,7 +128,7 @@ export class FlogoFlowsDetailTasks {
     console.group( `[FlogoFlowsDetailTasks] onInstalled` );
     console.log( response );
     console.groupEnd();
-    this._loadActivities();
+    this._loadActivities(this._addTaskMsg.appProfileType);
   }
 
 }

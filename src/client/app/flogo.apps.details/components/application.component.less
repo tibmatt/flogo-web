@@ -21,6 +21,41 @@
   background: #fff;
 }
 
+.flogo-app-details-container {
+  padding-left: 0;
+
+  .flogo-app-details {
+    display: flex;
+    padding-left: 0;
+
+    .flogo-app-header__name-container {
+      width: 100%;
+    }
+
+    .flogo-app-details__icon {
+      width: 62px;
+      height: 62px;
+      fill:#fff;
+      margin-right: 10px;
+
+      .flogo-app-details__icon-wrapper {
+        width: 62px;
+        height: 62px;
+      }
+
+    }
+
+    .flogo-app-details__icon--device {
+      background-color:@profile-device-color;
+    }
+
+    .flogo-app-details__icon--microservice {
+      background-color:@profile-microservice-color;
+    }
+  }
+}
+
+
 .flogo-app-header {
   padding: 1em 0;
   position: relative;
@@ -28,23 +63,68 @@
   .flogo-app-header__name {
     font-size: 1.5em;
     letter-spacing: .4px;
+    color: rgba(0, 0, 0, 0.87);
   }
   .flogo-app-header__name--edit {
     margin-bottom: 5px;
     font-size: 1.5em;
     letter-spacing: .4px;
-    width: 100%;
     padding: 0;
   }
 
   .flogo-app-header__date-container, .flogo-app-header__description {
-    font-size: 0.875em;
+    // font-size: 0.75em;
     letter-spacing: .2px;
     line-height: 1.14;
   }
 
+  .flogo-app-header__description {
+    font-size: 0.875em;
+    color: rgba(0,0,0,0.87);
+  }
+
+  .flogo-app-header__edge-icon {
+    position: absolute;
+    opacity: 0.1;
+  }
+
+  .flogo-app-header__edge-icon--profile {
+    pointer-events: none;
+    width: 290px;
+    height: 268px;
+    left: -100px;
+    top: -30px;
+    fill: #856cad;
+  }
+
+  .flogo-app-header__edge-icon--device {
+    pointer-events: none;
+    width: 345px;
+    height: 286px;
+    right: 0;
+    top: -50px;
+    fill: #8a9ccd;
+  }
+
+  .flogo-app-header__icon {
+    height: 62px;
+    width: 62px;
+  }
+
+  .flogo-app-header__icon--profile {
+    .flogo-app-header__icon;
+    fill: #fff;
+    background-color: #856cad;
+  }
+
+  .flogo-app-header__icon--device {
+    .flogo-app-header__icon;
+    fill: #fff;
+    background-color: #8a9ccd;
+  }
+
   .flogo-app-header__description-container {
-    margin: .625em 0;
+    // margin: .625em 0;
     .flogo-app-header__description--edit {
       font-size: .875em;
       width: 100%;
@@ -59,8 +139,17 @@
     margin-top: 0.5em;
   }
 
+  .flogo-app-detail-commands {
+    display: flex;
+  }
+
   .flogo-app-detail-build-button {
     margin-left: 0;
+  }
+
+  .flogo-app-header__date--creation,
+  .flogo-app-header__date--update {
+    font-size: 0.75em;
   }
 
   .flogo-app-detail-build-list-wrapper {
@@ -100,22 +189,31 @@
     }
   }
 
-  .flogo-app-header__go-back {
-    font-size: 14px;
-    position: absolute;
-    left: -8px;
-    top: 0;
-    height: 2em;
-    vertical-align: middle;
-    padding: 0.2em .3em 0.2em 0.2em;
+  .flogo-app-header__go-back-container {
+    position: relative;
+    left:60px;
+    color: white;
+    width: 50px;
 
-    .flogo-icon {
-      display: inline-block;
-      vertical-align: text-bottom;
-      line-height: 2.1em;
+    .flogo-app-header__go-back {
+      position: absolute;
+      top: 0;
+      height: 2em;
+      vertical-align: middle;
+      padding: 0.2em .3em 0.2em 0.2em;
+
+      font-size: 1.5em;
+      color: #79b8dc;
+
+      .flogo-icon {
+        display: inline-block;
+        vertical-align: text-bottom;
+        line-height: 2.1em;
+      }
     }
-
   }
+
+
 
   .flogo-app-header__new-flow {
       padding: 0;
@@ -146,7 +244,6 @@
   &:hover {
     border: solid 1px #ccc;
     padding: 0;
-    width: 100%;
   }
 }
 

@@ -5,11 +5,13 @@ import {
   FLOGO_FLOW_DIAGRAM_NODE_TYPE
 } from "../../flogo.flows.detail.diagram/constants";
 import {flogoGenTriggerID, flogoIDEncode} from "../../../common/utils";
-import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from "../../../common/constants";
+import {FLOGO_PROFILE_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from "../../../common/constants";
 import {RESTAPITriggersService} from "../../../common/services/restapi/triggers-api.service";
 import {RESTAPIActivitiesService} from "../../../common/services/restapi/activities-api.service";
 import {FlogoFlowDiagramNode} from "../../flogo.flows.detail.diagram/models/node.model";
 import {ErrorService} from "../../../common/services/error.service";
+import {RESTAPIContributionsService} from "../../../common/services/restapi/v2/contributions.service";
+import {FlogoProfileService} from "../../../common/services/profile.service";
 /*
  const APP_FIELDS = [
  'name',
@@ -23,11 +25,12 @@ const FLOW_ITEM = 'item';
 
 @Injectable()
 export class UIModelConverterService {
-  itemIndex = 2;
 
-  constructor(private _triggerService: RESTAPITriggersService,
-              private _activityService: RESTAPIActivitiesService,
-              private _errorService: ErrorService) {
+  constructor(public triggerService: RESTAPITriggersService,
+              public activityService: RESTAPIActivitiesService,
+              public contribService: RESTAPIContributionsService,
+              public profileSerivce: FlogoProfileService,
+              public errorService: ErrorService) {
   }
 
   /**
@@ -55,7 +58,7 @@ export class UIModelConverterService {
    *
    * @param flowObj - Engine flow model JSON. See mockFlow in ./ui-model-flow.mock.ts
    * @param triggerObj - Engine trigger JSON. see mockTrigger in ./ui-model-trigger.mock.ts
-   * @return {uiFlowObj}
+   * @return {Promise<Object>}
    *
    * getWebFlowModel method can throw the following errors:
    *
@@ -75,42 +78,37 @@ export class UIModelConverterService {
 
   // todo: define interfaces
   getWebFlowModel(flowObj: any, triggerObj: any) {
-    // todo: do not need to fetch trigger details if it doesn't have a trigger
-    // return Promise.all([fetchTriggersPromise, this.getActivities(flowObj)])
-    //   .then((triggersAndActivities) => {
-    //     let installedContribs = _.flattenDeep(triggersAndActivities);
-    //     return this.processFlowObj(flowObj, triggerObj, installedContribs);
-    //   });
-    if(!triggerObj.ref){
-      throw this._errorService.makeOperationalError('Trigger: Wrong input json file','Cannot get ref for trigger',
-        {
-          type: "ValidationError",
-          title: 'Wrong input json file',
-          detail: 'Cannot get ref for trigger:',
-          property: 'trigger',
-          value: triggerObj
-        });
+    let converterModelInstance: AbstractModelConverter;
+    if(this.profileSerivce.getProfileType(flowObj.app) === FLOGO_PROFILE_TYPE.MICRO_SERVICE){
+      converterModelInstance = new MicroServiceModelConverter(this.triggerService, this.activityService, this.errorService);
     } else {
-      const fetchTriggersPromise = triggerObj ? this._triggerService.getTriggerDetails(triggerObj.ref) : [];
-      return Promise.all([fetchTriggersPromise, this.getActivities(flowObj)])
-        .then((triggersAndActivities) => {
-          let installedTiles = _.flattenDeep(triggersAndActivities);
-          return this.processFlowObj(flowObj, triggerObj, installedTiles);
-        });
+      converterModelInstance = new DeviceModelConverter(this.contribService, this.errorService);
     }
+    return converterModelInstance.convertToWebFlowModel(flowObj, triggerObj);
   }
 
-  getActivities(activity: any) {
-    let promises = [];
-    let processed = [];
-    let tasks = _.get(activity, 'data.flow.rootTask.tasks', []);
+}
+
+abstract class AbstractModelConverter {
+  errorService: ErrorService;
+  itemIndex = 2;
+  constructor(errorService: ErrorService){
+    this.errorService = errorService;
+  }
+
+  abstract convertToWebFlowModel(flowDetails, triggerDetails);
+  abstract getActivitiesPromise(list);
+
+  getActivities(flow: any) {
+    let activitiesList = [];
+    let tasks = _.get(flow, 'data.flow.rootTask.tasks', []);
     // add tiles from error diagram
-    tasks = tasks.concat(_.get(activity, 'data.flow.errorHandlerTask.tasks', []));
+    tasks = tasks.concat(_.get(flow, 'data.flow.errorHandlerTask.tasks', []));
 
     tasks.forEach((task) => {
       const ref = task.activityRef;
       if (!ref) {
-        throw this._errorService.makeOperationalError('Activity: Wrong input json file',
+        throw this.errorService.makeOperationalError('Activity: Wrong input json file',
           `Cannot get activityRef for task: ${task.name}`,
           {
             type: "ValidationError",
@@ -120,15 +118,13 @@ export class UIModelConverterService {
             value: task
           });
       }
-      if (processed.indexOf(ref) == -1) {
-        processed.push(ref);
-        promises.push(this._activityService.getActivityDetails(ref));
+      if (activitiesList.indexOf(ref) == -1) {
+        activitiesList.push(ref);
       }
     });
 
-    return Promise.all(promises);
+    return activitiesList;
   }
-
   processFlowObj(flowJSON, triggerJSON, installedContribs) {
     this.itemIndex = 2;
     let endpoints = _.get(triggerJSON, 'handlers', []);
@@ -237,7 +233,7 @@ export class UIModelConverterService {
 
       let installedTrigger = installedTiles.find(tile => trigger && tile.ref === trigger.ref);
       if (trigger && !installedTrigger) {
-        throw this._errorService.makeOperationalError('Trigger is not installed', `Trigger: ${trigger.ref}`,
+        throw this.errorService.makeOperationalError('Trigger is not installed', `Trigger: ${trigger.ref}`,
           {
             type: 'notInstalledTrigger',
             title: 'Trigger is not installed',
@@ -257,7 +253,7 @@ export class UIModelConverterService {
 
         let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
         if (!installedActivity) {
-          throw this._errorService.makeOperationalError('Activity is not installed', `Activity: ${task.activityRef}`,
+          throw this.errorService.makeOperationalError('Activity is not installed', `Activity: ${task.activityRef}`,
             {
               type: 'notInstalledActivity',
               title: 'Activity is not installed',
@@ -351,7 +347,98 @@ export class UIModelConverterService {
       }
     }
   }
+}
 
+class MicroServiceModelConverter extends AbstractModelConverter {
+  triggerService: RESTAPITriggersService;
+  activityService: RESTAPIActivitiesService;
+  constructor(triggerService: RESTAPITriggersService,
+              activityService: RESTAPIActivitiesService,
+              errorService: ErrorService){
+   super(errorService);
+   this.triggerService = triggerService;
+   this.activityService = activityService;
+  }
+
+  convertToWebFlowModel(flowObj, triggerObj) {
+    if(!triggerObj.ref){
+      throw this.errorService.makeOperationalError('Trigger: Wrong input json file','Cannot get ref for trigger',
+        {
+          type: "ValidationError",
+          title: 'Wrong input json file',
+          detail: 'Cannot get ref for trigger:',
+          property: 'trigger',
+          value: triggerObj
+        });
+    } else {
+      const fetchTriggersPromise = triggerObj ? this.triggerService.getTriggerDetails(triggerObj.ref) : [];
+      const fetchActivitiesPromise = this.getActivitiesPromise(this.getActivities(flowObj));
+      return Promise.all([fetchTriggersPromise, fetchActivitiesPromise])
+        .then((triggersAndActivities) => {
+          let installedTiles = _.flattenDeep(triggersAndActivities);
+          return this.processFlowObj(flowObj, triggerObj, installedTiles);
+        });
+    }
+  }
+
+  getActivitiesPromise(activities) {
+    let promises = [];
+    activities.forEach(activityRef => {
+      promises.push(this.activityService.getActivityDetails(activityRef));
+    });
+    return Promise.all(promises);
+  }
+}
+
+class DeviceModelConverter extends AbstractModelConverter {
+  contribService: RESTAPIContributionsService;
+  constructor(contribService: RESTAPIContributionsService,
+              errorService: ErrorService){
+    super(errorService);
+    this.contribService = contribService;
+  }
+
+  convertToWebFlowModel(flowObj, triggerObj) {
+    if(!triggerObj.ref){
+      throw this.errorService.makeOperationalError('Trigger: Wrong input json file','Cannot get ref for trigger',
+        {
+          type: "ValidationError",
+          title: 'Wrong input json file',
+          detail: 'Cannot get ref for trigger:',
+          property: 'trigger',
+          value: triggerObj
+        });
+    } else {
+      const fetchTriggersPromise = triggerObj ? this.contribService.getContributionDetails(triggerObj.ref)
+        .then(trigger => {
+          trigger.handler = {
+            settings: []
+          };
+          trigger.endpoint = {
+            settings: []
+          };
+          return trigger;
+        }) : [];
+      const fetchActivitiesPromise = this.getActivitiesPromise(this.getActivities(flowObj));
+      return Promise.all([fetchTriggersPromise, fetchActivitiesPromise])
+        .then((triggersAndActivities) => {
+          let installedTiles = _.flattenDeep(triggersAndActivities);
+          return this.processFlowObj(flowObj, triggerObj, installedTiles);
+        });
+    }
+  }
+
+  getActivitiesPromise(activities) {
+    let promises = [];
+    activities.forEach(activityRef => {
+      promises.push(this.contribService.getContributionDetails(activityRef).then(activity => {
+        activity.inputs = activity.settings;
+        activity.outputs = [];
+        return activity;
+      }));
+    });
+    return Promise.all(promises);
+  }
 }
 
 class FlowElement {

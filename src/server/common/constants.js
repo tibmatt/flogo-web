@@ -25,6 +25,13 @@ export const FLOGO_FLOW_DIAGRAM_NODE_TYPE = {
   "NODE_ROOT_ERROR_NEW":10
 };
 
+export const FLOGO_PROFILE_TYPES = {
+  0: "MICRO_SERVICE",
+  1: "DEVICE",
+  "MICRO_SERVICE": 0,
+  "DEVICE": 1,
+};
+
 export const FLOGO_TASK_TYPE = {
   0: "TASK_ROOT",
   1: "TASK",
@@ -62,6 +69,7 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   5: "ARRAY",
   6: "PARAMS",
   7: "ANY",
+  8: "INT",
   "STRING": 0,
   "INTEGER": 1,
   "NUMBER": 2,
@@ -69,7 +77,8 @@ export const FLOGO_TASK_ATTRIBUTE_TYPE = {
   "OBJECT": 4,
   "ARRAY": 5,
   "PARAMS": 6,
-  "ANY": 7
+  "ANY": 7,
+  "INT": 8
 };
 
 export const FLOGO_ENGINE_STATUS = {

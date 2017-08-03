@@ -1,4 +1,5 @@
-<flogo-installer [flogoInstallType]="'trigger'" [(flogoIsActivated)]="installTriggerActivated"
+<flogo-installer  [profileType]="appDetails?.appProfileType"
+                 [flogoInstallType]="'trigger'" [(flogoIsActivated)]="installTriggerActivated"
                  (flogoOnInstalled)="onInstalledAction($event)"></flogo-installer>
 
 <div class="flogo-select-trigger">

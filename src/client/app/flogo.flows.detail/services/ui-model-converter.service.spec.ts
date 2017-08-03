@@ -8,12 +8,16 @@ import {
 } from "./ui-model-flow.mock";
 import {mockErrorTrigger, mockTrigger, mockTriggerDetails} from "./ui-model-trigger.mock";
 import Spy = jasmine.Spy;
+import {FlogoProfileService} from "../../../common/services/profile.service";
+import {RESTAPIContributionsService} from "../../../common/services/restapi/v2/contributions.service";
 
 describe("Service: UI Model Converter", function(this: {
   service: UIModelConverterService,
   errorService: ErrorService,
   triggerServiceMock: RESTAPITriggersService,
-  activityServiceMock: RESTAPIActivitiesService
+  activityServiceMock: RESTAPIActivitiesService,
+  profileService: FlogoProfileService,
+  contribServiceMock: RESTAPIContributionsService
 }){
 
   beforeEach(()=>{
@@ -23,8 +27,14 @@ describe("Service: UI Model Converter", function(this: {
     this.activityServiceMock = jasmine.createSpyObj<RESTAPIActivitiesService>('activityService', [
       'getActivityDetails'
     ]);
+    this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>('contribService', [
+      'getContributionDetails'
+    ]);
     this.errorService = new ErrorService();
-    this.service = new UIModelConverterService(this.triggerServiceMock, this.activityServiceMock, this.errorService);
+    this.profileService = new FlogoProfileService(this.triggerServiceMock,
+      this.activityServiceMock, this.contribServiceMock);
+    this.service = new UIModelConverterService(this.triggerServiceMock,
+      this.activityServiceMock, this.contribServiceMock, this.profileService, this.errorService);
   });
 
   it('Should throw error when trigger does not have a ref', ()=> {
@@ -55,13 +65,13 @@ describe("Service: UI Model Converter", function(this: {
 
   it('Should convert the Engine Flow Model to UI Flow model', (done) => {
     var spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
-    spyTriggerService.and.returnValue(mockTriggerDetails);
+    spyTriggerService.and.returnValue(Promise.resolve(mockTriggerDetails));
     var spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
     spyActivityService.and.callFake(function(activityRef){
       if(activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
-        return mockActivitiesDetails[0];
+        return Promise.resolve(mockActivitiesDetails[0]);
       } else {
-        return mockActivitiesDetails[1];
+        return Promise.resolve(mockActivitiesDetails[1]);
       }
     });
     this.service.getWebFlowModel(mockFlow, mockTrigger)
