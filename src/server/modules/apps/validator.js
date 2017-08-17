@@ -446,6 +446,9 @@ function fullAppSchema() {
           id: {
             type: 'string',
           },
+          name: {
+            type: 'string',
+          },
           ref: {
             type: 'string',
           },
@@ -801,6 +804,9 @@ function fullDeviceAppSchema() {
         type: 'object',
         additionalProperties: false,
         properties: {
+          name: {
+            type: 'string',
+          },
           tasks: {
             type: 'array',
             default: [],
