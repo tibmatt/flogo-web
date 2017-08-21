@@ -39,3 +39,5 @@ See list [here](https://github.com/TIBCOSoftware/flogo-web/issues?q=is%3Aopen+is
 ## Development and testing
 
 See [DEVELOPER.md](DEVELOPER.md)
+
+See [important-jsons-behaviour.md](docs/important-jsons-behaviour.md) for few important JSON transformations made in flogo-web which needs to be remembered

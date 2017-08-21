@@ -294,6 +294,10 @@ export class AppsManager {
         });
 
         app.actions.forEach(action => {
+          if(action.data.flow){
+            action.data.flow.name = action.name;
+            delete action.name;
+          }
           const tasks = get(action, 'data.flow.rootTask.tasks', []);
           const hasExplicitReply = tasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
           if (hasExplicitReply) {
