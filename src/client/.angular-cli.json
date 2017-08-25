@@ -28,7 +28,7 @@
       "main": "main.ts",
       "polyfills": "polyfills.ts",
       "test": "test.ts",
-      "tsconfig": "tsconfig.json",
+      "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "flogo",
       "styles": [
@@ -59,15 +59,12 @@
   },
   "lint": [
     {
-      "files": "/**/*.ts",
-      "project": "/tsconfig.json"
+      "files": ["./*.ts", "./app/flogo/**/*.ts", "./app/flogo.apps*/**/*.ts", "./app/config/**/*.ts"],
+      "project": "./tsconfig.app.json"
     },
     {
-      "project": "/tsconfig.spec.json"
-    },
-    {
-      "files": "e2e/**/*.ts",
-      "project": "e2e/tsconfig.json"
+      "files": ["./*.ts", "./app/flogo/**/*.ts", "./app/flogo.apps*/**/*.ts", "./app/config/**/*.ts"],
+      "project": "./tsconfig.spec.json"
     }
   ],
   "test": {

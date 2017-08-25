@@ -1,7 +1,8 @@
 sudo: required
 
-services:
-  - docker
+language: node_js
+node_js:
+  - "6.9"
 cache:
   bundler: false
   yarn: true
@@ -10,27 +11,37 @@ cache:
 # Handle git submodules yourself
 git:
   submodules: false
+install:
+  - pushd src/client
+  - echo $(yarn --version)
+  - yarn install
+  - popd
+
 jobs:
+  allow_failures:
+    - env:
+       - ALLOW_FAILURE=true
+  fast_finish: true
   include:
-    - stage: test
-      node_js:
-        - "6.9"
-      addons:
-        chrome: stable
-      env: FG_ENV=test
-      install:
-        - pushd src/client
-        - echo $(yarn --version)
-        - yarn install
-        - popd
+    - stage: test:client
+      before_script: pushd src/client
       script:
-        - pushd src/client
+        - echo "Linting client application source code"
+        - yarn run lint -- --format=stylish
+        - echo "Running unit tests for client application"
         - yarn run test:once -- --progress=false
-        - popd
+        - echo "Trying production build"
+        - yarn run build -- --prod
+      after_script: popd
     - stage: build
+      language: bash
+      node_js:
+      services:
+        - docker
       before_install:
         - "echo -e \"machine github.com\n  login ${GITHUB_USER_TOKEN}\" >> ~/.netrc"
         - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}" ;
+      install: skip
       script:
         - touch flogo-web.tgz
         - tar cvfz flogo-web.tgz --exclude=flogo-web.tgz . >/dev/null
@@ -46,11 +57,11 @@ jobs:
         - pushd flogo-cicd/docker/flogo-web
         - ./build-flogo-web.sh
         - popd
+      after_script:
+        - "[ -f \"${HOME}/.netrc\" ] && rm -f ${HOME}/.netrc"
       after_success:
         - "if [ \"${TRAVIS_BRANCH}\" == \"master\" ]; then
           docker login -u=\"${DOCKER_USERNAME}\" -p=\"${DOCKER_PASSWORD}\" ;
           source ${TRAVIS_BUILD_DIR}/flogo-cicd/scripts/init.sh ;
           flogo::module::postbuild flogo-web flogo-web;
           fi"
-after_script:
-  - "[ -f \"${HOME}/.netrc\" ] && rm -f ${HOME}/.netrc"

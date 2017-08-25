@@ -1,8 +1,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
+    "outDir": "./out-tsc/app",
+    "module": "es2015",
     "baseUrl": "",
+    "types": [],
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -16,5 +18,13 @@
       "es2016",
       "dom"
     ]
-  }
+  },
+  "include": [
+    "./*.ts"
+  ],
+  "exclude": [
+    "./test.ts",
+    "./**/*.spec.ts",
+    "./**/*.mock.ts"
+  ]
 }

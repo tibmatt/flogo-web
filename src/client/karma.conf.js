@@ -11,8 +11,6 @@ function getReporters(config) {
 }
 
 module.exports = function (config) {
-  const isTestEnv = process.env.FG_ENV === 'test';
-
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular/cli'],
@@ -46,7 +44,7 @@ module.exports = function (config) {
     reporters: getReporters(config),
     // reporter options
     mochaReporter: {
-      // output: isTestEnv ? 'minimal' : 'full'
+      output: 'full'
     },
     customLaunchers: {
       Chrome_travis_ci: {
