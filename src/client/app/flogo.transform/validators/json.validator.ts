@@ -1,9 +1,9 @@
 import { FormControl } from '@angular/forms';
 
-export function jsonValidator(control:FormControl) {
+export function jsonValidator(control: FormControl) {
   try {
     JSON.parse(control.value);
-    let errors = control.errors;
+    const errors = control.errors;
     if (errors && errors['invalidJson']) {
       delete errors['invalidJson'];
       control.setErrors(errors, {emitEvent: false});

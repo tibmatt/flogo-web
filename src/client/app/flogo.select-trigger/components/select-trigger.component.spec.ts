@@ -1,28 +1,22 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
-import { DebugElement }    from '@angular/core';
-import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-translate/ng2-translate';
-import {Http} from '@angular/http';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { FlogoSelectTriggerComponent } from './select-trigger.component';
 import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
-
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../../common/services/restapi/v2/triggers-api.service';
 import { RESTAPIContributionsService } from '../../../common/services/restapi/v2/contributions.service';
-
 import { RESTAPITriggersServiceMock } from '../../../common/services/restapi/triggers-api.service.mock';
-import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2} from '../../../common/services/restapi/v2/triggers-api.service.mock';
-
+import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2 } from '../../../common/services/restapi/v2/triggers-api.service.mock';
 import { InstallerModule } from '../../flogo.installer/flogo.installer.module';
 import { PostService } from '../../../common/services/post.service';
-import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../flogo.select-trigger/messages'
-import {HttpUtilsService} from "../../../common/services/restapi/http-utils.service";
-import {FlogoProfileService} from "../../../common/services/profile.service";
-import {FlogoProfileServiceMock} from "../../../common/services/profile.service.mock";
-import {FLOGO_PROFILE_TYPE} from "../../../common/constants";
+import { HttpUtilsService } from '../../../common/services/restapi/http-utils.service';
+import { FlogoProfileService } from '../../../common/services/profile.service';
+import { FlogoProfileServiceMock } from '../../../common/services/profile.service.mock';
+import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
 
-let postServiceStub = {
+const postServiceStub = {
 
   subscribe(options: any) {
     this.subscribeData = options;
@@ -32,15 +26,16 @@ let postServiceStub = {
     this.published = envelope;
   },
 
-  unsubscribe(sub: any) {}
+  unsubscribe(sub: any) {
+  }
 
 };
 
 describe('FlogoSelectTrigger component', () => {
-  let comp: FlogoSelectTriggerComponent, fixture: ComponentFixture<FlogoSelectTriggerComponent>,
-    de: DebugElement, el: HTMLElement;
+  let comp: FlogoSelectTriggerComponent;
+  let fixture: ComponentFixture<FlogoSelectTriggerComponent>;
 
-  let existingMock = [
+  const existingMock = [
     {
       ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/coap',
       name: 'Simple COAP Trigger',
@@ -62,15 +57,15 @@ describe('FlogoSelectTrigger component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateModule,
-      InstallerModule],
-      declarations: [ FlogoSelectTriggerComponent], // declare the test component
+        InstallerModule],
+      declarations: [FlogoSelectTriggerComponent], // declare the test component
       providers: [
         RESTAPIActivitiesService,
-        {provide:PostService, useValue: postServiceStub },
-        {provide: FlogoProfileService, useClass: FlogoProfileServiceMock},
-        {provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock},
-        {provide: RESTAPITriggersServiceV2, useClass: RESTAPITriggersServiceMockV2},
-        {provide: RESTAPIContributionsService},
+        { provide: PostService, useValue: postServiceStub },
+        { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
+        { provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock },
+        { provide: RESTAPITriggersServiceV2, useClass: RESTAPITriggersServiceMockV2 },
+        { provide: RESTAPIContributionsService },
         HttpUtilsService
       ]
     });
@@ -87,7 +82,7 @@ describe('FlogoSelectTrigger component', () => {
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
-            let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger__content'));
+            const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger__content'));
             expect(res.length).toEqual(4);
             done();
           });
@@ -103,14 +98,14 @@ describe('FlogoSelectTrigger component', () => {
         comp.appDetails = {
           appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE
         };
-        let existing =  function() {
+        const existing = function () {
           return Promise.resolve(existingMock);
         };
-        comp.getExistingTriggers  = existing;
+        comp.getExistingTriggers = existing;
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
-            let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
+            const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
             expect(res.length).toEqual(2);
             done();
           });
@@ -125,16 +120,16 @@ describe('FlogoSelectTrigger component', () => {
         comp.appDetails = {
           appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE
         };
-        let existing = function () {
+        const existing = function () {
           return Promise.resolve([]);
         };
         comp.getExistingTriggers = existing;
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
-            let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger__content'));
+            const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger__content'));
             res[0].nativeElement.click(res[0]);
-            let postService = <PostService>fixture.debugElement.injector.get(PostService);
+            const postService = <PostService>fixture.debugElement.injector.get(PostService);
             expect(postService['published'].data.trigger.description).toEqual('Simple CoAP Trigger');
             done();
           });
@@ -149,16 +144,16 @@ describe('FlogoSelectTrigger component', () => {
         comp.appDetails = {
           appProfileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE
         };
-        let existing =  function() {
+        const existing = function () {
           return Promise.resolve(existingMock);
         };
-        comp.getExistingTriggers  = existing;
+        comp.getExistingTriggers = existing;
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
-            let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
+            const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
             res[0].nativeElement.click(res[0]);
-            let postService = <PostService>fixture.debugElement.injector.get(PostService);
+            const postService = <PostService>fixture.debugElement.injector.get(PostService);
             expect(postService['published'].data.trigger.description).toEqual('Description of Simple COAP Trigger');
             done();
           });

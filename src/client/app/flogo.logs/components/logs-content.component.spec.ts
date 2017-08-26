@@ -1,7 +1,7 @@
 import {By} from '@angular/platform-browser';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {DebugElement}    from '@angular/core';
-import {FlogoLogsContent} from './logs-content.component';
+import {DebugElement} from '@angular/core';
+import {FlogoLogsContentComponent} from './logs-content.component';
 import {SearchPipe} from './search.pipe';
 import {LogService} from '../log.service';
 
@@ -23,20 +23,21 @@ class LogServiceMocked {
   lines = [];
 }
 
-describe('Component: FlogoLogsContent', () => {
-  let comp: FlogoLogsContent, fixture: ComponentFixture<FlogoLogsContent>;
+describe('Component: FlogoLogsContentComponent', () => {
+  let comp: FlogoLogsContentComponent;
+  let fixture: ComponentFixture<FlogoLogsContentComponent>;
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
         imports: [],
-        declarations: [FlogoLogsContent, SearchPipe],
+        declarations: [FlogoLogsContentComponent, SearchPipe],
         providers: [
           {provide: LogService, useClass: LogServiceMocked}
         ]
       })
       .compileComponents()
-      .then(()=>{
-        fixture = TestBed.createComponent(FlogoLogsContent);
+      .then(() => {
+        fixture = TestBed.createComponent(FlogoLogsContentComponent);
         comp = fixture.componentInstance;
         done();
       });
@@ -45,7 +46,7 @@ describe('Component: FlogoLogsContent', () => {
   it('Should show two log lines', () => {
     comp.logService.lines = LOG_LINES;
     fixture.detectChanges();
-    let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.log-line'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.log-line'));
     expect(res.length).toEqual(2);
   });
 
@@ -53,7 +54,7 @@ describe('Component: FlogoLogsContent', () => {
     comp.logService.lines = LOG_LINES;
     comp.searchValue = 'message 1';
     fixture.detectChanges();
-    let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.log-line'));
+    const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.log-line'));
     expect(res.length).toEqual(1);
   });
 

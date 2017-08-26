@@ -1,68 +1,62 @@
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import {Injectable} from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class ImportErrorFormatterService {
-  constructor(public _translate: TranslateService){
+  constructor(public _translate: TranslateService) {}
 
-  }
-
-  formatMessageHeader(keyword){
+  formatMessageHeader(keyword) {
     let messageHeader = '';
     switch (keyword) {
-      case "type":
-        messageHeader = this._translate.instant("IMPORT-ERROR:TYPE_MISMATCH");
+      case 'type':
+        messageHeader = this._translate.instant('IMPORT-ERROR:TYPE_MISMATCH');
         break;
-      case "required":
-        messageHeader = this._translate.instant("IMPORT-ERROR:PROPERTY_REQUIRED");
+      case 'required':
+        messageHeader = this._translate.instant('IMPORT-ERROR:PROPERTY_REQUIRED');
         break;
-      case "activity-installed":
-        messageHeader = this._translate.instant("IMPORT-ERROR:ACTIVITY_MISSING");
+      case 'activity-installed':
+        messageHeader = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING');
         break;
-      case "trigger-installed":
-        messageHeader = this._translate.instant("IMPORT-ERROR:TRIGGER_MISSING");
+      case 'trigger-installed':
+        messageHeader = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING');
         break;
       default:
-        messageHeader = this._translate.instant("APP-LIST:BROKEN_RULE_UNKNOWN");
+        messageHeader = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
         break;
     }
     return messageHeader;
   }
 
   formatErrorMessage(detail) {
-    let errorMessage='';
+    let errorMessage = '';
     switch (detail.keyword) {
-      case "type":
-      case "required":
+      case 'type':
+      case 'required':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
         break;
-      case "activity-installed":
-        errorMessage = this._translate.instant("IMPORT-ERROR:ACTIVITY_MISSING_CONTENT", {ref: detail.data});
+      case 'activity-installed':
+        errorMessage = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT', { ref: detail.data });
         break;
-      case "trigger-installed":
-        errorMessage = this._translate.instant("IMPORT-ERROR:TRIGGER_MISSING_CONTENT", {ref: detail.data});
+      case 'trigger-installed':
+        errorMessage = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING_CONTENT', { ref: detail.data });
         break;
       default:
-        errorMessage = this._translate.instant("APP-LIST:BROKEN_RULE_UNKNOWN");
+        errorMessage = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
         break;
     }
     return errorMessage;
   }
 
-  getErrorContext(path, keyword){
-    let pathArray = path.split('.'), propName = '',getNthIndex = /\d+/g;
+  getErrorContext(path, keyword) {
+    const pathArray = path.split('.');
+    let propName = '';
     pathArray.shift();
-    if(keyword === "type") {propName = pathArray.pop()}
-    /*pathArray = pathArray.map((val) => {
-      let index = val.match(getNthIndex), prop = val.split('[');
-      if(index) {
-        return `Item at index ${index} of ${prop[0]}`;
-      }
-      return val;
-    });*/
-    if(keyword === "type") {
+    if (keyword === 'type') {
+      propName = pathArray.pop();
+    }
+    if (keyword === 'type') {
       return this._translate
-        .instant("IMPORT-ERROR:TYPE_MISMATCH_CONTENT", {property: propName, JSONPath: '.'+pathArray.join('.')});
+        .instant('IMPORT-ERROR:TYPE_MISMATCH_CONTENT', { property: propName, JSONPath: '.' + pathArray.join('.') });
     } else {
       return `.${pathArray.join('.')} `;
     }

@@ -11,29 +11,29 @@ import { jsonValidator, mappingsValidatorFactory } from '../validators/validator
 })
 export class MapEditorComponent implements OnChanges, OnInit {
 
-  @Output() mappingChange:EventEmitter<any>;
-  @Input() mappings:any = '';
+  @Output() mappingChange: EventEmitter<any>;
+  @Input() mappings: any = '';
 
-  @Input() tileInputInfo:any = null;
-  @Input() precedingTilesOutputs:any[] = [];
+  @Input() tileInputInfo: any = null;
+  @Input() precedingTilesOutputs: any[] = [];
 
-  editor:FormControl;
+  editor: FormControl;
 
-  private tileInfo:TileInOutInfo = {
+  private tileInfo: TileInOutInfo = {
     attributes: {},
     precedingOutputs: {}
   };
 
   constructor() {
     this.mappingChange = new EventEmitter();
-    let mappingsValidator = mappingsValidatorFactory(this.tileInfo);
+    const mappingsValidator = mappingsValidatorFactory(this.tileInfo);
     this.editor = new FormControl('', Validators.compose([Validators.required, jsonValidator, mappingsValidator]));
     this
       .editor
       .valueChanges
       .debounceTime(300)
       .distinctUntilChanged()
-      .map((rawVal:string) => {
+      .map((rawVal: string) => {
         return {
           isValid: this.editor.valid,
           isDirty: this.editor.dirty,
@@ -41,7 +41,7 @@ export class MapEditorComponent implements OnChanges, OnInit {
           value: this.editor.valid ? JSON.parse(rawVal) : null
         };
       })
-      .distinctUntilChanged((prev:any, next:any) => _.isEqual(prev, next))
+      .distinctUntilChanged((prev: any, next: any) => _.isEqual(prev, next))
       .do((val) => {
         console.group('emitted val');
         console.log(val);
@@ -55,7 +55,7 @@ export class MapEditorComponent implements OnChanges, OnInit {
 
   }
 
-  ngOnChanges(changes:any) {
+  ngOnChanges(changes: any) {
     if (changes.mappings) {
       this.onMappingsChange(changes.mappings);
     }
@@ -70,24 +70,24 @@ export class MapEditorComponent implements OnChanges, OnInit {
 
   }
 
-  private onMappingsChange(mappingsChange:any) {
-    let nextValue = mappingsChange.currentValue;
-    let currentEditorValue:any = null;
+  private onMappingsChange(mappingsChange: any) {
+    const nextValue = mappingsChange.currentValue;
+    let currentEditorValue: any = null;
     try {
       currentEditorValue = JSON.parse(this.editor.value);
     } catch (e) { // current val is just not valid json
     }
 
     if (!_.isEqual(mappingsChange.previousValue, nextValue) && !_.isEqual(nextValue, currentEditorValue)) {
-      let stringified = JSON.stringify(nextValue || [], null, 2);
-      this.editor.patchValue(stringified, {onlySelf: true, emitEvent: false});
+      const stringified = JSON.stringify(nextValue || [], null, 2);
+      this.editor.patchValue(stringified, { onlySelf: true, emitEvent: false });
     }
   }
 
-  private extractInputs(tileInputs:any) {
-    let inputMap = {};
+  private extractInputs(tileInputs: any) {
+    const inputMap = {};
 
-    if(tileInputs) {
+    if (tileInputs) {
       tileInputs.forEach(attr => {
         inputMap[attr.name] = attr.type;
       });
@@ -96,14 +96,14 @@ export class MapEditorComponent implements OnChanges, OnInit {
     return inputMap;
   }
 
-  private extractPrecedingOutputs(precedingTiles:any) {
-    return precedingTiles ? _.reduce(precedingTiles, (allOutputNames:any, tileOutputs:any[], tileName:any) => {
-      tileOutputs.forEach(output => {
-        let path = `${tileName}.${output.name}`;
-        allOutputNames[path] = output;
-      });
-      return allOutputNames;
-    }, {}) : {};
+  private extractPrecedingOutputs(precedingTiles: any) {
+    return precedingTiles ? _.reduce(precedingTiles, (allOutputNames: any, tileOutputs: any[], tileName: any) => {
+        tileOutputs.forEach(output => {
+          const path = `${tileName}.${output.name}`;
+          allOutputNames[path] = output;
+        });
+        return allOutputNames;
+      }, {}) : {};
   }
 
 }

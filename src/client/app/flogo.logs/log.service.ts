@@ -8,25 +8,25 @@ export class LogService {
 
     constructor() {
         this.lines = [];
-        let socket = io(environment.hostname);
+        const socket = io(environment.hostname);
         socket.on('on-connecting', this.onData.bind(this));
         socket.on('on-log', this.onData.bind(this));
     }
 
     onData(msg) {
         try {
-            let data = JSON.parse(msg);
+            const data = JSON.parse(msg);
             this.appendLog(data);
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
     }
 
     appendLog(logData) {
-        if(logData.length) {
-            logData.forEach((data)=> {
+        if (logData.length) {
+            logData.forEach((data) => {
               // split lines
-              let lines = (data.message || '').match(/[^\r\n]+/g);
+              const lines = (data.message || '').match(/[^\r\n]+/g);
               lines.forEach((line) => {
                 this.addLine(Object.assign({}, data, {message: line}));
               });
@@ -39,7 +39,7 @@ export class LogService {
     }
 
     addLine(data) {
-        let message = {
+        const message = {
             level: data.level,
             timestamp: moment(data.timestamp).format('HH:mm:ss.SSS ll'),
             message: data.message

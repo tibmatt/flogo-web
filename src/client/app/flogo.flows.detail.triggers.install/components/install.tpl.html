@@ -4,7 +4,7 @@
     {{ 'TRIGGERS-INSTALL:INSTALL-NEW-TRIGGER' | translate }}
   </button>
 
-  <flogo-installer [flogoInstallType]="'trigger'" [(flogoIsActivated)]="isActivated"
-                   (flogoOnInstalled)="onInstalledAction($event)"></flogo-installer>
+  <flogo-installer [installType]="'trigger'" [(isActivated)]="isActivated"
+                   (installed)="onInstalledAction($event)"></flogo-installer>
 
 </div>

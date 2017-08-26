@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By }              from '@angular/platform-browser';
-import { DebugElement }    from '@angular/core';
-import { TranslateModule,  TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { Http } from '@angular/http'
-
+import { Http } from '@angular/http';
 import { FlogoInstructionsComponent } from './instructions.component';
 
 
-describe('Component: FlogoInstructions Modal', ()=> {
+describe('Component: FlogoInstructions Modal', () => {
 
-  let comp:    FlogoInstructionsComponent;
+  let comp: FlogoInstructionsComponent;
   let fixture: ComponentFixture<FlogoInstructionsComponent>;
-  let de:      DebugElement;
-  let el:      HTMLElement;
+  let de: DebugElement;
+  let el: HTMLElement;
 
   // synchronous beforeEach
   beforeEach(() => {
@@ -24,7 +23,7 @@ describe('Component: FlogoInstructions Modal', ()=> {
         useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
         deps: [Http]
       })],
-      declarations: [ FlogoInstructionsComponent, ModalComponent ], // declare the test component
+      declarations: [FlogoInstructionsComponent, ModalComponent], // declare the test component
     });  // compile template and css
 
   });
@@ -44,70 +43,70 @@ describe('Component: FlogoInstructions Modal', ()=> {
   });
 
 
-    it('When load, back button must not exist and next button should exist', done => {
+  it('When load, back button must not exist and next button should exist', done => {
 
-        TestBed.compileComponents()
-            .then(() => {
-                fixture = TestBed.createComponent(FlogoInstructionsComponent);
-                fixture.detectChanges();
-                let backButton = fixture.debugElement.query(By.css('#buttonBack'));
-                expect(backButton).toBeNull();
-                let nextButton = fixture.debugElement.query(By.css('#buttonNext'));
-                expect(nextButton).not.toBeNull(nextButton);
-                done();
-            });
-    });
+    TestBed.compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(FlogoInstructionsComponent);
+        fixture.detectChanges();
+        const backButton = fixture.debugElement.query(By.css('#buttonBack'));
+        expect(backButton).toBeNull();
+        const nextButton = fixture.debugElement.query(By.css('#buttonNext'));
+        expect(nextButton).not.toBeNull(nextButton);
+        done();
+      });
+  });
 
-    it('Click on next  should move to step 2', done => {
-        TestBed.compileComponents()
-            .then(() => {
-                fixture = TestBed.createComponent(FlogoInstructionsComponent);
-                let instructions = fixture.componentInstance;
-                fixture.detectChanges();
+  it('Click on next  should move to step 2', done => {
+    TestBed.compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(FlogoInstructionsComponent);
+        const instructions = fixture.componentInstance;
+        fixture.detectChanges();
 
-                let buttonNextDebug = fixture.debugElement.query(By.css('#buttonNext'));
-                let button = buttonNextDebug.nativeElement;
+        const buttonNextDebug = fixture.debugElement.query(By.css('#buttonNext'));
+        const button = buttonNextDebug.nativeElement;
 
-                button.click();
-                fixture.detectChanges();
-                let selected = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
-                expect(selected.nativeElement.innerHTML).toEqual('2');
+        button.click();
+        fixture.detectChanges();
+        const selected = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
+        expect(selected.nativeElement.innerHTML).toEqual('2');
 
-                done();
-            });
-    });
+        done();
+      });
+  });
 
-    it('When last step is selected, close button should exist', done => {
-        TestBed.compileComponents()
-            .then(() => {
-                fixture = TestBed.createComponent(FlogoInstructionsComponent);
-                let instructions = fixture.componentInstance;
-                instructions.currentIndex = instructions.steps.length -1;
+  it('When last step is selected, close button should exist', done => {
+    TestBed.compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(FlogoInstructionsComponent);
+        const instructions = fixture.componentInstance;
+        instructions.currentIndex = instructions.steps.length - 1;
 
-                fixture.detectChanges();
-                let buttonClose = fixture.debugElement.query(By.css('#buttonClose'));
-                expect(buttonClose).not.toBeNull();
-                done();
-            });
-    });
+        fixture.detectChanges();
+        const buttonClose = fixture.debugElement.query(By.css('#buttonClose'));
+        expect(buttonClose).not.toBeNull();
+        done();
+      });
+  });
 
-    it('Click on back  should move to step 3', done => {
-        TestBed.compileComponents()
-            .then(() => {
-                fixture = TestBed.createComponent(FlogoInstructionsComponent);
-                let instructions = fixture.componentInstance;
-                instructions.currentIndex = instructions.steps.length -1;
-                fixture.detectChanges();
+  it('Click on back  should move to step 3', done => {
+    TestBed.compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(FlogoInstructionsComponent);
+        const instructions = fixture.componentInstance;
+        instructions.currentIndex = instructions.steps.length - 1;
+        fixture.detectChanges();
 
-                let buttonBackDebug = fixture.debugElement.query(By.css('#buttonBack'));
-                let button = buttonBackDebug.nativeElement;
+        const buttonBackDebug = fixture.debugElement.query(By.css('#buttonBack'));
+        const button = buttonBackDebug.nativeElement;
 
-                button.click();
-                fixture.detectChanges();
-                let selected = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
-                expect(selected.nativeElement.innerHTML).toEqual('3');
-                done();
-            });
-    });
+        button.click();
+        fixture.detectChanges();
+        const selected = fixture.debugElement.query(By.css('.flogo-instructions-option-selected > span'));
+        expect(selected.nativeElement.innerHTML).toEqual('3');
+        done();
+      });
+  });
 
 });

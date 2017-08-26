@@ -31,7 +31,7 @@
         <div *ngFor="let item of tiles" [hidden]="!showList"  class="flogo-visual-mapper__item__list__item" >
 
             <span class="glyphicon flogo-visual-mapper__item__action"
-                  [ngClass]="{'glyphicon-triangle-right':!selectedTitle, 'glyphicon-triangle-bottom':selectedTile == item.name}"></span>
+                  [ngClass]="{'glyphicon-triangle-right': !selectedTile, 'glyphicon-triangle-bottom':selectedTile == item.name}"></span>
 
             <div class="flogo-visual-mapper__item__name" (click)="setSelectedTile(item.name)">{{item.name}}</div>
                 <div class="flogo-visual-mapper__item__list__field"

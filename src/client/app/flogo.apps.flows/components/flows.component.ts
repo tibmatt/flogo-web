@@ -1,7 +1,7 @@
-import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef} from '@angular/core';
-import {TranslateService} from 'ng2-translate/ng2-translate';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 import { FlogoModal } from '../../../common/services/modal.service';
-import {IFlogoApplicationFlowModel as FlowModel} from '../../../common/application.model';
+import { IFlogoApplicationFlowModel as FlowModel } from '../../../common/application.model';
 
 @Component({
   selector: 'flogo-apps-flows',
@@ -9,7 +9,7 @@ import {IFlogoApplicationFlowModel as FlowModel} from '../../../common/applicati
   templateUrl: 'flows.tpl.html',
   styleUrls: ['flows.component.less']
 })
-export class FlogoApplicationFlowsComponent implements OnChanges{
+export class FlogoApplicationFlowsComponent implements OnChanges {
   @Input()
   public flows: Array<FlowModel> = [];
   @Output()
@@ -20,7 +20,7 @@ export class FlogoApplicationFlowsComponent implements OnChanges{
   constructor(public translate: TranslateService, public flogoModal: FlogoModal) {
   }
 
-  ngOnChanges(changes:SimpleChanges){
+  ngOnChanges(changes: SimpleChanges) {
     this.flows = _.sortBy(this.flows, flow => flow.name.toLowerCase());
   }
 

@@ -1,6 +1,6 @@
 <flogo-installer  [profileType]="appDetails?.appProfileType"
-                 [flogoInstallType]="'trigger'" [(flogoIsActivated)]="installTriggerActivated"
-                 (flogoOnInstalled)="onInstalledAction($event)"></flogo-installer>
+                 [installType]="'trigger'" [(isActivated)]="installTriggerActivated"
+                 (installed)="onInstalledAction($event)"></flogo-installer>
 
 <div class="flogo-select-trigger">
   <h1>{{ 'SELECT-TRIGGER:SELECT-TRIGGER-TO-START' | translate }}</h1>

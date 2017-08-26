@@ -1,54 +1,48 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RESTAPIApplicationsService } from '../../../common/services/restapi/applications-api.service';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
-import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-
 import { FlogoModal } from '../../../common/services/modal.service';
-import { flogoIDEncode, notification } from "../../../common/utils";
-import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.service";
+import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 
 
-@Component( {
-    selector: 'flogo-apps-main',
-    // moduleId: module.id,
-    templateUrl: 'main.tpl.html',
-    styleUrls: [ 'main.component.less' ]
-} )
+@Component({
+  selector: 'flogo-apps-main',
+  // moduleId: module.id,
+  templateUrl: 'main.tpl.html',
+  styleUrls: ['main.component.less']
+})
 export class FlogoMainComponent implements OnInit {
-    public recent : Array<any> = [];
-    flows: Array<IFlogoApplicationFlowModel> = [];
-    originalFlows: Array<IFlogoApplicationFlowModel> = [];
-    application: IFlogoApplicationModel = null;
+  public recent: Array<any> = [];
+  flows: Array<IFlogoApplicationFlowModel> = [];
+  originalFlows: Array<IFlogoApplicationFlowModel> = [];
+  application: IFlogoApplicationModel = null;
 
-    constructor(
-        private _flogoModal: FlogoModal,
-        private router: Router,
-        public translate: TranslateService,
-        public applicationServiceAPI: AppsApiService
-    ) {
-    }
+  constructor(private _flogoModal: FlogoModal,
+              private router: Router,
+              public translate: TranslateService,
+              public applicationServiceAPI: AppsApiService) {
+  }
 
-    ngOnInit() {
-      this.loadFlows();
-    }
+  ngOnInit() {
+    this.loadFlows();
+  }
 
-    /*onChangedSearch(search) {
-        let flows = this.originalFlows || [];
+  /*onChangedSearch(search) {
+   let flows = this.originalFlows || [];
 
-        if(search && flows.length){
-            let filtered =  flows.filter((flow:IFlogoApplicationFlowModel)=> {
-                return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
-                    (flow.description || '').toLowerCase().includes(search.toLowerCase())
-            });
+   if(search && flows.length){
+   let filtered =  flows.filter((flow:IFlogoApplicationFlowModel)=> {
+   return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
+   (flow.description || '').toLowerCase().includes(search.toLowerCase())
+   });
 
-            this.flows = filtered || [];
+   this.flows = filtered || [];
 
-        }else {
-            this.flows = this.getOriginalFlows();
-        }
-    }*/
+   }else {
+   this.flows = this.getOriginalFlows();
+   }
+   }*/
 
   loadFlows() {
     this.applicationServiceAPI.recentFlows()

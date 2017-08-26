@@ -1,5 +1,5 @@
-import {Component, Output, EventEmitter, DoCheck} from '@angular/core';
-import {TranslateService} from 'ng2-translate/ng2-translate';
+import { Component, Output, EventEmitter, DoCheck } from '@angular/core';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-apps-search',
@@ -7,8 +7,8 @@ import {TranslateService} from 'ng2-translate/ng2-translate';
   templateUrl: 'search.tpl.html',
   styleUrls: ['search.component.less']
 })
-export class FlogoApplicationSearch implements DoCheck {
-  public placeholder: string = '';
+export class FlogoApplicationSearchComponent implements DoCheck {
+  public placeholder = '';
   @Output() changedSearch: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(public translate: TranslateService) {

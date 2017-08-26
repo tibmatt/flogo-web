@@ -7,33 +7,30 @@ import { Component, Input } from '@angular/core';
     templateUrl: 'visual-mapper-output.tpl.html'
 })
 export class VisualMapperOutputComponent {
-    @Input() outputs:any;
-    showList:boolean;
+    @Input() outputs: any;
+    showList: boolean;
     selectedValue: string;
-    tilesOutputs:any[] = [];
+    tilesOutputs: any[] = [];
 
     constructor() {
         this.showList = false;
     }
 
-    focus(event:any) {
+    focus(event: any) {
         this.showList =  true;
     }
 
-    blur(event:any) {
+    blur(event: any) {
         this.showList = false;
     }
 
-    ngOnChanges(changes:any) {
-    }
-
-    clickField(output:any, field:any) {
+    clickField(output: any, field: any) {
         this.selectedValue = output.name + '.' + field.name;
         this.showList = false;
     }
 
     onKeyPress(event) {
-        if(event.keyCode == 27) {
+        if (event.keyCode === 27) {
             this.showList = false;
         }
     }

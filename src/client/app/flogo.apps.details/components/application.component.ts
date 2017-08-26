@@ -1,20 +1,19 @@
-import {
-  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter
-} from '@angular/core';
-
+import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
 import {
-  AppDetailService, ApplicationDetail, ApplicationDetailState,
-  FlowGroup, App
+  AppDetailService,
+  ApplicationDetail,
+  ApplicationDetailState,
+  FlowGroup,
+  App
 } from '../../flogo.apps/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
 import { SanitizeService } from '../../../common/services/sanitize.service';
-
 import { diffDates, notification } from '../../../common/utils';
 import { FlogoModal } from '../../../common/services/modal.service';
-import {FLOGO_PROFILE_TYPE} from "../../../common/constants";
-import {FlogoProfileService} from "../../../common/services/profile.service";
+import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import { FlogoProfileService } from '../../../common/services/profile.service';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -37,7 +36,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   state: ApplicationDetailState;
 
   isNameInEditMode: boolean;
-  autofocusName: boolean = true;
+  autofocusName = true;
   editableName: string;
 
   isDescriptionInEditMode: boolean;
@@ -46,13 +45,13 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   flowGroups: Array<FlowGroup> = [];
   flows: Array<IFlogoApplicationFlowModel> = [];
 
-  isNewApp: boolean = false;
+  isNewApp = false;
 
-  isBuildBoxShown: boolean = false;
+  isBuildBoxShown = false;
   downloadLink: string;
 
   profileType: FLOGO_PROFILE_TYPE;
-  PROFILE_TYPES : typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
+  PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
@@ -67,7 +66,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    let change = changes['appDetail'];
+    const change = changes['appDetail'];
     if (change.currentValue) {
       this.application = this.appDetail.app;
       this.state = this.appDetail.state;
@@ -79,8 +78,8 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
 
       this.profileType = this.profileSerivce.getProfileType(this.application);
 
-      let prevValue = change.previousValue;
-      let isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id != this.application.id;
+      const prevValue = change.previousValue;
+      const isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;
       if (isDifferentApp) {
         this.appUpdated();
       } else {
@@ -103,7 +102,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.addFlow.open();
   }
 
-  openCreateFlowFromTrigger(trigger: Trigger){
+  openCreateFlowFromTrigger(trigger: Trigger) {
     this.addFlow.open(trigger.id);
   }
 
@@ -117,7 +116,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     if (!editableName) {
       return;
     }
-    editableName =  this.sanitizer.sanitizeHTMLInput(editableName);
+    editableName = this.sanitizer.sanitizeHTMLInput(editableName);
     this.isNameInEditMode = false;
     this.appDetailService.update('name', editableName);
   }
@@ -135,7 +134,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   }
 
   onSaveDeviceSettings(settings: any[]) {
-    if(!this.application.device) {
+    if (!this.application.device) {
       this.application.device = {};
     }
 
@@ -158,12 +157,12 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   }
 
   onChangedSearch(search) {
-    let flows = this.application.flows || [];
+    const flows = this.application.flows || [];
 
     if (search && flows.length) {
-      let filtered = flows.filter((flow: IFlogoApplicationFlowModel) => {
+      const filtered = flows.filter((flow: IFlogoApplicationFlowModel) => {
         return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
-          (flow.description || '').toLowerCase().includes(search.toLowerCase())
+          (flow.description || '').toLowerCase().includes(search.toLowerCase());
       });
 
       this.flows = filtered || [];
@@ -177,12 +176,12 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.flowSelected.emit(flow);
   }
 
-  onFlowDelete(eventData){
+  onFlowDelete(eventData) {
     this.flowDeleted.emit(eventData);
   }
 
   onFlowImportSuccess(result: any) {
-    let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-IMPORT');
+    const message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-IMPORT');
     notification(message, 'success', 3000);
     this.flowAdded.emit(result);
   }
@@ -197,7 +196,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   }
 
   onDeleteApp(application) {
-    let message = this.translate.instant('APP-DETAIL:CONFIRM_DELETE', { appName: application.name })
+    const message = this.translate.instant('APP-DETAIL:CONFIRM_DELETE', { appName: application.name });
     this.flogoModal.confirmDelete(message).then((res) => {
       if (res) {
         this.appDetailService.deleteApp();
@@ -222,7 +221,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
     this.isNameInEditMode = false;
     this.isNewApp = !this.application.updatedAt;
     if (this.isNewApp) {
-      let secondsSinceCreation = diffDates(Date.now(), this.application.createdAt, 'seconds');
+      const secondsSinceCreation = diffDates(Date.now(), this.application.createdAt, 'seconds');
       this.isNewApp = secondsSinceCreation <= MAX_SECONDS_TO_ASK_APP_NAME;
       this.isNameInEditMode = this.isNewApp;
     }

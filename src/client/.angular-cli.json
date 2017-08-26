@@ -59,12 +59,24 @@
   },
   "lint": [
     {
-      "files": ["./*.ts", "./app/flogo/**/*.ts", "./app/flogo.apps*/**/*.ts", "./app/config/**/*.ts"],
+      "files": ["./**/*.ts"],
+      "exclude": [
+        "./app/flogo.flows*/**/*.ts",
+        "./app/flogo.form*/**/*.ts",
+        "./common/**",
+        "./node_modules/**/*"
+      ],
       "project": "./tsconfig.app.json"
     },
     {
-      "files": ["./*.ts", "./app/flogo/**/*.ts", "./app/flogo.apps*/**/*.ts", "./app/config/**/*.ts"],
-      "project": "./tsconfig.spec.json"
+      "project": "./tsconfig.spec.json",
+      "files": ["./**/*.ts"],
+      "exclude": [
+        "./app/flogo.flows*/**/*.ts",
+        "./app/flogo.form*/**/*.ts",
+        "./common/**/*",
+        "./node_modules/**/*"
+      ]
     }
   ],
   "test": {

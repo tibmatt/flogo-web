@@ -1,22 +1,23 @@
-import {Component, ViewChild, ElementRef, Input, OnDestroy, HostListener} from '@angular/core';
-
-import {PostService} from '../../../common/services/post.service';
-
-import {FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE, FLOGO_TASK_TYPE as TASK_TYPE, FLOGO_ERROR_ROOT_NAME as ERROR_ROOT_NAME} from '../../../common/constants';
-import {REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT} from '../constants';
-import {PUB_EVENTS, SUB_EVENTS} from '../messages';
-
-import {normalizeTaskName, convertTaskID} from '../../../common/utils';
+import { Component, ViewChild, ElementRef, Input, OnDestroy, HostListener } from '@angular/core';
+import { PostService } from '../../../common/services/post.service';
+import {
+  FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE,
+  FLOGO_TASK_TYPE as TASK_TYPE,
+  FLOGO_ERROR_ROOT_NAME as ERROR_ROOT_NAME
+} from '../../../common/constants';
+import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from '../constants';
+import { PUB_EVENTS, SUB_EVENTS } from '../messages';
+import { normalizeTaskName, convertTaskID } from '../../../common/utils';
 
 const TILE_MAP_ROOT_KEY = 'root-task';
 
 interface TransformData {
-  result:any,
-  precedingTiles:any[],
-  precedingTilesOutputs:any[],
-  tile:any,
-  tileInputInfo:any,
-  mappings:any
+  result: any;
+  precedingTiles: any[];
+  precedingTilesOutputs: any[];
+  tile: any;
+  tileInputInfo: any;
+  mappings: any;
 }
 
 @Component({
@@ -26,27 +27,26 @@ interface TransformData {
   templateUrl: 'transform.tpl.html'
 })
 export class TransformComponent implements OnDestroy {
-  fieldsConnections:any = {};
-  isValid:boolean;
-  isDirty:boolean;
-  isCollapsedOutput:boolean = true;
-  isCollapsedInput:boolean = true;
-  currentFieldSelected:any = {};
+  fieldsConnections: any = {};
+  isValid: boolean;
+  isDirty: boolean;
+  isCollapsedOutput = true;
+  isCollapsedInput = true;
+  currentFieldSelected: any = {};
   @Input()
-  flowId:string;
+  flowId: string;
 
-  errors:any;
+  errors: any;
 
   // TODO: use angular animation API? It was not available when this was first implemented
   // two variables control the display of the modal to support animation when opening and closing
-  active:boolean = false; // controls the rendering of the content of the modal
-  out:boolean = false; // controls the in/out transition of the modal
+  active = false; // controls the rendering of the content of the modal
+  out = false; // controls the in/out transition of the modal
 
-  showDeleteConfirmation:boolean = false;
-  @ViewChild('deleteContainer') deleteContainer:ElementRef;
+  showDeleteConfirmation = false;
+  @ViewChild('deleteContainer') deleteContainer: ElementRef;
 
-  private _subscriptions:any[];
-  private data:TransformData = {
+  data: TransformData = {
     result: null,
     precedingTiles: [],
     precedingTilesOutputs: [],
@@ -55,7 +55,9 @@ export class TransformComponent implements OnDestroy {
     mappings: null
   };
 
-  constructor(private _postService:PostService) {
+  private _subscriptions: any[];
+
+  constructor(private _postService: PostService) {
     this.initSubscriptions();
     this.resetState();
   }
@@ -64,73 +66,73 @@ export class TransformComponent implements OnDestroy {
     this.cancelSubscriptions();
   }
 
-  onSelectedItem(params:any) {
+  onSelectedItem(params: any) {
     this.currentFieldSelected = params;
   }
 
-  removeError(change:any) {
-    this.errors = this.errors || {invalidMappings: {errors:[]}};
-    let index = this.errors.invalidMappings.errors.findIndex(function (item:any) {
-      return item.value.mapTo == change.field;
+  removeError(change: any) {
+    this.errors = this.errors || { invalidMappings: { errors: [] } };
+    const index = this.errors.invalidMappings.errors.findIndex(function (item: any) {
+      return item.value.mapTo === change.field;
     });
 
-    if(index !== -1) {
-      this.errors.invalidMappings.errors.splice(index,1);
+    if (index !== -1) {
+      this.errors.invalidMappings.errors.splice(index, 1);
     }
-    if(this.errors.invalidMappings.errors.length == 0) {
+    if (!this.errors.invalidMappings.errors.length) {
       this.errors = null;
     }
 
   }
 
-  onToggledSchema(state:any) {
-    if(state.isInput) {
+  onToggledSchema(state: any) {
+    if (state.isInput) {
       this.isCollapsedInput = state.isCollapsed;
     } else {
       this.isCollapsedOutput = state.isCollapsed;
     }
   }
 
-  updateErrors(change:any) {
-    let currentError = change.errors.invalidMappings.errors[0];
-    this.errors = this.errors || {invalidMappings: {errors:[]}};
+  updateErrors(change: any) {
+    const currentError = change.errors.invalidMappings.errors[0];
+    this.errors = this.errors || { invalidMappings: { errors: [] } };
 
-    if(change.errors.invalidMappings&&change.errors.invalidMappings.errors) {
-      let index = this.errors.invalidMappings.errors.findIndex(function (item:any) {
-        return item.value.mapTo == change.field;
+    if (change.errors.invalidMappings && change.errors.invalidMappings.errors) {
+      const index = this.errors.invalidMappings.errors.findIndex(function (item: any) {
+        return item.value.mapTo === change.field;
       });
 
-      if(index == -1) {
+      if (index === -1) {
         this.errors.invalidMappings.errors.push(currentError);
-      } else  {
+      } else {
         this.errors.invalidMappings.errors[index] = currentError;
       }
     }
   }
 
-  onMappingsChange(change:any) {
-    if(change.hasError) {
+  onMappingsChange(change: any) {
+    if (change.hasError) {
       this.updateErrors(change);
     } else {
       this.removeError(change);
     }
 
-    this.fieldsConnections[change.field] = {value: change.value, mapTo: change.field, hasError: change.hasError};
+    this.fieldsConnections[change.field] = { value: change.value, mapTo: change.field, hasError: change.hasError };
     this.isValid = this.checkIsValid();
     this.isDirty = !change.isInit;
 
-    if(this.isValid) {
-       this.data.result = this.getResult();
+    if (this.isValid) {
+      this.data.result = this.getResult();
     }
 
   }
 
   getResult() {
-    let results:any[] = [];
+    const results: any[] = [];
 
-    for(var key in this.fieldsConnections) {
-      if(this.fieldsConnections.hasOwnProperty(key)) {
-        if(!this.fieldsConnections[key].hasError && this.fieldsConnections[key].value) {
+    for (const key in this.fieldsConnections) {
+      if (this.fieldsConnections.hasOwnProperty(key)) {
+        if (!this.fieldsConnections[key].hasError && this.fieldsConnections[key].value) {
           results.push({
             type: TYPE_ATTR_ASSIGNMENT,
             mapTo: this.fieldsConnections[key].mapTo,
@@ -144,14 +146,14 @@ export class TransformComponent implements OnDestroy {
   }
 
   checkIsValid() {
-    let hasNonEmpty:boolean = false;
+    let hasNonEmpty = false;
 
-    for(var key in this.fieldsConnections) {
-      if(this.fieldsConnections.hasOwnProperty(key)) {
-        if(this.fieldsConnections[key].hasError) {
-          return  false;
+    for (const key in this.fieldsConnections) {
+      if (this.fieldsConnections.hasOwnProperty(key)) {
+        if (this.fieldsConnections[key].hasError) {
+          return false;
         }
-        if(this.fieldsConnections[key].value) {
+        if (this.fieldsConnections[key].value) {
           hasNonEmpty = true;
         }
       }
@@ -159,7 +161,6 @@ export class TransformComponent implements OnDestroy {
 
     return hasNonEmpty;
   }
-
 
 
   saveTransform() {
@@ -187,7 +188,7 @@ export class TransformComponent implements OnDestroy {
     this.close();
   }
 
-  openDeleteConfirmation(event:Event) {
+  openDeleteConfirmation(event: Event) {
     this.showDeleteConfirmation = true;
     event.stopPropagation();
   }
@@ -197,7 +198,7 @@ export class TransformComponent implements OnDestroy {
   }
 
   @HostListener('click', ['$event'])
-  clickOutsideDeleteConfirmation(event:Event) {
+  clickOutsideDeleteConfirmation(event: Event) {
     if (this.showDeleteConfirmation && this.deleteContainer && !this.deleteContainer.nativeElement.contains(event.target)) {
       this.showDeleteConfirmation = false;
     }
@@ -205,15 +206,15 @@ export class TransformComponent implements OnDestroy {
 
   private initSubscriptions() {
 
-    let subHandlers = [
-      _.assign({}, SUB_EVENTS.selectActivity, {callback: this.onTransformSelected.bind(this)})
+    const subHandlers = [
+      _.assign({}, SUB_EVENTS.selectActivity, { callback: this.onTransformSelected.bind(this) })
     ];
 
     this._subscriptions = subHandlers.map(handler => this._postService.subscribe(handler));
 
   }
 
-  private raisedByThisDiagram(id:string) {
+  private raisedByThisDiagram(id: string) {
     return this.flowId === (id || '');
   }
 
@@ -225,8 +226,8 @@ export class TransformComponent implements OnDestroy {
     return true;
   }
 
-  private onTransformSelected(data:any, envelope:any) {
-    if(!this.raisedByThisDiagram(data.id) ) {
+  private onTransformSelected(data: any, envelope: any) {
+    if (!this.raisedByThisDiagram(data.id)) {
       return;
     }
     this.data = {
@@ -245,27 +246,27 @@ export class TransformComponent implements OnDestroy {
 
   }
 
-  private extractPrecedingTilesOutputs(precedingTiles:any[]) {
+  private extractPrecedingTilesOutputs(precedingTiles: any[]) {
     return _.chain(precedingTiles || [])
-      .filter((tile:any) => {
-        let attrHolder = tile.type == TASK_TYPE.TASK_ROOT ? tile : tile.attributes;
+      .filter((tile: any) => {
+        const attrHolder = tile.type === TASK_TYPE.TASK_ROOT ? tile : tile.attributes;
         return attrHolder && attrHolder.outputs && attrHolder.outputs.length > 0;
       })
-      .map((tile:any) => {
-        let name = normalizeTaskName(tile.name);
-        let attrHolder = tile.type == TASK_TYPE.TASK_ROOT ? tile : tile.attributes;
-        let outputs = attrHolder.outputs.map(this.mapInOutObjectDisplay);
+      .map((tile: any) => {
+        const name = normalizeTaskName(tile.name);
+        const attrHolder = tile.type === TASK_TYPE.TASK_ROOT ? tile : tile.attributes;
+        const outputs = attrHolder.outputs.map(this.mapInOutObjectDisplay);
         return [name, outputs];
       })
       .fromPairs()
       .value();
   }
 
-  private extractTileInputInfo(tile:any) {
+  private extractTileInputInfo(tile: any) {
     return (tile.attributes && tile.attributes.inputs) ? tile.attributes.inputs.map(this.mapInOutObjectDisplay) : [];
   }
 
-  private mapInOutObjectDisplay(inputOutput:{name:string, type:ATTRIBUTE_TYPE}) {
+  private mapInOutObjectDisplay(inputOutput: { name: string, type: ATTRIBUTE_TYPE }) {
     let attributeType = ATTRIBUTE_TYPE[inputOutput.type];
     if (!attributeType) {
       attributeType = <string> (inputOutput.type || '');
@@ -278,33 +279,33 @@ export class TransformComponent implements OnDestroy {
     };
   }
 
-  private transformMappingsToExternalFormat(mappings:any[]) {
-    let tileMap:any = {};
-    _.forEach(this.data.precedingTiles, (tile:any) => {
+  private transformMappingsToExternalFormat(mappings: any[]) {
+    const tileMap: any = {};
+    _.forEach(this.data.precedingTiles, (tile: any) => {
       tileMap[normalizeTaskName(tile.name)] = {
         id: convertTaskID(tile.id),
-        isRoot: tile.type == TASK_TYPE.TASK_ROOT,
-        isError: tile.triggerType == ERROR_ROOT_NAME
+        isRoot: tile.type === TASK_TYPE.TASK_ROOT,
+        isError: tile.triggerType === ERROR_ROOT_NAME
       };
     });
 
-    let re = REGEX_INPUT_VALUE_INTERNAL;
+    const re = REGEX_INPUT_VALUE_INTERNAL;
 
     mappings.forEach(mapping => {
-      let matches = re.exec(mapping.value);
+      const matches = re.exec(mapping.value);
       if (!matches) {
         return; // ignoring it
       }
 
-      let taskInfo = tileMap[matches[2]];
-      let property = matches[3];
+      const taskInfo = tileMap[matches[2]];
+      const property = matches[3];
       let path;
       if (taskInfo.isRoot) {
         path = taskInfo.isError ? `E.${property}` : `T.${property}`;
       } else {
         path = `A${taskInfo.id}.${property}`;
       }
-      let rest = matches[4] || '';
+      const rest = matches[4] || '';
       mapping.value = `{${path}}${rest}`;
     });
 
@@ -312,32 +313,32 @@ export class TransformComponent implements OnDestroy {
 
   }
 
-  private transformMappingsToInternalFormat(mappings:any[]) {
-    let tileMap:any = {};
-    _.forEach(this.data.precedingTiles, (tile:any) => {
-      let tileId : any = convertTaskID(tile.id) || undefined;
-      if(tile.type == TASK_TYPE.TASK_ROOT) {
-        tileId = tile.triggerType == ERROR_ROOT_NAME ? ERROR_ROOT_NAME : TILE_MAP_ROOT_KEY;
+  private transformMappingsToInternalFormat(mappings: any[]) {
+    const tileMap: any = {};
+    _.forEach(this.data.precedingTiles, (tile: any) => {
+      let tileId: any = convertTaskID(tile.id) || undefined;
+      if (tile.type === TASK_TYPE.TASK_ROOT) {
+        tileId = tile.triggerType === ERROR_ROOT_NAME ? ERROR_ROOT_NAME : TILE_MAP_ROOT_KEY;
       }
       tileMap[tileId] = normalizeTaskName(tile.name);
     });
 
-    let re = REGEX_INPUT_VALUE_EXTERNAL;
+    const re = REGEX_INPUT_VALUE_EXTERNAL;
 
     mappings.forEach(mapping => {
-      let matches = re.exec(mapping.value);
+      const matches = re.exec(mapping.value);
       if (!matches) {
         return; // ignoring it
       }
 
 
       let taskName = tileMap[matches[2]];
-      if(!taskName) {
-        let type = matches[1];
-        taskName = type == 'T' ? tileMap[TILE_MAP_ROOT_KEY] : tileMap[ERROR_ROOT_NAME];
+      if (!taskName) {
+        const type = matches[1];
+        taskName = type === 'T' ? tileMap[TILE_MAP_ROOT_KEY] : tileMap[ERROR_ROOT_NAME];
       }
-      let property = matches[3];
-      let rest = matches[4] || '';
+      const property = matches[3];
+      const rest = matches[4] || '';
       mapping.value = `${taskName}.${property}${rest}`;
     });
 

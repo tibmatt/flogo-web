@@ -1,19 +1,18 @@
-
 export interface KeyValue {
-  key: string
+  key: string;
   value: string;
 }
 
-export interface Setting {
+export interface SettingGroup {
   key: string;
-  settings: any
+  settings: any;
 }
 
 export const OTHER_CATEGORY = 'other';
 
-const sortCategories = function(a, b) {
-  var nameA = a.key.toUpperCase();
-  var nameB = b.key.toUpperCase();
+const sortCategories = function (a, b) {
+  const nameA = a.key.toUpperCase();
+  const nameB = b.key.toUpperCase();
   if (nameA < nameB) {
     return -1;
   }
@@ -26,34 +25,35 @@ const sortCategories = function(a, b) {
 };
 
 export function importSettings(settings: any) {
-  let convertedSettings: Setting[] = [];
+  const convertedSettings: SettingGroup[] = [];
 
-  if(!settings) {
+  if (!settings) {
     return null;
   }
   // iterate over settings properties
   const keys = Object.keys(settings);
 
 
-  keys.forEach((key)=> {
-    const keys = key.split(':');
-    let category, fieldName;
+  keys.forEach((key) => {
+    const keyParts = key.split(':');
+    let category;
+    let fieldName;
 
-    if(keys.length) {
-      if(keys.length >= 2) {
-        category = keys[0];
-        fieldName = keys[1];
+    if (keyParts.length) {
+      if (keyParts.length >= 2) {
+        category = keyParts[0];
+        fieldName = keyParts[1];
       } else {
         category = OTHER_CATEGORY;
-        fieldName = keys[0];
+        fieldName = keyParts[0];
       }
 
-      const hostCategory = convertedSettings.find((current)=> {
+      const hostCategory = convertedSettings.find((current) => {
         return current.key === category;
       });
 
-      if(!hostCategory) {
-        const newCategory: Setting = {'key': category, 'settings': {[fieldName]: settings[key]}};
+      if (!hostCategory) {
+        const newCategory: SettingGroup = { 'key': category, 'settings': { [fieldName]: settings[key] } };
         convertedSettings.push(newCategory);
       } else {
         hostCategory.settings[fieldName] = settings[key];
@@ -61,25 +61,25 @@ export function importSettings(settings: any) {
     }
   });
 
-  const other =  convertedSettings.find((input) => input.key === OTHER_CATEGORY);
-  if(!other) {
-    convertedSettings.push({'key': OTHER_CATEGORY, 'settings': {}});
+  const other = convertedSettings.find((input) => input.key === OTHER_CATEGORY);
+  if (!other) {
+    convertedSettings.push({ 'key': OTHER_CATEGORY, 'settings': {} });
   }
 
-  return convertedSettings; //.sort(sortCategories);
+  return convertedSettings; // .sort(sortCategories);
 }
 
 
-export function serializeSettings(settings: Setting[]) {
-  let convertedSettings: any = {};
+export function serializeSettings(settingGroups: SettingGroup[]) {
+  const convertedSettings: any = {};
 
-  settings.forEach(setting => {
+  settingGroups.forEach(setting => {
     const category = setting.key;
     const settings = Object.keys(setting.settings);
 
     settings.forEach(categorySetting => {
-      let settingName: string = '';
-      if(category !==  OTHER_CATEGORY) {
+      let settingName = '';
+      if (category !== OTHER_CATEGORY) {
         settingName = `${category}:${categorySetting}`;
       } else {
         settingName = `${categorySetting}`;

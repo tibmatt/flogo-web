@@ -1,5 +1,4 @@
-import {Component, ElementRef, Renderer} from '@angular/core';
-import {LogService} from '../log.service';
+import {Component} from '@angular/core';
 import {ChildWindowService, ChildWindow} from '../../../common/services/child-window.service';
 
 
@@ -11,28 +10,25 @@ import {ChildWindowService, ChildWindow} from '../../../common/services/child-wi
     styleUrls: ['logs.component.less']
   }
 )
-export class FlogoLogs {
+export class FlogoLogsComponent {
   messages: string[];
-  searchValue: string = '';
-  isOpen: boolean = false;
+  searchValue = '';
+  isOpen = false;
   childWindow: ChildWindow = null;
 
   constructor(private windowService: ChildWindowService) {
     this.childWindow = windowService.getChildWindow();
   }
 
-  ngOnInit() {
-  }
-
   public windowAction(event) {
-    switch(event) {
+    switch (event) {
       case 'close':
         this.closeLogs();
         break;
 
       case 'maximize':
         this.closeLogs();
-        setTimeout(()=>this.open(),100);
+        setTimeout(() => this.open(), 100);
         break;
 
       case 'back':
@@ -41,10 +37,9 @@ export class FlogoLogs {
   }
 
   public toggleLogs() {
-    if(this.isChildWindowOpen()) {
+    if (this.isChildWindowOpen()) {
       this.open();
-    }
-    else {
+    } else {
       this.isOpen = !this.isOpen;
     }
 
@@ -65,7 +60,7 @@ export class FlogoLogs {
    }
 
    open() {
-     if (!this.windowService.isSupported()){
+     if (!this.windowService.isSupported()) {
       console.log('Child window not supported');
       return;
      } else if (this.childWindow && this.childWindow.isOpen()) {

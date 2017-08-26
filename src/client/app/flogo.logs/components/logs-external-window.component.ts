@@ -1,5 +1,5 @@
 import {Component, ElementRef, Renderer} from '@angular/core';
-import {FlogoLogsContent} from './logs-content.component';
+import {FlogoLogsContentComponent} from './logs-content.component';
 
 
 @Component(
@@ -10,7 +10,7 @@ import {FlogoLogsContent} from './logs-content.component';
     styleUrls: ['logs-external-window.component.less']
   }
 )
-export class FlogoLogsExternalWindow {
+export class FlogoLogsExternalWindowComponent {
   constructor() {
   }
 }

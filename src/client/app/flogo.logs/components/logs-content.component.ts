@@ -11,11 +11,11 @@ import 'rxjs/add/operator/map';
     styleUrls: ['logs-content.component.less']
   }
 )
-export class FlogoLogsContent {
+export class FlogoLogsContentComponent {
   @Output() onWindowAction: EventEmitter<string>;
-  @Input() isExternal: boolean = false;
+  @Input() isExternal = false;
   messages: string[];
-  searchValue: string = '';
+  searchValue = '';
 
   constructor(public logService: LogService) {
     this.onWindowAction = new EventEmitter();
@@ -37,7 +37,7 @@ export class FlogoLogsContent {
   }
 
   public isError(item) {
-    let message = item.message || '';
+    const message = item.message || '';
     return (message.indexOf('▶ ERROR') !== -1 || message.indexOf('▶ WARNI') !== -1);
   }
 

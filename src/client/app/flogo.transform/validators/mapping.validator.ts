@@ -1,4 +1,4 @@
-import { TYPE_ATTR_ASSIGNMENT, TYPE_EXPRESSION_ASSIGNMENT, VALID_TYPES, REGEX_INPUT_VALUE_INTERNAL } from '../constants';
+import { TYPE_ATTR_ASSIGNMENT, VALID_TYPES, REGEX_INPUT_VALUE_INTERNAL } from '../constants';
 import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
 import { TileInOutInfo } from '../models/tile-in-out-info.model';
 
@@ -8,23 +8,23 @@ const NESTABLE_ATTRIBUTE_TYPES = [
   FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.ANY].toLowerCase()
 ];
 
-export function mappingValidator(tileInfo:TileInOutInfo, mapping:any) {
+export function mappingValidator(tileInfo: TileInOutInfo, mapping: any) {
   if (!_.isObject(mapping)) {
     return {
       notObject: true,
     };
   }
 
-  let errors = [validateType, validateMapTo, validateValue]
-    .reduce((errors : any, validate : (tileInfo:TileInOutInfo, mapping:any, errors:any) => any) => {
+  const allErrors = [validateType, validateMapTo, validateValue]
+    .reduce((errors: any, validate: (tileInfo: TileInOutInfo, mapping: any, errors: any) => any) => {
       return validate(tileInfo, mapping, errors);
     }, {});
 
-  return _.isEmpty(errors) ? null : errors;
+  return _.isEmpty(allErrors) ? null : allErrors;
 
 }
 
-function validateType(tileInfo:TileInOutInfo, mapping:{type?: any}, errors:any) {
+function validateType(tileInfo: TileInOutInfo, mapping: { type?: any }, errors: any) {
   if (mapping.type) {
     if (!_.includes(VALID_TYPES, mapping.type)) {
       errors.type = {
@@ -39,20 +39,20 @@ function validateType(tileInfo:TileInOutInfo, mapping:{type?: any}, errors:any) 
   return errors;
 }
 
-function validateMapTo(tileInfo:TileInOutInfo, mapping:{mapTo?:string}, errors:any) {
+function validateMapTo(tileInfo: TileInOutInfo, mapping: { mapTo?: string }, errors: any) {
   if (!_.isEmpty(mapping.mapTo)) {
-    let matches = /^([\w]+)(\.[\w-]+)*$/.exec(mapping.mapTo); // var-name[.sub-path]
-    let attrName = matches ? matches[1] : null;
+    const matches = /^([\w]+)(\.[\w-]+)*$/.exec(mapping.mapTo); // var-name[.sub-path]
+    const attrName = matches ? matches[1] : null;
     if (attrName && tileInfo.attributes[attrName]) {
-      if(matches[2] && !_.includes(NESTABLE_ATTRIBUTE_TYPES, tileInfo.attributes[attrName])) {
+      if (matches[2] && !_.includes(NESTABLE_ATTRIBUTE_TYPES, tileInfo.attributes[attrName])) {
         errors.mapTo = {
           invalidValue: true,
-        }
+        };
       }
     } else {
       errors.mapTo = {
         invalidValue: true,
-      }
+      };
     }
   } else {
     errors.mapTo = {
@@ -63,7 +63,7 @@ function validateMapTo(tileInfo:TileInOutInfo, mapping:{mapTo?:string}, errors:a
 }
 
 
-function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:any}, errors:any) {
+function validateValue(tileInfo: TileInOutInfo, mapping: { value?: string, type?: any }, errors: any) {
   if (_.isEmpty(mapping.value)) {
     errors.value = {
       missing: true
@@ -72,14 +72,14 @@ function validateValue(tileInfo:TileInOutInfo, mapping:{value?:string,type?:any}
   }
 
   if (!errors.type) {
-    if (mapping.type == TYPE_ATTR_ASSIGNMENT && !tileInfo.precedingOutputs[mapping.value]) {
+    if (mapping.type === TYPE_ATTR_ASSIGNMENT && !tileInfo.precedingOutputs[mapping.value]) {
 
-      let matches = REGEX_INPUT_VALUE_INTERNAL.exec(mapping.value);
-      if(matches) {
-        let path = matches[1];
-        let outputInfo = tileInfo.precedingOutputs[path];
+      const matches = REGEX_INPUT_VALUE_INTERNAL.exec(mapping.value);
+      if (matches) {
+        const path = matches[1];
+        const outputInfo = tileInfo.precedingOutputs[path];
 
-        if(!outputInfo || !_.includes(NESTABLE_ATTRIBUTE_TYPES, outputInfo.type)) {
+        if (!outputInfo || !_.includes(NESTABLE_ATTRIBUTE_TYPES, outputInfo.type)) {
           errors.value = {
             invalidValue: true
           };

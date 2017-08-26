@@ -1,40 +1,43 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
-import {Component, Output, EventEmitter, DebugElement}    from '@angular/core';
-import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-translate/ng2-translate';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
-import {Http} from '@angular/http';
-import {FlogoApplicationFlowsComponent} from './flows.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
+import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { Http } from '@angular/http';
+import { FlogoApplicationFlowsComponent } from './flows.component';
 import { FlogoModal } from '../../../common/services/modal.service';
-import {TimeFromNowPipe} from "../../../common/pipes/time-from-now.pipe";
-import {FlogoDeletePopupComponent} from "../../../common/components/delete.popup.component";
+import { TimeFromNowPipe } from '../../../common/pipes/time-from-now.pipe';
+import { FlogoDeletePopupComponent } from '../../../common/components/delete.popup.component';
 
 @Component({
-  selector: 'container',
+  selector: 'flogo-container',
   template: `
                 <div class="flows">
                     <flogo-apps-flows [flows]="flows"></flogo-apps-flows>
                 </div>
             `
 })
-class Container {
+class ContainerComponent {
   @Output() changes = new EventEmitter();
   flows: Array<any> = [
     {
       id: '879',
       name: 'Log temperature',
+      // tslint:disable-next-line:max-line-length
       description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
       createdAt: new Date()
     },
     {
       id: '869',
       name: 'Log temperature 2',
+      // tslint:disable-next-line:max-line-length
       description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
       createdAt: new Date()
     },
     {
       id: '897',
       name: 'Manually adjust temperature',
+      // tslint:disable-next-line:max-line-length
       description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
       createdAt: new Date()
     },
@@ -50,6 +53,7 @@ class Container {
     {
       id: '897',
       name: 'Manually adjust temperature',
+      // tslint:disable-next-line:max-line-length
       description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt Luptas oilsksd as asdfwo',
       createdAt: new Date()
     },
@@ -62,12 +66,14 @@ class Container {
     {
       id: '879',
       name: 'Log temperature',
+      // tslint:disable-next-line:max-line-length
       description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
       createdAt: new Date()
     },
     {
       id: '869',
       name: 'Try to find pet',
+      // tslint:disable-next-line:max-line-length
       description: 'A complex flow for apietusam faccum esequi berum. Hentias porerum ent omniend itatempoer porem uga. Luptati optaquisist quibus rem quam unt',
       createdAt: new Date()
     }
@@ -80,8 +86,10 @@ class Container {
 }
 
 describe('Application flows', () => {
-  let fixture: ComponentFixture<Container>,
-    de:      DebugElement, el:      HTMLElement;
+  let fixture: ComponentFixture<ContainerComponent>;
+  let de: DebugElement;
+  let el: HTMLElement;
+
   function compileComponent() {
     return TestBed.compileComponents();
   }
@@ -93,7 +101,8 @@ describe('Application flows', () => {
         useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
         deps: [Http]
       })],
-      declarations: [ FlogoApplicationFlowsComponent, ModalComponent, Container, TimeFromNowPipe, FlogoDeletePopupComponent ], // declare the test component
+      // declare the test component
+      declarations: [FlogoApplicationFlowsComponent, ModalComponent, ContainerComponent, TimeFromNowPipe, FlogoDeletePopupComponent],
       providers: [FlogoModal]
     });
   });
@@ -101,13 +110,14 @@ describe('Application flows', () => {
   it('Should order the flows in alphabetical order', done => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(Container);
-        let comp = fixture.componentInstance;
+        fixture = TestBed.createComponent(ContainerComponent);
+        const comp = fixture.componentInstance;
         comp.flows = comp.flowsDisorder;
         fixture.detectChanges();
-        let res = fixture.debugElement.queryAll(By.css('.flogo-flow-title'));
-        let nameList = res.map(element => element.nativeElement.innerHTML.trim());
-        expect(nameList).toEqual(['Log temperature', 'Manually adjust temperature', 'Raise temperature &amp; notifiy operator', 'Try to find pet']);
+        const res = fixture.debugElement.queryAll(By.css('.flogo-flow-title'));
+        const nameList = res.map(element => element.nativeElement.innerHTML.trim());
+        expect(nameList).toEqual(['Log temperature', 'Manually adjust temperature',
+          'Raise temperature &amp; notifiy operator', 'Try to find pet']);
         done();
       });
   });
@@ -115,9 +125,9 @@ describe('Application flows', () => {
   it('Should render 4 flows', done => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(Container);
+        fixture = TestBed.createComponent(ContainerComponent);
         fixture.detectChanges();
-        let res:Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow'));
+        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow'));
         expect(res.length).toEqual(4);
         done();
       });
@@ -126,7 +136,7 @@ describe('Application flows', () => {
   it('Should display the flow title', done => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(Container);
+        fixture = TestBed.createComponent(ContainerComponent);
         fixture.detectChanges();
         de = fixture.debugElement.query(By.css('.flogo-flow-title:nth-of-type(1)'));
         el = de.nativeElement;
@@ -138,9 +148,9 @@ describe('Application flows', () => {
   it('Should display the flow description', done => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(Container);
+        fixture = TestBed.createComponent(ContainerComponent);
         fixture.detectChanges();
-        let res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow-description'));
+        const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-flow-description'));
         el = res[3].nativeElement;
         expect(el.innerText).toEqual('A basic flow for apietusam');
         done();

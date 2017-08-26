@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'flogo-navbar',
@@ -9,7 +9,7 @@ import {Component, OnInit} from '@angular/core';
 
 export class FlogoNavbarComponent implements OnInit {
 
-  public isInstructionsActivated: boolean  = false;
+  public isInstructionsActivated = false;
 
   ngOnInit() {
     setTimeout(() => {
@@ -18,8 +18,8 @@ export class FlogoNavbarComponent implements OnInit {
   }
 
   showInstructions() {
-    let instructions:string = localStorage.getItem('flogo-show-instructions');
-    if(_.isEmpty(instructions)) {
+    const instructions: string = localStorage.getItem('flogo-show-instructions');
+    if (_.isEmpty(instructions)) {
       localStorage.setItem('flogo-show-instructions', new Date().toString());
       this.isInstructionsActivated = true;
     }
@@ -30,7 +30,7 @@ export class FlogoNavbarComponent implements OnInit {
     this.isInstructionsActivated = false;
   }
 
-  public activateInstructions(event:any) {
+  public activateInstructions(event: any) {
     this.isInstructionsActivated = true;
   }
 

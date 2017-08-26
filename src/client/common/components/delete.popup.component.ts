@@ -2,7 +2,6 @@ import {Component, Input, Output, EventEmitter, HostListener, HostBinding, Eleme
 
 @Component({
   selector: 'flogo-delete-popover',
-  moduleId: module.id,
   template: `
     <span class="flogo-icon-delete" (click)="showPopup($event)"></span>
     <div *ngIf="isPopupOpen" class="popup-container">

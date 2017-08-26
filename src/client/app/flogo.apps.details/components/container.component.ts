@@ -1,15 +1,13 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-
 import { notification } from '../../../common/utils';
-import { PostService } from '../../../common/services/post.service'
+import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS as SUB_EVENTS } from '../../flogo.flows.add/message';
 import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
-
 import 'rxjs/add/operator/map';
-import {FlowsService} from "../../../common/services/flows.service";
-import {Subscription} from "rxjs/Subscription";
+import { FlowsService } from '../../../common/services/flows.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'flogo-app-container',
@@ -22,14 +20,12 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   private subscriptions: any;
   private appObserverSubscription: Subscription;
 
-  constructor(
-    public translate: TranslateService,
-    private router : Router,
-    private route: ActivatedRoute,
-    private appService: AppDetailService,
-    private flowsService: FlowsService,
-    private postService: PostService
-  ) {
+  constructor(public translate: TranslateService,
+              private router: Router,
+              private route: ActivatedRoute,
+              private appService: AppDetailService,
+              private flowsService: FlowsService,
+              private postService: PostService) {
     this.initSubscribe();
   }
 
@@ -75,7 +71,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
     this.appService.reload();
   }
 
-  public onFlowDeleted(eventData){
+  public onFlowDeleted(eventData) {
     this.flowsService
       .deleteFlowWithTrigger(eventData.flow.id, eventData.triggerId)
       .then(() => {
@@ -86,7 +82,7 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
   private initSubscribe() {
     this.subscriptions = [
       this.postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, { callback: this.onAddFlow.bind(this) }))
-    ]
+    ];
   }
 
   private onAddFlow(data: any) {
@@ -96,12 +92,12 @@ export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
       name: data.name,
       description: data.description,
     }, triggerId).then(() => {
-      let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
+      const message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
       notification(message, 'success', 3000);
     })
       .then(() => this.appService.reload())
       .catch((err) => {
-        let message = this.translate.instant('FLOWS:CREATE_FLOW_ERROR', err);
+        const message = this.translate.instant('FLOWS:CREATE_FLOW_ERROR', err);
         notification(message, 'error');
         console.error(err);
       });

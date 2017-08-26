@@ -18,9 +18,6 @@ install:
   - popd
 
 jobs:
-  allow_failures:
-    - env:
-       - ALLOW_FAILURE=true
   fast_finish: true
   include:
     - stage: test:client

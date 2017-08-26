@@ -2,11 +2,11 @@ import {NgModule} from '@angular/core';
 import {CommonModule as NgCommonModule} from '@angular/common';
 import {CommonModule as FlogoCommonModule} from '../../common/common.module';
 
-import {FlogoLogs} from './components/logs.component';
+import {FlogoLogsComponent} from './components/logs.component';
 import {SearchPipe} from './components/search.pipe';
 import {LogService} from './log.service';
-import {FlogoLogsContent} from './components/logs-content.component';
-import {FlogoLogsExternalWindow} from './components/logs-external-window.component';
+import {FlogoLogsContentComponent} from './components/logs-content.component';
+import {FlogoLogsExternalWindowComponent} from './components/logs-external-window.component';
 import { routing } from './flogo.logs.routing';
 
 @NgModule({
@@ -16,13 +16,13 @@ import { routing } from './flogo.logs.routing';
     routing
   ],
   declarations: [
-    FlogoLogs,
+    FlogoLogsComponent,
     SearchPipe,
-    FlogoLogsContent,
-    FlogoLogsExternalWindow
+    FlogoLogsContentComponent,
+    FlogoLogsExternalWindowComponent
   ],
   exports: [
-    FlogoLogs
+    FlogoLogsComponent
   ],
   providers: [
     LogService

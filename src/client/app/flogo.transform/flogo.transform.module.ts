@@ -11,7 +11,7 @@ import {HelpComponent} from './components/help.component';
 import {MapEditorComponent} from './components/map-editor.component';
 import {TransformJsonPanelComponent} from './components/transform-json-panel.component';
 import {TransformMapperComponent} from './components/transform-mapper.component';
-import {TransformMapperField} from './components/transform-mapper-field.component';
+import {TransformMapperFieldComponent} from './components/transform-mapper-field.component';
 import {VisualMapperComponent} from './components/visual-mapper.component';
 import {VisualMapperInputComponent} from './components/visual-mapper-input.component';
 import {VisualMapperOutputComponent} from './components/visual-mapper-output.component';
@@ -28,7 +28,7 @@ import {VisualMapperOutputComponent} from './components/visual-mapper-output.com
     HelpComponent,
     MapEditorComponent,
     TransformJsonPanelComponent,
-    TransformMapperField,
+    TransformMapperFieldComponent,
     TransformMapperComponent,
     VisualMapperComponent,
     VisualMapperInputComponent,

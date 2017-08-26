@@ -14,7 +14,7 @@
       <button class="flogo-button flogo-button--default" (click)="openProfileSelect()">{{ 'APP-LIST:NEW' | translate }}</button>
       <flogo-apps-profile-selection *ngIf="showProfileSeclectionDialog" (onClose)="closeModal()"
                                     (onAdd)="onAdd($event)"></flogo-apps-profile-selection>
-      <flogo-import-error *ngIf="showValidationErrors" [importValidationErrors]="importValidationErrors" (errorModalClose)="resetValidationErrors()">
+      <flogo-import-error *ngIf="showValidationErrors" [importValidationErrors]="importValidationErrors" (modalClose)="resetValidationErrors()">
 
       </flogo-import-error>
     </div>

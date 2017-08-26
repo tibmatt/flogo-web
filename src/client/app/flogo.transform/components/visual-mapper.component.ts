@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 
 @Component({
     selector: 'flogo-transform-visual-mapper',
@@ -7,15 +7,15 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     styleUrls: ['visual-mapper.component.less']
 })
 
-export class VisualMapperComponent {
-    @Output() mappingChange:EventEmitter<any>;
-    @Input() mappings:any = '';
-    @Input() precedingTilesOutputs:any[] = [];
-    @Input() tileInputInfo:any;
-    outputs:any[] = [];
-    showList:boolean = false;
-    selectedValue:string;
-    input:any;
+export class VisualMapperComponent implements OnChanges {
+    @Output() mappingChange: EventEmitter<any>;
+    @Input() mappings: any = '';
+    @Input() precedingTilesOutputs: any[] = [];
+    @Input() tileInputInfo: any;
+    outputs: any[] = [];
+    showList = false;
+    selectedValue: string;
+    input: any;
 
     constructor() {
         this.selectedValue = '';
@@ -23,15 +23,10 @@ export class VisualMapperComponent {
         this.mappingChange = new EventEmitter();
     }
 
-    precedingTilesToArray(precedingTiles:any) {
-        var tiles = [];
-
-        for(var tileName in precedingTiles || {}) {
-            var tile = {name: tileName, fields: precedingTiles[tileName]};
-            tiles.push(tile);
-        }
-
-        return tiles;
+    precedingTilesToArray(precedingTiles: any) {
+      return Object.keys((precedingTiles || {})).map(tileName => {
+        return { name: tileName, fields: precedingTiles[tileName] };
+      });
     }
 
     focusInputText(event) {
@@ -39,7 +34,7 @@ export class VisualMapperComponent {
     }
 
     onKeyPress(event) {
-        if(event.keyCode == 27) {
+        if (event.keyCode === 27) {
             this.showList = false;
         }
     }
@@ -49,7 +44,7 @@ export class VisualMapperComponent {
         this.showList = false;
     }
 
-    ngOnChanges(changes:any) {
+    ngOnChanges(changes: any) {
         this.outputs = this.precedingTilesToArray(changes.precedingTilesOutputs.currentValue);
         this.input = changes.tileInputInfo.currentValue;
     }

@@ -3,6 +3,7 @@ import {ProfilesAPIService} from "./profiles-api.service";
 
 @Injectable()
 export class MockProfilesAPIService extends ProfilesAPIService {
+
   sampleApps = [
     {
       type: "Atmel AVR",
@@ -17,6 +18,10 @@ export class MockProfilesAPIService extends ProfilesAPIService {
       id: "ESPRESSIF-32"
     }
   ];
+
+  constructor() {
+    super(null, null);
+  }
 
   getProfilesList() {
     return Promise.resolve(this.sampleApps);

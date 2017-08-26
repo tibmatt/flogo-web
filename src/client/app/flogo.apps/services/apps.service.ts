@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-
 import { IFlogoApplicationModel, Trigger } from '../../../common/application.model';
 import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { ErrorService } from '../../../common/services/error.service';
@@ -23,12 +22,12 @@ export interface ApplicationDetailState {
   name: {
     pendingSave: boolean,
     hasErrors: boolean,
-    errors: {[key: string]: boolean}
+    errors: { [key: string]: boolean }
   };
   description: {
     pendingSave: boolean,
     hasErrors: boolean,
-    errors: {[key: string]: boolean}
+    errors: { [key: string]: boolean }
   };
 }
 
@@ -75,7 +74,7 @@ export class AppDetailService {
 
   public reload() {
     this.fetching = true;
-    let currentApp = this.currentApp$.getValue();
+    const currentApp = this.currentApp$.getValue();
     if (!currentApp) {
       return;
     }
@@ -85,25 +84,31 @@ export class AppDetailService {
         app: this.transform(app),
         state: prevApp.state
       }));
-    })
+    });
   }
 
   public update(prop: string, value: any) {
     const appToUpdate = this.getCurrentAsEditable();
     const appToUpdateId = appToUpdate.app.id;
-    if(!appToUpdate.state[prop]) {
+    if (!appToUpdate.state[prop]) {
       appToUpdate.state[prop] = {};
     }
     appToUpdate.state[prop].pendingSave = true;
     this.currentApp$.next(appToUpdate);
 
+    const isRequestStillApplicable = (forAppId: string) => {
+      const nextApp = this.currentApp$.getValue();
+      // make sure current app has not changed
+      return nextApp.app.id === forAppId;
+    };
+
     this.appsApiService
-      .updateApp(appToUpdate.app.id, {[prop]: value})
+      .updateApp(appToUpdate.app.id, { [prop]: value })
       .then(updatedApp => {
         if (!isRequestStillApplicable(appToUpdateId)) {
           return;
         }
-        let nextApp = this.getCurrentAsEditable();
+        const nextApp = this.getCurrentAsEditable();
         nextApp.app = this.transform(updatedApp);
         nextApp.state[prop] = {
           pendingSave: false,
@@ -116,7 +121,7 @@ export class AppDetailService {
         if (!isRequestStillApplicable(appToUpdateId)) {
           return;
         }
-        let nextApp = this.getCurrentAsEditable();
+        const nextApp = this.getCurrentAsEditable();
         nextApp.state[prop] = {
           pendingSave: false,
           hasErrors: !!errors.length,
@@ -124,17 +129,10 @@ export class AppDetailService {
         };
         this.currentApp$.next(nextApp);
       });
-
-    let isRequestStillApplicable = (forAppId: string) => {
-      let nextApp = this.currentApp$.getValue();
-      // make sure current app has not changed
-      return nextApp.app.id === forAppId;
-    };
-
   }
 
   public cancelUpdate(prop: string) {
-    let nextApp = this.getCurrentAsEditable();
+    const nextApp = this.getCurrentAsEditable();
     nextApp.state[prop] = _.cloneDeep(DEFAULT_STATE[prop]);
     this.currentApp$.next(nextApp);
   }
@@ -185,7 +183,7 @@ export class AppDetailService {
     const actionMap = new Map(<[string, any][]> actions.map(a => [a.id, a]));
 
     const pullAction = actionId => {
-      let action = actionMap.get(actionId);
+      const action = actionMap.get(actionId);
       if (action) {
         actionMap.delete(actionId);
       }
@@ -198,7 +196,7 @@ export class AppDetailService {
         flows: trigger.handlers
           .map(h => pullAction(h.actionId))
           .filter(flow => !!flow),
-      }
+      };
     }).filter(triggerGroup => triggerGroup.flows.length > 0);
 
     // orphan flows

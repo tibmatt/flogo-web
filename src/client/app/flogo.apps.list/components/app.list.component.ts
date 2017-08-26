@@ -1,9 +1,8 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-
 import { IFlogoApplicationModel } from '../../../common/application.model';
 import { notification } from '../../../common/utils';
-import {AppsApiService} from "../../../common/services/restapi/v2/apps-api.service";
+import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 
 @Component({
   selector: 'flogo-apps-list',
@@ -17,7 +16,7 @@ export class FlogoAppListComponent implements OnInit {
 
   showValidationErrors: boolean;
   importValidationErrors: any;
-  showProfileSeclectionDialog: boolean = false;
+  showProfileSeclectionDialog = false;
 
   public applications: Array<IFlogoApplicationModel> = [];
 
@@ -36,21 +35,21 @@ export class FlogoAppListComponent implements OnInit {
   }
 
   onImportFileSelected($event) {
-    let file: File = $event.target.files[0];
-    let fileReader: FileReader = new FileReader();
+    const file: File = $event.target.files[0];
+    const fileReader: FileReader = new FileReader();
     fileReader.onload = (readerEvent) => this.uploadApp(readerEvent);
     fileReader.readAsText(file);
   }
 
   uploadApp(readerEvent) {
     try {
-      let appData = JSON.parse(readerEvent.target.result);
+      const appData = JSON.parse(readerEvent.target.result);
       this.apiApplications.uploadApplication(appData)
-        .then((application)=>{
+        .then((application) => {
           this.applications.push(application);
           this.applications = _.sortBy(this.applications, 'name');
           this.notifyUser(true);
-        }).catch((error)=>{
+        }).catch((error) => {
         this.notifyUser(false, error);
       });
     } catch (error) {
@@ -62,7 +61,7 @@ export class FlogoAppListComponent implements OnInit {
   notifyUser(isImported: boolean, errorDetails?: Error) {
     let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
 
-    if(isImported) {
+    if (isImported) {
       message = 'APP-LIST:SUCCESSFULLY-IMPORTED';
       notification(this.translate.instant(message), 'success', 3000);
     } else {
@@ -73,19 +72,19 @@ export class FlogoAppListComponent implements OnInit {
   uploadAppErrorHandler(error) {
     let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
 
-    if(error.name === 'SyntaxError'){
+    if (error.name === 'SyntaxError') {
       message = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
       notification(this.translate.instant(message), 'error');
     } else {
-      if(error[0].status === 400){
-        if(error[0].meta.details){
+      if (error[0].status === 400) {
+        if (error[0].meta.details) {
           this.importValidationErrors = error;
           this.showValidationErrors = true;
         } else {
           message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
           notification(this.translate.instant(message), 'error');
         }
-      } else if(error.status === 500){
+      } else if (error.status === 500) {
         message = 'APP-LIST:INTERNAL_ERROR';
         notification(this.translate.instant(message), 'error');
       } else {
@@ -95,21 +94,21 @@ export class FlogoAppListComponent implements OnInit {
     }
   }
 
-  resetValidationErrors(){
+  resetValidationErrors() {
     this.showValidationErrors = false;
     this.importValidationErrors = [];
   }
 
-  openProfileSelect(){
+  openProfileSelect() {
     this.showProfileSeclectionDialog = true;
   }
 
-  closeModal(){
+  closeModal() {
     this.showProfileSeclectionDialog = false;
   }
 
   onAdd(profileDetails) {
-   this.apiApplications.createNewApp(profileDetails).then((application: IFlogoApplicationModel) => {
+    this.apiApplications.createNewApp(profileDetails).then((application: IFlogoApplicationModel) => {
       this.closeModal();
       this.appSelected(application);
     });

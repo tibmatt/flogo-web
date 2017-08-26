@@ -7,7 +7,6 @@ import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'flogo-app',
-  // moduleId: module.id,
   templateUrl: 'flogo.tpl.html',
   styleUrls: ['flogo.component.less']
 })
@@ -15,13 +14,12 @@ import { Observable } from 'rxjs/Observable';
 export class FlogoAppComponent implements OnInit {
 
   public isPageLoading: Observable<boolean>;
-  public showNav: boolean = true;
+  public showNav = true;
 
   constructor(public router: Router,
               public loadingStatusService: LoadingStatusService,
               public languageService: LanguageService,
-              private activatedRoute: ActivatedRoute,
-  ) {
+              private activatedRoute: ActivatedRoute) {
 
     this.isPageLoading = this.loadingStatusService.status;
     this.languageService.configureLanguage();
@@ -39,7 +37,4 @@ export class FlogoAppComponent implements OnInit {
       .subscribe((params: Params) => this.showNav = !params['nonav']);
 
   }
-
-
-
 }

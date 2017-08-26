@@ -1,8 +1,7 @@
-import { Component, Input, Output, EventEmitter, ViewChild, Pipe, PipeTransform } from '@angular/core';
-import { Validators, AbstractControl } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { serializeSettings, importSettings, KeyValue, Setting, OTHER_CATEGORY } from './settings-converter';
+import { serializeSettings, importSettings, KeyValue, SettingGroup, OTHER_CATEGORY } from './settings-converter';
 
 
 @Component({
@@ -15,13 +14,13 @@ export class FlogoAppSettingsComponent {
   @Output() save: EventEmitter<any> = new EventEmitter();
   @ViewChild('modal')
   public modal: ModalComponent;
-  public selectedInput: Setting;
+  public selectedInput: SettingGroup;
   public hasChanges: boolean;
   public otherItem: KeyValue;
 
 
-  public customSettings:KeyValue[] = [];
-  public inputSettings:Setting[];
+  public customSettings: KeyValue[] = [];
+  public inputSettings: SettingGroup[];
 
   constructor(public translate: TranslateService) {
     this.resetForm();
@@ -37,22 +36,21 @@ export class FlogoAppSettingsComponent {
     this.inputSettings = importSettings(settings);
     const otherFound = this.inputSettings.find((item) => item.key === 'other');
     const otherIndex = this.inputSettings.indexOf(otherFound);
-    if(otherIndex !== -1) {
-      if(otherIndex !== this.inputSettings.length -1) {
-        this.moveItemArray(this.inputSettings, otherIndex, this.inputSettings.length -1);
+    if (otherIndex !== -1) {
+      if (otherIndex !== this.inputSettings.length - 1) {
+        this.moveItemArray(this.inputSettings, otherIndex, this.inputSettings.length - 1);
       }
     }
 
     this.customSettings = [];
-    const other =  this.inputSettings.find((input) => input.key === OTHER_CATEGORY);
-    for(var key in (other.settings || {})) {
-      this.customSettings.push({key, value: other.settings[key]});
-    }
+    const other = this.inputSettings.find((input) => input.key === OTHER_CATEGORY);
+    this.customSettings = Object.keys((other.settings || {}))
+      .map(key => ({ key, value: other.settings[key] }));
   }
 
   public moveItemArray(elements, oldIndex, newIndex) {
     if (newIndex >= elements.length) {
-      var k = newIndex - elements.length;
+      let k = newIndex - elements.length;
       while ((k--) + 1) {
         elements.push(undefined);
       }
@@ -63,23 +61,23 @@ export class FlogoAppSettingsComponent {
   public openModal() {
     this.hasChanges = false;
     this.selectedInput = null;
-    this.otherItem = { key: '', value: ''};
+    this.otherItem = { key: '', value: '' };
     this.getInput();
     this.modal.open();
   }
 
   public addCustom() {
-    if(!this.otherItem.key && !this.otherItem.value) {
+    if (!this.otherItem.key && !this.otherItem.value) {
       return;
     }
 
-    this.customSettings.push({key: this.otherItem.key, value: this.otherItem.value});
-    this.otherItem = {key: '', value: ''};
+    this.customSettings.push({ key: this.otherItem.key, value: this.otherItem.value });
+    this.otherItem = { key: '', value: '' };
   }
 
   public removeCustom(custom) {
     const index = this.customSettings.indexOf(custom);
-    if(index !== -1) {
+    if (index !== -1) {
       this.customSettings.splice(index, 1);
       this.hasChanges = true;
     }
@@ -87,22 +85,23 @@ export class FlogoAppSettingsComponent {
 
   public saveChanges() {
     const otherSettings = {};
-    const input =  this.inputSettings.filter((input) => input.key !== OTHER_CATEGORY);
+    const unvaryingInputs = this.inputSettings.filter((input) => input.key !== OTHER_CATEGORY);
     this.addCustom();
-    this.customSettings.forEach((setting) => otherSettings[setting.key] =  setting.value);
-    const databaseFormat = serializeSettings(input.concat([{key: OTHER_CATEGORY, settings: otherSettings}]));
-    this.save.emit(databaseFormat);
+    this.customSettings.forEach((setting) => otherSettings[setting.key] = setting.value);
+    const serialized = serializeSettings(unvaryingInputs.concat([{ key: OTHER_CATEGORY, settings: otherSettings }]));
+    this.save.emit(serialized);
     this.closeModal();
   }
 
   private resetForm() {
+    // TODO: why is it empty?
   }
 
   public closeModal() {
     this.modal.close();
   }
 
-  public selectInput(input:Setting) {
+  public selectInput(input: SettingGroup) {
     this.selectedInput = input;
   }
 

@@ -12,7 +12,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --env=prod --target=production",
-    "lint": "ng lint",
+    "lint": "ng lint --type-check --format=stylish",
     "e2e": "ng e2e"
   },
   "author": "TIBCO Software Inc.",

@@ -1,4 +1,4 @@
-import { NgModule }       from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,10 +13,10 @@ import { ConfigModule as FlogoConfigModule } from '../flogo.config/flogo.config.
 import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 
-import { FlogoAppComponent }   from './components/flogo.component';
-import { FlogoNavbarComponent }   from './components/navbar.component';
+import { FlogoAppComponent } from './components/flogo.component';
+import { FlogoNavbarComponent } from './components/navbar.component';
 
-import {routing, appRoutingProviders} from "./flogo.routing";
+import { routing, appRoutingProviders } from './flogo.routing';
 
 @NgModule({
   imports: [
@@ -39,4 +39,5 @@ import {routing, appRoutingProviders} from "./flogo.routing";
   bootstrap: [FlogoAppComponent],
   providers: [appRoutingProviders]
 })
-export class FlogoModule {}
+export class FlogoModule {
+}
