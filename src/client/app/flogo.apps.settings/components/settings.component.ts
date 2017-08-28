@@ -88,9 +88,8 @@ export class FlogoAppSettingsComponent {
   public saveChanges() {
     const otherSettings = {};
     const input =  this.inputSettings.filter((input) => input.key !== OTHER_CATEGORY);
-
+    this.addCustom();
     this.customSettings.forEach((setting) => otherSettings[setting.key] =  setting.value);
-
     const databaseFormat = serializeSettings(input.concat([{key: OTHER_CATEGORY, settings: otherSettings}]));
     this.save.emit(databaseFormat);
     this.closeModal();
