@@ -499,7 +499,9 @@ function getUrl(service) {
   if(service.port) {
     url += ':' + service.port
   }
-
+if(service.basePath){
+  url += service.basePath;
+}
   return url;
 }
 

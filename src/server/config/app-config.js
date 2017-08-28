@@ -253,6 +253,7 @@ let config = {
     protocol: 'http',
     host: FLOW_STATE_SERVICE_HOST,
     port: "9190",
+    basePath: "/v1",
     testPath: "ping"
   },
   processServer: {
