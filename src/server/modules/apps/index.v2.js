@@ -230,10 +230,12 @@ export class AppsManager {
    * Export an app to the schema expected by cli
    * This will export apps and flows
    * @param appId {string} app to export
+   * @param exportType {string} type of export if it is an application export or a flows only export
+   * @param selectedFlowsIds {Array} Array of flow Id's which are to be exported in case of flows only export
    * @return {object} exported object
    * @throws Not found error if app not found
    */
-  static export(appId) {
+  static export(appId, exportType, selectedFlowsIds) {
     return AppsManager.findOne(appId)
       .then(app => {
         if (!app) {
@@ -267,6 +269,11 @@ export class AppsManager {
             });
           });
           app.triggers = allTriggers;
+        }
+
+        //While exporting only flows, export selected flows if provided any else export all flows
+        if(exportType === 'flows' && selectedFlowsIds){
+          app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
         }
 
         const actionMap = new Map(app.actions.map(a => [a.id, a]));
@@ -335,6 +342,11 @@ export class AppsManager {
         const errors = Validator.validateFullApp(appProfileType, app, null, { removeAdditional: true, useDefaults: true });
         if (errors && errors.length > 0) {
           throw ErrorManager.createValidationError('Validation error', { details: errors });
+        }
+
+        if(exportType === 'flows'){
+          app.type = "flogo:actions";
+          delete app.triggers;
         }
 
         return app;
