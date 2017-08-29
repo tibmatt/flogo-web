@@ -35,7 +35,9 @@ All endpoints have a suffix of `/api/v2`
 - `DELETE /apps/{appId}` - Delete an app
 - `GET /apps/{appId}/build` - Get an app binary
 - `POST /apps:import` - Import an app from a flogo.json (Create an app with all its triggers and actions)
-- `GET /apps/{appId}:export` - Export an app to a flogo.json (export an app with all its triggers and actions)
+- `GET /apps/{appId}:export?type=application` - Export an app to a flogo.json (export an app with all its triggers and actions)
+- `GET /apps/{appId}:export?type=flows` - Export an app's all flows to a flogo.json (export an app with all its actions only)
+- `GET /apps/{appId}:export?type=flows&flowids=xyz,zef` - Export an app's selected flows to a flogo.json (export an app with selected actions only)
 
 ### Triggers
 - `GET /apps/{appId}/triggers` - List all triggers in an app [(See example)](#list-all-triggers-in-an-app)
@@ -57,12 +59,14 @@ All endpoints have a suffix of `/api/v2`
 
 ### Contributions
 TODO: upgrade contribs
-- `GET /contribs` - List all installed contributions
-- `POST /contribs` - Install new contribs (pallette)
-- `GET /contribs/triggers` - List all installed triggers
-- `POST /contribs/triggers` - Install a new trigger
-- `POST /contribs/activities` - Install a new activity
-- `GET /contribs/activities` - List all installed activities
+- `GET /v1/api/triggers` - List all installed triggers applicable for MicroServices
+- `POST /v1/api/triggers` - Install a trigger for MicroServices in engine
+- `DELETE /v1/api/triggers` - Uninstall an installed trigger for MicroServices from engine
+- `GET /v1/api/activities` - List all installed activities applicable for MicroServices
+- `POST /v1/api/activities` - Install an activity for MicroServices in engine
+- `DELETE /v1/api/activities` - Uninstall an installed activity for MicroServices from engine
+- `GET /api/v2/contributions/devices` - List all installed contributions applicable for device profile
+- `POST /api/v2/contributions/devices` - Install new contributions for device profile
 
 ### Services
 
@@ -87,7 +91,7 @@ Response
 {
   "id": "aXd345",
   "name": "myApp",
-  "type": "flogoweb:app",
+  "type": "flogo:app",
   "updatedAt": "017-07-14T01:00:00+01:00Z",
   "createdAt": "017-07-14T01:00:00+01:00Z",
   "version": "0.0.1",
@@ -114,7 +118,7 @@ Response
           "outputs": {
             "...": {}
           }
-      }],
+      }]
   }
   ],
   "actions": [
@@ -230,7 +234,9 @@ Empty flow, for example when just created:
      "createdAt": "017-07-14T01:00:00+01:00Z",
      "trigger": null,
      "handler": null,
-     "data": { }   
+     "data": { },
+     "app": { },
+     "appId": "aXedsx" 
    }
  }
 ```
@@ -241,6 +247,8 @@ Action with flow, trigger and handler:
 {
    "data": {
      "id": "my_simple_flow",
+     "app": { },
+     "appId": "aXedsx" ,
      "name": "My simple flow",
      "description": "A simple description",
      "ref": "github.com/TIBCOSoftware/flogo-contrib/incubator/flow",
