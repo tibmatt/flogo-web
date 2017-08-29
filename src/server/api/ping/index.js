@@ -87,7 +87,7 @@ function* pingService(next){
     let host     = data.host     || service.host;
     let port     = data.port     || service.port;
     let testPath = data.testPath || service.testPath;
-    let url = protocol + '://' + host + ':' + port + '/' + testPath;
+    let url = protocol + '://' + host + ':' + port + '/v1/' + testPath;
 
     let result = yield request(url);
     if(result.statusCode && result.statusCode != 200) {
