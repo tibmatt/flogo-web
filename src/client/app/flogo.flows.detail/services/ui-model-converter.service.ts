@@ -1,17 +1,17 @@
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import {
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE
-} from "../../flogo.flows.detail.diagram/constants";
-import {flogoGenTriggerID, flogoIDEncode} from "../../../common/utils";
-import {FLOGO_PROFILE_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from "../../../common/constants";
-import {RESTAPITriggersService} from "../../../common/services/restapi/triggers-api.service";
-import {RESTAPIActivitiesService} from "../../../common/services/restapi/activities-api.service";
-import {FlogoFlowDiagramNode} from "../../flogo.flows.detail.diagram/models/node.model";
-import {ErrorService} from "../../../common/services/error.service";
-import {RESTAPIContributionsService} from "../../../common/services/restapi/v2/contributions.service";
-import {FlogoProfileService} from "../../../common/services/profile.service";
+} from '../../flogo.flows.detail.diagram/constants';
+import {flogoGenTriggerID, flogoIDEncode} from '../../../common/utils';
+import {FLOGO_PROFILE_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../../../common/constants';
+import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
+import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
+import {FlogoFlowDiagramNode} from '../../flogo.flows.detail.diagram/models/node.model';
+import {ErrorService} from '../../../common/services/error.service';
+import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/contributions.service';
+import {FlogoProfileService} from '../../../common/services/profile.service';
 /*
  const APP_FIELDS = [
  'name',
@@ -79,7 +79,7 @@ export class UIModelConverterService {
   // todo: define interfaces
   getWebFlowModel(flowObj: any, triggerObj: any) {
     let converterModelInstance: AbstractModelConverter;
-    if(this.profileSerivce.getProfileType(flowObj.app) === FLOGO_PROFILE_TYPE.MICRO_SERVICE){
+    if (this.profileSerivce.getProfileType(flowObj.app) === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
       converterModelInstance = new MicroServiceModelConverter(this.triggerService, this.activityService, this.errorService);
     } else {
       converterModelInstance = new DeviceModelConverter(this.contribService, this.errorService);
@@ -92,7 +92,7 @@ export class UIModelConverterService {
 abstract class AbstractModelConverter {
   errorService: ErrorService;
   itemIndex = 2;
-  constructor(errorService: ErrorService){
+  constructor(errorService: ErrorService) {
     this.errorService = errorService;
   }
 
@@ -100,7 +100,7 @@ abstract class AbstractModelConverter {
   abstract getActivitiesPromise(list);
 
   getActivities(flow: any) {
-    let activitiesList = [];
+    const activitiesList = [];
     let tasks = _.get(flow, 'data.flow.rootTask.tasks', []);
     // add tiles from error diagram
     tasks = tasks.concat(_.get(flow, 'data.flow.errorHandlerTask.tasks', []));
@@ -111,14 +111,14 @@ abstract class AbstractModelConverter {
         throw this.errorService.makeOperationalError('Activity: Wrong input json file',
           `Cannot get activityRef for task: ${task.name}`,
           {
-            type: "ValidationError",
+            type: 'ValidationError',
             title: 'Wrong input json file',
             detail: 'Cannot get activityRef for task:',
             property: 'task',
             value: task
           });
       }
-      if (activitiesList.indexOf(ref) == -1) {
+      if (activitiesList.indexOf(ref) === -1) {
         activitiesList.push(ref);
       }
     });
@@ -127,13 +127,13 @@ abstract class AbstractModelConverter {
   }
   processFlowObj(flowJSON, triggerJSON, installedContribs) {
     this.itemIndex = 2;
-    let endpoints = _.get(triggerJSON, 'handlers', []);
+    const endpoints = _.get(triggerJSON, 'handlers', []);
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
     // links tasks
     let links = _.get(flowJSON, 'data.flow.rootTask.links', []);
 
-    let flowInfo = {
+    const flowInfo = {
       id: flowJSON.id,
       appId: flowJSON.app.id,
       name: flowJSON.name || flowJSON.id,
@@ -143,14 +143,14 @@ abstract class AbstractModelConverter {
 
     let handler = null;
     if (triggerJSON && triggerJSON.handlers) {
-      handler = triggerJSON.handlers.find(handler => handler.actionId === flowJSON.id);
+      handler = triggerJSON.handlers.find(thisHandler => thisHandler.actionId === flowJSON.id);
     }
 
-    let mainFlowParts = this.getFlowParts(installedContribs, tasks, links, triggerJSON, handler);
-    let currentFlow = this.makeFlow(mainFlowParts, flowInfo, installedContribs);
+    const mainFlowParts = this.getFlowParts(installedContribs, tasks, links, triggerJSON, handler);
+    const currentFlow = this.makeFlow(mainFlowParts, flowInfo, installedContribs);
 
     const flowData = flowJSON.data.flow;
-    if(flowData && flowData.errorHandlerTask){
+    if (flowData && flowData.errorHandlerTask) {
       // task flows of error handler
       tasks = _.get(flowJSON, 'data.flow.errorHandlerTask.tasks', []);
       // links tasks of error handler
@@ -166,11 +166,11 @@ abstract class AbstractModelConverter {
   makeFlow(parts, flowInfo, installedTiles?) {
     let flow: any = {};
     try {
-      let {nodes, items, branches} = parts;
-      let {id, name, description, appId, app} = flowInfo;
+      const {nodes, items, branches} = parts;
+      const {id, name, description, appId, app} = flowInfo;
 
-      let nodeTrigger = nodes.find((element) => {
-        let nodeType = element.node.type;
+      const nodeTrigger = nodes.find((element) => {
+        const nodeType = element.node.type;
         return nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT || nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW;
       });
 
@@ -192,7 +192,7 @@ abstract class AbstractModelConverter {
         _id: id,
       };
 
-      if(installedTiles) {
+      if (installedTiles) {
         flow.schemas = {};
       }
 
@@ -204,7 +204,7 @@ abstract class AbstractModelConverter {
         element.node.name = _.get(element, 'cli.name', element.node.name);
         element.node.description = _.get(element, 'cli.description', element.node.description);
         flow.items[element.node.id || element.node.nodeId] = element.node;
-        if(installedTiles) {
+        if (installedTiles) {
           flow.schemas[element.node.ref] =  installedTiles.find((tile) => {
             return tile.ref === element.node.ref;
           });
@@ -218,20 +218,20 @@ abstract class AbstractModelConverter {
   }
 
   getFlowParts(installedTiles, tasks, links, trigger, endpointSetting) {
-    let nodes = [];
-    let items = [];
-    let branches = [];
-    let node = new FlowElement(FLOW_NODE);
-    let item = new FlowElement(FLOW_ITEM);
+    const nodes = [];
+    const items = [];
+    const branches = [];
+    const node = new FlowElement(FLOW_NODE);
+    const item = new FlowElement(FLOW_ITEM);
 
     try {
-      let rootTrigger = trigger || { isErrorTrigger: true, taskID: flogoIDEncode(`${this.itemIndex}`), cli: { id: -1 } };
-      if(rootTrigger.isErrorTrigger){
+      const rootTrigger = trigger || { isErrorTrigger: true, taskID: flogoIDEncode(`${this.itemIndex}`), cli: { id: -1 } };
+      if (rootTrigger.isErrorTrigger) {
         this.itemIndex += 1;
       }
-      let nodeTrigger = node.makeTrigger(rootTrigger);
+      const nodeTrigger = node.makeTrigger(rootTrigger);
 
-      let installedTrigger = installedTiles.find(tile => trigger && tile.ref === trigger.ref);
+      const installedTrigger = installedTiles.find(tile => trigger && tile.ref === trigger.ref);
       if (trigger && !installedTrigger) {
         throw this.errorService.makeOperationalError('Trigger is not installed', `Trigger: ${trigger.ref}`,
           {
@@ -243,15 +243,20 @@ abstract class AbstractModelConverter {
           });
       }
 
-      let itemTrigger = item.makeTrigger(trigger ? { node: nodeTrigger, cli: rootTrigger, installed: installedTrigger, endpointSetting } : rootTrigger);
+      const itemTrigger = item.makeTrigger(trigger ? {
+        node: nodeTrigger,
+        cli: rootTrigger,
+        installed: installedTrigger,
+        endpointSetting
+      } : rootTrigger);
       nodes.push({ node: nodeTrigger, cli: rootTrigger });
       items.push({ node: itemTrigger, cli: rootTrigger });
 
       tasks.forEach((task) => {
-        let nodeItem = node.makeItem({ taskID: flogoIDEncode(`${this.itemIndex}`) });
+        const nodeItem = node.makeItem({ taskID: flogoIDEncode(`${this.itemIndex}`) });
         this.itemIndex += 1;
 
-        let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
+        const installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
         if (!installedActivity) {
           throw this.errorService.makeOperationalError('Activity is not installed', `Activity: ${task.activityRef}`,
             {
@@ -262,7 +267,7 @@ abstract class AbstractModelConverter {
               value: task
             });
         }
-        let itemActivity = item.makeItem({ node: nodeItem, cli: task, installed: installedActivity });
+        const itemActivity = item.makeItem({ node: nodeItem, cli: task, installed: installedActivity });
 
         nodes.push({ node: nodeItem, cli: task });
         items.push({ node: itemActivity, cli: task });
@@ -271,11 +276,11 @@ abstract class AbstractModelConverter {
       // add branches
       links.forEach((link) => {
         if (link.type === FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH) {
-          let branchNode = node.makeBranch();
-          let branchItem = item.makeBranch({ taskID: branchNode.taskID, condition: link.value });
+          const branchNode = node.makeBranch();
+          const branchItem = item.makeBranch({ taskID: branchNode.taskID, condition: link.value });
           // get connectors points
-          let nodeFrom = nodes.find(result => result.cli.id === link.from);
-          let nodeTo = nodes.find(result => result.cli.id === link.to);
+          const nodeFrom = nodes.find(result => result.cli.id === link.from);
+          const nodeTo = nodes.find(result => result.cli.id === link.to);
 
           branches.push({ node: branchNode, connector: { from: nodeFrom.cli.id, to: nodeTo.cli.id } });
           items.push({ node: branchItem, cli: null, connector: null });
@@ -283,8 +288,8 @@ abstract class AbstractModelConverter {
       });
 
 
-      let nodeLinks = links.filter(link => link.type !== FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH);
-      let branchesLinks = links.filter(link => link.type === FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH);
+      const nodeLinks = links.filter(link => link.type !== FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH);
+      const branchesLinks = links.filter(link => link.type === FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH);
       linkTiles(nodes, nodeLinks, nodeTrigger);
 
       linkBranches(branches, nodes, branchesLinks);
@@ -295,20 +300,21 @@ abstract class AbstractModelConverter {
 
     return { nodes, items, branches };
 
-    function linkTiles(nodes, links, nodeTrigger) {
+    function linkTiles(inputNodes, inputLinks, nodeTrigger) {
       try {
-        links.forEach((link) => {
-          const from = nodes.find(result => result.cli.id === link.from);
-          const to = nodes.find(result => result.cli.id === link.to);
+        inputLinks.forEach((link) => {
+          const from = inputNodes.find(result => result.cli.id === link.from);
+          const to = inputNodes.find(result => result.cli.id === link.to);
           linkNodes(from.node, to.node);
         });
 
         // set link between trigger and first node
-        const orphanNode = nodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE && result.node.parents.length === 0);
+        const orphanNode = inputNodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
+          result.node.parents.length === 0);
 
         if (orphanNode) {
           linkNodes(nodeTrigger, orphanNode.node);
-        } else if (links.length) {
+        } else if (inputLinks.length) {
           throw new Error('Function linkTiles:Cannot link trigger with first node');
         }
       } catch (error) {
@@ -317,12 +323,12 @@ abstract class AbstractModelConverter {
       }
     }
 
-    function linkBranches(branches, nodes, links) {
+    function linkBranches(inputBranches, inputNodes, inputLinks) {
       try {
-        links.forEach((link) => {
-          const branch = branches.find(branch => branch.connector.from === link.from && branch.connector.to === link.to);
-          const nodeFrom = nodes.find(node => node.cli.id === link.from);
-          const nodeTo = nodes.find(node => node.cli.id === link.to);
+        inputLinks.forEach((link) => {
+          const branch = inputBranches.find(thisBranch => thisBranch.connector.from === link.from && thisBranch.connector.to === link.to);
+          const nodeFrom = inputNodes.find(thisNode => thisNode.cli.id === link.from);
+          const nodeTo = inputNodes.find(thisNode => thisNode.cli.id === link.to);
 
           if (branch && nodeFrom && nodeTo) {
             linkNodes(nodeFrom.node, branch.node);
@@ -354,17 +360,17 @@ class MicroServiceModelConverter extends AbstractModelConverter {
   activityService: RESTAPIActivitiesService;
   constructor(triggerService: RESTAPITriggersService,
               activityService: RESTAPIActivitiesService,
-              errorService: ErrorService){
+              errorService: ErrorService) {
    super(errorService);
    this.triggerService = triggerService;
    this.activityService = activityService;
   }
 
   convertToWebFlowModel(flowObj, triggerObj) {
-    if(!triggerObj.ref){
-      throw this.errorService.makeOperationalError('Trigger: Wrong input json file','Cannot get ref for trigger',
+    if (!triggerObj.ref) {
+      throw this.errorService.makeOperationalError('Trigger: Wrong input json file', 'Cannot get ref for trigger',
         {
-          type: "ValidationError",
+          type: 'ValidationError',
           title: 'Wrong input json file',
           detail: 'Cannot get ref for trigger:',
           property: 'trigger',
@@ -375,14 +381,14 @@ class MicroServiceModelConverter extends AbstractModelConverter {
       const fetchActivitiesPromise = this.getActivitiesPromise(this.getActivities(flowObj));
       return Promise.all([fetchTriggersPromise, fetchActivitiesPromise])
         .then((triggersAndActivities) => {
-          let installedTiles = _.flattenDeep(triggersAndActivities);
+          const installedTiles = _.flattenDeep(triggersAndActivities);
           return this.processFlowObj(flowObj, triggerObj, installedTiles);
         });
     }
   }
 
   getActivitiesPromise(activities) {
-    let promises = [];
+    const promises = [];
     activities.forEach(activityRef => {
       promises.push(this.activityService.getActivityDetails(activityRef));
     });
@@ -393,16 +399,16 @@ class MicroServiceModelConverter extends AbstractModelConverter {
 class DeviceModelConverter extends AbstractModelConverter {
   contribService: RESTAPIContributionsService;
   constructor(contribService: RESTAPIContributionsService,
-              errorService: ErrorService){
+              errorService: ErrorService) {
     super(errorService);
     this.contribService = contribService;
   }
 
   convertToWebFlowModel(flowObj, triggerObj) {
-    if(!triggerObj.ref){
-      throw this.errorService.makeOperationalError('Trigger: Wrong input json file','Cannot get ref for trigger',
+    if (!triggerObj.ref) {
+      throw this.errorService.makeOperationalError('Trigger: Wrong input json file', 'Cannot get ref for trigger',
         {
-          type: "ValidationError",
+          type: 'ValidationError',
           title: 'Wrong input json file',
           detail: 'Cannot get ref for trigger:',
           property: 'trigger',
@@ -422,14 +428,14 @@ class DeviceModelConverter extends AbstractModelConverter {
       const fetchActivitiesPromise = this.getActivitiesPromise(this.getActivities(flowObj));
       return Promise.all([fetchTriggersPromise, fetchActivitiesPromise])
         .then((triggersAndActivities) => {
-          let installedTiles = _.flattenDeep(triggersAndActivities);
+          const installedTiles = _.flattenDeep(triggersAndActivities);
           return this.processFlowObj(flowObj, triggerObj, installedTiles);
         });
     }
   }
 
   getActivitiesPromise(activities) {
-    let promises = [];
+    const promises = [];
     activities.forEach(activityRef => {
       promises.push(this.contribService.getContributionDetails(activityRef).then(activity => {
         activity.inputs = activity.settings;
@@ -492,7 +498,7 @@ class NodeFactory {
   }
 
   static getSharedProperties() {
-    let status = {isSelected: false};
+    const status = {isSelected: false};
     return Object.assign({}, {id: FlogoFlowDiagramNode.genNodeID(), __status: status, children: [], parents: []});
   }
 
@@ -517,7 +523,7 @@ class NodeFactory {
 class ItemFactory {
 
   static getSharedProperties(installed) {
-    let defaults = {
+    const defaults = {
       name: '',
       title: '',
       version: '',
@@ -533,8 +539,7 @@ class ItemFactory {
       },
       __status: {}
     };
-    let item = Object.assign({}, defaults, _.pick(installed, ['name', 'title', 'version', 'homepage', 'description', 'ref']));
-    return item;
+     return Object.assign({}, defaults, _.pick(installed, ['name', 'title', 'version', 'homepage', 'description', 'ref']));
   }
 
   static makeTriggerError(trigger) {
@@ -554,7 +559,7 @@ class ItemFactory {
           name: 'message', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'message', value: '',
         }, {
           name: 'data', type: FLOGO_TASK_ATTRIBUTE_TYPE.ANY, title: 'data', value: '',
-        },],
+        }, ],
       },
       inputMappings: [],
       outputMappings: [],
@@ -564,7 +569,7 @@ class ItemFactory {
         name: 'message', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'message', value: '',
       }, {
         name: 'data', type: FLOGO_TASK_ATTRIBUTE_TYPE.ANY, title: 'data', value: '',
-      },],
+      }, ],
       __props: {
         errors: [],
       },
@@ -577,18 +582,18 @@ class ItemFactory {
       return this.makeTriggerError(trigger);
     }
 
-    let {installed, cli, endpointSetting} = trigger;
-    let item = Object.assign({}, this.getSharedProperties(installed), {id: trigger.node.taskID}, {
+    const {installed, cli, endpointSetting} = trigger;
+    const item = Object.assign({}, this.getSharedProperties(installed), {id: trigger.node.taskID}, {
       nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name
     });
 
-    let settings = _.get(cli, 'settings', {});
+    const settings = _.get(cli, 'settings', {});
     // get settings
-    let installedSettings = new Map(installed.settings.map(s => [s.name, s]));
+    const installedSettings = new Map(installed.settings.map(s => [s.name, s]));
     Object.keys(settings).forEach((property) => {
       // TODO: if no schema?
-      let schema: any = installedSettings.get(property);
-      let newSetting: any = {
+      const schema: any = installedSettings.get(property);
+      const newSetting: any = {
         name: property, type: schema.type, value: settings[property],
       };
       if (schema.required) {
@@ -597,13 +602,13 @@ class ItemFactory {
       item.settings.push(newSetting);
     });
 
-    let endpointSettings = _.get(installed, 'endpoint.settings', []);
-    let installedEndpointSettings = new Map(endpointSettings.map<[string, any]>(s => [s.name, s]));
+    const endpointSettings = _.get(installed, 'endpoint.settings', []);
+    const installedEndpointSettings = new Map(endpointSettings.map<[string, any]>(s => [s.name, s]));
     Object.keys(endpointSetting.settings || {}).forEach((property) => {
-      let schema: any = installedEndpointSettings.get(property);
+      const schema: any = installedEndpointSettings.get(property);
 
       // TODO: if no schema?
-      let newEndpointSetting: any = {
+      const newEndpointSetting: any = {
         name: property, type: schema.type, value: endpointSetting.settings[property],
       };
       if (schema.required) {
@@ -617,9 +622,9 @@ class ItemFactory {
     });
 
 
-    //-----------------
+    // -----------------
     // set outputs
-    let outputs = installed.outputs || [];
+    const outputs = installed.outputs || [];
 
     item.outputs = outputs.map(output => ({
       name: output.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(output, 'type', 'STRING').toUpperCase()],
@@ -630,9 +635,9 @@ class ItemFactory {
   }
 
   static makeItem(activity): any {
-    let {node, installed, cli} = activity;
+    const {node, installed, cli} = activity;
 
-    let item = Object.assign({}, this.getSharedProperties(installed), {
+    const item = Object.assign({}, this.getSharedProperties(installed), {
       attributes: {
         inputs: [], outputs: []
       }
@@ -641,13 +646,13 @@ class ItemFactory {
     });
 
     // -------- set attributes inputs  ----------------
-    let installedInputs = installed.inputs || [];
-    let cliAttributes = cli.attributes || [];
+    const installedInputs = installed.inputs || [];
+    const cliAttributes = cli.attributes || [];
 
     installedInputs.forEach((installedInput) => {
-      let cliValue = cliAttributes.find(attribute => attribute.name === installedInput.name);
+      const cliValue = cliAttributes.find(attribute => attribute.name === installedInput.name);
 
-      let newAttribute: any = {
+      const newAttribute: any = {
         name: installedInput.name,
         type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(installedInput, 'type', 'STRING').toUpperCase()],
       };
@@ -663,9 +668,9 @@ class ItemFactory {
       item.attributes.inputs.push(newAttribute);
     });
 
-    //-----------------
+    // -----------------
     // set attributes outputs
-    let outputs = installed.outputs || [];
+    const outputs = installed.outputs || [];
 
     item.attributes.outputs = outputs.map(output => ({
       name: output.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(output, 'type', 'STRING').toUpperCase()],
