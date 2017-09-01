@@ -46,6 +46,7 @@ export abstract class AbstractModelConverter {
     const endpoints = _.get(triggerJSON, 'handlers', []);
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
+    const defaultErrorRootId = tasks.length + 2;
     // links tasks
     let links = _.get(flowJSON, 'data.flow.rootTask.links', []);
 
@@ -72,7 +73,7 @@ export abstract class AbstractModelConverter {
       // links tasks of error handler
       links = _.get(flowData, 'errorHandlerTask.links', []);
       // error task's root id value
-      const errorId = _.get(flowData, 'errorHandlerTask.id', 2);
+      const errorId = _.get(flowData, 'errorHandlerTask.id', defaultErrorRootId);
       const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, null, handler, errorId);
 
       currentFlow.errorHandler = this.makeFlow(errorFlowParts, flowInfo);

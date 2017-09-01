@@ -87,7 +87,7 @@ export function flogoGenTriggerID(): string {
  * @private
  */
 export function convertTaskID(taskID: string ) {
-  let id = '';
+  let id: any = '';
 
   try {
     id = flogoIDDecode( taskID );
@@ -102,7 +102,7 @@ export function convertTaskID(taskID: string ) {
     console.warn( e );
     id = taskID;
   }
-
+  id = parseInt(id) || id;
   return id;
 }
 
