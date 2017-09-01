@@ -9,7 +9,6 @@ const FLOW_ITEM = 'item';
 
 export abstract class AbstractModelConverter {
   errorService: ErrorService;
-  itemIndex = 2;
   constructor(errorService: ErrorService) {
     this.errorService = errorService;
   }
@@ -44,7 +43,6 @@ export abstract class AbstractModelConverter {
     return activitiesList;
   }
   processFlowObj(flowJSON, triggerJSON, installedContribs) {
-    this.itemIndex = 2;
     const endpoints = _.get(triggerJSON, 'handlers', []);
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
@@ -70,10 +68,12 @@ export abstract class AbstractModelConverter {
     const flowData = flowJSON.data.flow;
     if (flowData && flowData.errorHandlerTask) {
       // task flows of error handler
-      tasks = _.get(flowJSON, 'data.flow.errorHandlerTask.tasks', []);
+      tasks = _.get(flowData, 'errorHandlerTask.tasks', []);
       // links tasks of error handler
-      links = _.get(flowJSON, 'data.flow.errorHandlerTask.links', []);
-      const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, null, handler);
+      links = _.get(flowData, 'errorHandlerTask.links', []);
+      // error task's root id value
+      const errorId = _.get(flowData, 'errorHandlerTask.id', 2)
+      const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, null, handler, errorId);
 
       currentFlow.errorHandler = this.makeFlow(errorFlowParts, flowInfo);
     }
@@ -135,7 +135,7 @@ export abstract class AbstractModelConverter {
     return flow;
   }
 
-  getFlowParts(installedTiles, tasks, links, trigger, endpointSetting) {
+  getFlowParts(installedTiles, tasks, links, trigger, endpointSetting, errorRootID?) {
     const nodes = [];
     const items = [];
     const branches = [];
@@ -143,10 +143,7 @@ export abstract class AbstractModelConverter {
     const item = new FlowElement(FLOW_ITEM);
 
     try {
-      const rootTrigger = trigger || { isErrorTrigger: true, taskID: flogoIDEncode(`${this.itemIndex}`), cli: { id: -1 } };
-      if (rootTrigger.isErrorTrigger) {
-        this.itemIndex += 1;
-      }
+      const rootTrigger = trigger || { isErrorTrigger: true, taskID: flogoIDEncode(errorRootID), cli: { id: -1 } };
       const nodeTrigger = node.makeTrigger(rootTrigger);
 
       const installedTrigger = installedTiles.find(tile => trigger && tile.ref === trigger.ref);
@@ -171,8 +168,7 @@ export abstract class AbstractModelConverter {
       items.push({ node: itemTrigger, cli: rootTrigger });
 
       tasks.forEach((task) => {
-        const nodeItem = node.makeItem({ taskID: flogoIDEncode(`${this.itemIndex}`) });
-        this.itemIndex += 1;
+        const nodeItem = node.makeItem({ taskID: flogoIDEncode(task.id) });
 
         const installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
         if (!installedActivity) {

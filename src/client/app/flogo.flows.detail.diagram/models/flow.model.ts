@@ -15,94 +15,94 @@ import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from 
  */
 
 export interface flowToJSON_Attribute {
-  name : string;
-  type : string;
-  value : string;
-  required: boolean
+  name: string;
+  type: string;
+  value: string;
+  required: boolean;
 }
 
 export interface flowToJSON_Mapping {
-  type : number;
-  value : string;
-  mapTo : string;
+  type: number;
+  value: string;
+  mapTo: string;
 }
 
 export interface flowToJSON_Task {
-  id : number;
-  type : number;
-  activityType : string;
-  activityRef? : string;
-  name? : string;
-  description? : string;
-  attributes : flowToJSON_Attribute[];
-  inputMappings : flowToJSON_Mapping [];
-  ouputMappings : flowToJSON_Mapping[];
+  id: any;
+  type: number;
+  activityType: string;
+  activityRef?: string;
+  name?: string;
+  description?: string;
+  attributes: flowToJSON_Attribute[];
+  inputMappings: flowToJSON_Mapping [];
+  ouputMappings: flowToJSON_Mapping[];
 }
 
 export interface flowToJSON_Link {
-  id : number;
-  type : number;
-  from : number;
-  to : number;
-  name? : string;
-  value? : any;
+  id: number;
+  type: number;
+  from: any;
+  to: any;
+  name?: string;
+  value?: any;
 }
 
 export interface flowToJSON_Flow {
-  id : string;
-  name : string;
-  description : string;
-  flow : flowToJSON_FlowInfo;
+  id: string;
+  name: string;
+  description: string;
+  flow: flowToJSON_FlowInfo;
 }
 
 export interface triggerToJSON_TriggerInfo {
-  name: string,
-  settings: any,
-  endpoints: any
+  name: string;
+  settings: any;
+  endpoints: any;
 }
 
 export interface triggerToJSON_Trigger {
-  triggers: triggerToJSON_TriggerInfo[]
+  triggers: triggerToJSON_TriggerInfo[];
 }
 
 export interface flowToJSON_FlowInfo {
-  type : number,
-  name : string;
-  model : string;
-  attributes : flowToJSON_Attribute[];
-  rootTask : flowToJSON_RootTask,
-  errorHandlerTask?: flowToJSON_RootTask,
-  explicitReply?: boolean
+  type: number;
+  name: string;
+  model: string;
+  attributes: flowToJSON_Attribute[];
+  rootTask: flowToJSON_RootTask;
+  errorHandlerTask?: flowToJSON_RootTask;
+  explicitReply?: boolean;
 }
 
 export interface flowToJSON_RootTask {
-  id : number;
-  type : number;
-  activityType : string;
-  ref? : string;
-  name : string;
-  tasks : flowToJSON_Task[];
-  links : flowToJSON_Link[];
+  id: any;
+  type: number;
+  activityType: string;
+  ref?: string;
+  name: string;
+  tasks: flowToJSON_Task[];
+  links: flowToJSON_Link[];
 }
 
 export interface flowToJSON_InputFlow {
-  _id? : string;
-  id? : string;
-  name? : string;
-  description? : string;
-  attributes? : any[];
-  path : {
-    root : {
-      is : string
+  _id?: string;
+  id?: string;
+  name?: string;
+  description?: string;
+  attributes?: any[];
+  path: {
+    root: {
+      is: string
     };
-    nodes : IFlogoFlowDiagramNodeDictionary,
+    nodes: IFlogoFlowDiagramNodeDictionary,
   };
-  items : {
-    id : string;
-    type : number;
-    [key : string] : any;
+  items: {
+    id: string;
+    type: number;
+    [key: string]: any;
   }[];
-  [key : string] : any;
+  [key: string]: any;
 }
 
 export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : triggerToJSON_Trigger {
@@ -267,13 +267,13 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     flow.errorHandlerTask = (function _parseErrorTask() {
 
       let errorPathRoot = <{
-        is : string
+        is: string
       }>_.get( errorPath, 'root' );
       let errorPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( errorPath, 'nodes' );
 
       let rootNode = errorPathNodes[ errorPathRoot.is ];
       let errorTask = <flowToJSON_RootTask>{
-        id : convertTaskID(rootNode.taskID), // TODO
+        id : convertTaskID(rootNode.taskID),
         type : FLOGO_TASK_TYPE.TASK, // this is 1
         activityType : '',
         ref: '',

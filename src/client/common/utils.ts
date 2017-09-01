@@ -104,7 +104,7 @@ export function convertTaskID(taskID : string ) {
     id = taskID;
   }
 
-  return parseInt( id );
+  return id;
 }
 
 // get default value of a given type
