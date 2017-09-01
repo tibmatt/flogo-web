@@ -645,6 +645,25 @@ paths:
           type: string
           description: |-
             Overrides the name for the app. Useful when we want to register an app with a different name from the one in the uplaoded file.
+        - name: type
+          in: query
+          description: |-
+            By providing the type value we can export the whole application or only (selected / all) flows of an application.
+
+            Example: `GET /apps/123:export?type=application`, `GET /apps/123:export?type=flows`
+
+          required: false
+          type: string
+          enum: ['application', 'flows']
+        - name: flowids
+          in: query
+          description: |-
+            By providing the flowids value we can export the flows only which are selected. flowids only work when value for type is `flows`.
+
+            Example: `GET /apps/123:export?type=flows&flowids=abc,def,ghi`
+
+          required: false
+          type: string
       responses:
         200:
           description: The flogo.json
