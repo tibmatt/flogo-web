@@ -140,10 +140,10 @@ function getSchema() {
                 type: 'integer',
               },
               from: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               to: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               type: {
                 type: 'integer',
@@ -217,7 +217,7 @@ function getSchema() {
             type: 'object',
             properties: {
               id: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               type: {
                 type: 'integer',

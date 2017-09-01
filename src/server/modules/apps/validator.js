@@ -548,10 +548,10 @@ function fullAppSchema() {
                 type: 'integer',
               },
               from: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               to: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               type: {
                 type: 'integer',
@@ -571,7 +571,7 @@ function fullAppSchema() {
             type: 'object',
             properties: {
               id: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               type: {
                 type: 'integer',
