@@ -105,54 +105,55 @@ export interface flowToJSON_InputFlow {
   [key: string]: any;
 }
 
-export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : triggerToJSON_Trigger {
-       let result:triggerToJSON_Trigger, rootTask:any;
+export function triggerFlowToJSON(flow: flowToJSON_InputFlow): triggerToJSON_Trigger {
+  let result: triggerToJSON_Trigger;
+  let rootTask: any;
 
-       _.forOwn(flow.items, function (value, key) {
-          if(value.type == FLOGO_TASK_TYPE.TASK_ROOT) {
-              rootTask = _.cloneDeep(value);
-              return false;
-          } else {
-            return true;
-          }
+  _.forOwn(flow.items, function (value, key) {
+    if (value.type === FLOGO_TASK_TYPE.TASK_ROOT) {
+      rootTask = _.cloneDeep(value);
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  if (rootTask) {
+    const settings = {};
+    const endpoint = {};
+    let endpoints = [];
+
+    if (rootTask.settings) {
+      rootTask.settings.forEach((setting) => {
+        settings[setting.name] = setting.value;
       });
+    }
 
-      if(rootTask) {
-          let settings = {};
-          let endpoint = {};
-          let endpoints = [];
+    if (rootTask.endpoint && rootTask.settings) {
+      rootTask.endpoint.settings.forEach((setting) => {
+        if (setting.value && typeof setting.value !== 'undefined') {
+          endpoint[setting.name] = setting.value;
+        }
+      });
+    }
 
-          if(rootTask.settings) {
-              rootTask.settings.forEach((setting) => {
-                  settings[setting.name] = setting.value;
-              });
-          }
+    if (_.isEmpty(endpoint)) {
+      endpoints = null;
+    } else {
+      endpoints.push(endpoint);
+    }
 
-          if(rootTask.endpoint&&rootTask.settings) {
-              rootTask.endpoint.settings.forEach((setting) => {
-                if(setting.value && typeof setting.value !== 'undefined') {
-                  endpoint[setting.name] = setting.value;
-                }
-              });
-          }
+    let trigger: triggerToJSON_TriggerInfo;
+    trigger = {
+      name: rootTask.triggerType,
+      settings: settings,
+      endpoints: endpoints
+    };
 
-          if(_.isEmpty(endpoint)) {
-              endpoints = null;
-          } else {
-              endpoints.push(endpoint);
-          }
+    result = {triggers: [trigger]};
+  }
 
-          let trigger: triggerToJSON_TriggerInfo;
-          trigger = {
-            name: rootTask.triggerType,
-            settings: settings,
-            endpoints: endpoints
-          };
-
-          result = { triggers: [ trigger ] };
-      }
-
-      return result;
+  return result;
 }
 
 /**
@@ -161,7 +162,7 @@ export function triggerFlowToJSON(flow:flowToJSON_InputFlow) : triggerToJSON_Tri
  * @param inFlow
  * @returns {flowToJSON_Flow}
  */
-export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Flow {
+export function flogoFlowToJSON( inFlow: flowToJSON_InputFlow ): flowToJSON_Flow {
 
   const DEBUG = false;
   const INFO = true;
@@ -171,13 +172,13 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
   //  for the moment, using the linkCounter to keep increasing the
   //  link number within a session is fine.
   let linkIDCounter = 0;
-  let _genLinkID = () => ++linkIDCounter;
+  const _genLinkID = () => ++linkIDCounter;
 
-  let flowJSON = <flowToJSON_Flow>{};
+  const flowJSON = <flowToJSON_Flow>{};
 
   /* validate the required fields */
 
-  let flowID = inFlow._id || inFlow.id;
+  const flowID = inFlow._id || inFlow.id;
 
   if ( _.isEmpty( flowID ) ) {
     DEBUG && console.error( 'No id in the given flow' );
@@ -185,18 +186,18 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     return flowJSON;
   }
 
-  let flowPath = <{
-    root : {
-      is : string
+  const flowPath = <{
+    root: {
+      is: string
     };
-    nodes : IFlogoFlowDiagramNodeDictionary,
+    nodes: IFlogoFlowDiagramNodeDictionary,
   }>_.get( inFlow, 'paths' );
 
-  let flowPathRoot = <{
-    is : string
+  const flowPathRoot = <{
+    is: string
   }>_.get( flowPath, 'root' );
 
-  let flowPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( flowPath, 'nodes' );
+  const flowPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( flowPath, 'nodes' );
 
   /* assign attributes */
 
@@ -210,7 +211,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     return flowJSON;
   }
 
-  let flowItems = <IFlogoFlowDiagramTaskDictionary>_.get( inFlow, 'items' );
+  const flowItems = <IFlogoFlowDiagramTaskDictionary>_.get( inFlow, 'items' );
 
   if ( _.isEmpty( flowItems ) ) {
     DEBUG && console.warn( 'Invalid items information in the given flow' );
@@ -219,7 +220,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
   }
 
   flowJSON.flow = (function _parseFlowInfo() {
-    let flow = <flowToJSON_FlowInfo>{};
+    const flow = <flowToJSON_FlowInfo>{};
 
     flow.name = flowJSON.name; // TODO seems to be redundant
     flow.model = _.get( inFlow, 'model', 'tibco-simple' );
@@ -234,7 +235,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
       //  TODO
       //    1. should handle the attribute mapping of trigger separately,
       //    hence will the rootTask has no mapping for the moment.
-      let rootTask = <flowToJSON_RootTask>{
+      const rootTask = <flowToJSON_RootTask>{
         id : 1,
         type : FLOGO_TASK_TYPE.TASK, // this is 1
         activityType : '',
@@ -244,7 +245,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
         links : <flowToJSON_Link[]>[]
       };
 
-      let rootNode = flowPathNodes[ flowPathRoot.is ];
+      const rootNode = flowPathNodes[ flowPathRoot.is ];
 
       _traversalDiagram( rootNode, flowPathNodes, flowItems, rootTask.tasks, rootTask.links );
 
@@ -252,27 +253,27 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     }());
 
 
-    let errorItems = <IFlogoFlowDiagramTaskDictionary>_.get( inFlow, 'errorHandler.items' );
-    let errorPath = <{
-      root : {
-        is : string
+    const errorItems = <IFlogoFlowDiagramTaskDictionary>_.get( inFlow, 'errorHandler.items' );
+    const errorPath = <{
+      root: {
+        is: string
       };
-      nodes : IFlogoFlowDiagramNodeDictionary,
+      nodes: IFlogoFlowDiagramNodeDictionary,
     }>_.get( inFlow, 'errorHandler.paths' );
 
-    if(_.isEmpty(errorPath) || _.isEmpty(errorItems)) {
+    if (_.isEmpty(errorPath) || _.isEmpty(errorItems)) {
       return flow;
     }
 
     flow.errorHandlerTask = (function _parseErrorTask() {
 
-      let errorPathRoot = <{
+      const errorPathRoot = <{
         is: string
       }>_.get( errorPath, 'root' );
-      let errorPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( errorPath, 'nodes' );
+      const errorPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get( errorPath, 'nodes' );
 
-      let rootNode = errorPathNodes[ errorPathRoot.is ];
-      let errorTask = <flowToJSON_RootTask>{
+      const rootNode = errorPathNodes[ errorPathRoot.is ];
+      const errorTask = <flowToJSON_RootTask>{
         id : convertTaskID(rootNode.taskID),
         type : FLOGO_TASK_TYPE.TASK, // this is 1
         activityType : '',
@@ -290,38 +291,38 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     return flow;
   }());
 
-  if(_hasExplicitReply(flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks)) {
+  if (_hasExplicitReply(flowJSON.flow && flowJSON.flow.rootTask && flowJSON.flow.rootTask.tasks)) {
     flowJSON.flow.explicitReply = true;
   }
 
   INFO && console.log( 'Generated flow.json: ', flowJSON );
 
-  function _traversalDiagram( rootNode : IFlogoFlowDiagramNode,
-    nodes : IFlogoFlowDiagramNodeDictionary,
-    tasks : IFlogoFlowDiagramTaskDictionary,
-    tasksDest : flowToJSON_Task[ ],
-    linksDest : flowToJSON_Link[ ] ) : void {
+  function _traversalDiagram( rootNode: IFlogoFlowDiagramNode,
+    nodes: IFlogoFlowDiagramNodeDictionary,
+    tasks: IFlogoFlowDiagramTaskDictionary,
+    tasksDest: flowToJSON_Task[ ],
+    linksDest: flowToJSON_Link[ ] ): void {
 
-    let visited = < string[ ] > [];
+    const visited = < string[ ] > [];
 
     _traversalDiagramChildren( rootNode, visited, nodes, tasks, tasksDest, linksDest );
   }
 
   function _traversalDiagramChildren( node : IFlogoFlowDiagramNode,
-    visitedNodes : string[ ],
-    nodes : IFlogoFlowDiagramNodeDictionary,
-    tasks : IFlogoFlowDiagramTaskDictionary,
-    tasksDest : flowToJSON_Task[ ],
-    linksDest : flowToJSON_Link[ ] ) {
+    visitedNodes: string[ ],
+    nodes: IFlogoFlowDiagramNodeDictionary,
+    tasks: IFlogoFlowDiagramTaskDictionary,
+    tasksDest: flowToJSON_Task[ ],
+    linksDest: flowToJSON_Link[ ] ) {
     // if haven't visited
     if ( !_.includes( visitedNodes, node.id ) ) {
       visitedNodes.push( node.id );
 
-      let nodesToGo = _.difference( node.children, visitedNodes );
+      const nodesToGo = _.difference( node.children, visitedNodes );
 
       _.each( nodesToGo, ( nid ) => {
 
-        let childNode = nodes[ nid ];
+        const childNode = nodes[ nid ];
 
         // filter the ADD node
         if ( childNode.type
@@ -333,7 +334,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
         // handle branch node differently
         if ( childNode.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH ) {
-          let branch = tasks[ childNode.taskID ];
+          const branch = tasks[ childNode.taskID ];
 
           // single child is found
           //  since branch can has only one direct child, this is the only case to follow
@@ -353,10 +354,10 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
          * add task
          */
 
-        let task = <IFlogoFlowDiagramTask>tasks[ childNode.taskID ];
+        const task = <IFlogoFlowDiagramTask>tasks[ childNode.taskID ];
 
         if ( _isValidInternalTaskInfo( task ) ) {
-          let taskInfo = <flowToJSON_Task>{};
+          const taskInfo = <flowToJSON_Task>{};
 
           taskInfo.id = convertTaskID( task.id );
           taskInfo.name = _.get( task, 'name', '' );
@@ -381,7 +382,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
           /* add inputMappings */
 
-          let inputMappings = _parseFlowMappings( <IFlogoFlowDiagramTaskAttributeMapping[]>_.get( task,
+          const inputMappings = _parseFlowMappings( <IFlogoFlowDiagramTaskAttributeMapping[]>_.get( task,
             'inputMappings' ) );
 
           if ( !_.isEmpty( inputMappings ) ) {
@@ -390,7 +391,7 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
           /* add outputMappings */
 
-          let outputMappings = _parseFlowMappings( <IFlogoFlowDiagramTaskAttributeMapping[]>_.get( task,
+          const outputMappings = _parseFlowMappings( <IFlogoFlowDiagramTaskAttributeMapping[]>_.get( task,
             'outputMappings' ) );
 
           if ( !_.isEmpty( outputMappings ) ) {
@@ -418,8 +419,8 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
 
         } else if ( node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH && node.parents.length === 1 ) {
 
-          let parentNode = nodes[ node.parents[ 0 ] ];
-          let branch = tasks[ node.taskID ];
+          const parentNode = nodes[ node.parents[ 0 ] ];
+          const branch = tasks[ node.taskID ];
 
           // ignore the case that the parent node of the branch node is the trigger
           //  TODO
@@ -445,12 +446,12 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
   }
 
   function _isValidInternalTaskInfo( task : {
-    id : string;
-    type : FLOGO_TASK_TYPE;
-    activityType? : string;
-    ref? : string;
-    [key : string] : any;
-  } ) : boolean {
+    id: string;
+    type: FLOGO_TASK_TYPE;
+    activityType?: string;
+    ref?: string;
+    [key: string]: any;
+  } ): boolean {
 
     if ( _.isEmpty( task ) ) {
       DEBUG && console.warn( 'Empty task' );
@@ -479,10 +480,10 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
   }
 
   function _parseFlowAttributes( inAttrs : any[] ) : flowToJSON_Attribute [] {
-    let attributes = <flowToJSON_Attribute []>[];
+    const attributes = <flowToJSON_Attribute []>[];
 
-    _.each( inAttrs, ( inAttr : any )=> {
-      let attr = <flowToJSON_Attribute>{};
+    _.each( inAttrs, ( inAttr : any ) => {
+      const attr = <flowToJSON_Attribute>{};
 
       /* simple validation */
       attr.name = <string>_.get( inAttr, 'name' );
@@ -517,10 +518,10 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
   }
 
   function _parseFlowMappings( inMappings : any[] ) : flowToJSON_Mapping[] {
-    let mappings = <flowToJSON_Mapping[]>[];
+    const mappings = <flowToJSON_Mapping[]>[];
 
-    _.each( inMappings, ( inMapping : any )=> {
-      let mapping = <flowToJSON_Mapping>{};
+    _.each( inMappings, ( inMapping : any ) => {
+      const mapping = <flowToJSON_Mapping>{};
 
       /* simple validation */
 
@@ -561,8 +562,8 @@ export function flogoFlowToJSON( inFlow : flowToJSON_InputFlow ) : flowToJSON_Fl
     return mappings;
   }
 
-  function _hasExplicitReply(tasks?:any) : boolean {
-    if(!tasks) {
+  function _hasExplicitReply(tasks?: any) : boolean {
+    if (!tasks) {
       return false;
     }
 

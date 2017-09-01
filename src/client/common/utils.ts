@@ -1,4 +1,3 @@
-import { Response, ResponseOptions } from '@angular/http';
 import {
   FLOGO_TASK_TYPE,
   FLOGO_TASK_ATTRIBUTE_TYPE,
@@ -12,13 +11,13 @@ import {
   IFlogoFlowDiagramNode
 } from '../app/flogo.flows.detail.diagram/models';
 
-//Refactoring data. Extracting functions related with branch creation in a different file.
+// Refactoring data. Extracting functions related with branch creation in a different file.
 export * from '../app/flogo.flows.detail.diagram/utils';
 
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDEncode( id : string ) : string {
+export function flogoIDEncode( id: string ): string {
   return btoa( id )
     .replace( /\+/g, '-' )
     .replace( /\//g, '_' )
@@ -27,7 +26,7 @@ export function flogoIDEncode( id : string ) : string {
 
 // URL safe base64 decoding
 // reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDDecode( encodedId : string ) : string {
+export function flogoIDDecode( encodedId: string ): string {
 
   encodedId = encodedId.replace( /-/g, '+' )
     .replace( /_/g, '/' );
@@ -39,22 +38,22 @@ export function flogoIDDecode( encodedId : string ) : string {
   return atob( encodedId );
 }
 
-export function flogoGenTaskID( items? : any ) : string {
-  let taskID : string;
+export function flogoGenTaskID( items?: any ): string {
+  let taskID: string;
   // TODO
   //  generate a more meaningful task ID in string format
   if ( items ) {
-    let ids = _.keys( items );
-    let startPoint = 2; // taskID 1 is reserved for the rootTask
+    const ids = _.keys( items );
+    const startPoint = 2; // taskID 1 is reserved for the rootTask
 
-    let taskIDs = _.map( _.filter( ids, ( id : string ) => {
-      let type = items[ id ].type;
+    const taskIDs = _.map( _.filter( ids, ( id: string ) => {
+      const type = items[ id ].type;
       return type === FLOGO_TASK_TYPE.TASK || type === FLOGO_TASK_TYPE.TASK_ROOT;
-    } ), ( id : string )=> {
+    } ), ( id: string ) => {
       return _[ 'toNumber' ]( flogoIDDecode( id ) );
     } );
 
-    let currentMax = _.max( taskIDs );
+    const currentMax = _.max( taskIDs );
 
     if ( currentMax ) {
       taskID = '' + ( currentMax + 1);
@@ -70,11 +69,11 @@ export function flogoGenTaskID( items? : any ) : string {
   return flogoIDEncode( taskID );
 }
 
-export function flogoGenBranchID() : string {
+export function flogoGenBranchID(): string {
   return flogoIDEncode( `Flogo::Branch::${Date.now()}` );
 }
 
-export function flogoGenTriggerID() : string {
+export function flogoGenTriggerID(): string {
   return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
 }
 
@@ -87,14 +86,14 @@ export function flogoGenTriggerID() : string {
  * @returns {number}
  * @private
  */
-export function convertTaskID(taskID : string ) {
+export function convertTaskID(taskID: string ) {
   let id = '';
 
   try {
     id = flogoIDDecode( taskID );
 
     // get the timestamp
-    let parsedID = id.split( '::' );
+    const parsedID = id.split( '::' );
 
     if ( parsedID.length >= 2 ) {
       id = parsedID[ 1 ];
@@ -108,21 +107,21 @@ export function convertTaskID(taskID : string ) {
 }
 
 // get default value of a given type
-export function getDefaultValue( type : FLOGO_TASK_ATTRIBUTE_TYPE ) : any {
+export function getDefaultValue( type: FLOGO_TASK_ATTRIBUTE_TYPE ): any {
   return DEFAULT_VALUES_OF_TYPES[ type ];
 }
 
 // convert the type of attribute and add default value if enabled
-function portAttribute( inAttr : {
-  type : string;
-  value : any;
-  [key : string] : any;
+function portAttribute( inAttr: {
+  type: string;
+  value: any;
+  [key: string]: any;
 }, withDefault = false ) {
 
-  let outAttr = <{
-    type : any;
-    value : any;
-    [key : string] : any;
+  const outAttr = <{
+    type: any;
+    value: any;
+    [key: string]: any;
   }>_.assign( {}, inAttr );
 
   outAttr.type = <FLOGO_TASK_ATTRIBUTE_TYPE>_.get( FLOGO_TASK_ATTRIBUTE_TYPE,
@@ -137,9 +136,9 @@ function portAttribute( inAttr : {
 }
 
 // mapping from schema.json of activity to the task can be used in flow.json
-export function activitySchemaToTask(schema: any) : any {
+export function activitySchemaToTask(schema: any): any {
 
-  let task:any = {
+  const task: any = {
     type: FLOGO_TASK_TYPE.TASK,
     activityType: _.get(schema, 'name', ''),
     ref: schema.ref,
@@ -151,19 +150,19 @@ export function activitySchemaToTask(schema: any) : any {
     attributes: {
       inputs: _.get(schema, 'inputs', []),
       outputs: _.get(schema, 'outputs', [])
-    }//,
-    //__schema: _.cloneDeep(schema)
+    }// ,
+    // __schema: _.cloneDeep(schema)
   };
 
   _.each(
-    task.attributes.inputs, ( input : any ) => {
+    task.attributes.inputs, ( input: any ) => {
       // convert to task enumeration and provision default types
       _.assign( input, portAttribute( input, true ) );
     }
   );
 
   _.each(
-    task.attributes.outputs, ( output : any ) => {
+    task.attributes.outputs, ( output: any ) => {
       // convert to task enumeration and provision default types
       _.assign( output, portAttribute( output ) );
     }
@@ -173,9 +172,9 @@ export function activitySchemaToTask(schema: any) : any {
 }
 
 // mapping from schema.json of activity to the trigger can be used in flow.json
-export function activitySchemaToTrigger(schema: any) : any {
+export function activitySchemaToTrigger(schema: any): any {
 
-  let trigger:any = {
+  const trigger: any = {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
     triggerType: _.get(schema, 'name', ''),
     ref: schema.ref,
@@ -186,19 +185,19 @@ export function activitySchemaToTrigger(schema: any) : any {
     homepage: _.get(schema, 'homepage', ''),
     settings: _.get(schema, 'settings', ''),
     outputs: _.get(schema, 'outputs', ''),
-    endpoint: { settings: _.get(schema, 'endpoint.settings', '') } //,
-    //__schema: _.cloneDeep(schema)
+    endpoint: { settings: _.get(schema, 'endpoint.settings', '') } // ,
+    // __schema: _.cloneDeep(schema)
   };
 
   _.each(
-    trigger.inputs, ( input : any ) => {
+    trigger.inputs, ( input: any ) => {
       // convert to task enumeration and provision default types
       _.assign( input, portAttribute( input, true ) );
     }
   );
 
   _.each(
-    trigger.outputs, ( output : any ) => {
+    trigger.outputs, ( output: any ) => {
       // convert to task enumeration and provision default types
       _.assign( output, portAttribute( output ) );
     }
@@ -210,8 +209,8 @@ export function activitySchemaToTrigger(schema: any) : any {
 
 // todo: name and location are too general and use case too specific
 export function objectFromArray(arr, copyValues?) {
-  let mappedSettings = {};
-  let settings = arr || [];
+  const mappedSettings = {};
+  const settings = arr || [];
 
   settings.forEach((setting) => {
     mappedSettings[setting.name] = copyValues ?  setting.value : null;
@@ -220,19 +219,19 @@ export function objectFromArray(arr, copyValues?) {
   return mappedSettings;
 }
 
-export function normalizeTaskName(taskName:string) {
+export function normalizeTaskName(taskName: string) {
   return _.kebabCase(taskName);
 }
 
-export function parseMapping(automapping:string){
-  let matches = FLOGO_AUTOMAPPING_FORMAT.exec(automapping);
+export function parseMapping(automapping: string) {
+  const matches = FLOGO_AUTOMAPPING_FORMAT.exec(automapping);
   if (!matches) {
     return null;
   }
 
-  let taskId = matches[2] || null;
-  let attributeName = matches[3];
-  let path = matches[4] ? _.trimStart(matches[4], '.') : null;
+  const taskId = matches[2] || null;
+  const attributeName = matches[3];
+  const path = matches[4] ? _.trimStart(matches[4], '.') : null;
 
   return {
     autoMap: `{${matches[1]}.${attributeName}}`,
@@ -244,7 +243,7 @@ export function parseMapping(automapping:string){
 
 }
 
-export function updateFlogoGlobalConfig( config : any ) {
+export function updateFlogoGlobalConfig( config: any ) {
   (<any>window).FLOGO_GLOBAL = config;
 
   if ( localStorage ) {
@@ -289,25 +288,25 @@ export function resetFlogoGlobalConfig() {
     engine : {
       // protocol : 'http',
       // host : "localhost",
-      port : "8080",
-      testPath: "status"
+      port : '8080',
+      testPath: 'status'
     },
     stateServer : {
       // protocol : 'http',
       // host : "localhost",
-      port : "9190",
-      testPath: "ping"
+      port : '9190',
+      testPath: 'ping'
     },
     flowServer : {
       // protocol : 'http',
       // host : "localhost",
-      port : "9090",
-      testPath: "ping"
+      port : '9090',
+      testPath: 'ping'
     }
   } );
 }
 
-export function formatServerConfiguration(config:any) {
+export function formatServerConfiguration(config: any) {
   return {
     db : {
       protocol: config.db.protocol,
@@ -348,7 +347,7 @@ export function formatServerConfiguration(config:any) {
       protocol : config.stateServer.protocol,
       host : config.stateServer.host,
       port : config.stateServer.port,
-      testPath:config.stateServer.testPath
+      testPath: config.stateServer.testPath
     },
     flowServer : {
       protocol : config.flowServer.protocol,
@@ -356,13 +355,13 @@ export function formatServerConfiguration(config:any) {
       port : config.flowServer.port,
       testPath: config.flowServer.testPath
     }
-  }
+  };
 }
 
-export function getFlogoGlobalConfig() : any {
+export function getFlogoGlobalConfig(): any {
 
   if ( !(<any>window).FLOGO_GLOBAL ) {
-    let config : any;
+    let config: any;
 
     if ( localStorage ) {
       config = localStorage.getItem( 'FLOGO_GLOBAL' );
@@ -387,11 +386,11 @@ export function getFlogoGlobalConfig() : any {
   return (<any>window).FLOGO_GLOBAL;
 }
 
-export function getURL( config : {
-  protocol? : string;
-  host? : string;
-  port? : string;
-} ) : string {
+export function getURL( config: {
+  protocol?: string;
+  host?: string;
+  port?: string;
+} ): string {
   if ( config.port ) {
     return `${config.protocol || location.protocol.replace( ':', '' )}://${config.host || location.hostname}:${config.port}`;
   } else {
@@ -401,11 +400,12 @@ export function getURL( config : {
 
 
 
-export function getDBURL( dbConfig : {
-  port : string;
-  protocol : string;
-  host : string;name : string
-} ) : string {
+export function getDBURL( dbConfig: {
+  port: string;
+  protocol: string;
+  host: string;
+  name: string;
+} ): string {
   return `${getURL( dbConfig )}/${dbConfig.name}`;
 }
 
@@ -419,13 +419,13 @@ export function getDBURL( dbConfig : {
  * @param  {HTMLElement} element The element containing the text to copy
  * @return {boolean} whether the copy operation is succeeded
  */
-export function copyToClipboard(element:HTMLElement) {
-  var sel = window.getSelection();
-  var snipRange = document.createRange();
+export function copyToClipboard(element: HTMLElement) {
+  const sel = window.getSelection();
+  const snipRange = document.createRange();
   snipRange.selectNodeContents(element);
   sel.removeAllRanges();
   sel.addRange(snipRange);
-  var res = false;
+  let res = false;
   try {
     res = document.execCommand('copy');
   } catch (err) {
@@ -446,42 +446,42 @@ export function copyToClipboard(element:HTMLElement) {
  */
 export function notification(message: string, type: string, time?: number, settings ?: any) {
   let styles = '';
-  for (let key in settings) {
-    styles += key + ':' + settings[key] + ';'
+  for (const key in settings) {
+    styles += key + ':' + settings[key] + ';';
   }
   let template = `<div style="${styles}" class="${type} flogo-common-notification">${message}`;
-  if(!time) {
+  if (!time) {
     template += `
     <i class="fa fa-times flogo-common-notification-close"></i>
-    `
+    `;
   }
   template += '</div>';
-  let notificationContainer = jQuery('body > .flogo-common-notification-container');
-  if(notificationContainer.length) {
+  const notificationContainer = jQuery('body > .flogo-common-notification-container');
+  if (notificationContainer.length) {
     notificationContainer.append(template);
   } else {
     jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
-  let notification = jQuery('.flogo-common-notification-container>div:last');
-  let notifications =  jQuery('.flogo-common-notification-container>div');
-  let maxCounter = 5;
+  const notification = jQuery('.flogo-common-notification-container>div:last');
+  const notifications =  jQuery('.flogo-common-notification-container>div');
+  const maxCounter = 5;
 
-  if(notifications.length > 5) {
-    for(let i = 0; i < notifications.length - maxCounter; i++) {
-      if(notifications[i]) notifications[i].remove();
+  if (notifications.length > 5) {
+    for (let i = 0; i < notifications.length - maxCounter; i++) {
+      if (notifications[i]) { notifications[i].remove(); }
     }
   }
   setTimeout(function () {
     notification.addClass('on');
   }, 100);
   return new Promise((resolve, reject) => {
-    if(time) {
+    if (time) {
       setTimeout(function () {
-        if(notification) notification.remove();
-        if(!notificationContainer.html()) notificationContainer.remove();
+        if (notification) { notification.remove(); }
+        if (!notificationContainer.html()) { notificationContainer.remove(); }
       }, time);
     }
-    if(!time) {
+    if (!time) {
       notification.find('.flogo-common-notification-close').click(() => {
         notification.remove();
         resolve();
@@ -489,10 +489,10 @@ export function notification(message: string, type: string, time?: number, setti
     } else {
       resolve();
     }
-  })
+  });
 }
 
-export function attributeTypeToString( inType : any ) : string {
+export function attributeTypeToString( inType: any ): string {
   if ( _.isString( inType ) ) {
     return inType;
   }
@@ -500,10 +500,10 @@ export function attributeTypeToString( inType : any ) : string {
   return (FLOGO_TASK_ATTRIBUTE_TYPE[inType] || 'string').toLowerCase();
 }
 
-export function updateBranchNodesRunStatus( nodes : IFlogoFlowDiagramNodeDictionary,
-  tasks : IFlogoFlowDiagramTaskDictionary ) {
+export function updateBranchNodesRunStatus( nodes: IFlogoFlowDiagramNodeDictionary,
+  tasks: IFlogoFlowDiagramTaskDictionary ) {
 
-  _.forIn( nodes, ( node : IFlogoFlowDiagramNode ) => {
+  _.forIn( nodes, ( node: IFlogoFlowDiagramNode ) => {
     const task = tasks[ node.taskID ];
 
     if ( task.type === FLOGO_TASK_TYPE.TASK_BRANCH ) {
@@ -520,9 +520,9 @@ export function updateBranchNodesRunStatus( nodes : IFlogoFlowDiagramNodeDiction
  * @param endDate: Final date
  * @param timeUnit: Measurement unit
  */
-export function diffDates(beginDate:any, endDate:any, timeUnit:any) {
-  let begin = moment(beginDate);
-  let end  = moment(endDate);
+export function diffDates(beginDate: any, endDate: any, timeUnit: any) {
+  const begin = moment(beginDate);
+  const end  = moment(endDate);
 
   return begin.diff(end, timeUnit);
 

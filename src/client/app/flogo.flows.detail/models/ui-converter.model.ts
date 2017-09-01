@@ -72,7 +72,7 @@ export abstract class AbstractModelConverter {
       // links tasks of error handler
       links = _.get(flowData, 'errorHandlerTask.links', []);
       // error task's root id value
-      const errorId = _.get(flowData, 'errorHandlerTask.id', 2)
+      const errorId = _.get(flowData, 'errorHandlerTask.id', 2);
       const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, null, handler, errorId);
 
       currentFlow.errorHandler = this.makeFlow(errorFlowParts, flowInfo);
