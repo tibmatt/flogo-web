@@ -163,7 +163,7 @@ function getSchema() {
             type: 'object',
             properties: {
               id: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               type: {
                 type: 'integer',

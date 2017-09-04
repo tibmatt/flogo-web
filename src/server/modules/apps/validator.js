@@ -632,7 +632,7 @@ function fullAppSchema() {
             additionalProperties: false,
             properties: {
               id: {
-                type: 'integer',
+                type: ['integer', 'string'],
               },
               type: {
                 type: 'integer',

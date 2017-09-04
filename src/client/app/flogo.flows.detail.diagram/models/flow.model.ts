@@ -76,7 +76,7 @@ export interface flowToJSON_FlowInfo {
 }
 
 export interface flowToJSON_RootTask {
-  id: number;
+  id: any;
   type: number;
   activityType: string;
   ref?: string;
@@ -274,7 +274,7 @@ export function flogoFlowToJSON( inFlow: flowToJSON_InputFlow ): flowToJSON_Flow
 
       const rootNode = errorPathNodes[ errorPathRoot.is ];
       const errorTask = <flowToJSON_RootTask>{
-        id : parseInt(convertTaskID(rootNode.taskID)),
+        id : convertTaskID(rootNode.taskID),
         type : FLOGO_TASK_TYPE.TASK, // this is 1
         activityType : '',
         ref: '',
