@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AbstractProfileUtilityService} from '../profiles.utils.service';
-import {FLOGO_TASK_TYPE} from '../../../constants';
-import {flogoIDDecode, flogoIDEncode} from '../../../utils';
+import {flogoIDEncode} from '../../../utils';
 
 @Injectable()
 export class FlogoDeviceUtilsService extends AbstractProfileUtilityService {
