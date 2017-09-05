@@ -4,14 +4,31 @@ import {RESTAPITriggersService} from "./restapi/triggers-api.service";
 import {RESTAPIContributionsService} from "./restapi/v2/contributions.service";
 import {activitySchemaToTask, activitySchemaToTrigger} from "../utils";
 import {RESTAPIActivitiesService} from "./restapi/activities-api.service";
+import {AbstractProfileUtilityService} from './profiles/profiles.utils.service';
+import {FlogoDeviceUtilsService} from './profiles/devices/utils.service';
+import {FlogoMicroserviceUtilsService} from './profiles/microservices/utils.service';
 
 @Injectable()
 export class FlogoProfileService {
+
+  public currentApplicationProfile: FLOGO_PROFILE_TYPE;
+  utils: AbstractProfileUtilityService;
+
   constructor(private triggersService: RESTAPITriggersService,
               private activitiesService: RESTAPIActivitiesService,
               private contribService: RESTAPIContributionsService){
 
   }
+
+  initializeProfile(app) {
+    this.currentApplicationProfile = this.getProfileType(app);
+    if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.DEVICE) {
+      this.utils = new FlogoDeviceUtilsService();
+    } else if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
+      this.utils = new FlogoMicroserviceUtilsService();
+    }
+  }
+
   getProfileType(app) {
     let profileType: FLOGO_PROFILE_TYPE;
     if(app.device){
