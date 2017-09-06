@@ -1,7 +1,22 @@
-import { config } from '../../config/app-config';
 import request  from 'co-request';
 
+import { config } from '../../config/app-config';
+import { logger } from '../../common/logging';
+
 let basePath = config.app.basePath;
+
+const logRequestResponse = (request, response) => {
+  logger.debug('Begin Request:');
+  logger.debug('   URI:', request.uri);
+  logger.debug('   Method:', request.method);
+  logger.debug('   body:', request.body ? JSON.stringify(request.body, null, 2) : 'empty');
+  logger.debug('End Request');
+  logger.debug('Begin Response:');
+  logger.debug('   ', JSON.stringify(response, null, 2));
+  logger.debug('End Response\n');
+
+
+};
 
 export function flowsRun(app, router) {
   if(!app) {
@@ -94,13 +109,15 @@ function* getProcessFlow(next) {
   let uri =  getUrl(process) + '/flows/' + id;
   this.body = id;
 
-  try {
-    let result = yield request({
-      uri: uri,
-      method: 'GET'
-    });
+  const payloadRequest = {
+    uri: uri,
+    method: 'GET'
+  };
 
+  try {
+    let result = yield request(payloadRequest);
     this.body = result.body;
+    logRequestResponse(payloadRequest, this.body);
   }catch(err) {
     this.throw(err.message, 500);
   }
@@ -216,15 +233,18 @@ function* restart(next) {
 
   let uri = getUrl(engine) + '/flow/restart';
 
-  try {
-    let result = yield request({
-      uri: uri,
-      method: 'POST',
-      body: data,
-      json: true
-    });
 
+  const payloadRequest = {
+    uri: uri,
+    method: 'POST',
+    body: data,
+    json: true
+  };
+
+  try {
+    let result = yield request(payloadRequest);
     this.body = result.body;
+    logRequestResponse(payloadRequest, this.body);
   }catch(err) {
     this.throw(err.message, 500);
   }
@@ -315,13 +335,15 @@ function* getSnapshot(next) {
 
   let uri = getUrl(state) + '/instances/' + idInstance + '/snapshot/' + idSnapshot;
 
-  try {
-    let result = yield request({
-      uri: uri,
-      method: 'GET'
-    });
+  const payloadRequest = {
+    uri: uri,
+    method: 'GET'
+  };
 
+  try {
+    let result = yield request(payloadRequest);
     this.body = result.body;
+    logRequestResponse(payloadRequest, this.body);
   }catch(err) {
     this.throw(err.message, 500);
   }
@@ -350,13 +372,15 @@ function* instanceById(next) {
   let id = this.params.id;
   let uri = getUrl(state) + '/instances/' + id;
 
-  try {
-    let result = yield request({
-      uri: uri,
+  const payloadRequest = {
+    uri: uri,
       method: 'GET'
-    });
+  };
 
+  try {
+    let result = yield request(payloadRequest);
     this.body = result.body;
+    logRequestResponse(payloadRequest, this.body);
   }catch(err) {
     this.throw(err.message, 500);
   }
@@ -388,13 +412,15 @@ function* stepsInstance(next) {
   let uri = getUrl(state) + '/instances/' + id + '/steps';
   this.body = id;
 
-  try {
-    let result = yield request({
-      uri: uri,
-      method: 'GET'
-    });
+  const payloadRequest = {
+    uri: uri,
+    method: 'GET'
+  };
 
+  try {
+    let result = yield request(payloadRequest);
     this.body = result.body;
+    logRequestResponse(payloadRequest, this.body);
   }catch(err) {
     this.throw(err.message, 500);
   }
@@ -479,13 +505,15 @@ function* statusInstance(next) {
   let uri =  getUrl(state) + '/instances/' + id + '/status';
   this.body = id;
 
-  try {
-    let result = yield request({
-      uri: uri,
-      method: 'GET'
-    });
+  const payloadRequest = {
+    uri: uri,
+    method: 'GET'
+  };
 
+  try {
+    let result = yield request(payloadRequest);
     this.body = result.body;
+    logRequestResponse(payloadRequest, this.body);
   }catch(err) {
     this.throw(err.message, 500);
   }
@@ -545,17 +573,17 @@ function* flowStart(next) {
   data.flowUri = data.actionUri;
   delete data.flowId;
 
+  const payloadRequest = {
+    uri: uri,
+    method: 'POST',
+    body: data,
+    json: true
+  };
+
   try {
-
-      let result = yield request({
-        uri: uri,
-        method: 'POST',
-        body: data,
-        json: true
-      });
-
+      let result = yield request(payloadRequest);
       this.body = result.body;
-
+      logRequestResponse(payloadRequest, this.body);
   }catch (err) {
     this.throw(err.message, 500);
   }
@@ -658,15 +686,17 @@ function* flows(next) {
   let process = config.processServer;
   let uri = getUrl(process) + '/flows';
 
-  try {
-    let result = yield request({
-      uri: uri,
-      method: 'POST',
-      body: data,
-      json: true
-    });
+  const payloadRequest = {
+    uri: uri,
+    method: 'POST',
+    body: data,
+    json: true
+  };
 
+  try {
+    let result = yield request(payloadRequest);
     this.body = result.body;
+    logRequestResponse(payloadRequest, this.body);
   } catch(err) {
     this.throw(err.message, 500);
   }
