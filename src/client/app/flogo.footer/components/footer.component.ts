@@ -7,8 +7,10 @@ import { Component } from '@angular/core';
     styleUrls : [ 'footer.component.less' ]
 })
 export class FlogoFooterComponent {
+  currentYear: number;
 
   constructor() {
+    this.currentYear = (new Date).getFullYear();
   }
 
 }
