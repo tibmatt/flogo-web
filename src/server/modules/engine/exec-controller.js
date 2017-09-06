@@ -31,8 +31,7 @@ module.exports = {
         const engineTester = settings.find((service)=> service.name === 'engineTester');
 
         const env =  Object.assign( {
-          LOG_LEVEL: 'DEBUG',
-          LOG_DATETIME_FORMAT: '',
+          FLOGO_LOG_LEVEL: 'DEBUG',
           TESTER_ENABLED: 'true',
           TESTER_PORT: engineTester.settings.port,
           TESTER_SR_SERVER: stateRecorder.settings.host + ':' + stateRecorder.settings.port
