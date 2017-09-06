@@ -8,8 +8,8 @@ import {mockTriggerDetails} from '../../app/flogo.flows.detail/services/ui-model
 import {MockBackend} from '@angular/http/testing';
 import { MOCK_DEVICE_APP_DATA as mockDeviceAppData,
   MOCK_MICROSERVICE_APP_DATA as mockMicroServiceAppData} from '../mocks/application.json.mock';
-import {FlogoMicroserviceUtilsService} from './profiles/microservices/utils.service';
-import {FlogoDeviceUtilsService} from './profiles/devices/utils.service';
+import {FlogoMicroserviceTaskIdGeneratorService} from './profiles/microservices/utils.service';
+import {FlogoDeviceTaskIdGeneratorService} from './profiles/devices/utils.service';
 
 describe('Service: FlogoProfileService', function(this: {
   testService: FlogoProfileService
@@ -446,12 +446,12 @@ describe('Service: FlogoProfileService', function(this: {
 
   it('Should create utilities class for a microservice profile', () => {
     this.testService.initializeProfile(mockMicroServiceAppData);
-    expect(this.testService.utils instanceof FlogoMicroserviceUtilsService).toBeTruthy();
+    expect(this.testService.utils instanceof FlogoMicroserviceTaskIdGeneratorService).toBeTruthy();
   });
 
   it('Should create utilities class for a device profile', () => {
     this.testService.initializeProfile(mockDeviceAppData);
-    expect(this.testService.utils instanceof FlogoDeviceUtilsService).toBeTruthy();
+    expect(this.testService.utils instanceof FlogoDeviceTaskIdGeneratorService).toBeTruthy();
   });
 
   it('Should transform the 11 activities', (done) => {

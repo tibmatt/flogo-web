@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
-import {AbstractProfileUtilityService} from '../profiles.utils.service';
+import {AbstractTaskIdGenerator } from '../profiles.utils.service';
 import {flogoIDEncode} from '../../../utils';
 
 @Injectable()
-export class FlogoMicroserviceUtilsService extends AbstractProfileUtilityService {
+export class FlogoMicroserviceTaskIdGeneratorService extends AbstractTaskIdGenerator  {
   generateTaskID(items?: any, currentTask?: any) {
     let taskID = '';
     if ( items ) {
       if (currentTask) {
         taskID = currentTask.ref.split('/').pop() + '_';
       }
-      taskID += this.getMaxCount(items, (item) => {
+      taskID += this.calculateNextId(items, (item) => {
         return item.split('_').pop();
       });
 

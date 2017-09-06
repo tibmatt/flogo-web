@@ -4,15 +4,15 @@ import {RESTAPITriggersService} from "./restapi/triggers-api.service";
 import {RESTAPIContributionsService} from "./restapi/v2/contributions.service";
 import {activitySchemaToTask, activitySchemaToTrigger} from "../utils";
 import {RESTAPIActivitiesService} from "./restapi/activities-api.service";
-import {AbstractProfileUtilityService} from './profiles/profiles.utils.service';
-import {FlogoDeviceUtilsService} from './profiles/devices/utils.service';
-import {FlogoMicroserviceUtilsService} from './profiles/microservices/utils.service';
+import {AbstractTaskIdGenerator } from './profiles/profiles.utils.service';
+import {FlogoDeviceTaskIdGeneratorService} from './profiles/devices/utils.service';
+import {FlogoMicroserviceTaskIdGeneratorService} from './profiles/microservices/utils.service';
 
 @Injectable()
 export class FlogoProfileService {
 
   public currentApplicationProfile: FLOGO_PROFILE_TYPE;
-  utils: AbstractProfileUtilityService;
+  utils: AbstractTaskIdGenerator ;
 
   constructor(private triggersService: RESTAPITriggersService,
               private activitiesService: RESTAPIActivitiesService,
@@ -23,10 +23,14 @@ export class FlogoProfileService {
   initializeProfile(app) {
     this.currentApplicationProfile = this.getProfileType(app);
     if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.DEVICE) {
-      this.utils = new FlogoDeviceUtilsService();
+      this.utils = new FlogoDeviceTaskIdGeneratorService();
     } else if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-      this.utils = new FlogoMicroserviceUtilsService();
+      this.utils = new FlogoMicroserviceTaskIdGeneratorService();
     }
+  }
+
+  generateTaskID(items?: any, taskSchema?: any) {
+    return this.utils.generateTaskID(items, taskSchema);
   }
 
   getProfileType(app) {

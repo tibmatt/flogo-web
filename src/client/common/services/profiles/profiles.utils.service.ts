@@ -1,10 +1,10 @@
 import {FLOGO_TASK_TYPE} from '../../constants';
 import {flogoIDDecode} from '../../utils';
 
-export abstract class AbstractProfileUtilityService {
+export abstract class AbstractTaskIdGenerator  {
   abstract generateTaskID(items?: any, currentTask?: any);
 
-  getMaxCount(items: any, parseInput?) {
+  calculateNextId(items: any, parseInput?) {
     let maxCount;
     const ids = _.keys( items );
     const startPoint = 2; // taskID 1 is reserved for the rootTask

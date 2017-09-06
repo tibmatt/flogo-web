@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
-import {AbstractProfileUtilityService} from '../profiles.utils.service';
+import {AbstractTaskIdGenerator } from '../profiles.utils.service';
 import {flogoIDEncode} from '../../../utils';
 
 @Injectable()
-export class FlogoDeviceUtilsService extends AbstractProfileUtilityService {
+export class FlogoDeviceTaskIdGeneratorService extends AbstractTaskIdGenerator  {
   generateTaskID(items?: any) {
     let taskID: string;
     // TODO
     //  generate a more meaningful task ID in string format
     if ( items ) {
-      taskID = this.getMaxCount(items);
+      taskID = this.calculateNextId(items);
 
     } else {
       // shift the timestamp for avoiding overflow 32 bit system

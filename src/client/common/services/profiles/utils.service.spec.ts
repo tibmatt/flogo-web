@@ -1,6 +1,6 @@
-import {FlogoMicroserviceUtilsService} from './microservices/utils.service';
-import {AbstractProfileUtilityService} from './profiles.utils.service';
-import {FlogoDeviceUtilsService} from './devices/utils.service';
+import {FlogoMicroserviceTaskIdGeneratorService} from './microservices/utils.service';
+import {AbstractTaskIdGenerator } from './profiles.utils.service';
+import {FlogoDeviceTaskIdGeneratorService} from './devices/utils.service';
 import {flogoIDEncode} from '../../utils';
 
 const mockTasksAvailable = {
@@ -115,11 +115,11 @@ const mockSelectedTask = {
   ]
 };
 
-describe('Service: FlogoMicroserviceUtilsService', function(this: {
-  testService: AbstractProfileUtilityService
+describe('Service: FlogoMicroserviceTaskIdGeneratorService', function(this: {
+  testService: AbstractTaskIdGenerator
 }){
   beforeAll(() => {
-    this.testService = new FlogoMicroserviceUtilsService();
+    this.testService = new FlogoMicroserviceTaskIdGeneratorService();
   });
 
   it('Should generate the task ID for Microservice profile in "ref_num" format', () => {
@@ -127,11 +127,11 @@ describe('Service: FlogoMicroserviceUtilsService', function(this: {
   });
 });
 
-describe('Service: FlogoDeviceUtilsService', function(this: {
-  testService: AbstractProfileUtilityService
+describe('Service: FlogoDeviceTaskIdGeneratorService', function(this: {
+  testService: AbstractTaskIdGenerator
 }){
   beforeAll(() => {
-    this.testService = new FlogoDeviceUtilsService();
+    this.testService = new FlogoDeviceTaskIdGeneratorService();
   });
 
   it('Should generate the task ID for Microservice profile in "num" format', () => {
