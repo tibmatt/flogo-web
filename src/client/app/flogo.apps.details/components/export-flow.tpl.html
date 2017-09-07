@@ -1,0 +1,22 @@
+<modal [size]="'sm'" #modal>
+  <form novalidate>
+      <h3>{{ 'FLOWS:EXPORT-FLOWS' | translate }}</h3>
+    <div ><a class="header__link" (click)="selectAllFlows($event)">Select All</a> | <a class="header__link" (click)="unselectAllFlows()">Unselect All</a> </div>
+    <modal-body>
+      <div class="export-flow-container">
+        <div *ngFor="let flow of flows; let index = index"><div>
+          <input class="flogo-checkbox--primary" type="checkbox" [checked] = "index === checkAllFlows[index]" (change)="flowSelect(flow.id,$event.target.checked)">{{flow.name}}
+        </div>
+        <div>{{flow.createdAt}}</div></div>
+      </div>
+    </modal-body>
+    <div class="modal-footer">
+    <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
+    </button>
+    <button type="submit" class="flogo-button--default" [jsonDownloader]="exportFlows()">
+      {{ 'DETAILS:EXPORT' | translate }}
+    </button>
+    </div>
+  </form>
+</modal>
+

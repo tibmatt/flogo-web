@@ -86,7 +86,20 @@ export class AppsApiService {
       .map(response => response.json())
       .toPromise();
   }
-
+  exportFlows(appId: string, flowIds: string){
+    let reqOptions = this.httpUtils.defaultOptions();
+    if (flowIds !="All"){
+      const searchParams = new URLSearchParams();
+      searchParams.set('flowids', flowIds);
+       reqOptions= reqOptions.merge({
+          search: searchParams
+        });
+    }
+    return this.http.get(
+      this.httpUtils.apiPrefix(`apps/${appId}:export?type=flows`), reqOptions)
+     .map((res: Response) => res.json())
+      .toPromise();
+  }
   uploadApplication(application) {
     let options = this.httpUtils.defaultOptions();
 
