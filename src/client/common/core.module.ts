@@ -25,6 +25,8 @@ import {FlowsService} from "./services/flows.service";
 import {ProfilesAPIService} from "./services/restapi/v2/profiles-api.service";
 import {FlogoProfileService} from "./services/profile.service";
 import {RESTAPIContributionsService} from "./services/restapi/v2/contributions.service";
+import {FlogoMicroserviceTaskIdGeneratorService} from './services/profiles/microservices/utils.service';
+import {FlogoDeviceTaskIdGeneratorService} from './services/profiles/devices/utils.service';
 
 @NgModule({
   providers: [ // services
@@ -54,7 +56,9 @@ import {RESTAPIContributionsService} from "./services/restapi/v2/contributions.s
     LanguageService,
     WindowRef,
     FlowsService,
-    FlogoProfileService
+    FlogoProfileService,
+    FlogoMicroserviceTaskIdGeneratorService,
+    FlogoDeviceTaskIdGeneratorService
   ]
 })
 export class CoreModule { }

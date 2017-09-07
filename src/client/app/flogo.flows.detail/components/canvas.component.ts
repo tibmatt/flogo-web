@@ -24,7 +24,7 @@ import { RESTAPITriggersService } from '../../../common/services/restapi/v2/trig
 import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
 import {FLOGO_TASK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE, ERROR_CODE, FLOGO_PROFILE_TYPE} from '../../../common/constants';
-import { flogoIDDecode, flogoIDEncode, flogoGenTaskID, normalizeTaskName, notification,
+import { flogoIDDecode, flogoIDEncode, normalizeTaskName, notification,
   attributeTypeToString, flogoGenBranchID, flogoGenTriggerID, updateBranchNodesRunStatus,
   objectFromArray
 } from '../../../common/utils';
@@ -227,8 +227,8 @@ export class FlogoCanvasComponent implements OnInit {
 
         this.clearAllHandlersRunStatus();
         this.loading = false;
-        this.profileType = this.profileService.getProfileType(this.flow.app);
-
+        this.profileService.initializeProfile(this.flow.app);
+        this.profileType = this.profileService.currentApplicationProfile;
       });
   }
 
@@ -501,7 +501,7 @@ export class FlogoCanvasComponent implements OnInit {
     let handler = this.handlers[diagramId];
 
     if (handler == this.errorHandler) {
-      trigger.id = flogoGenTaskID(this._getAllTasks());
+      trigger.id = this.profileService.generateTaskID(this._getAllTasks());
     }
     let tasks = handler.tasks || [];
 
@@ -599,7 +599,7 @@ export class FlogoCanvasComponent implements OnInit {
     let doRegisterTask = _registerTask.bind(this);
 
     if (this.handlers[diagramId] == this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
-      let errorTrigger = makeDefaultErrorTrigger(flogoGenTaskID(this._getAllTasks()));
+      let errorTrigger = makeDefaultErrorTrigger(this.profileService.generateTaskID(this._getAllTasks()));
       this.errorHandler.tasks[errorTrigger.id] = errorTrigger;
 
       this._postService.publish(
@@ -630,7 +630,7 @@ export class FlogoCanvasComponent implements OnInit {
       let task = <IFlogoFlowDiagramTask> _.assign({},
         data.task,
         {
-          id: flogoGenTaskID(this._getAllTasks()),
+          id: this.profileService.generateTaskID(this._getAllTasks(), data.task),
           name: taskName
         });
 
