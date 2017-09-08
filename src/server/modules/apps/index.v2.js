@@ -277,25 +277,29 @@ export class AppsManager {
         }
 
         const actionMap = new Map(app.actions.map(a => [a.id, a]));
-        let handlers = [];
-        app.triggers.forEach(t => {
-          t.id = normalizeName(t.name);
-          handlers = handlers.concat(t.handlers);
-        });
+        if(exportType === 'application' || !exportType){
+          let handlers = [];
+          app.triggers.forEach(t => {
+            t.id = normalizeName(t.name);
+            handlers = handlers.concat(t.handlers);
+          });
 
-        // convert to human readable action ids and update handler to point to new action id
-        handlers.forEach(h => {
-          const action = actionMap.get(h.actionId);
-          if (!actionMap) {
-            delete h.actionId;
-            return;
-          }
-          actionMap.delete(h.actionId);
-          action.id = normalizeName(action.name);
-          h.actionId = action.id;
-        });
+          // convert to human readable action ids and update handler to point to new action id
+          handlers.forEach(h => {
+            const action = actionMap.get(h.actionId);
+            if (!actionMap) {
+              delete h.actionId;
+              return;
+            }
+            actionMap.delete(h.actionId);
+            action.id = normalizeName(action.name);
+            h.actionId = action.id;
+          });
+        }
 
-        // convert orphan actions ids
+        // convert
+        // 1. orphan actions ids in case of application export
+        // 2. all actions ids in case of flows export
         actionMap.forEach(a => {
           a.id = normalizeName(a.name);
         });
