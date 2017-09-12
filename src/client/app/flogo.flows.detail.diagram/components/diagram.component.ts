@@ -93,7 +93,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     let _enabledSelectTrigger = false;
-    if ( _.isEmpty( this.diagram ) || _.isEmpty( this.diagram.root ) ) {
+    if ( _.isEmpty( this.diagram ) ||
+      (this.id === 'errorHandler' && _.isEmpty( this.diagram.root )) ||
+      (this.id === 'root' && !this.diagram.hasTrigger ) ) {
       this.diagram = FlogoFlowDiagram.getEmptyDiagram(this.id === 'errorHandler' ? 'error' : null );
       if (this.id === 'errorHandler') {
       } else {
