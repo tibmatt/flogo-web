@@ -14,15 +14,16 @@ import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { genBranchLine } from '../utils';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-//import * as moment from 'moment';
+// import * as moment from 'moment';
 
 export interface IFlogoFlowDiagram {
-  root : IFlogoFlowDiagramRootNode;
-  nodes : IFlogoFlowDiagramNodeDictionary;
-  MAX_ROW_LEN? : number;
+  root?: IFlogoFlowDiagramRootNode;
+  hasTrigger?: boolean;
+  nodes: IFlogoFlowDiagramNodeDictionary;
+  MAX_ROW_LEN?: number;
 }
 
-const DEFAULT_MAX_ROW_LEN = 7;
+const DEFAULT_MAX_ROW_LEN = 6;
 
 const CLS = {
   diagram : 'flogo-flows-detail-diagram',
@@ -157,7 +158,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       nodes : < IFlogoFlowDiagramNodeDictionary > {}
     };
 
-    newRootNode.type = diagramType == 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
+    newRootNode.type = diagramType === 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD;
+    // newRootNode.type = diagramType == 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
 
     emptyDiagram.nodes[ newRootNode.id ] = newRootNode;
 

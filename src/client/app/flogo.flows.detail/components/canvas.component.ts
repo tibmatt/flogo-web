@@ -221,7 +221,7 @@ export class FlogoCanvasComponent implements OnInit {
 
         this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
         this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-        if ( _.isEmpty( this.mainHandler.diagram ) || _.isEmpty( this.mainHandler.diagram.root ) ) {
+        if ( _.isEmpty( this.mainHandler.diagram ) || !this.mainHandler.diagram.hasTrigger ) {
           this.hasTrigger = false;
         }
 

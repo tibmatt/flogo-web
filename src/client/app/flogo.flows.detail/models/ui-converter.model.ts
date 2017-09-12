@@ -13,8 +13,15 @@ export abstract class AbstractModelConverter {
     this.errorService = errorService;
   }
 
-  abstract convertToWebFlowModel(flowDetails, triggerDetails);
   abstract getActivitiesPromise(list);
+
+  convertToWebFlowModel(flowObj) {
+    return this.getActivitiesPromise(this.getActivities(flowObj))
+      .then((installedActivities) => {
+        const installedTiles = _.flattenDeep(installedActivities);
+        return this.processFlowObj(flowObj, installedTiles);
+      });
+  }
 
   getActivities(flow: any) {
     const activitiesList = [];
@@ -42,8 +49,7 @@ export abstract class AbstractModelConverter {
 
     return activitiesList;
   }
-  processFlowObj(flowJSON, triggerJSON, installedContribs) {
-    const endpoints = _.get(triggerJSON, 'handlers', []);
+  processFlowObj(flowJSON, installedContribs) {
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
     const defaultErrorRootId = tasks.length + 2;
@@ -58,12 +64,7 @@ export abstract class AbstractModelConverter {
       app: flowJSON.app
     };
 
-    let handler = null;
-    if (triggerJSON && triggerJSON.handlers) {
-      handler = triggerJSON.handlers.find(thisHandler => thisHandler.actionId === flowJSON.id);
-    }
-
-    const mainFlowParts = this.getFlowParts(installedContribs, tasks, links, triggerJSON, handler);
+    const mainFlowParts = this.getFlowParts(installedContribs, tasks, links);
     const currentFlow = this.makeFlow(mainFlowParts, flowInfo, installedContribs);
 
     const flowData = flowJSON.data.flow;
@@ -74,7 +75,7 @@ export abstract class AbstractModelConverter {
       links = _.get(flowData, 'errorHandlerTask.links', []);
       // error task's root id value
       const errorId = _.get(flowData, 'errorHandlerTask.id', defaultErrorRootId);
-      const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, null, handler, errorId);
+      const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, errorId);
 
       currentFlow.errorHandler = this.makeFlow(errorFlowParts, flowInfo);
     }
@@ -90,7 +91,7 @@ export abstract class AbstractModelConverter {
 
       const nodeTrigger = nodes.find((element) => {
         const nodeType = element.node.type;
-        return nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT || nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW;
+        return nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW;
       });
 
       flow = {
@@ -100,9 +101,6 @@ export abstract class AbstractModelConverter {
         appId,
         app,
         paths: {
-          root: {
-            is: nodeTrigger.node.id,
-          },
           nodes: {},
         },
         items: {},
@@ -110,6 +108,19 @@ export abstract class AbstractModelConverter {
         // todo: remove _id, keeping it for now for legacy code that should move to id
         _id: id,
       };
+
+      if (nodeTrigger) {
+        flow.paths.root = {};
+        flow.paths.root.is = nodeTrigger.node.id;
+      } else {
+        console.log("Anand: ", nodes);
+        const orphanNode = nodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
+          result.node.parents.length === 0);
+        if (orphanNode) {
+          flow.paths.root = {};
+          flow.paths.root.is = orphanNode.node.id;
+        }
+      }
 
       if (installedTiles) {
         flow.schemas = {};
@@ -136,7 +147,7 @@ export abstract class AbstractModelConverter {
     return flow;
   }
 
-  getFlowParts(installedTiles, tasks, links, trigger, endpointSetting, errorRootID?) {
+  getFlowParts(installedTiles, tasks, links, errorRootID?) {
     const nodes = [];
     const items = [];
     const branches = [];
@@ -144,29 +155,14 @@ export abstract class AbstractModelConverter {
     const item = new FlowElement(FLOW_ITEM);
 
     try {
-      const rootTrigger = trigger || { isErrorTrigger: true, taskID: flogoIDEncode(errorRootID), cli: { id: -1 } };
-      const nodeTrigger = node.makeTrigger(rootTrigger);
-
-      const installedTrigger = installedTiles.find(tile => trigger && tile.ref === trigger.ref);
-      if (trigger && !installedTrigger) {
-        throw this.errorService.makeOperationalError('Trigger is not installed', `Trigger: ${trigger.ref}`,
-          {
-            type: 'notInstalledTrigger',
-            title: 'Trigger is not installed',
-            detail: `Trigger: ${trigger.ref}`,
-            property: 'trigger',
-            value: trigger
-          });
+      let nodeTrigger;
+      if (errorRootID) {
+        const rootTrigger = { isErrorTrigger: true, taskID: flogoIDEncode(errorRootID), cli: { id: -1 } };
+        nodeTrigger = node.makeTrigger(rootTrigger);
+        const itemTrigger = item.makeTrigger(rootTrigger);
+        nodes.push({ node: nodeTrigger, cli: rootTrigger });
+        items.push({ node: itemTrigger, cli: rootTrigger });
       }
-
-      const itemTrigger = item.makeTrigger(trigger ? {
-        node: nodeTrigger,
-        cli: rootTrigger,
-        installed: installedTrigger,
-        endpointSetting
-      } : rootTrigger);
-      nodes.push({ node: nodeTrigger, cli: rootTrigger });
-      items.push({ node: itemTrigger, cli: rootTrigger });
 
       tasks.forEach((task) => {
         const nodeItem = node.makeItem({ taskID: flogoIDEncode(task.id) });
@@ -215,7 +211,7 @@ export abstract class AbstractModelConverter {
 
     return { nodes, items, branches };
 
-    function linkTiles(inputNodes, inputLinks, nodeTrigger) {
+    function linkTiles(inputNodes, inputLinks, errorNodeTrigger) {
       try {
         inputLinks.forEach((link) => {
           const from = inputNodes.find(result => result.cli.id === link.from);
@@ -223,14 +219,16 @@ export abstract class AbstractModelConverter {
           linkNodes(from.node, to.node);
         });
 
-        // set link between trigger and first node
-        const orphanNode = inputNodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
-          result.node.parents.length === 0);
+        if (errorNodeTrigger) {
+          // set link between trigger and first node
+          const orphanNode = inputNodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
+            result.node.parents.length === 0);
 
-        if (orphanNode) {
-          linkNodes(nodeTrigger, orphanNode.node);
-        } else if (inputLinks.length) {
-          throw new Error('Function linkTiles:Cannot link trigger with first node');
+          if (orphanNode) {
+            linkNodes(errorNodeTrigger, orphanNode.node);
+          } else if (inputLinks.length) {
+            throw new Error('Function linkTiles:Cannot link trigger with first node');
+          }
         }
       } catch (error) {
         console.error(error);

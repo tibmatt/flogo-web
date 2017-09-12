@@ -35,9 +35,8 @@ export class FlogoFlowService {
         ]);
 
         if (flow.trigger) {
-          let triggerDetails = Object.assign({}, flow.trigger);
-          return this._converterService.getWebFlowModel(flowDiagramDetails, triggerDetails)
-            .then(convertedFlow =>  this.processFlowModel(convertedFlow));
+          return this._converterService.getWebFlowModel(flowDiagramDetails)
+            .then(convertedFlow =>  this.processFlowModel(convertedFlow, true));
         } else {
           // TODO: should create empty diagram instead
           return {
@@ -63,7 +62,7 @@ export class FlogoFlowService {
     return this._flowAPIService.findFlowsByName(name, appId);
   }
 
-  processFlowModel(model): Promise<FlowData> {
+  processFlowModel(model, hasTrigger?: boolean): Promise<FlowData> {
     let diagram: IFlogoFlowDiagram;
     let errorDiagram: IFlogoFlowDiagram;
     let tasks: IFlogoFlowDiagramTaskDictionary;
@@ -95,9 +94,12 @@ export class FlogoFlowService {
         errorDiagram = flow.errorHandler.paths = <IFlogoFlowDiagram>{
           root: {},
           nodes: {}
-        }
+        };
       } else {
         errorDiagram = flow.errorHandler.paths;
+      }
+      if (hasTrigger) {
+        diagram.hasTrigger = hasTrigger;
       }
     }
     return Promise.resolve({
