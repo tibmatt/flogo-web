@@ -113,7 +113,6 @@ export abstract class AbstractModelConverter {
         flow.paths.root = {};
         flow.paths.root.is = nodeTrigger.node.id;
       } else {
-        console.log("Anand: ", nodes);
         const orphanNode = nodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
           result.node.parents.length === 0);
         if (orphanNode) {

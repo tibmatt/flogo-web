@@ -1140,9 +1140,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE;
 
-        let parentNode = this.nodes[ node.parents[ 0 ] ];
+        const parentNode = this.nodes[ node.parents[ 0 ] ];
 
-        (<FlogoFlowDiagramNode>parentNode).linkToChildren( [ node.id ] );
+        // In case of the first activity, the parentNode will be undefined so cannot call the linkToChildren at this moment
+
+        if (parentNode) {
+          (<FlogoFlowDiagramNode>parentNode).linkToChildren( [ node.id ] );
+        }
 
       } else if (node.type ===  FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW) {
         node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT;
