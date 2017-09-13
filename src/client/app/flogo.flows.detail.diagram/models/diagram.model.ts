@@ -126,7 +126,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           if ( matrixRow.length
             === 1
             && diagram.nodes[ matrixRow[ 0 ] ].type
-            === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+            === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
             paddedRow = matrixRow;
           } else {
             paddedRow = matrixRow.concat( '+' ); // append add node symbol
