@@ -20,13 +20,16 @@ export let resultantFlowModelForCanvas = {
           "__status": {"isSelected": false},
           "children": ["some_id_0"],
           "parents": [],
-          "type": 3,
+          "type": 5,
           "taskID": "some_id_1"
         },
         "some_id_2": {
           "id": "some_id_2",
           "__status": {"isSelected": false},
-          "children": ["some_id_0"],
+          "children": [
+            "some_id_0",
+            "some_id_1"
+          ],
           "parents": ["some_id_0"],
           "type": 5,
           "taskID": "some_id_2"
@@ -34,10 +37,7 @@ export let resultantFlowModelForCanvas = {
         "some_id_3": {
           "id": "some_id_3",
           "__status": {"isSelected": false},
-          "children": [
-            "some_id_0",
-            "some_id_1"
-          ],
+          "children": [],
           "parents": ["some_id_0"],
           "type": 5,
           "taskID": "some_id_3"
@@ -53,9 +53,9 @@ export let resultantFlowModelForCanvas = {
         "some_id_5": {
           "id": "some_id_5",
           "__status": {"isSelected": false},
-          "children": [],
+          "children": ["some_id_0"],
           "parents": ["some_id_0"],
-          "type": 5,
+          "type": 6,
           "taskID": "some_id_5"
         },
         "some_id_6": {
@@ -65,74 +65,12 @@ export let resultantFlowModelForCanvas = {
           "parents": ["some_id_0"],
           "type": 6,
           "taskID": "some_id_6"
-        },
-        "some_id_7": {
-          "id": "some_id_7",
-          "__status": {"isSelected": false},
-          "children": ["some_id_0"],
-          "parents": ["some_id_0"],
-          "type": 6,
-          "taskID": "some_id_7"
         }
-      }
+      },
+      "hasTrigger": true
     },
     "items": {
-      "some_id_8": {
-        "name": "Trigger Request",
-        "title": "Timer",
-        "version": "0.0.1",
-        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer",
-        "description": "Simple Timer trigger",
-        "installed": true,
-        "settings": [],
-        "outputs": [
-          {
-            "name": "params",
-            "type": 6
-          },
-          {
-            "name": "content",
-            "type": 4
-          }
-        ],
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
-        "endpoint": {
-          "settings": [
-            {
-              "name": "repeating",
-              "type": "string",
-              "value": null
-            },
-            {
-              "name": "startDate",
-              "type": "string",
-              "value": null
-            },
-            {
-              "name": "hours",
-              "type": "string",
-              "value": null
-            },
-            {
-              "name": "minutes",
-              "type": "string",
-              "value": "5"
-            },
-            {
-              "name": "seconds",
-              "type": "string",
-              "value": null
-            }
-          ]
-        },
-        "__props": {"errors": []},
-        "__status": {},
-        "id": "some_id_8",
-        "nodeId": "some_id_8",
-        "type": 0,
-        "triggerType": "tibco-timer"
-      },
-      "some_id_9": {
+      "some_id_7": {
         "name": "First Log",
         "title": "Log Message",
         "version": "0.0.1",
@@ -174,11 +112,11 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_9",
+        "id": "some_id_7",
         "type": 1,
         "activityType": "tibco-log"
       },
-      "some_id_10": {
+      "some_id_8": {
         "name": "Counter1",
         "title": "Increment Counter",
         "version": "0.0.1",
@@ -220,11 +158,11 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_10",
+        "id": "some_id_8",
         "type": 1,
         "activityType": "tibco-counter"
       },
-      "some_id_11": {
+      "some_id_9": {
         "name": "Second Log",
         "title": "Log Message",
         "version": "0.0.1",
@@ -266,11 +204,11 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_11",
+        "id": "some_id_9",
         "type": 1,
         "activityType": "tibco-log"
       },
-      "some_id_12": {
+      "some_id_10": {
         "name": "Third Log",
         "title": "Log Message",
         "version": "0.0.1",
@@ -312,19 +250,19 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_12",
+        "id": "some_id_10",
         "type": 1,
         "activityType": "tibco-log"
       },
-      "some_id_13": {
-        "id": "some_id_13",
+      "some_id_11": {
+        "id": "some_id_11",
         "type": 2,
         "description": undefined,
         "name": undefined,
         "condition": "true"
       },
-      "some_id_14": {
-        "id": "some_id_14",
+      "some_id_12": {
+        "id": "some_id_12",
         "type": 2,
         "description": undefined,
         "name": undefined,
@@ -348,13 +286,16 @@ export let resultantFlowModelForCanvas = {
           "__status": {"isSelected": false},
           "children": ["some_id_0"],
           "parents": [],
-          "type": 3,
+          "type": 5,
           "taskID": "some_id_1"
         },
         "some_id_2": {
           "id": "some_id_2",
           "__status": {"isSelected": false},
-          "children": ["some_id_0"],
+          "children": [
+            "some_id_0",
+            "some_id_1"
+          ],
           "parents": ["some_id_0"],
           "type": 5,
           "taskID": "some_id_2"
@@ -362,10 +303,7 @@ export let resultantFlowModelForCanvas = {
         "some_id_3": {
           "id": "some_id_3",
           "__status": {"isSelected": false},
-          "children": [
-            "some_id_0",
-            "some_id_1"
-          ],
+          "children": [],
           "parents": ["some_id_0"],
           "type": 5,
           "taskID": "some_id_3"
@@ -381,9 +319,9 @@ export let resultantFlowModelForCanvas = {
         "some_id_5": {
           "id": "some_id_5",
           "__status": {"isSelected": false},
-          "children": [],
+          "children": ["some_id_0"],
           "parents": ["some_id_0"],
-          "type": 5,
+          "type": 6,
           "taskID": "some_id_5"
         },
         "some_id_6": {
@@ -393,74 +331,12 @@ export let resultantFlowModelForCanvas = {
           "parents": ["some_id_0"],
           "type": 6,
           "taskID": "some_id_6"
-        },
-        "some_id_7": {
-          "id": "some_id_7",
-          "__status": {"isSelected": false},
-          "children": ["some_id_0"],
-          "parents": ["some_id_0"],
-          "type": 6,
-          "taskID": "some_id_7"
         }
-      }
+      },
+      "hasTrigger": true
     },
     "tasks": {
-      "some_id_8": {
-        "name": "Trigger Request",
-        "title": "Timer",
-        "version": "0.0.1",
-        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer",
-        "description": "Simple Timer trigger",
-        "installed": true,
-        "settings": [],
-        "outputs": [
-          {
-            "name": "params",
-            "type": 6
-          },
-          {
-            "name": "content",
-            "type": 4
-          }
-        ],
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
-        "endpoint": {
-          "settings": [
-            {
-              "name": "repeating",
-              "type": "string",
-              "value": null
-            },
-            {
-              "name": "startDate",
-              "type": "string",
-              "value": null
-            },
-            {
-              "name": "hours",
-              "type": "string",
-              "value": null
-            },
-            {
-              "name": "minutes",
-              "type": "string",
-              "value": "5"
-            },
-            {
-              "name": "seconds",
-              "type": "string",
-              "value": null
-            }
-          ]
-        },
-        "__props": {"errors": []},
-        "__status": {},
-        "id": "some_id_8",
-        "nodeId": "some_id_8",
-        "type": 0,
-        "triggerType": "tibco-timer"
-      },
-      "some_id_9": {
+      "some_id_7": {
         "name": "First Log",
         "title": "Log Message",
         "version": "0.0.1",
@@ -502,11 +378,11 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_9",
+        "id": "some_id_7",
         "type": 1,
         "activityType": "tibco-log"
       },
-      "some_id_10": {
+      "some_id_8": {
         "name": "Counter1",
         "title": "Increment Counter",
         "version": "0.0.1",
@@ -548,11 +424,11 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_10",
+        "id": "some_id_8",
         "type": 1,
         "activityType": "tibco-counter"
       },
-      "some_id_11": {
+      "some_id_9": {
         "name": "Second Log",
         "title": "Log Message",
         "version": "0.0.1",
@@ -594,11 +470,11 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_11",
+        "id": "some_id_9",
         "type": 1,
         "activityType": "tibco-log"
       },
-      "some_id_12": {
+      "some_id_10": {
         "name": "Third Log",
         "title": "Log Message",
         "version": "0.0.1",
@@ -640,19 +516,19 @@ export let resultantFlowModelForCanvas = {
           ]
         },
         "inputMappings": [],
-        "id": "some_id_12",
+        "id": "some_id_10",
         "type": 1,
         "activityType": "tibco-log"
       },
-      "some_id_13": {
-        "id": "some_id_13",
+      "some_id_11": {
+        "id": "some_id_11",
         "type": 2,
         "description": undefined,
         "name": undefined,
         "condition": "true"
       },
-      "some_id_14": {
-        "id": "some_id_14",
+      "some_id_12": {
+        "id": "some_id_12",
         "type": 2,
         "description": undefined,
         "name": undefined,

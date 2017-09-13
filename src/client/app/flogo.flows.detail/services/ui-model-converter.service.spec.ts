@@ -37,24 +37,12 @@ describe("Service: UI Model Converter", function(this: {
       this.activityServiceMock, this.contribServiceMock, this.profileService, this.errorService);
   });
 
-  it('Should throw error when trigger does not have a ref', ()=> {
-    let thrownError: Error;
-    try{
-      this.service.getWebFlowModel(mockFlow, mockErrorTrigger);
-    } catch (error) {
-      thrownError = error;
-      expect(error.name).toEqual('Trigger: Wrong input json file');
-      expect(error.type).toEqual('ValidationError');
-    }
-    expect(thrownError).toBeDefined();
-  });
-
   it('Should throw error when Activity does not have a activityRef', ()=> {
     let thrownError: Error;
     try{
       var spy = <Spy>this.triggerServiceMock.getTriggerDetails;
       spy.and.returnValue({});
-      this.service.getWebFlowModel(mockErrorFlow, mockTrigger);
+      this.service.getWebFlowModel(mockErrorFlow);
     } catch (error) {
       thrownError = error;
       expect(error.name).toEqual('Activity: Wrong input json file');
@@ -64,6 +52,7 @@ describe("Service: UI Model Converter", function(this: {
   });
 
   it('Should convert the Engine Flow Model to UI Flow model', (done) => {
+    let thisTestData: any = _.cloneDeep(mockFlow);
     var spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(Promise.resolve(mockTriggerDetails));
     var spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
@@ -74,16 +63,16 @@ describe("Service: UI Model Converter", function(this: {
         return Promise.resolve(mockActivitiesDetails[1]);
       }
     });
-    this.service.getWebFlowModel(mockFlow, mockTrigger)
+    this.service.getWebFlowModel(thisTestData)
       .then((flow)=> {
-        let flowWithoutId = formFlowWithoutId(flow);
+        let flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
         expect(_.isEqual(flowWithoutId,mockResultantUIFlow)).toEqual(true);
         done();
       });
   });
 
   it('Should have error handler in UI Flow model', (done) => {
-    let thisTestData: any = Object.assign({}, mockFlow);
+    let thisTestData: any = _.cloneDeep(mockFlow);
     let spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
     let spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
@@ -95,16 +84,16 @@ describe("Service: UI Model Converter", function(this: {
       }
     });
     thisTestData.data.flow.errorHandlerTask = mockErrorHandler.errorHandlerTask;
-    this.service.getWebFlowModel(thisTestData, mockTrigger)
+    this.service.getWebFlowModel(thisTestData)
       .then((flow)=>{
-        let flowWithoutId = formFlowWithoutId(flow);
+        let flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
         expect(_.isEqual(flowWithoutId,mockResultantUIFlowWithError)).toEqual(true);
         done();
       });
   });
 
   it('Should maintain the transformation details of a tile', (done) => {
-    let thisTestData: any = Object.assign({}, mockFlow);
+    let thisTestData: any = _.cloneDeep(mockFlow);
     var spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
     var spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
@@ -117,9 +106,9 @@ describe("Service: UI Model Converter", function(this: {
     });
     thisTestData.data.flow.rootTask.tasks[0].attributes = mockTransformationData.attributes;
     thisTestData.data.flow.rootTask.tasks[0].inputMappings = mockTransformationData.inputMappings;
-    this.service.getWebFlowModel(thisTestData, mockTrigger)
+    this.service.getWebFlowModel(thisTestData)
       .then((flow)=>{
-        let flowWithoutId = formFlowWithoutId(flow);
+        let flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
         expect(_.isEqual(flowWithoutId,mockResultantUIFlowWithTransformations)).toEqual(true);
         done();
       });
