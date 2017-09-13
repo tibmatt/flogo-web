@@ -35,44 +35,44 @@ export class FlogoExportFlowsComponent implements OnChanges {
     this.modal.open();
   }
 
-  private selectAllFlows(event){
+  private selectAllFlows(event) {
     this.checkedFlows = [];
     this.checkAllFlows = [];
-    this.flows.forEach((flow,index) => {
+    this.flows.forEach((flow, index) => {
       this.checkAllFlows.push(index);
       this.checkedFlows.push(flow.id);
     })
     this.exportButtonDisbaled();
   }
-  private unselectAllFlows(){
-    this.checkedFlows=[];
-    this.checkAllFlows=[];
+  private unselectAllFlows() {
+    this.checkedFlows = [];
+    this.checkAllFlows = [];
     this.exportButtonDisbaled();
   }
-  private flowSelect(flowId:string, isChecked: boolean, index) {
-    if(isChecked) {
+  private flowSelect(flowId: string, isChecked: boolean, index) {
+    if (isChecked) {
       this.checkedFlows.push(flowId);
       this.checkAllFlows.push(index);
     } else {
-      let indexOfFlows = this.checkedFlows.indexOf(flowId);
-      let indexOfIndices = this.checkAllFlows.indexOf(index);
+      const indexOfFlows = this.checkedFlows.indexOf(flowId);
+      const indexOfIndices = this.checkAllFlows.indexOf(index);
       this.checkedFlows.splice(indexOfFlows, 1);
       this.checkAllFlows.splice(indexOfIndices, 1);
     }
    this.exportButtonDisbaled();
   }
-  private exportButtonDisbaled(){
-    if(this.checkedFlows.length === 0){
+  private exportButtonDisbaled() {
+    if (this.checkedFlows.length === 0) {
       this.exportButtonDisable = true;
-    }else{
+    }else {
       this.exportButtonDisable = false;
     }
   }
-  private exportFlows(){
+  private exportFlows() {
     let flowsToExport;
     if (this.checkedFlows.length === this.flows.length){
       flowsToExport = [];
-    }else{
+    }else {
       flowsToExport = this.checkedFlows;
     }
       return () => this.appDetailService.exportFlow(flowsToExport)
