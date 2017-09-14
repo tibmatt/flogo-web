@@ -41,7 +41,7 @@ export class FlogoExportFlowsComponent implements OnChanges {
     this.flows.forEach((flow, index) => {
       this.checkAllFlows.push(index);
       this.checkedFlows.push(flow.id);
-    })
+    });
     this.exportButtonDisbaled();
   }
   public unselectAllFlows() {
@@ -70,7 +70,7 @@ export class FlogoExportFlowsComponent implements OnChanges {
   }
   public exportFlows() {
     let flowsToExport;
-    if (this.checkedFlows.length === this.flows.length){
+    if (this.checkedFlows.length === this.flows.length) {
       flowsToExport = [];
     }else {
       flowsToExport = this.checkedFlows;
