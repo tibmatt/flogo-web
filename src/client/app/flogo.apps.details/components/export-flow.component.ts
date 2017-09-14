@@ -15,10 +15,10 @@ export class FlogoExportFlowsComponent implements OnChanges {
   public modal: ModalComponent;
 
   @Input()
-  public flows: Array<IFlogoApplicationFlowModel> = [];
-  private checkedFlows = [];
-  private checkAllFlows = [];
-  private exportButtonDisable: boolean;
+  flows: Array<IFlogoApplicationFlowModel> = [];
+  checkedFlows = [];
+  checkAllFlows = [];
+  exportButtonDisable: boolean;
 
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
@@ -35,7 +35,7 @@ export class FlogoExportFlowsComponent implements OnChanges {
     this.modal.open();
   }
 
-  private selectAllFlows(event) {
+  public selectAllFlows(event) {
     this.checkedFlows = [];
     this.checkAllFlows = [];
     this.flows.forEach((flow, index) => {
@@ -44,12 +44,12 @@ export class FlogoExportFlowsComponent implements OnChanges {
     })
     this.exportButtonDisbaled();
   }
-  private unselectAllFlows() {
+  public unselectAllFlows() {
     this.checkedFlows = [];
     this.checkAllFlows = [];
     this.exportButtonDisbaled();
   }
-  private flowSelect(flowId: string, isChecked: boolean, index) {
+  public flowSelect(flowId: string, isChecked: boolean, index) {
     if (isChecked) {
       this.checkedFlows.push(flowId);
       this.checkAllFlows.push(index);
@@ -68,7 +68,7 @@ export class FlogoExportFlowsComponent implements OnChanges {
       this.exportButtonDisable = false;
     }
   }
-  private exportFlows() {
+  public exportFlows() {
     let flowsToExport;
     if (this.checkedFlows.length === this.flows.length){
       flowsToExport = [];
