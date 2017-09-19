@@ -92,7 +92,7 @@ export class AppsApiService {
       const selectedFlowIds = flowIds.toString();
       const searchParams = new URLSearchParams();
       searchParams.set('flowids', selectedFlowIds);
-       reqOptions= reqOptions.merge({
+       reqOptions = reqOptions.merge({
           search: searchParams
         });
     }
