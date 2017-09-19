@@ -29,20 +29,23 @@ export class FlogoFlowService {
   getFlow(flowId: string): Promise<FlowData> {
     return this._flowAPIService.getFlow(flowId)
       .then((flow) => {
-        let flowDiagramDetails = _.omit(flow, [
-          'trigger',
-          'handler'
+        const flowDiagramDetails = _.omit(flow, [
+          'triggers'
         ]);
 
-        if (flow.trigger) {
+        const triggers = flow.triggers;
+
+        if (flow.triggers.length > 0) {
           return this._converterService.getWebFlowModel(flowDiagramDetails)
-            .then(convertedFlow =>  this.processFlowModel(convertedFlow, true));
+            .then(convertedFlow =>  this.processFlowModel(convertedFlow, true))
+            .then(processedFlow => _.assign({}, processedFlow, {triggers}));
         } else {
           // TODO: should create empty diagram instead
           return {
             flow,
             root: { diagram: null, tasks: null },
-            errorHandler: { diagram: null, tasks: null }
+            errorHandler: { diagram: null, tasks: null },
+            triggers
           };
         }
       });

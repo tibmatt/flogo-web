@@ -61,16 +61,25 @@
 
     </section>
 
-    <div  class="flogo-flow-container">
-      <flogo-canvas-flow-diagram *ngIf="mainHandler"
-                                 [tasks]="mainHandler.tasks"
-                                 [diagram]="mainHandler.diagram"
-                                 [id]="'root'"
-                                 [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
-                                 [appId]="flow?.app?.id"
-                                 data-flogo-diagram-id="root">
-      </flogo-canvas-flow-diagram>
-
+    <div class="flogo-flow-container">
+      <div class="clearfix flogo-flows-main">
+        <div class="flogo-flows-triggers-container pull-left">
+          <flogo-flows-detail-triggers-panel
+            [triggers]="triggersList"
+            [actionId]="flowId"
+            [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"></flogo-flows-detail-triggers-panel>
+        </div>
+        <div class="flogo-flows-diagram-container pull-left">
+          <flogo-canvas-flow-diagram *ngIf="mainHandler"
+                                     [tasks]="mainHandler.tasks"
+                                     [diagram]="mainHandler.diagram"
+                                     [id]="'root'"
+                                     [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
+                                     [appId]="flow?.app?.id"
+                                     data-flogo-diagram-id="root">
+          </flogo-canvas-flow-diagram>
+        </div>
+      </div>
       <flogo-footer class="footer-wrapper"></flogo-footer>
     </div>
 

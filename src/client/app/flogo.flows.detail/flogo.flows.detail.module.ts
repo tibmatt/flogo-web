@@ -31,6 +31,7 @@ import { RunnerService } from './services/runner.service';
 import { routing } from './flogo.flows.detail.routing';
 import { UIModelConverterService } from "./services/ui-model-converter.service";
 import { FlogoFlowService } from "./services/flow.service";
+import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 
 @NgModule({
   imports: [
@@ -60,7 +61,8 @@ import { FlogoFlowService } from "./services/flow.service";
     FlogoFlowsDetailTasksInstallComponent,
     FlogoFlowsDetailTriggersInstallComponent,
 
-    FlogoCanvasComponent
+    FlogoCanvasComponent,
+    FlogoFlowTriggersPanelComponent
 
   ],
   providers: [
