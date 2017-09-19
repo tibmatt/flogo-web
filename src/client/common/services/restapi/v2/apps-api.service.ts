@@ -86,10 +86,10 @@ export class AppsApiService {
       .map(response => response.json())
       .toPromise();
   }
-  exportFlows(appId: string, flowIds: any[]){
+  exportFlows(appId: string, flowIds: any[]) {
     let reqOptions = this.httpUtils.defaultOptions();
-    if (flowIds != []){
-      let selectedFlowIds = flowIds.toString();
+    if (flowIds !== []) {
+      const selectedFlowIds = flowIds.toString();
       const searchParams = new URLSearchParams();
       searchParams.set('flowids', selectedFlowIds);
        reqOptions= reqOptions.merge({

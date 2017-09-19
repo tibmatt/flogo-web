@@ -112,7 +112,7 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   onClickAddDescription(event) {
     this.isDescriptionInEditMode = true;
   }
-  openExportFlow(){
+  openExportFlow() {
     this.exportFlow.openExport();
   }
   onNameSave() {
