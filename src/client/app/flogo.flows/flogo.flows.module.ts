@@ -26,13 +26,11 @@ import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.
     FlogoFlowsAddComponent,
     FlogoFlowsImportComponent,
     FlogoFlowsFlowNameComponent,
-    FlogoExportFlowsComponent
   ],
-  exports:[
+  exports: [
     FlogoFlowsAddComponent,
     FlogoFlowsImportComponent,
     FlogoFlowsFlowNameComponent,
-    FlogoExportFlowsComponent
   ]
 })
 export class FlowsModule {}

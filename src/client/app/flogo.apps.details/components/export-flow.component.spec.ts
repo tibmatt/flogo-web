@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Component } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import {BaseRequestOptions, Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
 import {IFlogoApplicationFlowModel } from '../../../common/application.model';
@@ -14,6 +13,7 @@ import { ErrorService } from '../../../common/services/error.service';
 import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
 import {MockBackend} from '@angular/http/testing';
 import {HttpUtilsService} from '../../../common/services/restapi/http-utils.service';
+import { FlogoExportFlowsComponent } from './export-flow.component';
 
 
 @Component({
@@ -38,9 +38,9 @@ describe('FlogoExportFlowsComponent component', () => {
   const flow = null;
   let comp: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
-  const checkboxList = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list input'));
-  const exportButton = fixture.debugElement.query(By.css('#exportFlows'));
-  const selectAllLink = fixture.debugElement.query(By.css('#selectAll'));
+  let checkboxList: DebugElement[];
+  let exportButton: DebugElement;
+  let selectAllLink: DebugElement;
 
   function createComponent() {
     return TestBed.compileComponents();
@@ -58,11 +58,11 @@ describe('FlogoExportFlowsComponent component', () => {
         Ng2Bs3ModalModule,
         FlogoCoreModule,
         FlogoCommonModule,
-        FlogoFlowsModule,
       ],
       declarations: [
         FlogoAppSettingsComponent,
-        ContainerComponent
+        FlogoExportFlowsComponent,
+        ContainerComponent,
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService }
@@ -77,6 +77,11 @@ describe('FlogoExportFlowsComponent component', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ContainerComponent);
     comp = fixture.componentInstance;
+
+    checkboxList = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list input'));
+    exportButton = fixture.debugElement.query(By.css('#exportFlows'));
+    selectAllLink = fixture.debugElement.query(By.css('#selectAll'));
+
     this.httpOption = new Http(new MockBackend(), new BaseRequestOptions());
     this.appsApi = new AppsApiService(this.httpOption, new HttpUtilsService(), new ErrorService());
     this.mockAppDetailService = new MockAppDetailService(this.appsApi, new ErrorService());

@@ -152,6 +152,6 @@
                                  (deleteFlow)="onFlowDelete($event)"
                                  (addFlow)="openCreateFlowFromTrigger($event)"
     ></flogo-apps-flows-flow-group>
-    <flogo-export-flow *ngIf="application?.actions.length" [flows]="application?.actions" ></flogo-export-flow>
+    <flogo-export-flow *ngIf="application?.actions?.length" [flows]="application?.actions" ></flogo-export-flow>
   </div>
 </div>
