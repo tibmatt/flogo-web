@@ -82,7 +82,7 @@
   "FIELDS-BASE:TITLE-REQUIRED" : "{{value}} is required",
   "FIELDS-TEXTAREA:INVALID-JSON" : "{{value}} invalid JSON",
   "FIELDS:OPTIONAL": "Optional",
-  "FLOGO:COPYRIGHT-NOTICE": "Copyright © 2016 TIBCO Software Inc. All rights reserved.",
+  "FLOGO:COPYRIGHT-NOTICE": "Copyright © 2016 - {{year}} TIBCO Software Inc. All rights reserved.",
   "FLOGO:LINK-PRIVACY-POLICY": "Privacy Policy",
   "FLOGO:LINK-TERMS-OF-USE": "Terms of Use",
   "FLOGO:LINK-TRADEMARKS": "Trademarks",
