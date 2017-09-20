@@ -14,15 +14,16 @@ import { FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { genBranchLine } from '../utils';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-//import * as moment from 'moment';
+// import * as moment from 'moment';
 
 export interface IFlogoFlowDiagram {
-  root : IFlogoFlowDiagramRootNode;
-  nodes : IFlogoFlowDiagramNodeDictionary;
-  MAX_ROW_LEN? : number;
+  root?: IFlogoFlowDiagramRootNode;
+  hasTrigger?: boolean;
+  nodes: IFlogoFlowDiagramNodeDictionary;
+  MAX_ROW_LEN?: number;
 }
 
-const DEFAULT_MAX_ROW_LEN = 7;
+const DEFAULT_MAX_ROW_LEN = 6;
 
 const CLS = {
   diagram : 'flogo-flows-detail-diagram',
@@ -125,7 +126,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           if ( matrixRow.length
             === 1
             && diagram.nodes[ matrixRow[ 0 ] ].type
-            === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
+            === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
             paddedRow = matrixRow;
           } else {
             paddedRow = matrixRow.concat( '+' ); // append add node symbol
@@ -157,7 +158,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       nodes : < IFlogoFlowDiagramNodeDictionary > {}
     };
 
-    newRootNode.type = diagramType == 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
+    newRootNode.type = diagramType === 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD;
+    // newRootNode.type = diagramType == 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
 
     emptyDiagram.nodes[ newRootNode.id ] = newRootNode;
 
@@ -1138,9 +1140,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE;
 
-        let parentNode = this.nodes[ node.parents[ 0 ] ];
+        const parentNode = this.nodes[ node.parents[ 0 ] ];
 
-        (<FlogoFlowDiagramNode>parentNode).linkToChildren( [ node.id ] );
+        // In case of the first activity, the parentNode will be undefined so cannot call the linkToChildren at this moment
+
+        if (parentNode) {
+          (<FlogoFlowDiagramNode>parentNode).linkToChildren( [ node.id ] );
+        }
 
       } else if (node.type ===  FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW) {
         node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT;

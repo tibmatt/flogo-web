@@ -31,7 +31,7 @@ describe("Service: Flow", function(this: {
 
   it("Should get the Flow Details and convert it to work with canvas component", ()=>{
     var spyConverterService = <Spy>this.modelConverter.getWebFlowModel;
-    spyConverterService.and.returnValue(Promise.resolve(Object.assign({},mockResultantUIFlow)));
+    spyConverterService.and.returnValue(Promise.resolve(_.cloneDeep(mockResultantUIFlow)));
     this.service.getFlow("dummy")
       .then((response) => {
         expect(_.isEqual(response, resultantFlowModelForCanvas)).toEqual(true);

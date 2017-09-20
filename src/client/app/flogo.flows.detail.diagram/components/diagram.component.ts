@@ -56,9 +56,9 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     }
 
     let subs = [
-      _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._addTriggerDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._selectTriggerDone.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS_ADD_TRIGGER.addTrigger, { callback : this.selectModalTrigger.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._addTriggerDone.bind( this ) } ), // TODO: should remove this
+      _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._selectTriggerDone.bind( this ) } ), // TODO: should remove this
+      _.assign( {}, SUB_EVENTS_ADD_TRIGGER.addTrigger, { callback : this.selectModalTrigger.bind( this ) } ), // TODO: should remove this
       _.assign( {}, SUB_EVENTS.addTask, { callback : this._addTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.selectTask, { callback : this._selectTaskDone.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.deleteTask, { callback : this._deleteTaskDone.bind( this ) } ),
@@ -93,15 +93,19 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     let _enabledSelectTrigger = false;
-    if ( _.isEmpty( this.diagram ) || _.isEmpty( this.diagram.root ) ) {
-      this.diagram = FlogoFlowDiagram.getEmptyDiagram(this.id == 'errorHandler' ? 'error' : null );
-      if(this.id == 'errorHandler') {
+    if ( _.isEmpty( this.diagram ) ||
+      (this.id === 'errorHandler' && _.isEmpty( this.diagram.root )) ||
+      (this.id === 'root' && !this.diagram.hasTrigger ) ) {
+      this.diagram = FlogoFlowDiagram.getEmptyDiagram(this.id === 'errorHandler' ? 'error' : null );
+      if (this.id === 'errorHandler') {
       } else {
         _enabledSelectTrigger = true;
       }
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType,  this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType,
+                                            this._elmRef.nativeElement, this.id === 'errorHandler' ? 'error' : null );
     } else {
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType, this._elmRef.nativeElement, this.id == 'errorHandler' ? 'error' : null );
+      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType,
+                                            this._elmRef.nativeElement, this.id === 'errorHandler' ? 'error' : null );
     }
     // Render the diagram on next js cycle such that the diagram elements are added to the DOM.
     setTimeout(() => {
@@ -205,10 +209,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     let data = $event.detail;
     data.id = this.id;
 
-    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
-      // add trigger event
-      this._postService.publish( _.assign( {}, PUB_EVENTS.addTrigger, { data : data } ) );
-    } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
       // add task event
       this._postService.publish( _.assign( {}, PUB_EVENTS.addTask, { data : data } ) );
     } else {
@@ -229,7 +230,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
 
     // TODO
     //   need to support link and other nodes
-    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT || data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW ) {
+    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW ) {
       // select trigger event
       this._postService.publish( _.assign( {}, PUB_EVENTS.selectTrigger, { data : data } ) );
     } else if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE ) {

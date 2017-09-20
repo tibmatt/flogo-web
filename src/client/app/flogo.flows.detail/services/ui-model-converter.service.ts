@@ -64,14 +64,14 @@ export class UIModelConverterService {
    */
 
   // todo: define interfaces
-  getWebFlowModel(flowObj: any, triggerObj: any) {
+  getWebFlowModel(flowObj: any) {
     let converterModelInstance: AbstractModelConverter;
     if (this.profileSerivce.getProfileType(flowObj.app) === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
       converterModelInstance = new MicroServiceModelConverter(this.triggerService, this.activityService, this.errorService);
     } else {
       converterModelInstance = new DeviceModelConverter(this.contribService, this.errorService);
     }
-    return converterModelInstance.convertToWebFlowModel(flowObj, triggerObj);
+    return converterModelInstance.convertToWebFlowModel(flowObj);
   }
 
 }

@@ -23,7 +23,7 @@ export interface IFlogoFlowDiagramNodeLocation {
 }
 
 export interface IFlogoFlowDiagramRootNode {
-  is : string; // marking the root node in this dictionary
+  is?: string; // marking the root node in this dictionary
 }
 
 export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
