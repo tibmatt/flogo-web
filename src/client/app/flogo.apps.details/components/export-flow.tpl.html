@@ -1,5 +1,7 @@
 <modal [size]="'lg'" #modal class="flogo-export-flow-modal">
   <i class="flogo-icon-close flogo-export-flow-close" data-dismiss="modal"></i>
+  <div *ngIf="flows?.length === 0" class="content-empty__message">No Flows to Export </div>
+  <div *ngIf="flows?.length > 0">
   <form novalidate>
     <div class="flogo-export-flow-header">{{ 'FLOWS:EXPORT-FLOWS' | translate }}</div>
     <div class="flogo-select-flow-link"><a class="js-btn-select-all" (click)="selectAllFlows($event)">Select All</a> | <a id="unselectAll" (click)="unselectAllFlows()">Unselect All</a> </div>
@@ -28,4 +30,5 @@
       </button>
     </div>
   </form>
+  </div>
 </modal>
