@@ -26,6 +26,7 @@ export class FlogoFlowTriggersPanelComponent implements OnChanges {
   @Input()
   appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE};
   triggersList: any[] = [];
+  allowMultipleTriggers = true;
 
   constructor() {
 
@@ -40,6 +41,15 @@ export class FlogoFlowTriggersPanelComponent implements OnChanges {
           this.triggersList.push(_.assign({}, t, {handler: h}));
         });
       });
+      this.manageAddTriggerInView();
+    }
+  }
+
+  manageAddTriggerInView() {
+    if (this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE && this.triggersList.length > 0) {
+      this.allowMultipleTriggers = false;
+    } else {
+      this.allowMultipleTriggers = true;
     }
   }
 }
