@@ -1,18 +1,14 @@
-import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
-import {BaseRequestOptions, Http } from '@angular/http';
+import { Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
 import {IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { AppDetailService } from '../../flogo.apps/services/apps.service';
-import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
-import { ErrorService } from '../../../common/services/error.service';
 import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
-import {MockBackend} from '@angular/http/testing';
-import {HttpUtilsService} from '../../../common/services/restapi/http-utils.service';
 import { FlogoExportFlowsComponent } from './export-flow.component';
 
 
@@ -23,28 +19,22 @@ import { FlogoExportFlowsComponent } from './export-flow.component';
             `
 })
 class ContainerComponent {
-  flows: Array<IFlogoApplicationFlowModel> = makeMockAppDetail();
+  flows: Array<IFlogoApplicationFlowModel> = makeMockFlows();
 }
 
-class MockAppDetailService extends AppDetailService {
+class MockAppDetailService {
+  flows = makeMockAppDetailResponse();
 
-  public exportFlow(flowIds: string) {
-    return makeMockAppDetailResponse(flowIds);
-  }
+  exportFlow = jasmine.createSpy('exportFlow').and.callFake((flowIds: string) => Promise.resolve(this.flows));
 
 }
 
 describe('FlogoExportFlowsComponent component', () => {
-  const flow = null;
-  let comp: ContainerComponent;
+  let containerComponent: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
   let checkboxList: DebugElement[];
   let exportButton: DebugElement;
   let selectAllLink: DebugElement;
-
-  function createComponent() {
-    return TestBed.compileComponents();
-  }
 
   beforeEach(done => {
     TestBed.configureTestingModule({
@@ -52,6 +42,7 @@ describe('FlogoExportFlowsComponent component', () => {
         Ng2Bs3ModalModule,
         TranslateModule.forRoot({
           provide: TranslateLoader,
+          // TODO: Remove, no http calls should be done in unit tests
           useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
           deps: [Http],
         }),
@@ -60,7 +51,7 @@ describe('FlogoExportFlowsComponent component', () => {
         FlogoCommonModule,
       ],
       declarations: [
-        FlogoAppSettingsComponent,
+        // FlogoAppSettingsComponent,
         FlogoExportFlowsComponent,
         ContainerComponent,
       ], // declare the test component
@@ -76,54 +67,55 @@ describe('FlogoExportFlowsComponent component', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ContainerComponent);
-    comp = fixture.componentInstance;
-
-    checkboxList = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list input'));
-    exportButton = fixture.debugElement.query(By.css('#exportFlows'));
-    selectAllLink = fixture.debugElement.query(By.css('#selectAll'));
-
-    this.httpOption = new Http(new MockBackend(), new BaseRequestOptions());
-    this.appsApi = new AppsApiService(this.httpOption, new HttpUtilsService(), new ErrorService());
-    this.mockAppDetailService = new MockAppDetailService(this.appsApi, new ErrorService());
-    spyOn(this.mockAppDetailService, 'exportFlow');
+    containerComponent = fixture.componentInstance;
     fixture.detectChanges();
+    checkboxList = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list input'));
+    exportButton = fixture.debugElement.query(By.css('.js-btn-export'));
+    selectAllLink = fixture.debugElement.query(By.css('.js-btn-select-all'));
   });
+
   it('When 2 flows provided, it should render 2 flows', () => {
     const flows = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list'));
-    expect(flows.length).toEqual(2);
+    expect(flows.length).toEqual(3);
   });
+
   it('Should select all flows on click Select All', () => {
     selectAllLink.nativeElement.click();
     fixture.detectChanges();
-    checkboxList.forEach((checkbox) => {
-    expect(checkbox.nativeElement.checked).toBeTruthy();
-    });
+    const checkedFlowsCount = checkboxList.filter(checkbox => checkbox.nativeElement.checked).length;
+    expect(checkedFlowsCount).toEqual(checkboxList.length, 'Expected all flows selected');
   });
+
   it('Should unselect all flows on click unselect All', () => {
     const unselectAllLink = fixture.debugElement.query(By.css('#unselectAll'));
     unselectAllLink.nativeElement.click();
     fixture.detectChanges();
-    checkboxList.forEach((checkbox) => {
-      expect(checkbox.nativeElement.checked).toBeFalsy();
-    });
+    const checkedFlowsCount = checkboxList.filter(checkbox => checkbox.nativeElement.checked).length;
+    expect(checkedFlowsCount).toEqual(0, 'Expected no flows selected');
   });
-  it('Should export all flows selected on click of Export', () => {
-    const flowIds = [];
-    expect(exportButton.nativeElement.disabled).toBeTruthy();
-    selectAllLink.nativeElement.click();
-     this.flows.forEach((flowSelected)  => {
-       flowIds.push(flowSelected.id);
-    });
+
+  it('Should export only the flows that are selected', () => {
     fixture.detectChanges();
+    expect(exportButton.nativeElement.disabled).toBeTruthy();
+    // all except last one
+    checkboxList.slice(0, -1).forEach(checkboxElement => checkboxElement.nativeElement.click());
+    fixture.detectChanges();
+
     expect(exportButton.nativeElement.disabled).toBeFalsy();
     exportButton.nativeElement.click();
     fixture.detectChanges();
-    expect(this.mockAppDetailService.exportFlow()).toHaveBeenCalledWith(flowIds.toString());
 
+    // all original flows except the last one
+    const expectedFlowIds = containerComponent.flows.slice(0, -1).map(flow => flow.id);
+    const appDetailServiceSpy = fixture.debugElement.injector.get(AppDetailService);
+    expect(appDetailServiceSpy.exportFlow.calls.mostRecent().args).toEqual([expectedFlowIds]);
   });
+
+  // TODO: test case where you want to export all flows
+
 });
 
-  function makeMockAppDetail() {
+  function makeMockFlows() {
     return [
       {
         id: '897',
@@ -135,26 +127,30 @@ describe('FlogoExportFlowsComponent component', () => {
         name: 'Manually adjust humidity',
         description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent ',
         createdAt: new Date()
+      },
+      {
+        id: '899',
+        name: 'Manually adjust humidity',
+        description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent ',
+        createdAt: new Date()
       }
     ];
-}
+  }
 
- function makeMockAppDetailResponse(flowIds: string) {
-  const mockFlowDetails = [{
-    id: '897',
-    name: 'Manually adjust temperature',
-    description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent ',
-    createdAt: new Date(),
-    updatedAt: null
-  }, {
-    id: '897',
-    name: 'Manually adjust temperature',
-    description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent ',
-    createdAt: new Date(),
-    updatedAt: null
-  }];
-   return Promise.resolve(this.mockFlowDetails);
-
+ function makeMockAppDetailResponse() {
+    return [{
+      id: '897',
+      name: 'Manually adjust temperature',
+      description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent ',
+      createdAt: new Date(),
+      updatedAt: null
+    }, {
+      id: '898',
+      name: 'Manually adjust temperature',
+      description: 'A flow for apietusam faccum esequi berum. Hentias porerum ent ',
+      createdAt: new Date(),
+      updatedAt: null
+    }];
  }
 
 

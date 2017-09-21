@@ -18,7 +18,6 @@ export class FlogoExportFlowsComponent implements OnChanges {
   flows: Array<IFlogoApplicationFlowModel> = [];
   checkedFlows = [];
   checkAllFlows = [];
-  exportButtonDisable: boolean;
 
   constructor(public translate: TranslateService,
               private appDetailService: AppDetailService,
@@ -42,12 +41,10 @@ export class FlogoExportFlowsComponent implements OnChanges {
       this.checkAllFlows.push(index);
       this.checkedFlows.push(flow.id);
     });
-    this.exportButtonDisbaled();
   }
   public unselectAllFlows() {
     this.checkedFlows = [];
     this.checkAllFlows = [];
-    this.exportButtonDisbaled();
   }
   public flowSelect(flowId: string, isChecked: boolean, index) {
     if (isChecked) {
@@ -59,15 +56,8 @@ export class FlogoExportFlowsComponent implements OnChanges {
       this.checkedFlows.splice(indexOfFlows, 1);
       this.checkAllFlows.splice(indexOfIndices, 1);
     }
-   this.exportButtonDisbaled();
   }
-  private exportButtonDisbaled() {
-    if (this.checkedFlows.length === 0) {
-      this.exportButtonDisable = true;
-    }else {
-      this.exportButtonDisable = false;
-    }
-  }
+
   public exportFlows() {
     let flowsToExport;
     if (this.checkedFlows.length === this.flows.length) {
