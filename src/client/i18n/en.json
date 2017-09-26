@@ -70,6 +70,7 @@
   "DETAILS:EXPORT-APP": "Export App",
   "DETAILS:EXPORT-FLOW": "Export Flows",
   "DETAILS:FLOWS": "Flows",
+  "DETAILS:EXPORT-CANCEL": "Cancel",
   "DETAILS:IMPORT": "Import",
   "DETAILS:DESCRIPTION": "Description",
   "DETAILS:NEW-FLOW": "New Flow",

@@ -26,7 +26,7 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 })
 export class FlogoApplicationComponent implements OnChanges, OnInit {
   @ViewChild(FlogoFlowsAddComponent) addFlow: FlogoFlowsAddComponent;
-  @ViewChild(FlogoExportFlowsComponent) exportFlow: FlogoExportFlowsComponent;
+  @ViewChild('exportFlowModal') exportFlow: FlogoExportFlowsComponent;
   @Input() appDetail: ApplicationDetail;
 
   @Output() flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();

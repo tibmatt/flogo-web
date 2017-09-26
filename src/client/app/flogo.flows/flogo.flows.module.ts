@@ -25,12 +25,12 @@ import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.
   declarations: [
     FlogoFlowsAddComponent,
     FlogoFlowsImportComponent,
-    FlogoFlowsFlowNameComponent,
+    FlogoFlowsFlowNameComponent
   ],
   exports: [
     FlogoFlowsAddComponent,
     FlogoFlowsImportComponent,
-    FlogoFlowsFlowNameComponent,
+    FlogoFlowsFlowNameComponent
   ]
 })
 export class FlowsModule {}

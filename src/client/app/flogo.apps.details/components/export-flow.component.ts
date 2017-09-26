@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import {IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { TranslateService } from 'ng2-translate/ng2-translate';
@@ -10,7 +10,7 @@ import {AppDetailService} from '../../flogo.apps/services/apps.service';
   templateUrl: 'export-flow.tpl.html',
   styleUrls: ['export-flow.component.less']
 })
-export class FlogoExportFlowsComponent implements OnChanges {
+export class FlogoExportFlowsComponent {
   @ViewChild('modal')
   public modal: ModalComponent;
 
@@ -25,16 +25,13 @@ export class FlogoExportFlowsComponent implements OnChanges {
 
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-
-  }
-
   public openExport() {
     this.resetForm();
     this.modal.open();
+    this.selectAllFlows();
   }
 
-  public selectAllFlows(event) {
+  public selectAllFlows() {
     this.checkedFlows = [];
     this.checkAllFlows = [];
     this.flows.forEach((flow, index) => {
