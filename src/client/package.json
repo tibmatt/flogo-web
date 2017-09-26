@@ -60,6 +60,7 @@
     "jquery": "^2.2.2",
     "lodash": "^4.6.1",
     "moment": "^2.13.0",
+    "monaco-editor": "^0.10.0",
     "ng2-bs3-modal": "^0.10.4",
     "ng2-translate": "~5.0.0",
     "postal": "^1.0.8",
