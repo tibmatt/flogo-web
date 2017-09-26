@@ -69,13 +69,13 @@ describe('FlogoExportFlowsComponent component', () => {
     fixture = TestBed.createComponent(ContainerComponent);
     containerComponent = fixture.componentInstance;
     fixture.detectChanges();
-    checkboxList = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list input'));
+    checkboxList = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list-item input'));
     exportButton = fixture.debugElement.query(By.css('.js-btn-export'));
     selectAllLink = fixture.debugElement.query(By.css('.js-btn-select-all'));
   });
 
   it('When 2 flows provided, it should render 2 flows', () => {
-    const flows = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list'));
+    const flows = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list-item'));
     expect(flows.length).toEqual(3);
   });
 
