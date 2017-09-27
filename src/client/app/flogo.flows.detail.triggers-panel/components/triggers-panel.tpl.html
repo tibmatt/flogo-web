@@ -4,7 +4,11 @@
       <i class="flogo-icon-trigger"></i>
     </div>
   </div>
-  <div class="trigger trigger--add" *ngIf="allowMultipleTriggers">
+  <div class="trigger trigger--add" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
     <i class="flogo-icon-add"></i>
   </div>
+  <flogo-select-trigger *ngIf="showAddTrigger"
+                        (onAddTriggerModalClose)="closeAddTriggerModel($event)"
+                        (onAddTriggerToAction)="addTriggerToAction($event)"
+                        [appDetails]="appDetails"></flogo-select-trigger>
 </div>

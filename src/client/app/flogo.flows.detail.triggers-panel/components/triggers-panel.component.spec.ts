@@ -3,6 +3,10 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from 'ng2-translate';
 import {FlogoFlowTriggersPanelComponent} from './triggers-panel.component';
 import {By} from '@angular/platform-browser';
+import {FlogoSelectTriggerComponent} from '../../flogo.select-trigger/components/select-trigger.component';
+import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {RESTAPITriggersService} from '../../../common/services/restapi/v2/triggers-api.service';
+import {RESTAPIHandlersService} from '../../../common/services/restapi/v2/handlers-api.service';
 
 @Component({
   selector: 'flogo-container',
@@ -99,6 +103,14 @@ class ContainerComponent {
   }
 }
 
+class MockTriggerService {
+
+}
+
+class MockHandlerService {
+
+}
+
 describe('Component: FlogoFlowTriggersPanelComponent', () => {
   let comp: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
@@ -110,7 +122,11 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      declarations: [FlogoFlowTriggersPanelComponent, ContainerComponent]
+      declarations: [FlogoFlowTriggersPanelComponent, ContainerComponent, ModalComponent, FlogoSelectTriggerComponent],
+      providers: [
+        {provide: RESTAPITriggersService, useClass: MockTriggerService},
+        {provide: RESTAPIHandlersService, useClass: MockHandlerService}
+      ]
     });
   });
 

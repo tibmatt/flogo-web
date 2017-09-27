@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output} from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { PostService } from '../../../common/services/post.service';
 import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../../common/services/restapi/v2/triggers-api.service';
 import { PUB_EVENTS } from '../messages';
 import { FlogoProfileService } from '../../../common/services/profile.service';
+import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
   selector: 'flogo-select-trigger',
@@ -12,7 +13,10 @@ import { FlogoProfileService } from '../../../common/services/profile.service';
   styleUrls: ['select-trigger.less']
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
+  @ViewChild('addTriggerModal') modal: ModalComponent;
   @Input() appDetails: any;
+  @Output() onAddTriggerModalClose: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() onAddTriggerToAction: EventEmitter<any> = new EventEmitter<any>();
   public installedTriggers = [];
   public installTriggerActivated = false;
   public onInstalled = new EventEmitter();
@@ -30,6 +34,19 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+  }
+
+  onModalCloseOrDismiss() {
+    this.onAddTriggerModalClose.emit(false);
+  }
+
+  openModal() {
+    this.modal.open();
+  }
+
+  closeModal() {
+    this.modal.close();
+    this.onModalCloseOrDismiss();
   }
 
   getExistingTriggers() {
@@ -85,36 +102,12 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['appDetails']) {
       this.loadInstalledTriggers();
+      this.openModal();
     }
   }
 
-
-  public openInstallTriggerWindow() {
-    this.installTriggerActivated = true;
-  }
-
-  public closeModal() {
-    this.installTriggerActivated = false;
-  }
-
-  public onInstalledAction(response: any) {
-    this.loadInstalledTriggers();
-    // bubble the event.
-    this.onInstalled.emit(response);
-  }
-
   sendAddTriggerMsg(trigger: any, installType: string) {
-    this.postService.publish(
-      _.assign(
-        {}, PUB_EVENTS.addTrigger, {
-          data: _.assign(
-            {},
-            this.addTriggerMsg, { id: 'root' },
-            { trigger: _.cloneDeep(trigger) },
-            { installType: installType }
-          )
-        }
-      )
-    );
+    this.closeModal();
+    this.onAddTriggerToAction.emit({triggerData: trigger, installType});
   }
 }
