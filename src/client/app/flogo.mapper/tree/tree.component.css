@@ -1,0 +1,166 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.mapper-tree {
+  list-style: none;
+  margin: 0;
+  position: relative;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.mapper-tree__nodes-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.nodes {
+  flex: 1;
+  background-color: transparent;
+}
+
+:host >>> p-tree .nodes {
+  border: 0;
+  color: #212121;
+  width: 100%;
+  background: transparent;
+}
+
+.node {
+  align-items: center;
+  display: flex;
+  /*height: 36px;*/
+  height: 24px;
+}
+
+.node__type {
+  margin-right: 5px;
+}
+
+.node__label {
+  font-size: 13px;
+  margin-left: 5px;
+}
+
+.tree--is-filtered .node--is-visible {
+  display: flex;
+}
+
+.search {
+  border-bottom: 2px solid #dedede;
+  margin-bottom: 5px;
+}
+
+.search__text {
+  border: none;
+  height: 34px;
+  outline: none;
+  background: transparent;
+  width: 80%;
+}
+
+.search--has-value {
+  border-bottom: 3px solid #58acdc;
+}
+
+.search--has-value .search__command {
+  color: #58acdc;
+  cursor: pointer;
+}
+
+:host >>> p-tree .ui-treenode-content {
+  opacity: 0.75;
+  transition: all 0.250s ease-in-out;
+}
+
+/* when node has no children hide toggle */
+:host >>> p-tree > .ui-tree .ui-treenode.ui-treenode-leaf.node--has-no-children .ui-treenode-content > .ui-tree-toggler {
+  visibility: hidden !important;
+}
+
+/* when we're not filtering and node has a children make the toggler visible */
+:host >>> p-tree > .ui-tree .node--has-children .ui-treenode-content > .ui-tree-toggler {
+  visibility: visible !important;
+}
+
+/* when tree is filtered by default hide all nodes */
+:host >>> p-tree.tree--is-filtered .ui-treenode > .ui-treenode-content {
+  cursor: auto;
+  opacity: 0.75;
+  display: none;
+}
+
+:host >>> p-tree.tree--is-filtered .ui-treenode.node--is-filter-match > .ui-treenode-content {
+  font-weight: bold;
+  opacity: 1;
+}
+
+/* make visible all nodes that have a match */
+:host >>> p-tree.tree--is-filtered .node--visible > .ui-treenode-content > .ui-tree-toggler {
+  visibility: visible !important;
+}
+
+:host >>> p-tree .ui-treenode.node--selectable > .ui-treenode-content {
+  opacity: 1;
+  cursor: pointer;
+}
+
+:host >>> p-tree .ui-treenode.node--selectable > .ui-treenode-content:hover {
+  background-color: rgba(197, 202, 233, 0.2);
+}
+
+/* when tree is filtered and node has a match make the node visible */
+:host >>> p-tree.tree--is-filtered .ui-treenode.node--visible > .ui-treenode-content {
+  display: block;
+}
+
+:host(.tree-input-list) >>> p-tree .mapper-tree__node > .ui-treenode-content {
+  border-left: 4px solid transparent;
+}
+
+:host(.tree-input-list) .node {
+  height: 32px;
+}
+
+:host(.tree-input-list) >>> p-tree .ui-treenode-content {
+  border: solid 1px transparent;
+}
+
+/* mark node and parents which have an expression */
+:host(.tree-input-list) >>> p-tree .node--has-expression > .ui-treenode-content {
+  border: solid 1px #f4f4f4;
+}
+
+:host(.tree-input-list) >>> p-tree .node--is-selected > .ui-treenode-content {
+  background-color: #f4f4f4;
+  border-left: 4px solid #062e79;
+}
+
+:host(.tree-output-list) .node {
+  height: 24px;
+}
+
+:host(.tree-functions-list) .node {
+  height: 20px;
+}
+
+:host(.tree-output-list) .node .node__label,
+:host(.tree-functions-list) .node .node__label {
+  font-size: 12px;
+}
+
+:host(.tree-functions-list) .node {
+  color: #727272;
+}
+
+:host(.tree-input-list) >>> p-tree .ui-treenode.node--required .node__label::after {
+  content: " *";
+  color: #d0011b;
+}
+
+

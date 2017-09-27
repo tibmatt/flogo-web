@@ -1,0 +1,25 @@
+.breadcrumbs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breadcrumb {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumb__icon {
+  margin-right: 8px;
+}
+
+.breadcrumb__separator {
+  color: #dedede;
+  margin-right: 12px;
+  margin-left: 12px;
+}
+
+.breadcrumb:last-child .breadcrumb__separator {
+  display: none
+}

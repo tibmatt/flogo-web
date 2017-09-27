@@ -1,0 +1,10 @@
+<div class="mapper-output-list">
+  <flogo-mapper-tree
+    [treeNodes]="treeNodes"
+    class="tree-output-list"
+    [dragType]="dragType"
+    [searchTerm]="filterTerm"
+    (select)="onOutputSelect($event)"
+    (search)="onSearchChange($event)">
+  </flogo-mapper-tree>
+</div>

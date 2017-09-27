@@ -1,0 +1,8 @@
+.mapper-functions-list {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  list-style: none;
+  position: relative;
+}
+
