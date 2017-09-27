@@ -1,5 +1,5 @@
-<div class="flogo-transform-modal-wrapper" [ngClass]="{'in':active && !out}">
-  <div *ngIf="active" class="flogo-transform-modal">
+<div class="flogo-transform-modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
+  <div class="flogo-transform-modal" *ngIf="isActive">
     <div class="flogo-transform-modal__header" [class.is-delete-open]="showDeleteConfirmation">
       <div class="flogo-transform-header">
         <div class="flogo-transform-header__title">
@@ -65,7 +65,4 @@
 
     </div>
   </div>
-
-
-
 </div>

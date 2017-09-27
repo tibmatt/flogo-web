@@ -7,7 +7,7 @@ function getReporters(config) {
   }
   return config.angularCli && config.angularCli.codeCoverage
     ? ['progress', 'coverage-istanbul']
-    : ['progress', 'kjhtml']
+    : ['kjhtml', 'mocha']
 }
 
 module.exports = function (config) {

@@ -1,4 +1,7 @@
-import { Component, ViewChild, ElementRef, Input, OnDestroy, HostListener } from '@angular/core';
+import {
+  Component, ViewChild, ElementRef, Input, OnDestroy, HostListener, trigger, transition, style, animate, state,
+  AnimationTransitionEvent
+} from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
 import {
   FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE,
@@ -24,7 +27,25 @@ interface TransformData {
   selector: 'flogo-transform',
   styleUrls: ['transform.component.less'],
   // moduleId: module.id,
-  templateUrl: 'transform.tpl.html'
+  templateUrl: 'transform.tpl.html',
+  animations: [
+    trigger('dialog', [
+      state('hidden', style({
+        transform: 'translateY(-100%)',
+        opacity: 0
+      })),
+      state('visible', style({
+        transform: 'translateY(0)',
+        opacity: 1
+      })),
+      transition('hidden => visible', [
+        animate('300ms ease-out')
+      ]),
+      transition('visible => hidden', [
+        animate('250ms ease-in')
+      ])
+    ])
+  ],
 })
 export class TransformComponent implements OnDestroy {
   fieldsConnections: any = {};
@@ -38,10 +59,14 @@ export class TransformComponent implements OnDestroy {
 
   errors: any;
 
-  // TODO: use angular animation API? It was not available when this was first implemented
-  // two variables control the display of the modal to support animation when opening and closing
-  active = false; // controls the rendering of the content of the modal
-  out = false; // controls the in/out transition of the modal
+  // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
+  // this is because the contents of the modal need to visible up until the close animation finishes
+  // modalState = 'inactive' || 'active'
+  // TODO: we might be able to use a single variable when upgrading to angular >= 4.x as it allows to animate with *ngIf
+  // controls the in/out transition of the modal
+  modalState: 'visible'|'hidden' = 'hidden';
+  // controls the rendering of the content of the modal
+  isActive = false;
 
   showDeleteConfirmation = false;
   @ViewChild('deleteContainer') deleteContainer: ElementRef;
@@ -68,6 +93,14 @@ export class TransformComponent implements OnDestroy {
 
   onSelectedItem(params: any) {
     this.currentFieldSelected = params;
+  }
+
+  onModalStateChange(event: AnimationTransitionEvent) {
+    if (event.toState === 'visible' && event.phaseName === 'start') {
+      this.isActive = true;
+    } else if (event.toState === 'hidden' && event.phaseName === 'done') {
+      this.isActive = false;
+    }
   }
 
   removeError(change: any) {
@@ -355,13 +388,11 @@ export class TransformComponent implements OnDestroy {
   }
 
   private open() {
-    this.out = false;
-    setTimeout(() => this.active = true, 0);
+    this.modalState = 'visible';
   }
 
   private close() {
-    this.out = true;
-    setTimeout(() => this.active = this.out = false, 400);
+    this.modalState = 'hidden';
   }
 
 }
