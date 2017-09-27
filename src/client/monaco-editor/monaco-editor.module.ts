@@ -1,7 +1,7 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MonacoLoaderService, SRC_PATH } from './monaco-loader.service';
+import { MonacoEditorLoaderModule } from './loader';
 import { MonacoEditorComponent } from './monaco-editor.component';
 
 
@@ -12,8 +12,10 @@ export interface ModuleConfig {
 @NgModule({
   imports: [
     CommonModule,
+    MonacoEditorLoaderModule,
   ],
   exports: [
+    MonacoEditorLoaderModule,
     MonacoEditorComponent,
   ],
   declarations: [
@@ -24,14 +26,4 @@ export interface ModuleConfig {
   ]
 })
 export class MonacoEditorModule {
-
-  static forRoot(config: ModuleConfig = {}): ModuleWithProviders {
-    return {
-      ngModule: MonacoEditorModule,
-      providers: [
-        { provide: SRC_PATH, useValue: config.pathToMonacoSrc || '/assets/monaco/vs' }
-      ],
-    };
-  }
-
 }

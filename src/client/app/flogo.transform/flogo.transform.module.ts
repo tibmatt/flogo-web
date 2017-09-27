@@ -15,15 +15,13 @@ import {TransformMapperFieldComponent} from './components/transform-mapper-field
 import {VisualMapperComponent} from './components/visual-mapper.component';
 import {VisualMapperInputComponent} from './components/visual-mapper-input.component';
 import {VisualMapperOutputComponent} from './components/visual-mapper-output.component';
-import {MonacoEditorLoaderModule} from '../../monaco-editor/loader';
-import {MonacoEditorModule} from '../../monaco-editor/editor';
+import {MonacoEditorModule} from '../../monaco-editor';
 
 @NgModule({
   imports: [// module dependencies
     NgCommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MonacoEditorLoaderModule,
     MonacoEditorModule,
     FlogoCommonModule
   ],
