@@ -3144,6 +3144,12 @@ ng2-translate@~5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/ng2-translate/-/ng2-translate-5.0.0.tgz#0adbb510eb5007a2d6ded5f5d26888c14760aca5"
 
+ngx-perfect-scrollbar@2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/ngx-perfect-scrollbar/-/ngx-perfect-scrollbar-2.5.2.tgz#98c0a9f2d9c026cb3e2e6424c9cfa845844403b4"
+  dependencies:
+    perfect-scrollbar "~0.6.0"
+
 no-case@^2.2.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.1.tgz#7aeba1c73a52184265554b7dc03baf720df80081"
@@ -3541,6 +3547,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+perfect-scrollbar@~0.6.0:
+  version "0.6.16"
+  resolved "https://registry.yarnpkg.com/perfect-scrollbar/-/perfect-scrollbar-0.6.16.tgz#b1d61a5245cf3962bb9a8407a3fc669d923212fc"
+
 performance-now@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
@@ -3852,6 +3862,10 @@ pretty-error@^2.0.2:
   dependencies:
     renderkid "^2.0.1"
     utila "~0.4"
+
+primeng@2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/primeng/-/primeng-2.0.6.tgz#d8b95ce65fe29242465bd3e42f493fba2584746c"
 
 process-nextick-args@~1.0.6:
   version "1.0.7"
