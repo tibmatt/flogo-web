@@ -104,12 +104,12 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       .distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y)
       .subscribe(position => this.editorService.dragOver(position));
 
-    this.mapperService.setContext(this.context);
+    this.initContext();
   }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
     if (changes['context']) {
-      this.ngOnInit();
+      this.initContext();
     }
   }
 
@@ -165,6 +165,10 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   private isDragAcceptable() {
     return this.draggingService.accepts(TYPE_PARAM_OUTPUT)
       || this.draggingService.accepts(TYPE_PARAM_FUNCTION);
+  }
+
+  private initContext() {
+    this.mapperService.setContext(this.context);
   }
 
 }

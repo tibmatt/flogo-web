@@ -11,6 +11,10 @@ import {
 import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from '../constants';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { normalizeTaskName, convertTaskID } from '../../../common/utils';
+import { Observable } from 'rxjs/Observable';
+
+import 'rxjs/observable/of';
+import { IMapFunctionsLookup, ISchemaProvider } from '../../flogo.mapper/models/map-model';
 
 const TILE_MAP_ROOT_KEY = 'root-task';
 
@@ -48,14 +52,17 @@ interface TransformData {
   ],
 })
 export class TransformComponent implements OnDestroy {
+  @Input()
+  flowId: string;
+
+  mapperContext: any;
+
   fieldsConnections: any = {};
   isValid: boolean;
   isDirty: boolean;
   isCollapsedOutput = true;
   isCollapsedInput = true;
   currentFieldSelected: any = {};
-  @Input()
-  flowId: string;
 
   errors: any;
 
@@ -273,10 +280,49 @@ export class TransformComponent implements OnDestroy {
     };
     this.data.mappings = this.transformMappingsToInternalFormat(this.data.mappings);
 
+    this.mapperContext = this.createContext();
+
     this.resetState();
 
     this.open();
 
+  }
+
+  // todo: get data from event
+  private createContext() {
+    return {
+      getMapFunctionsProvider(): IMapFunctionsLookup {
+        return {
+          getFunctions() {
+            return Observable.of([]);
+          },
+          isValidFunction() {
+            // throw new Error('not implemented');
+            return true;
+          },
+          getFunction() {
+            throw new Error('not implemented');
+          }
+        };
+      },
+      getScopedOutputSchemaProvider(): ISchemaProvider {
+        return {
+          getSchema() {
+            return Observable.of([]);
+          }
+        };
+      },
+      getContextInputSchemaProvider(): ISchemaProvider {
+        return {
+          getSchema() {
+            return Observable.of([]);
+          }
+        };
+      },
+      getContextData() {
+        return {};
+      }
+    };
   }
 
   private extractPrecedingTilesOutputs(precedingTiles: any[]) {

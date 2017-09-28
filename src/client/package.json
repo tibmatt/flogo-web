@@ -13,7 +13,8 @@
     "start": "ng serve",
     "build": "ng build --env=prod --target=production",
     "lint": "ng lint --type-check --format=stylish",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "check": "npm run lint && npm run test:once"
   },
   "author": "TIBCO Software Inc.",
   "private": true,
