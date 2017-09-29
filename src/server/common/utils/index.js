@@ -379,6 +379,7 @@ export function getDefaultValueByType(type) {
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY] = [];
   defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS] = null;
+  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT] = null;
 
   return defaultValues[typeEnum];
 }

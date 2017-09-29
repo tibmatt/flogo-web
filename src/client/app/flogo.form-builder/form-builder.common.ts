@@ -58,6 +58,10 @@ export class FlogoFormBuilderCommon {
       case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
             return FLOGO_TASK_ATTRIBUTE_TYPE.ANY;
 
+      case 'complex_object':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT:
+        return FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT;
+
       default:
         return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
     }
@@ -87,6 +91,7 @@ export class FlogoFormBuilderCommon {
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
+      case FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT:
         control='FieldObject';
         break;
 
