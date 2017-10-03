@@ -281,7 +281,10 @@ export class TreeNodeFactoryService {
         // snippet: nodePath,
         dataType: dataType,
         data: {
-          nodeName: propName
+          nodeName: propName,
+          // specifies the type for generating namespaced expression in flogo.
+          // ex: activity, trigger, flow, etc
+          rootType: property.rootType
         }
       };
 

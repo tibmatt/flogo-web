@@ -354,42 +354,63 @@ export class MapperService {
 
     const tree = this.nodeFactory.fromJsonSchema(outputSchemas,
       (treeNode: MapperTreeNode, level: number, path: string, parents: MapperTreeNode[]) : MapperTreeNode => {
-        const isCurrentNodeArray = treeNode.dataType === 'array';
         const parentsAndCurrentNode = parents.concat(treeNode);
 
-        const paths = parentsAndCurrentNode.map((node: MapperTreeNode, index, array) => {
-          const nodeName = node.data.nodeName;
-
-          if (index === array.length - 1) {
-            return (selectedNode.dataType !== 'array' && node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
-          }
-          return (node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
-        });
-
-        if (lastMappedParent && treeNode.path.indexOf(lastMappedParent.fullLinkedPath) === 0) {
-          const itemsLinkedPathArraySyntax = lastMappedParent.fullLinkedPath.split('.').map((item, index) => paths[index]);
-          treeNode.snippet = this.makeRelativeNodePath({path: paths.join('.')}, { path: itemsLinkedPathArraySyntax.join('.')});
+        const [root, propName] = parentsAndCurrentNode;
+        let expressionHead = '';
+        let expressionTailParts;
+        const rootType = root.data.rootType;
+        if (rootType === 'trigger' || rootType === 'flow') {
+          expressionHead = `${rootType}.`;
+          expressionHead += propName ? propName.data.nodeName : '';
+          expressionTailParts = parentsAndCurrentNode.slice(2);
+        } else if (rootType === 'activity') {
+          expressionHead = `activity.${root.data.nodeName}.`;
+          expressionHead += propName ? propName.data.nodeName : '';
+          expressionTailParts = parentsAndCurrentNode.slice(2);
         } else {
-          treeNode.snippet = paths.join('.');
+          expressionHead = root.data.nodeName;
+          expressionTailParts = parentsAndCurrentNode.slice(1);
         }
-        treeNode.snippet = `$\{activity.${treeNode.snippet}}`;
+        treeNode.snippet = ['${' + expressionHead + '}'].concat(
+          expressionTailParts.map(n => n.data.nodeName)
+        ).join('.');
 
-        if (selectedNode.dataType === 'array') {
-          const forEachParam = isCurrentNodeArray ? treeNode.snippet : '';
-          treeNode.snippet = ArrayMappingHelper.applyExpressionForEach(forEachParam);
-        }
-
+        // ******** FOLLOWING CODE not applicable for first pass of the mapper ********
+        // const isCurrentNodeArray = treeNode.dataType === 'array';
+        // const paths = parentsAndCurrentNode.map((node: MapperTreeNode, index, array) => {
+        //   const nodeName = node.data.nodeName;
+        //
+        //   if (index === array.length - 1) {
+        //     return (selectedNode.dataType !== 'array' && node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
+        //   }
+        //   return (node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
+        // });
+        //
+        // if (lastMappedParent && treeNode.path.indexOf(lastMappedParent.fullLinkedPath) === 0) {
+        //   const itemsLinkedPathArraySyntax = lastMappedParent.fullLinkedPath.split('.').map((item, index) => paths[index]);
+        //   treeNode.snippet = this.makeRelativeNodePath({path: paths.join('.')}, { path: itemsLinkedPathArraySyntax.join('.')});
+        // } else {
+        //   treeNode.snippet = paths.join('.');
+        // }
+        //
+        // if (selectedNode.dataType === 'array') {
+        //   const forEachParam = isCurrentNodeArray ? treeNode.snippet : '';
+        //   treeNode.snippet = ArrayMappingHelper.applyExpressionForEach(forEachParam);
+        // }
         return treeNode;
       }
     );
 
-    const symbolTable = this.nodeFactory.fromJsonSchemaToSymbolTable(outputSchemas);
-    if (lastMappedParent && lastMappedParent.fullLinkedPath) {
-      // set the relative path for the array mappings
-      const { memberType, children } = lastMappedParent.fullLinkedPath.split('.')
-        .reduce((currentSchema, pathPart) => currentSchema.children[pathPart], { children: symbolTable });
-      symbolTable['$'] = { type: memberType, children };
-    }
+    /// SYMBOL TABLE necessary for validation only, disabling for now
+    const symbolTable = {};
+    // const symbolTable = this.nodeFactory.fromJsonSchemaToSymbolTable(outputSchemas);
+    // if (lastMappedParent && lastMappedParent.fullLinkedPath) {
+    //   // set the relative path for the array mappings
+    //   const { memberType, children } = lastMappedParent.fullLinkedPath.split('.')
+    //     .reduce((currentSchema, pathPart) => currentSchema.children[pathPart], { children: symbolTable });
+    //   symbolTable['$'] = { type: memberType, children };
+    // }
 
     return {
       mappings,

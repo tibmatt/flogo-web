@@ -103,4 +103,11 @@ export class MapperTranslator {
       }));
   }
 
+  static getRootType(tile: FlowTile) {
+    if (tile.type === FLOGO_TASK_TYPE.TASK_ROOT) {
+      return 'trigger';
+    }
+    return 'activity';
+  }
+
 }
