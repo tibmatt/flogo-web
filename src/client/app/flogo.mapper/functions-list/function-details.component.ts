@@ -2,6 +2,11 @@ import { Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } f
 import { PerfectScrollbarDirective as ScrollbarDirective } from 'ngx-perfect-scrollbar';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
+interface FunctionHelp {
+  description?: string;
+  example?: string;
+}
+
 @Component({
   selector: 'flogo-mapper-function-details',
   templateUrl: 'function-details.component.html',
@@ -9,7 +14,8 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 })
 export class FunctionDetailsComponent implements OnChanges {
   @Input() name: string;
-  @Input() help: MapperTreeNode;
+  // todo: fix wrong interface coming from wi
+  @Input() help: FunctionHelp;
   @ViewChildren(ScrollbarDirective) scrollbars: QueryList<ScrollbarDirective>;
 
   removeEndLine(str) {
