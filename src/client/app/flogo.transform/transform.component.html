@@ -27,7 +27,7 @@
 
     <div class="flogo-transform-modal__content">
 
-      <flogo-mapper [context]="mapperContext"></flogo-mapper>
+      <flogo-mapper [context]="mapperContext" (mappingsChange)="onMappingsChange($event)" ></flogo-mapper>
 
       <!--<div class="col" [ngClass]="{'collapsed':isCollapsedOutput, 'not-collapsed':!isCollapsedOutput}"   >-->
         <!--<flogo-transform-json-panel-->

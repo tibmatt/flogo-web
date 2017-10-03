@@ -1,8 +1,15 @@
+import * as _ from 'lodash';
+
 import {
   Component, ViewChild, ElementRef, Input, OnDestroy, HostListener, trigger, transition, style, animate, state,
   AnimationTransitionEvent
 } from '@angular/core';
+
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/observable/of';
+
 import { PostService } from '../../common/services/post.service';
+
 import {
   FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE,
   FLOGO_TASK_TYPE as TASK_TYPE,
@@ -11,10 +18,8 @@ import {
 import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from './constants';
 import { PUB_EVENTS, SUB_EVENTS } from './messages';
 import { normalizeTaskName, convertTaskID } from '../../common/utils';
-import { Observable } from 'rxjs/Observable';
 
-import 'rxjs/observable/of';
-import { IMapFunctionsLookup, IMapping, ISchemaProvider } from '../flogo.mapper/models/map-model';
+import { IMapFunctionsLookup, IMapping, IMapExpression, ISchemaProvider } from '../flogo.mapper/models/map-model';
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
 import { MapperTranslator } from './mapper-translator';
 
@@ -53,19 +58,18 @@ interface TransformData {
   ],
 })
 export class TransformComponent implements OnDestroy {
-  @Input()
-  flowId: string;
-
-  mapperContext: any;
-
   fieldsConnections: any = {};
-  isValid: boolean;
-  isDirty: boolean;
   isCollapsedOutput = true;
   isCollapsedInput = true;
   currentFieldSelected: any = {};
-
   errors: any;
+
+  @Input()
+  flowId: string;
+  mapperContext: any;
+
+  isValid: boolean;
+  isDirty: boolean;
 
   // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
   // this is because the contents of the modal need to visible up until the close animation finishes
@@ -89,6 +93,7 @@ export class TransformComponent implements OnDestroy {
   };
 
   private _subscriptions: any[];
+  private currentMappings: { [key: string]: IMapExpression };
 
   constructor(private _postService: PostService) {
     this.initSubscriptions();
@@ -151,21 +156,23 @@ export class TransformComponent implements OnDestroy {
     }
   }
 
-  onMappingsChange(change: any) {
-    if (change.hasError) {
-      this.updateErrors(change);
-    } else {
-      this.removeError(change);
-    }
-
-    this.fieldsConnections[change.field] = { value: change.value, mapTo: change.field, hasError: change.hasError };
-    this.isValid = this.checkIsValid();
-    this.isDirty = !change.isInit;
-
-    if (this.isValid) {
-      this.data.result = this.getResult();
-    }
-
+  onMappingsChange(change: IMapping) {
+    // if (change.hasError) {
+    //   this.updateErrors(change);
+    // } else {
+    //   this.removeError(change);
+    // }
+    //
+    // this.fieldsConnections[change.field] = { value: change.value, mapTo: change.field, hasError: change.hasError };
+    // this.isValid = this.checkIsValid();
+    // this.isDirty = !change.isInit;
+    //
+    // if (this.isValid) {
+    //   this.data.result = this.getResult();
+    // }
+    this.isValid = true;
+    this.isDirty = true;
+    this.currentMappings = _.cloneDeep(change).mappings;
   }
 
   getResult() {
@@ -208,7 +215,7 @@ export class TransformComponent implements OnDestroy {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.data.tile,
-        inputMappings: this.transformMappingsToExternalFormat(this.data.result),
+        inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings),
         id: this.flowId
       }
     }));

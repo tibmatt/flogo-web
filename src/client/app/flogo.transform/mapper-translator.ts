@@ -7,6 +7,13 @@ import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../common/constan
 import { REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from './constants';
 import { flogoIDDecode } from '../../common/utils';
 
+export interface Schema {
+  type: string;
+  properties: {[name: string]: { type: string }};
+  required?: string[];
+  rootType?: string;
+}
+
 export class MapperTranslator {
   static createInputSchema(tile: FlowTile) {
     let attributes = [];
@@ -16,8 +23,8 @@ export class MapperTranslator {
     return MapperTranslator.attributesToObjectDescriptor(attributes);
   }
 
-  static createOutputSchema(tiles: FlowTile[], includeEmptySchemas = false) {
-    const schema = { type: 'object', properties: {} };
+  static createOutputSchema(tiles: FlowTile[], includeEmptySchemas = false): Schema {
+    const rootSchema = { type: 'object', properties: {} };
     tiles.forEach(tile => {
       let attributes;
       if (tile.type === FLOGO_TASK_TYPE.TASK) {
@@ -30,14 +37,15 @@ export class MapperTranslator {
       const hasAttributes = attributes && attributes.length > 0;
       if (hasAttributes || includeEmptySchemas) {
         const taskId = flogoIDDecode(tile.id);
-        schema.properties[taskId] = MapperTranslator.attributesToObjectDescriptor(attributes || []);
+        const tileSchema =  MapperTranslator.attributesToObjectDescriptor(attributes || []);
+        tileSchema.rootType = this.getRootType(tile);
+        rootSchema.properties[taskId] = tileSchema;
       }
     });
-    return schema;
+    return rootSchema;
   }
 
-  static attributesToObjectDescriptor(attributes: FlowAttribute[]):
-    { type: 'object', properties: { [name: string]: { type: string } }, required: string[] } {
+  static attributesToObjectDescriptor(attributes: FlowAttribute[]): Schema {
     const properties = {};
     const requiredPropertyNames = [];
     attributes.forEach(attr => {
