@@ -4,7 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {CommonModule as FlogoCommonModule} from '../../common/common.module';
 
-import {TransformComponent} from './components/transform.component';
+import {TransformComponent} from './transform.component';
 
 import {ErrorDisplayComponent} from './components/error-display.component';
 import {HelpComponent} from './components/help.component';

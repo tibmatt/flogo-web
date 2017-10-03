@@ -25,7 +25,7 @@ export interface IMapExpression {
    * expression string
    * e.g.  String.concat(a.b.c,"abc")
    */
-  expression: String;
+  expression: string;
 
   /**
    * child expression map for nested expressions
@@ -45,7 +45,7 @@ export interface IMapExpression {
    * expression string
    * e.g.  String.concat(a.b.c,"abc")
    */
-  getExpression(): String;
+  getExpression(): string;
 
   /**
    * child expression map for nested expressions
@@ -74,7 +74,7 @@ export interface IMapping {
    * e.g. a.b.c => String.concat(x.a,y.b)
    * maps are stored in insertion order
    */
-  getMappings(): STRING_MAP<IMapExpression>;
+  // getMappings(): STRING_MAP<IMapExpression>;
 
 }
 

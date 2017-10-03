@@ -24,11 +24,14 @@ import {
 import { ClientPosition, CompletionProvider, EditorError, HoverProvider, OffsetRange } from './types';
 
 const SOURCE_ID = 'ngx-monaco-editor';
-const LANGUAGE_ID = 'tibcomapperscript';
+const LANGUAGE_ID = 'flogomapperscript';
 export const DEFAULT_EDITOR_OPTIONS = {
   language: LANGUAGE_ID,
   wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",<>/?',
-  fixedOverflowWidgets: true
+  fixedOverflowWidgets: true,
+  minimap: {
+    enabled: false
+  }
 };
 
 
@@ -277,7 +280,6 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
     this.editor.onDidChangeModelContent(() => this.onDidChangeContent());
     this.editor.onDidChangeCursorPosition(event => this.onDidChangeCursorPosition(event));
     this.editor.onDidChangeCursorSelection(event => this.onDidChangeCursorSelection(event));
-
 
     const didScrollChangeDisposable = this.editor.onDidScrollChange((event) => {
       this.isEditorLoading = false;

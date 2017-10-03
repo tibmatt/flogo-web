@@ -2,19 +2,21 @@ import {
   Component, ViewChild, ElementRef, Input, OnDestroy, HostListener, trigger, transition, style, animate, state,
   AnimationTransitionEvent
 } from '@angular/core';
-import { PostService } from '../../../common/services/post.service';
+import { PostService } from '../../common/services/post.service';
 import {
   FLOGO_TASK_ATTRIBUTE_TYPE as ATTRIBUTE_TYPE,
   FLOGO_TASK_TYPE as TASK_TYPE,
   FLOGO_ERROR_ROOT_NAME as ERROR_ROOT_NAME
-} from '../../../common/constants';
-import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from '../constants';
-import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { normalizeTaskName, convertTaskID } from '../../../common/utils';
+} from '../../common/constants';
+import { REGEX_INPUT_VALUE_INTERNAL, REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from './constants';
+import { PUB_EVENTS, SUB_EVENTS } from './messages';
+import { normalizeTaskName, convertTaskID } from '../../common/utils';
 import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/observable/of';
-import { IMapFunctionsLookup, ISchemaProvider } from '../../flogo.mapper/models/map-model';
+import { IMapFunctionsLookup, IMapping, ISchemaProvider } from '../flogo.mapper/models/map-model';
+import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
+import { MapperTranslator } from './mapper-translator';
 
 const TILE_MAP_ROOT_KEY = 'root-task';
 
@@ -30,8 +32,7 @@ interface TransformData {
 @Component({
   selector: 'flogo-transform',
   styleUrls: ['transform.component.less'],
-  // moduleId: module.id,
-  templateUrl: 'transform.tpl.html',
+  templateUrl: 'transform.component.html',
   animations: [
     trigger('dialog', [
       state('hidden', style({
@@ -266,7 +267,11 @@ export class TransformComponent implements OnDestroy {
     return true;
   }
 
-  private onTransformSelected(data: any, envelope: any) {
+  private onTransformSelected(data: {
+    id: string,
+    previousTiles: IFlogoFlowDiagramTask[],
+    tile: IFlogoFlowDiagramTask
+  }, envelope: any) {
     if (!this.raisedByThisDiagram(data.id)) {
       return;
     }
@@ -280,7 +285,7 @@ export class TransformComponent implements OnDestroy {
     };
     this.data.mappings = this.transformMappingsToInternalFormat(this.data.mappings);
 
-    this.mapperContext = this.createContext();
+    this.mapperContext = this.createContext(data.tile, data.previousTiles);
 
     this.resetState();
 
@@ -289,7 +294,10 @@ export class TransformComponent implements OnDestroy {
   }
 
   // todo: get data from event
-  private createContext() {
+  private createContext(inputTile: IFlogoFlowDiagramTask, outputTiles: IFlogoFlowDiagramTask[]) {
+    const inputSchema = MapperTranslator.createInputSchema(inputTile);
+    const outputSchema = MapperTranslator.createOutputSchema(outputTiles);
+    const mappings = MapperTranslator.translateMappingsIn(inputTile.inputMappings);
     return {
       getMapFunctionsProvider(): IMapFunctionsLookup {
         return {
@@ -307,20 +315,21 @@ export class TransformComponent implements OnDestroy {
       },
       getScopedOutputSchemaProvider(): ISchemaProvider {
         return {
-          getSchema() {
-            return Observable.of([]);
-          }
+          getSchema: () => outputSchema
         };
       },
       getContextInputSchemaProvider(): ISchemaProvider {
         return {
-          getSchema() {
-            return Observable.of([]);
-          }
+          getSchema: () => inputSchema
         };
       },
       getContextData() {
         return {};
+      },
+      getMapping(): IMapping {
+        return {
+          mappings
+        };
       }
     };
   }

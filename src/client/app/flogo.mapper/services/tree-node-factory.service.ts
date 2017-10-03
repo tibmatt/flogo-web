@@ -175,7 +175,7 @@ export class TreeNodeFactoryService {
       }
 
       if (property.type === 'object' && level === 0) {
-        property.type = 'namespace';
+        node.type = 'namespace';
       }
 
       nodes[propName] = node;

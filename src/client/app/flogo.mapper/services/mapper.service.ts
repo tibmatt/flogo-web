@@ -15,7 +15,7 @@ import 'rxjs/add/operator/withLatestFrom';
 
 import { TreeNodeFactoryService } from './tree-node-factory.service';
 import { TreeService } from './tree.service';
-import { ExpressionProcessorService } from './expression-processor.service';
+// import { ExpressionProcessorService } from './expression-processor.service';
 import {
   IMapExpression,
   IMapFunctionsLookup,
@@ -88,7 +88,8 @@ export class MapperService {
 
   constructor(private nodeFactory: TreeNodeFactoryService,
               private treeService: TreeService,
-              private parserService: ExpressionProcessorService) {
+              // private parserService: ExpressionProcessorService
+  ) {
 
     this.updatesSrc
       .scan((accumulator: MapperState, operation: Function) => {
@@ -192,8 +193,9 @@ export class MapperService {
             expectedResultType = { array: true, type: node.memberType || 'object' };
           }
           expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
-          const parseResult = this.parserService.processExpression(currentSelection.expression,
-            expectedResultType, currentSelection.symbolTable, outputContext.mapRelativeTo);
+          // const parseResult = this.parserService.processExpression(currentSelection.expression,
+          //   expectedResultType, currentSelection.symbolTable, outputContext.mapRelativeTo);
+          const parseResult = <any>{};
           currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
         }
 
@@ -268,10 +270,11 @@ export class MapperService {
         }
         expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
 
-        const parseResult = this.parserService.processExpression(state.currentSelection.expression,
-          expectedResultType,
-          state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
-        state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
+        // const parseResult = this.parserService.processExpression(state.currentSelection.expression,
+        //   expectedResultType,
+        //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
+        // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
+        const parseResult = <any>{};
 
         this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, expression, parseResult.structureDetails);
 
@@ -355,6 +358,7 @@ export class MapperService {
         if (lastMappedParent && treeNode.path.indexOf(lastMappedParent.fullLinkedPath) === 0) {
           treeNode.snippet = this.makeRelativeNodePath(treeNode, { path: lastMappedParent.fullLinkedPath });
         }
+        treeNode.snippet = `$\{activity.${treeNode.snippet}}`;
 
         if (selectedNode.dataType === 'array') {
           const forEachParam = isCurrentNodeArray ? treeNode.snippet : '';
