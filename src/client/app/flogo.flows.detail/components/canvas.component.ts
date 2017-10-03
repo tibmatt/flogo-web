@@ -33,7 +33,8 @@ import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.dia
 import { FlogoModal } from '../../../common/services/modal.service';
 import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
-import {FlogoProfileService} from "../../../common/services/profile.service";
+import {FlogoProfileService} from '../../../common/services/profile.service';
+import {IFlogoTriggers} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 
 interface IPropsToUpdateFormBuilder {
   name: string;
@@ -52,6 +53,7 @@ export class FlogoCanvasComponent implements OnInit {
   public mainHandler: HandlerInfo;
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
+  public triggersList: IFlogoTriggers[];
 
 
   private runState = {
@@ -224,6 +226,8 @@ export class FlogoCanvasComponent implements OnInit {
         if ( _.isEmpty( this.mainHandler.diagram ) || !this.mainHandler.diagram.hasTrigger ) {
           this.hasTrigger = false;
         }
+
+        this.triggersList = res.triggers;
 
         this.clearAllHandlersRunStatus();
         this.loading = false;

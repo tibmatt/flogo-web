@@ -16,7 +16,7 @@ export class MockAPIFlowsService extends APIFlowsService{
       "createdAt": "2017-03-21T09:43:38.614Z",
       "updatedAt": "2017-03-21T09:43:53.073Z"
     },
-    "trigger": {
+    "triggers": [{
       "id": "trigger_request",
       "name": "Trigger Request",
       "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
@@ -33,17 +33,7 @@ export class MockAPIFlowsService extends APIFlowsService{
           "actionId": "test_flow_1"
         }
       ]
-    },
-    "handlers": {
-      "settings": {
-        "repeating": null,
-        "startDate": null,
-        "hours": null,
-        "minutes": "5",
-        "seconds": null
-      },
-      "actionId": "test_flow_1"
-    },
+    }],
     "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
     "data": {
       "flow": {

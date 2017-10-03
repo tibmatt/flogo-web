@@ -1,3 +1,4 @@
+@import "../../../assets/_mixins";
 :host {
   display: block;
   margin: 0;
@@ -74,15 +75,13 @@
 }
 
 .flogo-instructions-modal-close {
-  color: #b5b5b5;
-  position: fixed;
+  .modal__close;
   top: 44px;
   right: 44px;
 
   height: 18px;
   width: 18px;
 
-  cursor: pointer;
 }
 
 .flogo-instructions-button {

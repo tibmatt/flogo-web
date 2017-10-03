@@ -110,19 +110,15 @@ export class ActionsManager {
         const action = app.actions.find(t => t.id === actionId);
         action.appId = app._id;
 
-        let handler = null;
-        const trigger = app.triggers.find(t => {
-          const h = t.handlers.find(a => a.actionId === actionId);
-          if (h) {
-            handler = h;
-          }
-          return h;
-        }) || null;
+        const triggers = app.triggers.filter(t => {
+          const h = t.handlers.filter(a => a.actionId === actionId);
+          return h.length > 0;
+        });
 
         app.id = app._id;
         app = omit(app, ['triggers', 'actions', '_id']);
 
-        return Object.assign({}, action, { app, handler, trigger });
+        return Object.assign({}, action, { app, triggers });
       });
   }
 

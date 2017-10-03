@@ -15,6 +15,7 @@ import { HttpUtilsService } from '../../../common/services/restapi/http-utils.se
 import { FlogoProfileService } from '../../../common/services/profile.service';
 import { FlogoProfileServiceMock } from '../../../common/services/profile.service.mock';
 import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import {ModalComponent, Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 const postServiceStub = {
 
@@ -57,7 +58,8 @@ describe('FlogoSelectTrigger component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateModule,
-        InstallerModule],
+        InstallerModule,
+        Ng2Bs3ModalModule],
       declarations: [FlogoSelectTriggerComponent], // declare the test component
       providers: [
         RESTAPIActivitiesService,
@@ -123,15 +125,16 @@ describe('FlogoSelectTrigger component', () => {
         const existing = function () {
           return Promise.resolve([]);
         };
+        comp.onAddTriggerToAction.subscribe(data => {
+          expect(data.triggerData.description).toEqual('Simple CoAP Trigger');
+          done();
+        });
         comp.getExistingTriggers = existing;
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
             const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger__content'));
             res[0].nativeElement.click(res[0]);
-            const postService = <PostService>fixture.debugElement.injector.get(PostService);
-            expect(postService['published'].data.trigger.description).toEqual('Simple CoAP Trigger');
-            done();
           });
       });
   });
@@ -147,15 +150,16 @@ describe('FlogoSelectTrigger component', () => {
         const existing = function () {
           return Promise.resolve(existingMock);
         };
+        comp.onAddTriggerToAction.subscribe(data => {
+          expect(data.triggerData.description).toEqual('Description of Simple COAP Trigger');
+          done();
+        });
         comp.getExistingTriggers = existing;
         comp.loadInstalledTriggers()
           .then(() => {
             fixture.detectChanges();
             const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.arrow-div li'));
             res[0].nativeElement.click(res[0]);
-            const postService = <PostService>fixture.debugElement.injector.get(PostService);
-            expect(postService['published'].data.trigger.description).toEqual('Description of Simple COAP Trigger');
-            done();
           });
       });
   });

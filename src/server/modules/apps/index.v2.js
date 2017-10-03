@@ -291,7 +291,6 @@ export class AppsManager {
               delete h.actionId;
               return;
             }
-            actionMap.delete(h.actionId);
             action.id = normalizeName(action.name);
             h.actionId = action.id;
           });
