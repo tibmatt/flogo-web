@@ -236,11 +236,12 @@ export class MapperService {
           const flattenedMappings = this.nodeFactory.flatMappings(newState.mappings);
 
           const inputSchemas = inputSchemaProvider.getSchema(<any>context.getContextData());
-          newState.inputs.nodes = this.nodeFactory.fromJsonSchema(inputSchemas, (treeNode: MapperTreeNode, level, path) => {
-            treeNode.data.level = level;
-            const expression = flattenedMappings[path];
-            treeNode.data.expression = expression || null;
-            return treeNode;
+          newState.inputs.nodes = this.nodeFactory.fromJsonSchema(inputSchemas,
+            (treeNode: MapperTreeNode, level, path, parents: MapperTreeNode[]) => {
+              treeNode.data.level = level;
+              const expression = flattenedMappings[path];
+              treeNode.data.expression = expression || null;
+              return treeNode;
           });
           // todo: improve for performance
           newState.inputs.nodes.forEach(node => this.treeService.updateTreeMappingStatus(node));
@@ -352,21 +353,30 @@ export class MapperService {
     }
 
     const tree = this.nodeFactory.fromJsonSchema(outputSchemas,
-      (treeNode: MapperTreeNode, level: number, path: string): MapperTreeNode => {
+      (treeNode: MapperTreeNode, level: number, path: string, parents: MapperTreeNode[]) : MapperTreeNode => {
         const isCurrentNodeArray = treeNode.dataType === 'array';
+        const parentsAndCurrentNode = parents.concat(treeNode);
+
+        const paths = parentsAndCurrentNode.map((node: MapperTreeNode, index, array) => {
+          const nodeName = node.data.nodeName;
+
+          if (index === array.length - 1) {
+            return (selectedNode.dataType !== 'array' && node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
+          }
+          return (node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
+        });
 
         if (lastMappedParent && treeNode.path.indexOf(lastMappedParent.fullLinkedPath) === 0) {
-          treeNode.snippet = this.makeRelativeNodePath(treeNode, { path: lastMappedParent.fullLinkedPath });
+          const itemsLinkedPathArraySyntax = lastMappedParent.fullLinkedPath.split('.').map((item, index) => paths[index]);
+          treeNode.snippet = this.makeRelativeNodePath({path: paths.join('.')}, { path: itemsLinkedPathArraySyntax.join('.')});
+        } else {
+          treeNode.snippet = paths.join('.');
         }
         treeNode.snippet = `$\{activity.${treeNode.snippet}}`;
 
         if (selectedNode.dataType === 'array') {
           const forEachParam = isCurrentNodeArray ? treeNode.snippet : '';
           treeNode.snippet = ArrayMappingHelper.applyExpressionForEach(forEachParam);
-        }
-
-        if (treeNode.dataType === 'array' && selectedNode.dataType !== 'array') {
-          treeNode.snippet = `${treeNode.snippet}[]`;
         }
 
         return treeNode;

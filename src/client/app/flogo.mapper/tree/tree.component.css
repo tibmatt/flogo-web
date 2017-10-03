@@ -158,7 +158,7 @@
   color: #727272;
 }
 
-:host(.tree-input-list) >>> p-tree .ui-treenode.node--required .node__label::after {
+:host(.tree-input-list) >>> p-tree .ui-treenode.node--required > .ui-treenode-content .node__label::after {
   content: " *";
   color: #d0011b;
 }

@@ -55,10 +55,10 @@ export class TreeService {
   }
 
   applyFilter(nodes: MapperTreeNode[], searchText: string = null, selectedPath: string = null) {
-    const searchTextLower = searchText ? searchText.toLowerCase() : searchText;
+    const searchTextLower = searchText ?  searchText.toLowerCase() : '';
     const isMatch = (node: MapperTreeNode) => {
       const nodeLabel = (node && node.label) ? node.label.toLowerCase() : node.label;
-      return searchTextLower && nodeLabel.indexOf(searchText) !== -1;
+      return searchTextLower && nodeLabel.indexOf(searchTextLower) !== -1;
     };
     nodes.forEach(node => this.applyFilterToNode(node, isMatch, selectedPath));
     return nodes;

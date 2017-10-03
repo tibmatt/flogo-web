@@ -8,11 +8,12 @@ import { ArrayMappingInfo } from '../models/array-mapping';
 @Injectable()
 export class TreeNodeFactoryService {
 
-  fromJsonSchema(schema: any, visitor?: (treeNode: TreeNode, level: number, path: string) => any): MapperTreeNode[] {
+  fromJsonSchema(schema: any,
+                 visitor?: (treeNode: TreeNode, level: number, path: string, parents: MapperTreeNode[]) => any): MapperTreeNode[] {
     if (!schema) {
       return [];
     }
-    return this.makeTreeNodes(schema, visitor, { level: 0, path: null });
+    return this.makeTreeNodes(schema, visitor, { level: 0, path: null, parents: [] });
   }
 
   applyArrayFilterToJsonSchema(schema: any, mappedArrayChain: ArrayMappingInfo[], path?: string, isInFilterPath = false) {
@@ -238,8 +239,9 @@ export class TreeNodeFactoryService {
   }
 
   private makeTreeNodes(from: any,
-                        visitor: (node: MapperTreeNode, level, path) => MapperTreeNode,
-                        params: { level, path }): MapperTreeNode[] {
+                        visitor: (node: MapperTreeNode, level, path, parents: MapperTreeNode[]) => MapperTreeNode,
+                        params: { level, path, parents }
+  ): MapperTreeNode[] {
     let properties = {};
     // let memberType = null;
     const { level, path } = params;
@@ -276,17 +278,15 @@ export class TreeNodeFactoryService {
         isSelectable: true,
         styleClass: 'mapper-tree__node',
         path: nodePath,
-        snippet: nodePath,
+        // snippet: nodePath,
         dataType: dataType,
-        data: {}
+        data: {
+          nodeName: propName
+        }
       };
 
-      // if (memberType) {
-      //   node.memberType = memberType;
-      // }
-
       if (property.type === 'object' || property.type === 'array') {
-        node.children = this.makeTreeNodes(property, visitor, { path: nodePath, level: nodeLevel });
+        node.children = this.makeTreeNodes(property, visitor, { path: nodePath, level: nodeLevel, parents: params.parents.concat(node) });
 
         // if is an array of primitives
         const nodeProperties = lodash.get(property, 'items.properties', null);
@@ -303,7 +303,7 @@ export class TreeNodeFactoryService {
       }
 
       if (visitor) {
-        node = visitor(node, nodeLevel, nodePath);
+        node = visitor(node, nodeLevel, nodePath, params.parents);
       }
 
       if (node.isSelectable) {
