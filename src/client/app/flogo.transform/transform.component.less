@@ -1,9 +1,4 @@
-flogo-mapper  {
-  width: 100%;
-  height: 100%;
-}
-
-.flogo-transform-modal-wrapper {
+.modal-wrapper {
   background-color: #fff;
 
   position: fixed;
@@ -15,7 +10,7 @@ flogo-mapper  {
   z-index: 999;
 }
 
-.flogo-transform-modal {
+.transform-modal {
   display: flex;
   flex-direction: column;
   padding: 39px 70px;
@@ -24,7 +19,7 @@ flogo-mapper  {
   width: 100%;
 }
 
-.flogo-transform-modal__header {
+.transform-modal__header {
   border-bottom: 1px solid #d8d8d8;
   height: 61px;
   margin-bottom: 25px;
@@ -33,15 +28,13 @@ flogo-mapper  {
   z-index: 0;
 }
 
-.flogo-transform-modal__header-title {
-  background: url('/assets/svg/flogo.transform.icon.svg') no-repeat left center;
-  color: #666;
-  font-size: 24px;
-  margin: 0;
-  padding: 0 0 0 30px;
+.transform-modal__content {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
 }
 
-.flogo-transform-modal__close {
+.transform-modal__close {
   background: url('/assets/svg/flogo.close.svg') no-repeat center center;
   border: none;
   position: absolute;
@@ -51,120 +44,47 @@ flogo-mapper  {
   width: 19px;
 }
 
-.flogo-transform-modal__content {
+.header {
   display: flex;
-  flex: 1;
-  justify-content: space-between;
-}
+  align-items: center;
 
-.flogo-transform-modal__content .col {
-  display: flex;
-  display: -webkit-flex;
+  &__title {
+    background: url('/assets/svg/flogo.transform.icon.svg') no-repeat left center;
+    color: #666;
+    font-size: 24px;
+    margin: 0;
+    padding: 0 0 0 30px;
+    flex: 1;
+  }
 
-  .flogo-transform-modal__content-json-panel {
-    height: 100%;
-    overflow:auto;
-    background-color: #FFF;
+  &__actions {
+    min-width: 320px;
+    overflow: hidden;
+    position: relative;
+    text-align: right;
   }
 
 }
 
-.flogo-transform-modal__content .collapsed {
-  flex: 0 0 8%;
+.mapper  {
+  width: 100%;
+  height: 100%;
 }
 
-
-.flogo-transform-modal__content .not-collapsed {
-  flex: 0 0 16%;
-}
-
-
-.flogo-transform-modal__col-header {
-  font-size: 15px;
-  margin-bottom: 17px;
-}
-
-.flogo-transform-modal__col-header-title {
-  line-height: 1.2;
-  padding-top: 20px;
-}
-
-.flogo-transform-modal__col-header-subtitle {
-  color: #aaa;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.flogo-transform-modal__col-header-subtitle + .flogo-transform-modal__col-header-title {
-  padding-top: 2px;
-}
-
-.flogo-transform-modal__col-content {
-  //flex: 1;
-}
-
-.flogo-transform-modal__schema-display {
-  background-color: #eceff4;
-  border: none;
-  border-radius: 4px;
-  color: #666;
-  padding: 19px 24px;
-  margin: 0;
-  overflow: auto;
-  flex: 1;
-}
-
-.editor-col .flogo-transform-modal__col-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.flogo-transform-modal__editor-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  flex-shrink: 0;
-
-  height: 35%;
-  min-height: 35%;
-
-}
-
-.flogo-transform-modal__error-container {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 25%;
-  max-height: 25%;
-  padding-top: 20px;
-}
-
-.flogo-transform-delete-btn {
+.actions__delete {
   background: url('/assets/svg/flogo.transform.trash.icon.svg') no-repeat 13px center;
   color: #0081cb;
+
+  &:hover {
+    filter: brightness(140%) saturate(60%);
+  }
+
+  &:active {
+    filter: brightness(80%) saturate(80%);
+  }
 }
 
-
-.flogo-transform-save-btn {
-}
-
-.flogo-transform-delete-btn:hover {
-  -webkit-filter: brightness(140%) saturate(60%);
-  filter: brightness(140%) saturate(60%);
-}
-
-.flogo-transform-delete-btn:active {
-  -webkit-filter: brightness(80%) saturate(80%);
-  filter: brightness(80%) saturate(80%);
-}
-
-.flogo-transform-header {
-  background-color: #fff;
-  padding-bottom: 15px;
-  width: 100%;
-}
-
-.flogo-transform-confirm-delete {
+.confirm-delete {
   color: #fff;
   background-color: #0081cb;
   font-size: 16px;
@@ -178,66 +98,30 @@ flogo-mapper  {
   pointer-events: none;
   transition: all 0.2s ease-out;
   transform: translateX(100%);
+
+  &__btn {
+    background-color: transparent;
+    border: none;
+    height: 45px;
+    line-height: 1;
+    min-width: 89px;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover,
+    &:active {
+      background-color: #fff;
+      color: #0081cb;
+    }
+  }
+
 }
 
-.flogo-transform-confirm-delete .text {
-  padding-left: 16px;
-  padding-right: 20px;
-}
-
-.is-delete-open .flogo-transform-confirm-delete {
+.--is-delete-open .confirm-delete {
   pointer-events: auto;
   transform: translateX(0%);
-}
-
-.delete-btn {
-  background-color: transparent;
-  border: none;
-  height: 45px;
-  line-height: 1;
-  min-width: 89px;
-}
-
-.delete-btn:focus {
-  outline: none;
-}
-
-.delete-btn:hover,
-.delete-btn:active {
-  background-color: #fff;
-  color: #0081cb;
-}
-
-.flogo-transform-header__main-actions {
-  min-width: 320px;
-  overflow: hidden;
-  position: relative;
-  text-align: right;
-}
-
-.editor-col {
-  width: 40%;
-}
-
-
-.mappings-container {
-  display:flex;
-  display: -webkit-flex;
-  align-items: start;
-  flex-direction: column;
-}
-
-.mappings-container__header {
-  flex: 0 0 7%;
-}
-
-.mappings-container__main {
-  overflow: auto;
-}
-
-.mappings-container__error {
-  margin-top: 40px;
-  overflow: auto;
 }
 
 

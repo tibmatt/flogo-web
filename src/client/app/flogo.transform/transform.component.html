@@ -1,32 +1,28 @@
-<div class="flogo-transform-modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
-  <div class="flogo-transform-modal" *ngIf="isActive">
-    <div class="flogo-transform-modal__header" [class.is-delete-open]="showDeleteConfirmation">
-      <div class="flogo-transform-header">
-        <div class="flogo-transform-header__title">
-          <h2 class="flogo-transform-modal__header-title">{{ 'TRANSFORM:TRANSFORMATION' | translate }}</h2>
-        </div>
-        <div class="flogo-transform-header__main-actions">
-          <button class="flogo-btn-link flogo-transform-delete-btn" (click)="openDeleteConfirmation($event)">
-            Delete
-          </button>
-          <button class="tc-buttons tc-buttons-primary flogo-transform-save-btn"
-                  [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
-                  (click)="saveTransform()">{{ 'TRANSFORM:SAVE' | translate }}
-          </button>
-          <div class="flogo-transform-confirm-delete" #deleteContainer>
-            <span class="text">{{ 'TRANSFORM:CONFIRMATION-MESSAGE' | translate }} </span>
-            <button class="delete-btn" (click)="deleteTransform()"> {{ 'TRANSFORM:YES' | translate }} </button>
-            <button class="delete-btn" (click)="cancelDeleteConfirmation()">{{ 'TRANSFORM:NO' | translate }}</button>
-          </div>
-        </div>
-        <button class="flogo-transform-modal__close" (click)="cancel()">
-          <span aria-hidden="true" class="sr-only">{{ 'TRANSFORM:CLOSE' | translate }}</span>
+<div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
+  <div class="transform-modal" *ngIf="isActive">
+    <div class="transform-modal__header header" [class.--is-delete-open]="showDeleteConfirmation">
+      <h2 class="header__title">{{ 'TRANSFORM:TRANSFORMATION' | translate }}</h2>
+      <div class="header__actions actions">
+        <button class="flogo-btn-link actions__delete" (click)="openDeleteConfirmation($event)">
+          Delete
         </button>
+        <button class="tc-buttons tc-buttons-primary actions__save"
+                [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
+                (click)="saveTransform()">{{ 'TRANSFORM:SAVE' | translate }}
+        </button>
+        <div class="confirm-delete" #deleteContainer>
+          <span class="confirm-delete__text">{{ 'TRANSFORM:CONFIRMATION-MESSAGE' | translate }} </span>
+          <button class="confirm-delete__btn" (click)="deleteTransform()"> {{ 'TRANSFORM:YES' | translate }} </button>
+          <button class="confirm-delete__btn" (click)="cancelDeleteConfirmation()">{{ 'TRANSFORM:NO' | translate }}</button>
+        </div>
       </div>
+      <button class="transform-modal__close" (click)="cancel()">
+        <span aria-hidden="true" class="sr-only">{{ 'TRANSFORM:CLOSE' | translate }}</span>
+      </button>
     </div>
 
-    <div class="flogo-transform-modal__content">
-      <flogo-mapper [context]="mapperContext" (mappingsChange)="onMappingsChange($event)" ></flogo-mapper>
+    <div class="transform-modal__content">
+      <flogo-mapper class="mapper" [context]="mapperContext" (mappingsChange)="onMappingsChange($event)" ></flogo-mapper>
     </div>
   </div>
 </div>
