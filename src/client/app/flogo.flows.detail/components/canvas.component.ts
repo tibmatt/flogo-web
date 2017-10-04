@@ -131,7 +131,7 @@ export class FlogoCanvasComponent implements OnInit {
       _.assign({}, FLOGO_TASK_SUB_EVENTS.setTaskWarnings, { callback: this._setTaskWarnings.bind(this) }),
       _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback: this._saveTransformFromTransform.bind(this) }),
       _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback: this._deleteTransformFromTransform.bind(this) }),
-      // _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
+      _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
       _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.openPanel, { callback: this._errorPanelStatusChanged.bind(this, true) }),
       _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.closePanel, { callback: this._errorPanelStatusChanged.bind(this, false) })
