@@ -11,6 +11,7 @@ export interface Schema {
   type: string;
   properties: {[name: string]: { type: string }};
   required?: string[];
+  title?: string;
   rootType?: string;
 }
 
@@ -26,19 +27,22 @@ export class MapperTranslator {
   static createOutputSchema(tiles: FlowTile[], includeEmptySchemas = false): Schema {
     const rootSchema = { type: 'object', properties: {} };
     tiles.forEach(tile => {
-      let attributes;
+      const attributes = tile.attributes;
+      let outputs;
       if (tile.type === FLOGO_TASK_TYPE.TASK) {
         // try to get data from task from outputs
-        attributes = tile.attributes && tile.attributes.outputs ? tile.attributes.outputs : [];
+        outputs = attributes && attributes.outputs ? attributes.outputs : [];
       } else {
-        // it's a trigger
-        attributes = tile.attributes;
+        // it's a trigger, outputs for trigger doesn't seem to be consistent in the UI model impl
+        // hence cheking in two places
+        outputs = (<any>tile).outputs || attributes && attributes.outputs;
       }
-      const hasAttributes = attributes && attributes.length > 0;
+      const hasAttributes = outputs && outputs.length > 0;
       if (hasAttributes || includeEmptySchemas) {
         const taskId = flogoIDDecode(tile.id);
-        const tileSchema =  MapperTranslator.attributesToObjectDescriptor(attributes || []);
+        const tileSchema =  MapperTranslator.attributesToObjectDescriptor(outputs || []);
         tileSchema.rootType = this.getRootType(tile);
+        tileSchema.title = tile.title;
         rootSchema.properties[taskId] = tileSchema;
       }
     });

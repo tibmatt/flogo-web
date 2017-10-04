@@ -273,8 +273,13 @@ export class TreeNodeFactoryService {
         dataType = 'date';
       }
 
+      let label = propName;
+      if (property.title) {
+        label = `${label} (${property.title})`;
+      }
+
       let node: MapperTreeNode = {
-        label: propName,
+        label,
         isSelectable: true,
         styleClass: 'mapper-tree__node',
         path: nodePath,

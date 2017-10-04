@@ -152,6 +152,7 @@ export class TransformComponent implements OnDestroy {
     if (!this.raisedByThisDiagram(data.id)) {
       return;
     }
+    this.currentTile = data.tile;
     this.resetState();
     this.mapperContext = this.createContext(data.tile, data.previousTiles);
     this.open();
