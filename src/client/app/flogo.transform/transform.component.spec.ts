@@ -73,7 +73,7 @@ describe('Component: TransformComponent', () => {
   it('Should open the transform component', () => {
     fixture.detectChanges();
     expect(comp.isActive).toBeTruthy('Transform component is not active');
-    expect(de.query(By.css('.flogo-transform-modal'))).not.toBeNull('Transform modal is not present');
+    expect(de.query(By.css('.data-transform-modal'))).not.toBeNull('Transform modal is not present');
   });
 
   function getMockData() {

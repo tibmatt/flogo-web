@@ -1,5 +1,5 @@
 <div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
-  <div class="transform-modal" *ngIf="isActive">
+  <div class="transform-modal data-transform-modal" *ngIf="isActive">
     <div class="transform-modal__header header" [class.--is-delete-open]="showDeleteConfirmation">
       <h2 class="header__title">{{ 'TRANSFORM:TRANSFORMATION' | translate }}</h2>
       <div class="header__actions actions">
