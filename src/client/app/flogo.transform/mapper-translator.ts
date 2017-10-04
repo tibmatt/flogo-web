@@ -3,7 +3,7 @@ import {
   IFlogoFlowDiagramTaskAttribute as FlowAttribute,
   IFlogoFlowDiagramTaskAttributeMapping as FlowMapping,
 } from '../flogo.flows.detail.diagram/models';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../common/constants';
 import { REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from './constants';
 import { flogoIDDecode } from '../../common/utils';
 
@@ -105,7 +105,7 @@ export class MapperTranslator {
 
   static getRootType(tile: FlowTile) {
     if (tile.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-      return 'trigger';
+      return tile.triggerType === FLOGO_ERROR_ROOT_NAME ? 'error-root' : 'trigger';
     }
     return 'activity';
   }

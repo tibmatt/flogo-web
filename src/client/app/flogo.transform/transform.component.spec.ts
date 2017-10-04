@@ -5,30 +5,9 @@ import { Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
 import { PostService } from '../../common/services/post.service';
 import { CommonModule as FlogoCommonModule } from '../../common/common.module';
-import { CoreModule as FlogoCoreModule } from '../../common/core.module';
+import { CommonModule as NgCommonModule } from '@angular/common';
 import { TransformComponent } from './transform.component';
-import { ErrorDisplayComponent } from './components/error-display.component';
-import { HelpComponent } from './components/help.component';
-import { MapEditorComponent } from './components/map-editor.component';
-import { TransformJsonPanelComponent } from './components/transform-json-panel.component';
-import { TransformMapperComponent } from './components/transform-mapper.component';
-import { TransformMapperFieldComponent } from './components/transform-mapper-field.component';
-import { VisualMapperComponent } from './components/visual-mapper.component';
-import { VisualMapperInputComponent } from './components/visual-mapper-input.component';
-import { VisualMapperOutputComponent } from './components/visual-mapper-output.component';
-
-const EXISTING_FLOW_NAME = 'existing';
-const flowsServiceStub = {
-
-  findFlowsByName(name: string) {
-    let flowArr = [];
-    if (name === EXISTING_FLOW_NAME) {
-      flowArr = [{ id: '123', name: EXISTING_FLOW_NAME }];
-    }
-    return Promise.resolve(flowArr);
-  }
-
-};
+import { MapperModule } from '../flogo.mapper/mapper.module';
 
 const postServiceStub = {
 
@@ -45,8 +24,9 @@ const postServiceStub = {
   }
 
 };
+
 // TODO: disabling while working on mapper upgrade
-xdescribe('Component: TransformComponent', () => {
+describe('Component: TransformComponent', () => {
   let comp: TransformComponent;
   let fixture: ComponentFixture<TransformComponent>;
   let de: DebugElement;
@@ -54,26 +34,18 @@ xdescribe('Component: TransformComponent', () => {
   beforeEach((done) => {
     TestBed.configureTestingModule({
       imports: [
+        // todo: stub/mock translator
         TranslateModule.forRoot({
           provide: TranslateLoader,
           useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
           deps: [Http],
         }),
-        FlogoCoreModule,
-        FlogoCommonModule
+        NgCommonModule,
+        FlogoCommonModule,
+        MapperModule,
       ],
       declarations: [
-        ErrorDisplayComponent,
-        HelpComponent,
-        MapEditorComponent,
-        TransformJsonPanelComponent,
-        TransformMapperFieldComponent,
-        TransformMapperComponent,
-        VisualMapperComponent,
-        VisualMapperInputComponent,
-        VisualMapperOutputComponent,
         TransformComponent
-
       ], // declare the test component
       providers: [
         // { provide: RESTAPIFlowsService, useValue: flowsServiceStub },
@@ -87,7 +59,6 @@ xdescribe('Component: TransformComponent', () => {
         comp = fixture.componentInstance;
         de = fixture.debugElement;
         comp.flowId = 'root';
-        comp.fieldsConnections = { oldfield: { data: 'should be cleared' } };
         fixture.detectChanges();
 
         const postService = <PostService>fixture.debugElement.injector.get(PostService);
@@ -104,17 +75,6 @@ xdescribe('Component: TransformComponent', () => {
     expect(comp.isActive).toBeTruthy('Transform component is not active');
     expect(de.query(By.css('.flogo-transform-modal'))).not.toBeNull('Transform modal is not present');
   });
-
-  it('When mapping changes should clear the connection state', fakeAsync(() => {
-    fixture.detectChanges();
-    expect(comp.fieldsConnections).toEqual({
-      message: {
-        value: 'timer-trigger.params',
-        mapTo: 'message',
-        hasError: false
-      }
-    });
-  }));
 
   function getMockData() {
 
