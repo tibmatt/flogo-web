@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
 import {PostService} from '../../../common/services/post.service';
-import {SUB_EVENTS} from '../messages';
+import {SUB_EVENTS, PUB_EVENTS} from '../messages';
 
 @Component({
   selector: 'flogo-flows-detail-triggers-detail',
@@ -58,6 +58,6 @@ export class FlogoFlowsDetailTriggersDetailComponent implements OnDestroy {
   }
 
   onAction(event) {
-
+    this._postService.publish( _.assign( {}, PUB_EVENTS.triggerAction, { data : {action: event} } ) );
   }
 }

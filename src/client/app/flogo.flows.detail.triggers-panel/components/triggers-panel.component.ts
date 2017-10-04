@@ -1,13 +1,17 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {FLOGO_PROFILE_TYPE} from '../../../common/constants';
-import {objectFromArray} from '../../../common/utils';
+import {notification, objectFromArray} from '../../../common/utils';
 import {RESTAPITriggersService} from '../../../common/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '../../../common/services/restapi/v2/handlers-api.service';
 import {Router} from '@angular/router';
 import {PostService} from '../../../common/services/post.service';
-import {PUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS} from '../../flogo.flows.detail.triggers.detail/messages';
+import {
+  SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
+  PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
+} from '../../flogo.flows.detail.triggers.detail/messages';
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS} from '../../flogo.form-builder/messages';
+import {TranslateService} from 'ng2-translate';
 
 export interface IFlogoTriggers {
   name: string;
@@ -35,7 +39,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE};
   triggersList: any[] = [];
   allowMultipleTriggers = true;
-  currentTrigger: IFlogoTriggers;
+  currentTrigger: any;
   _subscriptions: any[];
   public showAddTrigger = false;
 
@@ -43,6 +47,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _converterService: UIModelConverterService,
               private _router: Router,
+              private translate: TranslateService,
               private _postService: PostService) {
   }
 
@@ -69,6 +74,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     this._subscriptions = [];
 
     const subs = [
+      _.assign({}, FLOGO_SELECT_TRIGGER_SUB_EVENTS.triggerAction , { callback: this._onActionTrigger.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.triggerDetailsChanged, { callback: this._taskDetailsChanged.bind(this) })
     ];
 
@@ -182,5 +188,47 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
           )
         );
       });
+  }
+
+  private _onActionTrigger(data: any, envelope: any) {
+    if (data.action === 'trigger-copy') {
+      this._restAPIHandlerService.deleteHandler(this.actionId, this.currentTrigger.id)
+        .then(() => {
+          const triggerSettings = _.pick(this.currentTrigger, [
+            'name',
+            'description',
+            'ref',
+            'settings'
+          ]);
+          return this._restAPITriggersService.createTrigger(this.appDetails.appId, triggerSettings);
+        })
+        .then((createdTrigger) => {
+          const settings = this.getSettingsCurrentHandler();
+          this.currentTrigger = createdTrigger;
+          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.actionId, settings);
+        })
+        .then((updatedHandler) => {
+          const message = this.translate.instant('CANVAS:COPIED-TRIGGER');
+          notification(message, 'success', 3000);
+          const updatedTriggerDetails = _.assign({}, this.currentTrigger);
+          const currentHandler = _.assign({}, _.pick(updatedHandler, [
+            'actionId',
+            'createdAt',
+            'outputs',
+            'settings',
+            'updatedAt'
+          ]));
+          updatedTriggerDetails.handlers.push(currentHandler);
+          updatedTriggerDetails.handler = currentHandler;
+          this.showTriggerDetails(updatedTriggerDetails);
+        });
+    }
+  }
+
+  private getSettingsCurrentHandler() {
+    const settings = _.cloneDeep(this.currentTrigger.handler.settings);
+    const outputs = _.cloneDeep(this.currentTrigger.handler.outputs);
+
+    return {settings, outputs};
   }
 }

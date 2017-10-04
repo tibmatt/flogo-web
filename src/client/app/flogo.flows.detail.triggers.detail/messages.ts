@@ -6,6 +6,10 @@ export const PUB_EVENTS = {
   selectTrigger : {
     channel : 'flogo-flows-detail-trigger',
     topic : 'select-trigger'
+  },
+  triggerAction : {
+    channel : 'flogo-flows-detail-tasks',
+    topic : 'trigger-action'
   }
 };
 

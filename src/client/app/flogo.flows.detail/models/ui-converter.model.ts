@@ -279,6 +279,11 @@ export abstract class AbstractModelConverter {
     });
     itemTrigger.name = trigger.name;
     itemTrigger.description = trigger.description;
+    itemTrigger.outputs.forEach(o => {
+      if (trigger.handler.outputs[o.name]) {
+        o.value = trigger.handler.outputs[o.name];
+      }
+    });
     return itemTrigger;
   }
 }
