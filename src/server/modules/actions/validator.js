@@ -89,6 +89,7 @@ function getSchema() {
                   'array',
                   'params',
                   'any',
+                  'complex_object'
                 ],
               },
               value: {

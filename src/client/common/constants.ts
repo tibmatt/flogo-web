@@ -26,7 +26,8 @@ export enum FLOGO_TASK_ATTRIBUTE_TYPE {
   ARRAY,
   PARAMS,
   ANY,
-  INT
+  INT,
+  COMPLEX_OBJECT
 }
 
 /**
@@ -39,7 +40,7 @@ export const FLOGO_PROCESS_MODELS = {
 
 /* construct the default values fo types */
 
-let defaultValues = <{[key : number] : any}>{};
+let defaultValues = <{[key: number]: any}>{};
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INT] = 0;
@@ -49,6 +50,7 @@ defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY] = [];
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS] = null;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ANY] = null;
+defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT] = null;
 
 export const DEFAULT_VALUES_OF_TYPES = defaultValues;
 /**

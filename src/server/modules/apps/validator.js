@@ -497,6 +497,7 @@ function fullAppSchema() {
                   'array',
                   'params',
                   'any',
+                  'complex_object'
                 ],
               },
               value: {
@@ -507,7 +508,7 @@ function fullAppSchema() {
                   'boolean',
                   'object',
                   'array',
-                  'null',
+                  'null'
                 ],
               },
             },
