@@ -36,7 +36,8 @@ module.exports = {
           TESTER_PORT: engineTester.settings.port,
           TESTER_SR_SERVER: stateRecorder.settings.host + ':' + stateRecorder.settings.port
         });
-
+        console.log('[DEBUG] starting test runner with env:');
+        console.log(env);
         let engineProcess = spawn(command, {
           cwd: binPath,
           env: Object.assign(

@@ -18,12 +18,14 @@ import { findGreatestNameIndex } from '../../common/utils/collection';
 const EDITABLE_FIELDS_CREATION = [
   'name',
   'description',
+  'metadata',
   'data',
 ];
 
 const EDITABLE_FIELDS_UPDATE = [
   'name',
   'description',
+  'metadata',
   'data',
 ];
 
