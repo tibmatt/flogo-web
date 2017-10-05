@@ -33,7 +33,8 @@ import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.dia
 import { FlogoModal } from '../../../common/services/modal.service';
 import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
-import {FlogoProfileService} from "../../../common/services/profile.service";
+import {FlogoProfileService} from '../../../common/services/profile.service';
+import {IFlogoTriggers} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 
 interface IPropsToUpdateFormBuilder {
   name: string;
@@ -52,6 +53,7 @@ export class FlogoCanvasComponent implements OnInit {
   public mainHandler: HandlerInfo;
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
+  public triggersList: IFlogoTriggers[];
 
 
   private runState = {
@@ -122,7 +124,6 @@ export class FlogoCanvasComponent implements OnInit {
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTransform, { callback: this._selectTransformFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback: this._selectTriggerFromDiagram.bind(this) }),
       _.assign({}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback: this._addTriggerFromTriggers.bind(this) }),
-      _.assign({}, FLOGO_SELECT_TASKS_SUB_EVENTS.triggerAction , { callback: this._onActionTrigger.bind(this) }),
       _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback: this._runFromTriggerinTile.bind(this) }),
@@ -221,9 +222,11 @@ export class FlogoCanvasComponent implements OnInit {
 
         this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
         this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-        if ( _.isEmpty( this.mainHandler.diagram ) || _.isEmpty( this.mainHandler.diagram.root ) ) {
+        if ( _.isEmpty( this.mainHandler.diagram ) || !this.mainHandler.diagram.hasTrigger ) {
           this.hasTrigger = false;
         }
+
+        this.triggersList = res.triggers;
 
         this.clearAllHandlersRunStatus();
         this.loading = false;

@@ -51,20 +51,11 @@ export class HandlersManager {
             outputs: {},
           });
           updateQuery = { $push: { [`triggers.${triggerIndex}.handlers`]: handler } };
-          const oldTriggerIndex = findPreviousTriggerIndexForAction(app.triggers, actionId);
-          if (oldTriggerIndex >= 0) {
-            updateQuery.$pull = { [`triggers.${oldTriggerIndex}.handlers`]: { actionId } };
-          }
         }
 
         return appsDb.update(findQuery, updateQuery, {})
           .then(modifiedCount => HandlersManager.findOne(triggerId, actionId));
       });
-
-
-    function findPreviousTriggerIndexForAction(triggers, forActionId) {
-      return triggers.findIndex(t => t.handlers.findIndex(h => h.actionId === forActionId) > -1);
-    }
   }
 
   static findOne(triggerId, actionId) {

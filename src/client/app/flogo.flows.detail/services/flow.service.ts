@@ -29,21 +29,23 @@ export class FlogoFlowService {
   getFlow(flowId: string): Promise<FlowData> {
     return this._flowAPIService.getFlow(flowId)
       .then((flow) => {
-        let flowDiagramDetails = _.omit(flow, [
-          'trigger',
-          'handler'
+        const flowDiagramDetails = _.omit(flow, [
+          'triggers'
         ]);
 
-        if (flow.trigger) {
-          let triggerDetails = Object.assign({}, flow.trigger);
-          return this._converterService.getWebFlowModel(flowDiagramDetails, triggerDetails)
-            .then(convertedFlow =>  this.processFlowModel(convertedFlow));
+        const triggers = flow.triggers;
+
+        if (flow.triggers.length > 0) {
+          return this._converterService.getWebFlowModel(flowDiagramDetails)
+            .then(convertedFlow =>  this.processFlowModel(convertedFlow, true))
+            .then(processedFlow => _.assign({}, processedFlow, {triggers}));
         } else {
           // TODO: should create empty diagram instead
           return {
             flow,
             root: { diagram: null, tasks: null },
-            errorHandler: { diagram: null, tasks: null }
+            errorHandler: { diagram: null, tasks: null },
+            triggers
           };
         }
       });
@@ -63,7 +65,7 @@ export class FlogoFlowService {
     return this._flowAPIService.findFlowsByName(name, appId);
   }
 
-  processFlowModel(model): Promise<FlowData> {
+  processFlowModel(model, hasTrigger?: boolean): Promise<FlowData> {
     let diagram: IFlogoFlowDiagram;
     let errorDiagram: IFlogoFlowDiagram;
     let tasks: IFlogoFlowDiagramTaskDictionary;
@@ -95,9 +97,12 @@ export class FlogoFlowService {
         errorDiagram = flow.errorHandler.paths = <IFlogoFlowDiagram>{
           root: {},
           nodes: {}
-        }
+        };
       } else {
         errorDiagram = flow.errorHandler.paths;
+      }
+      if (hasTrigger) {
+        diagram.hasTrigger = hasTrigger;
       }
     }
     return Promise.resolve({

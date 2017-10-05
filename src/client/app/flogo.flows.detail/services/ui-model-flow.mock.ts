@@ -343,13 +343,16 @@ export let mockResultantUIFlow = {
         "__status": {"isSelected": false},
         "children": ["some_id_0"],
         "parents": [],
-        "type": 3,
+        "type": 5,
         "taskID": "some_id_1"
       },
       "some_id_2": {
         "id": "some_id_2",
         "__status": {"isSelected": false},
-        "children": ["some_id_0"],
+        "children": [
+          "some_id_0",
+          "some_id_1"
+        ],
         "parents": ["some_id_0"],
         "type": 5,
         "taskID": "some_id_2"
@@ -357,10 +360,7 @@ export let mockResultantUIFlow = {
       "some_id_3": {
         "id": "some_id_3",
         "__status": {"isSelected": false},
-        "children": [
-          "some_id_0",
-          "some_id_1"
-        ],
+        "children": [],
         "parents": ["some_id_0"],
         "type": 5,
         "taskID": "some_id_3"
@@ -376,9 +376,9 @@ export let mockResultantUIFlow = {
       "some_id_5": {
         "id": "some_id_5",
         "__status": {"isSelected": false},
-        "children": [],
+        "children": ["some_id_0"],
         "parents": ["some_id_0"],
-        "type": 5,
+        "type": 6,
         "taskID": "some_id_5"
       },
       "some_id_6": {
@@ -388,74 +388,11 @@ export let mockResultantUIFlow = {
         "parents": ["some_id_0"],
         "type": 6,
         "taskID": "some_id_6"
-      },
-      "some_id_7": {
-        "id": "some_id_7",
-        "__status": {"isSelected": false},
-        "children": ["some_id_0"],
-        "parents": ["some_id_0"],
-        "type": 6,
-        "taskID": "some_id_7"
       }
     }
   },
   "items": {
-    "some_id_8": {
-      "name": "Trigger Request",
-      "title": "Timer",
-      "version": "0.0.1",
-      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer",
-      "description": "Simple Timer trigger",
-      "installed": true,
-      "settings": [],
-      "outputs": [
-        {
-          "name": "params",
-          "type": 6
-        },
-        {
-          "name": "content",
-          "type": 4
-        }
-      ],
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
-      "endpoint": {
-        "settings": [
-          {
-            "name": "repeating",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "startDate",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "hours",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "minutes",
-            "type": "string",
-            "value": "5"
-          },
-          {
-            "name": "seconds",
-            "type": "string",
-            "value": null
-          }
-        ]
-      },
-      "__props": {"errors": []},
-      "__status": {},
-      "id": "some_id_8",
-      "nodeId": "some_id_8",
-      "type": 0,
-      "triggerType": "tibco-timer"
-    },
-    "some_id_9": {
+    "some_id_7": {
       "name": "First Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -497,11 +434,11 @@ export let mockResultantUIFlow = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_9",
+      "id": "some_id_7",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_10": {
+    "some_id_8": {
       "name": "Counter1",
       "title": "Increment Counter",
       "version": "0.0.1",
@@ -543,11 +480,11 @@ export let mockResultantUIFlow = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_10",
+      "id": "some_id_8",
       "type": 1,
       "activityType": "tibco-counter"
     },
-    "some_id_11": {
+    "some_id_9": {
       "name": "Second Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -589,11 +526,11 @@ export let mockResultantUIFlow = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_11",
+      "id": "some_id_9",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_12": {
+    "some_id_10": {
       "name": "Third Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -635,19 +572,19 @@ export let mockResultantUIFlow = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_12",
+      "id": "some_id_10",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_13": {
-      "id": "some_id_13",
+    "some_id_11": {
+      "id": "some_id_11",
       "type": 2,
       "description": undefined,
       "name": undefined,
       "condition": "true"
     },
-    "some_id_14": {
-      "id": "some_id_14",
+    "some_id_12": {
+      "id": "some_id_12",
       "type": 2,
       "description": undefined,
       "name": undefined,
@@ -677,13 +614,16 @@ export let mockResultantUIFlowWithError = {
         "__status": {"isSelected": false},
         "children": ["some_id_0"],
         "parents": [],
-        "type": 3,
+        "type": 5,
         "taskID": "some_id_1"
       },
       "some_id_2": {
         "id": "some_id_2",
         "__status": {"isSelected": false},
-        "children": ["some_id_0"],
+        "children": [
+          "some_id_0",
+          "some_id_1"
+        ],
         "parents": ["some_id_0"],
         "type": 5,
         "taskID": "some_id_2"
@@ -691,10 +631,7 @@ export let mockResultantUIFlowWithError = {
       "some_id_3": {
         "id": "some_id_3",
         "__status": {"isSelected": false},
-        "children": [
-          "some_id_0",
-          "some_id_1"
-        ],
+        "children": [],
         "parents": ["some_id_0"],
         "type": 5,
         "taskID": "some_id_3"
@@ -710,9 +647,9 @@ export let mockResultantUIFlowWithError = {
       "some_id_5": {
         "id": "some_id_5",
         "__status": {"isSelected": false},
-        "children": [],
+        "children": ["some_id_0"],
         "parents": ["some_id_0"],
-        "type": 5,
+        "type": 6,
         "taskID": "some_id_5"
       },
       "some_id_6": {
@@ -722,74 +659,11 @@ export let mockResultantUIFlowWithError = {
         "parents": ["some_id_0"],
         "type": 6,
         "taskID": "some_id_6"
-      },
-      "some_id_7": {
-        "id": "some_id_7",
-        "__status": {"isSelected": false},
-        "children": ["some_id_0"],
-        "parents": ["some_id_0"],
-        "type": 6,
-        "taskID": "some_id_7"
       }
     }
   },
   "items": {
-    "some_id_8": {
-      "name": "Trigger Request",
-      "title": "Timer",
-      "version": "0.0.1",
-      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer",
-      "description": "Simple Timer trigger",
-      "installed": true,
-      "settings": [],
-      "outputs": [
-        {
-          "name": "params",
-          "type": 6
-        },
-        {
-          "name": "content",
-          "type": 4
-        }
-      ],
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
-      "endpoint": {
-        "settings": [
-          {
-            "name": "repeating",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "startDate",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "hours",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "minutes",
-            "type": "string",
-            "value": "5"
-          },
-          {
-            "name": "seconds",
-            "type": "string",
-            "value": null
-          }
-        ]
-      },
-      "__props": {"errors": []},
-      "__status": {},
-      "id": "some_id_8",
-      "nodeId": "some_id_8",
-      "type": 0,
-      "triggerType": "tibco-timer"
-    },
-    "some_id_9": {
+    "some_id_7": {
       "name": "First Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -831,11 +705,11 @@ export let mockResultantUIFlowWithError = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_9",
+      "id": "some_id_7",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_10": {
+    "some_id_8": {
       "name": "Counter1",
       "title": "Increment Counter",
       "version": "0.0.1",
@@ -877,11 +751,11 @@ export let mockResultantUIFlowWithError = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_10",
+      "id": "some_id_8",
       "type": 1,
       "activityType": "tibco-counter"
     },
-    "some_id_11": {
+    "some_id_9": {
       "name": "Second Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -923,11 +797,11 @@ export let mockResultantUIFlowWithError = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_11",
+      "id": "some_id_9",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_12": {
+    "some_id_10": {
       "name": "Third Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -969,19 +843,19 @@ export let mockResultantUIFlowWithError = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_12",
+      "id": "some_id_10",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_13": {
-      "id": "some_id_13",
+    "some_id_11": {
+      "id": "some_id_11",
       "type": 2,
       "description": undefined,
       "name": undefined,
       "condition": "true"
     },
-    "some_id_14": {
-      "id": "some_id_14",
+    "some_id_12": {
+      "id": "some_id_12",
       "type": 2,
       "description": undefined,
       "name": undefined,
@@ -1150,13 +1024,16 @@ export let mockResultantUIFlowWithTransformations = {
         "__status": {"isSelected": false},
         "children": ["some_id_0"],
         "parents": [],
-        "type": 3,
+        "type": 5,
         "taskID": "some_id_1"
       },
       "some_id_2": {
         "id": "some_id_2",
         "__status": {"isSelected": false},
-        "children": ["some_id_0"],
+        "children": [
+          "some_id_0",
+          "some_id_1"
+        ],
         "parents": ["some_id_0"],
         "type": 5,
         "taskID": "some_id_2"
@@ -1164,10 +1041,7 @@ export let mockResultantUIFlowWithTransformations = {
       "some_id_3": {
         "id": "some_id_3",
         "__status": {"isSelected": false},
-        "children": [
-          "some_id_0",
-          "some_id_1"
-        ],
+        "children": [],
         "parents": ["some_id_0"],
         "type": 5,
         "taskID": "some_id_3"
@@ -1183,9 +1057,9 @@ export let mockResultantUIFlowWithTransformations = {
       "some_id_5": {
         "id": "some_id_5",
         "__status": {"isSelected": false},
-        "children": [],
+        "children": ["some_id_0"],
         "parents": ["some_id_0"],
-        "type": 5,
+        "type": 6,
         "taskID": "some_id_5"
       },
       "some_id_6": {
@@ -1195,74 +1069,11 @@ export let mockResultantUIFlowWithTransformations = {
         "parents": ["some_id_0"],
         "type": 6,
         "taskID": "some_id_6"
-      },
-      "some_id_7": {
-        "id": "some_id_7",
-        "__status": {"isSelected": false},
-        "children": ["some_id_0"],
-        "parents": ["some_id_0"],
-        "type": 6,
-        "taskID": "some_id_7"
       }
     }
   },
   "items": {
-    "some_id_8": {
-      "name": "Trigger Request",
-      "title": "Timer",
-      "version": "0.0.1",
-      "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/timer",
-      "description": "Simple Timer trigger",
-      "installed": true,
-      "settings": [],
-      "outputs": [
-        {
-          "name": "params",
-          "type": 6
-        },
-        {
-          "name": "content",
-          "type": 4
-        }
-      ],
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer",
-      "endpoint": {
-        "settings": [
-          {
-            "name": "repeating",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "startDate",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "hours",
-            "type": "string",
-            "value": null
-          },
-          {
-            "name": "minutes",
-            "type": "string",
-            "value": "5"
-          },
-          {
-            "name": "seconds",
-            "type": "string",
-            "value": null
-          }
-        ]
-      },
-      "__props": {"errors": []},
-      "__status": {},
-      "id": "some_id_8",
-      "nodeId": "some_id_8",
-      "type": 0,
-      "triggerType": "tibco-timer"
-    },
-    "some_id_9": {
+    "some_id_7": {
       "name": "First Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -1310,11 +1121,11 @@ export let mockResultantUIFlowWithTransformations = {
           "mapTo": "message"
         }
       ],
-      "id": "some_id_9",
+      "id": "some_id_7",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_10": {
+    "some_id_8": {
       "name": "Counter1",
       "title": "Increment Counter",
       "version": "0.0.1",
@@ -1356,11 +1167,11 @@ export let mockResultantUIFlowWithTransformations = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_10",
+      "id": "some_id_8",
       "type": 1,
       "activityType": "tibco-counter"
     },
-    "some_id_11": {
+    "some_id_9": {
       "name": "Second Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -1402,11 +1213,11 @@ export let mockResultantUIFlowWithTransformations = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_11",
+      "id": "some_id_9",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_12": {
+    "some_id_10": {
       "name": "Third Log",
       "title": "Log Message",
       "version": "0.0.1",
@@ -1448,162 +1259,23 @@ export let mockResultantUIFlowWithTransformations = {
         ]
       },
       "inputMappings": [],
-      "id": "some_id_12",
+      "id": "some_id_10",
       "type": 1,
       "activityType": "tibco-log"
     },
-    "some_id_13": {
-      "id": "some_id_13",
+    "some_id_11": {
+      "id": "some_id_11",
       "type": 2,
       "description": undefined,
       "name": undefined,
       "condition": "true"
     },
-    "some_id_14": {
-      "id": "some_id_14",
+    "some_id_12": {
+      "id": "some_id_12",
       "type": 2,
       "description": undefined,
       "name": undefined,
       "condition": "false"
-    }
-  },
-  "errorHandler": {
-    "name": "Test flow 1",
-    "description": "Hello world!!",
-    "appId": "e9712c97-4a9e-4e95-b815-33204ba1fb3a",
-    "app": {
-      "id": "e9712c97-4a9e-4e95-b815-33204ba1fb3a",
-      "name": "Sample Application",
-      "normalizedName": "sample-application",
-      "version": "",
-      "description": "",
-      "createdAt": "2017-03-21T09:43:38.614Z",
-      "updatedAt": "2017-03-21T09:43:53.073Z"
-    },
-    "paths": {
-      "root": {"is": "some_id_0"},
-      "nodes": {
-        "some_id_1": {
-          "id": "some_id_1",
-          "__status": {"isSelected": false},
-          "children": ["some_id_0"],
-          "parents": [],
-          "type": 10,
-          "taskID": "some_id_1"
-        },
-        "some_id_2": {
-          "id": "some_id_2",
-          "__status": {"isSelected": false},
-          "children": [],
-          "parents": ["some_id_0"],
-          "type": 5,
-          "taskID": "some_id_2"
-        }
-      }
-    },
-    "items": {
-      "some_id_3": {
-        "id": "some_id_3",
-        "type": 0,
-        "version": "",
-        "name": "On Error",
-        "description": "",
-        "title": "On Error",
-        "activityType": "",
-        "triggerType": "__error-trigger",
-        "attributes": {
-          "outputs": [
-            {
-              "name": "activity",
-              "type": 0,
-              "title": "activity",
-              "value": ""
-            },
-            {
-              "name": "message",
-              "type": 0,
-              "title": "message",
-              "value": ""
-            },
-            {
-              "name": "data",
-              "type": 7,
-              "title": "data",
-              "value": ""
-            }
-          ]
-        },
-        "inputMappings": [],
-        "outputMappings": [],
-        "outputs": [
-          {
-            "name": "activity",
-            "type": 0,
-            "title": "activity",
-            "value": ""
-          },
-          {
-            "name": "message",
-            "type": 0,
-            "title": "message",
-            "value": ""
-          },
-          {
-            "name": "data",
-            "type": 7,
-            "title": "data",
-            "value": ""
-          }
-        ],
-        "__props": {"errors": []},
-        "__status": {}
-      },
-      "some_id_4": {
-        "name": "Error Log",
-        "title": "Log Message",
-        "version": "0.0.1",
-        "homepage": "https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log",
-        "description": "Simple Log Activity",
-        "installed": true,
-        "settings": [],
-        "outputs": [],
-        "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
-        "endpoint": {"settings": []},
-        "__props": {"errors": []},
-        "__status": {},
-        "attributes": {
-          "inputs": [
-            {
-              "name": "message",
-              "type": 0,
-              "value": "Error Log 1",
-              "required": false
-            },
-            {
-              "name": "flowInfo",
-              "type": 3,
-              "value": "true",
-              "required": false
-            },
-            {
-              "name": "addToFlow",
-              "type": 3,
-              "value": "true",
-              "required": false
-            }
-          ],
-          "outputs": [
-            {
-              "name": "message",
-              "type": 0
-            }
-          ]
-        },
-        "inputMappings": [],
-        "id": "some_id_4",
-        "type": 1,
-        "activityType": "tibco-log"
-      }
     }
   }
 };

@@ -247,6 +247,15 @@ export function flogoFlowToJSON( inFlow: flowToJSON_InputFlow ): flowToJSON_Flow
 
       const rootNode = flowPathNodes[ flowPathRoot.is ];
 
+      /*
+      * add the root node to tasks of the root flow as it now is an activity
+      */
+
+      const taskInfo = _prepareTaskInfo(<IFlogoFlowDiagramTask>flowItems[rootNode.taskID]);
+      if (!_.isEmpty(taskInfo)) {
+        rootTask.tasks.push(taskInfo);
+      }
+
       _traversalDiagram( rootNode, flowPathNodes, flowItems, rootTask.tasks, rootTask.links );
 
       return rootTask;
@@ -354,54 +363,9 @@ export function flogoFlowToJSON( inFlow: flowToJSON_InputFlow ): flowToJSON_Flow
          * add task
          */
 
-        const task = <IFlogoFlowDiagramTask>tasks[ childNode.taskID ];
-
-        if ( _isValidInternalTaskInfo( task ) ) {
-          const taskInfo = <flowToJSON_Task>{};
-
-          taskInfo.id = convertTaskID( task.id );
-          taskInfo.name = _.get( task, 'name', '' );
-          taskInfo.description = _.get( task, 'description', '' );
-          taskInfo.type = task.type;
-          taskInfo.activityType = task.activityType;
-          taskInfo.activityRef = task.ref;
-
-
-          /* add `inputs` of a task to the `attributes` of the taskInfo in flow.json */
-
-          taskInfo.attributes = _parseFlowAttributes( <IFlogoFlowDiagramTaskAttribute[]>_.get( task,
-            'attributes.inputs' ) );
-
-          // filter null/undefined/{}/[]
-          // enabling this block, remove attribute settings, like (required)
-          /*
-          taskInfo.attributes = _.filter( taskInfo.attributes, ( attr : any )=> {
-            return !(_.isNil( attr.value ) || (_.isObject( attr.value ) && _.isEmpty( attr.value )));
-          } );
-          */
-
-          /* add inputMappings */
-
-          const inputMappings = _parseFlowMappings( <IFlogoFlowDiagramTaskAttributeMapping[]>_.get( task,
-            'inputMappings' ) );
-
-          if ( !_.isEmpty( inputMappings ) ) {
-            taskInfo.inputMappings = inputMappings;
-          }
-
-          /* add outputMappings */
-
-          const outputMappings = _parseFlowMappings( <IFlogoFlowDiagramTaskAttributeMapping[]>_.get( task,
-            'outputMappings' ) );
-
-          if ( !_.isEmpty( outputMappings ) ) {
-            taskInfo.ouputMappings = outputMappings;
-          }
-
-          tasksDest.push( taskInfo );
-        } else {
-          INFO && console.warn( 'Invalid task found.' );
-          INFO && console.warn( task );
+        const taskInfo = _prepareTaskInfo(<IFlogoFlowDiagramTask>tasks[ childNode.taskID ]);
+        if (!_.isEmpty(taskInfo)) {
+          tasksDest.push(taskInfo);
         }
 
         /*
@@ -571,6 +535,52 @@ export function flogoFlowToJSON( inFlow: flowToJSON_InputFlow ): flowToJSON_Flow
     // TODO: maybe the activity should expose a property so we know it can reply?
     return !!_.find(tasks, task => (<any>task).activityRef == 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
 
+  }
+
+  function _prepareTaskInfo(task: IFlogoFlowDiagramTask) {
+    const taskInfo = <flowToJSON_Task>{};
+    if (_isValidInternalTaskInfo(task)) {
+      taskInfo.id = convertTaskID(task.id);
+      taskInfo.name = _.get(task, 'name', '');
+      taskInfo.description = _.get(task, 'description', '');
+      taskInfo.type = task.type;
+      taskInfo.activityType = task.activityType;
+      taskInfo.activityRef = task.ref;
+
+
+      /* add `inputs` of a task to the `attributes` of the taskInfo in flow.json */
+
+      taskInfo.attributes = _parseFlowAttributes(<IFlogoFlowDiagramTaskAttribute[]>_.get(task, 'attributes.inputs'));
+
+      // filter null/undefined/{}/[]
+      // enabling this block, remove attribute settings, like (required)
+      /*
+      taskInfo.attributes = _.filter( taskInfo.attributes, ( attr : any )=> {
+        return !(_.isNil( attr.value ) || (_.isObject( attr.value ) && _.isEmpty( attr.value )));
+      } );
+      */
+
+      /* add inputMappings */
+
+      const inputMappings = _parseFlowMappings(<IFlogoFlowDiagramTaskAttributeMapping[]>_.get(task, 'inputMappings'));
+
+      if (!_.isEmpty(inputMappings)) {
+        taskInfo.inputMappings = inputMappings;
+      }
+
+      /* add outputMappings */
+
+      const outputMappings = _parseFlowMappings(<IFlogoFlowDiagramTaskAttributeMapping[]>_.get(task, 'outputMappings'));
+
+      if (!_.isEmpty(outputMappings)) {
+        taskInfo.ouputMappings = outputMappings;
+      }
+
+    } else {
+      INFO && console.warn('Invalid task found.');
+      INFO && console.warn(task);
+    }
+    return taskInfo;
   }
 
   return flowJSON;
