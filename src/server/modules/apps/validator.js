@@ -1,6 +1,6 @@
 import defaults from 'lodash/defaults';
 import Ajv from 'ajv';
-import {FLOGO_PROFILE_TYPES} from "../../common/constants";
+import { FLOGO_PROFILE_TYPES } from '../../common/constants';
 
 function validate(schema, data, options = {}, customValidations) {
   const ajv = new Ajv(options);
@@ -20,7 +20,7 @@ class Validator {
 
   static validateSimpleApp(data, isDeviceType) {
     let validationSchema;
-    if(isDeviceType) {
+    if (isDeviceType) {
       validationSchema = deviceAppSchema();
     } else {
       validationSchema = appSchema();
@@ -53,14 +53,12 @@ class Validator {
     options = defaults({}, options, { removeAdditional: false, useDefaults: false, allErrors: true, verbose: true });
     let customValidations;
     if (contribVerify) {
-      const makeInstalledValidator = (keyword, collection, type) => {
-        return function validator(schema, vData) {
-          const isInstalled = collection.includes(vData);
-          if (!isInstalled) {
-            validator.errors = [{ keyword, message: `${type} "${vData}" is not installed`, data }];
-          }
-          return isInstalled;
-        };
+      const makeInstalledValidator = (keyword, collection, type) => function validator(schema, vData) {
+        const isInstalled = collection.includes(vData);
+        if (!isInstalled) {
+          validator.errors = [{ keyword, message: `${type} "${vData}" is not installed`, data }];
+        }
+        return isInstalled;
       };
 
       customValidations = [
@@ -70,7 +68,7 @@ class Validator {
     }
 
     let schemaToUse;
-    if(profileType === FLOGO_PROFILE_TYPES.MICRO_SERVICE){
+    if (profileType === FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
       schemaToUse = fullAppSchema();
     } else {
       schemaToUse = fullDeviceAppSchema();
@@ -101,7 +99,7 @@ function activityDeviceSchemaCreate() {
     required: [
       'ref',
       'name',
-      'type'
+      'type',
     ],
     properties: {
       name: {
@@ -115,10 +113,10 @@ function activityDeviceSchemaCreate() {
         type: 'string',
       },
       type: {
-        type: 'string'
+        type: 'string',
       },
       version: {
-        type: 'string'
+        type: 'string',
       },
       ref: {
         type: 'string',
@@ -130,8 +128,8 @@ function activityDeviceSchemaCreate() {
       device_support: {
         type: 'array',
         default: [],
-      }
-    }
+      },
+    },
   };
 }
 
@@ -143,7 +141,7 @@ function triggerDeviceSchemaCreate() {
     required: [
       'ref',
       'name',
-      'type'
+      'type',
     ],
     properties: {
       name: {
@@ -157,10 +155,10 @@ function triggerDeviceSchemaCreate() {
         type: 'string',
       },
       type: {
-        type: 'string'
+        type: 'string',
       },
       version: {
-        type: 'string'
+        type: 'string',
       },
       ref: {
         type: 'string',
@@ -176,8 +174,8 @@ function triggerDeviceSchemaCreate() {
       device_support: {
         type: 'array',
         default: [],
-      }
-    }
+      },
+    },
   };
 }
 
@@ -237,12 +235,12 @@ function deviceAppSchema() {
     required: [
       'name',
       'type',
-      'device'
+      'device',
     ],
     properties: {
       name: {
         type: 'string',
-        minLength: 1
+        minLength: 1,
       },
       description: {
         type: 'string',
@@ -254,27 +252,27 @@ function deviceAppSchema() {
       device: {
         type: 'object',
         required: [
-          'profile'
+          'profile',
         ],
         properties: {
           profile: {
-            type: 'string'
+            type: 'string',
           },
           deviceType: {
             type: 'string',
-            default: 'Feather M0 WIFI'
+            default: 'Feather M0 WIFI',
           },
           settings: {
-            type: 'object'
-          }
-        }
+            type: 'object',
+          },
+        },
       },
       version: {
         type: 'string',
         default: '0.1.0',
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
 function appSchema() {
@@ -413,6 +411,38 @@ function fullAppSchema() {
       },
     },
     definitions: {
+      ActionMetadata: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          input: {
+            $ref: '#/definitions/ActionMetadata/definitions/AttributeCollection',
+          },
+          output: {
+            $ref: '#/definitions/ActionMetadata/definitions/AttributeCollection',
+          },
+        },
+        definitions: {
+          AttributeCollection: {
+            type: 'array',
+            items: {
+              $ref: '#/definitions/ActionMetadata/definitions/Attribute',
+            },
+          },
+          Attribute: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+              },
+              type: {
+                type: 'string',
+              },
+            },
+            required: ['name', 'type'],
+          },
+        },
+      },
       ActionFlow: {
         type: 'object',
         additionalProperties: false,
@@ -422,6 +452,9 @@ function fullAppSchema() {
           },
           ref: {
             type: 'string',
+          },
+          metadata: {
+            $ref: '#/definitions/ActionMetadata',
           },
           data: {
             type: 'object',
@@ -497,7 +530,7 @@ function fullAppSchema() {
                   'array',
                   'params',
                   'any',
-                  'complex_object'
+                  'complex_object',
                 ],
               },
               value: {
@@ -508,7 +541,7 @@ function fullAppSchema() {
                   'boolean',
                   'object',
                   'array',
-                  'null'
+                  'null',
                 ],
               },
             },
@@ -702,7 +735,7 @@ function fullDeviceAppSchema() {
       'version',
       'triggers',
       'actions',
-      'device'
+      'device',
     ],
     properties: {
       name: {
@@ -721,13 +754,13 @@ function fullDeviceAppSchema() {
       device: {
         type: 'object',
         required: [
-          'profile'
+          'profile',
         ],
         properties: {
           profile: {
-            type: 'string'
-          }
-        }
+            type: 'string',
+          },
+        },
       },
       triggers: {
         additionalProperties: false,
@@ -755,14 +788,14 @@ function fullDeviceAppSchema() {
               default: null,
             },
             actionId: {
-              type: 'string'
-            }
+              type: 'string',
+            },
           },
           required: [
             'id',
             'ref',
             'actionId',
-            'settings'
+            'settings',
           ],
         },
       },
@@ -812,15 +845,15 @@ function fullDeviceAppSchema() {
             type: 'array',
             default: [],
             items: {
-              $ref: "#/definitions/Flow/definitions/task"
-            }
+              $ref: '#/definitions/Flow/definitions/task',
+            },
           },
           links: {
             type: 'array',
             items: {
               $ref: '#/definitions/Flow/definitions/link',
             },
-          }
+          },
         },
         required: [
           'tasks',
@@ -829,7 +862,7 @@ function fullDeviceAppSchema() {
         definitions: {
           attribute: {
             title: 'attribute',
-            type: 'object'
+            type: 'object',
           },
           link: {
             title: 'link',
@@ -882,16 +915,16 @@ function fullDeviceAppSchema() {
               },
               attributes: {
                 $ref: '#/definitions/Flow/definitions/attribute',
-              }
+              },
             },
             required: [
               'id',
               'name',
               'activityRef',
             ],
-          }
-        }
-      }
-    }
+          },
+        },
+      },
+    },
   };
 }

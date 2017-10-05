@@ -25,6 +25,9 @@ function getSchema() {
       ref: {
         type: 'string',
       },
+      metadata: {
+        $ref: '#/definitions/Metadata',
+      },
       data: {
         type: 'object',
         default: { },
@@ -37,6 +40,38 @@ function getSchema() {
       },
     },
     definitions: {
+      Metadata: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          input: {
+            $ref: '#/definitions/Metadata/definitions/AttributeCollection',
+          },
+          output: {
+            $ref: '#/definitions/Metadata/definitions/AttributeCollection',
+          },
+        },
+        definitions: {
+          AttributeCollection: {
+            type: 'array',
+            items: {
+              $ref: '#/definitions/Metadata/definitions/Attribute',
+            },
+          },
+          Attribute: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+              },
+              type: {
+                type: 'string',
+              },
+            },
+            required: ['name', 'type'],
+          },
+        },
+      },
       Flow: {
         title: 'flow',
         type: 'object',
@@ -89,7 +124,7 @@ function getSchema() {
                   'array',
                   'params',
                   'any',
-                  'complex_object'
+                  'complex_object',
                 ],
               },
               value: {
