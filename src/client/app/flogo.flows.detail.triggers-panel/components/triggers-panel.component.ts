@@ -159,6 +159,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
           this.triggers.push(trigger);
         }
         this.makeTriggersListForAction();
+        this.manageAddTriggerInView();
     });
   }
 
