@@ -27,18 +27,79 @@
     top: -23px;
     right: -16px;
   }
+
+  .flogo-icon-trigger{
+    color: #1B4874;
+  }
+}
+
+.trigger_block {
+  position: relative;
+
+  .trigger_menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 40px;
+    z-index: 2;
+    width: 135px;
+
+    .trigger_menu-list{
+      margin: 0;
+      border: solid 1px #d8d8d8;
+      border-radius: 5px;
+      background: #FFFFFF;
+
+      .trigger_menu-item {
+        margin: 5px 0;
+        border: 0;
+        font-size: 0.65em;
+        padding: 5px 5px 5px 20px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: rgba(197, 202, 233, 0.2);
+        }
+
+        .trigger_menu-icon {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}
+
+.trigger_block--selected {
+  .trigger {
+    background: @color-trigger-selected-bg-color;
+    cursor: pointer;
+    position: relative;
+    z-index: 3;
+
+    &:after {
+      background: @color-trigger-selected-bg-color;
+    }
+
+    .flogo-icon-trigger{
+      color: #FFFFFF;
+    }
+  }
+
+  .trigger_menu--open {
+    display: initial;
+  }
 }
 
 .trigger--add {
   background: none;
-  border: @trigger-border-width dashed @color-trigger-bg-color;
-  color: @color-trigger-bg-color;
+  border: @trigger-border-width dashed #79b8dc;
+  color: #79b8dc;
   border-right: none;
   font-size: 0.85em;
 
   &:after {
     background: none;
-    border: 0 dashed @color-trigger-bg-color;
+    border: 0 dashed #79b8dc;
     border-top-width: @trigger-border-width;
     border-right-width: @trigger-border-width;
     height: 20px;

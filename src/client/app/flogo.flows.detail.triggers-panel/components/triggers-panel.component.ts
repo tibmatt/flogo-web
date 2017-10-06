@@ -41,6 +41,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   allowMultipleTriggers = true;
   currentTrigger: any;
   _subscriptions: any[];
+  selectedTriggerID: string;
+  displayTriggerMenuPopover: boolean;
   public showAddTrigger = false;
 
   constructor(private _restAPITriggersService: RESTAPITriggersService,
@@ -87,12 +89,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   private _taskDetailsChanged(data: any, envelope: any) {
     console.group('Save trigger details to flow');
-    let updatePromise: any = Promise.resolve(true);
-
     if (data.changedStructure === 'settings') {
-      updatePromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings});
+      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings});
     } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
-      updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
+      this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
         settings: data.endpointSettings,
         outputs: data.outputs
       });
@@ -116,11 +116,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   }
 
   private manageAddTriggerInView() {
-    if (this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE && this.triggersList.length > 0) {
-      this.allowMultipleTriggers = false;
-    } else {
-      this.allowMultipleTriggers = true;
-    }
+    this.allowMultipleTriggers = !(this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE && this.triggersList.length > 0);
   }
 
   openAddTriggerModel() {
@@ -162,7 +158,21 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     });
   }
 
+  showTriggerMenu(triggerId) {
+    this.selectedTriggerID = triggerId;
+    this.displayTriggerMenuPopover = true;
+  }
+
+  /*resetTriggerSelectState(triggerId) {
+    this.selectedTriggerID = '';
+  }*/
+
+  private hideTriggerMenuPopover() {
+    this.displayTriggerMenuPopover = false;
+  }
+
   showTriggerDetails(trigger) {
+    this.hideTriggerMenuPopover();
     this.currentTrigger = _.cloneDeep(trigger);
     this._router.navigate(['/flows', this.actionId, 'trigger', trigger.id])
       .then(() => this._converterService.getTriggerTask(trigger))
