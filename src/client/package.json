@@ -13,7 +13,8 @@
     "start": "ng serve",
     "build": "ng build --env=prod --target=production",
     "lint": "ng lint --type-check --format=stylish",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "check": "npm run lint && npm run test:once"
   },
   "author": "TIBCO Software Inc.",
   "private": true,
@@ -60,9 +61,12 @@
     "jquery": "^2.2.2",
     "lodash": "^4.6.1",
     "moment": "^2.13.0",
+    "monaco-editor": "^0.10.0",
     "ng2-bs3-modal": "^0.10.4",
     "ng2-translate": "~5.0.0",
+    "ngx-perfect-scrollbar": "2.5.2",
     "postal": "^1.0.8",
+    "primeng": "2.0.6",
     "reflect-metadata": "0.1.8",
     "rxjs": "5.0.1",
     "socket.io-client": "~1.5.1",

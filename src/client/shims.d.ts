@@ -10,6 +10,9 @@ import * as __d3 from 'd3';
 import * as __moment from 'moment';
 import * as __jQuery from 'jquery';
 import * as postal from 'postal';
+// import * as __monaco from 'monaco-editor';
+import 'monaco-editor/monaco.d';
+
 declare global {
   const _: typeof __lodash;
   const d3: typeof __d3;

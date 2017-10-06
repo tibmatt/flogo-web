@@ -1,6 +1,15 @@
 # Third party dependencies change log
 All notable changes to this project will be documented in this file.
 
+## v0.4.2
+
+### Client dependencies
+
+- Added:
+  - [monaco-editor@0.10.0](https://github.com/Microsoft/monaco-editor) (MIT) 
+  - [ngx-perfect-scrollbar@2.5.2](https://github.com/zefoy/ngx-perfect-scrollbar) (MIT)
+  - [primeng@2.0.6](https://github.com/primefaces/primeng) (MIT)
+
 ## v0.4.0
 
 ### Root Development Dependencies

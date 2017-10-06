@@ -51,13 +51,25 @@ gulp.task('build', 'Build in production mode (does not start the server or db, u
 gulp.task('dev', 'Build and start in development mode', cb => {
 
   runSequence(
+    'dev-server',
+    'dev.client.start',
+    cb
+  );
+
+});
+
+/**
+ * Build and start development mode
+ */
+gulp.task('dev-server', 'Build and start in development mode', cb => {
+
+  runSequence(
     'clean',
     'install.server.dev',
     'install.client.dev',
     'dev.server.build',
     ['dev.server.watch', 'install.server.dist'],
     'dev.start',
-    'dev.client.start',
     cb
   );
 

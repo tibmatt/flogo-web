@@ -1,0 +1,128 @@
+.modal-wrapper {
+  background-color: #fff;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  // todo: proper z-index
+  z-index: 999;
+}
+
+.transform-modal {
+  display: flex;
+  flex-direction: column;
+  padding: 39px 70px;
+
+  height: 100%;
+  width: 100%;
+}
+
+.transform-modal__header {
+  border-bottom: 1px solid #d8d8d8;
+  height: 61px;
+  margin-bottom: 25px;
+  padding-bottom: 16px;
+  position: relative;
+  z-index: 0;
+}
+
+.transform-modal__content {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.transform-modal__close {
+  background: url('/assets/svg/flogo.close.svg') no-repeat center center;
+  border: none;
+  position: absolute;
+  height: 19px;
+  right: -40px;
+  top: -20px;
+  width: 19px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+
+  &__title {
+    background: url('/assets/svg/flogo.transform.icon.svg') no-repeat left center;
+    color: #666;
+    font-size: 24px;
+    margin: 0;
+    padding: 0 0 0 30px;
+    flex: 1;
+  }
+
+  &__actions {
+    min-width: 320px;
+    overflow: hidden;
+    position: relative;
+    text-align: right;
+  }
+
+}
+
+.mapper  {
+  width: 100%;
+  height: 100%;
+}
+
+.actions__delete {
+  background: url('/assets/svg/flogo.transform.trash.icon.svg') no-repeat 13px center;
+  color: #0081cb;
+
+  &:hover {
+    filter: brightness(140%) saturate(60%);
+  }
+
+  &:active {
+    filter: brightness(80%) saturate(80%);
+  }
+}
+
+.confirm-delete {
+  color: #fff;
+  background-color: #0081cb;
+  font-size: 16px;
+  line-height: 45px;
+  right: 0;
+  position: absolute;
+  top: 0;
+  text-align: right;
+  width: 100%;
+  z-index: 2;
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+  transform: translateX(100%);
+
+  &__btn {
+    background-color: transparent;
+    border: none;
+    height: 45px;
+    line-height: 1;
+    min-width: 89px;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover,
+    &:active {
+      background-color: #fff;
+      color: #0081cb;
+    }
+  }
+
+}
+
+.--is-delete-open .confirm-delete {
+  pointer-events: auto;
+  transform: translateX(0%);
+}
+
+
+
