@@ -1,6 +1,6 @@
 <div class="main">
   <div *ngIf="triggersList.length > 0" >
-    <div class="trigger" *ngFor="let trigger of triggersList" (click)="showTriggerDetails(trigger)">
+    <div class="trigger" *ngFor="let trigger of triggersList" (click)="showTriggerDetails(trigger)" title="{{trigger.name}}">
       <i class="flogo-icon-trigger"></i>
     </div>
   </div>
