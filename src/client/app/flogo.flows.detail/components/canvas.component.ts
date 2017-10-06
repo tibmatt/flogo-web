@@ -628,16 +628,20 @@ export class FlogoCanvasComponent implements OnInit {
     }
 
     function _registerTask() {
-      let taskName = this.uniqueTaskName(data.task.name);
+      const taskName = this.uniqueTaskName(data.task.name);
       // generate task id when adding the task
-      let task = <IFlogoFlowDiagramTask> _.assign({},
+      const task = <IFlogoFlowDiagramTask> _.assign({},
         data.task,
         {
           id: this.profileService.generateTaskID(this._getAllTasks(), data.task),
           name: taskName
         });
 
-      this.handlers[diagramId].tasks[task.id] = task;
+      const handler = this.handlers[diagramId];
+      if (!handler.tasks) {
+        handler.tasks = {};
+      }
+      handler.tasks[task.id] = task;
 
       this.handlers['root'].schemas = this.handlers['root'].schemas || {};
       task.ref = task.ref || task['__schema'].ref;

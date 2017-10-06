@@ -1,13 +1,15 @@
-import { Component, ElementRef, SimpleChange, AfterViewInit, EventEmitter } from '@angular/core';
+import * as _ from 'lodash';
+
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChange } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import { FlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary, IFlogoFlowDiagram } from '../models';
+import { FlogoFlowDiagram, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from '../models';
 import { PostService } from '../../../common/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../flogo.select-trigger/messages'
 import { PUB_EVENTS as PUB_EVENTS_ADD_TRIGGER } from '../../flogo.flows.detail.triggers/messages';
-import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE } from '../constants';
-import { FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import { FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
 import { FlogoFlowDiagramNode } from '../models/node.model';
 
 @Component(
@@ -16,21 +18,19 @@ import { FlogoFlowDiagramNode } from '../models/node.model';
     // moduleId : module.id,
     templateUrl : 'diagram.tpl.html',
     styleUrls : [ 'diagram.component.less' ],
-    inputs : [
-      'tasks',
-      'diagram',
-       'id',
-      'appDetails',
-      'appId'
-    ]
   }
 )
-export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
+export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChanges {
 
-  public tasks : IFlogoFlowDiagramTaskDictionary;
-  public diagram : IFlogoFlowDiagram;
+  @Input()
+  public tasks: IFlogoFlowDiagramTaskDictionary;
+  @Input()
+  public diagram: IFlogoFlowDiagram;
+  @Input()
   public id: string;
+  @Input()
   public appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE};
+  @Input()
   public appId: string;
 
   private _elmRef : ElementRef;
@@ -92,32 +92,19 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    let _enabledSelectTrigger = false;
-    if ( _.isEmpty( this.diagram ) ||
-      (this.id === 'errorHandler' && _.isEmpty( this.diagram.root )) ||
-      (this.id === 'root' && !this.diagram.hasTrigger ) ) {
+    if ( _.isEmpty( this.diagram ) || (this.id === 'errorHandler' && _.isEmpty( this.diagram.root ))) {
       this.diagram = FlogoFlowDiagram.getEmptyDiagram(this.id === 'errorHandler' ? 'error' : null );
-      if (this.id === 'errorHandler') {
-      } else {
-        _enabledSelectTrigger = true;
-      }
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType,
-                                            this._elmRef.nativeElement, this.id === 'errorHandler' ? 'error' : null );
-    } else {
-      this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks, this._translate, this.appDetails.appProfileType,
-                                            this._elmRef.nativeElement, this.id === 'errorHandler' ? 'error' : null );
     }
+
+    this._diagram = new FlogoFlowDiagram( this.diagram, this.tasks || {}, this._translate, this.appDetails.appProfileType,
+      this._elmRef.nativeElement, this.id === 'errorHandler' ? 'error' : null );
+
     // Render the diagram on next js cycle such that the diagram elements are added to the DOM.
     setTimeout(() => {
-      this.enabledSelectTrigger = _enabledSelectTrigger;
-      // todo: remove once selector is extracted from here
-      if(!_enabledSelectTrigger) {
-        this._diagram.render();
-      }
+      this._diagram.render();
     }, 0);
+
   }
-
-
 
   ngOnChanges(
     changes : {
@@ -209,7 +196,8 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit {
     let data = $event.detail;
     data.id = this.id;
 
-    if ( data.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+    const nodeType = data.node.type;
+    if (nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD || nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW) {
       // add task event
       this._postService.publish( _.assign( {}, PUB_EVENTS.addTask, { data : data } ) );
     } else {

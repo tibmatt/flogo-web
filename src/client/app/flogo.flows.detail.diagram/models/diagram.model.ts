@@ -126,7 +126,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           if ( matrixRow.length
             === 1
             && diagram.nodes[ matrixRow[ 0 ] ].type
-            === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ) {
+            === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW ) {
             paddedRow = matrixRow;
           } else {
             paddedRow = matrixRow.concat( '+' ); // append add node symbol
@@ -158,8 +158,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       nodes : < IFlogoFlowDiagramNodeDictionary > {}
     };
 
-    newRootNode.type = diagramType === 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD;
-    // newRootNode.type = diagramType == 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
+    // newRootNode.type = diagramType === 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD;
+    newRootNode.type = diagramType == 'error' ? FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
 
     emptyDiagram.nodes[ newRootNode.id ] = newRootNode;
 
@@ -1142,14 +1142,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         const parentNode = this.nodes[ node.parents[ 0 ] ];
 
-        // In case of the first activity, the parentNode will be undefined so cannot call the linkToChildren at this moment
-
-        if (parentNode) {
-          (<FlogoFlowDiagramNode>parentNode).linkToChildren( [ node.id ] );
-        }
+        (<FlogoFlowDiagramNode>parentNode).linkToChildren( [ node.id ] );
 
       } else if (node.type ===  FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW) {
-        node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT;
+        // node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT;
+        node.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE;
       }
     } else {
       // use Promise.reject with error message cause TypeScript error
