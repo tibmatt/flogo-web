@@ -1,8 +1,7 @@
 import {
   FLOGO_TASK_TYPE,
   FLOGO_TASK_ATTRIBUTE_TYPE,
-  DEFAULT_VALUES_OF_TYPES,
-  FLOGO_AUTOMAPPING_FORMAT
+  DEFAULT_VALUES_OF_TYPES
 } from './constants';
 import {
   FlogoFlowDiagram,
@@ -192,23 +191,44 @@ export function normalizeTaskName(taskName: string) {
   return _.kebabCase(taskName);
 }
 
-export function parseMapping(automapping: string) {
-  const matches = FLOGO_AUTOMAPPING_FORMAT.exec(automapping);
-  if (!matches) {
-    return null;
+export function parseMapping(mappingValue: string) {
+  // todo: support other scopes,: flow, env, property, etc.
+  const processExprTail = (tail: string) => tail ? _.trimStart(tail, '.') : null;
+  let taskId = null;
+  let attributeName;
+  let exprTail;
+  let autoMap;
+
+  const matchesActivity = /(\${activity\.([\w-]+)\.([\w-]+)}((?:\.[\w-]+)*))/.exec(mappingValue);
+  if (matchesActivity) {
+    taskId = matchesActivity[2] || null;
+    attributeName = matchesActivity[3];
+    exprTail = processExprTail(matchesActivity[4]);
+    autoMap = `_A.${taskId}.${attributeName}`;
+    return {
+      autoMap,
+      isRoot: false,
+      taskId,
+      attributeName,
+      path: exprTail
+    };
   }
 
-  const taskId = matches[2] || null;
-  const attributeName = matches[3];
-  const path = matches[4] ? _.trimStart(matches[4], '.') : null;
+  const matchesTrigger = /(\${trigger\.([\w-]+)}((?:\.[\w-]+)*))/.exec(mappingValue);
+  if (matchesTrigger) {
+    attributeName = matchesTrigger[2] || null;
+    autoMap = `_T.${attributeName}`;
+    exprTail = processExprTail(matchesTrigger[3]);
+    return {
+      autoMap,
+      isRoot: true,
+      taskId,
+      attributeName,
+      path: exprTail
+    };
+  }
 
-  return {
-    autoMap: `{${matches[1]}.${attributeName}}`,
-    isRoot: !taskId,
-    taskId,
-    attributeName,
-    path
-  };
+  return null;
 
 }
 

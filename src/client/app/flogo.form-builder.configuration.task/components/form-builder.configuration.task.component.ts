@@ -39,29 +39,30 @@ export class FlogoFormBuilderConfigurationTaskComponent {
     return this._commonService.getControlByType(item, parameterDirection);
   }
 
-  _getMappingValue(info:any) {
-    // if there is results
-    let resultValue : any = null;
-    if(info.step) {
-      let taskId = convertTaskID(this._task.id);
-      if (info.direction === 'output') {
-        resultValue = _.find(info.step.flow.attributes, (attr:any) => attr.name == `{A${taskId}.${info.name}}`)
-      } else {
-        // TODO support map to nested attributes
-        let mapping = _.find(info.mappings, (mapping:any) => mapping.mapTo === info.name);
-        let parsedMapping = mapping ? parseMapping(mapping.value) : null;
-        if(parsedMapping) {
-          let resultHolder = _.find(info.step.flow.attributes, (attr:any) => {
-            return attr.name == parsedMapping.autoMap;
-          });
-          if(resultHolder) {
-            if(parsedMapping.path) {
-              resultValue = {
-                value: _.get(resultHolder.value, parsedMapping.path)
-              };
-            } else {
-              resultValue = resultHolder;
-            }
+  _getMappingValue(info: any) {
+    if (!info.step) {
+      return info.value;
+    }
+
+    let resultValue: any = null;
+    const taskId = convertTaskID(this._task.id);
+    if (info.direction === 'output') {
+      resultValue = _.find(info.step.flow.attributes, (attr: any) => attr.name === `_A.${taskId}.${info.name}`);
+    } else {
+      // TODO support map to nested attributes
+      const mapping = _.find(info.mappings, (m: any) => m.mapTo === info.name);
+      const parsedMapping = mapping ? parseMapping(mapping.value) : null;
+      if (parsedMapping) {
+        const resultHolder = _.find(info.step.flow.attributes, (attr: any) => {
+          return attr.name === parsedMapping.autoMap;
+        });
+        if (resultHolder) {
+          if (parsedMapping.path) {
+            resultValue = {
+              value: _.get(resultHolder.value, parsedMapping.path)
+            };
+          } else {
+            resultValue = resultHolder;
           }
         }
       }
