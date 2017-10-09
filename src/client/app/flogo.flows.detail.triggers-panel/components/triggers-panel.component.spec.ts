@@ -10,6 +10,7 @@ import {RESTAPIHandlersService} from '../../../common/services/restapi/v2/handle
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
 import {PostService} from '../../../common/services/post.service';
 import {Router} from '@angular/router';
+import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
 
 @Component({
   selector: 'flogo-container',
@@ -132,7 +133,7 @@ const postServiceStub = {
     this.published = envelope;
   },
 
-  unsubscribe(sub: any) {
+  unsubscribe() {
   }
 
 };
@@ -150,6 +151,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       imports: [TranslateModule.forRoot()],
       declarations: [FlogoFlowTriggersPanelComponent, ContainerComponent, ModalComponent, FlogoSelectTriggerComponent],
       providers: [
+        FlogoTriggerClickHandlerService,
         {provide: PostService, useValue: postServiceStub },
         {provide: Router, useClass: MockRouterService},
         {provide: RESTAPITriggersService, useClass: MockTriggerService},

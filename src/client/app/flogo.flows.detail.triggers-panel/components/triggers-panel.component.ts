@@ -12,6 +12,7 @@ import {
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS} from '../../flogo.form-builder/messages';
 import {TranslateService} from 'ng2-translate';
+import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
 
 export interface IFlogoTriggers {
   name: string;
@@ -50,6 +51,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _converterService: UIModelConverterService,
               private _router: Router,
               private translate: TranslateService,
+              private _clickHandler: FlogoTriggerClickHandlerService,
               private _postService: PostService) {
   }
 
@@ -158,7 +160,11 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     });
   }
 
-  showTriggerMenu(triggerId) {
+  showTriggerMenu(event, triggerId) {
+    const parentTriggerBlock: Element = event.path.find(e => _.find(e.classList, (cls) => cls === 'trigger_block'));
+    if (parentTriggerBlock) {
+      this._clickHandler.setCurrentTriggerBlock(parentTriggerBlock);
+    }
     this.selectedTriggerID = triggerId;
     this.displayTriggerMenuPopover = true;
   }
@@ -166,6 +172,13 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   /*resetTriggerSelectState(triggerId) {
     this.selectedTriggerID = '';
   }*/
+
+  handleClickOutsideTriggerMenu(event) {
+    if (this._clickHandler.isClickedOutside(event.path)) {
+      this._clickHandler.resetCurrentTriggerBlock();
+      this.hideTriggerMenuPopover();
+    }
+  }
 
   private hideTriggerMenuPopover() {
     this.displayTriggerMenuPopover = false;

@@ -32,7 +32,7 @@ import { routing } from './flogo.flows.detail.routing';
 import { UIModelConverterService } from './services/ui-model-converter.service';
 import { FlogoFlowService } from './services/flow.service';
 import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
-import {FlogoTriggerMenuComponent} from '../flogo.flows.trigger.menu/components/trigger-menu.component';
+import {FlogoTriggerClickHandlerService} from '../flogo.flows.detail.triggers-panel/services/click-handler.service';
 
 @NgModule({
   imports: [
@@ -63,14 +63,14 @@ import {FlogoTriggerMenuComponent} from '../flogo.flows.trigger.menu/components/
     FlogoFlowsDetailTriggersInstallComponent,
 
     FlogoCanvasComponent,
-    FlogoFlowTriggersPanelComponent,
-    FlogoTriggerMenuComponent
+    FlogoFlowTriggersPanelComponent
 
   ],
   providers: [
     RunnerService,
     UIModelConverterService,
-    FlogoFlowService
+    FlogoFlowService,
+    FlogoTriggerClickHandlerService
   ],
   bootstrap: [
     FlogoCanvasComponent
