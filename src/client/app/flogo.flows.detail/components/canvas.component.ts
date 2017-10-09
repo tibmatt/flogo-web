@@ -15,7 +15,10 @@ import { SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS, PUB_EVENTS as FLOGO_TRIGGERS_S
 import { SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks/messages';
 import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS, PUB_EVENTS as FLOGO_SELECT_TASKS_SUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS } from '../../flogo.form-builder/messages'
-import { PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS } from '../../flogo.transform/messages';
+import {
+  PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS, SelectTaskData,
+  SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS
+} from '../../flogo.transform/messages';
 import { PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS, SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS } from '../../flogo.flows.detail.error-panel/messages'
 import { PUB_EVENTS as FLOGO_LOGS_SUB_EVENTS } from '../../flogo.logs/messages';
 
@@ -1584,39 +1587,41 @@ export class FlogoCanvasComponent implements OnInit {
    *-------------------------------*/
 
   private _selectTransformFromDiagram(data: any, envelope: any) {
-    let diagramId: string = data.id;
-    let previousTiles: any;
+    const diagramId = data.id;
+    let scope: any[];
 
-    let selectedNode = data.node;
+    const selectedNode = data.node;
 
-    if (diagramId == 'errorHandler') {
-      let allPathsMainFlow = this.getAllPaths(this.handlers['root'].diagram.nodes);
-      let previousTilesMainFlow = this.mapNodesToTiles(allPathsMainFlow, this.handlers['root']);
+    if (diagramId === 'errorHandler') {
+      const allPathsMainFlow = this.getAllPaths(this.handlers['root'].diagram.nodes);
+      const previousTilesMainFlow = this.mapNodesToTiles(allPathsMainFlow, this.handlers['root']);
 
-      let previousNodesErrorFlow = this.findPathToNode(this.handlers['errorHandler'].diagram.root.is, selectedNode.id, 'errorHandler');
+      const previousNodesErrorFlow = this.findPathToNode(this.handlers['errorHandler'].diagram.root.is, selectedNode.id, 'errorHandler');
       previousNodesErrorFlow.pop(); // ignore last item as it is the very same selected node
-      let previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, this.handlers['errorHandler']);
+      const previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, this.handlers['errorHandler']);
 
-      previousTiles = previousTilesMainFlow.concat(previousTilesErrorFlow);
+      scope = previousTilesMainFlow.concat(previousTilesErrorFlow);
     } else {
-      let previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
+      const previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
 
       previousNodes.pop(); // ignore last item as it is the very same selected node
-      previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
+      scope = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
     }
 
-    //let previousTiles = this.mapNodesToTiles(previousNodes, diagramId);
+    const selectedTaskId = selectedNode.taskID;
 
-    let selectedTaskId = selectedNode.taskID;
-
+    const metadata = _.defaultsDeep({
+      type: 'metadata',
+    }, this.flow.metadata, { inputs: [], outputs: [] });
+    scope.push(metadata);
 
     this._postService.publish(
       _.assign(
         {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
-          data: {
-            previousTiles,
+          data: <SelectTaskData>{
+            scope,
             tile: _.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]),
-            id: diagramId
+            handlerId: diagramId
           }
         }
       ));

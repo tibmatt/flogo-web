@@ -79,7 +79,7 @@ describe('Component: TransformComponent', () => {
   function getMockData() {
 
     return {
-      'previousTiles': [
+      scope: [
         {
           'type': 0,
           'triggerType': 'tibco-timer',
@@ -162,7 +162,7 @@ describe('Component: TransformComponent', () => {
           'id': 'Mg'
         }
       ],
-      'tile': {
+      tile: {
         'type': 1,
         'activityType': 'tibco-log',
         'name': 'Logger',
@@ -203,7 +203,7 @@ describe('Component: TransformComponent', () => {
         ],
         'id': 'Mw'
       },
-      'id': 'root'
+      handlerId: 'root'
     };
   }
 
