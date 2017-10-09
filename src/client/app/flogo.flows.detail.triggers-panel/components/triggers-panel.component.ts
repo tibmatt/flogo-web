@@ -74,6 +74,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     );
   }
 
+  private isDeviceType() {
+    return this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE;
+  }
+
   private initSubscribe() {
     this._subscriptions = [];
 
@@ -118,7 +122,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   }
 
   private manageAddTriggerInView() {
-    this.allowMultipleTriggers = !(this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE && this.triggersList.length > 0);
+    this.allowMultipleTriggers = !(this.isDeviceType() && this.triggersList.length > 0);
   }
 
   openAddTriggerModel() {
@@ -160,13 +164,17 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     });
   }
 
-  showTriggerMenu(event, triggerId) {
-    const parentTriggerBlock: Element = event.path.find(e => _.find(e.classList, (cls) => cls === 'trigger_block'));
-    if (parentTriggerBlock) {
-      this._clickHandler.setCurrentTriggerBlock(parentTriggerBlock);
+  showTriggerMenu(event, trigger) {
+    this.selectedTriggerID = trigger.id;
+    if (!this.isDeviceType()) {
+      const parentTriggerBlock: Element = event.path.find(e => _.find(e.classList, (cls) => cls === 'trigger_block'));
+      if (parentTriggerBlock) {
+        this._clickHandler.setCurrentTriggerBlock(parentTriggerBlock);
+      }
+      this.displayTriggerMenuPopover = true;
+    } else {
+      this.showTriggerDetails(trigger);
     }
-    this.selectedTriggerID = triggerId;
-    this.displayTriggerMenuPopover = true;
   }
 
   /*resetTriggerSelectState(triggerId) {

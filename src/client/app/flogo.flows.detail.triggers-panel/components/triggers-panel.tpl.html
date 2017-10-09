@@ -1,7 +1,7 @@
 <div class="main">
   <div *ngFor="let trigger of triggersList" class="trigger_block"
        [ngClass]="{'trigger_block--selected': selectedTriggerID == trigger.id}">
-    <div class="trigger" title="{{trigger.name}}" (click)="showTriggerMenu($event, trigger.id)">
+    <div class="trigger" title="{{trigger.name}}" (click)="showTriggerMenu($event, trigger)">
       <i class="flogo-icon-trigger"></i>
     </div>
     <div class="trigger_menu"
