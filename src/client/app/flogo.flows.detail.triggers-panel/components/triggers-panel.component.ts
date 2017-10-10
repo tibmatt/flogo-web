@@ -12,6 +12,7 @@ import {
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS} from '../../flogo.form-builder/messages';
 import {TranslateService} from 'ng2-translate';
+import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
 
 export interface IFlogoTriggers {
   name: string;
@@ -41,6 +42,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   allowMultipleTriggers = true;
   currentTrigger: any;
   _subscriptions: any[];
+  selectedTriggerID: string;
+  displayTriggerMenuPopover: boolean;
   public showAddTrigger = false;
 
   constructor(private _restAPITriggersService: RESTAPITriggersService,
@@ -48,6 +51,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _converterService: UIModelConverterService,
               private _router: Router,
               private translate: TranslateService,
+              private _clickHandler: FlogoTriggerClickHandlerService,
               private _postService: PostService) {
   }
 
@@ -70,6 +74,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     );
   }
 
+  private isDeviceType() {
+    return this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE;
+  }
+
   private initSubscribe() {
     this._subscriptions = [];
 
@@ -87,12 +95,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   private _taskDetailsChanged(data: any, envelope: any) {
     console.group('Save trigger details to flow');
-    let updatePromise: any = Promise.resolve(true);
-
     if (data.changedStructure === 'settings') {
-      updatePromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings});
+      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings});
     } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
-      updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
+      this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
         settings: data.endpointSettings,
         outputs: data.outputs
       });
@@ -116,11 +122,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   }
 
   private manageAddTriggerInView() {
-    if (this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE && this.triggersList.length > 0) {
-      this.allowMultipleTriggers = false;
-    } else {
-      this.allowMultipleTriggers = true;
-    }
+    this.allowMultipleTriggers = !(this.isDeviceType() && this.triggersList.length > 0);
   }
 
   openAddTriggerModel() {
@@ -163,7 +165,36 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     });
   }
 
+  showTriggerMenu(event, trigger) {
+    this.selectedTriggerID = trigger.id;
+    if (!this.isDeviceType()) {
+      const parentTriggerBlock: Element = event.path.find(e => _.find(e.classList, (cls) => cls === 'trigger_block'));
+      if (parentTriggerBlock) {
+        this._clickHandler.setCurrentTriggerBlock(parentTriggerBlock);
+      }
+      this.displayTriggerMenuPopover = true;
+    } else {
+      this.showTriggerDetails(trigger);
+    }
+  }
+
+  /*resetTriggerSelectState(triggerId) {
+    this.selectedTriggerID = '';
+  }*/
+
+  handleClickOutsideTriggerMenu(event) {
+    if (this._clickHandler.isClickedOutside(event.path)) {
+      this._clickHandler.resetCurrentTriggerBlock();
+      this.hideTriggerMenuPopover();
+    }
+  }
+
+  private hideTriggerMenuPopover() {
+    this.displayTriggerMenuPopover = false;
+  }
+
   showTriggerDetails(trigger) {
+    this.hideTriggerMenuPopover();
     this.currentTrigger = _.cloneDeep(trigger);
     this._router.navigate(['/flows', this.actionId, 'trigger', trigger.id])
       .then(() => this._converterService.getTriggerTask(trigger))

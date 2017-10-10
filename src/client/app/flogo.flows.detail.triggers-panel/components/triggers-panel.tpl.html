@@ -1,10 +1,27 @@
 <div class="main">
-  <div *ngIf="triggersList.length > 0" >
-    <div class="trigger" *ngFor="let trigger of triggersList" (click)="showTriggerDetails(trigger)">
+  <div *ngFor="let trigger of triggersList" class="trigger_block"
+       [ngClass]="{'trigger_block--selected': selectedTriggerID == trigger.id}">
+    <div class="trigger" title="{{trigger.name}}" (click)="showTriggerMenu($event, trigger)">
       <i class="flogo-icon-trigger"></i>
     </div>
+    <div class="trigger_menu"
+         *ngIf="displayTriggerMenuPopover && (selectedTriggerID == trigger.id)"
+         (fgClickOutside)="handleClickOutsideTriggerMenu($event)"
+         [ngClass]="{'trigger_menu--open': displayTriggerMenuPopover && (selectedTriggerID == trigger.id)}">
+      <ul class="list-group trigger_menu-list">
+        <li class="list-group-item trigger_menu-item" (click)="showTriggerDetails(trigger)"><i
+          class="flogo-icon-settings trigger_menu-icon"></i>{{"TRIGGER-MENU:CONFIGURE" | translate}}
+        </li>
+        <li class="list-group-item trigger_menu-item" (click)="hideTriggerMenuPopover()"><i
+          class="fa fa-bolt trigger_menu-icon"></i>{{"TRIGGER-MENU:MAP-TO-INPUTS" | translate}}
+        </li>
+        <li class="list-group-item trigger_menu-item" (click)="hideTriggerMenuPopover()"><i
+          class="flogo-icon-delete trigger_menu-icon"></i>{{"TRIGGER-MENU:DELETE" | translate}}
+        </li>
+      </ul>
+    </div>
   </div>
-  <div class="trigger trigger--add" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
+  <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
     <i class="flogo-icon-add"></i>
   </div>
   <flogo-select-trigger *ngIf="showAddTrigger"

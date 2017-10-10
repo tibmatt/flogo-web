@@ -29,9 +29,10 @@ import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.
 
 import { RunnerService } from './services/runner.service';
 import { routing } from './flogo.flows.detail.routing';
-import { UIModelConverterService } from "./services/ui-model-converter.service";
-import { FlogoFlowService } from "./services/flow.service";
+import { UIModelConverterService } from './services/ui-model-converter.service';
+import { FlogoFlowService } from './services/flow.service';
 import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import {FlogoTriggerClickHandlerService} from '../flogo.flows.detail.triggers-panel/services/click-handler.service';
 
 @NgModule({
   imports: [
@@ -68,7 +69,8 @@ import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-pa
   providers: [
     RunnerService,
     UIModelConverterService,
-    FlogoFlowService
+    FlogoFlowService,
+    FlogoTriggerClickHandlerService
   ],
   bootstrap: [
     FlogoCanvasComponent
