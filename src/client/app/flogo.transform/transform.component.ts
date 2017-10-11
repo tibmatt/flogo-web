@@ -40,6 +40,7 @@ import { MapperContextFactory } from './mapper-context-factory';
 export class TransformComponent implements OnDestroy {
   @Input()
   flowId: string;
+  currentTile: IFlogoFlowDiagramTask;
   mapperContext: any;
 
   isValid: boolean;
@@ -59,7 +60,6 @@ export class TransformComponent implements OnDestroy {
 
   private _subscriptions: any[];
   private currentMappings: { [key: string]: IMapExpression };
-  private currentTile: any;
 
   constructor(private _postService: PostService) {
     this.initSubscriptions();

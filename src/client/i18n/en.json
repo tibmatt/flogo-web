@@ -183,6 +183,8 @@
   "TRANSFORM:SAVE": "Save",
   "TRANSFORM:TRANSFORMATION": "Transformation",
   "TRANSFORM:YES": "Yes",
+  "TRANSFORM:ACTIVITY-INPUTS": "Activity Inputs",
+  "TRANSFORM:AVAILABLE-DATA": "Available Data",
   "TRIGGERS:ADD-TRIGGER": "Add trigger",
   "TRIGGERS:HINT-ADD-TRIGGER": "Choose or upload a trigger",
   "TRIGGERS-INSTALL:INSTALL-NEW-TRIGGER":"Install new triggers",

@@ -54,14 +54,24 @@
 .search {
   border-bottom: 2px solid #dedede;
   margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .search__text {
   border: none;
+  border-bottom: 3px solid transparent;
   height: 34px;
   outline: none;
   background: transparent;
-  width: 80%;
+  flex: 1;
+}
+
+.search__command {
+  width: 1em;
+  color: #8b91a2;
+  margin-right: 0.5em;
 }
 
 .search--has-value {

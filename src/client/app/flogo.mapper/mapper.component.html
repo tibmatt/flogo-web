@@ -1,9 +1,9 @@
 <div class="mapper">
   <flogo-mapper-icons></flogo-mapper-icons>
-  <div class="col-md-3 mapper__left-panel">
-    <flogo-mapper-input-list></flogo-mapper-input-list>
+  <div class="mapper__left-panel">
+    <flogo-mapper-input-list [searchPlaceholder]="inputsSearchPlaceHolder"></flogo-mapper-input-list>
   </div>
-  <div class="col-md-9 mapper__right-panel" [class.mapper__right-panel--working-input]="currentInput">
+  <div class="mapper__right-panel" [class.mapper__right-panel--working-input]="currentInput">
     <div *ngIf="!currentInput" class="editor-container editor-container--empty">
       <p class="editor-container-empty__message">
         <svg class="editor-container-empty__image" width="46" height="23" viewBox="0 0 46 23">
@@ -34,9 +34,10 @@
         <!--Object input is not mappable-->
       <!--</div>-->
 
-      <div class="workspace__parameters parameters row">
-        <div class="parameters__parameter mapper__output-list col-md-6">
-          <flogo-mapper-output-list (selectNode)="onOutputSelected($event)"></flogo-mapper-output-list>
+      <div class="workspace__parameters parameters">
+        <div class="parameters__parameter mapper__output-list">
+          <flogo-mapper-output-list (selectNode)="onOutputSelected($event)" [searchPlaceholder]="outputsSearchPlaceHolder">
+          </flogo-mapper-output-list>
         </div>
         <!--<div class="parameters__parameter mapper__functions-list col-md-8">-->
           <!--<flogo-mapper-functions></flogo-mapper-functions>-->

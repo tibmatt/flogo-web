@@ -24,6 +24,7 @@ import { IconsService } from '../services/icons.service';
 export class TreeComponent implements OnChanges, AfterViewInit {
   @Input() treeNodes: MapperTreeNode[];
   @Input() searchTerm = '';
+  @Input() searchPlaceholder = 'Search';
   @Input() selected: MapperTreeNode | null;
   @Input() dragType: string;
 
