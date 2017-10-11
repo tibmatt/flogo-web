@@ -222,6 +222,30 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
+  updateHandlerWithActionMappings(trigger) {
+    this.hideTriggerMenuPopover();
+    // TODO: Need to get changes to the actionInputMappings and actionOutputMappings of an handler from trigger mapper
+    const dummyActionMappingsData = {
+      actionInputMappings: [
+        {'type': 1, 'value': 'content.customerId', 'mapTo': 'customerId'},
+        {'type': 1, 'value': 'content.orderId', 'mapTo': 'orderId'}
+      ],
+      actionOutputMappings: [
+        {'type': 1, 'value': 'responseCode', 'mapTo': 'status'},
+        {'type': 1, 'value': 'responceData', 'mapTo': 'data'}
+      ]
+    };
+    // Update the handler using the updateHanler REST API call
+    this._restAPIHandlerService.updateHandler(trigger.id, this.actionId, dummyActionMappingsData)
+      .then((handler) => {
+        // Update the new handler details in the this.triggers and this.triggersList
+        const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
+        const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
+        triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
+        this.makeTriggersListForAction();
+      });
+  }
+
   deleteHandlerForTrigger(triggerId) {
     this.hideTriggerMenuPopover();
     this._restAPIHandlerService.deleteHandler(this.actionId, triggerId)

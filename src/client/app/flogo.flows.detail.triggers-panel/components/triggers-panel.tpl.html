@@ -12,7 +12,7 @@
         <li class="list-group-item trigger_menu-item" (click)="showTriggerDetails(trigger)"><i
           class="flogo-icon-settings trigger_menu-icon"></i>{{"TRIGGER-MENU:CONFIGURE" | translate}}
         </li>
-        <li class="list-group-item trigger_menu-item" (click)="hideTriggerMenuPopover()"><i
+        <li class="list-group-item trigger_menu-item" (click)="updateHandlerWithActionMappings(trigger)"><i
           class="fa fa-bolt trigger_menu-icon"></i>{{"TRIGGER-MENU:MAP-TO-INPUTS" | translate}}
         </li>
         <li class="list-group-item trigger_menu-item" (click)="deleteHandlerForTrigger(trigger.id)"><i
