@@ -48,6 +48,9 @@
                 <a (click)="deleteFlow()" href="javascript:void(0);" class="flogo-flow-detail-menu-anchor">
                   <i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}
                 </a>
+                <a *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE" (click)="openInputSchemaModal()" href="javascript:void(0);" class="flogo-flow-detail-menu-anchor">
+                  {{ 'CANVAS:INPUT-PARAMS' | translate }}
+                </a>
               </li>
             </ul>
           </div>
@@ -99,6 +102,6 @@
   <div class="canvas-right-container" [ngClass]="{'canvas-right-container--minimized': !hasTrigger}">
     <router-outlet></router-outlet>
   </div>
-
+<flogo-flow-input-schema #inputSchemaModal [flow]="flow"></flogo-flow-input-schema>
 </div>
 

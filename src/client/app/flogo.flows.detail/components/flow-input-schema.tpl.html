@@ -1,0 +1,117 @@
+<modal [size]="'lg'" #modal cssClass="flow-input-params-modal">
+  <div class="flow-input-params-footer">
+    <button type="button" class="flogo-button--secondary flow-input-params-cancel" data-dismiss="modal">{{
+      'INPUT-PARAMS:CANCEL' | translate }}
+    </button>
+    <button type="submit" class="flogo-button--default flow-input-params-save" data-dismiss="modal"
+            (click)="saveParams()">
+      {{ 'INPUT-PARAMS:SAVE' | translate }}
+    </button>
+  </div>
+  <div class="flow-input-params-header">{{ 'INPUT-PARAMS:DEFINE' | translate }}
+  </div>
+  <div class="flow-input-params-container">
+    <div class="flow-input-params-categories">
+      <ul>
+        <li class="flow-input-params__category" (click)="showInputParams()">Input</li>
+        <li class="flow-input-params__category" (click)="showOutputParams()">Output</li>
+      </ul>
+    </div>
+    <div *ngIf="displayInputParams" >
+      <div *ngFor="let input of definedInputParams" class="flow-input-params-field">
+        <div>
+          <input type="text" placeholder="parameter name" [(ngModel)]="input.name"/>
+        </div>
+        <div class="dropdown flow-input-type-dropdown">
+          <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
+                  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="caret list-caret"></span>
+            <span class="">{{input.type}}</span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li *ngFor="let option of selectTypes" (click)="modifySelectedParamType(option)" style="cursor:pointer;"
+                class="list-label">
+              <a>{{option ? option : "&nbsp;"}}</a></li>
+          </ul>
+        </div>
+        <div class="flow-input-params-add flow-input-params-add--hidden">
+          <i class="flogo-icon-delete" (click)="removeParams(input)"></i>
+        </div>
+      </div>
+      <!-- &lt;!&ndash; new &#45;&#45;!>-->
+      <div class="flow-input-params-field">
+        <div>
+          <input type="text" placeholder="parameter name" [(ngModel)]="otherInputItem.name">
+        </div>
+        <div class="dropdown flow-input-type-dropdown">
+          <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
+                  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="caret list-caret"></span>
+            <span class="">{{otherInputItem.type}}</span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li *ngFor="let option of selectTypes" (click)="selectParamType(option)" style="cursor:pointer;"
+                class="list-label">
+              <a>{{option ? option : "&nbsp;"}}</a></li>
+          </ul>
+        </div>
+        <div>
+          <button class="flow-input-params-add " [disabled]="!otherInputItem.name || !otherInputItem.type"
+                  (click)="addInputParams()">
+            {{ 'INPUT-PARAMS:ADD' | translate }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  <div *ngIf="!displayInputParams">
+    <div *ngFor="let output of definedOutputParams" class="flow-input-params-field">
+      <div>
+        <input type="text" placeholder="parameter name" [(ngModel)]="output.name"/>
+      </div>
+      <div class="dropdown flow-input-type-dropdown">
+        <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
+                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <span class="caret list-caret"></span>
+          <span class="">{{output.type}}</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li *ngFor="let option of selectTypes" (click)="modifySelectedParamType(option)" style="cursor:pointer;"
+              class="list-label">
+            <a>{{option ? option : "&nbsp;"}}</a></li>
+        </ul>
+      </div>
+      <div class="flow-input-params-add flow-input-params-add--hidden">
+        <i class="flogo-icon-delete" (click)="removeParams(output)"></i>
+      </div>
+    </div>
+    <!-- &lt;!&ndash; new &#45;&#45;!>-->
+    <div class="flow-input-params-field">
+      <div>
+        <input type="text" placeholder="parameter name" [(ngModel)]="otherOutputItem.name">
+      </div>
+      <div class="dropdown flow-input-type-dropdown">
+        <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
+                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <span class="caret list-caret"></span>
+          <span class="">{{otherOutputItem.type}}</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li *ngFor="let option of selectTypes" (click)="selectParamType(option)" style="cursor:pointer;"
+              class="list-label">
+            <a>{{option ? option : "&nbsp;"}}</a></li>
+        </ul>
+      </div>
+      <div>
+        <button class="flow-input-params-add " [disabled]="!otherOutputItem.name || !otherOutputItem.type"
+                (click)="addOutputParams()">
+          {{ 'INPUT-PARAMS:ADD' | translate }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+    </div>
+</modal>
+

@@ -4,7 +4,7 @@ import {RESTAPITriggersService} from '../../../../common/services/restapi/trigge
 import {ErrorService} from '../../../../common/services/error.service';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../../common/constants';
 
-interface IFlowMetadataAttribute {
+export interface IFlowMetadataAttribute {
   name: string;
   type: string;
 }

@@ -49,6 +49,7 @@
   "CANVAS:COPY": "Make a copy",
   "CANVAS:DARWIN-OSX": "Darwin/OSX",
   "CANVAS:DELETE": "Delete",
+  "CANVAS:INPUT-PARAMS": "Input params",
   "CANVAS:FLOW-NAME-EXISTS":"Flow with name {{value}} exists, please choose another name.",
   "CANVAS:ERROR-GETTING-FLOW-NAME": "Error getting flow name",
   "CANVAS:ERROR-MESSAGE-FAILED": "Flow has failed with error code 700",
@@ -188,5 +189,9 @@
   "SELECT-TRIGGER:SELECT-TRIGGER-TO-START": "Select a trigger to get started",
   "SELECT-TRIGGER:TRIGGER-TYPES": "Trigger types",
   "SELECT-TRIGGER:INSTALL-NOW": "Install now",
-  "SELECT-TRIGGER:MY-EXISTING-TRIGGERS": "My existing triggers"
+  "SELECT-TRIGGER:MY-EXISTING-TRIGGERS": "My existing triggers",
+  "INPUT-PARAMS:ADD": "+",
+  "INPUT-PARAMS:DEFINE": "Define Params",
+  "INPUT-PARAMS:SAVE": "Save",
+  "INPUT-PARAMS:CANCEL": "Cancel"
 }

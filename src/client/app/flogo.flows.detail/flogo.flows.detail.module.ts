@@ -32,6 +32,7 @@ import { routing } from './flogo.flows.detail.routing';
 import { UIModelConverterService } from "./services/ui-model-converter.service";
 import { FlogoFlowService } from "./services/flow.service";
 import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import {FlogoFlowInputSchemaComponent} from "./components/flow-input-schema.component";
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-pa
     FlogoFlowsDetailTriggersInstallComponent,
 
     FlogoCanvasComponent,
-    FlogoFlowTriggersPanelComponent
+    FlogoFlowTriggersPanelComponent,
+    FlogoFlowInputSchemaComponent
 
   ],
   providers: [

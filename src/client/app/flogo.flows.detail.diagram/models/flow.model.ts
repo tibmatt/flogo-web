@@ -53,6 +53,7 @@ export interface flowToJSON_Flow {
   name: string;
   description: string;
   flow: flowToJSON_FlowInfo;
+  metadata: any;
 }
 
 export interface triggerToJSON_TriggerInfo {
@@ -204,6 +205,7 @@ export function flogoFlowToJSON( inFlow: flowToJSON_InputFlow ): flowToJSON_Flow
   flowJSON.id = flogoIDEncode( flowID ); // convert to URL safe base64 encoded id
   flowJSON.name = _.get( inFlow, 'name', '' );
   flowJSON.description = _.get( inFlow, 'description', '' );
+  flowJSON.metadata = _.get( inFlow, 'metadata', '' );
 
   if ( _.isEmpty( flowPath ) || _.isEmpty( flowPathRoot ) || _.isEmpty( flowPathNodes ) ) {
     DEBUG && console.warn( 'Invalid path information in the given flow' );
