@@ -17,7 +17,7 @@
     <div class="workspace" *ngIf="currentInput">
       <flogo-mapper-breadcrumbs [inputNode]="currentInput?.node"></flogo-mapper-breadcrumbs>
 
-      <div *ngIf="currentInput.mappingKey && currentInput.node && currentInput.node.dataType !== 'object'"
+      <div *ngIf="currentInput.mappingKey && currentInput.node"
            class="workspace__editor " [class.workspace__editor--droppable]="isDraggingOver" (drop)="onDrop($event)"
            (dragover)="onDragOver($event)"
            (dragenter)="onDragEnter()" (dragleave)="onDragLeave()">
