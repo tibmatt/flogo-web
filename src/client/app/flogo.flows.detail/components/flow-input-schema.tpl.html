@@ -13,11 +13,11 @@
   <div class="flow-input-params-container">
     <div class="flow-input-params-categories">
       <ul>
-        <li class="flow-input-params__category" (click)="showInputParams()">Input</li>
-        <li class="flow-input-params__category" (click)="showOutputParams()">Output</li>
+        <li class="flow-input-params__category" [ngClass]="{'flow-input-params__category-selected': displayInputParams}" (click)="showInputParams()">Input</li>
+        <li class="flow-input-params__category" [ngClass]="{'flow-input-params__category-selected': !displayInputParams}"(click)="showOutputParams()">Output</li>
       </ul>
     </div>
-    <div *ngIf="displayInputParams" >
+    <div *ngIf="displayInputParams" class="flow-input-params-pane">
       <div *ngFor="let input of definedInputParams" class="flow-input-params-field">
         <div>
           <input type="text" placeholder="parameter name" [(ngModel)]="input.name"/>
@@ -25,13 +25,13 @@
         <div class="dropdown flow-input-type-dropdown">
           <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
                   type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <span class="caret list-caret"></span>
-            <span class="">{{input.type}}</span>
+            <span class="">{{input.type | lowercase}}</span>
+            <span class="caret list-caret flow-input-params-caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             <li *ngFor="let option of selectTypes" (click)="modifySelectedParamType(option)" style="cursor:pointer;"
                 class="list-label">
-              <a>{{option ? option : "&nbsp;"}}</a></li>
+              <a>{{option | lowercase}}</a></li>
           </ul>
         </div>
         <div class="flow-input-params-add flow-input-params-add--hidden">
@@ -46,13 +46,13 @@
         <div class="dropdown flow-input-type-dropdown">
           <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
                   type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <span class="caret list-caret"></span>
-            <span class="">{{otherInputItem.type}}</span>
+            <span class="">{{otherInputItem.type | lowercase}}</span>
+            <span class="caret list-caret flow-input-params-caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             <li *ngFor="let option of selectTypes" (click)="selectParamType(option)" style="cursor:pointer;"
                 class="list-label">
-              <a>{{option ? option : "&nbsp;"}}</a></li>
+              <a>{{option | lowercase}}</a></li>
           </ul>
         </div>
         <div>
@@ -65,7 +65,7 @@
 
     </div>
 
-  <div *ngIf="!displayInputParams">
+  <div *ngIf="!displayInputParams" class="flow-input-params-pane">
     <div *ngFor="let output of definedOutputParams" class="flow-input-params-field">
       <div>
         <input type="text" placeholder="parameter name" [(ngModel)]="output.name"/>
@@ -73,13 +73,13 @@
       <div class="dropdown flow-input-type-dropdown">
         <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
                 type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          <span class="caret list-caret"></span>
-          <span class="">{{output.type}}</span>
+          <span class="">{{output.type | lowercase}}</span>
+          <span class="caret list-caret flow-input-params-caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
           <li *ngFor="let option of selectTypes" (click)="modifySelectedParamType(option)" style="cursor:pointer;"
               class="list-label">
-            <a>{{option ? option : "&nbsp;"}}</a></li>
+            <a>{{option | lowercase}}</a></li>
         </ul>
       </div>
       <div class="flow-input-params-add flow-input-params-add--hidden">
@@ -94,13 +94,13 @@
       <div class="dropdown flow-input-type-dropdown">
         <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
                 type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          <span class="caret list-caret"></span>
-          <span class="">{{otherOutputItem.type}}</span>
+          <span class="">{{otherOutputItem.type | lowercase}}</span>
+          <span class="caret list-caret flow-input-params-caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
           <li *ngFor="let option of selectTypes" (click)="selectParamType(option)" style="cursor:pointer;"
               class="list-label">
-            <a>{{option ? option : "&nbsp;"}}</a></li>
+            <a>{{option | lowercase}}</a></li>
         </ul>
       </div>
       <div>

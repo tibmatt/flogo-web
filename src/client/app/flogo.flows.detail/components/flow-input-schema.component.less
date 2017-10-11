@@ -18,6 +18,17 @@
 
 }
 
+.flow-input-params-pane {
+  background-color: #f4f4f4;
+  width: 538px;
+}
+
+.flow-input-params-caret {
+  float: right;
+  position: relative;
+  top: 9px;
+}
+
 .flow-input-params-add {
   border: 0;
   display: flex;
@@ -98,6 +109,7 @@
   display: flex;
   border: 1px solid #0081cb;
   height: 400px;
+  width: 740px;
 }
 
 .flow-input-params-categories {
@@ -121,9 +133,20 @@
   display: flex;
   align-items: center;
   color: #727272;
+  cursor: pointer;
   &:hover {
     color: #0081cb;
     background: rgba(197, 202, 233, 0.2);
     cursor: pointer;
   }
+}
+
+.flow-input-params__category-selected {
+  background-color: #cad3df;
+  color: #062e79;
+}
+
+.dropdown-menu {
+  top: 91%;
+  min-width: 155px;
 }
