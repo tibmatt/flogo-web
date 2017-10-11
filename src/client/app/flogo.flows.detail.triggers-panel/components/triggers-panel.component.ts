@@ -222,6 +222,22 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
+  deleteHandlerForTrigger(triggerId) {
+    this.hideTriggerMenuPopover();
+    this._restAPIHandlerService.deleteHandler(this.actionId, triggerId)
+      .then(() => this._router.navigate(['/flows', this.actionId]))
+      .then(() => this._restAPITriggersService.getTrigger(triggerId))
+      .then(trigger => {
+        const hasHandlerForThisAction = !!trigger.handlers.find(h => h.actionId === this.actionId);
+        if (hasHandlerForThisAction) {
+          this.triggers = this.triggers.map(t => t.id === triggerId ? trigger : t);
+        } else {
+          this.triggers = this.triggers.filter(t => t.id !== triggerId);
+        }
+        this.makeTriggersListForAction();
+      });
+  }
+
   private _onActionTrigger(data: any, envelope: any) {
     if (data.action === 'trigger-copy') {
       this._restAPIHandlerService.deleteHandler(this.actionId, this.currentTrigger.id)
