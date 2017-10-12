@@ -45,6 +45,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   selectedTriggerID: string;
   displayTriggerMenuPopover: boolean;
   public showAddTrigger = false;
+  public installTriggerActivated = false;
 
   constructor(private _restAPITriggersService: RESTAPITriggersService,
               private _restAPIHandlerService: RESTAPIHandlersService,
@@ -123,6 +124,16 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   private manageAddTriggerInView() {
     this.allowMultipleTriggers = !(this.isDeviceType() && this.triggersList.length > 0);
+  }
+
+  openInstallTriggerWindow() {
+    this.installTriggerActivated = true;
+    this.closeAddTriggerModel(false);
+  }
+
+  onTriggerInstalledAction() {
+    this.installTriggerActivated = false;
+    this.openAddTriggerModel();
   }
 
   openAddTriggerModel() {

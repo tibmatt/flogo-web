@@ -8,7 +8,7 @@
       <div class="triggers-container__trigger-types">
         <div class="triggers-container__header">
           <div>{{ 'SELECT-TRIGGER:TRIGGER-TYPES' | translate }}</div>
-          <div><button class="flogo-button--accent">{{ 'SELECT-TRIGGER:INSTALL-NOW' | translate }}</button></div>
+          <div><button (click)="openInstallTriggerDialog()" class="flogo-button--accent">{{ 'SELECT-TRIGGER:INSTALL-NOW' | translate }}</button></div>
         </div>
         <hr />
         <div *ngFor="let trigger of installedTriggers" class="trigger trigger--types"

@@ -25,7 +25,12 @@
     <i class="flogo-icon-add"></i>
   </div>
   <flogo-select-trigger *ngIf="showAddTrigger"
+                        [appDetails]="appDetails"
                         (onAddTriggerModalClose)="closeAddTriggerModel($event)"
                         (onAddTriggerToAction)="addTriggerToAction($event)"
-                        [appDetails]="appDetails"></flogo-select-trigger>
+                        (onInstallDialog)="openInstallTriggerWindow()"></flogo-select-trigger>
+  <flogo-installer [profileType]="appDetails?.appProfileType"
+                   [installType]="'trigger'" [(isActivated)]="installTriggerActivated"
+                   (isActivatedChange)="openAddTriggerModel()"
+                   (installed)="onTriggerInstalledAction()"></flogo-installer>
 </div>

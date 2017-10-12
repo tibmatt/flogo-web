@@ -4,13 +4,19 @@ import {TranslateModule} from 'ng2-translate';
 import {FlogoFlowTriggersPanelComponent} from './triggers-panel.component';
 import {By} from '@angular/platform-browser';
 import {FlogoSelectTriggerComponent} from '../../flogo.select-trigger/components/select-trigger.component';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
-import {RESTAPITriggersService} from '../../../common/services/restapi/v2/triggers-api.service';
+import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '../../../common/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '../../../common/services/restapi/v2/handlers-api.service';
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
 import {PostService} from '../../../common/services/post.service';
 import {Router} from '@angular/router';
 import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
+import {InstallerModule} from '../../flogo.installer/flogo.installer.module';
+import {RESTAPITriggersServiceMock} from '../../../common/services/restapi/triggers-api.service.mock';
+import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
+import {HttpUtilsService} from '../../../common/services/restapi/http-utils.service';
+import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
+import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/contributions.service';
 
 @Component({
   selector: 'flogo-container',
@@ -107,7 +113,11 @@ class ContainerComponent {
   }
 }
 
-class MockTriggerService {
+class MockActivityContribService {
+
+}
+
+class MockTriggerServiceV2 {
 
 }
 
@@ -148,15 +158,25 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
-      declarations: [FlogoFlowTriggersPanelComponent, ContainerComponent, ModalComponent, FlogoSelectTriggerComponent],
+      imports: [TranslateModule.forRoot(),
+        InstallerModule,
+        Ng2Bs3ModalModule],
+      declarations: [
+        FlogoFlowTriggersPanelComponent,
+        ContainerComponent,
+        FlogoSelectTriggerComponent
+      ],
       providers: [
         FlogoTriggerClickHandlerService,
         {provide: PostService, useValue: postServiceStub },
         {provide: Router, useClass: MockRouterService},
-        {provide: RESTAPITriggersService, useClass: MockTriggerService},
+        { provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock },
+        { provide: RESTAPIActivitiesService, useClass: MockActivityContribService },
+        { provide: RESTAPIContributionsService, useClass: MockActivityContribService },
+        {provide: RESTAPITriggersServiceV2, useClass: MockTriggerServiceV2},
         {provide: RESTAPIHandlersService, useClass: MockHandlerService},
-        {provide: UIModelConverterService, useClass: MockUIConverterService}
+        {provide: UIModelConverterService, useClass: MockUIConverterService},
+        HttpUtilsService
       ]
     });
   });
