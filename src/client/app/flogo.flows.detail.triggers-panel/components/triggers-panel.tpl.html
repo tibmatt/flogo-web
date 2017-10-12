@@ -24,9 +24,8 @@
   <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
     <i class="flogo-icon-add"></i>
   </div>
-  <flogo-select-trigger *ngIf="showAddTrigger"
+  <flogo-select-trigger [(isAddTriggerActivated)]="showAddTrigger"
                         [appDetails]="appDetails"
-                        (onAddTriggerModalClose)="closeAddTriggerModel($event)"
                         (onAddTriggerToAction)="addTriggerToAction($event)"
                         (onInstallDialog)="openInstallTriggerWindow()"></flogo-select-trigger>
   <flogo-installer [profileType]="appDetails?.appProfileType"

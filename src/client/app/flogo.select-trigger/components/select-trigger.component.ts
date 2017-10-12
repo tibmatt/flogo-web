@@ -15,15 +15,17 @@ import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   @ViewChild('addTriggerModal') modal: ModalComponent;
   @Input() appDetails: any;
-  @Output() onAddTriggerModalClose: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() isAddTriggerActivated: boolean;
   @Output() onAddTriggerToAction: EventEmitter<any> = new EventEmitter<any>();
   @Output() onInstallDialog = new EventEmitter();
+  @Output() isAddTriggerActivatedChange = new EventEmitter();
   public installedTriggers = [];
   public installTriggerActivated = false;
   private addTriggerMsg: any;
   public displayExisting: boolean;
 
   public existingTriggers = [];
+  private _isActivated: boolean;
 
 
   constructor(public translate: TranslateService,
@@ -37,7 +39,8 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   onModalCloseOrDismiss() {
-    this.onAddTriggerModalClose.emit(false);
+    this._isActivated = false;
+    this.isAddTriggerActivatedChange.emit(false);
   }
 
   openModal() {
@@ -46,7 +49,6 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
 
   closeModal() {
     this.modal.close();
-    this.onModalCloseOrDismiss();
   }
 
   getExistingTriggers() {
@@ -100,9 +102,20 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['appDetails']) {
-      this.loadInstalledTriggers();
-      this.openModal();
+    if (_.has(changes, 'isAddTriggerActivated')) {
+      this.onActivatedStatusChange(changes['isAddTriggerActivated'].currentValue);
+    }
+  }
+
+  onActivatedStatusChange(newVal) {
+    if (newVal !== this._isActivated) {
+      this._isActivated = newVal;
+      if (this._isActivated) {
+        this.loadInstalledTriggers();
+        this.openModal();
+      } else {
+        this.closeModal();
+      }
     }
   }
 

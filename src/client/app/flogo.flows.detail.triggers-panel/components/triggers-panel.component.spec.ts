@@ -17,6 +17,8 @@ import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-
 import {HttpUtilsService} from '../../../common/services/restapi/http-utils.service';
 import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
 import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/contributions.service';
+import {FlogoProfileService} from '../../../common/services/profile.service';
+import {FlogoProfileServiceMock} from '../../../common/services/profile.service.mock';
 
 @Component({
   selector: 'flogo-container',
@@ -170,6 +172,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         FlogoTriggerClickHandlerService,
         {provide: PostService, useValue: postServiceStub },
         {provide: Router, useClass: MockRouterService},
+        { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
         { provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock },
         { provide: RESTAPIActivitiesService, useClass: MockActivityContribService },
         { provide: RESTAPIContributionsService, useClass: MockActivityContribService },
