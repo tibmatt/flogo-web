@@ -1,19 +1,11 @@
 import {
   IFlogoFlowDiagramTask as FlowTile,
-  IFlogoFlowDiagramTaskAttribute as FlowAttribute,
   IFlogoFlowDiagramTaskAttributeMapping as FlowMapping,
 } from '../flogo.flows.detail.diagram/models';
 import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../common/constants';
 import { REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from './constants';
 import { flogoIDDecode } from '../../common/utils';
-
-export interface Schema {
-  type: string;
-  properties: {[name: string]: { type: string }};
-  required?: string[];
-  title?: string;
-  rootType?: string;
-}
+import { MapperSchema, FlowMetadata } from './models';
 
 export class MapperTranslator {
   static createInputSchema(tile: FlowTile) {
@@ -24,32 +16,43 @@ export class MapperTranslator {
     return MapperTranslator.attributesToObjectDescriptor(attributes);
   }
 
-  static createOutputSchema(tiles: FlowTile[], includeEmptySchemas = false): Schema {
+  static createOutputSchema(tiles: Array<FlowTile|FlowMetadata>, includeEmptySchemas = false): MapperSchema {
     const rootSchema = { type: 'object', properties: {} };
     tiles.forEach(tile => {
-      const attributes = tile.attributes;
-      let outputs;
-      if (tile.type === FLOGO_TASK_TYPE.TASK) {
-        // try to get data from task from outputs
-        outputs = attributes && attributes.outputs ? attributes.outputs : [];
+      if (tile.type !== 'metadata') {
+        const attributes = tile.attributes;
+        let outputs;
+        if (tile.type === FLOGO_TASK_TYPE.TASK) {
+          // try to get data from task from outputs
+          outputs = attributes && attributes.outputs ? attributes.outputs : [];
+        } else {
+          // it's a trigger, outputs for trigger doesn't seem to be consistent in the UI model impl
+          // hence checking in two places
+          outputs = (<any>tile).outputs || attributes && attributes.outputs;
+        }
+        const hasAttributes = outputs && outputs.length > 0;
+        if (hasAttributes || includeEmptySchemas) {
+          const taskId = flogoIDDecode(tile.id);
+          const tileSchema = MapperTranslator.attributesToObjectDescriptor(outputs || []);
+          tileSchema.rootType = this.getRootType(tile);
+          tileSchema.title = tile.title;
+          rootSchema.properties[taskId] = tileSchema;
+        }
       } else {
-        // it's a trigger, outputs for trigger doesn't seem to be consistent in the UI model impl
-        // hence cheking in two places
-        outputs = (<any>tile).outputs || attributes && attributes.outputs;
-      }
-      const hasAttributes = outputs && outputs.length > 0;
-      if (hasAttributes || includeEmptySchemas) {
-        const taskId = flogoIDDecode(tile.id);
-        const tileSchema =  MapperTranslator.attributesToObjectDescriptor(outputs || []);
-        tileSchema.rootType = this.getRootType(tile);
-        tileSchema.title = tile.title;
-        rootSchema.properties[taskId] = tileSchema;
+        const flowInputs = (<FlowMetadata>tile).input;
+        if (flowInputs && flowInputs.length > 0) {
+          const flowInputsSchema = MapperTranslator.attributesToObjectDescriptor(flowInputs);
+          flowInputsSchema.rootType = this.getRootType(tile);
+          rootSchema.properties['flow'] = flowInputsSchema;
+        }
       }
     });
     return rootSchema;
   }
 
-  static attributesToObjectDescriptor(attributes: FlowAttribute[]): Schema {
+  static attributesToObjectDescriptor(attributes: {
+    name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
+  }[]): MapperSchema {
     const properties = {};
     const requiredPropertyNames = [];
     attributes.forEach(attr => {
@@ -62,8 +65,8 @@ export class MapperTranslator {
   }
 
   // todo: change
-  static translateType(type: FLOGO_TASK_ATTRIBUTE_TYPE) {
-    return {
+  static translateType(type: FLOGO_TASK_ATTRIBUTE_TYPE|string) {
+    const translatedType = {
       [FLOGO_TASK_ATTRIBUTE_TYPE.ANY]: 'any',
       [FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY]: 'array',
       [FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN]: 'boolean',
@@ -74,6 +77,7 @@ export class MapperTranslator {
       [FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS]: 'object',
       [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: 'string',
     }[type];
+    return translatedType || type;
   }
 
   static translateMappingsIn(inputMappings: FlowMapping[]) {
@@ -107,9 +111,11 @@ export class MapperTranslator {
       }));
   }
 
-  static getRootType(tile: FlowTile) {
+  static getRootType(tile: FlowTile|FlowMetadata) {
     if (tile.type === FLOGO_TASK_TYPE.TASK_ROOT) {
       return tile.triggerType === FLOGO_ERROR_ROOT_NAME ? 'error-root' : 'trigger';
+    } else if (tile.type === 'metadata') {
+      return 'flow';
     }
     return 'activity';
   }
