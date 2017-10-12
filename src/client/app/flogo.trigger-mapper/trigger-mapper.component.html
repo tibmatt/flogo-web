@@ -1,0 +1,15 @@
+<modal cssClass="flogo-instructions-modal"
+       (onClose)="onCloseOrDismiss()"
+       (onDismiss)="onCloseOrDismiss()">
+  <div>
+    <button class="flogo-button--secondary" (click)="onCloseOrDismiss()">Cancel</button>
+    <button class="flogo-button--primary" (click)="onSave()">Save</button>
+    <button class="flogo-button--flat" (click)="setView(VIEWS.INPUTS)">Inputs</button>
+    <button class="flogo-button--flat" (click)="setView(VIEWS.OUTPUTS)">Outputs</button>
+  </div>
+  <flogo-mapper *ngIf="currentStatus?.isOpen"
+                class="mapper"
+                inputsSearchPlaceHolder="{{ 'TRANSFORM:ACTIVITY-INPUTS' | translate }}"
+                outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
+                [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
+</modal>

@@ -9,10 +9,9 @@ import { PostService } from '../../common/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskData } from './messages';
 
-import { IMapping, IMapExpression } from '../flogo.mapper/models/map-model';
+import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flogo.mapper';
+
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
-import { MapperTranslator } from './mapper-translator';
-import { MapperContextFactory } from './mapper-context-factory';
 
 @Component({
   selector: 'flogo-transform',
@@ -159,7 +158,7 @@ export class TransformComponent implements OnDestroy {
     const inputSchema = MapperTranslator.createInputSchema(inputTile);
     const outputSchema = MapperTranslator.createOutputSchema(scope);
     const mappings = MapperTranslator.translateMappingsIn(inputTile.inputMappings);
-    return MapperContextFactory.create(inputSchema, outputSchema, mappings);
+    return StaticMapperContextFactory.create(inputSchema, outputSchema, mappings);
   }
 
   private resetState() {

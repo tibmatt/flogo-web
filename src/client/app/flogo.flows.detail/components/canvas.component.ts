@@ -37,7 +37,7 @@ import { FlogoModal } from '../../../common/services/modal.service';
 import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
 import {FlogoProfileService} from '../../../common/services/profile.service';
-import {IFlogoTriggers} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import {IFlogoTrigger} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 import { FlogoFlowInputSchemaComponent } from '../components/flow-input-schema.component';
 
 interface IPropsToUpdateFormBuilder {
@@ -58,7 +58,7 @@ export class FlogoCanvasComponent implements OnInit {
   public mainHandler: HandlerInfo;
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
-  public triggersList: IFlogoTriggers[];
+  public triggersList: IFlogoTrigger[];
 
 
   private runState = {
@@ -1657,7 +1657,6 @@ export class FlogoCanvasComponent implements OnInit {
     });
 
   }
-
 
   private getAllPaths(nodes: any) {
     return Object.keys(nodes);

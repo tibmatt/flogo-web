@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/observable/of';
 
-import { IMapExpression, IMapFunctionsLookup, IMapping, ISchemaProvider } from '../flogo.mapper/models/map-model';
+import { IMapExpression, IMapFunctionsLookup, IMapping, ISchemaProvider } from '../models';
 
-export class MapperContextFactory {
+export class StaticMapperContextFactory {
   static create(inputSchema: any, outputSchema: any, mappings: {[lhs: string]: IMapExpression}) {
     return {
       getMapFunctionsProvider(): IMapFunctionsLookup {

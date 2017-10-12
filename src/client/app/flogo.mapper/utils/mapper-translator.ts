@@ -1,11 +1,13 @@
 import {
   IFlogoFlowDiagramTask as FlowTile,
   IFlogoFlowDiagramTaskAttributeMapping as FlowMapping,
-} from '../flogo.flows.detail.diagram/models';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../common/constants';
-import { REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from './constants';
-import { flogoIDDecode } from '../../common/utils';
-import { MapperSchema, FlowMetadata } from './models';
+} from '../../flogo.flows.detail.diagram/models';
+
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
+import { REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from '../../flogo.transform/constants';
+
+import { flogoIDDecode } from '../../../common/utils';
+import { MapperSchema, FlowMetadata } from '../../flogo.transform/models';
 
 export class MapperTranslator {
   static createInputSchema(tile: FlowTile) {

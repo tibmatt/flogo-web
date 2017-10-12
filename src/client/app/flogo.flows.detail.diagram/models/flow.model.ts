@@ -9,7 +9,7 @@ import {
   IFlogoFlowDiagramTaskDictionary
 } from '../models';
 import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE} from '../constants';
-import {IFlowMetadata} from "../../flogo.flows.detail/models/profiles/microservice-converter.model";
+import {FlowMetadata} from '../../flogo.flows.detail/models';
 
 /**
  * Type definitions for flowToJSON util function
@@ -211,7 +211,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     output: []
   }));
 
-  function _parseMetadata(metadata: IFlowMetadata) {
+  function _parseMetadata(metadata: FlowMetadata) {
     metadata.input = metadata.input.map(input => ({
       name: input.name, type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,
         <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'),
