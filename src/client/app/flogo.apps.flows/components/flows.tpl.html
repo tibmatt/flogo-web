@@ -1,38 +1,40 @@
-<div class="row">
-  <div *ngFor="let flow of flows; let i = index; trackBy: trackByFlowId" class="flogo-flow-card col-md-4 col-sm-12"
-       (click)="onSelect($event, deleteBox, flow)" [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
+<div *ngFor="let flow of flows; let i = index; trackBy: trackByFlowId"
+     class="flogo-flow-card"
+     (click)="onSelect($event, deleteBox, flow)" [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
 
-    <div class="flogo-flow">
-
+  <div class="flogo-flow">
+    <div class="col-md-9">
       <h4 class="flogo-flow-title">
         {{ flow.name }}
       </h4>
 
+      <p [title]="flow.description" class="flogo-flow-description">
+      <span *ngIf="flow.description">
+        {{ flow.description }}
+      </span>
+        <span *ngIf="!flow.description">
+        {{ 'FLOWS:NODESCRIPTION' | translate}}
+      </span>
+      </p>
+    </div>
+
+    <div class="col-md-3">
       <p class="flogo-flow-date">{{ 'FLOWS:CREATED' | translate:{value:''} }} {{ flow.createdAt | timeFromNow }}</p>
 
-      <p [title]="flow.description" class="flogo-flow-description">
-        <span *ngIf="flow.description">
-          {{ flow.description }}
-        </span>
-        <span *ngIf="!flow.description">
-          {{ 'FLOWS:NODESCRIPTION' | translate}}
-        </span>
-      </p>
-
       <p class="flogo-flow-date">
-        <span *ngIf="flow.updatedAt">
-          {{ 'FLOWS:UPDATED' | translate:{value:''} }} {{ flow.updatedAt | timeFromNow }}
-        </span>
+      <span *ngIf="flow.updatedAt">
+        {{ 'FLOWS:UPDATED' | translate:{value:''} }} {{ flow.updatedAt | timeFromNow }}
+      </span>
         <span *ngIf="!flow.updatedAt"></span>
       </p>
+    </div>
 
-      <div class="flogo-flow-menu">
-        <flogo-delete-popover #deleteBox class="flogo-flow-menu__delete-btn" (confirmDel)="onDeleteFlow($event)"
-                                  [deleteContent]="flow" [deleteContentType]="'flow'">
-        </flogo-delete-popover>
-      </div>
-
+    <div class="flogo-flow-menu">
+      <flogo-delete-popover #deleteBox class="flogo-flow-menu__delete-btn" (confirmDel)="onDeleteFlow($event)"
+                                [deleteContent]="flow" [deleteContentType]="'flow'">
+      </flogo-delete-popover>
     </div>
 
   </div>
+
 </div>

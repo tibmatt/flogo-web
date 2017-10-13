@@ -1,22 +1,21 @@
 <div class="row flogo-flow-group">
-  <div class="col-md-10 col-md-offset-1 col-sm-11 flogo-flow-group__trigger">
-    <div style="" class="flogo-flow-trigger__container">
-      <div class="flogo-trigger" [class.flogo-trigger--empty]="!trigger">
-        <i class="flogo-icon-trigger flogo-trigger__icon"></i>
-        <span *ngIf="trigger" class="flogo-trigger__text">{{ trigger.name }}</span>
-        <span *ngIf="!trigger">{{ 'APP-DETAIL:EMPTY-TRIGGER' | translate }}</span>
+  <div class="col-md-offset-1 col-md-10">
+    <div class="flogo-flow-group__trigger">
+      <div class="flogo-flow-trigger__container">
+        <div class="trigger" [ngClass]="{'trigger--empty': !trigger}" title="{{trigger?.name}}">
+          <i class="flogo-icon-trigger"></i>
+        </div>
       </div>
-      <div *ngIf="!trigger" class="flogo-trigger__voidspace"></div>
-      <div class="pull-right flogo-add-flow__container">
+    </div>
+    <div class="flogo-flow-group__flows">
+      <div class="flogo-app-content__flows">
+        <flogo-apps-flows [flows]="flows" (flowSelected)="onSelect($event)" (deleteFlow)="onDeleteFlow($event)"></flogo-apps-flows>
+      </div>
+      <div class="flogo-add-flow__container">
         <button class="flogo-flow-group__add-flow flogo-button--flat" *ngIf="trigger" (click)="onAddFlow()">
           <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}
         </button>
       </div>
-    </div>
-  </div>
-  <div class="col-md-10 col-md-offset-1  col-sm-11 flogo-flow-group__flows">
-    <div class="flogo-app-content__flows">
-      <flogo-apps-flows [flows]="flows" (flowSelected)="onSelect($event)" (deleteFlow)="onDeleteFlow($event)"></flogo-apps-flows>
     </div>
   </div>
 </div>

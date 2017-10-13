@@ -1,7 +1,6 @@
 @import '../../../assets/_variables';
 
 @action-fore-color: #449ed8;
-@width-inputs: 60%;
 @apps__trigger-row-height: 40px;
 @apps__trigger-border-width--empty: 3px;
 
@@ -11,30 +10,31 @@
 }
 
 .flogo-flow-group__trigger {
-  display: inline-block;
   position: relative;
   z-index: 1;
   cursor: pointer;
+  width: 56px;
+  float: left;
+}
+
+.flogo-flow-group__flows {
+  width: 94%;
+  float: left;
+  position: relative;
+  margin-left: -15px;
 
   &:hover .flogo-add-flow__container  {
     opacity: 1;
   }
-
-}
-
-.flogo-flow-trigger__container {
-  background: linear-gradient(180deg,
-              rgba(0, 0, 0, 0) calc(50% - 4px),
-              rgba(216, 216, 216,1) calc(50%),
-              rgba(0, 0, 0, 0) calc(50% + 4px));
-  height: 35px;
 }
 
 .flogo-add-flow__container {
-  padding-left: 10px;
   background: @color-app-detail-bg;
   opacity: 0;
   transition: opacity 250ms;
+  position: absolute;
+  top: -18px;
+  right: 0;
 }
 
 .flogo-flow-group__add-flow {
@@ -42,55 +42,46 @@
   font-size: 1em;
   border: solid 1px #d8d8d8;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
-
-  .flogo-icon-add {
-    margin-right: 10px;
-  }
 }
 
-.flogo-trigger {
-  font-size: 0.9em;
-  min-width: 100px;
-  background: @color-app-detail-bg;
-  display: inline-block;
-  margin-top: 8px;
-  padding-right: 10px;
-
-  .flogo-trigger__text {
-    display: inline-block;
-    max-width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
+.flogo-icon-add {
+  margin-right: 10px;
 }
 
-.flogo-trigger__icon {
-  display: inline-block;
-  font-size: 1.3em;
-  padding-right: 0.3em;
-  vertical-align: top;
-}
-
-.flogo-trigger--empty {
-  display: inline-block;
-  position: relative;
+.trigger {
+  width: 40px;
+  height: 40px;
+  padding: 10px 4px 10px 14px;
+  background: @color-trigger-bg-color;
   border-radius: 5px 0 0 5px;
-  border: @apps__trigger-border-width--empty dashed #d8d8d8;
-  border-right: none;
-  box-shadow: none;
-  padding: 6px;
-  color: #676a6d;
-  margin-top: -1px;
-
-  line-height: 1.5;
-  text-align: center;
+  cursor: pointer;
 
   &:after {
     display: block;
     content: "";
-    position: absolute;
+    position: relative;
+    -webkit-transform: rotate(45deg) skew(20deg, 20deg);
+    transform: rotate(45deg) skew(20deg, 20deg);
+    background: @color-trigger-bg-color;
+    height: 21px;
+    width: 21px;
+    top: -23px;
+    right: -16px;
+  }
+}
+
+.flogo-icon-trigger{
+  color: #1B4874;
+}
+
+.trigger--empty {
+  background: @color-app-detail-bg;
+  border: @apps__trigger-border-width--empty dashed #d8d8d8;
+  color: #79b8dc;
+  border-right: none;
+  font-size: 0.85em;
+
+  &:after {
     -webkit-transform: rotate(45deg) skew(20deg, 20deg);
     transform: rotate(45deg) skew(20deg, 20deg);
     background: @color-app-detail-bg;
@@ -99,21 +90,6 @@
     border-right-width: @apps__trigger-border-width--empty;
     height: 20px;
     width: 20px;
-    top: 6px;
-    right: -10px;
+    top: -22px;
   }
-
-  .flogo-trigger__icon {
-    display: none;
-  }
-
 }
-
-.flogo-trigger__voidspace {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin-left: 5px;
-  background: @color-app-detail-bg;
-}
-

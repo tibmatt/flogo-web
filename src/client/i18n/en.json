@@ -114,7 +114,7 @@
   "FLOWS:SUCCESS-MESSAGE-IMPORT":"Import flow successfully!",
   "FLOWS:EDITED": "Last edited {{value}}",
   "FLOWS:NODESCRIPTION": "No Description",
-  "FLOWS:UPDATED": "Last updated: {{value}}",
+  "FLOWS:UPDATED": "Updated {{value}}",
   "FLOWS:WELCOME-BACK": "Welcome back",
   "FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY": "Install new Activity",
   "FORM-BUILDER-CONFIGURATION-BRANCH:IF": "If condition",
