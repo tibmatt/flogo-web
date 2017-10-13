@@ -2,23 +2,20 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { SingleEmissionSubject } from '../../common/models/single-emission-subject';
-import { TriggerMapperService, Status } from './trigger-mapper.service';
-import { IMapping } from '../flogo.mapper';
-import { IMapExpression } from '../flogo.mapper/models/map-model';
-import { MapperTranslator } from '../flogo.mapper/utils/mapper-translator';
-import { StaticMapperContextFactory } from '../flogo.mapper/utils/static-mapper-context-factory';
-
 import 'rxjs/add/operator/takeUntil';
-import { FlowMetadata } from '../flogo.flows.detail/models/flow-metadata';
 
-const VIEWS = {
-  INPUTS: 'inputs',
-  OUTPUTS: 'outputs',
-};
+import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flogo.mapper';
+import { FlowMetadata } from '../flogo.flows.detail/models';
+
+import { VIEWS } from './views-info.model';
+import { TriggerMapperService, Status } from './trigger-mapper.service';
 
 @Component({
   selector: 'flogo-trigger-mapper',
-  styleUrls: ['../flogo.transform/transform.component.less', 'trigger-mapper.component.less'],
+  styleUrls: [
+    '../../common/styles/_mapper-modal.less',
+    'trigger-mapper.component.less'
+  ],
   templateUrl: 'trigger-mapper.component.html'
 })
 export class TriggerMapperComponent implements OnInit, OnDestroy {
@@ -29,9 +26,13 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   mapperContext: any;
   currentStatus: Status = { isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null };
 
-  currentView: string;
+  currentView = {
+    name: '',
+    inputsLabelKey: '',
+    outputsLabelKey: '',
+  };
   isInputsViewEnabled: boolean;
-  isOutputsViewEnabled: boolean;
+  isReplyViewEnabled: boolean;
 
   private editingMappings: {
     actionInput: { [key: string]: IMapExpression };
@@ -58,9 +59,9 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   onMappingsChange(change: IMapping) {
     const mappings = _.cloneDeep(change).mappings;
-    if (this.currentView === this.VIEWS.INPUTS) {
+    if (this.currentView.name === this.VIEWS.INPUTS.name) {
       this.editingMappings.actionInput = mappings;
-    } else if (this.currentView === this.VIEWS.OUTPUTS) {
+    } else if (this.currentView.name === this.VIEWS.REPLY.name) {
       this.editingMappings.actionOutput = mappings;
     }
   }
@@ -72,13 +73,18 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     });
   }
 
-  setView(viewType: string) {
-    this.currentView = viewType;
-    if (viewType === VIEWS.INPUTS) {
-      this.mapperContext = this.createInputsContext();
-    } else if (viewType === VIEWS.OUTPUTS) {
-      this.mapperContext = this.createOutputsContext();
+  setView(viewName: string) {
+    let viewInfo;
+    let mapperContext;
+    if (viewName === VIEWS.INPUTS.name) {
+      mapperContext = this.createInputsContext();
+      viewInfo = this.VIEWS.INPUTS;
+    } else if (viewName === VIEWS.REPLY.name) {
+      mapperContext = this.createReplyContext();
+      viewInfo = this.VIEWS.REPLY;
     }
+    this.mapperContext = mapperContext;
+    this.currentView = viewInfo;
   }
 
   private onNextStatus(nextStatus: Status) {
@@ -124,13 +130,13 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     }
 
     this.isInputsViewEnabled = hasTriggerOutputs && hasFlowInputs;
-    this.isOutputsViewEnabled = hasTriggerReply && hasFlowOutputs;
+    this.isReplyViewEnabled = hasTriggerReply && hasFlowOutputs;
 
-    let viewType = null;
+    let viewType: string = null;
     if (this.isInputsViewEnabled) {
-      viewType = this.VIEWS.INPUTS;
-    } else if (this.isOutputsViewEnabled) {
-      viewType = this.VIEWS.OUTPUTS;
+      viewType = this.VIEWS.INPUTS.name;
+    } else if (this.isReplyViewEnabled) {
+      viewType = this.VIEWS.REPLY.name;
     }
     this.setView(viewType);
   }
@@ -143,7 +149,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     return StaticMapperContextFactory.create(flowInputSchema, triggerOutputSchema, mappings);
   }
 
-  private createOutputsContext() {
+  private createReplyContext() {
     const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor(this.currentStatus.triggerSchema.reply || []);
     const flowMetadata = this.currentStatus.flowMetadata || { output: [] };
     const flowOutputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.output);

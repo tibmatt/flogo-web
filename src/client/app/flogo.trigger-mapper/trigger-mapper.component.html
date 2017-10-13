@@ -1,34 +1,38 @@
 <modal cssClass="flogo-trigger-mapper-modal"
        (onClose)="onCloseOrDismiss()"
        (onDismiss)="onCloseOrDismiss()">
-  <div class="transform-modal__header header">
+  <div class="mapper-modal__header header">
     <!-- TODO: externalize -->
-    <h2 class="header__title">Map trigger</h2>
+    <h2 class="header__title">{{ 'TRIGGER-MAPPER:TITLE' | translate }}: {{ currentStatus?.trigger?.name }} </h2>
     <div class="header__actions actions">
-      <button class="flogo-button--secondary actions__action actions__action--delete" (click)="onCloseOrDismiss()">Cancel</button>
-      <button class="flogo-button--primary  actions__action actions__action--save" (click)="onSave()">Save</button>
+      <button class="flogo-button--secondary actions__action actions__action--delete" (click)="onCloseOrDismiss()">
+        {{ 'TRIGGER-MAPPER:CANCEL' | translate  }}
+      </button>
+      <button class="flogo-button--primary  actions__action actions__action--save" (click)="onSave()">
+        {{ 'TRIGGER-MAPPER:SAVE' | translate  }}
+      </button>
     </div>
-    <button class="transform-modal__close" (click)="onCloseOrDismiss()">
-      <span aria-hidden="true" class="sr-only">{{ 'TRANSFORM:CLOSE' | translate }}</span>
+    <button class="mapper-modal__close" (click)="onCloseOrDismiss()">
+      <span aria-hidden="true" class="sr-only">{{ 'TRIGGER-MAPPER:CLOSE' | translate }}</span>
     </button>
   </div>
-  <div class="transform-modal__content content--with-menu">
+  <div class="mapper-modal__content content--with-menu">
     <div class="content__menu menu">
       <!-- TODO: Fix and externalize strings -->
       <a class="menu__item"
          [class.--disabled]="!isInputsViewEnabled"
-         [class.--active]="currentView===VIEWS.INPUTS"
-         (click)="setView(VIEWS.INPUTS)">Inputs</a>
+         [class.--active]="currentView?.name === VIEWS.INPUTS.name"
+         (click)="setView(VIEWS.INPUTS.name)">{{ 'TRIGGER-MAPPER:MENU-INPUTS'| translate }}</a>
       <a class="menu__item"
-         [class.--disabled]="!isOutputsViewEnabled"
-         [class.--active]="currentView===VIEWS.OUTPUTS"
-         (click)="setView(VIEWS.OUTPUTS)">Outputs</a>
+         [class.--disabled]="!isReplyViewEnabled"
+         [class.--active]="currentView?.name === VIEWS.REPLY.name"
+         (click)="setView(VIEWS.REPLY.name)">{{ 'TRIGGER-MAPPER:MENU-REPLY'| translate }}</a>
     </div>
     <!-- TODO: Fix and externalize strings -->
     <flogo-mapper *ngIf="currentStatus?.isOpen"
                   class="mapper content__mapper"
-                  inputsSearchPlaceHolder="{{ 'TRANSFORM:ACTIVITY-INPUTS' | translate }}"
-                  outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
+                  inputsSearchPlaceHolder="{{ currentView?.inputsLabelKey | translate }}"
+                  outputsSearchPlaceHolder="{{ currentView?.outputsLabelKey | translate }}"
                   [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
   </div>
 </modal>

@@ -15,7 +15,10 @@ import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task
 
 @Component({
   selector: 'flogo-transform',
-  styleUrls: ['transform.component.less'],
+  styleUrls: [
+    '../../common/styles/_mapper-modal.less',
+    'transform.component.less'
+  ],
   templateUrl: 'transform.component.html',
   animations: [
     trigger('dialog', [
