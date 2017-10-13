@@ -9,6 +9,7 @@ import { MapperTranslator } from '../flogo.mapper/utils/mapper-translator';
 import { StaticMapperContextFactory } from '../flogo.mapper/utils/static-mapper-context-factory';
 
 import 'rxjs/add/operator/takeUntil';
+import { FlowMetadata } from '../flogo.flows.detail/models/flow-metadata';
 
 const VIEWS = {
   INPUTS: 'inputs',
@@ -17,7 +18,7 @@ const VIEWS = {
 
 @Component({
   selector: 'flogo-trigger-mapper',
-  styleUrls: ['trigger-mapper.component.less'],
+  styleUrls: ['../flogo.transform/transform.component.less', 'trigger-mapper.component.less'],
   templateUrl: 'trigger-mapper.component.html'
 })
 export class TriggerMapperComponent implements OnInit, OnDestroy {
@@ -27,7 +28,10 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   mapperContext: any;
   currentStatus: Status = { isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null };
+
   currentView: string;
+  isInputsViewEnabled: boolean;
+  isOutputsViewEnabled: boolean;
 
   private editingMappings: {
     actionInput: { [key: string]: IMapExpression };
@@ -85,11 +89,50 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
         actionInput: MapperTranslator.translateMappingsIn(actionInputMappings),
         actionOutput: MapperTranslator.translateMappingsIn(actionOutputMappings),
       };
-      this.modal.open();
-      this.setView(VIEWS.INPUTS);
+      const triggerSchema = nextStatus.triggerSchema;
+      const flowMetadata = nextStatus.flowMetadata;
+      this.setupViews(triggerSchema, flowMetadata);
+
+      this.modal.open().then(() => {
+        // todo: remove
+        // dirty hack for the mapper editor to setup the size correctly after the modal finishes its animation
+        // probably move inside the mapper module
+        const event = document.createEvent('HTMLEvents');
+        event.initEvent('resize', true, false);
+        document.dispatchEvent(event);
+      });
     } else if (this.modal.visible) {
+      this.mapperContext = null;
       this.modal.close();
     }
+  }
+
+  private setupViews(triggerSchema: any, flowMetadata: FlowMetadata) {
+    let hasTriggerOutputs = false;
+    let hasTriggerReply = false;
+    let hasFlowInputs = false;
+    let hasFlowOutputs = false;
+
+    if (triggerSchema) {
+      hasTriggerOutputs = triggerSchema.outputs && triggerSchema.outputs.length > 0;
+      hasTriggerReply = triggerSchema.reply && triggerSchema.reply.length > 0;
+    }
+
+    if (flowMetadata) {
+      hasFlowInputs = flowMetadata.input && flowMetadata.input.length > 0;
+      hasFlowOutputs = flowMetadata.output && flowMetadata.output.length > 0;
+    }
+
+    this.isInputsViewEnabled = hasTriggerOutputs && hasFlowInputs;
+    this.isOutputsViewEnabled = hasTriggerReply && hasFlowOutputs;
+
+    let viewType = null;
+    if (this.isInputsViewEnabled) {
+      viewType = this.VIEWS.INPUTS;
+    } else if (this.isOutputsViewEnabled) {
+      viewType = this.VIEWS.OUTPUTS;
+    }
+    this.setView(viewType);
   }
 
   private createInputsContext() {

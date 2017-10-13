@@ -101,7 +101,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
     this._triggerMapperSubscription = this._triggerMapperService.save$
       .switchMap(({ trigger, mappings }) => this._restAPIHandlerService
-        // Update the handler using the updateHanler REST API call
+        // Update the handler using the updateHandler REST API call
           .updateHandler(trigger.id, this.actionId, mappings)
           .then(handler => ({trigger, handler}))
       )
@@ -252,9 +252,9 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
-  openTriggerMapper(trigger: IFlogoTrigger) {
+  openTriggerMapper(trigger: IFlogoTrigger & {handler: any}) {
     this.hideTriggerMenuPopover();
-    const handler = trigger.handlers.find(h => h.actionId === this.actionId);
+    const handler = trigger.handler;
     this._converterService.getTriggerTask(trigger)
       .then(triggerSchema => this._triggerMapperService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
     // TODO: Need to get changes to the actionInputMappings and actionOutputMappings of an handler from trigger mapper

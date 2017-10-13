@@ -9,11 +9,11 @@ export class  RESTAPIHandlersService {
   constructor( private http : Http,private httpUtils: HttpUtilsService) {
   }
 
-  updateHandler(triggerId, actionId, trigger) {
+  updateHandler(triggerId, actionId, handlerSettings) {
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
-    return this.http.put(this.apiPrefix(`triggers/${triggerId}/handlers/${actionId}`), trigger, options).toPromise()
+    return this.http.put(this.apiPrefix(`triggers/${triggerId}/handlers/${actionId}`), handlerSettings, options).toPromise()
       .then(response => response.json().data);
 
   }
