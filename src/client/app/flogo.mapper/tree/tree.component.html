@@ -1,7 +1,7 @@
 <div class="mapper-tree">
   <div class="search mapper-tree__search-container" [class.search--has-value]="searchTerm">
     <input type="text" class="search__text" #search [value]="searchTerm"
-           (keyup)="onSearchChange(search.value)" placeholder="Search">
+           (keyup)="onSearchChange(search.value)" [placeholder]="searchPlaceholder">
     <svg *ngIf="!searchTerm" class="flogo-mapper-icon search__command">
       <use flogoMapperInlineHref="#flogo-mapper-icon-search"></use>
     </svg>

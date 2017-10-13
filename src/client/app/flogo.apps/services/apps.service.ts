@@ -182,13 +182,16 @@ export class AppDetailService {
   }
 
   private makeFlowGroups(triggers, actions): FlowGroup[] {
+    let handlers = [];
+    triggers.forEach(t => {
+      handlers = handlers.concat(t.handlers);
+    });
+    const orphanActions = actions.filter(a => !handlers.find(h => h.actionId === a.id));
+    const orphanActionMap = new Map(<[string, any][]> orphanActions.map(a => [a.id, a]));
     const actionMap = new Map(<[string, any][]> actions.map(a => [a.id, a]));
 
     const pullAction = actionId => {
       const action = actionMap.get(actionId);
-      if (action) {
-        actionMap.delete(actionId);
-      }
       return action;
     };
 
@@ -202,10 +205,10 @@ export class AppDetailService {
     }).filter(triggerGroup => triggerGroup.flows.length > 0);
 
     // orphan flows
-    if (actionMap.size) {
+    if (orphanActionMap.size) {
       triggerGroups.unshift({
         trigger: null,
-        flows: Array.from(actionMap.values()),
+        flows: Array.from(orphanActionMap.values()),
       });
     }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { TYPE_PARAM_OUTPUT } from '../tree/dragging.service';
@@ -17,10 +17,11 @@ import 'rxjs/add/operator/takeUntil';
   styleUrls: ['output-list.component.css']
 })
 export class OutputListComponent implements OnInit, OnDestroy {
+  @Input() searchPlaceholder: string;
+  @Output() selectNode = new EventEmitter<MapperTreeNode>();
   treeNodes: MapperTreeNode[];
   filterTerm: string;
   dragType = TYPE_PARAM_OUTPUT;
-  @Output() selectNode = new EventEmitter<MapperTreeNode>();
 
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
 

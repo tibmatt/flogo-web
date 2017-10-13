@@ -7,7 +7,7 @@ import {
 
 import { PostService } from '../../common/services/post.service';
 
-import { PUB_EVENTS, SUB_EVENTS } from './messages';
+import { PUB_EVENTS, SUB_EVENTS, SelectTaskData } from './messages';
 
 import { IMapping, IMapExpression } from '../flogo.mapper/models/map-model';
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
@@ -40,6 +40,7 @@ import { MapperContextFactory } from './mapper-context-factory';
 export class TransformComponent implements OnDestroy {
   @Input()
   flowId: string;
+  currentTile: IFlogoFlowDiagramTask;
   mapperContext: any;
 
   isValid: boolean;
@@ -59,7 +60,6 @@ export class TransformComponent implements OnDestroy {
 
   private _subscriptions: any[];
   private currentMappings: { [key: string]: IMapExpression };
-  private currentTile: any;
 
   constructor(private _postService: PostService) {
     this.initSubscriptions();
@@ -144,24 +144,20 @@ export class TransformComponent implements OnDestroy {
     return true;
   }
 
-  private initTransformation(data: {
-    id: string,
-    previousTiles: IFlogoFlowDiagramTask[],
-    tile: IFlogoFlowDiagramTask
-  }, envelope: any) {
-    if (!this.raisedByThisDiagram(data.id)) {
+  private initTransformation(data: SelectTaskData, envelope: any) {
+    if (!this.raisedByThisDiagram(data.handlerId)) {
       return;
     }
     this.currentTile = data.tile;
     this.resetState();
-    this.mapperContext = this.createContext(data.tile, data.previousTiles);
+    this.mapperContext = this.createContext(data.tile, data.scope);
     this.open();
   }
 
   // todo: get data from event
-  private createContext(inputTile: IFlogoFlowDiagramTask, outputTiles: IFlogoFlowDiagramTask[]) {
+  private createContext(inputTile: IFlogoFlowDiagramTask, scope: IFlogoFlowDiagramTask[]) {
     const inputSchema = MapperTranslator.createInputSchema(inputTile);
-    const outputSchema = MapperTranslator.createOutputSchema(outputTiles);
+    const outputSchema = MapperTranslator.createOutputSchema(scope);
     const mappings = MapperTranslator.translateMappingsIn(inputTile.inputMappings);
     return MapperContextFactory.create(inputSchema, outputSchema, mappings);
   }

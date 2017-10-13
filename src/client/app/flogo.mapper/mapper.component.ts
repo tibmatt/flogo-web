@@ -21,17 +21,20 @@ import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './tree/
 @Component({
   selector: 'flogo-mapper',
   templateUrl: 'mapper.component.html',
-  styleUrls: ['mapper.component.css'],
+  styleUrls: ['mapper.component.less'],
   providers: [MapperService, EditorService, DraggingService]
 })
 export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() context: IMapperContext;
+  @Input() inputsSearchPlaceHolder = 'Search';
+  @Input() outputsSearchPlaceHolder = 'Search';
   @Output() mappingsChange = new EventEmitter<IMapping>();
   currentInput: CurrentSelection = null;
   isDraggingOver = false;
 
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
+  private contextInUse: IMapperContext;
 
   constructor(private mapperService: MapperService,
               private editorService: EditorService,
@@ -46,11 +49,13 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       })
       .share();
 
-    state$.map((state: MapperState) => state.currentSelection)
-      .distinctUntilChanged()
+    state$
+      .distinctUntilKeyChanged('currentSelection')
+      // .map((state: MapperState) => state.currentSelection)
+      // .distinctUntilChanged()
       .takeUntil(this.ngDestroy)
-      .subscribe((currentSelection: CurrentSelection) => {
-        this.currentInput = currentSelection;
+      .subscribe((state: MapperState) => {
+        this.currentInput = state.currentSelection;
         if (this.currentInput) {
           this.editorService.changeContext(this.currentInput.expression);
         }
@@ -105,10 +110,16 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe(position => this.editorService.dragOver(position));
 
     this.initContext();
+
   }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
-    if (changes['context']) {
+    const contextChange = changes['context'];
+    if (!contextChange || contextChange.currentValue === this.contextInUse) {
+      return;
+    }
+    this.contextInUse = this.context;
+    if (!contextChange.isFirstChange()) {
       this.initContext();
     }
   }
@@ -168,7 +179,18 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private initContext() {
-    this.mapperService.setContext(this.context);
+    this.mapperService.setContext(this.contextInUse);
+
+    this.mapperService.state
+      .distinctUntilKeyChanged('context')
+      .first()
+      .subscribe((state: MapperState) => {
+        const inputsData = state.inputs;
+        // open first input by default
+        if (inputsData.nodes && inputsData.nodes[0]) {
+          this.mapperService.selectInput(inputsData.nodes[0]);
+        }
+      });
   }
 
 }

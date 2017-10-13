@@ -35,19 +35,9 @@ export class FlogoFlowService {
 
         const triggers = flow.triggers;
 
-        if (flow.triggers.length > 0) {
-          return this._converterService.getWebFlowModel(flowDiagramDetails)
-            .then(convertedFlow =>  this.processFlowModel(convertedFlow, true))
-            .then(processedFlow => _.assign({}, processedFlow, {triggers}));
-        } else {
-          // TODO: should create empty diagram instead
-          return {
-            flow,
-            root: { diagram: null, tasks: null },
-            errorHandler: { diagram: null, tasks: null },
-            triggers
-          };
-        }
+        return this._converterService.getWebFlowModel(flowDiagramDetails)
+          .then(convertedFlow =>  this.processFlowModel(convertedFlow, flow.triggers.length > 0))
+          .then(processedFlow => _.assign({}, processedFlow, { triggers }));
       });
   }
 

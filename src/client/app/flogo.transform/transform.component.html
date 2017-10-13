@@ -1,12 +1,12 @@
 <div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
   <div class="transform-modal data-transform-modal" *ngIf="isActive">
     <div class="transform-modal__header header" [class.--is-delete-open]="showDeleteConfirmation">
-      <h2 class="header__title">{{ 'TRANSFORM:TRANSFORMATION' | translate }}</h2>
+      <h2 class="header__title">{{ currentTile?.name }}</h2>
       <div class="header__actions actions">
-        <button class="flogo-btn-link actions__delete" (click)="openDeleteConfirmation($event)">
+        <button class="flogo-button--secondary actions__action actions__action--delete" (click)="openDeleteConfirmation($event)">
           Delete
         </button>
-        <button class="tc-buttons tc-buttons-primary actions__save"
+        <button class="flogo-button--primary  actions__action actions__action--save"
                 [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
                 (click)="saveTransform()">{{ 'TRANSFORM:SAVE' | translate }}
         </button>
@@ -22,7 +22,10 @@
     </div>
 
     <div class="transform-modal__content">
-      <flogo-mapper class="mapper" [context]="mapperContext" (mappingsChange)="onMappingsChange($event)" ></flogo-mapper>
+      <flogo-mapper class="mapper"
+                    inputsSearchPlaceHolder="{{ 'TRANSFORM:ACTIVITY-INPUTS' | translate }}"
+                    outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
+                    [context]="mapperContext" (mappingsChange)="onMappingsChange($event)" ></flogo-mapper>
     </div>
   </div>
 </div>

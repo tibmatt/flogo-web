@@ -743,7 +743,8 @@ label {
   }
 }
 
-.flogo-button--default{
+.flogo-button--primary,
+.flogo-button--default {
   height: @size-height-button;
   color: white;
   background: @color-primary;
@@ -751,15 +752,18 @@ label {
   padding-left: 1em;
   padding-right: 1em;
 
-  &:hover{
+  &:hover {
     border-radius: 4px;
   }
   &:active{
     background: @color-primary;
     border-radius: 4px;
   }
-  &:disabled{
+  &:disabled {
     opacity: .5;
+    &:hover {
+      border-radius: 0;
+    }
   }
 }
 

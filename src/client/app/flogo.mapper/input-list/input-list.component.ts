@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 import { MapperService, MapperState, TreeState } from '../services/mapper.service';
@@ -15,6 +15,7 @@ import 'rxjs/add/operator/share';
   styleUrls: ['input-list.component.css']
 })
 export class InputListComponent implements OnInit, OnDestroy {
+  @Input() searchPlaceholder: string;
   treeNodes: MapperTreeNode[];
   selectedInput: MapperTreeNode;
   filterTerm: string;
