@@ -1,4 +1,4 @@
-import {Component, DebugElement} from '@angular/core';
+import {Component, DebugElement, NO_ERRORS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from 'ng2-translate';
 import {FlogoFlowTriggersPanelComponent} from './triggers-panel.component';
@@ -19,6 +19,8 @@ import {RESTAPIActivitiesService} from '../../../common/services/restapi/activit
 import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/contributions.service';
 import {FlogoProfileService} from '../../../common/services/profile.service';
 import {FlogoProfileServiceMock} from '../../../common/services/profile.service.mock';
+import { TriggerMapperModule } from '../../flogo.trigger-mapper/trigger-mapper.module';
+import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';
 
 @Component({
   selector: 'flogo-container',
@@ -160,9 +162,12 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(),
+      imports: [
+        TranslateModule.forRoot(),
         InstallerModule,
-        Ng2Bs3ModalModule],
+        Ng2Bs3ModalModule,
+        TriggerMapperModule,
+      ],
       declarations: [
         FlogoFlowTriggersPanelComponent,
         ContainerComponent,
@@ -179,12 +184,13 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         {provide: RESTAPITriggersServiceV2, useClass: MockTriggerServiceV2},
         {provide: RESTAPIHandlersService, useClass: MockHandlerService},
         {provide: UIModelConverterService, useClass: MockUIConverterService},
+        // {provide: TriggerMapperService, useValue: { open() {}, close() {}, save() {} }},
         HttpUtilsService
       ]
     });
   });
 
-  it('Should list zero triggers', (done) => {
+  it('When zero triggers provided it should list zero triggers', (done) => {
     compileComponent()
       .then(() => {
         fixture = TestBed.createComponent(ContainerComponent);

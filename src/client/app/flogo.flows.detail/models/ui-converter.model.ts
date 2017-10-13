@@ -373,7 +373,6 @@ class ItemFactory {
       installed: true,
       settings: [],
       outputs: [],
-      reply: [],
       ref: '',
       endpoint: {settings: []},
       __props: {
@@ -472,7 +471,7 @@ class ItemFactory {
     item.outputs = outputs.map(mapType);
 
     const reply = installed.reply || [];
-    item.reply = reply.map(mapType);
+    item['reply'] = reply.map(mapType);
 
     return item;
   }
