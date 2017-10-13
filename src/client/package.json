@@ -65,6 +65,7 @@
     "ng2-bs3-modal": "^0.10.4",
     "ng2-translate": "~5.0.0",
     "ngx-perfect-scrollbar": "2.5.2",
+    "perfect-scrollbar": "~0.6.0",
     "postal": "^1.0.8",
     "primeng": "2.0.6",
     "reflect-metadata": "0.1.8",
