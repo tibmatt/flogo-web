@@ -1,8 +1,7 @@
 <div *ngFor="let flow of flows; let i = index; trackBy: trackByFlowId"
-     class="flogo-flow-card"
-     (click)="onSelect($event, deleteBox, flow)" [ngStyle]="{'animation-delay': (200 * i) + 'ms' }">
+     class="flogo-flow"
+     (click)="onSelect($event, deleteBox, flow)">
 
-  <div class="flogo-flow">
     <div class="col-md-9">
       <h4 class="flogo-flow-title">
         {{ flow.name }}
@@ -34,7 +33,5 @@
                                 [deleteContent]="flow" [deleteContentType]="'flow'">
       </flogo-delete-popover>
     </div>
-
-  </div>
 
 </div>
