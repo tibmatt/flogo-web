@@ -9,7 +9,7 @@ export interface IFlowMetadataAttribute {
   type: string;
 }
 
-interface IFlowMetadata {
+export interface IFlowMetadata {
   input: IFlowMetadataAttribute[ ];
   output: IFlowMetadataAttribute[ ];
 }

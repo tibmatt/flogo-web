@@ -4,7 +4,7 @@
       'INPUT-PARAMS:CANCEL' | translate }}
     </button>
     <button type="submit" class="flogo-button--default flow-input-params-save" data-dismiss="modal"
-            (click)="saveParams()">
+            (click)="saveParams()" [disabled]="!hasInputChanges && !hasOutputChanges">
       {{ 'INPUT-PARAMS:SAVE' | translate }}
     </button>
   </div>
@@ -13,14 +13,19 @@
   <div class="flow-input-params-container">
     <div class="flow-input-params-categories">
       <ul>
-        <li class="flow-input-params__category" [ngClass]="{'flow-input-params__category-selected': displayInputParams}" (click)="showInputParams()">Input</li>
-        <li class="flow-input-params__category" [ngClass]="{'flow-input-params__category-selected': !displayInputParams}"(click)="showOutputParams()">Output</li>
+        <li class="flow-input-params__category" [ngClass]="{'flow-input-params__category-selected': displayInputParams}"
+            (click)="showInputParams()">Input
+        </li>
+        <li class="flow-input-params__category"
+            [ngClass]="{'flow-input-params__category-selected': !displayInputParams}" (click)="showOutputParams()">
+          Output
+        </li>
       </ul>
     </div>
     <div *ngIf="displayInputParams" class="flow-input-params-pane">
       <div *ngFor="let input of definedInputParams" class="flow-input-params-field">
         <div>
-          <input type="text" placeholder="parameter name" [(ngModel)]="input.name"/>
+          <input type="text" placeholder="parameter name" (blur)= "onChangeParams(input.name)" [(ngModel)]="input.name"/>
         </div>
         <div class="dropdown flow-input-type-dropdown">
           <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
@@ -29,7 +34,8 @@
             <span class="caret list-caret flow-input-params-caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li *ngFor="let option of selectTypes" (click)="modifySelectedParamType(option)" style="cursor:pointer;"
+            <li *ngFor="let option of selectTypes" (click)="modifySelectedInputType(option,input)"
+                style="cursor:pointer;"
                 class="list-label">
               <a>{{option | lowercase}}</a></li>
           </ul>
@@ -38,10 +44,10 @@
           <i class="flogo-icon-delete" (click)="removeParams(input)"></i>
         </div>
       </div>
-      <!-- &lt;!&ndash; new &#45;&#45;!>-->
+      <!-- new input params-->
       <div class="flow-input-params-field">
         <div>
-          <input type="text" placeholder="parameter name" [(ngModel)]="otherInputItem.name">
+          <input type="text" placeholder="parameter name" (blur)="onChangeParams(otherInputItem.name)" [(ngModel)]="otherInputItem.name">
         </div>
         <div class="dropdown flow-input-type-dropdown">
           <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
@@ -56,7 +62,7 @@
           </ul>
         </div>
         <div>
-          <button class="flow-input-params-add " [disabled]="!otherInputItem.name || !otherInputItem.type"
+          <button class="flow-input-params-add " [disabled]="!otherInputItem.name || !otherInputItem.type && hasInputChanges"
                   (click)="addInputParams()">
             {{ 'INPUT-PARAMS:ADD' | translate }}
           </button>
@@ -64,54 +70,53 @@
       </div>
 
     </div>
-
-  <div *ngIf="!displayInputParams" class="flow-input-params-pane">
-    <div *ngFor="let output of definedOutputParams" class="flow-input-params-field">
-      <div>
-        <input type="text" placeholder="parameter name" [(ngModel)]="output.name"/>
+    <div *ngIf="!displayInputParams" class="flow-input-params-pane">
+      <div *ngFor="let output of definedOutputParams" class="flow-input-params-field">
+        <div>
+          <input type="text" placeholder="parameter name" (blur)="onChangeParams(output.name)" [(ngModel)]="output.name"/>
+        </div>
+        <div class="dropdown flow-input-type-dropdown">
+          <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
+                  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="">{{output.type | lowercase}}</span>
+            <span class="caret list-caret flow-input-params-caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li *ngFor="let option of selectTypes" (click)="modifySelectedOutputType(option, output)"
+                style="cursor:pointer;"
+                class="list-label">
+              <a>{{option | lowercase}}</a></li>
+          </ul>
+        </div>
+        <div class="flow-input-params-add flow-input-params-add--hidden">
+          <i class="flogo-icon-delete" (click)="removeParams(output)"></i>
+        </div>
       </div>
-      <div class="dropdown flow-input-type-dropdown">
-        <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
-                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          <span class="">{{output.type | lowercase}}</span>
-          <span class="caret list-caret flow-input-params-caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-          <li *ngFor="let option of selectTypes" (click)="modifySelectedParamType(option)" style="cursor:pointer;"
-              class="list-label">
-            <a>{{option | lowercase}}</a></li>
-        </ul>
-      </div>
-      <div class="flow-input-params-add flow-input-params-add--hidden">
-        <i class="flogo-icon-delete" (click)="removeParams(output)"></i>
+      <!-- new output params-->
+      <div class="flow-input-params-field">
+        <div>
+          <input type="text" placeholder="parameter name" (blur)="onChangeParams(otherOutputItem.name)" [(ngModel)]="otherOutputItem.name">
+        </div>
+        <div class="dropdown flow-input-type-dropdown">
+          <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
+                  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="">{{otherOutputItem.type | lowercase}}</span>
+            <span class="caret list-caret flow-input-params-caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li *ngFor="let option of selectTypes" (click)="selectParamType(option)" style="cursor:pointer;"
+                class="list-label">
+              <a>{{option | lowercase}}</a></li>
+          </ul>
+        </div>
+        <div>
+          <button class="flow-input-params-add " [disabled]="!otherOutputItem.name || !otherOutputItem.type && hasOutputChanges"
+                  (click)="addOutputParams()">
+            {{ 'INPUT-PARAMS:ADD' | translate }}
+          </button>
+        </div>
       </div>
     </div>
-    <!-- &lt;!&ndash; new &#45;&#45;!>-->
-    <div class="flow-input-params-field">
-      <div>
-        <input type="text" placeholder="parameter name" [(ngModel)]="otherOutputItem.name">
-      </div>
-      <div class="dropdown flow-input-type-dropdown">
-        <button class="btn btn-default dropdown-toggle flow-input-type-dropdown-label"
-                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          <span class="">{{otherOutputItem.type | lowercase}}</span>
-          <span class="caret list-caret flow-input-params-caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-          <li *ngFor="let option of selectTypes" (click)="selectParamType(option)" style="cursor:pointer;"
-              class="list-label">
-            <a>{{option | lowercase}}</a></li>
-        </ul>
-      </div>
-      <div>
-        <button class="flow-input-params-add " [disabled]="!otherOutputItem.name || !otherOutputItem.type"
-                (click)="addOutputParams()">
-          {{ 'INPUT-PARAMS:ADD' | translate }}
-        </button>
-      </div>
-    </div>
-
   </div>
-    </div>
 </modal>
 
