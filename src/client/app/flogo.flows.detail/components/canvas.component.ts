@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { PostService } from '../../../common/services/post.service';
@@ -38,6 +38,7 @@ import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
 import {FlogoProfileService} from '../../../common/services/profile.service';
 import {IFlogoTriggers} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import { FlogoFlowInputSchemaComponent } from '../components/flow-input-schema.component';
 
 interface IPropsToUpdateFormBuilder {
   name: string;
@@ -51,6 +52,7 @@ interface IPropsToUpdateFormBuilder {
 })
 
 export class FlogoCanvasComponent implements OnInit {
+  @ViewChild('inputSchemaModal') defineInputSchema: FlogoFlowInputSchemaComponent;
   public flow: any;
   public flowId: string;
   public mainHandler: HandlerInfo;
@@ -182,7 +184,7 @@ export class FlogoCanvasComponent implements OnInit {
       })
   }
 
-  private _updateFlow(flow: any) {
+  public _updateFlow(flow: any) {
     this._isCurrentProcessDirty = true;
     function cleanPaths(paths: any) {
       _.each(_.keys(paths), key => {
@@ -1726,6 +1728,10 @@ export class FlogoCanvasComponent implements OnInit {
 
   public onMouseOutBackControl() {
     this.backToAppHover = false;
+  }
+
+  public openInputSchemaModal() {
+    this.defineInputSchema.openInputSchemaModel();
   }
 
 }

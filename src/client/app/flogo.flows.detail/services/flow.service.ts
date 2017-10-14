@@ -42,8 +42,8 @@ export class FlogoFlowService {
   }
 
   saveFlow(flowId, uiFlow) {
-    const { name, description, flow } = flogoFlowToJSON(uiFlow);
-    const action = { name, description, data: { flow } };
+    const { name, description, flow, metadata } = flogoFlowToJSON(uiFlow);
+    const action = { name, description, data: { flow }, metadata };
     return this._flowAPIService.updateFlow(flowId, action);
   }
 
