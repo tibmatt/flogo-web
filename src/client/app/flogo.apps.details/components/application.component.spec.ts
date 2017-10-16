@@ -14,6 +14,7 @@ import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/a
 import { FlogoProfileService } from '../../../common/services/profile.service';
 import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
 import { FlogoExportFlowsComponent } from './export-flow.component';
+import {FlowTriggerGroupComponent} from '../../flogo.apps.flows/components/trigger-group.component';
 
 
 @Component({
@@ -78,6 +79,7 @@ describe('FlogoApplicationComponent component', () => {
         FlowGroupComponent,
         ContainerComponent,
         FlogoExportFlowsComponent,
+        FlowTriggerGroupComponent
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },
@@ -258,7 +260,8 @@ function makeMockAppDetail() {
           createdAt: new Date()
         }
       ],
-      flowGroups: []
+      flowGroups: [],
+      triggerGroups: []
     },
     state: {
       name: {
