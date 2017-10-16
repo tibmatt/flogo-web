@@ -4,12 +4,19 @@
 @apps__trigger-row-height: 40px;
 @apps__trigger-border-width--empty: 3px;
 
+
+/*
+README!!
+// Group of flows
+// z-indexes inside the flow-group context
+// 0: default flow card
+// 1: hovered flow card
+// 2: new flow button/delete popover
+**/
+
 .flogo-group {
   margin-top: 12px;
   margin-bottom: @apps__trigger-row-height;
-  // create as stacking context so we can reorder the elements inside
-  position: relative;
-  z-index: 0;
 }
 
 .flogo-group__trigger {
@@ -17,21 +24,13 @@
   width: 56px;
   float: left;
 
-  z-index: 1;
+  z-index: 2;
 }
 
-// Group of flows
-// z-indexes inside the flow-group context
-// 0: default flow card
-// 1: hovered flow card
-// 2: new flow button
 .flogo-group__flows {
   width: 94%;
   float: left;
   margin-left: -16px;
-
-  position: relative;
-  z-index: 0;
 }
 
 .flogo-icon-add {
