@@ -1,20 +1,16 @@
 <div class="row flogo-group">
   <div class="col-md-offset-1 col-md-10">
     <div class="flogo-group__trigger">
-      <div class="flogo-flow-trigger__container">
-        <div class="trigger" [ngClass]="{'trigger--empty': !trigger}" title="{{trigger?.name}}">
+      <div class="flogo-trigger__container">
+        <div class="trigger" [ngClass]="{'trigger--empty': !triggers}">
           <i class="flogo-icon-trigger"></i>
         </div>
+        <div class="flogo-trigger_count" *ngIf="triggerCountDisplay"><span>{{triggerCountDisplay}}</span></div>
       </div>
     </div>
     <div class="flogo-group__flows">
       <div class="flogo-app-content__flows">
         <flogo-apps-flows [flows]="flows" (flowSelected)="onSelect($event)" (deleteFlow)="onDeleteFlow($event)"></flogo-apps-flows>
-      </div>
-      <div class="flogo-add-flow__container">
-        <button class="flogo-flows-group__add-flow flogo-button--flat" *ngIf="trigger" (click)="onAddFlow()">
-          <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}
-        </button>
       </div>
     </div>
   </div>

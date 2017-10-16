@@ -18,6 +18,7 @@ import { FlogoAppImportErrorComponent } from '../flogo.apps.import.error/compone
 import { ImportErrorFormatterService } from '../flogo.apps.import.error/services/message.formatter.service';
 import { ProfileSelectionComponent } from '../flogo.apps.add/components/profile-select.component';
 import { FlogoExportFlowsComponent } from '../flogo.apps.details/components/export-flow.component';
+import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-group.component';
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { FlogoExportFlowsComponent } from '../flogo.apps.details/components/expo
     FlogoAppImportErrorComponent,
     ProfileSelectionComponent,
     FlogoExportFlowsComponent,
+    FlowTriggerGroupComponent
   ],
   bootstrap: [FlogoMainComponent],
   providers: [

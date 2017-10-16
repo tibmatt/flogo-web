@@ -1,11 +1,11 @@
 export interface IFlogoApplicationModel {
-    id: string,
-    name: string,
-    version: string,
-    description: string,
-    createdAt: any,
-    updatedAt: any,
-    flows?: IFlogoApplicationFlowModel[]
+    id: string;
+    name: string;
+    version: string;
+    description: string;
+    createdAt: any;
+    updatedAt: any;
+    flows?: IFlogoApplicationFlowModel[];
     triggers?: Array<Trigger>;
     actions?: Array<Action>;
     type?: string;
@@ -13,10 +13,10 @@ export interface IFlogoApplicationModel {
 }
 
 export interface IFlogoApplicationFlowModel {
-    id: string,
-    name: string,
-    description: string,
-    createdAt: any
+    id: string;
+    name: string;
+    description: string;
+    createdAt: any;
 }
 
 export interface Trigger {
@@ -33,6 +33,7 @@ export interface Action {
   id: string;
   name: string;
   description?: string;
+  metadata?: any;
   createdAt: string;
   updatedAt: string;
   data: {

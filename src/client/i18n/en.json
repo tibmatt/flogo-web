@@ -82,6 +82,8 @@
   "DETAILS:CREATE-A-FLOW": "Create a flow",
   "DETAILS:SEARCH": "Search",
   "DETAILS:BUILD": "Build",
+  "DETAILS-VIEW-MENU:FLOWS": "Flows view",
+  "DETAILS-VIEW-MENU:TRIGGERS": "Triggers view",
   "DIAGRAM:ADD-BRANCH": "Add branch",
   "DIAGRAM:DELETE": "Delete",
   "DIAGRAM:TRANSFORM": "Transform",

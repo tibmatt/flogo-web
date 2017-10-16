@@ -2,14 +2,10 @@ import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
 import {
-  AppDetailService,
-  ApplicationDetail,
-  ApplicationDetailState,
-  FlowGroup,
-  App
+  AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../../flogo.apps/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
-import { FlogoExportFlowsComponent } from '../../flogo.apps.details/components/export-flow.component';
+import { FlogoExportFlowsComponent } from './export-flow.component';
 import { SanitizeService } from '../../../common/services/sanitize.service';
 import { diffDates, notification } from '../../../common/utils';
 import { FlogoModal } from '../../../common/services/modal.service';
@@ -17,7 +13,6 @@ import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
 import { FlogoProfileService } from '../../../common/services/profile.service';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
-
 
 @Component({
   selector: 'flogo-apps-details-application',
@@ -45,7 +40,10 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   editableDescription: string;
 
   flowGroups: Array<FlowGroup> = [];
+  triggerGroups: Array<TriggerGroup> = [];
   flows: Array<IFlogoApplicationFlowModel> = [];
+  isFlowsViewActive: boolean;
+  selectedViewTranslateKey: string;
 
   isNewApp = false;
 
@@ -66,6 +64,8 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   ngOnInit() {
     this.isDescriptionInEditMode = false;
     this.isNameInEditMode = false;
+    this.isFlowsViewActive = true;
+    this.selectedViewTranslateKey = 'DETAILS-VIEW-MENU:FLOWS';
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -76,6 +76,9 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
       const flowGroups = this.application ? this.application.flowGroups : null;
       this.flowGroups = flowGroups ? [...this.application.flowGroups] : [];
       this.flowGroups = _.sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
+      const triggerGroups = this.application ? this.application.triggerGroups : null;
+      this.triggerGroups = triggerGroups ? [...this.application.triggerGroups] : [];
+      this.triggerGroups = _.sortBy(this.triggerGroups, g => g.triggers ? g.flow.name.toLocaleLowerCase() : '');
       this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
       // this.flows = this.extractFlows();
 
@@ -223,6 +226,12 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   closeExportBox() {
     this.isExportBoxShown = false;
   }
+
+  showDetailsView(viewType: string) {
+    this.isFlowsViewActive = viewType === 'flows';
+    this.selectedViewTranslateKey = this.isFlowsViewActive ? 'DETAILS-VIEW-MENU:FLOWS' : 'DETAILS-VIEW-MENU:TRIGGERS';
+  }
+
   private appUpdated() {
     this.isDescriptionInEditMode = false;
 
