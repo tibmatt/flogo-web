@@ -257,17 +257,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     const handler = trigger.handler;
     this._converterService.getTriggerTask(trigger)
       .then(triggerSchema => this._triggerMapperService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
-    // TODO: Need to get changes to the actionInputMappings and actionOutputMappings of an handler from trigger mapper
-    // const dummyActionMappingsData = {
-    //   actionInputMappings: [
-    //     {'type': 1, 'value': 'content.customerId', 'mapTo': 'customerId'},
-    //     {'type': 1, 'value': 'content.orderId', 'mapTo': 'orderId'}
-    //   ],
-    //   actionOutputMappings: [
-    //     {'type': 1, 'value': 'responseCode', 'mapTo': 'status'},
-    //     {'type': 1, 'value': 'responceData', 'mapTo': 'data'}
-    //   ]
-    // };
   }
 
   deleteHandlerForTrigger(triggerId) {

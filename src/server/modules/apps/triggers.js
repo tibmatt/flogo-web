@@ -44,14 +44,16 @@ const EDITABLE_FIELDS_UPDATE = [
         "method": "GET",
         "path": "/test"
       },
-      "actionInputMappings": [
-        { "type": 1, "value": "content.customerId", "mapTo": "customerId" },
-        { "type": 1, "value": "content.orderId", "mapTo": "orderId" }
-      ],
-      "actionOutputMappings": [
-        { "type": 1, "value": "responseCode", "mapTo": "status" },
-        { "type": 1, "value": "responceData", "mapTo": "data" }
-      ]
+      "actionMappings": {
+        "input": [
+          { "type": 1, "value": "content.customerId", "mapTo": "customerId" },
+          { "type": 1, "value": "content.orderId", "mapTo": "orderId" }
+        ],
+        "output": [
+          { "type": 1, "value": "responseCode", "mapTo": "status" },
+          { "type": 1, "value": "responseData", "mapTo": "data" }
+        ]
+      }
     },
     {
       "actionId": "my_simple_flow_2",
@@ -59,14 +61,16 @@ const EDITABLE_FIELDS_UPDATE = [
         "method": "GET",
         "path": "/test2"
       },
-      "actionInputMappings": [
-        { "type": 1, "value": "content.customerId", "mapTo": "customerId" },
-        { "type": 1, "value": "content.orderId", "mapTo": "orderId" }
-      ],
-      "actionOutputMappings": [
-        { "type": 1, "value": "responseCode", "mapTo": "status" },
-        { "type": 1, "value": "responceData", "mapTo": "data" }
-      ]
+      "actionMappings": {
+        "input": [
+          { "type": 1, "value": "content.customerId", "mapTo": "customerId" },
+          { "type": 1, "value": "content.orderId", "mapTo": "orderId" }
+        ],
+        "output": [
+          { "type": 1, "value": "responseCode", "mapTo": "status" },
+          { "type": 1, "value": "responseData", "mapTo": "data" }
+        ]
+      }
     }
   ]
 }

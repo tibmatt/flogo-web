@@ -317,43 +317,39 @@ function handlerEditableSchema() {
       outputs: {
         type: 'object',
       },
-      actionInputMappings: {
-        $ref: '#/definitions/ActionInputMappingsCollection'
+      actionMappings: {
+        input: {
+          $ref: '#/definitions/MappingCollection',
+        },
+        output: {
+          $ref: '#/definitions/MappingCollection',
+        },
       },
-      actionOutputMappings: {
-        $ref: '#/definitions/ActionOutputMappingsCollection'
-      }
     },
     definitions: {
-      ActionInputMappingsCollection: {
+      MappingCollection: {
         type: 'array',
         items: {
-          $ref: '#/definitions/InputOutputMapping'
-        }
+          $ref: '#/definitions/Mapping',
+        },
       },
-      ActionOutputMappingsCollection: {
-        type: 'array',
-        items: {
-          $ref: '#/definitions/InputOutputMapping'
-        }
-      },
-      InputOutputMapping: {
+      Mapping: {
         type: 'object',
         additionalProperties: false,
         properties: {
           type: {
-            type: 'integer'
+            type: 'integer',
           },
           value: {
-            type: 'string'
+            type: 'string',
           },
           mapTo: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        required: ['type', 'value', 'mapTo']
-      }
-    }
+        required: ['type', 'value', 'mapTo'],
+      },
+    },
   };
 }
 
@@ -422,16 +418,18 @@ function fullAppSchema() {
                     default: {
                     },
                   },
-                  actionInputMappings: {
-                    $ref: '#/definitions/ActionInputMappingsCollection'
+                  actionMappings: {
+                    input: {
+                      $ref: '#/definitions/MappingCollection',
+                    },
+                    output: {
+                      $ref: '#/definitions/MappingCollection',
+                    },
                   },
-                  actionOutputMappings: {
-                    $ref: '#/definitions/ActionOutputMappingsCollection'
-                  }
                 },
                 required: [
                   'actionId',
-                  'settings'
+                  'settings',
                 ],
               },
             },
@@ -453,35 +451,27 @@ function fullAppSchema() {
       },
     },
     definitions: {
-      ActionInputMappingsCollection: {
+      MappingCollection: {
         type: 'array',
-        default: [],
         items: {
-          $ref: '#/definitions/InputOutputMapping'
-        }
+          $ref: '#/definitions/Mapping',
+        },
       },
-      ActionOutputMappingsCollection: {
-        type: 'array',
-        default: [],
-        items: {
-          $ref: '#/definitions/InputOutputMapping'
-        }
-      },
-      InputOutputMapping: {
+      Mapping: {
         type: 'object',
         additionalProperties: false,
         properties: {
           type: {
-            type: 'integer'
+            type: 'integer',
           },
           value: {
-            type: 'string'
+            type: 'string',
           },
           mapTo: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        required: ['type', 'value', 'mapTo']
+        required: ['type', 'value', 'mapTo'],
       },
       ActionMetadata: {
         type: 'object',

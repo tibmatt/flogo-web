@@ -68,8 +68,10 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   onSave() {
     this.triggerMapperService.save(this.currentStatus.trigger, {
-      actionInputMappings: MapperTranslator.translateMappingsOut(this.editingMappings.actionInput),
-      actionOutputMappings: MapperTranslator.translateMappingsOut(this.editingMappings.actionOutput),
+      actionMappings: {
+        input: MapperTranslator.translateMappingsOut(this.editingMappings.actionInput),
+        output: MapperTranslator.translateMappingsOut(this.editingMappings.actionOutput),
+      },
     });
   }
 
@@ -90,10 +92,11 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   private onNextStatus(nextStatus: Status) {
     this.currentStatus = Object.assign({}, nextStatus);
     if (nextStatus.isOpen) {
-      const { actionInputMappings, actionOutputMappings } = nextStatus.handler;
+      const { actionMappings } = nextStatus.handler;
+      const { input, output } = actionMappings;
       this.editingMappings = {
-        actionInput: MapperTranslator.translateMappingsIn(actionInputMappings),
-        actionOutput: MapperTranslator.translateMappingsIn(actionOutputMappings),
+        actionInput: MapperTranslator.translateMappingsIn(input),
+        actionOutput: MapperTranslator.translateMappingsIn(output),
       };
       const triggerSchema = nextStatus.triggerSchema;
       const flowMetadata = nextStatus.flowMetadata;
@@ -132,7 +135,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     this.isInputsViewEnabled = hasTriggerOutputs && hasFlowInputs;
     this.isReplyViewEnabled = hasTriggerReply && hasFlowOutputs;
 
-    let viewType: string = null;
+    let viewType: string = this.VIEWS.INPUTS.name;
     if (this.isInputsViewEnabled) {
       viewType = this.VIEWS.INPUTS.name;
     } else if (this.isReplyViewEnabled) {
