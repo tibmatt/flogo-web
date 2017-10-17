@@ -13,7 +13,7 @@ import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
 
 import { FlogoCanvasComponent } from './components/canvas.component';
 
-import { FlogoFlowsDetail } from './components/flow-detail.component';
+import { FlogoFlowsDetailComponent } from './components/flow-detail.component';
 import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/components/triggers.component';
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
@@ -37,6 +37,7 @@ import {FlogoFlowInputSchemaComponent} from './components/flow-input-schema.comp
 import {FlogoTriggerClickHandlerService} from '../flogo.flows.detail.triggers-panel/services/click-handler.service';
 
 import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigger-mapper';
+import { FlowSchemaComponent as FlogoFlowSchemaComponent } from './components/flow-schema.component';
 
 @NgModule({
   imports: [
@@ -54,7 +55,7 @@ import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigge
     routing
   ],
   declarations: [
-    FlogoFlowsDetail,
+    FlogoFlowsDetailComponent,
     FlogoFlowsDetailTriggers,
     FlogoFlowsDetailTriggersDetailComponent,
     FlogoFlowsDetailTasks,
@@ -69,7 +70,9 @@ import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigge
 
     FlogoCanvasComponent,
     FlogoFlowTriggersPanelComponent,
-    FlogoFlowInputSchemaComponent
+    FlogoFlowInputSchemaComponent,
+
+    FlogoFlowSchemaComponent,
 
   ],
   providers: [

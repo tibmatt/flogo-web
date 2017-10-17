@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
 
-import { FlogoFlowsDetail } from './components';
+import { FlogoFlowsDetailComponent } from './components';
 import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/components/triggers.component';
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
@@ -19,7 +19,7 @@ export const routes: Routes = [
     component: FlogoCanvasComponent,
     canActivate: [ ConfigurationLoadedGuard ],
     children: [
-      {path: '', component: FlogoFlowsDetail},
+      {path: '', component: FlogoFlowsDetailComponent},
       {path: 'trigger/add', component: FlogoFlowsDetailTriggers},
       {path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent},
       {path: 'task/add', component: FlogoFlowsDetailTasks},
@@ -33,7 +33,7 @@ export const routes: Routes = [
 export const routing: ModuleWithProviders = RouterModule.forChild(routes);
 
 /*
-{path: '/', name: 'FlogoFlowsDetailDefault', component: FlogoFlowsDetail, useAsDefault: true},
+{path: '/', name: 'FlogoFlowsDetailDefault', component: FlogoFlowsDetailComponent, useAsDefault: true},
 {path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggers},
 {path: '/trigger/:id', name: 'FlogoFlowsDetailTriggerDetail', component: FlogoFlowsDetailTriggersDetailComponent},
 {path: '/task/add', name: 'FlogoFlowsDetailaskAdd', component: FlogoFlowsDetailTasks},

@@ -1,3 +1,43 @@
-:host{
-  background-color: #0f7595;
+:host {
+  background-color: #fff;
+  color: #666;
+  text-align: center;
+  display: flex;
+  padding-top: 180px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
+
+.tile {
+  background-color: #959798;
+  border-radius: 8px;
+  opacity: 0.2;
+  height: 90px;
+  width: 90px;
+  margin-right: 10px;
+  position: relative;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 32px;
+    right: -16px;
+    width: 32px;
+    height: 26px;
+    background-color: #959798;
+    transform: rotate(62.8deg) skewX(35deg) scale(0.8);
+  }
+
+}
+
+.title {
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.detail {
+  font-size: 0.75em;
+}
+

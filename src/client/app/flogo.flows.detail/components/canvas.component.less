@@ -51,13 +51,14 @@
     background: @common-bg-color;
   }
 
-  .flogo-flows-diagram-container {
-    width:78%;
-    margin-left: 2%;
+  .flogo-flows-flow-schema-container {
+    padding: 20px 0 22px 22px;
+    z-index: 2;
   }
-}
 
-.canvas-flow-minimized {
+  .flogo-flows-diagram-container {
+    flex: 1;
+  }
 }
 
 .canvas-right-container {
@@ -112,8 +113,7 @@
 .flogo-flow-detail-name {
   font-size: 24px;
   color: @color-plane;
-  margin: 0;
-  margin-bottom: -5px;
+  margin: 0 0 -5px;
   line-height: 1.5;
   display: inline-block;
 }
@@ -196,4 +196,3 @@
     }
   }
 }
-
