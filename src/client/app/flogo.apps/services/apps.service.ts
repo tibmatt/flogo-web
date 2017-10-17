@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { IFlogoApplicationModel, Trigger } from '../../../common/application.model';
+import {Action, IFlogoApplicationModel, Trigger} from '../../../common/application.model';
 import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { ErrorService } from '../../../common/services/error.service';
 
@@ -37,8 +37,15 @@ export interface FlowGroup {
   flows: any[];
 }
 
+export interface TriggerGroup {
+  triggers: Trigger[]|null;
+  // todo: define interface
+  flow: Action;
+}
+
 export interface App extends IFlogoApplicationModel {
   flowGroups: FlowGroup[];
+  triggerGroups: TriggerGroup[];
 }
 
 export interface ApplicationDetail {
@@ -178,7 +185,11 @@ export class AppDetailService {
   private transform(app: IFlogoApplicationModel): App {
     const triggers = app.triggers || [];
     const actions = app.actions || [];
-    return <App> Object.assign({}, app, { flowGroups: this.makeFlowGroups(triggers, actions) });
+    return <App> Object.assign({}, app, {
+      flowGroups: this.makeFlowGroups(triggers, actions)
+    }, {
+      triggerGroups: this.makeTriggerGroups(triggers, actions)
+    });
   }
 
   private makeFlowGroups(triggers, actions): FlowGroup[] {
@@ -213,6 +224,18 @@ export class AppDetailService {
     }
 
     return triggerGroups;
+  }
+
+  private makeTriggerGroups(triggers, actions): TriggerGroup[] {
+    return actions.map(action => {
+      return {
+        flow: action,
+        triggers: triggers.filter(t => !!t.handlers.find(h => h.actionId === action.id))
+      };
+    }).map(actionGroup => {
+      actionGroup.triggers = actionGroup.triggers.length > 0 ? actionGroup.triggers : null;
+      return actionGroup;
+    });
   }
 
 }

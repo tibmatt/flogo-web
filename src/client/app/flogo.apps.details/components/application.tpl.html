@@ -74,6 +74,19 @@
 
           </div>
           <div class="flogo-app-detail-commands">
+            <div class="dropdown views-dropdown">
+              <button class="flogo-button btn btn-default dropdown-toggle views-dropdown_button"
+                      id="viewsDropDown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="views-dropdown_label">{{selectedViewTranslateKey | translate}}</span>
+                <span class="caret list-caret views-dropdown_caret pull-right"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="viewsDropDown">
+                <li class="list-label" (click)="showDetailsView('flows')"><a>{{"DETAILS-VIEW-MENU:FLOWS" |
+                  translate}}</a></li>
+                <li class="list-label" (click)="showDetailsView('triggers')"><a>{{"DETAILS-VIEW-MENU:TRIGGERS" |
+                  translate}}</a></li>
+              </ul>
+            </div>
             <flogo-flows-add [appId]="application?.id"></flogo-flows-add>
             <flogo-apps-settings *ngIf="profileType === PROFILE_TYPES.DEVICE"
                                  (save)="onSaveDeviceSettings($event)"
@@ -147,12 +160,20 @@
       <button class="flogo-button--default content-empty__action" (click)="openCreateFlow()">{{'DETAILS:CREATE-A-FLOW' | translate}}</button>
     </div>
 
-    <flogo-apps-flows-flow-group *ngFor="let flowGroup of flowGroups"
-                                 [trigger]="flowGroup.trigger" [flows]="flowGroup.flows"
-                                 (flowSelected)="onFlowSelected($event)"
-                                 (deleteFlow)="onFlowDelete($event)"
-                                 (addFlow)="openCreateFlowFromTrigger($event)"
-    ></flogo-apps-flows-flow-group>
+    <div *ngIf="isFlowsViewActive" class="flows-view_container">
+      <flogo-apps-flows-trigger-group *ngFor="let triggerGroup of triggerGroups"
+                                      [triggers]="triggerGroup.triggers" [flow]="triggerGroup.flow"
+                                      (flowSelected)="onFlowSelected($event)"
+                                      (deleteFlow)="onFlowDelete($event)"
+                                      (addFlow)="openCreateFlowFromTrigger($event)"></flogo-apps-flows-trigger-group>
+    </div>
+    <div *ngIf="!isFlowsViewActive" class="triggers-view_container">
+      <flogo-apps-flows-flow-group *ngFor="let flowGroup of flowGroups"
+                                   [trigger]="flowGroup.trigger" [flows]="flowGroup.flows"
+                                   (flowSelected)="onFlowSelected($event)"
+                                   (deleteFlow)="onFlowDelete($event)"
+                                   (addFlow)="openCreateFlowFromTrigger($event)"></flogo-apps-flows-flow-group>
+    </div>
     <flogo-export-flow #exportFlowModal [flows]="application?.actions" ></flogo-export-flow>
   </div>
 </div>
