@@ -25,7 +25,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   public displayExisting: boolean;
 
   public existingTriggers = [];
-  private _isActivated: boolean;
+  private _isActivated = false;
 
 
   constructor(public translate: TranslateService,
