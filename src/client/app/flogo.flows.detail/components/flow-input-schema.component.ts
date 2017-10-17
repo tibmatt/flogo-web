@@ -1,9 +1,9 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild, OnInit} from '@angular/core';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import {TranslateService} from 'ng2-translate/ng2-translate';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
-import {FlowMetadataAttribute} from '../models';
 import {FlogoFlowService as FlowsService} from '../services/flow.service';
+import {FormGroup, FormArray, FormBuilder, Validators} from '@angular/forms';
 
 
 @Component({
@@ -12,34 +12,41 @@ import {FlogoFlowService as FlowsService} from '../services/flow.service';
   styleUrls: ['flow-input-schema.component.less']
 })
 
-export class FlogoFlowInputSchemaComponent {
+export class FlogoFlowInputSchemaComponent implements OnInit {
   @ViewChild('modal')
   public modal: ModalComponent;
+  @Input()
+  public paramsForm: FormGroup;
   @Input() flow: any;
   selectTypes: any[] = [];
-  selectedParam: string;
-  hasInputChanges: boolean;
-  hasOutputChanges: boolean;
-  public definedInputParams: FlowMetadataAttribute[] = [];
-  public definedOutputParams: FlowMetadataAttribute[] = [];
-  public otherInputItem: FlowMetadataAttribute = {name: '', type: 'string'};
-  public otherOutputItem: FlowMetadataAttribute = {name: '', type: 'string'};
   displayInputParams: boolean;
 
   constructor(public translate: TranslateService,
-              private _flowService: FlowsService) {
+              private _flowService: FlowsService,
+              private _fb: FormBuilder) {
+    const options = Object.keys(FLOGO_TASK_ATTRIBUTE_TYPE);
+    this.selectTypes = options.filter(o => _.isNaN(_.parseInt(o)) && o !== FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.INT]);
+  }
 
+  ngOnInit() {
+    this.paramsForm = this._fb.group({
+      input: this._fb.array([]),
+      output: this._fb.array([])
+    });
+  }
+
+  initParams(data?) {
+    return this._fb.group({
+      name: [data ? data.name : '', Validators.required],
+      type: [data ? FLOGO_TASK_ATTRIBUTE_TYPE[data.type] : 'string'],
+    });
   }
 
   getParams() {
-    const options = Object.keys(FLOGO_TASK_ATTRIBUTE_TYPE);
-    this.selectTypes = options.filter(o => _.isNaN(_.parseInt(o)) && o !== FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.INT]);
-    this.definedInputParams = this.flow.metadata.input.map(input => ({
-      name: input.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING')],
-    }));
-    this.definedOutputParams = this.flow.metadata.output.map(input => ({
-      name: input.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING')],
-    }));
+    this.paramsForm = this._fb.group({
+      input: this._fb.array(this.flow.metadata.input.map(i => this.initParams(i)).concat(this.initParams())),
+      output: this._fb.array(this.flow.metadata.output.map(o => this.initParams(o)).concat(this.initParams()))
+    });
   }
 
   showOutputParams() {
@@ -50,76 +57,36 @@ export class FlogoFlowInputSchemaComponent {
     this.displayInputParams = true;
   }
 
-  modifySelectedInputType(option, input) {
-    if (input.type !== option) {
-      input.type = option;
-      this.hasInputChanges = true;
-    }
-  }
+  modifyParamType(event, index: number, fromParams: string) {
+    const data: any = {};
+    data.name = event.name;
+    data.type = FLOGO_TASK_ATTRIBUTE_TYPE[event.type];
+    const control = <FormArray>this.paramsForm.controls[fromParams];
+    const paramControl = this.initParams(data);
+    control.setControl(index, paramControl);
 
-  modifySelectedOutputType(option, output) {
-    if (output.type !== option) {
-      output.type = option;
-      this.hasOutputChanges = true;
-    }
   }
 
   public openInputSchemaModel() {
     this.displayInputParams = true;
-    this.hasInputChanges = false;
-    this.hasOutputChanges = false;
-    this.otherInputItem = {name: '', type: 'string'};
     this.modal.open();
     this.getParams();
   }
 
-  onChangeParams(name) {
-    if (this.displayInputParams) {
-      this.hasInputChanges = (!this.flow.metadata.input.find(input => input.name === name)) && (name !== '');
-    } else {
-      this.hasOutputChanges = (!this.flow.metadata.output.find(output => output.name === name)) && (name !== '');
-    }
-  };
-
-  selectParamType(option: string) {
-    this.selectedParam = option;
-    if (this.displayInputParams) {
-      this.otherInputItem.type = this.selectedParam;
-    } else {
-      this.otherOutputItem.type = this.selectedParam;
-    }
+  addParams(fromParams: string) {
+    const control = <FormArray>this.paramsForm.controls[fromParams];
+    const paramControl = this.initParams();
+    control.push(paramControl);
   }
 
-  addInputParams() {
-    this.hasInputChanges = !this.flow.metadata.input.find(input => input.name === this.otherInputItem.name);
-    if ((!this.otherInputItem.name || !this.otherInputItem.type) && (!this.hasInputChanges)) {
-      return;
-    }
-    this.definedInputParams.push({name: this.otherInputItem.name, type: this.otherInputItem.type});
-    this.otherInputItem = {name: '', type: 'string'};
-  }
-
-  addOutputParams() {
-    this.hasOutputChanges = !this.flow.metadata.output.find(output => output.name === this.otherOutputItem.name);
-    if ((!this.otherOutputItem.name || !this.otherOutputItem.type) && (!this.hasOutputChanges)) {
-      return;
-    }
-    this.definedOutputParams.push({name: this.otherOutputItem.name, type: this.otherOutputItem.type});
-    this.otherOutputItem = {name: '', type: 'string'};
-  }
-
-  saveParams() {
-    this.addInputParams();
-    this.addOutputParams();
-    this.flow.metadata = {
-      'input': this.definedInputParams.map(input => ({
-        name: input.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING')],
-      })),
-      'output': this.definedOutputParams.map(output => ({
-        name: output.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(output, 'type', 'STRING')],
-      }))
-    };
-    this.closeParamsModal();
+  saveParams(model: any) {
+    this.flow.metadata = model.value;
+    this.flow.metadata.input = this.flow.metadata.input.map(input => ({
+      name: input.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING')],
+    }));
+    this.flow.metadata.output = this.flow.metadata.output.map(output => ({
+      name: output.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(output, 'type', 'STRING')],
+    }));
 
     return this._flowService.saveFlow(this.flow.id, this.flow).then(rsp => {
       console.groupCollapsed('Flow updated');
@@ -137,26 +104,9 @@ export class FlogoFlowInputSchemaComponent {
 
   }
 
-  closeParamsModal() {
-    this.definedInputParams = [];
-    this.definedOutputParams = [];
-
-  }
-
-  removeParams(param) {
-    if (this.displayInputParams) {
-      const inputIndex = this.definedInputParams.indexOf(param);
-      if (inputIndex !== -1) {
-        this.definedInputParams.splice(inputIndex, 1);
-        this.hasInputChanges = true;
-      }
-    } else {
-      const outputIndex = this.definedOutputParams.indexOf(param);
-      if (outputIndex !== -1) {
-        this.definedOutputParams.splice(outputIndex, 1);
-        this.hasOutputChanges = true;
-      }
-    }
+  removeParam(index: number, fromParams: string) {
+    const control = <FormArray>this.paramsForm.controls[fromParams];
+    control.removeAt(index);
   }
 
 }
