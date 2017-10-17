@@ -203,8 +203,8 @@ export class MapperService {
         return (state: MapperState) => Object.assign({}, state, {
           currentSelection,
           inputs: { nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
-          functions: { filterTerm: '', nodes: node.dataType !== 'object' ? functions.treeNodes : [] },
-          outputs: { filterTerm: '', nodes: node.dataType !== 'object' ? outputContext.tree : [] },
+          functions: { filterTerm: '', nodes: functions.treeNodes },
+          outputs: { filterTerm: '', nodes: outputContext.tree },
         });
       })
       .subscribe(this.updatesSrc);
@@ -356,27 +356,8 @@ export class MapperService {
     const tree = this.nodeFactory.fromJsonSchema(outputSchemas,
       (treeNode: MapperTreeNode, level: number, path: string, parents: MapperTreeNode[]) : MapperTreeNode => {
         const parentsAndCurrentNode = parents.concat(treeNode);
-
-        const [root, propName] = parentsAndCurrentNode;
-        let expressionHead = '';
-        let expressionTailParts;
-        const rootType = root.data.rootType;
-        if (rootType === 'trigger' || rootType === 'flow') {
-          expressionHead = `${rootType}.`;
-          expressionHead += propName ? propName.data.nodeName : '';
-          expressionTailParts = parentsAndCurrentNode.slice(2);
-        } else if (rootType === 'activity') {
-          expressionHead = `activity.${root.data.nodeName}.`;
-          expressionHead += propName ? propName.data.nodeName : '';
-          expressionTailParts = parentsAndCurrentNode.slice(2);
-        } else {
-          expressionHead = root.data.nodeName;
-          expressionTailParts = parentsAndCurrentNode.slice(1);
-        }
-        treeNode.snippet = ['${' + expressionHead + '}'].concat(
-          expressionTailParts.map(n => n.data.nodeName)
-        ).join('.');
-
+        treeNode.snippet = this.makeSnippet(parentsAndCurrentNode);
+        return treeNode;
         // ******** FOLLOWING CODE not applicable for first pass of the mapper ********
         // const isCurrentNodeArray = treeNode.dataType === 'array';
         // const paths = parentsAndCurrentNode.map((node: MapperTreeNode, index, array) => {
@@ -399,7 +380,7 @@ export class MapperService {
         //   const forEachParam = isCurrentNodeArray ? treeNode.snippet : '';
         //   treeNode.snippet = ArrayMappingHelper.applyExpressionForEach(forEachParam);
         // }
-        return treeNode;
+        // return treeNode;
       }
     );
 
@@ -420,6 +401,33 @@ export class MapperService {
       mapRelativeTo: lastMappedParent && lastMappedParent.fullLinkedPath,
       symbolTable
     };
+  }
+
+  private makeSnippet(nodes: MapperTreeNode[]) {
+    const [root, propName] = nodes;
+    let expressionHead = '';
+    let expressionTailParts;
+    const rootType = root.data.rootType;
+    const curlyBraced = expr => '${' + expr + '}';
+
+    if (rootType === 'trigger' || rootType === 'flow') {
+      expressionHead = `${rootType}.`;
+      expressionHead += propName ? propName.data.nodeName : '';
+      expressionHead = curlyBraced(expressionHead);
+      expressionTailParts = nodes.slice(2);
+    } else if (rootType === 'activity') {
+      expressionHead = `activity.${root.data.nodeName}.`;
+      expressionHead += propName ? propName.data.nodeName : '';
+      expressionHead = curlyBraced(expressionHead);
+      expressionTailParts = nodes.slice(2);
+    } else {
+      const nodeName = root.data.nodeName;
+      expressionHead = rootType ? curlyBraced(nodeName) : nodeName;
+      expressionTailParts = nodes.slice(1);
+    }
+    return[expressionHead].concat(
+      expressionTailParts.map(n => n.data.nodeName)
+    ).join('.');
   }
 
   private extractLinkedOutputArrayPaths(arrayNodes: MapperTreeNode[], mappings: Mappings): ArrayMappingInfo[] {

@@ -21,6 +21,7 @@ export const PUBLISH_FIELDS_LONG = [
   'settings',
   'outputs',
   'handler',
-  'endpoint'
+  'endpoint',
+  'reply',
 ];
 

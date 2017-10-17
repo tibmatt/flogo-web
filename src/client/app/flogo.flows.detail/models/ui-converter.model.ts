@@ -283,6 +283,7 @@ export abstract class AbstractModelConverter {
         o.value = trigger.handler.outputs[o.name];
       }
     });
+
     return itemTrigger;
   }
 }
@@ -461,15 +462,16 @@ class ItemFactory {
       item.endpoint.settings.push(newEndpointSetting);
     });
 
-
+    const mapType = prop => ({
+      name: prop.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(prop, 'type', 'STRING').toUpperCase()],
+    });
     // -----------------
     // set outputs
     const outputs = installed.outputs || [];
+    item.outputs = outputs.map(mapType);
 
-    item.outputs = outputs.map(output => ({
-      name: output.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(output, 'type', 'STRING').toUpperCase()],
-    }));
-
+    const reply = installed.reply || [];
+    item['reply'] = reply.map(mapType);
 
     return item;
   }

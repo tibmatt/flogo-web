@@ -34,6 +34,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         if (context) {
           const newExpression = context.expression || '';
           this.editor.changeModel(newExpression);
+          setTimeout(() => this.editor.onWindowResize(), 0);
         }
       });
 

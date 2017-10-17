@@ -31,10 +31,12 @@ import { RunnerService } from './services/runner.service';
 import { routing } from './flogo.flows.detail.routing';
 import { UIModelConverterService } from './services/ui-model-converter.service';
 import { FlogoFlowService } from './services/flow.service';
-import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 
+import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 import {FlogoFlowInputSchemaComponent} from './components/flow-input-schema.component';
 import {FlogoTriggerClickHandlerService} from '../flogo.flows.detail.triggers-panel/services/click-handler.service';
+
+import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigger-mapper';
 
 @NgModule({
   imports: [
@@ -48,6 +50,7 @@ import {FlogoTriggerClickHandlerService} from '../flogo.flows.detail.triggers-pa
     FlogoFooterModule,
     FlogoFormModule,
     FlogoLogsModule,
+    FlogoTriggerMapperModule,
     routing
   ],
   declarations: [

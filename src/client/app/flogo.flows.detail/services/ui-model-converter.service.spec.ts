@@ -1,17 +1,17 @@
-import {UIModelConverterService} from "./ui-model-converter.service";
-import {RESTAPITriggersService} from "../../../common/services/restapi/triggers-api.service";
-import {RESTAPIActivitiesService} from "../../../common/services/restapi/activities-api.service";
-import {ErrorService} from "../../../common/services/error.service";
+import {UIModelConverterService} from './ui-model-converter.service';
+import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
+import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
+import {ErrorService} from '../../../common/services/error.service';
 import {
   mockActivitiesDetails, mockErrorFlow, mockErrorHandler, mockFlow, mockResultantUIFlow, mockResultantUIFlowWithError,
   mockResultantUIFlowWithTransformations, mockTransformationData
-} from "./ui-model-flow.mock";
-import {mockErrorTrigger, mockTrigger, mockTriggerDetails} from "./ui-model-trigger.mock";
+} from './ui-model-flow.mock';
+import { mockTriggerDetails} from './ui-model-trigger.mock';
 import Spy = jasmine.Spy;
-import {FlogoProfileService} from "../../../common/services/profile.service";
-import {RESTAPIContributionsService} from "../../../common/services/restapi/v2/contributions.service";
+import {FlogoProfileService} from '../../../common/services/profile.service';
+import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/contributions.service';
 
-describe("Service: UI Model Converter", function(this: {
+describe('Service: UI Model Converter', function(this: {
   service: UIModelConverterService,
   errorService: ErrorService,
   triggerServiceMock: RESTAPITriggersService,
@@ -20,7 +20,7 @@ describe("Service: UI Model Converter", function(this: {
   contribServiceMock: RESTAPIContributionsService
 }){
 
-  beforeEach(()=>{
+  beforeEach(() => {
     this.triggerServiceMock = jasmine.createSpyObj<RESTAPITriggersService>('triggerService', [
       'getTriggerDetails'
     ]);
@@ -37,10 +37,10 @@ describe("Service: UI Model Converter", function(this: {
       this.activityServiceMock, this.contribServiceMock, this.profileService, this.errorService);
   });
 
-  it('Should throw error when Activity does not have a activityRef', ()=> {
+  it('Should throw error when Activity does not have a activityRef', () => {
     let thrownError: Error;
-    try{
-      var spy = <Spy>this.triggerServiceMock.getTriggerDetails;
+    try {
+      const spy = <Spy>this.triggerServiceMock.getTriggerDetails;
       spy.and.returnValue({});
       this.service.getWebFlowModel(mockErrorFlow);
     } catch (error) {
@@ -52,32 +52,32 @@ describe("Service: UI Model Converter", function(this: {
   });
 
   it('Should convert the Engine Flow Model to UI Flow model', (done) => {
-    let thisTestData: any = _.cloneDeep(mockFlow);
-    var spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
+    const thisTestData: any = _.cloneDeep(mockFlow);
+    const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(Promise.resolve(mockTriggerDetails));
-    var spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
+    const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
     spyActivityService.and.callFake(function(activityRef){
-      if(activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
+      if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return Promise.resolve(mockActivitiesDetails[0]);
       } else {
         return Promise.resolve(mockActivitiesDetails[1]);
       }
     });
     this.service.getWebFlowModel(thisTestData)
-      .then((flow)=> {
-        let flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
-        expect(_.isEqual(flowWithoutId,mockResultantUIFlow)).toEqual(true);
+      .then((flow) => {
+        const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
+        expect(_.isEqual(flowWithoutId, mockResultantUIFlow)).toEqual(true);
         done();
       });
   });
 
   it('Should have error handler in UI Flow model', (done) => {
-    let thisTestData: any = _.cloneDeep(mockFlow);
-    let spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
+    const thisTestData: any = _.cloneDeep(mockFlow);
+    const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
-    let spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
+    const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
     spyActivityService.and.callFake(function(activityRef){
-      if(activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
+      if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return mockActivitiesDetails[0];
       } else {
         return mockActivitiesDetails[1];
@@ -85,20 +85,20 @@ describe("Service: UI Model Converter", function(this: {
     });
     thisTestData.data.flow.errorHandlerTask = mockErrorHandler.errorHandlerTask;
     this.service.getWebFlowModel(thisTestData)
-      .then((flow)=>{
-        let flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
-        expect(_.isEqual(flowWithoutId,mockResultantUIFlowWithError)).toEqual(true);
+      .then((flow) => {
+        const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
+        expect(_.isEqual(flowWithoutId, mockResultantUIFlowWithError)).toEqual(true);
         done();
       });
   });
 
   it('Should maintain the transformation details of a tile', (done) => {
-    let thisTestData: any = _.cloneDeep(mockFlow);
-    var spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
+    const thisTestData: any = _.cloneDeep(mockFlow);
+    const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
-    var spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
+    const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
     spyActivityService.and.callFake(function(activityRef){
-      if(activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
+      if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return mockActivitiesDetails[0];
       } else {
         return mockActivitiesDetails[1];
@@ -107,41 +107,41 @@ describe("Service: UI Model Converter", function(this: {
     thisTestData.data.flow.rootTask.tasks[0].attributes = mockTransformationData.attributes;
     thisTestData.data.flow.rootTask.tasks[0].inputMappings = mockTransformationData.inputMappings;
     this.service.getWebFlowModel(thisTestData)
-      .then((flow)=>{
-        let flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
-        expect(_.isEqual(flowWithoutId,mockResultantUIFlowWithTransformations)).toEqual(true);
+      .then((flow) => {
+        const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
+        expect(_.isEqual(flowWithoutId, mockResultantUIFlowWithTransformations)).toEqual(true);
         done();
       });
   });
 
   function formFlowWithoutId(flow) {
     let dummyIndex = 0;
-    let noIdFlow: any = Object.assign({},_.pick(flow, ['name', 'description', 'appId', 'app', 'metadata']), {
+    const noIdFlow: any = Object.assign({}, _.pick(flow, ['name', 'description', 'appId', 'app', 'metadata']), {
       paths: {
         root: {},
         nodes: {},
       },
       items: {},
     });
-    noIdFlow.paths.root.is = "some_id_" + dummyIndex++;
-    let allNodes = flow.paths.nodes, allItems = flow.items;
-    for(let nodeKey in allNodes) {
-      noIdFlow.paths.nodes["some_id_"+dummyIndex] = allNodes[nodeKey];
-      noIdFlow.paths.nodes["some_id_"+dummyIndex].id = "some_id_"+dummyIndex;
-      noIdFlow.paths.nodes["some_id_"+dummyIndex].taskID = "some_id_"+dummyIndex;
-      noIdFlow.paths.nodes["some_id_"+dummyIndex].children = _.map(allNodes[nodeKey].children, (v,i) => "some_id_"+i);
-      noIdFlow.paths.nodes["some_id_"+dummyIndex].parents = _.map(allNodes[nodeKey].parents, (v,i) => "some_id_"+i);
+    noIdFlow.paths.root.is = 'some_id_' + dummyIndex++;
+    const allNodes = flow.paths.nodes, allItems = flow.items;
+    for (const nodeKey in allNodes) {
+      noIdFlow.paths.nodes['some_id_' + dummyIndex] = allNodes[nodeKey];
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].taskID = 'some_id_' + dummyIndex;
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].children = _.map(allNodes[nodeKey].children, (v, i) => 'some_id_' + i);
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].parents = _.map(allNodes[nodeKey].parents, (v, i) => 'some_id_' + i);
       dummyIndex += 1;
     }
-    for(let itemKey in allItems) {
-      noIdFlow.items["some_id_"+dummyIndex] = allItems[itemKey];
-      noIdFlow.items["some_id_"+dummyIndex].id = "some_id_"+dummyIndex;
-      if(allItems[itemKey].nodeId){
-        noIdFlow.items["some_id_"+dummyIndex].nodeId = "some_id_"+dummyIndex;
+    for (const itemKey in allItems) {
+      noIdFlow.items['some_id_' + dummyIndex] = allItems[itemKey];
+      noIdFlow.items['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
+      if (allItems[itemKey].nodeId){
+        noIdFlow.items['some_id_' + dummyIndex].nodeId = 'some_id_' + dummyIndex;
       }
       dummyIndex += 1;
     }
-    if(flow.errorHandler){
+    if (flow.errorHandler) {
       noIdFlow.errorHandler = formFlowWithoutId(flow.errorHandler);
     }
     return noIdFlow;

@@ -4,6 +4,6 @@ import {
 } from '../../../common/models';
 
 export interface HandlerInfo {
-  diagram: IFlogoFlowDiagram,
-  tasks: IFlogoFlowDiagramTaskDictionary
+  diagram: IFlogoFlowDiagram;
+  tasks: IFlogoFlowDiagramTaskDictionary;
 }

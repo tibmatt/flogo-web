@@ -1,0 +1,67 @@
+.mapper-modal {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 40px 45px;
+
+  height: 100%;
+  width: 100%;
+}
+
+.mapper-modal__header {
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 0;
+}
+
+.mapper-modal__content {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.mapper-modal__close {
+  background: url(/assets/svg/flogo.close.svg) no-repeat center center;
+  background-size: contain;
+  border: none;
+  position: absolute;
+  height: 16px;
+  right: -22px;
+  top: -22px;
+  width: 16px;
+  margin-bottom: 5px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+
+  &__title {
+    background: url('/assets/svg/flogo.transform.icon.svg') no-repeat left center;
+    color: #666;
+    font-size: 24px;
+    margin: 0;
+    padding: 0 0 0 30px;
+    flex: 1;
+  }
+
+  &__actions {
+    min-width: 320px;
+    overflow: hidden;
+    position: relative;
+    text-align: right;
+  }
+
+}
+
+.actions {
+  &__action {
+    line-height: 1;
+    min-width: 7em;
+  }
+
+  &__action + &__action {
+    margin-left: 1em;
+  }
+}
+
+

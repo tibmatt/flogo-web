@@ -12,7 +12,7 @@
         <li class="list-group-item trigger_menu-item" (click)="showTriggerDetails(trigger)"><i
           class="flogo-icon-settings trigger_menu-icon"></i>{{"TRIGGER-MENU:CONFIGURE" | translate}}
         </li>
-        <li class="list-group-item trigger_menu-item" (click)="updateHandlerWithActionMappings(trigger)"><i
+        <li class="list-group-item trigger_menu-item" (click)="openTriggerMapper(trigger)"><i
           class="fa fa-bolt trigger_menu-icon"></i>{{"TRIGGER-MENU:MAP-TO-INPUTS" | translate}}
         </li>
         <li class="list-group-item trigger_menu-item" (click)="deleteHandlerForTrigger(trigger.id)"><i
@@ -27,9 +27,11 @@
   <flogo-select-trigger [(isAddTriggerActivated)]="showAddTrigger"
                         [appDetails]="appDetails"
                         (onAddTriggerToAction)="addTriggerToAction($event)"
-                        (onInstallDialog)="openInstallTriggerWindow()"></flogo-select-trigger>
+                        (onInstallDialog)="openInstallTriggerWindow()">
+  </flogo-select-trigger>
   <flogo-installer [profileType]="appDetails?.appProfileType"
                    [installType]="'trigger'" [(isActivated)]="installTriggerActivated"
                    (isActivatedChange)="openAddTriggerModel()"
                    (installed)="onTriggerInstalledAction()"></flogo-installer>
+  <flogo-trigger-mapper></flogo-trigger-mapper>
 </div>

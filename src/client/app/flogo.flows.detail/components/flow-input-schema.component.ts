@@ -2,7 +2,7 @@ import {Component, Input, ViewChild} from '@angular/core';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 import {TranslateService} from 'ng2-translate/ng2-translate';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
-import {IFlowMetadataAttribute} from '../models/profiles/microservice-converter.model';
+import {FlowMetadataAttribute} from '../models';
 import {FlogoFlowService as FlowsService} from '../services/flow.service';
 
 
@@ -20,12 +20,11 @@ export class FlogoFlowInputSchemaComponent {
   selectedParam: string;
   hasInputChanges: boolean;
   hasOutputChanges: boolean;
-  public definedInputParams: IFlowMetadataAttribute[] = [];
-  public definedOutputParams: IFlowMetadataAttribute[] = [];
-  public otherInputItem: IFlowMetadataAttribute = {name: '', type: 'string'};
-  public otherOutputItem: IFlowMetadataAttribute = {name: '', type: 'string'};
+  public definedInputParams: FlowMetadataAttribute[] = [];
+  public definedOutputParams: FlowMetadataAttribute[] = [];
+  public otherInputItem: FlowMetadataAttribute = {name: '', type: 'string'};
+  public otherOutputItem: FlowMetadataAttribute = {name: '', type: 'string'};
   displayInputParams: boolean;
-
 
   constructor(public translate: TranslateService,
               private _flowService: FlowsService) {

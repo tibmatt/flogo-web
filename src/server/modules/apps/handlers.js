@@ -1,17 +1,17 @@
 import pick from 'lodash/pick';
 import defaults from 'lodash/defaults';
+import defaultsDeep from 'lodash/defaultsDeep';
 
 import { apps as appsDb, dbUtils } from '../../common/db';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
-import {getProfileType} from "../../common/utils/profile";
-import {FLOGO_PROFILE_TYPES} from "../../common/constants";
+import { getProfileType } from '../../common/utils/profile';
+import { FLOGO_PROFILE_TYPES } from '../../common/constants';
 
 const EDITABLE_FIELDS = [
   'settings',
   'outputs',
-  'actionInputMappings',
-  'actionOutputMappings',
+  'actionMappings',
 ];
 
 export class HandlersManager {
@@ -56,9 +56,11 @@ export class HandlersManager {
           });
           /* Need to add actionInputMappings and actionOutputMappings only for Microservice profile*/
           if (getProfileType(app) === FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
-            handler = defaults(handler, {
-              actionInputMappings: [],
-              actionOutputMappings: []
+            handler = defaultsDeep(handler, {
+              actionMappings: {
+                input: [],
+                output: [],
+              },
             });
           }
           updateQuery = { $push: { [`triggers.${triggerIndex}.handlers`]: handler } };

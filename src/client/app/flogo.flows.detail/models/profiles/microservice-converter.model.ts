@@ -3,16 +3,7 @@ import {RESTAPIActivitiesService} from '../../../../common/services/restapi/acti
 import {RESTAPITriggersService} from '../../../../common/services/restapi/triggers-api.service';
 import {ErrorService} from '../../../../common/services/error.service';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../../common/constants';
-
-export interface IFlowMetadataAttribute {
-  name: string;
-  type: string;
-}
-
-export interface IFlowMetadata {
-  input: IFlowMetadataAttribute[ ];
-  output: IFlowMetadataAttribute[ ];
-}
+import { FlowMetadata } from '../models';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
   triggerService: RESTAPITriggersService;
@@ -51,7 +42,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
   getFlowInformation(flowJSON) {
     const flowInputs = (flowJSON.metadata && flowJSON.metadata.input) || [];
     const flowOutputs = (flowJSON.metadata && flowJSON.metadata.output) || [];
-    const metadata: IFlowMetadata = {
+    const metadata: FlowMetadata = {
       input: [],
       output: []
     };

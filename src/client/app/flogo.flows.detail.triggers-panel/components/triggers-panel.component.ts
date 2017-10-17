@@ -13,8 +13,11 @@ import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-mode
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS} from '../../flogo.form-builder/messages';
 import {TranslateService} from 'ng2-translate';
 import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
+import { FlowMetadata } from '../../flogo.transform/models';
+import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';
+import { Subscription } from 'rxjs/Subscription';
 
-export interface IFlogoTriggers {
+export interface IFlogoTrigger {
   name: string;
   ref: string;
   description: string;
@@ -33,19 +36,21 @@ export interface IFlogoTriggers {
 })
 export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
-  triggers: IFlogoTriggers[];
+  triggers: IFlogoTrigger[];
   @Input()
   actionId: string;
   @Input()
-  appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE};
+  appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE, metadata?: FlowMetadata};
   triggersList: any[] = [];
   allowMultipleTriggers = true;
   currentTrigger: any;
-  _subscriptions: any[];
   selectedTriggerID: string;
   displayTriggerMenuPopover: boolean;
-  public showAddTrigger = false;
-  public installTriggerActivated = false;
+  showAddTrigger = false;
+  installTriggerActivated = false;
+
+  private _subscriptions: any[];
+  private _triggerMapperSubscription: Subscription;
 
   constructor(private _restAPITriggersService: RESTAPITriggersService,
               private _restAPIHandlerService: RESTAPIHandlersService,
@@ -53,7 +58,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _router: Router,
               private translate: TranslateService,
               private _clickHandler: FlogoTriggerClickHandlerService,
-              private _postService: PostService) {
+              private _postService: PostService,
+              private _triggerMapperService: TriggerMapperService) {
   }
 
   ngOnInit() {
@@ -92,6 +98,19 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         this._subscriptions.push(this._postService.subscribe(sub));
       }
     );
+
+    this._triggerMapperSubscription = this._triggerMapperService.save$
+      .switchMap(({ trigger, mappings }) => this._restAPIHandlerService
+        // Update the handler using the updateHandler REST API call
+          .updateHandler(trigger.id, this.actionId, mappings)
+          .then(handler => ({trigger, handler}))
+      )
+      .subscribe(({ trigger, handler }) => {
+        const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
+        const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
+        triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
+        this.makeTriggersListForAction();
+      });
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
@@ -233,28 +252,11 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
-  updateHandlerWithActionMappings(trigger) {
+  openTriggerMapper(trigger: IFlogoTrigger & {handler: any}) {
     this.hideTriggerMenuPopover();
-    // TODO: Need to get changes to the actionInputMappings and actionOutputMappings of an handler from trigger mapper
-    const dummyActionMappingsData = {
-      actionInputMappings: [
-        {'type': 1, 'value': 'content.customerId', 'mapTo': 'customerId'},
-        {'type': 1, 'value': 'content.orderId', 'mapTo': 'orderId'}
-      ],
-      actionOutputMappings: [
-        {'type': 1, 'value': 'responseCode', 'mapTo': 'status'},
-        {'type': 1, 'value': 'responceData', 'mapTo': 'data'}
-      ]
-    };
-    // Update the handler using the updateHanler REST API call
-    this._restAPIHandlerService.updateHandler(trigger.id, this.actionId, dummyActionMappingsData)
-      .then((handler) => {
-        // Update the new handler details in the this.triggers and this.triggersList
-        const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
-        const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
-        triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
-        this.makeTriggersListForAction();
-      });
+    const handler = trigger.handler;
+    this._converterService.getTriggerTask(trigger)
+      .then(triggerSchema => this._triggerMapperService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
   }
 
   deleteHandlerForTrigger(triggerId) {
