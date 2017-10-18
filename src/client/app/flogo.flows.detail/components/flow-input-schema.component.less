@@ -3,17 +3,10 @@
   display: flex;
   margin: 30px;
   width: 93%;
+}
 
-  input {
-    border-radius: 4px;
-    border: solid 1px #cad3df;
-    width: 235px;
-    padding: 6px 12px;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.4;
-  }
-
+.flow-params-new-field {
+  width: 100%;
 }
 
 .flow-input-params-pane {
@@ -23,43 +16,18 @@
   overflow-y: auto;
 }
 
-.flow-input-params-caret {
-  float: right;
-  position: relative;
-  top: 9px;
-}
-
-.flow-input-params-add {
-  border: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 35px;
-  height: 35px;
-  border-radius: 4px;
-  color: #fff;
-  background-color: #79b8dc;
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-.flow-input-params-add--hidden {
-  background-color: transparent;
-  color: black;
-  font-size: 1em;
-
-  &:hover {
-    color: black;
-    cursor: pointer;
-  }
-}
-
 .flow-input-params-header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.flow-input-params-header__title {
   position: relative;
-  bottom: 15px;
   font-size: 20px;
   color: #b5b5b5;
+  flex: 1;
 }
 
 .flow-input-params-close {
@@ -72,14 +40,14 @@
   cursor: pointer;
 }
 
-.flow-input-params-footer {
-  text-align: right;
-}
-
-.flow-input-params-save, .flow-input-params-cancel {
+.header-button {
   width: 124px;
   height: 40px;
   font-size: 16px;
+}
+
+.header-button + .header-button {
+  margin-left: 20px;
 }
 
 .btn-input-output-params {
@@ -92,17 +60,6 @@
   color: #fff;
   background-color: #4e7ead;
   border-color: #4e7ead;
-}
-
-.flow-input-type-dropdown {
-  width: 30%;
-  margin-right: 25px;
-  margin-left: 20px;
-}
-
-.flow-input-type-dropdown-label {
-  width: 100%;
-  text-align: left;
 }
 
 .flow-input-params-container {
@@ -133,6 +90,8 @@
   align-items: center;
   color: #727272;
   cursor: pointer;
+  vertical-align: middle;
+
   &:hover {
     color: #0081cb;
     background: rgba(197, 202, 233, 0.2);
@@ -140,12 +99,43 @@
   }
 }
 
-.flow-input-params__category-selected {
+.flow-input-params__category-error {
+  color: #d2335c;
+  font-size: 0.75em;
+  margin-left: 0.5em;
+}
+
+.flow-input-params__category--selected {
   background-color: #cad3df;
   color: #062e79;
 }
 
-.dropdown-menu {
-  top: 91%;
-  min-width: 155px;
+.flow-input-params-add {
+  border: 0;
+  min-width: 35px;
+  height: 35px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #79b8dc;
+  padding: 0.4em 0.5em 0.5em;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &__icon {
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-right: 0;
+    padding-top: 3px;
+  }
+
+  &__text {
+    margin-left: 0.5em;
+  }
+
 }

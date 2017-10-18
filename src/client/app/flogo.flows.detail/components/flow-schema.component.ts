@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FlowMetadata } from '../models';
 
 @Component({
@@ -7,14 +7,8 @@ import { FlowMetadata } from '../models';
   templateUrl: 'flow-schema.component.html'
 })
 
-export class FlowSchemaComponent implements OnInit {
+export class FlowSchemaComponent {
   @Input()
   flowMetadata: FlowMetadata;
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
 }
 
