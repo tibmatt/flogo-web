@@ -1,57 +1,65 @@
 <modal [size]="'lg'" #modal cssClass="flow-input-params-modal">
   <form [formGroup]="paramsForm" novalidate (ngSubmit)="saveParams(paramsForm)">
-    <div class="flow-input-params-footer">
-      <button type="cancel" class="flogo-button--secondary flow-input-params-cancel" data-dismiss="modal">{{
+    <div class="flow-input-params-header">
+      <div class="flow-input-params-header__title">{{ 'INPUT-PARAMS:DEFINE' | translate }}</div>
+      <button type="button" class="header-button flogo-button--secondary" data-dismiss="modal">{{
         'INPUT-PARAMS:CANCEL' | translate }}
       </button>
-      <button type="submit" class="flogo-button--default flow-input-params-save" data-dismiss="modal"
+      <button type="submit" class="header-button flogo-button--default" data-dismiss="modal"
               [disabled]="!paramsForm.valid" (click)="saveParams(paramsForm)">
         {{ 'INPUT-PARAMS:SAVE' | translate }}
       </button>
-    </div>
-    <div class="flow-input-params-header">{{ 'INPUT-PARAMS:DEFINE' | translate }}
     </div>
     <div class="flow-input-params-container">
       <div class="flow-input-params-categories">
         <ul>
           <li class="flow-input-params__category"
-              [ngClass]="{'flow-input-params__category-selected': displayInputParams}"
-              (click)="showInputParams()">Input
+              [ngClass]="{'flow-input-params__category--selected': displayInputParams}"
+              (click)="showInputParams()">
+            <span>Input</span>
+            <i class="flogo-icon flogo-icon-info-outline flow-input-params__category-error" *ngIf="paramsForm?.get('input').invalid"></i>
           </li>
           <li class="flow-input-params__category"
-              [ngClass]="{'flow-input-params__category-selected': !displayInputParams}" (click)="showOutputParams()">
-            Output
+              [ngClass]="{'flow-input-params__category--selected': !displayInputParams}"
+              (click)="showOutputParams()">
+            <span>Output</span>
+            <i class="flogo-icon flogo-icon-info-outline flow-input-params__category-error" *ngIf="paramsForm?.get('output').invalid"></i>
           </li>
         </ul>
       </div>
       <div class="flow-input-params-pane" formArrayName="input" *ngIf="displayInputParams">
-        <div *ngFor="let inputParam of paramsForm.controls.input.controls; let i=index" class="flow-input-params-field">
+        <div *ngFor="let inputParam of paramsForm.get('input').controls; let i=index" class="flow-input-params-field">
           <div [formGroupName]="i" class="flow-params-new-field">
             <flogo-flow-input (onRemoveParam)="removeParam(i, 'input')"
-                              (onModifyParamType)="modifyParamType($event,i,'input')"
-                              (onAddParams)="addParams('input')"
-                              [totalCount]="paramsForm.controls.input.controls.length"
                               [dropdownOptions]="selectTypes"
-                              [paramGroup]="paramsForm.controls.input.controls[i]"
+                              [paramGroup]="inputParam"
                               [inputIndex]="i"></flogo-flow-input>
           </div>
         </div>
-
-
+        <div class="flow-input-params-field">
+          <button class="flow-input-params-add"
+                  (click)="addParams('input')" type="button">
+            <span class="flogo-icon flogo-icon-add flow-input-params-add__icon"></span>
+            <span class="flow-input-params-add__text" *ngIf="paramsForm.get('input').controls.length == 0">Add input</span>
+          </button>
+        </div>
       </div>
       <div class="flow-input-params-pane" formArrayName="output" *ngIf="!displayInputParams">
-        <div *ngFor="let outputParam of paramsForm.controls.output.controls; let i=index" class="flow-input-params-field">
+        <div *ngFor="let outputParam of paramsForm.get('output').controls; let i=index" class="flow-input-params-field">
           <div [formGroupName]="i" class="flow-params-new-field">
             <flogo-flow-input (onRemoveParam)="removeParam(i, 'output')"
-                              (onModifyParamType)="modifyParamType($event,i,'output')"
-                              (onAddParams)="addParams('output')"
-                              [totalCount]="paramsForm.controls.output.controls.length"
                               [dropdownOptions]="selectTypes"
-                              [paramGroup]="paramsForm.controls.output.controls[i]"
+                              [paramGroup]="outputParam"
                               [inputIndex]="i"></flogo-flow-input>
           </div>
         </div>
-
+        <div class="flow-input-params-field">
+          <button class="flow-input-params-add"
+                  (click)="addParams('output')" type="button">
+            <span class="flogo-icon flogo-icon-add  flow-input-params-add__icon"></span>
+            <span class="flow-input-params-add__text" *ngIf="paramsForm.get('output').controls.length == 0">Add output</span>
+          </button>
+        </div>
       </div>
     </div>
   </form>

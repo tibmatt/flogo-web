@@ -35,20 +35,6 @@ export class FlogoFlowInputSchemaComponent implements OnInit {
     });
   }
 
-  initParams(data?) {
-    return this._fb.group({
-      name: [data ? data.name : '', Validators.required],
-      type: [data ? FLOGO_TASK_ATTRIBUTE_TYPE[data.type] : 'string'],
-    });
-  }
-
-  getParams() {
-    this.paramsForm = this._fb.group({
-      input: this._fb.array(this.flow.metadata.input.map(i => this.initParams(i)).concat(this.initParams())),
-      output: this._fb.array(this.flow.metadata.output.map(o => this.initParams(o)).concat(this.initParams()))
-    });
-  }
-
   showOutputParams() {
     this.displayInputParams = false;
   };
@@ -62,20 +48,19 @@ export class FlogoFlowInputSchemaComponent implements OnInit {
     data.name = event.name;
     data.type = FLOGO_TASK_ATTRIBUTE_TYPE[event.type];
     const control = <FormArray>this.paramsForm.controls[fromParams];
-    const paramControl = this.initParams(data);
+    const paramControl = this.createParamRow(data);
     control.setControl(index, paramControl);
-
   }
 
-  public openInputSchemaModel() {
+  openInputSchemaModel() {
     this.displayInputParams = true;
+    this.initForm();
     this.modal.open();
-    this.getParams();
   }
 
   addParams(fromParams: string) {
     const control = <FormArray>this.paramsForm.controls[fromParams];
-    const paramControl = this.initParams();
+    const paramControl = this.createParamRow();
     control.push(paramControl);
   }
 
@@ -100,13 +85,25 @@ export class FlogoFlowInputSchemaComponent implements OnInit {
       }));
       return rsp;
     });
-
-
   }
 
   removeParam(index: number, fromParams: string) {
-    const control = <FormArray>this.paramsForm.controls[fromParams];
+    const control = <FormArray> this.paramsForm.controls[fromParams];
     control.removeAt(index);
+  }
+
+  private createParamRow(data?: { name: string, type: string }) {
+    return this._fb.group({
+      name: [data ? data.name : '', Validators.required],
+      type: [data ? FLOGO_TASK_ATTRIBUTE_TYPE[data.type] : 'string'],
+    });
+  }
+
+  private initForm() {
+    this.paramsForm = this._fb.group({
+      input: this._fb.array(this.flow.metadata.input.map(input => this.createParamRow(input))),
+      output: this._fb.array(this.flow.metadata.output.map(output => this.createParamRow(output)))
+    });
   }
 
 }

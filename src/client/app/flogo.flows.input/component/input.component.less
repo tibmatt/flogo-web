@@ -1,68 +1,60 @@
-.form-input-field {
+.form-input {
   width: 100%;
   display: flex;
-  input {
-    border-radius: 4px;
-    border: solid 1px #cad3df;
-    width: 235px;
-    padding: 6px 12px;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.4;
-  }
-  .input-validation-highlight {
-    border: 1px solid red;
+}
+
+.form-input__name {
+  border-radius: 4px;
+  border: solid 1px #cad3df;
+  width: 235px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  &.--invalid {
+    border: 1px solid #d2335c;
+    &:focus {
+      outline-color: #d2335c;
+    }
   }
 }
 
-.flow-input-params-caret {
-  float: right;
-  position: relative;
-  top: 9px;
-}
-
-.flow-input-params-add {
+.form-input__delete {
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  font-weight: bold;
   border: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 35px;
-  height: 35px;
-  border-radius: 4px;
-  color: #fff;
-  background-color: #4e7ead;
-  font-size: 1.5em;
-  font-weight: bold;
 
-  &:disabled {
-    opacity: 0.5;
+  &:hover .delete-icon {
+    color: #79b8dc;
   }
-
 }
 
-.flow-params-delete {
-  justify-content: center;
-  align-items: center;
-  width: 35px;
-  height: 35px;
-  font-weight: bold;
-  border: 0;
-  display: flex
-}
-
-.flow-input-type-dropdown {
+.type-selector {
   width: 30%;
   margin-right: 25px;
   margin-left: 20px;
 }
 
-.flow-input-type-dropdown-label {
+.type-selector__label {
   width: 100%;
   text-align: left;
 }
 
-.dropdown-menu {
+.type-selector__caret {
+  float: right;
+  position: relative;
+  top: 9px;
+}
+
+.type-selector__dropdown-menu {
   top: 91%;
   min-width: 155px;
 }
+
+
 

@@ -18,10 +18,16 @@
 
 .flow-input-params-header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.flow-input-params-header__title {
   position: relative;
-  bottom: 15px;
   font-size: 20px;
   color: #b5b5b5;
+  flex: 1;
 }
 
 .flow-input-params-close {
@@ -34,14 +40,14 @@
   cursor: pointer;
 }
 
-.flow-input-params-footer {
-  text-align: right;
-}
-
-.flow-input-params-save, .flow-input-params-cancel {
+.header-button {
   width: 124px;
   height: 40px;
   font-size: 16px;
+}
+
+.header-button + .header-button {
+  margin-left: 20px;
 }
 
 .btn-input-output-params {
@@ -84,6 +90,8 @@
   align-items: center;
   color: #727272;
   cursor: pointer;
+  vertical-align: middle;
+
   &:hover {
     color: #0081cb;
     background: rgba(197, 202, 233, 0.2);
@@ -91,9 +99,43 @@
   }
 }
 
-.flow-input-params__category-selected {
+.flow-input-params__category-error {
+  color: #d2335c;
+  font-size: 0.75em;
+  margin-left: 0.5em;
+}
+
+.flow-input-params__category--selected {
   background-color: #cad3df;
   color: #062e79;
 }
 
+.flow-input-params-add {
+  border: 0;
+  min-width: 35px;
+  height: 35px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #4e7ead;
+  padding: 0.4em 0.5em 0.5em;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &__icon {
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-right: 0;
+    padding-top: 3px;
+  }
+
+  &__text {
+    margin-left: 0.5em;
+  }
+
+}
