@@ -81,6 +81,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     );
   }
 
+  isLambda(trigger) {
+    return trigger && trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
+  }
+
   private isDeviceType() {
     return this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE;
   }

@@ -820,7 +820,17 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           iconName = 'trigger.icon.svg';
         }
 
-        return `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}" src="/assets/svg/flogo.flows.detail.diagram.${iconName}" alt=""/>
+        const taskSchema = diagram.tasks[taskInfo.nodeInfo.taskID];
+        let taskIcon;
+        if (taskSchema && taskSchema.ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/lambda') {
+          taskIcon = `<svg ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon} --lambda" viewBox="0 0 200 278">
+                        <use xlink:href="/assets/svg/lambda-icon.svg#layer1"></use>
+                      </svg>`;
+        } else {
+          taskIcon = `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}"
+                            src="/assets/svg/flogo.flows.detail.diagram.${iconName}" alt=""/>`;
+        }
+        return `${taskIcon}
                 <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}" title="${taskInfo.name}">${taskInfo.name}</div>
                 <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskInfo.desc}</div>`;
       } else {

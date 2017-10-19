@@ -9,28 +9,61 @@
 .trigger {
   width: 40px;
   height: 40px;
-  padding: 10px 4px 10px 14px;
+  padding-left: 5px;
   background: @color-trigger-bg-color;
   margin: 10px 0;
   border-radius: 5px 0 0 5px;
   cursor: pointer;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
   &:after {
     display: block;
     content: "";
-    position: relative;
-    -webkit-transform: rotate(45deg) skew(20deg, 20deg);
+    position: absolute;
     transform: rotate(45deg) skew(20deg, 20deg);
     background: @color-trigger-bg-color;
     height: 21px;
     width: 21px;
-    top: -23px;
-    right: -16px;
+    top: 9px;
+    right: -11px;
+    top: 9.5px;
+    right: -10.5px;
   }
 
-  .flogo-icon-trigger{
+  .lambda-icon {
+    display: none;
     color: #1B4874;
+    height: 20px;
   }
+
+  .flogo-icon-trigger {
+    display: block;
+    color: #1B4874;
+    font-size: 20px;
+  }
+
+  &.--lambda {
+    background-color: #ecc99b;
+
+    &:after {
+      background-color: #ecc99b;
+    }
+
+    .flogo-icon-trigger {
+      display: none;
+    }
+
+    .lambda-icon {
+      display: block;
+    }
+
+  }
+
 }
 
 .trigger_block {
@@ -47,7 +80,7 @@
     .trigger_menu-list{
       margin: 0;
       border: solid 1px #d8d8d8;
-      border-radius: 5px;
+      border-radius: 0 5px 5px 5px;
       background: #FFFFFF;
 
       .trigger_menu-item {
@@ -80,9 +113,14 @@
       background: @color-trigger-selected-bg-color;
     }
 
-    .flogo-icon-trigger{
-      color: #FFFFFF;
+    .flogo-icon-trigger {
+      color: #fff;
     }
+
+    .lambda-icon {
+      color: #fff;
+    }
+
   }
 
   .trigger_menu--open {
@@ -103,7 +141,6 @@
     border-top-width: @trigger-border-width;
     border-right-width: @trigger-border-width;
     height: 20px;
-    width: 20px;
-    top: -22px;
+    top: 8px;
   }
 }
