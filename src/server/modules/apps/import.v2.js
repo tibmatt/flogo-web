@@ -29,42 +29,37 @@ export function importApp(fromApp) {
     })
     .then(() => AppsManager.create(clonedApp))
     .then(app => {
-      return Promise.all([ContribDeviceManager.find({type:'flogo:device:trigger'}),
-        ContribDeviceManager.find({type:'flogo:device:activity'})])
+      if (appProfile === FLOGO_PROFILE_TYPES.DEVICE) {
+        return Promise.all([
+          ContribDeviceManager.find({ type: 'flogo:device:trigger' }),
+          ContribDeviceManager.find({ type: 'flogo:device:activity' }),
+        ])
         .then(([triggerContribs, activityContribs]) => {
-          if(appProfile === FLOGO_PROFILE_TYPES.DEVICE) {
-            fromApp.triggers = fromApp.triggers.map(trigger => deviceTriggerFormatter(trigger, triggerContribs));
-            fromApp.actions = fromApp.actions.map(action => deviceActionFormatter(action, activityContribs));
-          }
-          const groups = makeActionGroups(fromApp.triggers, fromApp.actions);
-          return chainPromises(groups.triggerGroups, g => registerTriggerGroup(app.id, g))
-            .then(() => chainPromises(groups.orphans, action => ActionsManager.create(app.id, action)))
-            .then(() => AppsManager.findOne(app.id));
+          fromApp.triggers = fromApp.triggers.map(trigger => deviceTriggerFormatter(trigger, triggerContribs));
+          fromApp.actions = fromApp.actions.map(action => deviceActionFormatter(action, activityContribs));
         });
+      }
+      return app;
+    })
+    .then(app => Promise.all(fromApp.actions.map(action =>
+        ActionsManager.create(app.id, action).then(storedAction => [action.id, storedAction])))
+        .then(actionPairs => ({ appId: app.id, actionsMap: new Map(actionPairs) })),
+    )
+    .then(({ appId, actionsMap }) => {
+      const triggerGroups = makeTriggerGroups(fromApp.triggers, actionsMap);
+      return chainPromises(triggerGroups, triggerGroup => registerTriggerGroup(appId, triggerGroup))
+        .then(() => AppsManager.findOne(appId));
     });
 }
 
-function makeActionGroups(triggers, actions) {
-  const actionMap = new Map(actions.map(a => [a.id, a]));
-
-  const pullAction = actionId => {
-    const action = actionMap.get(actionId);
-    if (action) {
-      actionMap.delete(actionId);
-    }
-    return action;
-  };
-
-  const triggerGroups = triggers.map(trigger => ({
-    trigger,
-    handlers: trigger.handlers
-      .map(handler => ({ handler, action: pullAction(handler.actionId) }))
-      .filter(h => !!h.action),
-  })).filter(triggerGroup => triggerGroup.handlers.length > 0);
-
-  // orphan flows
-  const orphans = Array.from(actionMap.values());
-  return { triggerGroups, orphans };
+function makeTriggerGroups(triggers, actionsMap) {
+  return triggers
+    .map(trigger => ({
+      trigger,
+      handlers: trigger.handlers
+        .map(handler => ({ handler, action: actionsMap.get(handler.actionId) }))
+        .filter(h => !!h.action),
+    }));
 }
 
 function registerTriggerGroup(appId, { trigger, handlers }) {
@@ -73,8 +68,7 @@ function registerTriggerGroup(appId, { trigger, handlers }) {
   }
   return AppsTriggersManager.create(appId, trigger)
     .then(savedTrigger => chainPromises(handlers,
-      handlerGroup => ActionsManager.create(appId, handlerGroup.action)
-        .then(action => HandlersManager.save(savedTrigger.id, action.id, handlerGroup.handler))),
+      handlerGroup => HandlersManager.save(savedTrigger.id, handlerGroup.action.id, handlerGroup.handler)),
     );
 }
 
@@ -85,15 +79,15 @@ function chainPromises(from, thenDo) {
 function getInstalledActivitiesAndTriggers(profileType) {
   const mapRefs = contribs => contribs.map(c => c.ref);
   let contribPromise;
-  if(profileType === FLOGO_PROFILE_TYPES.MICRO_SERVICE){
+  if (profileType === FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
     contribPromise = Promise.all([
       ContribTriggersManager.find().then(mapRefs),
       ContribActivitiesManager.find().then(mapRefs),
     ]);
   } else {
     contribPromise = Promise.all([
-      ContribDeviceManager.find({type:'flogo:device:trigger'}).then(mapRefs),
-      ContribDeviceManager.find({type:'flogo:device:activity'}).then(mapRefs)
+      ContribDeviceManager.find({ type: 'flogo:device:trigger' }).then(mapRefs),
+      ContribDeviceManager.find({ type: 'flogo:device:activity' }).then(mapRefs),
     ]);
   }
   return contribPromise.then(([triggers, activities]) => ({ triggers, activities }));

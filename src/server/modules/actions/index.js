@@ -50,10 +50,10 @@ export class ActionsManager {
           throw ErrorManager.createValidationError('Validation error', errors);
         }
 
-        if(actionData.data && actionData.data.flow && actionData.data.flow.name){
+        if (actionData.data && actionData.data.flow && actionData.data.flow.name) {
           actionData.name = actionData.data.flow.name;
           delete actionData.data.flow.name;
-        } else if(!actionData.name){
+        } else if (!actionData.name) {
           actionData.name = actionData.id;
         }
 
