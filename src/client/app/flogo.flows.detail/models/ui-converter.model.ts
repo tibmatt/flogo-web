@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import {FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE} from '../../flogo.flows.detail.diagram/constants';
 import {flogoGenTriggerID, flogoIDEncode} from '../../../common/utils';
 import {FlogoFlowDiagramNode} from '../../flogo.flows.detail.diagram/models/node.model';
@@ -430,10 +432,11 @@ class ItemFactory {
 
     const settings = _.get(cli, 'settings', {});
     // get settings
-    const installedSettings = new Map(installed.settings.map(s => [s.name, s]));
+    const rawTriggerSchemaSettings = _.isArray(installed.settings) ? installed.settings : [];
+    const triggerSchemaSettings = new Map(rawTriggerSchemaSettings.map(s => [s.name, s]));
     Object.keys(settings).forEach((property) => {
       // TODO: if no schema?
-      const schema: any = installedSettings.get(property);
+      const schema: any = triggerSchemaSettings.get(property);
       const newSetting: any = {
         name: property, type: schema.type, value: settings[property],
       };
