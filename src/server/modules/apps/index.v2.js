@@ -271,7 +271,7 @@ export class AppsManager {
           app.triggers = allTriggers;
         }
 
-        //While exporting only flows, export selected flows if provided any else export all flows
+        //While exporting only flows, export selected flows if any flowids are provided else export all flows
         if(exportType === 'flows' && selectedFlowsIds){
           app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
         }
