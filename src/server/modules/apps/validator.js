@@ -550,6 +550,9 @@ function fullAppSchema() {
           type: {
             type: 'integer',
           },
+          explicitReply: {
+            type: 'boolean'
+          },
           attributes: {
             type: 'array',
             items: {
