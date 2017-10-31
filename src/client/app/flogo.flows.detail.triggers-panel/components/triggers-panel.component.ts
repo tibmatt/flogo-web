@@ -1,22 +1,27 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import 'rxjs/add/operator/filter';
+import {TranslateService} from 'ng2-translate';
+import { SingleEmissionSubject } from '../../../common/models/single-emission-subject';
+
 import {FLOGO_PROFILE_TYPE} from '../../../common/constants';
+
 import {notification, objectFromArray} from '../../../common/utils';
 import {RESTAPITriggersService} from '../../../common/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '../../../common/services/restapi/v2/handlers-api.service';
-import {Router} from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import {PostService} from '../../../common/services/post.service';
 import {
   SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
 } from '../../flogo.flows.detail.triggers.detail/messages';
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
+
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../../flogo.form-builder/messages';
-import {TranslateService} from 'ng2-translate';
 import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
 import { FlowMetadata } from '../../flogo.transform/models';
 import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';
-import { Subscription } from 'rxjs/Subscription';
 import {IPropsToUpdateFormBuilder} from '../../flogo.flows.detail/components/canvas.component';
+
 
 export interface IFlogoTrigger {
   name: string;
@@ -51,13 +56,13 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   installTriggerActivated = false;
 
   private _subscriptions: any[];
-  private _triggerMapperSubscription: Subscription;
+  private _ngDestroy$ = SingleEmissionSubject.create();
 
   constructor(private _restAPITriggersService: RESTAPITriggersService,
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _converterService: UIModelConverterService,
               private _router: Router,
-              private translate: TranslateService,
+              private _translate: TranslateService,
               private _clickHandler: FlogoTriggerClickHandlerService,
               private _postService: PostService,
               private _triggerMapperService: TriggerMapperService) {
@@ -65,6 +70,17 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   ngOnInit() {
     this.initSubscribe();
+    this._router.events
+      .filter(event => event instanceof NavigationEnd)
+      .takeUntil(this._ngDestroy$)
+      .subscribe((navigationEvent: NavigationEnd) => {
+        // after upgrading to v4 using the router snapshot might be a better idea like this:
+        // this._router.routerState.snapshot;
+        if (!/\/trigger\/[\w_-]+$/.test(navigationEvent.url)) {
+          this.currentTrigger = null;
+          this.selectedTriggerID = null;
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -80,6 +96,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         this._postService.unsubscribe( sub );
       }
     );
+    this._ngDestroy$.emitAndComplete();
   }
 
   isLambda(trigger) {
@@ -105,12 +122,13 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       }
     );
 
-    this._triggerMapperSubscription = this._triggerMapperService.save$
+    this._triggerMapperService.save$
       .switchMap(({ trigger, mappings }) => this._restAPIHandlerService
         // Update the handler using the updateHandler REST API call
           .updateHandler(trigger.id, this.actionId, mappings)
           .then(handler => ({trigger, handler}))
       )
+      .takeUntil(this._ngDestroy$)
       .subscribe(({ trigger, handler }) => {
         const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
         const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
@@ -168,7 +186,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         this.makeTriggersListForAction();
       }).catch(() => {
         if (data.proper === 'name') {
-          const message = this.translate.instant('TRIGGERS-PANEL:TRIGGER-EXISTS');
+          const message = this._translate.instant('TRIGGERS-PANEL:TRIGGER-EXISTS');
           notification(message, 'error');
           const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {
             name: existingTrigger.name
@@ -352,7 +370,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
           return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.actionId, settings);
         })
         .then((updatedHandler) => {
-          const message = this.translate.instant('CANVAS:COPIED-TRIGGER');
+          const message = this._translate.instant('CANVAS:COPIED-TRIGGER');
           notification(message, 'success', 3000);
           const updatedTriggerDetails = _.assign({}, this.currentTrigger);
           const currentHandler = _.assign({}, _.pick(updatedHandler, [
