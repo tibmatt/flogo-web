@@ -94,6 +94,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
     const subs = [
       _.assign({}, FLOGO_SELECT_TRIGGER_SUB_EVENTS.triggerAction , { callback: this._onActionTrigger.bind(this) }),
+      _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.triggerDetailsChanged, { callback: this._taskDetailsChanged.bind(this) })
     ];
 
@@ -127,6 +128,22 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         outputs: data.outputs
       });
 
+    }
+
+    if (_.isFunction(envelope.done)) {
+      envelope.done();
+    }
+    console.groupEnd();
+  }
+
+  private _changeTileDetail(data: {
+    content: string;
+    proper: string;
+  }, envelope: any) {
+    if (data.proper === 'name') {
+      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content});
+    } else if (data.proper === 'description') {
+      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
     }
 
     if (_.isFunction(envelope.done)) {
