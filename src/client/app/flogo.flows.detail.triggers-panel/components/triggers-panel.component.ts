@@ -137,19 +137,24 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   }
 
   private _changeTileDetail(data: {
-    content: string;
-    proper: string;
+    content: string,
+    proper: string,
+    taskId: any,
+    id: string,
+    tileType: string
   }, envelope: any) {
-    if (data.proper === 'name') {
-      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content});
-    } else if (data.proper === 'description') {
-      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
-    }
+    if (data.tileType === 'trigger') {
+      if (data.proper === 'name') {
+        this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content});
+      } else if (data.proper === 'description') {
+        this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
+      }
 
-    if (_.isFunction(envelope.done)) {
-      envelope.done();
+      if (_.isFunction(envelope.done)) {
+        envelope.done();
+      }
+      console.groupEnd();
     }
-    console.groupEnd();
   }
 
   private makeTriggersListForAction() {
