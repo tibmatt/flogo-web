@@ -121,11 +121,21 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   private _taskDetailsChanged(data: any, envelope: any) {
     console.group('Save trigger details to flow');
     if (data.changedStructure === 'settings') {
-      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings});
+      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings}).then(() => {
+        const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
+        existingTrigger.settings = data.settings;
+        this.makeTriggersListForAction();
+      });
     } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
       this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
         settings: data.endpointSettings,
         outputs: data.outputs
+      }).then(() => {
+        const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
+        const existingHandler = existingTrigger.handlers.find(h => h.actionId === this.actionId);
+        existingHandler.settings = data.endpointSettings;
+        existingHandler.outputs = data.outputs;
+        this.makeTriggersListForAction();
       });
 
     }
@@ -144,11 +154,18 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     tileType: string
   }, envelope: any) {
     if (data.tileType === 'trigger') {
+      let resultantPromise;
       if (data.proper === 'name') {
-        this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content});
+        resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content})
       } else if (data.proper === 'description') {
-        this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
+        resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
       }
+
+      resultantPromise.then(() => {
+        const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
+        existingTrigger[data.proper] = data.content;
+        this.makeTriggersListForAction();
+      });
 
       if (_.isFunction(envelope.done)) {
         envelope.done();
