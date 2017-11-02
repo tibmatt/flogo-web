@@ -68,15 +68,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private ng2StyleAttr = '';
   private nodesOfAddType: IFlogoFlowDiagramNodeDictionary;
 
-  constructor(diagram: IFlogoFlowDiagram,
-              private tasks: IFlogoFlowDiagramTaskDictionary,
-              private translate: TranslateService,
-              private profileType: FLOGO_PROFILE_TYPE,
-              private elm ?: HTMLElement,
-              private diagramType?: string) {
-    this.updateDiagram(diagram);
-  }
-
   static isBranchNode(node: IFlogoFlowDiagramNode) {
     return _isBranchNode(node);
   }
@@ -202,6 +193,15 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
 
     return outputMatrix;
+  }
+
+  constructor(diagram: IFlogoFlowDiagram,
+              private tasks: IFlogoFlowDiagramTaskDictionary,
+              private translate: TranslateService,
+              private profileType: FLOGO_PROFILE_TYPE,
+              private elm ?: HTMLElement,
+              private diagramType?: string) {
+    this.updateDiagram(diagram);
   }
 
   public update(opt: {
@@ -457,7 +457,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     _.each(
       ids, (id) => {
         const node = this.nodes[id];
-
+        /* tslint:disable:no-unused-expression */
         node && nodes.push(node);
       }
     );
@@ -1499,6 +1499,7 @@ function _hasBranchRun(node: IFlogoFlowDiagramNode,
 }
 
 function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary) {
+  /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeInSingleRow: ${node.id}`);
 
   const itsParent = nodes[node.parents[0]];
