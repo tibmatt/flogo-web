@@ -1,66 +1,66 @@
 import {
   IFlogoFlowDiagramTaskAttributeMapping,
-  IFlogoFlowDiagramTaskLink,
-  IFlogoFlowDiagramTaskAttributes
+  IFlogoFlowDiagramTaskAttributes,
+  IFlogoFlowDiagramTaskLink
 } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
 import { flogoIDEncode } from '../../../common/utils';
 
 export interface IFlogoFlowDiagramTask {
-  id : string;
-  type : FLOGO_TASK_TYPE;
-  version ? : string;
-  name ? : string;
-  ref ? : string;
-  description ? : string;
-  title ? : string;
-  activityType? : string;
-  triggerType? : string;
-  attributes ? : IFlogoFlowDiagramTaskAttributes;
-  inputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
-  outputMappings ? : IFlogoFlowDiagramTaskAttributeMapping[ ];
-  tasks ? : IFlogoFlowDiagramTask[ ];
-  links ? : IFlogoFlowDiagramTaskLink[ ];
-  condition? : string;
-  __props? : {
-    [key : string] : any;
-    errors? : {msg : string;}[];
-    warnings? : {msg : string;}[];
+  id: string;
+  type: FLOGO_TASK_TYPE;
+  version ?: string;
+  name ?: string;
+  ref ?: string;
+  description ?: string;
+  title ?: string;
+  activityType?: string;
+  triggerType?: string;
+  attributes ?: IFlogoFlowDiagramTaskAttributes;
+  inputMappings ?: IFlogoFlowDiagramTaskAttributeMapping[ ];
+  outputMappings ?: IFlogoFlowDiagramTaskAttributeMapping[ ];
+  tasks ?: IFlogoFlowDiagramTask[ ];
+  links ?: IFlogoFlowDiagramTaskLink[ ];
+  condition?: string;
+  __props?: {
+    [key: string]: any;
+    errors?: { msg: string; }[];
+    warnings?: { msg: string; }[];
   }; // internal only properties in design time
-  __status? : {
-    [key : string] : boolean;
+  __status?: {
+    [key: string]: boolean;
   }; // internal only properties in design time
 }
 
 export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
-  id : string;
-  type : FLOGO_TASK_TYPE;
-  version : string;
-  name : string;
-  description : string;
-  title : string;
-  activityType : string;
+  id: string;
+  type: FLOGO_TASK_TYPE;
+  version: string;
+  name: string;
+  description: string;
+  title: string;
+  activityType: string;
   ref: string;
-  triggerType : string;
-  attributes : IFlogoFlowDiagramTaskAttributes;
-  inputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
-  outputMappings : IFlogoFlowDiagramTaskAttributeMapping[ ];
-  tasks : IFlogoFlowDiagramTask[ ];
-  links : IFlogoFlowDiagramTaskLink[ ];
-  __status : {
-    [key : string] : boolean;
+  triggerType: string;
+  attributes: IFlogoFlowDiagramTaskAttributes;
+  inputMappings: IFlogoFlowDiagramTaskAttributeMapping[ ];
+  outputMappings: IFlogoFlowDiagramTaskAttributeMapping[ ];
+  tasks: IFlogoFlowDiagramTask[ ];
+  links: IFlogoFlowDiagramTaskLink[ ];
+  __status: {
+    [key: string]: boolean;
   };
 
-  constructor( task ? : IFlogoFlowDiagramTask ) {
-    this.update( task );
+  static genTaskID(): string {
+    return flogoIDEncode('FlogoFlowDiagramTask::' + Date.now());
   };
 
-  static genTaskID() : string {
-    return flogoIDEncode( 'FlogoFlowDiagramTask::' + Date.now() );
+  constructor(task ?: IFlogoFlowDiagramTask) {
+    this.update(task);
   };
 
-  update( task : IFlogoFlowDiagramTask ) {
-    if ( !task ) {
+  update(task: IFlogoFlowDiagramTask) {
+    if (!task) {
       task = < IFlogoFlowDiagramTask > {};
     }
 
@@ -75,32 +75,32 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.ref = task.ref || this.ref || '';
 
     this.triggerType = task.triggerType || this.triggerType || '';
-    this.attributes = _.isEmpty( task.attributes ) ?
-                      this.attributes || < IFlogoFlowDiagramTaskAttributes > {} :
-                      _.cloneDeep( task.attributes );
-    this.inputMappings = _.isEmpty( task.inputMappings ) ? this.inputMappings || [] : _.cloneDeep( task.inputMappings );
-    this.outputMappings = _.isEmpty( task.outputMappings ) ?
-                          this.outputMappings || [] :
-                          _.cloneDeep( task.outputMappings );
+    this.attributes = _.isEmpty(task.attributes) ?
+      this.attributes || < IFlogoFlowDiagramTaskAttributes > {} :
+      _.cloneDeep(task.attributes);
+    this.inputMappings = _.isEmpty(task.inputMappings) ? this.inputMappings || [] : _.cloneDeep(task.inputMappings);
+    this.outputMappings = _.isEmpty(task.outputMappings) ?
+      this.outputMappings || [] :
+      _.cloneDeep(task.outputMappings);
 
-    if ( !_.isEmpty( task.tasks ) ) {
-      this.tasks = _.cloneDeep( task.tasks );
+    if (!_.isEmpty(task.tasks)) {
+      this.tasks = _.cloneDeep(task.tasks);
     }
 
-    if ( !_.isEmpty( task.links ) ) {
-      this.links = _.cloneDeep( task.links );
+    if (!_.isEmpty(task.links)) {
+      this.links = _.cloneDeep(task.links);
     }
 
-    if ( !_.isEmpty( task.__status ) ) {
-      this.__status = _.cloneDeep( task.__status );
+    if (!_.isEmpty(task.__status)) {
+      this.__status = _.cloneDeep(task.__status);
     }
 
   };
 }
 
-export function makeDefaultErrorTrigger(id) : IFlogoFlowDiagramTask {
+export function makeDefaultErrorTrigger(id): IFlogoFlowDiagramTask {
 
-  let outputs = [
+  const outputs = [
     {
       name: 'activity',
       type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
@@ -122,7 +122,7 @@ export function makeDefaultErrorTrigger(id) : IFlogoFlowDiagramTask {
   ];
 
 
-  let errorTrigger = new FlogoFlowDiagramTask({
+  const errorTrigger = new FlogoFlowDiagramTask({
     id: id,
     name: 'On Error',
     title: 'On Error',

@@ -19,7 +19,7 @@ export class UniqueNameValidator {
 function createUniqueNameValidator(flowsService: APIFlowsService, appId: string): AsyncValidatorFn {
 
   // This is used to signal streams to terminate.
-  let changed$ = new Subject<any>();
+  const changed$ = new Subject<any>();
 
   return (control: AbstractControl): Observable<any> | Promise<any> => {
     if (!control.valueChanges) {
@@ -41,8 +41,8 @@ function createUniqueNameValidator(flowsService: APIFlowsService, appId: string)
             validationResult = { uniqueInvalid: true };
           }
           return validationResult;
-        })
+        });
 
       });
-  }
+  };
 }

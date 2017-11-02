@@ -73,7 +73,15 @@
     {
       "files": ["./**/*.ts"],
       "exclude": [
-        "./app/flogo.flows*/**/*.ts",
+        "./app/flogo.flows.detail/**/*.ts",
+        "./app/flogo.flows.detail.error-panel/**/*.ts",
+        "./app/flogo.flows.detail.tasks/**/*.ts",
+        "./app/flogo.flows.detail.tasks.detail/**/*.ts",
+        "./app/flogo.flows.detail.tasks.install/**/*.ts",
+        "./app/flogo.flows.detail.triggers/**/*.ts",
+        "./app/flogo.flows.detail.triggers.detail/**/*.ts",
+        "./app/flogo.flows.detail.triggers.install/**/*.ts",
+        "./app/flogo.flows.import/**/*.ts",
         "./app/flogo.form*/**/*.ts",
         "./common/**",
         "./node_modules/**/*"
@@ -84,7 +92,15 @@
       "project": "./tsconfig.spec.json",
       "files": ["./**/*.ts"],
       "exclude": [
-        "./app/flogo.flows*/**/*.ts",
+        "./app/flogo.flows.detail/**/*.ts",
+        "./app/flogo.flows.detail.error-panel/**/*.ts",
+        "./app/flogo.flows.detail.tasks/**/*.ts",
+        "./app/flogo.flows.detail.tasks.detail/**/*.ts",
+        "./app/flogo.flows.detail.tasks.install/**/*.ts",
+        "./app/flogo.flows.detail.triggers/**/*.ts",
+        "./app/flogo.flows.detail.triggers.detail/**/*.ts",
+        "./app/flogo.flows.detail.triggers.install/**/*.ts",
+        "./app/flogo.flows.import/**/*.ts",
         "./app/flogo.form*/**/*.ts",
         "./common/**/*",
         "./node_modules/**/*"

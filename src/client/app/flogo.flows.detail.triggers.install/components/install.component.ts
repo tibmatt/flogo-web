@@ -8,7 +8,7 @@ import { Component, EventEmitter } from '@angular/core';
 } )
 export class FlogoFlowsDetailTriggersInstallComponent {
 
-  public triggers : any[] = [];
+  public triggers: any[] = [];
   isActivated = false;
   onInstalled = new EventEmitter();
 

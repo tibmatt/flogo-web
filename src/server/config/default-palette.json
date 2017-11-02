@@ -6,7 +6,19 @@
     "extensions": [
         {
             "type": "trigger",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/cli"
+        },
+        {
+            "type": "trigger",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/coap"
+        },
+        {
+            "type": "trigger",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/kafkasub"
+        },
+        {
+            "type": "trigger",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/lambda"
         },
         {
             "type": "trigger",
@@ -34,6 +46,10 @@
         },
         {
             "type": "activity",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/couchbase"
+        },
+        {
+            "type": "activity",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/counter"
         },
         {
@@ -43,6 +59,14 @@
         {
             "type": "activity",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio"
+        },
+        {
+            "type": "activity",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/kafkapub"
+        },
+        {
+            "type": "activity",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/lambda"
         },
         {
             "type": "activity",
