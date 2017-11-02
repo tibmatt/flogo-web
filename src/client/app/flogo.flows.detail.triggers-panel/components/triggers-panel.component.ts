@@ -156,7 +156,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     if (data.tileType === 'trigger') {
       let resultantPromise;
       if (data.proper === 'name') {
-        resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content})
+        resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content});
       } else if (data.proper === 'description') {
         resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
       }
