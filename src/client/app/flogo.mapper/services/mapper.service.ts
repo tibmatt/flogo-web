@@ -410,7 +410,7 @@ export class MapperService {
     const rootType = root.data.rootType;
     const curlyBraced = expr => '${' + expr + '}';
 
-    if (rootType === 'trigger' || rootType === 'flow') {
+    if (rootType === 'trigger') {
       expressionHead = `${rootType}.`;
       expressionHead += propName ? propName.data.nodeName : '';
       expressionHead = curlyBraced(expressionHead);
@@ -420,6 +420,9 @@ export class MapperService {
       expressionHead += propName ? propName.data.nodeName : '';
       expressionHead = curlyBraced(expressionHead);
       expressionTailParts = nodes.slice(2);
+    } else if (rootType === 'flow') {
+      expressionHead = curlyBraced(root.data.nodeName);
+      expressionTailParts = nodes.slice(1);
     } else {
       const nodeName = root.data.nodeName;
       expressionHead = rootType ? curlyBraced(nodeName) : nodeName;
