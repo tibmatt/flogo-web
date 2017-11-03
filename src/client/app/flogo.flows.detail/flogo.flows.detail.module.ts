@@ -40,6 +40,9 @@ import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigge
 import { FlowSchemaComponent as FlogoFlowSchemaComponent } from './components/flow-schema.component';
 import {FlogoFlowInputFieldComponent} from '../flogo.flows.input/component/input.component';
 
+import {FormBuilderModule as FlogoCommonFormBuilderModule} from '../../common/form-builder/form-builder.module';
+import {FlogoRunFlowComponent} from './run-flow/run-flow.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -54,6 +57,7 @@ import {FlogoFlowInputFieldComponent} from '../flogo.flows.input/component/input
     FlogoLogsModule,
     FlogoTriggerMapperModule,
     ReactiveFormsModule,
+    FlogoCommonFormBuilderModule,
     routing
   ],
   declarations: [
@@ -75,7 +79,8 @@ import {FlogoFlowInputFieldComponent} from '../flogo.flows.input/component/input
     FlogoFlowInputSchemaComponent,
 
     FlogoFlowSchemaComponent,
-    FlogoFlowInputFieldComponent
+    FlogoFlowInputFieldComponent,
+    FlogoRunFlowComponent
 
   ],
   providers: [

@@ -6,7 +6,7 @@
              [ngClass]="{'flogo-flow-detail__device': profileType === PROFILE_TYPES.DEVICE,
                          'flogo-flow-detail__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
 
-      <header class="flogo-flow-detail-header col-sm-10">
+      <header class="flogo-flow-detail-header col-sm-9">
         <div class="flogo-flow-detail-header-back"
              [ngClass]="{'--hover':backToAppHover}">
           <div class="flogo-flow-detail-header-back-icon"
@@ -38,7 +38,10 @@
       </header>
 
 
-      <div class="col-sm-2 flogo-flow-detail-menu-container">
+      <div class="col-sm-3 flogo-flow-detail-menu-container">
+        <flogo-run-flow *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
+                        [flowInputs]="flow?.metadata?.input"
+                        (onSubmit)="onRunFlow($event)"></flogo-run-flow>
         <div class="flogo-flow-detail-menu">
           <i class="flogo-icon-kebabmenu"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">

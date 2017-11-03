@@ -39,6 +39,7 @@ import { FlogoFlowService as FlowsService } from '../services/flow.service';
 import {FlogoProfileService} from '../../../common/services/profile.service';
 import {IFlogoTrigger} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 import { FlogoFlowInputSchemaComponent } from '../components/flow-input-schema.component';
+import {FlowMetadataAttribute} from '../models/flow-metadata-attribute';
 
 interface IPropsToUpdateFormBuilder {
   name: string;
@@ -1733,4 +1734,9 @@ export class FlogoCanvasComponent implements OnInit {
     this.defineInputSchema.openInputSchemaModel();
   }
 
+  onRunFlow(modifiedInputs: FlowMetadataAttribute[]) {
+    this.flow.metadata.input = modifiedInputs;
+    const flowUpdatePromise = modifiedInputs.length ? this._updateFlow(this.flow) : Promise.resolve(this.flow);
+    flowUpdatePromise.then(() => this._runFromRoot());
+  }
 }

@@ -1,0 +1,18 @@
+<div class="run-flow__container" (fgClickOutside)="setRunFlowFlag(false)">
+  <button (click)="showHideRun()" class="flogo-button flogo-button--default run-flow__button">Run Flow</button>
+  <div class="main" *ngIf=showRunFlow>
+    <div class="tip"></div>
+    <div class="content">
+      <h4>Run flow with the following inputs:</h4>
+      <flogo-common-form-builder (setFormGroup)="setRunFlowFormGroup($event)"
+                                 [fields]="flowInputs"></flogo-common-form-builder>
+      <div class="button__container">
+        <button type="button" class="flogo-button flogo-button--secondary" (click)="setRunFlowFlag(false)">Cancel
+        </button>
+        <button type="submit" class="flogo-button flogo-button--default" (click)="onRunFlowSubmit()"
+                [disabled]="!isValid">Run Flow
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

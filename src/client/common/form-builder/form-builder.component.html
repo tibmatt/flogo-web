@@ -1,0 +1,12 @@
+<div>
+  <form [formGroup]="fbForm">
+    <div formArrayName="formFields">
+      <div *ngFor="let field of fbForm.controls.formFields.controls; let i=index;">
+        <div [formGroupName]="i">
+          <label>{{field.controls.name.value}}</label>
+          <input type="text" formControlName="value">
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
