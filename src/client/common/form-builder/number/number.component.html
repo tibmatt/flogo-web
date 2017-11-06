@@ -1,6 +1,7 @@
 <div [formGroup]="fieldGroup" class="df-container form-group">
-  <label class="df-label">{{fieldGroup.get('name').value}}</label>
+  <label class="df-label" for="{{fieldControl.name}}">{{fieldGroup.get('name').value}}</label>
   <input type="number" class="df-input form-control tc-inputs"
          [ngClass]="{'--invalid': fieldGroup.get('value').invalid}"
+         id="{{fieldControl.name}}"
          formControlName="value">
 </div>

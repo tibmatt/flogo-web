@@ -4,6 +4,7 @@ import {Textbox} from './textbox/textbox';
 import {BaseField} from './field-base';
 import {FieldAttribute} from './field-attribute';
 import {NumberType} from './number/number';
+import {Textarea} from './textarea/textarea';
 
 @Injectable()
 export class FormFieldService {
@@ -30,15 +31,19 @@ export class FormFieldService {
         value: field.value
       });
 
+      case 'map':
+      case 'params':
+      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
+        return new Textarea({
+          name: field.name,
+          type: field.type,
+          value: field.value
+        });
+
       /*
       case 'boolean':
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
         return FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN;
-
-      case 'map':
-      case 'params':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS;
 
       case 'object':
       case 'any':
