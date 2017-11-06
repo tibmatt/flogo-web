@@ -23,6 +23,10 @@ export class FlogoRunFlowComponent {
     this.runFlowFormGroup = formGroup;
   }
 
+  handleRunFlowClick() {
+    this.flowInputs.length > 0 ? this.showHideRun() : this.onRunFlowSubmit();
+  }
+
   showHideRun() {
     this.showRunFlow = !this.showRunFlow;
   }
@@ -33,6 +37,6 @@ export class FlogoRunFlowComponent {
 
   onRunFlowSubmit() {
     this.setRunFlowFlag(false);
-    this.onSubmit.emit(this.runFlowFormGroup.value.formFields);
+    this.onSubmit.emit(this.runFlowFormGroup ? this.runFlowFormGroup.value.formFields : []);
   }
 }

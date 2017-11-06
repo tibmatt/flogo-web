@@ -1,5 +1,5 @@
 <div class="run-flow__container" (fgClickOutside)="setRunFlowFlag(false)">
-  <button (click)="showHideRun()" class="flogo-button flogo-button--default run-flow__button">Run Flow</button>
+  <button (click)="handleRunFlowClick()" class="flogo-button flogo-button--default run-flow__button">Run Flow</button>
   <div class="main" *ngIf=showRunFlow>
     <div class="tip"></div>
     <div class="content">
