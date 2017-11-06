@@ -5,6 +5,7 @@ import {TextBoxComponent} from './textbox/textbox.component';
 import {FormBuilderComponent} from './form-builder.component';
 import {FormBuilderService} from './form-builder.service';
 import {FormFieldService} from './form-field.service';
+import {NumberComponent} from './number/number.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import {FormFieldService} from './form-field.service';
   ],
   declarations: [
     FormBuilderComponent,
-    TextBoxComponent
+    TextBoxComponent,
+    NumberComponent
   ],
   providers: [
     FormBuilderService,

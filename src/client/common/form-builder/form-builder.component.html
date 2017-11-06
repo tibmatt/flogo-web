@@ -2,9 +2,13 @@
   <form [formGroup]="fbForm">
     <div formArrayName="formFields">
       <div *ngFor="let field of fbForm.controls.formFields.controls; let i=index;">
-        <div [formGroupName]="i">
-          <label>{{field.controls.name.value}}</label>
-          <input type="text" formControlName="value">
+        <div [formGroupName]="i" [ngSwitch]="fieldsWithControlType[i].controlType">
+          <flogo-fb-textbox *ngSwitchCase="'FieldTextBox'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textbox>
+          <flogo-fb-number *ngSwitchCase="'FieldNumber'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-number>
+          <flogo-fb-textbox *ngSwitchDefault [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textbox>
         </div>
       </div>
     </div>

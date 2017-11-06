@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {FormBuilderService} from './form-builder.service';
+import {BaseField} from './field-base';
 
 @Component({
   selector: 'flogo-common-form-builder',
@@ -8,16 +9,19 @@ import {FormBuilderService} from './form-builder.service';
 })
 
 export class FormBuilderComponent implements OnInit {
-  fbForm: FormGroup;
-  @Output()
-  setFormGroup = new EventEmitter<FormGroup>();
   @Input()
   fields: any;
+  @Output()
+  setFormGroup = new EventEmitter<FormGroup>();
+  fieldsWithControlType: BaseField<any>[];
+  fbForm: FormGroup;
 
   constructor( private formBuilder: FormBuilderService) {}
 
   ngOnInit() {
-    this.fbForm = this.formBuilder.toFormGroup(this.fields);
+    const {formGroup, fieldsWithControlType} = this.formBuilder.toFormGroup(this.fields);
+    this.fbForm = formGroup;
+    this.fieldsWithControlType = fieldsWithControlType;
     this.setFormGroup.emit(this.fbForm);
   }
 }

@@ -10,8 +10,9 @@ export class FormBuilderService {
   }
 
   toFormGroup(fields: FieldAttribute[]) {
-    const fieldsControlTypeGroup = fields.map(f => this.formService.mapFieldsToControlType(f));
-    return this.ngFB.group({formFields: this.makeFormFieldsArray(fieldsControlTypeGroup)});
+    const fieldsWithControlType = fields.map(f => this.formService.mapFieldsToControlType(f));
+    const formGroup = this.ngFB.group({formFields: this.makeFormFieldsArray(fieldsWithControlType)})
+    return {formGroup, fieldsWithControlType};
   }
 
   private makeFormFieldsArray(fieldsGroup: BaseField<any>[]) {

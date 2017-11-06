@@ -3,6 +3,7 @@ import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../constants';
 import {Textbox} from './textbox/textbox';
 import {BaseField} from './field-base';
 import {FieldAttribute} from './field-attribute';
+import {NumberType} from './number/number';
 
 @Injectable()
 export class FormFieldService {
@@ -17,15 +18,19 @@ export class FormFieldService {
           value: field.value
         });
 
-      /*
       case 'number':
       case 'int':
       case 'integer':
       case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
       case FLOGO_TASK_ATTRIBUTE_TYPE.INT:
       case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER;
+        return new NumberType({
+        name: field.name,
+        type: field.type,
+        value: field.value
+      });
 
+      /*
       case 'boolean':
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
         return FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN;

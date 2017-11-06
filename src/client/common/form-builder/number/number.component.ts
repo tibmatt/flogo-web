@@ -3,12 +3,12 @@ import {FormGroup} from '@angular/forms';
 import {BaseField} from '../field-base';
 
 @Component({
-  selector: 'flogo-fb-textbox',
-  templateUrl: 'textbox.component.html',
+  selector: 'flogo-fb-number',
+  templateUrl: 'number.component.html',
   styleUrls: ['../shared/dynamic-form.less']
 })
 
-export class TextBoxComponent {
+export class NumberComponent {
   @Input()
   fieldGroup: FormGroup;
   @Input()

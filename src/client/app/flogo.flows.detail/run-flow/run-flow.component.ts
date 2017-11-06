@@ -23,6 +23,10 @@ export class FlogoRunFlowComponent {
     this.runFlowFormGroup = formGroup;
   }
 
+  /*
+  * Run Flow form is not shown when the flow does not have any input metadata for the flow.
+  * The Run Flow button should directly run the flow
+  */
   handleRunFlowClick() {
     this.flowInputs.length > 0 ? this.showHideRun() : this.onRunFlowSubmit();
   }
