@@ -213,9 +213,10 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
 
   function _parseMetadata(metadata: FlowMetadata) {
     metadata.input = metadata.input.map(input => ({
-      name: input.name, type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,
-        <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'),
-        'string')).toLowerCase(),
+      name: input.name,
+      type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE, <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'), 'string'))
+        .toLowerCase(),
+      value: input.value || getDefaultValue(<FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'))
     }));
     metadata.output = metadata.output.map(output => ({
       name: output.name, type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,

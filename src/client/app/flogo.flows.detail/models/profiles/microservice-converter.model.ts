@@ -4,6 +4,7 @@ import {RESTAPITriggersService} from '../../../../common/services/restapi/trigge
 import {ErrorService} from '../../../../common/services/error.service';
 import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../../common/constants';
 import { FlowMetadata } from '../models';
+import {getDefaultValue} from '../../../../common/utils';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
   triggerService: RESTAPITriggersService;
@@ -48,7 +49,9 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
     };
 
     metadata.input = flowInputs.map(input => ({
-      name: input.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING').toUpperCase()],
+      name: input.name,
+      type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING').toUpperCase()],
+      value: input.value || getDefaultValue(FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING').toUpperCase()])
     }));
     metadata.output = flowOutputs.map(input => ({
       name: input.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING').toUpperCase()],
