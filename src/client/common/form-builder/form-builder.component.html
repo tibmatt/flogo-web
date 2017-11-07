@@ -1,7 +1,7 @@
 <div>
   <form [formGroup]="fbForm">
     <div formArrayName="formFields">
-      <div *ngFor="let field of fbForm.controls.formFields.controls; let i=index;">
+      <div *ngFor="let field of formFields.controls; let i=index;">
         <div [formGroupName]="i" [ngSwitch]="fieldsWithControlType[i].controlType">
           <flogo-fb-textbox *ngSwitchCase="'FieldTextBox'" [fieldGroup]="field"
                             [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textbox>

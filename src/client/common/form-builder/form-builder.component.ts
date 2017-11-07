@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {FormArray, FormGroup} from '@angular/forms';
 import {FormBuilderService} from './form-builder.service';
 import {BaseField} from './field-base';
 
@@ -17,6 +17,10 @@ export class FormBuilderComponent implements OnInit {
   fbForm: FormGroup;
 
   constructor( private formBuilder: FormBuilderService) {}
+
+  get formFields() {
+    return <FormArray>this.fbForm.get('formFields');
+  }
 
   ngOnInit() {
     const {formGroup, fieldsWithControlType} = this.formBuilder.toFormGroup(this.fields);
