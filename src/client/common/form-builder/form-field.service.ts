@@ -5,6 +5,7 @@ import {BaseField} from './field-base';
 import {FieldAttribute} from './field-attribute';
 import {NumberType} from './number/number';
 import {Textarea} from './textarea/textarea';
+import {Radio} from './radio/radio';
 
 @Injectable()
 export class FormFieldService {
@@ -40,11 +41,14 @@ export class FormFieldService {
           value: field.value
         });
 
-      /*
       case 'boolean':
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN;
-
+        return new Radio({
+          name: field.name,
+          type: field.type,
+          value: field.value
+        });
+      /*
       case 'object':
       case 'any':
       case 'complex_object':

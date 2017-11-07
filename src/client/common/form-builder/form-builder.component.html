@@ -9,6 +9,8 @@
                             [fieldControl]="fieldsWithControlType[i]"></flogo-fb-number>
           <flogo-fb-textarea *ngSwitchCase="'FieldTextArea'" [fieldGroup]="field"
                             [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textarea>
+          <flogo-fb-radio *ngSwitchCase="'FieldRadio'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-radio>
           <flogo-fb-textbox *ngSwitchDefault [fieldGroup]="field"
                             [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textbox>
         </div>
