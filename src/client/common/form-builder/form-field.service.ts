@@ -6,6 +6,7 @@ import {FieldAttribute} from './field-attribute';
 import {NumberType} from './number/number';
 import {Textarea} from './textarea/textarea';
 import {Radio} from './radio/radio';
+import {ObjectType} from './object/objectType';
 
 @Injectable()
 export class FormFieldService {
@@ -48,14 +49,18 @@ export class FormFieldService {
           type: field.type,
           value: field.value
         });
-      /*
+
       case 'object':
       case 'any':
       case 'complex_object':
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
       case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
       case FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT;*/
+        return new ObjectType({
+          name: field.name,
+          type: field.type,
+          value: field.value
+        });
 
       default:
         return new Textbox({

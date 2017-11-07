@@ -8,6 +8,7 @@ import {FormFieldService} from './form-field.service';
 import {NumberComponent} from './number/number.component';
 import {TextareaComponent} from './textarea/textarea.component';
 import {RadioComponent} from './radio/radio.component';
+import {ObjectTypeComponent} from './object/objectType.component';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import {RadioComponent} from './radio/radio.component';
     TextBoxComponent,
     NumberComponent,
     TextareaComponent,
-    RadioComponent
+    RadioComponent,
+    ObjectTypeComponent
   ],
   providers: [
     FormBuilderService,
