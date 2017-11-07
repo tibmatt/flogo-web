@@ -848,39 +848,42 @@ export class FlogoCanvasComponent implements OnInit {
     content: string;
     proper: string;
     taskId: any,
-    id: string
+    id: string,
+    tileType: string
   }, envelope: any) {
-    var task = this.handlers[data.id].tasks[data.taskId];
+    if (data.tileType === 'activity') {
+      var task = this.handlers[data.id].tasks[data.taskId];
 
-    if (task) {
-      if (data.proper == 'name') {
-        task[data.proper] = this.uniqueTaskName(data.content);
-      } else {
-        task[data.proper] = data.content;
+      if (task) {
+        if (data.proper == 'name') {
+          task[data.proper] = this.uniqueTaskName(data.content);
+        } else {
+          task[data.proper] = data.content;
+        }
+        let updateObject = {};
+
+        let propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
+
+        propsToUpdateFormBuilder.name = task.name;
+
+        this._updateFlow(this.flow).then(() => {
+          this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
+                data: propsToUpdateFormBuilder
+              }
+            )
+          );
+        });
+
+        if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
+          updateObject[data.proper] = task[data.proper];
+          this._restAPITriggersService.updateTrigger(this.currentTrigger.id, updateObject);
+        }
+
+
       }
-      let updateObject = {};
-
-      let propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
-
-      propsToUpdateFormBuilder.name = task.name;
-
-      this._updateFlow(this.flow).then(() => {
-        this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-        this._postService.publish(
-          _.assign(
-            {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
-              data: propsToUpdateFormBuilder
-            }
-          )
-        );
-      });
-
-      if(task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-        updateObject[data.proper] = task[data.proper];
-        this._restAPITriggersService.updateTrigger(this.currentTrigger.id, updateObject);
-      }
-
-
     }
   }
 

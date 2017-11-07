@@ -12,9 +12,9 @@ import { notification } from '../../../common/utils';
 })
 export class FlogoFlowsFlowNameComponent implements OnChanges {
     @Input()
-    show:boolean = false;
+    show  = false;
     @Input()
-    repeatedName:string='';
+    repeatedName = '';
     @Output()
     correctName: EventEmitter<any> = new EventEmitter();
     @Output()
@@ -22,17 +22,16 @@ export class FlogoFlowsFlowNameComponent implements OnChanges {
     public flowName: string;
     public flowNameExists = true;
     public nameModified = false;
+    @ViewChild('flowNameModal')
+    flowNameModal: ModalComponent;
 
     constructor(public translate: TranslateService, public APIFlows: RESTAPIFlowsService) {
     }
 
-    @ViewChild('flowNameModal')
-        flowNameModal: ModalComponent;
-
     public sendAddFlowMsg() {
         this.APIFlows.findFlowsByName(this.repeatedName)
             .then((results) => {
-                if(!_.isEmpty(results)) {
+                if (!_.isEmpty(results)) {
                     this.flowNameExists = true;
                     this.nameModified = false;
                 } else {
@@ -41,7 +40,7 @@ export class FlogoFlowsFlowNameComponent implements OnChanges {
                 }
             })
             .catch((err) => {
-                let message = this.translate.instant('FLOW-NAME:GETTING-FLOW-NAME');
+                const message = this.translate.instant('FLOW-NAME:GETTING-FLOW-NAME');
                 notification(message, 'error');
             });
 
@@ -55,20 +54,20 @@ export class FlogoFlowsFlowNameComponent implements OnChanges {
         this.close.emit(true);
     }
 
-    ngOnChanges( changes : {
-        [key : string] : SimpleChange
+    ngOnChanges(changes: {
+        [key: string]: SimpleChange
     } ) {
 
-        if(_.has(changes, 'show')) {
-            if(changes['show'].currentValue == true) {
+        if (_.has(changes, 'show')) {
+            if (changes['show'].currentValue) {
                 this.flowNameExists = true;
                 this.nameModified = false;
-                this.flowNameModal.open()
+                this.flowNameModal.open();
             }
         }
 
-        if(_.has(changes, 'repeatedName')) {
-            if(changes['repeatedName'].currentValue) {
+        if (_.has(changes, 'repeatedName')) {
+            if (changes['repeatedName'].currentValue) {
                 this.repeatedName = changes['repeatedName'].currentValue;
             }
         }

@@ -3,37 +3,37 @@
  */
 
 export const PUB_EVENTS = {
-  addTask : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'add-task'
+  addTask: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'add-task'
   },
-  selectTask : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'select-task'
+  selectTask: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'select-task'
   },
-  addTrigger : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'add-trigger'
+  addTrigger: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'add-trigger'
   },
-  selectTrigger : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'select-trigger'
+  selectTrigger: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'select-trigger'
   },
-  addBranch : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'add-branch'
+  addBranch: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'add-branch'
   },
-  selectBranch : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'select-branch'
+  selectBranch: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'select-branch'
   },
-  selectTransform : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'select-transform'
+  selectTransform: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'select-transform'
   },
-  deleteTask : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'delete-task'
+  deleteTask: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'delete-task'
   }
 };
 
@@ -42,29 +42,29 @@ export const PUB_EVENTS = {
  */
 
 export const SUB_EVENTS = {
-  addTask : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-add-task'
+  addTask: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-add-task'
   },
-  selectTask : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-select-task'
+  selectTask: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-select-task'
   },
-  addTrigger : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-add-trigger'
+  addTrigger: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-add-trigger'
   },
-  selectTrigger : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-select-trigger'
+  selectTrigger: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-select-trigger'
   },
   render: {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-render'
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-render'
   },
-  addBranch : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-add-branch'
+  addBranch: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-add-branch'
   },
   // TODO
   //  seems that we don't need any extra information to render on the node when the branch information is changed,
@@ -73,12 +73,12 @@ export const SUB_EVENTS = {
   //   channel : 'flogo-flows-detail-diagram',
   //   topic : 'public-select-branch'
   // },
-  selectTransform : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-select-transform'
+  selectTransform: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-select-transform'
   },
-  deleteTask : {
-    channel : 'flogo-flows-detail-diagram',
-    topic : 'public-delete-task'
+  deleteTask: {
+    channel: 'flogo-flows-detail-diagram',
+    topic: 'public-delete-task'
   }
 };

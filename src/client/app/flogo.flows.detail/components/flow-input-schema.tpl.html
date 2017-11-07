@@ -28,6 +28,7 @@
         </ul>
       </div>
       <div class="flow-input-params-pane" formArrayName="input" *ngIf="displayInputParams">
+        <div class="flow-param-fields">
         <div *ngFor="let inputParam of paramsForm.get('input').controls; let i=index" class="flow-input-params-field">
           <div [formGroupName]="i" class="flow-params-new-field">
             <flogo-flow-input (onRemoveParam)="removeParam(i, 'input')"
@@ -43,8 +44,10 @@
             <span class="flow-input-params-add__text" *ngIf="paramsForm.get('input').controls.length == 0">Add input</span>
           </button>
         </div>
+        </div>
       </div>
       <div class="flow-input-params-pane" formArrayName="output" *ngIf="!displayInputParams">
+        <div class="flow-param-fields">
         <div *ngFor="let outputParam of paramsForm.get('output').controls; let i=index" class="flow-input-params-field">
           <div [formGroupName]="i" class="flow-params-new-field">
             <flogo-flow-input (onRemoveParam)="removeParam(i, 'output')"
@@ -60,6 +63,7 @@
             <span class="flow-input-params-add__text" *ngIf="paramsForm.get('output').controls.length == 0">Add output</span>
           </button>
         </div>
+      </div>
       </div>
     </div>
   </form>

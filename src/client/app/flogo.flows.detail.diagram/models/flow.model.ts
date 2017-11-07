@@ -1,20 +1,22 @@
-import {flogoIDEncode, convertTaskID, getDefaultValue} from '../../../common/utils';
-import {FLOGO_PROCESS_TYPE, FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE} from '../../../common/constants';
+import { convertTaskID, flogoIDEncode, getDefaultValue } from '../../../common/utils';
+import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
 import {
   IFlogoFlowDiagramNode,
+  IFlogoFlowDiagramNodeDictionary,
   IFlogoFlowDiagramTask,
   IFlogoFlowDiagramTaskAttribute,
   IFlogoFlowDiagramTaskAttributeMapping,
-  IFlogoFlowDiagramNodeDictionary,
   IFlogoFlowDiagramTaskDictionary
 } from '../models';
-import {FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE} from '../constants';
-import {FlowMetadata} from '../../flogo.flows.detail/models';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
+import { FlowMetadata } from '../../flogo.flows.detail/models';
 
 /**
  * Type definitions for flowToJSON util function
  */
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_Attribute {
   name: string;
   type: string;
@@ -22,12 +24,16 @@ export interface flowToJSON_Attribute {
   required: boolean;
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_Mapping {
   type: number;
   value: string;
   mapTo: string;
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_Task {
   id: any;
   type: number;
@@ -40,6 +46,8 @@ export interface flowToJSON_Task {
   ouputMappings: flowToJSON_Mapping[];
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_Link {
   id: number;
   type: number;
@@ -49,6 +57,8 @@ export interface flowToJSON_Link {
   value?: any;
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_Flow {
   id: string;
   name: string;
@@ -57,16 +67,22 @@ export interface flowToJSON_Flow {
   metadata: any;
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface triggerToJSON_TriggerInfo {
   name: string;
   settings: any;
   endpoints: any;
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface triggerToJSON_Trigger {
   triggers: triggerToJSON_TriggerInfo[];
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_FlowInfo {
   type: number;
   name: string;
@@ -77,6 +93,8 @@ export interface flowToJSON_FlowInfo {
   explicitReply?: boolean;
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_RootTask {
   id: any;
   type: number;
@@ -87,6 +105,8 @@ export interface flowToJSON_RootTask {
   links: flowToJSON_Link[];
 }
 
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
 export interface flowToJSON_InputFlow {
   _id?: string;
   id?: string;
@@ -104,6 +124,7 @@ export interface flowToJSON_InputFlow {
     type: number;
     [key: string]: any;
   }[];
+
   [key: string]: any;
 }
 
@@ -152,7 +173,7 @@ export function triggerFlowToJSON(flow: flowToJSON_InputFlow): triggerToJSON_Tri
       endpoints: endpoints
     };
 
-    result = {triggers: [trigger]};
+    result = { triggers: [trigger] };
   }
 
   return result;
@@ -183,7 +204,9 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   const flowID = inFlow._id || inFlow.id;
 
   if (_.isEmpty(flowID)) {
+    /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.error('No id in the given flow');
+    /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.log(inFlow);
     return flowJSON;
   }
@@ -227,7 +250,9 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   }
 
   if (_.isEmpty(flowPath) || _.isEmpty(flowPathRoot) || _.isEmpty(flowPathNodes)) {
+    /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.warn('Invalid path information in the given flow');
+    /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.log(inFlow);
     return flowJSON;
   }
@@ -235,7 +260,9 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   const flowItems = <IFlogoFlowDiagramTaskDictionary>_.get(inFlow, 'items');
 
   if (_.isEmpty(flowItems)) {
+    /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.warn('Invalid items information in the given flow');
+    /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.log(inFlow);
     return flowJSON;
   }
@@ -325,6 +352,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     flowJSON.flow.explicitReply = true;
   }
 
+  /* tslint:disable-next-line:no-unused-expression */
   INFO && console.log('Generated flow.json: ', flowJSON);
 
   function _traversalDiagram(rootNode: IFlogoFlowDiagramNode,
@@ -369,11 +397,13 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
           // single child is found
           //  since branch can has only one direct child, this is the only case to follow
           if (branch && childNode.children.length === 1) {
+            /* tslint:disable-next-line:no-unused-expression */
             DEBUG && console.log('Found a branch with activity!');
 
             // traversal its children
             _traversalDiagramChildren(childNode, visitedNodes, nodes, tasks, tasksDest, linksDest);
           } else {
+            /* tslint:disable-next-line:no-unused-expression */
             DEBUG && console.warn('- Found a branch!\n- Don\'t care..');
           }
 
@@ -439,24 +469,31 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   }): boolean {
 
     if (_.isEmpty(task)) {
+      /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.warn('Empty task');
       return false;
     }
 
     if (_.isEmpty(task.id)) {
+      /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.warn('Empty task id');
+      /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.log(task);
       return false;
     }
 
     if (!_.isNumber(task.type)) {
+      /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.warn('Invalid task type');
+      /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.log(task);
       return false;
     }
 
     if (_.isEmpty(task.ref)) {
+      /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.warn('Empty task activityType');
+      /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.log(task);
       return false;
     }
@@ -476,7 +513,9 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       attr.required = !!inAttr.required;
 
       if (_.isEmpty(attr.name)) {
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.warn('Empty attribute name found');
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.log(inAttr);
         return;
       }
@@ -515,19 +554,25 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       mapping.mapTo = <string>_.get(inMapping, 'mapTo');
 
       if (_.isUndefined(mapping.type)) {
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.warn('Empty mapping type found');
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.log(inMapping);
         return;
       }
 
       if (_.isEmpty(mapping.value)) {
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.warn('Empty mapping value found');
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.log(inMapping);
         return;
       }
 
       if (_.isEmpty(mapping.mapTo)) {
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.warn('Empty mapping mapTo found');
+        /* tslint:disable-next-line:no-unused-expression */
         DEBUG && console.log(inMapping);
         return;
       }
@@ -536,7 +581,9 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       //  haven't got the types for mapping, hence of the type of mapping isn't the required integre type,
       //  force it to 1;
       if (!_.isNumber(mapping.type)) {
+        /* tslint:disable-next-line:no-unused-expression */
         INFO && console.warn(`Force invalid mapping type to 1 since it's not a number.`);
+        /* tslint:disable-next-line:no-unused-expression */
         INFO && console.log(mapping);
         mapping.type = 1;
       }
@@ -554,7 +601,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
 
     // hardcoding the activity type, for now
     // TODO: maybe the activity should expose a property so we know it can reply?
-    return !!_.find(tasks, task => (<any>task).activityRef == 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
+    return !!_.find(tasks, task => (<any>task).activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
 
   }
 
@@ -598,7 +645,9 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       }
 
     } else {
+      /* tslint:disable-next-line:no-unused-expression */
       INFO && console.warn('Invalid task found.');
+      /* tslint:disable-next-line:no-unused-expression */
       INFO && console.warn(task);
     }
     return taskInfo;

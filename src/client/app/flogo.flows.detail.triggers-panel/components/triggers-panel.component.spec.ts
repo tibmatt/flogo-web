@@ -20,7 +20,6 @@ import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/c
 import {FlogoProfileService} from '../../../common/services/profile.service';
 import {FlogoProfileServiceMock} from '../../../common/services/profile.service.mock';
 import { TriggerMapperModule } from '../../flogo.trigger-mapper/trigger-mapper.module';
-import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';
 
 @Component({
   selector: 'flogo-container',

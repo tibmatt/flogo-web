@@ -413,7 +413,8 @@ export class FlogoFormBuilderComponent{
           content: content,
           proper: proper,
           taskId:this._task.id,
-          id:this._flowId
+          id:this._flowId,
+          tileType: this._context.isTrigger ? 'trigger' : 'activity'
         }
       }
     ));

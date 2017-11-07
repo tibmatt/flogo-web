@@ -15,11 +15,11 @@ import { PUB_EVENTS } from '../message';
 import { FlogoFlowsAddComponent } from './add.component';
 
 const EXISTING_FLOW_NAME = 'existing';
-let flowsServiceStub = {
+const flowsServiceStub = {
 
   findFlowsByName(name: string) {
     let flowArr = [];
-    if (name == EXISTING_FLOW_NAME) {
+    if (name === EXISTING_FLOW_NAME) {
       flowArr = [{ id: '123', name: EXISTING_FLOW_NAME }];
     }
     return Promise.resolve(flowArr);
@@ -27,7 +27,7 @@ let flowsServiceStub = {
 
 };
 
-let postServiceStub = {
+const postServiceStub = {
 
   publish(data: any) {
     this.published = data;
@@ -131,7 +131,7 @@ describe('Component: FlogoFlowsAdd', () => {
     tick(500);
     fixture.detectChanges();
 
-    let postService = fixture.debugElement.injector.get(PostService);
+    const postService = fixture.debugElement.injector.get(PostService);
 
     expect(postService.published).toBeDefined('Published message is not defined');
     expect(postService.published.channel).toBe(PUB_EVENTS.addFlow.channel);
@@ -144,7 +144,7 @@ describe('Component: FlogoFlowsAdd', () => {
 
   }));
 
-  function setValueAndDispatch(value :any, de :DebugElement) {
+  function setValueAndDispatch(value: any, de: DebugElement) {
     const nativeElement = de.nativeElement;
     nativeElement.value = value;
     nativeElement.dispatchEvent(new Event('input'));

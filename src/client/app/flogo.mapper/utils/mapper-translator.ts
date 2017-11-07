@@ -43,9 +43,8 @@ export class MapperTranslator {
       } else {
         const flowInputs = (<FlowMetadata>tile).input;
         if (flowInputs && flowInputs.length > 0) {
-          const flowInputsSchema = MapperTranslator.attributesToObjectDescriptor(flowInputs);
-          flowInputsSchema.rootType = this.getRootType(tile);
-          rootSchema.properties['flow'] = flowInputsSchema;
+          const flowInputsSchema = MapperTranslator.attributesToObjectDescriptor(flowInputs, { rootType: 'flow' });
+          rootSchema.properties = Object.assign(rootSchema.properties, flowInputsSchema.properties);
         }
       }
     });
@@ -54,11 +53,15 @@ export class MapperTranslator {
 
   static attributesToObjectDescriptor(attributes: {
     name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
-  }[]): MapperSchema {
+  }[], additionalProps?: {[key: string]: any}): MapperSchema {
     const properties = {};
     const requiredPropertyNames = [];
     attributes.forEach(attr => {
-      properties[attr.name] = { type: MapperTranslator.translateType(attr.type) };
+      let property = { type: MapperTranslator.translateType(attr.type) };
+      if (additionalProps) {
+        property = Object.assign({}, additionalProps, property);
+      }
+      properties[attr.name] = property;
       if (attr.required) {
         requiredPropertyNames.push(attr.name);
       }
