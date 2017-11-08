@@ -1851,14 +1851,24 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     flowUpdatePromise.then(() => this._runFromRoot());
   }
 
-  public onFlowSchemaSave(newMetadata: { input: any[], output: any[] }) {
-    this.flow.metadata.input = newMetadata.input;
+  public onFlowSchemaSave(newMetadata: FlowMetadata) {
+    this.flow.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
     this.flow.metadata.output = newMetadata.output;
 
     const outputRegistry = new Map(<Array<[string, boolean]>>newMetadata.output.map((o: any) => [o.name, true]));
     this.cleanDanglingOutputMappings(outputRegistry);
 
     this._updateFlow(this.flow);
+  }
+
+  private mergeFlowInputMetadata(inputMetadata: FlowMetadataAttribute[]): FlowMetadataAttribute[] {
+    return inputMetadata.map(input => {
+      const existingInput = this.flow.metadata.input.find(i => i.name === input.name && i.type === input.type);
+      if (existingInput) {
+        input.value = existingInput.value;
+      }
+      return input;
+    });
   }
 
   private cleanDanglingOutputMappings(outputRegistry: Map<string, boolean>) {
