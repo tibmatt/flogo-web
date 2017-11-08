@@ -1,7 +1,7 @@
 <div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
   <div class="mapper-modal data-transform-modal" *ngIf="isActive">
     <div class="mapper-modal__header header" [class.--is-delete-open]="showDeleteConfirmation">
-      <h2 class="header__title">{{ currentTile?.name }}</h2>
+      <h2 class="header__title">{{ title }}</h2>
       <div class="header__actions actions">
         <button class="flogo-button--secondary actions__action actions__action--delete" (click)="openDeleteConfirmation($event)">
           Delete
@@ -23,7 +23,7 @@
 
     <div class="mapper-modal__content">
       <flogo-mapper class="mapper"
-                    inputsSearchPlaceHolder="{{ 'TRANSFORM:ACTIVITY-INPUTS' | translate }}"
+                    inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
                     outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
                     [context]="mapperContext" (mappingsChange)="onMappingsChange($event)" ></flogo-mapper>
     </div>

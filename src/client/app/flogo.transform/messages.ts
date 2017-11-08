@@ -42,5 +42,7 @@ export interface SelectTaskData {
   scope: any[];
   tile: IFlogoFlowDiagramTask;
   overridePropsToMap?: any[];
+  title?: string;
+  inputsSearchPlaceholderKey?: string;
 }
 

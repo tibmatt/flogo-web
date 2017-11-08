@@ -187,6 +187,8 @@
   "TRANSFORM:TRANSFORMATION": "Transformation",
   "TRANSFORM:YES": "Yes",
   "TRANSFORM:ACTIVITY-INPUTS": "Activity Inputs",
+  "TRANSFORM:FLOW-OUTPUTS": "Flow outputs",
+  "TRANSFORM:TITLE-OUTPUT-MAPPER": "Map to flow output ({{taskName}})",
   "TRANSFORM:AVAILABLE-DATA": "Available Data",
   "TRIGGER-MAPPER:TITLE": "Map Trigger",
   "TRIGGER-MAPPER:CANCEL": "Cancel",

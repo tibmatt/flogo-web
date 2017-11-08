@@ -1679,8 +1679,12 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     scope.push(metadata);
 
     let overridePropsToMap = null;
+    let searchTitleKey;
+    let transformTitle;
     if (outputMapper) {
       overridePropsToMap = metadata.output;
+      transformTitle = this.translate.instant('TRANSFORM:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.title });
+      searchTitleKey = 'TRANSFORM:FLOW-OUTPUTS';
     }
 
     this._postService.publish(
@@ -1688,9 +1692,11 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
         {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
           data: <SelectTaskData>{
             scope,
+            overridePropsToMap,
             tile: selectedTile,
             handlerId: diagramId,
-            overridePropsToMap
+            title: transformTitle,
+            inputsSearchPlaceholderKey: searchTitleKey,
           }
         }
       ));

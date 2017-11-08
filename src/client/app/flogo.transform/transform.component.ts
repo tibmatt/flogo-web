@@ -47,7 +47,9 @@ export class TransformComponent implements OnDestroy {
   flowId: string;
   currentTile: IFlogoFlowDiagramTask;
   mapperContext: any;
+  inputsSearchPlaceholderKey = 'TRANSFORM:ACTIVITY-INPUTS';
 
+  title: string;
   isValid: boolean;
   isDirty: boolean;
 
@@ -154,7 +156,11 @@ export class TransformComponent implements OnDestroy {
       return;
     }
     this.currentTile = data.tile;
-
+    this.title = data.title;
+    if (!this.title && this.currentTile) {
+      this.title = this.currentTile.title;
+    }
+    this.inputsSearchPlaceholderKey = data.inputsSearchPlaceholderKey || 'TRANSFORM:ACTIVITY-INPUTS';
     this.resetState();
 
     let propsToMap = [];
