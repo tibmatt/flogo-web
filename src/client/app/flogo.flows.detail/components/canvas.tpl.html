@@ -40,6 +40,7 @@
 
       <div class="col-sm-3 flogo-flow-detail-menu-container">
         <flogo-run-flow *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
+                        [disableRun]="disableRunFlow"
                         [flowInputs]="flow?.metadata?.input"
                         (onSubmit)="onRunFlow($event)"></flogo-run-flow>
         <div class="flogo-flow-detail-menu">

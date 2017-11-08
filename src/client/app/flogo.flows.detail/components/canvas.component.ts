@@ -161,6 +161,10 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
       });
   }
 
+  get disableRunFlow() {
+    return _.isEmpty(this.mainHandler && this.mainHandler.tasks);
+  }
+
   private initSubscribe() {
     this._subscriptions = [];
 

@@ -11,6 +11,8 @@ import {FlowMetadataAttribute} from '../models/flow-metadata-attribute';
 export class FlogoRunFlowComponent {
   @Input()
   flowInputs: FlowMetadataAttribute[];
+  @Input()
+  disableRun: boolean;
   @Output()
   onSubmit: EventEmitter<FlowMetadataAttribute[]> = new EventEmitter<FlowMetadataAttribute[]>();
   showRunFlow = false;
