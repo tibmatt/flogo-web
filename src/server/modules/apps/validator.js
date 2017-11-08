@@ -493,6 +493,7 @@ function fullAppSchema() {
           },
           Attribute: {
             type: 'object',
+            additionalProperties: false,
             properties: {
               name: {
                 type: 'string',

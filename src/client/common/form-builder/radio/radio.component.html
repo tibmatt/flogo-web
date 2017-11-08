@@ -1,0 +1,20 @@
+<div [formGroup]="fieldGroup" class="df-container form-group">
+  <label class="df-label">{{fieldGroup.get('name').value}}</label>
+  <div class="tc-radio-buttons tc-radio-button df-radio__option">
+    <input type="radio" name="value"
+           value=true [id]="'trueValue'+fieldGroup.get('name').value"
+           formControlName="value">
+    <label [attr.for]="'trueValue'+fieldGroup.get('name').value">
+      <span class="df-boolean__label-text">True</span>
+    </label>
+  </div>
+
+  <div class="tc-radio-buttons tc-radio-button df-radio__option">
+    <input type="radio" name="value"
+           value=false [id]="'falseValue'+fieldGroup.get('name').value"
+           formControlName="value">
+    <label [attr.for]="'falseValue'+fieldGroup.get('name').value">
+      <span class="df-boolean__label-text">False</span>
+    </label>
+  </div>
+</div>

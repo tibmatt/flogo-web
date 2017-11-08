@@ -1,0 +1,22 @@
+<div class="form-container">
+  <form [formGroup]="fbForm">
+    <div formArrayName="formFields">
+      <div *ngFor="let field of formFields.controls; let i=index;">
+        <div [formGroupName]="i" [ngSwitch]="fieldsWithControlType[i].controlType">
+          <flogo-fb-textbox *ngSwitchCase="'FieldTextBox'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textbox>
+          <flogo-fb-number *ngSwitchCase="'FieldNumber'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-number>
+          <flogo-fb-textarea *ngSwitchCase="'FieldTextArea'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textarea>
+          <flogo-fb-radio *ngSwitchCase="'FieldRadio'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-radio>
+          <flogo-fb-object *ngSwitchCase="'FieldObject'" [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-object>
+          <flogo-fb-textbox *ngSwitchDefault [fieldGroup]="field"
+                            [fieldControl]="fieldsWithControlType[i]"></flogo-fb-textbox>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
