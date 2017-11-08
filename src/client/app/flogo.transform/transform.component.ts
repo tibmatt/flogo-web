@@ -12,6 +12,9 @@ import { PUB_EVENTS, SUB_EVENTS, SelectTaskData } from './messages';
 import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flogo.mapper';
 
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
+import { IFlogoFlowDiagramTaskAttribute } from '../flogo.flows.detail.diagram/models/attribute.model';
+import { IFlogoFlowDiagramTaskAttributeMapping } from '../flogo.flows.detail.diagram/models/attribute-mapping.model';
+import { isMapperActivity } from '../../common/utils';
 
 @Component({
   selector: 'flogo-transform',
@@ -151,16 +154,25 @@ export class TransformComponent implements OnDestroy {
       return;
     }
     this.currentTile = data.tile;
+
     this.resetState();
-    this.mapperContext = this.createContext(data.tile, data.scope);
+
+    let propsToMap = [];
+    if (data.overridePropsToMap) {
+      propsToMap = data.overridePropsToMap;
+    } else if (this.currentTile.attributes && this.currentTile.attributes.inputs) {
+      propsToMap = this.currentTile.attributes.inputs;
+    }
+    this.mapperContext = this.createContext(propsToMap, this.currentTile.inputMappings, data.scope);
     this.open();
   }
 
-  // todo: get data from event
-  private createContext(inputTile: IFlogoFlowDiagramTask, scope: IFlogoFlowDiagramTask[]) {
-    const inputSchema = MapperTranslator.createInputSchema(inputTile);
+  private createContext(propsToMap: IFlogoFlowDiagramTaskAttribute[],
+                        inputMappings: IFlogoFlowDiagramTaskAttributeMapping[],
+                        scope: IFlogoFlowDiagramTask[]) {
+    const inputSchema = MapperTranslator.attributesToObjectDescriptor(propsToMap);
     const outputSchema = MapperTranslator.createOutputSchema(scope);
-    const mappings = MapperTranslator.translateMappingsIn(inputTile.inputMappings);
+    const mappings = MapperTranslator.translateMappingsIn(inputMappings);
     return StaticMapperContextFactory.create(inputSchema, outputSchema, mappings);
   }
 

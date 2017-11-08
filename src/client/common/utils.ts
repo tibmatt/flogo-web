@@ -103,6 +103,39 @@ function portAttribute( inAttr: {
   return outAttr;
 }
 
+// todo: add schema
+/**
+ * Finds out if an activity schema represents a mapper activity.
+ * To be considered a mapper activity the schema should have at least one input property that declares
+ * a display.mapper propert as true.
+ * @example
+ *  {
+ *    input: [ {
+ *      name: "prop",
+ *      type: "array",
+ *      "display": {
+ *           "description": "Return Mapping",
+ *           "name": "Mapper",
+ *           "type": "mapper",
+ *           "mapper_output_scope" : "action.ouput"
+ *         }
+ *      } ]
+ *  }
+ * @param activitySchema
+ * @return {boolean}
+ */
+export function isMapperActivity(activitySchema: any) {
+  const hasOutputMapperDefinition = _.get(activitySchema, 'inputs', []).find(isOutputMapper);
+  return Boolean(hasOutputMapperDefinition);
+
+  function isOutputMapper(inputDefinition) {
+    if (_.isObject(inputDefinition.display)) {
+      return inputDefinition.display.type === 'mapper';
+    }
+    return false;
+  };
+}
+
 // mapping from schema.json of activity to the task can be used in flow.json
 export function activitySchemaToTask(schema: any): any {
 
