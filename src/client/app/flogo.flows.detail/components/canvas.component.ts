@@ -668,12 +668,13 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     }
 
     function _registerTask() {
+      let task = data.task;
       const taskName = this.uniqueTaskName(data.task.name);
       // generate task id when adding the task
-      const task = <IFlogoFlowDiagramTask> _.assign({},
-        data.task,
+      task = <IFlogoFlowDiagramTask> _.assign({},
+        task,
         {
-          id: this.profileService.generateTaskID(this._getAllTasks(), data.task),
+          id: this.profileService.generateTaskID(this._getAllTasks(), task),
           name: taskName
         });
 
@@ -683,11 +684,14 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
       }
       handler.tasks[task.id] = task;
 
-      this.handlers['root'].schemas = this.handlers['root'].schemas || {};
-      task.ref = task.ref || task['__schema'].ref;
-      this.handlers['root'].schemas[task.ref] = task;
-
+      const rootHandler = this.handlers.root;
+      rootHandler.schemas = rootHandler.schemas || {};
+      const schema = task.__schema;
+      task.ref = task.ref || schema.ref;
+      rootHandler.schemas[task.ref] = schema;
+      this.flow.schemas = Object.assign({}, this.flow.schemas, rootHandler.schemas);
       delete task['__schema'];
+      const isMapperTask = isMapperActivity(schema);
 
       this._navigateFromModuleRoot()
         .then(
@@ -700,10 +704,16 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
                     task: task,
                     id: data.id
                   },
+                  // todo: remove, this is a temporal solution to prevent auto opening a new tile
+                  skipTaskAutoSelection: isMapperTask,
                   done: (diagram: IFlogoFlowDiagram) => {
                     _.assign(this.handlers[diagramId].diagram, diagram);
                     this._updateFlow(this.flow);
                     this._isDiagramEdited = true;
+                    if (isMapperTask) {
+                      // todo: remove, this is a temporal solution to clear the diagram selection state
+                      this._cleanSelectionStatus();
+                    }
                   }
                 }
               )

@@ -299,6 +299,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
         }
       })
       .then(() => {
+        // todo: remove, this is a temporal solution to prevent auto opening a new tile
+        if (envelope.skipTaskAutoSelection) {
+          return;
+        }
         // navigate to add task
         return this._diagram.triggerByTaskID('selectTask', data.task.id);
       })

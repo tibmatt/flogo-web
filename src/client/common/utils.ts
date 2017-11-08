@@ -151,8 +151,8 @@ export function activitySchemaToTask(schema: any): any {
     attributes: {
       inputs: _.get(schema, 'inputs', []),
       outputs: _.get(schema, 'outputs', [])
-    }// ,
-    // __schema: _.cloneDeep(schema)
+    },
+    __schema: _.cloneDeep(schema)
   };
 
   _.each(
