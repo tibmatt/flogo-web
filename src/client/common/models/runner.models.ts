@@ -54,7 +54,7 @@ export interface TaskDatum {
 }
 
 export interface InterceptorTask {
-  id: number;
+  id: string;
   inputs: Array<{
     name: string;
     type: string;

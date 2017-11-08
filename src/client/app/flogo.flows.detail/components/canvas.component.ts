@@ -1320,7 +1320,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   private _runFromThisTile(data: any, envelope: any) {
     console.group('Run from this tile');
 
-    let selectedTask = this.mainHandler.tasks[data.taskId];
+    const selectedTask = this.mainHandler.tasks[data.taskId];
 
     if (selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT) {
       this._runFromTriggerinTile(data, envelope);
@@ -1332,21 +1332,20 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let step = this._getStepNumberFromSteps(data.taskId);
+    const step = this._getStepNumberFromSteps(data.taskId);
 
     if (!step) {
       // TODO
       //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
-      let task = this.mainHandler.tasks[data.taskId];
+      const task = this.mainHandler.tasks[data.taskId];
       console.error(`Cannot start from task ${task.name} (${task.id})`);
       return;
     }
 
-    let attrs = _.get(selectedTask, 'attributes.inputs');
-
-    let dataOfInterceptor = {
+    const attrs = _.get(selectedTask, 'attributes.inputs');
+    const dataOfInterceptor = {
       tasks: [{
-        id: parseInt(flogoIDDecode(selectedTask.id)),
+        id: flogoIDDecode(selectedTask.id),
         inputs: parseInput(attrs, data.inputs),
       }]
     };
