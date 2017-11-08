@@ -1464,27 +1464,23 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private getInitDataForRoot(): { name: string; type: string; value: any }[] {
-    let rootId = this.mainHandler.diagram.root.is;
-    let rootNode = this.mainHandler.diagram.nodes[rootId];
-    let initData = <any>_.get(this.mainHandler.tasks[rootNode.taskID], '__props.outputs');
-    if (_.isEmpty(initData)) {
-      initData = undefined;
-    } else {
-      // preprocessing initial data
-      initData = _(initData)
-        .filter((item: any) => {
-          // filter empty values
-          return !_.isNil(item.value);
-        })
-        .map((item: any) => {
-          // converting the type of the initData from enum to string;
-          let outItem = _.cloneDeep(item);
-          outItem.type = attributeTypeToString(outItem.type);
-          return outItem;
-        })
-        .value();
+    const flowInput = _.get(this.flow, 'metadata.input');
+    if (_.isEmpty(flowInput)) {
+      return undefined;
     }
-    return initData;
+    // preprocessing initial data
+    return _(flowInput)
+      .filter((item: any) => {
+        // filter empty values
+        return !_.isNil(item.value);
+      })
+      .map((item: any) => {
+        // converting the type of the initData from enum to string;
+        const outItem = _.cloneDeep(item);
+        outItem.type = attributeTypeToString(outItem.type);
+        return outItem;
+      })
+      .value();
   }
 
   private handleRunError(error) {
