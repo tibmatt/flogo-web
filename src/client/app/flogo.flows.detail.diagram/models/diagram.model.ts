@@ -115,14 +115,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
     _.each(
       matrix, (matrixRow) => {
-        if (matrixRow.length < rowLen) {
+        const taskID = diagram.nodes[matrixRow[matrixRow.length - 1]].taskID;
+        if ((matrixRow.length < rowLen) &&  (diagram['tasks'][taskID]
+          && diagram['tasks'][taskID].ref !== 'github.com/TIBCOSoftware/flogo-contrib/activity/reply')) {
 
           let paddedRow: string[];
 
-          if (matrixRow.length
-            === 1
-            && diagram.nodes[matrixRow[0]].type
-            === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW) {
+          if ((matrixRow.length
+            === 1 && diagram.nodes[matrixRow[0]].type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW)) {
             paddedRow = matrixRow;
           } else {
             paddedRow = matrixRow.concat('+'); // append add node symbol
@@ -810,7 +810,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           classes[CLS.diagramNodeStatusRun] = taskStatus['hasRun'];
           classes[CLS.diagramNodeStatusHasError] = taskStatus.hasError;
           classes[CLS.diagramNodeStatusHasWarn] = taskStatus.hasWarning;
-          if (index === lastNodeInd) {
+          if ((index === lastNodeInd) || (diagram.tasks[d.taskID].ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply')) {
             classes[CLS.diagramLastNode] = true;
           }
           thisNode.classed(classes);
@@ -1155,7 +1155,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         return ``;
       }
 
-      if (nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
+      if ((nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) ||
+        (diagram['tasks'][nodeInfo.taskID].ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply')) {
         return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemDelete}
                   </ul>${tplGear}`;
