@@ -50,7 +50,10 @@ import {
 import { RESTAPITriggersService } from '../../../common/services/restapi/v2/triggers-api.service';
 import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
-import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
+import {
+  FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_PROFILE_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE,
+  FLOGO_TASK_TYPE
+} from '../../../common/constants';
 import {
   attributeTypeToString,
   flogoGenBranchID,
@@ -1847,4 +1850,26 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     const flowUpdatePromise = modifiedInputs.length ? this._updateFlow(this.flow) : Promise.resolve(this.flow);
     flowUpdatePromise.then(() => this._runFromRoot());
   }
+
+  public onFlowSchemaSave(newMetadata: { input: any[], output: any[] }) {
+    this.flow.metadata.input = newMetadata.input;
+    this.flow.metadata.output = newMetadata.output;
+
+    const outputRegistry = new Map(<Array<[string, boolean]>>newMetadata.output.map((o: any) => [o.name, true]));
+    this.cleanDanglingOutputMappings(outputRegistry);
+
+    this._updateFlow(this.flow);
+  }
+
+  private cleanDanglingOutputMappings(outputRegistry: Map<string, boolean>) {
+    const isMapperContribAndHasMapping = (task: IFlogoFlowDiagramTask) => {
+      const schema = this.flow.schemas[task.ref];
+      return isMapperActivity(schema) && task.inputMappings;
+    };
+    _.filter(this._getAllTasks(), isMapperContribAndHasMapping)
+      .forEach((task: IFlogoFlowDiagramTask) => {
+        task.inputMappings = task.inputMappings.filter(mapping => outputRegistry.has(mapping.mapTo));
+      });
+  }
+
 }

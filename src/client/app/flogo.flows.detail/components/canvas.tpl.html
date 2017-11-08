@@ -110,6 +110,6 @@
   <div class="canvas-right-container">
     <router-outlet></router-outlet>
   </div>
-<flogo-flow-input-schema #inputSchemaModal [flow]="flow"></flogo-flow-input-schema>
+  <flogo-flow-input-schema #inputSchemaModal [flow]="flow" (save)="onFlowSchemaSave($event)"></flogo-flow-input-schema>
 </div>
 
