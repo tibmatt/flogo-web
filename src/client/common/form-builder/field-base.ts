@@ -17,7 +17,7 @@ export abstract class BaseField<T> {
   } = {}) {
     this.name = options.name;
     this.type = options.type;
-    this.value = options.value || '';
+    this.value = options.value;
     this.controlType = options.controlType || '';
   }
 }

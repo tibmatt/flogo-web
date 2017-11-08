@@ -97,7 +97,7 @@ export class FlogoFlowInputSchemaComponent implements OnInit {
   private createParamFormRow(data?: { name: string, type: string }) {
     return this._fb.group({
       name: [data ? data.name : ''],
-      type: [data ? FLOGO_TASK_ATTRIBUTE_TYPE[data.type] : 'string'],
+      type: [data ? FLOGO_TASK_ATTRIBUTE_TYPE[data.type] : 'STRING'],
     });
   }
 

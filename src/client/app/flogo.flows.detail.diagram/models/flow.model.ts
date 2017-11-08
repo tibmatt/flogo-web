@@ -10,6 +10,7 @@ import {
 } from '../models';
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 import { FlowMetadata } from '../../flogo.flows.detail/models';
+import {FlowMetadataAttribute} from '../../flogo.flows.detail/models/flow-metadata-attribute';
 
 /**
  * Type definitions for flowToJSON util function
@@ -234,19 +235,28 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     output: []
   }));
 
-  function _parseMetadata(metadata: FlowMetadata) {
-    metadata.input = metadata.input.map(input => ({
-      name: input.name,
-      type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE, <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'), 'string'))
-        .toLowerCase(),
-      value: input.value || getDefaultValue(<FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'))
-    }));
-    metadata.output = metadata.output.map(output => ({
+  function _parseMetadata(metadata: FlowMetadata): FlowMetadata {
+    const flowMetadata: FlowMetadata = {
+      input: [],
+      output: []
+    };
+    flowMetadata.input = metadata.input.map(input => {
+      const inputMetadata: FlowMetadataAttribute = {
+        name: input.name,
+        type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE, <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'), 'string'))
+          .toLowerCase()
+      };
+      if (!_.isUndefined(input.value)) {
+        inputMetadata.value = input.value;
+      }
+      return inputMetadata;
+    });
+    flowMetadata.output = metadata.output.map(output => ({
       name: output.name, type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,
         <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(output, 'type'),
         'string')).toLowerCase(),
     }));
-    return metadata;
+    return flowMetadata;
   }
 
   if (_.isEmpty(flowPath) || _.isEmpty(flowPathRoot) || _.isEmpty(flowPathNodes)) {
