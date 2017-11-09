@@ -963,7 +963,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     // TODO
     //  refine confirmation
     //  delete trigger isn't hanlded
-    if (node.type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT && task) {
+    if (task) {
       this._flogoModal.confirmDelete('Are you sure you want to delete this task?').then((res) => {
         if (res) {
 
