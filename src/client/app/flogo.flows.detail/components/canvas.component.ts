@@ -1248,6 +1248,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
    |      RUN FLOW                 |
    *-------------------------------*/
 
+  /* TODO: Need to deprecate this method as it is no longer needed*/
   private _runFromTriggerinTile(data: any, envelope: any) {
     let diagramId: string = data.id;
     let currentDiagram: any = this.handlers[diagramId];
@@ -1288,7 +1289,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
     // The initial data to start the process from trigger
     const initData = this.getInitDataForRoot();
-    const runOptions : RunOptions = { attrsData: initData };
+    const runOptions: RunOptions = { attrsData: initData };
     let shouldUpdateFlow = this._isCurrentProcessDirty || !this.runState.currentProcessId;
     if (shouldUpdateFlow) {
       runOptions.useFlow = this.flow;
@@ -1853,7 +1854,49 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   onRunFlow(modifiedInputs: FlowMetadataAttribute[]) {
     this.flow.metadata.input = modifiedInputs;
     const flowUpdatePromise = modifiedInputs.length ? this._updateFlow(this.flow) : Promise.resolve(this.flow);
-    flowUpdatePromise.then(() => this._runFromRoot());
+    const self = this;
+    flowUpdatePromise.then(() => this._runFromRoot())
+      .then(() => {
+        let parsedURL = location.pathname.split('task/');
+        if (parsedURL.length === 2 && _.isString(parsedURL[1])) {
+          const taskId = parsedURL[1];
+          const id = this.getDiagramId(taskId);
+          if (id) {
+            this._updateTaskOutputAfterRun({id, taskId});
+          }
+        }
+      });
+  }
+
+  private getDiagramId(taskId: string): string {
+    let diagramId: string;
+    if (this.handlers['root'].tasks[taskId]) {
+      diagramId = 'root';
+    } else if (this.handlers['errorHandler'].tasks[taskId]) {
+      diagramId = 'errorHandler';
+    }
+    return diagramId;
+  }
+
+  private _updateTaskOutputAfterRun(data: {
+    id: string,
+    taskId: string
+  }) {
+    const diagramId: string = data.id;
+    const currentDiagram: any = this.handlers[diagramId];
+    const step = this._getCurrentState(data.taskId);
+    const task = _.assign({}, _.cloneDeep(currentDiagram.tasks[data.taskId]));
+    const context = this._getCurrentTaskContext(data.taskId, diagramId);
+
+    this._postService.publish(
+      _.assign(
+        {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
+          data: _.assign({},
+            data,
+            { task, step, context }
+          )
+        }
+      ));
   }
 
   public onFlowSchemaSave(newMetadata: FlowMetadata) {
