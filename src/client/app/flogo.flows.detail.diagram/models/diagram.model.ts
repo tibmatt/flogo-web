@@ -478,7 +478,11 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     const deleteNode = <FlogoFlowDiagramNode>this.nodes[node.id];
 
     if (deleteNode) {
-      _deleteNode(deleteNode, this.nodes);
+      _deleteNode(deleteNode, this.nodes, this.root);
+      if (_.isEmpty(this.nodes)) {
+        // create new diagram
+        return this.updateDiagram(null).then(() => this);
+      }
     } else {
       return Promise.reject(`Node ${node.id} doesn't exists.`);
     }
@@ -1451,11 +1455,20 @@ function _getRowHeight(elm: HTMLElement, rowClassName: string): number {
   return clientRect.height;
 }
 
+function _isReturnActivity(task) {
+  if (task) {
+    return task.return;
+  } else {
+    return false;
+  }
+}
+
 /**
  * Utility functions to delete nodes
  */
 function _isInSingleRow(node: IFlogoFlowDiagramNode) {
-  return (node.parents.length === 1 && node.children.length < 2);
+  const parentsCount = node.parents && node.parents.length;
+  return ((parentsCount === 0 || parentsCount === 1) && node.children.length < 2);
 }
 
 function _isBranchNode(node: IFlogoFlowDiagramNode) {
@@ -1498,15 +1511,8 @@ function _hasBranchRun(node: IFlogoFlowDiagramNode,
     (child) => _hasTaskRun(nodes[child], tasks));
 
 }
-function _isReturnActivity(task) {
-  if (task) {
-    return task.return;
-  } else {
-    return false;
-  }
 
-}
-function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary) {
+function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeInSingleRow: ${node.id}`);
 
@@ -1514,16 +1520,23 @@ function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDia
   const itsChild = nodes[node.children[0]];
 
   if (itsChild) {
-
     if (itsChild.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
-      _removeBranchNode(<FlogoFlowDiagramNode>itsChild, nodes);
-      itsParent.children.splice(itsParent.children.indexOf(node.id), 1);
-    } else {
-      itsChild.parents.splice(itsChild.parents.indexOf(node.id), 1, itsParent.id);
-      itsParent.children.splice(itsParent.children.indexOf(node.id), 1, itsChild.id);
+      _removeBranchNode(<FlogoFlowDiagramNode>itsChild, nodes, root);
     }
-
-  } else {
+    if (itsParent) {
+      if (itsChild.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
+        itsParent.children.splice(itsParent.children.indexOf(node.id), 1);
+      } else {
+        itsChild.parents.splice(itsChild.parents.indexOf(node.id), 1, itsParent.id);
+        itsParent.children.splice(itsParent.children.indexOf(node.id), 1, itsChild.id);
+      }
+    } else if (root) {
+      // child and no parent means this is the root node
+      // child needs to be the root now
+      root.is = itsChild.id;
+      itsChild.parents.splice(itsChild.parents.indexOf(node.id), 1);
+    }
+  } else if (itsParent) {
     itsParent.children.splice(itsParent.children.indexOf(node.id), 1);
   }
 
@@ -1532,7 +1545,7 @@ function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDia
   VERBOSE && console.groupEnd();
 }
 
-function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary) {
+function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeHasChildren: ${node.id}`);
 
@@ -1544,7 +1557,7 @@ function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDia
     node.children = _.filter(_.clone(node.children), (childNodeID: string) => {
       const childNode = <FlogoFlowDiagramNode>nodes[childNodeID];
       if (childNode && childNode.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
-        _deleteNode(childNode, nodes);
+        _deleteNode(childNode, nodes, root);
         return false;
       }
 
@@ -1556,26 +1569,26 @@ function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDia
   VERBOSE && console.log(_.cloneDeep(node));
 
   // remove self;
-  _deleteNode(node, nodes);
+  _deleteNode(node, nodes, root);
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.groupEnd();
 }
 
-function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary) {
+function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeBranchNode: ${node.id}`);
 
   if (node.children.length > 0) {
-    _recursivelyDeleteNodes(<FlogoFlowDiagramNode>nodes[node.children[0]], nodes);
+    _recursivelyDeleteNodes(<FlogoFlowDiagramNode>nodes[node.children[0]], nodes, root);
   }
 
-  _removeNodeInSingleRow(node, nodes);
+  _removeNodeInSingleRow(node, nodes, root);
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.groupEnd();
 }
 
 // could be used to recursively delete nodes
-function _deleteNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary) {
+function _deleteNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_deleteNode: ${node.id}`);
   /* tslint:disable-next-line:no-unused-expression */
@@ -1584,15 +1597,15 @@ function _deleteNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDic
   if (node && nodes) {
     if (node.children.length > 1) {
 
-      _removeNodeHasChildren(node, nodes);
+      _removeNodeHasChildren(node, nodes, root);
 
     } else if (node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
 
-      _removeBranchNode(node, nodes);
+      _removeBranchNode(node, nodes, root);
 
     } else if (_isInSingleRow(node)) {
 
-      _removeNodeInSingleRow(node, nodes);
+      _removeNodeInSingleRow(node, nodes, root);
 
     } else {
       // TODO
@@ -1605,7 +1618,7 @@ function _deleteNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDic
   VERBOSE && console.groupEnd();
 }
 
-function _recursivelyDeleteNodes(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary) {
+function _recursivelyDeleteNodes(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_recursivelyDeleteNodes: ${node.id}`);
 
@@ -1614,12 +1627,12 @@ function _recursivelyDeleteNodes(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDi
       const childNode = <FlogoFlowDiagramNode>nodes[childNodeID];
 
       if (childNode) {
-        _recursivelyDeleteNodes(childNode, nodes);
+        _recursivelyDeleteNodes(childNode, nodes, root);
       }
     });
   }
 
-  _deleteNode(node, nodes);
+  _deleteNode(node, nodes, root);
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.groupEnd();
 }
