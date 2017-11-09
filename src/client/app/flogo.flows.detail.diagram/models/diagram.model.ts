@@ -116,8 +116,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     _.each(
       matrix, (matrixRow) => {
         const taskID = diagram.nodes[matrixRow[matrixRow.length - 1]].taskID;
-        if ((matrixRow.length < rowLen) &&  (diagram['tasks'][taskID]
-          && diagram['tasks'][taskID].ref !== 'github.com/TIBCOSoftware/flogo-contrib/activity/reply')) {
+        if ((matrixRow.length < rowLen) && !_isReturnActivity(diagram['tasks'][taskID])) {
 
           let paddedRow: string[];
 
@@ -810,7 +809,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
           classes[CLS.diagramNodeStatusRun] = taskStatus['hasRun'];
           classes[CLS.diagramNodeStatusHasError] = taskStatus.hasError;
           classes[CLS.diagramNodeStatusHasWarn] = taskStatus.hasWarning;
-          if ((index === lastNodeInd) || (diagram.tasks[d.taskID].ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply')) {
+          if ((index === lastNodeInd) || _isReturnActivity(diagram.tasks[d.taskID])) {
             classes[CLS.diagramLastNode] = true;
           }
           thisNode.classed(classes);
@@ -1156,7 +1155,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       }
 
       if ((nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) ||
-        (diagram['tasks'][nodeInfo.taskID].ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply')) {
+        _isReturnActivity(diagram['tasks'][nodeInfo.taskID])
+      ) {
         return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemDelete}
                   </ul>${tplGear}`;
@@ -1498,7 +1498,14 @@ function _hasBranchRun(node: IFlogoFlowDiagramNode,
     (child) => _hasTaskRun(nodes[child], tasks));
 
 }
+function _isReturnActivity(task) {
+  if (task) {
+    return task.return;
+  } else {
+    return false;
+  }
 
+}
 function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeInSingleRow: ${node.id}`);
