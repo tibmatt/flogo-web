@@ -98,7 +98,7 @@
     <flogo-transform [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
-    <flogo-flows-detail-error-panel *ngIf="hasTrigger">
+    <flogo-flows-detail-error-panel>
       <flogo-canvas-flow-diagram *ngIf="errorHandler"
                                  [tasks]="errorHandler.tasks"
                                  [diagram]="errorHandler.diagram"
