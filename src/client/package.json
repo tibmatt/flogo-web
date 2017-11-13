@@ -14,7 +14,8 @@
     "build": "ng build --env=prod --target=production",
     "lint": "ng lint --type-check --format=stylish",
     "e2e": "ng e2e",
-    "check": "npm run lint && npm run test:once"
+    "check": "npm run lint && npm run test:once",
+    "check:travis": "yarn run lint --format=stylish && yarn run test:once && yarn run build --prod --progress=false"
   },
   "author": "TIBCO Software Inc.",
   "private": true,

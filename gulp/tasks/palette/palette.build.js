@@ -33,7 +33,12 @@ gulp.task('palette.build', 'Build default palette', [], cb => {
           ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow'
         }])
     ))
-    .then(result => writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), result))
+    .then(palette => {
+      console.log('** Generated new default palette **');
+      console.log(palette);
+      return palette;
+    })
+    .then(palette => writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), palette))
     .then(() => cb())
     .catch(err => {
       console.error(err);

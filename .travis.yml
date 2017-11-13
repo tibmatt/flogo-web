@@ -23,12 +23,7 @@ jobs:
     - stage: test:client
       before_script: pushd src/client
       script:
-        - echo "Linting client application source code"
-        - yarn run lint -- --format=stylish
-        - echo "Running unit tests for client application"
-        - yarn run test:once -- --progress=false
-        - echo "Trying production build"
-        - yarn run build -- --prod
+        - yarn run check:travis
       after_script: popd
     - stage: build
       language: bash

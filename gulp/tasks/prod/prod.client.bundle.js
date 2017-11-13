@@ -30,7 +30,10 @@ import { CONFIG } from '../../config';
 gulp.task('prod.client.bundle', 'Generate client bundle files', () => npmRun(
   'build',
   {
-    scriptArgs: ['--output-path', path.resolve(CONFIG.paths.dist.public)],
+    scriptArgs: [
+      '--output-path', path.resolve(CONFIG.paths.dist.public),
+      '--progress', 'false',
+    ],
     cwd: CONFIG.paths.source.client,
   }
 ));
