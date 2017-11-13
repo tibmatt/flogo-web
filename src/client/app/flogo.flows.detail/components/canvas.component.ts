@@ -1854,7 +1854,6 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   onRunFlow(modifiedInputs: FlowMetadataAttribute[]) {
     this.flow.metadata.input = modifiedInputs;
     const flowUpdatePromise = modifiedInputs.length ? this._updateFlow(this.flow) : Promise.resolve(this.flow);
-    const self = this;
     flowUpdatePromise.then(() => this._runFromRoot())
       .then(() => {
         let parsedURL = location.pathname.split('task/');
