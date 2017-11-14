@@ -166,7 +166,7 @@ export class RunService {
 
     // filter out the tasks that are not in the path
     taskData = _.filter(taskData, (taskDatum: any) => {
-      return taskDatum.taskId === 1 || taskIds.indexOf(taskDatum.taskId) !== -1;
+      return taskDatum.taskId === '1' || taskDatum.taskId === 1 || taskIds.indexOf(taskDatum.taskId) !== -1;
     });
 
     snapshot.workQueue = workQueue;
