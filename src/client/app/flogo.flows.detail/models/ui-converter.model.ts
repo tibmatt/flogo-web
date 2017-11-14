@@ -482,13 +482,19 @@ class ItemFactory {
   static makeItem(activity): any {
     const {node, installed, cli} = activity;
 
-    const item = Object.assign({}, this.getSharedProperties(installed), {
+    const item = <any> Object.assign({}, this.getSharedProperties(installed), {
       attributes: {
         inputs: [], outputs: []
-      }
-    }, {inputMappings: cli.inputMappings || []}, {
-      id: node.taskID, type: FLOGO_TASK_TYPE.TASK, activityType: installed.id
+      },
+      inputMappings: cli.inputMappings || [],
+      id: node.taskID,
+      type: FLOGO_TASK_TYPE.TASK,
+      activityType: installed.id,
     });
+
+    if (installed.return) {
+      item.return = true;
+    }
 
     // -------- set attributes inputs  ----------------
     const installedInputs = installed.inputs || [];

@@ -14,14 +14,6 @@
         },
         {
             "type": "trigger",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/kafkasub"
-        },
-        {
-            "type": "trigger",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/lambda"
-        },
-        {
-            "type": "trigger",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/mqtt"
         },
         {
@@ -31,6 +23,14 @@
         {
             "type": "trigger",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/timer"
+        },
+        {
+            "type": "activity",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreply"
+        },
+        {
+            "type": "activity",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/actreturn"
         },
         {
             "type": "activity",
@@ -62,15 +62,15 @@
         },
         {
             "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/kafkapub"
-        },
-        {
-            "type": "activity",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/lambda"
         },
         {
             "type": "activity",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
+        },
+        {
+            "type": "activity",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/mapper"
         },
         {
             "type": "activity",

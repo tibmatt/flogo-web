@@ -1,5 +1,5 @@
 import { config } from '../../config/app-config';
-import { TYPE_ACTIVITY, DEFAULT_PATH_ACTIVITY } from '../../common/constants';
+import { DEFAULT_PATH_ACTIVITY, TYPE_ACTIVITY } from '../../common/constants';
 import { inspectObj } from '../../common/utils';
 import { getInitializedEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
@@ -39,11 +39,15 @@ export function activities(app, router){
  */
 function* listActivities() {
   const searchTerms = {};
-  const filterName     = this.request.query['filter[name]'];
+  const filterName = this.request.query['filter[name]'];
   const filterRef = this.request.query['filter[ref]'];
 
-  if (filterName)     { searchTerms.name  = filterName;     }
-  if (filterRef) { searchTerms.ref = filterRef; }
+  if (filterName) {
+    searchTerms.name = filterName;
+  }
+  if (filterRef) {
+    searchTerms.ref = filterRef;
+  }
 
   const foundActivities = yield ActivitiesManager.find(searchTerms);
   this.body = {

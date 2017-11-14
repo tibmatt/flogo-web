@@ -1,6 +1,4 @@
-import pick from 'lodash/pick';
 import get from 'lodash/get';
-import { PUBLISH_FIELDS_SHORT, PUBLISH_FIELDS_LONG } from './constants';
 import { activitiesDBService } from '../../config/app-config';
 
 export class ActivitiesManager {
@@ -27,30 +25,20 @@ export class ActivitiesManager {
    */
   static find(terms, options) {
     terms = terms || {};
-    const { fields } = Object.assign({ fields: 'full'}, options);
+    const { fields } = Object.assign({ fields: 'full' }, options);
 
     return activitiesDBService.db.find(terms)
       .then(result => (result || [])
-        .map(activityRow => cleanForOutput(activityRow, fields))
+        .map(activityRow => prepareForOutput(activityRow, fields)),
       );
   }
 }
 
-function cleanForOutput(activity, fields) {
-  let cleanActivity = Object.assign(
+function prepareForOutput(activity) {
+  // this is a legacy
+  return Object.assign(
     { id: activity.id || activity._id },
-    {ref: activity.ref, homepage:get(activity, 'schema.homepage', '')},
-    activity.schema
+    { ref: activity.ref, homepage: get(activity, 'schema.homepage', '') },
+    activity.schema,
   );
-
-  if(fields == 'raw') {
-    return activity;
-  }
-
-  if (fields === 'short') {
-    cleanActivity = pick(cleanActivity, PUBLISH_FIELDS_SHORT);
-  } else if (fields === 'full') {
-    cleanActivity = pick(cleanActivity, PUBLISH_FIELDS_LONG);
-  }
-  return cleanActivity;
 }
