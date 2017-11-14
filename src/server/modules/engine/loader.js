@@ -1,8 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+
+import groupBy from 'lodash/groupBy';
+import clone from 'lodash/clone';
 
 import { readJSONFile } from '../../common/utils/file';
-import groupBy from 'lodash/groupBy';
 
 const TASK_SRC_ROOT = 'vendor/src';
 
@@ -58,11 +60,29 @@ module.exports = {
     const refToPath = el => ({ path: el.ref });
 
     return Promise.all([
-      _readTasks(enginePath, 'trigger', triggersToRead.map(refToPath)),
-      _readTasks(enginePath, 'activity', activitiesToRead.map(refToPath)),
-    ])
-      .then(([triggers, activities]) => ({ triggers, activities }));
-  }
+      _readTasks(enginePath, 'trigger', triggersToRead.map(refToPath))
+        .then(triggers => triggers.map(trigger => {
+          // change to "old" name to support new definition without affecting the rest of the application
+          // (outputs => output)
+          if (trigger.rt.output) {
+            trigger.rt.outputs = clone(trigger.rt.output);
+          }
+          return trigger;
+        })),
+      _readTasks(enginePath, 'activity', activitiesToRead.map(refToPath))
+        .then(activities => activities.map(activity => {
+          // change to "old" name to support new definition without affecting the rest of the application
+          // (inputs => input) and (outputs => output)
+          if (activity.rt.input) {
+            activity.rt.inputs = clone(activity.rt.input);
+          }
+          if (activity.rt.outputs) {
+            activity.rt.outputs = clone(activity.rt.outputs);
+          }
+          return activity;
+        })),
+    ]).then(([triggers, activities]) => ({ triggers, activities }));
+  },
 };
 
 function readFlogo(enginePath) {
