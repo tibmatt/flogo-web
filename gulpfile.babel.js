@@ -113,8 +113,8 @@ gulp.task('local-debug', 'Build development mode, start db and watch for changes
 
 gulp.task('release', '', cb => {
   runSequence(
-    'prod.build',
     'palette.build',
+    'prod.build',
     'dist.support-files',
     'dist.build-engines',
     cb);
