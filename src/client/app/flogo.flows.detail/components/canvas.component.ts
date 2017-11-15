@@ -72,7 +72,7 @@ import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
 import {FlogoProfileService} from '../../../common/services/profile.service';
 import {IFlogoTrigger} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
-import { FlogoFlowInputSchemaComponent } from '../components/flow-input-schema.component';
+import { FlogoFlowInputSchemaComponent } from './flow-input-schema.component';
 import {FlowMetadataAttribute} from '../models/flow-metadata-attribute';
 import { FlowMetadata } from '../../flogo.transform/models/flow-metadata';
 
@@ -1680,10 +1680,12 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     scope.push(metadata);
 
     let overridePropsToMap = null;
+    let overrideMappings = null;
     let searchTitleKey;
     let transformTitle;
     if (outputMapper) {
       overridePropsToMap = metadata.output;
+      overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);
       transformTitle = this.translate.instant('TRANSFORM:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.title });
       searchTitleKey = 'TRANSFORM:FLOW-OUTPUTS';
     }
@@ -1694,6 +1696,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
           data: <SelectTaskData>{
             scope,
             overridePropsToMap,
+            overrideMappings,
             tile: selectedTile,
             handlerId: diagramId,
             title: transformTitle,
@@ -1704,58 +1707,20 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   }
 
-  private _selectMapperActivity(data: any, envelope: any) {
-    const diagramId = data.id;
-    let scope: any[];
-
-    const selectedNode = data.node;
-
-    if (diagramId === 'errorHandler') {
-      const allPathsMainFlow = this.getAllPaths(this.handlers['root'].diagram.nodes);
-      const previousTilesMainFlow = this.mapNodesToTiles(allPathsMainFlow, this.handlers['root']);
-
-      const previousNodesErrorFlow = this.findPathToNode(this.handlers['errorHandler'].diagram.root.is, selectedNode.id, 'errorHandler');
-      previousNodesErrorFlow.pop(); // ignore last item as it is the very same selected node
-      const previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, this.handlers['errorHandler']);
-
-      scope = previousTilesMainFlow.concat(previousTilesErrorFlow);
-    } else {
-      const previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
-
-      previousNodes.pop(); // ignore last item as it is the very same selected node
-      scope = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
-    }
-
-    const selectedTaskId = selectedNode.taskID;
-    const selectedTask = this.handlers[diagramId].tasks[selectedTaskId];
-
-    const metadata = _.defaultsDeep({
-      type: 'metadata',
-    }, this.flow.metadata, { inputs: [], outputs: [] });
-    scope.push(metadata);
-
-    this._postService.publish(
-      _.assign(
-        {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
-          data: <SelectTaskData>{
-            scope,
-            tile: _.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]),
-            schema: this.flow.schemas[selectedTask.ref],
-            handlerId: diagramId
-          }
-        }
-      ));
-
-  }
-
   private _saveTransformFromTransform(data: any, envelope: any) {
-    let diagramId: string = data.id;
-
-    // data.tile.taskId
-    // data.inputMappings
-
-    let tile = this.handlers[diagramId].tasks[data.tile.id];
-    tile.inputMappings = _.cloneDeep(data.inputMappings);
+    const diagramId = data.id;
+    const tile = this.handlers[diagramId].tasks[data.tile.id];
+    const activitySchema = this.flow.schemas[tile.ref];
+    const isMapperTask = isMapperActivity(activitySchema);
+    if (isMapperTask) {
+      tile.attributes.inputs = [{
+        name: 'mappings',
+        type: FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY,
+        value: _.cloneDeep(data.inputMappings)
+      }];
+    } else {
+      tile.inputMappings = _.cloneDeep(data.inputMappings);
+    }
 
     this._updateFlow(this.flow).then(() => {
       this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);

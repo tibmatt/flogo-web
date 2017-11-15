@@ -14,7 +14,6 @@ import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory 
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
 import { IFlogoFlowDiagramTaskAttribute } from '../flogo.flows.detail.diagram/models/attribute.model';
 import { IFlogoFlowDiagramTaskAttributeMapping } from '../flogo.flows.detail.diagram/models/attribute-mapping.model';
-import { isMapperActivity } from '../../common/utils';
 
 @Component({
   selector: 'flogo-transform',
@@ -164,12 +163,20 @@ export class TransformComponent implements OnDestroy {
     this.resetState();
 
     let propsToMap = [];
+    let mappings = [];
     if (data.overridePropsToMap) {
       propsToMap = data.overridePropsToMap;
     } else if (this.currentTile.attributes && this.currentTile.attributes.inputs) {
       propsToMap = this.currentTile.attributes.inputs;
     }
-    this.mapperContext = this.createContext(propsToMap, this.currentTile.inputMappings, data.scope);
+
+    if (data.overrideMappings) {
+      mappings = data.overrideMappings;
+    } else {
+      mappings = this.currentTile.inputMappings;
+    }
+
+    this.mapperContext = this.createContext(propsToMap, mappings, data.scope);
     this.open();
   }
 
