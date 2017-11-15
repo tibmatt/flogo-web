@@ -64,6 +64,7 @@ module.exports = {
         .then(triggers => triggers.map(trigger => {
           // change to "old" name to support new definition without affecting the rest of the application
           // (outputs => output)
+          // rt === schema of the trigger
           if (trigger.rt.output) {
             trigger.rt.outputs = clone(trigger.rt.output);
           }
@@ -73,11 +74,12 @@ module.exports = {
         .then(activities => activities.map(activity => {
           // change to "old" name to support new definition without affecting the rest of the application
           // (inputs => input) and (outputs => output)
+          // rt === schema of the activity
           if (activity.rt.input) {
             activity.rt.inputs = clone(activity.rt.input);
           }
-          if (activity.rt.outputs) {
-            activity.rt.outputs = clone(activity.rt.outputs);
+          if (activity.rt.output) {
+            activity.rt.outputs = clone(activity.rt.output);
           }
           return activity;
         })),
@@ -96,6 +98,9 @@ function _readTasks(enginePath, type, data) {
 
   return Promise.all(data.map(function (taskInfo) {
       return readJSONFile(path.join(enginePath, TASK_SRC_ROOT, taskInfo.path, `${type}.json`))
+      // rt means "runtime", the name was used to differentiate the ui descriptor versus the runtime descriptor,
+      // now that the metadata is consolidated "rt" qualifier is not necessary anymore
+      // todo: change "rt" to a more descriptive name
       .then(schema => Object.assign({}, taskInfo, { rt: schema }));
   }));
 }
