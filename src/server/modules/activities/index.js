@@ -23,13 +23,12 @@ export class ActivitiesManager {
    * @params options
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
-  static find(terms, options) {
+  static find(terms) {
     terms = terms || {};
-    const { fields } = Object.assign({ fields: 'full' }, options);
 
     return activitiesDBService.db.find(terms)
       .then(result => (result || [])
-        .map(activityRow => prepareForOutput(activityRow, fields)),
+        .map(activityRow => prepareForOutput(activityRow)),
       );
   }
 }
