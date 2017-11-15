@@ -149,7 +149,7 @@ function getTilesFromFlow(items) {
 }
 
 export function getActivities() {
-  return ActivitiesManager.find(null, { fields: 'raw' })
+  return ActivitiesManager.find(null)
     .then(activities => activities.map(
       activity => ({ name: activity._id, type: FLOGO_TASK_TYPE.TASK })),
     );
