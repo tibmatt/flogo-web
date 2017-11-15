@@ -152,6 +152,7 @@ export function activitySchemaToTask(schema: any): any {
       inputs: _.get(schema, 'inputs', []),
       outputs: _.get(schema, 'outputs', [])
     },
+    return: schema.return,
     __schema: _.cloneDeep(schema)
   };
 
