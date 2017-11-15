@@ -24,7 +24,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/takeWhile';
 
-import { RunService, StatusResponse, RUN_STATUS_CODE } from '../../../common/services/restapi/run.service';
+import { RunService, StatusResponse, RUN_STATUS_CODE, RUN_STATE_CODE } from '../../../common/services/restapi/run.service';
 import { flogoFlowToJSON, flowToJSON_InputFlow } from '../../../common/models';
 import { Step, Interceptor } from '../../../common/models/runner.models';
 import { ErrorService } from '../../../common/services/error.service';
@@ -34,7 +34,7 @@ export const ERRORS = {
   PROCESS_NOT_COMPLETED: 'ProcessNotCompleted'
 };
 
-export { RUN_STATUS_CODE, Step };
+export { RUN_STATUS_CODE, RUN_STATE_CODE, Step };
 
 export interface RunStatus extends StatusResponse {
   /**
