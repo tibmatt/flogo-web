@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Http } from '@angular/http';
 import { FlogoInstructionsComponent } from './instructions.component';
@@ -18,11 +18,7 @@ describe('Component: FlogoInstructions Modal', () => {
   beforeEach(() => {
 
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot({
-        provide: TranslateLoader,
-        useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-        deps: [Http]
-      })],
+      imports: [TranslateModule.forRoot()],
       declarations: [FlogoInstructionsComponent, ModalComponent], // declare the test component
     });  // compile template and css
 

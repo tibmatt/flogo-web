@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, tick, fakeAsync, inject } from '@angular/cor
 import { Component }    from '@angular/core';
 import { By, DomSanitizer }              from '@angular/platform-browser';
 import { Http } from '@angular/http';
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { RouterTestingModule } from "@angular/router/testing";
 
@@ -106,11 +106,7 @@ function beforeSetup(done)  {
         RouterTestingModule.withRoutes([
           { path: '', component: MockRouter }
         ]),
-        TranslateModule.forRoot({
-          provide: TranslateLoader,
-          useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-          deps: [Http],
-        }),
+        TranslateModule.forRoot(),
         FlogoCoreModule,
         FlogoCommonModule,
         FlogoFlowsModule,

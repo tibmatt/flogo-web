@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { Http } from '@angular/http';
 import { FlogoApplicationFlowsComponent } from './flows.component';
 import { FlogoModal } from '../../../common/services/modal.service';
 import { TimeFromNowPipe } from '../../../common/pipes/time-from-now.pipe';
@@ -96,11 +95,7 @@ describe('Application flows', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot({
-        provide: TranslateLoader,
-        useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-        deps: [Http]
-      })],
+      imports: [TranslateModule.forRoot()],
       // declare the test component
       declarations: [FlogoApplicationFlowsComponent, ModalComponent, ContainerComponent, TimeFromNowPipe, FlogoDeletePopupComponent],
       providers: [FlogoModal]

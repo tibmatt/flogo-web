@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { Http } from '@angular/http';
 
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Observable } from 'rxjs/Observable';
 
@@ -53,11 +53,7 @@ describe('Component: FlogoFlowsAdd', () => {
     TestBed.configureTestingModule({
       imports: [
         Ng2Bs3ModalModule,
-        TranslateModule.forRoot({
-          provide: TranslateLoader,
-          useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-          deps: [Http],
-        }),
+        TranslateModule.forRoot(),
         FlogoCoreModule,
         FlogoCommonModule
       ],

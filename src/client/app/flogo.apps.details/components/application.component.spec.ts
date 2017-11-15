@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testin
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
@@ -61,11 +61,7 @@ describe('FlogoApplicationComponent component', () => {
     TestBed.configureTestingModule({
       imports: [
         Ng2Bs3ModalModule,
-        TranslateModule.forRoot({
-          provide: TranslateLoader,
-          useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-          deps: [Http],
-        }),
+        TranslateModule.forRoot(),
         Ng2Bs3ModalModule,
         FlogoCoreModule,
         FlogoCommonModule,

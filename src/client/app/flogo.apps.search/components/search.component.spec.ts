@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Http } from '@angular/http';
 import { FlogoApplicationSearchComponent } from './search.component';
 
@@ -17,11 +17,7 @@ describe('FlogoApplicationSearchComponent component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot({
-        provide: TranslateLoader,
-        useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-        deps: [Http]
-      })],
+      imports: [TranslateModule.forRoot()],
       declarations: [FlogoApplicationSearchComponent] // declare the test component
     });
   });

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
 import { Http } from '@angular/http';
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
@@ -40,12 +40,7 @@ describe('FlogoExportFlowsComponent component', () => {
     TestBed.configureTestingModule({
       imports: [
         Ng2Bs3ModalModule,
-        TranslateModule.forRoot({
-          provide: TranslateLoader,
-          // TODO: Remove, no http calls should be done in unit tests
-          useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-          deps: [Http],
-        }),
+        TranslateModule.forRoot(),
         Ng2Bs3ModalModule,
         FlogoCoreModule,
         FlogoCommonModule,

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Http } from '@angular/http';
-import { TranslateModule, TranslateLoader, TranslateStaticLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { PostService } from '../../common/services/post.service';
 import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 import { CommonModule as NgCommonModule } from '@angular/common';
@@ -35,11 +35,7 @@ describe('Component: TransformComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         // todo: stub/mock translator
-        TranslateModule.forRoot({
-          provide: TranslateLoader,
-          useFactory: (http: Http) => new TranslateStaticLoader(http, '/base/dist/public/assets/i18n', '.json'),
-          deps: [Http],
-        }),
+        TranslateModule.forRoot(),
         NgCommonModule,
         FlogoCommonModule,
         MapperModule,
