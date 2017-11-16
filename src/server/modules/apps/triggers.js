@@ -157,50 +157,44 @@ export class AppsTriggersManager {
         const appQuery = { _id: appId };
         const updateQuery = {};
 
-        const createUpdateQuery = (err, app) => {
-          if (err) {
-            return reject(err);
-          } else if (!app) {
-            return reject(appNotFound);
-          }
-
-          if (triggerFields.name) {
-            const nameExists = triggers => {
-              const comparableName = triggerFields.name.trim().toLowerCase();
-              return !!triggers.find(
-                t => t.name.trim().toLowerCase() === comparableName && t.id !== triggerId,
-              );
-            };
-            if (nameExists(app.triggers)) {
-              // do nothing
-              return reject(ErrorManager.createValidationError('Validation error', [{
-                property: 'name',
-                title: 'Name already exists',
-                detail: 'There\'s another trigger in the app with this name',
-                value: {
-                  triggerId,
-                  appId: app.id,
-                  name: triggerFields.name,
-                },
-                type: CONSTRAINTS.UNIQUE,
-              }]));
+        appsDb.findOne(appQuery, { triggers: 1 })
+          .then(app => {
+            if (!app) {
+              return reject(appNotFound);
             }
-          }
 
-          const triggerIndex = app.triggers.findIndex(t => t.id === triggerId);
-          const modifierPrefix = `triggers.${triggerIndex}`;
-          triggerFields.updatedAt = dbUtils.ISONow();
-          // makes { $set: { 'triggers.1.name': 'my trigger' } };
-          updateQuery.$set = mapKeys(triggerFields, (v, fieldName) => `${modifierPrefix}.${fieldName}`);
-          return null;
-        };
+            if (triggerFields.name) {
+              const nameExists = triggers => {
+                const comparableName = triggerFields.name.trim().toLowerCase();
+                return !!triggers.find(
+                  t => t.name.trim().toLowerCase() === comparableName && t.id !== triggerId,
+                );
+              };
+              if (nameExists(app.triggers)) {
+                // do nothing
+                return reject(ErrorManager.createValidationError('Validation error', [{
+                  property: 'name',
+                  title: 'Name already exists',
+                  detail: 'There\'s another trigger in the app with this name',
+                  value: {
+                    triggerId,
+                    appId: app.id,
+                    name: triggerFields.name,
+                  },
+                  type: CONSTRAINTS.UNIQUE,
+                }]));
+              }
+            }
 
-        // queue find and update operation to nedb to make sure they execute one after the other
-        // and no other operation is mixed between them
-        appsDb.collection.findOne(appQuery, { triggers: 1 }, createUpdateQuery);
-        // appsDb.collection.update(appQuery, updateQuery1);
-        appsDb.collection.update(appQuery, updateQuery, {},
-          (err, updatedCount) => (err ? reject(err) : resolve(updatedCount)));
+            const triggerIndex = app.triggers.findIndex(t => t.id === triggerId);
+            const modifierPrefix = `triggers.${triggerIndex}`;
+            triggerFields.updatedAt = dbUtils.ISONow();
+            // makes { $set: { 'triggers.1.name': 'my trigger' } };
+            updateQuery.$set = mapKeys(triggerFields, (v, fieldName) => `${modifierPrefix}.${fieldName}`);
+            return appsDb.update(appQuery, updateQuery);
+          })
+          .then(count => resolve(count))
+          .catch(e => reject(e));
       });
     }
   }
