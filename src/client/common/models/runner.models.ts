@@ -13,7 +13,8 @@ export interface Step {
     status: number;
   };
   id: string;
-  taskId: number;
+  taskId: number | string;
+  taskState?: number;
   // todo: what's this?
   tasks: any;
 }

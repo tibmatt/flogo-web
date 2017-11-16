@@ -1544,7 +1544,8 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
          *  Exclude the tasks which are skipped by the engine while running the flow
          *  but their running task information is generated and maintained
          ****/
-        if (_.get(step, 'flow.state', 0) !== RUNNER_STATE.SKIPPED) {
+        const taskState = step.taskState || 0;
+        if (taskState !== RUNNER_STATE.SKIPPED) {
           runTasksIDs.push(taskID);
         }
         let reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
