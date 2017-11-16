@@ -1867,9 +1867,13 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     this.flow.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
     this.flow.metadata.output = newMetadata.output;
 
-    const outputRegistry = new Map(<Array<[string, boolean]>>newMetadata.output.map((o: any) => [o.name, true]));
-    this.cleanDanglingOutputMappings(outputRegistry);
+    const propCollectionToRegistry = (from) => new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
 
+    const outputRegistry = propCollectionToRegistry(newMetadata.output);
+    const inputRegistry = propCollectionToRegistry(newMetadata.input);
+    this.cleanDanglingTaskOutputMappings(outputRegistry);
+
+    this.cleanDanglingTriggerMappingsToFlow(inputRegistry);
     this._updateFlow(this.flow);
   }
 
@@ -1883,7 +1887,36 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     });
   }
 
-  private cleanDanglingOutputMappings(outputRegistry: Map<string, boolean>) {
+  // when flow schema's input change we need to remove the trigger mappings that were referencing them
+  private cleanDanglingTriggerMappingsToFlow(inputRegistry: Map<string, boolean>) {
+    const isApplicableMapping = (mapping) => inputRegistry.has(mapping.mapTo);
+    const handlersToUpdate = this.triggersList.reduce((result, trigger) => {
+      const handlersToUpdateInTrigger = trigger.handlers
+        .filter(handler => handler.actionId === this.flowId)
+        .reduce(reduceToUpdatableHandlers, [])
+        .map(handler => ({ handler, triggerId: trigger.id }));
+      return result.concat(handlersToUpdateInTrigger);
+    }, []);
+    if (handlersToUpdate.length > 0) {
+      return Promise.all(handlersToUpdate.map(({ handler, triggerId }) => {
+        return this._restAPIHandlerService.updateHandler(triggerId, this.flowId, handler);
+      }));
+    }
+    return Promise.resolve();
+
+    function reduceToUpdatableHandlers(result, handler) {
+      const actionInputMappings = _.get(handler, 'actionMappings.input', []);
+      const applicableMappings = actionInputMappings.filter(isApplicableMapping);
+      if (applicableMappings.length !== actionInputMappings.length) {
+        handler.actionMappings.input = applicableMappings;
+        result.push(handler);
+      }
+      return result;
+    }
+  }
+
+  // when flow schema's output change we need to remove the task mappings that were referencing them
+  private cleanDanglingTaskOutputMappings(outputRegistry: Map<string, boolean>) {
     const isMapperContribAndHasMapping = (task: IFlogoFlowDiagramTask) => {
       const schema = this.flow.schemas[task.ref];
       return isMapperActivity(schema) && task.inputMappings;
