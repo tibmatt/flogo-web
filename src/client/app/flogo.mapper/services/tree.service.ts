@@ -18,6 +18,7 @@ const CLASSES = {
   selected: 'node--is-selected',
   hasMapping: 'node--has-expression',
   visible: 'node--visible',
+  invalid: 'node--has-errors',
   isFilterMatch: 'node--is-filter-match',
 };
 
@@ -84,7 +85,7 @@ export class TreeService {
     }
 
     const hasMapping = hasExpression || hasMappedChild;
-    this.updateStyleClass(node, { [CLASSES.hasMapping]: hasMapping });
+    this.updateStyleClass(node, { [CLASSES.hasMapping]: hasMapping, [CLASSES.invalid]: node.isInvalid });
     return hasMapping;
   }
 
@@ -94,7 +95,7 @@ export class TreeService {
       hasMapping = node.children.some(child => this.isMappedNode(child));
     }
 
-    this.updateStyleClass(node, { [CLASSES.hasMapping]: hasMapping });
+    this.updateStyleClass(node, { [CLASSES.hasMapping]: hasMapping, [CLASSES.invalid]: node.isInvalid });
     if (node.parent) {
       this.propagateMappingStatusToParents(node.parent, hasMapping);
     }

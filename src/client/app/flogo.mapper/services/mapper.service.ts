@@ -276,6 +276,7 @@ export class MapperService {
         //   expectedResultType,
         //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
         // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
+        node.isInvalid = expectedResultType.type === 'complex_object' && !this.isValidComplexObjectExpression(expression);
         const parseResult = <any>{};
 
         this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, expression, parseResult.structureDetails);
@@ -288,6 +289,18 @@ export class MapperService {
         return Object.assign({}, state);
       })
       .subscribe(this.updatesSrc);
+  }
+
+  private isValidComplexObjectExpression(expr: string) {
+    if (!expr || !expr.trim().length) {
+      return true;
+    }
+    try {
+      JSON.parse(expr);
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   private updateMapping(mappings: Mappings, path: string, expression: string, parsedExpressionDetails?: IParsedExpressionDetails) {

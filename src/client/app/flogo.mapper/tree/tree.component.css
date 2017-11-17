@@ -151,6 +151,10 @@
   border-left: 4px solid #062e79;
 }
 
+:host(.tree-input-list) >>> p-tree .node--has-errors > .ui-treenode-content {
+  border: solid 1px #d0011b;
+}
+
 :host(.tree-output-list) .node {
   height: 24px;
 }
