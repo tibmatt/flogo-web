@@ -129,6 +129,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   public loading: boolean;
   public hasTrigger: boolean;
+  public hasTask: boolean;
   public currentTrigger: any;
   public app: any;
 
@@ -147,6 +148,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.hasTrigger = true;
+    this.hasTask = true;
     this.currentTrigger = null;
     this.app = null;
   }
@@ -253,6 +255,9 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     }
 
     return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
+      if ( _.isEmpty( flow.items ) ) {
+        this.hasTask = false;
+      }
       console.groupCollapsed('Flow updated');
       console.log(rsp);
       console.groupEnd();
@@ -276,8 +281,8 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
         this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
         this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-        if ( _.isEmpty( this.mainHandler.diagram ) || !this.mainHandler.diagram.hasTrigger ) {
-          this.hasTrigger = false;
+        if ( _.isEmpty( this.mainHandler.tasks ) ) {
+          this.hasTask = false;
         }
 
         this.triggersList = res.triggers;
@@ -717,6 +722,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
                     _.assign(this.handlers[diagramId].diagram, diagram);
                     this._updateFlow(this.flow);
                     this._isDiagramEdited = true;
+                    this.hasTask = true;
                     if (isMapperTask) {
                       // todo: remove, this is a temporal solution to clear the diagram selection state
                       this._cleanSelectionStatus();
