@@ -21,6 +21,13 @@ export class RUN_STATUS_CODE {
   static FAILED: '700' = '700';
 }
 
+/**
+ * Possible run state
+ */
+export class RUN_STATE_CODE {
+  static SKIPPED: 50 = 50;
+}
+
 export interface StatusResponse {
   id: string,
   /**

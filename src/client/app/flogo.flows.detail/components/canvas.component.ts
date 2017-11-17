@@ -11,6 +11,7 @@ import { OperationalError } from '../../../common/services/error.service';
 import {
   ERRORS as RUNNER_ERRORS,
   RUN_STATUS_CODE as RUNNER_STATUS,
+  RUN_STATE_CODE as RUNNER_STATE,
   RunnerService,
   RunOptions,
   RunProgress,
@@ -1559,11 +1560,19 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     let runTasks = _.reduce(steps, (result: any, step: any) => {
       let taskID = step.taskId;
 
-      if (taskID !== 1 && !_.isNil(taskID)) { // if not rootTask and not `null`
+      if (taskID !== 'root' && taskID !== 1 && !_.isNil(taskID)) { // if not rootTask and not `null`
 
         taskID = flogoIDEncode('' + taskID);
-        runTasksIDs.push(taskID);
-        let reAttrName = new RegExp(`^\{A${step.taskId}\\..*`, 'g');
+
+        /****
+         *  Exclude the tasks which are skipped by the engine while running the flow
+         *  but their running task information is generated and maintained
+         ****/
+        const taskState = step.taskState || 0;
+        if (taskState !== RUNNER_STATE.SKIPPED) {
+          runTasksIDs.push(taskID);
+        }
+        let reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
         let reAttrErrMsg = new RegExp(`^\{Error.message}`, 'g');
 
         let taskInfo = _.reduce(_.get(step, 'flow.attributes', []), (taskInfo: any, attr: any) => {

@@ -40,7 +40,7 @@ export class MockAPIFlowsService extends APIFlowsService{
         "type": 1,
         "attributes": [],
         "rootTask": {
-          "id": 1,
+          "id": 'root',
           "type": 1,
           "activityRef": "",
           "name": "root",
