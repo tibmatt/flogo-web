@@ -77,6 +77,10 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
       console.log(this.diagram);
       console.groupEnd();
 
+    if (this.id === 'errorHandler' && _.isEmpty(this.diagram.root)) {
+        this.diagram = FlogoFlowDiagram.getEmptyDiagram('error');
+      }
+
       if (this.diagram && this.tasks && this._diagram) {
         this._diagram.updateAndRender({
           tasks: this.tasks,
