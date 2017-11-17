@@ -1029,7 +1029,25 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
                   // TODO
                   //  NOTE that once delete branch, not only single task is removed.
                   delete this.handlers[diagramId].tasks[_.get(data, 'node.taskID', '')];
-                  _.assign(this.handlers[diagramId].diagram, diagram);
+                  if ((diagramId === 'errorhandler') && ((Object.keys(this.handlers[diagramId].tasks).length) ===  1 )
+                    && (this.handlers[diagramId].tasks[Object.keys(this.handlers[diagramId].tasks)[0]].type === FLOGO_TASK_TYPE.TASK_ROOT))  {
+                    this.flow.errorHandler = {
+                      paths: {},
+                      items: {}
+                    };
+                    const errorTasks = this.flow.errorHandler.items;
+                    const errorDiagram = this.flow.errorHandler.paths = <IFlogoFlowDiagram>{
+                      root: {},
+                      nodes: {}
+                    };
+                    this.handlers[diagramId] = {
+                      diagram: errorDiagram,
+                      tasks: errorTasks
+                    };
+                    this.errorHandler = this.handlers[diagramId];
+                  } else {
+                    _.assign(this.handlers[diagramId].diagram, diagram);
+                  }
                   this._updateFlow(this.flow);
                   this._isDiagramEdited = true;
 
