@@ -10,12 +10,13 @@ import {
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
 } from '../../flogo.flows.detail.triggers.detail/messages';
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
-import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS} from '../../flogo.form-builder/messages';
+import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../../flogo.form-builder/messages';
 import {TranslateService} from 'ng2-translate';
 import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
 import { FlowMetadata } from '../../flogo.transform/models';
 import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';
 import { Subscription } from 'rxjs/Subscription';
+import {IPropsToUpdateFormBuilder} from '../../flogo.flows.detail/components/canvas.component';
 
 export interface IFlogoTrigger {
   name: string;
@@ -161,10 +162,25 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
       }
 
+      const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
       resultantPromise.then(() => {
-        const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
         existingTrigger[data.proper] = data.content;
         this.makeTriggersListForAction();
+      }).catch(() => {
+        if (data.proper === 'name') {
+          const message = this.translate.instant('TRIGGERS-PANEL:TRIGGER-EXISTS');
+          notification(message, 'error');
+          const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {
+            name: existingTrigger.name
+          };
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
+                data: propsToUpdateFormBuilder
+              }
+            )
+          );
+        }
       });
 
       if (_.isFunction(envelope.done)) {

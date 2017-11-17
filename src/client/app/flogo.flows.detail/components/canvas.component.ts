@@ -76,7 +76,7 @@ import { FlogoFlowInputSchemaComponent } from './flow-input-schema.component';
 import {FlowMetadataAttribute} from '../models/flow-metadata-attribute';
 import { FlowMetadata } from '../../flogo.transform/models/flow-metadata';
 
-interface IPropsToUpdateFormBuilder {
+export interface IPropsToUpdateFormBuilder {
   name: string;
 }
 

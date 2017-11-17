@@ -203,6 +203,7 @@
   "TRIGGER-MAPPER:LABEL-TRIGGER-OUTPUT": "Trigger Output",
   "TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES": "Trigger Response",
   "TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS": "Flow Output",
+  "TRIGGERS-PANEL:TRIGGER-EXISTS": "Trigger with same name exists, please choose another name.",
   "TRIGGERS:ADD-TRIGGER": "Add trigger",
   "TRIGGERS:HINT-ADD-TRIGGER": "Choose or upload a trigger",
   "TRIGGERS-INSTALL:INSTALL-NEW-TRIGGER":"Install new triggers",
