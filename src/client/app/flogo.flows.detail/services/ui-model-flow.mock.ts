@@ -17,7 +17,7 @@ export let mockFlow = {
       "type": 1,
       "attributes": [],
       "rootTask": {
-        "id": 1,
+        "id": 'root',
         "type": 1,
         "activityRef": "",
         "name": "root",
@@ -161,7 +161,7 @@ export let mockErrorFlow = {
       "type": 1,
       "attributes": [],
       "rootTask": {
-        "id": 1,
+        "id": 'root',
         "type": 1,
         "activityRef": "",
         "name": "root",

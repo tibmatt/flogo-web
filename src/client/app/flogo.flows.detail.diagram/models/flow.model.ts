@@ -294,7 +294,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       //    1. should handle the attribute mapping of trigger separately,
       //    hence will the rootTask has no mapping for the moment.
       const rootTask = <flowToJSON_RootTask>{
-        id: 1,
+        id: 'root',
         type: FLOGO_TASK_TYPE.TASK, // this is 1
         activityType: '',
         ref: '',
