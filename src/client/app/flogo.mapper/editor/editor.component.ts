@@ -8,7 +8,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/skipUntil';
 import 'rxjs/add/operator/takeUntil';
 
-import { MonacoEditorComponent } from '../../../monaco-editor';
+import { MonacoEditorComponent, DEFAULT_EDITOR_OPTIONS } from '../../../monaco-editor';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { EditorContext, EditorService, InsertEvent } from './editor.service';
@@ -33,7 +33,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       .subscribe((context: EditorContext) => {
         if (context) {
           const newExpression = context.expression || '';
-          this.editor.changeModel(newExpression);
+          this.editor.changeModel(newExpression, context.mode ? context.mode : DEFAULT_EDITOR_OPTIONS.language);
           setTimeout(() => this.editor.onWindowResize(), 0);
         }
       });

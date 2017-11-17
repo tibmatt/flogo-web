@@ -5,4 +5,5 @@ export interface InsertEvent {
 
 export interface EditorContext {
   expression: string;
+  mode?: string;
 }

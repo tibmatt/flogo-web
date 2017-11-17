@@ -57,7 +57,8 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe((state: MapperState) => {
         this.currentInput = state.currentSelection;
         if (this.currentInput) {
-          this.editorService.changeContext(this.currentInput.expression);
+          const mode = this.currentInput.node.dataType === 'complex_object' ? 'json' : null;
+          this.editorService.changeContext(this.currentInput.expression, mode);
         }
       });
 

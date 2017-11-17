@@ -69,8 +69,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   onSave() {
     this.triggerMapperService.save(this.currentStatus.trigger, {
       actionMappings: {
-        input: MapperTranslator.translateMappingsOut(this.editingMappings.actionInput),
-        output: MapperTranslator.translateMappingsOut(this.editingMappings.actionOutput),
+        input: MapperTranslator.translateMappingsOut(this.editingMappings.actionInput, []),
+        output: MapperTranslator.translateMappingsOut(this.editingMappings.actionOutput, []),
       },
     });
   }
