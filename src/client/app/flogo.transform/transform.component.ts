@@ -14,6 +14,7 @@ import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory 
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
 import { IFlogoFlowDiagramTaskAttribute } from '../flogo.flows.detail.diagram/models/attribute.model';
 import { IFlogoFlowDiagramTaskAttributeMapping } from '../flogo.flows.detail.diagram/models/attribute-mapping.model';
+import { MapperSchema } from './models/mapper-schema';
 
 @Component({
   selector: 'flogo-transform',
@@ -63,6 +64,9 @@ export class TransformComponent implements OnDestroy {
 
   private _subscriptions: any[];
   private currentMappings: { [key: string]: IMapExpression };
+  // todo: move to proper service
+  private areValidMappings: (mappings: IMapping) => boolean;
+  private propsToMap: IFlogoFlowDiagramTaskAttribute[];
 
   constructor(private _postService: PostService) {
     this.initSubscriptions();
@@ -82,7 +86,7 @@ export class TransformComponent implements OnDestroy {
   }
 
   onMappingsChange(change: IMapping) {
-    this.isValid = true;
+    this.isValid = this.areValidMappings(change);
     this.isDirty = true;
     this.currentMappings = _.cloneDeep(change).mappings;
   }
@@ -91,7 +95,7 @@ export class TransformComponent implements OnDestroy {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.currentTile,
-        inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings),
+        inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings, this.propsToMap),
         id: this.flowId
       }
     }));
@@ -140,6 +144,7 @@ export class TransformComponent implements OnDestroy {
     } else if (this.currentTile.attributes && this.currentTile.attributes.inputs) {
       propsToMap = this.currentTile.attributes.inputs;
     }
+    this.propsToMap = propsToMap;
 
     if (data.overrideMappings) {
       mappings = data.overrideMappings;
@@ -148,6 +153,7 @@ export class TransformComponent implements OnDestroy {
     }
 
     this.mapperContext = this.createContext(propsToMap, mappings, data.scope);
+    this.areValidMappings = MapperTranslator.makeValidator(propsToMap);
     this.open();
   }
 

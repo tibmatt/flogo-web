@@ -1,13 +1,19 @@
+import * as _ from 'lodash';
+
 import {
   IFlogoFlowDiagramTask as FlowTile,
   IFlogoFlowDiagramTaskAttributeMapping as FlowMapping,
 } from '../../flogo.flows.detail.diagram/models';
 
 import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../common/constants';
-import { REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT } from '../../flogo.transform/constants';
+import {
+  REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT,
+  TYPE_OBJECT_TEMPLATE
+} from '../../flogo.transform/constants';
 
 import { flogoIDDecode } from '../../../common/utils';
 import { MapperSchema, FlowMetadata } from '../../flogo.transform/models';
+import { IMapping } from '../models/map-model';
 
 export class MapperTranslator {
   static createInputSchema(tile: FlowTile) {
@@ -81,6 +87,7 @@ export class MapperTranslator {
       [FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT]: 'object',
       [FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS]: 'object',
       [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: 'string',
+      [FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT]: 'complex_object',
     }[type];
     return translatedType || type;
   }
@@ -100,20 +107,38 @@ export class MapperTranslator {
         }
         value = `$\{${head}}${tail}`;
       }
+      // complex_object case
+      if (value && !_.isString(value)) {
+        value = JSON.stringify(value);
+      }
       mappings[input.mapTo] = { expression: value };
       return mappings;
     }, {});
   }
 
-  static translateMappingsOut(mappings: {[attr: string]: { expression: string} }): FlowMapping[] {
+  static translateMappingsOut(mappings: {[attr: string]: { expression: string} }, propsDefinitions: {
+    name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
+  }[]): FlowMapping[] {
+    const attrTypes = new Map(<any>propsDefinitions.map(definition => [definition.name, MapperTranslator.translateType(definition.type)]));
     return Object.keys(mappings || {})
       // filterOutEmptyExpressions
       .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
-      .map(attrName => ({
-        type: TYPE_ATTR_ASSIGNMENT,
-        mapTo: attrName,
-        value: mappings[attrName].expression
-      }));
+      .map(attrName => {
+        const propType = attrTypes.get(attrName);
+        if (attrTypes.get(attrName) && propType === 'complex_object') {
+          return {
+            type: TYPE_OBJECT_TEMPLATE,
+            mapTo: attrName,
+            value: JSON.parse(mappings[attrName].expression)
+          };
+        } else {
+          return {
+            type: TYPE_ATTR_ASSIGNMENT,
+            mapTo: attrName,
+            value: mappings[attrName].expression
+          };
+        }
+      });
   }
 
   static getRootType(tile: FlowTile|FlowMetadata) {
@@ -123,6 +148,34 @@ export class MapperTranslator {
       return 'flow';
     }
     return 'activity';
+  }
+
+  static makeValidator(propsDefinitions: {
+    name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
+  }[]) {
+    const attrTypes = new Map(<any>propsDefinitions.map(definition => [definition.name, MapperTranslator.translateType(definition.type)]));
+    return (imapping: IMapping) => {
+      const mappings = imapping && imapping.mappings;
+      if (mappings) {
+        // TODO: only works for first level mappings
+        const invalidMapping = Object.keys(mappings).find(mapTo => {
+          if (attrTypes.get(mapTo) === 'complex_object') {
+            const expression = mappings[mapTo].expression;
+            if (!expression || !expression.trim().length) {
+              return false;
+            }
+            let parsedProp = undefined;
+            try {
+              parsedProp = JSON.parse(expression);
+            } catch (e) {}
+            return parsedProp === undefined;
+          }
+          return false;
+        });
+        return !invalidMapping;
+      }
+      return true;
+    };
   }
 
 }
