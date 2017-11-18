@@ -15,6 +15,8 @@ import { flogoIDDecode } from '../../../common/utils';
 import { MapperSchema, FlowMetadata } from '../../flogo.transform/models';
 import { IMapping } from '../models/map-model';
 
+export type  MappingsValidatorFn = (imapping: IMapping) => boolean;
+
 export class MapperTranslator {
   static createInputSchema(tile: FlowTile) {
     let attributes = [];
@@ -152,7 +154,7 @@ export class MapperTranslator {
 
   static makeValidator(propsDefinitions: {
     name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
-  }[]) {
+  }[]): MappingsValidatorFn {
     const attrTypes = new Map(<any>propsDefinitions.map(definition => [definition.name, MapperTranslator.translateType(definition.type)]));
     return (imapping: IMapping) => {
       const mappings = imapping && imapping.mappings;

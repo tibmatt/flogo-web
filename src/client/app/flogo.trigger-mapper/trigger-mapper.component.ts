@@ -4,11 +4,20 @@ import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { SingleEmissionSubject } from '../../common/models/single-emission-subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flogo.mapper';
+import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../flogo.mapper';
 import { FlowMetadata } from '../flogo.flows.detail/models';
 
-import { VIEWS } from './views-info.model';
+import { VIEWS, ViewInfo } from './views-info.model';
 import { TriggerMapperService, Status } from './trigger-mapper.service';
+
+interface ViewState extends ViewInfo {
+  enabled: boolean;
+  valid: boolean;
+}
+
+interface ViewsStates {
+  [name: string]: ViewState;
+}
 
 @Component({
   selector: 'flogo-trigger-mapper',
@@ -24,21 +33,28 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   @ViewChild(ModalComponent) modal: ModalComponent;
 
   mapperContext: any;
+  mappingValidationFn: MappingsValidatorFn;
   currentStatus: Status = { isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null };
 
-  currentView = {
-    name: '',
-    inputsLabelKey: '',
-    outputsLabelKey: '',
-  };
-  isInputsViewEnabled: boolean;
-  isReplyViewEnabled: boolean;
+  currentViewName: string;
+  viewStates: ViewsStates = {};
 
   private editingMappings: {
     actionInput: { [key: string]: IMapExpression };
     actionOutput: { [key: string]: IMapExpression };
   };
   private ngDestroy = SingleEmissionSubject.create();
+
+  static makeViewState(fromViewInfo: ViewInfo, state: { valid: boolean, enabled: boolean }): ViewState {
+    const { name, inputsLabelKey, outputsLabelKey } = fromViewInfo;
+    return {
+      name,
+      inputsLabelKey,
+      outputsLabelKey,
+      enabled: state.enabled,
+      valid: state.valid,
+    };
+  }
 
   constructor(private triggerMapperService: TriggerMapperService) {
   }
@@ -59,11 +75,15 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   onMappingsChange(change: IMapping) {
     const mappings = _.cloneDeep(change).mappings;
-    if (this.currentView.name === this.VIEWS.INPUTS.name) {
+    const currentView = this.currentViewStatus;
+    if (currentView.name === this.VIEWS.INPUTS.name) {
       this.editingMappings.actionInput = mappings;
-    } else if (this.currentView.name === this.VIEWS.REPLY.name) {
+    } else if (currentView.name === this.VIEWS.REPLY.name) {
       this.editingMappings.actionOutput = mappings;
+    } else {
+      return;
     }
+    currentView.valid = this.mappingValidationFn({ mappings });
   }
 
   onSave() {
@@ -75,18 +95,25 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     });
   }
 
-  setView(viewName: string) {
-    let viewInfo;
-    let mapperContext;
+  setCurrentView(viewName: string) {
+    this.currentViewName = viewName;
     if (viewName === VIEWS.INPUTS.name) {
-      mapperContext = this.createInputsContext();
-      viewInfo = this.VIEWS.INPUTS;
+      this.setupInputsContext();
     } else if (viewName === VIEWS.REPLY.name) {
-      mapperContext = this.createReplyContext();
-      viewInfo = this.VIEWS.REPLY;
+      this.setupReplyContext();
     }
-    this.mapperContext = mapperContext;
-    this.currentView = viewInfo;
+  }
+
+  get inputsView(): ViewState {
+    return this.viewStates[this.VIEWS.INPUTS.name];
+  }
+
+  get replyView(): ViewState {
+    return this.viewStates[this.VIEWS.REPLY.name];
+  }
+
+  get currentViewStatus() {
+    return this.viewStates[this.currentViewName];
   }
 
   private onNextStatus(nextStatus: Status) {
@@ -96,7 +123,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       const { input, output } = actionMappings;
       this.editingMappings = {
         actionInput: MapperTranslator.translateMappingsIn(input),
-        actionOutput: MapperTranslator.translateMappingsIn(output),
+        actionOutput: MapperTranslator.translateMappingsIn(output)
       };
       const triggerSchema = nextStatus.triggerSchema;
       const flowMetadata = nextStatus.flowMetadata;
@@ -112,6 +139,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       });
     } else if (this.modal.visible) {
       this.mapperContext = null;
+      this.editingMappings = null;
       this.modal.close();
     }
   }
@@ -132,32 +160,44 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       hasFlowOutputs = flowMetadata.output && flowMetadata.output.length > 0;
     }
 
-    this.isInputsViewEnabled = hasTriggerOutputs && hasFlowInputs;
-    this.isReplyViewEnabled = hasTriggerReply && hasFlowOutputs;
+    this.viewStates = {
+      [this.VIEWS.INPUTS.name]: TriggerMapperComponent.makeViewState(
+        this.VIEWS.INPUTS,
+        { enabled: hasTriggerOutputs && hasFlowInputs, valid: true }
+        ),
+      [this.VIEWS.REPLY.name]: TriggerMapperComponent.makeViewState(
+        this.VIEWS.REPLY,
+        { enabled: hasTriggerReply && hasFlowOutputs, valid: true }
+      ),
+    };
 
     let viewType: string = this.VIEWS.INPUTS.name;
-    if (this.isInputsViewEnabled) {
+    if (this.inputsView.enabled) {
       viewType = this.VIEWS.INPUTS.name;
-    } else if (this.isReplyViewEnabled) {
+    } else if (this.replyView.enabled) {
       viewType = this.VIEWS.REPLY.name;
     }
-    this.setView(viewType);
+    this.setCurrentView(viewType);
   }
 
-  private createInputsContext() {
+  private setupInputsContext() {
     const flowMetadata = this.currentStatus.flowMetadata || { input: [] };
     const flowInputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.input);
     const triggerOutputSchema = MapperTranslator.attributesToObjectDescriptor(this.currentStatus.triggerSchema.outputs || []);
     const mappings = _.cloneDeep(this.editingMappings.actionInput);
-    return StaticMapperContextFactory.create(flowInputSchema, triggerOutputSchema, mappings);
+
+    this.mapperContext = StaticMapperContextFactory.create(flowInputSchema, triggerOutputSchema, mappings);
+    this.mappingValidationFn = MapperTranslator.makeValidator(flowMetadata.input);
   }
 
-  private createReplyContext() {
+  private setupReplyContext() {
     const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor(this.currentStatus.triggerSchema.reply || []);
     const flowMetadata = this.currentStatus.flowMetadata || { output: [] };
     const flowOutputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.output);
     const mappings = _.cloneDeep(this.editingMappings.actionOutput);
-    return StaticMapperContextFactory.create(triggerReplySchema, flowOutputSchema, mappings);
+
+    this.mapperContext = StaticMapperContextFactory.create(triggerReplySchema, flowOutputSchema, mappings);
+    this.mappingValidationFn = MapperTranslator.makeValidator(this.currentStatus.triggerSchema.reply);
   }
 
 }
