@@ -1,3 +1,5 @@
+import kebabCase from 'lodash/kebabCase';
+
 import { AppsManager } from '../../modules/apps/index.v2';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 
@@ -137,10 +139,13 @@ function* buildApp() {
   const appId = this.params.appId;
   const options = { compile: {} };
 
-  options.compile.os = this.query.os     || null;
+  options.compile.os = this.query.os || null;
   options.compile.arch = this.query.arch || null;
 
-  this.body = yield AppsManager.build(appId, options);
+  const result = yield AppsManager.build(appId, options);
+  const name = [kebabCase(result.appName), options.compile.os, options.compile.arch].join('_');
+  this.attachment(name);
+  this.body = result.data;
 }
 
 function* exportApp() {
