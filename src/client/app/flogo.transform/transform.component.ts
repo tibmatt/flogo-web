@@ -61,9 +61,6 @@ export class TransformComponent implements OnDestroy {
   // controls the rendering of the content of the modal
   isActive = false;
 
-  showDeleteConfirmation = false;
-  @ViewChild('deleteContainer') deleteContainer: ElementRef;
-
   private _subscriptions: any[];
   private currentMappings: { [key: string]: IMapExpression };
 
@@ -101,34 +98,8 @@ export class TransformComponent implements OnDestroy {
     this.close();
   }
 
-  deleteTransform() {
-    this._postService.publish(_.assign({}, PUB_EVENTS.deleteTransform, {
-      data: {
-        tile: this.currentTile,
-        id: this.flowId
-      }
-    }));
-    this.close();
-  }
-
   cancel() {
     this.close();
-  }
-
-  openDeleteConfirmation(event: Event) {
-    this.showDeleteConfirmation = true;
-    event.stopPropagation();
-  }
-
-  cancelDeleteConfirmation() {
-    this.showDeleteConfirmation = false;
-  }
-
-  @HostListener('click', ['$event'])
-  clickOutsideDeleteConfirmation(event: Event) {
-    if (this.showDeleteConfirmation && this.deleteContainer && !this.deleteContainer.nativeElement.contains(event.target)) {
-      this.showDeleteConfirmation = false;
-    }
   }
 
   private initSubscriptions() {
@@ -192,7 +163,6 @@ export class TransformComponent implements OnDestroy {
   private resetState() {
     this.isValid = true;
     this.isDirty = false;
-    this.showDeleteConfirmation = false;
   }
 
   private open() {

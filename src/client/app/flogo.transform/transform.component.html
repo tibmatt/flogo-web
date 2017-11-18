@@ -1,20 +1,15 @@
 <div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
   <div class="mapper-modal data-transform-modal" *ngIf="isActive">
-    <div class="mapper-modal__header header" [class.--is-delete-open]="showDeleteConfirmation">
+    <div class="mapper-modal__header header">
       <h2 class="header__title">{{ title }}</h2>
       <div class="header__actions actions">
-        <button class="flogo-button--secondary actions__action actions__action--delete" (click)="openDeleteConfirmation($event)">
-          Delete
+        <button class="flogo-button--secondary actions__action" (click)="cancel()">
+          Cancel
         </button>
         <button class="flogo-button--primary  actions__action actions__action--save"
                 [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
                 (click)="saveTransform()">{{ 'TRANSFORM:SAVE' | translate }}
         </button>
-        <div class="confirm-delete" #deleteContainer>
-          <span class="confirm-delete__text">{{ 'TRANSFORM:CONFIRMATION-MESSAGE' | translate }} </span>
-          <button class="confirm-delete__btn" (click)="deleteTransform()"> {{ 'TRANSFORM:YES' | translate }} </button>
-          <button class="confirm-delete__btn" (click)="cancelDeleteConfirmation()">{{ 'TRANSFORM:NO' | translate }}</button>
-        </div>
       </div>
       <button class="mapper-modal__close" (click)="cancel()">
         <span aria-hidden="true" class="sr-only">{{ 'TRANSFORM:CLOSE' | translate }}</span>
