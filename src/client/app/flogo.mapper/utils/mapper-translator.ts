@@ -51,8 +51,10 @@ export class MapperTranslator {
       } else {
         const flowInputs = (<FlowMetadata>tile).input;
         if (flowInputs && flowInputs.length > 0) {
-          const flowInputsSchema = MapperTranslator.attributesToObjectDescriptor(flowInputs, { rootType: 'flow' });
-          rootSchema.properties = Object.assign(rootSchema.properties, flowInputsSchema.properties);
+          const flowInputsSchema = MapperTranslator.attributesToObjectDescriptor(flowInputs);
+          flowInputsSchema.rootType = 'flow';
+          flowInputsSchema.title = 'flow';
+          rootSchema.properties['flow'] = flowInputsSchema;
         }
       }
     });
@@ -97,18 +99,7 @@ export class MapperTranslator {
   static translateMappingsIn(inputMappings: FlowMapping[]) {
     inputMappings = inputMappings || [];
     return inputMappings.reduce((mappings, input) => {
-      let value = input.value;
-      const legacyMapping = REGEX_INPUT_VALUE_EXTERNAL.exec(input.value);
-      if (legacyMapping) {
-        const [, type, name, property, tail] = legacyMapping;
-        let head;
-        if (type === 'T') {
-          head = `trigger.${name}`;
-        } else {
-          head = `activity.${name}.${property}`;
-        }
-        value = `$\{${head}}${tail}`;
-      }
+      let value = this.upgradeLegacyMappingIfNeeded(input.value);
       // complex_object case
       if (value && !_.isString(value)) {
         value = JSON.stringify(value);
@@ -178,6 +169,21 @@ export class MapperTranslator {
       }
       return true;
     };
+  }
+
+  private static upgradeLegacyMappingIfNeeded(mappingValue: string) {
+    const legacyMapping = REGEX_INPUT_VALUE_EXTERNAL.exec(mappingValue);
+    if (!legacyMapping) {
+      return mappingValue;
+    }
+    const [, type, name, property, tail] = legacyMapping;
+    let head;
+    if (type === 'T') {
+      head = `trigger.${name}`;
+    } else {
+      head = `activity.${name}.${property}`;
+    }
+    return `$\{${head}}${tail}`;
   }
 
 }

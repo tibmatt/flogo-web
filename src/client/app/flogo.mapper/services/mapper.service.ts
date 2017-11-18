@@ -420,25 +420,22 @@ export class MapperService {
     const [root, propName] = nodes;
     let expressionHead = '';
     let expressionTailParts;
-    const rootType = root.data.rootType;
-    const curlyBraced = expr => '${' + expr + '}';
+    const resolver = root.data.rootType;
+    const makeResolvable = expr => '$' + expr;
 
-    if (rootType === 'trigger') {
-      expressionHead = `${rootType}.`;
+    if (resolver === 'trigger') {
+      expressionHead = `${resolver}.`;
       expressionHead += propName ? propName.data.nodeName : '';
-      expressionHead = curlyBraced(expressionHead);
+      expressionHead = makeResolvable(expressionHead);
       expressionTailParts = nodes.slice(2);
-    } else if (rootType === 'activity') {
-      expressionHead = `activity.${root.data.nodeName}.`;
+    } else if (resolver === 'activity') {
+      expressionHead = `activity[${root.data.nodeName}].`;
       expressionHead += propName ? propName.data.nodeName : '';
-      expressionHead = curlyBraced(expressionHead);
+      expressionHead = makeResolvable(expressionHead);
       expressionTailParts = nodes.slice(2);
-    } else if (rootType === 'flow') {
-      expressionHead = curlyBraced(root.data.nodeName);
-      expressionTailParts = nodes.slice(1);
     } else {
       const nodeName = root.data.nodeName;
-      expressionHead = rootType ? curlyBraced(nodeName) : nodeName;
+      expressionHead = resolver ? makeResolvable(nodeName) : nodeName;
       expressionTailParts = nodes.slice(1);
     }
     return[expressionHead].concat(
