@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
@@ -97,8 +99,9 @@ export class FlogoApplicationComponent implements OnChanges, OnInit {
   appExporter() {
     return () => this.appDetailService.toEngineSpec()
       .then(engineApp => {
+        const appName = _.snakeCase(engineApp.name);
         return [{
-          fileName: 'app.json',
+          fileName: `${appName}.json`,
           data: engineApp
         }];
       });
