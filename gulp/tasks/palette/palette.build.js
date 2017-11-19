@@ -30,6 +30,7 @@ gulp.task('palette.build', 'Build default palette', [], cb => {
     .then(([activities, triggers]) => makePalette(
       triggers
         .concat(activities)
+        .filter(contrib => !ignoreRefs.includes(contrib.ref))
         .concat([{
           type: 'action',
           ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow'
@@ -85,10 +86,10 @@ function getAll(type) {
                 ref: contrib.ref
               }))
               .catch(err => {
+                console.error(err);
                 console.warn(`Error reading descriptor for "${descriptorPath}"`);
               })
           })
-          .filter(result => Boolean(result) && ignoreRefs.indexOf(result.ref) === -1)
       ))
 }
 
