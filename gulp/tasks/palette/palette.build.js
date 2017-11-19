@@ -12,6 +12,8 @@ const REPO = 'TIBCOSoftware/flogo-contrib';
 const GITHUB_TOKEN = process.env['FLOGO_WEB_GITHUB_TOKEN'] || process.env['GITHUB_USER_TOKEN'] || process.env['GITHUB_TOKEN'];
 const target = process.env.DIST_BUILD ? CONFIG.paths.dist.server : CONFIG.paths.source.server;
 
+const ignoreRefs = [ 'github.com/TIBCOSoftware/activity/ml-inference' ];
+
 /**
  *
  */
@@ -86,7 +88,7 @@ function getAll(type) {
                 console.warn(`Error reading descriptor for "${descriptorPath}"`);
               })
           })
-          .filter(result => !!result)
+          .filter(result => Boolean(result) && ignoreRefs.indexOf(result.ref) === -1)
       ))
 }
 

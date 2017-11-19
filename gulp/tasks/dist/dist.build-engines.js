@@ -25,6 +25,9 @@ gulp.task('dist.build-engines', 'Starts server app and db in production mode', [
 
       // console.log('Stopping db process');
       // db.stop();
+      if (code !== 0) {
+        return cb(new Error('build-engines exited with code: ' + code));
+      }
 
       console.log('dist.build-engines Finished');
       cb();
