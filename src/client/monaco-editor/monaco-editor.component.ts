@@ -13,7 +13,7 @@ import {
 
 // import { MonacoLoaderService } from './monaco-loader.service';
 import {
-  EditorOptions,
+  EditorConstructOptions,
   ICursorPositionChangedEvent,
   ICursorSelectionChangedEvent,
   IDisposable,
@@ -78,7 +78,7 @@ export const DEFAULT_EDITOR_OPTIONS = {
 export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('editor') editorRef: ElementRef;
 
-  @Input() editorOptions: EditorOptions = {};
+  @Input() editorOptions: EditorConstructOptions = {};
   @Input() hoverProvider: HoverProvider = null;
   @Input() completionProvider: CompletionProvider = null;
 
@@ -176,19 +176,33 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
       return;
     }
     this._value = value;
+    mode = mode || DEFAULT_EDITOR_OPTIONS.language;
 
     if (!this.editor) {
+      this.editorOptions.language = mode;
       // changes should be taken from _value when editor initializes
       return;
     }
 
-    mode = mode || DEFAULT_EDITOR_OPTIONS.language;
     const oldModel = this.editor.getModel();
     const newModel = monaco.editor.createModel(value, mode);
     this.editor.setModel(newModel);
     if (oldModel) {
       oldModel.dispose();
     }
+  }
+
+  hasErrors() {
+    if (this._disposed || !this.editor) {
+      return false;
+    }
+
+    const model = this.editor.getModel();
+    if (model) {
+      const markers = monaco.editor.getModelMarkers({ owner: SOURCE_ID });
+      return Boolean(markers) && markers.find((marker) => marker.severity === monaco.Severity.Error) != null;
+    }
+    return false;
   }
 
   setErrors(errors?: EditorError[]) {

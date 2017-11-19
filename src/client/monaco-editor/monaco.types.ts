@@ -6,6 +6,7 @@ export type MonacoHover = monaco.languages.Hover;
 
 export type LineRange = monaco.IRange;
 export type EditorOptions = monaco.editor.IEditorOptions;
+export type EditorConstructOptions = monaco.editor.IEditorConstructionOptions;
 export type CompletionItem = monaco.languages.CompletionItem;
 export type CompletionList = monaco.languages.CompletionList;
 export type MonacoCompletionItemKind = monaco.languages.CompletionItemKind;
