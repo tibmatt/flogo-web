@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormActionsModels, FormDescriptionsModels } from './../models';
 
 
@@ -8,7 +8,7 @@ import { FormActionsModels, FormDescriptionsModels } from './../models';
   styleUrls: ['form.less'],
   templateUrl: 'form.tpl.html'
 })
-export class FlogoForm {
+export class FlogoFormComponent implements OnInit {
   name: string;
   title: string;
   descriptions: FormDescriptionsModels;
@@ -35,7 +35,7 @@ export class FlogoForm {
         title: 'Run from start',
         enabled: false
       }
-    ]
+    ];
   }
 
 }

@@ -1,6 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
-import { notification } from '../../../common/utils';
 import * as jQuery from 'jquery';
 @Component( {
   selector : 'flogo-flows-import',
@@ -8,15 +7,15 @@ import * as jQuery from 'jquery';
   templateUrl : 'import-flow.tpl.html',
   styleUrls : [ 'import-flow.component.less' ]
 } )
-export class FlogoFlowsImport {
+export class FlogoFlowsImportComponent {
   @Input()
-  public appId : string;
+  public appId: string;
   @Output()
   public importError: EventEmitter<any>;
   @Output()
   public importSuccess: EventEmitter<any>;
-  public showFileNameDialog: boolean = false;
-  public repeatedName: string = '';
+  public showFileNameDialog = false;
+  public repeatedName = '';
   public importFile: any;
   private _elmRef: ElementRef;
 
@@ -27,7 +26,7 @@ export class FlogoFlowsImport {
   }
 
   public selectFile(evt: any) {
-    let fileElm = jQuery(this._elmRef.nativeElement)
+    const fileElm = jQuery(this._elmRef.nativeElement)
       .find('.flogo-flows-import-input-file');
 
     // clean the previous selected file
@@ -42,8 +41,8 @@ export class FlogoFlowsImport {
   }
 
   getErrorMessageActivitiesNotInstalled(errors) {
+    const details = errors.details;
     let errorMessage = '';
-    let details = errors.details;
     let errorTriggers = '';
     let errorActivities = '';
 
@@ -52,10 +51,9 @@ export class FlogoFlowsImport {
     }
 
     if (details.activities.length) {
-      let activities = details.activities.map((item) => {
-        return `"${item}"`
-      })
-
+      const activities = details.activities.map((item) => {
+        return `"${item}"`;
+      });
       errorActivities += `Missing Activities: ${activities.join(', ')}`;
     }
     errorMessage = `Flow could not be imported, some triggers/activities are not installed.${errorTriggers} ${errorActivities}`;
@@ -84,14 +82,14 @@ export class FlogoFlowsImport {
         this.importSuccess.emit(result);
       })
       .catch((error: any) => {
-        let errorCode = error.details && error.details.ERROR_CODE || '';
+        const errorCode = error.details && error.details.ERROR_CODE || '';
 
         switch (errorCode) {
           case 'NAME_EXISTS':
             this.showFileNameDialog = true;
             break;
           case 'ERROR_VALIDATION':
-            let errorMessage = this.getErrorMessageActivitiesNotInstalled(error);
+            const errorMessage = this.getErrorMessageActivitiesNotInstalled(error);
             this.importError.emit({response: errorMessage});
             break;
           default:
@@ -107,17 +105,17 @@ export class FlogoFlowsImport {
     if (_.isUndefined(this.importFile)) {
       console.error('Invalid file to import');
     } else {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = ((theFile) => {
         return (e) => {
           try {
-            let flow = JSON.parse(e.target.result);
+            const flow = JSON.parse(e.target.result);
             this.repeatedName = flow.name;
           } catch (err) {
           }
 
           this.uploadFlow(this.importFile, null);
-        }
+        };
       })(this.importFile);
 
       reader.readAsText(this.importFile);

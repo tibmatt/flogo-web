@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { Component }    from '@angular/core';
-import { By }              from '@angular/platform-browser';
+import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
@@ -13,14 +12,12 @@ import {  FlogoFormBuilderFieldsNumber } from './fields.number/fields.number.com
 import {  FlogoFormBuilderFieldsObject } from './fields.object/fields.object.component';
 
 @Component({
-  selector: 'container-texarea',
-  template: `
-            <flogo-form-builder-fields-textarea [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-textarea>
-            `
+  template: `<flogo-form-builder-fields-textarea [info]="info" [fieldObserver]="fieldObserver">
+  </flogo-form-builder-fields-textarea>`
 })
-class ContainerTextarea {
+class TextareaTestHostComponent {
   info: any;
-  fieldObserver:ReplaySubject<any>;
+  fieldObserver: ReplaySubject<any>;
 
   constructor() {
     this.fieldObserver = new ReplaySubject(2);
@@ -32,19 +29,18 @@ class ContainerTextarea {
       isTask: false,
       isTrigger: true,
       value: 'invalid JSON value'
-    }
+    };
   }
 }
 
 @Component({
-  selector: 'container-textbox',
   template: `
             <flogo-form-builder-fields-textbox [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-textbox>
             `
 })
-class ContainerTextbox {
+class TextboxTestHostComponent {
   info: any;
-  fieldObserver:ReplaySubject<any>;
+  fieldObserver: ReplaySubject<any>;
 
   constructor() {
     this.fieldObserver = new ReplaySubject(2);
@@ -56,21 +52,20 @@ class ContainerTextbox {
       isTask: false,
       isTrigger: true,
       value: 'hello world'
-    }
+    };
   }
 }
 
 
 
 @Component({
-  selector: 'container-object',
   template: `
             <flogo-form-builder-fields-object [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-object>
             `
 })
-class ContainerObject {
+class ObjectTestHostComponent {
   info: any;
-  fieldObserver:ReplaySubject<any>;
+  fieldObserver: ReplaySubject<any>;
 
   constructor() {
     this.fieldObserver = new ReplaySubject(2);
@@ -82,20 +77,19 @@ class ContainerObject {
       isTask: false,
       isTrigger: true,
       value: {message: 'hello'}
-    }
+    };
   }
 }
 
 
 @Component({
-  selector: 'container-number',
   template: `
             <flogo-form-builder-fields-number [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-number>
             `
 })
-class ContainerNumber {
+class NumberTestHostComponent {
   info: any;
-  fieldObserver:ReplaySubject<any>;
+  fieldObserver: ReplaySubject<any>;
 
   constructor() {
     this.fieldObserver = new ReplaySubject(2);
@@ -107,30 +101,30 @@ class ContainerNumber {
       isTask: false,
       isTrigger: true,
       value: 10
-    }
+    };
   }
 }
 
 describe('Form-builder component', () => {
-  let compTextArea: ContainerTextarea;
-  let fixtureTextarea: ComponentFixture<ContainerTextarea>;
+  let compTextArea: TextareaTestHostComponent;
+  let fixtureTextarea: ComponentFixture<TextareaTestHostComponent>;
 
-  let compTextbox: ContainerTextarea;
-  let fixtureTextbox: ComponentFixture<ContainerTextbox>;
+  let compTextbox: TextareaTestHostComponent;
+  let fixtureTextbox: ComponentFixture<TextboxTestHostComponent>;
 
-  let compNumber: ContainerNumber;
-  let fixtureNumber: ComponentFixture<ContainerNumber>;
+  let compNumber: NumberTestHostComponent;
+  let fixtureNumber: ComponentFixture<NumberTestHostComponent>;
 
 
-  let compObject: ContainerObject;
-  let fixtureObject: ComponentFixture<ContainerObject>;
+  let compObject: ObjectTestHostComponent;
+  let fixtureObject: ComponentFixture<ObjectTestHostComponent>;
 
   function createComponent() {
     return TestBed.compileComponents();
   }
 
   beforeAll(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL= 120000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
   });
 
   beforeEach(done => {
@@ -145,10 +139,10 @@ describe('Form-builder component', () => {
         FlogoFormBuilderFieldsTextBox,
         FlogoFormBuilderFieldsNumber,
         FlogoFormBuilderFieldsObject,
-        ContainerTextarea,
-        ContainerNumber,
-        ContainerObject,
-        ContainerTextbox,
+        TextareaTestHostComponent,
+        NumberTestHostComponent,
+        ObjectTestHostComponent,
+        TextboxTestHostComponent,
       ], // declare the test component
       providers: [
       ],
@@ -159,16 +153,16 @@ describe('Form-builder component', () => {
   });
 
   beforeEach(() => {
-    fixtureTextarea = TestBed.createComponent(ContainerTextarea);
+    fixtureTextarea = TestBed.createComponent(TextareaTestHostComponent);
     compTextArea = fixtureTextarea.componentInstance;
 
-    fixtureTextbox = TestBed.createComponent(ContainerTextbox);
+    fixtureTextbox = TestBed.createComponent(TextboxTestHostComponent);
     compTextbox = fixtureTextbox.componentInstance;
 
-    fixtureNumber = TestBed.createComponent(ContainerNumber);
+    fixtureNumber = TestBed.createComponent(NumberTestHostComponent);
     compNumber = fixtureNumber.componentInstance;
 
-    fixtureObject = TestBed.createComponent(ContainerObject);
+    fixtureObject = TestBed.createComponent(ObjectTestHostComponent);
     compObject = fixtureObject.componentInstance;
 
     fixtureTextarea.detectChanges();
@@ -180,38 +174,13 @@ describe('Form-builder component', () => {
   it('Should throw error in TextBox when entered an empty string and the field is required', (done) => {
     let changeEventIsDone = false;
 
-    let result = compTextbox.fieldObserver;
-    result.subscribe((result: any) => {
-      if(result.message === 'validation') {
+    const resultObserver = compTextbox.fieldObserver;
+    resultObserver.subscribe((result: any) => {
+      if (result.message === 'validation') {
         fixtureTextbox.detectChanges();
-        let textbox = fixtureTextbox.nativeElement.querySelector('.flogo-fields-base__error');
-        if(textbox.innerText === 'FIELDS-BASE:TITLE-REQUIRED') {
-          if(changeEventIsDone) {
-            done();
-          }
-        }
-      } else {
-        if(result.message === 'change-field') {
-          changeEventIsDone = true;
-        }
-      }
-    });
-
-    let textbox = fixtureTextbox.nativeElement.querySelector('input');
-    textbox.value = '';
-    let evt = document.createEvent('Event');
-    evt.initEvent('keyup', true, false);
-    textbox.dispatchEvent(evt);
-  } );
-
-  it('Should throw error in Number field when entered an empty string and the field is required', (done) => {
-    let changeEventIsDone = false;
-    compNumber.fieldObserver.subscribe((result: any) => {
-      if(result.message === 'validation') {
-        fixtureNumber.detectChanges();
-        let numberBox = fixtureNumber.nativeElement.querySelector('.flogo-fields-base__error');
-        if(numberBox.innerText === 'FIELDS-BASE:TITLE-REQUIRED') {
-          if(changeEventIsDone) {
+        const textbox = fixtureTextbox.nativeElement.querySelector('.flogo-fields-base__error');
+        if (textbox.innerText === 'FIELDS-BASE:TITLE-REQUIRED') {
+          if (changeEventIsDone) {
             done();
           }
         }
@@ -222,9 +191,34 @@ describe('Form-builder component', () => {
       }
     });
 
-    let numberBox = fixtureNumber.nativeElement.querySelector('input');
+    const textbox = fixtureTextbox.nativeElement.querySelector('input');
+    textbox.value = '';
+    const evt = document.createEvent('Event');
+    evt.initEvent('keyup', true, false);
+    textbox.dispatchEvent(evt);
+  } );
+
+  it('Should throw error in Number field when entered an empty string and the field is required', (done) => {
+    let changeEventIsDone = false;
+    compNumber.fieldObserver.subscribe((result: any) => {
+      if (result.message === 'validation') {
+        fixtureNumber.detectChanges();
+        const numberBox = fixtureNumber.nativeElement.querySelector('.flogo-fields-base__error');
+        if (numberBox.innerText === 'FIELDS-BASE:TITLE-REQUIRED') {
+          if (changeEventIsDone) {
+            done();
+          }
+        }
+      } else {
+        if (result.message === 'change-field') {
+          changeEventIsDone = true;
+        }
+      }
+    });
+
+    const numberBox = fixtureNumber.nativeElement.querySelector('input');
     numberBox.value = undefined;
-    let evt = document.createEvent('Event');
+    const evt = document.createEvent('Event');
     evt.initEvent('keyup', true, false);
     numberBox.dispatchEvent(evt);
   });
@@ -232,30 +226,30 @@ describe('Form-builder component', () => {
   it('Should throw error in Object field when entered an empty string and the field is required', (done) => {
     let changeEventIsDone = false;
     compObject.fieldObserver.subscribe((result: any) => {
-      if(result.message === 'validation') {
+      if (result.message === 'validation') {
         fixtureObject.detectChanges();
-        let numberBox = fixtureObject.nativeElement.querySelector('.flogo-fields-base__error');
-        if (numberBox.innerText == 'FIELDS-BASE:TITLE-REQUIRED') {
-          if(changeEventIsDone) {
+        const numberBox = fixtureObject.nativeElement.querySelector('.flogo-fields-base__error');
+        if (numberBox.innerText === 'FIELDS-BASE:TITLE-REQUIRED') {
+          if (changeEventIsDone) {
             done();
           }
         }
       } else {
-        if(result.message == 'change-field') {
+        if (result.message === 'change-field') {
           changeEventIsDone = true;
         }
       }
     });
-    let numberBox = fixtureObject.nativeElement.querySelector('textarea');
-    numberBox.value = ''; //undefined;
-    let evt = document.createEvent('Event');
+    const numberBox = fixtureObject.nativeElement.querySelector('textarea');
+    numberBox.value = ''; // undefined;
+    const evt = document.createEvent('Event');
     evt.initEvent('keyup', true, false);
     numberBox.dispatchEvent(evt);
   });
 
   it('Should throw error when the control is displayed for first time and it has an invalid JSON value', (done) => {
     fixtureTextarea.detectChanges();
-    let textarea = fixtureTextarea.nativeElement.querySelector('textarea');
+    const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
     expect(textarea.classList).toContain('error');
     done();
   });
@@ -264,16 +258,16 @@ describe('Form-builder component', () => {
     let validationEventIsDone = false;
 
     compTextArea.fieldObserver.subscribe((result: any) => {
-      if(result.message === 'validation') {
+      if (result.message === 'validation') {
         fixtureTextarea.detectChanges();
-        let textarea = fixtureTextarea.nativeElement.querySelector('textarea');
-        let classes = toArray(textarea.classList);
-        if(classes.indexOf('error') > 0) {
+        const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
+        const classes = toArray(textarea.classList);
+        if (classes.indexOf('error') > 0) {
           validationEventIsDone = true;
         }
       } else {
-        if(result.message == 'change-field') {
-          if(validationEventIsDone) {
+        if (result.message === 'change-field') {
+          if (validationEventIsDone) {
             done();
           }
         }
@@ -281,9 +275,9 @@ describe('Form-builder component', () => {
     });
 
     fixtureTextarea.detectChanges();
-    let textarea = fixtureTextarea.nativeElement.querySelector('textarea');
+    const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
     textarea.value = 'invalid JSON value';
-    let evt = document.createEvent('Event');
+    const evt = document.createEvent('Event');
     evt.initEvent('keyup', true, false);
     textarea.dispatchEvent(evt);
   });
@@ -292,15 +286,15 @@ describe('Form-builder component', () => {
     let validationEventIsDone = false;
 
     compTextArea.fieldObserver.subscribe((result: any) => {
-      if(result.message === 'validation') {
+      if (result.message === 'validation') {
         fixtureTextarea.detectChanges();
-        let textarea = fixtureTextarea.nativeElement.querySelector('textarea');
-        if(!textarea.classList['error']) {
+        const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
+        if (!textarea.classList['error']) {
           validationEventIsDone = true;
         }
       } else {
-        if(result.message == 'change-field') {
-          if(validationEventIsDone) {
+        if (result.message === 'change-field') {
+          if (validationEventIsDone) {
             done();
           }
         }
@@ -308,10 +302,10 @@ describe('Form-builder component', () => {
     });
 
     fixtureTextarea.detectChanges();
-    let textarea = fixtureTextarea.nativeElement.querySelector('textarea');
+    const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
     textarea.value = '';
 
-    let evt = document.createEvent('Event');
+    const evt = document.createEvent('Event');
     evt.initEvent('keyup', true, false);
     textarea.dispatchEvent(evt);
   });
@@ -320,25 +314,25 @@ describe('Form-builder component', () => {
     let validationEventIsDone = false;
 
     compTextArea.fieldObserver.subscribe((result: any) => {
-      if(result.message === 'validation') {
+      if (result.message === 'validation') {
         fixtureTextarea.detectChanges();
-        let textarea = fixtureTextarea.nativeElement.querySelector('textarea');
-        if(!textarea.classList['error']) {
+        const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
+        if (!textarea.classList['error']) {
           validationEventIsDone = true;
         }
       } else {
-        if(result.message == 'change-field') {
-          if(validationEventIsDone) {
+        if (result.message === 'change-field') {
+          if (validationEventIsDone) {
             done();
           }
         }
       }
     });
     fixtureTextarea.detectChanges();
-    let textarea = fixtureTextarea.nativeElement.querySelector('textarea');
-    textarea.value = {"color": "blue"};
+    const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
+    textarea.value = {'color': 'blue'};
 
-    let evt = document.createEvent('Event');
+    const evt = document.createEvent('Event');
     evt.initEvent('keyup', true, false);
     textarea.dispatchEvent(evt);
   });
@@ -346,8 +340,10 @@ describe('Form-builder component', () => {
 });
 
 function toArray(obj) {
-  var array = [];
-  for (var i = obj.length >>> 0; i--;) {
+  const array = [];
+  // todo: why bitwise operator is needed here?
+  /* tslint:disable-next-line:no-bitwise */
+  for (let i = obj.length >>> 0; i--; ) {
     array[i] = obj[i];
   }
   return array;

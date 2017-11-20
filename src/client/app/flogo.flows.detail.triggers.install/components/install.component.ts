@@ -2,6 +2,7 @@ import { Component, EventEmitter } from '@angular/core';
 
 @Component( {
   selector : 'flogo-flows-detail-triggers-install',
+  /* tslint:disable-next-line:use-output-property-decorator */
   outputs : [ 'onInstalled: flogoOnInstalled' ],
   // moduleId : module.id,
   templateUrl : 'install.tpl.html'
@@ -20,9 +21,9 @@ export class FlogoFlowsDetailTriggersInstallComponent {
     this.isActivated = true;
   }
 
-  public onInstalledAction( response : any ) {
+  public onInstalledAction(response: any) {
     // bubble the event.
-    this.onInstalled.emit( response );
+    this.onInstalled.emit(response);
   }
 
 }

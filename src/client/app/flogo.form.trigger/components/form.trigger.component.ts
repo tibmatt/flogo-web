@@ -8,7 +8,8 @@ import { FormActionsModels, FormDescriptionsModels } from './../../flogo.form/mo
   styleUrls: ['form.trigger.less'],
   templateUrl: 'form.trigger.tpl.html'
 })
-export class FlogoFormTrigger {
+// todo: used?
+export class FlogoFormTriggerComponent {
   @Input() descriptions: FormDescriptionsModels;
   @Input() actions: FormActionsModels[];
 
@@ -16,7 +17,7 @@ export class FlogoFormTrigger {
   }
 
   changeDescriptions(evt, field) {
-    alert('Changing');
+    // alert('Changing');
   }
 
 }

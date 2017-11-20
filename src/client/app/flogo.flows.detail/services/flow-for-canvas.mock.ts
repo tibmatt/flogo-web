@@ -21,7 +21,7 @@ export let resultantFlowModelForCanvas = {
       'nodes': {
         'some_id_1': {
           'id': 'some_id_1',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': ['some_id_0'],
           'parents': [],
           'type': 5,
@@ -29,7 +29,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_2': {
           'id': 'some_id_2',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': [
             'some_id_0',
             'some_id_1'
@@ -40,7 +40,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_3': {
           'id': 'some_id_3',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': [],
           'parents': ['some_id_0'],
           'type': 5,
@@ -48,7 +48,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_4': {
           'id': 'some_id_4',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': [],
           'parents': ['some_id_0'],
           'type': 5,
@@ -56,7 +56,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_5': {
           'id': 'some_id_5',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': ['some_id_0'],
           'parents': ['some_id_0'],
           'type': 6,
@@ -64,7 +64,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_6': {
           'id': 'some_id_6',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': ['some_id_0'],
           'parents': ['some_id_0'],
           'type': 6,
@@ -85,8 +85,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {
@@ -131,8 +131,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {
@@ -177,8 +177,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {
@@ -223,8 +223,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {
@@ -287,7 +287,7 @@ export let resultantFlowModelForCanvas = {
       'nodes': {
         'some_id_1': {
           'id': 'some_id_1',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': ['some_id_0'],
           'parents': [],
           'type': 5,
@@ -295,7 +295,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_2': {
           'id': 'some_id_2',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': [
             'some_id_0',
             'some_id_1'
@@ -306,7 +306,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_3': {
           'id': 'some_id_3',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': [],
           'parents': ['some_id_0'],
           'type': 5,
@@ -314,7 +314,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_4': {
           'id': 'some_id_4',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': [],
           'parents': ['some_id_0'],
           'type': 5,
@@ -322,7 +322,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_5': {
           'id': 'some_id_5',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': ['some_id_0'],
           'parents': ['some_id_0'],
           'type': 6,
@@ -330,7 +330,7 @@ export let resultantFlowModelForCanvas = {
         },
         'some_id_6': {
           'id': 'some_id_6',
-          '___status': { 'isSelected': false },
+          '__status': { 'isSelected': false },
           'children': ['some_id_0'],
           'parents': ['some_id_0'],
           'type': 6,
@@ -351,8 +351,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {
@@ -397,8 +397,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {
@@ -443,8 +443,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {
@@ -489,8 +489,8 @@ export let resultantFlowModelForCanvas = {
         'outputs': [],
         'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         'endpoint': { 'settings': [] },
-        '___props': { 'errors': [] },
-        '___status': {},
+        '__props': { 'errors': [] },
+        '__status': {},
         'attributes': {
           'inputs': [
             {

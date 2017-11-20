@@ -3,43 +3,43 @@ import { flogoIDEncode } from '../../../common/utils';
 
 export const TRIGGERS = [
   {
-    "id" : flogoIDEncode( "1" ),
-    "type" : FLOGO_TASK_TYPE.TASK_ROOT,
-    "activityType" : '',
-    "name" : "HTTP Trigger",
-    "settings": [
+    'id' : flogoIDEncode( '1' ),
+    'type' : FLOGO_TASK_TYPE.TASK_ROOT,
+    'activityType' : '',
+    'name' : 'HTTP Trigger',
+    'settings': [
       {
-        "name": "port",
-        "type": "number"
+        'name': 'port',
+        'type': 'number'
       }
     ],
-    "outputs": [
+    'outputs': [
       {
-        "name": "params",
-        "type": "string"
+        'name': 'params',
+        'type': 'string'
       },
       {
-        "name": "content",
-        "type": "string"
+        'name': 'content',
+        'type': 'string'
       }
     ],
-    "endpoint": {
-      "settings": [
+    'endpoint': {
+      'settings': [
         {
-          "name": "method",
-          "type": "string"
+          'name': 'method',
+          'type': 'string'
         },
         {
-          "name": "path",
-          "type": "string"
+          'name': 'path',
+          'type': 'string'
         }
       ]
     }
   },
   {
-    "id" : flogoIDEncode( "1" ),
-    "type" : FLOGO_TASK_TYPE.TASK_ROOT,
-    "activityType" : '',
-    "name" : "MQTT Trigger"
+    'id' : flogoIDEncode( '1' ),
+    'type' : FLOGO_TASK_TYPE.TASK_ROOT,
+    'activityType' : '',
+    'name' : 'MQTT Trigger'
   }
 ];

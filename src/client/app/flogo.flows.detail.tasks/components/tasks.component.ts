@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import {FlogoProfileService} from "../../../common/services/profile.service";
+import {FlogoProfileService} from '../../../common/services/profile.service';
 import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
 
 @Component(
@@ -15,20 +15,20 @@ import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
     styleUrls : [ 'tasks.component.less' ]
   }
 )
-export class FlogoFlowsDetailTasks {
-  public filteredTasks : any[] = [];
-  private _filterQuery : string = null;
-  public profileType:FLOGO_PROFILE_TYPE;
+export class FlogoFlowsDetailTasksComponent implements OnDestroy {
+  public filteredTasks: any[] = [];
+  private _filterQuery: string = null;
+  public profileType: FLOGO_PROFILE_TYPE;
 
-  public tasks : any[] = [];
+  public tasks: any[] = [];
 
-  private _subscriptions : any;
-  private _addTaskMsg : any;
+  private _subscriptions: any;
+  private _addTaskMsg: any;
 
-  constructor( public translate : TranslateService,
-               private _postService : PostService,
+  constructor( public translate: TranslateService,
+               private _postService: PostService,
                private _profileService: FlogoProfileService ) {
-    console.group( 'Constructing FlogoFlowsDetailTasks' );
+    console.group( 'Constructing FlogoFlowsDetailTasksComponent' );
 
     this.initSubscribe();
 
@@ -37,7 +37,7 @@ export class FlogoFlowsDetailTasks {
 
   ngOnDestroy() {
     this._subscriptions.forEach(
-      ( sub : any ) => {
+      ( sub: any ) => {
         this._postService.unsubscribe( sub );
       }
     );
@@ -47,12 +47,12 @@ export class FlogoFlowsDetailTasks {
     return this._filterQuery;
   }
 
-  public set filterQuery(query:string){
+  public set filterQuery(query: string){
     this._filterQuery = query;
     this._filterActivities();
   }
 
-  public sendAddTaskMsg( task : any ) {
+  public sendAddTaskMsg( task: any ) {
 
     this._postService.publish(
       _.assign(
@@ -71,7 +71,7 @@ export class FlogoFlowsDetailTasks {
   private initSubscribe() {
     this._subscriptions = [];
 
-    let subs = [
+    const subs = [
       _.assign( {}, SUB_EVENTS.addTask, { callback : this._getAddTaskMsg.bind( this ) } ),
       _.assign( {}, SUB_EVENTS.installActivity, { callback : this._loadActivities.bind( this ) } ),
     ];
@@ -88,20 +88,20 @@ export class FlogoFlowsDetailTasks {
 
     this._profileService.getActivities(profileType)
       .then(
-        ( tasks : any )=> {
+        ( tasks: any ) => {
           this.tasks = tasks;
           this._filterActivities();
         }
       )
       .catch(
-        ( err : any )=> {
+        ( err: any ) => {
           console.error( err );
         }
       );
   }
 
 
-  private _getAddTaskMsg( data : any, envelope : any ) {
+  private _getAddTaskMsg( data: any, envelope: any ) {
     console.group( 'Add task message in tasks' );
 
     console.log( data );
@@ -117,14 +117,14 @@ export class FlogoFlowsDetailTasks {
 
   private _filterActivities() {
     if (this.filterQuery) {
-      let filterQuery = this.filterQuery.toLowerCase();
+      const filterQuery = this.filterQuery.toLowerCase();
       this.filteredTasks = _.filter(this.tasks, task => task.name.toLowerCase().indexOf(filterQuery) >= 0);
     } else {
       this.filteredTasks = this.tasks;
     }
   }
 
-  public onInstalledAction( response : any ) {
+  public onInstalledAction( response: any ) {
     console.group( `[FlogoFlowsDetailTasks] onInstalled` );
     console.log( response );
     console.groupEnd();

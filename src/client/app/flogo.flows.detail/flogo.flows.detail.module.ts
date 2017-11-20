@@ -14,14 +14,14 @@ import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
 import { FlogoCanvasComponent } from './components/canvas.component';
 
 import { FlogoFlowsDetailComponent } from './components/flow-detail.component';
-import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/components/triggers.component';
+import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
-import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
-import { FlogoFlowsDetailTasksDetail } from '../flogo.flows.detail.tasks.detail/components/detail.component';
+import { FlogoFlowsDetailTasksComponent } from '../flogo.flows.detail.tasks/components/tasks.component';
+import { FlogoFlowsDetailTasksDetailComponent } from '../flogo.flows.detail.tasks.detail/components/detail.component';
 import { FlogoSelectTriggerComponent } from '../flogo.select-trigger/components/select-trigger.component';
 
 import { FlogoFlowsDetailDiagramComponent } from '../flogo.flows.detail.diagram/components/diagram.component';
-import { FlogoFlowsDetailErrorPanel } from '../flogo.flows.detail.error-panel/components/error-panel.component';
+import { FlogoFlowsDetailErrorPanelComponent } from '../flogo.flows.detail.error-panel/components/error-panel.component';
 
 
 import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tasks.install/components/install.component';
@@ -62,14 +62,14 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
   ],
   declarations: [
     FlogoFlowsDetailComponent,
-    FlogoFlowsDetailTriggers,
+    FlogoFlowsDetailTriggersComponent,
     FlogoFlowsDetailTriggersDetailComponent,
-    FlogoFlowsDetailTasks,
-    FlogoFlowsDetailTasksDetail,
+    FlogoFlowsDetailTasksComponent,
+    FlogoFlowsDetailTasksDetailComponent,
     FlogoSelectTriggerComponent,
 
     FlogoFlowsDetailDiagramComponent,
-    FlogoFlowsDetailErrorPanel,
+    FlogoFlowsDetailErrorPanelComponent,
 
     FlogoFlowsDetailTasksInstallComponent,
     FlogoFlowsDetailTriggersInstallComponent,

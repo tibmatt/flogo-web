@@ -1,105 +1,105 @@
 import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
 import { flogoIDEncode } from '../../../common/utils';
 
-export var MOCK_TASKS = [
+export let MOCK_TASKS = [
   {
-    "id" : flogoIDEncode( "2" ),
-    "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : 'log',
-    "name" : "Log Start",
-    "attributes" : {
-      "inputs" : [
+    'id' : flogoIDEncode( '2' ),
+    'type' : FLOGO_TASK_TYPE.TASK,
+    'activityType' : 'log',
+    'name' : 'Log Start',
+    'attributes' : {
+      'inputs' : [
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-          "name" : "message",
-          "title" : "Message",
-          "value" : "Find Pet Process Started!"
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'name' : 'message',
+          'title' : 'Message',
+          'value' : 'Find Pet Process Started!'
         },
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
-          "name" : "processInfo",
-          "title" : "Process info",
-          "value" : "true"
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
+          'name' : 'processInfo',
+          'title' : 'Process info',
+          'value' : 'true'
         }
       ]
     }
   },
   {
-    "id" : flogoIDEncode( "3" ),
-    "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : 'rest',
-    "name" : "Pet Query",
-    "attributes" : {
-      "inputs" : [
+    'id' : flogoIDEncode( '3' ),
+    'type' : FLOGO_TASK_TYPE.TASK,
+    'activityType' : 'rest',
+    'name' : 'Pet Query',
+    'attributes' : {
+      'inputs' : [
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-          "name" : "uri",
-          "title" : "URI",
-          "value" : "http://petstore.swagger.io/v2/pet/{petId}"
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'name' : 'uri',
+          'title' : 'URI',
+          'value' : 'http://petstore.swagger.io/v2/pet/{petId}'
         },
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-          "name" : "method",
-          "title" : "Method",
-          "value" : "GET"
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'name' : 'method',
+          'title' : 'Method',
+          'value' : 'GET'
         },
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-          "name" : "petId",
-          "title" : "Pet ID",
-          "value" : "201603311111"
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'name' : 'petId',
+          'title' : 'Pet ID',
+          'value' : '201603311111'
         }
       ],
-      "outputs" : [
+      'outputs' : [
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT,
-          "name" : "result",
-          "title" : "Result",
-          "value" : ""
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT,
+          'name' : 'result',
+          'title' : 'Result',
+          'value' : ''
         }
       ]
     },
-    "inputMappings" : [
+    'inputMappings' : [
       {
-        "type" : 1,
-        "value" : "petId",
-        "mapTo" : "petId"
+        'type' : 1,
+        'value' : 'petId',
+        'mapTo' : 'petId'
       }
     ],
-    "outputMappings" : [
+    'outputMappings' : [
       {
-        "type" : 1,
-        "value" : "result",
-        "mapTo" : "petInfo"
+        'type' : 1,
+        'value' : 'result',
+        'mapTo' : 'petInfo'
       }
     ]
   },
   {
-    "id" : flogoIDEncode( "4" ),
-    "type" : FLOGO_TASK_TYPE.TASK,
-    "activityType" : 'log',
-    "name" : "Log Results",
-    "attributes" : {
-      "inputs" : [
+    'id' : flogoIDEncode( '4' ),
+    'type' : FLOGO_TASK_TYPE.TASK,
+    'activityType' : 'log',
+    'name' : 'Log Results',
+    'attributes' : {
+      'inputs' : [
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
-          "name" : "message",
-          "title" : "Message",
-          "value" : "REST results"
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'name' : 'message',
+          'title' : 'Message',
+          'value' : 'REST results'
         },
         {
-          "type" : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
-          "name" : "processInfo",
-          "title" : "Process Info",
-          "value" : "true"
+          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
+          'name' : 'processInfo',
+          'title' : 'Process Info',
+          'value' : 'true'
         }
       ]
     },
-    "inputMappings" : [
+    'inputMappings' : [
       {
-        "type" : 1,
-        "value" : "petInfo",
-        "mapTo" : "message"
+        'type' : 1,
+        'value' : 'petInfo',
+        'mapTo' : 'message'
       }
     ]
   }

@@ -8,7 +8,8 @@ import { FormActionsModels, FormDescriptionsModels } from './../../flogo.form/mo
   styleUrls: ['form.trigger.header.less'],
   templateUrl: 'form.trigger.header.tpl.html'
 })
-export class FlogoFormTriggerHeader {
+// todo: used?
+export class FlogoFormTriggerHeaderComponent {
   @Input() descriptions: FormDescriptionsModels;
   @Input() actions: FormActionsModels[];
 
@@ -16,7 +17,7 @@ export class FlogoFormTriggerHeader {
   }
 
   changeDescriptions(evt, field) {
-    alert('Changing');
+    // alert('Changing');
   }
 
 }

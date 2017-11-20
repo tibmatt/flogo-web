@@ -1,30 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { PostService } from '../../../common/services/post.service';
-import { TRIGGERS as TRIGGERS_MOCK } from '../mocks/triggers';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
 import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
 
 @Component(
   {
-    selector : 'flogo-flows-detail-triggers',
-    // moduleId : module.id,
-    templateUrl : 'triggers.tpl.html',
-    styleUrls : [ 'triggers.component.less' ]
+    selector: 'flogo-flows-detail-triggers',
+    templateUrl: 'triggers.tpl.html',
+    styleUrls: [ 'triggers.component.less' ]
   }
 )
-export class FlogoFlowsDetailTriggers {
-  public triggers : any;
-  private _subscriptions : any;
-  private _addTriggerMsg : any;
-  private _selectTriggerMsg : any;
+export class FlogoFlowsDetailTriggersComponent implements OnDestroy {
+  public triggers: any;
+  private _subscriptions: any;
+  private _addTriggerMsg: any;
+  private _selectTriggerMsg: any;
 
-  constructor( private _postService : PostService, private _restAPITriggersService: RESTAPITriggersService ) {
-    console.group( 'Constructing FlogoFlowsDetailTasks' );
+  constructor( private _postService: PostService, private _restAPITriggersService: RESTAPITriggersService ) {
+    console.group( 'Constructing FlogoFlowsDetailTasksComponent' );
 
     this.initSubscribe();
     this._loadTriggers();
-
-    //this.triggers = TRIGGERS_MOCK || [];
 
     console.groupEnd();
   }
@@ -32,9 +28,9 @@ export class FlogoFlowsDetailTriggers {
   private initSubscribe() {
     this._subscriptions = [];
 
-    let subs = [
-      _.assign( {}, SUB_EVENTS.addTrigger, { callback : this._getAddTriggerMsg.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.selectTrigger, { callback : this._getSelectTriggerMsg.bind( this ) } )
+    const subs = [
+      _.assign( {}, SUB_EVENTS.addTrigger, { callback: this._getAddTriggerMsg.bind( this ) } ),
+      _.assign( {}, SUB_EVENTS.selectTrigger, { callback: this._getSelectTriggerMsg.bind( this ) } )
     ];
 
     _.each(
@@ -46,13 +42,13 @@ export class FlogoFlowsDetailTriggers {
 
   ngOnDestroy() {
     this._subscriptions.forEach(
-      ( sub : any ) => {
+      ( sub: any ) => {
         this._postService.unsubscribe( sub );
       }
     );
   }
 
-  private _getAddTriggerMsg( data : any, envelope : any ) {
+  private _getAddTriggerMsg( data: any, envelope: any ) {
     console.group( 'Add trigger message in triggers' );
 
     console.log( data );
@@ -63,7 +59,7 @@ export class FlogoFlowsDetailTriggers {
     console.groupEnd();
   }
 
-  private _getSelectTriggerMsg( data : any, envelope : any ) {
+  private _getSelectTriggerMsg( data: any, envelope: any ) {
     console.group( 'Select trigger message in triggers' );
 
     console.log( data );
@@ -74,11 +70,11 @@ export class FlogoFlowsDetailTriggers {
     console.groupEnd();
   }
 
-  sendAddTriggerMsg( trigger : any ) {
+  sendAddTriggerMsg( trigger: any ) {
     this._postService.publish(
       _.assign(
         {}, PUB_EVENTS.addTrigger, {
-          data : _.assign( {}, this._addTriggerMsg, { trigger : _.cloneDeep( trigger ) } )
+          data: _.assign( {}, this._addTriggerMsg, { trigger: _.cloneDeep( trigger ) } )
         }
       )
     );
@@ -89,18 +85,18 @@ export class FlogoFlowsDetailTriggers {
 
     this._restAPITriggersService.getTriggers()
       .then(
-        ( triggers : any )=> {
+        ( triggers: any ) => {
           this.triggers = triggers;
         }
       )
       .catch(
-        ( err : any )=> {
+        ( err: any ) => {
           console.error( err );
         }
       );
   }
 
-  public onInstalledAction( response : any ) {
+  public onInstalledAction( response: any ) {
     console.group( `[FlogoFlowsDetailTriggers] onInstalled` );
     console.log( response );
     console.groupEnd();

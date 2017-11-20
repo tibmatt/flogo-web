@@ -11,21 +11,21 @@ import {SUB_EVENTS, PUB_EVENTS} from '../messages';
 })
 
 
-export class FlogoFlowsDetailErrorPanel implements OnDestroy {
+export class FlogoFlowsDetailErrorPanelComponent implements OnDestroy {
 
   @HostBinding('class.is-open')
-  isOpen: boolean = false;
+  isOpen = false;
   @HostBinding('class.is-opening')
-  isOpening: boolean = false;
+  isOpening = false;
   @HostBinding('class.is-closing')
-  isClosing: boolean = false;
+  isClosing = false;
 
-  isScreenScrolled: boolean  = false;
-  imgErrorHandler : string = "/assets/svg/error-icon-info.svg";
+  isScreenScrolled  = false;
+  imgErrorHandler = '/assets/svg/error-icon-info.svg';
 
-  private subscriptions : Array<any>;
+  private subscriptions: Array<any>;
 
-  constructor(private postService: PostService){
+  constructor(private postService: PostService) {
     this.initSubscribe();
   }
 
@@ -43,13 +43,13 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
       this.isClosing = false;
       this.isOpen = !this.isOpen;
 
-      if(this.isOpen) {
+      if (this.isOpen) {
         this.postService.publish( _.assign( {}, PUB_EVENTS.openPanel, { data : {} } ) );
-        this.imgErrorHandler = "/assets/svg/error-icon-close.svg"
+        this.imgErrorHandler = '/assets/svg/error-icon-close.svg';
 
       } else {
         this.postService.publish( _.assign( {}, PUB_EVENTS.closePanel, { data : {} } ) );
-        this.imgErrorHandler = "/assets/svg/error-icon-info.svg";
+        this.imgErrorHandler = '/assets/svg/error-icon-info.svg';
 
       }
 
@@ -57,13 +57,13 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
   }
 
   public open() {
-    if(!this.isOpen && !this.isOpening) {
+    if (!this.isOpen && !this.isOpening) {
       this.toggle();
     }
   }
 
   public close() {
-    if(this.isOpen || this.isOpening) {
+    if (this.isOpen || this.isOpening) {
       this.toggle();
     }
   }
@@ -73,15 +73,15 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
   }
 
   @HostListener('window:scroll', ['$event'])
-  onPageScroll(event:Event) {
+  onPageScroll(event: Event) {
     if (this.isOpen) {
-      let target = <any>event.target;
-      let NAV_HEIGHT = 48;
+      const target = <any>event.target;
+      const NAV_HEIGHT = 48;
       this.isScreenScrolled = !!(target && target.body && target.body.scrollTop > NAV_HEIGHT);
     }
   }
 
-  private initSubscribe(){
+  private initSubscribe() {
     if ( _.isEmpty( this.subscriptions ) ) {
       this.subscriptions = [];
     }
@@ -91,7 +91,7 @@ export class FlogoFlowsDetailErrorPanel implements OnDestroy {
       return;
     }
 
-    let subs = [
+    const subs = [
       _.assign( {}, SUB_EVENTS.openPanel, { callback : this.open.bind(this) } ),
       _.assign( {}, SUB_EVENTS.closePanel, { callback : this.close.bind(this) } )
     ];

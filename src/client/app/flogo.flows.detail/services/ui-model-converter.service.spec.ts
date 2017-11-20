@@ -132,26 +132,24 @@ describe('Service: UI Model Converter', function (this: {
     noIdFlow.paths.root.is = 'some_id_' + dummyIndex++;
     const allNodes = flow.paths.nodes;
     const allItems = flow.items;
+    /* tslint:disable:forin */
     for (const nodeKey in allNodes) {
-      if (allNodes.hasOwnProperty(nodeKey)) {
-        noIdFlow.paths.nodes['some_id_' + dummyIndex] = allNodes[nodeKey];
-        noIdFlow.paths.nodes['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
-        noIdFlow.paths.nodes['some_id_' + dummyIndex].taskID = 'some_id_' + dummyIndex;
-        noIdFlow.paths.nodes['some_id_' + dummyIndex].children = _.map(allNodes[nodeKey].children, (v, i) => 'some_id_' + i);
-        noIdFlow.paths.nodes['some_id_' + dummyIndex].parents = _.map(allNodes[nodeKey].parents, (v, i) => 'some_id_' + i);
-        dummyIndex += 1;
-      }
+      noIdFlow.paths.nodes['some_id_' + dummyIndex] = allNodes[nodeKey];
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].taskID = 'some_id_' + dummyIndex;
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].children = _.map(allNodes[nodeKey].children, (v, i) => 'some_id_' + i);
+      noIdFlow.paths.nodes['some_id_' + dummyIndex].parents = _.map(allNodes[nodeKey].parents, (v, i) => 'some_id_' + i);
+      dummyIndex += 1;
     }
     for (const itemKey in allItems) {
-      if (allItems.hasOwnProperty(itemKey)) {
-        noIdFlow.items['some_id_' + dummyIndex] = allItems[itemKey];
-        noIdFlow.items['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
-        if (allItems[itemKey].nodeId) {
-          noIdFlow.items['some_id_' + dummyIndex].nodeId = 'some_id_' + dummyIndex;
-        }
-        dummyIndex += 1;
+      noIdFlow.items['some_id_' + dummyIndex] = allItems[itemKey];
+      noIdFlow.items['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
+      if (allItems[itemKey].nodeId) {
+        noIdFlow.items['some_id_' + dummyIndex].nodeId = 'some_id_' + dummyIndex;
       }
+      dummyIndex += 1;
     }
+    /* tslint:enable:forin */
     if (flow.errorHandler) {
       noIdFlow.errorHandler = formFlowWithoutId(flow.errorHandler);
     }

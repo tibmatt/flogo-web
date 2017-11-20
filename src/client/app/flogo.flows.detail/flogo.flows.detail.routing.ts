@@ -4,12 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
 
 import { FlogoFlowsDetailComponent } from './components';
-import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/components/triggers.component';
+import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
-import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
-import { FlogoFlowsDetailTasksDetail } from '../flogo.flows.detail.tasks.detail/components/detail.component';
+import { FlogoFlowsDetailTasksComponent } from '../flogo.flows.detail.tasks/components/tasks.component';
+import { FlogoFlowsDetailTasksDetailComponent } from '../flogo.flows.detail.tasks.detail/components/detail.component';
 import { FlogoCanvasComponent } from './components/canvas.component';
-import { FlogoForm } from './../flogo.form/components/form.component';
+import { FlogoFormComponent } from './../flogo.form/components/form.component';
 
 export const routes: Routes = [
   {
@@ -18,11 +18,11 @@ export const routes: Routes = [
     canActivate: [ConfigurationLoadedGuard],
     children: [
       { path: '', component: FlogoFlowsDetailComponent },
-      { path: 'trigger/add', component: FlogoFlowsDetailTriggers },
+      { path: 'trigger/add', component: FlogoFlowsDetailTriggersComponent },
       { path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent },
-      { path: 'task/add', component: FlogoFlowsDetailTasks },
-      { path: 'task/:id', component: FlogoFlowsDetailTasksDetail },
-      { path: 'new-trigger', component: FlogoForm }
+      { path: 'task/add', component: FlogoFlowsDetailTasksComponent },
+      { path: 'task/:id', component: FlogoFlowsDetailTasksDetailComponent },
+      { path: 'new-trigger', component: FlogoFormComponent }
       // {path: 'logs', component: FlogoLogsComponent}
     ]
   }
@@ -32,7 +32,7 @@ export const routing: ModuleWithProviders = RouterModule.forChild(routes);
 
 /*
 {path: '/', name: 'FlogoFlowsDetailDefault', component: FlogoFlowsDetailComponent, useAsDefault: true},
-{path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggers},
+{path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggersComponent},
 {path: '/trigger/:id', name: 'FlogoFlowsDetailTriggerDetail', component: FlogoFlowsDetailTriggersDetailComponent},
-{path: '/task/add', name: 'FlogoFlowsDetailaskAdd', component: FlogoFlowsDetailTasks},
-{path: '/task/:id', name: 'FlogoFlowsDetailTaskDetail', component: FlogoFlowsDetailTasksDetail}*/
+{path: '/task/add', name: 'FlogoFlowsDetailaskAdd', component: FlogoFlowsDetailTasksComponent},
+{path: '/task/:id', name: 'FlogoFlowsDetailTaskDetail', component: FlogoFlowsDetailTasksDetailComponent}*/
