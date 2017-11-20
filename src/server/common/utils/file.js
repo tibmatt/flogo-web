@@ -12,6 +12,25 @@ export function isDirectory(testedPath) {
   return undefined;
 }
 
+export function asyncIsDirectory(file) {
+  return new Promise((resolve, reject) => {
+    fs.stat(file, (err, stats) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(stats);
+      }
+    });
+  })
+    .then(stats => stats.isDirectory())
+    .catch(err => {
+      if (err.code === 'ENOENT') {
+        return Promise.resolve(false);
+      }
+      return Promise.reject(err);
+    });
+}
+
 export function readDirectoriesSync(dirPath) {
   const dirs = fs.readdirSync(dirPath);
   const nDirs = [];
@@ -20,7 +39,6 @@ export function readDirectoriesSync(dirPath) {
       nDirs.push(dir);
     }
   });
-
   return nDirs;
 }
 
