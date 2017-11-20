@@ -40,6 +40,8 @@ const CLS = {
   diagramNodeStatusHasWarn: 'flogo-flows-detail-diagram-node-has-warn',
   diagramLastNode: 'flogo-flows-detail-diagram-node-last-node',
   diagramNodeDetail: 'flogo-flows-detail-diagram-node-detail',
+  diagramNodeDetailContent: 'flogo-flows-detail-diagram-node-detail-content',
+  diagramNodeDetailShape: 'flogo-flows-detail-diagram-node-detail-shape',
   diagramNodeDetailBranch: 'flogo-flows-detail-diagram-node-detail-branch',
   diagramNodeDetailBranchSelected: 'flogo-flows-detail-diagram-node-detail-branch-selected',
   diagramNodeDetailBranchHover: 'flogo-flows-detail-diagram-node-detail-branch-hover',
@@ -952,7 +954,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     nodeDetails = rows.selectAll(`.${CLS.diagramNodeDetail}`);
 
     const nodeParents = [];
-    let numOfChildren: number;
+    let numOfChildren;
     nodeDetails.html((taskInfo: {
       name: string;
       desc: string;
@@ -970,106 +972,195 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       }
 
       if (taskInfo.nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
-        const thisBranchRow = row;
-        let level = 0;
-
-        const thisBranchParent = <any>{
-          id: taskInfo.nodeInfo.parents[0]
-        };
-
-        if (nodeParents.indexOf(thisBranchParent.id) === -1) {
-          nodeParents.push(thisBranchParent.id);
+        const parentId = taskInfo.nodeInfo.parents[0];
+        if (nodeParents.indexOf(parentId) === -1) {
+          nodeParents.push(parentId);
           numOfChildren = 1;
         } else {
           numOfChildren++;
         }
-        // TODO
-        //  change to other Array API like some to optimise? but need to manually call d3 API to get the data..
-        rows.each(function (rowNodesIDs: string[], rowIndex: number) {
-          // if haven't got the level
-          // try to find the parent node's row and get the diff of the rows as the level
-          if (!level) {
-            const parentCol = rowNodesIDs.indexOf(thisBranchParent.id);
+        return this.makeBranch(row, parentId, numOfChildren, rows, rowHeight, diagram);
+      }
 
-            if (parentCol !== -1) {
-              thisBranchParent.loc = {
-                col: parentCol,
-                row: rowIndex
-              };
+      if (taskInfo.nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW) {
+        taskInfo = _.assign({}, taskInfo, { name: 'On Error', desc: 'Error ocurred', type: FLOGO_TASK_TYPE.TASK_ROOT });
+        return `
+         <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailContent}">
+            <i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-node-detail-error-icon flogo-icon flogo-icon-info"></i>
+            ${this.makeErrorRootTile()}
+          </div>
+        `;
+      }
 
-              level = thisBranchRow - rowIndex;
-            }
-          }
-        });
+      if (!taskInfo.name || !taskInfo.desc) {
+        return '';
+      }
 
-        const defaultLevel = numOfChildren === 1 ? level : 1;
-        const branchOverlap = 31; // branch overlap with mother tile
-        const thisBranchLineHeight = rowHeight * level - branchOverlap;
-        const branchLines = genBranchLine({
-          svgHeight: thisBranchLineHeight,
-          defaultHeight: rowHeight * defaultLevel - branchOverlap
-        });
+      let iconName = 'activity.icon.svg';
 
-        return _.map([
-          {
-            class: CLS.diagramNodeDetailBranch,
-            state: 'default'
-          }, {
-            class: CLS.diagramNodeDetailBranchHover,
-            state: 'hover'
-          }, {
-            class: CLS.diagramNodeDetailBranchSelected,
-            state: 'selected'
-          }, {
-            class: CLS.diagramNodeDetailBranchRun,
-            state: 'run'
-          }
-        ], (item: any) => {
-          const branchLine = btoa(
-            branchLines[item.state].trim()
-              .replace(/"/g, '\'')
-              .replace(/\s+/g, ' '));
-          /* tslint:disable:max-line-length */
-          return `
+      if (taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT) {
+        iconName = 'trigger.icon.svg';
+      }
+
+      const taskSchema = diagram.tasks[taskInfo.nodeInfo.taskID];
+      let taskIcon;
+      if (taskSchema && taskSchema.ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/lambda') {
+        taskIcon = `<svg ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon} --lambda" viewBox="0 0 200 278">
+                      <use xlink:href="/assets/svg/lambda-icon.svg#layer1"></use>
+                    </svg>`;
+      } else {
+        taskIcon = `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}"
+                          src="/assets/svg/flogo.flows.detail.diagram.${iconName}" alt=""/>`;
+      }
+
+      return `
+        <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailContent}">
+          ${this.makeTile()}
+          ${taskIcon}
+          <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}" title="${taskInfo.name}">${taskInfo.name}</div>
+          <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskInfo.desc}</div>
+        </div>
+      `;
+
+    });
+  }
+
+  private makeBranch(row: number,
+                     parentId: string,
+                     numOfChildren: number,
+                     rows: any,
+                     rowHeight: number,
+                     diagram: FlogoFlowDiagram) {
+    const thisBranchRow = row;
+    let level = 0;
+
+    const thisBranchParent = <any>{
+      id: parentId
+    };
+
+    // TODO
+    //  change to other Array API like some to optimise? but need to manually call d3 API to get the data..
+    rows.each(function (rowNodesIDs: string[], rowIndex: number) {
+      // if haven't got the level
+      // try to find the parent node's row and get the diff of the rows as the level
+      if (!level) {
+        const parentCol = rowNodesIDs.indexOf(thisBranchParent.id);
+
+        if (parentCol !== -1) {
+          thisBranchParent.loc = {
+            col: parentCol,
+            row: rowIndex
+          };
+
+          level = thisBranchRow - rowIndex;
+        }
+      }
+    });
+
+    const defaultLevel = numOfChildren === 1 ? level : 1;
+    const branchOverlap = 31; // branch overlap with mother tile
+    const thisBranchLineHeight = rowHeight * level - branchOverlap;
+    const branchLines = genBranchLine({
+      svgHeight: thisBranchLineHeight,
+      defaultHeight: rowHeight * defaultLevel - branchOverlap
+    });
+
+    return _.map([
+      {
+        class: CLS.diagramNodeDetailBranch,
+        state: 'default'
+      }, {
+        class: CLS.diagramNodeDetailBranchHover,
+        state: 'hover'
+      }, {
+        class: CLS.diagramNodeDetailBranchSelected,
+        state: 'selected'
+      }, {
+        class: CLS.diagramNodeDetailBranchRun,
+        state: 'run'
+      }
+    ], (item: any) => {
+      const branchLine = btoa(
+        branchLines[item.state].trim()
+          .replace(/"/g, '\'')
+          .replace(/\s+/g, ' '));
+      /* tslint:disable:max-line-length */
+      return `
               <div ${diagram.ng2StyleAttr} class="${item.class}">
                 <div ${diagram.ng2StyleAttr} class="img-left" style="background:url(data:image/svg+xml;base64,${branchLine}) left bottom no-repeat; height: ${thisBranchLineHeight}px"></div>
                 <div ${diagram.ng2StyleAttr} class="img-right" style="background:url(data:image/svg+xml;base64,${branchLine}) right bottom no-repeat;"></div>
               </div>
             `;
-          /* tslint:enable:max-line-length */
-        })
-          .join('');
-      }
+      /* tslint:enable:max-line-length */
+    })
+      .join('');
+  }
 
-      if (taskInfo.nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW) {
-        taskInfo = _.assign({}, taskInfo, { name: 'On Error', desc: 'Error ocurred', type: FLOGO_TASK_TYPE.TASK_ROOT });
-      }
+  private makeTile() {
+    /* tslint:disable:max-line-length */
+    return `
+    <svg class="${CLS.diagramNodeDetailShape}" 
+      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="150" height="138" viewBox="0 0 150 138">
+        <defs>
+            <linearGradient id="flogo-diagram-tile-bg-default" x1="0%" x2="31.438%" y1="52.069%" y2="52.069%">
+                <stop offset="0%" stop-color="#F4F4F4"/>
+                <stop offset="100%" stop-color="#FFF"/>
+            </linearGradient>
+            <linearGradient id="flogo-diagram-tile-bg-run" x1="0%" x2="33.893%" y1="50%" y2="50%">
+                <stop offset="0%" stop-color="#D2EDFD"/>
+                <stop offset="100%" stop-color="#DEF2FD"/>
+            </linearGradient>
+            <path id="flogo-diagram-tile-shape" d="M110.11 25.536V8a8 8 0 0 0-8-8h-94a8 8 0 0 0-8 8v94a8 8 0 0 0 8 8h94a8 8 0 0 0 8-8V84.758l13.333-29.61-13.333-29.612z"/>
+            <rect id="flogo-diagram-tile-shape-terminal" width="110" height="110" x=".11" rx="8"/>
+            <filter id="flogo-diagram-tile-shadow" width="105.7%" height="106.4%" x="-2.8%" y="-2.3%" filterUnits="objectBoundingBox">
+                <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"/>
+                <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"/>
+                <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"/>
+                <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.325888813 0"/>
+            </filter>
+            <filter id="flogo-diagram-tile-shadow-active" width="135.3%" height="139.2%" x="-17.7%" y="-15.4%" filterUnits="objectBoundingBox">
+                <feOffset dy="5" in="SourceAlpha" result="shadowOffsetOuter2"/>
+                <feGaussianBlur in="shadowOffsetOuter2" result="shadowBlurOuter2" stdDeviation="7"/>
+                <feColorMatrix in="shadowBlurOuter2" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.325888813 0"/>
+            </filter>
+        </defs>
+        <g class="tile" fill="none" fill-rule="evenodd" transform="translate(11 9)">
+            <g class="tile__default">
+                <use class="tile__shadow" fill="#000" filter="url(#flogo-diagram-tile-shadow)" xlink:href="#flogo-diagram-tile-shape"/>
+                <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape"/>
+                <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M123.005 55.147l-13.26-29.446-.035-.165V8a7.6 7.6 0 0 0-7.6-7.6h-94A7.6 7.6 0 0 0 .51 8v94a7.6 7.6 0 0 0 7.6 7.6h94a7.6 7.6 0 0 0 7.6-7.6V84.758l.035-.164 13.26-29.447z"/>
+            </g>
+    
+            <g class="tile__terminal">
+                <use class="tile__shadow" fill="#000" filter="url(#flogo-diagram-tile-shadow)" xlink:href="#flogo-diagram-tile-shape-terminal"/>
+                <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape-terminal" />
+                <rect class="tile__stroke" width="109.2" height="109.2" x=".51" y=".4" stroke="#F4F4F4" stroke-width=".8" rx="8"/>
+            </g>
+        </g>
+    </svg>
+    `;
+    /* tslint:enable:max-line-length */
+  }
 
-      if (taskInfo.name && taskInfo.desc) {
-        let iconName = 'activity.icon.svg';
-
-        if (taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-          iconName = 'trigger.icon.svg';
-        }
-
-        const taskSchema = diagram.tasks[taskInfo.nodeInfo.taskID];
-        let taskIcon;
-        if (taskSchema && taskSchema.ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/lambda') {
-          taskIcon = `<svg ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon} --lambda" viewBox="0 0 200 278">
-                        <use xlink:href="/assets/svg/lambda-icon.svg#layer1"></use>
-                      </svg>`;
-        } else {
-          taskIcon = `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}"
-                            src="/assets/svg/flogo.flows.detail.diagram.${iconName}" alt=""/>`;
-        }
-        return `${taskIcon}
-                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}" title="${taskInfo.name}">${taskInfo.name}</div>
-                <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskInfo.desc}</div>`;
-      } else {
-        return ``;
-      }
-
-    });
+  private makeErrorRootTile() {
+    return `<svg class="${CLS.diagramNodeDetailShape}" xmlns="http://www.w3.org/2000/svg" 
+        xmlns:xlink="http://www.w3.org/1999/xlink" width="52" height="52" viewBox="0 0 52 52">
+        <defs>
+            <path id="flogo-diagram-error-shape" d="M40 .12V0H2.4A2.4 2.4 0 0 0 0 2.4v43.2A2.4 2.4 0 0 0 2.4 48H40v-.12L48 24 40 .12z"/>
+            <filter id="flogo-diagram-error-bg" width="114.6%" height="114.6%" x="-7.3%" y="-5.2%" filterUnits="objectBoundingBox">
+                <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"/>
+                <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"/>
+                <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"/>
+                <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.325888813 0"/>
+            </filter>
+        </defs>
+        <g fill="none" fill-rule="evenodd" transform="translate(2 1)">
+            <use fill="#000" filter="url(#flogo-diagram-error-bg)" xlink:href="#flogo-diagram-error-shape"/>
+            <use fill="#FBCDD1" xlink:href="#flogo-diagram-error-shape"/>
+            <path stroke="#EE3342" stroke-width=".8" d="M39.672.4H2.4a2 2 0 0 0-2 2v43.2a2 2 0 0 0 2 2h37.272L47.578 24 39.672.4z"/>
+        </g>
+    </svg>
+    `;
   }
 
   private _handleExitNodeDetails(nodeDetails: any, rows: any) {
