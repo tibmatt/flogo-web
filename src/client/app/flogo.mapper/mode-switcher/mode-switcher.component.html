@@ -1,0 +1,6 @@
+<div class="switch" [class.--checked]="checked" (click)="onClick($event)">
+  <input [checked]="checked" type="checkbox">
+  <span class="slider"></span>
+  <span class="switch__label" *ngIf="!checked">Basic mapping</span>
+  <span class="switch__label" *ngIf="checked">Object mapping</span>
+</div>

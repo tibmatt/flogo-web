@@ -341,7 +341,6 @@ function handlerEditableSchema() {
             type: 'integer',
           },
           value: {
-            type: 'string',
           },
           mapTo: {
             type: 'string',
@@ -465,7 +464,6 @@ function fullAppSchema() {
             type: 'integer',
           },
           value: {
-            type: 'string',
           },
           mapTo: {
             type: 'string',
@@ -625,7 +623,6 @@ function fullAppSchema() {
                 type: 'integer',
               },
               value: {
-                type: 'string',
               },
               mapTo: {
                 type: 'string',

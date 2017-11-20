@@ -184,12 +184,13 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
       return;
     }
 
-    const oldModel = this.editor.getModel();
+    const currentModel = this.editor.getModel();
+    if (currentModel) {
+      currentModel.dispose();
+    }
+
     const newModel = monaco.editor.createModel(value, mode);
     this.editor.setModel(newModel);
-    if (oldModel) {
-      oldModel.dispose();
-    }
   }
 
   hasErrors() {

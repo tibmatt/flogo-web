@@ -27,6 +27,7 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
 import { IParsedExpressionDetails } from '../models/map-model';
+import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from '../constants';
 
 export interface TreeState {
   filterTerm: string | null;
@@ -35,7 +36,7 @@ export interface TreeState {
 
 export interface CurrentSelection {
   node?: MapperTreeNode;
-  expression?: string;
+  editingExpression?: EditingExpression;
   errors?: any[];
   symbolTable?: { [key: string]: any };
   mappings?: Mappings;
@@ -72,6 +73,11 @@ export interface OutputContext {
   symbolTable: any;
 }
 
+interface  EditingExpression {
+  expression: string;
+  mappingType?: number;
+}
+
 @Injectable()
 export class MapperService {
 
@@ -85,7 +91,7 @@ export class MapperService {
   private filterOutputsSrc: Subject<string> = new Subject<string>();
   private filterFunctionsSrc: Subject<string> = new Subject<string>();
   private selectInputSrc: Subject<MapperTreeNode> = new Subject<MapperTreeNode>();
-  private expressionChangeSrc: Subject<string> = new Subject<string>();
+  private expressionChangeSrc: Subject<EditingExpression> = new Subject<EditingExpression>();
 
   constructor(private nodeFactory: TreeNodeFactoryService,
               private treeService: TreeService,
@@ -143,8 +149,8 @@ export class MapperService {
     this.filterFunctionsSrc.next(filterTerm);
   }
 
-  expressionChange(expression: string) {
-    this.expressionChangeSrc.next(expression);
+  expressionChange(value: EditingExpression) {
+    this.expressionChangeSrc.next(value);
   }
 
   private setupSelectInput() {
@@ -183,7 +189,9 @@ export class MapperService {
           currentSelection = {
             node,
             symbolTable,
-            expression: mapping ? <string>mapping.expression : '',
+            editingExpression: mapping ?
+              { expression: mapping.expression, mappingType: mapping.mappingType }
+              : { expression: '', mappingType: TYPE_ATTR_ASSIGNMENT },
             mappings: outputContext.mappings,
             mappingKey: outputContext.mappingKey,
             mapRelativeTo: outputContext.mapRelativeTo,
@@ -253,18 +261,26 @@ export class MapperService {
   }
 
   private setupExpressionChange() {
+    const isSameEditingExpression = (prev: EditingExpression, next: EditingExpression) => {
+      if (!prev && next || !next && prev) {
+        return false;
+      }
+      return prev.expression === next.expression && prev.mappingType === next.mappingType;
+    };
+
     this.expressionChangeSrc
       .withLatestFrom(
         this.state.map((state: MapperState) => state.currentSelection && state.currentSelection.node).distinctUntilChanged(),
-        (expression: string, currentNode: MapperTreeNode) => ({ expression, currentNode })
+        (editingExpression: EditingExpression, currentNode: MapperTreeNode) => ({ editingExpression, currentNode })
       )
-      .distinctUntilChanged((prev, next) => prev.expression === next.expression && prev.currentNode === next.currentNode)
-      .map(({ expression }) => expression)
-      .map(expression => (state: MapperState) => {
+      .distinctUntilChanged((prev, next) =>
+        isSameEditingExpression(prev.editingExpression, next.editingExpression) && prev.currentNode === next.currentNode)
+      .map(({ editingExpression }) => editingExpression)
+      .map(editingExpression => (state: MapperState) => {
         const currentSelection = state.currentSelection;
         const node = currentSelection.node;
-        node.data.expression = expression;
-        currentSelection.expression = expression;
+        node.data.expression = editingExpression.expression;
+        currentSelection.editingExpression = editingExpression;
 
         let expectedResultType = { type: node.dataType, array: false };
         if (node.dataType === 'array') {
@@ -276,10 +292,11 @@ export class MapperService {
         //   expectedResultType,
         //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
         // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-        node.isInvalid = expectedResultType.type === 'complex_object' && !this.isValidComplexObjectExpression(expression);
+        node.isInvalid =
+          editingExpression.mappingType === TYPE_OBJECT_TEMPLATE && !this.isValidComplexObjectExpression(editingExpression.expression);
         const parseResult = <any>{};
 
-        this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, expression, parseResult.structureDetails);
+        this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, editingExpression, parseResult.structureDetails);
 
         state.hasMappings = this.hasMappings(state.mappings);
 
@@ -303,12 +320,18 @@ export class MapperService {
     return true;
   }
 
-  private updateMapping(mappings: Mappings, path: string, expression: string, parsedExpressionDetails?: IParsedExpressionDetails) {
+  private updateMapping(
+    mappings: Mappings,
+    path: string,
+    editingExpression: EditingExpression,
+    parsedExpressionDetails?: IParsedExpressionDetails
+  ) {
     const existingMapping = mappings[path];
-    const isEmptyExpression = !expression || !expression.trim();
+    const isEmptyExpression = !editingExpression || !editingExpression.expression || !editingExpression.expression.trim();
     if (existingMapping) {
       if (!isEmptyExpression) {
-        existingMapping.expression = expression;
+        existingMapping.expression = editingExpression.expression;
+        existingMapping.mappingType = editingExpression.mappingType;
         existingMapping.parsedExpressionDetails = parsedExpressionDetails;
       } else {
         delete mappings[path];
@@ -316,7 +339,8 @@ export class MapperService {
     } else if (!isEmptyExpression) {
       // todo: check types
       mappings[path] = <any>{
-        expression,
+        expression: editingExpression.expression,
+        mappingType: editingExpression.mappingType,
         mappings: <Map<any, any>>{},
         parsedExpressionDetails,
       };

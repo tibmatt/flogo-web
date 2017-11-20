@@ -9,7 +9,7 @@ import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } fro
 import {
   REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT,
   TYPE_OBJECT_TEMPLATE
-} from '../../flogo.transform/constants';
+} from '../constants';
 
 import { flogoIDDecode } from '../../../common/utils';
 import { MapperSchema, FlowMetadata } from '../../flogo.transform/models';
@@ -104,33 +104,27 @@ export class MapperTranslator {
       if (value && !_.isString(value)) {
         value = JSON.stringify(value);
       }
-      mappings[input.mapTo] = { expression: value };
+      mappings[input.mapTo] = { expression: value, mappingType: input.type };
       return mappings;
     }, {});
   }
 
-  static translateMappingsOut(mappings: {[attr: string]: { expression: string} }, propsDefinitions: {
-    name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
-  }[]): FlowMapping[] {
-    const attrTypes = new Map(<any>propsDefinitions.map(definition => [definition.name, MapperTranslator.translateType(definition.type)]));
+  static translateMappingsOut(mappings: {[attr: string]: { expression: string, mappingType?: number  }}): FlowMapping[] {
     return Object.keys(mappings || {})
       // filterOutEmptyExpressions
       .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
       .map(attrName => {
-        const propType = attrTypes.get(attrName);
-        if (attrTypes.get(attrName) && propType === 'complex_object') {
-          return {
-            type: TYPE_OBJECT_TEMPLATE,
-            mapTo: attrName,
-            value: JSON.parse(mappings[attrName].expression)
-          };
-        } else {
-          return {
-            type: TYPE_ATTR_ASSIGNMENT,
-            mapTo: attrName,
-            value: mappings[attrName].expression
-          };
+        const mapping = mappings[attrName];
+        let value = mapping.expression;
+        const type = mapping.mappingType || TYPE_ATTR_ASSIGNMENT;
+        if (mapping.mappingType ===  TYPE_OBJECT_TEMPLATE) {
+          value = JSON.parse(mappings[attrName].expression);
         }
+        return {
+          mapTo: attrName,
+          type,
+          value
+        };
       });
   }
 
@@ -143,17 +137,15 @@ export class MapperTranslator {
     return 'activity';
   }
 
-  static makeValidator(propsDefinitions: {
-    name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
-  }[]): MappingsValidatorFn {
-    const attrTypes = new Map(<any>propsDefinitions.map(definition => [definition.name, MapperTranslator.translateType(definition.type)]));
+  static makeValidator(): MappingsValidatorFn {
     return (imapping: IMapping) => {
       const mappings = imapping && imapping.mappings;
       if (mappings) {
         // TODO: only works for first level mappings
         const invalidMapping = Object.keys(mappings).find(mapTo => {
-          if (attrTypes.get(mapTo) === 'complex_object') {
-            const expression = mappings[mapTo].expression;
+          const mapping = mappings[mapTo];
+          if (mapping.mappingType === TYPE_OBJECT_TEMPLATE) {
+            const expression = mapping.expression;
             if (!expression || !expression.trim().length) {
               return false;
             }

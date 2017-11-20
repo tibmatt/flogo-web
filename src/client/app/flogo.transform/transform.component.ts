@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
-import {
-  Component, ViewChild, ElementRef, Input, OnDestroy, HostListener,
+import { Component, Input, OnDestroy,
   trigger, transition, style, animate, state, AnimationTransitionEvent
 } from '@angular/core';
 
@@ -14,7 +13,6 @@ import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory 
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
 import { IFlogoFlowDiagramTaskAttribute } from '../flogo.flows.detail.diagram/models/attribute.model';
 import { IFlogoFlowDiagramTaskAttributeMapping } from '../flogo.flows.detail.diagram/models/attribute-mapping.model';
-import { MapperSchema } from './models/mapper-schema';
 
 @Component({
   selector: 'flogo-transform',
@@ -66,7 +64,6 @@ export class TransformComponent implements OnDestroy {
   private currentMappings: { [key: string]: IMapExpression };
   // todo: move to proper service
   private areValidMappings: (mappings: IMapping) => boolean;
-  private propsToMap: IFlogoFlowDiagramTaskAttribute[];
 
   constructor(private _postService: PostService) {
     this.initSubscriptions();
@@ -95,7 +92,7 @@ export class TransformComponent implements OnDestroy {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
       data: {
         tile: this.currentTile,
-        inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings, this.propsToMap),
+        inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings),
         id: this.flowId
       }
     }));
@@ -144,7 +141,6 @@ export class TransformComponent implements OnDestroy {
     } else if (this.currentTile.attributes && this.currentTile.attributes.inputs) {
       propsToMap = this.currentTile.attributes.inputs;
     }
-    this.propsToMap = propsToMap;
 
     if (data.overrideMappings) {
       mappings = data.overrideMappings;
@@ -153,7 +149,7 @@ export class TransformComponent implements OnDestroy {
     }
 
     this.mapperContext = this.createContext(propsToMap, mappings, data.scope);
-    this.areValidMappings = MapperTranslator.makeValidator(propsToMap);
+    this.areValidMappings = MapperTranslator.makeValidator();
     this.open();
   }
 

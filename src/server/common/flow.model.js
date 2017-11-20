@@ -229,7 +229,7 @@ export function flogoFlowToJSON(inFlow, options = { useRef: true }) {
         DEBUG && console.log(inMapping);
         return;
       }
-      if (_.isEmpty(mapping.value)) {
+      if (_.isString(mapping.value) && _.isEmpty(mapping.value)) {
         DEBUG && console.warn('Empty mapping value found');
         DEBUG && console.log(inMapping);
         return;

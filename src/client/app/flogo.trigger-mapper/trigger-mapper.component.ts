@@ -89,8 +89,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   onSave() {
     this.triggerMapperService.save(this.currentStatus.trigger, {
       actionMappings: {
-        input: MapperTranslator.translateMappingsOut(this.editingMappings.actionInput, []),
-        output: MapperTranslator.translateMappingsOut(this.editingMappings.actionOutput, []),
+        input: MapperTranslator.translateMappingsOut(this.editingMappings.actionInput),
+        output: MapperTranslator.translateMappingsOut(this.editingMappings.actionOutput),
       },
     });
   }
@@ -187,7 +187,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     const mappings = _.cloneDeep(this.editingMappings.actionInput);
 
     this.mapperContext = StaticMapperContextFactory.create(flowInputSchema, triggerOutputSchema, mappings);
-    this.mappingValidationFn = MapperTranslator.makeValidator(flowMetadata.input);
+    this.mappingValidationFn = MapperTranslator.makeValidator();
   }
 
   private setupReplyContext() {
@@ -197,7 +197,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     const mappings = _.cloneDeep(this.editingMappings.actionOutput);
 
     this.mapperContext = StaticMapperContextFactory.create(triggerReplySchema, flowOutputSchema, mappings);
-    this.mappingValidationFn = MapperTranslator.makeValidator(this.currentStatus.triggerSchema.reply);
+    this.mappingValidationFn = MapperTranslator.makeValidator();
   }
 
 }

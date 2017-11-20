@@ -153,7 +153,6 @@ function getSchema() {
                 type: 'integer',
               },
               value: {
-                type: 'string',
               },
               mapTo: {
                 type: 'string',
