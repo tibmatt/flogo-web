@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response, URLSearchParams } from '@angular/http';
+import { Http, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { HttpUtilsService } from '../http-utils.service';
 import { IFlogoApplicationModel } from '../../../application.model';
-import { ErrorService } from '../../../../common/services/error.service';
-import { Observable } from 'rxjs';
-import {FLOGO_PROFILE_TYPE} from "../../../constants";
+import { ErrorService } from '../../error.service';
+import { FLOGO_PROFILE_TYPE } from '../../../constants';
 
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
 export class AppsApiService {
 
-  constructor(private http: Http, private httpUtils: HttpUtilsService, private errorService: ErrorService ) {
+  constructor(private http: Http, private httpUtils: HttpUtilsService, private errorService: ErrorService) {
 
 
   }
@@ -25,21 +24,21 @@ export class AppsApiService {
 
   createNewApp(profileDetails): Promise<any> {
     return this.determineUniqueName(UNTITLED_APP).then(appName => {
-      let application: any = {
-        type: "flogo:app",
+      const application: any = {
+        type: 'flogo:app',
         name: appName,
         version: '',
         description: ''
       };
       if (profileDetails.profileType === FLOGO_PROFILE_TYPE.DEVICE) {
-        application.type = "flogo:device";
+        application.type = 'flogo:device';
         application.device = {};
         application.device.profile = profileDetails.profile;
         application.device.deviceType = profileDetails.deviceType;
         application.device.settings = profileDetails.settings || {};
       }
 
-      let options = this.httpUtils.defaultOptions();
+      const options = this.httpUtils.defaultOptions();
 
       return this.http.post(this.apiPrefix('apps/'), application, options).toPromise()
         .then(response => response.json().data);
@@ -53,7 +52,7 @@ export class AppsApiService {
       .toPromise();
   }
 
-  getApp(appId: string): Promise<IFlogoApplicationModel|null> {
+  getApp(appId: string): Promise<IFlogoApplicationModel | null> {
     return this.http.get(this.apiPrefix(`apps/${appId}`))
       .map(response => response.json())
       .map(responseBody => responseBody.data ? <IFlogoApplicationModel> responseBody.data : null)
@@ -61,7 +60,7 @@ export class AppsApiService {
   }
 
   updateApp(appId: string, app: any) {
-    let options = this.httpUtils.defaultOptions();
+    const options = this.httpUtils.defaultOptions();
 
     return this.http.patch(this.apiPrefix(`apps/${appId}`), app, options)
       .toPromise()
@@ -71,7 +70,7 @@ export class AppsApiService {
   }
 
   deleteApp(appId: string) {
-    let options = this.httpUtils.defaultOptions();
+    const options = this.httpUtils.defaultOptions();
 
     return this.http.delete(this.apiPrefix(`apps/${appId}`), options)
       .toPromise()
@@ -80,29 +79,31 @@ export class AppsApiService {
   }
 
   exportApp(appId: string) {
-    let options = this.httpUtils.defaultOptions();
+    const options = this.httpUtils.defaultOptions();
 
     return this.http.get(this.apiPrefix(`apps/${appId}:export`), options)
       .map(response => response.json())
       .toPromise();
   }
+
   exportFlows(appId: string, flowIds: any[]) {
     let reqOptions = this.httpUtils.defaultOptions();
     if (flowIds !== []) {
       const selectedFlowIds = flowIds.toString();
       const searchParams = new URLSearchParams();
       searchParams.set('flowids', selectedFlowIds);
-       reqOptions = reqOptions.merge({
-          search: searchParams
-        });
+      reqOptions = reqOptions.merge({
+        search: searchParams
+      });
     }
     return this.http.get(
       this.httpUtils.apiPrefix(`apps/${appId}:export?type=flows`), reqOptions)
-     .map((res: Response) => res.json())
+      .map((res: Response) => res.json())
       .toPromise();
   }
+
   uploadApplication(application) {
-    let options = this.httpUtils.defaultOptions();
+    const options = this.httpUtils.defaultOptions();
 
     return this.http.post(this.apiPrefix('apps:import'), application, options).toPromise()
       .then(response => response.json())
@@ -113,24 +114,10 @@ export class AppsApiService {
     return this.apiPrefix(`apps/${appId}/build`);
   }
 
-  private apiPrefix(path) {
-    return this.httpUtils.apiPrefix(path, 'v2');
-  }
-
-  private extractErrors (error: Response | any) {
-    if (error instanceof Response) {
-      const body = error.json();
-      const errs = body.errors || [body];
-      return errs;
-    } else {
-      return new Error('Unknown error');
-    }
-  }
-
   determineUniqueName(name: string) {
     return this.listApps().then((apps: Array<IFlogoApplicationModel>) => {
-      let normalizedName = name.trim().toLowerCase();
-      let possibleMatches = apps
+      const normalizedName = name.trim().toLowerCase();
+      const possibleMatches = apps
         .map(app => app.name.trim().toLowerCase())
         .filter(appName => appName.startsWith(normalizedName));
 
@@ -148,6 +135,20 @@ export class AppsApiService {
 
     });
 
+  }
+
+  private apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path, 'v2');
+  }
+
+  private extractErrors(error: Response | any) {
+    if (error instanceof Response) {
+      const body = error.json();
+      const errs = body.errors || [body];
+      return errs;
+    } else {
+      return new Error('Unknown error');
+    }
   }
 
 }

@@ -1,13 +1,9 @@
-import {
-  FLOGO_TASK_TYPE,
-  FLOGO_TASK_ATTRIBUTE_TYPE,
-  DEFAULT_VALUES_OF_TYPES
-} from './constants';
+import { DEFAULT_VALUES_OF_TYPES, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from './constants';
 import {
   FlogoFlowDiagram,
+  IFlogoFlowDiagramNode,
   IFlogoFlowDiagramNodeDictionary,
-  IFlogoFlowDiagramTaskDictionary,
-  IFlogoFlowDiagramNode
+  IFlogoFlowDiagramTaskDictionary
 } from '../app/flogo.flows.detail.diagram/models';
 
 // Refactoring data. Extracting functions related with branch creation in a different file.
@@ -16,33 +12,33 @@ export * from '../app/flogo.flows.detail.diagram/utils';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDEncode( id: string ): string {
-  return btoa( id )
-    .replace( /\+/g, '-' )
-    .replace( /\//g, '_' )
-    .replace( /=+$/, '' );
+export function flogoIDEncode(id: string): string {
+  return btoa(id)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
 }
 
 // URL safe base64 decoding
 // reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDDecode( encodedId: string ): string {
+export function flogoIDDecode(encodedId: string): string {
 
-  encodedId = encodedId.replace( /-/g, '+' )
-    .replace( /_/g, '/' );
+  encodedId = encodedId.replace(/-/g, '+')
+    .replace(/_/g, '/');
 
-  while ( encodedId.length % 4 ) {
+  while (encodedId.length % 4) {
     encodedId += '=';
   }
 
-  return atob( encodedId );
+  return atob(encodedId);
 }
 
 export function flogoGenBranchID(): string {
-  return flogoIDEncode( `Flogo::Branch::${Date.now()}` );
+  return flogoIDEncode(`Flogo::Branch::${Date.now()}`);
 }
 
 export function flogoGenTriggerID(): string {
-  return flogoIDEncode( `Flogo::Trigger::${Date.now()}` );
+  return flogoIDEncode(`Flogo::Trigger::${Date.now()}`);
 }
 
 /**
@@ -54,50 +50,50 @@ export function flogoGenTriggerID(): string {
  * @returns {number}
  * @private
  */
-export function convertTaskID(taskID: string ) {
+export function convertTaskID(taskID: string) {
   let id: any = '';
 
   try {
-    id = flogoIDDecode( taskID );
+    id = flogoIDDecode(taskID);
 
     // get the timestamp
-    const parsedID = id.split( '::' );
+    const parsedID = id.split('::');
 
-    if ( parsedID.length >= 2 ) {
-      id = parsedID[ 1 ];
+    if (parsedID.length >= 2) {
+      id = parsedID[1];
     }
-  } catch ( e ) {
-    console.warn( e );
+  } catch (e) {
+    console.warn(e);
     id = taskID;
   }
-  id = parseInt(id) || id;
+  id = parseInt(id, undefined) || id;
   return id;
 }
 
 // get default value of a given type
-export function getDefaultValue( type: FLOGO_TASK_ATTRIBUTE_TYPE ): any {
-  return DEFAULT_VALUES_OF_TYPES[ type ];
+export function getDefaultValue(type: FLOGO_TASK_ATTRIBUTE_TYPE): any {
+  return DEFAULT_VALUES_OF_TYPES[type];
 }
 
 // convert the type of attribute and add default value if enabled
-function portAttribute( inAttr: {
+function portAttribute(inAttr: {
   type: string;
   value: any;
   [key: string]: any;
-}, withDefault = false ) {
+}, withDefault = false) {
 
   const outAttr = <{
     type: any;
     value: any;
     [key: string]: any;
-  }>_.assign( {}, inAttr );
+  }>_.assign({}, inAttr);
 
-  outAttr.type = <FLOGO_TASK_ATTRIBUTE_TYPE>_.get( FLOGO_TASK_ATTRIBUTE_TYPE,
-    _.get( outAttr, 'type', 'STRING' )
-      .toUpperCase() );
+  outAttr.type = <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,
+    _.get(outAttr, 'type', 'STRING')
+      .toUpperCase());
 
-  if ( withDefault && _.isUndefined( outAttr.value ) ) {
-    outAttr.value = getDefaultValue( outAttr.type );
+  if (withDefault && _.isUndefined(outAttr.value)) {
+    outAttr.value = getDefaultValue(outAttr.type);
   }
 
   return outAttr;
@@ -157,16 +153,16 @@ export function activitySchemaToTask(schema: any): any {
   };
 
   _.each(
-    task.attributes.inputs, ( input: any ) => {
+    task.attributes.inputs, (input: any) => {
       // convert to task enumeration and provision default types
-      _.assign( input, portAttribute( input, true ) );
+      _.assign(input, portAttribute(input, true));
     }
   );
 
   _.each(
-    task.attributes.outputs, ( output: any ) => {
+    task.attributes.outputs, (output: any) => {
       // convert to task enumeration and provision default types
-      _.assign( output, portAttribute( output ) );
+      _.assign(output, portAttribute(output));
     }
   );
 
@@ -192,16 +188,16 @@ export function activitySchemaToTrigger(schema: any): any {
   };
 
   _.each(
-    trigger.inputs, ( input: any ) => {
+    trigger.inputs, (input: any) => {
       // convert to task enumeration and provision default types
-      _.assign( input, portAttribute( input, true ) );
+      _.assign(input, portAttribute(input, true));
     }
   );
 
   _.each(
-    trigger.outputs, ( output: any ) => {
+    trigger.outputs, (output: any) => {
       // convert to task enumeration and provision default types
-      _.assign( output, portAttribute( output ) );
+      _.assign(output, portAttribute(output));
     }
   );
 
@@ -215,7 +211,7 @@ export function objectFromArray(arr, copyValues?) {
   const settings = arr || [];
 
   settings.forEach((setting) => {
-    mappedSettings[setting.name] = copyValues ?  setting.value : null;
+    mappedSettings[setting.name] = copyValues ? setting.value : null;
   });
 
   return mappedSettings;
@@ -266,37 +262,37 @@ export function parseMapping(mappingValue: string) {
 
 }
 
-export function updateFlogoGlobalConfig( config: any ) {
+export function updateFlogoGlobalConfig(config: any) {
   (<any>window).FLOGO_GLOBAL = config;
 
-  if ( localStorage ) {
-    localStorage.setItem( 'FLOGO_GLOBAL', JSON.stringify( config ) );
+  if (localStorage) {
+    localStorage.setItem('FLOGO_GLOBAL', JSON.stringify(config));
   }
 }
 
 export function resetFlogoGlobalConfig() {
   // set default value
-  updateFlogoGlobalConfig( {
-    db : {
+  updateFlogoGlobalConfig({
+    db: {
       // protocol : 'http',
       // host : 'localhost',
-      port : '5984',
-      name : 'flogo-web'
+      port: '5984',
+      name: 'flogo-web'
     },
-    activities : {
-      db : {
+    activities: {
+      db: {
         // protocol : 'http',
         // host : 'localhost',
-        port : '5984',
-        name : 'flogo-web-activities'
+        port: '5984',
+        name: 'flogo-web-activities'
       }
     },
-    triggers : {
-      db : {
+    triggers: {
+      db: {
         // protocol : 'http',
         // host : 'localhost',
-        port : '5984',
-        name : 'flogo-web-triggers'
+        port: '5984',
+        name: 'flogo-web-triggers'
       },
     },
     /*
@@ -308,74 +304,74 @@ export function resetFlogoGlobalConfig() {
         name : 'flogo-web-models'
       },
     },*/
-    engine : {
+    engine: {
       // protocol : 'http',
       // host : "localhost",
-      port : '8080',
+      port: '8080',
       testPath: 'status'
     },
-    stateServer : {
+    stateServer: {
       // protocol : 'http',
       // host : "localhost",
-      port : '9190',
+      port: '9190',
       testPath: 'ping'
     },
-    flowServer : {
+    flowServer: {
       // protocol : 'http',
       // host : "localhost",
-      port : '9090',
+      port: '9090',
       testPath: 'ping'
     }
-  } );
+  });
 }
 
 export function formatServerConfiguration(config: any) {
   return {
-    db : {
+    db: {
       protocol: config.db.protocol,
       host: config.db.host,
-      port : config.db.port,
-      name : config.db.testPath,
+      port: config.db.port,
+      name: config.db.testPath,
       label: config.db.label
     },
-    activities : {
+    activities: {
       protocol: config.activities.protocol,
       host: config.activities.host,
       port: config.activities.port,
       testPath: config.activities.testPath,
       label: config.activities.label,
-      db : {
-        port : config.activities.port,
-        name : config.activities.testPath
+      db: {
+        port: config.activities.port,
+        name: config.activities.testPath
       }
     },
-    triggers : {
+    triggers: {
       protocol: config.triggers.protocol,
       host: config.triggers.host,
       port: config.triggers.port,
       testPath: config.triggers.testPath,
       label: config.triggers.label,
-      db : {
-        port : config.triggers.port,
-        name : config.triggers.testPath
+      db: {
+        port: config.triggers.port,
+        name: config.triggers.testPath
       },
     },
-    engine : {
-      protocol : config.engine.protocol,
-      host : config.engine.host,
-      port : config.engine.port,
+    engine: {
+      protocol: config.engine.protocol,
+      host: config.engine.host,
+      port: config.engine.port,
       testPath: config.engine.testPath
     },
-    stateServer : {
-      protocol : config.stateServer.protocol,
-      host : config.stateServer.host,
-      port : config.stateServer.port,
+    stateServer: {
+      protocol: config.stateServer.protocol,
+      host: config.stateServer.host,
+      port: config.stateServer.port,
       testPath: config.stateServer.testPath
     },
-    flowServer : {
-      protocol : config.flowServer.protocol,
-      host : config.flowServer.host,
-      port : config.flowServer.port,
+    flowServer: {
+      protocol: config.flowServer.protocol,
+      host: config.flowServer.host,
+      port: config.flowServer.port,
       testPath: config.flowServer.testPath
     }
   };
@@ -383,21 +379,21 @@ export function formatServerConfiguration(config: any) {
 
 export function getFlogoGlobalConfig(): any {
 
-  if ( !(<any>window).FLOGO_GLOBAL ) {
+  if (!(<any>window).FLOGO_GLOBAL) {
     let config: any;
 
-    if ( localStorage ) {
-      config = localStorage.getItem( 'FLOGO_GLOBAL' );
+    if (localStorage) {
+      config = localStorage.getItem('FLOGO_GLOBAL');
 
-      if ( config ) {
+      if (config) {
 
         try {
-          config = JSON.parse( config );
-        } catch ( e ) {
-          console.warn( e );
+          config = JSON.parse(config);
+        } catch (e) {
+          console.warn(e);
         }
 
-        updateFlogoGlobalConfig( config );
+        updateFlogoGlobalConfig(config);
 
         return config;
       }
@@ -409,27 +405,26 @@ export function getFlogoGlobalConfig(): any {
   return (<any>window).FLOGO_GLOBAL;
 }
 
-export function getURL( config: {
+export function getURL(config: {
   protocol?: string;
   host?: string;
   port?: string;
-} ): string {
-  if ( config.port ) {
-    return `${config.protocol || location.protocol.replace( ':', '' )}://${config.host || location.hostname}:${config.port}`;
+}): string {
+  if (config.port) {
+    return `${config.protocol || location.protocol.replace(':', '')}://${config.host || location.hostname}:${config.port}`;
   } else {
-    return `${config.protocol || location.protocol.replace( ':', '' )}://${config.host || location.hostname}}`;
+    return `${config.protocol || location.protocol.replace(':', '')}://${config.host || location.hostname}}`;
   }
 }
 
 
-
-export function getDBURL( dbConfig: {
+export function getDBURL(dbConfig: {
   port: string;
   protocol: string;
   host: string;
   name: string;
-} ): string {
-  return `${getURL( dbConfig )}/${dbConfig.name}`;
+}): string {
+  return `${getURL(dbConfig)}/${dbConfig.name}`;
 }
 
 /**
@@ -470,7 +465,9 @@ export function copyToClipboard(element: HTMLElement) {
 export function notification(message: string, type: string, time?: number, settings ?: any) {
   let styles = '';
   for (const key in settings) {
-    styles += key + ':' + settings[key] + ';';
+    if (settings.hasOwnProperty(key)) {
+      styles += key + ':' + settings[key] + ';';
+    }
   }
   let template = `<div style="${styles}" class="${type} flogo-common-notification">${message}`;
   if (!time) {
@@ -486,12 +483,14 @@ export function notification(message: string, type: string, time?: number, setti
     jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
   const notification = jQuery('.flogo-common-notification-container>div:last');
-  const notifications =  jQuery('.flogo-common-notification-container>div');
+  const notifications = jQuery('.flogo-common-notification-container>div');
   const maxCounter = 5;
 
   if (notifications.length > 5) {
     for (let i = 0; i < notifications.length - maxCounter; i++) {
-      if (notifications[i]) { notifications[i].remove(); }
+      if (notifications[i]) {
+        notifications[i].remove();
+      }
     }
   }
   setTimeout(function () {
@@ -500,8 +499,12 @@ export function notification(message: string, type: string, time?: number, setti
   return new Promise((resolve, reject) => {
     if (time) {
       setTimeout(function () {
-        if (notification) { notification.remove(); }
-        if (!notificationContainer.html()) { notificationContainer.remove(); }
+        if (notification) {
+          notification.remove();
+        }
+        if (!notificationContainer.html()) {
+          notificationContainer.remove();
+        }
       }, time);
     }
     if (!time) {
@@ -515,24 +518,24 @@ export function notification(message: string, type: string, time?: number, setti
   });
 }
 
-export function attributeTypeToString( inType: any ): string {
-  if ( _.isString( inType ) ) {
+export function attributeTypeToString(inType: any): string {
+  if (_.isString(inType)) {
     return inType;
   }
 
   return (FLOGO_TASK_ATTRIBUTE_TYPE[inType] || 'string').toLowerCase();
 }
 
-export function updateBranchNodesRunStatus( nodes: IFlogoFlowDiagramNodeDictionary,
-  tasks: IFlogoFlowDiagramTaskDictionary ) {
+export function updateBranchNodesRunStatus(nodes: IFlogoFlowDiagramNodeDictionary,
+                                           tasks: IFlogoFlowDiagramTaskDictionary) {
 
-  _.forIn( nodes, ( node: IFlogoFlowDiagramNode ) => {
-    const task = tasks[ node.taskID ];
+  _.forIn(nodes, (node: IFlogoFlowDiagramNode) => {
+    const task = tasks[node.taskID];
 
-    if ( task.type === FLOGO_TASK_TYPE.TASK_BRANCH ) {
-      _.set( task, '__status.hasRun', FlogoFlowDiagram.hasBranchRun( node, tasks, nodes ) );
+    if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) {
+      _.set(task, '__status.hasRun', FlogoFlowDiagram.hasBranchRun(node, tasks, nodes));
     }
-  } );
+  });
 
 }
 
@@ -545,7 +548,7 @@ export function updateBranchNodesRunStatus( nodes: IFlogoFlowDiagramNodeDictiona
  */
 export function diffDates(beginDate: any, endDate: any, timeUnit: any) {
   const begin = moment(beginDate);
-  const end  = moment(endDate);
+  const end = moment(endDate);
 
   return begin.diff(end, timeUnit);
 

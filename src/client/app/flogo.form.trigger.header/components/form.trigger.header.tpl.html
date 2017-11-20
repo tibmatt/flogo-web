@@ -7,7 +7,7 @@
     </div>
 
     <div class="details__text">
-      <div class="details__text__name" [(myContenteditable)]="descriptions.name" (myContenteditableChange)="changeDescriptions($event, 'name')"></div>
+      <div class="details__text__name" [(fgContentEditable)]="descriptions.name" (fgContentEditableChange)="changeDescriptions($event, 'name')"></div>
       <div class="details__text__description">{{ descriptions?.details }}</div>
     </div>
 

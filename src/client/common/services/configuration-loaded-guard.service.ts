@@ -1,15 +1,13 @@
-import { Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ConfigurationService } from './configuration.service';
-
-import { Injectable }     from '@angular/core';
-import { CanActivate }    from '@angular/router';
+import { CanActivate } from '@angular/router';
 
 @Injectable()
 export class ConfigurationLoadedGuard implements CanActivate {
 
-  private _config : ConfigurationService;
+  private _config: ConfigurationService;
 
-  constructor(config : ConfigurationService) {
+  constructor(config: ConfigurationService) {
     this._config = config;
   }
 

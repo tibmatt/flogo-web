@@ -2,7 +2,7 @@ import { NgZone } from '@angular/core';
 import { ChildWindowService } from './child-window.service';
 import { WindowRef } from './window-ref';
 
-describe('Service: ChildWindowService', function(this: {
+describe('Service: ChildWindowService', function (this: {
   service: ChildWindowService;
   MockWindowClass: any;
   mockWindow: any;
@@ -30,7 +30,7 @@ describe('Service: ChildWindowService', function(this: {
       };
 
       this.off = () => {
-        //noop
+        // noop
       };
     }
 

@@ -105,7 +105,7 @@
               <div class="flogo-app-detail-list-wrapper "
                    [ngClass]="{'active' : isExportBoxShown, 'flogo-app-detail-profile-wrapper' : profileType === PROFILE_TYPES.DEVICE}">
                 <ul class="flogo-app-detail-list list-unstyled">
-                  <li class="flogo-app-detail-list-item" [jsonDownloader]="appExporter()">
+                  <li class="flogo-app-detail-list-item" [fgJsonDownloader]="appExporter()">
                     <a class="flogo-app-detail-list-link"><span>{{ 'DETAILS:EXPORT-APP' | translate }} </span></a>
                   </li>
                   <li class="flogo-app-detail-list-item" (click)="openExportFlow();">

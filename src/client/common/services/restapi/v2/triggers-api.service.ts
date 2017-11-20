@@ -1,19 +1,19 @@
-import {Injectable} from '@angular/core';
-import { activitySchemaToTrigger } from '../../../utils';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import {environment} from "../../../../environments/environment";
+import { environment } from '../../../../environments/environment';
 import { HttpUtilsService } from '../http-utils.service';
 
 export const domainURL = environment.hostname;
+
 @Injectable()
-export class  RESTAPITriggersService {
-  constructor( private http : Http,private httpUtils: HttpUtilsService) {
+export class RESTAPITriggersService {
+  constructor(private http: Http, private httpUtils: HttpUtilsService) {
   }
 
   createTrigger(appId, trigger: any) {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
 
     return this.http.post(this.apiPrefix(`apps/${appId}/triggers`), trigger, options).toPromise()
       .then(response => response.json().data);
@@ -33,8 +33,8 @@ export class  RESTAPITriggersService {
   }
 
   updateTrigger(triggerId: string, trigger: any) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
 
     return this.http.patch(this.apiPrefix(`triggers/${triggerId}`), trigger, options).toPromise()
       .then(response => this.extractData(response))
@@ -46,12 +46,12 @@ export class  RESTAPITriggersService {
   }
 
   private extractData(res: Response) {
-    let body = res.json();
+    const body = res.json();
     // todo: body.data won't always be an object, could be an array
     return body ? body.data : {};
   }
 
-  private extractErrors (error: Response | any) {
+  private extractErrors(error: Response | any) {
     if (error instanceof Response) {
       const body = error.json();
       const errs = body.errors || [body];
@@ -66,4 +66,4 @@ export class  RESTAPITriggersService {
   }
 
 
-  }
+}

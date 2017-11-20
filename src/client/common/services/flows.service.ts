@@ -1,5 +1,5 @@
-import {Injectable} from "@angular/core";
-import {objectFromArray} from "../utils";
+import { Injectable } from '@angular/core';
+import { objectFromArray } from '../utils';
 
 import { RESTAPIHandlersService as HandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService as FlowsApiService } from './restapi/v2/flows-api.service';
@@ -14,20 +14,21 @@ export class FlowsService {
               private contribTriggerService: ContribTriggersService) {
   }
 
-  createFlow(appId: string, flow: {name: string, description: string}, triggerId) {
+  createFlow(appId: string, newFlow: { name: string, description: string }, triggerId) {
     if (!triggerId) {
-      return this.flowsService.createFlow(appId, flow);
+      return this.flowsService.createFlow(appId, newFlow);
     }
 
-    return this.flowsService.createFlow(appId, flow)
-      .then(flow => this.getContribInfo(triggerId)
-        .then(contribTrigger => ({ flow, contribTrigger }))
-      )
-      .then(({flow, contribTrigger}) => {
-        let settings = objectFromArray(contribTrigger.endpoint.settings);
-        let outputs = objectFromArray(contribTrigger.outputs);
-        return this.handlersService.updateHandler(triggerId, flow.id, { settings, outputs });
+    return this.flowsService.createFlow(appId, newFlow)
+      .then(flow => {
+        return this.getContribInfo(triggerId)
+          .then(contribTrigger => ({ flow, contribTrigger }));
       })
+      .then(({ flow, contribTrigger }) => {
+        const settings = objectFromArray(contribTrigger.endpoint.settings);
+        const outputs = objectFromArray(contribTrigger.outputs);
+        return this.handlersService.updateHandler(triggerId, flow.id, { settings, outputs });
+      });
   }
 
   deleteFlow(flowId) {
@@ -37,10 +38,10 @@ export class FlowsService {
   deleteFlowWithTrigger(flowId: string, triggerId: string) {
     return this.deleteFlow(flowId)
       .then(() => {
-        if(triggerId){
+        if (triggerId) {
           return this.triggersService.getTrigger(triggerId)
             .then(triggerDetails => {
-              if(triggerDetails.handlers.length === 0) {
+              if (triggerDetails.handlers.length === 0) {
                 return this.triggersService.deleteTrigger(triggerDetails.id);
               } else {
                 return {};
@@ -55,7 +56,7 @@ export class FlowsService {
 
   private getContribInfo(triggerInstanceId) {
     return this.triggersService.getTrigger(triggerInstanceId)
-      .then(triggerInstance => this.contribTriggerService.getTriggerDetails(triggerInstance.ref))
+      .then(triggerInstance => this.contribTriggerService.getTriggerDetails(triggerInstance.ref));
   }
 
 }

@@ -1,24 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
-import { Http } from '@angular/http';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
 import {IFlogoApplicationFlowModel } from '../../../common/application.model';
 import { AppDetailService } from '../../flogo.apps/services/apps.service';
-import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
 import { FlogoExportFlowsComponent } from './export-flow.component';
 
 
 @Component({
-  selector: 'flogo-export-flow-modal',
-  template: `
-            <flogo-export-flow [flows]="flows"></flogo-export-flow>
-            `
+  template: `<flogo-export-flow [flows]="flows"></flogo-export-flow>`
 })
-class ContainerComponent {
+class TestHostComponent {
   flows: Array<IFlogoApplicationFlowModel> = makeMockFlows();
 }
 
@@ -30,8 +25,8 @@ class MockAppDetailService {
 }
 
 describe('FlogoExportFlowsComponent component', () => {
-  let containerComponent: ContainerComponent;
-  let fixture: ComponentFixture<ContainerComponent>;
+  let containerComponent: TestHostComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
   let checkboxList: DebugElement[];
   let exportButton: DebugElement;
   let selectAllLink: DebugElement;
@@ -48,7 +43,7 @@ describe('FlogoExportFlowsComponent component', () => {
       declarations: [
         // FlogoAppSettingsComponent,
         FlogoExportFlowsComponent,
-        ContainerComponent,
+        TestHostComponent,
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService }
@@ -61,7 +56,7 @@ describe('FlogoExportFlowsComponent component', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ContainerComponent);
+    fixture = TestBed.createComponent(TestHostComponent);
     containerComponent = fixture.componentInstance;
     fixture.detectChanges();
     checkboxList = fixture.debugElement.queryAll(By.css('.flogo-export-flow-list-item input'));
@@ -97,7 +92,11 @@ describe('FlogoExportFlowsComponent component', () => {
     fixture.detectChanges();
 
     expect(exportButton.nativeElement.disabled).toBeFalsy();
-    exportButton.nativeElement.click();
+
+    const exportFlowsComponentDe = fixture.debugElement.query(By.directive(FlogoExportFlowsComponent));
+    const exportFlowsComponent = <FlogoExportFlowsComponent> exportFlowsComponentDe.componentInstance;
+    const exporter = exportFlowsComponent.exportFlows();
+    exporter();
     fixture.detectChanges();
 
     // all original flows except the last one

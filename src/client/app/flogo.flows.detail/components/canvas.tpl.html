@@ -20,8 +20,8 @@
                            'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}"></div>
           <div>
             <div class="clearfix">
-              <h3 class="flogo-flow-detail-name" [(myContenteditable)]="flow.name"
-                  (myContenteditableChange)="changeFlowDetailName($event, 'name')"></h3>
+              <h3 class="flogo-flow-detail-name" [(fgContentEditable)]="flow.name"
+                  (fgContentEditableChange)="changeFlowDetailName($event, 'name')"></h3>
               <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{flow.app.device.deviceType}}</span>
             </div>
             <div>
@@ -29,9 +29,9 @@
                                     class="flogo-flow-detail-header-back-app-name"
                                     (mouseover)="onMouseOverBackControl()"
                                     (mouseout)="onMouseOutBackControl()">{{flow.app?.name}}</span>
-              <p class="flogo-flow-detail-description" [(myContenteditable)]="flow.description"
+              <p class="flogo-flow-detail-description" [(fgContentEditable)]="flow.description"
                  placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
-                 (myContenteditableChange)="changeFlowDetail($event, 'descrption')"></p>
+                 (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
             </div>
           </div>
         </div>

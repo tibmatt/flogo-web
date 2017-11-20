@@ -59,12 +59,11 @@ export class FlogoExportFlowsComponent {
     let flowsToExport;
     if (this.checkedFlows.length === this.flows.length) {
       flowsToExport = [];
-    }else {
+    } else {
       flowsToExport = this.checkedFlows;
     }
       return () => this.appDetailService.exportFlow(flowsToExport)
         .then(appWithFlows => {
-          console.log(appWithFlows);
           return [{
             fileName: 'flows.json',
             data: appWithFlows

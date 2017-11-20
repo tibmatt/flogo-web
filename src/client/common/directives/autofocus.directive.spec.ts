@@ -3,9 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { AutofocusDirective } from './autofocus.directive';
-//declare var document: any;
+
+// declare var document: any;
 @Component({
-  selector: 'container',
+  selector: 'flogo-test-container',
   template: `
 
 <div [ngSwitch]="caseName">
@@ -15,21 +16,21 @@ import { AutofocusDirective } from './autofocus.directive';
 </div>
    `
 })
-class Container {
-  public caseName : string;
-  public shouldAutofocus : boolean;
+class ContainerComponent {
+  public caseName: string;
+  public shouldAutofocus: boolean;
 }
 
 describe('Directive: fgAutofocus ', () => {
-  let fixture: ComponentFixture<Container>;
-  let container : Container;
+  let fixture: ComponentFixture<ContainerComponent>;
+  let container: ContainerComponent;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CommonModule, BrowserModule],
-      declarations: [AutofocusDirective, Container]
+      declarations: [AutofocusDirective, ContainerComponent]
     });
-    fixture = TestBed.createComponent(Container);
+    fixture = TestBed.createComponent(ContainerComponent);
     container = fixture.componentInstance;
   });
 

@@ -1,4 +1,4 @@
-import { Injectable, Component, NgZone } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
 
@@ -43,7 +43,7 @@ export class ChildWindowService {
     if (!nativeWindow) {
       return null;
     }
-    this.childWindow =  new ChildWindow(nativeWindow, this.ngZone);
+    this.childWindow = new ChildWindow(nativeWindow, this.ngZone);
     return this.childWindow;
   }
 
@@ -60,8 +60,8 @@ export class ChildWindowService {
 
 export class ChildWindow {
 
-  private _closed: Observable<Event>;
   private _isClosed = false;
+  private _closed: Observable<Event>;
 
   constructor(private nativeWindow: Window, private ngZone: NgZone) {
     if (!nativeWindow) {
@@ -73,6 +73,10 @@ export class ChildWindow {
       .do(event => ngZone.run(() => this._isClosed = true))
       .first()
       .publishReplay().refCount();
+  }
+
+  get closed(): Observable<Event> {
+    return this._closed;
   }
 
   isOpen() {
@@ -89,10 +93,6 @@ export class ChildWindow {
 
   focus() {
     this.nativeWindow.focus();
-  }
-
-  get closed(): Observable<Event> {
-    return this._closed;
   }
 
 }

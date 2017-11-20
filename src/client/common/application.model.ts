@@ -1,22 +1,22 @@
 export interface IFlogoApplicationModel {
-    id: string;
-    name: string;
-    version: string;
-    description: string;
-    createdAt: any;
-    updatedAt: any;
-    flows?: IFlogoApplicationFlowModel[];
-    triggers?: Array<Trigger>;
-    actions?: Array<Action>;
-    type?: string;
-    device?: any;
+  id: string;
+  name: string;
+  version: string;
+  description: string;
+  createdAt: any;
+  updatedAt: any;
+  flows?: IFlogoApplicationFlowModel[];
+  triggers?: Array<Trigger>;
+  actions?: Array<Action>;
+  type?: string;
+  device?: any;
 }
 
 export interface IFlogoApplicationFlowModel {
-    id: string;
-    name: string;
-    description: string;
-    createdAt: any;
+  id: string;
+  name: string;
+  description: string;
+  createdAt: any;
 }
 
 export interface Trigger {

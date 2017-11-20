@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import { Http, URLSearchParams, Response } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Response, URLSearchParams } from '@angular/http';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
@@ -7,22 +7,22 @@ import { HttpUtilsService } from '../http-utils.service';
 
 @Injectable()
 export class APIFlowsService {
-  constructor(private http: Http, private httpUtils: HttpUtilsService){
+  constructor(private http: Http, private httpUtils: HttpUtilsService) {
   }
 
   getFlow(flowId: string) {
     const actionId = flowId;
     return this.http.get(
-     this.httpUtils.apiPrefix(`actions/${actionId}`),
+      this.httpUtils.apiPrefix(`actions/${actionId}`),
       this.httpUtils.defaultOptions()
     )
       .map(response => response.json().data)
       .toPromise();
   }
 
-  createFlow(appId, flow: {name:string, description?:string, version?: string, data?: { flow: any }}) {
+  createFlow(appId, flow: { name: string, description?: string, version?: string, data?: { flow: any } }) {
     return this.http.post(
-     this.httpUtils.apiPrefix(`apps/${appId}/actions`),
+      this.httpUtils.apiPrefix(`apps/${appId}/actions`),
       flow,
       this.httpUtils.defaultOptions()
     )
@@ -33,7 +33,7 @@ export class APIFlowsService {
   updateFlow(flowId, flow) {
     const actionId = flowId;
     return this.http.patch(
-    this.httpUtils.apiPrefix(`actions/${actionId}`),
+      this.httpUtils.apiPrefix(`actions/${actionId}`),
       flow,
       this.httpUtils.defaultOptions()
     )
@@ -44,7 +44,7 @@ export class APIFlowsService {
   deleteFlow(flowId) {
     const actionId = flowId;
     return this.http.delete(
-    this.httpUtils.apiPrefix(`actions/${actionId}`),
+      this.httpUtils.apiPrefix(`actions/${actionId}`),
       this.httpUtils.defaultOptions()
     )
       .map(() => true)
@@ -54,13 +54,13 @@ export class APIFlowsService {
   findFlowsByName(flowName: string, appId: string) {
     const searchParams = new URLSearchParams();
     searchParams.set('filter[name]', flowName);
-    let reqOptions = this.httpUtils.defaultOptions()
+    const reqOptions = this.httpUtils.defaultOptions()
       .merge({
         search: searchParams
       });
 
     return this.http.get(
-    this.httpUtils.apiPrefix(`apps/${appId}/actions`), reqOptions)
+      this.httpUtils.apiPrefix(`apps/${appId}/actions`), reqOptions)
       .map((res: Response) => res.json().data)
       .toPromise();
   }

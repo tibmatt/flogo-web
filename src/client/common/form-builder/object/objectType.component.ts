@@ -1,6 +1,6 @@
-import {Component, Input} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {BaseField} from '../field-base';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { BaseField } from '../field-base';
 
 @Component({
   selector: 'flogo-fb-object',

@@ -16,14 +16,14 @@ import { Directive, ElementRef, Input, OnInit } from '@angular/core';
  * @version 1.0.0
  * @author Tyler Smith
  */
-@Directive({ selector: '[flogoMapperInlineHref]' })
+@Directive({ selector: '[fgMapperInlineHref]' })
 export class InlineHrefDirective implements OnInit {
   private static readonly HREF_ATTR = 'href';
   private static readonly SVG_USE_TAG = 'use';
   private static readonly XLINK_NS = 'http://www.w3.org/1999/xlink';
 
   // tslint:disable-next-line:no-input-rename
-  @Input('flogoMapperInlineHref') inlineHref: string;
+  @Input('fgMapperInlineHref') inlineHref: string;
 
   constructor(private element: ElementRef) {
   }

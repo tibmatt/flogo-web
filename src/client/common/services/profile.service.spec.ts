@@ -1,22 +1,22 @@
-import {FlogoProfileService} from './profile.service';
-import {FLOGO_PROFILE_TYPE} from '../constants';
-import {RESTAPIContributionsService} from './restapi/v2/contributions.service';
-import {RESTAPIActivitiesService} from './restapi/activities-api.service';
-import {RESTAPITriggersService} from './restapi/triggers-api.service';
+import { FlogoProfileService } from './profile.service';
+import { FLOGO_PROFILE_TYPE } from '../constants';
+import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
+import { RESTAPIActivitiesService } from './restapi/activities-api.service';
+import { RESTAPITriggersService } from './restapi/triggers-api.service';
+import {
+  MOCK_DEVICE_APP_DATA as mockDeviceAppData,
+  MOCK_MICROSERVICE_APP_DATA as mockMicroServiceAppData
+} from '../mocks/application.json.mock';
+import { FlogoMicroserviceTaskIdGeneratorService } from './profiles/microservices/utils.service';
+import { FlogoDeviceTaskIdGeneratorService } from './profiles/devices/utils.service';
 import Spy = jasmine.Spy;
-import {mockTriggerDetails} from '../../app/flogo.flows.detail/services/ui-model-trigger.mock';
-import {MockBackend} from '@angular/http/testing';
-import { MOCK_DEVICE_APP_DATA as mockDeviceAppData,
-  MOCK_MICROSERVICE_APP_DATA as mockMicroServiceAppData} from '../mocks/application.json.mock';
-import {FlogoMicroserviceTaskIdGeneratorService} from './profiles/microservices/utils.service';
-import {FlogoDeviceTaskIdGeneratorService} from './profiles/devices/utils.service';
 
-describe('Service: FlogoProfileService', function(this: {
+describe('Service: FlogoProfileService', function (this: {
   testService: FlogoProfileService
   triggerServiceMock: RESTAPITriggersService,
   activityServiceMock: RESTAPIActivitiesService,
   contribServiceMock: RESTAPIContributionsService
-}){
+}) {
   class MockActivitiesResponse {
     data = [
       {
@@ -412,11 +412,13 @@ describe('Service: FlogoProfileService', function(this: {
         'outputs': []
       }
     ];
+
     text() {
       return true;
     }
+
     json() {
-      return {data: this.data};
+      return { data: this.data };
     }
   }
 

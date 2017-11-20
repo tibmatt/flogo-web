@@ -3,7 +3,7 @@ export const MOCK_DEVICE_APP_DATA = {
   'triggers': [
     {
       'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'settings': {'port': null},
+      'settings': { 'port': null },
       'handlers': [
         {
           'settings': {
@@ -45,7 +45,7 @@ export const MOCK_MICROSERVICE_APP_DATA = {
   'triggers': [
     {
       'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'settings': {'port': null},
+      'settings': { 'port': null },
       'handlers': [
         {
           'settings': {

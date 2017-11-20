@@ -7,18 +7,18 @@ import { copyToClipboard } from '../utils';
         (click)="copy()" [ngClass]="{disabled: copied}" >{{ text }}</button>`
 })
 export class CopyToClipboardComponent {
-  @Input() element : HTMLElement;
+  @Input() element: HTMLElement;
   copied = false;
-
-  copy() {
-    if(copyToClipboard(this.element)) {
-      this.copied = true;
-      setTimeout(() => this.copied = false, 1200);
-    }
-  }
 
   get text() {
     return this.copied ? 'Copied to clipboard' : 'Copy';
+  }
+
+  copy() {
+    if (copyToClipboard(this.element)) {
+      this.copied = true;
+      setTimeout(() => this.copied = false, 1200);
+    }
   }
 
 }

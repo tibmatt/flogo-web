@@ -1,11 +1,10 @@
-import {Injectable} from '@angular/core';
-import { activitySchemaToTrigger } from '../../../utils';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class  RESTAPITriggersServiceMock {
-  constructor( private http : Http ) {
+export class RESTAPITriggersServiceMock {
+  constructor(private http: Http) {
   }
 
   createTrigger(appId, trigger: any) {

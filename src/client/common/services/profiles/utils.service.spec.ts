@@ -1,7 +1,7 @@
-import {FlogoMicroserviceTaskIdGeneratorService} from './microservices/utils.service';
-import {AbstractTaskIdGenerator } from './profiles.utils.service';
-import {FlogoDeviceTaskIdGeneratorService} from './devices/utils.service';
-import {flogoIDEncode} from '../../utils';
+import { FlogoMicroserviceTaskIdGeneratorService } from './microservices/utils.service';
+import { AbstractTaskIdGenerator } from './profiles.utils.service';
+import { FlogoDeviceTaskIdGeneratorService } from './devices/utils.service';
+import { flogoIDEncode } from '../../utils';
 
 const mockTasksAvailable = {
   'RmxvZ286OlRyaWdnZXI6OjE1MDQ2Mjg3ODI1NzU': {
@@ -115,9 +115,9 @@ const mockSelectedTask = {
   ]
 };
 
-describe('Service: FlogoMicroserviceTaskIdGeneratorService', function(this: {
+describe('Service: FlogoMicroserviceTaskIdGeneratorService', function (this: {
   testService: AbstractTaskIdGenerator
-}){
+}) {
   beforeAll(() => {
     this.testService = new FlogoMicroserviceTaskIdGeneratorService();
   });
@@ -127,9 +127,9 @@ describe('Service: FlogoMicroserviceTaskIdGeneratorService', function(this: {
   });
 });
 
-describe('Service: FlogoDeviceTaskIdGeneratorService', function(this: {
+describe('Service: FlogoDeviceTaskIdGeneratorService', function (this: {
   testService: AbstractTaskIdGenerator
-}){
+}) {
   beforeAll(() => {
     this.testService = new FlogoDeviceTaskIdGeneratorService();
   });

@@ -2,25 +2,29 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslateModule, TranslateLoader } from 'ng2-translate/ng2-translate';
-import { Http, HttpModule as NgHttpModule } from '@angular/http'
+import { TranslateLoader, TranslateModule } from 'ng2-translate/ng2-translate';
+import { Http, HttpModule as NgHttpModule } from '@angular/http';
 
-
-import { CopyToClipboardComponent, INFORMATION_POPUP_DIRECTIVES } from './components';
+import { CopyToClipboardComponent } from './components';
 import { TimeFromNowPipe } from './pipes';
-import { Contenteditable, JsonDownloader, AutofocusDirective, EditableInputDirective, DraggableDirective } from './directives';
-import { LoadingIndicatorComponent } from "./components/loading-indicator.component";
+import {
+  AutofocusDirective,
+  ContenteditableDirective,
+  DraggableDirective,
+  EditableInputDirective,
+  JsonDownloaderDirective
+} from './directives';
+import { LoadingIndicatorComponent } from './components/loading-indicator.component';
 import { CustomTranslateLoader } from './services/language.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
-import {FlogoDeletePopupComponent} from "./components/delete.popup.component";
+import { FlogoDeletePopupComponent } from './components/delete.popup.component';
 import { ObjectPropertiesPipe } from './pipes/objectProperties.pipe';
 
 
 const ALL_MODULE_DECLARABLES = [
   CopyToClipboardComponent,
-  ...INFORMATION_POPUP_DIRECTIVES,
-  Contenteditable,
-  JsonDownloader,
+  ContenteditableDirective,
+  JsonDownloaderDirective,
   LoadingIndicatorComponent,
   AutofocusDirective,
   DraggableDirective,
@@ -50,4 +54,5 @@ const ALL_MODULE_DECLARABLES = [
     ReactiveFormsModule
   ]
 })
-export class CommonModule { }
+export class CommonModule {
+}

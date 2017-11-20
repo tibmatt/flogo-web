@@ -1,4 +1,4 @@
-import {BaseField} from '../field-base';
+import { BaseField } from '../field-base';
 
 export class Textarea extends BaseField<any> {
   controlType = 'FieldTextArea';

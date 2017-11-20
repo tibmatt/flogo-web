@@ -1,23 +1,23 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable()
-export class PostService{
+export class PostService {
 
-  constructor(){
-    if(!postal){
-      console.error("PostService is depended on postal, it seems you didn't load postal");
+  constructor() {
+    if (!postal) {
+      console.error('PostService depends on postal, it seems you did not load postal');
     }
   }
 
-  publish(envelope:any){
+  publish(envelope: any) {
     return postal.publish(envelope);
   }
 
-  subscribe(options:any){
+  subscribe(options: any) {
     return postal.subscribe(options);
   }
 
-  unsubscribe(sub:any){
+  unsubscribe(sub: any) {
     return postal.unsubscribe(sub);
   }
 }

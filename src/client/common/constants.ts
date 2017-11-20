@@ -35,12 +35,12 @@ export enum FLOGO_TASK_ATTRIBUTE_TYPE {
  */
 
 export const FLOGO_PROCESS_MODELS = {
-  'DEFAULT' : 'simple'
+  'DEFAULT': 'simple'
 };
 
 /* construct the default values fo types */
 
-let defaultValues = <{[key: number]: any}>{};
+const defaultValues = <{ [key: number]: any }>{};
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
 defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INT] = 0;
@@ -60,7 +60,7 @@ export const DEFAULT_VALUES_OF_TYPES = defaultValues;
 export const FLOGO_ERROR_ROOT_NAME = '__error-trigger';
 
 export * from '../app/flogo.flows.detail.diagram/constants';
-export {REGEX_INPUT_VALUE_EXTERNAL as FLOGO_AUTOMAPPING_FORMAT} from '../app/flogo.mapper/constants';
+export { REGEX_INPUT_VALUE_EXTERNAL as FLOGO_AUTOMAPPING_FORMAT } from '../app/flogo.mapper/constants';
 
 export const ERROR_CODE = {
   REQUIRED: 'RequiredProperty',
@@ -75,15 +75,4 @@ export const ERROR_CONSTRAINT = {
   NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
   WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
-};
-
-export const DEFAULT_MQTT_SETTINGS = {
-  "settings": {
-    "mqtt:server": "192.168.50.164",
-    "mqtt:port": "1883",
-    "mqtt:user": "",
-    "mqtt:pass": "",
-    "wifi:ssid": "RT-N600_D8_2G",
-    "wifi:password": "random_7943"
-  }
 };

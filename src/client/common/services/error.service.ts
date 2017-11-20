@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ERROR_CODE, ERROR_CONSTRAINT } from './../constants';
+import { ERROR_CODE, ERROR_CONSTRAINT } from '../constants';
 
 const ERROR_MAP = {
   [ERROR_CODE.UNIQUE]: ERROR_CONSTRAINT.NOT_UNIQUE,
@@ -10,22 +10,23 @@ const ERROR_MAP = {
 
 export interface OperationalError extends Error {
   isOperational: true;
-  details?: {[key:string]: any},
+  details?: { [key: string]: any };
+
   // allow custom props
-  [propName:string]: any;
+  [propName: string]: any;
 }
 
 @Injectable()
 export class ErrorService {
 
-  public transformRestErrors(errors: {code: string, status: number|string}[]): {[key: string]: boolean} {
-    let firstError = errors[0];
+  public transformRestErrors(errors: { code: string, status: number | string }[]): { [key: string]: boolean } {
+    const firstError = errors[0];
     if (firstError && (firstError.status === 500 || firstError.status === '500')) {
       // internal error
       return { unknown: true };
     }
 
-    let transformed = {};
+    const transformed = {};
     errors.forEach(error => {
       const constraint = ERROR_MAP[error.code];
       if (constraint) {
@@ -56,7 +57,7 @@ export class ErrorService {
    * @param {object} props [props] - Key value pairs of additional data that will be added as properties of the error that will be created
    * @return {OperationalError}
    */
-  public makeOperationalError<T extends OperationalError>(name: string, message: string, props?: {[key:string]: any}): OperationalError {
+  public makeOperationalError<T extends OperationalError>(name: string, message: string, props?: { [key: string]: any }): OperationalError {
     const error = <OperationalError> new Error(message);
     error.isOperational = true;
     error.name = name;
@@ -67,7 +68,7 @@ export class ErrorService {
         if (!error[key]) {
           error[key] = props[key];
         }
-      })
+      });
     }
 
     return error;

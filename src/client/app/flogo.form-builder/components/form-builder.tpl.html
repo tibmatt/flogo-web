@@ -24,8 +24,8 @@
             </div>
           </div>
           <div class="flogo-common-edit-panel__head-titles">
-            <h3 [(myContenteditable)]="_task.name" class="flogo-common-edit-panel__head-title" (myContenteditableChange)="changeTaskDetail($event, 'name')"></h3>
-            <div class="flogo-common-edit-panel__head-subtitle" [(myContenteditable)]="_task.description" (myContenteditableChange)="changeTaskDetail($event, 'description')"></div>
+            <h3 [(fgContentEditable)]="_task.name" class="flogo-common-edit-panel__head-title" (fgContentEditableChange)="changeTaskDetail($event, 'name')"></h3>
+            <div class="flogo-common-edit-panel__head-subtitle" [(fgContentEditable)]="_task.description" (fgContentEditableChange)="changeTaskDetail($event, 'description')"></div>
           </div>
         </div>
 

@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {FormFieldService} from './form-field.service';
-import {BaseField} from './field-base';
-import {FieldAttribute} from './field-attribute';
+import { Injectable } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { FormFieldService } from './form-field.service';
+import { BaseField } from './field-base';
+import { FieldAttribute } from './field-attribute';
 
 @Injectable()
 export class FormBuilderService {
@@ -11,8 +11,8 @@ export class FormBuilderService {
 
   toFormGroup(fields: FieldAttribute[]) {
     const fieldsWithControlType = fields.map(f => this.formService.mapFieldsToControlType(f));
-    const formGroup = this.ngFB.group({formFields: this.makeFormFieldsArray(fieldsWithControlType)});
-    return {formGroup, fieldsWithControlType};
+    const formGroup = this.ngFB.group({ formFields: this.makeFormFieldsArray(fieldsWithControlType) });
+    return { formGroup, fieldsWithControlType };
   }
 
   private makeFormFieldsArray(fieldsGroup: BaseField<any>[]) {

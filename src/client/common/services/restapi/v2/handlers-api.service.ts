@@ -1,17 +1,16 @@
-import {Injectable} from '@angular/core';
-import { activitySchemaToTrigger } from '../../../utils';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { HttpUtilsService } from '../http-utils.service';
 
 @Injectable()
-export class  RESTAPIHandlersService {
-  constructor( private http : Http,private httpUtils: HttpUtilsService) {
+export class RESTAPIHandlersService {
+  constructor(private http: Http, private httpUtils: HttpUtilsService) {
   }
 
   updateHandler(triggerId, actionId, handlerSettings) {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
 
     return this.http.put(this.apiPrefix(`triggers/${triggerId}/handlers/${actionId}`), handlerSettings, options).toPromise()
       .then(response => response.json().data);

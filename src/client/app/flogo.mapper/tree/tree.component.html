@@ -3,12 +3,12 @@
     <input type="text" class="search__text" #search [value]="searchTerm"
            (keyup)="onSearchChange(search.value)" [placeholder]="searchPlaceholder">
     <svg *ngIf="!searchTerm" class="flogo-mapper-icon search__command">
-      <use flogoMapperInlineHref="#flogo-mapper-icon-search"></use>
+      <use fgMapperInlineHref="#flogo-mapper-icon-search"></use>
     </svg>
     <!--todo: should be a button-->
     <span [hidden]="!searchTerm" (click)="clearSearch()" class="search__command search__command--active">
             <svg class="flogo-mapper-icon search__command">
-                <use flogoMapperInlineHref="#flogo-mapper-icon-close"></use>
+                <use fgMapperInlineHref="#flogo-mapper-icon-close"></use>
             </svg>
         </span>
   </div>
@@ -27,7 +27,7 @@
              (mouseleave)="onMouseLeave(node)"
              [class.node--is-visible]="node.isVisible == true">
           <svg *ngIf="node.dataType" class="flogo-mapper-icon">
-            <use [flogoMapperInlineHref]="getIcon(node)"></use>
+            <use [fgMapperInlineHref]="getIcon(node)"></use>
           </svg>
           <div class="node__label">{{ node.label }}</div>
         </div>

@@ -83,7 +83,6 @@
         "./app/flogo.flows.detail.triggers.install/**/*.ts",
         "./app/flogo.flows.import/**/*.ts",
         "./app/flogo.form*/**/*.ts",
-        "./common/**",
         "./node_modules/**/*"
       ],
       "project": "./tsconfig.app.json"
@@ -102,7 +101,6 @@
         "./app/flogo.flows.detail.triggers.install/**/*.ts",
         "./app/flogo.flows.import/**/*.ts",
         "./app/flogo.form*/**/*.ts",
-        "./common/**/*",
         "./node_modules/**/*"
       ]
     }

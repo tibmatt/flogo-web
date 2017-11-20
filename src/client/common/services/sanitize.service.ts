@@ -1,9 +1,9 @@
-import {Injectable, SecurityContext, Sanitizer} from '@angular/core';
+import { Injectable, Sanitizer, SecurityContext } from '@angular/core';
 
 @Injectable()
-export class SanitizeService{
+export class SanitizeService {
 
-  constructor(private sanitizer: Sanitizer){
+  constructor(private sanitizer: Sanitizer) {
   }
 
   sanitizeHTMLInput(input: string): string {

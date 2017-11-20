@@ -1,33 +1,35 @@
 import { Component, DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick, async } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { BrowserModule } from '@angular/platform-browser';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { BrowserModule, By } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 
 import { EditableInputDirective } from './editable-input.directive';
 
 @Component({
-  selector: 'container',
+  selector: 'flogo-test-container',
   template: `
       <input fgEditableInput (editableInputSave)="onSave()" (editableInputCancel)="onCancel()" >
    `
 })
-class Container {
-  public onCancel() {}
-  public onSave() {}
+class ContainerComponent {
+  public onCancel() {
+  }
+
+  public onSave() {
+  }
 }
 
 describe('Directive: EditableInput', () => {
-  let fixture: ComponentFixture<Container>;
-  let container: Container;
-  let de : DebugElement;
+  let fixture: ComponentFixture<ContainerComponent>;
+  let container: ContainerComponent;
+  let de: DebugElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CommonModule, BrowserModule],
-      declarations: [EditableInputDirective, Container]
+      declarations: [EditableInputDirective, ContainerComponent]
     });
-    fixture = TestBed.createComponent(Container);
+    fixture = TestBed.createComponent(ContainerComponent);
     container = fixture.componentInstance;
     de = fixture.debugElement.query(By.directive(EditableInputDirective));
   });
@@ -46,7 +48,7 @@ describe('Directive: EditableInput', () => {
     spyOn(container, 'onSave');
     de.triggerEventHandler('keyup.enter', new KeyboardEvent('keyup.enter'));
     fixture.detectChanges();
-    //expect(container.onSave).toHaveBeenCalledTimes(1);
+    // expect(container.onSave).toHaveBeenCalledTimes(1);
     // TODO: there seems to be an issue re-firing DOM issues from inside the directive in the karma environment
     // Instead we're making sure the blur event is called
     expect(de.nativeElement.blur).toHaveBeenCalledTimes(1);

@@ -1,4 +1,4 @@
-import {BaseField} from '../field-base';
+import { BaseField } from '../field-base';
 
 export class ObjectType extends BaseField<any> {
   controlType = 'FieldObject';

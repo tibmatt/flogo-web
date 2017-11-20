@@ -1,11 +1,11 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Directive({
-  selector: '[flogoMapperClickOutside]'
+  selector: '[fgMapperClickOutside]'
 })
 export class ClickOutsideDirective {
   // tslint:disable-next-line:no-output-rename
-  @Output('flogoMapperClickOutside')
+  @Output('fgMapperClickOutside')
   public clickOutside = new EventEmitter<MouseEvent>();
 
   constructor(private _elementRef: ElementRef) {

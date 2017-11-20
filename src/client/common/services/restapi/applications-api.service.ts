@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response, URLSearchParams } from '@angular/http';
+import { Headers, Http, RequestOptions, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { IFlogoApplicationModel } from '../../application.model';
@@ -11,7 +11,7 @@ const UNTITLED_APP = 'Untitled App';
 @Injectable()
 export class RESTAPIApplicationsService {
 
-  constructor(private http: Http, private errorService: ErrorService,private httpUtils: HttpUtilsService) {
+  constructor(private http: Http, private errorService: ErrorService, private httpUtils: HttpUtilsService) {
   }
 
   recentFlows() {
@@ -22,34 +22,34 @@ export class RESTAPIApplicationsService {
   getAllApps(): Promise<IFlogoApplicationModel[]> {
     return this.http.get(this.apiPrefix('apps')).toPromise()
       .then(response => {
-        let appsResponse = response.json();
+        const appsResponse = response.json();
         return appsResponse && appsResponse.data ? appsResponse.data : [];
       });
   }
 
-  allFlows()   {
+  allFlows() {
     return this.http.get(this.apiPrefix('flows')).toPromise()
       .then(response => response.json());
   }
 
   createNewApp(): Promise<any> {
     return this.determineUniqueName(UNTITLED_APP).then(appName => {
-      let application: any = {
+      const application: any = {
         name: appName,
         version: '',
         description: ''
       };
 
-      let headers = new Headers({'Content-Type': 'application/json'});
-      let options = new RequestOptions({headers: headers});
-      let body = JSON.stringify(application);
+      const headers = new Headers({ 'Content-Type': 'application/json' });
+      const options = new RequestOptions({ headers: headers });
+      const body = JSON.stringify(application);
 
       return this.http.post(this.apiPrefix('apps'), body, options).toPromise()
-       .then(response => response.json().data);
+        .then(response => response.json().data);
     });
   }
 
-  deleteApp(appId: string)   {
+  deleteApp(appId: string) {
     return this.http.delete(this.apiPrefix('apps/' + appId)).toPromise();
   }
 
@@ -57,16 +57,15 @@ export class RESTAPIApplicationsService {
     return this.http.get(this.apiPrefix('apps/' + appId)).toPromise()
       .then(response => {
         if (response.text()) {
-          let app: IFlogoApplicationModel = response.json().data;
-          return app;
+          return response.json().data;
         }
         return null;
       });
   }
 
   updateApp(appId: string, app: any) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
 
     return this.http.patch(this.apiPrefix(`apps/${appId}`), app, options).toPromise()
       .then(response => this.extractData(response))
@@ -74,8 +73,8 @@ export class RESTAPIApplicationsService {
   }
 
   export(appId: string) {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
 
     return this.http.get(this.apiPrefix(`apps/${appId}/export`), options).toPromise()
       .then(response => response.json())
@@ -84,8 +83,8 @@ export class RESTAPIApplicationsService {
 
   determineUniqueName(name: string) {
     return this.getAllApps().then((apps: Array<IFlogoApplicationModel>) => {
-      let normalizedName = name.trim().toLowerCase();
-      let possibleMatches = apps
+      const normalizedName = name.trim().toLowerCase();
+      const possibleMatches = apps
         .map(app => app.name.trim().toLowerCase())
         .filter(appName => appName.startsWith(normalizedName));
 
@@ -105,28 +104,28 @@ export class RESTAPIApplicationsService {
 
   }
 
-  uploadApplication( file: File, appName: string = '') {
-    let formData: FormData = new FormData();
+  uploadApplication(file: File, appName: string = '') {
+    const formData: FormData = new FormData();
     formData.append('importFile', file, file.name);
 
-    let searchParams = new URLSearchParams();
+    const searchParams = new URLSearchParams();
     searchParams.set('appName', appName);
-    let headers = new Headers({ Accept: 'application/json' });
-    let requestOptions = new RequestOptions({ headers, search: searchParams });
+    const headers = new Headers({ Accept: 'application/json' });
+    const requestOptions = new RequestOptions({ headers, search: searchParams });
 
     return this.http.post(this.apiPrefix('apps/import'), formData, requestOptions).toPromise()
-              .then(response => this.extractData(response) )
-              .catch(error => Promise.reject(this.extractErrors(error)));
+      .then(response => this.extractData(response))
+      .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
 
   private extractData(res: Response) {
-    let body = res.json();
+    const body = res.json();
     // todo: body.data won't always be an object, could be an array
     return body ? body.data : {};
   }
 
-  private extractErrors (error: Response | any) {
+  private extractErrors(error: Response | any) {
     if (error instanceof Response) {
       const body = error.json();
       const errs = body.errors || [body];

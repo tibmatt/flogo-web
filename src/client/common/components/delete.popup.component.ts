@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, HostListener, HostBinding, ElementRef} from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'flogo-delete-popover',
@@ -53,7 +53,7 @@ import {Component, Input, Output, EventEmitter, HostListener, HostBinding, Eleme
 })
 export class FlogoDeletePopupComponent {
   @HostBinding('class.always-visible')
-  isPopupOpen: boolean = false;
+  isPopupOpen = false;
   @Input()
   deleteContent: any;
   @Input()
@@ -62,6 +62,10 @@ export class FlogoDeletePopupComponent {
   confirmDel: EventEmitter<any> = new EventEmitter();
   nativeElement: any;
 
+  constructor(private _eref: ElementRef) {
+    this.nativeElement = this._eref.nativeElement;
+  }
+
   @HostListener('document:click', ['$event'])
   onClick(event: Event) {
     if (event.target !== this.nativeElement && !this.nativeElement.contains(event.target)) {
@@ -69,12 +73,7 @@ export class FlogoDeletePopupComponent {
     }
   }
 
-  constructor(private _eref: ElementRef) {
-    this.nativeElement = this._eref.nativeElement;
-  }
-
   showPopup(event) {
-    //event.stopPropagation();
     event.preventDefault();
     this.isPopupOpen = true;
   }

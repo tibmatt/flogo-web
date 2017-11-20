@@ -99,7 +99,7 @@
       "check-type"
     ],
 
-    "directive-selector": [true, "attribute", "flogo", "camelCase"],
+    "directive-selector": [true, "attribute", "fg", "camelCase"],
     "component-selector": [true, "element", "flogo", "kebab-case"],
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,

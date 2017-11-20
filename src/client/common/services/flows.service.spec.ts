@@ -1,51 +1,51 @@
-import {FlowsService} from "./flows.service";
-import {RESTAPIHandlersService} from "./restapi/v2/handlers-api.service";
-import {APIFlowsService} from "./restapi/v2/flows-api.service";
-import {RESTAPITriggersService} from "./restapi/v2/triggers-api.service";
+import { FlowsService } from './flows.service';
+import { RESTAPIHandlersService } from './restapi/v2/handlers-api.service';
+import { APIFlowsService } from './restapi/v2/flows-api.service';
+import { RESTAPITriggersService } from './restapi/v2/triggers-api.service';
 import { RESTAPITriggersService as ContribTriggersService } from './restapi/triggers-api.service';
-
 import Spy = jasmine.Spy;
-import {ScalarObservable} from "rxjs/observable/ScalarObservable";
 
-describe("Service: FlowsService", function(this: {
+describe('Service: FlowsService', function (this: {
   testService: FlowsService,
   mockHandlersAPIService: RESTAPIHandlersService,
   mockTriggersService: RESTAPITriggersService,
   mockContribTriggerAPIService: ContribTriggersService,
   mockFlowsAPIService: APIFlowsService
-}){
-  let mockAppTriggerData = {
-    "name": "Receive HTTP Message",
-    "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
-    "description": "Simple REST Trigger",
-    "settings": {
-      "port": null
+}) {
+  const mockAppTriggerData = {
+    'name': 'Receive HTTP Message',
+    'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+    'description': 'Simple REST Trigger',
+    'settings': {
+      'port': null
     },
-    "id": "receive_http_message",
-    "createdAt": "2017-04-04T01:20:50.544Z",
-    "updatedAt": null,
-    "handlers": [
+    'id': 'receive_http_message',
+    'createdAt': '2017-04-04T01:20:50.544Z',
+    'updatedAt': null,
+    'handlers': [
       {
-        "settings": {
-          "method": "GET",
-          "path": null,
-          "autoIdReply": null,
-          "useReplyHandler": null
+        'settings': {
+          'method': 'GET',
+          'path': null,
+          'autoIdReply': null,
+          'useReplyHandler': null
         },
-        "actionId": "my_new_app"
+        'actionId': 'my_new_app'
       },
       {
-        "settings": {
-          "method": null,
-          "path": null,
-          "autoIdReply": null,
-          "useReplyHandler": null
+        'settings': {
+          'method': null,
+          'path': null,
+          'autoIdReply': null,
+          'useReplyHandler': null
         },
-        "actionId": "app_with_trigger"
+        'actionId': 'app_with_trigger'
       }
     ],
-    "appId": "some_app_id_1"
-  }, spyDelete, spyDeleteTrigger;
+    'appId': 'some_app_id_1'
+  };
+  let spyDelete;
+  let spyDeleteTrigger;
   beforeAll(() => {
     this.mockContribTriggerAPIService = jasmine.createSpyObj<ContribTriggersService>('contribTriggersService', [
       'getTriggerDetails'
@@ -53,7 +53,7 @@ describe("Service: FlowsService", function(this: {
     this.mockFlowsAPIService = jasmine.createSpyObj<APIFlowsService>('flowsAPIService', [
       'deleteFlow'
     ]);
-    this.mockTriggersService = jasmine.createSpyObj('triggersService',[
+    this.mockTriggersService = jasmine.createSpyObj('triggersService', [
       'getTrigger',
       'deleteTrigger'
     ]);
@@ -68,27 +68,27 @@ describe("Service: FlowsService", function(this: {
     spyDeleteTrigger.and.returnValue(Promise.resolve({}));
   });
 
-  it('Should delete only the flow but not the Trigger', (done)=>{
-    let specTriggerData = _.assign({}, mockAppTriggerData);
+  it('Should delete only the flow but not the Trigger', (done) => {
+    const specTriggerData = _.assign({}, mockAppTriggerData);
     specTriggerData.handlers.pop();
-    let spyGetTrigger = <Spy> this.mockTriggersService.getTrigger;
+    const spyGetTrigger = <Spy> this.mockTriggersService.getTrigger;
     spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
     this.testService.deleteFlowWithTrigger('some_flow_id_1', 'some_trigger_id_1')
-      .then((data)=>{
-        expect(_.isEqual(data,{})).toEqual(true);
+      .then((data) => {
+        expect(_.isEqual(data, {})).toEqual(true);
         done();
       });
   });
 
-  it('Should delete and also the Trigger', (done)=>{
-    let specTriggerData = _.assign({}, mockAppTriggerData);
+  it('Should delete and also the Trigger', (done) => {
+    const specTriggerData = _.assign({}, mockAppTriggerData);
     specTriggerData.handlers.pop();
     specTriggerData.handlers.pop();
-    let spyGetTrigger = <Spy> this.mockTriggersService.getTrigger;
+    const spyGetTrigger = <Spy> this.mockTriggersService.getTrigger;
     spyGetTrigger.and.returnValue(Promise.resolve(specTriggerData));
     this.testService.deleteFlowWithTrigger('some_flow_id_2', 'some_trigger_id_2')
-      .then((data)=>{
-        expect(_.isEqual(data,{})).toEqual(true);
+      .then((data) => {
+        expect(_.isEqual(data, {})).toEqual(true);
         expect(spyDeleteTrigger).toHaveBeenCalledTimes(1);
         done();
       });

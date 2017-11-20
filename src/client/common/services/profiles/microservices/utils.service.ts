@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {AbstractTaskIdGenerator } from '../profiles.utils.service';
-import {flogoIDEncode} from '../../../utils';
+import { Injectable } from '@angular/core';
+import { AbstractTaskIdGenerator } from '../profiles.utils.service';
+import { flogoIDEncode } from '../../../utils';
 
 @Injectable()
-export class FlogoMicroserviceTaskIdGeneratorService extends AbstractTaskIdGenerator  {
+export class FlogoMicroserviceTaskIdGeneratorService extends AbstractTaskIdGenerator {
   generateTaskID(items?: any, currentTask?: any) {
     let taskID = '';
-    if ( items ) {
+    if (items) {
       if (currentTask) {
         taskID = currentTask.ref.split('/').pop() + '_';
       }
@@ -16,9 +16,10 @@ export class FlogoMicroserviceTaskIdGeneratorService extends AbstractTaskIdGener
 
     } else {
       // shift the timestamp for avoiding overflow 32 bit system
+      // tslint:disable-next-line:no-bitwise
       taskID = '' + (Date.now() >>> 1);
     }
 
-    return flogoIDEncode( taskID );
+    return flogoIDEncode(taskID);
   }
 }

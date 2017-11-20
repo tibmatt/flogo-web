@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Headers, Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
@@ -8,11 +8,13 @@ import 'rxjs/add/operator/switchMap';
 
 import { HttpUtilsService } from './http-utils.service';
 import { Link } from '../../models/engine.models';
-import { FlowInfo, Interceptor, InterceptorTask, Snapshot, Step } from '../../models/runner.models'
+import { FlowInfo, Interceptor, InterceptorTask, Snapshot, Step } from '../../models/runner.models';
 
 /**
  * Possible run status
  */
+// disabling tslint check because this is a constant class
+/* tslint:disable-next-line:class-name */
 export class RUN_STATUS_CODE {
   static NOT_STARTED: '0' = '0';
   static ACTIVE: '100' = '100';
@@ -24,17 +26,19 @@ export class RUN_STATUS_CODE {
 /**
  * Possible run state
  */
+// disabling tslint check because this is a constant class
+/* tslint:disable-next-line:class-name */
 export class RUN_STATE_CODE {
   static SKIPPED: 50 = 50;
 }
 
 export interface StatusResponse {
-  id: string,
+  id: string;
   /**
    * A value from RUN_STATUS_CODE or null
    * @see RUN_STATUS_CODE
    */
-  status: string|null
+  status: string | null;
 }
 
 export interface StepsResponse {
@@ -57,7 +61,7 @@ export class RunService {
   constructor(private http: Http, private httpUtils: HttpUtilsService) {
   }
 
-  getStatusByInstanceId(id: string): Observable<StatusResponse|null> {
+  getStatusByInstanceId(id: string): Observable<StatusResponse | null> {
     return this.fetch(`flows/run/instances/${id}/status`);
   }
 
@@ -65,7 +69,7 @@ export class RunService {
     return this.fetch(`flows/run/instances/${id}/steps`);
   }
 
-  //todo: response interface
+  // todo: response interface
   getInstance(instanceId: string) {
     return this.fetch(`flows/run/instances/${instanceId}`);
   }
@@ -97,9 +101,9 @@ export class RunService {
   //  to do proper restart process, need to select proper snapshot, hence
   //  the current implementation is only for the last start-from-beginning snapshot, i.e.
   //  the using this.runState.processInstanceId to restart
-  restartFrom(processInstanceId: string, step: number, interceptor: Interceptor, updateProcessId?: string ): Observable<RestartResponse> {
+  restartFrom(processInstanceId: string, step: number, interceptor: Interceptor, updateProcessId?: string): Observable<RestartResponse> {
     // get the state of the last step
-    let snapshotId = step - 1;
+    const snapshotId = step - 1;
     if (snapshotId < 1) {
       return ErrorObservable.create(new Error(`Invalid step ${step} to start from.`));
     }
@@ -116,9 +120,9 @@ export class RunService {
         // process state info based on flowInfo
         // find all of the tasks in the path of the given tasks to intercept.
         // i.e. remove the tasks that won't get executed because they are not linked
-        let taskIdsInPath = this.findTaskIdsInLinkPath(interceptor.tasks, links);
+        const taskIdsInPath = this.findTaskIdsInLinkPath(interceptor.tasks, links);
         // get rid of the tasks that don't need to be executed
-        let filteredSnapshot = this.filterSnapshot(snapshot, taskIdsInPath);
+        const filteredSnapshot = this.filterSnapshot(snapshot, taskIdsInPath);
 
         // then restart from that state with data
         // TODO: document response data
@@ -130,7 +134,7 @@ export class RunService {
 
     function updateSnapshotActionUri(snapshot, newFlowId) {
       // replace the old flowURL with the newFlowID
-      let pattern = new RegExp('flows\/(.+)$');
+      const pattern = new RegExp('flows\/(.+)$');
       snapshot.actionUri = snapshot.flowUri.replace(pattern, `flows/${newFlowId}`);
       /** @deprecated snapshot.flowUri */
       snapshot.flowUri = snapshot.actionUri;
@@ -144,7 +148,7 @@ export class RunService {
       .map(response => response.json());
   }
 
-  private post<T>(path: string, body: any): Observable<T>{
+  private post<T>(path: string, body: any): Observable<T> {
     return this.http.post(
       this.httpUtils.apiPrefix(path, 'v1'),
       body,
@@ -186,11 +190,11 @@ export class RunService {
   // TODO: left algorithm as it was when refactored, need to make it clearer
   private findTaskIdsInLinkPath(tasks: InterceptorTask[], links: Link[]) {
     // TODO: icpt, what does it mean?? for icpTaskIds
-    let tasksIdsInPath: string[] = _.map(tasks, (task: any) => task.id);
+    const tasksIdsInPath: string[] = _.map(tasks, (task: any) => task.id);
     let linksToGo = links.slice();
     let lastLinksToGoLength = linksToGo.length;
 
-    let filterLinksAndAccumulateTasks = (link: any) => {
+    const filterLinksAndAccumulateTasks = (link: any) => {
       if (tasksIdsInPath.indexOf(link.from) !== -1) {
         // avoid duplications
         if (tasksIdsInPath.indexOf(link.to) === -1) {

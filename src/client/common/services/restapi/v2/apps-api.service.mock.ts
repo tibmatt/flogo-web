@@ -1,24 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import {AppsApiService} from "./apps-api.service";
-import {IFlogoApplicationModel} from "../../../application.model";
-import {ErrorService} from "../../error.service";
-import {HttpUtilsService} from "../http-utils.service";
+import { AppsApiService } from './apps-api.service';
+import { IFlogoApplicationModel } from '../../../application.model';
+import { ErrorService } from '../../error.service';
+import { HttpUtilsService } from '../http-utils.service';
 
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
-export class AppsApiServiceMock  extends AppsApiService {
+export class AppsApiServiceMock extends AppsApiService {
 
   private mockApplications: Array<IFlogoApplicationModel> = [
     {
-      id: "1",
-      name: "Sample Application 1",
-      version: "0.0.1",
+      id: '1',
+      name: 'Sample Application 1',
+      version: '0.0.1',
       description: null, /* should be null for test */
       createdAt: new Date(),
-      updatedAt: null,   /* should be null for test */
+      updatedAt: null, /* should be null for test */
+      /* tslint:disable:max-line-length */
       flows: [
         {
           id: '897',
@@ -41,27 +42,28 @@ export class AppsApiServiceMock  extends AppsApiService {
       ]
     },
     {
-      id: "2",
-      name: "Sample Application 2",
-      version: "0.0.1",
-      description: "My App",
+      id: '2',
+      name: 'Sample Application 2',
+      version: '0.0.1',
+      description: 'My App',
       createdAt: new Date(),
       updatedAt: new Date()
     }
   ];
+  /* tslint:enable:max-line-length */
 
-  constructor(public _http : Http, httpUtil: HttpUtilsService, errorService: ErrorService ) {
+  constructor(public _http: Http, httpUtil: HttpUtilsService, errorService: ErrorService) {
     super(_http, httpUtil, errorService);
   }
 
   listApps() {
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
       resolve(this.mockApplications);
     });
   }
 
-  createNewApp()   {
-    let application:any = {
+  createNewApp() {
+    const application: any = {
       id: this.mockApplications.length + 1,
       name: this.determineUniqueName(UNTITLED_APP),
       version: '',
@@ -71,41 +73,41 @@ export class AppsApiServiceMock  extends AppsApiService {
     };
     this.mockApplications.unshift(application);
 
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
       resolve(application);
     });
   }
 
-  deleteApp(id:string)   {
-    _.remove(this.mockApplications, (n:IFlogoApplicationModel)=> {
+  deleteApp(id: string) {
+    _.remove(this.mockApplications, (n: IFlogoApplicationModel) => {
       return n.id === id;
     });
 
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
       resolve(true);
     });
   }
 
-  getApp(id:string)   {
-    let application = this.mockApplications.find((item)=> {
-      return item.id == id;
+  getApp(id: string) {
+    const application = this.mockApplications.find((item) => {
+      return item.id === id;
     });
 
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
       resolve(application);
     });
   }
 
-  determineUniqueName(name:string, count = 0) {
-    let appName:string = name +  (count > 0 ?   ` (${count})` : '');
+  determineUniqueName(name: string, count = 0) {
+    const appName: string = name + (count > 0 ? ` (${count})` : '');
     let found: IFlogoApplicationModel;
 
-    found = this.mockApplications.find((app: IFlogoApplicationModel)=> {
-      return app.name == appName;
+    found = this.mockApplications.find((app: IFlogoApplicationModel) => {
+      return app.name === appName;
     });
 
-    if(found) {
-      return this.determineUniqueName(name , ++count);
+    if (found) {
+      return this.determineUniqueName(name, ++count);
     } else {
       return appName;
     }
