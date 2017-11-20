@@ -1,14 +1,13 @@
-import {Injectable} from '@angular/core';
-import {UIModelConverterService} from "./ui-model-converter.service";
-import { IFlogoFlowDiagram } from "../../flogo.flows.detail.diagram/models/diagram.model";
-import { flogoFlowToJSON } from "../../flogo.flows.detail.diagram/models/flow.model";
-import {IFlogoFlowDiagramTaskDictionary} from "../../flogo.flows.detail.diagram/models/dictionary.model";
-import {APIFlowsService} from "../../../common/services/restapi/v2/flows-api.service";
-import {  } from "../../../common/utils";
-import {FlowsService} from "../../../common/services/flows.service";
+import { Injectable } from '@angular/core';
+import { UIModelConverterService } from './ui-model-converter.service';
+import { IFlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
+import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
+import { IFlogoFlowDiagramTaskDictionary } from '../../flogo.flows.detail.diagram/models/dictionary.model';
+import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
+import { FlowsService } from '../../../common/services/flows.service';
 
 interface FlowData {
-  flow: any,
+  flow: any;
   root: {
     diagram: any;
     tasks: any;
@@ -36,7 +35,7 @@ export class FlogoFlowService {
         const triggers = flow.triggers;
 
         return this._converterService.getWebFlowModel(flowDiagramDetails)
-          .then(convertedFlow =>  this.processFlowModel(convertedFlow, flow.triggers.length > 0))
+          .then(convertedFlow => this.processFlowModel(convertedFlow, flow.triggers.length > 0))
           .then(processedFlow => _.assign({}, processedFlow, { triggers }));
       });
   }

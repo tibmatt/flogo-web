@@ -24,9 +24,14 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/takeWhile';
 
-import { RunService, StatusResponse, RUN_STATUS_CODE, RUN_STATE_CODE } from '../../../common/services/restapi/run.service';
+import {
+  RUN_STATE_CODE,
+  RUN_STATUS_CODE,
+  RunService,
+  StatusResponse
+} from '../../../common/services/restapi/run.service';
 import { flogoFlowToJSON, flowToJSON_InputFlow } from '../../../common/models';
-import { Step, Interceptor } from '../../../common/models/runner.models';
+import { Interceptor, Step } from '../../../common/models/runner.models';
 import { ErrorService } from '../../../common/services/error.service';
 
 export const ERRORS = {
@@ -52,7 +57,7 @@ interface BaseRunOptions {
 
 export interface RunOptions extends BaseRunOptions {
   // todo: interface
-  attrsData: Array<{ name: string; type: string; value: any }>|null;
+  attrsData: Array<{ name: string; type: string; value: any }> | null;
 }
 
 export interface RerunOptions extends BaseRunOptions {
@@ -65,23 +70,23 @@ export interface RunProgressStore {
   /**
    * Observer when process has been registered to start
    */
-  registered: Observable<{ processId: string, instanceId: string }>,
+  registered: Observable<{ processId: string, instanceId: string }>;
   /**
    * The state of the runner
    */
-  state: Observable<RunProgress>,
+  state: Observable<RunProgress>;
   /**
    * Stream of process status changes, will emit for every trial
    */
-  processStatus: Observable<RunStatus>,
+  processStatus: Observable<RunStatus>;
   /**
    * Stream of steps, will emit only when steps change (starts with null)
    */
-  steps: Observable<Step[]>,
+  steps: Observable<Step[]>;
   /**
    * Will emit the runner state once the run has completed successfully
    */
-  completed: Observable<RunProgress>
+  completed: Observable<RunProgress>;
 }
 
 export interface RunProgress {
@@ -179,7 +184,7 @@ export class RunnerService {
    * @see RunnerService#monitorProcessStatus
    */
   rerun(opts: RerunOptions): RunProgressStore {
-    let { instanceId, step, interceptor } = opts;
+    const { instanceId, step, interceptor } = opts;
     return this.startAndMonitor(opts, newProcessId => {
       return this.runService.restartFrom(instanceId, step, interceptor, newProcessId);
     });
@@ -187,7 +192,7 @@ export class RunnerService {
 
   startAndMonitor(opts: BaseRunOptions, startFlow: StartFlowFn): RunProgressStore {
 
-    let registered = this.registerAndStartFlow(opts, startFlow).share();
+    const registered = this.registerAndStartFlow(opts, startFlow).share();
 
     const instanceStatus = registered
       .switchMap(info => this.monitorProcessStatus(info.instanceId, opts))
@@ -277,14 +282,17 @@ export class RunnerService {
         // or fail when we exhaust the maximum number of attempts
         return Observable.throw(this.errorService.makeOperationalError(ERRORS.MAX_TRIALS_REACHED, 'Max trials reached'));
       })
-      .map((response: StatusResponse|null, index: number) => {
+      .map((response: StatusResponse | null, index: number) => {
         response = response || { id: null, status: null };
         if (response.status !== RUN_STATUS_CODE.CANCELLED && response.status !== RUN_STATUS_CODE.FAILED) {
           const runStatus = <RunStatus> Object.assign({}, response);
           runStatus.trial = index + 1;
           return runStatus;
         } else {
-          throw this.errorService.makeOperationalError(ERRORS.PROCESS_NOT_COMPLETED, `Run error. Status: ${response.status}`, { status: response.status });
+          throw this.errorService.makeOperationalError(
+            ERRORS.PROCESS_NOT_COMPLETED,
+            `Run error. Status: ${response.status}`, { status: response.status }
+          );
         }
       })
       .share();
@@ -301,21 +309,21 @@ export class RunnerService {
   registerAndStartFlow(opts: BaseRunOptions, startFlow: StartFlowFn): Observable<{ processId: string, instanceId: string }> {
     return this.registerFlowIfNeeded(opts)
       .switchMap(processId => startFlow(processId).map(result => result.id),
-      (processId, instanceId) => ({ processId, instanceId: instanceId }));
+        (processId, instanceId) => ({ processId, instanceId: instanceId }));
   }
 
-  registerFlowIfNeeded(opts: { useFlow?: flowToJSON_InputFlow, useProcessId?: string  }) {
+  registerFlowIfNeeded(opts: { useFlow?: flowToJSON_InputFlow, useProcessId?: string }) {
     let registered;
     if (opts.useFlow) {
       // generate process based on the current flow
-      let process = flogoFlowToJSON(opts.useFlow);
+      const process = flogoFlowToJSON(opts.useFlow);
 
       //  delete the id of the flow,
       //  since the same process ID returns 204 No Content response and cannot be updated,
       //  while the flow information without ID will be assigned an ID automatically.
       delete process.id;
       registered = this.runService.storeProcess(process)
-        .map(process => process.id);
+        .map(storedProcess => storedProcess.id);
     } else if (opts.useProcessId) {
       registered = ScalarObservable.create(opts.useProcessId);
     } else {
@@ -332,9 +340,9 @@ export class RunnerService {
       .map(steps => steps.steps);
   }
 
-  streamSteps(registered: Observable<{instanceId: string}>, state: Observable<RunProgress>) {
+  streamSteps(registered: Observable<{ instanceId: string }>, stateStream: Observable<RunProgress>) {
     return registered.exhaustMap(registerInfo => {
-      return state
+      return stateStream
         .catch(error => { // query steps one last time if process failed or was cancelled
           if (registerInfo.instanceId && error.name === ERRORS.PROCESS_NOT_COMPLETED) {
             return this.runService.getStepsByInstanceId(registerInfo.instanceId);
@@ -342,7 +350,7 @@ export class RunnerService {
           return Observable.throw(error);
         })
         .map(state => state.steps)
-        .distinctUntilChanged((prev, next) => _.isEqual(prev, next))
+        .distinctUntilChanged((prev, next) => _.isEqual(prev, next));
     });
   }
 
@@ -370,7 +378,7 @@ export class RunnerService {
           runState.lastInstance = instance;
           return runState;
         }
-      )
+      );
   }
 
 }

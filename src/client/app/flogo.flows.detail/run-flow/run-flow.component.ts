@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {FlowMetadataAttribute} from '../models/flow-metadata-attribute';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FlowMetadataAttribute } from '../models/flow-metadata-attribute';
 
 @Component({
   selector: 'flogo-run-flow',
@@ -21,6 +21,7 @@ export class FlogoRunFlowComponent {
   get isValid(): boolean {
     return this.runFlowFormGroup && this.runFlowFormGroup.valid;
   }
+
   setRunFlowFormGroup(formGroup: FormGroup) {
     this.runFlowFormGroup = formGroup;
   }

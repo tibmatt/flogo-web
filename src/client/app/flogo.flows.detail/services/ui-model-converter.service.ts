@@ -1,14 +1,14 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
-import {FLOGO_PROFILE_TYPE} from '../../../common/constants';
-import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
-import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
-import {ErrorService} from '../../../common/services/error.service';
-import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/contributions.service';
-import {FlogoProfileService} from '../../../common/services/profile.service';
-import {AbstractModelConverter} from '../models/ui-converter.model';
-import {MicroServiceModelConverter} from '../models/profiles/microservice-converter.model';
-import {DeviceModelConverter} from '../models/profiles/device-converter.model';
+import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { ErrorService } from '../../../common/services/error.service';
+import { RESTAPIContributionsService } from '../../../common/services/restapi/v2/contributions.service';
+import { FlogoProfileService } from '../../../common/services/profile.service';
+import { AbstractModelConverter } from '../models/ui-converter.model';
+import { MicroServiceModelConverter } from '../models/profiles/microservice-converter.model';
+import { DeviceModelConverter } from '../models/profiles/device-converter.model';
 
 @Injectable()
 export class UIModelConverterService {

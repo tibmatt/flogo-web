@@ -1,22 +1,28 @@
 import * as _ from 'lodash';
 
-import {FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE} from '../../flogo.flows.detail.diagram/constants';
-import {flogoGenTriggerID, flogoIDEncode} from '../../../common/utils';
-import {FlogoFlowDiagramNode} from '../../flogo.flows.detail.diagram/models/node.model';
-import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../../../common/constants';
-import {ErrorService} from '../../../common/services/error.service';
+import {
+  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
+  FLOGO_FLOW_DIAGRAM_NODE_TYPE
+} from '../../flogo.flows.detail.diagram/constants';
+import { flogoGenTriggerID, flogoIDEncode } from '../../../common/utils';
+import { FlogoFlowDiagramNode } from '../../flogo.flows.detail.diagram/models/node.model';
+import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
+import { ErrorService } from '../../../common/services/error.service';
 
 const FLOW_NODE = 'node';
 const FLOW_ITEM = 'item';
 
 export abstract class AbstractModelConverter {
   errorService: ErrorService;
+
   constructor(errorService: ErrorService) {
     this.errorService = errorService;
   }
 
   abstract getActivitiesPromise(list);
+
   abstract getTriggerPromise(trigger);
+
   abstract getFlowInformation(flow);
 
   convertToWebFlowModel(flowObj) {
@@ -53,6 +59,7 @@ export abstract class AbstractModelConverter {
 
     return activitiesList;
   }
+
   processFlowObj(flowJSON, installedContribs) {
     // task flows
     let tasks = _.get(flowJSON, 'data.flow.rootTask.tasks', []);
@@ -84,8 +91,8 @@ export abstract class AbstractModelConverter {
   makeFlow(parts, flowInfo, installedTiles?) {
     let flow: any = {};
     try {
-      const {nodes, items, branches} = parts;
-      const {id, name, description, appId, app, metadata} = flowInfo;
+      const { nodes, items, branches } = parts;
+      const { id, name, description, appId, app, metadata } = flowInfo;
 
       const nodeTrigger = nodes.find((element) => {
         const nodeType = element.node.type;
@@ -136,7 +143,7 @@ export abstract class AbstractModelConverter {
         element.node.description = _.get(element, 'cli.description', element.node.description);
         flow.items[element.node.id || element.node.nodeId] = element.node;
         if (installedTiles) {
-          flow.schemas[element.node.ref] =  installedTiles.find((tile) => {
+          flow.schemas[element.node.ref] = installedTiles.find((tile) => {
             return tile.ref === element.node.ref;
           });
         }
@@ -292,6 +299,7 @@ export abstract class AbstractModelConverter {
 
 class FlowElement {
   factory: any;
+
   constructor(factoryName) {
     switch (factoryName) {
       case FLOW_NODE:
@@ -341,8 +349,8 @@ class NodeFactory {
   }
 
   static getSharedProperties() {
-    const status = {isSelected: false};
-    return Object.assign({}, {id: FlogoFlowDiagramNode.genNodeID(), __status: status, children: [], parents: []});
+    const status = { isSelected: false };
+    return Object.assign({}, { id: FlogoFlowDiagramNode.genNodeID(), __status: status, children: [], parents: [] });
   }
 
   static makeBranch() {
@@ -354,12 +362,12 @@ class NodeFactory {
   static flogoGenBranchID() {
     let id = '';
 
-    if ( performance && _.isFunction( performance.now ) ) {
+    if (performance && _.isFunction(performance.now)) {
       id = `Flogo::Branch::${Date.now()}::${performance.now()}`;
     } else {
       id = `Flogo::Branch::${Date.now()}`;
     }
-    return flogoIDEncode( id );
+    return flogoIDEncode(id);
   }
 }
 
@@ -376,7 +384,7 @@ class ItemFactory {
       settings: [],
       outputs: [],
       ref: '',
-      endpoint: {settings: []},
+      endpoint: { settings: [] },
       __props: {
         errors: [],
       },
@@ -402,7 +410,7 @@ class ItemFactory {
           name: 'message', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'message', value: '',
         }, {
           name: 'data', type: FLOGO_TASK_ATTRIBUTE_TYPE.ANY, title: 'data', value: '',
-        }, ],
+        }],
       },
       inputMappings: [],
       outputMappings: [],
@@ -412,7 +420,7 @@ class ItemFactory {
         name: 'message', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'message', value: '',
       }, {
         name: 'data', type: FLOGO_TASK_ATTRIBUTE_TYPE.ANY, title: 'data', value: '',
-      }, ],
+      }],
       __props: {
         errors: [],
       },
@@ -425,8 +433,8 @@ class ItemFactory {
       return this.makeTriggerError(trigger);
     }
 
-    const {installed, cli, endpointSetting} = trigger;
-    const item = Object.assign({}, this.getSharedProperties(installed), {id: trigger.node.taskID}, {
+    const { installed, cli, endpointSetting } = trigger;
+    const item = Object.assign({}, this.getSharedProperties(installed), { id: trigger.node.taskID }, {
       nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name
     });
 
@@ -480,7 +488,7 @@ class ItemFactory {
   }
 
   static makeItem(activity): any {
-    const {node, installed, cli} = activity;
+    const { node, installed, cli } = activity;
 
     const item = <any> Object.assign({}, this.getSharedProperties(installed), {
       attributes: {

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule as FlogoCommonModule } from '../../common/common.module';
 import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
@@ -32,16 +32,16 @@ import { routing } from './flogo.flows.detail.routing';
 import { UIModelConverterService } from './services/ui-model-converter.service';
 import { FlogoFlowService } from './services/flow.service';
 
-import {FlogoFlowTriggersPanelComponent} from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
-import {FlogoFlowInputSchemaComponent} from './components/flow-input-schema.component';
-import {FlogoTriggerClickHandlerService} from '../flogo.flows.detail.triggers-panel/services/click-handler.service';
+import { FlogoFlowTriggersPanelComponent } from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import { FlogoFlowInputSchemaComponent } from './components/flow-input-schema.component';
+import { FlogoTriggerClickHandlerService } from '../flogo.flows.detail.triggers-panel/services/click-handler.service';
 
 import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigger-mapper';
 import { FlowSchemaComponent as FlogoFlowSchemaComponent } from './components/flow-schema.component';
-import {FlogoFlowInputFieldComponent} from '../flogo.flows.input/component/input.component';
+import { FlogoFlowInputFieldComponent } from '../flogo.flows.input/component/input.component';
 
-import {FormBuilderModule as FlogoCommonFormBuilderModule} from '../../common/form-builder/form-builder.module';
-import {FlogoRunFlowComponent} from './run-flow/run-flow.component';
+import { FormBuilderModule as FlogoCommonFormBuilderModule } from '../../common/form-builder/form-builder.module';
+import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 @NgModule({
   imports: [
@@ -93,4 +93,5 @@ import {FlogoRunFlowComponent} from './run-flow/run-flow.component';
     FlogoCanvasComponent
   ]
 })
-export class FlogoFlowsDetailModule {}
+export class FlogoFlowsDetailModule {
+}

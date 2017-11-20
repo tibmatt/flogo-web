@@ -1,5 +1,5 @@
 import { ModuleWithProviders } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
 
@@ -8,24 +8,22 @@ import { FlogoFlowsDetailTriggers } from '../flogo.flows.detail.triggers/compone
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasks } from '../flogo.flows.detail.tasks/components/tasks.component';
 import { FlogoFlowsDetailTasksDetail } from '../flogo.flows.detail.tasks.detail/components/detail.component';
-//import { FlogoLogsComponent } from '../flogo.logs/components/logs.component';
-import { FlogoCanvasComponent } from "./components/canvas.component";
-import { FlogoFormTriggerHeader } from './../flogo.form.trigger.header/components/form.trigger.header.component';
+import { FlogoCanvasComponent } from './components/canvas.component';
 import { FlogoForm } from './../flogo.form/components/form.component';
 
 export const routes: Routes = [
   {
     path: 'flows/:id',
     component: FlogoCanvasComponent,
-    canActivate: [ ConfigurationLoadedGuard ],
+    canActivate: [ConfigurationLoadedGuard],
     children: [
-      {path: '', component: FlogoFlowsDetailComponent},
-      {path: 'trigger/add', component: FlogoFlowsDetailTriggers},
-      {path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent},
-      {path: 'task/add', component: FlogoFlowsDetailTasks},
-      {path: 'task/:id', component: FlogoFlowsDetailTasksDetail} ,
-      {path: 'new-trigger', component: FlogoForm }
-      //{path: 'logs', component: FlogoLogsComponent}
+      { path: '', component: FlogoFlowsDetailComponent },
+      { path: 'trigger/add', component: FlogoFlowsDetailTriggers },
+      { path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent },
+      { path: 'task/add', component: FlogoFlowsDetailTasks },
+      { path: 'task/:id', component: FlogoFlowsDetailTasksDetail },
+      { path: 'new-trigger', component: FlogoForm }
+      // {path: 'logs', component: FlogoLogsComponent}
     ]
   }
 ];

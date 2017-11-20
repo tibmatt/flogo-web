@@ -73,7 +73,6 @@
     {
       "files": ["./**/*.ts"],
       "exclude": [
-        "./app/flogo.flows.detail/**/*.ts",
         "./app/flogo.flows.detail.error-panel/**/*.ts",
         "./app/flogo.flows.detail.tasks/**/*.ts",
         "./app/flogo.flows.detail.tasks.detail/**/*.ts",
@@ -91,7 +90,6 @@
       "project": "./tsconfig.spec.json",
       "files": ["./**/*.ts"],
       "exclude": [
-        "./app/flogo.flows.detail/**/*.ts",
         "./app/flogo.flows.detail.error-panel/**/*.ts",
         "./app/flogo.flows.detail.tasks/**/*.ts",
         "./app/flogo.flows.detail.tasks.detail/**/*.ts",

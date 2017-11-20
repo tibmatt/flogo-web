@@ -1,24 +1,30 @@
-import {UIModelConverterService} from './ui-model-converter.service';
-import {RESTAPITriggersService} from '../../../common/services/restapi/triggers-api.service';
-import {RESTAPIActivitiesService} from '../../../common/services/restapi/activities-api.service';
-import {ErrorService} from '../../../common/services/error.service';
+import { UIModelConverterService } from './ui-model-converter.service';
+import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
+import { ErrorService } from '../../../common/services/error.service';
 import {
-  mockActivitiesDetails, mockErrorFlow, mockErrorHandler, mockFlow, mockResultantUIFlow, mockResultantUIFlowWithError,
-  mockResultantUIFlowWithTransformations, mockTransformationData
+  mockActivitiesDetails,
+  mockErrorFlow,
+  mockErrorHandler,
+  mockFlow,
+  mockResultantUIFlow,
+  mockResultantUIFlowWithError,
+  mockResultantUIFlowWithTransformations,
+  mockTransformationData
 } from './ui-model-flow.mock';
-import { mockTriggerDetails} from './ui-model-trigger.mock';
+import { mockTriggerDetails } from './ui-model-trigger.mock';
+import { FlogoProfileService } from '../../../common/services/profile.service';
+import { RESTAPIContributionsService } from '../../../common/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
-import {FlogoProfileService} from '../../../common/services/profile.service';
-import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/contributions.service';
 
-describe('Service: UI Model Converter', function(this: {
+describe('Service: UI Model Converter', function (this: {
   service: UIModelConverterService,
   errorService: ErrorService,
   triggerServiceMock: RESTAPITriggersService,
   activityServiceMock: RESTAPIActivitiesService,
   profileService: FlogoProfileService,
   contribServiceMock: RESTAPIContributionsService
-}){
+}) {
 
   beforeEach(() => {
     this.triggerServiceMock = jasmine.createSpyObj<RESTAPITriggersService>('triggerService', [
@@ -56,7 +62,7 @@ describe('Service: UI Model Converter', function(this: {
     const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(Promise.resolve(mockTriggerDetails));
     const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
-    spyActivityService.and.callFake(function(activityRef){
+    spyActivityService.and.callFake(function (activityRef) {
       if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return Promise.resolve(mockActivitiesDetails[0]);
       } else {
@@ -76,7 +82,7 @@ describe('Service: UI Model Converter', function(this: {
     const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
     const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
-    spyActivityService.and.callFake(function(activityRef){
+    spyActivityService.and.callFake(function (activityRef) {
       if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return mockActivitiesDetails[0];
       } else {
@@ -97,7 +103,7 @@ describe('Service: UI Model Converter', function(this: {
     const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
     const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
-    spyActivityService.and.callFake(function(activityRef){
+    spyActivityService.and.callFake(function (activityRef) {
       if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return mockActivitiesDetails[0];
       } else {
@@ -124,22 +130,27 @@ describe('Service: UI Model Converter', function(this: {
       items: {},
     });
     noIdFlow.paths.root.is = 'some_id_' + dummyIndex++;
-    const allNodes = flow.paths.nodes, allItems = flow.items;
+    const allNodes = flow.paths.nodes;
+    const allItems = flow.items;
     for (const nodeKey in allNodes) {
-      noIdFlow.paths.nodes['some_id_' + dummyIndex] = allNodes[nodeKey];
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].taskID = 'some_id_' + dummyIndex;
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].children = _.map(allNodes[nodeKey].children, (v, i) => 'some_id_' + i);
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].parents = _.map(allNodes[nodeKey].parents, (v, i) => 'some_id_' + i);
-      dummyIndex += 1;
+      if (allNodes.hasOwnProperty(nodeKey)) {
+        noIdFlow.paths.nodes['some_id_' + dummyIndex] = allNodes[nodeKey];
+        noIdFlow.paths.nodes['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
+        noIdFlow.paths.nodes['some_id_' + dummyIndex].taskID = 'some_id_' + dummyIndex;
+        noIdFlow.paths.nodes['some_id_' + dummyIndex].children = _.map(allNodes[nodeKey].children, (v, i) => 'some_id_' + i);
+        noIdFlow.paths.nodes['some_id_' + dummyIndex].parents = _.map(allNodes[nodeKey].parents, (v, i) => 'some_id_' + i);
+        dummyIndex += 1;
+      }
     }
     for (const itemKey in allItems) {
-      noIdFlow.items['some_id_' + dummyIndex] = allItems[itemKey];
-      noIdFlow.items['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
-      if (allItems[itemKey].nodeId){
-        noIdFlow.items['some_id_' + dummyIndex].nodeId = 'some_id_' + dummyIndex;
+      if (allItems.hasOwnProperty(itemKey)) {
+        noIdFlow.items['some_id_' + dummyIndex] = allItems[itemKey];
+        noIdFlow.items['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
+        if (allItems[itemKey].nodeId) {
+          noIdFlow.items['some_id_' + dummyIndex].nodeId = 'some_id_' + dummyIndex;
+        }
+        dummyIndex += 1;
       }
-      dummyIndex += 1;
     }
     if (flow.errorHandler) {
       noIdFlow.errorHandler = formFlowWithoutId(flow.errorHandler);

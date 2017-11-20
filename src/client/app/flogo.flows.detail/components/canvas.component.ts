@@ -4,14 +4,15 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/toPromise';
 
 import { PostService } from '../../../common/services/post.service';
 import { OperationalError } from '../../../common/services/error.service';
 
 import {
   ERRORS as RUNNER_ERRORS,
-  RUN_STATUS_CODE as RUNNER_STATUS,
   RUN_STATE_CODE as RUNNER_STATE,
+  RUN_STATUS_CODE as RUNNER_STATUS,
   RunnerService,
   RunOptions,
   RunProgress,
@@ -52,7 +53,9 @@ import { RESTAPITriggersService } from '../../../common/services/restapi/v2/trig
 import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
 import {
-  FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_PROFILE_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE,
+  FLOGO_FLOW_DIAGRAM_NODE_TYPE,
+  FLOGO_PROFILE_TYPE,
+  FLOGO_TASK_ATTRIBUTE_TYPE,
   FLOGO_TASK_TYPE
 } from '../../../common/constants';
 import {
@@ -60,7 +63,8 @@ import {
   flogoGenBranchID,
   flogoGenTriggerID,
   flogoIDDecode,
-  flogoIDEncode, isMapperActivity,
+  flogoIDEncode,
+  isMapperActivity,
   normalizeTaskName,
   notification,
   objectFromArray,
@@ -71,10 +75,10 @@ import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.dia
 import { FlogoModal } from '../../../common/services/modal.service';
 import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
-import {FlogoProfileService} from '../../../common/services/profile.service';
-import {IFlogoTrigger} from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import { FlogoProfileService } from '../../../common/services/profile.service';
+import { IFlogoTrigger } from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 import { FlogoFlowInputSchemaComponent } from './flow-input-schema.component';
-import {FlowMetadataAttribute} from '../models/flow-metadata-attribute';
+import { FlowMetadataAttribute } from '../models/flow-metadata-attribute';
 import { FlowMetadata } from '../../flogo.transform/models/flow-metadata';
 
 export interface IPropsToUpdateFormBuilder {
@@ -208,36 +212,35 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   deleteFlow() {
-    let message = this.translate.instant('FLOWS:CONFIRM_DELETE', { flowName: this.flow.name });
-    this._flogoModal.confirmDelete(message)
+    this.translate.get('FLOWS:CONFIRM_DELETE', { flowName: this.flow.name })
+      .toPromise()
+      .then(deleteMessage => this._flogoModal.confirmDelete(deleteMessage))
       .then((res) => {
         if (res) {
           let appPromise = null;
           appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flow.app.id);
-
           appPromise
             .then((app) => {
-              let triggerDetails = this.getTriggerCurrentFlow(app, this.flow.id);
+              const triggerDetails = this.getTriggerCurrentFlow(app, this.flow.id);
               return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
             })
             .then(() => {
               this.navigateToApp();
             })
-            .then(() => {
-              let message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED');
-              notification(message, 'success', 3000);
-            })
+            .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED').toPromise())
+            .then(message => notification(message, 'success', 3000))
             .catch(err => {
-              let message = this.translate.instant('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err);
-              notification(message, 'error');
               console.error(err);
+              this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err)
+                .subscribe(message =>  notification(message, 'error'));
             });
         }
-      })
+      });
   }
 
   public _updateFlow(flow: any) {
     this._isCurrentProcessDirty = true;
+
     function cleanPaths(paths: any) {
       _.each(_.keys(paths), key => {
         if (key !== 'root' && key !== 'nodes') {
@@ -256,7 +259,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     }
 
     return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
-      if ( _.isEmpty( flow.items ) ) {
+      if (_.isEmpty(flow.items)) {
         this.hasTask = false;
       }
       console.groupCollapsed('Flow updated');
@@ -282,7 +285,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
         this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
         this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-        if ( _.isEmpty( this.mainHandler.tasks ) ) {
+        if (_.isEmpty(this.mainHandler.tasks)) {
           this.hasTask = false;
         }
 
@@ -297,18 +300,24 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   private _getCurrentState(taskID: string) {
     const steps = this.runState.steps || [];
-    let id:any = taskID;
+    let id: any = taskID;
     try { // try to decode the base64 encoded taskId to number
       id = flogoIDDecode(taskID);
     } catch (e) {
       console.warn(e);
     }
+    // allow double equal check for legacy ids that were type number
+    /* tslint:disable-next-line:triple-equals */
     return steps.find(step => id == step.taskId);
   }
 
   private _cleanSelectionStatus() {
-    let allNodes = _.reduce(this.handlers, (allNodes, handle) => {
-      return _.assign(allNodes, _.get(handle, 'diagram.nodesOfAddType', {}), _.get(handle, 'diagram.nodes', {}));
+    const allNodes = _.reduce(this.handlers, (nodesAccumulator, handle) => {
+      return _.assign(
+        nodesAccumulator,
+        _.get(handle, 'diagram.nodesOfAddType', {}),
+        _.get(handle, 'diagram.nodes', {})
+      );
     }, {});
     _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
 
@@ -322,8 +331,12 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
     // clean selection status
 
-    let allNodes = _.reduce(this.handlers, (allNodes, handle) => {
-      return _.assign(allNodes, _.get(handle, 'diagram.nodesOfAddType', {}), _.get(handle, 'diagram.nodes', {}));
+    const allNodes = _.reduce(this.handlers, (nodesAccumulator, handle) => {
+      return _.assign(nodesAccumulator,
+        _.get(handle, 'diagram.nodesOfAddType', {}),
+        _.get(handle, 'diagram.nodes',
+          {})
+      );
     }, {});
     _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
 
@@ -340,20 +353,20 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   private uniqueTaskName(taskName: string) {
     // TODO for performance pre-normalize and store task names?
-    let newNormalizedName = normalizeTaskName(taskName);
+    const newNormalizedName = normalizeTaskName(taskName);
 
-    //All activities are gathered in one variable
-    let allTasks = _.reduce(this.handlers, (all: any, current: any) => _.assign(all, current.tasks), {});
+    // All activities are gathered in one variable
+    const allTasks = _.reduce(this.handlers, (all: any, current: any) => _.assign(all, current.tasks), {});
 
-    //search for the greatest index in all the flow
-    let greatestIndex = _.reduce(allTasks, (greatest: number, task: any) => {
-      let currentNormalized = normalizeTaskName(task.name);
+    // search for the greatest index in all the flow
+    const greatestIndex = _.reduce(allTasks, (greatest: number, task: any) => {
+      const currentNormalized = normalizeTaskName(task.name);
       let repeatIndex = 0;
-      if (newNormalizedName == currentNormalized) {
+      if (newNormalizedName === currentNormalized) {
         repeatIndex = 1;
       } else {
-        let match = /^(.*)\-([0-9]+)$/.exec(currentNormalized); // some-name-{{integer}}
-        if (match && match[1] == newNormalizedName) {
+        const match = /^(.*)\-([0-9]+)$/.exec(currentNormalized); // some-name-{{integer}}
+        if (match && match[1] === newNormalizedName) {
           repeatIndex = _.toInteger(match[2]);
         }
       }
@@ -368,7 +381,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   private _getCurrentTaskContext(taskId: any, diagramId: string): TaskContext {
     const taskType = this.handlers[diagramId].tasks[taskId].type;
     return {
-      isTrigger:  taskType === FLOGO_TASK_TYPE.TASK_ROOT,
+      isTrigger: taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK,
       hasProcess: Boolean(this.runState.currentProcessId),
@@ -384,22 +397,22 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
    *-------------------------------*/
 
   private _exportTriggerAndFlow() {
-    let flow = this._exportFlow();
-    let trigger = this._exportTrigger();
+    const flow = this._exportFlow();
+    const trigger = this._exportTrigger();
 
     return Promise.all([trigger, flow]);
   }
 
   private _exportFlow() {
     return new Promise((resolve, reject) => {
-      let jsonFlow = flogoFlowToJSON(this.flow);
+      const jsonFlow = flogoFlowToJSON(this.flow);
       return resolve({ fileName: 'flow.json', data: jsonFlow.flow });
     });
   }
 
   private _exportTrigger() {
     return new Promise((resolve, reject) => {
-      let jsonTrigger = triggerFlowToJSON(this.flow)
+      const jsonTrigger = triggerFlowToJSON(this.flow);
       resolve({ fileName: 'trigger.json', data: jsonTrigger });
     });
   }
@@ -421,50 +434,50 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   public changeFlowDetail($event, property) {
     return new Promise((resolve, reject) => {
       this._updateFlow(this.flow).then((response: any) => {
-        let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
+        const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
         notification(message, 'success', 3000);
         resolve(response);
       }).catch((err) => {
-        let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
+        const message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
         notification(message, 'error');
         reject(err);
       });
-    })
+    });
 
   }
 
   public changeFlowDetailName(name, property) {
-    if (name == this.flowName) {
+    if (name === this.flowName) {
       return Promise.resolve(true);
     }
 
     return this._flowService.listFlowsByName(this.flow.appId, name)
       .then((flows) => {
-        let results = flows || [];
+        const results = flows || [];
         if (!_.isEmpty(results)) {
           if (results[0].id === this.flowId) {
             return;
           }
-          let message = this.translate.instant('CANVAS:FLOW-NAME-EXISTS', { value: name });
+          const message = this.translate.instant('CANVAS:FLOW-NAME-EXISTS', { value: name });
           this.flow.name = this.flowName;
           notification(message, 'error');
           return results;
         } else {
           this.flow.name = name;
           this._updateFlow(this.flow).then((response: any) => {
-            let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
+            const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
             this.flowName = this.flow.name;
             notification(message, 'success', 3000);
             return response;
           }).catch((err) => {
-            let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
+            const message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
             notification(message, 'error');
             return Promise.reject(err);
           });
         }
       })
       .catch((err) => {
-        let message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
+        const message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
         notification(message, 'error');
         return Promise.reject(err);
       });
@@ -494,33 +507,34 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     console.groupEnd();
   }
 
-  private getSettingsCurrentHandler () {
-    let settings, outputs;
-    for(let key in this.flow.items) {
-      if(this.flow.items[key].type === FLOGO_TASK_TYPE.TASK_ROOT) {
+  private getSettingsCurrentHandler() {
+    let settings;
+    let outputs;
+    for (const key in this.flow.items) {
+      if (this.flow.items[key].type === FLOGO_TASK_TYPE.TASK_ROOT) {
         settings = objectFromArray(this.flow.items[key].endpoint.settings, true);
         outputs = objectFromArray(this.flow.items[key].outputs, true);
       }
     }
 
-    return {settings, outputs};
+    return { settings, outputs };
   }
 
   private _onActionTrigger(data: any, envelope: any) {
 
-    if(data.action === 'trigger-copy') {
-      let triggerSettings = _.pick(this.currentTrigger, ['name', 'description', 'ref', 'settings']);
+    if (data.action === 'trigger-copy') {
+      const triggerSettings = _.pick(this.currentTrigger, ['name', 'description', 'ref', 'settings']);
       this._restAPITriggersService.createTrigger(this.app.id, triggerSettings)
         .then((createdTrigger) => {
           this.currentTrigger = createdTrigger;
-          let settings = this.getSettingsCurrentHandler();
-          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.flow.id, settings )
+          const settings = this.getSettingsCurrentHandler();
+          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.flow.id, settings)
             .then((res) => {
-              let message = this.translate.instant('CANVAS:COPIED-TRIGGER');
+              const message = this.translate.instant('CANVAS:COPIED-TRIGGER');
               notification(message, 'success', 3000);
               this._restAPIAppsService.getApp(this.flow.app.id)
                 .then((app) => {
-                  let updatedTriggerDetails = _.assign({}, this.currentTrigger);
+                  const updatedTriggerDetails = _.assign({}, this.currentTrigger);
                   updatedTriggerDetails.handlers.push(_.assign({}, _.pick(res, [
                     'actionId',
                     'createdAt',
@@ -551,15 +565,15 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
     // generate trigger id when adding the trigger;
     //  TODO replace the task ID generation function?
-    let trigger = <IFlogoFlowDiagramTask> _.assign({}, data.trigger, { id: flogoGenTriggerID() });
+    const trigger = <IFlogoFlowDiagramTask> _.assign({}, data.trigger, { id: flogoGenTriggerID() });
 
-    let diagramId = data.id;
-    let handler = this.handlers[diagramId];
+    const diagramId = data.id;
+    const handler = this.handlers[diagramId];
 
-    if (handler == this.errorHandler) {
+    if (handler === this.errorHandler) {
       trigger.id = this.profileService.generateTaskID(this._getAllTasks());
     }
-    let tasks = handler.tasks || [];
+    const tasks = handler.tasks || [];
 
     this.handlers['root']['schemas'] = this.handlers['root']['schemas'] || {};
     trigger.ref = trigger.ref || trigger['__schema'].ref;
@@ -569,22 +583,22 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
 
     let resultCreateTrigger;
-    let settings = objectFromArray(data.trigger.endpoint.settings, false);
-    let outputs = objectFromArray(data.trigger.outputs, false);
+    const settings = objectFromArray(data.trigger.endpoint.settings, false);
+    const outputs = objectFromArray(data.trigger.outputs, false);
 
-    if(data.installType === 'installed') {
-      let appId = this.flow.app.id;
-      let triggerInfo: any = _.pick(data.trigger, ['name', 'ref', 'description']);
+    if (data.installType === 'installed') {
+      const appId = this.flow.app.id;
+      const triggerInfo: any = _.pick(data.trigger, ['name', 'ref', 'description']);
       triggerInfo.settings = objectFromArray(data.trigger.settings || [], false);
 
       resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)
-        .then( (triggerResult)=> {
-          let triggerId = triggerResult.id;
-          return this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
+        .then((triggerResult) => {
+          const triggerId = triggerResult.id;
+          return this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, { settings, outputs });
         });
     } else {
       const triggerId = data.trigger.id;
-      resultCreateTrigger = this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, {settings, outputs});
+      resultCreateTrigger = this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, { settings, outputs });
     }
 
     resultCreateTrigger
@@ -646,16 +660,16 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private _addTaskFromTasks(data: any, envelope: any) {
-    let diagramId: string = data.id;
+    const diagramId: string = data.id;
     console.group('Add task message from task');
 
     console.log(data);
     console.log(envelope);
 
-    let doRegisterTask = _registerTask.bind(this);
+    const doRegisterTask = _registerTask.bind(this);
 
-    if (this.handlers[diagramId] == this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
-      let errorTrigger = makeDefaultErrorTrigger(this.profileService.generateTaskID(this._getAllTasks()));
+    if (this.handlers[diagramId] === this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
+      const errorTrigger = makeDefaultErrorTrigger(this.profileService.generateTaskID(this._getAllTasks()));
       this.errorHandler.tasks[errorTrigger.id] = errorTrigger;
 
       this._postService.publish(
@@ -741,29 +755,28 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private getTriggerCurrentFlow(app, flowId) {
-    let trigger:any = null;
+    let trigger: any = null;
+    const triggersForCurrentApp = app.triggers.filter(t => t.appId === app.id);
 
-    let triggers = app.triggers.filter((trigger) => trigger.appId === app.id);
-
-    if(triggers) {
-      triggers.forEach((currentTrigger) => {
-        let handlers = currentTrigger.handlers.find((handler) => {
+    // todo: unnecessary, app.triggers.filter is true?
+    if (triggersForCurrentApp) {
+      triggersForCurrentApp.forEach((currentTrigger) => {
+        const handlers = currentTrigger.handlers.find((handler) => {
           return handler.actionId === flowId;
         });
 
-        if(handlers) {
+        if (handlers) {
           trigger = currentTrigger;
           return trigger;
         }
       });
     }
-
     return trigger;
   }
 
 
   private _selectTriggerFromDiagram(data: any, envelope: any) {
-    let diagramId: string = data.id;
+    const diagramId: string = data.id;
     console.group('Select trigger message from diagram');
 
     console.log(data);
@@ -780,11 +793,11 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
           appPromise
             .then((app) => {
               // Refresh task detail
-              var currentStep = this._getCurrentState(data.node.taskID);
-              var currentTask = this.handlers[diagramId].tasks[data.node.taskID];
-              var context = this._getCurrentTaskContext(data.node.taskID, diagramId);
+              const currentStep = this._getCurrentState(data.node.taskID);
+              const currentTask = this.handlers[diagramId].tasks[data.node.taskID];
+              const context = this._getCurrentTaskContext(data.node.taskID, diagramId);
 
-              if(!this.currentTrigger) {
+              if (!this.currentTrigger) {
                 this.currentTrigger = this.getTriggerCurrentFlow(app, this.flow.id);
               }
 
@@ -832,11 +845,8 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
                 });
 
 
-
-
               console.groupEnd();
             });
-
 
 
         }
@@ -920,17 +930,17 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     tileType: string
   }, envelope: any) {
     if (data.tileType === 'activity') {
-      var task = this.handlers[data.id].tasks[data.taskId];
+      const task = this.handlers[data.id].tasks[data.taskId];
 
       if (task) {
-        if (data.proper == 'name') {
+        if (data.proper === 'name') {
           task[data.proper] = this.uniqueTaskName(data.content);
         } else {
           task[data.proper] = data.content;
         }
-        let updateObject = {};
+        const updateObject = {};
 
-        let propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
+        const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
 
         propsToUpdateFormBuilder.name = task.name;
 
@@ -956,16 +966,16 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private _deleteTaskFromDiagram(data: any, envelope: any) {
-    let diagramId: string = data.id;
+    const diagramId: string = data.id;
 
     console.group('Delete task message from diagram');
 
     console.log(data);
-    //data.id = this.flow._id;
+    // data.id = this.flow._id;
 
-    let task = this.handlers[diagramId].tasks[_.get(data, 'node.taskID', '')];
-    let node = this.handlers[diagramId].diagram.nodes[_.get(data, 'node.id', '')];
-    let _diagram = this.handlers[diagramId].diagram;
+    const task = this.handlers[diagramId].tasks[_.get(data, 'node.taskID', '')];
+    const node = this.handlers[diagramId].diagram.nodes[_.get(data, 'node.id', '')];
+    const _diagram = this.handlers[diagramId].diagram;
 
     // TODO
     //  refine confirmation
@@ -977,11 +987,11 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
           // clear details panel, if the selected activity is deleted
           // verify if should jump back to detail page before sending delete message
           let _shouldGoBack = false;
-          let parsedURL = location.pathname.split('task/');
+          const parsedURL = location.pathname.split('task/');
           if (parsedURL.length === 2 && _.isString(parsedURL[1])) {
 
-            let currentTaskID = parsedURL[1];
-            let deletingTaskID = _.get(data, 'node.taskID', '');
+            const currentTaskID = parsedURL[1];
+            const deletingTaskID = _.get(data, 'node.taskID', '');
 
             // if the current task ID in the URL is the deleting task, or
             // if the deleting task has branches or itself is branch, and the current task is in one of the branches
@@ -991,30 +1001,30 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
               // if the deleting task has branches or itself is branch, and the current task is in one of the branches
               ((_.some(_.get(data, 'node.children', []), (nodeId: string) => {
 
-                // try to find children of NODE_BRANCH type
-                return _diagram.nodes[nodeId].type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH;
+                  // try to find children of NODE_BRANCH type
+                  return _diagram.nodes[nodeId].type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH;
 
-              }) || _.get(data, 'node.type') === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH)
-              && (function isTaskIsChildOf(taskID: string, parentNode: any, isInBranch = false): boolean {
+                }) || _.get(data, 'node.type') === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH)
+                && (function isTaskIsChildOf(taskID: string, parentNode: any, isInBranch = false): boolean {
 
-                // traversal the downstream task
-                let children = _.get(parentNode, 'children', []);
+                  // traversal the downstream task
+                  const children = _.get(parentNode, 'children', []);
 
-                if (parentNode.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
-                  isInBranch = true;
-                }
+                  if (parentNode.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
+                    isInBranch = true;
+                  }
 
-                if (taskID === _.get(parentNode, 'taskID')) {
-                  return isInBranch; // if in branch, then should go back, otherwise ignore
-                } else if (children.length === 0) { // no child
-                  return false;
-                } else { // resursive call to the next level
-                  return _.some(children, (childID: string) => {
-                    return isTaskIsChildOf(taskID, _diagram.nodes[childID], isInBranch);
-                  });
-                }
+                  if (taskID === _.get(parentNode, 'taskID')) {
+                    return isInBranch; // if in branch, then should go back, otherwise ignore
+                  } else if (children.length === 0) { // no child
+                    return false;
+                  } else { // resursive call to the next level
+                    return _.some(children, (childID: string) => {
+                      return isTaskIsChildOf(taskID, _diagram.nodes[childID], isInBranch);
+                    });
+                  }
 
-              }(currentTaskID, data.node)))) {
+                }(currentTaskID, data.node)))) {
               _shouldGoBack = true;
             }
           }
@@ -1029,9 +1039,10 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
                 done: (diagram: IFlogoFlowDiagram) => {
                   // TODO
                   //  NOTE that once delete branch, not only single task is removed.
-                  delete this.handlers[diagramId].tasks[_.get(data, 'node.taskID', '')];
-                  if ((diagramId === 'errorhandler') && ((Object.keys(this.handlers[diagramId].tasks).length) ===  1 )
-                    && (this.handlers[diagramId].tasks[Object.keys(this.handlers[diagramId].tasks)[0]].type === FLOGO_TASK_TYPE.TASK_ROOT))  {
+                  const tasks = this.handlers[diagramId].tasks;
+                  delete tasks[_.get(data, 'node.taskID', '')];
+                  const taskIds = Object.keys(tasks);
+                  if ((diagramId === 'errorhandler') && (taskIds.length === 1 ) && (tasks[taskIds[0]].type === FLOGO_TASK_TYPE.TASK_ROOT)) {
                     this.flow.errorHandler = {
                       paths: {},
                       items: {}
@@ -1069,7 +1080,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private _addBranchFromDiagram(data: any, envelope: any) {
-    let diagramId: string = data.id;
+    const diagramId: string = data.id;
 
     console.group('Add branch message from diagram');
     console.log(data);
@@ -1078,7 +1089,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     //  remove this mock later
     //    here just creating a branch node with new branch info
 
-    let branchInfo = {
+    const branchInfo = {
       id: flogoGenBranchID(),
       type: FLOGO_TASK_TYPE.TASK_BRANCH,
       condition: 'true'
@@ -1102,7 +1113,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private _selectBranchFromDiagram(data: any, envelope: any) {
-    let diagramId: string = data.id;
+    const diagramId: string = data.id;
     console.group('Select branch message from diagram');
 
     console.log(data);
@@ -1110,14 +1121,14 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     // TODO
     //  reference to _selectTaskFromDiagram
     //  may need to route to some other URL?
-    var currentStep = this._getCurrentState(data.node.taskID);
-    var currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
-    var context = this._getCurrentTaskContext(data.node.taskID, diagramId);
+    const currentStep = this._getCurrentState(data.node.taskID);
+    const currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
+    const context = this._getCurrentTaskContext(data.node.taskID, diagramId);
 
-    let selectedNode = data.node;
-    let previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
+    const selectedNode = data.node;
+    const previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
     previousNodes.pop(); // ignore last item as it is the very same selected node
-    let previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
+    const previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
 
 
     this._navigateFromModuleRoot(['task', data.node.taskID])
@@ -1171,23 +1182,23 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
-    let diagramId = data.id;
+    const diagramId = data.id;
 
     console.group('Save task details to flow');
-    var task = this.handlers[diagramId].tasks[data.taskId];
+    const task = this.handlers[diagramId].tasks[data.taskId];
 
     if (task.type === FLOGO_TASK_TYPE.TASK) { // TODO handle more activity task types in the future
       // set/unset the warnings in the tile
       _.set(task, '__props.warnings', data.warnings);
 
-      var changedInputs = data.inputs || {};
+      const changedInputs = data.inputs || {};
       this._updateAttributesChanges(task, changedInputs, 'attributes.inputs');
 
     } else if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
       let updatePromise: any = Promise.resolve(true);
 
-      if(data.changedStructure === 'settings') {
-        updatePromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings})
+      if (data.changedStructure === 'settings') {
+        updatePromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, { settings: data.settings });
       } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
         updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.flow.id, {
           settings: data.endpointSettings,
@@ -1207,7 +1218,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
           // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
           task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
-            let newValue = data.outputs[output.name];
+            const newValue = data.outputs[output.name];
 
             // undefined is invalid default value, hence filter that out.
             if (output && !_.isUndefined(newValue)) {
@@ -1219,7 +1230,6 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
         });
 
 
-
     } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
       task.condition = data.condition;
     }
@@ -1228,7 +1238,6 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
       envelope.done();
     }
 
-    //this._updateFlow( this.flow );
     this._updateFlow(this.flow).then(() => {
       this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
     });
@@ -1238,22 +1247,25 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   private _updateAttributesChanges(task: any, changedInputs: any, structure: any) {
 
-    for (var name in changedInputs) {
-      var attributes = _.get(task, structure, []);
+    for (const name in changedInputs) {
+      if (!changedInputs.hasOwnProperty(name)) {
+        const attributes = _.get(task, structure, []);
 
-      attributes.forEach((input) => {
-        if (input.name === name) {
-          input['value'] = changedInputs[name];
-        }
-      });
+        // todo: do not create function in loop
+        attributes.forEach((input) => {
+          if (input.name === name) {
+            input['value'] = changedInputs[name];
+          }
+        });
+      }
     }
 
   }
 
   private _setTaskWarnings(data: any, envelope: any) {
-    let diagramId = data.id;
+    const diagramId = data.id;
 
-    var task = this.handlers[diagramId].tasks[data.taskId];
+    const task = this.handlers[diagramId].tasks[data.taskId];
 
     if (task) {
       _.set(task, '__props.warnings', data.warnings);
@@ -1275,15 +1287,15 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   /* TODO: Need to deprecate this method as it is no longer needed*/
   private _runFromTriggerinTile(data: any, envelope: any) {
-    let diagramId: string = data.id;
-    let currentDiagram: any = this.handlers[diagramId];
+    const diagramId: string = data.id;
+    const currentDiagram: any = this.handlers[diagramId];
 
     console.group('Run from Trigger');
 
     this._runFromRoot().then((res) => {
-      var currentStep = this._getCurrentState(data.taskId);
-      var currentTask = _.assign({}, _.cloneDeep(currentDiagram.tasks[data.taskId]));
-      var context = this._getCurrentTaskContext(data.taskId, diagramId);
+      const currentStep = this._getCurrentState(data.taskId);
+      const currentTask = _.assign({}, _.cloneDeep(currentDiagram.tasks[data.taskId]));
+      const context = this._getCurrentTaskContext(data.taskId, diagramId);
 
       this._postService.publish(
         _.assign(
@@ -1315,7 +1327,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     // The initial data to start the process from trigger
     const initData = this.getInitDataForRoot();
     const runOptions: RunOptions = { attrsData: initData };
-    let shouldUpdateFlow = this._isCurrentProcessDirty || !this.runState.currentProcessId;
+    const shouldUpdateFlow = this._isCurrentProcessDirty || !this.runState.currentProcessId;
     if (shouldUpdateFlow) {
       runOptions.useFlow = this.flow;
     } else {
@@ -1323,7 +1335,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     }
 
     this.runState.steps = null;
-    let runner = this._runnerService.runFromRoot(runOptions);
+    const runner = this._runnerService.runFromRoot(runOptions);
 
     runner.registered.subscribe(info => {
       this.runState.currentProcessId = info.processId;
@@ -1389,9 +1401,9 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
     this.observeRunProgress(runner)
       .then(() => {
-        let currentStep = this._getCurrentState(data.taskId);
-        let currentTask = _.assign({}, _.cloneDeep(this.mainHandler.tasks[data.taskId]));
-        let context = this._getCurrentTaskContext(data.taskId, 'root');
+        const currentStep = this._getCurrentState(data.taskId);
+        const currentTask = _.assign({}, _.cloneDeep(this.mainHandler.tasks[data.taskId]));
+        const context = this._getCurrentTaskContext(data.taskId, 'root');
 
         this._postService.publish(_.assign({},
           FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask,
@@ -1407,11 +1419,11 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
     console.groupEnd();
 
-    function parseInput(attrs: any, inputData: any) {
-      if (!attrs) {
+    function parseInput(formAttrs: any, inputData: any) {
+      if (!formAttrs) {
         return [];
       }
-      return _.map(attrs, (input: any) => {
+      return _.map(formAttrs, (input: any) => {
         // override the value;
         return _.assign(_.cloneDeep(input), {
           value: inputData[input['name']],
@@ -1423,7 +1435,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   // monitor the status of a process till it's done or up to the max trials
-  private observeRunProgress(runner: RunProgressStore): Promise<RunProgress|void> {
+  private observeRunProgress(runner: RunProgressStore): Promise<RunProgress | void> {
 
     // TODO: remove noop when fixed https://github.com/ReactiveX/rxjs/issues/2180
     runner.processStatus
@@ -1445,7 +1457,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     return runner.completed
       .do(state => {
         this.runState.steps = state.steps;
-        let message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-COMPLETED');
+        const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-COMPLETED');
         notification(message, 'success', 3000);
       })
       .toPromise();
@@ -1477,9 +1489,9 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private markRootAsRan() {
-    let mainHandler = this.mainHandler;
+    const mainHandler = this.mainHandler;
     try { // rootTask should be in DONE status once the flow start
-      let rootTask = mainHandler.tasks[mainHandler.diagram.nodes[mainHandler.diagram.root.is].taskID];
+      const rootTask = mainHandler.tasks[mainHandler.diagram.nodes[mainHandler.diagram.root.is].taskID];
       rootTask.__status['hasRun'] = true;
       rootTask.__status['isRunning'] = false;
     } catch (e) {
@@ -1513,7 +1525,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     // todo: more specific error message?
     let message = null;
     if (error.isOperational) {
-      let opError = <OperationalError> error;
+      const opError = <OperationalError> error;
       if (opError.name === RUNNER_ERRORS.PROCESS_NOT_COMPLETED) {
         // run error instance has status prop hence the casting to any
         message = (<any>opError).status === RUNNER_STATUS.CANCELLED ? 'CANVAS:RUN-ERROR:RUN-CANCELLED' : 'CANVAS:RUN-ERROR:RUN-FAILED';
@@ -1549,15 +1561,15 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   private updateTaskRunStatus(steps: Step[], rsp: any) {
     let isErrorHandlerTouched = false;
-    let runTasksIDs = <string[]>[];
-    let errors = <{
+    const runTasksIDs = <string[]>[];
+    const errors = <{
       [index: string]: {
         msg: string;
         time: string;
       }[];
     }>{};
     let isFlowDone = false;
-    let runTasks = _.reduce(steps, (result: any, step: any) => {
+    const runTasks = _.reduce(steps, (result: any, step: any) => {
       let taskID = step.taskId;
 
       if (taskID !== 'root' && taskID !== 1 && !_.isNil(taskID)) { // if not rootTask and not `null`
@@ -1572,30 +1584,31 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
         if (taskState !== RUNNER_STATE.SKIPPED) {
           runTasksIDs.push(taskID);
         }
-        let reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
-        let reAttrErrMsg = new RegExp(`^\{Error.message}`, 'g');
+        const reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
+        const reAttrErrMsg = new RegExp(`^\{Error.message}`, 'g');
 
-        let taskInfo = _.reduce(_.get(step, 'flow.attributes', []), (taskInfo: any, attr: any) => {
-          if (reAttrName.test(_.get(attr, 'name', ''))) {
-            taskInfo[attr.name] = attr;
-          }
+        const taskInfo = _.reduce(_.get(step, 'flow.attributes', []),
+          (currentTaskInfo: any, attr: any) => {
+                    if (reAttrName.test(_.get(attr, 'name', ''))) {
+                      currentTaskInfo[attr.name] = attr;
+                    }
 
-          if (reAttrErrMsg.test(attr.name)) {
-            let errs = <any[]>_.get(errors, `${taskID}`);
-            let shouldOverride = _.isUndefined(errs);
-            errs = errs || [];
+                    if (reAttrErrMsg.test(attr.name)) {
+                      let errs = <any[]>_.get(errors, `${taskID}`);
+                      const shouldOverride = _.isUndefined(errs);
+                      errs = errs || [];
 
-            errs.push({
-              msg: attr.value,
-              time: new Date().toJSON()
-            });
+                      errs.push({
+                        msg: attr.value,
+                        time: new Date().toJSON()
+                      });
 
-            if (shouldOverride) {
-              _.set(errors, `${taskID}`, errs);
-            }
-          }
-          return taskInfo;
-        }, {});
+                      if (shouldOverride) {
+                        _.set(errors, `${taskID}`, errs);
+                      }
+                    }
+                    return currentTaskInfo;
+             }, {});
 
         result[taskID] = { attrs: taskInfo };
       } else if (_.isNull(taskID)) {
@@ -1618,7 +1631,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
           task.__status['hasRun'] = true;
           task.__status['isRunning'] = false;
 
-          let errs = errors[runTaskID];
+          const errs = errors[runTaskID];
           if (!_.isUndefined(errs)) {
             _.set(task, '__props.errors', errs);
           }
@@ -1663,13 +1676,15 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   //  get step index logic should be based on the selected snapshot,
   //  hence need to be refined in the future
   private _getStepNumberFromSteps(taskId: string) {
-    var stepNumber: number = 0;
+    let stepNumber = 0;
     // firstly try to get steps from the last process instance running from the beginning,
     // otherwise use some defauts
-    let steps = _.get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
+    const steps = _.get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
     taskId = flogoIDDecode(taskId); // decode the taskId
 
     steps.forEach((step: any, index: number) => {
+      // allowing double equals for legacy ids that were of type number
+      /* tslint:disable-next-line:triple-equals */
       if (step.taskId == taskId) {
         stepNumber = index + 1;
       }
@@ -1762,10 +1777,10 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private _deleteTransformFromTransform(data: any, envelope: any) {
-    let diagramId: string = data.id;
+    const diagramId: string = data.id;
 
     // data.tile.taskId
-    let tile = this.handlers[diagramId].tasks[data.tile.id];
+    const tile = this.handlers[diagramId].tasks[data.tile.id];
     delete tile.inputMappings;
 
     this._updateFlow(this.flow).then(() => {
@@ -1786,20 +1801,20 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
    * @returns string[] list of node ids
    */
   private findPathToNode(startNodeId: any, targetNodeId: any, diagramId: string) {
-    let nodes = this.handlers[diagramId].diagram.nodes; // should be parameter?
+    const nodes = this.handlers[diagramId].diagram.nodes; // should be parameter?
     let queue = [[startNodeId]];
 
     while (queue.length > 0) {
-      let path = queue.shift();
-      let nodeId = path[path.length - 1];
+      const path = queue.shift();
+      const nodeId = path[path.length - 1];
 
-      if (nodeId == targetNodeId) {
+      if (nodeId === targetNodeId) {
         return path;
       }
 
-      let children = nodes[nodeId].children;
+      const children = nodes[nodeId].children;
       if (children) {
-        let paths = children.map(child => path.concat(child));
+        const paths = children.map(child => path.concat(child));
         queue = queue.concat(paths);
       }
 
@@ -1810,7 +1825,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
   private mapNodesToTiles(nodeIds: any[], from: HandlerInfo) {
 
-    let isApplicableNodeType = _.includes.bind(null, [
+    const isApplicableNodeType = _.includes.bind(null, [
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
@@ -1818,7 +1833,7 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
 
     return nodeIds
       .map(nodeId => {
-        let node = from.diagram.nodes[nodeId];
+        const node = from.diagram.nodes[nodeId];
         if (isApplicableNodeType(node.type)) {
           return from.tasks[node.taskID];
         } else {
@@ -1854,12 +1869,12 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
     const flowUpdatePromise = modifiedInputs.length ? this._updateFlow(this.flow) : Promise.resolve(this.flow);
     flowUpdatePromise.then(() => this._runFromRoot())
       .then(() => {
-        let parsedURL = location.pathname.split('task/');
+        const parsedURL = location.pathname.split('task/');
         if (parsedURL.length === 2 && _.isString(parsedURL[1])) {
           const taskId = parsedURL[1];
           const id = this.getDiagramId(taskId);
           if (id) {
-            this._updateTaskOutputAfterRun({id, taskId});
+            this._updateTaskOutputAfterRun({ id, taskId });
           }
         }
       });
