@@ -8,7 +8,6 @@
       </svg>
     </div>
     <div class="trigger_menu"
-         *ngIf="displayTriggerMenuPopover && (selectedTriggerID == trigger.id)"
          (fgClickOutside)="handleClickOutsideTriggerMenu($event)"
          [ngClass]="{'trigger_menu--open': displayTriggerMenuPopover && (selectedTriggerID == trigger.id)}">
       <ul class="list-group trigger_menu-list">

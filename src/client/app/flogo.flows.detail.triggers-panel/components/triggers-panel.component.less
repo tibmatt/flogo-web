@@ -70,7 +70,9 @@
   position: relative;
 
   .trigger_menu {
-    display: none;
+    transform: scale(0);
+    transform-origin: top left;
+    transition: all 100ms ease-in;
     position: absolute;
     top: 0;
     left: 40px;
@@ -124,7 +126,7 @@
   }
 
   .trigger_menu--open {
-    display: initial;
+    transform: scale(1);
   }
 }
 
