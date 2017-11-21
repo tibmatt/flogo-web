@@ -1,47 +1,43 @@
-import {Component, SimpleChange} from '@angular/core';
-import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
-import {  TranslateService } from 'ng2-translate/ng2-translate';
+import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
-    selector: 'flogo-form-builder-branch-configuration',
-    // moduleId: module.id,
-    templateUrl: 'form-builder.configuration.branch.tpl.html',
-    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes']
+  selector: 'flogo-form-builder-branch-configuration',
+  // moduleId: module.id,
+  templateUrl: 'form-builder.configuration.branch.tpl.html',
 })
-export class FlogoFormBuilderConfigurationBranchComponent {
-  _fieldObserver : any;
+export class FlogoFormBuilderConfigurationBranchComponent implements OnChanges {
+  // disabling no-input-rename rule to make the linter pass for now
+  // decided to skip fixing because this class should be deprecated
+  /* tslint:disable:no-input-rename */
+  @Input('fieldObserver')
+  _fieldObserver: any;
+  @Input('attributes')
   _attributes: any;
-  fields:any;
+  /* tslint:enable:no-input-rename */
+  fields: any;
 
-  constructor(private _commonService: FlogoFormBuilderCommon, public translate: TranslateService) {
+  constructor(public translate: TranslateService) {
   }
 
-  ngOnInit() {
+  ngOnChanges(change: { [propName: string]: SimpleChange }) {
+    this.fields = this._attributes;
   }
 
-  ngOnChanges(change: {[propName:string]:SimpleChange}) {
-      this.fields =  this._attributes;
-  }
-
-
-  getBranchInfo( branchInfo : any ) {
-      let translator = this.translate;
-    var info = {
-      name:       'condition',
-      id:         branchInfo.id,
-      title:      translator.get('FORM-BUILDER-CONFIGURATION-BRANCH:IF')['value'],
-      value:      branchInfo.condition,
-      required:   true,
+  getBranchInfo(branchInfo: any) {
+    return {
+      name: 'condition',
+      id: branchInfo.id,
+      title: this.translate.get('FORM-BUILDER-CONFIGURATION-BRANCH:IF')['value'],
+      value: branchInfo.condition,
+      required: true,
       placeholder: '',
-      isBranch:   true,
+      isBranch: true,
       isTrigger: false,
       isTask: false,
       isEditable: true
     };
-
-    return info;
   }
-
 
 
 }

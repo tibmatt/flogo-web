@@ -12,23 +12,22 @@ export class FlogoFormBuilderCommon {
     return this.directions;
   }
 
-
-  getStructureFromAttributes(structure:string, attributes:any) {
-    var returnValue =  _.get(attributes, structure, []);
+  getStructureFromAttributes(structure: string, attributes: any) {
+    const returnValue =  _.get(attributes, structure, []);
 
     return this._getArray(returnValue);
   }
 
-  _getArray(obj:any) {
-    if(!Array.isArray(obj)) {
+  _getArray(obj: any) {
+    if (!Array.isArray(obj)) {
       return [];
     }
 
     return obj;
   }
 
-  _mapTypeToConstant(type:string|FLOGO_TASK_ATTRIBUTE_TYPE) : FLOGO_TASK_ATTRIBUTE_TYPE {
-    switch(type) {
+  _mapTypeToConstant(type: string|FLOGO_TASK_ATTRIBUTE_TYPE): FLOGO_TASK_ATTRIBUTE_TYPE {
+    switch (type) {
       case 'string':
       case FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
         return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
@@ -67,11 +66,11 @@ export class FlogoFormBuilderCommon {
     }
   }
 
-  getControlByType(item:any, paramDirection?:string) {
-    let control:string = '';
-    let typeAsConstant:FLOGO_TASK_ATTRIBUTE_TYPE = this._mapTypeToConstant(item.type);
+  getControlByType(item: any, paramDirection?: string) {
+    let control = '';
+    const typeAsConstant: FLOGO_TASK_ATTRIBUTE_TYPE = this._mapTypeToConstant(item.type);
 
-    switch(typeAsConstant) {
+    switch (typeAsConstant) {
       case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
         control =  'FieldTextBox';
         break;
@@ -82,29 +81,29 @@ export class FlogoFormBuilderCommon {
         break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
-        control='FieldRadio';
+        control = 'FieldRadio';
         break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-        control='FieldTextArea';
+        control = 'FieldTextArea';
         break;
 
       case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
       case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
       case FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT:
-        control='FieldObject';
+        control = 'FieldObject';
         break;
 
       default:
-        control='FieldTextBox';
+        control = 'FieldTextBox';
         break;
     }
 
-    if(paramDirection == this.directions.output && item.type == FLOGO_TASK_ATTRIBUTE_TYPE.STRING) {
+    if (paramDirection === this.directions.output && item.type === FLOGO_TASK_ATTRIBUTE_TYPE.STRING) {
       control = 'FieldObject';
     }
 
-    if(item.allowed) { control= 'FieldListBox'; }
+    if (item.allowed) { control = 'FieldListBox'; }
 
     return {control};
 

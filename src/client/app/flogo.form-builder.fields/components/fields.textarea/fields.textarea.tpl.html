@@ -2,7 +2,8 @@
   <!--<label for="objectField" class="control-label">{{_info.title}}</label>-->
   <div class="flogo-fields-header-field">
     <label class="control-label">{{_info.title}}</label>
-    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >{{ 'FIELDS:OPTIONAL' | translate }}</label>
+    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' ">{{ 'FIELDS:OPTIONAL' |
+      translate }}</label>
   </div>
 
   <textarea name="" [id]="this._info.name" rows="5"
@@ -17,7 +18,8 @@
             [class.is-disabled-settings]="!_info.isEditable && _info.structure === 'settings'"
             (blur)="onBlur($event)"
             [readonly]="isReadOnly()"></textarea>
-  <label *ngIf="!_info.isEditable" for="" [class.is-empty]="!_info.value">{{_info.value ? _info.value : '(empty)' }}</label>
+  <label *ngIf="!_info.isEditable" for="" [class.is-empty]="!_info.value">{{_info.value ? _info.value : '(empty)'
+    }}</label>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>
   </div>

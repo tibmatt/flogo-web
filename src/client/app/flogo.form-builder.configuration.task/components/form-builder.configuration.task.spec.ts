@@ -16,12 +16,12 @@ describe('Form-builder component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ FormBuilderModule ],
+      imports: [FormBuilderModule],
 
 
       declarations: [],
       providers: [
-        {provide: FlogoFormBuilderCommon, useClass: FlogoFormBuilderCommon}
+        { provide: FlogoFormBuilderCommon, useClass: FlogoFormBuilderCommon }
       ]
     });
   });
@@ -120,7 +120,8 @@ describe('Form-builder component', () => {
                       { name: '_A.2.value', type: 'integer', value: '5' },
                       { name: '_A.3.message', type: 'string', value: '' }
                     ],
-                    state: 0, status: 500 }, id: '3', taskId: 3, tasks: null
+                    state: 0, status: 500
+                  }, id: '3', taskId: 3, tasks: null
                 }
               }, {
                 name: 'flowInfo',

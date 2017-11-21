@@ -1,15 +1,14 @@
-import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
 import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
 import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
-import {  FlogoFormBuilderFieldsTextArea } from './fields.textarea/fields.textarea.component';
-import {  FlogoFormBuilderFieldsTextBox } from './fields.textbox/fields.textbox.component';
-import {  FlogoFormBuilderFieldsNumber } from './fields.number/fields.number.component';
-import {  FlogoFormBuilderFieldsObject } from './fields.object/fields.object.component';
+import { FlogoFormBuilderFieldsTextAreaComponent } from './fields.textarea/fields.textarea.component';
+import { FlogoFormBuilderFieldsTextBoxComponent } from './fields.textbox/fields.textbox.component';
+import { FlogoFormBuilderFieldsNumberComponent } from './fields.number/fields.number.component';
+import { FlogoFormBuilderFieldsObjectComponent } from './fields.object/fields.object.component';
 
 @Component({
   template: `<flogo-form-builder-fields-textarea [info]="info" [fieldObserver]="fieldObserver">
@@ -57,7 +56,6 @@ class TextboxTestHostComponent {
 }
 
 
-
 @Component({
   template: `
             <flogo-form-builder-fields-object [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-object>
@@ -76,7 +74,7 @@ class ObjectTestHostComponent {
       isBranch: false,
       isTask: false,
       isTrigger: true,
-      value: {message: 'hello'}
+      value: { message: 'hello' }
     };
   }
 }
@@ -135,17 +133,16 @@ describe('Form-builder component', () => {
         FlogoFlowsModule
       ],
       declarations: [
-        FlogoFormBuilderFieldsTextArea,
-        FlogoFormBuilderFieldsTextBox,
-        FlogoFormBuilderFieldsNumber,
-        FlogoFormBuilderFieldsObject,
+        FlogoFormBuilderFieldsTextAreaComponent,
+        FlogoFormBuilderFieldsTextBoxComponent,
+        FlogoFormBuilderFieldsNumberComponent,
+        FlogoFormBuilderFieldsObjectComponent,
         TextareaTestHostComponent,
         NumberTestHostComponent,
         ObjectTestHostComponent,
         TextboxTestHostComponent,
       ], // declare the test component
-      providers: [
-      ],
+      providers: [],
       //  schemas: [ NO_ERRORS_SCHEMA ]
     })
       .compileComponents()
@@ -196,7 +193,7 @@ describe('Form-builder component', () => {
     const evt = document.createEvent('Event');
     evt.initEvent('keyup', true, false);
     textbox.dispatchEvent(evt);
-  } );
+  });
 
   it('Should throw error in Number field when entered an empty string and the field is required', (done) => {
     let changeEventIsDone = false;
@@ -330,7 +327,7 @@ describe('Form-builder component', () => {
     });
     fixtureTextarea.detectChanges();
     const textarea = fixtureTextarea.nativeElement.querySelector('textarea');
-    textarea.value = {'color': 'blue'};
+    textarea.value = { 'color': 'blue' };
 
     const evt = document.createEvent('Event');
     evt.initEvent('keyup', true, false);

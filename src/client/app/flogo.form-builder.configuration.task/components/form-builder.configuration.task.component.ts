@@ -1,41 +1,43 @@
-import {Component, SimpleChange} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
 
-import {FlogoFormBuilderCommon} from '../../flogo.form-builder/form-builder.common';
-import {FlogoFormBuilderFieldsListBox as FieldListBox} from '../../flogo.form-builder.fields/components/fields.listbox/fields.listbox.component';
-import {convertTaskID, parseMapping} from "../../../common/utils";
+import { FlogoFormBuilderCommon } from '../../flogo.form-builder/form-builder.common';
+import { convertTaskID, parseMapping } from '../../../common/utils';
 
 @Component({
-    selector: 'flogo-form-builder-task-configuration',
-    // moduleId: module.id,
-    templateUrl: 'form-builder.configuration.task.tpl.html',
-    inputs: ['_fieldObserver:fieldObserver','_attributes:attributes', '_task:task']
+  selector: 'flogo-form-builder-task-configuration',
+  templateUrl: 'form-builder.configuration.task.tpl.html'
 })
-export class FlogoFormBuilderConfigurationTaskComponent {
-  _fieldObserver : any;
+export class FlogoFormBuilderConfigurationTaskComponent implements OnChanges {
+  // disabling no-input-rename rule to make the linter pass for now
+  // decided to skip fixing because this class should be deprecated
+  /* tslint:disable:no-input-rename */
+  @Input('fieldObserver')
+  _fieldObserver: any;
+  @Input('attributes')
   _attributes: any;
-  _task:any;
-  fields:any;
+  @Input('task')
+  _task: any;
+  /* tslint:enable:no-input-rename */
+  fields: any;
   directions: any;
 
   constructor(public _commonService: FlogoFormBuilderCommon) {
-    this.fields = { inputs: [], outputs: []};
+    this.fields = { inputs: [], outputs: [] };
     this.directions = _commonService.getParameterDirections();
   }
 
-  ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
+  ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
     this.refreshInputs();
   }
 
   refreshInputs() {
     this.fields = {
-      inputs : this._commonService.getStructureFromAttributes('inputs',  this._attributes),
+      inputs: this._commonService.getStructureFromAttributes('inputs', this._attributes),
       outputs: this._commonService.getStructureFromAttributes('outputs', this._attributes),
-    }  }
-
-  ngOnInit() {
+    };
   }
 
-  getControlByType(item:any, parameterDirection?:string) :any {
+  getControlByType(item: any, parameterDirection?: string): any {
     return this._commonService.getControlByType(item, parameterDirection);
   }
 
@@ -70,21 +72,21 @@ export class FlogoFormBuilderConfigurationTaskComponent {
     return resultValue ? resultValue.value : info.value;
   }
 
-  //TODO define interface
-  getTaskInfo(input:any, direction:string, structure:string) {
-    var info = {
-      name:       input.name,
-      type:       input.type,
-      title:      input.title || input.name || '',
-      value:      input.value,
-      mappings:   input.mappings,
-      step:       input.step,
+  // TODO define interface
+  getTaskInfo(input: any, direction: string, structure: string) {
+    const info = {
+      name: input.name,
+      type: input.type,
+      title: input.title || input.name || '',
+      value: input.value,
+      mappings: input.mappings,
+      step: input.step,
       validation: input.validation,
       validationMessage: input.validationMessage,
-      required:   input.required || false,
+      required: input.required || false,
       placeholder: input.placeholder || '',
-      isTrigger:  false,
-      isBranch:   false,
+      isTrigger: false,
+      isBranch: false,
       isTask: true,
       direction: direction,
       // subfield where this item is located
@@ -96,8 +98,6 @@ export class FlogoFormBuilderConfigurationTaskComponent {
     info.value = this._getMappingValue(info);
     return _.assign({}, info, this.getControlByType(input));
   }
-
-
 
 
 }

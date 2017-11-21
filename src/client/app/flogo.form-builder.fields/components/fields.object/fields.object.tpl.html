@@ -2,7 +2,8 @@
 
   <div class="flogo-fields-header-field">
     <label class="control-label">{{_info.title}}</label>
-    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >{{ 'FIELDS:OPTIONAL' | translate }}</label>
+    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' ">{{ 'FIELDS:OPTIONAL' |
+      translate }}</label>
   </div>
 
   <textarea rows="5"
@@ -20,7 +21,8 @@
             (change)="onValidate($event)"
             [readonly]="isReadOnly()"></textarea>
 
-  <label *ngIf="!_info.isEditable" for="" [class.is-empty]="!_info.value">{{_info.value ? _info.value : '(empty)' }}</label>
+  <label *ngIf="!_info.isEditable" for="" [class.is-empty]="!_info.value">{{_info.value ? _info.value : '(empty)'
+    }}</label>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>
   </div>

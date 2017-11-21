@@ -71,20 +71,10 @@
   },
   "lint": [
     {
-      "files": ["./**/*.ts"],
-      "exclude": [
-        "./app/flogo.form-builder*/**/*",
-        "./node_modules/**/*"
-      ],
       "project": "./tsconfig.app.json"
     },
     {
-      "project": "./tsconfig.spec.json",
-      "files": ["./**/*.ts"],
-      "exclude": [
-        "./app/flogo.form-builder*/**/*",
-        "./node_modules/**/*"
-      ]
+      "project": "./tsconfig.spec.json"
     }
   ],
   "test": {

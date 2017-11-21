@@ -2,7 +2,8 @@
 
   <div class="flogo-fields-header-field">
     <label class="control-label">{{_info.title}}</label>
-    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' " >{{ 'FIELDS:OPTIONAL' | translate }}</label>
+    <label class="control-label" [hidden]="_info.required || _info.direction == 'output' ">{{ 'FIELDS:OPTIONAL' |
+      translate }}</label>
   </div>
 
 
@@ -21,11 +22,13 @@
     </button>
 
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" [id]="_info.name">
-      <li *ngFor="let option of options" (click)="onChangeField(option)" style="cursor:pointer;" class="list-label"><a>{{option ? option : "&nbsp;"}}</a></li>
+      <li *ngFor="let option of options" (click)="onChangeField(option)" style="cursor:pointer;" class="list-label"><a>{{option
+        ? option : "&nbsp;"}}</a></li>
     </ul>
   </div>
 
-  <label *ngIf="!_info.isEditable" for="" [class.is-empty]="!_info.value">{{_info.value ? _info.value : '(empty)' }}</label>
+  <label *ngIf="!_info.isEditable" for="" [class.is-empty]="!_info.value">{{_info.value ? _info.value : '(empty)'
+    }}</label>
   <div *ngIf="_hasError && _errorMessage" class="control-group error">
     <label class="flogo-fields-base__error">{{_errorMessage}}</label>
   </div>
