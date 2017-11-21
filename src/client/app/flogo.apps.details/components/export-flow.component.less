@@ -34,21 +34,34 @@
 
 .flogo-export-flow-created-at {
   font-size: 10px;
-  color: #666666;
+  letter-spacing: 0.6px;
   text-align: right;
+  color: #666666;
 }
 
 .flogo-export-flow-header {
   margin-left: 15px;
   color: #b5b5b5;
+  font-size: 18px;
 }
 
 .flogo-select-flow-link {
   a {
-    color: #0081cb;
+    color: #727272;
+    &:hover {
+      color: #106cc8;
+    }
   }
   margin: 10px 0 0 15px;
   font-size: 14px;
+  font-weight: 600;
+  line-height: 1.43;
+  letter-spacing: 0.5px;
+}
+
+.flogo-select-seperator{
+  color: #727272;
+  padding: 3px;
 }
 
 .flogo-export-flow-footer {
@@ -64,6 +77,16 @@
   height: 18px;
   width: 18px;
   cursor: pointer;
+}
+
+.footer-button{
+  width: 124px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.footer-button + .footer-button {
+  margin-left: 20px;
 }
 
 .flogo-checkbox {
@@ -82,7 +105,7 @@
   width: 17px;
   height: 17px;
   left: 0;
-  bottom: 2px;
+  bottom: 3px;
   margin-left: -21px;
   border: 1px solid #cccccc;
   border-radius: 3px;
@@ -109,8 +132,8 @@
   content: "\f00c";
 }
 .flogo-checkbox-primary input[type="checkbox"]:checked + label::before {
-  background-color: #4e7ead;
-  border-color:#4e7ead;
+  background-color: #419BF9;
+  border-color:#419BF9;
 }
 .flogo-checkbox-primary input[type="checkbox"]:checked + label::after {
   color: #fff;
