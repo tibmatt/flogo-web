@@ -22,6 +22,7 @@ export class FlogoFlowsDetailErrorPanelComponent implements OnDestroy {
 
   isScreenScrolled  = false;
   imgErrorHandler = '/assets/svg/error-icon-info.svg';
+  imgErrorHandlerToggle = '/assets/svg/error-icon-toggle-up.svg';
 
   private subscriptions: Array<any>;
 
@@ -45,12 +46,10 @@ export class FlogoFlowsDetailErrorPanelComponent implements OnDestroy {
 
       if (this.isOpen) {
         this.postService.publish( _.assign( {}, PUB_EVENTS.openPanel, { data : {} } ) );
-        this.imgErrorHandler = '/assets/svg/error-icon-close.svg';
-
+        this.imgErrorHandlerToggle = '/assets/svg/error-icon-toggle-down.svg';
       } else {
         this.postService.publish( _.assign( {}, PUB_EVENTS.closePanel, { data : {} } ) );
-        this.imgErrorHandler = '/assets/svg/error-icon-info.svg';
-
+        this.imgErrorHandlerToggle = '/assets/svg/error-icon-toggle-up.svg';
       }
 
     }, 100);
