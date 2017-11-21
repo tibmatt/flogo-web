@@ -43,6 +43,9 @@
                         [disableRun]="disableRunFlow"
                         [flowInputs]="flow?.metadata?.input"
                         (onSubmit)="onRunFlow($event)"></flogo-run-flow>
+        <div class="flogo-flow-detail-log-button-container">
+          <flogo-logs></flogo-logs>
+        </div>
         <div class="flogo-flow-detail-menu">
           <i class="flogo-icon-kebabmenu"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">
@@ -55,10 +58,6 @@
               </li>
             </ul>
           </div>
-        </div>
-
-        <div class="flogo-flow-detail-log-button-container">
-          <flogo-logs></flogo-logs>
         </div>
 
       </div>
