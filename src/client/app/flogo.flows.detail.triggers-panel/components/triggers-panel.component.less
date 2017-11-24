@@ -15,6 +15,10 @@
   display: flex;
   flex-direction: row;
 
+  .bg-placeholder {
+    fill: @color-trigger-bg-color;
+  }
+
   .lambda-icon {
     display: none;
     color: #1B4874;
@@ -26,6 +30,25 @@
     color: #1B4874;
     font-size: 20px;
   }
+
+  &.--lambda {
+    .bg-placeholder {
+      fill: #ecc99b;
+    }
+
+    .trigger-content {
+      padding: 14px 16px;
+    }
+
+    .flogo-icon-trigger {
+      display: none;
+    }
+
+    .lambda-icon {
+      display: block;
+    }
+
+  }
 }
 
 .trigger-icon-background {
@@ -33,32 +56,9 @@
   z-index: 0;
 }
 
-.bg-placeholder {
-  fill: @color-trigger-bg-color;
-}
-
 .trigger-content {
   padding: 14px 12px;
   z-index: 1;
-}
-
-.trigger.--lambda {
-  .bg-placeholder {
-    fill: #ecc99b;
-  }
-
-  .trigger-content {
-    padding: 14px 16px;
-  }
-
-  .flogo-icon-trigger {
-    display: none;
-  }
-
-  .lambda-icon {
-    display: block;
-  }
-
 }
 
 .trigger_block {
@@ -113,7 +113,7 @@
 
   }
 
-  .bg-placeholder {
+  .bg-placeholder, .trigger.--lambda .bg-placeholder {
     fill: @color-trigger-selected-bg-color;;
   }
 
