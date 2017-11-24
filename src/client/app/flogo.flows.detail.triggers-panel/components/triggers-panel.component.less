@@ -3,37 +3,17 @@
 @trigger-border-width: 2px;
 
 .main {
-  padding: 20px;
+  padding: 1em 1.25em;
 }
 
 .trigger {
-  width: 40px;
-  height: 40px;
-  padding-left: 5px;
-  background: @color-trigger-bg-color;
-  margin: 10px 0;
-  border-radius: 5px 0 0 5px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 10px;
   cursor: pointer;
-  text-align: center;
   position: relative;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
-
-  &:after {
-    display: block;
-    content: "";
-    position: absolute;
-    transform: rotate(45deg) skew(20deg, 20deg);
-    background: @color-trigger-bg-color;
-    height: 21px;
-    width: 21px;
-    top: 9px;
-    right: -11px;
-    top: 9.5px;
-    right: -10.5px;
-  }
 
   .lambda-icon {
     display: none;
@@ -47,12 +27,8 @@
     font-size: 20px;
   }
 
-  &.--lambda {
+  /*&.--lambda {
     background-color: #ecc99b;
-
-    &:after {
-      background-color: #ecc99b;
-    }
 
     .flogo-icon-trigger {
       display: none;
@@ -62,8 +38,22 @@
       display: block;
     }
 
-  }
+  }*/
 
+}
+
+.trigger-icon-background {
+  position: absolute;
+  z-index: 0;
+}
+
+.bg-placeholder {
+  fill: @color-trigger-bg-color;
+}
+
+.trigger-content {
+  padding: 14px 12px;
+  z-index: 1;
 }
 
 .trigger_block {
@@ -72,11 +62,10 @@
   .trigger_menu {
     transform: scale(0);
     transform-origin: top left;
-    transition: all 100ms ease-in;
+    transition: all 450ms ease-in;
     position: absolute;
-    top: 0;
+    top: 1px;
     left: 40px;
-    z-index: 2;
     width: 135px;
 
     .trigger_menu-list{
@@ -106,14 +95,8 @@
 
 .trigger_block--selected {
   .trigger {
-    background: @color-trigger-selected-bg-color;
-    cursor: pointer;
     position: relative;
     z-index: 3;
-
-    &:after {
-      background: @color-trigger-selected-bg-color;
-    }
 
     .flogo-icon-trigger {
       color: #fff;
@@ -125,24 +108,29 @@
 
   }
 
+  .bg-placeholder {
+    fill: @color-trigger-selected-bg-color;;
+  }
+
   .trigger_menu--open {
     transform: scale(1);
+    z-index: 2;
   }
 }
 
 .trigger--add {
-  background: none;
-  border: @trigger-border-width dashed #79b8dc;
   color: #79b8dc;
-  border-right: none;
   font-size: 0.85em;
-
-  &:after {
-    background: none;
-    border: 0 dashed #79b8dc;
-    border-top-width: @trigger-border-width;
-    border-right-width: @trigger-border-width;
-    height: 20px;
-    top: 8px;
+  margin-bottom: 0;
+  .trigger-content {
+    padding: 16px;
+  }
+  .bg-placeholder {
+    fill: none;
+    stroke: #79b8dc;
+    stroke-width: 2.4;
+    stroke-linejoin: round;
+    stroke-dasharray: 4;
+    stroke-dashoffset: 5;
   }
 }
