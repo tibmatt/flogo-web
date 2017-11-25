@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CommonModule as FlogoCommonModule } from '../../common/common.module';
+import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { FlogoFormBuilderCommon as FlogoFormBuilderCommonService } from './form-builder.common';
 import {
   FlogoFormBuilderFieldsBaseComponent,
@@ -29,7 +29,7 @@ import { FlogoFormBuilderComponent } from './components/form-builder.component';
   imports: [// module dependencies
     NgCommonModule,
     FormsModule,
-    FlogoCommonModule
+    FlogoSharedModule
   ],
   declarations: [
     FlogoFormBuilderFieldsBaseComponent,

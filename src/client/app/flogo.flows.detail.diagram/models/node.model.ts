@@ -1,6 +1,6 @@
 import { IFlogoFlowDiagram } from '../models';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
-import { flogoIDEncode } from '../../../common/utils';
+import { flogoIDEncode } from '../../shared/utils';
 
 export interface IFlogoFlowDiagramNode {
   id: string; // id of the node

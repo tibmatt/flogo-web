@@ -3,9 +3,9 @@ import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
-import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
-import {IFlogoApplicationFlowModel } from '../../../common/application.model';
+import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
+import { CoreModule as FlogoCoreModule } from '../../core/core.module';
+import {IFlogoApplicationFlowModel } from '../../core/application.model';
 import { AppDetailService } from '../../flogo.apps/services/apps.service';
 import { FlogoExportFlowsComponent } from './export-flow.component';
 
@@ -38,7 +38,7 @@ describe('FlogoExportFlowsComponent component', () => {
         TranslateModule.forRoot(),
         Ng2Bs3ModalModule,
         FlogoCoreModule,
-        FlogoCommonModule,
+        FlogoSharedModule,
       ],
       declarations: [
         // FlogoAppSettingsComponent,

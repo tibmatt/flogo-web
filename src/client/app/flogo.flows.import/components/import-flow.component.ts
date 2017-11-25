@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
+import { RESTAPIFlowsService } from '../../core/services/restapi/flows-api.service';
 import * as jQuery from 'jquery';
 @Component( {
   selector : 'flogo-flows-import',

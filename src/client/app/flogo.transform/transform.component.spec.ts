@@ -3,8 +3,8 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Http } from '@angular/http';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
-import { PostService } from '../../common/services/post.service';
-import { CommonModule as FlogoCommonModule } from '../../common/common.module';
+import { PostService } from '../core/services/post.service';
+import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { TransformComponent } from './transform.component';
 import { MapperModule } from '../flogo.mapper/mapper.module';
@@ -37,7 +37,7 @@ describe('Component: TransformComponent', () => {
         // todo: stub/mock translator
         TranslateModule.forRoot(),
         NgCommonModule,
-        FlogoCommonModule,
+        FlogoSharedModule,
         MapperModule,
       ],
       declarations: [

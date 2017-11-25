@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule  as NgCommonModule } from '@angular/common';
-import { CommonModule as FlogoCommonModule} from '../../common/common.module';
+import { SharedModule as FlogoSharedModule} from '../shared/shared.module';
 import { FlogoFormTriggerHeaderComponent } from '../flogo.form.trigger.header/components/form.trigger.header.component';
 import { FlogoFormComponent } from './components/form.component';
 import { FlogoFormTriggerComponent } from '../flogo.form.trigger/components/form.trigger.component';
@@ -8,7 +8,7 @@ import { FlogoFormTriggerComponent } from '../flogo.form.trigger/components/form
 @NgModule({
   imports: [
     NgCommonModule,
-    FlogoCommonModule
+    FlogoSharedModule
   ],
   declarations: [
     FlogoFormComponent,

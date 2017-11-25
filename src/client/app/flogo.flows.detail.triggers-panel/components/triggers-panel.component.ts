@@ -1,10 +1,10 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {FLOGO_PROFILE_TYPE} from '../../../common/constants';
-import {notification, objectFromArray} from '../../../common/utils';
-import {RESTAPITriggersService} from '../../../common/services/restapi/v2/triggers-api.service';
-import {RESTAPIHandlersService} from '../../../common/services/restapi/v2/handlers-api.service';
+import {FLOGO_PROFILE_TYPE} from '../../core/constants';
+import {notification, objectFromArray} from '../../shared/utils';
+import {RESTAPITriggersService} from '../../core/services/restapi/v2/triggers-api.service';
+import {RESTAPIHandlersService} from '../../core/services/restapi/v2/handlers-api.service';
 import {Router} from '@angular/router';
-import {PostService} from '../../../common/services/post.service';
+import {PostService} from '../../core/services/post.service';
 import {
   SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS

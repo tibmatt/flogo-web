@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationModel } from '../../../common/application.model';
-import { notification } from '../../../common/utils';
-import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
+import { IFlogoApplicationModel } from '../../core/application.model';
+import { notification } from '../../shared/utils';
+import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
 
 @Component({
   selector: 'flogo-apps-list',

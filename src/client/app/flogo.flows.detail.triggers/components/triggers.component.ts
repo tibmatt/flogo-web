@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { PostService } from '../../../common/services/post.service';
+import { PostService } from '../../core/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
+import { RESTAPITriggersService } from '../../core/services/restapi/triggers-api.service';
 
 @Component(
   {

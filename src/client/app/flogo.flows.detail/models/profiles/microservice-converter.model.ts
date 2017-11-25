@@ -1,8 +1,8 @@
 import { AbstractModelConverter } from '../ui-converter.model';
-import { RESTAPIActivitiesService } from '../../../../common/services/restapi/activities-api.service';
-import { RESTAPITriggersService } from '../../../../common/services/restapi/triggers-api.service';
-import { ErrorService } from '../../../../common/services/error.service';
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../../common/constants';
+import { RESTAPIActivitiesService } from '../../../core/services/restapi/activities-api.service';
+import { RESTAPITriggersService } from '../../../core/services/restapi/triggers-api.service';
+import { ErrorService } from '../../../core/services/error.service';
+import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../core/constants';
 import { FlowMetadata } from '../models';
 import { FlowMetadataAttribute } from '../flow-metadata-attribute';
 

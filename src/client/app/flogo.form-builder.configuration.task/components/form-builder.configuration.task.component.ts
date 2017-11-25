@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
 
 import { FlogoFormBuilderCommon } from '../../flogo.form-builder/form-builder.common';
-import { convertTaskID, parseMapping } from '../../../common/utils';
+import { convertTaskID, parseMapping } from '../../shared/utils';
 
 @Component({
   selector: 'flogo-form-builder-task-configuration',

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
-import { PostService } from '../../../common/services/post.service';
+import { PostService } from '../../core/services/post.service';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
-import { convertTaskID, getDefaultValue, normalizeTaskName } from '../../../common/utils';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
+import { convertTaskID, getDefaultValue, normalizeTaskName } from '../../shared/utils';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/filter';

@@ -13,7 +13,7 @@ import {
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE
 } from '../constants';
-import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
+import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
 import { genBranchLine } from '../utils';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 

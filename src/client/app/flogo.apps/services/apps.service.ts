@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import {Action, IFlogoApplicationModel, Trigger} from '../../../common/application.model';
-import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
-import { ErrorService } from '../../../common/services/error.service';
+import {Action, IFlogoApplicationModel, Trigger} from '../../core/application.model';
+import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
+import { ErrorService } from '../../core/services/error.service';
 
 const DEFAULT_STATE = {
   name: {

@@ -1,4 +1,4 @@
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../core/constants';
 
 export interface IFlogoFlowDiagramTaskAttribute {
   name: string;

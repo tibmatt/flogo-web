@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import * as _ from 'lodash';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../core/constants';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 

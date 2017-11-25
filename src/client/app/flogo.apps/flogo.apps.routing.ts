@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
+import { ConfigurationLoadedGuard } from '../core/services/configuration-loaded-guard.service';
 import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
 import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
 

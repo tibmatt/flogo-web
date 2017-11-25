@@ -1,4 +1,4 @@
-import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
+import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { Subject } from 'rxjs/Subject';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';

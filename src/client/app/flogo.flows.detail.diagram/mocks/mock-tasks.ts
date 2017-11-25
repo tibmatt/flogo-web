@@ -1,5 +1,5 @@
 import { IFlogoFlowDiagramTaskDictionary } from '../models';
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../core/constants';
 
 export var TASKS : IFlogoFlowDiagramTaskDictionary = {
   "task 1" : {

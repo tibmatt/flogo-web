@@ -1,6 +1,6 @@
 import { AbstractModelConverter } from '../ui-converter.model';
-import { RESTAPIContributionsService } from '../../../../common/services/restapi/v2/contributions.service';
-import { ErrorService } from '../../../../common/services/error.service';
+import { RESTAPIContributionsService } from '../../../core/services/restapi/v2/contributions.service';
+import { ErrorService } from '../../../core/services/error.service';
 
 export class DeviceModelConverter extends AbstractModelConverter {
   contribService: RESTAPIContributionsService;

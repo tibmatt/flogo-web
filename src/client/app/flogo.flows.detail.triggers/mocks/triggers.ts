@@ -1,5 +1,5 @@
-import { FLOGO_TASK_TYPE } from '../../../common/constants';
-import { flogoIDEncode } from '../../../common/utils';
+import { FLOGO_TASK_TYPE } from '../../core/constants';
+import { flogoIDEncode } from '../../shared/utils';
 
 export const TRIGGERS = [
   {

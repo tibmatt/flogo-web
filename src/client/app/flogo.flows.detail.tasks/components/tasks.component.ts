@@ -1,11 +1,11 @@
 import { Component, OnDestroy } from '@angular/core';
-import { PostService } from '../../../common/services/post.service';
+import { PostService } from '../../core/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from '../messages';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import {FlogoProfileService} from '../../../common/services/profile.service';
-import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import {FlogoProfileService} from '../../core/services/profile.service';
+import { FLOGO_PROFILE_TYPE } from '../../core/constants';
 
 @Component(
   {

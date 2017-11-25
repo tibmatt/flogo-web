@@ -4,7 +4,7 @@ import { Component, Input, OnDestroy,
   trigger, transition, style, animate, state, AnimationTransitionEvent
 } from '@angular/core';
 
-import { PostService } from '../../common/services/post.service';
+import { PostService } from '../core/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskData } from './messages';
 
@@ -17,7 +17,7 @@ import { IFlogoFlowDiagramTaskAttributeMapping } from '../flogo.flows.detail.dia
 @Component({
   selector: 'flogo-transform',
   styleUrls: [
-    '../../common/styles/_mapper-modal.less',
+    '../../assets/_mapper-modal.less',
     'transform.component.less'
   ],
   templateUrl: 'transform.component.html',

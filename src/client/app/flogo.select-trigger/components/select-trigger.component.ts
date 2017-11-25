@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output} from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { PostService } from '../../../common/services/post.service';
-import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../../common/services/restapi/v2/triggers-api.service';
+import { PostService } from '../../core/services/post.service';
+import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../core/services/restapi/v2/triggers-api.service';
 import { PUB_EVENTS } from '../messages';
-import { FlogoProfileService } from '../../../common/services/profile.service';
+import { FlogoProfileService } from '../../core/services/profile.service';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({

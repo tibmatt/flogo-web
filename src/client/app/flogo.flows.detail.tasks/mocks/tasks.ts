@@ -1,5 +1,5 @@
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../common/constants';
-import { flogoIDEncode } from '../../../common/utils';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '../../core/constants';
+import { flogoIDEncode } from '../../shared/utils';
 
 export let MOCK_TASKS = [
   {

@@ -5,13 +5,13 @@ import { Http } from '@angular/http';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
-import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
-import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
+import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
+import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import { FlogoApplicationComponent } from './application.component';
 import { FlogoApplicationSearchComponent } from '../../flogo.apps.search/components/search.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../../flogo.apps.flows/components';
 import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
-import { FlogoProfileService } from '../../../common/services/profile.service';
+import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
 import { FlogoExportFlowsComponent } from './export-flow.component';
 import {FlowTriggerGroupComponent} from '../../flogo.apps.flows/components/trigger-group.component';
@@ -64,7 +64,7 @@ describe('FlogoApplicationComponent component', () => {
         TranslateModule.forRoot(),
         Ng2Bs3ModalModule,
         FlogoCoreModule,
-        FlogoCommonModule,
+        FlogoSharedModule,
         FlogoFlowsModule,
       ],
       declarations: [

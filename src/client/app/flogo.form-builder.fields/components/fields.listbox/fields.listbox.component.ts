@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FlogoFormBuilderFieldsBaseComponent } from '../fields.base/fields.base.component';
-import { DEFAULT_VALUES_OF_TYPES as DEFAULT_VALUES } from '../../../../common/constants';
+import { DEFAULT_VALUES_OF_TYPES as DEFAULT_VALUES } from '../../../core/constants';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 const EMPTY_OPTION = '<empty>';

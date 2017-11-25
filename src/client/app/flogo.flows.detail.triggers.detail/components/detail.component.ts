@@ -1,5 +1,5 @@
 import {Component, OnDestroy} from '@angular/core';
-import {PostService} from '../../../common/services/post.service';
+import {PostService} from '../../core/services/post.service';
 import {SUB_EVENTS, PUB_EVENTS} from '../messages';
 
 @Component({

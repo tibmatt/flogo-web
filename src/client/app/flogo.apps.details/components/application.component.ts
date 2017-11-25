@@ -2,17 +2,17 @@ import * as _ from 'lodash';
 
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../../common/application.model';
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../core/application.model';
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../../flogo.apps/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
 import { FlogoExportFlowsComponent } from './export-flow.component';
-import { SanitizeService } from '../../../common/services/sanitize.service';
-import { diffDates, notification } from '../../../common/utils';
-import { FlogoModal } from '../../../common/services/modal.service';
-import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
-import { FlogoProfileService } from '../../../common/services/profile.service';
+import { SanitizeService } from '../../core/services/sanitize.service';
+import { diffDates, notification } from '../../shared/utils';
+import { FlogoModal } from '../../core/services/modal.service';
+import { FLOGO_PROFILE_TYPE } from '../../core/constants';
+import { FlogoProfileService } from '../../core/services/profile.service';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 

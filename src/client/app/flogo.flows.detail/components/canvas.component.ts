@@ -6,8 +6,8 @@ import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 
-import { PostService } from '../../../common/services/post.service';
-import { OperationalError } from '../../../common/services/error.service';
+import { PostService } from '../../core/services/post.service';
+import { OperationalError } from '../../core/services/error.service';
 
 import {
   ERRORS as RUNNER_ERRORS,
@@ -20,7 +20,7 @@ import {
   Step
 } from '../services/runner.service';
 
-import { IFlogoFlowDiagram, IFlogoFlowDiagramTask, makeDefaultErrorTrigger } from '../../../common/models';
+import { IFlogoFlowDiagram, IFlogoFlowDiagramTask, makeDefaultErrorTrigger } from '../../core/models';
 
 import {
   PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS,
@@ -49,15 +49,15 @@ import {
   SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS
 } from '../../flogo.flows.detail.error-panel/messages';
 
-import { RESTAPITriggersService } from '../../../common/services/restapi/v2/triggers-api.service';
-import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
-import { RESTAPIHandlersService } from '../../../common/services/restapi/v2/handlers-api.service';
+import { RESTAPITriggersService } from '../../core/services/restapi/v2/triggers-api.service';
+import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
+import { RESTAPIHandlersService } from '../../core/services/restapi/v2/handlers-api.service';
 import {
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   FLOGO_PROFILE_TYPE,
   FLOGO_TASK_ATTRIBUTE_TYPE,
   FLOGO_TASK_TYPE
-} from '../../../common/constants';
+} from '../../core/constants';
 import {
   attributeTypeToString,
   flogoGenBranchID,
@@ -69,13 +69,13 @@ import {
   notification,
   objectFromArray,
   updateBranchNodesRunStatus
-} from '../../../common/utils';
+} from '../../shared/utils';
 
 import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
-import { FlogoModal } from '../../../common/services/modal.service';
+import { FlogoModal } from '../../core/services/modal.service';
 import { HandlerInfo } from '../models/models';
 import { FlogoFlowService as FlowsService } from '../services/flow.service';
-import { FlogoProfileService } from '../../../common/services/profile.service';
+import { FlogoProfileService } from '../../core/services/profile.service';
 import { IFlogoTrigger } from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 import { FlogoFlowInputSchemaComponent } from './flow-input-schema.component';
 import { FlowMetadataAttribute } from '../models/flow-metadata-attribute';

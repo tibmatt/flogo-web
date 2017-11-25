@@ -1,9 +1,9 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild, Input, Output } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { RESTAPITriggersService } from '../../../common/services/restapi/triggers-api.service';
-import { RESTAPIActivitiesService } from '../../../common/services/restapi/activities-api.service';
-import { RESTAPIContributionsService } from '../../../common/services/restapi/v2/contributions.service';
-import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import { RESTAPITriggersService } from '../../core/services/restapi/triggers-api.service';
+import { RESTAPIActivitiesService } from '../../core/services/restapi/activities-api.service';
+import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
+import { FLOGO_PROFILE_TYPE } from '../../core/constants';
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,
   FLOGO_INSTALLER_STATUS_IDLE,

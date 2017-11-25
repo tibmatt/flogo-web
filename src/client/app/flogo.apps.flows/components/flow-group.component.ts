@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../../common/application.model';
+import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../core/application.model';
 
 @Component({
   selector: 'flogo-apps-flows-flow-group',

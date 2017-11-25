@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FlogoModal } from '../../../common/services/modal.service';
-import { IFlogoApplicationFlowModel as FlowModel } from '../../../common/application.model';
+import { FlogoModal } from '../../core/services/modal.service';
+import { IFlogoApplicationFlowModel as FlowModel } from '../../core/application.model';
 
 @Component({
   selector: 'flogo-apps-flows',

@@ -6,10 +6,10 @@ import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
-import { CommonModule as FlogoCommonModule } from '../../common/common.module';
-import { CoreModule as FlogoCoreModule } from '../../common/core.module';
+import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
+import { CoreModule as FlogoCoreModule } from '../core/core.module';
 import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
-import { PostService } from '../../common/services/post.service';
+import { PostService } from '../core/services/post.service';
 
 class MockRouter { public navigate() {}; }
 
@@ -114,7 +114,7 @@ function beforeSetup(done)  {
         ]),
         TranslateModule.forRoot(),
         FlogoCoreModule,
-        FlogoCommonModule,
+        FlogoSharedModule,
         FlogoFlowsModule,
         FlogoFormBuilderModule
       ],

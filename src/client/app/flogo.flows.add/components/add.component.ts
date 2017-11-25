@@ -3,9 +3,9 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import { PostService } from '../../../common/services/post.service';
-import { SanitizeService } from '../../../common/services/sanitize.service';
-import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
+import { PostService } from '../../core/services/post.service';
+import { SanitizeService } from '../../core/services/sanitize.service';
+import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { PUB_EVENTS } from '../message';
 import { UniqueNameValidator } from '../validators/unique-name.validator';
 

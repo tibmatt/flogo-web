@@ -2,10 +2,10 @@ import { ProfileSelectionComponent } from './profile-select.component';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { TranslateModule } from 'ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { ProfilesAPIService } from '../../../common/services/restapi/v2/profiles-api.service';
-import { MockProfilesAPIService } from '../../../common/services/restapi/v2/profiles-api.service.mock';
+import { ProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service';
+import { MockProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service.mock';
 import { By } from '@angular/platform-browser';
-import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import { FLOGO_PROFILE_TYPE } from '../../core/constants';
 describe('Component: ProfileSelectionComponent', () => {
   let comp: ProfileSelectionComponent;
   let service = null;

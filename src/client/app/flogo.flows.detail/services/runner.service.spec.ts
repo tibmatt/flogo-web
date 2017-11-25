@@ -6,10 +6,10 @@ import { ScalarObservable } from 'rxjs/observable/ScalarObservable';
 import 'rxjs/add/observable/concat';
 import 'rxjs/add/operator/finally';
 
-import * as flowUtils from '../../../common/models';
-import { RunService, StatusResponse } from '../../../common/services/restapi/run.service';
+import * as flowUtils from '../../core/models';
+import { RunService, StatusResponse } from '../../core/services/restapi/run.service';
 import { ERRORS, RUN_STATUS_CODE, RunnerService } from './runner.service';
-import { ErrorService } from '../../../common/services/error.service';
+import { ErrorService } from '../../core/services/error.service';
 import Spy = jasmine.Spy;
 
 describe('Service: RunService', function (this: {

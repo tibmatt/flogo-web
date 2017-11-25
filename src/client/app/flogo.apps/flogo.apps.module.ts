@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { CommonModule as FlogoCommonModule } from '../../common/common.module';
+import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
@@ -26,7 +26,7 @@ import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-
     FormsModule,
     Ng2Bs3ModalModule,
     FlogoFlowsModule,
-    FlogoCommonModule,
+    FlogoSharedModule,
     FlogoFooterModule,
     routing
   ],

@@ -1,8 +1,8 @@
 import {Component, ViewChild, SimpleChange, OnChanges, EventEmitter, Input, Output} from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { RESTAPIFlowsService } from '../../../common/services/restapi/flows-api.service';
-import { notification } from '../../../common/utils';
+import { RESTAPIFlowsService } from '../../core/services/restapi/flows-api.service';
+import { notification } from '../../shared/utils';
 
 @Component({
     selector: 'flogo-flows-flow-name',

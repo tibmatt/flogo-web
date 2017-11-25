@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input } from '@angular/core';
-import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import { FLOGO_PROFILE_TYPE } from '../../core/constants';
 
 @Component( {
   selector : 'flogo-flows-detail-tasks-install',

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { CommonModule as FlogoCommonModule } from '../../common/common.module';
+import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
 import { InstallerModule as FlogoInstallerModule } from '../flogo.installer/flogo.installer.module';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform';
@@ -40,14 +40,14 @@ import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigge
 import { FlowSchemaComponent as FlogoFlowSchemaComponent } from './components/flow-schema.component';
 import { FlogoFlowInputFieldComponent } from '../flogo.flows.input/component/input.component';
 
-import { FormBuilderModule as FlogoCommonFormBuilderModule } from '../../common/form-builder/form-builder.module';
+import { FormBuilderModule as FlogoCommonFormBuilderModule } from '../form-builder/form-builder.module';
 import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    FlogoCommonModule,
+    FlogoSharedModule,
     FlogoFormBuilderModule,
     FlogoInstallerModule,
     FlogoTransformModule,

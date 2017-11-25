@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
-import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../../common/application.model';
+import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../core/application.model';
 
 @Component({
   selector: 'flogo-apps-flows-trigger-group',

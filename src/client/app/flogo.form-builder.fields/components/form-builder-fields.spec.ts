@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
-import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
-import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
+import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
+import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import { FlogoFormBuilderFieldsTextAreaComponent } from './fields.textarea/fields.textarea.component';
 import { FlogoFormBuilderFieldsTextBoxComponent } from './fields.textbox/fields.textbox.component';
 import { FlogoFormBuilderFieldsNumberComponent } from './fields.number/fields.number.component';
@@ -129,7 +129,7 @@ describe('Form-builder component', () => {
     TestBed.configureTestingModule({
       imports: [
         FlogoCoreModule,
-        FlogoCommonModule,
+        FlogoSharedModule,
         FlogoFlowsModule
       ],
       declarations: [

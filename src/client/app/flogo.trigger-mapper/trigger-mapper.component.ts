@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
-import { SingleEmissionSubject } from '../../common/models/single-emission-subject';
+import { SingleEmissionSubject } from '../core/models/single-emission-subject';
 import 'rxjs/add/operator/takeUntil';
 
 import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../flogo.mapper';
@@ -22,7 +22,7 @@ interface ViewsStates {
 @Component({
   selector: 'flogo-trigger-mapper',
   styleUrls: [
-    '../../common/styles/_mapper-modal.less',
+    '../../assets/_mapper-modal.less',
     'trigger-mapper.component.less'
   ],
   templateUrl: 'trigger-mapper.component.html'

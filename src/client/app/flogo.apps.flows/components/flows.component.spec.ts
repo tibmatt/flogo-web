@@ -4,9 +4,9 @@ import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlogoApplicationFlowsComponent } from './flows.component';
-import { FlogoModal } from '../../../common/services/modal.service';
-import { TimeFromNowPipe } from '../../../common/pipes/time-from-now.pipe';
-import { FlogoDeletePopupComponent } from '../../../common/components/delete.popup.component';
+import { FlogoModal } from '../../core/services/modal.service';
+import { TimeFromNowPipe } from '../../shared/pipes/time-from-now.pipe';
+import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
 
 @Component({
   selector: 'flogo-container',

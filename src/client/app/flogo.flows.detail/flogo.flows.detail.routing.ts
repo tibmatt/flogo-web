@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { ConfigurationLoadedGuard } from '../../common/services/configuration-loaded-guard.service';
+import { ConfigurationLoadedGuard } from '../core/services/configuration-loaded-guard.service';
 
 import { FlogoFlowsDetailComponent } from './components';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';

@@ -7,10 +7,10 @@ import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Observable } from 'rxjs/Observable';
 
-import { PostService } from '../../../common/services/post.service';
-import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
-import { CommonModule as FlogoCommonModule } from '../../../common/common.module';
-import { CoreModule as FlogoCoreModule } from '../../../common/core.module';
+import { PostService } from '../../core/services/post.service';
+import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
+import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
+import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import { PUB_EVENTS } from '../message';
 import { FlogoFlowsAddComponent } from './add.component';
 
@@ -55,7 +55,7 @@ describe('Component: FlogoFlowsAdd', () => {
         Ng2Bs3ModalModule,
         TranslateModule.forRoot(),
         FlogoCoreModule,
-        FlogoCommonModule
+        FlogoSharedModule
       ],
       declarations: [
         FlogoFlowsAddComponent

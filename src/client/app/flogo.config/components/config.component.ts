@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { ConfigurationService } from '../../../common/services/configuration.service';
+import { ConfigurationService } from '../../core/services/configuration.service';
 
 const MAIN_DB = 'db';
 const DBS_ARR = ['activities', 'triggers', MAIN_DB];

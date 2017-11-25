@@ -3,8 +3,8 @@ import {
   IFlogoFlowDiagramTaskAttributes,
   IFlogoFlowDiagramTaskLink
 } from '../models';
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
-import { flogoIDEncode } from '../../../common/utils';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
+import { flogoIDEncode } from '../../shared/utils';
 
 export interface IFlogoFlowDiagramTask {
   id: string;

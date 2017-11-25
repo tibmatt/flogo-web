@@ -1,8 +1,8 @@
 import { Component, AfterViewInit, Output, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { EventEmitter } from '@angular/common/src/facade/async';
-import { ProfilesAPIService } from '../../../common/services/restapi/v2/profiles-api.service';
-import { FLOGO_PROFILE_TYPE } from '../../../common/constants';
+import { ProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service';
+import { FLOGO_PROFILE_TYPE } from '../../core/constants';
 
 interface DeviceProfile {
   type: string;

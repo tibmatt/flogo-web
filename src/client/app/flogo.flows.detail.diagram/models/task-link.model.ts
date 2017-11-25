@@ -1,4 +1,4 @@
-import { flogoIDEncode } from '../../../common/utils';
+import { flogoIDEncode } from '../../shared/utils';
 
 export interface IFlogoFlowDiagramTaskLink {
   id: string;

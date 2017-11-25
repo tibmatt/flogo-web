@@ -1,4 +1,4 @@
-import { IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from '../../../common/models';
+import { IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from '../../core/models';
 
 export interface HandlerInfo {
   diagram: IFlogoFlowDiagram;

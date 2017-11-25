@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../../common/constants';
+import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../core/constants';
 
 @Injectable()
 export class FlogoFormBuilderCommon {

@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule as NgCommonModule} from '@angular/common';
-import {CommonModule as FlogoCommonModule} from '../../common/common.module';
+import {SharedModule as FlogoSharedModule} from '../shared/shared.module';
 
 import {FlogoLogsComponent} from './components/logs.component';
 import {SearchPipe} from './components/search.pipe';
@@ -12,7 +12,7 @@ import { routing } from './flogo.logs.routing';
 @NgModule({
   imports: [// module dependencies
     NgCommonModule,
-    FlogoCommonModule,
+    FlogoSharedModule,
     routing
   ],
   declarations: [

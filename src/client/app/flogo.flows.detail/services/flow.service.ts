@@ -3,8 +3,8 @@ import { UIModelConverterService } from './ui-model-converter.service';
 import { IFlogoFlowDiagram } from '../../flogo.flows.detail.diagram/models/diagram.model';
 import { flogoFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
 import { IFlogoFlowDiagramTaskDictionary } from '../../flogo.flows.detail.diagram/models/dictionary.model';
-import { APIFlowsService } from '../../../common/services/restapi/v2/flows-api.service';
-import { FlowsService } from '../../../common/services/flows.service';
+import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
+import { FlowsService } from '../../core/services/flows.service';
 
 interface FlowData {
   flow: any;

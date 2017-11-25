@@ -2,11 +2,11 @@ import { FlogoFlowService } from './flow.service';
 import { UIModelConverterService } from './ui-model-converter.service';
 import { mockResultantUIFlow } from './ui-model-flow.mock';
 import { resultantFlowModelForCanvas } from './flow-for-canvas.mock';
-import { MockAPIFlowsService } from '../../../common/services/restapi/v2/flows-api.service.mock';
+import { MockAPIFlowsService } from '../../core/services/restapi/v2/flows-api.service.mock';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions, Http } from '@angular/http';
-import { HttpUtilsService } from '../../../common/services/restapi/http-utils.service';
-import { FlowsService } from '../../../common/services/flows.service';
+import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
+import { FlowsService } from '../../core/services/flows.service';
 import Spy = jasmine.Spy;
 
 describe('Service: Flow', function (this: {

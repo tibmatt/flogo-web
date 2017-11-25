@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../../common/application.model';
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../core/application.model';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FlogoModal } from '../../../common/services/modal.service';
-import { AppsApiService } from '../../../common/services/restapi/v2/apps-api.service';
+import { FlogoModal } from '../../core/services/modal.service';
+import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
 
 
 @Component({

@@ -1,5 +1,5 @@
-import { convertTaskID, flogoIDEncode, getDefaultValue } from '../../../common/utils';
-import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../../common/constants';
+import { convertTaskID, flogoIDEncode, getDefaultValue } from '../../shared/utils';
+import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
 import {
   IFlogoFlowDiagramNode,
   IFlogoFlowDiagramNodeDictionary,
