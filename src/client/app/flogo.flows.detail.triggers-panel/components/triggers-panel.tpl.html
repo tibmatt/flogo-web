@@ -1,6 +1,6 @@
 <div class="main">
   <div *ngFor="let trigger of triggersList" class="trigger_block"
-       [ngClass]="{'trigger_block--selected': selectedTriggerID == trigger.id}">
+       [ngClass]="{'trigger_block--selected': shouldShowTriggerSelected(trigger.id)}">
     <div class="trigger_menu"
          (fgClickOutside)="handleClickOutsideTriggerMenu($event)"
          [ngClass]="{'trigger_menu--open': displayTriggerMenuPopover && (selectedTriggerID == trigger.id)}">
@@ -21,17 +21,17 @@
            xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="a" width="114.6%" height="114.6%" x="-7.3%" y="-5.2%" filterUnits="objectBoundingBox">
-            <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"/>
-            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"/>
-            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
+            <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"></feGaussianBlur>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"></feColorMatrix>
           </filter>
         </defs>
         <use href="/assets/svg/trigger-icon.svg#defaultTrigger" class="bg-placeholder"></use>
       </svg>
       <div class="trigger-content">
         <i class="flogo-icon-trigger"></i>
-        <svg class="lambda-icon" viewBox="0 0 200 278">
-          <use xlink:href="/assets/svg/lambda-icon.svg#layer1"></use>
+        <svg class="lambda-icon" viewBox="0 0 200 278" xmlns="http://www.w3.org/2000/svg">
+          <use href="/assets/svg/lambda-icon.svg#layer1"></use>
         </svg>
       </div>
     </div>

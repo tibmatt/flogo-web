@@ -57,6 +57,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   private _subscriptions: any[];
   private _ngDestroy$ = SingleEmissionSubject.create();
+  private isMapperWindowOpen = false;
 
   constructor(private _restAPITriggersService: RESTAPITriggersService,
               private _restAPIHandlerService: RESTAPIHandlersService,
@@ -103,6 +104,14 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     return trigger && trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
   }
 
+  shouldShowTriggerSelected(triggerId) {
+    /* Select a trigger either if (not restricted to one):
+    *  1. it's trigger menu is active
+    *  2. it's configuration is displayed in the trigger details (right hand side) panel
+    *  */
+    return this.selectedTriggerID === triggerId || (this.currentTrigger && this.currentTrigger.id === triggerId);
+  }
+
   private isDeviceType() {
     return this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE;
   }
@@ -134,6 +143,13 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
         triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
         this.makeTriggersListForAction();
+      });
+
+    this._triggerMapperService.status$
+      .takeUntil(this._ngDestroy$)
+      .subscribe(state => {
+        this.isMapperWindowOpen = state.isOpen;
+        this.resetSelectedTriggerId();
       });
   }
 
@@ -293,11 +309,21 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     if (this._clickHandler.isClickedOutside(event.path)) {
       this._clickHandler.resetCurrentTriggerBlock();
       this.hideTriggerMenuPopover();
+      this.resetSelectedTriggerId();
     }
   }
 
   private hideTriggerMenuPopover() {
     this.displayTriggerMenuPopover = false;
+  }
+
+  private resetSelectedTriggerId() {
+    /* Reset the selectecTriggerID as we need to unselect the trigger if the trigger is no longer active
+    *  and the mapper window for the same trigger is now closed
+    *  */
+    if (!this.isMapperWindowOpen) {
+      this.selectedTriggerID = null;
+    }
   }
 
   showTriggerDetails(trigger) {
