@@ -1,13 +1,14 @@
 import * as _ from 'lodash';
+import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
+import { flogoGenTriggerID, flogoIDEncode } from '@flogo/shared/utils';
+import { ErrorService } from '@flogo/core/services/error.service';
 
 import {
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE
-} from '../../flogo.flows.detail.diagram/constants';
-import { flogoGenTriggerID, flogoIDEncode } from '../../shared/utils';
-import { FlogoFlowDiagramNode } from '../../flogo.flows.detail.diagram/models/node.model';
-import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
-import { ErrorService } from '../../core/services/error.service';
+} from '../../../flogo.flows.detail.diagram/constants';
+
+import { FlogoFlowDiagramNode } from '../../../flogo.flows.detail.diagram/models/node.model';
 
 const FLOW_NODE = 'node';
 const FLOW_ITEM = 'item';

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FlowMetadata } from '../models';
+import { FlowMetadata } from '../core/models';
 
 @Component({
   selector: 'flogo-flows-detail-flow-schema',

@@ -1,20 +1,20 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { ConfigurationLoadedGuard } from '../core/services/configuration-loaded-guard.service';
+import { ConfigurationLoadedGuard } from '@flogo/core/services/configuration-loaded-guard.service';
 
 import { FlogoFlowsDetailComponent } from './components';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasksComponent } from '../flogo.flows.detail.tasks/components/tasks.component';
 import { FlogoFlowsDetailTasksDetailComponent } from '../flogo.flows.detail.tasks.detail/components/detail.component';
-import { FlogoCanvasComponent } from './components/canvas.component';
-import { FlogoFormComponent } from './../flogo.form/components/form.component';
+import { FlowComponent } from './flow.component';
+import { FlogoFormComponent } from '../flogo.form/components/form.component';
 
 export const routes: Routes = [
   {
     path: 'flows/:id',
-    component: FlogoCanvasComponent,
+    component: FlowComponent,
     canActivate: [ConfigurationLoadedGuard],
     children: [
       { path: '', component: FlogoFlowsDetailComponent },

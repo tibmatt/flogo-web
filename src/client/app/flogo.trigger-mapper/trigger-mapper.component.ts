@@ -5,7 +5,7 @@ import { SingleEmissionSubject } from '../core/models/single-emission-subject';
 import 'rxjs/add/operator/takeUntil';
 
 import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../flogo.mapper';
-import { FlowMetadata } from '../flogo.flows.detail/models';
+import { FlowMetadata } from '../flow/core/models';
 
 import { VIEWS, ViewInfo } from './views-info.model';
 import { TriggerMapperService, Status } from './trigger-mapper.service';

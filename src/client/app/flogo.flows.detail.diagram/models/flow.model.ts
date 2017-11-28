@@ -9,8 +9,8 @@ import {
   IFlogoFlowDiagramTaskDictionary
 } from '../models';
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
-import { FlowMetadata } from '../../flogo.flows.detail/models';
-import {FlowMetadataAttribute} from '../../flogo.flows.detail/models/flow-metadata-attribute';
+import { FlowMetadata } from '../../flow/core/models';
+import {FlowMetadataAttribute} from '../../flow/core/models/flow-metadata-attribute';
 
 /**
  * Type definitions for flowToJSON util function

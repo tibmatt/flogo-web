@@ -7,7 +7,7 @@ import {FlogoSelectTriggerComponent} from '../../flogo.select-trigger/components
 import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
 import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '../../core/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '../../core/services/restapi/v2/handlers-api.service';
-import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
+import {UIModelConverterService} from '../../flow/core/ui-model-converter.service';
 import {PostService} from '../../core/services/post.service';
 import {Router} from '@angular/router';
 import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';

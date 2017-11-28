@@ -6,8 +6,8 @@ import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 
-import { PostService } from '../../core/services/post.service';
-import { OperationalError } from '../../core/services/error.service';
+import { PostService } from '../core/services/post.service';
+import { OperationalError } from '../core/services/error.service';
 
 import {
   ERRORS as RUNNER_ERRORS,
@@ -18,46 +18,46 @@ import {
   RunProgress,
   RunProgressStore,
   Step
-} from '../services/runner.service';
+} from './core/runner.service';
 
-import { IFlogoFlowDiagram, IFlogoFlowDiagramTask, makeDefaultErrorTrigger } from '../../core/models';
+import { IFlogoFlowDiagram, IFlogoFlowDiagramTask, makeDefaultErrorTrigger } from '../core/models';
 
 import {
   PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS,
   SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS
-} from '../../flogo.flows.detail.diagram/messages';
+} from '../flogo.flows.detail.diagram/messages';
 import {
   PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS,
   SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS
-} from '../../flogo.flows.detail.triggers/messages';
+} from '../flogo.flows.detail.triggers/messages';
 import {
   PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS
-} from '../../flogo.flows.detail.tasks/messages';
-import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from '../../flogo.flows.detail.tasks.detail/messages';
+} from '../flogo.flows.detail.tasks/messages';
+import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from '../flogo.flows.detail.tasks.detail/messages';
 import {
   PUB_EVENTS as FLOGO_TASK_SUB_EVENTS,
   SUB_EVENTS as FLOGO_TASK_PUB_EVENTS
-} from '../../flogo.form-builder/messages';
+} from '../flogo.form-builder/messages';
 import {
   PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS,
   SelectTaskData,
   SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS
-} from '../../flogo.transform/messages';
+} from '../flogo.transform/messages';
 import {
   PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS
-} from '../../flogo.flows.detail.error-panel/messages';
+} from '../flogo.flows.detail.error-panel/messages';
 
-import { RESTAPITriggersService } from '../../core/services/restapi/v2/triggers-api.service';
-import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
-import { RESTAPIHandlersService } from '../../core/services/restapi/v2/handlers-api.service';
+import { RESTAPITriggersService } from '../core/services/restapi/v2/triggers-api.service';
+import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
+import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
 import {
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   FLOGO_PROFILE_TYPE,
   FLOGO_TASK_ATTRIBUTE_TYPE,
   FLOGO_TASK_TYPE
-} from '../../core/constants';
+} from '../core/constants';
 import {
   attributeTypeToString,
   flogoGenBranchID,
@@ -69,17 +69,17 @@ import {
   notification,
   objectFromArray,
   updateBranchNodesRunStatus
-} from '../../shared/utils';
+} from '../shared/utils';
 
-import { flogoFlowToJSON, triggerFlowToJSON } from '../../flogo.flows.detail.diagram/models/flow.model';
-import { FlogoModal } from '../../core/services/modal.service';
-import { HandlerInfo } from '../models/models';
-import { FlogoFlowService as FlowsService } from '../services/flow.service';
-import { FlogoProfileService } from '../../core/services/profile.service';
-import { IFlogoTrigger } from '../../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
-import { FlogoFlowInputSchemaComponent } from './flow-input-schema.component';
-import { FlowMetadataAttribute } from '../models/flow-metadata-attribute';
-import { FlowMetadata } from '../../flogo.transform/models/flow-metadata';
+import { flogoFlowToJSON, triggerFlowToJSON } from '../flogo.flows.detail.diagram/models/flow.model';
+import { FlogoModal } from '../core/services/modal.service';
+import { HandlerInfo } from './core/models/models';
+import { FlogoFlowService as FlowsService } from './core/flow.service';
+import { FlogoProfileService } from '../core/services/profile.service';
+import { IFlogoTrigger } from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import { FlogoFlowInputSchemaComponent } from './components/flow-input-schema.component';
+import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
+import { FlowMetadata } from '../flogo.transform/models/flow-metadata';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -97,13 +97,12 @@ interface TaskContext {
 }
 
 @Component({
-  selector: 'flogo-canvas',
-  // moduleId: module.id,
-  templateUrl: 'canvas.tpl.html',
-  styleUrls: ['canvas.component.less']
+  selector: 'flogo-flow',
+  templateUrl: 'flow.component.html',
+  styleUrls: ['flow.component.less']
 })
 
-export class FlogoCanvasComponent implements OnInit, OnDestroy {
+export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild('inputSchemaModal') defineInputSchema: FlogoFlowInputSchemaComponent;
   public flow: any;
   public flowId: string;

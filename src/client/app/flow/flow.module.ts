@@ -1,8 +1,3 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
 import { InstallerModule as FlogoInstallerModule } from '../flogo.installer/flogo.installer.module';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform';
@@ -10,8 +5,6 @@ import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instruct
 import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
-
-import { FlogoCanvasComponent } from './components/canvas.component';
 
 import { FlogoFlowsDetailComponent } from './components/flow-detail.component';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
@@ -27,27 +20,37 @@ import { FlogoFlowsDetailErrorPanelComponent } from '../flogo.flows.detail.error
 import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tasks.install/components/install.component';
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
-import { RunnerService } from './services/runner.service';
-import { routing } from './flogo.flows.detail.routing';
-import { UIModelConverterService } from './services/ui-model-converter.service';
-import { FlogoFlowService } from './services/flow.service';
-
 import { FlogoFlowTriggersPanelComponent } from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 import { FlogoFlowInputSchemaComponent } from './components/flow-input-schema.component';
-import { FlogoTriggerClickHandlerService } from '../flogo.flows.detail.triggers-panel/services/click-handler.service';
 
 import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigger-mapper';
 import { FlowSchemaComponent as FlogoFlowSchemaComponent } from './components/flow-schema.component';
 import { FlogoFlowInputFieldComponent } from '../flogo.flows.input/component/input.component';
 
-import { FormBuilderModule as FlogoCommonFormBuilderModule } from '../flow-designer/shared/dynamic-form/form-builder.module';
+/////////
+
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { SharedModule as FlogoSharedModule } from '@flogo/shared';
+import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';
 import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
+
+import { CoreModule as FlowCoreModule } from './core';
+
+import { routing } from './flow.routing';
+import { FlowComponent } from './flow.component';
+
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     FlogoSharedModule,
+    FlowCoreModule,
+
+    FormsModule,
+
     FlogoFormBuilderModule,
     FlogoInstallerModule,
     FlogoTransformModule,
@@ -73,25 +76,21 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
     FlogoFlowsDetailTasksInstallComponent,
     FlogoFlowsDetailTriggersInstallComponent,
-
-    FlogoCanvasComponent,
     FlogoFlowTriggersPanelComponent,
     FlogoFlowInputSchemaComponent,
 
     FlogoFlowSchemaComponent,
     FlogoFlowInputFieldComponent,
-    FlogoRunFlowComponent
+    FlogoRunFlowComponent,
+
+    ////
+    FlowComponent,
 
   ],
-  providers: [
-    RunnerService,
-    UIModelConverterService,
-    FlogoFlowService,
-    FlogoTriggerClickHandlerService
-  ],
+  providers: [],
   bootstrap: [
-    FlogoCanvasComponent
+    FlowComponent
   ]
 })
-export class FlogoFlowsDetailModule {
+export class FlowModule {
 }

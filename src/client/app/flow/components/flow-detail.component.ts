@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'flogo-canvas',
+  selector: 'flogo-flow',
   templateUrl: 'flow-detail.component.html',
   styleUrls: ['flow-detail.component.less']
 })

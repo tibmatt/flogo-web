@@ -9,14 +9,14 @@ import {
   SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
 } from '../../flogo.flows.detail.triggers.detail/messages';
-import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
+import {UIModelConverterService} from '../../flow/core/ui-model-converter.service';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../../flogo.form-builder/messages';
 import {TranslateService} from 'ng2-translate';
 import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
 import { FlowMetadata } from '../../flogo.transform/models';
 import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';
 import { Subscription } from 'rxjs/Subscription';
-import {IPropsToUpdateFormBuilder} from '../../flogo.flows.detail/components/canvas.component';
+import {IPropsToUpdateFormBuilder} from '../../flow/flow.component';
 
 export interface IFlogoTrigger {
   name: string;
