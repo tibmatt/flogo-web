@@ -4,7 +4,8 @@
   <div *ngIf="flows?.length > 0">
     <form novalidate>
       <div class="flogo-export-flow-header">{{ 'FLOWS:EXPORT-FLOWS' | translate }}</div>
-      <div class="flogo-select-flow-link"><a class="js-btn-select-all" (click)="selectAllFlows()">Select All</a> |
+      <div class="flogo-select-flow-link">
+        <a class="js-btn-select-all" (click)="selectAllFlows()">Select All</a> <span class="flogo-select-separator">|</span>
         <a id="unselectAll" (click)="unselectAllFlows()">Unselect All</a></div>
       <modal-body>
         <div class="export-flow-container">
@@ -24,10 +25,10 @@
         </div>
       </modal-body>
       <div class="flogo-export-flow-footer">
-        <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal">{{
+        <button type="button" class="footer-button flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal">{{
           'DETAILS:EXPORT-CANCEL' | translate }}
         </button>
-        <button type="submit" class="js-btn-export flogo-button--default" [fgJsonDownloader]="exportFlows()"
+        <button type="submit" class="js-btn-export footer-button flogo-button--default" [fgJsonDownloader]="exportFlows()"
                 [disabled]="checkedFlows?.length <= 0" data-dismiss="modal">
           {{ 'DETAILS:EXPORT' | translate }}
         </button>

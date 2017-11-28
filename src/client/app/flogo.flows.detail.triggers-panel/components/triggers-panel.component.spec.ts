@@ -1,25 +1,32 @@
-import {Component, DebugElement, NO_ERRORS_SCHEMA} from '@angular/core';
+import {Component, DebugElement } from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateModule} from 'ng2-translate';
-import {FlogoFlowTriggersPanelComponent} from './triggers-panel.component';
 import {By} from '@angular/platform-browser';
+
+import { NavigationEnd, Router } from '@angular/router';
+import {TranslateModule} from 'ng2-translate';
+import { Observable } from 'rxjs/Observable';
+
+import {FlogoFlowTriggersPanelComponent} from './triggers-panel.component';
+
 import {FlogoSelectTriggerComponent} from '../../flogo.select-trigger/components/select-trigger.component';
 import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
-import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '../../core/services/restapi/v2/triggers-api.service';
-import {RESTAPIHandlersService} from '../../core/services/restapi/v2/handlers-api.service';
-import {UIModelConverterService} from '../../flow/core/ui-model-converter.service';
-import {PostService} from '../../core/services/post.service';
-import {Router} from '@angular/router';
-import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
-import {InstallerModule} from '../../flogo.installer/flogo.installer.module';
-import {RESTAPITriggersServiceMock} from '../../core/services/restapi/triggers-api.service.mock';
-import {RESTAPITriggersService} from '../../core/services/restapi/triggers-api.service';
-import {HttpUtilsService} from '../../core/services/restapi/http-utils.service';
-import {RESTAPIActivitiesService} from '../../core/services/restapi/activities-api.service';
-import {RESTAPIContributionsService} from '../../core/services/restapi/v2/contributions.service';
-import {FlogoProfileService} from '../../core/services/profile.service';
-import {FlogoProfileServiceMock} from '../../core/services/profile.service.mock';
+
+import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '@flogo/core/services/restapi/v2/triggers-api.service';
+import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
+import {RESTAPITriggersServiceMock} from '@flogo/core/services/restapi/triggers-api.service.mock';
+import {RESTAPITriggersService} from '@flogo/core/services/restapi/triggers-api.service';
+import {HttpUtilsService} from '@flogo/core/services/restapi/http-utils.service';
+import {RESTAPIActivitiesService} from '@flogo/core/services/restapi/activities-api.service';
+import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
+import {PostService} from '@flogo/core/services/post.service';
+import {FlogoProfileService} from '@flogo/core/services/profile.service';
+import {FlogoProfileServiceMock} from '@flogo/core/services/profile.service.mock';
+
+import { UIModelConverterService } from '../../flow/core/ui-model-converter.service';
+import { InstallerModule } from '../../flogo.installer/flogo.installer.module';
 import { TriggerMapperModule } from '../../flogo.trigger-mapper/trigger-mapper.module';
+import { FlogoTriggerClickHandlerService } from '../services/click-handler.service';
+
 
 @Component({
   selector: 'flogo-container',
@@ -133,7 +140,10 @@ class MockUIConverterService {
 }
 
 class MockRouterService {
-
+  events = Observable.create(observer => {
+    observer.next(new NavigationEnd(123, '', ''));
+    observer.complete();
+  });
 }
 
 const postServiceStub = {
