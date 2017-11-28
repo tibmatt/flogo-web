@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { MonacoEditorLoaderModule } from './loader';
 import { MonacoEditorComponent } from './monaco-editor.component';
 
-
 export interface ModuleConfig {
   pathToMonacoSrc?: string;
 }
