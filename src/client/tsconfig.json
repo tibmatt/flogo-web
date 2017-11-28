@@ -2,7 +2,10 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
-    "baseUrl": "",
+    "baseUrl": ".",
+    "paths": {
+      "@flogo/*": ["app/*"]
+    },
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",

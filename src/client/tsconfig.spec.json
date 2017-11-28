@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "baseUrl": "",
+    "baseUrl": ".",
+    "paths": {
+      "@flogo/*": ["app/*"]
+    },
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",

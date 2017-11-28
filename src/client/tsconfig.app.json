@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "module": "es2015",
-    "baseUrl": "",
+    "baseUrl": ".",
+    "paths": {
+      "@flogo/*": ["app/*"]
+    },
     "types": [],
     "sourceMap": true,
     "declaration": false,

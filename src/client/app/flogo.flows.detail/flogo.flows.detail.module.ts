@@ -40,7 +40,7 @@ import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigge
 import { FlowSchemaComponent as FlogoFlowSchemaComponent } from './components/flow-schema.component';
 import { FlogoFlowInputFieldComponent } from '../flogo.flows.input/component/input.component';
 
-import { FormBuilderModule as FlogoCommonFormBuilderModule } from '../form-builder/form-builder.module';
+import { FormBuilderModule as FlogoCommonFormBuilderModule } from '../flow-designer/shared/dynamic-form/form-builder.module';
 import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 @NgModule({

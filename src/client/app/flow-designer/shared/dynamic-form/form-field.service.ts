@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../core/constants';
+import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../core/constants';
 import { Textbox } from './textbox/textbox';
 import { BaseField } from './field-base';
 import { FieldAttribute } from './field-attribute';
