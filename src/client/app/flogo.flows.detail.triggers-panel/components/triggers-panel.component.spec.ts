@@ -9,7 +9,7 @@ import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '../../../commo
 import {RESTAPIHandlersService} from '../../../common/services/restapi/v2/handlers-api.service';
 import {UIModelConverterService} from '../../flogo.flows.detail/services/ui-model-converter.service';
 import {PostService} from '../../../common/services/post.service';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {FlogoTriggerClickHandlerService} from '../services/click-handler.service';
 import {InstallerModule} from '../../flogo.installer/flogo.installer.module';
 import {RESTAPITriggersServiceMock} from '../../../common/services/restapi/triggers-api.service.mock';
@@ -20,6 +20,7 @@ import {RESTAPIContributionsService} from '../../../common/services/restapi/v2/c
 import {FlogoProfileService} from '../../../common/services/profile.service';
 import {FlogoProfileServiceMock} from '../../../common/services/profile.service.mock';
 import { TriggerMapperModule } from '../../flogo.trigger-mapper/trigger-mapper.module';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'flogo-container',
@@ -133,7 +134,10 @@ class MockUIConverterService {
 }
 
 class MockRouterService {
-
+  events = Observable.create(observer => {
+    observer.next(new NavigationEnd(123, '', ''));
+    observer.complete();
+  });
 }
 
 const postServiceStub = {

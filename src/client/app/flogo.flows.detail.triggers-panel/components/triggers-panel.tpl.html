@@ -1,14 +1,16 @@
 <div class="main">
+  <svg class="icon-svg__def" width=0 height=0 xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="flogoFlowsDetailTriggersPanelTriggerShadow" width="114.6%" height="114.6%" x="-7.3%" y="-5.2%" filterUnits="objectBoundingBox">
+        <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+        <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"></feGaussianBlur>
+        <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"></feColorMatrix>
+      </filter>
+    </defs>
+  </svg>
   <div *ngFor="let trigger of triggersList" class="trigger_block"
-       [ngClass]="{'trigger_block--selected': selectedTriggerID == trigger.id}">
-    <div class="trigger"  [class.--lambda]="isLambda(trigger)" title="{{trigger.name}}" (click)="showTriggerMenu($event, trigger)">
-      <i class="flogo-icon-trigger"></i>
-      <svg class="lambda-icon" viewBox="0 0 200 278">
-        <use xlink:href="/assets/svg/lambda-icon.svg#layer1"></use>
-      </svg>
-    </div>
+       [ngClass]="{'trigger_block--selected': shouldShowTriggerSelected(trigger.id)}">
     <div class="trigger_menu"
-         *ngIf="displayTriggerMenuPopover && (selectedTriggerID == trigger.id)"
          (fgClickOutside)="handleClickOutsideTriggerMenu($event)"
          [ngClass]="{'trigger_menu--open': displayTriggerMenuPopover && (selectedTriggerID == trigger.id)}">
       <ul class="list-group trigger_menu-list">
@@ -23,9 +25,27 @@
         </li>
       </ul>
     </div>
+    <div class="trigger"  [class.--lambda]="isLambda(trigger)" title="{{trigger.name}}" (click)="showTriggerMenu($event, trigger)">
+      <svg class="trigger-icon-background" viewBox="0 0 50 52"
+           xmlns="http://www.w3.org/2000/svg">
+        <use href="/assets/svg/trigger-icon.svg#defaultTrigger" class="bg-placeholder"></use>
+      </svg>
+      <div class="trigger-content">
+        <i class="flogo-icon-trigger"></i>
+        <svg class="lambda-icon" viewBox="0 0 200 278" xmlns="http://www.w3.org/2000/svg">
+          <use href="/assets/svg/lambda-icon.svg#layer1"></use>
+        </svg>
+      </div>
+    </div>
   </div>
   <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
-    <i class="flogo-icon-add"></i>
+    <svg class="trigger-icon-background" viewBox="0 0 50 50"
+         xmlns="http://www.w3.org/2000/svg">
+      <use href="/assets/svg/trigger-icon.svg#addTrigger" class="bg-placeholder"></use>
+    </svg>
+    <div class="trigger-content">
+      <i class="flogo-icon-add"></i>
+    </div>
   </div>
   <flogo-select-trigger [(isAddTriggerActivated)]="showAddTrigger"
                         [appDetails]="appDetails"
