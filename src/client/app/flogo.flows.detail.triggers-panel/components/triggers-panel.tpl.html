@@ -1,4 +1,13 @@
 <div class="main">
+  <svg class="icon-svg__def" width=0 height=0 xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="triggerShadow" width="114.6%" height="114.6%" x="-7.3%" y="-5.2%" filterUnits="objectBoundingBox">
+        <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+        <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"></feGaussianBlur>
+        <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"></feColorMatrix>
+      </filter>
+    </defs>
+  </svg>
   <div *ngFor="let trigger of triggersList" class="trigger_block"
        [ngClass]="{'trigger_block--selected': shouldShowTriggerSelected(trigger.id)}">
     <div class="trigger_menu"
@@ -19,13 +28,6 @@
     <div class="trigger"  [class.--lambda]="isLambda(trigger)" title="{{trigger.name}}" (click)="showTriggerMenu($event, trigger)">
       <svg class="trigger-icon-background" viewBox="0 0 50 52"
            xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="a" width="114.6%" height="114.6%" x="-7.3%" y="-5.2%" filterUnits="objectBoundingBox">
-            <feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="1"></feGaussianBlur>
-            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"></feColorMatrix>
-          </filter>
-        </defs>
         <use href="/assets/svg/trigger-icon.svg#defaultTrigger" class="bg-placeholder"></use>
       </svg>
       <div class="trigger-content">
