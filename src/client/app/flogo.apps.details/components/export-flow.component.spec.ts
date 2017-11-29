@@ -105,7 +105,16 @@ describe('FlogoExportFlowsComponent component', () => {
     expect(appDetailServiceSpy.exportFlow.calls.mostRecent().args).toEqual([expectedFlowIds]);
   });
 
-  // TODO: test case where you want to export all flows
+  it('Should select all flows onload by default', () => {
+    fixture.detectChanges();
+    const exportFlowsComponentDe = fixture.debugElement.query(By.directive(FlogoExportFlowsComponent));
+    const exportFlowsComponent = <FlogoExportFlowsComponent> exportFlowsComponentDe.componentInstance;
+    exportFlowsComponent.openExport();
+    fixture.detectChanges();
+    const checkedFlowsCount = checkboxList.filter(checkbox => checkbox.nativeElement.checked).length;
+    expect(checkedFlowsCount).toEqual(checkboxList.length, 'Expected all flows selected default');
+
+  });
 
 });
 
