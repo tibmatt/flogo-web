@@ -112,7 +112,8 @@ describe('FlogoExportFlowsComponent component', () => {
     exportFlowsComponent.openExport();
     fixture.detectChanges();
     const checkedFlowsCount = checkboxList.filter(checkbox => checkbox.nativeElement.checked).length;
-    expect(checkedFlowsCount).toEqual(checkboxList.length, 'Expected all flows selected default');
+    expect(checkedFlowsCount).toBeGreaterThan(0);
+    expect(checkedFlowsCount).toEqual(exportFlowsComponent.flows.length, 'Expected all flows selected default');
 
   });
 
