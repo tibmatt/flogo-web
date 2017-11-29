@@ -74,10 +74,10 @@
         </div>
 
         <div class="flogo-flows-flow-schema-container" *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE">
-          <flogo-flows-detail-flow-schema role="button"
-                                          [flowMetadata]="flow?.metadata"
-                                          (click)="openInputSchemaModal()">
-          </flogo-flows-detail-flow-schema>
+          <flogo-flow-params-schema-button role="button"
+                                           [flowMetadata]="flow?.metadata"
+                                           (click)="openInputSchemaModal()">
+          </flogo-flow-params-schema-button>
         </div>
 
         <div class="flogo-flows-diagram-container">
@@ -110,6 +110,6 @@
   <div class="canvas-right-container">
     <router-outlet></router-outlet>
   </div>
-  <flogo-flow-input-schema #inputSchemaModal [flow]="flow" (save)="onFlowSchemaSave($event)"></flogo-flow-input-schema>
+  <flogo-flow-params-schema #inputSchemaModal [flow]="flow" (save)="onFlowSchemaSave($event)"></flogo-flow-params-schema>
 </div>
 

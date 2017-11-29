@@ -19,6 +19,8 @@ import {
   RunProgressStore,
   Step
 } from './core/runner.service';
+import { FlogoModal } from '@flogo/core/services/modal.service';
+import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
 import { IFlogoFlowDiagram, IFlogoFlowDiagramTask, makeDefaultErrorTrigger } from '../core/models';
 
@@ -72,12 +74,11 @@ import {
 } from '../shared/utils';
 
 import { flogoFlowToJSON, triggerFlowToJSON } from '../flogo.flows.detail.diagram/models/flow.model';
-import { FlogoModal } from '../core/services/modal.service';
+
 import { HandlerInfo } from './core/models/models';
 import { FlogoFlowService as FlowsService } from './core/flow.service';
-import { FlogoProfileService } from '../core/services/profile.service';
 import { IFlogoTrigger } from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
-import { FlogoFlowInputSchemaComponent } from './components/flow-input-schema.component';
+import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
 import { FlowMetadata } from '../flogo.transform/models/flow-metadata';
 
@@ -103,7 +104,7 @@ interface TaskContext {
 })
 
 export class FlowComponent implements OnInit, OnDestroy {
-  @ViewChild('inputSchemaModal') defineInputSchema: FlogoFlowInputSchemaComponent;
+  @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
   public flow: any;
   public flowId: string;
   public mainHandler: HandlerInfo;

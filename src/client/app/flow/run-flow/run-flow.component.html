@@ -8,8 +8,8 @@
     <div class="tip"></div>
     <div class="content">
       <h4>{{ 'FLOW-RUN:INPUTS-LABEL' | translate }}</h4>
-      <flogo-common-form-builder (setFormGroup)="setRunFlowFormGroup($event)"
-                                 [fields]="flowInputs"></flogo-common-form-builder>
+      <flogo-flow-dynamic-form (setFormGroup)="setRunFlowFormGroup($event)"
+                               [fields]="flowInputs"></flogo-flow-dynamic-form>
       <div class="button__container">
         <button type="button" class="flogo-button flogo-button--secondary" (click)="setRunFlowFlag(false)">
           {{'FLOW-RUN:CANCEL-BUTTON' | translate }}

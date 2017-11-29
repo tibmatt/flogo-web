@@ -4,7 +4,7 @@ import { FormBuilderService } from './form-builder.service';
 import { BaseField } from './field-base';
 
 @Component({
-  selector: 'flogo-common-form-builder',
+  selector: 'flogo-flow-dynamic-form',
   templateUrl: 'form-builder.component.html'
 })
 

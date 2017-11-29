@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: 'apps',
     component: FlogoMainComponent,
-    canActivate: [ConfigurationLoadedGuard],
+    // canActivate: [ConfigurationLoadedGuard],
   },
   {
     path: 'apps/:appId',

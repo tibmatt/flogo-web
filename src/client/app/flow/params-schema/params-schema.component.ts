@@ -1,18 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import * as _ from 'lodash';
+
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../core/constants';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
+import { FLOGO_TASK_ATTRIBUTE_TYPE } from '@flogo/core/constants';
 
 @Component({
-  selector: 'flogo-flow-input-schema',
-  templateUrl: 'flow-input-schema.tpl.html',
-  styleUrls: ['flow-input-schema.component.less']
+  selector: 'flogo-flow-params-schema',
+  templateUrl: 'params-schema.component.html',
+  styleUrls: ['params-schema.component.less']
 })
 
-export class FlogoFlowInputSchemaComponent implements OnInit {
+export class ParamsSchemaComponent implements OnInit {
   @ViewChild('modal')
   modal: ModalComponent;
   @Input()

@@ -2,12 +2,15 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {FormGroup} from '@angular/forms';
 
 @Component({
-  selector: 'flogo-flow-input',
-  templateUrl: 'input.component.html',
-  styleUrls: ['input.component.less']
+  selector: 'flogo-flow-params-schema-param-row',
+  templateUrl: 'param-row.component.html',
+  styleUrls: ['param-row.component.less']
 })
 
-export class FlogoFlowInputFieldComponent {
+/**
+ * @private
+ */
+export class ParamRowComponent {
   @Input() paramGroup: FormGroup;
   @Input() dropdownOptions;
   @Input() inputIndex;
@@ -21,7 +24,4 @@ export class FlogoFlowInputFieldComponent {
     this.paramGroup.patchValue({ type });
   }
 
-  // addParams() {
-  //   this.onAddParams.emit();
-  // }
 }

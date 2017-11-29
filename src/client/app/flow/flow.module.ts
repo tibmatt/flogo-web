@@ -6,7 +6,7 @@ import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
 
-import { FlogoFlowsDetailComponent } from './components/flow-detail.component';
+import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasksComponent } from '../flogo.flows.detail.tasks/components/tasks.component';
@@ -21,17 +21,14 @@ import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tas
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
 import { FlogoFlowTriggersPanelComponent } from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
-import { FlogoFlowInputSchemaComponent } from './components/flow-input-schema.component';
+import { ParamsSchemaModule } from './params-schema';
 
 import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigger-mapper';
-import { FlowSchemaComponent as FlogoFlowSchemaComponent } from './components/flow-schema.component';
-import { FlogoFlowInputFieldComponent } from '../flogo.flows.input/component/input.component';
 
 /////////
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';
@@ -47,9 +44,9 @@ import { FlowComponent } from './flow.component';
   imports: [
     CommonModule,
     FlogoSharedModule,
-    FlowCoreModule,
 
-    FormsModule,
+    FlowCoreModule,
+    ParamsSchemaModule,
 
     FlogoFormBuilderModule,
     FlogoInstallerModule,
@@ -59,12 +56,11 @@ import { FlowComponent } from './flow.component';
     FlogoFormModule,
     FlogoLogsModule,
     FlogoTriggerMapperModule,
-    ReactiveFormsModule,
     FlogoCommonFormBuilderModule,
     routing
   ],
   declarations: [
-    FlogoFlowsDetailComponent,
+    EmptyDetailComponent,
     FlogoFlowsDetailTriggersComponent,
     FlogoFlowsDetailTriggersDetailComponent,
     FlogoFlowsDetailTasksComponent,
@@ -77,10 +73,7 @@ import { FlowComponent } from './flow.component';
     FlogoFlowsDetailTasksInstallComponent,
     FlogoFlowsDetailTriggersInstallComponent,
     FlogoFlowTriggersPanelComponent,
-    FlogoFlowInputSchemaComponent,
 
-    FlogoFlowSchemaComponent,
-    FlogoFlowInputFieldComponent,
     FlogoRunFlowComponent,
 
     ////
