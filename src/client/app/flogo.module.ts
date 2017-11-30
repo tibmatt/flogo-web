@@ -2,7 +2,7 @@
 import { FlogoAppsModule } from './flogo.apps/flogo.apps.module';
 import { FlowsModule as FlogoFlowsModule } from './flogo.flows/flogo.flows.module';
 
-import { ConfigModule as FlogoConfigModule } from './flogo.config/flogo.config.module';
+import { ConfigModule as FlogoConfigModule } from '@flogo/config';
 import { InstructionsModule as FlogoInstructionsModule } from './flogo.instructions/flogo.instructions.module';
 import { FooterModule as FlogoFooterModule } from './flogo.footer/flogo.footer.module';
 

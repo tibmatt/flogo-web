@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FlogoConfigComponent } from './components/config.component';
-import { ServiceStatusIndicatorComponent } from './components/service-status-indicator.component';
-import { routing } from './flogo.config.routing';
+import { FlogoConfigComponent } from './config.component';
+import { ServiceStatusIndicatorComponent } from './service-status-indicator.component';
+import { routing } from './config.routing';
 
 @NgModule({
   imports: [

@@ -1,52 +1,30 @@
+import * as _ from 'lodash';
+
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Http, Headers, RequestOptions } from '@angular/http';
-import { ConfigurationService } from '../../core/services/configuration.service';
+import { ConfigurationService } from '../core/services/configuration.service';
 
-const MAIN_DB = 'db';
-const DBS_ARR = ['activities', 'triggers', MAIN_DB];
-const SERVERS_ARR = ['engine', 'stateServer', 'flowServer'];
+const SEVER_NAMES = ['engine', 'stateServer', 'flowServer'];
 
 @Component({
   selector: 'flogo-config',
-  // moduleId : module.id,
-  templateUrl: 'config.tpl.html',
+  templateUrl: 'config.component.html',
   styleUrls: ['config.component.less']
 })
 export class FlogoConfigComponent {
   _config: any;
   _servers: any[];
-  _dbs: any[];
-  _appDB: any;
   location = location; // expose window.location
 
-  constructor(private _router: Router, private http: Http, private _configurationService: ConfigurationService) {
+  constructor(private _router: Router, private _configurationService: ConfigurationService) {
     this.init();
   }
 
   init() {
     this._config = this._configurationService.configuration;
-    this._appDB = _.cloneDeep(this._config[MAIN_DB]);
-
-    this._dbs = _.reduce(this._config, (result: any[], value: any, key: string) => {
-      if (DBS_ARR.indexOf(key) !== -1) {
-        if (!value.testPath) {
-          value.testPath = value.name;
-        }
-
-        value.name = value.testPath;
-        result.push({
-          _label: _.startCase(key),
-          _key: key,
-          config: value
-        });
-      }
-
-      return result;
-    }, []);
 
     this._servers = _.reduce(this._config, (result: any[], value: any, key: string) => {
-      if (SERVERS_ARR.indexOf(key) !== -1) {
+      if (SEVER_NAMES.indexOf(key) !== -1) {
         let _display = false;
 
         // for now we just has the restart feature for 8080(default engine)
@@ -71,17 +49,10 @@ export class FlogoConfigComponent {
     const config = <any>{};
 
     _.each(this._servers, (server: any) => {
-      if (SERVERS_ARR.indexOf(server._key) !== -1) {
+      if (SEVER_NAMES.indexOf(server._key) !== -1) {
         config[server._key] = _.cloneDeep(server.config);
       }
     });
-
-    _.each(this._dbs, (db: any) => {
-      if (DBS_ARR.indexOf(db._key) !== -1) {
-        config[db._key] = _.cloneDeep(db.config);
-      }
-    });
-
 
     console.groupCollapsed('Save configuration');
     console.log(_.cloneDeep(config));
@@ -99,55 +70,32 @@ export class FlogoConfigComponent {
     console.log(server);
     const port = server && server.config && server.config.port || undefined;
     if (port === '8080' || port === 8080) {
-      const headers = new Headers(
-        {
-          'Accept': 'application/json'
-        }
-      );
-
-      const options = new RequestOptions({ headers: headers });
-
-      this.http.get(`/v1/api/engine/restart`, options)
+      this._configurationService.resetEngine()
         .toPromise()
         .then((res) => {
           console.log('Restart test engine successful. res: ', res);
         }).catch((err) => {
-        console.log('Restart test engine errror. err: ', err);
-      });
-
+          console.log('Restart test engine errror. err: ', err);
+        });
     }
   }
 
   onRestartBuild() {
-    const headers = new Headers(
-      {
-        'Accept': 'application/json'
-      }
-    );
-
-    const options = new RequestOptions({ headers: headers });
-
-    this.http.get(`/v1/api/engine/restart?name=build`, options)
+    this._configurationService.restartBuild()
       .toPromise()
       .then((res) => {
         console.log('Restart build engine successful. res: ', res);
-      }).catch((err) => {
-      console.log('Restart build engine errror. err: ', err);
-    });
+      })
+      .catch((err) => {
+        console.log('Restart build engine errror. err: ', err);
+      });
   }
 
   onResetDefault() {
-
     this._configurationService.resetConfiguration()
       .then((config) => {
         this.init();
         console.log('Configuration restored');
       });
-
-  }
-
-  getDatabaseName(db) {
-    db = db || '';
-    return db.replace('Database', '');
   }
 }

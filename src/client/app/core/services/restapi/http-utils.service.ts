@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, RequestOptions } from '@angular/http';
+import { Headers, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import { environment } from '../../../../environments/environment';
 
 export const domainURL = environment.hostname;
@@ -16,9 +16,13 @@ export class HttpUtilsService {
     return `${prefix}${path}`;
   }
 
-  defaultOptions(): RequestOptions {
-    const headers = new Headers({ 'Accept': 'application/json' });
-    return new RequestOptions({ headers: headers });
+  defaultOptions(extendOptions?: RequestOptionsArgs): RequestOptions {
+    const options = Object.assign(
+      {},
+      { headers: new Headers({ 'Accept': 'application/json' }) },
+      extendOptions || {}
+    );
+    return new RequestOptions(options);
   }
 
 }

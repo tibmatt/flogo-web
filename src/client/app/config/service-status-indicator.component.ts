@@ -1,29 +1,21 @@
 import { Component, Input, OnInit, DoCheck, OnDestroy } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/retry';
-import 'rxjs/add/operator/switch';
-import { getURL } from '../../shared/utils';
+import 'rxjs/add/operator/switchMap';
+
+import { getURL } from '../shared/utils';
+import { ConfigurationService } from '@flogo/core/services/configuration.service';
+import { ServiceUrlConfig } from '@flogo/core/services/configuration.service';
 
 const PING_INTERVAL_MS = 2500;
 
-interface IUrlConfig {
-  protocol: string;
-  host: string;
-  port: string;
-  name?: string;
-  testPath?: string;
-}
-
 @Component({
   selector: 'flogo-config-service-status-indicator',
-  // moduleId: module.id,
   template: `
     <i [title]="info" class="fa" [style.color]="color"
        [ngClass]="{'fa-circle': status == 'online' || status == 'offline' || status == 'online-warning', 'fa-circle-o': !status}">       
@@ -31,7 +23,7 @@ interface IUrlConfig {
 })
 export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestroy {
 
-  @Input() urlConfig: IUrlConfig = null;
+  @Input() urlConfig: ServiceUrlConfig = null;
   status: string = null;
   statusCode: any = null;
 
@@ -44,7 +36,7 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
     'unknown': 'orange'
   };
 
-  constructor(private http: Http) {
+  constructor(private configService: ConfigurationService) {
     this.configChangeSubject = new BehaviorSubject(this.urlConfig);
   }
 
@@ -54,16 +46,8 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
     configChangeStream.subscribe(() => this.status = null);
 
     this.subscription = IntervalObservable.create(PING_INTERVAL_MS)
-      .combineLatest(configChangeStream)
-      .map(combined => combined[1])
-      .map((config: IUrlConfig) => {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
-        const body = JSON.stringify({ config: config });
-
-        return this.http.post('/v1/api/ping/service', body, options);
-      })
-      .switch()
+      .combineLatest(configChangeStream, (_, config) => config)
+      .switchMap((config: ServiceUrlConfig) => this.configService.pingService(config))
       .catch((error: any) => {
         this.statusCode = error.status;
         // status 200 means no response from server

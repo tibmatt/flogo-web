@@ -1,7 +1,8 @@
-import { config } from '../../config/app-config';
-import {isJSON } from '../../common/utils';
-import _ from 'lodash';
 import request from 'co-request';
+import url from 'url';
+
+import { config } from '../../config/app-config';
+import { isJSON } from '../../common/utils';
 
 let basePath = config.app.basePath;
 
@@ -83,18 +84,19 @@ function* pingService(next){
       throw new Error('Wrong service name in pingService');
     }
 
-    let protocol = data.protocol || service.protocol;
-    let host     = data.host     || service.host;
-    let port     = data.port     || service.port;
-    let testPath = data.testPath || service.testPath;
-    let url = protocol + '://' + host + ':' + port + '/v1/' + testPath;
+    const serviceUrl = url.format({
+      protocol: data.protocol || service.protocol,
+      hostname: data.host || service.host,
+      port: data.port || service.port,
+      pathname: data.testPath || service.testPath,
+    });
 
-    let result = yield request(url);
-    if(result.statusCode && result.statusCode != 200) {
+    const result = yield request(serviceUrl);
+    if (result.statusCode && result.statusCode != 200) {
       throw new Error('Error');
     }
     this.body = result.body;
-  }catch(err){
+  } catch(err){
     this.throw(err.message, 500);
   }
 

@@ -262,69 +262,6 @@ export function parseMapping(mappingValue: string) {
 
 }
 
-export function updateFlogoGlobalConfig(config: any) {
-  (<any>window).FLOGO_GLOBAL = config;
-
-  if (localStorage) {
-    localStorage.setItem('FLOGO_GLOBAL', JSON.stringify(config));
-  }
-}
-
-export function resetFlogoGlobalConfig() {
-  // set default value
-  updateFlogoGlobalConfig({
-    db: {
-      // protocol : 'http',
-      // host : 'localhost',
-      port: '5984',
-      name: 'flogo-web'
-    },
-    activities: {
-      db: {
-        // protocol : 'http',
-        // host : 'localhost',
-        port: '5984',
-        name: 'flogo-web-activities'
-      }
-    },
-    triggers: {
-      db: {
-        // protocol : 'http',
-        // host : 'localhost',
-        port: '5984',
-        name: 'flogo-web-triggers'
-      },
-    },
-    /*
-    models : {
-      db : {
-        // protocol : 'http',
-        // host : 'localhost',
-        port : '5984',
-        name : 'flogo-web-models'
-      },
-    },*/
-    engine: {
-      // protocol : 'http',
-      // host : "localhost",
-      port: '8080',
-      testPath: 'status'
-    },
-    stateServer: {
-      // protocol : 'http',
-      // host : "localhost",
-      port: '9190',
-      testPath: 'ping'
-    },
-    flowServer: {
-      // protocol : 'http',
-      // host : "localhost",
-      port: '9090',
-      testPath: 'ping'
-    }
-  });
-}
-
 export function formatServerConfiguration(config: any) {
   return {
     db: {
@@ -377,34 +314,6 @@ export function formatServerConfiguration(config: any) {
   };
 }
 
-export function getFlogoGlobalConfig(): any {
-
-  if (!(<any>window).FLOGO_GLOBAL) {
-    let config: any;
-
-    if (localStorage) {
-      config = localStorage.getItem('FLOGO_GLOBAL');
-
-      if (config) {
-
-        try {
-          config = JSON.parse(config);
-        } catch (e) {
-          console.warn(e);
-        }
-
-        updateFlogoGlobalConfig(config);
-
-        return config;
-      }
-    }
-
-    resetFlogoGlobalConfig();
-  }
-
-  return (<any>window).FLOGO_GLOBAL;
-}
-
 export function getURL(config: {
   protocol?: string;
   host?: string;
@@ -415,16 +324,6 @@ export function getURL(config: {
   } else {
     return `${config.protocol || location.protocol.replace(':', '')}://${config.host || location.hostname}}`;
   }
-}
-
-
-export function getDBURL(dbConfig: {
-  port: string;
-  protocol: string;
-  host: string;
-  name: string;
-}): string {
-  return `${getURL(dbConfig)}/${dbConfig.name}`;
 }
 
 /**

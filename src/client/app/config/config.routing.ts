@@ -1,7 +1,8 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ConfigurationLoadedGuard } from '../core/services/configuration-loaded-guard.service';
-import { FlogoConfigComponent } from './components/config.component';
+
+import { ConfigurationLoadedGuard } from '@flogo/core/services/configuration-loaded-guard.service';
+import { FlogoConfigComponent } from './config.component';
 
 const routes: Routes = [
   {

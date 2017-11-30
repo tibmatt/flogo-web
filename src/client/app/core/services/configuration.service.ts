@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { RESTAPIConfigurationService } from './restapi/configuration-api-service';
 import { formatServerConfiguration } from '../../shared/utils';
+import { Http, URLSearchParams } from '@angular/http';
+import { HttpUtilsService } from './restapi/http-utils.service';
 
+export interface ServiceUrlConfig {
+  protocol: string;
+  host: string;
+  port: string;
+  name?: string;
+  testPath?: string;
+}
 
 @Injectable()
 export class ConfigurationService {
@@ -9,31 +18,16 @@ export class ConfigurationService {
   public configuration: any;
   configurationName: string;
 
-  constructor(private _APIConfiguration: RESTAPIConfigurationService) {
+  constructor(private _APIConfiguration: RESTAPIConfigurationService,
+              private http: Http,
+              private httpUtils: HttpUtilsService
+  ) {
     this.configuration = null;
     this.configurationName = 'FLOGO_GLOBAL';
   }
 
   getLocalOrServerConfiguration() {
-
-    return new Promise((resolve, reject) => {
-      // first try local
-      const config: any = this.getFromLocalStorage();
-
-      if (!config) {
-        // if not get from server
-        this.getFromServer()
-          .then((configuration: any) => {
-            resolve(configuration);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      } else {
-        resolve(config);
-      }
-    });
-
+    return this.getFromServer();
   }
 
   getConfiguration() {
@@ -53,28 +47,6 @@ export class ConfigurationService {
 
   }
 
-  getFromLocalStorage(): any {
-    let config: any;
-
-    if (localStorage) {
-      config = localStorage.getItem(this.configurationName);
-
-      if (config) {
-
-        try {
-          config = JSON.parse(config);
-        } catch (e) {
-          console.warn(e);
-        }
-
-        // updateFlogoGlobalConfig( config );
-        return config;
-      }
-    }
-
-    return config;
-  }
-
   getFromServer() {
 
     return new Promise((resolve, reject) => {
@@ -83,7 +55,6 @@ export class ConfigurationService {
         .then((res) => {
           try {
             const config = formatServerConfiguration(res.json());
-            this.saveToLocalStorage(config);
             resolve(config);
           } catch (exc) {
             reject(exc);
@@ -95,22 +66,10 @@ export class ConfigurationService {
     });
   }
 
-  saveToLocalStorage(config) {
-
-    if (localStorage) {
-      localStorage.setItem(this.configurationName, JSON.stringify(config));
-    }
-
-  }
-
   save() {
-    this._APIConfiguration.setConfiguration(this.configuration)
-      .then((res: any) => {
-        this.saveToLocalStorage(this.configuration);
-      });
+    this._APIConfiguration.setConfiguration(this.configuration);
 
   }
-
 
   resetConfiguration() {
 
@@ -130,5 +89,27 @@ export class ConfigurationService {
     });
   }
 
+  resetEngine() {
+    return this.http.get(
+      this.httpUtils.apiPrefix('engine/restart', 'v1'), this.httpUtils.defaultOptions()
+    );
+  }
+
+  restartBuild() {
+    const queryParams = new URLSearchParams();
+    queryParams.set('name', 'build');
+    return this.http.get(
+      this.httpUtils.apiPrefix('engine/restart', 'v1'),
+      this.httpUtils.defaultOptions({ search: queryParams })
+    );
+  }
+
+  pingService(config: ServiceUrlConfig) {
+    return this.http.post(
+      this.httpUtils.apiPrefix('ping/service', 'v1'),
+      { config },
+      this.httpUtils.defaultOptions()
+    );
+  }
 
 }
