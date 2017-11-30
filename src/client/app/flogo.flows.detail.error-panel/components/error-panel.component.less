@@ -9,7 +9,6 @@
   height: 55px;
   padding: 3px 10px;
   border-radius: 5px;
-  margin-left: 35px;
 
   &__icon {
     margin-left: 5px;
@@ -24,13 +23,11 @@
 
 .error-panel-close {
   display: inline-block;
-  -webkit-transform: rotate(270deg);
-  transform: rotate(270deg);
+  transform: rotate(90deg);
 }
 
 .error-panel-open {
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
+  transform: rotate(270deg);
 }
 
 :host {
@@ -77,6 +74,11 @@
   width: 29%;
 }
 
+.error-icon {
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+}
 .wrapper {
   align-self: flex-end;
   position: relative;
@@ -109,9 +111,11 @@
   }
 
   .error-panel {
+    border-radius: 4px 4px 0 0;
     -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.33);
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.33);
     .error-panel__content /deep/ .flogo-flows-detail-diagram {
+      border-radius: 4px 4px 0 0;
       background: #fff;
     }
   }
@@ -123,7 +127,6 @@
 }
 
 :host.is-opening .wrapper {
-  //transform: translateY(100%);
   transform: @hide-position;
 
   .error-panel {
