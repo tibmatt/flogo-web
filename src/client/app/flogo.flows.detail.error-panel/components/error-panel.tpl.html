@@ -3,7 +3,8 @@
     <div class="wrapper" #wrapper>
         <div class="actions-container">
             <button (click)="toggle()" class="tc-buttons tc-buttons-primary toggle-button action-button" [class.toggle-button--open]="isOpen" >
-              <img [src]="imgErrorHandler">
+              <img class="error-icon" [src]="imgErrorHandler"><div class="error-toggle-button"><span class="error-handler-text">Error Handler</span>
+              <div class="flogo-icon flogo-icon-back error-panel-close" [class.error-panel-open]="isOpen"></div></div>
             </button>
         </div>
       <div class="error-panel">
