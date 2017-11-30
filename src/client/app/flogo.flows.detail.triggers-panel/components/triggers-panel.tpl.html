@@ -52,9 +52,9 @@
                         (onAddTriggerToAction)="addTriggerToAction($event)"
                         (onInstallDialog)="openInstallTriggerWindow()">
   </flogo-select-trigger>
-  <flogo-installer [profileType]="appDetails?.appProfileType"
-                   [installType]="'trigger'" [(isActivated)]="installTriggerActivated"
-                   (isActivatedChange)="openAddTriggerModel()"
-                   (installed)="onTriggerInstalledAction()"></flogo-installer>
+  <flogo-flow-installer [profileType]="appDetails?.appProfileType"
+                        [installType]="'trigger'" [(isActivated)]="installTriggerActivated"
+                        (isActivatedChange)="openAddTriggerModel()"
+                        (installed)="onTriggerInstalledAction()"></flogo-flow-installer>
   <flogo-trigger-mapper></flogo-trigger-mapper>
 </div>

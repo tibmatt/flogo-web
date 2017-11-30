@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChange } from '@angular/core';
-import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../../flogo.installer/constants';
+import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../../flow/shared/installer/constants';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({

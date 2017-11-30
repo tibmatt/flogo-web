@@ -23,7 +23,7 @@ import {FlogoProfileService} from '@flogo/core/services/profile.service';
 import {FlogoProfileServiceMock} from '@flogo/core/services/profile.service.mock';
 
 import { UIModelConverterService } from '../../flow/core/ui-model-converter.service';
-import { InstallerModule } from '../../flogo.installer/flogo.installer.module';
+import { InstallerModule } from '@flogo/flow/shared/installer';
 import { TriggerMapperModule } from '../../flogo.trigger-mapper/trigger-mapper.module';
 import { FlogoTriggerClickHandlerService } from '../services/click-handler.service';
 

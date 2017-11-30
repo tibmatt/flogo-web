@@ -1,21 +1,21 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild, Input, Output } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { RESTAPITriggersService } from '../../core/services/restapi/triggers-api.service';
-import { RESTAPIActivitiesService } from '../../core/services/restapi/activities-api.service';
-import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
-import { FLOGO_PROFILE_TYPE } from '../../core/constants';
+import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
+import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
+import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
+import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,
   FLOGO_INSTALLER_STATUS_IDLE,
   FLOGO_INSTALLER_STATUS_INSTALL_FAILED,
   FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS,
   FLOGO_INSTALLER_STATUS_INSTALLING
-} from '../constants';
+} from './constants';
 
 @Component({
-  selector: 'flogo-installer',
+  selector: 'flogo-flow-installer',
   // moduleId : module.id,
-  templateUrl: 'installer.tpl.html',
+  templateUrl: 'installer.component.html',
   styleUrls: ['installer.component.less']
 })
 export class FlogoInstallerComponent implements OnChanges {

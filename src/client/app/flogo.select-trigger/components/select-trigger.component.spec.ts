@@ -9,7 +9,7 @@ import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../core/s
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import { RESTAPITriggersServiceMock } from '../../core/services/restapi/triggers-api.service.mock';
 import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2 } from '../../core/services/restapi/v2/triggers-api.service.mock';
-import { InstallerModule } from '../../flogo.installer/flogo.installer.module';
+import { InstallerModule } from '../../flow/shared/installer/installer.module';
 import { PostService } from '../../core/services/post.service';
 import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
 import { FlogoProfileService } from '../../core/services/profile.service';

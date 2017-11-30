@@ -1,5 +1,5 @@
 import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
-import { InstallerModule as FlogoInstallerModule } from '../flogo.installer/flogo.installer.module';
+import { InstallerModule as FlogoInstallerModule } from './shared/installer';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform';
 import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
 import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
