@@ -33,7 +33,7 @@ export class FlogoModal {
       }
     }
     const textMessage = lodash.escape(message);
-    jQuery('flogo-app').append(`
+    jQuery('flogo').append(`
             <div class="flogo-common-service-modal-container fade">
                 <div class="flogo-common-service-modal-detail fade clearfix" style="${style}">
                     <div class="flogo-common-service-modal-confirm">${title}</div>
