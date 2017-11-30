@@ -8,9 +8,9 @@
       </header>
 
       <section class="container-fluid">
-        <flogo-installer-url (install)="onInstallAction($event)"
-                             (cancel)="closeModal($event)"
-                             [status]="_status"></flogo-installer-url>
+        <flogo-flow-url-installer (install)="onInstallAction($event)"
+                                  (cancel)="closeModal($event)"
+                                  [status]="_status"></flogo-flow-url-installer>
       </section>
     </div>
     <div *ngIf="_status == showBlock.installingMode"

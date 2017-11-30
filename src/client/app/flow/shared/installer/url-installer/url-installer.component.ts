@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChange } from '@angular/core';
-import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../../flow/shared/installer/constants';
+import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../constants';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
-  selector: 'flogo-installer-url',
-  templateUrl: 'url-installer.tpl.html',
+  selector: 'flogo-flow-url-installer',
+  templateUrl: 'url-installer.component.html',
   styleUrls: ['url-installer.component.less']
 })
-export class FlogoInstallerUrlComponent implements OnChanges {
+export class FlogoUrlInstallerComponent implements OnChanges {
 
   @Input()
   installType: string;

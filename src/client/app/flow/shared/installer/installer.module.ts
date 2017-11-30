@@ -6,7 +6,7 @@ import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 
 import {FlogoInstallerComponent} from './installer.component';
 
-import { FlogoInstallerUrlComponent } from '../../../flogo.installer.url-installer/components/url-installer.component';
+import { FlogoUrlInstallerComponent } from './url-installer/url-installer.component';
 
 @NgModule({
   imports: [// module dependencies
@@ -15,7 +15,7 @@ import { FlogoInstallerUrlComponent } from '../../../flogo.installer.url-install
     FlogoSharedModule
   ],
   declarations: [
-    FlogoInstallerUrlComponent,
+    FlogoUrlInstallerComponent,
     FlogoInstallerComponent
   ],
   exports: [
