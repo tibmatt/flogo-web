@@ -45,12 +45,8 @@ export class FlogoFlowsDetailErrorPanelComponent implements OnDestroy {
 
       if (this.isOpen) {
         this.postService.publish( _.assign( {}, PUB_EVENTS.openPanel, { data : {} } ) );
-        this.imgErrorHandler = '/assets/svg/error-icon-close.svg';
-
       } else {
         this.postService.publish( _.assign( {}, PUB_EVENTS.closePanel, { data : {} } ) );
-        this.imgErrorHandler = '/assets/svg/error-icon-info.svg';
-
       }
 
     }, 100);
