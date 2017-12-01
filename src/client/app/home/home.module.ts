@@ -13,9 +13,9 @@ import { FlogoApplicationSearchComponent } from '../flogo.apps.search/components
 import { FlogoAppSettingsComponent } from '../flogo.apps.settings/components/settings.component';
 import { AppDetailService } from './services/apps.service';
 import { routing, appRoutingProviders } from './home.routing';
-import { FlogoAppImportErrorComponent } from '../flogo.apps.import.error/components/import.error.component';
-import { ImportErrorFormatterService } from '../flogo.apps.import.error/services/message.formatter.service';
-import { ProfileSelectionComponent } from '../flogo.apps.add/components/profile-select.component';
+import { FlogoAppImportComponent } from './app-import/app-import.component';
+import { ImportErrorFormatterService } from './core/import-error-formatter.service';
+import { FlogoNewAppComponent } from './new-app/new-app.component';
 import { FlogoExportFlowsComponent } from '../flogo.apps.details/components/export-flow.component';
 import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-group.component';
 
@@ -37,8 +37,8 @@ import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-
     FlogoAppListComponent,
     FlogoApplicationSearchComponent,
     FlogoAppSettingsComponent,
-    FlogoAppImportErrorComponent,
-    ProfileSelectionComponent,
+    FlogoAppImportComponent,
+    FlogoNewAppComponent,
     FlogoExportFlowsComponent,
     FlowTriggerGroupComponent
   ],

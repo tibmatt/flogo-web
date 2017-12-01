@@ -1,17 +1,17 @@
-import { FlogoAppImportErrorComponent } from './import.error.component';
+import { FlogoAppImportComponent } from './app-import.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { ImportErrorFormatterService } from '../services/message.formatter.service';
+import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
 import { By } from '@angular/platform-browser';
-import { mockImportErrorResponse } from '../mocks/error.response.mock';
+import { mockImportErrorResponse } from './mocks/error.response.mock';
 
 @Component({
   selector: 'flogo-container-component',
   template: `
     <div class="flows">
-      <flogo-import-error [importValidationErrors]="errors" (modalClose)="closeModal()"></flogo-import-error>
+      <flogo-home-app-import [importValidationErrors]="errors" (modalClose)="closeModal()"></flogo-home-app-import>
     </div>
   `
 })
@@ -23,7 +23,7 @@ class ContainerComponent {
   }
 }
 
-describe('Component: FlogoAppImportErrorComponent', () => {
+describe('Component: FlogoAppImportComponent', () => {
   let comp: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
 
@@ -34,7 +34,7 @@ describe('Component: FlogoAppImportErrorComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      declarations: [FlogoAppImportErrorComponent, ModalComponent, ContainerComponent], // declare the test component
+      declarations: [FlogoAppImportComponent, ModalComponent, ContainerComponent], // declare the test component
       providers: [ImportErrorFormatterService],
       schemas: [NO_ERRORS_SCHEMA]
     });

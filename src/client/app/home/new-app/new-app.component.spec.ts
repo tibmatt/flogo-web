@@ -1,4 +1,4 @@
-import { ProfileSelectionComponent } from './profile-select.component';
+import { FlogoNewAppComponent } from './new-app.component';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { TranslateModule } from 'ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
@@ -6,10 +6,10 @@ import { ProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.
 import { MockProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service.mock';
 import { By } from '@angular/platform-browser';
 import { FLOGO_PROFILE_TYPE } from '../../core/constants';
-describe('Component: ProfileSelectionComponent', () => {
-  let comp: ProfileSelectionComponent;
+describe('Component: FlogoNewAppComponent', () => {
+  let comp: FlogoNewAppComponent;
   let service = null;
-  let fixture: ComponentFixture<ProfileSelectionComponent>;
+  let fixture: ComponentFixture<FlogoNewAppComponent>;
 
   function compileComponent() {
     return TestBed.compileComponents();
@@ -19,19 +19,19 @@ describe('Component: ProfileSelectionComponent', () => {
     return TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [{ provide: ProfilesAPIService, useClass: MockProfilesAPIService }],
-      declarations: [ProfileSelectionComponent, ModalComponent], // declare the test component
+      declarations: [FlogoNewAppComponent, ModalComponent], // declare the test component
     })
       .compileComponents();
   });
 
   beforeEach(inject([ProfilesAPIService], (serviceAPI: ProfilesAPIService) => {
     service = serviceAPI;
-    fixture = TestBed.createComponent(ProfileSelectionComponent);
+    fixture = TestBed.createComponent(FlogoNewAppComponent);
     comp = fixture.componentInstance;
   }));
 
   it('Should emit \'microservice\' when selecting microservice profile', (done) => {
-    comp.profileSelectionModal.open();
+    comp.newAppModal.open();
     fixture.detectChanges();
     comp.onAdd.subscribe((profileDetails) => {
       expect(profileDetails.profileType).toEqual(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
@@ -42,7 +42,7 @@ describe('Component: ProfileSelectionComponent', () => {
   });
 
   it('Should show 3 devices in the list when device is selected', (done) => {
-    comp.profileSelectionModal.open();
+    comp.newAppModal.open();
     comp.showList = true;
     service.getProfilesList().then((res) => {
       comp.devicesList = res;
@@ -54,7 +54,7 @@ describe('Component: ProfileSelectionComponent', () => {
   });
 
   it('Should emit \'Atmel AVR\' when selecting Atmel AVR device profile', (done) => {
-    comp.profileSelectionModal.open();
+    comp.newAppModal.open();
     comp.onAdd.subscribe((profileDetails) => {
       expect(profileDetails.deviceType).toEqual('Atmel AVR');
       done();

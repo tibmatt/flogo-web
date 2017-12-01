@@ -10,9 +10,9 @@ import { AppsApiServiceMock } from '../../core/services/restapi/v2/apps-api.serv
 import { TimeFromNowPipe } from '../../shared/pipes/time-from-now.pipe';
 import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
 import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
-import { FlogoAppImportErrorComponent } from '../../flogo.apps.import.error/components/import.error.component';
+import { FlogoAppImportComponent } from '../../home/app-import/app-import.component';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { ProfileSelectionComponent } from '../../flogo.apps.add/components/profile-select.component';
+import { FlogoNewAppComponent } from '../../home/new-app/new-app.component';
 
 describe('FlogoAppList component', () => {
   const applications = [
@@ -55,7 +55,7 @@ describe('FlogoAppList component', () => {
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       declarations: [FlogoAppListComponent, FlogoDeletePopupComponent, TimeFromNowPipe,
-        FlogoAppImportErrorComponent, ModalComponent, ProfileSelectionComponent], // declare the test component
+        FlogoAppImportComponent, ModalComponent, FlogoNewAppComponent], // declare the test component
       providers: [
         HttpUtilsService,
         { provide: ErrorService, useClass: ErrorService },

@@ -1,6 +1,6 @@
-import { ImportErrorFormatterService } from './message.formatter.service';
+import { ImportErrorFormatterService } from './import-error-formatter.service';
 import { TranslateService } from 'ng2-translate';
-import { mockImportErrorResponse } from '../mocks/error.response.mock';
+import { mockImportErrorResponse } from '../app-import/mocks/error.response.mock';
 import Spy = jasmine.Spy;
 
 describe('Service: ImportErrorFormatterService', function (this: {

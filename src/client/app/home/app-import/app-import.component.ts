@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { ImportErrorFormatterService } from '../services/message.formatter.service';
+import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
 
 
 @Component({
-  selector: 'flogo-import-error',
-  templateUrl: 'import.error.tpl.html',
-  styleUrls: ['import.error.component.less']
+  selector: 'flogo-home-app-import',
+  templateUrl: 'app-import.component.html',
+  styleUrls: ['app-import.component.less']
 })
-export class FlogoAppImportErrorComponent implements OnChanges {
+export class FlogoAppImportComponent implements OnChanges {
 
   @ViewChild('errorModal') modal: ModalComponent;
 

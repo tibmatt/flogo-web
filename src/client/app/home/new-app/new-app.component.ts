@@ -1,8 +1,7 @@
-import { Component, AfterViewInit, Output, ViewChild } from '@angular/core';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { EventEmitter } from '@angular/common/src/facade/async';
-import { ProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service';
-import { FLOGO_PROFILE_TYPE } from '../../core/constants';
+import {Component, AfterViewInit, Output, ViewChild, EventEmitter} from '@angular/core';
+import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {ProfilesAPIService} from '../../core/services/restapi/v2/profiles-api.service';
+import {FLOGO_PROFILE_TYPE} from '../../core/constants';
 
 interface DeviceProfile {
   type: string;
@@ -10,12 +9,12 @@ interface DeviceProfile {
 }
 
 @Component({
-  selector: 'flogo-apps-profile-selection',
-  templateUrl: 'profile-selection.tpl.html',
-  styleUrls: ['profile-selection.less']
+  selector: 'flogo-home-new-app',
+  templateUrl: 'new-app.component.html',
+  styleUrls: ['new-app.component.less']
 })
-export class ProfileSelectionComponent implements AfterViewInit {
-  @ViewChild('profileSelectionModal') profileSelectionModal: ModalComponent;
+export class FlogoNewAppComponent implements AfterViewInit {
+  @ViewChild('newAppModal') newAppModal: ModalComponent;
 
   @Output() onClose: EventEmitter<any> = new EventEmitter();
   @Output() onAdd: EventEmitter<any> = new EventEmitter();
@@ -32,11 +31,11 @@ export class ProfileSelectionComponent implements AfterViewInit {
   }
 
   openModal() {
-    this.profileSelectionModal.open();
+    this.newAppModal.open();
   }
 
   closeModal() {
-    this.profileSelectionModal.close();
+    this.newAppModal.close();
     this.onModalCloseOrDismiss();
   }
 
@@ -52,7 +51,7 @@ export class ProfileSelectionComponent implements AfterViewInit {
   }
 
   onAddProfile(profileType: FLOGO_PROFILE_TYPE, profile?: string) {
-    const profileDetails: any = { profileType };
+    const profileDetails: any = {profileType};
     if (profileType === FLOGO_PROFILE_TYPE.DEVICE) {
       profileDetails.profile = 'github.com/TIBCOSoftware/flogo-contrib/device/profile/feather_m0_wifi';
       profileDetails.deviceType = profile;
