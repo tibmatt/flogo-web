@@ -1,11 +1,11 @@
 import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
 
-import { convertTaskID, parseMapping } from '../../shared/utils';
-import {FlogoFormBuilderService} from '../../flow/shared/form-builder/form-builder.service';
+import { convertTaskID, parseMapping } from '@flogo/shared/utils';
+import {FlogoFormBuilderService} from '../../form-builder.service';
 
 @Component({
-  selector: 'flogo-form-builder-task-configuration',
-  templateUrl: 'form-builder.configuration.task.tpl.html'
+  selector: 'flogo-flow-configuration-task',
+  templateUrl: 'task.component.html'
 })
 export class FlogoFormBuilderConfigurationTaskComponent implements OnChanges {
   // disabling no-input-rename rule to make the linter pass for now

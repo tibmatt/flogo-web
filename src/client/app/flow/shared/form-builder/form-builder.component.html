@@ -52,7 +52,7 @@
     </div>
 
     <div *ngIf="_context.isTask">
-      <flogo-form-builder-task-configuration     [attributes]="_attributes"  [fieldObserver]="_fieldObserver" [task]="_task"></flogo-form-builder-task-configuration>
+      <flogo-flow-configuration-task [attributes]="_attributes" [fieldObserver]="_fieldObserver" [task]="_task"></flogo-flow-configuration-task>
     </div>
 
     <div *ngIf="_context.isBranch">

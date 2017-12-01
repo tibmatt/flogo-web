@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/operator/filter';
 
-import { FlogoFormBuilderConfigurationTaskComponent } from './form-builder.configuration.task.component';
-import { FormBuilderModule } from '../../flow/shared/form-builder';
-import {FlogoFormBuilderService} from '../../flow/shared/form-builder/form-builder.service';
+import { FlogoFormBuilderConfigurationTaskComponent } from './task.component';
+import {FormBuilderModule} from '@flogo/flow/shared/form-builder';
+import {FlogoFormBuilderService} from '../../form-builder.service';
 
 describe('Form-builder component', () => {
   let comp: FlogoFormBuilderConfigurationTaskComponent;

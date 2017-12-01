@@ -18,7 +18,7 @@ import {
 } from '../../../flogo.form-builder.configuration.trigger/components/form-builder.configuration.trigger.component';
 import {
   FlogoFormBuilderConfigurationTaskComponent as TaskDirective
-} from '../../../flogo.form-builder.configuration.task/components/form-builder.configuration.task.component';
+} from './configuration/task/task.component';
 import {
   FlogoFormBuilderConfigurationBranchComponent as BranchDirective
 } from './configuration/branch/branch.component';
