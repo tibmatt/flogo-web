@@ -3,7 +3,6 @@ import { InstallerModule as FlogoInstallerModule } from './shared/installer';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform';
 import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
-import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
@@ -51,7 +50,6 @@ import { FlowComponent } from './flow.component';
     FlogoInstallerModule,
     FlogoTransformModule,
     FlogoFooterModule,
-    FlogoFormModule,
     FlogoLogsModule,
     FlogoTriggerMapperModule,
     FlogoCommonFormBuilderModule,
