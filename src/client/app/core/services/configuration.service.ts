@@ -3,14 +3,7 @@ import { RESTAPIConfigurationService } from './restapi/configuration-api-service
 import { formatServerConfiguration } from '../../shared/utils';
 import { Http, URLSearchParams } from '@angular/http';
 import { HttpUtilsService } from './restapi/http-utils.service';
-
-export interface ServiceUrlConfig {
-  protocol: string;
-  host: string;
-  port: string;
-  name?: string;
-  testPath?: string;
-}
+import { ServiceUrlConfig } from '@flogo/core/services/service-url-config.model';
 
 @Injectable()
 export class ConfigurationService {

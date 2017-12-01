@@ -31,7 +31,7 @@ import { RESTAPIContributionsService } from './services/restapi/v2/contributions
 import { FlogoMicroserviceTaskIdGeneratorService } from './services/profiles/microservices/utils.service';
 import { FlogoDeviceTaskIdGeneratorService } from './services/profiles/devices/utils.service';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
-import { InstructionsModule } from '../flogo.instructions/flogo.instructions.module';
+import { InstructionsModule } from './walkthrough/walkthrough.module';
 
 @NgModule({
   imports: [

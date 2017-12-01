@@ -7,44 +7,44 @@
 
 // need to use a string as less throws an error if we try to use /deep/ directly
 @deep: ~"/deep/";
-@{deep} .flogo-instructions-modal {
+@{deep} .walkthrough-modal {
   max-width: 980px;
 }
 
-.flogo-instructions {
+.walkthrough {
   margin: -30px;
   padding: 40px 40px 20px;
 }
 
-.flogo-instructions-header {
+.walkthrough-header {
   padding-bottom: 43px;
 }
 
-.flogo-instructions-panel {
+.walkthrough-panel {
   display: flex;
   flex-direction: row;
   margin-left: -40px;
 }
 
 @media (max-width: 768px) {
-  .flogo-instructions {
+  .walkthrough {
     margin: -20px;
     padding: 20px 20px 10px;
   }
 
-  .flogo-instructions-panel {
+  .walkthrough-panel {
     margin: 0;
     flex-direction: column;
   }
 
-  @{deep} .flogo-instructions-modal {
+  @{deep} .walkthrough-modal {
     margin: 0 auto;
     width: 95%;
   }
 
 }
 
-.flogo-instructions-footer {
+.walkthrough-footer {
   padding-top: 32px;
   text-align: right;
   .flogo-button--default{
@@ -52,14 +52,14 @@
   }
 }
 
-.flogo-instructions-panel__step-list {
+.walkthrough-panel__step-list {
   margin: 0;
   list-style-type: none;
   padding: 0;
 
 }
 
-.flogo-instructions-panel__content {
+.walkthrough-panel__content {
   flex: 2;
 }
 
@@ -67,14 +67,14 @@
   min-width: 112px;
 }
 
-.flogo-instructions-modal-title {
+.walkthrough-modal-title {
   font-size: 24px;
   color: #666;
   margin: 0;
   padding: 0;
 }
 
-.flogo-instructions-modal-close {
+.walkthrough-modal-close {
   .modal__close;
   top: 44px;
   right: 44px;
@@ -84,12 +84,12 @@
 
 }
 
-.flogo-instructions-button {
+.walkthrough-button {
   width: 124px;
   height: 40px;
 }
 
-.flogo-instructions-option {
+.walkthrough-option {
   color: #666666;
   cursor: pointer;
   font-size: 14px;
@@ -112,29 +112,29 @@
     width: 30px;
   }
 
-  &-selected .flogo-instructions-option__bullet,
-  &:hover .flogo-instructions-option__bullet {
+  &-selected .walkthrough-option__bullet,
+  &:hover .walkthrough-option__bullet {
     border-color: #fff;
     color: #fff;
   }
 
 }
 
-.flogo-instructions-screenshot {
+.walkthrough-screenshot {
   margin: -3px;
 }
 
-.flogo-instructions-option-selected-mixin() {
+.walkthrough-option-selected-mixin() {
   background-color: #36bfbb;
   color: white;
 }
 
-.flogo-instructions-option-selected,
-.flogo-instructions-option:hover {
-  .flogo-instructions-option-selected-mixin();
+.walkthrough-option-selected,
+.walkthrough-option:hover {
+  .walkthrough-option-selected-mixin();
 }
 
-.flogo-instructions-description {
+.walkthrough-description {
   margin-left: 20px;
   color: #666;
   font-size: 14px;

@@ -1,7 +1,6 @@
 import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
 import { InstallerModule as FlogoInstallerModule } from './shared/installer';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform';
-import { InstructionsModule as FlogoInstructionsModule } from '../flogo.instructions/flogo.instructions.module';
 import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
 import { FooterModule as FlogoFooterModule } from '../flogo.footer/flogo.footer.module';
 import { FormModule as FlogoFormModule } from '../flogo.form/flogo.form.module';
@@ -51,7 +50,6 @@ import { FlowComponent } from './flow.component';
     FlogoFormBuilderModule,
     FlogoInstallerModule,
     FlogoTransformModule,
-    FlogoInstructionsModule,
     FlogoFooterModule,
     FlogoFormModule,
     FlogoLogsModule,

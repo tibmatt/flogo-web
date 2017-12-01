@@ -2,12 +2,11 @@ import { Component, EventEmitter, Input, Output, OnChanges, SimpleChange, ViewCh
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
-  selector: 'flogo-instructions',
-  // moduleId : module.id,
-  templateUrl: 'instructions.tpl.html',
-  styleUrls: ['instructions.component.less']
+  selector: 'flogo-walkthrough',
+  templateUrl: 'walkthrough.component.html',
+  styleUrls: ['walkthrough.component.less']
 })
-export class FlogoInstructionsComponent implements OnChanges {
+export class WalkthroughComponent implements OnChanges {
 
   @ViewChild('instructionsModal') modal: ModalComponent;
 
@@ -52,7 +51,6 @@ export class FlogoInstructionsComponent implements OnChanges {
     }
     this.currentStep = this.steps[this.currentIndex];
   }
-
 
   ngOnChanges(changes: {
     [key: string]: SimpleChange

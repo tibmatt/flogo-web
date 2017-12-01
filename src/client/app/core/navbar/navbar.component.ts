@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 
 export class FlogoNavbarComponent implements OnInit {
 
-  public isInstructionsActivated = false;
+  public isWalkthroughActivated = false;
 
   ngOnInit() {
     setTimeout(() => {
@@ -21,17 +21,17 @@ export class FlogoNavbarComponent implements OnInit {
     const instructions: string = localStorage.getItem('flogo-show-instructions');
     if (_.isEmpty(instructions)) {
       localStorage.setItem('flogo-show-instructions', new Date().toString());
-      this.isInstructionsActivated = true;
+      this.isWalkthroughActivated = true;
     }
-    return this.isInstructionsActivated;
+    return this.isWalkthroughActivated;
   }
 
   public onClosedInstructions(closed) {
-    this.isInstructionsActivated = false;
+    this.isWalkthroughActivated = false;
   }
 
   public activateInstructions(event: any) {
-    this.isInstructionsActivated = true;
+    this.isWalkthroughActivated = true;
   }
 
 }

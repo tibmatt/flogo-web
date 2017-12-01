@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {CommonModule as NgCommonModule} from '@angular/common';
 
-import {SharedModule as FlogoSharedModule} from '../shared/shared.module';
+import {SharedModule as FlogoSharedModule} from '../../shared/shared.module';
 
-import {FlogoInstructionsComponent} from './components/instructions.component';
+import {WalkthroughComponent} from './walkthrough.component';
 
 @NgModule({
   imports: [// module dependencies
@@ -11,10 +11,10 @@ import {FlogoInstructionsComponent} from './components/instructions.component';
     FlogoSharedModule
   ],
   declarations: [
-    FlogoInstructionsComponent
+    WalkthroughComponent
   ],
   exports: [
-    FlogoInstructionsComponent
+    WalkthroughComponent
   ],
   providers: [
   ]

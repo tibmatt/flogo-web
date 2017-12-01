@@ -10,7 +10,7 @@ import 'rxjs/add/operator/switchMap';
 
 import { getURL } from '../shared/utils';
 import { ConfigurationService } from '@flogo/core/services/configuration.service';
-import { ServiceUrlConfig } from '@flogo/core/services/configuration.service';
+import { ServiceUrlConfig } from '@flogo/core/services/service-url-config.model';
 
 const PING_INTERVAL_MS = 2500;
 
