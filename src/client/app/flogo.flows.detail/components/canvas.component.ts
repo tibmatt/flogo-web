@@ -1246,20 +1246,14 @@ export class FlogoCanvasComponent implements OnInit, OnDestroy {
   }
 
   private _updateAttributesChanges(task: any, changedInputs: any, structure: any) {
-
-    for (const name in changedInputs) {
-      if (!changedInputs.hasOwnProperty(name)) {
-        const attributes = _.get(task, structure, []);
-
-        // todo: do not create function in loop
-        attributes.forEach((input) => {
-          if (input.name === name) {
-            input['value'] = changedInputs[name];
-          }
-        });
+    const attributeNamePairs = _.get(task, structure, []).map(attr => <[string, any]>[attr.name, attr]);
+    const attributesByName = new Map<string, any>(attributeNamePairs);
+    Object.keys(changedInputs || {}).forEach(name => {
+      const attribute = attributesByName.get(name);
+      if (attribute) {
+        attribute.value = changedInputs[name];
       }
-    }
-
+    });
   }
 
   private _setTaskWarnings(data: any, envelope: any) {
