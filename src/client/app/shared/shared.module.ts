@@ -16,6 +16,7 @@ import {
   JsonDownloaderDirective
 } from './directives';
 import { LoadingIndicatorComponent } from './components/loading-indicator.component';
+import { FooterComponent } from '@flogo/shared/components/footer/footer.component';
 import { CustomTranslateLoader } from '../core/services/language.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { FlogoDeletePopupComponent } from './components/delete.popup.component';
@@ -23,6 +24,7 @@ import { ObjectPropertiesPipe } from './pipes/objectProperties.pipe';
 
 const ALL_MODULE_DECLARABLES = [
   CopyToClipboardComponent,
+  FooterComponent,
   ContenteditableDirective,
   JsonDownloaderDirective,
   LoadingIndicatorComponent,
@@ -38,6 +40,7 @@ const ALL_MODULE_DECLARABLES = [
 @NgModule({ // module dependencies
   imports: [
     NgCommonModule,
+    // todo: should be declared in core?
     TranslateModule.forRoot({
       provide: TranslateLoader,
       useClass: CustomTranslateLoader,
@@ -52,7 +55,6 @@ const ALL_MODULE_DECLARABLES = [
     ReactiveFormsModule,
     // todo: should be in root only?
     Ng2Bs3ModalModule,
-    // todo: should be in root only?
     TranslateModule,
     ...ALL_MODULE_DECLARABLES,
   ]
