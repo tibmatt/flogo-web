@@ -30,7 +30,7 @@
 
     <div class="flogo-logs-lines" [style.overflow-y]="isExternal ? 'none' : 'scroll'">
         <div class="content-section">
-            <div *ngFor="let message of logService.lines | logsSearch : searchValue" class="log-line">
+            <div *ngFor="let message of logService.lines | flogoLogsSearch : searchValue" class="log-line">
                 <div class="log-line__timestamp">{{message.timestamp}}</div>
                 <div class="log-line__level" [class.log-line__level--error]="message.level=='error'">
                     <img *ngIf="isError(message)" src="/assets/svg/flogo-logs-error.svg" />

@@ -30,15 +30,16 @@ import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
 import { FlogoMicroserviceTaskIdGeneratorService } from './services/profiles/microservices/utils.service';
 import { FlogoDeviceTaskIdGeneratorService } from './services/profiles/devices/utils.service';
+import { LogService } from '@flogo/core/services/log.service';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
-import { InstructionsModule } from './walkthrough/walkthrough.module';
+import { WalkthroughModule } from './walkthrough/walkthrough.module';
 
 @NgModule({
   imports: [
     HttpModule,
     RouterModule,
     TranslateModule,
-    InstructionsModule,
+    WalkthroughModule,
   ],
   providers: [ // services
     RESTAPIApplicationsService,
@@ -69,7 +70,8 @@ import { InstructionsModule } from './walkthrough/walkthrough.module';
     FlowsService,
     FlogoProfileService,
     FlogoMicroserviceTaskIdGeneratorService,
-    FlogoDeviceTaskIdGeneratorService
+    FlogoDeviceTaskIdGeneratorService,
+    LogService
   ],
   declarations: [
     FlogoNavbarComponent,

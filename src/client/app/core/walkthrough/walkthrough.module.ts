@@ -19,5 +19,5 @@ import {WalkthroughComponent} from './walkthrough.component';
   providers: [
   ]
 })
-export class InstructionsModule {
+export class WalkthroughModule {
 }

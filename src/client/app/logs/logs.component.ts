@@ -1,16 +1,15 @@
 import {Component} from '@angular/core';
-import {ChildWindowService, ChildWindow} from '../../core/services/child-window.service';
-
+import {ChildWindowService, ChildWindow} from '../core/services/child-window.service';
 
 @Component(
   {
     selector: 'flogo-logs',
     // moduleId: module.id,
-    templateUrl: 'logs.tpl.html',
+    templateUrl: 'logs.component.html',
     styleUrls: ['logs.component.less']
   }
 )
-export class FlogoLogsComponent {
+export class LogsComponent {
   messages: string[];
   searchValue = '';
   isOpen = false;

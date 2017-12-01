@@ -1,17 +1,16 @@
-import {Component, ElementRef, Renderer, Input, Output, EventEmitter} from '@angular/core';
-import {LogService} from '../log.service';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {LogService} from '@flogo/core/services/log.service';
 
 import 'rxjs/add/operator/map';
 
 @Component(
   {
     selector: 'flogo-logs-content',
-    // moduleId: module.id,
-    templateUrl: 'logs-content.tpl.html',
-    styleUrls: ['logs-content.component.less']
+    templateUrl: 'content.component.html',
+    styleUrls: ['content.component.less']
   }
 )
-export class FlogoLogsContentComponent {
+export class LogsContentComponent {
   @Output() onWindowAction: EventEmitter<string>;
   @Input() isExternal = false;
   messages: string[];

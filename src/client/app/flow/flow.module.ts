@@ -1,7 +1,6 @@
 import { FormBuilderModule as FlogoFormBuilderModule } from './shared/form-builder';
 import { InstallerModule as FlogoInstallerModule } from './shared/installer';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform';
-import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
@@ -28,6 +27,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
+import { LogsModule as FlogoLogsModule } from '@flogo/logs';
+
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';
 import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
@@ -41,6 +42,7 @@ import { FlowComponent } from './flow.component';
   imports: [
     CommonModule,
     FlogoSharedModule,
+    FlogoLogsModule,
 
     FlowCoreModule,
     ParamsSchemaModule,
@@ -48,7 +50,6 @@ import { FlowComponent } from './flow.component';
     FlogoFormBuilderModule,
     FlogoInstallerModule,
     FlogoTransformModule,
-    FlogoLogsModule,
     FlogoTriggerMapperModule,
     FlogoCommonFormBuilderModule,
     routing

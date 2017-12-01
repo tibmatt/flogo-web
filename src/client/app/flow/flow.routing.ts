@@ -18,7 +18,7 @@ export const routes: Routes = [
       { path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent },
       { path: 'task/add', component: FlogoFlowsDetailTasksComponent },
       { path: 'task/:id', component: FlogoFlowsDetailTasksDetailComponent }
-      // {path: 'logs', component: FlogoLogsComponent}
+      // {path: 'logs', component: LogsComponent}
     ]
   }
 ];

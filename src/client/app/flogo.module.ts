@@ -15,6 +15,7 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { CoreModule } from '@flogo/core';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { FlowModule } from '@flogo/flow';
+import { LogsModule as FlogoLogsModule } from '@flogo/logs';
 
 import { FlogoAppComponent } from './flogo.component';
 import { appRoutingProviders, routing } from './flogo.routing';
@@ -29,6 +30,7 @@ import { appRoutingProviders, routing } from './flogo.routing';
     CoreModule,
     FlogoSharedModule,
     FlogoHomeModule,
+    FlogoLogsModule,
     FlogoFlowsModule,
     FlowModule,
     FlogoConfigModule,
