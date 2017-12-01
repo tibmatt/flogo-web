@@ -4,7 +4,7 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 import { notification } from '../../shared/utils';
 import { PostService } from '../../core/services/post.service';
 import { PUB_EVENTS as SUB_EVENTS } from '../../flogo.flows.add/message';
-import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
+import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
 import 'rxjs/add/operator/map';
 import { FlowsService } from '../../core/services/flows.service';
 import { Subscription } from 'rxjs/Subscription';

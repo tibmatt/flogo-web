@@ -1,13 +1,13 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ConfigurationLoadedGuard } from '../core/services/configuration-loaded-guard.service';
-import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
+import { FlogoHomeComponent } from './home.component';
 import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
 
 const routes: Routes = [
   {
     path: 'apps',
-    component: FlogoMainComponent,
+    component: FlogoHomeComponent,
     // canActivate: [ConfigurationLoadedGuard],
   },
   {

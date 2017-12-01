@@ -1,5 +1,5 @@
 
-import { FlogoAppsModule } from './flogo.apps/flogo.apps.module';
+import { FlogoHomeModule } from '@flogo/home';
 import { FlowsModule as FlogoFlowsModule } from './flogo.flows/flogo.flows.module';
 
 import { ConfigModule as FlogoConfigModule } from '@flogo/config';
@@ -28,7 +28,7 @@ import { appRoutingProviders, routing } from './flogo.routing';
 
     CoreModule,
     FlogoSharedModule,
-    FlogoAppsModule,
+    FlogoHomeModule,
     FlogoFlowsModule,
     FlowModule,
     FlogoConfigModule,

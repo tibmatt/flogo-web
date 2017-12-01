@@ -5,7 +5,7 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../core/application.model';
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
-} from '../../flogo.apps/services/apps.service';
+} from '../../home/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
 import { FlogoExportFlowsComponent } from './export-flow.component';
 import { SanitizeService } from '../../core/services/sanitize.service';

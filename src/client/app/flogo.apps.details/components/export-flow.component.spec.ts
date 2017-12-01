@@ -6,7 +6,7 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import {IFlogoApplicationFlowModel } from '../../core/application.model';
-import { AppDetailService } from '../../flogo.apps/services/apps.service';
+import { AppDetailService } from '../../home/services/apps.service';
 import { FlogoExportFlowsComponent } from './export-flow.component';
 
 

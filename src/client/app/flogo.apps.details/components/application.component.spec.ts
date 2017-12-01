@@ -10,7 +10,7 @@ import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import { FlogoApplicationComponent } from './application.component';
 import { FlogoApplicationSearchComponent } from '../../flogo.apps.search/components/search.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../../flogo.apps.flows/components';
-import { AppDetailService, ApplicationDetail } from '../../flogo.apps/services/apps.service';
+import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
 import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
 import { FlogoExportFlowsComponent } from './export-flow.component';

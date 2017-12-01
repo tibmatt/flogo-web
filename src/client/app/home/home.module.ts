@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
-import { FlogoMainComponent } from '../flogo.apps.main/components/main.component';
+import { FlogoHomeComponent } from './home.component';
 import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
 import { FlogoApplicationComponent } from '../flogo.apps.details/components/application.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flogo.apps.flows/components';
@@ -12,7 +12,7 @@ import { FlogoAppListComponent } from '../flogo.apps.list/components/app.list.co
 import { FlogoApplicationSearchComponent } from '../flogo.apps.search/components/search.component';
 import { FlogoAppSettingsComponent } from '../flogo.apps.settings/components/settings.component';
 import { AppDetailService } from './services/apps.service';
-import { routing, appRoutingProviders } from './flogo.apps.routing';
+import { routing, appRoutingProviders } from './home.routing';
 import { FlogoAppImportErrorComponent } from '../flogo.apps.import.error/components/import.error.component';
 import { ImportErrorFormatterService } from '../flogo.apps.import.error/services/message.formatter.service';
 import { ProfileSelectionComponent } from '../flogo.apps.add/components/profile-select.component';
@@ -29,7 +29,7 @@ import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-
     routing
   ],
   declarations: [
-    FlogoMainComponent,
+    FlogoHomeComponent,
     FlogoApplicationComponent,
     FlogoApplicationContainerComponent,
     FlogoApplicationFlowsComponent,
@@ -42,12 +42,12 @@ import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-
     FlogoExportFlowsComponent,
     FlowTriggerGroupComponent
   ],
-  bootstrap: [FlogoMainComponent],
+  bootstrap: [FlogoHomeComponent],
   providers: [
     appRoutingProviders,
     AppDetailService,
     ImportErrorFormatterService
   ]
 })
-export class FlogoAppsModule {
+export class FlogoHomeModule {
 }

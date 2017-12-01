@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../../core/application.model';
+import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../core/application.model';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FlogoModal } from '../../core/services/modal.service';
-import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
+import { FlogoModal } from '../core/services/modal.service';
+import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 
 
 @Component({
-  selector: 'flogo-apps-main',
+  selector: 'flogo-home',
   // moduleId: module.id,
-  templateUrl: 'main.tpl.html',
-  styleUrls: ['main.component.less']
+  templateUrl: 'home.component.html',
+  styleUrls: ['home.component.less']
 })
-export class FlogoMainComponent implements OnInit {
+export class FlogoHomeComponent implements OnInit {
   public recent: Array<any> = [];
   flows: Array<IFlogoApplicationFlowModel> = [];
   originalFlows: Array<IFlogoApplicationFlowModel> = [];
