@@ -4,7 +4,7 @@ import 'rxjs/add/operator/filter';
 
 import { FlogoFormBuilderConfigurationTaskComponent } from './task.component';
 import {FormBuilderModule} from '@flogo/flow/shared/form-builder';
-import {FlogoFormBuilderService} from '../../form-builder.service';
+import {FlogoConfigurationCommonService} from '../shared/configuration-common.service';
 
 describe('Form-builder component', () => {
   let comp: FlogoFormBuilderConfigurationTaskComponent;
@@ -20,7 +20,7 @@ describe('Form-builder component', () => {
 
 
       declarations: [],
-      providers: [FlogoFormBuilderService]
+      providers: [FlogoConfigurationCommonService]
     });
   });
 

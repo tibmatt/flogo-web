@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
-import { FlogoFormBuilderService as FlogoFormBuilderCommonService } from './form-builder.service';
+import { FlogoConfigurationCommonService as FlogoFormBuilderCommonService } from './configuration/shared/configuration-common.service';
 import {
   FlogoFormBuilderFieldsBaseComponent,
   FlogoFormBuilderFieldsListBoxComponent,
@@ -15,7 +15,7 @@ import {
 
 import {
   FlogoFormBuilderConfigurationTriggerComponent as TriggersDirective
-} from '../../../flogo.form-builder.configuration.trigger/components/form-builder.configuration.trigger.component';
+} from './configuration/trigger/trigger.component';
 import {
   FlogoFormBuilderConfigurationTaskComponent as TaskDirective
 } from './configuration/task/task.component';

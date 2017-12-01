@@ -48,7 +48,7 @@
 
 
     <div *ngIf="_context.isTrigger">
-      <flogo-form-builder-trigger-configuration  [context]="_context" [attributes]="_attributes"  [fieldObserver]="_fieldObserver" (onTriggerAction)="onAction($event)"></flogo-form-builder-trigger-configuration>
+      <flogo-flow-configuration-trigger [context]="_context" [attributes]="_attributes" [fieldObserver]="_fieldObserver" (onTriggerAction)="onAction($event)"></flogo-flow-configuration-trigger>
     </div>
 
     <div *ngIf="_context.isTask">

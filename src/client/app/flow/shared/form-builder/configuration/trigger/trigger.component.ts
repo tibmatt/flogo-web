@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange } from '@angular/core';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import {FlogoFormBuilderService} from '../../flow/shared/form-builder/form-builder.service';
+import {FlogoConfigurationCommonService} from '../shared/configuration-common.service';
 
 @Component({
-  selector: 'flogo-form-builder-trigger-configuration',
-  templateUrl: 'form-builder.configuration.trigger.tpl.html',
-  styleUrls: ['form-builder.configuration.trigger.less']
+  selector: 'flogo-flow-configuration-trigger',
+  templateUrl: 'trigger.component.html',
+  styleUrls: ['trigger.component.less']
 })
 export class FlogoFormBuilderConfigurationTriggerComponent implements OnChanges {
 
@@ -27,7 +27,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent implements OnChanges 
   isEditable: boolean;
   @Output() onTriggerAction: EventEmitter<string>;
 
-  constructor(private _commonService: FlogoFormBuilderService,
+  constructor(private _commonService: FlogoConfigurationCommonService,
               public translate: TranslateService) {
     this.isEditable = false;
     this.directions = _commonService.getParameterDirections();
