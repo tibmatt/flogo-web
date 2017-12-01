@@ -8,7 +8,7 @@ import { FlogoHomeComponent } from './home.component';
 import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
 import { FlogoApplicationComponent } from '../flogo.apps.details/components/application.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flogo.apps.flows/components';
-import { FlogoAppListComponent } from '../flogo.apps.list/components/app.list.component';
+import { FlogoAppsListComponent } from './apps-list/apps-list.component';
 import { FlogoApplicationSearchComponent } from '../flogo.apps.search/components/search.component';
 import { FlogoAppSettingsComponent } from '../flogo.apps.settings/components/settings.component';
 import { AppDetailService } from './services/apps.service';
@@ -34,7 +34,7 @@ import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-
     FlogoApplicationContainerComponent,
     FlogoApplicationFlowsComponent,
     FlowGroupComponent,
-    FlogoAppListComponent,
+    FlogoAppsListComponent,
     FlogoApplicationSearchComponent,
     FlogoAppSettingsComponent,
     FlogoAppImportComponent,

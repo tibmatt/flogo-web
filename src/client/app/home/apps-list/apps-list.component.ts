@@ -5,12 +5,12 @@ import { notification } from '../../shared/utils';
 import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
 
 @Component({
-  selector: 'flogo-apps-list',
+  selector: 'flogo-home-apps-list',
   // moduleId: module.id,
-  templateUrl: 'app.list.tpl.html',
-  styleUrls: ['app.list.less']
+  templateUrl: 'apps-list.component.html',
+  styleUrls: ['apps-list.component.less']
 })
-export class FlogoAppListComponent implements OnInit {
+export class FlogoAppsListComponent implements OnInit {
   @ViewChild('importInput') importInput: ElementRef;
   @Output() onSelectedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
 

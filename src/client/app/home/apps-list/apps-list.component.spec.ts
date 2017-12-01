@@ -3,16 +3,16 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Http } from '@angular/http';
-import { FlogoAppListComponent } from './app.list.component';
+import { FlogoAppsListComponent } from './apps-list.component';
 import { ErrorService } from '../../core/services/error.service';
 import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
 import { AppsApiServiceMock } from '../../core/services/restapi/v2/apps-api.service.mock';
 import { TimeFromNowPipe } from '../../shared/pipes/time-from-now.pipe';
 import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
 import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
-import { FlogoAppImportComponent } from '../../home/app-import/app-import.component';
+import { FlogoAppImportComponent } from '../app-import/app-import.component';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { FlogoNewAppComponent } from '../../home/new-app/new-app.component';
+import { FlogoNewAppComponent } from '../new-app/new-app.component';
 
 describe('FlogoAppList component', () => {
   const applications = [
@@ -42,8 +42,8 @@ describe('FlogoAppList component', () => {
       }
 
     ];
-  let comp: FlogoAppListComponent;
-  let fixture: ComponentFixture<FlogoAppListComponent>;
+  let comp: FlogoAppsListComponent;
+  let fixture: ComponentFixture<FlogoAppsListComponent>;
   let de: DebugElement;
   let el: HTMLElement;
 
@@ -54,7 +54,7 @@ describe('FlogoAppList component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      declarations: [FlogoAppListComponent, FlogoDeletePopupComponent, TimeFromNowPipe,
+      declarations: [FlogoAppsListComponent, FlogoDeletePopupComponent, TimeFromNowPipe,
         FlogoAppImportComponent, ModalComponent, FlogoNewAppComponent], // declare the test component
       providers: [
         HttpUtilsService,
@@ -67,7 +67,7 @@ describe('FlogoAppList component', () => {
   it('Should render 3 applications', (done) => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(FlogoAppListComponent);
+        fixture = TestBed.createComponent(FlogoAppsListComponent);
         comp = fixture.componentInstance;
         comp.applications = applications;
 
@@ -81,7 +81,7 @@ describe('FlogoAppList component', () => {
   it('Should show the application name', (done) => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(FlogoAppListComponent);
+        fixture = TestBed.createComponent(FlogoAppsListComponent);
         comp = fixture.componentInstance;
         comp.applications = [
           {
@@ -105,7 +105,7 @@ describe('FlogoAppList component', () => {
   // xit('On add application, should emit the added application to the host', (done) => {
   //   compileComponent()
   //     .then(() => {
-  //       fixture = TestBed.createComponent(FlogoAppListComponent);
+  //       fixture = TestBed.createComponent(FlogoAppsListComponent);
   //       comp = fixture.componentInstance;
   //       comp.applications = null;
   //       comp.apiApplications.add = () => {
@@ -122,7 +122,7 @@ describe('FlogoAppList component', () => {
   it('On selected application, should emit the selected application to the host', done => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(FlogoAppListComponent);
+        fixture = TestBed.createComponent(FlogoAppsListComponent);
         comp = fixture.componentInstance;
         comp.applications = [
           {
@@ -150,7 +150,7 @@ describe('FlogoAppList component', () => {
   it('On mouse over must show delete icon', done => {
     compileComponent()
       .then(() => {
-        fixture = TestBed.createComponent(FlogoAppListComponent);
+        fixture = TestBed.createComponent(FlogoAppsListComponent);
         comp = fixture.componentInstance;
         comp.applications = [
           {
@@ -182,7 +182,7 @@ describe('FlogoAppList component', () => {
   /*xit('On delete application, should deleted the application from the list', done => {
    compileComponent()
    .then(() => {
-   fixture = TestBed.createComponent(FlogoAppListComponent);
+   fixture = TestBed.createComponent(FlogoAppsListComponent);
    comp = fixture.componentInstance;
    comp.applications = applications;
 
