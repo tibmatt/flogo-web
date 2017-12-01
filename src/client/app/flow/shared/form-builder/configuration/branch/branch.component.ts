@@ -2,9 +2,8 @@ import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
-  selector: 'flogo-form-builder-branch-configuration',
-  // moduleId: module.id,
-  templateUrl: 'form-builder.configuration.branch.tpl.html',
+  selector: 'flogo-flow-configuration-branch',
+  templateUrl: 'branch.component.html',
 })
 export class FlogoFormBuilderConfigurationBranchComponent implements OnChanges {
   // disabling no-input-rename rule to make the linter pass for now
