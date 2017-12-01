@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
 
-import { FlogoFormBuilderCommon } from '../../flogo.form-builder/form-builder.common';
 import { convertTaskID, parseMapping } from '../../shared/utils';
+import {FlogoFormBuilderService} from '../../flow/shared/form-builder/form-builder.service';
 
 @Component({
   selector: 'flogo-form-builder-task-configuration',
@@ -21,7 +21,7 @@ export class FlogoFormBuilderConfigurationTaskComponent implements OnChanges {
   fields: any;
   directions: any;
 
-  constructor(public _commonService: FlogoFormBuilderCommon) {
+  constructor(public _commonService: FlogoFormBuilderService) {
     this.fields = { inputs: [], outputs: [] };
     this.directions = _commonService.getParameterDirections();
   }

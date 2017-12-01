@@ -81,7 +81,7 @@ var flowPage = {
     },
     saveButton: {
       get() {
-        return element(by.css('flogo-form-builder')).element(by.css('.flogo-form-builder-buttons-save'));
+        return element(by.css('flogo-flow-form-builder')).element(by.css('.flogo-form-builder-buttons-save'));
       }
     },
     runFromTriggerButton: {

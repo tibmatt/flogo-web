@@ -1,4 +1,4 @@
-import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
+import { FormBuilderModule as FlogoFormBuilderModule } from './shared/form-builder';
 import { InstallerModule as FlogoInstallerModule } from './shared/installer';
 import { TransformModule as FlogoTransformModule } from '../flogo.transform';
 import { LogsModule as FlogoLogsModule } from '../flogo.logs/flogo.logs.module';

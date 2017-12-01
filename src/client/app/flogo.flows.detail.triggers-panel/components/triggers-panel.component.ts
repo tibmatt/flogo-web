@@ -19,7 +19,7 @@ import {
 } from '../../flogo.flows.detail.triggers.detail/messages';
 
 import { FlowMetadata } from '../../flogo.transform/models';
-import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../../flogo.form-builder/messages';
+import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../../flow/shared/form-builder/messages';
 
 import { FlogoTriggerClickHandlerService } from '../services/click-handler.service';
 import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';

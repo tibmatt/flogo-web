@@ -1,18 +1,17 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
-import { PostService } from '../../core/services/post.service';
+import { PostService } from '@flogo/core/services/post.service';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
-import { convertTaskID, getDefaultValue, normalizeTaskName } from '../../shared/utils';
+import { PUB_EVENTS, SUB_EVENTS } from './messages';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
+import { convertTaskID, getDefaultValue, normalizeTaskName } from '@flogo/shared/utils';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/filter';
 
 @Component({
-  selector: 'flogo-form-builder',
-  // moduleId: module.id,
-  styleUrls: ['form-builder.less'],
-  templateUrl: 'form-builder.tpl.html'
+  selector: 'flogo-flow-form-builder',
+  styleUrls: ['form-builder.component.less'],
+  templateUrl: 'form-builder.component.html'
 })
 /**
  * @deprecated

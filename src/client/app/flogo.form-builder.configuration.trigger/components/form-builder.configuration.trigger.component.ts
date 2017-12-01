@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange } from '@angular/core';
 
-import { FlogoFormBuilderCommon } from '../../flogo.form-builder/form-builder.common';
 import { TranslateService } from 'ng2-translate/ng2-translate';
+import {FlogoFormBuilderService} from '../../flow/shared/form-builder/form-builder.service';
 
 @Component({
   selector: 'flogo-form-builder-trigger-configuration',
@@ -27,7 +27,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent implements OnChanges 
   isEditable: boolean;
   @Output() onTriggerAction: EventEmitter<string>;
 
-  constructor(private _commonService: FlogoFormBuilderCommon,
+  constructor(private _commonService: FlogoFormBuilderService,
               public translate: TranslateService) {
     this.isEditable = false;
     this.directions = _commonService.getParameterDirections();

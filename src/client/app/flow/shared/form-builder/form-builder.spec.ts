@@ -5,18 +5,18 @@ import { By, DomSanitizer } from '@angular/platform-browser';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
-import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
-import { CoreModule as FlogoCoreModule } from '../core/core.module';
-import { FormBuilderModule as FlogoFormBuilderModule } from '../flogo.form-builder/flogo.form-builder.module';
-import { PostService } from '../core/services/post.service';
+import { FlowsModule as FlogoFlowsModule } from '../../../flogo.flows/flogo.flows.module';
+import { SharedModule as FlogoSharedModule } from '@flogo/shared';
+import { CoreModule as FlogoCoreModule } from '@flogo/core';
+import { FormBuilderModule as FlogoFormBuilderModule } from '../form-builder';
+import { PostService } from '@flogo/core/services/post.service';
 
 class MockRouter { public navigate() {}; }
 
 @Component({
   template: `
-            <flogo-form-builder [task]="task" [step]="step" [context]="context" [flowId]="flowId"></flogo-form-builder>
-            `
+    <flogo-flow-form-builder [task]="task" [step]="step" [context]="context" [flowId]="flowId"></flogo-flow-form-builder>
+  `
 })
 class TaskTestHostComponent {
   task: any;
@@ -65,8 +65,8 @@ class TaskTestHostComponent {
 
 @Component({
   template: `
-            <flogo-form-builder [task]="task" [step]="step" [context]="context" [flowId]="flowId"></flogo-form-builder>
-            `
+    <flogo-flow-form-builder [task]="task" [step]="step" [context]="context" [flowId]="flowId"></flogo-flow-form-builder>
+  `
 })
 class TriggerTestHostComponent {
   task: any;

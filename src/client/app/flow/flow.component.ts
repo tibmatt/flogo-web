@@ -40,7 +40,7 @@ import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from '../flogo.flows.deta
 import {
   PUB_EVENTS as FLOGO_TASK_SUB_EVENTS,
   SUB_EVENTS as FLOGO_TASK_PUB_EVENTS
-} from '../flogo.form-builder/messages';
+} from './shared/form-builder/messages';
 import {
   PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS,
   SelectTaskData,

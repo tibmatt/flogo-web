@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {FLOGO_TASK_ATTRIBUTE_TYPE} from '../core/constants';
+import {FLOGO_TASK_ATTRIBUTE_TYPE} from '@flogo/core/constants';
 
 @Injectable()
-export class FlogoFormBuilderCommon {
+export class FlogoFormBuilderService {
   directions = {
     output: 'output',
     input: 'input'
