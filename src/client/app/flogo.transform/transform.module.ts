@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule as NgCommonModule } from '@angular/common';
 
-import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
+import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 
 import { TransformComponent } from './transform.component';
-import { MapperModule } from '../flogo.mapper';
+import { MapperModule } from '../flow/shared/mapper';
 
 @NgModule({
   imports: [// module dependencies

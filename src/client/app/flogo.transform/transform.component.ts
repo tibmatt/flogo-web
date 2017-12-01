@@ -8,7 +8,7 @@ import { PostService } from '../core/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskData } from './messages';
 
-import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flogo.mapper';
+import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flow/shared/mapper';
 
 import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
 import { IFlogoFlowDiagramTaskAttribute } from '../flogo.flows.detail.diagram/models/attribute.model';

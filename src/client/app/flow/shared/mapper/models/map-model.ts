@@ -8,8 +8,6 @@ import { Observable } from 'rxjs/Observable';
 // tslint:disable-next-line:interface-over-type-literal
 type STRING_MAP<T> = {[key: string]: T};
 
-
-
 /**
  * Details of a parsed expression string
  */

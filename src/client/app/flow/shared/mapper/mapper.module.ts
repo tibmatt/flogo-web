@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { TreeModule } from 'primeng/components/tree/tree';
-import { MonacoEditorModule } from '../flow/shared/monaco-editor/monaco-editor.module';
+import { MonacoEditorModule } from '../monaco-editor/monaco-editor.module';
 
 import { MappingParser } from './services/map.parser';
 // import { ScopedOutputSchemaProvider } from './service/map.output.schema.provider';

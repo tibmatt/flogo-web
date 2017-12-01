@@ -3,16 +3,16 @@ import * as _ from 'lodash';
 import {
   IFlogoFlowDiagramTask as FlowTile,
   IFlogoFlowDiagramTaskAttributeMapping as FlowMapping,
-} from '../../flogo.flows.detail.diagram/models';
+} from '../../../../flogo.flows.detail.diagram/models';
 
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../core/constants';
+import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../../core/constants';
 import {
   REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT,
   TYPE_OBJECT_TEMPLATE
 } from '../constants';
 
-import { flogoIDDecode } from '../../shared/utils';
-import { MapperSchema, FlowMetadata } from '../../flogo.transform/models';
+import { flogoIDDecode } from '../../../../shared/utils';
+import { MapperSchema, FlowMetadata } from '../../../../flogo.transform/models';
 import { IMapping } from '../models/map-model';
 
 export type  MappingsValidatorFn = (imapping: IMapping) => boolean;

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
-import { MapperModule } from '../flogo.mapper';
+import { MapperModule } from '../flow/shared/mapper';
 
 import { TriggerMapperComponent } from './trigger-mapper.component';
 import { TriggerMapperService } from './trigger-mapper.service';

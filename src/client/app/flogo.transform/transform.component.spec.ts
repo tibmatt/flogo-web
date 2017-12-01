@@ -1,13 +1,12 @@
-import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { Http } from '@angular/http';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { PostService } from '../core/services/post.service';
-import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
+import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { TransformComponent } from './transform.component';
-import { MapperModule } from '../flogo.mapper/mapper.module';
+import { MapperModule } from '../flow/shared/mapper';
 
 const postServiceStub = {
 

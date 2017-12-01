@@ -4,7 +4,7 @@ import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { SingleEmissionSubject } from '../core/models/single-emission-subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../flogo.mapper';
+import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../flow/shared/mapper';
 import { FlowMetadata } from '../flow/core/models';
 
 import { VIEWS, ViewInfo } from './views-info.model';
