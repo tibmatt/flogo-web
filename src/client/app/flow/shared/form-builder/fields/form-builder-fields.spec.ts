@@ -2,17 +2,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
-import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
-import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
-import { CoreModule as FlogoCoreModule } from '../../core/core.module';
-import { FlogoFormBuilderFieldsTextAreaComponent } from './fields.textarea/fields.textarea.component';
-import { FlogoFormBuilderFieldsTextBoxComponent } from './fields.textbox/fields.textbox.component';
-import { FlogoFormBuilderFieldsNumberComponent } from './fields.number/fields.number.component';
-import { FlogoFormBuilderFieldsObjectComponent } from './fields.object/fields.object.component';
+import { FlowsModule as FlogoFlowsModule } from '../../../../flogo.flows/flogo.flows.module';
+import { SharedModule as FlogoSharedModule } from '@flogo/shared';
+import { CoreModule as FlogoCoreModule } from '@flogo/core';
+import { FlogoFormBuilderFieldsTextAreaComponent } from './textarea/textarea.component';
+import { FlogoFormBuilderFieldsTextBoxComponent } from './textbox/textbox.component';
+import { FlogoFormBuilderFieldsNumberComponent } from './number/number.component';
+import { FlogoFormBuilderFieldsObjectComponent } from './object/object.component';
 
 @Component({
-  template: `<flogo-form-builder-fields-textarea [info]="info" [fieldObserver]="fieldObserver">
-  </flogo-form-builder-fields-textarea>`
+  template: `
+    <flogo-flow-form-builder-fields-textarea [info]="info" [fieldObserver]="fieldObserver">
+    </flogo-flow-form-builder-fields-textarea>`
 })
 class TextareaTestHostComponent {
   info: any;
@@ -34,8 +35,8 @@ class TextareaTestHostComponent {
 
 @Component({
   template: `
-            <flogo-form-builder-fields-textbox [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-textbox>
-            `
+    <flogo-flow-form-builder-fields-textbox [info]="info" [fieldObserver]="fieldObserver"></flogo-flow-form-builder-fields-textbox>
+  `
 })
 class TextboxTestHostComponent {
   info: any;
@@ -58,8 +59,8 @@ class TextboxTestHostComponent {
 
 @Component({
   template: `
-            <flogo-form-builder-fields-object [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-object>
-            `
+    <flogo-flow-form-builder-fields-object [info]="info" [fieldObserver]="fieldObserver"></flogo-flow-form-builder-fields-object>
+  `
 })
 class ObjectTestHostComponent {
   info: any;
@@ -82,8 +83,8 @@ class ObjectTestHostComponent {
 
 @Component({
   template: `
-            <flogo-form-builder-fields-number [info]="info" [fieldObserver]="fieldObserver"></flogo-form-builder-fields-number>
-            `
+    <flogo-flow-form-builder-fields-number [info]="info" [fieldObserver]="fieldObserver"></flogo-flow-form-builder-fields-number>
+  `
 })
 class NumberTestHostComponent {
   info: any;

@@ -11,7 +11,7 @@ import {
   FlogoFormBuilderFieldsRadioComponent,
   FlogoFormBuilderFieldsTextAreaComponent,
   FlogoFormBuilderFieldsTextBoxComponent
-} from '../../../flogo.form-builder.fields/fields';
+} from './fields';
 
 import {
   FlogoFormBuilderConfigurationTriggerComponent as TriggersDirective

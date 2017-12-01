@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FlogoFormBuilderFieldsBaseComponent } from '../fields.base/fields.base.component';
+import { FlogoFormBuilderFieldsBaseComponent } from '../shared/base.component';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
-  selector: 'flogo-form-builder-fields-object',
-  styleUrls: ['fields.object.less', '../fields.base/fields.base.less'],
-  templateUrl: 'fields.object.tpl.html',
+  selector: 'flogo-flow-form-builder-fields-object',
+  styleUrls: ['object.component.less', '../shared/base.component.less'],
+  templateUrl: 'object.component.html',
   // disabling no-input-rename rule to make the linter pass for now
   // decided to skip fixing because this class should be deprecated
   /* tslint:disable-next-line:use-input-property-decorator */

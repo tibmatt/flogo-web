@@ -60,20 +60,20 @@ var flowPage = {
       }
     },
     textInput: function (label) {
-      return findFieldContainer('flogo-form-builder-fields-textbox', label)
+      return findFieldContainer('flogo-flow-form-builder-fields-textbox', label)
         .element(by.css('input.form-control'));
     },
     textArea: function (label) {
-      return findFieldContainer('flogo-form-builder-fields-textarea', label)
+      return findFieldContainer('flogo-flow-form-builder-fields-textarea', label)
         .element(by.css('textarea.form-control'));
     },
     booleanInput: function (label, boolVal) {
-      return findFieldContainer('flogo-form-builder-fields-radio', label)
+      return findFieldContainer('flogo-flow-form-builder-fields-radio', label)
       // we cannot click directly the radio inputs since they're not visible
         .element(by.css(`input[type="radio"][value="${boolVal ? 'true' : 'false'}"] + label`));
     },
     selectOption: function(label, selectVal) {
-      let container = findFieldContainer('flogo-form-builder-fields-listbox', label);
+      let container = findFieldContainer('flogo-flow-form-builder-fields-listbox', label);
       let link = container.element(by.cssContainingText('a', selectVal));
       container.element(by.css('button.dropdown-toggle')).click();
       browser.wait(protractor.ExpectedConditions.visibilityOf(link));

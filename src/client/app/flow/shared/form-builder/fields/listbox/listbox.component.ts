@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FlogoFormBuilderFieldsBaseComponent } from '../fields.base/fields.base.component';
-import { DEFAULT_VALUES_OF_TYPES as DEFAULT_VALUES } from '../../../core/constants';
+import { FlogoFormBuilderFieldsBaseComponent } from '../shared/base.component';
+import { DEFAULT_VALUES_OF_TYPES as DEFAULT_VALUES } from '@flogo/core/constants';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 const EMPTY_OPTION = '<empty>';
 
 @Component({
-  selector: 'flogo-form-builder-fields-listbox',
-  styleUrls: ['fields.listbox.less', '../fields.base/fields.base.less'],
-  templateUrl: 'fields.listbox.tpl.html',
+  selector: 'flogo-flow-form-builder-fields-listbox',
+  styleUrls: ['listbox.component.less', '../shared/base.component.less'],
+  templateUrl: 'listbox.component.html',
   // disabling no-input-rename rule to make the linter pass for now
   // decided to skip fixing because this class should be deprecated
   /* tslint:disable-next-line:use-input-property-decorator */
