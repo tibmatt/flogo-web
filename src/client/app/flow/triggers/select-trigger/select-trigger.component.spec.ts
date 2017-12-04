@@ -3,19 +3,21 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { FlogoSelectTriggerComponent } from './select-trigger.component';
-import { RESTAPIActivitiesService } from '../../core/services/restapi/activities-api.service';
-import { RESTAPITriggersService } from '../../core/services/restapi/triggers-api.service';
-import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../core/services/restapi/v2/triggers-api.service';
-import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
-import { RESTAPITriggersServiceMock } from '../../core/services/restapi/triggers-api.service.mock';
-import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2 } from '../../core/services/restapi/v2/triggers-api.service.mock';
-import { InstallerModule } from '../../flow/shared/installer/installer.module';
-import { PostService } from '../../core/services/post.service';
-import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
-import { FlogoProfileService } from '../../core/services/profile.service';
-import { FlogoProfileServiceMock } from '../../core/services/profile.service.mock';
-import { FLOGO_PROFILE_TYPE } from '../../core/constants';
+import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
+import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
+import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '@flogo/core/services/restapi/v2/triggers-api.service';
+import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
+import { RESTAPITriggersServiceMock } from '@flogo/core/services/restapi/triggers-api.service.mock';
+import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2 } from '@flogo/core/services/restapi/v2/triggers-api.service.mock';
+import { InstallerModule } from '@flogo/flow/shared/installer/installer.module';
+import { PostService } from '@flogo/core/services/post.service';
+import { HttpUtilsService } from '@flogo/core/services/restapi/http-utils.service';
+import { FlogoProfileService } from '@flogo/core/services/profile.service';
+import { FlogoProfileServiceMock } from '@flogo/core/services/profile.service.mock';
+import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import {ModalComponent, Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {TriggersModule} from '@flogo/flow/triggers';
+import { CoreModule as FlogoCoreModule } from '@flogo/core';
 
 const postServiceStub = {
 
@@ -57,10 +59,8 @@ describe('FlogoSelectTrigger component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule,
-        InstallerModule,
-        Ng2Bs3ModalModule],
-      declarations: [FlogoSelectTriggerComponent], // declare the test component
+      imports: [TriggersModule,
+        FlogoCoreModule],
       providers: [
         RESTAPIActivitiesService,
         { provide: PostService, useValue: postServiceStub },

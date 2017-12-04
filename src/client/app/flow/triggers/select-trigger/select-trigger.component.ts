@@ -1,16 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output} from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { PostService } from '../../core/services/post.service';
-import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '../../core/services/restapi/v2/triggers-api.service';
-import { PUB_EVENTS } from '../messages';
-import { FlogoProfileService } from '../../core/services/profile.service';
+import { PostService } from '@flogo/core/services/post.service';
+import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '@flogo/core/services/restapi/v2/triggers-api.service';
+import { PUB_EVENTS } from './messages';
+import { FlogoProfileService } from '@flogo/core/services/profile.service';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
-  selector: 'flogo-select-trigger',
-  // moduleId: module.id,
-  templateUrl: 'select-trigger.tpl.html',
-  styleUrls: ['select-trigger.less']
+  selector: 'flogo-flow-select-trigger',
+  templateUrl: 'select-trigger.component.html',
+  styleUrls: ['select-trigger.component.less']
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   @ViewChild('addTriggerModal') modal: ModalComponent;

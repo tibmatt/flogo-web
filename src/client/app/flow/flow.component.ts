@@ -77,7 +77,7 @@ import { flogoFlowToJSON, triggerFlowToJSON } from './shared/diagram/models/flow
 
 import { HandlerInfo } from './core/models/models';
 import { FlogoFlowService as FlowsService } from './core/flow.service';
-import { IFlogoTrigger } from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
+import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
 import { FlowMetadata } from '../flogo.transform/models/flow-metadata';

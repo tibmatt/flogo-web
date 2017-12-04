@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RunnerService } from './runner.service';
 import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowService } from './flow.service';
-// todo: fix
-import { FlogoTriggerClickHandlerService } from '../../flogo.flows.detail.triggers-panel/services/click-handler.service';
 
 @NgModule({
   imports: [
@@ -14,8 +12,7 @@ import { FlogoTriggerClickHandlerService } from '../../flogo.flows.detail.trigge
   providers: [
     RunnerService,
     UIModelConverterService,
-    FlogoFlowService,
-    FlogoTriggerClickHandlerService
+    FlogoFlowService
   ]
 })
 export class CoreModule { }

@@ -11,19 +11,19 @@ import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-a
 
 import {PostService} from '@flogo/core/services/post.service';
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
-import {UIModelConverterService} from '../../flow/core/ui-model-converter.service';
+import {UIModelConverterService} from '@flogo/flow/core/ui-model-converter.service';
 
 import {
   SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
 } from '../../flogo.flows.detail.triggers.detail/messages';
 
-import { FlowMetadata } from '../../flogo.transform/models';
-import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../../flow/shared/form-builder/messages';
+import { FlowMetadata } from '@flogo/flogo.transform/models';
+import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
 
-import { FlogoTriggerClickHandlerService } from '../services/click-handler.service';
-import { TriggerMapperService } from '../../flogo.trigger-mapper/trigger-mapper.service';
-import {IPropsToUpdateFormBuilder} from '../../flow/flow.component';
+import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
+import { TriggerMapperService } from '@flogo/flogo.trigger-mapper/trigger-mapper.service';
+import {IPropsToUpdateFormBuilder} from '../flow.component';
 
 export interface IFlogoTrigger {
   name: string;
@@ -38,9 +38,9 @@ export interface IFlogoTrigger {
 }
 
 @Component({
-  selector : 'flogo-flows-detail-triggers-panel',
-  templateUrl : 'triggers-panel.tpl.html',
-  styleUrls : [ 'triggers-panel.component.less' ]
+  selector : 'flogo-flow-triggers',
+  templateUrl : 'triggers.component.html',
+  styleUrls : [ 'triggers.component.less' ]
 })
 export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDestroy {
   @Input()

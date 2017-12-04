@@ -6,9 +6,9 @@ import { NavigationEnd, Router } from '@angular/router';
 import {TranslateModule} from 'ng2-translate';
 import { Observable } from 'rxjs/Observable';
 
-import {FlogoFlowTriggersPanelComponent} from './triggers-panel.component';
+import {FlogoFlowTriggersPanelComponent} from './triggers.component';
 
-import {FlogoSelectTriggerComponent} from '../../flogo.select-trigger/components/select-trigger.component';
+import {FlogoSelectTriggerComponent} from './select-trigger/select-trigger.component';
 import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '@flogo/core/services/restapi/v2/triggers-api.service';
@@ -22,19 +22,19 @@ import {PostService} from '@flogo/core/services/post.service';
 import {FlogoProfileService} from '@flogo/core/services/profile.service';
 import {FlogoProfileServiceMock} from '@flogo/core/services/profile.service.mock';
 
-import { UIModelConverterService } from '../../flow/core/ui-model-converter.service';
+import { UIModelConverterService } from '@flogo/flow/core/ui-model-converter.service';
 import { InstallerModule } from '@flogo/flow/shared/installer';
 import { TriggerMapperModule } from '../../flogo.trigger-mapper/trigger-mapper.module';
-import { FlogoTriggerClickHandlerService } from '../services/click-handler.service';
+import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
 
 
 @Component({
   selector: 'flogo-container',
   template: `
-    <flogo-flows-detail-triggers-panel
-                [triggers]="triggersList"
-                [actionId]="flowId"
-                [appDetails]="{appId:'123', appProfileType: profileType}"></flogo-flows-detail-triggers-panel>
+    <flogo-flow-triggers
+      [triggers]="triggersList"
+      [actionId]="flowId"
+      [appDetails]="{appId:'123', appProfileType: profileType}"></flogo-flow-triggers>
   `
 })
 

@@ -47,11 +47,11 @@
       <i class="flogo-icon-add"></i>
     </div>
   </div>
-  <flogo-select-trigger [(isAddTriggerActivated)]="showAddTrigger"
-                        [appDetails]="appDetails"
-                        (onAddTriggerToAction)="addTriggerToAction($event)"
-                        (onInstallDialog)="openInstallTriggerWindow()">
-  </flogo-select-trigger>
+  <flogo-flow-select-trigger [(isAddTriggerActivated)]="showAddTrigger"
+                             [appDetails]="appDetails"
+                             (onAddTriggerToAction)="addTriggerToAction($event)"
+                             (onInstallDialog)="openInstallTriggerWindow()">
+  </flogo-flow-select-trigger>
   <flogo-flow-installer [profileType]="appDetails?.appProfileType"
                         [installType]="'trigger'" [(isActivated)]="installTriggerActivated"
                         (isActivatedChange)="openAddTriggerModel()"

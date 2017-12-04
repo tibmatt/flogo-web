@@ -7,12 +7,10 @@ import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.trigger
 import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 import { FlogoFlowsDetailTasksComponent } from '../flogo.flows.detail.tasks/components/tasks.component';
 import { FlogoFlowsDetailTasksDetailComponent } from '../flogo.flows.detail.tasks.detail/components/detail.component';
-import { FlogoSelectTriggerComponent } from '../flogo.select-trigger/components/select-trigger.component';
 
 import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tasks.install/components/install.component';
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
-import { FlogoFlowTriggersPanelComponent } from '../flogo.flows.detail.triggers-panel/components/triggers-panel.component';
 import { ParamsSchemaModule } from './params-schema';
 
 import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigger-mapper';
@@ -34,6 +32,7 @@ import { routing } from './flow.routing';
 import { FlowComponent } from './flow.component';
 import {DiagramModule as FlogoDiagramModule} from '@flogo/flow/shared/diagram';
 import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-panel';
+import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 
 
 @NgModule({
@@ -52,6 +51,7 @@ import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-p
     FlogoCommonFormBuilderModule,
     FlogoDiagramModule,
     FlogoFlowErrorPanelModule,
+    FlogoFlowTriggersModule,
     routing
   ],
   declarations: [
@@ -60,11 +60,9 @@ import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-p
     FlogoFlowsDetailTriggersDetailComponent,
     FlogoFlowsDetailTasksComponent,
     FlogoFlowsDetailTasksDetailComponent,
-    FlogoSelectTriggerComponent,
 
     FlogoFlowsDetailTasksInstallComponent,
     FlogoFlowsDetailTriggersInstallComponent,
-    FlogoFlowTriggersPanelComponent,
 
     FlogoRunFlowComponent,
 
