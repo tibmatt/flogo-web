@@ -2,7 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ConfigurationLoadedGuard } from '../core/services/configuration-loaded-guard.service';
 import { FlogoHomeComponent } from './home.component';
-import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
+import { FlogoApplicationComponent } from '../app/app.component';
 
 const routes: Routes = [
   {
@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: 'apps/:appId',
-    component: FlogoApplicationContainerComponent
+    component: FlogoApplicationComponent
   }
 ];
 

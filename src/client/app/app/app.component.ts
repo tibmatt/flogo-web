@@ -1,21 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { notification } from '../../shared/utils';
-import { PostService } from '../../core/services/post.service';
-import { PUB_EVENTS as SUB_EVENTS } from '../../flogo.flows.add/message';
-import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
+import { notification } from '../shared/utils';
+import { PostService } from '../core/services/post.service';
+import { PUB_EVENTS as SUB_EVENTS } from '../flogo.flows.add/message';
+import { AppDetailService, ApplicationDetail } from '../home/services/apps.service';
 import 'rxjs/add/operator/map';
-import { FlowsService } from '../../core/services/flows.service';
+import { FlowsService } from '../core/services/flows.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-  selector: 'flogo-app-container',
+  selector: 'flogo-app',
   // moduleId: module.id,
-  templateUrl: 'container.tpl.html',
-  styleUrls: ['container.component.less']
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.less']
 })
-export class FlogoApplicationContainerComponent implements OnInit, OnDestroy {
+export class FlogoApplicationComponent implements OnInit, OnDestroy {
   public appDetail: ApplicationDetail = null;
   private subscriptions: any;
   private appObserverSubscription: Subscription;

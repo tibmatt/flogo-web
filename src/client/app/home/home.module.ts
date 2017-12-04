@@ -5,8 +5,8 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.module';
 import { FlogoHomeComponent } from './home.component';
-import { FlogoApplicationContainerComponent } from '../flogo.apps.details/components/container.component';
-import { FlogoApplicationComponent } from '../flogo.apps.details/components/application.component';
+import { FlogoApplicationComponent } from '../app/app.component';
+import { FlogoApplicationDetailComponent } from '../app/app-detail/app-detail.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flogo.apps.flows/components';
 import { FlogoAppsListComponent } from './apps-list/apps-list.component';
 import { FlogoApplicationSearchComponent } from '../flogo.apps.search/components/search.component';
@@ -16,7 +16,7 @@ import { routing, appRoutingProviders } from './home.routing';
 import { FlogoAppImportComponent } from './app-import/app-import.component';
 import { ImportErrorFormatterService } from './core/import-error-formatter.service';
 import { FlogoNewAppComponent } from './new-app/new-app.component';
-import { FlogoExportFlowsComponent } from '../flogo.apps.details/components/export-flow.component';
+import { FlogoExportFlowsComponent } from '../app/app-detail/export-flows/export-flows.component';
 import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-group.component';
 
 @NgModule({
@@ -30,8 +30,8 @@ import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-
   ],
   declarations: [
     FlogoHomeComponent,
+    FlogoApplicationDetailComponent,
     FlogoApplicationComponent,
-    FlogoApplicationContainerComponent,
     FlogoApplicationFlowsComponent,
     FlowGroupComponent,
     FlogoAppsListComponent,

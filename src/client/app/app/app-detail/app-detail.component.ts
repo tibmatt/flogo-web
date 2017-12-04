@@ -7,7 +7,7 @@ import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../../home/services/apps.service';
 import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
-import { FlogoExportFlowsComponent } from './export-flow.component';
+import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
 import { SanitizeService } from '../../core/services/sanitize.service';
 import { diffDates, notification } from '../../shared/utils';
 import { FlogoModal } from '../../core/services/modal.service';
@@ -18,10 +18,10 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
 @Component({
   selector: 'flogo-apps-details-application',
-  templateUrl: 'application.tpl.html',
-  styleUrls: ['application.component.less']
+  templateUrl: 'app-detail.component.html',
+  styleUrls: ['app-detail.component.less']
 })
-export class FlogoApplicationComponent implements OnChanges, OnInit {
+export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @ViewChild(FlogoFlowsAddComponent) addFlow: FlogoFlowsAddComponent;
   @ViewChild('exportFlowModal') exportFlow: FlogoExportFlowsComponent;
   @Input() appDetail: ApplicationDetail;

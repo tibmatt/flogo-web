@@ -1,14 +1,14 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import {IFlogoApplicationFlowModel } from '../../core/application.model';
+import {IFlogoApplicationFlowModel } from '../../../core/application.model';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import {AppDetailService} from '../../home/services/apps.service';
+import {AppDetailService} from '../../../home/services/apps.service';
 
 
 @Component({
   selector: 'flogo-export-flow',
-  templateUrl: 'export-flow.tpl.html',
-  styleUrls: ['export-flow.component.less']
+  templateUrl: 'export-flows.component.html',
+  styleUrls: ['export-flows.component.less']
 })
 export class FlogoExportFlowsComponent {
   @ViewChild('modal')
