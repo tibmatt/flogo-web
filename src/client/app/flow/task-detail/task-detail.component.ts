@@ -1,11 +1,11 @@
 import { Component, OnDestroy } from '@angular/core';
 import { PostService } from '../../core/services/post.service';
-import { SUB_EVENTS } from '../messages';
+import { SUB_EVENTS } from './messages';
 
 @Component({
-    selector: 'flogo-flows-detail-tasks-detail',
-    templateUrl: 'detail.tpl.html',
-    styleUrls: ['detail.component.less'],
+    selector: 'flogo-flow-task-detail',
+    templateUrl: 'task-detail.component.html',
+    styleUrls: ['task-detail.component.less'],
 })
 export class FlogoFlowsDetailTasksDetailComponent implements OnDestroy {
   _flowId: string;

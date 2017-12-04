@@ -36,7 +36,7 @@ import {
   PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS
 } from '../flogo.flows.detail.tasks/messages';
-import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from '../flogo.flows.detail.tasks.detail/messages';
+import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from './task-detail/messages';
 import {
   PUB_EVENTS as FLOGO_TASK_SUB_EVENTS,
   SUB_EVENTS as FLOGO_TASK_PUB_EVENTS
