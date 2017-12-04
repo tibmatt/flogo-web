@@ -1,7 +1,7 @@
 /**
  * Events published from this module
  */
-import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
+import { IFlogoFlowDiagramTask } from '../flow/shared/diagram/models/task.model';
 
 export const PUB_EVENTS = {
   selectActivity : {

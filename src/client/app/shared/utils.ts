@@ -4,10 +4,10 @@ import {
   IFlogoFlowDiagramNode,
   IFlogoFlowDiagramNodeDictionary,
   IFlogoFlowDiagramTaskDictionary
-} from '../flogo.flows.detail.diagram/models';
+} from '../flow/shared/diagram/models';
 
 // Refactoring data. Extracting functions related with branch creation in a different file.
-export * from '../flogo.flows.detail.diagram/utils';
+export * from '../flow/shared/diagram/utils';
 
 
 // URL safe base64 encoding

@@ -59,7 +59,7 @@ export const DEFAULT_VALUES_OF_TYPES = defaultValues;
 
 export const FLOGO_ERROR_ROOT_NAME = '__error-trigger';
 
-export * from '../flogo.flows.detail.diagram/constants';
+export * from '../flow/shared/diagram/constants';
 export { REGEX_INPUT_VALUE_EXTERNAL as FLOGO_AUTOMAPPING_FORMAT } from '../flow/shared/mapper/constants';
 
 export const ERROR_CODE = {

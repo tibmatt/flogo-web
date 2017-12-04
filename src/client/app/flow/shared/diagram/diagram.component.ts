@@ -3,20 +3,20 @@ import * as _ from 'lodash';
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChange } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import { FlogoFlowDiagram, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from '../models';
-import { PostService } from '../../core/services/post.service';
-import { PUB_EVENTS, SUB_EVENTS } from '../messages';
-import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../flogo.select-trigger/messages';
-import { PUB_EVENTS as PUB_EVENTS_ADD_TRIGGER } from '../../flogo.flows.detail.triggers/messages';
-import { FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
-import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
-import { FlogoFlowDiagramNode } from '../models/node.model';
+import { FlogoFlowDiagram, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from './models';
+import { PostService } from '@flogo/core/services/post.service';
+import { PUB_EVENTS, SUB_EVENTS } from './messages';
+import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../../flogo.select-trigger/messages';
+import { PUB_EVENTS as PUB_EVENTS_ADD_TRIGGER } from '../../../flogo.flows.detail.triggers/messages';
+import { FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from './constants';
+import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
+import { FlogoFlowDiagramNode } from './models/node.model';
 
 @Component(
   {
     selector: 'flogo-canvas-flow-diagram',
     // moduleId : module.id,
-    templateUrl: 'diagram.tpl.html',
+    templateUrl: 'diagram.component.html',
     styleUrls: ['diagram.component.less'],
   }
 )

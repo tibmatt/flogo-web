@@ -10,9 +10,9 @@ import { PUB_EVENTS, SUB_EVENTS, SelectTaskData } from './messages';
 
 import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flow/shared/mapper';
 
-import { IFlogoFlowDiagramTask } from '../flogo.flows.detail.diagram/models/task.model';
-import { IFlogoFlowDiagramTaskAttribute } from '../flogo.flows.detail.diagram/models/attribute.model';
-import { IFlogoFlowDiagramTaskAttributeMapping } from '../flogo.flows.detail.diagram/models/attribute-mapping.model';
+import { IFlogoFlowDiagramTask } from '../flow/shared/diagram/models/task.model';
+import { IFlogoFlowDiagramTaskAttribute } from '../flow/shared/diagram/models/attribute.model';
+import { IFlogoFlowDiagramTaskAttributeMapping } from '../flow/shared/diagram/models/attribute-mapping.model';
 
 @Component({
   selector: 'flogo-transform',

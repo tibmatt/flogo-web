@@ -6,9 +6,9 @@ import { ErrorService } from '@flogo/core/services/error.service';
 import {
   FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE
-} from '../../../flogo.flows.detail.diagram/constants';
+} from '../../shared/diagram/constants';
 
-import { FlogoFlowDiagramNode } from '../../../flogo.flows.detail.diagram/models/node.model';
+import { FlogoFlowDiagramNode } from '../../shared/diagram/models/node.model';
 
 const FLOW_NODE = 'node';
 const FLOW_ITEM = 'item';

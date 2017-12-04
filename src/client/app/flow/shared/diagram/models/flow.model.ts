@@ -1,5 +1,5 @@
-import { convertTaskID, flogoIDEncode, getDefaultValue } from '../../shared/utils';
-import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../core/constants';
+import { convertTaskID, flogoIDEncode, getDefaultValue } from '@flogo/shared/utils';
+import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import {
   IFlogoFlowDiagramNode,
   IFlogoFlowDiagramNodeDictionary,
@@ -9,8 +9,8 @@ import {
   IFlogoFlowDiagramTaskDictionary
 } from '../models';
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
-import { FlowMetadata } from '../../flow/core/models';
-import {FlowMetadataAttribute} from '../../flow/core/models/flow-metadata-attribute';
+import { FlowMetadata } from '@flogo/flow/core/models';
+import {FlowMetadataAttribute} from '@flogo/flow/core/models/flow-metadata-attribute';
 
 /**
  * Type definitions for flowToJSON util function

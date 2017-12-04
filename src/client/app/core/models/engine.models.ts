@@ -5,4 +5,4 @@ export {
   flowToJSON_Task as Task,
   flowToJSON_Link as Link,
   flowToJSON_RootTask as RootTask
-} from '../../flogo.flows.detail.diagram/models/flow.model';
+} from '../../flow/shared/diagram/models/flow.model';

@@ -27,7 +27,7 @@ import { IFlogoFlowDiagram, IFlogoFlowDiagramTask, makeDefaultErrorTrigger } fro
 import {
   PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS,
   SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS
-} from '../flogo.flows.detail.diagram/messages';
+} from './shared/diagram/messages';
 import {
   PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS,
   SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS
@@ -73,7 +73,7 @@ import {
   updateBranchNodesRunStatus
 } from '../shared/utils';
 
-import { flogoFlowToJSON, triggerFlowToJSON } from '../flogo.flows.detail.diagram/models/flow.model';
+import { flogoFlowToJSON, triggerFlowToJSON } from './shared/diagram/models/flow.model';
 
 import { HandlerInfo } from './core/models/models';
 import { FlogoFlowService as FlowsService } from './core/flow.service';

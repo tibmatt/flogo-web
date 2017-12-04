@@ -1,2 +1,2 @@
-export * from '../flogo.flows.detail.diagram/models';
-export * from '../flogo.flows.detail.diagram/models/flow.model';
+export * from '../flow/shared/diagram/models';
+export * from '../flow/shared/diagram/models/flow.model';

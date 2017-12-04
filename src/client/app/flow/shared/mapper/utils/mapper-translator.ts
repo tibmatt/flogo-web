@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {
   IFlogoFlowDiagramTask as FlowTile,
   IFlogoFlowDiagramTaskAttributeMapping as FlowMapping,
-} from '../../../../flogo.flows.detail.diagram/models';
+} from '../../diagram/models';
 
 import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../../core/constants';
 import {
