@@ -6,7 +6,7 @@ import { IFlogoApplicationFlowModel as FlowModel } from '../../core/application.
 @Component({
   selector: 'flogo-apps-flows',
   // moduleId: module.id,
-  templateUrl: 'flows.tpl.html',
+  templateUrl: 'flows.component.html',
   styleUrls: ['flows.component.less']
 })
 export class FlogoApplicationFlowsComponent implements OnChanges {

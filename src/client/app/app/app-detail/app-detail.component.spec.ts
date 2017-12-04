@@ -9,12 +9,12 @@ import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
 import { FlogoApplicationSearchComponent } from '../../flogo.apps.search/components/search.component';
-import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../../flogo.apps.flows/components';
+import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flows/index';
 import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
 import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
 import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
-import {FlowTriggerGroupComponent} from '../../flogo.apps.flows/components/trigger-group.component';
+import {FlowTriggerGroupComponent} from '../flows/flow-group/trigger-group.component';
 
 
 @Component({

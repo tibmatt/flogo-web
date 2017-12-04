@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../core/application.model';
+import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../../core/application.model';
 
 @Component({
   selector: 'flogo-apps-flows-flow-group',
   // moduleId: module.id,
-  templateUrl: 'flow-group.tpl.html',
-  styleUrls: ['../common/assets/group.component.less', 'flow-group.component.less']
+  templateUrl: 'flow-group.component.html',
+  styleUrls: ['../../../flogo.apps.flows/common/assets/group.component.less', 'flow-group.component.less']
 })
 export class FlowGroupComponent implements OnChanges {
   @Input()

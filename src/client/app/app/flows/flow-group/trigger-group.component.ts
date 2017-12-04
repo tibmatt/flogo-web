@@ -1,11 +1,11 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
-import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../core/application.model';
+import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../../core/application.model';
 
 @Component({
   selector: 'flogo-apps-flows-trigger-group',
   // moduleId: module.id,
-  templateUrl: 'trigger-group.tpl.html',
-  styleUrls: ['../common/assets/group.component.less', 'trigger-group.component.less']
+  templateUrl: 'trigger-group.component.html',
+  styleUrls: ['../../../flogo.apps.flows/common/assets/group.component.less', 'trigger-group.component.less']
 })
 export class FlowTriggerGroupComponent implements OnChanges {
   @Input()

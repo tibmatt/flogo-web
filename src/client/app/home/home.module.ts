@@ -7,7 +7,7 @@ import { FlowsModule as FlogoFlowsModule } from '../flogo.flows/flogo.flows.modu
 import { FlogoHomeComponent } from './home.component';
 import { FlogoApplicationComponent } from '../app/app.component';
 import { FlogoApplicationDetailComponent } from '../app/app-detail/app-detail.component';
-import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flogo.apps.flows/components';
+import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../app/flows/index';
 import { FlogoAppsListComponent } from './apps-list/apps-list.component';
 import { FlogoApplicationSearchComponent } from '../flogo.apps.search/components/search.component';
 import { FlogoAppSettingsComponent } from '../flogo.apps.settings/components/settings.component';
@@ -17,7 +17,7 @@ import { FlogoAppImportComponent } from './app-import/app-import.component';
 import { ImportErrorFormatterService } from './core/import-error-formatter.service';
 import { FlogoNewAppComponent } from './new-app/new-app.component';
 import { FlogoExportFlowsComponent } from '../app/app-detail/export-flows/export-flows.component';
-import {FlowTriggerGroupComponent} from '../flogo.apps.flows/components/trigger-group.component';
+import {FlowTriggerGroupComponent} from '../app/flows/flow-group/trigger-group.component';
 
 @NgModule({
   imports: [
