@@ -12,9 +12,6 @@ import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tas
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
 import { ParamsSchemaModule } from './params-schema';
-
-import { TriggerMapperModule as FlogoTriggerMapperModule } from '../flogo.trigger-mapper';
-
 /////////
 
 import { NgModule } from '@angular/core';
@@ -47,7 +44,6 @@ import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
     FlogoFormBuilderModule,
     FlogoInstallerModule,
     FlogoTransformModule,
-    FlogoTriggerMapperModule,
     FlogoCommonFormBuilderModule,
     FlogoDiagramModule,
     FlogoFlowErrorPanelModule,

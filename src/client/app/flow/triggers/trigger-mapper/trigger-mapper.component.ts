@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
-import { SingleEmissionSubject } from '../core/models/single-emission-subject';
+import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../flow/shared/mapper';
-import { FlowMetadata } from '../flow/core/models';
+import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../../shared/mapper';
+import { FlowMetadata } from '@flogo/flow/core/models';
 
 import { VIEWS, ViewInfo } from './views-info.model';
 import { TriggerMapperService, Status } from './trigger-mapper.service';
@@ -20,9 +20,9 @@ interface ViewsStates {
 }
 
 @Component({
-  selector: 'flogo-trigger-mapper',
+  selector: 'flogo-flow-trigger-mapper',
   styleUrls: [
-    '../../assets/_mapper-modal.less',
+    '../../../../assets/_mapper-modal.less',
     'trigger-mapper.component.less'
   ],
   templateUrl: 'trigger-mapper.component.html'

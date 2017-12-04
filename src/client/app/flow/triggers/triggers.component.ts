@@ -22,7 +22,7 @@ import { FlowMetadata } from '@flogo/flogo.transform/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
 
 import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
-import { TriggerMapperService } from '@flogo/flogo.trigger-mapper/trigger-mapper.service';
+import { TriggerMapperService } from '@flogo/flow/triggers/trigger-mapper/trigger-mapper.service';
 import {IPropsToUpdateFormBuilder} from '../flow.component';
 
 export interface IFlogoTrigger {
