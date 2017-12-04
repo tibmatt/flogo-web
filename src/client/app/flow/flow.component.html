@@ -81,14 +81,14 @@
         </div>
 
         <div class="flogo-flows-diagram-container">
-          <flogo-canvas-flow-diagram *ngIf="mainHandler"
-                                     [tasks]="mainHandler.tasks"
-                                     [diagram]="mainHandler.diagram"
-                                     [id]="'root'"
-                                     [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
-                                     [appId]="flow?.app?.id"
-                                     data-flogo-diagram-id="root">
-          </flogo-canvas-flow-diagram>
+          <flogo-flow-diagram *ngIf="mainHandler"
+                              [tasks]="mainHandler.tasks"
+                              [diagram]="mainHandler.diagram"
+                              [id]="'root'"
+                              [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
+                              [appId]="flow?.app?.id"
+                              data-flogo-diagram-id="root">
+          </flogo-flow-diagram>
         </div>
       </div>
       <flogo-footer class="footer-wrapper"></flogo-footer>
@@ -98,12 +98,12 @@
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
     <flogo-flows-detail-error-panel *ngIf="hasTask">
-      <flogo-canvas-flow-diagram *ngIf="errorHandler"
-                                 [tasks]="errorHandler.tasks"
-                                 [diagram]="errorHandler.diagram"
-                                 [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
-                                 [id]="'errorHandler'"
-                                 data-flogo-diagram-id="root"></flogo-canvas-flow-diagram>
+      <flogo-flow-diagram *ngIf="errorHandler"
+                          [tasks]="errorHandler.tasks"
+                          [diagram]="errorHandler.diagram"
+                          [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
+                          [id]="'errorHandler'"
+                          data-flogo-diagram-id="root"></flogo-flow-diagram>
     </flogo-flows-detail-error-panel>
 
   </div>

@@ -14,7 +14,7 @@ import { FlogoFlowDiagramNode } from './models/node.model';
 
 @Component(
   {
-    selector: 'flogo-canvas-flow-diagram',
+    selector: 'flogo-flow-diagram',
     // moduleId : module.id,
     templateUrl: 'diagram.component.html',
     styleUrls: ['diagram.component.less'],

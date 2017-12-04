@@ -98,7 +98,7 @@ var flowPage = {
       types = types || [];
       let nodesSelector = '.flogo-flows-detail-diagram-node';
       if(diagramId) {
-        nodesSelector = 'flogo-canvas-flow-diagram[data-flogo-diagram-id="' + diagramId + '"] ' + nodesSelector;
+        nodesSelector = 'flogo-flow-diagram[data-flogo-diagram-id="' + diagramId + '"] ' + nodesSelector;
       }
       return element.all(by.css(nodesSelector))
         .filter(element => element.getAttribute('data-flogo-node-type').then(attrVal => types.indexOf(attrVal) > -1));
@@ -106,7 +106,7 @@ var flowPage = {
     findOne: function (taskName, diagramId) {
       let nodesSelector = '.flogo-flows-detail-diagram-node';
       if(diagramId) {
-        nodesSelector = 'flogo-canvas-flow-diagram[data-flogo-diagram-id="' + diagramId + '"] ' + nodesSelector;
+        nodesSelector = 'flogo-flow-diagram[data-flogo-diagram-id="' + diagramId + '"] ' + nodesSelector;
       }
       return element.all(by.css(nodesSelector))
         .filter(elem => {
