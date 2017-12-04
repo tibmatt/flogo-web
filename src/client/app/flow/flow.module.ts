@@ -9,9 +9,6 @@ import { FlogoFlowsDetailTasksComponent } from '../flogo.flows.detail.tasks/comp
 import { FlogoFlowsDetailTasksDetailComponent } from '../flogo.flows.detail.tasks.detail/components/detail.component';
 import { FlogoSelectTriggerComponent } from '../flogo.select-trigger/components/select-trigger.component';
 
-import { FlogoFlowsDetailErrorPanelComponent } from '../flogo.flows.detail.error-panel/components/error-panel.component';
-
-
 import { FlogoFlowsDetailTasksInstallComponent } from '../flogo.flows.detail.tasks.install/components/install.component';
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
@@ -36,6 +33,7 @@ import { CoreModule as FlowCoreModule } from './core';
 import { routing } from './flow.routing';
 import { FlowComponent } from './flow.component';
 import {DiagramModule as FlogoDiagramModule} from '@flogo/flow/shared/diagram';
+import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-panel';
 
 
 @NgModule({
@@ -53,6 +51,7 @@ import {DiagramModule as FlogoDiagramModule} from '@flogo/flow/shared/diagram';
     FlogoTriggerMapperModule,
     FlogoCommonFormBuilderModule,
     FlogoDiagramModule,
+    FlogoFlowErrorPanelModule,
     routing
   ],
   declarations: [
@@ -62,8 +61,6 @@ import {DiagramModule as FlogoDiagramModule} from '@flogo/flow/shared/diagram';
     FlogoFlowsDetailTasksComponent,
     FlogoFlowsDetailTasksDetailComponent,
     FlogoSelectTriggerComponent,
-
-    FlogoFlowsDetailErrorPanelComponent,
 
     FlogoFlowsDetailTasksInstallComponent,
     FlogoFlowsDetailTriggersInstallComponent,

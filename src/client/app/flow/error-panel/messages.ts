@@ -4,7 +4,7 @@
 
 export const PUB_EVENTS = {
   openPanel : {
-    channel : 'flogo-flows-detail-error-panel',
+    channel : 'flogo-flow-error-panel',
     topic : 'state-opened'
   },
   closePanel : {
@@ -19,7 +19,7 @@ export const PUB_EVENTS = {
 
 export const SUB_EVENTS = {
   openPanel : {
-    channel : 'flogo-flows-detail-error-panel',
+    channel : 'flogo-flow-error-panel',
     topic : 'public-state-opened'
   },
   closePanel : {

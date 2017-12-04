@@ -1,12 +1,11 @@
 import {Component, HostBinding, OnDestroy, HostListener} from '@angular/core';
-import {PostService} from '../../core/services/post.service';
+import {PostService} from '@flogo/core/services/post.service';
 
-import {SUB_EVENTS, PUB_EVENTS} from '../messages';
+import {SUB_EVENTS, PUB_EVENTS} from './messages';
 
 @Component({
-  selector: 'flogo-flows-detail-error-panel',
-  // moduleId: module.id,
-  templateUrl: 'error-panel.tpl.html',
+  selector: 'flogo-flow-error-panel',
+  templateUrl: 'error-panel.component.html',
   styleUrls: ['error-panel.component.less']
 })
 

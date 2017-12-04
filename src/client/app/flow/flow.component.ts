@@ -49,7 +49,7 @@ import {
 import {
   PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS
-} from '../flogo.flows.detail.error-panel/messages';
+} from './error-panel/messages';
 
 import { RESTAPITriggersService } from '../core/services/restapi/v2/triggers-api.service';
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
@@ -1792,6 +1792,7 @@ export class FlowComponent implements OnInit, OnDestroy {
    * Assumes we have a tree structure, meaning we have no cycles
    * @param {string} startNodeId
    * @param {string} targetNodeId
+   * @param {string} diagramId
    * @returns string[] list of node ids
    */
   private findPathToNode(startNodeId: any, targetNodeId: any, diagramId: string) {

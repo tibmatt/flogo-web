@@ -97,14 +97,14 @@
     <flogo-transform [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-transform>
     <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
 
-    <flogo-flows-detail-error-panel *ngIf="hasTask">
+    <flogo-flow-error-panel *ngIf="hasTask">
       <flogo-flow-diagram *ngIf="errorHandler"
                           [tasks]="errorHandler.tasks"
                           [diagram]="errorHandler.diagram"
                           [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
                           [id]="'errorHandler'"
                           data-flogo-diagram-id="root"></flogo-flow-diagram>
-    </flogo-flows-detail-error-panel>
+    </flogo-flow-error-panel>
 
   </div>
   <div class="canvas-right-container">
