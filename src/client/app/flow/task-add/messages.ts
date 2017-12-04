@@ -4,7 +4,7 @@
 
 export const PUB_EVENTS = {
   addTask : {
-    channel : 'flogo-flows-detail-tasks',
+    channel : 'flogo-flow-task-add',
     topic : 'add-task'
   }
 };
@@ -14,11 +14,11 @@ export const PUB_EVENTS = {
  */
 export const SUB_EVENTS = {
   addTask : {
-    channel : 'flogo-flows-detail-tasks',
+    channel : 'flogo-flow-task-add',
     topic : 'public-add-task'
   },
   installActivity: {
-    channel : 'flogo-flows-detail-tasks',
+    channel : 'flogo-flow-task-add',
     topic : 'public-install-activity'
   }
 };

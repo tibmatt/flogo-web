@@ -1,1 +1,1 @@
-export * from '../flogo.flows.detail.tasks/mocks/tasks';
+export * from '../flow/task-add/mocks/tasks';

@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input } from '@angular/core';
-import { FLOGO_PROFILE_TYPE } from '../../core/constants';
+import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 
 @Component( {
-  selector : 'flogo-flows-detail-tasks-install',
+  selector : 'flogo-flow-task-add-install',
   /* tslint:disable-next-line:use-output-property-decorator */
   outputs: [ 'onInstalled: flogoOnInstalled' ],
-  templateUrl : 'install.tpl.html',
+  templateUrl : 'install.component.html',
 } )
 export class FlogoFlowsDetailTasksInstallComponent {
   @Input() profileType: FLOGO_PROFILE_TYPE ;

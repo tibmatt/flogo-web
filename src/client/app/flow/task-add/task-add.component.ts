@@ -1,18 +1,17 @@
 import { Component, OnDestroy } from '@angular/core';
-import { PostService } from '../../core/services/post.service';
-import { SUB_EVENTS, PUB_EVENTS } from '../messages';
+import { PostService } from '@flogo/core/services/post.service';
+import { SUB_EVENTS, PUB_EVENTS } from './messages';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
-import {FlogoProfileService} from '../../core/services/profile.service';
-import { FLOGO_PROFILE_TYPE } from '../../core/constants';
+import {FlogoProfileService} from '@flogo/core/services/profile.service';
+import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 
 @Component(
   {
-    selector : 'flogo-flows-detail-tasks',
-    // moduleId : module.id,
-    templateUrl : 'tasks.tpl.html',
-    styleUrls : [ 'tasks.component.less' ]
+    selector : 'flogo-flow-task-add',
+    templateUrl : 'task-add.component.html',
+    styleUrls : [ 'task-add.component.less' ]
   }
 )
 export class FlogoFlowsDetailTasksComponent implements OnDestroy {
