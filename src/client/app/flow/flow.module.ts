@@ -4,7 +4,6 @@ import { TaskMapperModule as FlogoTaskMapperModule } from './task-mapper';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
-import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
 
 import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
@@ -29,6 +28,7 @@ import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-p
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
+import {TriggerDetailModule as FlogoFlowTriggerDetailModule} from '@flogo/flow/trigger-detail';
 
 
 @NgModule({
@@ -40,7 +40,6 @@ import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
     FlowCoreModule,
     ParamsSchemaModule,
 
-    FlogoFormBuilderModule,
     FlogoInstallerModule,
     FlogoTaskMapperModule,
     FlogoCommonFormBuilderModule,
@@ -48,13 +47,13 @@ import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
     FlogoFlowErrorPanelModule,
     FlogoFlowTriggersModule,
     FlogoFlowTaskDetailModule,
+    FlogoFlowTriggerDetailModule,
     FlogoFlowTaskAddModule,
     routing
   ],
   declarations: [
     EmptyDetailComponent,
     FlogoFlowsDetailTriggersComponent,
-    FlogoFlowsDetailTriggersDetailComponent,
 
     FlogoFlowsDetailTriggersInstallComponent,
 

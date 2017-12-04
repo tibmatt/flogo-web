@@ -1,12 +1,11 @@
 import {Component, OnDestroy} from '@angular/core';
-import {PostService} from '../../core/services/post.service';
-import {SUB_EVENTS, PUB_EVENTS} from '../messages';
+import {PostService} from '@flogo/core/services/post.service';
+import {SUB_EVENTS, PUB_EVENTS} from './messages';
 
 @Component({
-  selector: 'flogo-flows-detail-triggers-detail',
-  // moduleId: module.id,
-  templateUrl: 'detail.tpl.html',
-  styleUrls: ['detail.component.less']
+  selector: 'flogo-flow-trigger-detail',
+  templateUrl: 'trigger-detail.component.html',
+  styleUrls: ['trigger-detail.component.less']
 })
 
 export class FlogoFlowsDetailTriggersDetailComponent implements OnDestroy {

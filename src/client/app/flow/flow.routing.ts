@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
-import { FlogoFlowsDetailTriggersDetailComponent } from '../flogo.flows.detail.triggers.detail/components/detail.component';
+import { FlogoFlowsDetailTriggersDetailComponent } from './trigger-detail';
 import { FlogoFlowsDetailTasksComponent } from './task-add';
 import { FlogoFlowsDetailTasksDetailComponent } from './task-detail';
 import { FlowComponent } from './flow.component';

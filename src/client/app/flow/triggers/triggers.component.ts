@@ -16,7 +16,7 @@ import {UIModelConverterService} from '@flogo/flow/core/ui-model-converter.servi
 import {
   SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
-} from '../../flogo.flows.detail.triggers.detail/messages';
+} from '../trigger-detail/messages';
 
 import { FlowMetadata } from '@flogo/flow/task-mapper/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
