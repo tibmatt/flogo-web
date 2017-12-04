@@ -10,7 +10,7 @@ import { FlogoApplicationDetailComponent } from '../app/app-detail/app-detail.co
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../app/flows/index';
 import { FlogoAppsListComponent } from './apps-list/apps-list.component';
 import { FlogoApplicationSearchComponent } from '../flogo.apps.search/components/search.component';
-import { FlogoAppSettingsComponent } from '../flogo.apps.settings/components/settings.component';
+import { FlogoAppSettingsComponent } from '../app/settings/settings.component';
 import { AppDetailService } from './services/apps.service';
 import { routing, appRoutingProviders } from './home.routing';
 import { FlogoAppImportComponent } from './app-import/app-import.component';

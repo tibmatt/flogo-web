@@ -12,7 +12,7 @@ import { FlogoApplicationSearchComponent } from '../../flogo.apps.search/compone
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flows/index';
 import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
 import { FlogoProfileService } from '../../core/services/profile.service';
-import { FlogoAppSettingsComponent } from '../../flogo.apps.settings/components/settings.component';
+import { FlogoAppSettingsComponent } from '../settings/settings.component';
 import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
 import {FlowTriggerGroupComponent} from '../flows/flow-group/trigger-group.component';
 

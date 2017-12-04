@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 import { notification } from '../shared/utils';
 import { PostService } from '../core/services/post.service';
-import { PUB_EVENTS as SUB_EVENTS } from '../flogo.flows.add/message';
+import { PUB_EVENTS as SUB_EVENTS } from './new-flow/message';
 import { AppDetailService, ApplicationDetail } from '../home/services/apps.service';
 import 'rxjs/add/operator/map';
 import { FlowsService } from '../core/services/flows.service';

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
-import { FlogoFlowsAddComponent as FlogoFlowsAddComponent } from '../flogo.flows.add/components/add.component';
+import { FlogoNewFlowComponent as FlogoFlowsAddComponent } from '../app/new-flow/new-flow.component';
 import { FlogoFlowsImportComponent as FlogoFlowsImportComponent } from '../flogo.flows.import/components/import-flow.component';
 import { FlogoFlowsFlowNameComponent } from '../flogo.flows.flow-name/components/flow-name.component';
 

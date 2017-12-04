@@ -6,7 +6,7 @@ import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../../home/services/apps.service';
-import { FlogoFlowsAddComponent } from '../../flogo.flows.add/components/add.component';
+import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
 import { SanitizeService } from '../../core/services/sanitize.service';
 import { diffDates, notification } from '../../shared/utils';
@@ -22,7 +22,7 @@ const MAX_SECONDS_TO_ASK_APP_NAME = 5;
   styleUrls: ['app-detail.component.less']
 })
 export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
-  @ViewChild(FlogoFlowsAddComponent) addFlow: FlogoFlowsAddComponent;
+  @ViewChild(FlogoNewFlowComponent) addFlow: FlogoNewFlowComponent;
   @ViewChild('exportFlowModal') exportFlow: FlogoExportFlowsComponent;
   @Input() appDetail: ApplicationDetail;
 

@@ -5,7 +5,7 @@ import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../../core/
   selector: 'flogo-apps-flows-trigger-group',
   // moduleId: module.id,
   templateUrl: 'trigger-group.component.html',
-  styleUrls: ['../../../flogo.apps.flows/common/assets/group.component.less', 'trigger-group.component.less']
+  styleUrls: ['group.component.less', 'trigger-group.component.less']
 })
 export class FlowTriggerGroupComponent implements OnChanges {
   @Input()

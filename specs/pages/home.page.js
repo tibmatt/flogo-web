@@ -3,7 +3,7 @@
 var Homepage = {
   addFlowButton: {
     click: function () {
-      return element(by.css('flogo-flows-add .flogo-common-flows-new-flow')).click();
+      return element(by.css('flogo-new-flow .flogo-common-flows-new-flow')).click();
     }
   },
   newFlow: {

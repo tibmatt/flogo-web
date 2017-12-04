@@ -11,8 +11,8 @@ import { PostService } from '../../core/services/post.service';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '../../core/core.module';
-import { PUB_EVENTS } from '../message';
-import { FlogoFlowsAddComponent } from './add.component';
+import { PUB_EVENTS } from './message';
+import { FlogoNewFlowComponent } from './new-flow.component';
 
 const EXISTING_FLOW_NAME = 'existing';
 const flowsServiceStub = {
@@ -36,8 +36,8 @@ const postServiceStub = {
 };
 
 describe('Component: FlogoFlowsAdd', () => {
-  let comp: FlogoFlowsAddComponent;
-  let fixture: ComponentFixture<FlogoFlowsAddComponent>;
+  let comp: FlogoNewFlowComponent;
+  let fixture: ComponentFixture<FlogoNewFlowComponent>;
   let elements: { submitBtn: DebugElement, nameInput: DebugElement, descriptionInput: DebugElement };
 
   let submitBtn: DebugElement;
@@ -58,7 +58,7 @@ describe('Component: FlogoFlowsAdd', () => {
         FlogoSharedModule
       ],
       declarations: [
-        FlogoFlowsAddComponent
+        FlogoNewFlowComponent
       ], // declare the test component
       providers: [
         { provide: APIFlowsService, useValue: flowsServiceStub },
@@ -73,7 +73,7 @@ describe('Component: FlogoFlowsAdd', () => {
 
   beforeEach(() => {
 
-    fixture = TestBed.createComponent(FlogoFlowsAddComponent);
+    fixture = TestBed.createComponent(FlogoNewFlowComponent);
     comp = fixture.componentInstance;
 
     const openModalBtnDe = fixture.debugElement.query(By.css('.js-open-modal'));

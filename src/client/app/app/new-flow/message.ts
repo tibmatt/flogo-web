@@ -3,7 +3,7 @@
  */
 export const PUB_EVENTS = {
     addFlow: {
-        channel: 'flogo-flows-add',
+        channel: 'flogo-new-flow',
         topic: 'add-flow'
     }
 };

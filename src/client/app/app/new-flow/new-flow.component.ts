@@ -6,17 +6,17 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 import { PostService } from '../../core/services/post.service';
 import { SanitizeService } from '../../core/services/sanitize.service';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
-import { PUB_EVENTS } from '../message';
-import { UniqueNameValidator } from '../validators/unique-name.validator';
+import { PUB_EVENTS } from './message';
+import { UniqueNameValidator } from './unique-name.validator';
 
 
 @Component({
-    selector: 'flogo-flows-add',
+    selector: 'flogo-new-flow',
     // moduleId: module.id,
-    templateUrl: 'add.tpl.html',
-    styleUrls: ['add.component.less']
+    templateUrl: 'new-flow.component.html',
+    styleUrls: ['new-flow.component.less']
 })
-export class FlogoFlowsAddComponent implements OnChanges {
+export class FlogoNewFlowComponent implements OnChanges {
   @ViewChild('modal')
   public modal: ModalComponent;
   @Input()
