@@ -4,23 +4,23 @@ import { Component, Input, OnDestroy,
   trigger, transition, style, animate, state, AnimationTransitionEvent
 } from '@angular/core';
 
-import { PostService } from '../core/services/post.service';
+import { PostService } from '@flogo/core/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskData } from './messages';
 
-import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../flow/shared/mapper';
+import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../shared/mapper';
 
-import { IFlogoFlowDiagramTask } from '../flow/shared/diagram/models/task.model';
-import { IFlogoFlowDiagramTaskAttribute } from '../flow/shared/diagram/models/attribute.model';
-import { IFlogoFlowDiagramTaskAttributeMapping } from '../flow/shared/diagram/models/attribute-mapping.model';
+import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
+import { IFlogoFlowDiagramTaskAttribute } from '../shared/diagram/models/attribute.model';
+import { IFlogoFlowDiagramTaskAttributeMapping } from '../shared/diagram/models/attribute-mapping.model';
 
 @Component({
-  selector: 'flogo-transform',
+  selector: 'flogo-flow-task-mapper',
   styleUrls: [
-    '../../assets/_mapper-modal.less',
-    'transform.component.less'
+    '../../../assets/_mapper-modal.less',
+    'task-mapper.component.less'
   ],
-  templateUrl: 'transform.component.html',
+  templateUrl: 'task-mapper.component.html',
   animations: [
     trigger('dialog', [
       state('hidden', style({
@@ -40,7 +40,7 @@ import { IFlogoFlowDiagramTaskAttributeMapping } from '../flow/shared/diagram/mo
     ])
   ],
 })
-export class TransformComponent implements OnDestroy {
+export class TaskMapperComponent implements OnDestroy {
   @Input()
   flowId: string;
   currentTile: IFlogoFlowDiagramTask;

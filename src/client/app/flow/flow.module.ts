@@ -1,6 +1,6 @@
 import { FormBuilderModule as FlogoFormBuilderModule } from './shared/form-builder';
 import { InstallerModule as FlogoInstallerModule } from './shared/installer';
-import { TransformModule as FlogoTransformModule } from '../flogo.transform';
+import { TaskMapperModule as FlogoTaskMapperModule } from './task-mapper';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
@@ -43,7 +43,7 @@ import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 
     FlogoFormBuilderModule,
     FlogoInstallerModule,
-    FlogoTransformModule,
+    FlogoTaskMapperModule,
     FlogoCommonFormBuilderModule,
     FlogoDiagramModule,
     FlogoFlowErrorPanelModule,

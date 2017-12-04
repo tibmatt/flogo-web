@@ -12,7 +12,7 @@ import {
 } from '../constants';
 
 import { flogoIDDecode } from '../../../../shared/utils';
-import { MapperSchema, FlowMetadata } from '../../../../flogo.transform/models';
+import { MapperSchema, FlowMetadata } from '../../../task-mapper/models';
 import { IMapping } from '../models/map-model';
 
 export type  MappingsValidatorFn = (imapping: IMapping) => boolean;

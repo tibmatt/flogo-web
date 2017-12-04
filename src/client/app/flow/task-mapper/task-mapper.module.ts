@@ -3,8 +3,8 @@ import { CommonModule as NgCommonModule } from '@angular/common';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 
-import { TransformComponent } from './transform.component';
-import { MapperModule } from '../flow/shared/mapper';
+import { TaskMapperComponent } from './task-mapper.component';
+import { MapperModule } from '../shared/mapper';
 
 @NgModule({
   imports: [// module dependencies
@@ -13,12 +13,12 @@ import { MapperModule } from '../flow/shared/mapper';
     MapperModule,
   ],
   declarations: [
-    TransformComponent,
+    TaskMapperComponent,
   ],
   exports: [
-    TransformComponent,
+    TaskMapperComponent,
   ],
   providers: []
 })
-export class TransformModule {
+export class TaskMapperModule {
 }

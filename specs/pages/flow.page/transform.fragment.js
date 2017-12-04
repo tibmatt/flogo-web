@@ -32,7 +32,7 @@ module.exports = {
    * @returns {TransformFragment}
    */
   get: function(forDiagramId) {
-    let selector = 'flogo-transform';
+    let selector = 'flogo-flow-task-mapper';
     if(forDiagramId) {
       selector = selector + '[data-flogo-for-diagram-id="' + forDiagramId + '"]';
     }

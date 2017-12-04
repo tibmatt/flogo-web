@@ -18,7 +18,7 @@ import {
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
 } from '../../flogo.flows.detail.triggers.detail/messages';
 
-import { FlowMetadata } from '@flogo/flogo.transform/models';
+import { FlowMetadata } from '@flogo/flow/task-mapper/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
 
 import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';

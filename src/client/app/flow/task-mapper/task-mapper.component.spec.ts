@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { TranslateModule } from 'ng2-translate/ng2-translate';
-import { PostService } from '../core/services/post.service';
+import { PostService } from '@flogo/core/services/post.service';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CommonModule as NgCommonModule } from '@angular/common';
-import { TransformComponent } from './transform.component';
-import { MapperModule } from '../flow/shared/mapper';
+import { TaskMapperComponent } from './task-mapper.component';
+import { MapperModule } from '../shared/mapper';
 
 const postServiceStub = {
 
@@ -25,9 +25,9 @@ const postServiceStub = {
 };
 
 // TODO: disabling while working on mapper upgrade
-describe('Component: TransformComponent', () => {
-  let comp: TransformComponent;
-  let fixture: ComponentFixture<TransformComponent>;
+describe('Component: TaskMapperComponent', () => {
+  let comp: TaskMapperComponent;
+  let fixture: ComponentFixture<TaskMapperComponent>;
   let de: DebugElement;
 
   beforeEach((done) => {
@@ -40,7 +40,7 @@ describe('Component: TransformComponent', () => {
         MapperModule,
       ],
       declarations: [
-        TransformComponent
+        TaskMapperComponent
       ], // declare the test component
       providers: [
         // { provide: RESTAPIFlowsService, useValue: flowsServiceStub },
@@ -50,7 +50,7 @@ describe('Component: TransformComponent', () => {
     })
       .compileComponents()
       .then(() => {
-        fixture = TestBed.createComponent(TransformComponent);
+        fixture = TestBed.createComponent(TaskMapperComponent);
         comp = fixture.componentInstance;
         de = fixture.debugElement;
         comp.flowId = 'root';

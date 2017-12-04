@@ -45,7 +45,7 @@ import {
   PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS,
   SelectTaskData,
   SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS
-} from '../flogo.transform/messages';
+} from './task-mapper/messages';
 import {
   PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS
@@ -80,7 +80,7 @@ import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
-import { FlowMetadata } from '../flogo.transform/models/flow-metadata';
+import { FlowMetadata } from './task-mapper/models/flow-metadata';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;

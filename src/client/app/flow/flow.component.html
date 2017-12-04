@@ -94,8 +94,8 @@
       <flogo-footer class="footer-wrapper"></flogo-footer>
     </div>
 
-    <flogo-transform [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-transform>
-    <flogo-transform [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-transform>
+    <flogo-flow-task-mapper [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-mapper>
+    <flogo-flow-task-mapper [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-mapper>
 
     <flogo-flow-error-panel *ngIf="hasTask">
       <flogo-flow-diagram *ngIf="errorHandler"
