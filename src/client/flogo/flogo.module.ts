@@ -36,7 +36,6 @@ import { Http } from '@angular/http';
     FlogoSharedModule,
     FlogoHomeModule,
     FlogoLogsModule,
-    FlogoFlowsModule,
     FlowModule,
     FlogoConfigModule,
     routing,

@@ -5,7 +5,6 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { CoreModule } from '@flogo/flow/core';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
-import { FlowsModule as FlogoFlowsModule } from '../../../../flogo.flows/flogo.flows.module';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { FlogoFormBuilderFieldsTextAreaComponent } from './textarea/textarea.component';
 import { FlogoFormBuilderFieldsTextBoxComponent } from './textbox/textbox.component';
@@ -133,8 +132,7 @@ describe('Form-builder component', () => {
       imports: [
         FakeRootLanguageModule,
         CoreModule,
-        FlogoSharedModule,
-        FlogoFlowsModule
+        FlogoSharedModule
       ],
       declarations: [
         FlogoFormBuilderFieldsTextAreaComponent,

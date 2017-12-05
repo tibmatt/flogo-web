@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { FlowsModule as FlogoFlowsModule } from '../../../flogo.flows/flogo.flows.module';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CoreModule as FlogoCoreModule } from '@flogo/core';
 import { FormBuilderModule as FlogoFormBuilderModule } from '../form-builder';
@@ -115,7 +114,6 @@ function beforeSetup(done)  {
         FakeRootLanguageModule,
         FlogoCoreModule,
         FlogoSharedModule,
-        FlogoFlowsModule,
         FlogoFormBuilderModule
       ],
       declarations: [
