@@ -2,7 +2,6 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
-import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
 import { FlogoFlowsDetailTriggersDetailComponent } from './trigger-detail';
 import { FlogoFlowsDetailTasksComponent } from './task-add';
 import { FlogoFlowsDetailTasksDetailComponent } from './task-detail';
@@ -14,7 +13,6 @@ export const routes: Routes = [
     component: FlowComponent,
     children: [
       { path: '', component: EmptyDetailComponent },
-      { path: 'trigger/add', component: FlogoFlowsDetailTriggersComponent },
       { path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent },
       { path: 'task/add', component: FlogoFlowsDetailTasksComponent },
       { path: 'task/:id', component: FlogoFlowsDetailTasksDetailComponent }
@@ -27,7 +25,6 @@ export const routing: ModuleWithProviders = RouterModule.forChild(routes);
 
 /*
 {path: '/', name: 'FlogoFlowsDetailDefault', component: EmptyDetailComponent, useAsDefault: true},
-{path: '/trigger/add', name: 'FlogoFlowsDetailTriggerAdd', component: FlogoFlowsDetailTriggersComponent},
 {path: '/trigger/:id', name: 'FlogoFlowsDetailTriggerDetail', component: FlogoFlowsDetailTriggersDetailComponent},
 {path: '/task/add', name: 'FlogoFlowsDetailaskAdd', component: FlogoFlowsDetailTasksComponent},
 {path: '/task/:id', name: 'FlogoFlowsDetailTaskDetail', component: FlogoFlowsDetailTasksDetailComponent}*/

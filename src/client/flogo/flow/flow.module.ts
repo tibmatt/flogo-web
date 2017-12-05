@@ -1,11 +1,6 @@
-import { FormBuilderModule as FlogoFormBuilderModule } from './shared/form-builder';
-import { InstallerModule as FlogoInstallerModule } from './shared/installer';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-mapper';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
-import { FlogoFlowsDetailTriggersComponent } from '../flogo.flows.detail.triggers/components/triggers.component';
-
-import { FlogoFlowsDetailTriggersInstallComponent } from '../flogo.flows.detail.triggers.install/components/install.component';
 
 import { ParamsSchemaModule } from './params-schema';
 /////////
@@ -39,8 +34,6 @@ import {TriggerDetailModule as FlogoFlowTriggerDetailModule} from '@flogo/flow/t
 
     FlowCoreModule,
     ParamsSchemaModule,
-
-    FlogoInstallerModule,
     FlogoTaskMapperModule,
     FlogoCommonFormBuilderModule,
     FlogoDiagramModule,
@@ -53,14 +46,8 @@ import {TriggerDetailModule as FlogoFlowTriggerDetailModule} from '@flogo/flow/t
   ],
   declarations: [
     EmptyDetailComponent,
-    FlogoFlowsDetailTriggersComponent,
-
-    FlogoFlowsDetailTriggersInstallComponent,
-
     FlogoRunFlowComponent,
-
-    ////
-    FlowComponent,
+    FlowComponent
 
   ],
   providers: [],

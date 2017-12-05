@@ -28,10 +28,6 @@ import {
   SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS
 } from './shared/diagram/messages';
 import {
-  PUB_EVENTS as FLOGO_TRIGGERS_SUB_EVENTS,
-  SUB_EVENTS as FLOGO_TRIGGERS_PUB_EVENTS
-} from '../flogo.flows.detail.triggers/messages';
-import {
   PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS
 } from './task-add/messages';
@@ -177,14 +173,12 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     const subs = [
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.addTask, { callback: this._addTaskFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.addTrigger, { callback: this._addTriggerFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback: this._selectTaskFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.deleteTask, { callback: this._deleteTaskFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.addBranch, { callback: this._addBranchFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectBranch, { callback: this._selectBranchFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTransform, { callback: this._selectTransformFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback: this._selectTriggerFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_TRIGGERS_SUB_EVENTS.addTrigger, { callback: this._addTriggerFromTriggers.bind(this) }),
       _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback: this._runFromTriggerinTile.bind(this) }),
@@ -483,30 +477,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _addTriggerFromDiagram(data: any, envelope: any) {
-    console.group('Add trigger message from diagram');
-    console.log(data);
-    console.log(envelope);
-
-    this._navigateFromModuleRoot(['trigger', 'add'])
-      .then(
-        () => {
-          console.group('after navigation');
-
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_TRIGGERS_PUB_EVENTS.addTrigger, {
-                data: data
-              }
-            )
-          );
-
-          console.groupEnd();
-        });
-
-    console.groupEnd();
-  }
-
   private getSettingsCurrentHandler() {
     let settings;
     let outputs;
@@ -555,81 +525,6 @@ export class FlowComponent implements OnInit, OnDestroy {
         });
     }
 
-  }
-
-  private _addTriggerFromTriggers(data: any, envelope: any) {
-    console.group('Add trigger message from trigger');
-
-    console.log(data);
-    console.log(envelope);
-
-    // generate trigger id when adding the trigger;
-    //  TODO replace the task ID generation function?
-    const trigger = <IFlogoFlowDiagramTask> _.assign({}, data.trigger, { id: flogoGenTriggerID() });
-
-    const diagramId = data.id;
-    const handler = this.handlers[diagramId];
-
-    if (handler === this.errorHandler) {
-      trigger.id = this.profileService.generateTaskID(this._getAllTasks());
-    }
-    const tasks = handler.tasks || [];
-
-    this.handlers['root']['schemas'] = this.handlers['root']['schemas'] || {};
-    trigger.ref = trigger.ref || trigger['__schema'].ref;
-    this.handlers['root']['schemas'][trigger.ref] = trigger;
-    delete trigger['__schema'];
-    tasks[trigger.id] = trigger;
-
-
-    let resultCreateTrigger;
-    const settings = objectFromArray(data.trigger.endpoint.settings, false);
-    const outputs = objectFromArray(data.trigger.outputs, false);
-
-    if (data.installType === 'installed') {
-      const appId = this.flow.app.id;
-      const triggerInfo: any = _.pick(data.trigger, ['name', 'ref', 'description']);
-      triggerInfo.settings = objectFromArray(data.trigger.settings || [], false);
-
-      resultCreateTrigger = this._restAPITriggersService.createTrigger(appId, triggerInfo)
-        .then((triggerResult) => {
-          const triggerId = triggerResult.id;
-          return this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, { settings, outputs });
-        });
-    } else {
-      const triggerId = data.trigger.id;
-      resultCreateTrigger = this._restAPIHandlerService.updateHandler(triggerId, this.flow.id, { settings, outputs });
-    }
-
-    resultCreateTrigger
-      .then(() => this._loadFlow(this.flowId))
-      .then(() => {
-        this.hasTrigger = true;
-        return this._navigateFromModuleRoot();
-      })
-      .then(
-        () => {
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_DIAGRAM_PUB_EVENTS.addTrigger, {
-                data: {
-                  id: data.id,
-                  node: data.node,
-                  task: trigger
-                },
-                done: (diagram: IFlogoFlowDiagram) => {
-                  _.assign(handler.diagram, diagram);
-                  this._updateFlow(this.flow);
-                  this._isDiagramEdited = true;
-                }
-              }
-            )
-          );
-        }
-      );
-
-
-    console.groupEnd();
   }
 
   private _addTaskFromDiagram(data: any, envelope: any) {

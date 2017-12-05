@@ -6,8 +6,6 @@ import { LanguageService } from '@flogo/core';
 import { FlogoFlowDiagram, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from './models';
 import { PostService } from '@flogo/core/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from './messages';
-import { PUB_EVENTS as SUB_EVENTS_ADD_TRIGGER } from '../../triggers/select-trigger/messages';
-import { PUB_EVENTS as PUB_EVENTS_ADD_TRIGGER } from '../../../flogo.flows.detail.triggers/messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from './constants';
 import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { FlogoFlowDiagramNode } from './models/node.model';
@@ -202,7 +200,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
     const subs = [
       _.assign({}, SUB_EVENTS.addTrigger, { callback: this._addTriggerDone.bind(this) }), // TODO: should remove this
       _.assign({}, SUB_EVENTS.selectTrigger, { callback: this._selectTriggerDone.bind(this) }), // TODO: should remove this
-      _.assign({}, SUB_EVENTS_ADD_TRIGGER.addTrigger, { callback: this.selectModalTrigger.bind(this) }), // TODO: should remove this
       _.assign({}, SUB_EVENTS.addTask, { callback: this._addTaskDone.bind(this) }),
       _.assign({}, SUB_EVENTS.selectTask, { callback: this._selectTaskDone.bind(this) }),
       _.assign({}, SUB_EVENTS.deleteTask, { callback: this._deleteTaskDone.bind(this) }),
@@ -314,22 +311,6 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
       });
 
     console.groupEnd();
-  }
-
-
-  private selectModalTrigger(data: any, envelope: any) {
-    this.enabledSelectTrigger = false;
-
-    this._postService.publish(
-      _.assign(
-        {}, PUB_EVENTS_ADD_TRIGGER.addTrigger, {
-          data: _.assign({}, { id: 'root', col: 0, row: 0 },
-            { node: this.diagram.nodes[this.diagram.root.is] },
-            { trigger: _.cloneDeep(data.trigger) },
-            { installType: data.installType }),
-        }
-      )
-    );
   }
 
   private _selectTriggerDone(data: any, envelope: any) {
