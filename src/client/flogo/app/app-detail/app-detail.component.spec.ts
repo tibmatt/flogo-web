@@ -6,12 +6,12 @@ import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.m
 import { SharedModule as FlogoSharedModule } from '@flogo/shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '@flogo/core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
-import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flows/index';
+import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../shared/flows/index';
 import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
 import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../settings/settings.component';
-import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
-import {FlowTriggerGroupComponent} from '../flows/flow-group/trigger-group.component';
+import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
+import {FlowTriggerGroupComponent} from '../trigger-group/trigger-group.component';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 

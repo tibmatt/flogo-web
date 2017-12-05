@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import {IFlogoApplicationFlowModel } from '../../../core/application.model';
-import {AppDetailService} from '../../../home/services/apps.service';
+import {IFlogoApplicationFlowModel } from '@flogo/core/application.model';
+import {AppDetailService} from '@flogo/home/services/apps.service';
 
 @Component({
   selector: 'flogo-export-flow',

@@ -3,9 +3,9 @@ import { By } from '@angular/platform-browser';
 import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlogoApplicationFlowsComponent } from './flows.component';
-import { FlogoModal } from '../../core/services/modal.service';
-import { TimeFromNowPipe } from '../../shared/pipes/time-from-now.pipe';
-import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
+import { FlogoModal } from '@flogo/core/services/modal.service';
+import { TimeFromNowPipe } from '@flogo/shared/pipes/time-from-now.pipe';
+import { FlogoDeletePopupComponent } from '@flogo/shared/components/delete.popup.component';
 import { NoDependenciesFakeLanguageModule } from '@flogo/core/language/testing';
 
 @Component({

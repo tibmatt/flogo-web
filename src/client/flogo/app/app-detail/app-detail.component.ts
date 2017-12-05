@@ -7,7 +7,7 @@ import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../../home/services/apps.service';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
-import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
+import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { SanitizeService } from '../../core/services/sanitize.service';
 import { diffDates, notification } from '../../shared/utils';
 import { FlogoModal } from '../../core/services/modal.service';
