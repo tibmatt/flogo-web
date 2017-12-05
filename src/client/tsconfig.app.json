@@ -5,7 +5,7 @@
     "module": "es2015",
     "baseUrl": ".",
     "paths": {
-      "@flogo/*": ["app/*"]
+      "@flogo/*": ["flogo/*"]
     },
     "types": [],
     "sourceMap": true,

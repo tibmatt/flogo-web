@@ -4,7 +4,7 @@
     "outDir": "./dist/out-tsc",
     "baseUrl": ".",
     "paths": {
-      "@flogo/*": ["app/*"]
+      "@flogo/*": ["flogo/*"]
     },
     "sourceMap": true,
     "declaration": false,

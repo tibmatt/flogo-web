@@ -171,7 +171,7 @@ __TODO:__ in the future, new messaging mechanism will be introduced to replace t
 
 Read [angular's official testing guide](https://angular.io/guide/testing) and about the [different types of testing](https://vsavkin.com/three-ways-to-test-angular-2-components-dcea8e90bd8d).
 
-DO NOT import the TranslateModule directly, instead use the [language testing utilities](/src/client/app/core/language/testing) under `@flogo/core/language/testing`.
+DO NOT import the TranslateModule directly, instead use the [language testing utilities](/flogo/core/language/testing) under `@flogo/core/language/testing`.
 
 ## Reference
 
