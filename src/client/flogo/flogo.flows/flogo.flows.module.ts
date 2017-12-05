@@ -6,7 +6,6 @@ import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { FlogoNewFlowComponent as FlogoFlowsAddComponent } from '../app/new-flow/new-flow.component';
-import { FlogoFlowsFlowNameComponent } from '../flogo.flows.flow-name/components/flow-name.component';
 
 
 @NgModule({
@@ -17,12 +16,10 @@ import { FlogoFlowsFlowNameComponent } from '../flogo.flows.flow-name/components
     FlogoSharedModule,
   ],
   declarations: [
-    FlogoFlowsAddComponent,
-    FlogoFlowsFlowNameComponent
+    FlogoFlowsAddComponent
   ],
   exports: [
-    FlogoFlowsAddComponent,
-    FlogoFlowsFlowNameComponent
+    FlogoFlowsAddComponent
   ]
 })
 export class FlowsModule {}
