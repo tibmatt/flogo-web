@@ -16,9 +16,9 @@ i.e. from most preferable to least preferable:
 2. If you **only** need the `LanguageService` use the [fakeLanguageProvider](#fakeLanguageprovider-for-languageservice) 
 3. If you **only** need the `translate` pipe use the [FakeTranslatePipe](#fake-translate-pipe)
 4. If you need both the `LanguageService` and the `translate` pipe and your test doesn't depend on flogo's SharedModule
-   nor flogo's CoreModule then use the [NoDependenciesFakeLanguageModule](#NoDependenciesFakeLanguageModule)
+   nor flogo's CoreModule then use the [NoDependenciesFakeLanguageModule](#nodependenciesfakelanguagemodule)
 5. If you're importing flogo's CoreModule or flogo's SharedModule (or one of your test dependencies import them) then
-   use  [FakeRootLanguageModule](#FakeRootLanguageModule). *Note:* This option is most suitable for integration testing,
+   use  [FakeRootLanguageModule](#fakerootlanguagemodule). *Note:* This option is most suitable for integration testing,
    if you're not implementing an integration test and the only suitable option seems to be the FakeRootLanguageModule
    please re-evaluate your component's design and component test' design to see if it can be simplified. 
 
