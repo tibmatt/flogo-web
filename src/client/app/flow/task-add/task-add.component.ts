@@ -4,6 +4,7 @@ import { SUB_EVENTS, PUB_EVENTS } from './messages';
 
 import {FlogoProfileService} from '@flogo/core/services/profile.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
+import { LanguageService } from '@flogo/core';
 
 @Component(
   {
@@ -22,8 +23,11 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
   private _subscriptions: any;
   private _addTaskMsg: any;
 
-  constructor(private _postService: PostService,
-               private _profileService: FlogoProfileService ) {
+  constructor(
+          // todo: remove exposed language service
+          public translate: LanguageService,
+          private _postService: PostService,
+          private _profileService: FlogoProfileService ) {
     console.group( 'Constructing FlogoFlowsDetailTasksComponent' );
 
     this.initSubscribe();
