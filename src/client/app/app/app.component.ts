@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 import { notification } from '../shared/utils';
 import { PostService } from '../core/services/post.service';
 import { PUB_EVENTS as SUB_EVENTS } from './new-flow/message';
@@ -20,7 +20,7 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   private subscriptions: any;
   private appObserverSubscription: Subscription;
 
-  constructor(public translate: TranslateService,
+  constructor(public translate: LanguageService,
               private router: Router,
               private route: ActivatedRoute,
               private appService: AppDetailService,

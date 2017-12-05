@@ -3,13 +3,14 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 
 import { NavigationEnd, Router } from '@angular/router';
-import {TranslateModule} from 'ng2-translate';
 import { Observable } from 'rxjs/Observable';
+
+import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 import {FlogoFlowTriggersPanelComponent} from './triggers.component';
 
 import {FlogoSelectTriggerComponent} from './select-trigger/select-trigger.component';
-import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '@flogo/core/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
@@ -26,7 +27,6 @@ import { UIModelConverterService } from '@flogo/flow/core/ui-model-converter.ser
 import { InstallerModule } from '@flogo/flow/shared/installer';
 import { TriggerMapperModule } from './trigger-mapper/trigger-mapper.module';
 import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
-
 
 @Component({
   selector: 'flogo-container',
@@ -172,7 +172,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
+        FakeRootLanguageModule,
         InstallerModule,
         Ng2Bs3ModalModule,
         TriggerMapperModule,

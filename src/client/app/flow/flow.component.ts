@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
@@ -81,6 +80,7 @@ import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
 import { FlowMetadata } from './task-mapper/models/flow-metadata';
+import { LanguageService } from '@flogo/core';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -138,7 +138,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   public currentTrigger: any;
   public app: any;
 
-  constructor(public translate: TranslateService,
+  constructor(public translate: LanguageService,
               private _postService: PostService,
               private _flowService: FlowsService,
               private _restAPITriggersService: RESTAPITriggersService,

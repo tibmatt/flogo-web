@@ -1,9 +1,9 @@
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class ImportErrorFormatterService {
-  constructor(public _translate: TranslateService) {}
+  constructor(public _translate: LanguageService) {}
 
   formatMessageHeader(keyword) {
     let messageHeader = '';

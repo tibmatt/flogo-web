@@ -1,6 +1,4 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FlogoModal } from '../../core/services/modal.service';
 import { IFlogoApplicationFlowModel as FlowModel } from '../../core/application.model';
 
 @Component({
@@ -17,7 +15,7 @@ export class FlogoApplicationFlowsComponent implements OnChanges {
   @Output()
   public deleteFlow: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
 
-  constructor(public translate: TranslateService, public flogoModal: FlogoModal) {
+  constructor() {
   }
 
   ngOnChanges(changes: SimpleChanges) {

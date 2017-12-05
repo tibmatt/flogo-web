@@ -1,8 +1,6 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 import { serializeSettings, importSettings, KeyValue, SettingGroup, OTHER_CATEGORY } from './settings-converter';
-
 
 @Component({
   selector: 'flogo-apps-settings',
@@ -22,7 +20,7 @@ export class FlogoAppSettingsComponent {
   public customSettings: KeyValue[] = [];
   public inputSettings: SettingGroup[];
 
-  constructor(public translate: TranslateService) {
+  constructor() {
     this.resetForm();
   }
 

@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '../../../core/application.model';
 
 @Component({
@@ -22,9 +21,6 @@ export class FlowGroupComponent implements OnChanges {
   }>();
   @Output()
   public addFlow: EventEmitter<Trigger> = new EventEmitter<Trigger>();
-
-  constructor(public translate: TranslateService) {
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flows'] && changes['flows'].currentValue) {

@@ -1,9 +1,8 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {TranslateService} from 'ng2-translate';
-
 import 'rxjs/add/operator/filter';
 
+import { LanguageService } from '@flogo/core';
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import {notification, objectFromArray} from '@flogo/shared/utils';
 import {RESTAPITriggersService} from '@flogo/core/services/restapi/v2/triggers-api.service';
@@ -65,7 +64,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _converterService: UIModelConverterService,
               private _router: Router,
-              private _translate: TranslateService,
+              private _translate: LanguageService,
               private _clickHandler: FlogoTriggerClickHandlerService,
               private _postService: PostService,
               private _triggerMapperService: TriggerMapperService) {

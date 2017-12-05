@@ -2,8 +2,6 @@ import { Component, OnDestroy } from '@angular/core';
 import { PostService } from '@flogo/core/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from './messages';
 
-import { TranslateService } from 'ng2-translate/ng2-translate';
-
 import {FlogoProfileService} from '@flogo/core/services/profile.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 
@@ -24,8 +22,7 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
   private _subscriptions: any;
   private _addTaskMsg: any;
 
-  constructor( public translate: TranslateService,
-               private _postService: PostService,
+  constructor(private _postService: PostService,
                private _profileService: FlogoProfileService ) {
     console.group( 'Constructing FlogoFlowsDetailTasksComponent' );
 

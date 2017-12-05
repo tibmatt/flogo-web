@@ -1,14 +1,15 @@
+import { LanguageService } from '@flogo/core';
+
 import { ImportErrorFormatterService } from './import-error-formatter.service';
-import { TranslateService } from 'ng2-translate';
 import { mockImportErrorResponse } from '../app-import/mocks/error.response.mock';
 import Spy = jasmine.Spy;
 
 describe('Service: ImportErrorFormatterService', function (this: {
   service: ImportErrorFormatterService,
-  mockTranslateService: TranslateService
+  mockTranslateService: LanguageService
 }) {
   beforeEach(() => {
-    this.mockTranslateService = jasmine.createSpyObj<TranslateService>('translateService', [
+    this.mockTranslateService = jasmine.createSpyObj<LanguageService>('translateService', [
       'instant'
     ]);
     this.service = new ImportErrorFormatterService(this.mockTranslateService);

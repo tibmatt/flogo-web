@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 import { IFlogoApplicationModel } from '../../core/application.model';
 import { notification } from '../../shared/utils';
 import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
@@ -20,7 +20,7 @@ export class FlogoAppsListComponent implements OnInit {
 
   public applications: Array<IFlogoApplicationModel> = [];
 
-  constructor(public translate: TranslateService,
+  constructor(private translate: LanguageService,
               private apiApplications: AppsApiService) {
   }
 

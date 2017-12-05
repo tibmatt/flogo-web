@@ -1,7 +1,7 @@
 import { Component, Input, SimpleChanges, OnChanges, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 
 import { PostService } from '../../core/services/post.service';
 import { SanitizeService } from '../../core/services/sanitize.service';
@@ -24,7 +24,8 @@ export class FlogoNewFlowComponent implements OnChanges {
   public flow: FormGroup;
   private triggerId: string;
 
-  constructor(public translate: TranslateService,
+  // TODO: REMOVE EXPOSING TRANSLATE SERVICE
+  constructor(public translate: LanguageService,
     private postService: PostService,
     private flowsService: APIFlowsService,
     private formBuilder: FormBuilder,

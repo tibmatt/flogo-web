@@ -32,7 +32,6 @@ import { FlogoFormBuilderComponent } from './form-builder.component';
     FlogoSharedModule
   ],
   declarations: [
-    FlogoFormBuilderFieldsBaseComponent,
     FlogoFormBuilderFieldsListBoxComponent,
     FlogoFormBuilderFieldsNumberComponent,
     FlogoFormBuilderFieldsObjectComponent,

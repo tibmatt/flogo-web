@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange } from '@angular/core';
 
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 import {FlogoConfigurationCommonService} from '../shared/configuration-common.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent implements OnChanges 
   @Output() onTriggerAction: EventEmitter<string>;
 
   constructor(private _commonService: FlogoConfigurationCommonService,
-              public translate: TranslateService) {
+              private translate: LanguageService) {
     this.isEditable = false;
     this.directions = _commonService.getParameterDirections();
     this.onTriggerAction = new EventEmitter<string>();

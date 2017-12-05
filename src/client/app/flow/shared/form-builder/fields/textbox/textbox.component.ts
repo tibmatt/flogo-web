@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { LanguageService } from '@flogo/core';
 import { FlogoFormBuilderFieldsBaseComponent } from '../shared/base.component';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-flow-form-builder-fields-textbox',
@@ -17,8 +17,7 @@ export class FlogoFormBuilderFieldsTextBoxComponent extends FlogoFormBuilderFiel
   _info: any;
   _fieldObserver: any;
 
-
-  constructor(public translate: TranslateService) {
+  constructor(translate: LanguageService) {
     super(translate);
   }
 

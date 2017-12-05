@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Http } from '@angular/http';
-
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslateLoader, TranslateModule } from 'ng2-translate/ng2-translate';
+import { TranslateModule } from 'ng2-translate/ng2-translate';
 
 import { CopyToClipboardComponent } from './components';
 import { TimeFromNowPipe } from './pipes';
@@ -17,7 +15,6 @@ import {
 } from './directives';
 import { LoadingIndicatorComponent } from './components/loading-indicator.component';
 import { FooterComponent } from '@flogo/shared/components/footer/footer.component';
-import { CustomTranslateLoader } from '../core/services/language.service';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { FlogoDeletePopupComponent } from './components/delete.popup.component';
 import { ObjectPropertiesPipe } from './pipes/objectProperties.pipe';
@@ -40,12 +37,7 @@ const ALL_MODULE_DECLARABLES = [
 @NgModule({ // module dependencies
   imports: [
     NgCommonModule,
-    // todo: should be declared in core?
-    TranslateModule.forRoot({
-      provide: TranslateLoader,
-      useClass: CustomTranslateLoader,
-      deps: [Http]
-    })
+    TranslateModule,
   ],
   declarations: ALL_MODULE_DECLARABLES,
   exports: [

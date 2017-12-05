@@ -4,7 +4,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PUB_EVENTS, SUB_EVENTS } from './messages';
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { convertTaskID, getDefaultValue, normalizeTaskName } from '@flogo/shared/utils';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/filter';
 
@@ -43,7 +43,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   @Output() onBuilderAction: EventEmitter<string>;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
-  constructor(public route: ActivatedRoute, private _postService: PostService, private _translate: TranslateService) {
+  constructor(public route: ActivatedRoute, private _postService: PostService, private _translate: LanguageService) {
     this._initSubscribe();
     this._setFieldsObservers();
 

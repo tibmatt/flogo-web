@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
-import { Http } from '@angular/http';
 import { FlogoAppsListComponent } from './apps-list.component';
 import { ErrorService } from '../../core/services/error.service';
 import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
@@ -13,6 +11,9 @@ import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.
 import { FlogoAppImportComponent } from '../app-import/app-import.component';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlogoNewAppComponent } from '../new-app/new-app.component';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
+import { ProfilesAPIService } from '@flogo/core/services/restapi/v2/profiles-api.service';
+import { MockProfilesAPIService } from '@flogo/core/services/restapi/v2/profiles-api.service.mock';
 
 describe('FlogoAppList component', () => {
   const applications = [
@@ -53,11 +54,23 @@ describe('FlogoAppList component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
-      declarations: [FlogoAppsListComponent, FlogoDeletePopupComponent, TimeFromNowPipe,
-        FlogoAppImportComponent, ModalComponent, FlogoNewAppComponent], // declare the test component
+      imports: [
+        // // TODO:  HttpModule shouldn't be required
+        // HttpModule,
+        // NoDependenciesFakeLanguageModule,
+        FakeRootLanguageModule,
+      ],
+      declarations: [
+        FlogoAppsListComponent,
+        FlogoDeletePopupComponent,
+        TimeFromNowPipe,
+        FlogoAppImportComponent,
+        ModalComponent,
+        FlogoNewAppComponent
+      ], // declare the test component
       providers: [
         HttpUtilsService,
+        { provide: ProfilesAPIService, useClass: MockProfilesAPIService },
         { provide: ErrorService, useClass: ErrorService },
         { provide: AppsApiService, useClass: AppsApiServiceMock }
       ]

@@ -1,8 +1,7 @@
 // begin change
 import { ComponentFixture, TestBed, tick, fakeAsync, inject } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { By, DomSanitizer } from '@angular/platform-browser';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
+import { DomSanitizer } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { FlowsModule as FlogoFlowsModule } from '../../../flogo.flows/flogo.flows.module';
@@ -10,6 +9,7 @@ import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CoreModule as FlogoCoreModule } from '@flogo/core';
 import { FormBuilderModule as FlogoFormBuilderModule } from '../form-builder';
 import { PostService } from '@flogo/core/services/post.service';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 class MockRouter { public navigate() {}; }
 
@@ -112,7 +112,7 @@ function beforeSetup(done)  {
         RouterTestingModule.withRoutes([
           { path: '', component: MockRouter }
         ]),
-        TranslateModule.forRoot(),
+        FakeRootLanguageModule,
         FlogoCoreModule,
         FlogoSharedModule,
         FlogoFlowsModule,

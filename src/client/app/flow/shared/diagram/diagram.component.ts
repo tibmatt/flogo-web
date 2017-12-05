@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChange } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 
 import { FlogoFlowDiagram, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from './models';
 import { PostService } from '@flogo/core/services/post.service';
@@ -36,7 +36,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
   private _diagram: FlogoFlowDiagram;
   private _subscriptions: any[ ];
 
-  constructor(elementRef: ElementRef, private _postService: PostService, private _translate: TranslateService) {
+  constructor(elementRef: ElementRef, private _postService: PostService, private _translate: LanguageService) {
     this.enabledSelectTrigger = false;
     this._elmRef = elementRef;
     this.initSub();

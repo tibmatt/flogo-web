@@ -2,6 +2,10 @@
 
 This document describes how to set up your development environment to build, run and test flogo web.
 
+> Before developing client code please also read the [client code guideline](/docs/client-code-guideline.md)
+
+> Additional developer documentation can be found in [docs](/docs)
+
 * [Prerequisite Software](#prerequisite-software)
 * [Getting the Sources](#getting-the-sources)
 * [Getting the Images](#getting-the-images)

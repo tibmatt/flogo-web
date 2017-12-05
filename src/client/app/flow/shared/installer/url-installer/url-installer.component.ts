@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChange } from '@angular/core';
 import { FLOGO_INSTALLER_STATUS_INSTALLING } from '../constants';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'flogo-flow-url-installer',
@@ -21,7 +20,7 @@ export class FlogoUrlInstallerComponent implements OnChanges {
   cancel = new EventEmitter();
   disableInstall: boolean;
 
-  constructor(translate: TranslateService) {
+  constructor() {
     this.disableInstall = false;
   }
 

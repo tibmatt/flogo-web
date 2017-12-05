@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChange } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 
 @Component({
   selector: 'flogo-flow-configuration-branch',
@@ -16,7 +16,7 @@ export class FlogoFormBuilderConfigurationBranchComponent implements OnChanges {
   /* tslint:enable:no-input-rename */
   fields: any;
 
-  constructor(public translate: TranslateService) {
+  constructor(private translate: LanguageService) {
   }
 
   ngOnChanges(change: { [propName: string]: SimpleChange }) {
@@ -27,7 +27,7 @@ export class FlogoFormBuilderConfigurationBranchComponent implements OnChanges {
     return {
       name: 'condition',
       id: branchInfo.id,
-      title: this.translate.get('FORM-BUILDER-CONFIGURATION-BRANCH:IF')['value'],
+      title: this.translate.instant('FORM-BUILDER-CONFIGURATION-BRANCH:IF'),
       value: branchInfo.condition,
       required: true,
       placeholder: '',

@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
-import { Http } from '@angular/http';
 import { FlogoApplicationSearchComponent } from './search.component';
+import { NoDependenciesFakeLanguageModule } from '@flogo/core/language/testing';
 
 describe('FlogoApplicationSearchComponent component', () => {
   let comp: FlogoApplicationSearchComponent;
@@ -17,7 +16,7 @@ describe('FlogoApplicationSearchComponent component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [NoDependenciesFakeLanguageModule],
       declarations: [FlogoApplicationSearchComponent] // declare the test component
     });
   });

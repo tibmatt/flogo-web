@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, Output, EventEmitter, DebugElement } from '@angular/core';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlogoApplicationFlowsComponent } from './flows.component';
 import { FlogoModal } from '../../core/services/modal.service';
 import { TimeFromNowPipe } from '../../shared/pipes/time-from-now.pipe';
 import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
+import { NoDependenciesFakeLanguageModule } from '@flogo/core/language/testing';
 
 @Component({
   selector: 'flogo-container',
@@ -95,7 +95,7 @@ describe('Application flows', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [NoDependenciesFakeLanguageModule],
       // declare the test component
       declarations: [FlogoApplicationFlowsComponent, ModalComponent, ContainerComponent, TimeFromNowPipe, FlogoDeletePopupComponent],
       providers: [FlogoModal]

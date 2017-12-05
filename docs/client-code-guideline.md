@@ -3,25 +3,27 @@ A style guide for syntax, conventions, and structuring Angular applications
   
 ## Required Libraries and Tools for Developers and QA   
 You must have the following installed on your machine:
-   
-### Libraries   
-The following libraries need to be available on your machines:   
-- [Angular.js 2.x](https://angular.io)   
-   
+
 ### Tools
 - [NPM](https://www.npmjs.com/)
+- NodeJS v6.4.0 or greater
    
 ###Style Guides for Reference   
 Refer to the following style guides if need be:
 
 - [JavaScript Style Guide](https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml)
 - [HTML/CSS Style Guide](https://google-styleguide.googlecode.com/svn/trunk/htmlcssguide.xml)
-- [AngularJS 2.x Style Guide](https://github.com/johnpapa/angular-styleguide/blob/master/a2/README.md)
+- [Angular Style Guide](https://angular.io/guide/styleguide)
 	
 
 ## Guidelines for Developers   
 
-### One component, directive, service, filter... per file, and add meaningful suffix.
+### Javascript
+
+Client code mostly follows the official [Angular Style Guide](https://angular.io/guide/styleguide). Additional
+considerations are detailed below.
+
+#### One component, directive, service, filter... per file, and add meaningful suffix.
 **Valid Suffix**
 
 1. component
@@ -33,39 +35,18 @@ Refer to the following style guides if need be:
 7. e2e
 8. interface
 9. model
-10. tpl
 
 When you define class, you also need to add `Component`, `Directive`... as suffix
 
-### A module folder example
+#### A module folder example
 
-```
-app
-    |-- components
-        |-- app.component.ts
-        |-- app.tpl.html
-        |-- app.component.lang.json
-        |-- app.component.css
-        |-- app.component.spec.ts
-        |-- app.component.e2e.ts
-    |-- directives
-        |-- app.directive.ts
-        |-- app.directive.spec.ts
-        |-- app.directive.e2e.ts
-    |-- services
-    |-- models
-    |-- messages.ts
-```
+// TODO
 
-1. File name use lower case
-2. If name more than one word, use - to connect them. For example `app-detail.component.ts`
-1. The `messages.ts` holds the information of publish/subscribe events of a module (outgoing/incoming messages)
-
-### Using rxjs
+#### Using rxjs
 
 There are few special considerations when using [rxjs](https://github.com/ReactiveX/rxjs) in flogo-web:
 
-#### Never import from `rxjs/Rx`
+##### Do NOT import from `rxjs/Rx`
 
 The RxJS library is large. Importing the `rxjs/Rx` package will import the whole RxJS library into the application,
 this will result in increased page loading times as the application will be forced to download resources it is not going to use.
@@ -73,17 +54,17 @@ this will result in increased page loading times as the application will be forc
 Instead, when you need to use of the RxJS library import directly from the modules, examples:
 
 ```javascript
-// WRONG, this will load the whole RxJS libray
-import { Observable, BehaviorSubject } from 'rxjs/Rx';
-
 // Correct, importing from each module 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+///
+
+// WRONG, this will load the whole RxJS libray
+import { Observable, BehaviorSubject } from 'rxjs/Rx';
 
 ```
 
-
-#### Only add the operators you use
+##### Only add the operators you use
 
 Each code file should add the operators it needs by importing from an RxJS library. Make sure you only add the operators you use,
 as any added operators will be included in the final production bundle.
@@ -182,19 +163,17 @@ ___Note___ that the commented `data` field is used to provide an example of the 
 __TODO:__ in the future, new messaging mechanism will be introduced to replace this one.
 
 
-### Avoid name collision, use module name as prefix, this rule for class name, directive name, selector name...
+#### Avoid name collision, use module name as prefix, this rule for class name, directive name, selector name...
 
-### Use attributes as selectors for directive, so one element can have multiple directives
+// TODO: example
 
-### Use element as selectors for component.
+#### Unit and Integration tests
 
-### Selector naming rule. Element selector use `kebab-case`, attribute or class selector use `lowerCamelCase`
+Read [angular's official testing guide](https://angular.io/guide/testing) and about the [different types of testing](https://vsavkin.com/three-ways-to-test-angular-2-components-dcea8e90bd8d).
 
-### Use `lowerCamelCase` for naming the selectors of your directives
-
-
+DO NOT import the TranslateModule directly, instead use the [language testing utilities](/src/client/app/core/language/testing) under `@flogo/core/language/testing`.
 
 ## Reference
 
 1. [https://mgechev.github.io/angular2-style-guide/](https://mgechev.github.io/angular2-style-guide/)
-2. [Angular 2 Style Guide](https://github.com/johnpapa/angular-styleguide/tree/master/a2)
+2. [Angular Style Guide](https://angular.io/guide/styleguide)

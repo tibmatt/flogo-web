@@ -3,7 +3,6 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/for
 import * as _ from 'lodash';
 
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { FLOGO_TASK_ATTRIBUTE_TYPE } from '@flogo/core/constants';
 
@@ -23,8 +22,7 @@ export class ParamsSchemaComponent implements OnInit {
   selectTypes: any[] = [];
   displayInputParams: boolean;
 
-  constructor(public translate: TranslateService,
-              private _fb: FormBuilder) {
+  constructor(private _fb: FormBuilder) {
     const options = Object.keys(FLOGO_TASK_ATTRIBUTE_TYPE);
     this.selectTypes = options.filter(o => _.isNaN(_.parseInt(o)) && o !== FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.INT]);
   }

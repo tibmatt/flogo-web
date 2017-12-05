@@ -5,6 +5,7 @@ import 'rxjs/add/operator/filter';
 import { FlogoFormBuilderConfigurationTaskComponent } from './task.component';
 import {FormBuilderModule} from '@flogo/flow/shared/form-builder';
 import {FlogoConfigurationCommonService} from '../shared/configuration-common.service';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 describe('Form-builder component', () => {
   let comp: FlogoFormBuilderConfigurationTaskComponent;
@@ -16,9 +17,10 @@ describe('Form-builder component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FormBuilderModule],
-
-
+      imports: [
+        FakeRootLanguageModule,
+        FormBuilderModule,
+      ],
       declarations: [],
       providers: [FlogoConfigurationCommonService]
     });

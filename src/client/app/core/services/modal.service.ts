@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 import * as lodash from 'lodash';
+// do not import from @flogo/core, it will create a cyclic dependency
+import { LanguageService } from '../language';
 
 export interface IOptions {
   primary?: string;
@@ -9,7 +10,7 @@ export interface IOptions {
 
 @Injectable()
 export class FlogoModal {
-  constructor(public translate: TranslateService) {
+  constructor(private translate: LanguageService) {
   }
 
   confirmDelete(message, styles?: {

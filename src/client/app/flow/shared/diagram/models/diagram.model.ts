@@ -15,7 +15,7 @@ import {
 } from '../constants';
 import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { genBranchLine } from '../utils';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 
 // import * as moment from 'moment';
 
@@ -198,7 +198,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
   constructor(diagram: IFlogoFlowDiagram,
               private tasks: IFlogoFlowDiagramTaskDictionary,
-              private translate: TranslateService,
+              private translate: LanguageService,
               private profileType: FLOGO_PROFILE_TYPE,
               private elm ?: HTMLElement,
               private diagramType?: string) {

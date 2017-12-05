@@ -1,11 +1,12 @@
 import { FlogoNewAppComponent } from './new-app.component';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { TranslateModule } from 'ng2-translate';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { ProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service';
 import { MockProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service.mock';
 import { By } from '@angular/platform-browser';
 import { FLOGO_PROFILE_TYPE } from '../../core/constants';
+import { NoDependenciesFakeLanguageModule } from '@flogo/core/language/testing';
+
 describe('Component: FlogoNewAppComponent', () => {
   let comp: FlogoNewAppComponent;
   let service = null;
@@ -17,7 +18,7 @@ describe('Component: FlogoNewAppComponent', () => {
 
   beforeEach(() => {
     return TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [NoDependenciesFakeLanguageModule],
       providers: [{ provide: ProfilesAPIService, useClass: MockProfilesAPIService }],
       declarations: [FlogoNewAppComponent, ModalComponent], // declare the test component
     })

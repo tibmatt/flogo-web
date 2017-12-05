@@ -2,9 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
+import { CoreModule } from '@flogo/flow/core';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
+
 import { FlowsModule as FlogoFlowsModule } from '../../../../flogo.flows/flogo.flows.module';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
-import { CoreModule as FlogoCoreModule } from '@flogo/core';
 import { FlogoFormBuilderFieldsTextAreaComponent } from './textarea/textarea.component';
 import { FlogoFormBuilderFieldsTextBoxComponent } from './textbox/textbox.component';
 import { FlogoFormBuilderFieldsNumberComponent } from './number/number.component';
@@ -129,7 +131,8 @@ describe('Form-builder component', () => {
   beforeEach(done => {
     TestBed.configureTestingModule({
       imports: [
-        FlogoCoreModule,
+        FakeRootLanguageModule,
+        CoreModule,
         FlogoSharedModule,
         FlogoFlowsModule
       ],

@@ -1,12 +1,10 @@
 import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
-import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
-import { CoreModule as FlogoCoreModule } from '../../core/core.module';
+import { SharedModule as FlogoSharedModule } from '@flogo/shared/shared.module';
+import { CoreModule as FlogoCoreModule } from '@flogo/core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
 import { FlogoApplicationSearchComponent } from '../../flogo.apps.search/components/search.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flows/index';
@@ -15,6 +13,7 @@ import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../settings/settings.component';
 import { FlogoExportFlowsComponent } from './export-flows/export-flows.component';
 import {FlowTriggerGroupComponent} from '../flows/flow-group/trigger-group.component';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 
 @Component({
@@ -61,8 +60,7 @@ describe('FlogoApplicationDetailComponent component', () => {
     TestBed.configureTestingModule({
       imports: [
         Ng2Bs3ModalModule,
-        TranslateModule.forRoot(),
-        Ng2Bs3ModalModule,
+        FakeRootLanguageModule,
         FlogoCoreModule,
         FlogoSharedModule,
         FlogoFlowsModule,

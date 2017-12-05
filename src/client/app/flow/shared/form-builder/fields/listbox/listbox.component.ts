@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FlogoFormBuilderFieldsBaseComponent } from '../shared/base.component';
 import { DEFAULT_VALUES_OF_TYPES as DEFAULT_VALUES } from '@flogo/core/constants';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 
 const EMPTY_OPTION = '<empty>';
 
@@ -20,7 +20,7 @@ export class FlogoFormBuilderFieldsListBoxComponent extends FlogoFormBuilderFiel
   _fieldObserver: any;
   options: any[] = [];
 
-  constructor(public translate: TranslateService) {
+  constructor(translate: LanguageService) {
     super(translate);
   }
 

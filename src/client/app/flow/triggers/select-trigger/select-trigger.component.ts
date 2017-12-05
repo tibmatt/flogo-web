@@ -1,8 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output} from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
-import { PostService } from '@flogo/core/services/post.service';
 import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '@flogo/core/services/restapi/v2/triggers-api.service';
-import { PUB_EVENTS } from './messages';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
@@ -27,9 +24,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   private _isActivated = false;
 
 
-  constructor(public translate: TranslateService,
-              private postService: PostService,
-              private profileService: FlogoProfileService,
+  constructor(private profileService: FlogoProfileService,
               private triggersServiceV2: RESTAPITriggersServiceV2) {
     this.displayExisting = true;
   }

@@ -1,13 +1,5 @@
-import { Component } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 
-@Component({
-  template: '',
-  // disabling no-input-rename rule to make the linter pass for now
-  // decided to skip fixing because this class should be deprecated
-  /* tslint:disable-next-line:use-input-property-decorator */
-  inputs: ['_info:info', '_fieldObserver:fieldObserver']
-})
 export class FlogoFormBuilderFieldsBaseComponent {
   _info: any;
   _hasError = false;
@@ -15,7 +7,7 @@ export class FlogoFormBuilderFieldsBaseComponent {
   _fieldObserver: any;
   originalInfo: any;
 
-  constructor(public translate: TranslateService) {
+  constructor(protected translate: LanguageService) {
     this._hasError = false;
   }
 

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HttpModule } from '@angular/http';
-import { TranslateModule } from 'ng2-translate';
+import { Http, HttpModule } from '@angular/http';
+import { TranslateLoader, TranslateModule, TranslateService } from 'ng2-translate';
 
 import { RESTAPIApplicationsService } from './services/restapi/applications-api.service';
 import { RESTAPIActivitiesService } from './services/restapi/activities-api.service';
@@ -20,7 +20,6 @@ import { PostService } from './services/post.service';
 import { SanitizeService } from './services/sanitize.service';
 import { ConfigurationLoadedGuard } from './services/configuration-loaded-guard.service';
 import { LoadingStatusService } from './services/loading-status.service';
-import { LanguageService } from './services/language.service';
 import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
 import { ChildWindowService } from './services/child-window.service';
@@ -38,8 +37,8 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
   imports: [
     HttpModule,
     RouterModule,
-    TranslateModule,
     WalkthroughModule,
+    TranslateModule,
   ],
   providers: [ // services
     RESTAPIApplicationsService,
@@ -65,7 +64,6 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
     SanitizeService,
     ConfigurationLoadedGuard,
     LoadingStatusService,
-    LanguageService,
     WindowRef,
     FlowsService,
     FlogoProfileService,

@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { Http } from '@angular/http';
-
 import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Observable } from 'rxjs/Observable';
@@ -13,6 +11,7 @@ import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '../../core/core.module';
 import { PUB_EVENTS } from './message';
 import { FlogoNewFlowComponent } from './new-flow.component';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 const EXISTING_FLOW_NAME = 'existing';
 const flowsServiceStub = {
@@ -52,8 +51,8 @@ describe('Component: FlogoFlowsAdd', () => {
   beforeEach((done) => {
     TestBed.configureTestingModule({
       imports: [
+        FakeRootLanguageModule,
         Ng2Bs3ModalModule,
-        TranslateModule.forRoot(),
         FlogoCoreModule,
         FlogoSharedModule
       ],

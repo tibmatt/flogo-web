@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../core/application.model';
-import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FlogoModal } from '../core/services/modal.service';
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 
 
@@ -18,9 +16,7 @@ export class FlogoHomeComponent implements OnInit {
   originalFlows: Array<IFlogoApplicationFlowModel> = [];
   application: IFlogoApplicationModel = null;
 
-  constructor(private _flogoModal: FlogoModal,
-              private router: Router,
-              public translate: TranslateService,
+  constructor(private router: Router,
               public applicationServiceAPI: AppsApiService) {
   }
 

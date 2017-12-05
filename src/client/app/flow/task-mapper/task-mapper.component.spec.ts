@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { PostService } from '@flogo/core/services/post.service';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CommonModule as NgCommonModule } from '@angular/common';
 import { TaskMapperComponent } from './task-mapper.component';
 import { MapperModule } from '../shared/mapper';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 const postServiceStub = {
 
@@ -33,9 +33,8 @@ describe('Component: TaskMapperComponent', () => {
   beforeEach((done) => {
     TestBed.configureTestingModule({
       imports: [
-        // todo: stub/mock translator
-        TranslateModule.forRoot(),
         NgCommonModule,
+        FakeRootLanguageModule,
         FlogoSharedModule,
         MapperModule,
       ],
@@ -43,7 +42,6 @@ describe('Component: TaskMapperComponent', () => {
         TaskMapperComponent
       ], // declare the test component
       providers: [
-        // { provide: RESTAPIFlowsService, useValue: flowsServiceStub },
         { provide: PostService, useValue: postServiceStub }
       ]// ,
       // schemas: [NO_ERRORS_SCHEMA]

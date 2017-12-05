@@ -1,6 +1,6 @@
 import {Component, ViewChild, SimpleChange, OnChanges, EventEmitter, Input, Output} from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 import { RESTAPIFlowsService } from '../../core/services/restapi/flows-api.service';
 import { notification } from '../../shared/utils';
 
@@ -25,7 +25,7 @@ export class FlogoFlowsFlowNameComponent implements OnChanges {
     @ViewChild('flowNameModal')
     flowNameModal: ModalComponent;
 
-    constructor(public translate: TranslateService, public APIFlows: RESTAPIFlowsService) {
+    constructor(public translate: LanguageService, public APIFlows: RESTAPIFlowsService) {
     }
 
     public sendAddFlowMsg() {

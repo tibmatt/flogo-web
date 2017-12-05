@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '@flogo/core';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../core/application.model';
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
@@ -56,7 +56,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
-  constructor(public translate: TranslateService,
+  constructor(public translate: LanguageService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal,
               public profileSerivce: FlogoProfileService,

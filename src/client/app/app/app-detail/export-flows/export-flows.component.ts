@@ -1,9 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import {IFlogoApplicationFlowModel } from '../../../core/application.model';
-import { TranslateService } from 'ng2-translate/ng2-translate';
 import {AppDetailService} from '../../../home/services/apps.service';
-
 
 @Component({
   selector: 'flogo-export-flow',
@@ -19,10 +17,7 @@ export class FlogoExportFlowsComponent {
   checkedFlows = [];
   checkAllFlows = [];
 
-  constructor(public translate: TranslateService,
-              private appDetailService: AppDetailService,
-  ) {
-
+  constructor(private appDetailService: AppDetailService) {
   }
 
   public openExport() {

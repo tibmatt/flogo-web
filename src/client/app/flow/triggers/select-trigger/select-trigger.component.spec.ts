@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { FlogoSelectTriggerComponent } from './select-trigger.component';
 import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
@@ -9,15 +8,13 @@ import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '@flogo/core/
 import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
 import { RESTAPITriggersServiceMock } from '@flogo/core/services/restapi/triggers-api.service.mock';
 import { RESTAPITriggersServiceMock as RESTAPITriggersServiceMockV2 } from '@flogo/core/services/restapi/v2/triggers-api.service.mock';
-import { InstallerModule } from '@flogo/flow/shared/installer/installer.module';
 import { PostService } from '@flogo/core/services/post.service';
 import { HttpUtilsService } from '@flogo/core/services/restapi/http-utils.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 import { FlogoProfileServiceMock } from '@flogo/core/services/profile.service.mock';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import {ModalComponent, Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
 import {TriggersModule} from '@flogo/flow/triggers';
-import { CoreModule as FlogoCoreModule } from '@flogo/core';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 const postServiceStub = {
 
@@ -59,8 +56,10 @@ describe('FlogoSelectTrigger component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TriggersModule,
-        FlogoCoreModule],
+      imports: [
+        FakeRootLanguageModule,
+        TriggersModule,
+      ],
       providers: [
         RESTAPIActivitiesService,
         { provide: PostService, useValue: postServiceStub },

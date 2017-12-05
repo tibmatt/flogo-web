@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { SharedModule as FlogoSharedModule } from '../../../shared/shared.module';
-import { CoreModule as FlogoCoreModule } from '../../../core/core.module';
-import {IFlogoApplicationFlowModel } from '../../../core/application.model';
+import { SharedModule as FlogoSharedModule } from '@flogo/shared';
+import { CoreModule as FlogoCoreModule } from '@flogo/core';
+import { FakeRootLanguageModule } from '@flogo/core/language/testing';
+import {IFlogoApplicationFlowModel } from '@flogo/core/application.model';
 import { AppDetailService } from '../../../home/services/apps.service';
 import { FlogoExportFlowsComponent } from './export-flows.component';
-
 
 @Component({
   template: `<flogo-export-flow [flows]="flows"></flogo-export-flow>`
@@ -34,8 +33,7 @@ describe('FlogoExportFlowsComponent component', () => {
   beforeEach(done => {
     TestBed.configureTestingModule({
       imports: [
-        Ng2Bs3ModalModule,
-        TranslateModule.forRoot(),
+        FakeRootLanguageModule,
         Ng2Bs3ModalModule,
         FlogoCoreModule,
         FlogoSharedModule,
