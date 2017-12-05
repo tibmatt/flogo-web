@@ -9,7 +9,6 @@ import { FlogoApplicationComponent } from '../app/app.component';
 import { FlogoApplicationDetailComponent } from '../app/app-detail/app-detail.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../app/flows/index';
 import { FlogoAppsListComponent } from './apps-list/apps-list.component';
-import { FlogoApplicationSearchComponent } from '../flogo.apps.search/components/search.component';
 import { FlogoAppSettingsComponent } from '../app/settings/settings.component';
 import { AppDetailService } from './services/apps.service';
 import { FlogoAppImportComponent } from './app-import/app-import.component';
@@ -35,7 +34,6 @@ import { RouterModule } from '@angular/router';
     FlogoApplicationFlowsComponent,
     FlowGroupComponent,
     FlogoAppsListComponent,
-    FlogoApplicationSearchComponent,
     FlogoAppSettingsComponent,
     FlogoAppImportComponent,
     FlogoNewAppComponent,

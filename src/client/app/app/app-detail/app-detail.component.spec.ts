@@ -6,7 +6,6 @@ import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.m
 import { SharedModule as FlogoSharedModule } from '@flogo/shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '@flogo/core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
-import { FlogoApplicationSearchComponent } from '../../flogo.apps.search/components/search.component';
 import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../flows/index';
 import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
 import { FlogoProfileService } from '../../core/services/profile.service';
@@ -66,7 +65,6 @@ describe('FlogoApplicationDetailComponent component', () => {
         FlogoFlowsModule,
       ],
       declarations: [
-        FlogoApplicationSearchComponent,
         FlogoAppSettingsComponent,
         FlogoApplicationFlowsComponent,
         FlogoApplicationDetailComponent,
