@@ -6,7 +6,7 @@ import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CoreModule as FlogoCoreModule } from '@flogo/core';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import {IFlogoApplicationFlowModel } from '@flogo/core/application.model';
-import { AppDetailService } from '@flogo/home/services/apps.service';
+import { AppDetailService } from '@flogo/app/core/apps.service';
 import { FlogoExportFlowsComponent } from './export-flows.component';
 
 @Component({

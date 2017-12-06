@@ -5,7 +5,7 @@ import { LanguageService } from '@flogo/core';
 import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../core/application.model';
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
-} from '../../home/services/apps.service';
+} from '../core/apps.service';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { SanitizeService } from '../../core/services/sanitize.service';

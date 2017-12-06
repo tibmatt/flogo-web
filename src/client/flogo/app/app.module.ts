@@ -5,7 +5,7 @@ import {RouterModule} from '@angular/router';
 import {FlogoApplicationComponent} from './app.component';
 import {FlogoAppSettingsComponent} from '@flogo/app/settings/settings.component';
 import {FlogoApplicationDetailComponent} from '@flogo/app/app-detail/app-detail.component';
-import {AppDetailService} from '@flogo/home/services/apps.service';
+import {AppDetailService} from '@flogo/app/core/apps.service';
 import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.component';
 import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
 import {FlogoExportFlowsComponent} from '@flogo/app/export-flows/export-flows.component';
