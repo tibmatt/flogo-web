@@ -1,4 +1,3 @@
-import { FlowsModule as FlogoFlowsModule } from './flogo.flows/flogo.flows.module';
 
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
@@ -20,6 +19,7 @@ import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';
 import { CustomTranslateLoader } from '@flogo/core/language';
 import { Http } from '@angular/http';
+import {FlogoApplicationModule} from '@flogo/app';
 
 @NgModule({
   imports: [
@@ -38,6 +38,7 @@ import { Http } from '@angular/http';
     FlogoLogsModule,
     FlowModule,
     FlogoConfigModule,
+    FlogoApplicationModule,
     routing,
   ],
   declarations: [

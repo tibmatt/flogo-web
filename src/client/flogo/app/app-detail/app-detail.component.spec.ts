@@ -2,17 +2,18 @@ import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testin
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { FlowsModule as FlogoFlowsModule } from '../../flogo.flows/flogo.flows.module';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '@flogo/core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
-import { FlogoApplicationFlowsComponent, FlowGroupComponent } from '../shared/flows/index';
 import { AppDetailService, ApplicationDetail } from '../../home/services/apps.service';
 import { FlogoProfileService } from '../../core/services/profile.service';
 import { FlogoAppSettingsComponent } from '../settings/settings.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import {FlowTriggerGroupComponent} from '../trigger-group/trigger-group.component';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
+import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.component';
+import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
+import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
 
 
 @Component({
@@ -61,8 +62,7 @@ describe('FlogoApplicationDetailComponent component', () => {
         Ng2Bs3ModalModule,
         FakeRootLanguageModule,
         FlogoCoreModule,
-        FlogoSharedModule,
-        FlogoFlowsModule,
+        FlogoSharedModule
       ],
       declarations: [
         FlogoAppSettingsComponent,
@@ -71,7 +71,8 @@ describe('FlogoApplicationDetailComponent component', () => {
         FlowGroupComponent,
         ContainerComponent,
         FlogoExportFlowsComponent,
-        FlowTriggerGroupComponent
+        FlowTriggerGroupComponent,
+        FlogoNewFlowComponent
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },
