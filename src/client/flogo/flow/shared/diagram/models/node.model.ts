@@ -1,6 +1,6 @@
-import { IFlogoFlowDiagram } from '../models';
-import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { flogoIDEncode } from '@flogo/shared/utils';
+// import { IFlogoFlowDiagram } from './diagram.model';
+import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 
 export interface IFlogoFlowDiagramNode {
   id: string; // id of the node
@@ -8,7 +8,7 @@ export interface IFlogoFlowDiagramNode {
   type: FLOGO_FLOW_DIAGRAM_NODE_TYPE; // type of the node
   children: string[ ]; // ids of the children IFlogoFlowDiagramNode
   parents: string[ ]; // ids of the parents IFlogoFlowDiagramNode
-  subProc ?: IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
+  // subProc ?: IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
   __status?: {
     [key: string]: boolean;
   };
@@ -29,7 +29,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
   type: FLOGO_FLOW_DIAGRAM_NODE_TYPE; // type of the node
   children: string[ ]; // ids of the children IFlogoFlowDiagramNode
   parents: string[ ]; // ids of the parents IFlogoFlowDiagramNode
-  subProc: IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
+  // subProc: IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
 
   static genNodeID(): string {
     let id = '';
@@ -41,7 +41,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     }
 
     return flogoIDEncode(id);
-  };
+  }
 
   constructor(node ?: IFlogoFlowDiagramNode) {
     if (!node) {
@@ -55,7 +55,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     }
 
     this.update(node);
-  };
+  }
 
   public update(node: IFlogoFlowDiagramNode): Promise<FlogoFlowDiagramNode> {
 
@@ -64,18 +64,18 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     this.type = node.type;
     this.children = _.cloneDeep(node.children);
     this.parents = _.cloneDeep(node.parents);
-    this.subProc = _.cloneDeep(node.subProc);
+    // this.subProc = _.cloneDeep(node.subProc);
 
     return Promise.resolve(this);
-  };
+  }
 
   public hasNoChild() {
     return !this.children.length;
-  };
+  }
 
   public hasNoParent() {
     return !this.parents.length;
-  };
+  }
 
   public linkTo(nodes: {
     parents ?: string[ ],
@@ -92,7 +92,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     }
 
     return Promise.all(promises);
-  };
+  }
 
   public linkToChildren(nodeIDs: string[ ]): Promise<boolean> {
     this.children = _.union(this.children, nodeIDs);
@@ -105,7 +105,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     /* tslint:enable:no-unused-expression */
 
     return Promise.resolve(true);
-  };
+  }
 
   public linkToParents(nodeIDs: string[ ]): Promise<boolean> {
     this.parents = _.union(this.parents, nodeIDs);
@@ -118,7 +118,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     /* tslint:enable:no-unused-expression */
 
     return Promise.resolve(true);
-  };
+  }
 
   public unlinkFrom(nodes: {
     parents ?: string[ ],
@@ -135,7 +135,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     }
 
     return Promise.all(promises);
-  };
+  }
 
   public unlinkFromChildren(nodeIDs: string[ ]): Promise<boolean> {
     const removed = _.remove(
@@ -152,7 +152,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     /* tslint:enable:no-unused-expression */
 
     return Promise.resolve(true);
-  };
+  }
 
   public unlinkFromParents(nodeIDs: string[ ]): Promise<boolean> {
     const removed = _.remove(
@@ -169,6 +169,6 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     /* tslint:enable:no-unused-expression */
 
     return Promise.resolve(true);
-  };
+  }
 
 }

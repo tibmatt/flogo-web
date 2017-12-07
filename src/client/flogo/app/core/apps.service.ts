@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import {Action, IFlogoApplicationModel, Trigger} from '../../core/application.model';
+import { IFlogoApplicationModel } from '@flogo/core/application.model';
 import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
 import { ErrorService } from '../../core/services/error.service';
+import { App} from './app.interface';
+import { ApplicationDetail } from './application-detail.interface';
+import { TriggerGroup } from './trigger-group.interface';
+import { FlowGroup } from './flow-group.interface';
 
 const DEFAULT_STATE = {
   name: {
@@ -17,41 +21,6 @@ const DEFAULT_STATE = {
     errors: {}
   }
 };
-
-export interface ApplicationDetailState {
-  name: {
-    pendingSave: boolean,
-    hasErrors: boolean,
-    errors: { [key: string]: boolean }
-  };
-  description: {
-    pendingSave: boolean,
-    hasErrors: boolean,
-    errors: { [key: string]: boolean }
-  };
-}
-
-export interface FlowGroup {
-  trigger: Trigger|null;
-  // todo: define interface
-  flows: any[];
-}
-
-export interface TriggerGroup {
-  triggers: Trigger[]|null;
-  // todo: define interface
-  flow: Action;
-}
-
-export interface App extends IFlogoApplicationModel {
-  flowGroups: FlowGroup[];
-  triggerGroups: TriggerGroup[];
-}
-
-export interface ApplicationDetail {
-  app: App;
-  state: ApplicationDetailState;
-}
 
 @Injectable()
 export class AppDetailService {

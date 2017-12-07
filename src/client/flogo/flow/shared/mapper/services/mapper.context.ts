@@ -3,12 +3,13 @@
 // import { IAppModel } from '../app/app.model';
 import {
   IExpressionParser,
-  IMapContextValidator,
   IMapFunctionsLookup,
+  ISchemaProvider,
   IMapperContext,
   IMapping,
-  ISchemaProvider
-} from '../models/map-model';
+  IMapContextValidator,
+} from '../models';
+
 // import { STRING_MAP } from '../../../common/index';
 
 // tslint:disable-next-line:interface-over-type-literal

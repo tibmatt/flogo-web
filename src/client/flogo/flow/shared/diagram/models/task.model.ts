@@ -1,10 +1,8 @@
-import {
-  IFlogoFlowDiagramTaskAttributeMapping,
-  IFlogoFlowDiagramTaskAttributes,
-  IFlogoFlowDiagramTaskLink
-} from '../models';
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { flogoIDEncode } from '@flogo/shared/utils';
+import { IFlogoFlowDiagramTaskAttributes } from './attribute.model';
+import { IFlogoFlowDiagramTaskAttributeMapping } from './attribute-mapping.model';
+import { IFlogoFlowDiagramTaskLink } from './task-link.model';
 
 export interface IFlogoFlowDiagramTask {
   id: string;
@@ -53,11 +51,11 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
 
   static genTaskID(): string {
     return flogoIDEncode('FlogoFlowDiagramTask::' + Date.now());
-  };
+  }
 
   constructor(task ?: IFlogoFlowDiagramTask) {
     this.update(task);
-  };
+  }
 
   update(task: IFlogoFlowDiagramTask) {
     if (!task) {
@@ -95,7 +93,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
       this.__status = _.cloneDeep(task.__status);
     }
 
-  };
+  }
 }
 
 export function makeDefaultErrorTrigger(id): IFlogoFlowDiagramTask {

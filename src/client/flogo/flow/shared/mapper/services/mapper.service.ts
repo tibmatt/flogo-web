@@ -20,13 +20,12 @@ import { TreeService } from './tree.service';
 import {
   IMapExpression,
   IMapFunctionsLookup,
-  IMapperContext,
   ISchemaProvider
 } from '../models/map-model';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
-import { IParsedExpressionDetails } from '../models/map-model';
+import { IParsedExpressionDetails, IMapperContext } from '../models';
 import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from '../constants';
 
 export interface TreeState {
@@ -391,7 +390,7 @@ export class MapperService {
     }
 
     const tree = this.nodeFactory.fromJsonSchema(outputSchemas,
-      (treeNode: MapperTreeNode, level: number, path: string, parents: MapperTreeNode[]) : MapperTreeNode => {
+      (treeNode: MapperTreeNode, level: number, path: string, parents: MapperTreeNode[]): MapperTreeNode => {
         const parentsAndCurrentNode = parents.concat(treeNode);
         treeNode.snippet = this.makeSnippet(parentsAndCurrentNode);
         return treeNode;

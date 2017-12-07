@@ -13,7 +13,7 @@ import {
 
 import { flogoIDDecode } from '../../../../shared/utils';
 import { MapperSchema, FlowMetadata } from '../../../task-mapper/models';
-import { IMapping } from '../models/map-model';
+import { IMapping } from '../models/imapping';
 
 export type  MappingsValidatorFn = (imapping: IMapping) => boolean;
 

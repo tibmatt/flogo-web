@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { TranslateModule } from 'ng2-translate/ng2-translate';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { Observable } from 'rxjs/Observable';
 
@@ -126,13 +125,13 @@ describe('Component: FlogoFlowsAdd', () => {
     tick(500);
     fixture.detectChanges();
 
-    const postService = fixture.debugElement.injector.get(PostService);
+    const postServiceStubInstance = <any> fixture.debugElement.injector.get(PostService);
 
-    expect(postService.published).toBeDefined('Published message is not defined');
-    expect(postService.published.channel).toBe(PUB_EVENTS.addFlow.channel);
-    expect(postService.published.topic).toBe(PUB_EVENTS.addFlow.topic);
+    expect(postServiceStubInstance.published).toBeDefined('Published message is not defined');
+    expect(postServiceStubInstance.published.channel).toBe(PUB_EVENTS.addFlow.channel);
+    expect(postServiceStubInstance.published.topic).toBe(PUB_EVENTS.addFlow.topic);
 
-    const messageData = postService.published.data;
+    const messageData = postServiceStubInstance.published.data;
     expect(messageData.name).toBe(testFlow.name);
     expect(messageData.description).toBe(testFlow.description);
 

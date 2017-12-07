@@ -1,7 +1,5 @@
 import {
-  EnumMapperErrorCodes,
   IExpressionParser,
-  IMappingError,
   IParseError,
   IParseLocation,
   IParseResult,
@@ -9,6 +7,7 @@ import {
   IParseTree,
   ITokenLocation
 } from './map-model';
+import { EnumMapperErrorCodes, IMappingError } from './imapping-error';
 // import * as mapparser from 'wi-mapper-parser';
 
 /**
@@ -92,9 +91,7 @@ export class ParseError implements IParseError {
 
   getLocation(): ITokenLocation {
     let start: IParseLocation = ParseLocation.newLocation(-1, -1, -1);
-    ;
     let end: IParseLocation = ParseLocation.newLocation(-1, -1, -1);
-    ;
     if (this.error.location) {
       if (this.error.location.start) {
         start = ParseLocation.newLocation(

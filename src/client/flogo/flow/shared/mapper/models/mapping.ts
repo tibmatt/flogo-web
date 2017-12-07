@@ -1,4 +1,5 @@
-import { IMapExpression, IMapping } from './map-model';
+import { IMapExpression} from './map-model';
+import { IMapping } from './imapping';
 
 export class Mapping implements IMapping {
 

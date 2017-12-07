@@ -1,11 +1,17 @@
 import {
   FlogoFlowDiagramNode,
   IFlogoFlowDiagramNode,
-  IFlogoFlowDiagramNodeDictionary,
   IFlogoFlowDiagramRootNode,
+} from './node.model';
+import {
   IFlogoFlowDiagramTask,
-  IFlogoFlowDiagramTaskDictionary
-} from '../models';
+} from './task.model';
+import {
+  IFlogoFlowDiagramTaskDictionary,
+  IFlogoFlowDiagramNodeDictionary,
+} from './dictionary.model';
+import { IFlogoFlowDiagram } from './diagram.interface';
+
 import { Selection } from 'd3';
 import {
   FLOGO_FLOW_DIAGRAM_DEBUG as DEBUG,
@@ -14,17 +20,9 @@ import {
   FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE
 } from '../constants';
 import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import { genBranchLine } from '../utils';
+import { genBranchLine } from './branch-generator';
 import { LanguageService } from '@flogo/core';
 
-// import * as moment from 'moment';
-
-export interface IFlogoFlowDiagram {
-  root?: IFlogoFlowDiagramRootNode;
-  hasTrigger?: boolean;
-  nodes: IFlogoFlowDiagramNodeDictionary;
-  MAX_ROW_LEN?: number;
-}
 
 const DEFAULT_MAX_ROW_LEN = 6;
 

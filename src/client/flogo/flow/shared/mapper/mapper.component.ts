@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
-import { IMapperContext, IMapping } from './models/map-model';
+import { IMapping } from './models/imapping';
+import { IMapperContext } from './models/imapper-context';
 
 import 'rxjs/add/operator/auditTime';
 import 'rxjs/add/operator/catch';
@@ -79,7 +80,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       });
 
     state$
-      .scan((acc, state: MapperState) => {
+      .scan((acc: { state: MapperState, prevNode, nodeChanged }, state: MapperState) => {
         let nodeChanged = false;
         let prevNode = acc.prevNode;
         const currentSelection = state.currentSelection || {};

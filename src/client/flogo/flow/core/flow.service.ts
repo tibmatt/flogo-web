@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UIModelConverterService } from './ui-model-converter.service';
-import { IFlogoFlowDiagram } from '../shared/diagram/models/diagram.model';
+import { IFlogoFlowDiagram } from '../shared/diagram/models';
 import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
 import { IFlogoFlowDiagramTaskDictionary } from '../shared/diagram/models/dictionary.model';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';

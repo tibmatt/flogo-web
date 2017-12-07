@@ -64,9 +64,7 @@ import {
   isMapperActivity,
   normalizeTaskName,
   notification,
-  objectFromArray,
-  updateBranchNodesRunStatus
-} from '../shared/utils';
+  objectFromArray} from '@flogo/shared/utils';
 
 import { flogoFlowToJSON, triggerFlowToJSON } from './shared/diagram/models/flow.model';
 
@@ -77,6 +75,7 @@ import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
 import { FlowMetadata } from './task-mapper/models/flow-metadata';
 import { LanguageService } from '@flogo/core';
+import { updateBranchNodesRunStatus } from './shared/diagram/utils';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;

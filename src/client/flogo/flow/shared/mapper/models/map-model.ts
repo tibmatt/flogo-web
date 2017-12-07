@@ -1,12 +1,16 @@
 // import { IFlow } from '../app/flows';
 import { Observable } from 'rxjs/Observable';
+import { IMapping } from './imapping';
+import { IMapContextValidator } from './imap-context-validator';
+import { IMapperResult } from './imapper-result';
+import { IMappingError } from './imapping-error';
 // import { IFunctionArgs, IFunctionContribution, IFunctionReturn } from '../contrib';
 // import { STRING_MAP } from '../../types';
 // import { IAppModel } from '../index';
 // import { IMessaging } from '../messaging';
 
 // tslint:disable-next-line:interface-over-type-literal
-type STRING_MAP<T> = {[key: string]: T};
+export type STRING_MAP<T> = {[key: string]: T};
 
 /**
  * Details of a parsed expression string
@@ -57,27 +61,6 @@ export interface IMapExpression {
    *         child: for-each(p.a,q.a)=>{ for-each(p.a,q.a) => { p.a.x=q.a.x, p.a.y=q.a.y }}
    */
   getMappings(): STRING_MAP<IMapExpression>;
-}
-
-/**
- * Root Level mapping for the whole mapper
- * This object is serializable
- */
-export interface IMapping {
-  /**
-   * Individual mapping
-   * e.g. a.b.c => String.concat(x.a,y.b)
-   * maps are stored in insertion order
-   */
-  mappings: STRING_MAP<IMapExpression>;
-
-  /**
-   * Individual mapping
-   * e.g. a.b.c => String.concat(x.a,y.b)
-   * maps are stored in insertion order
-   */
-  // getMappings(): STRING_MAP<IMapExpression>;
-
 }
 
 /**
@@ -141,30 +124,6 @@ export interface IMapFunctionsLookup {
 /**
  * Mapping Error codes
  */
-export enum EnumMapperErrorCodes {
-  M_INVALID_IDENTIFIER = 4000,
-  M_INVALID_FUNCTION,
-  M_INVALID_TYPE,
-  M_INVALID_SYNTAX
-}
-
-/**
- *  Mapping Error Code to Error Messages
- *  load messages from file/resource
- */
-export interface IMappingError {
-  errorCode: EnumMapperErrorCodes;
-  errorMsg: string;
-
-  /**
-   * returns errorcode
-   */
-  getErrorCode(): EnumMapperErrorCodes | number;
-
-  getErrorMessage(): string;
-
-  toString(): string;
-}
 
 /**
  * Parse location
@@ -195,26 +154,6 @@ export interface IParseError extends IMappingError {
   getLocation(): ITokenLocation;
 }
 
-
-/**
- * Mapping Validation Result
- * A result can contain one or more errors
- */
-export interface IMapperResult {
-  errors: IMappingError[];
-
-  isValid(): boolean;
-
-  getErrors(): IMappingError[];
-}
-
-/**
- * Map Context validator responsible for
- * validating mapping LHS and RHS expressions
- */
-export interface IMapContextValidator {
-  validate(context: IMapperContext): IMapperResult;
-}
 
 /**
  * Provides different contextual schemas

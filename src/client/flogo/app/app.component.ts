@@ -4,7 +4,7 @@ import { LanguageService } from '@flogo/core';
 import { notification } from '../shared/utils';
 import { PostService } from '../core/services/post.service';
 import { PUB_EVENTS as SUB_EVENTS } from './new-flow/message';
-import { AppDetailService, ApplicationDetail } from './core/apps.service';
+import { ApplicationDetail, AppDetailService} from './core';
 import 'rxjs/add/operator/map';
 import { FlowsService } from '../core/services/flows.service';
 import { Subscription } from 'rxjs/Subscription';
