@@ -35,9 +35,9 @@ engineLogger.registerDataStream = (stdout, stderr) => {
       splitLines(data.toString())
         .forEach(line => {
           line = cleanAsciiColors(line);
-          if(isDebug(line)) {
-            engineLogger.info(line)
-          }else {
+          if (isDebug(line)) {
+            engineLogger.info(line);
+          } else {
             engineLogger.error(line);
           }
         });
@@ -48,5 +48,3 @@ engineLogger.registerDataStream = (stdout, stderr) => {
 
 
 export { engineLogger };
-
-

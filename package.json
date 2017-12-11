@@ -19,8 +19,8 @@
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
-    "babel-preset-node6": "^11.0.0",
-    "babel-register": "^6.9.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "del": "3.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "7.0.0",
@@ -36,7 +36,7 @@
     "protractor": "5.2.0",
     "require-dir": "^0.3.0",
     "run-sequence": "2.2.0",
-    "vinyl-fs": "^2.4.3",
+    "vinyl-fs": "3.0.0",
     "webdriver-manager": "12.0.6"
   },
   "dependencies": {}

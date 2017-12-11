@@ -12,6 +12,15 @@ const sourcePaths = {
 };
 
 export const CONFIG = {
+  babel: {
+    "presets": [
+      ["env", {
+        "targets": {
+          "node": "current"
+        }
+      }]
+    ]
+  },
   paths: {
     source: sourcePaths,
     dist: {

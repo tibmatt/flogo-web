@@ -1,6 +1,7 @@
-import { runShellCMD, parseJSON } from '../../../common/utils';
+import { parseJSON } from '../../../common/utils';
 import { logger } from '../../../common/logging';
 import { build } from './build';
+import {runShellCMD} from "../../../common/utils/process";
 
 var path = require('path');
 

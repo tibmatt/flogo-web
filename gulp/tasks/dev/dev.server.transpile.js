@@ -12,9 +12,7 @@ gulp.task('dev.server.transpile', 'Server transpile', () => {
     .pipe(changed(CONFIG.paths.dist.server))
     .pipe(sourcemaps.init())
     .pipe(plumber())
-    .pipe(babel({
-      presets: ['node6']
-    }))
+    .pipe(babel(CONFIG.babel))
     .pipe(sourcemaps.write('.'), { sourceRoot: CONFIG.paths.source.server })
     .pipe(gulp.dest(CONFIG.paths.dist.server));
 

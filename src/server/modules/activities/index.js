@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { activitiesDBService } from '../../config/app-config';
+import { activitiesDBService } from '../../common/db/activities';
 
 export class ActivitiesManager {
 

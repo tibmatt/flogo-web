@@ -6,18 +6,19 @@ import {
   SCHEMA_FILE_NAME_ACTIVITY,
   SCHEMA_FILE_NAME_TRIGGER
 } from '../../common/constants';
-import { activitiesDBService, triggersDBService, config } from '../../config/app-config';
+import { config } from '../../config/app-config';
 import _ from 'lodash';
 import path from 'path';
 import { BaseRegistered } from '../../modules/base-registered';
 import {
   isGitHubURL,
   parseGitHubURL,
-  constructGitHubPath,
-  runShellCMD
-} from '../../common/utils';
+  constructGitHubPath} from '../../common/utils';
 import {getInitializedEngine} from "../engine/registry";
 import {syncTasks} from "../init/sync-tasks";
+import {triggersDBService} from "../../common/db/triggers";
+import {activitiesDBService} from "../../common/db/activities";
+import {runShellCMD} from "../../common/utils/process";
 
 // TODO
 // update this information. the `somefile.json` and `aFloder` are only for testing.

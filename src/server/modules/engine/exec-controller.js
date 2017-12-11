@@ -1,98 +1,97 @@
-const fs = require('fs');
-const path = require('path');
-const spawn = require('child_process').spawn;
+import fs from 'fs';
+import path from 'path';
+import { spawn } from 'cross-spawn';
+import * as ps from 'ps-node';
 
-const ps = require('ps-node');
-
-import {fileExists} from '../../common/utils/file';
-import {config} from '../../config/app-config';
+import { fileExists } from '../../common/utils/file';
+import { config } from '../../config/app-config';
 
 module.exports = {
   start(enginePath, engineName, options) {
     options = Object.assign({}, { binDir: 'bin' }, options);
 
-    console.log( `[info] starting engine ${engineName}` );
+    console.log(`[info] starting engine ${engineName}`);
 
-    return new Promise( ( resolve, reject ) => {
+    return new Promise((resolve, reject) => {
+      const binPath = path.join(enginePath, options.binDir);
+      console.log('[info] defaultEngineBinPath: ', binPath);
 
-      let binPath = path.join(enginePath, options.binDir);
-      console.log( '[info] defaultEngineBinPath: ', binPath );
-      // TODO: cross platform execution?
-      let command = `./${engineName}`;
-      console.log( '[info] command: ', command );
-
-      if ( !fileExists( path.join( binPath, engineName ) ) ) {
-        console.log( `[error] engine ${engineName} doesn't exist` );
-        reject( new Error( `[error] engine ${engineName} doesn't exist` ) );
-      } else {
+      if (fileExists(path.join(binPath, engineName))) {
         const settings = config.buildEngine.config.services || [];
-
-        const stateRecorder = settings.find((service)=> service.name === 'stateRecorder');
-        const engineTester = settings.find((service)=> service.name === 'engineTester');
-
-        const env =  Object.assign( {
+        const stateRecorder = settings.find(service => service.name === 'stateRecorder');
+        const engineTester = settings.find(service => service.name === 'engineTester');
+        const { host: stateHost, port: statePort } = stateRecorder.settings;
+        const env = {
           FLOGO_LOG_LEVEL: 'DEBUG',
           TESTER_ENABLED: 'true',
           TESTER_PORT: engineTester.settings.port,
-          TESTER_SR_SERVER: stateRecorder.settings.host + ':' + stateRecorder.settings.port
-        });
-        console.log('[DEBUG] starting test runner with env:');
-        console.log(env);
-        let engineProcess = spawn(command, {
-          cwd: binPath,
-          env: Object.assign(
-            env, process.env),
-        });
-
+          TESTER_SR_SERVER: `${stateHost}:${statePort}`,
+        };
+        const engineProcess = startProcess(engineName, binPath, env);
         _setupLogging(engineProcess, engineName, options);
 
         resolve(engineProcess);
+      } else {
+        console.log(`[error] engine ${engineName} doesn't exist`);
+        reject(new Error(`[error] engine ${engineName} doesn't exist`));
       }
-    } );
+    });
   },
   stop(name) {
-
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       ps.lookup({
-        command: name
-      }, function(err, resultList) {
+        command: name,
+      }, (err, resultList) => {
         if (err) {
-          return reject(new Error(err));
+          reject(new Error(err));
+          return;
         }
 
-        let process = resultList.shift();
-        if(process) {
-          console.log( '[info] Stop engine PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments );
-          ps.kill(process.pid, function( err ) {
-            if (err) {
-              return reject(new Error( err ));
-            } else {
-              console.log( '[info] Stop engine Process %s has been killed!', process.pid );
-              resolve(true);
+        const process = resultList.shift();
+        if (process) {
+          console.log('[info] Stop engine PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments);
+          ps.kill(process.pid, killErr => {
+            if (killErr) {
+              reject(new Error(killErr));
+              return;
             }
+            console.log('[info] Stop engine Process %s has been killed!', process.pid);
+            resolve(true);
           });
         } else {
           resolve(false);
         }
-
       });
-
     });
-  }
+  },
 };
 
 function _setupLogging(engineProcess, engineName, options) {
   if (options.logger) {
-    let logger = options.logger;
+    const logger = options.logger;
     logger.registerDataStream(engineProcess.stdout, engineProcess.stderr);
   } else if (options.logPath) {
-    let logFile = path.join(options.logPath, engineName + '.log' );
-    let logStream = fs.createWriteStream( logFile, { flags : 'a' } );
-    console.log( '[info] engine logFile: ', logFile );
+    const logFile = path.join(options.logPath, `${engineName}.log`);
+    const logStream = fs.createWriteStream(logFile, { flags: 'a' });
+    console.log('[info] engine logFile: ', logFile);
     // log engine output
-    engineProcess.stdout.pipe( logStream );
-    engineProcess.stderr.pipe( logStream );
+    engineProcess.stdout.pipe(logStream);
+    engineProcess.stderr.pipe(logStream);
   } else {
     console.warn('[warning] no logging setup for engine run');
   }
+}
+
+function startProcess(engineName, cwd, env) {
+  console.log('[DEBUG] Env for test runner (will be merged with the system env):');
+  console.log(env);
+  const commandEnv = Object.assign({}, env, process.env);
+
+  let command = `./${engineName}`;
+  let args = [];
+  if (process.platform === 'win32') {
+    command = process.env.comspec;
+    args = ['/c', engineName];
+  }
+  return spawn(command, args, { cwd, env: commandEnv });
 }

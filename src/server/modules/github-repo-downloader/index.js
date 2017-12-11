@@ -3,7 +3,7 @@ import { config } from '../../config/app-config';
 import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
-import { runShellCMD, parseGitHubURL, createFolder, gitClone, gitUpdate, rmFolder } from '../../common/utils';
+import { parseGitHubURL, createFolder, gitClone, gitUpdate, rmFolder } from '../../common/utils';
 
 /**
  * Download GitHub repo to local environment.

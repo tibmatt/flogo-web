@@ -1,25 +1,12 @@
 import performanceNow from 'performance-now';
 import _ from 'lodash';
-import { spawn } from 'child_process';
-import { inspect } from 'util';
+import {inspect} from 'util';
 
 import {FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE} from '../constants';
+import {runShellCMD} from "./process";
 
 export * from './file';
 export * from './request';
-
-export function extractDomain(url) {
-  var domain;
-  if (url.indexOf("://") > -1) {
-    domain = url.split('/')[2];
-  }
-  else {
-    domain = url.split('/')[0];
-  }
-
-  domain = domain.split(':')[0];
-  return domain;
-}
 
 export function btoa( str ) {
   var buffer;
@@ -248,38 +235,6 @@ export function constructGitHubRepoURL( githubInfo ) {
 /** *******
  * CMD related utility functions
  */
-
-/**
- * Port `child_process.spawn` with Promise, same inputs as the original API
- *
- * https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
- */
-export function runShellCMD( cmd, args, opts ) {
-  return new Promise( ( resolve, reject ) => {
-    const _cmd = spawn( cmd, args, opts );
-    let _data = '';
-    let errData = '';
-
-    console.log( `[info] run command: ${cmd} ${args.join( ' ' )}` );
-
-    _cmd.stdout.on( 'data', ( data ) => {
-      _data += data;
-    } );
-
-    _cmd.stderr.on( 'data', ( data ) => {
-      errData += data instanceof Buffer ? data.toString() : data;
-    } );
-
-    _cmd.on( 'close', ( code ) => {
-      if ( code !== 0 ) {
-        console.log( `[log] command exited with code ${code}: ${cmd} ${args.join( ' ' )}` );
-        reject( errData );
-      } else {
-        resolve( _data );
-      }
-    } );
-  } );
-}
 
 /**
  * Git clone a given repo with `--recursive` flag, to an absolute path

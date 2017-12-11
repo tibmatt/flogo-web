@@ -17,7 +17,7 @@ ensureDefaultDirs()
     Promise.all([
       apps.compact(),
       indexer.compact(),
-      contribs.compact()
+      contribs.compact(),
     ]);
   })
   .catch(error => {
