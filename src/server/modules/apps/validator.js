@@ -511,6 +511,9 @@ function fullAppSchema() {
           id: {
             type: 'string',
           },
+          description: {
+            type: 'string',
+          },
           ref: {
             type: 'string',
           },
@@ -541,6 +544,9 @@ function fullAppSchema() {
             type: 'string',
           },
           name: {
+            type: 'string',
+          },
+          description: {
             type: 'string',
           },
           ref: {
@@ -876,6 +882,9 @@ function fullDeviceAppSchema() {
         additionalProperties: false,
         properties: {
           id: {
+            type: 'string',
+          },
+          description: {
             type: 'string',
           },
           ref: {
