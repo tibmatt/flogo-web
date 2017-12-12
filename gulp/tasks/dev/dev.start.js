@@ -16,11 +16,13 @@ gulp.task('dev.start', 'Starts server app and db for development', [], () => {
     npmTask = 'start-debug';
   }
 
+  const posixServerPath = CONFIG.paths.dist.server.replace('\\', '/');
   nodemon({
     verbose: true,
     // DON'T use cwd here, it will change the whole gulp process cwd
     exec: `npm --prefix="${CONFIG.paths.dist.server}" run ${npmTask}`,
-    ignore: CONFIG.paths.serverWatchIgnore.map(watchPath => path.posix.join(CONFIG.paths.dist.server, watchPath)),
+    watch: [`posixServerPath`],
+    ignore: CONFIG.paths.serverWatchIgnore.map(watchPath => path.posix.join(posixServerPath, watchPath)),
     stdout: false
   })
     .on('stdout', function(stdout) {
