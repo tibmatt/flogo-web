@@ -20,7 +20,7 @@ gulp.task('dev.start', 'Starts server app and db for development', [], () => {
     verbose: true,
     // DON'T use cwd here, it will change the whole gulp process cwd
     exec: `npm --prefix="${CONFIG.paths.dist.server}" run ${npmTask}`,
-    watch: CONFIG.paths.serverWatch.map(watchPath => path.join(CONFIG.paths.dist.server, watchPath)),
+    ignore: CONFIG.paths.serverWatchIgnore.map(watchPath => path.posix.join(CONFIG.paths.dist.server, watchPath)),
     stdout: false
   })
     .on('stdout', function(stdout) {

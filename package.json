@@ -8,6 +8,7 @@
   "scripts": {
     "start": "gulp",
     "gulp": "gulp",
+    "dev:server": "gulp dev-server",
     "clean": "rm -rfv `find . -path \"*/node_modules\" -print`",
     "test:client": "npm --prefix=\"src/client\" run test",
     "test:server": "npm --prefix=\"dist/server\" run test:api -- ./tests",
