@@ -4,6 +4,7 @@ import { spawn } from 'cross-spawn';
 import * as ps from 'ps-node';
 
 import { fileExists } from '../../common/utils/file';
+import { processHost } from '../../common/utils/process';
 import { config } from '../../config/app-config';
 
 module.exports = {
@@ -89,7 +90,7 @@ function startProcess(engineName, cwd, env) {
 
   let command = `./${engineName}`;
   let args = [];
-  if (process.platform === 'win32') {
+  if (processHost.isWindows()) {
     command = process.env.comspec;
     args = ['/c', engineName];
   }

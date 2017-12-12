@@ -32,3 +32,9 @@ export function runShellCMD(cmd, args, opts) {
     });
   });
 }
+
+export const processHost = {
+  isWindows() {
+    return process.platform === 'win32';
+  },
+};

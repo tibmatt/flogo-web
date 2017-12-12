@@ -2,7 +2,7 @@ import path from 'path';
 
 const source = 'src';
 
-const dist = process.env.DIST_BUILD ? 'dist/build' : 'dist';
+const dist = process.env.DIST_BUILD ? path.join('dist', 'build') : 'dist';
 
 const sourcePaths = {
   root: source,
@@ -33,7 +33,7 @@ export const CONFIG = {
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     // directories that should be watched by running server so it restarts if something changes
-    serverWatch: ['api', 'common', 'config', 'modules', 'server.js']
+    serverWatch: ['!local', '!node_modules']
   },
   host: 'localhost:3303'
 };
