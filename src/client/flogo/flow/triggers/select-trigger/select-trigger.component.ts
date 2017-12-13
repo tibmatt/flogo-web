@@ -16,8 +16,6 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   @Output() onInstallDialog = new EventEmitter();
   @Output() isAddTriggerActivatedChange = new EventEmitter();
   public installedTriggers = [];
-  public installTriggerActivated = false;
-  private addTriggerMsg: any;
   public displayExisting: boolean;
 
   public existingTriggers = [];
@@ -63,6 +61,8 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
           .then((triggers) => {
             if (!triggers.length) {
               this.displayExisting = false;
+            } else if (triggers.length > 0) {
+              this.displayExisting = true;
             }
 
             const allInstalled = {};
