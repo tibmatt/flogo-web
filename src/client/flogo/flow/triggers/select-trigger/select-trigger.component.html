@@ -14,7 +14,7 @@
           </div>
           <hr />
         </div>
-        <div class="triggers-container__existing-triggers">
+        <div *ngIf="displayExisting" class="triggers-container__existing-triggers">
           <div class="triggers-container__header">
             <div>{{'SELECT-TRIGGER:MY-EXISTING-TRIGGERS' | translate}}</div>
           </div>
