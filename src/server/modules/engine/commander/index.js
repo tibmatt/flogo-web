@@ -20,9 +20,9 @@ module.exports = {
     const enginePathInfo = path.parse(enginePath);
 
     const command = ['create'];
-    if (options.libVersion && options.libVersion !== 'latest') {
-      command.push('-flv', options.libVersion);
-    }
+    // if (options.libVersion && options.libVersion !== 'latest') {
+    //   command.push('-flv', options.libVersion);
+    // }
 
     if (options.flogoDescriptor) {
       command.push('-f', options.flogoDescriptor);
