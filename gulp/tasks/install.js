@@ -1,8 +1,9 @@
 import gulp from 'gulp';
 import cp from 'child_process';
 import {CONFIG} from '../config';
+import commandExists from 'command-exists';
 
-const command = process.env.FGWEB_USE_YARN ? 'yarn' : 'npm';
+const command = commandExists.sync('yarn') ? 'yarn' : 'npm';
 function install(cwd) {
   return cp.execSync(`${command} install`, { cwd, stdio: 'inherit' });
 }
