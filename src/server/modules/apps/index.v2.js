@@ -22,7 +22,6 @@ import { buildApp } from  './build';
 
 import { Validator } from './validator';
 import {getProfileType} from "../../common/utils/profile";
-import {UniqueId} from '../../common/utils/uniqueId';
 
 const EDITABLE_FIELDS = [
   'name',
@@ -242,7 +241,7 @@ export class AppsManager {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
-        const uniqueIdGenerator = new UniqueId();
+
         const DEFAULT_COMMON_VALUES = [{
           appType: "flogo:app",
           actionRef: "github.com/TIBCOSoftware/flogo-contrib/action/flow"
@@ -286,7 +285,6 @@ export class AppsManager {
           });
 
           // convert to human readable action ids and update handler to point to new action id
-          let handlerActionIdArray = [];
           handlers.forEach(h => {
             const action = actionMap.get(h.actionId);
             if (!actionMap) {
@@ -294,25 +292,15 @@ export class AppsManager {
               return;
             }
             action.id = normalizeName(action.name);
-            if(handlerActionIdArray.indexOf(action.id)!== -1){
-              action.id =  uniqueIdGenerator.getUniqueId(action.id);
-            }
-            handlerActionIdArray.push(action.id);
-
             h.actionId = action.id;
           });
-
         }
-        let  actionIdArray = [];
+
         // convert
         // 1. orphan actions ids in case of application export
         // 2. all actions ids in case of flows export
         actionMap.forEach(a => {
           a.id = normalizeName(a.name);
-          if(actionIdArray.indexOf(a.id)!== -1){
-            a.id =  uniqueIdGenerator.getUniqueId(a.id);
-          }
-          actionIdArray.push(a.id);
         });
 
         app.actions.forEach(action => {
