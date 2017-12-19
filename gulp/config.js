@@ -33,7 +33,7 @@ export const CONFIG = {
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     // directories that should be ingored by running server so it won't restart if something changes
-    serverWatchIgnore: ['local/*', 'node_modules/*']
+    serverWatchIgnore: ['local/*', 'node_modules/*', '**/*.log']
   },
   host: 'localhost:3303'
 };
