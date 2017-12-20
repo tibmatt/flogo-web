@@ -1,0 +1,29 @@
+<div class="trigger_block"
+     [ngClass]="{'trigger_block--selected': shouldAddSelectedClass()}">
+  <div class="trigger_menu"
+       [ngClass]="{'trigger_menu--open': isMenuOpen}">
+    <ul class="list-group trigger_menu-list">
+      <li class="list-group-item trigger_menu-item" (click)="selectedMenuItem(MENU_OPTIONS.CONFIGURE)"><i
+        class="flogo-icon-settings trigger_menu-icon"></i>{{"TRIGGER-MENU:CONFIGURE" | translate}}
+      </li>
+      <li class="list-group-item trigger_menu-item" (click)="selectedMenuItem(MENU_OPTIONS.TRIGGER_MAPPING)"><i
+        class="fa fa-bolt trigger_menu-icon"></i>{{"TRIGGER-MENU:MAP-TO-FLOW-PARAMS" | translate}}
+      </li>
+      <li class="list-group-item trigger_menu-item" (click)="selectedMenuItem(MENU_OPTIONS.DELETE)"><i
+        class="flogo-icon-delete trigger_menu-icon"></i>{{"TRIGGER-MENU:DELETE" | translate}}
+      </li>
+    </ul>
+  </div>
+  <div class="trigger"  [class.--lambda]="isLambda" title="{{trigger.name}}" (click)="showTriggerMenu()">
+    <svg class="trigger-icon-background" viewBox="0 0 50 52"
+         xmlns="http://www.w3.org/2000/svg">
+      <use href="/assets/svg/trigger-icon.svg#defaultTrigger" class="bg-placeholder"></use>
+    </svg>
+    <div class="trigger-content">
+      <i class="flogo-icon-trigger"></i>
+      <svg class="lambda-icon" viewBox="0 0 200 278" xmlns="http://www.w3.org/2000/svg">
+        <use href="/assets/svg/lambda-icon.svg#layer1"></use>
+      </svg>
+    </div>
+  </div>
+</div>

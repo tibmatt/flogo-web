@@ -76,3 +76,9 @@ export const ERROR_CONSTRAINT = {
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
   WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
 };
+
+export const TRIGGER_MENU_OPERATION = {
+  CONFIGURE: 'configure',
+  TRIGGER_MAPPING: 'trigger-mappings',
+  DELETE: 'delete'
+};

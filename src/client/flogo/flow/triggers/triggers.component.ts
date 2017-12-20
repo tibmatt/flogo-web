@@ -3,7 +3,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import 'rxjs/add/operator/filter';
 
 import { LanguageService } from '@flogo/core';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import {FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION} from '@flogo/core/constants';
 import {notification, objectFromArray} from '@flogo/shared/utils';
 import {RESTAPITriggersService} from '@flogo/core/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
@@ -23,6 +23,7 @@ import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENT
 import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
 import { TriggerMapperService } from '@flogo/flow/triggers/trigger-mapper/trigger-mapper.service';
 import {IPropsToUpdateFormBuilder} from '../flow.component';
+import {ITriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
 
 export interface IFlogoTrigger {
   name: string;
@@ -34,6 +35,7 @@ export interface IFlogoTrigger {
   updatedAt: string | null;
   handlers: any[];
   appId: string;
+  handler?: any;
 }
 
 @Component({
@@ -327,7 +329,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     }
   }
 
-  showTriggerDetails(trigger) {
+  private showTriggerDetails(trigger) {
     this.hideTriggerMenuPopover();
     this.currentTrigger = _.cloneDeep(trigger);
     this._router.navigate(['/flows', this.actionId, 'trigger', trigger.id])
@@ -356,14 +358,14 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
-  openTriggerMapper(trigger: IFlogoTrigger & {handler: any}) {
+  private openTriggerMapper(trigger: IFlogoTrigger) {
     this.hideTriggerMenuPopover();
     const handler = trigger.handler;
     this._converterService.getTriggerTask(trigger)
       .then(triggerSchema => this._triggerMapperService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
   }
 
-  deleteHandlerForTrigger(triggerId) {
+  private deleteHandlerForTrigger(triggerId) {
     this.hideTriggerMenuPopover();
     this._restAPIHandlerService.deleteHandler(this.actionId, triggerId)
       .then(() => this._router.navigate(['/flows', this.actionId]))
@@ -419,5 +421,22 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     const outputs = _.cloneDeep(this.currentTrigger.handler.outputs);
 
     return {settings, outputs};
+  }
+
+  handleMenuSelection(event: ITriggerMenuSelectionEvent) {
+    switch (event.operation) {
+      case TRIGGER_MENU_OPERATION.CONFIGURE:
+        this.showTriggerDetails(event.trigger);
+        break;
+      case TRIGGER_MENU_OPERATION.TRIGGER_MAPPING:
+        this.openTriggerMapper(event.trigger);
+        break;
+      case TRIGGER_MENU_OPERATION.DELETE:
+        this.deleteHandlerForTrigger(event.trigger.id);
+        break;
+      default:
+        console.warn(`[TRIGGER MENU][${event.operation}] unhandled menu action.`);
+        break;
+    }
   }
 }
