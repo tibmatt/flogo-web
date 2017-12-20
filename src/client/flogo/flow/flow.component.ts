@@ -1754,8 +1754,13 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   onRunFlow(modifiedInputs: FlowMetadataAttribute[]) {
-    this.flow.metadata.input = modifiedInputs;
-    const flowUpdatePromise = modifiedInputs.length ? this._updateFlow(this.flow) : Promise.resolve(this.flow);
+    let flowUpdatePromise;
+    if (modifiedInputs.length) {
+      this.flow.metadata.input = modifiedInputs;
+      flowUpdatePromise = this._updateFlow(this.flow);
+    } else {
+      flowUpdatePromise = Promise.resolve(this.flow);
+    }
     flowUpdatePromise.then(() => this._runFromRoot())
       .then(() => {
         const parsedURL = location.pathname.split('task/');
