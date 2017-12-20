@@ -9,7 +9,7 @@ import {InstallerModule as ContribInstallerModule} from '@flogo/flow/shared/inst
 import {FlogoFlowTriggersPanelComponent} from './triggers.component';
 import {FlogoTriggerClickHandlerService} from './shared/click-handler.service';
 import {FlogoSelectTriggerComponent} from './select-trigger/select-trigger.component';
-import {TriggerBlockComponent} from '@flogo/flow/triggers/trigger-block/trigger-block.component';
+import {TriggerBlockComponent} from './trigger-block';
 
 @NgModule({
   imports: [
