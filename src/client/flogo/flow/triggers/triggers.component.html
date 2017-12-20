@@ -11,6 +11,7 @@
   <flogo-flow-triggers-trigger-block *ngFor="let trigger of triggersList"
                                      [trigger]="trigger"
                                      [mapperWindowState]="isMapperWindowOpen"
+                                     [isDevice]="isDeviceType"
                                      (onMenuItemSelected)="handleMenuSelection($event)"></flogo-flow-triggers-trigger-block>
   <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
     <svg class="trigger-icon-background" viewBox="0 0 50 50"

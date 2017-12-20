@@ -21,6 +21,8 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   trigger: IFlogoTrigger;
   @Input()
   mapperWindowState: boolean;
+  @Input()
+  isDevice: boolean;
   @Output()
   onMenuItemSelected: EventEmitter<ITriggerMenuSelectionEvent> = new EventEmitter<ITriggerMenuSelectionEvent>();
 
@@ -78,8 +80,8 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
     return this.trigger && this.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
   }
 
-  showTriggerMenu() {
-    this.isShowingMenu = true;
+  handleTriggerSelection() {
+    this.isDevice ? this.selectedMenuItem(this.MENU_OPTIONS.CONFIGURE) : this.isShowingMenu = true;
   }
 
   shouldAddSelectedClass(): boolean {
