@@ -22,7 +22,7 @@ import { buildApp } from  './build';
 
 import { Validator } from './validator';
 import {getProfileType} from "../../common/utils/profile";
-import {UniqueId} from '../../common/utils/uniqueId';
+import {UniqueIdGenerator} from '../../common/utils/uniqueId';
 
 const EDITABLE_FIELDS = [
   'name',
@@ -242,7 +242,7 @@ export class AppsManager {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
-        const uniqueIdGenerator = new UniqueId();
+        const uniqueIdGenerator = new UniqueIdGenerator();
         const DEFAULT_COMMON_VALUES = [{
           appType: "flogo:app",
           actionRef: "github.com/TIBCOSoftware/flogo-contrib/action/flow"
@@ -273,12 +273,12 @@ export class AppsManager {
         }
 
         //While exporting only flows, export selected flows if any flowids are provided else export all flows
-        if(exportType === 'flows' && selectedFlowsIds){
+        if (exportType === 'flows' && selectedFlowsIds) {
           app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
         }
 
         const actionMap = new Map(app.actions.map(a => [a.id, a]));
-        if(exportType === 'application' || !exportType){
+        if (exportType === 'application' || !exportType) {
           let handlers = [];
           app.triggers.forEach(t => {
             t.id = normalizeName(t.name);
@@ -286,33 +286,23 @@ export class AppsManager {
           });
 
           // convert to human readable action ids and update handler to point to new action id
-          let handlerActionIdArray = [];
+
           handlers.forEach(h => {
             const action = actionMap.get(h.actionId);
             if (!actionMap) {
               delete h.actionId;
               return;
             }
-            action.id = normalizeName(action.name);
-            if(handlerActionIdArray.indexOf(action.id)!== -1){
-              action.id =  uniqueIdGenerator.getUniqueId(action.id);
-            }
-            handlerActionIdArray.push(action.id);
 
-            h.actionId = action.id;
+            h.actionId = uniqueIdGenerator.getUniqueId(action.name);
           });
 
         }
-        let  actionIdArray = [];
         // convert
         // 1. orphan actions ids in case of application export
         // 2. all actions ids in case of flows export
         actionMap.forEach(a => {
-          a.id = normalizeName(a.name);
-          if(actionIdArray.indexOf(a.id)!== -1){
-            a.id =  uniqueIdGenerator.getUniqueId(a.id);
-          }
-          actionIdArray.push(a.id);
+          a.id = uniqueIdGenerator.getUniqueId(a.name);
         });
 
         app.actions.forEach(action => {
