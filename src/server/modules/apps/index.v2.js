@@ -22,7 +22,7 @@ import { buildApp } from  './build';
 
 import { Validator } from './validator';
 import {getProfileType} from "../../common/utils/profile";
-import {UniqueIdGenerator} from '../../common/utils/uniqueId';
+import {UniqueIdAgent} from './uniqueId';
 
 const EDITABLE_FIELDS = [
   'name',
@@ -242,7 +242,7 @@ export class AppsManager {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
-        const uniqueIdGenerator = new UniqueIdGenerator();
+        const uniqueIdAgent = new UniqueIdAgent();
         const DEFAULT_COMMON_VALUES = [{
           appType: "flogo:app",
           actionRef: "github.com/TIBCOSoftware/flogo-contrib/action/flow"
@@ -294,7 +294,7 @@ export class AppsManager {
               return;
             }
 
-            h.actionId = uniqueIdGenerator.getUniqueId(action.name);
+            h.actionId = uniqueIdAgent.generateUniqueId(action.name);
           });
 
         }
@@ -302,7 +302,7 @@ export class AppsManager {
         // 1. orphan actions ids in case of application export
         // 2. all actions ids in case of flows export
         actionMap.forEach(a => {
-          a.id = uniqueIdGenerator.getUniqueId(a.name);
+          a.id = uniqueIdAgent.generateUniqueId(a.name);
         });
 
         app.actions.forEach(action => {
