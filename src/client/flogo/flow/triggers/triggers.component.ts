@@ -20,7 +20,6 @@ import {
 import { FlowMetadata } from '@flogo/flow/task-mapper/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
 
-import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
 import { TriggerMapperService } from '@flogo/flow/triggers/trigger-mapper/trigger-mapper.service';
 import {IPropsToUpdateFormBuilder} from '../flow.component';
 import {ITriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
@@ -65,7 +64,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _converterService: UIModelConverterService,
               private _router: Router,
               private _translate: LanguageService,
-              private _clickHandler: FlogoTriggerClickHandlerService,
               private _postService: PostService,
               private _triggerMapperService: TriggerMapperService) {
   }
