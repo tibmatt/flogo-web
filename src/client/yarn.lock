@@ -798,6 +798,10 @@ chalk@^2.0.1, chalk@^2.1.0:
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
 
+chevrotain@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-1.0.0.tgz#baad41c7178fac94e26d3aad008290a6d5b24fe7"
+
 chokidar@^1.4.1, chokidar@^1.4.3, chokidar@^1.6.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
@@ -1800,6 +1804,11 @@ findup-sync@~0.3.0:
 flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
+
+flogo-mapping-parser@../packages/mapping-parser:
+  version "1.0.0"
+  dependencies:
+    chevrotain "^1.0.0"
 
 font-awesome@^4.7.0:
   version "4.7.0"

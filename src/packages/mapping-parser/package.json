@@ -1,0 +1,26 @@
+{
+  "name": "flogo-mapping-parser",
+  "version": "1.0.0",
+  "description": "flogo parser",
+  "main": "src/index.ts",
+  "author": "Fabian Castillo <fcastill@tibco.com>",
+  "license": "None",
+  "private": true,
+  "scripts": {
+    "test": "mocha --require ts-node/register ./test/*.spec.ts",
+    "test:watch": "watch 'mocha --require ts-node/register ./test/*.spec.ts' parser test",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "chevrotain": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.10",
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.58",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "typescript": "^2.3.3",
+    "watch": "^1.0.2"
+  }
+}
