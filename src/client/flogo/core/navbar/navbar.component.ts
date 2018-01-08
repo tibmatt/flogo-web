@@ -8,8 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class FlogoNavbarComponent implements OnInit {
-
+  public currentYear: number;
   public isWalkthroughActivated = false;
+
+  constructor() {
+    this.currentYear = (new Date).getFullYear();
+  }
 
   ngOnInit() {
     setTimeout(() => {

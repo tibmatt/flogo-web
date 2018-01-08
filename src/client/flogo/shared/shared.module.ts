@@ -14,14 +14,12 @@ import {
   JsonDownloaderDirective
 } from './directives';
 import { LoadingIndicatorComponent } from './components/loading-indicator.component';
-import { FooterComponent } from '@flogo/shared/components/footer/footer.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { FlogoDeletePopupComponent } from './components/delete.popup.component';
 import { ObjectPropertiesPipe } from './pipes/objectProperties.pipe';
 
 const ALL_MODULE_DECLARABLES = [
   CopyToClipboardComponent,
-  FooterComponent,
   ContenteditableDirective,
   JsonDownloaderDirective,
   LoadingIndicatorComponent,
