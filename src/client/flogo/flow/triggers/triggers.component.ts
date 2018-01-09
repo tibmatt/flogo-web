@@ -22,7 +22,7 @@ import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENT
 
 import { TriggerMapperService } from '@flogo/flow/triggers/trigger-mapper/trigger-mapper.service';
 import {IPropsToUpdateFormBuilder} from '../flow.component';
-import {ITriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
+import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
 
 export interface IFlogoTrigger {
   name: string;
@@ -128,7 +128,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
         const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
         triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
       });
 
     this._triggerMapperService.status$
@@ -144,7 +144,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings}).then(() => {
         const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
         existingTrigger.settings = data.settings;
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
       });
     } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
       this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
@@ -155,7 +155,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         const existingHandler = existingTrigger.handlers.find(h => h.actionId === this.actionId);
         existingHandler.settings = data.endpointSettings;
         existingHandler.outputs = data.outputs;
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
       });
 
     }
@@ -184,7 +184,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
       resultantPromise.then(() => {
         existingTrigger[data.proper] = data.content;
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList(data.proper, existingTrigger);
       }).catch(() => {
         if (data.proper === 'name') {
           const message = this._translate.instant('TRIGGERS-PANEL:TRIGGER-EXISTS');
@@ -268,7 +268,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         } else {
           this.triggers.push(trigger);
         }
-        this.makeTriggersListForAction();
+        this.addTriggerToTriggerList(trigger);
         this.manageAddTriggerInView();
     });
   }
@@ -319,6 +319,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
           this.triggers = this.triggers.filter(t => t.id !== triggerId);
         }
         this.makeTriggersListForAction();
+        this.manageAddTriggerInView();
       });
   }
 
@@ -364,7 +365,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     return {settings, outputs};
   }
 
-  handleMenuSelection(event: ITriggerMenuSelectionEvent) {
+  handleMenuSelection(event: TriggerMenuSelectionEvent) {
     switch (event.operation) {
       case TRIGGER_MENU_OPERATION.CONFIGURE:
         this.showTriggerDetails(event.trigger);
@@ -378,6 +379,27 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       default:
         console.warn(`[TRIGGER MENU][${event.operation}] unhandled menu action.`);
         break;
+    }
+  }
+
+  private modifyTriggerInTriggersList(property, triggerEntity: IFlogoTrigger) {
+    const itemToModify = _.find(this.triggersList, t => t.id === triggerEntity.id);
+    if (!!itemToModify) {
+      itemToModify[property] = triggerEntity[property];
+      if (property === 'handlers') {
+        itemToModify['handler'] = triggerEntity.handlers.find(a => a.actionId === this.actionId);
+      }
+    }
+  }
+
+  private addTriggerToTriggerList(triggerToAdd: IFlogoTrigger) {
+    let triggerToUpdate = this.triggersList.find(t => t.id === triggerToAdd.id);
+    if (triggerToUpdate) {
+      triggerToUpdate = triggerToAdd;
+      triggerToUpdate['handler'] = triggerToAdd.handlers.find(a => a.actionId === this.actionId);
+    } else {
+      triggerToAdd['handler'] = triggerToAdd.handlers.find(a => a.actionId === this.actionId);
+      this.triggersList.push(triggerToAdd);
     }
   }
 }

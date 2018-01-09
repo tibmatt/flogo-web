@@ -10,13 +10,13 @@
   </svg>
   <flogo-flow-triggers-trigger-block *ngFor="let trigger of triggersList"
                                      [trigger]="trigger"
-                                     [mapperWindowState]="isMapperWindowOpen"
+                                     [keepSelected]="isMapperWindowOpen"
                                      [isDevice]="isDeviceType"
                                      (onMenuItemSelected)="handleMenuSelection($event)"></flogo-flow-triggers-trigger-block>
   <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
     <svg class="trigger-icon-background" viewBox="0 0 50 50"
          xmlns="http://www.w3.org/2000/svg">
-      <use href="/assets/svg/trigger-icon.svg#addTrigger" class="bg-placeholder"></use>
+      <use xlink:href="/assets/svg/trigger-icon.svg#addTrigger" class="bg-placeholder"></use>
     </svg>
     <div class="trigger-content">
       <i class="flogo-icon-add"></i>

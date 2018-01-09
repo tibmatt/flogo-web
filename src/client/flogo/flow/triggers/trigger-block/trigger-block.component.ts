@@ -2,10 +2,10 @@ import {Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnD
 import {IFlogoTrigger} from '@flogo/flow/triggers/models';
 import {NavigationEnd, Router} from '@angular/router';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
-import {ITriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
+import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
 import {TRIGGER_MENU_OPERATION} from '@flogo/core/constants';
 
-export interface ITriggerMenuSelectionEvent {
+export interface TriggerMenuSelectionEvent {
   operation: string;
   trigger: IFlogoTrigger;
 }
@@ -20,11 +20,11 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   trigger: IFlogoTrigger;
   @Input()
-  mapperWindowState: boolean;
+  keepSelected: boolean;
   @Input()
   isDevice: boolean;
   @Output()
-  onMenuItemSelected: EventEmitter<ITriggerMenuSelectionEvent> = new EventEmitter<ITriggerMenuSelectionEvent>();
+  onMenuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<TriggerMenuSelectionEvent>();
 
   MENU_OPTIONS: typeof TRIGGER_MENU_OPERATION = TRIGGER_MENU_OPERATION;
 
@@ -61,7 +61,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['mapperWindowState'] && !changes['mapperWindowState'].currentValue && this.isShowingMapper) {
+    if (changes['keepSelected'] && !changes['keepSelected'].currentValue && this.isShowingMapper) {
       this.isShowingMapper = false;
     } else if (changes['trigger'] && !this.urlCheckRegEx) {
       this.urlCheckRegEx = new RegExp(`/trigger/${this.trigger.id}+$`, 'g');
@@ -81,10 +81,14 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   handleTriggerSelection() {
-    this.isDevice ? this.selectedMenuItem(this.MENU_OPTIONS.CONFIGURE) : this.isShowingMenu = true;
+    if (this.isDevice) {
+      this.selectedMenuItem(this.MENU_OPTIONS.CONFIGURE);
+    } else {
+      this.isShowingMenu = true;
+    }
   }
 
-  shouldAddSelectedClass(): boolean {
+  get isSelected(): boolean {
     /***
      * Select a trigger either if (not restricted to one):
      *  1. it's trigger menu is active
