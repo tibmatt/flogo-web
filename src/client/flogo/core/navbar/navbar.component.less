@@ -40,10 +40,11 @@ div.flogo-header__help-menu-content {
   background-color: #ffffff;
   box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.33);
   border: solid 1px #d8d8d8;
+  border-radius: 2px;
   min-width: 376px;
   position: absolute;
-  right: 30px;
-  top: 40px;
+  right: 3px;
+  top: 60px;
   transform: scale(0);
   transform-origin: top right;
   transition: all 300ms ease-in;
@@ -57,15 +58,18 @@ div.flogo-header__help-menu-content {
 
   ul.flogo-header__help-menu-copyright-content {
     border-top: 1px solid #d8d8d8;
-    li, a {
+    li, a{
       font-size: 12px;
-      margin: 0;
-      padding: 0;
+      line-height: 3;
+    }
+    li.help-menu-copyright-reserve-content{
+      padding: 0px 20px;
     }
   }
 
   h3 {
-    padding: 9px 15px;
+    padding: 0px 20px;
+    font-weight: bold;
   }
 
   li, a {
@@ -87,8 +91,8 @@ div.flogo-header__help-menu-content {
     color: #00a2ff;
     display: inline-block;
     height: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
     width: 100%;
   }
 
@@ -104,7 +108,19 @@ div.flogo-header__help-menu-content {
   }
 
 }
-
+.flogo-header__help-menu-tip {
+  height: 20px;
+  width: 20px;
+  background: #FFFFFF;
+  transform: rotate(135deg);
+  border: solid 1px #d8d8d8;
+  border-right: none;
+  border-top: none;
+  margin-left: 341px;
+  position: relative;
+  top: -10px;
+  box-shadow: -2px 2px 4px -2px rgba(0, 0, 0, 0.33);
+}
 .flogo-header__help-menu-btn {
   padding: 10px 15px;
   font-size: 1em;

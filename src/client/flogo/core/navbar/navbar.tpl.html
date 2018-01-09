@@ -6,6 +6,7 @@
         <i class="flogo-icon-help"></i>
       </button>
       <div class="flogo-header__help-menu-content">
+        <div class="flogo-header__help-menu-tip"></div>
         <h3>{{'NAVBAR:HELP'| translate}}</h3>
         <ul>
         <li><a href="https://tibcosoftware.github.io/flogo/" target="_blank">{{ 'NAVBAR:HELP-DOCUMENTATION' | translate }}</a></li>
@@ -16,7 +17,7 @@
         <li><a href="http://www.tibco.com/company/privacy-cma" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-PRIVACY-POLICY' | translate }}</a></li>
         <li><a href="http://www.tibco.com/company/termsofuse" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-TERMS-OF-USE' | translate }}</a></li>
         <li><a href="http://www.tibco.com/trademarks" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-TRADEMARKS' | translate }}</a></li>
-        <li>{{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}</li>
+        <li class="help-menu-copyright-reserve-content">{{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}</li>
         </ul>
       </div>
     </div>
