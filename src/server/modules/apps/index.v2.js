@@ -22,6 +22,7 @@ import { buildApp } from  './build';
 
 import { Validator } from './validator';
 import {getProfileType} from "../../common/utils/profile";
+import {UniqueIdAgent} from './uniqueId';
 
 const EDITABLE_FIELDS = [
   'name',
@@ -241,7 +242,7 @@ export class AppsManager {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
-
+        const uniqueIdAgent = new UniqueIdAgent();
         const DEFAULT_COMMON_VALUES = [{
           appType: "flogo:app",
           actionRef: "github.com/TIBCOSoftware/flogo-contrib/action/flow"
@@ -272,12 +273,12 @@ export class AppsManager {
         }
 
         //While exporting only flows, export selected flows if any flowids are provided else export all flows
-        if(exportType === 'flows' && selectedFlowsIds){
+        if (exportType === 'flows' && selectedFlowsIds) {
           app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
         }
 
         const actionMap = new Map(app.actions.map(a => [a.id, a]));
-        if(exportType === 'application' || !exportType){
+        if (exportType === 'application' || !exportType) {
           let handlers = [];
           app.triggers.forEach(t => {
             t.id = normalizeName(t.name);
@@ -285,22 +286,23 @@ export class AppsManager {
           });
 
           // convert to human readable action ids and update handler to point to new action id
+
           handlers.forEach(h => {
             const action = actionMap.get(h.actionId);
             if (!actionMap) {
               delete h.actionId;
               return;
             }
-            action.id = normalizeName(action.name);
-            h.actionId = action.id;
-          });
-        }
 
+            h.actionId = uniqueIdAgent.generateUniqueId(action.name);
+          });
+
+        }
         // convert
         // 1. orphan actions ids in case of application export
         // 2. all actions ids in case of flows export
         actionMap.forEach(a => {
-          a.id = normalizeName(a.name);
+          a.id = uniqueIdAgent.generateUniqueId(a.name);
         });
 
         app.actions.forEach(action => {
