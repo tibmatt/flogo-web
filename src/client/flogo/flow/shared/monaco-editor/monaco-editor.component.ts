@@ -24,7 +24,7 @@ import {
 import { ClientPosition, CompletionProvider, EditorError, HoverProvider, OffsetRange } from './types';
 
 const SOURCE_ID = 'ngx-monaco-editor';
-const LANGUAGE_ID = 'flogomapperscript';
+const LANGUAGE_ID = 'flogomapping';
 export const DEFAULT_EDITOR_OPTIONS = {
   language: LANGUAGE_ID,
   wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",<>/?',

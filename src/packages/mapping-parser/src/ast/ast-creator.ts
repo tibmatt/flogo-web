@@ -25,7 +25,7 @@ const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
     value,
     raw: cstToken.image,
   };
-}
+};
 
 const isSelectorNode = (node: PrimaryExprNode): node is ExprNodes.SelectorExpr => node.type === 'SelectorExpr';
 
@@ -63,7 +63,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
     attrAccess(ctx) {
       const operand = <ExprNodes.ScopeResolver|ExprNodes.Identifier> this.visit(ctx.operandHead);
       if (ctx.primaryExprTail.length > 0) {
-        return this.createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
+        return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
         return operand;
       }
@@ -92,7 +92,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
     }
 
     literal(ctx) {
-      const cstNodeType = this.findCstNodeTypeFromContext(ctx);
+      const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
       const cstToken = ctx[cstNodeType][0];
       const value =  JSON.parse(cstToken.image);
       const tokenName = cstToken.tokenType.tokenName;
@@ -107,7 +107,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
     primaryExpr(ctx): PrimaryExprNode {
       const operand = <ExprNodes.BasicLit|ExprNodes.Identifier> this.visit(ctx.operand);
       if (ctx.primaryExprTail.length > 0) {
-        return this.createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
+        return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
         return operand;
       }
@@ -219,7 +219,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
     }
 
     value(ctx): JsonNodes.ValueNode {
-      const cstNodeType = this.findCstNodeTypeFromContext(ctx);
+      const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
       if (cstNodeType !== 'object' && cstNodeType !== 'array') {
         return makeLiteralJsonNode(ctx[cstNodeType][0]);
       } else {
@@ -227,11 +227,13 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
       }
     }
 
-    private findCstNodeTypeFromContext(ctx) {
+    // $ suffix is required for helpers
+    private $findCstNodeTypeFromContext(ctx) {
       return Object.keys(ctx).find(key => ctx[key][0])
     }
 
-    private createPrimaryExprHierarchy(primaryExprTailNodes: CstNode[], operand) {
+    // $ suffix is required for helpers
+    private $createPrimaryExprHierarchy(primaryExprTailNodes: CstNode[], operand) {
       type PrimaryExprAstNode = ExprNodes.SelectorExpr|ExprNodes.IndexExpr;
       return primaryExprTailNodes
           .map(cstTailNode => this.visit(cstTailNode))

@@ -1,15 +1,18 @@
 import { Lexer, ILexingError, exceptions, CstElement, CstNode } from 'chevrotain';
-import { allTokens } from './tokens';
-import { MappingParser } from './parser';
+// import { allTokens } from './tokens';
+import { allTokens, MappingParser } from './parser';
 import { astCreatorFactory } from './ast/ast-creator';
 import { Node } from './ast/node';
 import { ExprStmt } from './ast/expr-nodes';
 
+export type RecognitionException = exceptions.IRecognitionException;
+export type LexingError = ILexingError
+
 export interface ParseResult {
   cst: CstElement;
   ast: Node,
-  lexErrors: ILexingError[];
-  parseErrors: exceptions.IRecognitionException[];
+  lexErrors: LexingError[];
+  parseErrors: RecognitionException[];
 }
 
 const lexer = new Lexer(allTokens);
@@ -20,10 +23,9 @@ const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructor();
 const AstCreator = astCreatorFactory(BaseCstVisitor);
 
 export function parse(text): ParseResult {
-  let lexResult = lexer.tokenize(text)
+  let lexResult = lexer.tokenize(text);
   // setting a new input will RESET the parser instance's state.
   parserInstance.input = lexResult.tokens;
-  // todo: for clarity change for parserInstance.program() once this generic function is not needed
   const cst = parserInstance.mappingExpression();
   let ast = null;
   if (parserInstance.errors.length === 0) {
