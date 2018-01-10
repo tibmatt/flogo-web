@@ -1,4 +1,4 @@
-import { parse, RecognitionException, LexingError } from 'flogo-mapping-parser';
+import { parse, RecognitionException, LexingError } from '@flogo/packages/mapping-parser';
 export class LanguageService {
   static doValidation(expression: string): Promise<Array<RecognitionException|LexingError>> {
     if (!expression || !expression.trim()) {

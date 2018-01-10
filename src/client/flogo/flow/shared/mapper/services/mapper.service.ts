@@ -4,8 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 
-import * as _ from 'lodash';
-
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/zip';
 import 'rxjs/add/operator/combineLatest';
@@ -15,6 +13,8 @@ import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/withLatestFrom';
+
+import { resolveExpressionType } from '@flogo/packages/mapping-parser';
 
 import { TreeNodeFactoryService } from './tree-node-factory.service';
 import { TreeService } from './tree.service';
@@ -29,7 +29,6 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
 import { IParsedExpressionDetails, IMapperContext } from '../models';
 import { TYPE_ATTR_ASSIGNMENT } from '../constants';
-import { determineMappingExpressionType } from '../../../../../../packages/mapping-parser/src';
 
 export interface TreeState {
   filterTerm: string | null;
@@ -295,7 +294,7 @@ export class MapperService {
         //   expectedResultType,
         //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
         // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-        node.isInvalid = !determineMappingExpressionType(editingExpression.expression);
+        node.isInvalid = !resolveExpressionType(editingExpression.expression);
 
         this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, editingExpression, parseResult.structureDetails);
 

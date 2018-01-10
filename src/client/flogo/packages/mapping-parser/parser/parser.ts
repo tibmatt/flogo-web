@@ -11,7 +11,7 @@ import { Parser, IToken, tokenMatcher } from 'chevrotain';
 // const Token = require('./tokens');
 
 import { Lexer } from 'chevrotain';
-import { UnicodeCategory } from './tokens/unicode';
+import { UnicodeCategory } from '../tokens/unicode';
 
 // Using TypeScript we have both classes and static properties to define Tokens
 export class True {
@@ -19,7 +19,7 @@ export class True {
   static PATTERN = /true/;
 }
 export class False {
-  static LABEL = 'false'
+  static LABEL = 'false';
   static PATTERN = /false/;
 }
 export class Null {
@@ -161,8 +161,11 @@ const Token = {
 };
 
 
-
+// disable member odering rule because the parser requires to declare properties
+// instead of functions, so all the functions are properties
+// tslint:disable:member-ordering
 export class MappingParser extends Parser {
+
   constructor(input: IToken[]) {
     super(input, Token.allTokens, {
       recoveryEnabled: true,
@@ -222,7 +225,7 @@ export class MappingParser extends Parser {
   private binaryExprSide = this.RULE('binaryExprSide', () => {
     this.CONSUME(Token.BinaryOp);
     this.SUBRULE(this.expression);
-  })
+  });
 
   private unaryExpr = this.RULE('unaryExpr', () => {
     this.OR([
@@ -249,7 +252,7 @@ export class MappingParser extends Parser {
     this.OR([
       { ALT: () => this.SUBRULE(this.selector) },
       { ALT: () => this.SUBRULE(this.index) }
-    ])
+    ]);
   });
 
   // todo: parenthesis support
@@ -336,4 +339,5 @@ export class MappingParser extends Parser {
       { ALT: () => this.CONSUME(Token.Null) }
     ]);
   });
+
 }

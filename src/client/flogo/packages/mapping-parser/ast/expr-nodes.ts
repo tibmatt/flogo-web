@@ -2,7 +2,6 @@
  * Ast nodes for expressions.
  * Based on golang's AST classes:
  * https://godoc.org/go/ast
- * 
  */
 import { Node } from './node';
 
@@ -53,7 +52,7 @@ export interface ScopeResolver extends Node {
 export interface UnaryExpr extends Node {
   type: 'UnaryExpr';
   operator: string;
-  x: Expr; 
+  x: Expr;
 }
 
 // a > b => (x="a"; operator=">"; y="b" )

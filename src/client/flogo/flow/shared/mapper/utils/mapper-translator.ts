@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { determineMappingExpressionType } from 'flogo-mapping-parser';
+import { resolveExpressionType } from '@flogo/packages/mapping-parser';
 
 import {
   IFlogoFlowDiagramTask as FlowTile,
@@ -11,7 +11,7 @@ import {
   REGEX_INPUT_VALUE_EXTERNAL, MAPPING_TYPE
 } from '../constants';
 
-import { flogoIDDecode } from '../../../../shared/utils';
+import { flogoIDDecode } from '@flogo/shared/utils';
 import { MapperSchema, FlowMetadata } from '../../../task-mapper/models';
 import { IMapping } from '../models/imapping';
 
@@ -157,7 +157,7 @@ export class MapperTranslator {
             } catch (e) {}
             return parsedProp === undefined;
           } else {
-            const mappingType = determineMappingExpressionType(mapping.expression);
+            const mappingType = resolveExpressionType(mapping.expression);
             return mappingType == null;
           }
         });
@@ -185,7 +185,7 @@ export class MapperTranslator {
 }
 
 function mappingTypeFromExpression(expression: string) {
-  const expressionType = determineMappingExpressionType(expression);
+  const expressionType = resolveExpressionType(expression);
   let mappingType = null;
   switch (expressionType) {
     case 'json':

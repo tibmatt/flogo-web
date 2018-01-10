@@ -14,7 +14,7 @@ export interface ObjectNode extends Node {
 
 export interface ArrayNode extends Node {
   type: 'jsonArray';
-  children: ValueNode[]
+  children: ValueNode[];
 }
 
 export interface PropertyNode {
@@ -24,9 +24,9 @@ export interface PropertyNode {
 }
 
 export interface LiteralNode {
-  type: 'jsonLiteral',
-  value: any,
-  kind: string,
-  raw: string,
+  type: 'jsonLiteral';
+  value: any;
+  kind: string;
+  raw: string;
 }
 

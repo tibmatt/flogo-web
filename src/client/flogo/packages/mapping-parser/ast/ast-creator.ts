@@ -3,21 +3,20 @@
  * https://godoc.org/go/ast
  */
 
-import { CstNode, CstElement, IToken, ICstVisitor, Parser } from 'chevrotain';
-import  { Node } from './node';
-import  { MappingParser } from '../parser';
+import { CstNode, ICstVisitor, IToken } from 'chevrotain';
+import { Node } from './node';
 import * as JsonNodes from './json-nodes';
 import * as ExprNodes from './expr-nodes';
 
-type CstVisitorBase = {
-  new (...args: any[]): ICstVisitor<CstNode, Node|Node[]>;
+interface CstVisitorBase {
+  new (...args: any[]): ICstVisitor<CstNode, Node | Node[]>;
 };
 
 type PrimaryExprNode = ExprNodes.BasicLit | ExprNodes.Identifier | ExprNodes.SelectorExpr | ExprNodes.IndexExpr;
 
-const literalTypeMap = { StringLiteral: 'string', NumberLiteral: 'number', True: 'boolean', False: 'boolean', Null: 'null' };
+const literalTypeMap = {StringLiteral: 'string', NumberLiteral: 'number', True: 'boolean', False: 'boolean', Null: 'null'};
 const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
-  const value =  JSON.parse(cstToken.image);
+  const value = JSON.parse(cstToken.image);
   const tokenName = cstToken.tokenType.tokenName;
   return {
     type: 'jsonLiteral',
@@ -29,10 +28,10 @@ const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
 
 const isSelectorNode = (node: PrimaryExprNode): node is ExprNodes.SelectorExpr => node.type === 'SelectorExpr';
 
-export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
+export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
   class AstConstructor extends BaseCstVisitorClass {
     constructor() {
-      super()
+      super();
       // This helper will detect any missing or redundant methods on this visitor
       this.validateVisitor();
     }
@@ -61,7 +60,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
     }
 
     attrAccess(ctx) {
-      const operand = <ExprNodes.ScopeResolver|ExprNodes.Identifier> this.visit(ctx.operandHead);
+      const operand = <ExprNodes.ScopeResolver | ExprNodes.Identifier> this.visit(ctx.operandHead);
       if (ctx.primaryExprTail.length > 0) {
         return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
@@ -94,7 +93,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
     literal(ctx) {
       const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
       const cstToken = ctx[cstNodeType][0];
-      const value =  JSON.parse(cstToken.image);
+      const value = JSON.parse(cstToken.image);
       const tokenName = cstToken.tokenType.tokenName;
       return {
         type: 'BasicLit',
@@ -105,7 +104,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
     }
 
     primaryExpr(ctx): PrimaryExprNode {
-      const operand = <ExprNodes.BasicLit|ExprNodes.Identifier> this.visit(ctx.operand);
+      const operand = <ExprNodes.BasicLit | ExprNodes.Identifier> this.visit(ctx.operand);
       if (ctx.primaryExprTail.length > 0) {
         return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
@@ -170,7 +169,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
       };
     }
 
-    selector(ctx) : ExprNodes.SelectorExpr {
+    selector(ctx): ExprNodes.SelectorExpr {
       return {
         type: 'SelectorExpr',
         x: null,
@@ -182,7 +181,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
       return {
         type: 'IndexExpr',
         x: null,
-        index: parseInt(ctx.NumberLiteral[0].image),
+        index: parseInt(ctx.NumberLiteral[0].image, 10),
       };
     }
 
@@ -191,7 +190,7 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
       return {
         type: 'json',
         value,
-      }
+      };
     }
 
     array(ctx): JsonNodes.ArrayNode {
@@ -223,27 +222,28 @@ export function astCreatorFactory(BaseCstVisitorClass:  CstVisitorBase) {
       if (cstNodeType !== 'object' && cstNodeType !== 'array') {
         return makeLiteralJsonNode(ctx[cstNodeType][0]);
       } else {
-        return <JsonNodes.ObjectNode|JsonNodes.ArrayNode> this.visit(ctx[cstNodeType]);
+        return <JsonNodes.ObjectNode | JsonNodes.ArrayNode> this.visit(ctx[cstNodeType]);
       }
     }
 
     // $ suffix is required for helpers
     private $findCstNodeTypeFromContext(ctx) {
-      return Object.keys(ctx).find(key => ctx[key][0])
+      return Object.keys(ctx).find(key => ctx[key][0]);
     }
 
     // $ suffix is required for helpers
     private $createPrimaryExprHierarchy(primaryExprTailNodes: CstNode[], operand) {
-      type PrimaryExprAstNode = ExprNodes.SelectorExpr|ExprNodes.IndexExpr;
+      type PrimaryExprAstNode = ExprNodes.SelectorExpr | ExprNodes.IndexExpr;
       return primaryExprTailNodes
-          .map(cstTailNode => this.visit(cstTailNode))
-          .reduce((object: PrimaryExprAstNode, property: PrimaryExprAstNode) => {
-            property.x = object;
-            return property;
-          }, operand);
+        .map(cstTailNode => this.visit(cstTailNode))
+        .reduce((object: PrimaryExprAstNode, property: PrimaryExprAstNode) => {
+          property.x = object;
+          return property;
+        }, operand);
 
     }
 
   }
+
   return AstConstructor;
 }

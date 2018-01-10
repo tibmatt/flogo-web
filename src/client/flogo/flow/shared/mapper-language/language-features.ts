@@ -1,9 +1,7 @@
 import Uri = monaco.Uri;
 import IDisposable = monaco.IDisposable;
-import { LexingError, RecognitionException } from 'flogo-mapping-parser';
+import { LexingError, RecognitionException } from '@flogo/packages/mapping-parser';
 import { LanguageService } from './language-service';
-import { LineRange } from '@flogo/flow/shared/monaco-editor/monaco.types';
-import { OffsetRange } from '@flogo/flow/shared/monaco-editor/types';
 
 // --- diagnostics --- ---
 
