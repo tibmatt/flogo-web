@@ -4,6 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 
+import * as _ from 'lodash';
+
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/zip';
 import 'rxjs/add/operator/combineLatest';
@@ -26,7 +28,8 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
 import { IParsedExpressionDetails, IMapperContext } from '../models';
-import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from '../constants';
+import { TYPE_ATTR_ASSIGNMENT } from '../constants';
+import { determineMappingExpressionType } from '../../../../../../packages/mapping-parser/src';
 
 export interface TreeState {
   filterTerm: string | null;
@@ -288,12 +291,11 @@ export class MapperService {
         expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
 
         // const parseResult = this.parserService.processExpression(state.currentSelection.expression,
+        const parseResult = <any>{};
         //   expectedResultType,
         //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
         // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-        node.isInvalid =
-          editingExpression.mappingType === TYPE_OBJECT_TEMPLATE && !this.isValidComplexObjectExpression(editingExpression.expression);
-        const parseResult = <any>{};
+        node.isInvalid = !determineMappingExpressionType(editingExpression.expression);
 
         this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, editingExpression, parseResult.structureDetails);
 

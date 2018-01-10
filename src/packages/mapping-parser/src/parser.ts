@@ -1,13 +1,14 @@
 import { Parser, IToken, tokenMatcher } from 'chevrotain';
-// IMPORTANT: use require to prevent webpack/treeshaking from removing the tokens
-// as it cannot detect the tokens are being used by the parser.
-// const Token = require('./tokens');
-
 /**
  * Based on:
  *  - https://golang.org/ref/spec
  *  - https://github.com/antlr/grammars-v4/tree/master/golang
  */
+// IMPORTANT:  Tokens are defined in the same file to prevent webpack/treeshaking from removing them
+// as it cannot detect the tokens are being used by the parser.
+// Another alternative would be to 'require' the file which will also prevent treeshaking but 'require' is causing issues
+// with the current setup.
+// const Token = require('./tokens');
 
 import { Lexer } from 'chevrotain';
 import { UnicodeCategory } from './tokens/unicode';

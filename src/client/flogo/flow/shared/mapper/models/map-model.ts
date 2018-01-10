@@ -43,7 +43,7 @@ export interface IMapExpression {
   /**
    * Details of a parsed expression string
    */
-  parsedExpressionDetails: IParsedExpressionDetails;
+  parsedExpressionDetails?: IParsedExpressionDetails;
 
   mappingType?: number;
 

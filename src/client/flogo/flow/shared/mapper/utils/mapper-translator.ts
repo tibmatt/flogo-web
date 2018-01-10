@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { determineMappingExpressionType } from 'flogo-mapping-parser';
 
 import {
   IFlogoFlowDiagramTask as FlowTile,
@@ -7,8 +8,7 @@ import {
 
 import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../../core/constants';
 import {
-  REGEX_INPUT_VALUE_EXTERNAL, TYPE_ATTR_ASSIGNMENT,
-  TYPE_OBJECT_TEMPLATE
+  REGEX_INPUT_VALUE_EXTERNAL, MAPPING_TYPE
 } from '../constants';
 
 import { flogoIDDecode } from '../../../../shared/utils';
@@ -100,9 +100,11 @@ export class MapperTranslator {
     inputMappings = inputMappings || [];
     return inputMappings.reduce((mappings, input) => {
       let value = this.upgradeLegacyMappingIfNeeded(input.value);
-      // complex_object case
-      if (value && !_.isString(value)) {
-        value = JSON.stringify(value);
+      if (input.type === MAPPING_TYPE.LITERAL_ASSIGNMENT && _.isString(value) ) {
+        value = `"${value}"`;
+      } else if (value && !_.isString(value)) {
+        // complex_object case
+        value = JSON.stringify(value, null, 2);
       }
       mappings[input.mapTo] = { expression: value, mappingType: input.type };
       return mappings;
@@ -116,13 +118,13 @@ export class MapperTranslator {
       .map(attrName => {
         const mapping = mappings[attrName];
         let value = mapping.expression;
-        const type = mapping.mappingType || TYPE_ATTR_ASSIGNMENT;
-        if (mapping.mappingType ===  TYPE_OBJECT_TEMPLATE) {
-          value = JSON.parse(mappings[attrName].expression);
+        const mappingType = mappingTypeFromExpression(value);
+        if (mappingType === MAPPING_TYPE.OBJECT_TEMPLATE || mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
+          value = JSON.parse(value);
         }
         return {
           mapTo: attrName,
-          type,
+          type: mappingType,
           value
         };
       });
@@ -144,18 +146,20 @@ export class MapperTranslator {
         // TODO: only works for first level mappings
         const invalidMapping = Object.keys(mappings).find(mapTo => {
           const mapping = mappings[mapTo];
-          if (mapping.mappingType === TYPE_OBJECT_TEMPLATE) {
-            const expression = mapping.expression;
-            if (!expression || !expression.trim().length) {
-              return false;
-            }
+          const expression = mapping.expression;
+          if (!expression || !expression.trim().length) {
+            return false;
+          }
+          if (mapping.mappingType === MAPPING_TYPE.OBJECT_TEMPLATE) {
             let parsedProp = undefined;
             try {
               parsedProp = JSON.parse(expression);
             } catch (e) {}
             return parsedProp === undefined;
+          } else {
+            const mappingType = determineMappingExpressionType(mapping.expression);
+            return mappingType == null;
           }
-          return false;
         });
         return !invalidMapping;
       }
@@ -178,4 +182,24 @@ export class MapperTranslator {
     return `$\{${head}}${tail}`;
   }
 
+}
+
+function mappingTypeFromExpression(expression: string) {
+  const expressionType = determineMappingExpressionType(expression);
+  let mappingType = null;
+  switch (expressionType) {
+    case 'json':
+      mappingType = MAPPING_TYPE.OBJECT_TEMPLATE;
+      break;
+    case 'literal':
+      mappingType = MAPPING_TYPE.LITERAL_ASSIGNMENT;
+      break;
+    case 'attrAccess':
+      mappingType = MAPPING_TYPE.ATTR_ASSIGNMENT;
+      break;
+    default:
+      mappingType = MAPPING_TYPE.EXPRESSION_ASSIGNMENT;
+      break;
+  }
+  return mappingType;
 }
