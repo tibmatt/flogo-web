@@ -1,7 +1,5 @@
 @import '../../../assets/_variables';
 
-@trigger-border-width: 2px;
-
 .main {
   padding: 1em 1.25em;
 }
@@ -18,37 +16,6 @@
   .bg-placeholder {
     fill: @color-trigger-bg-color;
   }
-
-  .lambda-icon {
-    display: none;
-    color: #1B4874;
-    height: 20px;
-  }
-
-  .flogo-icon-trigger {
-    display: block;
-    color: #1B4874;
-    font-size: 20px;
-  }
-
-  &.--lambda {
-    .bg-placeholder {
-      fill: #ecc99b;
-    }
-
-    .trigger-content {
-      padding: 14px 16px;
-    }
-
-    .flogo-icon-trigger {
-      display: none;
-    }
-
-    .lambda-icon {
-      display: block;
-    }
-
-  }
 }
 
 .trigger-icon-background {
@@ -63,70 +30,6 @@
 
 .icon-svg__def {
   display: block;
-}
-
-.trigger_block {
-  position: relative;
-
-  .trigger_menu {
-    transform: scale(0);
-    transform-origin: top left;
-    opacity: 0;
-    transition: all 250ms ease-in;
-    position: absolute;
-    top: 1px;
-    left: 40px;
-    width: 135px;
-
-    .trigger_menu-list{
-      margin: 0;
-      border: solid 1px #d8d8d8;
-      border-radius: 0 5px 5px 5px;
-      background: #FFFFFF;
-
-      .trigger_menu-item {
-        margin: 5px 0;
-        border: 0;
-        font-size: 0.65em;
-        padding: 5px 5px 5px 20px;
-        cursor: pointer;
-
-        &:hover {
-          background-color: rgba(197, 202, 233, 0.2);
-        }
-
-        .trigger_menu-icon {
-          margin-right: 5px;
-        }
-      }
-    }
-  }
-}
-
-.trigger_block--selected {
-  .trigger {
-    position: relative;
-    z-index: 3;
-
-    .flogo-icon-trigger {
-      color: #fff;
-    }
-
-    .lambda-icon {
-      color: #fff;
-    }
-
-  }
-
-  .bg-placeholder, .trigger.--lambda .bg-placeholder {
-    fill: @color-trigger-selected-bg-color;;
-  }
-
-  .trigger_menu--open {
-    transform: scale(1);
-    opacity: 1;
-    z-index: 2;
-  }
 }
 
 .trigger--add {

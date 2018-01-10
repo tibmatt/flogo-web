@@ -7,8 +7,8 @@ import {CoreModule as FlowCoreModule} from '@flogo/flow/core';
 import {TriggerMapperModule as FlowTriggerMapperModule} from '@flogo/flow/triggers/trigger-mapper';
 import {InstallerModule as ContribInstallerModule} from '@flogo/flow/shared/installer';
 import {FlogoFlowTriggersPanelComponent} from './triggers.component';
-import {FlogoTriggerClickHandlerService} from './shared/click-handler.service';
 import {FlogoSelectTriggerComponent} from './select-trigger/select-trigger.component';
+import {TriggerBlockComponent} from './trigger-block';
 
 @NgModule({
   imports: [
@@ -20,11 +20,9 @@ import {FlogoSelectTriggerComponent} from './select-trigger/select-trigger.compo
     ContribInstallerModule
   ],
   declarations: [
+    TriggerBlockComponent,
     FlogoFlowTriggersPanelComponent,
     FlogoSelectTriggerComponent
-  ],
-  providers: [
-    FlogoTriggerClickHandlerService
   ],
   exports: [
     FlogoFlowTriggersPanelComponent
