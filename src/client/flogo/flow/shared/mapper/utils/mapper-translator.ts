@@ -1,19 +1,15 @@
 import * as _ from 'lodash';
 import { resolveExpressionType } from '@flogo/packages/mapping-parser';
 
-import {
-  IFlogoFlowDiagramTask as FlowTile,
-  IFlogoFlowDiagramTaskAttributeMapping as FlowMapping,
-} from '../../diagram/models';
+import { IFlogoFlowDiagramTask as FlowTile, IFlogoFlowDiagramTaskAttributeMapping as FlowMapping, } from '../../diagram/models';
 
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_ERROR_ROOT_NAME } from '../../../../core/constants';
-import {
-  REGEX_INPUT_VALUE_EXTERNAL, MAPPING_TYPE
-} from '../constants';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../../../core/constants';
+import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 
 import { flogoIDDecode } from '@flogo/shared/utils';
-import { MapperSchema, FlowMetadata } from '../../../task-mapper/models';
+import { FlowMetadata, MapperSchema } from '../../../task-mapper/models';
 import { IMapping } from '../models/imapping';
+import { IMapExpression } from '@flogo/flow/shared/mapper';
 
 export type  MappingsValidatorFn = (imapping: IMapping) => boolean;
 
@@ -26,8 +22,8 @@ export class MapperTranslator {
     return MapperTranslator.attributesToObjectDescriptor(attributes);
   }
 
-  static createOutputSchema(tiles: Array<FlowTile|FlowMetadata>, includeEmptySchemas = false): MapperSchema {
-    const rootSchema = { type: 'object', properties: {} };
+  static createOutputSchema(tiles: Array<FlowTile | FlowMetadata>, includeEmptySchemas = false): MapperSchema {
+    const rootSchema = {type: 'object', properties: {}};
     tiles.forEach(tile => {
       if (tile.type !== 'metadata') {
         const attributes = tile.attributes;
@@ -62,12 +58,12 @@ export class MapperTranslator {
   }
 
   static attributesToObjectDescriptor(attributes: {
-    name: string, type: string|FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
-  }[], additionalProps?: {[key: string]: any}): MapperSchema {
+    name: string, type: string | FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
+  }[], additionalProps?: { [key: string]: any }): MapperSchema {
     const properties = {};
     const requiredPropertyNames = [];
     attributes.forEach(attr => {
-      let property = { type: MapperTranslator.translateType(attr.type) };
+      let property = {type: MapperTranslator.translateType(attr.type)};
       if (additionalProps) {
         property = Object.assign({}, additionalProps, property);
       }
@@ -76,11 +72,11 @@ export class MapperTranslator {
         requiredPropertyNames.push(attr.name);
       }
     });
-    return { type: 'object', properties, required: requiredPropertyNames };
+    return {type: 'object', properties, required: requiredPropertyNames};
   }
 
   // todo: change
-  static translateType(type: FLOGO_TASK_ATTRIBUTE_TYPE|string) {
+  static translateType(type: FLOGO_TASK_ATTRIBUTE_TYPE | string) {
     const translatedType = {
       [FLOGO_TASK_ATTRIBUTE_TYPE.ANY]: 'any',
       [FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY]: 'array',
@@ -100,20 +96,20 @@ export class MapperTranslator {
     inputMappings = inputMappings || [];
     return inputMappings.reduce((mappings, input) => {
       let value = this.upgradeLegacyMappingIfNeeded(input.value);
-      if (input.type === MAPPING_TYPE.LITERAL_ASSIGNMENT && _.isString(value) ) {
+      if (input.type === MAPPING_TYPE.LITERAL_ASSIGNMENT && _.isString(value)) {
         value = `"${value}"`;
       } else if (value && !_.isString(value)) {
         // complex_object case
         value = JSON.stringify(value, null, 2);
       }
-      mappings[input.mapTo] = { expression: value, mappingType: input.type };
+      mappings[input.mapTo] = {expression: value, mappingType: input.type};
       return mappings;
     }, {});
   }
 
-  static translateMappingsOut(mappings: {[attr: string]: { expression: string, mappingType?: number  }}): FlowMapping[] {
+  static translateMappingsOut(mappings: { [attr: string]: { expression: string, mappingType?: number } }): FlowMapping[] {
     return Object.keys(mappings || {})
-      // filterOutEmptyExpressions
+    // filterOutEmptyExpressions
       .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
       .map(attrName => {
         const mapping = mappings[attrName];
@@ -130,7 +126,7 @@ export class MapperTranslator {
       });
   }
 
-  static getRootType(tile: FlowTile|FlowMetadata) {
+  static getRootType(tile: FlowTile | FlowMetadata) {
     if (tile.type === FLOGO_TASK_TYPE.TASK_ROOT) {
       return tile.triggerType === FLOGO_ERROR_ROOT_NAME ? 'error-root' : 'trigger';
     } else if (tile.type === 'metadata') {
@@ -142,28 +138,12 @@ export class MapperTranslator {
   static makeValidator(): MappingsValidatorFn {
     return (imapping: IMapping) => {
       const mappings = imapping && imapping.mappings;
-      if (mappings) {
-        // TODO: only works for first level mappings
-        const invalidMapping = Object.keys(mappings).find(mapTo => {
-          const mapping = mappings[mapTo];
-          const expression = mapping.expression;
-          if (!expression || !expression.trim().length) {
-            return false;
-          }
-          if (mapping.mappingType === MAPPING_TYPE.OBJECT_TEMPLATE) {
-            let parsedProp = undefined;
-            try {
-              parsedProp = JSON.parse(expression);
-            } catch (e) {}
-            return parsedProp === undefined;
-          } else {
-            const mappingType = resolveExpressionType(mapping.expression);
-            return mappingType == null;
-          }
-        });
-        return !invalidMapping;
+      if (!mappings) {
+        return true;
       }
-      return true;
+      const invalidMapping = Object.keys(mappings)
+        .find(mapTo => isInvalidMapping(mappings[mapTo]));
+      return !invalidMapping;
     };
   }
 
@@ -182,6 +162,26 @@ export class MapperTranslator {
     return `$\{${head}}${tail}`;
   }
 
+}
+
+// TODO: only works for first level mappings
+function isInvalidMapping(mapping: IMapExpression) {
+  const expression = mapping.expression;
+  if (!expression || !expression.trim().length) {
+    return false;
+  }
+  let isInvalid = false;
+  if (mapping.mappingType === MAPPING_TYPE.OBJECT_TEMPLATE) {
+    try {
+      JSON.parse(expression);
+    } catch (e) {
+      isInvalid = true;
+    }
+  } else {
+    const mappingType = resolveExpressionType(mapping.expression);
+    isInvalid = mappingType == null;
+  }
+  return isInvalid;
 }
 
 function mappingTypeFromExpression(expression: string) {

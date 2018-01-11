@@ -1,10 +1,9 @@
-import { IMapExpression } from '@flogo/flow/shared/mapper';
 import { MapperTranslator } from './mapper-translator';
 import { MAPPING_TYPE } from '../constants';
 
 describe('MapperTranslator', function () {
 
-  describe('#translateMappingsIn', () => {
+  describe('#translateMappingsIn', function() {
     const translatedMappings = MapperTranslator.translateMappingsIn([
       {
         mapTo: 'simpleNumber',
@@ -35,33 +34,33 @@ describe('MapperTranslator', function () {
       },
     ]);
 
-    describe('for literal assignments', () => {
-      it('translates primitive types', () => {
+    describe('for literal assignments', function() {
+      it('translates primitive types', function() {
         expect(translatedMappings['simpleNumber']).toEqual(jasmine.objectContaining({
           mappingType: MAPPING_TYPE.LITERAL_ASSIGNMENT,
           expression: '1',
         }));
       });
-      it('translates strings', () => {
+      it('translates strings', function() {
         expect(translatedMappings['simpleString']).toEqual(jasmine.objectContaining({
           mappingType: MAPPING_TYPE.LITERAL_ASSIGNMENT,
           expression: '"my string"',
         }));
       });
     });
-    it('translates attribute assignments', () => {
+    it('translates attribute assignments', function() {
       expect(translatedMappings['attrAssignment']).toEqual(jasmine.objectContaining({
         mappingType: MAPPING_TYPE.ATTR_ASSIGNMENT,
         expression: '$activity[myActivity].attr',
       }));
     });
-    it('translates expression assignments', () => {
+    it('translates expression assignments', function() {
       expect(translatedMappings['exprAssignment']).toEqual(jasmine.objectContaining({
         mappingType: MAPPING_TYPE.EXPRESSION_ASSIGNMENT,
         expression: '$activity[myActivity].attr + 4',
       }));
     });
-    it('translates object templates', () => {
+    it('translates object templates', function() {
       const objectMapping = translatedMappings['objectTemplate'];
       expect(objectMapping).toBeTruthy();
       expect(objectMapping.mappingType).toEqual(MAPPING_TYPE.OBJECT_TEMPLATE);
@@ -71,7 +70,7 @@ describe('MapperTranslator', function () {
     });
   });
 
-  describe('#translateMappingsOut', () => {
+  describe('#translateMappingsOut', function() {
     const translatedMappings = MapperTranslator.translateMappingsOut({
       simpleNumber: {expression: '1.2'},
       simpleString: {expression: '"hello"'},
@@ -81,10 +80,10 @@ describe('MapperTranslator', function () {
       objectTemplate: {expression: '{ "myThing": 44 }'}
     });
     const getMappingFor = (forProperty: string) => translatedMappings.find(m => m.mapTo === forProperty);
-    it('Parses all mappings', () => {
+    it('Parses all mappings', function() {
       expect(translatedMappings.length).toEqual(6);
     });
-    it('translates simple numbers assignments', () => {
+    it('translates simple numbers assignments', function() {
       expect(getMappingFor('simpleNumber'))
         .toEqual(jasmine.objectContaining({
           mapTo: 'simpleNumber',
@@ -92,7 +91,7 @@ describe('MapperTranslator', function () {
           value: 1.2,
         }));
     });
-    it('translates string assignments', () => {
+    it('translates string assignments', function() {
       expect(getMappingFor('simpleString'))
         .toEqual(jasmine.objectContaining({
           mapTo: 'simpleString',
@@ -100,7 +99,7 @@ describe('MapperTranslator', function () {
           value: 'hello',
         }));
     });
-    it('translates resolver assignments', () => {
+    it('translates resolver assignments', function() {
       expect(getMappingFor('resolverAssignment'))
         .toEqual(jasmine.objectContaining({
           mapTo: 'resolverAssignment',
@@ -108,7 +107,7 @@ describe('MapperTranslator', function () {
           value: '$activity[myActivity].array[0].id'
         }));
     });
-    it('translates attribute assignments', () => {
+    it('translates attribute assignments', function() {
       expect(getMappingFor('attrAssignment'))
         .toEqual(jasmine.objectContaining({
           mapTo: 'attrAssignment',
@@ -116,7 +115,7 @@ describe('MapperTranslator', function () {
           value: 'myProp'
         }));
     });
-    it('translates expression assignments', () => {
+    it('translates expression assignments', function() {
       expect(getMappingFor('exprAssignment'))
         .toEqual(jasmine.objectContaining({
           mapTo: 'exprAssignment',
@@ -124,7 +123,7 @@ describe('MapperTranslator', function () {
           value: '$activity[myActivity].attr >= 4'
         }));
     });
-    it('translates object mappings', () => {
+    it('translates object mappings', function() {
       expect(getMappingFor('objectTemplate'))
         .toEqual(jasmine.objectContaining({
           mapTo: 'objectTemplate',
@@ -134,18 +133,87 @@ describe('MapperTranslator', function () {
     });
   });
 
-  // describe('#makeValidator', () => {
-  //   const validatorFn = MapperTranslator.makeValidator();
-  //   it('creates a validator function', () => {
-  //     expect(validatorFn).toEqual(jasmine.any(Function));
+  // describe('#makeValidator', function() {
+  //   const isValidExpression = MapperTranslator.makeValidator();
+  //   it('creates a validator function', function() {
+  //     expect(isValidExpression).toEqual(jasmine.any(Function));
   //   });
   //
-  //   const makeMappingHolder = (propName: string, expression: string) => (<IMapExpression>{ mappings: {
-  //     [propName]: { expression, mappings: {} } }
+  //   it('Treats empty expressions as a valid', function() {
+  //     expect(isValidExpression({
+  //       mappings: {
+  //         something: {
+  //           expression: '',
+  //           mappings: {},
+  //         }
+  //       }
+  //     })).toBeTruthy();
   //   });
   //
-  //   it('Treats empty expressions as a valid', () => {
-  //     expect(validatorFn(makeMappingHolder('something', ''))).toBeFalsy();
+  //   it('Treats well formed objects as valid', function() {
+  //     expect(true).toBe(true);
+  //     expect(isValidExpression({
+  //       mappings: {
+  //         something: {
+  //           expression: '{ "a": 1, "b": [1, 2]}',
+  //           mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
+  //           mappings: {},
+  //         }
+  //       }
+  //     })).toBeTruthy();
+  //   });
+  //
+  //   it('Treats incorrectly formed objects as invalid', function() {
+  //     expect(isValidExpression({
+  //       mappings: {
+  //         something: {
+  //           expression: '{ "a": 1, "b": [1, 2}',
+  //           mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
+  //           mappings: {},
+  //         }
+  //       }
+  //     })).toBeFalsy();
+  //   });
+  //
+  //   describe('For correctly formed expressions', function() {
+  //     [
+  //       '$a.b.c',
+  //       '$activity[name]',
+  //       'singleProp',
+  //       '25.6',
+  //       '"my string"',
+  //       '$activity[hello].something > 555',
+  //     ].forEach(expr => {
+  //       it(`Treats ${expr} as valid`,
+  //         () => expect(isValidExpression({
+  //           mappings: {
+  //             testMapping: {
+  //               expression: expr,
+  //               mappings: {}
+  //             }
+  //           }
+  //         })).toBeTruthy());
+  //     });
+  //   });
+  //
+  //   describe('For incorrectly formed expressions', function() {
+  //     [
+  //       '$a.',
+  //       '1.5.2',
+  //       '$activity[.d',
+  //       '$activity[hello].something >+ 555',
+  //     ].forEach(expr => {
+  //       it(`Treats ${expr} as invalid`,
+  //         () => expect(isValidExpression({
+  //           mappings: {
+  //             testMapping: {
+  //               expression: expr,
+  //               mappings: {}
+  //             }
+  //           }
+  //         })).toBeFalsy()
+  //       );
+  //     });
   //   });
   //
   // });

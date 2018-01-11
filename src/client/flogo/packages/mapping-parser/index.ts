@@ -1,3 +1,3 @@
 export { ParseResult, RecognitionException, LexingError } from './parser/parse-result';
-export * from './parse';
-export * from './resolve-expression-type';
+export { parse } from './parse';
+export { resolveExpressionType } from './resolve-expression-type';
