@@ -607,7 +607,11 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     const doRegisterTask = _registerTask.bind(this);
 
-    if (this.handlers[diagramId] === this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
+    if (data.task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+      this._flowService.listFlowsForApp(this.flow.appId).then(flows => {
+        console.log(flows);
+      });
+    } else if (this.handlers[diagramId] === this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
       const errorTrigger = makeDefaultErrorTrigger(this.profileService.generateTaskID(this._getAllTasks()));
       this.errorHandler.tasks[errorTrigger.id] = errorTrigger;
 

@@ -54,6 +54,10 @@ export class FlogoFlowService {
     return this._flowAPIService.findFlowsByName(name, appId);
   }
 
+  listFlowsForApp(appId) {
+    return this._flowAPIService.findFlowsByName('', appId);
+  }
+
   processFlowModel(model, hasTrigger?: boolean): Promise<FlowData> {
     let diagram: IFlogoFlowDiagram;
     let errorDiagram: IFlogoFlowDiagram;

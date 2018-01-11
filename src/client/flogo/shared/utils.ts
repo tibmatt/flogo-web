@@ -428,7 +428,9 @@ export function diffDates(beginDate: any, endDate: any, timeUnit: any) {
 
 }
 
-
-
-
-
+export function createSubFlowTask() {
+  return {
+    type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
+    name: 'Sub-Flow'
+  };
+}

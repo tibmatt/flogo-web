@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FLOGO_PROFILE_TYPE } from '../constants';
 import { RESTAPITriggersService } from './restapi/triggers-api.service';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
-import { activitySchemaToTask, activitySchemaToTrigger } from '../../shared/utils';
+import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask} from '../../shared/utils';
 import { RESTAPIActivitiesService } from './restapi/activities-api.service';
 import { AbstractTaskIdGenerator } from './profiles/profiles.utils.service';
 import { FlogoDeviceTaskIdGeneratorService } from './profiles/devices/utils.service';
@@ -94,6 +94,11 @@ export class FlogoProfileService {
       } else {
         return response;
       }
+    }).then(result => {
+      if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
+        result.unshift(createSubFlowTask());
+      }
+      return result;
     });
   }
 }
