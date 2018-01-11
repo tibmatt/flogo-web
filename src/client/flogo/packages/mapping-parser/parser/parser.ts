@@ -1,115 +1,140 @@
-import { Parser, IToken, tokenMatcher } from 'chevrotain';
 /**
+ * Mapping expressions parser
  * Based on:
  *  - https://golang.org/ref/spec
  *  - https://github.com/antlr/grammars-v4/tree/master/golang
  */
+import { IToken, Lexer, Parser, tokenMatcher } from 'chevrotain';
+import { UnicodeCategory } from './unicode';
+
+/////////////////////////////
+//        TOKENS           //
+////////////////////////////
+
 // IMPORTANT:  Tokens are defined in the same file to prevent webpack/treeshaking from removing them
 // as it cannot detect the tokens are being used by the parser.
 // Another alternative would be to 'require' the file which will also prevent treeshaking but 'require' is causing issues
 // with the current setup.
 // const Token = require('./tokens');
 
-import { Lexer } from 'chevrotain';
-import { UnicodeCategory } from '../tokens/unicode';
-
-// Using TypeScript we have both classes and static properties to define Tokens
 export class True {
   static LABEL = 'true';
   static PATTERN = /true/;
 }
+
 export class False {
   static LABEL = 'false';
   static PATTERN = /false/;
 }
+
 export class Null {
   static LABEL = 'null';
   static PATTERN = /null/;
 }
+
 export class LCurly {
   static LABEL = '{';
   static PATTERN = /{/;
 }
+
 export class RCurly {
   static LABEL = '}';
   static PATTERN = /}/;
 }
+
 export class LSquare {
   static LABEL = '[';
   static PATTERN = /\[/;
 }
+
 export class RSquare {
   static LABEL = ']';
   static PATTERN = /]/;
 }
+
 export class Dot {
   static LABEL = '.';
   static PATTERN = /\./;
 }
+
 export class Comma {
   static LABEL = ',';
   static PATTERN = /,/;
 }
+
 export class Colon {
   static LABEL = ':';
   static PATTERN = /:/;
 }
+
 export class StringLiteral {
   static PATTERN = /"(:?[^\\"\n\r]+|\\(:?[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/;
 }
+
 export class NumberLiteral {
   static PATTERN = /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
 }
+
 export class WhiteSpace {
   static PATTERN = /\s+/;
   static GROUP = Lexer.SKIPPED;
   static LINE_BREAKS = true;
 }
+
 // https://golang.org/ref/spec#Identifiers
 // identifier = letter { letter | unicode_digit }
 export class IdentifierName {
   // TODO: should we change this regex for manual parsing to avoid perf issues?
   static PATTERN = new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`);
 }
+
 export class Lookup {
   static LABEL = '$';
   static PATTERN = /\$/;
 }
+
 // TODO: are all operators supported?
 export class UnaryOp {
   static PATTERN = /\+|-|!|\^|\*|&|<-/;
 }
+
 export class BinaryOp {
   static PATTERN = Lexer.NA;
 }
+
 // TODO: are all operators supported?
 // OPERATOR PRECEDENCE: 5 (greatest)
 export class MulOp {
   static PATTERN = /\*|\/|%|<<|>>|&\^|&/;
   static CATEGORIES = BinaryOp;
 }
+
 // OPERATOR PRECEDENCE: 4
 // TODO: are all operators supported?
 export class AddOp {
   static PATTERN = /\+|-|\|\^/;
   static CATEGORIES = BinaryOp;
 }
+
 // OPERATOR PRECEDENCE: 3
 // TODO: are all operators supported?
 export class RelOp {
   static PATTERN = /==|!=|<=|>=|<|>/;
   static CATEGORIES = BinaryOp;
 }
+
 // OPERATOR PRECEDENCE: 2
 export class LogicalAnd {
   static PATTERN = /&&/;
   static CATEGORIES = BinaryOp;
 }
+
 // OPERATOR PRECEDENCE: 1
 export class LogicalOr {
   static PATTERN = /\|\|/;
   static CATEGORIES = BinaryOp;
 }
+
 export const allTokens = [
   WhiteSpace,
   Lookup,
@@ -160,6 +185,9 @@ const Token = {
   allTokens,
 };
 
+/////////////////////////////
+//        PARSER           //
+////////////////////////////
 
 // disable member odering rule because the parser requires to declare properties
 // instead of functions, so all the functions are properties
@@ -176,8 +204,8 @@ export class MappingParser extends Parser {
 
   public mappingExpression = this.RULE('mappingExpression', () => {
     this.OR([
-      { ALT: () => this.SUBRULE(this.expression) },
-      { ALT: () => this.SUBRULE(this.json) }
+      {ALT: () => this.SUBRULE(this.expression)},
+      {ALT: () => this.SUBRULE(this.json)}
     ]);
   });
 
@@ -202,18 +230,18 @@ export class MappingParser extends Parser {
 
   public literal = this.RULE('literal', () => {
     this.OR([
-      { ALT: () => this.CONSUME(Token.StringLiteral) },
-      { ALT: () => this.CONSUME(Token.NumberLiteral) },
-      { ALT: () => this.CONSUME(Token.True) },
-      { ALT: () => this.CONSUME(Token.False) },
-      { ALT: () => this.CONSUME(Token.Null) }
+      {ALT: () => this.CONSUME(Token.StringLiteral)},
+      {ALT: () => this.CONSUME(Token.NumberLiteral)},
+      {ALT: () => this.CONSUME(Token.True)},
+      {ALT: () => this.CONSUME(Token.False)},
+      {ALT: () => this.CONSUME(Token.Null)}
     ]);
   });
 
   public json = this.RULE('json', () => {
     this.OR([
-      { ALT: () => this.SUBRULE(this.object) },
-      { ALT: () => this.SUBRULE(this.array) }
+      {ALT: () => this.SUBRULE(this.object)},
+      {ALT: () => this.SUBRULE(this.array)}
     ]);
   });
 
@@ -250,23 +278,23 @@ export class MappingParser extends Parser {
 
   private primaryExprTail = this.RULE('primaryExprTail', () => {
     this.OR([
-      { ALT: () => this.SUBRULE(this.selector) },
-      { ALT: () => this.SUBRULE(this.index) }
+      {ALT: () => this.SUBRULE(this.selector)},
+      {ALT: () => this.SUBRULE(this.index)}
     ]);
   });
 
   // todo: parenthesis support
   private operand = this.RULE('operand', () => {
     this.OR([
-      { ALT: () => this.SUBRULE(this.literal) },
-      { ALT: () => this.SUBRULE(this.operandHead) }
+      {ALT: () => this.SUBRULE(this.literal)},
+      {ALT: () => this.SUBRULE(this.operandHead)}
     ]);
   });
 
   private operandHead = this.RULE('operandHead', () => {
     this.OR([
-      { ALT: () => this.CONSUME(Token.IdentifierName) },
-      { ALT: () => this.SUBRULE(this.resolver) },
+      {ALT: () => this.CONSUME(Token.IdentifierName)},
+      {ALT: () => this.SUBRULE(this.resolver)},
     ]);
   });
 
@@ -330,13 +358,13 @@ export class MappingParser extends Parser {
 
   private value = this.RULE('value', () => {
     this.OR([
-      { ALT: () => this.CONSUME(Token.StringLiteral) },
-      { ALT: () => this.CONSUME(Token.NumberLiteral) },
-      { ALT: () => this.SUBRULE(this.object) },
-      { ALT: () => this.SUBRULE(this.array) },
-      { ALT: () => this.CONSUME(Token.True) },
-      { ALT: () => this.CONSUME(Token.False) },
-      { ALT: () => this.CONSUME(Token.Null) }
+      {ALT: () => this.CONSUME(Token.StringLiteral)},
+      {ALT: () => this.CONSUME(Token.NumberLiteral)},
+      {ALT: () => this.SUBRULE(this.object)},
+      {ALT: () => this.SUBRULE(this.array)},
+      {ALT: () => this.CONSUME(Token.True)},
+      {ALT: () => this.CONSUME(Token.False)},
+      {ALT: () => this.CONSUME(Token.Null)}
     ]);
   });
 
