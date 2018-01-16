@@ -98,7 +98,7 @@ export class MapperTranslator {
       let value = this.upgradeLegacyMappingIfNeeded(input.value);
       if (input.type === MAPPING_TYPE.LITERAL_ASSIGNMENT && _.isString(value)) {
         value = `"${value}"`;
-      } else if (value && !_.isString(value)) {
+      } else if (!_.isString(value)) {
         // complex_object case
         value = JSON.stringify(value, null, 2);
       }

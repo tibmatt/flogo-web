@@ -308,18 +308,6 @@ export class MapperService {
       .subscribe(this.updatesSrc);
   }
 
-  private isValidComplexObjectExpression(expr: string) {
-    if (!expr || !expr.trim().length) {
-      return true;
-    }
-    try {
-      JSON.parse(expr);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
   private updateMapping(
     mappings: Mappings,
     path: string,

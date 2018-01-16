@@ -11,6 +11,11 @@ describe('MapperTranslator', function () {
         value: 1,
       },
       {
+        mapTo: 'simpleFalsyValue',
+        type: MAPPING_TYPE.LITERAL_ASSIGNMENT,
+        value: false,
+      },
+      {
         mapTo: 'simpleString',
         type: MAPPING_TYPE.LITERAL_ASSIGNMENT,
         value: 'my string',
@@ -39,6 +44,12 @@ describe('MapperTranslator', function () {
         expect(translatedMappings['simpleNumber']).toEqual(jasmine.objectContaining({
           mappingType: MAPPING_TYPE.LITERAL_ASSIGNMENT,
           expression: '1',
+        }));
+      });
+      it('translates falsy values', function() {
+        expect(translatedMappings['simpleFalsyValue']).toEqual(jasmine.objectContaining({
+          mappingType: MAPPING_TYPE.LITERAL_ASSIGNMENT,
+          expression: 'false',
         }));
       });
       it('translates strings', function() {
