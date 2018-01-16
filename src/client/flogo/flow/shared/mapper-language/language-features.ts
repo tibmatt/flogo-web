@@ -76,7 +76,6 @@ export class DiagnosticsAdapter {
        const markers = diagnostics.map(d => toDiagnostics(resource, d));
        monaco.editor.setModelMarkers(model, languageId, markers);
      }
-     console.log(diagnostics);
    });
 
     // this._worker(resource).then(worker => {

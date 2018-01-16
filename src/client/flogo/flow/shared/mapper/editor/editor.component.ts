@@ -74,7 +74,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       .subscribe(value => {
         if (value) {
           const parseresult = parse(value);
-          console.log(parseresult);
         }
         this.editorService.outputExpression(value);
       });
