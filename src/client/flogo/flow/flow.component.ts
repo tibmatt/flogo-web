@@ -141,6 +141,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   public currentTrigger: any;
   public app: any;
 
+  public showFlowsList = false;
+
   constructor(public translate: LanguageService,
               private _postService: PostService,
               private _flowService: FlowsService,
@@ -608,9 +610,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const doRegisterTask = _registerTask.bind(this);
 
     if (data.task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
-      this._flowService.listFlowsForApp(this.flow.appId).then(flows => {
-        console.log(flows);
-      });
+      this.showFlowsList = true;
     } else if (this.handlers[diagramId] === this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
       const errorTrigger = makeDefaultErrorTrigger(this.profileService.generateTaskID(this._getAllTasks()));
       this.errorHandler.tasks[errorTrigger.id] = errorTrigger;
@@ -1940,6 +1940,14 @@ export class FlowComponent implements OnInit, OnDestroy {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
         });
       });
+  }
+
+  public handleFlowSelection(event: string) {
+    if (event === 'dismiss') {
+      this.showFlowsList = false;
+    } else {
+
+    }
   }
 
 }

@@ -1,0 +1,17 @@
+<modal [cssClass]="'flows-list'" [size]="'sm'" #listModal (onClose)="onModalCloseOrDismiss()"
+       (onDismiss)="onModalCloseOrDismiss()">
+  <i class="flogo-icon-close flows-list__close" (click)="closeModal()"></i>
+  <div class="flogo-list__header">
+    <p>
+      <span>Select a flow to use as a sub-flow</span>
+      <input type="text" [(ngModel)]="searchText" />
+    </p>
+  </div>
+  <div class="flogo-list__container" style="padding:10px; background: #f4f4f4">
+    <div *ngFor="let flow of filteredFlows" class="card row" style="margin: 0">
+      <div class="col-md-7" style="background: red"><p></p></div>
+      <div class="col-md-3" style="background: blue"><a href="#">View in new tab</a></div>
+      <div class="col-md-2" style="background: yellow">adfj</div>
+    </div>
+  </div>
+</modal>
