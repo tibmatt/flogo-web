@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { convertTaskID, flogoIDEncode, getDefaultValue } from '@flogo/shared/utils';
 import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import {
@@ -29,7 +30,7 @@ export interface flowToJSON_Attribute {
 /* tslint:disable-next-line:class-name */
 export interface flowToJSON_Mapping {
   type: number;
-  value: string;
+  value: any;
   mapTo: string;
 }
 
@@ -551,59 +552,6 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     return attributes;
   }
 
-  function _parseFlowMappings(inMappings: any[]): flowToJSON_Mapping[] {
-    const mappings = <flowToJSON_Mapping[]>[];
-
-    _.each(inMappings, (inMapping: any) => {
-      const mapping = <flowToJSON_Mapping>{};
-
-      /* simple validation */
-
-      mapping.type = <number>_.get(inMapping, 'type');
-      mapping.value = <string>_.get(inMapping, 'value');
-      mapping.mapTo = <string>_.get(inMapping, 'mapTo');
-
-      if (_.isUndefined(mapping.type)) {
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.warn('Empty mapping type found');
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.log(inMapping);
-        return;
-      }
-
-      if (_.isEmpty(mapping.value)) {
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.warn('Empty mapping value found');
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.log(inMapping);
-        return;
-      }
-
-      if (_.isEmpty(mapping.mapTo)) {
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.warn('Empty mapping mapTo found');
-        /* tslint:disable-next-line:no-unused-expression */
-        DEBUG && console.log(inMapping);
-        return;
-      }
-
-      // TODO
-      //  haven't got the types for mapping, hence of the type of mapping isn't the required integre type,
-      //  force it to 1;
-      if (!_.isNumber(mapping.type)) {
-        /* tslint:disable-next-line:no-unused-expression */
-        INFO && console.warn(`Force invalid mapping type to 1 since it's not a number.`);
-        /* tslint:disable-next-line:no-unused-expression */
-        INFO && console.log(mapping);
-        mapping.type = 1;
-      }
-
-      mappings.push(mapping);
-    });
-
-    return mappings;
-  }
-
   function _hasExplicitReply(tasks?: any): boolean {
     if (!tasks) {
       return false;
@@ -664,4 +612,43 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   }
 
   return flowJSON;
+}
+
+export function _parseFlowMappings(inMappings: any[] = []): flowToJSON_Mapping[] {
+  return inMappings.reduce((parsedMappings: flowToJSON_Mapping[], inMapping: any) => {
+    if (isValidMapping(inMapping)) {
+      const parsedMapping: flowToJSON_Mapping = {
+        type: inMapping.type, value: inMapping.value, mapTo: inMapping.mapTo
+      };
+      if (!_.isNumber(parsedMapping.type)) {
+        console.warn('Force invalid mapping type to 1 since it is not a number.');
+        console.log(parsedMapping);
+        parsedMapping.type = 1;
+      }
+      parsedMappings.push(parsedMapping);
+    }
+    return parsedMappings;
+  }, []);
+
+  /* simple validation */
+  function isValidMapping(mapping) {
+    if (_.isUndefined(mapping.type)) {
+      // DEBUG && console.warn('Empty mapping type found');
+      // DEBUG && console.log(inMapping);
+      return false;
+    }
+
+    if (_.isUndefined(mapping.value)) {
+      return false;
+    } else if (_.isString(mapping.value) && !_.trim(mapping.value)) {
+      return false;
+    }
+
+    if (_.isEmpty(mapping.mapTo)) {
+      // DEBUG && console.warn('Empty mapping mapTo found');
+      // DEBUG && console.log(inMapping);
+      return false;
+    }
+    return true;
+  }
 }
