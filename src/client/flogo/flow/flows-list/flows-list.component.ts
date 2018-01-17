@@ -14,15 +14,26 @@ export class FlowsListComponent implements AfterViewInit, OnInit {
   onSelection: EventEmitter<string> = new EventEmitter<string>();
 
   @ViewChild('listModal') modal: ModalComponent;
-  filteredFlows: any[];
+  flowsList: any[];
 
   searchText: string;
 
   constructor(private flowService: FlowsService) {}
 
+  get filteredFlows() {
+    if (this.searchText && !_.isEmpty(this.searchText.trim())) {
+      return this.flowsList.filter((flow) => {
+        return (flow.name || '').toLowerCase().includes(this.searchText.toLowerCase()) ||
+          (flow.description || '').toLowerCase().includes(this.searchText.toLowerCase());
+      });
+    } else {
+      return this.flowsList;
+    }
+  }
+
   ngOnInit() {
     this.flowService.listFlowsForApp(this.appId).then(flows => {
-      this.filteredFlows = flows;
+      this.flowsList = flows;
     });
   }
 
