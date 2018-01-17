@@ -1861,11 +1861,13 @@ export class FlowComponent implements OnInit, OnDestroy {
   private cleanDanglingTaskOutputMappings(outputRegistry: Map<string, boolean>) {
     const isMapperContribAndHasMapping = (task: IFlogoFlowDiagramTask) => {
       const schema = this.flow.schemas[task.ref];
-      return isMapperActivity(schema) && task.inputMappings;
+      return isMapperActivity(schema) && task.attributes.inputs.length ;
     };
     _.filter(this._getAllTasks(), isMapperContribAndHasMapping)
       .forEach((task: IFlogoFlowDiagramTask) => {
-        task.inputMappings = task.inputMappings.filter(mapping => outputRegistry.has(mapping.mapTo));
+        task.attributes.inputs.forEach((mapping) => {
+          mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
+        });
       });
   }
 
