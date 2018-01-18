@@ -1,5 +1,5 @@
 import toString from 'lodash/toString';
-import normalizeName from 'lodash/snakeCase'
+import normalizeName from 'lodash/snakeCase';
 
 export class UniqueIdAgent {
 
