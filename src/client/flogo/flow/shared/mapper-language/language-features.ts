@@ -70,7 +70,11 @@ export class DiagnosticsAdapter {
   }
 
   private _doValidate(resource: Uri, languageId: string): void {
-   LanguageService.doValidation(monaco.editor.getModel(resource).getValue()).then(diagnostics => {
+    const initialModel = monaco.editor.getModel(resource);
+    if (!initialModel) {
+      return;
+    }
+   LanguageService.doValidation(initialModel.getValue()).then(diagnostics => {
      const model = monaco.editor.getModel(resource);
      if (model.getModeId() === languageId) {
        const markers = diagnostics.map(d => toDiagnostics(resource, d));

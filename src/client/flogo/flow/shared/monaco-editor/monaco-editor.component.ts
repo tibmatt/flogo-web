@@ -5,6 +5,7 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
   Output,
@@ -98,8 +99,8 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
   };
   private _value = '';
 
-  // constructor(private _monacoLoader: MonacoLoaderService) {
-  // }
+  constructor(private ngZone: NgZone) {
+  }
 
   get value() {
     return this.editor.getValue();
@@ -297,9 +298,11 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
     this.editor.onDidChangeCursorSelection(event => this.onDidChangeCursorSelection(event));
 
     const didScrollChangeDisposable = this.editor.onDidScrollChange((event) => {
-      this.isEditorLoading = false;
-      didScrollChangeDisposable.dispose();
-      this.ready.next(true);
+      this.ngZone.run(() => {
+        this.isEditorLoading = false;
+        didScrollChangeDisposable.dispose();
+        this.ready.next(true);
+      });
     });
   }
 
