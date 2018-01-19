@@ -9,18 +9,129 @@
   flex-direction: row;
   /* todo: remove fixed height once parent height is set */
   height: 100%;
+
 }
 
-.mapper__left-panel {
+.tc-toggle-div {
+  display: inline-block;
+  .tc-toggle {
+    position: relative;
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+    width: 48px;
+    height: 28px;
+    margin-left: 16px;
+    input {
+      display: none;
+    }
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 48px;
+    height: 28px;
+    background-color: #727272;
+    border: solid 1px #727272;
+    transition: .4s;
+    &:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 0px;
+      bottom: 1px;
+      background-color: #ffffff;
+      transition: .4s;
+    }
+  }
+  input {
+    &:checked {
+      & + .slider {
+        background-color: #0081cb;
+        border: solid 1px #0081cb;
+        &:before {
+          -webkit-transform: translateX(22px);
+          transform: translateX(22px);
+        }
+        &:hover {
+          background-color: #055dab;
+        }
+      }
+    }
+    &:focus {
+      & + .slider {
+        box-shadow: 0 0 4px #0081cb;
+      }
+    }
+  }
+  .slider.round {
+    border-radius: 14px;
+    &:before {
+      border-radius: 50%;
+    }
+  }
+}
+.mapper-iterate-panel{
+  border-bottom: 2px solid #dedede;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.mapper-iterate-text{
+  flex: 1;
+  font-weight: bold;
+}
+
+.mapper__center-panel {
   padding: 20px;
   flex: 1;
+}
+.mapper__left-panel{
+  width: 15%;
+  border-right: 1px solid #e0e0e0;
+  ul {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+}
+.mapper_category{
+  width: 100%;
+  height: 45px;
+  padding-left: 30px;
+  margin: 0;
+  list-style-type: none;
+  text-transform: capitalize;
+  line-height: 1.43;
+  display: flex;
+  align-items: center;
+  color: #727272;
+  cursor: pointer;
+  vertical-align: middle;
+
+  &:hover {
+    color: #0081cb;
+    background: rgba(197, 202, 233, 0.2);
+    cursor: pointer;
+  }
+}
+
+.mapper_category--selected {
+  background-color: #cad3df;
+  color: #062e79;
 }
 
 .mapper__right-panel {
   background-color: #f4f4f4;
   padding: 20px;
-  width: 75%;
-  max-width: 75%;
+  width: 60%;
+  max-width: 60%;
 }
 
 .editor-container {

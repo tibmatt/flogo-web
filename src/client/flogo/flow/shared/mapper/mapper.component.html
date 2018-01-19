@@ -1,7 +1,19 @@
 <div class="mapper">
-  <flogo-mapper-icons></flogo-mapper-icons>
   <div class="mapper__left-panel">
-    <flogo-mapper-input-list [searchPlaceholder]="inputsSearchPlaceHolder"></flogo-mapper-input-list>
+    <ul><li class="mapper_category" [ngClass]="{'mapper_category--selected': displayMapInputs}" (click)="showMapInputs()" >Map Inputs</li>
+      <li class="mapper_category" [ngClass]="{'mapper_category--selected': !displayMapInputs}" (click)="showIterators()">Iterators</li></ul>
+  </div>
+  <flogo-mapper-icons></flogo-mapper-icons>
+  <div class="mapper__center-panel">
+    <div *ngIf="displayIterators" class="mapper-iterate-panel"><div class="mapper-iterate-text">Iterate</div><div class="tc-toggle-div">
+      <span class="switch__label" *ngIf="iteratorModeOn">On</span>
+      <span class="switch__label" *ngIf="!iteratorModeOn">Off</span>
+      <label class="tc-toggle">
+        <input type="checkbox" [checked]="iteratorModeOn" (change)="changeIteratorMode($event)">
+        <span class="slider round"></span>
+      </label>
+    </div></div>
+    <flogo-mapper-input-list *ngIf="displayMapInputs" [searchPlaceholder]="inputsSearchPlaceHolder"></flogo-mapper-input-list>
   </div>
   <div class="mapper__right-panel" [class.mapper__right-panel--working-input]="currentInput">
     <div *ngIf="!currentInput" class="editor-container editor-container--empty">
