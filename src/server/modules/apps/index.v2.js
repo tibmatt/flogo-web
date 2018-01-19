@@ -9,7 +9,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import shortid from 'shortid';
 
-import {DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES} from '../../common/constants';
+import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -17,18 +17,18 @@ import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
-import {importApp} from './import.v2';
-import { buildApp } from  './build';
+import { importApp } from './import.v2';
+import { buildApp } from './build';
 
 import { Validator } from './validator';
-import {getProfileType} from "../../common/utils/profile";
-import {UniqueIdAgent} from './uniqueId';
+import { getProfileType } from '../../common/utils/profile';
+import { UniqueIdAgent } from './uniqueId';
 
 const EDITABLE_FIELDS = [
   'name',
   'version',
   'description',
-  'device'
+  'device',
 ];
 
 const PUBLISH_FIELDS = [
@@ -56,7 +56,7 @@ export class AppsManager {
   static create(app) {
     let inputData = app;
     let isDevice = false;
-    if(getProfileType(app) === FLOGO_PROFILE_TYPES.DEVICE) {
+    if (getProfileType(app) === FLOGO_PROFILE_TYPES.DEVICE) {
       isDevice = true;
     }
     const errors = Validator.validateSimpleApp(inputData, isDevice);
@@ -104,7 +104,7 @@ export class AppsManager {
         }
 
         let isDevice = false;
-        if(getProfileType(mergedData) === FLOGO_PROFILE_TYPES.DEVICE) {
+        if (getProfileType(mergedData) === FLOGO_PROFILE_TYPES.DEVICE) {
           isDevice = true;
         }
 
@@ -244,11 +244,11 @@ export class AppsManager {
         }
         const uniqueIdAgent = new UniqueIdAgent();
         const DEFAULT_COMMON_VALUES = [{
-          appType: "flogo:app",
-          actionRef: "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+          appType: 'flogo:app',
+          actionRef: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
         }, {
-          appType: "flogo:device",
-          actionRef: "github.com/TIBCOSoftware/flogo-contrib/device/action/flow"
+          appType: 'flogo:device',
+          actionRef: 'github.com/TIBCOSoftware/flogo-contrib/device/action/flow',
         }];
 
         const appProfileType = getProfileType(app);
@@ -258,26 +258,33 @@ export class AppsManager {
           a.ref = DEFAULT_COMMON_VALUES[appProfileType].actionRef;
         });
 
-        if(appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
-          let allTriggers = [];
+        if (appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
+          const allTriggers = [];
           app.triggers.forEach(t => {
             t.handlers.forEach((handler, ind) => {
-              let triggerName = t.name + (ind ? '('+ind+')' : '');
+              const triggerName = t.name + (ind ? `(${ind})` : '');
               allTriggers.push(Object.assign({}, t, {
                 name: triggerName,
-                handlers: [handler]
+                handlers: [handler],
               }));
             });
           });
           app.triggers = allTriggers;
         }
 
-        //While exporting only flows, export selected flows if any flowids are provided else export all flows
+        // While exporting only flows, export selected flows if any flowids are provided else export all flows
         if (exportType === 'flows' && selectedFlowsIds) {
           app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
         }
 
-        const actionMap = new Map(app.actions.map(a => [a.id, a]));
+        // oldId => actionObjectWithNewId
+        const actionMap = new Map();
+        app.actions.forEach(action => {
+          const oldId = action.id;
+          action.id = uniqueIdAgent.generateUniqueId(action.name);
+          actionMap.set(oldId, action);
+        });
+
         if (exportType === 'application' || !exportType) {
           let handlers = [];
           app.triggers.forEach(t => {
@@ -289,24 +296,16 @@ export class AppsManager {
 
           handlers.forEach(h => {
             const action = actionMap.get(h.actionId);
-            if (!actionMap) {
+            if (!action) {
               delete h.actionId;
               return;
             }
-
-            h.actionId = uniqueIdAgent.generateUniqueId(action.name);
+            h.actionId = action.id;
           });
-
         }
-        // convert
-        // 1. orphan actions ids in case of application export
-        // 2. all actions ids in case of flows export
-        actionMap.forEach(a => {
-          a.id = uniqueIdAgent.generateUniqueId(a.name);
-        });
 
         app.actions.forEach(action => {
-          if(action.data.flow){
+          if (action.data.flow) {
             action.data.flow.name = action.name;
             delete action.name;
           }
@@ -317,21 +316,21 @@ export class AppsManager {
           }
         });
 
-        if(!app.version) {
-          app.version =  DEFAULT_APP_VERSION;
+        if (!app.version) {
+          app.version = DEFAULT_APP_VERSION;
         }
 
-        if(appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
+        if (appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
           app.triggers.forEach(trigger => {
             trigger.actionId = trigger.handlers[0].actionId;
             // delete trigger.handlers;
           });
           app.actions.forEach(action => {
-            if(action.data.flow){
+            if (action.data.flow) {
               action.data.flow.links = cloneDeep(action.data.flow.rootTask.links);
               action.data.flow.tasks = cloneDeep(action.data.flow.rootTask.tasks);
               action.data.flow.tasks.forEach(task => {
-                let attributes = {};
+                const attributes = {};
                 task.attributes.forEach(attribute => {
                   attributes[attribute.name] = attribute.value;
                 });
@@ -344,13 +343,15 @@ export class AppsManager {
         }
 
         // will strip additional metadata such as createdAt, updatedAt
-        const errors = Validator.validateFullApp(appProfileType, app, null, { removeAdditional: true, useDefaults: true });
+        const errors = Validator.validateFullApp(
+          appProfileType, app, null, { removeAdditional: true, useDefaults: true }
+          );
         if (errors && errors.length > 0) {
           throw ErrorManager.createValidationError('Validation error', { details: errors });
         }
 
-        if(exportType === 'flows'){
-          app.type = "flogo:actions";
+        if (exportType === 'flows') {
+          app.type = 'flogo:actions';
           delete app.triggers;
         }
 
@@ -399,8 +400,8 @@ function build(app) {
 
 function cleanForOutput(app) {
   const cleanedApp = Object.assign({ id: app._id }, app);
-  let appDataToSend = pick(cleanedApp, PUBLISH_FIELDS);
-  if(getProfileType(app) === FLOGO_PROFILE_TYPES.DEVICE) {
+  const appDataToSend = pick(cleanedApp, PUBLISH_FIELDS);
+  if (getProfileType(app) === FLOGO_PROFILE_TYPES.DEVICE) {
     appDataToSend.device = app.device;
   }
   return appDataToSend;
