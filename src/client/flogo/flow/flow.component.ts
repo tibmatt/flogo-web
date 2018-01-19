@@ -376,7 +376,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     return {
       isTrigger: taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
-      isTask: taskType === FLOGO_TASK_TYPE.TASK,
+      isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_ITERATOR,
       hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
       app: null,
@@ -1081,7 +1081,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     console.group('Save task details to flow');
     const task = this.handlers[diagramId].tasks[data.taskId];
 
-    if (task.type === FLOGO_TASK_TYPE.TASK) { // TODO handle more activity task types in the future
+    if (task.type === FLOGO_TASK_TYPE.TASK || task.type === FLOGO_TASK_TYPE.TASK_ITERATOR) {
       // set/unset the warnings in the tile
       _.set(task, '__props.warnings', data.warnings);
 

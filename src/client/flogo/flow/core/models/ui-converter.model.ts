@@ -382,7 +382,7 @@ class ItemFactory {
       homepage: '',
       description: '',
       installed: true,
-      settings: [],
+      settings: {},
       outputs: [],
       ref: '',
       endpoint: { settings: [] },
@@ -436,7 +436,7 @@ class ItemFactory {
 
     const { installed, cli, endpointSetting } = trigger;
     const item = Object.assign({}, this.getSharedProperties(installed), { id: trigger.node.taskID }, {
-      nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name
+      nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name, settings: [],
     });
 
     const settings = _.get(cli, 'settings', {});
@@ -497,7 +497,7 @@ class ItemFactory {
       },
       inputMappings: cli.inputMappings || [],
       id: node.taskID,
-      type: FLOGO_TASK_TYPE.TASK,
+      type: FLOGO_TASK_TYPE[cli.type] ? FLOGO_TASK_TYPE[FLOGO_TASK_TYPE[cli.type]] : FLOGO_TASK_TYPE.TASK,
       activityType: installed.id,
     });
 

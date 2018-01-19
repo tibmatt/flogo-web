@@ -11,7 +11,7 @@ export abstract class AbstractTaskIdGenerator {
 
     const taskIDs = _.map(_.filter(ids, (id: string) => {
       const type = items[id].type;
-      return type === FLOGO_TASK_TYPE.TASK || type === FLOGO_TASK_TYPE.TASK_ROOT;
+      return type === FLOGO_TASK_TYPE.TASK || type === FLOGO_TASK_TYPE.TASK_ROOT || type === FLOGO_TASK_TYPE.TASK_ITERATOR;
     }), (id: string) => {
       // if parseInput callback is provided then parse the decoded task ID to get the number string
       const numberString = parseInput ? parseInput(flogoIDDecode(id)) : flogoIDDecode(id);

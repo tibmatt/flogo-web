@@ -37,7 +37,7 @@ export const FLOGO_TASK_TYPE = {
   1: "TASK",
   2: "TASK_BRANCH",
   3: "TASK_SUB_PROC",
-  4: "TASK_LOOP",
+  4: "TASK_ITERATOR",
   "TASK_ROOT": 0,
   "TASK": 1,
   "TASK_BRANCH": 2,
