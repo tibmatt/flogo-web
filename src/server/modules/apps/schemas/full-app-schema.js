@@ -1,65 +1,141 @@
-import Ajv from 'ajv';
-
-class Validator {
-
-  static validate(data) {
-    const ajv = new Ajv({ removeAdditional: true, useDefaults: true, allErrors: true });
-    const valid = ajv.validate(getSchema(), data);
-    return valid ? null : ajv.errors;
-  }
-
-}
-export { Validator };
-
-export function getSchema() {
+export function fullAppSchema() {
   return {
     $schema: 'http://json-schema.org/draft-04/schema#',
+    additionalProperties: false,
     type: 'object',
     required: [
-      'data',
+      'name',
+      'type',
+      'version',
+      'triggers',
+      'actions',
     ],
     properties: {
+      name: {
+        type: 'string',
+      },
+      type: {
+        type: 'string',
+        default: 'flogo:app',
+      },
+      version: {
+        type: 'string',
+      },
       description: {
         type: 'string',
       },
-      ref: {
-        type: 'string',
-      },
-      metadata: {
-        $ref: '#/definitions/Metadata',
-      },
-      data: {
-        type: 'object',
-        default: { },
-        properties: {
-          flow: {
-            $ref: '#/definitions/Flow',
-          },
-        },
+      triggers: {
         additionalProperties: false,
+        default: [],
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            id: {
+              type: 'string',
+            },
+            ref: {
+              type: 'string',
+              'trigger-installed': true,
+            },
+            name: {
+              type: 'string',
+            },
+            description: {
+              type: 'string',
+            },
+            settings: {
+              type: 'object',
+              default: null,
+            },
+            handlers: {
+              type: 'array',
+              items: {
+                type: 'object',
+                additionalProperties: false,
+                properties: {
+                  actionId: {
+                    type: 'string',
+                  },
+                  settings: {
+                    type: 'object',
+                    default: {},
+                  },
+                  actionMappings: {
+                    input: {
+                      $ref: '#/definitions/MappingCollection',
+                    },
+                    output: {
+                      $ref: '#/definitions/MappingCollection',
+                    },
+                  },
+                },
+                required: [
+                  'actionId',
+                  'settings',
+                ],
+              },
+            },
+          },
+          required: [
+            'id',
+            'ref',
+            'settings',
+            'handlers',
+          ],
+        },
+      },
+      actions: {
+        default: [],
+        type: 'array',
+        items: {
+          $ref: '#/definitions/ActionFlow',
+        },
       },
     },
     definitions: {
-      Metadata: {
+      MappingCollection: {
+        type: 'array',
+        items: {
+          $ref: '#/definitions/Mapping',
+        },
+      },
+      Mapping: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          type: {
+            type: 'integer',
+          },
+          value: {},
+          mapTo: {
+            type: 'string',
+          },
+        },
+        required: ['type', 'value', 'mapTo'],
+      },
+      ActionMetadata: {
         type: 'object',
         additionalProperties: false,
         properties: {
           input: {
-            $ref: '#/definitions/Metadata/definitions/AttributeCollection',
+            $ref: '#/definitions/ActionMetadata/definitions/AttributeCollection',
           },
           output: {
-            $ref: '#/definitions/Metadata/definitions/AttributeCollection',
+            $ref: '#/definitions/ActionMetadata/definitions/AttributeCollection',
           },
         },
         definitions: {
           AttributeCollection: {
             type: 'array',
             items: {
-              $ref: '#/definitions/Metadata/definitions/Attribute',
+              $ref: '#/definitions/ActionMetadata/definitions/Attribute',
             },
           },
           Attribute: {
             type: 'object',
+            additionalProperties: false,
             properties: {
               name: {
                 type: 'string',
@@ -72,13 +148,59 @@ export function getSchema() {
           },
         },
       },
+      ActionFlow: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          id: {
+            type: 'string',
+          },
+          description: {
+            type: 'string',
+          },
+          ref: {
+            type: 'string',
+          },
+          metadata: {
+            $ref: '#/definitions/ActionMetadata',
+          },
+          data: {
+            type: 'object',
+            properties: {
+              flow: {
+                $ref: '#/definitions/Flow',
+              },
+            },
+          },
+        },
+        required: [
+          'id',
+          'ref',
+          'data',
+        ],
+      },
       Flow: {
         title: 'flow',
         type: 'object',
-        default: {},
+        additionalProperties: false,
         properties: {
+          id: {
+            type: 'string',
+          },
           name: {
             type: 'string',
+          },
+          description: {
+            type: 'string',
+          },
+          ref: {
+            type: 'string',
+          },
+          type: {
+            type: 'integer',
+          },
+          explicitReply: {
+            type: 'boolean',
           },
           attributes: {
             type: 'array',
@@ -93,7 +215,6 @@ export function getSchema() {
             },
           },
           rootTask: {
-            default: {},
             title: 'rootTask',
             $ref: '#/definitions/Flow/definitions/rootTask',
           },
@@ -117,7 +238,6 @@ export function getSchema() {
                 enum: [
                   'string',
                   'integer',
-                  'int',
                   'number',
                   'boolean',
                   'object',
@@ -152,8 +272,7 @@ export function getSchema() {
               type: {
                 type: 'integer',
               },
-              value: {
-              },
+              value: {},
               mapTo: {
                 type: 'string',
               },
@@ -169,7 +288,7 @@ export function getSchema() {
             type: 'object',
             properties: {
               name: {
-                name: 'string',
+                type: 'string',
               },
               id: {
                 type: 'integer',
@@ -193,60 +312,6 @@ export function getSchema() {
               'to',
             ],
           },
-          rootTask: {
-            title: 'task',
-            type: 'object',
-            properties: {
-              id: {
-                type: ['integer', 'string'],
-              },
-              type: {
-                type: 'integer',
-              },
-              name: {
-                type: 'string',
-              },
-              description: {
-                type: 'string',
-              },
-              activityRef: {
-                type: 'string',
-              },
-              attributes: {
-                type: 'array',
-                items: {
-                  $ref: '#/definitions/Flow/definitions/attribute',
-                },
-              },
-              inputMappings: {
-                type: 'array',
-                items: {
-                  $ref: '#/definitions/Flow/definitions/mapping',
-                },
-              },
-              outputMappings: {
-                type: 'array',
-                items: {
-                  $ref: '#/definitions/Flow/definitions/mapping',
-                },
-              },
-              tasks: {
-                type: 'array',
-                items: {
-                  $ref: '#/definitions/Flow/definitions/task',
-                },
-              },
-              links: {
-                type: 'array',
-                items: {
-                  $ref: '#/definitions/Flow/definitions/link',
-                },
-              },
-            },
-            required: [
-              'id',
-            ],
-          },
           task: {
             title: 'task',
             type: 'object',
@@ -260,20 +325,25 @@ export function getSchema() {
               name: {
                 type: 'string',
               },
+              title: {
+                type: 'string',
+              },
               description: {
                 type: 'string',
               },
               activityRef: {
                 type: 'string',
+                'activity-installed': true,
+              },
+              settings: {
+                title: 'settings',
+                type: 'object',
               },
               attributes: {
                 type: 'array',
                 items: {
                   $ref: '#/definitions/Flow/definitions/attribute',
                 },
-              },
-              settings: {
-                type: 'object',
               },
               inputMappings: {
                 type: 'array',
@@ -302,10 +372,69 @@ export function getSchema() {
             },
             required: [
               'id',
+              'name',
               'activityRef',
             ],
           },
+          rootTask: {
+            title: 'rootTask',
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              id: {
+                type: ['integer', 'string'],
+              },
+              type: {
+                type: 'integer',
+              },
+              attributes: {
+                type: 'array',
+                default: [],
+                items: {
+                  $ref: '#/definitions/Flow/definitions/attribute',
+                },
+              },
+              inputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              outputMappings: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/mapping',
+                },
+              },
+              tasks: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/task',
+                },
+              },
+              links: {
+                type: 'array',
+                items: {
+                  $ref: '#/definitions/Flow/definitions/link',
+                },
+              },
+            },
+            required: [
+              'id',
+            ],
+          },
         },
+      },
+      FlowEmbedded: {
+        type: 'object',
+        properties: {
+          flow: {
+            $ref: '#/definitions/Flow',
+          },
+        },
+        required: [
+          'flow',
+        ],
       },
     },
   };
