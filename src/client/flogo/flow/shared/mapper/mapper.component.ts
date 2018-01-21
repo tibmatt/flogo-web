@@ -34,6 +34,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() inputsSearchPlaceHolder = 'Search';
   @Input() outputsSearchPlaceHolder = 'Search';
   @Output() mappingsChange = new EventEmitter<IMapping>();
+  @Input() isSingleInputMode = false;
   currentInput: CurrentSelection = null;
   isDraggingOver = false;
   currentMappingType: number;
