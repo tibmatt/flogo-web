@@ -27,8 +27,10 @@ const SOURCE_ID = 'ngx-monaco-editor';
 const LANGUAGE_ID = 'flogomapping';
 export const DEFAULT_EDITOR_OPTIONS = {
   language: LANGUAGE_ID,
-  wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",<>/?',
+  fontSize: 13,
   fixedOverflowWidgets: true,
+  lineNumbers: false,
+  scrollBeyondLastLine: false,
   minimap: {
     enabled: false
   }
@@ -38,7 +40,7 @@ export const DEFAULT_EDITOR_OPTIONS = {
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'monaco-editor',
-  styleUrls: ['monaco-editor.component.css'],
+  styleUrls: ['monaco-editor.component.less'],
   template: `
     <div #editor class="editor-container" [style.width]="'100%'" [style.height]="'100%'"></div>
     <div class="editor-spinner" *ngIf="isEditorLoading">
@@ -275,9 +277,11 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   updateDimensions(dimension?: { width: number, height: number }) {
-    if (this.editor) {
-      this.editor.layout(dimension);
-    }
+    setTimeout(() => {
+      if (this.editor) {
+        this.editor.layout(dimension);
+      }
+    }, 0);
   }
 
   private initMonaco() {
