@@ -1,4 +1,5 @@
-<div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)" (@dialog.done)="onModalStateChange($event)">
+<div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)"
+     (@dialog.done)="onModalStateChange($event)">
   <div class="mapper-modal data-transform-modal" *ngIf="isActive">
     <div class="mapper-modal__header header">
       <h2 class="header__title">{{ title }}</h2>
@@ -17,10 +18,33 @@
     </div>
 
     <div class="mapper-modal__content">
-      <flogo-mapper class="mapper"
+      <div class="mapper-modal_left-panel">
+        <ul>
+          <li class="mapper-modal_category" [ngClass]="{'mapper-modal_category--selected': displayMapInputs}"
+              (click)="showMapInputs()">Map Inputs
+          </li>
+          <li class="mapper-modal_category" [ngClass]="{'mapper-modal_category--selected': !displayMapInputs}"
+              (click)="showIterators()">Iterators
+          </li>
+        </ul>
+      </div>
+      <div class="mapper-modal__iterator-panel" *ngIf="displayIterators">
+        <div class="mapper-modal_iterate-switch">
+          <div class="mapper-modal-iterate-text">Iterate</div>
+          <div class="flogo-toggle-switch_container">
+            <span *ngIf="iteratorModeOn">On</span>
+            <span *ngIf="!iteratorModeOn">Off</span>
+            <label class="flogo-toggle-switch">
+              <input type="checkbox" [checked]="iteratorModeOn" (change)="changeIteratorMode($event)">
+              <span class="flogo-toggle-switch_slider toggle-switch_round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <flogo-mapper *ngIf="displayMapInputs" class="mapper"
                     inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
                     outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
-                    [context]="mapperContext" (mappingsChange)="onMappingsChange($event)" ></flogo-mapper>
+                    [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
     </div>
   </div>
 </div>
