@@ -10,8 +10,69 @@
   z-index: 999;
 }
 
-.mapper  {
-  width: 100%;
+.mapper {
+  width: 85%;
   height: 100%;
   border: solid 1px #b6b6b6;
+}
+
+.mapper-modal_iterator--selected {
+  width: 65%;
+}
+
+.mapper-modal_left-panel {
+  width: 15%;
+  ul {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.mapper-modal_category {
+  width: 100%;
+  height: 45px;
+  padding-left: 30px;
+  margin: 0;
+  list-style-type: none;
+  text-transform: capitalize;
+  line-height: 1.43;
+  display: flex;
+  align-items: center;
+  color: #727272;
+  cursor: pointer;
+  vertical-align: middle;
+  font-weight: bold;
+
+  &:hover {
+    color: #0081cb;
+    background: rgba(197, 202, 233, 0.2);
+    cursor: pointer;
+  }
+}
+
+.mapper-modal_category--selected {
+  background-color: #cad3df;
+  color: #062e79;
+}
+
+.mapper-modal_iterate-switch {
+  border-bottom: 2px solid #dedede;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.mapper-modal-iterate-text {
+  flex: 1;
+  font-weight: bold;
+}
+
+.mapper-modal__iterator-panel {
+  width: 20%;
+  max-width: 20%;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  flex: 1;
 }

@@ -35,9 +35,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   isDraggingOver = false;
   currentMappingType: number;
   isObjectModeAllowed = false;
-  displayIterators = false;
-  displayMapInputs = true;
-  iteratorModeOn = false;
 
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -179,23 +176,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     this.isDraggingOver = false;
   }
 
-  showIterators() {
-    this.displayIterators = true;
-    this.displayMapInputs = false;
-  }
 
-  showMapInputs() {
-    this.displayMapInputs = true;
-    this.displayIterators = false;
-  }
-
-  changeIteratorMode(event) {
-    if (event.target.checked) {
-      this.iteratorModeOn = true;
-    } else {
-      this.iteratorModeOn = false;
-    }
-  }
 
   toggleMode(event) {
     // todo: investigate why this callback is called twice even when the emitter emits only once

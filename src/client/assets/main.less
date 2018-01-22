@@ -971,3 +971,67 @@ label {
   top: -5px;
   color: @color-plane;
 }
+
+.flogo-toggle-switch_container {
+  display: inline-block;
+  .flogo-toggle-switch {
+    position: relative;
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+    width: 48px;
+    height: 28px;
+    margin-left: 16px;
+    input {
+      display: none;
+    }
+  }
+  .flogo-toggle-switch_slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 48px;
+    height: 28px;
+    background-color: #727272;
+    border: solid 1px #727272;
+    transition: .4s;
+    &:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 0px;
+      bottom: 1px;
+      background-color: #ffffff;
+      transition: .4s;
+    }
+  }
+  input {
+    &:checked {
+      & + .flogo-toggle-switch_slider {
+        background-color: #0081cb;
+        border: solid 1px #0081cb;
+        &:before {
+          transform: translateX(22px);
+        }
+        &:hover {
+          background-color: #055dab;
+        }
+      }
+    }
+    &:focus {
+      & + .flogo-toggle-switch_slider {
+        box-shadow: 0 0 4px #0081cb;
+      }
+    }
+  }
+  .flogo-toggle-switch_slider.toggle-switch_round {
+    border-radius: 14px;
+    &:before {
+      border-radius: 50%;
+    }
+  }
+}

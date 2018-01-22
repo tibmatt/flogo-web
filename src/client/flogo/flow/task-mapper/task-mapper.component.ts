@@ -50,6 +50,9 @@ export class TaskMapperComponent implements OnDestroy {
   title: string;
   isValid: boolean;
   isDirty: boolean;
+  displayIterators = false;
+  displayMapInputs = true;
+  iteratorModeOn = false;
 
   // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
   // this is because the contents of the modal need to visible up until the close animation finishes
@@ -102,7 +105,23 @@ export class TaskMapperComponent implements OnDestroy {
   cancel() {
     this.close();
   }
+  showIterators() {
+    this.displayIterators = true;
+    this.displayMapInputs = false;
+  }
 
+  showMapInputs() {
+    this.displayMapInputs = true;
+    this.displayIterators = false;
+  }
+
+  changeIteratorMode(event) {
+    if (event.target.checked) {
+      this.iteratorModeOn = true;
+    } else {
+      this.iteratorModeOn = false;
+    }
+  }
   private initSubscriptions() {
     const subHandlers = [
       _.assign({}, SUB_EVENTS.selectActivity, { callback: this.initTransformation.bind(this) })
