@@ -2,63 +2,31 @@
        (onDismiss)="onModalCloseOrDismiss()">
   <i class="flogo-icon-close flows-list__close" (click)="closeModal()"></i>
   <div class="flogo-list__header">
-    <p>
-      <span>Select a flow to use as a sub-flow</span>
-      <input title="Filter flows" type="text" class="pull-right" [(ngModel)]="searchText"/>
-    </p>
+    <span class="header-content">{{ 'SUB-FLOW:HEADER-TEXT' | translate}}</span>
+    <input type="text" title="Filter flows"
+           placeholder="{{ 'SUB-FLOW:FILTER-TEXT' | translate }}"
+           class="form-control filter-box" [(ngModel)]="searchText"/>
   </div>
-  <div class="flogo-list__container" style="padding:1.5em 1.125em; background: #f4f4f4">
-    <div *ngFor="let flow of filteredFlows" class="card row" style="display: flex;
-    align-items: center;
-    background: #fff;
-    padding: 30px;
-    height: 100px;
-    margin: 0;
-margin-bottom: 1em;">
-      <div class="col-md-8" style="
-    padding: 0;
-">
-        <h4 style="
-    margin: 0;
-    margin-right: 5px;
-    display: inline-block;
-    font-size: 16px;
-    font-weight: bold;
-    color: #666;
-">{{flow.name}}</h4>
-        <span style="
-    font-size: 0.75em;
-    opacity: 0.54;
-">Created {{flow.createdAt | timeFromNow}}</span>
-        <p style="
-    height: 30px;
-    line-height: 1.25;
-    font-size: 0.75em;
-    margin: 12px 0 0;
-    padding: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-"><span *ngIf="flow.description">
-        {{ flow.description }}
-      </span>
+  <div class="flogo-list__container">
+    <div *ngFor="let flow of filteredFlows" class="flogo-list__card row">
+      <div class="col-md-8 no-padding">
+        <h4 class="card-header">{{flow.name}}</h4>
+        <span class="card-date">{{ 'SUB-FLOW:CREATED' | translate }} {{flow.createdAt | timeFromNow}}</span>
+        <p class="card-description no-padding">
+          <span *ngIf="flow.description">
+            {{ flow.description }}
+          </span>
           <span *ngIf="!flow.description">
-        {{ 'FLOWS:NODESCRIPTION' | translate}}
-      </span></p>
+            {{ 'SUB-FLOW:NODESCRIPTION' | translate}}
+          </span>
+        </p>
       </div>
-      <div class="col-md-2" style="
-    padding: 0;
-    font-size: 14px;
-    text-align: right;
-">
-        <a href="/flows/{{flow.id}}" class="flogo-link" target="_blank" style="color: #0081cb;">View in new tab</a>
+      <div class="col-md-2 no-padding card-link__placeholder">
+        <a href="/flows/{{flow.id}}" class="flogo-link" target="_blank">{{ 'SUB-FLOW:LINK-TEXT' | translate }}</a>
       </div>
-      <div class="col-md-2" style="
-    padding: 0;
-    text-align: right;
-">
+      <div class="col-md-2 no-padding card-button__placeholder">
         <button class="flogo-button flogo-button--secondary">
-          Select
+          {{ 'SUB-FLOW:SELECT' | translate }}
         </button>
       </div>
     </div>
