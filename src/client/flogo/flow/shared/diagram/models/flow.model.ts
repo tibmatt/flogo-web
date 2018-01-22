@@ -44,9 +44,16 @@ export interface flowToJSON_Task {
   name?: string;
   description?: string;
   attributes: flowToJSON_Attribute[];
+  settings?: flowToJSON_Settings;
   inputMappings: flowToJSON_Mapping [];
   ouputMappings: flowToJSON_Mapping[];
 }
+
+// Disabling tslint rule for legacy purposes
+/* tslint:disable-next-line:class-name */
+export interface  flowToJSON_Settings {
+  iterate?: string;
+};
 
 // Disabling tslint rule for legacy purposes
 /* tslint:disable-next-line:class-name */
@@ -600,6 +607,10 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
 
       if (!_.isEmpty(outputMappings)) {
         taskInfo.ouputMappings = outputMappings;
+      }
+
+      if (!_.isEmpty(task.settings)) {
+        taskInfo.settings = _.cloneDeep(task.settings);
       }
 
     } else {

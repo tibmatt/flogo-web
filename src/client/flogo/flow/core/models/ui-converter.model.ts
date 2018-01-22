@@ -382,7 +382,7 @@ class ItemFactory {
       homepage: '',
       description: '',
       installed: true,
-      settings: [],
+      settings: {},
       outputs: [],
       ref: '',
       endpoint: { settings: [] },
@@ -436,7 +436,7 @@ class ItemFactory {
 
     const { installed, cli, endpointSetting } = trigger;
     const item = Object.assign({}, this.getSharedProperties(installed), { id: trigger.node.taskID }, {
-      nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name
+      nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name, settings: [],
     });
 
     const settings = _.get(cli, 'settings', {});
@@ -488,41 +488,42 @@ class ItemFactory {
     return item;
   }
 
-  static makeItem(activity): any {
-    const { node, installed, cli } = activity;
+  static makeItem(activitySource): any {
+    const { node, installed: activitySchema, cli: taskInstance } = activitySource;
 
-    const item = <any> Object.assign({}, this.getSharedProperties(installed), {
+    const item = <any> Object.assign({}, this.getSharedProperties(activitySchema), {
       attributes: {
         inputs: [], outputs: []
       },
-      inputMappings: cli.inputMappings || [],
+      inputMappings: taskInstance.inputMappings || [],
       id: node.taskID,
-      type: FLOGO_TASK_TYPE.TASK,
-      activityType: installed.id,
+      type: FLOGO_TASK_TYPE[taskInstance.type] ? FLOGO_TASK_TYPE[FLOGO_TASK_TYPE[taskInstance.type]] : FLOGO_TASK_TYPE.TASK,
+      activityType: activitySchema.id,
+      settings: taskInstance.settings || {}
     });
 
-    if (installed.return) {
+    if (activitySchema.return) {
       item.return = true;
     }
 
     // -------- set attributes inputs  ----------------
-    const installedInputs = installed.inputs || [];
-    const cliAttributes = cli.attributes || [];
+    const schemaInputs = activitySchema.inputs || [];
+    const taskInstanceAttributes = taskInstance.attributes || [];
 
-    installedInputs.forEach((installedInput) => {
-      const cliValue = cliAttributes.find(attribute => attribute.name === installedInput.name);
+    schemaInputs.forEach((schemaInput) => {
+      const attrValue = taskInstanceAttributes.find(attribute => attribute.name === schemaInput.name);
 
       const newAttribute: any = {
-        name: installedInput.name,
-        type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(installedInput, 'type', 'STRING').toUpperCase()],
+        name: schemaInput.name,
+        type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(schemaInput, 'type', 'STRING').toUpperCase()],
       };
 
-      if (cliValue) {
-        newAttribute.value = cliValue.value;
-        newAttribute.required = cliValue.required || false;
+      if (attrValue) {
+        newAttribute.value = attrValue.value;
+        newAttribute.required = attrValue.required || false;
       } else {
         // use the value provided by the schema
-        newAttribute.value = installedInput.value;
+        newAttribute.value = schemaInput.value;
       }
 
       item.attributes.inputs.push(newAttribute);
@@ -530,7 +531,7 @@ class ItemFactory {
 
     // -----------------
     // set attributes outputs
-    const outputs = installed.outputs || [];
+    const outputs = activitySchema.outputs || [];
 
     item.attributes.outputs = outputs.map(output => ({
       name: output.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(output, 'type', 'STRING').toUpperCase()],

@@ -19,6 +19,9 @@ export interface IFlogoFlowDiagramTask {
   outputMappings ?: IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks ?: IFlogoFlowDiagramTask[ ];
   links ?: IFlogoFlowDiagramTaskLink[ ];
+  settings?: {
+    iterate?: string;
+  };
   condition?: string;
   __props?: {
     [key: string]: any;
@@ -45,6 +48,9 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   outputMappings: IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks: IFlogoFlowDiagramTask[ ];
   links: IFlogoFlowDiagramTaskLink[ ];
+  settings?: {
+    iterate?: string;
+  };
   __status: {
     [key: string]: boolean;
   };
@@ -80,6 +86,8 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.outputMappings = _.isEmpty(task.outputMappings) ?
       this.outputMappings || [] :
       _.cloneDeep(task.outputMappings);
+
+    this.settings = task.settings || {};
 
     if (!_.isEmpty(task.tasks)) {
       this.tasks = _.cloneDeep(task.tasks);

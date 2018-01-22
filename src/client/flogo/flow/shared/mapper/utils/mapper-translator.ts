@@ -28,7 +28,7 @@ export class MapperTranslator {
       if (tile.type !== 'metadata') {
         const attributes = tile.attributes;
         let outputs;
-        if (tile.type === FLOGO_TASK_TYPE.TASK) {
+        if (tile.type === FLOGO_TASK_TYPE.TASK || tile.type === FLOGO_TASK_TYPE.TASK_ITERATOR) {
           // try to get data from task from outputs
           outputs = attributes && attributes.outputs ? attributes.outputs : [];
         } else {

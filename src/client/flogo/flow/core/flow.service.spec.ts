@@ -29,12 +29,13 @@ describe('Service: Flow', function (this: {
     this.service = new FlogoFlowService(this.mockRESTAPI, this.modelConverter, this.commonFlowsService);
   });
 
-  it('Should get the Flow Details and convert it to work with canvas component', () => {
+  it('Should get the Flow Details and convert it to work with canvas component', done => {
     const spyConverterService = <Spy>this.modelConverter.getWebFlowModel;
     spyConverterService.and.returnValue(Promise.resolve(_.cloneDeep(mockResultantUIFlow)));
     this.service.getFlow('dummy')
       .then((response) => {
         expect(_.isEqual(response, resultantFlowModelForCanvas)).toEqual(true);
+        done();
       });
   });
 
