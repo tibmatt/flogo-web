@@ -10,6 +10,8 @@ import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 export class FlowsListComponent implements AfterViewInit, OnInit {
   @Input()
   appId: string;
+  @Input()
+  currentFlow: string;
   @Output()
   onSelection: EventEmitter<string> = new EventEmitter<string>();
 
@@ -33,7 +35,7 @@ export class FlowsListComponent implements AfterViewInit, OnInit {
 
   ngOnInit() {
     this.flowService.listFlowsForApp(this.appId).then(flows => {
-      this.flowsList = flows;
+      this.flowsList = flows.filter(flow => flow.id !== this.currentFlow);
     });
   }
 

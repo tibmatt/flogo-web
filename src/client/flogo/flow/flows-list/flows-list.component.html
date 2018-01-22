@@ -7,7 +7,7 @@
            placeholder="{{ 'SUB-FLOW:FILTER-TEXT' | translate }}"
            class="form-control filter-box" [(ngModel)]="searchText"/>
   </div>
-  <div class="flogo-list__container">
+  <div class="flogo-list__container" *ngIf="filteredFlows && filteredFlows.length > 0">
     <div *ngFor="let flow of filteredFlows" class="flogo-list__card row">
       <div class="col-md-8 no-padding">
         <h4 class="card-header">{{flow.name}}</h4>
@@ -30,5 +30,8 @@
         </button>
       </div>
     </div>
+  </div>
+  <div class="flogo-list__container" *ngIf="filteredFlows && filteredFlows.length === 0">
+    <p>{{ 'SUB-FLOW:NOFLOW' | translate }}</p>
   </div>
 </modal>

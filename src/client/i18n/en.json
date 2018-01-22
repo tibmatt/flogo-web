@@ -206,5 +206,6 @@
   "SUB-FLOW:CREATED":"Created",
   "SUB-FLOW:LINK-TEXT":"View in new tab",
   "SUB-FLOW:NODESCRIPTION": "No Description",
+  "SUB-FLOW:NOFLOW": "No flow is available for selection",
   "SUB-FLOW:SELECT":"Select"
 }
