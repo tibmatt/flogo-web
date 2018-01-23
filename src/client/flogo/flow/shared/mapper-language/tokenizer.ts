@@ -1,7 +1,7 @@
 export function load() {
   return {
     keywords: [
-      'null', '$'
+      'true', 'false', 'null'
     ],
 
     builtins: [
