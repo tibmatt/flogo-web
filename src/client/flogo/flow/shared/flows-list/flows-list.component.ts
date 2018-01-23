@@ -11,6 +11,9 @@ export class FlowsListComponent {
   @Input()
   list: any[];
 
+  @Output()
+  onUserSelection: EventEmitter<string> = new EventEmitter<string>();
+
   searchText: string;
 
   constructor() {}
@@ -24,5 +27,13 @@ export class FlowsListComponent {
     } else {
       return this.list;
     }
+  }
+
+  cancelList() {
+    this.onUserSelection.emit('cancel');
+  }
+
+  selectFlow(flowId: string) {
+    this.onUserSelection.emit(flowId);
   }
 }

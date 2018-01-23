@@ -1943,11 +1943,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public handleFlowSelection(event: string) {
-    if (event === 'dismiss') {
-      this.showFlowsList = false;
-    } else {
-
+    if (event !== 'dismiss') {
+      console.log('selected flow id is: ', event);
     }
+    this.showFlowsList = false;
   }
 
 }
