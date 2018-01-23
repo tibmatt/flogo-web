@@ -13,9 +13,28 @@
   font-weight: bold;
 }
 
+.header-cancel {
+  background: transparent;
+  color: #0081cb;
+  font-size: 16px;
+  margin-left: 1em;
+}
+
 .flogo-list__container {
   padding: 1.5em 1.125em;
-  background: #f4f4f4
+  background: #f4f4f4;
+  overflow-y: auto;
+  max-height: 470px;
+  border: solid 1px #b6b6b6;
+}
+
+.flogo-list__container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.flogo-list__container::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+  background-color: rgba(114, 114, 114, 0.2);
 }
 
 .flogo-list__card {

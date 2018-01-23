@@ -202,6 +202,7 @@
   "INPUT-PARAMS:SAVE": "Save",
   "INPUT-PARAMS:CANCEL": "Cancel",
   "FLOWS-LIST:HEADER-TEXT":"Select a flow to use as a sub-flow",
+  "FLOWS-LIST:CANCEL":"Cancel",
   "FLOWS-LIST:FILTER-TEXT":"Filter",
   "FLOWS-LIST:CREATED":"Created",
   "FLOWS-LIST:LINK-TEXT":"View in new tab",

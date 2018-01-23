@@ -1,5 +1,9 @@
 <div class="flogo-list__header">
-  <span class="header-content">{{ 'FLOWS-LIST:HEADER-TEXT' | translate}}</span>
+  <div class="header-block">
+    <span class="header-content">{{ 'FLOWS-LIST:HEADER-TEXT' | translate}}</span>
+    <button class="flogo-button--flat header-cancel">{{ 'FLOWS-LIST:CANCEL' | translate }}
+    </button>
+  </div>
   <input type="text" title="Filter flows"
          placeholder="{{ 'FLOWS-LIST:FILTER-TEXT' | translate }}"
          class="form-control filter-box" [(ngModel)]="searchText"/>
