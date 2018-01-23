@@ -1,24 +1,22 @@
 import {CommonModule} from '@angular/common';
 import {CoreModule as FlowCoreModule} from '@flogo/core';
 import {NgModule} from '@angular/core';
-import {FlowsListComponent} from './flows-list.component';
+import {SubFlowComponent} from './sub-flow.component';
 import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
-import {FormsModule} from '@angular/forms';
-import {SharedModule as FlogoSharedModule} from '../../shared';
+import {FlowsListModule} from '../shared/flows-list';
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     Ng2Bs3ModalModule,
-    FlogoSharedModule,
-    FlowCoreModule
+    FlowCoreModule,
+    FlowsListModule
   ],
   declarations: [
-    FlowsListComponent
+    SubFlowComponent
   ],
   exports: [
-    FlowsListComponent
+    SubFlowComponent
   ]
 })
-export class FlowsListModule { }
+export class SubFlowModule { }

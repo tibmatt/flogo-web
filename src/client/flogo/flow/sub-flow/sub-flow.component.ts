@@ -3,11 +3,11 @@ import {FlogoFlowService as FlowsService} from '@flogo/flow/core/flow.service';
 import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
-  selector: 'flogo-flow-flows-list',
-  templateUrl: 'flows-list.component.html',
-  styleUrls: ['flows-list.component.less']
+  selector: 'flogo-flow-sub-flow',
+  templateUrl: 'sub-flow.component.html',
+  styleUrls: ['sub-flow.component.less']
 })
-export class FlowsListComponent implements AfterViewInit, OnInit {
+export class SubFlowComponent implements AfterViewInit, OnInit {
   @Input()
   appId: string;
   @Input()
@@ -18,20 +18,7 @@ export class FlowsListComponent implements AfterViewInit, OnInit {
   @ViewChild('listModal') modal: ModalComponent;
   flowsList: any[];
 
-  searchText: string;
-
   constructor(private flowService: FlowsService) {}
-
-  get filteredFlows() {
-    if (this.searchText && !_.isEmpty(this.searchText.trim())) {
-      return this.flowsList.filter((flow) => {
-        return (flow.name || '').toLowerCase().includes(this.searchText.toLowerCase()) ||
-          (flow.description || '').toLowerCase().includes(this.searchText.toLowerCase());
-      });
-    } else {
-      return this.flowsList;
-    }
-  }
 
   ngOnInit() {
     this.flowService.listFlowsForApp(this.appId).then(flows => {

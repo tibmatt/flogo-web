@@ -24,7 +24,7 @@ import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
 import {TriggerDetailModule as FlogoFlowTriggerDetailModule} from '@flogo/flow/trigger-detail';
-import {FlowsListModule} from '@flogo/flow/flows-list/flows-list.module';
+import {SubFlowModule} from '@flogo/flow/sub-flow/sub-flow.module';
 
 
 @NgModule({
@@ -43,7 +43,7 @@ import {FlowsListModule} from '@flogo/flow/flows-list/flows-list.module';
     FlogoFlowTaskDetailModule,
     FlogoFlowTriggerDetailModule,
     FlogoFlowTaskAddModule,
-    FlowsListModule,
+    SubFlowModule,
     routing
   ],
   declarations: [

@@ -1,0 +1,5 @@
+<modal [cssClass]="'sub-flow__modal'" #listModal (onClose)="onModalCloseOrDismiss()"
+       (onDismiss)="onModalCloseOrDismiss()">
+  <i class="flogo-icon-close flows-list__close" (click)="closeModal()"></i>
+  <flogo-flow-flows-list [list]="flowsList"></flogo-flow-flows-list>
+</modal>

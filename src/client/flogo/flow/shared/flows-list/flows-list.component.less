@@ -1,13 +1,3 @@
-@import "../../../assets/_mixins";
-
-.no-padding {
-  padding: 0;
-}
-
-.flows-list__close {
-  .modal__close;
-}
-
 .flogo-list__header {
   display: flex;
   align-items: center;
@@ -19,6 +9,10 @@
   }
 }
 
+.header-content {
+  font-weight: bold;
+}
+
 .flogo-list__container {
   padding: 1.5em 1.125em;
   background: #f4f4f4
@@ -27,6 +21,7 @@
 .flogo-list__card {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background: #fff;
   padding: 20px 32px;
   margin: 0 0 1em;
@@ -38,10 +33,14 @@
   }
 }
 
+.card-details {
+  max-width: 75%;
+}
+
 .card-header {
   margin: 0 5px 0 0;
   display: inline-block;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: bold;
   color: #666;
   letter-spacing: 0.5px;
@@ -56,7 +55,7 @@
 .card-description {
   height: 30px;
   line-height: 1.25;
-  font-size: 0.75em;
+  opacity: 0.54;
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -64,16 +63,9 @@
   letter-spacing: 0.3px;
 }
 
-.card-link__placeholder {
+.flogo-link {
   font-size: 14px;
-  text-align: right;
-
-  .flogo-link {
-    color: #0081cb;
-    letter-spacing: 0.4px;
-  }
-}
-
-.card-button__placeholder {
-  text-align: right;
+  color: #0081cb;
+  letter-spacing: 0.4px;
+  margin: 0 20px;
 }

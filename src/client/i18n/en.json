@@ -201,11 +201,11 @@
   "INPUT-PARAMS:DEFINE": "Define Params",
   "INPUT-PARAMS:SAVE": "Save",
   "INPUT-PARAMS:CANCEL": "Cancel",
-  "SUB-FLOW:HEADER-TEXT":"Select a flow to use as a sub-flow",
-  "SUB-FLOW:FILTER-TEXT":"Filter",
-  "SUB-FLOW:CREATED":"Created",
-  "SUB-FLOW:LINK-TEXT":"View in new tab",
-  "SUB-FLOW:NODESCRIPTION": "No Description",
-  "SUB-FLOW:NOFLOW": "No flow is available for selection",
-  "SUB-FLOW:SELECT":"Select"
+  "FLOWS-LIST:HEADER-TEXT":"Select a flow to use as a sub-flow",
+  "FLOWS-LIST:FILTER-TEXT":"Filter",
+  "FLOWS-LIST:CREATED":"Created",
+  "FLOWS-LIST:LINK-TEXT":"View in new tab",
+  "FLOWS-LIST:NODESCRIPTION": "No Description",
+  "FLOWS-LIST:NOFLOW": "No flow is available for selection",
+  "FLOWS-LIST:SELECT":"Select"
 }
