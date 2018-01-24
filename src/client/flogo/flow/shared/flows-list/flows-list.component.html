@@ -30,6 +30,7 @@
     </div>
   </div>
 </div>
-<div class="flogo-list__container" *ngIf="filteredFlows && filteredFlows.length === 0">
+<div class="flogo-list__container --empty" *ngIf="filteredFlows && filteredFlows.length === 0">
+  <div class="flogo-list--empty"></div>
   <p>{{ 'FLOWS-LIST:NOFLOW' | translate }}</p>
 </div>
