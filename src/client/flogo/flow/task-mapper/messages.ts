@@ -36,6 +36,11 @@ export const SUB_EVENTS = {
   }
 };
 
+interface IteratorInfo {
+  isIterable: boolean;
+  iterableValue?: string;
+}
+
 export interface SelectTaskData {
   handlerId: string;
   // scope
@@ -45,5 +50,12 @@ export interface SelectTaskData {
   overrideMappings?: any[];
   title?: string;
   inputsSearchPlaceholderKey?: string;
+  iterator: IteratorInfo;
 }
 
+export interface SaveTransformData {
+  handlerId: string;
+  tile: IFlogoFlowDiagramTask;
+  iterator: IteratorInfo;
+  inputMappings: any[];
+}

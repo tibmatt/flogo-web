@@ -58,7 +58,6 @@ import {
 import {
   attributeTypeToString,
   flogoGenBranchID,
-  flogoGenTriggerID,
   flogoIDDecode,
   flogoIDEncode,
   isMapperActivity,
@@ -76,6 +75,7 @@ import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
 import { FlowMetadata } from './task-mapper/models/flow-metadata';
 import { LanguageService } from '@flogo/core';
 import { updateBranchNodesRunStatus } from './shared/diagram/utils';
+import { SaveTransformData } from './task-mapper';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -1608,7 +1608,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
 
     const selectedTaskId = selectedNode.taskID;
-    const selectedTile = _.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
+    const selectedTile = <IFlogoFlowDiagramTask>_.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
 
     const metadata = <FlowMetadata>  _.defaultsDeep({
       type: 'metadata',
@@ -1626,6 +1626,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       searchTitleKey = 'TRANSFORM:FLOW-OUTPUTS';
     }
 
+    const taskSettings = selectedTile.settings;
     this._postService.publish(
       _.assign(
         {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
@@ -1637,14 +1638,18 @@ export class FlowComponent implements OnInit, OnDestroy {
             handlerId: diagramId,
             title: transformTitle,
             inputsSearchPlaceholderKey: searchTitleKey,
+            iterator: {
+              isIterable: selectedTile.type === FLOGO_TASK_TYPE.TASK_ITERATOR,
+              iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
+            },
           }
         }
       ));
 
   }
 
-  private _saveTransformFromTransform(data: any, envelope: any) {
-    const diagramId = data.id;
+  private _saveTransformFromTransform(data: SaveTransformData, envelope: any) {
+    const diagramId = data.handlerId;
     const tile = this.handlers[diagramId].tasks[data.tile.id];
     const activitySchema = this.flow.schemas[tile.ref];
     const isMapperTask = isMapperActivity(activitySchema);
@@ -1656,6 +1661,14 @@ export class FlowComponent implements OnInit, OnDestroy {
       }];
     } else {
       tile.inputMappings = _.cloneDeep(data.inputMappings);
+    }
+
+    tile.type = FLOGO_TASK_TYPE.TASK;
+    if (data.iterator.isIterable) {
+      tile.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
+      tile.settings = Object.assign({}, tile.settings, { iterate:  data.iterator.iterableValue });
+    } else if (tile.settings) {
+      delete tile.settings.iterate;
     }
 
     this._updateFlow(this.flow).then(() => {

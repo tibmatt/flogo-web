@@ -187,8 +187,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     this.isDraggingOver = false;
   }
 
-
-
   toggleMode(event) {
     // todo: investigate why this callback is called twice even when the emitter emits only once
     event.stopPropagation();

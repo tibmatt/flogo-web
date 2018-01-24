@@ -42,11 +42,16 @@
             </div>
           </div>
         </div>
-        <flogo-mapper class="content__main" *ngIf="displayMapInputs || (displayIterators && iteratorModeOn)"
+        <flogo-mapper class="content__main" *ngIf="displayMapInputs"
                       [isSingleInputMode]="displayIterators"
                       inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
                       outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
                       [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
+        <flogo-mapper class="content__main" *ngIf="displayIterators && iteratorModeOn"
+                      [isSingleInputMode]="displayIterators"
+                      inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
+                      outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
+                      [context]="iteratorContext" (mappingsChange)="onIteratorValueChange($event)"></flogo-mapper>
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ import { CommonModule as NgCommonModule } from '@angular/common';
 import { TaskMapperComponent } from './task-mapper.component';
 import { MapperModule } from '../shared/mapper';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
+import { SaveTransformData, SelectTaskData } from '@flogo/flow/task-mapper/messages';
 
 const postServiceStub = {
 
@@ -69,7 +70,7 @@ describe('Component: TaskMapperComponent', () => {
     expect(de.query(By.css('.qa-transform-modal'))).not.toBeNull('Transform modal is not present');
   });
 
-  function getMockData() {
+  function getMockData(): SelectTaskData {
 
     return {
       scope: [
@@ -183,7 +184,8 @@ describe('Component: TaskMapperComponent', () => {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 0,
+              value: ''
             }
           ]
         },
@@ -196,7 +198,10 @@ describe('Component: TaskMapperComponent', () => {
         ],
         'id': 'Mw'
       },
-      handlerId: 'root'
+      handlerId: 'root',
+      iterator: {
+        isIterable: false,
+      }
     };
   }
 
