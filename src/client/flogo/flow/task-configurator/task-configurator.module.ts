@@ -3,7 +3,7 @@ import { CommonModule as NgCommonModule } from '@angular/common';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 
-import { TaskMapperComponent } from './task-mapper.component';
+import { TaskConfiguratorComponent } from './task-configurator.component';
 import { MapperModule } from '../shared/mapper';
 
 @NgModule({
@@ -13,10 +13,10 @@ import { MapperModule } from '../shared/mapper';
     MapperModule,
   ],
   declarations: [
-    TaskMapperComponent,
+    TaskConfiguratorComponent,
   ],
   exports: [
-    TaskMapperComponent,
+    TaskConfiguratorComponent,
   ],
   providers: []
 })

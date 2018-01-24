@@ -6,24 +6,24 @@ import { Component, Input, OnDestroy,
 
 import { PostService } from '@flogo/core/services/post.service';
 
-import { PUB_EVENTS, SUB_EVENTS, SelectTaskData, SaveTransformData } from './messages';
+import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventData } from './messages';
 
 import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../shared/mapper';
 
 import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
 import { IFlogoFlowDiagramTaskAttribute } from '../shared/diagram/models/attribute.model';
 import { IFlogoFlowDiagramTaskAttributeMapping } from '../shared/diagram/models/attribute-mapping.model';
-import { MapperSchema } from '@flogo/flow/task-mapper/models';
+import { MapperSchema } from '@flogo/flow/task-configurator/models';
 
 const ITERABLE_VALUE_KEY = 'iterate';
 
 @Component({
-  selector: 'flogo-flow-task-mapper',
+  selector: 'flogo-flow-task-configurator',
   styleUrls: [
     '../../../assets/_mapper-modal.less',
-    'task-mapper.component.less'
+    'task-configurator.component.less'
   ],
-  templateUrl: 'task-mapper.component.html',
+  templateUrl: 'task-configurator.component.html',
   animations: [
     trigger('dialog', [
       state('hidden', style({
@@ -43,7 +43,7 @@ const ITERABLE_VALUE_KEY = 'iterate';
     ])
   ],
 })
-export class TaskMapperComponent implements OnDestroy {
+export class TaskConfiguratorComponent implements OnDestroy {
   @Input()
   flowId: string;
   currentTile: IFlogoFlowDiagramTask;
@@ -118,8 +118,8 @@ export class TaskMapperComponent implements OnDestroy {
 
   saveTransform() {
     const isIterable = this.iteratorModeOn && !_.isEmpty(this.iterableValue);
-    this._postService.publish(_.assign({}, PUB_EVENTS.saveTransform, {
-      data: <SaveTransformData>{
+    this._postService.publish(_.assign({}, PUB_EVENTS.saveTask, {
+      data: <SaveTaskConfigEventData>{
         tile: this.currentTile,
         iterator: {
           isIterable,
@@ -168,7 +168,7 @@ export class TaskMapperComponent implements OnDestroy {
 
   private initSubscriptions() {
     const subHandlers = [
-      _.assign({}, SUB_EVENTS.selectActivity, { callback: this.initTransformation.bind(this) })
+      _.assign({}, SUB_EVENTS.selectTask, { callback: this.initTransformation.bind(this) })
     ];
     this._subscriptions = subHandlers.map(handler => this._postService.subscribe(handler));
   }
@@ -185,7 +185,7 @@ export class TaskMapperComponent implements OnDestroy {
     return true;
   }
 
-  private initTransformation(data: SelectTaskData, envelope: any) {
+  private initTransformation(data: SelectTaskConfigEventData, envelope: any) {
     if (!this.raisedByThisDiagram(data.handlerId)) {
       return;
     }

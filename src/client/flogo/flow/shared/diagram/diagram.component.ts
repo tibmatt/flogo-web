@@ -177,7 +177,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
           this._postService.publish(_.assign({}, PUB_EVENTS.addBranch, { data: data }));
           break;
         case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM:
-          this._postService.publish(_.assign({}, PUB_EVENTS.selectTransform, { data: data }));
+          this._postService.publish(_.assign({}, PUB_EVENTS.selectConfigureTask, { data: data }));
           break;
         case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE:
           this._postService.publish(_.assign({}, PUB_EVENTS.deleteTask, { data: data }));

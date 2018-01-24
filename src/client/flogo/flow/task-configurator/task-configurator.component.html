@@ -43,7 +43,6 @@
           </div>
         </div>
         <flogo-mapper class="content__main" *ngIf="displayMapInputs"
-                      [isSingleInputMode]="displayIterators"
                       inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
                       outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
                       [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>

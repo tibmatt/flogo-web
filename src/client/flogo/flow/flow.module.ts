@@ -1,4 +1,4 @@
-import { TaskMapperModule as FlogoTaskMapperModule } from './task-mapper';
+import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 

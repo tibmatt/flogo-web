@@ -4,10 +4,10 @@ import { DebugElement } from '@angular/core';
 import { PostService } from '@flogo/core/services/post.service';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CommonModule as NgCommonModule } from '@angular/common';
-import { TaskMapperComponent } from './task-mapper.component';
+import { TaskConfiguratorComponent } from './task-configurator.component';
 import { MapperModule } from '../shared/mapper';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
-import { SaveTransformData, SelectTaskData } from '@flogo/flow/task-mapper/messages';
+import { SaveTaskConfigEventData, SelectTaskConfigEventData } from '@flogo/flow/task-configurator/messages';
 
 const postServiceStub = {
 
@@ -26,9 +26,9 @@ const postServiceStub = {
 };
 
 // TODO: disabling while working on mapper upgrade
-describe('Component: TaskMapperComponent', () => {
-  let comp: TaskMapperComponent;
-  let fixture: ComponentFixture<TaskMapperComponent>;
+describe('Component: TaskConfiguratorComponent', () => {
+  let comp: TaskConfiguratorComponent;
+  let fixture: ComponentFixture<TaskConfiguratorComponent>;
   let de: DebugElement;
 
   beforeEach((done) => {
@@ -40,7 +40,7 @@ describe('Component: TaskMapperComponent', () => {
         MapperModule,
       ],
       declarations: [
-        TaskMapperComponent
+        TaskConfiguratorComponent
       ], // declare the test component
       providers: [
         { provide: PostService, useValue: postServiceStub }
@@ -49,7 +49,7 @@ describe('Component: TaskMapperComponent', () => {
     })
       .compileComponents()
       .then(() => {
-        fixture = TestBed.createComponent(TaskMapperComponent);
+        fixture = TestBed.createComponent(TaskConfiguratorComponent);
         comp = fixture.componentInstance;
         de = fixture.debugElement;
         comp.flowId = 'root';
@@ -70,7 +70,7 @@ describe('Component: TaskMapperComponent', () => {
     expect(de.query(By.css('.qa-transform-modal'))).not.toBeNull('Transform modal is not present');
   });
 
-  function getMockData(): SelectTaskData {
+  function getMockData(): SelectTaskConfigEventData {
 
     return {
       scope: [

@@ -93,8 +93,8 @@
       </div>
     </div>
 
-    <flogo-flow-task-mapper [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-mapper>
-    <flogo-flow-task-mapper [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-mapper>
+    <flogo-flow-task-configurator [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-configurator>
+    <flogo-flow-task-configurator [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-configurator>
 
     <flogo-flow-error-panel *ngIf="hasTask">
       <flogo-flow-diagram *ngIf="errorHandler"

@@ -4,17 +4,13 @@
 import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
 
 export const PUB_EVENTS = {
-  selectActivity : {
-    channel : 'flogo-flow-task-mapper',
-    topic : 'select-task'
+  selectTask : {
+    channel : 'flogo-flow-task-configurator',
+    topic : 'open-task'
   },
-  saveTransform : {
-    channel : 'flogo-flow-task-mapper',
-    topic : 'save-transform'
-  },
-  deleteTransform : {
-    channel : 'flogo-flow-task-mapper',
-    topic : 'delete-transform'
+  saveTask : {
+    channel : 'flogo-flow-task-configurator',
+    topic : 'save-task'
   }
 };
 
@@ -22,17 +18,13 @@ export const PUB_EVENTS = {
  * Events subscribed by this module
  */
 export const SUB_EVENTS = {
-  selectActivity : {
-    channel : 'flogo-flow-task-mapper',
-    topic : 'public-select-task'
+  selectTask : {
+    channel : 'flogo-flow-task-configurator',
+    topic : 'public-open-task'
   },
-  saveTransform : {
-    channel : 'flogo-flow-task-mapper',
-    topic : 'public-save-transform'
-  },
-  deleteTransform : {
-    channel : 'flogo-flow-task-mapper',
-    topic : 'public-delete-transform'
+  saveTask : {
+    channel : 'flogo-flow-task-configurator',
+    topic : 'public-save-task'
   }
 };
 
@@ -41,7 +33,7 @@ interface IteratorInfo {
   iterableValue?: string;
 }
 
-export interface SelectTaskData {
+export interface SelectTaskConfigEventData {
   handlerId: string;
   // scope
   scope: any[];
@@ -53,7 +45,7 @@ export interface SelectTaskData {
   iterator: IteratorInfo;
 }
 
-export interface SaveTransformData {
+export interface SaveTaskConfigEventData {
   handlerId: string;
   tile: IFlogoFlowDiagramTask;
   iterator: IteratorInfo;

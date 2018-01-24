@@ -8,7 +8,7 @@ import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 import { flogoIDDecode } from '@flogo/shared/utils';
 import { IMapExpression } from '@flogo/flow/shared/mapper';
 // todo: shared models should be moved to core
-import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-mapper/models';
+import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
 import { IMapping } from '../models/imapping';
 
 export type  MappingsValidatorFn = (imapping: IMapping) => boolean;
