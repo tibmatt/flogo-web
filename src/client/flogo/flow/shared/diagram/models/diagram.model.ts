@@ -67,7 +67,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private rootElm: Selection<any>;
   private ng2StyleAttr = '';
   private nodesOfAddType: IFlogoFlowDiagramNodeDictionary;
-  private isSafari = Boolean(navigator.userAgent.match(/Version\/[\d\.]+.*Safari/));
+  private requiresSvgFix = Boolean(
+    document['documentMode'] || /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent)
+  );
 
   static isBranchNode(node: IFlogoFlowDiagramNode) {
     return _isBranchNode(node);
@@ -305,7 +307,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     this._handleUpdateRows(rows);
     this._handleExitRows(rows);
 
-    this.fixAbsoluteSvgUrlsForSafari();
+    this.fixAbsoluteSvgUrlsIfRequired();
 
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.groupEnd();
@@ -512,8 +514,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return Promise.resolve(this);
   }
 
-  public fixAbsoluteSvgUrlsForSafari() {
-    if (!this.isSafari) {
+  public fixAbsoluteSvgUrlsIfRequired() {
+    if (!this.requiresSvgFix) {
       return;
     }
     const urlRegex = /url\((.*)#/;

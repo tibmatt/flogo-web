@@ -47,7 +47,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
   ngOnInit() {
     this._routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this._diagram.fixAbsoluteSvgUrlsForSafari();
+        this._diagram.fixAbsoluteSvgUrlsIfRequired();
       }
     });
   }
