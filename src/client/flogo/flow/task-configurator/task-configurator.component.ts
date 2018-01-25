@@ -8,14 +8,10 @@ import { PostService } from '@flogo/core/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventData } from './messages';
 
-import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../shared/mapper';
+import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
 import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
-import { IFlogoFlowDiagramTaskAttribute } from '../shared/diagram/models/attribute.model';
-import { IFlogoFlowDiagramTaskAttributeMapping } from '../shared/diagram/models/attribute-mapping.model';
-import { MapperSchema } from '@flogo/flow/task-configurator/models';
-
-const ITERABLE_VALUE_KEY = 'iterate';
+import { InputMapperConfig } from './input-mapper';
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -47,9 +43,10 @@ export class TaskConfiguratorComponent implements OnDestroy {
   @Input()
   flowId: string;
   currentTile: IFlogoFlowDiagramTask;
-  mapperContext: any;
-  iteratorContext: any;
   inputsSearchPlaceholderKey = 'TRANSFORM:ACTIVITY-INPUTS';
+
+  inputScope: any[];
+  inputMappingsConfig: InputMapperConfig;
 
   title: string;
   isInputMappingsValid: boolean;
@@ -64,6 +61,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   };
   iteratorModeOn = false;
   iterableValue: string;
+  currentMappings: Mappings;
 
   // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
   // this is because the contents of the modal need to visible up until the close animation finishes
@@ -75,7 +73,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
   isActive = false;
 
   private _subscriptions: any[];
-  private currentMappings: { [key: string]: IMapExpression };
   // todo: move to proper service
   private areValidMappings: (mappings: IMapping) => boolean;
 
@@ -96,15 +93,20 @@ export class TaskConfiguratorComponent implements OnDestroy {
     }
   }
 
-  onMappingsChange(change: IMapping) {
-    this.isInputMappingsValid = this.areValidMappings(change);
+  onMappingsChange(newMappings: Mappings) {
+    this.isInputMappingsValid = this.areValidMappings({ mappings: newMappings });
     this.isMapperDirty = true;
-    this.currentMappings = _.cloneDeep(change).mappings;
+    this.currentMappings = _.cloneDeep(newMappings);
   }
 
-  onIteratorValueChange(change: IMapping) {
-    this.isIteratorValid = this.areValidMappings(change);
-    this.iterableValue = change.mappings[ITERABLE_VALUE_KEY].expression;
+  onIteratorValueChange(newValue: string) {
+    this.isIteratorValid = MapperTranslator.isValidExpression(newValue);
+    this.iterableValue = newValue;
+    this.checkIsIteratorDirty();
+  }
+
+  onChangeIteratorMode() {
+    this.iteratorModeOn = !this.iteratorModeOn;
     this.checkIsIteratorDirty();
   }
 
@@ -146,11 +148,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.displayIterators = false;
   }
 
-  changeIteratorMode(event) {
-    this.iteratorModeOn = !!event.target.checked;
-    this.checkIsIteratorDirty();
-  }
-
   private checkIsIteratorDirty() {
     if (!this.initialIteratorData) {
       this.isIteratorDirty = false;
@@ -168,7 +165,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   private initSubscriptions() {
     const subHandlers = [
-      _.assign({}, SUB_EVENTS.selectTask, { callback: this.initTransformation.bind(this) })
+      _.assign({}, SUB_EVENTS.selectTask, { callback: this.initConfigurator.bind(this) })
     ];
     this._subscriptions = subHandlers.map(handler => this._postService.subscribe(handler));
   }
@@ -185,18 +182,34 @@ export class TaskConfiguratorComponent implements OnDestroy {
     return true;
   }
 
-  private initTransformation(data: SelectTaskConfigEventData, envelope: any) {
+  private initConfigurator(data: SelectTaskConfigEventData, envelope: any) {
     if (!this.raisedByThisDiagram(data.handlerId)) {
       return;
     }
+    this.resetState();
     this.currentTile = data.tile;
     this.title = data.title;
+    this.inputScope = data.scope;
+
     if (!this.title && this.currentTile) {
       this.title = this.currentTile.title;
     }
     this.inputsSearchPlaceholderKey = data.inputsSearchPlaceholderKey || 'TRANSFORM:ACTIVITY-INPUTS';
-    this.resetState();
 
+    this.createInputMapperConfig(data);
+
+    this.iteratorModeOn = data.iterator.isIterable;
+    this.iterableValue = data.iterator.iterableValue;
+    this.initialIteratorData = {
+      iteratorModeOn: this.iteratorModeOn,
+      iterableValue: this.iterableValue,
+    };
+
+    this.areValidMappings = MapperTranslator.makeValidator();
+    this.open();
+  }
+
+  private createInputMapperConfig(data: SelectTaskConfigEventData) {
     let propsToMap = [];
     let mappings = [];
     if (data.overridePropsToMap) {
@@ -211,53 +224,19 @@ export class TaskConfiguratorComponent implements OnDestroy {
       mappings = this.currentTile.inputMappings;
     }
 
-    this.iteratorModeOn = data.iterator.isIterable;
-    this.iterableValue = data.iterator.iterableValue;
-    this.initialIteratorData = {
-      iteratorModeOn: this.iteratorModeOn,
-      iterableValue: this.iterableValue,
+    this.inputMappingsConfig = {
+      inputScope: this.inputScope,
+      propsToMap,
+      inputMappings: mappings
     };
-
-    this.mapperContext = this.createInputMapperContext(propsToMap, mappings, data.scope);
-    this.iteratorContext = this.createIteratorContext(this.iterableValue, data.scope);
-    this.areValidMappings = MapperTranslator.makeValidator();
-    this.open();
-  }
-
-  private createInputMapperContext(propsToMap: IFlogoFlowDiagramTaskAttribute[],
-                                   inputMappings: IFlogoFlowDiagramTaskAttributeMapping[],
-                                   scope: IFlogoFlowDiagramTask[]) {
-    const inputSchema = MapperTranslator.attributesToObjectDescriptor(propsToMap);
-    const outputSchema = MapperTranslator.createOutputSchema(scope);
-    const outputSchemaWithIterator = MapperTranslator.createOutputSchema(scope, { $current: this.getIteratorSchema() });
-    const mappings = MapperTranslator.translateMappingsIn(inputMappings);
-    const context = StaticMapperContextFactory.create(inputSchema, outputSchema, mappings);
-    context.getScopedOutputSchemaProvider = () => {
-      return {
-        getSchema: () => this.iteratorModeOn ? outputSchemaWithIterator : outputSchema
-      };
-    };
-    return context;
-  }
-
-  private createIteratorContext(iterableValue: string, scope: IFlogoFlowDiagramTask[]) {
-    const outputSchema = MapperTranslator.createOutputSchema(scope);
-    return StaticMapperContextFactory.create({
-      type: 'object',
-      properties: {
-        [ITERABLE_VALUE_KEY]: {
-          type: 'string'
-        }
-      }
-    }, outputSchema, {
-      [ITERABLE_VALUE_KEY]: { expression: iterableValue, mappings: {} }
-    });
   }
 
   private resetState() {
     this.isInputMappingsValid = true;
     this.isIteratorValid = true;
     this.isMapperDirty = false;
+    this.displayIterators = false;
+    this.displayMapInputs = true;
   }
 
   private open() {
@@ -266,25 +245,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   private close() {
     this.modalState = 'hidden';
-  }
-
-  private getIteratorSchema(): MapperSchema {
-    return {
-      type: 'object',
-      properties: {
-        iteration: {
-          type: 'object',
-          properties: {
-            key: {
-              type: 'string'
-            },
-            value: {
-              type: 'any'
-            }
-          }
-        }
-      }
-    };
   }
 
 }

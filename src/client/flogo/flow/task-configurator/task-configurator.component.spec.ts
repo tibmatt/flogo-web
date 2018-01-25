@@ -8,6 +8,8 @@ import { TaskConfiguratorComponent } from './task-configurator.component';
 import { MapperModule } from '../shared/mapper';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import { SaveTaskConfigEventData, SelectTaskConfigEventData } from '@flogo/flow/task-configurator/messages';
+import { InputMapperComponent } from './input-mapper';
+import { IteratorComponent } from './iterator/iterator.component';
 
 const postServiceStub = {
 
@@ -40,7 +42,9 @@ describe('Component: TaskConfiguratorComponent', () => {
         MapperModule,
       ],
       declarations: [
-        TaskConfiguratorComponent
+        InputMapperComponent,
+        IteratorComponent,
+        TaskConfiguratorComponent,
       ], // declare the test component
       providers: [
         { provide: PostService, useValue: postServiceStub }

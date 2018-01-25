@@ -1,0 +1,24 @@
+.iterator-panel {
+  border-right: solid 2px #dedede;
+  padding: 20px;
+}
+
+.iterator-switch {
+  border-bottom: 2px solid #dedede;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.iterator-switch__text {
+  flex: 1;
+  font-weight: bold;
+}
+
+:host.--is-initing {
+  transition: none;
+  .flogo-toggle-switch_slider::before {
+    transition: none;
+  }
+}

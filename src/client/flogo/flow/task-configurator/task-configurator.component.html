@@ -28,30 +28,21 @@
           </li>
         </ul>
       </div>
-      <div class="content">
-        <div class="content__sidebar iterator-panel" *ngIf="displayIterators">
-          <div class="iterator-switch">
-            <div class="iterator-switch__text">Iterate</div>
-            <div class="flogo-toggle-switch_container">
-              <span *ngIf="iteratorModeOn">On</span>
-              <span *ngIf="!iteratorModeOn">Off</span>
-              <label class="flogo-toggle-switch">
-                <input type="checkbox" [checked]="iteratorModeOn" (change)="changeIteratorMode($event)">
-                <span class="flogo-toggle-switch_slider toggle-switch_round"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-        <flogo-mapper class="content__main" *ngIf="displayMapInputs"
-                      inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
-                      outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
-                      [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
-        <flogo-mapper class="content__main" *ngIf="displayIterators && iteratorModeOn"
-                      [isSingleInputMode]="displayIterators"
-                      inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
-                      outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
-                      [context]="iteratorContext" (mappingsChange)="onIteratorValueChange($event)"></flogo-mapper>
-      </div>
+      <flogo-flow-task-configurator-input-mapper
+        *ngIf="displayMapInputs"
+        class="content"
+        [mappings]="currentMappings"
+        [initialConfig]="inputMappingsConfig"
+        [isIterableScope]="iteratorModeOn"
+        (mappingsChange)="onMappingsChange($event)"
+        inputsSearchPlaceholder="{{ inputsSearchPlaceholderKey | translate }}"
+        outputsSearchPlaceholder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"></flogo-flow-task-configurator-input-mapper>
+      <flogo-flow-task-configurator-iterator *ngIf="displayIterators"
+        class="content"
+        [iteratorModeOn]="iteratorModeOn"
+        [initialConfig]="{ inputScope: inputScope, iterableValue: iterableValue }"
+        (changeIteratorMode)="onChangeIteratorMode()"
+        (iteratorValueChange)="onIteratorValueChange($event)"></flogo-flow-task-configurator-iterator>
     </div>
   </div>
 </div>

@@ -151,6 +151,10 @@ export class MapperTranslator {
     };
   }
 
+  static isValidExpression(expression: string) {
+    return isValidExpression(expression);
+  }
+
   private static upgradeLegacyMappingIfNeeded(mappingValue: string) {
     const legacyMapping = REGEX_INPUT_VALUE_EXTERNAL.exec(mappingValue);
     if (!legacyMapping) {
@@ -188,10 +192,17 @@ function isInvalidMapping(mapping: IMapExpression) {
       isInvalid = true;
     }
   } else {
-    const mappingType = resolveExpressionType(mapping.expression);
-    isInvalid = mappingType == null;
+    return !isValidExpression(expression);
   }
   return isInvalid;
+}
+
+function isValidExpression(expression: string) {
+  if (!expression || !expression.trim().length) {
+    return true;
+  }
+  const mappingType = resolveExpressionType(expression);
+  return mappingType == null;
 }
 
 function mappingTypeFromExpression(expression: string) {

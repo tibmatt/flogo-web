@@ -18,15 +18,16 @@
   border: solid 1px #b6b6b6;
   display: flex;
   flex-direction: row;
-}
 
-.content__sidebar {
-  width: 30%;
-  max-width: 30%;
-}
+  /deep/ .content__sidebar {
+    width: 30%;
+    max-width: 30%;
+  }
 
-.content__main {
-  flex: 1;
+  /deep/ .content__main {
+    flex: 1;
+  }
+
 }
 
 /// tabs
@@ -67,24 +68,4 @@
 .tabs__tab--selected {
   background-color: #cad3df;
   color: #062e79;
-}
-
-/// iterator
-
-.iterator-panel {
-  border-right: solid 2px #dedede;
-  padding: 20px;
-}
-
-.iterator-switch {
-  border-bottom: 2px solid #dedede;
-  margin-bottom: 5px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.iterator-switch__text {
-  flex: 1;
-  font-weight: bold;
 }

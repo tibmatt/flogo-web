@@ -1,0 +1,19 @@
+<div class="content__sidebar iterator-panel">
+  <div class="iterator-switch">
+    <!--TODO i18n-->
+    <div class="iterator-switch__text">Iterate</div>
+    <div class="flogo-toggle-switch_container">
+      <span *ngIf="iteratorModeOn">On</span>
+      <span *ngIf="!iteratorModeOn">Off</span>
+      <label class="flogo-toggle-switch">
+        <input type="checkbox" [checked]="iteratorModeOn" (change)="onChangeIteratorMode()">
+        <span class="flogo-toggle-switch_slider toggle-switch_round"></span>
+      </label>
+    </div>
+  </div>
+</div>
+<flogo-mapper class="content__main" *ngIf="iteratorModeOn"
+              [isSingleInputMode]="true"
+              inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
+              outputsSearchPlaceHolder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"
+              [context]="iteratorContext" (mappingsChange)="onIteratorValueChange($event)"></flogo-mapper>
