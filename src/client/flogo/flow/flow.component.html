@@ -30,7 +30,7 @@
                                     (mouseover)="onMouseOverBackControl()"
                                     (mouseout)="onMouseOutBackControl()">{{flow.app?.name}}</span>
               <p class="flogo-flow-detail-description" [(fgContentEditable)]="flow.description"
-                 placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
+                 placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
                  (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
             </div>
           </div>
