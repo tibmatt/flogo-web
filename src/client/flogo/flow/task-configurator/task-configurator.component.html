@@ -8,7 +8,8 @@
           Cancel
         </button>
         <button class="flogo-button--primary  actions__action actions__action--save"
-                [class.disabled]="!isValid || !isDirty" [disabled]="!isValid || !isDirty"
+                [class.disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
+                [disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
                 (click)="saveTransform()">{{ 'TRANSFORM:SAVE' | translate }}
         </button>
       </div>
@@ -20,16 +21,18 @@
     <div class="mapper-modal__content">
       <div class="tab-panel">
         <ul class="tabs">
-          <li class="tabs__tab" [ngClass]='{"tabs__tab--selected": displayMapInputs}'
-              (click)="showMapInputs()">Map Inputs
-          </li>
-          <li class="tabs__tab" [ngClass]='{"tabs__tab--selected": !displayMapInputs}'
-              (click)="showIterators()">Iterators
+          <li class="tabs__tab"
+              *ngFor="let tabData of tabs; trackBy: trackTabsByFn"
+              [ngClass]='{
+                "tabs__tab--selected": tabData[1].isSelected,
+                "tabs__tab--has-errors": !tabData[1].isValid
+               }'
+              (click)="selectTab(tabData[0])"> {{ tabData[0] }}
           </li>
         </ul>
       </div>
       <flogo-flow-task-configurator-input-mapper
-        *ngIf="displayMapInputs"
+        *ngIf="this.tabs.get('inputMappings').isSelected"
         class="content"
         [mappings]="currentMappings"
         [initialConfig]="inputMappingsConfig"
@@ -37,7 +40,7 @@
         (mappingsChange)="onMappingsChange($event)"
         inputsSearchPlaceholder="{{ inputsSearchPlaceholderKey | translate }}"
         outputsSearchPlaceholder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"></flogo-flow-task-configurator-input-mapper>
-      <flogo-flow-task-configurator-iterator *ngIf="displayIterators"
+      <flogo-flow-task-configurator-iterator *ngIf="this.tabs.get('iterator').isSelected"
         class="content"
         [iteratorModeOn]="iteratorModeOn"
         [initialConfig]="{ inputScope: inputScope, iterableValue: iterableValue }"

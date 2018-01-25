@@ -17,8 +17,10 @@
 }
 
 :host.--is-initing {
-  transition: none;
-  .flogo-toggle-switch_slider::before {
+  .flogo-toggle-switch_slider {
     transition: none;
+    &::before {
+      transition: none;
+    }
   }
 }

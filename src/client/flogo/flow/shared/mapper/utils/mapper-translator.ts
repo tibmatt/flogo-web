@@ -202,7 +202,7 @@ function isValidExpression(expression: string) {
     return true;
   }
   const mappingType = resolveExpressionType(expression);
-  return mappingType == null;
+  return mappingType != null;
 }
 
 function mappingTypeFromExpression(expression: string) {

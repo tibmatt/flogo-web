@@ -12,6 +12,7 @@ import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
 import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
 import { InputMapperConfig } from './input-mapper';
+import { TAB_NAME, Tabs } from './models/tabs.model';
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -46,21 +47,17 @@ export class TaskConfiguratorComponent implements OnDestroy {
   inputsSearchPlaceholderKey = 'TRANSFORM:ACTIVITY-INPUTS';
 
   inputScope: any[];
-  inputMappingsConfig: InputMapperConfig;
+  tabs: Tabs;
 
   title: string;
-  isInputMappingsValid: boolean;
-  isIteratorValid: boolean;
-  isMapperDirty: boolean;
-  isIteratorDirty: boolean;
-  displayIterators = false;
-  displayMapInputs = true;
   initialIteratorData: {
     iteratorModeOn: boolean;
     iterableValue: string;
   };
   iteratorModeOn = false;
   iterableValue: string;
+
+  inputMappingsConfig: InputMapperConfig;
   currentMappings: Mappings;
 
   // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
@@ -94,13 +91,14 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   onMappingsChange(newMappings: Mappings) {
-    this.isInputMappingsValid = this.areValidMappings({ mappings: newMappings });
-    this.isMapperDirty = true;
+    const mapperTab = this.tabs.get('inputMappings');
+    mapperTab.isValid = this.areValidMappings({ mappings: newMappings });
+    mapperTab.isDirty = true;
     this.currentMappings = _.cloneDeep(newMappings);
   }
 
   onIteratorValueChange(newValue: string) {
-    this.isIteratorValid = MapperTranslator.isValidExpression(newValue);
+    this.tabs.get('iterator').isValid = MapperTranslator.isValidExpression(newValue);
     this.iterableValue = newValue;
     this.checkIsIteratorDirty();
   }
@@ -111,11 +109,11 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   get isValid() {
-    return this.isInputMappingsValid || this.isIteratorValid;
+    return this.tabs.areDirty();
   }
 
   get isDirty() {
-    return this.isMapperDirty || this.isIteratorDirty;
+    return this.tabs.areDirty();
   }
 
   saveTransform() {
@@ -134,23 +132,22 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.close();
   }
 
+  selectTab(name: TAB_NAME) {
+    this.tabs.markSelected(name);
+  }
+
   cancel() {
     this.close();
   }
 
-  showIterators() {
-    this.displayIterators = true;
-    this.displayMapInputs = false;
-  }
-
-  showMapInputs() {
-    this.displayMapInputs = true;
-    this.displayIterators = false;
+  trackTabsByFn(index, [tabName, tab]) {
+    return tabName;
   }
 
   private checkIsIteratorDirty() {
+    const iteratorTab = this.tabs.get('iterator');
     if (!this.initialIteratorData) {
-      this.isIteratorDirty = false;
+      iteratorTab.isDirty = false;
       return;
     }
 
@@ -160,7 +157,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     } else {
       isDirty = this.iteratorModeOn && this.iterableValue !== this.initialIteratorData.iterableValue;
     }
-    this.isIteratorDirty = isDirty;
+    iteratorTab.isDirty = isDirty;
   }
 
   private initSubscriptions() {
@@ -232,11 +229,11 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   private resetState() {
-    this.isInputMappingsValid = true;
-    this.isIteratorValid = true;
-    this.isMapperDirty = false;
-    this.displayIterators = false;
-    this.displayMapInputs = true;
+    if (this.tabs) {
+      this.tabs.clear();
+    }
+    this.tabs = Tabs.create();
+    this.tabs.get('inputMappings').isSelected = true;
   }
 
   private open() {

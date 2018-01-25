@@ -33,7 +33,8 @@ export class IteratorComponent implements OnInit {
   }
 
   onIteratorValueChange(change: IMapping) {
-    this.iteratorValueChange.emit(change.mappings[ITERABLE_VALUE_KEY].expression);
+    const mapping = change.mappings[ITERABLE_VALUE_KEY];
+    this.iteratorValueChange.emit(mapping ? mapping.expression : '');
   }
 
   private createIteratorContext(iterableValue: string, scope: IFlogoFlowDiagramTask[]) {
