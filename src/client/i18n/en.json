@@ -87,6 +87,7 @@
   "DIAGRAM:ADD-BRANCH": "Add branch",
   "DIAGRAM:DELETE": "Delete",
   "DIAGRAM:TRANSFORM": "Transform",
+  "DIAGRAM:CONFIGURE": "Configure",
   "ERROR-PANEL:ERROR-HANDLER" : "Error Handler",
   "FIELDS-BASE:TITLE-REQUIRED" : "{{value}} is required",
   "FIELDS-TEXTAREA:INVALID-JSON" : "{{value}} invalid JSON",

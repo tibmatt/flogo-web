@@ -13,6 +13,7 @@ import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
 import { InputMapperConfig } from './input-mapper';
 import { TAB_NAME, Tabs } from './models/tabs.model';
+import {isMapperActivity} from "@flogo/shared/utils";
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -201,10 +202,11 @@ export class TaskConfiguratorComponent implements OnDestroy {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,
     };
+/*    const isMapperTask = isMapperActivity(data.tile);
 
-    // if (data.overrideInputMapperTabLabel) {
-    //   this.tabs.get('inputMappings').labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
-    // }
+     if (isMapperTask) {
+      this.tabs.get('inputMappings').labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
+     }*/
 
     this.areValidMappings = MapperTranslator.makeValidator();
     this.open();

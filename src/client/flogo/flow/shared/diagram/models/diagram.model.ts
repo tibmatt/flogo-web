@@ -1229,15 +1229,15 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private _handleUpdateNodeMenus(nodeMenus: any) {
     const diagram = this;
     const textAddBranch = this.translate.instant('DIAGRAM:ADD-BRANCH');
-    const textTransform = this.translate.instant('DIAGRAM:TRANSFORM');
+    const textConfigure = this.translate.instant('DIAGRAM:CONFIGURE');
     const textDelete = this.translate.instant('DIAGRAM:DELETE');
 
     nodeMenus.html((nodeInfo: any, ignore: number, idxInTotalNodes: number) => {
       /* tslint:disable-next-line:max-line-length */
-      const tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i ${diagram.ng2StyleAttr} class="fa fa-plus"></i>${textAddBranch}</li>`;
+      const tplItemAddBranch = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.ADD_BRANCH}"><i ${diagram.ng2StyleAttr} class="flogo-icon-addbranch"></i>${textAddBranch}</li>`;
 
       /* tslint:disable-next-line:max-line-length */
-      const tplItemTransform = (this.profileType !== FLOGO_PROFILE_TYPE.DEVICE) ? `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa fa-bolt"></i>${textTransform}</li>` : '';
+      const tplItemConfigure = (this.profileType !== FLOGO_PROFILE_TYPE.DEVICE) ? `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa flogo-icon-settings"></i>${textConfigure}</li>` : '';
 
       /* tslint:disable-next-line:max-line-length */
       const tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i ${diagram.ng2StyleAttr} class="fa fa-trash-o"></i>${textDelete}</li>`;
@@ -1262,14 +1262,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       if ((idxInTotalNodes + 1) % 7) {
         // normal template
         return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
-                    ${tplItemAddBranch}
-                    ${tplItemTransform}
-                    ${tplItemDelete}
+                     ${tplItemConfigure}
+                     ${tplItemAddBranch}
+                     ${tplItemDelete}
                 </ul>${tplGear}`;
       } else {
         // no add branch
         return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
-                    ${tplItemTransform}
+                    ${tplItemConfigure}
                     ${tplItemDelete}
                 </ul>${tplGear}`;
       }
@@ -1304,6 +1304,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
               {
                 hasError: taskStatus.hasError,
                 hasMapping: _isTaskHasMapping(task),
+                hasIterators: _isTaskHasIterators(task),
                 errors: errors
               }
             ];
@@ -1342,6 +1343,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
 
         if (taskStatus.hasMapping) {
           tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-flows-detail-diagram-ic-transform"></i>`;
+        }
+        if (taskStatus.hasIterators) {
+          tpl += `<i ${diagram.ng2StyleAttr} class="flogo-flows-detail-diagram-status-icon flogo-icon-iterator"></i>`;
         }
       }
 
@@ -1537,6 +1541,9 @@ function _isTaskHasMapping(taskInfo: any): boolean {
     //  _.isArray( taskInfo.outputMappings ) && taskInfo.outputMappings.length > 0
     // )
   );
+}
+function _isTaskHasIterators(taskInfo: any): boolean {
+  return taskInfo && (taskInfo.type === 2);
 }
 
 function _getRowHeight(elm: HTMLElement, rowClassName: string): number {
