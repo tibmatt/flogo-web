@@ -1621,8 +1621,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (outputMapper) {
       overridePropsToMap = metadata.output;
       overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);
-      transformTitle = this.translate.instant('TRANSFORM:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.title });
-      searchTitleKey = 'TRANSFORM:FLOW-OUTPUTS';
+      transformTitle = this.translate.instant('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.title });
+      searchTitleKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
     }
 
     const taskSettings = selectedTile.settings;

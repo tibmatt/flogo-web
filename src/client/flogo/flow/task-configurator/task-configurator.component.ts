@@ -44,7 +44,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   @Input()
   flowId: string;
   currentTile: IFlogoFlowDiagramTask;
-  inputsSearchPlaceholderKey = 'TRANSFORM:ACTIVITY-INPUTS';
+  inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
   inputScope: any[];
   tabs: Tabs;
@@ -191,7 +191,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (!this.title && this.currentTile) {
       this.title = this.currentTile.title;
     }
-    this.inputsSearchPlaceholderKey = data.inputsSearchPlaceholderKey || 'TRANSFORM:ACTIVITY-INPUTS';
+    this.inputsSearchPlaceholderKey = data.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
     this.createInputMapperConfig(data);
 
@@ -201,6 +201,10 @@ export class TaskConfiguratorComponent implements OnDestroy {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,
     };
+
+    // if (data.overrideInputMapperTabLabel) {
+    //   this.tabs.get('inputMappings').labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
+    // }
 
     this.areValidMappings = MapperTranslator.makeValidator();
     this.open();

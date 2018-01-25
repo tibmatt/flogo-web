@@ -1,15 +1,20 @@
-// Add new tabs here, keep TabNames and tabNames in sync
+// Add new tabs here, keep TabNames and defaultTabsInfo in sync
 // after upgrading to typescript 2.1 this can be simplified to keyof TabNames
 export type TAB_NAME = 'inputMappings' | 'iterator';
-const tabNames: TAB_NAME[] = ['inputMappings', 'iterator'];
+const defaultTabsInfo: {name: TAB_NAME, labelKey: string}[] = [
+  { name: 'inputMappings', labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
+  { name: 'iterator', labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' },
+];
 
 export interface Tab {
+  labelKey: string;
   isSelected: boolean;
   isDirty: boolean;
   isValid: boolean;
 }
 
-const makeTab = () => ({
+export const makeTab = (labelKey: string) => ({
+  labelKey,
   isSelected: false,
   isDirty: false,
   isValid: true,
@@ -25,7 +30,7 @@ export class Tabs implements Iterable<[TAB_NAME, Tab]> {
   }
 
   constructor() {
-    const tabPairs = tabNames.map(tabName => [tabName, makeTab()] as [TAB_NAME, Tab]);
+    const tabPairs = defaultTabsInfo.map(({ name, labelKey }) => [name, makeTab(labelKey)] as [TAB_NAME, Tab]);
     this.tabs = new Map<TAB_NAME, Tab>(tabPairs);
     this[Symbol.iterator] = this.tabs[Symbol.iterator].bind(this.tabs);
   }

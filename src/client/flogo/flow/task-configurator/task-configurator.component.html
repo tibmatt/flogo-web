@@ -10,11 +10,11 @@
         <button class="flogo-button--primary  actions__action actions__action--save"
                 [class.disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
                 [disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
-                (click)="saveTransform()">{{ 'TRANSFORM:SAVE' | translate }}
+                (click)="saveTransform()">{{ 'TASK-CONFIGURATOR:SAVE' | translate }}
         </button>
       </div>
       <button class="mapper-modal__close" (click)="cancel()">
-        <span aria-hidden="true" class="sr-only">{{ 'TRANSFORM:CLOSE' | translate }}</span>
+        <span aria-hidden="true" class="sr-only">{{ 'TASK-CONFIGURATOR:CLOSE' | translate }}</span>
       </button>
     </div>
 
@@ -23,11 +23,12 @@
         <ul class="tabs">
           <li class="tabs__tab"
               *ngFor="let tabData of tabs; trackBy: trackTabsByFn"
+              (click)="selectTab(tabData[0])"
               [ngClass]='{
                 "tabs__tab--selected": tabData[1].isSelected,
                 "tabs__tab--has-errors": !tabData[1].isValid
-               }'
-              (click)="selectTab(tabData[0])"> {{ tabData[0] }}
+               }'>
+            {{ tabData[1].labelKey | translate }}
           </li>
         </ul>
       </div>
@@ -39,7 +40,7 @@
         [isIterableScope]="iteratorModeOn"
         (mappingsChange)="onMappingsChange($event)"
         inputsSearchPlaceholder="{{ inputsSearchPlaceholderKey | translate }}"
-        outputsSearchPlaceholder="{{ 'TRANSFORM:AVAILABLE-DATA' | translate }}"></flogo-flow-task-configurator-input-mapper>
+        outputsSearchPlaceholder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}"></flogo-flow-task-configurator-input-mapper>
       <flogo-flow-task-configurator-iterator *ngIf="this.tabs.get('iterator').isSelected"
         class="content"
         [iteratorModeOn]="iteratorModeOn"
