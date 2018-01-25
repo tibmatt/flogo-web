@@ -1,0 +1,52 @@
+<div class="modal-wrapper" [@dialog]="modalState" (@dialog.start)="onModalStateChange($event)"
+     (@dialog.done)="onModalStateChange($event)">
+  <div class="mapper-modal qa-transform-modal" *ngIf="isActive">
+    <div class="mapper-modal__header header">
+      <h2 class="header__title">{{ title }}</h2>
+      <div class="header__actions actions">
+        <button class="flogo-button--secondary actions__action" (click)="cancel()">
+          Cancel
+        </button>
+        <button class="flogo-button--primary  actions__action actions__action--save"
+                [class.disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
+                [disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
+                (click)="saveTransform()">{{ 'TASK-CONFIGURATOR:SAVE' | translate }}
+        </button>
+      </div>
+      <button class="mapper-modal__close" (click)="cancel()">
+        <span aria-hidden="true" class="sr-only">{{ 'TASK-CONFIGURATOR:CLOSE' | translate }}</span>
+      </button>
+    </div>
+
+    <div class="mapper-modal__content">
+      <div class="tab-panel">
+        <ul class="tabs">
+          <li class="tabs__tab"
+              *ngFor="let tabData of tabs; trackBy: trackTabsByFn"
+              (click)="selectTab(tabData[0])"
+              [ngClass]='{
+                "tabs__tab--selected": tabData[1].isSelected,
+                "tabs__tab--has-errors": !tabData[1].isValid
+               }'>
+            {{ tabData[1].labelKey | translate }}
+          </li>
+        </ul>
+      </div>
+      <flogo-flow-task-configurator-input-mapper
+        *ngIf="this.tabs.get('inputMappings').isSelected"
+        class="content"
+        [mappings]="currentMappings"
+        [initialConfig]="inputMappingsConfig"
+        [isIterableScope]="iteratorModeOn"
+        (mappingsChange)="onMappingsChange($event)"
+        inputsSearchPlaceholder="{{ inputsSearchPlaceholderKey | translate }}"
+        outputsSearchPlaceholder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}"></flogo-flow-task-configurator-input-mapper>
+      <flogo-flow-task-configurator-iterator *ngIf="this.tabs.get('iterator').isSelected"
+        class="content"
+        [iteratorModeOn]="iteratorModeOn"
+        [initialConfig]="{ inputScope: inputScope, iterableValue: iterableValue }"
+        (changeIteratorMode)="onChangeIteratorMode()"
+        (iteratorValueChange)="onIteratorValueChange($event)"></flogo-flow-task-configurator-iterator>
+    </div>
+  </div>
+</div>

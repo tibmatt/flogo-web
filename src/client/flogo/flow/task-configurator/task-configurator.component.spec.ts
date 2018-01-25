@@ -4,9 +4,12 @@ import { DebugElement } from '@angular/core';
 import { PostService } from '@flogo/core/services/post.service';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CommonModule as NgCommonModule } from '@angular/common';
-import { TaskMapperComponent } from './task-mapper.component';
+import { TaskConfiguratorComponent } from './task-configurator.component';
 import { MapperModule } from '../shared/mapper';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
+import { SaveTaskConfigEventData, SelectTaskConfigEventData } from '@flogo/flow/task-configurator/messages';
+import { InputMapperComponent } from './input-mapper';
+import { IteratorComponent } from './iterator/iterator.component';
 
 const postServiceStub = {
 
@@ -25,9 +28,9 @@ const postServiceStub = {
 };
 
 // TODO: disabling while working on mapper upgrade
-describe('Component: TaskMapperComponent', () => {
-  let comp: TaskMapperComponent;
-  let fixture: ComponentFixture<TaskMapperComponent>;
+describe('Component: TaskConfiguratorComponent', () => {
+  let comp: TaskConfiguratorComponent;
+  let fixture: ComponentFixture<TaskConfiguratorComponent>;
   let de: DebugElement;
 
   beforeEach((done) => {
@@ -39,7 +42,9 @@ describe('Component: TaskMapperComponent', () => {
         MapperModule,
       ],
       declarations: [
-        TaskMapperComponent
+        InputMapperComponent,
+        IteratorComponent,
+        TaskConfiguratorComponent,
       ], // declare the test component
       providers: [
         { provide: PostService, useValue: postServiceStub }
@@ -48,7 +53,7 @@ describe('Component: TaskMapperComponent', () => {
     })
       .compileComponents()
       .then(() => {
-        fixture = TestBed.createComponent(TaskMapperComponent);
+        fixture = TestBed.createComponent(TaskConfiguratorComponent);
         comp = fixture.componentInstance;
         de = fixture.debugElement;
         comp.flowId = 'root';
@@ -66,10 +71,10 @@ describe('Component: TaskMapperComponent', () => {
   it('Should open the transform component', () => {
     fixture.detectChanges();
     expect(comp.isActive).toBeTruthy('Transform component is not active');
-    expect(de.query(By.css('.data-transform-modal'))).not.toBeNull('Transform modal is not present');
+    expect(de.query(By.css('.qa-transform-modal'))).not.toBeNull('Transform modal is not present');
   });
 
-  function getMockData() {
+  function getMockData(): SelectTaskConfigEventData {
 
     return {
       scope: [
@@ -183,7 +188,8 @@ describe('Component: TaskMapperComponent', () => {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 0,
+              value: ''
             }
           ]
         },
@@ -196,7 +202,10 @@ describe('Component: TaskMapperComponent', () => {
         ],
         'id': 'Mw'
       },
-      handlerId: 'root'
+      handlerId: 'root',
+      iterator: {
+        isIterable: false,
+      }
     };
   }
 

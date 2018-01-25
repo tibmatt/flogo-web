@@ -34,6 +34,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() inputsSearchPlaceHolder = 'Search';
   @Input() outputsSearchPlaceHolder = 'Search';
   @Output() mappingsChange = new EventEmitter<IMapping>();
+  @Input() isSingleInputMode = false;
   currentInput: CurrentSelection = null;
   isDraggingOver = false;
   currentMappingType: number;
@@ -185,8 +186,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   onDragLeave(event?: DragEvent) {
     this.isDraggingOver = false;
   }
-
-
 
   toggleMode(event) {
     // todo: investigate why this callback is called twice even when the emitter emits only once

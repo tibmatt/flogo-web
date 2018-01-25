@@ -10,29 +10,43 @@
   z-index: 999;
 }
 
-.mapper {
+//// layout
+
+.content {
   width: 85%;
   height: 100%;
   border: solid 1px #b6b6b6;
-}
+  display: flex;
+  flex-direction: row;
 
-.mapper-modal_iterator--selected {
-  width: 65%;
-}
-
-.mapper-modal_left-panel {
-  width: 15%;
-  ul {
-    display: block;
-    margin: 0;
-    padding: 0;
+  /deep/ .content__sidebar {
+    width: 30%;
+    max-width: 30%;
   }
+
+  /deep/ .content__main {
+    flex: 1;
+  }
+
 }
 
-.mapper-modal_category {
+/// tabs
+
+.tab-panel {
+  width: 15%;
+}
+
+.tabs {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.tabs__tab {
+  border: 1px solid transparent;
   width: 100%;
   height: 45px;
-  padding-left: 30px;
+  padding-left: 29px;
   margin: 0;
   list-style-type: none;
   text-transform: capitalize;
@@ -51,28 +65,19 @@
   }
 }
 
-.mapper-modal_category--selected {
+.tabs__tab--selected {
   background-color: #cad3df;
   color: #062e79;
 }
 
-.mapper-modal_iterate-switch {
-  border-bottom: 2px solid #dedede;
-  margin-bottom: 5px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.tabs__tab--has-errors {
+  font-weight: normal;
+  color: #d0011b;
+  border-color: #d0011b;
 }
 
-.mapper-modal-iterate-text {
-  flex: 1;
-  font-weight: bold;
-}
-
-.mapper-modal__iterator-panel {
-  width: 20%;
-  max-width: 20%;
-  border: 1px solid #e0e0e0;
-  padding: 20px;
-  flex: 1;
+.header__title {
+  background: url('/assets/svg/flogo.flows.detail.diagram.activity.icon.svg') no-repeat left center;
+  padding-left: 40px;
+  background-size: 36px 26px;
 }

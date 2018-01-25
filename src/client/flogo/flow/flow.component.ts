@@ -38,9 +38,9 @@ import {
 } from './shared/form-builder/messages';
 import {
   PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS,
-  SelectTaskData,
+  SelectTaskConfigEventData,
   SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS
-} from './task-mapper/messages';
+} from './task-configurator/messages';
 import {
   PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS
@@ -58,7 +58,6 @@ import {
 import {
   attributeTypeToString,
   flogoGenBranchID,
-  flogoGenTriggerID,
   flogoIDDecode,
   flogoIDEncode,
   isMapperActivity,
@@ -73,9 +72,10 @@ import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
-import { FlowMetadata } from './task-mapper/models/flow-metadata';
+import { FlowMetadata } from './task-configurator/models/flow-metadata';
 import { LanguageService } from '@flogo/core';
 import { updateBranchNodesRunStatus } from './shared/diagram/utils';
+import { SaveTaskConfigEventData } from './task-configurator';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -176,14 +176,13 @@ export class FlowComponent implements OnInit, OnDestroy {
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.deleteTask, { callback: this._deleteTaskFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.addBranch, { callback: this._addBranchFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectBranch, { callback: this._selectBranchFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTransform, { callback: this._selectTransformFromDiagram.bind(this) }),
+      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectConfigureTask, { callback: this._selectConfigureTaskFromDiagram.bind(this) }),
       _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback: this._selectTriggerFromDiagram.bind(this) }),
       _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback: this._runFromTriggerinTile.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.setTaskWarnings, { callback: this._setTaskWarnings.bind(this) }),
-      _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTransform, { callback: this._saveTransformFromTransform.bind(this) }),
-      _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.deleteTransform, { callback: this._deleteTransformFromTransform.bind(this) }),
+      _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTask, { callback: this._saveConfigFromTaskConfigurator.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
       _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.openPanel, { callback: this._errorPanelStatusChanged.bind(this, true) }),
@@ -767,7 +766,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (isMapperTask) {
       return this._navigateFromModuleRoot()
       // because diagram forces "open" task event when adding a new one
-        .then(() => this._selectTransformFromDiagram(data, envelope, true))
+        .then(() => this._selectConfigureTaskFromDiagram(data, envelope, true))
         .then(() => this._cleanSelectionStatus())
         .then(() => console.groupEnd());
     }
@@ -1582,10 +1581,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   /*-------------------------------*
-   |      TRANSFORM                |
+   |      Task Configurator        |
    *-------------------------------*/
 
-  private _selectTransformFromDiagram(data: any, envelope: any, outputMapper?: boolean) {
+  private _selectConfigureTaskFromDiagram(data: any, envelope: any, outputMapper?: boolean) {
     const diagramId = data.id;
     let scope: any[];
 
@@ -1608,7 +1607,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
 
     const selectedTaskId = selectedNode.taskID;
-    const selectedTile = _.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
+    const selectedTile = <IFlogoFlowDiagramTask>_.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
 
     const metadata = <FlowMetadata>  _.defaultsDeep({
       type: 'metadata',
@@ -1617,34 +1616,42 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     let overridePropsToMap = null;
     let overrideMappings = null;
+    let inputMappingsTabLabelKey = null;
     let searchTitleKey;
     let transformTitle;
     if (outputMapper) {
       overridePropsToMap = metadata.output;
       overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);
-      transformTitle = this.translate.instant('TRANSFORM:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.title });
-      searchTitleKey = 'TRANSFORM:FLOW-OUTPUTS';
+      transformTitle = this.translate.instant('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.title });
+      searchTitleKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
+      inputMappingsTabLabelKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
     }
 
+    const taskSettings = selectedTile.settings;
     this._postService.publish(
       _.assign(
-        {}, FLOGO_TRANSFORM_PUB_EVENTS.selectActivity, {
-          data: <SelectTaskData>{
+        {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
+          data: <SelectTaskConfigEventData>{
             scope,
             overridePropsToMap,
             overrideMappings,
+            inputMappingsTabLabelKey,
             tile: selectedTile,
             handlerId: diagramId,
             title: transformTitle,
             inputsSearchPlaceholderKey: searchTitleKey,
+            iterator: {
+              isIterable: selectedTile.type === FLOGO_TASK_TYPE.TASK_ITERATOR,
+              iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
+            },
           }
         }
       ));
 
   }
 
-  private _saveTransformFromTransform(data: any, envelope: any) {
-    const diagramId = data.id;
+  private _saveConfigFromTaskConfigurator(data: SaveTaskConfigEventData, envelope: any) {
+    const diagramId = data.handlerId;
     const tile = this.handlers[diagramId].tasks[data.tile.id];
     const activitySchema = this.flow.schemas[tile.ref];
     const isMapperTask = isMapperActivity(activitySchema);
@@ -1658,18 +1665,13 @@ export class FlowComponent implements OnInit, OnDestroy {
       tile.inputMappings = _.cloneDeep(data.inputMappings);
     }
 
-    this._updateFlow(this.flow).then(() => {
-      this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-    });
-
-  }
-
-  private _deleteTransformFromTransform(data: any, envelope: any) {
-    const diagramId: string = data.id;
-
-    // data.tile.taskId
-    const tile = this.handlers[diagramId].tasks[data.tile.id];
-    delete tile.inputMappings;
+    tile.type = FLOGO_TASK_TYPE.TASK;
+    if (data.iterator.isIterable) {
+      tile.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
+      tile.settings = Object.assign({}, tile.settings, { iterate:  data.iterator.iterableValue });
+    } else if (tile.settings) {
+      delete tile.settings.iterate;
+    }
 
     this._updateFlow(this.flow).then(() => {
       this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);

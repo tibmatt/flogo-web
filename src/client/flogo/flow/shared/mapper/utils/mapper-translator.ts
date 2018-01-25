@@ -1,15 +1,15 @@
 import * as _ from 'lodash';
 import { resolveExpressionType } from '@flogo/packages/mapping-parser';
 
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { IFlogoFlowDiagramTask as FlowTile, IFlogoFlowDiagramTaskAttributeMapping as FlowMapping, } from '../../diagram/models';
-
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../../../../core/constants';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 
 import { flogoIDDecode } from '@flogo/shared/utils';
-import { FlowMetadata, MapperSchema } from '../../../task-mapper/models';
-import { IMapping } from '../models/imapping';
 import { IMapExpression } from '@flogo/flow/shared/mapper';
+// todo: shared models should be moved to core
+import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
+import { IMapping } from '../models/imapping';
 
 export type  MappingsValidatorFn = (imapping: IMapping) => boolean;
 
@@ -22,7 +22,9 @@ export class MapperTranslator {
     return MapperTranslator.attributesToObjectDescriptor(attributes);
   }
 
-  static createOutputSchema(tiles: Array<FlowTile | FlowMetadata>, includeEmptySchemas = false): MapperSchema {
+  static createOutputSchema(
+    tiles: Array<FlowTile | FlowMetadata>, additionalSchemas?: MapperSchemaProperties, includeEmptySchemas = false
+  ): MapperSchema {
     const rootSchema = {type: 'object', properties: {}};
     tiles.forEach(tile => {
       if (tile.type !== 'metadata') {
@@ -54,6 +56,8 @@ export class MapperTranslator {
         }
       }
     });
+    rootSchema.properties = Object.assign(rootSchema.properties, additionalSchemas);
+    rootSchema.properties = sortObjectKeys(rootSchema.properties);
     return rootSchema;
   }
 
@@ -72,7 +76,7 @@ export class MapperTranslator {
         requiredPropertyNames.push(attr.name);
       }
     });
-    return {type: 'object', properties, required: requiredPropertyNames};
+    return {type: 'object', properties: sortObjectKeys(properties), required: requiredPropertyNames};
   }
 
   // todo: change
@@ -147,6 +151,10 @@ export class MapperTranslator {
     };
   }
 
+  static isValidExpression(expression: string) {
+    return isValidExpression(expression);
+  }
+
   private static upgradeLegacyMappingIfNeeded(mappingValue: string) {
     const legacyMapping = REGEX_INPUT_VALUE_EXTERNAL.exec(mappingValue);
     if (!legacyMapping) {
@@ -164,6 +172,12 @@ export class MapperTranslator {
 
 }
 
+function sortObjectKeys (object: {[key: string]: any}) {
+  const keys = Object.keys(object);
+  const sortedKeys = keys.sort();
+  return _.fromPairs(sortedKeys.map(key => [key, object[key]]));
+}
+
 // TODO: only works for first level mappings
 function isInvalidMapping(mapping: IMapExpression) {
   const expression = mapping.expression;
@@ -178,10 +192,17 @@ function isInvalidMapping(mapping: IMapExpression) {
       isInvalid = true;
     }
   } else {
-    const mappingType = resolveExpressionType(mapping.expression);
-    isInvalid = mappingType == null;
+    return !isValidExpression(expression);
   }
   return isInvalid;
+}
+
+function isValidExpression(expression: string) {
+  if (!expression || !expression.trim().length) {
+    return true;
+  }
+  const mappingType = resolveExpressionType(expression);
+  return mappingType != null;
 }
 
 function mappingTypeFromExpression(expression: string) {
