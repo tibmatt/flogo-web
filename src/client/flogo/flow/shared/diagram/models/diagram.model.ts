@@ -1240,7 +1240,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       const tplItemConfigure = (this.profileType !== FLOGO_PROFILE_TYPE.DEVICE) ? `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM}"><i ${diagram.ng2StyleAttr} class="fa flogo-icon-settings"></i>${textConfigure}</li>` : '';
 
       /* tslint:disable-next-line:max-line-length */
-      const tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i ${diagram.ng2StyleAttr} class="fa fa-trash-o"></i>${textDelete}</li>`;
+      const tplItemDelete = `<li ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuList}" data-menu-item-type="${FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE}"><i ${diagram.ng2StyleAttr} class="fa flogo-icon-delete"></i>${textDelete}</li>`;
 
       const tplGear = `<span ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuGear}"></span>`;
 

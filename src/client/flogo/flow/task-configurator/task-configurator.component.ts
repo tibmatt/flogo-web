@@ -13,7 +13,6 @@ import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
 import { InputMapperConfig } from './input-mapper';
 import { TAB_NAME, Tabs } from './models/tabs.model';
-import {isMapperActivity} from "@flogo/shared/utils";
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -180,33 +179,32 @@ export class TaskConfiguratorComponent implements OnDestroy {
     return true;
   }
 
-  private initConfigurator(data: SelectTaskConfigEventData, envelope: any) {
-    if (!this.raisedByThisDiagram(data.handlerId)) {
+  private initConfigurator(eventData: SelectTaskConfigEventData, envelope: any) {
+    if (!this.raisedByThisDiagram(eventData.handlerId)) {
       return;
     }
     this.resetState();
-    this.currentTile = data.tile;
-    this.title = data.title;
-    this.inputScope = data.scope;
+    this.currentTile = eventData.tile;
+    this.title = eventData.title;
+    this.inputScope = eventData.scope;
 
     if (!this.title && this.currentTile) {
       this.title = this.currentTile.title;
     }
-    this.inputsSearchPlaceholderKey = data.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
+    this.inputsSearchPlaceholderKey = eventData.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
-    this.createInputMapperConfig(data);
+    this.createInputMapperConfig(eventData);
 
-    this.iteratorModeOn = data.iterator.isIterable;
-    this.iterableValue = data.iterator.iterableValue;
+    this.iteratorModeOn = eventData.iterator.isIterable;
+    this.iterableValue = eventData.iterator.iterableValue;
     this.initialIteratorData = {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,
     };
-/*    const isMapperTask = isMapperActivity(data.tile);
 
-     if (isMapperTask) {
+    if (eventData.inputMappingsTabLabelKey) {
       this.tabs.get('inputMappings').labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
-     }*/
+    }
 
     this.areValidMappings = MapperTranslator.makeValidator();
     this.open();

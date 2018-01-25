@@ -1616,6 +1616,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     let overridePropsToMap = null;
     let overrideMappings = null;
+    let inputMappingsTabLabelKey = null;
     let searchTitleKey;
     let transformTitle;
     if (outputMapper) {
@@ -1623,6 +1624,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);
       transformTitle = this.translate.instant('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.title });
       searchTitleKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
+      inputMappingsTabLabelKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
     }
 
     const taskSettings = selectedTile.settings;
@@ -1633,6 +1635,7 @@ export class FlowComponent implements OnInit, OnDestroy {
             scope,
             overridePropsToMap,
             overrideMappings,
+            inputMappingsTabLabelKey,
             tile: selectedTile,
             handlerId: diagramId,
             title: transformTitle,

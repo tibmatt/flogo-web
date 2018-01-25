@@ -41,6 +41,7 @@ export interface SelectTaskConfigEventData {
   overridePropsToMap?: any[];
   overrideMappings?: any[];
   title?: string;
+  inputMappingsTabLabelKey?: string;
   inputsSearchPlaceholderKey?: string;
   iterator: IteratorInfo;
 }
