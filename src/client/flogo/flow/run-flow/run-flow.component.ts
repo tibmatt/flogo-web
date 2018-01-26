@@ -13,6 +13,7 @@ export class FlogoRunFlowComponent {
   flowInputs: FlowMetadataAttribute[];
   @Input()
   disableRun: boolean;
+  @Input() disableReason?: string;
   @Output()
   onSubmit: EventEmitter<FlowMetadataAttribute[]> = new EventEmitter<FlowMetadataAttribute[]>();
   showRunFlow = false;

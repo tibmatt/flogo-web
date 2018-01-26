@@ -106,6 +106,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
   public triggersList: IFlogoTrigger[];
+  public runnableInfo: {
+    disabled: boolean;
+    disableReason?: string;
+  };
 
   private runState = {
     // data
@@ -161,10 +165,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       .then(() => {
         this.initSubscribe();
       });
-  }
-
-  get disableRunFlow() {
-    return _.isEmpty(this.mainHandler && this.mainHandler.tasks);
   }
 
   private initSubscribe() {
@@ -250,6 +250,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       cleanPaths(flow.errorHandler.paths);
     }
 
+    this.determineRunnableEnabled();
     return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
       if (_.isEmpty(flow.items)) {
         this.hasTask = false;
@@ -284,6 +285,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         this.triggersList = res.triggers;
 
         this.clearAllHandlersRunStatus();
+        this.determineRunnableEnabled();
         this.loading = false;
         this.profileService.initializeProfile(this.flow.app);
         this.profileType = this.profileService.currentApplicationProfile;
@@ -1405,6 +1407,23 @@ export class FlowComponent implements OnInit, OnDestroy {
         return outItem;
       })
       .value();
+  }
+
+  private determineRunnableEnabled() {
+    this.runnableInfo = {
+      disabled: _.isEmpty(this.mainHandler && this.mainHandler.tasks),
+      disableReason: null
+    };
+    if (this.runnableInfo.disabled) {
+      return;
+    }
+    const allTasks = this._getAllTasks();
+    const iteratorTasks = Object.keys(allTasks)
+      .filter(taskId => allTasks[taskId].type === FLOGO_TASK_TYPE.TASK_ITERATOR);
+    if (iteratorTasks.length > 0) {
+      this.runnableInfo.disabled = true;
+      this.runnableInfo.disableReason = this.translate.instant('CANVAS:WARNING-UNSUPPORTED-TEST-RUN');
+    }
   }
 
   private handleRunError(error) {
