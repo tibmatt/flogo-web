@@ -377,7 +377,6 @@ class ItemFactory {
   static getSharedProperties(installed) {
     const defaults = {
       name: '',
-      title: '',
       version: '',
       homepage: '',
       description: '',
@@ -391,7 +390,7 @@ class ItemFactory {
       },
       __status: {}
     };
-    return Object.assign({}, defaults, _.pick(installed, ['name', 'title', 'version', 'homepage', 'description', 'ref']));
+    return Object.assign({}, defaults, _.pick(installed, ['name', 'version', 'homepage', 'description', 'ref']));
   }
 
   static makeTriggerError(trigger) {
@@ -401,7 +400,6 @@ class ItemFactory {
       version: '',
       name: 'On Error',
       description: '',
-      title: 'On Error',
       activityType: '',
       triggerType: '__error-trigger',
       attributes: {

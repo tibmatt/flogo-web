@@ -82,7 +82,6 @@ describe('Component: TaskConfiguratorComponent', () => {
           'type': 0,
           'triggerType': 'tibco-timer',
           'name': 'Timer Trigger',
-          'title': 'Timer Trigger',
           'settings': [],
           'outputs': [
             {
@@ -165,7 +164,7 @@ describe('Component: TaskConfiguratorComponent', () => {
         'activityType': 'tibco-log',
         'name': 'Logger',
         'version': '0.0.1',
-        'title': 'Log Activity',
+        // 'title': 'Log Activity',
         'description': 'To log the number',
         'attributes': {
           'inputs': [

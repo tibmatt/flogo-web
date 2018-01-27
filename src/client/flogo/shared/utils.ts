@@ -131,7 +131,6 @@ export function activitySchemaToTask(schema: any): any {
     ref: schema.ref,
     name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
     version: _.get(schema, 'version', ''),
-    title: _.get(schema, 'title', ''),
     description: _.get(schema, 'description', ''),
     homepage: _.get(schema, 'homepage', ''),
     attributes: {
@@ -168,7 +167,6 @@ export function activitySchemaToTrigger(schema: any): any {
     ref: schema.ref,
     name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
     version: _.get(schema, 'version', ''),
-    title: _.get(schema, 'title', ''),
     description: _.get(schema, 'description', ''),
     homepage: _.get(schema, 'homepage', ''),
     settings: _.get(schema, 'settings', ''),

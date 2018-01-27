@@ -262,7 +262,6 @@ export let mockActivitiesDetails = [
     'id': 'tibco-log',
     'name': 'tibco-log',
     'version': '0.0.1',
-    'title': 'Log Message',
     'description': 'Simple Log Activity',
     'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
     'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
@@ -294,7 +293,6 @@ export let mockActivitiesDetails = [
     'id': 'tibco-counter',
     'name': 'tibco-counter',
     'version': '0.0.1',
-    'title': 'Increment Counter',
     'description': 'Simple Global Counter Activity',
     'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
     'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
@@ -398,7 +396,6 @@ export let mockResultantUIFlow = {
   'items': {
     'some_id_7': {
       'name': 'First Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -444,7 +441,6 @@ export let mockResultantUIFlow = {
     },
     'some_id_8': {
       'name': 'Counter1',
-      'title': 'Increment Counter',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
       'description': 'Simple Global Counter Activity',
@@ -490,7 +486,6 @@ export let mockResultantUIFlow = {
     },
     'some_id_9': {
       'name': 'Second Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -536,7 +531,6 @@ export let mockResultantUIFlow = {
     },
     'some_id_10': {
       'name': 'Third Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -673,7 +667,6 @@ export let mockResultantUIFlowWithError = {
   'items': {
     'some_id_7': {
       'name': 'First Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -719,7 +712,6 @@ export let mockResultantUIFlowWithError = {
     },
     'some_id_8': {
       'name': 'Counter1',
-      'title': 'Increment Counter',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
       'description': 'Simple Global Counter Activity',
@@ -765,7 +757,6 @@ export let mockResultantUIFlowWithError = {
     },
     'some_id_9': {
       'name': 'Second Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -811,7 +802,6 @@ export let mockResultantUIFlowWithError = {
     },
     'some_id_10': {
       'name': 'Third Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -915,7 +905,6 @@ export let mockResultantUIFlowWithError = {
         'version': '',
         'name': 'On Error',
         'description': '',
-        'title': 'On Error',
         'activityType': '',
         'triggerType': '__error-trigger',
         'attributes': {
@@ -967,7 +956,6 @@ export let mockResultantUIFlowWithError = {
       },
       'some_id_4': {
         'name': 'Error Log',
-        'title': 'Log Message',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
         'description': 'Simple Log Activity',
@@ -1091,7 +1079,6 @@ export let mockResultantUIFlowWithTransformations = {
   'items': {
     'some_id_7': {
       'name': 'First Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -1143,7 +1130,6 @@ export let mockResultantUIFlowWithTransformations = {
     },
     'some_id_8': {
       'name': 'Counter1',
-      'title': 'Increment Counter',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
       'description': 'Simple Global Counter Activity',
@@ -1189,7 +1175,6 @@ export let mockResultantUIFlowWithTransformations = {
     },
     'some_id_9': {
       'name': 'Second Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',
@@ -1235,7 +1220,6 @@ export let mockResultantUIFlowWithTransformations = {
     },
     'some_id_10': {
       'name': 'Third Log',
-      'title': 'Log Message',
       'version': '0.0.1',
       'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
       'description': 'Simple Log Activity',

@@ -189,7 +189,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.inputScope = eventData.scope;
 
     if (!this.title && this.currentTile) {
-      this.title = this.currentTile.title;
+      this.title = this.currentTile.name;
     }
     this.inputsSearchPlaceholderKey = eventData.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
