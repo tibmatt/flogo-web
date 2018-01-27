@@ -6,11 +6,15 @@ import { FlogoFlowsDetailTriggersDetailComponent } from './trigger-detail';
 import { FlogoFlowsDetailTasksComponent } from './task-add';
 import { FlogoFlowsDetailTasksDetailComponent } from './task-detail';
 import { FlowComponent } from './flow.component';
+import { FlowDataResolver } from './flow-data.resolver';
 
 export const routes: Routes = [
   {
     path: 'flows/:id',
     component: FlowComponent,
+    resolve: {
+      flowData: FlowDataResolver,
+    },
     children: [
       { path: '', component: EmptyDetailComponent },
       { path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent },

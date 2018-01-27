@@ -76,6 +76,7 @@ import { FlowMetadata } from './task-configurator/models/flow-metadata';
 import { LanguageService } from '@flogo/core';
 import { updateBranchNodesRunStatus } from './shared/diagram/utils';
 import { SaveTaskConfigEventData } from './task-configurator';
+import { FlowData } from '@flogo/flow/core';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -130,7 +131,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   _isCurrentProcessDirty = true;
   _isDiagramEdited: boolean;
   flowName: string;
-  backToAppHover: boolean;
+  backToAppHover = false;
 
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
@@ -164,13 +165,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.flowId = this._route.snapshot.params['id'];
-    this.backToAppHover = false;
-
-    this._loadFlow(this.flowId)
-      .then(() => {
-        this.initSubscribe();
-      });
+    const flowData: FlowData = this._route.snapshot.data['flowData'];
+    this.initFlowData(flowData);
+    this.initSubscribe();
+    this.loading = false;
   }
 
   private initSubscribe() {
@@ -310,31 +308,28 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   }
 
-  private _loadFlow(flowId: string) {
-    this.loading = true;
-    return this._flowService.getFlow(flowId)
-      .then((res: any) => {
-        this.flow = res.flow;
-        this.flowName = this.flow.name;
-        this.handlers = {
-          [FLOW_HANDLER_TYPE_ROOT]: res.root,
-          [FLOW_HANDLER_TYPE_ERROR]: res.errorHandler
-        };
+  private initFlowData(flowData: FlowData) {
+    const FLOW_HANDLER_TYPE_ROOT = 'root';
+    const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
+    this.flow = flowData.flow;
+    this.flowName = this.flow.name;
+    this.handlers = {
+      [FLOW_HANDLER_TYPE_ROOT]: flowData.root,
+      [FLOW_HANDLER_TYPE_ERROR]: flowData.errorHandler
+    };
 
-        this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
-        this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-        if (_.isEmpty(this.mainHandler.tasks)) {
-          this.hasTask = false;
-        }
+    this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
+    this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
+    if (_.isEmpty(this.mainHandler.tasks)) {
+      this.hasTask = false;
+    }
+    this.triggersList = flowData.triggers;
 
-        this.triggersList = res.triggers;
-
-        this.clearAllHandlersRunStatus();
-        this.determineRunnableEnabled();
-        this.loading = false;
-        this.profileService.initializeProfile(this.flow.app);
-        this.profileType = this.profileService.currentApplicationProfile;
-      });
+    this.clearAllHandlersRunStatus();
+    this.determineRunnableEnabled();
+    // todo: move to resolver?
+    this.profileService.initializeProfile(this.flow.app);
+    this.profileType = this.profileService.currentApplicationProfile;
   }
 
   private _getCurrentState(taskID: string) {

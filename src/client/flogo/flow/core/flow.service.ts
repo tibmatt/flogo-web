@@ -5,9 +5,11 @@ import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
 import { IFlogoFlowDiagramTaskDictionary } from '../shared/diagram/models/dictionary.model';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '../../core/services/flows.service';
+import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
-interface FlowData {
+export interface FlowData {
   flow: any;
+  triggers: any;
   root: {
     diagram: any;
     tasks: any;
@@ -22,10 +24,11 @@ interface FlowData {
 export class FlogoFlowService {
   constructor(private _flowAPIService: APIFlowsService,
               private _converterService: UIModelConverterService,
+              public profileSerivce: FlogoProfileService,
               private _commonFlowsService: FlowsService) {
   }
 
-  getFlow(flowId: string): Promise<FlowData> {
+  loadFlow(flowId: string): Promise<FlowData> {
     return this._flowAPIService.getFlow(flowId)
       .then((flow) => {
         const flowDiagramDetails = _.omit(flow, [
@@ -33,7 +36,7 @@ export class FlogoFlowService {
         ]);
 
         const triggers = flow.triggers;
-
+        this._converterService.setProfile(this.profileSerivce.getProfileType(flow.app));
         return this._converterService.getWebFlowModel(flowDiagramDetails)
           .then(convertedFlow => this.processFlowModel(convertedFlow, flow.triggers.length > 0))
           .then(processedFlow => _.assign({}, processedFlow, { triggers }));
