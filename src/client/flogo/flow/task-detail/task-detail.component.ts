@@ -28,7 +28,8 @@ export class FlogoFlowsDetailTasksDetailComponent implements OnDestroy {
 
     const subs = [
       _.assign({}, SUB_EVENTS.selectTask, { callback: this._getSelectTaskMsg.bind(this) }),
-      _.assign({}, SUB_EVENTS.updateTriggerTask, { callback: this._updateTriggerContext.bind(this) })
+      _.assign({}, SUB_EVENTS.updateTriggerTask, { callback: this._newTriggerContext.bind(this) }),
+      _.assign({}, SUB_EVENTS.taskContextUpdated, { callback: this._updateTaskContext.bind(this) }),
     ];
 
     _.each(
@@ -70,7 +71,7 @@ export class FlogoFlowsDetailTasksDetailComponent implements OnDestroy {
     console.groupEnd();
   }
 
-  private _updateTriggerContext(data: any, envelope: any) {
+  private _newTriggerContext(data: any, envelope: any) {
     this._task = _.assign({}, this._task, {
       name: data.updatedTrigger.name
     });
@@ -78,6 +79,12 @@ export class FlogoFlowsDetailTasksDetailComponent implements OnDestroy {
       app: data.updatedApp,
       currentTrigger: data.updatedTrigger
     });
+  }
+
+  private _updateTaskContext({ taskId, context }) {
+    if (this._task && this._task.id === taskId) {
+      this._context = _.assign({}, context);
+    }
   }
 
 }

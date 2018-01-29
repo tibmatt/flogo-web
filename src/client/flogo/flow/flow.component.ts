@@ -85,12 +85,16 @@ interface TaskContext {
   isTrigger: boolean;
   isBranch: boolean;
   isTask: boolean;
+  isIterator: boolean;
   hasProcess: boolean;
   isDiagramEdited: boolean;
   app: any;
   currentTrigger: any;
   profileType: FLOGO_PROFILE_TYPE;
 }
+
+const FLOW_HANDLER_TYPE_ROOT = 'root';
+const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
 
 @Component({
   selector: 'flogo-flow',
@@ -230,6 +234,47 @@ export class FlowComponent implements OnInit, OnDestroy {
       });
   }
 
+  private refreshCurrentTileContextIfNeeded() {
+    const taskInfo = this.getCurrentTaskInfoFromRoute();
+    if (taskInfo) {
+      return;
+    }
+    const { taskId, diagramId } = taskInfo;
+    const context = this._getCurrentTaskContext(taskId, diagramId);
+    this._postService.publish(Object.assign(
+      {},
+      FLOGO_SELECT_TASKS_PUB_EVENTS.taskContextUpdated,
+      { data: { taskId, context } }
+      ));
+  }
+
+  private getCurrentTaskInfoFromRoute() {
+    const rootSnapshot = this._router.routerState.snapshot.root;
+    const thisRoute = rootSnapshot.firstChild;
+    if (!thisRoute && thisRoute.url[0].path !== 'flows') {
+      // not on this route
+      return null;
+    }
+    const childRoute = thisRoute.firstChild;
+    if (!childRoute) {
+      return null;
+    }
+    const [taskSegment, taskIdSegment] = childRoute.url;
+    if (!taskSegment && taskSegment.path !== 'task') {
+      return null;
+    }
+    const taskId = taskIdSegment.path;
+    let diagramId;
+    if (this.handlers[FLOW_HANDLER_TYPE_ROOT].tasks[taskId]) {
+      diagramId = FLOW_HANDLER_TYPE_ROOT;
+    } else if (this.handlers[FLOW_HANDLER_TYPE_ERROR].tasks[taskId]) {
+      diagramId = FLOW_HANDLER_TYPE_ERROR;
+    } else {
+      return null;
+    }
+    return { diagramId, taskId };
+  }
+
   public _updateFlow(flow: any) {
     this._isCurrentProcessDirty = true;
 
@@ -267,8 +312,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.loading = true;
     return this._flowService.getFlow(flowId)
       .then((res: any) => {
-        const FLOW_HANDLER_TYPE_ROOT = 'root';
-        const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
         this.flow = res.flow;
         this.flowName = this.flow.name;
         this.handlers = {
@@ -378,6 +421,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTrigger: taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_ITERATOR,
+      isIterator: taskType === FLOGO_TASK_TYPE.TASK_ITERATOR,
       hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
       app: null,
@@ -1695,7 +1739,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._updateFlow(this.flow).then(() => {
       this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
     });
-
+    // context potentially changed
+    this.refreshCurrentTileContextIfNeeded();
   }
 
   private getAllPaths(nodes: any) {
