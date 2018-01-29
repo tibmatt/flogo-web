@@ -11,7 +11,6 @@ export interface IFlogoFlowDiagramTask {
   name ?: string;
   ref ?: string;
   description ?: string;
-  title ?: string;
   activityType?: string;
   triggerType?: string;
   attributes ?: IFlogoFlowDiagramTaskAttributes;
@@ -39,7 +38,6 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   version: string;
   name: string;
   description: string;
-  title: string;
   activityType: string;
   ref: string;
   triggerType: string;
@@ -74,7 +72,6 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.version = task.version || this.version || '';
     this.name = task.name || this.name || 'new task';
     this.description = task.description || this.description || '';
-    this.title = task.title || this.title || '';
     this.activityType = task.activityType || this.activityType || '';
     this.ref = task.ref || this.ref || '';
 
@@ -131,7 +128,7 @@ export function makeDefaultErrorTrigger(id): IFlogoFlowDiagramTask {
   const errorTrigger = new FlogoFlowDiagramTask({
     id: id,
     name: 'On Error',
-    title: 'On Error',
+    // title: 'On Error',
     type: FLOGO_TASK_TYPE.TASK_ROOT,
     triggerType: FLOGO_ERROR_ROOT_NAME,
     attributes: {

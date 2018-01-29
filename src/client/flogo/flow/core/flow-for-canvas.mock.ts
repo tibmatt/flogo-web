@@ -76,7 +76,6 @@ export let resultantFlowModelForCanvas = {
     'items': {
       'some_id_7': {
         'name': 'First Log',
-        'title': 'Log Message',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
         'description': 'Simple Log Activity',
@@ -122,7 +121,6 @@ export let resultantFlowModelForCanvas = {
       },
       'some_id_8': {
         'name': 'Counter1',
-        'title': 'Increment Counter',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
         'description': 'Simple Global Counter Activity',
@@ -168,7 +166,6 @@ export let resultantFlowModelForCanvas = {
       },
       'some_id_9': {
         'name': 'Second Log',
-        'title': 'Log Message',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
         'description': 'Simple Log Activity',
@@ -214,7 +211,6 @@ export let resultantFlowModelForCanvas = {
       },
       'some_id_10': {
         'name': 'Third Log',
-        'title': 'Log Message',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
         'description': 'Simple Log Activity',
@@ -342,7 +338,6 @@ export let resultantFlowModelForCanvas = {
     'tasks': {
       'some_id_7': {
         'name': 'First Log',
-        'title': 'Log Message',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
         'description': 'Simple Log Activity',
@@ -388,7 +383,6 @@ export let resultantFlowModelForCanvas = {
       },
       'some_id_8': {
         'name': 'Counter1',
-        'title': 'Increment Counter',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
         'description': 'Simple Global Counter Activity',
@@ -434,7 +428,6 @@ export let resultantFlowModelForCanvas = {
       },
       'some_id_9': {
         'name': 'Second Log',
-        'title': 'Log Message',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
         'description': 'Simple Log Activity',
@@ -480,7 +473,6 @@ export let resultantFlowModelForCanvas = {
       },
       'some_id_10': {
         'name': 'Third Log',
-        'title': 'Log Message',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
         'description': 'Simple Log Activity',

@@ -43,7 +43,7 @@ export class MapperTranslator {
           const taskId = flogoIDDecode(tile.id);
           const tileSchema = MapperTranslator.attributesToObjectDescriptor(outputs || []);
           tileSchema.rootType = this.getRootType(tile);
-          tileSchema.title = tile.title;
+          tileSchema.title = tile.name;
           rootSchema.properties[taskId] = tileSchema;
         }
       } else {
