@@ -4,7 +4,7 @@
  *  - https://golang.org/ref/spec
  *  - https://github.com/antlr/grammars-v4/tree/master/golang
  */
-import { IToken, Lexer, Parser, tokenMatcher } from 'chevrotain';
+import { IToken, Lexer, Parser, tokenMatcher, createToken } from 'chevrotain';
 import { UnicodeCategory } from './unicode';
 
 /////////////////////////////
@@ -17,123 +17,151 @@ import { UnicodeCategory } from './unicode';
 // with the current setup.
 // const Token = require('./tokens');
 
-export class True {
-  static LABEL = 'true';
-  static PATTERN = /true/;
-}
+const True = createToken({
+  name: 'True',
+  label: 'true',
+  pattern: /true/,
+});
 
-export class False {
-  static LABEL = 'false';
-  static PATTERN = /false/;
-}
+const False = createToken({
+  name: 'False',
+  label: 'false',
+  pattern: /false/,
+});
 
-export class Null {
-  static LABEL = 'null';
-  static PATTERN = /null/;
-}
+const Null = createToken({
+  name: 'Null',
+  label: 'null',
+  pattern: /null/,
+});
 
-export class LCurly {
-  static LABEL = '{';
-  static PATTERN = /{/;
-}
+const LCurly = createToken({
+  name: 'LCurly',
+  label: '{',
+  pattern: /{/,
+});
 
-export class RCurly {
-  static LABEL = '}';
-  static PATTERN = /}/;
-}
+const RCurly = createToken({
+  name: 'RCurly',
+  label: '}',
+  pattern: /}/,
+});
 
-export class LSquare {
-  static LABEL = '[';
-  static PATTERN = /\[/;
-}
+const LSquare = createToken({
+  name: 'LSquare',
+  label: '[',
+  pattern: /\[/,
+});
 
-export class RSquare {
-  static LABEL = ']';
-  static PATTERN = /]/;
-}
+const RSquare = createToken({
+  name: 'RSquare',
+  label: ']',
+  pattern: /]/,
+});
 
-export class Dot {
-  static LABEL = '.';
-  static PATTERN = /\./;
-}
+const Dot = createToken({
+  name: 'Dot',
+  label: '.',
+  pattern: /\./,
+});
 
-export class Comma {
-  static LABEL = ',';
-  static PATTERN = /,/;
-}
+const Comma = createToken({
+  name: 'Comma',
+  label: ',',
+  pattern: /,/,
+});
 
-export class Colon {
-  static LABEL = ':';
-  static PATTERN = /:/;
-}
+const Colon = createToken({
+  name: 'Colon',
+  label: ':',
+  pattern: /:/,
+});
 
-export class StringLiteral {
-  static PATTERN = /"(:?[^\\"\n\r]+|\\(:?[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/;
-}
+const StringLiteral = createToken({
+  name: 'StringLiteral',
+  label: 'StringLiteral',
+  pattern: /"(:?[^\\"\n\r]+|\\(:?[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+});
 
-export class NumberLiteral {
-  static PATTERN = /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
-}
+const NumberLiteral = createToken({
+  name: 'NumberLiteral',
+  label: 'NumberLiteral',
+  pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
+});
 
-export class WhiteSpace {
-  static PATTERN = /\s+/;
-  static GROUP = Lexer.SKIPPED;
-  static LINE_BREAKS = true;
-}
+const WhiteSpace = createToken({
+  name: 'WhiteSpace',
+  label: 'Whitespace',
+  pattern: /\s+/,
+  group: Lexer.SKIPPED,
+  line_breaks: true,
+});
 
 // https://golang.org/ref/spec#Identifiers
 // identifier = letter { letter | unicode_digit }
-export class IdentifierName {
+const IdentifierName = createToken({
+  name: 'IdentifierName',
+  label: 'Identifier',
   // TODO: should we change this regex for manual parsing to avoid perf issues?
-  static PATTERN = new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`);
-}
+  pattern: new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`),
+});
 
-export class Lookup {
-  static LABEL = '$';
-  static PATTERN = /\$/;
-}
+const Lookup = createToken({
+  name: 'Lookup',
+  label: '$',
+  pattern: /\$/,
+});
 
 // TODO: are all operators supported?
-export class UnaryOp {
-  static PATTERN = /\+|-|!|\^|\*|&|<-/;
-}
+const UnaryOp = createToken({
+  name: 'UnaryOp',
+  label: 'Unary operator',
+  pattern: /\+|-|!|\^|\*|&|<-/,
+});
 
-export class BinaryOp {
-  static PATTERN = Lexer.NA;
-}
+const BinaryOp = createToken({
+  name: 'BinaryOp',
+  label: 'Binary operator',
+  pattern: Lexer.NA,
+});
 
 // TODO: are all operators supported?
 // OPERATOR PRECEDENCE: 5 (greatest)
-export class MulOp {
-  static PATTERN = /\*|\/|%|<<|>>|&\^|&/;
-  static CATEGORIES = BinaryOp;
-}
+const MulOp = createToken({
+  name: 'MulOp',
+  pattern: /\*|\/|%|<<|>>|&\^|&/,
+  categories: BinaryOp,
+});
 
 // OPERATOR PRECEDENCE: 4
 // TODO: are all operators supported?
-export class AddOp {
-  static PATTERN = /\+|-|\|\^/;
-  static CATEGORIES = BinaryOp;
-}
+const AddOp = createToken({
+  name: 'AddOp',
+  pattern: /\+|-|\|\^/,
+  categories: BinaryOp,
+});
 
 // OPERATOR PRECEDENCE: 3
 // TODO: are all operators supported?
-export class RelOp {
-  static PATTERN = /==|!=|<=|>=|<|>/;
-  static CATEGORIES = BinaryOp;
-}
+const RelOp = createToken({
+  name: 'RelOp',
+  pattern: /==|!=|<=|>=|<|>/,
+  categories: BinaryOp,
+});
 
 // OPERATOR PRECEDENCE: 2
-export class LogicalAnd {
-  static PATTERN = /&&/;
-  static CATEGORIES = BinaryOp;
-}
+const LogicalAnd = createToken({
+  name: 'LogicalAnd',
+  pattern: /&&/,
+  categories: BinaryOp,
+});
 
 // OPERATOR PRECEDENCE: 1
-export class LogicalOr {
-  static PATTERN = /\|\|/;
-  static CATEGORIES = BinaryOp;
-}
+const LogicalOr = createToken({
+  name: 'LogicalOr',
+  pattern: /\|\|/,
+  categories: BinaryOp,
+});
 
 export const allTokens = [
   WhiteSpace,
@@ -195,7 +223,7 @@ const Token = {
 export class MappingParser extends Parser {
 
   constructor(input: IToken[]) {
-    super(input, Token.allTokens, {
+    super(input, <any>Token.allTokens, {
       recoveryEnabled: true,
       outputCst: true,
     });

@@ -3,7 +3,7 @@ import { allTokens, MappingParser } from './parser/parser';
 import { astCreatorFactory } from './ast/ast-creator';
 import { ParseResult } from './parser/parse-result';
 
-const lexer = new Lexer(allTokens);
+const lexer = new Lexer(<any>allTokens);
 // reuse the same parser instance.
 const parserInstance = new MappingParser([]);
 const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructor();
