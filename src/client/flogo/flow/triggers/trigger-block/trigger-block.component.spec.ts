@@ -101,12 +101,12 @@ describe('Component: TriggerBlockComponent', () => {
       });
   });
 
-  it('Trigger menu should open when trigger is selected in case of microservices', (done) => {
+  it('Trigger configuration details should open when trigger is selected in case of microservices', (done) => {
     compileComponent()
       .then(() => {
         fixture = TestBed.createComponent(FlogoContainerComponent);
         comp = fixture.componentInstance;
-        comp.triggerBlock.handleTriggerSelection();
+        comp.triggerBlock.handleTriggerMenuShow();
         fixture.detectChanges();
         expect(comp.triggerBlock.isSelected).toEqual(true);
         done();
