@@ -518,17 +518,20 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     if (!this.requiresSvgFix) {
       return;
     }
-    const urlRegex = /url\((.*)#/;
-    const replaceUrl = (inString: string) => inString.replace(urlRegex, `url(${window.location.href}#`);
+    const functionalUrlRegex = /url\((.*)#/;
+    const simpleHashedRegex = /(.*)#/;
+    const replaceFunctionalUrl = (inString: string) => inString.replace(functionalUrlRegex, `url(${window.location.href}#`);
+    const replaceHashedRef = (inString: string) => inString.replace(simpleHashedRegex, `${window.location.href}#`);
     const updateAttrUrlIfNeeded = (element: Element, attrName) => {
-      if (element.hasAttribute(attrName) && urlRegex.test(element.getAttribute(attrName))) {
+      if (element.hasAttribute(attrName)) {
         const attrVal = element.getAttribute(attrName);
+        const replaceUrl =  functionalUrlRegex.test(attrVal) ? replaceFunctionalUrl : replaceHashedRef;
         element.setAttribute(attrName, replaceUrl(attrVal));
       }
     };
     Array.from(this.elm.querySelectorAll('[fill], [filter]'))
       .forEach((element: Element) => {
-        ['fill', 'filter'].forEach(attrName => updateAttrUrlIfNeeded(element, attrName));
+        ['fill', 'filter', 'xlink:href'].forEach(attrName => updateAttrUrlIfNeeded(element, attrName));
       });
   }
 
