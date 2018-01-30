@@ -68,6 +68,37 @@ describe('Component: FlowsListComponent', () => {
       });
   });
 
+  it('Should form proper link to open a flow in new tab', (done) => {
+    compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(FlowsListComponent);
+        comp = fixture.componentInstance;
+        de = fixture.debugElement;
+        comp.list = getFlowsList();
+        fixture.detectChanges();
+        const firstLink = de.queryAll(By.css('.flogo-link'))[0].nativeElement;
+        expect(firstLink.getAttribute('href')).toEqual('/flows/flow_1');
+        done();
+      });
+  });
+
+  it('Should emit selected flow\'s ID', (done) => {
+    compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(FlowsListComponent);
+        comp = fixture.componentInstance;
+        de = fixture.debugElement;
+        comp.list = getFlowsList();
+        comp.onUserSelection.subscribe((event) => {
+          expect(event).toEqual('flow_1');
+          done();
+        });
+        fixture.detectChanges();
+        const firstSelectFlowButton = de.queryAll(By.css('.flogo-list__card .flogo-button--secondary'))[0].nativeElement;
+        firstSelectFlowButton.click();
+      });
+  });
+
   function getFlowsList() {
     return [
       {
