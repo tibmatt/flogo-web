@@ -12,6 +12,8 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/skipWhile';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/withLatestFrom';
+import { MonacoEditorLoaderService } from '../monaco-editor';
+import { load as loadMonacoLangPlugin } from '../mapper-language/monaco-contribution';
 
 import { SingleEmissionSubject } from './shared/single-emission-subject';
 
@@ -19,6 +21,7 @@ import { CurrentSelection, MapperService, MapperState } from './services/mapper.
 import { EditorService } from './editor/editor.service';
 import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './tree/dragging.service';
 import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from './constants';
+
 
 @Component({
   selector: 'flogo-mapper',
@@ -31,6 +34,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() inputsSearchPlaceHolder = 'Search';
   @Input() outputsSearchPlaceHolder = 'Search';
   @Output() mappingsChange = new EventEmitter<IMapping>();
+  @Input() isSingleInputMode = false;
   currentInput: CurrentSelection = null;
   isDraggingOver = false;
   currentMappingType: number;
@@ -42,10 +46,17 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private mapperService: MapperService,
               private editorService: EditorService,
-              private draggingService: DraggingService) {
+              private draggingService: DraggingService,
+              private monacoLoaderService: MonacoEditorLoaderService) {
+    monacoLoaderService.isMonacoLoaded.subscribe(isLoaded => {
+      if (isLoaded) {
+        loadMonacoLangPlugin();
+      }
+    });
   }
 
   ngOnInit() {
+
     const state$ = this.mapperService.state
       .catch(err => {
         console.error(err);

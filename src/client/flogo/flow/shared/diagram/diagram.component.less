@@ -7,7 +7,7 @@
 @diagram-placeholder-node-height: 70px;
 @diagram-row-height: 140px;
 @diagram-node-font-size-large: 12px;
-@diagram-node-font-size: 11px;
+@diagram-node-font-size: 12px;
 @diagram-node-font-size-small: 10px;
 
 :host {
@@ -437,6 +437,10 @@
       font-size: @diagram-node-font-size;
       cursor: pointer;
       i {
+        pointer-events: none;
+        position: relative;
+        top: 1px;
+        font-size: @diagram-node-font-size + 1;
         margin-right: 3px;
       }
     }
@@ -616,9 +620,11 @@
 }
 
 .flogo-flows-detail-diagram-node-badge {
+  display: flex;
+  align-items: center;
   position: absolute;
   top: -9px;
-  right: 10px;
+  right: 8px;
   z-index: 4;
   color: #fff;
 
@@ -636,6 +642,11 @@
 
     &.flogo-flows-detail-diagram-ic-error {
       background-image: url('/assets/svg/flogo.flows.diagram.icon.error.svg');
+    }
+    &.flogo-icon-iterator {
+      background: #36bfbb;
+      font-size: 14px;
+
     }
   }
 }

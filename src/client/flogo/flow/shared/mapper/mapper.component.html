@@ -1,6 +1,6 @@
 <div class="mapper">
   <flogo-mapper-icons></flogo-mapper-icons>
-  <div class="mapper__left-panel">
+  <div *ngIf="!isSingleInputMode" class="mapper__left-panel">
     <flogo-mapper-input-list [searchPlaceholder]="inputsSearchPlaceHolder"></flogo-mapper-input-list>
   </div>
   <div class="mapper__right-panel" [class.mapper__right-panel--working-input]="currentInput">
@@ -15,17 +15,18 @@
     </div>
 
     <div class="workspace" *ngIf="currentInput" [class.workspace--bigger-editor]="isObjectLiteralMode">
-      <!--<flogo-mapper-breadcrumbs [inputNode]="currentInput?.node"></flogo-mapper-breadcrumbs>-->
+      <flogo-mapper-breadcrumbs [inputNode]="currentInput?.node"></flogo-mapper-breadcrumbs>
+
       <div *ngIf="isObjectModeAllowed">
         <flogo-mapper-mode-switcher [checked]="isObjectLiteralMode" (click)="toggleMode($event)"></flogo-mapper-mode-switcher>
       </div>
 
       <div *ngIf="currentInput.mappingKey && currentInput.node"
-           class="workspace__editor "
-           [class.workspace__editor--droppable]="isDraggingOver" (drop)="onDrop($event)"
+           class="workspace__editor-container"
+           [class.workspace__editor-container--droppable]="isDraggingOver" (drop)="onDrop($event)"
            (dragover)="onDragOver($event)"
            (dragenter)="onDragEnter()" (dragleave)="onDragLeave()">
-        <flogo-mapper-editor *loadMonacoEditor></flogo-mapper-editor>
+        <flogo-mapper-editor class="workspace__editor" *loadMonacoEditor></flogo-mapper-editor>
       </div>
 
       <!--<div *ngIf="!currentInput.mappingKey && !currentInput.node"-->

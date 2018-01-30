@@ -11,7 +11,6 @@ export interface IFlogoFlowDiagramTask {
   name ?: string;
   ref ?: string;
   description ?: string;
-  title ?: string;
   activityType?: string;
   triggerType?: string;
   attributes ?: IFlogoFlowDiagramTaskAttributes;
@@ -19,6 +18,9 @@ export interface IFlogoFlowDiagramTask {
   outputMappings ?: IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks ?: IFlogoFlowDiagramTask[ ];
   links ?: IFlogoFlowDiagramTaskLink[ ];
+  settings?: {
+    iterate?: string;
+  };
   condition?: string;
   __props?: {
     [key: string]: any;
@@ -36,7 +38,6 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   version: string;
   name: string;
   description: string;
-  title: string;
   activityType: string;
   ref: string;
   triggerType: string;
@@ -45,6 +46,9 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   outputMappings: IFlogoFlowDiagramTaskAttributeMapping[ ];
   tasks: IFlogoFlowDiagramTask[ ];
   links: IFlogoFlowDiagramTaskLink[ ];
+  settings?: {
+    iterate?: string;
+  };
   __status: {
     [key: string]: boolean;
   };
@@ -68,7 +72,6 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.version = task.version || this.version || '';
     this.name = task.name || this.name || 'new task';
     this.description = task.description || this.description || '';
-    this.title = task.title || this.title || '';
     this.activityType = task.activityType || this.activityType || '';
     this.ref = task.ref || this.ref || '';
 
@@ -80,6 +83,8 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     this.outputMappings = _.isEmpty(task.outputMappings) ?
       this.outputMappings || [] :
       _.cloneDeep(task.outputMappings);
+
+    this.settings = task.settings || {};
 
     if (!_.isEmpty(task.tasks)) {
       this.tasks = _.cloneDeep(task.tasks);
@@ -123,7 +128,7 @@ export function makeDefaultErrorTrigger(id): IFlogoFlowDiagramTask {
   const errorTrigger = new FlogoFlowDiagramTask({
     id: id,
     name: 'On Error',
-    title: 'On Error',
+    // title: 'On Error',
     type: FLOGO_TASK_TYPE.TASK_ROOT,
     triggerType: FLOGO_ERROR_ROOT_NAME,
     attributes: {

@@ -3,7 +3,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import 'rxjs/add/operator/filter';
 
 import { LanguageService } from '@flogo/core';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import {FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION} from '@flogo/core/constants';
 import {notification, objectFromArray} from '@flogo/shared/utils';
 import {RESTAPITriggersService} from '@flogo/core/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
@@ -17,12 +17,12 @@ import {
   PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
 } from '../trigger-detail/messages';
 
-import { FlowMetadata } from '@flogo/flow/task-mapper/models';
+import { FlowMetadata } from '@flogo/flow/task-configurator/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
 
-import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
 import { TriggerMapperService } from '@flogo/flow/triggers/trigger-mapper/trigger-mapper.service';
 import {IPropsToUpdateFormBuilder} from '../flow.component';
+import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
 
 export interface IFlogoTrigger {
   name: string;
@@ -34,6 +34,7 @@ export interface IFlogoTrigger {
   updatedAt: string | null;
   handlers: any[];
   appId: string;
+  handler?: any;
 }
 
 @Component({
@@ -51,21 +52,18 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   triggersList: any[] = [];
   allowMultipleTriggers = true;
   currentTrigger: any;
-  selectedTriggerID: string;
-  displayTriggerMenuPopover: boolean;
   showAddTrigger = false;
   installTriggerActivated = false;
 
   private _subscriptions: any[];
   private _ngDestroy$ = SingleEmissionSubject.create();
-  private isMapperWindowOpen = false;
+  public isMapperWindowOpen = false;
 
   constructor(private _restAPITriggersService: RESTAPITriggersService,
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _converterService: UIModelConverterService,
               private _router: Router,
               private _translate: LanguageService,
-              private _clickHandler: FlogoTriggerClickHandlerService,
               private _postService: PostService,
               private _triggerMapperService: TriggerMapperService) {
   }
@@ -80,7 +78,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         // this._router.routerState.snapshot;
         if (!/\/trigger\/[\w_-]+$/.test(navigationEvent.url)) {
           this.currentTrigger = null;
-          this.selectedTriggerID = null;
         }
       });
   }
@@ -101,19 +98,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     this._ngDestroy$.emitAndComplete();
   }
 
-  isLambda(trigger) {
-    return trigger && trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
-  }
-
-  shouldShowTriggerSelected(triggerId) {
-    /* Select a trigger either if (not restricted to one):
-    *  1. it's trigger menu is active
-    *  2. it's configuration is displayed in the trigger details (right hand side) panel
-    *  */
-    return this.selectedTriggerID === triggerId || (this.currentTrigger && this.currentTrigger.id === triggerId);
-  }
-
-  private isDeviceType() {
+  get isDeviceType() {
     return this.appDetails.appProfileType === FLOGO_PROFILE_TYPE.DEVICE;
   }
 
@@ -143,14 +128,13 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
         const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
         triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
       });
 
     this._triggerMapperService.status$
       .takeUntil(this._ngDestroy$)
       .subscribe(state => {
         this.isMapperWindowOpen = state.isOpen;
-        this.resetSelectedTriggerId();
       });
   }
 
@@ -160,7 +144,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings}).then(() => {
         const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
         existingTrigger.settings = data.settings;
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
       });
     } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
       this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
@@ -171,7 +155,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         const existingHandler = existingTrigger.handlers.find(h => h.actionId === this.actionId);
         existingHandler.settings = data.endpointSettings;
         existingHandler.outputs = data.outputs;
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
       });
 
     }
@@ -200,7 +184,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
       resultantPromise.then(() => {
         existingTrigger[data.proper] = data.content;
-        this.makeTriggersListForAction();
+        this.modifyTriggerInTriggersList(data.proper, existingTrigger);
       }).catch(() => {
         if (data.proper === 'name') {
           const message = this._translate.instant('TRIGGERS-PANEL:TRIGGER-EXISTS');
@@ -236,7 +220,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   }
 
   private manageAddTriggerInView() {
-    this.allowMultipleTriggers = !(this.isDeviceType() && this.triggersList.length > 0);
+    this.allowMultipleTriggers = !(this.isDeviceType && this.triggersList.length > 0);
   }
 
   openInstallTriggerWindow() {
@@ -284,51 +268,12 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         } else {
           this.triggers.push(trigger);
         }
-        this.makeTriggersListForAction();
+        this.addTriggerToTriggerList(trigger);
         this.manageAddTriggerInView();
     });
   }
 
-  showTriggerMenu(event, trigger) {
-    this.selectedTriggerID = trigger.id;
-    if (!this.isDeviceType()) {
-      const parentTriggerBlock: Element = event.path.find(e => _.find(e.classList, (cls) => cls === 'trigger_block'));
-      if (parentTriggerBlock) {
-        this._clickHandler.setCurrentTriggerBlock(parentTriggerBlock);
-      }
-      this.displayTriggerMenuPopover = true;
-    } else {
-      this.showTriggerDetails(trigger);
-    }
-  }
-
-  /*resetTriggerSelectState(triggerId) {
-    this.selectedTriggerID = '';
-  }*/
-
-  handleClickOutsideTriggerMenu(event) {
-    if (this._clickHandler.isClickedOutside(event.path)) {
-      this._clickHandler.resetCurrentTriggerBlock();
-      this.hideTriggerMenuPopover();
-      this.resetSelectedTriggerId();
-    }
-  }
-
-  private hideTriggerMenuPopover() {
-    this.displayTriggerMenuPopover = false;
-  }
-
-  private resetSelectedTriggerId() {
-    /* Reset the selectecTriggerID as we need to unselect the trigger if the trigger is no longer active
-    *  and the mapper window for the same trigger is now closed
-    *  */
-    if (!this.isMapperWindowOpen) {
-      this.selectedTriggerID = null;
-    }
-  }
-
-  showTriggerDetails(trigger) {
-    this.hideTriggerMenuPopover();
+  private showTriggerDetails(trigger) {
     this.currentTrigger = _.cloneDeep(trigger);
     this._router.navigate(['/flows', this.actionId, 'trigger', trigger.id])
       .then(() => this._converterService.getTriggerTask(trigger))
@@ -356,15 +301,13 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
-  openTriggerMapper(trigger: IFlogoTrigger & {handler: any}) {
-    this.hideTriggerMenuPopover();
+  private openTriggerMapper(trigger: IFlogoTrigger) {
     const handler = trigger.handler;
     this._converterService.getTriggerTask(trigger)
       .then(triggerSchema => this._triggerMapperService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
   }
 
-  deleteHandlerForTrigger(triggerId) {
-    this.hideTriggerMenuPopover();
+  private deleteHandlerForTrigger(triggerId) {
     this._restAPIHandlerService.deleteHandler(this.actionId, triggerId)
       .then(() => this._router.navigate(['/flows', this.actionId]))
       .then(() => this._restAPITriggersService.getTrigger(triggerId))
@@ -376,6 +319,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
           this.triggers = this.triggers.filter(t => t.id !== triggerId);
         }
         this.makeTriggersListForAction();
+        this.manageAddTriggerInView();
       });
   }
 
@@ -419,5 +363,43 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     const outputs = _.cloneDeep(this.currentTrigger.handler.outputs);
 
     return {settings, outputs};
+  }
+
+  handleMenuSelection(event: TriggerMenuSelectionEvent) {
+    switch (event.operation) {
+      case TRIGGER_MENU_OPERATION.CONFIGURE:
+        this.showTriggerDetails(event.trigger);
+        break;
+      case TRIGGER_MENU_OPERATION.TRIGGER_MAPPING:
+        this.openTriggerMapper(event.trigger);
+        break;
+      case TRIGGER_MENU_OPERATION.DELETE:
+        this.deleteHandlerForTrigger(event.trigger.id);
+        break;
+      default:
+        console.warn(`[TRIGGER MENU][${event.operation}] unhandled menu action.`);
+        break;
+    }
+  }
+
+  private modifyTriggerInTriggersList(property, triggerEntity: IFlogoTrigger) {
+    const itemToModify = _.find(this.triggersList, t => t.id === triggerEntity.id);
+    if (!!itemToModify) {
+      itemToModify[property] = triggerEntity[property];
+      if (property === 'handlers') {
+        itemToModify['handler'] = triggerEntity.handlers.find(a => a.actionId === this.actionId);
+      }
+    }
+  }
+
+  private addTriggerToTriggerList(triggerToAdd: IFlogoTrigger) {
+    let triggerToUpdate = this.triggersList.find(t => t.id === triggerToAdd.id);
+    if (triggerToUpdate) {
+      triggerToUpdate = triggerToAdd;
+      triggerToUpdate['handler'] = triggerToAdd.handlers.find(a => a.actionId === this.actionId);
+    } else {
+      triggerToAdd['handler'] = triggerToAdd.handlers.find(a => a.actionId === this.actionId);
+      this.triggersList.push(triggerToAdd);
+    }
   }
 }

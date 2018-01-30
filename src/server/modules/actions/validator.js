@@ -11,7 +11,7 @@ class Validator {
 }
 export { Validator };
 
-function getSchema() {
+export function getSchema() {
   return {
     $schema: 'http://json-schema.org/draft-04/schema#',
     type: 'object',
@@ -271,6 +271,9 @@ function getSchema() {
                 items: {
                   $ref: '#/definitions/Flow/definitions/attribute',
                 },
+              },
+              settings: {
+                type: 'object',
               },
               inputMappings: {
                 type: 'array',

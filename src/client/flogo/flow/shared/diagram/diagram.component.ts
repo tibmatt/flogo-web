@@ -1,6 +1,9 @@
 import * as _ from 'lodash';
 
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChange } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChange } from '@angular/core';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+
 import { LanguageService } from '@flogo/core';
 
 import { FlogoFlowDiagram, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from './models';
@@ -17,7 +20,7 @@ import { FlogoFlowDiagramNode } from './models/node.model';
     styleUrls: ['diagram.component.less'],
   }
 )
-export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChanges, OnDestroy, OnInit {
 
   @Input()
   public tasks: IFlogoFlowDiagramTaskDictionary;
@@ -33,11 +36,20 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
   private _elmRef: ElementRef;
   private _diagram: FlogoFlowDiagram;
   private _subscriptions: any[ ];
+  private _routerSubscription: Subscription;
 
-  constructor(elementRef: ElementRef, private _postService: PostService, private _translate: LanguageService) {
+  constructor(elementRef: ElementRef, private _postService: PostService, private _translate: LanguageService, private router: Router) {
     this.enabledSelectTrigger = false;
     this._elmRef = elementRef;
     this.initSub();
+  }
+
+  ngOnInit() {
+    this._routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this._diagram.fixAbsoluteSvgUrlsIfRequired();
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -177,7 +189,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
           this._postService.publish(_.assign({}, PUB_EVENTS.addBranch, { data: data }));
           break;
         case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.SELECT_TRANSFORM:
-          this._postService.publish(_.assign({}, PUB_EVENTS.selectTransform, { data: data }));
+          this._postService.publish(_.assign({}, PUB_EVENTS.selectConfigureTask, { data: data }));
           break;
         case FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE.DELETE:
           this._postService.publish(_.assign({}, PUB_EVENTS.deleteTask, { data: data }));

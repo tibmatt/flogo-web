@@ -9,10 +9,10 @@ export enum FLOGO_PROFILE_TYPE {
 
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
-  TASK,
+  TASK = 1,
+  TASK_ITERATOR = 2,
   TASK_BRANCH,
   TASK_SUB_PROC,
-  TASK_LOOP
 }
 
 export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
@@ -75,4 +75,10 @@ export const ERROR_CONSTRAINT = {
   NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
   WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
+};
+
+export const TRIGGER_MENU_OPERATION = {
+  CONFIGURE: 'configure',
+  TRIGGER_MAPPING: 'trigger-mappings',
+  DELETE: 'delete'
 };

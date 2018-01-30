@@ -7,20 +7,20 @@
   z-index: 0;
   display: flex;
   flex-direction: row;
-  /* todo: remove fixed height once parent height is set */
   height: 100%;
 }
 
 .mapper__left-panel {
-  padding: 20px;
-  flex: 1;
+  padding: 15px 20px 20px;
+  width: 30%;
+  max-width: 30%;
+  border-right: 2px solid #dedede;
 }
 
 .mapper__right-panel {
+  padding: 15px 20px 20px;
   background-color: #f4f4f4;
-  padding: 20px;
-  width: 75%;
-  max-width: 75%;
+  flex: 1;
 }
 
 .editor-container {
@@ -51,23 +51,53 @@
   flex-direction: column;
 }
 
-.workspace__editor {
-  height: 4em;
+.workspace__editor-container {
+  background-color: #fff;
+  height: 6em;
   width: 100%;
   border: 1px solid #cad3df;
   border-radius: 4px;
-  padding: 1px;
+  //padding: 1px;
   margin-bottom: 0.5em;
+  display: flex;
+  flex-direction: column;
 }
 
-.workspace__editor--disabled {
+.workspace__editor {
+  flex: 1;
+  padding: 0.7em;
+  padding-right: 0;
+}
+
+.workspace__editor-container::after {
+  background-color: #eee;
+  border-top: 1px solid #cad3df;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1.2em;
+}
+
+.workspace__editor-container--disabled {
   color: #b6b6b6;
   text-align: center;
   padding-top: 1em;
 }
 
-.workspace__editor--droppable {
+.workspace__editor-container--droppable {
   border-style: dashed;
+}
+
+.workspace--bigger-editor {
+  .workspace__editor-container {
+    height: 9.5em;
+  }
+}
+
+.workspace /deep/ {
+  #editor {
+    height: 100%;
+  }
 }
 
 .workspace__parameters {
@@ -83,16 +113,4 @@
   flex: 1;
   /* height: 100%; */
   /* overflow: auto; */
-}
-
-.workspace--bigger-editor {
-  .workspace__editor {
-    height: 9.5em;
-  }
-}
-
-.workspace /deep/ {
-  #editor {
-    height: 100%;
-  }
 }

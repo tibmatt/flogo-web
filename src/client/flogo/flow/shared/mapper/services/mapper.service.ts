@@ -14,6 +14,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/withLatestFrom';
 
+import { resolveExpressionType } from '@flogo/packages/mapping-parser';
+
 import { TreeNodeFactoryService } from './tree-node-factory.service';
 import { TreeService } from './tree.service';
 // import { ExpressionProcessorService } from './expression-processor.service';
@@ -26,7 +28,7 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
 import { IParsedExpressionDetails, IMapperContext } from '../models';
-import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from '../constants';
+import { TYPE_ATTR_ASSIGNMENT } from '../constants';
 
 export interface TreeState {
   filterTerm: string | null;
@@ -288,12 +290,11 @@ export class MapperService {
         expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
 
         // const parseResult = this.parserService.processExpression(state.currentSelection.expression,
+        const parseResult = <any>{};
         //   expectedResultType,
         //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
         // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-        node.isInvalid =
-          editingExpression.mappingType === TYPE_OBJECT_TEMPLATE && !this.isValidComplexObjectExpression(editingExpression.expression);
-        const parseResult = <any>{};
+        node.isInvalid = !resolveExpressionType(editingExpression.expression);
 
         this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, editingExpression, parseResult.structureDetails);
 
@@ -305,18 +306,6 @@ export class MapperService {
         return Object.assign({}, state);
       })
       .subscribe(this.updatesSrc);
-  }
-
-  private isValidComplexObjectExpression(expr: string) {
-    if (!expr || !expr.trim().length) {
-      return true;
-    }
-    try {
-      JSON.parse(expr);
-    } catch (e) {
-      return false;
-    }
-    return true;
   }
 
   private updateMapping(

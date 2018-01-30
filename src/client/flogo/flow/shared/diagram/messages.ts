@@ -27,9 +27,9 @@ export const PUB_EVENTS = {
     channel: 'flogo-flows-detail-diagram',
     topic: 'select-branch'
   },
-  selectTransform: {
+  selectConfigureTask: {
     channel: 'flogo-flows-detail-diagram',
-    topic: 'select-transform'
+    topic: 'select-configure'
   },
   deleteTask: {
     channel: 'flogo-flows-detail-diagram',
@@ -73,10 +73,6 @@ export const SUB_EVENTS = {
   //   channel : 'flogo-flows-detail-diagram',
   //   topic : 'public-select-branch'
   // },
-  selectTransform: {
-    channel: 'flogo-flows-detail-diagram',
-    topic: 'public-select-transform'
-  },
   deleteTask: {
     channel: 'flogo-flows-detail-diagram',
     topic: 'public-delete-task'

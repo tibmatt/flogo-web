@@ -1,0 +1,83 @@
+.modal-wrapper {
+  background-color: #fff;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  // todo: proper z-index
+  z-index: 999;
+}
+
+//// layout
+
+.content {
+  width: 85%;
+  height: 100%;
+  border: solid 1px #b6b6b6;
+  display: flex;
+  flex-direction: row;
+
+  /deep/ .content__sidebar {
+    width: 30%;
+    max-width: 30%;
+  }
+
+  /deep/ .content__main {
+    flex: 1;
+  }
+
+}
+
+/// tabs
+
+.tab-panel {
+  width: 15%;
+}
+
+.tabs {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.tabs__tab {
+  border: 1px solid transparent;
+  width: 100%;
+  height: 45px;
+  padding-left: 29px;
+  margin: 0;
+  list-style-type: none;
+  text-transform: capitalize;
+  line-height: 1.43;
+  display: flex;
+  align-items: center;
+  color: #727272;
+  cursor: pointer;
+  vertical-align: middle;
+  font-weight: bold;
+
+  &:hover {
+    color: #0081cb;
+    background: rgba(197, 202, 233, 0.2);
+    cursor: pointer;
+  }
+}
+
+.tabs__tab--selected {
+  background-color: #cad3df;
+  color: #062e79;
+}
+
+.tabs__tab--has-errors {
+  font-weight: normal;
+  color: #d0011b;
+  border-color: #d0011b;
+}
+
+.header__title {
+  background: url('/assets/svg/flogo.flows.detail.diagram.activity.icon.svg') no-repeat left center;
+  padding-left: 40px;
+  background-size: 36px 26px;
+}

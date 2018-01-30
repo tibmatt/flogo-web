@@ -215,10 +215,8 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
     if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
       inputs = _.get(this._task, 'settings', []);
       inputs = inputs.concat(_.get(this._task, 'endpoint.settings', []));
-    } else {
-      if (task.type === FLOGO_TASK_TYPE.TASK) {
-        inputs = _.get(this._task, 'attributes.inputs', []);
-      }
+    } else if (task.type === FLOGO_TASK_TYPE.TASK || task.type ===  FLOGO_TASK_TYPE.TASK_ITERATOR) {
+      inputs = _.get(this._task, 'attributes.inputs', []);
     }
 
     //  verify if all of the required fields are fulfilled.

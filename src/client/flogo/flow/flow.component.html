@@ -30,7 +30,7 @@
                                     (mouseover)="onMouseOverBackControl()"
                                     (mouseout)="onMouseOutBackControl()">{{flow.app?.name}}</span>
               <p class="flogo-flow-detail-description" [(fgContentEditable)]="flow.description"
-                 placeholder="{{ translate.instant('CANVAS:ADD-FLOW-DESCRIPTION') }}"
+                 placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
                  (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
             </div>
           </div>
@@ -91,11 +91,10 @@
           </flogo-flow-diagram>
         </div>
       </div>
-      <flogo-footer class="footer-wrapper"></flogo-footer>
     </div>
 
-    <flogo-flow-task-mapper [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-mapper>
-    <flogo-flow-task-mapper [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-mapper>
+    <flogo-flow-task-configurator [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-configurator>
+    <flogo-flow-task-configurator [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-configurator>
 
     <flogo-flow-error-panel *ngIf="hasTask">
       <flogo-flow-diagram *ngIf="errorHandler"

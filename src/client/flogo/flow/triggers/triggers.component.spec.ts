@@ -26,7 +26,7 @@ import {FlogoProfileServiceMock} from '@flogo/core/services/profile.service.mock
 import { UIModelConverterService } from '@flogo/flow/core/ui-model-converter.service';
 import { InstallerModule } from '@flogo/flow/shared/installer';
 import { TriggerMapperModule } from './trigger-mapper/trigger-mapper.module';
-import { FlogoTriggerClickHandlerService } from './shared/click-handler.service';
+import {TriggerBlockComponent} from './trigger-block';
 
 @Component({
   selector: 'flogo-container',
@@ -180,10 +180,10 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       declarations: [
         FlogoFlowTriggersPanelComponent,
         ContainerComponent,
+        TriggerBlockComponent,
         FlogoSelectTriggerComponent
       ],
       providers: [
-        FlogoTriggerClickHandlerService,
         {provide: PostService, useValue: postServiceStub },
         {provide: Router, useClass: MockRouterService},
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
