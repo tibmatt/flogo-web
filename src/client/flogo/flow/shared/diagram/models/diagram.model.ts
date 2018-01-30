@@ -67,6 +67,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   private rootElm: Selection<any>;
   private ng2StyleAttr = '';
   private nodesOfAddType: IFlogoFlowDiagramNodeDictionary;
+  private requiresSvgFix = Boolean(
+    document['documentMode'] || /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent)
+  );
 
   static isBranchNode(node: IFlogoFlowDiagramNode) {
     return _isBranchNode(node);
@@ -304,6 +307,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     this._handleUpdateRows(rows);
     this._handleExitRows(rows);
 
+    this.fixAbsoluteSvgUrlsIfRequired();
+
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.groupEnd();
 
@@ -507,6 +512,27 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     (<FlogoFlowDiagramNode>this.nodes[parentNode.id]).linkToChildren([node.id]);
 
     return Promise.resolve(this);
+  }
+
+  public fixAbsoluteSvgUrlsIfRequired() {
+    if (!this.requiresSvgFix) {
+      return;
+    }
+    const functionalUrlRegex = /url\((.*)#/;
+    const simpleHashedRegex = /(.*)#/;
+    const replaceFunctionalUrl = (inString: string) => inString.replace(functionalUrlRegex, `url(${window.location.href}#`);
+    const replaceHashedRef = (inString: string) => inString.replace(simpleHashedRegex, `${window.location.href}#`);
+    const updateAttrUrlIfNeeded = (element: Element, attrName) => {
+      if (element.hasAttribute(attrName)) {
+        const attrVal = element.getAttribute(attrName);
+        const replaceUrl =  functionalUrlRegex.test(attrVal) ? replaceFunctionalUrl : replaceHashedRef;
+        element.setAttribute(attrName, replaceUrl(attrVal));
+      }
+    };
+    Array.from(this.elm.querySelectorAll('[fill], [filter]'))
+      .forEach((element: Element) => {
+        ['fill', 'filter', 'xlink:href'].forEach(attrName => updateAttrUrlIfNeeded(element, attrName));
+      });
   }
 
   private _bindDataToRows(rows: any) {
@@ -1095,7 +1121,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   private makeTile() {
-    const urlLocation = window.location.href;
     /* tslint:disable:max-line-length */
     return `
     <svg class="${CLS.diagramNodeDetailShape}" 
@@ -1125,14 +1150,14 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         </defs>
         <g class="tile" fill="none" fill-rule="evenodd" transform="translate(11 9)">
             <g class="tile__default">
-                <use class="tile__shadow" fill="#000" filter="url(${urlLocation}#flogo-diagram-tile-shadow)" xlink:href="${urlLocation}#flogo-diagram-tile-shape"/>
-                <use class="tile__bg" fill="url(${urlLocation}#flogo-diagram-tile-bg-default)" xlink:href="${urlLocation}#flogo-diagram-tile-shape"/>
+                <use class="tile__shadow" fill="#000" filter="url(#flogo-diagram-tile-shadow)" xlink:href="#flogo-diagram-tile-shape"/>
+                <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape"/>
                 <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M123.005 55.147l-13.26-29.446-.035-.165V8a7.6 7.6 0 0 0-7.6-7.6h-94A7.6 7.6 0 0 0 .51 8v94a7.6 7.6 0 0 0 7.6 7.6h94a7.6 7.6 0 0 0 7.6-7.6V84.758l.035-.164 13.26-29.447z"/>
             </g>
     
             <g class="tile__terminal">
-                <use class="tile__shadow" fill="#000" filter="url(${urlLocation}#flogo-diagram-tile-shadow)" xlink:href="${urlLocation}#flogo-diagram-tile-shape-terminal"/>
-                <use class="tile__bg" fill="url(${urlLocation}#flogo-diagram-tile-bg-default)" xlink:href="${urlLocation}#flogo-diagram-tile-shape-terminal" />
+                <use class="tile__shadow" fill="#000" filter="url(#flogo-diagram-tile-shadow)" xlink:href="#flogo-diagram-tile-shape-terminal"/>
+                <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape-terminal" />
                 <rect class="tile__stroke" width="109.2" height="109.2" x=".51" y=".4" stroke="#F4F4F4" stroke-width=".8" rx="8"/>
             </g>
         </g>
@@ -1142,7 +1167,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   private makeErrorRootTile() {
-    const urlLocation = window.location.href;
     return `<svg class="${CLS.diagramNodeDetailShape}" xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" width="52" height="52" viewBox="0 0 52 52">
         <defs>
@@ -1155,9 +1179,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
             </filter>
         </defs>
         <g fill="none" fill-rule="evenodd" transform="translate(2 1)">
-            <use fill="#000" filter="url(${urlLocation}#flogo-diagram-error-bg)"
-              xlink:href="${urlLocation}#flogo-diagram-error-shape"/>
-            <use fill="#FBCDD1" xlink:href="${urlLocation}#flogo-diagram-error-shape"/>
+            <use fill="#000" filter="url(#flogo-diagram-error-bg)"
+              xlink:href="#flogo-diagram-error-shape"/>
+            <use fill="#FBCDD1" xlink:href="#flogo-diagram-error-shape"/>
             <path stroke="#EE3342" stroke-width=".8" d="M39.672.4H2.4a2 2 0 0 0-2 2v43.2a2 2 0 0 0 2 2h37.272L47.578 24 39.672.4z"/>
         </g>
     </svg>
