@@ -1,6 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {FlogoFlowService as FlowsService} from '@flogo/flow/core/flow.service';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'flogo-flow-flows-list',
@@ -15,8 +13,6 @@ export class FlowsListComponent {
   onUserSelection: EventEmitter<string> = new EventEmitter<string>();
 
   searchText: string;
-
-  constructor() {}
 
   get filteredFlows() {
     if (this.searchText && !_.isEmpty(this.searchText.trim())) {
