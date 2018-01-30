@@ -71,10 +71,6 @@ describe('Component: TriggerBlockComponent', () => {
   let comp: FlogoContainerComponent;
   let fixture: ComponentFixture<FlogoContainerComponent>;
 
-  function compileComponent() {
-    return TestBed.compileComponents();
-  }
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -90,57 +86,48 @@ describe('Component: TriggerBlockComponent', () => {
     });
   });
 
-  it('When initiated trigger is not selected', (done) => {
-    compileComponent()
+  beforeEach((done) => {
+    return TestBed.compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(FlogoContainerComponent);
         comp = fixture.componentInstance;
-        fixture.detectChanges();
-        expect(comp.triggerBlock.isSelected).toEqual(false);
         done();
       });
   });
 
-  it('Trigger configuration details should open when trigger is selected in case of microservices', (done) => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(FlogoContainerComponent);
-        comp = fixture.componentInstance;
-        comp.triggerBlock.handleTriggerMenuShow();
-        fixture.detectChanges();
-        expect(comp.triggerBlock.isSelected).toEqual(true);
-        done();
-      });
+  it('When initiated trigger is not selected', () => {
+    comp = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(comp.triggerBlock.isSelected).toEqual(false);
   });
 
-  it('Trigger configuration details must be shown when trigger is selected in case of device profile', (done) => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(FlogoContainerComponent);
-        comp = fixture.componentInstance;
-        comp.isDeviceType = true;
-        fixture.detectChanges();
-        comp.triggerBlock.onMenuItemSelected.subscribe((data) => {
-          expect(data.operation).toEqual('configure');
-          done();
-        });
-        comp.triggerBlock.handleTriggerSelection();
-        fixture.detectChanges();
-      });
+  describe('for microservice profiles', () => {
+    it('trigger configuration details should open when trigger is selected', () => {
+      comp.triggerBlock.handleTriggerMenuShow();
+      fixture.detectChanges();
+      expect(comp.triggerBlock.isSelected).toEqual(true);
+    });
   });
 
-  it('Trigger should be unselected once the trigger mapper is closed', (done) => {
-    compileComponent()
-      .then(() => {
-        fixture = TestBed.createComponent(FlogoContainerComponent);
-        comp = fixture.componentInstance;
-        comp.isMapperOpen = true;
-        comp.triggerBlock.selectedMenuItem('trigger-mappings');
-        fixture.detectChanges();
-        comp.isMapperOpen = false;
-        fixture.detectChanges();
-        expect(comp.triggerBlock.isSelected).toEqual(false);
+  describe('for device profiles', () => {
+    it('trigger configuration details must be shown when trigger is selected', (done) => {
+      comp.isDeviceType = true;
+      fixture.detectChanges();
+      comp.triggerBlock.onMenuItemSelected.subscribe((data) => {
+        expect(data.operation).toEqual('configure');
         done();
       });
+      comp.triggerBlock.handleTriggerSelection();
+      fixture.detectChanges();
+    });
+  });
+
+  it('Trigger should be unselected once the trigger mapper is closed', () => {
+    comp.isMapperOpen = true;
+    comp.triggerBlock.selectedMenuItem('trigger-mappings');
+    fixture.detectChanges();
+    comp.isMapperOpen = false;
+    fixture.detectChanges();
+    expect(comp.triggerBlock.isSelected).toEqual(false);
   });
 });
