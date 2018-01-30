@@ -40,12 +40,6 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
     this.nativeElement = this._eref.nativeElement;
   }
 
-  @HostListener('document:click', ['$event'])
-  onClick(event: Event) {
-    if (event.target !== this.nativeElement && !this.nativeElement.contains(event.target)) {
-      this.isShowingMenu = false;
-    }
-  }
 
   ngOnInit() {
     this._router.events
@@ -81,11 +75,17 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   handleTriggerSelection() {
-    if (this.isDevice) {
-      this.selectedMenuItem(this.MENU_OPTIONS.CONFIGURE);
-    } else {
+    this.selectedMenuItem(this.MENU_OPTIONS.CONFIGURE);
+  }
+
+  handleTriggerMenuShow() {
+    if (!this.isDevice) {
       this.isShowingMenu = true;
     }
+  }
+
+  handleTriggerMenuHide() {
+    this.isShowingMenu = false;
   }
 
   get isSelected(): boolean {
