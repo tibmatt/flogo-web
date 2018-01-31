@@ -1,14 +1,73 @@
 # Third party dependencies change log
-All notable changes to this project will be documented in this file.
+All notable changes to this project's dependencies will be documented in this file.
 
-## v0.4.2
+## v0.5.1
 
-### Client dependencies
+### Production Dependencies
 
-- Added:
+- **Added:**
+  - [chevrotain@1.0.1](https://github.com/SAP/chevrotain) ([Apache2.0](https://github.com/SAP/chevrotain/raw/master/LICENSE.txt))
+  - [cross-spawn@5.1.0](https://github.com/IndigoUnited/node-cross-spawn) ([MIT](https://github.com/IndigoUnited/node-cross-spawn/raw/master/LICENSE))
+- **Upgraded:**
+  - [koa@1.4.1](https://github.com/koajs/koa) ([MIT](https://github.com/koajs/koa/raw/master/LICENSE)) - Was 1.2.0
+  - [fs-extra@4.0.2](https://github.com/jprichardson/node-fs-extra) ([MIT](https://github.com/jprichardson/node-fs-extra/raw/master/LICENSE)) - Was 0.30.0
+  - [npm@5.5.1](https://github.com/npm/npm) ([Artistic2.0](https://github.com/npm/npm/raw/master/LICENSE)) - Was 3.8.5
+  - [performance-now@2.1.0](https://github.com/braveg1rl/performance-now) ([MIT](https://github.com/braveg1rl/performance-now/raw/master/license.txt)) -  Was 0.2.0
+  - [semver@5.4.1](https://github.com/npm/node-semver) ([ISC](https://github.com/npm/node-semver/raw/master/LICENSE)) - Was 5.2.0
+  - [socket.io@2.0.4](https://github.com/socketio/socket.io) ([MIT](https://github.com/socketio/socket.io/raw/master/LICENSE)) - Was 1.5.1
+  - [socket.io-client@2.0.4](https://github.com/socketio/socket.io) ([MIT](https://github.com/Automattic/socket.io-client/raw/master/LICENSE)) - Was 1.5.1 (client)
+  - [winston@2.4.0](https://github.com/winstonjs/winston) ([MIT](https://github.com/winstonjs/winston/raw/master/LICENSE)) - Was 2.3.0
+- **Removed:**
+  - none
+
+
+### Development Dependencies
+
+- **Added:**
+  - [babel-preset-env@1.6.1](https://github.com/babel/babel-preset-env) ([MIT](https://github.com/babel/babel-preset-env/raw/master/LICENSE))
+  - [command-exists@1.2.2](https://github.com/mathisonian/command-exists) ([MIT](https://github.com/mathisonian/command-exists/raw/master/LICENSE)))
+- **Upgraded:**
+  - [ajv@4.11.8](https://github.com/epoberezkin/ajv) ([MIT](https://github.com/epoberezkin/ajv/raw/master/LICENSE)) - Was 4.11.5
+  - [babel-core@6.26.0](https://github.com/babel/babel/tree/master/packages/babel-core)) (Was 6.10.4)
+  - [babel-cli@6.26.0](https://github.com/babel/babel/tree/master/packages/babel-cli) ([MIT](https://github.com/babel/babel/tree/master/packages/babel-cli)) - Was 6.6.5
+  - [chai@4.1.2](https://github.com/chaijs/chai) ([MIT](https://github.com/chaijs/chai/raw/master/LICENSE)) - Was 3.5.0 (client)
+  - [concurrently@3.5.1](https://github.com/kimmobrunfeldt/concurrently) ([MIT](https://github.com/kimmobrunfeldt/concurrently/raw/master/LICENSE)) - Was 2.0.0
+  - [del@3.0.0](https://github.com/sindresorhus/del) ([MIT](https://github.com/sindresorhus/del/raw/master/license)) - Was 2.2.0
+  - [gulp-babel@7.0.0](https://github.com/babel/gulp-babel) ([MIT](https://github.com/babel/gulp-babel/raw/master/license)) - Was 6.1.2
+  - [gulp-changed@3.1.1](https://github.com/sindresorhus/gulp-changed) ([MIT](https://github.com/sindresorhus/gulp-changed/raw/master/license)) - Was 1.3.0
+  - [gulp-filter@5.0.1](https://github.com/sindresorhus/gulp-filter) ([MIT](https://github.com/sindresorhus/gulp-filter/raw/master/license)) - Was 4.0.0
+  - [gulp-sourcemaps@2.6.1](https://github.com/gulp-sourcemaps/gulp-sourcemaps) ([ISC](https://github.com/gulp-sourcemaps/gulp-sourcemaps/raw/master/LICENSE.md)) - Was 1.6.0
+  - [gulp-uglify@3.0.0](https://github.com/terinjokes/gulp-uglify) ([MIT](https://github.com/terinjokes/gulp-uglify/raw/master/LICENSE.md)) - Was 1.2.0
+  - [mocha@4.0.1](https://github.com/mochajs/mocha) ([MIT](https://github.com/mochajs/mocha/raw/master/LICENSE)) - Was 3.2.0 (client)
+  - [protractor@5.2.0](https://github.com/angular/protractor) ([MIT](https://github.com/angular/protractor/raw/master/LICENSE)) - Was 4.0.2
+  - [run-sequence@2.2.0](https://github.com/OverZealous/run-sequence) ([MIT](https://github.com/OverZealous/run-sequence/raw/master/LICENSE)) - Was 1.1.5
+  - [vinyl-fs@3.0.0](https://github.com/gulpjs/vinyl-fs) ([MIT](https://github.com/gulpjs/vinyl-fs/raw/master/LICENSE)) - Was 2.4.2
+  - [webdriver-manager@12.0.6](https://github.com/angular/webdriver-manager) ([MIT](https://github.com/angular/webdriver-manager/raw/master/LICENSE)) - Was 12.0.6
+- **Removed:**
+  - [babel-preset-node6@11.0.0](https://github.com/invertase/babel-preset-node6)
+  - [babel-register@6.9.0](https://github.com/babel/babel/tree/master/packages/babel-register)
+
+## v0.5.0
+
+### Production dependencies
+
+- *Added:*
   - [monaco-editor@0.10.0](https://github.com/Microsoft/monaco-editor) (MIT) 
   - [ngx-perfect-scrollbar@2.5.2](https://github.com/zefoy/ngx-perfect-scrollbar) (MIT)
   - [primeng@2.0.6](https://github.com/primefaces/primeng) (MIT)
+- *Upgraded:*
+  - none
+- *Removed:*
+  - none
+
+### Development dependencies
+
+- Added:
+  - [karma-mocha-reporter@2.2.4](https://github.com/litixsoft/karma-mocha-reporter) (MIT)
+- Upgraded:
+  - [karma-chrome-launcher@2.2.0](https://github.com/karma-runner/karma-chrome-launcher) (MIT) (Was 2.0.0)
+- Removed:
+  - none
 
 ## v0.4.0
 
