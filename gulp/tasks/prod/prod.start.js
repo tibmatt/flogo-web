@@ -15,7 +15,7 @@ gulp.task('prod.start', 'Starts server app and db in production mode', [], () =>
   nodemon({
     // DON'T use cwd here, it will change the whole gulp process cwd
     exec: `npm --prefix="${CONFIG.paths.dist.server}" run start-prod-server`,
-    watch: CONFIG.paths.serverWatch.map(watchPath => path.join(CONFIG.paths.dist.server, watchPath))
+    ingore: CONFIG.paths.serverWatchIgnore.map(watchPath => path.posix.join(CONFIG.paths.dist.server, watchPath))
   })
   .on('start', () => {
     process.env['FLOGO_SKIP_PKG_INSTALL'] = true;

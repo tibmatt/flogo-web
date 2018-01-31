@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import get from 'lodash/get';
 import { PUBLISH_FIELDS_SHORT, PUBLISH_FIELDS_LONG } from './constants';
-import { triggersDBService } from '../../config/app-config';
+import { triggersDBService } from '../../common/db/triggers';
 
 export class TriggerManager {
 

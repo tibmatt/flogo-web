@@ -13,13 +13,11 @@ ensureDefaultDirs()
     console.log('[log] init test engine done');
     return installDefaults();
   })
-  .then(() => {
-    Promise.all([
-      apps.compact(),
-      indexer.compact(),
-      contribs.compact()
-    ]);
-  })
+  .then(() => Promise.all([
+    apps.compact(),
+    indexer.compact(),
+    contribs.compact(),
+  ]))
   .catch(error => {
     console.error(error);
     console.error(error.stack);

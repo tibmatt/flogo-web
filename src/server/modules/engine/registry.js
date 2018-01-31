@@ -66,7 +66,10 @@ export function initEngine(engine, options) {
             return Promise.all([engine.installPalette(palettePath), installDeviceContributions()]);
           })
           .catch(error => {
-            logger.error('Error initializing engine. Will try to clean up');
+            logger.error('Found error while initializing engine:');
+            logger.error(error);
+            throw error;
+            // logger.error('Error initializing engine. Will try to clean up');
             // return engine.remove().then(() => {
             //   logger.info('Successful clean');
             //   throw new Error(error);

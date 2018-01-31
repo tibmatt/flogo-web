@@ -2,7 +2,7 @@ import path from 'path';
 
 const source = 'src';
 
-const dist = process.env.DIST_BUILD ? 'dist/build' : 'dist';
+const dist = process.env.DIST_BUILD ? path.join('dist', 'build') : 'dist';
 
 const sourcePaths = {
   root: source,
@@ -12,6 +12,15 @@ const sourcePaths = {
 };
 
 export const CONFIG = {
+  babel: {
+    "presets": [
+      ["env", {
+        "targets": {
+          "node": "current"
+        }
+      }]
+    ]
+  },
   paths: {
     source: sourcePaths,
     dist: {
@@ -23,8 +32,8 @@ export const CONFIG = {
     less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
-    // directories that should be watched by running server so it restarts if something changes
-    serverWatch: ['api', 'common', 'config', 'modules', 'server.js']
+    // directories that should be ingored by running server so it won't restart if something changes
+    serverWatchIgnore: ['local/*', 'node_modules/*', '**/*.log']
   },
   host: 'localhost:3303'
 };

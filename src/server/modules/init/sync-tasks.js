@@ -1,8 +1,9 @@
-import { activitiesDBService, triggersDBService } from '../../config/app-config';
+import { activitiesDBService} from '../../common/db/activities';
 
 import { BaseRegistered } from '../base-registered';
 
 import { logger } from '../../common/logging';
+import {triggersDBService} from "../../common/db/triggers";
 
 /*
  * Server start logic

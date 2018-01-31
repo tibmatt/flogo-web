@@ -2,13 +2,13 @@ import path from 'path';
 import enableDestroy from 'server-destroy'; // eslint-disable-line import/no-extraneous-dependencies
 import chai from 'chai'; // eslint-disable-line import/no-extraneous-dependencies
 import chaiHttp from 'chai-http'; // eslint-disable-line import/no-extraneous-dependencies
+import {cleanDb} from './clean-db';
+import {expectErrorResponse} from './test-utils';
+import {triggersDBService} from "../common/db/triggers";
 
 process.env.FLOGO_WEB_DISABLE_WS = process.env.FLOGO_WEB_DISABLE_WS || true;
 process.env.FLOGO_WEB_DBDIR = process.env.FLOGO_WEB_DBDIR || path.resolve('../dist/local/test_db');
 process.env.FLOGO_WEB_LOGLEVEL = process.env.FLOGO_WEB_LOGLEVEL || 'error';
-
-import { cleanDb } from './clean-db';
-import { expectErrorResponse } from './test-utils';
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -52,7 +52,7 @@ describe('Handlers', function () {
         enableDestroy(server);
         agent = chai.request(server.listen());
 
-        const contribTriggersDb = require('../config/app-config').triggersDBService.db;
+        const contribTriggersDb = triggersDBService.db;
         return contribTriggersDb
           .removeAll()
           .then(() => contribTriggersDb.insert({ ref: 'github.com/flogo-web/my/trigger' }))

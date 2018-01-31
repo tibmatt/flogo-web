@@ -1,5 +1,6 @@
-import {runShellCMD, copyFile, changePermissions, findMostRecentFile} from '../../../common/utils';
-var path = require('path');
+import path from 'path';
+import { copyFile, changePermissions, findMostRecentFile } from '../../../common/utils';
+import { processHost, runShellCMD } from '../../../common/utils/process';
 
 /**
  * Build the engine.
@@ -8,12 +9,15 @@ var path = require('path');
  *
  * @param enginePath {string} Path to the engine dir
  * @param opts Options for engine build
- * @param opts.target where to place the generated build. Due to current limitations it will be copied to specified destination.
+ * @param opts.target where to place the generated build. Due to current limitations it will be copied to
+ *  specified destination.
  * @param opts.configDir directory that contains the configuration to incorporate into the executable
  * @param opts.optimize {boolean} Optimize for embedded flows. Default false.
  * @param opts.embedConfig {boolean} Embed application config into executable. Default false.
- * @param opts.compile.os {string} Target operating system. Default value false. Falsy value will fallback to engine host's default os.
- * @param opts.compile.arch {string} Target compilation architechture. Default value false. Falsy value will fallback to engine host's default arch.
+ * @param opts.compile.os {string} Target operating system. Default value false. Falsy value will fallback to
+ *  engine host's default os.
+ * @param opts.compile.arch {string} Target compilation architechture. Default value false.
+ *  Falsy value will fallback to engine host's default arch.
  * @param opts.copyFlogoDescriptor {boolean} If should also make a copy of the generated flogo.json
  *
  * @returns {Promise<{path: string}>} path to generated binary
@@ -50,19 +54,19 @@ export function build(enginePath, opts) {
       }
       return { path: binaryPath };
     });
-
 }
 
-//////////////////////////
+// ////////////////////////
 // Helpers
-//////////////////////////
+// ////////////////////////
 
 function _mergeOpts(opts) {
-  let defaultOpts = {
+  const defaultOpts = {
     target: undefined,
-    optimize: false, embedConfig: false,
+    optimize: false,
+    embedConfig: false,
     configDir: undefined,
-    compile: {os: false, arch: false}
+    compile: { os: false, arch: false },
   };
   return Object.assign({}, defaultOpts, opts);
 }
@@ -73,8 +77,8 @@ function _getCommandArgs(opts) {
     opts.embedConfig ? '-e' : '',
   ];
 
-  if(opts.embedConfig && opts.configDir) {
-    args.push('-c', opts.configDir)
+  if (opts.embedConfig && opts.configDir) {
+    args.push('-c', opts.configDir);
   }
 
   // clean args
@@ -84,15 +88,15 @@ function _getCommandArgs(opts) {
 }
 
 function _getEnv(opts) {
-  let env = {};
+  const env = {};
 
   if (opts.compile) {
     if (opts.compile.os) {
-      env['GOOS'] = opts.compile.os;
+      env.GOOS = opts.compile.os;
     }
 
     if (opts.compile.arch) {
-      env['GOARCH'] = opts.compile.arch
+      env.GOARCH = opts.compile.arch;
     }
   }
 
@@ -107,43 +111,44 @@ function _copyBinaryToTarget(binaryPath, targetDir) {
   const execPermissions = 0o755;
   return copyFile(from, to)
     .then(() => changePermissions(to, execPermissions))
-    .then(() => ({path: to}));
-
+    .then(() => ({ path: to }));
 }
 
 function _getGeneratedBinaryPath(enginePath, compileOptions) {
-  let enginePathInfo = path.parse(enginePath);
-  let binDirPath = path.join(enginePath, 'bin');
-  let executableFilePattern = _determineBuildExecutableNamePattern(enginePathInfo.name, compileOptions );
-  console.log( `[log] execName: ${executableFilePattern.namePattern}` );
+  const enginePathInfo = path.parse(enginePath);
+  const binDirPath = path.join(enginePath, 'bin');
+  const executableFilePattern = _determineBuildExecutableNamePattern(enginePathInfo.name, compileOptions);
+  console.log(`[log] execName: ${executableFilePattern.namePattern}`);
 
-  // if no compile options provided or both options provided we can skip the search for generated binary since we have the exact name
-  if ( executableFilePattern.isDefaultCompile ) {
-    console.log( '[debug] Default compile, grab file directly' );
+  // if no compile options provided or both options provided we can skip the search for
+  // generated binary since we have the exact name
+  if (executableFilePattern.isDefaultCompile) {
+    console.log('[debug] Default compile, grab file directly');
     return Promise.resolve(path.resolve(binDirPath, executableFilePattern.namePattern));
-  } else {
-    console.log( '[debug] Find file' );
-    return findMostRecentFile(binDirPath, new RegExp( executableFilePattern.namePattern ))
-      .then( binaryPath => {
-        console.log( '[log] Found: ' + JSON.stringify( binaryPath ) );
-        return binaryPath ;
-      } );
   }
+  console.log('[debug] Find file');
+  return findMostRecentFile(binDirPath, new RegExp(executableFilePattern.namePattern))
+      .then(binaryPath => {
+        console.log(`[log] Found: ${JSON.stringify(binaryPath)}`);
+        return binaryPath;
+      });
 }
 
 function _determineBuildExecutableNamePattern(name, compileOptions) {
   let namePattern = name;
-  let isDefaultCompile = !(compileOptions.os || compileOptions.arch);
+  const isDefaultCompile = !(compileOptions.os || compileOptions.arch);
 
-  if(compileOptions.os && compileOptions.arch) {
+  if (compileOptions.os && compileOptions.arch) {
     namePattern = `${namePattern}-${compileOptions.os}-${compileOptions.arch}`;
   } else if (compileOptions.os) {
     namePattern = `${namePattern}-${compileOptions.os}`;
   } else if (compileOptions.arch) {
     namePattern = `${namePattern}-.*-${compileOptions.arch}`;
+  } else if (isDefaultCompile && processHost.isWindows()) {
+    namePattern = `${namePattern}.exe`;
   }
   return {
     isDefaultCompile,
-    namePattern
+    namePattern,
   };
 }
