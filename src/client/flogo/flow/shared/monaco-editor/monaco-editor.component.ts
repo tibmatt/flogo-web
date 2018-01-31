@@ -185,13 +185,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
       return;
     }
 
-    const currentModel = this.editor.getModel();
-    if (currentModel) {
-      currentModel.dispose();
-    }
-
+    const oldModel = this.editor.getModel();
     const newModel = monaco.editor.createModel(value, mode);
     this.editor.setModel(newModel);
+    if (oldModel) {
+      oldModel.dispose();
+    }
   }
 
   hasErrors() {
@@ -226,7 +225,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this._disposed) {
       return;
     }
-    this.initMonaco();
+    this.ngZone.runOutsideAngular(() => {
+      this.initMonaco();
+    });
     // Wait until monaco editor is available
     // this._monacoLoader.load()
     //   .then(() => {
@@ -292,17 +293,27 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
     this.registerHoverProvider();
     this.registerCompletionProvider();
     this.editor = monaco.editor.create(this.editorRef.nativeElement, editorOptions);
+
     // monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
-    this.editor.onDidChangeModelContent(() => this.onDidChangeContent());
-    this.editor.onDidChangeCursorPosition(event => this.onDidChangeCursorPosition(event));
-    this.editor.onDidChangeCursorSelection(event => this.onDidChangeCursorSelection(event));
+    this.editor.onDidChangeModelContent(() => this.ngZone.run(() => {
+      this.onDidChangeContent();
+    }));
+    this.editor.onDidChangeCursorPosition(event => {
+      this.ngZone.run(() => this.onDidChangeCursorPosition(event));
+    });
+    this.editor.onDidChangeCursorSelection(event => {
+      this.ngZone.run(() => this.onDidChangeCursorSelection(event));
+    });
 
     const didScrollChangeDisposable = this.editor.onDidScrollChange((event) => {
-      this.ngZone.run(() => {
-        this.isEditorLoading = false;
-        didScrollChangeDisposable.dispose();
-        this.ready.next(true);
-      });
+      didScrollChangeDisposable.dispose();
+      // allow monaco event handlers to execute
+      setTimeout(() => {
+        this.ngZone.run(() => {
+          this.isEditorLoading = false;
+          this.ready.next(true);
+        });
+      }, 0);
     });
   }
 
