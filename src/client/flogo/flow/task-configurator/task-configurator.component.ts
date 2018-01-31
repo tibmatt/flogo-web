@@ -116,14 +116,14 @@ export class TaskConfiguratorComponent implements OnDestroy {
     return this.tabs.areDirty();
   }
 
-  saveTransform() {
+  save() {
     const isIterable = this.iteratorModeOn && !_.isEmpty(this.iterableValue);
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTask, {
       data: <SaveTaskConfigEventData>{
         tile: this.currentTile,
         iterator: {
           isIterable,
-          iterableValue: isIterable ? this.iterableValue : undefined,
+          iterableValue: isIterable ? MapperTranslator.parseExpression(this.iterableValue).value : undefined,
         },
         inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings),
         handlerId: this.flowId
@@ -196,7 +196,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.createInputMapperConfig(eventData);
 
     this.iteratorModeOn = eventData.iterator.isIterable;
-    this.iterableValue = eventData.iterator.iterableValue;
+    this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue);
     this.initialIteratorData = {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,

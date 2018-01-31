@@ -100,15 +100,20 @@ export class MapperTranslator {
     inputMappings = inputMappings || [];
     return inputMappings.reduce((mappings, input) => {
       let value = this.upgradeLegacyMappingIfNeeded(input.value);
-      if (input.type === MAPPING_TYPE.LITERAL_ASSIGNMENT && _.isString(value)) {
-        value = `"${value}"`;
-      } else if (!_.isString(value)) {
-        // complex_object case
-        value = JSON.stringify(value, null, 2);
-      }
+      value = this.rawExpressionToString(value, input.type);
       mappings[input.mapTo] = {expression: value, mappingType: input.type};
       return mappings;
     }, {});
+  }
+
+  static rawExpressionToString(rawExpression: any, inputType?: number) {
+    let value = rawExpression;
+    if (inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT && _.isString(rawExpression)) {
+      value = `"${value}"`;
+    } else if (!_.isString(value)) {
+      value = JSON.stringify(value, null, 2);
+    }
+    return value;
   }
 
   static translateMappingsOut(mappings: { [attr: string]: { expression: string, mappingType?: number } }): FlowMapping[] {
@@ -117,17 +122,22 @@ export class MapperTranslator {
       .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
       .map(attrName => {
         const mapping = mappings[attrName];
-        let value = mapping.expression;
-        const mappingType = mappingTypeFromExpression(value);
-        if (mappingType === MAPPING_TYPE.OBJECT_TEMPLATE || mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
-          value = JSON.parse(value);
-        }
+        const { value, mappingType } = this.parseExpression(mapping.expression);
         return {
           mapTo: attrName,
           type: mappingType,
           value
         };
       });
+  }
+
+  static parseExpression(expression: string) {
+    const mappingType = mappingTypeFromExpression(expression);
+    let value = expression;
+    if (mappingType === MAPPING_TYPE.OBJECT_TEMPLATE || mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
+      value = JSON.parse(value);
+    }
+    return { mappingType, value };
   }
 
   static getRootType(tile: FlowTile | FlowMetadata) {

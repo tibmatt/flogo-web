@@ -10,7 +10,7 @@
         <button class="flogo-button--primary  actions__action actions__action--save"
                 [class.disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
                 [disabled]="!this.tabs.areDirty() || !this.tabs.areValid()"
-                (click)="saveTransform()">{{ 'TASK-CONFIGURATOR:SAVE' | translate }}
+                (click)="save()">{{ 'TASK-CONFIGURATOR:SAVE' | translate }}
         </button>
       </div>
       <button class="mapper-modal__close" (click)="cancel()">
