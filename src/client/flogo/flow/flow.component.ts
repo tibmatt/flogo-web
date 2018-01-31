@@ -85,7 +85,7 @@ interface TaskContext {
   isTrigger: boolean;
   isBranch: boolean;
   isTask: boolean;
-  isIterator: boolean;
+  flowRunDisabled: boolean;
   hasProcess: boolean;
   isDiagramEdited: boolean;
   app: any;
@@ -236,7 +236,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private refreshCurrentTileContextIfNeeded() {
     const taskInfo = this.getCurrentTaskInfoFromRoute();
-    if (taskInfo) {
+    if (!taskInfo) {
       return;
     }
     const { taskId, diagramId } = taskInfo;
@@ -421,7 +421,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTrigger: taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_ITERATOR,
-      isIterator: taskType === FLOGO_TASK_TYPE.TASK_ITERATOR,
+      flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
       hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
       app: null,
@@ -1736,11 +1736,12 @@ export class FlowComponent implements OnInit, OnDestroy {
       delete tile.settings.iterate;
     }
 
+    this.determineRunnableEnabled();
+    // context potentially changed
+    this.refreshCurrentTileContextIfNeeded();
     this._updateFlow(this.flow).then(() => {
       this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
     });
-    // context potentially changed
-    this.refreshCurrentTileContextIfNeeded();
   }
 
   private getAllPaths(nodes: any) {

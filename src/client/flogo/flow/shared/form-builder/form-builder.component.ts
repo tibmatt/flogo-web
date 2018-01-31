@@ -305,7 +305,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       return true;
     }
 
-    if (this._context.isDiagramEdited || this._context.isIterator) {
+    if (this._context.isDiagramEdited || this._context.flowRunDisabled) {
       return false;
     }
 
