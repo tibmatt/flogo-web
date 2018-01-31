@@ -30,7 +30,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
 
   private isShowingDetails = false;
   private isShowingMapper = false;
-  private isShowingMenu = false;
+  public isShowingMenu = false;
   private nativeElement: any;
   private _ngDestroy$ = SingleEmissionSubject.create();
   private urlCheckRegEx: RegExp;
