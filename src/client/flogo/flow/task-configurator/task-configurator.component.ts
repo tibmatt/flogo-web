@@ -123,7 +123,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
         tile: this.currentTile,
         iterator: {
           isIterable,
-          iterableValue: isIterable ? MapperTranslator.parseExpression(this.iterableValue).value : undefined,
+          iterableValue: isIterable ? this.iterableValue : undefined,
         },
         inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings),
         handlerId: this.flowId
@@ -196,7 +196,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.createInputMapperConfig(eventData);
 
     this.iteratorModeOn = eventData.iterator.isIterable;
-    this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue);
+    this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
     this.initialIteratorData = {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,
@@ -225,7 +225,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
       mappings = this.currentTile.inputMappings;
     }
 
-    this.currentMappings = null;
+    this.currentMappings = MapperTranslator.translateMappingsIn(mappings);
     this.inputMappingsConfig = {
       inputScope: this.inputScope,
       propsToMap,
