@@ -260,7 +260,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       return null;
     }
     const [taskSegment, taskIdSegment] = childRoute.url;
-    if (!taskSegment && taskSegment.path !== 'task') {
+    if (!taskSegment || taskSegment.path !== 'task') {
       return null;
     }
     const taskId = taskIdSegment.path;
