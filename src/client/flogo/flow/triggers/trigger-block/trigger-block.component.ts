@@ -30,7 +30,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
 
   private isShowingDetails = false;
   private isShowingMapper = false;
-  private isShowingMenu = false;
+  public isShowingMenu = false;
   private nativeElement: any;
   private _ngDestroy$ = SingleEmissionSubject.create();
   private urlCheckRegEx: RegExp;
@@ -40,12 +40,6 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
     this.nativeElement = this._eref.nativeElement;
   }
 
-  @HostListener('document:click', ['$event'])
-  onClick(event: Event) {
-    if (event.target !== this.nativeElement && !this.nativeElement.contains(event.target)) {
-      this.isShowingMenu = false;
-    }
-  }
 
   ngOnInit() {
     this._router.events
@@ -72,20 +66,24 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
     this._ngDestroy$.emitAndComplete();
   }
 
-  get isMenuOpen(): boolean {
-    return this.isShowingMenu;
-  }
 
   get isLambda(): boolean {
     return this.trigger && this.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
   }
 
   handleTriggerSelection() {
-    if (this.isDevice) {
-      this.selectedMenuItem(this.MENU_OPTIONS.CONFIGURE);
-    } else {
+    this.isShowingDetails = true;
+    this.onMenuItemSelected.emit({operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS, trigger: this.trigger});
+  }
+
+  handleTriggerMenuShow() {
+    if (!this.isDevice) {
       this.isShowingMenu = true;
     }
+  }
+
+  handleTriggerMenuHide() {
+    this.isShowingMenu = false;
   }
 
   get isSelected(): boolean {
@@ -99,17 +97,10 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   selectedMenuItem(item: string) {
-    this.isShowingMenu = false;
-    switch (item) {
-      case TRIGGER_MENU_OPERATION.CONFIGURE:
-        this.isShowingDetails = true;
-        break;
-      case TRIGGER_MENU_OPERATION.TRIGGER_MAPPING:
-        this.isShowingMapper = true;
-        break;
-      default:
-        break;
+    if (item === TRIGGER_MENU_OPERATION.CONFIGURE) {
+      this.isShowingMapper = true;
     }
+    this.isShowingMenu = false;
     this.onMenuItemSelected.emit({operation: item, trigger: this.trigger});
   }
 }

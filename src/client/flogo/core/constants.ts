@@ -78,7 +78,7 @@ export const ERROR_CONSTRAINT = {
 };
 
 export const TRIGGER_MENU_OPERATION = {
+  SHOW_SETTINGS: 'show-settings',
   CONFIGURE: 'configure',
-  TRIGGER_MAPPING: 'trigger-mappings',
   DELETE: 'delete'
 };

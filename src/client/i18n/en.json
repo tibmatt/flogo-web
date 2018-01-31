@@ -67,7 +67,6 @@
   "CANVAS:WARNING-UNSUPPORTED-TEST-RUN": "Running flows with iterator activities is not supported yet.",
   "CANVAS:X86-LINUX": "x86/Linux",
   "TRIGGER-MENU:CONFIGURE": "Configure",
-  "TRIGGER-MENU:MAP-TO-FLOW-PARAMS": "Map flow params",
   "TRIGGER-MENU:DELETE": "Delete",
   "CATEGORY-SELECTOR:CATEGORY": "CATEGORY",
   "DETAILS:ADD-DESCRIPTION": "Add description",
