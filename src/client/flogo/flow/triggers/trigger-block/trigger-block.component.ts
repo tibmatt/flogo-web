@@ -26,13 +26,13 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   @Output()
   onMenuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<TriggerMenuSelectionEvent>();
 
+  isShowingMenu = false;
   MENU_OPTIONS: typeof TRIGGER_MENU_OPERATION = TRIGGER_MENU_OPERATION;
 
   private isShowingDetails = false;
   private isShowingMapper = false;
-  public isShowingMenu = false;
   private nativeElement: any;
-  private _ngDestroy$ = SingleEmissionSubject.create();
+  private ngDestroy$ = SingleEmissionSubject.create();
   private urlCheckRegEx: RegExp;
 
   constructor(private _eref: ElementRef,
@@ -44,7 +44,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this._router.events
       .filter(event => event instanceof NavigationEnd)
-      .takeUntil(this._ngDestroy$)
+      .takeUntil(this.ngDestroy$)
       .subscribe((navigationEvent: NavigationEnd) => {
         // after upgrading to v4 using the router snapshot might be a better idea like this:
         // this._router.routerState.snapshot;
@@ -63,7 +63,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._ngDestroy$.emitAndComplete();
+    this.ngDestroy$.emitAndComplete();
   }
 
 
