@@ -225,6 +225,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
       mappings = this.currentTile.inputMappings;
     }
 
+    this.currentMappings = null;
     this.inputMappingsConfig = {
       inputScope: this.inputScope,
       propsToMap,
