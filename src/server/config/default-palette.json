@@ -54,10 +54,6 @@
         },
         {
             "type": "activity",
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/gpio"
-        },
-        {
-            "type": "activity",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log"
         },
         {
