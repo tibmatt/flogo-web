@@ -66,16 +66,14 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
     this._ngDestroy$.emitAndComplete();
   }
 
-  get isMenuOpen(): boolean {
-    return this.isShowingMenu;
-  }
 
   get isLambda(): boolean {
     return this.trigger && this.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
   }
 
   handleTriggerSelection() {
-    this.selectedMenuItem(this.MENU_OPTIONS.CONFIGURE);
+    this.isShowingDetails = true;
+    this.onMenuItemSelected.emit({operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS, trigger: this.trigger});
   }
 
   handleTriggerMenuShow() {
@@ -99,17 +97,10 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   selectedMenuItem(item: string) {
-    this.isShowingMenu = false;
-    switch (item) {
-      case TRIGGER_MENU_OPERATION.CONFIGURE:
-        this.isShowingDetails = true;
-        break;
-      case TRIGGER_MENU_OPERATION.TRIGGER_MAPPING:
-        this.isShowingMapper = true;
-        break;
-      default:
-        break;
+    if (item === TRIGGER_MENU_OPERATION.CONFIGURE) {
+      this.isShowingMapper = true;
     }
+    this.isShowingMenu = false;
     this.onMenuItemSelected.emit({operation: item, trigger: this.trigger});
   }
 }

@@ -102,29 +102,28 @@ describe('Component: TriggerBlockComponent', () => {
   });
 
   describe('for microservice profiles', () => {
-    it('trigger configuration details should open when trigger is selected', () => {
+    it('trigger menu should open when hovered on trigger and it should be selected', () => {
+      comp.isDeviceType = false;
       comp.triggerBlock.handleTriggerMenuShow();
       fixture.detectChanges();
       expect(comp.triggerBlock.isSelected).toEqual(true);
     });
   });
 
-  describe('for device profiles', () => {
     it('trigger configuration details must be shown when trigger is selected', (done) => {
       comp.isDeviceType = true;
       fixture.detectChanges();
       comp.triggerBlock.onMenuItemSelected.subscribe((data) => {
-        expect(data.operation).toEqual('configure');
+        expect(data.operation).toEqual('show-settings');
         done();
       });
       comp.triggerBlock.handleTriggerSelection();
       fixture.detectChanges();
     });
-  });
 
   it('Trigger should be unselected once the trigger mapper is closed', () => {
     comp.isMapperOpen = true;
-    comp.triggerBlock.selectedMenuItem('trigger-mappings');
+    comp.triggerBlock.selectedMenuItem('configure');
     fixture.detectChanges();
     comp.isMapperOpen = false;
     fixture.detectChanges();
