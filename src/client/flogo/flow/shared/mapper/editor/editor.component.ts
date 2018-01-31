@@ -29,8 +29,22 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.editorService.context$
+    const editorContext$ = this.editorService.context$
       .distinctUntilChanged()
+      .takeUntil(this.ngDestroy);
+
+    editorContext$
+      .switchMap(() => this.editor.valueChange
+        .debounceTime(300)
+        .distinctUntilChanged()
+      )
+      .takeUntil(this.ngDestroy)
+      .subscribe((value: string) => {
+        this.editorService.outputExpression(value);
+      });
+
+    this.editor.ready
+      .switchMap(() => editorContext$)
       .takeUntil(this.ngDestroy)
       .subscribe((context: EditorContext) => {
         if (context) {
@@ -65,17 +79,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       .takeUntil(this.ngDestroy)
       .subscribe(errors => {
         this.editor.setErrors(errors);
-      });
-
-    this.editor.valueChange
-      .debounceTime(300)
-      .distinctUntilChanged()
-      .takeUntil(this.ngDestroy)
-      .subscribe(value => {
-        if (value) {
-          const parseresult = parse(value);
-        }
-        this.editorService.outputExpression(value);
       });
   }
 

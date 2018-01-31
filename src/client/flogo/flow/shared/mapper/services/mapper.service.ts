@@ -294,7 +294,8 @@ export class MapperService {
         //   expectedResultType,
         //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
         // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-        node.isInvalid = !resolveExpressionType(editingExpression.expression);
+        const expression = editingExpression.expression;
+        node.isInvalid = expression && expression.trim() && !resolveExpressionType(expression);
 
         this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, editingExpression, parseResult.structureDetails);
 
@@ -374,8 +375,7 @@ export class MapperService {
         // outputSchemas = this.nodeFactory.applyArrayFilterToJsonSchema(outputSchemas, mappedOutputArrays);
         lastMappedParent = <ArrayMappingInfo> [...mappedOutputArrays].reverse().find(p => isMappedParent(p));
       }
-      const submappings = this.getSubMappings(arrayParentsOfSelectedNode.concat(selectedNode), mappings);
-      mappings = submappings;
+      mappings = this.getSubMappings(arrayParentsOfSelectedNode.concat(selectedNode), mappings);
     }
 
     const tree = this.nodeFactory.fromJsonSchema(outputSchemas,
