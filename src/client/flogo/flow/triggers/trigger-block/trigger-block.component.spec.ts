@@ -106,11 +106,24 @@ describe('Component: TriggerBlockComponent', () => {
       comp.isDeviceType = false;
       comp.triggerBlock.handleTriggerMenuShow();
       fixture.detectChanges();
+      expect(comp.triggerBlock.isShowingMenu).toEqual(true);
       expect(comp.triggerBlock.isSelected).toEqual(true);
+    });
+
+    it('trigger settings must be shown when trigger is selected', (done) => {
+      comp.isDeviceType = false;
+      fixture.detectChanges();
+      comp.triggerBlock.onMenuItemSelected.subscribe((data) => {
+        expect(data.operation).toEqual('show-settings');
+        done();
+      });
+      comp.triggerBlock.handleTriggerSelection();
+      fixture.detectChanges();
     });
   });
 
-    it('trigger configuration details must be shown when trigger is selected', (done) => {
+  describe('for device profiles', () => {
+    it('trigger settings must be shown when trigger is selected', (done) => {
       comp.isDeviceType = true;
       fixture.detectChanges();
       comp.triggerBlock.onMenuItemSelected.subscribe((data) => {
@@ -120,6 +133,7 @@ describe('Component: TriggerBlockComponent', () => {
       comp.triggerBlock.handleTriggerSelection();
       fixture.detectChanges();
     });
+  });
 
   it('Trigger should be unselected once the trigger mapper is closed', () => {
     comp.isMapperOpen = true;
