@@ -85,12 +85,16 @@ interface TaskContext {
   isTrigger: boolean;
   isBranch: boolean;
   isTask: boolean;
+  flowRunDisabled: boolean;
   hasProcess: boolean;
   isDiagramEdited: boolean;
   app: any;
   currentTrigger: any;
   profileType: FLOGO_PROFILE_TYPE;
 }
+
+const FLOW_HANDLER_TYPE_ROOT = 'root';
+const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
 
 @Component({
   selector: 'flogo-flow',
@@ -106,6 +110,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
   public triggersList: IFlogoTrigger[];
+  public runnableInfo: {
+    disabled: boolean;
+    disableReason?: string;
+  };
 
   private runState = {
     // data
@@ -161,10 +169,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       .then(() => {
         this.initSubscribe();
       });
-  }
-
-  get disableRunFlow() {
-    return _.isEmpty(this.mainHandler && this.mainHandler.tasks);
   }
 
   private initSubscribe() {
@@ -230,6 +234,47 @@ export class FlowComponent implements OnInit, OnDestroy {
       });
   }
 
+  private refreshCurrentTileContextIfNeeded() {
+    const taskInfo = this.getCurrentTaskInfoFromRoute();
+    if (!taskInfo) {
+      return;
+    }
+    const { taskId, diagramId } = taskInfo;
+    const context = this._getCurrentTaskContext(taskId, diagramId);
+    this._postService.publish(Object.assign(
+      {},
+      FLOGO_SELECT_TASKS_PUB_EVENTS.taskContextUpdated,
+      { data: { taskId, context } }
+      ));
+  }
+
+  private getCurrentTaskInfoFromRoute() {
+    const rootSnapshot = this._router.routerState.snapshot.root;
+    const thisRoute = rootSnapshot.firstChild;
+    if (!thisRoute && thisRoute.url[0].path !== 'flows') {
+      // not on this route
+      return null;
+    }
+    const childRoute = thisRoute.firstChild;
+    if (!childRoute) {
+      return null;
+    }
+    const [taskSegment, taskIdSegment] = childRoute.url;
+    if (!taskSegment && taskSegment.path !== 'task') {
+      return null;
+    }
+    const taskId = taskIdSegment.path;
+    let diagramId;
+    if (this.handlers[FLOW_HANDLER_TYPE_ROOT].tasks[taskId]) {
+      diagramId = FLOW_HANDLER_TYPE_ROOT;
+    } else if (this.handlers[FLOW_HANDLER_TYPE_ERROR].tasks[taskId]) {
+      diagramId = FLOW_HANDLER_TYPE_ERROR;
+    } else {
+      return null;
+    }
+    return { diagramId, taskId };
+  }
+
   public _updateFlow(flow: any) {
     this._isCurrentProcessDirty = true;
 
@@ -250,6 +295,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       cleanPaths(flow.errorHandler.paths);
     }
 
+    this.determineRunnableEnabled();
     return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
       if (_.isEmpty(flow.items)) {
         this.hasTask = false;
@@ -266,8 +312,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.loading = true;
     return this._flowService.getFlow(flowId)
       .then((res: any) => {
-        const FLOW_HANDLER_TYPE_ROOT = 'root';
-        const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
         this.flow = res.flow;
         this.flowName = this.flow.name;
         this.handlers = {
@@ -284,6 +328,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         this.triggersList = res.triggers;
 
         this.clearAllHandlersRunStatus();
+        this.determineRunnableEnabled();
         this.loading = false;
         this.profileService.initializeProfile(this.flow.app);
         this.profileType = this.profileService.currentApplicationProfile;
@@ -376,6 +421,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTrigger: taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_ITERATOR,
+      flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
       hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
       app: null,
@@ -1407,6 +1453,23 @@ export class FlowComponent implements OnInit, OnDestroy {
       .value();
   }
 
+  private determineRunnableEnabled() {
+    this.runnableInfo = {
+      disabled: _.isEmpty(this.mainHandler && this.mainHandler.tasks),
+      disableReason: null
+    };
+    if (this.runnableInfo.disabled) {
+      return;
+    }
+    const allTasks = this._getAllTasks();
+    const iteratorTasks = Object.keys(allTasks)
+      .filter(taskId => allTasks[taskId].type === FLOGO_TASK_TYPE.TASK_ITERATOR);
+    if (iteratorTasks.length > 0) {
+      this.runnableInfo.disabled = true;
+      this.runnableInfo.disableReason = this.translate.instant('CANVAS:WARNING-UNSUPPORTED-TEST-RUN');
+    }
+  }
+
   private handleRunError(error) {
     console.error(error);
     // todo: more specific error message?
@@ -1673,10 +1736,12 @@ export class FlowComponent implements OnInit, OnDestroy {
       delete tile.settings.iterate;
     }
 
+    this.determineRunnableEnabled();
+    // context potentially changed
+    this.refreshCurrentTileContextIfNeeded();
     this._updateFlow(this.flow).then(() => {
       this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
     });
-
   }
 
   private getAllPaths(nodes: any) {

@@ -1,9 +1,16 @@
 <div class="run-flow__container" (fgClickOutside)="setRunFlowFlag(false)">
-  <button (click)="handleRunFlowClick()" class="flogo-button flogo-button--default run-flow__button"
-          [disabled]="disableRun"
-          [class.--disabled]="disableRun">
-    {{'FLOW-RUN:RUN-BUTTON' | translate }}
-  </button>
+  <div class="warning-container" [class.--show-disable-detail]="disableRun && disableReason">
+    <button (click)="handleRunFlowClick()" class="flogo-button flogo-button--default run-flow__button"
+            [disabled]="disableRun"
+            [class.--disabled]="disableRun">
+      {{'FLOW-RUN:RUN-BUTTON' | translate }}
+      <span class="flogo-icon-info-outline warning-badge"></span>
+    </button>
+    <div class="tooltip bottom">
+      <div class="tooltip-arrow"></div>
+      <div class="tooltip-inner">{{ disableReason }}</div>
+    </div>
+  </div>
   <div class="main" *ngIf=showRunFlow>
     <div class="tip"></div>
     <div class="content">

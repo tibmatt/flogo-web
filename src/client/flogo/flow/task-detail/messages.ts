@@ -20,5 +20,9 @@ export const SUB_EVENTS = {
   updateTriggerTask : {
     channel : 'flogo-flows-detail-tasks',
     topic : 'update-trigger'
+  },
+  taskContextUpdated: {
+    channel : 'flogo-flows-detail-tasks',
+    topic : 'task-context-updated'
   }
 };

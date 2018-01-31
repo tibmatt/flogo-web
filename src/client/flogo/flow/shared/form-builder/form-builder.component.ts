@@ -256,11 +256,11 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
 
     this._canRunFromThisTile = this._getCanRunFromThisTile();
 
-    const refresTaskWarnings = () => {
-
+    const refreshTaskWarnings = () => {
+      // TODO: WHY IS THIS NEEDED???
       setTimeout(() => {
         this._setTaskWarnings();
-      }, 1000);
+      }, 100);
 
     };
 
@@ -278,7 +278,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
 
       this._attributesOriginal = _.cloneDeep(attributes);
       this._setTriggerEnvironment(attributes);
-      refresTaskWarnings();
+      refreshTaskWarnings();
       return;
     }
 
@@ -287,7 +287,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       this._attributesOriginal = _.cloneDeep(attributes);
       this._setTaskEnvironment(attributes);
 
-      refresTaskWarnings();
+      refreshTaskWarnings();
       return;
     }
 
@@ -305,7 +305,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       return true;
     }
 
-    if (this._context.isDiagramEdited) {
+    if (this._context.isDiagramEdited || this._context.flowRunDisabled) {
       return false;
     }
 
