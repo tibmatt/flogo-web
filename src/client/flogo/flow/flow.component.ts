@@ -312,6 +312,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const FLOW_HANDLER_TYPE_ROOT = 'root';
     const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
     this.flow = flowData.flow;
+    this.flowId = this._flowService.currentFlowDetails.id;
     this.flowName = this.flow.name;
     this.handlers = {
       [FLOW_HANDLER_TYPE_ROOT]: flowData.root,

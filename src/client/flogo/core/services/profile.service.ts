@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FLOGO_PROFILE_TYPE } from '../constants';
 import { RESTAPITriggersService } from './restapi/triggers-api.service';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
-import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask} from '../../shared/utils';
+import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask, getProfileType} from '../../shared/utils';
 import { RESTAPIActivitiesService } from './restapi/activities-api.service';
 import { AbstractTaskIdGenerator } from './profiles/profiles.utils.service';
 import { FlogoDeviceTaskIdGeneratorService } from './profiles/devices/utils.service';
@@ -21,7 +21,7 @@ export class FlogoProfileService {
   }
 
   initializeProfile(app) {
-    this.currentApplicationProfile = this.getProfileType(app);
+    this.currentApplicationProfile = getProfileType(app);
     if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.DEVICE) {
       this.utils = new FlogoDeviceTaskIdGeneratorService();
     } else if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {

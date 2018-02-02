@@ -6,6 +6,7 @@ import { IFlogoFlowDiagramTaskDictionary } from '../shared/diagram/models/dictio
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '../../core/services/flows.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
+import {FlogoFlowDetails} from '@flogo/flow/core/models/flow-details.model';
 
 export interface FlowData {
   flow: any;
@@ -22,9 +23,10 @@ export interface FlowData {
 
 @Injectable()
 export class FlogoFlowService {
+  public currentFlowDetails: FlogoFlowDetails;
+
   constructor(private _flowAPIService: APIFlowsService,
               private _converterService: UIModelConverterService,
-              public profileSerivce: FlogoProfileService,
               private _commonFlowsService: FlowsService) {
   }
 
@@ -35,8 +37,10 @@ export class FlogoFlowService {
           'triggers'
         ]);
 
+        this.currentFlowDetails = new FlogoFlowDetails(flow);
+
         const triggers = flow.triggers;
-        this._converterService.setProfile(this.profileSerivce.getProfileType(flow.app));
+        this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
         return this._converterService.getWebFlowModel(flowDiagramDetails)
           .then(convertedFlow => this.processFlowModel(convertedFlow, flow.triggers.length > 0))
           .then(processedFlow => _.assign({}, processedFlow, { triggers }));

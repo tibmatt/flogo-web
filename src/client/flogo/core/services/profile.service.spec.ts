@@ -436,16 +436,6 @@ describe('Service: FlogoProfileService', function (this: {
       this.contribServiceMock);
   });
 
-  it('Should return MICRO_SERVICE enum for Microservice type of profile', () => {
-    const profileType = this.testService.getProfileType(mockMicroServiceAppData);
-    expect(profileType).toEqual(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
-  });
-
-  it('Should return DEVICE enum for Device type of profile', () => {
-    const profileType = this.testService.getProfileType(mockDeviceAppData);
-    expect(profileType).toEqual(FLOGO_PROFILE_TYPE.DEVICE);
-  });
-
   it('Should create utilities class for a microservice profile', () => {
     this.testService.initializeProfile(mockMicroServiceAppData);
     expect(this.testService.utils instanceof FlogoMicroserviceTaskIdGeneratorService).toBeTruthy();
