@@ -1,4 +1,7 @@
 @import '../../../../assets/_variables';
+@trigger-padding-vertical: 14px;
+@trigger-padding-horizontal: 16px;
+@trigger-icon-clickable-padding: 8px;
 
 .trigger {
   width: 48px;
@@ -8,6 +11,8 @@
   position: relative;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
   .bg-placeholder {
     fill: @color-trigger-bg-color;
@@ -25,13 +30,14 @@
     font-size: 20px;
   }
 
+  .flogo-icon-trigger,
+  .lambda-icon {
+    margin: (14px - @trigger-icon-clickable-padding) (16px - @trigger-icon-clickable-padding);
+  }
+
   &.--lambda {
     .bg-placeholder {
       fill: #ecc99b;
-    }
-
-    .trigger-content {
-      padding: 14px 16px;
     }
 
     .flogo-icon-trigger {
@@ -51,8 +57,8 @@
 }
 
 .trigger-content {
-  padding: 14px 12px;
   z-index: 1;
+  margin-right: 3px;
 }
 
 .icon-svg__def {
@@ -62,13 +68,22 @@
 .trigger_block {
   position: relative;
 
+  &:hover {
+    .flogo-icon-trigger,
+    .lambda-icon {
+      color: #fff;
+      &:hover {
+        color: @pumpkin-orange;
+      }
+    }
+  }
+
   .trigger_menu {
     transform: scale(0);
     transform-origin: top left;
     opacity: 0;
     transition: all 250ms ease-in;
     position: absolute;
-    top: 1px;
     left: 40px;
     width: 135px;
 
@@ -97,10 +112,20 @@
   }
 }
 
+.trigger_block--menu-open {
+  .trigger {
+    z-index: 3;
+  }
+
+  .trigger_menu {
+    transform: scale(1);
+    opacity: 1;
+    z-index: 2;
+  }
+}
+
 .trigger_block--selected {
   .trigger {
-    position: relative;
-    z-index: 3;
 
     .flogo-icon-trigger {
       color: #fff;
@@ -114,11 +139,5 @@
 
   .bg-placeholder, .trigger.--lambda .bg-placeholder {
     fill: @color-trigger-selected-bg-color;;
-  }
-
-  .trigger_menu--open {
-    transform: scale(1);
-    opacity: 1;
-    z-index: 2;
   }
 }
