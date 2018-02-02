@@ -11,9 +11,13 @@
       </label>
     </div>
   </div>
-  <p class="iterator-instructions_text">Use an iterator when you want to loop over an array or if you want to invoke this activity <i>n</i>  times. The input of the iterator should be an array or a number.</p>
-  <p>For example, the value <b>10</b> would indicate that this activity should be invoked <b>10</b> times.</p>
-  <p>When looping over an array, you can access the iterator value and index using <b>$current.iteration.value</b> or <b>$current.iteration.key</b></p>
+  <div class="description">
+    <p class="description__lead">
+      Use an iterator when you want to loop over an array or if you want to invoke this activity <i>n</i>  times. The input of the iterator should be an array or a number.
+    </p>
+    <p>For example, the value <code>10</code> would indicate that this activity should be invoked <code>10</code> times.</p>
+    <p>When looping over an array, you can access the iterator value and index using <code>$current.iteration.value</code> or <code>$current.iteration.key</code></p>
+  </div>
 </div>
 <flogo-mapper class="content__main" *ngIf="iteratorModeOn"
               [isSingleInputMode]="true"
