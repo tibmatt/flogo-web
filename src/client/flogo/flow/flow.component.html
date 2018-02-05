@@ -111,9 +111,6 @@
     <router-outlet></router-outlet>
   </div>
   <flogo-flow-params-schema #inputSchemaModal [flow]="flow" (save)="onFlowSchemaSave($event)"></flogo-flow-params-schema>
-  <flogo-flow-sub-flow *ngIf="showFlowsList"
-                       [appId]="flow.appId"
-                       [currentFlow]="flowId"
-                       (onSelection)="handleFlowSelection($event)"></flogo-flow-sub-flow>
+
 </div>
 

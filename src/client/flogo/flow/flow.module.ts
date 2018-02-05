@@ -22,7 +22,6 @@ import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
 import {TriggerDetailModule as FlogoFlowTriggerDetailModule} from '@flogo/flow/trigger-detail';
-import {SubFlowModule} from '@flogo/flow/sub-flow/sub-flow.module';
 
 import { routing } from './flow.routing';
 import { FlowComponent } from './flow.component';
@@ -45,7 +44,6 @@ import { FlowDataResolver } from './flow-data.resolver';
     FlogoFlowTaskDetailModule,
     FlogoFlowTriggerDetailModule,
     FlogoFlowTaskAddModule,
-    SubFlowModule,
     routing
   ],
   declarations: [

@@ -3,8 +3,9 @@ import { PostService } from '@flogo/core/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from './messages';
 
 import {FlogoProfileService} from '@flogo/core/services/profile.service';
-import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
+import {FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE} from '@flogo/core/constants';
 import { LanguageService } from '@flogo/core';
+import {FlogoFlowService} from '@flogo/flow/core';
 
 @Component(
   {
@@ -22,11 +23,14 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
 
   private _subscriptions: any;
   private _addTaskMsg: any;
+  private subFlowTask: any;
+  public showFlowsList = false;
 
   constructor(
           // todo: remove exposed language service
           public translate: LanguageService,
           private _postService: PostService,
+          private flowService: FlogoFlowService,
           private _profileService: FlogoProfileService ) {
     console.group( 'Constructing FlogoFlowsDetailTasksComponent' );
 
@@ -41,6 +45,14 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
         this._postService.unsubscribe( sub );
       }
     );
+  }
+
+  public get appId() {
+    return this.flowService.currentFlowDetails.associatedToAppId;
+  }
+
+  public get currentFlowId() {
+    return this.flowService.currentFlowDetails.id;
   }
 
   public get filterQuery() {
@@ -129,6 +141,23 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
     console.log( response );
     console.groupEnd();
     this._loadActivities(this._addTaskMsg.appProfileType);
+  }
+
+  public manageAddTaskMsg(task: any) {
+    if (task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+      this.showFlowsList = true;
+      this.subFlowTask = task;
+    } else {
+      this.sendAddTaskMsg(task);
+    }
+  }
+
+  public handleFlowSelection(selectedFlowId: string) {
+    this.showFlowsList = false;
+    if (selectedFlowId !== 'dismiss' && _.isObjectLike(this.subFlowTask)) {
+      this.subFlowTask.flowRef = selectedFlowId;
+      this.sendAddTaskMsg(this.subFlowTask);
+    }
   }
 
 }
