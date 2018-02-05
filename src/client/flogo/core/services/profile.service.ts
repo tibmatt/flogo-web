@@ -33,16 +33,6 @@ export class FlogoProfileService {
     return this.utils.generateTaskID(items, taskSchema);
   }
 
-  getProfileType(app) {
-    let profileType: FLOGO_PROFILE_TYPE;
-    if (app.device) {
-      profileType = FLOGO_PROFILE_TYPE.DEVICE;
-    } else {
-      profileType = FLOGO_PROFILE_TYPE.MICRO_SERVICE;
-    }
-    return profileType;
-  }
-
   getTriggers(profile) {
     let triggerFetchPromise;
     if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {

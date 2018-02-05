@@ -106,7 +106,6 @@ const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
 export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
   public flow: any;
-  public flowId: string;
   public mainHandler: HandlerInfo;
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
@@ -162,6 +161,10 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.hasTask = true;
     this.currentTrigger = null;
     this.app = null;
+  }
+
+  get flowId() {
+    return this._flowService.currentFlowDetails.id;
   }
 
   public ngOnInit() {
@@ -309,10 +312,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private initFlowData(flowData: FlowData) {
-    const FLOW_HANDLER_TYPE_ROOT = 'root';
-    const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
     this.flow = flowData.flow;
-    this.flowId = this._flowService.currentFlowDetails.id;
     this.flowName = this.flow.name;
     this.handlers = {
       [FLOW_HANDLER_TYPE_ROOT]: flowData.root,
