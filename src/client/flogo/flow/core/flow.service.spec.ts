@@ -20,7 +20,8 @@ describe('Service: Flow', function (this: {
 
   beforeEach(() => {
     this.modelConverter = jasmine.createSpyObj<UIModelConverterService>('converterService', [
-      'getWebFlowModel'
+      'getWebFlowModel',
+      'setProfile'
     ]);
     this.commonFlowsService = jasmine.createSpyObj<FlowsService>('commonFlowsService', [
       'deleteFlowWithTrigger'

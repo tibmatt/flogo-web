@@ -13,16 +13,15 @@ import {
   mockTransformationData
 } from './ui-model-flow.mock';
 import { mockTriggerDetails } from './ui-model-trigger.mock';
-import { FlogoProfileService } from '../../core/services/profile.service';
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
+import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 
 describe('Service: UI Model Converter', function (this: {
   service: UIModelConverterService,
   errorService: ErrorService,
   triggerServiceMock: RESTAPITriggersService,
   activityServiceMock: RESTAPIActivitiesService,
-  profileService: FlogoProfileService,
   contribServiceMock: RESTAPIContributionsService
 }) {
 
@@ -37,10 +36,9 @@ describe('Service: UI Model Converter', function (this: {
       'getContributionDetails'
     ]);
     this.errorService = new ErrorService();
-    this.profileService = new FlogoProfileService(this.triggerServiceMock,
-      this.activityServiceMock, this.contribServiceMock);
-    this.service = new UIModelConverterService(this.triggerServiceMock,
-      this.activityServiceMock, this.contribServiceMock, this.profileService, this.errorService);
+    this.service = new UIModelConverterService(this.triggerServiceMock, this.activityServiceMock,
+      this.contribServiceMock, this.errorService);
+    this.service.setProfile(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
   });
 
   it('Should throw error when Activity does not have a activityRef', () => {
