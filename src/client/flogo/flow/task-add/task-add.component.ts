@@ -3,8 +3,7 @@ import { PostService } from '@flogo/core/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from './messages';
 
 import {FlogoProfileService} from '@flogo/core/services/profile.service';
-import {FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE} from '@flogo/core/constants';
-import { LanguageService } from '@flogo/core';
+import {FLOGO_TASK_TYPE} from '@flogo/core/constants';
 import {FlogoFlowService} from '@flogo/flow/core';
 
 @Component(
@@ -17,7 +16,6 @@ import {FlogoFlowService} from '@flogo/flow/core';
 export class FlogoFlowsDetailTasksComponent implements OnDestroy {
   public filteredTasks: any[] = [];
   private _filterQuery: string = null;
-  public profileType: FLOGO_PROFILE_TYPE;
 
   public tasks: any[] = [];
 
@@ -26,11 +24,8 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
   private subFlowTask: any;
   public showFlowsList = false;
 
-  constructor(
-          // todo: remove exposed language service
-          public translate: LanguageService,
+  constructor(public flowService: FlogoFlowService,
           private _postService: PostService,
-          private flowService: FlogoFlowService,
           private _profileService: FlogoProfileService ) {
     console.group( 'Constructing FlogoFlowsDetailTasksComponent' );
 
@@ -121,8 +116,7 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
 
 
     this._addTaskMsg = data;
-    this.profileType = this._addTaskMsg.appProfileType;
-    this._loadActivities(this.profileType);
+    this._loadActivities(this.flowService.currentFlowDetails.applicationProfileType);
 
     console.groupEnd();
   }
@@ -140,7 +134,7 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
     console.group( `[FlogoFlowsDetailTasks] onInstalled` );
     console.log( response );
     console.groupEnd();
-    this._loadActivities(this._addTaskMsg.appProfileType);
+    this._loadActivities(this.flowService.currentFlowDetails.applicationProfileType);
   }
 
   public manageAddTaskMsg(task: any) {

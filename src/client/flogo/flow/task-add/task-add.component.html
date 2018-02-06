@@ -9,14 +9,14 @@
       </div>
     </div>
     <flogo-flow-task-add-install
-      [profileType]="profileType"
+      [profileType]="flowService?.currentFlowDetails?.applicationProfileType"
       (flogoOnInstalled)="onInstalledAction($event)"></flogo-flow-task-add-install>
   </div>
 
   <div class="flogo-common-edit-panel__container">
     <div class="filter-box">
       <input class="flogo-input-search filter-box__input" type="text" [(ngModel)]="filterQuery"
-             placeholder="{{ translate.instant('ADD:FILTER-TASKS') }}">
+             placeholder="{{ 'ADD:FILTER-TASKS' | translate }}">
     </div>
 
 
