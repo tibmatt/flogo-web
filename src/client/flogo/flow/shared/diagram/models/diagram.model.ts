@@ -22,7 +22,7 @@ import {
 import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { genBranchLine } from './branch-generator';
 import { LanguageService } from '@flogo/core';
-
+import { diagramToRenderableMatrix } from './matrix-creator.model';
 
 const DEFAULT_MAX_ROW_LEN = 6;
 
@@ -83,70 +83,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return _hasBranchRun(node, tasks, nodes);
   }
 
-  static transformDiagram(diagram: IFlogoFlowDiagram): string[ ][ ] {
-    const matrix: string[ ][ ] = [];
-
-    // find the root node
-    let root: IFlogoFlowDiagramNode; // diagram node
-    if (diagram && diagram.root && diagram.root.is) {
-      root = diagram.nodes[diagram.root.is];
-    }
-
-    // if there is no root, then it's an empty diagram
-    if (!root) {
-      return matrix;
-    }
-
-    // add the root to the first row of the matrix
-    matrix.push([root.id]);
-
-    // handling children of root
-    _insertChildNodes(matrix, diagram, root);
-
-    /* tslint:disable:no-unused-expression */
-    DEBUG && console.groupCollapsed('matrix');
-    DEBUG && console.log(matrix);
-    DEBUG && console.groupEnd();
-    /* tslint:enable:no-unused-expression */
-
-    return matrix;
-  }
-
-  // pad display matrix with nodes of add type and placeholder type
-  static padMatrix(matrix: string [][], rowLen = DEFAULT_MAX_ROW_LEN, diagram: IFlogoFlowDiagram): string[][] {
-    const outputMatrix: string[][] = [];
-
-    _.each(
-      matrix, (matrixRow) => {
-        const taskID = diagram.nodes[matrixRow[matrixRow.length - 1]].taskID;
-        if ((matrixRow.length < rowLen) && !_isReturnActivity(diagram['tasks'][taskID])) {
-
-          let paddedRow: string[];
-
-          if ((matrixRow.length
-            === 1 && diagram.nodes[matrixRow[0]].type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW)) {
-            paddedRow = matrixRow;
-          } else {
-            paddedRow = matrixRow.concat('+'); // append add node symbol
-          }
-
-          const rowLenDiff = rowLen - paddedRow.length;
-          const paddingArr = _.fill(Array(rowLenDiff), '_');
-          outputMatrix.push(paddedRow.concat(<string[]>paddingArr));
-
-        } else {
-          // TODO
-          // ignore for the moment, assuming that the row won't be overflow
-          // and the overflow case should be handled somewhere else.
-
-          outputMatrix.push(matrixRow);
-        }
-      }
-    );
-
-    return outputMatrix;
-  }
-
   static getEmptyDiagram(diagramType?: string): IFlogoFlowDiagram {
     const newRootNode = new FlogoFlowDiagramNode();
     const emptyDiagram = < IFlogoFlowDiagram > {
@@ -162,39 +98,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     emptyDiagram.nodes[newRootNode.id] = newRootNode;
 
     return emptyDiagram;
-  }
-
-  static filterOverflowAddNode(matrix: string[][],
-                               nodes: IFlogoFlowDiagramNodeDictionary,
-                               rowLen = DEFAULT_MAX_ROW_LEN): string[][] {
-    const outputMatrix = _.cloneDeep(matrix);
-
-    _.each(
-      outputMatrix, (matrixRow: string[]) => {
-
-        if (matrixRow.length > rowLen) {
-
-          let diffRowLen = matrixRow.length - rowLen;
-          while (diffRowLen) {
-            const node = nodes[matrixRow[matrixRow.length - 1]];
-
-            if (node && (
-                node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ADD ||
-                node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW
-              )) {
-              matrixRow.pop();
-            }
-
-            diffRowLen--;
-          }
-
-        }
-
-      }
-    );
-
-
-    return outputMatrix;
   }
 
   constructor(diagram: IFlogoFlowDiagram,
@@ -301,7 +204,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     this.nodesOfAddType = this.nodesOfAddType || <IFlogoFlowDiagramNodeDictionary>{};
 
     // enter selection
-    const rows = this._bindDataToRows(this.rootElm.selectAll(`.${CLS.diagramRow}`));
+    const rows = this.rootElm.selectAll(`.${CLS.diagramRow}`)
+                    .data(diagramToRenderableMatrix(this, this.MAX_ROW_LEN));
 
     this._handleEnterRows(rows);
     this._handleUpdateRows(rows);
@@ -535,17 +439,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       });
   }
 
-  private _bindDataToRows(rows: any) {
-    return rows.data(
-      FlogoFlowDiagram.filterOverflowAddNode(
-        FlogoFlowDiagram.padMatrix(
-          FlogoFlowDiagram.transformDiagram(this), this.MAX_ROW_LEN, this
-        ), this.nodes
-      )
-    );
-  }
-
-  private _handleEnterRows(rows: any) {
+  private _handleEnterRows(rows: d3.selection.Update<any>) {
     const enterRows = rows
       .enter()
       .append('div')
@@ -566,7 +460,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       );
   }
 
-  private _handleUpdateRows(rows: any) {
+  private _handleUpdateRows(rows: d3.selection.Update<any>) {
     rows
       .classed('updated', true)
       .style('z-index', (d: any, row: number) => rows.size() - row); // the earlier rendered row is higher
@@ -576,7 +470,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     this._handleTaskNodes(tasks, rows);
   }
 
-  private _handleExitRows(rows: any) {
+  private _handleExitRows(rows: d3.selection.Update<any>) {
     rows.exit()
       .classed(
         {
@@ -1414,58 +1308,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return false;
   }
 
-}
-
-// helper function of transformMatrix function
-//   if the item has multiple children, put the first non-branch node along with the item
-//   create new row the the rest of the branch nodes
-// TODOx
-//   at some time, may need to track which node has been visited
-//   for example branch back to other path
-//   but for now, may not need to care about it
-function _insertChildNodes(matrix: string[ ][ ],
-                           diagram: IFlogoFlowDiagram,
-                           node: IFlogoFlowDiagramNode): string[ ][ ] {
-
-  // deep-first traversal
-
-  const curRowIdx = matrix.length - 1;
-
-  if (node.children.length) {
-    // make sure the non-branch/non-link node is the first children of the node
-    node.children.sort((nodeAID: string, nodeBID: string) => {
-      if (diagram.nodes[nodeAID].type === diagram.nodes[nodeBID].type) {
-        return 0;
-      } else if (diagram.nodes[nodeAID].type
-        === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH
-        || diagram.nodes[nodeAID].type
-        === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_LINK) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
-
-    _.each(node.children, (nodeID: string) => {
-      if (diagram.nodes[nodeID].type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
-        // push to the current row if it's non-branch node
-        matrix[curRowIdx].push(nodeID);
-      } else {
-        // create new row for branch node
-        const newRow = Array(matrix[curRowIdx].indexOf(node.id));
-        newRow.push(nodeID);
-        matrix.push(newRow);
-      }
-
-      // not follow the children of a link node
-      if (diagram.nodes[nodeID].type !== FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_LINK) {
-        _insertChildNodes(matrix, diagram, diagram.nodes[nodeID]);
-      }
-
-    });
-  }
-
-  return matrix;
 }
 
 function _triggerCustomEvent(eventType: string, eventDetail: any, elm: HTMLElement): boolean {
