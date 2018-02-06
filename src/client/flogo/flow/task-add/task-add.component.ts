@@ -146,10 +146,11 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
     }
   }
 
-  public handleFlowSelection(selectedFlowId: string) {
+  public handleFlowSelection(selectedFlow: any) {
     this.showFlowsList = false;
-    if (selectedFlowId !== 'dismiss' && _.isObjectLike(this.subFlowTask)) {
-      this.subFlowTask.flowRef = selectedFlowId;
+    if (selectedFlow !== 'dismiss' && _.isObjectLike(selectedFlow) && _.isObjectLike(this.subFlowTask)) {
+      this.subFlowTask.name = selectedFlow.name;
+      this.subFlowTask.flowRef = selectedFlow.id;
       this.sendAddTaskMsg(this.subFlowTask);
     }
   }

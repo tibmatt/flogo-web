@@ -13,7 +13,7 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
   @Input()
   currentFlow: string;
   @Output()
-  onSelection: EventEmitter<string> = new EventEmitter<string>();
+  onSelection: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('listModal') modal: ModalComponent;
   flowsList: any[];
@@ -42,7 +42,7 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
     this.onModalCloseOrDismiss();
   }
 
-  selectedFlow(flowId: string) {
-    this.onSelection.emit(flowId);
+  selectedFlow(flow: any) {
+    this.onSelection.emit(flow);
   }
 }

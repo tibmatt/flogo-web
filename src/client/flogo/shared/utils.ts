@@ -441,8 +441,7 @@ export function createSubFlowTask() {
       inputs: [],
       outputs: []
     },
-    return: false,
-    __schema: {}
+    return: false
   };
 }
 

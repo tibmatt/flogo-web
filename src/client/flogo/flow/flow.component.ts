@@ -601,9 +601,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     const doRegisterTask = _registerTask.bind(this);
 
-    if (data.task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
-      console.log('selected flow id is: ', data.task.flowRef);
-    } else if (this.handlers[diagramId] === this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
+    if (this.handlers[diagramId] === this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
       const errorTrigger = makeDefaultErrorTrigger(this.profileService.generateTaskID(this._getAllTasks()));
       this.errorHandler.tasks[errorTrigger.id] = errorTrigger;
 
@@ -646,14 +644,17 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
       handler.tasks[task.id] = task;
 
-      const rootHandler = this.handlers.root;
-      rootHandler.schemas = rootHandler.schemas || {};
       const schema = task.__schema;
-      task.ref = task.ref || schema.ref;
-      rootHandler.schemas[task.ref] = schema;
-      this.flow.schemas = Object.assign({}, this.flow.schemas, rootHandler.schemas);
-      delete task['__schema'];
       const isMapperTask = isMapperActivity(schema);
+      const isSubFlowTask = data.task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC;
+      if (!isSubFlowTask) {
+        const rootHandler = this.handlers.root;
+        rootHandler.schemas = rootHandler.schemas || {};
+        task.ref = task.ref || schema.ref;
+        rootHandler.schemas[task.ref] = schema;
+        this.flow.schemas = Object.assign({}, this.flow.schemas, rootHandler.schemas);
+        delete task['__schema'];
+      }
 
       this._navigateFromModuleRoot()
         .then(
@@ -667,13 +668,13 @@ export class FlowComponent implements OnInit, OnDestroy {
                     id: data.id
                   },
                   // todo: remove, this is a temporal solution to prevent auto opening a new tile
-                  skipTaskAutoSelection: isMapperTask,
+                  skipTaskAutoSelection: isMapperTask || isSubFlowTask,
                   done: (diagram: IFlogoFlowDiagram) => {
                     _.assign(this.handlers[diagramId].diagram, diagram);
                     this._updateFlow(this.flow);
                     this._isDiagramEdited = true;
                     this.hasTask = true;
-                    if (isMapperTask) {
+                    if (isMapperTask || isSubFlowTask) {
                       // todo: remove, this is a temporal solution to clear the diagram selection state
                       this._cleanSelectionStatus();
                     }

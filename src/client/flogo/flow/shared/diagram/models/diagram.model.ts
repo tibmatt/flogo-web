@@ -1016,7 +1016,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         `;
       }
 
-      if (!taskInfo.name || !taskInfo.desc) {
+      const taskSchema = diagram.tasks[taskInfo.nodeInfo.taskID];
+      if (!taskInfo.name || (taskSchema.type !== FLOGO_TASK_TYPE.TASK_SUB_PROC && !taskInfo.desc)) {
         return '';
       }
 
@@ -1026,7 +1027,6 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         iconName = 'trigger.icon.svg';
       }
 
-      const taskSchema = diagram.tasks[taskInfo.nodeInfo.taskID];
       let taskIcon;
       if (taskSchema && taskSchema.ref === 'github.com/TIBCOSoftware/flogo-contrib/activity/lambda') {
         taskIcon = `<svg ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon} --lambda" viewBox="0 0 200 278">

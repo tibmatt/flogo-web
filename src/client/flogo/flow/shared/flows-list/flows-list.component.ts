@@ -10,7 +10,7 @@ export class FlowsListComponent {
   list: any[];
 
   @Output()
-  onUserSelection: EventEmitter<string> = new EventEmitter<string>();
+  onUserSelection: EventEmitter<any> = new EventEmitter<any>();
 
   searchText: string;
 
@@ -29,7 +29,7 @@ export class FlowsListComponent {
     this.onUserSelection.emit('cancel');
   }
 
-  selectFlow(flowId: string) {
-    this.onUserSelection.emit(flowId);
+  selectFlow(flow: any) {
+    this.onUserSelection.emit(flow);
   }
 }
