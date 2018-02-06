@@ -107,7 +107,6 @@ describe('Component: TriggerBlockComponent', () => {
       comp.triggerBlock.handleTriggerMenuShow();
       fixture.detectChanges();
       expect(comp.triggerBlock.isShowingMenu).toEqual(true);
-      expect(comp.triggerBlock.isSelected).toEqual(true);
     });
 
     it('trigger settings must be shown when trigger is selected', (done) => {

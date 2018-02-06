@@ -16,12 +16,14 @@ export class FlogoNavbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.showInstructions();
-    }, 500);
+    // TODO: re-enable after v0.5.1 with updated content
+    // setTimeout(() => {
+    //   this.showInstructions();
+    // }, 500);
   }
 
   showInstructions() {
+    // TODO: show again if walkthrough content was updated?
     const instructions: string = localStorage.getItem('flogo-show-instructions');
     if (_.isEmpty(instructions)) {
       localStorage.setItem('flogo-show-instructions', new Date().toString());

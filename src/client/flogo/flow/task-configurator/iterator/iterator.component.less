@@ -1,6 +1,17 @@
+@import '../../../../assets/_variables';
+
 .iterator-panel {
   border-right: solid 2px #dedede;
   padding: 20px;
+}
+
+.description {
+  color: @warm-grey;
+  line-height: 1.5;
+}
+
+.description__lead {
+  font-weight: 600;
 }
 
 .iterator-switch {
@@ -13,7 +24,6 @@
 
 .iterator-switch__text {
   flex: 1;
-  font-weight: bold;
 }
 
 :host.--is-initing {
@@ -24,3 +34,4 @@
     }
   }
 }
+

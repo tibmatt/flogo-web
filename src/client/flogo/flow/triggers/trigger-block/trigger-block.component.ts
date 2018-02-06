@@ -93,7 +93,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
      *  2. it's configuration is displayed in the trigger details (right hand side) panel
      *  3. it's mapper is active
      ***/
-    return this.isShowingDetails || this.isShowingMapper || this.isShowingMenu;
+    return this.isShowingDetails || this.isShowingMapper;
   }
 
   selectedMenuItem(item: string) {
