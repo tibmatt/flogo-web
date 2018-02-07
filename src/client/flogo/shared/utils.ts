@@ -433,7 +433,7 @@ export function createSubFlowTask() {
   return {
     type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
     name: 'Sub-Flow',
-    ref: '',
+    ref: 'subflow',
     version: '',
     description: '',
     homepage: '',

@@ -926,6 +926,9 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         taskIcon = `<svg ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon} --lambda" viewBox="0 0 200 278">
                       <use xlink:href="/assets/svg/lambda-icon.svg#layer1"></use>
                     </svg>`;
+      } else if (taskSchema && taskSchema.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+        taskIcon = `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon} --subflow"
+                          src="/assets/svg/subflow.svg" alt=""/>`;
       } else {
         taskIcon = `<img ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailIcon}"
                           src="/assets/svg/flogo.flows.detail.diagram.${iconName}" alt=""/>`;
