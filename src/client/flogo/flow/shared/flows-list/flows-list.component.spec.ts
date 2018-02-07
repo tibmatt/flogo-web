@@ -82,7 +82,7 @@ describe('Component: FlowsListComponent', () => {
       });
   });
 
-  it('Should emit selected flow\'s ID', (done) => {
+  it('Should emit selected flow\'s details', (done) => {
     compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(FlowsListComponent);
@@ -90,7 +90,7 @@ describe('Component: FlowsListComponent', () => {
         de = fixture.debugElement;
         comp.list = getFlowsList();
         comp.onUserSelection.subscribe((event) => {
-          expect(event).toEqual('flow_1');
+          expect(event.id).toEqual('flow_1');
           done();
         });
         fixture.detectChanges();
