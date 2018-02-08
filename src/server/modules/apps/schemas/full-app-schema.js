@@ -335,6 +335,9 @@ export function fullAppSchema() {
                 type: 'string',
                 'activity-installed': true,
               },
+              flowRef: {
+                type: 'string',
+              },
               settings: {
                 title: 'settings',
                 type: 'object',
@@ -370,11 +373,17 @@ export function fullAppSchema() {
                 },
               },
             },
-            required: [
-              'id',
-              'name',
-              'activityRef',
-            ],
+            anyOf: [{
+              properties: {
+                type: { enum: [4] },
+              },
+              required: ['id', 'flowRef'],
+            }, {
+              properties: {
+                type: { enum: [0, 1, 2, 3] },
+              },
+              required: ['id', 'activityRef'],
+            }],
           },
           rootTask: {
             title: 'rootTask',
