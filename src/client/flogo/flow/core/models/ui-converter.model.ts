@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import { flogoGenTriggerID, flogoIDEncode } from '@flogo/shared/utils';
+import {flogoGenTriggerID, flogoIDEncode, isSubflowTask} from '@flogo/shared/utils';
 import { ErrorService } from '@flogo/core/services/error.service';
 
 import {
@@ -40,7 +40,7 @@ export abstract class AbstractModelConverter {
     // add tiles from error diagram
     tasks = tasks.concat(_.get(flow, 'data.flow.errorHandlerTask.tasks', []));
     // filter only tasks of type activity and ignore subflows
-    tasks = tasks.filter(t => t.type !== FLOGO_TASK_TYPE.TASK_SUB_PROC);
+    tasks = tasks.filter(t => !isSubflowTask(t.type));
 
     tasks.forEach((task) => {
       const ref = task.activityRef;
@@ -145,7 +145,7 @@ export abstract class AbstractModelConverter {
         element.node.name = _.get(element, 'cli.name', element.node.name);
         element.node.description = _.get(element, 'cli.description', element.node.description);
         flow.items[element.node.id || element.node.nodeId] = element.node;
-        if (installedTiles && element.cli && element.cli.type !== FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+        if (installedTiles && element.cli && !isSubflowTask(element.cli.type)) {
           flow.schemas[element.node.ref] = installedTiles.find((tile) => {
             return tile.ref === element.node.ref;
           });
@@ -179,7 +179,7 @@ export abstract class AbstractModelConverter {
         const nodeItem = node.makeItem({ taskID: flogoIDEncode(task.id) });
 
         let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
-        if (task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+        if (isSubflowTask(task.type)) {
           installedActivity = {ref: 'subflow'};
         }
         if (!installedActivity) {
@@ -510,7 +510,7 @@ class ItemFactory {
     }
 
     // Add flowRef for the case of a subflow typr of task
-    if (taskInstance.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+    if (isSubflowTask(taskInstance.type)) {
       item.flowRef = taskInstance.flowRef;
     }
 

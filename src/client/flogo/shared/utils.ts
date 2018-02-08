@@ -445,6 +445,10 @@ export function createSubFlowTask() {
   };
 }
 
+export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
+  return taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC;
+}
+
 export function getProfileType(app) {
   let profileType: FLOGO_PROFILE_TYPE;
   if (app.device) {

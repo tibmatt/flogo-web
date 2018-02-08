@@ -3,8 +3,8 @@ import { PostService } from '@flogo/core/services/post.service';
 import { SUB_EVENTS, PUB_EVENTS } from './messages';
 
 import {FlogoProfileService} from '@flogo/core/services/profile.service';
-import {FLOGO_TASK_TYPE} from '@flogo/core/constants';
 import {FlogoFlowService} from '@flogo/flow/core';
+import {isSubflowTask} from '@flogo/shared/utils';
 
 @Component(
   {
@@ -138,7 +138,7 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
   }
 
   public manageAddTaskMsg(task: any) {
-    if (task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+    if (isSubflowTask(task.type)) {
       this.showFlowsList = true;
       this.subFlowTask = task;
     } else {

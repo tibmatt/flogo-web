@@ -61,9 +61,11 @@ import {
   flogoIDDecode,
   flogoIDEncode,
   isMapperActivity,
+  isSubflowTask,
   normalizeTaskName,
   notification,
-  objectFromArray} from '@flogo/shared/utils';
+  objectFromArray
+} from '@flogo/shared/utils';
 
 import { flogoFlowToJSON, triggerFlowToJSON } from './shared/diagram/models/flow.model';
 
@@ -646,7 +648,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
       const schema = task.__schema;
       const isMapperTask = isMapperActivity(schema);
-      const isSubFlowTask = data.task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC;
+      const isSubFlowTask = isSubflowTask(data.task.type);
       if (!isSubFlowTask) {
         const rootHandler = this.handlers.root;
         rootHandler.schemas = rootHandler.schemas || {};
