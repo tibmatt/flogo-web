@@ -815,6 +815,25 @@ export class FlowComponent implements OnInit, OnDestroy {
         .then(() => this._cleanSelectionStatus())
         .then(() => console.groupEnd());
     }
+    if (isSubflowTask(currentTask.type)) {
+      return this._navigateFromModuleRoot()
+        .then(() => {
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+                data: {
+                  node: data.node,
+                  task: this.handlers[diagramId].tasks[data.node.taskID],
+                  id: diagramId
+                },
+                done: (diagram: IFlogoFlowDiagram) => {
+                  _.assign(this.handlers[diagramId].diagram, diagram);
+                }
+              }
+            )
+          );
+        });
+    }
     this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
