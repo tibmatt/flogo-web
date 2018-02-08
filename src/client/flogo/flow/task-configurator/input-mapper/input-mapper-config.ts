@@ -1,7 +1,7 @@
-import { IFlogoFlowDiagramTaskAttributeMapping } from '../../shared/diagram/models/attribute-mapping.model';
+import { AttributeMapping } from '@flogo/core';
 
 export interface InputMapperConfig {
   propsToMap: any[];
   inputScope: any[];
-  inputMappings: IFlogoFlowDiagramTaskAttributeMapping[];
+  inputMappings: AttributeMapping[];
 }

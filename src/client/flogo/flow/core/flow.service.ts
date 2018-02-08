@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { UIModelConverterService } from './ui-model-converter.service';
-import { IFlogoFlowDiagram } from '../shared/diagram/models';
+import { FlowDiagram, TaskDictionary } from '@flogo/core';
 import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
-import { IFlogoFlowDiagramTaskDictionary } from '../shared/diagram/models/dictionary.model';
+
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '../../core/services/flows.service';
-import { FlogoProfileService } from '@flogo/core/services/profile.service';
 import {FlogoFlowDetails} from '@flogo/flow/core/models/flow-details.model';
 
 export interface FlowData {
@@ -66,10 +65,10 @@ export class FlogoFlowService {
   }
 
   processFlowModel(model, hasTrigger?: boolean): Promise<FlowData> {
-    let diagram: IFlogoFlowDiagram;
-    let errorDiagram: IFlogoFlowDiagram;
-    let tasks: IFlogoFlowDiagramTaskDictionary;
-    let errorTasks: IFlogoFlowDiagramTaskDictionary;
+    let diagram: FlowDiagram;
+    let errorDiagram: FlowDiagram;
+    let tasks: TaskDictionary;
+    let errorTasks: TaskDictionary;
     let flow: any;
     if (!_.isEmpty(model)) {
       // initialisation
@@ -77,7 +76,7 @@ export class FlogoFlowService {
       flow = model;
       tasks = flow.items;
       if (_.isEmpty(flow.paths)) {
-        diagram = flow.paths = <IFlogoFlowDiagram>{
+        diagram = flow.paths = <FlowDiagram>{
           root: {},
           nodes: {}
         };
@@ -94,7 +93,7 @@ export class FlogoFlowService {
 
       errorTasks = flow.errorHandler.items;
       if (_.isEmpty(flow.errorHandler.paths)) {
-        errorDiagram = flow.errorHandler.paths = <IFlogoFlowDiagram>{
+        errorDiagram = flow.errorHandler.paths = <FlowDiagram>{
           root: {},
           nodes: {}
         };

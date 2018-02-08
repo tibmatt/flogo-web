@@ -1,35 +1,15 @@
 import { flogoIDEncode } from '@flogo/shared/utils';
-// import { IFlogoFlowDiagram } from './diagram.model';
+// import { FlowDiagram } from './diagram.model';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
+import { Node } from '@flogo/core/interfaces/flow-diagram/node';
 
-export interface IFlogoFlowDiagramNode {
-  id: string; // id of the node
-  taskID ?: string; // id of the task
-  type: FLOGO_FLOW_DIAGRAM_NODE_TYPE; // type of the node
-  children: string[ ]; // ids of the children IFlogoFlowDiagramNode
-  parents: string[ ]; // ids of the parents IFlogoFlowDiagramNode
-  // subProc ?: IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
-  __status?: {
-    [key: string]: boolean;
-  };
-}
-
-export interface IFlogoFlowDiagramNodeLocation {
-  children: string[ ]; // ids of the children IFlogoFlowDiagramNode
-  parents: string[ ]; // ids of the parents IFlogoFlowDiagramNode
-}
-
-export interface IFlogoFlowDiagramRootNode {
-  is?: string; // marking the root node in this dictionary
-}
-
-export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
+export class FlogoFlowDiagramNode implements Node {
   id: string; // id of the node
   taskID: string; // id of the task
   type: FLOGO_FLOW_DIAGRAM_NODE_TYPE; // type of the node
-  children: string[ ]; // ids of the children IFlogoFlowDiagramNode
-  parents: string[ ]; // ids of the parents IFlogoFlowDiagramNode
-  // subProc: IFlogoFlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
+  children: string[ ]; // ids of the children Node
+  parents: string[ ]; // ids of the parents Node
+  // subProc: FlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
 
   static genNodeID(): string {
     let id = '';
@@ -43,7 +23,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     return flogoIDEncode(id);
   }
 
-  constructor(node ?: IFlogoFlowDiagramNode) {
+  constructor(node ?: Node) {
     if (!node) {
       node = {
         id: FlogoFlowDiagramNode.genNodeID(),
@@ -57,7 +37,7 @@ export class FlogoFlowDiagramNode implements IFlogoFlowDiagramNode {
     this.update(node);
   }
 
-  public update(node: IFlogoFlowDiagramNode): Promise<FlogoFlowDiagramNode> {
+  public update(node: Node): Promise<FlogoFlowDiagramNode> {
 
     this.id = node.id;
     this.taskID = node.taskID;

@@ -6,12 +6,14 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { LanguageService } from '@flogo/core';
 
-import { FlogoFlowDiagram, IFlogoFlowDiagram, IFlogoFlowDiagramTaskDictionary } from './models';
+import { FlowDiagram, TaskDictionary } from '@flogo/core';
+
 import { PostService } from '@flogo/core/services/post.service';
 import { PUB_EVENTS, SUB_EVENTS } from './messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from './constants';
 import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import { FlogoFlowDiagramNode } from './models/node.model';
+import { FlogoFlowDiagram, FlogoFlowDiagramNode } from './models';
+import { diagramToRenderableMatrix } from './models/matrix-creator.model';
 
 @Component(
   {
@@ -23,9 +25,9 @@ import { FlogoFlowDiagramNode } from './models/node.model';
 export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChanges, OnDestroy, OnInit {
 
   @Input()
-  public tasks: IFlogoFlowDiagramTaskDictionary;
+  public tasks: TaskDictionary;
   @Input()
-  public diagram: IFlogoFlowDiagram;
+  public diagram: FlowDiagram;
   @Input()
   public id: string;
   @Input()

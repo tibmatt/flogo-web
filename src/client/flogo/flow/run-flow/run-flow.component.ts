@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FlowMetadataAttribute } from '../core/models/flow-metadata-attribute';
+import { MetadataAttribute } from '@flogo/core';
 
 @Component({
   selector: 'flogo-run-flow',
@@ -10,12 +10,12 @@ import { FlowMetadataAttribute } from '../core/models/flow-metadata-attribute';
 
 export class FlogoRunFlowComponent {
   @Input()
-  flowInputs: FlowMetadataAttribute[];
+  flowInputs: MetadataAttribute[];
   @Input()
   disableRun: boolean;
   @Input() disableReason?: string;
   @Output()
-  onSubmit: EventEmitter<FlowMetadataAttribute[]> = new EventEmitter<FlowMetadataAttribute[]>();
+  onSubmit: EventEmitter<MetadataAttribute[]> = new EventEmitter<MetadataAttribute[]>();
   showRunFlow = false;
   runFlowFormGroup: FormGroup;
 

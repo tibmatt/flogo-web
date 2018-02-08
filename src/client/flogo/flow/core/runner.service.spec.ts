@@ -5,12 +5,13 @@ import { ScalarObservable } from 'rxjs/observable/ScalarObservable';
 
 import 'rxjs/add/observable/concat';
 import 'rxjs/add/operator/finally';
+import Spy = jasmine.Spy;
 
-import * as flowUtils from '../../core/models';
 import { RunService, StatusResponse } from '../../core/services/restapi/run.service';
 import { ERRORS, RUN_STATUS_CODE, RunnerService } from './runner.service';
 import { ErrorService } from '../../core/services/error.service';
-import Spy = jasmine.Spy;
+import { flowToJSON_InputFlow } from '@flogo/core/interfaces/backend/legacy';
+import * as flowUtils from '../shared/diagram/models/flow.model';
 
 describe('Service: RunService', function (this: {
   DEFAULT_PROCESS_ID: string,
@@ -178,7 +179,7 @@ describe('Service: RunService', function (this: {
       storeProcessMock.and.returnValue(ScalarObservable.create({ id: '456' }));
 
       const testFlow = <any> { name: 'test-flow' };
-      this.service.registerFlowIfNeeded({ useFlow: <flowUtils.flowToJSON_InputFlow>testFlow })
+      this.service.registerFlowIfNeeded({ useFlow: <flowToJSON_InputFlow>testFlow })
         .subscribe(result => {
           expect(flowUtils.flogoFlowToJSON).toHaveBeenCalledTimes(1);
           expect(storeProcessMock).toHaveBeenCalledTimes(1);

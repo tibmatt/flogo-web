@@ -1,4 +1,4 @@
-import * as engine from './engine.models';
+import { flowToJSON_Link } from './backend/legacy';
 
 export interface Step {
   flow: {
@@ -34,7 +34,7 @@ export interface RootTaskEnv {
   id?: number;
   taskId?: number;
   // todo: detail instead of any
-  linkDatas?: engine.Link[];
+  linkDatas?: flowToJSON_Link[];
   taskDatas?: TaskDatum[];
 }
 
@@ -66,5 +66,3 @@ export interface InterceptorTask {
 export interface Interceptor {
   tasks: InterceptorTask[];
 }
-
-export { flowToJSON_Flow as FlowInfo } from '../models';

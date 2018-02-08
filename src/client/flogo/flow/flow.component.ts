@@ -5,8 +5,15 @@ import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 
-import { PostService } from '../core/services/post.service';
-import { OperationalError } from '../core/services/error.service';
+import { MetadataAttribute, FlowDiagram, Task } from '@flogo/core/interfaces';
+
+import { LanguageService } from '@flogo/core';
+import { PostService } from '@flogo/core/services/post.service';
+import { OperationalError } from '@flogo/core/services/error.service';
+
+import { FlogoModal } from '@flogo/core/services/modal.service';
+import { FlogoProfileService } from '@flogo/core/services/profile.service';
+import { FlowData } from '@flogo/flow/core';
 
 import {
   ERRORS as RUNNER_ERRORS,
@@ -18,10 +25,8 @@ import {
   RunProgressStore,
   Step
 } from './core/runner.service';
-import { FlogoModal } from '@flogo/core/services/modal.service';
-import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
-import { IFlogoFlowDiagram, IFlogoFlowDiagramTask, makeDefaultErrorTrigger } from '../core/models';
+import { FlowMetadata } from './task-configurator/models/flow-metadata';
 
 import {
   PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS,
@@ -67,18 +72,14 @@ import {
   objectFromArray
 } from '@flogo/shared/utils';
 
-import { flogoFlowToJSON, triggerFlowToJSON } from './shared/diagram/models/flow.model';
+import { HandlerInfo } from './core/models';
 
-import { HandlerInfo } from './core/models/models';
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
-import { FlowMetadataAttribute } from './core/models/flow-metadata-attribute';
-import { FlowMetadata } from './task-configurator/models/flow-metadata';
-import { LanguageService } from '@flogo/core';
 import { updateBranchNodesRunStatus } from './shared/diagram/utils';
 import { SaveTaskConfigEventData } from './task-configurator';
-import { FlowData } from '@flogo/flow/core';
+import { makeDefaultErrorTrigger } from '@flogo/flow/shared/diagram/models/task.model';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -428,31 +429,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     };
   }
 
-  /*-------------------------------*
-   |       EXPORT AND IMPORT       |
-   *-------------------------------*/
-
-  private _exportTriggerAndFlow() {
-    const flow = this._exportFlow();
-    const trigger = this._exportTrigger();
-
-    return Promise.all([trigger, flow]);
-  }
-
-  private _exportFlow() {
-    return new Promise((resolve, reject) => {
-      const jsonFlow = flogoFlowToJSON(this.flow);
-      return resolve({ fileName: 'flow.json', data: jsonFlow.flow });
-    });
-  }
-
-  private _exportTrigger() {
-    return new Promise((resolve, reject) => {
-      const jsonTrigger = triggerFlowToJSON(this.flow);
-      resolve({ fileName: 'trigger.json', data: jsonTrigger });
-    });
-  }
-
   /**
    *
    * @param urlParts empty to navigate to module root
@@ -615,7 +591,7 @@ export class FlowComponent implements OnInit, OnDestroy {
               task: errorTrigger,
               id: data.id
             },
-            done: (diagram: IFlogoFlowDiagram) => {
+            done: (diagram: FlowDiagram) => {
               _.assign(this.handlers[diagramId].diagram, diagram);
               this._updateFlow(this.flow);
               this._isDiagramEdited = true;
@@ -633,7 +609,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       let task = data.task;
       const taskName = this.uniqueTaskName(data.task.name);
       // generate task id when adding the task
-      task = <IFlogoFlowDiagramTask> _.assign({},
+      task = <Task> _.assign({},
         task,
         {
           id: this.profileService.generateTaskID(this._getAllTasks(), task),
@@ -671,7 +647,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                   },
                   // todo: remove, this is a temporal solution to prevent auto opening a new tile
                   skipTaskAutoSelection: isMapperTask || isSubFlowTask,
-                  done: (diagram: IFlogoFlowDiagram) => {
+                  done: (diagram: FlowDiagram) => {
                     _.assign(this.handlers[diagramId].diagram, diagram);
                     this._updateFlow(this.flow);
                     this._isDiagramEdited = true;
@@ -767,7 +743,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                                   task: currentTask, // this.handlers[diagramId].tasks[data.node.taskID],
                                   id: data.id
                                 },
-                                done: (diagram: IFlogoFlowDiagram) => {
+                                done: (diagram: FlowDiagram) => {
                                   _.assign(this.handlers[diagramId].diagram, diagram);
                                   // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
                                 }
@@ -826,7 +802,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                   task: this.handlers[diagramId].tasks[data.node.taskID],
                   id: diagramId
                 },
-                done: (diagram: IFlogoFlowDiagram) => {
+                done: (diagram: FlowDiagram) => {
                   _.assign(this.handlers[diagramId].diagram, diagram);
                 }
               }
@@ -865,7 +841,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                     task: this.handlers[diagramId].tasks[data.node.taskID],
                     id: diagramId
                   },
-                  done: (diagram: IFlogoFlowDiagram) => {
+                  done: (diagram: FlowDiagram) => {
                     _.assign(this.handlers[diagramId].diagram, diagram);
                     // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
                   }
@@ -993,7 +969,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                   node: data.node,
                   id: diagramId
                 },
-                done: (diagram: IFlogoFlowDiagram) => {
+                done: (diagram: FlowDiagram) => {
                   // TODO
                   //  NOTE that once delete branch, not only single task is removed
                   const tasks = this.handlers[diagramId].tasks;
@@ -1005,7 +981,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                       items: {}
                     };
                     const errorTasks = this.flow.errorHandler.items;
-                    const errorDiagram = this.flow.errorHandler.paths = <IFlogoFlowDiagram>{
+                    const errorDiagram = this.flow.errorHandler.paths = <FlowDiagram>{
                       root: {},
                       nodes: {}
                     };
@@ -1060,7 +1036,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         task: branchInfo,
         id: diagramId
       },
-      done: (diagram: IFlogoFlowDiagram) => {
+      done: (diagram: FlowDiagram) => {
         _.assign(this.handlers[diagramId].diagram, diagram);
         this._updateFlow(this.flow);
       }
@@ -1118,7 +1094,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                           node: data.node,
                           task: this.handlers[diagramId].tasks[data.node.taskID]
                         },
-                        done: (diagram: IFlogoFlowDiagram) => {
+                        done: (diagram: FlowDiagram) => {
                           _.assign(this.handlers[diagramId].diagram, diagram);
                           // this._updateFlow(this.flow);
                         }
@@ -1688,7 +1664,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
 
     const selectedTaskId = selectedNode.taskID;
-    const selectedTile = <IFlogoFlowDiagramTask>_.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
+    const selectedTile = <Task>_.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
 
     const metadata = <FlowMetadata>  _.defaultsDeep({
       type: 'metadata',
@@ -1838,7 +1814,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.defineInputSchema.openInputSchemaModel();
   }
 
-  onRunFlow(modifiedInputs: FlowMetadataAttribute[]) {
+  onRunFlow(modifiedInputs: MetadataAttribute[]) {
     let flowUpdatePromise;
     if (modifiedInputs.length) {
       this.flow.metadata.input = modifiedInputs;
@@ -1904,7 +1880,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._updateFlow(this.flow);
   }
 
-  private mergeFlowInputMetadata(inputMetadata: FlowMetadataAttribute[]): FlowMetadataAttribute[] {
+  private mergeFlowInputMetadata(inputMetadata: MetadataAttribute[]): MetadataAttribute[] {
     return inputMetadata.map(input => {
       const existingInput = this.flow.metadata.input.find(i => i.name === input.name && i.type === input.type);
       if (existingInput) {
@@ -1944,12 +1920,12 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   // when flow schema's output change we need to remove the task mappings that were referencing them
   private cleanDanglingTaskOutputMappings(outputRegistry: Map<string, boolean>) {
-    const isMapperContribAndHasMapping = (task: IFlogoFlowDiagramTask) => {
+    const isMapperContribAndHasMapping = (task: Task) => {
       const schema = this.flow.schemas[task.ref];
       return isMapperActivity(schema) && task.attributes.inputs.length ;
     };
     _.filter(this._getAllTasks(), isMapperContribAndHasMapping)
-      .forEach((task: IFlogoFlowDiagramTask) => {
+      .forEach((task: Task) => {
         task.attributes.inputs.forEach((mapping) => {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
         });

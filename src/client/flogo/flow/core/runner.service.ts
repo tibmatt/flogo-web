@@ -29,10 +29,10 @@ import {
   RUN_STATUS_CODE,
   RunService,
   StatusResponse
-} from '../../core/services/restapi/run.service';
-import { flogoFlowToJSON, flowToJSON_InputFlow } from '../../core/models';
-import { Interceptor, Step } from '../../core/models/runner.models';
-import { ErrorService } from '../../core/services/error.service';
+} from '@flogo/core/services/restapi/run.service';
+import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
+import { Interceptor, Step, flowToJSON_InputFlow } from '@flogo/core/interfaces';
+import { ErrorService } from '@flogo/core/services/error.service';
 
 export const ERRORS = {
   MAX_TRIALS_REACHED: 'MaxTrialsReached',

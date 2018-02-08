@@ -1,40 +1,8 @@
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { flogoIDEncode } from '@flogo/shared/utils';
-import { IFlogoFlowDiagramTaskAttributes } from './attribute.model';
-import { IFlogoFlowDiagramTaskAttributeMapping } from './attribute-mapping.model';
-import { IFlogoFlowDiagramTaskLink } from './task-link.model';
+import { AttributeMapping, TaskAttributes, Link, Task } from '@flogo/core';
 
-export interface IFlogoFlowDiagramTask {
-  id: string;
-  type: FLOGO_TASK_TYPE;
-  version ?: string;
-  name ?: string;
-  ref ?: string;
-  description ?: string;
-  activityType?: string;
-  activityRef?: string;
-  flowRef?: string;
-  triggerType?: string;
-  attributes ?: IFlogoFlowDiagramTaskAttributes;
-  inputMappings ?: IFlogoFlowDiagramTaskAttributeMapping[ ];
-  outputMappings ?: IFlogoFlowDiagramTaskAttributeMapping[ ];
-  tasks ?: IFlogoFlowDiagramTask[ ];
-  links ?: IFlogoFlowDiagramTaskLink[ ];
-  settings?: {
-    iterate?: string;
-  };
-  condition?: string;
-  __props?: {
-    [key: string]: any;
-    errors?: { msg: string; }[];
-    warnings?: { msg: string; }[];
-  }; // internal only properties in design time
-  __status?: {
-    [key: string]: boolean;
-  }; // internal only properties in design time
-}
-
-export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
+export class FlogoFlowDiagramTask implements Task {
   id: string;
   type: FLOGO_TASK_TYPE;
   version: string;
@@ -43,11 +11,11 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   activityType: string;
   ref: string;
   triggerType: string;
-  attributes: IFlogoFlowDiagramTaskAttributes;
-  inputMappings: IFlogoFlowDiagramTaskAttributeMapping[ ];
-  outputMappings: IFlogoFlowDiagramTaskAttributeMapping[ ];
-  tasks: IFlogoFlowDiagramTask[ ];
-  links: IFlogoFlowDiagramTaskLink[ ];
+  attributes: TaskAttributes;
+  inputMappings: AttributeMapping[ ];
+  outputMappings: AttributeMapping[ ];
+  tasks: Task[ ];
+  links: Link[ ];
   settings?: {
     iterate?: string;
   };
@@ -59,13 +27,13 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
     return flogoIDEncode('FlogoFlowDiagramTask::' + Date.now());
   }
 
-  constructor(task ?: IFlogoFlowDiagramTask) {
+  constructor(task ?: Task) {
     this.update(task);
   }
 
-  update(task: IFlogoFlowDiagramTask) {
+  update(task: Task) {
     if (!task) {
-      task = < IFlogoFlowDiagramTask > {};
+      task = < Task > {};
     }
 
     this.id = task.id || this.id || FlogoFlowDiagramTask.genTaskID();
@@ -79,7 +47,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
 
     this.triggerType = task.triggerType || this.triggerType || '';
     this.attributes = _.isEmpty(task.attributes) ?
-      this.attributes || < IFlogoFlowDiagramTaskAttributes > {} :
+      this.attributes || < TaskAttributes > {} :
       _.cloneDeep(task.attributes);
     this.inputMappings = _.isEmpty(task.inputMappings) ? this.inputMappings || [] : _.cloneDeep(task.inputMappings);
     this.outputMappings = _.isEmpty(task.outputMappings) ?
@@ -103,7 +71,7 @@ export class FlogoFlowDiagramTask implements IFlogoFlowDiagramTask {
   }
 }
 
-export function makeDefaultErrorTrigger(id): IFlogoFlowDiagramTask {
+export function makeDefaultErrorTrigger(id): Task {
 
   const outputs = [
     {

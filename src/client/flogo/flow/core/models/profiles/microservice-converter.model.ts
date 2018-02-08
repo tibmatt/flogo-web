@@ -3,8 +3,8 @@ import { RESTAPIActivitiesService } from '../../../../core/services/restapi/acti
 import { RESTAPITriggersService } from '../../../../core/services/restapi/triggers-api.service';
 import { ErrorService } from '../../../../core/services/error.service';
 import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../../core/constants';
-import { FlowMetadata } from '../models';
-import { FlowMetadataAttribute } from '../flow-metadata-attribute';
+import { FlowMetadata } from '@flogo/core';
+import { MetadataAttribute } from '../../../../core/interfaces/flow/flow-metadata-attribute';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
   triggerService: RESTAPITriggersService;
@@ -50,7 +50,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
     };
 
     metadata.input = flowInputs.map(input => {
-      const inputMetadata: FlowMetadataAttribute = {
+      const inputMetadata: MetadataAttribute = {
         name: input.name,
         type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING').toUpperCase()],
       };
