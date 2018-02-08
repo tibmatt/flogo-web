@@ -12,6 +12,8 @@ export interface IFlogoFlowDiagramTask {
   ref ?: string;
   description ?: string;
   activityType?: string;
+  activityRef?: string;
+  flowRef?: string;
   triggerType?: string;
   attributes ?: IFlogoFlowDiagramTaskAttributes;
   inputMappings ?: IFlogoFlowDiagramTaskAttributeMapping[ ];

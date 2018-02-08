@@ -41,6 +41,7 @@ export interface flowToJSON_Task {
   type: number;
   activityType: string;
   activityRef?: string;
+  flowRef?: string;
   name?: string;
   description?: string;
   attributes: flowToJSON_Attribute[];
@@ -577,8 +578,12 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       taskInfo.name = _.get(task, 'name', '');
       taskInfo.description = _.get(task, 'description', '');
       taskInfo.type = task.type;
-      taskInfo.activityType = task.activityType;
-      taskInfo.activityRef = task.ref;
+      taskInfo.activityType = task.activityType || '';
+      if (task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+        taskInfo.flowRef = task.flowRef;
+      } else {
+        taskInfo.activityRef = task.ref;
+      }
 
 
       /* add `inputs` of a task to the `attributes` of the taskInfo in flow.json */
