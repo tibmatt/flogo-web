@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Action} from '@flogo/core/application.model';
 
 @Component({
   selector: 'flogo-flow-flows-list',
@@ -6,12 +7,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['flows-list.component.less']
 })
 export class FlowsListComponent {
-  // TODO: Implement interface for the list
   @Input()
-  list: any[];
+  list: Action[];
 
   @Output()
-  flowSelected: EventEmitter<any> = new EventEmitter<any>();
+  flowSelected: EventEmitter<Action | string> = new EventEmitter<Action | string>();
 
   searchText: string;
 
@@ -30,7 +30,7 @@ export class FlowsListComponent {
     this.flowSelected.emit('cancel');
   }
 
-  selectFlow(flow: any) {
+  selectFlow(flow: Action) {
     this.flowSelected.emit(flow);
   }
 }

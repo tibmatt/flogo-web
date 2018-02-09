@@ -21,7 +21,6 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
 
   private _subscriptions: any;
   private _addTaskMsg: any;
-  // TODO implement interface
   private subFlowTask: any;
   public showFlowsList = false;
 
