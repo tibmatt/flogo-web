@@ -6,11 +6,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['flows-list.component.less']
 })
 export class FlowsListComponent {
+  // TODO: Implement interface for the list
   @Input()
   list: any[];
 
   @Output()
-  onUserSelection: EventEmitter<any> = new EventEmitter<any>();
+  flowSelected: EventEmitter<any> = new EventEmitter<any>();
 
   searchText: string;
 
@@ -26,10 +27,10 @@ export class FlowsListComponent {
   }
 
   cancelList() {
-    this.onUserSelection.emit('cancel');
+    this.flowSelected.emit('cancel');
   }
 
   selectFlow(flow: any) {
-    this.onUserSelection.emit(flow);
+    this.flowSelected.emit(flow);
   }
 }

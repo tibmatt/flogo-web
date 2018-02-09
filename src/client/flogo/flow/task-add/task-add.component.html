@@ -9,7 +9,7 @@
       </div>
     </div>
     <flogo-flow-task-add-install
-      [profileType]="flowService?.currentFlowDetails?.applicationProfileType"
+      [profileType]="profileType"
       (flogoOnInstalled)="onInstalledAction($event)"></flogo-flow-task-add-install>
   </div>
 
@@ -29,5 +29,5 @@
   <flogo-flow-sub-flow *ngIf="showFlowsList"
                        [appId]="appId"
                        [currentFlow]="currentFlowId"
-                       (onSelection)="handleFlowSelection($event)"></flogo-flow-sub-flow>
+                       (flowSelected)="handleFlowSelection($event)"></flogo-flow-sub-flow>
 </div>

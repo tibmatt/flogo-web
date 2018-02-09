@@ -21,6 +21,7 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
 
   private _subscriptions: any;
   private _addTaskMsg: any;
+  // TODO implement interface
   private subFlowTask: any;
   public showFlowsList = false;
 
@@ -48,6 +49,10 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
 
   public get currentFlowId() {
     return this.flowService.currentFlowDetails.id;
+  }
+
+  public get profileType() {
+    return this.flowService.currentFlowDetails.applicationProfileType;
   }
 
   public get filterQuery() {
