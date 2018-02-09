@@ -20,7 +20,8 @@ describe('Service: Flow', function (this: {
 
   beforeEach(() => {
     this.modelConverter = jasmine.createSpyObj<UIModelConverterService>('converterService', [
-      'getWebFlowModel'
+      'getWebFlowModel',
+      'setProfile'
     ]);
     this.commonFlowsService = jasmine.createSpyObj<FlowsService>('commonFlowsService', [
       'deleteFlowWithTrigger'
@@ -32,7 +33,7 @@ describe('Service: Flow', function (this: {
   it('Should get the Flow Details and convert it to work with canvas component', done => {
     const spyConverterService = <Spy>this.modelConverter.getWebFlowModel;
     spyConverterService.and.returnValue(Promise.resolve(_.cloneDeep(mockResultantUIFlow)));
-    this.service.getFlow('dummy')
+    this.service.loadFlow('dummy')
       .then((response) => {
         expect(_.isEqual(response, resultantFlowModelForCanvas)).toEqual(true);
         done();

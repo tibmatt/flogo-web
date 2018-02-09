@@ -16,14 +16,16 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 import { CoreModule as FlowCoreModule } from './core';
 
-import { routing } from './flow.routing';
-import { FlowComponent } from './flow.component';
 import {DiagramModule as FlogoDiagramModule} from '@flogo/flow/shared/diagram';
 import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-panel';
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
 import {TriggerDetailModule as FlogoFlowTriggerDetailModule} from '@flogo/flow/trigger-detail';
+
+import { routing } from './flow.routing';
+import { FlowComponent } from './flow.component';
+import { FlowDataResolver } from './flow-data.resolver';
 
 
 @NgModule({
@@ -47,10 +49,11 @@ import {TriggerDetailModule as FlogoFlowTriggerDetailModule} from '@flogo/flow/t
   declarations: [
     EmptyDetailComponent,
     FlogoRunFlowComponent,
-    FlowComponent
-
+    FlowComponent,
   ],
-  providers: [],
+  providers: [
+    FlowDataResolver,
+  ],
   bootstrap: [
     FlowComponent
   ]

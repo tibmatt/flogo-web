@@ -61,9 +61,11 @@ import {
   flogoIDDecode,
   flogoIDEncode,
   isMapperActivity,
+  isSubflowTask,
   normalizeTaskName,
   notification,
-  objectFromArray} from '@flogo/shared/utils';
+  objectFromArray
+} from '@flogo/shared/utils';
 
 import { flogoFlowToJSON, triggerFlowToJSON } from './shared/diagram/models/flow.model';
 
@@ -76,6 +78,7 @@ import { FlowMetadata } from './task-configurator/models/flow-metadata';
 import { LanguageService } from '@flogo/core';
 import { updateBranchNodesRunStatus } from './shared/diagram/utils';
 import { SaveTaskConfigEventData } from './task-configurator';
+import { FlowData } from '@flogo/flow/core';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -105,7 +108,6 @@ const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
 export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
   public flow: any;
-  public flowId: string;
   public mainHandler: HandlerInfo;
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
@@ -130,7 +132,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   _isCurrentProcessDirty = true;
   _isDiagramEdited: boolean;
   flowName: string;
-  backToAppHover: boolean;
+  backToAppHover = false;
 
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
@@ -161,14 +163,15 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.app = null;
   }
 
-  public ngOnInit() {
-    this.flowId = this._route.snapshot.params['id'];
-    this.backToAppHover = false;
+  get flowId() {
+    return this._flowService.currentFlowDetails.id;
+  }
 
-    this._loadFlow(this.flowId)
-      .then(() => {
-        this.initSubscribe();
-      });
+  public ngOnInit() {
+    const flowData: FlowData = this._route.snapshot.data['flowData'];
+    this.initFlowData(flowData);
+    this.initSubscribe();
+    this.loading = false;
   }
 
   private initSubscribe() {
@@ -308,31 +311,26 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   }
 
-  private _loadFlow(flowId: string) {
-    this.loading = true;
-    return this._flowService.getFlow(flowId)
-      .then((res: any) => {
-        this.flow = res.flow;
-        this.flowName = this.flow.name;
-        this.handlers = {
-          [FLOW_HANDLER_TYPE_ROOT]: res.root,
-          [FLOW_HANDLER_TYPE_ERROR]: res.errorHandler
-        };
+  private initFlowData(flowData: FlowData) {
+    this.flow = flowData.flow;
+    this.flowName = this.flow.name;
+    this.handlers = {
+      [FLOW_HANDLER_TYPE_ROOT]: flowData.root,
+      [FLOW_HANDLER_TYPE_ERROR]: flowData.errorHandler
+    };
 
-        this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
-        this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-        if (_.isEmpty(this.mainHandler.tasks)) {
-          this.hasTask = false;
-        }
+    this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
+    this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
+    if (_.isEmpty(this.mainHandler.tasks)) {
+      this.hasTask = false;
+    }
+    this.triggersList = flowData.triggers;
 
-        this.triggersList = res.triggers;
-
-        this.clearAllHandlersRunStatus();
-        this.determineRunnableEnabled();
-        this.loading = false;
-        this.profileService.initializeProfile(this.flow.app);
-        this.profileType = this.profileService.currentApplicationProfile;
-      });
+    this.clearAllHandlersRunStatus();
+    this.determineRunnableEnabled();
+    // todo: move to resolver?
+    this.profileService.initializeProfile(this.flow.app);
+    this.profileType = this.profileService.currentApplicationProfile;
   }
 
   private _getCurrentState(taskID: string) {
@@ -582,8 +580,6 @@ export class FlowComponent implements OnInit, OnDestroy {
         () => {
           console.group('after navigation');
 
-          data.appProfileType = this.profileType;
-
           this._postService.publish(
             _.assign(
               {}, FLOGO_ADD_TASKS_PUB_EVENTS.addTask, {
@@ -650,14 +646,17 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
       handler.tasks[task.id] = task;
 
-      const rootHandler = this.handlers.root;
-      rootHandler.schemas = rootHandler.schemas || {};
       const schema = task.__schema;
-      task.ref = task.ref || schema.ref;
-      rootHandler.schemas[task.ref] = schema;
-      this.flow.schemas = Object.assign({}, this.flow.schemas, rootHandler.schemas);
-      delete task['__schema'];
       const isMapperTask = isMapperActivity(schema);
+      const isSubFlowTask = isSubflowTask(data.task.type);
+      if (!isSubFlowTask) {
+        const rootHandler = this.handlers.root;
+        rootHandler.schemas = rootHandler.schemas || {};
+        task.ref = task.ref || schema.ref;
+        rootHandler.schemas[task.ref] = schema;
+        this.flow.schemas = Object.assign({}, this.flow.schemas, rootHandler.schemas);
+        delete task['__schema'];
+      }
 
       this._navigateFromModuleRoot()
         .then(
@@ -671,13 +670,13 @@ export class FlowComponent implements OnInit, OnDestroy {
                     id: data.id
                   },
                   // todo: remove, this is a temporal solution to prevent auto opening a new tile
-                  skipTaskAutoSelection: isMapperTask,
+                  skipTaskAutoSelection: isMapperTask || isSubFlowTask,
                   done: (diagram: IFlogoFlowDiagram) => {
                     _.assign(this.handlers[diagramId].diagram, diagram);
                     this._updateFlow(this.flow);
                     this._isDiagramEdited = true;
                     this.hasTask = true;
-                    if (isMapperTask) {
+                    if (isMapperTask || isSubFlowTask) {
                       // todo: remove, this is a temporal solution to clear the diagram selection state
                       this._cleanSelectionStatus();
                     }
@@ -815,6 +814,25 @@ export class FlowComponent implements OnInit, OnDestroy {
         .then(() => this._selectConfigureTaskFromDiagram(data, envelope, true))
         .then(() => this._cleanSelectionStatus())
         .then(() => console.groupEnd());
+    }
+    if (isSubflowTask(currentTask.type)) {
+      return this._navigateFromModuleRoot()
+        .then(() => {
+          this._postService.publish(
+            _.assign(
+              {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
+                data: {
+                  node: data.node,
+                  task: this.handlers[diagramId].tasks[data.node.taskID],
+                  id: diagramId
+                },
+                done: (diagram: IFlogoFlowDiagram) => {
+                  _.assign(this.handlers[diagramId].diagram, diagram);
+                }
+              }
+            )
+          );
+        });
     }
     this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(

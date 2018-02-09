@@ -17,8 +17,15 @@ export class UIModelConverterService {
   constructor(public triggerService: RESTAPITriggersService,
               public activityService: RESTAPIActivitiesService,
               public contribService: RESTAPIContributionsService,
-              public profileSerivce: FlogoProfileService,
               public errorService: ErrorService) {
+  }
+
+  setProfile(profile: FLOGO_PROFILE_TYPE) {
+    if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
+      this.converterModelInstance = new MicroServiceModelConverter(this.triggerService, this.activityService, this.errorService);
+    } else {
+      this.converterModelInstance = new DeviceModelConverter(this.contribService, this.errorService);
+    }
   }
 
   /**
@@ -66,11 +73,6 @@ export class UIModelConverterService {
 
   // todo: define interfaces
   getWebFlowModel(flowObj: any) {
-    if (this.profileSerivce.getProfileType(flowObj.app) === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-      this.converterModelInstance = new MicroServiceModelConverter(this.triggerService, this.activityService, this.errorService);
-    } else {
-      this.converterModelInstance = new DeviceModelConverter(this.contribService, this.errorService);
-    }
     return this.converterModelInstance.convertToWebFlowModel(flowObj);
   }
 

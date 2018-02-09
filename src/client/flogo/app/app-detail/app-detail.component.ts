@@ -9,7 +9,7 @@ import {
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { SanitizeService } from '../../core/services/sanitize.service';
-import { diffDates, notification } from '../../shared/utils';
+import {diffDates, getProfileType, notification} from '../../shared/utils';
 import { FlogoModal } from '../../core/services/modal.service';
 import { FLOGO_PROFILE_TYPE } from '../../core/constants';
 import { FlogoProfileService } from '../../core/services/profile.service';
@@ -59,7 +59,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   constructor(public translate: LanguageService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal,
-              public profileSerivce: FlogoProfileService,
               private sanitizer: SanitizeService) {
   }
 
@@ -84,7 +83,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
       // this.flows = this.extractFlows();
 
-      this.profileType = this.profileSerivce.getProfileType(this.application);
+      this.profileType = getProfileType(this.application);
 
       const prevValue = change.previousValue;
       const isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;

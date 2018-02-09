@@ -436,16 +436,6 @@ describe('Service: FlogoProfileService', function (this: {
       this.contribServiceMock);
   });
 
-  it('Should return MICRO_SERVICE enum for Microservice type of profile', () => {
-    const profileType = this.testService.getProfileType(mockMicroServiceAppData);
-    expect(profileType).toEqual(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
-  });
-
-  it('Should return DEVICE enum for Device type of profile', () => {
-    const profileType = this.testService.getProfileType(mockDeviceAppData);
-    expect(profileType).toEqual(FLOGO_PROFILE_TYPE.DEVICE);
-  });
-
   it('Should create utilities class for a microservice profile', () => {
     this.testService.initializeProfile(mockMicroServiceAppData);
     expect(this.testService.utils instanceof FlogoMicroserviceTaskIdGeneratorService).toBeTruthy();
@@ -456,17 +446,18 @@ describe('Service: FlogoProfileService', function (this: {
     expect(this.testService.utils instanceof FlogoDeviceTaskIdGeneratorService).toBeTruthy();
   });
 
-  it('Should transform the 11 activities', (done) => {
+  it('Should transform the 12 activities including Sub-Flow', (done) => {
     const spyActivityService = <Spy>this.activityServiceMock.getActivities;
     spyActivityService.and.returnValue(Promise.resolve(new MockActivitiesResponse()));
     this.testService.getActivities(FLOGO_PROFILE_TYPE.MICRO_SERVICE)
       .then((res) => {
-        expect(res.length).toEqual(11);
+        // 11 activities + 1 sub-flow activity
+        expect(res.length).toEqual(12);
         done();
       });
   });
 
-  it('Should add the "installed" field to all items', (done) => {
+  it('Should add the "installed" field to 11 items', (done) => {
     const spyActivityService = <Spy>this.activityServiceMock.getActivities;
     spyActivityService.and.returnValue(Promise.resolve(new MockActivitiesResponse()));
     this.testService.getActivities(FLOGO_PROFILE_TYPE.MICRO_SERVICE)

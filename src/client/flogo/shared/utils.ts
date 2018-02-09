@@ -1,4 +1,5 @@
 import { DEFAULT_VALUES_OF_TYPES, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../core/constants';
+import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
@@ -428,7 +429,32 @@ export function diffDates(beginDate: any, endDate: any, timeUnit: any) {
 
 }
 
+export function createSubFlowTask() {
+  return {
+    type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
+    name: 'Sub-Flow',
+    ref: 'subflow',
+    version: '',
+    description: '',
+    homepage: '',
+    attributes: {
+      inputs: [],
+      outputs: []
+    },
+    return: false
+  };
+}
 
+export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
+  return taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC;
+}
 
-
-
+export function getProfileType(app) {
+  let profileType: FLOGO_PROFILE_TYPE;
+  if (app.device) {
+    profileType = FLOGO_PROFILE_TYPE.DEVICE;
+  } else {
+    profileType = FLOGO_PROFILE_TYPE.MICRO_SERVICE;
+  }
+  return profileType;
+}

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import { flogoGenTriggerID, flogoIDEncode } from '@flogo/shared/utils';
+import {flogoGenTriggerID, flogoIDEncode, isSubflowTask} from '@flogo/shared/utils';
 import { ErrorService } from '@flogo/core/services/error.service';
 
 import {
@@ -39,6 +39,8 @@ export abstract class AbstractModelConverter {
     let tasks = _.get(flow, 'data.flow.rootTask.tasks', []);
     // add tiles from error diagram
     tasks = tasks.concat(_.get(flow, 'data.flow.errorHandlerTask.tasks', []));
+    // filter only tasks of type activity and ignore subflows
+    tasks = tasks.filter(t => !isSubflowTask(t.type));
 
     tasks.forEach((task) => {
       const ref = task.activityRef;
@@ -143,7 +145,7 @@ export abstract class AbstractModelConverter {
         element.node.name = _.get(element, 'cli.name', element.node.name);
         element.node.description = _.get(element, 'cli.description', element.node.description);
         flow.items[element.node.id || element.node.nodeId] = element.node;
-        if (installedTiles) {
+        if (installedTiles && element.cli && !isSubflowTask(element.cli.type)) {
           flow.schemas[element.node.ref] = installedTiles.find((tile) => {
             return tile.ref === element.node.ref;
           });
@@ -176,7 +178,10 @@ export abstract class AbstractModelConverter {
       tasks.forEach((task) => {
         const nodeItem = node.makeItem({ taskID: flogoIDEncode(task.id) });
 
-        const installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
+        let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
+        if (isSubflowTask(task.type)) {
+          installedActivity = {ref: 'subflow'};
+        }
         if (!installedActivity) {
           throw this.errorService.makeOperationalError('Activity is not installed', `Activity: ${task.activityRef}`,
             {
@@ -502,6 +507,11 @@ class ItemFactory {
 
     if (activitySchema.return) {
       item.return = true;
+    }
+
+    // Add flowRef for the case of a subflow typr of task
+    if (isSubflowTask(taskInstance.type)) {
+      item.flowRef = taskInstance.flowRef;
     }
 
     // -------- set attributes inputs  ----------------

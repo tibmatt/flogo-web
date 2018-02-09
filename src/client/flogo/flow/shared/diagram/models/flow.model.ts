@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { convertTaskID, flogoIDEncode, getDefaultValue } from '@flogo/shared/utils';
+import {convertTaskID, flogoIDEncode, getDefaultValue, isSubflowTask} from '@flogo/shared/utils';
 import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import {
   IFlogoFlowDiagramNode,
@@ -41,6 +41,7 @@ export interface flowToJSON_Task {
   type: number;
   activityType: string;
   activityRef?: string;
+  flowRef?: string;
   name?: string;
   description?: string;
   attributes: flowToJSON_Attribute[];
@@ -577,8 +578,12 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       taskInfo.name = _.get(task, 'name', '');
       taskInfo.description = _.get(task, 'description', '');
       taskInfo.type = task.type;
-      taskInfo.activityType = task.activityType;
-      taskInfo.activityRef = task.ref;
+      taskInfo.activityType = task.activityType || '';
+      if (isSubflowTask(task.type)) {
+        taskInfo.flowRef = task.flowRef;
+      } else {
+        taskInfo.activityRef = task.ref;
+      }
 
 
       /* add `inputs` of a task to the `attributes` of the taskInfo in flow.json */

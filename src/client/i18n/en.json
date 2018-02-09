@@ -200,5 +200,13 @@
   "INPUT-PARAMS:ADD": "+",
   "INPUT-PARAMS:DEFINE": "Define Params",
   "INPUT-PARAMS:SAVE": "Save",
-  "INPUT-PARAMS:CANCEL": "Cancel"
+  "INPUT-PARAMS:CANCEL": "Cancel",
+  "FLOWS-LIST:HEADER-TEXT":"Select a flow to use as a sub-flow",
+  "FLOWS-LIST:CANCEL":"Cancel",
+  "FLOWS-LIST:FILTER-TEXT":"Filter",
+  "FLOWS-LIST:CREATED":"Created",
+  "FLOWS-LIST:LINK-TEXT":"View in new tab",
+  "FLOWS-LIST:NODESCRIPTION": "No Description",
+  "FLOWS-LIST:NOFLOW": "No flow is available for selection",
+  "FLOWS-LIST:SELECT":"Select"
 }

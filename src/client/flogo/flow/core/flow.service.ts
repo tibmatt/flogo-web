@@ -5,9 +5,12 @@ import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
 import { IFlogoFlowDiagramTaskDictionary } from '../shared/diagram/models/dictionary.model';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '../../core/services/flows.service';
+import { FlogoProfileService } from '@flogo/core/services/profile.service';
+import {FlogoFlowDetails} from '@flogo/flow/core/models/flow-details.model';
 
-interface FlowData {
+export interface FlowData {
   flow: any;
+  triggers: any;
   root: {
     diagram: any;
     tasks: any;
@@ -20,20 +23,24 @@ interface FlowData {
 
 @Injectable()
 export class FlogoFlowService {
+  public currentFlowDetails: FlogoFlowDetails;
+
   constructor(private _flowAPIService: APIFlowsService,
               private _converterService: UIModelConverterService,
               private _commonFlowsService: FlowsService) {
   }
 
-  getFlow(flowId: string): Promise<FlowData> {
+  loadFlow(flowId: string): Promise<FlowData> {
     return this._flowAPIService.getFlow(flowId)
       .then((flow) => {
         const flowDiagramDetails = _.omit(flow, [
           'triggers'
         ]);
 
-        const triggers = flow.triggers;
+        this.currentFlowDetails = new FlogoFlowDetails(flow);
 
+        const triggers = flow.triggers;
+        this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
         return this._converterService.getWebFlowModel(flowDiagramDetails)
           .then(convertedFlow => this.processFlowModel(convertedFlow, flow.triggers.length > 0))
           .then(processedFlow => _.assign({}, processedFlow, { triggers }));
@@ -52,6 +59,10 @@ export class FlogoFlowService {
 
   listFlowsByName(appId, name) {
     return this._flowAPIService.findFlowsByName(name, appId);
+  }
+
+  listFlowsForApp(appId) {
+    return this._flowAPIService.findFlowsByName('', appId);
   }
 
   processFlowModel(model, hasTrigger?: boolean): Promise<FlowData> {

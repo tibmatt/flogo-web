@@ -16,14 +16,18 @@
   <div class="flogo-common-edit-panel__container">
     <div class="filter-box">
       <input class="flogo-input-search filter-box__input" type="text" [(ngModel)]="filterQuery"
-             placeholder="{{ translate.instant('ADD:FILTER-TASKS') }}">
+             placeholder="{{ 'ADD:FILTER-TASKS' | translate }}">
     </div>
 
 
     <ul class="flogo-common-edit-panel__tiles-list">
       <li class="flogo-common-edit-panel__tiles-list-tile" *ngFor="let task of filteredTasks"
-          (click)="sendAddTaskMsg(task)">{{task.name}}
+          (click)="manageAddTaskMsg(task)">{{task.name}}
       </li>
     </ul>
   </div>
+  <flogo-flow-sub-flow *ngIf="showFlowsList"
+                       [appId]="appId"
+                       [currentFlow]="currentFlowId"
+                       (flowSelected)="handleFlowSelection($event)"></flogo-flow-sub-flow>
 </div>
