@@ -1,24 +1,14 @@
 import { Injectable } from '@angular/core';
-import { UIModelConverterService } from './ui-model-converter.service';
-import { FlowDiagram, TaskDictionary } from '@flogo/core';
+
+import { FlowDiagram, TaskDictionary, UiFlow } from '@flogo/core';
+import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
+import { FlowsService } from '@flogo/core/services/flows.service';
+
 import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
 
-import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
-import { FlowsService } from '../../core/services/flows.service';
-import {FlogoFlowDetails} from '@flogo/flow/core/models/flow-details.model';
-
-export interface FlowData {
-  flow: any;
-  triggers: any;
-  root: {
-    diagram: any;
-    tasks: any;
-  };
-  errorHandler: {
-    diagram: any,
-    tasks: any
-  };
-}
+import { UIModelConverterService } from './ui-model-converter.service';
+import { FlogoFlowDetails } from './models';
+import { FlowData } from './flow-data';
 
 @Injectable()
 export class FlogoFlowService {
@@ -46,7 +36,7 @@ export class FlogoFlowService {
       });
   }
 
-  saveFlow(flowId, uiFlow) {
+  saveFlow(flowId, uiFlow: UiFlow) {
     const { name, description, flow, metadata } = flogoFlowToJSON(uiFlow);
     const action = { name, description, data: { flow }, metadata };
     return this._flowAPIService.updateFlow(flowId, action);

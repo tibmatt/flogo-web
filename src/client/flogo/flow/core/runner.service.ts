@@ -31,7 +31,7 @@ import {
   StatusResponse
 } from '@flogo/core/services/restapi/run.service';
 import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
-import { Interceptor, Step, flowToJSON_InputFlow } from '@flogo/core/interfaces';
+import { Interceptor, Step, UiFlow } from '@flogo/core';
 import { ErrorService } from '@flogo/core/services/error.service';
 
 export const ERRORS = {
@@ -52,7 +52,7 @@ interface BaseRunOptions {
   maxTrials?: number;
   queryInterval?: number;
   useProcessId?: string;
-  useFlow?: flowToJSON_InputFlow;
+  useFlow?: UiFlow;
 }
 
 export interface RunOptions extends BaseRunOptions {
@@ -312,7 +312,7 @@ export class RunnerService {
         (processId, instanceId) => ({ processId, instanceId: instanceId }));
   }
 
-  registerFlowIfNeeded(opts: { useFlow?: flowToJSON_InputFlow, useProcessId?: string }) {
+  registerFlowIfNeeded(opts: { useFlow?: UiFlow, useProcessId?: string }) {
     let registered;
     if (opts.useFlow) {
       // generate process based on the current flow

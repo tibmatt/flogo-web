@@ -4,4 +4,3 @@ export interface FlowMetadata {
   input: MetadataAttribute[];
   output: MetadataAttribute[];
 }
-

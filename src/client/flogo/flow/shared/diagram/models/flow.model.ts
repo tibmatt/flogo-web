@@ -12,7 +12,7 @@ import {
   TaskAttribute as DiagramTaskAttribute,
   TaskDictionary,
   flowToJSON_Attribute,
-  flowToJSON_InputFlow,
+  UiFlow,
   flowToJSON_Link,
   flowToJSON_Mapping,
   flowToJSON_RootTask,
@@ -23,7 +23,7 @@ import {
   triggerToJSON_TriggerInfo,
 } from '@flogo/core';
 
-export function triggerFlowToJSON(flow: flowToJSON_InputFlow): triggerToJSON_Trigger {
+export function triggerFlowToJSON(flow: UiFlow): triggerToJSON_Trigger {
   let result: triggerToJSON_Trigger;
   let rootTask: any;
 
@@ -80,7 +80,7 @@ export function triggerFlowToJSON(flow: flowToJSON_InputFlow): triggerToJSON_Tri
  * @param inFlow
  * @returns {LegacyFlowWrapper}
  */
-export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): LegacyFlowWrapper {
+export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
 
   const DEBUG = false;
   const INFO = true;
@@ -96,7 +96,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): LegacyFlowWrapper
 
   /* validate the required fields */
 
-  const flowID = inFlow._id || inFlow.id;
+  const flowID = inFlow.id;
 
   if (_.isEmpty(flowID)) {
     /* tslint:disable-next-line:no-unused-expression */

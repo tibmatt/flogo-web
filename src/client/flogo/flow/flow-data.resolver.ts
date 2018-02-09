@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { FlogoFlowService, FlowData } from '@flogo/flow/core';
+import { FlogoFlowService } from '@flogo/flow/core';
+import { FlowData } from './core';
 
 @Injectable()
 export class FlowDataResolver implements Resolve<FlowData> {

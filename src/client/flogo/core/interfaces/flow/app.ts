@@ -1,12 +1,4 @@
-export interface Flow {
-  id: string;
-  name: string;
-  description?: string;
-  appId: string;
-  app: FlowApp;
-}
-
-interface FlowApp {
+export interface App {
   id: string;
   name: string;
   type: string;

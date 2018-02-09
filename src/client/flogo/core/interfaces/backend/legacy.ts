@@ -1,5 +1,3 @@
-import { NodeDictionary } from '@flogo/core/interfaces/flow-diagram/flow-diagram';
-
 // Disabling tslint rule for legacy purposes
 /* tslint:disable-next-line:class-name */
 export interface flowToJSON_Attribute {
@@ -98,23 +96,3 @@ export interface flowToJSON_RootTask {
 
 // Disabling tslint rule for legacy purposes
 /* tslint:disable-next-line:class-name */
-export interface flowToJSON_InputFlow {
-  _id?: string;
-  id?: string;
-  name?: string;
-  description?: string;
-  attributes?: any[];
-  path: {
-    root: {
-      is: string
-    };
-    nodes: NodeDictionary,
-  };
-  items: {
-    id: string;
-    type: number;
-    [key: string]: any;
-  }[];
-
-  [key: string]: any;
-}

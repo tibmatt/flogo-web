@@ -10,7 +10,7 @@ import Spy = jasmine.Spy;
 import { RunService, StatusResponse } from '../../core/services/restapi/run.service';
 import { ERRORS, RUN_STATUS_CODE, RunnerService } from './runner.service';
 import { ErrorService } from '../../core/services/error.service';
-import { flowToJSON_InputFlow } from '@flogo/core/interfaces/backend/legacy';
+import { UiFlow } from '@flogo/core';
 import * as flowUtils from '../shared/diagram/models/flow.model';
 
 describe('Service: RunService', function (this: {
@@ -179,7 +179,7 @@ describe('Service: RunService', function (this: {
       storeProcessMock.and.returnValue(ScalarObservable.create({ id: '456' }));
 
       const testFlow = <any> { name: 'test-flow' };
-      this.service.registerFlowIfNeeded({ useFlow: <flowToJSON_InputFlow>testFlow })
+      this.service.registerFlowIfNeeded({ useFlow: <UiFlow>testFlow })
         .subscribe(result => {
           expect(flowUtils.flogoFlowToJSON).toHaveBeenCalledTimes(1);
           expect(storeProcessMock).toHaveBeenCalledTimes(1);

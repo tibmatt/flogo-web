@@ -5,7 +5,8 @@ import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 
-import { MetadataAttribute, FlowDiagram, Task } from '@flogo/core/interfaces';
+import { MetadataAttribute, FlowDiagram, Task, UiFlow } from '@flogo/core';
+import { FlowData } from './core';
 
 import { LanguageService } from '@flogo/core';
 import { PostService } from '@flogo/core/services/post.service';
@@ -13,7 +14,6 @@ import { OperationalError } from '@flogo/core/services/error.service';
 
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
-import { FlowData } from '@flogo/flow/core';
 
 import {
   ERRORS as RUNNER_ERRORS,
@@ -72,7 +72,7 @@ import {
   objectFromArray
 } from '@flogo/shared/utils';
 
-import { HandlerInfo } from './core/models';
+import { HandlerInfo } from '@flogo/core';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { IFlogoTrigger } from './triggers/models';
@@ -108,7 +108,7 @@ const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
 
 export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
-  public flow: any;
+  public flow: UiFlow;
   public mainHandler: HandlerInfo;
   public errorHandler: HandlerInfo;
   public handlers: { [id: string]: HandlerInfo };
@@ -500,8 +500,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     let outputs;
     for (const key in this.flow.items) {
       if (this.flow.items[key].type === FLOGO_TASK_TYPE.TASK_ROOT) {
-        settings = objectFromArray(this.flow.items[key].endpoint.settings, true);
-        outputs = objectFromArray(this.flow.items[key].outputs, true);
+        // casting to any for now because we need to check first that this is still used
+        settings = objectFromArray((<any>this.flow.items[key]).endpoint.settings, true);
+        outputs = objectFromArray((<any>this.flow.items[key]).outputs, true);
       }
     }
 
@@ -976,12 +977,12 @@ export class FlowComponent implements OnInit, OnDestroy {
                   delete tasks[_.get(data, 'node.taskID', '')];
                   const taskIds = Object.keys(tasks);
                   if ((diagramId === 'errorHandler') && (taskIds.length === 1 ) && (tasks[taskIds[0]].type === FLOGO_TASK_TYPE.TASK_ROOT)) {
-                    this.flow.errorHandler = {
+                    this.flow.errorHandler = <any>{
                       paths: {},
                       items: {}
                     };
                     const errorTasks = this.flow.errorHandler.items;
-                    const errorDiagram = this.flow.errorHandler.paths = <FlowDiagram>{
+                    const errorDiagram = this.flow.errorHandler.paths = <any>{
                       root: {},
                       nodes: {}
                     };
