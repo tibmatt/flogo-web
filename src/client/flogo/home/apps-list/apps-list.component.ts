@@ -1,8 +1,7 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { LanguageService } from '@flogo/core';
-import { IFlogoApplicationModel } from '../../core/application.model';
-import { notification } from '../../shared/utils';
-import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
+import { LanguageService, App } from '@flogo/core';
+import { AppsApiService } from '@flogo/core/services/restapi/v2/apps-api.service';
+import { notification } from '@flogo/shared/utils';
 
 @Component({
   selector: 'flogo-home-apps-list',
@@ -12,13 +11,13 @@ import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service'
 })
 export class FlogoAppsListComponent implements OnInit {
   @ViewChild('importInput') importInput: ElementRef;
-  @Output() onSelectedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
+  @Output() onSelectedApp: EventEmitter<App> = new EventEmitter<App>();
 
   showValidationErrors: boolean;
   importValidationErrors: any;
   showProfileSeclectionDialog = false;
 
-  public applications: Array<IFlogoApplicationModel> = [];
+  public applications: Array<App> = [];
 
   constructor(private translate: LanguageService,
               private apiApplications: AppsApiService) {
@@ -28,7 +27,7 @@ export class FlogoAppsListComponent implements OnInit {
     this.listAllApps();
   }
 
-  onSelectApp(event: Event, removeBox: ElementRef, app: IFlogoApplicationModel) {
+  onSelectApp(event: Event, removeBox: ElementRef, app: App) {
     if (!(event.target === removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
       this.appSelected(app);
     }
@@ -108,7 +107,7 @@ export class FlogoAppsListComponent implements OnInit {
   }
 
   onAdd(profileDetails) {
-    this.apiApplications.createNewApp(profileDetails).then((application: IFlogoApplicationModel) => {
+    this.apiApplications.createNewApp(profileDetails).then((application: App) => {
       this.closeModal();
       this.appSelected(application);
     });
@@ -116,12 +115,12 @@ export class FlogoAppsListComponent implements OnInit {
 
   listAllApps() {
     this.apiApplications.listApps()
-      .then((applications: Array<IFlogoApplicationModel>) => {
+      .then((applications: Array<App>) => {
         this.applications = _.sortBy(applications, 'name');
       });
   }
 
-  remove(application: IFlogoApplicationModel) {
+  remove(application: App) {
     this.apiApplications.deleteApp(application.id)
       .then(() => {
         this.listAllApps();

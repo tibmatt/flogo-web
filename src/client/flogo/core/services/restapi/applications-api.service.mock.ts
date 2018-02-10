@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { IFlogoApplicationModel } from '../../application.model';
+
+import { App } from '@flogo/core';
 import { RESTAPIApplicationsService } from './applications-api.service';
 import { ErrorService } from '../error.service';
 import { HttpUtilsService } from './http-utils.service';
@@ -11,7 +12,7 @@ const UNTITLED_APP = 'Untitled App';
 @Injectable()
 export class RESTAPIApplicationsServiceMock extends RESTAPIApplicationsService {
 
-  private mockApplications: Array<IFlogoApplicationModel> = [
+  private mockApplications: Array<App> = [
     {
       id: '1',
       name: 'Sample Application 1',
@@ -79,7 +80,7 @@ export class RESTAPIApplicationsServiceMock extends RESTAPIApplicationsService {
   }
 
   deleteApp(id: string) {
-    _.remove(this.mockApplications, (n: IFlogoApplicationModel) => {
+    _.remove(this.mockApplications, (n: App) => {
       return n.id === id;
     });
 
@@ -100,9 +101,9 @@ export class RESTAPIApplicationsServiceMock extends RESTAPIApplicationsService {
 
   determineUniqueName(name: string, count = 0) {
     const appName: string = name + (count > 0 ? ` (${count})` : '');
-    let found: IFlogoApplicationModel;
+    let found: App;
 
-    found = this.mockApplications.find((app: IFlogoApplicationModel) => {
+    found = this.mockApplications.find((app: App) => {
       return app.name === appName;
     });
 

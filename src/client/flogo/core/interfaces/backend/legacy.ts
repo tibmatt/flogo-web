@@ -1,3 +1,11 @@
+export interface LegacyFlowWrapper {
+  id: string;
+  name: string;
+  description?: string;
+  flow: LegacyFlow;
+  metadata: any;
+}
+
 // Disabling tslint rule for legacy purposes
 /* tslint:disable-next-line:class-name */
 export interface flowToJSON_Attribute {
@@ -48,14 +56,6 @@ export interface flowToJSON_Link {
   value?: any;
 }
 
-export interface LegacyFlowWrapper {
-  id: string;
-  name: string;
-  description?: string;
-  flow: LegacyFlow;
-  metadata: any;
-}
-
 // Disabling tslint rule for legacy purposes
 /* tslint:disable-next-line:class-name */
 export interface triggerToJSON_TriggerInfo {
@@ -94,5 +94,3 @@ export interface flowToJSON_RootTask {
   links: flowToJSON_Link[];
 }
 
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */

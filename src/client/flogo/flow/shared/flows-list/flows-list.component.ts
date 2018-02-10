@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {Action} from '@flogo/core/application.model';
+import { Action } from '@flogo/core';
 
 @Component({
   selector: 'flogo-flow-flows-list',

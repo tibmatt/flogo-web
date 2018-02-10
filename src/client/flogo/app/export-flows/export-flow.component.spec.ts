@@ -5,7 +5,7 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CoreModule as FlogoCoreModule } from '@flogo/core';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
-import {IFlogoApplicationFlowModel } from '@flogo/core/application.model';
+import {FlowSummary } from '@flogo/core/interfaces/app/flow-summary';
 import { AppDetailService } from '@flogo/app/core/apps.service';
 import { FlogoExportFlowsComponent } from './export-flows.component';
 
@@ -13,7 +13,7 @@ import { FlogoExportFlowsComponent } from './export-flows.component';
   template: `<flogo-export-flow [flows]="flows"></flogo-export-flow>`
 })
 class TestHostComponent {
-  flows: Array<IFlogoApplicationFlowModel> = makeMockFlows();
+  flows: Array<FlowSummary> = makeMockFlows();
 }
 
 class MockAppDetailService {

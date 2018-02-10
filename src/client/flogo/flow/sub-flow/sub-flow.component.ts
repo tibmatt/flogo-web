@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {FlogoFlowService as FlowsService} from '@flogo/flow/core/flow.service';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
-import {Action} from '@flogo/core/application.model';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Action } from '@flogo/core';
+import { FlogoFlowService as FlowsService } from '@flogo/flow/core/flow.service';
+import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
   selector: 'flogo-flow-sub-flow',

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import { IFlogoApplicationModel } from '../../application.model';
+import { App } from '@flogo/core';
 import { ErrorService } from '../error.service';
 import { HttpUtilsService } from './http-utils.service';
 
@@ -19,7 +19,7 @@ export class RESTAPIApplicationsService {
       .then(response => response.json().data);
   }
 
-  getAllApps(): Promise<IFlogoApplicationModel[]> {
+  getAllApps(): Promise<App[]> {
     return this.http.get(this.apiPrefix('apps')).toPromise()
       .then(response => {
         const appsResponse = response.json();
@@ -53,7 +53,7 @@ export class RESTAPIApplicationsService {
     return this.http.delete(this.apiPrefix('apps/' + appId)).toPromise();
   }
 
-  getApp(appId: string): Promise<IFlogoApplicationModel> {
+  getApp(appId: string): Promise<App> {
     return this.http.get(this.apiPrefix('apps/' + appId)).toPromise()
       .then(response => {
         if (response.text()) {
@@ -82,7 +82,7 @@ export class RESTAPIApplicationsService {
   }
 
   determineUniqueName(name: string) {
-    return this.getAllApps().then((apps: Array<IFlogoApplicationModel>) => {
+    return this.getAllApps().then((apps: Array<App>) => {
       const normalizedName = name.trim().toLowerCase();
       const possibleMatches = apps
         .map(app => app.name.trim().toLowerCase())
