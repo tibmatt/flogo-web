@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '@flogo/core/constants';
+import { ValueTypes } from '@flogo/core/constants';
 
 @Component({
   selector: 'flogo-flow-params-schema',
@@ -19,12 +19,11 @@ export class ParamsSchemaComponent implements OnInit {
   paramsForm: FormGroup;
   @Input() flow: any;
   @Output() save = new EventEmitter<{ input: any[], output: any[] }>();
-  selectTypes: any[] = [];
+  selectTypes: ValueTypes.ValueType[] = [];
   displayInputParams: boolean;
 
   constructor(private _fb: FormBuilder) {
-    const options = Object.keys(FLOGO_TASK_ATTRIBUTE_TYPE);
-    this.selectTypes = options.filter(o => _.isNaN(_.parseInt(o)) && o !== FLOGO_TASK_ATTRIBUTE_TYPE[FLOGO_TASK_ATTRIBUTE_TYPE.INT]);
+    this.selectTypes = Array.from(ValueTypes.allTypes);
   }
 
   ngOnInit() {
@@ -60,7 +59,7 @@ export class ParamsSchemaComponent implements OnInit {
       .filter(param => param.name && param.name.trim().length > 0)
       .map(param => ({
         name: param.name.trim(),
-        type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(param, 'type', 'STRING')],
+        type: param.type || ValueTypes.STRING,
       }));
 
     const updatedParams = this.paramsForm.value;
@@ -96,7 +95,7 @@ export class ParamsSchemaComponent implements OnInit {
   private createParamFormRow(data?: { name: string, type: string }) {
     return this._fb.group({
       name: [data ? data.name : ''],
-      type: [data ? FLOGO_TASK_ATTRIBUTE_TYPE[data.type] : 'STRING'],
+      type: [data ? data.type : 'STRING'],
     });
   }
 

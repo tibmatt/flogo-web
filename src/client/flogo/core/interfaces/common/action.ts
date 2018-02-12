@@ -8,6 +8,6 @@ export interface Action {
   createdAt: string;
   updatedAt: string;
   data: {
-    flow: flow.Flow
+    flow?: flow.Flow
   };
 }

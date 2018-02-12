@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { resolveExpressionType } from '@flogo/packages/mapping-parser';
 
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueTypes } from '@flogo/core/constants';
 import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 
@@ -62,12 +62,12 @@ export class MapperTranslator {
   }
 
   static attributesToObjectDescriptor(attributes: {
-    name: string, type: string | FLOGO_TASK_ATTRIBUTE_TYPE, required?: boolean
+    name: string, type: ValueTypes.ValueType, required?: boolean
   }[], additionalProps?: { [key: string]: any }): MapperSchema {
     const properties = {};
     const requiredPropertyNames = [];
     attributes.forEach(attr => {
-      let property = {type: MapperTranslator.translateType(attr.type)};
+      let property = { type: attr.type };
       if (additionalProps) {
         property = Object.assign({}, additionalProps, property);
       }
@@ -77,23 +77,6 @@ export class MapperTranslator {
       }
     });
     return {type: 'object', properties: sortObjectKeys(properties), required: requiredPropertyNames};
-  }
-
-  // todo: change
-  static translateType(type: FLOGO_TASK_ATTRIBUTE_TYPE | string) {
-    const translatedType = {
-      [FLOGO_TASK_ATTRIBUTE_TYPE.ANY]: 'any',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY]: 'array',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN]: 'boolean',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.INT]: 'integer',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER]: 'integer',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER]: 'number',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT]: 'object',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS]: 'object',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: 'string',
-      [FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT]: 'complex_object',
-    }[type];
-    return translatedType || type;
   }
 
   static translateMappingsIn(inputMappings: FlowMapping[]) {

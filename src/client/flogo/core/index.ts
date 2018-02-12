@@ -1,4 +1,5 @@
-export { CoreModule } from './core.module';
+export * from './interfaces';
+export * from './constants';
 export { initializer } from './initializer';
 export { LanguageService } from './language';
-export * from './interfaces';
+export { CoreModule } from './core.module';

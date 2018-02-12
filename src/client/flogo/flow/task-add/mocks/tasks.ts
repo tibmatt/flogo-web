@@ -1,4 +1,4 @@
-import { FLOGO_TASK_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE } from '@flogo/core/constants';
+import { FLOGO_TASK_TYPE, ValueTypes } from '@flogo/core/constants';
 import { flogoIDEncode } from '@flogo/shared/utils';
 
 export let MOCK_TASKS = [
@@ -10,13 +10,13 @@ export let MOCK_TASKS = [
     'attributes' : {
       'inputs' : [
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'type' : ValueTypes.STRING,
           'name' : 'message',
           'title' : 'Message',
           'value' : 'Find Pet Process Started!'
         },
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
+          'type' : ValueTypes.BOOLEAN,
           'name' : 'processInfo',
           'title' : 'Process info',
           'value' : 'true'
@@ -32,19 +32,19 @@ export let MOCK_TASKS = [
     'attributes' : {
       'inputs' : [
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'type' : ValueTypes.STRING,
           'name' : 'uri',
           'title' : 'URI',
           'value' : 'http://petstore.swagger.io/v2/pet/{petId}'
         },
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'type' : ValueTypes.STRING,
           'name' : 'method',
           'title' : 'Method',
           'value' : 'GET'
         },
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'type' : ValueTypes.STRING,
           'name' : 'petId',
           'title' : 'Pet ID',
           'value' : '201603311111'
@@ -52,7 +52,7 @@ export let MOCK_TASKS = [
       ],
       'outputs' : [
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT,
+          'type' : ValueTypes.OBJECT,
           'name' : 'result',
           'title' : 'Result',
           'value' : ''
@@ -82,13 +82,13 @@ export let MOCK_TASKS = [
     'attributes' : {
       'inputs' : [
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.STRING,
+          'type' : ValueTypes.STRING,
           'name' : 'message',
           'title' : 'Message',
           'value' : 'REST results'
         },
         {
-          'type' : FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN,
+          'type' : ValueTypes.BOOLEAN,
           'name' : 'processInfo',
           'title' : 'Process Info',
           'value' : 'true'

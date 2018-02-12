@@ -1,8 +1,8 @@
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '@flogo/core/constants';
+import { ValueTypes } from '../../constants';
 
 export interface TaskAttribute {
   name: string;
-  type: FLOGO_TASK_ATTRIBUTE_TYPE;
+  type: ValueTypes.ValueType;
   value: any;
   title ?: string;
   description ?: string;

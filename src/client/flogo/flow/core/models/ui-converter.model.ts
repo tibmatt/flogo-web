@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
+import { FLOGO_TASK_TYPE, ValueTypes } from '@flogo/core/constants';
 import {flogoGenTriggerID, flogoIDEncode, isSubflowTask} from '@flogo/shared/utils';
 import { ErrorService } from '@flogo/core/services/error.service';
 
@@ -409,21 +409,21 @@ class ItemFactory {
       triggerType: '__error-trigger',
       attributes: {
         outputs: [{
-          name: 'activity', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'activity', value: '',
+          name: 'activity', type: ValueTypes.STRING, title: 'activity', value: '',
         }, {
-          name: 'message', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'message', value: '',
+          name: 'message', type: ValueTypes.STRING, title: 'message', value: '',
         }, {
-          name: 'data', type: FLOGO_TASK_ATTRIBUTE_TYPE.ANY, title: 'data', value: '',
+          name: 'data', type: ValueTypes.ANY, title: 'data', value: '',
         }],
       },
       inputMappings: [],
       outputMappings: [],
       outputs: [{
-        name: 'activity', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'activity', value: '',
+        name: 'activity', type: ValueTypes.STRING, title: 'activity', value: '',
       }, {
-        name: 'message', type: FLOGO_TASK_ATTRIBUTE_TYPE.STRING, title: 'message', value: '',
+        name: 'message', type: ValueTypes.STRING, title: 'message', value: '',
       }, {
-        name: 'data', type: FLOGO_TASK_ATTRIBUTE_TYPE.ANY, title: 'data', value: '',
+        name: 'data', type: ValueTypes.ANY, title: 'data', value: '',
       }],
       __props: {
         errors: [],
@@ -478,7 +478,8 @@ class ItemFactory {
     });
 
     const mapType = prop => ({
-      name: prop.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(prop, 'type', 'STRING').toUpperCase()],
+      name: prop.name,
+      type: prop.type || ValueTypes.STRING,
     });
     // -----------------
     // set outputs
@@ -523,7 +524,7 @@ class ItemFactory {
 
       const newAttribute: any = {
         name: schemaInput.name,
-        type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(schemaInput, 'type', 'STRING').toUpperCase()],
+        type: schemaInput.type || ValueTypes.STRING,
       };
 
       if (attrValue) {
@@ -542,7 +543,8 @@ class ItemFactory {
     const outputs = activitySchema.outputs || [];
 
     item.attributes.outputs = outputs.map(output => ({
-      name: output.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(output, 'type', 'STRING').toUpperCase()],
+      name: output.name,
+      type: output.type || ValueTypes.STRING,
     }));
 
 

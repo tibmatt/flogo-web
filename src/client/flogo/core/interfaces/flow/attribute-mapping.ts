@@ -1,7 +1,5 @@
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from 'flogo/core/constants';
-
 export interface AttributeMapping {
-  type: FLOGO_TASK_ATTRIBUTE_TYPE;
+  type: number;
   value: any;
   mapTo: string;
 }
