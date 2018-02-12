@@ -1,4 +1,4 @@
-import { FlowDiagram, TaskDictionary, Task, RootNode, Node, NodeDictionary } from '@flogo/core';
+import { FlowDiagram, TaskDictionary, Task, RootNode as RootFlowNode, Node as FlowNode, NodeDictionary } from '@flogo/core';
 import { FlogoFlowDiagramNode } from './node.model';
 
 import { Selection } from 'd3';
@@ -49,7 +49,7 @@ const CLS = {
 };
 
 export class FlogoFlowDiagram implements FlowDiagram {
-  public root: RootNode;
+  public root: RootFlowNode;
   public nodes: NodeDictionary;
   public MAX_ROW_LEN = DEFAULT_MAX_ROW_LEN;
 
@@ -60,11 +60,11 @@ export class FlogoFlowDiagram implements FlowDiagram {
     document['documentMode'] || /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent)
   );
 
-  static isBranchNode(node: Node) {
+  static isBranchNode(node: FlowNode) {
     return _isBranchNode(node);
   }
 
-  static hasBranchRun(node: Node,
+  static hasBranchRun(node: FlowNode,
                       tasks: TaskDictionary,
                       nodes: NodeDictionary): boolean {
 
@@ -324,8 +324,8 @@ export class FlogoFlowDiagram implements FlowDiagram {
   }
 
   public findNodesByType(type: FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-                         sourceNodes ?: Node[ ]): Node[ ] {
-    const nodes: Node[ ] = [];
+                         sourceNodes ?: FlowNode[ ]): FlowNode[ ] {
+    const nodes: FlowNode[ ] = [];
 
     if (sourceNodes) {
       _.each(
@@ -337,7 +337,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
       );
     } else {
       _.mapKeys(
-        this.nodes, (node: Node) => {
+        this.nodes, (node: FlowNode) => {
           if (node.type === type) {
             nodes.push(node);
           }
@@ -348,8 +348,8 @@ export class FlogoFlowDiagram implements FlowDiagram {
     return nodes;
   }
 
-  public findNodesByIDs(ids: string[ ]): Node[ ] {
-    const nodes: Node[ ] = [];
+  public findNodesByIDs(ids: string[ ]): FlowNode[ ] {
+    const nodes: FlowNode[ ] = [];
 
     _.each(
       ids, (id) => {
@@ -363,16 +363,16 @@ export class FlogoFlowDiagram implements FlowDiagram {
   }
 
   public findChildrenNodesByType(type: FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-                                 node: Node): Node[ ] {
+                                 node: FlowNode): FlowNode[ ] {
     return this.findNodesByType(type, this.findNodesByIDs(node.children));
   }
 
   public findParentsNodesByType(type: FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-                                node: Node): Node[ ] {
+                                node: FlowNode): FlowNode[ ] {
     return this.findNodesByType(type, this.findNodesByIDs(node.parents));
   }
 
-  public deleteNode(node: Node): Promise<any> {
+  public deleteNode(node: FlowNode): Promise<any> {
     const deleteNode = <FlogoFlowDiagramNode>this.nodes[node.id];
 
     if (deleteNode) {
@@ -388,7 +388,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
     return Promise.resolve(this);
   }
 
-  public addBranch(parentNode: Node, branchInfo: any): Promise<any> {
+  public addBranch(parentNode: FlowNode, branchInfo: any): Promise<any> {
     // the `node` is the parent node of the branch
     // the `task` is the branch information
 
@@ -540,13 +540,13 @@ export class FlogoFlowDiagram implements FlowDiagram {
     // enter selection
     const newNodes = nodes.enter()
       .append('div')
-      .attr('data-task-id', (nodeInfo: Node) => {
+      .attr('data-task-id', (nodeInfo: FlowNode) => {
         return nodeInfo.taskID || -1;
       })
       .attr(this.ng2StyleAttr, '')
       .classed(CLS.diagramNode, true)
       .on(
-        'click', function (d: Node, col: number, row: number) {
+        'click', function (d: FlowNode, col: number, row: number) {
           /* tslint:disable:no-unused-expression */
           DEBUG && console.group('on click');
 
@@ -625,7 +625,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
         }
       )
       .on(
-        'mouseenter', function (d: Node) {
+        'mouseenter', function (d: FlowNode) {
           const element: HTMLElement = this;
 
           if (dontCareNodesTypesForNodeMenu.indexOf(d.type) !== -1) {
@@ -656,7 +656,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
         }
       )
       .on(
-        'mouseleave', function (d: Node) {
+        'mouseleave', function (d: FlowNode) {
           // clearTimeout( timerHandle[ d.id ] );
 
           // comment out since hover will show the menu
@@ -702,10 +702,10 @@ export class FlogoFlowDiagram implements FlowDiagram {
       'updated': true
     })
       .attr('data-flogo-node-type',
-        (d: Node) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[d.type].toLowerCase());
+        (d: FlowNode) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[d.type].toLowerCase());
 
     nodes.each(
-      function (d: Node, index: number) {
+      function (d: FlowNode, index: number) {
         const thisNode = d3.select(this);
         const task = diagram.tasks && diagram.tasks[d.taskID];
         const classes: { [key: string]: boolean } = {};
@@ -739,7 +739,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
         });
 
         // update the current node ID
-        thisNode.attr('data-task-id', function (nodeInfo: Node) {
+        thisNode.attr('data-task-id', function (nodeInfo: FlowNode) {
           const previousID = thisNode.attr('data-task-id');
 
           // unset whatever status should not be kept once the task is changed.
@@ -1377,7 +1377,7 @@ function _isNodeHasMenu(nodeInfo: any): boolean {
   }
 }
 
-function _isNodeSelectable(nodeInfo: Node) {
+function _isNodeSelectable(nodeInfo: FlowNode) {
   if (nodeInfo.type) {
     return [
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
@@ -1423,16 +1423,16 @@ function _isReturnActivity(task) {
 /**
  * Utility functions to delete nodes
  */
-function _isInSingleRow(node: Node) {
+function _isInSingleRow(node: FlowNode) {
   const parentsCount = node.parents && node.parents.length;
   return ((parentsCount === 0 || parentsCount === 1) && node.children.length < 2);
 }
 
-function _isBranchNode(node: Node) {
+function _isBranchNode(node: FlowNode) {
   return node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH;
 }
 
-function _hasTaskRun(node: Node, tasks: TaskDictionary): boolean {
+function _hasTaskRun(node: FlowNode, tasks: TaskDictionary): boolean {
   if (!node || !tasks) {
     return false;
   }
@@ -1446,7 +1446,7 @@ function _hasTaskRun(node: Node, tasks: TaskDictionary): boolean {
   return _.get(task, '__status.hasRun', false);
 }
 
-function _hasBranchRun(node: Node,
+function _hasBranchRun(node: FlowNode,
                        tasks: TaskDictionary,
                        nodes: NodeDictionary): boolean {
 
@@ -1469,7 +1469,7 @@ function _hasBranchRun(node: Node,
 
 }
 
-function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootNode) {
+function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeInSingleRow: ${node.id}`);
 
@@ -1502,7 +1502,7 @@ function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: NodeDictionar
   VERBOSE && console.groupEnd();
 }
 
-function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootNode) {
+function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeHasChildren: ${node.id}`);
 
@@ -1531,7 +1531,7 @@ function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: NodeDictionar
   VERBOSE && console.groupEnd();
 }
 
-function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootNode) {
+function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeBranchNode: ${node.id}`);
 
@@ -1545,7 +1545,7 @@ function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, ro
 }
 
 // could be used to recursively delete nodes
-function _deleteNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootNode) {
+function _deleteNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_deleteNode: ${node.id}`);
   /* tslint:disable-next-line:no-unused-expression */
@@ -1575,7 +1575,7 @@ function _deleteNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: Ro
   VERBOSE && console.groupEnd();
 }
 
-function _recursivelyDeleteNodes(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootNode) {
+function _recursivelyDeleteNodes(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_recursivelyDeleteNodes: ${node.id}`);
 
