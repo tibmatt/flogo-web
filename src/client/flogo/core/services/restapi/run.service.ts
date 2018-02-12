@@ -7,8 +7,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 
 import { HttpUtilsService } from './http-utils.service';
-import { Link } from '../../models/engine.models';
-import { FlowInfo, Interceptor, InterceptorTask, Snapshot, Step } from '../../models/runner.models';
+import { flowToJSON_Link, Interceptor, InterceptorTask, LegacyFlow, Snapshot, Step } from '../../interfaces';
+import { LegacyFlowWrapper } from '@flogo/core';
 
 /**
  * Possible run status
@@ -84,7 +84,7 @@ export class RunService {
     return this.post('flows/run/flow/start', { flowId, attrs: data });
   }
 
-  storeProcess(flowInfo: FlowInfo): Observable<StoredProcessResponse> {
+  storeProcess(flowInfo: LegacyFlowWrapper): Observable<StoredProcessResponse> {
     //  upload current flow to process service server
     return this.post<StoredProcessResponse>('flows/run/flows', flowInfo)
       .map(storedProcess => {
@@ -188,7 +188,7 @@ export class RunService {
   }
 
   // TODO: left algorithm as it was when refactored, need to make it clearer
-  private findTaskIdsInLinkPath(tasks: InterceptorTask[], links: Link[]) {
+  private findTaskIdsInLinkPath(tasks: InterceptorTask[], links: flowToJSON_Link[]) {
     // TODO: icpt, what does it mean?? for icpTaskIds
     const tasksIdsInPath: string[] = _.map(tasks, (task: any) => task.id);
     let linksToGo = links.slice();

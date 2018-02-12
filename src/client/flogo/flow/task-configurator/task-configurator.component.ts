@@ -4,13 +4,14 @@ import { Component, Input, OnDestroy,
   trigger, transition, style, animate, state, AnimationTransitionEvent
 } from '@angular/core';
 
+
+import { Task } from '@flogo/core/interfaces';
 import { PostService } from '@flogo/core/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventData } from './messages';
 
 import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
-import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
 import { InputMapperConfig } from './input-mapper';
 import { TAB_NAME, Tabs } from './models/tabs.model';
 
@@ -43,7 +44,7 @@ import { TAB_NAME, Tabs } from './models/tabs.model';
 export class TaskConfiguratorComponent implements OnDestroy {
   @Input()
   flowId: string;
-  currentTile: IFlogoFlowDiagramTask;
+  currentTile: Task;
   inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
   inputScope: any[];

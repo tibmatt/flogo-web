@@ -1,4 +1,4 @@
-import { Action, Trigger } from '@flogo/core/application.model';
+import { Trigger, Action } from '@flogo/core';
 
 export interface TriggerGroup {
   triggers: Trigger[] | null;

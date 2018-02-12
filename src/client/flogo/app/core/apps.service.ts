@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { IFlogoApplicationModel } from '@flogo/core/application.model';
-import { AppsApiService } from '../../core/services/restapi/v2/apps-api.service';
-import { ErrorService } from '../../core/services/error.service';
-import { App} from './app.interface';
+
+import { AppsApiService } from '@flogo/core/services/restapi/v2/apps-api.service';
+import { ErrorService } from '@flogo/core/services/error.service';
+
+import { App } from './app.interface';
 import { ApplicationDetail } from './application-detail.interface';
 import { TriggerGroup } from './trigger-group.interface';
 import { FlowGroup } from './flow-group.interface';
@@ -141,7 +142,7 @@ export class AppDetailService {
   private fetchApp(appId: string) {
     this.fetching = true;
     return this.appsApiService.getApp(appId)
-      .then((app: IFlogoApplicationModel) => {
+      .then((app: App) => {
         this.fetching = false;
         return app;
       });
@@ -151,7 +152,7 @@ export class AppDetailService {
     return _.cloneDeep(this.currentApp$.getValue());
   }
 
-  private transform(app: IFlogoApplicationModel): App {
+  private transform(app: App): App {
     const triggers = app.triggers || [];
     const actions = app.actions || [];
     return <App> Object.assign({}, app, {

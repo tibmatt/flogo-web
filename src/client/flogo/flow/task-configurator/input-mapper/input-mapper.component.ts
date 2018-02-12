@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 
 import { IMapping, Mappings } from '../../shared/mapper';
 import { MapperTranslator, StaticMapperContextFactory } from '../../shared/mapper';
-import { IFlogoFlowDiagramTaskAttribute } from '../../shared/diagram/models/attribute.model';
-import { IFlogoFlowDiagramTask } from '../../shared/diagram/models/task.model';
+import { TaskAttribute, Task } from '@flogo/core';
 
 import { MapperSchema } from '../models';
 import { InputMapperConfig } from './input-mapper-config';
@@ -34,9 +33,9 @@ export class InputMapperComponent implements OnInit {
     this.mapperContext = this.createInputMapperContext(propsToMap, mappings, inputScope);
   }
 
-  private createInputMapperContext(propsToMap: IFlogoFlowDiagramTaskAttribute[],
+  private createInputMapperContext(propsToMap: TaskAttribute[],
                                    mappings: Mappings,
-                                   scope: IFlogoFlowDiagramTask[]) {
+                                   scope: Task[]) {
     const inputSchema = MapperTranslator.attributesToObjectDescriptor(propsToMap);
     const outputSchema = MapperTranslator.createOutputSchema(scope);
     const outputSchemaWithIterator = MapperTranslator.createOutputSchema(scope, { $current: this.getIteratorSchema() });

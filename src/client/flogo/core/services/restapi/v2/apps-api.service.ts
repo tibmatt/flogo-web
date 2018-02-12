@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
-import { HttpUtilsService } from '../http-utils.service';
-import { IFlogoApplicationModel } from '../../../application.model';
+
+import { App } from '@flogo/core';
 import { ErrorService } from '../../error.service';
 import { FLOGO_PROFILE_TYPE } from '../../../constants';
+import { HttpUtilsService } from '../http-utils.service';
 
 const UNTITLED_APP = 'Untitled App';
 
@@ -45,17 +46,17 @@ export class AppsApiService {
     });
   }
 
-  listApps(): Promise<IFlogoApplicationModel[]> {
+  listApps(): Promise<App[]> {
     return this.http.get(this.apiPrefix('apps'), this.httpUtils.defaultOptions())
       .map(response => response.json())
       .map(responseBody => responseBody.data ? responseBody.data : [])
       .toPromise();
   }
 
-  getApp(appId: string): Promise<IFlogoApplicationModel | null> {
+  getApp(appId: string): Promise<App | null> {
     return this.http.get(this.apiPrefix(`apps/${appId}`))
       .map(response => response.json())
-      .map(responseBody => responseBody.data ? <IFlogoApplicationModel> responseBody.data : null)
+      .map(responseBody => responseBody.data ? <App> responseBody.data : null)
       .toPromise();
   }
 
@@ -115,7 +116,7 @@ export class AppsApiService {
   }
 
   determineUniqueName(name: string) {
-    return this.listApps().then((apps: Array<IFlogoApplicationModel>) => {
+    return this.listApps().then((apps: Array<App>) => {
       const normalizedName = name.trim().toLowerCase();
       const possibleMatches = apps
         .map(app => app.name.trim().toLowerCase())

@@ -1,16 +1,5 @@
-import {
-  FlogoFlowDiagramNode,
-  IFlogoFlowDiagramNode,
-  IFlogoFlowDiagramRootNode,
-} from './node.model';
-import {
-  IFlogoFlowDiagramTask,
-} from './task.model';
-import {
-  IFlogoFlowDiagramTaskDictionary,
-  IFlogoFlowDiagramNodeDictionary,
-} from './dictionary.model';
-import { IFlogoFlowDiagram } from './diagram.interface';
+import { FlowDiagram, TaskDictionary, Task, RootNode as RootFlowNode, Node as FlowNode, NodeDictionary } from '@flogo/core';
+import { FlogoFlowDiagramNode } from './node.model';
 
 import { Selection } from 'd3';
 import {
@@ -59,37 +48,37 @@ const CLS = {
   diagramNodeMenuGear: 'flogo-flows-detail-diagram-node-menu-gear'
 };
 
-export class FlogoFlowDiagram implements IFlogoFlowDiagram {
-  public root: IFlogoFlowDiagramRootNode;
-  public nodes: IFlogoFlowDiagramNodeDictionary;
+export class FlogoFlowDiagram implements FlowDiagram {
+  public root: RootFlowNode;
+  public nodes: NodeDictionary;
   public MAX_ROW_LEN = DEFAULT_MAX_ROW_LEN;
 
   private rootElm: Selection<any>;
   private ng2StyleAttr = '';
-  private nodesOfAddType: IFlogoFlowDiagramNodeDictionary;
+  private nodesOfAddType: NodeDictionary;
   private requiresSvgFix = Boolean(
     document['documentMode'] || /(Edge)|(Version\/[\d\.]+.*Safari)/.test(navigator.userAgent)
   );
 
-  static isBranchNode(node: IFlogoFlowDiagramNode) {
+  static isBranchNode(node: FlowNode) {
     return _isBranchNode(node);
   }
 
-  static hasBranchRun(node: IFlogoFlowDiagramNode,
-                      tasks: IFlogoFlowDiagramTaskDictionary,
-                      nodes: IFlogoFlowDiagramNodeDictionary): boolean {
+  static hasBranchRun(node: FlowNode,
+                      tasks: TaskDictionary,
+                      nodes: NodeDictionary): boolean {
 
     // expose internal function.
     return _hasBranchRun(node, tasks, nodes);
   }
 
-  static getEmptyDiagram(diagramType?: string): IFlogoFlowDiagram {
+  static getEmptyDiagram(diagramType?: string): FlowDiagram {
     const newRootNode = new FlogoFlowDiagramNode();
-    const emptyDiagram = < IFlogoFlowDiagram > {
+    const emptyDiagram = < FlowDiagram > {
       root: {
         is: newRootNode.id
       },
-      nodes: < IFlogoFlowDiagramNodeDictionary > {}
+      nodes: < NodeDictionary > {}
     };
 
     newRootNode.type = diagramType === 'error' ?
@@ -100,8 +89,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return emptyDiagram;
   }
 
-  constructor(diagram: IFlogoFlowDiagram,
-              private tasks: IFlogoFlowDiagramTaskDictionary,
+  constructor(diagram: FlowDiagram,
+              private tasks: TaskDictionary,
               private translate: LanguageService,
               private profileType: FLOGO_PROFILE_TYPE,
               private elm ?: HTMLElement,
@@ -110,8 +99,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   public update(opt: {
-    diagram ?: IFlogoFlowDiagram;
-    tasks ?: IFlogoFlowDiagramTaskDictionary;
+    diagram ?: FlowDiagram;
+    tasks ?: TaskDictionary;
     element ?: HTMLElement;
   }): Promise<FlogoFlowDiagram> {
     const promises: Promise<FlogoFlowDiagram> [ ] = [];
@@ -133,8 +122,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   public updateAndRender(opt: {
-    diagram ?: IFlogoFlowDiagram;
-    tasks ?: IFlogoFlowDiagramTaskDictionary;
+    diagram ?: FlowDiagram;
+    tasks ?: TaskDictionary;
     element ?: HTMLElement;
   }): Promise<FlogoFlowDiagram> {
     return this.update(opt)
@@ -145,7 +134,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       );
   }
 
-  public updateDiagram(diagram: IFlogoFlowDiagram): Promise<FlogoFlowDiagram> {
+  public updateDiagram(diagram: FlowDiagram): Promise<FlogoFlowDiagram> {
     if (_.isEmpty(diagram) || _.isEmpty(diagram.root)) {
 
       // handle empty diagram
@@ -159,7 +148,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       this.root = _.cloneDeep(diagram.root);
 
       // convert FlogoNode object into instance of FlogoNode class
-      const nodeDict: IFlogoFlowDiagramNodeDictionary = {};
+      const nodeDict: NodeDictionary = {};
       _.forIn(diagram.nodes, (node, nodeID) => {
         if (node instanceof FlogoFlowDiagramNode) {
           nodeDict[nodeID] = node;
@@ -176,7 +165,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return Promise.resolve(this);
   }
 
-  public updateTasks(tasks: IFlogoFlowDiagramTaskDictionary): Promise<FlogoFlowDiagram> {
+  public updateTasks(tasks: TaskDictionary): Promise<FlogoFlowDiagram> {
     this.tasks = tasks;
     return Promise.resolve(this);
   }
@@ -201,7 +190,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       this._updateNG2StyleAttr();
     }
 
-    this.nodesOfAddType = this.nodesOfAddType || <IFlogoFlowDiagramNodeDictionary>{};
+    this.nodesOfAddType = this.nodesOfAddType || <NodeDictionary>{};
 
     // enter selection
     const rows = this.rootElm.selectAll(`.${CLS.diagramRow}`)
@@ -303,7 +292,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return Promise.resolve(this);
   }
 
-  public linkNodeWithTask(nodeID: string, task: IFlogoFlowDiagramTask): Promise<FlogoFlowDiagram> {
+  public linkNodeWithTask(nodeID: string, task: Task): Promise<FlogoFlowDiagram> {
     const node = this.nodes[nodeID] || this.nodesOfAddType[nodeID];
 
     if (node) {
@@ -335,8 +324,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   public findNodesByType(type: FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-                         sourceNodes ?: IFlogoFlowDiagramNode[ ]): IFlogoFlowDiagramNode[ ] {
-    const nodes: IFlogoFlowDiagramNode[ ] = [];
+                         sourceNodes ?: FlowNode[ ]): FlowNode[ ] {
+    const nodes: FlowNode[ ] = [];
 
     if (sourceNodes) {
       _.each(
@@ -348,7 +337,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       );
     } else {
       _.mapKeys(
-        this.nodes, (node) => {
+        this.nodes, (node: FlowNode) => {
           if (node.type === type) {
             nodes.push(node);
           }
@@ -359,8 +348,8 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return nodes;
   }
 
-  public findNodesByIDs(ids: string[ ]): IFlogoFlowDiagramNode[ ] {
-    const nodes: IFlogoFlowDiagramNode[ ] = [];
+  public findNodesByIDs(ids: string[ ]): FlowNode[ ] {
+    const nodes: FlowNode[ ] = [];
 
     _.each(
       ids, (id) => {
@@ -374,16 +363,16 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
   }
 
   public findChildrenNodesByType(type: FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-                                 node: IFlogoFlowDiagramNode): IFlogoFlowDiagramNode[ ] {
+                                 node: FlowNode): FlowNode[ ] {
     return this.findNodesByType(type, this.findNodesByIDs(node.children));
   }
 
   public findParentsNodesByType(type: FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-                                node: IFlogoFlowDiagramNode): IFlogoFlowDiagramNode[ ] {
+                                node: FlowNode): FlowNode[ ] {
     return this.findNodesByType(type, this.findNodesByIDs(node.parents));
   }
 
-  public deleteNode(node: IFlogoFlowDiagramNode): Promise<any> {
+  public deleteNode(node: FlowNode): Promise<any> {
     const deleteNode = <FlogoFlowDiagramNode>this.nodes[node.id];
 
     if (deleteNode) {
@@ -399,7 +388,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     return Promise.resolve(this);
   }
 
-  public addBranch(parentNode: IFlogoFlowDiagramNode, branchInfo: any): Promise<any> {
+  public addBranch(parentNode: FlowNode, branchInfo: any): Promise<any> {
     // the `node` is the parent node of the branch
     // the `task` is the branch information
 
@@ -551,13 +540,13 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
     // enter selection
     const newNodes = nodes.enter()
       .append('div')
-      .attr('data-task-id', (nodeInfo: IFlogoFlowDiagramNode) => {
+      .attr('data-task-id', (nodeInfo: FlowNode) => {
         return nodeInfo.taskID || -1;
       })
       .attr(this.ng2StyleAttr, '')
       .classed(CLS.diagramNode, true)
       .on(
-        'click', function (d: IFlogoFlowDiagramNode, col: number, row: number) {
+        'click', function (d: FlowNode, col: number, row: number) {
           /* tslint:disable:no-unused-expression */
           DEBUG && console.group('on click');
 
@@ -636,7 +625,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         }
       )
       .on(
-        'mouseenter', function (d: IFlogoFlowDiagramNode) {
+        'mouseenter', function (d: FlowNode) {
           const element: HTMLElement = this;
 
           if (dontCareNodesTypesForNodeMenu.indexOf(d.type) !== -1) {
@@ -667,7 +656,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         }
       )
       .on(
-        'mouseleave', function (d: IFlogoFlowDiagramNode) {
+        'mouseleave', function (d: FlowNode) {
           // clearTimeout( timerHandle[ d.id ] );
 
           // comment out since hover will show the menu
@@ -713,10 +702,10 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
       'updated': true
     })
       .attr('data-flogo-node-type',
-        (d: IFlogoFlowDiagramNode) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[d.type].toLowerCase());
+        (d: FlowNode) => FLOGO_FLOW_DIAGRAM_NODE_TYPE[d.type].toLowerCase());
 
     nodes.each(
-      function (d: IFlogoFlowDiagramNode, index: number) {
+      function (d: FlowNode, index: number) {
         const thisNode = d3.select(this);
         const task = diagram.tasks && diagram.tasks[d.taskID];
         const classes: { [key: string]: boolean } = {};
@@ -750,7 +739,7 @@ export class FlogoFlowDiagram implements IFlogoFlowDiagram {
         });
 
         // update the current node ID
-        thisNode.attr('data-task-id', function (nodeInfo: IFlogoFlowDiagramNode) {
+        thisNode.attr('data-task-id', function (nodeInfo: FlowNode) {
           const previousID = thisNode.attr('data-task-id');
 
           // unset whatever status should not be kept once the task is changed.
@@ -1388,7 +1377,7 @@ function _isNodeHasMenu(nodeInfo: any): boolean {
   }
 }
 
-function _isNodeSelectable(nodeInfo: IFlogoFlowDiagramNode) {
+function _isNodeSelectable(nodeInfo: FlowNode) {
   if (nodeInfo.type) {
     return [
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_HOLDER,
@@ -1434,16 +1423,16 @@ function _isReturnActivity(task) {
 /**
  * Utility functions to delete nodes
  */
-function _isInSingleRow(node: IFlogoFlowDiagramNode) {
+function _isInSingleRow(node: FlowNode) {
   const parentsCount = node.parents && node.parents.length;
   return ((parentsCount === 0 || parentsCount === 1) && node.children.length < 2);
 }
 
-function _isBranchNode(node: IFlogoFlowDiagramNode) {
+function _isBranchNode(node: FlowNode) {
   return node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH;
 }
 
-function _hasTaskRun(node: IFlogoFlowDiagramNode, tasks: IFlogoFlowDiagramTaskDictionary): boolean {
+function _hasTaskRun(node: FlowNode, tasks: TaskDictionary): boolean {
   if (!node || !tasks) {
     return false;
   }
@@ -1457,9 +1446,9 @@ function _hasTaskRun(node: IFlogoFlowDiagramNode, tasks: IFlogoFlowDiagramTaskDi
   return _.get(task, '__status.hasRun', false);
 }
 
-function _hasBranchRun(node: IFlogoFlowDiagramNode,
-                       tasks: IFlogoFlowDiagramTaskDictionary,
-                       nodes: IFlogoFlowDiagramNodeDictionary): boolean {
+function _hasBranchRun(node: FlowNode,
+                       tasks: TaskDictionary,
+                       nodes: NodeDictionary): boolean {
 
   if (!node || !tasks || !nodes || !_isBranchNode(node)) {
     return false;
@@ -1480,7 +1469,7 @@ function _hasBranchRun(node: IFlogoFlowDiagramNode,
 
 }
 
-function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
+function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeInSingleRow: ${node.id}`);
 
@@ -1513,7 +1502,7 @@ function _removeNodeInSingleRow(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDia
   VERBOSE && console.groupEnd();
 }
 
-function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
+function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeNodeHasChildren: ${node.id}`);
 
@@ -1542,7 +1531,7 @@ function _removeNodeHasChildren(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDia
   VERBOSE && console.groupEnd();
 }
 
-function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
+function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_removeBranchNode: ${node.id}`);
 
@@ -1556,7 +1545,7 @@ function _removeBranchNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramN
 }
 
 // could be used to recursively delete nodes
-function _deleteNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
+function _deleteNode(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_deleteNode: ${node.id}`);
   /* tslint:disable-next-line:no-unused-expression */
@@ -1586,7 +1575,7 @@ function _deleteNode(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDic
   VERBOSE && console.groupEnd();
 }
 
-function _recursivelyDeleteNodes(node: FlogoFlowDiagramNode, nodes: IFlogoFlowDiagramNodeDictionary, root: IFlogoFlowDiagramRootNode) {
+function _recursivelyDeleteNodes(node: FlogoFlowDiagramNode, nodes: NodeDictionary, root: RootFlowNode) {
   /* tslint:disable-next-line:no-unused-expression */
   VERBOSE && console.group(`_recursivelyDeleteNodes: ${node.id}`);
 

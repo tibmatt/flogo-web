@@ -1,144 +1,29 @@
 import * as _ from 'lodash';
 import {convertTaskID, flogoIDEncode, getDefaultValue, isSubflowTask} from '@flogo/shared/utils';
 import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import {
-  IFlogoFlowDiagramNode,
-  IFlogoFlowDiagramNodeDictionary,
-  IFlogoFlowDiagramTask,
-  IFlogoFlowDiagramTaskAttribute,
-  IFlogoFlowDiagramTaskAttributeMapping,
-  IFlogoFlowDiagramTaskDictionary
-} from '../models';
+
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
-import { FlowMetadata } from '@flogo/flow/core/models';
-import {FlowMetadataAttribute} from '@flogo/flow/core/models/flow-metadata-attribute';
+import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces/flow';
+import {
+  AttributeMapping as DiagramTaskAttributeMapping,
+  Node as DiagramNode,
+  NodeDictionary,
+  Task as DiagramTask,
+  TaskAttribute as DiagramTaskAttribute,
+  TaskDictionary,
+  flowToJSON_Attribute,
+  UiFlow,
+  flowToJSON_Link,
+  flowToJSON_Mapping,
+  flowToJSON_RootTask,
+  flowToJSON_Task,
+  LegacyFlow,
+  LegacyFlowWrapper,
+  triggerToJSON_Trigger,
+  triggerToJSON_TriggerInfo,
+} from '@flogo/core';
 
-/**
- * Type definitions for flowToJSON util function
- */
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_Attribute {
-  name: string;
-  type: string;
-  value: string;
-  required: boolean;
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_Mapping {
-  type: number;
-  value: any;
-  mapTo: string;
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_Task {
-  id: any;
-  type: number;
-  activityType: string;
-  activityRef?: string;
-  flowRef?: string;
-  name?: string;
-  description?: string;
-  attributes: flowToJSON_Attribute[];
-  settings?: flowToJSON_Settings;
-  inputMappings: flowToJSON_Mapping [];
-  ouputMappings: flowToJSON_Mapping[];
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface  flowToJSON_Settings {
-  iterate?: string;
-};
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_Link {
-  id: number;
-  type: number;
-  from: any;
-  to: any;
-  name?: string;
-  value?: any;
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_Flow {
-  id: string;
-  name: string;
-  description: string;
-  flow: flowToJSON_FlowInfo;
-  metadata: any;
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface triggerToJSON_TriggerInfo {
-  name: string;
-  settings: any;
-  endpoints: any;
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface triggerToJSON_Trigger {
-  triggers: triggerToJSON_TriggerInfo[];
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_FlowInfo {
-  type: number;
-  name: string;
-  model: string;
-  attributes: flowToJSON_Attribute[];
-  rootTask: flowToJSON_RootTask;
-  errorHandlerTask?: flowToJSON_RootTask;
-  explicitReply?: boolean;
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_RootTask {
-  id: any;
-  type: number;
-  activityType: string;
-  ref?: string;
-  name: string;
-  tasks: flowToJSON_Task[];
-  links: flowToJSON_Link[];
-}
-
-// Disabling tslint rule for legacy purposes
-/* tslint:disable-next-line:class-name */
-export interface flowToJSON_InputFlow {
-  _id?: string;
-  id?: string;
-  name?: string;
-  description?: string;
-  attributes?: any[];
-  path: {
-    root: {
-      is: string
-    };
-    nodes: IFlogoFlowDiagramNodeDictionary,
-  };
-  items: {
-    id: string;
-    type: number;
-    [key: string]: any;
-  }[];
-
-  [key: string]: any;
-}
-
-export function triggerFlowToJSON(flow: flowToJSON_InputFlow): triggerToJSON_Trigger {
+export function triggerFlowToJSON(flow: UiFlow): triggerToJSON_Trigger {
   let result: triggerToJSON_Trigger;
   let rootTask: any;
 
@@ -193,9 +78,9 @@ export function triggerFlowToJSON(flow: flowToJSON_InputFlow): triggerToJSON_Tri
  * Convert the flow to flow.json
  *
  * @param inFlow
- * @returns {flowToJSON_Flow}
+ * @returns {LegacyFlowWrapper}
  */
-export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
+export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
 
   const DEBUG = false;
   const INFO = true;
@@ -207,11 +92,11 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   let linkIDCounter = 0;
   const _genLinkID = () => ++linkIDCounter;
 
-  const flowJSON = <flowToJSON_Flow>{};
+  const flowJSON = <LegacyFlowWrapper>{};
 
   /* validate the required fields */
 
-  const flowID = inFlow._id || inFlow.id;
+  const flowID = inFlow.id;
 
   if (_.isEmpty(flowID)) {
     /* tslint:disable-next-line:no-unused-expression */
@@ -225,14 +110,14 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     root: {
       is: string
     };
-    nodes: IFlogoFlowDiagramNodeDictionary,
+    nodes: NodeDictionary,
   }>_.get(inFlow, 'paths');
 
   const flowPathRoot = <{
     is: string
   }>_.get(flowPath, 'root');
 
-  const flowPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get(flowPath, 'nodes');
+  const flowPathNodes = <NodeDictionary>_.get(flowPath, 'nodes');
 
   /* assign attributes */
 
@@ -250,7 +135,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       output: []
     };
     flowMetadata.input = metadata.input.map(input => {
-      const inputMetadata: FlowMetadataAttribute = {
+      const inputMetadata: MetadataAttribute = {
         name: input.name,
         type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE, <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'), 'string'))
           .toLowerCase()
@@ -276,7 +161,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     return flowJSON;
   }
 
-  const flowItems = <IFlogoFlowDiagramTaskDictionary>_.get(inFlow, 'items');
+  const flowItems = <TaskDictionary>_.get(inFlow, 'items');
 
   if (_.isEmpty(flowItems)) {
     /* tslint:disable-next-line:no-unused-expression */
@@ -287,7 +172,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   }
 
   flowJSON.flow = (function _parseFlowInfo() {
-    const flow = <flowToJSON_FlowInfo>{};
+    const flow = <LegacyFlow>{};
 
     flow.name = flowJSON.name; // TODO seems to be redundant
     flow.model = _.get(inFlow, 'model', 'tibco-simple');
@@ -318,7 +203,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
        * add the root node to tasks of the root flow as it now is an activity
        */
 
-      const taskInfo = _prepareTaskInfo(<IFlogoFlowDiagramTask>flowItems[rootNode.taskID]);
+      const taskInfo = _prepareTaskInfo(<DiagramTask>flowItems[rootNode.taskID]);
       if (!_.isEmpty(taskInfo)) {
         rootTask.tasks.push(taskInfo);
       }
@@ -329,12 +214,12 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     }());
 
 
-    const errorItems = <IFlogoFlowDiagramTaskDictionary>_.get(inFlow, 'errorHandler.items');
+    const errorItems = <TaskDictionary>_.get(inFlow, 'errorHandler.items');
     const errorPath = <{
       root: {
         is: string
       };
-      nodes: IFlogoFlowDiagramNodeDictionary,
+      nodes: NodeDictionary,
     }>_.get(inFlow, 'errorHandler.paths');
 
     if (_.isEmpty(errorPath) || _.isEmpty(errorItems)) {
@@ -346,7 +231,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
       const errorPathRoot = <{
         is: string
       }>_.get(errorPath, 'root');
-      const errorPathNodes = <IFlogoFlowDiagramNodeDictionary>_.get(errorPath, 'nodes');
+      const errorPathNodes = <NodeDictionary>_.get(errorPath, 'nodes');
 
       const rootNode = errorPathNodes[errorPathRoot.is];
       const errorTask = <flowToJSON_RootTask>{
@@ -374,9 +259,9 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
   /* tslint:disable-next-line:no-unused-expression */
   INFO && console.log('Generated flow.json: ', flowJSON);
 
-  function _traversalDiagram(rootNode: IFlogoFlowDiagramNode,
-                             nodes: IFlogoFlowDiagramNodeDictionary,
-                             tasks: IFlogoFlowDiagramTaskDictionary,
+  function _traversalDiagram(rootNode: DiagramNode,
+                             nodes: NodeDictionary,
+                             tasks: TaskDictionary,
                              tasksDest: flowToJSON_Task[ ],
                              linksDest: flowToJSON_Link[ ]): void {
 
@@ -385,10 +270,10 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
     _traversalDiagramChildren(rootNode, visited, nodes, tasks, tasksDest, linksDest);
   }
 
-  function _traversalDiagramChildren(node: IFlogoFlowDiagramNode,
+  function _traversalDiagramChildren(node: DiagramNode,
                                      visitedNodes: string[ ],
-                                     nodes: IFlogoFlowDiagramNodeDictionary,
-                                     tasks: IFlogoFlowDiagramTaskDictionary,
+                                     nodes: NodeDictionary,
+                                     tasks: TaskDictionary,
                                      tasksDest: flowToJSON_Task[ ],
                                      linksDest: flowToJSON_Link[ ]) {
     // if haven't visited
@@ -433,7 +318,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
          * add task
          */
 
-        const taskInfo = _prepareTaskInfo(<IFlogoFlowDiagramTask>tasks[childNode.taskID]);
+        const taskInfo = _prepareTaskInfo(<DiagramTask>tasks[childNode.taskID]);
         if (!_.isEmpty(taskInfo)) {
           tasksDest.push(taskInfo);
         }
@@ -571,7 +456,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
 
   }
 
-  function _prepareTaskInfo(task: IFlogoFlowDiagramTask) {
+  function _prepareTaskInfo(task: DiagramTask) {
     const taskInfo = <flowToJSON_Task>{};
     if (_isValidInternalTaskInfo(task)) {
       taskInfo.id = convertTaskID(task.id);
@@ -588,7 +473,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
 
       /* add `inputs` of a task to the `attributes` of the taskInfo in flow.json */
 
-      taskInfo.attributes = _parseFlowAttributes(<IFlogoFlowDiagramTaskAttribute[]>_.get(task, 'attributes.inputs'));
+      taskInfo.attributes = _parseFlowAttributes(<DiagramTaskAttribute[]>_.get(task, 'attributes.inputs'));
 
       // filter null/undefined/{}/[]
       // enabling this block, remove attribute settings, like (required)
@@ -600,7 +485,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
 
       /* add inputMappings */
 
-      const inputMappings = _parseFlowMappings(<IFlogoFlowDiagramTaskAttributeMapping[]>_.get(task, 'inputMappings'));
+      const inputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>_.get(task, 'inputMappings'));
 
       if (!_.isEmpty(inputMappings)) {
         taskInfo.inputMappings = inputMappings;
@@ -608,7 +493,7 @@ export function flogoFlowToJSON(inFlow: flowToJSON_InputFlow): flowToJSON_Flow {
 
       /* add outputMappings */
 
-      const outputMappings = _parseFlowMappings(<IFlogoFlowDiagramTaskAttributeMapping[]>_.get(task, 'outputMappings'));
+      const outputMappings = _parseFlowMappings(<DiagramTaskAttributeMapping[]>_.get(task, 'outputMappings'));
 
       if (!_.isEmpty(outputMappings)) {
         taskInfo.ouputMappings = outputMappings;

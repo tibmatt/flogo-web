@@ -1,12 +1,11 @@
-import { IFlogoFlowDiagramNodeDictionary, IFlogoFlowDiagramTaskDictionary } from '@flogo/flow/shared/diagram/models/dictionary.model';
-import { IFlogoFlowDiagramNode } from '@flogo/flow/shared/diagram/models/node.model';
+import { TaskDictionary, Node, NodeDictionary } from '@flogo/core/interfaces';
 import { FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { FlogoFlowDiagram } from '@flogo/flow/shared/diagram/models/diagram.model';
 
-export function updateBranchNodesRunStatus(nodes: IFlogoFlowDiagramNodeDictionary,
-                                           tasks: IFlogoFlowDiagramTaskDictionary) {
+export function updateBranchNodesRunStatus(nodes: NodeDictionary,
+                                           tasks: TaskDictionary) {
 
-  _.forIn(nodes, (node: IFlogoFlowDiagramNode) => {
+  _.forIn(nodes, (node: Node) => {
     const task = tasks[node.taskID];
 
     if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) {

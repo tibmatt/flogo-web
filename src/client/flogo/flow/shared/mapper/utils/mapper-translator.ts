@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { resolveExpressionType } from '@flogo/packages/mapping-parser';
 
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import { IFlogoFlowDiagramTask as FlowTile, IFlogoFlowDiagramTaskAttributeMapping as FlowMapping, } from '../../diagram/models';
+import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 
 import { flogoIDDecode } from '@flogo/shared/utils';

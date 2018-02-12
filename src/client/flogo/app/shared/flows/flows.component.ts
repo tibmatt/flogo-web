@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
-import { IFlogoApplicationFlowModel as FlowModel } from '@flogo/core/application.model';
+import { FlowSummary } from '@flogo/core';
 
 @Component({
   selector: 'flogo-apps-flows',
@@ -9,11 +9,11 @@ import { IFlogoApplicationFlowModel as FlowModel } from '@flogo/core/application
 })
 export class FlogoApplicationFlowsComponent implements OnChanges {
   @Input()
-  public flows: Array<FlowModel> = [];
+  public flows: Array<FlowSummary> = [];
   @Output()
-  public flowSelected: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
+  public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
   @Output()
-  public deleteFlow: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
+  public deleteFlow: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
 
   constructor() {
   }
@@ -22,17 +22,17 @@ export class FlogoApplicationFlowsComponent implements OnChanges {
     this.flows = _.sortBy(this.flows, flow => flow.name.toLowerCase());
   }
 
-  trackByFlowId(index: number, flow: FlowModel) {
+  trackByFlowId(index: number, flow: FlowSummary) {
     return flow ? flow.id : null;
   }
 
-  onSelect(event: Event, removeBox: ElementRef, flow: FlowModel) {
+  onSelect(event: Event, removeBox: ElementRef, flow: FlowSummary) {
     if (!(event.target === removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
       this.flowSelected.emit(flow);
     }
   }
 
-  onDeleteFlow(flow: FlowModel) {
+  onDeleteFlow(flow: FlowSummary) {
     this.deleteFlow.emit(flow);
   }
 }

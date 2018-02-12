@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { FlowMetadata } from '@flogo/flow/core/models';
+import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
 interface HandlerMappings {
   actionMappings: { input: any[], output: any[] };

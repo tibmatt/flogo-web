@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '@flogo/core/application.model';
+import { Trigger, FlowSummary } from '@flogo/core';
 
 @Component({
   selector: 'flogo-apps-flows-flow-group',
@@ -9,15 +9,15 @@ import { IFlogoApplicationFlowModel as FlowModel, Trigger } from '@flogo/core/ap
 })
 export class FlowGroupComponent implements OnChanges {
   @Input()
-  public flows: Array<FlowModel> = [];
+  public flows: Array<FlowSummary> = [];
   @Input()
   public trigger: Trigger;
   @Output()
-  public flowSelected: EventEmitter<FlowModel> = new EventEmitter<FlowModel>();
+  public flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
   @Output() public deleteFlow: EventEmitter<{
-    triggerId: string, flow: FlowModel
+    triggerId: string, flow: FlowSummary
   }> = new EventEmitter<{
-    triggerId: string, flow: FlowModel
+    triggerId: string, flow: FlowSummary
   }>();
   @Output()
   public addFlow: EventEmitter<Trigger> = new EventEmitter<Trigger>();
@@ -28,15 +28,15 @@ export class FlowGroupComponent implements OnChanges {
     }
   }
 
-  trackByFlowId(index: number, flow: FlowModel) {
+  trackByFlowId(index: number, flow: FlowSummary) {
     return flow ? flow.id : null;
   }
 
-  onSelect(flow: FlowModel) {
+  onSelect(flow: FlowSummary) {
     this.flowSelected.emit(flow);
   }
 
-  onDeleteFlow(flow: FlowModel) {
+  onDeleteFlow(flow: FlowSummary) {
     this.deleteFlow.emit({ triggerId: (this.trigger ? this.trigger.id : null), flow: flow });
   }
 

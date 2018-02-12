@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output, OnInit, AfterViewInit, HostBinding } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, HostBinding } from '@angular/core';
 import { IMapping, MapperTranslator, StaticMapperContextFactory } from '../../shared/mapper';
-import { IFlogoFlowDiagramTask } from '../../shared/diagram/models/task.model';
+import { Task } from '@flogo/core';
 
 const ITERABLE_VALUE_KEY = 'iterate';
 
@@ -37,7 +37,7 @@ export class IteratorComponent implements OnInit {
     this.iteratorValueChange.emit(mapping ? mapping.expression : '');
   }
 
-  private createIteratorContext(iterableValue: string, scope: IFlogoFlowDiagramTask[]) {
+  private createIteratorContext(iterableValue: string, scope: Task[]) {
     const outputSchema = MapperTranslator.createOutputSchema(scope);
     return StaticMapperContextFactory.create({
       type: 'object',

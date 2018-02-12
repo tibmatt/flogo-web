@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel } from '../core/application.model';
+import { App, FlowSummary } from '@flogo/core';
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
-
 
 @Component({
   selector: 'flogo-home',
@@ -12,9 +11,9 @@ import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 })
 export class FlogoHomeComponent implements OnInit {
   public recent: Array<any> = [];
-  flows: Array<IFlogoApplicationFlowModel> = [];
-  originalFlows: Array<IFlogoApplicationFlowModel> = [];
-  application: IFlogoApplicationModel = null;
+  flows: Array<FlowSummary> = [];
+  originalFlows: Array<FlowSummary> = [];
+  application: App = null;
 
   constructor(private router: Router,
               public applicationServiceAPI: AppsApiService) {
@@ -28,7 +27,7 @@ export class FlogoHomeComponent implements OnInit {
    let flows = this.originalFlows || [];
 
    if(search && flows.length){
-   let filtered =  flows.filter((flow:IFlogoApplicationFlowModel)=> {
+   let filtered =  flows.filter((flow:FlowSummary)=> {
    return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
    (flow.description || '').toLowerCase().includes(search.toLowerCase())
    });
@@ -48,7 +47,7 @@ export class FlogoHomeComponent implements OnInit {
       });
   }
 
-  onSelectedApp(application: IFlogoApplicationModel) {
+  onSelectedApp(application: App) {
     this.router.navigate(['/apps', application.id]);
   }
 }

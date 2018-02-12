@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 
-import { IFlogoFlowDiagramNode } from './node.model';
-import { IFlogoFlowDiagram } from './diagram.interface';
-import { IFlogoFlowDiagramNodeDictionary } from './dictionary.model';
+import { Node } from '@flogo/core/interfaces/flow-diagram/node';
+import { FlowDiagram } from '@flogo/core/interfaces';
+import { NodeDictionary } from '@flogo/core/interfaces/flow-diagram/flow-diagram';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 
-export function diagramToRenderableMatrix(diagram: IFlogoFlowDiagram, rowLength: number) {
+export function diagramToRenderableMatrix(diagram: FlowDiagram, rowLength: number) {
   return filterOverflowAddNode(
     padMatrix(
       transformDiagram(diagram), rowLength, diagram
@@ -13,7 +13,7 @@ export function diagramToRenderableMatrix(diagram: IFlogoFlowDiagram, rowLength:
     , rowLength);
 }
 
-function padMatrix(matrix: string [][], rowLen, diagram: IFlogoFlowDiagram): string[][] {
+function padMatrix(matrix: string [][], rowLen, diagram: FlowDiagram): string[][] {
   const outputMatrix: string[][] = [];
   const isReturnActivity = task => task && task.return;
 
@@ -48,11 +48,11 @@ function padMatrix(matrix: string [][], rowLen, diagram: IFlogoFlowDiagram): str
   return outputMatrix;
 }
 
-function transformDiagram(diagram: IFlogoFlowDiagram): string[ ][ ] {
+function transformDiagram(diagram: FlowDiagram): string[ ][ ] {
   const matrix: string[ ][ ] = [];
 
   // find the root node
-  let root: IFlogoFlowDiagramNode; // diagram node
+  let root: Node; // diagram node
   if (diagram && diagram.root && diagram.root.is) {
     root = diagram.nodes[diagram.root.is];
   }
@@ -76,8 +76,8 @@ function transformDiagram(diagram: IFlogoFlowDiagram): string[ ][ ] {
 }
 
 function _insertChildNodes(matrix: string[ ][ ],
-                           diagram: IFlogoFlowDiagram,
-                           node: IFlogoFlowDiagramNode): string[ ][ ] {
+                           diagram: FlowDiagram,
+                           node: Node): string[ ][ ] {
 
   // deep-first traversal
 
@@ -122,7 +122,7 @@ function _insertChildNodes(matrix: string[ ][ ],
 
 function filterOverflowAddNode(
   matrix: string[][],
-  nodes: IFlogoFlowDiagramNodeDictionary,
+  nodes: NodeDictionary,
   rowLen: number
 ): string[][] {
   const outputMatrix = _.cloneDeep(matrix);

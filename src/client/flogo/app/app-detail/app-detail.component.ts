@@ -1,18 +1,17 @@
 import * as _ from 'lodash';
 
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
-import { LanguageService } from '@flogo/core';
-import { IFlogoApplicationModel, IFlogoApplicationFlowModel, Trigger } from '../../core/application.model';
+import { LanguageService, FlowSummary, Trigger } from '@flogo/core';
+import { FlogoModal } from '@flogo/core/services/modal.service';
+import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
+import { SanitizeService } from '@flogo/core/services/sanitize.service';
+
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../core';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
-import { SanitizeService } from '../../core/services/sanitize.service';
-import {diffDates, getProfileType, notification} from '../../shared/utils';
-import { FlogoModal } from '../../core/services/modal.service';
-import { FLOGO_PROFILE_TYPE } from '../../core/constants';
-import { FlogoProfileService } from '../../core/services/profile.service';
+import { diffDates, getProfileType, notification } from '../../shared/utils';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -26,10 +25,10 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @ViewChild('exportFlowModal') exportFlow: FlogoExportFlowsComponent;
   @Input() appDetail: ApplicationDetail;
 
-  @Output() flowSelected: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
-  @Output() flowAdded: EventEmitter<IFlogoApplicationFlowModel> = new EventEmitter<IFlogoApplicationFlowModel>();
-  @Output() flowDeleted: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
-  @Output() onDeletedApp: EventEmitter<IFlogoApplicationModel> = new EventEmitter<IFlogoApplicationModel>();
+  @Output() flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
+  @Output() flowAdded: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
+  @Output() flowDeleted: EventEmitter<App> = new EventEmitter<App>();
+  @Output() onDeletedApp: EventEmitter<App> = new EventEmitter<App>();
 
   application: App;
   state: ApplicationDetailState;
@@ -43,7 +42,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   flowGroups: Array<FlowGroup> = [];
   triggerGroups: Array<TriggerGroup> = [];
-  flows: Array<IFlogoApplicationFlowModel> = [];
+  flows: Array<FlowSummary> = [];
   isFlowsViewActive: boolean;
   selectedViewTranslateKey: string;
 
@@ -170,7 +169,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     const flows = this.application.flows || [];
 
     if (search && flows.length) {
-      const filtered = flows.filter((flow: IFlogoApplicationFlowModel) => {
+      const filtered = flows.filter((flow: FlowSummary) => {
         return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
           (flow.description || '').toLowerCase().includes(search.toLowerCase());
       });

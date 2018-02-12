@@ -1,6 +1,6 @@
 import { FLOGO_TASK_ATTRIBUTE_TYPE } from '@flogo/core/constants';
 
-export interface IFlogoFlowDiagramTaskAttribute {
+export interface TaskAttribute {
   name: string;
   type: FLOGO_TASK_ATTRIBUTE_TYPE;
   value: any;
@@ -10,10 +10,10 @@ export interface IFlogoFlowDiagramTaskAttribute {
   required ?: boolean;
   validation ?: '';
   validationMessage ?: '';
-  child ?: IFlogoFlowDiagramTaskAttribute[ ];
+  child ?: TaskAttribute[ ];
 }
 
-export interface IFlogoFlowDiagramTaskAttributes {
-  inputs ?: IFlogoFlowDiagramTaskAttribute[ ];
-  outputs ?: IFlogoFlowDiagramTaskAttribute[ ];
+export interface TaskAttributes {
+  inputs ?: TaskAttribute[];
+  outputs ?: TaskAttribute[];
 }

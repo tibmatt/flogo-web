@@ -1,7 +1,7 @@
 /**
  * Events published from this module
  */
-import { IFlogoFlowDiagramTask } from '../shared/diagram/models/task.model';
+import { Task } from '@flogo/core';
 
 export const PUB_EVENTS = {
   selectTask : {
@@ -37,7 +37,7 @@ export interface SelectTaskConfigEventData {
   handlerId: string;
   // scope
   scope: any[];
-  tile: IFlogoFlowDiagramTask;
+  tile: Task;
   overridePropsToMap?: any[];
   overrideMappings?: any[];
   title?: string;
@@ -48,7 +48,7 @@ export interface SelectTaskConfigEventData {
 
 export interface SaveTaskConfigEventData {
   handlerId: string;
-  tile: IFlogoFlowDiagramTask;
+  tile: Task;
   iterator: IteratorInfo;
   inputMappings: any[];
 }
