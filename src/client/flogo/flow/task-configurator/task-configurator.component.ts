@@ -15,7 +15,7 @@ import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 import { InputMapperConfig } from './input-mapper';
 import { TAB_NAME, Tabs } from './models/tabs.model';
 import {SubFlowConfig} from './subflow/subflow-config';
-import {isSubflowTask} from "@flogo/shared/utils";
+import {isSubflowTask} from '@flogo/shared/utils';
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -198,7 +198,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.inputsSearchPlaceholderKey = eventData.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
     this.createInputMapperConfig(eventData);
-    if(isSubflowTask(this.currentTile.type)) {
+    if (isSubflowTask(this.currentTile.type)) {
       this.createSubflowConfig(eventData);
     }
     this.iteratorModeOn = eventData.iterator.isIterable;

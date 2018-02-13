@@ -1657,7 +1657,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       previousNodes.pop(); // ignore last item as it is the very same selected node
       scope = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
     }
-    const doConfigureTask =  _configureTask.bind(this);
+    const doConfigureTask = _configureTask.bind(this);
     const selectedTaskId = selectedNode.taskID;
     const selectedTile = <Task>_.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
     if (isSubflowTask(selectedTile.type)) {
@@ -1667,10 +1667,10 @@ export class FlowComponent implements OnInit, OnDestroy {
     } else {
       doConfigureTask();
     }
-    function _configureTask(subFlowData){
+    function _configureTask(subFlowData) {
       const metadata = <FlowMetadata>  _.defaultsDeep({
         type: 'metadata',
-      }, this.flow.metadata, { input: [], output: [] });
+      }, this.flow.metadata, {input: [], output: []});
       scope.push(metadata);
 
       let overridePropsToMap = null;
