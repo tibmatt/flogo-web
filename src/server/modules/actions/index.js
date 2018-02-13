@@ -350,6 +350,7 @@ function ensureUniqueName(actions, name) {
 
 function projectOutputOnFields(actionArray, fields) {
   if (fields && fields.length > 0) {
+    fields.push('id');
     return actionArray.map(action => pick(action, fields));
   }
   return actionArray;
