@@ -14,6 +14,8 @@ import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
 import { InputMapperConfig } from './input-mapper';
 import { TAB_NAME, Tabs } from './models/tabs.model';
+import {SubFlowConfig} from './subflow/subflow-config';
+import {isSubflowTask} from "@flogo/shared/utils";
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -60,6 +62,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   inputMappingsConfig: InputMapperConfig;
   currentMappings: Mappings;
+  subFlowConfig: SubFlowConfig;
 
   // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
   // this is because the contents of the modal need to visible up until the close animation finishes
@@ -184,10 +187,10 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (!this.raisedByThisDiagram(eventData.handlerId)) {
       return;
     }
-    this.resetState();
     this.currentTile = eventData.tile;
     this.title = eventData.title;
     this.inputScope = eventData.scope;
+    this.resetState();
 
     if (!this.title && this.currentTile) {
       this.title = this.currentTile.name;
@@ -195,7 +198,9 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.inputsSearchPlaceholderKey = eventData.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
     this.createInputMapperConfig(eventData);
-
+    if(isSubflowTask(this.currentTile.type)) {
+      this.createSubflowConfig(eventData);
+    }
     this.iteratorModeOn = eventData.iterator.isIterable;
     this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
     this.initialIteratorData = {
@@ -234,12 +239,27 @@ export class TaskConfiguratorComponent implements OnDestroy {
     };
   }
 
+  private createSubflowConfig(data: SelectTaskConfigEventData) {
+    this.subFlowConfig = {
+      name: data.subFlowData.name,
+      description: data.subFlowData.description,
+      createdAt: data.subFlowData.createdAt,
+      flowRef: data.tile.flowRef
+    };
+  }
+
   private resetState() {
     if (this.tabs) {
       this.tabs.clear();
     }
-    this.tabs = Tabs.create();
-    this.tabs.get('inputMappings').isSelected = true;
+    if (this.currentTile && isSubflowTask(this.currentTile.type)) {
+      this.tabs = Tabs.create(true);
+      this.tabs.get('subFlow').isSelected = true;
+    } else {
+      this.tabs = Tabs.create(false);
+      this.tabs.get('inputMappings').isSelected = true;
+    }
+
   }
 
   private open() {

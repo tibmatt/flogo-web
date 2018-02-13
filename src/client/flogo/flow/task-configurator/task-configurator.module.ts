@@ -7,6 +7,7 @@ import { MapperModule } from '../shared/mapper';
 import { TaskConfiguratorComponent } from './task-configurator.component';
 import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
+import { SubFlowComponent } from './subflow/subflow.component';
 
 @NgModule({
   imports: [// module dependencies
@@ -17,6 +18,7 @@ import { IteratorComponent } from './iterator/iterator.component';
   declarations: [
     InputMapperComponent,
     IteratorComponent,
+    SubFlowComponent,
     TaskConfiguratorComponent,
   ],
   exports: [

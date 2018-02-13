@@ -50,6 +50,10 @@ export class FlogoFlowService {
     return this._flowAPIService.findFlowsByName(name, appId);
   }
 
+  getFlow(flowId) {
+    return this._flowAPIService.getFlow(flowId);
+  }
+
   listFlowsForApp(appId) {
     return this._flowAPIService.findFlowsByName('', appId);
   }
