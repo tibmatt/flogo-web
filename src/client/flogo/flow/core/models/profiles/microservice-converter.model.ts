@@ -1,10 +1,9 @@
+import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces';
+import { ValueTypes } from '@flogo/core/constants';
+import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
+import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
+import { ErrorService } from '@flogo/core/services/error.service';
 import { AbstractModelConverter } from '../ui-converter.model';
-import { RESTAPIActivitiesService } from '../../../../core/services/restapi/activities-api.service';
-import { RESTAPITriggersService } from '../../../../core/services/restapi/triggers-api.service';
-import { ErrorService } from '../../../../core/services/error.service';
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../../core/constants';
-import { FlowMetadata } from '@flogo/core';
-import { MetadataAttribute } from '../../../../core/interfaces/flow/flow-metadata-attribute';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
   triggerService: RESTAPITriggersService;
@@ -52,7 +51,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
     metadata.input = flowInputs.map(input => {
       const inputMetadata: MetadataAttribute = {
         name: input.name,
-        type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING').toUpperCase()],
+        type: input.type || ValueTypes.STRING,
       };
       if (!_.isUndefined(input.value)) {
         inputMetadata.value = input.value;
@@ -60,7 +59,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
       return inputMetadata;
     });
     metadata.output = flowOutputs.map(input => ({
-      name: input.name, type: FLOGO_TASK_ATTRIBUTE_TYPE[_.get(input, 'type', 'STRING').toUpperCase()],
+      name: input.name, type: input.type || ValueTypes.STRING,
     }));
 
     return {

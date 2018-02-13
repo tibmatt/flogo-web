@@ -90,19 +90,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': 'string',
               'value': 'I am here 1',
               'required': false
             },
             {
               'name': 'flowInfo',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'addToFlow',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             }
@@ -110,7 +110,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 'string'
             }
           ]
         },
@@ -135,19 +135,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'counterName',
-              'type': 0,
+              'type': 'string',
               'value': 'counter1',
               'required': false
             },
             {
               'name': 'increment',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'reset',
-              'type': 3,
+              'type': 'boolean',
               'value': false,
               'required': false
             }
@@ -155,7 +155,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'value',
-              'type': 1
+              'type': 'integer'
             }
           ]
         },
@@ -180,19 +180,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': 'string',
               'value': 'I am here 2',
               'required': false
             },
             {
               'name': 'flowInfo',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'addToFlow',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             }
@@ -200,7 +200,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 'string'
             }
           ]
         },
@@ -225,19 +225,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': 'string',
               'value': 'I am here 3',
               'required': false
             },
             {
               'name': 'flowInfo',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'addToFlow',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             }
@@ -245,7 +245,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 'string'
             }
           ]
         },
@@ -352,19 +352,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': 'string',
               'value': 'I am here 1',
               'required': false
             },
             {
               'name': 'flowInfo',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'addToFlow',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             }
@@ -372,7 +372,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 'string'
             }
           ]
         },
@@ -397,19 +397,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'counterName',
-              'type': 0,
+              'type': 'string',
               'value': 'counter1',
               'required': false
             },
             {
               'name': 'increment',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'reset',
-              'type': 3,
+              'type': 'boolean',
               'value': false,
               'required': false
             }
@@ -417,7 +417,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'value',
-              'type': 1
+              'type': 'integer'
             }
           ]
         },
@@ -442,19 +442,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': 'string',
               'value': 'I am here 2',
               'required': false
             },
             {
               'name': 'flowInfo',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'addToFlow',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             }
@@ -462,7 +462,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 'string'
             }
           ]
         },
@@ -487,19 +487,19 @@ export let resultantFlowModelForCanvas = {
           'inputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': 'string',
               'value': 'I am here 3',
               'required': false
             },
             {
               'name': 'flowInfo',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             },
             {
               'name': 'addToFlow',
-              'type': 3,
+              'type': 'boolean',
               'value': 'true',
               'required': false
             }
@@ -507,7 +507,7 @@ export let resultantFlowModelForCanvas = {
           'outputs': [
             {
               'name': 'message',
-              'type': 0
+              'type': 'string'
             }
           ]
         },

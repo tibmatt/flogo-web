@@ -7,9 +7,10 @@ import { CommonModule as NgCommonModule } from '@angular/common';
 import { TaskConfiguratorComponent } from './task-configurator.component';
 import { MapperModule } from '../shared/mapper';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
-import { SaveTaskConfigEventData, SelectTaskConfigEventData } from '@flogo/flow/task-configurator/messages';
+import { SelectTaskConfigEventData } from '@flogo/flow/task-configurator/messages';
 import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
+import { ValueTypes } from '@flogo/core';
 
 const postServiceStub = {
 
@@ -86,12 +87,12 @@ describe('Component: TaskConfiguratorComponent', () => {
           'outputs': [
             {
               'name': 'params',
-              'type': 6,
+              'type': ValueTypes.PARAMS,
               'value': null
             },
             {
               'name': 'content',
-              'type': 4,
+              'type': ValueTypes.OBJECT,
               'value': null
             }
           ],
@@ -134,25 +135,25 @@ describe('Component: TaskConfiguratorComponent', () => {
             'inputs': [
               {
                 'name': 'counterName',
-                'type': 0,
+                'type': ValueTypes.STRING,
                 'required': true,
                 'value': 'number'
               },
               {
                 'name': 'increment',
-                'type': 3,
+                'type': ValueTypes.BOOLEAN,
                 'value': 'true'
               },
               {
                 'name': 'reset',
-                'type': 3,
+                'type': ValueTypes.BOOLEAN,
                 'value': 'false'
               }
             ],
             'outputs': [
               {
                 'name': 'value',
-                'type': 1
+                'type': ValueTypes.INTEGER,
               }
             ]
           },
@@ -170,24 +171,24 @@ describe('Component: TaskConfiguratorComponent', () => {
           'inputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': ValueTypes.STRING,
               'value': 'hello world'
             },
             {
               'name': 'flowInfo',
-              'type': 3,
+              'type': ValueTypes.BOOLEAN,
               'value': 'true'
             },
             {
               'name': 'addToFlow',
-              'type': 3,
+              'type': ValueTypes.BOOLEAN,
               'value': 'true'
             }
           ],
           'outputs': [
             {
               'name': 'message',
-              'type': 0,
+              'type': ValueTypes.STRING,
               value: ''
             }
           ]

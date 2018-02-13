@@ -35,12 +35,12 @@ class TaskTestHostComponent {
         activityType: 'tibco-log',
         attributes: {
           inputs: [
-            {name: 'message', type: 0, value: 'Received request.'},
-            {name: 'flowInfo', type: 3, value: 'true'},
-            {name: 'addToFlow', type: 3, value: 'true'}
+            {name: 'message', type: 'string', value: 'Received request.'},
+            {name: 'flowInfo', type: 'boolean', value: 'true'},
+            {name: 'addToFlow', type: 'boolean', value: 'true'}
           ],
           outputs: [
-            {name: 'message', type: 0}
+            {name: 'message', type: 'string'}
           ]
         },
         description: 'Simple Log Activity',
@@ -94,9 +94,9 @@ class TriggerTestHostComponent {
             {name: 'useReplyHandler', type: 'boolean', value: 'true'}]},
         homepage: '', id: '', installed: true, name: 'Receiver',
         outputs: [
-          {name: 'pathParams', type: 6, value: {q: 100}},
-          {name: 'queryParams', type: 6, value: {status: 1}},
-          {name: 'content', type: 4, value: '400'}],
+          {name: 'pathParams', type: 'params', value: {q: 100}},
+          {name: 'queryParams', type: 'params', value: {status: 1}},
+          {name: 'content', type: 'object', value: '400'}],
         settings: [{name: 'port', required: true, type: 'integer', value: '9999'}],
         title: 'REST Trigger', triggerType: 'tibco-rest', type: 0, version: '0.0.1', where: ''
       };

@@ -1,5 +1,4 @@
-import { DEFAULT_VALUES_OF_TYPES, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '../core/constants';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import { ValueTypes, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
@@ -62,8 +61,8 @@ export function convertTaskID(taskID: string) {
 }
 
 // get default value of a given type
-export function getDefaultValue(type: FLOGO_TASK_ATTRIBUTE_TYPE): any {
-  return DEFAULT_VALUES_OF_TYPES[type];
+export function getDefaultValue(forType: ValueTypes.ValueType): any {
+  return ValueTypes.defaultValueForType.get(forType);
 }
 
 // convert the type of attribute and add default value if enabled
@@ -78,10 +77,6 @@ function portAttribute(inAttr: {
     value: any;
     [key: string]: any;
   }>_.assign({}, inAttr);
-
-  outAttr.type = <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,
-    _.get(outAttr, 'type', 'STRING')
-      .toUpperCase());
 
   if (withDefault && _.isUndefined(outAttr.value)) {
     outAttr.value = getDefaultValue(outAttr.type);
@@ -404,14 +399,6 @@ export function notification(message: string, type: string, time?: number, setti
       resolve();
     }
   });
-}
-
-export function attributeTypeToString(inType: any): string {
-  if (_.isString(inType)) {
-    return inType;
-  }
-
-  return (FLOGO_TASK_ATTRIBUTE_TYPE[inType] || 'string').toLowerCase();
 }
 
 /**

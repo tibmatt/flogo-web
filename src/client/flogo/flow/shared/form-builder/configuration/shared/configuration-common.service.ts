@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FLOGO_TASK_ATTRIBUTE_TYPE} from '@flogo/core/constants';
+import { ValueTypes } from '@flogo/core/constants';
 
 @Injectable()
 export class FlogoConfigurationCommonService {
@@ -26,71 +26,31 @@ export class FlogoConfigurationCommonService {
     return obj;
   }
 
-  _mapTypeToConstant(type: string|FLOGO_TASK_ATTRIBUTE_TYPE): FLOGO_TASK_ATTRIBUTE_TYPE {
-    switch (type) {
-      case 'string':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
-
-      case 'number':
-      case 'int':
-      case 'integer':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
-      case FLOGO_TASK_ATTRIBUTE_TYPE.INT:
-      case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER;
-
-      case 'boolean':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN;
-
-      case 'object':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT;
-
-      case 'map':
-      case 'params':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS;
-
-      case 'any':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
-            return FLOGO_TASK_ATTRIBUTE_TYPE.ANY;
-
-      case 'complex_object':
-      case FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT;
-
-      default:
-        return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
-    }
-  }
-
   getControlByType(item: any, paramDirection?: string) {
     let control = '';
-    const typeAsConstant: FLOGO_TASK_ATTRIBUTE_TYPE = this._mapTypeToConstant(item.type);
+    const typeAsConstant = item.type as ValueTypes.ValueType;
 
     switch (typeAsConstant) {
-      case  FLOGO_TASK_ATTRIBUTE_TYPE.STRING:
+      case  ValueTypes.STRING:
         control =  'FieldTextBox';
         break;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER:
-      case FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER:
+      case ValueTypes.NUMBER:
+      case ValueTypes.INTEGER:
         control = 'FieldNumber';
         break;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN:
+      case ValueTypes.BOOLEAN:
         control = 'FieldRadio';
         break;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS:
+      case ValueTypes.PARAMS:
         control = 'FieldTextArea';
         break;
 
-      case FLOGO_TASK_ATTRIBUTE_TYPE.ANY:
-      case FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT:
-      case FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT:
+      case ValueTypes.ANY:
+      case ValueTypes.OBJECT:
+      case ValueTypes.COMPLEX_OBJECT:
         control = 'FieldObject';
         break;
 
@@ -99,7 +59,7 @@ export class FlogoConfigurationCommonService {
         break;
     }
 
-    if (paramDirection === this.directions.output && item.type === FLOGO_TASK_ATTRIBUTE_TYPE.STRING) {
+    if (paramDirection === this.directions.output && item.type === ValueTypes.STRING) {
       control = 'FieldObject';
     }
 

@@ -1,8 +1,8 @@
-import { FLOGO_TASK_ATTRIBUTE_TYPE } from '../../../core/constants';
+import { ValueTypes } from '@flogo/core';
 
 export abstract class BaseField<T> {
   name: string;
-  type: FLOGO_TASK_ATTRIBUTE_TYPE;
+  type: ValueTypes.ValueType;
   value: T;
   // making required defaulted to true only for the case of Input metadata
   required = true;
@@ -10,7 +10,7 @@ export abstract class BaseField<T> {
 
   constructor(options: {
     name?: string,
-    type?: FLOGO_TASK_ATTRIBUTE_TYPE,
+    type?: ValueTypes.ValueType,
     value?: any,
     required?: boolean,
     controlType?: string

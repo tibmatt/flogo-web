@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import {convertTaskID, flogoIDEncode, getDefaultValue, isSubflowTask} from '@flogo/shared/utils';
-import { FLOGO_PROCESS_TYPE, FLOGO_TASK_ATTRIBUTE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces/flow';
@@ -21,6 +20,9 @@ import {
   LegacyFlowWrapper,
   triggerToJSON_Trigger,
   triggerToJSON_TriggerInfo,
+  ValueTypes,
+  FLOGO_PROCESS_TYPE,
+  FLOGO_TASK_TYPE,
 } from '@flogo/core';
 
 export function triggerFlowToJSON(flow: UiFlow): triggerToJSON_Trigger {
@@ -137,8 +139,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     flowMetadata.input = metadata.input.map(input => {
       const inputMetadata: MetadataAttribute = {
         name: input.name,
-        type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE, <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(input, 'type'), 'string'))
-          .toLowerCase()
+        type: input.type || ValueTypes.STRING,
       };
       if (!_.isUndefined(input.value)) {
         inputMetadata.value = input.value;
@@ -146,9 +147,8 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       return inputMetadata;
     });
     flowMetadata.output = metadata.output.map(output => ({
-      name: output.name, type: (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,
-        <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(output, 'type'),
-        'string')).toLowerCase(),
+      name: output.name,
+      type: output.type || ValueTypes.STRING,
     }));
     return flowMetadata;
   }
@@ -434,10 +434,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       // }
 
       // the attribute default attribute type is STRING
-      attr.type = (<string>_.get(FLOGO_TASK_ATTRIBUTE_TYPE,
-        <FLOGO_TASK_ATTRIBUTE_TYPE>_.get(inAttr, 'type'),
-        'string')).toLowerCase();
-
+      attr.type = inAttr.type || ValueTypes.STRING;
 
       attributes.push(attr);
     });

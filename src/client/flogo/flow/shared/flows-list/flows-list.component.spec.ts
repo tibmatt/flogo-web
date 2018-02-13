@@ -5,6 +5,7 @@ import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 import {FakeRootLanguageModule} from '@flogo/core/language/testing';
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
+import { Action } from '@flogo/core';
 
 describe('Component: FlowsListComponent', () => {
   let comp: FlowsListComponent;
@@ -64,28 +65,31 @@ describe('Component: FlowsListComponent', () => {
     firstSelectFlowButton.click();
   });
 
-  function getFlowsList() {
+  function getFlowsList(): Action[] {
     return [
       {
         'name': 'hello flow',
         'description': '',
         'id': 'flow_1',
         'createdAt': '2018-01-25T09:50:29.664Z',
-        'updatedAt': '2018-01-25T09:55:11.088Z'
+        'updatedAt': '2018-01-25T09:55:11.088Z',
+        data: {},
       },
       {
         'name': 'test flow',
         'description': 'hello',
         'id': 'flow_2',
         'createdAt': '2018-01-25T09:50:29.664Z',
-        'updatedAt': '2018-01-25T09:55:11.088Z'
+        'updatedAt': '2018-01-25T09:55:11.088Z',
+        data: {},
       },
       {
         'name': 'flow something',
         'description': '',
         'id': 'flow_3',
         'createdAt': '2018-01-25T09:50:29.664Z',
-        'updatedAt': '2018-01-25T09:55:11.088Z'
+        'updatedAt': '2018-01-25T09:55:11.088Z',
+        data: {},
       }
     ];
   }

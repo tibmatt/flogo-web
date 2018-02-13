@@ -11,6 +11,7 @@ import { FlowData } from './core';
 import { LanguageService } from '@flogo/core';
 import { PostService } from '@flogo/core/services/post.service';
 import { OperationalError } from '@flogo/core/services/error.service';
+import { ValueTypes } from '@flogo/core/constants';
 
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
@@ -57,11 +58,9 @@ import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api
 import {
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   FLOGO_PROFILE_TYPE,
-  FLOGO_TASK_ATTRIBUTE_TYPE,
   FLOGO_TASK_TYPE
 } from '../core/constants';
 import {
-  attributeTypeToString,
   flogoGenBranchID,
   flogoIDDecode,
   flogoIDEncode,
@@ -1354,8 +1353,8 @@ export class FlowComponent implements OnInit, OnDestroy {
       return _.map(formAttrs, (input: any) => {
         // override the value;
         return _.assign(_.cloneDeep(input), {
-          value: inputData[input['name']],
-          type: attributeTypeToString(input['type'])
+          value: inputData[input.name],
+          type: input.type
         });
       });
     }
@@ -1439,12 +1438,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         // filter empty values
         return !_.isNil(item.value);
       })
-      .map((item: any) => {
-        // converting the type of the initData from enum to string;
-        const outItem = _.cloneDeep(item);
-        outItem.type = attributeTypeToString(outItem.type);
-        return outItem;
-      })
+      .map((item: any) => _.cloneDeep(item))
       .value();
   }
 
@@ -1716,7 +1710,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (isMapperTask) {
       tile.attributes.inputs = [{
         name: 'mappings',
-        type: FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY,
+        type: ValueTypes.ARRAY,
         value: _.cloneDeep(data.inputMappings)
       }];
     } else {
