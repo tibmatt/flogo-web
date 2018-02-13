@@ -16,13 +16,26 @@ export function actions(router, basePath) {
 function* listActions() {
   const appId = this.params.appId;
 
-  const searchTerms = {};
+  const options = {};
   const filterName = this.request.query['filter[name]'];
-  if (filterName) {
-    searchTerms.name = filterName;
+  const filterId = this.request.query['filter[id]'];
+  const getFields = this.request.query['fields'];
+  if (filterName || filterId) {
+    const filter = options.filter = {};
+    if (filterName) {
+      filter.by = 'name';
+      filter.value = filterName;
+    } else if (filterId) {
+      filter.by = 'id';
+      filter.value = filterId.split(',');
+    }
   }
 
-  const actionList = yield ActionsManager.list(appId, searchTerms);
+  if (getFields) {
+    options.payload = getFields.split(',');
+  }
+
+  const actionList = yield ActionsManager.list(appId, options);
   this.body = {
     data: actionList || [],
   };
