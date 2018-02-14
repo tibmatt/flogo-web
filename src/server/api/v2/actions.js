@@ -32,7 +32,7 @@ function* listActions() {
   }
 
   if (getFields) {
-    options.payload = getFields.split(',');
+    options.project = getFields.split(',');
   }
 
   const actionList = yield ActionsManager.list(appId, options);

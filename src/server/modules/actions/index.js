@@ -136,7 +136,7 @@ export class ActionsManager {
         }
         return actions;
       })
-      .then(actions => projectOutputOnFields(actions, options.payload));
+      .then(actions => projectOutputOnFields(actions, options.project));
   }
 
   static listRecent() {
