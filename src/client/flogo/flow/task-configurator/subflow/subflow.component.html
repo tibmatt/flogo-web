@@ -1,6 +1,6 @@
 <div class="subflow-content">
-  <div class="subflow-name">{{subFlowname}}</div>
-  <div class="subflow-description">{{subFlowDescription}}</div>
-  <div class="subflow-createdAt">created {{subFlowCreatedAt | timeFromNow}}</div>
-  <div><a href="/flows/{{subFlowId}}" class="flogo-link" target="_blank">{{ 'TASK-CONFIGURATOR:SUB-FLOW:LINK-TEXT' | translate }}</a></div>
+  <div class="subflow-name">{{subFlow.name}}</div>
+  <div class="subflow-description">{{subFlow.description}}</div>
+  <div class="subflow-createdAt">{{'TASK-CONFIGURATOR:SUB-FLOW:CREATED' | translate}} {{subFlow.createdAt | timeFromNow}}</div>
+  <div><a href="/flows/{{subFlow.flowRef}}" class="flogo-link" target="_blank">{{ 'TASK-CONFIGURATOR:SUB-FLOW:LINK-TEXT' | translate }}</a></div>
 </div>

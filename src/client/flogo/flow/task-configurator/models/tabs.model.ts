@@ -31,8 +31,8 @@ export class Tabs implements Iterable<[TAB_NAME, Tab]> {
   }
 
   constructor(includeSubFlow: boolean) {
-    const tabPairs = defaultTabsInfo.filter(val => val.name !== 'subFlow' || (val.name === 'subFlow' && includeSubFlow))
-      .map(({ name, labelKey }) => [name, makeTab(labelKey)] as [TAB_NAME, Tab]);
+    const tabPairs = defaultTabsInfo.filter(val => val.name !== 'subFlow' || includeSubFlow)
+      .map(({name, labelKey}) => [name, makeTab(labelKey)] as [TAB_NAME, Tab]);
     this.tabs = new Map<TAB_NAME, Tab>(tabPairs);
     this[Symbol.iterator] = this.tabs[Symbol.iterator].bind(this.tabs);
   }

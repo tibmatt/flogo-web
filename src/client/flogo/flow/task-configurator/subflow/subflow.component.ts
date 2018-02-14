@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 
 @Component({
@@ -7,23 +7,8 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['subflow.component.less'],
 })
 
-export class SubFlowComponent implements OnInit {
-  @Input() subFlowConfig;
-  subFlowId;
-  subFlowname;
-  subFlowDescription;
-  subFlowCreatedAt;
+export class SubFlowComponent {
+  @Input() subFlow;
 
-  ngOnInit() {
-    this.initSubflowConfiguration();
-  }
-
-
-  private initSubflowConfiguration() {
-    this.subFlowname = this.subFlowConfig.name;
-    this.subFlowDescription = this.subFlowConfig.description;
-    this.subFlowCreatedAt = this.subFlowConfig.createdAt;
-    this.subFlowId = this.subFlowConfig.flowRef;
-  }
 }
 

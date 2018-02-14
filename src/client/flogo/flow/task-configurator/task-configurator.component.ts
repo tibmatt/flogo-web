@@ -14,7 +14,7 @@ import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
 import { InputMapperConfig } from './input-mapper';
 import { TAB_NAME, Tabs } from './models/tabs.model';
-import {SubFlowConfig} from './subflow/subflow-config';
+import {SubFlowConfig} from '../../core/interfaces/flow/subflow-config';
 import {isSubflowTask} from '@flogo/shared/utils';
 
 @Component({
@@ -118,6 +118,10 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   get isDirty() {
     return this.tabs.areDirty();
+  }
+
+  get isSubFlow() {
+    return isSubflowTask(this.currentTile.type);
   }
 
   save() {
