@@ -153,6 +153,8 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
   public handleFlowSelection(selectedFlow: any) {
     this.showFlowsList = false;
     if (selectedFlow !== 'dismiss' && _.isObjectLike(selectedFlow) && _.isObjectLike(this.subFlowTask)) {
+      // update the flow relation in the flow details model
+      this.flowService.currentFlowDetails.setFlowRelation(selectedFlow);
       this.subFlowTask.name = selectedFlow.name;
       this.subFlowTask.flowRef = selectedFlow.id;
       this.sendAddTaskMsg(this.subFlowTask);
