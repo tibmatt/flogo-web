@@ -124,16 +124,19 @@ export class ActionsManager {
       });
   }
 
-  static list(appId, searchTerms) {
+  static list(appId, options) {
     return appsDb.findOne({ _id: appId })
       .then(app => (app && app.actions ? app.actions : []))
       .then(actions => {
-        if (searchTerms && searchTerms.name) {
-          const comparableName = searchTerms.name.trim().toLowerCase();
+        if (options && options.filter && options.filter.by === 'name') {
+          const comparableName = options.filter.value.trim().toLowerCase();
           return actions.filter(a => comparableName === a.name.trim().toLowerCase());
+        } else if (options && options.filter && options.filter.by === 'id') {
+          return actions.filter(a => options.filter.value.indexOf(a.id) !== -1);
         }
         return actions;
-      });
+      })
+      .then(actions => projectOutputOnFields(actions, options.project));
   }
 
   static listRecent() {
@@ -343,4 +346,12 @@ function ensureUniqueName(actions, name) {
     name = `${name} (${greatestIndex + 1})`;
   }
   return name;
+}
+
+function projectOutputOnFields(actionArray, fields) {
+  if (fields && fields.length > 0) {
+    fields.push('id');
+    return actionArray.map(action => pick(action, fields));
+  }
+  return actionArray;
 }
