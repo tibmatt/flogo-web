@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Action } from '@flogo/core';
 import { FlogoFlowService as FlowsService } from '@flogo/flow/core/flow.service';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import {ActionBase} from '@flogo/core';
 
 @Component({
   selector: 'flogo-flow-sub-flow',
@@ -14,10 +14,10 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
   @Input()
   currentFlow: string;
   @Output()
-  flowSelected: EventEmitter<Action | string> = new EventEmitter<Action | string>();
+  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<ActionBase | string>();
 
   @ViewChild('listModal') modal: ModalComponent;
-  flowsList: Action[];
+  flowsList: ActionBase[];
 
   constructor(private flowService: FlowsService) {}
 
@@ -43,7 +43,7 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
     this.onModalCloseOrDismiss();
   }
 
-  selectedFlow(flow: Action) {
+  selectedFlow(flow: ActionBase) {
     this.flowSelected.emit(flow);
   }
 }

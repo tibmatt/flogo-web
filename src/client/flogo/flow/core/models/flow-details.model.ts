@@ -1,28 +1,29 @@
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import {getProfileType} from '@flogo/shared/utils';
+import {ActionBase} from '@flogo/core';
 
 export class FlogoFlowDetails {
   id: string;
   associatedToAppId: string;
   applicationProfileType: FLOGO_PROFILE_TYPE;
-  relatedSubFlows: Map<string, any>;
+  relatedSubFlows: Map<string, ActionBase>;
 
-  constructor(flow, subFlowRelations) {
+  constructor(flow, subFlowRelations: ActionBase[]) {
     this.id = flow.id;
     this.associatedToAppId = flow.app.id;
     this.applicationProfileType = getProfileType(flow.app);
-    this.relatedSubFlows = new Map(<[string, any][]> subFlowRelations.map(a => [a.id, a]));
+    this.relatedSubFlows = new Map(<[string, ActionBase][]> subFlowRelations.map(a => [a.id, a]));
   }
 
-  setFlowRelation(flow: any) {
+  setFlowRelation(flow: ActionBase) {
     this.relatedSubFlows.set(flow.id, flow);
   }
 
-  getFlowRelation(flowId) {
+  getFlowRelation(flowId: string): ActionBase {
     return this.relatedSubFlows.get(flowId);
   }
 
-  deleteFlowRelation(flowId) {
+  deleteFlowRelation(flowId: string) {
     this.relatedSubFlows.delete(flowId);
   }
 }
