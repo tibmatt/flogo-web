@@ -15,15 +15,15 @@ export class FlogoFlowDetails {
     this.relatedSubFlows = new Map(<[string, ActionBase][]> subFlowRelations.map(a => [a.id, a]));
   }
 
-  setFlowRelation(flow: ActionBase) {
+  addSubflowSchema(flow: ActionBase) {
     this.relatedSubFlows.set(flow.id, flow);
   }
 
-  getFlowRelation(flowId: string): ActionBase {
+  getSubflowSchema(flowId: string): ActionBase {
     return this.relatedSubFlows.get(flowId);
   }
 
-  deleteFlowRelation(flowId: string) {
+  deleteSubflowSchema(flowId: string) {
     this.relatedSubFlows.delete(flowId);
   }
 }

@@ -1940,7 +1940,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private manageFlowRelationships(flowId: string) {
     if (!this.isFlowUsedAgain(flowId)) {
-      this._flowService.currentFlowDetails.deleteFlowRelation(flowId);
+      this._flowService.currentFlowDetails.deleteSubflowSchema(flowId);
     }
   }
 
