@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Action } from '@flogo/core';
+import {ActionBase} from '@flogo/core';
 
 @Component({
   selector: 'flogo-flow-flows-list',
@@ -8,10 +8,10 @@ import { Action } from '@flogo/core';
 })
 export class FlowsListComponent {
   @Input()
-  list: Action[];
+  list: ActionBase[];
 
   @Output()
-  flowSelected: EventEmitter<Action | string> = new EventEmitter<Action | string>();
+  flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<ActionBase | string>();
 
   searchText: string;
 
@@ -30,7 +30,7 @@ export class FlowsListComponent {
     this.flowSelected.emit('cancel');
   }
 
-  selectFlow(flow: Action) {
+  selectFlow(flow: ActionBase) {
     this.flowSelected.emit(flow);
   }
 }

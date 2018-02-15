@@ -9,6 +9,7 @@ import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
 import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowDetails } from './models';
 import { FlowData } from './flow-data';
+import {isSubflowTask} from '@flogo/shared/utils';
 
 @Injectable()
 export class FlogoFlowService {
@@ -21,12 +22,21 @@ export class FlogoFlowService {
 
   loadFlow(flowId: string): Promise<FlowData> {
     return this._flowAPIService.getFlow(flowId)
-      .then((flow) => {
+      .then(flow => {
+        const subFlowTasks = _.get(flow, 'data.flow.rootTask.tasks', [])
+          .filter(t => isSubflowTask(t.type));
+        const flowIdsToFetch = _.uniq(subFlowTasks.map(t => t.flowRef));
+        if (flowIdsToFetch.length > 0) {
+          return Promise.all([flow, this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch)]);
+        }
+        return Promise.all([flow, flowIdsToFetch]);
+      })
+      .then(([flow, subflows]) => {
         const flowDiagramDetails = _.omit(flow, [
           'triggers'
         ]);
 
-        this.currentFlowDetails = new FlogoFlowDetails(flow);
+        this.currentFlowDetails = new FlogoFlowDetails(flow, subflows);
 
         const triggers = flow.triggers;
         this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
@@ -51,7 +61,7 @@ export class FlogoFlowService {
   }
 
   listFlowsForApp(appId) {
-    return this._flowAPIService.findFlowsByName('', appId);
+    return this._flowAPIService.getSubFlows(appId);
   }
 
   processFlowModel(model, hasTrigger?: boolean): Promise<FlowData> {

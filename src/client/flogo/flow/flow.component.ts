@@ -973,6 +973,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                   // TODO
                   //  NOTE that once delete branch, not only single task is removed
                   const tasks = this.handlers[diagramId].tasks;
+                  const deletedTask = _.cloneDeep(tasks[_.get(data, 'node.taskID', '')]);
                   delete tasks[_.get(data, 'node.taskID', '')];
                   const taskIds = Object.keys(tasks);
                   if ((diagramId === 'errorHandler') && (taskIds.length === 1 ) && (tasks[taskIds[0]].type === FLOGO_TASK_TYPE.TASK_ROOT)) {
@@ -995,6 +996,10 @@ export class FlowComponent implements OnInit, OnDestroy {
                   }
                   this._updateFlow(this.flow);
                   this._isDiagramEdited = true;
+
+                  if (isSubflowTask(deletedTask.type)) {
+                    this.manageFlowRelationships(deletedTask.flowRef);
+                  }
 
                   if (_shouldGoBack) {
                     this._navigateFromModuleRoot();
@@ -1925,6 +1930,16 @@ export class FlowComponent implements OnInit, OnDestroy {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
         });
       });
+  }
+
+  private manageFlowRelationships(flowId: string) {
+    if (!this.isFlowUsedAgain(flowId)) {
+      this._flowService.currentFlowDetails.deleteSubflowSchema(flowId);
+    }
+  }
+
+  private isFlowUsedAgain(id: string) {
+    return !!_.values(this._getAllTasks()).find(t => t.flowRef === id);
   }
 
 }

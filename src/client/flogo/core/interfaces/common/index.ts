@@ -1,2 +1,2 @@
 export { Dictionary } from './dictionary';
-export { Action } from './action';
+export { Action, ActionBase} from './action';
