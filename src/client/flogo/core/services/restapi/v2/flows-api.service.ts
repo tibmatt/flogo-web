@@ -65,4 +65,21 @@ export class APIFlowsService {
       .toPromise();
   }
 
+  getSubFlows(appId: string, flowIds?: string[]) {
+    const searchParams = new URLSearchParams();
+    searchParams.set('fields', 'id,name,description,metadata,createdAt');
+    if (!_.isEmpty(flowIds)) {
+      searchParams.set('filter[id]', flowIds.toString());
+    }
+    const reqOptions = this.httpUtils.defaultOptions()
+      .merge({
+        search: searchParams
+      });
+
+    return this.http.get(
+      this.httpUtils.apiPrefix(`apps/${appId}/actions`), reqOptions)
+      .map((res: Response) => res.json().data)
+      .toPromise();
+  }
+
 }
