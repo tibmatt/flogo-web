@@ -62,6 +62,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   inputMappingsConfig: InputMapperConfig;
   currentMappings: Mappings;
+  isSubflowType: boolean;
   subFlowConfig: SubFlowConfig;
 
   // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
@@ -79,6 +80,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   constructor(private _postService: PostService) {
     this.initSubscriptions();
+    this.isSubflowType = false;
     this.resetState();
   }
 
@@ -118,10 +120,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   get isDirty() {
     return this.tabs.areDirty();
-  }
-
-  get isSubFlow() {
-    return isSubflowTask(this.currentTile.type);
   }
 
   save() {
@@ -194,6 +192,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.currentTile = eventData.tile;
     this.title = eventData.title;
     this.inputScope = eventData.scope;
+    this.isSubflowType = isSubflowTask(this.currentTile.type);
     this.resetState();
 
     if (!this.title && this.currentTile) {
@@ -202,7 +201,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.inputsSearchPlaceholderKey = eventData.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
     this.createInputMapperConfig(eventData);
-    if (isSubflowTask(this.currentTile.type)) {
+    if (this.isSubflowType) {
       this.createSubflowConfig(eventData);
     }
     this.iteratorModeOn = eventData.iterator.isIterable;
@@ -256,11 +255,11 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (this.tabs) {
       this.tabs.clear();
     }
-    if (this.currentTile && isSubflowTask(this.currentTile.type)) {
-      this.tabs = Tabs.create(true);
+    this.tabs = Tabs.create(this.isSubflowType);
+
+    if (this.isSubflowType) {
       this.tabs.get('subFlow').isSelected = true;
     } else {
-      this.tabs = Tabs.create(false);
       this.tabs.get('inputMappings').isSelected = true;
     }
 

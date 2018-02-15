@@ -2,7 +2,7 @@
      (@dialog.done)="onModalStateChange($event)">
   <div class="mapper-modal qa-transform-modal" *ngIf="isActive">
     <div class="mapper-modal__header header">
-      <h2 class="header__title" [ngClass]="{'header__title--subflow': this.isSubFlow}">{{ title }}</h2>
+      <h2 class="header__title" [ngClass]="{'header__title--subflow': isSubflowType}">{{ title }}</h2>
       <div class="header__actions actions">
         <button class="flogo-button--secondary actions__action" (click)="cancel()">
           Cancel
@@ -47,7 +47,7 @@
         [initialConfig]="{ inputScope: inputScope, iterableValue: iterableValue }"
         (changeIteratorMode)="onChangeIteratorMode()"
         (iteratorValueChange)="onIteratorValueChange($event)"></flogo-flow-task-configurator-iterator>
-      <flogo-flow-task-configurator-subflow *ngIf="this.tabs.get('subFlow') && this.tabs.get('subFlow').isSelected" [subFlow]="subFlowConfig"
+      <flogo-flow-task-configurator-subflow *ngIf="isSubflowType && this.tabs.get('subFlow').isSelected" [subFlow]="subFlowConfig"
                                             class="content"></flogo-flow-task-configurator-subflow>
     </div>
   </div>

@@ -510,7 +510,7 @@ class ItemFactory {
       item.return = true;
     }
 
-    // Add flowRef for the case of a subflow typr of task
+    // Add flowRef for the case of a subflow type of task
     if (isSubflowTask(taskInstance.type)) {
       item.flowRef = taskInstance.flowRef;
     }
