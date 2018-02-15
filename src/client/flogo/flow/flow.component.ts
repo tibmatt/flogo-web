@@ -1662,57 +1662,51 @@ export class FlowComponent implements OnInit, OnDestroy {
       previousNodes.pop(); // ignore last item as it is the very same selected node
       scope = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
     }
-    const doConfigureTask = _configureTask.bind(this);
+
     const selectedTaskId = selectedNode.taskID;
     const selectedTile = <Task>_.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
-    if (isSubflowTask(selectedTile.type)) {
-      this._flowService.getFlow(selectedTile.flowRef).then((subFlowData) => {
-        doConfigureTask(subFlowData);
-      });
-    } else {
-      doConfigureTask();
-    }
-    function _configureTask(subFlowData) {
-      const metadata = <FlowMetadata>  _.defaultsDeep({
-        type: 'metadata',
-      }, this.flow.metadata, {input: [], output: []});
-      scope.push(metadata);
 
-      let overridePropsToMap = null;
-      let overrideMappings = null;
-      let inputMappingsTabLabelKey = null;
-      let searchTitleKey;
-      let transformTitle;
-      if (outputMapper) {
-        overridePropsToMap = metadata.output;
-        overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);
-        transformTitle = this.translate.instant('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.name });
-        searchTitleKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
-        inputMappingsTabLabelKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
+    const metadata = <FlowMetadata>  _.defaultsDeep({
+      type: 'metadata',
+    }, this.flow.metadata, { input: [], output: [] });
+    scope.push(metadata);
+
+    let overridePropsToMap = null;
+    let overrideMappings = null;
+    let inputMappingsTabLabelKey = null;
+    let searchTitleKey;
+    let transformTitle;
+    if (outputMapper) {
+      overridePropsToMap = metadata.output;
+      overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);
+      transformTitle = this.translate.instant('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName: selectedTile.name });
+      searchTitleKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
+      inputMappingsTabLabelKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
+    }
+
+    const taskSettings = selectedTile.settings;
+    const dataToPublish = _.assign(
+      {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
+        data: <SelectTaskConfigEventData>{
+          scope,
+          overridePropsToMap,
+          overrideMappings,
+          inputMappingsTabLabelKey,
+          tile: selectedTile,
+          handlerId: diagramId,
+          title: transformTitle,
+          inputsSearchPlaceholderKey: searchTitleKey,
+          iterator: {
+            isIterable: selectedTile.type === FLOGO_TASK_TYPE.TASK_ITERATOR,
+            iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
+          },
+        }
       }
-
-      const taskSettings = selectedTile.settings;
-      this._postService.publish(
-        _.assign(
-          {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
-            data: <SelectTaskConfigEventData>{
-              scope,
-              overridePropsToMap,
-              overrideMappings,
-              inputMappingsTabLabelKey,
-              tile: selectedTile,
-              handlerId: diagramId,
-              title: transformTitle,
-              inputsSearchPlaceholderKey: searchTitleKey,
-              iterator: {
-                isIterable: selectedTile.type === FLOGO_TASK_TYPE.TASK_ITERATOR,
-                iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
-              },
-              subFlowData,
-            }
-          }
-        ));
+    );
+    if (isSubflowTask(selectedTile.type)) {
+      dataToPublish.data.subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedTile.flowRef);
     }
+    this._postService.publish(dataToPublish);
 
   }
 

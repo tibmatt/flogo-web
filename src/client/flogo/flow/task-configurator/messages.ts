@@ -1,7 +1,8 @@
 /**
  * Events published from this module
  */
-import {Task, Action} from '@flogo/core';
+import {Task} from '@flogo/core';
+import {ActionBase} from '@flogo/core/interfaces/common/action';
 
 export const PUB_EVENTS = {
   selectTask : {
@@ -44,7 +45,7 @@ export interface SelectTaskConfigEventData {
   inputMappingsTabLabelKey?: string;
   inputsSearchPlaceholderKey?: string;
   iterator: IteratorInfo;
-  subFlowData?: Action;
+  subflowSchema?: ActionBase;
 }
 
 export interface SaveTaskConfigEventData {

@@ -244,10 +244,10 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   private createSubflowConfig(data: SelectTaskConfigEventData) {
     this.subFlowConfig = {
-      name: data.subFlowData.name,
-      description: data.subFlowData.description,
-      createdAt: data.subFlowData.createdAt,
-      flowRef: data.tile.flowRef
+      name: data.subflowSchema.name,
+      description: data.subflowSchema.description,
+      createdAt: data.subflowSchema.createdAt,
+      flowRef: data.subflowSchema.id
     };
   }
 
