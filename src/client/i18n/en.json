@@ -200,6 +200,7 @@
   "SELECT-TRIGGER:TRIGGER-TYPES": "Trigger types",
   "SELECT-TRIGGER:INSTALL-NEW": "Install new",
   "SELECT-TRIGGER:MY-EXISTING-TRIGGERS": "My existing triggers",
+  "SUBFLOW:REFERENCE-ERROR-TEXT": "Reference is not available for this subflow",
   "INPUT-PARAMS:ADD": "+",
   "INPUT-PARAMS:DEFINE": "Define Params",
   "INPUT-PARAMS:SAVE": "Save",

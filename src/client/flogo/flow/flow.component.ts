@@ -1704,7 +1704,13 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
     );
     if (isSubflowTask(selectedTile.type)) {
-      dataToPublish.data.subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedTile.flowRef);
+      const subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedTile.flowRef);
+      if (subflowSchema) {
+        dataToPublish.data.subflowSchema = subflowSchema;
+      } else {
+        this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
+          .subscribe(message => notification(message, 'error'));
+      }
     }
     this._postService.publish(dataToPublish);
 
@@ -1725,7 +1731,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       tile.inputMappings = _.cloneDeep(data.inputMappings);
     }
 
-    tile.type = FLOGO_TASK_TYPE.TASK;
+    tile.type = data.tile.type;
     if (data.iterator.isIterable) {
       tile.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
       tile.settings = Object.assign({}, tile.settings, { iterate:  data.iterator.iterableValue });
