@@ -41,7 +41,7 @@ export class FlogoFlowService {
 
         const triggers = flow.triggers;
         this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
-        return this._converterService.getWebFlowModel(flowDiagramDetails)
+        return this._converterService.getWebFlowModel(flowDiagramDetails, this.currentFlowDetails.relatedSubFlows)
           .then(convertedFlow => this.processFlowModel(convertedFlow, flow.triggers.length > 0))
           .then(processedFlow => _.assign({}, processedFlow, { triggers }));
       });

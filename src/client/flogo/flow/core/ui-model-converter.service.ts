@@ -9,6 +9,7 @@ import { FlogoProfileService } from '../../core/services/profile.service';
 import { AbstractModelConverter } from './models/ui-converter.model';
 import { MicroServiceModelConverter } from './models/profiles/microservice-converter.model';
 import { DeviceModelConverter } from './models/profiles/device-converter.model';
+import {ActionBase} from '@flogo/core';
 
 @Injectable()
 export class UIModelConverterService {
@@ -72,8 +73,8 @@ export class UIModelConverterService {
    */
 
   // todo: define interfaces
-  getWebFlowModel(flowObj: any) {
-    return this.converterModelInstance.convertToWebFlowModel(flowObj);
+  getWebFlowModel(flowObj: any, subflowSchemas: Map<string, ActionBase>) {
+    return this.converterModelInstance.convertToWebFlowModel(flowObj, subflowSchemas);
   }
 
   getTriggerTask(trigger) {
