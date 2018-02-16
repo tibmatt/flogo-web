@@ -1794,7 +1794,12 @@ export class FlowComponent implements OnInit, OnDestroy {
       .map(nodeId => {
         const node = from.diagram.nodes[nodeId];
         if (isApplicableNodeType(node.type)) {
-          return from.tasks[node.taskID];
+          const task = from.tasks[node.taskID];
+          if (isSubflowTask(task.type)) {
+            const subFlowSchema = this._flowService.currentFlowDetails.getSubflowSchema(task.flowRef);
+            task.attributes.outputs = _.get(subFlowSchema, 'metadata.output', []);
+          }
+          return task;
         } else {
           return null;
         }
