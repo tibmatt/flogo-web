@@ -11,6 +11,7 @@ import { SelectTaskConfigEventData } from '@flogo/flow/task-configurator/message
 import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
 import { ValueTypes } from '@flogo/core';
+import { SubFlowComponent } from './subflow/subflow.component';
 
 const postServiceStub = {
 
@@ -45,6 +46,7 @@ describe('Component: TaskConfiguratorComponent', () => {
       declarations: [
         InputMapperComponent,
         IteratorComponent,
+        SubFlowComponent,
         TaskConfiguratorComponent,
       ], // declare the test component
       providers: [

@@ -1685,25 +1685,28 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
 
     const taskSettings = selectedTile.settings;
-    this._postService.publish(
-      _.assign(
-        {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
-          data: <SelectTaskConfigEventData>{
-            scope,
-            overridePropsToMap,
-            overrideMappings,
-            inputMappingsTabLabelKey,
-            tile: selectedTile,
-            handlerId: diagramId,
-            title: transformTitle,
-            inputsSearchPlaceholderKey: searchTitleKey,
-            iterator: {
-              isIterable: selectedTile.type === FLOGO_TASK_TYPE.TASK_ITERATOR,
-              iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
-            },
-          }
+    const dataToPublish = _.assign(
+      {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
+        data: <SelectTaskConfigEventData>{
+          scope,
+          overridePropsToMap,
+          overrideMappings,
+          inputMappingsTabLabelKey,
+          tile: selectedTile,
+          handlerId: diagramId,
+          title: transformTitle,
+          inputsSearchPlaceholderKey: searchTitleKey,
+          iterator: {
+            isIterable: selectedTile.type === FLOGO_TASK_TYPE.TASK_ITERATOR,
+            iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
+          },
         }
-      ));
+      }
+    );
+    if (isSubflowTask(selectedTile.type)) {
+      dataToPublish.data.subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedTile.flowRef);
+    }
+    this._postService.publish(dataToPublish);
 
   }
 
