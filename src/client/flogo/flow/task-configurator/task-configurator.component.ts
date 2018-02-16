@@ -224,6 +224,8 @@ export class TaskConfiguratorComponent implements OnDestroy {
     let mappings = [];
     if (data.overridePropsToMap) {
       propsToMap = data.overridePropsToMap;
+    } else if (this.isSubflowType) {
+      propsToMap = data.subflowSchema.metadata.input;
     } else if (this.currentTile.attributes && this.currentTile.attributes.inputs) {
       propsToMap = this.currentTile.attributes.inputs;
     }
