@@ -184,13 +184,16 @@ export abstract class AbstractModelConverter {
         let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
         if (isSubflowTask(task.type)) {
           installedActivity = {ref: 'subflow'};
-          // If the flow is still available Get the inputs of a subflow from its latest definition
-          // else consider an empty flow as inputs.
-          const subflowInputs = (this.subflowSchemaRegistry.get(task.flowRef)
-            && this.subflowSchemaRegistry.get(task.flowRef).metadata.input) || [];
-          // Remove the dangling inputMappings of old flow inputs. This won't save to the database yet
-          // but it will make sure it won't maintain the dangling mappings when next time flow is saved.
-          task.inputMappings = task.inputMappings.filter(mapping => !!subflowInputs.find(i => i.name === mapping.mapTo));
+
+          if (task.inputMappings) {
+            // If the flow is still available get the inputs of a subflow from its latest definition
+            // else consider an empty array as flow inputs.
+            const subflowInputs = (this.subflowSchemaRegistry.get(task.flowRef)
+              && this.subflowSchemaRegistry.get(task.flowRef).metadata.input) || [];
+            // Remove the dangling inputMappings of old flow inputs. This won't save to the database yet
+            // but it will make sure it won't maintain the dangling mappings when next time flow is saved.
+            task.inputMappings = task.inputMappings.filter(mapping => !!subflowInputs.find(i => i.name === mapping.mapTo));
+          }
         }
         if (!installedActivity) {
           throw this.errorService.makeOperationalError('Activity is not installed', `Activity: ${task.activityRef}`,
