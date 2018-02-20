@@ -64,6 +64,7 @@ import {
   flogoGenBranchID,
   flogoIDDecode,
   flogoIDEncode,
+  isIteratableTask,
   isMapperActivity,
   isSubflowTask,
   normalizeTaskName,
@@ -418,7 +419,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     return {
       isTrigger: taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
-      isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_ITERATOR,
+      isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
       flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
       hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
@@ -1125,7 +1126,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     console.group('Save task details to flow');
     const task = this.handlers[diagramId].tasks[data.taskId];
 
-    if (task.type === FLOGO_TASK_TYPE.TASK || task.type === FLOGO_TASK_TYPE.TASK_ITERATOR) {
+    if (task.type === FLOGO_TASK_TYPE.TASK) {
       // set/unset the warnings in the tile
       _.set(task, '__props.warnings', data.warnings);
 
@@ -1457,7 +1458,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
     const allTasks = this._getAllTasks();
     const iteratorTasks = Object.keys(allTasks)
-      .filter(taskId => allTasks[taskId].type === FLOGO_TASK_TYPE.TASK_ITERATOR);
+      .filter(taskId => isIteratableTask(allTasks[taskId]));
     if (iteratorTasks.length > 0) {
       this.runnableInfo.disabled = true;
       this.runnableInfo.disableReason = this.translate.instant('CANVAS:WARNING-UNSUPPORTED-TEST-RUN');
@@ -1697,7 +1698,7 @@ export class FlowComponent implements OnInit, OnDestroy {
           title: transformTitle,
           inputsSearchPlaceholderKey: searchTitleKey,
           iterator: {
-            isIterable: selectedTile.type === FLOGO_TASK_TYPE.TASK_ITERATOR,
+            isIterable: isIteratableTask(selectedTile),
             iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
           },
         }
@@ -1733,7 +1734,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     tile.type = data.tile.type;
     if (data.iterator.isIterable) {
-      tile.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
       tile.settings = Object.assign({}, tile.settings, { iterate:  data.iterator.iterableValue });
     } else if (tile.settings) {
       delete tile.settings.iterate;

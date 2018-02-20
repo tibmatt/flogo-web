@@ -1,4 +1,5 @@
 import { ValueTypes, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
+import {Task} from '@flogo/core/interfaces/flow/task';
 
 // URL safe base64 encoding
 // reference: https://gist.github.com/jhurliman/1250118
@@ -434,6 +435,10 @@ export function createSubFlowTask() {
 
 export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
   return taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC;
+}
+
+export function isIteratableTask(task: Task): boolean {
+  return !_.isEmpty(_.get(task, 'settings.iterate'));
 }
 
 export function getProfileType(app) {

@@ -9,12 +9,13 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import shortid from 'shortid';
 
-import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES } from '../../common/constants';
+import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
 import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
+import { isIteratableTask } from '../../common/utils';
 
 import { ActionsManager } from '../actions';
 import { importApp } from './import.v2';
@@ -314,6 +315,16 @@ export class AppsManager {
           if (hasExplicitReply) {
             action.data.flow.explicitReply = true;
           }
+
+          // Update task type of iterators as per engine specifications
+          tasks.filter(task => isIteratableTask(task))
+            .forEach(task => {
+              task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
+            });
+          get(action, 'data.flow.errorHandlerTask.tasks', []).filter(task => isIteratableTask(task))
+            .forEach(task => {
+              task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
+            });
         });
 
         if (!app.version) {
