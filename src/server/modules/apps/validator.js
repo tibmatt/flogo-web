@@ -34,31 +34,31 @@ export class Validator {
   static validateSimpleApp(data, isDeviceType) {
     let validationSchema;
     if (isDeviceType) {
-      validationSchema = deviceAppSchema();
+      validationSchema = deviceAppSchema;
     } else {
-      validationSchema = appSchema();
+      validationSchema = appSchema;
     }
     return validate(validationSchema, data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
   static validateTriggerCreate(data) {
-    return validate(triggerSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(triggerSchemaCreate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
   static validateTriggerDeviceCreate(data) {
-    return validate(triggerDeviceSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(triggerDeviceSchemaCreate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
   static validateActivityDeviceCreate(data) {
-    return validate(activityDeviceSchemaCreate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(activityDeviceSchemaCreate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
   static validateTriggerUpdate(data) {
-    return validate(triggerSchemaUpdate(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(triggerSchemaUpdate, data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
   static validateHandler(data) {
-    return validate(handlerEditableSchema(), data, { removeAdditional: true, useDefaults: true, allErrors: true });
+    return validate(handlerEditableSchema, data, { removeAdditional: true, useDefaults: true, allErrors: true });
   }
 
   static validateFullApp(profileType, data, contribVerify, options) {
@@ -81,9 +81,9 @@ export class Validator {
 
     let schemaToUse;
     if (profileType === FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
-      schemaToUse = fullAppSchema();
+      schemaToUse = fullAppSchema;
     } else {
-      schemaToUse = fullDeviceAppSchema();
+      schemaToUse = fullDeviceAppSchema;
     }
 
     const errors = validate(schemaToUse, data, options, customValidations);
