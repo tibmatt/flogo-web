@@ -60,10 +60,10 @@ export class ActionsManager {
         }
 
         // Update task type of iterators as per flogo-web specifications
-        get(actionData, 'data.flow.rootTask.tasks', []).filter(t => isIteratableTask(t)).forEach(t => {
-          t.type = FLOGO_TASK_TYPE.TASK;
-        });
-        get(actionData, 'data.flow.errorHandlerTask.tasks', []).filter(t => isIteratableTask(t)).forEach(t => {
+        let allTasks = [];
+        allTasks = allTasks.concat(get(actionData, 'data.flow.rootTask.tasks', []));
+        allTasks = allTasks.concat(get(actionData, 'data.flow.errorHandlerTask.tasks', []));
+        allTasks.filter(t => isIteratableTask(t)).forEach(t => {
           t.type = FLOGO_TASK_TYPE.TASK;
         });
 

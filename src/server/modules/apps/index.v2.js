@@ -315,7 +315,9 @@ export class AppsManager {
             action.data.flow.name = action.name;
             delete action.name;
           }
-          const tasks = get(action, 'data.flow.rootTask.tasks', []);
+          let tasks = [];
+          tasks = tasks.concat(get(action, 'data.flow.rootTask.tasks', []));
+          tasks = tasks.concat(get(action, 'data.flow.errorHandlerTask.tasks', []));
           const hasExplicitReply = tasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
           if (hasExplicitReply) {
             action.data.flow.explicitReply = true;
@@ -323,10 +325,6 @@ export class AppsManager {
 
           // Update task type of iterators as per engine specifications
           tasks.filter(task => isIteratableTask(task))
-            .forEach(task => {
-              task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
-            });
-          get(action, 'data.flow.errorHandlerTask.tasks', []).filter(task => isIteratableTask(task))
             .forEach(task => {
               task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
             });
