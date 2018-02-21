@@ -18,7 +18,7 @@ export class FlogoExportFlowsComponent {
   checkedFlows = [];
   checkAllFlows = [];
 
-  constructor(private appDetailService: AppDetailService, private translate: LanguageService,) {
+  constructor(private appDetailService: AppDetailService, private translate: LanguageService) {
   }
 
   public openExport() {
