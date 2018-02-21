@@ -11,20 +11,22 @@ cache:
 # Handle git submodules yourself
 git:
   submodules: false
-install:
-  - pushd src/client
-  - echo $(yarn --version)
-  - yarn install
-  - popd
+install: yarn install
+after_script: popd
 
 jobs:
   fast_finish: true
   include:
-    - stage: test:client
-      before_script: pushd src/client
-      script:
-        - yarn run check:travis
-      after_script: popd
+    - stage: test
+      before_install:
+       - echo "TEST CLIENT"
+       - pushd src/client
+      script: yarn run check:travis
+    - stage: test
+      before_install:
+       - echo "TEST SERVER"
+       - pushd src/server
+      script: yarn run test
     - stage: build
       language: bash
       node_js:
