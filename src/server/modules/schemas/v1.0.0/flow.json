@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/flow.json",
+  "required": ["id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/task"
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/link"
+      }
+    },
+    "errorHandler": {
+      "type": "object",
+      "properties": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/task"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/link"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metadataItem"
+          }
+        },
+        "output": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metadataItem"
+          }
+        }
+      }
+    },
+    "metadataItem": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$ref": "common.json#/definitions/valueType"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "required": ["id", "activity"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "iterate": true
+          },
+          "additionalProperties": true
+        },
+        "type": {
+          "type": "string",
+          "enum": ["standard", "iterator"],
+          "default": "standard"
+        },
+        "activity": {
+          "$ref": "#/definitions/activity"
+        }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "required": ["ref"],
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "settings": true,
+        "input": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "mappings": {
+          "type": "object",
+          "properties": {
+            "input": {
+              "$ref": "common.json#/definitions/mappingsCollection"
+            }
+          }
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "type": {
+          "const": "expression"
+        },
+        "value": true
+      },
+      "dependencies": {
+        "value": {
+          "properties": {
+            "type": {
+              "const": "expression"
+            }
+          }
+        }
+      }
+    }
+  }
+}
