@@ -1,7 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { FlowSummary } from '@flogo/core';
+import {FlowSummary, LanguageService} from '@flogo/core';
 import { AppDetailService } from '@flogo/app/core/apps.service';
+import {notification} from '@flogo/shared/utils';
 
 @Component({
   selector: 'flogo-export-flow',
@@ -17,7 +18,7 @@ export class FlogoExportFlowsComponent {
   checkedFlows = [];
   checkAllFlows = [];
 
-  constructor(private appDetailService: AppDetailService) {
+  constructor(private appDetailService: AppDetailService, private translate: LanguageService,) {
   }
 
   public openExport() {
@@ -63,6 +64,13 @@ export class FlogoExportFlowsComponent {
             fileName: 'flows.json',
             data: appWithFlows
           }];
+        }).catch(errRsp => {
+          if (errRsp.errors[0].code === 'HasSubflow') {
+            this.translate.get('DETAILS:CANNOT-EXPORT').toPromise()
+              .then(msg => notification(msg, 'error'));
+          } else {
+            console.error(errRsp.errors);
+          }
         });
     }
   private resetForm() {

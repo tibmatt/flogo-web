@@ -170,6 +170,12 @@ function* exportApp() {
           title: 'Application not found',
           detail: 'No application with the specified id',
         });
+      } else if (error.type === ERROR_TYPES.COMMON.HAS_SUBFLOW) {
+        throw ErrorManager.createRestError('Application cannot be exported', {
+          title: 'Application cannot be exported',
+          detail: 'Application with subflow tasks cannot be exported',
+          code: ERROR_TYPES.COMMON.HAS_SUBFLOW,
+        });
       }
     }
     throw error;

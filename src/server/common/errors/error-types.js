@@ -5,5 +5,6 @@ export const ERROR_TYPES = {
     VALIDATION: 'ValidationError',
     ALREADY_EXISTS: 'AlreadyExists',
     NOT_FOUND: 'NotFoundError',
+    HAS_SUBFLOW: 'HasSubflow'
   }
 };

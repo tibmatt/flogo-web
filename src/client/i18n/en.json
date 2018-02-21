@@ -73,6 +73,7 @@
   "DETAILS:EXPORT": "Export",
   "DETAILS:EXPORT-APP": "Export App",
   "DETAILS:EXPORT-FLOW": "Export Flows",
+  "DETAILS:CANNOT-EXPORT": "Cannot export the application as it has subflow tasks",
   "DETAILS:FLOWS": "Flows",
   "DETAILS:EXPORT-CANCEL": "Cancel",
   "DETAILS:IMPORT": "Import",

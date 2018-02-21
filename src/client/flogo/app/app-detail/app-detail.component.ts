@@ -102,7 +102,15 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
           fileName: `${appName}.json`,
           data: engineApp
         }];
-      });
+      }).catch(errRsp => {
+        this.closeExportBox();
+        if (errRsp.errors[0].code === 'HasSubflow') {
+          this.translate.get('DETAILS:CANNOT-EXPORT').toPromise()
+            .then(msg => notification(msg, 'error'));
+        } else {
+          console.error(errRsp.errors);
+        }
+    });
   }
 
   openCreateFlow() {
