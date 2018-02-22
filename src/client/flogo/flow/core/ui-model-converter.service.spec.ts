@@ -16,13 +16,15 @@ import { mockTriggerDetails } from './ui-model-trigger.mock';
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import {ActionBase} from '@flogo/core';
 
 describe('Service: UI Model Converter', function (this: {
   service: UIModelConverterService,
   errorService: ErrorService,
   triggerServiceMock: RESTAPITriggersService,
   activityServiceMock: RESTAPIActivitiesService,
-  contribServiceMock: RESTAPIContributionsService
+  contribServiceMock: RESTAPIContributionsService,
+  emptySchemaRegistry: Map<string, ActionBase>
 }) {
 
   beforeEach(() => {
@@ -39,6 +41,7 @@ describe('Service: UI Model Converter', function (this: {
     this.service = new UIModelConverterService(this.triggerServiceMock, this.activityServiceMock,
       this.contribServiceMock, this.errorService);
     this.service.setProfile(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
+    this.emptySchemaRegistry = new Map(<[string, ActionBase][]> []);
   });
 
   it('Should throw error when Activity does not have a activityRef', () => {
@@ -46,7 +49,7 @@ describe('Service: UI Model Converter', function (this: {
     try {
       const spy = <Spy>this.triggerServiceMock.getTriggerDetails;
       spy.and.returnValue({});
-      this.service.getWebFlowModel(mockErrorFlow);
+      this.service.getWebFlowModel(mockErrorFlow, this.emptySchemaRegistry);
     } catch (error) {
       thrownError = error;
       expect(error.name).toEqual('Activity: Wrong input json file');
@@ -67,7 +70,7 @@ describe('Service: UI Model Converter', function (this: {
         return Promise.resolve(mockActivitiesDetails[1]);
       }
     });
-    this.service.getWebFlowModel(thisTestData)
+    this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow) => {
         const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
         expect(_.isEqual(flowWithoutId, mockResultantUIFlow)).toEqual(true);
@@ -88,7 +91,7 @@ describe('Service: UI Model Converter', function (this: {
       }
     });
     thisTestData.data.flow.errorHandlerTask = mockErrorHandler.errorHandlerTask;
-    this.service.getWebFlowModel(thisTestData)
+    this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow) => {
         const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
         expect(_.isEqual(flowWithoutId, mockResultantUIFlowWithError)).toEqual(true);
@@ -110,7 +113,7 @@ describe('Service: UI Model Converter', function (this: {
     });
     thisTestData.data.flow.rootTask.tasks[0].attributes = mockTransformationData.attributes;
     thisTestData.data.flow.rootTask.tasks[0].inputMappings = mockTransformationData.inputMappings;
-    this.service.getWebFlowModel(thisTestData)
+    this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow) => {
         const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
         expect(_.isEqual(flowWithoutId, mockResultantUIFlowWithTransformations)).toEqual(true);
