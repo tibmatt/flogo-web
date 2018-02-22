@@ -84,7 +84,8 @@ export class AppsApiService {
 
     return this.http.get(this.apiPrefix(`apps/${appId}:export`), options)
       .map(response => response.json())
-      .toPromise();
+      .toPromise()
+      .catch(err => Promise.reject(err.json()));
   }
 
   exportFlows(appId: string, flowIds: any[]) {
@@ -100,7 +101,8 @@ export class AppsApiService {
     return this.http.get(
       this.httpUtils.apiPrefix(`apps/${appId}:export?type=flows`), reqOptions)
       .map((res: Response) => res.json())
-      .toPromise();
+      .toPromise()
+      .catch(err => Promise.reject(err.json()));
   }
 
   uploadApplication(application) {

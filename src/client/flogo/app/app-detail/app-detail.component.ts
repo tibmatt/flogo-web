@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
-import { LanguageService, FlowSummary, Trigger } from '@flogo/core';
+import {LanguageService, FlowSummary, Trigger, ERROR_CODE} from '@flogo/core';
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
@@ -102,7 +102,17 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
           fileName: `${appName}.json`,
           data: engineApp
         }];
-      });
+      }).catch(errRsp => {
+        this.closeExportBox();
+        if (errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
+          this.translate.get('DETAILS-EXPORT:CANNOT-EXPORT').toPromise()
+            .then(msg => notification(msg, 'error'));
+        } else {
+          console.error(errRsp.errors);
+          this.translate.get('DETAILS-EXPORT:ERROR_UNKNOWN').toPromise()
+            .then(msg => notification(msg, 'error'));
+        }
+    });
   }
 
   openCreateFlow() {

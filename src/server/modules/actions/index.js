@@ -14,6 +14,8 @@ import { TriggerManager as ContribTriggersManager } from '../triggers';
 
 
 import { findGreatestNameIndex } from '../../common/utils/collection';
+import {isIterableTask} from "../../common/utils";
+import {FLOGO_TASK_TYPE} from "../../common/constants";
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
@@ -56,6 +58,14 @@ export class ActionsManager {
         } else if (!actionData.name) {
           actionData.name = actionData.id;
         }
+
+        // Update task type of iterators as per flogo-web specifications
+        let allTasks = [];
+        allTasks = allTasks.concat(get(actionData, 'data.flow.rootTask.tasks', []));
+        allTasks = allTasks.concat(get(actionData, 'data.flow.errorHandlerTask.tasks', []));
+        allTasks.filter(t => isIterableTask(t)).forEach(t => {
+          t.type = FLOGO_TASK_TYPE.TASK;
+        });
 
         actionData.name = ensureUniqueName(app.actions, actionData.name);
         return actionData;

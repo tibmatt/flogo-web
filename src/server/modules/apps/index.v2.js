@@ -9,12 +9,13 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import shortid from 'shortid';
 
-import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES } from '../../common/constants';
+import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
 import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
+import { isIterableTask } from '../../common/utils';
 
 import { ActionsManager } from '../actions';
 import { importApp } from './import.v2';
@@ -242,6 +243,16 @@ export class AppsManager {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
+
+        // While exporting only flows, export selected flows if any flowids are provided else export all flows
+        if (exportType === 'flows' && selectedFlowsIds) {
+          app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
+        }
+
+        if (hasSubflowTask(app.actions)) {
+          throw ErrorManager.makeError('Application cannot be exported', { type: ERROR_TYPES.COMMON.HAS_SUBFLOW });
+        }
+
         const uniqueIdAgent = new UniqueIdAgent();
         const DEFAULT_COMMON_VALUES = [{
           appType: 'flogo:app',
@@ -270,11 +281,6 @@ export class AppsManager {
             });
           });
           app.triggers = allTriggers;
-        }
-
-        // While exporting only flows, export selected flows if any flowids are provided else export all flows
-        if (exportType === 'flows' && selectedFlowsIds) {
-          app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
         }
 
         // oldId => actionObjectWithNewId
@@ -309,11 +315,19 @@ export class AppsManager {
             action.data.flow.name = action.name;
             delete action.name;
           }
-          const tasks = get(action, 'data.flow.rootTask.tasks', []);
+          let tasks = [];
+          tasks = tasks.concat(get(action, 'data.flow.rootTask.tasks', []));
+          tasks = tasks.concat(get(action, 'data.flow.errorHandlerTask.tasks', []));
           const hasExplicitReply = tasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
           if (hasExplicitReply) {
             action.data.flow.explicitReply = true;
           }
+
+          // Update task type of iterators as per engine specifications
+          tasks.filter(task => isIterableTask(task))
+            .forEach(task => {
+              task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
+            });
         });
 
         if (!app.version) {
@@ -420,3 +434,11 @@ function ensureUniqueName(forName) {
     });
 }
 
+function hasSubflowTask(actions) {
+  return !!actions.find(action => {
+    let allTasks = [];
+    allTasks = allTasks.concat(get(action, 'data.flow.rootTask.tasks', []));
+    allTasks = allTasks.concat(get(action, 'data.flow.errorHandlerTask.tasks', []));
+    return allTasks.find(t => t.type === FLOGO_TASK_TYPE.TASK_SUB_PROC);
+  });
+}

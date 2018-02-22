@@ -338,3 +338,7 @@ export function getDefaultValueByType(type) {
 
   return defaultValues[typeEnum];
 }
+
+export function isIterableTask(task) {
+  return !_.isEmpty(_.get(task, 'settings.iterate'));
+}
