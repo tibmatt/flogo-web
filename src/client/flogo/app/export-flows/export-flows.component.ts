@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
-import {FlowSummary, LanguageService} from '@flogo/core';
+import {ERROR_CODE, FlowSummary, LanguageService} from '@flogo/core';
 import { AppDetailService } from '@flogo/app/core/apps.service';
 import {notification} from '@flogo/shared/utils';
 
@@ -65,11 +65,13 @@ export class FlogoExportFlowsComponent {
             data: appWithFlows
           }];
         }).catch(errRsp => {
-          if (errRsp.errors[0].code === 'HasSubflow') {
-            this.translate.get('DETAILS:CANNOT-EXPORT').toPromise()
+          if (errRsp.errors[0].code ===  ERROR_CODE.HAS_SUBFLOW) {
+            this.translate.get('DETAILS-EXPORT:CANNOT-EXPORT').toPromise()
               .then(msg => notification(msg, 'error'));
           } else {
             console.error(errRsp.errors);
+            this.translate.get('DETAILS-EXPORT:ERROR_UNKNOWN').toPromise()
+              .then(msg => notification(msg, 'error'));
           }
         });
     }

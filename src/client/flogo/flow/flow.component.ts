@@ -64,7 +64,7 @@ import {
   flogoGenBranchID,
   flogoIDDecode,
   flogoIDEncode,
-  isIteratableTask,
+  isIterableTask,
   isMapperActivity,
   isSubflowTask,
   normalizeTaskName,
@@ -1458,7 +1458,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
     const allTasks = this._getAllTasks();
     const iteratorTasks = Object.keys(allTasks)
-      .filter(taskId => isIteratableTask(allTasks[taskId]));
+      .filter(taskId => isIterableTask(allTasks[taskId]));
     if (iteratorTasks.length > 0) {
       this.runnableInfo.disabled = true;
       this.runnableInfo.disableReason = this.translate.instant('CANVAS:WARNING-UNSUPPORTED-TEST-RUN');
@@ -1698,7 +1698,7 @@ export class FlowComponent implements OnInit, OnDestroy {
           title: transformTitle,
           inputsSearchPlaceholderKey: searchTitleKey,
           iterator: {
-            isIterable: isIteratableTask(selectedTile),
+            isIterable: isIterableTask(selectedTile),
             iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
           },
         }

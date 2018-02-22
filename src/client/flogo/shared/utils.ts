@@ -437,7 +437,7 @@ export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
   return taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC;
 }
 
-export function isIteratableTask(task: Task): boolean {
+export function isIterableTask(task: Task): boolean {
   return !_.isEmpty(_.get(task, 'settings.iterate'));
 }
 

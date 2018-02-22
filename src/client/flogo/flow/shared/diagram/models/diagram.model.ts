@@ -12,7 +12,7 @@ import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { genBranchLine } from './branch-generator';
 import { LanguageService } from '@flogo/core';
 import { diagramToRenderableMatrix } from './matrix-creator.model';
-import {isIteratableTask} from '@flogo/shared/utils';
+import {isIterableTask} from '@flogo/shared/utils';
 
 const DEFAULT_MAX_ROW_LEN = 6;
 
@@ -1215,7 +1215,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
               {
                 hasError: taskStatus.hasError,
                 hasMapping: _isTaskHasMapping(task),
-                hasIterators: isIteratableTask(task),
+                hasIterators: isIterableTask(task),
                 errors: errors
               }
             ];

@@ -15,7 +15,7 @@ import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
 import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { isIteratableTask } from '../../common/utils';
+import { isIterableTask } from '../../common/utils';
 
 import { ActionsManager } from '../actions';
 import { importApp } from './import.v2';
@@ -324,7 +324,7 @@ export class AppsManager {
           }
 
           // Update task type of iterators as per engine specifications
-          tasks.filter(task => isIteratableTask(task))
+          tasks.filter(task => isIterableTask(task))
             .forEach(task => {
               task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
             });

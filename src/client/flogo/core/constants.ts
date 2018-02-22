@@ -73,7 +73,8 @@ export const ERROR_CODE = {
   UNIQUE: 'UniqueValue',
   NOT_INSTALLED_TRIGGER: 'notInstalledTrigger',
   NOT_INSTALLED_ACTIVITY: 'notInstalledActivity',
-  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile'
+  WRONG_INPUT_JSON_FILE: 'wrongInputJSONFile',
+  HAS_SUBFLOW: 'HasSubflow'
 };
 
 export const ERROR_CONSTRAINT = {
