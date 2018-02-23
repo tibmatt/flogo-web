@@ -1709,7 +1709,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       if (subflowSchema) {
         dataToPublish.data.subflowSchema = subflowSchema;
       } else {
-        this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
+        return this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
           .subscribe(message => notification(message, 'error'));
       }
     }
