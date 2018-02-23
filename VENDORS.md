@@ -1,6 +1,12 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
+## v0.5.2
+
+### Production Dependencies
+- **Upgraded:**
+  - [ajv@6.1.1](https://github.com/epoberezkin/ajv) ([MIT](https://github.com/epoberezkin/ajv/raw/master/LICENSE)) - Was 4.11.8
+
 ## v0.5.1
 
 ### Production Dependencies

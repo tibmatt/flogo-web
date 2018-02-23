@@ -24,7 +24,7 @@
     "server-destroy": "^1.0.1"
   },
   "dependencies": {
-    "ajv": "4.11.8",
+    "ajv": "^6.1.1",
     "atob": "^2.0.3",
     "co-request": "1.0.0",
     "cross-spawn": "^5.1.0",

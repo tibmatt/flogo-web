@@ -1,9 +1,21 @@
-export { activityDeviceSchemaCreate } from './activity-device-schema-create';
-export { triggerDeviceSchemaCreate } from './trigger-device-schema-create';
-export { triggerSchemaCreate } from './trigger-schema-create';
-export { triggerSchemaUpdate } from './trigger-schema-update';
-export { deviceAppSchema } from './device-app-schema';
-export { appSchema } from './app-schema';
-export { handlerEditableSchema } from './handler-editable-schema';
-export { fullAppSchema } from './full-app-schema';
-export { fullDeviceAppSchema } from './full-device-app-schema';
+const activityDeviceSchemaCreate = require('./activity-device-schema-create');
+const triggerDeviceSchemaCreate = require('./trigger-device-schema-create');
+const triggerSchemaCreate = require('./trigger-schema-create');
+const triggerSchemaUpdate = require('./trigger-schema-update');
+const deviceAppSchema = require('./device-app-schema');
+const appSchema = require('./app-schema');
+const handlerEditableSchema = require('./handler-editable-schema');
+const fullAppSchema = require('./full-app-schema');
+const fullDeviceAppSchema = require('./full-device-app-schema');
+
+export {
+  activityDeviceSchemaCreate,
+  triggerDeviceSchemaCreate,
+  triggerSchemaCreate,
+  triggerSchemaUpdate,
+  deviceAppSchema,
+  appSchema,
+  handlerEditableSchema,
+  fullAppSchema,
+  fullDeviceAppSchema,
+};
