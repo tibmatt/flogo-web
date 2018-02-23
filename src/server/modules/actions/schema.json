@@ -266,7 +266,7 @@
             "activityRef": {
               "type": "string"
             },
-            "flowRef": {
+            "flowPath": {
               "type": "string"
             },
             "attributes": {
@@ -312,7 +312,7 @@
               },
               "required": [
                 "id",
-                "flowRef"
+                "flowPath"
               ]
             },
             {

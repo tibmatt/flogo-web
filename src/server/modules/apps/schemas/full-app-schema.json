@@ -350,7 +350,7 @@
               "type": "string",
               "activity-installed": true
             },
-            "flowRef": {
+            "flowPath": {
               "type": "string"
             },
             "settings": {
@@ -397,7 +397,7 @@
               },
               "required": [
                 "id",
-                "flowRef"
+                "flowPath"
               ]
             },
             {

@@ -188,8 +188,8 @@ export abstract class AbstractModelConverter {
           if (task.inputMappings) {
             // If the flow is still available get the inputs of a subflow from its latest definition
             // else consider an empty array as flow inputs.
-            const subflowInputs = (this.subflowSchemaRegistry.get(task.flowRef)
-              && this.subflowSchemaRegistry.get(task.flowRef).metadata.input) || [];
+            const subflowInputs = (this.subflowSchemaRegistry.get(task.flowPath)
+              && this.subflowSchemaRegistry.get(task.flowPath).metadata.input) || [];
             // Remove the dangling inputMappings of old flow inputs. This won't save to the database yet
             // but it will make sure it won't maintain the dangling mappings when next time flow is saved.
             task.inputMappings = task.inputMappings.filter(mapping => !!subflowInputs.find(i => i.name === mapping.mapTo));
@@ -523,9 +523,9 @@ class ItemFactory {
       item.return = true;
     }
 
-    // Add flowRef for the case of a subflow type of task
+    // Add flowPath for the case of a subflow type of task
     if (isSubflowTask(taskInstance.type)) {
-      item.flowRef = taskInstance.flowRef;
+      item.flowPath = taskInstance.flowPath;
     }
 
     // -------- set attributes inputs  ----------------

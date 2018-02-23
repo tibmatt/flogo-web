@@ -26,7 +26,7 @@ export class FlogoFlowService {
         const subFlowTasks = _.get(flow, 'data.flow.rootTask.tasks', [])
           .concat(_.get(flow, 'data.flow.errorHandlerTask.tasks', []))
           .filter(t => isSubflowTask(t.type));
-        const flowIdsToFetch = _.uniq(subFlowTasks.map(t => t.flowRef));
+        const flowIdsToFetch = _.uniq(subFlowTasks.map(t => t.flowPath));
         if (flowIdsToFetch.length > 0) {
           return Promise.all([flow, this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch)]);
         }

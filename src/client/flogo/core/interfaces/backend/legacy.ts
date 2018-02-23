@@ -30,7 +30,7 @@ export interface flowToJSON_Task {
   type: number;
   activityType: string;
   activityRef?: string;
-  flowRef?: string;
+  flowPath?: string;
   name?: string;
   description?: string;
   attributes: flowToJSON_Attribute[];

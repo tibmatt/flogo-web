@@ -462,7 +462,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       taskInfo.type = task.type;
       taskInfo.activityType = task.activityType || '';
       if (isSubflowTask(task.type)) {
-        taskInfo.flowRef = task.flowRef;
+        taskInfo.flowPath = task.flowPath;
       } else {
         taskInfo.activityRef = task.ref;
       }

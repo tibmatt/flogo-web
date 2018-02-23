@@ -999,7 +999,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                   this._isDiagramEdited = true;
 
                   if (isSubflowTask(deletedTask.type)) {
-                    this.manageFlowRelationships(deletedTask.flowRef);
+                    this.manageFlowRelationships(deletedTask.flowPath);
                   }
 
                   if (_shouldGoBack) {
@@ -1706,7 +1706,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
     );
     if (isSubflowTask(selectedTile.type)) {
-      const subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedTile.flowRef);
+      const subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedTile.flowPath);
       if (subflowSchema) {
         dataToPublish.data.subflowSchema = subflowSchema;
       } else {
@@ -1797,7 +1797,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         if (isApplicableNodeType(node.type)) {
           const task = from.tasks[node.taskID];
           if (isSubflowTask(task.type)) {
-            const subFlowSchema = this._flowService.currentFlowDetails.getSubflowSchema(task.flowRef);
+            const subFlowSchema = this._flowService.currentFlowDetails.getSubflowSchema(task.flowPath);
             task.attributes.outputs = _.get(subFlowSchema, 'metadata.output', []);
           }
           return task;
@@ -1954,7 +1954,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private isFlowUsedAgain(id: string) {
-    return !!_.values(this._getAllTasks()).find(t => t.flowRef === id);
+    return !!_.values(this._getAllTasks()).find(t => t.flowPath === id);
   }
 
 }

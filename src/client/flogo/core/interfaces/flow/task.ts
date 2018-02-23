@@ -9,7 +9,7 @@ export interface Task {
   version ?: string;
   name ?: string;
   activityRef?: string;
-  flowRef?: string;
+  flowPath?: string;
   ref ?: string;
   description ?: string;
   activityType?: string;
