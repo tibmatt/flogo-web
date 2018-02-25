@@ -2,9 +2,10 @@ import Ajv from 'ajv';
 import { Validator } from './validator';
 
 export function validatorFactory(schema, contributionRefs, options = {}) {
-  const ajv = new Ajv(options);
-  addContributionRule(ajv, 'trigger-installed', contributionRefs.triggers, 'Trigger');
-  addContributionRule(ajv, 'activity-installed', contributionRefs.activities, 'Activity');
+  const defaultOptions = { removeAdditional: true, useDefaults: true, allErrors: true, };
+  const ajv = new Ajv({ ...defaultOptions, ...options });
+  addContributionRule(ajv, 'trigger-installed', 'Trigger', contributionRefs.triggers);
+  addContributionRule(ajv, 'activity-installed', 'Activity', contributionRefs.activities);
   return new Validator(schema, ajv);
 }
 
@@ -21,8 +22,13 @@ function contributionRuleFactory(keyword, type, refs) {
     validate: function validator(schema, contribRef) {
       const isInstalled = refs.includes(contribRef);
       if (!isInstalled) {
-        // todo: data?
-        validator.errors = [{ keyword, message: `${type} "${contribRef}" is not installed` }];
+        validator.errors = [{
+          keyword,
+          message: `${type} "${contribRef}" is not installed`,
+          params: {
+            ref: contribRef,
+          },
+        }];
       }
       return isInstalled;
     },
