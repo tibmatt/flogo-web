@@ -350,12 +350,17 @@
               "type": "string",
               "activity-installed": true
             },
-            "flowPath": {
-              "type": "string"
-            },
             "settings": {
               "title": "settings",
-              "type": "object"
+              "type": "object",
+              "properties": {
+                "iterate": {
+                  "type": ["string", "integer"]
+                },
+                "flowPath": {
+                  "type": "string"
+                }
+              }
             },
             "attributes": {
               "type": "array",
@@ -388,35 +393,33 @@
               }
             }
           },
-          "anyOf": [
-            {
-              "properties": {
-                "type": {
-                  "const": 4
-                }
-              },
-              "required": [
-                "id",
-                "flowPath"
-              ]
-            },
-            {
-              "properties": {
-                "type": {
-                  "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                  ]
-                }
-              },
-              "required": [
-                "id",
-                "activityRef"
-              ]
+          "required": [
+            "id"
+          ],
+          "if": {
+            "properties": {
+              "type": {
+                "const": 4
+              }
             }
-          ]
+          },
+          "then": {
+            "required": [
+              "settings"
+            ],
+            "properties": {
+              "settings": {
+                "required": [
+                  "flowPath"
+                ]
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "activityRef"
+            ]
+          }
         },
         "rootTask": {
           "title": "rootTask",

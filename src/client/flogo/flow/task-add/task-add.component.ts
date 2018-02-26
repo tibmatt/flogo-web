@@ -156,7 +156,8 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
       // update the flow relation in the flow details model
       this.flowService.currentFlowDetails.addSubflowSchema(selectedFlow);
       this.subFlowTask.name = selectedFlow.name;
-      this.subFlowTask.flowPath = selectedFlow.id;
+      this.subFlowTask.settings = this.subFlowTask.settings || {};
+      this.subFlowTask.settings.flowPath = selectedFlow.id;
       this.sendAddTaskMsg(this.subFlowTask);
     }
   }
