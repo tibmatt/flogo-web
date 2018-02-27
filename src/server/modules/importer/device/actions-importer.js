@@ -20,7 +20,8 @@ export class ActionsImporter extends AbstractActionsImporter {
     if (!action.name) {
       action.name = action.id;
     }
-    const flow = action.data.flow;
+    action.data = action.data ? action.data : {};
+    const { flow } = action.data;
     if (flow) {
       const { tasks = [], links = [] } = flow;
       delete flow.tasks;
@@ -32,13 +33,12 @@ export class ActionsImporter extends AbstractActionsImporter {
         links,
         tasks: tasks.map(task => this.mapTask(task)),
       };
-      delete flow.tasks;
-      delete flow.links;
     }
     return action;
   }
 
   mapTask(task) {
+    task.attributes = task.attributes || [];
     const attributes = this
       .getSettingsSchema(task.activityRef)
       .map(attribute => ({
@@ -51,7 +51,7 @@ export class ActionsImporter extends AbstractActionsImporter {
   getSettingsSchema(activityRef) {
     return this.activitySchemas
       .find(activitySchema => activitySchema.ref === activityRef)
-      .settings;
+      .settings || [];
   }
 
 }

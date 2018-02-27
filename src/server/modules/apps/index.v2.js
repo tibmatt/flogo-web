@@ -18,7 +18,7 @@ import { findGreatestNameIndex } from '../../common/utils/collection';
 import { isIterableTask } from '../../common/utils';
 
 import { ActionsManager } from '../actions';
-import { importApp } from './import.v2';
+import { importApp } from '../importer';
 import { buildApp } from './build';
 
 import { Validator } from './validator';

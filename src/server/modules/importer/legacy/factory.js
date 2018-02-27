@@ -1,12 +1,6 @@
-import { Validator, validatorFactory } from '../validator';
-
-import { HandlersManager } from '../../apps/handlers';
-import { ActionsManager } from '../../actions/index';
-import { AppsTriggersManager } from '../../apps/triggers';
 import { fullAppSchema } from '../../apps/schemas';
 
-import { TriggerManager as ContribTriggersManager } from '../../triggers';
-import { ActivitiesManager as ContribActivitiesManager } from '../../activities';
+import { validatorFactory } from '../validator';
 
 import { extractContribRefs } from '../extract-contrib-refs';
 
@@ -15,9 +9,21 @@ import { TriggersHandlersImporter } from './triggers-handlers-importer';
 
 export class LegacyAppImporterFactory {
 
-  static async create() {
-    const actionsImporter = new ActionsImporter(ActionsManager);
-    const triggersHandlersImporter = new TriggersHandlersImporter(AppsTriggersManager, HandlersManager);
+  /**
+   * @param {ResourceStorageRegistry} resourceStorageRegistry
+   */
+  constructor(resourceStorageRegistry) {
+    this.resourceStorageRegistry = resourceStorageRegistry;
+  }
+
+  async create() {
+    const actionsImporter = this.createActionsImporter(
+      this.resourceStorageRegistry.getActionsManager(),
+    );
+    const triggersHandlersImporter = this.createTriggersHandlersImporter(
+      this.resourceStorageRegistry.getAppsTriggersManager(),
+      this.resourceStorageRegistry.getHandlersManager(),
+    );
     const contributions = await this.loadContributions();
     const validator = this.createValidator(contributions);
     return {
@@ -27,17 +33,35 @@ export class LegacyAppImporterFactory {
     };
   }
 
-  static async loadContributions() {
+  async loadContributions() {
     const [activities, triggers] = await Promise.all([
-      ContribTriggersManager.find(),
-      ContribActivitiesManager.find(),
+      this.getActivitiesManager().find(),
+      this.getTriggersManager().find(),
     ]);
     return { activities, triggers };
   }
 
-  static createValidator(contributions) {
-    const contribRefs = extractContribRefs(contributions);
+  getTriggersManager() {
+    return this.resourceStorageRegistry.getContribTriggersManager();
+  }
+
+  getActivitiesManager() {
+    return this.resourceStorageRegistry.getContribActivitiesManager();
+  }
+
+  createValidator(contributions) {
+    const contribRefs = {
+      activities: extractContribRefs(contributions.activities),
+      triggers: extractContribRefs(contributions.triggers),
+    };
     return validatorFactory(fullAppSchema, contribRefs);
   }
 
+  createActionsImporter(actionsManager) {
+    return new ActionsImporter(actionsManager);
+  }
+
+  createTriggersHandlersImporter(appsTriggersManager, handlersManager) {
+    return new TriggersHandlersImporter(appsTriggersManager, handlersManager);
+  }
 }

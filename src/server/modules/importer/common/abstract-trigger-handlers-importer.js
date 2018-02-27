@@ -31,8 +31,8 @@ export class AbstractTriggersHandlersImporter {
 
   async importAll(rawApp) {
     const rawTriggers = this.extractTriggers(rawApp);
-    const triggerGroups = this.reconcileTriggersAndActions(rawTriggers);
-    await this.storeTriggersAndHandlers(triggerGroups);
+    const reconciledTriggers = this.reconcileTriggersAndActions(rawTriggers);
+    await this.storeTriggersAndHandlers(reconciledTriggers);
   }
 
   /**
@@ -65,17 +65,17 @@ export class AbstractTriggersHandlersImporter {
 
   /**
    *
-   * @param {Array.<{trigger, handlers: Array.<{ actionId, data }>}>} triggerGroups
+   * @param {Array.<{trigger, reconciledHandlers: Array.<{ actionId, handler }>}>} triggerGroups
    * @return {Promise<void>}
    */
   async storeTriggersAndHandlers(triggerGroups) {
-    /* eslint-disable no-await-in-loop */
-    // await in loop to have the handlers processed in sequence
+    /* eslint-disable no-await-in-loop, no-restricted-syntax */
+    // await in forOf loop to have the handlers processed in sequence
     for (const triggerGroup of triggerGroups) {
       const trigger = await this.triggerStorage.create(this.appId, triggerGroup.trigger);
       await this.storeHandlers(trigger.id, triggerGroup.reconciledHandlers);
     }
-    /* eslint-enable no-await-in-loop */
+    /* eslint-enable no-await-in-loop, no-restricted-syntax */
   }
 
   /**
@@ -85,11 +85,12 @@ export class AbstractTriggersHandlersImporter {
    * @return {Promise<void>}
    */
   async storeHandlers(triggerId, reconciledHandlers) {
+    /* eslint-disable no-await-in-loop, no-restricted-syntax */
+    // await in forOf loop to have the handlers processed in sequence
     for (const handlerData of reconciledHandlers) {
-      // await in loop to have the handlers processed in sequence
-      // eslint-disable-next-line no-await-in-loop
       await this.handlerStore.save(triggerId, handlerData.actionId, handlerData.handler);
     }
+    /* eslint-enable no-await-in-loop, no-restricted-syntax */
   }
 
 }

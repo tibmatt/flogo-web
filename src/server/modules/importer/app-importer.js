@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep';
 import { ErrorManager } from '../../common/errors/index';
 
 export class AppImporter {
@@ -26,9 +26,9 @@ export class AppImporter {
 
     this.app = await this.appStorage.create(cleanApp);
 
-    const actionsByOriginalId = await this.actionsImporter.importAll(this.rawData);
+    const actionsByOriginalId = await this.actionsImporter.importAll(this.app.id, this.rawData);
 
-    this.triggerHandlersImporter.setAppId(actionsByOriginalId);
+    this.triggerHandlersImporter.setAppId(this.app.id);
     this.triggerHandlersImporter.setActionsByOriginalId(actionsByOriginalId);
     await this.triggerHandlersImporter.importAll(this.rawData);
 

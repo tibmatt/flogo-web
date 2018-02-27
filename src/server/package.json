@@ -25,7 +25,8 @@
     "chai-http": "^3.0.0",
     "concurrently": "^3.5.1",
     "mocha": "4.0.1",
-    "server-destroy": "^1.0.1"
+    "server-destroy": "^1.0.1",
+    "sinon": "^4.4.1"
   },
   "dependencies": {
     "ajv": "^6.1.1",

@@ -9,13 +9,14 @@ export class AbstractActionsImporter {
     throw new Error('You have to implement the method extractActions!');
   }
 
-  async importAll(fromRawApp) {
+  async importAll(appId, fromRawApp) {
     const rawActions = this.extractActions(fromRawApp);
-    return new Map(await this.storeActions(rawActions));
+    const actionPairs = await this.storeActions(appId, rawActions);
+    return new Map(actionPairs);
   }
 
   async storeActions(appId, rawActions = []) {
-    const actionPromises = rawActions.map(async (actionMap, rawAction) => {
+    const actionPromises = rawActions.map(async rawAction => {
       const originalActionId = rawAction.id;
       const action = await this.storeSingleAction(appId, rawAction);
       return [originalActionId, action];

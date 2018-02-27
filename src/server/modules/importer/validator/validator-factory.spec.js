@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { validatorFactory } from './validator-factory';
 
-describe('validator-factory', function () {
+describe('importer.validator-factory', function () {
   let validator;
   beforeEach(function () {
     validator = validatorFactory(

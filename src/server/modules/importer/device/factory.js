@@ -1,13 +1,8 @@
 import groupBy from 'lodash/groupBy';
 
-import { validatorFactory } from '../validator';
-
-import { HandlersManager } from '../../apps/handlers';
-import { ActionsManager } from '../../actions/index';
-import { AppsTriggersManager } from '../../apps/triggers';
 import { fullDeviceAppSchema } from '../../apps/schemas';
-import { ContribsManager as ContribDeviceManager } from '../../contribs';
 
+import { validatorFactory } from '../validator';
 import { extractContribRefs } from '../extract-contrib-refs';
 
 import { ActionsImporter } from './actions-importer';
@@ -15,13 +10,26 @@ import { TriggersHandlersImporter } from './triggers-handlers-importer';
 
 export class DeviceAppImporterFactory {
 
-  static async create() {
+  /**
+   * @param {ResourceStorageRegistry} resourceStorageRegistry
+   */
+  constructor(resourceStorageRegistry) {
+    this.resourceStorageRegistry = resourceStorageRegistry;
+  }
+
+  async create() {
     const contributions = await this.loadContributions();
     const validator = this.createValidator(contributions);
 
-    const actionsImporter = new ActionsImporter(ActionsManager, contributions.activities);
-    const triggersHandlersImporter = new TriggersHandlersImporter(
-      AppsTriggersManager, HandlersManager, contributions.triggers,
+    const actionsImporter = this.createActionsImporter(
+      this.resourceStorageRegistry.getActionsManager(),
+      contributions.activities,
+    );
+
+    const triggersHandlersImporter = this.createTriggersHandlersImporter(
+      this.resourceStorageRegistry.getAppsTriggersManager(),
+      this.resourceStorageRegistry.getHandlersManager(),
+      contributions.triggers,
     );
 
     return {
@@ -31,8 +39,20 @@ export class DeviceAppImporterFactory {
     };
   }
 
-  static async loadContributions() {
-    return ContribDeviceManager
+  createTriggersHandlersImporter(appsTriggersManager, handlersManager, triggers) {
+    return new TriggersHandlersImporter(appsTriggersManager, handlersManager, triggers);
+  }
+
+  createActionsImporter(actionsManager, activities) {
+    return new ActionsImporter(actionsManager, activities);
+  }
+
+  getContribDeviceManager() {
+    return this.resourceStorageRegistry.getDeviceContribsManager();
+  }
+
+  async loadContributions() {
+    return this.getContribDeviceManager()
       .find()
       .then(contribs => groupBy(contribs, 'type'))
       .then(contribGroups => ({
@@ -41,8 +61,11 @@ export class DeviceAppImporterFactory {
       }));
   }
 
-  static createValidator(contributions) {
-    const contribRefs = extractContribRefs(contributions);
+  createValidator(contributions) {
+    const contribRefs = {
+      activities: extractContribRefs(contributions.activities),
+      triggers: extractContribRefs(contributions.triggers),
+    };
     return validatorFactory(fullDeviceAppSchema, contribRefs);
   }
 

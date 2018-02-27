@@ -4,8 +4,6 @@ import { AbstractTriggersHandlersImporter } from '../common/abstract-trigger-han
 
 export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
 
-
-
   constructor(triggerStorage, handlerStore, triggerSchemas) {
     super(triggerStorage, handlerStore);
     this.triggerSchemas = triggerSchemas;
@@ -21,6 +19,7 @@ export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
   }
 
   formatTrigger(trigger) {
+    trigger.settings = trigger.settings || [];
     return {
       ...trigger,
       settings: this.makeTriggerSettings(trigger),
@@ -43,7 +42,7 @@ export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
   getSettingsSchema(triggerRef) {
     return this.triggerSchemas
       .find(triggerSchema => triggerSchema.ref === triggerRef)
-      .settings;
+      .settings || [];
   }
 
 }
