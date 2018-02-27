@@ -30,7 +30,6 @@ export interface flowToJSON_Task {
   type: number;
   activityType: string;
   activityRef?: string;
-  flowRef?: string;
   name?: string;
   description?: string;
   attributes: flowToJSON_Attribute[];
@@ -43,6 +42,7 @@ export interface flowToJSON_Task {
 /* tslint:disable-next-line:class-name */
 export interface flowToJSON_Settings {
   iterate?: string;
+  flowPath?: string;
 }
 
 // Disabling tslint rule for legacy purposes

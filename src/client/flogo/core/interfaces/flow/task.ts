@@ -9,7 +9,6 @@ export interface Task {
   version ?: string;
   name ?: string;
   activityRef?: string;
-  flowRef?: string;
   ref ?: string;
   description ?: string;
   activityType?: string;
@@ -21,6 +20,7 @@ export interface Task {
   links ?: Link[ ];
   settings?: {
     iterate?: string;
+    flowPath?: string;
   };
   condition?: string;
   __props?: {
