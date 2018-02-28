@@ -379,7 +379,7 @@ class NodeFactory {
   }
 
   static flogoGenBranchID() {
-    const id = `Flogo::Branch::${Date.now()}::${_.uniqueId()}`;
+    const id = _.uniqueId(`Flogo::Branch::${Date.now()}::`);
     return flogoIDEncode(id);
   }
 }

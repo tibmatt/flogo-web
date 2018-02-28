@@ -12,7 +12,7 @@ export class FlogoFlowDiagramNode implements Node {
   // subProc: FlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
 
   static genNodeID(): string {
-    const id = `FlogoFlowDiagramNode::${Date.now()}::${_.uniqueId()}`;
+    const id = _.uniqueId(`FlogoFlowDiagramNode::${Date.now()}::`);
     return flogoIDEncode(id);
   }
 
