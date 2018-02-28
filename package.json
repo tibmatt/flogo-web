@@ -15,8 +15,9 @@
     "webdriver-manager-update": "webdriver-manager update",
     "e2e": "cd specs && protractor protractor.conf.js",
     "e2e-container": "cd specs && docker run -it --rm --net=host -e FLOGO_HOST=\"$FLOGO_HOST\" -e FLOGO_PORT=\"$FLOGO_PORT\" --name flogo-protractor-runner -v $(pwd):/protractor/project hortonworks/docker-e2e-protractor protractor.conf.js",
-    "clean-all-node-modules": "rm -rfv `find . -path \"*/node_modules\" -print`",
-    "del:engines": "rm -rf ./dist/server/local/engines",
+    "clean:all-node-modules": "rm -rfv `find . -path \"*/node_modules\" -print`",
+    "clean:engines": "rm -rf ./dist/server/local/engines",
+    "clean:local": "rm -rf -rf ./dist/server/local",
     "update-global-flogo": "go get -u github.com/TIBCOSoftware/flogo-cli/..."
   },
   "author": "TIBCO Software Inc.",

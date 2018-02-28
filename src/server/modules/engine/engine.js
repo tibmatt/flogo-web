@@ -1,4 +1,4 @@
-const path = require('path');
+import path from 'path';
 
 import {config} from '../../config/app-config';
 import {createFolder as ensureDir} from '../../common/utils/file';
@@ -15,7 +15,10 @@ const DIR_BUILD_BIN = 'bin-build';
 const TYPE_TEST = 'test';
 const TYPE_BUILD = 'build';
 
-//TODO: status
+const DEFAULT_LIBS = [
+  'github.com/TIBCOSoftware/flogo-lib',
+  'github.com/TIBCOSoftware/flogo-contrib',
+];
 
 class Engine {
 
@@ -23,7 +26,7 @@ class Engine {
     this.path = path;
     this.tasks = {
       activities: [],
-      triggers: []
+      triggers: [],
     };
     this.libVersion = libVersion;
     this.runLogger = runLogger;
@@ -40,11 +43,13 @@ class Engine {
 
   create(flogoDescriptorPath = null, vendor = null) {
     // todo: add support for lib version
-    const options = { libVersion: this.libVersion };
+    const options = {
+      libVersion: this._buildLibsOption()
+    };
     if (flogoDescriptorPath) {
       options.flogoDescriptor = flogoDescriptorPath;
     }
-    if(vendor) {
+    if (vendor) {
       options.vendor = vendor;
     }
     console.time('engine:create');
@@ -124,8 +129,8 @@ class Engine {
     return exec.start(this.path, this.getName(), {
       binDir: DIR_TEST_BIN,
       logPath: config.publicPath,
-      logger: this.runLogger
-    })
+      logger: this.runLogger,
+    });
   }
 
   stop() {
@@ -212,9 +217,9 @@ class Engine {
   _installItem(itemType, path, options) {
     let label = `engine:install:${itemType}`;
     console.time(label);
-    options = Object.assign({ version: this.libVersion }, options);
+    options = { ...options };
     let promise = commander.add[itemType](this.path, path, options);
-    let shouldReload = !(options && options.noReload);
+    const shouldReload = !(options && options.noReload);
     if (shouldReload) {
       promise = promise.then(() => this.load());
     }
@@ -229,6 +234,14 @@ class Engine {
     return !!item;
   }
 
+  _buildLibsOption() {
+    if (this.libVersion) {
+      return DEFAULT_LIBS
+        .map(lib => `${lib}@${this.libVersion}`)
+        .join(',');
+    }
+    return null;
+  }
 }
 
 // export type constants for outside use
