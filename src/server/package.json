@@ -11,17 +11,22 @@
     "start-server": "node server.js",
     "start-debug": "node --debug server.js",
     "start-prod-server": "node server.js",
+    "test": "mocha --require babel-core/register './{,!(node_modules)/**/}*.spec.js'",
+    "test:watch": "mocha --watch --require babel-core/register --watch-extensions json './{,!(node_modules)/**/}*.spec.js'",
     "test:api": "mocha"
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
+    "babel-core": "^6.26.0",
+    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
+    "babel-preset-env": "^1.6.1",
     "chai": "4.1.2",
     "chai-http": "^3.0.0",
     "concurrently": "^3.5.1",
     "mocha": "4.0.1",
-    "server-destroy": "^1.0.1"
+    "server-destroy": "^1.0.1",
+    "sinon": "^4.4.1"
   },
   "dependencies": {
     "ajv": "^6.1.1",
@@ -50,7 +55,12 @@
   },
   "eslintConfig": {
     "extends": "airbnb-base",
+    "env": {
+      "node": true,
+      "mocha": true
+    },
     "rules": {
+      "no-unused-expressions": "off",
       "func-names": "off",
       "max-len": [
         "error",
@@ -91,6 +101,9 @@
         {
           "allowParens": true
         }
+      ],
+      "prefer-arrow-callback": [
+        "warn"
       ],
       "arrow-parens": [
         "warn",

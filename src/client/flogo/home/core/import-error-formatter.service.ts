@@ -35,10 +35,10 @@ export class ImportErrorFormatterService {
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
         break;
       case 'activity-installed':
-        errorMessage = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT', { ref: detail.data });
+        errorMessage = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT', { ref: detail.params.ref });
         break;
       case 'trigger-installed':
-        errorMessage = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING_CONTENT', { ref: detail.data });
+        errorMessage = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING_CONTENT', { ref: detail.params.ref });
         break;
       default:
         errorMessage = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');

@@ -86,8 +86,7 @@ gulp.task('dev-watch', 'Build in development mode and watch for changes', cb => 
     'install.server.dev',
     'install.client.dev',
     'dev.server.build',
-    'dev.server.watch',
-    'dev.client.start',
+    ['dev.server.watch', 'install.server.dist'],
     cb
   );
 

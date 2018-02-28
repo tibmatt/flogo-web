@@ -1,5 +1,4 @@
-import toString from 'lodash/toString';
-import normalizeName from 'lodash/snakeCase';
+import { normalizeName } from './normalize-name';
 
 export class UniqueIdAgent {
 
@@ -11,8 +10,8 @@ export class UniqueIdAgent {
   generateUniqueId(name) {
     let uniqueId = normalizeName(name);
     if (this.uniqueIdArray.indexOf(uniqueId) !== -1) {
-      let id = ++this.idCounter;
-      uniqueId = toString(uniqueId) + '_' + id;
+      const id = ++this.idCounter;
+      uniqueId = `${uniqueId}_${id}`;
     }
     this.uniqueIdArray.push(uniqueId);
 

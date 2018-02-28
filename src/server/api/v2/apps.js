@@ -118,18 +118,15 @@ function* deleteApp() {
 
 function* importApp() {
   try {
-    console.log('usinfg', this.request.body);
     this.body = yield AppsManager.import(this.request.body);
   } catch (error) {
-    if (error.isOperational) {
-      if (error.type === ERROR_TYPES.COMMON.VALIDATION) {
-        throw ErrorManager.createRestError('Validation error in /apps getApp', {
-          status: 400,
-          title: 'Validation error',
-          detail: 'There were one or more validation problems',
-          meta: error.details.errors,
-        });
-      }
+    if (error.isOperational && error.type === ERROR_TYPES.COMMON.VALIDATION) {
+      throw ErrorManager.createRestError('Validation error in /apps getApp', {
+        status: 400,
+        title: 'Validation error',
+        detail: 'There were one or more validation problems',
+        meta: error.details.errors,
+      });
     }
     throw error;
   }
