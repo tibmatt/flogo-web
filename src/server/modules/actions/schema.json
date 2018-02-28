@@ -276,7 +276,10 @@
               "type": "object",
               "properties": {
                 "iterate": {
-                  "type": ["string", "integer"]
+                  "type": [
+                    "string",
+                    "integer"
+                  ]
                 },
                 "flowPath": {
                   "type": "string"
@@ -331,9 +334,31 @@
             }
           },
           "else": {
-            "required": [
-              "activityRef"
-            ]
+            "if": {
+              "properties": {
+                "type": {
+                  "const": 2
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "settings",
+                "activityRef"
+              ],
+              "properties": {
+                "settings": {
+                  "required": [
+                    "iterate"
+                  ]
+                }
+              }
+            },
+            "else": {
+              "required": [
+                "activityRef"
+              ]
+            }
           }
         }
       }
