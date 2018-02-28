@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep';
-import { ErrorManager } from '../../common/errors/index';
 
 export class AppImporter {
 
@@ -19,12 +18,10 @@ export class AppImporter {
   async import(value) {
     this.rawData = value;
     const rawApp = cloneDeep(value);
-    const { errors: validationErrors, app: cleanApp } = this.validateAndCleanAdditionalProperties(rawApp);
-    if (validationErrors && validationErrors.length > 0) {
-      throw ErrorManager.createValidationError('Validation error', { details: validationErrors });
-    }
 
-    this.app = await this.appStorage.create(cleanApp);
+    this.validateAndCleanAdditionalProperties(rawApp);
+
+    this.app = await this.appStorage.create(rawApp);
 
     const actionsByOriginalId = await this.actionsImporter.importAll(this.app.id, this.rawData);
 
@@ -41,8 +38,8 @@ export class AppImporter {
    * @return {{app: *, errors: Array}}
    */
   validateAndCleanAdditionalProperties(fullApp) {
-    const errors = this.fullAppValidator.validate(fullApp);
-    return { app: fullApp, errors };
+    this.fullAppValidator.validate(fullApp);
+    return fullApp;
   }
 
 }

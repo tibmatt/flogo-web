@@ -6,22 +6,31 @@ describe('importer.validator-factory', function () {
   beforeEach(function () {
     validator = validatorFactory(
       makeTestSchema(),
-      { activities: ['ref/to/an/activity'], triggers: ['ref/to/a/trigger'] }
+      { activities: ['ref/to/an/activity'], triggers: ['ref/to/a/trigger'] },
     );
   });
 
   it('should error for not installed contributions', function () {
-    const errors = validator.validate({
-      trigger: 'foo',
-      activity: 'bar',
-    });
-    expect(errors).to.not.be.empty;
-    expect(errors[0]).to.deep.include({
+    let thrownError;
+    try {
+      validator.validate({
+        trigger: 'foo',
+        activity: 'bar',
+      });
+    } catch (error) {
+      thrownError = error;
+    }
+    expect(!!thrownError).to.equal(true, 'validation was expected to fail but no error was thrown');
+
+    const { details: validationDetails } = thrownError.details.errors;
+    expect(validationDetails).to.not.be.empty;
+
+    expect(validationDetails[0]).to.deep.include({
       dataPath: '.trigger',
       keyword: 'trigger-installed',
       params: { ref: 'foo' },
     });
-    expect(errors[1]).to.deep.include({
+    expect(validationDetails[1]).to.deep.include({
       dataPath: '.activity',
       keyword: 'activity-installed',
       params: { ref: 'bar' },
@@ -29,11 +38,10 @@ describe('importer.validator-factory', function () {
   });
 
   it('should allow installed contributions', function () {
-    const errors = validator.validate({
+    expect(validator.validate({
       trigger: 'ref/to/a/trigger',
       activity: 'ref/to/an/activity',
-    });
-    expect(errors).to.be.null;
+    })).not.to.throw;
   });
 
   function makeTestSchema() {

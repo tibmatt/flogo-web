@@ -3,9 +3,7 @@ import get from 'lodash/get';
 import defaults from 'lodash/defaults';
 import fromPairs from 'lodash/fromPairs';
 import isEqual from 'lodash/isEqual';
-import normalizeName from 'lodash/snakeCase';
 import escapeRegExp from 'lodash/escapeRegExp';
-import cloneDeep from 'lodash/cloneDeep';
 
 import shortid from 'shortid';
 
@@ -15,15 +13,14 @@ import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
 import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import { isIterableTask } from '../../common/utils';
 
 import { ActionsManager } from '../actions';
 import { importApp } from '../importer';
+import { exportLegacy, exportStandard } from '../exporter';
 import { buildApp } from './build';
 
 import { Validator } from './validator';
 import { getProfileType } from '../../common/utils/profile';
-import { UniqueIdAgent } from './uniqueId';
 
 const EDITABLE_FIELDS = [
   'name',
@@ -243,133 +240,8 @@ export class AppsManager {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
-
-        // While exporting only flows, export selected flows if any flowids are provided else export all flows
-        if (exportType === 'flows' && selectedFlowsIds) {
-          app.actions = app.actions.filter(a => selectedFlowsIds.indexOf(a.id) !== -1);
-        }
-
-        if (hasSubflowTask(app.actions)) {
-          throw ErrorManager.makeError('Application cannot be exported', { type: ERROR_TYPES.COMMON.HAS_SUBFLOW });
-        }
-
-        const uniqueIdAgent = new UniqueIdAgent();
-        const DEFAULT_COMMON_VALUES = [{
-          appType: 'flogo:app',
-          actionRef: 'github.com/TIBCOSoftware/flogo-contrib/action/flow',
-        }, {
-          appType: 'flogo:device',
-          actionRef: 'github.com/TIBCOSoftware/flogo-contrib/device/action/flow',
-        }];
-
-        const appProfileType = getProfileType(app);
-
-        app.type = DEFAULT_COMMON_VALUES[appProfileType].appType;
-        app.actions.forEach(a => {
-          a.ref = DEFAULT_COMMON_VALUES[appProfileType].actionRef;
-        });
-
-        if (appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
-          const allTriggers = [];
-          app.triggers.forEach(t => {
-            t.handlers.forEach((handler, ind) => {
-              const triggerName = t.name + (ind ? `(${ind})` : '');
-              allTriggers.push(Object.assign({}, t, {
-                name: triggerName,
-                handlers: [handler],
-              }));
-            });
-          });
-          app.triggers = allTriggers;
-        }
-
-        // oldId => actionObjectWithNewId
-        const actionMap = new Map();
-        app.actions.forEach(action => {
-          const oldId = action.id;
-          action.id = uniqueIdAgent.generateUniqueId(action.name);
-          actionMap.set(oldId, action);
-        });
-
-        if (exportType === 'application' || !exportType) {
-          let handlers = [];
-          app.triggers.forEach(t => {
-            t.id = normalizeName(t.name);
-            handlers = handlers.concat(t.handlers);
-          });
-
-          // convert to human readable action ids and update handler to point to new action id
-
-          handlers.forEach(h => {
-            const action = actionMap.get(h.actionId);
-            if (!action) {
-              delete h.actionId;
-              return;
-            }
-            h.actionId = action.id;
-          });
-        }
-
-        app.actions.forEach(action => {
-          if (action.data.flow) {
-            action.data.flow.name = action.name;
-            delete action.name;
-          }
-          let tasks = [];
-          tasks = tasks.concat(get(action, 'data.flow.rootTask.tasks', []));
-          tasks = tasks.concat(get(action, 'data.flow.errorHandlerTask.tasks', []));
-          const hasExplicitReply = tasks.find(t => t.activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/reply');
-          if (hasExplicitReply) {
-            action.data.flow.explicitReply = true;
-          }
-
-          // Update task type of iterators as per engine specifications
-          tasks.filter(task => isIterableTask(task))
-            .forEach(task => {
-              task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
-            });
-        });
-
-        if (!app.version) {
-          app.version = DEFAULT_APP_VERSION;
-        }
-
-        if (appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
-          app.triggers.forEach(trigger => {
-            trigger.actionId = trigger.handlers[0].actionId;
-            // delete trigger.handlers;
-          });
-          app.actions.forEach(action => {
-            if (action.data.flow) {
-              action.data.flow.links = cloneDeep(action.data.flow.rootTask.links);
-              action.data.flow.tasks = cloneDeep(action.data.flow.rootTask.tasks);
-              action.data.flow.tasks.forEach(task => {
-                const attributes = {};
-                task.attributes.forEach(attribute => {
-                  attributes[attribute.name] = attribute.value;
-                });
-                task.attributes = attributes;
-              });
-              // delete action.data.flow.rootTask;
-              // delete action.data.flow.attributes;
-            }
-          });
-        }
-
-        // will strip additional metadata such as createdAt, updatedAt
-        const errors = Validator.validateFullApp(
-          appProfileType, app, null, { removeAdditional: true, useDefaults: true }
-          );
-        if (errors && errors.length > 0) {
-          throw ErrorManager.createValidationError('Validation error', { details: errors });
-        }
-
-        if (exportType === 'flows') {
-          app.type = 'flogo:actions';
-          delete app.triggers;
-        }
-
-        return app;
+        const isFullExportMode = exportType !== 'flows';
+        return exportLegacy(app, { isFullExportMode, onlyThisActions: selectedFlowsIds  });
       });
   }
 

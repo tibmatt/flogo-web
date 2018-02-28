@@ -10,10 +10,7 @@ describe('importer.AppImporter', function () {
     it('should throw an error if the app is invalid', async function () {
       const sandbox = sinon.createSandbox();
       const validateStub = sandbox.stub(importer, 'validateAndCleanAdditionalProperties');
-      validateStub.returns({
-        errors: [new Error()],
-        app: {},
-      });
+      validateStub.returns({});
       let error = null;
       try {
         await importer.import({});
@@ -37,7 +34,9 @@ describe('importer.AppImporter', function () {
       before(async function () {
         sandbox = sinon.createSandbox();
         testDoubles.validatorStub = sandbox.stub(importer, 'validateAndCleanAdditionalProperties')
-          .callsFake(() => ({ app: { id: 'myValidCleanAppId' }, errors: null }));
+          .callsFake(app => {
+            app.id = 'myValidCleanAppId';
+          });
         testDoubles.appCreationStub = sandbox.stub(dependencies.appStorage, 'create')
           .returns({ id: 'createdAppId' });
 
@@ -57,7 +56,6 @@ describe('importer.AppImporter', function () {
       it('should validate the app structure', function () {
         const validatorStub = testDoubles.validatorStub;
         expect(validatorStub.calledOnce).to.equal(true);
-        expect(validatorStub.calledWith({ id: 'myValidRawAppId' })).to.equal(true);
       });
       it('should store the app', function () {
         const appCreationStub = testDoubles.appCreationStub;

@@ -1,16 +1,27 @@
-import Ajv from 'ajv';
-import { Validator } from './validator';
+import { validatorFactory as commonValidatorFactory } from '../../../common/validator';
 
+/**
+ * @param schema
+ * @param contributionRefs
+ * @param options
+ * @return {Validator}
+ */
 export function validatorFactory(schema, contributionRefs, options = {}) {
-  const defaultOptions = { removeAdditional: true, useDefaults: true, allErrors: true, };
-  const ajv = new Ajv({ ...defaultOptions, ...options });
-  addContributionRule(ajv, 'trigger-installed', 'Trigger', contributionRefs.triggers);
-  addContributionRule(ajv, 'activity-installed', 'Activity', contributionRefs.activities);
-  return new Validator(schema, ajv);
+  const validator = commonValidatorFactory(schema, options);
+  addContributionRule(validator, 'trigger-installed', 'Trigger', contributionRefs.triggers);
+  addContributionRule(validator, 'activity-installed', 'Activity', contributionRefs.activities);
+  return validator;
 }
 
-function addContributionRule(ajvInstance, keyword, type, refs) {
-  ajvInstance.addKeyword(
+/**
+ *
+ * @param {Validator} validator
+ * @param keyword
+ * @param type
+ * @param refs
+ */
+function addContributionRule(validator, keyword, type, refs) {
+  validator.addValidationRule(
     keyword,
     contributionRuleFactory(keyword, type, refs || []),
   );
