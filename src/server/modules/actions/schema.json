@@ -322,11 +322,9 @@
             }
           },
           "then": {
-            "required": [
-              "settings"
-            ],
             "properties": {
               "settings": {
+                "default": {},
                 "required": [
                   "flowPath"
                 ]
@@ -334,6 +332,9 @@
             }
           },
           "else": {
+            "required": [
+              "activityRef"
+            ],
             "if": {
               "properties": {
                 "type": {
@@ -342,22 +343,14 @@
               }
             },
             "then": {
-              "required": [
-                "settings",
-                "activityRef"
-              ],
               "properties": {
                 "settings": {
+                  "default": {},
                   "required": [
                     "iterate"
                   ]
                 }
               }
-            },
-            "else": {
-              "required": [
-                "activityRef"
-              ]
             }
           }
         }
