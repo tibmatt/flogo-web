@@ -21,5 +21,5 @@ ensureDefaultDirs()
   .catch(error => {
     console.error(error);
     console.error(error.stack);
-    throw error;
+    process.exit(1);
   });

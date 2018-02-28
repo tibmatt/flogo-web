@@ -19,7 +19,7 @@ export function getInitializedEngine(enginePath, opts = {}) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
 
-  const engine = new Engine(enginePath, opts.libVersion||config.libVersion, engineLogger);
+  const engine = new Engine(enginePath, opts.libVersion || config.libVersion, engineLogger);
   engineRegistry[enginePath] = engine;
 
   const initTimer = logger.startTimer();
