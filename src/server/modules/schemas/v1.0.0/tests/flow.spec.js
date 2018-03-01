@@ -126,7 +126,7 @@ describe('JSONSchema: Flow', function () {
         const originalTask = { ...validSchemas.task, settings };
         const taskUnderTest = cloneDeep(originalTask);
         taskValidator.validate(taskUnderTest);
-        expect(originalTask).to.deep.include(originalTask);
+        expect(taskUnderTest).to.deep.include(originalTask);
       });
 
       ['id', 'activity'].forEach(requiredProp => {
