@@ -1,4 +1,4 @@
-import { LanguageService } from '@flogo/core';
+import {LanguageService, ValidationDetails} from '@flogo/core';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -60,5 +60,13 @@ export class ImportErrorFormatterService {
     } else {
       return `.${pathArray.join('.')} `;
     }
+  }
+
+  getErrorsDetails(details: ValidationDetails[]): ValidationDetails[] {
+    return details.filter(d => this.isRationalError(d));
+  }
+
+  isRationalError(detail: ValidationDetails) {
+    return detail.keyword !== 'if';
   }
 }

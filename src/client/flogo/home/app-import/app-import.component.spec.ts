@@ -45,7 +45,7 @@ describe('Component: FlogoAppImportComponent', () => {
       .then(() => {
         fixture = TestBed.createComponent(ContainerComponent);
         comp = fixture.componentInstance;
-        comp.errors = mockImportErrorResponse;
+        comp.errors = mockImportErrorResponse[0].meta.details;
         fixture.detectChanges();
         const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-error__list'));
         expect(res.length).toEqual(3);
@@ -58,7 +58,7 @@ describe('Component: FlogoAppImportComponent', () => {
       .then(() => {
         fixture = TestBed.createComponent(ContainerComponent);
         comp = fixture.componentInstance;
-        comp.errors = mockImportErrorResponse;
+        comp.errors = mockImportErrorResponse[0].meta.details;
         fixture.detectChanges();
         const res: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.flogo-error__list-container .flogo-error__content'));
         const el: HTMLElement = res[2].nativeElement;

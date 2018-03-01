@@ -15,5 +15,6 @@ export interface ValidationDetails {
   dataPath: string;
   schemaPath: string;
   message: string;
-  data: any;
+  data?: any;
+  params?: any;
 }

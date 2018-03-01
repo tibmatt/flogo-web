@@ -77,7 +77,7 @@ export class FlogoAppsListComponent implements OnInit {
     } else {
       if (error[0].status === 400) {
         if (error[0].meta.details) {
-          this.importValidationErrors = error;
+          this.importValidationErrors = error[0].meta.details;
           this.showValidationErrors = true;
         } else {
           message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
