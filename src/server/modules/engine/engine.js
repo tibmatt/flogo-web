@@ -16,8 +16,8 @@ const TYPE_TEST = 'test';
 const TYPE_BUILD = 'build';
 
 const DEFAULT_LIBS = [
-  'github.com/TIBCOSoftware/flogo-lib',
-  'github.com/TIBCOSoftware/flogo-contrib',
+  'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+  'github.com/TIBCOSoftware/flogo-lib/app/resource',
 ];
 
 class Engine {
@@ -159,7 +159,7 @@ class Engine {
    * @param options.noReload {boolean} Skip engine data reload
    */
   installPalette(palettePath, options) {
-    options = Object.assign({ version: this.libVersion }, options);
+    options = Object.assign({ /* version: this.libVersion */ }, options);
     return this._installItem('palette', palettePath, options);
   }
 
