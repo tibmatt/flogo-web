@@ -784,15 +784,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const context = this._getCurrentTaskContext(data.node.taskID, diagramId);
 
     const activitySchema = this.flow.schemas[currentTask.ref];
-    const isMapperTask = isMapperActivity(activitySchema);
-    if (isMapperTask) {
-      return this._navigateFromModuleRoot()
-      // because diagram forces "open" task event when adding a new one
-        .then(() => this._selectConfigureTaskFromDiagram(data, envelope, true))
-        .then(() => this._cleanSelectionStatus())
-        .then(() => console.groupEnd());
-    }
-    if (isSubflowTask(currentTask.type)) {
+    if (isSubflowTask(currentTask.type) || isMapperActivity(activitySchema)) {
       return this._navigateFromModuleRoot()
         .then(() => {
           this._postService.publish(
@@ -805,6 +797,7 @@ export class FlowComponent implements OnInit, OnDestroy {
                 },
                 done: (diagram: FlowDiagram) => {
                   _.assign(this.handlers[diagramId].diagram, diagram);
+                  console.groupEnd();
                 }
               }
             )
@@ -1643,7 +1636,7 @@ export class FlowComponent implements OnInit, OnDestroy {
    |      Task Configurator        |
    *-------------------------------*/
 
-  private _selectConfigureTaskFromDiagram(data: any, envelope: any, outputMapper?: boolean) {
+  private _selectConfigureTaskFromDiagram(data: any, envelope: any) {
     const diagramId = data.id;
     let scope: any[];
 
@@ -1678,6 +1671,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     let inputMappingsTabLabelKey = null;
     let searchTitleKey;
     let transformTitle;
+
+    const currentTask = _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]);
+    const activitySchema = this.flow.schemas[currentTask.ref];
+    const  outputMapper = isMapperActivity(activitySchema);
+
     if (outputMapper) {
       overridePropsToMap = metadata.output;
       overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);

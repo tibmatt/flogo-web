@@ -1161,12 +1161,18 @@ export class FlogoFlowDiagram implements FlowDiagram {
         return ``;
       }
 
-      if ((nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) ||
-        _isReturnActivity(diagram['tasks'][nodeInfo.taskID])
-      ) {
+      if ((nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH)) {
         return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemDelete}
                   </ul>${tplGear}`;
+      }
+
+      if (_isReturnActivity(diagram['tasks'][nodeInfo.taskID])) {
+        // no add branch
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+                    ${tplItemConfigure}
+                    ${tplItemDelete}
+                </ul>${tplGear}`;
       }
 
       // if not the last node in row
