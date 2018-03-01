@@ -29,7 +29,12 @@ const enginesRoot = path.join(rootPath, enginesPath);
 const defaultEngineName = 'flogo-web';
 const defaultEngine = `${enginesPath}/${defaultEngineName}`;
 
-let config = {
+let libVersion = process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION;
+if (!libVersion || libVersion === 'latest') {
+  libVersion = 'master';
+}
+
+const config = {
   db: 'http://localhost:5984/flogo-web',
   rootPath,
   publicPath,
@@ -38,7 +43,7 @@ let config = {
   defaultAppJsonPath: path.join(rootPath, 'config', 'sample-app.json'),
   defaultContribsPath: path.join(rootPath, 'config', 'default-devices-contrib.json'),
   defaultFlogoDescriptorPath: process.env.FLOGO_WEB_DEFAULT_DESCRIPTOR || path.join(rootPath, 'config', 'default-flogo.json'),
-  libVersion: process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION,
+  libVersion,
   app: {
     basePath: '/v1/api',
     basePathV2: '/api/v2',

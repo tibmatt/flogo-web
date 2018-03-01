@@ -1,16 +1,17 @@
 import { parseJSON } from '../../../common/utils';
 import { logger } from '../../../common/logging';
 import { build } from './build';
-import {runShellCMD} from "../../../common/utils/process";
+import { runShellCMD } from '../../../common/utils/process';
 
-var path = require('path');
+const path = require('path');
 
 module.exports = {
   /**
    *
    * @param enginePath
    * @param options
-   * @param {string} [options.libVersion] - specify the flogo-lib version
+   * @param {string} [options.libVersion] - specify the flogo-lib version this is the same as flogo's flv option and
+   * it will be passed as is
    * @param {string} [options.flogoDescriptor] - specify the flogo.json to create project from
    * @param {string} [options.vendor] - specify existing vendor directory to copy
    * @return {*}
@@ -20,9 +21,9 @@ module.exports = {
     const enginePathInfo = path.parse(enginePath);
 
     const command = ['create'];
-    // if (options.libVersion && options.libVersion !== 'latest') {
-    //   command.push('-flv', options.libVersion);
-    // }
+    if (options.libVersion && options.libVersion !== 'latest') {
+      command.push('-flv', options.libVersion);
+    }
 
     if (options.flogoDescriptor) {
       command.push('-f', options.flogoDescriptor);
@@ -31,7 +32,6 @@ module.exports = {
     if (options.vendor) {
       command.push('-vendor', options.vendor);
     }
-
 
     command.push(enginePathInfo.name);
 
