@@ -1,12 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/flow.json",
-  "required": ["id"],
   "properties": {
-    "id": {
-      "type": "string",
-      "minLength": 1
-    },
     "name": {
       "type": "string"
     },
@@ -107,7 +102,8 @@
       "required": ["ref"],
       "properties": {
         "ref": {
-          "type": "string"
+          "type": "string",
+          "activity-installed": true
         },
         "settings": true,
         "input": {

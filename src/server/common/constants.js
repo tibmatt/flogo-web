@@ -1,4 +1,5 @@
-import _ from 'lodash';
+export const REF_SUBFLOW = 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow';
+export const LEGACY_FLOW_TYPE = 1;
 
 export const FLOGO_FLOW_DIAGRAM_NODE_TYPE = {
   0: "NODE_PADDING",
@@ -123,60 +124,7 @@ export const FLOGO_ENGINE_STATUS = {
   CREATED : 17,
   REMOVED : 18
 };
-// // generation function.
-// export const FLOGO_ENGINE_STATUS = (()=> {
-//
-//   const items = [
-//     {
-//       'adding' : [ 'model', 'activity', 'trigger', 'flow' ]
-//     }, {
-//       'removing' : [ 'model', 'activity', 'trigger', 'flow' ]
-//     }, {
-//       'updating' : [ 'configJson', 'triggerJson' ]
-//     },
-//     { 'building' : [] },
-//     { 'starting' : [] },
-//     { 'stopping' : [] },
-//     { 'creating' : [] },
-//     { 'removing' : [] },
-//     { 'stopped' : [] },
-//     { 'started' : [] },
-//     { 'created' : [] },
-//     { 'removed' : [] }
-//   ];
-//
-//   let status = {};
-//
-//   // generate keys
-//   let statusKeys = _.reduce( items, ( _status, item, idx ) => {
-//     let keys = _.keys( item );
-//
-//     return _.reduce( keys, ( _statusOfKey, key ) => {
-//
-//       if ( items[ idx ][ key ].length < 1 ) {
-//         _statusOfKey.push( key.toUpperCase() );
-//       } else {
-//         _statusOfKey = _statusOfKey.concat( _.map( items[ idx ][ key ], ( elm ) => {
-//           return `${key.toUpperCase()}_${_.snakeCase( elm )
-//             .toUpperCase()}`;
-//         } ) );
-//       }
-//
-//       return _statusOfKey;
-//     }, _status );
-//   }, [] );
-//
-//   // generate status obj
-//   return _.reduce( statusKeys, ( _status, statusKey, idx ) => {
-//     _status[ statusKey ] = idx;
-//     _status[ idx ] = statusKey;
-//
-//     return _status;
-//   }, status );
-//
-// })();
-//
-// console.log( FLOGO_ENGINE_STATUS );
+
 
 export const TYPE_TRIGGER = 'trigger';
 export const TYPE_ACTIVITY = 'activity';

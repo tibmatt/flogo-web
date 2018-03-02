@@ -43,7 +43,8 @@
       "properties": {
         "ref": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "trigger-installed": true
         },
         "data": {
           "$ref": "#/definitions/flowData"

@@ -31,7 +31,7 @@
         "value": {
           "description":
             "The value to map. i.e. the right hand side of the expression",
-          "$comment": "Can hold any type of value"
+          "$comment": "Type any, so no 'type' keyword"
         }
       }
     }

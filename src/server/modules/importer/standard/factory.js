@@ -1,11 +1,15 @@
-import { fullAppSchema } from '../../apps/schemas';
+import * as schemas from '../../schemas/v1.0.0';
 
+import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
 import { validatorFactory } from '../validator';
 
-import { extractContribRefs } from '../extract-contrib-refs';
+import { extractContribRefs } from '../common/extract-contrib-refs';
 
-import { StandardActionsImporter } from './actions-importer';
-import { StandardTriggersHandlersImporter } from './triggers-handlers-importer';
+
+import { StandardActionsImporter } from './standard-actions-importer';
+import { StandardTaskConverter } from './standard-task-converter';
+import { StandardTriggersHandlersImporter } from './standard-triggers-handlers-importer';
+
 
 export class LegacyAppImporterFactory {
 
@@ -17,15 +21,18 @@ export class LegacyAppImporterFactory {
   }
 
   async create() {
+    const contributions = await this.loadContributions();
+
+    const validator = this.createValidator(contributions);
+
     const actionsImporter = this.createActionsImporter(
       this.resourceStorageRegistry.getActionsManager(),
+      contributions.activities,
     );
     const triggersHandlersImporter = this.createTriggersHandlersImporter(
       this.resourceStorageRegistry.getAppsTriggersManager(),
       this.resourceStorageRegistry.getHandlersManager(),
     );
-    const contributions = await this.loadContributions();
-    const validator = this.createValidator(contributions);
     return {
       actionsImporter,
       triggersHandlersImporter,
@@ -34,11 +41,10 @@ export class LegacyAppImporterFactory {
   }
 
   async loadContributions() {
-    const [activities, triggers] = await Promise.all([
-      this.getActivitiesManager().find(),
-      this.getTriggersManager().find(),
-    ]);
-    return { activities, triggers };
+    return loadMicroserviceContribs(
+      this.getActivitiesManager(),
+      this.getTriggersManager(),
+    );
   }
 
   getTriggersManager() {
@@ -54,11 +60,17 @@ export class LegacyAppImporterFactory {
       activities: extractContribRefs(contributions.activities),
       triggers: extractContribRefs(contributions.triggers),
     };
-    return validatorFactory(fullAppSchema, contribRefs);
+    return validatorFactory(schemas.app, contribRefs, {
+      schemas: [
+        schemas.common,
+        schemas.trigger,
+        schemas.flow,
+      ],
+    });
   }
 
-  createActionsImporter(actionsManager) {
-    return new StandardActionsImporter(actionsManager);
+  createActionsImporter(actionsManager, activitySchemas) {
+    return new StandardActionsImporter(actionsManager, StandardTaskConverter, activitySchemas);
   }
 
   createTriggersHandlersImporter(appsTriggersManager, handlersManager) {

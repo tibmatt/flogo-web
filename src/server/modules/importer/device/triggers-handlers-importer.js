@@ -1,6 +1,6 @@
 import fromPairs from 'lodash/fromPairs';
 import { getDefaultValueByType } from '../../../common/utils';
-import { AbstractTriggersHandlersImporter } from '../common/abstract-trigger-handlers-importer';
+import { AbstractTriggersHandlersImporter } from '../common';
 
 export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
 
