@@ -905,6 +905,8 @@ export class FlogoFlowDiagram implements FlowDiagram {
         return '';
       }
 
+      const taskDescription = taskSchema.type === FLOGO_TASK_TYPE.TASK_SUB_PROC ? '' : taskInfo.desc;
+
       let iconName = 'activity.icon.svg';
 
       if (taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT) {
@@ -929,7 +931,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
           ${this.makeTile()}
           ${taskIcon}
           <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}" title="${taskInfo.name}">${taskInfo.name}</div>
-          <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskInfo.desc}</div>
+          <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskDescription}</div>
         </div>
       `;
 
