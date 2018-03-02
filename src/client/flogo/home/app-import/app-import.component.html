@@ -9,10 +9,10 @@
   </div>
   <div class="flogo-error__container">
     <p class="flogo-error__content flogo-error__count">
-      {{ "IMPORT-ERROR:ERRORS_FOUND" | translate:{value:importValidationErrors[0].meta.details.length} }}
+      {{ "IMPORT-ERROR:ERRORS_FOUND" | translate:{value:errorDetails.length} }}
     </p>
     <div class="flogo-error__list-container">
-      <div class="flogo-error__list" *ngFor="let detail of importValidationErrors[0].meta.details">
+      <div class="flogo-error__list" *ngFor="let detail of errorDetails">
         <h4 class="flogo-error__list-head">{{errorFormatter.formatMessageHeader(detail.keyword)}}</h4>
         <span class="flogo-error__content">{{errorFormatter.formatErrorMessage(detail)}}</span>
       </div>
