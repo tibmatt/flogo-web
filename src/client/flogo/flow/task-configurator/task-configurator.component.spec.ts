@@ -12,6 +12,8 @@ import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
 import { ValueTypes } from '@flogo/core';
 import { SubFlowComponent } from './subflow/subflow.component';
+import {FlowsListModule} from '../shared/flows-list';
+import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 
 const postServiceStub = {
 
@@ -29,6 +31,21 @@ const postServiceStub = {
 
 };
 
+const flowServiceStub = {
+
+  listFlowsForApp(appId) {
+    return {
+      name: 'test flow',
+      description: 'test description',
+      id: 'test_flow',
+      metadata: {
+        input: [],
+        output: []
+      }
+    };
+  }
+};
+
 // TODO: disabling while working on mapper upgrade
 describe('Component: TaskConfiguratorComponent', () => {
   let comp: TaskConfiguratorComponent;
@@ -42,6 +59,7 @@ describe('Component: TaskConfiguratorComponent', () => {
         FakeRootLanguageModule,
         FlogoSharedModule,
         MapperModule,
+        FlowsListModule
       ],
       declarations: [
         InputMapperComponent,
@@ -50,7 +68,8 @@ describe('Component: TaskConfiguratorComponent', () => {
         TaskConfiguratorComponent,
       ], // declare the test component
       providers: [
-        { provide: PostService, useValue: postServiceStub }
+        {provide: PostService, useValue: postServiceStub},
+        {provide: FlowsService, useValue: flowServiceStub}
       ]// ,
       // schemas: [NO_ERRORS_SCHEMA]
     })

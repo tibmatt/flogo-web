@@ -53,4 +53,5 @@ export interface SaveTaskConfigEventData {
   tile: Task;
   iterator: IteratorInfo;
   inputMappings: any[];
+  newSubflowSchema?: ActionBase;
 }

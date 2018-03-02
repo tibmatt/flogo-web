@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 
-import { MetadataAttribute, FlowDiagram, Task, UiFlow } from '@flogo/core';
+import {MetadataAttribute, FlowDiagram, Task, UiFlow} from '@flogo/core';
 import { FlowData } from './core';
 
 import { LanguageService } from '@flogo/core';
@@ -1707,6 +1707,13 @@ export class FlowComponent implements OnInit, OnDestroy {
   private _saveConfigFromTaskConfigurator(data: SaveTaskConfigEventData, envelope: any) {
     const diagramId = data.handlerId;
     const tile = this.handlers[diagramId].tasks[data.tile.id];
+    const newSubflowSchema = data.newSubflowSchema;
+    if (newSubflowSchema && tile.settings.flowPath !== newSubflowSchema.id) {
+      tile.name = this.uniqueTaskName(newSubflowSchema.name);
+      tile.settings.flowPath = newSubflowSchema.id;
+      this._flowService.currentFlowDetails.addSubflowSchema(newSubflowSchema);
+      this.manageFlowRelationships(tile.settings.flowPath);
+    };
     const activitySchema = this.flow.schemas[tile.ref];
     const isMapperTask = isMapperActivity(activitySchema);
     if (isMapperTask) {

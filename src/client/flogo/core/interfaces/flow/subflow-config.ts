@@ -3,4 +3,5 @@ export interface SubFlowConfig {
   description: string;
   createdAt: string;
   flowPath: string;
+  metadata?: any[];
 }

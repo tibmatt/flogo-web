@@ -94,7 +94,7 @@
       </div>
     </div>
 
-    <flogo-flow-task-configurator [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-configurator>
+    <flogo-flow-task-configurator [actionId]="flow.id" [appId]="flow.appId" [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-configurator>
     <flogo-flow-task-configurator [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-configurator>
 
     <flogo-flow-error-panel *ngIf="hasTask">
