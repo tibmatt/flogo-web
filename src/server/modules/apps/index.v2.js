@@ -228,20 +228,26 @@ export class AppsManager {
   /**
    * Export an app to the schema expected by cli
    * This will export apps and flows
-   * @param appId {string} app to export
-   * @param exportType {string} type of export if it is an application export or a flows only export
-   * @param selectedFlowsIds {Array} Array of flow Id's which are to be exported in case of flows only export
+   * @param {string} appId - app to export
+   * @param {object} [options]
+   * @param {string} [options.appModel] - type of export if it is an application export or a flows only export
+   * @param {string} [options.format] - type of export if it is an application export or a flows only export
+   * @param {string[]} [options.flowIds] - Array of flow Id's which are to be exported in case of flows only export
    * @return {object} exported object
    * @throws Not found error if app not found
    */
-  static export(appId, exportType, selectedFlowsIds) {
+  static export(appId, { appModel = 'standard', format, flowIds }) {
     return AppsManager.findOne(appId)
       .then(app => {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
-        const isFullExportMode = exportType !== 'flows';
-        return exportLegacy(app, { isFullExportMode, onlyThisActions: selectedFlowsIds  });
+        const isFullExportMode = format !== 'flows';
+        const exporters = { standard: exportStandard, legacy: exportLegacy };
+        if (!exporters[appModel]) {
+          throw new Error(`Cannot export to unknown format "${format}"`);
+        }
+        return exporters[appModel](app, { isFullExportMode, onlyThisActions: flowIds });
       });
   }
 
