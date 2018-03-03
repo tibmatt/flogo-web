@@ -3,19 +3,16 @@ import omit from 'lodash/omit';
 import get from 'lodash/get';
 import mapKeys from 'lodash/mapKeys';
 
-import { apps as appsDb, indexer as indexerDb, dbUtils } from '../../common/db';
-import { ErrorManager, ERROR_TYPES } from '../../common/errors';
+import { apps as appsDb, dbUtils, indexer as indexerDb } from '../../common/db';
+import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { Validator } from './validator';
 
 import { HandlersManager } from '../apps/handlers';
-import { ActivitiesManager as ContribActivitiesManager } from '../activities';
 import { TriggerManager as ContribTriggersManager } from '../triggers';
 
-
 import { findGreatestNameIndex } from '../../common/utils/collection';
-import {isIterableTask} from "../../common/utils";
-import {FLOGO_TASK_TYPE} from "../../common/constants";
+import { portTaskTypesForLegacyIteratorTasks } from './create/port-task-types-for-legacy-iterator-tasks';
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
@@ -59,13 +56,8 @@ export class ActionsManager {
           actionData.name = actionData.id;
         }
 
-        // Update task type of iterators as per flogo-web specifications
-        let allTasks = [];
-        allTasks = allTasks.concat(get(actionData, 'data.flow.rootTask.tasks', []));
-        allTasks = allTasks.concat(get(actionData, 'data.flow.errorHandlerTask.tasks', []));
-        allTasks.filter(t => isIterableTask(t)).forEach(t => {
-          t.type = FLOGO_TASK_TYPE.TASK;
-        });
+        // TODO: should be done during import in importer.LegacyImporter
+        portTaskTypesForLegacyIteratorTasks(actionData);
 
         actionData.name = ensureUniqueName(app.actions, actionData.name);
         return actionData;

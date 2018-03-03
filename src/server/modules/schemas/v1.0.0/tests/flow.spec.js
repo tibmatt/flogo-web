@@ -19,22 +19,6 @@ describe('JSONSchema: Flow', function () {
     this.validator = this.ajvContext.createValidator();
   });
 
-  it('should require id property', function () {
-    const flowUnderTest = { };
-    this.validator
-      .validateAndCreateAsserter(flowUnderTest)
-      .assertIsInvalid()
-      .assertHasErrorForRequiredProp('id');
-  });
-
-  it('should not allow empty id', function () {
-    const flowUnderTest = { id: '' };
-    this.validator
-      .validateAndCreateAsserter(flowUnderTest)
-      .assertIsInvalid()
-      .assertHasErrorForEmptyProp('id');
-  });
-
   it('should allow correct flows', function () {
     const flow = {
       id: 'flow:someId',

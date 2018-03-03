@@ -11,7 +11,7 @@ import { StandardTaskConverter } from './standard-task-converter';
 import { StandardTriggersHandlersImporter } from './standard-triggers-handlers-importer';
 
 
-export class LegacyAppImporterFactory {
+export class StandardAppImporterFactory {
 
   /**
    * @param {ResourceStorageRegistry} resourceStorageRegistry

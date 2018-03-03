@@ -59,10 +59,10 @@ export class StandardActionsImporter extends AbstractActionsImporter {
     };
   }
 
-  getErrorHandler(resource) {
-    const { errorHandler } = resource.data;
+  getErrorHandler(resourceData) {
+    const { errorHandler } = resourceData;
     if (isEmpty(errorHandler) || isEmpty(errorHandler.tasks)) {
-      return null;
+      return undefined;
     }
     return {
       id: 'errorHandler',
@@ -79,8 +79,8 @@ export class StandardActionsImporter extends AbstractActionsImporter {
     }));
   }
 
-  extractMetadata(resource) {
-    const metadata = { ...resource.data.metadata };
+  extractMetadata(resourceData) {
+    const metadata = { ...resourceData.metadata };
     metadata.input = metadata.input || [];
     metadata.output = metadata.output || [];
     return metadata;

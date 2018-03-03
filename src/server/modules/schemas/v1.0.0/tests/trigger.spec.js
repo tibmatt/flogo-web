@@ -77,20 +77,6 @@ describe('JSONSchema: Trigger', function () {
         validator = this.ajvContext.createValidatorForSubschema('action');
       });
 
-      it('should require ref', function () {
-        validator
-          .validateAndCreateAsserter({ data: validFlowData })
-          .assertIsInvalid()
-          .assertHasErrorForRequiredProp('ref');
-      });
-
-      it('should not allow an empty ref', function () {
-        validator
-          .validateAndCreateAsserter({ ref: '', data: validFlowData })
-          .assertIsInvalid()
-          .assertHasErrorForEmptyProp('ref');
-      });
-
       it('should require data', function () {
         validator
           .validateAndCreateAsserter({ ref: 'xyz' })

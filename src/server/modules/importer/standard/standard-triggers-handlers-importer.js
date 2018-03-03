@@ -1,5 +1,5 @@
 import { AbstractTriggersHandlersImporter } from '../common/abstract-trigger-handlers-importer';
-import { convertMappingsCollection, parseNameFromResourceUri } from './utils';
+import { convertMappingsCollection, parseResourceIdFromResourceUri } from './utils';
 
 export class StandardTriggersHandlersImporter extends AbstractTriggersHandlersImporter {
 
@@ -7,7 +7,7 @@ export class StandardTriggersHandlersImporter extends AbstractTriggersHandlersIm
     const standardTriggers = rawApp.triggers || [];
     return standardTriggers.map(stdTrigger => ({
       ...stdTrigger,
-      name: stdTrigger.id,
+      name: stdTrigger.name || stdTrigger.id,
     }));
   }
 
@@ -20,7 +20,7 @@ export class StandardTriggersHandlersImporter extends AbstractTriggersHandlersIm
     const action = stdHandler.action;
     return {
       settings: stdHandler.settings,
-      actionId: parseNameFromResourceUri(action.data.flowURI),
+      actionId: parseResourceIdFromResourceUri(action.data.flowURI),
       actionMappings: convertMappingsCollection(action.mappings),
     };
   }

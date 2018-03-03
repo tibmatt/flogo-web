@@ -10,6 +10,7 @@
     },
     "ref": {
       "type": "string",
+      "trigger-installed": true,
       "minLength": 1
     },
     "settings": {
@@ -39,12 +40,12 @@
     },
     "action": {
       "type": "object",
-      "required": ["ref", "data"],
+      "required": ["data"],
       "properties": {
         "ref": {
           "type": "string",
           "minLength": 1,
-          "trigger-installed": true
+          "default": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
         },
         "data": {
           "$ref": "#/definitions/flowData"

@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep';
-import { appHasSubflowTask } from '../utils/do-actions-have-subflow-tasks';
+import { appHasSubflowTasks } from '../../../common/utils/subflow';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 
 const DEVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/device/action/flow';
@@ -72,7 +72,7 @@ export class DeviceFormatter {
   }
 
   appHasSubflowTask(app) {
-    return appHasSubflowTask(app);
+    return appHasSubflowTasks(app);
   }
 
 }

@@ -5,42 +5,35 @@
   "required": ["name", "type", "appModel"],
   "properties": {
     "name": {
-      "$id": "/properties/name",
       "type": "string",
       "title": "The name of the app"
     },
     "type": {
-      "$id": "/properties/type",
       "type": "string",
       "title": "The type of the application",
       "default": "flogo:app",
       "const": "flogo:app"
     },
     "version": {
-      "$id": "/properties/version",
       "type": "string",
       "title": "Version of this app"
     },
     "appModel": {
-      "$id": "/properties/appModel",
       "type": "string",
       "title": "Flogo app model version"
     },
     "description": {
-      "$id": "/properties/description",
       "type": "string",
       "title": "The description of this app",
       "default": ""
     },
     "triggers": {
-      "$id": "/properties/triggers",
       "type": "array",
       "items": {
         "$ref": "trigger.json"
       }
     },
     "resources": {
-      "$id": "/properties/resources",
       "type": "array",
       "items": {
         "type": "object",
