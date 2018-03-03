@@ -1,6 +1,7 @@
 import { FLOGO_PROFILE_TYPES } from '../../common/constants';
-
 import { getProfileType } from '../../common/utils/profile';
+
+import * as schemas from '../schemas/v1.0.0';
 
 import { UniqueIdAgent } from './utils/unique-id-agent';
 import { fullAppSchema, fullDeviceAppSchema } from '../apps/schemas';
@@ -10,6 +11,7 @@ import { LegacyMicroServiceFormatter } from './formatters/legacy-microservice-fo
 import { DeviceFormatter } from './formatters/device-formatter';
 
 import { Exporter } from './exporter';
+import { StandardMicroServiceFormatter } from './formatters/standard-microservice-formatter/standard-microservice-formatter';
 
 export function exportLegacy(app, options = {}) {
   const appProfileType = getProfileType(app);
@@ -28,14 +30,19 @@ export function exportLegacy(app, options = {}) {
 
 export function exportStandard(app, options) {
   const appProfileType = getProfileType(app);
-  let formatter;
-  let validator;
-  if (appProfileType === FLOGO_PROFILE_TYPES.DEVICE) {
+  if (appProfileType !== FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
     // can't export standard mode of a device app
-    throw new Error('Cannot export a device app to an standard format');
-  } else {
-    throw new Error('Export app in standard mode: Not implemented yet');
+    throw new Error('Can only export microservice apps to an standard format');
   }
+  const formatter = new StandardMicroServiceFormatter();
+  const validator = validatorFactory(schemas.app, {
+    schemas: [
+      schemas.common,
+      schemas.trigger,
+      schemas.flow,
+    ],
+    useDefaults: false,
+  });
   return executeExport({ app, options, formatter, validator });
 }
 

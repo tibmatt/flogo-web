@@ -1,12 +1,13 @@
 import isEmpty from 'lodash/isEmpty';
-import { DEFAULT_APP_VERSION } from '../../common/constants';
+import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../common/constants';
+import { forEachSubflowTaskInAction } from '../../common/utils/subflow';
 
 import { normalizeName } from './utils/normalize-name';
 
 export class Exporter {
   /**
    * @param {boolean} isFullExportMode - full export or flows export
-   * @param {LegacyMicroServiceFormatter|DeviceFormatter} formatter
+   * @param {StandardMicroServiceFormatter|LegacyMicroServiceFormatter|DeviceFormatter} formatter
    * @param {Validator} validator
    * @param {UniqueIdAgent} uniqueIdAgent
    */
@@ -32,13 +33,24 @@ export class Exporter {
     app = this.applyDefaultAppAttributes(app);
 
     const { actions, previousActionIdsLinker } = this.humanizeActionIds(app.actions);
-    app.actions = actions;
+    app.actions = this.updateSubflowReferences(actions, previousActionIdsLinker);
     app.triggers = this.processTriggers(app.triggers, previousActionIdsLinker);
+
     app = this.formatter.format(app);
 
     this.validator.validate(app);
     app = this.postProcess(app);
     return app;
+  }
+
+  updateSubflowReferences(actions, previousActionIdsLinker) {
+    const updateFlowPath = task => {
+      task.settings.flowPath = previousActionIdsLinker.get(task.settings.flowPath).id;
+    };
+    return actions.map(action => {
+      forEachSubflowTaskInAction(updateFlowPath);
+      return action;
+    });
   }
 
   selectActions(actions, includeOnlyThisActionIds = []) {
@@ -73,6 +85,7 @@ export class Exporter {
     if (!app.version) {
       app.version = DEFAULT_APP_VERSION;
     }
+    app.type = DEFAULT_APP_TYPE;
     return app;
   }
 

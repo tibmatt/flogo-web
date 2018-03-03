@@ -140,3 +140,4 @@ export const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'ui';
 
 export const DEFAULT_APP_ID = 'DEFAULT-APP';
 export const DEFAULT_APP_VERSION = '0.0.1';
+export const DEFAULT_APP_TYPE = 'flogo:app';
