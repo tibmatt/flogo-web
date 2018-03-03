@@ -64,7 +64,7 @@
           "action": {
             "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
             "data": {
-              "flowURI": "res://flow:all_tasks_types"
+              "flowURI": "res://flow:all_task_types"
             }
           }
         },

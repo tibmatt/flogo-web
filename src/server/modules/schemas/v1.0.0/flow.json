@@ -80,6 +80,11 @@
           "type": "string",
           "minLength": 1
         },
+        "type": {
+          "type": "string",
+          "enum": ["standard", "iterator"],
+          "default": "standard"
+        },
         "settings": {
           "type": "object",
           "properties": {
@@ -87,13 +92,25 @@
           },
           "additionalProperties": true
         },
-        "type": {
-          "type": "string",
-          "enum": ["standard", "iterator"],
-          "default": "standard"
-        },
         "activity": {
           "$ref": "#/definitions/activity"
+        }
+      },
+      "if": {
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "const": "iterator"
+          }
+        }
+      },
+      "then": {
+        "required": [ "settings" ],
+        "properties": {
+          "default": {},
+          "settings": {
+            "required": ["iterate"]
+          }
         }
       }
     },
@@ -105,7 +122,10 @@
           "type": "string",
           "activity-installed": true
         },
-        "settings": true,
+        "settings": {
+          "type": "object",
+          "additionalProperties": true
+        },
         "input": {
           "type": "object",
           "additionalProperties": true
@@ -120,6 +140,24 @@
             "input": {
               "$ref": "common.json#/definitions/mappingsCollection"
             }
+          }
+        }
+      },
+      "if": {
+        "$comment": "check for subflow",
+        "required": ["ref"],
+        "properties": {
+          "ref": {
+            "const": "github.com/TIBCOSoftware/flogo-contrib/activity/subflow"
+          }
+        }
+      },
+      "then": {
+        "required": ["settings"],
+        "properties": {
+          "settings": {
+            "default": {},
+            "required": ["flowURI"]
           }
         }
       }
