@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/trigger.json",
   "type": "object",
+  "additionalProperties": false,
   "required": ["id", "ref"],
   "properties": {
     "id": {
@@ -13,8 +14,15 @@
       "trigger-installed": true,
       "minLength": 1
     },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
     "settings": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": true
     },
     "handlers": {
       "type": "array",
@@ -26,6 +34,7 @@
   "definitions": {
     "handler": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["action"],
       "properties": {
         "action": {
@@ -40,6 +49,7 @@
     },
     "action": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["data"],
       "properties": {
         "ref": {
@@ -52,6 +62,7 @@
         },
         "mappings": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "input": {
               "$ref": "common.json#/definitions/mappingsCollection"
@@ -65,6 +76,7 @@
     },
     "flowData": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["flowURI"],
       "properties": {
         "flowURI": {

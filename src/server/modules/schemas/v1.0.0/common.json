@@ -18,6 +18,7 @@
     },
     "mapping": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["mapTo", "type", "value"],
       "properties": {
         "mapTo": {

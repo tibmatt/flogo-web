@@ -3,6 +3,7 @@
   "$id": "http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/app.json",
   "type": "object",
   "required": ["name", "type", "appModel"],
+  "additionalProperties": false,
   "properties": {
     "name": {
       "type": "string",
@@ -38,6 +39,7 @@
       "items": {
         "type": "object",
         "required": ["id", "data"],
+        "additionalProperties": false,
         "properties": {
           "id": {
             "type": "string",

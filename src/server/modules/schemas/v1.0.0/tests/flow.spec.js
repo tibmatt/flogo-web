@@ -21,7 +21,6 @@ describe('JSONSchema: Flow', function () {
 
   it('should allow correct flows', function () {
     const flow = {
-      id: 'flow:someId',
       name: 'my cool flow',
       description: 'this is a flow description',
       metadata: { ...validSchemas.metadata },
