@@ -11,8 +11,10 @@ describe('JSONSchema: Trigger', function () {
   const actionWithoutMappings = { ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow', data: { ...validFlowData } };
   const validAction = {
     ...actionWithoutMappings,
-    input: [{ ...validMapping }],
-    output: [{ ...validMapping }],
+    mappings: {
+      input: [{ ...validMapping }],
+      output: [{ ...validMapping }],
+    },
   };
   const validTrigger = {
     id: 'handlerId',
@@ -85,12 +87,12 @@ describe('JSONSchema: Trigger', function () {
       });
 
       it('should accept input mappings', function () {
-        const action = { ...actionWithoutMappings, input: [{ ...validMapping }] };
+        const action = { ...actionWithoutMappings, mappings: { input: [{ ...validMapping }] } };
         expect(validator.validate(action)).to.equal(true);
       });
 
       it('should accept output mappings', function () {
-        const action = { ...actionWithoutMappings, output: [{ ...validMapping }] };
+        const action = { ...actionWithoutMappings, mappings: { output: [{ ...validMapping }] } };
         expect(validator.validate(action)).to.equal(true);
       });
 
