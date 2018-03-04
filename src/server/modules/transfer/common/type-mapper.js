@@ -33,19 +33,23 @@ const linkTypesDictionary = {
   [LINK_TYPE.EXPRESSION]: 1,
 };
 
+const fromStandard = {
+  taskTypes: taskTypeDictionary,
+  mappingTypes: mappingTypesDictionary,
+  linkTypes: linkTypesDictionary,
+};
+
+const toStandard = {
+  taskTypes: invert(taskTypeDictionary),
+  mappingTypes: invert(mappingTypesDictionary),
+  linkTypes: invert(linkTypesDictionary),
+};
+
 export const typeMapper = {
   fromStandard() {
-    return {
-      taskTypes: taskTypeDictionary,
-      mappingTypes: mappingTypesDictionary,
-      linkTypes: linkTypesDictionary,
-    };
+    return fromStandard;
   },
   toStandard() {
-    return {
-      taskTypes: invert(taskTypeDictionary),
-      mappingTypes: invert(mappingTypesDictionary),
-      linkTypes: invert(linkTypesDictionary),
-    };
+    return toStandard;
   },
 };

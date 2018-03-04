@@ -1,7 +1,8 @@
 import isEmpty from 'lodash/isEmpty';
 import { FLOGO_TASK_TYPE, LEGACY_FLOW_TYPE } from '../../../common/constants';
+import { LINK_TYPE } from '../../transfer/common/type-mapper';
 import { AbstractActionsImporter } from '../common';
-import { typeMapper, LINK_TYPE } from './utils';
+import { fromStandardTypeMapper } from './utils';
 
 export class StandardActionsImporter extends AbstractActionsImporter {
 
@@ -19,7 +20,7 @@ export class StandardActionsImporter extends AbstractActionsImporter {
       throw new TypeError('Missing parameter: taskConverterFactory');
     }
     this.taskConverterFactory = taskConverterFactory;
-    this.typeMapper = typeMapper.fromStandard();
+    this.typeMapper = fromStandardTypeMapper.fromStandard();
     this.activitySchemasByRef = activitySchemas
       .reduce(
         (registry, activity) => registry.set(activity.ref, activity),

@@ -3,7 +3,8 @@ import isArray from 'lodash/isArray';
 import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../common/constants';
 import { getDefaultValueByType } from '../../../common/utils';
 import { isOutputMapperField } from '../../../common/utils/flow';
-import { parseResourceIdFromResourceUri, TASK_TYPE, typeMapper, convertSingleMapping } from './utils';
+import { TASK_TYPE } from '../../transfer/common/type-mapper';
+import { parseResourceIdFromResourceUri, fromStandardTypeMapper, portMappingType } from './utils';
 
 export class StandardTaskConverter {
 
@@ -26,7 +27,7 @@ export class StandardTaskConverter {
     }
     this.resourceTask = resourceTask;
     this.activitySchema = activitySchema;
-    this.types = typeMapper.fromStandard();
+    this.types = fromStandardTypeMapper.fromStandard();
   }
 
   convert() {
@@ -81,7 +82,7 @@ export class StandardTaskConverter {
       if (isUndefined(value)) {
         value = getDefaultValueByType(schemaInput.name);
       } else if (isOutputMapperField(schemaInput) && isArray(value)) {
-        value = value.map(outputMapping => convertSingleMapping(outputMapping));
+        value = value.map(outputMapping => portMappingType(outputMapping));
       }
       return { ...schemaInput, value };
     });
@@ -90,7 +91,7 @@ export class StandardTaskConverter {
   convertInputMappings() {
     const mappings = this.resourceTask.activity.mappings || {};
     const { input: resourceInputMappings = [] } = mappings;
-    return resourceInputMappings.map(mapping => convertSingleMapping(mapping));
+    return resourceInputMappings.map(mapping => portMappingType(mapping));
   }
 
 }
