@@ -74,7 +74,6 @@ export class StandardTaskConverter {
   }
 
   convertAttributes() {
-    // todo: for mapper classes need to convert input.mappings too
     const schemaInputs = this.activitySchema.inputs || [];
     const activityInput = this.resourceTask.activity.input || {};
     return schemaInputs.map(schemaInput => {

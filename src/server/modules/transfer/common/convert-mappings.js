@@ -1,4 +1,5 @@
 /**
+ * @param mappingTypesDictionary
  * @param mappings
  * @return {{input: any[], output: any[]}}
  */

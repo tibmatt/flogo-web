@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import { ensureKeyOrder } from '../../../../common/utils/object';
 import { formatHandler } from './format-handler';
-import { formatResource } from './fromat-resource';
+import { formatResource } from './format-resource';
 
 const APP_MODEL_VERSION = '1.0.0';
 const APP_KEY_ORDER = ['name', 'type', 'version', 'appModel', 'description', 'triggers', 'resources'];

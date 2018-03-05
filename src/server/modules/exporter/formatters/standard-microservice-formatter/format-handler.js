@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
-import { portMappings } from './format-mappings';
+import { portAndFormatMappings } from './port-and-format-mappings';
+import { createFlowUri } from './create-flow-uri';
 
 const DEFAULT_FLOW_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
@@ -10,7 +11,7 @@ export function formatHandler(handler) {
     action: {
       ref: DEFAULT_FLOW_REF,
       data: {
-        flowURI: `res://flow:${handler.actionId}`,
+        flowURI: createFlowUri(handler.actionId),
       },
       mappings: !isEmpty(formattedMappings) ? formattedMappings : undefined,
     },
@@ -19,13 +20,5 @@ export function formatHandler(handler) {
 }
 
 function formatMappings(actionMappings = {}) {
-  const portedMappings = portMappings(actionMappings);
-  const formattedMappings = {};
-  if (!isEmpty(portedMappings.input)) {
-    formattedMappings.input = portedMappings.input;
-  }
-  if (!isEmpty(portedMappings.output)) {
-    formattedMappings.output = portedMappings.output;
-  }
-  return formattedMappings;
+  return portAndFormatMappings(actionMappings);
 }

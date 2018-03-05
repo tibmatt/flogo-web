@@ -48,7 +48,7 @@ export class Exporter {
       task.settings.flowPath = previousActionIdsLinker.get(task.settings.flowPath).id;
     };
     return actions.map(action => {
-      forEachSubflowTaskInAction(updateFlowPath);
+      forEachSubflowTaskInAction(action, updateFlowPath);
       return action;
     });
   }

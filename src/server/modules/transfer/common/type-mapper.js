@@ -25,8 +25,8 @@ const mappingTypesDictionary = {
 };
 
 export const LINK_TYPE = {
-  EXPRESSION: 'expression',
   SUCCESS: 'success',
+  EXPRESSION: 'expression',
 };
 const linkTypesDictionary = {
   [LINK_TYPE.SUCCESS]: 0,
