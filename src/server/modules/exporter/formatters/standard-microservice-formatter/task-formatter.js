@@ -5,6 +5,7 @@ import keyBy from 'lodash/keyBy';
 import { TASK_TYPE } from '../../../transfer/common/type-mapper';
 import { isIterableTask } from '../../../../common/utils';
 import { isOutputMapperField } from '../../../../common/utils/flow';
+import { isSubflowTask } from '../../../../common/utils/subflow';
 import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../../common/constants';
 
 import { portAndFormatMappings } from './port-and-format-mappings';
@@ -47,7 +48,7 @@ export class TaskFormatter {
     const activitySettings = {};
     // for type 'standard' we will omit the 'type' property as a task is 'standard' by default
     let type;
-    if (this.isSubflowTask()) {
+    if (isSubflowTask(this.sourceTask)) {
       activitySettings.flowURI = this.convertSubflowPath();
     }
     if (this.isIteratorTask()) {
@@ -60,10 +61,6 @@ export class TaskFormatter {
   convertSubflowPath() {
     const settings = this.sourceTask.settings;
     return createFlowUri(settings.flowPath);
-  }
-
-  isSubflowTask() {
-    return this.sourceTask.activityRef === REF_SUBFLOW || this.sourceTask.type === FLOGO_TASK_TYPE.TASK_SUB_PROC;
   }
 
   isIteratorTask() {

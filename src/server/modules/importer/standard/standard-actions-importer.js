@@ -20,7 +20,6 @@ export class StandardActionsImporter extends AbstractActionsImporter {
       throw new TypeError('Missing parameter: taskConverterFactory');
     }
     this.taskConverterFactory = taskConverterFactory;
-    this.typeMapper = fromStandardTypeMapper.fromStandard();
     this.activitySchemasByRef = activitySchemas
       .reduce(
         (registry, activity) => registry.set(activity.ref, activity),
@@ -74,9 +73,10 @@ export class StandardActionsImporter extends AbstractActionsImporter {
   }
 
   mapLinks(resourceLinks = []) {
-    return resourceLinks.map(link => ({
+    return resourceLinks.map((link, index) => ({
+      id: index,
       ...link,
-      type: this.typeMapper.linkTypes[link.type || LINK_TYPE.SUCCESS],
+      type: fromStandardTypeMapper.linkTypes[link.type || LINK_TYPE.SUCCESS],
     }));
   }
 

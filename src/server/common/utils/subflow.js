@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { FLOGO_TASK_TYPE } from '../constants';
+import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../constants';
 
 export function appHasSubflowTasks(app) {
   return !!app.actions.find(actionHasSubflowTasks);
@@ -11,7 +11,7 @@ export function actionHasSubflowTasks(action) {
 }
 
 export function isSubflowTask(task) {
-  return task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC;
+  return task.type === FLOGO_TASK_TYPE.TASK_SUB_PROC || task.activityRef === REF_SUBFLOW;
 }
 
 /**

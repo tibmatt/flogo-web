@@ -4,7 +4,7 @@ import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../common/constants';
 import { getDefaultValueByType } from '../../../common/utils';
 import { isOutputMapperField } from '../../../common/utils/flow';
 import { TASK_TYPE } from '../../transfer/common/type-mapper';
-import { parseResourceIdFromResourceUri, fromStandardTypeMapper, portMappingType } from './utils';
+import { parseResourceIdFromResourceUri, portMappingType } from './utils';
 
 export class StandardTaskConverter {
 
@@ -26,8 +26,8 @@ export class StandardTaskConverter {
       throw new TypeError('Missing parameter: activitySchema');
     }
     this.resourceTask = resourceTask;
+    this.resourceTask = resourceTask;
     this.activitySchema = activitySchema;
-    this.types = fromStandardTypeMapper.fromStandard();
   }
 
   convert() {
