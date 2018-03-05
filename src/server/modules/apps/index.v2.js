@@ -15,6 +15,7 @@ import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
+import { ActivitiesManager } from '../activities';
 import { importApp } from '../importer';
 import { exportLegacy, exportStandard } from '../exporter';
 import { buildApp } from './build';
@@ -48,6 +49,10 @@ const DEFAULT_APP = {
   description: 'App created by default',
   version: DEFAULT_APP_VERSION,
 };
+
+const EXPORT_MODEL_STANDARD = 'standard';
+const EXPORT_MODEL_LEGACY = 'legacy';
+const EXPORT_FORMAT_FLOWS = 'flows';
 
 export class AppsManager {
 
@@ -236,18 +241,23 @@ export class AppsManager {
    * @return {object} exported object
    * @throws Not found error if app not found
    */
-  static export(appId, { appModel = 'standard', format, flowIds }) {
+  static export(appId, { appModel = EXPORT_MODEL_STANDARD, format, flowIds } = {}) {
+    if (appModel !== EXPORT_MODEL_STANDARD && appModel !== EXPORT_MODEL_LEGACY) {
+      throw new Error(`Cannot export to unknown app model "${appModel}"`);
+    }
     return AppsManager.findOne(appId)
       .then(app => {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
         }
-        const isFullExportMode = format !== 'flows';
-        const exporters = { standard: exportStandard, legacy: exportLegacy };
-        if (!exporters[appModel]) {
-          throw new Error(`Cannot export to unknown format "${format}"`);
+        const isFullExportMode = format !== EXPORT_FORMAT_FLOWS;
+        const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
+
+        if (appModel !== EXPORT_MODEL_STANDARD) {
+          return exportLegacy(app, exportOptions);
         }
-        return exporters[appModel](app, { isFullExportMode, onlyThisActions: flowIds });
+        return ActivitiesManager.find()
+          .then(activitySchemas => exportStandard(app, activitySchemas, exportOptions));
       });
   }
 

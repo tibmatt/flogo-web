@@ -1,8 +1,12 @@
+import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
+import keyBy from 'lodash/keyBy';
 
 import { TASK_TYPE } from '../../../transfer/common/type-mapper';
 import { isIterableTask } from '../../../../common/utils';
+import { isOutputMapperField } from '../../../../common/utils/flow';
 import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../../common/constants';
+
 import { portAndFormatMappings } from './port-and-format-mappings';
 import { createFlowUri } from './create-flow-uri';
 
@@ -10,6 +14,11 @@ export class TaskFormatter {
 
   setSourceTask(sourceTask) {
     this.sourceTask = sourceTask;
+    return this;
+  }
+
+  setSchemaInputs(schemaInputs) {
+    this.schemaInputsByName = keyBy(schemaInputs, 'name');
     return this;
   }
 
@@ -65,11 +74,10 @@ export class TaskFormatter {
     // todo: for mapper classes need to convert input.mappings too
     const attributes = this.sourceTask.attributes || {};
     return attributes.reduce((input, attribute) => {
-      const value = attribute.value;
-      // todo
-      // if (isOutputMapperField(schemaInput) && isArray(attribute.value)) {
-      //   value = value.map(outputMapping => portMappingType(outputMapping));
-      // }
+      let value = attribute.value;
+      if (isOutputMapperField(this.schemaInputsByName[attribute.name]) && isArray(attribute.value)) {
+        value = portAndFormatMappings({ output: value }).output;
+      }
       input[attribute.name] = value;
       return input;
     }, {});

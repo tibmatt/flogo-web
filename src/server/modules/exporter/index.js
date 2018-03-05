@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep';
+
 import { FLOGO_PROFILE_TYPES } from '../../common/constants';
 import { getProfileType } from '../../common/utils/profile';
 
@@ -28,13 +30,13 @@ export function exportLegacy(app, options = {}) {
   return executeExport({ app, options, formatter, validator });
 }
 
-export function exportStandard(app, options) {
+export function exportStandard(app, activitySchemas, options) {
   const appProfileType = getProfileType(app);
   if (appProfileType !== FLOGO_PROFILE_TYPES.MICRO_SERVICE) {
     // can't export standard mode of a device app
     throw new Error('Can only export microservice apps to an standard format');
   }
-  const formatter = new StandardMicroServiceFormatter();
+  const formatter = new StandardMicroServiceFormatter(activitySchemas);
   const validator = validatorFactory(schemas.app, {
     schemas: [
       schemas.common,
@@ -49,5 +51,5 @@ export function exportStandard(app, options) {
 function executeExport({ app, options, formatter, validator }) {
   const { isFullExportMode = true, onlyThisActions = [] } = options || {};
   const exporter = new Exporter(isFullExportMode, formatter, validator, new UniqueIdAgent());
-  return exporter.export(app, onlyThisActions);
+  return exporter.export(cloneDeep(app), onlyThisActions);
 }

@@ -3,7 +3,7 @@
  * @param mappings
  * @return {{input: any[], output: any[]}}
  */
-export function convertMappingsCollection(mappingTypesDictionary, mappings = {}) {
+export function portMappings(mappingTypesDictionary, mappings = {}) {
   const convertSingleMapping = mapping => portMappingType(mappingTypesDictionary, mapping);
   return {
     input: (mappings.input || []).map(convertSingleMapping),

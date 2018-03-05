@@ -45,7 +45,8 @@ export class Exporter {
 
   updateSubflowReferences(actions, previousActionIdsLinker) {
     const updateFlowPath = task => {
-      task.settings.flowPath = previousActionIdsLinker.get(task.settings.flowPath).id;
+      const action = previousActionIdsLinker.get(task.settings.flowPath);
+      task.settings.flowPath = action ? action.id : null;
     };
     return actions.map(action => {
       forEachSubflowTaskInAction(action, updateFlowPath);

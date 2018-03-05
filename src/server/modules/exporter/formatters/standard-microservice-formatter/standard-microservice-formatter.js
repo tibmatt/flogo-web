@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import { ensureKeyOrder } from '../../../../common/utils/object';
 import { formatHandler } from './format-handler';
+import { formatTaskLinkGroups } from './format-task-link-group';
 import { formatResource } from './format-resource';
 
 const APP_MODEL_VERSION = '1.0.0';
@@ -8,6 +9,10 @@ const APP_KEY_ORDER = ['name', 'type', 'version', 'appModel', 'description', 'tr
 const TRIGGER_KEY_ORDER = ['id', 'ref', 'name', 'description', 'settings', 'handlers'];
 
 export class StandardMicroServiceFormatter {
+  constructor(activitySchemas) {
+    this.activitySchemas = activitySchemas;
+  }
+
   preprocess(app) {
     return app;
   }
@@ -38,6 +43,9 @@ export class StandardMicroServiceFormatter {
   }
 
   formatResources(actions) {
-    return actions.map(formatResource);
+    return actions.map(action => {
+      const taskLinkGroup = formatTaskLinkGroups(this.activitySchemas, action.data.flow || {});
+      return formatResource(action, taskLinkGroup);
+    });
   }
 }

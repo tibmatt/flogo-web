@@ -4,9 +4,9 @@ import * as convertMappings from '../../../transfer/common/convert-mappings';
 export const fromStandardTypeMapper = typeMapper.fromStandard();
 
 export const convertMappingsCollection = mappings => convertMappings
-  .convertMappingsCollection(fromStandardTypeMapper.mappingTypes, mappings);
+  .portMappings(fromStandardTypeMapper.mappingTypes, mappings);
 
 export const portMappingType = singleMapping => convertMappings
-  .convertMappingsCollection(fromStandardTypeMapper.mappingTypes, singleMapping);
+  .portMappings(fromStandardTypeMapper.mappingTypes, singleMapping);
 
 export * from './parse-resource-uri';

@@ -1,12 +1,9 @@
 import isEmpty from 'lodash/isEmpty';
 import { portAndFormatMappings } from './port-and-format-mappings';
-import { formatTasks } from './format-tasks';
-import { formatLinks } from './format-links';
 
-export function formatResource(fromAction) {
+export function formatResource(fromAction, taskLinkGroup) {
   const mappings = portAndFormatMappings(fromAction.metadata);
-  const flow = fromAction.data.flow || {};
-  const { root: rootHandler, error: errorHandler } = formatHandlers(flow);
+  const { root: rootHandler, error: errorHandler } = taskLinkGroup;
 
   return {
     id: `flow:${fromAction.id}`,
@@ -17,22 +14,6 @@ export function formatResource(fromAction) {
       ...rootHandler,
       errorHandler: !isEmpty(errorHandler) ? errorHandler : undefined,
     },
-  };
-}
-
-function formatHandlers(flow) {
-  return {
-    root: formatHandler(flow.rootTask || {}),
-    error: formatHandler(flow.errorHandlerTask || {}),
-  };
-}
-
-function formatHandler({ tasks, links }) {
-  const formattedTasks = formatTasks(tasks);
-  const formattedLinks = formatLinks(links);
-  return {
-    tasks: !isEmpty(formattedTasks) ? formattedTasks : undefined,
-    links: !isEmpty(formattedLinks) ? formattedLinks : undefined,
   };
 }
 
