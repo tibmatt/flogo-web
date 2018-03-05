@@ -62,7 +62,7 @@
         <flogo-flow-configuration-branch [attributes]="_branchConfigs" [fieldObserver]="_fieldObserver"    ></flogo-flow-configuration-branch>
       </div>
     </div>
-    <div *ngIf="_context.shouldSkipTaskConfigure" class="flogo-task-container--configure">
+    <div *ngIf="_context.shouldSkipTaskConfigure" class="flogo-task-container--no-configure">
       <div class="tile"></div>
       <div class="title"><i class="flogo-icon-settings"></i> {{ 'FORM-BUILDER:CONFIGURE-FROM-MENU' | translate }}</div>
     </div>
