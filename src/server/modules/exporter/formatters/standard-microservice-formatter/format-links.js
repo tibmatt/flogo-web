@@ -7,6 +7,7 @@ export function formatLinks(links = []) {
     const type = fromLink.type !== LEGACY_LINK_TYPE.DEFAULT ? stdTypeMapper.linkTypes[fromLink.type] : undefined;
     return {
       ...fromLink,
+      id: undefined,
       type,
     };
   });
