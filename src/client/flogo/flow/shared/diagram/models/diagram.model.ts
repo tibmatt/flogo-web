@@ -905,6 +905,8 @@ export class FlogoFlowDiagram implements FlowDiagram {
         return '';
       }
 
+      const taskDescription = taskSchema.type === FLOGO_TASK_TYPE.TASK_SUB_PROC ? '' : taskInfo.desc;
+
       let iconName = 'activity.icon.svg';
 
       if (taskInfo.type === FLOGO_TASK_TYPE.TASK_ROOT) {
@@ -929,7 +931,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
           ${this.makeTile()}
           ${taskIcon}
           <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailTitle}" title="${taskInfo.name}">${taskInfo.name}</div>
-          <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskInfo.desc}</div>
+          <div ${diagram.ng2StyleAttr} class="${CLS.diagramNodeDetailDesc}" title="${taskInfo.desc}">${taskDescription}</div>
         </div>
       `;
 
@@ -1161,12 +1163,18 @@ export class FlogoFlowDiagram implements FlowDiagram {
         return ``;
       }
 
-      if ((nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) ||
-        _isReturnActivity(diagram['tasks'][nodeInfo.taskID])
-      ) {
+      if ((nodeInfo.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH)) {
         return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
                     ${tplItemDelete}
                   </ul>${tplGear}`;
+      }
+
+      if (_isReturnActivity(diagram['tasks'][nodeInfo.taskID])) {
+        // no add branch
+        return `<ul ${diagram.ng2StyleAttr} class="${CLS.diagramNodeMenuBox}">
+                    ${tplItemConfigure}
+                    ${tplItemDelete}
+                </ul>${tplGear}`;
       }
 
       // if not the last node in row

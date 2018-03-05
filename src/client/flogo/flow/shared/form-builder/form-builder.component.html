@@ -9,9 +9,12 @@
         <!-- PANEL TITLES -->
         <div  *ngIf="_task && (_context.isTask || _context.isTrigger)" [ngClass]="{trigger:_context.isTrigger, task: _context.isTask}">
           <div class="flogo-common-edit-panel__head-read">
-            <a  class="flogo-common-edit-panel__head-read-icon" [href]="_task.homepage? _task.homepage : 'javascript:;'" target="_blank">
+            <a class="flogo-common-edit-panel__head-read-icon" *ngIf="_task.homepage" [href]="_task.homepage" target="_blank">
               <i class="flogo-icon-info"></i>
             </a>
+            <div  class="flogo-common-edit-panel__head-read-icon" *ngIf="!_task.homepage">
+              <i class="flogo-icon-info"></i>
+            </div>
             <div class="flogo-common-edit-panel__head-read-detail-wrapper">
               <div  class="flogo-common-edit-panel__head-read-detail">
                 <!--<i class="fa fa-times flogo-common-edit-panel__head-read-detail-close" aria-hidden="true"></i>-->
@@ -46,17 +49,22 @@
       </div>
     </div>
 
+    <div *ngIf="!_context.shouldSkipTaskConfigure">
+      <div *ngIf="_context.isTrigger">
+        <flogo-flow-configuration-trigger [context]="_context" [attributes]="_attributes" [fieldObserver]="_fieldObserver" (onTriggerAction)="onAction($event)"></flogo-flow-configuration-trigger>
+      </div>
 
-    <div *ngIf="_context.isTrigger">
-      <flogo-flow-configuration-trigger [context]="_context" [attributes]="_attributes" [fieldObserver]="_fieldObserver" (onTriggerAction)="onAction($event)"></flogo-flow-configuration-trigger>
+      <div *ngIf="_context.isTask">
+        <flogo-flow-configuration-task [attributes]="_attributes" [fieldObserver]="_fieldObserver" [task]="_task"></flogo-flow-configuration-task>
+      </div>
+
+      <div *ngIf="_context.isBranch">
+        <flogo-flow-configuration-branch [attributes]="_branchConfigs" [fieldObserver]="_fieldObserver"    ></flogo-flow-configuration-branch>
+      </div>
     </div>
-
-    <div *ngIf="_context.isTask">
-      <flogo-flow-configuration-task [attributes]="_attributes" [fieldObserver]="_fieldObserver" [task]="_task"></flogo-flow-configuration-task>
-    </div>
-
-    <div *ngIf="_context.isBranch">
-      <flogo-flow-configuration-branch [attributes]="_branchConfigs" [fieldObserver]="_fieldObserver"    ></flogo-flow-configuration-branch>
+    <div *ngIf="_context.shouldSkipTaskConfigure" class="flogo-task-container--no-configure">
+      <div class="tile"></div>
+      <div class="title"><i class="flogo-icon-settings"></i> {{ 'FORM-BUILDER:CONFIGURE-FROM-MENU' | translate }}</div>
     </div>
 
   </div>

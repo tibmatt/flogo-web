@@ -1,3 +1,4 @@
+@import "../../../../assets/_variables";
 @header-footer-background: #f8f8f8;
 
 .flogo-form-builder {
@@ -165,8 +166,10 @@
     width: 100%;
     position: relative;
     bottom: 10px;
+    cursor: pointer;
     &:hover{
       text-decoration: none;
+      color: @color-secondary;
     }
   }
 
@@ -228,5 +231,44 @@
     .flogo-common-edit-panel__head-read-text{
       font-size: 14px;
     }
+  }
+}
+
+.flogo-task-container--no-configure {
+  padding: 5em;
+  text-align: center;
+  color: @color-disabled;
+  font-size: 13px;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  .tile {
+    background-color: #959798;
+    border-radius: 8px;
+    opacity: 0.2;
+    height: 90px;
+    width: 90px;
+    margin-right: 10px;
+    position: relative;
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 32px;
+      right: -16px;
+      width: 32px;
+      height: 26px;
+      background-color: #959798;
+      transform: rotate(62.8deg) skewX(35deg) scale(0.8);
+    }
+  }
+
+  .title {
+    margin-top: 1.25em;
+    margin-bottom: 0.5em;
   }
 }
