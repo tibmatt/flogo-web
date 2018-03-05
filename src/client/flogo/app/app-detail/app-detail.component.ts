@@ -94,8 +94,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     }
   }
 
-  appExporter() {
-    return () => this.appDetailService.toEngineSpec()
+  appExporter(isLegacyExport: boolean = false) {
+    return () => this.appDetailService.toEngineSpec(isLegacyExport)
       .then(engineApp => {
         const appName = _.snakeCase(engineApp.name);
         return [{

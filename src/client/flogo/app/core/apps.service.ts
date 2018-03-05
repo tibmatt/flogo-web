@@ -9,6 +9,7 @@ import { App } from './app.interface';
 import { ApplicationDetail } from './application-detail.interface';
 import { TriggerGroup } from './trigger-group.interface';
 import { FlowGroup } from './flow-group.interface';
+import { APP_MODELS, TYPE_APP_MODEL } from '@flogo/core';
 
 const DEFAULT_STATE = {
   name: {
@@ -129,9 +130,11 @@ export class AppDetailService {
       });
   }
 
-  public toEngineSpec() {
-    return this.appsApiService.exportApp(this.currentApp$.getValue().app.id);
+  public toEngineSpec(isLegacyExport?: boolean) {
+    const appModel = isLegacyExport ? APP_MODELS.LEGACY : APP_MODELS.STANDARD;
+    return this.appsApiService.exportApp(this.currentApp$.getValue().app.id, { appModel });
   }
+
   public exportFlow(flowids) {
     return this.appsApiService.exportFlows(this.currentApp$.getValue().app.id, flowids);
   }

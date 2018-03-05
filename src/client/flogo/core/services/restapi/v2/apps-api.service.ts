@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 
 import { App } from '@flogo/core';
 import { ErrorService } from '../../error.service';
-import { FLOGO_PROFILE_TYPE } from '../../../constants';
+import { FLOGO_PROFILE_TYPE, TYPE_APP_MODEL, APP_MODELS } from '../../../constants';
 import { HttpUtilsService } from '../http-utils.service';
 
 const UNTITLED_APP = 'Untitled App';
@@ -79,10 +79,14 @@ export class AppsApiService {
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
-  exportApp(appId: string) {
-    const options = this.httpUtils.defaultOptions();
-
-    return this.http.get(this.apiPrefix(`apps/${appId}:export`), options)
+  exportApp(appId: string, options: { appModel?: TYPE_APP_MODEL } = {}) {
+    let searchOptions: URLSearchParams;
+    if (options.appModel) {
+      searchOptions = new URLSearchParams();
+      searchOptions.set('appmodel', options.appModel);
+    }
+    const requestOptions = this.httpUtils.defaultOptions({ search: searchOptions });
+    return this.http.get(this.apiPrefix(`apps/${appId}:export`), requestOptions)
       .map(response => response.json())
       .toPromise()
       .catch(err => Promise.reject(err.json()));
@@ -90,16 +94,17 @@ export class AppsApiService {
 
   exportFlows(appId: string, flowIds: any[]) {
     let reqOptions = this.httpUtils.defaultOptions();
-    if (flowIds !== []) {
-      const selectedFlowIds = flowIds.toString();
-      const searchParams = new URLSearchParams();
+    const searchParams = new URLSearchParams();
+    searchParams.set('type', 'flows');
+    if (flowIds && flowIds.length > 0) {
+      const selectedFlowIds = flowIds.join(',');
       searchParams.set('flowids', selectedFlowIds);
-      reqOptions = reqOptions.merge({
-        search: searchParams
-      });
     }
+    reqOptions = reqOptions.merge({
+      search: searchParams
+    });
     return this.http.get(
-      this.httpUtils.apiPrefix(`apps/${appId}:export?type=flows`), reqOptions)
+      this.httpUtils.apiPrefix(`apps/${appId}:export`), reqOptions)
       .map((res: Response) => res.json())
       .toPromise()
       .catch(err => Promise.reject(err.json()));

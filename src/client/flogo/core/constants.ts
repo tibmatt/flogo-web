@@ -89,3 +89,11 @@ export const TRIGGER_MENU_OPERATION = {
   CONFIGURE: 'configure',
   DELETE: 'delete'
 };
+
+const APP_MODEL_LEGACY: 'legacy' = 'legacy';
+const APP_MODEL_STANDARD: 'standard' = 'standard';
+export const APP_MODELS = {
+  LEGACY: APP_MODEL_LEGACY,
+  STANDARD: APP_MODEL_STANDARD,
+};
+export type TYPE_APP_MODEL = typeof APP_MODEL_LEGACY | typeof APP_MODEL_STANDARD;

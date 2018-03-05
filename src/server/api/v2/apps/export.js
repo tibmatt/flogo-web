@@ -39,7 +39,7 @@ function handleErrorAndRethrow(error) {
 
 function extractOptions(queryParams) {
   const {
-    appmodel = 'legacy',
+    appmodel,
     type,
     flowids: flowIdsCsv,
   } = queryParams;
