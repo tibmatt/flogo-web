@@ -90,6 +90,8 @@
           "enum": ["standard", "iterator"],
           "default": "standard"
         },
+        "name": true,
+        "description": true,
         "settings": {
           "type": "object",
           "properties": {
