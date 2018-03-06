@@ -141,6 +141,7 @@
   "FORM-BUILDER:RUN-FROM-TILE": "Run from Tile",
   "FORM-BUILDER:RUN-FROM-TRIGGER": "Run from Trigger",
   "FORM-BUILDER:SAVE": "Save",
+  "FORM-BUILDER:CONFIGURE-FROM-MENU": "Configure from the tile menu",
   "IMPORT-FLOW:IMPORT-FLOW": "Import",
   "INSTALLER:CONNECT-TO-DEVICES": "Connect to Devices",
   "INSTALLER:DOWNLOAD-TITLE": "Install Trigger or Activity",

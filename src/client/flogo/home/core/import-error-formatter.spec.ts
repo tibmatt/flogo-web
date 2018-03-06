@@ -1,4 +1,4 @@
-import { LanguageService } from '@flogo/core';
+import {LanguageService} from '@flogo/core';
 
 import { ImportErrorFormatterService } from './import-error-formatter.service';
 import { mockImportErrorResponse } from '../app-import/mocks/error.response.mock';
@@ -31,5 +31,10 @@ describe('Service: ImportErrorFormatterService', function (this: {
     });
     const errorLabel = this.service.formatErrorMessage(mockImportErrorResponse[0].meta.details[2]);
     expect(errorLabel).toEqual('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT');
+  });
+
+  it('Should return rational validation error message', () => {
+    const errors = this.service.getErrorsDetails(mockImportErrorResponse[0].meta.details);
+    expect(errors.length).toEqual(3);
   });
 });

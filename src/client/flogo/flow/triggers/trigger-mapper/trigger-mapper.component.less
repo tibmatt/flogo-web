@@ -6,16 +6,20 @@
 }
 
 .content__menu {
-  flex: 1;
   border-right: solid 2px #dedede;
-  //box-shadow: 0 -1px 2px 0 rgba(0, 0, 0, 0.1);
+  min-width: 90px;
+  width: 20%;
+
+  @media (min-width: 1250px) {
+    width: 200px;
+  }
+
 }
 
 .content__mapper {
   border: none;
   height: 100%;
-  max-width: 80%;
-  width: 80%;
+  flex: 1;
 }
 
 .menu__item {

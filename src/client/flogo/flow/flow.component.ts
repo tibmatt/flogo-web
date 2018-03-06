@@ -89,6 +89,7 @@ interface TaskContext {
   isTrigger: boolean;
   isBranch: boolean;
   isTask: boolean;
+  shouldSkipTaskConfigure: boolean;
   flowRunDisabled: boolean;
   hasProcess: boolean;
   isDiagramEdited: boolean;
@@ -420,6 +421,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTrigger: taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
+      shouldSkipTaskConfigure: this.isTaskSubflowOrMapper(taskId, diagramId),
       flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
       hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
@@ -427,6 +429,12 @@ export class FlowComponent implements OnInit, OnDestroy {
       currentTrigger: null,
       profileType: this.profileType
     };
+  }
+
+  private isTaskSubflowOrMapper(taskId: any, diagramId: string): boolean {
+    const currentTask = this.handlers[diagramId].tasks[taskId];
+    const activitySchema = this.flow.schemas[currentTask.ref];
+    return isSubflowTask(currentTask.type) || isMapperActivity(activitySchema);
   }
 
   /**
@@ -784,33 +792,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     const context = this._getCurrentTaskContext(data.node.taskID, diagramId);
 
     const activitySchema = this.flow.schemas[currentTask.ref];
-    const isMapperTask = isMapperActivity(activitySchema);
-    if (isMapperTask) {
-      return this._navigateFromModuleRoot()
-      // because diagram forces "open" task event when adding a new one
-        .then(() => this._selectConfigureTaskFromDiagram(data, envelope, true))
-        .then(() => this._cleanSelectionStatus())
-        .then(() => console.groupEnd());
-    }
-    if (isSubflowTask(currentTask.type)) {
-      return this._navigateFromModuleRoot()
-        .then(() => {
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-                data: {
-                  node: data.node,
-                  task: this.handlers[diagramId].tasks[data.node.taskID],
-                  id: diagramId
-                },
-                done: (diagram: FlowDiagram) => {
-                  _.assign(this.handlers[diagramId].diagram, diagram);
-                }
-              }
-            )
-          );
-        });
-    }
     this._navigateFromModuleRoot(['task', data.node.taskID])
       .then(
         () => {
@@ -1643,7 +1624,7 @@ export class FlowComponent implements OnInit, OnDestroy {
    |      Task Configurator        |
    *-------------------------------*/
 
-  private _selectConfigureTaskFromDiagram(data: any, envelope: any, outputMapper?: boolean) {
+  private _selectConfigureTaskFromDiagram(data: any, envelope: any) {
     const diagramId = data.id;
     let scope: any[];
 
@@ -1678,6 +1659,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     let inputMappingsTabLabelKey = null;
     let searchTitleKey;
     let transformTitle;
+
+    const currentTask = _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]);
+    const activitySchema = this.flow.schemas[currentTask.ref];
+    const  outputMapper = isMapperActivity(activitySchema);
+
     if (outputMapper) {
       overridePropsToMap = metadata.output;
       overrideMappings = _.get(selectedTile.attributes.inputs, '[0].value', []);

@@ -17,6 +17,7 @@
   flex: 1;
   position: relative;
   overflow: hidden;
+  margin-right: -10px;
 }
 
 .nodes {
@@ -45,6 +46,8 @@
 .node__label {
   font-size: 14px;
   margin-left: 5px;
+  position: relative;
+  top: -1.5px;
 }
 
 .tree--is-filtered .node--is-visible {
@@ -88,6 +91,14 @@
 :host >>> p-tree .ui-treenode-content {
   opacity: 0.75;
   transition: all 0.250s ease-in-out;
+}
+
+:host >>> p-tree .ui-tree-container {
+  padding: 0 12px 0 0;
+}
+
+:host >>> p-tree .ui-treenode-content .ui-tree-toggler {
+  width: 1em;
 }
 
 /* when node has no children hide toggle */

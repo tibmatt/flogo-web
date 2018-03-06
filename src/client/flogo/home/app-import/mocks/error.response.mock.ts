@@ -28,6 +28,15 @@ export const mockImportErrorResponse = [
           'params': {
             'ref': 'github.com/some/activity'
           }
+        },
+        {
+          'keyword': 'if',
+          'dataPath': '.actions[0].data.flow.rootTask.tasks[0]',
+          'schemaPath': '#/if',
+          'params': {
+            'failingKeyword': 'else'
+          },
+          'message': 'should match "else" schema'
         }
       ]
     }

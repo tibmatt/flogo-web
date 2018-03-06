@@ -95,7 +95,7 @@ export class ParamsSchemaComponent implements OnInit {
   private createParamFormRow(data?: { name: string, type: string }) {
     return this._fb.group({
       name: [data ? data.name : ''],
-      type: [data ? data.type : 'STRING'],
+      type: [data ? data.type : ValueTypes.STRING],
     });
   }
 
