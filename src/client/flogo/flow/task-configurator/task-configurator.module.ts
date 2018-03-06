@@ -8,12 +8,14 @@ import { TaskConfiguratorComponent } from './task-configurator.component';
 import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
 import { SubFlowComponent } from './subflow/subflow.component';
+import {FlowsListModule} from '../shared/flows-list';
 
 @NgModule({
   imports: [// module dependencies
     NgCommonModule,
     FlogoSharedModule,
     MapperModule,
+    FlowsListModule
   ],
   declarations: [
     InputMapperComponent,

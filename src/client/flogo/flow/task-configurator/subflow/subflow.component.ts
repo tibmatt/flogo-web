@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 
 @Component({
@@ -9,6 +9,12 @@ import {Component, Input} from '@angular/core';
 
 export class SubFlowComponent {
   @Input() subFlow;
+  @Output()
+  selectDifferentFlow: EventEmitter<string> = new EventEmitter<string>();
+
+  selectFlow() {
+    this.selectDifferentFlow.emit();
+  }
 
 }
 

@@ -14,8 +14,10 @@ import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
 import { InputMapperConfig } from './input-mapper';
 import { TAB_NAME, Tabs } from './models/tabs.model';
-import {SubFlowConfig} from '../../core/interfaces/flow/subflow-config';
+import {SubFlowConfig} from './subflow-config';
 import {isSubflowTask} from '@flogo/shared/utils';
+import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
+import {ActionBase} from '@flogo/core';
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -64,6 +66,9 @@ export class TaskConfiguratorComponent implements OnDestroy {
   currentMappings: Mappings;
   isSubflowType: boolean;
   subFlowConfig: SubFlowConfig;
+  subflowList: ActionBase[];
+  context: SelectTaskConfigEventData;
+  showSubflowList = false;
 
   // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
   // this is because the contents of the modal need to visible up until the close animation finishes
@@ -78,7 +83,8 @@ export class TaskConfiguratorComponent implements OnDestroy {
   // todo: move to proper service
   private areValidMappings: (mappings: IMapping) => boolean;
 
-  constructor(private _postService: PostService) {
+  constructor(private _flowService: FlowsService,
+              private _postService: PostService) {
     this.initSubscriptions();
     this.isSubflowType = false;
     this.resetState();
@@ -98,11 +104,40 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   onMappingsChange(newMappings: Mappings) {
     const mapperTab = this.tabs.get('inputMappings');
-    mapperTab.isValid = this.areValidMappings({ mappings: newMappings });
+    mapperTab.isValid = this.areValidMappings({mappings: newMappings});
     mapperTab.isDirty = true;
     this.currentMappings = _.cloneDeep(newMappings);
   }
 
+  selectSubFlow() {
+    this._flowService.listFlowsForApp(this.context.appId).then(flows => {
+      this.subflowList = flows.filter(flow => !(flow.id === this.context.actionId || flow.id === this.currentTile.settings.flowPath));
+      this.showSubflowList = true;
+    });
+  }
+
+  subFlowChanged(event) {
+    const subFlowTab = this.tabs.get('subFlow');
+    this.showSubflowList = false;
+    subFlowTab.isDirty = true;
+    this.createSubflowConfig(event);
+    this.context.subflowSchema = event;
+    this.createChangedsubFlowConfig(event);
+  }
+
+  createChangedsubFlowConfig(event) {
+    this.currentTile.name = event.name;
+    this.currentTile.settings.flowPath = event.flowPath;
+    this.currentTile.description = event.description;
+    const mappings = [];
+    const propsToMap = event.metadata ? event.metadata.input : [];
+    this.currentMappings = MapperTranslator.translateMappingsIn(mappings);
+    this.inputMappingsConfig = {
+      inputScope: this.inputScope,
+      propsToMap,
+      inputMappings: mappings
+    };
+  }
   onIteratorValueChange(newValue: string) {
     this.tabs.get('iterator').isValid = MapperTranslator.isValidExpression(newValue);
     this.iterableValue = newValue;
@@ -127,6 +162,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this._postService.publish(_.assign({}, PUB_EVENTS.saveTask, {
       data: <SaveTaskConfigEventData>{
         tile: this.currentTile,
+        changedSubflowSchema: this.context.subflowSchema,
         iterator: {
           isIterable,
           iterableValue: isIterable ? this.iterableValue : undefined,
@@ -140,6 +176,11 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   selectTab(name: TAB_NAME) {
     this.tabs.markSelected(name);
+    this.showSubflowList = false;
+  }
+
+  flowSelectionCancel(event) {
+    this.showSubflowList = false;
   }
 
   cancel() {
@@ -189,6 +230,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (!this.raisedByThisDiagram(eventData.handlerId)) {
       return;
     }
+    this.context = eventData;
     this.currentTile = eventData.tile;
     this.title = eventData.title;
     this.inputScope = eventData.scope;
@@ -202,7 +244,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
     this.createInputMapperConfig(eventData);
     if (this.isSubflowType) {
-      this.createSubflowConfig(eventData);
+      this.createSubflowConfig(eventData.subflowSchema);
     }
     this.iteratorModeOn = eventData.iterator.isIterable;
     this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
@@ -244,12 +286,12 @@ export class TaskConfiguratorComponent implements OnDestroy {
     };
   }
 
-  private createSubflowConfig(data: SelectTaskConfigEventData) {
+  private createSubflowConfig(subflowSchema: ActionBase) {
     this.subFlowConfig = {
-      name: data.subflowSchema.name,
-      description: data.subflowSchema.description,
-      createdAt: data.subflowSchema.createdAt,
-      flowPath: data.subflowSchema.id
+      name: subflowSchema.name,
+      description: subflowSchema.description,
+      createdAt: subflowSchema.createdAt,
+      flowPath: subflowSchema.id
     };
   }
 
@@ -258,7 +300,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
       this.tabs.clear();
     }
     this.tabs = Tabs.create(this.isSubflowType);
-
+    this.showSubflowList = false;
     if (this.isSubflowType) {
       this.tabs.get('subFlow').isSelected = true;
     } else {
