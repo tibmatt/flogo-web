@@ -417,13 +417,13 @@ export function diffDates(beginDate: any, endDate: any, timeUnit: any) {
 
 }
 
-export function createSubFlowTask() {
+export function createSubFlowTask(schema: any) {
   return {
     type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
-    name: 'Sub-Flow',
-    ref: 'subflow',
+    name: _.get(schema, 'title', _.get(schema, 'name', 'Start a Subflow')),
+    ref: schema.ref,
     version: '',
-    description: '',
+    description: _.get(schema, 'description', ''),
     homepage: '',
     attributes: {
       inputs: [],

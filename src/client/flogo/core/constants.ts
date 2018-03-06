@@ -89,3 +89,7 @@ export const TRIGGER_MENU_OPERATION = {
   CONFIGURE: 'configure',
   DELETE: 'delete'
 };
+
+export const CONTRIB_REF_PLACEHOLDER = {
+  REF_SUBFLOW: 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow'
+};

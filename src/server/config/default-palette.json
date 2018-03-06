@@ -70,6 +70,10 @@
         },
         {
             "type": "activity",
+            "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/subflow"
+        },
+        {
+            "type": "activity",
             "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/twilio"
         },
         {
