@@ -10,10 +10,14 @@ export function formatTaskLinkGroups(activitySchemas, flow) {
 }
 
 function formatGroup(activitySchemas, { tasks, links }) {
+  const group = {};
   const formattedTasks = formatTasks(activitySchemas, tasks);
+  if (!isEmpty(formattedTasks)) {
+    group.tasks = formattedTasks;
+  }
   const formattedLinks = formatLinks(links);
-  return {
-    tasks: !isEmpty(formattedTasks) ? formattedTasks : undefined,
-    links: !isEmpty(formattedLinks) ? formattedLinks : undefined,
-  };
+  if (!isEmpty(formattedLinks)) {
+    group.links = formattedLinks;
+  }
+  return group;
 }

@@ -7,6 +7,6 @@ export const convertMappingsCollection = mappings => convertMappings
   .portMappings(fromStandardTypeMapper.mappingTypes, mappings);
 
 export const portMappingType = singleMapping => convertMappings
-  .portMappings(fromStandardTypeMapper.mappingTypes, singleMapping);
+  .portMappingType(fromStandardTypeMapper.mappingTypes, singleMapping);
 
 export * from './parse-resource-uri';
