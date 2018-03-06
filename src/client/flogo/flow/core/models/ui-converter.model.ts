@@ -10,6 +10,7 @@ import {
 
 import { FlogoFlowDiagramNode } from '../../shared/diagram/models/node.model';
 import {ActionBase} from '@flogo/core';
+import {CONTRIB_REF_PLACEHOLDER} from '@flogo/core/constants';
 
 const FLOW_NODE = 'node';
 const FLOW_ITEM = 'item';
@@ -183,7 +184,7 @@ export abstract class AbstractModelConverter {
 
         let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
         if (isSubflowTask(task.type)) {
-          installedActivity = {ref: 'subflow'};
+          installedActivity = {ref: CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW};
 
           if (task.inputMappings) {
             // If the flow is still available get the inputs of a subflow from its latest definition
