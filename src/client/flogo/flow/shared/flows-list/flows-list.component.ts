@@ -12,6 +12,8 @@ export class FlowsListComponent {
 
   @Output()
   flowSelected: EventEmitter<ActionBase | string> = new EventEmitter<ActionBase | string>();
+  @Output()
+  flowSelectionCancel: EventEmitter<string> = new EventEmitter<string>();
 
   searchText: string;
 
@@ -27,7 +29,7 @@ export class FlowsListComponent {
   }
 
   cancelList() {
-    this.flowSelected.emit('cancel');
+    this.flowSelectionCancel.emit('cancel');
   }
 
   selectFlow(flow: ActionBase) {

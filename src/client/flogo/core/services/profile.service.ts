@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FLOGO_PROFILE_TYPE } from '../constants';
+import { FLOGO_PROFILE_TYPE, CONTRIB_REF_PLACEHOLDER } from '../constants';
 import { RESTAPITriggersService } from './restapi/triggers-api.service';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
 import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask, getProfileType} from '../../shared/utils';
@@ -63,6 +63,7 @@ export class FlogoProfileService {
 
   getActivities(profile) {
     let activitiesFetchPromise;
+    let subflowAcivitySchema;
     if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
       activitiesFetchPromise = this.activitiesService.getActivities();
     } else {
@@ -71,6 +72,8 @@ export class FlogoProfileService {
     return activitiesFetchPromise.then(response => {
       if (response.text()) {
         const data = response.json().data || [];
+        // Exclude subflow activity from processing it as a normal activity
+        subflowAcivitySchema = _.remove(data, (activity: any) => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW).pop();
         return _.map(data, (activity: any) => {
           if (profile === FLOGO_PROFILE_TYPE.DEVICE) {
             activity.inputs = activity.settings;
@@ -85,8 +88,10 @@ export class FlogoProfileService {
         return response;
       }
     }).then(result => {
-      if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-        result.unshift(createSubFlowTask());
+      // Create a custom activity task object for subflow using suflow schema. Also we need to add it to the list only if
+      // the subflow is installed in the flogo-web engine
+      if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE && subflowAcivitySchema) {
+        result.unshift(createSubFlowTask(subflowAcivitySchema));
       }
       return result;
     });
