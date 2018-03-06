@@ -108,6 +108,9 @@
                   <li class="flogo-app-detail-list-item" [fgJsonDownloader]="appExporter()">
                     <a class="flogo-app-detail-list-link"><span>{{ 'DETAILS:EXPORT-APP' | translate }} </span></a>
                   </li>
+                  <li class="flogo-app-detail-list-item" [fgJsonDownloader]="appExporter(true)">
+                    <a class="flogo-app-detail-list-link"><span>{{ 'DETAILS:EXPORT-APP-LEGACY' | translate }} </span></a>
+                  </li>
                   <li class="flogo-app-detail-list-item" (click)="openExportFlow();">
                     <a class="flogo-app-detail-list-link"><span>{{ 'DETAILS:EXPORT-FLOW' | translate }}</span></a>
                   </li>

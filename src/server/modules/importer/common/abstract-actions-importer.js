@@ -1,3 +1,4 @@
+import { actionHasSubflowTasks, forEachSubflowTaskInAction } from '../../../common/utils/subflow';
 
 export class AbstractActionsImporter {
   constructor(actionStorage) {
@@ -12,7 +13,32 @@ export class AbstractActionsImporter {
   async importAll(appId, fromRawApp) {
     const rawActions = this.extractActions(fromRawApp);
     const actionPairs = await this.storeActions(appId, rawActions);
-    return new Map(actionPairs);
+    let actionRegistry = new Map(actionPairs);
+    actionRegistry = await this.reconcileSubflows(actionRegistry);
+    return actionRegistry;
+  }
+
+  // TODO: a better approach to avoid having to call the actionStorage twice per flow could be to figure out the
+  // flow -> subflow relationship chain and store them in reverse order so we can fix the subflow refs as we go storing
+  // the actions but it will require to deal with cyclic references e.g. flow1 -> subflow1 -> flow1
+  async reconcileSubflows(actionRegistry) {
+    const reconcileOperations = [...actionRegistry.entries()]
+      .filter(([, action]) => actionHasSubflowTasks(action))
+      .map(async ([originalActionId, action]) => {
+        action = this.reconcileSubflowTasksInAction(action, actionRegistry);
+        const updatedAction = await this.updateAction(action);
+        actionRegistry.set(originalActionId, updatedAction);
+      });
+    await Promise.all(reconcileOperations);
+    return actionRegistry;
+  }
+
+  reconcileSubflowTasksInAction(action, actionsByOriginalId) {
+    forEachSubflowTaskInAction(action, task => {
+      const originalFlowPath = task.settings.flowPath;
+      task.settings.flowPath = actionsByOriginalId.get(originalFlowPath).id;
+    });
+    return action;
   }
 
   async storeActions(appId, rawActions = []) {
@@ -32,6 +58,10 @@ export class AbstractActionsImporter {
    */
   async storeSingleAction(appId, rawAction) {
     return this.actionStorage.create(appId, rawAction);
+  }
+
+  async updateAction(action) {
+    return this.actionStorage.update(action.id, action);
   }
 
 }

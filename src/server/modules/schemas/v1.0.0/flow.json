@@ -1,0 +1,202 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://github.com/TIBCOSoftware/flogo/schemas/1.0.0/flow.json",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/task"
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/link"
+      }
+    },
+    "errorHandler": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/task"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/link"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "input": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metadataItem"
+          }
+        },
+        "output": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metadataItem"
+          }
+        }
+      }
+    },
+    "metadataItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$ref": "common.json#/definitions/valueType"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "activity"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": ["standard", "iterator"],
+          "default": "standard"
+        },
+        "name": true,
+        "description": true,
+        "settings": {
+          "type": "object",
+          "properties": {
+            "iterate": true
+          },
+          "additionalProperties": true
+        },
+        "activity": {
+          "$ref": "#/definitions/activity"
+        }
+      },
+      "if": {
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "const": "iterator"
+          }
+        }
+      },
+      "then": {
+        "required": [ "settings" ],
+        "properties": {
+          "default": {},
+          "settings": {
+            "required": ["iterate"]
+          }
+        }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "required": ["ref"],
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "activity-installed": true
+        },
+        "settings": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "mappings": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "input": {
+              "$ref": "common.json#/definitions/mappingsCollection"
+            }
+          }
+        }
+      },
+      "if": {
+        "$comment": "check for subflow",
+        "required": ["ref"],
+        "properties": {
+          "ref": {
+            "const": "github.com/TIBCOSoftware/flogo-contrib/activity/subflow"
+          }
+        }
+      },
+      "then": {
+        "required": ["settings"],
+        "properties": {
+          "settings": {
+            "default": {},
+            "required": ["flowURI"]
+          }
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "id": true,
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "type": {
+          "const": "expression"
+        },
+        "value": true
+      },
+      "dependencies": {
+        "value": {
+          "properties": {
+            "type": {
+              "const": "expression"
+            }
+          }
+        }
+      }
+    }
+  }
+}

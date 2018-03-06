@@ -1,7 +1,8 @@
 import kebabCase from 'lodash/kebabCase';
 
 import { AppsManager } from '../../modules/apps/index.v2';
-import { ErrorManager, ERROR_TYPES } from '../../common/errors';
+import { ERROR_TYPES, ErrorManager } from '../../common/errors';
+import { exportApp } from './apps/export';
 
 export function apps(router, basePath) {
   router.get(`${basePath}/apps`, listApps);
@@ -143,40 +144,6 @@ function* buildApp() {
   const name = [kebabCase(result.appName), options.compile.os, options.compile.arch].join('_');
   this.attachment(name);
   this.body = result.data;
-}
-
-function* exportApp() {
-  const appId = this.params.appId;
-  const type = this.request.query['type'];
-  const flowIds = this.request.query['flowids'];
-  const flowIdArray = flowIds ? flowIds.split(',') : null;
-
-  try {
-    this.body = yield AppsManager.export(appId, type, flowIdArray);
-  } catch (error) {
-    if (error.isOperational) {
-      if (error.type === ERROR_TYPES.COMMON.VALIDATION) {
-        throw ErrorManager.createRestError('Validation error in /apps getApp', {
-          status: 400,
-          title: 'Validation error',
-          detail: 'There were one or more validation problems',
-          meta: error.details.errors,
-        });
-      } else if (error.type === ERROR_TYPES.COMMON.NOT_FOUND) {
-        throw ErrorManager.createRestNotFoundError('Application not found', {
-          title: 'Application not found',
-          detail: 'No application with the specified id',
-        });
-      } else if (error.type === ERROR_TYPES.COMMON.HAS_SUBFLOW) {
-        throw ErrorManager.createRestError('Application cannot be exported', {
-          title: 'Application cannot be exported',
-          detail: 'Application with subflow tasks cannot be exported',
-          code: ERROR_TYPES.COMMON.HAS_SUBFLOW,
-        });
-      }
-    }
-    throw error;
-  }
 }
 
 function* validateApp() {

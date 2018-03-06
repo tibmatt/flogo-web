@@ -2,10 +2,11 @@ import { fullAppSchema } from '../../apps/schemas';
 
 import { validatorFactory } from '../validator';
 
-import { extractContribRefs } from '../extract-contrib-refs';
+import { extractContribRefs } from '../common/extract-contrib-refs';
 
 import { ActionsImporter } from './actions-importer';
 import { TriggersHandlersImporter } from './triggers-handlers-importer';
+import { loadMicroserviceContribs } from '../common/load-microservice-contribs';
 
 export class LegacyAppImporterFactory {
 
@@ -34,11 +35,10 @@ export class LegacyAppImporterFactory {
   }
 
   async loadContributions() {
-    const [activities, triggers] = await Promise.all([
-      this.getActivitiesManager().find(),
-      this.getTriggersManager().find(),
-    ]);
-    return { activities, triggers };
+    return loadMicroserviceContribs(
+      this.getActivitiesManager(),
+      this.getTriggersManager(),
+    );
   }
 
   getTriggersManager() {

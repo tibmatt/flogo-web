@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { AppImporter } from './app-importer';
 import { LegacyAppImporterFactory } from './legacy/factory';
 import { DeviceAppImporterFactory } from './device/factory';
+import { StandardAppImporterFactory } from './standard/factory';
 import { getProfileType } from '../../common/utils/profile';
 import { FLOGO_PROFILE_TYPES } from '../../common/constants';
 
@@ -61,7 +62,7 @@ export class AppImporterFactory {
   }
 
   standardDependenciesFactory() {
-    throw new Error('Not implemented yet');
+    return new StandardAppImporterFactory(this.resourceStorageRegistry);
   }
 
   createAppImporter({ validator, actionsImporter, triggersHandlersImporter }) {

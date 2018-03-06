@@ -1,4 +1,4 @@
-import { AbstractActionsImporter } from '../common/abstract-actions-importer';
+import { AbstractActionsImporter } from '../common';
 
 export class ActionsImporter extends AbstractActionsImporter {
 

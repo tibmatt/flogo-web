@@ -1,5 +1,4 @@
-
-import { AbstractTriggersHandlersImporter } from '../common/abstract-trigger-handlers-importer';
+import { AbstractTriggersHandlersImporter } from '../common';
 
 export class TriggersHandlersImporter extends AbstractTriggersHandlersImporter {
 

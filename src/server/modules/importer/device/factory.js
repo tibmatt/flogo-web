@@ -3,7 +3,7 @@ import groupBy from 'lodash/groupBy';
 import { fullDeviceAppSchema } from '../../apps/schemas';
 
 import { validatorFactory } from '../validator';
-import { extractContribRefs } from '../extract-contrib-refs';
+import { extractContribRefs } from '../common/extract-contrib-refs';
 
 import { ActionsImporter } from './actions-importer';
 import { TriggersHandlersImporter } from './triggers-handlers-importer';

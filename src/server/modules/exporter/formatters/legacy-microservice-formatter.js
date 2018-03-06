@@ -1,15 +1,15 @@
 import get from 'lodash/get';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import { isIterableTask } from '../../../common/utils';
+import { appHasSubflowTasks } from '../../../common/utils/subflow';
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
-import { appHasSubflowTask } from '../utils/do-actions-have-subflow-tasks';
 
 const MICROSERVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
 export class LegacyMicroServiceFormatter {
 
   preprocess(app) {
-    if (appHasSubflowTask(app)) {
+    if (appHasSubflowTasks(app)) {
       throw ErrorManager.makeError('Application cannot be exported', { type: ERROR_TYPES.COMMON.HAS_SUBFLOW });
     }
     return app;
