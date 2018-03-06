@@ -6,7 +6,6 @@ import { TASK_TYPE } from '../../../transfer/common/type-mapper';
 import { isIterableTask } from '../../../../common/utils';
 import { isOutputMapperField } from '../../../../common/utils/flow';
 import { isSubflowTask } from '../../../../common/utils/subflow';
-import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../../../../common/constants';
 
 import { portAndFormatMappings } from './port-and-format-mappings';
 import { createFlowUri } from './create-flow-uri';
@@ -81,6 +80,6 @@ export class TaskFormatter {
   }
 
   convertInputMappings() {
-    return portAndFormatMappings(this.sourceTask.inputMappings || []);
+    return portAndFormatMappings({ input: this.sourceTask.inputMappings || [] });
   }
 }

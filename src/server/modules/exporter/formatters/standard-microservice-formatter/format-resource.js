@@ -2,7 +2,7 @@ import isEmpty from 'lodash/isEmpty';
 import { portAndFormatMappings } from './port-and-format-mappings';
 
 export function formatResource(fromAction, taskLinkGroup) {
-  const mappings = portAndFormatMappings(fromAction.metadata);
+  const { metadata } = fromAction;
   const { root: rootHandler, error: errorHandler } = taskLinkGroup;
 
   return {
@@ -10,7 +10,7 @@ export function formatResource(fromAction, taskLinkGroup) {
     data: {
       name: fromAction.name,
       description: !isEmpty(fromAction.description) ? fromAction.description : undefined,
-      mappings: !isEmpty(mappings) ? mappings : undefined,
+      metadata: !isEmpty(metadata) ? metadata : undefined,
       ...rootHandler,
       errorHandler: !isEmpty(errorHandler) ? errorHandler : undefined,
     },
