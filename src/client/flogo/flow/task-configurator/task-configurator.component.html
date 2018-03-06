@@ -47,8 +47,10 @@
         [initialConfig]="{ inputScope: inputScope, iterableValue: iterableValue }"
         (changeIteratorMode)="onChangeIteratorMode()"
         (iteratorValueChange)="onIteratorValueChange($event)"></flogo-flow-task-configurator-iterator>
-      <flogo-flow-task-configurator-subflow *ngIf="isSubflowType && this.tabs.get('subFlow').isSelected" [subFlow]="subFlowConfig" [subflowList]="subflowList"
-                                           (flowSelected)="subFlowChanged($event)" (selectDifferentFlow)="selectSubFlow($event)" class="content"></flogo-flow-task-configurator-subflow>
+      <flogo-flow-task-configurator-subflow *ngIf="isSubflowType && this.tabs.get('subFlow').isSelected && !showSubflowList" [subFlow]="subFlowConfig"
+                                           (selectDifferentFlow)="selectSubFlow($event)" class="content"></flogo-flow-task-configurator-subflow>
+      <flogo-flow-flows-list class="content subflow-list__content" *ngIf="showSubflowList" (flowSelected)="subFlowChanged($event)"
+                             (flowSelectionCancel) = "flowSelectionCancel($event)" [list]="subflowList"></flogo-flow-flows-list>
     </div>
   </div>
 </div>

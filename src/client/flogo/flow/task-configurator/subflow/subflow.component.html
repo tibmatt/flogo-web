@@ -1,5 +1,4 @@
 <div class="subflow-content">
-  <div class="subflow-details" *ngIf="!showSubflowList">
     <div class="subflow-name">{{subFlow.name}}<a class="flogo-link subflow-select-link" (click)="selectFlow()">{{'SUBFLOW:SELECT-DIFFERENT-FLOW'
       | translate}}</a></div>
     <div class="subflow-description">{{subFlow.description}}</div>
@@ -9,6 +8,4 @@
     <div><a href="/flows/{{subFlow.flowPath}}" class="flogo-link" target="_blank">{{
       'TASK-CONFIGURATOR:SUB-FLOW:LINK-TEXT' | translate }}</a></div>
   </div>
-  <flogo-flow-flows-list *ngIf="showSubflowList" (flowSelected)="subFlowChanged($event)"
-                         [list]="subflowList"></flogo-flow-flows-list>
-</div>
+

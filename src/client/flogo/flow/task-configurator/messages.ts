@@ -46,6 +46,8 @@ export interface SelectTaskConfigEventData {
   inputsSearchPlaceholderKey?: string;
   iterator: IteratorInfo;
   subflowSchema?: ActionBase;
+  appId?: string;
+  actionId?: string;
 }
 
 export interface SaveTaskConfigEventData {
@@ -53,5 +55,5 @@ export interface SaveTaskConfigEventData {
   tile: Task;
   iterator: IteratorInfo;
   inputMappings: any[];
-  newSubflowSchema?: ActionBase;
+  changedSubflowSchema?: ActionBase;
 }

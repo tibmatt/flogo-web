@@ -1695,6 +1695,8 @@ export class FlowComponent implements OnInit, OnDestroy {
       const subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedTile.settings.flowPath);
       if (subflowSchema) {
         dataToPublish.data.subflowSchema = subflowSchema;
+        dataToPublish.data.appId = this.flow.appId;
+        dataToPublish.data.actionId = this.flow.id;
       } else {
         return this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
           .subscribe(message => notification(message, 'error'));
@@ -1707,13 +1709,14 @@ export class FlowComponent implements OnInit, OnDestroy {
   private _saveConfigFromTaskConfigurator(data: SaveTaskConfigEventData, envelope: any) {
     const diagramId = data.handlerId;
     const tile = this.handlers[diagramId].tasks[data.tile.id];
-    const newSubflowSchema = data.newSubflowSchema;
-    if (newSubflowSchema && tile.settings.flowPath !== newSubflowSchema.id) {
-      tile.name = this.uniqueTaskName(newSubflowSchema.name);
-      tile.settings.flowPath = newSubflowSchema.id;
-      this._flowService.currentFlowDetails.addSubflowSchema(newSubflowSchema);
+    const changedSubflowSchema = data.changedSubflowSchema;
+    if (changedSubflowSchema && tile.settings.flowPath !== data.tile.settings.flowPath) {
       this.manageFlowRelationships(tile.settings.flowPath);
-    };
+      tile.name = this.uniqueTaskName(changedSubflowSchema.name);
+      tile.description = changedSubflowSchema.description;
+      tile.settings.flowPath = changedSubflowSchema.id;
+      this._flowService.currentFlowDetails.addSubflowSchema(changedSubflowSchema);
+    }
     const activitySchema = this.flow.schemas[tile.ref];
     const isMapperTask = isMapperActivity(activitySchema);
     if (isMapperTask) {
