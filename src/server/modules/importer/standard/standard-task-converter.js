@@ -79,7 +79,7 @@ export class StandardTaskConverter {
     return schemaInputs.map(schemaInput => {
       let value = activityInput[schemaInput.name];
       if (isUndefined(value)) {
-        value = getDefaultValueByType(schemaInput.name);
+        value = getDefaultValueByType(schemaInput.type);
       } else if (isOutputMapperField(schemaInput) && isArray(value)) {
         value = value.map(outputMapping => portMappingType(outputMapping));
       }
