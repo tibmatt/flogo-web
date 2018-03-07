@@ -5,6 +5,7 @@ import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../common/constants';
 import { forEachSubflowTaskInAction } from '../../common/utils/subflow';
 
 import { normalizeName } from './utils/normalize-name';
+import { DanglingSubflowReferencesCleaner } from './utils/dangling-subflow-references-cleaner';
 
 export class Exporter {
   /**
@@ -35,7 +36,8 @@ export class Exporter {
     app = this.applyDefaultAppAttributes(app);
 
     const { actions, previousActionIdsLinker } = this.humanizeActionIds(app.actions);
-    app.actions = this.updateSubflowReferences(actions, previousActionIdsLinker);
+    app.actions = this.updateSubflowReferencesAndDanglingMappings(actions, previousActionIdsLinker);
+
     app.triggers = this.processTriggers(app.triggers, previousActionIdsLinker);
 
     app = this.formatter.format(app);
@@ -45,13 +47,15 @@ export class Exporter {
     return app;
   }
 
-  updateSubflowReferences(actions, previousActionIdsLinker) {
-    const updateFlowPath = task => {
-      const action = previousActionIdsLinker.get(task.settings.flowPath);
-      task.settings.flowPath = action ? action.id : null;
+  updateSubflowReferencesAndDanglingMappings(actions, previousActionIdsLinker) {
+    const subflowMappingCleaner = new DanglingSubflowReferencesCleaner();
+    const updateTask = task => {
+      const linkedAction = previousActionIdsLinker.get(task.settings.flowPath);
+      task.settings.flowPath = linkedAction ? linkedAction.id : null;
+      task.inputMappings = subflowMappingCleaner.cleanMappings(task, linkedAction);
     };
     return actions.map(action => {
-      forEachSubflowTaskInAction(action, updateFlowPath);
+      forEachSubflowTaskInAction(action, updateTask);
       return action;
     });
   }
