@@ -243,7 +243,7 @@ export class AppsManager {
    */
   static export(appId, { appModel = EXPORT_MODEL_STANDARD, format, flowIds } = {}) {
     if (appModel !== EXPORT_MODEL_STANDARD && appModel !== EXPORT_MODEL_LEGACY) {
-      throw new Error(`Cannot export to unknown app model "${appModel}"`);
+      throw ErrorManager.createCustomValidationError(`Cannot export to unknown application model "${appModel}"`);
     }
     return AppsManager.findOne(appId)
       .then(app => {

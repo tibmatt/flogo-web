@@ -20,6 +20,9 @@ export class ImportErrorFormatterService {
       case 'trigger-installed':
         messageHeader = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING');
         break;
+      case 'custom':
+        messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
+        break;
       default:
         messageHeader = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
         break;
@@ -33,6 +36,9 @@ export class ImportErrorFormatterService {
       case 'type':
       case 'required':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
+        break;
+      case 'custom':
+        errorMessage = detail.message;
         break;
       case 'activity-installed':
         errorMessage = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT', { ref: detail.params.ref });

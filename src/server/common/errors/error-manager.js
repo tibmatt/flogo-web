@@ -30,6 +30,38 @@ export class ErrorManager {
     });
   }
 
+
+  /**
+   * Creates a custom validation error object which caused due to the data the server logic is performing on.
+   * The method has message and details as parameters.
+   *
+   * 1. Message is type string and it is what send to the client.
+   *
+   * 2. Details param is an optional param. It can the following optional properties in it:
+   *      dataPath: path of the data at which the validation has failed
+   *      params: an object which can have custom error specific extra information based on which the error occurred
+   *
+   * @param message
+   * @param details
+   */
+  static createCustomValidationError(message, {dataPath, params} = {}) {
+    const errorDetails = {details: []};
+    const error = {
+      keyword: "custom",
+      message: message,
+      schemaPath: "#/custom"
+    };
+    error.dataPath = dataPath ? dataPath : "";
+    error.params = params ? params : {};
+    errorDetails.details.push(error);
+    return ErrorManager.makeError("Custom validation error", {
+      type: ERROR_TYPES.COMMON.VALIDATION,
+      details: {
+        errors: errorDetails
+      }
+    });
+  }
+
   /**
    * Create a sanitized error marked as ready to propagate from the API to the user
    * @param message {string} message

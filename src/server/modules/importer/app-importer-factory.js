@@ -6,6 +6,7 @@ import { DeviceAppImporterFactory } from './device/factory';
 import { StandardAppImporterFactory } from './standard/factory';
 import { getProfileType } from '../../common/utils/profile';
 import { FLOGO_PROFILE_TYPES } from '../../common/constants';
+import {ErrorManager} from "../../common/errors";
 
 export class AppImporterFactory {
 
@@ -21,8 +22,7 @@ export class AppImporterFactory {
     if (dependenciesFactory) {
       return this.createAppImporter(await dependenciesFactory.create());
     }
-    // todo: throw correct error type
-    throw new Error('Cannot import app: unrecognized structure');
+    throw ErrorManager.createCustomValidationError('Cannot import application with unrecognized structure');
   }
 
   // Since we only have three types of importers as of feb 2018 we're using
