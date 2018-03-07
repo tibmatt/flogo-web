@@ -1,4 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
+import compact from 'lodash/compact';
+
 import { DEFAULT_APP_TYPE, DEFAULT_APP_VERSION } from '../../common/constants';
 import { forEachSubflowTaskInAction } from '../../common/utils/subflow';
 
@@ -58,9 +60,19 @@ export class Exporter {
     if (isEmpty(includeOnlyThisActionIds)) {
       return actions;
     }
-    const flowSet = new Set(includeOnlyThisActionIds);
-    // todo: deal with case if flow1 references flow2 via subflow task then subflow2 should also be exported
-    return actions.filter(action => flowSet.has(action.id));
+    const actionRegistry = new Map(actions.map(action => [action.id, action]));
+
+    const finalActionIds = new Set(includeOnlyThisActionIds);
+    const collectSubflowPathFromTask = task => finalActionIds.add(task.settings.flowPath);
+
+    includeOnlyThisActionIds.forEach(actionId => {
+      const action = actionRegistry.get(actionId);
+      if (action) {
+        forEachSubflowTaskInAction(action, collectSubflowPathFromTask);
+      }
+    });
+
+    return compact([...finalActionIds.values()].map(actionId => actionRegistry.get(actionId)));
   }
 
   processTriggers(triggers, humanizedActions) {
