@@ -3,7 +3,7 @@ import path from 'path';
 import {config} from '../../config/app-config';
 import {createFolder as ensureDir} from '../../common/utils/file';
 
-import {removeDir} from './file-utils';
+import { removeDir } from './file-utils';
 
 const loader = require('./loader');
 const commander = require('./commander');
@@ -22,8 +22,8 @@ const DEFAULT_LIBS = [
 
 class Engine {
 
-  constructor(path, libVersion, runLogger) {
-    this.path = path;
+  constructor(pathToEngine, libVersion, runLogger) {
+    this.path = pathToEngine;
     this.tasks = {
       activities: [],
       triggers: [],
@@ -44,7 +44,7 @@ class Engine {
   create(flogoDescriptorPath = null, vendor = null) {
     // todo: add support for lib version
     const options = {
-      libVersion: this._buildLibsOption()
+      libVersion: this._buildLibsOption(),
     };
     if (flogoDescriptorPath) {
       options.flogoDescriptor = flogoDescriptorPath;
@@ -235,12 +235,13 @@ class Engine {
   }
 
   _buildLibsOption() {
-    if (this.libVersion) {
-      return DEFAULT_LIBS
-        .map(lib => `${lib}@${this.libVersion}`)
-        .join(',');
+    if (this.skipLibVersionOnCreation) {
+      return null;
     }
-    return null;
+    const libConstraint = this.libVersion ? `@${this.libVersion}` : '';
+    return DEFAULT_LIBS
+      .map(lib => `${lib}${libConstraint}`)
+      .join(',');
   }
 }
 

@@ -84,39 +84,6 @@ export function readJSONFile(JSONPath) {
 }
 
 /**
- * Get absoulte path to latest file in a directory. It does not recurse.
- * @param where directory to look in
- * @param name {string|RegExp} name of the file
- * @returns {Promise<String>} resolves to absolute path to file or null if no file found with the provided name
- */
-export function findMostRecentFile(where, name) {
-  if (typeof name === 'string') {
-    name = new RegExp(name);
-  }
-
-  return new Promise((resolve, reject) => {
-    fs.readdir(where, (err, files) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      const fileStatsCollect = files
-        .filter(fileName => name.test(fileName))
-        .map(fileName => new Promise((resolve, reject) => {
-          const filePath = path.join(where, fileName);
-          fs.stat(filePath, (err, stats) => resolve(err ? null : { path: filePath, creation: stats.birthtime.getTime() }));
-        }));
-
-      Promise.all(fileStatsCollect)
-        .then(files => files.reduce((greatest, current) => current.creation > greatest.creation ? current : greatest, { creation: 0 }))
-        .then(fileInfo => fileInfo.path || null)
-        .then(resolve);
-    });
-  });
-}
-
-/**
  * write a JSON file
  * @param {string|Path} JSONPath - the path of JSON file
  * @param {object} data - the JSON data you want to write
@@ -158,16 +125,9 @@ export function writeJSONFile(JSONPath, data) {
  * @returns {Promise}
  */
 export function createFolder(folderPath) {
-  return new Promise((resolve, reject) => {
-    fse.ensureDir(folderPath, err => {
-      if (err) {
-        reject(new Error(err));
-      } else {
-        resolve();
-      }
-    });
-  });
+  return fse.ensureDir(folderPath);
 }
+export const ensureDir = createFolder;
 
 /**
  * Remove the given folder using `rm -rf`
