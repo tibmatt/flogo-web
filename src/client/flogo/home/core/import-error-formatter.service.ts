@@ -14,14 +14,19 @@ export class ImportErrorFormatterService {
       case 'required':
         messageHeader = this._translate.instant('IMPORT-ERROR:PROPERTY_REQUIRED');
         break;
+      case 'pattern':
+        messageHeader = this._translate.instant('IMPORT-ERROR:PATTERN_MISMATCH');
+        break;
+      case 'custom':
+      case 'minLength':
+      case 'const':
+        messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
+        break;
       case 'activity-installed':
         messageHeader = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING');
         break;
       case 'trigger-installed':
         messageHeader = this._translate.instant('IMPORT-ERROR:TRIGGER_MISSING');
-        break;
-      case 'custom':
-        messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
         break;
       default:
         messageHeader = this._translate.instant('APP-LIST:BROKEN_RULE_UNKNOWN');
@@ -35,6 +40,9 @@ export class ImportErrorFormatterService {
     switch (detail.keyword) {
       case 'type':
       case 'required':
+      case 'pattern':
+      case 'minLength':
+      case 'const':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
         break;
       case 'custom':

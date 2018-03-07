@@ -23,6 +23,7 @@
   "IMPORT-ERROR:IMPORT_FAILED": "Import failed",
   "IMPORT-ERROR:ERRORS_FOUND": "{{value}} errors found",
   "IMPORT-ERROR:DATA_MISMATCH": "Data mismatch",
+  "IMPORT-ERROR:PATTERN_MISMATCH": "Pattern mismatch",
   "IMPORT-ERROR:TYPE_MISMATCH": "Type mismatch",
   "IMPORT-ERROR:PROPERTY_REQUIRED": "Property required",
   "IMPORT-ERROR:ACTIVITY_MISSING": "Activity missing",
