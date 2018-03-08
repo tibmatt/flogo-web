@@ -1,6 +1,6 @@
 export class FlogoError extends Error {
 
-  constructor(message, { type, details } = {}) {
+  constructor(message, { type, details, ctr } = {}) {
     super();
     this.name = 'FlogoError';
     this.message = message;
@@ -10,9 +10,10 @@ export class FlogoError extends Error {
 
     this.type = type;
 
+    Error.captureStackTrace(this, ctr || FlogoError);
+
     if (details) {
       this.details = Object.assign({}, details);
     }
   }
 }
-//FlogoError.prototype = Object.create(Error.prototype);

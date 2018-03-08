@@ -62,6 +62,10 @@ export class ErrorService {
     error.isOperational = true;
     error.name = name;
 
+    if (this.canCaptureStack(Error)) {
+      Error.captureStackTrace(error, this.makeOperationalError);
+    }
+
     if (props) {
       Object.keys(props).forEach(key => {
         // do not override other properties
@@ -72,6 +76,10 @@ export class ErrorService {
     }
 
     return error;
+  }
+
+  private canCaptureStack(fromClass: any): fromClass is { captureStackTrace: (thisArg: any, func: any) => void } {
+    return !!fromClass.captureStackTrace;
   }
 
 }

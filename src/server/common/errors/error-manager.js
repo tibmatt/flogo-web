@@ -12,7 +12,7 @@ export class ErrorManager {
    * @return {FlogoError}
    */
   static makeError(message, options) {
-    return new FlogoError(message, options);
+    return new FlogoError(message, { ctr: ErrorManager.makeError, ...options });
   }
 
 
@@ -25,8 +25,9 @@ export class ErrorManager {
     return ErrorManager.makeError(message, {
       type: ERROR_TYPES.COMMON.VALIDATION,
       details: {
-        errors: details
-      }
+        errors: details,
+      },
+      ctr: ErrorManager.createValidationError,
     });
   }
 
@@ -72,11 +73,12 @@ export class ErrorManager {
    * @param details.detail {string} (optional) A human-readable explanation specific to this occurrence of the problem.
    * @param details.meta {object} (optional) A meta object containing non-standard meta-information about the error. Ex. for validation the property details
    */
-  static createRestError(message = 'REST Api Error', details) {
+  static createRestError(message = 'REST Api Error', details, ctr) {
     details.status = details.status || 400;
     return ErrorManager.makeError(message, {
       type: ERROR_TYPES.COMMON.REST_API,
-      details: details
+      details,
+      ctr: ctr || ErrorManager.createRestError,
     });
   }
 
@@ -89,8 +91,14 @@ export class ErrorManager {
    * @param details.meta {object} (optional) A meta object containing non-standard meta-information about the error. Ex. for validation the property details
    */
   static createRestNotFoundError(message = 'Resource not found', details) {
-    details = Object.assign({}, { status: 404, code: ERROR_TYPES.COMMON.NOT_FOUND, title: 'Resource not found' }, details);
-    return ErrorManager.createRestError(message, details);
+    details = Object.assign(
+      {
+        status: 404,
+        code: ERROR_TYPES.COMMON.NOT_FOUND,
+        title: 'Resource not found',
+      },
+      details);
+    return ErrorManager.createRestError(message, details, ErrorManager.createRestNotFoundError);
   }
 
   static validationToRestErrors(validationErrors = []) {
@@ -102,9 +110,9 @@ export class ErrorManager {
         detail: validationError.detail,
         meta: {
           property: validationError.property,
-          value: validationError.value
-        }
-      })
+          value: validationError.value,
+        },
+      }, ErrorManager.validationToRestErrors),
     );
   }
 
