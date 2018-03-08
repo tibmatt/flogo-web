@@ -50,7 +50,15 @@ class Asserter {
     expect(this.errors[0]).to.deep.include({
       dataPath: `.${propertyName}`,
       keyword: 'type',
-      params: { type: expectedType },
+      params: {type: expectedType},
+    });
+  }
+
+  assertHasErrorForMismatchingPropertyEnum(propertyName, expectedType) {
+    expect(this.errors[0]).to.deep.include({
+      dataPath: `.${propertyName}`,
+      keyword: 'enum',
+      params: {allowedValues: expectedType},
     });
   }
 }

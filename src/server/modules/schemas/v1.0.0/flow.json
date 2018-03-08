@@ -184,18 +184,25 @@
           "type": "string"
         },
         "type": {
-          "const": "expression"
+          "type": "string",
+          "enum": ["default", "dependency", "expression"]
         },
         "value": true
       },
-      "dependencies": {
-        "value": {
-          "properties": {
-            "type": {
-              "const": "expression"
-            }
+      "if": {
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "const": "expression"
           }
         }
+      },
+      "then": {
+        "required": [
+          "value"
+        ]
       }
     }
   }
