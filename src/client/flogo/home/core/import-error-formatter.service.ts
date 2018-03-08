@@ -1,4 +1,4 @@
-import {LanguageService, ValidationDetails} from '@flogo/core';
+import {LanguageService, ValidationDetail} from '@flogo/core';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -17,9 +17,11 @@ export class ImportErrorFormatterService {
       case 'pattern':
         messageHeader = this._translate.instant('IMPORT-ERROR:PATTERN_MISMATCH');
         break;
-      case 'custom':
+      case 'enum':
       case 'minLength':
       case 'const':
+      case 'app-empty':
+      case 'cannot-identify-app-type':
         messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
         break;
       case 'activity-installed':
@@ -35,17 +37,25 @@ export class ImportErrorFormatterService {
     return messageHeader;
   }
 
-  formatErrorMessage(detail) {
+  formatErrorMessage(detail: ValidationDetail) {
     let errorMessage = '';
     switch (detail.keyword) {
       case 'type':
       case 'required':
       case 'pattern':
       case 'minLength':
-      case 'const':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword) + detail.message;
         break;
-      case 'custom':
+      case 'enum':
+        errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
+          + this._translate.instant('IMPORT-ERROR:ONE_AMONG_CONTENT', { val: detail.params.allowedValues.join(',') });
+        break;
+      case 'const':
+        errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
+          + this._translate.instant('IMPORT-ERROR:CONSTANT_CONTENT', { val: detail.params.allowedValue });
+        break;
+      case 'app-empty':
+      case 'cannot-identify-app-type':
         errorMessage = detail.message;
         break;
       case 'activity-installed':
@@ -76,11 +86,11 @@ export class ImportErrorFormatterService {
     }
   }
 
-  getErrorsDetails(details: ValidationDetails[]): ValidationDetails[] {
+  getErrorsDetails(details: ValidationDetail[]): ValidationDetail[] {
     return details.filter(d => this.isRationalError(d));
   }
 
-  isRationalError(detail: ValidationDetails) {
+  isRationalError(detail: ValidationDetail) {
     return detail.keyword !== 'if';
   }
 }

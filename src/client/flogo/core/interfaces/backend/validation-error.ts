@@ -7,10 +7,10 @@ export interface ServerValidationError {
 }
 
 interface ErrorMetaData {
-  details: ValidationDetails[];
+  details: ValidationDetail[];
 }
 
-export interface ValidationDetails {
+export interface ValidationDetail {
   keyword: string;
   dataPath: string;
   schemaPath: string;

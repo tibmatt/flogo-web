@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
-import {ValidationDetails} from '@flogo/core';
+import {ValidationDetail} from '@flogo/core';
 
 
 @Component({
@@ -13,10 +13,10 @@ export class FlogoAppImportComponent implements OnChanges {
 
   @ViewChild('errorModal') modal: ModalComponent;
 
-  @Input() importValidationErrors: ValidationDetails[];
+  @Input() importValidationErrors: ValidationDetail[];
   @Output() modalClose: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  errorDetails: ValidationDetails[];
+  errorDetails: ValidationDetail[];
 
   constructor(public errorFormatter: ImportErrorFormatterService) {
     this.errorDetails = [];
