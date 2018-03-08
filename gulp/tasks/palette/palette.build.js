@@ -1,53 +1,39 @@
 import fs from 'fs';
 import path from 'path';
-import https from 'https';
+import { promisify, inspect } from 'util';
 
 import gulp from 'gulp';
 
 import {CONFIG} from '../../config';
 
+const writeFile = promisify(fs.writeFile);
+const readFile = promisify(fs.readFile);
+const readDir = promisify(fs.readdir);
+const fileStat = promisify(fs.stat);
+
 const DEFAULT_PALETTE_FILENAME = 'default-palette.json';
-const MEDIA_TYPE_RAW = 'application/vnd.github.v3.raw+json';
-const REPO = 'TIBCOSoftware/flogo-contrib';
-const GITHUB_TOKEN = process.env['FLOGO_WEB_GITHUB_TOKEN'] || process.env['GITHUB_USER_TOKEN'] || process.env['GITHUB_TOKEN'];
-const target = process.env.DIST_BUILD ? CONFIG.paths.dist.server : CONFIG.paths.source.server;
 
 const ignoreRefs = [ 'github.com/TIBCOSoftware/flogo-contrib/activity/inference' ];
 
+const pathToContrib = process.env.FLOGO_WEB_BUILD_CONTRIB_PATH || path.resolve('/flogo', 'flogo-contrib');
+console.log('Will look for flogo-contrib in: ', pathToContrib);
 /**
  *
  */
-gulp.task('palette.build', 'Build default palette', [], cb => {
+gulp.task('palette.build', 'Build default palette', [], async () => {
+  const [activities, triggers] = await Promise.all([getAll('activity'), getAll('trigger')]);
 
-  if (!GITHUB_TOKEN) {
-    throw new Error('GITHUB TOKEN not found');
-  }
+  const contribs = [...activities, ...triggers]
+    .filter(contrib => !ignoreRefs.includes(contrib.ref))
+    .concat([{
+      type: 'action',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow'
+    }]);
 
-  Promise.all([
-    getAll('activity'),
-    getAll('trigger')
-  ])
-    .then(([activities, triggers]) => makePalette(
-      triggers
-        .concat(activities)
-        .filter(contrib => !ignoreRefs.includes(contrib.ref))
-        .concat([{
-          type: 'action',
-          ref: 'github.com/TIBCOSoftware/flogo-contrib/action/flow'
-        }])
-    ))
-    .then(palette => {
-      console.log('** Generated new default palette **');
-      console.log(palette);
-      return palette;
-    })
-    .then(palette => writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), palette))
-    .then(() => cb())
-    .catch(err => {
-      console.error(err);
-      cb(err);
-    })
-
+  const palette = makePalette(contribs);
+  console.log('** Generated new default palette **');
+  console.log(inspect(palette));
+  return writeJsonFile(path.resolve(CONFIG.paths.source.server, 'config', DEFAULT_PALETTE_FILENAME), palette);
 });
 
 function makePalette(extensions) {
@@ -60,85 +46,47 @@ function makePalette(extensions) {
   };
 }
 
+async function getAll(type) {
+  const dirPath = path.join(pathToContrib, type);
+  const files = await getFiles(dirPath);
+  let descriptorPaths = files
+    .filter(file => file.isDir)
+    .map(file => path.join(file.path, `${type}.json`));
+  const descriptors = await Promise.all(descriptorPaths.map(contribDescriptorPath => readContribDescriptor(contribDescriptorPath)));
+  return descriptors
+    .filter(descriptor => !!descriptor)
+    .map(({ ref }) => ({ type, ref }));
+}
+
+async function getFiles(dirPath) {
+  const getFileStats = name => {
+    const filePath = path.join(dirPath, name);
+    return fileStat(filePath)
+      .then(fileInfo => {
+        return {
+          name,
+          path: filePath,
+          isDir: fileInfo.isDirectory(),
+        };
+      })
+  };
+  const fileNames = await readDir(dirPath);
+  return Promise.all(fileNames.map(getFileStats));
+}
+
 function writeJsonFile(target, contents) {
-  return new Promise(function(resolve, reject) {
-    fs.writeFile(target, JSON.stringify(contents, null, 4), function(err) {
-      if(err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-
+  return writeFile(target, JSON.stringify(contents, null, 4));
 }
 
-function getAll(type) {
-  return getRepoContents(type)
-    .then(all => Promise.all(
-        all
-          .filter(each => each.type == 'dir')
-          .map(each => {
-            const descriptorPath = `${each.path}/${type}.json`;
-            return getRepoContents(descriptorPath, { rawContent: true })
-              .then(contrib => ({
-                type: type,
-                ref: contrib.ref
-              }))
-              .catch(err => {
-                console.error(err);
-                console.warn(`Error reading descriptor for "${descriptorPath}"`);
-              })
-          })
-      ))
+function readContribDescriptor(path) {
+  return readFile(path)
+    .then(fileContents => {
+      return JSON.parse(fileContents);
+    })
+    .catch((err) => {
+      console.warn(`Could not read descriptor for ${path}`);
+      console.warn(err);
+      return Promise.resolve(null);
+    })
 }
 
-/**
- *
- * @param contentsPath
- * @param options (optional)
- * @param options.rawContent
- * @returns {Promise}
- */
-function getRepoContents(contentsPath, options) {
-  options = options || {};
-
-  return new Promise((resolve, reject) => {
-    let reqOptions = {
-      protocol: 'https:',
-      hostname: 'api.github.com',
-      path: `/repos/${REPO}/contents/${contentsPath}`,
-      headers: {
-        'User-Agent': 'fg-testing'
-      }
-    };
-
-    if(options.rawContent) {
-      reqOptions.headers['Accept'] = MEDIA_TYPE_RAW;
-    }
-
-    if(GITHUB_TOKEN) {
-      reqOptions.headers['Authentication'] = `Basic ${GITHUB_TOKEN}`;
-    }
-
-    https.get(reqOptions, response => {
-      var body = '';
-      response.on('data', function(d) {
-        body += d;
-      });
-      response.on('end', function() {
-        try {
-          // Data reception is done, do whatever with it!
-          var parsed = JSON.parse(body);
-          resolve(parsed);
-        } catch (e) {
-          reject(new Error(e));
-        }
-
-      });
-    }).on('error', (e) => {
-      reject(new Error(e));
-    });
-  });
-
-}
