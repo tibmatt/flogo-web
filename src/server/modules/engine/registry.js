@@ -19,7 +19,13 @@ export function getInitializedEngine(enginePath, opts = {}) {
     return Promise.resolve(engineRegistry[enginePath]);
   }
 
-  const engine = new Engine(enginePath, opts.libVersion || config.libVersion, engineLogger);
+  let libVersion;
+  if (opts.noLib) {
+    libVersion = null;
+  } else {
+    libVersion = opts.libVersion || config.libVersion;
+  }
+  const engine = new Engine(enginePath, libVersion, engineLogger);
   engineRegistry[enginePath] = engine;
 
   const initTimer = logger.startTimer();
@@ -29,7 +35,32 @@ export function getInitializedEngine(enginePath, opts = {}) {
       initTimer.done('EngineInit');
       return engine;
     });
+}
 
+function createEngine(engine, defaultFlogoDescriptorPath, useVendor) {
+  logger.warn('Engine does not exist. Creating...');
+  return engine.create(defaultFlogoDescriptorPath, useVendor)
+    .then(() => {
+      logger.info('New engine created');
+      // when vendor provided it's not needed to install a palette
+      if (useVendor) {
+        return Promise.resolve(true);
+      }
+      // TODO: add palette version
+      const palettePath = path.resolve('config', config.defaultEngine.defaultPalette);
+      logger.info(`Will install palette at ${palettePath}`);
+      return Promise.all([engine.installPalette(palettePath), installDeviceContributions()]);
+    })
+    .catch(error => {
+      logger.error('Found error while initializing engine:');
+      logger.error(error);
+      throw error;
+      // logger.error('Error initializing engine. Will try to clean up');
+      // return engine.remove().then(() => {
+      //   logger.info('Successful clean');
+      //   throw new Error(error);
+      // });
+    });
 }
 
 /**
@@ -39,50 +70,36 @@ export function getInitializedEngine(enginePath, opts = {}) {
  * @returns {*}
  */
 export function initEngine(engine, options) {
-  let forceInit = options && options.forceCreate;
-  return engine.exists()
-    .then(function(engineExists){
+  const forceInit = options && options.forceCreate;
+  const useVendor = options && options.vendor;
+  const defaultFlogoDescriptorPath = (options && options.defaultFlogoDescriptorPath)
+    || config.defaultFlogoDescriptorPath;
+  const skipContribLoad = options && options.skipContribLoad;
 
+  return engine.exists()
+    .then(engineExists => {
       if (engineExists && forceInit) {
         return engine.remove().then(() => true);
       }
       return !engineExists || forceInit;
     })
-    .then(create => {
-      if(create) {
-        logger.warn('Engine does not exist. Creating...');
-        const defaultFlogoDescriptorPath = ((options && options.defaultFlogoDescriptorPath) || config.defaultFlogoDescriptorPath);
-        const vendor = options && options.vendor;
-        return engine.create(defaultFlogoDescriptorPath, vendor)
-          .then(() => {
-            logger.info('New engine created');
-            // when vendor provided it's not needed to install a palette
-            if(vendor) {
-              return Promise.resolve(true);
-            }
-            // TODO: add palette version
-            let palettePath = path.resolve('config', config.defaultEngine.defaultPalette);
-            logger.info(`Will install palette at ${palettePath}`);
-            return Promise.all([engine.installPalette(palettePath), installDeviceContributions()]);
-          })
-          .catch(error => {
-            logger.error('Found error while initializing engine:');
-            logger.error(error);
-            throw error;
-            // logger.error('Error initializing engine. Will try to clean up');
-            // return engine.remove().then(() => {
-            //   logger.info('Successful clean');
-            //   throw new Error(error);
-            // });
-          });
+    .then(shouldCreateNewEngine => {
+      if (shouldCreateNewEngine) {
+        return createEngine(engine, defaultFlogoDescriptorPath, useVendor);
       }
+      return true;
     })
-    .then(() => engine.load())
-    .then(installedContribs => {
-      const mapContribs = collection => collection.map(c => ({ path: c.path, version: c.version }));
-      logger.info('installedContributions', {
-        triggers: mapContribs(installedContribs.triggers),
-        activities: mapContribs(installedContribs.activities),
-      });
+    .then(() => {
+      if (skipContribLoad) {
+        return true;
+      }
+      return engine.load()
+        .then(installedContribs => {
+          const mapContribs = collection => collection.map(c => ({ path: c.path, version: c.version }));
+          logger.info('installedContributions', {
+            triggers: mapContribs(installedContribs.triggers),
+            activities: mapContribs(installedContribs.activities),
+          });
+        });
     });
 }

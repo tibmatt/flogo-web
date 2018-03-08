@@ -4,10 +4,8 @@ import * as path from 'path';
 import groupBy from 'lodash/groupBy';
 import clone from 'lodash/clone';
 
-import { readJSONFile, asyncIsDirectory } from '../../common/utils/file';
-
-const TASK_SRC_ROOT_LEGACY = () => ['vendor', 'src'];
-const TASK_SRC_ROOT = (engineName) => ['src', engineName, 'vendor'];
+import { readJSONFile } from '../../common/utils/file';
+import { determinePathToVendor } from './determine-path-to-vendor';
 
 module.exports = {
   exists(enginePath) {
@@ -96,27 +94,6 @@ module.exports = {
 
 function readFlogo(enginePath) {
   return readJSONFile(path.join(enginePath, 'flogo.json'));
-}
-
-function determinePathToVendor(enginePath) {
-  const engineName = path.basename(enginePath);
-  const relativeVendorPathParts = TASK_SRC_ROOT(engineName);
-  const vendorPath = path.join(enginePath, ...relativeVendorPathParts);
-  return asyncIsDirectory(vendorPath)
-    .then(vendorDirExists => {
-      console.log(`${vendorPath}?: `, vendorDirExists);
-      if (vendorDirExists) {
-        return vendorPath;
-      }
-      const legacyVendorDir = path.join(enginePath, ...TASK_SRC_ROOT_LEGACY());
-      return asyncIsDirectory(legacyVendorDir).then(legacyVendorDirExists => {
-        console.log(`${legacyVendorDir}?: `, vendorDirExists)
-        if (!legacyVendorDirExists) {
-          throw new Error('Could not find vendor directory while loading contributions');
-        }
-        return legacyVendorDir;
-      });
-    });
 }
 
 function _readTasks(vendorPath, type, data) {

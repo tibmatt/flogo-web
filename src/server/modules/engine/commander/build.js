@@ -1,6 +1,7 @@
 import path from 'path';
-import { copyFile, changePermissions, findMostRecentFile } from '../../../common/utils';
-import { processHost, runShellCMD } from '../../../common/utils/process';
+import { copyFile, changePermissions } from '../../../common/utils';
+import { runShellCMD } from '../../../common/utils/process';
+import { recursivelyFindFirstFile } from '../file-utils';
 
 /**
  * Build the engine.
@@ -40,8 +41,9 @@ export function build(enginePath, opts) {
     env: Object.assign({}, process.env, env),
   })
     .then(out => console.log(`[log] build output: ${out}`))
-    .then(() => _getGeneratedBinaryPath(enginePath, opts.compile))
+    .then(() => recursivelyFindFirstFile(path.join(enginePath, 'bin')))
     .then(binaryPath => {
+      console.log('[build] Found binary file: ', binaryPath);
       if (copyFlogoDescriptor) {
         return copyFile(path.join(enginePath, 'bin', 'flogo.json'), path.join(opts.target, 'flogo.json'))
           .then(() => binaryPath);
@@ -112,43 +114,4 @@ function _copyBinaryToTarget(binaryPath, targetDir) {
   return copyFile(from, to)
     .then(() => changePermissions(to, execPermissions))
     .then(() => ({ path: to }));
-}
-
-function _getGeneratedBinaryPath(enginePath, compileOptions) {
-  const enginePathInfo = path.parse(enginePath);
-  const binDirPath = path.join(enginePath, 'bin');
-  const executableFilePattern = _determineBuildExecutableNamePattern(enginePathInfo.name, compileOptions);
-  console.log(`[log] execName: ${executableFilePattern.namePattern}`);
-
-  // if no compile options provided or both options provided we can skip the search for
-  // generated binary since we have the exact name
-  if (executableFilePattern.isDefaultCompile) {
-    console.log('[debug] Default compile, grab file directly');
-    return Promise.resolve(path.resolve(binDirPath, executableFilePattern.namePattern));
-  }
-  console.log('[debug] Find file');
-  return findMostRecentFile(binDirPath, new RegExp(executableFilePattern.namePattern))
-      .then(binaryPath => {
-        console.log(`[log] Found: ${JSON.stringify(binaryPath)}`);
-        return binaryPath;
-      });
-}
-
-function _determineBuildExecutableNamePattern(name, compileOptions) {
-  let namePattern = name;
-  const isDefaultCompile = !(compileOptions.os || compileOptions.arch);
-
-  if (compileOptions.os && compileOptions.arch) {
-    namePattern = `${namePattern}-${compileOptions.os}-${compileOptions.arch}`;
-  } else if (compileOptions.os) {
-    namePattern = `${namePattern}-${compileOptions.os}`;
-  } else if (compileOptions.arch) {
-    namePattern = `${namePattern}-.*-${compileOptions.arch}`;
-  } else if (isDefaultCompile && processHost.isWindows()) {
-    namePattern = `${namePattern}.exe`;
-  }
-  return {
-    isDefaultCompile,
-    namePattern,
-  };
 }

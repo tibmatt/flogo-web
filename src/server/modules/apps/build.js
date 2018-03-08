@@ -1,43 +1,35 @@
-import { AppsManager } from './index.v2';
+import { readFile } from 'fs-extra';
+
+import { logger } from '../../common/logging';
 import { config } from './../../config/app-config';
-import { writeJSONFile, rmFolder } from './../../common/utils';
-import fs from 'fs';
 import { getInitializedEngine } from './../../modules/init';
+import { determinePathToVendor } from '../engine/determine-path-to-vendor';
 
+import { AppsManager } from './index.v2';
 
-export function buildApp(appId, options) {
-  let createdEngine = null;
+export async function buildApp(appId, options) {
   const buildOptions = Object.assign({}, { optimize: true, embedConfig: true }, options);
   const engineOptions = {
     forceCreate: true,
+    // noLib: true,
+    skipContribLoad: true,
     defaultFlogoDescriptorPath: config.exportedAppBuild,
-    vendor: config.defaultEngine.vendorPath,
   };
 
-  return AppsManager.export(appId)
-            .then((exportedApp) => {
-              return writeJSONFile(config.exportedAppBuild, exportedApp)
-                .then(() => {
-                    return getInitializedEngine(config.appBuildEngine.path, engineOptions)
-                      .then((engine) => {
-                        createdEngine = engine;
-                        return createdEngine.build(buildOptions);
-                      })
-                    .then((buildResult) => {
-                      return new Promise((resolve, reject) => {
-                        fs.readFile(buildResult.path, (err, data) => {
-                           if(err) {
-                             reject(err);
-                           }
-                           let binaryStream = data;
-                           return createdEngine.remove()
-                             .then(() => {
-                               resolve({ appName: exportedApp.name, data: binaryStream });
-                             });
-                        });
-                      });
-                    })
-                })
-            });
+  const timer = logger.startTimer();
+  const [exportedApp, pathToVendor] = await Promise.all([
+    AppsManager.export(appId),
+    determinePathToVendor(config.defaultEngine.path),
+  ]);
 
+  const createdEngine = await getInitializedEngine(
+    config.appBuildEngine.path,
+    { ...engineOptions, vendor: pathToVendor },
+  );
+  const buildResult = await createdEngine.build(buildOptions);
+  const binaryStream = await readFile(buildResult.path);
+
+  await createdEngine.remove();
+  timer.done(`done build for ${JSON.stringify(buildOptions)}`);
+  return { appName: exportedApp.name, data: binaryStream };
 }
