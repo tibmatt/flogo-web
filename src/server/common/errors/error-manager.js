@@ -20,6 +20,7 @@ export class ErrorManager {
    *
    * @param message
    * @param details
+   * @param ctr
    */
   static createValidationError(message, details, ctr) {
     return ErrorManager.makeError(message, {
@@ -57,7 +58,7 @@ export class ErrorManager {
 
     return ErrorManager.createValidationError(
       'Validation error',
-      { errors: { details: [error] } },
+      { details: [error] } ,
     );
   }
 
@@ -70,6 +71,7 @@ export class ErrorManager {
    * @param details.title {string} A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem
    * @param details.detail {string} (optional) A human-readable explanation specific to this occurrence of the problem.
    * @param details.meta {object} (optional) A meta object containing non-standard meta-information about the error. Ex. for validation the property details
+   * @param ctr
    */
   static createRestError(message = 'REST Api Error', details, ctr) {
     details.status = details.status || 400;
