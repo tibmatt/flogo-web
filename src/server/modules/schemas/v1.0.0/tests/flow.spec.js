@@ -76,25 +76,47 @@ describe('JSONSchema: Flow', function () {
       });
 
       it('should accept input mappings', function () {
-        const action = { input: [{ ...validSchemas.metadataItem }] };
+        const action = {input: [{...validSchemas.metadataItem}]};
         expect(metadataValidator.validate(action)).to.equal(true);
       });
 
       it('should accept output mappings', function () {
-        const action = { output: [{ ...validSchemas.metadataItem }] };
+        const action = {output: [{...validSchemas.metadataItem}]};
         expect(metadataValidator.validate(action)).to.equal(true);
       });
 
       it('should accept both input and output mappings', function () {
-        const action = { ...validSchemas.metadata };
+        const action = {...validSchemas.metadata};
         expect(metadataValidator.validate(action)).to.equal(true);
       });
     });
-    xdescribe('/activity', function () {
-      xit('should allow correct activities', function () {
 
+    describe('/activity', function () {
+      let activityValidator;
+      beforeEach(function () {
+        activityValidator = this.ajvContext.createValidatorForSubschema('activity');
+      });
+      it('should allow correct activities', function () {
+        activityValidator
+          .validateAndCreateAsserter({...validSchemas.activity})
+          .assertIsValid();
+      });
+      it('should require ref', function () {
+        activityValidator.validateAndCreateAsserter({type: 'number'})
+          .assertIsInvalid()
+          .assertHasErrorForRequiredProp('ref');
+      });
+
+      it('should require settings when activity is subflow', function () {
+        const activityUnderTest = {...validSchemas.activity};
+        activityUnderTest.ref = 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow';
+        activityUnderTest.settings = {};
+        activityValidator.validateAndCreateAsserter(activityUnderTest)
+          .assertIsInvalid()
+          .assertHasErrorForRequiredProp('.flowURI');
       });
     });
+
     describe('/task', function () {
       let taskValidator;
       beforeEach(function () {
@@ -106,7 +128,7 @@ describe('JSONSchema: Flow', function () {
           iterate: '$someref',
           customSettings: 'foobar',
         };
-        const originalTask = { ...validSchemas.task, settings };
+        const originalTask = {...validSchemas.task, settings};
         const taskUnderTest = cloneDeep(originalTask);
         taskValidator.validate(taskUnderTest);
         expect(taskUnderTest).to.deep.include(originalTask);
@@ -114,7 +136,7 @@ describe('JSONSchema: Flow', function () {
 
       ['id', 'activity'].forEach(requiredProp => {
         it(`should require ${requiredProp}`, function () {
-          const taskUnderTest = { ...validSchemas.task };
+          const taskUnderTest = {...validSchemas.task};
           delete taskUnderTest[requiredProp];
           taskValidator.validateAndCreateAsserter(taskUnderTest)
             .assertIsInvalid()
@@ -123,13 +145,46 @@ describe('JSONSchema: Flow', function () {
       });
 
       it('should not allow empty id', function () {
-        taskValidator.validateAndCreateAsserter({ ...validSchemas.task, id: '' })
+        taskValidator.validateAndCreateAsserter({...validSchemas.task, id: ''})
           .assertIsInvalid()
           .assertHasErrorForEmptyProp('id');
       });
     });
-    xdescribe('/link', function () {
-      xit('should allow correct links', function () {
+
+    describe('/link', function () {
+      let linkValidator;
+      beforeEach(function () {
+        linkValidator = this.ajvContext.createValidatorForSubschema('link');
+      });
+      it('should allow correct links', function () {
+        linkValidator
+          .validateAndCreateAsserter({...validSchemas.link})
+          .assertIsValid();
+      });
+      ['from', 'to'].forEach(propName => {
+        it(`should require "${propName}" property`, function () {
+          const linkUnderTest = {...validSchemas.link};
+          delete linkUnderTest[propName];
+          linkValidator.validateAndCreateAsserter(linkUnderTest)
+            .assertIsInvalid()
+            .assertHasErrorForRequiredProp(propName);
+        });
+      });
+      it('should allow value when type expression', function () {
+        const linkUnderTest = {...validSchemas.link};
+        linkUnderTest.type = "expression";
+        linkValidator.validateAndCreateAsserter(linkUnderTest)
+          .assertIsInvalid()
+          .assertHasErrorForRequiredProp('.value');
+      });
+
+      it('should not accept invalid type', function () {
+        const linkUnderTest = {...validSchemas.link};
+        const allowedValues = ["default", "dependency", "expression"];
+        linkUnderTest.type = "somethingElse";
+        linkValidator.validateAndCreateAsserter(linkUnderTest)
+          .assertIsInvalid()
+          .assertHasErrorForMismatchingPropertyEnum('type', allowedValues)
 
       });
     });
