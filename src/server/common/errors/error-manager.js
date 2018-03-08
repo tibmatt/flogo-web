@@ -1,5 +1,5 @@
-import {FlogoError} from './flogo-error';
-import {ERROR_TYPES} from './error-types';
+import { FlogoError } from './flogo-error';
+import { ERROR_TYPES } from './error-types';
 
 export class ErrorManager {
 
@@ -21,46 +21,44 @@ export class ErrorManager {
    * @param message
    * @param details
    */
-  static createValidationError(message, details) {
+  static createValidationError(message, details, ctr) {
     return ErrorManager.makeError(message, {
       type: ERROR_TYPES.COMMON.VALIDATION,
       details: {
         errors: details,
       },
-      ctr: ErrorManager.createValidationError,
+      ctr: ctr || ErrorManager.createValidationError,
     });
   }
 
 
   /**
    * Creates a custom validation error object which caused due to the data the server logic is performing on.
-   * The method has message and details as parameters.
+   * The method has message, keyword and details as parameters.
    *
-   * 1. Message is type string and it is what send to the client.
-   *
-   * 2. Details param is an optional param. It can the following optional properties in it:
-   *      dataPath: path of the data at which the validation has failed
-   *      params: an object which can have custom error specific extra information based on which the error occurred
-   *
-   * @param message
-   * @param details
+   * @param {string} message - message to be sent to the client
+   * @param {string} keyword
+   * @param {object} [details] - optional details
+   * @param {string} [details.dataPath] - path of the data at which the validation has failed
+   * @param {object [details.params] -  an object which can have custom error specific extra information based on which
+   * the error occurred
    */
-  static createCustomValidationError(message, {dataPath, params} = {}) {
-    const errorDetails = {details: []};
+  static createCustomValidationError(message, keyword, { dataPath, params } = {}) {
+    if (!keyword) {
+      throw new Error('Missing required keyword parameter');
+    }
     const error = {
-      keyword: "custom",
-      message: message,
-      schemaPath: "#/custom"
+      keyword,
+      message,
+      schemaPath: '#/custom',
+      dataPath: dataPath || '',
+      params: params || {},
     };
-    error.dataPath = dataPath ? dataPath : "";
-    error.params = params ? params : {};
-    errorDetails.details.push(error);
-    return ErrorManager.makeError("Custom validation error", {
-      type: ERROR_TYPES.COMMON.VALIDATION,
-      details: {
-        errors: errorDetails
-      }
-    });
+
+    return ErrorManager.createValidationError(
+      'Validation error',
+      { errors: { details: [error] } },
+    );
   }
 
   /**

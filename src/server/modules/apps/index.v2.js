@@ -8,7 +8,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 import shortid from 'shortid';
 
 import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE } from '../../common/constants';
-import { ErrorManager, ERROR_TYPES } from '../../common/errors';
+import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
 import { logger } from '../../common/logging';
@@ -22,6 +22,7 @@ import { buildApp } from './build';
 
 import { Validator } from './validator';
 import { getProfileType } from '../../common/utils/profile';
+import { APP_ERRORS } from './errors';
 
 const EDITABLE_FIELDS = [
   'name',
@@ -97,7 +98,7 @@ export class AppsManager {
       .findOne({ _id: appId }, fromPairs(EDITABLE_FIELDS.concat('_id').map(field => [field, 1])))
       .then(app => {
         if (!app) {
-          throw ErrorManager.makeError('App not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+          throw ErrorManager.makeError('App not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
         }
 
         const mergedData = Object.assign({}, app, inputData);
@@ -243,12 +244,12 @@ export class AppsManager {
    */
   static export(appId, { appModel = EXPORT_MODEL_STANDARD, format, flowIds } = {}) {
     if (appModel !== EXPORT_MODEL_STANDARD && appModel !== EXPORT_MODEL_LEGACY) {
-      throw ErrorManager.createCustomValidationError(`Cannot export to unknown application model "${appModel}"`);
+      throw ErrorManager.makeError(`Cannot export to unknown application model "${appModel}"`, { type: APP_ERRORS.UNKNOWN_APP_MODEL });
     }
     return AppsManager.findOne(appId)
       .then(app => {
         if (!app) {
-          throw ErrorManager.makeError('Application not found', { type: ERROR_TYPES.COMMON.NOT_FOUND });
+          throw ErrorManager.makeError('Application not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
         }
         const isFullExportMode = format !== EXPORT_FORMAT_FLOWS;
         const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
