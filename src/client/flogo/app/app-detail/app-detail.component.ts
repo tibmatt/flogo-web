@@ -49,6 +49,14 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   isNewApp = false;
 
   isBuildBoxShown = false;
+  buildOptions = [
+    { label: 'x86/Linux', os: 'linux', arch: '386' },
+    { label: 'x64/Linux', os: 'linux', arch: 'amd64' },
+    { label: 'ARM/Linux', os: 'linux', arch: 'arm' },
+    { label: 'x64/Darwin-OSX', os: 'darwin', arch: 'amd64' },
+    { label: 'x64/Windows', os: 'windows', arch: 'amd64' },
+  ];
+
   isExportBoxShown = false;
   downloadLink: string;
 

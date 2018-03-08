@@ -6,6 +6,7 @@ import { getInitializedEngine } from './../../modules/init';
 import { determinePathToVendor } from '../engine/determine-path-to-vendor';
 
 import { AppsManager } from './index.v2';
+import { writeJSONFile } from '../../common/utils';
 
 export async function buildApp(appId, options) {
   const buildOptions = Object.assign({}, { optimize: true, embedConfig: true }, options);
@@ -17,8 +18,9 @@ export async function buildApp(appId, options) {
   };
 
   const timer = logger.startTimer();
+
   const [exportedApp, pathToVendor] = await Promise.all([
-    AppsManager.export(appId),
+    exportAppAndWriteToFileSystem(appId, engineOptions.defaultFlogoDescriptorPath),
     determinePathToVendor(config.defaultEngine.path),
   ]);
 
@@ -32,4 +34,10 @@ export async function buildApp(appId, options) {
   await createdEngine.remove();
   timer.done(`done build for ${JSON.stringify(buildOptions)}`);
   return { appName: exportedApp.name, data: binaryStream };
+}
+
+async function exportAppAndWriteToFileSystem(appId, outputToPath) {
+  const exportedApp = await AppsManager.export(appId);
+  await writeJSONFile(outputToPath, exportedApp);
+  return exportedApp;
 }
