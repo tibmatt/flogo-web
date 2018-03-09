@@ -50,7 +50,7 @@ export class ImportErrorFormatterService {
         break;
       case 'enum':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
-          + this._translate.instant('IMPORT-ERROR:ONE_AMONG_CONTENT', { allowedValuesl: detail.params.allowedValues.join(',') });
+          + this._translate.instant('IMPORT-ERROR:ONE_AMONG_CONTENT', { allowedValues: detail.params.allowedValues.join(',') });
         break;
       case 'const':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
