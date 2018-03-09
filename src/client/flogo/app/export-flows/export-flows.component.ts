@@ -11,10 +11,11 @@ import {notification} from '@flogo/shared/utils';
 })
 export class FlogoExportFlowsComponent {
   @ViewChild('modal')
-  public modal: ModalComponent;
-
+  modal: ModalComponent;
   @Input()
   flows: Array<FlowSummary> = [];
+  @Input()
+  isLegacyExport = false;
   checkedFlows = [];
   checkAllFlows = [];
 
@@ -58,7 +59,7 @@ export class FlogoExportFlowsComponent {
     } else {
       flowsToExport = this.checkedFlows;
     }
-      return () => this.appDetailService.exportFlow(flowsToExport)
+      return () => this.appDetailService.exportFlow(flowsToExport, this.isLegacyExport)
         .then(appWithFlows => {
           return [{
             fileName: 'flows.json',

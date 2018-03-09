@@ -105,11 +105,11 @@
               <div class="flogo-app-detail-list-wrapper "
                    [ngClass]="{'active' : isExportBoxShown, 'flogo-app-detail-profile-wrapper' : profileType === PROFILE_TYPES.DEVICE}">
                 <ul class="flogo-app-detail-list list-unstyled">
-                  <li class="flogo-app-detail-list-item" [fgJsonDownloader]="appExporter()">
+                  <li *ngIf="profileType == PROFILE_TYPES.MICRO_SERVICE" class="flogo-app-detail-list-item" [fgJsonDownloader]="appExporter()">
                     <a class="flogo-app-detail-list-link"><span>{{ 'DETAILS:EXPORT-APP' | translate }} </span></a>
                   </li>
                   <li class="flogo-app-detail-list-item" [fgJsonDownloader]="appExporter(true)">
-                    <a class="flogo-app-detail-list-link"><span>{{ 'DETAILS:EXPORT-APP-LEGACY' | translate }} </span></a>
+                    <a class="flogo-app-detail-list-link"><span>{{(profileType == PROFILE_TYPES.MICRO_SERVICE ? 'DETAILS:EXPORT-APP-LEGACY' : 'DETAILS:EXPORT-APP') | translate }} </span></a>
                   </li>
                   <li class="flogo-app-detail-list-item" (click)="openExportFlow();">
                     <a class="flogo-app-detail-list-link"><span>{{ 'DETAILS:EXPORT-FLOW' | translate }}</span></a>
@@ -172,6 +172,6 @@
                                    (deleteFlow)="onFlowDelete($event)"
                                    (addFlow)="openCreateFlowFromTrigger($event)"></flogo-apps-flows-flow-group>
     </div>
-    <flogo-export-flow #exportFlowModal [flows]="application?.actions" ></flogo-export-flow>
+    <flogo-export-flow #exportFlowModal [flows]="application?.actions" [isLegacyExport]="profileType == PROFILE_TYPES.DEVICE"></flogo-export-flow>
   </div>
 </div>

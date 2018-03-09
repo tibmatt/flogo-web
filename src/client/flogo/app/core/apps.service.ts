@@ -135,8 +135,12 @@ export class AppDetailService {
     return this.appsApiService.exportApp(this.currentApp$.getValue().app.id, { appModel });
   }
 
-  public exportFlow(flowids) {
-    return this.appsApiService.exportFlows(this.currentApp$.getValue().app.id, flowids);
+  public exportFlow(flowids, isLegacyExport?: boolean) {
+    let appModel;
+    if (isLegacyExport) {
+      appModel = APP_MODELS.LEGACY;
+    }
+    return this.appsApiService.exportFlows(this.currentApp$.getValue().app.id, flowids, appModel);
   }
   public getDownloadLink(appId: string): string {
     return this.appsApiService.downloadAppLink(appId);

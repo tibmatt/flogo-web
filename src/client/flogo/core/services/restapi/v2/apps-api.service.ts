@@ -79,6 +79,7 @@ export class AppsApiService {
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
+  // todo: combine with exportflows
   exportApp(appId: string, options: { appModel?: TYPE_APP_MODEL } = {}) {
     let searchOptions: URLSearchParams;
     if (options.appModel) {
@@ -92,13 +93,17 @@ export class AppsApiService {
       .catch(err => Promise.reject(err.json()));
   }
 
-  exportFlows(appId: string, flowIds: any[]) {
+  // todo: combine with exportapp
+  exportFlows(appId: string, flowIds: any[], appModel?: TYPE_APP_MODEL) {
     let reqOptions = this.httpUtils.defaultOptions();
     const searchParams = new URLSearchParams();
     searchParams.set('type', 'flows');
     if (flowIds && flowIds.length > 0) {
       const selectedFlowIds = flowIds.join(',');
       searchParams.set('flowids', selectedFlowIds);
+    }
+    if (appModel) {
+      searchParams.set('appmodel', appModel);
     }
     reqOptions = reqOptions.merge({
       search: searchParams
