@@ -10,10 +10,11 @@ import { AppDetailService } from '@flogo/app/core/apps.service';
 import { FlogoExportFlowsComponent } from './export-flows.component';
 
 @Component({
-  template: `<flogo-export-flow [flows]="flows"></flogo-export-flow>`
+  template: `<flogo-export-flow [flows]="flows" [isLegacyExport]="isLegacyExport"></flogo-export-flow>`
 })
 class TestHostComponent {
   flows: Array<FlowSummary> = makeMockFlows();
+  isLegacyExport = false;
 }
 
 class MockAppDetailService {
@@ -82,6 +83,34 @@ describe('FlogoExportFlowsComponent component', () => {
     expect(checkedFlowsCount).toEqual(0, 'Expected no flows selected');
   });
 
+  describe('Legacy export', function () {
+    let exportFlowsComponent;
+    let appDetailServiceSpy;
+    const performExport = () => {
+      fixture.detectChanges();
+      const exporter = exportFlowsComponent.exportFlows();
+      exporter();
+      fixture.detectChanges();
+    };
+    beforeEach(function () {
+      selectAllLink.nativeElement.click();
+      fixture.detectChanges();
+      const exportFlowsComponentDe = fixture.debugElement.query(By.directive(FlogoExportFlowsComponent));
+      exportFlowsComponent = <FlogoExportFlowsComponent> exportFlowsComponentDe.componentInstance;
+      appDetailServiceSpy = fixture.debugElement.injector.get(AppDetailService);
+    });
+    it('If in legacy mode it should export legacy format', function() {
+      containerComponent.isLegacyExport = true;
+      performExport();
+      expect(appDetailServiceSpy.exportFlow.calls.mostRecent().args[1]).toBe(true);
+    });
+    it('If not in legacy mode it should export the standard format', function() {
+      containerComponent.isLegacyExport = false;
+      performExport();
+      expect(appDetailServiceSpy.exportFlow.calls.mostRecent().args[1]).toBe(false);
+    });
+  });
+
   it('Should export only the flows that are selected', () => {
     fixture.detectChanges();
     expect(exportButton.nativeElement.disabled).toBeTruthy();
@@ -100,7 +129,7 @@ describe('FlogoExportFlowsComponent component', () => {
     // all original flows except the last one
     const expectedFlowIds = containerComponent.flows.slice(0, -1).map(flow => flow.id);
     const appDetailServiceSpy = fixture.debugElement.injector.get(AppDetailService);
-    expect(appDetailServiceSpy.exportFlow.calls.mostRecent().args).toEqual([expectedFlowIds]);
+    expect(appDetailServiceSpy.exportFlow.calls.mostRecent().args[0]).toEqual(expectedFlowIds);
   });
 
   it('Should select all flows onload by default', () => {
