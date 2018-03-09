@@ -21,8 +21,10 @@ export class ImportErrorFormatterService {
       case 'minLength':
       case 'const':
       case 'app-empty':
+      messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
+      break;
       case 'cannot-identify-app-type':
-        messageHeader = this._translate.instant('IMPORT-ERROR:DATA_MISMATCH');
+        messageHeader = this._translate.instant('IMPORT-ERROR:UNKNOWN_APP_TYPE');
         break;
       case 'activity-installed':
         messageHeader = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING');
@@ -48,15 +50,17 @@ export class ImportErrorFormatterService {
         break;
       case 'enum':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
-          + this._translate.instant('IMPORT-ERROR:ONE_AMONG_CONTENT', { val: detail.params.allowedValues.join(',') });
+          + this._translate.instant('IMPORT-ERROR:ONE_AMONG_CONTENT', { allowedValuesl: detail.params.allowedValues.join(',') });
         break;
       case 'const':
         errorMessage = this.getErrorContext(detail.dataPath, detail.keyword)
           + this._translate.instant('IMPORT-ERROR:CONSTANT_CONTENT', { val: detail.params.allowedValue });
         break;
       case 'app-empty':
-      case 'cannot-identify-app-type':
         errorMessage = detail.message;
+        break;
+      case 'cannot-identify-app-type':
+        errorMessage = this._translate.instant('IMPORT-ERROR:UNKNOWN_APP_TYPE_DETAIL');
         break;
       case 'activity-installed':
         errorMessage = this._translate.instant('IMPORT-ERROR:ACTIVITY_MISSING_CONTENT', { ref: detail.params.ref });
@@ -87,10 +91,10 @@ export class ImportErrorFormatterService {
   }
 
   getErrorsDetails(details: ValidationDetail[]): ValidationDetail[] {
-    return details.filter(d => this.isRationalError(d));
+    return details.filter(d => this.isErrorRelevantToDisplay(d));
   }
 
-  isRationalError(detail: ValidationDetail) {
+  isErrorRelevantToDisplay(detail: ValidationDetail) {
     return detail.keyword !== 'if';
   }
 }
