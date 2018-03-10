@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Http, HttpModule } from '@angular/http';
-import { TranslateLoader, TranslateModule, TranslateService } from 'ng2-translate';
+import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { RESTAPIApplicationsService } from './services/restapi/applications-api.service';
 import { RESTAPIActivitiesService } from './services/restapi/activities-api.service';
@@ -36,6 +37,7 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
 @NgModule({
   imports: [
     HttpModule,
+    HttpClientModule,
     RouterModule,
     WalkthroughModule,
     TranslateModule,

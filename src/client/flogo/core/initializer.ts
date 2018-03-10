@@ -1,4 +1,4 @@
-import { TranslateService } from 'ng2-translate';
+import { TranslateService } from '@ngx-translate/core';
 
 export function initializer(translateService: TranslateService) {
   return () => {
