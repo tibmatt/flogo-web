@@ -1,4 +1,4 @@
-<modal cssClass="flogo-trigger-mapper-modal"
+<bs-modal cssClass="flogo-trigger-mapper-modal"
        (onClose)="onCloseOrDismiss()"
        (onDismiss)="onCloseOrDismiss()">
   <div class="mapper-modal__header header">
@@ -34,4 +34,4 @@
                   outputsSearchPlaceHolder="{{ currentViewStatus?.outputsLabelKey | translate }}"
                   [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
   </div>
-</modal>
+</bs-modal>

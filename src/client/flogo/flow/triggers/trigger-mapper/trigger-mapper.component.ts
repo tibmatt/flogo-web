@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 import 'rxjs/add/operator/takeUntil';
@@ -30,7 +30,7 @@ interface ViewsStates {
 export class TriggerMapperComponent implements OnInit, OnDestroy {
   // allow access to the constants from the template
   VIEWS = VIEWS;
-  @ViewChild(ModalComponent) modal: ModalComponent;
+  @ViewChild(BsModalComponent) modal: BsModalComponent;
 
   mapperContext: any;
   mappingValidationFn: MappingsValidatorFn;

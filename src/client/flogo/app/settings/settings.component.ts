@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { serializeSettings, importSettings, KeyValue, SettingGroup, OTHER_CATEGORY } from './settings-converter';
 
 @Component({
@@ -11,7 +11,7 @@ export class FlogoAppSettingsComponent {
   @Input() settings: any;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @ViewChild('modal')
-  public modal: ModalComponent;
+  public modal: BsModalComponent;
   public selectedInput: SettingGroup;
   public hasChanges: boolean;
   public otherItem: KeyValue;

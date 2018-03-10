@@ -1,7 +1,7 @@
 import { FlogoAppImportComponent } from './app-import.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { ImportErrorFormatterService } from '../core/import-error-formatter.service';
 import { By } from '@angular/platform-browser';
 import { mockImportErrorResponse } from './mocks/error.response.mock';
@@ -34,7 +34,7 @@ describe('Component: FlogoAppImportComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NoDependenciesFakeLanguageModule],
-      declarations: [FlogoAppImportComponent, ModalComponent, ContainerComponent], // declare the test component
+      declarations: [FlogoAppImportComponent, BsModalComponent, ContainerComponent], // declare the test component
       providers: [ImportErrorFormatterService],
       schemas: [NO_ERRORS_SCHEMA]
     });

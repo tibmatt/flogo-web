@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalModule } from 'ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import { FlogoHomeComponent } from './home.component';
 import { FlogoAppsListComponent } from './apps-list/apps-list.component';
@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     FormsModule,
-    Ng2Bs3ModalModule,
+    BsModalModule,
     FlogoSharedModule,
     RouterModule
   ],

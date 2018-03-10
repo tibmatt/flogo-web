@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChange, ViewChild } from '@angular/core';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 
 @Component({
   selector: 'flogo-walkthrough',
@@ -8,7 +8,7 @@ import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 })
 export class WalkthroughComponent implements OnChanges {
 
-  @ViewChild('instructionsModal') modal: ModalComponent;
+  @ViewChild('instructionsModal') modal: BsModalComponent;
 
   @Input()
   isActivated: boolean;

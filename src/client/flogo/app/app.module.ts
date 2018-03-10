@@ -1,5 +1,5 @@
 import {FormsModule} from '@angular/forms';
-import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {BsModalModule} from 'ng2-bs3-modal';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {FlogoApplicationComponent} from './app.component';
@@ -19,7 +19,7 @@ import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
   imports: [
     CommonModule,
     FormsModule,
-    Ng2Bs3ModalModule,
+    BsModalModule,
     FlogoSharedModule,
     RouterModule
   ],

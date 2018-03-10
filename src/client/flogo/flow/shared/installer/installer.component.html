@@ -1,6 +1,6 @@
-<modal [cssClass]="'flogo-common-modal'" #installerModal (onClose)="onModalCloseOrDismiss($event)"
+<bs-modal [cssClass]="'flogo-common-modal'" #installerModal (onClose)="onModalCloseOrDismiss($event)"
        (onDismiss)="onModalCloseOrDismiss($event)">
-  <modal-body>
+  <bs-modal-body>
     <i class="flogo-installer-modal-close" (click)="closeModal()"></i>
     <div *ngIf="_status == showBlock.standByMode">
       <header class="container-fluid">
@@ -75,5 +75,5 @@
         </button>
       </div>
     </div>
-  </modal-body>
-</modal>
+  </bs-modal-body>
+</bs-modal>

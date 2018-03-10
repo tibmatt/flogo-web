@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import * as _ from 'lodash';
 
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 
 import { ValueTypes } from '@flogo/core/constants';
 
@@ -14,7 +14,7 @@ import { ValueTypes } from '@flogo/core/constants';
 
 export class ParamsSchemaComponent implements OnInit {
   @ViewChild('modal')
-  modal: ModalComponent;
+  modal: BsModalComponent;
   @Input()
   paramsForm: FormGroup;
   @Input() flow: any;

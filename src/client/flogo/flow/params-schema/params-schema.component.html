@@ -1,4 +1,4 @@
-<modal [size]="'lg'" #modal cssClass="flow-input-params-modal">
+<bs-modal [size]="'lg'" #modal cssClass="flow-input-params-modal">
   <form [formGroup]="paramsForm" novalidate (ngSubmit)="saveParams()">
     <div class="flow-input-params-header">
       <div class="flow-input-params-header__title">{{ 'INPUT-PARAMS:DEFINE' | translate }}</div>
@@ -72,5 +72,5 @@
       </div>
     </div>
   </form>
-</modal>
+</bs-modal>
 

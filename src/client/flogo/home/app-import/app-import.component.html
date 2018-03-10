@@ -1,4 +1,4 @@
-<modal [cssClass]="'flogo-common-modal flogo-error'" #errorModal (onClose)="onModalCloseOrDismiss()"
+<bs-modal [cssClass]="'flogo-common-modal flogo-error'" #errorModal (onClose)="onModalCloseOrDismiss()"
        (onDismiss)="onModalCloseOrDismiss()">
   <i class="flogo-icon-close flogo-error__close" (click)="closeModal()"></i>
   <div class="flogo-error__header">
@@ -23,4 +23,4 @@
       {{"MODAL:OKAY" | translate}}
     </button>
   </div>
-</modal>
+</bs-modal>

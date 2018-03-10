@@ -1,5 +1,5 @@
 import {Component, AfterViewInit, Output, ViewChild, EventEmitter} from '@angular/core';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {BsModalComponent} from 'ng2-bs3-modal';
 import {ProfilesAPIService} from '../../core/services/restapi/v2/profiles-api.service';
 import {FLOGO_PROFILE_TYPE} from '../../core/constants';
 
@@ -14,7 +14,7 @@ interface DeviceProfile {
   styleUrls: ['new-app.component.less']
 })
 export class FlogoNewAppComponent implements AfterViewInit {
-  @ViewChild('newAppModal') newAppModal: ModalComponent;
+  @ViewChild('newAppModal') newAppModal: BsModalComponent;
 
   @Output() onClose: EventEmitter<any> = new EventEmitter();
   @Output() onAdd: EventEmitter<any> = new EventEmitter();

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
-import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalModule } from 'ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '@flogo/core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
@@ -59,7 +59,7 @@ describe('FlogoApplicationDetailComponent component', () => {
   beforeEach(done => {
     TestBed.configureTestingModule({
       imports: [
-        Ng2Bs3ModalModule,
+        BsModalModule,
         FakeRootLanguageModule,
         FlogoCoreModule,
         FlogoSharedModule

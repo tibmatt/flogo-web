@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, DebugElement } from '@angular/core';
-import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalModule } from 'ng2-bs3-modal';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { CoreModule as FlogoCoreModule } from '@flogo/core';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
@@ -35,7 +35,7 @@ describe('FlogoExportFlowsComponent component', () => {
     TestBed.configureTestingModule({
       imports: [
         FakeRootLanguageModule,
-        Ng2Bs3ModalModule,
+        BsModalModule,
         FlogoCoreModule,
         FlogoSharedModule,
       ],

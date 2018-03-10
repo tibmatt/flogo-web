@@ -1,6 +1,6 @@
 import { FlogoNewAppComponent } from './new-app.component';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { ProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service';
 import { MockProfilesAPIService } from '../../core/services/restapi/v2/profiles-api.service.mock';
 import { By } from '@angular/platform-browser';
@@ -20,7 +20,7 @@ describe('Component: FlogoNewAppComponent', () => {
     return TestBed.configureTestingModule({
       imports: [NoDependenciesFakeLanguageModule],
       providers: [{ provide: ProfilesAPIService, useClass: MockProfilesAPIService }],
-      declarations: [FlogoNewAppComponent, ModalComponent], // declare the test component
+      declarations: [FlogoNewAppComponent, BsModalComponent], // declare the test component
     })
       .compileComponents();
   });

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { WalkthroughComponent } from './walkthrough.component';
 import { NoDependenciesFakeLanguageModule } from '../language/testing';
 
@@ -20,7 +20,7 @@ describe('Component: FlogoInstructions Modal', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [NoDependenciesFakeLanguageModule],
-      declarations: [WalkthroughComponent, ModalComponent], // declare the test component
+      declarations: [WalkthroughComponent, BsModalComponent], // declare the test component
     });
     return TestBed.compileComponents();
   }));

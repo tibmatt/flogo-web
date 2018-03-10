@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalModule } from 'ng2-bs3-modal';
 
 import { CoreModule, LanguageService } from '@flogo/core';
 import { createTranslateLoader } from '@flogo/core/language';
@@ -33,7 +33,7 @@ import { FlogoApplicationModule } from '@flogo/app';
     BrowserModule,
     CoreModule,
     // todo: should be in common?
-    Ng2Bs3ModalModule,
+    BsModalModule,
 
     FlogoSharedModule,
     FlogoHomeModule,

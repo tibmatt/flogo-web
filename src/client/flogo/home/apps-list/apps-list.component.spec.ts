@@ -9,7 +9,7 @@ import { TimeFromNowPipe } from '../../shared/pipes/time-from-now.pipe';
 import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
 import { FlogoDeletePopupComponent } from '../../shared/components/delete.popup.component';
 import { FlogoAppImportComponent } from '../app-import/app-import.component';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { FlogoNewAppComponent } from '../new-app/new-app.component';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import { ProfilesAPIService } from '@flogo/core/services/restapi/v2/profiles-api.service';
@@ -65,7 +65,7 @@ describe('FlogoAppList component', () => {
         FlogoDeletePopupComponent,
         TimeFromNowPipe,
         FlogoAppImportComponent,
-        ModalComponent,
+        BsModalComponent,
         FlogoNewAppComponent
       ], // declare the test component
       providers: [

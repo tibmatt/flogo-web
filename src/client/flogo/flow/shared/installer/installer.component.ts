@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild, Input, Output } from '@angular/core';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
 import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
 import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
@@ -20,7 +20,7 @@ import {
 })
 export class FlogoInstallerComponent implements OnChanges {
 
-  @ViewChild('installerModal') modal: ModalComponent;
+  @ViewChild('installerModal') modal: BsModalComponent;
 
   @Input()
   installType: string;

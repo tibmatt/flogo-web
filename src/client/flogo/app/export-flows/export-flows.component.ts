@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import {ERROR_CODE, FlowSummary, LanguageService} from '@flogo/core';
 import { AppDetailService } from '@flogo/app/core/apps.service';
 import {notification} from '@flogo/shared/utils';
@@ -11,7 +11,7 @@ import {notification} from '@flogo/shared/utils';
 })
 export class FlogoExportFlowsComponent {
   @ViewChild('modal')
-  modal: ModalComponent;
+  modal: BsModalComponent;
   @Input()
   flows: Array<FlowSummary> = [];
   @Input()

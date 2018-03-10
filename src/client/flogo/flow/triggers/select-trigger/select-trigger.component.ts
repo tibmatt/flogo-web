@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output} from '@angular/core';
 import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '@flogo/core/services/restapi/v2/triggers-api.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
-import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {BsModalComponent} from 'ng2-bs3-modal';
 
 @Component({
   selector: 'flogo-flow-select-trigger',
@@ -9,7 +9,7 @@ import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
   styleUrls: ['select-trigger.component.less']
 })
 export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
-  @ViewChild('addTriggerModal') modal: ModalComponent;
+  @ViewChild('addTriggerModal') modal: BsModalComponent;
   @Input() appDetails: any;
   @Input() isAddTriggerActivated: boolean;
   @Output() onAddTriggerToAction: EventEmitter<any> = new EventEmitter<any>();

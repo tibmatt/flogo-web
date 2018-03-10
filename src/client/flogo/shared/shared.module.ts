@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule as NgCommonModule } from '@angular/common';
-import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalModule } from 'ng2-bs3-modal';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CopyToClipboardComponent } from './components';
@@ -44,7 +44,7 @@ const ALL_MODULE_DECLARABLES = [
     FormsModule,
     ReactiveFormsModule,
     // todo: should be in root only?
-    Ng2Bs3ModalModule,
+    BsModalModule,
     TranslateModule,
     ...ALL_MODULE_DECLARABLES,
   ]

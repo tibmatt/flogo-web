@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalModule } from 'ng2-bs3-modal';
 import { Observable } from 'rxjs/Observable';
 
 import { PostService } from '../../core/services/post.service';
@@ -51,7 +51,7 @@ describe('Component: FlogoFlowsAdd', () => {
     TestBed.configureTestingModule({
       imports: [
         FakeRootLanguageModule,
-        Ng2Bs3ModalModule,
+        BsModalModule,
         FlogoCoreModule,
         FlogoSharedModule
       ],

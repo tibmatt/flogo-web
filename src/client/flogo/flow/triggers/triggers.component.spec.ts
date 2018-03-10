@@ -5,7 +5,7 @@ import {By} from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import {Ng2Bs3ModalModule} from 'ng2-bs3-modal/ng2-bs3-modal';
+import {BsModalModule} from 'ng2-bs3-modal';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
 import {FlogoFlowTriggersPanelComponent} from './triggers.component';
@@ -174,7 +174,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
       imports: [
         FakeRootLanguageModule,
         InstallerModule,
-        Ng2Bs3ModalModule,
+        BsModalModule,
         TriggerMapperModule,
       ],
       declarations: [

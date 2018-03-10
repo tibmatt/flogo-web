@@ -1,6 +1,6 @@
 import { Component, Input, SimpleChanges, OnChanges, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsModalComponent } from 'ng2-bs3-modal';
 import { LanguageService } from '@flogo/core';
 
 import { PostService } from '../../core/services/post.service';
@@ -18,7 +18,7 @@ import { UniqueNameValidator } from './unique-name.validator';
 })
 export class FlogoNewFlowComponent implements OnChanges {
   @ViewChild('modal')
-  public modal: ModalComponent;
+  public modal: BsModalComponent;
   @Input()
   public appId: string;
   public flow: FormGroup;
