@@ -18,4 +18,3 @@ declare global {
   const d3: typeof __d3;
   const moment: typeof __moment;
 }
-

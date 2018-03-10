@@ -1,23 +1,7 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "baseUrl": ".",
-    "paths": {
-      "@flogo/*": ["flogo/*"]
-    },
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es5",
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "lib": [
-      "es2016",
-      "dom"
-    ],
     "module": "commonjs",
     "types": [
       "jasmine",
@@ -25,11 +9,11 @@
     ]
   },
   "files": [
-    "./test.ts"
+    "test.ts"
   ],
   "include": [
-    "./**/*.spec.ts",
-    "./**/*.mock.ts",
-    "./**/*.d.ts"
+    "**/*.spec.ts",
+    "**/*.mock.ts",
+    "**/*.d.ts"
   ]
 }

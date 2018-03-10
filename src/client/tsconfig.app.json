@@ -1,33 +1,13 @@
 {
-  "compileOnSave": false,
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "module": "es2015",
-    "baseUrl": ".",
-    "paths": {
-      "@flogo/*": ["flogo/*"]
-    },
-    "types": [],
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es5",
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "lib": [
-      "es2016",
-      "dom"
-    ]
+    "types": []
   },
-  "include": [
-    "./*.ts"
-  ],
   "exclude": [
-    "./test.ts",
-    "./**/*.spec.ts",
-    "./**/*.mock.ts"
+    "test.ts",
+    "**/*.spec.ts",
+    "**/*.mock.ts"
   ]
 }
