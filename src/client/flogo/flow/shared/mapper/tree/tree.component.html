@@ -20,7 +20,7 @@
             (onNodeExpand)="onCategoryExpand($event)"
             (onNodeCollapse)="onCategoryExpand($event)"
             (onNodeSelect)="onSelect($event)">
-      <template let-node pTemplate="default">
+      <ng-template let-node pTemplate="default">
         <div class="node"
              [draggable]="node.isSelectable" (dragstart)="onDragStart($event, node)"
              (mouseenter)="onMouseHover(node)"
@@ -31,7 +31,7 @@
           </svg>
           <div class="node__label">{{ node.label }}</div>
         </div>
-      </template>
+      </ng-template>
     </p-tree>
   </div>
 </div>

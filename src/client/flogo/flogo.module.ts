@@ -1,8 +1,8 @@
-
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
@@ -31,6 +31,7 @@ import { FlogoApplicationModule } from '@flogo/app';
       }
     }),
     BrowserModule,
+    BrowserAnimationsModule,
     CoreModule,
     // todo: should be in common?
     BsModalModule,
