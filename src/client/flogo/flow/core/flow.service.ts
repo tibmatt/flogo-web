@@ -26,7 +26,7 @@ export class FlogoFlowService {
         const subFlowTasks = _.get(flow, 'data.flow.rootTask.tasks', [])
           .concat(_.get(flow, 'data.flow.errorHandlerTask.tasks', []))
           .filter(t => isSubflowTask(t.type));
-        const flowIdsToFetch = _.uniq(subFlowTasks.map(t => (t.settings || {}).flowPath));
+        const flowIdsToFetch = _.uniq<string>(subFlowTasks.map(t => (t.settings || {}).flowPath));
         if (flowIdsToFetch.length > 0) {
           return Promise.all([flow, this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch)]);
         }
@@ -105,7 +105,7 @@ export class FlogoFlowService {
         diagram.hasTrigger = hasTrigger;
       }
     }
-    return Promise.resolve({
+    return Promise.resolve<FlowData>({
       flow,
       root: {
         diagram,
@@ -114,7 +114,9 @@ export class FlogoFlowService {
       errorHandler: {
         diagram: errorDiagram,
         tasks: errorTasks
-      }
+      },
+      // will be added later
+      triggers: [],
     });
   }
 }

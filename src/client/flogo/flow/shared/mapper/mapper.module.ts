@@ -37,7 +37,7 @@ import { ModeSwitcherComponent } from './mode-switcher/mode-switcher.component';
     CommonModule,
     FormsModule,
     RouterModule.forChild([]),
-    PerfectScrollbarModule.forChild(),
+    PerfectScrollbarModule,
     TreeModule,
     MonacoEditorModule,
   ],

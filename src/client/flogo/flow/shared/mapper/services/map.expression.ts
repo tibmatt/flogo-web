@@ -8,7 +8,7 @@ export class MapExpression implements IMapExpression {
    * expression string
    * e.g.  String.concat(a.b.c,"abc")
    */
-  expression: String;
+  expression: string;
 
   /**
    * child expression map for nested expressions
