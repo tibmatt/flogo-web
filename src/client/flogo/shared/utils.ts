@@ -360,14 +360,14 @@ export function notification(message: string, type: string, time?: number, setti
     `;
   }
   template += '</div>';
-  const notificationContainer = jQuery('body > .flogo-common-notificationEl-container');
+  const notificationContainer = jQuery('body > .flogo-common-notification-container');
   if (notificationContainer.length) {
     notificationContainer.append(template);
   } else {
     jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
-  const $notificationElement = jQuery('.flogo-common-notificationEl-container>div:last');
-  const $notificationsContainers = jQuery('.flogo-common-notificationEl-container>div');
+  const $notificationElement = jQuery('.flogo-common-notification-container>div:last');
+  const $notificationsContainers = jQuery('.flogo-common-notification-container>div');
   const maxCounter = 5;
 
   if ($notificationsContainers.length > 5) {
@@ -392,7 +392,7 @@ export function notification(message: string, type: string, time?: number, setti
       }, time);
     }
     if (!time) {
-      $notificationElement.find('.flogo-common-notificationEl-close').click(() => {
+      $notificationElement.find('.flogo-common-notification-close').click(() => {
         $notificationElement.remove();
         resolve();
       });
