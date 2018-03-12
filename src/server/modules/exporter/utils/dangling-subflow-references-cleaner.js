@@ -13,11 +13,11 @@ export class DanglingSubflowReferencesCleaner {
       return [];
     }
 
-    const mappedPropNamesInTask = task.inputMappings.map(mapping => mapping.name);
+    const mappedPropNamesInTask = task.inputMappings.map(mapping => mapping.mapTo);
     const linkedFlowInputNames = linkedFlowInputMetadata.map(input => input.name);
     const finalMappingNames = intersection(mappedPropNamesInTask, linkedFlowInputNames);
 
-    return task.inputMappings.filter(inputMapping => finalMappingNames.includes(inputMapping.name));
+    return task.inputMappings.filter(inputMapping => finalMappingNames.includes(inputMapping.mapTo));
   }
 
   getFlowMetadata(linkedFlow) {
