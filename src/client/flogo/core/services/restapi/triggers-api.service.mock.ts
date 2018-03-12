@@ -7,7 +7,7 @@ import { HttpUtilsService } from './http-utils.service';
 export class RESTAPITriggersServiceMock {
   private triggers = {};
 
-  constructor(private _http: Http, httpUtils: HttpUtilsService) {
+  constructor() {
     this.triggers = [
       {
         'id': 'tibco-coap',

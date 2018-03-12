@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { BsModalComponent } from 'ng2-bs3-modal';
+import { BsModalModule, BsModalService } from 'ng2-bs3-modal';
 import { WalkthroughComponent } from './walkthrough.component';
 import { NoDependenciesFakeLanguageModule } from '../language/testing';
 
-describe('Component: FlogoInstructions Modal', () => {
+describe('Component: WalkthroughComponent Modal', () => {
 
   let comp: WalkthroughComponent;
   let fixture: ComponentFixture<WalkthroughComponent>;
@@ -19,17 +19,26 @@ describe('Component: FlogoInstructions Modal', () => {
   // synchronous beforeEach
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NoDependenciesFakeLanguageModule],
-      declarations: [WalkthroughComponent, BsModalComponent], // declare the test component
+      imports: [NoDependenciesFakeLanguageModule, BsModalModule],
+      declarations: [WalkthroughComponent], // declare the test component
     });
     return TestBed.compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async(inject([BsModalService], (modalService: BsModalService) => {
+    return modalService.dismissAll();
+  })));
+
+  beforeEach(async(() => {
     fixture = TestBed.createComponent(WalkthroughComponent);
     comp = fixture.componentInstance; // WalkthroughComponent test instance
+    comp.modal.animation = false;
     fixture.detectChanges();
-  });
+  }));
+
+  afterEach(async(() => {
+    comp.modal.close();
+  }));
 
   it('When load, should select by default the step number 1', () => {
     expect(findCurrentlySelectedStepNumber(fixture)).toEqual(1);

@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 
@@ -51,7 +52,7 @@ export class APIFlowsService {
       .toPromise();
   }
 
-  findFlowsByName(flowName: string, appId: string) {
+  findFlowsByName(flowName: string, appId: string): Observable<any[]> {
     const searchParams = new URLSearchParams();
     searchParams.set('filter[name]', flowName);
     const reqOptions = this.httpUtils.defaultOptions()
@@ -61,8 +62,7 @@ export class APIFlowsService {
 
     return this.http.get(
       this.httpUtils.apiPrefix(`apps/${appId}/actions`), reqOptions)
-      .map((res: Response) => res.json().data)
-      .toPromise();
+      .map((res: Response) => res.json().data);
   }
 
   getSubFlows(appId: string, flowIds?: string[]) {

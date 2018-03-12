@@ -21,8 +21,7 @@ class ContainerComponent {
   public shouldAutofocus: boolean;
 }
 
-// Disabling until modal issue is solved
-xdescribe('Directive: fgAutofocus ', () => {
+describe('Directive: fgAutofocus ', () => {
   let fixture: ComponentFixture<ContainerComponent>;
   let container: ContainerComponent;
 

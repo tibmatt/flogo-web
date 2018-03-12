@@ -1,8 +1,7 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, async, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BsModalModule } from 'ng2-bs3-modal';
-import { Observable } from 'rxjs/Observable';
+import { BsModalModule, BsModalService } from 'ng2-bs3-modal';
 
 import { PostService } from '../../core/services/post.service';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
@@ -33,19 +32,12 @@ const postServiceStub = {
 
 };
 
-describe('Component: FlogoFlowsAdd', () => {
+describe('Component: FlogoNewFlow', () => {
   let comp: FlogoNewFlowComponent;
   let fixture: ComponentFixture<FlogoNewFlowComponent>;
   let elements: { submitBtn: DebugElement, nameInput: DebugElement, descriptionInput: DebugElement };
 
   let submitBtn: DebugElement;
-
-  beforeAll(() => {
-    // Monkey-patch Observable.debounceTime() since it is using
-    // setInterval() internally which not allowed within async zone
-    Observable.prototype.debounceTime = function () { return this; };
-  });
-
 
   beforeEach((done) => {
     TestBed.configureTestingModule({
@@ -69,7 +61,7 @@ describe('Component: FlogoFlowsAdd', () => {
 
   });
 
-  beforeEach(() => {
+  beforeEach(async(() => {
 
     fixture = TestBed.createComponent(FlogoNewFlowComponent);
     comp = fixture.componentInstance;
@@ -87,22 +79,27 @@ describe('Component: FlogoFlowsAdd', () => {
 
     submitBtn = fixture.debugElement.query(By.css('[type="submit"]'));
 
+  }));
+
+  afterEach((done) => {
+    return comp.modal.close()
+      .then(() => done());
   });
 
-  it('Should not allow save when flow name is not provided', () => {
+  it('Should not allow save when flow name is not provided', async(() => {
     fixture.detectChanges();
     expect(comp.flow.valid).toBe(false, 'form is valid');
     expect(submitBtn.nativeElement.disabled).toBe(true);
-  });
+  }));
 
-  it('Should not allow to save when flow name already exists', () => {
+  it('Should not allow to save when flow name already exists', async(() => {
     setValueAndDispatch(EXISTING_FLOW_NAME, elements.nameInput);
     fixture.detectChanges();
     expect(comp.flow.valid).toBe(false, 'form is valid');
     expect(submitBtn.nativeElement.disabled).toBeTruthy();
-  });
+  }));
 
-  it('Should trigger an event with the flow info when the save button is clicked', fakeAsync(() => {
+  it('Should trigger an event with the flow info when the save button is clicked', async(() => {
 
     const testFlow = {
       name: 'new flow name',
@@ -112,30 +109,30 @@ describe('Component: FlogoFlowsAdd', () => {
     setValueAndDispatch(testFlow.name, elements.nameInput);
     fixture.detectChanges();
 
-    setValueAndDispatch(testFlow.description, elements.descriptionInput);
-    tick();
-    fixture.detectChanges();
+    return fixture.whenStable()
+      .then(() => {
+        setValueAndDispatch(testFlow.description, elements.descriptionInput);
+        fixture.detectChanges();
+        return fixture.whenStable();
+      })
+      .then(() => {
+        expect(comp.flow.valid).toBe(true, 'form is invalid');
+        expect(submitBtn.nativeElement.disabled).toBeFalsy('Submit button is not enabled');
+        submitBtn.nativeElement.click();
+        fixture.detectChanges();
+        return fixture.whenStable();
+      })
+      .then(() => {
+        const postServiceStubInstance = <any> fixture.debugElement.injector.get(PostService);
 
-    expect(comp.flow.valid).toBe(true, 'form is invalid');
-    expect(submitBtn.nativeElement.disabled).toBeFalsy('Submit button is not enabled');
-    submitBtn.nativeElement.click();
+        expect(postServiceStubInstance.published).toBeDefined('Published message is not defined');
+        expect(postServiceStubInstance.published.channel).toBe(PUB_EVENTS.addFlow.channel);
+        expect(postServiceStubInstance.published.topic).toBe(PUB_EVENTS.addFlow.topic);
 
-    // TODO: investigate why this happens, might be some modal timers
-    // wait for all the timers to complete
-    tick(500);
-    fixture.detectChanges();
-
-    const postServiceStubInstance = <any> fixture.debugElement.injector.get(PostService);
-
-    expect(postServiceStubInstance.published).toBeDefined('Published message is not defined');
-    expect(postServiceStubInstance.published.channel).toBe(PUB_EVENTS.addFlow.channel);
-    expect(postServiceStubInstance.published.topic).toBe(PUB_EVENTS.addFlow.topic);
-
-    const messageData = postServiceStubInstance.published.data;
-    expect(messageData.name).toBe(testFlow.name);
-    expect(messageData.description).toBe(testFlow.description);
-
-
+        const messageData = postServiceStubInstance.published.data;
+        expect(messageData.name).toBe(testFlow.name);
+        expect(messageData.description).toBe(testFlow.description);
+      });
   }));
 
   function setValueAndDispatch(value: any, de: DebugElement) {

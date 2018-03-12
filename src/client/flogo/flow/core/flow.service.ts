@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import 'rxjs/operator/toPromise';
 
 import { FlowDiagram, TaskDictionary, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
@@ -9,7 +10,7 @@ import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
 import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowDetails } from './models';
 import { FlowData } from './flow-data';
-import {isSubflowTask} from '@flogo/shared/utils';
+import { isSubflowTask } from '@flogo/shared/utils';
 
 @Injectable()
 export class FlogoFlowService {
@@ -58,7 +59,9 @@ export class FlogoFlowService {
   }
 
   listFlowsByName(appId, name) {
-    return this._flowAPIService.findFlowsByName(name, appId);
+    return this._flowAPIService
+      .findFlowsByName(name, appId)
+      .toPromise();
   }
 
   listFlowsForApp(appId) {

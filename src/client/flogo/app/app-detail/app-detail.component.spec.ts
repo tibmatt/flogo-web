@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
@@ -189,21 +189,22 @@ describe('FlogoApplicationDetailComponent component', () => {
     expect(addDescription).toBeNull();
   });
 
-  it('If it is a new application, its name should be displayed as editable', fakeAsync(() => {
+  it('If it is a new application, its name should be displayed as editable', async(() => {
     const nextApp = makeMockAppDetail();
     nextApp.app.id = '4';
     nextApp.app.name = 'Untitled Application';
     nextApp.app.createdAt = new Date();
     comp.appDetail = nextApp;
-    tick();
+    // tick(1000);
     fixture.detectChanges();
+    fixture.whenStable()
+      .then(() => {
+        const labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
+        expect(labelName).toBeNull();
 
-    const labelName = fixture.debugElement.query(By.css('.flogo-app-header__name'));
-    expect(labelName).toBeNull();
-
-    const nameInput = fixture.debugElement.query(By.css('#appName'));
-    expect(nameInput).not.toBeNull('Name input is not present');
-
+        const nameInput = fixture.debugElement.query(By.css('#appName'));
+        expect(nameInput).not.toBeNull('Name input is not present');
+      });
   }));
 
   it('If it is not a new application, its name should be displayed as a label', () => {
