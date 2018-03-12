@@ -15,6 +15,7 @@
 
   <div class="mapper-tree__nodes-container" perfect-scrollbar>
     <p-tree styleClass="nodes"
+            selectionMode="single"
             [ngClass]="{'tree--is-filtered': searchTerm}"
             [value]="treeNodes"
             (onNodeExpand)="onCategoryExpand($event)"
