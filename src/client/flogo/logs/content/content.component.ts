@@ -11,24 +11,24 @@ import 'rxjs/add/operator/map';
   }
 )
 export class LogsContentComponent {
-  @Output() onWindowAction: EventEmitter<string>;
+  @Output() windowAction: EventEmitter<string>;
   @Input() isExternal = false;
   messages: string[];
   searchValue = '';
 
   constructor(public logService: LogService) {
-    this.onWindowAction = new EventEmitter();
+    this.windowAction = new EventEmitter();
   }
 
   close() {
-    this.onWindowAction.emit('close');
+    this.windowAction.emit('close');
   }
 
   back() {
   }
 
   maximize() {
-    this.onWindowAction.emit('maximize');
+    this.windowAction.emit('maximize');
   }
 
   public onKeyUp(event) {

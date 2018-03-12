@@ -33,7 +33,7 @@
         <div class="flow-param-fields">
           <div *ngFor="let inputParam of paramsForm.get('input').controls; let i=index" class="flow-input-params-field">
             <div [formGroupName]="i" class="flow-params-new-field">
-              <flogo-flow-params-schema-param-row (onRemoveParam)="removeParam(i, 'input')"
+              <flogo-flow-params-schema-param-row (removeParam)="removeParam(i, 'input')"
                                                   [dropdownOptions]="selectTypes"
                                                   [paramGroup]="inputParam"
                                                   [inputIndex]="i"></flogo-flow-params-schema-param-row>
@@ -54,7 +54,7 @@
           <div *ngFor="let outputParam of paramsForm.get('output').controls; let i=index"
                class="flow-input-params-field">
             <div [formGroupName]="i" class="flow-params-new-field">
-              <flogo-flow-params-schema-param-row (onRemoveParam)="removeParam(i, 'output')"
+              <flogo-flow-params-schema-param-row (removeParam)="removeParam(i, 'output')"
                                                   [dropdownOptions]="selectTypes"
                                                   [paramGroup]="outputParam"
                                                   [inputIndex]="i"></flogo-flow-params-schema-param-row>

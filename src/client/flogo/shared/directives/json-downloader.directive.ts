@@ -14,7 +14,7 @@ export class JsonDownloaderDirective {
 
   /* tslint:disable:no-input-rename */
   @Input('fgJsonDownloader')
-  generateObject: () => Promise<DownloadableData | DownloadableData[]> = () => null;
+  generateObject: () => Promise<DownloadableData | DownloadableData[]> = (() => null);
 
   constructor(private el: ElementRef) {
     this._el = el.nativeElement;

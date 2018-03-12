@@ -13,7 +13,7 @@ export class WalkthroughComponent implements OnChanges {
   @Input()
   isActivated: boolean;
   @Output()
-  onClosedModal = new EventEmitter();
+  closedModal = new EventEmitter();
   steps = [
     { title: 'Configure the trigger', description: '', screenshot: 'flogo.instructions.screen-1@3x.png' },
     { title: 'Add and configure activities', description: '', screenshot: 'flogo.instructions.screen-2@3x.png' },
@@ -70,11 +70,11 @@ export class WalkthroughComponent implements OnChanges {
 
   closeModal() {
     this.modal.close();
-    this.onClosedModal.emit(true);
+    this.closedModal.emit(true);
   }
 
   onModalCloseOrDismiss(event) {
-    this.onClosedModal.emit(true);
+    this.closedModal.emit(true);
   }
 
   onInstallAction(url: string) {

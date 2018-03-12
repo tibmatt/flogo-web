@@ -124,7 +124,7 @@ describe('FlogoSelectTrigger component', () => {
         const existing = function () {
           return Promise.resolve([]);
         };
-        comp.onAddTriggerToAction.subscribe(data => {
+        comp.addTriggerToAction.subscribe(data => {
           expect(data.triggerData.description).toEqual('Simple CoAP Trigger');
           done();
         });
@@ -149,7 +149,7 @@ describe('FlogoSelectTrigger component', () => {
         const existing = function () {
           return Promise.resolve(existingMock);
         };
-        comp.onAddTriggerToAction.subscribe(data => {
+        comp.addTriggerToAction.subscribe(data => {
           expect(data.triggerData.description).toEqual('Description of Simple COAP Trigger');
           done();
         });

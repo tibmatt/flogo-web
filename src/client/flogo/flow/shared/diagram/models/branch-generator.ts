@@ -102,7 +102,7 @@ export function genBranchLine(opts?: any): any {
 
   const groups = <any>{
     'default': `
-      <g id="branch-1" filter="url(#filter-1)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" 
+      <g id="branch-1" filter="url(#filter-1)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
           transform="translate(${translate[0]}, ${translate[1]})">
           <path d="${defaultPath}" id="Combined-Shape" fill="url(#linearGradient-1)"></path>
       </g>
@@ -143,7 +143,7 @@ export function genBranchLine(opts?: any): any {
   };
 
   const svgWrapper = `
-  <svg width="${svgSize[0]}px" height="${svgSize[1]}px" version="1.1" 
+  <svg width="${svgSize[0]}px" height="${svgSize[1]}px" version="1.1"
     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
         ___FILTER___
@@ -154,7 +154,7 @@ export function genBranchLine(opts?: any): any {
   `.trim();
 
   const svgWrapperDefault = `
-  <svg width="${defaultSize.svgWidth}px" height="${defaultSize.svgHeight}px" version="1.1" 
+  <svg width="${defaultSize.svgWidth}px" height="${defaultSize.svgHeight}px" version="1.1"
     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
         ___FILTER___

@@ -54,7 +54,7 @@ export class FlogoAppSettingsComponent {
       }
     }
     elements.splice(newIndex, 0, elements.splice(oldIndex, 1)[0]);
-  };
+  }
 
   public openModal() {
     this.hasChanges = false;

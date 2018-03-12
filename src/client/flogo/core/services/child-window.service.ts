@@ -8,6 +8,45 @@ import 'rxjs/add/operator/publishReplay';
 
 import { WindowRef } from './window-ref';
 
+export class ChildWindow {
+
+  private _isClosed = false;
+  private _closed: Observable<Event>;
+
+  constructor(private nativeWindow: Window, private ngZone: NgZone) {
+    if (!nativeWindow) {
+      throw new Error('Window is required');
+    }
+
+    // since the event comes from a different window we need to manually re-enter it into the ngZone
+    this._closed = FromEventObservable.create<Event>(nativeWindow, 'beforeunload')
+      .do(event => ngZone.run(() => this._isClosed = true))
+      .first()
+      .publishReplay().refCount();
+  }
+
+  get closed(): Observable<Event> {
+    return this._closed;
+  }
+
+  isOpen() {
+    return !this.isClosed();
+  }
+
+  isClosed() {
+    return this._isClosed;
+  }
+
+  close() {
+    this.nativeWindow.close();
+  }
+
+  focus() {
+    this.nativeWindow.focus();
+  }
+
+}
+
 @Injectable()
 /**
  *
@@ -58,42 +97,4 @@ export class ChildWindowService {
 
 }
 
-export class ChildWindow {
-
-  private _isClosed = false;
-  private _closed: Observable<Event>;
-
-  constructor(private nativeWindow: Window, private ngZone: NgZone) {
-    if (!nativeWindow) {
-      throw new Error('Window is required');
-    }
-
-    // since the event comes from a different window we need to manually re-enter it into the ngZone
-    this._closed = FromEventObservable.create<Event>(nativeWindow, 'beforeunload')
-      .do(event => ngZone.run(() => this._isClosed = true))
-      .first()
-      .publishReplay().refCount();
-  }
-
-  get closed(): Observable<Event> {
-    return this._closed;
-  }
-
-  isOpen() {
-    return !this.isClosed();
-  }
-
-  isClosed() {
-    return this._isClosed;
-  }
-
-  close() {
-    this.nativeWindow.close();
-  }
-
-  focus() {
-    this.nativeWindow.focus();
-  }
-
-}
 

@@ -396,26 +396,27 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private createMonacoRangeInstance(range: OffsetRange | LineRange) {
-    const model = this.editor.getModel();
-
     if (range && (<OffsetRange>range).endOffset) {
-      range = <OffsetRange>range;
-      let startLineNumber;
-      let startColumn;
-      let endLineNumber;
-      let endColumn = null;
-      const startPosition = model.getPositionAt(range.startOffset);
-      const endPosition = model.getPositionAt(range.endOffset);
-      startLineNumber = startPosition.lineNumber;
-      startColumn = startPosition.column;
-      endLineNumber = endPosition.lineNumber;
-      endColumn = endPosition.column;
-      return new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
+      return this.rangeInstanceFromOffsetRange(<OffsetRange>range);
+    } else {
+      return this.rangeInstanceFromLineRange(<LineRange>range);
     }
-    range = <LineRange>range;
-    const { startLineNumber, startColumn, endLineNumber, endColumn } = range;
-    return new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
+  }
 
+  private rangeInstanceFromOffsetRange(offsetRange: OffsetRange) {
+    const model = this.editor.getModel();
+    const startPosition = model.getPositionAt(offsetRange.startOffset);
+    const endPosition = model.getPositionAt(offsetRange.endOffset);
+    const startLineNumber = startPosition.lineNumber;
+    const startColumn = startPosition.column;
+    const endLineNumber = endPosition.lineNumber;
+    const endColumn = endPosition.column;
+    return new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
+  }
+
+  private rangeInstanceFromLineRange(lineRange: LineRange) {
+    const { startLineNumber, startColumn, endLineNumber, endColumn } = lineRange;
+    return new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn);
   }
 
   private errorToMarker(e: EditorError) {
@@ -438,7 +439,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
       endLineNumber: selection.positionLineNumber,
       endColumn: selection.positionColumn,
     };
-  };
+  }
 
   private getLanguageId() {
     // return this.editor.getModel().getModeId();

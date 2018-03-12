@@ -28,7 +28,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @Output() flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
   @Output() flowAdded: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
   @Output() flowDeleted: EventEmitter<App> = new EventEmitter<App>();
-  @Output() onDeletedApp: EventEmitter<App> = new EventEmitter<App>();
 
   application: App;
   state: ApplicationDetailState;

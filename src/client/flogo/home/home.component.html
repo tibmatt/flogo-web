@@ -18,7 +18,7 @@
       </div>
       <div class="flogo-apps-list__main row">
         <div class="col-md-9">
-          <flogo-home-apps-list #appList (onSelectedApp)="onSelectedApp($event)"></flogo-home-apps-list>
+          <flogo-home-apps-list #appList (appSelected)="onSelectedApp($event)"></flogo-home-apps-list>
         </div>
         <div class="col-xs-12 col-md-3">
           <h3 class="flogo-main__subtitle">{{ 'FLOWS:RECENTLY-MODIFIED' | translate }}</h3>

@@ -57,10 +57,8 @@ export class RESTAPIApplicationsServiceMock extends RESTAPIApplicationsService {
     super(_http, errorService, httpUtils);
   }
 
-  getAllApps() {
-    return new Promise((resolve, reject) => {
-      resolve(this.mockApplications);
-    });
+  getAllApps(): Promise<App[]> {
+    return Promise.resolve(this.mockApplications);
   }
 
   createNewApp() {
@@ -79,24 +77,18 @@ export class RESTAPIApplicationsServiceMock extends RESTAPIApplicationsService {
     });
   }
 
-  deleteApp(id: string) {
+  deleteApp(id: string): Promise<any> {
     _.remove(this.mockApplications, (n: App) => {
       return n.id === id;
     });
-
-    return new Promise((resolve, reject) => {
-      resolve(true);
-    });
+    return Promise.resolve(true);
   }
 
-  getApp(id: string) {
+  getApp(id: string): Promise<App> {
     const application = this.mockApplications.find((item) => {
       return item.id === id;
     });
-
-    return new Promise((resolve, reject) => {
-      resolve(application);
-    });
+    return Promise.resolve<App>(application);
   }
 
   determineUniqueName(name: string, count = 0) {

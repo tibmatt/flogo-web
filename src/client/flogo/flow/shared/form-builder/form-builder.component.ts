@@ -40,14 +40,14 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   _fieldsErrors: string[];
   _branchConfigs: any[]; // force the fields update by taking the advantage of ngFor
   hasErrors = false;
-  @Output() onBuilderAction: EventEmitter<string>;
+  @Output() builderAction: EventEmitter<string>;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
   constructor(public route: ActivatedRoute, private _postService: PostService, private _translate: LanguageService) {
     this._initSubscribe();
     this._setFieldsObservers();
 
-    this.onBuilderAction = new EventEmitter<string>();
+    this.builderAction = new EventEmitter<string>();
 
     // same as onDestroy since router is reusing the components instead of destroying them
     // see: https://github.com/angular/angular/issues/7757#issuecomment-236737846
@@ -75,7 +75,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   }
 
   public onAction(event) {
-    this.onBuilderAction.emit(event);
+    this.builderAction.emit(event);
   }
 
   ngOnDestroy() {

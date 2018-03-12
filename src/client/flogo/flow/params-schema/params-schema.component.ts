@@ -35,7 +35,7 @@ export class ParamsSchemaComponent implements OnInit {
 
   showOutputParams() {
     this.displayInputParams = false;
-  };
+  }
 
   showInputParams() {
     this.displayInputParams = true;

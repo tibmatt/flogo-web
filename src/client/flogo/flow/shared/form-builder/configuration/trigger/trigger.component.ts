@@ -25,13 +25,13 @@ export class FlogoFormBuilderConfigurationTriggerComponent implements OnChanges 
   needEditConfirmation = false;
   messageNumFlowsUsed: string;
   isEditable: boolean;
-  @Output() onTriggerAction: EventEmitter<string>;
+  @Output() triggerAction: EventEmitter<string>;
 
   constructor(private _commonService: FlogoConfigurationCommonService,
               private translate: LanguageService) {
     this.isEditable = false;
     this.directions = _commonService.getParameterDirections();
-    this.onTriggerAction = new EventEmitter<string>();
+    this.triggerAction = new EventEmitter<string>();
   }
 
   updateMessageNumFlowsUsed(numFlows) {
@@ -47,11 +47,11 @@ export class FlogoFormBuilderConfigurationTriggerComponent implements OnChanges 
 
   clickEditForNFlows(event?) {
     this.isEditable = true;
-    this.onTriggerAction.emit('trigger-edit');
+    this.triggerAction.emit('trigger-edit');
   }
 
   clickMakeCopy(event) {
-    this.onTriggerAction.emit('trigger-copy');
+    this.triggerAction.emit('trigger-copy');
   }
 
 

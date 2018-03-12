@@ -10,7 +10,7 @@ import { FormBuilderModule as FlogoFormBuilderModule } from '../form-builder';
 import { PostService } from '@flogo/core/services/post.service';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
-class MockRouter { public navigate() {}; }
+class MockRouter { public navigate() {} }
 
 @Component({
   template: `

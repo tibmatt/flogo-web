@@ -7,7 +7,7 @@
         </button>
     </div>
     <div *ngIf="isOpen" style="position: fixed" class="logs-window" fgDraggable>
-        <flogo-logs-content (onWindowAction)="windowAction($event)"></flogo-logs-content>
+        <flogo-logs-content (windowAction)="windowAction($event)"></flogo-logs-content>
         <div class="footer-section">&nbsp;</div>
     </div>
 </div>

@@ -34,7 +34,7 @@ describe('Component: FlogoNewAppComponent', () => {
   it('Should emit \'microservice\' when selecting microservice profile', (done) => {
     comp.newAppModal.open();
     fixture.detectChanges();
-    comp.onAdd.subscribe((profileDetails) => {
+    comp.add.subscribe((profileDetails) => {
       expect(profileDetails.profileType).toEqual(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
       done();
     });
@@ -56,7 +56,7 @@ describe('Component: FlogoNewAppComponent', () => {
 
   it('Should emit \'Atmel AVR\' when selecting Atmel AVR device profile', (done) => {
     comp.newAppModal.open();
-    comp.onAdd.subscribe((profileDetails) => {
+    comp.add.subscribe((profileDetails) => {
       expect(profileDetails.deviceType).toEqual('Atmel AVR');
       done();
     });

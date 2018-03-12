@@ -43,7 +43,7 @@
                         [disableRun]="runnableInfo?.disabled"
                         disableReason="{{ runnableInfo?.disableReason | translate }}"
                         [flowInputs]="flow?.metadata?.input"
-                        (onSubmit)="onRunFlow($event)"></flogo-run-flow>
+                        (submit)="onRunFlow($event)"></flogo-run-flow>
         <div class="flogo-flow-detail-log-button-container">
           <flogo-logs></flogo-logs>
         </div>

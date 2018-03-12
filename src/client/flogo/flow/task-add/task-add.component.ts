@@ -58,7 +58,7 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
     return this._filterQuery;
   }
 
-  public set filterQuery(query: string){
+  public set filterQuery(query: string) {
     this._filterQuery = query;
     this._filterActivities();
   }

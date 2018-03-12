@@ -10,7 +10,7 @@ import * as ExprNodes from './expr-nodes';
 
 interface CstVisitorBase {
   new (...args: any[]): ICstVisitor<CstNode, Node | Node[]>;
-};
+}
 
 type PrimaryExprNode = ExprNodes.BasicLit | ExprNodes.Identifier | ExprNodes.SelectorExpr | ExprNodes.IndexExpr;
 

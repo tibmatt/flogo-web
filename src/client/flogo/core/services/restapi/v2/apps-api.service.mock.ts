@@ -58,9 +58,7 @@ export class AppsApiServiceMock extends AppsApiService {
   }
 
   listApps() {
-    return new Promise((resolve, reject) => {
-      resolve(this.mockApplications);
-    });
+    return Promise.resolve(<App[]>this.mockApplications);
   }
 
   createNewApp() {
@@ -79,24 +77,18 @@ export class AppsApiServiceMock extends AppsApiService {
     });
   }
 
-  deleteApp(id: string) {
+  deleteApp(id: string): Promise<boolean> {
     _.remove(this.mockApplications, (n: App) => {
       return n.id === id;
     });
-
-    return new Promise((resolve, reject) => {
-      resolve(true);
-    });
+    return Promise.resolve(true);
   }
 
-  getApp(id: string) {
+  getApp(id: string): Promise<App> {
     const application = this.mockApplications.find((item) => {
       return item.id === id;
     });
-
-    return new Promise((resolve, reject) => {
-      resolve(application);
-    });
+    return Promise.resolve(application);
   }
 
   determineUniqueName(name: string, count = 0) {

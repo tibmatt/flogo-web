@@ -150,7 +150,7 @@ describe('FlogoAppList component', () => {
 
         fixture.detectChanges();
         de = fixture.debugElement.query(By.css('.app-list__app-name'));
-        comp.onSelectedApp.subscribe((app) => {
+        comp.appSelected.subscribe((app) => {
           expect(app.name).toEqual('Sample Application');
           done();
         });

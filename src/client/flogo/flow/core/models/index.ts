@@ -1,1 +1,1 @@
-export * from './flow-details.model'
+export * from './flow-details.model';

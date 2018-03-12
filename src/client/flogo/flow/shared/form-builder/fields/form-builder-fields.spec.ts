@@ -11,6 +11,8 @@ import { FlogoFormBuilderFieldsTextBoxComponent } from './textbox/textbox.compon
 import { FlogoFormBuilderFieldsNumberComponent } from './number/number.component';
 import { FlogoFormBuilderFieldsObjectComponent } from './object/object.component';
 
+// disabling shadowed variables textbox, textarea, etc. because we're deprecating this class anyway
+/* tslint:disable:no-shadowed-variable */
 @Component({
   template: `
     <flogo-flow-form-builder-fields-textarea [info]="info" [fieldObserver]="fieldObserver">

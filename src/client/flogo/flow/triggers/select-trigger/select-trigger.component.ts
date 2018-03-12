@@ -12,8 +12,8 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   @ViewChild('addTriggerModal') modal: BsModalComponent;
   @Input() appDetails: any;
   @Input() isAddTriggerActivated: boolean;
-  @Output() onAddTriggerToAction: EventEmitter<any> = new EventEmitter<any>();
-  @Output() onInstallDialog = new EventEmitter();
+  @Output() addTriggerToAction: EventEmitter<any> = new EventEmitter<any>();
+  @Output() installDialog = new EventEmitter();
   @Output() isAddTriggerActivatedChange = new EventEmitter();
   public installedTriggers = [];
   public displayExisting: boolean;
@@ -115,10 +115,10 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
 
   sendAddTriggerMsg(trigger: any, installType: string) {
     this.closeModal();
-    this.onAddTriggerToAction.emit({triggerData: trigger, installType});
+    this.addTriggerToAction.emit({triggerData: trigger, installType});
   }
 
   openInstallTriggerDialog() {
-    this.onInstallDialog.emit();
+    this.installDialog.emit();
   }
 }

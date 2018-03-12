@@ -5,10 +5,6 @@ import 'rxjs/add/operator/catch';
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader } from '@ngx-translate/core';
 
-export function createTranslateLoader(http: HttpClient) {
-  return new CustomTranslateLoader(http);
-}
-
 export class CustomTranslateLoader implements TranslateLoader {
   constructor(private http: HttpClient) {
   }
@@ -20,4 +16,8 @@ export class CustomTranslateLoader implements TranslateLoader {
         return Observable.of({});
       });
   }
+}
+
+export function createTranslateLoader(http: HttpClient) {
+  return new CustomTranslateLoader(http);
 }

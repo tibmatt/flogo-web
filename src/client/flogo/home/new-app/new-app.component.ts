@@ -16,8 +16,8 @@ interface DeviceProfile {
 export class FlogoNewAppComponent implements AfterViewInit {
   @ViewChild('newAppModal') newAppModal: BsModalComponent;
 
-  @Output() onClose: EventEmitter<any> = new EventEmitter();
-  @Output() onAdd: EventEmitter<any> = new EventEmitter();
+  @Output() close: EventEmitter<any> = new EventEmitter();
+  @Output() add: EventEmitter<any> = new EventEmitter();
 
   showList = false;
   devicesList: DeviceProfile[];
@@ -40,7 +40,7 @@ export class FlogoNewAppComponent implements AfterViewInit {
   }
 
   onModalCloseOrDismiss() {
-    this.onClose.emit();
+    this.close.emit();
   }
 
   showDevicesList() {
@@ -64,6 +64,6 @@ export class FlogoNewAppComponent implements AfterViewInit {
         'wifi:password': ''
       };
     }
-    this.onAdd.emit(profileDetails);
+    this.add.emit(profileDetails);
   }
 }

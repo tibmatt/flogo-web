@@ -14,10 +14,10 @@ export class ParamRowComponent {
   @Input() paramGroup: FormGroup;
   @Input() dropdownOptions;
   @Input() inputIndex;
-  @Output() onRemoveParam: EventEmitter<number> = new EventEmitter<number>();
+  @Output() removeParam: EventEmitter<number> = new EventEmitter<number>();
 
-  removeParam() {
-    this.onRemoveParam.emit(this.inputIndex);
+  onRemoveParam() {
+    this.removeParam.emit(this.inputIndex);
   }
 
   selectType(type) {

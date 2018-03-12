@@ -176,4 +176,4 @@ export class ErrorFactory {
       message: `Invalid expression result, expected ${msgParams.expected} but got ${msgParams.actual}.`
     };
   }
-};
+}

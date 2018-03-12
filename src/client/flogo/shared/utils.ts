@@ -116,7 +116,7 @@ export function isMapperActivity(activitySchema: any) {
       return inputDefinition.display.type === 'mapper';
     }
     return false;
-  };
+  }
 }
 
 // mapping from schema.json of activity to the task can be used in flow.json
@@ -360,31 +360,31 @@ export function notification(message: string, type: string, time?: number, setti
     `;
   }
   template += '</div>';
-  const notificationContainer = jQuery('body > .flogo-common-notification-container');
+  const notificationContainer = jQuery('body > .flogo-common-notificationEl-container');
   if (notificationContainer.length) {
     notificationContainer.append(template);
   } else {
     jQuery('body').append(`<div class="flogo-common-notification-container">${template}</div>`);
   }
-  const notification = jQuery('.flogo-common-notification-container>div:last');
-  const notifications = jQuery('.flogo-common-notification-container>div');
+  const $notificationElement = jQuery('.flogo-common-notificationEl-container>div:last');
+  const $notificationsContainers = jQuery('.flogo-common-notificationEl-container>div');
   const maxCounter = 5;
 
-  if (notifications.length > 5) {
-    for (let i = 0; i < notifications.length - maxCounter; i++) {
-      if (notifications[i]) {
-        notifications[i].remove();
+  if ($notificationsContainers.length > 5) {
+    for (let i = 0; i < $notificationsContainers.length - maxCounter; i++) {
+      if ($notificationsContainers[i]) {
+        $notificationsContainers[i].remove();
       }
     }
   }
   setTimeout(function () {
-    notification.addClass('on');
+    $notificationElement.addClass('on');
   }, 100);
   return new Promise((resolve, reject) => {
     if (time) {
       setTimeout(function () {
-        if (notification) {
-          notification.remove();
+        if ($notificationElement) {
+          $notificationElement.remove();
         }
         if (!notificationContainer.html()) {
           notificationContainer.remove();
@@ -392,8 +392,8 @@ export function notification(message: string, type: string, time?: number, setti
       }, time);
     }
     if (!time) {
-      notification.find('.flogo-common-notification-close').click(() => {
-        notification.remove();
+      $notificationElement.find('.flogo-common-notificationEl-close').click(() => {
+        $notificationElement.remove();
         resolve();
       });
     } else {

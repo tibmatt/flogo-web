@@ -18,7 +18,7 @@ const PING_INTERVAL_MS = 2500;
   selector: 'flogo-config-service-status-indicator',
   template: `
     <i [title]="info" class="fa" [style.color]="color"
-       [ngClass]="{'fa-circle': status == 'online' || status == 'offline' || status == 'online-warning', 'fa-circle-o': !status}">       
+       [ngClass]="{'fa-circle': status == 'online' || status == 'offline' || status == 'online-warning', 'fa-circle-o': !status}">
     </i>`
 })
 export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestroy {

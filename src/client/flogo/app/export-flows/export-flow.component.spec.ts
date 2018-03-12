@@ -129,7 +129,7 @@ describe('FlogoExportFlowsComponent component', () => {
     // all original flows except the last one
     const expectedFlowIds = containerComponent.flows.slice(0, -1).map(flow => flow.id);
     const appDetailServiceSpy = fixture.debugElement.injector.get(AppDetailService);
-    expect(appDetailServiceSpy.exportFlow.calls.mostRecent().args[0]).toEqual(expectedFlowIds);
+    expect((<jasmine.Spy>appDetailServiceSpy.exportFlow).calls.mostRecent().args[0]).toEqual(expectedFlowIds);
   });
 
   it('Should select all flows onload by default', () => {

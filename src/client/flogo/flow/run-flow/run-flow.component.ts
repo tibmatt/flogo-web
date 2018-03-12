@@ -15,7 +15,7 @@ export class FlogoRunFlowComponent {
   disableRun: boolean;
   @Input() disableReason?: string;
   @Output()
-  onSubmit: EventEmitter<MetadataAttribute[]> = new EventEmitter<MetadataAttribute[]>();
+  submit: EventEmitter<MetadataAttribute[]> = new EventEmitter<MetadataAttribute[]>();
   showRunFlow = false;
   runFlowFormGroup: FormGroup;
 
@@ -54,6 +54,6 @@ export class FlogoRunFlowComponent {
 
   onRunFlowSubmit() {
     this.setRunFlowFlag(false);
-    this.onSubmit.emit(this.runFlowFormGroup ? this.runFlowFormGroup.value.formFields : []);
+    this.submit.emit(this.runFlowFormGroup ? this.runFlowFormGroup.value.formFields : []);
   }
 }

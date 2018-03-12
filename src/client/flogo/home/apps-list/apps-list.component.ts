@@ -11,7 +11,7 @@ import { notification } from '@flogo/shared/utils';
 })
 export class FlogoAppsListComponent implements OnInit {
   @ViewChild('importInput') importInput: ElementRef;
-  @Output() onSelectedApp: EventEmitter<App> = new EventEmitter<App>();
+  @Output() appSelected: EventEmitter<App> = new EventEmitter<App>();
 
   showValidationErrors: boolean;
   importValidationErrors: any;
@@ -29,7 +29,7 @@ export class FlogoAppsListComponent implements OnInit {
 
   onSelectApp(event: Event, removeBox: ElementRef, app: App) {
     if (!(event.target === removeBox.nativeElement || removeBox.nativeElement.contains(event.target))) {
-      this.appSelected(app);
+      this.emitAppSelected(app);
     }
   }
 
@@ -109,7 +109,7 @@ export class FlogoAppsListComponent implements OnInit {
   onAdd(profileDetails) {
     this.apiApplications.createNewApp(profileDetails).then((application: App) => {
       this.closeModal();
-      this.appSelected(application);
+      this.emitAppSelected(application);
     });
   }
 
@@ -127,8 +127,8 @@ export class FlogoAppsListComponent implements OnInit {
       });
   }
 
-  private appSelected(app) {
-    this.onSelectedApp.emit(app);
+  private emitAppSelected(app) {
+    this.appSelected.emit(app);
   }
 
 }

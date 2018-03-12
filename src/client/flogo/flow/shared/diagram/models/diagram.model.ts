@@ -1011,8 +1011,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
 
   private makeTile() {
     /* tslint:disable:max-line-length */
-    return `
-    <svg class="${CLS.diagramNodeDetailShape}" 
+    return `<svg class="${CLS.diagramNodeDetailShape}"
       xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="150" height="138" viewBox="0 0 150 138">
         <defs>
             <linearGradient id="flogo-diagram-tile-bg-default" x1="0%" x2="31.438%" y1="52.069%" y2="52.069%">
@@ -1043,7 +1042,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
                 <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape"/>
                 <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M123.005 55.147l-13.26-29.446-.035-.165V8a7.6 7.6 0 0 0-7.6-7.6h-94A7.6 7.6 0 0 0 .51 8v94a7.6 7.6 0 0 0 7.6 7.6h94a7.6 7.6 0 0 0 7.6-7.6V84.758l.035-.164 13.26-29.447z"/>
             </g>
-    
+
             <g class="tile__terminal">
                 <use class="tile__shadow" fill="#000" filter="url(#flogo-diagram-tile-shadow)" xlink:href="#flogo-diagram-tile-shape-terminal"/>
                 <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape-terminal" />
@@ -1056,7 +1055,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
   }
 
   private makeErrorRootTile() {
-    return `<svg class="${CLS.diagramNodeDetailShape}" xmlns="http://www.w3.org/2000/svg" 
+    return `<svg class="${CLS.diagramNodeDetailShape}" xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink" width="52" height="52" viewBox="0 0 52 52">
         <defs>
             <path id="flogo-diagram-error-shape" d="M40 .12V0H2.4A2.4 2.4 0 0 0 0 2.4v43.2A2.4 2.4 0 0 0 2.4 48H40v-.12L48 24 40 .12z"/>

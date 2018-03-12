@@ -10,10 +10,10 @@ import {FakeRootLanguageModule} from '@flogo/core/language/testing';
   selector: 'flogo-container',
   template: `
     <flogo-flow-triggers-trigger-block #triggerBlock
-      [trigger]="triggerEntity"
-      [keepSelected]="isMapperOpen"
-      [isDevice]="isDeviceType"
-      (onMenuItemSelected)="checkMenuAction($event)"></flogo-flow-triggers-trigger-block>
+                                       [trigger]="triggerEntity"
+                                       [keepSelected]="isMapperOpen"
+                                       [isDevice]="isDeviceType"
+                                       (menuItemSelected)="checkMenuAction($event)"></flogo-flow-triggers-trigger-block>
   `
 })
 class FlogoContainerComponent {
@@ -112,7 +112,7 @@ describe('Component: TriggerBlockComponent', () => {
     it('trigger settings must be shown when trigger is selected', (done) => {
       comp.isDeviceType = false;
       fixture.detectChanges();
-      comp.triggerBlock.onMenuItemSelected.subscribe((data) => {
+      comp.triggerBlock.menuItemSelected.subscribe((data) => {
         expect(data.operation).toEqual('show-settings');
         done();
       });
@@ -125,7 +125,7 @@ describe('Component: TriggerBlockComponent', () => {
     it('trigger settings must be shown when trigger is selected', (done) => {
       comp.isDeviceType = true;
       fixture.detectChanges();
-      comp.triggerBlock.onMenuItemSelected.subscribe((data) => {
+      comp.triggerBlock.menuItemSelected.subscribe((data) => {
         expect(data.operation).toEqual('show-settings');
         done();
       });

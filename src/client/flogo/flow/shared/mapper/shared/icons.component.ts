@@ -14,7 +14,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
   `],
   /* tslint:disable:max-line-length */
   template: `
-<svg xmlns="http://www.w3.org/2000/svg" 
+<svg xmlns="http://www.w3.org/2000/svg"
     style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1">
   <defs>
     <symbol id="flogo-mapper-icon-date" viewBox="0 0 32 32">

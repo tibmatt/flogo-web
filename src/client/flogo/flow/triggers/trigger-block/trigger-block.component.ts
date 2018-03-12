@@ -24,7 +24,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   isDevice: boolean;
   @Output()
-  onMenuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<TriggerMenuSelectionEvent>();
+  menuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<TriggerMenuSelectionEvent>();
 
   isShowingMenu = false;
   MENU_OPTIONS: typeof TRIGGER_MENU_OPERATION = TRIGGER_MENU_OPERATION;
@@ -73,7 +73,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
 
   handleTriggerSelection() {
     this.isShowingDetails = true;
-    this.onMenuItemSelected.emit({operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS, trigger: this.trigger});
+    this.menuItemSelected.emit({operation: TRIGGER_MENU_OPERATION.SHOW_SETTINGS, trigger: this.trigger});
   }
 
   handleTriggerMenuShow() {
@@ -101,6 +101,6 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
       this.isShowingMapper = true;
     }
     this.isShowingMenu = false;
-    this.onMenuItemSelected.emit({operation: item, trigger: this.trigger});
+    this.menuItemSelected.emit({operation: item, trigger: this.trigger});
   }
 }
