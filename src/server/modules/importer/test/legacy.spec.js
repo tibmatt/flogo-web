@@ -2,16 +2,16 @@ import {expect} from 'chai';
 import {ResourceStorageRegistryMock} from './resource-storage-mock';
 import {AppImporterFactory} from '../app-importer-factory';
 
-const app = require('./samples/standard-app');
+const app = require('./samples/legacy-app');
 
-describe('Importer: Standard', function () {
+describe('Importer: Legacy', function () {
   let importerFactory;
 
   before(async function () {
     importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
   });
 
-  it.only('should import a standard application', async function () {
+  it('should import a legacy application', async function () {
     const appToImport = {...app};
     const importer = await importerFactory.create(appToImport);
     const importedApp = await importer.import(appToImport);
