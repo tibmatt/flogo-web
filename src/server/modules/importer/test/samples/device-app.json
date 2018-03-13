@@ -1,0 +1,128 @@
+{
+  "name": "My Device app",
+  "type": "flogo:device",
+  "version": "0.0.1",
+  "description": "",
+  "triggers": [
+    {
+      "name": "VL53L0X Trigger",
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/device/trigger/vl53l0x",
+      "description": "Simple VL53L0X Trigger",
+      "settings": {
+        "condition": null
+      },
+      "id": "vl_53_l_0_x_trigger",
+      "actionId": "test_flow"
+    },
+    {
+      "name": "VL53L0X Trigger(1)",
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/device/trigger/vl53l0x",
+      "description": "Simple VL53L0X Trigger",
+      "settings": {
+        "condition": null
+      },
+      "id": "vl_53_l_0_x_trigger_1",
+      "actionId": "test_flow_2"
+    }
+  ],
+  "actions": [
+    {
+      "data": {
+        "flow": {
+          "name": "test flow",
+          "links": [
+            {
+              "id": 1,
+              "from": 2,
+              "to": 3,
+              "type": 0
+            },
+            {
+              "id": 2,
+              "from": 3,
+              "to": 4,
+              "type": 0
+            }
+          ],
+          "tasks": [
+            {
+              "id": 2,
+              "name": "Set Pin",
+              "description": "Simple Device Set Pin Activity",
+              "type": 1,
+              "activityType": "tibco-device-setpin",
+              "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/setpin",
+              "attributes": {
+                "pin": "50",
+                "digital": "true",
+                "value": "70"
+              }
+            },
+            {
+              "id": 3,
+              "name": "Serial Output",
+              "description": "Serial Output Activity",
+              "type": 1,
+              "activityType": "tibco-device-serial",
+              "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/serial",
+              "attributes": {
+                "message": "Hello world"
+              }
+            },
+            {
+              "id": 4,
+              "name": "Send MQTT Message",
+              "description": "Simple Device MQTT Send Activity",
+              "type": 1,
+              "activityType": "tibco-device-mqtt",
+              "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/mqtt",
+              "attributes": {
+                "topic": "my-message",
+                "message": "hello again"
+              }
+            }
+          ]
+        }
+      },
+      "id": "test_flow",
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/device/action/flow"
+    },
+    {
+      "data": {
+        "flow": {
+          "name": "test flow 2",
+          "links": [],
+          "tasks": [
+            {
+              "id": 2,
+              "name": "Set Pin",
+              "description": "Simple Device Set Pin Activity",
+              "type": 1,
+              "activityType": "tibco-device-setpin",
+              "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/setpin",
+              "attributes": {
+                "pin": "10",
+                "digital": false,
+                "value": "20"
+              }
+            }
+          ]
+        }
+      },
+      "id": "test_flow_2",
+      "ref": "github.com/TIBCOSoftware/flogo-contrib/device/action/flow"
+    }
+  ],
+  "device": {
+    "profile": "github.com/TIBCOSoftware/flogo-contrib/device/profile/feather_m0_wifi",
+    "deviceType": "Feather M0 WIFI",
+    "settings": {
+      "mqtt:server": "10.1.1.1",
+      "mqtt:port": "4050",
+      "mqtt:user": "abc",
+      "mqtt:pass": "test",
+      "wifi:ssid": "mmcd:dsds:weds:cxss",
+      "wifi:password": "tester"
+    }
+  }
+}
