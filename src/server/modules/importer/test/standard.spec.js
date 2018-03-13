@@ -11,7 +11,7 @@ describe('Importer: Standard', function () {
     importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
   });
 
-  it.only('should import a standard application', async function () {
+  it('should import a standard application', async function () {
     const appToImport = {...app};
     const importer = await importerFactory.create(appToImport);
     const importedApp = await importer.import(appToImport);
