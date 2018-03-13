@@ -445,45 +445,18 @@ class ItemFactory {
       return this.makeTriggerError(trigger);
     }
 
+    // todo: what does cli means in this context??
     const { installed, cli, endpointSetting } = trigger;
     const item = Object.assign({}, this.getSharedProperties(installed), { id: trigger.node.taskID }, {
       nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name, settings: [],
     });
 
     const settings = _.get(cli, 'settings', {});
-    // get settings
-    const rawTriggerSchemaSettings = _.isArray(installed.settings) ? installed.settings : [];
-    const triggerSchemaSettings = new Map(rawTriggerSchemaSettings.map(s => [s.name, s]));
-    Object.keys(settings).forEach((property) => {
-      // TODO: if no schema?
-      const schema: any = triggerSchemaSettings.get(property);
-      const newSetting: any = {
-        name: property, type: schema.type, value: settings[property],
-      };
-      if (schema.required) {
-        newSetting.required = true;
-      }
-      item.settings.push(newSetting);
-    });
+    const triggerSchemaSettings = _.isArray(installed.settings) ? installed.settings : [];
+    item.settings = mergeAttributesWithSchema(settings, triggerSchemaSettings);
 
     const endpointSettings = _.get(installed, 'endpoint.settings', []);
-    const installedEndpointSettings = new Map(endpointSettings.map<[string, any]>(s => [s.name, s]));
-    Object.keys(endpointSetting.settings || {}).forEach((property) => {
-      const schema: any = installedEndpointSettings.get(property);
-
-      // TODO: if no schema?
-      const newEndpointSetting: any = {
-        name: property, type: schema.type, value: endpointSetting.settings[property],
-      };
-      if (schema.required) {
-        newEndpointSetting.required = true;
-      }
-
-      if (schema.allowed) {
-        newEndpointSetting.allowed = schema.allowed;
-      }
-      item.endpoint.settings.push(newEndpointSetting);
-    });
+    item.endpoint.settings = mergeAttributesWithSchema(endpointSetting.settings || {}, endpointSettings);
 
     const mapType = prop => ({
       name: prop.name,
@@ -560,3 +533,13 @@ class ItemFactory {
     };
   }
 }
+
+function mergeAttributesWithSchema(properties: { [key: string]: any }, schemaAttributes: any[]) {
+  return schemaAttributes.map(attribute => {
+    const mappedAttribute = _.cloneDeep(attribute);
+    if (properties[attribute.name]) {
+      mappedAttribute.value = properties[attribute.name];
+    }
+    return mappedAttribute;
+  });
+};
