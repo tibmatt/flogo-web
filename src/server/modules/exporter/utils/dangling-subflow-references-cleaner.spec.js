@@ -4,9 +4,9 @@ import { DanglingSubflowReferencesCleaner } from './dangling-subflow-references-
 describe('exporter.utils.DanglingSubflowReferencesCleaner', function () {
   const task = {
     inputMappings: [
-      { name: 'foo', value: 'oof', type: 2 },
-      { name: 'dangling', value: 'abcd', type: 2 },
-      { name: 'bar', value: 'rab', type: 2 },
+      { mapTo: 'foo', value: 'oof', type: 2 },
+      { mapTo: 'dangling', value: 'abcd', type: 2 },
+      { mapTo: 'bar', value: 'rab', type: 2 },
     ],
   };
   const linkedFlow = {
@@ -25,8 +25,8 @@ describe('exporter.utils.DanglingSubflowReferencesCleaner', function () {
   it('valid mappings should stay', function () {
     expect(cleanMappings).to.have.length(2)
       .and.to.deep.include.members([
-        { name: 'foo', value: 'oof', type: 2 },
-        { name: 'bar', value: 'rab', type: 2 },
+        { mapTo: 'foo', value: 'oof', type: 2 },
+        { mapTo: 'bar', value: 'rab', type: 2 },
       ]);
   });
 });
