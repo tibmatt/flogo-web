@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Output, Renderer } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Directive({
   selector: '[fgEditableInput]'
@@ -8,7 +8,7 @@ export class EditableInputDirective {
   @Output() editableInputSave: EventEmitter<Event> = new EventEmitter();
   @Output() editableInputCancel: EventEmitter<Event> = new EventEmitter();
 
-  constructor(private element: ElementRef, private renderer: Renderer) {
+  constructor(private element: ElementRef) {
   }
 
   @HostListener('blur')

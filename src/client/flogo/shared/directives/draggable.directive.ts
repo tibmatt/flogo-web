@@ -1,5 +1,5 @@
 // script based on: https://github.com/CoderAjay/ng2Draggable under MIT license
-import { Directive, ElementRef, HostListener, OnDestroy, OnInit, Renderer } from '@angular/core';
+import { Directive, ElementRef, HostListener, OnDestroy, OnInit, Renderer2 as Renderer} from '@angular/core';
 
 @Directive({
   selector: '[fgDraggable]'
@@ -23,7 +23,7 @@ export class DraggableDirective implements OnDestroy, OnInit {
 
   public ngOnInit(): void {
     this.isFireFox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-    this.renderer.setElementAttribute(this.el.nativeElement, 'draggable', 'true');
+    this.renderer.setAttribute(this.el.nativeElement, 'draggable', 'true');
   }
 
   @HostListener('dragstart', ['$event'])
@@ -73,12 +73,12 @@ export class DraggableDirective implements OnDestroy, OnInit {
     if (!x || !y)  {
       return;
     }
-    this.renderer.setElementStyle(this.el.nativeElement, 'top', (y - this.Δy) + 'px');
-    this.renderer.setElementStyle(this.el.nativeElement, 'left', (x - this.Δx) + 'px');
+    this.renderer.setStyle(this.el.nativeElement, 'top', (y - this.Δy) + 'px');
+    this.renderer.setStyle(this.el.nativeElement, 'left', (x - this.Δx) + 'px');
   }
 
   public ngOnDestroy(): void {
-    this.renderer.setElementAttribute(this.el.nativeElement, 'draggable', 'false');
+    this.renderer.setAttribute(this.el.nativeElement, 'draggable', 'false');
   }
 
 }
