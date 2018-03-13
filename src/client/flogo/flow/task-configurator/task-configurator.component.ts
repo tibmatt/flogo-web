@@ -1,9 +1,7 @@
 import * as _ from 'lodash';
 
-import { Component, Input, OnDestroy,
-  trigger, transition, style, animate, state, AnimationTransitionEvent
-} from '@angular/core';
-
+import { Component, Input, OnDestroy } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Task } from '@flogo/core/interfaces';
 import { PostService } from '@flogo/core/services/post.service';
@@ -28,20 +26,13 @@ import {ActionBase} from '@flogo/core';
   templateUrl: 'task-configurator.component.html',
   animations: [
     trigger('dialog', [
-      state('hidden', style({
-        transform: 'translateY(-100%)',
-        opacity: 0
-      })),
-      state('visible', style({
-        transform: 'translateY(0)',
-        opacity: 1
-      })),
-      transition('hidden => visible', [
-        animate('300ms ease-out')
-      ]),
-      transition('visible => hidden', [
+      transition('void => *', [
+        style({ transform: 'translateY(-100%)', opacity: 0 }),
         animate('250ms ease-in')
-      ])
+      ]),
+      transition('* => void', [
+        animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
+      ]),
     ])
   ],
 })
@@ -70,13 +61,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
   context: SelectTaskConfigEventData;
   showSubflowList = false;
 
-  // Two variables control the display of the modal to support animation when opening and closing: modalState and isActive.
-  // this is because the contents of the modal need to visible up until the close animation finishes
-  // modalState = 'inactive' || 'active'
-  // TODO: we might be able to use a single variable when upgrading to angular >= 4.x as it allows to animate with *ngIf
-  // controls the in/out transition of the modal
-  modalState: 'visible'|'hidden' = 'hidden';
-  // controls the rendering of the content of the modal
   isActive = false;
 
   private _subscriptions: any[];
@@ -92,14 +76,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.cancelSubscriptions();
-  }
-
-  onModalStateChange(event: AnimationTransitionEvent) {
-    if (event.toState === 'visible' && event.phaseName === 'start') {
-      this.isActive = true;
-    } else if (event.toState === 'hidden' && event.phaseName === 'done') {
-      this.isActive = false;
-    }
   }
 
   onMappingsChange(newMappings: Mappings) {
@@ -310,11 +286,11 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   private open() {
-    this.modalState = 'visible';
+    this.isActive = true;
   }
 
   private close() {
-    this.modalState = 'hidden';
+    this.isActive = false;
   }
 
 }
