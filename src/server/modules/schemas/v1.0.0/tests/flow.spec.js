@@ -115,6 +115,15 @@ describe('JSONSchema: Flow', function () {
           .assertIsInvalid()
           .assertHasErrorForRequiredProp('.flowURI');
       });
+
+      it('should have valid flowURI in case of subflow', function () {
+        const activityUnderTest = {...validSchemas.activity};
+        activityUnderTest.ref = 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow';
+        activityUnderTest.settings = {'flowURI': 'flowUri'};
+        activityValidator.validateAndCreateAsserter(activityUnderTest)
+          .assertIsInvalid()
+          .assertHasErrorForMismatchingPattern('settings.flowURI');
+      });
     });
 
     describe('/task', function () {

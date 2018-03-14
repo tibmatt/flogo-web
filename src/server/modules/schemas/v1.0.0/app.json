@@ -37,17 +37,22 @@
     "resources": {
       "type": "array",
       "items": {
-        "type": "object",
-        "required": ["id", "data"],
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "pattern": "^flow:.+"
-          },
-          "data": {
-            "$ref": "flow.json"
-          }
+        "$ref": "#/definitions/resource"
+      }
+    }
+  },
+  "definitions": {
+    "resource": {
+      "type": "object",
+      "required": ["id", "data"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^flow:.+"
+        },
+        "data": {
+          "$ref": "flow.json"
         }
       }
     }

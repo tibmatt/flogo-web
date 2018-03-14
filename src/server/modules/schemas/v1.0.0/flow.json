@@ -114,8 +114,8 @@
       "then": {
         "required": [ "settings" ],
         "properties": {
-          "default": {},
           "settings": {
+            "default": {},
             "required": ["iterate"]
           }
         }
@@ -132,7 +132,14 @@
         },
         "settings": {
           "type": "object",
-          "additionalProperties": true
+          "additionalProperties": true,
+          "properties": {
+            "flowURI": {
+              "type": "string",
+              "pattern": "^res:\/\/.+"
+            }
+          }
+
         },
         "input": {
           "type": "object",

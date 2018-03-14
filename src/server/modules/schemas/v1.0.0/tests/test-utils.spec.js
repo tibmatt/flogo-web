@@ -54,6 +54,14 @@ class Asserter {
     });
   }
 
+  assertHasErrorForMismatchingPattern(propertyName) {
+    expect(this.errors[0]).to.deep.include({
+      keyword: 'pattern',
+      dataPath: `.${propertyName}`,
+
+    });
+  }
+
   assertHasErrorForMismatchingPropertyEnum(propertyName, expectedType) {
     expect(this.errors[0]).to.deep.include({
       dataPath: `.${propertyName}`,
