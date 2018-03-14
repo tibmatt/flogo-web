@@ -7,6 +7,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/skipWhile';
@@ -21,6 +22,7 @@ import { CurrentSelection, MapperService, MapperState } from './services/mapper.
 import { EditorService } from './editor/editor.service';
 import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './tree/dragging.service';
 import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from './constants';
+import { Subject } from 'rxjs/Subject';
 
 
 @Component({
@@ -42,7 +44,9 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
+  private contextChanged = new Subject();
   private contextInUse: IMapperContext;
+  private hasInitted = false;
 
   constructor(private mapperService: MapperService,
               private editorService: EditorService,
@@ -56,81 +60,8 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-
-    const state$ = this.mapperService.state
-      .catch(err => {
-        console.error(err);
-        throw err;
-      })
-      .share();
-
-    state$
-      .distinctUntilKeyChanged('currentSelection')
-      // .map((state: MapperState) => state.currentSelection)
-      // .distinctUntilChanged()
-      .takeUntil(this.ngDestroy)
-      .subscribe((state: MapperState) => {
-        this.currentInput = state.currentSelection;
-        if (this.currentInput) {
-          const editingExpression = this.currentInput.editingExpression;
-          this.currentMappingType = editingExpression.mappingType || TYPE_ATTR_ASSIGNMENT;
-          const nodeDataType = this.currentInput.node.dataType;
-          this.isObjectModeAllowed = nodeDataType === 'object' || nodeDataType === 'complex_object';
-          const mode = editingExpression.mappingType === TYPE_OBJECT_TEMPLATE ? 'json' : null;
-          this.editorService.changeContext(editingExpression.expression, mode);
-        }
-      });
-
-    state$.map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null)
-      .distinctUntilChanged()
-      .takeUntil(this.ngDestroy)
-      .subscribe((errors: any[]) => {
-        if (this.currentInput) {
-          this.editorService.validated(errors);
-        }
-      });
-
-    state$
-      .scan((acc: { state: MapperState, prevNode, nodeChanged }, state: MapperState) => {
-        let nodeChanged = false;
-        let prevNode = acc.prevNode;
-        const currentSelection = state.currentSelection || {};
-        if (currentSelection.node && currentSelection.node !== acc.prevNode) {
-          nodeChanged = true;
-          prevNode = currentSelection.node;
-        }
-        return { state, prevNode, nodeChanged };
-      }, { state: null, prevNode: null, nodeChanged: false })
-      .skipWhile(({ state, nodeChanged }) =>
-        nodeChanged || !state || !state.currentSelection || !state.currentSelection.node
-      )
-      .map(({ state }) => (<MapperState>state).currentSelection.editingExpression)
-      .distinctUntilChanged()
-      .withLatestFrom(state$, (expr, state) => state)
-      .map((state: MapperState) => ({
-        mappings: <any>state.mappings,
-        getMappings() {
-          return this.mappings;
-        }
-      }))
-      .takeUntil(this.ngDestroy)
-      // .do(mappings => {
-      //   console.log("@Output mappings:", mappings);
-      // })
-      .subscribe(this.mappingsChange);
-
-    this.editorService.outputExpression$
-      .takeUntil(this.ngDestroy)
-      .subscribe(expression => this.mapperService.expressionChange({ expression, mappingType: this.currentMappingType }));
-
-    this.dragOverEditor
-      .debounceTime(300)
-      .map((ev: DragEvent) => ({ x: ev.clientX, y: ev.clientY }))
-      .distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y)
-      .subscribe(position => this.editorService.dragOver(position));
-
+    this.hasInitted = true;
     this.initContext();
-
   }
 
   ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
@@ -139,13 +70,15 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
     this.contextInUse = this.context;
-    if (!contextChange.isFirstChange()) {
+    this.contextChanged.next();
+    if (!contextChange.isFirstChange() && this.hasInitted) {
       this.initContext();
     }
   }
 
   ngOnDestroy() {
     this.ngDestroy.emitAndComplete();
+    this.contextChanged.complete();
   }
 
   onDrop(event: DragEvent) {
@@ -214,9 +147,80 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
   private initContext() {
     this.mapperService.setContext(this.contextInUse);
+    const stop$ = this.ngDestroy.merge(this.contextChanged).first().share();
+
+    const state$ = this.mapperService.state
+      .catch(err => {
+        console.error(err);
+        throw err;
+      })
+      .takeUntil(stop$)
+      .share();
+
+    state$
+      .distinctUntilKeyChanged('currentSelection')
+      .takeUntil(stop$)
+      .subscribe((state: MapperState) => {
+        this.currentInput = state.currentSelection;
+        if (this.currentInput) {
+          const editingExpression = this.currentInput.editingExpression;
+          this.currentMappingType = editingExpression.mappingType || TYPE_ATTR_ASSIGNMENT;
+          const nodeDataType = this.currentInput.node.dataType;
+          this.isObjectModeAllowed = nodeDataType === 'object' || nodeDataType === 'complex_object';
+          const mode = editingExpression.mappingType === TYPE_OBJECT_TEMPLATE ? 'json' : null;
+          this.editorService.changeContext(editingExpression.expression, mode);
+        }
+      });
+
+    state$.map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null)
+      .distinctUntilChanged()
+      .takeUntil(stop$)
+      .subscribe((errors: any[]) => {
+        if (this.currentInput) {
+          this.editorService.validated(errors);
+        }
+      });
+
+    state$
+      .scan((acc: { state: MapperState, prevNode, nodeChanged }, state: MapperState) => {
+        let nodeChanged = false;
+        let prevNode = acc.prevNode;
+        const currentSelection = state.currentSelection || {};
+        if (currentSelection.node && currentSelection.node !== acc.prevNode) {
+          nodeChanged = true;
+          prevNode = currentSelection.node;
+        }
+        return { state, prevNode, nodeChanged };
+      }, { state: null, prevNode: null, nodeChanged: false })
+      .skipWhile(({ state, nodeChanged }) =>
+        nodeChanged || !state || !state.currentSelection || !state.currentSelection.node
+      )
+      .map(({ state }) => (<MapperState>state).currentSelection.editingExpression)
+      .distinctUntilChanged()
+      .withLatestFrom(state$, (expr, state) => state)
+      .map((state: MapperState) => ({
+        mappings: <any>state.mappings,
+        getMappings() {
+          return this.mappings;
+        }
+      }))
+      .takeUntil(stop$)
+      .subscribe(change => this.mappingsChange.emit(change));
+
+    this.editorService.outputExpression$
+      .takeUntil(this.ngDestroy)
+      .subscribe(expression => this.mapperService.expressionChange({ expression, mappingType: this.currentMappingType }));
+
+    this.dragOverEditor
+      .takeUntil(stop$)
+      .debounceTime(300)
+      .map((ev: DragEvent) => ({ x: ev.clientX, y: ev.clientY }))
+      .distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y)
+      .subscribe(position => this.editorService.dragOver(position));
 
     this.mapperService.state
       .distinctUntilKeyChanged('context')
+      .takeUntil(stop$)
       .first()
       .subscribe((state: MapperState) => {
         const inputsData = state.inputs;
