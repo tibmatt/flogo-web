@@ -20,8 +20,11 @@ export function load() {
     brackets: [
       ['(', ')', 'bracket.parenthesis'],
       ['{', '}', 'bracket.curly'],
-      ['[', ']', 'bracket.square']
+      ['[', ']', 'bracket.square'],
+      ['{{', '}}', 'bracket.curly'],
     ],
+
+    resolvers: /activity|trigger|current|flow|error|iterate|env|property/,
 
     // common regular expressions
     symbols: /[~!@#%\^&*-+=|\\:`<>.?\/]+/,
@@ -30,38 +33,13 @@ export function load() {
 
     tokenizer: {
       root: [
-        // identifiers and keywords
-        [/([a-zA-Z_][\w\$]*)(\s*)(:?)/, {
-          cases: {
-            '$1@keywords': ['keyword', 'white', 'delimiter'],
-            '$3': ['key.identifier', 'white', 'delimiter'],   // followed by :
-            '$1@builtins': ['predefined.identifier', 'white', 'delimiter'],
-            '@default': ['identifier', 'white', 'delimiter']
-          }
-        }],
 
-        [/\$[\w\$]*/, 'type.identifier'],  // to show class names nicely
+        {include: '@baseExpr'},
 
-        // whitespace
-        {include: '@whitespace'},
+        [/{/, 'json.delimiter', '@json'],
 
         // delimiters and operators
         [/[{}()\[\]]/, '@brackets'],
-        [/[;,.]/, 'delimiter'],
-        [/@symbols/, {
-          cases: {
-            '@operators': 'operator',
-            '@default': ''
-          }
-        }],
-
-        // numbers
-        [/\d+\.\d*(@exponent)?/, 'number.float'],
-        [/\.\d+(@exponent)?/, 'number.float'],
-        [/\d+@exponent/, 'number.float'],
-        [/0[xX][\da-fA-F]+/, 'number.hex'],
-        [/0[0-7]+/, 'number.octal'],
-        [/\d+/, 'number'],
 
         // strings: recover on non-terminated strings
         [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
@@ -72,6 +50,119 @@ export function load() {
 
       whitespace: [
         [/[ \t\r\n]+/, 'white'],
+      ],
+
+      templateExpr: [
+        {include: '@baseExpr'},
+        [/[()\[\]]/, '@brackets'],
+        [/}}/, {token: '@rematch', next: '@pop'}],
+      ],
+
+      json: [
+        {include: '@whitespace'},
+        [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+        [/"/, 'json.key', '@jsonKey."'],
+        [/:\s*/, 'json.delimiter', '@jsonValue'],
+        [/,/, 'json.delimiter'],
+        [/}/, {token: 'json.delimiter', next: '@pop'}],
+      ],
+
+      jsonValue: [
+        [/"([^"\\]|\\.)*$/, 'string.invalid', '@pop'],  // non-teminated string
+        [/"/, { token: 'json.string', switchTo: '@stringTemplate."' }],
+        [/{/, { token: 'json.delimiter', switchTo: '@json' }],
+        [/\d+\.\d*(@exponent)?/, 'number.float', '@pop'],
+        [/\.\d+(@exponent)?/, 'number.float', '@pop'],
+        [/\d+@exponent/, 'number.float', '@pop'],
+        [/0[xX][\da-fA-F]+/, 'number.hex', '@pop'],
+        [/0[0-7]+/, 'number.octal', '@pop'],
+        [/\d+/, 'number', '@pop'],
+        [/true|false|null/, 'keyword', '@pop'],
+        [/\[/, { token: 'json.delimiter', switchTo: '@jsonArray' }]
+      ],
+
+      jsonArray: [
+        { include: '@whitespace' },
+        [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+        [/"/, { token: 'json.string', next: '@stringTemplate."' }],
+        [/{/, { token: 'json.delimiter', next: '@json' }],
+        { include: '@numbers' },
+        [/true|false|null/, 'keyword'],
+        [/\[/, 'json.delimiter', '@jsonArray'],
+        [/,/, 'json.delimiter'],
+        [/\]/, 'json.delimiter', '@pop']
+      ],
+
+      jsonKey: [
+        [/[^\\"']+/, 'json.key'],
+        [/@escapes/, 'json.key'],
+        [/\\./, 'string.escape.invalid'],
+        [/["']/, {
+          cases: {
+            '$#==$S2': {token: 'json.key', next: '@pop'},
+            '@default': 'json.key'
+          }
+        }]
+      ],
+
+      baseExpr: [
+
+        [/([a-zA-Z_][\w\$]*)(\()/, ['function.call', 'delimiter']],
+
+        // identifiers and keywords
+        [/([a-zA-Z_][\w\$]*)(\s*)(:?)/, {
+          cases: {
+            '$1@keywords': ['keyword', 'white', 'delimiter'],
+            '$3': ['key.identifier', 'white', 'delimiter'],   // followed by :
+            '$1@builtins': ['predefined.identifier', 'white', 'delimiter'],
+            '@default': ['identifier', 'white', 'delimiter']
+          }
+        }],
+
+        [/(\$)(@resolvers)(\[\w+\])/, ['resolver.symbol', 'resolver.name', 'resolver.selector']],
+        [/(\$)(@resolvers)/, ['resolver.symbol', 'resolver.name']],
+        [/(\$)(\.)/, ['resolver.symbol', 'delimiter']],
+
+        // whitespace
+        {include: '@whitespace'},
+
+        // delimiters and operators
+        [/[;,.]/, 'delimiter'],
+        [/@symbols/, {
+          cases: {
+            '@operators': 'operator',
+            '@default': ''
+          }
+        }],
+
+        { include: '@numbers' }
+      ],
+
+      numbers: [
+        [/\d+\.\d*(@exponent)?/, 'number.float'],
+        [/\.\d+(@exponent)?/, 'number.float'],
+        [/\d+@exponent/, 'number.float'],
+        [/0[xX][\da-fA-F]+/, 'number.hex'],
+        [/0[0-7]+/, 'number.octal'],
+        [/\d+/, 'number'],
+      ],
+
+      stringTemplate: [
+        [/{{/, {
+          token: 'string-template.open', bracket: '@open', next: '@templateExpr'
+        }],
+        [/}}/, {
+          token: 'string-template.close', bracket: '@close'
+        }],
+        [/[^\\"']+/, 'json.string'],
+        [/@escapes/, 'string.value.json'],
+        [/\\./, 'string.invalid'],
+        [/["']/, {
+          cases: {
+            '$#==$S2': {token: 'json.string', next: '@pop'},
+            '@default': 'json.string'
+          }
+        }]
       ],
 
       string: [

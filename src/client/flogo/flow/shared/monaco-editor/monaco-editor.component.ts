@@ -28,9 +28,12 @@ const SOURCE_ID = 'ngx-monaco-editor';
 const LANGUAGE_ID = 'flogomapping';
 export const DEFAULT_EDITOR_OPTIONS = {
   language: LANGUAGE_ID,
+  theme: LANGUAGE_ID,
   fontSize: 13,
+  glyphMargin: false,
+  lineNumbersMinChars: 3,
   fixedOverflowWidgets: true,
-  lineNumbers: false,
+  lineNumbers: true,
   scrollBeyondLastLine: false,
   minimap: {
     enabled: false
