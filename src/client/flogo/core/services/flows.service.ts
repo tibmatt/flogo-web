@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { objectFromArray } from '../../shared/utils';
 
+import { TriggersApiService } from './restapi';
 import { RESTAPIHandlersService as HandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService as FlowsApiService } from './restapi/v2/flows-api.service';
-import { RESTAPITriggersService as TriggersService } from './restapi/v2/triggers-api.service';
 import { RESTAPITriggersService as ContribTriggersService } from './restapi/triggers-api.service';
 
 @Injectable()
 export class FlowsService {
   constructor(private handlersService: HandlersService,
               private flowsService: FlowsApiService,
-              private triggersService: TriggersService,
+              private triggersService: TriggersApiService,
               private contribTriggerService: ContribTriggersService) {
   }
 

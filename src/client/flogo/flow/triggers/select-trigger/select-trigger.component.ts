@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, ViewChild, Output} from '@angular/core';
-import { RESTAPITriggersService as RESTAPITriggersServiceV2 } from '@flogo/core/services/restapi/v2/triggers-api.service';
+import { TriggersApiService } from '@flogo/core/services';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 import {BsModalComponent} from 'ng2-bs3-modal';
 
@@ -23,7 +23,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
 
 
   constructor(private profileService: FlogoProfileService,
-              private triggersServiceV2: RESTAPITriggersServiceV2) {
+              private triggersApiService: TriggersApiService) {
     this.displayExisting = true;
   }
 
@@ -44,7 +44,7 @@ export class FlogoSelectTriggerComponent implements OnInit, OnChanges {
   }
 
   getExistingTriggers() {
-    return this.triggersServiceV2.listTriggersApp(this.appDetails.appId);
+    return this.triggersApiService.listTriggersForApp(this.appDetails.appId);
   }
 
   loadInstalledTriggers() {

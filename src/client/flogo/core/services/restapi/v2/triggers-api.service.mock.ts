@@ -3,15 +3,15 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class RESTAPITriggersServiceMock {
-  constructor(private http: Http) {
+export class TriggersApiServiceMock {
+  constructor() {
   }
 
   createTrigger(appId, trigger: any) {
     return Promise.resolve({});
   }
 
-  listTriggersApp(appId) {
+  listTriggersForApp(appId) {
     const existing = [
       {
         ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/coap',

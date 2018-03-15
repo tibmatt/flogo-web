@@ -12,7 +12,7 @@ import {FlogoFlowTriggersPanelComponent} from './triggers.component';
 
 import {FlogoSelectTriggerComponent} from './select-trigger/select-trigger.component';
 
-import {RESTAPITriggersService as RESTAPITriggersServiceV2} from '@flogo/core/services/restapi/v2/triggers-api.service';
+import {TriggersApiService} from '@flogo/core/services';
 import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
 import {RESTAPITriggersServiceMock} from '@flogo/core/services/restapi/triggers-api.service.mock';
 import {RESTAPITriggersService} from '@flogo/core/services/restapi/triggers-api.service';
@@ -190,7 +190,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         { provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock },
         { provide: RESTAPIActivitiesService, useClass: MockActivityContribService },
         { provide: RESTAPIContributionsService, useClass: MockActivityContribService },
-        {provide: RESTAPITriggersServiceV2, useClass: MockTriggerServiceV2},
+        {provide: TriggersApiService, useClass: MockTriggerServiceV2},
         {provide: RESTAPIHandlersService, useClass: MockHandlerService},
         {provide: UIModelConverterService, useClass: MockUIConverterService},
         // {provide: TriggerMapperService, useValue: { open() {}, close() {}, save() {} }},

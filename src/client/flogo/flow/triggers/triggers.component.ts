@@ -3,9 +3,9 @@ import {NavigationEnd, Router} from '@angular/router';
 import 'rxjs/add/operator/filter';
 
 import { LanguageService } from '@flogo/core';
+import { TriggersApiService } from '@flogo/core/services';
 import {FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION} from '@flogo/core/constants';
 import {notification, objectFromArray} from '@flogo/shared/utils';
-import {RESTAPITriggersService} from '@flogo/core/services/restapi/v2/triggers-api.service';
 import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
 
 import {PostService} from '@flogo/core/services/post.service';
@@ -59,7 +59,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   private _ngDestroy$ = SingleEmissionSubject.create();
   public isMapperWindowOpen = false;
 
-  constructor(private _restAPITriggersService: RESTAPITriggersService,
+  constructor(private _restAPITriggersService: TriggersApiService,
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _converterService: UIModelConverterService,
               private _router: Router,

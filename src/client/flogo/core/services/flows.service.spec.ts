@@ -1,14 +1,14 @@
 import { FlowsService } from './flows.service';
 import { RESTAPIHandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService } from './restapi/v2/flows-api.service';
-import { RESTAPITriggersService } from './restapi/v2/triggers-api.service';
+import { TriggersApiService } from './restapi';
 import { RESTAPITriggersService as ContribTriggersService } from './restapi/triggers-api.service';
 import Spy = jasmine.Spy;
 
 describe('Service: FlowsService', function (this: {
   testService: FlowsService,
   mockHandlersAPIService: RESTAPIHandlersService,
-  mockTriggersService: RESTAPITriggersService,
+  mockTriggersService: TriggersApiService,
   mockContribTriggerAPIService: ContribTriggersService,
   mockFlowsAPIService: APIFlowsService
 }) {

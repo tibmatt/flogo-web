@@ -5,12 +5,9 @@ import * as _ from 'lodash';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 
-import {MetadataAttribute, FlowDiagram, Task, UiFlow} from '@flogo/core';
-import { FlowData } from './core';
-
-import { LanguageService } from '@flogo/core';
+import {MetadataAttribute, FlowDiagram, Task, UiFlow, LanguageService} from '@flogo/core';
+import { TriggersApiService, OperationalError } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
-import { OperationalError } from '@flogo/core/services/error.service';
 import { ValueTypes } from '@flogo/core/constants';
 
 import { FlogoModal } from '@flogo/core/services/modal.service';
@@ -26,6 +23,7 @@ import {
   RunProgressStore,
   Step
 } from './core/runner.service';
+import { FlowData } from './core';
 
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
 
@@ -52,7 +50,6 @@ import {
   SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS
 } from './error-panel/messages';
 
-import { RESTAPITriggersService } from '../core/services/restapi/v2/triggers-api.service';
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
 import {
@@ -148,7 +145,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   constructor(public translate: LanguageService,
               private _postService: PostService,
               private _flowService: FlowsService,
-              private _restAPITriggersService: RESTAPITriggersService,
+              private triggersApiService: TriggersApiService,
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _restAPIAppsService: AppsApiService,
               private _runnerService: RunnerService,
@@ -521,7 +518,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     if (data.action === 'trigger-copy') {
       const triggerSettings = _.pick(this.currentTrigger, ['name', 'description', 'ref', 'settings']);
-      this._restAPITriggersService.createTrigger(this.app.id, triggerSettings)
+      this.triggersApiService.createTrigger(this.app.id, triggerSettings)
         .then((createdTrigger) => {
           this.currentTrigger = createdTrigger;
           const settings = this.getSettingsCurrentHandler();
@@ -872,7 +869,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
         if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
           updateObject[data.proper] = task[data.proper];
-          this._restAPITriggersService.updateTrigger(this.currentTrigger.id, updateObject);
+          this.triggersApiService.updateTrigger(this.currentTrigger.id, updateObject);
         }
 
 
@@ -1118,7 +1115,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       let updatePromise: any = Promise.resolve(true);
 
       if (data.changedStructure === 'settings') {
-        updatePromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, { settings: data.settings });
+        updatePromise = this.triggersApiService.updateTrigger(this.currentTrigger.id, { settings: data.settings });
       } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
         updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.flow.id, {
           settings: data.endpointSettings,

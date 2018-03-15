@@ -542,4 +542,4 @@ function mergeAttributesWithSchema(properties: { [key: string]: any }, schemaAtt
     }
     return mappedAttribute;
   });
-};
+}

@@ -1,69 +1,54 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
-import { environment } from '../../../../../environments/environment';
-import { HttpUtilsService } from '../http-utils.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { _throw } from 'rxjs/observable/throw';
 
-export const domainURL = environment.hostname;
-
+import { RestApiService } from '../rest-api.service';
+// TriggersBackendService
+// TriggersApiService
+// TriggerStorage
+// TriggerRepository
 @Injectable()
-export class RESTAPITriggersService {
-  constructor(private http: Http, private httpUtils: HttpUtilsService) {
+export class TriggersApiService {
+  constructor(private restApi: RestApiService) {
+  }
+
+  listTriggersForApp(appId) {
+    return this.restApi.get<any>(`apps/${appId}/triggers`)
+      .toPromise();
   }
 
   createTrigger(appId, trigger: any) {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
-
-    return this.http.post(this.apiPrefix(`apps/${appId}/triggers`), trigger, options).toPromise()
-      .then(response => response.json().data);
-  }
-
-  listTriggersApp(appId) {
-    return this.http.get(this.apiPrefix(`apps/${appId}/triggers`)).toPromise()
-      .then(response => {
-        return response.json().data;
-      });
+    return this.restApi.post<any>(`apps/${appId}/triggers`, trigger)
+      .toPromise();
   }
 
   getTrigger(triggerId) {
-    return this.http.get(this.apiPrefix(`triggers/${triggerId}`))
-      .toPromise()
-      .then(response => response.json().data);
+    return this.restApi.get<any>(`triggers/${triggerId}`)
+      .toPromise();
   }
 
   updateTrigger(triggerId: string, trigger: any) {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
-
-    return this.http.patch(this.apiPrefix(`triggers/${triggerId}`), trigger, options).toPromise()
-      .then(response => this.extractData(response))
-      .catch(error => Promise.reject(this.extractErrors(error)));
+    return this.restApi
+      .patch<any>(`triggers/${triggerId}`, trigger)
+      // extract errors
+      .catch((err: HttpErrorResponse) => {
+        return _throw(this.extractErrors(err));
+      })
+      .toPromise();
   }
 
   deleteTrigger(triggerId: string) {
-    return this.http.delete(this.apiPrefix(`triggers/${triggerId}`)).toPromise();
+    return this.restApi.delete(`triggers/${triggerId}`)
+      .toPromise();
   }
 
-  private extractData(res: Response) {
-    const body = res.json();
-    // todo: body.data won't always be an object, could be an array
-    return body ? body.data : {};
-  }
-
-  private extractErrors(error: Response | any) {
-    if (error instanceof Response) {
-      const body = error.json();
-      const errs = body.errors || [body];
-      return errs;
+  private extractErrors(error: HttpErrorResponse | any) {
+    const body = error.error;
+    if (body instanceof Error) {
+      return new Error(`Unknown error: error.error.message`);
     } else {
-      return new Error('Unknown error');
+      return body.errors || [body];
     }
   }
-
-  private apiPrefix(path) {
-    return this.httpUtils.apiPrefix(path, 'v2');
-  }
-
 
 }
