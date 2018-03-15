@@ -28,7 +28,7 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
 import { IParsedExpressionDetails, IMapperContext } from '../models';
-import { TYPE_ATTR_ASSIGNMENT } from '../constants';
+import { TYPE_ATTR_ASSIGNMENT, ROOT_TYPES } from '../constants';
 
 export interface TreeState {
   filterTerm: string | null;
@@ -435,13 +435,13 @@ export class MapperService {
     const resolver = root.data.rootType;
     const makeResolvable = expr => '$' + expr;
 
-    if (resolver === 'trigger') {
+    if (resolver === ROOT_TYPES.TRIGGER || resolver === ROOT_TYPES.ERROR) {
       expressionHead = `${resolver}.`;
       expressionHead += propName ? propName.data.nodeName : '';
       expressionHead = makeResolvable(expressionHead);
       expressionTailParts = nodes.slice(2);
-    } else if (resolver === 'activity') {
-      expressionHead = `activity[${root.data.nodeName}].`;
+    } else if (resolver === ROOT_TYPES.ACTIVITY) {
+      expressionHead = `${ROOT_TYPES.ACTIVITY}[${root.data.nodeName}].`;
       expressionHead += propName ? propName.data.nodeName : '';
       expressionHead = makeResolvable(expressionHead);
       expressionTailParts = nodes.slice(2);
