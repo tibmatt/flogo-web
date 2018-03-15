@@ -91,6 +91,12 @@ export function makeDefaultErrorTrigger(id): Task {
       type: ValueTypes.ANY,
       title: 'data',
       value: ''
+    },
+    {
+      name: 'code',
+      type: ValueTypes.STRING,
+      title: 'code',
+      value: ''
     }
   ];
 

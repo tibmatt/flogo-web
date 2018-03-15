@@ -6,10 +6,10 @@ import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo/core'
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 
 import { flogoIDDecode } from '@flogo/shared/utils';
-import { IMapExpression } from '@flogo/flow/shared/mapper';
 // todo: shared models should be moved to core
 import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
-import { IMapping } from '../models/imapping';
+import { ROOT_TYPES } from '../constants';
+import { IMapping, IMapExpression } from '../models';
 
 export type  MappingsValidatorFn = (imapping: IMapping) => boolean;
 
@@ -41,11 +41,11 @@ export class MapperTranslator {
         }
         const hasAttributes = outputs && outputs.length > 0;
         if (hasAttributes || includeEmptySchemas) {
-          const taskId = flogoIDDecode(tile.id);
           const tileSchema = MapperTranslator.attributesToObjectDescriptor(outputs || []);
           tileSchema.rootType = this.getRootType(tile);
           tileSchema.title = tile.name;
-          rootSchema.properties[taskId] = tileSchema;
+          const propName = tileSchema.rootType === ROOT_TYPES.ERROR ? 'error' : flogoIDDecode(tile.id);
+          rootSchema.properties[propName] = tileSchema;
         }
       } else {
         const flowInputs = (<FlowMetadata>tile).input;
@@ -126,11 +126,11 @@ export class MapperTranslator {
 
   static getRootType(tile: FlowTile | FlowMetadata) {
     if (tile.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-      return tile.triggerType === FLOGO_ERROR_ROOT_NAME ? 'error-root' : 'trigger';
+      return tile.triggerType === FLOGO_ERROR_ROOT_NAME ? ROOT_TYPES.ERROR : ROOT_TYPES.TRIGGER;
     } else if (tile.type === 'metadata') {
-      return 'flow';
+      return ROOT_TYPES.FLOW;
     }
-    return 'activity';
+    return ROOT_TYPES.ACTIVITY;
   }
 
   static makeValidator(): MappingsValidatorFn {

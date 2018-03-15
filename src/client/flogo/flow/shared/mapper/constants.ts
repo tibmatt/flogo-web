@@ -10,5 +10,12 @@ export const MAPPING_TYPE = {
   OBJECT_TEMPLATE: TYPE_OBJECT_TEMPLATE,
 };
 
+export const ROOT_TYPES = {
+  FLOW: 'flow',
+  ACTIVITY: 'activity',
+  TRIGGER: 'trigger',
+  ERROR: 'error',
+};
+
 export const REGEX_INPUT_VALUE_INTERNAL = /^(([\w-]+)\.([\w-]+))((?:\.[\w-]+)*)$/;
 export const REGEX_INPUT_VALUE_EXTERNAL = /^\{(A([\w-]+)|T|E)\.([\w-]+)\}((?:\.[\w-]+)*)$/;
