@@ -1,10 +1,10 @@
-import {TriggerManagerMock} from "./trigger-mananger-mock";
-import {ActivitiesManagerMock} from "./activities-mananger-mock";
-import {AppsManagerMock} from "./apps-manager-mock";
-import {ActionsManagerMock} from "./actions-manager-mock";
-import {AppsTriggersManagerMock} from "./apps-trigger-manager-mock";
-import {HandlerManagerMock} from "./handler-manager-mock";
-import {ContribManagerMock} from "./contrib-mananger-mock";
+import {TriggerManagerMock} from "./mocks/trigger-mananger-mock";
+import {ActivitiesManagerMock} from "./mocks/activities-mananger-mock";
+import {AppsManagerMock} from "./mocks/apps-manager-mock";
+import {ActionsManagerMock} from "./mocks/actions-manager-mock";
+import {AppsTriggersManagerMock} from "./mocks/apps-trigger-manager-mock";
+import {HandlerManagerMock} from "./mocks/handler-manager-mock";
+import {ContribManagerMock} from "./mocks/contrib-mananger-mock";
 
 export class ResourceStorageRegistryMock {
   /**

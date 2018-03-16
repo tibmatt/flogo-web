@@ -1,4 +1,4 @@
-const triggers = require('./samples/triggers');
+const triggers = require('../samples/triggers');
 
 export class TriggerManagerMock {
   static find() {

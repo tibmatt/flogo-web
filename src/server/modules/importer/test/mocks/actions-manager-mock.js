@@ -1,6 +1,6 @@
-import {portTaskTypesForLegacyIteratorTasks} from "../../actions/create/port-task-types-for-legacy-iterator-tasks";
+import {portTaskTypesForLegacyIteratorTasks} from "../../../actions/create/port-task-types-for-legacy-iterator-tasks";
 
-const app = require('./samples/legacy-app');
+const commonApp = require('../samples/common-app-details');
 
 export class ActionsManagerMock {
   static create(appId, actionData) {
@@ -12,7 +12,7 @@ export class ActionsManagerMock {
         updatedAt: null,
         appId,
         app: {
-          name: app.name, type: app.type, version: app.version, description: app.description,
+          ...commonApp,
           createdAt: now,
           updatedAt: null,
           id: appId
