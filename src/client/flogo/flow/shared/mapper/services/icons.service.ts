@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ValueTypes } from '@flogo/core/constants';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 @Injectable()
@@ -6,20 +7,21 @@ export class IconsService {
 
   private iconMap = {
     date: '#flogo-mapper-icon-date',
-    array: '#flogo-mapper-icon-array',
-    boolean: '#flogo-mapper-icon-boolean',
-    number: '#flogo-mapper-icon-number',
-    integer: '#flogo-mapper-icon-integer',
-    params: '#flogo-mapper-icon-params',
-    complex_object: '#flogo-mapper-icon-complex-object',
-    any: '#flogo-mapper-icon-any',
-    object: '#flogo-mapper-icon-object',
-    string: '#flogo-mapper-icon-string',
-    stringArray: '#flogo-mapper-icon-string-array',
-    numberArray: '#flogo-mapper-icon-number-array',
-    booleanArray: '#flogo-mapper-icon-boolean-array',
+    [ValueTypes.ARRAY]: '#flogo-mapper-icon-array',
+    [ValueTypes.BOOLEAN]: '#flogo-mapper-icon-boolean',
+    [ValueTypes.DOUBLE]: '#flogo-mapper-icon-double',
+    [ValueTypes.INTEGER]: '#flogo-mapper-icon-integer',
+    [ValueTypes.LONG]: '#flogo-mapper-icon-long',
+    [ValueTypes.PARAMS]: '#flogo-mapper-icon-params',
+    [ValueTypes.COMPLEX_OBJECT]: '#flogo-mapper-icon-complex-object',
+    [ValueTypes.ANY]: '#flogo-mapper-icon-any',
+    [ValueTypes.OBJECT]: '#flogo-mapper-icon-object',
+    [ValueTypes.STRING]: '#flogo-mapper-icon-string',
+    [`${ValueTypes.STRING}Array`]: '#flogo-mapper-icon-string-array',
+    [`${ValueTypes.DOUBLE}Array`]: '#flogo-mapper-icon-double-array',
+    [`${ValueTypes.BOOLEAN}Array`]: '#flogo-mapper-icon-boolean-array',
     dateArray: '#flogo-mapper-icon-date-array',
-    objectArray: '#flogo-mapper-icon-object-array',
+    [`${ValueTypes.OBJECT}Array`]: '#flogo-mapper-icon-object-array',
   };
 
   getIcon(node: MapperTreeNode) {

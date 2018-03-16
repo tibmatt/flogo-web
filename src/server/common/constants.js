@@ -62,26 +62,16 @@ export const FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE = {
 
 
 export const FLOGO_TASK_ATTRIBUTE_TYPE = {
-  0: "STRING",
-  1: "INTEGER",
-  2: "NUMBER",
-  3: "BOOLEAN",
-  4: "OBJECT",
-  5: "ARRAY",
-  6: "PARAMS",
-  7: "ANY",
-  8: "INT",
-  9: "COMPLEX_OBJECT",
-  "STRING": 0,
-  "INTEGER": 1,
-  "NUMBER": 2,
-  "BOOLEAN": 3,
-  "OBJECT": 4,
-  "ARRAY": 5,
-  "PARAMS": 6,
-  "ANY": 7,
-  "INT": 8,
-  "COMPLEX_OBJECT": 9
+  STRING: 'string',
+  INTEGER: 'integer',
+  DOUBLE: 'double',
+  BOOLEAN: 'boolean',
+  OBJECT: 'object',
+  ARRAY: 'array',
+  PARAMS: 'params',
+  ANY: 'any',
+  LONG: 'long',
+  COMPLEX_OBJECT: 'complexObject',
 };
 
 export const FLOGO_ENGINE_STATUS = {

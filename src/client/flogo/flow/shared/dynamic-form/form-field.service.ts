@@ -19,7 +19,7 @@ export class FormFieldService {
           type: field.type,
           value: field.value
         });
-      case ValueTypes.NUMBER:
+      case ValueTypes.DOUBLE:
       case ValueTypes.INTEGER:
         return new NumberType({
           name: field.name,

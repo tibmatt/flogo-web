@@ -19,28 +19,27 @@ export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
 
 // can be simplified using string enums in typescript >= 2.1
 export namespace ValueTypes {
-  export type ValueType = 'string' | 'integer' | 'int' | 'number' | 'boolean' | 'object' | 'array' | 'params' | 'any' |  'complex_object';
+  export type ValueType = 'string' | 'integer' | 'long' | 'double' | 'boolean' | 'object' | 'array' | 'params' | 'any' |  'complexObject';
 
   export const STRING: 'string' = 'string';
   export const INTEGER: 'integer' = 'integer';
-  // todo: should be removed? only used by device activities
-  export const INT: 'int' = 'int';
-  export const NUMBER: 'number' = 'number';
+  export const LONG: 'long' = 'long';
+  export const DOUBLE: 'double' = 'double';
   export const BOOLEAN: 'boolean' = 'boolean';
   export const OBJECT: 'object' = 'object';
   export const ARRAY: 'array' = 'array';
   export const ANY: 'any' = 'any';
   export const PARAMS: 'params' = 'params';
-  export const COMPLEX_OBJECT: 'complex_object' = 'complex_object';
+  export const COMPLEX_OBJECT: 'complexObject' = 'complexObject';
 
-  export const allTypes: ReadonlyArray<ValueType> = [ STRING, INTEGER, NUMBER, BOOLEAN, OBJECT, ARRAY, ANY, PARAMS, COMPLEX_OBJECT ];
+  export const allTypes: ReadonlyArray<ValueType> = [ STRING, INTEGER, LONG, DOUBLE, BOOLEAN, OBJECT, ARRAY, ANY, PARAMS, COMPLEX_OBJECT ];
 
   // can be type safe in typescript >= 2.1 using "keyof" keyword
   export const defaultValueForType = new Map<ValueType, any>([
     [STRING, ''],
     [INTEGER, 0],
-    [INT, 0],
-    [NUMBER, 0.0],
+    [LONG, 0],
+    [DOUBLE, 0.0],
     [BOOLEAN, false],
     [OBJECT, null],
     [ARRAY, []],
