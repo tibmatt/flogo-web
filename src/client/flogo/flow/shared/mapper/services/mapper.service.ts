@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
+import { scan } from 'rxjs/operators';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/zip';
@@ -100,9 +101,11 @@ export class MapperService {
   ) {
 
     this.updatesSrc
-      .scan((accumulator: MapperState, operation: Function) => {
-        return operation(accumulator);
-      }, {})
+      .pipe(
+        scan((accumulator: MapperState, operation: Function) => {
+          return operation(accumulator);
+        }, {})
+      )
       .subscribe(this.state);
 
     this.filterInputsSrc

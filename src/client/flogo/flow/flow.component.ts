@@ -15,8 +15,8 @@ import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
 import {
   ERRORS as RUNNER_ERRORS,
-  RUN_STATE_CODE as RUNNER_STATE,
-  RUN_STATUS_CODE as RUNNER_STATUS,
+  RunStateCode as RUNNER_STATE,
+  RunStatusCode as RUNNER_STATUS,
   RunnerService,
   RunOptions,
   RunProgress,
@@ -1377,13 +1377,13 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private logRunStatus(processStatus) {
     switch (processStatus.status) {
-      case RUNNER_STATUS.NOT_STARTED:
+      case RUNNER_STATUS.NotStarted:
         console.log(`[PROC STATE][${processStatus.trial}] Process has not started.`);
         break;
-      case RUNNER_STATUS.ACTIVE:
+      case RUNNER_STATUS.Active:
         console.log(`[PROC STATE][${processStatus.trial}] Process is running...`);
         break;
-      case RUNNER_STATUS.COMPLETED:
+      case RUNNER_STATUS.Completed:
         console.log(`[PROC STATE][${processStatus.trial}] Process finished.`);
         break;
       case null:
@@ -1452,7 +1452,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       const opError = <OperationalError> error;
       if (opError.name === RUNNER_ERRORS.PROCESS_NOT_COMPLETED) {
         // run error instance has status prop hence the casting to any
-        message = (<any>opError).status === RUNNER_STATUS.CANCELLED ? 'CANVAS:RUN-ERROR:RUN-CANCELLED' : 'CANVAS:RUN-ERROR:RUN-FAILED';
+        message = (<any>opError).status === RUNNER_STATUS.Cancelled ? 'CANVAS:RUN-ERROR:RUN-CANCELLED' : 'CANVAS:RUN-ERROR:RUN-FAILED';
       } else if (opError.name === RUNNER_ERRORS.MAX_TRIALS_REACHED) {
         message = 'CANVAS:RUN-ERROR:MAX-REACHED';
       }
@@ -1505,7 +1505,7 @@ export class FlowComponent implements OnInit, OnDestroy {
          *  but their running task information is generated and maintained
          ****/
         const taskState = step.taskState || 0;
-        if (taskState !== RUNNER_STATE.SKIPPED) {
+        if (taskState !== RUNNER_STATE.Skipped) {
           runTasksIDs.push(taskID);
         }
         const reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');

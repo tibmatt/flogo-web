@@ -1,42 +1,38 @@
-import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { Inject, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs/Observable';
+import { _throw } from 'rxjs/observable/throw';
+import { map, switchMap } from 'rxjs/operators';
+
+import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step, LegacyFlowWrapper } from '@flogo/core/interfaces';
 
 import { HttpUtilsService } from './http-utils.service';
-import { flowToJSON_Link, Interceptor, InterceptorTask, LegacyFlow, Snapshot, Step } from '../../interfaces';
-import { LegacyFlowWrapper } from '@flogo/core';
+import { DEFAULT_REST_HEADERS } from './rest-api-http-headers';
 
 /**
  * Possible run status
  */
-// disabling tslint check because this is a constant class
-/* tslint:disable-next-line:class-name */
-export class RUN_STATUS_CODE {
-  static NOT_STARTED: '0' = '0';
-  static ACTIVE: '100' = '100';
-  static COMPLETED: '500' = '500';
-  static CANCELLED: '600' = '600';
-  static FAILED: '700' = '700';
+export enum RunStatusCode {
+  NotStarted = '0',
+  Active = '100',
+  Completed = '500',
+  Cancelled = '600',
+  Failed = '700',
 }
 
 /**
  * Possible run state
  */
-// disabling tslint check because this is a constant class
-/* tslint:disable-next-line:class-name */
-export class RUN_STATE_CODE {
-  static SKIPPED: 50 = 50;
+export enum RunStateCode {
+  Skipped = 50,
 }
 
 export interface StatusResponse {
   id: string;
   /**
-   * A value from RUN_STATUS_CODE or null
-   * @see RUN_STATUS_CODE
+   * A value from RunStatusCode or null
+   * @see RunStatusCode
    */
   status: string | null;
 }
@@ -57,8 +53,11 @@ export interface RestartResponse {
 }
 
 @Injectable()
-export class RunService {
-  constructor(private http: Http, private httpUtils: HttpUtilsService) {
+export class RunApiService {
+  constructor(
+    private http: HttpClient,
+    private httpUtils: HttpUtilsService,
+    @Inject(DEFAULT_REST_HEADERS) private defaultHeaders: HttpHeaders) {
   }
 
   getStatusByInstanceId(id: string): Observable<StatusResponse | null> {
@@ -86,14 +85,15 @@ export class RunService {
 
   storeProcess(flowInfo: LegacyFlowWrapper): Observable<StoredProcessResponse> {
     //  upload current flow to process service server
-    return this.post<StoredProcessResponse>('flows/run/flows', flowInfo)
-      .map(storedProcess => {
+    return this.post<StoredProcessResponse>('flows/run/flows', flowInfo).pipe(
+      map(storedProcess => {
         // TODO
         //  need to handle the empty response
         //  maybe later on the /flows API should be changed to reply the exist process
         //  instead of an empty response, however, in that case this block won't be run
         return storedProcess;
-      });
+      })
+    );
   }
 
   // TODO: original name was restartWithIcptFrom, what is "icpt?
@@ -105,32 +105,34 @@ export class RunService {
     // get the state of the last step
     const snapshotId = step - 1;
     if (snapshotId < 1) {
-      return ErrorObservable.create(new Error(`Invalid step ${step} to start from.`));
+      return _throw(new Error(`Invalid step ${step} to start from.`));
     }
 
     return this.getSnapshot(processInstanceId, snapshotId)
-      .map(snapshot =>
-        updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot)
-      .switchMap(() => {
-        // TODO: flowinfo interface
-        return this.fetch(`flows/run/flows/${updateProcessId}`)
-          .map(flowInfo => _.get(flowInfo, 'rootTask.links', []));
-      }, (snapshot, links) => ({ snapshot, links }))
-      .switchMap(({ snapshot, links }) => {
-        // process state info based on flowInfo
-        // find all of the tasks in the path of the given tasks to intercept.
-        // i.e. remove the tasks that won't get executed because they are not linked
-        const taskIdsInPath = this.findTaskIdsInLinkPath(interceptor.tasks, links);
-        // get rid of the tasks that don't need to be executed
-        const filteredSnapshot = this.filterSnapshot(snapshot, taskIdsInPath);
+      .pipe(
+        map(snapshot =>
+          updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot),
+        switchMap(() => {
+          // TODO: flowinfo interface
+          return this.fetch(`flows/run/flows/${updateProcessId}`)
+            .map(flowInfo => _.get(flowInfo, 'rootTask.links', []));
+        }, (snapshot, links) => ({snapshot, links})),
+        switchMap(({snapshot, links}) => {
+          // process state info based on flowInfo
+          // find all of the tasks in the path of the given tasks to intercept.
+          // i.e. remove the tasks that won't get executed because they are not linked
+          const taskIdsInPath = this.findTaskIdsInLinkPath(interceptor.tasks, links);
+          // get rid of the tasks that don't need to be executed
+          const filteredSnapshot = this.filterSnapshot(snapshot, taskIdsInPath);
 
-        // then restart from that state with data
-        // TODO: document response data
-        return this.post('flows/run/restart', {
-          initialState: filteredSnapshot,
-          interceptor,
-        });
-      });
+          // then restart from that state with data
+          // TODO: document response data
+          return this.post('flows/run/restart', {
+            initialState: filteredSnapshot,
+            interceptor,
+          });
+        }),
+      );
 
     function updateSnapshotActionUri(snapshot, newFlowId) {
       // replace the old flowURL with the newFlowID
@@ -144,18 +146,15 @@ export class RunService {
   }
 
   private fetch<T>(path: string): Observable<T> {
-    return this.http.get(this.httpUtils.apiPrefix(path, 'v1'), this.httpUtils.defaultOptions())
-      .map(response => response.json());
+    return this.http.get<T>(this.httpUtils.apiPrefix(path, 'v1'), { headers: this.defaultHeaders });
   }
 
   private post<T>(path: string, body: any): Observable<T> {
-    return this.http.post(
+    return this.http.post<T>(
       this.httpUtils.apiPrefix(path, 'v1'),
       body,
-      this.httpUtils.defaultOptions().merge({
-        headers: new Headers({ 'Accept': 'application/json' })
-      })
-    ).map(response => response.json());
+      { headers: this.defaultHeaders },
+    );
   }
 
   /**

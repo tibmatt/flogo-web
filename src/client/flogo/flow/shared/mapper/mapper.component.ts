@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, S
 import { IMapping } from './models/imapping';
 import { IMapperContext } from './models/imapper-context';
 
+import { Subject } from 'rxjs/Subject';
+import { distinctUntilChanged, first, map, merge, scan, share, skipWhile, takeUntil, withLatestFrom } from 'rxjs/operators';
+
 import 'rxjs/add/operator/auditTime';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
@@ -22,7 +25,6 @@ import { CurrentSelection, MapperService, MapperState } from './services/mapper.
 import { EditorService } from './editor/editor.service';
 import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './tree/dragging.service';
 import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from './constants';
-import { Subject } from 'rxjs/Subject';
 
 
 @Component({
@@ -147,7 +149,11 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
   private initContext() {
     this.mapperService.setContext(this.contextInUse);
-    const stop$ = this.ngDestroy.merge(this.contextChanged).first().share();
+    const stop$ = this.ngDestroy.pipe(
+      merge(this.contextChanged),
+      first(),
+      share(),
+    );
 
     const state$ = this.mapperService.state
       .catch(err => {
@@ -182,29 +188,31 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       });
 
     state$
-      .scan((acc: { state: MapperState, prevNode, nodeChanged }, state: MapperState) => {
-        let nodeChanged = false;
-        let prevNode = acc.prevNode;
-        const currentSelection = state.currentSelection || {};
-        if (currentSelection.node && currentSelection.node !== acc.prevNode) {
-          nodeChanged = true;
-          prevNode = currentSelection.node;
-        }
-        return { state, prevNode, nodeChanged };
-      }, { state: null, prevNode: null, nodeChanged: false })
-      .skipWhile(({ state, nodeChanged }) =>
-        nodeChanged || !state || !state.currentSelection || !state.currentSelection.node
+      .pipe(
+        scan((acc: { state: MapperState, prevNode, nodeChanged }, state: MapperState) => {
+          let nodeChanged = false;
+          let prevNode = acc.prevNode;
+          const currentSelection = state.currentSelection || {};
+          if (currentSelection.node && currentSelection.node !== acc.prevNode) {
+            nodeChanged = true;
+            prevNode = currentSelection.node;
+          }
+          return { state, prevNode, nodeChanged };
+        }, { state: null, prevNode: null, nodeChanged: false }),
+        skipWhile(({ state, nodeChanged }) =>
+          nodeChanged || !state || !state.currentSelection || !state.currentSelection.node
+        ),
+        map(({ state }) => (<MapperState>state).currentSelection.editingExpression),
+        distinctUntilChanged(),
+        withLatestFrom(state$, (expr, state) => state),
+        map((state: MapperState) => ({
+          mappings: <any>state.mappings,
+          getMappings() {
+            return this.mappings;
+          }
+        })),
+        takeUntil(stop$)
       )
-      .map(({ state }) => (<MapperState>state).currentSelection.editingExpression)
-      .distinctUntilChanged()
-      .withLatestFrom(state$, (expr, state) => state)
-      .map((state: MapperState) => ({
-        mappings: <any>state.mappings,
-        getMappings() {
-          return this.mappings;
-        }
-      }))
-      .takeUntil(stop$)
       .subscribe(change => this.mappingsChange.emit(change));
 
     this.editorService.outputExpression$

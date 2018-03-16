@@ -16,7 +16,7 @@ import { RESTAPITriggersService } from './services/restapi/triggers-api.service'
 import { RESTAPIHandlersService as RESTAPIHandlersServiceV2 } from './services/restapi/v2/handlers-api.service';
 import { APIFlowsService } from './services/restapi/v2/flows-api.service';
 import { AppsApiService } from './services/restapi/v2/apps-api.service';
-import { RunService } from './services/restapi/run.service';
+import { RunApiService } from './services/restapi/run-api.service';
 import { FlogoModal } from './services/modal.service';
 import { ConfigurationService } from './services/configuration.service';
 import { PostService } from './services/post.service';
@@ -63,7 +63,7 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
     ProfilesAPIService,
     RESTAPIContributionsService,
 
-    RunService,
+    RunApiService,
     ChildWindowService,
     ErrorService,
     FlogoModal,

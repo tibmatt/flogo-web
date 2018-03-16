@@ -1,22 +1,20 @@
-import { Observable } from 'rxjs/Observable';
-import { ArrayObservable } from 'rxjs/observable/ArrayObservable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { ScalarObservable } from 'rxjs/observable/ScalarObservable';
+import { of } from 'rxjs/observable/of';
+import { from } from 'rxjs/observable/from';
+import { _throw } from 'rxjs/observable/throw';
+import { concat } from 'rxjs/observable/concat';
 
-import 'rxjs/add/observable/concat';
-import 'rxjs/add/operator/finally';
+import { finalize } from 'rxjs/operators';
 import Spy = jasmine.Spy;
 
-import { RunService, StatusResponse } from '../../core/services/restapi/run.service';
-import { ERRORS, RUN_STATUS_CODE, RunnerService } from './runner.service';
-import { ErrorService } from '../../core/services/error.service';
 import { UiFlow } from '@flogo/core';
+import { RunApiService, StatusResponse, ErrorService } from '@flogo/core/services';
+import { ERRORS, RunStatusCode, RunnerService } from './runner.service';
 import * as flowUtils from '../shared/diagram/models/flow.model';
 
-describe('Service: RunService', function (this: {
+describe('Service: RunnerService', function (this: {
   DEFAULT_PROCESS_ID: string,
   errorService: ErrorService,
-  runServiceMock: RunService,
+  runServiceMock: RunApiService,
   service: RunnerService
 }) {
 
@@ -25,7 +23,7 @@ describe('Service: RunService', function (this: {
   });
 
   beforeEach(() => {
-    this.runServiceMock = jasmine.createSpyObj<RunService>('runService', [
+    this.runServiceMock = jasmine.createSpyObj<RunApiService>('runService', [
       'getStatusByInstanceId',
       'getStepsByInstanceId',
       'getInstance',
@@ -41,14 +39,14 @@ describe('Service: RunService', function (this: {
     });
 
     it('Should complete when flow execution is completed', (done) => {
-      const expectedSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [RUN_STATUS_CODE.COMPLETED]);
+      const expectedSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [RunStatusCode.Completed]);
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, expectedSequence);
       expectSequenceCompleted(this.service, this.runServiceMock, expectedSequence, done);
     });
 
     it('Should continue while flow is running', (done) => {
       const expectedSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID,
-        [RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.COMPLETED]
+        [RunStatusCode.Active, RunStatusCode.Active, RunStatusCode.Active, RunStatusCode.Completed]
       );
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, expectedSequence);
       expectSequenceCompleted(this.service, this.runServiceMock, expectedSequence, done);
@@ -56,7 +54,7 @@ describe('Service: RunService', function (this: {
 
     it('Should continue when process has not started or when unknown status is received', (done) => {
       const expectedSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID,
-        [RUN_STATUS_CODE.NOT_STARTED, RUN_STATUS_CODE.ACTIVE, 9999, 'unknown', RUN_STATUS_CODE.COMPLETED]
+        [RunStatusCode.NotStarted, RunStatusCode.Active, 9999, 'unknown', RunStatusCode.Completed]
       );
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, expectedSequence);
       expectSequenceCompleted(this.service, this.runServiceMock, expectedSequence, done);
@@ -64,7 +62,7 @@ describe('Service: RunService', function (this: {
 
     it('Should emit an error after max attempts reached', (done) => {
       const responseSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID,
-        [RUN_STATUS_CODE.NOT_STARTED, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.ACTIVE]
+        [RunStatusCode.NotStarted, RunStatusCode.Active, RunStatusCode.Active, RunStatusCode.Active, RunStatusCode.Active]
       );
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, responseSequence);
 
@@ -77,7 +75,7 @@ describe('Service: RunService', function (this: {
 
     it('Should emit an error when flow execution fails', (done) => {
       const responseSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [
-        RUN_STATUS_CODE.NOT_STARTED, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.FAILED]
+        RunStatusCode.NotStarted, RunStatusCode.Active, RunStatusCode.Failed]
       );
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, responseSequence);
 
@@ -85,8 +83,8 @@ describe('Service: RunService', function (this: {
         expect(error).toBeDefined('No error passed to callback');
         expect(error.name).toEqual(ERRORS.PROCESS_NOT_COMPLETED);
         expect(error.status).toEqual(
-          RUN_STATUS_CODE.FAILED,
-          `Expected error.status to be ${RUN_STATUS_CODE.FAILED} but found ${error.status}`
+          RunStatusCode.Failed,
+          `Expected error.status to be ${RunStatusCode.Failed} but found ${error.status}`
         );
       }, done);
 
@@ -94,19 +92,19 @@ describe('Service: RunService', function (this: {
 
     it('Should emit an error when flow execution is cancelled', (done) => {
       const responseSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID,
-        [RUN_STATUS_CODE.NOT_STARTED, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.CANCELLED]
+        [RunStatusCode.NotStarted, RunStatusCode.Active, RunStatusCode.Cancelled]
       );
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, responseSequence);
 
       expectSequenceWithError(this.service, responseSequence, (error) => {
         expect(error).toBeDefined('No error passed to callback');
         expect(error.name).toEqual(ERRORS.PROCESS_NOT_COMPLETED);
-        expect(error.status).toEqual(RUN_STATUS_CODE.CANCELLED);
+        expect(error.status).toEqual(RunStatusCode.Cancelled);
       }, done);
     });
 
 
-    function expectSequenceCompleted(service: RunnerService, runServiceMock: RunService, sequence: any[], done) {
+    function expectSequenceCompleted(service: RunnerService, runServiceMock: RunApiService, sequence: any[], done) {
       let count = 0;
       service.monitorProcessStatus('123', { queryInterval: 2, maxTrials: 10 })
         .subscribe(state => {
@@ -142,13 +140,15 @@ describe('Service: RunService', function (this: {
       spyOn(subscriber, 'onError').and.callThrough();
 
       service.monitorProcessStatus('123', { queryInterval: 1, maxTrials: maxAttempts })
-        .finally(() => {
-          expect(subscriber.onError).toHaveBeenCalled();
-          if (maxAttempts) {
-            expect(count).toEqual(maxAttempts);
-          }
-          done();
-        })
+        .pipe(
+          finalize(() => {
+            expect(subscriber.onError).toHaveBeenCalled();
+            if (maxAttempts) {
+              expect(count).toEqual(maxAttempts);
+            }
+            done();
+          })
+        )
         .subscribe(state => {
             expect(state.status).toEqual(
               sequence[count].status,
@@ -176,7 +176,7 @@ describe('Service: RunService', function (this: {
     it('When useFlow option is provided it should register the flow and return its id', done => {
       spyOn(flowUtils, 'flogoFlowToJSON').and.returnValue({ id: 'transformed-flow' });
       const storeProcessMock = <jasmine.Spy> this.runServiceMock.storeProcess;
-      storeProcessMock.and.returnValue(ScalarObservable.create({ id: '456' }));
+      storeProcessMock.and.returnValue(of({ id: '456' }));
 
       const testFlow = <any> { name: 'test-flow' };
       this.service.registerFlowIfNeeded({ useFlow: <UiFlow>testFlow })
@@ -197,17 +197,17 @@ describe('Service: RunService', function (this: {
       const state = {
         processId: '123',
         instanceId: '456',
-        runStatus: { id: 1, status: RUN_STATUS_CODE.ACTIVE },
+        runStatus: { id: 1, status: RunStatusCode.Active },
         steps: [],
         lastInstance: null,
       };
       const stateSeq = stateSeqPieces.map(toMerge => Object.assign({}, state, toMerge));
-      const stateStream = Observable.concat(
-        ArrayObservable.create(stateSeq),
+      const stateStream = concat(
+        from(stateSeq),
         errorStream,
       );
 
-      const registeredStream = ScalarObservable.create({ processId: '123', instanceId: '456' });
+      const registeredStream = of({ processId: '123', instanceId: '456' });
 
       return {
         stateSeq,
@@ -219,12 +219,14 @@ describe('Service: RunService', function (this: {
 
     it('Should fetch steps one time more after process failed', (done) => {
 
-      const setupData = setup([{ steps: [1] }, { steps: [1, 2] }],
-        ErrorObservable.create(this.errorService.makeOperationalError(ERRORS.PROCESS_NOT_COMPLETED, 'Run failed')));
+      const setupData = setup(
+        [{ steps: [1] }, { steps: [1, 2] }],
+        _throw(this.errorService.makeOperationalError(ERRORS.PROCESS_NOT_COMPLETED, 'Run failed'))
+      );
       const { stateSeq, registeredStream, stateStream } = setupData;
 
       const mockStepsByInstance = <jasmine.Spy> this.runServiceMock.getStepsByInstanceId;
-      mockStepsByInstance.and.returnValue(ScalarObservable.create({ steps: [1, 2, 3] }));
+      mockStepsByInstance.and.returnValue(of({ steps: [1, 2, 3] }));
 
       const receivedSteps = [];
       const expectedSteps = stateSeq.map(s => s.steps).concat([[1, 2, 3]]);
@@ -236,12 +238,14 @@ describe('Service: RunService', function (this: {
       spyOn(subscriber, 'onError');
 
       this.service.streamSteps(registeredStream, stateStream)
-        .finally(() => {
-          expect(receivedSteps).toEqual(expectedSteps);
-          expect(mockStepsByInstance).toHaveBeenCalledTimes(1);
-          expect(mockStepsByInstance.calls.mostRecent().args).toEqual(['456']);
-          done();
-        })
+        .pipe(
+          finalize(() => {
+            expect(receivedSteps).toEqual(expectedSteps);
+            expect(mockStepsByInstance).toHaveBeenCalledTimes(1);
+            expect(mockStepsByInstance.calls.mostRecent().args).toEqual(['456']);
+            done();
+          })
+        )
         .subscribe(steps => {
           receivedSteps.push(steps);
         }, subscriber.onError);
@@ -249,8 +253,10 @@ describe('Service: RunService', function (this: {
     });
 
     it('Should stop after process failed for an unknown reason', (done) => {
-      const setupData = setup([{ steps: [1] }, { steps: [1, 2] }],
-        ErrorObservable.create(new Error('unknown error')));
+      const setupData = setup(
+        [{ steps: [1] }, { steps: [1, 2] }],
+        _throw(new Error('unknown error'))
+      );
       const { stateSeq, registeredStream, stateStream } = setupData;
 
       const receivedSteps = [];
@@ -258,14 +264,15 @@ describe('Service: RunService', function (this: {
 
       const subscriber = jasmine.createSpyObj('subscriber', ['onError']);
 
-      this.service.streamSteps(registeredStream, stateStream)
-        .finally(() => {
+      this.service.streamSteps(registeredStream, stateStream).pipe(
+        finalize(() => {
           expect(receivedSteps).toEqual(expectedSteps);
           const mockStepsByInstance = <jasmine.Spy> this.runServiceMock.getStepsByInstanceId;
           expect(subscriber.onError).toHaveBeenCalled();
           expect(mockStepsByInstance).not.toHaveBeenCalled();
           done();
         })
+      )
         .subscribe(steps => receivedSteps.push(steps), subscriber.onError);
     });
 
@@ -275,7 +282,7 @@ describe('Service: RunService', function (this: {
 
     it('State stream should get steps only for active and completed statuses', (done) => {
       const statusSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [
-        RUN_STATUS_CODE.NOT_STARTED, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.COMPLETED
+        RunStatusCode.NotStarted, RunStatusCode.Active, RunStatusCode.Completed
       ]);
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, statusSequence);
 
@@ -300,27 +307,28 @@ describe('Service: RunService', function (this: {
       spyOn(subscriber, 'onError').and.callThrough();
 
       spyOn(this.service, 'registerAndStartFlow').and
-        .returnValue(ScalarObservable.create({ instanceId: '123', processId: '456' }));
-      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(ScalarObservable.create({ name: 'instance mock' }));
+        .returnValue(of({ instanceId: '123', processId: '456' }));
+      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(of({ name: 'instance mock' }));
 
 
       this.service.startAndMonitor({ useProcessId: '456', queryInterval: 1, maxTrials: 10 },
-        processId => ScalarObservable.create({ id: '456' }))
-        .state
-        .finally(() => {
-          const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
-          expect(mockedMethod).toHaveBeenCalledTimes(2);
-          expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID], [this.DEFAULT_PROCESS_ID]]);
-          expect(this.service.registerAndStartFlow).toHaveBeenCalledTimes(1);
+        processId => of({ id: '456' }))
+        .state.pipe(
+          finalize(() => {
+            const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
+            expect(mockedMethod).toHaveBeenCalledTimes(2);
+            expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID], [this.DEFAULT_PROCESS_ID]]);
+            expect(this.service.registerAndStartFlow).toHaveBeenCalledTimes(1);
 
-          expect(emittedSteps).toEqual([null, 1, 2]);
+            expect(emittedSteps).toEqual([null, 1, 2]);
 
-          expect(subscriber.onComplete).toHaveBeenCalled();
-          // 4 = one for each status and one for each step of that status
-          expect(subscriber.onNext).toHaveBeenCalledTimes(5);
-          expect(subscriber.onError).not.toHaveBeenCalled();
-          done();
-        })
+            expect(subscriber.onComplete).toHaveBeenCalled();
+            // 4 = one for each status and one for each step of that status
+            expect(subscriber.onNext).toHaveBeenCalledTimes(5);
+            expect(subscriber.onError).not.toHaveBeenCalled();
+            done();
+          })
+        )
         .subscribe(
           subscriber.onNext,
           subscriber.onError,
@@ -330,7 +338,7 @@ describe('Service: RunService', function (this: {
 
     it('State should emit as soon as the flow is registered', (done) => {
       const statusSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [
-        RUN_STATUS_CODE.NOT_STARTED, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.COMPLETED
+        RunStatusCode.NotStarted, RunStatusCode.Active, RunStatusCode.Completed
       ]);
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, statusSequence);
 
@@ -355,27 +363,29 @@ describe('Service: RunService', function (this: {
       spyOn(subscriber, 'onError').and.callThrough();
 
       spyOn(this.service, 'registerAndStartFlow').and
-        .returnValue(ScalarObservable.create({ instanceId: '123', processId: '456' }));
-      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(ScalarObservable.create({ name: 'instance mock' }));
+        .returnValue(of({ instanceId: '123', processId: '456' }));
+      (<jasmine.Spy>this.runServiceMock.getInstance).and.returnValue(of({ name: 'instance mock' }));
 
 
       this.service.startAndMonitor({ useProcessId: '456', queryInterval: 1, maxTrials: 10 },
-        processId => ScalarObservable.create({ id: '456' }))
+        processId => of({ id: '456' }))
         .state
-        .finally(() => {
-          const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
-          expect(mockedMethod).toHaveBeenCalledTimes(2);
-          expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID], [this.DEFAULT_PROCESS_ID]]);
-          expect(this.service.registerAndStartFlow).toHaveBeenCalledTimes(1);
+        .pipe(
+          finalize(() => {
+            const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
+            expect(mockedMethod).toHaveBeenCalledTimes(2);
+            expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID], [this.DEFAULT_PROCESS_ID]]);
+            expect(this.service.registerAndStartFlow).toHaveBeenCalledTimes(1);
 
-          expect(emittedSteps).toEqual([null, 1, 2]);
+            expect(emittedSteps).toEqual([null, 1, 2]);
 
-          expect(subscriber.onComplete).toHaveBeenCalled();
-          // 4 = one for each status and one for each step of that status
-          expect(subscriber.onNext).toHaveBeenCalledTimes(5);
-          expect(subscriber.onError).not.toHaveBeenCalled();
-          done();
-        })
+            expect(subscriber.onComplete).toHaveBeenCalled();
+            // 4 = one for each status and one for each step of that status
+            expect(subscriber.onNext).toHaveBeenCalledTimes(5);
+            expect(subscriber.onError).not.toHaveBeenCalled();
+            done();
+          })
+        )
         .subscribe(
           subscriber.onNext,
           subscriber.onError,
@@ -385,14 +395,14 @@ describe('Service: RunService', function (this: {
 
     it('State stream should catch an error response', (done) => {
       const statusSequence = genStatusResponseSequence(this.DEFAULT_PROCESS_ID, [
-        RUN_STATUS_CODE.NOT_STARTED, RUN_STATUS_CODE.ACTIVE, RUN_STATUS_CODE.FAILED
+        RunStatusCode.NotStarted, RunStatusCode.Active, RunStatusCode.Failed
       ]);
       setUpResponseSequence(<Spy>this.runServiceMock.getStatusByInstanceId, statusSequence);
 
       const stepSequence = [1, 2, 3, 4, 5].map(n => ({ steps: n }));
       setUpResponseSequence(<Spy>this.runServiceMock.getStepsByInstanceId, stepSequence);
       spyOn(this.service, 'registerAndStartFlow').and
-        .returnValue(ScalarObservable.create({ instanceId: '123', processId: '456' }));
+        .returnValue(of({ instanceId: '123', processId: '456' }));
 
       const emittedSteps = [];
       const subscriber = {
@@ -404,24 +414,26 @@ describe('Service: RunService', function (this: {
         onError: (error) => {
           expect(error).toBeDefined('No error passed to callback');
           expect(error.name).toEqual(ERRORS.PROCESS_NOT_COMPLETED);
-          expect(error.status).toEqual(RUN_STATUS_CODE.FAILED);
+          expect(error.status).toEqual(RunStatusCode.Failed);
         }
       };
       spyOn(subscriber, 'onError').and.callThrough();
 
       this.service.startAndMonitor({ useProcessId: '456', queryInterval: 1, maxTrials: 10 },
-        processId => ScalarObservable.create({ id: '456' }))
+        processId => of({ id: '456' }))
         .state
-        .finally(() => {
-          const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
-          expect(mockedMethod).toHaveBeenCalledTimes(1);
-          expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID]]);
+        .pipe(
+          finalize(() => {
+            const mockedMethod = <Spy>this.runServiceMock.getStepsByInstanceId;
+            expect(mockedMethod).toHaveBeenCalledTimes(1);
+            expect(mockedMethod.calls.allArgs()).toEqual([[this.DEFAULT_PROCESS_ID]]);
 
-          expect(emittedSteps).toEqual([null, 1]);
+            expect(emittedSteps).toEqual([null, 1]);
 
-          expect(subscriber.onError).toHaveBeenCalled();
-          done();
-        })
+            expect(subscriber.onError).toHaveBeenCalled();
+            done();
+          })
+        )
         .subscribe(
           subscriber.onNext,
           subscriber.onError
@@ -435,7 +447,7 @@ describe('Service: RunService', function (this: {
   }
 
   function setUpResponseSequence(spy: jasmine.Spy, sequence: any[]) {
-    const promiseSequence = sequence.map((value) => ScalarObservable.create(value));
+    const promiseSequence = sequence.map((value) => of(value));
     spy.and.returnValues(...promiseSequence);
   }
 

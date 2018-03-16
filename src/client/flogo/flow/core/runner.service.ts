@@ -1,45 +1,32 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
-import { ScalarObservable } from 'rxjs/observable/ScalarObservable';
+import { timer } from 'rxjs/observable/timer';
+import { of } from 'rxjs/observable/of';
+import { _throw } from 'rxjs/observable/throw';
 
-import 'rxjs/add/observable/throw';
-
-import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/concat';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/exhaustMap';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/merge';
-import 'rxjs/add/operator/last';
-import 'rxjs/add/operator/publish';
-import 'rxjs/add/operator/race';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/takeWhile';
+import { isEqual, defaults } from 'lodash';
 
 import {
-  RUN_STATE_CODE,
-  RUN_STATUS_CODE,
-  RunService,
-  StatusResponse
-} from '@flogo/core/services/restapi/run.service';
-import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
+  catchError, combineLatest, distinctUntilChanged, exhaustMap, filter, last, map, merge, share,
+  startWith, switchMap, takeWhile
+} from 'rxjs/operators';
+
 import { Interceptor, Step, UiFlow } from '@flogo/core';
-import { ErrorService } from '@flogo/core/services/error.service';
+import {
+  RunStateCode,
+  RunStatusCode,
+  RunApiService,
+  StatusResponse,
+  ErrorService
+} from '@flogo/core/services';
+import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
 
 export const ERRORS = {
   MAX_TRIALS_REACHED: 'MaxTrialsReached',
   PROCESS_NOT_COMPLETED: 'ProcessNotCompleted'
 };
 
-export { RUN_STATUS_CODE, RUN_STATE_CODE, Step };
+export { RunStatusCode, RunStateCode, Step };
 
 export interface RunStatus extends StatusResponse {
   /**
@@ -109,7 +96,7 @@ type StartFlowFn = (processId: string) => Observable<{ id: string }>;
 @Injectable()
 export class RunnerService {
 
-  constructor(private runService: RunService, private errorService: ErrorService) {
+  constructor(private runService: RunApiService, private errorService: ErrorService) {
   }
 
   /**
@@ -193,25 +180,30 @@ export class RunnerService {
   startAndMonitor(opts: BaseRunOptions, startFlow: StartFlowFn): RunProgressStore {
 
     const registered = this.registerAndStartFlow(opts, startFlow).share();
+    const shareObservable = obs => obs.pipe(share());
 
     const instanceStatus = registered
-      .switchMap(info => this.monitorProcessStatus(info.instanceId, opts))
-      .share();
+      .pipe(
+        switchMap(info => this.monitorProcessStatus(info.instanceId, opts)),
+        share(),
+      );
 
     // start with null to force the stream to start emitting
-    const querySteps = this.queryForSteps(instanceStatus).startWith(null);
+    const querySteps = this.queryForSteps(instanceStatus)
+      .pipe(startWith(null));
 
     // merge all into a single state
-    const state: Observable<RunProgress> = this.mergeState(instanceStatus, querySteps, registered).share();
+    const state: Observable<RunProgress> = shareObservable(this.mergeState(instanceStatus, querySteps, registered));
 
-    const steps = this.streamSteps(registered, state).share();
+    const steps = shareObservable(this.streamSteps(registered, state));
 
-    const completed = this.observeCompletion(state).share();
+    const completed = shareObservable(this.observeCompletion(state));
 
     return {
       registered,
       state,
-      processStatus: instanceStatus.distinctUntilChanged((prev, next) => _.isEqual(prev, next)),
+      processStatus: instanceStatus
+        .pipe(distinctUntilChanged((prev, next) => isEqual(prev, next))),
       steps,
       completed,
     };
@@ -233,7 +225,7 @@ export class RunnerService {
    *  - Failed process status is encountered (code 700).
    *  - Max number of trials is reached.
    *
-   *  Refer to {@link RUN_STATUS_CODE} for the status codes.
+   *  Refer to {@link RunStatusCode} for the status codes.
    *
    *  @example
    *    runner.monitorProcessStatus("123").subscribe(
@@ -250,7 +242,7 @@ export class RunnerService {
    *      }
    *    );
    *
-   * @see RUN_STATUS_CODE
+   * @see RunStatusCode
    * @see RunStatus
    * @param processInstanceID {string} - The id of a running process
    * @param {object} [opts] - Options
@@ -264,7 +256,7 @@ export class RunnerService {
    * @throws Synchronous error when processInstanceID parameter is not provided
    */
   monitorProcessStatus(processInstanceID: string, opts?: { maxTrials?: number, queryInterval?: number }): Observable<RunStatus> {
-    opts = _.defaults({}, opts, {
+    opts = defaults({}, opts, {
       maxTrials: 20,
       // change this small polling interval to slow down, this is for evaluating
       queryInterval: 500 // ms
@@ -274,45 +266,53 @@ export class RunnerService {
       throw new Error('No process instance has been logged.');
     }
 
-    const source: Observable<RunStatus> = TimerObservable.create(0, opts.queryInterval)
-      .exhaustMap(i => {
-        if (i < opts.maxTrials) {
-          return this.runService.getStatusByInstanceId(processInstanceID);
-        }
-        // or fail when we exhaust the maximum number of attempts
-        return Observable.throw(this.errorService.makeOperationalError(ERRORS.MAX_TRIALS_REACHED, 'Max trials reached'));
-      })
-      .map((response: StatusResponse | null, index: number) => {
-        response = response || { id: null, status: null };
-        if (response.status !== RUN_STATUS_CODE.CANCELLED && response.status !== RUN_STATUS_CODE.FAILED) {
-          const runStatus = <RunStatus> Object.assign({}, response);
-          runStatus.trial = index + 1;
-          return runStatus;
-        } else {
-          throw this.errorService.makeOperationalError(
-            ERRORS.PROCESS_NOT_COMPLETED,
-            `Run error. Status: ${response.status}`, { status: response.status }
-          );
-        }
-      })
-      .share();
+    const source: Observable<RunStatus> = timer(0, opts.queryInterval)
+      .pipe(
+        exhaustMap(i => {
+          if (i < opts.maxTrials) {
+            return this.runService.getStatusByInstanceId(processInstanceID);
+          }
+          // or fail when we exhaust the maximum number of attempts
+          return _throw(this.errorService.makeOperationalError(ERRORS.MAX_TRIALS_REACHED, 'Max trials reached'));
+        }),
+        map((response: StatusResponse | null, index: number) => {
+          response = response || { id: null, status: null };
+          if (response.status !== RunStatusCode.Cancelled && response.status !== RunStatusCode.Failed) {
+            const runStatus = <RunStatus> Object.assign({}, response);
+            runStatus.trial = index + 1;
+            return runStatus;
+          } else {
+            throw this.errorService.makeOperationalError(
+              ERRORS.PROCESS_NOT_COMPLETED,
+              `Run error. Status: ${response.status}`, { status: response.status }
+            );
+          }
+        }),
+        share(),
+      );
 
-    const isStatusCompleted = (status: string) => status === RUN_STATUS_CODE.COMPLETED;
+    const isStatusCompleted = (status: string) => status === RunStatusCode.Completed;
 
     return source
-    // continue until we reach the completed status
-      .takeWhile(runStatus => !isStatusCompleted(runStatus.status))
-      // also publish the completion status
-      .merge(source.filter(runStatus => isStatusCompleted(runStatus.status)).take(1));
+      .pipe(
+        // continue until we reach the completed status
+        takeWhile(runStatus => !isStatusCompleted(runStatus.status)),
+        // also publish the completion status
+        merge(source.filter(runStatus => isStatusCompleted(runStatus.status)).take(1))
+      );
   }
 
   registerAndStartFlow(opts: BaseRunOptions, startFlow: StartFlowFn): Observable<{ processId: string, instanceId: string }> {
     return this.registerFlowIfNeeded(opts)
-      .switchMap(processId => startFlow(processId).map(result => result.id),
-        (processId, instanceId) => ({ processId, instanceId: instanceId }));
+      .pipe(
+        switchMap(
+          processId => startFlow(processId),
+          (processId, instance) => ({ processId, instanceId: instance.id })
+        )
+      );
   }
 
-  registerFlowIfNeeded(opts: { useFlow?: UiFlow, useProcessId?: string }) {
+  registerFlowIfNeeded(opts: { useFlow?: UiFlow, useProcessId?: string }): Observable<string> {
     let registered;
     if (opts.useFlow) {
       // generate process based on the current flow
@@ -322,10 +322,11 @@ export class RunnerService {
       //  since the same process ID returns 204 No Content response and cannot be updated,
       //  while the flow information without ID will be assigned an ID automatically.
       delete process.id;
-      registered = this.runService.storeProcess(process)
-        .map(storedProcess => storedProcess.id);
+      registered = this.runService.storeProcess(process).pipe(
+        map(storedProcess => storedProcess.id)
+      );
     } else if (opts.useProcessId) {
-      registered = ScalarObservable.create(opts.useProcessId);
+      registered = of(opts.useProcessId);
     } else {
       throw new Error('Provided info was not enough to run a flow');
     }
@@ -333,52 +334,63 @@ export class RunnerService {
   }
 
   queryForSteps(processStatusMonitor: Observable<RunStatus>) {
-    const shouldQuery = status => status === RUN_STATUS_CODE.ACTIVE || status === RUN_STATUS_CODE.COMPLETED;
+    const shouldQuery = status => status === RunStatusCode.Active || status === RunStatusCode.Completed;
     return processStatusMonitor
-      .filter(runState => runState && shouldQuery(runState.status))
-      .switchMap(runState => this.runService.getStepsByInstanceId(runState.id))
-      .map(steps => steps.steps);
-  }
-
-  streamSteps(registered: Observable<{ instanceId: string }>, stateStream: Observable<RunProgress>) {
-    return registered.exhaustMap(registerInfo => {
-      return stateStream
-        .catch(error => { // query steps one last time if process failed or was cancelled
-          if (registerInfo.instanceId && error.name === ERRORS.PROCESS_NOT_COMPLETED) {
-            return this.runService.getStepsByInstanceId(registerInfo.instanceId);
-          }
-          return Observable.throw(error);
-        })
-        .map(state => state.steps)
-        .distinctUntilChanged((prev, next) => _.isEqual(prev, next));
-    });
-  }
-
-  private mergeState(instanceStatusStream, queryStepsStream, processRegisteredStream): Observable<RunProgress> {
-    return queryStepsStream
-      .combineLatest(
-        instanceStatusStream,
-        processRegisteredStream,
-        (steps, runStatus, registeredInfo) => ({
-          instanceId: registeredInfo.instanceId,
-          processId: registeredInfo.processId,
-          runStatus,
-          steps,
-          lastInstance: null
-        })
+      .pipe(
+        filter(runState => runState && shouldQuery(runState.status)),
+        switchMap(runState => this.runService.getStepsByInstanceId(runState.id)),
+        map(steps => steps.steps),
       );
   }
 
+  streamSteps(registered: Observable<{ instanceId: string }>, stateStream: Observable<RunProgress>) {
+    return registered.pipe(
+      exhaustMap(registerInfo => {
+        return stateStream.pipe(
+          catchError(error => { // query steps one last time if process failed or was cancelled
+            if (registerInfo.instanceId && error.name === ERRORS.PROCESS_NOT_COMPLETED) {
+              return this.runService.getStepsByInstanceId(registerInfo.instanceId);
+            }
+            return _throw(error);
+          }),
+          map(state => state.steps),
+          distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        );
+      })
+    );
+  }
+
+  private mergeState(
+    instanceStatus$: Observable<RunStatus>,
+    querySteps$: Observable<Step[]|null>,
+    processRegistered$: Observable<{instanceId: string, processId: string}>
+  ): Observable<RunProgress> {
+    return querySteps$.pipe(
+        combineLatest(
+          instanceStatus$,
+          processRegistered$,
+          (steps, runStatus, registeredInfo) => ({
+            instanceId: registeredInfo.instanceId,
+            processId: registeredInfo.processId,
+            runStatus,
+            steps,
+            lastInstance: null
+          })
+        ),
+    );
+  }
+
   private observeCompletion(stateStream: Observable<RunProgress>) {
-    return stateStream
-      .last()
-      .switchMap(
+    return stateStream.pipe(
+      last(),
+      switchMap(
         state => this.runService.getInstance(state.instanceId),
         (runState, instance) => {
           runState.lastInstance = instance;
           return runState;
         }
-      );
+      )
+    );
   }
 
 }

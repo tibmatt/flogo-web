@@ -3,3 +3,4 @@ export { RestApiOptions, RestApiService } from './rest-api.service';
 export { HttpUtilsService } from './http-utils.service';
 
 export { TriggersApiService } from './v2/triggers-api.service';
+export * from './run-api.service';
