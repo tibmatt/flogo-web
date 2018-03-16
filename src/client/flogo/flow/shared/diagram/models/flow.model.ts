@@ -20,7 +20,7 @@ import {
   LegacyFlowWrapper,
   triggerToJSON_Trigger,
   triggerToJSON_TriggerInfo,
-  ValueTypes,
+  ValueType,
   FLOGO_PROCESS_TYPE,
   FLOGO_TASK_TYPE,
 } from '@flogo/core';
@@ -139,7 +139,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     flowMetadata.input = metadata.input.map(input => {
       const inputMetadata: MetadataAttribute = {
         name: input.name,
-        type: input.type || ValueTypes.STRING,
+        type: input.type || ValueType.String,
       };
       if (!_.isUndefined(input.value)) {
         inputMetadata.value = input.value;
@@ -148,7 +148,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     });
     flowMetadata.output = metadata.output.map(output => ({
       name: output.name,
-      type: output.type || ValueTypes.STRING,
+      type: output.type || ValueType.String,
     }));
     return flowMetadata;
   }
@@ -434,7 +434,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       // }
 
       // the attribute default attribute type is STRING
-      attr.type = inAttr.type || ValueTypes.STRING;
+      attr.type = inAttr.type || ValueType.String;
 
       attributes.push(attr);
     });

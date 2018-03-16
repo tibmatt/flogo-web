@@ -1,4 +1,4 @@
-import { FLOGO_TASK_TYPE, ValueTypes } from '@flogo/core/constants';
+import { FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
 import { flogoIDEncode } from '@flogo/shared/utils';
 
 export let MOCK_TASKS = [
@@ -10,13 +10,13 @@ export let MOCK_TASKS = [
     'attributes' : {
       'inputs' : [
         {
-          'type' : ValueTypes.STRING,
+          'type' : ValueType.String,
           'name' : 'message',
           'title' : 'Message',
           'value' : 'Find Pet Process Started!'
         },
         {
-          'type' : ValueTypes.BOOLEAN,
+          'type' : ValueType.Boolean,
           'name' : 'processInfo',
           'title' : 'Process info',
           'value' : 'true'
@@ -32,19 +32,19 @@ export let MOCK_TASKS = [
     'attributes' : {
       'inputs' : [
         {
-          'type' : ValueTypes.STRING,
+          'type' : ValueType.String,
           'name' : 'uri',
           'title' : 'URI',
           'value' : 'http://petstore.swagger.io/v2/pet/{petId}'
         },
         {
-          'type' : ValueTypes.STRING,
+          'type' : ValueType.String,
           'name' : 'method',
           'title' : 'Method',
           'value' : 'GET'
         },
         {
-          'type' : ValueTypes.STRING,
+          'type' : ValueType.String,
           'name' : 'petId',
           'title' : 'Pet ID',
           'value' : '201603311111'
@@ -52,7 +52,7 @@ export let MOCK_TASKS = [
       ],
       'outputs' : [
         {
-          'type' : ValueTypes.OBJECT,
+          'type' : ValueType.Object,
           'name' : 'result',
           'title' : 'Result',
           'value' : ''
@@ -82,13 +82,13 @@ export let MOCK_TASKS = [
     'attributes' : {
       'inputs' : [
         {
-          'type' : ValueTypes.STRING,
+          'type' : ValueType.String,
           'name' : 'message',
           'title' : 'Message',
           'value' : 'REST results'
         },
         {
-          'type' : ValueTypes.BOOLEAN,
+          'type' : ValueType.Boolean,
           'name' : 'processInfo',
           'title' : 'Process Info',
           'value' : 'true'

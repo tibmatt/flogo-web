@@ -1,8 +1,8 @@
-import { ValueTypes } from '@flogo/core';
+import { ValueType } from '@flogo/core';
 
 export abstract class BaseField<T> {
   name: string;
-  type: ValueTypes.ValueType;
+  type: ValueType;
   value: T;
   // making required defaulted to true only for the case of Input metadata
   required = true;
@@ -10,7 +10,7 @@ export abstract class BaseField<T> {
 
   constructor(options: {
     name?: string,
-    type?: ValueTypes.ValueType,
+    type?: ValueType,
     value?: any,
     required?: boolean,
     controlType?: string

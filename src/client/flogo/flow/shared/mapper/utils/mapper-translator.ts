@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { resolveExpressionType } from '@flogo/packages/mapping-parser';
 
-import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueTypes } from '@flogo/core/constants';
+import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
 import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 
@@ -63,7 +63,7 @@ export class MapperTranslator {
   }
 
   static attributesToObjectDescriptor(attributes: {
-    name: string, type: ValueTypes.ValueType, required?: boolean
+    name: string, type: ValueType, required?: boolean
   }[], additionalProps?: { [key: string]: any }): MapperSchema {
     const properties = {};
     const requiredPropertyNames = [];

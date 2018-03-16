@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { FLOGO_TASK_TYPE, ValueTypes } from '@flogo/core/constants';
+import { FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
 import {flogoGenTriggerID, flogoIDEncode, isSubflowTask} from '@flogo/shared/utils';
 import { ErrorService } from '@flogo/core/services/error.service';
 
@@ -417,21 +417,21 @@ class ItemFactory {
       triggerType: '__error-trigger',
       attributes: {
         outputs: [{
-          name: 'activity', type: ValueTypes.STRING, title: 'activity', value: '',
+          name: 'activity', type: ValueType.String, title: 'activity', value: '',
         }, {
-          name: 'message', type: ValueTypes.STRING, title: 'message', value: '',
+          name: 'message', type: ValueType.String, title: 'message', value: '',
         }, {
-          name: 'data', type: ValueTypes.ANY, title: 'data', value: '',
+          name: 'data', type: ValueType.Any, title: 'data', value: '',
         }],
       },
       inputMappings: [],
       outputMappings: [],
       outputs: [{
-        name: 'activity', type: ValueTypes.STRING, title: 'activity', value: '',
+        name: 'activity', type: ValueType.String, title: 'activity', value: '',
       }, {
-        name: 'message', type: ValueTypes.STRING, title: 'message', value: '',
+        name: 'message', type: ValueType.String, title: 'message', value: '',
       }, {
-        name: 'data', type: ValueTypes.ANY, title: 'data', value: '',
+        name: 'data', type: ValueType.Any, title: 'data', value: '',
       }],
       __props: {
         errors: [],
@@ -460,7 +460,7 @@ class ItemFactory {
 
     const mapType = prop => ({
       name: prop.name,
-      type: prop.type || ValueTypes.STRING,
+      type: prop.type || ValueType.String,
     });
     // -----------------
     // set outputs
@@ -500,7 +500,7 @@ class ItemFactory {
 
       const newAttribute: any = {
         name: schemaInput.name,
-        type: schemaInput.type || ValueTypes.STRING,
+        type: schemaInput.type || ValueType.String,
       };
 
       if (attrValue) {
@@ -520,7 +520,7 @@ class ItemFactory {
 
     item.attributes.outputs = outputs.map(output => ({
       name: output.name,
-      type: output.type || ValueTypes.STRING,
+      type: output.type || ValueType.String,
     }));
 
 

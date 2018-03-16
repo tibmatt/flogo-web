@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import { ValueTypes } from '@flogo/core/constants';
+import { ValueType } from '@flogo/core/constants';
 
 @Injectable()
 export class FlogoConfigurationCommonService {
@@ -28,29 +28,29 @@ export class FlogoConfigurationCommonService {
 
   getControlByType(item: any, paramDirection?: string) {
     let control = '';
-    const typeAsConstant = item.type as ValueTypes.ValueType;
+    const typeAsConstant = item.type as ValueType;
 
     switch (typeAsConstant) {
-      case  ValueTypes.STRING:
+      case  ValueType.String:
         control =  'FieldTextBox';
         break;
 
-      case ValueTypes.NUMBER:
-      case ValueTypes.INTEGER:
+      case ValueType.Number:
+      case ValueType.Integer:
         control = 'FieldNumber';
         break;
 
-      case ValueTypes.BOOLEAN:
+      case ValueType.Boolean:
         control = 'FieldRadio';
         break;
 
-      case ValueTypes.PARAMS:
+      case ValueType.Params:
         control = 'FieldTextArea';
         break;
 
-      case ValueTypes.ANY:
-      case ValueTypes.OBJECT:
-      case ValueTypes.COMPLEX_OBJECT:
+      case ValueType.Any:
+      case ValueType.Object:
+      case ValueType.ComplexObject:
         control = 'FieldObject';
         break;
 
@@ -59,7 +59,7 @@ export class FlogoConfigurationCommonService {
         break;
     }
 
-    if (paramDirection === this.directions.output && item.type === ValueTypes.STRING) {
+    if (paramDirection === this.directions.output && item.type === ValueType.String) {
       control = 'FieldObject';
     }
 

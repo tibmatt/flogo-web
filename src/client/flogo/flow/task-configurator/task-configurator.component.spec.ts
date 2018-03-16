@@ -10,7 +10,7 @@ import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import { SelectTaskConfigEventData } from '@flogo/flow/task-configurator/messages';
 import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
-import { ValueTypes } from '@flogo/core';
+import { ValueType } from '@flogo/core';
 import { SubFlowComponent } from './subflow/subflow.component';
 import {FlowsListModule} from '../shared/flows-list';
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
@@ -108,12 +108,12 @@ describe('Component: TaskConfiguratorComponent', () => {
           'outputs': [
             {
               'name': 'params',
-              'type': ValueTypes.PARAMS,
+              'type': ValueType.Params,
               'value': null
             },
             {
               'name': 'content',
-              'type': ValueTypes.OBJECT,
+              'type': ValueType.Object,
               'value': null
             }
           ],
@@ -156,25 +156,25 @@ describe('Component: TaskConfiguratorComponent', () => {
             'inputs': [
               {
                 'name': 'counterName',
-                'type': ValueTypes.STRING,
+                'type': ValueType.String,
                 'required': true,
                 'value': 'number'
               },
               {
                 'name': 'increment',
-                'type': ValueTypes.BOOLEAN,
+                'type': ValueType.Boolean,
                 'value': 'true'
               },
               {
                 'name': 'reset',
-                'type': ValueTypes.BOOLEAN,
+                'type': ValueType.Boolean,
                 'value': 'false'
               }
             ],
             'outputs': [
               {
                 'name': 'value',
-                'type': ValueTypes.INTEGER,
+                'type': ValueType.Integer,
               }
             ]
           },
@@ -192,24 +192,24 @@ describe('Component: TaskConfiguratorComponent', () => {
           'inputs': [
             {
               'name': 'message',
-              'type': ValueTypes.STRING,
+              'type': ValueType.String,
               'value': 'hello world'
             },
             {
               'name': 'flowInfo',
-              'type': ValueTypes.BOOLEAN,
+              'type': ValueType.Boolean,
               'value': 'true'
             },
             {
               'name': 'addToFlow',
-              'type': ValueTypes.BOOLEAN,
+              'type': ValueType.Boolean,
               'value': 'true'
             }
           ],
           'outputs': [
             {
               'name': 'message',
-              'type': ValueTypes.STRING,
+              'type': ValueType.String,
               value: ''
             }
           ]

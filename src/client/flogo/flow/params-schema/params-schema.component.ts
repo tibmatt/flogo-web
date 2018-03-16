@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 import { BsModalComponent } from 'ng2-bs3-modal';
 
-import { ValueTypes } from '@flogo/core/constants';
+import { ValueType } from '@flogo/core/constants';
 
 @Component({
   selector: 'flogo-flow-params-schema',
@@ -19,11 +19,11 @@ export class ParamsSchemaComponent implements OnInit {
   paramsForm: FormGroup;
   @Input() flow: any;
   @Output() save = new EventEmitter<{ input: any[], output: any[] }>();
-  selectTypes: ValueTypes.ValueType[] = [];
+  selectTypes: ValueType[] = [];
   displayInputParams: boolean;
 
   constructor(private _fb: FormBuilder) {
-    this.selectTypes = Array.from(ValueTypes.allTypes);
+    this.selectTypes = Array.from(ValueType.allTypes);
   }
 
   ngOnInit() {
@@ -59,7 +59,7 @@ export class ParamsSchemaComponent implements OnInit {
       .filter(param => param.name && param.name.trim().length > 0)
       .map(param => ({
         name: param.name.trim(),
-        type: param.type || ValueTypes.STRING,
+        type: param.type || ValueType.String,
       }));
 
     const updatedParams = this.paramsForm.value;
@@ -95,7 +95,7 @@ export class ParamsSchemaComponent implements OnInit {
   private createParamFormRow(data?: { name: string, type: string }) {
     return this._fb.group({
       name: [data ? data.name : ''],
-      type: [data ? data.type : ValueTypes.STRING],
+      type: [data ? data.type : ValueType.String],
     });
   }
 

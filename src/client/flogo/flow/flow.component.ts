@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import {MetadataAttribute, FlowDiagram, Task, UiFlow, LanguageService} from '@flogo/core';
 import { TriggersApiService, OperationalError } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
-import { ValueTypes } from '@flogo/core/constants';
+import { ValueType } from '@flogo/core/constants';
 
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
@@ -1719,7 +1719,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (isMapperTask) {
       tile.attributes.inputs = [{
         name: 'mappings',
-        type: ValueTypes.ARRAY,
+        type: ValueType.Array,
         value: _.cloneDeep(data.inputMappings)
       }];
     } else {

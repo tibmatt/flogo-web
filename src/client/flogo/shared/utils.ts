@@ -1,4 +1,4 @@
-import { ValueTypes, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
+import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import {Task} from '@flogo/core/interfaces/flow/task';
 
 // URL safe base64 encoding
@@ -62,8 +62,8 @@ export function convertTaskID(taskID: string) {
 }
 
 // get default value of a given type
-export function getDefaultValue(forType: ValueTypes.ValueType): any {
-  return ValueTypes.defaultValueForType.get(forType);
+export function getDefaultValue(forType: ValueType): any {
+  return ValueType.defaultValueForType.get(forType);
 }
 
 // convert the type of attribute and add default value if enabled

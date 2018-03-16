@@ -521,7 +521,7 @@ class ItemFactory {
 
     item.outputs = outputs.map(output => ({
       name: output.name,
-      type: FLOGO_TASK_ATTRIBUTE_TYPE[get(output, 'type', 'STRING').toUpperCase()],
+      type: FLOGO_TASK_ATTRIBUTE_TYPE[get(output, 'type', 'String').toUpperCase()],
     }));
 
 
@@ -545,7 +545,7 @@ class ItemFactory {
 
       const newAttribute = {
         name: installedInput.name,
-        type: FLOGO_TASK_ATTRIBUTE_TYPE[get(installedInput, 'type', 'STRING').toUpperCase()],
+        type: FLOGO_TASK_ATTRIBUTE_TYPE[get(installedInput, 'type', 'String').toUpperCase()],
       };
 
       if (cliValue) {
@@ -564,7 +564,7 @@ class ItemFactory {
 
     item.attributes.outputs = outputs.map(output => ({
       name: output.name,
-      type: FLOGO_TASK_ATTRIBUTE_TYPE[get(output, 'type', 'STRING').toUpperCase()],
+      type: FLOGO_TASK_ATTRIBUTE_TYPE[get(output, 'type', 'String').toUpperCase()],
     }));
 
 

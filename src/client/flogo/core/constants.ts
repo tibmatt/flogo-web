@@ -17,38 +17,37 @@ export enum FLOGO_TASK_TYPE {
 
 export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
 
-// can be simplified using string enums in typescript >= 2.1
-export namespace ValueTypes {
-  export type ValueType = 'string' | 'integer' | 'int' | 'number' | 'boolean' | 'object' | 'array' | 'params' | 'any' |  'complex_object';
-
-  export const STRING: 'string' = 'string';
-  export const INTEGER: 'integer' = 'integer';
+export enum ValueType {
+  String = 'string',
+  Integer = 'integer',
   // todo: should be removed? only used by device activities
-  export const INT: 'int' = 'int';
-  export const NUMBER: 'number' = 'number';
-  export const BOOLEAN: 'boolean' = 'boolean';
-  export const OBJECT: 'object' = 'object';
-  export const ARRAY: 'array' = 'array';
-  export const ANY: 'any' = 'any';
-  export const PARAMS: 'params' = 'params';
-  export const COMPLEX_OBJECT: 'complex_object' = 'complex_object';
+  Int = 'int',
+  Number = 'number',
+  Boolean = 'boolean',
+  Object = 'object',
+  Array = 'array',
+  Any = 'any',
+  Params = 'params',
+  ComplexObject = 'complex_object'
+}
 
-  export const allTypes: ReadonlyArray<ValueType> = [ STRING, INTEGER, NUMBER, BOOLEAN, OBJECT, ARRAY, ANY, PARAMS, COMPLEX_OBJECT ];
+const _allTypes: ReadonlyArray<ValueType> = Object.values(ValueType);
+const _defaultValuesForValueTypes: [ValueType, any][] = [
+  [ValueType.String, ''],
+  [ValueType.Integer, 0],
+  [ValueType.Int, 0],
+  [ValueType.Number, 0.0],
+  [ValueType.Boolean, false],
+  [ValueType.Object, null],
+  [ValueType.Array, []],
+  [ValueType.Params, null],
+  [ValueType.Any, null],
+  [ValueType.ComplexObject, null],
+];
 
-  // can be type safe in typescript >= 2.1 using "keyof" keyword
-  export const defaultValueForType = new Map<ValueType, any>([
-    [STRING, ''],
-    [INTEGER, 0],
-    [INT, 0],
-    [NUMBER, 0.0],
-    [BOOLEAN, false],
-    [OBJECT, null],
-    [ARRAY, []],
-    [PARAMS, null],
-    [ANY, null],
-    [COMPLEX_OBJECT, null],
-  ]);
-
+export namespace ValueType {
+  export const allTypes = _allTypes;
+  export const defaultValueForType = new Map<ValueType, any>(_defaultValuesForValueTypes);
 }
 
 /**

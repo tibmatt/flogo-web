@@ -1,7 +1,7 @@
-import { ValueTypes } from '../../constants';
+import { ValueType } from '../../constants';
 
 export interface MetadataAttribute {
   name: string;
-  type: ValueTypes.ValueType;
+  type: ValueType;
   value?: any;
 }

@@ -1,4 +1,4 @@
-import { FLOGO_ERROR_ROOT_NAME, ValueTypes, FLOGO_TASK_TYPE } from '@flogo/core/constants';
+import { FLOGO_ERROR_ROOT_NAME, ValueType, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { flogoIDEncode } from '@flogo/shared/utils';
 import { AttributeMapping, TaskAttributes, Link, Task } from '@flogo/core';
 
@@ -76,25 +76,25 @@ export function makeDefaultErrorTrigger(id): Task {
   const outputs = [
     {
       name: 'activity',
-      type: ValueTypes.STRING,
+      type: ValueType.String,
       title: 'activity',
       value: ''
     },
     {
       name: 'message',
-      type: ValueTypes.STRING,
+      type: ValueType.String,
       title: 'message',
       value: ''
     },
     {
       name: 'data',
-      type: ValueTypes.ANY,
+      type: ValueType.Any,
       title: 'data',
       value: ''
     },
     {
       name: 'code',
-      type: ValueTypes.STRING,
+      type: ValueType.String,
       title: 'code',
       value: ''
     }

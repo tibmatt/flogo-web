@@ -1,8 +1,8 @@
-import { ValueTypes } from '../../constants';
+import { ValueType } from '../../constants';
 
 export interface TaskAttribute {
   name: string;
-  type: ValueTypes.ValueType;
+  type: ValueType;
   value: any;
   title ?: string;
   description ?: string;

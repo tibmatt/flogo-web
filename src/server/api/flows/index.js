@@ -712,7 +712,7 @@ function portAttribute(inAttr, withDefault) {
   }
   var outAttr = _.assign({}, inAttr);
 
-  outAttr.type = FLOGO_TASK_ATTRIBUTE_TYPE[_.get(outAttr, 'type', 'STRING').toUpperCase()];
+  outAttr.type = FLOGO_TASK_ATTRIBUTE_TYPE[_.get(outAttr, 'type', 'String').toUpperCase()];
 
   if (withDefault && _.isUndefined(outAttr.value)) {
     outAttr.value = getDefaultValue(outAttr.type);

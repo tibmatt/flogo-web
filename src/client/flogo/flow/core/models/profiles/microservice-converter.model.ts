@@ -1,5 +1,5 @@
 import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces';
-import { ValueTypes } from '@flogo/core/constants';
+import { ValueType } from '@flogo/core/constants';
 import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
 import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
 import { ErrorService } from '@flogo/core/services/error.service';
@@ -51,7 +51,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
     metadata.input = flowInputs.map(input => {
       const inputMetadata: MetadataAttribute = {
         name: input.name,
-        type: input.type || ValueTypes.STRING,
+        type: input.type || ValueType.String,
       };
       if (!_.isUndefined(input.value)) {
         inputMetadata.value = input.value;
@@ -59,7 +59,7 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
       return inputMetadata;
     });
     metadata.output = flowOutputs.map(input => ({
-      name: input.name, type: input.type || ValueTypes.STRING,
+      name: input.name, type: input.type || ValueType.String,
     }));
 
     return {

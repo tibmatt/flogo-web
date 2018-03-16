@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ValueTypes } from '@flogo/core';
+import { ValueType } from '@flogo/core';
 import { Textbox } from './textbox/textbox';
 import { BaseField } from './field-base';
 import { FieldAttribute } from './field-attribute';
@@ -13,34 +13,34 @@ export class FormFieldService {
 
   mapFieldsToControlType(field: FieldAttribute): BaseField<any> {
     switch (field.type) {
-      case ValueTypes.STRING:
+      case ValueType.String:
         return new Textbox({
           name: field.name,
           type: field.type,
           value: field.value
         });
-      case ValueTypes.NUMBER:
-      case ValueTypes.INTEGER:
+      case ValueType.Number:
+      case ValueType.Integer:
         return new NumberType({
           name: field.name,
           type: field.type,
           value: field.value
         });
-      case ValueTypes.PARAMS:
+      case ValueType.Params:
         return new Textarea({
           name: field.name,
           type: field.type,
           value: field.value
         });
-      case ValueTypes.BOOLEAN:
+      case ValueType.Boolean:
         return new Radio({
           name: field.name,
           type: field.type,
           value: field.value
         });
-      case ValueTypes.OBJECT:
-      case ValueTypes.ANY:
-      case ValueTypes.COMPLEX_OBJECT:
+      case ValueType.Object:
+      case ValueType.Any:
+      case ValueType.ComplexObject:
         return new ObjectType({
           name: field.name,
           type: field.type,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LanguageService, ValueTypes } from '@flogo/core';
+import { LanguageService, ValueType } from '@flogo/core';
 
 import { FlogoFormBuilderFieldsBaseComponent } from '../shared/base.component';
 
@@ -30,7 +30,7 @@ export class FlogoFormBuilderFieldsListBoxComponent extends FlogoFormBuilderFiel
 
   onChangeField(option: string) {
     if (option === EMPTY_OPTION) {
-      option = ValueTypes.defaultValueForType.get(this._info.type);
+      option = ValueType.defaultValueForType.get(this._info.type);
     }
     this._info.value = option;
     this.publishNextChange();
