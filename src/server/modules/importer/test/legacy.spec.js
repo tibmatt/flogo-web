@@ -1,6 +1,6 @@
-import {expect} from 'chai';
 import {ResourceStorageRegistryMock} from './resource-storage-mock';
 import {AppImporterFactory} from '../app-importer-factory';
+import {makeImporterContext} from "./test-utils.spec";
 
 const app = require('./samples/legacy-app');
 
@@ -9,12 +9,12 @@ describe('Importer: Legacy', function () {
 
   before(async function () {
     importerFactory = new AppImporterFactory(ResourceStorageRegistryMock);
+    this.importerContext = makeImporterContext(importerFactory);
   });
 
   it('should import a legacy application', async function () {
     const appToImport = {...app};
-    const importer = await importerFactory.create(appToImport);
-    const importedApp = await importer.import(appToImport);
-    expect(importedApp).to.be.ok;
+    const assert = await this.importerContext.importAndCreateAssert(appToImport)
+    assert.assertIsSuccessful();
   });
 });
