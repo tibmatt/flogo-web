@@ -4,7 +4,22 @@
   "definitions": {
     "valueType": {
       "type": "string",
-      "enum": ["string", "integer", "number", "boolean", "object", "array", "params", "any", "complex_object"]
+      "enum": [
+        "string",
+        "integer",
+        "int",
+        "long",
+        "number",
+        "double",
+        "boolean",
+        "bool",
+        "object",
+        "array",
+        "params",
+        "any",
+        "complexObject",
+        "complex_object"
+      ]
     },
     "mappingType": {
       "type": "string",
