@@ -1,4 +1,5 @@
 import { actionHasSubflowTasks, forEachSubflowTaskInAction } from '../../../common/utils/subflow';
+import { actionValueTypesNormalizer } from './action-value-type-normalizer';
 
 export class AbstractActionsImporter {
   constructor(actionStorage) {
@@ -11,7 +12,8 @@ export class AbstractActionsImporter {
   }
 
   async importAll(appId, fromRawApp) {
-    const rawActions = this.extractActions(fromRawApp);
+    const rawActions = this.extractActions(fromRawApp).map(actionValueTypesNormalizer);
+
     const actionPairs = await this.storeActions(appId, rawActions);
     let actionRegistry = new Map(actionPairs);
     actionRegistry = await this.reconcileSubflows(actionRegistry);
