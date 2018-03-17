@@ -5,6 +5,8 @@ export function normalizeValueType(type) {
   switch (type) {
     case 'any':
       return FLOGO_TASK_ATTRIBUTE_TYPE.ANY;
+    case 'string':
+      return FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
     case 'integer':
     case 'int':
       return FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER;

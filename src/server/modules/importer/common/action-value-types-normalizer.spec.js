@@ -10,6 +10,7 @@ describe('importer.common.actionValueTypesNormalizer', function () {
       input: [
         { name: 'in1', type: 'any' },
         { name: 'in2', type: 'integer' },
+        { name: 'in3', type: 'string' },
       ],
       output: [
         { name: 'out1', type: 'int' },
@@ -65,6 +66,7 @@ describe('importer.common.actionValueTypesNormalizer', function () {
     expect(inputs).to.have.deep.members([
       { in1: 'any' },
       { in2: 'integer' },
+      { in3: 'string' },
     ]);
     expect(outputs).to.have.deep.members([
       { out1: 'integer' },
