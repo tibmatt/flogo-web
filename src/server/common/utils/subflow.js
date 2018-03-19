@@ -1,13 +1,13 @@
-import get from 'lodash/get';
-import { FLOGO_TASK_TYPE, REF_SUBFLOW } from '../constants';
+import { FLOGO_TASK_TYPE, TASK_HANDLER_NAME_ERROR, TASK_HANDLER_NAME_ROOT, REF_SUBFLOW } from '../constants';
+import { safeGetTasksInHandler } from './flow';
 
 export function appHasSubflowTasks(app) {
   return !!app.actions.find(actionHasSubflowTasks);
 }
 
 export function actionHasSubflowTasks(action) {
-  return !!safeGetTasksInHandler(action, 'rootTask').find(isSubflowTask)
-    || !!safeGetTasksInHandler(action, 'errorHandlerTask').find(isSubflowTask);
+  return !!safeGetTasksInHandler(action, TASK_HANDLER_NAME_ROOT).find(isSubflowTask)
+    || !!safeGetTasksInHandler(action, TASK_HANDLER_NAME_ERROR).find(isSubflowTask);
 }
 
 export function isSubflowTask(task) {
@@ -21,10 +21,7 @@ export function isSubflowTask(task) {
  */
 export function forEachSubflowTaskInAction(action, onSubflowTask) {
   const iterateOn = taskArray => taskArray.filter(isSubflowTask).forEach(task => onSubflowTask(task));
-  iterateOn(safeGetTasksInHandler(action, 'rootTask'));
-  iterateOn(safeGetTasksInHandler(action, 'errorHandlerTask'));
+  iterateOn(safeGetTasksInHandler(action, TASK_HANDLER_NAME_ROOT));
+  iterateOn(safeGetTasksInHandler(action, TASK_HANDLER_NAME_ERROR));
 }
 
-function safeGetTasksInHandler(from, handler) {
-  return get(from, `data.flow.${handler}.tasks`, []);
-}

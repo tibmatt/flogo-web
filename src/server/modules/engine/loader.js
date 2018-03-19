@@ -2,9 +2,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import groupBy from 'lodash/groupBy';
-import clone from 'lodash/clone';
 
 import { readJSONFile } from '../../common/utils/file';
+import { normalizeContribSchema } from '../../common/contrib-schema-normalize';
 import { determinePathToVendor } from './determine-path-to-vendor';
 
 module.exports = {
@@ -65,25 +65,14 @@ module.exports = {
         return Promise.all([
           _readTasks(vendorPath, 'trigger', triggersToRead.map(refToPath))
             .then(triggers => triggers.map(trigger => {
-              // change to "old" name to support new definition without affecting the rest of the application
-              // (outputs => output)
               // rt === schema of the trigger
-              if (trigger.rt.output) {
-                trigger.rt.outputs = clone(trigger.rt.output);
-              }
+              trigger.rt = normalizeContribSchema(trigger.rt);
               return trigger;
             })),
           _readTasks(vendorPath, 'activity', activitiesToRead.map(refToPath))
             .then(activities => activities.map(activity => {
-              // change to "old" name to support new definition without affecting the rest of the application
-              // (inputs => input) and (outputs => output)
               // rt === schema of the activity
-              if (activity.rt.input) {
-                activity.rt.inputs = clone(activity.rt.input);
-              }
-              if (activity.rt.output) {
-                activity.rt.outputs = clone(activity.rt.output);
-              }
+              activity.rt = normalizeContribSchema(activity.rt);
               return activity;
             })),
         ]);

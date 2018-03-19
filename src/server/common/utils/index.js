@@ -319,24 +319,23 @@ export function getRemoteFileContent(url) {
 }
 
 export function getDefaultValueByType(type) {
-  let defaultValues = [];
-  let typeEnum = FLOGO_TASK_ATTRIBUTE_TYPE[type.toUpperCase()];
+  const defaultValues = {
+    [FLOGO_TASK_ATTRIBUTE_TYPE.STRING]: '',
+    [FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER]: 0,
+    [FLOGO_TASK_ATTRIBUTE_TYPE.LONG]: 0,
+    [FLOGO_TASK_ATTRIBUTE_TYPE.DOUBLE]: 0.0,
+    [FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN]: false,
+    [FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT]: null,
+    [FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY]: [],
+    [FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS]: null,
+    [FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT]: null,
+  };
 
-  if(!typeEnum){
-    typeEnum = FLOGO_TASK_ATTRIBUTE_TYPE.STRING;
+  if (!Object.hasOwnProperty.call(defaultValues, type)) {
+    type = FLOGO_TASK_TYPE.STRING;
   }
 
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.STRING] = '';
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INTEGER] = 0;
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.INT] = 0;
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.NUMBER] = 0.0;
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.BOOLEAN] = false;
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.OBJECT] = null;
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.ARRAY] = [];
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.PARAMS] = null;
-  defaultValues[FLOGO_TASK_ATTRIBUTE_TYPE.COMPLEX_OBJECT] = null;
-
-  return defaultValues[typeEnum];
+  return defaultValues[type];
 }
 
 export function isIterableTask(task) {

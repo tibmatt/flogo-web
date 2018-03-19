@@ -35,7 +35,7 @@ export class FlogoConfigurationCommonService {
         control =  'FieldTextBox';
         break;
 
-      case ValueTypes.NUMBER:
+      case ValueTypes.DOUBLE:
       case ValueTypes.INTEGER:
         control = 'FieldNumber';
         break;

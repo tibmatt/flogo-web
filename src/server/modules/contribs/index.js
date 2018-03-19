@@ -1,6 +1,7 @@
 import pick from 'lodash/pick';
 
 import { contribs as contribsDb  } from '../../common/db';
+import { normalizeContribSchema } from '../../common/contrib-schema-normalize';
 import { RemoteInstallerContrib } from './../remote-installer-contrib';
 import { Validator } from './../apps/validator';
 
@@ -20,6 +21,7 @@ const EDITABLE_FIELDS_CREATION = [
 export class ContribsManager {
 
   static cleanInput(contribution) {
+    contribution = normalizeContribSchema(contribution);
     const cleanedContribution = pick(contribution, EDITABLE_FIELDS_CREATION);
     if (cleanedContribution.name) {
      cleanedContribution.name = cleanedContribution.name.trim();
