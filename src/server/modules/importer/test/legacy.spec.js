@@ -14,7 +14,14 @@ describe('Importer: Legacy', function () {
 
   it('should import a legacy application', async function () {
     const appToImport = {...app};
-    const assert = await this.importerContext.importAndCreateAssert(appToImport)
+    const assert = await this.importerContext.importAndCreateAssert(appToImport);
+    assert.assertIsSuccessful();
+  });
+
+  it('should import a legacy application which should not accept appModel', async function () {
+    const appToImport = {...app};
+    appToImport.appModel = '';
+    const assert = await this.importerContext.importAndCreateAssert(appToImport);
     assert.assertIsSuccessful();
   });
 });
