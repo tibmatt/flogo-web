@@ -62,26 +62,16 @@ export const FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE = {
 
 
 export const FLOGO_TASK_ATTRIBUTE_TYPE = {
-  0: "String",
-  1: "Integer",
-  2: "Number",
-  3: "Boolean",
-  4: "Object",
-  5: "Array",
-  6: "PARAMS",
-  7: "Any",
-  8: "Int",
-  9: "ComplexObject",
-  "STRING": 0,
-  "INTEGER": 1,
-  "NUMBER": 2,
-  "BOOLEAN": 3,
-  "OBJECT": 4,
-  "ARRAY": 5,
-  "PARAMS": 6,
-  "ANY": 7,
-  "INT": 8,
-  "COMPLEX_OBJECT": 9
+  STRING: 'string',
+  INTEGER: 'integer',
+  LONG: 'long',
+  DOUBLE: 'double',
+  BOOLEAN: 'boolean',
+  OBJECT: 'object',
+  ARRAY: 'array',
+  PARAMS: 'params',
+  ANY: 'any',
+  COMPLEX_OBJECT: 'complexObject',
 };
 
 export const FLOGO_ENGINE_STATUS = {
@@ -141,3 +131,6 @@ export const DEFAULT_SCHEMA_ROOT_FOLDER_NAME = 'ui';
 export const DEFAULT_APP_ID = 'DEFAULT-APP';
 export const DEFAULT_APP_VERSION = '0.0.1';
 export const DEFAULT_APP_TYPE = 'flogo:app';
+
+export const TASK_HANDLER_NAME_ROOT = 'rootTask';
+export const TASK_HANDLER_NAME_ERROR = 'errorHandlerTask';

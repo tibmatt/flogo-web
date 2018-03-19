@@ -19,8 +19,9 @@ export class FormFieldService {
           type: field.type,
           value: field.value
         });
-      case ValueType.Number:
+      case ValueType.Double:
       case ValueType.Integer:
+      case ValueType.Long:
         return new NumberType({
           name: field.name,
           type: field.type,

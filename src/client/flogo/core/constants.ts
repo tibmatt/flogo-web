@@ -17,26 +17,26 @@ export enum FLOGO_TASK_TYPE {
 
 export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
 
+
 export enum ValueType {
   String = 'string',
   Integer = 'integer',
-  // todo: should be removed? only used by device activities
-  Int = 'int',
-  Number = 'number',
+  Long = 'long',
+  Double = 'double',
   Boolean = 'boolean',
   Object = 'object',
   Array = 'array',
   Any = 'any',
   Params = 'params',
-  ComplexObject = 'complex_object'
+  ComplexObject = 'complexObject'
 }
 
 const _allTypes: ReadonlyArray<ValueType> = Object.values(ValueType);
 const _defaultValuesForValueTypes: [ValueType, any][] = [
   [ValueType.String, ''],
   [ValueType.Integer, 0],
-  [ValueType.Int, 0],
-  [ValueType.Number, 0.0],
+  [ValueType.Long, 0],
+  [ValueType.Double, 0.0],
   [ValueType.Boolean, false],
   [ValueType.Object, null],
   [ValueType.Array, []],

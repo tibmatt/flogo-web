@@ -107,12 +107,16 @@
                 "string",
                 "integer",
                 "int",
+                "long",
                 "number",
+                "double",
                 "boolean",
+                "bool",
                 "object",
                 "array",
                 "params",
                 "any",
+                "complexObject",
                 "complex_object"
               ]
             },

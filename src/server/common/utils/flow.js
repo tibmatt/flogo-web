@@ -32,3 +32,7 @@ export function isOutputMapperField(inputDefinition) {
   }
   return false;
 }
+
+export function safeGetTasksInHandler(action, handler) {
+  return get(action, `data.flow.${handler}.tasks`, []);
+}
