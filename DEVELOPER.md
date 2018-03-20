@@ -18,14 +18,15 @@ This document describes how to set up your development environment to build, run
 
 ## Prerequisite Software
 - git
-- Docker and docker-compose for Mac or Windows or Linux (https://www.docker.com) 1.12.0-rc4-beta20 or later
+- [Docker and docker-compose](https://www.docker.com) for Mac or Windows or Linux (https://www.docker.com) 1.12.0-rc4-beta20 or later
 - For windows you will need basic support for bash scripting, you can use git's bash replacement or any other terminal emulator instead of the dos/window standard command line
 
 - Required only for local mode:
-  - GO Lang 1.7 - Follow the instructions here https://golang.org/doc/install
-    - Make sure you add $GOPATH/bin to your $PATH variable. Instructions related to the $GOPATH variable are found in the above link in the "Test your installation" section.
-  - GB - Follow instructions from here: https://getgb.io
-  - Node JS 6.4.0 - Download it from here https://nodejs.org/en/download/releases/
+  - GO Lang 1.9 - Follow the instructions here https://golang.org/doc/install
+    - Make sure you add $GOPATH/bin to your $PATH variable. Instructions related to the $GOPATH variable are found in the above link in the ["Test your installation" section](https://golang.org/doc/install#testing).
+  - [Go dep](https://golang.github.io/dep/)
+  - [Node JS 8.9.3](https://nodejs.org/en/download/releases/)
+  - [yarn](https://yarnpkg.com) 
   - Install the flogo CLI tool: https://github.com/TIBCOSoftware/flogo-cli
 
 ## Getting the Sources
@@ -47,7 +48,8 @@ git clone https://github.com/TIBCOSoftware/flogo-cicd.git
 
 ## Getting the Images
 
-The development environment depends on the flogo-base docker image and the flogo services images (flow-service and state-service), if you have access to TIBCO's reldocker or flogo's private dockerhub you can pull the images from them, otherwise you will need to build the images locally.
+The development environment depends on flogo services images (flow-service and state-service), if you have access to
+TIBCO's reldocker or flogo's private dockerhub you can pull the images from them, otherwise you will need to build the images locally.
 
 Chose and follow **one** of these methods to get the images:
 
@@ -63,11 +65,6 @@ docker login
 ```
 
 After you authenticated, pull the images.
-
-Pull the base image
-```sh
-docker pull flogo/flogo-base
-```
 
 Pull the state service image
 ```sh
@@ -87,11 +84,6 @@ docker login reldocker.tibco.com
 ```
 
 After you authenticated, pull the images:
-
-Pull the base image
-```sh
-docker pull reldocker.tibco.com/flogo/flogo-base:latest
-```
 
 Rename the base image:
 ```sh
@@ -122,7 +114,6 @@ docker tag reldocker.tibco.com/flogo/flow-service:latest flogo/flow-service:late
 
 Follow the instructions in https://github.com/TIBCOSoftware/flogo-cicd using the private registry method and build *only* the following images (in the specified order, do not use the "build-all.sh" script):
 
-1. flogo/flogo-base
 1. flogo/go-builder
 1. flogo/state-service
 1. flogo/flow-service
@@ -308,12 +299,12 @@ FLOGO_WEB_TASK="dev.build dev.watch" /path/to/dev.sh start local
 To see all available tasks navigate to your <flogo-web> root directory and run:
 
 ```sh
-npm run gulp help
+yarn gulp help
 ```
 
 If for some reason you are starting the services manually or don't need to start them, you can skip
 using the dev.sh script and directly execute the gulp process by navigating to your <flogo-web> root
-and run `npm run start [...your tasks]`.
+and run `yarn start [...your tasks]`.
 
 ## Troubleshooting and Known Issues
 
