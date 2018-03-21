@@ -1,5 +1,7 @@
 import {expect} from "chai";
+import sinon from "sinon";
 import get from "lodash/get";
+import {Validator} from "../../../common/validator/validator";
 
 class Asserter {
   constructor(isSuccessful, errors) {
@@ -22,6 +24,11 @@ class Asserter {
       keyword,
       params,
     });
+    return this;
+  }
+
+  assertDataWithInstanceOf(data, constructor) {
+    expect(data).to.be.an.instanceOf(constructor);
     return this;
   }
 }
@@ -58,7 +65,7 @@ export function makeImporterContext(importerFactory) {
   return new AppImporterTestContext(importerFactory);
 }
 
-export function commonTestCases(name, updateTask) {
+export function commonTestCases(name) {
   it(`should import a ${name} application`, async function () {
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsSuccessful();
@@ -103,11 +110,20 @@ export function commonTestCases(name, updateTask) {
   });
 
   it('should throw error if application uses an activity which is not recognised by the server', async function () {
-    this.appToImport = updateTask(this.appToImport);
+    this.appToImport = this.testOptions.updateTasksRef(this.appToImport);
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsFailed()
       .assertHasFailedWithError('activity-installed', {
         "ref": "some.domain/path/to/activity"
       });
+  });
+
+  it("dependenciesFactory.create() should create instances of necessary dependencies", async function(){
+    const spyingCreateAppImporter = sinon.spy(this.importerFactory, "createAppImporter");
+    const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+    assert.assertIsSuccessful()
+      .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].actionsImporter, this.testOptions.depsConstructors.actionsImporter)
+      .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].validator, Validator)
+      .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].triggersHandlersImporter, this.testOptions.depsConstructors.triggersHandlersImporter);
   });
 }
