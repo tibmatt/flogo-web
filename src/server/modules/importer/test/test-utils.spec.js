@@ -1,9 +1,10 @@
 import {expect} from "chai";
+import get from "lodash/get";
 
 class Asserter {
   constructor(isSuccessful, errors) {
     this.isSuccessful = isSuccessful;
-    this.errors = errors;
+    this.errors = get(errors, "details.errors.details", null);
   }
 
   assertIsSuccessful() {
@@ -13,6 +14,14 @@ class Asserter {
 
   assertIsFailed() {
     expect(this.isSuccessful).to.equal(false);
+    return this;
+  }
+
+  assertHasFailedWithError(keyword, params) {
+    expect(this.errors[0]).to.deep.include({
+      keyword,
+      params,
+    });
     return this;
   }
 }
