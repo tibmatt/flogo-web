@@ -29,6 +29,7 @@
           <div class="flogo-common-edit-panel__head-titles">
             <h3 [(fgContentEditable)]="_task.name" class="flogo-common-edit-panel__head-title" (fgContentEditableChange)="changeTaskDetail($event, 'name')"></h3>
             <div class="flogo-common-edit-panel__head-subtitle" [(fgContentEditable)]="_task.description" (fgContentEditableChange)="changeTaskDetail($event, 'description')"></div>
+            <div *ngIf="_context.isTask" class="flogo-common-edit-panel__head-subtitle --not-editable">ID: {{ getTaskId() }}</div>
           </div>
         </div>
 
@@ -39,7 +40,7 @@
         </div>
         <!-- PANEL BUTTONS -->
 
-        <div *ngIf="_context.isTask && _context.profileType !== PROFILE_TYPES.DEVICE" class="clearfix">
+        <div *ngIf="_context.isTask && _context.profileType !== PROFILE_TYPES.DEVICE" class="clearfix run-container">
           <button  class="flogo-button--default" [class.disabled]="!_canRunFromThisTile || _fieldsErrors.length"
                    [disabled]="!_canRunFromThisTile || _fieldsErrors.length"  (click)="runFromThisTile($event)">
             {{ 'FORM-BUILDER:RUN-FROM-TILE' | translate }}
