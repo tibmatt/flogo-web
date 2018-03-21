@@ -1441,6 +1441,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (subflowOrIteratorTasks) {
       this.runnableInfo.disabled = true;
       this.runnableInfo.disableReason = this.translate.instant('CANVAS:WARNING-UNSUPPORTED-TEST-RUN');
+    } else {
+      this.runnableInfo.disabled = false;
+      this.runnableInfo.disableReason = null;
     }
   }
 
