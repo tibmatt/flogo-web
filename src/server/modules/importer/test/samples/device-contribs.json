@@ -1,0 +1,191 @@
+[
+  {
+    "name": "tibco-device-pin",
+    "type": "flogo:device:trigger",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/device/trigger/pin",
+    "version": "0.0.1",
+    "title": "Trigger on Pin Condition",
+    "description": "Simple Device Pin Trigger",
+    "settings": [
+      {
+        "name": "pin",
+        "type": "int"
+      },
+      {
+        "name": "digital",
+        "type": "boolean"
+      },
+      {
+        "name": "condition",
+        "type": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "device_support": [
+      {
+        "framework": "arduino",
+        "template": "pin.ino.tmpl"
+      }
+    ]
+  },
+  {
+    "name": "tibco-device-bme280",
+    "type": "flogo:device:trigger",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/device/trigger/bme280",
+    "version": "0.0.1",
+    "title": "BME280 Trigger",
+    "description": "Simple BME280 Trigger",
+    "libs": [
+      {
+        "name": "Adafruit BME280 Library",
+        "type": "platformio",
+        "ref": "166"
+      },
+      {
+        "name": "Adafruit Unified Sensor",
+        "type": "platformio",
+        "ref": "31"
+      }
+    ],
+    "settings": [
+      {
+        "name": "reading",
+        "type": "string",
+        "allowed": [
+          "Temperature",
+          "Pressure",
+          "Humidity"
+        ]
+      },
+      {
+        "name": "condition",
+        "type": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "device_support": [
+      {
+        "framework": "arduino",
+        "template": "bme280.ino.tmpl"
+      }
+    ]
+  },
+  {
+    "name": "tibco-vl53l0x",
+    "type": "flogo:device:trigger",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/device/trigger/vl53l0x",
+    "version": "0.0.1",
+    "title": "VL53L0X Trigger",
+    "description": "Simple VL53L0X Trigger",
+    "libs": [
+      {
+        "name": "Adafruit_VL53L0X",
+        "type": "platformio",
+        "ref": "1494"
+      }
+    ],
+    "settings": [
+      {
+        "name": "condition",
+        "type": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "device_support": [
+      {
+        "framework": "arduino",
+        "template": "vl53l0x.ino.tmpl"
+      }
+    ]
+  },
+  {
+    "name": "tibco-device-setpin",
+    "type": "flogo:device:activity",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/device/activity/setpin",
+    "version": "0.0.1",
+    "title": "Set Pin",
+    "description": "Simple Device Set Pin Activity",
+    "settings": [
+      {
+        "name": "pin",
+        "type": "int"
+      },
+      {
+        "name": "digital",
+        "type": "boolean"
+      },
+      {
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "device_support": [
+      {
+        "framework": "arduino",
+        "template": "setpin.ino.tmpl",
+        "devices": []
+      }
+    ]
+  },
+  {
+    "name": "tibco-device-mqtt",
+    "type": "flogo:device:activity",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/device/activity/mqtt",
+    "version": "0.0.1",
+    "title": "Send MQTT Message",
+    "description": "Simple Device MQTT Send Activity",
+    "settings": [
+      {
+        "name": "topic",
+        "type": "string"
+      },
+      {
+        "name": "message",
+        "type": "string"
+      }
+    ],
+    "device_support": [
+      {
+        "framework": "arduino",
+        "template": "mqtt.ino.tmpl",
+        "devices": []
+      }
+    ]
+  },
+  {
+    "name": "tibco-device-serial",
+    "type": "flogo:device:activity",
+    "ref": "github.com/TIBCOSoftware/flogo-contrib/device/activity/serial",
+    "version": "0.0.1",
+    "title": "Serial Output",
+    "description": "Serial Output Activity",
+    "settings": [
+      {
+        "name": "message",
+        "type": "string"
+      }
+    ],
+    "device_support": [
+      {
+        "framework": "arduino",
+        "template": "serial.ino.tmpl",
+        "devices": []
+      }
+    ]
+  }
+]

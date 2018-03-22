@@ -1,0 +1,266 @@
+{
+  "input": {},
+  "expect": {
+    "extractActions": [
+      {
+        "id": "flow:get_status",
+        "name": "GetStatus",
+        "metadata": {
+          "input": [
+            {
+              "name": "id",
+              "type": "string"
+            }
+          ],
+          "output": [
+            {
+              "name": "status",
+              "type": "any"
+            },
+            {
+              "name": "code",
+              "type": "integer"
+            }
+          ]
+        },
+        "data": {
+          "flow": {
+            "type": 1,
+            "description": "",
+            "rootTask": {
+              "id": "root",
+              "type": 1,
+              "tasks": [
+                {
+                  "id": "log_2",
+                  "name": "log_2",
+                  "description": "",
+                  "type": 1,
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                  "settings": {},
+                  "attributes": [
+                    {
+                      "name": "message",
+                      "type": "string",
+                      "value": ""
+                    },
+                    {
+                      "name": "flowInfo",
+                      "type": "boolean",
+                      "value": false
+                    },
+                    {
+                      "name": "addToFlow",
+                      "type": "boolean",
+                      "value": false
+                    }
+                  ],
+                  "inputMappings": []
+                }
+              ],
+              "links": []
+            },
+            "errorHandlerTask": {
+              "id": "errorHandler",
+              "type": 1,
+              "tasks": [
+                {
+                  "id": "log_6",
+                  "name": "log_6",
+                  "description": "",
+                  "type": 1,
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                  "settings": {},
+                  "attributes": [
+                    {
+                      "name": "message",
+                      "type": "string",
+                      "value": "log in error handler"
+                    },
+                    {
+                      "name": "flowInfo",
+                      "type": "boolean",
+                      "value": false
+                    },
+                    {
+                      "name": "addToFlow",
+                      "type": "boolean",
+                      "value": false
+                    }
+                  ],
+                  "inputMappings": []
+                }
+              ],
+              "links": []
+            }
+          }
+        }
+      }
+    ],
+    "extractTriggers": [
+      {
+        "id": "receive_http_message",
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+        "name": "Receive HTTP Message",
+        "description": "Simple REST Trigger",
+        "settings": {
+          "port": "9094"
+        },
+        "handlers": [
+          {
+            "settings": {
+              "method": "GET",
+              "path": "/status/:id",
+              "autoIdReply": null,
+              "useReplyHandler": "true"
+            },
+            "action": {
+              "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+              "data": {
+                "flowURI": "res://flow:get_status"
+              },
+              "mappings": {
+                "input": [
+                  {
+                    "mapTo": "id",
+                    "type": "assign",
+                    "value": "params.id"
+                  }
+                ],
+                "output": [
+                  {
+                    "mapTo": "code",
+                    "type": "assign",
+                    "value": "code"
+                  },
+                  {
+                    "mapTo": "data",
+                    "type": "assign",
+                    "value": "status"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "extractHandlers": [
+      {
+        "settings": {
+          "method": "GET",
+          "path": "/status/:id",
+          "autoIdReply": null,
+          "useReplyHandler": "true"
+        },
+        "actionId": "flow:get_status",
+        "actionMappings": {
+          "input": [
+            {
+              "mapTo": "id",
+              "type": 1,
+              "value": "params.id"
+            }
+          ],
+          "output": [
+            {
+              "mapTo": "code",
+              "type": 1,
+              "value": "code"
+            },
+            {
+              "mapTo": "data",
+              "type": 1,
+              "value": "status"
+            }
+          ]
+        }
+      }
+    ],
+    "reconciledTriggers": [
+      {
+        "trigger": {
+          "id": "receive_http_message",
+          "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+          "name": "Receive HTTP Message",
+          "description": "Simple REST Trigger",
+          "settings": {
+            "port": "9094"
+          },
+          "handlers": [
+            {
+              "settings": {
+                "method": "GET",
+                "path": "/status/:id",
+                "autoIdReply": null,
+                "useReplyHandler": "true"
+              },
+              "action": {
+                "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
+                "data": {
+                  "flowURI": "res://flow:get_status"
+                },
+                "mappings": {
+                  "input": [
+                    {
+                      "mapTo": "id",
+                      "type": "assign",
+                      "value": "params.id"
+                    }
+                  ],
+                  "output": [
+                    {
+                      "mapTo": "code",
+                      "type": "assign",
+                      "value": "code"
+                    },
+                    {
+                      "mapTo": "data",
+                      "type": "assign",
+                      "value": "status"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "reconciledHandlers": [
+          {
+            "handler": {
+              "settings": {
+                "method": "GET",
+                "path": "/status/:id",
+                "autoIdReply": null,
+                "useReplyHandler": "true"
+              },
+              "actionId": "flow:get_status",
+              "actionMappings": {
+                "input": [
+                  {
+                    "mapTo": "id",
+                    "type": 1,
+                    "value": "params.id"
+                  }
+                ],
+                "output": [
+                  {
+                    "mapTo": "code",
+                    "type": 1,
+                    "value": "code"
+                  },
+                  {
+                    "mapTo": "data",
+                    "type": 1,
+                    "value": "status"
+                  }
+                ]
+              }
+            },
+            "actionId": "flow:get_status-processed"
+          }
+        ]
+      }
+    ]
+  }
+}

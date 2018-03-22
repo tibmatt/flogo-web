@@ -38,7 +38,7 @@ export class StandardTaskConverter {
     return {
       id,
       name: name || id,
-      description,
+      description: description || '',
       type,
       activityRef,
       settings,
