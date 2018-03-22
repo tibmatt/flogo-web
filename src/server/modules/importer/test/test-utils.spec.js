@@ -31,6 +31,11 @@ class Asserter {
     expect(data).to.be.an.instanceOf(constructor);
     return this;
   }
+
+  assertRequiredMethodsAreDefined(spyObj) {
+    expect(spyObj.exceptions[0]).to.be.undefined;
+    return this;
+  }
 }
 
 class AppImporterTestContext {
@@ -125,5 +130,21 @@ export function commonTestCases(name) {
       .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].actionsImporter, this.testOptions.depsConstructors.actionsImporter)
       .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].validator, Validator)
       .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].triggersHandlersImporter, this.testOptions.depsConstructors.triggersHandlersImporter);
+  });
+
+  it("ActionImporter should implement extractActions method", async function(){
+    const spyingExtractActions = sinon.spy(this.testOptions.depsConstructors.actionsImporter.prototype, "extractActions");
+    const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+    assert.assertRequiredMethodsAreDefined(spyingExtractActions)
+      .assertIsSuccessful();
+  });
+
+  it("TriggerHandlerImporter should implement required method", async function(){
+    const spyingExtractTriggers = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
+    const spyingExtractHandlers = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractHandlers");
+    const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+    assert.assertRequiredMethodsAreDefined(spyingExtractTriggers)
+      .assertRequiredMethodsAreDefined(spyingExtractHandlers)
+      .assertIsSuccessful();
   });
 }
