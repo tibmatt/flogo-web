@@ -59,12 +59,12 @@ export class RemoteInstallerContrib {
                 promise = Promise.resolve({content: null, ref:url.original});
               } else {
                 // get raw url
-                let fileUrl = repoInfo.file(path.join(repoUrlParts.path, 'activity.json'));
+                let fileUrl = repoInfo.file([repoUrlParts.path, 'activity.json'].join('/'));
                 // fall back
                 promise = getJSONContent(fileUrl)
                     .then((result) => Promise.resolve({content:result, ref: url.original}))
                     .catch(err => {
-                      let fileUrl = repoInfo.file(path.join(repoUrlParts.path, 'trigger.json'));
+                      let fileUrl = repoInfo.file([repoUrlParts.path, 'trigger.json'].join('/'));
                       return getJSONContent(fileUrl)
                         .then((result) => Promise.resolve({content:result, ref: url.original}))
                         .catch(err => Promise.resolve({content: null, ref: url.original}) )
