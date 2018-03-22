@@ -7,6 +7,7 @@ import {StandardActionsImporter} from "../standard/standard-actions-importer";
 import {StandardTriggersHandlersImporter} from "../standard/standard-triggers-handlers-importer";
 
 const app = require('./samples/standard-app');
+const testData = require('./samples/standard-test-data');
 
 describe('Importer: Standard', function () {
 
@@ -21,7 +22,8 @@ describe('Importer: Standard', function () {
       depsConstructors: {
         actionsImporter: StandardActionsImporter,
         triggersHandlersImporter: StandardTriggersHandlersImporter
-      }
+      },
+      expectedActions: [...testData.expect.extractActions]
     });
   });
 

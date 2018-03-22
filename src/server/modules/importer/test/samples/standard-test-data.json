@@ -1,0 +1,101 @@
+{
+  "input": {},
+  "expect": {
+    "extractActions": [
+      {
+        "id": "flow:get_status",
+        "name": "GetStatus",
+        "metadata": {
+          "input": [
+            {
+              "name": "id",
+              "type": "string"
+            }
+          ],
+          "output": [
+            {
+              "name": "status",
+              "type": "any"
+            },
+            {
+              "name": "code",
+              "type": "integer"
+            }
+          ]
+        },
+        "data": {
+          "flow": {
+            "type": 1,
+            "description": "",
+            "rootTask": {
+              "id": "root",
+              "type": 1,
+              "tasks": [
+                {
+                  "id": "log_2",
+                  "name": "log_2",
+                  "description": "",
+                  "type": 1,
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                  "settings": {},
+                  "attributes": [
+                    {
+                      "name": "message",
+                      "type": "string",
+                      "value": ""
+                    },
+                    {
+                      "name": "flowInfo",
+                      "type": "boolean",
+                      "value": false
+                    },
+                    {
+                      "name": "addToFlow",
+                      "type": "boolean",
+                      "value": false
+                    }
+                  ],
+                  "inputMappings": []
+                }
+              ],
+              "links": []
+            },
+            "errorHandlerTask": {
+              "id": "errorHandler",
+              "type": 1,
+              "tasks": [
+                {
+                  "id": "log_6",
+                  "name": "log_6",
+                  "description": "",
+                  "type": 1,
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+                  "settings": {},
+                  "attributes": [
+                    {
+                      "name": "message",
+                      "type": "string",
+                      "value": "log in error handler"
+                    },
+                    {
+                      "name": "flowInfo",
+                      "type": "boolean",
+                      "value": false
+                    },
+                    {
+                      "name": "addToFlow",
+                      "type": "boolean",
+                      "value": false
+                    }
+                  ],
+                  "inputMappings": []
+                }
+              ],
+              "links": []
+            }
+          }
+        }
+      }
+    ]
+  }
+}

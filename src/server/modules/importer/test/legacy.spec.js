@@ -7,6 +7,7 @@ import {ActionsImporter} from "../legacy/actions-importer";
 import {TriggersHandlersImporter} from "../legacy/triggers-handlers-importer";
 
 const app = require('./samples/legacy-app');
+const testData = require('./samples/legacy-test-data');
 
 describe('Importer: Legacy', function () {
 
@@ -21,7 +22,8 @@ describe('Importer: Legacy', function () {
       depsConstructors: {
         actionsImporter: ActionsImporter,
         triggersHandlersImporter: TriggersHandlersImporter
-      }
+      },
+      expectedActions: [...testData.expect.extractActions]
     });
   });
 

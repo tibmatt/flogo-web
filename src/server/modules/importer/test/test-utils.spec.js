@@ -2,6 +2,7 @@ import {expect} from "chai";
 import sinon from "sinon";
 import get from "lodash/get";
 import {Validator} from "../../../common/validator/validator";
+import {ActionsManagerMock} from "./mocks/actions-manager-mock";
 
 class Asserter {
   constructor(isSuccessful, errors) {
@@ -32,8 +33,13 @@ class Asserter {
     return this;
   }
 
+  assertMethodCalledWithDataAsExpected(args, expected) {
+    args.forEach((arg, idx) => expect(arg[1]).to.deep.include({...expected[idx]}));
+    return this;
+  }
+
   assertRequiredMethodsAreDefined(spyObj) {
-    expect(spyObj.exceptions[0]).to.be.undefined;
+    spyObj.exceptions.forEach(exception => expect(exception).to.equal(undefined));
     return this;
   }
 }
@@ -146,5 +152,13 @@ export function commonTestCases(name) {
     assert.assertRequiredMethodsAreDefined(spyingExtractTriggers)
       .assertRequiredMethodsAreDefined(spyingExtractHandlers)
       .assertIsSuccessful();
+  });
+
+  it("should save actions as supported by server", async function(){
+    const spyingActionCreate = sinon.spy(ActionsManagerMock, "create");
+    const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+    assert.assertIsSuccessful()
+      .assertMethodCalledWithDataAsExpected(spyingActionCreate.args, this.testOptions.expectedActions);
+    spyingActionCreate.restore();
   });
 }

@@ -7,6 +7,7 @@ import {ActionsImporter} from "../device/actions-importer";
 import {TriggersHandlersImporter} from "../device/triggers-handlers-importer";
 
 const app = require('./samples/device-app');
+const testData = require('./samples/device-test-data');
 
 describe('Importer: Device', function () {
 
@@ -21,7 +22,8 @@ describe('Importer: Device', function () {
       depsConstructors: {
         actionsImporter: ActionsImporter,
         triggersHandlersImporter: TriggersHandlersImporter
-      }
+      },
+      expectedActions: [...testData.expect.extractActions]
     });
   });
 

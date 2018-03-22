@@ -1,0 +1,139 @@
+{
+  "input": {},
+  "expect": {
+    "extractActions": [
+      {
+        "data": {
+          "flow": {
+            "attributes": [],
+            "rootTask": {
+              "id": 1,
+              "type": 1,
+              "links": [
+                {
+                  "id": 1,
+                  "from": 2,
+                  "to": 3,
+                  "type": 0
+                },
+                {
+                  "id": 2,
+                  "from": 3,
+                  "to": 4,
+                  "type": 0
+                }
+              ],
+              "tasks": [
+                {
+                  "id": 2,
+                  "name": "Set Pin",
+                  "description": "Simple Device Set Pin Activity",
+                  "type": 1,
+                  "activityType": "tibco-device-setpin",
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/setpin",
+                  "attributes": [
+                    {
+                      "name": "pin",
+                      "type": "integer",
+                      "value": "50"
+                    },
+                    {
+                      "name": "digital",
+                      "type": "boolean",
+                      "value": "true"
+                    },
+                    {
+                      "name": "value",
+                      "type": "integer",
+                      "value": "70"
+                    }
+                  ]
+                },
+                {
+                  "id": 3,
+                  "name": "Serial Output",
+                  "description": "Serial Output Activity",
+                  "type": 1,
+                  "activityType": "tibco-device-serial",
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/serial",
+                  "attributes": [
+                    {
+                      "name": "message",
+                      "type": "string",
+                      "value": "Hello world"
+                    }
+                  ]
+                },
+                {
+                  "id": 4,
+                  "name": "Send MQTT Message",
+                  "description": "Simple Device MQTT Send Activity",
+                  "type": 1,
+                  "activityType": "tibco-device-mqtt",
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/mqtt",
+                  "attributes": [
+                    {
+                      "name": "topic",
+                      "type": "string",
+                      "value": "my-message"
+                    },
+                    {
+                      "name": "message",
+                      "type": "string",
+                      "value": "hello again"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "id": "test_flow",
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/device/action/flow",
+        "name": "test_flow"
+      },
+      {
+        "data": {
+          "flow": {
+            "attributes": [],
+            "rootTask": {
+              "id": 1,
+              "type": 1,
+              "links": [],
+              "tasks": [
+                {
+                  "id": 2,
+                  "name": "Set Pin",
+                  "description": "Simple Device Set Pin Activity",
+                  "type": 1,
+                  "activityType": "tibco-device-setpin",
+                  "activityRef": "github.com/TIBCOSoftware/flogo-contrib/device/activity/setpin",
+                  "attributes": [
+                    {
+                      "name": "pin",
+                      "type": "integer",
+                      "value": "10"
+                    },
+                    {
+                      "name": "digital",
+                      "type": "boolean",
+                      "value": ""
+                    },
+                    {
+                      "name": "value",
+                      "type": "integer",
+                      "value": "20"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "id": "test_flow_2",
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/device/action/flow",
+        "name": "test_flow_2"
+      }
+    ]
+  }
+}
