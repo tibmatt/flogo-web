@@ -32,15 +32,19 @@ describe('Importer: Standard', function () {
 
   beforeEach(function(){
     this.appToImport = cloneDeep(app);
+    this.sinonSandbox = sinon.sandbox.create();
+  });
+
+  afterEach(function(){
+    this.sinonSandbox.restore();
   });
 
   commonTestCases('standard');
 
   it("TriggerHandlerImporter:  should transform handlers as expected", async function(){
-    const spyingHandlersExtract = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractHandlers");
+    const spyingHandlersExtract = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractHandlers");
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsSuccessful()
       .assertMethodReturnedWithDataAsExpected(spyingHandlersExtract.returnValues[0], [...testData.expect.extractHandlers]);
-    spyingHandlersExtract.restore();
   });
 });

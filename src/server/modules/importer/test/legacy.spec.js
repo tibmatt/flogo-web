@@ -5,6 +5,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import {TestOptions} from "./test-options";
 import {ActionsImporter} from "../legacy/actions-importer";
 import {TriggersHandlersImporter} from "../legacy/triggers-handlers-importer";
+import sinon from "sinon";
 
 const app = require('./samples/legacy-app');
 const testData = require('./samples/legacy-test-data');
@@ -31,6 +32,11 @@ describe('Importer: Legacy', function () {
 
   beforeEach(function(){
     this.appToImport = cloneDeep(app);
+    this.sinonSandbox = sinon.sandbox.create();
+  });
+
+  afterEach(function(){
+    this.sinonSandbox.restore();
   });
 
   commonTestCases('legacy');

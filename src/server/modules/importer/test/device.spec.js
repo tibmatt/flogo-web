@@ -1,7 +1,8 @@
+import cloneDeep from "lodash/cloneDeep";
+import sinon from 'sinon';
 import {ResourceStorageRegistryMock} from './resource-storage-mock';
 import {AppImporterFactory} from '../app-importer-factory';
 import {commonTestCases, makeImporterContext} from "./test-utils.spec";
-import cloneDeep from "lodash/cloneDeep";
 import {TestOptions} from "./test-options";
 import {ActionsImporter} from "../device/actions-importer";
 import {TriggersHandlersImporter} from "../device/triggers-handlers-importer";
@@ -31,6 +32,11 @@ describe('Importer: Device', function () {
 
   beforeEach(function(){
     this.appToImport = cloneDeep(app);
+    this.sinonSandbox = sinon.sandbox.create();
+  });
+
+  afterEach(function(){
+    this.sinonSandbox.restore();
   });
 
   commonTestCases('device');

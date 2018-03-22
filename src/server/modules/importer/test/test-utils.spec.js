@@ -1,5 +1,4 @@
 import {expect} from "chai";
-import sinon from "sinon";
 import get from "lodash/get";
 import {Validator} from "../../../common/validator/validator";
 import {ActionsManagerMock} from "./mocks/actions-manager-mock";
@@ -135,56 +134,49 @@ export function commonTestCases(name) {
   });
 
   it("dependenciesFactory.create(): should create instances of necessary dependencies", async function(){
-    const spyingCreateAppImporter = sinon.spy(this.importerFactory, "createAppImporter");
+    const spyingCreateAppImporter = this.sinonSandbox.spy(this.importerFactory, "createAppImporter");
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsSuccessful()
       .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].actionsImporter, this.testOptions.depsConstructors.actionsImporter)
       .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].validator, Validator)
       .assertDataWithInstanceOf(spyingCreateAppImporter.firstCall.args[0].triggersHandlersImporter, this.testOptions.depsConstructors.triggersHandlersImporter);
-    spyingCreateAppImporter.restore();
   });
 
   it("ActionImporter: should implement extractActions method", async function(){
-    const spyingExtractActions = sinon.spy(this.testOptions.depsConstructors.actionsImporter.prototype, "extractActions");
+    const spyingExtractActions = this.sinonSandbox.spy(this.testOptions.depsConstructors.actionsImporter.prototype, "extractActions");
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertRequiredMethodsAreDefined(spyingExtractActions)
       .assertIsSuccessful();
-    spyingExtractActions.restore();
   });
 
   it("TriggerHandlerImporter: should implement required method", async function(){
-    const spyingExtractTriggers = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
-    const spyingExtractHandlers = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractHandlers");
+    const spyingExtractTriggers = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
+    const spyingExtractHandlers = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractHandlers");
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertRequiredMethodsAreDefined(spyingExtractTriggers)
       .assertRequiredMethodsAreDefined(spyingExtractHandlers)
       .assertIsSuccessful();
-    spyingExtractTriggers.restore();
-    spyingExtractHandlers.restore();
   });
 
   it("should save actions as supported by server", async function(){
-    const spyingActionCreate = sinon.spy(ActionsManagerMock, "create");
+    const spyingActionCreate = this.sinonSandbox.spy(ActionsManagerMock, "create");
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsSuccessful()
       .assertMethodCalledWithDataAsExpected(spyingActionCreate.args, this.testOptions.expectedActions);
-    spyingActionCreate.restore();
   });
 
   it("TriggerHandlerImporter:  should transform triggers as expected", async function(){
-    const spyingTriggerExtract = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
+    const spyingTriggerExtract = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "extractTriggers");
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsSuccessful()
       .assertMethodReturnedWithDataAsExpected(spyingTriggerExtract.returnValues[0], this.testOptions.expectedTriggers);
-    spyingTriggerExtract.restore();
   });
 
   it("TriggerHandlerImporter:  should reconcile handlers with new action id", async function(){
-    const spyingReconcileHandlers = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "reconcileTriggersAndActions");
+    const spyingReconcileHandlers = this.sinonSandbox.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "reconcileTriggersAndActions");
     const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
     assert.assertIsSuccessful()
       .assertMethodReturnedWithDataAsExpected(spyingReconcileHandlers.returnValues[0], this.testOptions.expectedReconciledTriggers);
-    spyingReconcileHandlers.restore();
   });
 
 }
