@@ -134,6 +134,40 @@
         "ref": "github.com/TIBCOSoftware/flogo-contrib/device/action/flow",
         "name": "test_flow_2"
       }
+    ],
+    "extractTriggers": [
+      {
+        "name": "VL53L0X Trigger",
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/device/trigger/vl53l0x",
+        "description": "Simple VL53L0X Trigger",
+        "settings": {
+          "condition": ""
+        },
+        "id": "vl_53_l_0_x_trigger",
+        "actionId": "test_flow",
+        "handlers": [
+          {
+            "settings": {},
+            "actionId": "test_flow"
+          }
+        ]
+      },
+      {
+        "name": "VL53L0X Trigger(1)",
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/device/trigger/vl53l0x",
+        "description": "Simple VL53L0X Trigger",
+        "settings": {
+          "condition": ""
+        },
+        "id": "vl_53_l_0_x_trigger_1",
+        "actionId": "test_flow_2",
+        "handlers": [
+          {
+            "settings": {},
+            "actionId": "test_flow_2"
+          }
+        ]
+      }
     ]
   }
 }

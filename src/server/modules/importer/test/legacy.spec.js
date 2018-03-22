@@ -23,7 +23,8 @@ describe('Importer: Legacy', function () {
         actionsImporter: ActionsImporter,
         triggersHandlersImporter: TriggersHandlersImporter
       },
-      expectedActions: [...testData.expect.extractActions]
+      expectedActions: [...testData.expect.extractActions],
+      expectedTriggers: [...testData.expect.extractTriggers]
     });
   });
 

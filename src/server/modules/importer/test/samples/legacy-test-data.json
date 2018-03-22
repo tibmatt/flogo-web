@@ -63,6 +63,32 @@
         },
         "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow"
       }
+    ],
+    "extractTriggers": [
+      {
+        "name": "Receive HTTP Message",
+        "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+        "description": "Simple REST Trigger",
+        "settings": {
+          "port": null
+        },
+        "id": "receive_http_message",
+        "handlers": [
+          {
+            "settings": {
+              "method": null,
+              "path": null,
+              "autoIdReply": null,
+              "useReplyHandler": null
+            },
+            "actionId": "test_flow",
+            "actionMappings": {
+              "input": [],
+              "output": []
+            }
+          }
+        ]
+      }
     ]
   }
 }
