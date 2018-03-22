@@ -1,6 +1,58 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
+## v0.5.3
+
+### Production Dependencies
+
+- **Added:**
+  - [@angular/animations@5.2.9](https://github.com/angular/angular) (MIT)
+  - [@ngx-translate/core@9.1.1](https://github.com/ngx-translate/core) (MIT)
+- **Upgraded:**
+  - [@angular/common@5.2.9](https://github.com/angular/angular) (MIT) - Was 2.4.0
+  - [@angular/core@5.2.9](https://github.com/angular/angular) (MIT) - Was 2.4.0
+  - [@angular/forms@5.2.9](https://github.com/angular/angular) (MIT) - Was 2.4.0
+  - [@angular/http@5.2.9](https://github.com/angular/angular) (MIT) - Was 2.4.0
+  - [@angular/platform-browser-dynamic@5.2.9](https://github.com/angular/angular) (MIT) - Was 2.4.0
+  - [@angular/platform-browser@5.2.9](https://github.com/angular/angular) (MIT) - Was 2.4.0
+  - [@angular/router@5.2.9](https://github.com/angular/angular) (MIT) - Was 2.4.0
+  - [jquery@2.2.4](https://github.com/jquery/jquery) (MIT) - Was 2.2.2
+  - [lodash@4.17.5](https://github.com/lodash/lodash) (MIT) - Was 4.6.1
+  - [ng2-bs3-modal@0.13.0](https://github.com/dougludlow/ng2-bs3-modal) (ISC) - Was 0.10.4
+  - [ngx-perfect-scrollbar@5.3.5](https://github.com/zefoy/ngx-perfect-scrollbar) (MIT) - Was 5.3.5 
+  - [primeng@5.2.3](https://github.com/primefaces/primeng) (MIT) - Was 2.0.6
+  - [rxjs@5.5.7](https://github.com/ReactiveX/RxJS) (Apache-2.0) - Was 5.2.0
+  - [zone.js@0.8.20](https://github.com/angular/zone.js) (MIT) - Was 0.7.4
+- **Removed:**
+  - ng2-translate
+  - reflect-metadata
+  - system.js
+  
+### Development Dependencies
+
+- **Added:**
+  - [@angular/animations@5.2.9](https://github.com/angular/angular) (MIT)
+  - [@ngx-translate/core@9.1.1](https://github.com/ngx-translate/core) (MIT)
+- **Upgraded:**
+  - [@angular/cli@1.7.3](https://github.com/angular/angular-cli) (MIT)
+  - [@angular/compiler-cli@5.2.9](https://github.com/angular/angular) (MIT)
+  - [@types/jasmine@2.8.6](https://www.github.com/DefinitelyTyped/DefinitelyTyped) (MIT)
+  - [@types/lodash@4.14.104](https://www.github.com/DefinitelyTyped/DefinitelyTyped) (MIT)
+  - [codelyzer@4.2.1](https://github.com/mgechev/codelyzer) (MIT)
+  - [jasmine-core@2.8.0](https://github.com/jasmine/jasmine) (MIT)
+  - [jasmine-spec-reporter@4.2.1](https://github.com/bcaudan/jasmine-spec-reporter) (Apache-2.0)
+  - [karma@2.0.0](https://github.com/karma-runner/karma) (MIT)
+  - [karma-coverage-istanbul-reporter@1.4.2](https://github.com/mattlewis92/karma-coverage-istanbul-reporter) (MIT)
+  - [karma-spec-reporter@0.0.32](https://github.com/mlex/karma-spec-reporter) (MIT)
+  - [protractor@5.1.2](https://github.com/angular/protractor) (MIT)
+  - [ts-node@4.1.0](https://github.com/TypeStrong/ts-node) (MIT)
+  - [tslint@5.9.1](https://github.com/palantir/tslint) (Apache-2.0)
+  - [typescript@2.5.3](https://github.com/Microsoft/TypeScript) (Apache-2.0)
+- **Removed:**
+  - enhanced-resolve
+
+### Development Dependencies
+
 ## v0.5.2
 
 ### Production Dependencies
