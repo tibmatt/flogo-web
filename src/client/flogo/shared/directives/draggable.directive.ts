@@ -27,7 +27,7 @@ export class DraggableDirective implements OnDestroy, OnInit {
   }
 
   @HostListener('dragstart', ['$event'])
-  onDragStart(event: DragEvent) {
+  onDragStart(event: Event | any) {
     event.dataTransfer.setData('text', '');
 
     if (!this.isFireFox) {
@@ -45,7 +45,7 @@ export class DraggableDirective implements OnDestroy, OnInit {
   }
 
   @HostListener('drag', ['$event'])
-  onDrag(event: DragEvent) {
+  onDrag(event: Event | any) {
     if (!this.isFireFox) {
       this.doTranslation(event.x, event.y);
     } else {
@@ -54,7 +54,7 @@ export class DraggableDirective implements OnDestroy, OnInit {
   }
 
   @HostListener('dragend', ['$event'])
-  onDragEnd(event: DragEvent) {
+  onDragEnd(event: Event | any) {
     if (this.isFireFox) {
       if (event.stopPropagation) {
         event.stopPropagation(); // Stops some browsers from redirecting.
