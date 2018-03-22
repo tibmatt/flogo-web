@@ -179,4 +179,12 @@ export function commonTestCases(name) {
     spyingTriggerExtract.restore();
   });
 
+  it("TriggerHandlerImporter:  should reconcile handlers with new action id", async function(){
+    const spyingReconcileHandlers = sinon.spy(this.testOptions.depsConstructors.triggersHandlersImporter.prototype, "reconcileTriggersAndActions");
+    const assert = await this.importerContext.importAndCreateAssert(this.appToImport);
+    assert.assertIsSuccessful()
+      .assertMethodReturnedWithDataAsExpected(spyingReconcileHandlers.returnValues[0], this.testOptions.expectedReconciledTriggers);
+    spyingReconcileHandlers.restore();
+  });
+
 }

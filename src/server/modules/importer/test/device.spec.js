@@ -24,7 +24,8 @@ describe('Importer: Device', function () {
         triggersHandlersImporter: TriggersHandlersImporter
       },
       expectedActions: [...testData.expect.extractActions],
-      expectedTriggers: [...testData.expect.extractTriggers]
+      expectedTriggers: [...testData.expect.extractTriggers],
+      expectedReconciledTriggers: [...testData.expect.reconciledTriggers]
     });
   });
 

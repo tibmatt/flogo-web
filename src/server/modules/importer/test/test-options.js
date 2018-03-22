@@ -2,7 +2,7 @@ import {AbstractActionsImporter} from "../common/abstract-actions-importer";
 import {AbstractTriggersHandlersImporter} from "../common/abstract-trigger-handlers-importer";
 
 export class TestOptions {
-  constructor({updateTasksRefCb, depsConstructors, expectedActions, expectedTriggers}) {
+  constructor({updateTasksRefCb, depsConstructors, expectedActions, expectedTriggers, expectedReconciledTriggers}) {
     this.updateTasksRef = updateTasksRefCb || function(app) {
       return app;
     };
@@ -12,5 +12,6 @@ export class TestOptions {
     };
     this.expectedActions = expectedActions || [];
     this.expectedTriggers = expectedTriggers || [];
+    this.expectedReconciledTriggers = expectedReconciledTriggers || [];
   }
 }
