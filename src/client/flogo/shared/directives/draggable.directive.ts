@@ -27,14 +27,16 @@ export class DraggableDirective implements OnDestroy, OnInit {
   }
 
   @HostListener('dragstart', ['$event'])
-  onDragStart(event: DragEvent) {
+  onDragStart(event: Event | any) {
     event.dataTransfer.setData('text', '');
 
     if (!this.isFireFox) {
       this.dragItem = event.target['cloneNode'](true);
       this.dragItem.style.visibility = 'hidden';
       document.body.appendChild(this.dragItem);
-      event.dataTransfer['setDragImage'](this.dragItem, 0, 0);
+      if (event.dataTransfer['setDragImage']) { // IE Edge does not support setDragImage
+        event.dataTransfer['setDragImage'](this.dragItem, 0, 0);
+      }
 
       this.Δx = event.x - this.el.nativeElement.offsetLeft;
       this.Δy = event.y - this.el.nativeElement.offsetTop;
@@ -45,7 +47,7 @@ export class DraggableDirective implements OnDestroy, OnInit {
   }
 
   @HostListener('drag', ['$event'])
-  onDrag(event: DragEvent) {
+  onDrag(event: Event | any) {
     if (!this.isFireFox) {
       this.doTranslation(event.x, event.y);
     } else {
@@ -54,7 +56,7 @@ export class DraggableDirective implements OnDestroy, OnInit {
   }
 
   @HostListener('dragend', ['$event'])
-  onDragEnd(event: DragEvent) {
+  onDragEnd(event: Event | any) {
     if (this.isFireFox) {
       if (event.stopPropagation) {
         event.stopPropagation(); // Stops some browsers from redirecting.
