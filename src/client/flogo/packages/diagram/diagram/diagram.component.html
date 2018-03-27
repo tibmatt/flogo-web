@@ -1,0 +1,4 @@
+<flogo-diagram-row *ngFor="let row of tileMatrix; trackBy: trackByIndex"
+                   [row]="row" [selection]="selection"
+                   (action)="onAction($event)">
+</flogo-diagram-row>

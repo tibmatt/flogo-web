@@ -1,0 +1,38 @@
+@import '../_styles';
+
+:host {
+  .tile-container();
+}
+
+.btn-insert {
+  .tile-placeholder;
+  .flex-center;
+  color: #b6d9ed;
+  background-color: @tile-color-bg;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease;
+  outline: none;
+
+  &:hover {
+    box-shadow: 0 5px 16px 1px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.btn-insert__icon {
+  height: @tile-placeholder-dimension / 3;
+  width: @tile-placeholder-dimension / 3;
+}
+
+:host(.is-selected) {
+  .btn-insert, .btn-insert:hover {
+    box-shadow: 1px 2px 9px 0px rgba(0, 0, 0, 0.3);
+    transform: translateY(0);
+    background-color: @tile-color-bg--selected;
+    color: #fff;
+  }
+}

@@ -1,0 +1,24 @@
+@tile-width: 124px;
+@tile-height: 110px;
+@tile-placeholder-dimension: 70px;
+@tile-radius: 8px;
+@tile-color-bg: #fff;
+@tile-color-bg--selected: #4e7ead;
+
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-placeholder() {
+  border-radius: 8px;
+  height: @tile-placeholder-dimension;
+  width: @tile-placeholder-dimension;
+}
+
+.tile-container {
+  height: 110px;
+  width: 124px;
+  .flex-center();
+}

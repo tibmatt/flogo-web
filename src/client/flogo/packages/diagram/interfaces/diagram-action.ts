@@ -8,5 +8,15 @@ export enum DiagramActionType {
 
 export interface DiagramAction {
   type: DiagramActionType;
-  taskId: string;
 }
+
+export interface DiagramActionSelf extends DiagramAction {
+  type: DiagramActionType;
+  id: string;
+}
+
+export interface DiagramActionChild extends DiagramAction {
+  type: DiagramActionType.Insert | DiagramActionType.Branch;
+  parentId: string;
+}
+
