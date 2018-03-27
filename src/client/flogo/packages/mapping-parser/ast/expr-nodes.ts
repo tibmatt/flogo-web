@@ -41,10 +41,11 @@ export interface IndexExpr extends Node {
 
 // flogo specific
 // example: $activity[my_act] -> { name: 'activity'; selector: 'my_act' }
+// example: $. -> { }
 //
 export interface ScopeResolver extends Node {
   type: 'ScopeResolver';
-  name: string;
+  name?: string;
   selector?: string;
 }
 

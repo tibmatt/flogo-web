@@ -153,20 +153,26 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
     resolver(ctx): ExprNodes.ScopeResolver {
       const resolverNode = <ExprNodes.ScopeResolver> {
         type: 'ScopeResolver',
-        name: ctx.IdentifierName[0].image
       };
 
-      const selector = <any> this.visit(ctx.resolverSelector);
-      if (selector) {
+      const resolverSelector = <any> this.visit(ctx.resolverSelector);
+      const { name, selector } = resolverSelector || <any>{};
+      if (name) {
+        resolverNode.name = name;
+      }
+      if (name) {
         resolverNode.selector = selector;
       }
       return resolverNode;
     }
 
-    resolverSelector(ctx): { name: string } {
-      return {
-        name: ctx.IdentifierName[0].image
-      };
+    resolverSelector(ctx): { name: string, selector?: string } {
+      const [name, selector] = ctx.IdentifierName;
+      const resolverSelector: { name: string, selector?: string } = { name };
+      if (selector) {
+        resolverSelector.selector = selector;
+      }
+      return resolverSelector;
     }
 
     selector(ctx): ExprNodes.SelectorExpr {

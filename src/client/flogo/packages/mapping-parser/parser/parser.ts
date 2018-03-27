@@ -328,19 +328,20 @@ export class MappingParser extends Parser {
 
   private resolver = this.RULE('resolver', () => {
     this.CONSUME1(Token.Lookup);
-    this.CONSUME2(Token.IdentifierName);
-    this.OPTION({
-      // avoid ambiguity between $resolver[name] and $arrayThing[0]
-      GATE: () => !tokenMatcher(this.LA(2), Token.NumberLiteral),
-      DEF: () => this.SUBRULE(this.resolverSelector),
-    });
+    this.OPTION(() => this.SUBRULE(this.resolverSelector));
   });
 
   private resolverSelector = this.RULE('resolverSelector', () => {
-    // this.CONSUME(Token.IdentifierName);
-    this.CONSUME(Token.LSquare);
-    this.CONSUME2(Token.IdentifierName);
-    this.CONSUME(Token.RSquare);
+    this.CONSUME1(Token.IdentifierName);
+    this.OPTION({
+      // avoid ambiguity between $resolver[name] and $arrayThing[0]
+      GATE: () => !tokenMatcher(this.LA(2), Token.NumberLiteral),
+      DEF: () => {
+        this.CONSUME(Token.LSquare);
+        this.CONSUME2(Token.IdentifierName);
+        this.CONSUME(Token.RSquare);
+      },
+    });
   });
 
   private selector = this.RULE('selector', () => {

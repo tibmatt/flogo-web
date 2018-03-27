@@ -1,10 +1,18 @@
 import { resolveExpressionType } from './resolve-expression-type';
 
-describe('Parser Type Resolver', function () {
+fdescribe('Parser Type Resolver', function () {
+
+  function assertParsedType(inputData) {
+    it(`For ${inputData.text}`, () => {
+      const parsedType = resolveExpressionType(inputData.text);
+      expect(parsedType).toEqual(inputData.expectedType, `Expected ${inputData.expectedType} but got ${parsedType}`);
+    });
+  }
 
   describe('for valid input', () => {
-    it('it correctly determines its type', () => {
+    describe('it correctly determines its type', () => {
       [
+        {text: '$.inputName', expectedType: 'attrAccess'},
         {text: '$activity', expectedType: 'attrAccess'},
         {text: '$trigger', expectedType: 'attrAccess'},
         {text: '$regularVar.withProp', expectedType: 'attrAccess'},
@@ -32,6 +40,7 @@ describe('Parser Type Resolver', function () {
         }
       }`, expectedType: 'json'
         },
+        {text: '$.inputName != 2', expectedType: 'expression'},
         {text: '$a + $b', expectedType: 'expression'},
         {text: '$a + $b.c', expectedType: 'expression'},
         {text: '$a < $b.c', expectedType: 'expression'},
@@ -43,18 +52,14 @@ describe('Parser Type Resolver', function () {
         {text: '1 + 2 > 3 + $a.b.c', expectedType: 'expression'},
         {text: '$a - 3 * $a.b[0]', expectedType: 'expression'},
         {text: '$activity[my_activity].array[0].id || 45 && false', expectedType: 'expression'},
-      ].forEach(function (inputData) {
-        const parsedType = resolveExpressionType(inputData.text);
-        expect(parsedType).toEqual(inputData.expectedType);
-      });
+      ].forEach(assertParsedType);
     });
   });
 
   describe('for invalid input', () => {
-    it('dismisses incorrect expressions', () => {
+    describe('dismisses incorrect expressions', () => {
       [
         {text: '$trigger[]', expectedType: null},
-        {text: '$', expectedType: null},
         {text: '$abcd.', expectedType: null},
         {text: '$abcd.e[what]', expectedType: null},
         {text: '1.4.25', expectedType: null},
@@ -63,10 +68,7 @@ describe('Parser Type Resolver', function () {
         {text: '{ "a": 1, b: {} ', expectedType: null},
         {text: '', expectedType: null},
         {text: '$a >', expectedType: null},
-      ].forEach(function (inputData) {
-        const parsedType = resolveExpressionType(inputData.text);
-        expect(parsedType).toEqual(inputData.expectedType);
-      });
+      ].forEach(assertParsedType);
     });
   });
 
