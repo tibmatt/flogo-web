@@ -1,4 +1,4 @@
-<ng-template ngFor let-tile [ngForOf]="row" [ngForTrackBy]="trackTileBy">
+<ng-template ngFor let-tile [ngForOf]="tiles" [ngForTrackBy]="trackTileBy">
   <flogo-diagram-tile-empty *ngIf="tile.type === tileTypes.Padding"></flogo-diagram-tile-empty>
   <flogo-diagram-tile-placeholder *ngIf="tile.type === tileTypes.Placeholder" class="tile--placeholder" ></flogo-diagram-tile-placeholder>
   <flogo-diagram-tile-insert *ngIf="tile.type === tileTypes.Insert" class="tile--placeholder"

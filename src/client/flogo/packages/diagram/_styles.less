@@ -1,3 +1,4 @@
+@tile-container-dimension: 110px;
 @tile-width: 124px;
 @tile-height: 110px;
 @tile-placeholder-dimension: 70px;
@@ -18,7 +19,8 @@
 }
 
 .tile-container {
-  height: 110px;
-  width: 124px;
-  .flex-center();
+  .flex-center;
+  height: @tile-container-dimension;
+  width: @tile-container-dimension;
+  margin-right: 8px;
 }

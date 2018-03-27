@@ -9,4 +9,13 @@ import { DiagramSelection, TaskTile } from '../interfaces';
 export class TileTaskComponent {
   @Input() tile: TaskTile;
   @Input() currentSelection: DiagramSelection;
+
+  get isTerminal() {
+    const { task } = this.tile;
+    if (task) {
+      return task.status.final || !task.capabilities.canHaveChildren;
+    }
+    return false;
+  }
+
 }
