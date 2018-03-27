@@ -18,11 +18,12 @@ function makeRowExtensible(rowOfTiles: Tile[], lastNodeId: string, maxRowLength:
 // assumes that the rows won't overflow
 // and the overflow case should be handled somewhere else.
 export function createTileMatrix(nodeMatrix: NodeMatrix, maxRowLength): TileMatrix {
+  const nodeToTile = node => !!node ? tileFactory.makeTask(node) : TILE_PADDING;
   return nodeMatrix.map(rowOfNodes => {
     if (rowOfNodes.length <= 0) {
       return [];
     }
-    const rowOfTiles: Tile[] = rowOfNodes.map(node => node ? tileFactory.makeTask(node) : TILE_PADDING);
+    const rowOfTiles: Tile[] = rowOfNodes.map(nodeToTile);
     const lastNode = rowOfNodes[rowOfNodes.length - 1];
     const isInsertAllowed = lastNode.capabilities.canHaveChildren;
     if (isInsertAllowed && rowOfTiles.length < maxRowLength) {

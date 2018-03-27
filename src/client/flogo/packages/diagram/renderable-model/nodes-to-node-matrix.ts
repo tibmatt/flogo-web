@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, times, partialRight } from 'lodash';
 import { Node, NodeDictionary, NodeType } from '../interfaces/index';
 import { NodeMatrix } from './matrix';
 
@@ -13,6 +13,8 @@ export function nodesToNodeMatrix(rootNode: Node, nodes: NodeDictionary): NodeMa
   return matrix;
 }
 
+const arrayOfNulls = partialRight<number, Function, null[]>(times, () => null);
+
 export function translateChildren(context: TranslateContext, matrix: NodeMatrix): NodeMatrix {
   const children = retrieveChildrenNodes(context).sort(nonBranchesFirst);
   if (isEmpty(children)) {
@@ -21,7 +23,7 @@ export function translateChildren(context: TranslateContext, matrix: NodeMatrix)
   const currentRow = matrix[matrix.length - 1];
   children.forEach((node: Node, index) => {
     if (node.type === NodeType.Branch) {
-      const newRow = new Array<Node>(index);
+      const newRow: Node[] = arrayOfNulls(index);
       newRow.push(node);
       matrix.push(newRow);
     } else {

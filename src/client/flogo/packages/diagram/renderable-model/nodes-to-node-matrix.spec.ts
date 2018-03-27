@@ -166,7 +166,8 @@ fdescribe('diagram.nodesToNodeMatrix', function () {
               const actualValues = actualMatrix[i].map(extractNodeId);
               const expectedValues = expectedMatrix[i];
               if (!isEqual(actualValues, expectedValues)) {
-                result.message = `Actual row at index ${i} doesn't match expectation. Expected ${JSON.stringify(expectedValues)}. Actual: ${JSON.stringify(actualValues)}`;
+                result.message = `Actual row at index ${i} doesn't match expectation.
+                  Expected ${JSON.stringify(expectedValues)}. Actual: ${JSON.stringify(actualValues)}`;
               }
             }
             result.pass = true;
