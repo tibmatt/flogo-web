@@ -31,8 +31,8 @@ export class EditorService {
   private dragOverSrc = new Subject<{ x: number, y: number }>();
   dragOver$: Observable<{ x: number, y: number }> = this.dragOverSrc.asObservable();
 
-  changeContext(expression: string, mode?: string) {
-    this.contextSrc.next({ expression, mode });
+  changeContext(expression: string) {
+    this.contextSrc.next({ expression});
   }
 
   insertText(string: string, replaceTokenAtPosition?: { x: number, y: number }) {
