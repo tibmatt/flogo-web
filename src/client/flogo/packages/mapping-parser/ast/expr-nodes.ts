@@ -5,11 +5,11 @@
  */
 import { Node } from './node';
 
-export type Expr = SelectorExpr | IndexExpr | CallExpr | UnaryExpr | BinaryExpr | Identifier | BasicLit;
+export type Expr = SelectorExpr | ScopeResolver | IndexExpr | CallExpr | UnaryExpr | BinaryExpr | Identifier | BasicLit;
 
 export interface ExprStmt {
   type: 'ExprStmt';
-  // we call "x" because that's the way golang's AST does it
+  // we call it "x" because that's the way golang's AST does it
   x: Expr;
 }
 
@@ -52,7 +52,7 @@ export interface CallExpr extends Node {
 export interface ScopeResolver extends Node {
   type: 'ScopeResolver';
   name?: string;
-  selector?: string;
+  sel?: string;
 }
 
 // !a => (operator="!"; x="a")

@@ -1,6 +1,6 @@
 import { resolveExpressionType } from './resolve-expression-type';
 
-fdescribe('Parser Type Resolver', function () {
+describe('Parser Type Resolver', function () {
 
   function assertParsedType(inputData) {
     it(`For ${inputData.text}`, () => {
@@ -40,6 +40,8 @@ fdescribe('Parser Type Resolver', function () {
         }
       }`, expectedType: 'json'
         },
+        {text: `{ "a": "{{ $activity[xyz].result.id }}" }`, expectedType: 'json'},
+        {text: `{ "foo": ["{{ string.concat($activity[hello].world, $flow.a[0]) }}"] }`, expectedType: 'json'},
         {text: '$.inputName != 2', expectedType: 'expression'},
         {text: '$a + $b', expectedType: 'expression'},
         {text: '$a + $b.c', expectedType: 'expression'},
@@ -70,6 +72,7 @@ fdescribe('Parser Type Resolver', function () {
         {text: '{ "a": 1, b: {} ', expectedType: null},
         {text: '', expectedType: null},
         {text: '$a >', expectedType: null},
+        {text: `{ "a": "{{}}" }`, expectedType: null},
       ].forEach(assertParsedType);
     });
   });

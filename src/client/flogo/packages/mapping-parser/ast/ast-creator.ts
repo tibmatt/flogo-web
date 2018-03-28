@@ -161,10 +161,10 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
       const resolverSelector = <any> this.visit(ctx.resolverSelector);
       const { name, selector } = resolverSelector || <any>{};
       if (name) {
-        resolverNode.name = name;
+        resolverNode.name = name.image;
       }
-      if (name) {
-        resolverNode.selector = selector;
+      if (selector) {
+        resolverNode.sel = selector.image;
       }
       return resolverNode;
     }
@@ -204,7 +204,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
     }
 
     json(ctx): JsonNodes.JsonNode {
-      const value = this.visit(ctx.object) || this.visit(ctx.array);
+      const value = <any> this.visit(ctx.object) || this.visit(ctx.array);
       return {
         type: 'json',
         value,
@@ -237,11 +237,18 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
 
     value(ctx): JsonNodes.ValueNode {
       const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
-      if (cstNodeType !== 'object' && cstNodeType !== 'array') {
-        return makeLiteralJsonNode(ctx[cstNodeType][0]);
-      } else {
+      if (cstNodeType === 'object' || cstNodeType === 'array' || cstNodeType === 'stringTemplate' ) {
         return <JsonNodes.ObjectNode | JsonNodes.ArrayNode> this.visit(ctx[cstNodeType]);
+      } else {
+        return makeLiteralJsonNode(ctx[cstNodeType][0]);
       }
+    }
+
+    stringTemplate(ctx): JsonNodes.StringTemplateNode {
+      return {
+        type: 'stringTemplate',
+        expression: <ExprNodes.Expr> this.visit(ctx.expression),
+      };
     }
 
     // $ suffix is required for helpers

@@ -4,7 +4,8 @@
  *  - https://golang.org/ref/spec
  *  - https://github.com/antlr/grammars-v4/tree/master/golang
  */
-import { IToken, TokenType, Lexer, Parser, tokenMatcher, createToken } from 'chevrotain';
+import { IToken, TokenType, Lexer, Parser, tokenMatcher, createToken, IMultiModeLexerDefinition } from 'chevrotain';
+import { Identifier } from '../ast/expr-nodes';
 import { UnicodeCategory } from './unicode';
 
 /////////////////////////////
@@ -95,6 +96,36 @@ const StringLiteral = createToken({
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
 });
 
+function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IToken[], groups?: {
+  [groupName: string]: IToken;
+}) {
+  if (tokens.length <= 2) {
+    return null;
+  }
+  const isLexingJson = tokens.find((token, index, tokenArr) => {
+    const prevToken = index - 1 >= 0 ? tokenArr[index - 1] : null;
+    return prevToken && tokenMatcher(token, Colon) && tokenMatcher(prevToken, StringLiteral);
+  });
+  if (!isLexingJson) {
+    return null;
+  }
+  return /^"{{/.exec(text.substr(startOffset));
+}
+
+const StringTemplateOpen = createToken({
+  name: 'StringTemplateOpen',
+  label: '"{{',
+  pattern: matchStringTemplateOpen,
+  push_mode: 'string_template'
+});
+
+const StringTemplateClose = createToken({
+  name: 'StringTemplateClose',
+  label: '}}"',
+  pattern: /}}"/,
+  pop_mode: true,
+});
+
 const NumberLiteral = createToken({
   name: 'NumberLiteral',
   label: 'NumberLiteral',
@@ -180,6 +211,8 @@ const Token = {
   Lookup,
   NumberLiteral,
   StringLiteral,
+  StringTemplateOpen,
+  StringTemplateClose,
   LParen,
   RParen,
   LCurly,
@@ -201,6 +234,64 @@ const Token = {
   UnaryOp,
   IdentifierName,
 };
+
+export const lexerDefinition: IMultiModeLexerDefinition = {
+  modes: {
+    default: [
+      WhiteSpace,
+      Lookup,
+      NumberLiteral,
+      StringTemplateOpen,
+      StringLiteral,
+      LParen,
+      RParen,
+      LCurly,
+      RCurly,
+      LSquare,
+      RSquare,
+      Dot,
+      Comma,
+      Colon,
+      True,
+      False,
+      Null,
+      LogicalAnd,
+      MulOp,
+      AddOp,
+      RelOp,
+      LogicalOr,
+      BinaryOp,
+      UnaryOp,
+      IdentifierName,
+    ],
+    string_template: [
+      WhiteSpace,
+      Lookup,
+      NumberLiteral,
+      StringTemplateClose,
+      LParen,
+      RParen,
+      LSquare,
+      RSquare,
+      Dot,
+      Comma,
+      Colon,
+      True,
+      False,
+      Null,
+      LogicalAnd,
+      MulOp,
+      AddOp,
+      RelOp,
+      LogicalOr,
+      BinaryOp,
+      UnaryOp,
+      IdentifierName,
+    ],
+  },
+  defaultMode: 'default',
+};
+
 export const allTokens: TokenType[] = [...Object.values(Token)];
 
 /////////////////////////////
@@ -213,7 +304,7 @@ export const allTokens: TokenType[] = [...Object.values(Token)];
 export class MappingParser extends Parser {
 
   constructor(input: IToken[]) {
-    super(input, <any>allTokens, {
+    super(input, lexerDefinition, {
       recoveryEnabled: true,
       outputCst: true,
     });
@@ -387,6 +478,7 @@ export class MappingParser extends Parser {
 
   private value = this.RULE('value', () => {
     this.OR([
+      {ALT: () => this.SUBRULE(this.stringTemplate)},
       {ALT: () => this.CONSUME(Token.StringLiteral)},
       {ALT: () => this.CONSUME(Token.NumberLiteral)},
       {ALT: () => this.SUBRULE(this.object)},
@@ -395,6 +487,12 @@ export class MappingParser extends Parser {
       {ALT: () => this.CONSUME(Token.False)},
       {ALT: () => this.CONSUME(Token.Null)}
     ]);
+  });
+
+  private stringTemplate = this.RULE('stringTemplate', () => {
+    this.CONSUME(Token.StringTemplateOpen);
+    this.SUBRULE(this.expression);
+    this.CONSUME(Token.StringTemplateClose);
   });
 
 }

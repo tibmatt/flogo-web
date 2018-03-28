@@ -1,10 +1,11 @@
 import { Node } from './node';
 
-export type ValueNode = ObjectNode | ArrayNode | LiteralNode;
+import { Expr } from './expr-nodes';
+export type ValueNode = ObjectNode | ArrayNode | LiteralNode | StringTemplateNode;
 
 export interface JsonNode extends Node {
   type: 'json';
-  value: Object | ArrayNode;
+  value: ObjectNode | ArrayNode;
 }
 
 export interface ObjectNode extends Node {
@@ -28,5 +29,10 @@ export interface LiteralNode {
   value: any;
   kind: string;
   raw: string;
+}
+
+export interface StringTemplateNode {
+  type: 'stringTemplate';
+  expression: Expr;
 }
 
