@@ -80,7 +80,7 @@ const Colon = createToken({
 const StringLiteral = createToken({
   name: 'StringLiteral',
   label: 'StringLiteral',
-  pattern: /"(:?[^\\"\n\r]+|\\(:?[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+  pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
 });
 
 const NumberLiteral = createToken({
