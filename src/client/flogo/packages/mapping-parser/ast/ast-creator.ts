@@ -12,7 +12,8 @@ interface CstVisitorBase {
   new (...args: any[]): ICstVisitor<CstNode, Node | Node[]>;
 }
 
-type PrimaryExprNode = ExprNodes.BasicLit | ExprNodes.Identifier | ExprNodes.SelectorExpr | ExprNodes.IndexExpr;
+type PrimaryExprNode = ExprNodes.BasicLit | ExprNodes.Identifier | ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
+type PrimaryExprAstNode = ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
 
 const literalTypeMap = {StringLiteral: 'string', NumberLiteral: 'number', True: 'boolean', False: 'boolean', Null: 'null'};
 const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
@@ -112,11 +113,13 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
       }
     }
 
-    primaryExprTail(ctx): ExprNodes.SelectorExpr | ExprNodes.IndexExpr {
+    primaryExprTail(ctx): ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr {
       if (ctx.selector[0]) {
         return <ExprNodes.SelectorExpr> this.visit(ctx.selector);
-      } else {
+      } else if (ctx.index[0]) {
         return <ExprNodes.IndexExpr> this.visit(ctx.index);
+      } else {
+        return <ExprNodes.CallExpr> this.visit(ctx.argumentList);
       }
     }
 
@@ -191,6 +194,15 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
       };
     }
 
+    argumentList(ctx): ExprNodes.CallExpr {
+      const args = ctx.expression.map(exprNode => this.visit(exprNode));
+      return {
+        type: 'CallExpr',
+        fun: null,
+        args,
+      };
+    }
+
     json(ctx): JsonNodes.JsonNode {
       const value = this.visit(ctx.object) || this.visit(ctx.array);
       return {
@@ -239,12 +251,17 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
 
     // $ suffix is required for helpers
     private $createPrimaryExprHierarchy(primaryExprTailNodes: CstNode[], operand) {
-      type PrimaryExprAstNode = ExprNodes.SelectorExpr | ExprNodes.IndexExpr;
       return primaryExprTailNodes
         .map(cstTailNode => this.visit(cstTailNode))
-        .reduce((object: PrimaryExprAstNode, property: PrimaryExprAstNode) => {
-          property.x = object;
-          return property;
+        .reduce((member: PrimaryExprAstNode, selector: PrimaryExprAstNode) => {
+          if (selector.type === 'CallExpr') {
+            const callExprNode = <ExprNodes.CallExpr> selector;
+            callExprNode.fun = member;
+            return callExprNode;
+          } else {
+            selector.x = member;
+            return selector;
+          }
         }, operand);
 
     }

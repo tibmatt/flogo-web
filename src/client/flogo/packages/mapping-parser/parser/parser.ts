@@ -4,7 +4,7 @@
  *  - https://golang.org/ref/spec
  *  - https://github.com/antlr/grammars-v4/tree/master/golang
  */
-import { IToken, Lexer, Parser, tokenMatcher, createToken } from 'chevrotain';
+import { IToken, TokenType, Lexer, Parser, tokenMatcher, createToken } from 'chevrotain';
 import { UnicodeCategory } from './unicode';
 
 /////////////////////////////
@@ -45,6 +45,18 @@ const RCurly = createToken({
   name: 'RCurly',
   label: '}',
   pattern: /}/,
+});
+
+const LParen = createToken({
+  name: 'LParen',
+  label: '(',
+  pattern: /\(/,
+});
+
+const RParen = createToken({
+  name: 'RParen',
+  label: ')',
+  pattern: /\)/,
 });
 
 const LSquare = createToken({
@@ -163,35 +175,13 @@ const LogicalOr = createToken({
   categories: BinaryOp,
 });
 
-export const allTokens = [
-  WhiteSpace,
-  Lookup,
-  NumberLiteral,
-  StringLiteral,
-  LCurly,
-  RCurly,
-  LSquare,
-  RSquare,
-  Dot,
-  Comma,
-  Colon,
-  True,
-  False,
-  Null,
-  LogicalAnd,
-  MulOp,
-  AddOp,
-  RelOp,
-  LogicalOr,
-  BinaryOp,
-  UnaryOp,
-  IdentifierName
-];
 const Token = {
   WhiteSpace,
   Lookup,
   NumberLiteral,
   StringLiteral,
+  LParen,
+  RParen,
   LCurly,
   RCurly,
   LSquare,
@@ -210,8 +200,8 @@ const Token = {
   BinaryOp,
   UnaryOp,
   IdentifierName,
-  allTokens,
 };
+export const allTokens: TokenType[] = [...Object.values(Token)];
 
 /////////////////////////////
 //        PARSER           //
@@ -223,7 +213,7 @@ const Token = {
 export class MappingParser extends Parser {
 
   constructor(input: IToken[]) {
-    super(input, <any>Token.allTokens, {
+    super(input, <any>allTokens, {
       recoveryEnabled: true,
       outputCst: true,
     });
@@ -307,7 +297,8 @@ export class MappingParser extends Parser {
   private primaryExprTail = this.RULE('primaryExprTail', () => {
     this.OR([
       {ALT: () => this.SUBRULE(this.selector)},
-      {ALT: () => this.SUBRULE(this.index)}
+      {ALT: () => this.SUBRULE(this.index)},
+      {ALT: () => this.SUBRULE(this.argumentList)}
     ]);
   });
 
@@ -349,13 +340,22 @@ export class MappingParser extends Parser {
     this.CONSUME(Token.IdentifierName);
   });
 
-  //// JSON
-
   private index = this.RULE('index', () => {
     this.CONSUME(Token.LSquare);
     this.CONSUME(Token.NumberLiteral);
     this.CONSUME(Token.RSquare);
   });
+
+  private argumentList = this.RULE('argumentList', () => {
+    this.CONSUME(Token.LParen);
+    this.MANY_SEP({
+      SEP: Token.Comma,
+      DEF: () => this.SUBRULE(this.expression),
+    });
+    this.CONSUME(Token.RParen);
+  });
+
+  //// JSON
 
   private object = this.RULE('object', () => {
     this.CONSUME(Token.LCurly);

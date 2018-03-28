@@ -5,7 +5,7 @@
  */
 import { Node } from './node';
 
-export type Expr = SelectorExpr | IndexExpr | UnaryExpr | BinaryExpr | Identifier | BasicLit;
+export type Expr = SelectorExpr | IndexExpr | CallExpr | UnaryExpr | BinaryExpr | Identifier | BasicLit;
 
 export interface ExprStmt {
   type: 'ExprStmt';
@@ -37,6 +37,12 @@ export interface IndexExpr extends Node {
   type: 'IndexExpr';
   x: Expr;
   index: number;
+}
+
+export interface CallExpr extends Node {
+  type: 'CallExpr';
+  fun: Expr;
+  args: Expr[];
 }
 
 // flogo specific

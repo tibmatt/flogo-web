@@ -52,6 +52,8 @@ fdescribe('Parser Type Resolver', function () {
         {text: '1 + 2 > 3 + $a.b.c', expectedType: 'expression'},
         {text: '$a - 3 * $a.b[0]', expectedType: 'expression'},
         {text: '$activity[my_activity].array[0].id || 45 && false', expectedType: 'expression'},
+        {text: 'isDefined()', expectedType: 'expression'},
+        {text: 'string.concat("a", 1, $.input, $activity[xyz].someProp, otherFuncCall(2))', expectedType: 'expression'},
       ].forEach(assertParsedType);
     });
   });
