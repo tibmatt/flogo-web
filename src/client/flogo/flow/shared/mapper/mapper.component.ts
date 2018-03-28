@@ -42,7 +42,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   currentInput: CurrentSelection = null;
   isDraggingOver = false;
   currentMappingType: number;
-  isObjectModeAllowed = false;
 
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -122,24 +121,10 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     this.isDraggingOver = false;
   }
 
-  toggleMode(event) {
-    // todo: investigate why this callback is called twice even when the emitter emits only once
-    event.stopPropagation();
-    const { expression } = this.currentInput.editingExpression;
-    this.currentMappingType = this.currentMappingType === TYPE_ATTR_ASSIGNMENT ? TYPE_OBJECT_TEMPLATE : TYPE_ATTR_ASSIGNMENT;
-    const mode = this.getModeFor(this.currentMappingType);
-    this.editorService.changeContext(expression, mode);
-    this.mapperService.expressionChange({ expression, mappingType: this.currentMappingType });
-  }
-
   onClickOutside() {
     if (this.currentInput) {
       this.mapperService.selectInput(null);
     }
-  }
-
-  get isObjectLiteralMode() {
-    return this.currentMappingType === TYPE_OBJECT_TEMPLATE;
   }
 
   private isDragAcceptable() {
@@ -171,10 +156,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
         if (this.currentInput) {
           const editingExpression = this.currentInput.editingExpression;
           this.currentMappingType = editingExpression.mappingType || TYPE_ATTR_ASSIGNMENT;
-          const nodeDataType = this.currentInput.node.dataType;
-          this.isObjectModeAllowed = nodeDataType === 'object' || nodeDataType === 'complex_object';
-          const mode = editingExpression.mappingType === TYPE_OBJECT_TEMPLATE ? 'json' : null;
-          this.editorService.changeContext(editingExpression.expression, mode);
+          this.editorService.changeContext(editingExpression.expression);
         }
       });
 
@@ -237,10 +219,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
           this.mapperService.selectInput(inputsData.nodes[0]);
         }
       });
-  }
-
-  private getModeFor(mappingType: number) {
-    return mappingType === TYPE_OBJECT_TEMPLATE ? 'json' : null;
   }
 
 }

@@ -30,7 +30,6 @@ import { InlineHrefDirective } from './shared/inline-href.directive';
 import { IconsService } from './services/icons.service';
 import { ClickOutsideDirective } from './shared/click-outside.directive';
 import { ExpressionProcessorService } from './services/expression-processor.service';
-import { ModeSwitcherComponent } from './mode-switcher/mode-switcher.component';
 
 @NgModule({
   imports: [
@@ -56,8 +55,7 @@ import { ModeSwitcherComponent } from './mode-switcher/mode-switcher.component';
     BreadcrumbsComponent,
     InlineHrefDirective,
     ClickOutsideDirective,
-    TreeComponent,
-    ModeSwitcherComponent,
+    TreeComponent
   ],
   entryComponents: [
     MapperComponent
