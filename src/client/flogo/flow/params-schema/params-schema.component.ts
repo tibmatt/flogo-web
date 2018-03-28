@@ -47,6 +47,11 @@ export class ParamsSchemaComponent implements OnInit {
     this.modal.open();
   }
 
+  closeInputSchemaModel() {
+    this.displayInputParams = false;
+    this.modal.close();
+  }
+
   addParams(fromParams: string) {
     const control = <FormArray>this.paramsForm.controls[fromParams];
     const paramControl = this.createParamFormRow();
@@ -66,6 +71,7 @@ export class ParamsSchemaComponent implements OnInit {
     const input = mapParamsToFlow(updatedParams.input);
     const output = mapParamsToFlow(updatedParams.output);
     this.save.next({ input, output });
+    this.closeInputSchemaModel();
   }
 
   removeParam(index: number, fromParams: string) {
