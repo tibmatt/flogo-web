@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { resolveExpressionType } from '@flogo/packages/mapping-parser';
+import { resolveExpressionType } from 'flogo-parser';
 
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
 import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo/core';

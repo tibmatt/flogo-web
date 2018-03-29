@@ -342,6 +342,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
           if (node.type === type) {
             nodes.push(node);
           }
+          return null;
         }
       );
     }
