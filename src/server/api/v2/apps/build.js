@@ -2,6 +2,7 @@ import kebabCase from 'lodash/kebabCase';
 import { AppsManager } from '../../../modules/apps/index.v2';
 
 export function* buildApp() {
+  this.req.setTimeout(0);
   const appId = this.params.appId;
   const options = { compile: {} };
 
