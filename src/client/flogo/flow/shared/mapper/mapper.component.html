@@ -14,12 +14,8 @@
       </p>
     </div>
 
-    <div class="workspace" *ngIf="currentInput" [class.workspace--bigger-editor]="isObjectLiteralMode">
+    <div class="workspace" *ngIf="currentInput">
       <flogo-mapper-breadcrumbs [inputNode]="currentInput?.node"></flogo-mapper-breadcrumbs>
-
-      <div *ngIf="isObjectModeAllowed">
-        <flogo-mapper-mode-switcher [checked]="isObjectLiteralMode" (click)="toggleMode($event)"></flogo-mapper-mode-switcher>
-      </div>
 
       <div *ngIf="currentInput.mappingKey && currentInput.node"
            class="workspace__editor-container"
