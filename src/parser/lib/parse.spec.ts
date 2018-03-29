@@ -1,5 +1,6 @@
-import { parse } from './parse';
+import { expect } from 'chai';
 import { LiteralNode, PropertyNode, StringTemplateNode } from './ast/index';
+import { parse } from './parse';
 
 describe('parse', function () {
   it('parses object string templates', function () {
@@ -9,7 +10,7 @@ describe('parse', function () {
       "stringTemplateInArray": ["{{ somefunc(3) }}", "somelit", "{{ $activity[x].y }}"]
     }`);
 
-    expect(parseResult.ast).toEqual({
+    expect(parseResult.ast).to.deep.equal({
       type: 'json',
       value: {
         type: 'jsonObject',
