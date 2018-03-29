@@ -4,7 +4,7 @@ import {config} from '../../config/app-config';
 import {createFolder as ensureDir} from '../../common/utils/file';
 
 import { removeDir } from './file-utils';
-import {getHostExecutableExtension} from "../../common/utils/process";
+import {processHost} from "../../common/utils/process";
 
 const loader = require('./loader');
 const commander = require('./commander');
@@ -25,7 +25,7 @@ class Engine {
 
   constructor(pathToEngine, libVersion, runLogger) {
     this.path = pathToEngine;
-    this.hostExt = getHostExecutableExtension();
+    this.hostExt = processHost.getExtensionForExecutables();
     this.tasks = {
       activities: [],
       triggers: [],
@@ -128,7 +128,7 @@ class Engine {
   }
 
   start() {
-    return exec.start(this.path, this.getName(), {
+    return exec.start(this.path, this.getExecutableName(), {
       binDir: DIR_TEST_BIN,
       logPath: config.publicPath,
       logger: this.runLogger,
@@ -136,10 +136,10 @@ class Engine {
   }
 
   stop() {
-    return exec.stop(this.getName());
+    return exec.stop(this.getExecutableName());
   }
 
-  getName() {
+  getExecutableName() {
     return `${path.parse(this.path).name}${this.hostExt}`;
   }
 

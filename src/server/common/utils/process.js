@@ -33,16 +33,15 @@ export function runShellCMD(cmd, args, opts) {
   });
 }
 
-export function getHostExecutableExtension() {
-  let ext = '';
-  if (processHost.isWindows()) {
-    ext = '.exe';
-  }
-  return ext;
-}
-
 export const processHost = {
   isWindows() {
     return process.platform === 'win32';
   },
+  getExtensionForExecutables() {
+    let ext = '';
+    if (this.isWindows()) {
+      ext = '.exe';
+    }
+    return ext;
+  }
 };
