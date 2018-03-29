@@ -5,11 +5,11 @@
  */
 import { Node } from './node';
 
-export type Expr = SelectorExpr | IndexExpr | UnaryExpr | BinaryExpr | Identifier | BasicLit;
+export type Expr = SelectorExpr | ScopeResolver | IndexExpr | CallExpr | UnaryExpr | BinaryExpr | Identifier | BasicLit;
 
 export interface ExprStmt {
   type: 'ExprStmt';
-  // we call "x" because that's the way golang's AST does it
+  // we call it "x" because that's the way golang's AST does it
   x: Expr;
 }
 
@@ -39,13 +39,20 @@ export interface IndexExpr extends Node {
   index: number;
 }
 
+export interface CallExpr extends Node {
+  type: 'CallExpr';
+  fun: Expr;
+  args: Expr[];
+}
+
 // flogo specific
 // example: $activity[my_act] -> { name: 'activity'; selector: 'my_act' }
+// example: $. -> { }
 //
 export interface ScopeResolver extends Node {
   type: 'ScopeResolver';
-  name: string;
-  selector?: string;
+  name?: string;
+  sel?: string;
 }
 
 // !a => (operator="!"; x="a")

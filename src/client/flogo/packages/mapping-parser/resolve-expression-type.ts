@@ -21,6 +21,7 @@ function translateExprStmtType(exprStmtType: string) {
       return 'literal';
     case 'UnaryExpr':
     case 'BinaryExpr':
+    case 'CallExpr':
       return 'expression';
     default:
       return 'attrAccess';

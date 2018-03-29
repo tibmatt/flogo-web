@@ -1,12 +1,12 @@
 import { CstElement, exceptions, ILexingError } from 'chevrotain';
-import { Node } from '../ast/node';
+import { ExprStmt, JsonNode } from '../ast';
 
 export type RecognitionException = exceptions.IRecognitionException;
 export type LexingError = ILexingError;
 
 export interface ParseResult {
   cst: CstElement;
-  ast: Node;
+  ast: ExprStmt | JsonNode;
   lexErrors: LexingError[];
   parseErrors: RecognitionException[];
 }
