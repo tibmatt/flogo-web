@@ -37,4 +37,11 @@ export const processHost = {
   isWindows() {
     return process.platform === 'win32';
   },
+  getExtensionForExecutables() {
+    let ext = '';
+    if (this.isWindows()) {
+      ext = '.exe';
+    }
+    return ext;
+  }
 };

@@ -51,7 +51,9 @@ module.exports = {
         const process = resultList.shift();
         if (process) {
           console.log('[info] Stop engine PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments);
-          ps.kill(process.pid, killErr => {
+          ps.kill(process.pid, {
+            timeout: 60
+          }, killErr => {
             if (killErr) {
               reject(new Error(killErr));
               return;
