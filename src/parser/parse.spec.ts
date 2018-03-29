@@ -1,5 +1,5 @@
 import { parse } from './parse';
-import { LiteralNode, PropertyNode, StringTemplateNode } from './ast';
+import { LiteralNode, PropertyNode, StringTemplateNode } from './ast/index';
 
 describe('parse', function () {
   it('parses object string templates', function () {
