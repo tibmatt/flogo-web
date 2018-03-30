@@ -119,7 +119,7 @@ gulp.task('release', '', cb => {
   runSequence(
     //'palette.build',
     'prod.build',
-    ['dist.support-files', 'server.copy.parser-dist'],
+    ['dist.support-files', 'dist.parser'],
     'dist.build-engines',
     cb);
 
