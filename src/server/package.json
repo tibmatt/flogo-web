@@ -28,6 +28,10 @@
     "server-destroy": "^1.0.1",
     "sinon": "^4.4.1"
   },
+  "peerDependencies": {
+    "flogo-parser": "",
+    "chevrotain": "^1.0.1"
+  },
   "dependencies": {
     "ajv": "^6.1.1",
     "atob": "^2.0.3",

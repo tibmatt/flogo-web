@@ -23,6 +23,9 @@ import { logger } from './common/logging';
 let app;
 let server;
 
+import { resolveExpressionType } from 'flogo-parser';
+console.log(resolveExpressionType('$activity[x].y'))
+
 /**
  * Server start logic
  *

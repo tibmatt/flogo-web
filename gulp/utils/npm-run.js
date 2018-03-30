@@ -1,5 +1,13 @@
-import cp from 'child_process';
 import os from 'os';
+import cp from 'child_process';
+import commandExists from 'command-exists';
+
+const depManager = commandExists.sync('yarn') ? 'yarn' : 'npm';
+const depManagerBin = os.platform() === 'win32' ? `${depManager}.cmd` : depManager;
+
+export function runSync(script, cwd) {
+  return cp.execSync(`${depManager} ${script}`, { cwd, stdio: 'inherit' });
+}
 
 /**
  * Spawn an npm script
@@ -19,10 +27,8 @@ import os from 'os';
 export function npmRun(command, options = {}) {
   const opts = makeOptions(command, options);
   const execOptions = opts.execOptions;
-  // execOptions.stdio = 'inherit';
 
-  const npm = getNpmBinName();
-  const child = cp.spawn(npm, opts.args, execOptions);
+  const child = cp.spawn(depManagerBin, opts.args, execOptions);
 
   child.stdout.on('data', function (data) {
     console.log(data.toString());
@@ -67,20 +73,14 @@ export function npmRunExec(command, options = {}) {
   const opts = makeOptions(command, options);
   const execOptions = opts.execOptions;
 
-  const npm = getNpmBinName();
-
   return new Promise((resolve, reject) => {
-    cp.exec([npm].concat(opts.args).join(' '), execOptions, (error, result) => {
+    cp.exec([depManagerBin].concat(opts.args).join(' '), execOptions, (error, result) => {
       if (error) {
         return reject(error);
       }
       return resolve(result);
     });
   });
-}
-
-function getNpmBinName() {
-  return os.platform() === 'win32' ? 'npm.cmd' : 'npm';
 }
 
 function makeOptions(command, options) {

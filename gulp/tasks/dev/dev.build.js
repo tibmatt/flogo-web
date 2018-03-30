@@ -5,8 +5,7 @@ gulp.task('dev.build', 'Build client and server app for development', ['dev.serv
 
 gulp.task('dev.server.build', 'Build server app for development', cb => {
   return runSequence(
-    'server.copy',
+    'server.copy.assets',
     'dev.server.transpile',
-    'install.server.dev',
      cb);
 });
