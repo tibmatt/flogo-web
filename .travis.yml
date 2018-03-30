@@ -20,11 +20,17 @@ jobs:
   include:
     - stage: test
       before_install:
+       - pushd src/parser
+       - yarn run installbuild
+       - popd
        - echo "TEST CLIENT"
        - pushd src/client
       script: yarn run check:travis
     - stage: test
       before_install:
+       - pushd src/parser
+       - yarn run installbuild
+       - popd
        - echo "TEST SERVER"
        - pushd src/server
       script: yarn run test
