@@ -436,6 +436,7 @@ export class MapperService {
     let expressionHead = '';
     let expressionTailParts;
     const resolver = root.data.rootType;
+    const nodeName = root.data.nodeName;
     const makeResolvable = expr => '$' + expr;
 
     if (resolver === ROOT_TYPES.TRIGGER || resolver === ROOT_TYPES.ERROR) {
@@ -448,9 +449,11 @@ export class MapperService {
       expressionHead += propName ? propName.data.nodeName : '';
       expressionHead = makeResolvable(expressionHead);
       expressionTailParts = nodes.slice(2);
+    } else if (resolver === ROOT_TYPES.FLOW) {
+      expressionHead = makeResolvable(nodeName);
+      expressionTailParts = nodes.slice(1);
     } else {
-      const nodeName = root.data.nodeName;
-      expressionHead = resolver ? makeResolvable(nodeName) : nodeName;
+      expressionHead = nodeName.indexOf('$') === -1 ? '$.' + nodeName : nodeName;
       expressionTailParts = nodes.slice(1);
     }
     return[expressionHead].concat(
