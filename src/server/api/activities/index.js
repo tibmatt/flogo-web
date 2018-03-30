@@ -107,11 +107,16 @@ function* installActivities( next ) {
   let results = {};
   if ( testEngine ) {
 
+    console.log(`[log] backing up source folder...`);
+    yield remoteInstaller.createBackup(testEngine.path);
+
     console.log( `[log] adding activities to test engine...` );
 
     let stopTestEngineResult = yield testEngine.stop();
 
     if ( !stopTestEngineResult ) {
+      console.log(`[log] removing backup folders as stopping engine failed`);
+      remoteInstaller.removeBackup(testEngine.path);
       throw new Error( '[error] Encounter error to stop test engine.' );
     }
 
@@ -126,21 +131,30 @@ function* installActivities( next ) {
     } catch ( err ) {
       console.error( `[error] add activities to test engine` );
       console.error( err );
+      console.log(`[log] removing backup folders as add activities to test engine failed`);
+      remoteInstaller.removeBackup(testEngine.path);
       throw new Error( '[error] Encounter error to add activities to test engine.' );
     }
 
     let testEngineBuildResult = yield testEngine.build();
 
     if ( !testEngineBuildResult ) {
+      console.log(`[log] removing backup folders as building engine failed`);
+      remoteInstaller.removeBackup(testEngine.path);
       throw new Error( '[error] Encounter error to build test engine after adding activities.' );
     }
 
     let testEngineStartResult = yield testEngine.start();
 
     if ( !testEngineStartResult ) {
+      console.log(`[log] removing backup folders as starting test engine failed`);
+      remoteInstaller.removeBackup(testEngine.path);
       throw new Error( '[error] Encounter error to start test engine after adding activities.' );
     }
   }
+
+  console.log(`[log] removing backup folders after adding activity to engine successfully`);
+  remoteInstaller.removeBackup(testEngine.path);
 
   delete results.details; // keep the details internally.
 

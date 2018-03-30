@@ -13,7 +13,8 @@ import { BaseRegistered } from '../../modules/base-registered';
 import {
   isGitHubURL,
   parseGitHubURL,
-  constructGitHubPath} from '../../common/utils';
+  constructGitHubPath, fileExists, copyFile, rmFolder
+} from '../../common/utils';
 import {getInitializedEngine} from "../engine/registry";
 import {syncTasks} from "../init/sync-tasks";
 import {triggersDBService} from "../../common/db/triggers";
@@ -44,6 +45,26 @@ export class RemoteInstaller {
     };
 
     this.opts = _.assign( {}, defaultOpts, opts );
+  }
+
+  createBackup(enginePath) {
+    return new Promise( (resolve, reject) => {
+      const srcPath = path.join(enginePath, 'src');
+      if (fileExists(srcPath)) {
+        copyFile(srcPath, path.join(enginePath, 'backupsrc'))
+          .then(() => resolve(true))
+          .catch((error) => reject(error));
+      } else {
+        resolve(true);
+      }
+    });
+  }
+
+  removeBackup(enginePath) {
+    const pathToDel = path.join(enginePath, 'backupsrc');
+    if (fileExists(pathToDel)) {
+      rmFolder(pathToDel);
+    }
   }
 
   install( sourceURLs, opts ) {
