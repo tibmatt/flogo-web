@@ -1,5 +1,5 @@
 <bs-modal [size]="'lg'" #modal cssClass="flogo-export-flow-modal">
-  <i class="flogo-icon-close flogo-export-flow-close" data-dismiss="modal"></i>
+  <i class="flogo-icon-close flogo-export-flow-close" data-dismiss="modal" (click)="closeExport()"></i>
   <div *ngIf="flows?.length === 0" class="content-empty__message">No Flows to Export</div>
   <div *ngIf="flows?.length > 0">
     <form novalidate>
@@ -25,7 +25,7 @@
         </div>
       </bs-modal-body>
       <div class="flogo-export-flow-footer">
-        <button type="button" class="footer-button flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal">{{
+        <button type="button" class="footer-button flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeExport()">{{
           'DETAILS:EXPORT-CANCEL' | translate }}
         </button>
         <button type="submit" class="js-btn-export footer-button flogo-button--default" [fgJsonDownloader]="exportFlows()"

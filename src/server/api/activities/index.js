@@ -98,6 +98,7 @@ function* listActivities() {
  *        description: 'Activity installed successfully'
  */
 function* installActivities( next ) {
+  this.req.setTimeout(0);
   let urls = preProcessURLs( this.request.body.urls );
   console.log( '[log] Install Activities' );
   inspectObj( urls );

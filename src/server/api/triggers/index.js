@@ -70,6 +70,7 @@ function* listTriggers() {
  *          description: New triggers installed successfully
  */
 function* installTriggers( next ) {
+  this.req.setTimeout(0);
   let urls = preProcessURLs( this.request.body.urls );
 
   console.log( '[log] Install Triggers' );

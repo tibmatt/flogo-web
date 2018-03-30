@@ -28,6 +28,10 @@ export class FlogoExportFlowsComponent {
     this.selectAllFlows();
   }
 
+  public closeExport() {
+    this.modal.close();
+  }
+
   public selectAllFlows() {
     this.checkedFlows = [];
     this.checkAllFlows = [];
@@ -59,23 +63,25 @@ export class FlogoExportFlowsComponent {
     } else {
       flowsToExport = this.checkedFlows;
     }
-      return () => this.appDetailService.exportFlow(flowsToExport, this.isLegacyExport)
-        .then(appWithFlows => {
-          return [{
-            fileName: 'flows.json',
-            data: appWithFlows
-          }];
-        }).catch(errRsp => {
-          if (errRsp.errors[0].code ===  ERROR_CODE.HAS_SUBFLOW) {
-            this.translate.get('DETAILS-EXPORT:CANNOT-EXPORT').toPromise()
-              .then(msg => notification(msg, 'error'));
-          } else {
-            console.error(errRsp.errors);
-            this.translate.get('DETAILS-EXPORT:ERROR_UNKNOWN').toPromise()
-              .then(msg => notification(msg, 'error'));
-          }
-        });
-    }
+    return () => this.appDetailService.exportFlow(flowsToExport, this.isLegacyExport)
+      .then(appWithFlows => {
+        this.closeExport();
+        return [{
+          fileName: 'flows.json',
+          data: appWithFlows
+        }];
+      }).catch(errRsp => {
+        if (errRsp.errors[0].code === ERROR_CODE.HAS_SUBFLOW) {
+          this.translate.get('DETAILS-EXPORT:CANNOT-EXPORT').toPromise()
+            .then(msg => notification(msg, 'error'));
+        } else {
+          console.error(errRsp.errors);
+          this.translate.get('DETAILS-EXPORT:ERROR_UNKNOWN').toPromise()
+            .then(msg => notification(msg, 'error'));
+        }
+      });
+  }
+
   private resetForm() {
     this.unselectAllFlows();
   }
