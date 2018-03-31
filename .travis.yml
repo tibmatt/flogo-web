@@ -12,7 +12,9 @@ cache:
 # Handle git submodules yourself
 git:
   submodules: false
-before_install: yarn --cwd src/parser run installbuild
+before_install:
+ - yarn --cwd src/parser installbuild
+ - yarn submodules:link
 install: true
 
 jobs:
@@ -23,7 +25,11 @@ jobs:
       script: yarn --cwd src/client run check:travis
     - stage: test
       install: yarn --cwd src/server install
-      script: yarn --cwd src/server run test
+      script:
+        - yarn --cwd src/parser test
+        - pushd src/server
+        - yarn test
+        - popd
     - stage: build
       language: bash
       node_js:
