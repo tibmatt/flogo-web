@@ -2,8 +2,6 @@ sudo: required
 language: node_js
 node_js:
   - "8"
-addons:
-  chrome: stable
 cache:
   bundler: false
   yarn: true
@@ -22,14 +20,17 @@ jobs:
   include:
     - stage: test
       install: yarn --cwd src/client install
-      script: yarn --cwd src/client run check:travis
+      script: yarn --cwd src/client travis:lint
     - stage: test
-      install: yarn --cwd src/server install
+      addons:
+        chrome: stable
+      install:
+        - yarn --cwd src/client install
+        - yarn --cwd src/server install
       script:
-        - yarn --cwd src/parser test
-        - pushd src/server
-        - yarn test
-        - popd
+        - yarn test:parser --reporter dot
+        - yarn test:server --reporter dot
+        - yarn --cwd src/client travis:test --reporters dots
     - stage: build
       language: bash
       node_js:
