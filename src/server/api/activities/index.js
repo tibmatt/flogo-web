@@ -5,6 +5,7 @@ import { getInitializedEngine } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import { ActivitiesManager } from '../../modules/activities';
 import path from 'path';
+import {ContribInstallController} from "../../modules/engine/contrib-install-controller";
 
 let basePath = config.app.basePath;
 
@@ -21,6 +22,23 @@ export function activities(app, router){
   router.get(basePath+"/activities", listActivities);
   router.post(basePath+"/activities", installActivities);
   router.delete(basePath+"/activities", deleteActivities);
+  router.post(basePath+"/test", testInstall);
+}
+
+function* testInstall(next) {
+  this.req.setTimeout(0);
+  let urls = preProcessURLs( this.request.body.urls );
+  console.log( '[log] Install Activities' );
+  inspectObj( urls );
+
+  let testEngine = yield getInitializedEngine(config.defaultEngine.path);
+  let installController = new ContribInstallController(testEngine, remoteInstaller);
+  const result = yield installController.install(urls);
+
+  this.body = result;
+
+  yield next;
+
 }
 
 /**

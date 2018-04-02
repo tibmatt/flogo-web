@@ -1,47 +1,65 @@
 import {copyFile, fileExists, inspectObj, rmFolder} from "../../../common/utils";
 import path from 'path';
 import omit from 'lodash/omit';
-import {INTSTALLATION_STATE} from "../../../common/constants";
+import {INSTALLATION_STATE} from "../../../common/constants";
 
 export class ContribInstallController {
   constructor(testEngine, remoteInstaller) {
     this.testEngine = testEngine;
     this.remoteInstaller = remoteInstaller;
-    this.installState = INTSTALLATION_STATE.INIT;
+    this.installState = INSTALLATION_STATE.INIT;
+  }
+
+  async install(urls) {
+    try {
+      let installResults = await this.installContributions(urls);
+      if (installResults.fail.length === 0) {
+        await this.buildAndRestartEngine();
+      }
+      return Promise.resolve(installResults);
+    } catch (err) {
+      console.error(`[error] Encountered error while installing the ${this.getInstallType()} to the engine: `, err);
+      await this.recoverEngine();
+      throw new Error(`Error while installing the ${this.getInstallType()} to the engine`);
+    } finally {
+      await this.removeBackup();
+    }
   }
 
   installContributions(urls) {
-    let installResults;
     return this.createBackup()
       .then(() => this.installToEngine(urls))
       .then((results) => {
-        installResults = omit(results, ['details']);
         console.log('[log] Installation results');
         inspectObj({
           success: results.success,
           fail: results.fail
         });
-        return this.stopEngine();
-      })
-      .then(() => this.buildEngine())
-      .then(() => {
-        this.removeBackup();
-        return this.startEngine()
-      })
-      .then(() => installResults)
-      .catch((err) => {
-        console.error(`[error] Encountered error while installing the ${this.getInstallType()} to the engine: `, err);
-        this.recoverEngine();
-        throw new Error(`Error while installing the ${this.getInstallType()} to the engine`);
+        return omit(results, ['details']);
       });
   }
 
+  buildAndRestartEngine() {
+    return this.stopEngine()
+      .then(() => this.buildEngine())
+      .then(() => this.startEngine());
+  }
+
   recoverEngine() {
+    let promise = null;
     switch (this.installState) {
+      // case INSTALLATION_STATE.INSTALL:
+      case INSTALLATION_STATE.BUILD:
+      case INSTALLATION_STATE.STOP:
+      case INSTALLATION_STATE.START:
+        promise = this.backupSource()
+          .then(() => this.buildAndRestartEngine());
+        break;
       default:
+        promise = Promise.resolve(true);
         break;
     }
-    this.removeBackup();
+    return promise;
   }
 
   getInstallType() {
@@ -49,17 +67,15 @@ export class ContribInstallController {
   }
 
   createBackup() {
-    this.installState = INTSTALLATION_STATE.BACKUP;
-    return new Promise((resolve, reject) => {
-      const srcPath = path.join(this.testEngine.path, 'src');
-      if (fileExists(srcPath)) {
-        copyFile(srcPath, path.join(this.testEngine.path, 'backupsrc'))
-          .then(() => resolve(true))
-          .catch((error) => reject(error));
-      } else {
-        resolve(true);
-      }
-    });
+    this.installState = INSTALLATION_STATE.BACKUP;
+    let promise = null;
+    const srcPath = path.join(this.testEngine.path, 'src');
+    if (fileExists(srcPath)) {
+      promise = copyFile(srcPath, path.join(this.testEngine.path, 'backupsrc'));
+    } else {
+      promise = Promise.resolve(true);
+    }
+    return promise;
   }
 
   removeBackup() {
@@ -71,35 +87,33 @@ export class ContribInstallController {
 
   backupSource() {
     console.log('[Log] Recovering engine to previous working state.');
-    return new Promise((resolve, reject) => {
-      const srcPath = path.join(this.testEngine.path, 'backupsrc');
-      if (fileExists(srcPath)) {
-        copyFile(srcPath, path.join(this.testEngine.path, 'src'))
-          .then(() => resolve(true))
-          .catch((error) => reject(error));
-      } else {
-        resolve(true);
-      }
-    });
+    let promise = null;
+    const srcPath = path.join(this.testEngine.path, 'backupsrc');
+    if (fileExists(srcPath)) {
+      promise = copyFile(srcPath, path.join(this.testEngine.path, 'src'));
+    } else {
+      promise = Promise.resolve(true);
+    }
+    return promise;
   }
 
   installToEngine(urls) {
-    this.installState = INTSTALLATION_STATE.INSTALL;
+    this.installState = INSTALLATION_STATE.INSTALL;
     return this.remoteInstaller.install(urls, {engine: this.testEngine});
   }
 
   buildEngine() {
-    this.installState = INTSTALLATION_STATE.BUILD;
+    this.installState = INSTALLATION_STATE.BUILD;
     return this.testEngine.build();
   }
 
   stopEngine() {
-    this.installState = INTSTALLATION_STATE.STOP;
+    this.installState = INSTALLATION_STATE.STOP;
     return this.testEngine.stop();
   }
 
   startEngine() {
-    this.installState = INTSTALLATION_STATE.START;
+    this.installState = INSTALLATION_STATE.START;
     return this.testEngine.start();
   }
 }
