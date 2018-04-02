@@ -10,7 +10,7 @@ export class ContribInstallController {
     this.installState = INTSTALLATION_STATE.INIT;
   }
 
-  installContribution(urls) {
+  installContributions(urls) {
     let installResults;
     return this.createBackup()
       .then(() => this.installToEngine(urls))
@@ -67,6 +67,20 @@ export class ContribInstallController {
     if (fileExists(pathToDel)) {
       rmFolder(pathToDel);
     }
+  }
+
+  backupSource() {
+    console.log('[Log] Recovering engine to previous working state.');
+    return new Promise((resolve, reject) => {
+      const srcPath = path.join(this.testEngine.path, 'backupsrc');
+      if (fileExists(srcPath)) {
+        copyFile(srcPath, path.join(this.testEngine.path, 'src'))
+          .then(() => resolve(true))
+          .catch((error) => reject(error));
+      } else {
+        resolve(true);
+      }
+    });
   }
 
   installToEngine(urls) {
