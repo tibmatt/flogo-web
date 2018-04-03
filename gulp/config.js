@@ -8,6 +8,7 @@ const sourcePaths = {
   root: source,
   client: path.join(source, 'client'),
   server: path.join(source, 'server'),
+  parser: path.join(source, 'parser'),
   packages: path.join(source, 'packages')
 };
 
@@ -31,6 +32,7 @@ export const CONFIG = {
     },
     less: ['{assets,app,common}/**/*.less', '!{assets,app,common}/**/_*.less'],
     serverSrc: ['**/*', 'package.json', '!**/node_modules/**'],
+    parserSrc: ['package.json',  'yarn.lock', 'dist/**/*.js'],
     distAssets: ['**/*', '!{app,common}/**/*.html', '!**/*.ts', '!**/*.js', '!**/*.less', '!**/*.js.map', '!**/node_modules/**'],
     // directories that should be ingored by running server so it won't restart if something changes
     serverWatchIgnore: ['local/*', 'node_modules/*', '**/*.log']

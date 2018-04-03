@@ -1,6 +1,6 @@
 import Uri = monaco.Uri;
 import IDisposable = monaco.IDisposable;
-import { LexingError, RecognitionException } from '@flogo/packages/mapping-parser';
+import { LexingError, RecognitionException } from 'flogo-parser';
 import { LanguageService } from './language-service';
 
 // --- diagnostics --- ---

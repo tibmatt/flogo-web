@@ -13,8 +13,6 @@ import { MonacoEditorComponent, DEFAULT_EDITOR_OPTIONS } from '../../monaco-edit
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { EditorContext, EditorService, InsertEvent } from './editor.service';
 
-import { parse } from '@flogo/packages/mapping-parser';
-
 @Component({
   selector: 'flogo-mapper-editor',
   template: `<monaco-editor></monaco-editor>`

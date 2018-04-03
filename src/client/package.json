@@ -15,7 +15,8 @@
     "lint": "ng lint --type-check --format=stylish",
     "e2e": "ng e2e",
     "check": "npm run lint && npm run test:once",
-    "check:travis": "yarn run lint --format=stylish && yarn run test:once --progress=false && yarn run build --prod --progress=false"
+    "travis:test": "yarn run test:once --progress=false",
+    "travis:lint": "yarn run lint --format=stylish && yarn run build --prod --progress=false"
   },
   "author": "TIBCO Software Inc.",
   "private": true,
@@ -60,6 +61,7 @@
     "chevrotain": "^1.0.1",
     "core-js": "^2.4.1",
     "d3": "^3.5.16",
+    "flogo-parser": "../parser",
     "font-awesome": "^4.7.0",
     "jquery": "~2.2.4",
     "lodash": "^4.14.104",

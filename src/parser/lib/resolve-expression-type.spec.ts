@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { resolveExpressionType } from './resolve-expression-type';
 
 describe('Parser Type Resolver', function () {
@@ -5,7 +6,7 @@ describe('Parser Type Resolver', function () {
   function assertParsedType(inputData) {
     it(`For ${inputData.text}`, () => {
       const parsedType = resolveExpressionType(inputData.text);
-      expect(parsedType).toEqual(inputData.expectedType, `Expected ${inputData.expectedType} but got ${parsedType}`);
+      expect(parsedType).to.equal(inputData.expectedType, `Expected ${inputData.expectedType} but got ${parsedType}`);
     });
   }
 

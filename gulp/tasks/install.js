@@ -1,12 +1,12 @@
 import gulp from 'gulp';
-import cp from 'child_process';
 import {CONFIG} from '../config';
-import commandExists from 'command-exists';
+import { runSync as npmRunSync } from '../utils/npm-run';
 
-const command = commandExists.sync('yarn') ? 'yarn' : 'npm';
-function install(cwd) {
-  return cp.execSync(`${command} install`, { cwd, stdio: 'inherit' });
-}
+const install = npmRunSync.bind(null, 'install');
+
+gulp.task('install.parser', 'Install parser dependencies', () => {
+  npmRunSync('installbuild', CONFIG.paths.source.parser);
+});
 
 /**
  * Install client dependencies
@@ -18,7 +18,7 @@ gulp.task('install.client.dev', 'Install client dependencies', () =>{
 /**
  * Install client dependencies
  */
-gulp.task('install.client.dist', 'Install client dependencies', () =>{
+gulp.task('install.client.dist', 'Install client dist dependencies', () =>{
   return install(CONFIG.paths.dist.public);
 });
 
@@ -32,6 +32,6 @@ gulp.task('install.server.dev', 'Install server dependencies', () => {
 /**
  * Install server dependencies
  */
-gulp.task('install.server.dist', 'Install server dependencies', () => {
+gulp.task('install.server.dist', 'Install server dist dependencies', () => {
   return install(CONFIG.paths.dist.server);
 });

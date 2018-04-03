@@ -15,7 +15,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/withLatestFrom';
 
-import { resolveExpressionType } from '@flogo/packages/mapping-parser';
+import { resolveExpressionType } from 'flogo-parser';
 
 import { TreeNodeFactoryService } from './tree-node-factory.service';
 import { TreeService } from './tree.service';

@@ -11,8 +11,8 @@
     "start-server": "node server.js",
     "start-debug": "node --debug server.js",
     "start-prod-server": "node server.js",
-    "test": "mocha --require babel-core/register './{,!(node_modules)/**/}*.spec.js'",
-    "test:watch": "mocha --watch --require babel-core/register --watch-extensions json './{,!(node_modules)/**/}*.spec.js'",
+    "test": "mocha --require babel-core/register './{,!(node_modules)/**/}*.spec.js' --preserve-symlinks",
+    "test:watch": "mocha --watch --require babel-core/register --watch-extensions json './{,!(node_modules)/**/}*.spec.js' --preserve-symlinks",
     "test:api": "mocha"
   },
   "author": "TIBCO Software Inc.",
@@ -27,6 +27,10 @@
     "mocha": "4.0.1",
     "server-destroy": "^1.0.1",
     "sinon": "^4.4.1"
+  },
+  "peerDependencies": {
+    "flogo-parser": "",
+    "chevrotain": "^1.0.1"
   },
   "dependencies": {
     "ajv": "^6.1.1",

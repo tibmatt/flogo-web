@@ -8,7 +8,7 @@ import { Node } from './node';
 import * as JsonNodes from './json-nodes';
 import * as ExprNodes from './expr-nodes';
 
-interface CstVisitorBase {
+export interface CstVisitorBase {
   new (...args: any[]): ICstVisitor<CstNode, Node | Node[]>;
 }
 
@@ -29,7 +29,7 @@ const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
 
 const isSelectorNode = (node: PrimaryExprNode): node is ExprNodes.SelectorExpr => node.type === 'SelectorExpr';
 
-export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase) {
+export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisitorBase {
   class AstConstructor extends BaseCstVisitorClass {
     constructor() {
       super();

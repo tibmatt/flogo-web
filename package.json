@@ -2,15 +2,26 @@
   "name": "flogo-web",
   "version": "0.5.2",
   "description": "Wonderful web application for Flogo",
+  "license": "SEE LICENSE IN TIBCO Samples Internal End User License.txt",
   "repository": {
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "scripts": {
     "start": "gulp",
+    "postinstall": "yarn run submodules:link",
     "gulp": "gulp",
+    "dev": "concurrently --kill-others --names \"PARSER,DEV:SERVER\"  -c \"bgBlue,bgCyan,bgMagenta\" \"yarn --cwd src/parser run build:watch\" \"yarn run dev:server\"",
     "dev:server": "gulp dev-server",
-    "test:client": "npm --prefix=\"src/client\" run test",
-    "test:server": "npm --prefix=\"dist/server\" run test:api -- ./tests",
+    "watch:server-parser": "concurrently --kill-others --names \"PARSER,SERVER\"  -c \"bgBlue,bgCyan,bgMagenta\" \"yarn run watch:parser\" \"yarn run watch:server\"",
+    "watch:server": "gulp dev-watch",
+    "watch:parser": "yarn --cwd src/parser run build:watch",
+    "test": "yarn test:parser && yarn test:server && yarn test:client",
+    "test:client": "yarn --cwd src/client run test:once",
+    "test:server": "yarn --cwd src/server run test",
+    "test:parser": "yarn --cwd src/parser run test",
+    "install:client": "yarn --cwd src/client install",
+    "install:server": "yarn --cwd src/server install",
+    "install:parser": "yarn --cwd src/parser install",
     "webdriver-manager": "webdriver-manager update && webdriver-manager start",
     "webdriver-manager-update": "webdriver-manager update",
     "e2e": "cd specs && protractor protractor.conf.js",
@@ -18,7 +29,8 @@
     "clean:all-node-modules": "rm -rfv `find . -path \"*/node_modules\" -print`",
     "clean:engines": "rm -rf ./dist/server/local/engines",
     "clean:local": "rm -rf -rf ./dist/server/local",
-    "update-global-flogo": "go get -u github.com/TIBCOSoftware/flogo-cli/..."
+    "update-global-flogo": "go get -u github.com/TIBCOSoftware/flogo-cli/...",
+    "submodules:link": "yarn --cwd src/parser link && yarn --cwd src/client link flogo-parser && yarn --cwd src/server link flogo-parser"
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
@@ -26,6 +38,7 @@
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-preset-env": "^1.6.1",
     "command-exists": "^1.2.2",
+    "concurrently": "^3.5.1",
     "del": "3.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "7.0.0",

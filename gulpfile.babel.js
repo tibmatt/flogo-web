@@ -67,9 +67,11 @@ gulp.task('dev-server', 'Build and start in development mode', cb => {
     'clean',
     'install.server.dev',
     'install.client.dev',
+    'install.parser',
     'dev.server.build',
-    ['dev.server.watch', 'install.server.dist'],
-    'dev.start',
+    'install.server.dist',
+    'server.copy.parser',
+    ['dev.server.watch', 'dev.start'],
     cb
   );
 
@@ -85,8 +87,11 @@ gulp.task('dev-watch', 'Build in development mode and watch for changes', cb => 
     'clean',
     'install.server.dev',
     'install.client.dev',
+    'install.parser',
     'dev.server.build',
-    ['dev.server.watch', 'install.server.dist'],
+    'install.server.dist',
+    'server.copy.parser',
+    'dev.server.watch',
     cb
   );
 
@@ -114,7 +119,7 @@ gulp.task('release', '', cb => {
   runSequence(
     'palette.build',
     'prod.build',
-    'dist.support-files',
+    ['dist.support-files', 'dist.parser'],
     'dist.build-engines',
     cb);
 
