@@ -143,7 +143,7 @@ export const TASK_HANDLER_NAME_ROOT = 'rootTask';
 export const TASK_HANDLER_NAME_ERROR = 'errorHandlerTask';
 
 export const INSTALLATION_STATE = {
-  INIT: 'initialized',
+  INIT: 'initializing',
   BACKUP: 'backing up engine',
   INSTALL: 'installing',
   BUILD: 'building engine',

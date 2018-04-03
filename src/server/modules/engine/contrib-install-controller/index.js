@@ -2,6 +2,8 @@ import {copyFile, fileExists, inspectObj, rmFolder} from "../../../common/utils"
 import path from 'path';
 import omit from 'lodash/omit';
 import {INSTALLATION_STATE} from "../../../common/constants";
+import {logger} from "../../../common/logging";
+import {ERROR_TYPES, ErrorManager} from "../../../common/errors";
 
 export class ContribInstallController {
   constructor(testEngine, remoteInstaller) {
@@ -14,14 +16,20 @@ export class ContribInstallController {
     try {
       let installResults = await this.installContributions(urls);
       if (installResults.fail.length === 0) {
+        logger.debug(`[Debug] Restarting the engine upon successful ${this.getInstallType()} installation.`);
         await this.buildAndRestartEngine();
       }
       return Promise.resolve(installResults);
     } catch (err) {
-      console.error(`[error] Encountered error while installing the ${this.getInstallType()} to the engine: `, err);
+      logger.error(`[error] Encountered error while installing the ${this.getInstallType()} to the engine: `);
+      logger.error(err);
+      logger.debug(`[Debug] Installation of ${this.getInstallType()} failed in '${this.installState}' step.`);
+      logger.debug(`[Debug] Recovering the engine with old state.`);
+      const customError = this.customInstallationError();
       await this.recoverEngine();
-      throw new Error(`Error while installing the ${this.getInstallType()} to the engine`);
+      throw customError;
     } finally {
+      logger.debug('[Debug] Resource cleaning - removing the backup folder.');
       await this.removeBackup();
     }
   }
@@ -30,7 +38,7 @@ export class ContribInstallController {
     return this.createBackup()
       .then(() => this.installToEngine(urls))
       .then((results) => {
-        console.log('[log] Installation results');
+        logger.log('[log] Installation results');
         inspectObj({
           success: results.success,
           fail: results.fail
@@ -45,10 +53,41 @@ export class ContribInstallController {
       .then(() => this.startEngine());
   }
 
+  customInstallationError() {
+    logger.debug('[Debug] Creating a custom error for the installation failure');
+    let message = 'Installation failed ';
+    let type = ERROR_TYPES.ENGINE.NOTHANDLED;
+    switch (this.installState) {
+      case INSTALLATION_STATE.BACKUP:
+        message = message + 'while taking backup of src';
+        type = ERROR_TYPES.ENGINE.BACKUP;
+        break;
+      case INSTALLATION_STATE.INSTALL:
+        message = message + 'while installing ';
+        type = ERROR_TYPES.ENGINE.INSTALL;
+        break;
+      case INSTALLATION_STATE.BUILD:
+        message = message + 'while building the engine';
+        type = ERROR_TYPES.ENGINE.BUILD;
+        break;
+      case INSTALLATION_STATE.STOP:
+        message = message + 'while stopping the engine';
+        type = ERROR_TYPES.ENGINE.STOP;
+        break;
+      case INSTALLATION_STATE.START:
+        message = message + 'while starting the engine';
+        type = ERROR_TYPES.ENGINE.START;
+        break;
+      default:
+        message = message + 'at unknown state';
+        break;
+    }
+    return ErrorManager.createRestError(message, {type});
+  }
+
   recoverEngine() {
     let promise = null;
     switch (this.installState) {
-      // case INSTALLATION_STATE.INSTALL:
       case INSTALLATION_STATE.BUILD:
       case INSTALLATION_STATE.STOP:
       case INSTALLATION_STATE.START:
@@ -67,6 +106,7 @@ export class ContribInstallController {
   }
 
   createBackup() {
+    logger.debug('[Debug] Started taking backup of src to backupsrc.');
     this.installState = INSTALLATION_STATE.BACKUP;
     let promise = null;
     const srcPath = path.join(this.testEngine.path, 'src');
@@ -86,7 +126,7 @@ export class ContribInstallController {
   }
 
   backupSource() {
-    console.log('[Log] Recovering engine to previous working state.');
+    logger.log('[Log] Recovering engine to previous working state..');
     let promise = null;
     const srcPath = path.join(this.testEngine.path, 'backupsrc');
     if (fileExists(srcPath)) {
@@ -98,21 +138,25 @@ export class ContribInstallController {
   }
 
   installToEngine(urls) {
+    logger.debug(`[Debug] Started installing ${this.getInstallType()} to the engine.`);
     this.installState = INSTALLATION_STATE.INSTALL;
     return this.remoteInstaller.install(urls, {engine: this.testEngine});
   }
 
   buildEngine() {
+    logger.debug('[Debug] Building engine.');
     this.installState = INSTALLATION_STATE.BUILD;
     return this.testEngine.build();
   }
 
   stopEngine() {
+    logger.debug('[Debug] Stopping enigne.');
     this.installState = INSTALLATION_STATE.STOP;
     return this.testEngine.stop();
   }
 
   startEngine() {
+    logger.debug('[Debug] Starting enigne.');
     this.installState = INSTALLATION_STATE.START;
     return this.testEngine.start();
   }
