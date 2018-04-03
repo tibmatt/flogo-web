@@ -30,7 +30,7 @@
     "clean:engines": "rm -rf ./dist/server/local/engines",
     "clean:local": "rm -rf -rf ./dist/server/local",
     "update-global-flogo": "go get -u github.com/TIBCOSoftware/flogo-cli/...",
-    "submodules:link": "yarn --cwd src/parser link && yarn --cwd src/client link flogo-parser && yarn --cwd src/server link flogo-parser"
+    "submodules:link": "yarn --cwd src/parser link && yarn link flogo-parser && yarn --cwd src/client link flogo-parser && yarn --cwd src/server link flogo-parser"
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {

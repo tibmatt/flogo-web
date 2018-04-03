@@ -70,7 +70,6 @@ gulp.task('dev-server', 'Build and start in development mode', cb => {
     'install.parser',
     'dev.server.build',
     'install.server.dist',
-    'server.copy.parser',
     ['dev.server.watch', 'dev.start'],
     cb
   );
@@ -90,7 +89,6 @@ gulp.task('dev-watch', 'Build in development mode and watch for changes', cb => 
     'install.parser',
     'dev.server.build',
     'install.server.dist',
-    'server.copy.parser',
     'dev.server.watch',
     cb
   );
