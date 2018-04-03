@@ -16,20 +16,20 @@ export class ContribInstallController {
     try {
       let installResults = await this.installContributions(urls);
       if (installResults.fail.length === 0) {
-        logger.debug(`[Debug] Restarting the engine upon successful ${this.getInstallType()} installation.`);
+        logger.debug(`Restarting the engine upon successful ${this.getInstallType()} installation.`);
         await this.buildAndRestartEngine();
       }
       return Promise.resolve(installResults);
     } catch (err) {
       logger.error(`[error] Encountered error while installing the ${this.getInstallType()} to the engine: `);
       logger.error(err);
-      logger.debug(`[Debug] Installation of ${this.getInstallType()} failed in '${this.installState}' step.`);
-      logger.debug(`[Debug] Recovering the engine with old state.`);
+      logger.debug(`Installation of ${this.getInstallType()} failed in '${this.installState}' step.`);
+      logger.debug(`Recovering the engine with old state.`);
       const customError = this.customInstallationError();
       await this.recoverEngine();
       throw customError;
     } finally {
-      logger.debug('[Debug] Resource cleaning - removing the backup folder.');
+      logger.debug('Resource cleaning: removing the backup folder.');
       await this.removeBackup();
     }
   }
@@ -54,7 +54,6 @@ export class ContribInstallController {
   }
 
   customInstallationError() {
-    logger.debug('[Debug] Creating a custom error for the installation failure');
     let message = 'Installation failed ';
     let type = ERROR_TYPES.ENGINE.NOTHANDLED;
     switch (this.installState) {
@@ -106,7 +105,7 @@ export class ContribInstallController {
   }
 
   createBackup() {
-    logger.debug('[Debug] Started taking backup of src to backupsrc.');
+    logger.debug('Backing up \'src\' to \'backupsrc\'.');
     this.installState = INSTALLATION_STATE.BACKUP;
     let promise = null;
     const srcPath = path.join(this.testEngine.path, 'src');
@@ -138,25 +137,25 @@ export class ContribInstallController {
   }
 
   installToEngine(urls) {
-    logger.debug(`[Debug] Started installing ${this.getInstallType()} to the engine.`);
+    logger.debug(`Started installing ${this.getInstallType()} to the engine.`);
     this.installState = INSTALLATION_STATE.INSTALL;
     return this.remoteInstaller.install(urls, {engine: this.testEngine});
   }
 
   buildEngine() {
-    logger.debug('[Debug] Building engine.');
+    logger.debug('Building engine.');
     this.installState = INSTALLATION_STATE.BUILD;
     return this.testEngine.build();
   }
 
   stopEngine() {
-    logger.debug('[Debug] Stopping enigne.');
+    logger.debug('Stopping enigne.');
     this.installState = INSTALLATION_STATE.STOP;
     return this.testEngine.stop();
   }
 
   startEngine() {
-    logger.debug('[Debug] Starting enigne.');
+    logger.debug('Starting enigne.');
     this.installState = INSTALLATION_STATE.START;
     return this.testEngine.start();
   }

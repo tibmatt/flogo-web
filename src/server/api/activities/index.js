@@ -22,23 +22,6 @@ export function activities(app, router){
   router.get(basePath+"/activities", listActivities);
   router.post(basePath+"/activities", installActivities);
   router.delete(basePath+"/activities", deleteActivities);
-  router.post(basePath+"/test", testInstall);
-}
-
-function* testInstall(next) {
-  this.req.setTimeout(0);
-  let urls = preProcessURLs( this.request.body.urls );
-  console.log( '[log] Install Activities' );
-  inspectObj( urls );
-
-  let testEngine = yield getInitializedEngine(config.defaultEngine.path);
-  let installController = new ContribInstallController(testEngine, remoteInstaller);
-  const result = yield installController.install(urls);
-
-  this.body = result;
-
-  yield next;
-
 }
 
 /**
@@ -122,61 +105,12 @@ function* installActivities( next ) {
   inspectObj( urls );
 
   let testEngine = yield getInitializedEngine(config.defaultEngine.path);
-  let results = {};
-  if ( testEngine ) {
+  let installController = new ContribInstallController(testEngine, remoteInstaller);
+  const result = yield installController.install(urls);
 
-    console.log(`[log] backing up source folder...`);
-    yield remoteInstaller.createBackup(testEngine.path);
+  delete result.details; // keep the details internally.
 
-    console.log( `[log] adding activities to test engine...` );
-
-    let stopTestEngineResult = yield testEngine.stop();
-
-    if ( !stopTestEngineResult ) {
-      console.log(`[log] removing backup folders as stopping engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to stop test engine.' );
-    }
-
-    try {
-
-      results = yield remoteInstaller.install( urls, {engine: testEngine} );
-      console.log( '[log] Installation results' );
-      inspectObj( {
-        success : results.success,
-        fail : results.fail
-      } );
-    } catch ( err ) {
-      console.error( `[error] add activities to test engine` );
-      console.error( err );
-      console.log(`[log] removing backup folders as add activities to test engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to add activities to test engine.' );
-    }
-
-    let testEngineBuildResult = yield testEngine.build();
-
-    if ( !testEngineBuildResult ) {
-      console.log(`[log] removing backup folders as building engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to build test engine after adding activities.' );
-    }
-
-    let testEngineStartResult = yield testEngine.start();
-
-    if ( !testEngineStartResult ) {
-      console.log(`[log] removing backup folders as starting test engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to start test engine after adding activities.' );
-    }
-  }
-
-  console.log(`[log] removing backup folders after adding activity to engine successfully`);
-  remoteInstaller.removeBackup(testEngine.path);
-
-  delete results.details; // keep the details internally.
-
-  this.body = results;
+  this.body = result;
 
   yield next;
 }

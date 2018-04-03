@@ -5,6 +5,7 @@ import { inspectObj } from '../../common/utils';
 import path from 'path';
 import { getInitializedEngine } from '../../modules/engine';
 import { TriggerManager } from '../../modules/triggers';
+import {ContribInstallController} from "../../modules/engine/contrib-install-controller";
 
 let basePath = config.app.basePath;
 
@@ -72,68 +73,18 @@ function* listTriggers() {
 function* installTriggers( next ) {
   this.req.setTimeout(0);
   let urls = preProcessURLs( this.request.body.urls );
-
   console.log( '[log] Install Triggers' );
   inspectObj( urls );
 
   let testEngine = yield getInitializedEngine(config.defaultEngine.path);
-  let results = {};
-  if ( testEngine ) {
+  let installController = new ContribInstallController(testEngine, remoteInstaller);
+  const result = yield installController.install(urls);
 
-    console.log(`[log] backing up source folder...`);
-    yield remoteInstaller.createBackup(testEngine.path);
+  delete result.details; // keep the details internally.
 
-    console.log( `[log] adding triggers to test engine...` );
-
-    let stopTestEngineResult = yield testEngine.stop();
-
-    if ( !stopTestEngineResult ) {
-      console.log(`[log] removing backup folders as stopping engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to stop test engine.' );
-    }
-
-    try {
-      results = yield remoteInstaller.install( urls, {engine: testEngine} );
-      console.log( '[log] Installation results' );
-      inspectObj( {
-        success : results.success,
-        fail : results.fail
-      } );
-    } catch ( err ) {
-      console.error( `[error] add triggers to test engine` );
-      console.error( err );
-      console.log(`[log] removing backup folders as add activities to test engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to add triggers to test engine.' );
-    }
-
-    let testEngineBuildResult = yield testEngine.build();
-
-    if ( !testEngineBuildResult ) {
-      console.log(`[log] removing backup folders as building test engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to build test engine after adding triggers.' );
-    }
-
-    let testEngineStartResult = yield testEngine.start();
-
-    if ( !testEngineStartResult ) {
-      console.log(`[log] removing backup folders as starting engine failed`);
-      remoteInstaller.removeBackup(testEngine.path);
-      throw new Error( '[error] Encounter error to start test engine after adding triggers.' );
-    }
-  }
-
-  console.log(`[log] removing backup folders after adding activity to engine successfully`);
-  remoteInstaller.removeBackup(testEngine.path);
-
-  delete results.details; // keep the details internally.
-
-  this.body = results;
+  this.body = result;
 
   yield next;
-
 }
 
 /**
