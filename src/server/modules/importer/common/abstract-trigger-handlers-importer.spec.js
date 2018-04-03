@@ -38,27 +38,30 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
 
   describe('#reconcileTriggersAndActions', () => {
     let result;
-    let reconcileHandlersStub;
+    let reconcileHandlerStub;
     before(() => {
-      const mockHandlers = ['mockHandlers'];
+      const mockHandlers = Array(4).fill('mockhandler');
       const mockTriggers = [
         { id: 'trigger1', handlers: mockHandlers },
         { id: 'trigger2', handlers: mockHandlers },
       ];
-      reconcileHandlersStub = sandbox
-        .stub(importer, 'reconcileHandlersWithActions')
-        .returns([
-          { actionId: 'actionA' },
-          {},
-          { actionId: 'actionB' },
-          { actionId: null },
-        ]);
+      const responsesPerHandler = [
+        { actionId: 'actionA', handler: {} },
+        { handler: {} },
+        { actionId: 'actionB', handler: {} },
+        { actionId: null, handler: {} },
+      ];
+      reconcileHandlerStub = sandbox
+        .stub(importer, 'reconcileHandlerWithAction');
+      [...responsesPerHandler, ...responsesPerHandler].forEach((mockReturn, index) => {
+        reconcileHandlerStub.onCall(index).returns(mockReturn);
+      });
       result = importer.reconcileTriggersAndActions(mockTriggers);
     });
 
     it('should call reconcile handlers for every trigger', () => {
-      expect(reconcileHandlersStub.calledTwice).to.equal(true);
-      expect(reconcileHandlersStub.alwaysCalledWith(['mockHandlers']));
+      expect(reconcileHandlerStub.callCount).to.equal(8);
+      expect(reconcileHandlerStub.alwaysCalledWith(['mockHandlers']));
     });
 
     it('should process all triggers', () => {
@@ -77,32 +80,23 @@ describe('importer.common.AbstractTriggerHandlersImporter', () => {
     });
   });
 
-  describe('#reconcileHandlersWithActions', () => {
-    let linkedHandlers;
-    let danglingHandler;
-    let reconciledHandlers;
-    before(() => {
-      linkedHandlers = [
+  describe('#reconcileHandlerWithAction', () => {
+    it('should correctly map old handler links to new actions', () => {
+      const linkedHandlers = [
         { id: 'a-1', actionId: 'a' },
         { id: 'b-1', actionId: 'b' },
         { id: 'a-2', actionId: 'a' },
       ];
-      danglingHandler = { id: 'x-1', actionId: '??' };
-      const handlers = [...linkedHandlers, danglingHandler];
-      reconciledHandlers = importer.reconcileHandlersWithActions(handlers);
-    });
-
-    it('should correctly map old handler links to new actions', () => {
-      expect(reconciledHandlers).to.not.be.empty;
-      const reconciledHandlerRegistry = new Map(reconciledHandlers.map(v => [v.handler.id, v]));
       linkedHandlers.forEach(handler => {
-        const reconciledHandler = reconciledHandlerRegistry.get(handler.id);
+        const reconciledHandler = importer.reconcileHandlerWithAction(handler);
         expect(reconciledHandler).to.be.ok;
         expect(reconciledHandler.actionId).to.equal(`${handler.actionId}-stored`);
       });
-      expect(
-        reconciledHandlerRegistry.get(danglingHandler.id).actionId,
-      ).to.be.a('null');
+    });
+
+    it('should handle dangling handlers', () => {
+      const danglingHandler = { id: 'x-1', actionId: '??' };
+      expect(importer.reconcileHandlerWithAction(danglingHandler).actionId).to.be.a('null');
     });
   });
 

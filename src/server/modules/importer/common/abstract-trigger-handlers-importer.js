@@ -1,3 +1,7 @@
+import flow from 'lodash/fp/flow';
+import map from 'lodash/fp/map';
+import filter from 'lodash/fp/filter';
+import { normalizeHandlerMappings } from './normalize-handler-mappings';
 
 export class AbstractTriggersHandlersImporter {
   /**
@@ -40,27 +44,33 @@ export class AbstractTriggersHandlersImporter {
    * @param rawTriggers
    */
   reconcileTriggersAndActions(rawTriggers) {
+    const normalizeHandlers = flow(
+      map(handler => this.reconcileHandlerWithAction(handler)),
+      filter(reconciledHandler => !!reconciledHandler.actionId),
+      map(reconciledHandler => ({
+        ...reconciledHandler,
+        handler: normalizeHandlerMappings(reconciledHandler.handler),
+      })),
+    );
     return rawTriggers.map(trigger => {
       const rawHandlers = this.extractHandlers(trigger);
-      const reconciledHandlers = this
-        .reconcileHandlersWithActions(rawHandlers)
-        .filter(reconciledHandler => !!reconciledHandler.actionId);
-      return { trigger, reconciledHandlers };
+      return {
+        trigger,
+        reconciledHandlers: normalizeHandlers(rawHandlers),
+      };
     });
   }
 
   /**
-   * @param handlers
-   * @return {Array.<{ handler: *, actionId: string|null }>}
+   * @param handler
+   * @return { handler: *, actionId: string|null }
    */
-  reconcileHandlersWithActions(handlers) {
-    return handlers.map(handler => {
-      const linkedAction = this.actionsByOriginalId.get(handler.actionId);
-      return {
-        handler,
-        actionId: linkedAction ? linkedAction.id : null,
-      };
-    });
+  reconcileHandlerWithAction(handler) {
+    const linkedAction = this.actionsByOriginalId.get(handler.actionId);
+    return {
+      handler,
+      actionId: linkedAction ? linkedAction.id : null,
+    };
   }
 
   /**

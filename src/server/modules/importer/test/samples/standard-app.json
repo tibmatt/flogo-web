@@ -38,7 +38,7 @@
                 {
                   "mapTo": "code",
                   "type": "assign",
-                  "value": "code"
+                  "value": "$.code"
                 },
                 {
                   "mapTo": "data",

@@ -115,6 +115,13 @@ export const FLOGO_ENGINE_STATUS = {
   REMOVED : 18
 };
 
+export const MAPPING_EXPRESSION_TYPE = {
+  ASSIGN: 1,
+  LITERAL: 2,
+  EXPRESSION: 3,
+  OBJECT: 4,
+  ARRAY: 5,
+};
 
 export const TYPE_TRIGGER = 'trigger';
 export const TYPE_ACTIVITY = 'activity';

@@ -131,7 +131,7 @@
                   {
                     "mapTo": "code",
                     "type": "assign",
-                    "value": "code"
+                    "value": "$.code"
                   },
                   {
                     "mapTo": "data",
@@ -166,7 +166,7 @@
             {
               "mapTo": "code",
               "type": 1,
-              "value": "code"
+              "value": "$.code"
             },
             {
               "mapTo": "data",
@@ -212,7 +212,7 @@
                     {
                       "mapTo": "code",
                       "type": "assign",
-                      "value": "code"
+                      "value": "$.code"
                     },
                     {
                       "mapTo": "data",
@@ -240,19 +240,19 @@
                   {
                     "mapTo": "id",
                     "type": 1,
-                    "value": "params.id"
+                    "value": "$.params.id"
                   }
                 ],
                 "output": [
                   {
                     "mapTo": "code",
                     "type": 1,
-                    "value": "code"
+                    "value": "$.code"
                   },
                   {
                     "mapTo": "data",
                     "type": 1,
-                    "value": "status"
+                    "value": "$.status"
                   }
                 ]
               }
