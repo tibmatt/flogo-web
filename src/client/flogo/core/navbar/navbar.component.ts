@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {environment} from '../../../environments/environment';
+
 
 @Component({
   selector: 'flogo-navbar',
@@ -10,9 +12,11 @@ import { Component, OnInit } from '@angular/core';
 export class FlogoNavbarComponent implements OnInit {
   public currentYear: number;
   public isWalkthroughActivated = false;
+  public version: string;
 
   constructor() {
     this.currentYear = (new Date).getFullYear();
+    this.version = environment.version;
   }
 
   ngOnInit() {
