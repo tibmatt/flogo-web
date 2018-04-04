@@ -141,12 +141,3 @@ export const DEFAULT_APP_TYPE = 'flogo:app';
 
 export const TASK_HANDLER_NAME_ROOT = 'rootTask';
 export const TASK_HANDLER_NAME_ERROR = 'errorHandlerTask';
-
-export const INSTALLATION_STATE = {
-  INIT: 'initializing',
-  BACKUP: 'backing up engine',
-  INSTALL: 'installing',
-  BUILD: 'building engine',
-  STOP: 'stopping engine',
-  START: 'starting engine'
-};

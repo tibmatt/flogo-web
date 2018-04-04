@@ -1,9 +1,20 @@
 import {copyFile, fileExists, inspectObj, rmFolder} from "../../../common/utils";
 import path from 'path';
 import omit from 'lodash/omit';
-import {INSTALLATION_STATE} from "../../../common/constants";
 import {logger} from "../../../common/logging";
 import {ERROR_TYPES, ErrorManager} from "../../../common/errors";
+
+const INSTALLATION_STATE = {
+  INIT: 'initializing',
+  BACKUP: 'backing up engine',
+  INSTALL: 'installing',
+  BUILD: 'building engine',
+  STOP: 'stopping engine',
+  START: 'starting engine'
+};
+
+const SRC_FOLDER = 'src';
+const BACKUP_SRC_FOLDER = 'backupsrc';
 
 export class ContribInstallController {
   constructor(testEngine, remoteInstaller) {
@@ -58,7 +69,7 @@ export class ContribInstallController {
     let type = ERROR_TYPES.ENGINE.NOTHANDLED;
     switch (this.installState) {
       case INSTALLATION_STATE.BACKUP:
-        message = message + 'while taking backup of src';
+        message = message + `while taking backup of ${SRC_FOLDER}`;
         type = ERROR_TYPES.ENGINE.BACKUP;
         break;
       case INSTALLATION_STATE.INSTALL:
@@ -105,12 +116,12 @@ export class ContribInstallController {
   }
 
   createBackup() {
-    logger.debug('Backing up \'src\' to \'backupsrc\'.');
+    logger.debug(`Backing up '${SRC_FOLDER}' to '${BACKUP_SRC_FOLDER}'.`);
     this.installState = INSTALLATION_STATE.BACKUP;
     let promise = null;
-    const srcPath = path.join(this.testEngine.path, 'src');
+    const srcPath = path.join(this.testEngine.path, SRC_FOLDER);
     if (fileExists(srcPath)) {
-      promise = copyFile(srcPath, path.join(this.testEngine.path, 'backupsrc'));
+      promise = copyFile(srcPath, path.join(this.testEngine.path, BACKUP_SRC_FOLDER));
     } else {
       promise = Promise.resolve(true);
     }
@@ -118,7 +129,7 @@ export class ContribInstallController {
   }
 
   removeBackup() {
-    const pathToDel = path.join(this.testEngine.path, 'backupsrc');
+    const pathToDel = path.join(this.testEngine.path, BACKUP_SRC_FOLDER);
     if (fileExists(pathToDel)) {
       rmFolder(pathToDel);
     }
@@ -127,9 +138,9 @@ export class ContribInstallController {
   backupSource() {
     logger.log('[Log] Recovering engine to previous working state..');
     let promise = null;
-    const srcPath = path.join(this.testEngine.path, 'backupsrc');
+    const srcPath = path.join(this.testEngine.path, BACKUP_SRC_FOLDER);
     if (fileExists(srcPath)) {
-      promise = copyFile(srcPath, path.join(this.testEngine.path, 'src'));
+      promise = copyFile(srcPath, path.join(this.testEngine.path, SRC_FOLDER));
     } else {
       promise = Promise.resolve(true);
     }
