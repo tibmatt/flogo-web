@@ -9,6 +9,7 @@ const INSTALLATION_STATE = {
   BACKUP: 'backing-up',
   INSTALL: 'installing-to',
   BUILD: 'building',
+  COPYBIN: 'copying-binary',
   STOP: 'stopping',
   START: 'starting'
 };
@@ -25,7 +26,6 @@ export class ContribInstallController {
     return this;
   }
 
-
   /**
    * Install the contribution accessible in a URL (preferrably github URL) to the engine and restart the engine
    * @param url {string} URL path where the acitivy / trigger .json is located
@@ -33,26 +33,33 @@ export class ContribInstallController {
    * @returns results.success {array} array of successfully installed contribution urls
    * @returns results.fail {array} array of installation failed contribution urls
    */
-  async install(url) {
-    try {
-      let installResults = await this.installContributions(url);
-      if (installResults.fail.length === 0) {
-        logger.debug(`Restarting the engine upon successful '${url}' installation.`);
-        await this.buildAndRestartEngine();
-      }
-      return Promise.resolve(installResults);
-    } catch (err) {
-      logger.error(`[error] Encountered error while installing the '${url}' to the engine: `);
-      logger.error(err);
-      logger.debug(`Installation of '${url}' failed in '${this.installState}' step.`);
-      logger.debug(`Recovering the engine with old state.`);
-      const customError = this.customInstallationError();
-      await this.recoverEngine();
-      throw customError;
-    } finally {
-      logger.debug('Resource cleaning: removing the backup folder.');
-      await this.removeBackup();
-    }
+  install(url) {
+    let results;
+    return this.installContributions(url)
+      .then(installResults => {
+        results = installResults;
+        if (results.fail.length === 0) {
+          return this.buildEngine()
+            .then(() => {
+              logger.debug(`Restarting the engine upon successful '${url}' installation.`);
+              return this.restartEngineAfterBuild();
+            });
+        } else {
+          return results;
+        }
+      }).then(() => this.removeBackup())
+      .then(() => results)
+      .catch(err => {
+        logger.error(`[error] Encountered error while installing the '${url}' to the engine: `);
+        logger.error(err);
+        logger.debug(`Installation of '${url}' failed in '${this.installState}' step.`);
+        logger.debug(`Starting engine recovery.`);
+        return this.recoverEngine()
+          .then(() => this.removeBackup())
+          .then(() => {
+            throw this.customInstallationError();
+          });
+      });
   }
 
   installContributions(url) {
@@ -68,9 +75,9 @@ export class ContribInstallController {
       });
   }
 
-  buildAndRestartEngine() {
+  restartEngineAfterBuild() {
     return this.stopEngine()
-      .then(() => this.buildEngine())
+      .then(() => this.copyBinary())
       .then(() => this.startEngine());
   }
 
@@ -88,6 +95,10 @@ export class ContribInstallController {
         break;
       case INSTALLATION_STATE.BUILD:
         message = message + 'while building the engine';
+        type = ERROR_TYPES.ENGINE.BUILD;
+        break;
+      case INSTALLATION_STATE.COPYBIN:
+        message = message + 'while copying the binary';
         type = ERROR_TYPES.ENGINE.BUILD;
         break;
       case INSTALLATION_STATE.STOP:
@@ -109,10 +120,12 @@ export class ContribInstallController {
     let promise = null;
     switch (this.installState) {
       case INSTALLATION_STATE.BUILD:
+      case INSTALLATION_STATE.COPYBIN:
       case INSTALLATION_STATE.STOP:
       case INSTALLATION_STATE.START:
-        promise = this.backupSource()
-          .then(() => this.buildAndRestartEngine());
+        promise = this.recoverSource()
+          .then(() => this.buildEngine())
+          .then(() => this.restartEngineAfterBuild());
         break;
       default:
         promise = Promise.resolve(true);
@@ -135,14 +148,15 @@ export class ContribInstallController {
   }
 
   removeBackup() {
+    logger.debug('Resource cleaning: removing the backup folder.');
     const pathToDel = path.join(this.engine.path, BACKUP_SRC_FOLDER);
     if (fileExists(pathToDel)) {
       rmFolder(pathToDel);
     }
   }
 
-  backupSource() {
-    logger.log('[Log] Recovering engine to previous working state..');
+  recoverSource() {
+    logger.debug('[Log] Recovering engine to previous working state..');
     let promise = null;
     const srcPath = path.join(this.engine.path, BACKUP_SRC_FOLDER);
     if (fileExists(srcPath)) {
@@ -162,7 +176,13 @@ export class ContribInstallController {
   buildEngine() {
     logger.debug('Building engine.');
     this.installState = INSTALLATION_STATE.BUILD;
-    return this.engine.build();
+    return this.engine.buildOnly();
+  }
+
+  copyBinary() {
+    logger.debug('Copying binary to bin folder.');
+    this.installState = INSTALLATION_STATE.COPYBIN;
+    return this.engine.copyToBinTest();
   }
 
   stopEngine() {

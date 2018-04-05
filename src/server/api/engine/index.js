@@ -43,7 +43,7 @@ function* restartEngine(next) {
   };
 
   try{
-    let engine = getInitializedEngine(config.defaultEngine.path);
+    let engine = yield getInitializedEngine(config.defaultEngine.path);
 
     let stopTestEngineResult = yield engine.stop();
     let startTestEngineResult = false;
