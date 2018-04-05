@@ -11,11 +11,5 @@ gulp.task('dist.version', function () {
 });
 
 function getVersion() {
-  const { BUILD_RELEASE_TAG: releaseTag, BUILD_GIT_COMMIT: gitCommit } = process.env;
-  if (releaseTag) {
-    return releaseTag;
-  } else if (gitCommit) {
-    return gitCommit.substring(0, 7);
-  }
-  return '';
+  return process.env.FLOGO_LIB_VERSION || 'latest';
 }
