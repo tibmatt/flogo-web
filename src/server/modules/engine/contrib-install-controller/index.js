@@ -23,18 +23,18 @@ export class ContribInstallController {
     this.installState = INSTALLATION_STATE.INIT;
   }
 
-  async install(urls) {
+  async install(url) {
     try {
-      let installResults = await this.installContributions(urls);
+      let installResults = await this.installContributions(url);
       if (installResults.fail.length === 0) {
-        logger.debug(`Restarting the engine upon successful ${this.getInstallType()} installation.`);
+        logger.debug(`Restarting the engine upon successful '${url}' installation.`);
         await this.buildAndRestartEngine();
       }
       return Promise.resolve(installResults);
     } catch (err) {
-      logger.error(`[error] Encountered error while installing the ${this.getInstallType()} to the engine: `);
+      logger.error(`[error] Encountered error while installing the '${url}' to the engine: `);
       logger.error(err);
-      logger.debug(`Installation of ${this.getInstallType()} failed in '${this.installState}' step.`);
+      logger.debug(`Installation of '${url}' failed in '${this.installState}' step.`);
       logger.debug(`Recovering the engine with old state.`);
       const customError = this.customInstallationError();
       await this.recoverEngine();
@@ -45,9 +45,9 @@ export class ContribInstallController {
     }
   }
 
-  installContributions(urls) {
+  installContributions(url) {
     return this.createBackup()
-      .then(() => this.installToEngine(urls))
+      .then(() => this.installToEngine(url))
       .then((results) => {
         logger.log('[log] Installation results');
         inspectObj({
@@ -111,10 +111,6 @@ export class ContribInstallController {
     return promise;
   }
 
-  getInstallType() {
-    return this.remoteInstaller.opts.type || 'common';
-  }
-
   createBackup() {
     logger.debug(`Backing up '${SRC_FOLDER}' to '${BACKUP_SRC_FOLDER}'.`);
     this.installState = INSTALLATION_STATE.BACKUP;
@@ -147,10 +143,10 @@ export class ContribInstallController {
     return promise;
   }
 
-  installToEngine(urls) {
-    logger.debug(`Started installing ${this.getInstallType()} to the engine.`);
+  installToEngine(url) {
+    logger.debug(`Started installing '${url}' to the engine.`);
     this.installState = INSTALLATION_STATE.INSTALL;
-    return this.remoteInstaller.install(urls, {engine: this.testEngine});
+    return this.remoteInstaller.install([url], {engine: this.testEngine});
   }
 
   buildEngine() {

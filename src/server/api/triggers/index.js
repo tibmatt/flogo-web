@@ -72,13 +72,13 @@ function* listTriggers() {
  */
 function* installTriggers( next ) {
   this.req.setTimeout(0);
-  let urls = preProcessURLs( this.request.body.urls );
-  console.log( '[log] Install Triggers' );
-  inspectObj( urls );
+  const url = preProcessURLs( this.request.body.urls );
+  console.log( '[log] Install Trigger' );
+  inspectObj( url );
 
   let testEngine = yield getInitializedEngine(config.defaultEngine.path);
   let installController = new ContribInstallController(testEngine, remoteInstaller);
-  const result = yield installController.install(urls);
+  const result = yield installController.install(url);
 
   delete result.details; // keep the details internally.
 
@@ -111,7 +111,8 @@ function* deleteTriggers( next ) {
 function preProcessURLs( urls ) {
   'use strict';
   // TODO
-  return urls;
+  // Assuming that we are only installing one contribution for an API call, selecting only the first URL in the array
+  return urls.shift();
 }
 /**
  * @swagger
