@@ -35,7 +35,8 @@ export class AbstractTriggersHandlersImporter {
 
   async importAll(rawApp) {
     const rawTriggers = this.extractTriggers(rawApp);
-    const reconciledTriggers = this.reconcileTriggersAndActions(rawTriggers);
+    const triggers = this.ensureTriggersHaveNames(rawTriggers);
+    const reconciledTriggers = this.reconcileTriggersAndActions(triggers);
     await this.storeTriggersAndHandlers(reconciledTriggers);
   }
 
@@ -71,6 +72,13 @@ export class AbstractTriggersHandlersImporter {
       handler,
       actionId: linkedAction ? linkedAction.id : null,
     };
+  }
+
+  ensureTriggersHaveNames(triggers = []) {
+    return triggers.map(trigger => ({
+      ...trigger,
+      name: trigger.name || trigger.id,
+    }));
   }
 
   /**
