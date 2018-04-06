@@ -1,11 +1,10 @@
 import { config } from '../../config/app-config';
 import { DEFAULT_PATH_ACTIVITY, TYPE_ACTIVITY } from '../../common/constants';
 import { inspectObj } from '../../common/utils';
-import { getInitializedEngine } from '../../modules/engine';
+import { getContribInstallationController as getInstallationController } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import { ActivitiesManager } from '../../modules/activities';
 import path from 'path';
-import {ContribInstallController} from "../../modules/engine/contrib-install-controller";
 
 let basePath = config.app.basePath;
 
@@ -104,8 +103,7 @@ function* installActivities( next ) {
   console.log( '[log] Install Activity' );
   inspectObj( url );
 
-  let testEngine = yield getInitializedEngine(config.defaultEngine.path);
-  let installController = new ContribInstallController(testEngine, remoteInstaller);
+  const installController = yield getInstallationController(config.defaultEngine.path, remoteInstaller);
 
   const result = yield installController.install(url);
 

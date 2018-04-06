@@ -6,23 +6,33 @@ import {ERROR_TYPES, ErrorManager} from "../../../common/errors";
 
 const INSTALLATION_STATE = {
   INIT: 'initializing',
-  BACKUP: 'backing up engine',
-  INSTALL: 'installing',
-  BUILD: 'building engine',
-  STOP: 'stopping engine',
-  START: 'starting engine'
+  BACKUP: 'backing-up',
+  INSTALL: 'installing-to',
+  BUILD: 'building',
+  STOP: 'stopping',
+  START: 'starting'
 };
 
 const SRC_FOLDER = 'src';
 const BACKUP_SRC_FOLDER = 'backupsrc';
 
 export class ContribInstallController {
-  constructor(testEngine, remoteInstaller) {
-    this.testEngine = testEngine;
+
+  setupController(engine, remoteInstaller) {
+    this.engine = engine;
     this.remoteInstaller = remoteInstaller;
     this.installState = INSTALLATION_STATE.INIT;
+    return this;
   }
 
+
+  /**
+   * Install the contribution accessible in a URL (preferrably github URL) to the engine and restart the engine
+   * @param url {string} URL path where the acitivy / trigger .json is located
+   * @returns results {Object} results of installation
+   * @returns results.success {array} array of successfully installed contribution urls
+   * @returns results.fail {array} array of installation failed contribution urls
+   */
   async install(url) {
     try {
       let installResults = await this.installContributions(url);
@@ -89,7 +99,7 @@ export class ContribInstallController {
         type = ERROR_TYPES.ENGINE.START;
         break;
       default:
-        message = message + 'at unknown state';
+        message = message + `at ${this.installState} state`;
         break;
     }
     return ErrorManager.createRestError(message, {type});
@@ -115,9 +125,9 @@ export class ContribInstallController {
     logger.debug(`Backing up '${SRC_FOLDER}' to '${BACKUP_SRC_FOLDER}'.`);
     this.installState = INSTALLATION_STATE.BACKUP;
     let promise = null;
-    const srcPath = path.join(this.testEngine.path, SRC_FOLDER);
+    const srcPath = path.join(this.engine.path, SRC_FOLDER);
     if (fileExists(srcPath)) {
-      promise = copyFile(srcPath, path.join(this.testEngine.path, BACKUP_SRC_FOLDER));
+      promise = copyFile(srcPath, path.join(this.engine.path, BACKUP_SRC_FOLDER));
     } else {
       promise = Promise.resolve(true);
     }
@@ -125,7 +135,7 @@ export class ContribInstallController {
   }
 
   removeBackup() {
-    const pathToDel = path.join(this.testEngine.path, BACKUP_SRC_FOLDER);
+    const pathToDel = path.join(this.engine.path, BACKUP_SRC_FOLDER);
     if (fileExists(pathToDel)) {
       rmFolder(pathToDel);
     }
@@ -134,9 +144,9 @@ export class ContribInstallController {
   backupSource() {
     logger.log('[Log] Recovering engine to previous working state..');
     let promise = null;
-    const srcPath = path.join(this.testEngine.path, BACKUP_SRC_FOLDER);
+    const srcPath = path.join(this.engine.path, BACKUP_SRC_FOLDER);
     if (fileExists(srcPath)) {
-      promise = copyFile(srcPath, path.join(this.testEngine.path, SRC_FOLDER));
+      promise = copyFile(srcPath, path.join(this.engine.path, SRC_FOLDER));
     } else {
       promise = Promise.resolve(true);
     }
@@ -146,24 +156,24 @@ export class ContribInstallController {
   installToEngine(url) {
     logger.debug(`Started installing '${url}' to the engine.`);
     this.installState = INSTALLATION_STATE.INSTALL;
-    return this.remoteInstaller.install([url], {engine: this.testEngine});
+    return this.remoteInstaller.install([url], {engine: this.engine});
   }
 
   buildEngine() {
     logger.debug('Building engine.');
     this.installState = INSTALLATION_STATE.BUILD;
-    return this.testEngine.build();
+    return this.engine.build();
   }
 
   stopEngine() {
     logger.debug('Stopping enigne.');
     this.installState = INSTALLATION_STATE.STOP;
-    return this.testEngine.stop();
+    return this.engine.stop();
   }
 
   startEngine() {
     logger.debug('Starting enigne.');
     this.installState = INSTALLATION_STATE.START;
-    return this.testEngine.start();
+    return this.engine.start();
   }
 }

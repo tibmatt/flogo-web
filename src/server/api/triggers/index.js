@@ -3,9 +3,8 @@ import { TYPE_TRIGGER, DEFAULT_PATH_TRIGGER } from '../../common/constants';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import { inspectObj } from '../../common/utils';
 import path from 'path';
-import { getInitializedEngine } from '../../modules/engine';
+import { getContribInstallationController as getInstallationController } from '../../modules/engine';
 import { TriggerManager } from '../../modules/triggers';
-import {ContribInstallController} from "../../modules/engine/contrib-install-controller";
 
 let basePath = config.app.basePath;
 
@@ -76,8 +75,8 @@ function* installTriggers( next ) {
   console.log( '[log] Install Trigger' );
   inspectObj( url );
 
-  let testEngine = yield getInitializedEngine(config.defaultEngine.path);
-  let installController = new ContribInstallController(testEngine, remoteInstaller);
+  const installController = yield getInstallationController(config.defaultEngine.path, remoteInstaller);
+
   const result = yield installController.install(url);
 
   delete result.details; // keep the details internally.
