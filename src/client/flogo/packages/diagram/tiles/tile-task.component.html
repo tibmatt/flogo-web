@@ -1,17 +1,33 @@
+<div class="content" (click)="onSelect()">
+  {{ tile.task.id }}
+</div>
+<div class="menu">
+  <ul class="menu__options">
+    <li class="menu__option">
+      <i class="flogo-icon-settings menu__icon"></i> {{  'DIAGRAM:CONFIGURE' | translate }}
+    </li>
+    <li class="menu__option">
+      <i class="flogo-icon-addbranch menu__icon"></i> {{  'DIAGRAM:ADD-BRANCH' | translate }}
+    </li>
+    <li class="menu__option">
+      <i class="flogo-icon-delete menu__icon"></i> {{  'DIAGRAM:DELETE' | translate }}
+    </li>
+  </ul>
+</div>
 <svg class="shape"
      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="150" height="138" viewBox="0 0 150 138">
   <g class="tile" fill="none" fill-rule="evenodd" transform="translate(11 9)">
     <ng-template [ngIf]="!isTerminal" [ngIfElse]="terminalShape">
       <g class="tile__default">
-        <use class="tile__shadow" fill="#000" filter="url(#flogo-diagram-tile-shadow)" xlink:href="#flogo-diagram-tile-shape"/>
-        <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape"/>
+        <use class="tile__shadow" xlink:href="#flogo-diagram-tile-shape"/>
+        <path class="tile__bg" d="M110.11 25.536V8a8 8 0 0 0-8-8h-94a8 8 0 0 0-8 8v94a8 8 0 0 0 8 8h94a8 8 0 0 0 8-8V84.758l13.333-29.61-13.333-29.612z"/>
         <path class="tile__stroke" stroke="#F4F4F4" stroke-width=".8" d="M123.005 55.147l-13.26-29.446-.035-.165V8a7.6 7.6 0 0 0-7.6-7.6h-94A7.6 7.6 0 0 0 .51 8v94a7.6 7.6 0 0 0 7.6 7.6h94a7.6 7.6 0 0 0 7.6-7.6V84.758l.035-.164 13.26-29.447z"/>
       </g>
     </ng-template>
     <ng-template #terminalShape >
       <g class="tile__terminal">
-        <use class="tile__shadow" fill="#000" filter="url(#flogo-diagram-tile-shadow)" xlink:href="#flogo-diagram-tile-shape-terminal"/>
-        <use class="tile__bg" fill="url(#flogo-diagram-tile-bg-default)" xlink:href="#flogo-diagram-tile-shape-terminal" />
+        <use class="tile__shadow" xlink:href="#flogo-diagram-tile-shape-terminal"/>
+        <use class="tile__bg" xlink:href="#flogo-diagram-tile-shape-terminal" />
         <rect class="tile__stroke" width="109.2" height="109.2" x=".51" y=".4" stroke="#F4F4F4" stroke-width=".8" rx="8"/>
       </g>
     </ng-template>

@@ -25,5 +25,7 @@
 </svg>
 <flogo-diagram-row *ngFor="let row of tileMatrix; trackBy: trackByIndex"
                    [row]="row" [selection]="selection"
-                   (action)="onAction($event)">
+                   (action)="onAction($event)"
+                   class="diagram-row"
+                   @items>
 </flogo-diagram-row>

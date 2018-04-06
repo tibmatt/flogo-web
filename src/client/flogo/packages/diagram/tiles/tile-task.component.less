@@ -1,12 +1,134 @@
-@import '../_styles';
+@import "../_styles";
+
+// layers
+@layer-idx-selected: 5;
+@layer-idx-hover: 10;
+
+@menu-tab-width: 36px;
+@menu-tab-radius: 8px;
 
 :host {
   .tile-container();
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+:host(:hover) {
+  z-index: @layer-idx-hover;
+}
+
+.menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  width: 100px;
+  height: 100%;
+  overflow: hidden;
+
+  background: rgba(179, 214, 233, 0.9) url('/assets/svg/flogo.flows.detail.diagram.gear.icon.svg') no-repeat right 8px top 8px;
+  border-top-right-radius: @menu-tab-radius;
+  border-bottom-right-radius: @menu-tab-radius;
+
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  //transition-property: background-color, transform;
+  transition-property: all;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateX(142px);
+    background-color: #4e7ead;
+    width: 146px;
+  }
+
+  &:hover .menu__options {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+}
+
+.menu__options {
+  height: 100%;
+  border: solid 1px #d8d8d8;
+  border-right: none;
+  margin: 0 @menu-tab-width 0 0;
+  padding: 0;
+
+  font-size: 12px;
+  background-color: #fff;
+  list-style: none;
+
+}
+
+.menu__option {
+  cursor: pointer;
+  height: 30px;
+  padding-left: 20px;
+  line-height: 30px;
+  transition: background-color 150ms ease-in-out;
+
+  &:hover {
+    background-color: rgba(197, 202, 233, 0.2);
+  }
+
+}
+
+.menu__icon {
+  display: inline-block;
+  width: 16px;
+  position: relative;
+  top: 1.5px;
+  font-size: 15px;
+  text-align: center;
+  margin-right: 4px;
 }
 
 .shape {
   display: block;
   pointer-events: none;
   position: absolute;
-  transform: translate(9px, 5px);
+  transform: translate(10px, 5px);
+  z-index: 1;
+}
+
+.content {
+  width: 100%;
+  z-index: 2;
+  height: 100%;
+}
+
+.tile__bg {
+  transform: translate(0, 0);
+  fill: url(#flogo-diagram-tile-bg-default);
+}
+
+.tile__shadow {
+  fill: #000;
+  filter: url(#flogo-diagram-tile-shadow);
+}
+
+:host(.is-selected) {
+  transform: scale(1.08);
+  z-index: @layer-idx-selected;
+
+  .tile__stroke {
+    stroke: #4e7ead;
+  }
+
+  .tile__bg {
+    fill: #4e7ead;
+  }
+
+  .tile__shadow {
+    filter: url(#flogo-diagram-tile-shadow-active);
+  }
+}
+
+.content:hover + .menu {
+  // compensate for the rounded corners
+  transform: translateX(@menu-tab-width - @menu-tab-radius / 2);
+  width: 136px;
 }

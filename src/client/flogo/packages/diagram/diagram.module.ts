@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CoreModule } from '@flogo/core';
+import { SharedModule } from '@flogo/shared';
 
 import { DiagramComponent } from './diagram/diagram.component';
 import { DiagramRowComponent } from './diagram/diagram-row.component';
@@ -11,7 +12,8 @@ import { TileTaskComponent } from './tiles/tile-task.component';
 
 @NgModule({
   imports: [
-    CommonModule
+    SharedModule,
+    CoreModule,
   ],
   exports: [],
   declarations: [
