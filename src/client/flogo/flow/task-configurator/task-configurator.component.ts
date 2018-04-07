@@ -114,6 +114,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
       inputMappings: mappings
     };
   }
+
   onIteratorValueChange(newValue: string) {
     this.tabs.get('iterator').isValid = MapperTranslator.isValidExpression(newValue);
     this.iterableValue = newValue;
@@ -123,14 +124,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
   onChangeIteratorMode() {
     this.iteratorModeOn = !this.iteratorModeOn;
     this.checkIsIteratorDirty();
-  }
-
-  get isValid() {
-    return this.tabs.areDirty();
-  }
-
-  get isDirty() {
-    return this.tabs.areDirty();
   }
 
   save() {
