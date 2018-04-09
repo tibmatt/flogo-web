@@ -13,7 +13,8 @@ import { BaseRegistered } from '../../modules/base-registered';
 import {
   isGitHubURL,
   parseGitHubURL,
-  constructGitHubPath} from '../../common/utils';
+  constructGitHubPath
+} from '../../common/utils';
 import {getInitializedEngine} from "../engine/registry";
 import {syncTasks} from "../init/sync-tasks";
 import {triggersDBService} from "../../common/db/triggers";

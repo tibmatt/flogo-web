@@ -1,7 +1,7 @@
 import { config } from '../../config/app-config';
 import { DEFAULT_PATH_ACTIVITY, TYPE_ACTIVITY } from '../../common/constants';
 import { inspectObj } from '../../common/utils';
-import { getInitializedEngine } from '../../modules/engine';
+import { getContribInstallationController as getInstallationController } from '../../modules/engine';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import { ActivitiesManager } from '../../modules/activities';
 import path from 'path';
@@ -99,52 +99,17 @@ function* listActivities() {
  */
 function* installActivities( next ) {
   this.req.setTimeout(0);
-  let urls = preProcessURLs( this.request.body.urls );
-  console.log( '[log] Install Activities' );
-  inspectObj( urls );
+  const url = preProcessURLs( this.request.body.urls );
+  console.log( '[log] Install Activity' );
+  inspectObj( url );
 
-  let testEngine = yield getInitializedEngine(config.defaultEngine.path);
-  let results = {};
-  if ( testEngine ) {
+  const installController = yield getInstallationController(config.defaultEngine.path, remoteInstaller);
 
-    console.log( `[log] adding activities to test engine...` );
+  const result = yield installController.install(url);
 
-    let stopTestEngineResult = yield testEngine.stop();
+  delete result.details; // keep the details internally.
 
-    if ( !stopTestEngineResult ) {
-      throw new Error( '[error] Encounter error to stop test engine.' );
-    }
-
-    try {
-
-      results = yield remoteInstaller.install( urls, {engine: testEngine} );
-      console.log( '[log] Installation results' );
-      inspectObj( {
-        success : results.success,
-        fail : results.fail
-      } );
-    } catch ( err ) {
-      console.error( `[error] add activities to test engine` );
-      console.error( err );
-      throw new Error( '[error] Encounter error to add activities to test engine.' );
-    }
-
-    let testEngineBuildResult = yield testEngine.build();
-
-    if ( !testEngineBuildResult ) {
-      throw new Error( '[error] Encounter error to build test engine after adding activities.' );
-    }
-
-    let testEngineStartResult = yield testEngine.start();
-
-    if ( !testEngineStartResult ) {
-      throw new Error( '[error] Encounter error to start test engine after adding activities.' );
-    }
-  }
-
-  delete results.details; // keep the details internally.
-
-  this.body = results;
+  this.body = result;
 
   yield next;
 }
@@ -194,5 +159,6 @@ function* deleteActivities(next){
 function preProcessURLs( urls ) {
   'use strict';
   // TODO
-  return urls;
+  // Assuming that we are only installing one contribution for an API call, selecting only the first URL in the array
+  return urls.shift();
 }

@@ -3,7 +3,7 @@ import { TYPE_TRIGGER, DEFAULT_PATH_TRIGGER } from '../../common/constants';
 import { RemoteInstaller } from '../../modules/remote-installer';
 import { inspectObj } from '../../common/utils';
 import path from 'path';
-import { getInitializedEngine } from '../../modules/engine';
+import { getContribInstallationController as getInstallationController } from '../../modules/engine';
 import { TriggerManager } from '../../modules/triggers';
 
 let basePath = config.app.basePath;
@@ -71,55 +71,19 @@ function* listTriggers() {
  */
 function* installTriggers( next ) {
   this.req.setTimeout(0);
-  let urls = preProcessURLs( this.request.body.urls );
+  const url = preProcessURLs( this.request.body.urls );
+  console.log( '[log] Install Trigger' );
+  inspectObj( url );
 
-  console.log( '[log] Install Triggers' );
-  inspectObj( urls );
+  const installController = yield getInstallationController(config.defaultEngine.path, remoteInstaller);
 
-  let testEngine = yield getInitializedEngine(config.defaultEngine.path);
-  let results = {};
-  if ( testEngine ) {
+  const result = yield installController.install(url);
 
-    console.log( `[log] adding triggers to test engine...` );
+  delete result.details; // keep the details internally.
 
-    let stopTestEngineResult = yield testEngine.stop();
-
-    if ( !stopTestEngineResult ) {
-      throw new Error( '[error] Encounter error to stop test engine.' );
-    }
-
-    try {
-      results = yield remoteInstaller.install( urls, {engine: testEngine} );
-      console.log( '[log] Installation results' );
-      inspectObj( {
-        success : results.success,
-        fail : results.fail
-      } );
-    } catch ( err ) {
-      console.error( `[error] add triggers to test engine` );
-      console.error( err );
-      throw new Error( '[error] Encounter error to add triggers to test engine.' );
-    }
-
-    let testEngineBuildResult = yield testEngine.build();
-
-    if ( !testEngineBuildResult ) {
-      throw new Error( '[error] Encounter error to build test engine after adding triggers.' );
-    }
-
-    let testEngineStartResult = yield testEngine.start();
-
-    if ( !testEngineStartResult ) {
-      throw new Error( '[error] Encounter error to start test engine after adding triggers.' );
-    }
-  }
-
-  delete results.details; // keep the details internally.
-
-  this.body = results;
+  this.body = result;
 
   yield next;
-
 }
 
 /**
@@ -146,7 +110,8 @@ function* deleteTriggers( next ) {
 function preProcessURLs( urls ) {
   'use strict';
   // TODO
-  return urls;
+  // Assuming that we are only installing one contribution for an API call, selecting only the first URL in the array
+  return urls.shift();
 }
 /**
  * @swagger
