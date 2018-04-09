@@ -119,8 +119,18 @@ export class ContribInstallController {
   recoverEngine() {
     let promise = null;
     switch (this.installState) {
+      case INSTALLATION_STATE.INSTALL:
+        promise = this.recoverSource();
+        break;
       case INSTALLATION_STATE.BUILD:
+        promise = this.recoverSource()
+          .then(() => this.buildEngine());
+        break;
       case INSTALLATION_STATE.COPYBIN:
+        promise = this.recoverSource()
+          .then(() => this.buildEngine())
+          .then(() => this.copyBinary());
+        break;
       case INSTALLATION_STATE.STOP:
       case INSTALLATION_STATE.START:
         promise = this.recoverSource()

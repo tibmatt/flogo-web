@@ -107,6 +107,7 @@ class Engine {
    * @param options
    * @param {boolean} options.copyFlogoDescriptor
    * @return {Promise.<TResult>|*}
+   * @deprecated
    */
   build(options) {
     options = Object.assign({}, { type: TYPE_TEST }, options);
