@@ -3,6 +3,7 @@ import path from 'path';
 import omit from 'lodash/omit';
 import {logger} from '../../../common/logging';
 import {ERROR_TYPES, ErrorManager} from '../../../common/errors';
+import {syncTasks} from '../../init';
 
 const INSTALLATION_STATE = {
   INIT: 'initializing',
@@ -43,7 +44,8 @@ export class ContribInstallController {
             .then(() => {
               logger.debug(`Restarting the engine upon successful '${url}' installation.`);
               return this.restartEngineAfterBuild();
-            });
+            })
+            .then(() => this.updateContribsDB(url));
         } else {
           return results;
         }
@@ -79,6 +81,12 @@ export class ContribInstallController {
     return this.stopEngine()
       .then(() => this.copyBinary())
       .then(() => this.startEngine());
+  }
+
+  updateContribsDB() {
+    logger.debug(`Syncing the contributions DB`);
+    return this.engine.load()
+      .then(() => syncTasks(this.engine));
   }
 
   customInstallationError() {
