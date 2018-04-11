@@ -107,6 +107,7 @@ class Engine {
    * @param options
    * @param {boolean} options.copyFlogoDescriptor
    * @return {Promise.<TResult>|*}
+   * @deprecated
    */
   build(options) {
     options = Object.assign({}, { type: TYPE_TEST }, options);
@@ -124,7 +125,17 @@ class Engine {
     options.target = path.join(this.path, buildTargetDir);
 
     return ensureDir(options.target)
-      .then(() => commander.build(this.path, options));
+      .then(() => commander.buildAndCopy(this.path, options));
+  }
+
+  buildOnly(options) {
+    return commander.build(this.path, options);
+  }
+
+  copyToBinTest() {
+    const targetDir = path.join(this.path, DIR_TEST_BIN);
+    return ensureDir(targetDir)
+      .then(() => commander.copy(this.path, targetDir));
   }
 
   start() {
