@@ -47,6 +47,11 @@ export class RemoteInstaller {
     this.opts = _.assign( {}, defaultOpts, opts );
   }
 
+  updateOptions(opts) {
+    this.opts = _.assign( {}, this.opts, opts );
+    return this;
+  }
+
   install( sourceURLs, opts ) {
     return new Promise( ( resolve, reject )=> {
 
