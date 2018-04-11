@@ -1,8 +1,5 @@
 @import "../_styles";
 
-// layers
-@layer-idx-selected: 5;
-@layer-idx-hover: 10;
 
 @menu-tab-width: 36px;
 @menu-tab-radius: 8px;
@@ -12,10 +9,6 @@
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease-in-out;
-}
-
-:host(:hover) {
-  z-index: @layer-idx-hover;
 }
 
 .menu {
@@ -30,12 +23,9 @@
   background: rgba(179, 214, 233, 0.9) url('/assets/svg/flogo.flows.detail.diagram.gear.icon.svg') no-repeat right 8px top 8px;
   border-top-right-radius: @menu-tab-radius;
   border-bottom-right-radius: @menu-tab-radius;
-
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
-  //transition-property: background-color, transform;
-  transition-property: all;
   cursor: pointer;
+
+  .animate-menu();
 
   &:hover {
     transform: translateX(142px);
@@ -60,7 +50,6 @@
   font-size: 12px;
   background-color: #fff;
   list-style: none;
-
 }
 
 .menu__option {
@@ -68,12 +57,7 @@
   height: 30px;
   padding-left: 20px;
   line-height: 30px;
-  transition: background-color 150ms ease-in-out;
-
-  &:hover {
-    background-color: rgba(197, 202, 233, 0.2);
-  }
-
+  .menu-option();
 }
 
 .menu__icon {
@@ -112,7 +96,6 @@
 
 :host(.is-selected) {
   transform: scale(1.08);
-  z-index: @layer-idx-selected;
 
   .tile__stroke {
     stroke: #4e7ead;

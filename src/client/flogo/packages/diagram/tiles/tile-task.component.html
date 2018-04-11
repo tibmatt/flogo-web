@@ -1,15 +1,15 @@
-<div class="content" (click)="onSelect()">
+<div class="content" (click)="onSelect()" [attr.data-diagram-task-id]="tile.task.id">
   {{ tile.task.id }}
 </div>
 <div class="menu">
   <ul class="menu__options">
-    <li class="menu__option">
+    <li class="menu__option" (click)="onConfigure()">
       <i class="flogo-icon-settings menu__icon"></i> {{  'DIAGRAM:CONFIGURE' | translate }}
     </li>
-    <li class="menu__option">
+    <li class="menu__option" (click)="onBranch()">
       <i class="flogo-icon-addbranch menu__icon"></i> {{  'DIAGRAM:ADD-BRANCH' | translate }}
     </li>
-    <li class="menu__option">
+    <li class="menu__option" (click)="onRemove()">
       <i class="flogo-icon-delete menu__icon"></i> {{  'DIAGRAM:DELETE' | translate }}
     </li>
   </ul>

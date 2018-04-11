@@ -24,3 +24,17 @@
   width: @tile-container-dimension;
   margin-right: 10px;
 }
+
+.menu-option() {
+  transition: background-color 150ms ease-in-out;
+  &:hover {
+    background-color: rgba(197, 202, 233, 0.2);
+  }
+}
+
+.animate-menu() {
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  transition-property: all;
+  transition-delay: 200ms;
+}

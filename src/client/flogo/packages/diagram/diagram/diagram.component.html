@@ -21,10 +21,26 @@
       <feGaussianBlur in="shadowOffsetOuter2" result="shadowBlurOuter2" stdDeviation="7"/>
       <feColorMatrix in="shadowBlurOuter2" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.325888813 0"/>
     </filter>
+    <linearGradient id="flogo-diagram-branch__bg" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop stop-color="#ABB0C5" offset="0%"></stop>
+      <stop stop-color="#C2C5DA" offset="100%"></stop>
+    </linearGradient>
+    <filter id="flogo-diagram-branch__shadow" width="200%" height="200%" x="-50%" y="-50%" filterUnits="objectBoundingBox">
+      <feOffset dy="-1" in="SourceAlpha" result="shadowOffsetOuter1"/>
+      <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation=".5"/>
+      <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.37 0"/>
+    </filter>
+    <filter id="flogo-diagram-branch__shadow--selected" width="200%" height="200%" x="-50%" y="-50%" filterUnits="objectBoundingBox">
+      <feOffset dy="-5" in="SourceAlpha" result="shadowOffsetOuter1"/>
+      <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="7"/>
+      <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.325888813 0"/>
+    </filter>
   </defs>
 </svg>
-<flogo-diagram-row *ngFor="let row of tileMatrix; trackBy: trackByIndex"
-                   [row]="row" [selection]="selection"
+<flogo-diagram-row *ngFor="let row of tileMatrix; trackBy: trackRow; let rowIndex = index;"
+                   [row]="row"
+                   [rowIndex]="tileMatrix.length - rowIndex - 1"
+                   [selection]="selection"
                    (action)="onAction($event)"
                    class="diagram-row"
                    @items>

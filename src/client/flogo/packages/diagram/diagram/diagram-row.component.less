@@ -17,6 +17,21 @@
   }
 }
 
+.tile--task {
+  z-index: 1;
+}
+
+.tile--branch {
+  z-index: 2;
+}
+
+.interactive-tile {
+  &:hover,
+  &.is-hovered {
+    z-index: 3;
+  }
+}
+
 :host:hover {
   background-color: rgba(182, 217, 237, 0.2);
   .tile--placeholder {

@@ -6,9 +6,11 @@ import { DiagramComponent } from './diagram/diagram.component';
 import { DiagramRowComponent } from './diagram/diagram-row.component';
 import { TilePlaceholderComponent } from './tiles/tile-placeholder.component';
 import { TileEmptyComponent } from './tiles/tile-empty.component';
-import { DiagramTestComponent } from '@flogo/packages/diagram/diagram-test.component';
 import { TileInsertComponent } from './tiles/tile-insert.component';
 import { TileTaskComponent } from './tiles/tile-task.component';
+import { TileBranchComponent } from '@flogo/packages/diagram/tiles/tile-branch.component';
+
+import { DiagramTestComponent } from '@flogo/packages/diagram/diagram-test.component';
 
 @NgModule({
   imports: [
@@ -22,10 +24,10 @@ import { TileTaskComponent } from './tiles/tile-task.component';
     TileEmptyComponent,
     TileInsertComponent,
     TilePlaceholderComponent,
+    TileBranchComponent,
+    TileTaskComponent,
 
     DiagramTestComponent,
-
-    TileTaskComponent,
   ],
   providers: [],
 })
