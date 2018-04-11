@@ -12,7 +12,8 @@ const INSTALLATION_STATE = {
   BUILD: 'building',
   COPYBIN: 'copying-binary',
   STOP: 'stopping',
-  START: 'starting'
+  START: 'starting',
+  SYNC: 'syncing-db'
 };
 
 const SRC_FOLDER = 'src';
@@ -85,6 +86,7 @@ export class ContribInstallController {
 
   updateContribsDB() {
     logger.debug(`Syncing the contributions DB`);
+    this.installState = INSTALLATION_STATE.SYNC;
     return this.engine.load()
       .then(() => syncTasks(this.engine));
   }
@@ -117,6 +119,10 @@ export class ContribInstallController {
         message = message + 'while starting the engine';
         type = ERROR_TYPES.ENGINE.START;
         break;
+      case INSTALLATION_STATE.SYNC:
+        message = message + 'while syncing to database';
+        type = ERROR_TYPES.ENGINE.SYNC;
+        break;
       default:
         message = message + `at ${this.installState} state`;
         break;
@@ -141,6 +147,7 @@ export class ContribInstallController {
         break;
       case INSTALLATION_STATE.STOP:
       case INSTALLATION_STATE.START:
+      case INSTALLATION_STATE.SYNC:
         promise = this.recoverSource()
           .then(() => this.buildEngine())
           .then(() => this.restartEngineAfterBuild());
