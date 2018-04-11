@@ -20,10 +20,12 @@ export function translateChildren(context: TranslateContext, matrix: NodeMatrix)
   if (isEmpty(children)) {
     return matrix;
   }
-  const currentRow = matrix[matrix.length - 1];
-  children.forEach((node: Node, index) => {
+  const currentRowIndex = matrix.length - 1;
+  const currentRow = matrix[currentRowIndex];
+  children.forEach((node: Node) => {
     if (node.type === NodeType.Branch) {
-      const newRow: Node[] = arrayOfNulls(index);
+      const padding = currentRow.indexOf(context.parentNode);
+      const newRow: Node[] = arrayOfNulls(padding);
       newRow.push(node);
       matrix.push(newRow);
     } else {
