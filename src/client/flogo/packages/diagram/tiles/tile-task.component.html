@@ -6,10 +6,10 @@
     <li class="menu__option" (click)="onConfigure()">
       <i class="flogo-icon-settings menu__icon"></i> {{  'DIAGRAM:CONFIGURE' | translate }}
     </li>
-    <li class="menu__option" (click)="onBranch()">
+    <li *ngIf="!isTerminal && tile.task?.capabilities?.canBranch" class="menu__option" (click)="onBranch()">
       <i class="flogo-icon-addbranch menu__icon"></i> {{  'DIAGRAM:ADD-BRANCH' | translate }}
     </li>
-    <li class="menu__option" (click)="onRemove()">
+    <li *ngIf="!isTerminal && tile.task?.capabilities?.deletable"  class="menu__option" (click)="onRemove()">
       <i class="flogo-icon-delete menu__icon"></i> {{  'DIAGRAM:DELETE' | translate }}
     </li>
   </ul>
