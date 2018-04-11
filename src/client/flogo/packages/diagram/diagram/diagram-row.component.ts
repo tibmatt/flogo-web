@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Tile, TaskTile, TileType, NodeType, DiagramAction, DiagramSelection } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
@@ -46,6 +46,7 @@ export class DiagramRowComponent implements OnChanges {
   @Input() row: Tile[];
   @Input() selection: DiagramSelection;
   @Input() rowIndex: number;
+  @HostBinding('class.is-readonly') @Input() isReadOnly = false;
   @Output() action = new EventEmitter<DiagramAction>();
 
   tileTypes = TileType;

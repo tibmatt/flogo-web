@@ -2,7 +2,7 @@
   <path class="branch__shadow" [attr.d]="path" [attr.transform]="transform"></path>
   <path class="branch__path" (mouseover)="setHovered(true)" (mouseleave)="setHovered(false)"  (click)="onSelect()" [attr.d]="path" [attr.transform]="transform"></path>
 </svg>
-<div class="menu" (mouseover)="setHovered(true)" (mouseleave)="setHovered(false)">
+<div *ngIf="!isReadOnly" class="menu" (mouseover)="setHovered(true)" (mouseleave)="setHovered(false)">
   <span class="menu__option" (click)="onRemove()">
     <i class="fa flogo-icon-delete menu__icon"></i> Delete
   </span>

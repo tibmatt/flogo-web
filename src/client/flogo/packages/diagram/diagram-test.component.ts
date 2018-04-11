@@ -10,9 +10,10 @@ import {
   selector: 'flogo-diagram-test',
   template: `
     <div>
-      <button [disabled]="canAdd" (click)="add()">Add</button>
+      <button [disabled]="canAdd" (click)="add()">Add task in current selection</button>
+      <button (click)="toggleReadOnly()">ReadOnly: {{ isReadOnly }}</button>
     </div>
-    <flogo-diagram-v2 [flow]="flow" [selection]="selection" (action)="onAction($event)"></flogo-diagram-v2>`,
+    <flogo-diagram-v2 [isReadOnly]="isReadOnly" [flow]="flow" [selection]="selection" (action)="onAction($event)"></flogo-diagram-v2>`,
   styles: [' :host { background-color: #efeded  } ']
 })
 
@@ -21,6 +22,7 @@ export class DiagramTestComponent {
   selection: DiagramSelection;
   // demo purposes
   count = 0;
+  isReadOnly = false;
 
   onAction(action: DiagramAction) {
     switch (action.type) {
@@ -37,6 +39,10 @@ export class DiagramTestComponent {
         this.selectTask((<DiagramActionSelf>action).id);
         break;
     }
+  }
+
+  toggleReadOnly() {
+    this.isReadOnly = !this.isReadOnly;
   }
 
   remove(action: DiagramActionSelf) {

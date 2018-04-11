@@ -8,6 +8,7 @@ import { actionEventFactory } from '../action-event-factory';
 export abstract class AbstractTileTaskComponent implements OnChanges {
   @Input() tile: TaskTile;
   @Input() currentSelection: DiagramSelection;
+  @Input() isReadOnly = false;
   @Output() select = new EventEmitter<TaskTile>();
   @Output() branch = new EventEmitter<DiagramActionChild>();
   @Output() remove = new EventEmitter<DiagramActionSelf>();
@@ -21,7 +22,9 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
   }
 
   onSelect() {
-    this.select.emit(this.tile);
+    if (!this.isReadOnly) {
+      this.select.emit(this.tile);
+    }
   }
 
   onRemove() {

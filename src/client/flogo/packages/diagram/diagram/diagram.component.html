@@ -42,6 +42,7 @@
                    [rowIndex]="tileMatrix.length - rowIndex - 1"
                    [selection]="selection"
                    (action)="onAction($event)"
+                   [isReadOnly]="isReadOnly"
                    class="diagram-row"
                    @items>
 </flogo-diagram-row>

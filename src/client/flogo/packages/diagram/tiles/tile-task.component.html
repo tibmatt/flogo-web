@@ -1,7 +1,7 @@
 <div class="content" (click)="onSelect()" [attr.data-diagram-task-id]="tile.task.id">
   {{ tile.task.id }}
 </div>
-<div class="menu">
+<div class="menu" *ngIf="!isReadOnly">
   <ul class="menu__options">
     <li class="menu__option" (click)="onConfigure()">
       <i class="flogo-icon-settings menu__icon"></i> {{  'DIAGRAM:CONFIGURE' | translate }}

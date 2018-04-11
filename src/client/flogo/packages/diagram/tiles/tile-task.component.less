@@ -1,6 +1,5 @@
 @import "../_styles";
 
-
 @menu-tab-width: 36px;
 @menu-tab-radius: 8px;
 
@@ -108,6 +107,10 @@
   .tile__shadow {
     filter: url(#flogo-diagram-tile-shadow-active);
   }
+}
+
+:host-context(.is-readonly) {
+  cursor: inherit;
 }
 
 .content:hover + .menu {

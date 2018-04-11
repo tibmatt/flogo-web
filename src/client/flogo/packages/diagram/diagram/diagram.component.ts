@@ -17,16 +17,17 @@ export class DiagramComponent implements OnChanges, OnDestroy {
   @HostBinding('@list') animateList = true;
   @Input() flow: Flow;
   @Input() selection: DiagramSelection;
+  @Input() @HostBinding('class.flogo-diagram-is-readonly') isReadOnly = false;
   @Output() action = new EventEmitter<DiagramAction>();
-
   tileMatrix: TileMatrix;
 
   constructor(private rowIndexService: RowIndexService) {
   }
 
-  ngOnChanges({ flow: flowChange }: SimpleChanges) {
-    if (flowChange) {
-      const tileMatrix = makeRenderableMatrix(this.flow, 7);
+  ngOnChanges({ flow: flowChange, isReadOnly: readOnlyChange }: SimpleChanges) {
+    const readOnlyDidChange = readOnlyChange && readOnlyChange.currentValue !== readOnlyChange.previousValue;
+    if (flowChange || readOnlyDidChange) {
+      const tileMatrix = makeRenderableMatrix(this.flow, 7, this.isReadOnly);
       this.rowIndexService.updateRowIndexes(tileMatrix);
       this.tileMatrix = tileMatrix.reverse();
     }
