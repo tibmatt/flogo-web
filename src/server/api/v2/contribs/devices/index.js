@@ -1,10 +1,5 @@
-import { config } from '../../config/app-config';
-import { inspectObj } from '../../common/utils';
-import { ContribsManager  } from '../../modules/contribs/'
-import { ErrorManager } from '../../common/errors';
-import path from 'path';
-
-let basePath = config.app.basePath;
+import { ContribsManager  } from '../../../../modules/contribs'
+import { ErrorManager } from '../../../../common/errors';
 
 export function contribs(router, basePath){
   router.post(`${basePath}/contributions/devices`, installContribs);
