@@ -23,5 +23,7 @@
                            [tile]="tile"
                            [currentSelection]="selection"
                            [spanRows]="calculateBranchSpan(tile)"
-                           (select)="onTaskSelected($event)"></flogo-diagram-tile-branch>
+                           (select)="onTaskSelected($event)"
+                           (remove)="onTaskAction($event)"
+  ></flogo-diagram-tile-branch>
 </ng-template>

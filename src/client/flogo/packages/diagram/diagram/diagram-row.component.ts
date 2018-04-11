@@ -89,4 +89,8 @@ export class DiagramRowComponent implements OnChanges {
     this.action.emit(action);
   }
 
+  onBranchRemove(taskTile: TaskTile) {
+    this.action.emit(actionEventFactory.remove(taskTile.task.id));
+  }
+
 }
