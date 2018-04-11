@@ -2,6 +2,7 @@ import path from 'path';
 import { copyFile, changePermissions } from '../../../common/utils';
 import { runShellCMD } from '../../../common/utils/process';
 import { recursivelyFindFirstFile } from '../file-utils';
+import {logger} from "../../../common/logging";
 
 /**
  * Build the engine.
@@ -66,7 +67,7 @@ export function build(enginePath, opts) {
   const args = _getCommandArgs(opts);
   const env = _getEnv(opts);
 
-  console.log(`[log] Build flogo: "flogo build ${args}" compileOpts:`);
+  logger.info(`[log] Build flogo: "flogo build ${args}" compileOpts:`);
 
   return runShellCMD('flogo', ['build'].concat(args), {
     cwd: defaultEnginePath,
