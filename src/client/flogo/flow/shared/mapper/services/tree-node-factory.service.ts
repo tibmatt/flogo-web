@@ -79,72 +79,74 @@ export class TreeNodeFactoryService {
     }
 
     const categoryMap = new Map<any, TreeNode>();
-    const namespaceDivider = '/';
 
     const pushToCategory = (categoryId, value) => {
       let category = categoryMap.get(categoryId);
       if (!category) {
-        category = { label: categoryId, children: [], styleClass: 'node--has-children' };
+        category = {label: categoryId, children: [], styleClass: 'node--has-children'};
         categoryMap.set(categoryId, category);
       }
       category.children.push(value);
     };
 
     const nodes = [];
+    let node = {};
     Object.keys(functionMap).forEach(func => {
       const currentFunction = functionMap[func];
-      // const functionName = currentFunction.category;
-      const nameParts = currentFunction.category.split(namespaceDivider);
-
-      const name = currentFunction.name;
-
-      // const name = nameParts.pop();
-      // removing the subpackage name
-      nameParts.pop();
-      const namespace = nameParts.join(namespaceDivider);
-
-      // const node = { label: name, data: Object.assign(functionMap) };
-      const help = currentFunction.function.help;
-      const args = currentFunction.function.args
-        .reduce((allArgs, current) => {
-          // is var args?
-          if (/\.\.\.(.+)/g.test(current.type)) {
-            allArgs.push(`${current.name}1`, `${current.name}2`);
-          } else {
-            allArgs.push(current.name);
-          }
-          return allArgs;
-        }, []);
-
-      const functionName = `${name}(${args.join(', ')})`;
-      // const snippetArgs = args.map((argName, i) => `\${${i}:${argName}`).join(", ");
-      // const snippet = `${name}(${snippetArgs})`;
-      const snippet = nameParts.concat(functionName).join('.');
-      const node = {
-        label: functionName,
-        isSelectable: true,
-        styleClass: 'node--selectable node--has-no-children',
-        data: { help, snippet }
-      };
-
-      if (namespace) {
-        pushToCategory(namespace, node);
-      } else {
+      if (currentFunction.type === 'namespace') {
+        Object.keys(currentFunction.functions).forEach(subFunc => {
+          const currentChildFunction = currentFunction.functions[subFunc];
+          node = this.createFromFunctionsNode(currentChildFunction, currentFunction.type, func);
+          pushToCategory(func, node);
+        });
+      } else if (currentFunction.type === 'function') {
+        node = this.createFromFunctionsNode(currentFunction, currentFunction.type, func);
         nodes.push(node);
+      } else {
+        console.error(`Not a recognized type of function: ${currentFunction.type}`);
+        throw new Error('Unknown function type');
       }
     });
 
     const sort = (sortNodes) => lodash.sortBy(sortNodes, 'label');
-    const allNodes = nodes.concat(Array.from(categoryMap.values())).map(node => {
-      if (node.children) {
-        node.children = sort(node.children);
+    const allNodes = nodes.concat(Array.from(categoryMap.values())).map(currNode => {
+      if (currNode.children) {
+        currNode.children = sort(currNode.children);
       } else {
-        node.isSelectable = true;
+        currNode.isSelectable = true;
       }
-      return node;
+      return currNode;
     });
 
     return sort(allNodes);
+  }
+
+  private createFromFunctionsNode(currentFunction, currentFunctionType, namespace) {
+    const functionName = currentFunction.name;
+    const help = currentFunction.help;
+    const args = currentFunction.args
+      .reduce((allArgs, current) => {
+        // is var args?
+        if (/\.\.\.(.+)/g.test(current.type)) {
+          allArgs.push(`${current.name}1`, `${current.name}2`);
+        } else {
+          allArgs.push(current.name);
+        }
+        return allArgs;
+      }, []);
+    let snippet = '';
+    if (currentFunctionType === 'namespace') {
+      snippet = `${namespace}.${functionName}(${args.join(', ')})`;
+    } else if (currentFunctionType === 'function') {
+      snippet = `${functionName}(${args.join(', ')})`;
+    }
+    const node = {
+      label: functionName,
+      isSelectable: true,
+      styleClass: 'node--selectable node--has-no-children',
+      data: {help, snippet}
+    };
+    return node;
   }
 
   fromJsonSchemaToSymbolTable(from: any, level = 0) {
@@ -191,12 +193,11 @@ export class TreeNodeFactoryService {
     }
 
     const categoryMap = new Map<any, { name: string, type: string, children?: any }>();
-    const namespaceDivider = '/';
 
     const pushToCategory = (categoryId, value) => {
       let category = categoryMap.get(categoryId);
       if (!category) {
-        category = { name: categoryId, type: 'namespace', children: {} };
+        category = {name: categoryId, type: 'namespace', children: {}};
         categoryMap.set(categoryId, category);
       }
       category.children[value.name] = value;
@@ -206,14 +207,19 @@ export class TreeNodeFactoryService {
     Object.keys(functionMap).forEach(func => {
       const currentFunction = functionMap[func];
       // const functionName = currentFunction.category;
-      const nameParts = currentFunction.category.split(namespaceDivider);
-
-      const name = currentFunction.name;
-
-      // const name = nameParts.pop();
-      // removing the subpackage name
-      nameParts.pop();
-      const namespace = nameParts.join(namespaceDivider);
+      if (currentFunction.type === 'namespace') {
+        Object.keys(currentFunction.functions).forEach(subFunc => {
+          const currentChildFunction = currentFunction.functions[subFunc];
+          const node = Object.assign({}, currentChildFunction, {name, type: 'function'});
+          pushToCategory(func, node);
+        });
+      } else if (currentFunction.type === 'function') {
+        const node = Object.assign({}, currentFunction.function, {name, type: 'function'});
+        nodes.push(node);
+      } else {
+        console.error(`Not a recognized type of function: ${currentFunction.type}`);
+        throw new Error('Unknown function type');
+      }
 
       // const node = { label: name, data: Object.assign(functionMap) };
       // const help = currentFunction.function.help;
@@ -223,13 +229,7 @@ export class TreeNodeFactoryService {
       // const snippetArgs = args.map((argName, i) => `\${${i}:${argName}`).join(", ");
       // const snippet = `${name}(${snippetArgs})`;
       // const snippet = nameParts.concat(functionName).join(".");
-      const node = Object.assign({}, currentFunction.function, { name, type: 'function' });
 
-      if (namespace) {
-        pushToCategory(namespace, node);
-      } else {
-        nodes.push(node);
-      }
     });
 
     return Array.from(categoryMap.values()).reduce((all, c) => {
