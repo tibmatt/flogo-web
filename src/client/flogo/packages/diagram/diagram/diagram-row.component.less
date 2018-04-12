@@ -25,18 +25,23 @@
   z-index: 2;
 }
 
-:host:not(.is-readonly):hover {
-  background-color: rgba(182, 217, 237, 0.2);
-  .tile--placeholder {
-    opacity: 1;
+:host:not(.is-readonly) {
+  .is-selected {
+    z-index: 3;
   }
 
-  .interactive-tile {
-    &:hover,
-    &.is-hovered {
-      z-index: 3;
+  &:hover {
+    background-color: rgba(182, 217, 237, 0.2);
+    .tile--placeholder {
+      opacity: 1;
+    }
+
+    .interactive-tile {
+      &:hover,
+      &.is-hovered {
+        z-index: 4;
+      }
     }
   }
 
 }
-

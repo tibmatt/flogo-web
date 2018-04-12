@@ -20,9 +20,9 @@ import {
 export class DiagramTestComponent {
   flow = this.makeTestData();
   selection: DiagramSelection;
+  isReadOnly = false;
   // demo purposes
   count = 0;
-  isReadOnly = false;
 
   onAction(action: DiagramAction) {
     switch (action.type) {
@@ -199,6 +199,9 @@ export class DiagramTestComponent {
         capabilities: {
           canBranch: true,
           canHaveChildren: true,
+        },
+        status: {
+          invalid: true,
         }
       },
       {
@@ -220,6 +223,9 @@ export class DiagramTestComponent {
           canBranch: false,
           canHaveChildren: true,
         },
+        status: {
+          executed: true
+        }
       },
       {
         id: 'B2',
@@ -230,6 +236,9 @@ export class DiagramTestComponent {
           canBranch: true,
           canHaveChildren: true,
         },
+        status: {
+          executed: true
+        }
       },
       {
         id: 'C2',

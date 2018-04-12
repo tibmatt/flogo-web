@@ -21,6 +21,24 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     }
   }
 
+  @HostBinding('class.has-run')
+  get hasRun() {
+    const status = this.tile.task.status;
+    if (status) {
+      return status.executed;
+    }
+    return false;
+  }
+
+  @HostBinding('class.is-invalid')
+  get isInvalid() {
+    const status = this.tile.task.status;
+    if (status) {
+      return status.invalid;
+    }
+    return false;
+  }
+
   onSelect() {
     if (!this.isReadOnly) {
       this.select.emit(this.tile);

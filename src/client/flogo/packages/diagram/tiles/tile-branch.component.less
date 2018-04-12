@@ -54,6 +54,18 @@
   }
 }
 
+:host(.has-run) {
+
+  &::before {
+    color: #79b8dc;
+  }
+
+  .branch__path {
+    fill: url(#flogo-diagram-tile__bg--has-run);
+  }
+
+}
+
 .menu {
   .animate-menu();
   pointer-events: all;

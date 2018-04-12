@@ -93,12 +93,13 @@
   filter: url(#flogo-diagram-tile-shadow);
 }
 
+.tile__stroke {
+  stroke: transparent;
+  transition: stroke 200ms ease-in-out;
+}
+
 :host(.is-selected) {
   transform: scale(1.08);
-
-  .tile__stroke {
-    stroke: #4e7ead;
-  }
 
   .tile__bg {
     fill: #4e7ead;
@@ -106,6 +107,24 @@
 
   .tile__shadow {
     filter: url(#flogo-diagram-tile-shadow-active);
+  }
+}
+
+:host(.has-run) {
+  .tile__stroke {
+    stroke: #79B8DC;
+    stroke-width: 1px;
+  }
+
+  .tile__bg {
+    fill: url(#flogo-diagram-tile__bg--has-run);
+  }
+}
+
+:host(.is-invalid) {
+  .tile__stroke {
+    stroke: #f5a623;
+    stroke-width: 2px;
   }
 }
 
