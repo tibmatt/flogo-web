@@ -40,7 +40,7 @@ export class RemoteInstaller {
     const defaultOpts = {
       type : TYPE_UNKNOWN,
       gitRepoCachePath : config.app.gitRepoCachePath, // location to cache the git repos.
-      registerPath : path.join( config.rootPath, `packages/defaults` ), // location to install the node packages. Will run `npm insatll` under it.
+      registerPath : path.join( config.rootPath, 'packages', 'defaults' ), // location to install the node packages. Will run `npm insatll` under it.
       schemaRootFolderName : DEFAULT_SCHEMA_ROOT_FOLDER_NAME
     };
 

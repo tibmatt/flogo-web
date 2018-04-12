@@ -4,9 +4,8 @@ import {getContribInstallationController as getInstallationController} from "../
 import {config} from "../../../../config/app-config";
 import {logger} from "../../../../common/logging";
 import {RemoteInstaller} from "../../../../modules/remote-installer";
-import {DEFAULT_PATH_ACTIVITY, DEFAULT_PATH_TRIGGER, TYPE_ACTIVITY, TYPE_TRIGGER} from "../../../../common/constants";
+import {TYPE_ACTIVITY, TYPE_TRIGGER} from "../../../../common/constants";
 import {ERROR_TYPES, ErrorManager} from "../../../../common/errors";
-import path from 'path';
 import flatten from 'lodash/flatten';
 
 const remoteInstaller = new RemoteInstaller();
@@ -15,15 +14,13 @@ const contributionTypes = {
   "activity": {
     "manager": ActivitiesManager,
     "installerOpts": {
-      "type": TYPE_ACTIVITY,
-      "registerPath": path.join(config.rootPath, DEFAULT_PATH_ACTIVITY)
+      "type": TYPE_ACTIVITY
     }
   },
   "trigger": {
     "manager": TriggerManager,
     "installerOpts": {
-      "type": TYPE_TRIGGER,
-      "registerPath": path.join(config.rootPath, DEFAULT_PATH_TRIGGER)
+      "type": TYPE_TRIGGER
     }
   }
 };
@@ -78,7 +75,7 @@ export function contribs(router, basePath) {
  *      summary: Get all the contributions installed in the engine.
  *      responses:
  *        '200':
- *          description: All contributions obtained successfully.
+ *          description: All contributions fetched successfully from db.
  *          schema:
  *            type: array
  *            items:
