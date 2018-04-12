@@ -5,49 +5,38 @@ import {config} from "../../../../config/app-config";
 import {logger} from "../../../../common/logging";
 import {RemoteInstaller} from "../../../../modules/remote-installer";
 import {DEFAULT_PATH_ACTIVITY, DEFAULT_PATH_TRIGGER, TYPE_ACTIVITY, TYPE_TRIGGER} from "../../../../common/constants";
+import {ERROR_TYPES, ErrorManager} from "../../../../common/errors";
 import path from 'path';
+import flatten from 'lodash/flatten';
 
 const remoteInstaller = new RemoteInstaller();
 
-const commonPath = 'contributions/microservices';
+const contributionTypes = {
+  "activity": {
+    "manager": ActivitiesManager,
+    "installerOpts": {
+      "type": TYPE_ACTIVITY,
+      "registerPath": path.join(config.rootPath, DEFAULT_PATH_ACTIVITY)
+    }
+  },
+  "trigger": {
+    "manager": TriggerManager,
+    "installerOpts": {
+      "type": TYPE_TRIGGER,
+      "registerPath": path.join(config.rootPath, DEFAULT_PATH_TRIGGER)
+    }
+  }
+};
 
 export function contribs(router, basePath) {
-  router.get(`${basePath}/${commonPath}/triggers`, listTriggers);
-  router.post(`${basePath}/${commonPath}/trigger`, installTrigger);
-  router.get(`${basePath}/${commonPath}/activities`, listActivities);
-  router.post(`${basePath}/${commonPath}/activity`, installActivity);
+  router.get(`${basePath}/contributions/microservices`, listContributions);
+  router.post(`${basePath}/contributions/microservices`, installContribution);
 }
 
 /**
  * @swagger
  * definition:
- *  Trigger:
- *    type: object
- *    properties:
- *      name:
- *        type: string
- *      version:
- *        type: string
- *      description:
- *        type: string
- *      title:
- *        type: string
- *      settings:
- *        type: array
- *        items:
- *          $ref: '#/definitions/Attribute'
- *      outputs:
- *        type: array
- *        items:
- *          $ref: '#/definitions/Attribute'
- *      endpoint:
- *        type: object
- *        properties:
- *          settings:
- *            type: array
- *            items:
- *              $ref: '#/definitions/Attribute'
- *  Activity:
+ *  Contribution:
  *    type: object
  *    properties:
  *      name:
@@ -66,27 +55,41 @@ export function contribs(router, basePath) {
  *        type: array
  *        items:
  *          $ref: '#/definitions/Attribute'
+ *      settings:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/Attribute'
+ *      endpoint:
+ *        type: object
+ *        properties:
+ *          settings:
+ *            type: array
+ *            items:
+ *              $ref: '#/definitions/Attribute'
  */
 
 /**
  * @swagger
- *  /contributions/microservice/trigger:
+ *  /contributions/microservice:
  *    get:
  *      tags:
  *        - Trigger
- *      summary: Get all the triggers installed in the engine.
+ *        - Activity
+ *      summary: Get all the contributions installed in the engine.
  *      responses:
  *        '200':
- *          description: All triggers obtained successfully.
+ *          description: All contributions obtained successfully.
  *          schema:
  *            type: array
  *            items:
- *              $ref: '#/definitions/Trigger'
+ *              $ref: '#/definitions/Contribution'
  */
-function* listTriggers() {
+function* listContributions() {
   const searchTerms = {};
   const filterName = this.request.query['filter[name]'];
   const filterRef = this.request.query['filter[ref]'];
+  let contributionType = contributionTypes[this.request.query['filter[type]']];
+  let foundContributions;
 
   if (filterName) {
     searchTerms.name = filterName;
@@ -95,19 +98,28 @@ function* listTriggers() {
     searchTerms.ref = filterRef;
   }
 
-  const foundTriggers = yield TriggerManager.find(searchTerms);
+  if (contributionType) {
+    foundContributions = yield contributionType.manager.find(searchTerms);
+  } else {
+    const promises = Object.keys(contributionTypes)
+      .reduce((promiseArray, type) =>  promiseArray.concat(contributionTypes[type].manager.find(searchTerms)), []);
+    const results = yield Promise.all(promises);
+    foundContributions = flatten(results);
+  }
+
   this.body = {
-    data: foundTriggers || [],
+    data: foundContributions || [],
   };
 }
 
 /**
  * @swagger
- * /contributions/microservice/triggers:
+ * /contributions/microservice:
  *    post:
  *      tags:
  *        - Trigger
- *      summary: Install new Triggers in the engine
+ *        - Activity
+ *      summary: Install new Trigger or Activity to the engine
  *      parameters:
  *        - name: url
  *          in: body
@@ -115,9 +127,15 @@ function* listTriggers() {
  *          required: true
  *          schema:
  *            type: string
+ *        - name: type
+ *          in: body
+ *          description: Type of contribution to be installed. Should contain either 'activity' / 'trigger'
+ *          required: true
+ *          schema:
+ *            type: string
  *      responses:
  *        '200':
- *          description: Success or failure status of installing a trigger
+ *          description: Success or failure status of installing a contribution
  *          schema:
  *            type: object
  *            properties:
@@ -128,101 +146,27 @@ function* listTriggers() {
  *                type: array
  *                items: string
  *        '400':
- *          description: Exception created while installing the trigger to the engine
+ *          description: Exception created while installing the contribution to the engine
  */
-function* installTrigger(next) {
+function* installContribution(next) {
   this.req.setTimeout(0);
   const url = this.request.body.url;
-  logger.info(`[log] Install Trigger: "${url}"`);
+  const contribType = contributionTypes[this.request.body.type];
 
-  const triggerRemoteInstaller = remoteInstaller.updateOptions({
-    type: TYPE_TRIGGER,
-    registerPath: path.join(config.rootPath, DEFAULT_PATH_TRIGGER)
-  });
-
-  const installController = yield getInstallationController(config.defaultEngine.path, triggerRemoteInstaller);
-
-  const result = yield installController.install(url);
-
-  delete result.details;
-
-  this.body = result;
-
-  yield next;
-}
-
-/**
- * @swagger
- * /contributions/microservice/activities:
- *  get:
- *    tags:
- *      - Activity
- *    responses:
- *      200:
- *        description: List all activities installed on the engine
- *        schema:
- *          type: array
- *          items:
- *            $ref: '#/definitions/Activity'
- */
-function* listActivities() {
-  const searchTerms = {};
-  const filterName = this.request.query['filter[name]'];
-  const filterRef = this.request.query['filter[ref]'];
-
-  if (filterName) {
-    searchTerms.name = filterName;
-  }
-  if (filterRef) {
-    searchTerms.ref = filterRef;
+  if (!contribType) {
+    throw ErrorManager.createRestError('Unknown type of contribution', {
+      type: ERROR_TYPES.ENGINE.INSTALL,
+      message: "Unknown type of contribution",
+      params: {
+        body: "Should be in the pattern: {\"url\": \"path_to_contribution\", \"type\": \"activity\"}"
+      }
+    });
   }
 
-  const foundActivities = yield ActivitiesManager.find(searchTerms);
-  this.body = {
-    data: foundActivities || [],
-  };
-}
-
-/**
- * @swagger
- * /contributions/microservice/activity:
- *  post:
- *    tags:
- *      - Activity
- *    summary: Install new activities
- *    parameters:
- *      - name: url
- *        in: body
- *        description: Urls of the activities to be installed
- *        required: true
- *        schema:
- *          type: string
- *      responses:
- *        '200':
- *          description: Success or failure status of installing an activity
- *          schema:
- *            type: object
- *            properties:
- *              success:
- *                type: array
- *                items: string
- *              fail:
- *                type: array
- *                items: string
- *        '400':
- *          description: Exception created while installing the activity to the engine
- */
-function* installActivity( next ) {
-  this.req.setTimeout(0);
-  const url = this.request.body.url;
-  logger.info(`[log] Install Activity: "${url}"`);
-
-  const activityRemoteInstaller = remoteInstaller.updateOptions({
-    type: TYPE_ACTIVITY,
-    registerPath: path.join(config.rootPath, DEFAULT_PATH_ACTIVITY)
-  });
-
-  const installController = yield getInstallationController(config.defaultEngine.path, activityRemoteInstaller);
+  logger.info(`[log] Install ${contribType.installerOpts.type}: "${url}"`);
+  const installController = yield getInstallationController(config.defaultEngine.path, remoteInstaller.updateOptions({
+    ...contribType.installerOpts
+  }));
 
   const result = yield installController.install(url);
 
