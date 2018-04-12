@@ -4,11 +4,7 @@ import { convertMappingsCollection, parseResourceIdFromResourceUri } from './uti
 export class StandardTriggersHandlersImporter extends AbstractTriggersHandlersImporter {
 
   extractTriggers(rawApp) {
-    const standardTriggers = rawApp.triggers || [];
-    return standardTriggers.map(stdTrigger => ({
-      ...stdTrigger,
-      name: stdTrigger.name || stdTrigger.id,
-    }));
+    return rawApp.triggers || [];
   }
 
   extractHandlers(trigger) {

@@ -178,17 +178,7 @@ function isInvalidMapping(mapping: IMapExpression) {
   if (!expression || !expression.trim().length) {
     return false;
   }
-  let isInvalid = false;
-  if (mapping.mappingType === MAPPING_TYPE.OBJECT_TEMPLATE) {
-    try {
-      JSON.parse(expression);
-    } catch (e) {
-      isInvalid = true;
-    }
-  } else {
-    return !isValidExpression(expression);
-  }
-  return isInvalid;
+  return !isValidExpression(expression);
 }
 
 function isValidExpression(expression: string) {
