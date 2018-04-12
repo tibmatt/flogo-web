@@ -5,7 +5,7 @@ import { createTileMatrix } from './create-tile-matrix';
 import { InsertTile, Node, NodeType, TaskTile, Tile, TileType } from '@flogo/packages/diagram/interfaces';
 import { NodeMatrix } from '@flogo/packages/diagram/renderable-model/matrix';
 
-fdescribe('diagram.createTileMatrix', function () {
+describe('diagram.createTileMatrix', function () {
   it('should create a renderable matrix from a node matrix', function () {
     const result = createTileMatrix(getTestData(), 5);
     const expected: ObjectContaining<Tile>[][] = getExpectedMatrix();

@@ -129,7 +129,7 @@ function makeTestData(): { root: Node, nodeDictionary: NodeDictionary } {
   return { root, nodeDictionary };
 }
 
-fdescribe('diagram.nodesToNodeMatrix', function () {
+describe('diagram.nodesToNodeMatrix', function () {
   it('correctly generates a node matrix from nodes info', function () {
     const { root, nodeDictionary } = makeTestData();
     const result = nodesToNodeMatrix(root, nodeDictionary);
