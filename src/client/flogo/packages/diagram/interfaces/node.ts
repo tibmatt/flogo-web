@@ -14,7 +14,7 @@ export interface NodeStatus {
   invalid?: boolean;
   executed?: boolean;
   executionErrored?: boolean;
-  iterable?: boolean;
+  iterable?: string;
   final?: boolean;
 }
 

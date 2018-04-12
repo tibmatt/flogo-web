@@ -98,6 +98,53 @@
   transition: stroke 200ms ease-in-out;
 }
 
+.badges {
+  z-index: 3;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: -9px;
+  right: 4px;
+  pointer-events: none;
+}
+
+.badge {
+  font-size: 14px;
+  text-align: center;
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+
+  &::before {
+    margin-left: -5px;
+    top: -1px;
+    position: relative;
+  }
+
+  & + .badge {
+    margin-left: 4px;
+  }
+
+}
+
+.badge--iterator {
+  background-color: #36bfbb;
+}
+
+.badge--error {
+  font-size: 18px;
+  background-color: #fff;
+  color: #fe566a;
+  pointer-events: all;
+  cursor: default;
+
+  &::before {
+    margin-left: -7px;
+    top: -3px;
+  }
+}
+
 :host(.is-selected) {
   transform: scale(1.08);
 

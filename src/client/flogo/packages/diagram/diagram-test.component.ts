@@ -202,6 +202,7 @@ export class DiagramTestComponent {
         },
         status: {
           invalid: true,
+          executionErrored: 'some reason here',
         }
       },
       {
@@ -213,6 +214,9 @@ export class DiagramTestComponent {
           canBranch: true,
           canHaveChildren: true,
         },
+        status: {
+          iterable: true,
+        }
       },
       {
         id: 'L-root-B2',
@@ -289,6 +293,10 @@ export class DiagramTestComponent {
           canBranch: true,
           canHaveChildren: true,
         },
+        status: {
+          executionErrored: 'some other error',
+          iterable: true,
+        }
       },
       {
         id: 'L-root-B5',
