@@ -17,11 +17,14 @@ info:
       - Triggers
       - Actions (also known as Flows)
       - Handlers
+      - Contributions
 
     An application is composed of triggers and actions.
 
     Handlers link triggers to actions, a trigger can be linked to multiple actions inside the same app but an action
     can only be linked to a single trigger.
+
+    Contributions are the trigers or activities which are used in a flow.
 
     ## Use example
     Create an app and create an action and a trigger into it.
@@ -45,6 +48,18 @@ info:
     // get the app with action and trigger linked
     finalApp = request.get('/apps/${app.id}');
 
+    // get the contributions of device profile
+    deviceContributions = request.get('/contributions/devices');
+
+    // get the contributions of microservice profile
+    microserviceContributions = request.get('/contributions/microservices');
+
+    // install a contribution of device profile
+    results = request.post('/contributions/devices', contributionData);
+
+    // install a contribution of microservice profile
+    results = request.post('/contributions/microservices', contributionData);
+    ```
     ### App structure example
     ```json
     {
@@ -145,6 +160,7 @@ tags:
  - name: actions
  - name: triggers
  - name: handlers
+ - name: contributions
 
 ################################################################################
 #                               Parameters                                     #
@@ -236,7 +252,7 @@ paths:
           schema:
             $ref: '#/definitions/AppCreate'
       responses:
-        201:
+        200:
           description: App successfully created
           schema:
             type: object
@@ -634,6 +650,8 @@ paths:
     get:
       summary: Export app to a flogo.json
       tags: [apps, export]
+      consumes:
+        - multipart/form-data
       parameters:
         - $ref: '#/parameters/appId'
         - name: app
@@ -682,7 +700,122 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/Error'
+  /contributions/microservices:
+    get:
+      summary: Get all microservice contributions
+      tags: [contributions]
+      parameters:
+        - name: filter[name]
+          in: query
+          description: |-
+            Filter all microservice contributions with exactly this name.
+          required: false
+          type: string
+        - name: filter[ref]
+          in: query
+          description: |-
+            Filter all microservice contributions with exactly this ref.
+          required: false
+          type: string
+        - name: filter[type]
+          in: query
+          description: |-
+            Filter all microservice contributions exactly with this type.
+            Useful to get all contributions of either type **`activity`** or **`trigger`**.
+          required: false
+          type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            required: ['data']
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Contribution'
+          examples:
+            application/json: |-
+              {
+                "data": [
+                  {
+                    "id": "activity-id",
+                    "ref": "activity-ref",
+                    "homepage": "activity-homepage",
+                    "name": "activity-name",
+                    "type": "flogo:activity",
+                    "version": "0.0.1",
+                    "title": "sometitle",
+                    "inputs": [],
+                    "outputs": []
 
+                  },
+                  {
+                    "id": "trigger-id",
+                    "name": "trigger-name",
+                    "version": "0.0.1",
+                    "title": "trigger-title",
+                    "description": "trigger-description",
+                    "homepage": "trigger-homepage"",
+                    "ref": "trigger-ref",
+                    "settings": [],
+                    "outputs": [],
+                    "handler": {
+                      "settings": []
+                    },
+                    "endpoint": {
+                      "settings": []
+                    },
+                    "reply": []
+                  }
+                ]
+              }
+    post:
+      summary: Install a new microservice contribution to the engine
+      description: |-
+        Installs a contribution (either a **`trigger`** or **`activity`**) to the local engine
+      tags: [contributions]
+      parameters:
+        - name: data
+          in: body
+          description: Contribution install post data
+          required: true
+          schema:
+            type: object
+            required: ['url', 'type']
+            properties:
+              url:
+                type: string
+                example: 'githubpath'
+              'type':
+                type: string
+                example: 'activity'
+      responses:
+        200:
+          description: list of contribution which are successful and failed to install in the engine
+          schema:
+            type: object
+            properties:
+              success:
+                type: array
+                items:
+                  type: string
+              fail:
+                type: array
+                items:
+                  type: string
+        400:
+          description: error
+          examples:
+            application/json: |-
+              {
+                "errors": [{
+                  "type": "CouldNotInstall",
+                  "message": "Unknown type of contribution",
+                  "status": 400
+                }]
+              }'
 ################################################################################
 #                                 Responses                                    #
 ################################################################################
@@ -953,7 +1086,6 @@ definitions:
         readOnly: true
       ref:
         type: string
-        readOnly: true
       settings:
         type: object
       handlers:
@@ -988,7 +1120,6 @@ definitions:
     properties:
       actionId:
         type: string
-        readOnly: true
       settings:
         type: object
       outputs:
@@ -1041,4 +1172,7 @@ definitions:
       $ref: '#/definitions/Action'
   FlogoJson:
     description: flogo.json
+    type: object
+  Contribution:
+    description: Trigger or Activity schema
     type: object
