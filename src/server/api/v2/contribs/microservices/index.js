@@ -31,55 +31,12 @@ export function contribs(router, basePath) {
 }
 
 /**
- * @swagger
- * definition:
- *  Contribution:
- *    type: object
- *    properties:
- *      name:
- *        type: string
- *      version:
- *        type: string
- *      description:
- *        type: string
- *      title:
- *        type: string
- *      inputs:
- *        type: array
- *        items:
- *          $ref: '#/definitions/Attribute'
- *      outputs:
- *        type: array
- *        items:
- *          $ref: '#/definitions/Attribute'
- *      settings:
- *        type: array
- *        items:
- *          $ref: '#/definitions/Attribute'
- *      endpoint:
- *        type: object
- *        properties:
- *          settings:
- *            type: array
- *            items:
- *              $ref: '#/definitions/Attribute'
- */
-
-/**
- * @swagger
- *  /contributions/microservice:
- *    get:
- *      tags:
- *        - Trigger
- *        - Activity
- *      summary: Get all the contributions installed in the engine.
- *      responses:
- *        '200':
- *          description: All contributions fetched successfully from db.
- *          schema:
- *            type: array
- *            items:
- *              $ref: '#/definitions/Contribution'
+ * Get all the contributions installed in the engine. The request have following optional query params:
+ * filter[name] {string} name of the contribution which needs to be fetched.
+ * filter[ref] {string} reference of the contribution which needs to be fetched.
+ * filter[type] {string} can contain 'activity' or 'trigger' to fetch all contributions of one type.
+ *                       If nothing provided, all the contributions for a microservices will be returned
+ *
  */
 function* listContributions() {
   const searchTerms = {};
@@ -98,9 +55,9 @@ function* listContributions() {
   if (contributionType) {
     foundContributions = yield contributionType.manager.find(searchTerms);
   } else {
-    const promises = Object.keys(contributionTypes)
-      .reduce((promiseArray, type) =>  promiseArray.concat(contributionTypes[type].manager.find(searchTerms)), []);
-    const results = yield Promise.all(promises);
+    const contributionsFetcher = Object.keys(contributionTypes)
+      .reduce((getContribsArray, type) =>  getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)), []);
+    const results = yield Promise.all(contributionsFetcher);
     foundContributions = flatten(results);
   }
 
@@ -110,40 +67,10 @@ function* listContributions() {
 }
 
 /**
- * @swagger
- * /contributions/microservice:
- *    post:
- *      tags:
- *        - Trigger
- *        - Activity
- *      summary: Install new Trigger or Activity to the engine
- *      parameters:
- *        - name: url
- *          in: body
- *          description: Url to the trigger to be installed
- *          required: true
- *          schema:
- *            type: string
- *        - name: type
- *          in: body
- *          description: Type of contribution to be installed. Should contain either 'activity' / 'trigger'
- *          required: true
- *          schema:
- *            type: string
- *      responses:
- *        '200':
- *          description: Success or failure status of installing a contribution
- *          schema:
- *            type: object
- *            properties:
- *              success:
- *                type: array
- *                items: string
- *              fail:
- *                type: array
- *                items: string
- *        '400':
- *          description: Exception created while installing the contribution to the engine
+ * Install new Trigger or Activity to the engine. The POST request need to have the following properties in the body:
+ * url {string} Url to the contribution to be installed
+ * type {string} Type of contribution to be installed. Should contain either 'activity' / 'trigger'
+ *
  */
 function* installContribution(next) {
   this.req.setTimeout(0);
@@ -153,9 +80,9 @@ function* installContribution(next) {
   if (!contribType) {
     throw ErrorManager.createRestError('Unknown type of contribution', {
       type: ERROR_TYPES.ENGINE.INSTALL,
-      message: "Unknown type of contribution",
+      message: 'Unknown type of contribution',
       params: {
-        body: "Should be in the pattern: {\"url\": \"path_to_contribution\", \"type\": \"activity\"}"
+        body: 'Should be in the pattern: {"url": "path_to_contribution", "type": "activity"}'
       }
     });
   }
