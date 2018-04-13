@@ -13,6 +13,7 @@ export const ERROR_TYPES = {
     INSTALL: 'CouldNotInstall',
     BUILD: 'EngineBuildFailed',
     STOP: 'EngineStopFailed',
-    START: 'EngineStartFailed'
+    START: 'EngineStartFailed',
+    SYNC: 'DatabaseSyncFailed'
   }
 };

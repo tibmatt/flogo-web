@@ -16,7 +16,6 @@ import {
   constructGitHubPath
 } from '../../common/utils';
 import {getInitializedEngine} from "../engine/registry";
-import {syncTasks} from "../init/sync-tasks";
 import {triggersDBService} from "../../common/db/triggers";
 import {activitiesDBService} from "../../common/db/activities";
 import {runShellCMD} from "../../common/utils/process";
@@ -84,23 +83,16 @@ export class RemoteInstaller {
 
           return result;
         } )
-        .then( ( result ) => {
-
-          // TODO
-          //  need to merge and include the installed success ones and failed ones.
-          return opts.engine.load()
-            .then(() => syncTasks(opts.engine, true))
-            .then(() => ({
-              success : _.union( result.github.success, result.default.success ),
-              fail : _.union( result.github.fail, result.default.fail ),
-              details : _.assign( {}, result.github.details, result.default.details )
-            }));
-        } )
+        .then((result) => ({
+          success : _.union( result.github.success, result.default.success ),
+          fail : _.union( result.github.fail, result.default.fail ),
+          details : _.assign( {}, result.github.details, result.default.details )
+        }))
         .then( resolve )
         .catch( ( err ) => {
           console.error( err );
           reject( err );
-        } );
+        });
     } );
   }
 

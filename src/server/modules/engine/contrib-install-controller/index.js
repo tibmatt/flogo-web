@@ -3,6 +3,7 @@ import path from 'path';
 import omit from 'lodash/omit';
 import {logger} from '../../../common/logging';
 import {ERROR_TYPES, ErrorManager} from '../../../common/errors';
+import {syncTasks} from '../../init';
 
 const INSTALLATION_STATE = {
   INIT: 'initializing',
@@ -11,7 +12,8 @@ const INSTALLATION_STATE = {
   BUILD: 'building',
   COPYBIN: 'copying-binary',
   STOP: 'stopping',
-  START: 'starting'
+  START: 'starting',
+  SYNC: 'syncing-db'
 };
 
 const SRC_FOLDER = 'src';
@@ -43,7 +45,8 @@ export class ContribInstallController {
             .then(() => {
               logger.debug(`Restarting the engine upon successful '${url}' installation.`);
               return this.restartEngineAfterBuild();
-            });
+            })
+            .then(() => this.updateContribsDB());
         } else {
           return results;
         }
@@ -81,6 +84,13 @@ export class ContribInstallController {
       .then(() => this.startEngine());
   }
 
+  updateContribsDB() {
+    logger.debug(`Syncing the contributions DB`);
+    this.installState = INSTALLATION_STATE.SYNC;
+    return this.engine.load()
+      .then(() => syncTasks(this.engine));
+  }
+
   customInstallationError() {
     let message = 'Installation failed ';
     let type = ERROR_TYPES.ENGINE.NOTHANDLED;
@@ -109,6 +119,10 @@ export class ContribInstallController {
         message = message + 'while starting the engine';
         type = ERROR_TYPES.ENGINE.START;
         break;
+      case INSTALLATION_STATE.SYNC:
+        message = message + 'while syncing to database';
+        type = ERROR_TYPES.ENGINE.SYNC;
+        break;
       default:
         message = message + `at ${this.installState} state`;
         break;
@@ -133,6 +147,7 @@ export class ContribInstallController {
         break;
       case INSTALLATION_STATE.STOP:
       case INSTALLATION_STATE.START:
+      case INSTALLATION_STATE.SYNC:
         promise = this.recoverSource()
           .then(() => this.buildEngine())
           .then(() => this.restartEngineAfterBuild());

@@ -169,7 +169,6 @@ class Engine {
    * @param palettePath Path to palette
    * @param options
    * @param options.version {string} version
-   * @param options.noReload {boolean} Skip engine data reload
    */
   installPalette(palettePath, options) {
     options = Object.assign({ /* version: this.libVersion */ }, options);
@@ -181,7 +180,6 @@ class Engine {
    * @param triggerPath Remote url or use local://path for local items
    * @param options
    * @param options.version {string} trigger versions
-   * @param options.noReload {boolean} Skip engine data reload
    */
   addTrigger(triggerPath, options) {
     return this._installItem('trigger', triggerPath, options);
@@ -192,7 +190,6 @@ class Engine {
    * @param activityPath Remote url or use local://path for local items
    * @param options
    * @param options.version {string} trigger versions
-   * @param options.noReload {boolean} Skip engine data reload
    */
   addActivity(activityPath, options) {
     return this._installItem('activity', activityPath, options);
@@ -202,7 +199,6 @@ class Engine {
    * Delete an installed trigger
    * @param {string} nameOrPath Trigger name or path (remote url or local://path)
    * @param options
-   * @param options.noReload {boolean} Skip engine data reload
    */
   deleteTrigger(nameOrPath, options) {
     return this._deleteItem('trigger', nameOrPath, options);
@@ -212,34 +208,24 @@ class Engine {
    * Delete an installed activity
    * @param {string} nameOrPath Trigger name or path (remote url or local://path)
    * @param options
-   * @param options.noReload {boolean} Skip engine data reload
    */
   deleteActivity(nameOrPath, options) {
     return this._deleteItem('activity', nameOrPath, options);
   }
 
   _deleteItem(itemType, nameOrPath, options) {
-    let promise = commander.delete[itemType](this.path, nameOrPath);
-    let shouldReload = !(options && options.noReload);
-    if (shouldReload) {
-      promise = promise.then(() => this.load());
-    }
-    return promise;
+    return commander.delete[itemType](this.path, nameOrPath);
   }
 
   _installItem(itemType, path, options) {
     let label = `engine:install:${itemType}`;
     console.time(label);
-    options = { ...options };
-    let promise = commander.add[itemType](this.path, path, options);
-    const shouldReload = !(options && options.noReload);
-    if (shouldReload) {
-      promise = promise.then(() => this.load());
-    }
-    return promise.then(result => {
-      console.timeEnd(label);
-      return result;
-    });
+    options = {...options};
+    return commander.add[itemType](this.path, path, options)
+      .then(result => {
+        console.timeEnd(label);
+        return result;
+      });
   }
 
   _hasItem(where, nameOrPath) {
