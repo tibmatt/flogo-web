@@ -53,7 +53,7 @@
   "CANVAS:BUILD": "Build",
   "CANVAS:COPY": "Make a copy",
   "CANVAS:DELETE": "Delete",
-  "CANVAS:FLOW-PARAMS": "Flow params",
+  "CANVAS:FLOW-PARAMS-INPUT-OUTPUT": "Input Output",
   "CANVAS:FLOW-NAME-EXISTS":"Flow with name {{value}} exists, please choose another name.",
   "CANVAS:ERROR-GETTING-FLOW-NAME": "Error getting flow name",
   "CANVAS:ERROR-MESSAGE-FAILED": "Flow has failed with error code 700",
