@@ -96,11 +96,11 @@ export class TreeNodeFactoryService {
       if (currentFunction.type === 'namespace') {
         Object.keys(currentFunction.functions).forEach(subFunc => {
           const currentChildFunction = currentFunction.functions[subFunc];
-          node = this.createFromFunctionsNode(currentChildFunction, currentFunction.type, func);
+          node = this.createFromFunctionsNode(currentChildFunction, func);
           pushToCategory(func, node);
         });
       } else if (currentFunction.type === 'function') {
-        node = this.createFromFunctionsNode(currentFunction, currentFunction.type, func);
+        node = this.createFromFunctionsNode(currentFunction);
         nodes.push(node);
       } else {
         console.error(`Not a recognized type of function: ${currentFunction.type}`);
@@ -121,7 +121,7 @@ export class TreeNodeFactoryService {
     return sort(allNodes);
   }
 
-  private createFromFunctionsNode(currentFunction, currentFunctionType, namespace) {
+  private createFromFunctionsNode(currentFunction, namespace?) {
     const functionName = currentFunction.name;
     const help = currentFunction.help;
     const args = currentFunction.args
@@ -135,9 +135,9 @@ export class TreeNodeFactoryService {
         return allArgs;
       }, []);
     let snippet = '';
-    if (currentFunctionType === 'namespace') {
+    if (namespace) {
       snippet = `${namespace}.${functionName}(${args.join(', ')})`;
-    } else if (currentFunctionType === 'function') {
+    } else {
       snippet = `${functionName}(${args.join(', ')})`;
     }
     const node = {
