@@ -1,26 +1,26 @@
-import {TriggerManager} from "../../../../modules/triggers";
-import {ActivitiesManager} from "../../../../modules/activities";
-import {getContribInstallationController as getInstallationController} from "../../../../modules/engine";
-import {config} from "../../../../config/app-config";
-import {logger} from "../../../../common/logging";
-import {RemoteInstaller} from "../../../../modules/remote-installer";
-import {TYPE_ACTIVITY, TYPE_TRIGGER} from "../../../../common/constants";
-import {ERROR_TYPES, ErrorManager} from "../../../../common/errors";
+import {TriggerManager} from '../../../../modules/triggers';
+import {ActivitiesManager} from '../../../../modules/activities';
+import {getContribInstallationController as getInstallationController} from '../../../../modules/engine';
+import {config} from '../../../../config/app-config';
+import {logger} from '../../../../common/logging';
+import {RemoteInstaller} from '../../../../modules/remote-installer';
+import {TYPE_ACTIVITY, TYPE_TRIGGER} from '../../../../common/constants';
+import {ERROR_TYPES, ErrorManager} from '../../../../common/errors';
 import flatten from 'lodash/flatten';
 
 const remoteInstaller = new RemoteInstaller();
 
 const contributionTypes = {
-  "activity": {
-    "manager": ActivitiesManager,
-    "installerOpts": {
-      "type": TYPE_ACTIVITY
+  'activity': {
+    'manager': ActivitiesManager,
+    'installerOpts': {
+      'type': TYPE_ACTIVITY
     }
   },
-  "trigger": {
-    "manager": TriggerManager,
-    "installerOpts": {
-      "type": TYPE_TRIGGER
+  'trigger': {
+    'manager': TriggerManager,
+    'installerOpts': {
+      'type': TYPE_TRIGGER
     }
   }
 };
@@ -87,7 +87,7 @@ function* installContribution(next) {
     });
   }
 
-  logger.info(`[log] Install ${contribType.installerOpts.type}: "${url}"`);
+  logger.info(`[log] Install ${contribType.installerOpts.type}: '${url}'`);
   const installController = yield getInstallationController(config.defaultEngine.path, remoteInstaller.updateOptions({
     ...contribType.installerOpts
   }));

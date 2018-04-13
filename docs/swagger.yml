@@ -729,7 +729,7 @@ paths:
           description: Successful response
           schema:
             type: object
-            required: ["data"]
+            required: ['data']
             properties:
               data:
                 type: array

@@ -1,8 +1,8 @@
-import {copyFile, fileExists, inspectObj, rmFolder} from "../../../common/utils";
+import {copyFile, fileExists, inspectObj, rmFolder} from '../../../common/utils';
 import path from 'path';
 import omit from 'lodash/omit';
-import {logger} from "../../../common/logging";
-import {ERROR_TYPES, ErrorManager} from "../../../common/errors";
+import {logger} from '../../../common/logging';
+import {ERROR_TYPES, ErrorManager} from '../../../common/errors';
 
 const INSTALLATION_STATE = {
   INIT: 'initializing',
@@ -41,7 +41,7 @@ export class ContribInstallController {
         if (results.fail.length === 0) {
           return this.buildEngine()
             .then(() => {
-              logger.debug(`Restarting the engine upon successful "${url}" installation.`);
+              logger.debug(`Restarting the engine upon successful '${url}' installation.`);
               return this.restartEngineAfterBuild();
             });
         } else {
@@ -50,9 +50,9 @@ export class ContribInstallController {
       }).then(() => this.removeBackup())
       .then(() => results)
       .catch(err => {
-        logger.error(`[error] Encountered error while installing the "${url}" to the engine: `);
+        logger.error(`[error] Encountered error while installing the '${url}' to the engine: `);
         logger.error(err);
-        logger.debug(`Installation of "${url}" failed in "${this.installState}" step.`);
+        logger.debug(`Installation of '${url}' failed in '${this.installState}' step.`);
         logger.debug(`Starting engine recovery.`);
         return this.recoverEngine()
           .then(() => this.removeBackup())
@@ -145,7 +145,7 @@ export class ContribInstallController {
   }
 
   createBackup() {
-    logger.debug(`Backing up "${SRC_FOLDER}" to "${BACKUP_SRC_FOLDER}".`);
+    logger.debug(`Backing up '${SRC_FOLDER}' to '${BACKUP_SRC_FOLDER}'.`);
     this.installState = INSTALLATION_STATE.BACKUP;
     let promise = null;
     const srcPath = path.join(this.engine.path, SRC_FOLDER);
@@ -178,7 +178,7 @@ export class ContribInstallController {
   }
 
   installToEngine(url) {
-    logger.debug(`Started installing "${url}" to the engine.`);
+    logger.debug(`Started installing '${url}' to the engine.`);
     this.installState = INSTALLATION_STATE.INSTALL;
     return this.remoteInstaller.install([url], {engine: this.engine});
   }
