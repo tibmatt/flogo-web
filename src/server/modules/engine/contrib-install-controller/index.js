@@ -46,7 +46,7 @@ export class ContribInstallController {
               logger.debug(`Restarting the engine upon successful '${url}' installation.`);
               return this.restartEngineAfterBuild();
             })
-            .then(() => this.updateContribsDB(url));
+            .then(() => this.updateContribsDB());
         } else {
           return results;
         }
