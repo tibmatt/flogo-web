@@ -85,20 +85,6 @@ export class StaticMapperContextFactory {
                     }
                   }
                 }
-              },
-              'random': {
-                'name': 'random',
-                'type': 'function',
-                'args': [{
-                  'name': 'limit',
-                  'type': 'integer'
-                }],
-                'return': {'type': 'integer'},
-                'help': {
-                  'description': 'Generates a pseudo-random integer number between 0 and the specified limit.',
-                  'usage': 'number.random(<< limit >>)\nReturn Type\nint',
-                  'example': 'number.random(10)\nReturns 9'
-                }
               }
             });
           },
