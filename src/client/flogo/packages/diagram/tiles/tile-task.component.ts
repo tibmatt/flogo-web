@@ -29,7 +29,8 @@ export class TileTaskComponent extends AbstractTileTaskComponent {
   get isTerminal() {
     const { task } = this.tile;
     if (task) {
-      return task.status.final || !task.capabilities.canHaveChildren;
+      const { final: isFinal, canHaveChildren } = task.features;
+      return isFinal || !canHaveChildren;
     }
     return false;
   }

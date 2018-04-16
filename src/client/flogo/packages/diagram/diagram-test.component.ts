@@ -119,7 +119,7 @@ export class DiagramTestComponent {
     const newNode = this.newNode({
       type: NodeType.Task,
       parents: [parentNode.id],
-      capabilities: {
+      features: {
         canBranch: true,
         canHaveChildren: true,
         deletable: true
@@ -139,7 +139,7 @@ export class DiagramTestComponent {
     const newNode = this.newNode({
       type: NodeType.Branch,
       parents: [parentNode.id],
-      capabilities: {
+      features: {
         canBranch: false,
         canHaveChildren: true,
         deletable: true,
@@ -176,7 +176,7 @@ export class DiagramTestComponent {
       id: newId,
       parents: nodeData.parents ? [...nodeData.parents] : [],
       children: nodeData.children ? [...nodeData.children] : [],
-      capabilities: nodeData.capabilities ? {...nodeData.capabilities } : {},
+      features: nodeData.features ? {...nodeData.features } : {},
       status: nodeData.status ? {...nodeData.status } : {},
     };
   }
@@ -188,7 +188,7 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: [],
         children: ['B1', 'L-root-B2', 'L-root-B3', 'L-root-B4', 'L-root-B5'],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: true,
         }
@@ -198,7 +198,7 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: ['root'],
         children: ['C1'],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: true,
         },
@@ -212,7 +212,7 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: ['B1'],
         children: [],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: true,
         },
@@ -225,7 +225,7 @@ export class DiagramTestComponent {
         type: NodeType.Branch,
         parents: ['root'],
         children: ['B2'],
-        capabilities: {
+        features: {
           canBranch: false,
           canHaveChildren: true,
         },
@@ -238,7 +238,7 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: ['L-root-B2'],
         children: ['C2'],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: true,
         },
@@ -251,7 +251,7 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: ['B2'],
         children: [],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: false,
         },
@@ -261,7 +261,7 @@ export class DiagramTestComponent {
         type: NodeType.Branch,
         parents: ['root'],
         children: ['B3'],
-        capabilities: {
+        features: {
           canBranch: false,
           canHaveChildren: true,
         },
@@ -271,7 +271,7 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: ['L-root-B3'],
         children: [],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: true,
         },
@@ -281,7 +281,7 @@ export class DiagramTestComponent {
         type: NodeType.Branch,
         parents: ['root'],
         children: ['B4'],
-        capabilities: {
+        features: {
           canBranch: false,
           canHaveChildren: true,
         },
@@ -291,7 +291,7 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: ['L-root-B4'],
         children: [],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: true,
         },
@@ -305,7 +305,7 @@ export class DiagramTestComponent {
         type: NodeType.Branch,
         parents: ['root'],
         children: ['B5'],
-        capabilities: {
+        features: {
           canBranch: false,
           canHaveChildren: true,
         },
@@ -315,14 +315,14 @@ export class DiagramTestComponent {
         type: NodeType.Task,
         parents: ['L-root-B5'],
         children: [],
-        capabilities: {
+        features: {
           canBranch: true,
           canHaveChildren: true,
         },
       }
     ];
     const nodeDictionary: NodeDictionary = fromPairs(
-      nodes.map(node => [node.id, { ...node, capabilities: { deletable: true, ...node.capabilities }, status: node.status || {} }]),
+      nodes.map(node => [node.id, { ...node, capabilities: { deletable: true, ...node.features }, status: node.status || {} }]),
     );
     const { root } = nodeDictionary;
     return { rootId: root.id, nodes: nodeDictionary };

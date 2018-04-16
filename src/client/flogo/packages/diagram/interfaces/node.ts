@@ -3,11 +3,13 @@ export enum NodeType {
   Branch = 'branch',
 }
 
-export interface NodeCapabilities {
+export interface NodeFeatures {
   selectable?: boolean;
   canHaveChildren?: boolean;
   canBranch?: boolean;
   deletable?: boolean;
+  subflow?: boolean;
+  final?: boolean;
 }
 
 export interface NodeStatus {
@@ -15,7 +17,6 @@ export interface NodeStatus {
   executed?: boolean;
   executionErrored?: string;
   iterable?: boolean;
-  final?: boolean;
 }
 
 export interface Node {
@@ -23,7 +24,9 @@ export interface Node {
   type: NodeType;
   children: string[];
   parents: string[];
-  capabilities: NodeCapabilities;
+  features: NodeFeatures;
   status: NodeStatus;
+  title?: string;
+  description?: string;
 }
 

@@ -35,7 +35,7 @@ describe('diagram.createTileMatrix', function () {
           type: NodeType.Task,
           parents: [],
           children: ['child1', 'branch1'],
-          capabilities: {
+          features: {
             canHaveChildren: true,
             canBranch: true,
           },
@@ -46,7 +46,7 @@ describe('diagram.createTileMatrix', function () {
           type: NodeType.Task,
           parents: ['root'],
           children: [],
-          capabilities: {
+          features: {
             canHaveChildren: false,
             canBranch: true,
           },
@@ -60,7 +60,7 @@ describe('diagram.createTileMatrix', function () {
           type: NodeType.Branch,
           parents: [],
           children: ['child2'],
-          capabilities: {
+          features: {
             canHaveChildren: true,
             canBranch: true,
           },
@@ -71,7 +71,7 @@ describe('diagram.createTileMatrix', function () {
           type: NodeType.Task,
           parents: [],
           children: [],
-          capabilities: {
+          features: {
             canHaveChildren: true,
             canBranch: true,
           },

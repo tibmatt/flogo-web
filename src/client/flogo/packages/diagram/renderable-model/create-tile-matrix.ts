@@ -19,7 +19,7 @@ export function createTileMatrix(nodeMatrix: NodeMatrix, maxRowLength, isReadOnl
     }
     const rowOfTiles: Tile[] = rowOfNodes.map(nodeToTile);
     const lastNode = rowOfNodes[rowOfNodes.length - 1];
-    const isInsertAllowed = lastNode.capabilities.canHaveChildren;
+    const isInsertAllowed = lastNode.features && lastNode.features.canHaveChildren;
     if (!isReadOnly && isInsertAllowed && rowOfTiles.length < maxRowLength) {
       return makeRowExtensible(rowOfTiles, lastNode.id, maxRowLength);
     }
