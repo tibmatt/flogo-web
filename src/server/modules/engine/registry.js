@@ -4,7 +4,9 @@ import {Engine} from './engine';
 import { logger, engineLogger } from '../../common/logging';
 import {config} from '../../config/app-config';
 import { installDeviceContributions } from './../init/install-device-contribs';
+import {ContribInstallController} from "./contrib-install-controller";
 
+const CONTRIB_INSTALLER = 'contribInstaller';
 let engineRegistry = {};
 
 /**
@@ -34,6 +36,24 @@ export function getInitializedEngine(enginePath, opts = {}) {
       engineRegistry[enginePath] = engine;
       initTimer.done('EngineInit');
       return engine;
+    });
+}
+
+/**
+ * Gets initialized ContributionInstallController instance and setup the controller's Engine and
+ * RemoteInstaller instances which are used for installing a contribution
+ * @param enginePath {string} name/path of the engine
+ * @param remoteInstaller {object}
+ * @param remoteInstaller.opts {object} to maintain the options for remote installer to install contribution in engine
+ * @returns {*} Instance of  ContribInstallController
+ */
+export function getContribInstallationController(enginePath, remoteInstaller ) {
+  return getInitializedEngine(enginePath)
+    .then(engine => {
+      if (!engineRegistry[CONTRIB_INSTALLER]) {
+        engineRegistry[CONTRIB_INSTALLER] = new ContribInstallController();
+      }
+      return engineRegistry[CONTRIB_INSTALLER].setupController(engine, remoteInstaller);
     });
 }
 

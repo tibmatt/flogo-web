@@ -13,9 +13,9 @@ import { BaseRegistered } from '../../modules/base-registered';
 import {
   isGitHubURL,
   parseGitHubURL,
-  constructGitHubPath} from '../../common/utils';
+  constructGitHubPath
+} from '../../common/utils';
 import {getInitializedEngine} from "../engine/registry";
-import {syncTasks} from "../init/sync-tasks";
 import {triggersDBService} from "../../common/db/triggers";
 import {activitiesDBService} from "../../common/db/activities";
 import {runShellCMD} from "../../common/utils/process";
@@ -39,11 +39,16 @@ export class RemoteInstaller {
     const defaultOpts = {
       type : TYPE_UNKNOWN,
       gitRepoCachePath : config.app.gitRepoCachePath, // location to cache the git repos.
-      registerPath : path.join( config.rootPath, `packages/defaults` ), // location to install the node packages. Will run `npm insatll` under it.
+      registerPath : path.join( config.rootPath, 'packages', 'defaults' ), // location to install the node packages. Will run `npm insatll` under it.
       schemaRootFolderName : DEFAULT_SCHEMA_ROOT_FOLDER_NAME
     };
 
     this.opts = _.assign( {}, defaultOpts, opts );
+  }
+
+  updateOptions(opts) {
+    this.opts = _.assign( {}, this.opts, opts );
+    return this;
   }
 
   install( sourceURLs, opts ) {
@@ -78,23 +83,16 @@ export class RemoteInstaller {
 
           return result;
         } )
-        .then( ( result ) => {
-
-          // TODO
-          //  need to merge and include the installed success ones and failed ones.
-          return opts.engine.load()
-            .then(() => syncTasks(opts.engine, true))
-            .then(() => ({
-              success : _.union( result.github.success, result.default.success ),
-              fail : _.union( result.github.fail, result.default.fail ),
-              details : _.assign( {}, result.github.details, result.default.details )
-            }));
-        } )
+        .then((result) => ({
+          success : _.union( result.github.success, result.default.success ),
+          fail : _.union( result.github.fail, result.default.fail ),
+          details : _.assign( {}, result.github.details, result.default.details )
+        }))
         .then( resolve )
         .catch( ( err ) => {
           console.error( err );
           reject( err );
-        } );
+        });
     } );
   }
 

@@ -2,6 +2,7 @@ import path from 'path';
 import { copyFile, changePermissions } from '../../../common/utils';
 import { runShellCMD } from '../../../common/utils/process';
 import { recursivelyFindFirstFile } from '../file-utils';
+import {logger} from "../../../common/logging";
 
 /**
  * Build the engine.
@@ -23,7 +24,7 @@ import { recursivelyFindFirstFile } from '../file-utils';
  *
  * @returns {Promise<{path: string}>} path to generated binary
  */
-export function build(enginePath, opts) {
+export function buildAndCopy(enginePath, opts) {
   const defaultEnginePath = path.join(enginePath);
 
   opts = _mergeOpts(opts);
@@ -55,6 +56,29 @@ export function build(enginePath, opts) {
         return _copyBinaryToTarget(binaryPath, opts.target);
       }
       return { path: binaryPath };
+    });
+}
+
+export function build(enginePath, opts) {
+  const defaultEnginePath = path.join(enginePath);
+
+  opts = _mergeOpts(opts);
+
+  const args = _getCommandArgs(opts);
+  const env = _getEnv(opts);
+
+  logger.info(`[log] Build flogo: "flogo build ${args}" compileOpts:`);
+
+  return runShellCMD('flogo', ['build'].concat(args), {
+    cwd: defaultEnginePath,
+    env: Object.assign({}, process.env, env),
+  });
+}
+
+export function copyBinaryToDestination(enginePath, target) {
+  return recursivelyFindFirstFile(path.join(enginePath, 'bin'))
+    .then(binaryPath => {
+      return _copyBinaryToTarget(binaryPath, target);
     });
 }
 
