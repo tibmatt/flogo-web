@@ -17,6 +17,12 @@ export class RESTAPITriggersService {
     return this._http.get(this.apiPrefix('triggers')).toPromise();
   }
 
+  /**
+   * Used to install triggers to the local engine.
+   * @param {string[]} urls of the triggers which are to be installed to the local engine
+   * @returns {Promise<Response>}
+   * @deprecated since v0.5.4 after migrating the install API to v2
+   */
   installTriggers(urls: string[]) {
 
     const body = JSON.stringify({

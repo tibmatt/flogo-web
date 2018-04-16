@@ -17,6 +17,12 @@ export class RESTAPIActivitiesService {
     return this._http.get(this.apiPrefix('activities')).toPromise();
   }
 
+  /**
+   * Used to install activities to the local engine.
+   * @param {string[]} urls of the activities which are to be installed to the local engine
+   * @returns {Promise<Response>}
+   * @deprecated since v0.5.4 after migrating the install API to v2
+   */
   installActivities(urls: string[]) {
 
     const body = JSON.stringify({
