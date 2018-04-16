@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FLOGO_PROFILE_TYPE, CONTRIB_REF_PLACEHOLDER } from '../constants';
-import { RESTAPITriggersService } from './restapi/triggers-api.service';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
 import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask, getProfileType} from '../../shared/utils';
-import { RESTAPIActivitiesService } from './restapi/activities-api.service';
 import { AbstractTaskIdGenerator } from './profiles/profiles.utils.service';
 import { FlogoDeviceTaskIdGeneratorService } from './profiles/devices/utils.service';
 import { FlogoMicroserviceTaskIdGeneratorService } from './profiles/microservices/utils.service';
@@ -14,9 +12,7 @@ export class FlogoProfileService {
   public currentApplicationProfile: FLOGO_PROFILE_TYPE;
   utils: AbstractTaskIdGenerator;
 
-  constructor(private triggersService: RESTAPITriggersService,
-              private activitiesService: RESTAPIActivitiesService,
-              private contribService: RESTAPIContributionsService) {
+  constructor(private contribService: RESTAPIContributionsService) {
 
   }
 
@@ -34,13 +30,7 @@ export class FlogoProfileService {
   }
 
   getTriggers(profile) {
-    let triggerFetchPromise;
-    if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-      triggerFetchPromise = this.triggersService.getTriggers();
-    } else {
-      triggerFetchPromise = this.contribService.listContribs('trigger');
-    }
-    return triggerFetchPromise.then(response => {
+    return this.contribService.listContribs(profile, 'trigger').then(response => {
       if (response.text()) {
         const data = response.json().data || [];
         return _.map(data, (trigger: any) => {
@@ -62,14 +52,8 @@ export class FlogoProfileService {
   }
 
   getActivities(profile) {
-    let activitiesFetchPromise;
     let subflowAcivitySchema;
-    if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-      activitiesFetchPromise = this.activitiesService.getActivities();
-    } else {
-      activitiesFetchPromise = this.contribService.listContribs('activity');
-    }
-    return activitiesFetchPromise.then(response => {
+    return this.contribService.listContribs(profile, 'activity').then(response => {
       if (response.text()) {
         const data = response.json().data || [];
         // Exclude subflow activity from processing it as a normal activity
@@ -87,7 +71,7 @@ export class FlogoProfileService {
       } else {
         return response;
       }
-    }).then(result => {
+    }).then((result: any[]) => {
       // Create a custom activity task object for subflow using suflow schema. Also we need to add it to the list only if
       // the subflow is installed in the flogo-web engine
       if (profile === FLOGO_PROFILE_TYPE.MICRO_SERVICE && subflowAcivitySchema) {

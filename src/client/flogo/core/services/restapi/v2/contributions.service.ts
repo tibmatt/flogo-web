@@ -21,8 +21,8 @@ export class RESTAPIContributionsService {
       .then(response => response.json().data[0]);
   }
 
-  listContribs(type) {
-    return this._http.get(this.httpUtils.apiPrefix(this.pathToService + '?filter[type]=' + type)).toPromise();
+  listContribs(profileType, type) {
+    return this._http.get(this.apiPrefix(profileType, '?filter[type]=' + type)).toPromise();
   }
 
   installContributions({profileType, installType, url}) {
@@ -47,7 +47,7 @@ export class RESTAPIContributionsService {
     return data;
   }
 
-  private apiPrefix(profileType: FLOGO_PROFILE_TYPE) {
+  private apiPrefix(profileType: FLOGO_PROFILE_TYPE, extendedPath?: string) {
     const commonPath = 'contributions/';
     let pathToService;
     if (profileType === FLOGO_PROFILE_TYPE.DEVICE) {
@@ -55,6 +55,6 @@ export class RESTAPIContributionsService {
     } else {
       pathToService = commonPath + 'microservices';
     }
-    return this.httpUtils.apiPrefix(pathToService);
+    return this.httpUtils.apiPrefix(pathToService + extendedPath);
   }
 }

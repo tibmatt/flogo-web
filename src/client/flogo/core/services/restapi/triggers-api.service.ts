@@ -13,6 +13,11 @@ export class RESTAPITriggersService {
       .then(response => response.json().data[0]);
   }
 
+  /**
+   * Used to get all the triggers installed in the local engine.
+   * @returns {Promise<Response>}
+   * @deprecated since v0.5.4 after migrating the install API to v2
+   */
   getTriggers() {
     return this._http.get(this.apiPrefix('triggers')).toPromise();
   }
