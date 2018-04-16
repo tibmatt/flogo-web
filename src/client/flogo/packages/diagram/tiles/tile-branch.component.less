@@ -27,41 +27,23 @@
   bottom: 0;
   right: 0;
   transform: translateX(25px);
-  transition: all 0.3s ease-in-out;
   pointer-events: none;
 }
 
 .branch__path {
-  fill: url(#flogo-diagram-branch__bg);
   pointer-events: all;
   cursor: pointer;
 }
 
 .branch__shadow {
   fill: #000;
-  filter: url(#flogo-diagram-branch__shadow);
   pointer-events: none;
-}
-
-:host(.is-selected) {
-
-  .branch__path {
-    fill: #8a90ae;
-  }
-
-  .branch__shadow {
-    filter: url(#flogo-diagram-branch__shadow--selected);
-  }
 }
 
 :host(.has-run) {
 
   &::before {
     color: #79b8dc;
-  }
-
-  .branch__path {
-    fill: url(#flogo-diagram-tile__bg--has-run);
   }
 
 }

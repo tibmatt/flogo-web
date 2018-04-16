@@ -85,12 +85,10 @@
 
 .tile__bg {
   transform: translate(0, 0);
-  fill: url(#flogo-diagram-tile-bg-default);
 }
 
 .tile__shadow {
   fill: #000;
-  filter: url(#flogo-diagram-tile-shadow);
 }
 
 .tile__stroke {
@@ -151,20 +149,12 @@
   .tile__bg {
     fill: #4e7ead;
   }
-
-  .tile__shadow {
-    filter: url(#flogo-diagram-tile-shadow-active);
-  }
 }
 
 :host(.has-run) {
   .tile__stroke {
     stroke: #79B8DC;
     stroke-width: 1px;
-  }
-
-  .tile__bg {
-    fill: url(#flogo-diagram-tile__bg--has-run);
   }
 }
 

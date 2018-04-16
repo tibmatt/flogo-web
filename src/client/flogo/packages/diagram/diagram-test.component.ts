@@ -94,7 +94,7 @@ export class DiagramTestComponent {
       childBranches.push(nodeToRemove);
     }
     childBranches.forEach(branchNode => this.deleteChildren(branchNode, flow.nodes));
-    this.flow = flow;
+    this.flow = { ...flow };
   }
 
   deleteChildren(node: Node, dictionary: Flow['nodes']) {
@@ -122,6 +122,7 @@ export class DiagramTestComponent {
       capabilities: {
         canBranch: true,
         canHaveChildren: true,
+        deletable: true
       }
     });
 
@@ -141,6 +142,7 @@ export class DiagramTestComponent {
       capabilities: {
         canBranch: false,
         canHaveChildren: true,
+        deletable: true,
       },
     });
     this.insertNode(newNode, parentNode);
@@ -320,7 +322,7 @@ export class DiagramTestComponent {
       }
     ];
     const nodeDictionary: NodeDictionary = fromPairs(
-      nodes.map(node => [node.id, { ...node, capabilities: node.capabilities || {}, status: node.status || {} }]),
+      nodes.map(node => [node.id, { ...node, capabilities: { deletable: true, ...node.capabilities }, status: node.status || {} }]),
     );
     const { root } = nodeDictionary;
     return { rootId: root.id, nodes: nodeDictionary };

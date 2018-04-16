@@ -1,4 +1,7 @@
-import { Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, Output,
+  SimpleChanges
+} from '@angular/core';
 import { find } from 'lodash';
 import { Flow, DiagramSelection, DiagramAction, TaskTile, TileType, Tile } from '../interfaces';
 import { TileMatrix, makeRenderableMatrix } from '../renderable-model';
@@ -12,6 +15,7 @@ import { diagramAnimations } from './diagram.animations';
   styleUrls: ['./diagram.component.less'],
   providers: [RowIndexService],
   animations: diagramAnimations,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiagramComponent implements OnChanges, OnDestroy {
   @HostBinding('@list') animateList = true;

@@ -13,8 +13,8 @@ export interface NodeCapabilities {
 export interface NodeStatus {
   invalid?: boolean;
   executed?: boolean;
-  executionErrored?: boolean;
-  iterable?: string;
+  executionErrored?: string;
+  iterable?: boolean;
   final?: boolean;
 }
 

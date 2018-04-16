@@ -1,10 +1,9 @@
-import { Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Injectable, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { DiagramSelection, TaskTile, DiagramActionSelf, DiagramActionChild, DiagramSelectionType } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
-@Component({
-  selector: 'flogo-diagram-abstract-tile-task',
-  template: '',
-})
+import { SvgRefFixerService } from '../../../core/services/svg-ref-fixer.service';
+
+@Injectable()
 export abstract class AbstractTileTaskComponent implements OnChanges {
   @Input() tile: TaskTile;
   @Input() currentSelection: DiagramSelection;
@@ -14,6 +13,8 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
   @Output() remove = new EventEmitter<DiagramActionSelf>();
   @Output() configure = new EventEmitter<DiagramActionSelf>();
   @HostBinding('class.is-selected') isSelected = false;
+
+  constructor(private svgFixer: SvgRefFixerService) {}
 
   ngOnChanges({ currentSelection: currentSelectionChange }: SimpleChanges) {
     if (currentSelectionChange) {
@@ -55,6 +56,10 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
 
   onConfigure() {
     this.remove.emit(actionEventFactory.configure(this.tile.task.id));
+  }
+
+  protected fixSvgRef(ref: string) {
+    return this.svgFixer.getFixedRef(ref);
   }
 
   private checkIsSelected() {

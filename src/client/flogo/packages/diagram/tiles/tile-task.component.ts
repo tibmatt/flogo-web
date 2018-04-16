@@ -7,6 +7,24 @@ import { AbstractTileTaskComponent } from '@flogo/packages/diagram/tiles/abstrac
 })
 export class TileTaskComponent extends AbstractTileTaskComponent {
 
+  get bgFill() {
+    if (this.hasRun) {
+      return this.fixSvgRef('url(#flogo-diagram-tile__bg--has-run)');
+    } else if (this.isSelected) {
+      return '#4e7ead';
+    } else {
+      return this.fixSvgRef('url(#flogo-diagram-tile__bg)');
+    }
+  }
+
+  get shadow() {
+    if (this.isSelected) {
+      return this.fixSvgRef('url(#flogo-diagram-tile__shadow--active)');
+    } else {
+      return this.fixSvgRef('url(#flogo-diagram-tile__shadow)');
+    }
+  }
+
   get isTerminal() {
     const { task } = this.tile;
     if (task) {

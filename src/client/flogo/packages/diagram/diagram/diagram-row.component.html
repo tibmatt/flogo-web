@@ -2,13 +2,13 @@
   <flogo-diagram-tile-empty *ngIf="tile.type === tileTypes.Padding"></flogo-diagram-tile-empty>
   <flogo-diagram-tile-placeholder *ngIf="tile.type === tileTypes.Placeholder" class="tile--placeholder" ></flogo-diagram-tile-placeholder>
   <flogo-diagram-tile-insert *ngIf="tile.type === tileTypes.Insert"
-                             @inserts
+                             @tile-insert
                              class="tile--placeholder"
                              [tile]="tile"
                              [currentSelection]="selection"
                              (select)="onInsertSelected($event)"></flogo-diagram-tile-insert>
   <flogo-diagram-tile-task *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Task"
-                           @tasks
+                           @tile-task
                            class="tile--task interactive-tile"
                            [tile]="tile"
                            [currentSelection]="selection"
@@ -19,7 +19,7 @@
                            (configure)="onTaskAction($event)"
   ></flogo-diagram-tile-task>
   <flogo-diagram-tile-branch *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Branch"
-                           @branches
+                           @tile-branch
                            class="tile--branch interactive-tile"
                            [tile]="tile"
                            [currentSelection]="selection"

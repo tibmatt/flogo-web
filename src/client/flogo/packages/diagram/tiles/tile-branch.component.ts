@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AbstractTileTaskComponent } from '@flogo/packages/diagram/tiles/abstract-tile-task.component';
 
 const ROW_HEIGHT = 140;
@@ -14,12 +14,27 @@ const ACTIVE_STATE = {
   templateUrl: './tile-branch.component.html',
   styleUrls: ['./tile-branch.component.less']
 })
-export class TileBranchComponent extends AbstractTileTaskComponent {
+export class TileBranchComponent extends AbstractTileTaskComponent implements OnChanges {
   @Input() spanRows: number;
   @HostBinding('class.is-hovered') isHovered = false;
+  currentSpanRows: number;
 
   setHovered(isHovered: boolean) {
     this.isHovered = isHovered;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    super.ngOnChanges(changes);
+    const { spanRows: spanRowsChange } = changes;
+    if (!spanRowsChange) {
+      return;
+    }
+    if (spanRowsChange.previousValue < spanRowsChange.currentValue) {
+      // allow for parent animation to complete
+      setTimeout(() => this.applySpanRowsUpdate(), 400);
+    } else {
+      this.applySpanRowsUpdate();
+    }
   }
 
   get path() {
@@ -36,7 +51,7 @@ export class TileBranchComponent extends AbstractTileTaskComponent {
   }
 
   get containerHeight() {
-    return ROW_HEIGHT * this.spanRows;
+    return ROW_HEIGHT * this.currentSpanRows;
   }
 
   get transform() {
@@ -45,8 +60,30 @@ export class TileBranchComponent extends AbstractTileTaskComponent {
     return `translate(${translateX}, ${translateY}) rotate(180)`;
   }
 
+  get bgFill() {
+    if (this.hasRun) {
+      return this.fixSvgRef('url(#flogo-diagram-tile__bg--has-run)');
+    } else if (this.isSelected) {
+      return '#8a90ae';
+    } else {
+      return this.fixSvgRef('url(#flogo-diagram-branch__bg)');
+    }
+  }
+
+  get shadow() {
+    if (this.isSelected) {
+      return this.fixSvgRef('url(#flogo-diagram-branch__shadow--active)');
+    } else {
+      return this.fixSvgRef('url(#flogo-diagram-branch__shadow)');
+    }
+  }
+
   private getBranchHeight() {
     return this.containerHeight - BOTTOM_DISTANCE;
+  }
+
+  private applySpanRowsUpdate() {
+    this.currentSpanRows = this.spanRows;
   }
 
 }
