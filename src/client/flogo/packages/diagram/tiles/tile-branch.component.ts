@@ -1,5 +1,6 @@
-import { Component, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AbstractTileTaskComponent } from '@flogo/packages/diagram/tiles/abstract-tile-task.component';
+import { SvgRefFixerService } from '@flogo/core/services/svg-ref-fixer.service';
 
 const ROW_HEIGHT = 140;
 const BOTTOM_DISTANCE = 35;
@@ -19,6 +20,10 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
   @HostBinding('class.is-hovered') isHovered = false;
   currentSpanRows: number;
 
+  constructor(svgFixer: SvgRefFixerService, private changeDetector: ChangeDetectorRef) {
+    super(svgFixer);
+  }
+
   setHovered(isHovered: boolean) {
     this.isHovered = isHovered;
   }
@@ -31,14 +36,17 @@ export class TileBranchComponent extends AbstractTileTaskComponent implements On
     }
     if (spanRowsChange.previousValue < spanRowsChange.currentValue) {
       // allow for parent animation to complete
-      setTimeout(() => this.applySpanRowsUpdate(), 400);
+      setTimeout(() => {
+        this.applySpanRowsUpdate();
+        this.changeDetector.detectChanges();
+      }, 400); // same as transition time
     } else {
       this.applySpanRowsUpdate();
     }
   }
 
   get path() {
-    const height = this.getBranchHeight();
+    const height = this.getBranchHeight() - 1; // give some space for the shadow
     return `M 90 37 L 90 26 C 90 12 78 0 64 0 L 7 0 L 0 14 L 7 28 L 52 28 C 57 28 62 32 62 37
       L 62 ${height}
       L 90 ${height}

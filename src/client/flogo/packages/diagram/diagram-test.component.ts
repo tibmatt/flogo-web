@@ -14,7 +14,7 @@ import {
       <button (click)="toggleReadOnly()">ReadOnly: {{ isReadOnly }}</button>
     </div>
     <flogo-diagram-v2 [isReadOnly]="isReadOnly" [flow]="flow" [selection]="selection" (action)="onAction($event)"></flogo-diagram-v2>`,
-  styles: [' :host { background-color: #efeded  } ']
+  styles: [' :host { background-color: #efeded; height: 100%;  } ']
 })
 
 export class DiagramTestComponent {
@@ -254,6 +254,7 @@ export class DiagramTestComponent {
         features: {
           canBranch: true,
           canHaveChildren: false,
+          subflow: true,
         },
       },
       {
@@ -269,6 +270,8 @@ export class DiagramTestComponent {
       {
         id: 'B3',
         type: NodeType.Task,
+        title: 'Some long title needs to be here',
+        description: 'Some long description needs to be here',
         parents: ['L-root-B3'],
         children: [],
         features: {
@@ -322,7 +325,15 @@ export class DiagramTestComponent {
       }
     ];
     const nodeDictionary: NodeDictionary = fromPairs(
-      nodes.map(node => [node.id, { ...node, capabilities: { deletable: true, ...node.features }, status: node.status || {} }]),
+      nodes.map(node => [
+        node.id,
+        {
+          description: 'Some description',
+          ...node,
+          features: { deletable: true, ...node.features },
+          status: node.status || {}
+        }
+      ]),
     );
     const { root } = nodeDictionary;
     return { rootId: root.id, nodes: nodeDictionary };
