@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Tile, TaskTile, TileType, NodeType, DiagramAction, DiagramSelection } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
 import { RowIndexService, isTaskTile, isInsertTile } from '../shared';
@@ -9,6 +9,7 @@ import { rowAnimations } from './diagram-row.animations';
   templateUrl: './diagram-row.component.html',
   styleUrls: ['./diagram-row.component.less'],
   animations: rowAnimations,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiagramRowComponent implements OnChanges {
   @Input() row: Tile[];

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractTileTaskComponent } from '@flogo/packages/diagram/tiles/abstract-tile-task.component';
 @Component({
   selector: 'flogo-diagram-tile-task',
   templateUrl: './tile-task.component.html',
-  styleUrls: ['./tile-task.component.less']
+  styleUrls: ['./tile-task.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TileTaskComponent extends AbstractTileTaskComponent {
 

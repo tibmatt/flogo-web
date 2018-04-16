@@ -1,11 +1,12 @@
-import { Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { DiagramSelection, InsertTile } from '../interfaces';
 import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
 
 @Component({
   selector: 'flogo-diagram-tile-insert',
   templateUrl: './tile-insert.component.html',
-  styleUrls: ['./tile-insert.component.less']
+  styleUrls: ['./tile-insert.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TileInsertComponent implements OnChanges {
   @Input() tile: InsertTile;
