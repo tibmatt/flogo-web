@@ -77,7 +77,6 @@
   height: 113px;
   display: flex;
   align-items: center;
-  position: relative;
 
   &:before {
     content: ' ';
@@ -88,8 +87,8 @@
     width: 100%;
     height: 100%;
     background-repeat: no-repeat;
-    background-position: 0 -20px;
-    background-size: 255px 180px;
+    background-position: -66px -4px;
+    background-size: 260px 255px;
   }
 
   &.flogo-flow-detail__device:before {
@@ -151,7 +150,6 @@
 
 .flogo-flow-detail-header {
 
-  margin-left: 5%;
 
   .flogo-flow-detail-name + span {
     font-size: .875em;
@@ -165,11 +163,13 @@
     .flogo-flow-detail-header-back-icon {
       cursor: pointer;
       margin-top: 10px;
+      margin-right: 28px;
 
       .flogo-icon-back {
         font-size: 1.2em;
         padding: 0 10px;
-        color: @color-secondary;
+        color: #727272;
+        font-weight: bold;
       }
     }
 
