@@ -11,7 +11,7 @@ import {
 } from '../core';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
-import { diffDates, getProfileType, notification } from '../../shared/utils';
+import { diffDates, notification } from '../../shared/utils';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -60,7 +60,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   isExportBoxShown = false;
   downloadLink: string;
 
-  profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
   constructor(public translate: LanguageService,
@@ -89,8 +88,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       this.triggerGroups = _.sortBy(this.triggerGroups, g => g.triggers ? g.flow.name.toLocaleLowerCase() : '');
       this.downloadLink = this.appDetailService.getDownloadLink(this.application.id);
       // this.flows = this.extractFlows();
-
-      this.profileType = getProfileType(this.application);
 
       const prevValue = change.previousValue;
       const isDifferentApp = !prevValue || !prevValue.app || prevValue.app.id !== this.application.id;

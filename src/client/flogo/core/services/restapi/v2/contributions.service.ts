@@ -11,13 +11,12 @@ interface InstallationData {
 
 @Injectable()
 export class RESTAPIContributionsService {
-  pathToService = 'contributions/devices';
 
   constructor(private _http: Http, private httpUtils: HttpUtilsService) {
   }
 
-  getContributionDetails(ref: string) {
-    return this._http.get(this.httpUtils.apiPrefix(this.pathToService + '?filter[ref]=' + ref)).toPromise()
+  getContributionDetails(profileType: FLOGO_PROFILE_TYPE, ref: string) {
+    return this._http.get(this.apiPrefix(profileType,  '?filter[ref]=' + ref)).toPromise()
       .then(response => response.json().data[0]);
   }
 
