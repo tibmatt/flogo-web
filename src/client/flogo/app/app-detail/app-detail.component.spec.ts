@@ -14,6 +14,7 @@ import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.component';
 import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
 import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
+import {FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 
 @Component({
@@ -225,6 +226,7 @@ describe('FlogoApplicationDetailComponent component', () => {
 function makeMockAppDetail() {
   return {
     app: {
+      profileType: FLOGO_PROFILE_TYPE.MICRO_SERVICE,
       id: '1',
       name: 'Sample Application 1',
       version: '0.0.1',

@@ -9,10 +9,8 @@ import {
   TriggersApiService
 } from './services/restapi';
 import { RESTAPIApplicationsService } from './services/restapi/applications-api.service';
-import { RESTAPIActivitiesService } from './services/restapi/activities-api.service';
 import { RESTAPIConfigurationService } from './services/restapi/configuration-api-service';
 import { RESTAPIFlowsService } from './services/restapi/flows-api.service';
-import { RESTAPITriggersService } from './services/restapi/triggers-api.service';
 import { RESTAPIHandlersService as RESTAPIHandlersServiceV2 } from './services/restapi/v2/handlers-api.service';
 import { APIFlowsService } from './services/restapi/v2/flows-api.service';
 import { AppsApiService } from './services/restapi/v2/apps-api.service';
@@ -52,11 +50,9 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
     TriggersApiService,
 
     RESTAPIApplicationsService,
-    RESTAPIActivitiesService,
     RESTAPIConfigurationService,
     RESTAPIFlowsService,
 
-    RESTAPITriggersService,
     RESTAPIHandlersServiceV2,
     AppsApiService,
     APIFlowsService,

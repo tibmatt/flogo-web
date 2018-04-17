@@ -1,8 +1,6 @@
 import {FlogoProfileService} from './profile.service';
 import {FLOGO_PROFILE_TYPE} from '../constants';
 import {RESTAPIContributionsService} from './restapi/v2/contributions.service';
-import {RESTAPIActivitiesService} from './restapi/activities-api.service';
-import {RESTAPITriggersService} from './restapi/triggers-api.service';
 import {
   MOCK_DEVICE_APP_DATA as mockDeviceAppData, MOCK_MICROSERVICE_APP_DATA as mockMicroServiceAppData
 } from '../mocks/application.json.mock';
@@ -12,7 +10,7 @@ import Spy = jasmine.Spy;
 
 describe('Service: FlogoProfileService', function (this: {
   testService: FlogoProfileService
-  triggerServiceMock: RESTAPITriggersService, activityServiceMock: RESTAPIActivitiesService, contribServiceMock: RESTAPIContributionsService
+  contribServiceMock: RESTAPIContributionsService
 }) {
   class MockActivitiesResponse {
     data = [
@@ -438,16 +436,10 @@ describe('Service: FlogoProfileService', function (this: {
   }
 
   beforeAll(() => {
-    this.triggerServiceMock = jasmine.createSpyObj<RESTAPITriggersService>('triggerService', [
-      'getTriggers'
-    ]);
-    this.activityServiceMock = jasmine.createSpyObj<RESTAPIActivitiesService>('activityService', [
-      'getActivities'
-    ]);
     this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>('contribService', [
       'listContribs'
     ]);
-    this.testService = new FlogoProfileService(this.triggerServiceMock, this.activityServiceMock, this.contribServiceMock);
+    this.testService = new FlogoProfileService(this.contribServiceMock);
   });
 
   it('Should create utilities class for a microservice profile', () => {
@@ -461,7 +453,7 @@ describe('Service: FlogoProfileService', function (this: {
   });
 
   it('Should transform the 11 activities in case subflow is not installed in engine', (done) => {
-    const spyActivityService = <Spy>this.activityServiceMock.getActivities;
+    const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(new MockActivitiesResponse()));
     this.testService.getActivities(FLOGO_PROFILE_TYPE.MICRO_SERVICE)
       .then((res) => {
@@ -472,7 +464,7 @@ describe('Service: FlogoProfileService', function (this: {
   });
 
   it('Should transform the 12 activities including Subflow in case subflow activity is installed is installed in engine', (done) => {
-    const spyActivityService = <Spy>this.activityServiceMock.getActivities;
+    const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     const mockActivitiesReponse = new MockActivitiesResponse();
     mockActivitiesReponse.appendSubflowActivity();
     spyActivityService.and.returnValue(Promise.resolve(mockActivitiesReponse));
@@ -485,7 +477,7 @@ describe('Service: FlogoProfileService', function (this: {
   });
 
   it('Should add the "installed" field to 11 items', (done) => {
-    const spyActivityService = <Spy>this.activityServiceMock.getActivities;
+    const spyActivityService = <Spy>this.contribServiceMock.listContribs;
     spyActivityService.and.returnValue(Promise.resolve(new MockActivitiesResponse()));
     this.testService.getActivities(FLOGO_PROFILE_TYPE.MICRO_SERVICE)
       .then((res) => {

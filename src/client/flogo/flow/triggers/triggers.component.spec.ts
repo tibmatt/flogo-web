@@ -14,10 +14,7 @@ import {FlogoSelectTriggerComponent} from './select-trigger/select-trigger.compo
 
 import {TriggersApiService} from '@flogo/core/services';
 import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
-import {RESTAPITriggersServiceMock} from '@flogo/core/services/restapi/triggers-api.service.mock';
-import {RESTAPITriggersService} from '@flogo/core/services/restapi/triggers-api.service';
 import {HttpUtilsService} from '@flogo/core/services/restapi/http-utils.service';
-import {RESTAPIActivitiesService} from '@flogo/core/services/restapi/activities-api.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import {PostService} from '@flogo/core/services/post.service';
 import {FlogoProfileService} from '@flogo/core/services/profile.service';
@@ -187,8 +184,6 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         {provide: PostService, useValue: postServiceStub },
         {provide: Router, useClass: MockRouterService},
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
-        { provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock },
-        { provide: RESTAPIActivitiesService, useClass: MockActivityContribService },
         { provide: RESTAPIContributionsService, useClass: MockActivityContribService },
         {provide: TriggersApiService, useClass: MockTriggerServiceV2},
         {provide: RESTAPIHandlersService, useClass: MockHandlerService},
