@@ -1,3 +1,5 @@
+@import '../_styles';
+
 :host {
   height: 140px;
   padding-top: 16px;
@@ -9,11 +11,25 @@
   transition: background-color 0.15s ease;
 }
 
-.tile--placeholder {
+.tile {
+  .tile-container();
+}
+
+.tile--slot {
   opacity: 0;
   transition: opacity 0.25s ease-out;
   &.is-selected {
     opacity: 1;
+  }
+
+}
+
+.tile--placeholder {
+  &::before {
+    background-color: rgba(170, 208, 232, 0.4);
+    display: block;
+    content: '';
+    .tile-placeholder();
   }
 }
 
@@ -32,7 +48,7 @@
 
   &:hover {
     background-color: rgba(182, 217, 237, 0.2);
-    .tile--placeholder {
+    .tile--slot {
       opacity: 1;
     }
 
