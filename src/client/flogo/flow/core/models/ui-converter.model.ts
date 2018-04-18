@@ -9,9 +9,19 @@ import {
 } from '../../shared/diagram/constants';
 
 import { FlogoFlowDiagramNode } from '../../shared/diagram/models/node.model';
-import { ActionBase, FLOGO_PROFILE_TYPE, ItemActivityTask, ItemTask, UiFlow } from '@flogo/core';
+
+import { ActionBase, FlowMetadata, FLOGO_PROFILE_TYPE, ItemActivityTask, ItemTask, UiFlow } from '@flogo/core';
 import {CONTRIB_REF_PLACEHOLDER} from '@flogo/core/constants';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
+
+export interface FlowInfo {
+  id: string;
+  appId: string;
+  name: string;
+  description: string;
+  app: any;
+  metadata?: FlowMetadata;
+}
 
 export abstract class AbstractModelConverter {
   subflowSchemaRegistry: Map<string, ActionBase>;
@@ -27,7 +37,7 @@ export abstract class AbstractModelConverter {
 
   abstract getProfileType(): FLOGO_PROFILE_TYPE;
 
-  abstract getFlowInformation(flow);
+  abstract getFlowInformation(flow): FlowInfo;
 
   getTriggerSchema(trigger) {
     if (!trigger.ref) {
@@ -107,8 +117,7 @@ export abstract class AbstractModelConverter {
     return currentFlow;
   }
 
-
-  makeFlow(parts, flowInfo, schemas?): UiFlow {
+  makeFlow(parts, flowInfo: FlowInfo, schemas?): UiFlow {
     let flow: any = {};
     try {
       const { nodes, items, branches } = parts;
@@ -162,7 +171,7 @@ export abstract class AbstractModelConverter {
     return flow;
   }
 
-  getFlowParts(installedTiles, tasks, links) {
+  getFlowParts(contribSchemas, tasks, links) {
     const nodes = [];
     const items = [];
     const branches = [];
@@ -172,7 +181,7 @@ export abstract class AbstractModelConverter {
       tasks.forEach((task) => {
         const nodeItem = NodeFactory.makeItem({ taskID: task.id });
 
-        let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
+        let installedActivity = contribSchemas.find(schema => schema.ref === task.activityRef);
         if (isSubflowTask(task.type)) {
           installedActivity = { ref: CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW };
 

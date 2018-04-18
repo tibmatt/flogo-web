@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AbstractTileTaskComponent } from '@flogo/packages/diagram/tiles/abstract-tile-task.component';
+import { AbstractTileTaskComponent } from './abstract-tile-task.component';
+
 @Component({
   selector: 'flogo-diagram-tile-task',
   templateUrl: './tile-task.component.html',

@@ -19,7 +19,7 @@ export interface NodeStatus {
   iterable?: boolean;
 }
 
-export interface Node {
+export interface GraphNode {
   id: string;
   type: NodeType;
   children: string[];

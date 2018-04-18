@@ -1,10 +1,9 @@
 import { fromPairs } from 'lodash';
 import { Component } from '@angular/core';
+import { GraphNode, FlowGraph, GraphNodeDictionary, NodeType } from '@flogo/core';
 import {
-  DiagramAction, DiagramActionChild, DiagramActionSelf, DiagramActionType, DiagramSelection, DiagramSelectionType, Flow, Node,
-  NodeDictionary,
-  NodeType
-} from '@flogo/packages/diagram/interfaces';
+  DiagramAction, DiagramActionChild, DiagramActionSelf, DiagramActionType, DiagramSelection, DiagramSelectionType
+} from './interfaces';
 
 @Component({
   selector: 'flogo-diagram-test',
@@ -61,7 +60,7 @@ export class DiagramTestComponent {
       flow.nodes = { ...flow.nodes, [parentId]: parent };
     }
 
-    const substituteNodeWithChild = (childNode: Node) => {
+    const substituteNodeWithChild = (childNode: GraphNode) => {
       if (parent) {
         parent.children = parent.children.concat(childNode.id);
         flow.nodes = {
@@ -97,7 +96,7 @@ export class DiagramTestComponent {
     this.flow = { ...flow };
   }
 
-  deleteChildren(node: Node, dictionary: Flow['nodes']) {
+  deleteChildren(node: GraphNode, dictionary: FlowGraph['nodes']) {
     node.children.forEach(childId => {
       const childNode = dictionary[childId];
       delete dictionary[childId];
@@ -159,7 +158,7 @@ export class DiagramTestComponent {
     };
   }
 
-  private insertNode(node: Node, parent: Node) {
+  private insertNode(node: GraphNode, parent: GraphNode) {
     parent = { ...parent, children: [...parent.children, node.id] };
     const nodes = this.flow.nodes;
     this.flow = {
@@ -168,7 +167,7 @@ export class DiagramTestComponent {
     };
   }
 
-  private newNode(nodeData: Partial<Node> & {type: any}): Node {
+  private newNode(nodeData: Partial<GraphNode> & {type: any}): GraphNode {
     this.count += 1;
     const newId = `new_${this.count}`;
     return {
@@ -181,8 +180,8 @@ export class DiagramTestComponent {
     };
   }
 
-  private makeTestData(): Flow {
-    const nodes: Partial<Node>[] = [
+  private makeTestData(): FlowGraph {
+    const nodes: Partial<GraphNode>[] = [
       {
         id: 'root',
         type: NodeType.Task,
@@ -324,7 +323,7 @@ export class DiagramTestComponent {
         },
       }
     ];
-    const nodeDictionary: NodeDictionary = fromPairs(
+    const nodeDictionary: GraphNodeDictionary = fromPairs(
       nodes.map(node => [
         node.id,
         {

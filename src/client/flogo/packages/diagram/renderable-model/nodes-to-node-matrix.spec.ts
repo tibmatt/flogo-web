@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
+import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo/core';
 import { nodesToNodeMatrix } from './nodes-to-node-matrix';
-import { Node, NodeDictionary, NodeType } from '../interfaces';
 import { fromPairs } from 'lodash';
 import { NodeMatrix } from './matrix';
 // Test should render this tree:
@@ -11,7 +11,7 @@ import { NodeMatrix } from './matrix';
 // └── B6⟶C6
 // |   └──C7
 // └──B8
-function makeTestData(): { root: Node, nodeDictionary: NodeDictionary } {
+function makeTestData(): { root: GraphNode, nodeDictionary: GraphNodeDictionary } {
   const nodes = [
     {
       id: 'root',
@@ -122,7 +122,7 @@ function makeTestData(): { root: Node, nodeDictionary: NodeDictionary } {
       children: ['E4'],
     },
   ];
-  const nodeDictionary: NodeDictionary = fromPairs(
+  const nodeDictionary: GraphNodeDictionary = fromPairs(
     nodes.map(node => [node.id, { ...node, capabilities: {}, status: {} }]),
   );
   const { root } = nodeDictionary;

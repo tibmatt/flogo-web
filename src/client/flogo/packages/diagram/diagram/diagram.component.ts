@@ -3,7 +3,8 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { find } from 'lodash';
-import { Flow, DiagramSelection, DiagramAction, TaskTile, TileType, Tile } from '../interfaces';
+import { FlowGraph } from '@flogo/core';
+import { DiagramSelection, DiagramAction, TaskTile, TileType, Tile } from '../interfaces';
 import { TileMatrix, makeRenderableMatrix } from '../renderable-model';
 import { RowIndexService } from '../shared/row-index.service';
 import { diagramAnimations } from './diagram.animations';
@@ -19,7 +20,7 @@ import { diagramAnimations } from './diagram.animations';
 })
 export class DiagramComponent implements OnChanges, OnDestroy {
   @HostBinding('@list') animateList = true;
-  @Input() flow: Flow;
+  @Input() flow: FlowGraph;
   @Input() selection: DiagramSelection;
   @Input() @HostBinding('class.flogo-diagram-is-readonly') isReadOnly = false;
   @Output() action = new EventEmitter<DiagramAction>();

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { Tile, TaskTile, TileType, NodeType, DiagramAction, DiagramSelection } from '../interfaces';
+import { NodeType } from '@flogo/core';
+import { Tile, TaskTile, TileType, DiagramAction, DiagramSelection } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
 import { RowIndexService, isTaskTile, isInsertTile } from '../shared';
 import { rowAnimations } from './diagram-row.animations';

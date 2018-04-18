@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { SvgRefFixerService } from '@flogo/core';
 import { DiagramSelection, TaskTile, DiagramActionSelf, DiagramActionChild, DiagramSelectionType } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
-import { SvgRefFixerService } from '../../../core/services/svg-ref-fixer.service';
 
 @Injectable()
 export abstract class AbstractTileTaskComponent implements OnChanges {

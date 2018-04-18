@@ -2,8 +2,9 @@ import objectContaining = jasmine.objectContaining;
 import ObjectContaining = jasmine.ObjectContaining;
 
 import { createTileMatrix } from './create-tile-matrix';
-import { InsertTile, Node, NodeType, TaskTile, Tile, TileType } from '@flogo/packages/diagram/interfaces';
-import { NodeMatrix } from '@flogo/packages/diagram/renderable-model/matrix';
+import { GraphNode, NodeType } from '@flogo/core';
+import { InsertTile, TaskTile, Tile, TileType } from '../interfaces';
+import { NodeMatrix } from '../renderable-model/matrix';
 
 describe('diagram.createTileMatrix', function () {
   it('should create a renderable matrix from a node matrix', function () {
@@ -86,7 +87,7 @@ describe('diagram.createTileMatrix', function () {
       [
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <Node><any>objectContaining<Node>(
+          task: <GraphNode><any>objectContaining<GraphNode>(
             {
               id: 'root',
               type: NodeType.Task
@@ -95,7 +96,7 @@ describe('diagram.createTileMatrix', function () {
         }),
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <Node><any>objectContaining<Node>({
+          task: <GraphNode><any>objectContaining<GraphNode>({
             id: 'child1',
             type: NodeType.Task
           })
@@ -107,14 +108,14 @@ describe('diagram.createTileMatrix', function () {
         }),
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <Node><any>objectContaining<Node>({
+          task: <GraphNode><any>objectContaining<GraphNode>({
             id: 'branch1',
             type: NodeType.Branch
           })
         }),
         objectContaining<TaskTile>({
           type: TileType.Task,
-          task: <Node><any>objectContaining<Node>({
+          task: <GraphNode><any>objectContaining<GraphNode>({
             id: 'child2',
             type: NodeType.Task
           }),

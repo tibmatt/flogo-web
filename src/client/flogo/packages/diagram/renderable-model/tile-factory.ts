@@ -1,5 +1,5 @@
-import { Node } from '../interfaces/node';
-import { Tile, TileType, InsertTile, TaskTile } from '../interfaces/tile';
+import { GraphNode } from '@flogo/core';
+import { TileType, InsertTile, TaskTile } from '../interfaces/tile';
 
 const PaddingTile = {
   type: TileType.Padding,
@@ -16,7 +16,7 @@ export function makeInsertTile(parentId: string): InsertTile {
   };
 }
 
-export function makeTaskTile(task: Node): TaskTile {
+export function makeTaskTile(task: GraphNode): TaskTile {
   return {
     type: TileType.Task,
     task,

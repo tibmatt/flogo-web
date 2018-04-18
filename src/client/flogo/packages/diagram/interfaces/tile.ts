@@ -1,4 +1,4 @@
-import { Node } from './node';
+import { GraphNode } from '@flogo/core';
 
 export enum TileType {
   Padding = 'padding',
@@ -18,5 +18,5 @@ export interface InsertTile extends Tile {
 
 export interface TaskTile extends Tile {
   type: TileType.Task;
-  task: Node;
+  task: GraphNode;
 }
