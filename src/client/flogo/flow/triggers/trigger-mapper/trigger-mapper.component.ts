@@ -9,7 +9,7 @@ import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
 import { VIEWS, ViewInfo } from './views-info.model';
 import { TriggerMapperService, Status } from './trigger-mapper.service';
-import {animate, style, transition, trigger} from "@angular/animations";
+import {animate, style, transition, trigger} from '@angular/animations/';
 
 interface ViewState extends ViewInfo {
   enabled: boolean;
