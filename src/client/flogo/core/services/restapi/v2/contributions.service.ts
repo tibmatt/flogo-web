@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { HttpUtilsService } from '../http-utils.service';
 import 'rxjs/add/operator/toPromise';
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import {RestApiService} from '../rest-api.service';
 
 interface InstallationData {
   url: string;
@@ -12,30 +11,27 @@ interface InstallationData {
 @Injectable()
 export class RESTAPIContributionsService {
 
-  constructor(private _http: Http, private httpUtils: HttpUtilsService) {
+  contributionPathByProfileType = new Map<FLOGO_PROFILE_TYPE, string>([
+    [FLOGO_PROFILE_TYPE.MICRO_SERVICE, 'contributions/microservices'],
+    [FLOGO_PROFILE_TYPE.DEVICE, 'contributions/devices']
+  ]);
+
+  constructor(private restApi: RestApiService) {
   }
 
   getContributionDetails(profileType: FLOGO_PROFILE_TYPE, ref: string) {
-    return this._http.get(this.apiPrefix(profileType,  '?filter[ref]=' + ref)).toPromise()
-      .then(response => response.json().data[0]);
+    return this.restApi.get<any>(this.getApiPath(profileType) + '?filter[ref]=' + ref).toPromise()
+      .then(response => response[0]);
   }
 
   listContribs(profileType, type) {
-    return this._http.get(this.apiPrefix(profileType, '?filter[type]=' + type)).toPromise();
+    return this.restApi.get<any>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }
 
   installContributions({profileType, installType, url}) {
     const body = JSON.stringify(this.prepareBodyData(profileType, installType, url));
 
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-
-    const options = new RequestOptions({ headers: headers });
-
-    return this._http.post(this.apiPrefix(profileType), body, options).map(res => res.json()).toPromise();
-
+    return this.restApi.post(this.getApiPath(profileType), body).toPromise();
   }
 
   private prepareBodyData(profileType, type, url): InstallationData {
@@ -46,14 +42,11 @@ export class RESTAPIContributionsService {
     return data;
   }
 
-  private apiPrefix(profileType: FLOGO_PROFILE_TYPE, extendedPath?: string) {
-    const commonPath = 'contributions/';
-    let pathToService;
-    if (profileType === FLOGO_PROFILE_TYPE.DEVICE) {
-      pathToService = commonPath + 'devices';
-    } else {
-      pathToService = commonPath + 'microservices';
+  private getApiPath(profileType: FLOGO_PROFILE_TYPE): string {
+    const pathToContribution = this.contributionPathByProfileType.get(profileType);
+    if (!pathToContribution) {
+      throw new Error(`Contributions API path for '${FLOGO_PROFILE_TYPE[profileType]}' profile is not found`);
     }
-    return this.httpUtils.apiPrefix(pathToService + extendedPath);
+    return pathToContribution;
   }
 }
