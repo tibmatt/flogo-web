@@ -369,40 +369,6 @@ class ItemFactory {
     return Object.assign({}, defaults, _.pick(installed, ['name', 'version', 'homepage', 'description', 'ref']));
   }
 
-  static makeTriggerError(trigger) {
-    return {
-      id: trigger.taskID,
-      type: FLOGO_TASK_TYPE.TASK_ROOT,
-      version: '',
-      name: 'On Error',
-      description: '',
-      activityType: '',
-      triggerType: '__error-trigger',
-      attributes: {
-        outputs: [{
-          name: 'activity', type: ValueType.String, title: 'activity', value: '',
-        }, {
-          name: 'message', type: ValueType.String, title: 'message', value: '',
-        }, {
-          name: 'data', type: ValueType.Any, title: 'data', value: '',
-        }],
-      },
-      inputMappings: [],
-      outputMappings: [],
-      outputs: [{
-        name: 'activity', type: ValueType.String, title: 'activity', value: '',
-      }, {
-        name: 'message', type: ValueType.String, title: 'message', value: '',
-      }, {
-        name: 'data', type: ValueType.Any, title: 'data', value: '',
-      }],
-      __props: {
-        errors: [],
-      },
-      __status: {},
-    };
-  }
-
   static makeTrigger(trigger): any {
     // todo: what does cli means in this context??
     const { installed, cli, endpointSetting } = trigger;
