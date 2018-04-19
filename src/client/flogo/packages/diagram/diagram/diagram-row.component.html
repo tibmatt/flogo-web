@@ -1,16 +1,18 @@
 <ng-template ngFor let-tile [ngForOf]="tiles" [ngForTrackBy]="trackTileBy">
   <div *ngIf="tile.type === tileTypes.Padding || tile.type == tileTypes.Placeholder"
+       @tileGeneric
+       [@.disabled]="tile.type === tileTypes.Placeholder"
        class="tile tile--slot"
        [class.tile--placeholder]="tile.type === tileTypes.Placeholder">
   </div>
   <flogo-diagram-tile-insert *ngIf="tile.type === tileTypes.Insert"
-                             @tile-insert
+                             @tileInsert
                              class="tile--slot"
                              [tile]="tile"
                              [currentSelection]="selection"
                              (select)="onInsertSelected($event)"></flogo-diagram-tile-insert>
   <flogo-diagram-tile-task *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Task"
-                           @tile-task
+                           @tileTask
                            class="tile--task interactive-tile"
                            [tile]="tile"
                            [currentSelection]="selection"
@@ -21,7 +23,7 @@
                            (configure)="onTaskAction($event)"
   ></flogo-diagram-tile-task>
   <flogo-diagram-tile-branch *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Branch"
-                           @tile-branch
+                           @tileGeneric
                            class="tile--branch interactive-tile"
                            [tile]="tile"
                            [currentSelection]="selection"
