@@ -73,7 +73,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
     return _hasBranchRun(node, tasks, nodes);
   }
 
-  static getEmptyDiagram(diagramType?: string): FlowDiagram {
+  static getEmptyDiagram(): FlowDiagram {
     const newRootNode = new FlogoFlowDiagramNode();
     const emptyDiagram = < FlowDiagram > {
       root: {
@@ -82,8 +82,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
       nodes: < NodeDictionary > {}
     };
 
-    newRootNode.type = diagramType === 'error' ?
-      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW : FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
+    newRootNode.type = FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_NEW;
 
     emptyDiagram.nodes[newRootNode.id] = newRootNode;
 
@@ -139,7 +138,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
     if (_.isEmpty(diagram) || _.isEmpty(diagram.root)) {
 
       // handle empty diagram
-      this.updateDiagram(FlogoFlowDiagram.getEmptyDiagram(this.diagramType));
+      this.updateDiagram(FlogoFlowDiagram.getEmptyDiagram());
 
     } else {
 

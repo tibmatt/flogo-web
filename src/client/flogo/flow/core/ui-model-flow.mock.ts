@@ -883,78 +883,15 @@ export let mockResultantUIFlowWithError = {
         'some_id_1': {
           'id': 'some_id_1',
           '__status': { 'isSelected': false },
-          'children': ['some_id_0'],
-          'parents': [],
-          'type': 10,
-          'taskID': 'some_id_1'
-        },
-        'some_id_2': {
-          'id': 'some_id_2',
-          '__status': { 'isSelected': false },
           'children': [],
-          'parents': ['some_id_0'],
+          'parents': [],
           'type': 5,
-          'taskID': 'some_id_2'
+          'taskID': 'some_id_1'
         }
       }
     },
     'items': {
-      'some_id_3': {
-        'id': 'some_id_3',
-        'type': 0,
-        'version': '',
-        'name': 'On Error',
-        'description': '',
-        'activityType': '',
-        'triggerType': '__error-trigger',
-        'attributes': {
-          'outputs': [
-            {
-              'name': 'activity',
-              'type': 'string',
-              'title': 'activity',
-              'value': ''
-            },
-            {
-              'name': 'message',
-              'type': 'string',
-              'title': 'message',
-              'value': ''
-            },
-            {
-              'name': 'data',
-              'type': 'any',
-              'title': 'data',
-              'value': ''
-            }
-          ]
-        },
-        'inputMappings': [],
-        'outputMappings': [],
-        'outputs': [
-          {
-            'name': 'activity',
-            'type': 'string',
-            'title': 'activity',
-            'value': ''
-          },
-          {
-            'name': 'message',
-            'type': 'string',
-            'title': 'message',
-            'value': ''
-          },
-          {
-            'name': 'data',
-            'type': 'any',
-            'title': 'data',
-            'value': ''
-          }
-        ],
-        '__props': { 'errors': [] },
-        '__status': {}
-      },
-      'some_id_4': {
+      'some_id_2': {
         'name': 'Error Log',
         'version': '0.0.1',
         'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
@@ -995,7 +932,7 @@ export let mockResultantUIFlowWithError = {
           ]
         },
         'inputMappings': [],
-        'id': 'some_id_4',
+        'id': 'some_id_2',
         'type': 1,
         'activityType': 'tibco-log'
       }
