@@ -32,6 +32,7 @@ import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
 import { FlogoMicroserviceTaskIdGeneratorService } from './services/profiles/microservices/utils.service';
 import { FlogoDeviceTaskIdGeneratorService } from './services/profiles/devices/utils.service';
+import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from '@flogo/core/services/log.service';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
 import { WalkthroughModule } from './walkthrough/walkthrough.module';
@@ -77,7 +78,8 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
     FlogoProfileService,
     FlogoMicroserviceTaskIdGeneratorService,
     FlogoDeviceTaskIdGeneratorService,
-    LogService
+    LogService,
+    SvgRefFixerService,
   ],
   declarations: [
     FlogoNavbarComponent,

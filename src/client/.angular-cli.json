@@ -5,7 +5,9 @@
   },
   "apps": [
     {
+      "appRoot": "",
       "root": "",
+      "prefix": "flogo",
       "outDir": "../../dist/public",
       "assets": [
         {
@@ -62,6 +64,12 @@
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts"
       }
+    },
+    {
+      "name": "gen",
+      "appRoot": "",
+      "root": "flogo",
+      "prefix": "flogo"
     }
   ],
   "e2e": {

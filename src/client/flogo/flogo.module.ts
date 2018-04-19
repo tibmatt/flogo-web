@@ -2,7 +2,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
@@ -20,6 +20,7 @@ import { ConfigModule as FlogoConfigModule } from '@flogo/config';
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';
 import { FlogoApplicationModule } from '@flogo/app';
+import { DiagramModule } from '@flogo/packages/diagram';
 
 @NgModule({
   imports: [
@@ -42,6 +43,7 @@ import { FlogoApplicationModule } from '@flogo/app';
     FlowModule,
     FlogoConfigModule,
     FlogoApplicationModule,
+    DiagramModule,
     routing,
   ],
   declarations: [

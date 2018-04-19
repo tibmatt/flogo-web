@@ -1,0 +1,40 @@
+@tile-container-dimension: 110px;
+@tile-width: 124px;
+@tile-height: 110px;
+@tile-placeholder-dimension: 70px;
+@tile-radius: 8px;
+@tile-color-bg: #fff;
+@tile-color-bg--selected: #4e7ead;
+
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-placeholder() {
+  border-radius: 8px;
+  height: @tile-placeholder-dimension;
+  width: @tile-placeholder-dimension;
+}
+
+.tile-container {
+  .flex-center;
+  height: @tile-container-dimension;
+  width: @tile-container-dimension;
+  margin-right: 10px;
+}
+
+.menu-option() {
+  transition: background-color 150ms ease-in-out;
+  &:hover {
+    background-color: #f3f5fa;
+  }
+}
+
+.animate-menu() {
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  transition-property: all;
+  transition-delay: 200ms;
+}

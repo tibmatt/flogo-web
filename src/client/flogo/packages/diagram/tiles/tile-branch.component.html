@@ -1,0 +1,12 @@
+<svg class="branch" [attr.viewBox]="viewBox" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" [style.height.px]="containerHeight">
+  <path class="branch__shadow" [attr.filter]="shadow" [attr.d]="path" [attr.transform]="transform"></path>
+  <path class="branch__path"
+        [attr.fill]="bgFill" [attr.d]="path" [attr.transform]="transform"
+        (mouseover)="setHovered(true)" (mouseleave)="setHovered(false)"  (click)="onSelect()"></path>
+</svg>
+<div *ngIf="!isReadOnly" class="menu" (mouseover)="setHovered(true)" (mouseleave)="setHovered(false)">
+  <span class="menu__option" (click)="onRemove()">
+    <i class="fa flogo-icon-delete menu__icon"></i> Delete
+  </span>
+  <span class="menu__gear"></span>
+</div>
