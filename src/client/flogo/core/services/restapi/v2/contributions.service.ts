@@ -20,16 +20,16 @@ export class RESTAPIContributionsService {
   }
 
   getContributionDetails(profileType: FLOGO_PROFILE_TYPE, ref: string) {
-    return this.restApi.get<any>(this.getApiPath(profileType) + '?filter[ref]=' + ref).toPromise()
+    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[ref]=' + ref).toPromise()
       .then(response => response[0]);
   }
 
   listContribs(profileType, type) {
-    return this.restApi.get<any>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
+    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }
 
   installContributions({profileType, installType, url}) {
-    const body = JSON.stringify(this.prepareBodyData(profileType, installType, url));
+    const body = this.prepareBodyData(profileType, installType, url);
 
     return this.restApi.post(this.getApiPath(profileType), body).toPromise();
   }

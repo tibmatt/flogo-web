@@ -125,25 +125,22 @@ export class FlogoInstallerComponent implements OnChanges {
 
     const self = this;
 
-    if (_.isFunction(installAPI)) {
 
-      self._status = FLOGO_INSTALLER_STATUS_INSTALLING;
+    self._status = FLOGO_INSTALLER_STATUS_INSTALLING;
 
-      installAPI({profileType: this.profileType, installType: this._installType, url})
-        .then((response) => {
-          this.installed.emit(response);
-          self._status = FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS;
-          console.groupEnd();
-          return response;
-        })
-        .catch((err) => {
-          console.error(err);
-          self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
-          console.groupEnd();
-        });
-    } else {
+    this.contributionsAPIs.installContributions({
+      profileType: this.profileType,
+      installType: this._installType,
+      url
+    }).then((response) => {
+      this.installed.emit(response);
+      self._status = FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS;
+      console.groupEnd();
+      return response;
+    }).catch((err) => {
+      console.error(err);
       self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
-    }
-
+      console.groupEnd();
+    });
   }
 }
