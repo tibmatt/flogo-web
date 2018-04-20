@@ -104,8 +104,7 @@ export abstract class AbstractModelConverter {
       // links tasks of error handler
       links = _.get(flowData, 'errorHandlerTask.links', []);
       // error task's root id value
-      const errorId = _.get(flowData, 'errorHandlerTask.id', defaultErrorRootId);
-      const errorFlowParts = this.getFlowParts(installedContribs, tasks, links, errorId);
+      const errorFlowParts = this.getFlowParts(installedContribs, tasks, links);
 
       currentFlow.errorHandler = this.makeFlow(errorFlowParts, flowInfo);
     }
@@ -118,11 +117,6 @@ export abstract class AbstractModelConverter {
     try {
       const { nodes, items, branches } = parts;
       const { id, name, description, appId, app, metadata } = flowInfo;
-
-      const nodeTrigger = nodes.find((element) => {
-        const nodeType = element.node.type;
-        return nodeType === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW;
-      });
 
       flow = {
         id,
@@ -143,16 +137,11 @@ export abstract class AbstractModelConverter {
         flow.metadata = metadata;
       }
 
-      if (nodeTrigger) {
+      const orphanNode = nodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
+        result.node.parents.length === 0);
+      if (orphanNode) {
         flow.paths.root = {};
-        flow.paths.root.is = nodeTrigger.node.id;
-      } else {
-        const orphanNode = nodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
-          result.node.parents.length === 0);
-        if (orphanNode) {
-          flow.paths.root = {};
-          flow.paths.root.is = orphanNode.node.id;
-        }
+        flow.paths.root.is = orphanNode.node.id;
       }
 
       if (installedTiles) {
@@ -180,7 +169,7 @@ export abstract class AbstractModelConverter {
     return flow;
   }
 
-  getFlowParts(installedTiles, tasks, links, errorRootID?) {
+  getFlowParts(installedTiles, tasks, links) {
     const nodes = [];
     const items = [];
     const branches = [];
@@ -188,14 +177,6 @@ export abstract class AbstractModelConverter {
     const item = new FlowElement(FLOW_ITEM);
 
     try {
-      let nodeTrigger;
-      if (errorRootID) {
-        const rootTrigger = { isErrorTrigger: true, taskID: flogoIDEncode(errorRootID), cli: { id: -1 } };
-        nodeTrigger = node.makeTrigger(rootTrigger);
-        const itemTrigger = item.makeTrigger(rootTrigger);
-        nodes.push({ node: nodeTrigger, cli: rootTrigger });
-        items.push({ node: itemTrigger, cli: rootTrigger });
-      }
 
       tasks.forEach((task) => {
         const nodeItem = node.makeItem({ taskID: flogoIDEncode(task.id) });
@@ -247,7 +228,7 @@ export abstract class AbstractModelConverter {
 
       const nodeLinks = links.filter(link => link.type !== FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH);
       const branchesLinks = links.filter(link => link.type === FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE.BRANCH);
-      linkTiles(nodes, nodeLinks, nodeTrigger);
+      linkTiles(nodes, nodeLinks);
 
       linkBranches(branches, nodes, branchesLinks);
     } catch (error) {
@@ -257,25 +238,13 @@ export abstract class AbstractModelConverter {
 
     return { nodes, items, branches };
 
-    function linkTiles(inputNodes, inputLinks, errorNodeTrigger) {
+    function linkTiles(inputNodes, inputLinks) {
       try {
         inputLinks.forEach((link) => {
           const from = inputNodes.find(result => result.cli.id === link.from);
           const to = inputNodes.find(result => result.cli.id === link.to);
           linkNodes(from.node, to.node);
         });
-
-        if (errorNodeTrigger) {
-          // set link between trigger and first node
-          const orphanNode = inputNodes.find(result => result.node && result.node.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE &&
-            result.node.parents.length === 0);
-
-          if (orphanNode) {
-            linkNodes(errorNodeTrigger, orphanNode.node);
-          } else if (inputLinks.length) {
-            throw new Error('Function linkTiles:Cannot link trigger with first node');
-          }
-        }
       } catch (error) {
         console.error(error);
         throw error;
@@ -368,16 +337,10 @@ class FlowElement {
 }
 
 class NodeFactory {
-  static makeTrigger(trigger) {
-    if (trigger.isErrorTrigger) {
-      return Object.assign({}, this.getSharedProperties(), {
-        type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW, taskID: trigger.taskID
-      });
-    } else {
-      return Object.assign({}, this.getSharedProperties(), {
-        type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT, taskID: flogoGenTriggerID()
-      });
-    }
+  static makeTrigger() {
+    return Object.assign({}, this.getSharedProperties(), {
+      type: FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT, taskID: flogoGenTriggerID()
+    });
   }
 
   static makeItem(item) {
@@ -424,45 +387,7 @@ class ItemFactory {
     return Object.assign({}, defaults, _.pick(installed, ['name', 'version', 'homepage', 'description', 'ref']));
   }
 
-  static makeTriggerError(trigger) {
-    return {
-      id: trigger.taskID,
-      type: FLOGO_TASK_TYPE.TASK_ROOT,
-      version: '',
-      name: 'On Error',
-      description: '',
-      activityType: '',
-      triggerType: '__error-trigger',
-      attributes: {
-        outputs: [{
-          name: 'activity', type: ValueType.String, title: 'activity', value: '',
-        }, {
-          name: 'message', type: ValueType.String, title: 'message', value: '',
-        }, {
-          name: 'data', type: ValueType.Any, title: 'data', value: '',
-        }],
-      },
-      inputMappings: [],
-      outputMappings: [],
-      outputs: [{
-        name: 'activity', type: ValueType.String, title: 'activity', value: '',
-      }, {
-        name: 'message', type: ValueType.String, title: 'message', value: '',
-      }, {
-        name: 'data', type: ValueType.Any, title: 'data', value: '',
-      }],
-      __props: {
-        errors: [],
-      },
-      __status: {},
-    };
-  }
-
   static makeTrigger(trigger): any {
-    if (trigger.isErrorTrigger) {
-      return this.makeTriggerError(trigger);
-    }
-
     // todo: what does cli means in this context??
     const { installed, cli, endpointSetting } = trigger;
     const item = Object.assign({}, this.getSharedProperties(installed), { id: trigger.node.taskID }, {

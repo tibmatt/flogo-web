@@ -191,3 +191,44 @@
     }
   }
 }
+
+@error-panel-icon__width: 48px;
+.error-panel {
+  display: flex;
+
+  ::ng-deep .flogo-flows-detail-diagram-row {
+    padding-left: @error-panel-icon__width * 2;
+  }
+
+}
+
+.error-panel__icon-container {
+  width: @error-panel-icon__width;
+  height: 155px;
+  position: absolute;
+  margin-left: @error-panel-icon__width;
+  z-index: 2;
+}
+
+.error-panel__icon-bg {
+  width: 48px;
+  height: 155px;
+}
+
+.error-panel__icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  line-height: 155px;
+  color: #ee3342;
+  font-size: 22px;
+  text-align: center;
+  padding-left: 4px;
+  transform: rotate(180deg);
+}
+
+.error-panel__diagram {
+  flex: 1;
+}

@@ -56,7 +56,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
 
   ngAfterViewInit() {
     if (_.isEmpty(this.diagram) || (this.id === 'errorHandler' && _.isEmpty(this.diagram.root))) {
-      this.diagram = FlogoFlowDiagram.getEmptyDiagram(this.id === 'errorHandler' ? 'error' : null);
+      this.diagram = FlogoFlowDiagram.getEmptyDiagram();
     }
 
     this._diagram = new FlogoFlowDiagram(this.diagram, this.tasks || {}, this._translate, this.appDetails.appProfileType,
@@ -89,7 +89,7 @@ export class FlogoFlowsDetailDiagramComponent implements AfterViewInit, OnChange
       console.groupEnd();
 
     if (this.id === 'errorHandler' && _.isEmpty(this.diagram.root)) {
-        this.diagram = FlogoFlowDiagram.getEmptyDiagram('error');
+        this.diagram = FlogoFlowDiagram.getEmptyDiagram();
       }
 
       if (this.diagram && this.tasks && this._diagram) {

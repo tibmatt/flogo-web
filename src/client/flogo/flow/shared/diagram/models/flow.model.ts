@@ -202,7 +202,6 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       /*
        * add the root node to tasks of the root flow as it now is an activity
        */
-
       const taskInfo = _prepareTaskInfo(<DiagramTask>flowItems[rootNode.taskID]);
       if (!_.isEmpty(taskInfo)) {
         rootTask.tasks.push(taskInfo);
@@ -233,9 +232,8 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       }>_.get(errorPath, 'root');
       const errorPathNodes = <NodeDictionary>_.get(errorPath, 'nodes');
 
-      const rootNode = errorPathNodes[errorPathRoot.is];
       const errorTask = <flowToJSON_RootTask>{
-        id: convertTaskID(rootNode.taskID),
+        id: '__error_root',
         type: FLOGO_TASK_TYPE.TASK, // this is 1
         activityType: '',
         ref: '',
@@ -243,6 +241,14 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
         tasks: <flowToJSON_Task[]>[],
         links: <flowToJSON_Link[]>[]
       };
+      /*
+       * add the root node to tasks of the root flow as it now is an activity
+       */
+      const rootNode = errorPathNodes[errorPathRoot.is];
+      const taskInfo = _prepareTaskInfo(<DiagramTask>errorItems[rootNode.taskID]);
+      if (!_.isEmpty(taskInfo)) {
+        errorTask.tasks.push(taskInfo);
+      }
 
       _traversalDiagram(rootNode, errorPathNodes, errorItems, errorTask.tasks, errorTask.links);
 

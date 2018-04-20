@@ -584,33 +584,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     console.log(envelope);
 
     const doRegisterTask = _registerTask.bind(this);
-
-    if (this.handlers[diagramId] === this.errorHandler && _.isEmpty(this.errorHandler.tasks)) {
-      const errorTrigger = makeDefaultErrorTrigger(this.profileService.generateTaskID(this._getAllTasks()));
-      this.errorHandler.tasks[errorTrigger.id] = errorTrigger;
-
-      this._postService.publish(
-        _.assign(
-          {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
-            data: {
-              node: null,
-              task: errorTrigger,
-              id: data.id
-            },
-            done: (diagram: FlowDiagram) => {
-              _.assign(this.handlers[diagramId].diagram, diagram);
-              this._updateFlow(this.flow);
-              this._isDiagramEdited = true;
-              doRegisterTask();
-            }
-          }
-        )
-      );
-
-    } else {
-      doRegisterTask();
-    }
-
+    doRegisterTask();
     function _registerTask() {
       let task = data.task;
       const taskName = this.uniqueTaskName(data.task.name);
@@ -1638,7 +1612,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       previousNodesErrorFlow.pop(); // ignore last item as it is the very same selected node
       const previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, this.handlers['errorHandler']);
 
-      scope = previousTilesMainFlow.concat(previousTilesErrorFlow);
+      scope = [...previousTilesMainFlow, makeDefaultErrorTrigger(''), ...previousTilesErrorFlow];
     } else {
       const previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
 
@@ -1784,7 +1758,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     const isApplicableNodeType = _.includes.bind(null, [
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
-      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT_ERROR_NEW
     ]);
 
     return nodeIds
