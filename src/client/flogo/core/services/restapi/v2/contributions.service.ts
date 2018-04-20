@@ -1,37 +1,52 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { HttpUtilsService } from '../http-utils.service';
 import 'rxjs/add/operator/toPromise';
+import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import {RestApiService} from '../rest-api.service';
+
+interface InstallationData {
+  url: string;
+  type?: string;
+}
 
 @Injectable()
 export class RESTAPIContributionsService {
-  pathToService = 'contributions/devices';
 
-  constructor(private _http: Http, private httpUtils: HttpUtilsService) {
+  contributionPathByProfileType = new Map<FLOGO_PROFILE_TYPE, string>([
+    [FLOGO_PROFILE_TYPE.MICRO_SERVICE, 'contributions/microservices'],
+    [FLOGO_PROFILE_TYPE.DEVICE, 'contributions/devices']
+  ]);
+
+  constructor(private restApi: RestApiService) {
   }
 
-  getContributionDetails(ref: string) {
-    return this._http.get(this.httpUtils.apiPrefix(this.pathToService + '?filter[ref]=' + ref)).toPromise()
-      .then(response => response.json().data[0]);
+  getContributionDetails(profileType: FLOGO_PROFILE_TYPE, ref: string) {
+    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[ref]=' + ref).toPromise()
+      .then(response => response[0]);
   }
 
-  listContribs(type) {
-    return this._http.get(this.httpUtils.apiPrefix(this.pathToService + '?filter[type]=' + type)).toPromise();
+  listContribs(profileType, type) {
+    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }
 
-  installContributions(urls: string[]) {
-    const body = JSON.stringify({
-      'urls': urls
-    });
+  installContributions({profileType, installType, url}) {
+    const body = this.prepareBodyData(profileType, installType, url);
 
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
+    return this.restApi.post(this.getApiPath(profileType), body).toPromise();
+  }
 
-    const options = new RequestOptions({ headers: headers });
+  private prepareBodyData(profileType, type, url): InstallationData {
+    const data: InstallationData = {url};
+    if (profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
+      data.type = type;
+    }
+    return data;
+  }
 
-    return this._http.post(this.httpUtils.apiPrefix(this.pathToService), body, options).map(res => res.json()).toPromise();
-
+  private getApiPath(profileType: FLOGO_PROFILE_TYPE): string {
+    const pathToContribution = this.contributionPathByProfileType.get(profileType);
+    if (!pathToContribution) {
+      throw new Error(`Contributions API path for '${FLOGO_PROFILE_TYPE[profileType]}' profile is not found`);
+    }
+    return pathToContribution;
   }
 }

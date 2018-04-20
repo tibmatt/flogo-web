@@ -4,10 +4,7 @@ import { DebugElement } from '@angular/core';
 import { TriggersApiService } from '@flogo/core/services';
 import { TriggersApiServiceMock } from '@flogo/core/services/restapi/v2/triggers-api.service.mock';
 import { FlogoSelectTriggerComponent } from './select-trigger.component';
-import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
-import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
 import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
-import { RESTAPITriggersServiceMock } from '@flogo/core/services/restapi/triggers-api.service.mock';
 import { PostService } from '@flogo/core/services/post.service';
 import { HttpUtilsService } from '@flogo/core/services/restapi/http-utils.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
@@ -61,10 +58,8 @@ describe('FlogoSelectTrigger component', () => {
         TriggersModule,
       ],
       providers: [
-        RESTAPIActivitiesService,
         { provide: PostService, useValue: postServiceStub },
         { provide: FlogoProfileService, useClass: FlogoProfileServiceMock },
-        { provide: RESTAPITriggersService, useClass: RESTAPITriggersServiceMock },
         { provide: TriggersApiService, useClass: TriggersApiServiceMock },
         { provide: RESTAPIContributionsService },
         HttpUtilsService

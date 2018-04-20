@@ -10,6 +10,7 @@ import { ApplicationDetail } from './application-detail.interface';
 import { TriggerGroup } from './trigger-group.interface';
 import { FlowGroup } from './flow-group.interface';
 import { APP_MODELS, TYPE_APP_MODEL } from '@flogo/core';
+import {getProfileType} from '@flogo/shared/utils';
 
 const DEFAULT_STATE = {
   name: {
@@ -162,7 +163,9 @@ export class AppDetailService {
   private transform(app: App): App {
     const triggers = app.triggers || [];
     const actions = app.actions || [];
+    const profileType = getProfileType(app);
     return <App> Object.assign({}, app, {
+      profileType,
       flowGroups: this.makeFlowGroups(triggers, actions)
     }, {
       triggerGroups: this.makeTriggerGroups(triggers, actions)

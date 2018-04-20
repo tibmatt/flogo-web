@@ -1,7 +1,5 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild, Input, Output } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { RESTAPITriggersService } from '@flogo/core/services/restapi/triggers-api.service';
-import { RESTAPIActivitiesService } from '@flogo/core/services/restapi/activities-api.service';
 import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import {
@@ -52,9 +50,7 @@ export class FlogoInstallerComponent implements OnChanges {
 
   _status = FLOGO_INSTALLER_STATUS_IDLE;
 
-  constructor(private _triggersAPIs: RESTAPITriggersService,
-              private _activitiesAPIs: RESTAPIActivitiesService,
-              private contributionsAPIs: RESTAPIContributionsService) {
+  constructor(private contributionsAPIs: RESTAPIContributionsService) {
     this.init();
   }
 
@@ -116,47 +112,35 @@ export class FlogoInstallerComponent implements OnChanges {
   }
 
   onInstallAction(url: string) {
+    if (this._installType !== 'trigger' && this._installType !== 'activity') {
+      console.warn('Unknown installation type.');
+      console.groupEnd();
+      return;
+    }
+
     console.group(`[FlogoInstallerComponent] onInstallAction`);
     console.log(`Source URL: ${url} `);
 
-    let installAPI = null;
-
-    if (this.profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-      if (this._installType === 'trigger') {
-        installAPI = this._triggersAPIs.installTriggers.bind(this._triggersAPIs);
-      } else if (this._installType === 'activity') {
-        installAPI = this._activitiesAPIs.installActivities.bind(this._activitiesAPIs);
-      } else {
-        console.warn('Unknown installation type.');
-        console.groupEnd();
-        return;
-      }
-    } else {
-      installAPI = this.contributionsAPIs.installContributions.bind(this.contributionsAPIs);
-    }
-
+    const installAPI = this.contributionsAPIs.installContributions.bind(this.contributionsAPIs);
 
     const self = this;
 
-    if (_.isFunction(installAPI)) {
 
-      self._status = FLOGO_INSTALLER_STATUS_INSTALLING;
+    self._status = FLOGO_INSTALLER_STATUS_INSTALLING;
 
-      installAPI([url])
-        .then((response) => {
-          this.installed.emit(response);
-          self._status = FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS;
-          console.groupEnd();
-          return response;
-        })
-        .catch((err) => {
-          console.error(err);
-          self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
-          console.groupEnd();
-        });
-    } else {
+    this.contributionsAPIs.installContributions({
+      profileType: this.profileType,
+      installType: this._installType,
+      url
+    }).then((response) => {
+      this.installed.emit(response);
+      self._status = FLOGO_INSTALLER_STATUS_INSTALL_SUCCESS;
+      console.groupEnd();
+      return response;
+    }).catch((err) => {
+      console.error(err);
       self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
-    }
-
+      console.groupEnd();
+    });
   }
 }

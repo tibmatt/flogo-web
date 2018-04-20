@@ -36,11 +36,11 @@ function *getContribution()  {
 }
 
 function* installContribs( next ) {
-  const urls = preProcessURLs(this.request.body.urls);
+  const url = preProcessURLs(this.request.body.url);
 
   let results = {};
     try {
-      results = yield ContribsManager.install( urls );
+      results = yield ContribsManager.install( [url] );
     } catch ( err ) {
       throw new Error( '[error] Encounter error to add contributions to test engine.' );
     }

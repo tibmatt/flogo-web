@@ -1,41 +1,22 @@
 import { AbstractModelConverter } from '../ui-converter.model';
-import { RESTAPIContributionsService } from '../../../../core/services/restapi/v2/contributions.service';
-import { ErrorService } from '../../../../core/services/error.service';
+import {FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 export class DeviceModelConverter extends AbstractModelConverter {
-  contribService: RESTAPIContributionsService;
 
-  constructor(contribService: RESTAPIContributionsService,
-              errorService: ErrorService) {
-    super(errorService);
-    this.contribService = contribService;
+  getProfileType(): FLOGO_PROFILE_TYPE {
+    return FLOGO_PROFILE_TYPE.DEVICE;
   }
 
-  getActivitiesPromise(activities) {
+  getActivitiesSchema(activities) {
     const promises = [];
     activities.forEach(activityRef => {
-      promises.push(this.contribService.getContributionDetails(activityRef).then(activity => {
+      promises.push(this.contribService.getContributionDetails(this.getProfileType(), activityRef).then(activity => {
         activity.inputs = activity.settings;
         activity.outputs = [];
         return activity;
       }));
     });
     return Promise.all(promises);
-  }
-
-  getTriggerPromise(trigger) {
-    if (!trigger.ref) {
-      throw this.errorService.makeOperationalError('Trigger: Wrong input json file', 'Cannot get ref for trigger',
-        {
-          type: 'ValidationError',
-          title: 'Wrong input json file',
-          detail: 'Cannot get ref for trigger:',
-          property: 'trigger',
-          value: trigger
-        });
-    } else {
-      return this.contribService.getContributionDetails(trigger.ref);
-    }
   }
 
   getFlowInformation(flowJSON) {

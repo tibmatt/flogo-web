@@ -9,8 +9,9 @@ import {
 } from '../../shared/diagram/constants';
 
 import { FlogoFlowDiagramNode } from '../../shared/diagram/models/node.model';
-import {ActionBase} from '@flogo/core';
+import {ActionBase, FLOGO_PROFILE_TYPE} from '@flogo/core';
 import {CONTRIB_REF_PLACEHOLDER} from '@flogo/core/constants';
+import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 
 const FLOW_NODE = 'node';
 const FLOW_ITEM = 'item';
@@ -18,27 +19,44 @@ const FLOW_ITEM = 'item';
 export abstract class AbstractModelConverter {
   subflowSchemaRegistry: Map<string, ActionBase>;
   errorService: ErrorService;
+  contribService: RESTAPIContributionsService;
 
-  constructor(errorService: ErrorService) {
+  constructor(contributionService: RESTAPIContributionsService, errorService: ErrorService) {
+    this.contribService = contributionService;
     this.errorService = errorService;
   }
 
-  abstract getActivitiesPromise(list);
+  abstract getActivitiesSchema(list);
 
-  abstract getTriggerPromise(trigger);
+  abstract getProfileType(): FLOGO_PROFILE_TYPE;
 
   abstract getFlowInformation(flow);
 
+  getTriggerSchema(trigger) {
+    if (!trigger.ref) {
+      throw this.errorService.makeOperationalError('Trigger: Wrong input json file', 'Cannot get ref for trigger',
+        {
+          type: 'ValidationError',
+          title: 'Wrong input json file',
+          detail: 'Cannot get ref for trigger:',
+          property: 'trigger',
+          value: trigger
+        });
+    } else {
+      return this.contribService.getContributionDetails(this.getProfileType(), trigger.ref);
+    }
+  }
+
   convertToWebFlowModel(flowObj, subflowSchema: Map<string, ActionBase>) {
     this.subflowSchemaRegistry = subflowSchema;
-    return this.getActivitiesPromise(this.getActivities(flowObj))
+    return this.getActivitiesSchema(this.activitiesUsed(flowObj))
       .then((installedActivities) => {
         const installedTiles = _.flattenDeep(installedActivities);
         return this.processFlowObj(flowObj, installedTiles);
       });
   }
 
-  getActivities(flow: any) {
+  activitiesUsed(flow: any) {
     const activitiesList = [];
     let tasks = _.get(flow, 'data.flow.rootTask.tasks', []);
     // add tiles from error diagram

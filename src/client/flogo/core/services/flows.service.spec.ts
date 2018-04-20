@@ -2,14 +2,14 @@ import { FlowsService } from './flows.service';
 import { RESTAPIHandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService } from './restapi/v2/flows-api.service';
 import { TriggersApiService } from './restapi';
-import { RESTAPITriggersService as ContribTriggersService } from './restapi/triggers-api.service';
+import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
 
 describe('Service: FlowsService', function (this: {
   testService: FlowsService,
   mockHandlersAPIService: RESTAPIHandlersService,
   mockTriggersService: TriggersApiService,
-  mockContribTriggerAPIService: ContribTriggersService,
+  mockContribTriggerAPIService: RESTAPIContributionsService,
   mockFlowsAPIService: APIFlowsService
 }) {
   const mockAppTriggerData = {
@@ -47,8 +47,8 @@ describe('Service: FlowsService', function (this: {
   let spyDelete;
   let spyDeleteTrigger;
   beforeAll(() => {
-    this.mockContribTriggerAPIService = jasmine.createSpyObj<ContribTriggersService>('contribTriggersService', [
-      'getTriggerDetails'
+    this.mockContribTriggerAPIService = jasmine.createSpyObj<RESTAPIContributionsService>('contribTriggersService', [
+      'getContributionDetails'
     ]);
     this.mockFlowsAPIService = jasmine.createSpyObj<APIFlowsService>('flowsAPIService', [
       'deleteFlow'

@@ -88,10 +88,11 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   private onAddFlow(data: any) {
     const appId = this.appDetail.app.id;
     const triggerId = data.triggerId;
+    const profileType = this.appDetail.app.profileType;
     this.flowsService.createFlow(appId, {
       name: data.name,
       description: data.description,
-    }, triggerId).then(() => {
+    }, triggerId, profileType).then(() => {
       const message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
       notification(message, 'success', 3000);
     })

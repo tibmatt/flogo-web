@@ -1,6 +1,4 @@
 import { UIModelConverterService } from './ui-model-converter.service';
-import { RESTAPITriggersService } from '../../core/services/restapi/triggers-api.service';
-import { RESTAPIActivitiesService } from '../../core/services/restapi/activities-api.service';
 import { ErrorService } from '../../core/services/error.service';
 import {
   mockActivitiesDetails,
@@ -21,25 +19,16 @@ import {ActionBase} from '@flogo/core';
 describe('Service: UI Model Converter', function (this: {
   service: UIModelConverterService,
   errorService: ErrorService,
-  triggerServiceMock: RESTAPITriggersService,
-  activityServiceMock: RESTAPIActivitiesService,
   contribServiceMock: RESTAPIContributionsService,
   emptySchemaRegistry: Map<string, ActionBase>
 }) {
 
   beforeEach(() => {
-    this.triggerServiceMock = jasmine.createSpyObj<RESTAPITriggersService>('triggerService', [
-      'getTriggerDetails'
-    ]);
-    this.activityServiceMock = jasmine.createSpyObj<RESTAPIActivitiesService>('activityService', [
-      'getActivityDetails'
-    ]);
     this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>('contribService', [
       'getContributionDetails'
     ]);
     this.errorService = new ErrorService();
-    this.service = new UIModelConverterService(this.triggerServiceMock, this.activityServiceMock,
-      this.contribServiceMock, this.errorService);
+    this.service = new UIModelConverterService(this.contribServiceMock, this.errorService);
     this.service.setProfile(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
     this.emptySchemaRegistry = new Map(<[string, ActionBase][]> []);
   });
@@ -47,7 +36,7 @@ describe('Service: UI Model Converter', function (this: {
   it('Should throw error when Activity does not have a activityRef', () => {
     let thrownError: Error;
     try {
-      const spy = <Spy>this.triggerServiceMock.getTriggerDetails;
+      const spy = <Spy>this.contribServiceMock.getContributionDetails;
       spy.and.returnValue({});
       this.service.getWebFlowModel(mockErrorFlow, this.emptySchemaRegistry);
     } catch (error) {
@@ -60,10 +49,10 @@ describe('Service: UI Model Converter', function (this: {
 
   it('Should convert the Engine Flow Model to UI Flow model', (done) => {
     const thisTestData: any = _.cloneDeep(mockFlow);
-    const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
+    const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(Promise.resolve(mockTriggerDetails));
-    const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
-    spyActivityService.and.callFake(function (activityRef) {
+    const spyActivityService = <Spy>this.contribServiceMock.getContributionDetails;
+    spyActivityService.and.callFake(function (type, activityRef) {
       if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return Promise.resolve(mockActivitiesDetails[0]);
       } else {
@@ -80,10 +69,10 @@ describe('Service: UI Model Converter', function (this: {
 
   it('Should have error handler in UI Flow model', (done) => {
     const thisTestData: any = _.cloneDeep(mockFlow);
-    const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
+    const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
-    const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
-    spyActivityService.and.callFake(function (activityRef) {
+    const spyActivityService = <Spy>this.contribServiceMock.getContributionDetails;
+    spyActivityService.and.callFake(function (type, activityRef) {
       if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return mockActivitiesDetails[0];
       } else {
@@ -101,10 +90,10 @@ describe('Service: UI Model Converter', function (this: {
 
   it('Should maintain the transformation details of a tile', (done) => {
     const thisTestData: any = _.cloneDeep(mockFlow);
-    const spyTriggerService = <Spy>this.triggerServiceMock.getTriggerDetails;
+    const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
-    const spyActivityService = <Spy>this.activityServiceMock.getActivityDetails;
-    spyActivityService.and.callFake(function (activityRef) {
+    const spyActivityService = <Spy>this.contribServiceMock.getContributionDetails;
+    spyActivityService.and.callFake(function (type, activityRef) {
       if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
         return mockActivitiesDetails[0];
       } else {
