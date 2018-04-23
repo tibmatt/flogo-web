@@ -1,6 +1,7 @@
-@bg-color-empty: #e0e0e0;
-@bg-color-configured: #fff;
-@bg-color-hovered: #eef6fa;
+@bg-color-default: #dedede;
+@bg-color-default--hover: #f0f0f0;
+@bg-color-configured: #eef6fa;
+@bg-color-configured--hover: #c9e3f1;
 
 .schema-button {
   width: 70px;
@@ -12,52 +13,49 @@
   align-items: center;
   flex-direction: column;
 
-  background-color: @bg-color-empty;
+  background-color: @bg-color-default;
   font-weight: bold;
   text-align: center;
   font-size: 0.75em;
-  box-shadow: 2px 3px 1px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0px 1px 0 rgba(0, 0, 0, 0.1);
   transition: all 0.15s ease-in-out;
 
   // arrow
   &:after {
     position: absolute;
-    left: 58px;
-    top: 62px;
+    left: 56px;
+    top: 52px;
     z-index: 3;
     content: '';
     display: block;
-    width: 24px;
-    height: 20px;
-    background: @bg-color-empty;
+    width: 28px;
+    height: 16px;
+    transform: rotate(71deg) skewX(50deg);
+    background: @bg-color-default;
     box-shadow: 2px -2px 1px 0 rgba(0, 0, 0, 0.1);
-    transform: rotate(62.8deg) skewX(35deg);
     transition: all 0.15s ease-in-out;
   }
 
   &:hover {
-
-    background-color: @bg-color-hovered;
+    background-color: @bg-color-default--hover;
     &:after {
-      background-color: @bg-color-hovered;
+      background-color: @bg-color-default--hover;
     }
-
   }
 
   &.--is-configured {
-    background-color: transparent;
-
+    background-color: @bg-color-configured;
     &:after {
       background-color: @bg-color-configured;
     }
+
     &:hover {
-
-      background-color: @bg-color-hovered;
+      background-color: @bg-color-configured--hover;
       &:after {
-        background-color: @bg-color-hovered;
+        background-color: @bg-color-configured--hover;
       }
-
     }
+
   }
 
   &__icon {
