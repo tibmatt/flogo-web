@@ -28,6 +28,19 @@
 
   -webkit-transition: width .5s; /* Safari */
   transition: width .5s;
+  background-position: -61px -53px;
+  background-size: 260px 255px;
+  background-repeat: no-repeat;
+
+  &.flogo-flow-detail__microservice {
+    background: url(/assets/svg/bg-microservice.svg) no-repeat;
+    background-position: -61px -53px;
+    background-size: 260px 255px;
+  }
+  &.flogo-flow-detail__device {
+    background-image: url(/assets/svg/bg-device.svg);
+  }
+
 }
 
 .flogo-flow-container {
@@ -37,19 +50,15 @@
 
 .flogo-flows-main {
   min-height: 100%;
-  background-color: #eeeded;
   display: flex;
   flex-direction: row;
-
-  .flogo-flows-triggers-container {
-    background: #FFFFFF;
-  }
 
   .flogo-flows-flow-schema-container {
     z-index: 1;
   }
 
   .flogo-flows-diagram-container {
+    background-color: #eeeded;
     flex: 1;
   }
 }
@@ -78,27 +87,6 @@
   display: flex;
   align-items: center;
 
-  &:before {
-    content: ' ';
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-position: -66px -4px;
-    background-size: 260px 255px;
-  }
-
-  &.flogo-flow-detail__device:before {
-    background-image: url('/assets/svg/bg-device.svg');
-    background-position-x: -20px;
-  }
-
-  &.flogo-flow-detail__microservice:before {
-    background-image: url(/assets/svg/bg-microservice.svg);
-  }
 }
 
 .flogo-flow-detail-name {
@@ -149,7 +137,6 @@
 }
 
 .flogo-flow-detail-header {
-
 
   .flogo-flow-detail-name + span {
     font-size: .875em;

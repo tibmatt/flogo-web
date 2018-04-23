@@ -45,10 +45,18 @@
   }
 
   &.--is-configured {
-    background-color: @bg-color-configured;
+    background-color: transparent;
 
     &:after {
       background-color: @bg-color-configured;
+    }
+    &:hover {
+
+      background-color: @bg-color-hovered;
+      &:after {
+        background-color: @bg-color-hovered;
+      }
+
     }
   }
 
