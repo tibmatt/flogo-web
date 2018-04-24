@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AbstractTaskIdGenerator } from '../profiles.utils.service';
-import { flogoIDEncode } from '../../../../shared/utils';
 
 @Injectable()
 export class FlogoDeviceTaskIdGeneratorService extends AbstractTaskIdGenerator {
@@ -17,6 +16,6 @@ export class FlogoDeviceTaskIdGeneratorService extends AbstractTaskIdGenerator {
       taskID = '' + (Date.now() >>> 1);
     }
 
-    return flogoIDEncode(taskID);
+    return taskID;
   }
 }

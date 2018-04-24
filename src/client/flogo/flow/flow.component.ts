@@ -59,8 +59,6 @@ import {
 } from '../core/constants';
 import {
   flogoGenBranchID,
-  flogoIDDecode,
-  flogoIDEncode,
   isIterableTask,
   isMapperActivity,
   isSubflowTask,
@@ -334,15 +332,9 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private _getCurrentState(taskID: string) {
     const steps = this.runState.steps || [];
-    let id: any = taskID;
-    try { // try to decode the base64 encoded taskId to number
-      id = flogoIDDecode(taskID);
-    } catch (e) {
-      console.warn(e);
-    }
     // allow double equal check for legacy ids that were type number
     /* tslint:disable-next-line:triple-equals */
-    return steps.find(step => id == step.taskId);
+    return steps.find(step => taskID == step.taskId);
   }
 
   private _cleanSelectionStatus() {
@@ -1268,7 +1260,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const attrs = _.get(selectedTask, 'attributes.inputs');
     const dataOfInterceptor = {
       tasks: [{
-        id: flogoIDDecode(selectedTask.id),
+        id: selectedTask.id,
         inputs: parseInput(attrs, data.inputs),
       }]
     };
@@ -1471,11 +1463,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     }>{};
     let isFlowDone = false;
     const runTasks = _.reduce(steps, (result: any, step: any) => {
-      let taskID = step.taskId;
+      const taskID = step.taskId;
 
       if (taskID !== 'root' && taskID !== 1 && !_.isNil(taskID)) { // if not rootTask and not `null`
-
-        taskID = flogoIDEncode('' + taskID);
 
         /****
          *  Exclude the tasks which are skipped by the engine while running the flow
@@ -1581,7 +1571,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     // firstly try to get steps from the last process instance running from the beginning,
     // otherwise use some defauts
     const steps = _.get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
-    taskId = flogoIDDecode(taskId); // decode the taskId
 
     steps.forEach((step: any, index: number) => {
       // allowing double equals for legacy ids that were of type number

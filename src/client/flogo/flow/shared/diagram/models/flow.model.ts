@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import {convertTaskID, flogoIDEncode, getDefaultValue, isSubflowTask} from '@flogo/shared/utils';
+import {convertTaskID, getDefaultValue, isSubflowTask} from '@flogo/shared/utils';
 
 import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../constants';
 import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces/flow';
@@ -123,7 +123,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
 
   /* assign attributes */
 
-  flowJSON.id = flogoIDEncode(flowID); // convert to URL safe base64 encoded id
+  flowJSON.id = flowID;
   flowJSON.name = _.get(inFlow, 'name', '');
   flowJSON.description = _.get(inFlow, 'description', '');
   flowJSON.metadata = _parseMetadata(_.get(inFlow, 'metadata', {

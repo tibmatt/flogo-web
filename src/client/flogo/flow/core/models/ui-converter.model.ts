@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
-import {flogoGenTriggerID, flogoIDEncode, isSubflowTask} from '@flogo/shared/utils';
+import {flogoGenTriggerID, isSubflowTask} from '@flogo/shared/utils';
 import { ErrorService } from '@flogo/core/services/error.service';
 
 import {
@@ -179,7 +179,7 @@ export abstract class AbstractModelConverter {
     try {
 
       tasks.forEach((task) => {
-        const nodeItem = node.makeItem({ taskID: flogoIDEncode(task.id) });
+        const nodeItem = node.makeItem({ taskID: task.id });
 
         let installedActivity = installedTiles.find(tile => tile.ref === task.activityRef);
         if (isSubflowTask(task.type)) {
@@ -361,8 +361,7 @@ class NodeFactory {
   }
 
   static flogoGenBranchID() {
-    const id = _.uniqueId(`Flogo::Branch::${Date.now()}::`);
-    return flogoIDEncode(id);
+    return _.uniqueId(`Flogo::Branch::${Date.now()}::`);
   }
 }
 

@@ -1,5 +1,4 @@
 import { FLOGO_TASK_TYPE } from '../../constants';
-import { flogoIDDecode } from '../../../shared/utils';
 
 export abstract class AbstractTaskIdGenerator {
   abstract generateTaskID(items?: any, currentTask?: any);
@@ -14,7 +13,7 @@ export abstract class AbstractTaskIdGenerator {
       return type === FLOGO_TASK_TYPE.TASK || type === FLOGO_TASK_TYPE.TASK_ROOT || type === FLOGO_TASK_TYPE.TASK_SUB_PROC;
     }), (id: string) => {
       // if parseInput callback is provided then parse the decoded task ID to get the number string
-      const numberString = parseInput ? parseInput(flogoIDDecode(id)) : flogoIDDecode(id);
+      const numberString = parseInput ? parseInput(id) : id;
       // Convert the numberString to number
       return _['toNumber'](numberString);
     });

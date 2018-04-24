@@ -1,35 +1,12 @@
 import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import {Task} from '@flogo/core/interfaces/flow/task';
 
-// URL safe base64 encoding
-// reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDEncode(id: string): string {
-  return btoa(id)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
-}
-
-// URL safe base64 decoding
-// reference: https://gist.github.com/jhurliman/1250118
-export function flogoIDDecode(encodedId: string): string {
-
-  encodedId = encodedId.replace(/-/g, '+')
-    .replace(/_/g, '/');
-
-  while (encodedId.length % 4) {
-    encodedId += '=';
-  }
-
-  return atob(encodedId);
-}
-
 export function flogoGenBranchID(): string {
-  return flogoIDEncode(`Flogo::Branch::${Date.now()}`);
+  return `Flogo::Branch::${Date.now()}`;
 }
 
 export function flogoGenTriggerID(): string {
-  return flogoIDEncode(`Flogo::Trigger::${Date.now()}`);
+  return `Flogo::Trigger::${Date.now()}`;
 }
 
 /**
@@ -42,23 +19,7 @@ export function flogoGenTriggerID(): string {
  * @private
  */
 export function convertTaskID(taskID: string) {
-  let id: any = '';
-
-  try {
-    id = flogoIDDecode(taskID);
-
-    // get the timestamp
-    const parsedID = id.split('::');
-
-    if (parsedID.length >= 2) {
-      id = parsedID[1];
-    }
-  } catch (e) {
-    console.warn(e);
-    id = taskID;
-  }
-  id = parseInt(id, undefined) || id;
-  return id;
+  return taskID;
 }
 
 // get default value of a given type

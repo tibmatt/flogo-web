@@ -1,7 +1,6 @@
 import { FlogoMicroserviceTaskIdGeneratorService } from './microservices/utils.service';
 import { AbstractTaskIdGenerator } from './profiles.utils.service';
 import { FlogoDeviceTaskIdGeneratorService } from './devices/utils.service';
-import { flogoIDEncode } from '../../../shared/utils';
 
 const mockTasksAvailable = {
   'RmxvZ286OlRyaWdnZXI6OjE1MDQ2Mjg3ODI1NzU': {
@@ -123,7 +122,7 @@ describe('Service: FlogoMicroserviceTaskIdGeneratorService', function (this: {
   });
 
   it('Should generate the task ID for Microservice profile in "ref_num" format', () => {
-    expect(this.testService.generateTaskID(mockTasksAvailable, mockSelectedTask)).toEqual(flogoIDEncode('counter_2'));
+    expect(this.testService.generateTaskID(mockTasksAvailable, mockSelectedTask)).toEqual('counter_2');
   });
 });
 
@@ -135,6 +134,6 @@ describe('Service: FlogoDeviceTaskIdGeneratorService', function (this: {
   });
 
   it('Should generate the task ID for Microservice profile in "num" format', () => {
-    expect(this.testService.generateTaskID(mockTasksAvailable)).toEqual(flogoIDEncode('2'));
+    expect(this.testService.generateTaskID(mockTasksAvailable)).toEqual('2');
   });
 });

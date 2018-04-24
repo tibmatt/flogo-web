@@ -1,5 +1,4 @@
 import { FLOGO_ERROR_ROOT_NAME, ValueType, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import { flogoIDEncode } from '@flogo/shared/utils';
 import { AttributeMapping, TaskAttributes, Link, Task } from '@flogo/core';
 
 export class FlogoFlowDiagramTask implements Task {
@@ -24,7 +23,7 @@ export class FlogoFlowDiagramTask implements Task {
   };
 
   static genTaskID(): string {
-    return flogoIDEncode('FlogoFlowDiagramTask::' + Date.now());
+    return 'FlogoFlowDiagramTask::' + Date.now();
   }
 
   constructor(task ?: Task) {

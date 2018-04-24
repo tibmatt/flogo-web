@@ -1,4 +1,3 @@
-import { flogoIDEncode } from '@flogo/shared/utils';
 import * as _ from 'lodash';
 import { FLOGO_FLOW_DIAGRAM_NODE_TYPE, FLOGO_FLOW_DIAGRAM_VERBOSE as VERBOSE } from '../constants';
 import { Node } from '@flogo/core/interfaces/flow-diagram/node';
@@ -12,8 +11,7 @@ export class FlogoFlowDiagramNode implements Node {
   // subProc: FlowDiagram[ ]; // [optional] sub process diagram of a task with sub process
 
   static genNodeID(): string {
-    const id = _.uniqueId(`FlogoFlowDiagramNode::${Date.now()}::`);
-    return flogoIDEncode(id);
+    return _.uniqueId(`FlogoFlowDiagramNode::${Date.now()}::`);
   }
 
   constructor(node ?: Node) {

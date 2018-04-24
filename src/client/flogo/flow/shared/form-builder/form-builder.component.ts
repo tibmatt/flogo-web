@@ -3,7 +3,7 @@ import { PostService } from '@flogo/core/services/post.service';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PUB_EVENTS, SUB_EVENTS } from './messages';
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
-import { convertTaskID, flogoIDDecode, getDefaultValue, normalizeTaskName } from '@flogo/shared/utils';
+import { convertTaskID, getDefaultValue, normalizeTaskName } from '@flogo/shared/utils';
 import { LanguageService } from '@flogo/core';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/filter';
@@ -79,7 +79,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   }
 
   public getTaskId() {
-    return this._task ? flogoIDDecode(this._task.id) : '';
+    return this._task ? this._task.id : '';
   }
 
   ngOnDestroy() {
