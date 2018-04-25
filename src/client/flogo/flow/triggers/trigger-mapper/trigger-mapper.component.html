@@ -1,40 +1,39 @@
-<div class="modal-wrapper" *ngIf="isActive" [@dialog]>
-  <div class="mapper-modal qa-transform-modal">
-    <div class="mapper-modal__header header">
-      <h2 class="header__title">{{ 'TRIGGER-MAPPER:TITLE' | translate }}: {{ currentStatus?.trigger?.name }} </h2>
-      <div class="header__actions actions">
-        <button class="flogo-button--secondary actions__action actions__action--delete" (click)="onCloseOrDismiss()">
-          {{ 'TRIGGER-MAPPER:CANCEL' | translate  }}
-        </button>
-        <button [disabled]="!inputsView?.valid || !replyView.valid" class="flogo-button--primary  actions__action actions__action--save" (click)="onSave()">
-          {{ 'TRIGGER-MAPPER:SAVE' | translate  }}
-        </button>
-      </div>
-      <button class="mapper-modal__close" (click)="onCloseOrDismiss()">
-        <span aria-hidden="true" class="sr-only">{{ 'TRIGGER-MAPPER:CLOSE' | translate }}</span>
+<bs-modal cssClass="flogo-trigger-mapper-modal"
+          (onClose)="onCloseOrDismiss()"
+          (onDismiss)="onCloseOrDismiss()">
+  <div class="mapper-modal__header header">
+    <h2 class="header__title">{{ 'TRIGGER-MAPPER:TITLE' | translate }}: {{ currentStatus?.trigger?.name }} </h2>
+    <div class="header__actions actions">
+      <button class="flogo-button--secondary actions__action actions__action--delete" (click)="onCloseOrDismiss()">
+        {{ 'TRIGGER-MAPPER:CANCEL' | translate  }}
+      </button>
+      <button [disabled]="!inputsView?.valid || !replyView.valid" class="flogo-button--primary  actions__action actions__action--save" (click)="onSave()">
+        {{ 'TRIGGER-MAPPER:SAVE' | translate  }}
       </button>
     </div>
-    <div class="mapper-modal__content content--with-menu">
-      <div class="content__menu">
-        <ul>
-          <li><a class="menu__item"
-                 [class.--has-errors]="currentViewName !== VIEWS.INPUTS.name && !inputsView?.valid"
-                 [class.--disabled]="!inputsView?.enabled"
-                 [class.--active]="currentViewName === VIEWS.INPUTS.name"
-                 (click)="setCurrentView(VIEWS.INPUTS.name)">{{ 'TRIGGER-MAPPER:FLOW-INPUTS'| translate }}</a></li>
-          <li><a class="menu__item"
-                 [class.--has-errors]="currentViewName !== VIEWS.INPUTS.name && !replyView?.valid"
-                 [class.--disabled]="!replyView?.enabled"
-                 [class.--active]="currentViewName === VIEWS.REPLY.name"
-                 (click)="setCurrentView(VIEWS.REPLY.name)">{{ 'TRIGGER-MAPPER:FLOW-OUTPUTS'| translate }}</a></li>
-          <li><a class="menu__item">{{ 'TRIGGER-MAPPER:TRIGGER-CONFIGURATION'| translate }}</a></li>
-        </ul>
-      </div>
-      <flogo-mapper *ngIf="currentStatus?.isOpen"
-                    class="mapper content__mapper"
-                    inputsSearchPlaceHolder="{{ currentViewStatus?.inputsLabelKey | translate }}"
-                    outputsSearchPlaceHolder="{{ currentViewStatus?.outputsLabelKey | translate }}"
-                    [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
-    </div>
+    <button class="mapper-modal__close" (click)="onCloseOrDismiss()">
+      <span aria-hidden="true" class="sr-only">{{ 'TRIGGER-MAPPER:CLOSE' | translate }}</span>
+    </button>
   </div>
-</div>
+  <div class="mapper-modal__content content--with-menu">
+    <div class="content__menu"><ul>
+<li class="menu__item"
+             [class.--has-errors]="currentViewName !== VIEWS.INPUTS.name && !inputsView?.valid"
+             [class.--disabled]="!inputsView?.enabled"
+             [class.--active]="currentViewName === VIEWS.INPUTS.name"
+             (click)="setCurrentView(VIEWS.INPUTS.name)">{{ 'TRIGGER-MAPPER:FLOW-INPUTS'| translate }}</li>
+<li class="menu__item"
+             [class.--has-errors]="currentViewName !== VIEWS.INPUTS.name && !replyView?.valid"
+             [class.--disabled]="!replyView?.enabled"
+             [class.--active]="currentViewName === VIEWS.REPLY.name"
+             (click)="setCurrentView(VIEWS.REPLY.name)">{{ 'TRIGGER-MAPPER:FLOW-OUTPUTS'| translate }}</li>
+      <li class="menu__item">{{ 'TRIGGER-MAPPER:TRIGGER-CONFIGURATION'| translate }}</li>
+    </ul>
+    </div>
+    <flogo-mapper *ngIf="currentStatus?.isOpen"
+                  class="mapper content__mapper"
+                  inputsSearchPlaceHolder="{{ currentViewStatus?.inputsLabelKey | translate }}"
+                  outputsSearchPlaceHolder="{{ currentViewStatus?.outputsLabelKey | translate }}"
+                  [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
+  </div>
+</bs-modal>

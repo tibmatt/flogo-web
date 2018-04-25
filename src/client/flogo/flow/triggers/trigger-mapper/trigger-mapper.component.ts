@@ -9,7 +9,6 @@ import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
 import { VIEWS, ViewInfo } from './views-info.model';
 import { TriggerMapperService, Status } from './trigger-mapper.service';
-import {animate, style, transition, trigger} from '@angular/animations/';
 
 interface ViewState extends ViewInfo {
   enabled: boolean;
@@ -26,18 +25,7 @@ interface ViewsStates {
     '../../../../assets/_mapper-modal.less',
     'trigger-mapper.component.less'
   ],
-  templateUrl: 'trigger-mapper.component.html',
-  animations: [
-    trigger('dialog', [
-      transition('void => *', [
-        style({ transform: 'translateY(-100%)', opacity: 0 }),
-        animate('250ms ease-in')
-      ]),
-      transition('* => void', [
-        animate('250ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
-      ]),
-    ])
-  ],
+  templateUrl: 'trigger-mapper.component.html'
 })
 export class TriggerMapperComponent implements OnInit, OnDestroy {
   // allow access to the constants from the template
@@ -46,11 +34,11 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   mapperContext: any;
   mappingValidationFn: MappingsValidatorFn;
-  currentStatus: Status = {isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null};
+  currentStatus: Status = { isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null };
 
   currentViewName: string;
   viewStates: ViewsStates = {};
-  isActive = false;
+
   private editingMappings: {
     actionInput: { [key: string]: IMapExpression };
     actionOutput: { [key: string]: IMapExpression };
@@ -82,7 +70,6 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   }
 
   onCloseOrDismiss() {
-    this.close();
     this.triggerMapperService.close();
   }
 
@@ -141,19 +128,19 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       const triggerSchema = nextStatus.triggerSchema;
       const flowMetadata = nextStatus.flowMetadata;
       this.setupViews(triggerSchema, flowMetadata);
-      this.open();
-      /*      this.modal.open().then(() => {
-              // todo: remove
-              // dirty hack for the mapper editor to setup the size correctly after the modal finishes its animation
-              // probably move inside the mapper module
-              const event = document.createEvent('HTMLEvents');
-              event.initEvent('resize', true, false);
-              document.dispatchEvent(event);
-            });*/
-    } else if (this.isActive) {
+
+      this.modal.open().then(() => {
+        // todo: remove
+        // dirty hack for the mapper editor to setup the size correctly after the modal finishes its animation
+        // probably move inside the mapper module
+        const event = document.createEvent('HTMLEvents');
+        event.initEvent('resize', true, false);
+        document.dispatchEvent(event);
+      });
+    } else if (this.modal.visible) {
       this.mapperContext = null;
       this.editingMappings = null;
-      this.close();
+      this.modal.close();
     }
   }
 
@@ -205,7 +192,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   private setupReplyContext() {
     const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor(this.currentStatus.triggerSchema.reply || []);
-    const flowMetadata = this.currentStatus.flowMetadata || {output: []};
+    const flowMetadata = this.currentStatus.flowMetadata || { output: [] };
     const flowOutputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.output);
     const mappings = _.cloneDeep(this.editingMappings.actionOutput);
 
@@ -213,11 +200,4 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     this.mappingValidationFn = MapperTranslator.makeValidator();
   }
 
-  private open() {
-    this.isActive = true;
-  }
-
-  private close() {
-    this.isActive = false;
-  }
 }

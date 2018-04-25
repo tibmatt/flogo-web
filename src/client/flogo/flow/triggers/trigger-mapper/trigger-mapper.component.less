@@ -7,27 +7,12 @@
 }
 
 .content__menu{
-  display: flex;
   border-bottom: solid 2px #b6b6b6;
   background-color: white;
-  height: 2.5em;
-  flex-direction: column;
 
-  ul li{
-    display: inline;
-    padding: 3em;
+  ul{
+    margin: 0;
   }
-}
-.modal-wrapper {
-  background-color: #fff;
-
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  // todo: proper z-index
-  z-index: 999;
 }
 .content__mapper {
   border: none;
@@ -36,10 +21,12 @@
 }
 
 .menu__item {
+  display: inline;
   width: 100%;
-  line-height: 1.43;
-  padding: 0.4em 1.429em;
-  color: #0081cb;
+  font-size: 0.875em;
+  line-height: 2.43;
+  padding: 0.5em 3.429em;
+  border: 1px solid transparent;
 
 
   &:hover {
@@ -48,8 +35,8 @@
 
   &.--active {
     color: #062e79;
-    border-bottom: 4px solid;
     font-weight: bold;
+    border-bottom: 3px solid #062e79;
 
   }
 
