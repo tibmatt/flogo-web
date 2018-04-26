@@ -5,7 +5,6 @@ import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '@flogo/core/c
 import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo/core';
 import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 
-import { flogoIDDecode } from '@flogo/shared/utils';
 // todo: shared models should be moved to core
 import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
 import { ROOT_TYPES } from '../constants';
@@ -44,7 +43,7 @@ export class MapperTranslator {
           const tileSchema = MapperTranslator.attributesToObjectDescriptor(outputs || []);
           tileSchema.rootType = this.getRootType(tile);
           tileSchema.title = tile.name;
-          const propName = tileSchema.rootType === ROOT_TYPES.ERROR ? 'error' : flogoIDDecode(tile.id);
+          const propName = tileSchema.rootType === ROOT_TYPES.ERROR ? 'error' : tile.id;
           rootSchema.properties[propName] = tileSchema;
         }
       } else {
