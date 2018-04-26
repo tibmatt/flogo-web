@@ -1,20 +1,10 @@
+import { FlowGraph } from '@flogo/core';
 import { Dictionary, ContribSchema } from '../common';
 import { App } from './app';
-import { NodeDictionary } from '../flow-diagram';
 import { FlowMetadata } from './flow-metadata';
 import { Item } from './items';
 
-export interface Handler {
-  paths: {
-    root: {
-      is: string
-    };
-    nodes: NodeDictionary,
-  };
-  items: Dictionary<Item>;
-}
-
-export interface UiFlow extends Handler {
+export interface UiFlow {
   id?: string;
   name?: string;
   description?: string;
@@ -23,6 +13,8 @@ export interface UiFlow extends Handler {
   metadata?: FlowMetadata;
   attributes?: any[];
   items: Dictionary<Item>;
-  errorHandler?: Handler;
+  errorItems: Dictionary<Item>;
+  mainGraph: FlowGraph;
+  errorGraph: FlowGraph;
   schemas: Dictionary<ContribSchema>;
 }

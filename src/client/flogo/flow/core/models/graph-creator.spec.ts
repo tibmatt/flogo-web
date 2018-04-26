@@ -1,6 +1,6 @@
 import { Dictionary, GraphNode, NodeType } from '@flogo/core';
 import { ObjectSlice } from '@flogo/core/testing';
-import { makeGraph } from './graph-creator';
+import { makeGraph } from './graph-and-items/graph-creator';
 
 import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;

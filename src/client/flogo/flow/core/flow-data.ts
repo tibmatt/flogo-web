@@ -1,7 +1,7 @@
-import { HandlerInfo } from '@flogo/core';
+import { HandlerInfo, UiFlow } from '@flogo/core';
 
 export interface FlowData {
-  flow: any;
+  flow: UiFlow;
   triggers: any;
   root: HandlerInfo;
   errorHandler: HandlerInfo;
