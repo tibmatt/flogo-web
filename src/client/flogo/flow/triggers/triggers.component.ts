@@ -20,9 +20,9 @@ import {
 import { FlowMetadata } from '@flogo/flow/task-configurator/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
 
-import { TriggerMapperService } from '@flogo/flow/triggers/trigger-mapper/trigger-mapper.service';
 import {IPropsToUpdateFormBuilder} from '../flow.component';
 import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
+import {ConfiguratorService as TriggersConfiguratorService} from '@flogo/flow/triggers/configurator';
 
 export interface IFlogoTrigger {
   name: string;
@@ -65,7 +65,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _router: Router,
               private _translate: LanguageService,
               private _postService: PostService,
-              private _triggerMapperService: TriggerMapperService) {
+              private _triggerConfiguratorService: TriggersConfiguratorService) {
   }
 
   ngOnInit() {
@@ -117,7 +117,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       }
     );
 
-    this._triggerMapperService.save$
+    this._triggerConfiguratorService.save$
       .switchMap(({ trigger, mappings }) => this._restAPIHandlerService
         // Update the handler using the updateHandler REST API call
           .updateHandler(trigger.id, this.actionId, mappings)
@@ -131,7 +131,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
       });
 
-    this._triggerMapperService.status$
+    this._triggerConfiguratorService.modalStatus$
       .takeUntil(this._ngDestroy$)
       .subscribe(state => {
         this.isMapperWindowOpen = state.isOpen;
@@ -304,7 +304,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   private openTriggerMapper(trigger: IFlogoTrigger) {
     const handler = trigger.handler;
     this._converterService.getTriggerTask(trigger)
-      .then(triggerSchema => this._triggerMapperService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
+      .then(triggerSchema => this._triggerConfiguratorService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
   }
 
   private deleteHandlerForTrigger(triggerId) {
