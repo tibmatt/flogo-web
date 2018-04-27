@@ -1,7 +1,8 @@
+import { assign, isEmpty, get, uniq, cloneDeep, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import 'rxjs/operator/toPromise';
 
-import { Dictionary, FlowDiagram, Item, TaskDictionary, UiFlow } from '@flogo/core';
+import { Dictionary, FlowDiagram, Item, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 
@@ -24,27 +25,35 @@ export class FlogoFlowService {
   loadFlow(flowId: string): Promise<FlowData> {
     return this._flowAPIService.getFlow(flowId)
       .then(flow => {
-        const subFlowTasks = _.get(flow, 'data.flow.rootTask.tasks', [])
-          .concat(_.get(flow, 'data.flow.errorHandlerTask.tasks', []))
+        const subFlowTasks = get(flow, 'data.flow.rootTask.tasks', [])
+          .concat(get(flow, 'data.flow.errorHandlerTask.tasks', []))
           .filter(t => isSubflowTask(t.type));
-        const flowIdsToFetch = _.uniq<string>(subFlowTasks.map(t => (t.settings || {}).flowPath));
+        const flowIdsToFetch = uniq<string>(subFlowTasks.map(t => (t.settings || {}).flowPath));
         if (flowIdsToFetch.length > 0) {
           return Promise.all([flow, this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch)]);
         }
         return Promise.all([flow, flowIdsToFetch]);
       })
       .then(([flow, subflows]) => {
-        const flowDiagramDetails = _.omit(flow, [
+        const flowDiagramDetails = omit(flow, [
           'triggers'
         ]);
 
-        this.currentFlowDetails = new FlogoFlowDetails(flow, subflows);
-
         const triggers = flow.triggers;
-        this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
+
+        if (this.currentFlowDetails) {
+          this.currentFlowDetails.destroy();
+        }
+
         return this._converterService.getWebFlowModel(flowDiagramDetails, this.currentFlowDetails.relatedSubFlows)
-          .then(convertedFlow => this.processFlowModel(convertedFlow, flow.triggers.length > 0))
-          .then(processedFlow => _.assign({}, processedFlow, { triggers }));
+          .then(convertedFlow => {
+            this.currentFlowDetails = new FlogoFlowDetails(flow, subflows, convertedFlow);
+            this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
+            return this.processFlowModel(convertedFlow, flow.triggers.length > 0);
+          })
+          .then(processedFlow => {
+            return assign({}, processedFlow, { triggers });
+          });
       });
   }
 
@@ -74,12 +83,12 @@ export class FlogoFlowService {
     let tasks: Dictionary<Item>;
     let errorTasks: Dictionary<Item>;
     let flow: any;
-    if (!_.isEmpty(model)) {
+    if (!isEmpty(model)) {
       // initialisation
       console.group('Initialise canvas component');
       flow = model;
       tasks = flow.items;
-      if (_.isEmpty(flow.paths)) {
+      if (isEmpty(flow.paths)) {
         diagram = flow.paths = <FlowDiagram>{
           root: {},
           nodes: {}
@@ -88,7 +97,7 @@ export class FlogoFlowService {
         diagram = flow.paths;
       }
 
-      if (_.isEmpty(flow.errorHandler)) {
+      if (isEmpty(flow.errorHandler)) {
         flow.errorHandler = {
           paths: {},
           items: {}
@@ -96,7 +105,7 @@ export class FlogoFlowService {
       }
 
       errorTasks = flow.errorHandler.items;
-      if (_.isEmpty(flow.errorHandler.paths)) {
+      if (isEmpty(flow.errorHandler.paths)) {
         errorDiagram = flow.errorHandler.paths = <FlowDiagram>{
           root: {},
           nodes: {}
