@@ -112,7 +112,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     return flowJSON;
   }
 
-  const flowItems = inFlow.items;
+  const flowItems = inFlow.mainItems;
 
   if (_.isEmpty(flowItems)) {
     /* tslint:disable-next-line:no-unused-expression */

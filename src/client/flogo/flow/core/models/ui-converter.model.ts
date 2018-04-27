@@ -130,7 +130,7 @@ export abstract class AbstractModelConverter {
       description,
       appId,
       app,
-      items: null,
+      mainItems: null,
       errorItems: null,
       mainGraph: null,
       errorGraph: null,

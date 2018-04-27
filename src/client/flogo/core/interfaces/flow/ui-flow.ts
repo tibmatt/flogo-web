@@ -12,7 +12,7 @@ export interface UiFlow {
   app: App;
   metadata?: FlowMetadata;
   attributes?: any[];
-  items: Dictionary<Item>;
+  mainItems: Dictionary<Item>;
   errorItems: Dictionary<Item>;
   mainGraph: FlowGraph;
   errorGraph: FlowGraph;
