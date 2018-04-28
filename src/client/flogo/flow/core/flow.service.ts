@@ -2,7 +2,7 @@ import { assign, isEmpty, get, uniq, cloneDeep, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import 'rxjs/operator/toPromise';
 
-import { Dictionary, FlowDiagram, Item, UiFlow } from '@flogo/core';
+import { ActionBase, Dictionary, FlowDiagram, Item, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 
@@ -45,10 +45,12 @@ export class FlogoFlowService {
           this.currentFlowDetails.destroy();
         }
 
-        return this._converterService.getWebFlowModel(flowDiagramDetails, this.currentFlowDetails.relatedSubFlows)
+        this.currentFlowDetails = new FlogoFlowDetails(flow, subflows);
+        this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
+        const subflowsMap = new Map<string, ActionBase>(subflows.map(a => [a.id, a]));
+        return this._converterService.getWebFlowModel(flowDiagramDetails, subflowsMap)
           .then(convertedFlow => {
-            this.currentFlowDetails = new FlogoFlowDetails(flow, subflows, convertedFlow);
-            this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
+            this.currentFlowDetails.initState(convertedFlow);
             return this.processFlowModel(convertedFlow, flow.triggers.length > 0);
           })
           .then(processedFlow => {
@@ -85,7 +87,6 @@ export class FlogoFlowService {
     let flow: any;
     if (!isEmpty(model)) {
       // initialisation
-      console.group('Initialise canvas component');
       flow = model;
       tasks = flow.items;
       if (isEmpty(flow.paths)) {

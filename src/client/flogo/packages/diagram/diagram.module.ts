@@ -15,7 +15,9 @@ import { DiagramTestComponent } from '@flogo/packages/diagram/diagram-test.compo
     SharedModule,
     CoreModule,
   ],
-  exports: [],
+  exports: [
+    DiagramComponent,
+  ],
   declarations: [
     DiagramComponent,
     DiagramRowComponent,

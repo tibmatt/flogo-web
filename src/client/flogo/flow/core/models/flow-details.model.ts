@@ -1,11 +1,20 @@
+import { isEqual } from 'lodash';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import { ActionBase, UiFlow, ItemTask, GraphNode } from '@flogo/core';
+import { ActionBase, UiFlow, ItemTask, GraphNode, Item, ContribSchema, NodeType } from '@flogo/core';
 import { getProfileType } from '@flogo/shared/utils';
 import * as selectionFactory from './flow/selection-factory';
 import { FlowState } from './flow-state';
-import { addNewNode } from '@flogo/flow/core/models/flow/add-new-node';
-import { removeNode } from '@flogo/flow/core/models/flow/remove-node';
+import { addNewNode } from './flow/add-new-node';
+import { removeNode } from './flow/remove-node';
+import { addNewBranch } from './flow/add-new-branch';
+import { newBranchId } from '@flogo/flow/core/models/flow/id-generator';
+import { ItemFactory } from '@flogo/flow/core/models/graph-and-items/item-factory';
+import { Observable } from 'rxjs/Observable';
+import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { DiagramSelection } from '@flogo/packages/diagram';
+import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
+import { insertNode } from '@flogo/flow/core/models/flow/insert-node';
 
 export enum HandlerType {
   Main = 'main',
@@ -23,16 +32,13 @@ export class FlogoFlowDetails {
   flow: UiFlow;
 
   flow$: BehaviorSubject<FlowState>;
+  selectionChange$: Observable<DiagramSelection>;
 
-  constructor(flow, subFlowRelations: ActionBase[], uiFlow: UiFlow) {
+  constructor(flow, subFlowRelations: Map<string, ActionBase>,) {
     this.id = flow.id;
     this.associatedToAppId = flow.app.id;
     this.applicationProfileType = getProfileType(flow.app);
-    this.relatedSubFlows = new Map(<[string, ActionBase][]> subFlowRelations.map(a => [a.id, a]));
-    this.flow$ = new BehaviorSubject<FlowState>({
-      ...uiFlow,
-      currentSelection: null,
-    });
+    this.relatedSubFlows = subFlowRelations;
   }
 
   selectItem(itemId: string) {
@@ -49,18 +55,39 @@ export class FlogoFlowDetails {
     });
   }
 
-  registerNewItem(handlerType: HandlerType, { item, node }: { item: ItemTask, node: GraphNode }) {
+  createBranch(handlerType: HandlerType, parentId: string) {
+    const state = this.currentState;
+    const graphName = getGraphName(handlerType);
+    const itemsDictionaryName = getItemsDictionaryName(handlerType);
+    const itemBranch = ItemFactory.makeBranch({ taskID: newBranchId(), condition: 'true' });
+    this.commitStateUpdate({
+      currentSelection: {
+        type: DiagramSelectionType.Insert,
+        taskId: itemBranch.id,
+      },
+      [itemsDictionaryName]: {
+        ...state[itemsDictionaryName],
+        [itemBranch.id]: itemBranch,
+      },
+      [graphName]: addNewBranch(state[graphName], parentId, itemBranch.id),
+    });
+  }
+
+  registerNewItem(handlerType: HandlerType, { item, node, schema }: { item: ItemTask, node: GraphNode, schema: ContribSchema }) {
     const state = this.currentState;
     const graphName = getGraphName(handlerType);
     const itemsDictionaryName = getItemsDictionaryName(handlerType);
     const itemsDictionary = state[itemsDictionaryName];
+    const schemas = schema ? {...state.schemas, [schema.ref]: schema} : state.schemas;
+
     this.commitStateUpdate({
       currentSelection: selectionFactory.makeTaskSelection(node.id),
       [graphName]: addNewNode(state[graphName], node),
       [itemsDictionaryName]: {
         ...itemsDictionary,
         [item.id]: { ...item }
-      }
+      },
+      schemas,
     });
   }
 
@@ -68,23 +95,22 @@ export class FlogoFlowDetails {
     const state = this.currentState;
     const graphName = getGraphName(handlerType);
     const itemDictionaryName = getItemsDictionaryName(handlerType);
-    const graph = removeNode(state[graphName], itemId);
-    if (graph === state[graphName]) {
+    const result = removeNode({ flowGraph: state[graphName], items: state[itemDictionaryName] }, itemId);
+    if (result.flowGraph === state[graphName]) {
       return state;
     }
     let currentSelection = state.currentSelection;
     if (currentSelection && !state.mainGraph[currentSelection.taskId] && !state.errorGraph[currentSelection.taskId]) {
       currentSelection = null;
     }
-    const { [itemId]: removedItem, ...itemsDictionary } = state[itemDictionaryName];
     this.commitStateUpdate({
-      [graphName]: graph,
-      [itemDictionaryName]: itemsDictionary,
+      [graphName]: result.flowGraph,
+      [itemDictionaryName]: result.items,
       currentSelection
     });
   }
 
-  updateTask(handlerType: HandlerType, { item }: { item: Partial<ItemTask> }) {
+  updateItem(handlerType: HandlerType, { item }: { item: Partial<Item> }) {
     const state = this.currentState;
     const itemsDictionaryName = getItemsDictionaryName(handlerType);
     const dictionary = state[itemsDictionaryName];
@@ -112,6 +138,17 @@ export class FlogoFlowDetails {
     if (this.flow$ && !this.flow$.closed) {
       this.flow$.complete();
     }
+  }
+
+  initState(uiFlow: UiFlow) {
+    this.flow$ = new BehaviorSubject<FlowState>({
+      ...uiFlow,
+      currentSelection: null,
+    });
+    this.selectionChange$ = this.flow$.pipe(
+      pluck<FlowState, DiagramSelection>('currentSelection'),
+      distinctUntilChanged(isEqual),
+    );
   }
 
   private commitStateUpdate(nextStateDiff: Partial<FlowState>) {

@@ -1,17 +1,13 @@
-import { GraphNode, NodeType } from '@flogo/core';
-import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
-import { FlowState } from '../flow-state';
+import { FlowGraph, GraphNode, NodeType } from '@flogo/core';
 import { insertNode } from './insert-node';
-import { newBranchId } from './id-generator';
 
-export function addNewBranch(flowState: FlowState, parentId: string): FlowState {
-  const flowGraph = flowState.mainGraph;
+export function addNewBranch(flowGraph: FlowGraph, parentId: string, branchId: string): FlowGraph {
   const parentNode = flowGraph.nodes[parentId];
   if (!parentNode || parentNode.type === NodeType.Branch) {
-    return;
+    return flowGraph;
   }
   const branchNode: GraphNode = {
-    id: newBranchId(),
+    id: branchId,
     type: NodeType.Branch,
     parents: [parentNode.id],
     children: [],
@@ -22,12 +18,5 @@ export function addNewBranch(flowState: FlowState, parentId: string): FlowState 
     },
     status: {},
   };
-  return {
-    ...flowState,
-    currentSelection: {
-      type: DiagramSelectionType.Insert,
-      taskId: branchNode.id,
-    },
-    mainGraph: insertNode(flowGraph, branchNode, parentId),
-  };
+  return insertNode(flowGraph, branchNode, parentId);
 }

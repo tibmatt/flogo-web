@@ -164,7 +164,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     }());
 
 
-    const errorItems = inFlow.errorHandler.items;
+    const errorItems = inFlow.errorItems;
     const errorPath = <{
       root: {
         is: string

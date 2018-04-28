@@ -1,4 +1,3 @@
-import { uniqueId } from 'lodash';
 import { GraphNode, NodeFeatures, NodeStatus, NodeType } from '../../../../core/index';
 import { Dictionary, flow as backendFlow } from '../../../../core/index';
 
@@ -50,7 +49,7 @@ export function makeBranchNode(id: string, link: backendFlow.Link): GraphNode {
   });
 }
 
-function makeNode(from: {id: string, type: NodeType} & Partial<GraphNode>): GraphNode {
+export function makeNode(from: {id: string, type: NodeType} & Partial<GraphNode>): GraphNode {
   return {
     title: from.id || '',
     description: '',

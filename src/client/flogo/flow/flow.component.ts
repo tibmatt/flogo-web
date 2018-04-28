@@ -6,21 +6,10 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 
 import {
-  MetadataAttribute,
-  FlowDiagram,
-  Task,
-  UiFlow,
-  LanguageService,
-  ActivitySchema,
-  ItemTask,
-  Item,
-  ItemSubflow,
-  ItemBranch
+  MetadataAttribute, Task, LanguageService, ItemTask, Item, ItemSubflow, Dictionary, GraphNode, ItemActivityTask, NodeType
 } from '@flogo/core';
 import { TriggersApiService, OperationalError } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
-import { ValueType } from '@flogo/core/constants';
-
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
@@ -39,7 +28,6 @@ import { FlowData } from './core';
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
 
 import {
-  PUB_EVENTS as FLOGO_DIAGRAM_SUB_EVENTS,
   SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS
 } from './shared/diagram/messages';
 import {
@@ -87,6 +75,11 @@ import { updateBranchNodesRunStatus } from './shared/diagram/utils';
 import { SaveTaskConfigEventData } from './task-configurator';
 import { makeDefaultErrorTrigger } from '@flogo/flow/shared/diagram/models/task.model';
 import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema } from '@flogo/core/models';
+import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
+import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
+import { HandlerType } from '@flogo/flow/core/models';
+import { FlowState } from '@flogo/flow/core/models/flow-state';
+import { makeNode } from '@flogo/flow/core/models/graph-and-items/graph-creator';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -117,10 +110,7 @@ const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.ty
 
 export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
-  public flow: UiFlow;
-  public mainHandler: HandlerInfo;
-  public errorHandler: HandlerInfo;
-  public handlers: { [id: string]: HandlerInfo };
+  public flowState: FlowState;
   public triggersList: IFlogoTrigger[];
   public runnableInfo: {
     disabled: boolean;
@@ -179,7 +169,14 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
+    const flowDetails = this._flowService.currentFlowDetails;
+    flowDetails.flow$
+      .subscribe(flowState => {
+        console.log(flowState);
+        this.flowState = flowState;
+      });
     this.initFlowData(flowData);
+    flowDetails.selectionChange$.subscribe(selection => this.onSelectionChanged(selection));
     this.initSubscribe();
     this.loading = false;
   }
@@ -188,16 +185,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
 
     const subs = [
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.addTask, { callback: this._addTaskFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTask, { callback: this._selectTaskFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.deleteTask, { callback: this._deleteTaskFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.addBranch, { callback: this._addBranchFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectBranch, { callback: this._selectBranchFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectConfigureTask, { callback: this._selectConfigureTaskFromDiagram.bind(this) }),
-      _.assign({}, FLOGO_DIAGRAM_SUB_EVENTS.selectTrigger, { callback: this._selectTriggerFromDiagram.bind(this) }),
       _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
-      _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromTrigger, { callback: this._runFromTriggerinTile.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.setTaskWarnings, { callback: this._setTaskWarnings.bind(this) }),
       _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTask, { callback: this._saveConfigFromTaskConfigurator.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
@@ -213,6 +202,53 @@ export class FlowComponent implements OnInit, OnDestroy {
     );
   }
 
+  private onMainDiagramAction(diagramAction: DiagramAction) {
+    this.onDiagramAction(HandlerType.Main, diagramAction);
+  }
+
+  private onErrorDiagramAction(diagramAction: DiagramAction) {
+    this.onDiagramAction(HandlerType.Error, diagramAction);
+  }
+
+  private onDiagramAction(handlerType: HandlerType, diagramAction: DiagramAction) {
+    const flowDetails = this._flowService.currentFlowDetails;
+    switch (diagramAction.type) {
+      case DiagramActionType.Select: {
+        flowDetails.selectItem((<DiagramActionSelf>diagramAction).id);
+        return;
+      }
+      case DiagramActionType.Configure: {
+        this._selectConfigureTaskFromDiagram((<DiagramActionSelf>diagramAction).id);
+        return;
+      }
+      case DiagramActionType.Remove: {
+        this._deleteTaskFromDiagram(handlerType, (<DiagramActionSelf>diagramAction).id);
+        return;
+      }
+      case DiagramActionType.Insert: {
+        flowDetails.selectInsert((<DiagramActionChild>diagramAction).parentId);
+        return;
+      }
+      case DiagramActionType.Branch: {
+        flowDetails.createBranch(handlerType, (<DiagramActionChild>diagramAction).parentId);
+        return;
+      }
+    }
+  }
+
+  private onSelectionChanged(selection: DiagramSelection) {
+    if (!selection) {
+      const [firstRouteChild] = this._route.children;
+      if (firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/')) {
+        this._navigateFromModuleRoot();
+      }
+    } else if (selection.type === DiagramSelectionType.Node) {
+      this._selectTaskFromDiagram(selection.taskId);
+    } else if (selection.type === DiagramSelectionType.Insert) {
+      this._addTaskFromDiagram(selection.taskId);
+    }
+  }
+
   ngOnDestroy() {
     _.each(this._subscriptions, sub => {
         this._postService.unsubscribe(sub);
@@ -221,16 +257,15 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   deleteFlow() {
-    this.translate.get('FLOWS:CONFIRM_DELETE', { flowName: this.flow.name })
+    this.translate.get('FLOWS:CONFIRM_DELETE', { flowName: this.flowState.name })
       .toPromise()
       .then(deleteMessage => this._flogoModal.confirmDelete(deleteMessage))
       .then((res) => {
         if (res) {
-          let appPromise = null;
-          appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flow.app.id);
+          const appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flowState.app.id);
           appPromise
             .then((app) => {
-              const triggerDetails = this.getTriggerCurrentFlow(app, this.flow.id);
+              const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
               return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
             })
             .then(() => {
@@ -278,9 +313,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
     const taskId = taskIdSegment.path;
     let diagramId;
-    if (this.handlers[FLOW_HANDLER_TYPE_ROOT].tasks[taskId]) {
+    if (this.flowState.mainItems[taskId]) {
       diagramId = FLOW_HANDLER_TYPE_ROOT;
-    } else if (this.handlers[FLOW_HANDLER_TYPE_ERROR].tasks[taskId]) {
+    } else if (this.flowState.errorItems[taskId]) {
       diagramId = FLOW_HANDLER_TYPE_ERROR;
     } else {
       return null;
@@ -289,48 +324,40 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public _updateFlow(flow: any) {
-    this._isCurrentProcessDirty = true;
-
-    function cleanPaths(paths: any) {
-      _.each(_.keys(paths), key => {
-        if (key !== 'root' && key !== 'nodes') {
-          delete paths[key];
-        }
-      });
-    }
-
-    // processing this._flow to pure JSON object
-    flow = _.cloneDeep(flow);
-    cleanPaths(flow.paths);
-
-    if (flow.errorHandler && !_.isEmpty(flow.errorHandler.paths)) {
-      cleanPaths(flow.errorHandler.paths);
-    }
-
-    this.determineRunnableEnabled();
-    return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
-      if (_.isEmpty(flow.items)) {
-        this.hasTask = false;
-      }
-      console.groupCollapsed('Flow updated');
-      console.log(rsp);
-      console.groupEnd();
-      return rsp;
-    });
-
+    return Promise.resolve(flow);
+    // this._isCurrentProcessDirty = true;
+    //
+    // function cleanPaths(paths: any) {
+    //   _.each(_.keys(paths), key => {
+    //     if (key !== 'root' && key !== 'nodes') {
+    //       delete paths[key];
+    //     }
+    //   });
+    // }
+    //
+    // // processing this._flow to pure JSON object
+    // flow = _.cloneDeep(flow);
+    // cleanPaths(flow.paths);
+    //
+    // if (flow.errorHandler && !_.isEmpty(flow.errorHandler.paths)) {
+    //   cleanPaths(flow.errorHandler.paths);
+    // }
+    //
+    // this.determineRunnableEnabled();
+    // return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
+    //   if (_.isEmpty(flow.items)) {
+    //     this.hasTask = false;
+    //   }
+    //   console.groupCollapsed('Flow updated');
+    //   console.log(rsp);
+    //   console.groupEnd();
+    //   return rsp;
+    // });
   }
 
   private initFlowData(flowData: FlowData) {
-    this.flow = flowData.flow;
-    this.flowName = this.flow.name;
-    this.handlers = {
-      [FLOW_HANDLER_TYPE_ROOT]: flowData.root,
-      [FLOW_HANDLER_TYPE_ERROR]: flowData.errorHandler
-    };
-
-    this.mainHandler = this.handlers[FLOW_HANDLER_TYPE_ROOT];
-    this.errorHandler = this.handlers[FLOW_HANDLER_TYPE_ERROR];
-    if (_.isEmpty(this.mainHandler.tasks)) {
+    this.flowName = flowData.flow.name;
+    if (_.isEmpty(flowData.flow.mainItems)) {
       this.hasTask = false;
     }
     this.triggersList = flowData.triggers;
@@ -338,7 +365,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.clearAllHandlersRunStatus();
     this.determineRunnableEnabled();
     // todo: move to resolver?
-    this.profileService.initializeProfile(this.flow.app);
+    this.profileService.initializeProfile(flowData.flow.app);
     this.profileType = this.profileService.currentApplicationProfile;
   }
 
@@ -349,52 +376,18 @@ export class FlowComponent implements OnInit, OnDestroy {
     return steps.find(step => taskID == step.taskId);
   }
 
-  private _cleanSelectionStatus() {
-    const allNodes = _.reduce(this.handlers, (nodesAccumulator, handle) => {
-      return _.assign(
-        nodesAccumulator,
-        _.get(handle, 'diagram.nodesOfAddType', {}),
-        _.get(handle, 'diagram.nodes', {})
-      );
-    }, {});
-    _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
-
-    this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-  }
-
-
   private _errorPanelStatusChanged(isOpened: boolean, data: any, envelope: any) {
-
     console.group('Close/open error panel from error panel');
-
-    // clean selection status
-
-    const allNodes = _.reduce(this.handlers, (nodesAccumulator, handle) => {
-      return _.assign(nodesAccumulator,
-        _.get(handle, 'diagram.nodesOfAddType', {}),
-        _.get(handle, 'diagram.nodes',
-          {})
-      );
-    }, {});
-    _.forEach(allNodes, node => _.set(node, '__status.isSelected', false));
-
-    this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-
-    // clean selection status
-    this._cleanSelectionStatus();
-
+    // this._cleanSelectionStatus();
     this._navigateFromModuleRoot();
-
     console.groupEnd();
-
   }
 
   private uniqueTaskName(taskName: string) {
     // TODO for performance pre-normalize and store task names?
     const newNormalizedName = normalizeTaskName(taskName);
 
-    // All activities are gathered in one variable
-    const allTasks = _.reduce(this.handlers, (all: any, current: any) => _.assign(all, current.tasks), {});
+    const allTasks = { ...this.flowState.mainItems, ...this.flowState.errorItems };
 
     // search for the greatest index in all the flow
     const greatestIndex = _.reduce(allTasks, (greatest: number, task: any) => {
@@ -417,7 +410,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private _getCurrentTaskContext(taskId: any, diagramId: string): TaskContext {
-    const taskType = this.handlers[diagramId].tasks[taskId].type;
+    const taskType = this.getTaskInHandler(diagramId, taskId).type;
     return {
       isTrigger: false, // taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
@@ -432,9 +425,17 @@ export class FlowComponent implements OnInit, OnDestroy {
     };
   }
 
+  private getItemsByHandlerId(id: string) {
+    return id === FLOW_HANDLER_TYPE_ROOT ? this.flowState.mainItems : this.flowState.errorItems;
+  }
+
+  private getTaskInHandler(handlerId: string, taskId: string) {
+    return this.getItemsByHandlerId(handlerId)[taskId];
+  }
+
   private isTaskSubflowOrMapper(taskId: any, diagramId: string): boolean {
-    const currentTask = <ItemTask> this.handlers[diagramId].tasks[taskId];
-    const activitySchema = this.flow.schemas[currentTask.ref];
+    const currentTask = <ItemTask> this.getTaskInHandler(diagramId, taskId);
+    const activitySchema = this.flowState.schemas[currentTask.ref];
     return isSubflowTask(currentTask.type) || isMapperActivity(activitySchema);
   }
 
@@ -454,7 +455,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public changeFlowDetail($event, property) {
     return new Promise((resolve, reject) => {
-      this._updateFlow(this.flow).then((response: any) => {
+      this._updateFlow(this.flowState).then((response: any) => {
         const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
         notification(message, 'success', 3000);
         resolve(response);
@@ -472,7 +473,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       return Promise.resolve(true);
     }
 
-    return this._flowService.listFlowsByName(this.flow.appId, name)
+    return this._flowService.listFlowsByName(this.flowState.appId, name)
       .then((flows) => {
         const results = flows || [];
         if (!_.isEmpty(results)) {
@@ -480,14 +481,14 @@ export class FlowComponent implements OnInit, OnDestroy {
             return;
           }
           const message = this.translate.instant('CANVAS:FLOW-NAME-EXISTS', { value: name });
-          this.flow.name = this.flowName;
+          this.flowState.name = this.flowName;
           notification(message, 'error');
           return results;
         } else {
-          this.flow.name = name;
-          this._updateFlow(this.flow).then((response: any) => {
+          this.flowState.name = name;
+          this._updateFlow(this.flowState).then((response: any) => {
             const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
-            this.flowName = this.flow.name;
+            this.flowName = this.flowState.name;
             notification(message, 'success', 3000);
             return response;
           }).catch((err) => {
@@ -504,100 +505,102 @@ export class FlowComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _addTaskFromDiagram(data: any, envelope: any) {
-    console.group('Add task message from diagram');
-
-    console.log(data);
-    console.log(envelope);
-
+  private _addTaskFromDiagram(parentId: string) {
     this._navigateFromModuleRoot(['task', 'add'])
       .then(
         () => {
-          console.group('after navigation');
-
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_ADD_TASKS_PUB_EVENTS.addTask, {
-                data: data
-              }
-            )
-          );
-
-          console.groupEnd();
+          this._postService.publish({
+            ...FLOGO_ADD_TASKS_PUB_EVENTS.addTask,
+            data: {
+              parentId
+            }
+          });
         });
-
-    console.groupEnd();
   }
 
   private _addTaskFromTasks(data: any, envelope: any) {
-    const diagramId: string = data.id;
-    console.group('Add task message from task');
+    const diagramId: string = this.getDiagramId(data.parentId);
+    const currentState = this.flowState;
 
-    console.log(data);
-    console.log(envelope);
+    let task = data.task;
+    const taskName = this.uniqueTaskName(data.task.name);
+    // generate task id when adding the task
+    task = <Task> _.assign({},
+      task,
+      {
+        id: this.profileService.generateTaskID(this._getAllTasks(), task),
+        name: taskName
+      });
 
-    const doRegisterTask = _registerTask.bind(this);
-    doRegisterTask();
-    function _registerTask() {
-      let task = data.task;
-      const taskName = this.uniqueTaskName(data.task.name);
-      // generate task id when adding the task
-      task = <Task> _.assign({},
-        task,
-        {
-          id: this.profileService.generateTaskID(this._getAllTasks(), task),
-          name: taskName
-        });
+    let item: ItemTask = {
+      id: task.id,
+      type: task.type,
+      ref: task.ref,
+      name: taskName,
+      description: task.description,
+      inputMappings: task.inputMappings,
+      input: extractItemInputsFromTask(task),
+      settings: task.settings,
+    };
 
-      const handler = this.handlers[diagramId];
-      if (!handler.tasks) {
-        handler.tasks = {};
-      }
-      handler.tasks[task.id] = task;
-
-      const schema = task.__schema;
-      const isMapperTask = isMapperActivity(schema);
-      const isSubFlowTask = isSubflowTask(data.task.type);
-      if (!isSubFlowTask) {
-        const rootHandler = this.handlers.root;
-        rootHandler.schemas = rootHandler.schemas || {};
-        task.ref = task.ref || schema.ref;
-        rootHandler.schemas[task.ref] = schema;
-        this.flow.schemas = Object.assign({}, this.flow.schemas, rootHandler.schemas);
-        delete task['__schema'];
-      }
-
-      this._navigateFromModuleRoot()
-        .then(
-          () => {
-            this._postService.publish(
-              _.assign(
-                {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
-                  data: {
-                    node: data.node,
-                    task: task,
-                    id: data.id
-                  },
-                  // todo: remove, this is a temporal solution to prevent auto opening a new tile
-                  skipTaskAutoSelection: isMapperTask || isSubFlowTask,
-                  done: (diagram: FlowDiagram) => {
-                    _.assign(this.handlers[diagramId].diagram, diagram);
-                    this._updateFlow(this.flow);
-                    this._isDiagramEdited = true;
-                    this.hasTask = true;
-                    if (isMapperTask || isSubFlowTask) {
-                      // todo: remove, this is a temporal solution to clear the diagram selection state
-                      this._cleanSelectionStatus();
-                    }
-                  }
-                }
-              )
-            );
-          }
-        );
+    const isSubFlowTask = isSubflowTask(data.task.type);
+    if (isSubFlowTask) {
+      item = {
+        ...item,
+        outputMappings: task.outputMappings,
+      };
+    } else {
+      (<ItemActivityTask>item).return = task.return;
     }
+    const schema = task.__schema;
+    const isFinal = !!task.return;
+    const node = makeNode({
+      id: task.id,
+      type: NodeType.Task,
+      title: task.name,
+      description: task.description,
+      parents: [currentState.currentSelection.taskId],
+      features: {
+        subflow: isSubFlowTask,
+        final: isFinal,
+        canHaveChildren: !isFinal
+      }
+    });
 
-    console.groupEnd();
+    this._flowService.currentFlowDetails.registerNewItem(
+      diagramId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+      { item, node, schema },
+    );
+
+    // this._navigateFromModuleRoot()
+    //   .then(
+    //     () => {
+    //       this._postService.publish(
+    //         _.assign(
+    //           {}, FLOGO_DIAGRAM_PUB_EVENTS.addTask, {
+    //             data: {
+    //               node: data.node,
+    //               task: task,
+    //               id: data.id
+    //             },
+    //             // todo: remove, this is a temporal solution to prevent auto opening a new tile
+    //             skipTaskAutoSelection: isMapperTask || isSubFlowTask,
+    //             done: (diagram: FlowDiagram) => {
+    //               _.assign(this.handlers[diagramId].diagram, diagram);
+    //               this._updateFlow(this.flow);
+    //               this._isDiagramEdited = true;
+    //               this.hasTask = true;
+    //               if (isMapperTask || isSubFlowTask) {
+    //                 // todo: remove, this is a temporal solution to clear the diagram selection state
+    //                 this._cleanSelectionStatus();
+    //               }
+    //             }
+    //           }
+    //         )
+    //       );
+    //     }
+    //   );
+    // console.groupEnd();
 
   }
 
@@ -621,119 +624,27 @@ export class FlowComponent implements OnInit, OnDestroy {
     return trigger;
   }
 
-
-  private _selectTriggerFromDiagram(data: any, envelope: any) {
-    const diagramId: string = data.id;
-    console.group('Select trigger message from diagram');
-
-    console.log(data);
-    console.log(envelope);
-
-
-    this._navigateFromModuleRoot(['task', data.node.taskID])
-      .then(
-        () => {
-          console.group('after navigation');
-          let appPromise = null;
-          appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flow.app.id);
-
-          appPromise
-            .then((app) => {
-              // Refresh task detail
-              const currentStep = this._getCurrentState(data.node.taskID);
-              const currentTask = this.handlers[diagramId].tasks[data.node.taskID];
-              const context = this._getCurrentTaskContext(data.node.taskID, diagramId);
-
-              if (!this.currentTrigger) {
-                this.currentTrigger = this.getTriggerCurrentFlow(app, this.flow.id);
-              }
-
-              context.currentTrigger = this.currentTrigger;
-
-              context.app = app;
-              this.app = app;
-
-              this._restAPIHandlerService.getHandler(this.currentTrigger.id, this.flow.id)
-                .then((handler) => {
-                  this._updateAttributesChanges(currentTask, handler.outputs, 'outputs');
-
-                  this._postService.publish(
-                    _.assign(
-                      {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                        data: _.assign({}, data,
-                          { task: currentTask },
-                          { step: currentStep },
-                          { context: context }
-                        ),
-                        done: () => {
-                          // select task done
-                          //  only need this publish if the trigger has been changed
-                          this._postService.publish(
-                            _.assign(
-                              {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTrigger, {
-                                data: {
-                                  node: data.node,
-                                  task: currentTask, // this.handlers[diagramId].tasks[data.node.taskID],
-                                  id: data.id
-                                },
-                                done: (diagram: FlowDiagram) => {
-                                  _.assign(this.handlers[diagramId].diagram, diagram);
-                                  // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
-                                }
-                              }
-                            )
-                          );
-
-                        }
-                      }
-                    )
-                  );
-
-                });
-
-
-              console.groupEnd();
-            });
-
-
-        }
-      );
-
-
-    console.groupEnd();
-  }
-
-  private _selectTaskFromDiagram(data: any, envelope: any) {
-    const diagramId = data.id;
-
-    console.group('Select task message from diagram');
-    console.log(data);
-    console.log(envelope);
+  private _selectTaskFromDiagram(taskId: string) {
+    const handlerId = this.getDiagramId(taskId);
 
     // Refresh task detail
-    const currentStep = this._getCurrentState(data.node.taskID);
-    const context = this._getCurrentTaskContext(data.node.taskID, diagramId);
+    const currentStep = this._getCurrentState(taskId);
+    const context = this._getCurrentTaskContext(taskId, handlerId);
 
-    const currentItem = <ItemTask> _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]);
+    const currentItem = <ItemTask> _.cloneDeep(this.getTaskInHandler(handlerId, taskId));
     // schema == {} for subflow case
-    const activitySchema = this.flow.schemas[currentItem.ref] || <any>{};
+    const activitySchema = this.flowState.schemas[currentItem.ref] || <any>{};
     const currentTask = mergeItemWithSchema(currentItem, activitySchema);
 
-    this._navigateFromModuleRoot(['task', data.node.taskID])
+    this._navigateFromModuleRoot(['task', taskId])
       .then(
         () => {
-          console.group('after navigation');
-          this.openTaskDetail(diagramId, data, currentTask, currentStep, context);
-          console.groupEnd();
+          this.openTaskDetail(currentTask, currentStep, context);
         }
       );
-
-    console.groupEnd();
   }
 
   private openTaskDetail(
-    diagramId: string,
-    data: any,
     currentTask: Task,
     currentStep: Step,
     context: TaskContext,
@@ -742,29 +653,9 @@ export class FlowComponent implements OnInit, OnDestroy {
       _.assign(
         {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
           data: _.assign({},
-            data,
+            // data,
             { task: currentTask, step: currentStep, context }
           ),
-
-          done: () => {
-            // select task done
-            this._postService.publish(
-              _.assign(
-                {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-                  data: {
-                    node: data.node,
-                    task: this.handlers[diagramId].tasks[data.node.taskID],
-                    id: diagramId
-                  },
-                  done: (diagram: FlowDiagram) => {
-                    _.assign(this.handlers[diagramId].diagram, diagram);
-                    // this._updateFlow( this.flow ); // doesn't need to save if only selecting without any change
-                  }
-                }
-              )
-            );
-
-          }
         }
       )
     );
@@ -777,307 +668,142 @@ export class FlowComponent implements OnInit, OnDestroy {
     id: string,
     tileType: string
   }, envelope: any) {
-    if (data.tileType === 'activity') {
-      const task = <ItemTask> this.handlers[data.id].tasks[data.taskId];
+    if (data.tileType !== 'activity') {
+      return;
+    }
 
-      if (task) {
-        if (data.proper === 'name') {
-          task[data.proper] = this.uniqueTaskName(data.content);
-        } else {
-          task[data.proper] = data.content;
-        }
-        const updateObject = {};
+    const task = <ItemTask> this.getTaskInHandler(data.id, data.taskId);
+    if (!task) {
+      return;
+    }
+    if (data.proper === 'name') {
+      task[data.proper] = this.uniqueTaskName(data.content);
+    } else {
+      task[data.proper] = data.content;
+    }
 
-        const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
+    const updateObject = {};
+    const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
+    propsToUpdateFormBuilder.name = task.name;
 
-        propsToUpdateFormBuilder.name = task.name;
+    this._updateFlow(this.flowState).then(() => {
+      this._postService.publish(
+        _.assign(
+          {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
+            data: propsToUpdateFormBuilder
+          }
+        )
+      );
+    });
 
-        this._updateFlow(this.flow).then(() => {
-          this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
-                data: propsToUpdateFormBuilder
-              }
-            )
-          );
-        });
-
-        // TODO: used?
-        if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-          updateObject[data.proper] = task[data.proper];
-          this.triggersApiService.updateTrigger(this.currentTrigger.id, updateObject);
-        }
-
-
-      }
+    // TODO: used?
+    if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
+      updateObject[data.proper] = task[data.proper];
+      this.triggersApiService.updateTrigger(this.currentTrigger.id, updateObject);
     }
   }
 
-  private _deleteTaskFromDiagram(data: any, envelope: any) {
-    const diagramId: string = data.id;
+  private findItemById(taskId: string) {
+    return this.getTaskInHandler(this.getDiagramId(taskId), taskId);
+  }
 
-    console.group('Delete task message from diagram');
-
-    console.log(data);
-    // data.id = this.flow._id;
-
-    const task = this.handlers[diagramId].tasks[_.get(data, 'node.taskID', '')];
-    const node = this.handlers[diagramId].diagram.nodes[_.get(data, 'node.id', '')];
-    const _diagram = this.handlers[diagramId].diagram;
-
-    // TODO
-    //  refine confirmation
-    //  delete trigger isn't hanlded
-    if (task) {
-      this._flogoModal.confirmDelete('Are you sure you want to delete this task?').then((res) => {
-        if (res) {
-
-          // clear details panel, if the selected activity is deleted
-          // verify if should jump back to detail page before sending delete message
-          let _shouldGoBack = false;
-          const parsedURL = location.pathname.split('task/');
-          if (parsedURL.length === 2 && _.isString(parsedURL[1])) {
-
-            const currentTaskID = parsedURL[1];
-            const deletingTaskID = _.get(data, 'node.taskID', '');
-
-            // if the current task ID in the URL is the deleting task, or
-            // if the deleting task has branches or itself is branch, and the current task is in one of the branches
-            // navigate to the flow default view
-            if (currentTaskID === deletingTaskID || // if the current task ID in the URL is the deleting task
-
-              // if the deleting task has branches or itself is branch, and the current task is in one of the branches
-              ((_.some(_.get(data, 'node.children', []), (nodeId: string) => {
-
-                  // try to find children of NODE_BRANCH type
-                  return _diagram.nodes[nodeId].type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH;
-
-                }) || _.get(data, 'node.type') === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH)
-                && (function isTaskIsChildOf(taskID: string, parentNode: any, isInBranch = false): boolean {
-
-                  // traversal the downstream task
-                  const children = _.get(parentNode, 'children', []);
-
-                  if (parentNode.type === FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_BRANCH) {
-                    isInBranch = true;
-                  }
-
-                  if (taskID === _.get(parentNode, 'taskID')) {
-                    return isInBranch; // if in branch, then should go back, otherwise ignore
-                  } else if (children.length === 0) { // no child
-                    return false;
-                  } else { // resursive call to the next level
-                    return _.some(children, (childID: string) => {
-                      return isTaskIsChildOf(taskID, _diagram.nodes[childID], isInBranch);
-                    });
-                  }
-
-                }(currentTaskID, data.node)))) {
-              _shouldGoBack = true;
-            }
-          }
-
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_DIAGRAM_PUB_EVENTS.deleteTask, {
-                data: {
-                  node: data.node,
-                  id: diagramId
-                },
-                done: (diagram: FlowDiagram) => {
-                  // TODO
-                  //  NOTE that once delete branch, not only single task is removed
-                  const tasks = this.handlers[diagramId].tasks;
-                  const deletedTask = <Item>_.cloneDeep(tasks[_.get(data, 'node.taskID', '')]);
-                  delete tasks[_.get(data, 'node.taskID', '')];
-                  _.assign(this.handlers[diagramId].diagram, diagram);
-                  this._updateFlow(this.flow);
-                  this._isDiagramEdited = true;
-
-                  if (isSubflowItem(deletedTask)) {
-                    this.manageFlowRelationships(deletedTask.settings.flowPath);
-                  }
-
-                  if (_shouldGoBack) {
-                    this._navigateFromModuleRoot();
-                  }
-                }
-              }
-            )
-          );
+  private _deleteTaskFromDiagram(handlerType: HandlerType, taskId: string) {
+    const task = this.findItemById(taskId);
+    if (!task) {
+      return;
+    }
+    this._flogoModal.confirmDelete('Are you sure you want to delete this task?')
+      .then((confirmed) => {
+        if (!confirmed) {
+          return;
         }
-      }).catch((err) => {
+        this._isDiagramEdited = true;
+        if (isSubflowItem(task)) {
+          this.manageFlowRelationships(task.settings.flowPath);
+        }
+        this._flowService.currentFlowDetails.removeItem(handlerType, taskId);
+      })
+      .catch((err) => {
         console.error(err);
       });
-    }
-
-    console.groupEnd();
-  }
-
-  private _addBranchFromDiagram(data: any, envelope: any) {
-    const diagramId: string = data.id;
-
-    console.group('Add branch message from diagram');
-    console.log(data);
-
-    // TODO
-    //  remove this mock later
-    //    here just creating a branch node with new branch info
-
-    const branchInfo: ItemBranch = {
-      id: flogoGenBranchID(),
-      type: FLOGO_TASK_TYPE.TASK_BRANCH,
-      condition: 'true'
-    };
-
-    this.handlers[diagramId].tasks[branchInfo.id] = branchInfo;
-
-    this._postService.publish(_.assign({}, FLOGO_DIAGRAM_PUB_EVENTS.addBranch, {
-      data: {
-        node: data.node,
-        task: branchInfo,
-        id: diagramId
-      },
-      done: (diagram: FlowDiagram) => {
-        _.assign(this.handlers[diagramId].diagram, diagram);
-        this._updateFlow(this.flow);
-      }
-    }));
-
-    console.groupEnd();
-  }
-
-  private _selectBranchFromDiagram(data: any, envelope: any) {
-    const diagramId: string = data.id;
-    console.group('Select branch message from diagram');
-
-    console.log(data);
-
-    // TODO
-    //  reference to _selectTaskFromDiagram
-    //  may need to route to some other URL?
-    const currentStep = this._getCurrentState(data.node.taskID);
-    const currentTask = _.assign({}, _.cloneDeep(this.handlers[diagramId].tasks[data.node.taskID]));
-    const context = this._getCurrentTaskContext(data.node.taskID, diagramId);
-
-    const selectedNode = data.node;
-    const previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
-    previousNodes.pop(); // ignore last item as it is the very same selected node
-    const previousTiles = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
-
-
-    this._navigateFromModuleRoot(['task', data.node.taskID])
-      .then(
-        () => {
-          console.group('after navigation');
-
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-                data: _.assign({},
-                  data,
-                  { task: currentTask },
-                  { step: currentStep },
-                  {
-                    context: _.assign(context, {
-                      contextData: {
-                        previousTiles: previousTiles
-                      }
-                    })
-                  }
-                ),
-
-                done: () => {
-                  // select task done
-                  this._postService.publish(
-                    _.assign(
-                      {}, FLOGO_DIAGRAM_PUB_EVENTS.selectTask, {
-                        data: {
-                          node: data.node,
-                          task: this.handlers[diagramId].tasks[data.node.taskID]
-                        },
-                        done: (diagram: FlowDiagram) => {
-                          _.assign(this.handlers[diagramId].diagram, diagram);
-                          // this._updateFlow(this.flow);
-                        }
-                      }
-                    )
-                  );
-
-                }
-              }
-            )
-          );
-
-          console.groupEnd();
-        }
-      );
-
-    console.groupEnd();
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
-    const diagramId = data.id;
-
-    console.group('Save task details to flow');
-    const task = this.handlers[diagramId].tasks[data.taskId];
-
-    if (task.type === FLOGO_TASK_TYPE.TASK) {
-      // set/unset the warnings in the tile
-      _.set(task, '__props.warnings', data.warnings);
-      const changedInputs = data.inputs || {};
-      task.input = {...changedInputs};
-    } else if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
+    const handlerId = this.getDiagramId(data.id);
+    const task = this.getTaskInHandler(handlerId, data.taskId);
+    if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
       // todo: used?
-      let updatePromise: any = Promise.resolve(true);
-
-      if (data.changedStructure === 'settings') {
-        updatePromise = this.triggersApiService.updateTrigger(this.currentTrigger.id, { settings: data.settings });
-      } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
-        updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.flow.id, {
-          settings: data.endpointSettings,
-          outputs: data.outputs
-        });
-
+      this._triggerDetailsChanged(task, data, envelope);
+      if (_.isFunction(envelope.done)) {
+        envelope.done();
       }
+      return;
+    }
 
-      updatePromise
-        .then((res) => {
-          this._updateAttributesChanges(task, data.settings, 'settings');
-          this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
-          this._updateAttributesChanges(task, data.outputs, 'outputs');
-
-          // ensure the persence of the internal properties
-          task.__props = task.__props || {};
-
-          // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
-          task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
-            const newValue = data.outputs[output.name];
-
-            // undefined is invalid default value, hence filter that out.
-            if (output && !_.isUndefined(newValue)) {
-              output.value = newValue;
-            }
-
-            return output;
-          });
-        });
-
-
+    let changes: Partial<Item>;
+    if (task.type === FLOGO_TASK_TYPE.TASK) {
+      const changedInputs = data.inputs || {};
+      // set/unset the warnings in the tile
+      changes = {
+        id: task.id,
+        __props: {
+          ...task.__props,
+          warnings: data.warnings,
+        },
+        input: { ...changedInputs  }
+      };
     } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
-      task.condition = data.condition;
+      changes = {
+        id: task.id,
+        condition: data.condition,
+      };
     }
 
     if (_.isFunction(envelope.done)) {
       envelope.done();
     }
 
-    this._updateFlow(this.flow).then(() => {
-      this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-    });
+    this._flowService.currentFlowDetails.updateItem(
+      handlerId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+      { item: changes },
+    );
+  }
 
-    console.groupEnd();
+  private _triggerDetailsChanged(task: any, data: any, evnelope: any) {
+    // todo: used?
+    let updatePromise: any = Promise.resolve(true);
+
+    if (data.changedStructure === 'settings') {
+      updatePromise = this.triggersApiService.updateTrigger(this.currentTrigger.id, { settings: data.settings });
+    } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
+      updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.flowState.id, {
+        settings: data.endpointSettings,
+        outputs: data.outputs
+      });
+
+    }
+
+    updatePromise
+      .then((res) => {
+        this._updateAttributesChanges(task, data.settings, 'settings');
+        this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
+        this._updateAttributesChanges(task, data.outputs, 'outputs');
+
+        // ensure the persence of the internal properties
+        task.__props = task.__props || {};
+
+        // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
+        task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
+          const newValue = data.outputs[output.name];
+
+          // undefined is invalid default value, hence filter that out.
+          if (output && !_.isUndefined(newValue)) {
+            output.value = newValue;
+          }
+
+          return output;
+        });
+      });
   }
 
   private _updateAttributesChanges(task: any, changedInputs: any, structure: any) {
@@ -1092,59 +818,32 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private _setTaskWarnings(data: any, envelope: any) {
-    const diagramId = data.id;
-
-    const task = this.handlers[diagramId].tasks[data.taskId];
+    const handlerId = this.getDiagramId(data.taskId);
+    const task = this.getTaskInHandler(handlerId, data.taskId);
 
     if (task) {
-      _.set(task, '__props.warnings', data.warnings);
-
-      this._updateFlow(this.flow).then(() => {
-        this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-      });
+      this._flowService.currentFlowDetails.updateItem(
+        handlerId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+        {
+          item: {
+            __props: {
+              ...task.__props,
+              warnings: data.warnings,
+            }
+          },
+        }
+      );
     }
 
   }
 
   private _getAllTasks() {
-    return _.assign({}, this.handlers['root'].tasks, this.handlers['errorHandler'].tasks);
+    return {...this.flowState.mainItems, ...this.flowState.errorItems};
   }
 
   /*-------------------------------*
    |      RUN FLOW                 |
    *-------------------------------*/
-
-  /* TODO: Need to deprecate this method as it is no longer needed*/
-  private _runFromTriggerinTile(data: any, envelope: any) {
-    const diagramId: string = data.id;
-    const currentDiagram: any = this.handlers[diagramId];
-
-    console.group('Run from Trigger');
-
-    this._runFromRoot().then((res) => {
-      const currentStep = this._getCurrentState(data.taskId);
-      const currentTask = _.assign({}, _.cloneDeep(currentDiagram.tasks[data.taskId]));
-      const context = this._getCurrentTaskContext(data.taskId, diagramId);
-
-      this._postService.publish(
-        _.assign(
-          {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-            data: _.assign({},
-              data,
-              { task: currentTask, step: currentStep, context }
-            )
-          }
-        ));
-    })
-      .catch(
-        (err: any) => {
-          console.error(err);
-          return err;
-        }
-      );
-
-    console.groupEnd();
-  }
 
   private _runFromRoot() {
     this._postService.publish(FLOGO_ERROR_PANEL_PUB_EVENTS.closePanel);
@@ -1158,7 +857,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const runOptions: RunOptions = { attrsData: initData };
     const shouldUpdateFlow = this._isCurrentProcessDirty || !this.runState.currentProcessId;
     if (shouldUpdateFlow) {
-      runOptions.useFlow = this.flow;
+      runOptions.useFlow = this.flowState;
     } else {
       runOptions.useProcessId = this.runState.currentProcessId;
     }
@@ -1187,26 +886,20 @@ export class FlowComponent implements OnInit, OnDestroy {
   private _runFromThisTile(data: any, envelope: any) {
     console.group('Run from this tile');
 
-    const selectedTask = this.mainHandler.tasks[data.taskId];
+    const selectedTask = this.flowState.mainItems[data.taskId];
 
-    if (<any>selectedTask.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-      // todo: used?
-      this._runFromTriggerinTile(data, envelope);
-      return;
-    } else if (!this.runState.processInstanceId) {
+    if (!this.runState.processInstanceId) {
       // run from other than the trigger (root task);
       // TODO
       console.warn('Cannot find proper step to restart from, skipping...');
       return;
     }
-
     const step = this._getStepNumberFromSteps(data.taskId);
 
     if (!step) {
       // TODO
       //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
-      const task = this.mainHandler.tasks[data.taskId];
-      console.error(`Cannot start from task ${(<any>task).name} (${task.id})`);
+      console.error(`Cannot start from task ${(<any>selectedTask).name} (${selectedTask.id})`);
       return;
     }
 
@@ -1220,10 +913,10 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.runState.steps = null;
     this.clearAllHandlersRunStatus();
-    this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+    // this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
 
     const runner = this._runnerService.rerun({
-      useFlow: this.flow,
+      useFlow: this.flowState,
       interceptor: dataOfInterceptor,
       step: step,
       instanceId: this.runState.processInstanceId,
@@ -1232,7 +925,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.observeRunProgress(runner)
       .then(() => {
         const currentStep = this._getCurrentState(data.taskId);
-        const currentTask = _.assign({}, _.cloneDeep(this.mainHandler.tasks[data.taskId]));
+        const currentTask = _.assign({}, _.cloneDeep(this.flowState.mainItems[data.taskId]));
         const context = this._getCurrentTaskContext(data.taskId, 'root');
 
         this._postService.publish(_.assign({},
@@ -1315,13 +1008,13 @@ export class FlowComponent implements OnInit, OnDestroy {
   private cleanDiagramRunState() {
     // clear task status and render the diagram
     this.clearAllHandlersRunStatus();
-    this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+    // this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
   }
 
   private markRootAsRan() {
-    const mainHandler = this.mainHandler;
     try { // rootTask should be in DONE status once the flow start
-      const rootTask = mainHandler.tasks[mainHandler.diagram.nodes[mainHandler.diagram.root.is].taskID];
+      // todo: should send update instead
+      const rootTask = this.flowState.mainItems[this.flowState.mainGraph.rootId];
       rootTask.__status['hasRun'] = true;
       rootTask.__status['isRunning'] = false;
     } catch (e) {
@@ -1331,7 +1024,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private getInitDataForRoot(): { name: string; type: string; value: any }[] {
-    const flowInput = _.get(this.flow, 'metadata.input');
+    const flowInput = _.get(this.flowState, 'metadata.input');
     if (_.isEmpty(flowInput)) {
       return undefined;
     }
@@ -1347,7 +1040,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private determineRunnableEnabled() {
     this.runnableInfo = {
-      disabled: _.isEmpty(this.mainHandler && this.mainHandler.tasks),
+      disabled: _.isEmpty(this.flowState.mainItems),
       disableReason: null
     };
     if (this.runnableInfo.disabled) {
@@ -1386,23 +1079,23 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private clearAllHandlersRunStatus() {
-    Object.keys(this.handlers).forEach(handlerId => {
-      const tasks = this.handlers[handlerId].tasks;
-      if (_.isEmpty(tasks)) {
-        return;
-      }
-      _.forIn(tasks, (task: any, taskID: string) => {
-        // clear errors
-        task.__props = task.__props || {};
-        task.__props.errors = [];
-
-        // ensure the presence of __status
-        task.__status = task.__status || {};
-        task.__status.isRunning = false;
-        task.__status.hasRun = false;
-
-      });
-    });
+    // Object.keys(this.handlers).forEach(handlerId => {
+    //   const tasks = this.handlers[handlerId].tasks;
+    //   if (_.isEmpty(tasks)) {
+    //     return;
+    //   }
+    //   _.forIn(tasks, (task: any, taskID: string) => {
+    //     // clear errors
+    //     task.__props = task.__props || {};
+    //     task.__props.errors = [];
+    //
+    //     // ensure the presence of __status
+    //     task.__status = task.__status || {};
+    //     task.__status.isRunning = false;
+    //     task.__status.hasRun = false;
+    //
+    //   });
+    // });
   }
 
   private updateTaskRunStatus(steps: Step[], rsp: any) {
@@ -1464,16 +1157,17 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     _.each(
       runTasksIDs, (runTaskID: string) => {
-        let task = this.mainHandler.tasks[runTaskID];
+        let task = this.flowState.mainItems[runTaskID];
 
         if (_.isEmpty(task)) {
-          task = this.errorHandler.tasks[runTaskID];
+          task = this.flowState.errorItems[runTaskID];
           isErrorHandlerTouched = !!task;
         }
 
         if (task) {
-          task.__status['hasRun'] = true;
-          task.__status['isRunning'] = false;
+          // todo: should send update instead
+          task.__status.hasRun = true;
+          task.__status.isRunning = false;
 
           const errs = errors[runTaskID];
           if (!_.isUndefined(errs)) {
@@ -1490,24 +1184,23 @@ export class FlowComponent implements OnInit, OnDestroy {
       runTasksIDs: runTasksIDs
     });
 
-    // update branch run status after apply the other status.
-    updateBranchNodesRunStatus(this.mainHandler.diagram.nodes, this.mainHandler.tasks);
-    updateBranchNodesRunStatus(this.errorHandler.diagram.nodes, this.errorHandler.tasks);
+
+    // todo: re-enable
+    // const flowState = this.flowState;
+    // updateBranchNodesRunStatus(flowState.mainGraph.nodes, flowState.mainItems);
+    // updateBranchNodesRunStatus(flowState.errorGraph.nodes, flowState.errorItems);
 
     if (isErrorHandlerTouched) {
       this._postService.publish(FLOGO_ERROR_PANEL_PUB_EVENTS.openPanel);
     }
 
-    this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+    // this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
 
     // when the flow is done on error, throw an error
     // the error is the response with `__status` provisioned.
     if (isFlowDone && !_.isEmpty(errors)) {
       throw rsp;
     }
-
-    // TODO logging
-    // console.log( _.cloneDeep( this.tasks ) );
 
     // TODO
     //  how to verify if a task is running?
@@ -1540,36 +1233,37 @@ export class FlowComponent implements OnInit, OnDestroy {
    |      Task Configurator        |
    *-------------------------------*/
 
-  private _selectConfigureTaskFromDiagram(data: any, envelope: any) {
-    const diagramId = data.id;
+  private _selectConfigureTaskFromDiagram(itemId: string) {
+    const diagramId = this.getDiagramId(itemId);
+    const flowState = this.flowState;
     let scope: any[];
 
-    const selectedNode = data.node;
-
-    if (diagramId === 'errorHandler') {
-      const allPathsMainFlow = this.getAllPaths(this.handlers['root'].diagram.nodes);
-      const previousTilesMainFlow = this.mapNodesToTiles(allPathsMainFlow, this.handlers['root']);
-
-      const previousNodesErrorFlow = this.findPathToNode(this.handlers['errorHandler'].diagram.root.is, selectedNode.id, 'errorHandler');
+    if (diagramId === FLOW_HANDLER_TYPE_ERROR) {
+      const allPathsMainFlow = this.getAllPaths(flowState.mainGraph.nodes);
+      const previousTilesMainFlow = this.mapNodesToTiles(
+        allPathsMainFlow,
+        { nodes: flowState.mainGraph.nodes, items: flowState.mainItems }
+      );
+      const previousNodesErrorFlow = this.findPathToNode(flowState.errorGraph.rootId, itemId, flowState.errorGraph.nodes);
       previousNodesErrorFlow.pop(); // ignore last item as it is the very same selected node
-      const previousTilesErrorFlow = this.mapNodesToTiles(previousNodesErrorFlow, this.handlers['errorHandler']);
-
-      scope = [...previousTilesMainFlow, makeDefaultErrorTrigger(''), ...previousTilesErrorFlow];
+      const previousTilesErrorFlow = this.mapNodesToTiles(
+        previousNodesErrorFlow,
+        { nodes: flowState.errorGraph.nodes, items: flowState.errorItems  }
+      );
+      scope = [...previousTilesMainFlow, makeDefaultErrorTrigger(), ...previousTilesErrorFlow];
     } else {
-      const previousNodes = this.findPathToNode(this.handlers[diagramId].diagram.root.is, selectedNode.id, diagramId);
-
+      const previousNodes = this.findPathToNode(flowState.mainGraph.rootId, itemId, flowState.mainGraph.nodes);
       previousNodes.pop(); // ignore last item as it is the very same selected node
-      scope = this.mapNodesToTiles(previousNodes, this.handlers[diagramId]);
+      scope = this.mapNodesToTiles(previousNodes, { nodes: flowState.mainGraph.nodes, items: flowState.mainItems });
     }
 
     const metadata = <FlowMetadata>  _.defaultsDeep({
       type: 'metadata',
-    }, this.flow.metadata, { input: [], output: [] });
+    }, this.flowState.metadata, { input: [], output: [] });
     scope.push(metadata);
 
-    const selectedTaskId = selectedNode.taskID;
-    const selectedItem = <ItemTask>_.cloneDeep(this.handlers[diagramId].tasks[selectedTaskId]);
-    const activitySchema: PartialActivitySchema = this.flow.schemas[selectedItem.ref] || {};
+    const selectedItem = <ItemTask>_.cloneDeep(this.findItemById(itemId));
+    const activitySchema: PartialActivitySchema = this.flowState.schemas[selectedItem.ref] || {};
     const task = mergeItemWithSchema(selectedItem, activitySchema);
     const outputMapper = isMapperActivity(activitySchema);
 
@@ -1611,8 +1305,8 @@ export class FlowComponent implements OnInit, OnDestroy {
       const subflowSchema = this._flowService.currentFlowDetails.getSubflowSchema(selectedItem.settings.flowPath);
       if (subflowSchema) {
         dataToPublish.data.subflowSchema = subflowSchema;
-        dataToPublish.data.appId = this.flow.appId;
-        dataToPublish.data.actionId = this.flow.id;
+        dataToPublish.data.appId = this.flowState.appId;
+        dataToPublish.data.actionId = this.flowState.id;
       } else {
         return this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
           .subscribe(message => notification(message, 'error'));
@@ -1624,37 +1318,51 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private _saveConfigFromTaskConfigurator(data: SaveTaskConfigEventData, envelope: any) {
     const diagramId = data.handlerId;
-    const tile = <ItemTask> this.handlers[diagramId].tasks[data.tile.id];
+    const tile = <ItemTask> this.getTaskInHandler(diagramId, data.tile.id);
     const changedSubflowSchema = data.changedSubflowSchema;
     const tileAsSubflow = <ItemSubflow> tile;
+    const itemChanges: Partial<ItemActivityTask & ItemSubflow> = {
+      id: tile.id,
+      settings: tile.settings,
+    };
     if (changedSubflowSchema && tileAsSubflow.settings.flowPath !== data.tile.settings.flowPath) {
       this.manageFlowRelationships(tileAsSubflow.settings.flowPath);
-      tile.name = this.uniqueTaskName(changedSubflowSchema.name);
-      tile.description = changedSubflowSchema.description;
-      tileAsSubflow.settings.flowPath = changedSubflowSchema.id;
+      itemChanges.name = this.uniqueTaskName(changedSubflowSchema.name);
+      itemChanges.description = changedSubflowSchema.description;
+      itemChanges.settings = {
+        ...itemChanges.settings,
+        flowPath: changedSubflowSchema.id,
+      };
       this._flowService.currentFlowDetails.addSubflowSchema(changedSubflowSchema);
     }
-    const activitySchema = this.flow.schemas[tile.ref];
+    const activitySchema = this.flowState.schemas[tile.ref];
     const isMapperTask = isMapperActivity(activitySchema);
     if (isMapperTask) {
-      tile.input.mappings = _.cloneDeep(data.inputMappings);
+      itemChanges.input = {
+        mappings: _.cloneDeep(data.inputMappings),
+      };
     } else {
-      tile.inputMappings = _.cloneDeep(data.inputMappings);
+      itemChanges.inputMappings = _.cloneDeep(data.inputMappings);
     }
 
-    tile.type = <any>data.tile.type;
-    if (data.iterator.isIterable) {
-      tile.settings = Object.assign({}, tile.settings, { iterate:  data.iterator.iterableValue });
-    } else if (tile.settings) {
-      delete tile.settings.iterate;
-    }
+    // tile.type = <any>data.tile.type;
+    const iteratorInfo = data.iterator;
+    itemChanges.settings = {
+      ...itemChanges.settings,
+      iterate: iteratorInfo.isIterable ? data.iterator.iterableValue : undefined,
+    };
+
+    this._flowService.currentFlowDetails.updateItem(
+      diagramId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+      { item: itemChanges },
+    );
 
     this.determineRunnableEnabled();
     // context potentially changed
     this.refreshCurrentTileContextIfNeeded();
-    this._updateFlow(this.flow).then(() => {
-      this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-    });
+    // this._updateFlow(this.flowState).then(() => {
+    //   // this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
+    // });
   }
 
   private getAllPaths(nodes: any) {
@@ -1666,11 +1374,10 @@ export class FlowComponent implements OnInit, OnDestroy {
    * Assumes we have a tree structure, meaning we have no cycles
    * @param {string} startNodeId
    * @param {string} targetNodeId
-   * @param {string} diagramId
+   * @param {Dictionary<GraphNode>} nodes
    * @returns string[] list of node ids
    */
-  private findPathToNode(startNodeId: any, targetNodeId: any, diagramId: string) {
-    const nodes = this.handlers[diagramId].diagram.nodes; // should be parameter?
+  private findPathToNode(startNodeId: any, targetNodeId: any, nodes: Dictionary<GraphNode>) {
     let queue = [[startNodeId]];
 
     while (queue.length > 0) {
@@ -1686,13 +1393,11 @@ export class FlowComponent implements OnInit, OnDestroy {
         const paths = children.map(child => path.concat(child));
         queue = queue.concat(paths);
       }
-
     }
-
     return [];
   }
 
-  private mapNodesToTiles(nodeIds: any[], from: HandlerInfo) {
+  private mapNodesToTiles(nodeIds: any[], from: { nodes: Dictionary<GraphNode>, items: Dictionary<Item> }) {
     const isApplicableNodeType = _.includes.bind(null, [
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
       FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
@@ -1700,10 +1405,10 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     return nodeIds
       .map(nodeId => {
-        const node = from.diagram.nodes[nodeId];
+        const node = from.nodes[nodeId];
         if (isApplicableNodeType(node.type)) {
-          const item = <ItemTask> from.tasks[node.taskID];
-          let schema: PartialActivitySchema = this.flow.schemas[item.ref];
+          const item = <ItemTask> from.items[nodeId];
+          let schema: PartialActivitySchema = this.flowState.schemas[item.ref];
           if (isSubflowItem(item)) {
             const subFlowSchema = this._flowService.currentFlowDetails.getSubflowSchema(item.settings.flowPath);
             schema = { outputs: _.get(subFlowSchema, 'metadata.output', []) };
@@ -1722,7 +1427,7 @@ export class FlowComponent implements OnInit, OnDestroy {
    *-------------------------------*/
 
   public navigateToApp() {
-    this._router.navigate(['/apps', this.flow.appId]);
+    this._router.navigate(['/apps', this.flowState.appId]);
   }
 
   public onMouseOverBackControl() {
@@ -1740,10 +1445,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   onRunFlow(modifiedInputs: MetadataAttribute[]) {
     let flowUpdatePromise;
     if (modifiedInputs.length) {
-      this.flow.metadata.input = modifiedInputs;
-      flowUpdatePromise = this._updateFlow(this.flow);
+      this.flowState.metadata.input = modifiedInputs;
+      flowUpdatePromise = this._updateFlow(this.flowState);
     } else {
-      flowUpdatePromise = Promise.resolve(this.flow);
+      flowUpdatePromise = Promise.resolve(this.flowState);
     }
     flowUpdatePromise.then(() => this._runFromRoot())
       .then(() => {
@@ -1759,13 +1464,13 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private getDiagramId(taskId: string): string {
-    let diagramId: string;
-    if (this.handlers['root'].tasks[taskId]) {
-      diagramId = 'root';
-    } else if (this.handlers['errorHandler'].tasks[taskId]) {
-      diagramId = 'errorHandler';
+    if (this.getTaskInHandler(FLOW_HANDLER_TYPE_ROOT, taskId)) {
+      return FLOW_HANDLER_TYPE_ROOT;
+    } else if (this.getTaskInHandler(FLOW_HANDLER_TYPE_ERROR, taskId)) {
+      return FLOW_HANDLER_TYPE_ERROR;
     }
-    return diagramId;
+    // todo: throw error?
+    return null;
   }
 
   private _updateTaskOutputAfterRun(data: {
@@ -1773,9 +1478,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     taskId: string
   }) {
     const diagramId: string = data.id;
-    const currentDiagram: any = this.handlers[diagramId];
     const step = this._getCurrentState(data.taskId);
-    const task = _.cloneDeep(currentDiagram.tasks[data.taskId]);
+    const task = _.cloneDeep(this.getTaskInHandler(diagramId, data.taskId));
     const context = this._getCurrentTaskContext(data.taskId, diagramId);
 
     this._postService.publish(
@@ -1790,8 +1494,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onFlowSchemaSave(newMetadata: FlowMetadata) {
-    this.flow.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
-    this.flow.metadata.output = newMetadata.output;
+    this.flowState.metadata.input = this.mergeFlowInputMetadata(newMetadata.input);
+    this.flowState.metadata.output = newMetadata.output;
 
     const propCollectionToRegistry = (from) => new Map(<Array<[string, boolean]>>from.map((o: any) => [o.name, true]));
 
@@ -1800,12 +1504,12 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.cleanDanglingTaskOutputMappings(outputRegistry);
 
     this.cleanDanglingTriggerMappingsToFlow(inputRegistry);
-    this._updateFlow(this.flow);
+    this._updateFlow(this.flowState);
   }
 
   private mergeFlowInputMetadata(inputMetadata: MetadataAttribute[]): MetadataAttribute[] {
     return inputMetadata.map(input => {
-      const existingInput = this.flow.metadata.input.find(i => i.name === input.name && i.type === input.type);
+      const existingInput = this.flowState.metadata.input.find(i => i.name === input.name && i.type === input.type);
       if (existingInput) {
         input.value = existingInput.value;
       }
@@ -1844,7 +1548,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   // when flow schema's output change we need to remove the task mappings that were referencing them
   private cleanDanglingTaskOutputMappings(outputRegistry: Map<string, boolean>) {
     const isMapperContribAndHasMapping = (task: Task) => {
-      const schema = this.flow.schemas[task.ref];
+      const schema = this.flowState.schemas[task.ref];
       return !!(isMapperActivity(schema) && task.attributes.inputs.length);
     };
     _.filter(this._getAllTasks(), isMapperContribAndHasMapping)

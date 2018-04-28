@@ -1,15 +1,21 @@
 import { fromPairs, partition } from 'lodash';
-import { FlowGraph, GraphNode, NodeType } from '@flogo/core';
-import { NodeDictionary } from '@flogo/core/interfaces/graph/graph';
+import { Dictionary, FlowGraph, GraphNode, Item, NodeType } from '@flogo/core';
 
-export function removeNode(fromFlowGraph: FlowGraph, nodeId: string): FlowGraph {
-  const { [nodeId]: nodeToRemove, ...nodes  } = fromFlowGraph.nodes;
+interface Collections {
+  flowGraph: FlowGraph;
+  items: Dictionary<Item>;
+}
+
+export function removeNode({ flowGraph, items }: Collections, nodeId: string): Collections {
+  const { [nodeId]: nodeToRemove, ...resultNodes  } = flowGraph.nodes;
+  const { [nodeId]: itemToRemove, ...resultItems  } = items;
   if (!nodeToRemove) {
-    return fromFlowGraph;
+    return { flowGraph, items };
   }
-  let flowGraph = { ...fromFlowGraph, nodes };
+  flowGraph = { ...flowGraph, nodes: resultNodes };
+  items = resultItems;
   if (nodeToRemove.parents.length <= 0 && nodeToRemove.children.length <= 0) {
-    return flowGraph;
+    return { flowGraph, items };
   }
 
   const [parentId] = nodeToRemove.parents;
@@ -38,8 +44,7 @@ export function removeNode(fromFlowGraph: FlowGraph, nodeId: string): FlowGraph 
     flowGraph = updateRootNode(flowGraph, newRootNode);
   }
 
-  flowGraph.nodes = branches.reduce(deleteChildren, flowGraph.nodes);
-  return flowGraph;
+  return branches.reduce(deleteChildren, { flowGraph, items });
 }
 
 function updateRootNode(flowGraph: FlowGraph, rootNode: GraphNode): FlowGraph {
@@ -63,14 +68,15 @@ function unlinkChild(node: GraphNode, childToRemoveId: string): GraphNode {
   };
 }
 
-function deleteChildren(nodes: NodeDictionary, node: GraphNode): NodeDictionary {
-  nodes = { ...nodes };
+function deleteChildren(collections: Collections, node: GraphNode): Collections {
+  const nodes = collections.flowGraph.nodes;
   node.children.forEach(childId => {
     const childNode = nodes[childId];
     delete nodes[childId];
-    nodes = deleteChildren(nodes, childNode);
+    delete collections.items[childId];
+    collections = deleteChildren(collections, childNode);
   });
-  return nodes;
+  return collections;
 }
 
 function linkParentWithChildren(flowGraph: FlowGraph, parent: GraphNode, childNodes: GraphNode[]): FlowGraph {

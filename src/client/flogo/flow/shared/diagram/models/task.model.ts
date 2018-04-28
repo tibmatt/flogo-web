@@ -70,7 +70,7 @@ export class FlogoFlowDiagramTask implements Task {
   }
 }
 
-export function makeDefaultErrorTrigger(id): Task {
+export function makeDefaultErrorTrigger(): Task {
 
   const outputs = [
     {
@@ -101,7 +101,7 @@ export function makeDefaultErrorTrigger(id): Task {
 
 
   const errorTrigger = new FlogoFlowDiagramTask({
-    id: id,
+    id: '',
     name: 'On Error',
     // title: 'On Error',
     type: FLOGO_TASK_TYPE.TASK_ROOT,

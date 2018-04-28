@@ -1,4 +1,4 @@
-import { get, flattenDeep, uniqueId } from 'lodash';
+import { get, flattenDeep, fromPairs, uniqueId } from 'lodash';
 import {
   ActionBase,
   FlowMetadata,
@@ -114,14 +114,14 @@ export abstract class AbstractModelConverter {
 
     return {
       ...this.makeFlow(flowInfo, installedContribs),
-      items: this.cleanDanglingSubflowMappings(mainComponents.items),
+      mainItems: this.cleanDanglingSubflowMappings(mainComponents.items),
       mainGraph: mainComponents.graph,
       errorItems: this.cleanDanglingSubflowMappings(errorHandlerComponents.items),
       errorGraph: errorHandlerComponents.graph,
     };
   }
 
-  makeFlow(flowInfo: FlowInfo, schemas?): UiFlow {
+  makeFlow(flowInfo: FlowInfo, schemas = []): UiFlow {
     const { id, name, description, appId, app, metadata } = flowInfo;
 
     const flow: UiFlow = {
@@ -134,7 +134,7 @@ export abstract class AbstractModelConverter {
       errorItems: null,
       mainGraph: null,
       errorGraph: null,
-      schemas: schemas || {}
+      schemas: fromPairs(schemas.map(schema => [schema.ref, schema])),
     };
 
     if (metadata) {
