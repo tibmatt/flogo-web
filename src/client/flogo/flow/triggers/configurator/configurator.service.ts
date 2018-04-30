@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
-interface HandlerMappings {
+export interface HandlerMappings {
   actionMappings: { input: any[], output: any[] };
 }
 
@@ -27,14 +27,10 @@ interface SaveData {
   mappings: HandlerMappings;
 }
 
-interface TriggerStatus {
-  [triggerId: string]: {
-    handler: HandlerMappings;
-    trigger: any;
-    triggerSchema: any;
-    isDirty: boolean;
-    isValid: boolean;
-  };
+export interface ConfigurationStatus {
+  triggerId: string;
+  isValid: boolean;
+  changedMappings: HandlerMappings;
 }
 
 @Injectable()
@@ -42,6 +38,7 @@ export class ConfiguratorService {
 
   modalStatus$ = new Subject<ModalStatus>();
   save$ = new Subject<SaveData>();
+  triggerConfigurationStatus$ = new Subject<ConfigurationStatus>();
 
   open(trigger: any, flowMetadata: FlowMetadata, handler: HandlerMappings, triggerSchema: any) {
     this.modalStatus$.next({ isOpen: true, trigger, handler, flowMetadata, triggerSchema });
@@ -54,6 +51,10 @@ export class ConfiguratorService {
   save(trigger: any, mappings: HandlerMappings) {
     this.save$.next({ trigger, mappings });
     this.close();
+  }
+
+  updateTriggerStatus(newConfigurations: ConfigurationStatus) {
+    this.triggerConfigurationStatus$.next(newConfigurations);
   }
 
 }

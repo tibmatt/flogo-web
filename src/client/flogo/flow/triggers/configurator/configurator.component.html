@@ -1,11 +1,13 @@
-<div class="trigger-configuration__main" *ngIf="currentModalStatus?.isOpen" [@configurationPanel]>
+<div class="trigger-configuration__main" *ngIf="currentModalStatus?.isOpen"
+     [class.--active]="currentModalStatus?.isOpen"
+     [@configurationPanel]>
   <div class="mapper-modal__header header">
     <h2 class="header__title">{{ 'TRIGGER-CONFIGURATOR:TITLE' | translate }} </h2>
     <div class="header__actions actions">
       <button class="flogo-button--secondary actions__action actions__action--delete" (click)="onCloseOrDismiss()">
         {{ 'TRIGGER-CONFIGURATOR:CANCEL' | translate }}
       </button>
-      <button disabled
+      <button [disabled]="disableSave"
               class="flogo-button--primary  actions__action actions__action--save" (click)="onSave()">
         {{ 'TRIGGER-CONFIGURATOR:SAVE' | translate }}
       </button>
@@ -13,5 +15,11 @@
     <button class="mapper-modal__close" (click)="onCloseOrDismiss()">
       <span aria-hidden="true" class="sr-only">{{ 'TRIGGER-CONFIGURATOR:CLOSE' | translate }}</span>
     </button>
+  </div>
+  <div class="trigger-configuration__content">
+    <flogo-flow-trigger-mapper [flowMetadata]="currentModalStatus.flowMetadata"
+                               [triggerSchema]="selectedTriggerDetails.triggerSchema"
+                               [handler]="selectedTriggerDetails.handler"
+                               [triggerId]="selectedTriggerDetails.trigger.id"></flogo-flow-trigger-mapper>
   </div>
 </div>
