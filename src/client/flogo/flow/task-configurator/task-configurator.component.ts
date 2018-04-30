@@ -282,7 +282,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
       this.tabs = Tabs.create(this.defaultTabsInfo);
       this.tabs.get('inputMappings').isSelected = true;
     }
-console.log(this.tabs);
   }
 
   private open() {

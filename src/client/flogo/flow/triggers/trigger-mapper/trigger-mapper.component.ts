@@ -42,13 +42,16 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   private ngDestroy = SingleEmissionSubject.create();
 
   constructor(private triggerMapperService: TriggerMapperService) {
-    this.tabs = Tabs.create(this.defaultTabsInfo);
+
+
+
   }
 
   ngOnInit() {
     this.triggerMapperService.status$
       .takeUntil(this.ngDestroy)
       .subscribe(nextStatus => this.onNextStatus(nextStatus));
+    this.resetState();
   }
 
   ngOnDestroy() {
@@ -148,6 +151,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       hasFlowInputs = flowMetadata.input && flowMetadata.input.length > 0;
       hasFlowOutputs = flowMetadata.output && flowMetadata.output.length > 0;
     }
+    this.resetState();
     this.tabs.get('flowInput').enabled = hasTriggerOutputs && hasFlowInputs;
     this.tabs.get('flowOutput').enabled = hasTriggerReply && hasFlowOutputs;
     let viewType: TAB_NAME = 'flowInput';
@@ -179,4 +183,10 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     this.mappingValidationFn = MapperTranslator.makeValidator();
   }
 
+  resetState() {
+    if (this.tabs) {
+      this.tabs.clear();
+    }
+    this.tabs = Tabs.create(this.defaultTabsInfo);
+  }
 }
