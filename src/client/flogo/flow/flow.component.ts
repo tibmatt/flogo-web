@@ -2,8 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import * as _ from 'lodash';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/toPromise';
 
 import {
   MetadataAttribute, Task, LanguageService, ItemTask, Item, ItemSubflow, Dictionary, GraphNode, ItemActivityTask, NodeType
@@ -27,9 +25,6 @@ import { FlowData } from './core';
 
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
 
-import {
-  SUB_EVENTS as FLOGO_DIAGRAM_PUB_EVENTS
-} from './shared/diagram/messages';
 import {
   PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS,
   SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS
@@ -57,21 +52,16 @@ import {
   FLOGO_TASK_TYPE
 } from '../core/constants';
 import {
-  flogoGenBranchID,
   isIterableTask,
   isMapperActivity,
   isSubflowTask,
   normalizeTaskName,
   notification,
-  objectFromArray
 } from '@flogo/shared/utils';
-
-import { HandlerInfo } from '@flogo/core';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
-import { updateBranchNodesRunStatus } from './shared/diagram/utils';
 import { SaveTaskConfigEventData } from './task-configurator';
 import { makeDefaultErrorTrigger } from '@flogo/flow/shared/diagram/models/task.model';
 import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema } from '@flogo/core/models';
@@ -171,10 +161,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
     const flowDetails = this._flowService.currentFlowDetails;
     flowDetails.flow$
-      .subscribe(flowState => {
-        console.log(flowState);
-        this.flowState = flowState;
-      });
+      .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
     flowDetails.selectionChange$.subscribe(selection => this.onSelectionChanged(selection));
     this.initSubscribe();
@@ -249,6 +236,20 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
   }
 
+  private onFlowStateUpdate(flowState: FlowState) {
+    this.flowState = flowState;
+    this.determineRunnableEnabled();
+    if (_.isEmpty(flowState.mainItems)) {
+      this.hasTask = false;
+    }
+    this._flowService.saveFlowIfChanged(this.flowId, flowState)
+      .subscribe(udpated => {
+        console.groupCollapsed('flowSaved');
+        console.log(udpated);
+        console.groupEnd();
+      });
+  }
+
   ngOnDestroy() {
     _.each(this._subscriptions, sub => {
         this._postService.unsubscribe(sub);
@@ -321,38 +322,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       return null;
     }
     return { diagramId, taskId };
-  }
-
-  public _updateFlow(flow: any) {
-    return Promise.resolve(flow);
-    // this._isCurrentProcessDirty = true;
-    //
-    // function cleanPaths(paths: any) {
-    //   _.each(_.keys(paths), key => {
-    //     if (key !== 'root' && key !== 'nodes') {
-    //       delete paths[key];
-    //     }
-    //   });
-    // }
-    //
-    // // processing this._flow to pure JSON object
-    // flow = _.cloneDeep(flow);
-    // cleanPaths(flow.paths);
-    //
-    // if (flow.errorHandler && !_.isEmpty(flow.errorHandler.paths)) {
-    //   cleanPaths(flow.errorHandler.paths);
-    // }
-    //
-    // this.determineRunnableEnabled();
-    // return this._flowService.saveFlow(this.flowId, flow).then(rsp => {
-    //   if (_.isEmpty(flow.items)) {
-    //     this.hasTask = false;
-    //   }
-    //   console.groupCollapsed('Flow updated');
-    //   console.log(rsp);
-    //   console.groupEnd();
-    //   return rsp;
-    // });
   }
 
   private initFlowData(flowData: FlowData) {
@@ -454,18 +423,28 @@ export class FlowComponent implements OnInit, OnDestroy {
    *-------------------------------*/
 
   public changeFlowDetail($event, property) {
-    return new Promise((resolve, reject) => {
-      this._updateFlow(this.flowState).then((response: any) => {
-        const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
-        notification(message, 'success', 3000);
-        resolve(response);
-      }).catch((err) => {
-        const message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
-        notification(message, 'error');
-        reject(err);
-      });
-    });
+    return this._updateFlow()
+      .then(wasSaved => {
+        if (wasSaved) {
+          this.translate
+            .get('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property })
+            .subscribe(message => notification(message, 'success', 3000));
+        }
+        return wasSaved;
+      })
+      .catch(() => this.translate
+          .get('CANVAS:ERROR-MESSAGE-UPDATE', { value: property })
+          .subscribe(errorMsg => notification(errorMsg, 'error'))
+      );
+  }
 
+  /**
+   * @deprecated
+   */
+  private _updateFlow() {
+    return this._flowService
+      .saveFlowIfChanged(this.flowId, this.flowState)
+      .toPromise();
   }
 
   public changeFlowDetailName(name, property) {
@@ -486,16 +465,18 @@ export class FlowComponent implements OnInit, OnDestroy {
           return results;
         } else {
           this.flowState.name = name;
-          this._updateFlow(this.flowState).then((response: any) => {
-            const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property });
-            this.flowName = this.flowState.name;
-            notification(message, 'success', 3000);
-            return response;
-          }).catch((err) => {
-            const message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
-            notification(message, 'error');
-            return Promise.reject(err);
-          });
+          this._updateFlow()
+            .then((response: any) => {
+              this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property })
+                .subscribe(message =>    notification(message, 'success', 3000));
+              this.flowName = this.flowState.name;
+              return response;
+            }).catch((err) => {
+              const message = this.translate
+                .get('CANVAS:ERROR-MESSAGE-UPDATE', { value: property })
+                .subscribe(errorMsg =>  notification(errorMsg, 'error'));
+              return Promise.reject(err);
+            });
         }
       })
       .catch((err) => {
@@ -686,15 +667,13 @@ export class FlowComponent implements OnInit, OnDestroy {
     const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
     propsToUpdateFormBuilder.name = task.name;
 
-    this._updateFlow(this.flowState).then(() => {
-      this._postService.publish(
-        _.assign(
-          {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
-            data: propsToUpdateFormBuilder
-          }
-        )
-      );
-    });
+    this._postService.publish(
+      _.assign(
+        {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
+          data: propsToUpdateFormBuilder
+        }
+      )
+    );
 
     // TODO: used?
     if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
@@ -1446,7 +1425,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     let flowUpdatePromise;
     if (modifiedInputs.length) {
       this.flowState.metadata.input = modifiedInputs;
-      flowUpdatePromise = this._updateFlow(this.flowState);
+      flowUpdatePromise = this._updateFlow();
     } else {
       flowUpdatePromise = Promise.resolve(this.flowState);
     }
@@ -1504,7 +1483,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.cleanDanglingTaskOutputMappings(outputRegistry);
 
     this.cleanDanglingTriggerMappingsToFlow(inputRegistry);
-    this._updateFlow(this.flowState);
+    this._updateFlow();
   }
 
   private mergeFlowInputMetadata(inputMetadata: MetadataAttribute[]): MetadataAttribute[] {

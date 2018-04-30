@@ -5,10 +5,11 @@ import { Http, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import { HttpUtilsService } from '../http-utils.service';
+import { RestApiService } from '@flogo/core/services/restapi/rest-api.service';
 
 @Injectable()
 export class APIFlowsService {
-  constructor(private http: Http, private httpUtils: HttpUtilsService) {
+  constructor(private http: Http, private restApi: RestApiService, private httpUtils: HttpUtilsService) {
   }
 
   getFlow(flowId: string) {
@@ -31,15 +32,10 @@ export class APIFlowsService {
       .toPromise();
   }
 
-  updateFlow(flowId, flow) {
+  updateFlow(flowId, flow): Observable<boolean> {
     const actionId = flowId;
-    return this.http.patch(
-      this.httpUtils.apiPrefix(`actions/${actionId}`),
-      flow,
-      this.httpUtils.defaultOptions()
-    )
-      .map(() => true)
-      .toPromise();
+    return this.restApi.patch(`actions/${actionId}`, flow)
+      .map(() => true);
   }
 
   deleteFlow(flowId) {

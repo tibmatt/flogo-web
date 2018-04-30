@@ -75,7 +75,7 @@
 
         <div class="flogo-flows-flow-schema-container" *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE">
           <flogo-flow-params-schema-button role="button"
-                                           [flowMetadata]="flow?.metadata"
+                                           [flowMetadata]="flowState?.metadata"
                                            (click)="openInputSchemaModal()">
           </flogo-flow-params-schema-button>
         </div>
