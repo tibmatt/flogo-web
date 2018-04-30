@@ -1,17 +1,16 @@
 // Add new tabs here, keep TabNames and defaultTabsInfo in sync
 // after upgrading to typescript 2.1 this can be simplified to keyof TabNames
-export type TAB_NAME = 'subFlow' | 'inputMappings' | 'iterator' ;
-const defaultTabsInfo: {name: TAB_NAME, labelKey: string}[] = [
-  { name: 'subFlow', labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW' },
-  { name: 'inputMappings', labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
-  { name: 'iterator', labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' },
-];
+export type TAB_NAME = 'subFlow' | 'inputMappings' | 'iterator' | 'flowInput' |'flowOutput';
+
 
 export interface Tab {
   labelKey: string;
   isSelected: boolean;
   isDirty: boolean;
   isValid: boolean;
+  enabled: boolean;
+  inputsLabelKey?: string;
+  outputsLabelKey?: string;
 }
 
 export const makeTab = (labelKey: string) => ({
@@ -19,6 +18,7 @@ export const makeTab = (labelKey: string) => ({
   isSelected: false,
   isDirty: false,
   isValid: true,
+  enabled: true,
 });
 
 export class Tabs implements Iterable<[TAB_NAME, Tab]> {
@@ -26,13 +26,12 @@ export class Tabs implements Iterable<[TAB_NAME, Tab]> {
 
   [Symbol.iterator]: () => Iterator<[TAB_NAME, Tab]>;
 
-  static create(isSubFlow: boolean): Tabs {
-    return new Tabs(isSubFlow);
+  static create(tabsInfo: any[]): Tabs {
+    return new Tabs(tabsInfo);
   }
 
-  constructor(includeSubFlow: boolean) {
-    const tabPairs = defaultTabsInfo.filter(val => val.name !== 'subFlow' || includeSubFlow)
-      .map(({name, labelKey}) => [name, makeTab(labelKey)] as [TAB_NAME, Tab]);
+  constructor(tabsInfo: any[]) {
+    const tabPairs = tabsInfo.map(({name, labelKey}) => [name, makeTab(labelKey)] as [TAB_NAME, Tab]);
     this.tabs = new Map<TAB_NAME, Tab>(tabPairs);
     this[Symbol.iterator] = this.tabs[Symbol.iterator].bind(this.tabs);
   }

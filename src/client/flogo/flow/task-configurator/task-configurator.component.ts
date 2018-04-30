@@ -11,7 +11,7 @@ import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventD
 import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
 import { InputMapperConfig } from './input-mapper';
-import { TAB_NAME, Tabs } from './models/tabs.model';
+import {TAB_NAME, Tabs} from './models/tabs.model';
 import {SubFlowConfig} from './subflow-config';
 import {isSubflowTask} from '@flogo/shared/utils';
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
@@ -62,6 +62,10 @@ export class TaskConfiguratorComponent implements OnDestroy {
   showSubflowList = false;
 
   isActive = false;
+  defaultTabsInfo: {name: TAB_NAME, labelKey: string}[] = [
+    { name: 'inputMappings', labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
+    { name: 'iterator', labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' },
+  ];
 
   private _subscriptions: any[];
   // todo: move to proper service
@@ -268,14 +272,17 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (this.tabs) {
       this.tabs.clear();
     }
-    this.tabs = Tabs.create(this.isSubflowType);
     this.showSubflowList = false;
     if (this.isSubflowType) {
+      this.defaultTabsInfo.unshift({name: 'subFlow', labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW'});
+      this.tabs = Tabs.create(this.defaultTabsInfo);
       this.tabs.get('subFlow').isSelected = true;
     } else {
+      this.defaultTabsInfo = this.defaultTabsInfo.filter(val => val.name !== 'subFlow');
+      this.tabs = Tabs.create(this.defaultTabsInfo);
       this.tabs.get('inputMappings').isSelected = true;
     }
-
+console.log(this.tabs);
   }
 
   private open() {
