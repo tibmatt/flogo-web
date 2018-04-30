@@ -824,7 +824,7 @@ export class FlogoFlowDiagram implements FlowDiagram {
               const _warnings = _.get(task, '__props.warnings', [{ msg: '' }]);
               taskDescription = _warnings[0].msg;
             } else {
-              taskDescription = task.description;
+              taskDescription = task.description || '';
             }
 
             return <any>[
@@ -901,11 +901,14 @@ export class FlogoFlowDiagram implements FlowDiagram {
       }
 
       const taskSchema = diagram.tasks[taskInfo.nodeInfo.taskID];
-      if (!taskInfo.name || (taskSchema.type !== FLOGO_TASK_TYPE.TASK_SUB_PROC && !taskInfo.desc)) {
+      if (!taskInfo.name) {
         return '';
       }
 
-      const taskDescription = taskSchema.type === FLOGO_TASK_TYPE.TASK_SUB_PROC ? '' : taskInfo.desc;
+      let taskDescription = '';
+      if (taskSchema.type !== FLOGO_TASK_TYPE.TASK_SUB_PROC) {
+        taskDescription = taskInfo.desc || '';
+      }
 
       let iconName = 'activity.icon.svg';
 
