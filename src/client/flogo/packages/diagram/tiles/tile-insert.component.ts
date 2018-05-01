@@ -10,6 +10,7 @@ import { DiagramSelection, InsertTile, DiagramSelectionType } from '../interface
 export class TileInsertComponent implements OnChanges {
   @Input() tile: InsertTile;
   @Input() currentSelection: DiagramSelection;
+  @Input() diagramId: string;
   @Output() select = new EventEmitter<string>();
   @HostBinding('class.is-selected') isSelected = false;
 
@@ -23,11 +24,17 @@ export class TileInsertComponent implements OnChanges {
     this.select.emit(this.tile.parentId);
   }
 
+  @HostBinding('class.is-root')
+  get isRootInsert() {
+    return this.tile && this.tile.isRoot;
+  }
+
   private checkIsSelected() {
     if (!this.currentSelection) {
       return false;
     }
-    const {type, taskId} = this.currentSelection;
-    return type === DiagramSelectionType.Insert && taskId === this.tile.parentId;
+    const {type, taskId, diagramId} = this.currentSelection;
+    const forRoot = this.isRootInsert && diagramId === this.diagramId;
+    return type === DiagramSelectionType.Insert && (taskId === this.tile.parentId || forRoot);
   }
 }

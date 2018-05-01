@@ -36,12 +36,13 @@
 
   </defs>
 </svg>
-<flogo-diagram-row *ngFor="let row of tileMatrix; trackBy: trackRow; let rowIndex = index"
+<flogo-diagram-row *ngFor="let row of tileMatrix; trackBy: trackRowBy; let rowIndex = index"
                    @diagramRow
                    [row]="row"
                    [rowIndex]="tileMatrix.length - rowIndex - 1"
                    [selection]="selection"
-                   (action)="onAction($event)"
                    [isReadOnly]="isReadOnly"
+                   [diagramId]="diagramId"
+                   (action)="onAction($event)"
                    class="diagram-row">
 </flogo-diagram-row>

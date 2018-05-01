@@ -1,13 +1,13 @@
 import {
-  ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, Output,
-  SimpleChanges
+  ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, Output, SimpleChanges, TrackByFunction
 } from '@angular/core';
-import { find } from 'lodash';
 import { FlowGraph } from '@flogo/core';
-import { DiagramSelection, DiagramAction, TaskTile, TileType, Tile } from '../interfaces';
-import { TileMatrix, makeRenderableMatrix } from '../renderable-model';
+import { DiagramAction, DiagramSelection, Tile } from '../interfaces';
+import { EMPTY_MATRIX } from '../shared';
+import { makeRenderableMatrix, TileMatrix } from '../renderable-model';
 import { RowIndexService } from '../shared/row-index.service';
 import { diagramAnimations } from './diagram.animations';
+import { diagramRowTracker } from './diagram-row-tracker';
 
 @Component({
   // temporal name until old diagram implementation is removed
@@ -22,19 +22,21 @@ export class DiagramComponent implements OnChanges, OnDestroy {
   @HostBinding('@list') animateList = true;
   @Input() flow: FlowGraph;
   @Input() selection: DiagramSelection;
+  @Input() diagramId?: string;
   @Input() @HostBinding('class.flogo-diagram-is-readonly') isReadOnly = false;
   @Output() action = new EventEmitter<DiagramAction>();
   tileMatrix: TileMatrix;
 
+  trackRowBy: TrackByFunction<Tile[]>;
+
   constructor(private rowIndexService: RowIndexService) {
+    this.trackRowBy = diagramRowTracker(this);
   }
 
   ngOnChanges({ flow: flowChange, isReadOnly: readOnlyChange }: SimpleChanges) {
     const readOnlyDidChange = readOnlyChange && readOnlyChange.currentValue !== readOnlyChange.previousValue;
     if (flowChange || readOnlyDidChange) {
-      const tileMatrix = makeRenderableMatrix(this.flow, 7, this.isReadOnly);
-      this.rowIndexService.updateRowIndexes(tileMatrix);
-      this.tileMatrix = tileMatrix.reverse();
+      this.updateMatrix();
     }
   }
 
@@ -43,15 +45,18 @@ export class DiagramComponent implements OnChanges, OnDestroy {
   }
 
   onAction(action: DiagramAction) {
-    this.action.emit(action);
+    this.action.emit({ ...action, diagramId: this.diagramId });
   }
 
-  trackRow(index, row: Tile[]) {
-    const firstTask = <TaskTile>find(row, tile => tile.type === TileType.Task);
-    if (firstTask) {
-      return firstTask.task.id;
-    } else {
-      return index;
+  private updateMatrix() {
+    const tileMatrix = makeRenderableMatrix(this.flow, 7, this.isReadOnly);
+    this.rowIndexService.updateRowIndexes(tileMatrix);
+    if (tileMatrix.length > 0) {
+      // matrix is reversed to make sure html stack order always goes from bottom to top
+      // i.e. top rows are rendered in front of bottom rows, this ensures branches don't display on top of the tiles above
+      this.tileMatrix = tileMatrix.reverse();
+    } else if (!this.isReadOnly) {
+      this.tileMatrix = EMPTY_MATRIX;
     }
   }
 

@@ -16,6 +16,7 @@ export class DiagramRowComponent implements OnChanges {
   @Input() row: Tile[];
   @Input() selection: DiagramSelection;
   @Input() rowIndex: number;
+  @Input() diagramId?: string;
   @HostBinding('class.is-readonly') @Input() isReadOnly = false;
   @Output() action = new EventEmitter<DiagramAction>();
 
@@ -58,10 +59,6 @@ export class DiagramRowComponent implements OnChanges {
 
   onTaskAction(action: DiagramAction) {
     this.action.emit(action);
-  }
-
-  onBranchRemove(taskTile: TaskTile) {
-    this.action.emit(actionEventFactory.remove(taskTile.task.id));
   }
 
 }

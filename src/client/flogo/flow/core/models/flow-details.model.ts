@@ -14,7 +14,6 @@ import { Observable } from 'rxjs/Observable';
 import { distinctUntilChanged, pluck } from 'rxjs/operators';
 import { DiagramSelection } from '@flogo/packages/diagram';
 import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
-import { insertNode } from '@flogo/flow/core/models/flow/insert-node';
 
 export enum HandlerType {
   Main = 'main',
@@ -49,9 +48,9 @@ export class FlogoFlowDetails {
     });
   }
 
-  selectInsert(parentItemId: string) {
+  selectInsert(diagramId: HandlerType, parentItemId: string) {
     this.commitStateUpdate({
-      currentSelection: selectionFactory.makeInsertSelection(parentItemId),
+      currentSelection: selectionFactory.makeInsertSelection(diagramId, parentItemId),
     });
   }
 

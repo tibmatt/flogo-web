@@ -81,21 +81,18 @@
         </div>
 
         <div class="flogo-flows-diagram-container">
-          <flogo-diagram-v2 [flow]="flowState?.mainGraph" [selection]="flowState?.currentSelection" (action)="onMainDiagramAction($event)"></flogo-diagram-v2>
-          <!--<flogo-flow-diagram *ngIf="mainHandler"-->
-                              <!--[tasks]="mainHandler.tasks"-->
-                              <!--[diagram]="mainHandler.diagram"-->
-                              <!--[id]="'root'"-->
-                              <!--[appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"-->
-                              <!--[appId]="flow?.app?.id"-->
-                              <!--data-flogo-diagram-id="root">-->
-          <!--</flogo-flow-diagram>-->
+          <flogo-diagram-v2
+            [diagramId]="handlerTypes.Main"
+            [flow]="flowState?.mainGraph"
+            [selection]="flowState?.currentSelection"
+            (action)="onMainDiagramAction($event)">
+          </flogo-diagram-v2>
         </div>
       </div>
     </div>
 
-    <flogo-flow-task-configurator [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-configurator>
-    <flogo-flow-task-configurator [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-configurator>
+    <flogo-flow-task-configurator [flowId]="handlerTypes.Main"></flogo-flow-task-configurator>
+    <flogo-flow-task-configurator [flowId]="handlerTypes.Error"></flogo-flow-task-configurator>
 
     <flogo-flow-error-panel *ngIf="hasTask">
       <div class="error-panel">
@@ -121,7 +118,11 @@
           </svg>
         </div>
         <flogo-diagram-v2 class="error-panel__diagram"
-                          [flow]="flowState?.errorGraph" [selection]="currentSelection" (action)="onErrorDiagramAction($event)"></flogo-diagram-v2>
+                          [diagramId]="handlerTypes.Error"
+                          [flow]="flowState?.errorGraph"
+                          [selection]="flowState?.currentSelection"
+                          (action)="onErrorDiagramAction($event)">
+        </flogo-diagram-v2>
       </div>
     </flogo-flow-error-panel>
 

@@ -67,9 +67,9 @@ import { makeDefaultErrorTrigger } from '@flogo/flow/shared/diagram/models/task.
 import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema } from '@flogo/core/models';
 import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
 import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
-import { HandlerType } from '@flogo/flow/core/models';
-import { FlowState } from '@flogo/flow/core/models/flow-state';
-import { makeNode } from '@flogo/flow/core/models/graph-and-items/graph-creator';
+import { HandlerType } from './core/models';
+import { FlowState } from './core/models/flow-state';
+import { makeNode } from './core/models/graph-and-items/graph-creator';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -88,8 +88,6 @@ interface TaskContext {
   profileType: FLOGO_PROFILE_TYPE;
 }
 
-const FLOW_HANDLER_TYPE_ROOT = 'root';
-const FLOW_HANDLER_TYPE_ERROR = 'errorHandler';
 const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.type);
 
 @Component({
@@ -126,6 +124,8 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
+
+  handlerTypes = HandlerType;
 
   public loading: boolean;
   public hasTrigger: boolean;
@@ -213,7 +213,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         return;
       }
       case DiagramActionType.Insert: {
-        flowDetails.selectInsert((<DiagramActionChild>diagramAction).parentId);
+        flowDetails.selectInsert(handlerType, (<DiagramActionChild>diagramAction).parentId);
         return;
       }
       case DiagramActionType.Branch: {
@@ -315,9 +315,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     const taskId = taskIdSegment.path;
     let diagramId;
     if (this.flowState.mainItems[taskId]) {
-      diagramId = FLOW_HANDLER_TYPE_ROOT;
+      diagramId = HandlerType.Main;
     } else if (this.flowState.errorItems[taskId]) {
-      diagramId = FLOW_HANDLER_TYPE_ERROR;
+      diagramId = HandlerType.Error;
     } else {
       return null;
     }
@@ -395,7 +395,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private getItemsByHandlerId(id: string) {
-    return id === FLOW_HANDLER_TYPE_ROOT ? this.flowState.mainItems : this.flowState.errorItems;
+    return id === HandlerType.Main ? this.flowState.mainItems : this.flowState.errorItems;
   }
 
   private getTaskInHandler(handlerId: string, taskId: string) {
@@ -500,8 +500,15 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private _addTaskFromTasks(data: any, envelope: any) {
-    const diagramId: string = this.getDiagramId(data.parentId);
     const currentState = this.flowState;
+    const selection = currentState.currentSelection;
+    const isAddingToRoot = selection && !selection.taskId;
+    let diagramId: string;
+    if (isAddingToRoot) {
+      diagramId = selection.diagramId;
+    } else {
+      diagramId = this.getDiagramId(data.parentId);
+    }
 
     let task = data.task;
     const taskName = this.uniqueTaskName(data.task.name);
@@ -549,7 +556,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     });
 
     this._flowService.currentFlowDetails.registerNewItem(
-      diagramId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+      this.handlerTypeFromString(diagramId),
       { item, node, schema },
     );
 
@@ -743,7 +750,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
 
     this._flowService.currentFlowDetails.updateItem(
-      handlerId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+      this.handlerTypeFromString(handlerId),
       { item: changes },
     );
   }
@@ -802,7 +809,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     if (task) {
       this._flowService.currentFlowDetails.updateItem(
-        handlerId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+        this.handlerTypeFromString(handlerId),
         {
           item: {
             __props: {
@@ -1217,7 +1224,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const flowState = this.flowState;
     let scope: any[];
 
-    if (diagramId === FLOW_HANDLER_TYPE_ERROR) {
+    if (diagramId === HandlerType.Error) {
       const allPathsMainFlow = this.getAllPaths(flowState.mainGraph.nodes);
       const previousTilesMainFlow = this.mapNodesToTiles(
         allPathsMainFlow,
@@ -1332,7 +1339,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     };
 
     this._flowService.currentFlowDetails.updateItem(
-      diagramId === FLOW_HANDLER_TYPE_ROOT ? HandlerType.Main : HandlerType.Error,
+      this.handlerTypeFromString(diagramId),
       { item: itemChanges },
     );
 
@@ -1443,13 +1450,17 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private getDiagramId(taskId: string): string {
-    if (this.getTaskInHandler(FLOW_HANDLER_TYPE_ROOT, taskId)) {
-      return FLOW_HANDLER_TYPE_ROOT;
-    } else if (this.getTaskInHandler(FLOW_HANDLER_TYPE_ERROR, taskId)) {
-      return FLOW_HANDLER_TYPE_ERROR;
+    if (this.getTaskInHandler(HandlerType.Main, taskId)) {
+      return HandlerType.Main;
+    } else if (this.getTaskInHandler(HandlerType.Error, taskId)) {
+      return HandlerType.Error;
     }
     // todo: throw error?
     return null;
+  }
+
+  private handlerTypeFromString(handlerTypeName: string): HandlerType {
+    return handlerTypeName === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
   }
 
   private _updateTaskOutputAfterRun(data: {

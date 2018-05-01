@@ -7,16 +7,19 @@ export enum TileType {
   Task = 'task',
 }
 
-export interface Tile {
+interface BaseTile {
   type: TileType;
 }
 
-export interface InsertTile extends Tile {
+export type  Tile = InsertTile | TaskTile | BaseTile;
+
+export interface InsertTile extends BaseTile {
   type: TileType.Insert;
   parentId: string;
+  isRoot?: boolean;
 }
 
-export interface TaskTile extends Tile {
+export interface TaskTile extends BaseTile {
   type: TileType.Task;
   task: GraphNode;
 }

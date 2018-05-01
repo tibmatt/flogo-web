@@ -178,14 +178,13 @@
   }
 }
 
-@error-panel-icon__width: 48px;
+@error-panel-icon__width: 46px;
+@error-panel-height: 142px;
 .error-panel {
   display: flex;
-
-  ::ng-deep .flogo-flows-detail-diagram-row {
+  ::ng-deep flogo-diagram-row {
     padding-left: @error-panel-icon__width * 2;
   }
-
 }
 
 .error-panel__icon-container {
@@ -198,20 +197,20 @@
 
 .error-panel__icon-bg {
   width: 48px;
-  height: 155px;
+  height: @error-panel-height;
 }
 
 .error-panel__icon {
   display: block;
   width: 100%;
-  height: 100%;
+  height: @error-panel-height;
   position: absolute;
   z-index: 1;
-  line-height: 155px;
+  line-height: @error-panel-height;
   color: #ee3342;
   font-size: 22px;
   text-align: center;
-  padding-left: 4px;
+  padding-left: 1px;
   transform: rotate(180deg);
 }
 

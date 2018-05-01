@@ -7,9 +7,10 @@ export function makeTaskSelection(taskId: string) {
   };
 }
 
-export function makeInsertSelection(parentTaskId: string) {
+export function makeInsertSelection(diagramId: string, parentTaskId: string) {
   return {
     type: DiagramSelectionType.Insert,
     taskId: parentTaskId,
+    diagramId,
   };
 }

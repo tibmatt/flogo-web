@@ -48,15 +48,26 @@ export function removeNode({ flowGraph, items }: Collections, nodeId: string): C
 }
 
 function updateRootNode(flowGraph: FlowGraph, rootNode: GraphNode): FlowGraph {
-  return {
-    ...flowGraph,
-    rootId: rootNode.id,
-    nodes: {
-      ...flowGraph.nodes,
+  let nodeChange;
+  let rootId;
+  if (rootNode) {
+    rootId = rootNode.id;
+    nodeChange = {
       [rootNode.id]:  {
         ...rootNode,
         parents: [],
-      }
+      },
+    };
+  } else {
+    rootId = null;
+    nodeChange = {};
+  }
+  return {
+    ...flowGraph,
+    rootId,
+    nodes: {
+      ...flowGraph.nodes,
+      ...nodeChange,
     },
   };
 }
