@@ -46,10 +46,6 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     }
   }
 
-  onRemove() {
-    this.remove.emit(actionEventFactory.remove(this.tile.task.id));
-  }
-
   onBranch() {
     this.branch.emit(actionEventFactory.branch(this.tile.task.id));
   }
@@ -63,11 +59,11 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
   }
 
   private checkIsSelected() {
-    if (!this.currentSelection) {
-      return false;
+    this.isSelected = false;
+    if (this.currentSelection) {
+      const {type, taskId} = this.currentSelection;
+      this.isSelected = type === DiagramSelectionType.Node && taskId === this.tile.task.id;
     }
-    const {type, taskId} = this.currentSelection;
-    this.isSelected = type === DiagramSelectionType.Node && taskId === this.tile.task.id;
   }
 
 }

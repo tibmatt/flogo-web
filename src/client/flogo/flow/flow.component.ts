@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import * as _ from 'lodash';
 
@@ -81,6 +81,8 @@ import { HandlerType } from './core/models';
 import { FlowState } from './core/models/flow-state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
+import { SingleEmissionSubject } from '@flogo/core/models';
+import { filter, takeUntil } from 'rxjs/operators';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -135,7 +137,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
-
   handlerTypes = HandlerType;
 
   public loading: boolean;
@@ -143,6 +144,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   public hasTask: boolean;
   public currentTrigger: any;
   public app: any;
+  private ngOnDestroy$ = SingleEmissionSubject.create();
 
   constructor(public translate: LanguageService,
               private _postService: PostService,
@@ -162,6 +164,18 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.hasTask = true;
     this.currentTrigger = null;
     this.app = null;
+
+    this._router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.ngOnDestroy$),
+    ).subscribe(() => {
+      // needed from where trigger changes the url
+      // todo: should invert and change comes from state
+      const selection = this.flowState && this.flowState.currentSelection;
+      if (!this.isTaskSubroute() && selection) {
+        this.flowDetails.clearSelection();
+      }
+    });
   }
 
   get flowId() {
@@ -172,9 +186,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
     const flowDetails = this.flowDetails;
     flowDetails.flow$
+      .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
     flowDetails.selectionChange$
+      .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(selection => this.onSelectionChanged(selection));
     this.initSubscribe();
     this.loading = false;
@@ -241,8 +257,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private onSelectionChanged(selection: DiagramSelection) {
     if (!selection) {
-      const [firstRouteChild] = this._route.children;
-      if (firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/')) {
+      if (this.isTaskSubroute()) {
         this._navigateFromModuleRoot();
       }
     } else if (selection.type === DiagramSelectionType.Node) {
@@ -250,6 +265,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     } else if (selection.type === DiagramSelectionType.Insert) {
       this._addTaskFromDiagram(selection.taskId);
     }
+  }
+
+  private isTaskSubroute() {
+    const [firstRouteChild] = this._route.children;
+    return firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/');
   }
 
   private onFlowStateUpdate(flowState: FlowState) {
@@ -301,44 +321,17 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private refreshCurrentTileContextIfNeeded() {
-    const taskInfo = this.getCurrentTaskInfoFromRoute();
-    if (!taskInfo) {
+    const selection = this.flowState.currentSelection;
+    if (!selection || selection.type !== DiagramSelectionType.Node) {
       return;
     }
-    const { taskId, diagramId } = taskInfo;
+    const { taskId, diagramId } = selection;
     const context = this._getCurrentTaskContext(taskId, diagramId);
     this._postService.publish(Object.assign(
       {},
       FLOGO_SELECT_TASKS_PUB_EVENTS.taskContextUpdated,
       { data: { taskId, context } }
       ));
-  }
-
-  private getCurrentTaskInfoFromRoute() {
-    const rootSnapshot = this._router.routerState.snapshot.root;
-    const thisRoute = rootSnapshot.firstChild;
-    if (!thisRoute && thisRoute.url[0].path !== 'flows') {
-      // not on this route
-      return null;
-    }
-    const childRoute = thisRoute.firstChild;
-    if (!childRoute) {
-      return null;
-    }
-    const [taskSegment, taskIdSegment] = childRoute.url;
-    if (!taskSegment || taskSegment.path !== 'task') {
-      return null;
-    }
-    const taskId = taskIdSegment.path;
-    let diagramId;
-    if (this.flowState.mainItems[taskId]) {
-      diagramId = HandlerType.Main;
-    } else if (this.flowState.errorItems[taskId]) {
-      diagramId = HandlerType.Error;
-    } else {
-      return null;
-    }
-    return { diagramId, taskId };
   }
 
   private initFlowData(flowData: FlowData) {
@@ -456,7 +449,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @deprecated
+   * @deprecated state should be updated instead but supporting this for now for old modules
    */
   private _updateFlow() {
     return this._flowService
@@ -1448,13 +1441,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private handlerTypeFromString(handlerTypeName: string): HandlerType {
     return handlerTypeName === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
-  }
-
-  private _updateTaskOutputAfterRun(data: {
-    diagramId: string,
-    taskId: string
-  }) {
-    this._selectTaskFromDiagram(data.taskId);
   }
 
   public onFlowSchemaSave(newMetadata: FlowMetadata) {
