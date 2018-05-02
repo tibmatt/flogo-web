@@ -203,7 +203,7 @@ export class DiagramTestComponent {
         },
         status: {
           invalid: true,
-          executionErrored: 'some reason here',
+          executionErrored: ['some reason here'],
         }
       },
       {
@@ -298,7 +298,7 @@ export class DiagramTestComponent {
           canHaveChildren: true,
         },
         status: {
-          executionErrored: 'some other error',
+          executionErrored: ['some other error'],
           iterable: true,
         }
       },
