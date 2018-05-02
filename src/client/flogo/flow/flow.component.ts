@@ -57,7 +57,6 @@ import {
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
 import {
-  FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   FLOGO_PROFILE_TYPE,
   FLOGO_TASK_TYPE
 } from '../core/constants';
@@ -73,13 +72,13 @@ import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { SaveTaskConfigEventData } from './task-configurator';
-import { makeDefaultErrorTrigger } from '@flogo/flow/shared/diagram/models/task.model';
 import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema } from '@flogo/core/models';
 import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
 import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
 import { HandlerType } from './core/models';
 import { FlowState } from './core/models/flow-state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
+import { makeErrorTask } from './core/models/make-error-task';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -288,6 +287,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.ngOnDestroy$.complete();
     _.each(this._subscriptions, sub => {
         this._postService.unsubscribe(sub);
       }
@@ -1213,7 +1213,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         previousNodesErrorFlow,
         { nodes: flowState.errorGraph.nodes, items: flowState.errorItems  }
       );
-      scope = [...previousTilesMainFlow, makeDefaultErrorTrigger(), ...previousTilesErrorFlow];
+      scope = [...previousTilesMainFlow, makeErrorTask(), ...previousTilesErrorFlow];
     } else {
       const previousNodes = this.findPathToNode(flowState.mainGraph.rootId, itemId, flowState.mainGraph.nodes);
       previousNodes.pop(); // ignore last item as it is the very same selected node
@@ -1358,15 +1358,11 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private mapNodesToTiles(nodeIds: any[], from: { nodes: Dictionary<GraphNode>, items: Dictionary<Item> }) {
-    const isApplicableNodeType = _.includes.bind(null, [
-      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE,
-      FLOGO_FLOW_DIAGRAM_NODE_TYPE.NODE_ROOT,
-    ]);
-
+    const canUseItemOutputs = (node: GraphNode) => node.type === NodeType.Task;
     return nodeIds
       .map(nodeId => {
         const node = from.nodes[nodeId];
-        if (isApplicableNodeType(node.type)) {
+        if (canUseItemOutputs(node)) {
           const item = <ItemTask> from.items[nodeId];
           let schema: PartialActivitySchema = this.flowState.schemas[item.ref];
           if (isSubflowItem(item)) {

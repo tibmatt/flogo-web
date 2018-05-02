@@ -10,7 +10,6 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 import { CoreModule as FlowCoreModule } from './core';
 
-import {DiagramModule as FlogoDiagramModule} from '@flogo/flow/shared/diagram';
 import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-panel';
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
@@ -36,7 +35,6 @@ import { FlowDataResolver } from './flow-data.resolver';
     ParamsSchemaModule,
     FlogoTaskMapperModule,
     FlogoCommonFormBuilderModule,
-    FlogoDiagramModule,
     FlogoFlowErrorPanelModule,
     FlogoFlowTriggersModule,
     FlogoFlowTaskDetailModule,
