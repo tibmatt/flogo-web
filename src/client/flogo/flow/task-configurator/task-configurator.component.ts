@@ -18,7 +18,7 @@ import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {ActionBase} from '@flogo/core';
 
 const TASK_TABS = {
-  SUBFLOW: 'subflow',
+  SUBFLOW: 'subFlow',
   ITERATOR: 'iterator',
   INPUT_MAPPINGS: 'inputMappings'
 };
