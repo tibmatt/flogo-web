@@ -11,11 +11,17 @@ import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventD
 import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
 
 import { InputMapperConfig } from './input-mapper';
-import {TAB_NAME, Tabs} from './models/tabs.model';
+import {Tabs} from '../shared/tabs/models/tabs.model';
 import {SubFlowConfig} from './subflow-config';
 import {isSubflowTask} from '@flogo/shared/utils';
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {ActionBase} from '@flogo/core';
+
+const TASK_TABS = {
+  SUBFLOW: 'subflow',
+  ITERATOR: 'iterator',
+  INPUT_MAPPINGS: 'inputMappings'
+};
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -62,9 +68,9 @@ export class TaskConfiguratorComponent implements OnDestroy {
   showSubflowList = false;
 
   isActive = false;
-  defaultTabsInfo: {name: TAB_NAME, labelKey: string}[] = [
-    { name: 'inputMappings', labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
-    { name: 'iterator', labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' },
+  defaultTabsInfo: {name: string, labelKey: string}[] = [
+    { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
+    { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' },
   ];
 
   private _subscriptions: any[];
@@ -83,7 +89,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   onMappingsChange(newMappings: Mappings) {
-    const mapperTab = this.tabs.get('inputMappings');
+    const mapperTab = this.tabs.get(TASK_TABS.INPUT_MAPPINGS);
     mapperTab.isValid = this.areValidMappings({mappings: newMappings});
     mapperTab.isDirty = true;
     this.currentMappings = _.cloneDeep(newMappings);
@@ -97,7 +103,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   subFlowChanged(event) {
-    const subFlowTab = this.tabs.get('subFlow');
+    const subFlowTab = this.tabs.get(TASK_TABS.SUBFLOW);
     this.showSubflowList = false;
     subFlowTab.isDirty = true;
     this.createSubflowConfig(event);
@@ -120,7 +126,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   onIteratorValueChange(newValue: string) {
-    this.tabs.get('iterator').isValid = MapperTranslator.isValidExpression(newValue);
+    this.tabs.get(TASK_TABS.ITERATOR).isValid = MapperTranslator.isValidExpression(newValue);
     this.iterableValue = newValue;
     this.checkIsIteratorDirty();
   }
@@ -147,7 +153,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.close();
   }
 
-  selectTab(name: TAB_NAME) {
+  selectTab(name: string) {
     this.tabs.markSelected(name);
     this.showSubflowList = false;
   }
@@ -165,7 +171,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   private checkIsIteratorDirty() {
-    const iteratorTab = this.tabs.get('iterator');
+    const iteratorTab = this.tabs.get(TASK_TABS.ITERATOR);
     if (!this.initialIteratorData) {
       iteratorTab.isDirty = false;
       return;
@@ -227,7 +233,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     };
 
     if (eventData.inputMappingsTabLabelKey) {
-      this.tabs.get('inputMappings').labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
+      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
     }
 
     this.areValidMappings = MapperTranslator.makeValidator();
@@ -274,13 +280,13 @@ export class TaskConfiguratorComponent implements OnDestroy {
     }
     this.showSubflowList = false;
     if (this.isSubflowType) {
-      this.defaultTabsInfo.unshift({name: 'subFlow', labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW'});
+      this.defaultTabsInfo.unshift({name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW'});
       this.tabs = Tabs.create(this.defaultTabsInfo);
-      this.tabs.get('subFlow').isSelected = true;
+      this.tabs.get(TASK_TABS.SUBFLOW).isSelected = true;
     } else {
-      this.defaultTabsInfo = this.defaultTabsInfo.filter(val => val.name !== 'subFlow');
+      this.defaultTabsInfo = this.defaultTabsInfo.filter(val => val.name !==  TASK_TABS.SUBFLOW);
       this.tabs = Tabs.create(this.defaultTabsInfo);
-      this.tabs.get('inputMappings').isSelected = true;
+      this.tabs.get( TASK_TABS.INPUT_MAPPINGS).isSelected = true;
     }
   }
 

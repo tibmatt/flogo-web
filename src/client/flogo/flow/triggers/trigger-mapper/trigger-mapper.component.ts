@@ -8,8 +8,12 @@ import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, Static
 import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
 import { TriggerMapperService, Status } from './trigger-mapper.service';
-import {TAB_NAME, Tabs} from '@flogo/flow/task-configurator/models/tabs.model';
+import {Tabs} from '@flogo/flow/shared/tabs/models/tabs.model';
 
+const TRIGGER_TABS = {
+  MAP_FLOW_INPUT: 'mapFlowInput',
+  MAP_FLOW_OUTPUT: 'mapFlowOutput'
+};
 
 @Component({
   selector: 'flogo-flow-trigger-mapper',
@@ -27,16 +31,16 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   mappingValidationFn: MappingsValidatorFn;
   currentStatus: Status = {isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null};
 
-  currentViewName: TAB_NAME;
+  currentViewName: string;
   tabs: Tabs;
   private editingMappings: {
     actionInput: { [key: string]: IMapExpression };
     actionOutput: { [key: string]: IMapExpression };
   };
 
-  defaultTabsInfo: { name: TAB_NAME, labelKey: string }[] = [
-    {name: 'flowInput', labelKey: 'TRIGGER-MAPPER:FLOW-INPUTS'},
-    {name: 'flowOutput', labelKey: 'TRIGGER-MAPPER:FLOW-OUTPUTS'}
+  defaultTabsInfo: { name: string, labelKey: string }[] = [
+    {name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-MAPPER:FLOW-INPUTS'},
+    {name: TRIGGER_TABS.MAP_FLOW_OUTPUT, labelKey: 'TRIGGER-MAPPER:FLOW-OUTPUTS'}
   ];
 
   private ngDestroy = SingleEmissionSubject.create();
@@ -56,6 +60,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ngDestroy.emitAndComplete();
+
   }
 
   onCloseOrDismiss() {
@@ -65,9 +70,9 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   onMappingsChange(change: IMapping) {
     const mappings = _.cloneDeep(change).mappings;
     const currentView = this.currentViewStatus;
-    if (currentView === this.tabs.get('flowInput')) {
+    if (currentView === this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT)) {
       this.editingMappings.actionInput = mappings;
-    } else if (currentView === this.tabs.get('flowOutput')) {
+    } else if (currentView === this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT)) {
       this.editingMappings.actionOutput = mappings;
     } else {
       return;
@@ -85,16 +90,18 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     });
   }
 
-  setCurrentView(viewName: TAB_NAME) {
-    this.tabs.markSelected(viewName);
+  setCurrentView(viewName: string) {
+    if (this.tabs.get(viewName).enabled) {
+      this.tabs.markSelected(viewName);
+    }
     this.currentViewName = viewName;
-    if (viewName === 'flowInput') {
+    if (viewName === TRIGGER_TABS.MAP_FLOW_INPUT) {
       this.setupInputsContext();
-      this.tabs.get('flowInput').inputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-INPUTS';
-      this.tabs.get('flowInput').outputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-OUTPUT';
-    } else if (viewName === 'flowOutput') {
-      this.tabs.get('flowOutput').inputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES';
-      this.tabs.get('flowOutput').outputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS';
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).inputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-INPUTS';
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).outputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-OUTPUT';
+    } else if (viewName === TRIGGER_TABS.MAP_FLOW_OUTPUT) {
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).inputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES';
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).outputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS';
       this.setupReplyContext();
     }
   }
@@ -152,13 +159,13 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       hasFlowOutputs = flowMetadata.output && flowMetadata.output.length > 0;
     }
     this.resetState();
-    this.tabs.get('flowInput').enabled = hasTriggerOutputs && hasFlowInputs;
-    this.tabs.get('flowOutput').enabled = hasTriggerReply && hasFlowOutputs;
-    let viewType: TAB_NAME = 'flowInput';
-    if (this.tabs.get('flowOutput').isSelected) {
-      viewType = 'flowInput';
-    } else if (this.tabs.get('flowOutput').isSelected) {
-      viewType = 'flowOutput';
+    this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).enabled = hasTriggerOutputs && hasFlowInputs;
+    this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).enabled = hasTriggerReply && hasFlowOutputs;
+    let viewType: string = TRIGGER_TABS.MAP_FLOW_INPUT;
+    if (this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isSelected || this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).enabled ) {
+      viewType = TRIGGER_TABS.MAP_FLOW_INPUT;
+    } else if (this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).isSelected || this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).enabled) {
+      viewType = TRIGGER_TABS.MAP_FLOW_OUTPUT;
     }
     this.setCurrentView(viewType);
   }
