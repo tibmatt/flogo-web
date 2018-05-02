@@ -46,6 +46,10 @@ export abstract class AbstractTileTaskComponent implements OnChanges {
     }
   }
 
+  onRemove() {
+    this.remove.emit(actionEventFactory.remove(this.tile.task.id));
+  }
+
   onBranch() {
     this.branch.emit(actionEventFactory.branch(this.tile.task.id));
   }

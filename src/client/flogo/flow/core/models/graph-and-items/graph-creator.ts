@@ -1,5 +1,15 @@
-import { GraphNode, NodeFeatures, NodeStatus, NodeType } from '../../../../core/index';
-import { Dictionary, flow as backendFlow } from '../../../../core/index';
+import {
+  GraphNode,
+  Item,
+  NodeFeatures,
+  NodeStatus,
+  NodeType,
+  Dictionary,
+  flow as backendFlow,
+  ItemTask,
+  ItemActivityTask
+} from '@flogo/core';
+import { isIterableTask, isSubflowTask } from '@flogo/shared/utils';
 
 const defaultFeatures: NodeFeatures = {
   selectable: true,
@@ -17,23 +27,28 @@ const defaultStatus: NodeStatus = {
   iterable: false,
 };
 
-export function makeTaskNodes(tasks: backendFlow.Task[]): Dictionary<GraphNode> {
+export function makeTaskNodes(tasks: backendFlow.Task[], items: Dictionary<Item>): Dictionary<GraphNode> {
   return tasks.reduce((nodes, task) => {
-    const node = makeTask(task);
+    const node = makeTask(task, items[task.id]);
     nodes[node.id] = node;
     return nodes;
   }, {} as Dictionary<GraphNode>);
 }
 
-function makeTask(task: backendFlow.Task): GraphNode {
+function makeTask(task: backendFlow.Task, item: Item): GraphNode {
+  const isFinal = (<ItemActivityTask>item).return;
   return makeNode({
     type: NodeType.Task,
     id: task.id,
     features: {
       selectable: true,
-      canHaveChildren: true,
+      deletable: true,
+      canHaveChildren: !isFinal,
+      subflow: isSubflowTask(item.type),
+      final: isFinal,
     },
     status: {
+      iterable: isIterableTask(item),
     },
     title: task.name,
     description: task.description,

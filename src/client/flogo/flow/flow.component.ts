@@ -326,7 +326,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       return;
     }
     const { taskId, diagramId } = selection;
-    const context = this._getCurrentTaskContext(taskId, diagramId);
+    const context = this._getCurrentTaskContext(taskId);
     this._postService.publish(Object.assign(
       {},
       FLOGO_SELECT_TASKS_PUB_EVENTS.taskContextUpdated,
@@ -336,14 +336,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private initFlowData(flowData: FlowData) {
     this.flowName = flowData.flow.name;
-    if (_.isEmpty(flowData.flow.mainItems)) {
-      this.hasTask = false;
-    }
     this.triggersList = flowData.triggers;
-
-    this.clearAllHandlersRunStatus();
-    this.determineRunnableEnabled();
-    // todo: move to resolver?
     this.profileService.initializeProfile(flowData.flow.app);
     this.profileType = this.profileService.currentApplicationProfile;
   }
@@ -388,13 +381,14 @@ export class FlowComponent implements OnInit, OnDestroy {
     return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
   }
 
-  private _getCurrentTaskContext(taskId: any, diagramId: string): TaskContext {
-    const taskType = this.getTaskInHandler(diagramId, taskId).type;
+  private _getCurrentTaskContext(taskId: any): TaskContext {
+    const handlerId = this.getDiagramId(taskId);
+    const taskType = this.getTaskInHandler(handlerId, taskId).type;
     return {
       isTrigger: false, // taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
-      shouldSkipTaskConfigure: this.isTaskSubflowOrMapper(taskId, diagramId),
+      shouldSkipTaskConfigure: this.isTaskSubflowOrMapper(taskId, handlerId),
       flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
       hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
@@ -597,7 +591,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     // Refresh task detail
     const currentStep = this._getCurrentState(taskId);
-    const context = this._getCurrentTaskContext(taskId, handlerId);
+    const context = this._getCurrentTaskContext(taskId);
 
     const currentItem = <Item> _.cloneDeep(this.getTaskInHandler(handlerId, taskId));
     let currentTask;
@@ -710,7 +704,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let changes: Partial<Item>;
+    let changes: {id: string} & Partial<Item>;
     if (task.type === FLOGO_TASK_TYPE.TASK) {
       const changedInputs = data.inputs || {};
       // set/unset the warnings in the tile
@@ -796,6 +790,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         this.handlerTypeFromString(handlerId),
         {
           item: {
+            id: task.id,
             __props: {
               ...task.__props,
               warnings: data.warnings,
@@ -894,7 +889,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       .then(() => {
         const currentStep = this._getCurrentState(data.taskId);
         const currentTask = _.assign({}, _.cloneDeep(this.flowState.mainItems[data.taskId]));
-        const context = this._getCurrentTaskContext(data.taskId, HandlerType.Main);
+        const context = this._getCurrentTaskContext(data.taskId);
 
         this.openTaskDetail(currentTask, currentStep, context);
 
@@ -1289,7 +1284,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const tile = <ItemTask> this.getTaskInHandler(diagramId, data.tile.id);
     const changedSubflowSchema = data.changedSubflowSchema;
     const tileAsSubflow = <ItemSubflow> tile;
-    const itemChanges: Partial<ItemActivityTask & ItemSubflow> = {
+    const itemChanges: {id: string} & Partial<ItemActivityTask & ItemSubflow> = {
       id: tile.id,
       settings: tile.settings,
     };

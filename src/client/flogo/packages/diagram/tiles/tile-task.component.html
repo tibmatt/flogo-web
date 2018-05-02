@@ -22,7 +22,7 @@
     <li *ngIf="!isTerminal && tile.task?.features?.canBranch" class="menu__option" (click)="onBranch()">
       <i class="flogo-icon-addbranch menu__icon"></i> {{  'DIAGRAM:ADD-BRANCH' | translate }}
     </li>
-    <li *ngIf="!isTerminal && tile.task?.features?.deletable" class="menu__option" (click)="onRemove()">
+    <li *ngIf="tile.task?.features?.deletable" class="menu__option" (click)="onRemove()">
       <i class="flogo-icon-delete menu__icon"></i> {{  'DIAGRAM:DELETE' | translate }}
     </li>
   </ul>

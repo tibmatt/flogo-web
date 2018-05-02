@@ -1,5 +1,5 @@
 import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import {Task} from '@flogo/core/interfaces/flow/task';
+import { Item, Task } from '@flogo/core';
 
 export function flogoGenBranchID(): string {
   return `Flogo::Branch::${Date.now()}`;
@@ -398,7 +398,7 @@ export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
   return taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC;
 }
 
-export function isIterableTask(task: Task): boolean {
+export function isIterableTask(task: Task | Item): boolean {
   return !_.isEmpty(_.get(task, 'settings.iterate'));
 }
 

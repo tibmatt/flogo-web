@@ -2,7 +2,7 @@ import { isEqual, isEmpty } from 'lodash';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { ActionBase, UiFlow, ItemTask, GraphNode, Item, ContribSchema, FlowGraph, Dictionary, NodeStatus } from '@flogo/core';
-import { getProfileType } from '@flogo/shared/utils';
+import { getProfileType, isIterableTask } from '@flogo/shared/utils';
 import * as selectionFactory from './flow/selection-factory';
 import { FlowState } from './flow-state';
 import { addNewNode } from './flow/add-new-node';
@@ -114,15 +114,34 @@ export class FlogoFlowDetails {
     });
   }
 
-  updateItem(handlerType: HandlerType, { item }: { item: Partial<Item> }) {
+  updateItem(handlerType: HandlerType, { item }: { item: {id: string} & Partial<Item> }) {
     const state = this.currentState;
     const itemsDictionaryName = getItemsDictionaryName(handlerType);
-    const dictionary = state[itemsDictionaryName];
+    const items = state[itemsDictionaryName];
+    const newItemState = {...items[item.id], ...item};
+
+    const graphName = getGraphName(handlerType);
+    const graph = state[graphName];
+    const node = graph.nodes[newItemState.id];
+    const newNodeState: GraphNode = {
+      ...node,
+      status: {
+        ...node.status,
+        iterable: isIterableTask(newItemState),
+      }
+    };
     this.commitStateUpdate({
       [itemsDictionaryName]: {
-        ...dictionary,
-        [item.id]: {...dictionary[item.id], ...item}
+        ...items,
+        [item.id]: newItemState,
       },
+      [graphName]: {
+        ...graph,
+        nodes: {
+          ...graph.nodes,
+          [item.id]: newNodeState
+        }
+      }
     });
   }
 

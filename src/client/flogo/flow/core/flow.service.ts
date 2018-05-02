@@ -36,24 +36,27 @@ export class FlogoFlowService {
         return Promise.all([flow, flowIdsToFetch]);
       })
       .then(([flow, subflows]) => {
+        const triggers = flow.triggers;
         const flowDiagramDetails = omit(flow, [
           'triggers'
         ]);
-
-        const triggers = flow.triggers;
 
         if (this.currentFlowDetails) {
           this.currentFlowDetails.destroy();
         }
 
-        this.currentFlowDetails = new FlogoFlowDetails(flow, subflows);
-        this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
         const subflowsMap = new Map<string, ActionBase>(subflows.map(a => [a.id, a]));
+        this.currentFlowDetails = new FlogoFlowDetails(flow, subflowsMap);
+
+        this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
         return this._converterService.getWebFlowModel(flowDiagramDetails, subflowsMap)
           .then(convertedFlow => {
             this.currentFlowDetails.initState(convertedFlow);
             this.previousSavedFlow = flogoFlowToJSON(convertedFlow);
-            return this.processFlowModel(convertedFlow, flow.triggers.length > 0);
+            return {
+              flow,
+              triggers,
+            };
           })
           .then(processedFlow => {
             return assign({}, processedFlow, { triggers });
@@ -88,60 +91,6 @@ export class FlogoFlowService {
 
   listFlowsForApp(appId) {
     return this._flowAPIService.getSubFlows(appId);
-  }
-
-  processFlowModel(model, hasTrigger?: boolean): Promise<FlowData> {
-    let diagram: FlowDiagram;
-    let errorDiagram: FlowDiagram;
-    let tasks: Dictionary<Item>;
-    let errorTasks: Dictionary<Item>;
-    let flow: any;
-    if (!isEmpty(model)) {
-      // initialisation
-      flow = model;
-      tasks = flow.items;
-      if (isEmpty(flow.paths)) {
-        diagram = flow.paths = <FlowDiagram>{
-          root: {},
-          nodes: {}
-        };
-      } else {
-        diagram = flow.paths;
-      }
-
-      if (isEmpty(flow.errorHandler)) {
-        flow.errorHandler = {
-          paths: {},
-          items: {}
-        };
-      }
-
-      errorTasks = flow.errorHandler.items;
-      if (isEmpty(flow.errorHandler.paths)) {
-        errorDiagram = flow.errorHandler.paths = <FlowDiagram>{
-          root: {},
-          nodes: {}
-        };
-      } else {
-        errorDiagram = flow.errorHandler.paths;
-      }
-      if (hasTrigger) {
-        diagram.hasTrigger = hasTrigger;
-      }
-    }
-    return Promise.resolve<FlowData>({
-      flow,
-      root: {
-        diagram,
-        tasks
-      },
-      errorHandler: {
-        diagram: errorDiagram,
-        tasks: errorTasks
-      },
-      // will be added later
-      triggers: [],
-    });
   }
 
   private saveLegacyFlow(flowId: string, { name, description, flow, metadata }: LegacyFlowWrapper) {

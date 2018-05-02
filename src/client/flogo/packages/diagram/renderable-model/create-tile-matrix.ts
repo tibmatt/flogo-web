@@ -12,7 +12,8 @@ const fillWithPlaceholders = (fromCount: number, max: number) => times(max - fro
 // assumes that the rows won't overflow
 // and the overflow case should be handled somewhere else.
 export function createTileMatrix(nodeMatrix: NodeMatrix, maxRowLength, isReadOnly = false): TileMatrix {
-  const nodeToTile = node => !!node ? tileFactory.makeTask(node) : TILE_PADDING;
+  const maxTileIndex = maxRowLength - 1;
+  const nodeToTile = (node, index) => !!node ? tileFactory.makeTask(node, index >= maxTileIndex) : TILE_PADDING;
   return nodeMatrix.map(rowOfNodes => {
     if (rowOfNodes.length <= 0) {
       return [];

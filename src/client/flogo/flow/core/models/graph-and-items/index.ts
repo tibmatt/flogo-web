@@ -26,7 +26,7 @@ export function makeGraphAndItems(
 ): { items: Dictionary<Item>, graph: FlowGraph } {
   const getActivitySchema = activitySchemaFinder(contribSchemas);
   const taskItems = makeTaskItems(tasks, getActivitySchema);
-  const taskNodes = makeTaskNodes(tasks);
+  const taskNodes = makeTaskNodes(tasks, taskItems);
 
   const {nodes, items} = createAndAppendBranches(links, getNewBranchId, taskItems, taskNodes);
   const [rootTask] = tasks;
