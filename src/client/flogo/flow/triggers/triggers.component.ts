@@ -57,7 +57,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   private _subscriptions: any[];
   private _ngDestroy$ = SingleEmissionSubject.create();
-  public isMapperWindowOpen = false;
 
   constructor(private _restAPITriggersService: TriggersApiService,
               private _restAPIHandlerService: RESTAPIHandlersService,
@@ -129,12 +128,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
         triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
         this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
-      });
-
-    this._triggerConfiguratorService.modalStatus$
-      .takeUntil(this._ngDestroy$)
-      .subscribe(state => {
-        this.isMapperWindowOpen = state.isOpen;
       });
   }
 

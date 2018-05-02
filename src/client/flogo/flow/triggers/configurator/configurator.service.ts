@@ -6,20 +6,17 @@ export interface HandlerMappings {
   actionMappings: { input: any[], output: any[] };
 }
 
-/*interface Status {
-  isOpen: boolean;
-  triggers: any[];
-  flowMetadata: FlowMetadata;
-  triggerSchema: any[];
-  triggerToConfigure: string;
-}*/
+interface TriggerDetail {
+  handler: HandlerMappings;
+  trigger: any;
+  triggerSchema: any;
+}
 
 export interface ModalStatus {
   isOpen: boolean;
-  handler: HandlerMappings;
-  trigger: any;
+  triggers: TriggerDetail[];
   flowMetadata: FlowMetadata;
-  triggerSchema: any;
+  selectedTrigger: string;
 }
 
 interface SaveData {
@@ -41,11 +38,12 @@ export class ConfiguratorService {
   triggerConfigurationStatus$ = new Subject<ConfigurationStatus>();
 
   open(trigger: any, flowMetadata: FlowMetadata, handler: HandlerMappings, triggerSchema: any) {
-    this.modalStatus$.next({ isOpen: true, trigger, handler, flowMetadata, triggerSchema });
+    const triggerToConfigure = Object.assign({}, {trigger, handler, triggerSchema});
+    this.modalStatus$.next({ isOpen: true, triggers: [triggerToConfigure], flowMetadata, selectedTrigger: trigger.id });
   }
 
   close() {
-    this.modalStatus$.next({ isOpen: false, trigger: null, handler: null, flowMetadata: null, triggerSchema: null });
+    this.modalStatus$.next({ isOpen: false, triggers: [], flowMetadata: null, selectedTrigger: null });
   }
 
   save(trigger: any, mappings: HandlerMappings) {

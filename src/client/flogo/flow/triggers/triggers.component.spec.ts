@@ -23,6 +23,7 @@ import {FlogoProfileServiceMock} from '@flogo/core/services/profile.service.mock
 import { UIModelConverterService } from '@flogo/flow/core/ui-model-converter.service';
 import { InstallerModule } from '@flogo/flow/shared/installer';
 import {TriggerBlockComponent} from './trigger-block';
+import {ConfiguratorModule as TriggersConfiguratorModule} from '@flogo/flow/triggers/configurator';
 
 @Component({
   selector: 'flogo-container',
@@ -171,6 +172,7 @@ describe('Component: FlogoFlowTriggersPanelComponent', () => {
         FakeRootLanguageModule,
         InstallerModule,
         BsModalModule,
+        TriggersConfiguratorModule
       ],
       declarations: [
         FlogoFlowTriggersPanelComponent,

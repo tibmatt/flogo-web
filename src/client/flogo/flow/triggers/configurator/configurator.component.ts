@@ -63,9 +63,8 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   currentModalStatus: ModalStatus = {
     isOpen: false,
     flowMetadata: null,
-    triggerSchema: null,
-    handler: null,
-    trigger: null
+    triggers: [],
+    selectedTrigger: null
   };
 
   selectedTriggerDetails: TriggerStatus;
@@ -128,15 +127,15 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   initConfigurableTriggers() {
-    // TODO: Need to convert this to create a map for an array of triggers and trigger schemas
-    this.configurableTriggers.set(this.currentModalStatus.trigger.id, {
-      triggerSchema: this.currentModalStatus.triggerSchema,
-      handler: this.currentModalStatus.handler,
-      trigger: this.currentModalStatus.trigger,
-      isValid: true,
-      isDirty: false
+    this.currentModalStatus.triggers.forEach((triggerDetail) => {
+      this.configurableTriggers.set(triggerDetail.trigger.id, {
+        triggerSchema: triggerDetail.triggerSchema,
+        handler: triggerDetail.handler,
+        trigger: triggerDetail.trigger,
+        isValid: true,
+        isDirty: false
+      });
     });
-
-    this.selectedTriggerDetails = this.configurableTriggers.get(this.currentModalStatus.trigger.id);
+    this.selectedTriggerDetails = this.configurableTriggers.get(this.currentModalStatus.selectedTrigger);
   }
 }

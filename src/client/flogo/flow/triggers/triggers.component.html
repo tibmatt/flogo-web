@@ -10,7 +10,6 @@
   </svg>
   <flogo-flow-triggers-trigger-block *ngFor="let trigger of triggersList"
                                      [trigger]="trigger"
-                                     [keepSelected]="isMapperWindowOpen"
                                      [isDevice]="isDeviceType"
                                      (menuItemSelected)="handleMenuSelection($event)"></flogo-flow-triggers-trigger-block>
   <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
