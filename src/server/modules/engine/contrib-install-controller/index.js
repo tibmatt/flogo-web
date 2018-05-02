@@ -36,22 +36,21 @@ export class ContribInstallController {
    * @returns results.fail {array} array of installation failed contribution urls
    */
   install(url) {
-    let results;
     return this.installContributions(url)
       .then(installResults => {
-        results = installResults;
-        if (results.fail.length === 0) {
+        if (installResults.fail.length === 0) {
           return this.buildEngine()
             .then(() => {
               logger.debug(`Restarting the engine upon successful '${url}' installation.`);
               return this.restartEngineAfterBuild();
             })
-            .then(() => this.updateContribsDB());
+            .then(() => this.updateContribsDB())
+            .then(() => this.removeBackup())
+            .then(() => installResults);
         } else {
-          return results;
+          throw new Error('Cannot install a contribution outside github domain');
         }
-      }).then(() => this.removeBackup())
-      .then(() => results)
+      })
       .catch(err => {
         logger.error(`[error] Encountered error while installing the '${url}' to the engine: `);
         logger.error(err);
