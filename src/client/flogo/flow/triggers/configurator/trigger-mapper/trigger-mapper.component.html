@@ -6,8 +6,7 @@
         [class.--active]="tabData[1].isSelected"
         (click)="setCurrentView(tabData[0])">{{ tabData[1].labelKey | translate }}</li>
   </ul>
-  <flogo-mapper *ngIf="currentStatus?.isOpen"
-                class="mapper content__mapper"
+  <flogo-mapper class="mapper content__mapper"
                 inputsSearchPlaceHolder="{{ currentViewStatus?.inputsLabelKey | translate }}"
                 outputsSearchPlaceHolder="{{ currentViewStatus?.outputsLabelKey | translate }}"
                 [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>

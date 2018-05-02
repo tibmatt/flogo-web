@@ -40,8 +40,8 @@ export class TriggerMapperComponent implements OnChanges {
   };
 
   defaultTabsInfo: { name: string, labelKey: string }[] = [
-    {name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-MAPPER:FLOW-INPUTS'},
-    {name: TRIGGER_TABS.MAP_FLOW_OUTPUT, labelKey: 'TRIGGER-MAPPER:FLOW-OUTPUTS'}
+    {name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-INPUTS'},
+    {name: TRIGGER_TABS.MAP_FLOW_OUTPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-OUTPUTS'}
   ];
 
   constructor(private triggerConfiguratorService: ConfiguratorService) {
@@ -82,11 +82,6 @@ export class TriggerMapperComponent implements OnChanges {
   }
 
   updateCurrentTriggerStatus() {
-    // If we do not find an invalid viewStates means the trigger tab is valid
-    /*const isTriggerChangesValid = !(Object.values(this.VIEWS).find(viewState => {
-      return !this.viewStates[viewState.name].valid;
-    }));*/
-    const isTriggerChangesValid = false;
     const changedMappings = {
       actionMappings: {
         input: MapperTranslator.translateMappingsOut(this.editingMappings.actionInput),
@@ -95,7 +90,7 @@ export class TriggerMapperComponent implements OnChanges {
     };
     this.triggerConfiguratorService.updateTriggerStatus({
       triggerId: this.triggerId,
-      isValid: isTriggerChangesValid,
+      isValid: this.tabs.areValid(), // If we do not find an invalid viewStates means the trigger tab is valid
       changedMappings
     });
   }

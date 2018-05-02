@@ -25,9 +25,9 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   menuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<TriggerMenuSelectionEvent>();
 
   isShowingMenu = false;
+  isShowingDetails = false;
   MENU_OPTIONS: typeof TRIGGER_MENU_OPERATION = TRIGGER_MENU_OPERATION;
 
-  private isShowingDetails = false;
   private nativeElement: any;
   private ngDestroy$ = SingleEmissionSubject.create();
   private urlCheckRegEx: RegExp;
