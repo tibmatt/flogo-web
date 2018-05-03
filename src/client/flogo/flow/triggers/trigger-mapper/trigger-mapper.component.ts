@@ -7,17 +7,13 @@ import 'rxjs/add/operator/takeUntil';
 import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../../shared/mapper';
 import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
-import { VIEWS, ViewInfo } from './views-info.model';
 import { TriggerMapperService, Status } from './trigger-mapper.service';
+import {Tabs} from '@flogo/flow/shared/tabs/models/tabs.model';
 
-interface ViewState extends ViewInfo {
-  enabled: boolean;
-  valid: boolean;
-}
-
-interface ViewsStates {
-  [name: string]: ViewState;
-}
+const TRIGGER_TABS = {
+  MAP_FLOW_INPUT: 'mapFlowInput',
+  MAP_FLOW_OUTPUT: 'mapFlowOutput'
+};
 
 @Component({
   selector: 'flogo-flow-trigger-mapper',
@@ -28,45 +24,43 @@ interface ViewsStates {
   templateUrl: 'trigger-mapper.component.html'
 })
 export class TriggerMapperComponent implements OnInit, OnDestroy {
-  // allow access to the constants from the template
-  VIEWS = VIEWS;
+
   @ViewChild(BsModalComponent) modal: BsModalComponent;
 
   mapperContext: any;
   mappingValidationFn: MappingsValidatorFn;
-  currentStatus: Status = { isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null };
+  currentStatus: Status = {isOpen: false, flowMetadata: null, triggerSchema: null, handler: null, trigger: null};
 
   currentViewName: string;
-  viewStates: ViewsStates = {};
-
+  tabs: Tabs;
   private editingMappings: {
     actionInput: { [key: string]: IMapExpression };
     actionOutput: { [key: string]: IMapExpression };
   };
+
+  defaultTabsInfo: { name: string, labelKey: string }[] = [
+    {name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-MAPPER:FLOW-INPUTS'},
+    {name: TRIGGER_TABS.MAP_FLOW_OUTPUT, labelKey: 'TRIGGER-MAPPER:FLOW-OUTPUTS'}
+  ];
+
   private ngDestroy = SingleEmissionSubject.create();
 
-  static makeViewState(fromViewInfo: ViewInfo, state: { valid: boolean, enabled: boolean }): ViewState {
-    const { name, inputsLabelKey, outputsLabelKey } = fromViewInfo;
-    return {
-      name,
-      inputsLabelKey,
-      outputsLabelKey,
-      enabled: state.enabled,
-      valid: state.valid,
-    };
-  }
-
   constructor(private triggerMapperService: TriggerMapperService) {
+
+
+
   }
 
   ngOnInit() {
     this.triggerMapperService.status$
       .takeUntil(this.ngDestroy)
       .subscribe(nextStatus => this.onNextStatus(nextStatus));
+    this.resetState();
   }
 
   ngOnDestroy() {
     this.ngDestroy.emitAndComplete();
+
   }
 
   onCloseOrDismiss() {
@@ -76,14 +70,15 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   onMappingsChange(change: IMapping) {
     const mappings = _.cloneDeep(change).mappings;
     const currentView = this.currentViewStatus;
-    if (currentView.name === this.VIEWS.INPUTS.name) {
+    if (currentView === this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT)) {
       this.editingMappings.actionInput = mappings;
-    } else if (currentView.name === this.VIEWS.REPLY.name) {
+    } else if (currentView === this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT)) {
       this.editingMappings.actionOutput = mappings;
     } else {
       return;
     }
-    currentView.valid = this.mappingValidationFn({ mappings });
+    currentView.isValid = this.mappingValidationFn({mappings});
+    currentView.isDirty = true;
   }
 
   onSave() {
@@ -96,31 +91,31 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   }
 
   setCurrentView(viewName: string) {
+    if (this.tabs.get(viewName).enabled) {
+      this.tabs.markSelected(viewName);
+    }
     this.currentViewName = viewName;
-    if (viewName === VIEWS.INPUTS.name) {
+    if (viewName === TRIGGER_TABS.MAP_FLOW_INPUT) {
       this.setupInputsContext();
-    } else if (viewName === VIEWS.REPLY.name) {
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).inputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-INPUTS';
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).outputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-OUTPUT';
+    } else if (viewName === TRIGGER_TABS.MAP_FLOW_OUTPUT) {
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).inputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES';
+      this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).outputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS';
       this.setupReplyContext();
     }
   }
 
-  get inputsView(): ViewState {
-    return this.viewStates[this.VIEWS.INPUTS.name];
-  }
-
-  get replyView(): ViewState {
-    return this.viewStates[this.VIEWS.REPLY.name];
-  }
 
   get currentViewStatus() {
-    return this.viewStates[this.currentViewName];
+    return this.tabs.get(this.currentViewName);
   }
 
   private onNextStatus(nextStatus: Status) {
     this.currentStatus = Object.assign({}, nextStatus);
     if (nextStatus.isOpen) {
-      const { actionMappings } = nextStatus.handler;
-      const { input, output } = actionMappings;
+      const {actionMappings} = nextStatus.handler;
+      const {input, output} = actionMappings;
       this.editingMappings = {
         actionInput: MapperTranslator.translateMappingsIn(input),
         actionOutput: MapperTranslator.translateMappingsIn(output)
@@ -144,6 +139,10 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     }
   }
 
+  trackTabsByFn(index, [tabName, tab]) {
+    return tabName;
+  }
+
   private setupViews(triggerSchema: any, flowMetadata: FlowMetadata) {
     let hasTriggerOutputs = false;
     let hasTriggerReply = false;
@@ -159,29 +158,20 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       hasFlowInputs = flowMetadata.input && flowMetadata.input.length > 0;
       hasFlowOutputs = flowMetadata.output && flowMetadata.output.length > 0;
     }
-
-    this.viewStates = {
-      [this.VIEWS.INPUTS.name]: TriggerMapperComponent.makeViewState(
-        this.VIEWS.INPUTS,
-        { enabled: hasTriggerOutputs && hasFlowInputs, valid: true }
-        ),
-      [this.VIEWS.REPLY.name]: TriggerMapperComponent.makeViewState(
-        this.VIEWS.REPLY,
-        { enabled: hasTriggerReply && hasFlowOutputs, valid: true }
-      ),
-    };
-
-    let viewType: string = this.VIEWS.INPUTS.name;
-    if (this.inputsView.enabled) {
-      viewType = this.VIEWS.INPUTS.name;
-    } else if (this.replyView.enabled) {
-      viewType = this.VIEWS.REPLY.name;
+    this.resetState();
+    this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).enabled = hasTriggerOutputs && hasFlowInputs;
+    this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).enabled = hasTriggerReply && hasFlowOutputs;
+    let viewType: string = TRIGGER_TABS.MAP_FLOW_INPUT;
+    if (this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isSelected || this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).enabled ) {
+      viewType = TRIGGER_TABS.MAP_FLOW_INPUT;
+    } else if (this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).isSelected || this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).enabled) {
+      viewType = TRIGGER_TABS.MAP_FLOW_OUTPUT;
     }
     this.setCurrentView(viewType);
   }
 
   private setupInputsContext() {
-    const flowMetadata = this.currentStatus.flowMetadata || { input: [] };
+    const flowMetadata = this.currentStatus.flowMetadata || {input: []};
     const flowInputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.input);
     const triggerOutputSchema = MapperTranslator.attributesToObjectDescriptor(this.currentStatus.triggerSchema.outputs || []);
     const mappings = _.cloneDeep(this.editingMappings.actionInput);
@@ -192,7 +182,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
 
   private setupReplyContext() {
     const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor(this.currentStatus.triggerSchema.reply || []);
-    const flowMetadata = this.currentStatus.flowMetadata || { output: [] };
+    const flowMetadata = this.currentStatus.flowMetadata || {output: []};
     const flowOutputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.output);
     const mappings = _.cloneDeep(this.editingMappings.actionOutput);
 
@@ -200,4 +190,10 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     this.mappingValidationFn = MapperTranslator.makeValidator();
   }
 
+  resetState() {
+    if (this.tabs) {
+      this.tabs.clear();
+    }
+    this.tabs = Tabs.create(this.defaultTabsInfo);
+  }
 }
