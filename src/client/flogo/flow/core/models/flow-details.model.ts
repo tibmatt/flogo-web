@@ -114,7 +114,7 @@ export class FlogoFlowDetails {
     });
   }
 
-  updateItem(handlerType: HandlerType, { item }: { item: {id: string} & Partial<Item> }) {
+  updateItem(handlerType: HandlerType, { item, node }: { item: {id: string} & Partial<Item>, node?: Partial<GraphNode> }) {
     const state = this.currentState;
     const itemsDictionaryName = getItemsDictionaryName(handlerType);
     const items = state[itemsDictionaryName];
@@ -122,13 +122,16 @@ export class FlogoFlowDetails {
 
     const graphName = getGraphName(handlerType);
     const graph = state[graphName];
-    const node = graph.nodes[newItemState.id];
+    node = node || {};
+    const currentNode = graph.nodes[newItemState.id];
     const newNodeState: GraphNode = {
+      ...currentNode,
       ...node,
       status: {
-        ...node.status,
+        ...currentNode.status,
+        ...(node.status || {}),
         iterable: isIterableTask(newItemState),
-      }
+      },
     };
     this.commitStateUpdate({
       [itemsDictionaryName]: {

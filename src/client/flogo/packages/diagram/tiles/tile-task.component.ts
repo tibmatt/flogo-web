@@ -39,4 +39,13 @@ export class TileTaskComponent extends AbstractTileTaskComponent {
     return false;
   }
 
+  get errorMsg() {
+    const status = this.tile.task.status;
+    if (status && status.executionErrored) {
+      const [error] = status.executionErrored;
+      return error;
+    }
+    return null;
+  }
+
 }

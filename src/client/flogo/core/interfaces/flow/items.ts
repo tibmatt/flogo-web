@@ -7,16 +7,6 @@ export type Item = ItemTask | ItemBranch;
 export interface BaseItem {
   id: string;
   type: FLOGO_TASK_TYPE;
-  // todo: remove
-  __props?: {
-    [key: string]: any;
-    errors?: { msg: string; }[];
-    warnings?: { msg: string; }[];
-  }; // internal only properties in design time
-  // todo: remove
-  __status?: {
-    [key: string]: boolean;
-  }; // internal only properties in design time
 }
 
 export interface BaseItemSettings {

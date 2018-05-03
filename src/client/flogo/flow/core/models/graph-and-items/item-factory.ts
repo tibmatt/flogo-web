@@ -10,10 +10,6 @@ export class ItemFactory {
       description: '',
       settings: {},
       ref: '',
-      __props: {
-        errors: [],
-      },
-      __status: {}
     };
     return Object.assign({}, defaults, pick(installed, ['name', 'description', 'ref']));
   }

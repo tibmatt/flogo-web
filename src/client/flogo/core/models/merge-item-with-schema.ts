@@ -31,7 +31,7 @@ export function mergeItemWithSchema(item: ItemTask, schema: PartialActivitySchem
     },
     inputMappings: item.inputMappings,
     settings: item.settings,
-    __props: item.__props,
-    __status: item.__status
+    __props: {},
+    __status: {},
   };
 }

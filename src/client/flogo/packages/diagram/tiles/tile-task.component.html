@@ -1,5 +1,5 @@
 <div class="badges">
-  <i *ngIf="tile.task?.status?.executionErrored" class="badge badge--error flogo-icon-info" [title]="tile.task.status.executionErrored"></i>
+  <i *ngIf="tile.task?.status?.executionErrored" class="badge badge--error flogo-icon-info" [title]="errorMsg"></i>
   <i *ngIf="tile.task?.status?.iterable" class="badge badge--iterator flogo-icon-iterator"></i>
 </div>
 <div class="content" (click)="onSelect()" [attr.data-diagram-task-id]="tile.task.id">

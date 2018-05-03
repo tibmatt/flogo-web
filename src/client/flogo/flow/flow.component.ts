@@ -704,20 +704,21 @@ export class FlowComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let changes: {id: string} & Partial<Item>;
+    const changes: { item: {id: string} & Partial<Item>, node: Partial<GraphNode> } = <any>{};
     if (task.type === FLOGO_TASK_TYPE.TASK) {
       const changedInputs = data.inputs || {};
       // set/unset the warnings in the tile
-      changes = {
+      changes.item = {
         id: task.id,
-        __props: {
-          ...task.__props,
-          warnings: data.warnings,
-        },
         input: { ...changedInputs  }
       };
+      changes.node = {
+        status: {
+          invalid: !_.isEmpty(data.warnings),
+        }
+      };
     } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
-      changes = {
+      changes.item = {
         id: task.id,
         condition: data.condition,
       };
@@ -729,7 +730,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.flowDetails.updateItem(
       this.handlerTypeFromString(handlerId),
-      { item: changes },
+      changes,
     );
   }
 
@@ -791,11 +792,13 @@ export class FlowComponent implements OnInit, OnDestroy {
         {
           item: {
             id: task.id,
-            __props: {
-              ...task.__props,
-              warnings: data.warnings,
-            }
           },
+          node: {
+            id: task.id,
+            status: {
+              invalid: !_.isEmpty(data.warnings)
+            }
+          }
         }
       );
     }
@@ -1137,7 +1140,7 @@ export class FlowComponent implements OnInit, OnDestroy {
           runTaskIds.push(taskID);
         }
         const reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
-        const reAttrErrMsg = new RegExp(`^\{Error.message}`, 'g');
+        const reAttrErrMsg = new RegExp(`^_E.message`, 'g');
 
         const taskInfo = _.reduce(_.get(step, 'flow.attributes', []),
           (currentTaskInfo: any, attr: any) => {
