@@ -1,6 +1,3 @@
-// Add new tabs here, keep TabNames and defaultTabsInfo in sync
-// after upgrading to typescript 2.1 this can be simplified to keyof TabNames
-
 export interface Tab {
   labelKey: string;
   isSelected: boolean;
