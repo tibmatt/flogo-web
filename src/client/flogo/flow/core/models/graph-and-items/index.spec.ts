@@ -1,11 +1,8 @@
-import { Dictionary, GraphNode, NodeType } from '@flogo/core';
+import { ContribSchema, Dictionary, FLOGO_TASK_TYPE, FlowGraph, GraphNode, Item, NodeType } from '@flogo/core';
 import { ObjectSlice } from '@flogo/core/testing';
-import { makeGraph } from './graph-and-items/graph-creator';
+import { makeGraphAndItems } from './index';
 
-import arrayContaining = jasmine.arrayContaining;
-import objectContaining = jasmine.objectContaining;
-
-describe('flow.core.models.graphCreator', function () {
+describe('flow.core.models.graph-and-items', function () {
   const tasks = [
     {
       'id': 'log_1',
@@ -251,17 +248,163 @@ describe('flow.core.models.graphCreator', function () {
     }
   ];
 
-  it('should create a graph from the flow info', function () {
-    const graph = makeGraph(tasks, links, {});
-    expect(graph.rootId).toEqual('log_1');
-    expect(graph.nodes.awsiot_1.children.length).toEqual(3);
-    expect(graph.nodes.reply_1.children.length).toEqual(1);
+  const mockSchemas = [
+    { ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log' },
+    { ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/reply' },
+    { ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot' },
+  ];
 
+  let graph: FlowGraph;
+  let items: Dictionary<Item>;
+
+  beforeAll(function() {
+    let branchId = 1;
+    const graphAndItems = makeGraphAndItems(tasks, links, <ContribSchema[]>mockSchemas, () => `dummy_branch_${branchId++}`);
+    graph = graphAndItems.graph;
+    items = graphAndItems.items;
+  });
+
+  it('should correctly form the items from the flow info', function () {
+    expect(items).toEqual({
+      log_1: {
+        name: 'Start processing',
+        description: 'Simple Log Activity',
+        settings: {},
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        id: 'log_1',
+        inputMappings: [],
+        type: FLOGO_TASK_TYPE.TASK,
+        'return': false,
+        input: {
+          message: 'Received Rest request and starting trigger',
+          flowInfo: 'true',
+          addToFlow: 'true'
+        }
+      },
+      awsiot_1: {
+        name: 'Update',
+        description: 'Simple AWS IoT',
+        settings: {},
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/awsiot',
+        id: 'awsiot_1',
+        inputMappings: [],
+        type: FLOGO_TASK_TYPE.TASK,
+        'return': false,
+        input: {
+          thingName: 'flogo_test',
+          awsEndpoint: 'a1njsonnibpa75.iot.us-east-1.amazonaws.com',
+          desired: {
+            'switch': 'on'
+          },
+          reported: {
+            'switch': 'off'
+          }
+        }
+      },
+      reply_1: {
+        name: 'Done',
+        description: 'Simple Reply Activity',
+        settings: {},
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/reply',
+        id: 'reply_1',
+        inputMappings: [],
+        type: FLOGO_TASK_TYPE.TASK,
+        'return': false,
+        input: {
+          code: '200',
+          data: 'AWS IOT update successfully'
+        }
+      },
+      log_6: {
+        name: 'Log Message (3)',
+        description: 'Simple Log Activity',
+        settings: {},
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        id: 'log_6',
+        inputMappings: [],
+        type: FLOGO_TASK_TYPE.TASK,
+        'return': false,
+        input: {
+          message: '',
+          flowInfo: 'false',
+          addToFlow: 'false'
+        }
+      },
+      log_7: {
+        name: 'Log Message (4)',
+        description: 'Simple Log Activity',
+        settings: {},
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        id: 'log_7',
+        inputMappings: [],
+        type: FLOGO_TASK_TYPE.TASK,
+        'return': false,
+        input: {
+          message: '',
+          flowInfo: 'false',
+          addToFlow: 'false'
+        }
+      },
+      log_4: {
+        name: 'Log Message',
+        description: 'Simple Log Activity',
+        settings: {},
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        id: 'log_4',
+        inputMappings: [],
+        type: 1,
+        'return': false,
+        input: {
+          message: '',
+          flowInfo: 'false',
+          addToFlow: 'false'
+        }
+      },
+      log_5: {
+        name: 'Log Message (2)',
+        description: 'Simple Log Activity',
+        settings: {},
+        ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+        id: 'log_5',
+        inputMappings: [],
+        type: FLOGO_TASK_TYPE.TASK,
+        'return': false,
+        input: {
+          message: '',
+          flowInfo: 'false',
+          addToFlow: 'false'
+        }
+      },
+      dummy_branch_1: {
+        id: 'dummy_branch_1',
+        type: FLOGO_TASK_TYPE.TASK_BRANCH,
+        condition: 'true'
+      },
+      dummy_branch_2: {
+        id: 'dummy_branch_2',
+        type: FLOGO_TASK_TYPE.TASK_BRANCH,
+        condition: 'true'
+      },
+      dummy_branch_3: {
+        id: 'dummy_branch_3',
+        type: FLOGO_TASK_TYPE.TASK_BRANCH,
+        condition: 'true'
+      },
+      dummy_branch_4: {
+        id: 'dummy_branch_4',
+        type: FLOGO_TASK_TYPE.TASK_BRANCH,
+        condition: 'true'
+      }
+    });
+  });
+
+  it('should correctly form a flow graph from the flow info', function () {
     type NodeSlice = ObjectSlice<GraphNode>;
     type PartialNodeDict = Dictionary<NodeSlice | jasmine.ObjectContaining<NodeSlice>>;
 
-    expect<PartialNodeDict>(graph.nodes).toEqual(objectContaining<PartialNodeDict>({
-      log_1: objectContaining({
+    expect(graph.rootId).toEqual('log_1');
+    expect<PartialNodeDict>(graph.nodes).toEqual({
+      log_1: {
         title: 'Start processing',
         description: 'Simple Log Activity',
         type: NodeType.Task,
@@ -282,8 +425,8 @@ describe('flow.core.models.graphCreator', function () {
         },
         children: ['awsiot_1'],
         parents: []
-      }),
-      awsiot_1: objectContaining({
+      },
+      awsiot_1: {
         title: 'Update',
         description: 'Simple AWS IoT',
         type: NodeType.Task,
@@ -302,10 +445,10 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         },
-        children: <string[]><any> arrayContaining(['reply_1']),
+        children: ['reply_1', 'dummy_branch_3', 'dummy_branch_4'],
         parents: ['log_1']
-      }),
-      reply_1: objectContaining({
+      },
+      reply_1: {
         title: 'Done',
         description: 'Simple Reply Activity',
         type: NodeType.Task,
@@ -324,13 +467,16 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         },
-        parents: ['awsiot_1']
-      }),
-      log_6: objectContaining({
+        parents: ['awsiot_1'],
+        children: ['dummy_branch_1'],
+      },
+      log_6: {
         title: 'Log Message (3)',
         description: 'Simple Log Activity',
         type: NodeType.Task,
         id: 'log_6',
+        parents: ['dummy_branch_1'],
+        children: ['dummy_branch_2'],
         features: {
           selectable: true,
           canHaveChildren: true,
@@ -345,12 +491,14 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         },
-      }),
-      log_7: objectContaining({
+      },
+      log_7: {
         title: 'Log Message (4)',
         description: 'Simple Log Activity',
         type: NodeType.Task,
         id: 'log_7',
+        parents: [ 'dummy_branch_2' ],
+        children: [],
         features: {
           selectable: true,
           canHaveChildren: true,
@@ -365,13 +513,14 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         },
-        children: [],
-      }),
-      log_4: objectContaining({
+      },
+      log_4: {
         title: 'Log Message',
         description: 'Simple Log Activity',
         type: NodeType.Task,
         id: 'log_4',
+        parents: ['dummy_branch_3'],
+        children: [],
         features: {
           selectable: true,
           canHaveChildren: true,
@@ -386,13 +535,14 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         },
-        children: [],
-      }),
-      log_5: objectContaining({
+      },
+      log_5: {
         title: 'Log Message (2)',
         description: 'Simple Log Activity',
         type: NodeType.Task,
         id: 'log_5',
+        parents: ['dummy_branch_4'],
+        children: [],
         features: {
           selectable: true,
           canHaveChildren: true,
@@ -407,13 +557,9 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         },
-        children: [],
-      }),
-    }));
-
-    const branchNodes = Object.values(graph.nodes).filter(node => node.type === NodeType.Branch);
-    expect<NodeSlice[]>(branchNodes).toEqual(<any>jasmine.arrayWithExactContents([
-      objectContaining({
+      },
+      dummy_branch_1: {
+        id: 'dummy_branch_1',
         type: NodeType.Branch,
         parents: ['reply_1'],
         children: ['log_6'],
@@ -431,8 +577,9 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         }
-      }),
-      objectContaining({
+      },
+      dummy_branch_2: {
+        id: 'dummy_branch_2',
         type: NodeType.Branch,
         parents: ['log_6'],
         children: ['log_7'],
@@ -450,8 +597,9 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         }
-      }),
-      objectContaining({
+      },
+      dummy_branch_3: {
+        id: 'dummy_branch_3',
         type: NodeType.Branch,
         parents: ['awsiot_1'],
         children: ['log_4'],
@@ -469,8 +617,9 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         }
-      }),
-      objectContaining({
+      },
+      dummy_branch_4: {
+        id: 'dummy_branch_4',
         type: NodeType.Branch,
         parents: ['awsiot_1'],
         children: ['log_5'],
@@ -488,7 +637,7 @@ describe('flow.core.models.graphCreator', function () {
           executionErrored: null,
           iterable: false
         }
-      })
-    ]));
+      }
+    });
   });
 });

@@ -643,9 +643,16 @@ export class FlowComponent implements OnInit, OnDestroy {
       return;
     }
     if (data.proper === 'name') {
-      task[data.proper] = this.uniqueTaskName(data.content);
+      const uniqueName = this.uniqueTaskName(data.content);
+      this.flowDetails.updateItem(this.handlerTypeFromString(data.id), {
+        item: { id: data.taskId, name: uniqueName },
+        node: { id: data.taskId, title: uniqueName },
+      });
     } else {
-      task[data.proper] = data.content;
+      this.flowDetails.updateItem(this.handlerTypeFromString(data.id), {
+        item: { id: data.taskId, [data.proper]: data.content },
+        node: { id: data.taskId, [data.proper]: data.content },
+      });
     }
 
     const updateObject = {};

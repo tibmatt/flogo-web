@@ -54,7 +54,7 @@ export class FlogoFlowService {
             this.currentFlowDetails.initState(convertedFlow);
             this.previousSavedFlow = flogoFlowToJSON(convertedFlow);
             return {
-              flow,
+              flow: convertedFlow,
               triggers,
             };
           })

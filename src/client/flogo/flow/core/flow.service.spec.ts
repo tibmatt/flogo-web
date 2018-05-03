@@ -1,10 +1,7 @@
 import { FlogoFlowService } from './flow.service';
 import { UIModelConverterService } from './ui-model-converter.service';
-import { mockResultantUIFlow } from './ui-model-flow.mock';
 import { resultantFlowModelForCanvas } from './flow-for-canvas.mock';
 import { MockAPIFlowsService } from '../../core/services/restapi/v2/flows-api.service.mock';
-import { MockBackend } from '@angular/http/testing';
-import { BaseRequestOptions, Http } from '@angular/http';
 import { HttpUtilsService } from '../../core/services/restapi/http-utils.service';
 import { FlowsService } from '../../core/services/flows.service';
 import Spy = jasmine.Spy;
@@ -26,16 +23,19 @@ describe('Service: Flow', function (this: {
     this.commonFlowsService = jasmine.createSpyObj<FlowsService>('commonFlowsService', [
       'deleteFlowWithTrigger'
     ]);
-    this.mockRESTAPI = new MockAPIFlowsService(new Http(new MockBackend(), new BaseRequestOptions()), new HttpUtilsService());
-    this.service = new FlogoFlowService(this.mockRESTAPI, this.modelConverter, this.commonFlowsService);
+    this.mockRESTAPI = new MockAPIFlowsService();
+    this.service = new FlogoFlowService(<any>this.mockRESTAPI, this.modelConverter, this.commonFlowsService);
   });
 
   it('Should get the Flow Details and convert it to work with flow component', done => {
     const spyConverterService = <Spy>this.modelConverter.getWebFlowModel;
-    spyConverterService.and.returnValue(Promise.resolve(_.cloneDeep(mockResultantUIFlow)));
+    spyConverterService.and.returnValue(Promise.resolve({ name: 'generated flow' }));
     this.service.loadFlow('dummy')
       .then((response) => {
-        expect(response).toEqual(resultantFlowModelForCanvas);
+        expect(response).toEqual({
+          flow: <any> { name: 'generated flow' },
+          triggers: resultantFlowModelForCanvas.triggers,
+        });
         done();
       });
   });

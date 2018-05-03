@@ -6,7 +6,6 @@ import {
   NodeType,
   Dictionary,
   flow as backendFlow,
-  ItemTask,
   ItemActivityTask
 } from '@flogo/core';
 import { isIterableTask, isSubflowTask } from '@flogo/shared/utils';
@@ -40,6 +39,8 @@ function makeTask(task: backendFlow.Task, item: Item): GraphNode {
   return makeNode({
     type: NodeType.Task,
     id: task.id,
+    title: task.name,
+    description: task.description,
     features: {
       selectable: true,
       deletable: true,
@@ -50,8 +51,6 @@ function makeTask(task: backendFlow.Task, item: Item): GraphNode {
     status: {
       iterable: isIterableTask(item),
     },
-    title: task.name,
-    description: task.description,
   });
 }
 
@@ -66,8 +65,6 @@ export function makeBranchNode(id: string, link: backendFlow.Link): GraphNode {
 
 export function makeNode(from: {id: string, type: NodeType} & Partial<GraphNode>): GraphNode {
   return {
-    title: from.id || '',
-    description: '',
     ...from,
     children: from.children ? [...from.children] : [],
     parents: from.parents ? [...from.parents] : [],

@@ -61,8 +61,7 @@ describe('Service: UI Model Converter', function (this: {
     });
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow) => {
-        const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
-        expect(flowWithoutId).toEqual(mockResultantUIFlow);
+        expect(flow).toEqual(mockResultantUIFlow);
         done();
       });
   });
@@ -82,8 +81,7 @@ describe('Service: UI Model Converter', function (this: {
     thisTestData.data.flow.errorHandlerTask = mockErrorHandler.errorHandlerTask;
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow) => {
-        const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
-        expect(flowWithoutId).toEqual(mockResultantUIFlowWithError);
+        expect(flow).toEqual(mockResultantUIFlowWithError);
         done();
       });
   });
@@ -104,45 +102,9 @@ describe('Service: UI Model Converter', function (this: {
     thisTestData.data.flow.rootTask.tasks[0].inputMappings = mockTransformationData.inputMappings;
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
       .then((flow) => {
-        const flowWithoutId = formFlowWithoutId(_.cloneDeep(flow));
-        expect(flowWithoutId).toEqual(mockResultantUIFlowWithTransformations);
+        expect(flow).toEqual(mockResultantUIFlowWithTransformations);
         done();
       });
   });
 
-  function formFlowWithoutId(flow) {
-    let dummyIndex = 0;
-    const noIdFlow: any = Object.assign({}, _.pick(flow, ['name', 'description', 'appId', 'app', 'metadata']), {
-      paths: {
-        root: {},
-        nodes: {},
-      },
-      items: {},
-    });
-    noIdFlow.paths.root.is = 'some_id_' + dummyIndex++;
-    const allNodes = flow.paths.nodes;
-    const allItems = flow.items;
-    /* tslint:disable:forin */
-    for (const nodeKey in allNodes) {
-      noIdFlow.paths.nodes['some_id_' + dummyIndex] = allNodes[nodeKey];
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].taskID = 'some_id_' + dummyIndex;
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].children = _.map(allNodes[nodeKey].children, (v, i) => 'some_id_' + i);
-      noIdFlow.paths.nodes['some_id_' + dummyIndex].parents = _.map(allNodes[nodeKey].parents, (v, i) => 'some_id_' + i);
-      dummyIndex += 1;
-    }
-    for (const itemKey in allItems) {
-      noIdFlow.items['some_id_' + dummyIndex] = allItems[itemKey];
-      noIdFlow.items['some_id_' + dummyIndex].id = 'some_id_' + dummyIndex;
-      if (allItems[itemKey].nodeId) {
-        noIdFlow.items['some_id_' + dummyIndex].nodeId = 'some_id_' + dummyIndex;
-      }
-      dummyIndex += 1;
-    }
-    /* tslint:enable:forin */
-    if (flow.errorHandler) {
-      noIdFlow.errorHandler = formFlowWithoutId(flow.errorHandler);
-    }
-    return noIdFlow;
-  }
 });
