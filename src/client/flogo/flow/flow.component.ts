@@ -890,16 +890,10 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.observeRunProgress(runner)
       .then(() => {
-        const currentStep = this._getCurrentState(data.taskId);
-        const currentTask = _.assign({}, _.cloneDeep(this.flowState.mainItems[data.taskId]));
-        const context = this._getCurrentTaskContext(data.taskId);
-
-        this.openTaskDetail(currentTask, currentStep, context);
-
         if (_.isFunction(envelope.done)) {
           envelope.done();
         }
-
+        this.refreshCurrentSelectedTaskIfNeeded();
       })
       .catch(err => this.handleRunError(err));
 
@@ -1411,16 +1405,20 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
     flowUpdatePromise.then(() => this._runFromRoot())
       .then(() => {
-        const currentSelection = this.flowState.currentSelection;
-        if (!currentSelection || currentSelection.type !== DiagramSelectionType.Node) {
-          return;
-        }
-        const taskId = currentSelection.taskId;
-        const diagramId = this.getDiagramId(taskId);
-        if (diagramId) {
-          this._selectTaskFromDiagram(taskId);
-        }
+        this.refreshCurrentSelectedTaskIfNeeded();
       });
+  }
+
+  private refreshCurrentSelectedTaskIfNeeded() {
+    const currentSelection = this.flowState.currentSelection;
+    if (!currentSelection || currentSelection.type !== DiagramSelectionType.Node) {
+      return;
+    }
+    const taskId = currentSelection.taskId;
+    const diagramId = this.getDiagramId(taskId);
+    if (diagramId) {
+      this._selectTaskFromDiagram(taskId);
+    }
   }
 
   private getDiagramId(taskId: string): string {
