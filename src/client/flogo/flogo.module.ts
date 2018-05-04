@@ -20,7 +20,6 @@ import { ConfigModule as FlogoConfigModule } from '@flogo/config';
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';
 import { FlogoApplicationModule } from '@flogo/app';
-import { DiagramModule } from '@flogo/packages/diagram';
 
 @NgModule({
   imports: [
@@ -43,7 +42,6 @@ import { DiagramModule } from '@flogo/packages/diagram';
     FlowModule,
     FlogoConfigModule,
     FlogoApplicationModule,
-    DiagramModule,
     routing,
   ],
   declarations: [

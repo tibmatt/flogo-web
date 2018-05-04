@@ -11,7 +11,7 @@ import { diagramRowTracker } from './diagram-row-tracker';
 
 @Component({
   // temporal name until old diagram implementation is removed
-  selector: 'flogo-diagram-v2',
+  selector: 'flogo-diagram',
   templateUrl: './diagram.component.html',
   styleUrls: ['./diagram.component.less'],
   providers: [RowIndexService],

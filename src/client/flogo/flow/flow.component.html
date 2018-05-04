@@ -81,12 +81,12 @@
         </div>
 
         <div class="flogo-flows-diagram-container">
-          <flogo-diagram-v2
+          <flogo-diagram
             [diagramId]="handlerTypes.Main"
             [flow]="flowState?.mainGraph"
             [selection]="flowState?.currentSelection"
             (action)="onMainDiagramAction($event)">
-          </flogo-diagram-v2>
+          </flogo-diagram>
         </div>
       </div>
     </div>
@@ -117,12 +117,12 @@
             </g>
           </svg>
         </div>
-        <flogo-diagram-v2 class="error-panel__diagram"
-                          [diagramId]="handlerTypes.Error"
-                          [flow]="flowState?.errorGraph"
-                          [selection]="flowState?.currentSelection"
-                          (action)="onErrorDiagramAction($event)">
-        </flogo-diagram-v2>
+        <flogo-diagram class="error-panel__diagram"
+                       [diagramId]="handlerTypes.Error"
+                       [flow]="flowState?.errorGraph"
+                       [selection]="flowState?.currentSelection"
+                       (action)="onErrorDiagramAction($event)">
+        </flogo-diagram>
       </div>
     </flogo-flow-error-panel>
 
