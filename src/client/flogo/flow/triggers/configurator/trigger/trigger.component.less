@@ -1,0 +1,73 @@
+@import '../../../../../assets/_variables';
+
+.trigger {
+  cursor: pointer;
+  color: #1c4874;
+  width: 220px;
+  position: relative;
+  height: 40px;
+  margin-bottom: 8px;
+  background: @color-trigger-bg-color;
+
+  &:after {
+    display: block;
+    content: "";
+    position: absolute;
+    transform: rotate(45deg) skew(25deg, 25deg);
+    background: @color-trigger-bg-color;
+    height: 18px;
+    width: 18px;
+    right: -9px;
+    top: 10px;
+  }
+
+  &:hover {
+    background-color: @color-primary;
+    color: #FFFFFF;
+
+    &:after {
+      background-color: @color-primary;
+    }
+  }
+}
+
+.trigger--selected {
+  background-color: @color-primary;
+  color: #FFFFFF;
+
+  &:after {
+    background-color: @color-primary;
+  }
+}
+
+.trigger-content{
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-left: 10px;
+}
+
+.trigger-label {
+  margin-left: 10px;
+  width: 74%;
+}
+
+.trigger-name {
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.trigger-modified {
+  font-size: 16px;
+  top: -5px;
+}
+
+.flogo-icon-error {
+  width: 16px;
+  height: 16px;
+  background: url('/assets/svg/flogo.flows.diagram.icon.error.svg') no-repeat;
+  background-size: 100%;
+}

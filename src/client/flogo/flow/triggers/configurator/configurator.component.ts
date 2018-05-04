@@ -2,9 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import {ConfigurationStatus, HandlerMappings, ModalStatus} from '@flogo/flow/triggers/configurator/configurator.service';
-import {animate, group, state, style, transition, trigger} from '@angular/animations';
+// import {animate, group, state, style, transition, trigger} from '@angular/animations';
 
-interface TriggerStatus {
+export interface TriggerStatus {
   handler: any;
   trigger: any;
   triggerSchema: any;
@@ -19,26 +19,6 @@ interface TriggerStatus {
   styleUrls: [
     '../../../../assets/_mapper-modal.less',
     'configurator.component.less'
-  ],
-  animations: [
-    trigger('configurationPanel', [
-      transition('void => *', [
-        group([
-          style({position: 'fixed', width: '0%', top: '150px'}),
-          animate('350ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-        ])
-      ]),
-      transition('* => void', [
-        group([
-          style({position: 'fixed', bottom: 0, left: 0}),
-          animate('350ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({
-            width: '40%',
-            top: '150px',
-            overflow: 'hidden'
-          }))
-        ])
-      ])
-    ])
   ]
 })
 
@@ -53,6 +33,8 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
 
   selectedTriggerDetails: TriggerStatus;
   disableSave = true;
+
+  triggersList: TriggerStatus[] = [];
 
   configurableTriggers: Map<string, TriggerStatus> = new Map<string, TriggerStatus>();
 
@@ -77,6 +59,11 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     return !hasModifiedTriggerMapping || hasInvalidTriggerMappings;
   }
 
+  updateAllConfigurationsStates() {
+    this.disableSave = this.isSaveDisabled();
+    this.triggersList = Array.from(this.configurableTriggers.values());
+  }
+
   onUpdateTriggerConfiguration(nextStatus: ConfigurationStatus) {
     const modifiedTrigger = Object.assign({}, this.configurableTriggers.get(nextStatus.triggerId), {
       isValid: nextStatus.isValid,
@@ -84,7 +71,12 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     });
     modifiedTrigger.isDirty = !_.isEqual(modifiedTrigger.changedMappings.actionMappings, modifiedTrigger.handler.actionMappings);
     this.configurableTriggers.set(nextStatus.triggerId, modifiedTrigger);
-    this.disableSave = this.isSaveDisabled();
+    this.updateAllConfigurationsStates();
+  }
+
+  changeTriggerSelection(triggerId: string) {
+    this.currentModalStatus.selectedTrigger = triggerId;
+    this.selectedTriggerDetails = this.configurableTriggers.get(triggerId);
   }
 
   onNextStatus(nextStatus: ModalStatus) {
@@ -123,6 +115,6 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
       });
     });
     this.selectedTriggerDetails = this.configurableTriggers.get(this.currentModalStatus.selectedTrigger);
-    this.disableSave = this.isSaveDisabled();
+    this.updateAllConfigurationsStates();
   }
 }

@@ -1,0 +1,11 @@
+<div class="trigger" [class.trigger--selected]="selectedTrigger === triggerData?.trigger?.id"
+     [title]="triggerData?.trigger?.name" (click)="onTriggerSelect()">
+  <div class="trigger-content">
+    <i class="flogo-icon-trigger"></i>
+    <div class="trigger-label">
+      <span class="trigger-name">{{triggerData?.trigger?.name}}</span>
+      <sup class="trigger-modified" *ngIf="triggerData?.isDirty">*</sup>
+    </div>
+    <i class="flogo-icon-error" *ngIf="!triggerData?.isValid"></i>
+  </div>
+</div>

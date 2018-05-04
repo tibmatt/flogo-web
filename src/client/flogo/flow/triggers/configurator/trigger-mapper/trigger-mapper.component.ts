@@ -5,6 +5,7 @@ import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
 import {Tabs} from '@flogo/flow/shared/tabs/models/tabs.model';
 import {ConfiguratorService} from '../configurator.service';
+import {HandlerMappings} from '../configurator.service';
 
 const TRIGGER_TABS = {
   MAP_FLOW_INPUT: 'mapFlowInput',
@@ -31,6 +32,8 @@ export class TriggerMapperComponent implements OnChanges {
   handler: any;
   @Input()
   triggerId: string;
+  @Input()
+  changedMappings: HandlerMappings;
 
   currentViewName: string;
   tabs: Tabs;
@@ -100,7 +103,7 @@ export class TriggerMapperComponent implements OnChanges {
   }
 
   private onNextStatus() {
-    const { actionMappings } = this.handler;
+    const { actionMappings } = this.changedMappings || this.handler;
     const { input, output } = actionMappings;
     this.editingMappings = {
       actionInput: MapperTranslator.translateMappingsIn(input),

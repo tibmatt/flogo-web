@@ -5,6 +5,7 @@ import {MapperModule} from '@flogo/flow/shared/mapper';
 import {TriggerMapperComponent} from './trigger-mapper';
 import {ConfiguratorComponent} from './configurator.component';
 import {ConfiguratorService} from './configurator.service';
+import {ConfigureTriggerComponent} from './trigger/trigger.component';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import {ConfiguratorService} from './configurator.service';
   ],
   declarations: [
     TriggerMapperComponent,
-    ConfiguratorComponent
+    ConfiguratorComponent,
+    ConfigureTriggerComponent
   ],
   exports: [
     ConfiguratorComponent

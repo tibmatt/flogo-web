@@ -1,5 +1,4 @@
-<div class="trigger-configuration__main" *ngIf="currentModalStatus?.isOpen"
-     [@configurationPanel]>
+<div class="trigger-configuration__main" *ngIf="currentModalStatus?.isOpen">
   <div class="mapper-modal__header header">
     <h2 class="header__title">{{ 'TRIGGER-CONFIGURATOR:TITLE' | translate }} </h2>
     <div class="header__actions actions">
@@ -16,9 +15,18 @@
     </button>
   </div>
   <div class="trigger-configuration__content">
-    <flogo-flow-trigger-mapper [flowMetadata]="currentModalStatus.flowMetadata"
-                               [triggerSchema]="selectedTriggerDetails.triggerSchema"
-                               [handler]="selectedTriggerDetails.handler"
-                               [triggerId]="selectedTriggerDetails.trigger.id"></flogo-flow-trigger-mapper>
+    <div class="configuration__triggers">
+      <flogo-triggers-configure-trigger *ngFor="let triggerData of triggersList"
+                                        [triggerData]="triggerData"
+                                        [selectedTrigger]="selectedTriggerDetails.trigger.id" (triggerSelected)="changeTriggerSelection($event)">
+      </flogo-triggers-configure-trigger>
+    </div>
+    <div class="configuration__mapper">
+      <flogo-flow-trigger-mapper [flowMetadata]="currentModalStatus.flowMetadata"
+                                 [triggerSchema]="selectedTriggerDetails.triggerSchema"
+                                 [handler]="selectedTriggerDetails.handler"
+                                 [changedMappings]="selectedTriggerDetails.changedMappings"
+                                 [triggerId]="selectedTriggerDetails.trigger.id"></flogo-flow-trigger-mapper>
+    </div>
   </div>
 </div>
