@@ -22,32 +22,16 @@ interface TriggerStatus {
   ],
   animations: [
     trigger('configurationPanel', [
-      state('*', style({
-        backgroundColor: '#ffffff',
-        position: 'fixed',
-        width: '100%',
-        height: '100%',
-        bottom: 0,
-        left: 0,
-        // firefox has issues with shorthand syntax for padding and margin
-        paddingLeft: '40px',
-        paddingRight: '40px',
-        paddingTop: '40px',
-        paddingBottom: '40px',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 3
-      })),
       transition('void => *', [
         group([
-          style({position: 'fixed', width: '0px', top: '150px'}),
+          style({position: 'fixed', width: '0%', top: '150px'}),
           animate('350ms cubic-bezier(0.4, 0.0, 0.2, 1)')
         ])
       ]),
       transition('* => void', [
         group([
           style({position: 'fixed', bottom: 0, left: 0}),
-          animate('350ms 200ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({
+          animate('350ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({
             width: '40%',
             top: '150px',
             overflow: 'hidden'
@@ -68,6 +52,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   };
 
   selectedTriggerDetails: TriggerStatus;
+  disableSave = true;
 
   configurableTriggers: Map<string, TriggerStatus> = new Map<string, TriggerStatus>();
 
@@ -85,10 +70,10 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
       .subscribe(nextStatus => this.onUpdateTriggerConfiguration(nextStatus));
   }
 
-  get disableSave() {
+  isSaveDisabled() {
     const allTriggers = Array.from(this.configurableTriggers.values());
-    const hasInvalidTriggerMappings = allTriggers.find(triggerObj => !triggerObj.isValid);
-    const hasModifiedTriggerMapping = allTriggers.find(triggerObj => triggerObj.isDirty);
+    const hasInvalidTriggerMappings = !!allTriggers.find(triggerObj => !triggerObj.isValid);
+    const hasModifiedTriggerMapping = !!allTriggers.find(triggerObj => triggerObj.isDirty);
     return !hasModifiedTriggerMapping || hasInvalidTriggerMappings;
   }
 
@@ -99,6 +84,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     });
     modifiedTrigger.isDirty = !_.isEqual(modifiedTrigger.changedMappings.actionMappings, modifiedTrigger.handler.actionMappings);
     this.configurableTriggers.set(nextStatus.triggerId, modifiedTrigger);
+    this.disableSave = this.isSaveDisabled();
   }
 
   onNextStatus(nextStatus: ModalStatus) {
@@ -137,5 +123,6 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
       });
     });
     this.selectedTriggerDetails = this.configurableTriggers.get(this.currentModalStatus.selectedTrigger);
+    this.disableSave = this.isSaveDisabled();
   }
 }
