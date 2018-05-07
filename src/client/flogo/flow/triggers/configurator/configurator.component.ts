@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import {ConfigurationStatus, HandlerMappings, ModalStatus} from '@flogo/flow/triggers/configurator/configurator.service';
-// import {animate, group, state, style, transition, trigger} from '@angular/animations';
+import { configuratorAnimations } from './configurator.animations';
 
 export interface TriggerStatus {
   handler: any;
@@ -19,7 +19,8 @@ export interface TriggerStatus {
   styleUrls: [
     '../../../../assets/_mapper-modal.less',
     'configurator.component.less'
-  ]
+  ],
+  animations: configuratorAnimations
 })
 
 export class ConfiguratorComponent implements OnInit, OnDestroy {

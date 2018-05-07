@@ -1,5 +1,6 @@
-<div class="trigger-configuration__main" *ngIf="currentModalStatus?.isOpen">
-  <div class="mapper-modal__header header">
+<div @configurationPanel class="trigger-configuration__main" *ngIf="currentModalStatus?.isOpen">
+  <div class="background"></div>
+  <div class="mapper-modal__header header js-animation-content">
     <h2 class="header__title">{{ 'TRIGGER-CONFIGURATOR:TITLE' | translate }} </h2>
     <div class="header__actions actions">
       <button class="flogo-button--secondary actions__action actions__action--delete" (click)="onCloseOrDismiss()">
@@ -15,13 +16,13 @@
     </button>
   </div>
   <div class="trigger-configuration__content">
-    <div class="configuration__triggers">
-      <flogo-triggers-configure-trigger *ngFor="let triggerData of triggersList"
+    <div class="configuration__triggers js-triggers-list">
+      <flogo-triggers-configure-trigger class="js-trigger-element" *ngFor="let triggerData of triggersList"
                                         [triggerData]="triggerData"
                                         [selectedTrigger]="selectedTriggerDetails.trigger.id" (triggerSelected)="changeTriggerSelection($event)">
       </flogo-triggers-configure-trigger>
     </div>
-    <div class="configuration__mapper">
+    <div class="configuration__mapper js-animation-content">
       <flogo-flow-trigger-mapper [flowMetadata]="currentModalStatus.flowMetadata"
                                  [triggerSchema]="selectedTriggerDetails.triggerSchema"
                                  [handler]="selectedTriggerDetails.handler"
