@@ -1,6 +1,6 @@
 {
   "name": "flogo-web",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "Wonderful web application for Flogo",
   "license": "SEE LICENSE IN TIBCO Samples Internal End User License.txt",
   "repository": {

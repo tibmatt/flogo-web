@@ -1,6 +1,11 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
+## v0.5.4
+
+[No changes]
+
+
 ## v0.5.3
 
 ### Production Dependencies
