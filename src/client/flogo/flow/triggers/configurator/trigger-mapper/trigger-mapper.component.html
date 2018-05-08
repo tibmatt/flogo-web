@@ -1,0 +1,13 @@
+<div class="content--with-menu">
+  <ul class="content__menu">
+    <li class="menu__item" *ngFor="let tabData of tabs; trackBy: trackTabsByFn"
+        [class.--has-errors]="!tabData[1].isValid"
+        [class.--disabled]="!tabData[1].enabled"
+        [class.--active]="tabData[1].isSelected"
+        (click)="setCurrentView(tabData[0])">{{ tabData[1].labelKey | translate }}</li>
+  </ul>
+  <flogo-mapper class="mapper content__mapper"
+                inputsSearchPlaceHolder="{{ currentViewStatus?.inputsLabelKey | translate }}"
+                outputsSearchPlaceHolder="{{ currentViewStatus?.outputsLabelKey | translate }}"
+                [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
+</div>

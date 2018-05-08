@@ -1,24 +1,23 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, DebugElement, ViewChild} from '@angular/core';
 import {IFlogoTrigger} from '@flogo/flow/triggers/models';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NavigationEnd, Router} from '@angular/router';
 import {TriggerBlockComponent} from '@flogo/flow/triggers/trigger-block/trigger-block.component';
 import {Observable} from 'rxjs/Observable';
 import {FakeRootLanguageModule} from '@flogo/core/language/testing';
+import {By} from '@angular/platform-browser';
 
 @Component({
   selector: 'flogo-container',
   template: `
     <flogo-flow-triggers-trigger-block #triggerBlock
                                        [trigger]="triggerEntity"
-                                       [keepSelected]="isMapperOpen"
                                        [isDevice]="isDeviceType"
                                        (menuItemSelected)="checkMenuAction($event)"></flogo-flow-triggers-trigger-block>
   `
 })
 class FlogoContainerComponent {
   triggerEntity: IFlogoTrigger;
-  isMapperOpen: boolean;
   isDeviceType: boolean;
   @ViewChild('triggerBlock') triggerBlock: TriggerBlockComponent;
 
@@ -54,7 +53,6 @@ class FlogoContainerComponent {
       }
     };
     this.isDeviceType = false;
-    this.isMapperOpen = false;
   }
 
   checkMenuAction(event) {}
@@ -98,7 +96,8 @@ describe('Component: TriggerBlockComponent', () => {
   it('When initiated trigger is not selected', () => {
     comp = fixture.componentInstance;
     fixture.detectChanges();
-    expect(comp.triggerBlock.isSelected).toEqual(false);
+    const triggerBlock: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.trigger_block--selected'));
+    expect(triggerBlock.length).toEqual(0);
   });
 
   describe('for microservice profiles', () => {
@@ -132,14 +131,5 @@ describe('Component: TriggerBlockComponent', () => {
       comp.triggerBlock.handleTriggerSelection();
       fixture.detectChanges();
     });
-  });
-
-  it('Trigger should be unselected once the trigger mapper is closed', () => {
-    comp.isMapperOpen = true;
-    comp.triggerBlock.selectedMenuItem('configure');
-    fixture.detectChanges();
-    comp.isMapperOpen = false;
-    fixture.detectChanges();
-    expect(comp.triggerBlock.isSelected).toEqual(false);
   });
 });
