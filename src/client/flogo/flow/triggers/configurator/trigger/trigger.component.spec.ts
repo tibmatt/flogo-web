@@ -33,4 +33,11 @@ describe('ConfigureTriggerComponent component', () => {
     fixture.detectChanges();
     expect(component.isSelected).toEqual(true);
   });
+
+  it('Should not mark the trigger selected', () => {
+    component.triggerData = MockData;
+    component.selectedTrigger = 'trigger_2';
+    fixture.detectChanges();
+    expect(component.isSelected).toEqual(false);
+  });
 });
