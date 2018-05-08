@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { FlowMetadata } from '@flogo/core/interfaces/flow';
+import {IFlogoTrigger} from '@flogo/flow/triggers/triggers.component';
 
 export interface HandlerMappings {
   actionMappings: { input: any[], output: any[] };
@@ -20,8 +21,7 @@ export interface ModalStatus {
 }
 
 interface SaveData {
-  trigger: any;
-  mappings: HandlerMappings;
+  triggers: any[];
 }
 
 export interface ConfigurationStatus {
@@ -37,17 +37,16 @@ export class ConfiguratorService {
   save$ = new Subject<SaveData>();
   triggerConfigurationStatus$ = new Subject<ConfigurationStatus>();
 
-  open(trigger: any, flowMetadata: FlowMetadata, handler: HandlerMappings, triggerSchema: any) {
-    const triggerToConfigure = Object.assign({}, {trigger, handler, triggerSchema});
-    this.modalStatus$.next({ isOpen: true, triggers: [triggerToConfigure], flowMetadata, selectedTrigger: trigger.id });
+  open(triggersToConfigure: TriggerDetail[], flowMetadata: FlowMetadata, trigger: IFlogoTrigger) {
+    this.modalStatus$.next({ isOpen: true, triggers: triggersToConfigure, flowMetadata, selectedTrigger: trigger.id });
   }
 
   close() {
     this.modalStatus$.next({ isOpen: false, triggers: [], flowMetadata: null, selectedTrigger: null });
   }
 
-  save(trigger: any, mappings: HandlerMappings) {
-    this.save$.next({ trigger, mappings });
+  save(triggers: any[]) {
+    this.save$.next({ triggers});
     this.close();
   }
 

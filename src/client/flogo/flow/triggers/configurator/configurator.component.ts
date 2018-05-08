@@ -98,11 +98,13 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
+    const modifiedTriggers = [];
     this.configurableTriggers.forEach(configurableTrigger => {
       if (configurableTrigger.isDirty) {
-        this.triggerConfiguratorService.save(configurableTrigger.trigger, configurableTrigger.changedMappings);
+        modifiedTriggers.push(configurableTrigger);
       }
     });
+    this.triggerConfiguratorService.save(modifiedTriggers);
   }
 
   initConfigurableTriggers() {

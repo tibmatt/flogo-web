@@ -116,19 +116,19 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       }
     );
 
-    this._triggerConfiguratorService.save$
-      .switchMap(({ trigger, mappings }) => this._restAPIHandlerService
+    this._triggerConfiguratorService.save$.subscribe(({triggers}) => {
+      triggers.map(modifiedTrigger => {
+        this._restAPIHandlerService
         // Update the handler using the updateHandler REST API call
-          .updateHandler(trigger.id, this.actionId, mappings)
-          .then(handler => ({trigger, handler}))
-      )
-      .takeUntil(this._ngDestroy$)
-      .subscribe(({ trigger, handler }) => {
-        const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
-        const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
-        triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
-        this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
+          .updateHandler(modifiedTrigger.trigger.id, this.actionId, modifiedTrigger.changedMappings)
+          .then(handler => {
+            const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
+            const triggerToUpdate = this.triggers.find(t => t.id === modifiedTrigger.trigger.id);
+            triggerToUpdate.handlers = modifiedTrigger.trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
+            this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
+          });
       });
+    });
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
@@ -294,10 +294,18 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
-  private openTriggerMapper(trigger: IFlogoTrigger) {
-    const handler = trigger.handler;
-    this._converterService.getTriggerTask(trigger)
-      .then(triggerSchema => this._triggerConfiguratorService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
+  private openTriggerMapper(selectedTrigger: IFlogoTrigger) {
+    let triggersToConfigure: any[];
+    Promise.all(this.triggersList.map(trigger => {
+      const handler = trigger.handler;
+      return this._converterService.getTriggerTask(trigger).then(triggerSchema => {
+        return Object.assign({}, {trigger, handler, triggerSchema});
+      });
+    })).then(allTriggerDetails => {
+      triggersToConfigure = allTriggerDetails;
+      this._triggerConfiguratorService.open(triggersToConfigure, this.appDetails.metadata, selectedTrigger);
+    });
+
   }
 
   private deleteHandlerForTrigger(triggerId) {
