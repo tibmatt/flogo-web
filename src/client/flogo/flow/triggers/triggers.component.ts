@@ -116,7 +116,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       }
     );
 
-    this._triggerConfiguratorService.save$.subscribe(({triggers}) => {
+    this._triggerConfiguratorService.save$.takeUntil(this._ngDestroy$).subscribe(({triggers}) => {
       triggers.map(modifiedTrigger => {
         this._restAPIHandlerService
         // Update the handler using the updateHandler REST API call
