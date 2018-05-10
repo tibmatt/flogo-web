@@ -29,28 +29,23 @@ export class ContribInstallController {
   }
 
   /**
-   * Install the contribution accessible in a URL (preferrably github URL) to the engine and restart the engine
+   * Install the contribution accessible in a URL (github URL) to engine and restart the engine
    * @param url {string} URL path where the acitivy / trigger .json is located
    * @returns results {Object} results of installation
    * @returns results.success {array} array of successfully installed contribution urls
    * @returns results.fail {array} array of installation failed contribution urls
    */
   install(url) {
-    let results;
-    return this.installContributions(url)
+    let results = {};
+    return this.installContribution(url)
       .then(installResults => {
         results = installResults;
-        if (results.fail.length === 0) {
-          return this.buildEngine()
-            .then(() => {
-              logger.debug(`Restarting the engine upon successful '${url}' installation.`);
-              return this.restartEngineAfterBuild();
-            })
-            .then(() => this.updateContribsDB());
-        } else {
-          return results;
-        }
-      }).then(() => this.removeBackup())
+        return this.buildEngine();
+      }).then(() => {
+        logger.debug(`Restarting the engine upon successful '${url}' installation.`);
+        return this.restartEngineAfterBuild();
+      }).then(() => this.updateContribsDB())
+      .then(() => this.removeBackup())
       .then(() => results)
       .catch(err => {
         logger.error(`[error] Encountered error while installing the '${url}' to the engine: `);
@@ -65,7 +60,7 @@ export class ContribInstallController {
       });
   }
 
-  installContributions(url) {
+  installContribution(url) {
     return this.createBackup()
       .then(() => this.installToEngine(url))
       .then((results) => {
@@ -74,6 +69,9 @@ export class ContribInstallController {
           success: results.success,
           fail: results.fail
         });
+        if (results.fail.length) {
+          throw new Error('Cannot install a contribution outside github domain');
+        }
         return omit(results, ['details']);
       });
   }

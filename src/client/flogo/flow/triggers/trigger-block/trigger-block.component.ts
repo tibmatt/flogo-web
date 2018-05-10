@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {IFlogoTrigger} from '@flogo/flow/triggers/models';
 import {NavigationEnd, Router} from '@angular/router';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
@@ -20,17 +20,14 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   trigger: IFlogoTrigger;
   @Input()
-  keepSelected: boolean;
-  @Input()
   isDevice: boolean;
   @Output()
   menuItemSelected: EventEmitter<TriggerMenuSelectionEvent> = new EventEmitter<TriggerMenuSelectionEvent>();
 
   isShowingMenu = false;
+  isShowingDetails = false;
   MENU_OPTIONS: typeof TRIGGER_MENU_OPERATION = TRIGGER_MENU_OPERATION;
 
-  private isShowingDetails = false;
-  private isShowingMapper = false;
   private nativeElement: any;
   private ngDestroy$ = SingleEmissionSubject.create();
   private urlCheckRegEx: RegExp;
@@ -55,9 +52,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['keepSelected'] && !changes['keepSelected'].currentValue && this.isShowingMapper) {
-      this.isShowingMapper = false;
-    } else if (changes['trigger'] && !this.urlCheckRegEx) {
+    if (changes['trigger'] && !this.urlCheckRegEx) {
       this.urlCheckRegEx = new RegExp(`/trigger/${this.trigger.id}+$`, 'g');
     }
   }
@@ -86,20 +81,7 @@ export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
     this.isShowingMenu = false;
   }
 
-  get isSelected(): boolean {
-    /***
-     * Select a trigger either if (not restricted to one):
-     *  1. it's trigger menu is active
-     *  2. it's configuration is displayed in the trigger details (right hand side) panel
-     *  3. it's mapper is active
-     ***/
-    return this.isShowingDetails || this.isShowingMapper;
-  }
-
   selectedMenuItem(item: string) {
-    if (item === TRIGGER_MENU_OPERATION.CONFIGURE) {
-      this.isShowingMapper = true;
-    }
     this.isShowingMenu = false;
     this.menuItemSelected.emit({operation: item, trigger: this.trigger});
   }

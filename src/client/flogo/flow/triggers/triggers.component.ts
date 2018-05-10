@@ -20,9 +20,9 @@ import {
 import { FlowMetadata } from '@flogo/flow/task-configurator/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
 
-import { TriggerMapperService } from '@flogo/flow/triggers/trigger-mapper/trigger-mapper.service';
 import {IPropsToUpdateFormBuilder} from '../flow.component';
 import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
+import {ConfiguratorService as TriggersConfiguratorService} from '@flogo/flow/triggers/configurator';
 
 export interface IFlogoTrigger {
   name: string;
@@ -57,7 +57,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   private _subscriptions: any[];
   private _ngDestroy$ = SingleEmissionSubject.create();
-  public isMapperWindowOpen = false;
 
   constructor(private _restAPITriggersService: TriggersApiService,
               private _restAPIHandlerService: RESTAPIHandlersService,
@@ -65,7 +64,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _router: Router,
               private _translate: LanguageService,
               private _postService: PostService,
-              private _triggerMapperService: TriggerMapperService) {
+              private _triggerConfiguratorService: TriggersConfiguratorService) {
   }
 
   ngOnInit() {
@@ -117,25 +116,19 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       }
     );
 
-    this._triggerMapperService.save$
-      .switchMap(({ trigger, mappings }) => this._restAPIHandlerService
+    this._triggerConfiguratorService.save$.takeUntil(this._ngDestroy$).subscribe(({triggers}) => {
+      triggers.map(modifiedTrigger => {
+        this._restAPIHandlerService
         // Update the handler using the updateHandler REST API call
-          .updateHandler(trigger.id, this.actionId, mappings)
-          .then(handler => ({trigger, handler}))
-      )
-      .takeUntil(this._ngDestroy$)
-      .subscribe(({ trigger, handler }) => {
-        const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
-        const triggerToUpdate = this.triggers.find(t => t.id === trigger.id);
-        triggerToUpdate.handlers = trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
-        this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
+          .updateHandler(modifiedTrigger.trigger.id, this.actionId, modifiedTrigger.changedMappings)
+          .then(handler => {
+            const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
+            const triggerToUpdate = this.triggers.find(t => t.id === modifiedTrigger.trigger.id);
+            triggerToUpdate.handlers = modifiedTrigger.trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
+            this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
+          });
       });
-
-    this._triggerMapperService.status$
-      .takeUntil(this._ngDestroy$)
-      .subscribe(state => {
-        this.isMapperWindowOpen = state.isOpen;
-      });
+    });
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
@@ -301,10 +294,18 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
-  private openTriggerMapper(trigger: IFlogoTrigger) {
-    const handler = trigger.handler;
-    this._converterService.getTriggerTask(trigger)
-      .then(triggerSchema => this._triggerMapperService.open(trigger, this.appDetails.metadata, handler, triggerSchema));
+  private openTriggerMapper(selectedTrigger: IFlogoTrigger) {
+    let triggersToConfigure: any[];
+    Promise.all(this.triggersList.map(trigger => {
+      const handler = trigger.handler;
+      return this._converterService.getTriggerTask(trigger).then(triggerSchema => {
+        return Object.assign({}, {trigger, handler, triggerSchema});
+      });
+    })).then(allTriggerDetails => {
+      triggersToConfigure = allTriggerDetails;
+      this._triggerConfiguratorService.open(triggersToConfigure, this.appDetails.metadata, selectedTrigger);
+    });
+
   }
 
   private deleteHandlerForTrigger(triggerId) {
