@@ -7,7 +7,7 @@ export interface ActivitySchema extends BaseSchema {
   return: boolean;
   /** @deprecated */
   reply?: boolean;
-  inputs: SchemaAttribute[];
+  inputs?: SchemaAttribute[];
 }
 
 export interface TriggerSchema extends BaseSchema {
@@ -19,7 +19,7 @@ export interface TriggerSchema extends BaseSchema {
   };
 }
 
-interface SchemaAttribute {
+export interface SchemaAttribute {
   name: string;
   type: ValueType;
   required?: boolean;

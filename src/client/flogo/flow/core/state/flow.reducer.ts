@@ -4,6 +4,7 @@ import { cleanGraphRunState } from '../models/flow/clean-run-state';
 import * as actions from './flow.actions';
 import { FlowState } from './flow.state';
 
+import { init } from './cases/init';
 import { createBranch } from './cases/create-branch';
 import { taskItemCreated } from './cases/task-item-created';
 import { removeItem } from './cases/remove-item';
@@ -25,10 +26,7 @@ const INITIAL_STATE: FlowState = {
 export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.ActionsUnion): FlowState {
   switch (action.type) {
     case ActionType.Init: {
-      return {
-        ...INITIAL_STATE,
-        ...action.payload,
-      };
+      return init(INITIAL_STATE, action.payload);
     }
     case ActionType.SelectItem: {
       return {

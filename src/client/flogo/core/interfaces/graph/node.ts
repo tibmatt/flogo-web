@@ -14,6 +14,7 @@ export interface NodeFeatures {
 
 export interface NodeStatus {
   invalid?: boolean;
+  errors?: { [errorName: string]: any };
   executed?: boolean;
   executionErrored?: Array<string> | null;
   iterable?: boolean;
