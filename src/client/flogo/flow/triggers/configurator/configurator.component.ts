@@ -101,7 +101,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     const modifiedTriggers = [];
     this.configurableTriggers.forEach(configurableTrigger => {
       if (configurableTrigger.isDirty) {
-        modifiedTriggers.push(configurableTrigger);
+        modifiedTriggers.push({trigger: configurableTrigger.trigger, mappings: configurableTrigger.changedMappings});
       }
     });
     this.triggerConfiguratorService.save(modifiedTriggers);
