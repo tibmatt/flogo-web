@@ -2,7 +2,10 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalModule } from 'ng2-bs3-modal';
@@ -20,6 +23,7 @@ import { ConfigModule as FlogoConfigModule } from '@flogo/config';
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';
 import { FlogoApplicationModule } from '@flogo/app';
+import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
@@ -30,6 +34,11 @@ import { FlogoApplicationModule } from '@flogo/app';
         deps: [HttpClient],
       }
     }),
+    StoreModule.forRoot({}),
+    !environment.production ? StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production // Restrict extension to log-only mode
+    }) : [],
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,

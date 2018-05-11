@@ -23,7 +23,6 @@ import { FlowComponent } from './flow.component';
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlowDataResolver } from './flow-data.resolver';
 
-
 @NgModule({
   imports: [
     CommonModule,

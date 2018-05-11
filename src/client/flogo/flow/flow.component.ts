@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import * as _ from 'lodash';
+import { filter, share, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import {
   MetadataAttribute,
@@ -81,7 +82,6 @@ import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { makeErrorTask } from './core/models/make-error-task';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
-import { filter, takeUntil } from 'rxjs/operators';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -163,18 +163,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.hasTask = true;
     this.currentTrigger = null;
     this.app = null;
-
-    this._router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.ngOnDestroy$),
-    ).subscribe(() => {
-      // needed from where trigger changes the url
-      // todo: should invert and change comes from state
-      const selection = this.flowState && this.flowState.currentSelection;
-      if (!this.isTaskSubroute() && selection) {
-        this.flowDetails.clearSelection();
-      }
-    });
   }
 
   get flowId() {
@@ -183,14 +171,32 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
-    const flowDetails = this.flowDetails;
-    flowDetails.flow$
+    this.flowDetails
+      .flowState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
-    flowDetails.selectionChange$
-      .pipe(takeUntil(this.ngOnDestroy$))
+    const selection$ = this.flowDetails
+      .selectionChange$
+      .pipe(
+        share(),
+        takeUntil(this.ngOnDestroy$),
+      );
+    selection$
       .subscribe(selection => this.onSelectionChanged(selection));
+    this._router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        withLatestFrom(selection$),
+        takeUntil(this.ngOnDestroy$),
+      )
+      .subscribe(([event, selection]) => {
+        // needed from where trigger changes the url
+        // todo: should invert data flow and change should come from state
+        if (!this.isTaskSubroute() && selection) {
+          this.flowDetails.clearSelection();
+        }
+      });
     this.initSubscribe();
     this.loading = false;
   }
@@ -563,7 +569,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       this.handlerTypeFromString(diagramId),
       { item, node, schema },
     );
-
   }
 
   private getTriggerCurrentFlow(app, flowId) {
@@ -642,18 +647,18 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (!task) {
       return;
     }
+
+    let item;
+    let node;
     if (data.proper === 'name') {
       const uniqueName = this.uniqueTaskName(data.content);
-      this.flowDetails.updateItem(this.handlerTypeFromString(data.id), {
-        item: { id: data.taskId, name: uniqueName },
-        node: { id: data.taskId, title: uniqueName },
-      });
+      item = { id: data.taskId, name: uniqueName };
+      node = { id: data.taskId, title: uniqueName };
     } else {
-      this.flowDetails.updateItem(this.handlerTypeFromString(data.id), {
-        item: { id: data.taskId, [data.proper]: data.content },
-        node: { id: data.taskId, [data.proper]: data.content },
-      });
+      item = { id: data.taskId, [data.proper]: data.content };
+      node = { id: data.taskId, [data.proper]: data.content };
     }
+    this.flowDetails.updateItem(this.handlerTypeFromString(data.id), { item, node });
 
     const updateObject = {};
     const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
@@ -806,7 +811,7 @@ export class FlowComponent implements OnInit, OnDestroy {
               invalid: !_.isEmpty(data.warnings)
             }
           }
-        }
+        },
       );
     }
 
@@ -1104,7 +1109,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.flowDetails.executionStatusChanged(allStatusChanges);
 
-
     // when the flow is done on error, throw an error
     // the error is the response with `__status` provisioned.
     if (isFlowDone && !_.isEmpty(errors)) {
@@ -1319,10 +1323,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       iterate: iteratorInfo.isIterable ? data.iterator.iterableValue : undefined,
     };
 
-    this.flowDetails.updateItem(
-      this.handlerTypeFromString(diagramId),
-      { item: itemChanges },
-    );
+    this.flowDetails.updateItem(this.handlerTypeFromString(diagramId), { item: itemChanges });
 
     this.determineRunnableEnabled();
     // context potentially changed
