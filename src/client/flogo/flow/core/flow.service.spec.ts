@@ -24,7 +24,10 @@ describe('Service: Flow', function (this: {
       'deleteFlowWithTrigger'
     ]);
     this.mockRESTAPI = new MockAPIFlowsService();
-    this.service = new FlogoFlowService(<any>this.mockRESTAPI, this.modelConverter, this.commonFlowsService);
+    const storeMock = {
+      dispatch() {},
+    };
+    this.service = new FlogoFlowService(<any>this.mockRESTAPI, this.modelConverter, this.commonFlowsService, <any>storeMock);
   });
 
   it('Should get the Flow Details and convert it to work with flow component', done => {
