@@ -207,7 +207,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     const subs = [
       _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
-      _.assign({}, FLOGO_TASK_SUB_EVENTS.setTaskWarnings, { callback: this._setTaskWarnings.bind(this) }),
       _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTask, { callback: this._saveConfigFromTaskConfigurator.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
@@ -719,17 +718,17 @@ export class FlowComponent implements OnInit, OnDestroy {
     const changes: { item: {id: string} & Partial<Item>, node: Partial<GraphNode> } = <any>{};
     if (task.type === FLOGO_TASK_TYPE.TASK) {
       const changedInputs = data.inputs || {};
-      // set/unset the warnings in the tile
+      if (_.isEqual(changedInputs, task.input)) {
+        return;
+      }
       changes.item = {
         id: task.id,
         input: { ...changedInputs  }
       };
-      changes.node = {
-        status: {
-          invalid: !_.isEmpty(data.warnings),
-        }
-      };
     } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
+      if (_.isEqual(data.condition, task.condition)) {
+        return;
+      }
       changes.item = {
         id: task.id,
         condition: data.condition,
@@ -792,29 +791,6 @@ export class FlowComponent implements OnInit, OnDestroy {
         attribute.value = changedInputs[name];
       }
     });
-  }
-
-  private _setTaskWarnings(data: any, envelope: any) {
-    const handlerId = this.getDiagramId(data.taskId);
-    const task = this.getTaskInHandler(handlerId, data.taskId);
-
-    if (task) {
-      this.flowDetails.updateItem(
-        this.handlerTypeFromString(handlerId),
-        {
-          item: {
-            id: task.id,
-          },
-          node: {
-            id: task.id,
-            status: {
-              invalid: !_.isEmpty(data.warnings)
-            }
-          }
-        },
-      );
-    }
-
   }
 
   private _getAllTasks() {
