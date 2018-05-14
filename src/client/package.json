@@ -56,6 +56,8 @@
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
+    "@ngrx/store": "^5.2.0",
+    "@ngrx/store-devtools": "^5.2.0",
     "@ngx-translate/core": "^9.1.1",
     "bootstrap": "^3.3.7",
     "chevrotain": "^1.0.1",

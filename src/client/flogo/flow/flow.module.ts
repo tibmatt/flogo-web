@@ -22,10 +22,12 @@ import { routing } from './flow.routing';
 import { FlowComponent } from './flow.component';
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlowDataResolver } from './flow-data.resolver';
-
+import { flowReducer } from '@flogo/flow/core/state';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   imports: [
+    StoreModule.forFeature('flow', flowReducer),
     CommonModule,
     FlogoSharedModule,
     FlogoLogsModule,
