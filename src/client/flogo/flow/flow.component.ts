@@ -15,7 +15,7 @@ import {
   GraphNode,
   ItemActivityTask,
   NodeType,
-  FlowGraph
+  FlowGraph, ActivitySchema
 } from '@flogo/core';
 import { TriggersApiService, OperationalError } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
@@ -1210,9 +1210,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     scope.push(metadata);
 
     const selectedItem = <ItemTask>_.cloneDeep(this.findItemById(itemId));
-    const activitySchema: PartialActivitySchema = this.flowState.schemas[selectedItem.ref] || {};
-    const task = mergeItemWithSchema(selectedItem, activitySchema);
-    const outputMapper = isMapperActivity(activitySchema);
+    const activitySchema = this.flowState.schemas[selectedItem.ref] as ActivitySchema;
+    const task = mergeItemWithSchema(selectedItem, activitySchema || {});
+    const isOutputMapper = activitySchema ? isMapperActivity(activitySchema) : false;
 
     let overridePropsToMap = null;
     let overrideMappings = null;
@@ -1220,7 +1220,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     let searchTitleKey;
     let transformTitle;
 
-    if (outputMapper) {
+    if (isOutputMapper) {
       overridePropsToMap = metadata.output;
       const inputs = selectedItem.input || {};
       overrideMappings = inputs.mappings || [];

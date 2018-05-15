@@ -1,5 +1,5 @@
 import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
-import { Item, Task } from '@flogo/core';
+import { ContribSchema, Item, Task } from '@flogo/core';
 
 export function flogoGenBranchID(): string {
   return `Flogo::Branch::${Date.now()}`;
@@ -68,7 +68,7 @@ function portAttribute(inAttr: {
  * @param activitySchema
  * @return {boolean}
  */
-export function isMapperActivity(activitySchema: any) {
+export function isMapperActivity(activitySchema: ContribSchema) {
   const hasOutputMapperDefinition = _.get(activitySchema, 'inputs', []).find(isOutputMapper);
   return Boolean(hasOutputMapperDefinition);
 

@@ -1,11 +1,12 @@
 import { fromPairs as objectFromPairs, isEmpty } from 'lodash';
 import { ActivitySchema, ContribSchema, Dictionary, Item, ItemTask } from '@flogo/core';
+import { isMapperActivity } from '@flogo/shared/utils';
 
 import { createItemValidators, Validator } from '../../validation';
 import { itemIsTask } from '../utils';
 
 export function validateOne(schema: ActivitySchema, item: Item) {
-  if (!itemIsTask(item)) {
+  if (!itemIsTask(item) || isMapperActivity(schema)) {
     return null;
   }
   const validators = createItemValidators(schema);
