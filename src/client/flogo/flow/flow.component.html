@@ -1,6 +1,6 @@
 <div [hidden]="loading">
 
-  <div class="canvas-flow" *ngIf="flow && !loading" [ngClass]="{'flogo-flow-detail__device': profileType === PROFILE_TYPES.DEVICE,
+  <div class="canvas-flow" *ngIf="flowState && !loading" [ngClass]="{'flogo-flow-detail__device': profileType === PROFILE_TYPES.DEVICE,
                          'flogo-flow-detail__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
 
     <section class="flogo-flow-detail">
@@ -19,16 +19,16 @@
                            'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}"></div>
           <div>
             <div class="clearfix">
-              <h3 class="flogo-flow-detail-name" [(fgContentEditable)]="flow.name"
+              <h3 class="flogo-flow-detail-name" [(fgContentEditable)]="flowState.name"
                   (fgContentEditableChange)="changeFlowDetailName($event, 'name')"></h3>
-              <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{flow.app.device.deviceType}}</span>
+              <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{flowState.app.device.deviceType}}</span>
             </div>
             <div>
               <span>in</span> <span (click)="navigateToApp()"
                                     class="flogo-flow-detail-header-back-app-name"
                                     (mouseover)="onMouseOverBackControl()"
-                                    (mouseout)="onMouseOutBackControl()">{{flow.app?.name}}</span>
-              <p class="flogo-flow-detail-description" [(fgContentEditable)]="flow.description"
+                                    (mouseout)="onMouseOutBackControl()">{{flowState?.app?.name}}</span>
+              <p class="flogo-flow-detail-description" [(fgContentEditable)]="flowState.description"
                  placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
                  (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
             </div>
@@ -41,7 +41,7 @@
         <flogo-run-flow *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
                         [disableRun]="runnableInfo?.disabled"
                         disableReason="{{ runnableInfo?.disableReason | translate }}"
-                        [flowInputs]="flow?.metadata?.input"
+                        [flowInputs]="flowState?.metadata?.input"
                         (submit)="onRunFlow($event)"></flogo-run-flow>
         <div class="flogo-flow-detail-log-button-container">
           <flogo-logs></flogo-logs>
@@ -70,31 +70,29 @@
           <flogo-flow-triggers
             [triggers]="triggersList"
             [actionId]="flowId"
-            [appDetails]="{appId: flow?.app?.id, appProfileType: profileType, metadata: flow?.metadata}"></flogo-flow-triggers>
+            [appDetails]="{appId: flowState?.app?.id, appProfileType: profileType, metadata: flowState?.metadata}"></flogo-flow-triggers>
         </div>
 
         <div class="flogo-flows-flow-schema-container" *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE">
           <flogo-flow-params-schema-button role="button"
-                                           [flowMetadata]="flow?.metadata"
+                                           [flowMetadata]="flowState?.metadata"
                                            (click)="openInputSchemaModal()">
           </flogo-flow-params-schema-button>
         </div>
 
         <div class="flogo-flows-diagram-container">
-          <flogo-flow-diagram *ngIf="mainHandler"
-                              [tasks]="mainHandler.tasks"
-                              [diagram]="mainHandler.diagram"
-                              [id]="'root'"
-                              [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
-                              [appId]="flow?.app?.id"
-                              data-flogo-diagram-id="root">
-          </flogo-flow-diagram>
+          <flogo-diagram
+            [diagramId]="handlerTypes.Main"
+            [flow]="flowState?.mainGraph"
+            [selection]="flowState?.currentSelection"
+            (action)="onMainDiagramAction($event)">
+          </flogo-diagram>
         </div>
       </div>
     </div>
 
-    <flogo-flow-task-configurator [flowId]="'root'" data-flogo-for-diagram-id="root"></flogo-flow-task-configurator>
-    <flogo-flow-task-configurator [flowId]="'errorHandler'" data-flogo-for-diagram-id="errorHandler"></flogo-flow-task-configurator>
+    <flogo-flow-task-configurator [flowId]="handlerTypes.Main"></flogo-flow-task-configurator>
+    <flogo-flow-task-configurator [flowId]="handlerTypes.Error"></flogo-flow-task-configurator>
 
     <flogo-flow-error-panel *ngIf="hasTask">
       <div class="error-panel">
@@ -119,13 +117,12 @@
             </g>
           </svg>
         </div>
-        <flogo-flow-diagram class="error-panel__diagram"
-                            *ngIf="errorHandler"
-                            [tasks]="errorHandler.tasks"
-                            [diagram]="errorHandler.diagram"
-                            [appDetails]="{appId:flow?.app?.id, appProfileType: profileType}"
-                            [id]="'errorHandler'"
-                            data-flogo-diagram-id="root"></flogo-flow-diagram>
+        <flogo-diagram class="error-panel__diagram"
+                       [diagramId]="handlerTypes.Error"
+                       [flow]="flowState?.errorGraph"
+                       [selection]="flowState?.currentSelection"
+                       (action)="onErrorDiagramAction($event)">
+        </flogo-diagram>
       </div>
     </flogo-flow-error-panel>
 
@@ -133,7 +130,7 @@
   <div class="canvas-right-container">
     <router-outlet></router-outlet>
   </div>
-  <flogo-flow-params-schema #inputSchemaModal [flow]="flow" (save)="onFlowSchemaSave($event)"></flogo-flow-params-schema>
+  <flogo-flow-params-schema #inputSchemaModal [flow]="flowState" (save)="onFlowSchemaSave($event)"></flogo-flow-params-schema>
 
 </div>
 

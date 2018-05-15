@@ -1,4 +1,4 @@
-import { Node } from './node';
+import { GraphNode } from '@flogo/core';
 
 export enum TileType {
   Padding = 'padding',
@@ -7,16 +7,20 @@ export enum TileType {
   Task = 'task',
 }
 
-export interface Tile {
+interface BaseTile {
   type: TileType;
 }
 
-export interface InsertTile extends Tile {
+export type  Tile = InsertTile | TaskTile | BaseTile;
+
+export interface InsertTile extends BaseTile {
   type: TileType.Insert;
   parentId: string;
+  isRoot?: boolean;
 }
 
-export interface TaskTile extends Tile {
+export interface TaskTile extends BaseTile {
   type: TileType.Task;
-  task: Node;
+  task: GraphNode;
+  isTerminalInRow?: boolean;
 }

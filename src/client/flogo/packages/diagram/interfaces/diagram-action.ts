@@ -8,6 +8,7 @@ export enum DiagramActionType {
 
 export interface DiagramAction {
   type: DiagramActionType;
+  diagramId?: string;
 }
 
 export interface DiagramActionSelf extends DiagramAction {

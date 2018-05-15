@@ -6,4 +6,5 @@ export enum DiagramSelectionType {
 export interface DiagramSelection {
   type: DiagramSelectionType;
   taskId: string;
+  diagramId?: string;
 }

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { Tile, TaskTile, TileType, NodeType, DiagramAction, DiagramSelection } from '../interfaces';
+import { NodeType } from '@flogo/core';
+import { Tile, TaskTile, TileType, DiagramAction, DiagramSelection } from '../interfaces';
 import { actionEventFactory } from '../action-event-factory';
 import { RowIndexService, isTaskTile, isInsertTile } from '../shared';
 import { rowAnimations } from './diagram-row.animations';
@@ -15,6 +16,7 @@ export class DiagramRowComponent implements OnChanges {
   @Input() row: Tile[];
   @Input() selection: DiagramSelection;
   @Input() rowIndex: number;
+  @Input() diagramId?: string;
   @HostBinding('class.is-readonly') @Input() isReadOnly = false;
   @Output() action = new EventEmitter<DiagramAction>();
 
@@ -57,10 +59,6 @@ export class DiagramRowComponent implements OnChanges {
 
   onTaskAction(action: DiagramAction) {
     this.action.emit(action);
-  }
-
-  onBranchRemove(taskTile: TaskTile) {
-    this.action.emit(actionEventFactory.remove(taskTile.task.id));
   }
 
 }

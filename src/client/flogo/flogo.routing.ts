@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { ExternalWindowComponent } from '@flogo/logs';
 import { FlogoHomeComponent } from '@flogo/home';
 import { FlogoApplicationComponent } from '@flogo/app';
-import { DiagramTestComponent } from '@flogo/packages/diagram/diagram-test.component';
 
 export const appRoutes: Routes = [
   {
@@ -18,11 +17,6 @@ export const appRoutes: Routes = [
   {
     path: 'logs',
     component: ExternalWindowComponent
-  },
-  // temporal route to test the new diagram implementation
-  {
-    path: 'diagrampreview',
-    component: DiagramTestComponent
   },
   {
     path: '**',

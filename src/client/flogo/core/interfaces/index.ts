@@ -4,3 +4,4 @@ export * from './flow-diagram';
 export * from './flow';
 export * from './runner';
 export * from './app';
+export * from './graph';

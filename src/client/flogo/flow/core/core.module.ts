@@ -6,7 +6,7 @@ import { FlogoFlowService } from './flow.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
   ],
   declarations: [],
   providers: [

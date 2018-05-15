@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AbstractTileTaskComponent } from '@flogo/packages/diagram/tiles/abstract-tile-task.component';
+import { AbstractTileTaskComponent } from './abstract-tile-task.component';
+
 @Component({
   selector: 'flogo-diagram-tile-task',
   templateUrl: './tile-task.component.html',
@@ -27,12 +28,24 @@ export class TileTaskComponent extends AbstractTileTaskComponent {
   }
 
   get isTerminal() {
+    if (this.tile.isTerminalInRow) {
+      return true;
+    }
     const { task } = this.tile;
     if (task) {
       const { final: isFinal, canHaveChildren } = task.features;
       return isFinal || !canHaveChildren;
     }
     return false;
+  }
+
+  get errorMsg() {
+    const status = this.tile.task.status;
+    if (status && status.executionErrored) {
+      const [error] = status.executionErrored;
+      return error;
+    }
+    return null;
   }
 
 }

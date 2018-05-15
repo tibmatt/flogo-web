@@ -1,13 +1,13 @@
 import { isEmpty, times, partialRight } from 'lodash';
-import { Node, NodeDictionary, NodeType } from '../interfaces/index';
+import { GraphNode, GraphNodeDictionary, NodeType } from '@flogo/core';
 import { NodeMatrix } from './matrix';
 
 interface TranslateContext {
-  parentNode: Node;
-  nodes: NodeDictionary;
+  parentNode: GraphNode;
+  nodes: GraphNodeDictionary;
 }
 
-export function nodesToNodeMatrix(rootNode: Node, nodes: NodeDictionary): NodeMatrix {
+export function nodesToNodeMatrix(rootNode: GraphNode, nodes: GraphNodeDictionary): NodeMatrix {
   const matrix: NodeMatrix = [[rootNode]];
   translateChildren({ parentNode: rootNode, nodes }, matrix);
   return matrix;
@@ -22,10 +22,10 @@ export function translateChildren(context: TranslateContext, matrix: NodeMatrix)
   }
   const currentRowIndex = matrix.length - 1;
   const currentRow = matrix[currentRowIndex];
-  children.forEach((node: Node) => {
+  children.forEach((node: GraphNode) => {
     if (node.type === NodeType.Branch) {
       const padding = currentRow.indexOf(context.parentNode);
-      const newRow: Node[] = arrayOfNulls(padding);
+      const newRow: GraphNode[] = arrayOfNulls(padding);
       newRow.push(node);
       matrix.push(newRow);
     } else {
@@ -43,7 +43,7 @@ function retrieveChildrenNodes({ parentNode, nodes }: TranslateContext) {
   return parentNode.children.map(nodeId => nodes[nodeId]);
 }
 
-function nonBranchesFirst(nodeA: Node, nodeB: Node): number {
+function nonBranchesFirst(nodeA: GraphNode, nodeB: GraphNode): number {
   if (nodeA.type === nodeB.type) {
     return 0;
   }

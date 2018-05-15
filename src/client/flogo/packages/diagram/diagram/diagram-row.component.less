@@ -1,14 +1,7 @@
 @import '../_styles';
 
 :host {
-  height: 140px;
-  padding-top: 16px;
-  padding-bottom: 14px;
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  background-color: transparent;
-  transition: background-color 0.15s ease;
+  .row();
 }
 
 .tile {
@@ -42,6 +35,10 @@
 }
 
 :host:not(.is-readonly) {
+  .tile--slot.is-root {
+    opacity: 1;
+  }
+
   .is-selected {
     z-index: 3;
   }

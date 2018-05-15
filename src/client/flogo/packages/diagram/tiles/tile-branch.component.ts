@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { AbstractTileTaskComponent } from '@flogo/packages/diagram/tiles/abstract-tile-task.component';
-import { SvgRefFixerService } from '@flogo/core/services/svg-ref-fixer.service';
+import { SvgRefFixerService } from '@flogo/core';
+import { AbstractTileTaskComponent } from './abstract-tile-task.component';
 
 const ROW_HEIGHT = 140;
 const BOTTOM_DISTANCE = 35;

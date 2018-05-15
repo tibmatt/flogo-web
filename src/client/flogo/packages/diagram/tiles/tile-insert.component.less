@@ -28,11 +28,24 @@
   width: @tile-placeholder-dimension / 3;
 }
 
+:host(.is-root) {
+  .btn-insert {
+    color: #79b8dc;
+    background-color: transparent;
+    border: 2px dashed #79b8dc;
+    box-shadow: none;
+  }
+  .btn-insert:hover {
+    background-color: @tile-color-bg;
+  }
+}
+
 :host(.is-selected) {
   .btn-insert, .btn-insert:hover {
     box-shadow: 1px 2px 9px 0px rgba(0, 0, 0, 0.3);
     transform: translateY(0);
     background-color: @tile-color-bg--selected;
     color: #fff;
+    border: none;
   }
 }

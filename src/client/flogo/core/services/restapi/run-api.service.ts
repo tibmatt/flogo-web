@@ -104,7 +104,7 @@ export class RunApiService {
   restartFrom(processInstanceId: string, step: number, interceptor: Interceptor, updateProcessId?: string): Observable<RestartResponse> {
     // get the state of the last step
     const snapshotId = step - 1;
-    if (snapshotId < 1) {
+    if (snapshotId < 0) {
       return _throw(new Error(`Invalid step ${step} to start from.`));
     }
 

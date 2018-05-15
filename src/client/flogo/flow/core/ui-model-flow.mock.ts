@@ -23,8 +23,9 @@ export let mockFlow = {
         'name': 'root',
         'tasks': [
           {
-            'id': 2,
+            'id': 'log_1',
             'name': 'First Log',
+            'description': 'description log 1',
             'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
             'type': 1,
             'attributes': [
@@ -46,8 +47,9 @@ export let mockFlow = {
             ]
           },
           {
-            'id': 3,
+            'id': 'counter_1',
             'name': 'Counter1',
+            'description': 'description counter 1',
             'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
             'type': 1,
             'attributes': [
@@ -69,8 +71,9 @@ export let mockFlow = {
             ]
           },
           {
-            'id': 4,
+            'id': 'log_2',
             'name': 'Second Log',
+            'description': 'description second log',
             'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
             'type': 1,
             'attributes': [
@@ -92,8 +95,9 @@ export let mockFlow = {
             ]
           },
           {
-            'id': 5,
+            'id': 'log_3',
             'name': 'Third Log',
+            'description': 'description third Log',
             'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
             'type': 1,
             'attributes': [
@@ -118,21 +122,21 @@ export let mockFlow = {
         'links': [
           {
             'id': 1,
-            'from': 2,
-            'to': 3,
+            'from': 'log_1',
+            'to': 'counter_1',
             'type': 0
           },
           {
             'id': 2,
-            'from': 3,
-            'to': 4,
+            'from': 'counter_1',
+            'to': 'log_2',
             'type': 1,
             'value': 'true'
           },
           {
             'id': 3,
-            'from': 3,
-            'to': 5,
+            'from': 'log_2',
+            'to': 'log_3',
             'type': 1,
             'value': 'false'
           }
@@ -169,6 +173,7 @@ export let mockErrorFlow = {
           {
             'id': 2,
             'name': 'First Log',
+            'description': 'log',
             'type': 1,
             'attributes': [
               {
@@ -230,8 +235,9 @@ export let mockErrorHandler = {
     'name': 'error_root',
     'tasks': [
       {
-        'id': 7,
+        'id': 'error_log',
         'name': 'Error Log',
+        'description': 'error log description',
         'activityRef': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
         'type': 1,
         'attributes': [
@@ -320,899 +326,983 @@ export let mockActivitiesDetails = [
   }
 ];
 
-export let mockResultantUIFlow = {
-  'name': 'Test flow 1',
-  'description': 'Hello world!!',
-  'appId': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-  'app': {
-    'id': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-    'name': 'Sample Application',
-    'normalizedName': 'sample-application',
-    'version': '',
-    'description': '',
-    'createdAt': '2017-03-21T09:43:38.614Z',
-    'updatedAt': '2017-03-21T09:43:53.073Z'
+export const mockResultantUIFlow = {
+  id: 'test_flow_1',
+  name: 'Test flow 1',
+  description: 'Hello world!!',
+  appId: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
+  app: {
+    id: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
+    name: 'Sample Application',
+    normalizedName: 'sample-application',
+    version: '',
+    description: '',
+    createdAt: '2017-03-21T09:43:38.614Z',
+    updatedAt: '2017-03-21T09:43:53.073Z'
   },
-  'metadata': {
-    'input': [],
-    'output': []
+  mainItems: {
+    log_1: {
+      name: 'First Log',
+      description: 'description log 1',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_1',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 1',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    counter_1: {
+      name: 'Counter1',
+      description: 'description counter 1',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      id: 'counter_1',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        counterName: 'counter1',
+        increment: 'true',
+        reset: false
+      }
+    },
+    log_2: {
+      name: 'Second Log',
+      description: 'description second log',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_2',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 2',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    log_3: {
+      name: 'Third Log',
+      description: 'description third Log',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_3',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 3',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    '::branch::1': {
+      id: '::branch::1',
+      type: 3,
+      condition: 'true'
+    },
+    '::branch::2': {
+      id: '::branch::2',
+      type: 3,
+      condition: 'false'
+    }
   },
-  'paths': {
-    'root': { 'is': 'some_id_0' },
-    'nodes': {
-      'some_id_1': {
-        'id': 'some_id_1',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': [],
-        'type': 5,
-        'taskID': 'some_id_1'
-      },
-      'some_id_2': {
-        'id': 'some_id_2',
-        '__status': { 'isSelected': false },
-        'children': [
-          'some_id_0',
-          'some_id_1'
+  errorItems: {},
+  mainGraph: {
+    rootId: 'log_1',
+    nodes: {
+      log_1: {
+        title: 'First Log',
+        description: 'description log 1',
+        type: 'task',
+        id: 'log_1',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          'counter_1'
         ],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_2'
+        parents: []
       },
-      'some_id_3': {
-        'id': 'some_id_3',
-        '__status': { 'isSelected': false },
-        'children': [],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_3'
+      counter_1: {
+        title: 'Counter1',
+        description: 'description counter 1',
+        type: 'task',
+        id: 'counter_1',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          '::branch::1'
+        ],
+        parents: [
+          'log_1'
+        ]
       },
-      'some_id_4': {
-        'id': 'some_id_4',
-        '__status': { 'isSelected': false },
-        'children': [],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_4'
+      log_2: {
+        title: 'Second Log',
+        description: 'description second log',
+        type: 'task',
+        id: 'log_2',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          '::branch::2'
+        ],
+        parents: [
+          '::branch::1'
+        ]
       },
-      'some_id_5': {
-        'id': 'some_id_5',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': ['some_id_0'],
-        'type': 6,
-        'taskID': 'some_id_5'
+      log_3: {
+        title: 'Third Log',
+        description: 'description third Log',
+        type: 'task',
+        id: 'log_3',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [],
+        parents: [
+          '::branch::2'
+        ]
       },
-      'some_id_6': {
-        'id': 'some_id_6',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': ['some_id_0'],
-        'type': 6,
-        'taskID': 'some_id_6'
+      '::branch::1': {
+        id: '::branch::1',
+        type: 'branch',
+        parents: [
+          'counter_1'
+        ],
+        children: [
+          'log_2'
+        ],
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        }
+      },
+      '::branch::2': {
+        id: '::branch::2',
+        type: 'branch',
+        parents: [
+          'log_2'
+        ],
+        children: [
+          'log_3'
+        ],
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        }
       }
     }
   },
-  'items': {
-    'some_id_7': {
-      'name': 'First Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 1',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
-        ]
-      },
-      'inputMappings': [],
-      'id': 'some_id_7',
-      'type': 1,
-      'activityType': 'tibco-log'
+  errorGraph: {
+    rootId: null,
+    nodes: {}
+  },
+  schemas: {
+    'github.com/TIBCOSoftware/flogo-contrib/activity/log': {
+      id: 'tibco-log',
+      name: 'tibco-log',
+      version: '0.0.1',
+      description: 'Simple Log Activity',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+      inputs: [
+        {
+          name: 'message',
+          type: 'string',
+          value: ''
+        },
+        {
+          name: 'flowInfo',
+          type: 'boolean',
+          value: 'true'
+        },
+        {
+          name: 'addToFlow',
+          type: 'boolean',
+          value: 'true'
+        }
+      ],
+      outputs: [
+        {
+          name: 'message',
+          type: 'string'
+        }
+      ]
     },
-    'some_id_8': {
-      'name': 'Counter1',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
-      'description': 'Simple Global Counter Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'counterName',
-            'type': 'string',
-            'value': 'counter1',
-            'required': false
-          },
-          {
-            'name': 'increment',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'reset',
-            'type': 'boolean',
-            'value': false,
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'value',
-            'type': 'integer'
-          }
-        ]
-      },
-      'inputMappings': [],
-      'id': 'some_id_8',
-      'type': 1,
-      'activityType': 'tibco-counter'
-    },
-    'some_id_9': {
-      'name': 'Second Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 2',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
-        ]
-      },
-      'inputMappings': [],
-      'id': 'some_id_9',
-      'type': 1,
-      'activityType': 'tibco-log'
-    },
-    'some_id_10': {
-      'name': 'Third Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 3',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
-        ]
-      },
-      'inputMappings': [],
-      'id': 'some_id_10',
-      'type': 1,
-      'activityType': 'tibco-log'
-    },
-    'some_id_11': {
-      'id': 'some_id_11',
-      'type': 3,
-      'description': undefined,
-      'name': undefined,
-      'condition': 'true'
-    },
-    'some_id_12': {
-      'id': 'some_id_12',
-      'type': 3,
-      'description': undefined,
-      'name': undefined,
-      'condition': 'false'
+    'github.com/TIBCOSoftware/flogo-contrib/activity/counter': {
+      id: 'tibco-counter',
+      name: 'tibco-counter',
+      version: '0.0.1',
+      description: 'Simple Global Counter Activity',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      inputs: [
+        {
+          name: 'counterName',
+          type: 'string',
+          required: true
+        },
+        {
+          name: 'increment',
+          type: 'boolean'
+        },
+        {
+          name: 'reset',
+          type: 'boolean'
+        }
+      ],
+      outputs: [
+        {
+          name: 'value',
+          type: 'integer'
+        }
+      ]
     }
+  },
+  metadata: {
+    input: [],
+    output: []
   }
 };
 
-export let mockResultantUIFlowWithError = {
-  'name': 'Test flow 1',
-  'description': 'Hello world!!',
-  'appId': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-  'app': {
-    'id': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-    'name': 'Sample Application',
-    'normalizedName': 'sample-application',
-    'version': '',
-    'description': '',
-    'createdAt': '2017-03-21T09:43:38.614Z',
-    'updatedAt': '2017-03-21T09:43:53.073Z'
+export const mockResultantUIFlowWithError = {
+  id: 'test_flow_1',
+  name: 'Test flow 1',
+  description: 'Hello world!!',
+  appId: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
+  app: {
+    id: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
+    name: 'Sample Application',
+    normalizedName: 'sample-application',
+    version: '',
+    description: '',
+    createdAt: '2017-03-21T09:43:38.614Z',
+    updatedAt: '2017-03-21T09:43:53.073Z'
   },
-  'metadata': {
-    'input': [],
-    'output': []
+  mainItems: {
+    log_1: {
+      name: 'First Log',
+      description: 'description log 1',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_1',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 1',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    counter_1: {
+      name: 'Counter1',
+      description: 'description counter 1',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      id: 'counter_1',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        counterName: 'counter1',
+        increment: 'true',
+        reset: false
+      }
+    },
+    log_2: {
+      name: 'Second Log',
+      description: 'description second log',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_2',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 2',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    log_3: {
+      name: 'Third Log',
+      description: 'description third Log',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_3',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 3',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    '::branch::3': {
+      id: '::branch::3',
+      type: 3,
+      condition: 'true'
+    },
+    '::branch::4': {
+      id: '::branch::4',
+      type: 3,
+      condition: 'false'
+    }
   },
-  'paths': {
-    'root': { 'is': 'some_id_0' },
-    'nodes': {
-      'some_id_1': {
-        'id': 'some_id_1',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': [],
-        'type': 5,
-        'taskID': 'some_id_1'
-      },
-      'some_id_2': {
-        'id': 'some_id_2',
-        '__status': { 'isSelected': false },
-        'children': [
-          'some_id_0',
-          'some_id_1'
-        ],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_2'
-      },
-      'some_id_3': {
-        'id': 'some_id_3',
-        '__status': { 'isSelected': false },
-        'children': [],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_3'
-      },
-      'some_id_4': {
-        'id': 'some_id_4',
-        '__status': { 'isSelected': false },
-        'children': [],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_4'
-      },
-      'some_id_5': {
-        'id': 'some_id_5',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': ['some_id_0'],
-        'type': 6,
-        'taskID': 'some_id_5'
-      },
-      'some_id_6': {
-        'id': 'some_id_6',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': ['some_id_0'],
-        'type': 6,
-        'taskID': 'some_id_6'
+  errorItems: {
+    error_log: {
+      name: 'Error Log',
+      description: 'error log description',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'error_log',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'Error Log 1',
+        flowInfo: 'true',
+        addToFlow: 'true'
       }
     }
   },
-  'items': {
-    'some_id_7': {
-      'name': 'First Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 1',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
+  mainGraph: {
+    rootId: 'log_1',
+    nodes: {
+      log_1: {
+        title: 'First Log',
+        description: 'description log 1',
+        type: 'task',
+        id: 'log_1',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          'counter_1'
         ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
+        parents: []
+      },
+      counter_1: {
+        title: 'Counter1',
+        description: 'description counter 1',
+        type: 'task',
+        id: 'counter_1',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          '::branch::3'
+        ],
+        parents: [
+          'log_1'
         ]
       },
-      'inputMappings': [],
-      'id': 'some_id_7',
-      'type': 1,
-      'activityType': 'tibco-log'
-    },
-    'some_id_8': {
-      'name': 'Counter1',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
-      'description': 'Simple Global Counter Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'counterName',
-            'type': 'string',
-            'value': 'counter1',
-            'required': false
-          },
-          {
-            'name': 'increment',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'reset',
-            'type': 'boolean',
-            'value': false,
-            'required': false
-          }
+      log_2: {
+        title: 'Second Log',
+        description: 'description second log',
+        type: 'task',
+        id: 'log_2',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          '::branch::4'
         ],
-        'outputs': [
-          {
-            'name': 'value',
-            'type': 'integer'
-          }
+        parents: [
+          '::branch::3'
         ]
       },
-      'inputMappings': [],
-      'id': 'some_id_8',
-      'type': 1,
-      'activityType': 'tibco-counter'
-    },
-    'some_id_9': {
-      'name': 'Second Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 2',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
+      log_3: {
+        title: 'Third Log',
+        description: 'description third Log',
+        type: 'task',
+        id: 'log_3',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [],
+        parents: [
+          '::branch::4'
         ]
       },
-      'inputMappings': [],
-      'id': 'some_id_9',
-      'type': 1,
-      'activityType': 'tibco-log'
-    },
-    'some_id_10': {
-      'name': 'Third Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 3',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
+      '::branch::3': {
+        id: '::branch::3',
+        type: 'branch',
+        parents: [
+          'counter_1'
         ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
-        ]
+        children: [
+          'log_2'
+        ],
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        }
       },
-      'inputMappings': [],
-      'id': 'some_id_10',
-      'type': 1,
-      'activityType': 'tibco-log'
-    },
-    'some_id_11': {
-      'id': 'some_id_11',
-      'type': 3,
-      'description': undefined,
-      'name': undefined,
-      'condition': 'true'
-    },
-    'some_id_12': {
-      'id': 'some_id_12',
-      'type': 3,
-      'description': undefined,
-      'name': undefined,
-      'condition': 'false'
-    }
-  },
-  'errorHandler': {
-    'name': 'Test flow 1',
-    'description': 'Hello world!!',
-    'appId': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-    'app': {
-      'id': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-      'name': 'Sample Application',
-      'normalizedName': 'sample-application',
-      'version': '',
-      'description': '',
-      'createdAt': '2017-03-21T09:43:38.614Z',
-      'updatedAt': '2017-03-21T09:43:53.073Z'
-    },
-    'metadata': {
-      'input': [],
-      'output': []
-    },
-    'paths': {
-      'root': { 'is': 'some_id_0' },
-      'nodes': {
-        'some_id_1': {
-          'id': 'some_id_1',
-          '__status': { 'isSelected': false },
-          'children': [],
-          'parents': [],
-          'type': 5,
-          'taskID': 'some_id_1'
+      '::branch::4': {
+        id: '::branch::4',
+        type: 'branch',
+        parents: [
+          'log_2'
+        ],
+        children: [
+          'log_3'
+        ],
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
         }
       }
-    },
-    'items': {
-      'some_id_2': {
-        'name': 'Error Log',
-        'version': '0.0.1',
-        'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-        'description': 'Simple Log Activity',
-        'installed': true,
-        'settings': {},
-        'outputs': [],
-        'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-        'endpoint': { 'settings': [] },
-        '__props': { 'errors': [] },
-        '__status': {},
-        'attributes': {
-          'inputs': [
-            {
-              'name': 'message',
-              'type': 'string',
-              'value': 'Error Log 1',
-              'required': false
-            },
-            {
-              'name': 'flowInfo',
-              'type': 'boolean',
-              'value': 'true',
-              'required': false
-            },
-            {
-              'name': 'addToFlow',
-              'type': 'boolean',
-              'value': 'true',
-              'required': false
-            }
-          ],
-          'outputs': [
-            {
-              'name': 'message',
-              'type': 'string'
-            }
-          ]
+    }
+  },
+  errorGraph: {
+    rootId: 'error_log',
+    nodes: {
+      error_log: {
+        title: 'Error Log',
+        type: 'task',
+        description: 'error log description',
+        id: 'error_log',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
         },
-        'inputMappings': [],
-        'id': 'some_id_2',
-        'type': 1,
-        'activityType': 'tibco-log'
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [],
+        parents: []
       }
     }
+  },
+  schemas: {
+    'github.com/TIBCOSoftware/flogo-contrib/activity/log': {
+      id: 'tibco-log',
+      name: 'tibco-log',
+      version: '0.0.1',
+      description: 'Simple Log Activity',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+      inputs: [
+        {
+          name: 'message',
+          type: 'string',
+          value: ''
+        },
+        {
+          name: 'flowInfo',
+          type: 'boolean',
+          value: 'true'
+        },
+        {
+          name: 'addToFlow',
+          type: 'boolean',
+          value: 'true'
+        }
+      ],
+      outputs: [
+        {
+          name: 'message',
+          type: 'string'
+        }
+      ]
+    },
+    'github.com/TIBCOSoftware/flogo-contrib/activity/counter': {
+      id: 'tibco-counter',
+      name: 'tibco-counter',
+      version: '0.0.1',
+      description: 'Simple Global Counter Activity',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      inputs: [
+        {
+          name: 'counterName',
+          type: 'string',
+          required: true
+        },
+        {
+          name: 'increment',
+          type: 'boolean'
+        },
+        {
+          name: 'reset',
+          type: 'boolean'
+        }
+      ],
+      outputs: [
+        {
+          name: 'value',
+          type: 'integer'
+        }
+      ]
+    }
+  },
+  metadata: {
+    input: [],
+    output: []
   }
 };
 
 export let mockResultantUIFlowWithTransformations = {
-  'name': 'Test flow 1',
-  'description': 'Hello world!!',
-  'appId': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-  'app': {
-    'id': 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
-    'name': 'Sample Application',
-    'normalizedName': 'sample-application',
-    'version': '',
-    'description': '',
-    'createdAt': '2017-03-21T09:43:38.614Z',
-    'updatedAt': '2017-03-21T09:43:53.073Z'
+  id: 'test_flow_1',
+  name: 'Test flow 1',
+  description: 'Hello world!!',
+  appId: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
+  app: {
+    id: 'e9712c97-4a9e-4e95-b815-33204ba1fb3a',
+    name: 'Sample Application',
+    normalizedName: 'sample-application',
+    version: '',
+    description: '',
+    createdAt: '2017-03-21T09:43:38.614Z',
+    updatedAt: '2017-03-21T09:43:53.073Z'
   },
-  'metadata': {
-    'input': [],
-    'output': []
+  mainItems: {
+    log_1: {
+      name: 'First Log',
+      description: 'description log 1',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_1',
+      inputMappings: [
+        {
+          type: 1,
+          value: '{T.content}',
+          mapTo: 'message'
+        }
+      ],
+      type: 1,
+      'return': false,
+      input: {
+        message: null,
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    counter_1: {
+      name: 'Counter1',
+      description: 'description counter 1',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      id: 'counter_1',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        counterName: 'counter1',
+        increment: 'true',
+        reset: false
+      }
+    },
+    log_2: {
+      name: 'Second Log',
+      description: 'description second log',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_2',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 2',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    log_3: {
+      name: 'Third Log',
+      description: 'description third Log',
+      settings: {},
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      id: 'log_3',
+      inputMappings: [],
+      type: 1,
+      'return': false,
+      input: {
+        message: 'I am here 3',
+        flowInfo: 'true',
+        addToFlow: 'true'
+      }
+    },
+    '::branch::5': {
+      id: '::branch::5',
+      type: 3,
+      condition: 'true'
+    },
+    '::branch::6': {
+      id: '::branch::6',
+      type: 3,
+      condition: 'false'
+    }
   },
-  'paths': {
-    'root': { 'is': 'some_id_0' },
-    'nodes': {
-      'some_id_1': {
-        'id': 'some_id_1',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': [],
-        'type': 5,
-        'taskID': 'some_id_1'
-      },
-      'some_id_2': {
-        'id': 'some_id_2',
-        '__status': { 'isSelected': false },
-        'children': [
-          'some_id_0',
-          'some_id_1'
+  errorItems: {},
+  mainGraph: {
+    rootId: 'log_1',
+    nodes: {
+      log_1: {
+        title: 'First Log',
+        description: 'description log 1',
+        type: 'task',
+        id: 'log_1',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          'counter_1'
         ],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_2'
+        parents: []
       },
-      'some_id_3': {
-        'id': 'some_id_3',
-        '__status': { 'isSelected': false },
-        'children': [],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_3'
+      counter_1: {
+        title: 'Counter1',
+        description: 'description counter 1',
+        type: 'task',
+        id: 'counter_1',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          '::branch::5'
+        ],
+        parents: [
+          'log_1'
+        ]
       },
-      'some_id_4': {
-        'id': 'some_id_4',
-        '__status': { 'isSelected': false },
-        'children': [],
-        'parents': ['some_id_0'],
-        'type': 5,
-        'taskID': 'some_id_4'
+      log_2: {
+        title: 'Second Log',
+        description: 'description second log',
+        type: 'task',
+        id: 'log_2',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [
+          '::branch::6'
+        ],
+        parents: [
+          '::branch::5'
+        ]
       },
-      'some_id_5': {
-        'id': 'some_id_5',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': ['some_id_0'],
-        'type': 6,
-        'taskID': 'some_id_5'
+      log_3: {
+        title: 'Third Log',
+        description: 'description third Log',
+        type: 'task',
+        id: 'log_3',
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        },
+        children: [],
+        parents: [
+          '::branch::6'
+        ]
       },
-      'some_id_6': {
-        'id': 'some_id_6',
-        '__status': { 'isSelected': false },
-        'children': ['some_id_0'],
-        'parents': ['some_id_0'],
-        'type': 6,
-        'taskID': 'some_id_6'
+      '::branch::5': {
+        id: '::branch::5',
+        type: 'branch',
+        parents: [
+          'counter_1'
+        ],
+        children: [
+          'log_2'
+        ],
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        }
+      },
+      '::branch::6': {
+        id: '::branch::6',
+        type: 'branch',
+        parents: [
+          'log_2'
+        ],
+        children: [
+          'log_3'
+        ],
+        features: {
+          selectable: true,
+          canHaveChildren: true,
+          canBranch: true,
+          deletable: true,
+          subflow: false,
+          'final': false
+        },
+        status: {
+          invalid: false,
+          executed: false,
+          executionErrored: null,
+          iterable: false
+        }
       }
     }
   },
-  'items': {
-    'some_id_7': {
-      'name': 'First Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': null,
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
-        ]
-      },
-      'inputMappings': [
+  errorGraph: {
+    rootId: null,
+    nodes: {}
+  },
+  schemas: {
+    'github.com/TIBCOSoftware/flogo-contrib/activity/log': {
+      id: 'tibco-log',
+      name: 'tibco-log',
+      version: '0.0.1',
+      description: 'Simple Log Activity',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
+      inputs: [
         {
-          'type': 1,
-          'value': '{T.content}',
-          'mapTo': 'message'
+          name: 'message',
+          type: 'string',
+          value: ''
+        },
+        {
+          name: 'flowInfo',
+          type: 'boolean',
+          value: 'true'
+        },
+        {
+          name: 'addToFlow',
+          type: 'boolean',
+          value: 'true'
         }
       ],
-      'id': 'some_id_7',
-      'type': 1,
-      'activityType': 'tibco-log'
+      outputs: [
+        {
+          name: 'message',
+          type: 'string'
+        }
+      ]
     },
-    'some_id_8': {
-      'name': 'Counter1',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
-      'description': 'Simple Global Counter Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'counterName',
-            'type': 'string',
-            'value': 'counter1',
-            'required': false
-          },
-          {
-            'name': 'increment',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'reset',
-            'type': 'boolean',
-            'value': false,
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'value',
-            'type': 'integer'
-          }
-        ]
-      },
-      'inputMappings': [],
-      'id': 'some_id_8',
-      'type': 1,
-      'activityType': 'tibco-counter'
-    },
-    'some_id_9': {
-      'name': 'Second Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 2',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
-        ]
-      },
-      'inputMappings': [],
-      'id': 'some_id_9',
-      'type': 1,
-      'activityType': 'tibco-log'
-    },
-    'some_id_10': {
-      'name': 'Third Log',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/log',
-      'description': 'Simple Log Activity',
-      'installed': true,
-      'settings': {},
-      'outputs': [],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/activity/log',
-      'endpoint': { 'settings': [] },
-      '__props': { 'errors': [] },
-      '__status': {},
-      'attributes': {
-        'inputs': [
-          {
-            'name': 'message',
-            'type': 'string',
-            'value': 'I am here 3',
-            'required': false
-          },
-          {
-            'name': 'flowInfo',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          },
-          {
-            'name': 'addToFlow',
-            'type': 'boolean',
-            'value': 'true',
-            'required': false
-          }
-        ],
-        'outputs': [
-          {
-            'name': 'message',
-            'type': 'string'
-          }
-        ]
-      },
-      'inputMappings': [],
-      'id': 'some_id_10',
-      'type': 1,
-      'activityType': 'tibco-log'
-    },
-    'some_id_11': {
-      'id': 'some_id_11',
-      'type': 3,
-      'description': undefined,
-      'name': undefined,
-      'condition': 'true'
-    },
-    'some_id_12': {
-      'id': 'some_id_12',
-      'type': 3,
-      'description': undefined,
-      'name': undefined,
-      'condition': 'false'
+    'github.com/TIBCOSoftware/flogo-contrib/activity/counter': {
+      id: 'tibco-counter',
+      name: 'tibco-counter',
+      version: '0.0.1',
+      description: 'Simple Global Counter Activity',
+      ref: 'github.com/TIBCOSoftware/flogo-contrib/activity/counter',
+      homepage: 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/activity/counter',
+      inputs: [
+        {
+          name: 'counterName',
+          type: 'string',
+          required: true
+        },
+        {
+          name: 'increment',
+          type: 'boolean'
+        },
+        {
+          name: 'reset',
+          type: 'boolean'
+        }
+      ],
+      outputs: [
+        {
+          name: 'value',
+          type: 'integer'
+        }
+      ]
     }
+  },
+  metadata: {
+    input: [],
+    output: []
   }
 };
