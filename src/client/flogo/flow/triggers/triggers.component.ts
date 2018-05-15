@@ -23,19 +23,7 @@ import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENT
 import {IPropsToUpdateFormBuilder} from '../flow.component';
 import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
 import {ConfiguratorService as TriggersConfiguratorService} from '@flogo/flow/triggers/configurator';
-
-export interface IFlogoTrigger {
-  name: string;
-  ref: string;
-  description: string;
-  settings: any;
-  id: string;
-  createdAt: string;
-  updatedAt: string | null;
-  handlers: any[];
-  appId: string;
-  handler?: any;
-}
+import {IFlogoTrigger} from '@flogo/flow/core';
 
 @Component({
   selector : 'flogo-flow-triggers',
@@ -116,7 +104,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       }
     );
 
-    this._triggerConfiguratorService.save$.takeUntil(this._ngDestroy$).subscribe(({triggers}) => {
+    this._triggerConfiguratorService.save$.takeUntil(this._ngDestroy$).subscribe(triggers => {
       triggers.map(modifiedTrigger => {
         this._restAPIHandlerService
         // Update the handler using the updateHandler REST API call

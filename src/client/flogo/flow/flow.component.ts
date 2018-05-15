@@ -70,7 +70,6 @@ import {
 } from '@flogo/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
-import { IFlogoTrigger } from './triggers/models';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { SaveTaskConfigEventData } from './task-configurator';
 import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema } from '@flogo/core/models';
@@ -82,6 +81,7 @@ import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { makeErrorTask } from './core/models/make-error-task';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
+import {IFlogoTrigger} from '@flogo/flow/core';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
