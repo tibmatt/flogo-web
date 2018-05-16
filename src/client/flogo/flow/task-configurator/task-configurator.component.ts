@@ -62,6 +62,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   inputMappingsConfig: InputMapperConfig;
   currentMappings: Mappings;
   isSubflowType: boolean;
+  isReturnActivity: boolean;
   subFlowConfig: SubFlowConfig;
   subflowList: ActionBase[];
   context: SelectTaskConfigEventData;
@@ -69,8 +70,9 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   isActive = false;
   defaultTabsInfo: {name: string, labelKey: string}[] = [
+    { name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW' },
     { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
-    { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' },
+    { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' }
   ];
 
   private _subscriptions: any[];
@@ -81,6 +83,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
               private _postService: PostService) {
     this.initSubscriptions();
     this.isSubflowType = false;
+    this.isReturnActivity = false;
     this.resetState();
   }
 
@@ -214,6 +217,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.title = eventData.title;
     this.inputScope = eventData.scope;
     this.isSubflowType = isSubflowTask(this.currentTile.type);
+    this.isReturnActivity = this.context.return;
     this.resetState();
 
     if (!this.title && this.currentTile) {
@@ -280,13 +284,16 @@ export class TaskConfiguratorComponent implements OnDestroy {
     }
     this.showSubflowList = false;
     if (this.isSubflowType) {
-      this.defaultTabsInfo.unshift({name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW'});
       this.tabs = Tabs.create(this.defaultTabsInfo);
       this.tabs.get(TASK_TABS.SUBFLOW).isSelected = true;
+    } else if (this.isReturnActivity) {
+      const returnActivityTabs = this.defaultTabsInfo.filter(val => val.name === TASK_TABS.INPUT_MAPPINGS);
+      this.tabs = Tabs.create(returnActivityTabs);
+      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
     } else {
-      this.defaultTabsInfo = this.defaultTabsInfo.filter(val => val.name !==  TASK_TABS.SUBFLOW);
-      this.tabs = Tabs.create(this.defaultTabsInfo);
-      this.tabs.get( TASK_TABS.INPUT_MAPPINGS).isSelected = true;
+      const activityTabs = this.defaultTabsInfo.filter(val => val.name !== TASK_TABS.SUBFLOW);
+      this.tabs = Tabs.create(activityTabs);
+      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
     }
   }
 

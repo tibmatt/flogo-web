@@ -1245,6 +1245,7 @@ export class FlowComponent implements OnInit, OnDestroy {
             isIterable: isIterableTask(selectedItem),
             iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
           },
+          return: (<ItemActivityTask>selectedItem).return,
         }
       }
     );
