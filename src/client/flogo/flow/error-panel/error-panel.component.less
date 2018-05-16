@@ -1,44 +1,65 @@
-@open-button-height: 45px;
-// ~"" syntax to avoid less overwriting calc
-@hide-position: translateY(~"calc(100% - " @open-button-height ~")");
-
-.toggle-button {
-  background: #36bfbb;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-  min-width: 55px;
-  height: 55px;
-  padding: 3px 10px;
-  border-radius: 5px;
-
-  &__icon {
-    margin-left: 5px;
-  }
-
-}
-
-.toggle-button--open {
-  position: relative;
-  top: 0;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
-  border-radius: 5px 5px 0 0;
-}
-
-.error-panel-close {
-  display: inline-block;
-  padding: 11px;
-  transform: rotate(90deg);
-}
-
-.error-panel-open {
-  transform: rotate(270deg);
-}
-
 :host {
   width: 100%;
   position: fixed;
   bottom: 0;
   pointer-events: none;
   z-index: 1;
+}
+
+:host(.is-open) {
+  height: 100%;
+}
+
+.toggle-button {
+  background: #36bfbb;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  min-width: 55px;
+  height: 48px;
+  width: 198px;
+  margin-top: 0;
+  margin-right: 30px;
+  padding: 13px 16px;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  top: 0;
+  display: flex;
+}
+
+.toggle-button--open {
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.toggle-button__text {
+  display: inline-block;
+  padding-left: 8px;
+  flex: 1;
+  font-size: 18px;
+  text-align: left;
+}
+
+.toggle-button__icon {
+  display: inline-block;
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+  position: relative;
+  top: 2px;
+}
+
+.toggle-button__toggler {
+  display: block;
+  transform: rotate(90deg);
+  transform-origin: center center;
+  margin: 0;
+  padding: 0;
+  line-height: 16px;
+  position: relative;
+  height: 16px;
+  top: 4px;
+
+  &.is-open {
+    transform: rotate(270deg);
+  }
 }
 
 .layout {
@@ -56,14 +77,10 @@
 
 .layout__main {
   align-items: center;
-  background-color: transparent;
   display: flex;
   flex-direction: row;
   justify-content: center;
   pointer-events: all;
-
-  transition: background-color 200ms ease-in-out;
-
   width: 100%;
 }
 
@@ -73,87 +90,24 @@
   width: 29%;
 }
 
-.error-icon {
-  width: 21px;
-  height: 21px;
-  object-fit: contain;
-}
 .wrapper {
   align-self: flex-end;
   position: relative;
-  width: 98%;
-
-  transition: transform 200ms ease-out;
-
-  transform: @hide-position;
-
-}
-
-:host.is-open,
-:host.is-opening,
-:host.is-closing {
-  height: 100%;
   width: 100%;
-
-  .layout__main {
-
-  }
-
-  .error-panel {
-    border-radius: 5px 5px 0 0;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.33);
-    background: #fff;
-  }
-
-  .wrapper {
-    transform: translateY(0);
-  }
-
 }
 
-:host.is-opening .wrapper {
-  transform: @hide-position;
-
-  .error-panel {
-    min-height: 200px;
-  }
-
+.error-panel {
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.33);
+  background: #fff;
 }
 
-:host.is-closing {
-  .layout__main {
-    background-color: transparent;
-  }
-
-  .wrapper {
-    transform: @hide-position;
-  }
-
+.error-panel__content {
+  min-height: 144px;
+  display: flex;
 }
 
 .actions-container {
   display: flex;
   justify-content: flex-end;
-}
-
-.error-handler-text {
-  padding: 10px;
-  font-size: 18px;
-}
-
-.error-toggle-button {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.action-button {
-  display: block;
-  margin-top: 0;
-  width: 198px;
-  height: 48px;
-  margin-right: 30px;
-}
-
-a:link {
-  color: white;
 }

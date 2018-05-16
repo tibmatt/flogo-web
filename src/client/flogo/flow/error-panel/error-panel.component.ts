@@ -1,115 +1,89 @@
-import {Component, HostBinding, OnDestroy, HostListener} from '@angular/core';
-import {PostService} from '@flogo/core/services/post.service';
+import { Component, HostBinding, OnDestroy, HostListener } from '@angular/core';
+import { animate, style, transition, trigger, AnimationEvent, state } from '@angular/animations';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs/Subscription';
+import { filter } from 'rxjs/operators';
 
-import {SUB_EVENTS, PUB_EVENTS} from './messages';
+import { FlowState, FlowActions, FlowSelectors } from '../core/state';
+
+const TOGGLE_BUTTON_HEIGHT = 48;
+const NAV_HEIGHT = 48;
 
 @Component({
   selector: 'flogo-flow-error-panel',
   templateUrl: 'error-panel.component.html',
-  styleUrls: ['error-panel.component.less']
+  styleUrls: ['error-panel.component.less'],
+  animations: [
+    trigger('errorPanelIsOpen', [
+      state('false', style({ transform: `translateY(calc(100% - ${TOGGLE_BUTTON_HEIGHT}px))` })),
+      state('true', style({ transform: '*' })),
+      transition('false => true', animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition('true => false', animate('200ms cubic-bezier(0.4, 0.0, 1, 1)')),
+    ]),
+  ],
 })
-
-
 export class FlogoFlowsDetailErrorPanelComponent implements OnDestroy {
 
   @HostBinding('class.is-open')
   isOpen = false;
-  @HostBinding('class.is-opening')
-  isOpening = false;
-  @HostBinding('class.is-closing')
-  isClosing = false;
+  displayContent = false;
+  isAnimating = false;
 
   isScreenScrolled  = false;
-  imgErrorHandler = '/assets/svg/error-icon-info.svg';
 
-  private subscriptions: Array<any>;
+  private subscription: Subscription;
 
-  constructor(private postService: PostService) {
-    this.initSubscribe();
-  }
-
-  public openLogs() {
-    window.open('http://localhost:3012');
+  constructor(private store: Store<FlowState>) {
+    this.subscription = this.store
+      .pipe(
+        select(FlowSelectors.selectErrorPanelStatus),
+        filter(isErrorPanelOpen => this.isOpen !== isErrorPanelOpen),
+      )
+      .subscribe(isErrorPanelOpen => {
+        this.isOpen = isErrorPanelOpen;
+        if (isErrorPanelOpen) {
+          this.displayContent = true;
+        }
+      });
   }
 
   public toggle() {
-    this.isClosing = this.isOpen;
-    this.isOpening = !this.isClosing;
-
-    // let the animation setup take effect
-    setTimeout(() => {
-      this.isOpening = false;
-      this.isClosing = false;
-      this.isOpen = !this.isOpen;
-
-      if (this.isOpen) {
-        this.postService.publish( _.assign( {}, PUB_EVENTS.openPanel, { data : {} } ) );
-      } else {
-        this.postService.publish( _.assign( {}, PUB_EVENTS.closePanel, { data : {} } ) );
-      }
-
-    }, 100);
+    this.store.dispatch(new FlowActions.ErrorPanelStatusChange({ isOpen: !this.isOpen }));
   }
 
   public open() {
-    if (!this.isOpen && !this.isOpening) {
+    if (!this.isOpen) {
       this.toggle();
     }
   }
 
   public close() {
-    if (this.isOpen || this.isOpening) {
+    if (this.isOpen) {
       this.toggle();
     }
   }
 
+  public onAnimationEnd(event: AnimationEvent) {
+    if (!event.toState) {
+      this.displayContent = false;
+    }
+    this.isAnimating = false;
+  }
+
+  public onAnimationStart() {
+    this.isAnimating = true;
+  }
+
   public ngOnDestroy(): any {
-    this.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   @HostListener('window:scroll', ['$event'])
-  onPageScroll(event: Event) {
+  onPageScroll(event: UIEvent) {
     if (this.isOpen) {
-      const target = <any>event.target;
-      const NAV_HEIGHT = 48;
-      this.isScreenScrolled = !!(target && target.body && target.body.scrollTop > NAV_HEIGHT);
+      const target: any = event.target;
+      this.isScreenScrolled = Boolean(target && target.body && target.body.scrollTop > NAV_HEIGHT);
     }
-  }
-
-  private initSubscribe() {
-    if ( _.isEmpty( this.subscriptions ) ) {
-      this.subscriptions = [];
-    }
-
-    if ( !this.postService ) {
-      console.error( 'No PostService Found..' );
-      return;
-    }
-
-    const subs = [
-      _.assign( {}, SUB_EVENTS.openPanel, { callback : this.open.bind(this) } ),
-      _.assign( {}, SUB_EVENTS.closePanel, { callback : this.close.bind(this) } )
-    ];
-
-    _.each(
-      subs, ( sub ) => {
-        this.subscriptions.push( this.postService.subscribe( sub ) );
-      }
-    );
-  }
-
-  private unsubscribe() {
-    if ( _.isEmpty( this.subscriptions ) ) {
-      return true;
-    }
-
-    _.each(
-      this.subscriptions, sub => {
-        this.postService.unsubscribe( sub );
-      }
-    );
-
-    return true;
   }
 
 }

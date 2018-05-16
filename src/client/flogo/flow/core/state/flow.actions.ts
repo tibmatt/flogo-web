@@ -14,6 +14,7 @@ export enum ActionType {
   ClearSelection = '[Flow] Clear selection',
   ExecutionWillStart = '[Flow] Execution will start',
   ExecutionUpdated = '[Flow] Execution updated',
+  ErrorPanelStatusChange = '[Flow] Error panel status change',
 }
 
 interface BaseFlowAction extends Action {
@@ -75,6 +76,11 @@ export class ExecutionStateUpdated implements BaseFlowAction {
   constructor(public payload: { changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> } }) {}
 }
 
+export class ErrorPanelStatusChange implements BaseFlowAction {
+  readonly type = ActionType.ErrorPanelStatusChange;
+  constructor(public payload: { isOpen: boolean }) {}
+}
+
 export type ActionsUnion =
   | Init
   | SelectCreateItem
@@ -86,4 +92,5 @@ export type ActionsUnion =
   | CreateBranch
   | ItemUpdated
   | ExecutionWillStart
-  | ExecutionStateUpdated;
+  | ExecutionStateUpdated
+  | ErrorPanelStatusChange;
