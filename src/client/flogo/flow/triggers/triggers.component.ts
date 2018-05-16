@@ -120,9 +120,9 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       triggers.map(modifiedTrigger => {
         this._restAPIHandlerService
         // Update the handler using the updateHandler REST API call
-          .updateHandler(modifiedTrigger.trigger.id, this.actionId, modifiedTrigger.changedMappings)
+          .updateHandler(modifiedTrigger.trigger.id, this.actionId, modifiedTrigger.mappings)
           .then(handler => {
-            const updatedHandler = _.assign({}, _.omit(handler, ['appId', 'triggerId']));
+            const updatedHandler = _.omit(handler, ['appId', 'triggerId']);
             const triggerToUpdate = this.triggers.find(t => t.id === modifiedTrigger.trigger.id);
             triggerToUpdate.handlers = modifiedTrigger.trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
             this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
@@ -295,15 +295,13 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
   }
 
   private openTriggerMapper(selectedTrigger: IFlogoTrigger) {
-    let triggersToConfigure: any[];
     Promise.all(this.triggersList.map(trigger => {
       const handler = trigger.handler;
       return this._converterService.getTriggerTask(trigger).then(triggerSchema => {
-        return Object.assign({}, {trigger, handler, triggerSchema});
+        return {trigger, handler, triggerSchema};
       });
     })).then(allTriggerDetails => {
-      triggersToConfigure = allTriggerDetails;
-      this._triggerConfiguratorService.open(triggersToConfigure, this.appDetails.metadata, selectedTrigger);
+      this._triggerConfiguratorService.open(allTriggerDetails, this.appDetails.metadata, selectedTrigger.id);
     });
 
   }
