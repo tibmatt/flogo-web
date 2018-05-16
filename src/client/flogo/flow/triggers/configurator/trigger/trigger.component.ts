@@ -1,5 +1,5 @@
-import { Component, EventEmitter, HostBinding, HostListener, Input, Output, state } from '@angular/core';
-import { TriggerStatus } from '../configurator.component';
+import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import {TriggerStatus} from '../interfaces';
 
 @Component({
   selector: 'flogo-triggers-configure-trigger',
@@ -12,7 +12,7 @@ export class ConfigureTriggerComponent {
   @Input()
   triggerData: TriggerStatus;
   @Output()
-  triggerSelected: EventEmitter<string> = new EventEmitter<string>();
+  selectTrigger: EventEmitter<string> = new EventEmitter<string>();
 
   @HostBinding('class.is-selected')
   get isSelected() {
@@ -24,6 +24,6 @@ export class ConfigureTriggerComponent {
 
   @HostListener('click')
   onTriggerSelect() {
-    this.triggerSelected.emit(this.triggerData.trigger.id);
+    this.selectTrigger.emit(this.triggerData.trigger.id);
   }
 }

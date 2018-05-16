@@ -2,10 +2,10 @@ import {ConfiguratorComponent} from './configurator.component';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement} from '@angular/core';
 import {ConfiguratorModule} from './configurator.module';
-import {ModalStatus} from './configurator.service';
 import {FlowMetaDataMock, TriggersMock} from './mocks/triggers.mock';
 import {By} from '@angular/platform-browser';
 import {FakeRootLanguageModule} from '@flogo/core/language/testing';
+import {ModalStatus} from './interfaces';
 
 describe('ConfiguratorComponent component', () => {
   let component: ConfiguratorComponent;

@@ -19,7 +19,8 @@
     <div class="configuration__triggers js-triggers-list">
       <flogo-triggers-configure-trigger class="js-trigger-element" *ngFor="let triggerData of triggersList"
                                         [triggerData]="triggerData"
-                                        [selectedTrigger]="selectedTriggerDetails.trigger.id" (triggerSelected)="changeTriggerSelection($event)">
+                                        [selectedTrigger]="selectedTriggerDetails.trigger.id"
+                                        (selectTrigger)="changeTriggerSelection($event)">
       </flogo-triggers-configure-trigger>
     </div>
     <div class="configuration__mapper" @triggerConfiguratorLayoutElement>

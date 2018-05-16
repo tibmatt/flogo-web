@@ -1,17 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
-import {ConfigurationStatus, HandlerMappings, ModalStatus} from '@flogo/flow/triggers/configurator/configurator.service';
 import { configuratorAnimations } from './configurator.animations';
-
-export interface TriggerStatus {
-  handler: any;
-  trigger: any;
-  triggerSchema: any;
-  isValid: boolean;
-  isDirty: boolean;
-  changedMappings?: HandlerMappings;
-}
+import {ConfigurationStatus, ModalStatus, TriggerStatus} from './interfaces';
 
 @Component({
   selector: 'flogo-triggers-configuration',

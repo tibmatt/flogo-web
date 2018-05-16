@@ -5,7 +5,7 @@ import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
 import {Tabs} from '@flogo/flow/shared/tabs/models/tabs.model';
 import {ConfiguratorService} from '../configurator.service';
-import {HandlerMappings} from '../configurator.service';
+import {HandlerMappings} from '../interfaces';
 
 const TRIGGER_TABS = {
   MAP_FLOW_INPUT: 'mapFlowInput',
