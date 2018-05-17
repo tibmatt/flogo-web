@@ -1,11 +1,11 @@
 import {Component, DebugElement, ViewChild} from '@angular/core';
-import {IFlogoTrigger} from '@flogo/flow/triggers/models';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NavigationEnd, Router} from '@angular/router';
 import {TriggerBlockComponent} from '@flogo/flow/triggers/trigger-block/trigger-block.component';
 import {Observable} from 'rxjs/Observable';
 import {FakeRootLanguageModule} from '@flogo/core/language/testing';
 import {By} from '@angular/platform-browser';
+import {Trigger} from '../../core';
 
 @Component({
   selector: 'flogo-container',
@@ -17,7 +17,7 @@ import {By} from '@angular/platform-browser';
   `
 })
 class FlogoContainerComponent {
-  triggerEntity: IFlogoTrigger;
+  triggerEntity: Trigger;
   isDeviceType: boolean;
   @ViewChild('triggerBlock') triggerBlock: TriggerBlockComponent;
 

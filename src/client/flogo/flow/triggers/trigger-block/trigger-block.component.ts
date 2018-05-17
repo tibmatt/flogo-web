@@ -1,13 +1,13 @@
 import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
-import {IFlogoTrigger} from '@flogo/flow/triggers/models';
 import {NavigationEnd, Router} from '@angular/router';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
 import {TRIGGER_MENU_OPERATION} from '@flogo/core/constants';
+import {Trigger} from '../../core';
 
 export interface TriggerMenuSelectionEvent {
   operation: string;
-  trigger: IFlogoTrigger;
+  trigger: Trigger;
 }
 
 @Component({
@@ -18,7 +18,7 @@ export interface TriggerMenuSelectionEvent {
 
 export class TriggerBlockComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
-  trigger: IFlogoTrigger;
+  trigger: Trigger;
   @Input()
   isDevice: boolean;
   @Output()
