@@ -1230,6 +1230,10 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
 
     const taskSettings = selectedItem.settings;
+    const iterator = (<ItemActivityTask>selectedItem).return ? null : {
+      isIterable: isIterableTask(selectedItem),
+      iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
+    };
     const dataToPublish = _.assign(
       {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
         data: <SelectTaskConfigEventData>{
@@ -1241,11 +1245,7 @@ export class FlowComponent implements OnInit, OnDestroy {
           handlerId: diagramId,
           title: transformTitle,
           inputsSearchPlaceholderKey: searchTitleKey,
-          iterator: {
-            isIterable: isIterableTask(selectedItem),
-            iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
-          },
-          return: (<ItemActivityTask>selectedItem).return,
+          iterator: iterator
         }
       }
     );

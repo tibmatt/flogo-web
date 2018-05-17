@@ -48,7 +48,6 @@ export interface SelectTaskConfigEventData {
   subflowSchema?: ActionBase;
   appId?: string;
   actionId?: string;
-  return?: boolean;
 }
 
 export interface SaveTaskConfigEventData {
