@@ -2,6 +2,7 @@ import { FlowState } from '../flow.state';
 import { RemoveItem } from '../flow.actions';
 import { getGraphName, getItemsDictionaryName, PayloadOf } from '../utils';
 import { removeNode } from '../../models/flow/remove-node';
+import { CurrentSelection, SelectionType } from '../../models/selection';
 
 export function removeItem(state: FlowState, payload: PayloadOf<RemoveItem>) {
   const {handlerType, itemId} = payload;
@@ -12,7 +13,7 @@ export function removeItem(state: FlowState, payload: PayloadOf<RemoveItem>) {
     return state;
   }
   let currentSelection = state.currentSelection;
-  if (currentSelection && !state.mainGraph[currentSelection.taskId] && !state.errorGraph[currentSelection.taskId]) {
+  if (shouldClearCurrentSelection(currentSelection, itemId)) {
     currentSelection = null;
   }
   return {
@@ -21,4 +22,20 @@ export function removeItem(state: FlowState, payload: PayloadOf<RemoveItem>) {
     [itemDictionaryName]: result.items,
     currentSelection
   };
+}
+
+function shouldClearCurrentSelection(selection: CurrentSelection, taskIdToRemove: string): boolean {
+  if (!selection) {
+    return false;
+  }
+  let taskId;
+  if (selection.type === SelectionType.Task) {
+    taskId = selection.taskId;
+  } else if (selection.type === SelectionType.InsertTask) {
+    taskId = selection.parentId;
+  }
+  if (!taskId) {
+    return false;
+  }
+  return taskIdToRemove === taskId;
 }

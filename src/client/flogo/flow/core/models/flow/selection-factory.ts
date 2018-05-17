@@ -1,16 +1,24 @@
-import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
+import { SelectionType, InsertTaskSelection, TaskSelection, TriggerSelection } from '../selection';
+import { HandlerType } from '../handler-type';
 
-export function makeTaskSelection(taskId: string) {
+export function makeTaskSelection(taskId: string): TaskSelection {
   return {
-    type: DiagramSelectionType.Node,
+    type: SelectionType.Task,
     taskId,
   };
 }
 
-export function makeInsertSelection(diagramId: string, parentTaskId: string) {
+export function makeInsertSelection(handlerType: HandlerType, parentId: string): InsertTaskSelection {
   return {
-    type: DiagramSelectionType.Insert,
-    taskId: parentTaskId,
-    diagramId,
+    type: SelectionType.InsertTask,
+    parentId,
+    handlerType,
+  };
+}
+
+export function makeTriggerSelection(triggerId: string): TriggerSelection {
+  return {
+    type: SelectionType.Trigger,
+    triggerId,
   };
 }

@@ -1,10 +1,12 @@
-import { DiagramSelection } from '@flogo/packages/diagram';
 import { UiFlow } from '@flogo/core';
 import * as fromRoot from '../../../store';
+import { CurrentSelection } from '../models/selection';
 
 export interface FlowState extends UiFlow {
   isErrorPanelOpen: boolean;
-  currentSelection: DiagramSelection;
+  currentSelection: null | CurrentSelection;
+  // todo: trigger interface?
+  triggers: any[];
 }
 
 export interface State extends fromRoot.State {
@@ -20,4 +22,5 @@ export const INITIAL_STATE: FlowState = {
   currentSelection: null,
   isErrorPanelOpen: false,
   schemas: {},
+  triggers: [],
 };
