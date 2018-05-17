@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnDestroy, HostListener } from '@angular/core';
+import { Component, HostBinding, OnDestroy, HostListener, TemplateRef, Input } from '@angular/core';
 import { animate, style, transition, trigger, AnimationEvent, state } from '@angular/animations';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
@@ -20,15 +20,14 @@ const NAV_HEIGHT = 48;
       transition('false => true', animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
       transition('true => false', animate('200ms cubic-bezier(0.4, 0.0, 1, 1)')),
     ]),
+    trigger('panelContent', []),
   ],
 })
 export class FlogoFlowsDetailErrorPanelComponent implements OnDestroy {
-
-  @HostBinding('class.is-open')
-  isOpen = false;
+  @Input() templateRef: TemplateRef<any>;
+  @HostBinding('class.is-open') isOpen = false;
   displayContent = false;
   isAnimating = false;
-
   isScreenScrolled  = false;
 
   private subscription: Subscription;

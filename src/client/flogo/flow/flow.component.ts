@@ -284,7 +284,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         if (updated && !this._isCurrentProcessDirty) {
           this._isCurrentProcessDirty = true;
         }
-        console.groupCollapsed('flowSaved?', updated);
+        console.log('flowSaved?', updated);
       });
   }
 
