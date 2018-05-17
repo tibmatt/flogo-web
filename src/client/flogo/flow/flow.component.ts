@@ -81,7 +81,7 @@ import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { makeErrorTask } from './core/models/make-error-task';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
-import {IFlogoTrigger} from '@flogo/flow/core';
+import {Trigger} from './core';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -111,7 +111,7 @@ const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.ty
 export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
   public flowState: FlowState;
-  public triggersList: IFlogoTrigger[];
+  public triggersList: Trigger[];
   public runnableInfo: {
     disabled: boolean;
     disableReason?: string;

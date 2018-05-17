@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { FlowMetadata } from '@flogo/core/interfaces/flow';
-import {IFlogoTrigger} from '@flogo/flow/core';
+import {Trigger} from '../../core';
 
 export interface HandlerMappings {
   actionMappings: { input: any[], output: any[] };
@@ -21,7 +21,7 @@ export interface ModalStatus {
 }
 
 interface SaveData {
-  trigger: IFlogoTrigger;
+  trigger: Trigger;
   mappings: HandlerMappings;
 }
 

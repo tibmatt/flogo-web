@@ -1,4 +1,4 @@
-export interface IFlogoTrigger {
+export interface Trigger {
   name: string;
   ref: string;
   description: string;

@@ -23,7 +23,7 @@ import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENT
 import {IPropsToUpdateFormBuilder} from '../flow.component';
 import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
 import {ConfiguratorService as TriggersConfiguratorService} from '@flogo/flow/triggers/configurator';
-import {IFlogoTrigger} from '@flogo/flow/core';
+import {Trigger} from '../core';
 
 @Component({
   selector : 'flogo-flow-triggers',
@@ -32,7 +32,7 @@ import {IFlogoTrigger} from '@flogo/flow/core';
 })
 export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
-  triggers: IFlogoTrigger[];
+  triggers: Trigger[];
   @Input()
   actionId: string;
   @Input()
@@ -282,7 +282,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       });
   }
 
-  private openTriggerMapper(selectedTrigger: IFlogoTrigger) {
+  private openTriggerMapper(selectedTrigger: Trigger) {
     Promise.all(this.triggersList.map(trigger => {
       const handler = trigger.handler;
       return this._converterService.getTriggerTask(trigger).then(triggerSchema => {
@@ -369,7 +369,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     }
   }
 
-  private modifyTriggerInTriggersList(property, triggerEntity: IFlogoTrigger) {
+  private modifyTriggerInTriggersList(property, triggerEntity: Trigger) {
     const itemToModify = _.find(this.triggersList, t => t.id === triggerEntity.id);
     if (!!itemToModify) {
       itemToModify[property] = triggerEntity[property];
@@ -379,7 +379,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     }
   }
 
-  private addTriggerToTriggerList(triggerToAdd: IFlogoTrigger) {
+  private addTriggerToTriggerList(triggerToAdd: Trigger) {
     let triggerToUpdate = this.triggersList.find(t => t.id === triggerToAdd.id);
     if (triggerToUpdate) {
       triggerToUpdate = triggerToAdd;

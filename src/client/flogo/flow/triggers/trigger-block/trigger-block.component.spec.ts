@@ -5,7 +5,7 @@ import {TriggerBlockComponent} from '@flogo/flow/triggers/trigger-block/trigger-
 import {Observable} from 'rxjs/Observable';
 import {FakeRootLanguageModule} from '@flogo/core/language/testing';
 import {By} from '@angular/platform-browser';
-import {IFlogoTrigger} from '@flogo/flow/core';
+import {Trigger} from '../../core';
 
 @Component({
   selector: 'flogo-container',
@@ -17,7 +17,7 @@ import {IFlogoTrigger} from '@flogo/flow/core';
   `
 })
 class FlogoContainerComponent {
-  triggerEntity: IFlogoTrigger;
+  triggerEntity: Trigger;
   isDeviceType: boolean;
   @ViewChild('triggerBlock') triggerBlock: TriggerBlockComponent;
 
