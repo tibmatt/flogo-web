@@ -1,7 +1,7 @@
 import {FlowMetadata} from '@flogo/core/interfaces/flow';
 import {Trigger} from '../../../core';
 
-export interface TriggerStatus {
+export interface TriggerConfiguration {
   handler: any;
   trigger: any;
   triggerSchema: any;
@@ -20,11 +20,17 @@ export interface TriggerDetail {
   triggerSchema: any;
 }
 
+export interface ConfiguratorStatus {
+  disableSave?: boolean;
+  isOpen?: boolean;
+  triggers?: TriggerStatus[];
+  selectedTriggerID?: string;
+}
+
 export interface ModalStatus {
   isOpen: boolean;
-  triggers: TriggerDetail[];
   flowMetadata: FlowMetadata;
-  selectedTrigger: string;
+  selectedTriggerID: string;
 }
 
 export interface SaveData {
@@ -32,8 +38,9 @@ export interface SaveData {
   mappings: HandlerMappings;
 }
 
-export interface ConfigurationStatus {
-  triggerId: string;
-  isValid: boolean;
-  changedMappings: HandlerMappings;
+export interface TriggerStatus {
+  id?: string;
+  isValid?: boolean;
+  isDirty?: boolean;
+  name?: string;
 }

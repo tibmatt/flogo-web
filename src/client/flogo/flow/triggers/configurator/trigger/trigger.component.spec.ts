@@ -9,9 +9,7 @@ describe('ConfigureTriggerComponent component', () => {
   let fixture: ComponentFixture<ConfigureTriggerComponent>;
   let de: DebugElement;
   const MockData = {
-    ...TriggersMock[0],
-    isValid: true,
-    isDirty: false
+    ...TriggersMock[0]
   };
 
   beforeEach(() => {
@@ -29,14 +27,14 @@ describe('ConfigureTriggerComponent component', () => {
 
   it('Should mark the trigger selected', () => {
     component.triggerData = MockData;
-    component.selectedTrigger = 'trigger_1';
+    component.selectedTriggerID = 'trigger_1';
     fixture.detectChanges();
     expect(component.isSelected).toEqual(true);
   });
 
   it('Should not mark the trigger selected', () => {
     component.triggerData = MockData;
-    component.selectedTrigger = 'trigger_2';
+    component.selectedTriggerID = 'trigger_2';
     fixture.detectChanges();
     expect(component.isSelected).toEqual(false);
   });

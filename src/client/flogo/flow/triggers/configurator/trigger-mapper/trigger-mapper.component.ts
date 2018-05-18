@@ -1,11 +1,12 @@
-import {Component, Input, OnChanges} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import { IMapping, IMapExpression, MapperTranslator, MappingsValidatorFn, StaticMapperContextFactory } from '../../../shared/mapper';
 import { FlowMetadata } from '@flogo/core/interfaces/flow';
 
 import {Tabs} from '@flogo/flow/shared/tabs/models/tabs.model';
 import {ConfiguratorService} from '../configurator.service';
-import {HandlerMappings} from '../interfaces';
+import {MapperStatus} from '../interfaces';
+import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 
 const TRIGGER_TABS = {
   MAP_FLOW_INPUT: 'mapFlowInput',
@@ -19,28 +20,22 @@ const TRIGGER_TABS = {
   ],
   templateUrl: 'trigger-mapper.component.html'
 })
-export class TriggerMapperComponent implements OnChanges {
+export class TriggerMapperComponent implements OnInit, OnDestroy {
 
+  currentMapperState: MapperStatus = {
+    flowMetadata: null,
+    handler: null,
+    triggerSchema: null
+  };
   mapperContext: any;
   mappingValidationFn: MappingsValidatorFn;
-
-  @Input()
-  flowMetadata: FlowMetadata;
-  @Input()
-  triggerSchema: any;
-  @Input()
-  handler: any;
-  @Input()
-  triggerId: string;
-  @Input()
-  changedMappings: HandlerMappings;
-
   currentViewName: string;
   tabs: Tabs;
   private editingMappings: {
     actionInput: { [key: string]: IMapExpression };
     actionOutput: { [key: string]: IMapExpression };
   };
+  private ngDestroy = SingleEmissionSubject.create();
 
   defaultTabsInfo: { name: string, labelKey: string }[] = [
     {name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-INPUTS'},
@@ -50,8 +45,26 @@ export class TriggerMapperComponent implements OnChanges {
   constructor(private triggerConfiguratorService: ConfiguratorService) {
   }
 
-  ngOnChanges() {
-    this.onNextStatus();
+  ngOnInit() {
+    this.triggerConfiguratorService.triggerMapperStatus$
+      .takeUntil(this.ngDestroy)
+      .subscribe((nextStatus: MapperStatus) => this.onNextStatus(nextStatus));
+  }
+
+  ngOnDestroy() {
+    this.ngDestroy.emitAndComplete();
+  }
+
+  onNextStatus(nextStatus: MapperStatus) {
+    if (nextStatus) {
+      this.currentMapperState = {
+        ...this.currentMapperState,
+        ...nextStatus
+      };
+      if (this.currentMapperState.handler) {
+        this.updateTriggerConfigurations();
+      }
+    }
   }
 
   onMappingsChange(change: IMapping) {
@@ -91,8 +104,7 @@ export class TriggerMapperComponent implements OnChanges {
         output: MapperTranslator.translateMappingsOut(this.editingMappings.actionOutput)
       }
     };
-    this.triggerConfiguratorService.updateTriggerStatus({
-      triggerId: this.triggerId,
+    this.triggerConfiguratorService.updateTriggerConfiguration({
       isValid: this.tabs.areValid(), // If we do not find an invalid viewStates means the trigger tab is valid
       changedMappings
     });
@@ -102,15 +114,15 @@ export class TriggerMapperComponent implements OnChanges {
     return this.tabs.get(this.currentViewName);
   }
 
-  private onNextStatus() {
-    const { actionMappings } = this.changedMappings || this.handler;
+  updateTriggerConfigurations() {
+    const { actionMappings } = this.currentMapperState.changedMappings || this.currentMapperState.handler;
     const { input, output } = actionMappings;
     this.editingMappings = {
       actionInput: MapperTranslator.translateMappingsIn(input),
       actionOutput: MapperTranslator.translateMappingsIn(output)
     };
-    const triggerSchema = this.triggerSchema;
-    const flowMetadata = this.flowMetadata;
+    const triggerSchema = this.currentMapperState.triggerSchema;
+    const flowMetadata = this.currentMapperState.flowMetadata;
     this.setupViews(triggerSchema, flowMetadata);
   }
 
@@ -143,12 +155,14 @@ export class TriggerMapperComponent implements OnChanges {
       viewType = TRIGGER_TABS.MAP_FLOW_OUTPUT;
     }
     this.setCurrentView(viewType);
+    this.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isValid = this.mappingValidationFn({mappings: this.editingMappings.actionInput});
+    this.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).isValid = this.mappingValidationFn({mappings: this.editingMappings.actionOutput});
   }
 
   private setupInputsContext() {
-    const flowMetadata = this.flowMetadata || { input: [] };
+    const flowMetadata = this.currentMapperState.flowMetadata || { input: [] };
     const flowInputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.input);
-    const triggerOutputSchema = MapperTranslator.attributesToObjectDescriptor(this.triggerSchema.outputs || []);
+    const triggerOutputSchema = MapperTranslator.attributesToObjectDescriptor(this.currentMapperState.triggerSchema.outputs || []);
     const mappings = _.cloneDeep(this.editingMappings.actionInput);
 
     this.mapperContext = StaticMapperContextFactory.create(flowInputSchema, triggerOutputSchema, mappings);
@@ -156,8 +170,8 @@ export class TriggerMapperComponent implements OnChanges {
   }
 
   private setupReplyContext() {
-    const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor(this.triggerSchema.reply || []);
-    const flowMetadata = this.flowMetadata || { output: [] };
+    const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor(this.currentMapperState.triggerSchema.reply || []);
+    const flowMetadata = this.currentMapperState.flowMetadata || { output: [] };
     const flowOutputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.output);
     const mappings = _.cloneDeep(this.editingMappings.actionOutput);
 
