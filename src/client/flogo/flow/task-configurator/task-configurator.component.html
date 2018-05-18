@@ -40,7 +40,7 @@
         (mappingsChange)="onMappingsChange($event)"
         inputsSearchPlaceholder="{{ inputsSearchPlaceholderKey | translate }}"
         outputsSearchPlaceholder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}"></flogo-flow-task-configurator-input-mapper>
-      <flogo-flow-task-configurator-iterator *ngIf="this.tabs.get('iterator').isSelected"
+      <flogo-flow-task-configurator-iterator *ngIf="this.tabs.get('iterator')?.isSelected"
         class="content"
         [iteratorModeOn]="iteratorModeOn"
         [initialConfig]="{ inputScope: inputScope, iterableValue: iterableValue }"

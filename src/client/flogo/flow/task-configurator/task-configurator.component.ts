@@ -22,6 +22,9 @@ const TASK_TABS = {
   ITERATOR: 'iterator',
   INPUT_MAPPINGS: 'inputMappings'
 };
+const ITERATOR_TAB_INFO = { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' };
+const SUBFLOW_TAB_INFO = { name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW' };
+const MAPPINGS_TAB_INFO = { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' };
 
 @Component({
   selector: 'flogo-flow-task-configurator',
@@ -58,7 +61,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   };
   iteratorModeOn = false;
   iterableValue: string;
-
+  iterator: {};
   inputMappingsConfig: InputMapperConfig;
   currentMappings: Mappings;
   isSubflowType: boolean;
@@ -68,10 +71,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
   showSubflowList = false;
 
   isActive = false;
-  defaultTabsInfo: {name: string, labelKey: string}[] = [
-    { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
-    { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' },
-  ];
 
   private _subscriptions: any[];
   // todo: move to proper service
@@ -214,6 +213,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.title = eventData.title;
     this.inputScope = eventData.scope;
     this.isSubflowType = isSubflowTask(this.currentTile.type);
+    this.iterator = eventData.iterator;
     this.resetState();
 
     if (!this.title && this.currentTile) {
@@ -225,12 +225,14 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (this.isSubflowType) {
       this.createSubflowConfig(eventData.subflowSchema);
     }
-    this.iteratorModeOn = eventData.iterator.isIterable;
-    this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
-    this.initialIteratorData = {
-      iteratorModeOn: this.iteratorModeOn,
-      iterableValue: this.iterableValue,
-    };
+    if (this.iterator) {
+      this.iteratorModeOn = eventData.iterator.isIterable;
+      this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
+      this.initialIteratorData = {
+        iteratorModeOn: this.iteratorModeOn,
+        iterableValue: this.iterableValue,
+      };
+    }
 
     if (eventData.inputMappingsTabLabelKey) {
       this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
@@ -278,15 +280,19 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (this.tabs) {
       this.tabs.clear();
     }
+    let tabsInfo = [MAPPINGS_TAB_INFO];
     this.showSubflowList = false;
     if (this.isSubflowType) {
-      this.defaultTabsInfo.unshift({name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW'});
-      this.tabs = Tabs.create(this.defaultTabsInfo);
+      tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
+      this.tabs = Tabs.create(tabsInfo);
       this.tabs.get(TASK_TABS.SUBFLOW).isSelected = true;
+    } else if (this.iterator) {
+      tabsInfo = [...tabsInfo, ITERATOR_TAB_INFO];
+      this.tabs = Tabs.create(tabsInfo);
+      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
     } else {
-      this.defaultTabsInfo = this.defaultTabsInfo.filter(val => val.name !==  TASK_TABS.SUBFLOW);
-      this.tabs = Tabs.create(this.defaultTabsInfo);
-      this.tabs.get( TASK_TABS.INPUT_MAPPINGS).isSelected = true;
+      this.tabs = Tabs.create(tabsInfo);
+      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
     }
   }
 
