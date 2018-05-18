@@ -38,26 +38,27 @@ describe('ConfiguratorComponent component', () => {
     expect(component.currentConfiguratorState.isOpen).toEqual(false);
   });
 
-  xit('Should show exact number of triggers', () => {
+  it('Should show exact number of triggers', () => {
     component.onNextStatus(MockData);
     fixture.detectChanges();
     const triggerElements = fixture.debugElement.queryAll(By.css('.js-trigger-element'));
     expect(triggerElements.length).toEqual(2);
   });
 
-  xit('Should select at least one trigger by default', () => {
+  it('Should select at least one trigger by default', () => {
     component.onNextStatus(MockData);
     fixture.detectChanges();
     const triggerElements = fixture.debugElement.queryAll(By.css('.js-trigger-element.is-selected'));
     expect(triggerElements.length).toEqual(1);
   });
 
-  xit('Should disable save by default', () => {
+  it('Should disable save by default', () => {
     component.onNextStatus(MockData);
     fixture.detectChanges();
     expect(component.currentConfiguratorState.disableSave).toEqual(true);
   });
 
+  // The following test specs are no longer part of this component
   /*it('Should disable save when trigger configurations are modified to original state', () => {
     component.onNextStatus(MockData);
     component.onUpdateTriggerConfiguration({

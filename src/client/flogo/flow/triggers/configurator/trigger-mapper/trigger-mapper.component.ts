@@ -56,15 +56,11 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   }
 
   onNextStatus(nextStatus: MapperStatus) {
-    if (nextStatus) {
-      this.currentMapperState = {
-        ...this.currentMapperState,
-        ...nextStatus
-      };
-      if (this.currentMapperState.handler) {
-        this.updateTriggerConfigurations();
-      }
-    }
+    this.currentMapperState = {
+      ...this.currentMapperState,
+      ...nextStatus
+    };
+    this.updateTriggerConfigurations();
   }
 
   onMappingsChange(change: IMapping) {
@@ -115,7 +111,12 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   }
 
   updateTriggerConfigurations() {
-    const { actionMappings } = this.currentMapperState.changedMappings || this.currentMapperState.handler;
+    const {actionMappings} = this.currentMapperState.changedMappings || this.currentMapperState.handler || {
+      actionMappings: {
+        input: null,
+        output: null
+      }
+    };
     const { input, output } = actionMappings;
     this.editingMappings = {
       actionInput: MapperTranslator.translateMappingsIn(input),
@@ -162,7 +163,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   private setupInputsContext() {
     const flowMetadata = this.currentMapperState.flowMetadata || { input: [] };
     const flowInputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.input);
-    const triggerOutputSchema = MapperTranslator.attributesToObjectDescriptor(this.currentMapperState.triggerSchema.outputs || []);
+    const triggerSchema = this.currentMapperState.triggerSchema || {outputs: []};
+    const triggerOutputSchema = MapperTranslator.attributesToObjectDescriptor(triggerSchema.outputs);
     const mappings = _.cloneDeep(this.editingMappings.actionInput);
 
     this.mapperContext = StaticMapperContextFactory.create(flowInputSchema, triggerOutputSchema, mappings);
@@ -170,7 +172,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   }
 
   private setupReplyContext() {
-    const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor(this.currentMapperState.triggerSchema.reply || []);
+    const triggerSchema = this.currentMapperState.triggerSchema || {reply: []};
+    const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor( triggerSchema.reply );
     const flowMetadata = this.currentMapperState.flowMetadata || { output: [] };
     const flowOutputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.output);
     const mappings = _.cloneDeep(this.editingMappings.actionOutput);
