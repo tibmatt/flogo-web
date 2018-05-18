@@ -28,14 +28,14 @@ export class ContenteditableDirective implements OnInit, OnChanges {
     if (_.has(changes, 'fgContentEditable')) {
       const input = changes['fgContentEditable'].currentValue;
       if (input) {
-        this.el.nativeElement.innerHTML = input;
+        this.el.nativeElement.textContent = input;
       }
     }
   }
 
   ngOnInit() {
     if (this.fgContentEditable !== undefined) {
-      this.$el.html(this.fgContentEditable);
+      this.$el.text(this.fgContentEditable);
     }
     this.$el.attr('contenteditable', 'true');
     this.$el.css({
@@ -111,7 +111,7 @@ export class ContenteditableDirective implements OnInit, OnChanges {
       if (this.$el.text() === '' && this.fgContentEditable === undefined) {
         // omit
       } else if (this.$el.text() !== this.fgContentEditable) {
-        this.fgContentEditableChange.emit(this.sanitizer.sanitizeHTMLInput(this.$el.text()));
+        this.fgContentEditableChange.emit(this.$el.text());
       }
       this._initPlaceholder();
     } else {
