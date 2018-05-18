@@ -71,11 +71,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
   showSubflowList = false;
 
   isActive = false;
-  defaultTabsInfo: {name: string, labelKey: string}[] = [
-    { name: TASK_TABS.SUBFLOW, labelKey: 'TASK-CONFIGURATOR:TABS:SUB-FLOW' },
-    { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONFIGURATOR:TABS:MAP-INPUTS' },
-    { name: TASK_TABS.ITERATOR, labelKey: 'TASK-CONFIGURATOR:TABS:ITERATOR' }
-  ];
 
   private _subscriptions: any[];
   // todo: move to proper service
