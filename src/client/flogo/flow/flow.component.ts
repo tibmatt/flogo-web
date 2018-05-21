@@ -289,7 +289,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngOnDestroy$.complete();
+    this.ngOnDestroy$.emitAndComplete();
     _.each(this._subscriptions, sub => {
         this._postService.unsubscribe(sub);
       }
