@@ -1,5 +1,6 @@
 import {FlowMetadata} from '@flogo/core/interfaces/flow';
 import {Trigger} from '../../../core';
+import {Tabs} from '../../../shared/tabs/models/tabs.model';
 
 export interface TriggerConfiguration {
   handler: any;
@@ -8,6 +9,7 @@ export interface TriggerConfiguration {
   isValid: boolean;
   isDirty: boolean;
   changedMappings?: HandlerMappings;
+  tabs: Tabs;
 }
 
 export interface HandlerMappings {

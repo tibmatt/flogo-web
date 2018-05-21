@@ -1,6 +1,6 @@
 <div class="content--with-menu">
   <ul class="content__menu">
-    <li class="menu__item" *ngFor="let tabData of tabs; trackBy: trackTabsByFn"
+    <li class="menu__item" *ngFor="let tabData of currentMapperState.tabs; trackBy: trackTabsByFn"
         [class.--has-errors]="!tabData[1].isValid"
         [class.--disabled]="!tabData[1].enabled"
         [class.--active]="tabData[1].isSelected"
