@@ -9,10 +9,11 @@
     </defs>
   </svg>
   <flogo-flow-triggers-trigger-block *ngFor="let trigger of triggersList"
+                                     [isSelected]="currentTrigger?.id === trigger.id"
                                      [trigger]="trigger"
-                                     [isDevice]="isDeviceType"
+                                     [menuDisabled]="isDeviceType"
                                      (menuItemSelected)="handleMenuSelection($event)"></flogo-flow-triggers-trigger-block>
-  <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModel()">
+  <div class="trigger trigger--add" title="Add Trigger" *ngIf="allowMultipleTriggers" (click)="openAddTriggerModal()">
     <svg class="trigger-icon-background" viewBox="0 0 50 50"
          xmlns="http://www.w3.org/2000/svg">
       <use xlink:href="/assets/svg/trigger-icon.svg#addTrigger" class="bg-placeholder"></use>
@@ -28,7 +29,7 @@
   </flogo-flow-select-trigger>
   <flogo-flow-installer [profileType]="appDetails?.appProfileType"
                         [installType]="'trigger'" [(isActivated)]="installTriggerActivated"
-                        (isActivatedChange)="openAddTriggerModel()"
+                        (isActivatedChange)="openAddTriggerModal()"
                         (installed)="onTriggerInstalledAction()"></flogo-flow-installer>
   <flogo-triggers-configuration></flogo-triggers-configuration>
 </div>

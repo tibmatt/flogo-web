@@ -1,4 +1,4 @@
-import * as selectionFactory from '../models/flow/selection-factory';
+import * as selectionFactory from '../models/flow/selection';
 import { cleanGraphRunState } from '../models/flow/clean-run-state';
 
 import * as actions from './flow.actions';

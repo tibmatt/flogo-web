@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { compose, StoreModule } from '@ngrx/store';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { LogsModule as FlogoLogsModule } from '@flogo/logs';
@@ -22,12 +23,11 @@ import { routing } from './flow.routing';
 import { FlowComponent } from './flow.component';
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlowDataResolver } from './flow-data.resolver';
-import { flowReducer } from '@flogo/flow/core/state';
-import { StoreModule } from '@ngrx/store';
+import { featureReducer } from './core/state';
 
 @NgModule({
   imports: [
-    StoreModule.forFeature('flow', flowReducer),
+    StoreModule.forFeature('flow', featureReducer),
     CommonModule,
     FlogoSharedModule,
     FlogoLogsModule,

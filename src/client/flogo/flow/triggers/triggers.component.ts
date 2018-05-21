@@ -1,11 +1,14 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import 'rxjs/add/operator/filter';
+import { assign, cloneDeep, each, find, pick } from 'lodash';
+import {Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { from } from 'rxjs/observable/from';
+import { takeUntil, mergeMap, switchMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
-import { LanguageService } from '@flogo/core';
+import { LanguageService, FlowMetadata } from '@flogo/core';
 import { TriggersApiService } from '@flogo/core/services';
 import {FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION} from '@flogo/core/constants';
-import {notification, objectFromArray} from '@flogo/shared/utils';
+import { notification, objectFromArray } from '@flogo/shared/utils';
 import {RESTAPIHandlersService} from '@flogo/core/services/restapi/v2/handlers-api.service';
 
 import {PostService} from '@flogo/core/services/post.service';
@@ -13,38 +16,38 @@ import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subjec
 import {UIModelConverterService} from '@flogo/flow/core/ui-model-converter.service';
 
 import {
-  SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
-  PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
+SUB_EVENTS as FLOGO_SELECT_TRIGGER_PUB_EVENTS,
+PUB_EVENTS as FLOGO_SELECT_TRIGGER_SUB_EVENTS
 } from '../trigger-detail/messages';
 
-import { FlowMetadata } from '@flogo/flow/task-configurator/models';
 import { PUB_EVENTS as FLOGO_TASK_SUB_EVENTS, SUB_EVENTS as FLOGO_TASK_PUB_EVENTS} from '../shared/form-builder/messages';
+import { AppState } from '../core/state/app.state';
 
 import {IPropsToUpdateFormBuilder} from '../flow.component';
+import { Trigger, TriggerHandler } from '../core';
 import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/models';
-import {ConfiguratorService as TriggersConfiguratorService} from '@flogo/flow/triggers/configurator';
-import {Trigger} from '../core';
+import { ConfiguratorService as TriggersConfiguratorService } from './configurator/configurator.service';
+import { SaveData } from './configurator/interfaces';
+import { RenderableTrigger } from './interfaces/renderable-trigger';
+import { getTriggersState } from './state/triggers.selectors';
+import * as TriggerActions from '../core/state/triggers.actions';
 
 @Component({
   selector : 'flogo-flow-triggers',
   templateUrl : 'triggers.component.html',
   styleUrls : [ 'triggers.component.less' ]
 })
-export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDestroy {
-  @Input()
-  triggers: Trigger[];
-  @Input()
+export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   actionId: string;
-  @Input()
   appDetails: {appId: string, appProfileType:  FLOGO_PROFILE_TYPE, metadata?: FlowMetadata};
-  triggersList: any[] = [];
+  triggersList: RenderableTrigger[] = [];
   allowMultipleTriggers = true;
-  currentTrigger: any;
+  currentTrigger: RenderableTrigger;
   showAddTrigger = false;
   installTriggerActivated = false;
 
   private _subscriptions: any[];
-  private _ngDestroy$ = SingleEmissionSubject.create();
+  private ngDestroy$ = SingleEmissionSubject.create();
 
   constructor(private _restAPITriggersService: TriggersApiService,
               private _restAPIHandlerService: RESTAPIHandlersService,
@@ -52,28 +55,31 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
               private _router: Router,
               private _translate: LanguageService,
               private _postService: PostService,
-              private _triggerConfiguratorService: TriggersConfiguratorService) {
+              private _triggerConfiguratorService: TriggersConfiguratorService,
+              private store: Store<AppState>) {
   }
 
   ngOnInit() {
     this.initSubscribe();
-    this._router.events
-      .filter(event => event instanceof NavigationEnd)
-      .takeUntil(this._ngDestroy$)
-      .subscribe((navigationEvent: NavigationEnd) => {
-        // after upgrading to v4 using the router snapshot might be a better idea like this:
-        // this._router.routerState.snapshot;
-        if (!/\/trigger\/[\w_-]+$/.test(navigationEvent.url)) {
-          this.currentTrigger = null;
-        }
-      });
-  }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['triggers']) {
-      this.makeTriggersListForAction();
-      this.manageAddTriggerInView();
-    }
+    this.store
+      .select(getTriggersState)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(triggerState => {
+        this.actionId = triggerState.actionId;
+        this.triggersList = triggerState.triggers;
+        const prevTrigger = this.currentTrigger;
+        this.currentTrigger = triggerState.currentTrigger;
+        if (prevTrigger !== this.currentTrigger) {
+          this.onSelectionChange(prevTrigger);
+        }
+        this.appDetails = {
+          appId: triggerState.appId,
+          appProfileType: triggerState.appProfileType,
+          metadata: triggerState.flowMetadata,
+        };
+        this.manageAddTriggerInView();
+      });
   }
 
   ngOnDestroy() {
@@ -82,7 +88,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
         this._postService.unsubscribe( sub );
       }
     );
-    this._ngDestroy$.emitAndComplete();
+    this.ngDestroy$.emitAndComplete();
   }
 
   get isDeviceType() {
@@ -93,58 +99,59 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     this._subscriptions = [];
 
     const subs = [
-      _.assign({}, FLOGO_SELECT_TRIGGER_SUB_EVENTS.triggerAction , { callback: this._onActionTrigger.bind(this) }),
-      _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
-      _.assign({}, FLOGO_TASK_SUB_EVENTS.triggerDetailsChanged, { callback: this._taskDetailsChanged.bind(this) })
+      assign({}, FLOGO_SELECT_TRIGGER_SUB_EVENTS.triggerAction , { callback: this._onActionTrigger.bind(this) }),
+      assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
+      assign({}, FLOGO_TASK_SUB_EVENTS.triggerDetailsChanged, { callback: this._taskDetailsChanged.bind(this) })
     ];
 
-    _.each(
+    each(
       subs, sub => {
         this._subscriptions.push(this._postService.subscribe(sub));
       }
     );
 
-    this._triggerConfiguratorService.save$.takeUntil(this._ngDestroy$).subscribe(triggers => {
-      triggers.map(modifiedTrigger => {
-        this._restAPIHandlerService
-        // Update the handler using the updateHandler REST API call
+    this._triggerConfiguratorService.save$
+      .pipe(
+        takeUntil(this.ngDestroy$),
+        switchMap(saveData => from(saveData)),
+        mergeMap((modifiedTrigger: SaveData) => this._restAPIHandlerService
           .updateHandler(modifiedTrigger.trigger.id, this.actionId, modifiedTrigger.mappings)
-          .then(handler => {
-            const updatedHandler = _.omit(handler, ['appId', 'triggerId']);
-            const triggerToUpdate = this.triggers.find(t => t.id === modifiedTrigger.trigger.id);
-            triggerToUpdate.handlers = modifiedTrigger.trigger.handlers.map(h => h.actionId === this.actionId ? updatedHandler : h);
-            this.modifyTriggerInTriggersList('handlers', triggerToUpdate);
-          });
-      });
+          .then((updatedHandler) => ({ triggerId: modifiedTrigger.trigger.id, updatedHandler })))
+      )
+      .subscribe(({ updatedHandler, triggerId }) => {
+        this.store.dispatch(new TriggerActions.UpdateHandler({
+          triggerId,
+          handler: updatedHandler,
+        }));
     });
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
-    console.group('Save trigger details to flow');
-    if (data.changedStructure === 'settings') {
-      this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings}).then(() => {
-        const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
-        existingTrigger.settings = data.settings;
-        this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
-      });
-    } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
-      this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
-        settings: data.endpointSettings,
-        outputs: data.outputs
-      }).then(() => {
-        const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
-        const existingHandler = existingTrigger.handlers.find(h => h.actionId === this.actionId);
-        existingHandler.settings = data.endpointSettings;
-        existingHandler.outputs = data.outputs;
-        this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
-      });
-
-    }
-
-    if (_.isFunction(envelope.done)) {
-      envelope.done();
-    }
-    console.groupEnd();
+    // console.group('Save trigger details to flow');
+    // if (data.changedStructure === 'settings') {
+    //   this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {settings: data.settings}).then(() => {
+    //     const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
+    //     existingTrigger.settings = data.settings;
+    //     this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
+    //   });
+    // } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
+    //   this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.actionId, {
+    //     settings: data.endpointSettings,
+    //     outputs: data.outputs
+    //   }).then(() => {
+    //     const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
+    //     const existingHandler = existingTrigger.handlers.find(h => h.actionId === this.actionId);
+    //     existingHandler.settings = data.endpointSettings;
+    //     existingHandler.outputs = data.outputs;
+    //     this.modifyTriggerInTriggersList(data.changedStructure, existingTrigger);
+    //   });
+    //
+    // }
+    //
+    // if (isFunction(envelope.done)) {
+    //   envelope.done();
+    // }
+    // console.groupEnd();
   }
 
   private _changeTileDetail(data: {
@@ -154,50 +161,40 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     id: string,
     tileType: string
   }, envelope: any) {
-    if (data.tileType === 'trigger') {
-      let resultantPromise;
-      if (data.proper === 'name') {
-        resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content});
-      } else if (data.proper === 'description') {
-        resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
-      }
-
-      const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
-      resultantPromise.then(() => {
-        existingTrigger[data.proper] = data.content;
-        this.modifyTriggerInTriggersList(data.proper, existingTrigger);
-      }).catch(() => {
-        if (data.proper === 'name') {
-          const message = this._translate.instant('TRIGGERS-PANEL:TRIGGER-EXISTS');
-          notification(message, 'error');
-          const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {
-            name: existingTrigger.name
-          };
-          this._postService.publish(
-            _.assign(
-              {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
-                data: propsToUpdateFormBuilder
-              }
-            )
-          );
-        }
-      });
-
-      if (_.isFunction(envelope.done)) {
-        envelope.done();
-      }
-      console.groupEnd();
-    }
-  }
-
-  private makeTriggersListForAction() {
-    this.triggersList = [];
-    this.triggers.forEach(t => {
-      const handlers = t.handlers.filter(a => a.actionId === this.actionId);
-      handlers.forEach(h => {
-        this.triggersList.push(_.assign({}, t, {handler: h}));
-      });
-    });
+    // if (data.tileType === 'trigger') {
+    //   let resultantPromise;
+    //   if (data.proper === 'name') {
+    //     resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {name: data.content});
+    //   } else if (data.proper === 'description') {
+    //     resultantPromise = this._restAPITriggersService.updateTrigger(this.currentTrigger.id, {description: data.content});
+    //   }
+    //
+    //   const existingTrigger = this.triggers.find(t => t.id === this.currentTrigger.id);
+    //   resultantPromise.then(() => {
+    //     existingTrigger[data.proper] = data.content;
+    //     this.modifyTriggerInTriggersList(data.proper, existingTrigger);
+    //   }).catch(() => {
+    //     if (data.proper === 'name') {
+    //       const message = this._translate.instant('TRIGGERS-PANEL:TRIGGER-EXISTS');
+    //       notification(message, 'error');
+    //       const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {
+    //         name: existingTrigger.name
+    //       };
+    //       this._postService.publish(
+    //         assign(
+    //           {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
+    //             data: propsToUpdateFormBuilder
+    //           }
+    //         )
+    //       );
+    //     }
+    //   });
+    //
+    //   if (isFunction(envelope.done)) {
+    //     envelope.done();
+    //   }
+    //   console.groupEnd();
+    // }
   }
 
   private manageAddTriggerInView() {
@@ -206,20 +203,20 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
 
   openInstallTriggerWindow() {
     this.installTriggerActivated = true;
-    this.closeAddTriggerModel(false);
+    this.closeAddTriggerModal(false);
   }
 
   onTriggerInstalledAction() {
     this.installTriggerActivated = false;
-    this.openAddTriggerModel();
+    this.openAddTriggerModal();
   }
 
-  openAddTriggerModel() {
+  openAddTriggerModal() {
     this.showAddTrigger = true;
   }
 
-  closeAddTriggerModel($event) {
-    this.showAddTrigger = $event;
+  closeAddTriggerModal(showAddTrigger: boolean) {
+    this.showAddTrigger = showAddTrigger;
   }
 
   addTriggerToAction(data) {
@@ -229,7 +226,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     let triggerId;
     if (data.installType === 'installed') {
       const appId = this.appDetails.appId;
-      const triggerInfo: any = _.pick(data.triggerData, ['name', 'ref', 'description']);
+      const triggerInfo: any = pick(data.triggerData, ['name', 'ref', 'description']);
       triggerInfo.settings = objectFromArray(data.triggerData.settings || [], false);
 
       resultantPromiseState = this._restAPITriggersService.createTrigger(appId, triggerInfo)
@@ -241,23 +238,27 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
       triggerId = data.triggerData.id;
       resultantPromiseState = this._restAPIHandlerService.updateHandler(triggerId, this.actionId, {settings, outputs});
     }
-    resultantPromiseState.then(() => this._restAPITriggersService.getTrigger(triggerId))
+    resultantPromiseState
+      .then(() => this._restAPITriggersService.getTrigger(triggerId))
       .then(trigger => {
-        let existingTrigger = this.triggers.find(t => t.id === trigger.id);
-        if (existingTrigger) {
-          existingTrigger = trigger;
-        } else {
-          this.triggers.push(trigger);
-        }
-        this.addTriggerToTriggerList(trigger);
-        this.manageAddTriggerInView();
+        const handler = trigger.handlers.find(h => h.actionId === this.actionId);
+        this.store.dispatch(new TriggerActions.AddTrigger({ trigger, handler }));
     });
   }
 
-  private showTriggerDetails(trigger) {
-    this.currentTrigger = _.cloneDeep(trigger);
-    this._router.navigate(['/flows', this.actionId, 'trigger', trigger.id])
-      .then(() => this._converterService.getTriggerTask(trigger))
+  private onSelectionChange(prevTrigger: Trigger) {
+    if (prevTrigger === this.currentTrigger || !this.currentTrigger) {
+      return;
+    }
+    if (!prevTrigger && this.currentTrigger || prevTrigger.id !== this.currentTrigger.id) {
+      this.showTriggerDetails();
+    }
+  }
+
+  private showTriggerDetails() {
+    const currentTrigger =  cloneDeep(this.currentTrigger);
+    this._router.navigate(['/flows', this.actionId, 'trigger', currentTrigger.id])
+      .then(() => this._converterService.getTriggerTask(currentTrigger))
       .then((triggerForUI) => {
         const dataToPublish = {
           'id': 'root',
@@ -268,14 +269,14 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
             'isTask': false,
             'hasProcess': false,
             'isDiagramEdited': false,
-            'currentTrigger': trigger,
+            'currentTrigger': currentTrigger,
             'profileType': this.appDetails.appProfileType
           }
         };
         this._postService.publish(
-          _.assign(
+          assign(
             {}, FLOGO_SELECT_TRIGGER_PUB_EVENTS.selectTrigger, {
-              data: _.assign({}, dataToPublish)
+              data: assign({}, dataToPublish)
             }
           )
         );
@@ -291,71 +292,56 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     })).then(allTriggerDetails => {
       this._triggerConfiguratorService.open(allTriggerDetails, this.appDetails.metadata, selectedTrigger.id);
     });
-
   }
 
   private deleteHandlerForTrigger(triggerId) {
     this._restAPIHandlerService.deleteHandler(this.actionId, triggerId)
       .then(() => this._router.navigate(['/flows', this.actionId]))
-      .then(() => this._restAPITriggersService.getTrigger(triggerId))
-      .then(trigger => {
-        const hasHandlerForThisAction = !!trigger.handlers.find(h => h.actionId === this.actionId);
-        if (hasHandlerForThisAction) {
-          this.triggers = this.triggers.map(t => t.id === triggerId ? trigger : t);
-        } else {
-          this.triggers = this.triggers.filter(t => t.id !== triggerId);
-        }
-        this.makeTriggersListForAction();
-        this.manageAddTriggerInView();
-      });
+      // .then(() => this._restAPITriggersService.getTrigger(triggerId))
+      .then(() => this.store.dispatch(new TriggerActions.RemoveHandler(triggerId)));
   }
 
   private _onActionTrigger(data: any, envelope: any) {
-    if (data.action === 'trigger-copy') {
-      this._restAPIHandlerService.deleteHandler(this.actionId, this.currentTrigger.id)
-        .then(() => {
-          const triggerSettings = _.pick(this.currentTrigger, [
-            'name',
-            'description',
-            'ref',
-            'settings'
-          ]);
-          return this._restAPITriggersService.createTrigger(this.appDetails.appId, triggerSettings);
-        })
-        .then((createdTrigger) => {
-          const settings = this.getSettingsCurrentHandler();
-          this.currentTrigger = createdTrigger;
-          return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.actionId, settings);
-        })
-        .then((updatedHandler) => {
-          const message = this._translate.instant('CANVAS:COPIED-TRIGGER');
-          notification(message, 'success', 3000);
-          const updatedTriggerDetails = _.assign({}, this.currentTrigger);
-          const currentHandler = _.assign({}, _.pick(updatedHandler, [
-            'actionId',
-            'createdAt',
-            'outputs',
-            'settings',
-            'updatedAt'
-          ]));
-          updatedTriggerDetails.handlers.push(currentHandler);
-          updatedTriggerDetails.handler = currentHandler;
-          this.showTriggerDetails(updatedTriggerDetails);
-        });
+    if (data.action !== 'trigger-copy') {
+      return;
     }
+    const currentTrigger = this.currentTrigger;
+    this._restAPIHandlerService.deleteHandler(this.actionId, this.currentTrigger.id)
+      .then(() => {
+        const triggerSettings = pick(this.currentTrigger, [
+          'name',
+          'description',
+          'ref',
+          'settings'
+        ]);
+        return this._restAPITriggersService.createTrigger(this.appDetails.appId, triggerSettings);
+      })
+      .then((createdTrigger) => {
+        const settings = this.getSettingsFromHandler(currentTrigger.handler);
+        return this._restAPIHandlerService.updateHandler(createdTrigger.id, this.actionId, settings)
+          .then(handler => ({ trigger: createdTrigger, handler }));
+      })
+      .then(({ trigger, handler }) => {
+        this.store.dispatch(new TriggerActions.CopyTrigger({
+          copiedTriggerId: currentTrigger.id,
+          newTrigger: trigger,
+          newHandler: handler,
+        }));
+        const message = this._translate.instant('CANVAS:COPIED-TRIGGER');
+        notification(message, 'success', 3000);
+      });
   }
 
-  private getSettingsCurrentHandler() {
-    const settings = _.cloneDeep(this.currentTrigger.handler.settings);
-    const outputs = _.cloneDeep(this.currentTrigger.handler.outputs);
-
+  private getSettingsFromHandler(handler: TriggerHandler) {
+    const settings = cloneDeep(handler.settings);
+    const outputs = cloneDeep(handler.outputs);
     return {settings, outputs};
   }
 
   handleMenuSelection(event: TriggerMenuSelectionEvent) {
     switch (event.operation) {
       case TRIGGER_MENU_OPERATION.SHOW_SETTINGS:
-        this.showTriggerDetails(event.trigger);
+        this.store.dispatch(new TriggerActions.SelectTrigger(event.trigger.id));
         break;
       case TRIGGER_MENU_OPERATION.CONFIGURE:
         this.openTriggerMapper(event.trigger);
@@ -369,24 +355,4 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnChanges, OnDes
     }
   }
 
-  private modifyTriggerInTriggersList(property, triggerEntity: Trigger) {
-    const itemToModify = _.find(this.triggersList, t => t.id === triggerEntity.id);
-    if (!!itemToModify) {
-      itemToModify[property] = triggerEntity[property];
-      if (property === 'handlers') {
-        itemToModify['handler'] = triggerEntity.handlers.find(a => a.actionId === this.actionId);
-      }
-    }
-  }
-
-  private addTriggerToTriggerList(triggerToAdd: Trigger) {
-    let triggerToUpdate = this.triggersList.find(t => t.id === triggerToAdd.id);
-    if (triggerToUpdate) {
-      triggerToUpdate = triggerToAdd;
-      triggerToUpdate['handler'] = triggerToAdd.handlers.find(a => a.actionId === this.actionId);
-    } else {
-      triggerToAdd['handler'] = triggerToAdd.handlers.find(a => a.actionId === this.actionId);
-      this.triggersList.push(triggerToAdd);
-    }
-  }
 }

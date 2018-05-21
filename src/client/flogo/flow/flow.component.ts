@@ -180,27 +180,13 @@ export class FlowComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
-    const selection$ = this.flowDetails
+    this.flowDetails
       .selectionChange$
       .pipe(
         share(),
         takeUntil(this.ngOnDestroy$),
-      );
-    selection$
-      .subscribe(selection => this.onSelectionChanged(selection));
-    this._router.events
-      .pipe(
-        filter(event => event instanceof NavigationEnd),
-        withLatestFrom(selection$),
-        takeUntil(this.ngOnDestroy$),
       )
-      .subscribe(([event, selection]) => {
-        // needed from where trigger changes the url
-        // todo: should invert data flow and change should come from state
-        if (!this.isTaskSubroute() && selection) {
-          this.flowDetails.clearSelection();
-        }
-      });
+      .subscribe(selection => this.onSelectionChanged(selection));
     this.initSubscribe();
     this.loading = false;
   }

@@ -1,3 +1,13 @@
+import { Action, ActionReducer } from '@ngrx/store';
+import { INITIAL_STATE, FlowState } from './flow.state';
+import { flowReducer } from './flow.reducer';
+import { triggersReducer } from './triggers.reducer';
+
+const reducers: ActionReducer<FlowState, Action>[] = [flowReducer, triggersReducer];
+export function featureReducer(state = INITIAL_STATE, action: Action) {
+  return reducers.reduce((nextState, reducer) => reducer(nextState, action), state);
+}
+
 export * from './flow.actions';
 export * from './flow.state';
 export * from './flow.reducer';

@@ -1,9 +1,9 @@
-import { assign, get, uniq, isEqual, omit } from 'lodash';
+import { assign, cloneDeep, get, uniq, isEqual, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs/observable/of';
 
-import { ActionBase, LegacyFlowWrapper, UiFlow } from '@flogo/core';
+import { ActionBase, Dictionary, LegacyFlowWrapper, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 import { isSubflowTask } from '@flogo/shared/utils';
@@ -14,6 +14,19 @@ import { FlogoFlowDetails } from './models';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
 import { Init } from './state';
+import { Trigger, TriggerHandler } from './interfaces';
+
+function normalizeTriggersAndHandlersForAction(actionId: string, originalTriggers: Trigger[]) {
+  const triggers: Dictionary<Trigger> = {};
+  const handlers: Dictionary<TriggerHandler> = {};
+  const findHandlerForAction = (handler: TriggerHandler) => handler.actionId === actionId;
+  originalTriggers.forEach(trigger => {
+    triggers[trigger.id] = trigger;
+    const handler = trigger.handlers.find(findHandlerForAction);
+    handlers[trigger.id] = { ...handler, triggerId: trigger.id };
+  });
+  return { triggers, handlers };
+}
 
 @Injectable()
 export class FlogoFlowService {
@@ -40,11 +53,11 @@ export class FlogoFlowService {
         return Promise.all([flow, flowIdsToFetch]);
       })
       .then(([flow, subflows]) => {
-        const triggers = flow.triggers;
+        const flowTriggers = flow.triggers || [];
         const flowDiagramDetails = omit(flow, [
           'triggers'
         ]);
-
+        const { triggers, handlers } = normalizeTriggersAndHandlersForAction(flow.id, flowTriggers);
         const subflowsMap = new Map<string, ActionBase>(subflows.map(a => [a.id, a]));
         this.currentFlowDetails = new FlogoFlowDetails(flow, subflowsMap, this.store);
 
@@ -52,14 +65,11 @@ export class FlogoFlowService {
         return this._converterService.getWebFlowModel(flowDiagramDetails, subflowsMap)
           .then(convertedFlow => {
             this.previousSavedFlow = flogoFlowToJSON(convertedFlow);
-            this.store.dispatch(new Init(convertedFlow));
+            this.store.dispatch(new Init({ ...convertedFlow, triggers, handlers }));
             return {
               flow: convertedFlow,
-              triggers,
+              triggers: flowTriggers,
             };
-          })
-          .then(processedFlow => {
-            return assign({}, processedFlow, { triggers });
           });
       });
   }

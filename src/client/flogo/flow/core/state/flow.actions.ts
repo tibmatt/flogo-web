@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
-import { ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
+import { ContribSchema, Dictionary, GraphNode, Item, ItemTask } from '@flogo/core';
 import { HandlerType } from '../models/handler-type';
+import { FlowState } from './flow.state';
 
 export enum ActionType {
   Init = '[Flow] Init',
@@ -23,7 +24,7 @@ interface BaseFlowAction extends Action {
 
 export class Init implements BaseFlowAction {
   readonly type = ActionType.Init;
-  constructor(public payload: UiFlow) {}
+  constructor(public payload: FlowState) {}
 }
 
 export class SelectItem implements BaseFlowAction {

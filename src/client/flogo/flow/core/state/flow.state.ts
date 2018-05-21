@@ -1,12 +1,13 @@
-import { UiFlow } from '@flogo/core';
+import { Dictionary, UiFlow } from '@flogo/core';
 import * as fromRoot from '../../../store';
 import { CurrentSelection } from '../models/selection';
+import { Trigger, TriggerHandler } from '../interfaces';
 
 export interface FlowState extends UiFlow {
   isErrorPanelOpen: boolean;
   currentSelection: null | CurrentSelection;
-  // todo: trigger interface?
-  triggers: any[];
+  triggers: Dictionary<Trigger>;
+  handlers: Dictionary<TriggerHandler>;
 }
 
 export interface State extends fromRoot.State {
@@ -22,5 +23,6 @@ export const INITIAL_STATE: FlowState = {
   currentSelection: null,
   isErrorPanelOpen: false,
   schemas: {},
-  triggers: [],
+  handlers: {},
+  triggers: {},
 };

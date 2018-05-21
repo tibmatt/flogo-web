@@ -12,7 +12,7 @@ import {Trigger} from '../../core';
   template: `
     <flogo-flow-triggers-trigger-block #triggerBlock
                                        [trigger]="triggerEntity"
-                                       [isDevice]="isDeviceType"
+                                       [menuDisabled]="isDeviceType"
                                        (menuItemSelected)="checkMenuAction($event)"></flogo-flow-triggers-trigger-block>
   `
 })
