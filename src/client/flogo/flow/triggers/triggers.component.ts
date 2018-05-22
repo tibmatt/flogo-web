@@ -29,7 +29,7 @@ import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/mode
 import { ConfiguratorService as TriggersConfiguratorService } from './configurator/configurator.service';
 import { SaveData } from './configurator/interfaces';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
-import { getTriggersState } from './state/triggers.selectors';
+import { getTriggersState } from '../core/state/triggers.selectors';
 import * as TriggerActions from '../core/state/triggers.actions';
 
 @Component({
