@@ -51,8 +51,6 @@ export class FlogoNewFlowComponent implements OnChanges {
     if (this.triggerId) {
       value['triggerId'] = this.triggerId;
     }
-    value.name = value.name;
-    value.description = value.description;
 
     this.postService.publish(_.assign({}, PUB_EVENTS.addFlow, {data: value}));
     this.closeAddFlowModal();
