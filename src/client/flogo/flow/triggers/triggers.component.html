@@ -8,7 +8,7 @@
       </filter>
     </defs>
   </svg>
-  <flogo-flow-triggers-trigger-block *ngFor="let trigger of triggersList"
+  <flogo-flow-triggers-trigger-block *ngFor="let trigger of triggersList; trackBy: trackTriggerBy"
                                      [isSelected]="currentTrigger?.id === trigger.id"
                                      [trigger]="trigger"
                                      [menuDisabled]="isDeviceType"

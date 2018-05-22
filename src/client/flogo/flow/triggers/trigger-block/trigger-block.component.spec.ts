@@ -12,13 +12,13 @@ import {Trigger} from '../../core';
   template: `
     <flogo-flow-triggers-trigger-block #triggerBlock
                                        [trigger]="triggerEntity"
-                                       [menuDisabled]="isDeviceType"
+                                       [menuDisabled]="isMenuDisabled"
                                        (menuItemSelected)="checkMenuAction($event)"></flogo-flow-triggers-trigger-block>
   `
 })
 class FlogoContainerComponent {
   triggerEntity: Trigger;
-  isDeviceType: boolean;
+  isMenuDisabled: boolean;
   @ViewChild('triggerBlock') triggerBlock: TriggerBlockComponent;
 
   constructor() {
@@ -52,17 +52,10 @@ class FlogoContainerComponent {
         'actionId': '435643'
       }
     };
-    this.isDeviceType = false;
+    this.isMenuDisabled = false;
   }
 
   checkMenuAction(event) {}
-}
-
-class MockRouterService {
-  events = Observable.create(observer => {
-    observer.next(new NavigationEnd(123, '', ''));
-    observer.complete();
-  });
 }
 
 describe('Component: TriggerBlockComponent', () => {
@@ -78,9 +71,6 @@ describe('Component: TriggerBlockComponent', () => {
         FlogoContainerComponent,
         TriggerBlockComponent
       ],
-      providers: [
-        {provide: Router, useClass: MockRouterService},
-      ]
     });
   });
 
@@ -102,14 +92,14 @@ describe('Component: TriggerBlockComponent', () => {
 
   describe('for microservice profiles', () => {
     it('trigger menu should open when hovered on trigger and it should be selected', () => {
-      comp.isDeviceType = false;
+      comp.isMenuDisabled = false;
       comp.triggerBlock.handleTriggerMenuShow();
       fixture.detectChanges();
       expect(comp.triggerBlock.isShowingMenu).toEqual(true);
     });
 
     it('trigger settings must be shown when trigger is selected', (done) => {
-      comp.isDeviceType = false;
+      comp.isMenuDisabled = false;
       fixture.detectChanges();
       comp.triggerBlock.menuItemSelected.subscribe((data) => {
         expect(data.operation).toEqual('show-settings');
@@ -122,7 +112,7 @@ describe('Component: TriggerBlockComponent', () => {
 
   describe('for device profiles', () => {
     it('trigger settings must be shown when trigger is selected', (done) => {
-      comp.isDeviceType = true;
+      comp.isMenuDisabled = true;
       fixture.detectChanges();
       comp.triggerBlock.menuItemSelected.subscribe((data) => {
         expect(data.operation).toEqual('show-settings');

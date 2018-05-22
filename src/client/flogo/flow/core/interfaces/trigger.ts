@@ -1,14 +1,14 @@
 import { TriggerHandler } from './trigger-handler';
 
 export interface Trigger {
+  id: string;
+  appId?: string;
   name: string;
   ref: string;
-  description: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string | null;
   settings: any;
-  id: string;
-  createdAt: string;
-  updatedAt: string | null;
   handlers: TriggerHandler[];
-  appId: string;
   handler?: any;
 }
