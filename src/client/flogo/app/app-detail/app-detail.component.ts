@@ -26,7 +26,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   @Input() appDetail: ApplicationDetail;
 
   @Output() flowSelected: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
-  @Output() flowAdded: EventEmitter<FlowSummary> = new EventEmitter<FlowSummary>();
+  @Output() flowAdded: EventEmitter<{ name: string, description?: string, triggerId?: string }> = new EventEmitter<FlowSummary>();
   @Output() flowDeleted: EventEmitter<App> = new EventEmitter<App>();
 
   application: App;
@@ -132,9 +132,11 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   onClickAddDescription(event) {
     this.isDescriptionInEditMode = true;
   }
+
   openExportFlow() {
     this.exportFlow.openExport();
   }
+
   onNameSave() {
     let editableName = this.editableName || '';
     editableName = editableName.trim();
@@ -181,22 +183,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isNameInEditMode = true;
   }
 
-  onChangedSearch(search) {
-    const flows = this.application.flows || [];
-
-    if (search && flows.length) {
-      const filtered = flows.filter((flow: FlowSummary) => {
-        return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
-          (flow.description || '').toLowerCase().includes(search.toLowerCase());
-      });
-
-      this.flows = filtered || [];
-
-    } else {
-      this.flows = this.extractFlows();
-    }
-  }
-
   onFlowSelected(flow) {
     this.flowSelected.emit(flow);
   }
@@ -205,19 +191,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.flowDeleted.emit(eventData);
   }
 
-  onFlowImportSuccess(result: any) {
-    const message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-IMPORT');
-    notification(message, 'success', 3000);
-    this.flowAdded.emit(result);
-  }
-
-  onFlowImportError(err: {
-    status: string;
-    statusText: string;
-    response: any
-  }) {
-    // let message = this.translate.instant('FLOWS:ERROR-MESSAGE-IMPORT', {value: err.response});
-    notification(err.response, 'error');
+  onFlowAdd(newFlow) {
+    this.flowAdded.emit(newFlow);
   }
 
   onDeleteApp(application) {

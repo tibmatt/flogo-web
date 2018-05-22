@@ -1,12 +1,9 @@
-import { Component, Input, SimpleChanges, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BsModalComponent } from 'ng2-bs3-modal';
-import { LanguageService } from '@flogo/core';
 
 import { PostService } from '../../core/services/post.service';
-import { SanitizeService } from '../../core/services/sanitize.service';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
-import { PUB_EVENTS } from './message';
 import { UniqueNameValidator } from './unique-name.validator';
 
 
@@ -17,19 +14,16 @@ import { UniqueNameValidator } from './unique-name.validator';
     styleUrls: ['new-flow.component.less']
 })
 export class FlogoNewFlowComponent implements OnChanges {
-  @ViewChild('modal')
-  public modal: BsModalComponent;
-  @Input()
-  public appId: string;
+  @ViewChild('modal') public modal: BsModalComponent;
+  @Input()  public appId: string;
+  @Output() public newFlow = new EventEmitter();
   public flow: FormGroup;
   private triggerId: string;
 
-  // TODO: REMOVE EXPOSING TRANSLATE SERVICE
-  constructor(public translate: LanguageService,
+  constructor(
     private postService: PostService,
     private flowsService: APIFlowsService,
     private formBuilder: FormBuilder,
-    private sanitizer: SanitizeService
   ) {
     this.resetForm();
   }
@@ -48,18 +42,18 @@ export class FlogoNewFlowComponent implements OnChanges {
   }
 
   public createFlow({ value, valid }: { value: { name: string, description?: string }, valid: boolean }) {
-    if (this.triggerId) {
-      value['triggerId'] = this.triggerId;
-    }
-
-    this.postService.publish(_.assign({}, PUB_EVENTS.addFlow, {data: value}));
+    this.newFlow.emit({
+      triggerId: this.triggerId,
+      name: value.name,
+      description: value.description,
+    });
     this.closeAddFlowModal();
   }
 
   public closeAddFlowModal() {
-      this.resetForm();
-      this.triggerId = null;
-      this.modal.close();
+    this.resetForm();
+    this.triggerId = null;
+    this.modal.close();
   }
 
   private resetForm() {
