@@ -3,8 +3,10 @@ import path from 'path';
 import {config} from '../../config/app-config';
 import {createFolder as ensureDir} from '../../common/utils/file';
 
-import { removeDir } from './file-utils';
-import {processHost} from "../../common/utils/process";
+import { copyBinaryToDestination, removeDir } from './file-utils';
+import { processHost } from '../../common/utils/process';
+import { buildAndCopyBinary } from './build/binary';
+import { buildPlugin } from './build/plugin';
 
 const loader = require('./loader');
 const commander = require('./commander');
@@ -125,7 +127,12 @@ class Engine {
     options.target = path.join(this.path, buildTargetDir);
 
     return ensureDir(options.target)
-      .then(() => commander.buildAndCopy(this.path, options));
+      .then(() => buildAndCopyBinary(this.path, options));
+  }
+
+  buildPlugin(options) {
+    return ensureDir(path.join(this.path, DIR_BUILD_BIN))
+      .then(() => buildPlugin(this.path, options));
   }
 
   buildOnly(options) {
@@ -135,7 +142,7 @@ class Engine {
   copyToBinTest() {
     const targetDir = path.join(this.path, DIR_TEST_BIN);
     return ensureDir(targetDir)
-      .then(() => commander.copy(this.path, targetDir));
+      .then(() => copyBinaryToDestination(this.path, targetDir));
   }
 
   start() {

@@ -1,7 +1,7 @@
 import { AppsManager } from '../../modules/apps/index.v2';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
 import { exportApp } from './apps/export';
-import { buildApp } from './apps/build';
+import { buildEnpoint } from './apps/build';
 
 export function apps(router, basePath) {
   router.get(`${basePath}/apps`, listApps);
@@ -11,7 +11,7 @@ export function apps(router, basePath) {
   // ex. /apps/zA45E:export
   // needs to be registered before .get('/apps/:appId')
   router.get(`${basePath}/apps/:appId\\:export`, exportApp);
-  router.get(`${basePath}/apps/:appId/build`, buildApp);
+  router.get(`${basePath}/apps/:appId/build`, buildEnpoint);
 
   router.get(`${basePath}/apps/:appId`, getApp);
   router.patch(`${basePath}/apps/:appId`, updateApp);

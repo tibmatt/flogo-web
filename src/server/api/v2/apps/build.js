@@ -1,29 +1,14 @@
-import kebabCase from 'lodash/kebabCase';
 import { AppsManager } from '../../../modules/apps/index.v2';
+import { buildHandler } from '../shared/build-handler';
+import { getNameForAppBinary } from '../shared/name-for-app-binary';
 
-export function* buildApp() {
-  this.req.setTimeout(0);
-  const appId = this.params.appId;
-  const options = { compile: {} };
+const buildApp = buildHandler(async (context, options) => {
+  const appId = context.params.appId;
+  const buildResult = await AppsManager.build(appId, options);
+  const fileName = getNameForAppBinary(buildResult.appName, options.compile);
+  return { fileName, content: buildResult.data };
+});
 
-  options.compile.os = this.query.os || null;
-  options.compile.arch = this.query.arch || null;
-
-  const result = yield AppsManager.build(appId, options);
-  const name = getNameForFile(result.appName, options.compile);
-  this.attachment(name);
-  this.body = result.data;
+export function* buildEnpoint() {
+  yield buildApp(this);
 }
-
-function getNameForFile(appName, { os: targetOs, arch: targetArch }) {
-  let name = [
-    kebabCase(appName),
-    targetOs || undefined,
-    targetArch || undefined,
-  ].join('_');
-  if (targetOs === 'windows') {
-    name = `${name}.exe`;
-  }
-  return name;
-}
-
