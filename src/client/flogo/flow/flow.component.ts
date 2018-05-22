@@ -50,10 +50,6 @@ import {
   SelectTaskConfigEventData,
   SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS
 } from './task-configurator/messages';
-import {
-  PUB_EVENTS as FLOGO_ERROR_PANEL_SUB_EVENTS,
-  SUB_EVENTS as FLOGO_ERROR_PANEL_PUB_EVENTS
-} from './error-panel/messages';
 
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
@@ -76,7 +72,7 @@ import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema }
 import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
 import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
 import { HandlerType } from './core/models';
-import { FlowState } from './core/models/flow-state';
+import { FlowState } from './core/state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { makeErrorTask } from './core/models/make-error-task';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
@@ -210,8 +206,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTask, { callback: this._saveConfigFromTaskConfigurator.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
-      _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.openPanel, { callback: this._errorPanelStatusChanged.bind(this, true) }),
-      _.assign({}, FLOGO_ERROR_PANEL_SUB_EVENTS.closePanel, { callback: this._errorPanelStatusChanged.bind(this, false) })
     ];
 
     _.each(
@@ -276,23 +270,26 @@ export class FlowComponent implements OnInit, OnDestroy {
     return firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/');
   }
 
-  private onFlowStateUpdate(flowState: FlowState) {
-    this.flowState = flowState;
+  private onFlowStateUpdate(nextState: FlowState) {
+    const prevState = this.flowState;
+    this.flowState = nextState;
     this.determineRunnableEnabled();
-    this.hasTask = !_.isEmpty(flowState.mainItems);
-    this._flowService.saveFlowIfChanged(this.flowId, flowState)
+    this.hasTask = !_.isEmpty(nextState.mainItems);
+    if (prevState && prevState.isErrorPanelOpen !== nextState.isErrorPanelOpen) {
+      // todo: this shouldn't be necessary once we move away from route based state
+      this._navigateFromModuleRoot();
+    }
+    this._flowService.saveFlowIfChanged(this.flowId, nextState)
       .subscribe(updated => {
         if (updated && !this._isCurrentProcessDirty) {
           this._isCurrentProcessDirty = true;
         }
-        console.groupCollapsed('flowSaved');
-        console.log(updated);
-        console.groupEnd();
+        console.log('flowSaved?', updated);
       });
   }
 
   ngOnDestroy() {
-    this.ngOnDestroy$.complete();
+    this.ngOnDestroy$.emitAndComplete();
     _.each(this._subscriptions, sub => {
         this._postService.unsubscribe(sub);
       }
@@ -351,13 +348,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     // allow double equal check for legacy ids that were type number
     /* tslint:disable-next-line:triple-equals */
     return steps.find(step => taskID == step.taskId);
-  }
-
-  private _errorPanelStatusChanged(isOpened: boolean, data: any, envelope: any) {
-    console.group('Close/open error panel from error panel');
-    this.flowDetails.clearSelection();
-    this._navigateFromModuleRoot();
-    console.groupEnd();
   }
 
   private uniqueTaskName(taskName: string) {
@@ -802,7 +792,6 @@ export class FlowComponent implements OnInit, OnDestroy {
    *-------------------------------*/
 
   private _runFromRoot() {
-    this._postService.publish(FLOGO_ERROR_PANEL_PUB_EVENTS.closePanel);
 
     this._isDiagramEdited = false;
     this.cleanDiagramRunState();
@@ -1078,10 +1067,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       runTasks: runTasks,
       runTasksIDs: runTaskIds
     });
-
-    if (isErrorHandlerTouched) {
-      this._postService.publish(FLOGO_ERROR_PANEL_PUB_EVENTS.openPanel);
-    }
 
     this.flowDetails.executionStatusChanged(allStatusChanges);
 

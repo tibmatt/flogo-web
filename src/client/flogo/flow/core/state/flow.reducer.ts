@@ -2,7 +2,7 @@ import * as selectionFactory from '../models/flow/selection-factory';
 import { cleanGraphRunState } from '../models/flow/clean-run-state';
 
 import * as actions from './flow.actions';
-import { FlowState } from './flow.state';
+import { FlowState, INITIAL_STATE } from './flow.state';
 
 import { createBranch } from './cases/create-branch';
 import { taskItemCreated } from './cases/task-item-created';
@@ -11,16 +11,6 @@ import { itemUpdate } from './cases/item-update';
 import { executionUpdate } from './cases/execution-update';
 
 const ActionType = actions.ActionType;
-
-const INITIAL_STATE: FlowState = {
-  app: null,
-  mainItems: null,
-  mainGraph: null,
-  errorItems: null,
-  errorGraph: null,
-  currentSelection: null,
-  schemas: {},
-};
 
 export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.ActionsUnion): FlowState {
   switch (action.type) {
@@ -67,12 +57,19 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     case ActionType.ExecutionWillStart: {
       return  {
         ...state,
+        isErrorPanelOpen: false,
         mainGraph: cleanGraphRunState(state.mainGraph),
         errorGraph: cleanGraphRunState(state.errorGraph),
       };
     }
     case ActionType.ExecutionUpdated: {
       return executionUpdate(state, action.payload);
+    }
+    case ActionType.ErrorPanelStatusChange: {
+      return {
+        ...state,
+        isErrorPanelOpen: action.payload.isOpen
+      };
     }
   }
   return state;

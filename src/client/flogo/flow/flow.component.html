@@ -94,7 +94,8 @@
     <flogo-flow-task-configurator [flowId]="handlerTypes.Main"></flogo-flow-task-configurator>
     <flogo-flow-task-configurator [flowId]="handlerTypes.Error"></flogo-flow-task-configurator>
 
-    <flogo-flow-error-panel *ngIf="hasTask">
+    <flogo-flow-error-panel *ngIf="hasTask" [templateRef]="errorHandlerContent" ></flogo-flow-error-panel>
+    <ng-template #errorHandlerContent>
       <div class="error-panel">
         <div class="error-panel__icon-container">
           <i class="flogo-icon flogo-icon-info error-panel__icon"></i>
@@ -124,7 +125,7 @@
                        (action)="onErrorDiagramAction($event)">
         </flogo-diagram>
       </div>
-    </flogo-flow-error-panel>
+    </ng-template>
 
   </div>
   <div class="canvas-right-container">
