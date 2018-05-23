@@ -26,7 +26,7 @@ export class FlowsService {
           .then(contribTrigger => ({ flow, contribTrigger }));
       })
       .then(({ flow, contribTrigger }) => {
-        const endpointSchema = contribTrigger.endpoint || {};
+        const endpointSchema = contribTrigger.handler || {};
         const settings = objectFromArray(endpointSchema.settings);
         const outputs = objectFromArray(contribTrigger.outputs);
         return this.handlersService.updateHandler(triggerId, flow.id, { settings, outputs });

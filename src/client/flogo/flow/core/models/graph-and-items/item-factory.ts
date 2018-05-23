@@ -44,7 +44,7 @@ export class ItemFactory {
     const triggerSchemaSettings = isArray(installed.settings) ? installed.settings : [];
     item.settings = mergeAttributesWithSchema(settings, triggerSchemaSettings);
 
-    const endpointSettings = get(installed, 'endpoint.settings', []);
+    const endpointSettings = get(installed, 'handler.settings', []);
     item.endpoint.settings = mergeAttributesWithSchema(endpointSetting.settings || {}, endpointSettings);
 
     const mapType = prop => ({
