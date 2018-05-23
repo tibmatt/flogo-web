@@ -2,9 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../../../shared/mapper';
 
-import {ConfiguratorService as TriggerConfiguratorService, TRIGGER_TABS} from '../configurator.service';
+import {ConfiguratorService as TriggerConfiguratorService} from '../configurator.service';
 import {MapperStatus} from '../interfaces';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
+import {TRIGGER_TABS} from '../core/constants';
 
 @Component({
   selector: 'flogo-flow-trigger-mapper',

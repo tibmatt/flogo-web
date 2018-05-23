@@ -9,24 +9,14 @@ import {
   ConfiguratorStatus,
   TriggerStatus,
   MapperStatus,
-  HandlerMappings,
   TriggerChanges
 } from './interfaces';
 import {MapperTranslator, MappingsValidatorFn, IMapping} from '../../shared/mapper';
-import {Tabs} from '../../shared/tabs/models/tabs.model';
 import {reduce as arrayReduce} from 'lodash';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {isEqual} from 'lodash';
-
-export const TRIGGER_TABS = {
-  MAP_FLOW_INPUT: 'mapFlowInput',
-  MAP_FLOW_OUTPUT: 'mapFlowOutput'
-};
-
-const defaultTabsInfo: { name: string, labelKey: string }[] = [
-  {name: TRIGGER_TABS.MAP_FLOW_INPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-INPUTS'},
-  {name: TRIGGER_TABS.MAP_FLOW_OUTPUT, labelKey: 'TRIGGER-CONFIGURATOR:FLOW-OUTPUTS'}
-];
+import {createTabs} from './core/utils';
+import {TRIGGER_TABS} from './core/constants';
 
 @Injectable()
 export class ConfiguratorService {
@@ -95,8 +85,19 @@ export class ConfiguratorService {
         ...triggerDetail,
         isValid: true,
         isDirty: false,
-        tabs: this.createTabs(triggerDetail.triggerSchema, triggerDetail.handler)
+        tabs: createTabs(triggerDetail.triggerSchema, this.currentModalStatus.flowMetadata)
       };
+      const { input, output } = triggerDetail.handler.actionMappings;
+      const mappings = {
+        input: MapperTranslator.translateMappingsIn(input),
+        output: MapperTranslator.translateMappingsIn(output)
+      };
+      triggerConfiguration.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isValid = this.areValidMappings({
+        mappings: mappings.input
+      });
+      triggerConfiguration.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).isValid = this.areValidMappings({
+        mappings: mappings.output
+      });
       triggerConfiguration.isValid = triggerConfiguration.tabs.areValid();
       return triggersMap.set(triggerDetail.trigger.id, triggerConfiguration);
     }, this.triggersToConfigure);
@@ -116,43 +117,6 @@ export class ConfiguratorService {
       handler: (triggerToConfigure && triggerToConfigure.handler) || null,
       tabs: (triggerToConfigure && triggerToConfigure.tabs) || null
     });
-  }
-
-  createTabs(triggerSchema, handler: HandlerMappings) {
-    const tabs = Tabs.create(defaultTabsInfo);
-    const flowMetadata = this.currentModalStatus.flowMetadata;
-    const { input, output } = handler.actionMappings;
-    const mappings = {
-      input: MapperTranslator.translateMappingsIn(input),
-      output: MapperTranslator.translateMappingsIn(output)
-    };
-    let hasTriggerOutputs = false;
-    let hasTriggerReply = false;
-    let hasFlowInputs = false;
-    let hasFlowOutputs = false;
-
-    if (triggerSchema) {
-      hasTriggerOutputs = triggerSchema.outputs && triggerSchema.outputs.length > 0;
-      hasTriggerReply = triggerSchema.reply && triggerSchema.reply.length > 0;
-    }
-
-    if (flowMetadata) {
-      hasFlowInputs = flowMetadata.input && flowMetadata.input.length > 0;
-      hasFlowOutputs = flowMetadata.output && flowMetadata.output.length > 0;
-    }
-    tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).inputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-INPUTS';
-    tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).outputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-OUTPUT';
-    tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).enabled = hasTriggerOutputs && hasFlowInputs;
-    tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isValid = this.areValidMappings({
-      mappings: mappings.input
-    });
-    tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).inputsLabelKey = 'TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES';
-    tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).outputsLabelKey = 'TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS';
-    tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).enabled = hasTriggerReply && hasFlowOutputs;
-    tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).isValid = this.areValidMappings({
-      mappings: mappings.output
-    });
-    return tabs;
   }
 
   private publishChangedTriggerSelection() {
