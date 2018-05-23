@@ -87,7 +87,7 @@
                   translate}}</a></li>
               </ul>
             </div>
-            <flogo-new-flow [appId]="application?.id"></flogo-new-flow>
+            <flogo-new-flow [appId]="application?.id" (newFlow)="onFlowAdd($event)"></flogo-new-flow>
             <flogo-apps-settings *ngIf="application?.profileType === PROFILE_TYPES.DEVICE"
                                  (save)="onSaveDeviceSettings($event)"
                                  [settings]="application?.device?.settings"></flogo-apps-settings>

@@ -1,28 +1,24 @@
 <button class="flogo-button--flat js-open-modal flogo-app-header__add-flow" (click)="open()">
   <i class="flogo-icon-add"></i>{{ 'DETAILS:NEW-FLOW' | translate }}</button>
 
-<bs-modal [size]="'sm'" #modal>
+<bs-modal cssClass="new-flow-modal" [size]="'sm'" #modal>
   <form novalidate [formGroup]="flow" (ngSubmit)="createFlow(flow)">
-    <bs-modal-header>
-      <h3>{{ 'ADD:CREATE-NEW-FLOW' | translate }}</h3>
-    </bs-modal-header>
-    <bs-modal-body>
-      <div class="form-group">
-        <label for="flowName" class="h4">{{ 'ADD:FLOW-NAME' | translate }} </label>
-        <input type="text" class="form-control" id="flowName" formControlName="name" asyncValidator placeholder="{{ translate.instant('ADD:GIVE-YOUR-FLOW-A-NAME') }}">
-        <label *ngIf="flow.get('name').hasError('uniqueInvalid')" for="flowName" class="flogo-flows-add-error">{{ 'ADD:FLOW-NAME-EXISTS' | translate}}</label>
-      </div>
-      <div class="form-group">
-        <label for="flowDescription" class="h4">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>
-        <textarea class="form-control" formControlName="description" rows="3" id="flowDescription" placeholder="{{ translate.instant('ADD:ADD-FLOW-DESCRIPTION') }}"></textarea>
-      </div>
-    </bs-modal-body>
-    <bs-modal-footer>
-      <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
+    <h3 class="title">{{ 'ADD:CREATE-NEW-FLOW' | translate }}</h3>
+    <div class="form-group">
+      <label for="flowName" class="form__label">{{ 'ADD:FLOW-NAME' | translate }} </label>
+      <input type="text" autofocus class="form-control form__input" id="flowName" formControlName="name" asyncValidator placeholder="{{ 'ADD:GIVE-YOUR-FLOW-A-NAME' | translate }}">
+      <label *ngIf="flow.get('name').hasError('uniqueInvalid')" for="flowName" class="form__error">{{ 'ADD:FLOW-NAME-EXISTS' | translate}}</label>
+    </div>
+    <div class="form-group">
+      <label for="flowDescription" class="form__label">{{ 'ADD:FLOW-DESCRIPTION' | translate }} </label>
+      <textarea class="form-control form__input" formControlName="description" rows="3" id="flowDescription" placeholder="{{ 'ADD:ADD-FLOW-DESCRIPTION' | translate }}"></textarea>
+    </div>
+    <div class="footer">
+      <button type="button" class="flogo-button--secondary flogo-flows-add-cancel footer__button" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
       </button>
-      <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="!flow.valid">
+      <button type="submit" class="flogo-button--default flogo-flows-add-save footer__button" [disabled]="!flow.valid">
         {{ 'ADD:CREATE' | translate }}
       </button>
-    </bs-modal-footer>
+    </div>
   </form>
 </bs-modal>

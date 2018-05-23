@@ -1,13 +1,11 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, async, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BsModalModule, BsModalService } from 'ng2-bs3-modal';
+import { BsModalModule } from 'ng2-bs3-modal';
 
-import { PostService } from '../../core/services/post.service';
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { SharedModule as FlogoSharedModule } from '../../shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '../../core/core.module';
-import { PUB_EVENTS } from './message';
 import { FlogoNewFlowComponent } from './new-flow.component';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 
@@ -24,16 +22,8 @@ const flowsServiceStub = {
 
 };
 
-const postServiceStub = {
-
-  publish(data: any) {
-    this.published = data;
-  }
-
-};
-
 describe('Component: FlogoNewFlow', () => {
-  let comp: FlogoNewFlowComponent;
+  let component: FlogoNewFlowComponent;
   let fixture: ComponentFixture<FlogoNewFlowComponent>;
   let elements: { submitBtn: DebugElement, nameInput: DebugElement, descriptionInput: DebugElement };
 
@@ -52,7 +42,6 @@ describe('Component: FlogoNewFlow', () => {
       ], // declare the test component
       providers: [
         { provide: APIFlowsService, useValue: flowsServiceStub },
-        { provide: PostService, useValue: postServiceStub }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -64,7 +53,7 @@ describe('Component: FlogoNewFlow', () => {
   beforeEach(async(() => {
 
     fixture = TestBed.createComponent(FlogoNewFlowComponent);
-    comp = fixture.componentInstance;
+    component = fixture.componentInstance;
 
     const openModalBtnDe = fixture.debugElement.query(By.css('.js-open-modal'));
     openModalBtnDe.triggerEventHandler('click', null);
@@ -82,25 +71,26 @@ describe('Component: FlogoNewFlow', () => {
   }));
 
   afterEach((done) => {
-    return comp.modal.close()
+    return component.modal.close()
       .then(() => done());
   });
 
   it('Should not allow save when flow name is not provided', async(() => {
     fixture.detectChanges();
-    expect(comp.flow.valid).toBe(false, 'form is valid');
+    expect(component.flow.valid).toBe(false, 'form is valid');
     expect(submitBtn.nativeElement.disabled).toBe(true);
   }));
 
   it('Should not allow to save when flow name already exists', async(() => {
     setValueAndDispatch(EXISTING_FLOW_NAME, elements.nameInput);
     fixture.detectChanges();
-    expect(comp.flow.valid).toBe(false, 'form is valid');
+    expect(component.flow.valid).toBe(false, 'form is valid');
     expect(submitBtn.nativeElement.disabled).toBeTruthy();
   }));
 
   it('Should trigger an event with the flow info when the save button is clicked', async(() => {
 
+    spyOn(component.newFlow, 'emit');
     const testFlow = {
       name: 'new flow name',
       description: 'new flow description'
@@ -116,22 +106,17 @@ describe('Component: FlogoNewFlow', () => {
         return fixture.whenStable();
       })
       .then(() => {
-        expect(comp.flow.valid).toBe(true, 'form is invalid');
+        expect(component.flow.valid).toBe(true, 'form is invalid');
         expect(submitBtn.nativeElement.disabled).toBeFalsy('Submit button is not enabled');
         submitBtn.nativeElement.click();
         fixture.detectChanges();
         return fixture.whenStable();
       })
       .then(() => {
-        const postServiceStubInstance = <any> fixture.debugElement.injector.get(PostService);
-
-        expect(postServiceStubInstance.published).toBeDefined('Published message is not defined');
-        expect(postServiceStubInstance.published.channel).toBe(PUB_EVENTS.addFlow.channel);
-        expect(postServiceStubInstance.published.topic).toBe(PUB_EVENTS.addFlow.topic);
-
-        const messageData = postServiceStubInstance.published.data;
-        expect(messageData.name).toBe(testFlow.name);
-        expect(messageData.description).toBe(testFlow.description);
+        const [mostRecentCallParams] = (<jasmine.Spy>component.newFlow.emit).calls.mostRecent().args;
+        const { name, description } = mostRecentCallParams;
+        expect(component.newFlow.emit).toHaveBeenCalledTimes(1);
+        expect({ name, description }).toEqual(testFlow);
       });
   }));
 
@@ -140,7 +125,6 @@ describe('Component: FlogoNewFlow', () => {
     nativeElement.value = value;
     nativeElement.dispatchEvent(new Event('input'));
   }
-
 
 });
 

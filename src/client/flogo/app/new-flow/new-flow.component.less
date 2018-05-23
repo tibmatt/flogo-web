@@ -1,11 +1,51 @@
-:host{
+:host {
   display: inline-block;
 }
 
-.flogo-flows-add-save, .flogo-flows-add-cancel {
+::ng-deep {
+  .new-flow-modal {
+    min-width: 617px;
+  }
+  .modal-content {
+    padding: 40px;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form__label {
+  font-size: 14px;
+  color: #727272;
+}
+
+.form__input {
+  min-height: 40px;
+}
+
+.form__error {
+  color: red
+}
+
+.title {
+  margin-top: 0;
+}
+
+.footer {
+  padding-top: 40px;
+  text-align: right;
+}
+
+.footer__button {
   width: 124px;
   height: 40px;
   font-size: 16px;
+
+  & + .footer__button {
+    margin-left: 20px;
+  }
+
 }
 
 .flogo-app-header__add-flow {
@@ -25,6 +65,3 @@
   }
 }
 
-.flogo-flows-add-error {
-  color: red
-}

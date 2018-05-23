@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
 import { LanguageService } from '@flogo/core';
 import { notification } from '../shared/utils';
-import { PostService } from '../core/services/post.service';
-import { PUB_EVENTS as SUB_EVENTS } from './new-flow/message';
 import { ApplicationDetail, AppDetailService} from './core';
 import 'rxjs/add/operator/map';
 import { FlowsService } from '../core/services/flows.service';
@@ -17,16 +15,13 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class FlogoApplicationComponent implements OnInit, OnDestroy {
   public appDetail: ApplicationDetail = null;
-  private subscriptions: any;
   private appObserverSubscription: Subscription;
 
-  constructor(public translate: LanguageService,
+  constructor(private translate: LanguageService,
               private router: Router,
               private route: ActivatedRoute,
               private appService: AppDetailService,
-              private flowsService: FlowsService,
-              private postService: PostService) {
-    this.initSubscribe();
+              private flowsService: FlowsService) {
   }
 
   public ngOnInit() {
@@ -56,19 +51,10 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
     this.appObserverSubscription.unsubscribe();
     // Reset currentApp$ next element to null
     this.appService.resetApp();
-    // cancel subscriptions
-    _.each(this.subscriptions, sub => {
-        this.postService.unsubscribe(sub);
-      }
-    );
   }
 
   public onFlowSelected(flow) {
     this.router.navigate(['/flows', flow.id]);
-  }
-
-  public onFlowAdded(event) {
-    this.appService.reload();
   }
 
   public onFlowDeleted(eventData) {
@@ -79,29 +65,19 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
       });
   }
 
-  private initSubscribe() {
-    this.subscriptions = [
-      this.postService.subscribe(_.assign({}, SUB_EVENTS.addFlow, { callback: this.onAddFlow.bind(this) }))
-    ];
-  }
-
-  private onAddFlow(data: any) {
+  public onFlowAdded({triggerId, name, description}: { triggerId?: string, name: string, description?: string }) {
     const appId = this.appDetail.app.id;
-    const triggerId = data.triggerId;
     const profileType = this.appDetail.app.profileType;
-    this.flowsService.createFlow(appId, {
-      name: data.name,
-      description: data.description,
-    }, triggerId, profileType).then(() => {
-      const message = this.translate.instant('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED');
-      notification(message, 'success', 3000);
-    })
+    this.flowsService.createFlow(appId, { name, description: description }, triggerId, profileType)
+      .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-CREATED').toPromise())
+      .then(message => notification(message, 'success', 3000))
       .then(() => this.appService.reload())
-      .catch((err) => {
-        const message = this.translate.instant('FLOWS:CREATE_FLOW_ERROR', err);
-        notification(message, 'error');
-        console.error(err);
-      });
+    .catch((err) => {
+      console.error(err);
+      return this.translate.get('FLOWS:CREATE_FLOW_ERROR', err)
+        .toPromise()
+        .then(message => notification(message, 'error'));
+    });
   }
 
 }
