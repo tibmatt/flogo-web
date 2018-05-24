@@ -163,6 +163,14 @@ export class FlowComponent implements OnInit, OnDestroy {
     return this.flowDetails.id;
   }
 
+  getSelectionFor(handlerType) {
+    if (this.flowState.currentSelection && this.flowState.currentSelection.diagramId === handlerType) {
+      return this.flowState.currentSelection;
+    } else {
+      return null;
+    }
+  }
+
   public ngOnInit() {
     const flowData: FlowData = this._route.snapshot.data['flowData'];
     this.flowDetails

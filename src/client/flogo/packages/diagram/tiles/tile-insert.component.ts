@@ -10,7 +10,6 @@ import { DiagramSelection, InsertTile, DiagramSelectionType } from '../interface
 export class TileInsertComponent implements OnChanges {
   @Input() tile: InsertTile;
   @Input() currentSelection: DiagramSelection;
-  @Input() diagramId: string;
   @Output() select = new EventEmitter<string>();
   @HostBinding('class.is-selected') isSelected = false;
 
@@ -34,7 +33,7 @@ export class TileInsertComponent implements OnChanges {
       return false;
     }
     const {type, taskId, diagramId} = this.currentSelection;
-    const forRoot = this.isRootInsert && diagramId === this.diagramId;
+    const forRoot = this.isRootInsert;
     return type === DiagramSelectionType.Insert && (taskId && taskId === this.tile.parentId || forRoot);
   }
 }

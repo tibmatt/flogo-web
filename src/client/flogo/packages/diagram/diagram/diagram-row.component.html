@@ -10,7 +10,6 @@
                              class="tile--slot"
                              [tile]="tile"
                              [currentSelection]="selection"
-                             [diagramId] = "diagramId"
                              (select)="onInsertSelected($event)"></flogo-diagram-tile-insert>
   <flogo-diagram-tile-task *ngIf="tile.type === tileTypes.Task && tile.task?.type === nodeTypes.Task"
                            @tileTask

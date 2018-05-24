@@ -84,7 +84,7 @@
           <flogo-diagram
             [diagramId]="handlerTypes.Main"
             [flow]="flowState?.mainGraph"
-            [selection]="flowState?.currentSelection"
+            [selection]="getSelectionFor(handlerTypes.Main)"
             (action)="onMainDiagramAction($event)">
           </flogo-diagram>
         </div>
@@ -121,7 +121,7 @@
         <flogo-diagram class="error-panel__diagram"
                        [diagramId]="handlerTypes.Error"
                        [flow]="flowState?.errorGraph"
-                       [selection]="flowState?.currentSelection"
+                       [selection]="getSelectionFor(handlerTypes.Error)"
                        (action)="onErrorDiagramAction($event)">
         </flogo-diagram>
       </div>

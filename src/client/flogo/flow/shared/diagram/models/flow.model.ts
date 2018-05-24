@@ -63,6 +63,8 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   const flowPathNodes = flowPath.nodes;
   const errorPathRoot = errorPath.rootId;
   const errorPathNodes = errorPath.nodes;
+  const isFlowPath = isEmpty(flowPath) || isEmpty(flowPathRoot) || isEmpty(flowPathNodes);
+  const isErrorPath = isEmpty(errorPath) || isEmpty(errorPathRoot) || isEmpty(errorPathNodes);
 
   flowJSON.id = flowID;
   flowJSON.name = inFlow.name || '';
@@ -94,8 +96,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     return flowMetadata;
   }
 
-  if ((isEmpty(flowPath) || isEmpty(flowPathRoot) || isEmpty(flowPathNodes)) &&
-    (isEmpty(errorPath) || isEmpty(errorPathRoot) || isEmpty(errorPathNodes))) {
+  if (isFlowPath && isErrorPath) {
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.warn('Invalid path information in the given flow');
     /* tslint:disable-next-line:no-unused-expression */

@@ -16,7 +16,6 @@ export class DiagramRowComponent implements OnChanges {
   @Input() row: Tile[];
   @Input() selection: DiagramSelection;
   @Input() rowIndex: number;
-  @Input() diagramId?: string;
   @HostBinding('class.is-readonly') @Input() isReadOnly = false;
   @Output() action = new EventEmitter<DiagramAction>();
 
