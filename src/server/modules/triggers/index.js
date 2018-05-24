@@ -43,18 +43,16 @@ export class TriggerManager {
 }
 
 function cleanForOutput(trigger, fields) {
-  // To-Do: remove cleanTrigger.endpoint
   let cleanTrigger = Object.assign(
     {
       id: trigger.id || trigger._id,
       ref: trigger.ref,
-      homepage: get(trigger, 'schema.homepage', ''),
-      endpoint: get(trigger, 'schema.handler', {'settings': []})
+      homepage: get(trigger, 'schema.homepage', '')
     },
     trigger.schema
   );
 
-  if(fields == 'raw') {
+  if(fields === 'raw') {
     return trigger;
   }
 
