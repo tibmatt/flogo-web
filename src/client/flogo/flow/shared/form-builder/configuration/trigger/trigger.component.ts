@@ -70,7 +70,7 @@ export class FlogoFormBuilderConfigurationTriggerComponent implements OnChanges 
       this.updateMessageNumFlowsUsed(numFlows);
     }
     this.fields = {
-      endpointSettings: this._commonService.getStructureFromAttributes('endpointSettings', this._attributes),
+      handlerSettings: this._commonService.getStructureFromAttributes('handlerSettings', this._attributes),
       settings: this._commonService.getStructureFromAttributes('settings', this._attributes),
       outputs: this._commonService.getStructureFromAttributes('outputs', this._attributes)
     };

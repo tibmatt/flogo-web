@@ -55,38 +55,38 @@
 
     </div>
 
-    <hr *ngIf="fields.endpointSettings.length && fields.settings.length">
+    <hr *ngIf="fields.handlerSettings.length && fields.settings.length">
 
-    <div *ngFor="let item of fields.endpointSettings; let index = index" class="">
+    <div *ngFor="let item of fields.handlerSettings; let index = index" class="">
 
-      <div class="endpoint" *ngIf="getControlByType(item,directions.input).control == 'FieldTextBox'">
-        <flogo-flow-form-builder-fields-textbox [info]="getTriggerInfo(item, directions.input, 'endpointSettings')"
+      <div class="handler" *ngIf="getControlByType(item,directions.input).control == 'FieldTextBox'">
+        <flogo-flow-form-builder-fields-textbox [info]="getTriggerInfo(item, directions.input, 'handlerSettings')"
                                                 [fieldObserver]="_fieldObserver"></flogo-flow-form-builder-fields-textbox>
       </div>
 
-      <div class="endpoint" *ngIf="getControlByType(item,directions.input).control == 'FieldListBox'">
-        <flogo-flow-form-builder-fields-listbox [info]="getTriggerInfo(item, directions.input, 'endpointSettings')"
+      <div class="handler" *ngIf="getControlByType(item,directions.input).control == 'FieldListBox'">
+        <flogo-flow-form-builder-fields-listbox [info]="getTriggerInfo(item, directions.input, 'handlerSettings')"
                                                 [fieldObserver]="_fieldObserver"></flogo-flow-form-builder-fields-listbox>
       </div>
 
-      <div class="endpoint" *ngIf="getControlByType(item,directions.input).control == 'FieldNumber'">
-        <flogo-flow-form-builder-fields-number [info]="getTriggerInfo(item, directions.input, 'endpointSettings')"
+      <div class="handler" *ngIf="getControlByType(item,directions.input).control == 'FieldNumber'">
+        <flogo-flow-form-builder-fields-number [info]="getTriggerInfo(item, directions.input, 'handlerSettings')"
                                                [fieldObserver]="_fieldObserver"></flogo-flow-form-builder-fields-number>
       </div>
 
-      <div class="endpoint" *ngIf="getControlByType(item,directions.input).control == 'FieldTextArea'">
-        <flogo-flow-form-builder-fields-textarea [info]="getTriggerInfo(item, directions.input, 'endpointSettings')"
+      <div class="handler" *ngIf="getControlByType(item,directions.input).control == 'FieldTextArea'">
+        <flogo-flow-form-builder-fields-textarea [info]="getTriggerInfo(item, directions.input, 'handlerSettings')"
                                                  [fieldObserver]="_fieldObserver"></flogo-flow-form-builder-fields-textarea>
       </div>
 
-      <div class="endpoint" *ngIf="getControlByType(item,directions.input).control == 'FieldRadio'">
-        <flogo-flow-form-builder-fields-radio [info]="getTriggerInfo(item, directions.input, 'endpointSettings')"
+      <div class="handler" *ngIf="getControlByType(item,directions.input).control == 'FieldRadio'">
+        <flogo-flow-form-builder-fields-radio [info]="getTriggerInfo(item, directions.input, 'handlerSettings')"
                                               [fieldObserver]="_fieldObserver"
                                               [index]="index"></flogo-flow-form-builder-fields-radio>
       </div>
 
-      <div class="endpoint" *ngIf="getControlByType(item,directions.input).control == 'FieldObject'">
-        <flogo-flow-form-builder-fields-object [info]="getTriggerInfo(item, directions.input, 'endpointSettings')"
+      <div class="handler" *ngIf="getControlByType(item,directions.input).control == 'FieldObject'">
+        <flogo-flow-form-builder-fields-object [info]="getTriggerInfo(item, directions.input, 'handlerSettings')"
                                                [fieldObserver]="_fieldObserver"></flogo-flow-form-builder-fields-object>
       </div>
 

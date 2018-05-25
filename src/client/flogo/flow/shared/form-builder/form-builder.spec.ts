@@ -159,13 +159,13 @@ describe('Form-builder component', () => {
     const port = fixture.nativeElement.querySelector('.settings input[id="port"]');
     expect(port).not.toBeNull();
 
-    const method = fixture.nativeElement.querySelector('.endpoint ul[id="method"]');
+    const method = fixture.nativeElement.querySelector('.handler ul[id="method"]');
     expect(method).not.toBeNull();
 
-    const path = fixture.nativeElement.querySelector('.endpoint input[id="path"]');
+    const path = fixture.nativeElement.querySelector('.handler input[id="path"]');
     expect(path).not.toBeNull();
 
-    const radios = fixture.nativeElement.querySelectorAll('.endpoint input[type="radio"]');
+    const radios = fixture.nativeElement.querySelectorAll('.handler input[type="radio"]');
     expect(radios.length).toEqual(4);
 
     tick();

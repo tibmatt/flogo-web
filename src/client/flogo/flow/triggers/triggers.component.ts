@@ -142,10 +142,10 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
         .then((updatedTrigger) => {
           this.store.dispatch(new TriggerActions.UpdateTrigger(updatedTrigger));
         });
-    } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
+    } else if (data.changedStructure === 'handlerSettings' || data.changedStructure === 'outputs') {
       const actionId = this.actionId;
       this._restAPIHandlerService.updateHandler(currentTrigger.id, actionId, {
-        settings: data.endpointSettings,
+        settings: data.handlerSettings,
         outputs: data.outputs
       }).then((updatedHandler) => {
         const triggerId = currentTrigger.id;
