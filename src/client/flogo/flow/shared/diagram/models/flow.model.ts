@@ -58,10 +58,13 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   }
 
   const flowPath = inFlow.mainGraph;
-
+  const errorPath: FlowGraph = inFlow.errorGraph;
   const flowPathRoot = flowPath.rootId;
-
   const flowPathNodes = flowPath.nodes;
+  const errorPathRoot = errorPath.rootId;
+  const errorPathNodes = errorPath.nodes;
+  const isFlowPath = isEmpty(flowPath) || isEmpty(flowPathRoot) || isEmpty(flowPathNodes);
+  const isErrorPath = isEmpty(errorPath) || isEmpty(errorPathRoot) || isEmpty(errorPathNodes);
 
   flowJSON.id = flowID;
   flowJSON.name = inFlow.name || '';
@@ -93,7 +96,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     return flowMetadata;
   }
 
-  if (isEmpty(flowPath) || isEmpty(flowPathRoot) || isEmpty(flowPathNodes)) {
+  if (isFlowPath && isErrorPath) {
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.warn('Invalid path information in the given flow');
     /* tslint:disable-next-line:no-unused-expression */
@@ -102,8 +105,8 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   }
 
   const flowItems = inFlow.mainItems;
-
-  if (isEmpty(flowItems)) {
+  const errorItems = inFlow.errorItems;
+  if (isEmpty(flowItems) && isEmpty(errorItems)) {
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.warn('Invalid items information in the given flow');
     /* tslint:disable-next-line:no-unused-expression */
@@ -144,6 +147,10 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       /*
        * add the root node to tasks of the root flow as it now is an activity
        */
+      if (isEmpty(rootNode)) {
+        return rootTask;
+      }
+
       const taskInfo = _prepareTaskInfo(<ItemActivityTask>flowItems[rootNode.id]);
       if (!isEmpty(taskInfo)) {
         rootTask.tasks.push(taskInfo);
@@ -155,17 +162,8 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     }());
 
 
-    const errorItems = inFlow.errorItems;
-    const errorPath: FlowGraph = inFlow.errorGraph;
-
-    if (isEmpty(errorPath) || isEmpty(errorItems)) {
-      return flow;
-    }
 
     flow.errorHandlerTask = (function _parseErrorTask() {
-
-      const errorPathRoot = errorPath.rootId;
-      const errorPathNodes = errorPath.nodes;
 
       const errorTask = <flowToJSON_RootTask>{
         id: '__error_root',
@@ -180,6 +178,10 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
        * add the root node to tasks of the root flow as it now is an activity
        */
       const rootNode = errorPathNodes[errorPathRoot];
+
+      if (isEmpty(rootNode)) {
+        return errorTask;
+      }
       const taskInfo = _prepareTaskInfo(<ItemActivityTask>errorItems[rootNode.id]);
       if (!isEmpty(taskInfo)) {
         errorTask.tasks.push(taskInfo);

@@ -136,7 +136,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public loading: boolean;
   public hasTrigger: boolean;
-  public hasTask: boolean;
   public currentTrigger: any;
   public app: any;
   private ngOnDestroy$ = SingleEmissionSubject.create();
@@ -156,13 +155,20 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.hasTrigger = true;
-    this.hasTask = true;
     this.currentTrigger = null;
     this.app = null;
   }
 
   get flowId() {
     return this.flowDetails.id;
+  }
+
+  getSelectionFor(handlerType) {
+    if (this.flowState.currentSelection && this.flowState.currentSelection.diagramId === handlerType) {
+      return this.flowState.currentSelection;
+    } else {
+      return null;
+    }
   }
 
   public ngOnInit() {
@@ -274,7 +280,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     const prevState = this.flowState;
     this.flowState = nextState;
     this.determineRunnableEnabled();
-    this.hasTask = !_.isEmpty(nextState.mainItems);
     if (prevState && prevState.isErrorPanelOpen !== nextState.isErrorPanelOpen) {
       // todo: this shouldn't be necessary once we move away from route based state
       this._navigateFromModuleRoot();

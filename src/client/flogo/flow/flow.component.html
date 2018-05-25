@@ -84,7 +84,7 @@
           <flogo-diagram
             [diagramId]="handlerTypes.Main"
             [flow]="flowState?.mainGraph"
-            [selection]="flowState?.currentSelection"
+            [selection]="getSelectionFor(handlerTypes.Main)"
             (action)="onMainDiagramAction($event)">
           </flogo-diagram>
         </div>
@@ -94,7 +94,7 @@
     <flogo-flow-task-configurator [flowId]="handlerTypes.Main"></flogo-flow-task-configurator>
     <flogo-flow-task-configurator [flowId]="handlerTypes.Error"></flogo-flow-task-configurator>
 
-    <flogo-flow-error-panel *ngIf="hasTask" [templateRef]="errorHandlerContent" ></flogo-flow-error-panel>
+    <flogo-flow-error-panel [templateRef]="errorHandlerContent" ></flogo-flow-error-panel>
     <ng-template #errorHandlerContent>
       <div class="error-panel">
         <div class="error-panel__icon-container">
@@ -121,7 +121,7 @@
         <flogo-diagram class="error-panel__diagram"
                        [diagramId]="handlerTypes.Error"
                        [flow]="flowState?.errorGraph"
-                       [selection]="flowState?.currentSelection"
+                       [selection]="getSelectionFor(handlerTypes.Error)"
                        (action)="onErrorDiagramAction($event)">
         </flogo-diagram>
       </div>
