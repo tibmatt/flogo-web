@@ -129,7 +129,7 @@ export function activitySchemaToTrigger(schema: any): any {
     homepage: _.get(schema, 'homepage', ''),
     settings: _.get(schema, 'settings', ''),
     outputs: _.get(schema, 'outputs', ''),
-    endpoint: { settings: _.get(schema, 'handler.settings', []) } // ,
+    handler: { settings: _.get(schema, 'handler.settings', []) } // ,
     // __schema: _.cloneDeep(schema)
   };
 

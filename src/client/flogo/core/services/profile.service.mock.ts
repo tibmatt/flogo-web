@@ -31,7 +31,7 @@ export class FlogoProfileServiceMock {
             'type': 'string'
           }
         ],
-        'endpoint': {
+        'handler': {
           'settings': [
             {
               'name': 'method',
@@ -105,7 +105,7 @@ export class FlogoProfileServiceMock {
             'type': 'string'
           }
         ],
-        'endpoint': {
+        'handler': {
           'settings': [
             {
               'name': 'topic',
@@ -147,7 +147,7 @@ export class FlogoProfileServiceMock {
             'type': 'object'
           }
         ],
-        'endpoint': {
+        'handler': {
           'settings': [
             {
               'name': 'method',
@@ -196,7 +196,7 @@ export class FlogoProfileServiceMock {
             'type': 'object'
           }
         ],
-        'endpoint': {
+        'handler': {
           'settings': [
             {
               'name': 'repeating',

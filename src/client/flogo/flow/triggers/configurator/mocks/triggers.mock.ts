@@ -160,7 +160,7 @@ export const ConfigureTriggersMock = [
         }
       ],
       'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'endpoint': {
+      'handler': {
         'settings': [
           {
             'name': 'method',
@@ -331,7 +331,7 @@ export const ConfigureTriggersMock = [
         }
       ],
       'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'endpoint': {
+      'handler': {
         'settings': [
           {
             'name': 'method',
@@ -507,7 +507,7 @@ export const InvalidConfigureTriggersMock = [
         }
       ],
       'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'endpoint': {
+      'handler': {
         'settings': [
           {
             'name': 'method',

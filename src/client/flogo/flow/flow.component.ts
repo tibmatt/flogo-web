@@ -745,9 +745,9 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     if (data.changedStructure === 'settings') {
       updatePromise = this.triggersApiService.updateTrigger(this.currentTrigger.id, { settings: data.settings });
-    } else if (data.changedStructure === 'endpointSettings' || data.changedStructure === 'outputs') {
+    } else if (data.changedStructure === 'handlerSettings' || data.changedStructure === 'outputs') {
       updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.flowState.id, {
-        settings: data.endpointSettings,
+        settings: data.handlerSettings,
         outputs: data.outputs
       });
 
@@ -756,7 +756,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     updatePromise
       .then((res) => {
         this._updateAttributesChanges(task, data.settings, 'settings');
-        this._updateAttributesChanges(task, data.endpointSettings, 'endpoint.settings');
+        this._updateAttributesChanges(task, data.handlerSettings, 'handler.settings');
         this._updateAttributesChanges(task, data.outputs, 'outputs');
 
         // ensure the persence of the internal properties

@@ -273,7 +273,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       const attributes: any = {};
       const task = this._task || {};
 
-      // ((task['endpoint'] || {})['settings']) || [];
+      // ((task['handler'] || {})['settings']) || [];
       attributes['handlerSettings'] = this._getArray(_.get(task, 'handler.settings', []));
       // override trigger outputs attributes if there is internal values
       // attributesTrigger[ 'outputs' ] = _.get( task, '__props.initData', task[ 'outputs' ] || [] );

@@ -54,7 +54,7 @@ export let mockTriggerDetails = {
       'type': 'object'
     }
   ],
-  'endpoint': {
+  'handler': {
     'settings': [
       {
         'name': 'repeating',

@@ -117,7 +117,7 @@ describe('Component: TaskConfiguratorComponent', () => {
               'value': null
             }
           ],
-          'endpoint': {
+          'handler': {
             'settings': [
               {
                 'name': 'repeating',
