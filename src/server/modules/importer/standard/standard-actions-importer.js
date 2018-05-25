@@ -37,6 +37,7 @@ export class StandardActionsImporter extends AbstractActionsImporter {
     return {
       id: this.actionIdFromResourceId(resource.id),
       name: resourceData.name,
+      description: resourceData.description,
       metadata: this.extractMetadata(resourceData),
       data: {
         flow: this.makeFlow(resourceData),
@@ -48,7 +49,6 @@ export class StandardActionsImporter extends AbstractActionsImporter {
     const errorHandlerTask = this.getErrorHandler(resourceData);
     return {
       type: LEGACY_FLOW_TYPE,
-      description: resourceData.description,
       rootTask: {
         id: 'root',
         type: FLOGO_TASK_TYPE.TASK,
