@@ -86,7 +86,7 @@ class TriggerTestHostComponent {
     function getMockTask() {
       return {
         author: 'Anonymous', description: 'Simple REST Trigger',
-        endpoint: {
+        handler: {
           settings: [
             { allowed: [],  name: 'method', required: true, type: 'string', value: 'GET' },
             {name: 'path', required: true, type: 'string', value: '/awsiot/status/:q'},

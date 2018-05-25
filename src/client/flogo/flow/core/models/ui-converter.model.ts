@@ -149,7 +149,7 @@ export abstract class AbstractModelConverter {
       node: nodeTrigger,
       cli: trigger,
       installed: installedTrigger,
-      endpointSetting: trigger.handler
+      handlerSetting: trigger.handler
     });
     itemTrigger.name = trigger.name;
     itemTrigger.description = trigger.description;
