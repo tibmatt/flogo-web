@@ -5,6 +5,7 @@
       {
         "id": "flow:get_status",
         "name": "GetStatus",
+        "description": "",
         "metadata": {
           "input": [
             {
@@ -26,7 +27,6 @@
         "data": {
           "flow": {
             "type": 1,
-            "description": "",
             "rootTask": {
               "id": "root",
               "type": 1,
