@@ -167,7 +167,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   getSelectionFor(handlerType) {
     if (this.currentDiagramSelection && this.currentDiagramSelection.diagramId === handlerType) {
-      return this.flowState.currentSelection;
+      return this.currentDiagramSelection;
     } else {
       return null;
     }
@@ -225,7 +225,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const flowDetails = this.flowDetails;
     switch (diagramAction.type) {
       case DiagramActionType.Select: {
-        flowDetails.selectItem((<DiagramActionSelf>diagramAction).id);
+        flowDetails.selectItem(handlerType, (<DiagramActionSelf>diagramAction).id);
         return;
       }
       case DiagramActionType.Configure: {

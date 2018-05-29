@@ -35,8 +35,9 @@ export class FlogoFlowDetails {
       .pipe(distinctUntilChanged(isEqual));
   }
 
-  selectItem(itemId: string) {
+  selectItem(handlerType: HandlerType, itemId: string) {
     this.store.dispatch(new FlowActions.SelectItem({
+      handlerType,
       itemId,
     }));
   }

@@ -13,7 +13,7 @@ export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCre
 
   return {
     ...state,
-    currentSelection: makeTaskSelection(node.id),
+    currentSelection: makeTaskSelection(handlerType, node.id),
     [graphName]: addNewNode(state[graphName], node),
     [itemsDictionaryName]: {
       ...itemsDictionary,

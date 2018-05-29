@@ -1,10 +1,11 @@
 import { SelectionType, CurrentSelection, InsertTaskSelection, TaskSelection, TriggerSelection } from '../selection';
 import { HandlerType } from '../handler-type';
 
-export function makeTaskSelection(taskId: string): TaskSelection {
+export function makeTaskSelection(handlerType: HandlerType, taskId: string): TaskSelection {
   return {
     type: SelectionType.Task,
     taskId,
+    handlerType,
   };
 }
 

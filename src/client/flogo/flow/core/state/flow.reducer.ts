@@ -23,7 +23,7 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     case ActionType.SelectItem: {
       return {
         ...state,
-        currentSelection: selectionFactory.makeTaskSelection(action.payload.itemId),
+        currentSelection: selectionFactory.makeTaskSelection(action.payload.handlerType, action.payload.itemId),
       };
     }
     case ActionType.SelectCreateItem: {

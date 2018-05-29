@@ -29,7 +29,7 @@ export class Init implements BaseFlowAction {
 
 export class SelectItem implements BaseFlowAction {
   readonly type = ActionType.SelectItem;
-  constructor(public payload: { itemId: string } | null) {}
+  constructor(public payload: { handlerType: HandlerType, itemId: string } | null) {}
 }
 
 export class SelectCreateItem implements BaseFlowAction {
