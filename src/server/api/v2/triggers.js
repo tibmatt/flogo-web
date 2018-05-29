@@ -1,6 +1,5 @@
 import { AppsTriggersManager } from '../../modules/apps/triggers';
 import { ERROR_TYPES, ErrorManager } from '../../common/errors';
-import { getCompileOptions } from './shared/get-compile-options';
 import { buildTrigger } from './triggers/build';
 
 export function triggers(router, basePath) {
