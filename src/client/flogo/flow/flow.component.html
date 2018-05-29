@@ -67,10 +67,7 @@
     <div class="flogo-flow-container">
       <div class="clearfix flogo-flows-main">
         <div class="flogo-flows-triggers-container">
-          <flogo-flow-triggers
-            [triggers]="triggersList"
-            [actionId]="flowId"
-            [appDetails]="{appId: flowState?.app?.id, appProfileType: profileType, metadata: flowState?.metadata}"></flogo-flow-triggers>
+          <flogo-flow-triggers></flogo-flow-triggers>
         </div>
 
         <div class="flogo-flows-flow-schema-container" *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE">

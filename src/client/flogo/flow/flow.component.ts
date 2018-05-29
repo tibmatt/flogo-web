@@ -71,7 +71,7 @@ import { SaveTaskConfigEventData } from './task-configurator';
 import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema } from '@flogo/core/models';
 import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
 import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
-import { HandlerType } from './core/models';
+import { HandlerType, CurrentSelection, InsertTaskSelection, SelectionType } from './core/models';
 import { FlowState } from './core/state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { makeErrorTask } from './core/models/make-error-task';
@@ -134,6 +134,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
   handlerTypes = HandlerType;
 
+  currentDiagramSelection: DiagramSelection;
+
   public loading: boolean;
   public hasTrigger: boolean;
   public currentTrigger: any;
@@ -164,7 +166,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   getSelectionFor(handlerType) {
-    if (this.flowState.currentSelection && this.flowState.currentSelection.diagramId === handlerType) {
+    if (this.currentDiagramSelection && this.currentDiagramSelection.diagramId === handlerType) {
       return this.flowState.currentSelection;
     } else {
       return null;
@@ -178,27 +180,13 @@ export class FlowComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
-    const selection$ = this.flowDetails
+    this.flowDetails
       .selectionChange$
       .pipe(
         share(),
         takeUntil(this.ngOnDestroy$),
-      );
-    selection$
-      .subscribe(selection => this.onSelectionChanged(selection));
-    this._router.events
-      .pipe(
-        filter(event => event instanceof NavigationEnd),
-        withLatestFrom(selection$),
-        takeUntil(this.ngOnDestroy$),
       )
-      .subscribe(([event, selection]) => {
-        // needed from where trigger changes the url
-        // todo: should invert data flow and change should come from state
-        if (!this.isTaskSubroute() && selection) {
-          this.flowDetails.clearSelection();
-        }
-      });
+      .subscribe(selection => this.onSelectionChanged(selection));
     this.initSubscribe();
     this.loading = false;
   }
@@ -259,15 +247,26 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private onSelectionChanged(selection: DiagramSelection) {
+  private onSelectionChanged(selection: CurrentSelection) {
+    this.currentDiagramSelection = null;
     if (!selection) {
       if (this.isTaskSubroute()) {
         this._navigateFromModuleRoot();
       }
-    } else if (selection.type === DiagramSelectionType.Node) {
+    } else if (selection.type === SelectionType.Task) {
+      this.currentDiagramSelection = {
+        type: DiagramSelectionType.Node,
+        taskId: selection.taskId,
+        diagramId: selection.handlerType,
+      };
       this._selectTaskFromDiagram(selection.taskId);
-    } else if (selection.type === DiagramSelectionType.Insert) {
-      this._addTaskFromDiagram(selection.taskId);
+    } else if (selection.type === SelectionType.InsertTask) {
+      this.currentDiagramSelection = {
+        type: DiagramSelectionType.Insert,
+        taskId: selection.parentId,
+        diagramId: selection.handlerType,
+      };
+      this._addTaskFromDiagram(selection.parentId);
     }
   }
 
@@ -329,10 +328,10 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private refreshCurrentTileContextIfNeeded() {
     const selection = this.flowState.currentSelection;
-    if (!selection || selection.type !== DiagramSelectionType.Node) {
+    if (!selection || selection.type !== SelectionType.Task) {
       return;
     }
-    const { taskId, diagramId } = selection;
+    const { taskId } = selection;
     const context = this._getCurrentTaskContext(taskId);
     this._postService.publish(Object.assign(
       {},
@@ -505,11 +504,11 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private _addTaskFromTasks(data: any, envelope: any) {
     const currentState = this.flowState;
-    const selection = currentState.currentSelection;
-    const isAddingToRoot = selection && !selection.taskId;
+    const selection = currentState.currentSelection as InsertTaskSelection;
+    const isAddingToRoot = selection && !selection.parentId;
     let diagramId: string;
     if (isAddingToRoot) {
-      diagramId = selection.diagramId;
+      diagramId = selection.handlerType;
     } else {
       diagramId = this.getDiagramId(data.parentId);
     }
@@ -551,7 +550,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       type: NodeType.Task,
       title: task.name,
       description: task.description,
-      parents: [currentState.currentSelection.taskId],
+      parents: [selection.parentId],
       features: {
         subflow: isSubFlowTask,
         final: isFinal,
@@ -1386,7 +1385,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private refreshCurrentSelectedTaskIfNeeded() {
     const currentSelection = this.flowState.currentSelection;
-    if (!currentSelection || currentSelection.type !== DiagramSelectionType.Node) {
+    if (!currentSelection || currentSelection.type !== SelectionType.Task) {
       return;
     }
     const taskId = currentSelection.taskId;
