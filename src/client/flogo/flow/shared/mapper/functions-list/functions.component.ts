@@ -1,16 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/takeUntil';
-
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { TYPE_PARAM_FUNCTION } from '../tree/dragging.service';
 
 import { EditorService } from '../editor/editor.service';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 import { MapperService, MapperState, TreeState } from '../services/mapper.service';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'flogo-mapper-functions',
@@ -33,9 +29,11 @@ export class FunctionsComponent implements OnInit, OnDestroy {
     this.name = '';
     this.help = null;
     this.mapperService.state
-      .map((state: MapperState) => state.functions)
-      .distinctUntilChanged()
-      .takeUntil(this.ngDestroy)
+      .pipe(
+        map((state: MapperState) => state.functions),
+        distinctUntilChanged(),
+        takeUntil(this.ngDestroy),
+      )
       .subscribe((functions: TreeState) => {
         this.functions = functions.nodes;
         this.filterTerm = functions.filterTerm || '';

@@ -3,19 +3,21 @@ import { Mappings } from './models/mappings';
 import { MapperContext } from './models/mapper-context';
 
 import { Subject } from 'rxjs/Subject';
-import { distinctUntilChanged, first, map, merge, scan, share, skipWhile, takeUntil, withLatestFrom } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  first,
+  map,
+  merge,
+  scan,
+  share,
+  skipWhile,
+  takeUntil,
+  withLatestFrom
+} from 'rxjs/operators';
 
-import 'rxjs/add/operator/auditTime';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/skipWhile';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/withLatestFrom';
 import { MonacoEditorLoaderService } from '../monaco-editor';
 import { load as loadMonacoLangPlugin } from '../mapper-language/monaco-contribution';
 
@@ -24,8 +26,7 @@ import { SingleEmissionSubject } from './shared/single-emission-subject';
 import { CurrentSelection, MapperService, MapperState } from './services/mapper.service';
 import { EditorService } from './editor/editor.service';
 import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './tree/dragging.service';
-import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from './constants';
-
+import { TYPE_ATTR_ASSIGNMENT } from './constants';
 
 @Component({
   selector: 'flogo-mapper',
@@ -84,7 +85,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
   onDrop(event: DragEvent) {
     if (this.isDragAcceptable()) {
-      const dataTransfer = event.dataTransfer.getData('data');
       const node = this.draggingService.getData();
       const type = this.draggingService.getType();
       let text = '';
@@ -121,12 +121,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     this.isDraggingOver = false;
   }
 
-  onClickOutside() {
-    if (this.currentInput) {
-      this.mapperService.selectInput(null);
-    }
-  }
-
   private isDragAcceptable() {
     return this.draggingService.accepts(TYPE_PARAM_OUTPUT)
       || this.draggingService.accepts(TYPE_PARAM_FUNCTION);
@@ -141,16 +135,20 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     );
 
     const state$ = this.mapperService.state
-      .catch(err => {
-        console.error(err);
-        throw err;
-      })
-      .takeUntil(stop$)
-      .share();
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          throw err;
+        }),
+        takeUntil(stop$),
+        share(),
+      );
 
     state$
-      .distinctUntilKeyChanged('currentSelection')
-      .takeUntil(stop$)
+      .pipe(
+        distinctUntilKeyChanged('currentSelection'),
+        takeUntil(stop$),
+      )
       .subscribe((state: MapperState) => {
         this.currentInput = state.currentSelection;
         if (this.currentInput) {
@@ -160,9 +158,12 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
         }
       });
 
-    state$.map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null)
-      .distinctUntilChanged()
-      .takeUntil(stop$)
+    state$
+      .pipe(
+        map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null),
+        distinctUntilChanged(),
+        takeUntil(stop$),
+      )
       .subscribe((errors: any[]) => {
         if (this.currentInput) {
           this.editorService.validated(errors);
@@ -193,20 +194,24 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe(change => this.mappingsChange.emit(change));
 
     this.editorService.outputExpression$
-      .takeUntil(this.ngDestroy)
+      .pipe(takeUntil(this.ngDestroy))
       .subscribe(expression => this.mapperService.expressionChange({ expression, mappingType: this.currentMappingType }));
 
     this.dragOverEditor
-      .takeUntil(stop$)
-      .debounceTime(300)
-      .map((ev: DragEvent) => ({ x: ev.clientX, y: ev.clientY }))
-      .distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y)
+      .pipe(
+        takeUntil(stop$),
+        debounceTime(300),
+        map((ev: DragEvent) => ({ x: ev.clientX, y: ev.clientY })),
+        distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y),
+      )
       .subscribe(position => this.editorService.dragOver(position));
 
-    this.mapperService.state
-      .distinctUntilKeyChanged('context')
-      .takeUntil(stop$)
-      .first()
+    this.mapperService
+      .state.pipe(
+        distinctUntilKeyChanged('context'),
+        takeUntil(stop$),
+        first(),
+      )
       .subscribe((state: MapperState) => {
         const inputsData = state.inputs;
         // open first input by default

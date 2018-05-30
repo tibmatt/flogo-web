@@ -5,11 +5,7 @@ import { TYPE_PARAM_OUTPUT } from '../tree/dragging.service';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 import { MapperService, MapperState, TreeState } from '../services/mapper.service';
-
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/takeUntil';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'flogo-mapper-output-list',
@@ -30,10 +26,11 @@ export class OutputListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.mapperService.state
-      .map((state: MapperState) => state.outputs)
-      .distinctUntilChanged()
-      // .do(ins => console.log("outputs changed", ins))
-      .takeUntil(this.ngDestroy)
+      .pipe(
+        map((state: MapperState) => state.outputs),
+        distinctUntilChanged(),
+        takeUntil(this.ngDestroy),
+      )
       .subscribe((outputs: TreeState) => {
         this.treeNodes = outputs.nodes;
         this.filterTerm = outputs.filterTerm;

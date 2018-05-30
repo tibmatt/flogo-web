@@ -78,13 +78,6 @@ export class TreeComponent implements OnChanges, AfterViewInit {
     this.leave.emit(event);
   }
 
-  isNodeInSelectedBranch(node: MapperTreeNode) {
-    if (!this.selectedBranch) {
-      return false;
-    }
-    return this.selectedBranch.indexOf(node) >= 0;
-  }
-
   onDragStart(event, node) {
     event.dataTransfer.setData('data', node.path);
     this.draggingService.dragStart(this.dragType, node);

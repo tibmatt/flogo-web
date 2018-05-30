@@ -1,13 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MapperTreeNode } from '../models/mapper-treenode.model';
-
-import { MapperService, MapperState, TreeState } from '../services/mapper.service';
 
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+
+import { MapperService, MapperState, TreeState } from '../services/mapper.service';
+import { MapperTreeNode } from '../models/mapper-treenode.model';
+import { distinctUntilChanged, map, share, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'flogo-mapper-input-list',
@@ -26,20 +23,24 @@ export class InputListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const stateObserver = this.mapperService.state.share();
+    const stateObserver = this.mapperService.state.pipe(share());
     stateObserver
-      .map((state: MapperState) => state.inputs)
-      .distinctUntilChanged()
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        map((state: MapperState) => state.inputs),
+        distinctUntilChanged(),
+        takeUntil(this.ngUnsubscribe),
+      )
       .subscribe((inputs: TreeState) => {
         this.treeNodes = inputs.nodes;
         this.filterTerm = inputs.filterTerm;
       });
 
     stateObserver
-      .map((state: MapperState) => state.currentSelection ? state.currentSelection.node : null)
-      .distinctUntilChanged()
-      .takeUntil(this.ngUnsubscribe)
+      .pipe(
+        map((state: MapperState) => state.currentSelection ? state.currentSelection.node : null),
+        distinctUntilChanged(),
+        takeUntil(this.ngUnsubscribe),
+      )
       .subscribe((node: MapperTreeNode) => {
         this.selectedInput = node;
       });

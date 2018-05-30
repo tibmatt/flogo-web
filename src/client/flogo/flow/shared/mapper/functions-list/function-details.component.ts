@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import { PerfectScrollbarDirective as ScrollbarDirective } from 'ngx-perfect-scrollbar';
-import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 interface FunctionHelp {
   description?: string;
