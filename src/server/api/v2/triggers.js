@@ -1,9 +1,12 @@
 import { AppsTriggersManager } from '../../modules/apps/triggers';
-import { ErrorManager, ERROR_TYPES } from '../../common/errors';
+import { ERROR_TYPES, ErrorManager } from '../../common/errors';
+import { buildTrigger } from './triggers/build';
 
 export function triggers(router, basePath) {
   router.get(`${basePath}/apps/:appId/triggers`, listTriggers);
   router.post(`${basePath}/apps/:appId/triggers`, createTrigger);
+  // !!IMPORTANT :shim endpoint should be declared before the other /triggers/{triggerId} urls
+  router.get(`${basePath}/triggers/:triggerId\\:shim`, shimTrigger);
   router.get(`${basePath}/triggers/:triggerId`, getTrigger);
   router.patch(`${basePath}/triggers/:triggerId`, updateTrigger);
   router.del(`${basePath}/triggers/:triggerId`, deleteTrigger);
@@ -107,3 +110,6 @@ function* deleteTrigger() {
   this.status = 204;
 }
 
+function* shimTrigger() {
+  yield buildTrigger(this);
+}

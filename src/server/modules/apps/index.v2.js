@@ -18,7 +18,7 @@ import { ActionsManager } from '../actions';
 import { ActivitiesManager } from '../activities';
 import { importApp } from '../importer';
 import { exportLegacy, exportStandard } from '../exporter';
-import { buildApp } from './build';
+import { buildBinary } from './build';
 
 import { Validator } from './validator';
 import { getProfileType } from '../../common/utils/profile';
@@ -219,16 +219,17 @@ export class AppsManager {
   }
 
   /**
-   * Build an app
+   * Builds an app binary and returns the generated binary
    * @param appId {string} app to build
    * @params options
    * @params options.compile.os: target operating system
    * @params options.compile.arch: target architecture
-   * @return {object} builded app
+   * @params options.shimTriggerId: create an app using shim mode using specified trigger id
+   * @return {object} built app stream
    * @throws Not found error if app not found
    */
-  static build(appId, options) {
-    return buildApp(appId, options);
+  static async build(appId, options) {
+    return buildBinary(appId, options);
   }
 
   /**

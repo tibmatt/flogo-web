@@ -4,13 +4,15 @@ import mapKeys from 'lodash/mapKeys';
 import { TriggerManager as TriggerContribManager } from '../triggers';
 import { ContribsManager as ContribDeviceManager } from '../contribs';
 import { apps as appsDb, dbUtils } from '../../common/db';
-import { ErrorManager, ERROR_TYPES } from '../../common/errors';
+import { ErrorManager, ERROR_TYPES, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
-import { Validator } from './validator';
-
 import { findGreatestNameIndex } from '../../common/utils/collection';
 import { getProfileType } from '../../common/utils/profile';
-import {FLOGO_PROFILE_TYPES} from "../../common/constants";
+import { FLOGO_PROFILE_TYPES, REF_TRIGGER_LAMBDA } from "../../common/constants";
+import { normalizeName } from '../exporter/utils/normalize-name';
+
+import { Validator } from './validator';
+import { buildBinary, buildPlugin } from './build';
 
 const EDITABLE_FIELDS_CREATION = [
   'name',
@@ -221,6 +223,25 @@ export class AppsTriggersManager {
       { 'triggers.id': triggerId },
       { $pull: { triggers: { id: triggerId } } },
     ).then(numRemoved => numRemoved > 0);
+  }
+
+  /**
+   * Builds an app in shim mode and returns the generated file
+   * @param triggerId {string} trigger to build
+   * @params options
+   * @params options.compile.os: target operating system
+   * @params options.compile.arch: target architecture
+   * @params options.shimTriggerId: create an app using shim mode using specified trigger id
+   * @return {{ trigger: string, appName: string, data: Stream }} built handler zip file
+   * @throws Not found error if trigger not found
+   */
+  static async buildShim(triggerId, options) {
+    const trigger = await AppsTriggersManager.findOne(triggerId);
+    if (!trigger) {
+      throw ErrorManager.makeError('Cannot build shim for unknown trigger id', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
+    }
+    const build = trigger.ref === REF_TRIGGER_LAMBDA ? buildPlugin : buildBinary;
+    return build(trigger.appId, { ...options, shimTriggerId: normalizeName(trigger.name) });
   }
 
 }

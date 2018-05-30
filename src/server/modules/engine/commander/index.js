@@ -1,7 +1,7 @@
 import { parseJSON } from '../../../common/utils';
 import { logger } from '../../../common/logging';
-import { buildAndCopy, build, copyBinaryToDestination as copy} from './build';
 import { runShellCMD } from '../../../common/utils/process';
+import { build } from './build';
 
 const path = require('path');
 
@@ -37,9 +37,7 @@ module.exports = {
 
     return _exec(enginePathInfo.dir, command);
   },
-  buildAndCopy,
   build,
-  copy,
   add: {
     flow: install,
     palette(enginePath, palettePath, options) {

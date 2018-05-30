@@ -1,4 +1,5 @@
 export const REF_SUBFLOW = 'github.com/TIBCOSoftware/flogo-contrib/activity/subflow';
+export const REF_TRIGGER_LAMBDA = 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
 export const LEGACY_FLOW_TYPE = 1;
 
 export const FLOGO_FLOW_DIAGRAM_NODE_TYPE = {
