@@ -1,19 +1,6 @@
 import { Injectable } from '@angular/core';
 
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
-import { distinctUntilChanged, map, scan, withLatestFrom } from 'rxjs/operators';
-
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/zip';
-import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/distinctUntilKeyChanged';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/withLatestFrom';
-
 import { resolveExpressionType } from 'flogo-parser';
 
 import { TreeNodeFactoryService } from './tree-node-factory.service';
@@ -66,218 +53,158 @@ interface  EditingExpression {
   mappingType?: number;
 }
 
+const isSameEditingExpression = (prev: EditingExpression, next: EditingExpression) => {
+  if (!prev && next || !next && prev) {
+    return false;
+  }
+  return prev.expression === next.expression && prev.mappingType === next.mappingType;
+};
+
 @Injectable()
 export class MapperService {
 
+  currentState: MapperState;
   state: ReplaySubject<MapperState> = new ReplaySubject(1);
-
-  private contextSrc: Subject<MapperContext> = new Subject();
-  private updatesSrc: Subject<any> = new Subject<any>();
-
-  //// actions
-  private filterInputsSrc: Subject<string> = new Subject<string>();
-  private filterOutputsSrc: Subject<string> = new Subject<string>();
-  private filterFunctionsSrc: Subject<string> = new Subject<string>();
-  private selectInputSrc: Subject<MapperTreeNode> = new Subject<MapperTreeNode>();
-  private expressionChangeSrc: Subject<EditingExpression> = new Subject<EditingExpression>();
 
   constructor(private nodeFactory: TreeNodeFactoryService,
               private treeService: TreeService,
-              // private parserService: ExpressionProcessorService
-  ) {
-
-    this.updatesSrc
-      .pipe(
-        scan((accumulator: MapperState, operation: Function) => {
-          return operation(accumulator);
-        }, {})
-      )
-      .subscribe(this.state);
-
-    this.filterInputsSrc
-      .map(filterTerm => (state: MapperState) => {
-        const currentNode = state.currentSelection ? state.currentSelection.node : null;
-        return Object.assign({}, state, { inputs: this.applyTreeFilter(filterTerm, state.inputs, currentNode) });
-      })
-      .subscribe(this.updatesSrc);
-
-    this.filterOutputsSrc
-      .map(filterTerm => (state: MapperState) => {
-        return Object.assign({}, state, { outputs: this.applyTreeFilter(filterTerm, state.outputs) });
-      })
-      .subscribe(this.updatesSrc);
-
-    this.filterFunctionsSrc
-      .map(filterTerm => (state: MapperState) => {
-        return Object.assign({}, state, { functions: this.applyTreeFilter(filterTerm, state.functions) });
-      })
-      .subscribe(this.updatesSrc);
-
-    this.setupContextChange();
-    this.setupExpressionChange();
-    this.setupSelectInput();
-
-  }
+  ) {}
 
   setContext(context: MapperContext) {
-    this.contextSrc.next(context);
+    this.setupContextChange(context);
   }
 
   selectInput(node: MapperTreeNode) {
-    this.selectInputSrc.next(node);
+    const state = this.applyInputSelection(node);
+    this.updateState(state);
   }
 
   filterInputs(filterTerm: string) {
-    this.filterInputsSrc.next(filterTerm);
+    const state = this.currentState;
+    const currentNode = state.currentSelection ? state.currentSelection.node : null;
+    this.updateState({ ...state, inputs: this.applyTreeFilter(filterTerm, state.inputs, currentNode) });
   }
 
   filterOutputs(filterTerm: string) {
-    this.filterOutputsSrc.next(filterTerm);
+    this.updateState({ ...this.currentState, outputs: this.applyTreeFilter(filterTerm, this.currentState.outputs) });
   }
 
   filterFunctions(filterTerm: string) {
-    this.filterFunctionsSrc.next(filterTerm);
+    const state = this.currentState;
+    this.updateState({
+      ...state,
+      functions: this.applyTreeFilter(filterTerm, state.functions)
+    });
   }
 
   expressionChange(value: EditingExpression) {
-    this.expressionChangeSrc.next(value);
+    const state = this.applyExpressionChange(this.currentState, value);
+    this.updateState(state);
   }
 
-  private setupSelectInput() {
-    this.selectInputSrc
-      .pipe(
-        distinctUntilChanged(),
-        withLatestFrom(this.state, (node: MapperTreeNode, state: MapperState) => ({ node, state })),
-        map(({ node, state }: { node: MapperTreeNode, state: MapperState }) => {
-          if (node) {
-            return [
-              node,
-              this.makeOutputContext(node, state.context.outputSchemas, state.mappings),
-              {
-                treeNodes: this.nodeFactory.fromFunctions(state.context.functions),
-                symbolTable: <any> this.nodeFactory.fromFunctionsToSymbolTable(state.context.functions),
-              }
-            ];
-          } else {
-            return [ node,  <any>{}, <any[]>[] ];
-          }
-        }),
-        map(([node, outputContext, functions]: [MapperTreeNode, OutputContext, { treeNodes: MapperTreeNode[], symbolTable: any }]) => {
-          let currentSelection: CurrentSelection = null;
-          if (node && node.data) {
-            if (!outputContext) {
-              return (state: MapperState) => Object.assign({}, state, {
-                currentSelection: { mappingKey: null },
-                inputs: { nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
-                functions: { filterTerm: '', nodes: [] },
-                outputs: { filterTerm: '', nodes: [] },
-              });
-            }
-            const mapping = outputContext.mappings[outputContext.mappingKey];
-            const symbolTable = Object.assign({}, outputContext.symbolTable, functions.symbolTable);
-            currentSelection = {
-              node,
-              symbolTable,
-              editingExpression: mapping ?
-                { expression: mapping.expression, mappingType: mapping.mappingType }
-                : { expression: '', mappingType: TYPE_ATTR_ASSIGNMENT },
-              mappings: outputContext.mappings,
-              mappingKey: outputContext.mappingKey,
-              mapRelativeTo: outputContext.mapRelativeTo,
-            };
-
-            let expectedResultType = { type: node.dataType, array: false };
-            if (node.dataType === 'array') {
-              expectedResultType = { array: true, type: node.memberType || 'object' };
-            }
-            expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
-            // const parseResult = this.parserService.processExpression(currentSelection.expression,
-            //   expectedResultType, currentSelection.symbolTable, outputContext.mapRelativeTo);
-            const parseResult = <any>{};
-            currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-          }
-
-          return (state: MapperState) => Object.assign({}, state, {
-            currentSelection,
-            inputs: { nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
-            functions: { filterTerm: '', nodes: functions.treeNodes },
-            outputs: { filterTerm: '', nodes: outputContext.tree },
-          });
-        })
-      )
-      .subscribe(this.updatesSrc);
+  private updateState(state: MapperState) {
+    this.currentState = state;
+    this.state.next(state);
   }
 
-  private setupContextChange() {
-    this.contextSrc
-      .map((context: MapperContext) => {
-        return (state: MapperState) => {
-          const newState = this.getInitialState();
-          newState.context = context;
-          newState.mappings = context.mappings || {};
-          newState.hasMappings = this.hasMappings(newState.mappings);
-          const flattenedMappings = this.nodeFactory.flatMappings(newState.mappings);
-          newState.inputs.nodes = this.nodeFactory.fromJsonSchema(context.inputSchemas,
-            (treeNode: MapperTreeNode, level, path, parents: MapperTreeNode[]) => {
-              treeNode.data.level = level;
-              const expression = flattenedMappings[path];
-              treeNode.data.expression = expression || null;
-              return treeNode;
-          });
-          // todo: improve for performance
-          newState.inputs.nodes.forEach(node => this.treeService.updateTreeMappingStatus(node));
-          return newState;
-        };
-      })
-      .subscribe(this.updatesSrc);
-  }
-
-  private setupExpressionChange() {
-    const isSameEditingExpression = (prev: EditingExpression, next: EditingExpression) => {
-      if (!prev && next || !next && prev) {
-        return false;
-      }
-      return prev.expression === next.expression && prev.mappingType === next.mappingType;
-    };
-
-    this.expressionChangeSrc
-      .withLatestFrom(
-        this.state.map((state: MapperState) => state.currentSelection && state.currentSelection.node).distinctUntilChanged(),
-        (editingExpression: EditingExpression, currentNode: MapperTreeNode) => ({ editingExpression, currentNode })
-      )
-      .distinctUntilChanged((prev, next) =>
-        isSameEditingExpression(prev.editingExpression, next.editingExpression) && prev.currentNode === next.currentNode)
-      .map(({ editingExpression }) => editingExpression)
-      .map(editingExpression => (state: MapperState) => {
-        const currentSelection = state.currentSelection;
-        const node = currentSelection.node;
-        node.data.expression = editingExpression.expression;
-        currentSelection.editingExpression = editingExpression;
-
-        let expectedResultType = { type: node.dataType, array: false };
-        if (node.dataType === 'array') {
-          expectedResultType = { array: true, type: node.memberType || 'object' };
+  private getSelectionContext(node: MapperTreeNode, state: MapperState)
+    : [OutputContext, { treeNodes: MapperTreeNode[], symbolTable: any }] {
+    if (node) {
+      return [
+        this.makeOutputContext(node, state.context.outputSchemas, state.mappings),
+        {
+          treeNodes: this.nodeFactory.fromFunctions(state.context.functions),
+          symbolTable: <any> this.nodeFactory.fromFunctionsToSymbolTable(state.context.functions),
         }
-        expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
+      ];
+    } else {
+      return [ <any>{}, <any>{} ];
+    }
+  }
 
-        // const parseResult = this.parserService.processExpression(state.currentSelection.expression,
-        const parseResult = <any>{};
-        //   expectedResultType,
-        //   state.currentSelection.symbolTable, state.currentSelection.mapRelativeTo);
-        // state.currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-        const expression = editingExpression.expression;
-        node.isInvalid = expression && expression.trim() && !resolveExpressionType(expression);
+  private applyInputSelection(node: MapperTreeNode): MapperState {
+    const state = this.currentState;
+    const [outputContext, functions] = this.getSelectionContext(node, state);
 
-        this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, editingExpression, parseResult.structureDetails);
+    let currentSelection: CurrentSelection = null;
+    if (node && node.data) {
+      if (!outputContext) {
+        return {
+          ...state,
+          currentSelection: { mappingKey: null },
+          inputs: { filterTerm: '', nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
+          functions: { filterTerm: '', nodes: [] },
+          outputs: { filterTerm: '', nodes: [] },
+        };
+      }
+      const mapping = outputContext.mappings[outputContext.mappingKey];
+      const symbolTable = Object.assign({}, outputContext.symbolTable, functions.symbolTable);
+      currentSelection = {
+        node,
+        symbolTable,
+        editingExpression: mapping ?
+          { expression: mapping.expression, mappingType: mapping.mappingType }
+          : { expression: '', mappingType: TYPE_ATTR_ASSIGNMENT },
+        mappings: outputContext.mappings,
+        mappingKey: outputContext.mappingKey,
+        mapRelativeTo: outputContext.mapRelativeTo,
+      };
 
-        state.hasMappings = this.hasMappings(state.mappings);
+      let expectedResultType = { type: node.dataType, array: false };
+      if (node.dataType === 'array') {
+        expectedResultType = { array: true, type: node.memberType || 'object' };
+      }
+      expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
+      const parseResult = <any>{};
+      currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
+    }
 
-        // this.treeService.updateMappingStatus(node);
-        this.treeService.propagateMappingStatusToParents(node);
+    return {
+      ...state,
+      inputs: { filterTerm: '', nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
+      functions: { filterTerm: '', nodes: functions.treeNodes },
+      outputs: { filterTerm: '', nodes: outputContext.tree },
+    };
+  }
 
-        return Object.assign({}, state);
-      })
-      .subscribe(this.updatesSrc);
+  private setupContextChange(context: MapperContext) {
+    const newState = this.getInitialState();
+    newState.context = context;
+    newState.mappings = context.mappings || {};
+    newState.hasMappings = this.hasMappings(newState.mappings);
+    const flattenedMappings = this.nodeFactory.flatMappings(newState.mappings);
+    newState.inputs.nodes = this.nodeFactory.fromJsonSchema(context.inputSchemas,
+      (treeNode: MapperTreeNode, level, path, parents: MapperTreeNode[]) => {
+        treeNode.data.level = level;
+        const expression = flattenedMappings[path];
+        treeNode.data.expression = expression || null;
+        return treeNode;
+      });
+    // todo: improve for performance
+    newState.inputs.nodes.forEach(node => this.treeService.updateTreeMappingStatus(node));
+    this.updateState(newState);
+  }
+
+  private applyExpressionChange(state: MapperState, editingExpression: EditingExpression): MapperState {
+    let currentSelection = state.currentSelection;
+    if (isSameEditingExpression(currentSelection.editingExpression, editingExpression)) {
+      return state;
+    }
+    state = {...state};
+    const node = currentSelection.node;
+    node.data.expression = editingExpression.expression;
+    currentSelection = {...currentSelection, editingExpression};
+
+    const expression = editingExpression.expression;
+    node.isInvalid = expression && expression.trim() && !resolveExpressionType(expression);
+    this.updateMapping(currentSelection.mappings, currentSelection.mappingKey, editingExpression);
+
+    state.hasMappings = this.hasMappings(state.mappings);
+
+    // this.treeService.updateMappingStatus(node);
+    this.treeService.propagateMappingStatusToParents(node);
+
+    return state;
   }
 
   private updateMapping(
@@ -354,42 +281,11 @@ export class MapperService {
         const parentsAndCurrentNode = parents.concat(treeNode);
         treeNode.snippet = this.makeSnippet(parentsAndCurrentNode);
         return treeNode;
-        // ******** FOLLOWING CODE not applicable for first pass of the mapper ********
-        // const isCurrentNodeArray = treeNode.dataType === 'array';
-        // const paths = parentsAndCurrentNode.map((node: MapperTreeNode, index, array) => {
-        //   const nodeName = node.data.nodeName;
-        //
-        //   if (index === array.length - 1) {
-        //     return (selectedNode.dataType !== 'array' && node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
-        //   }
-        //   return (node.dataType === 'array')  ? `${nodeName}[0]` : nodeName;
-        // });
-        //
-        // if (lastMappedParent && treeNode.path.indexOf(lastMappedParent.fullLinkedPath) === 0) {
-        //   const itemsLinkedPathArraySyntax = lastMappedParent.fullLinkedPath.split('.').map((item, index) => paths[index]);
-        //   treeNode.snippet = this.makeRelativeNodePath({path: paths.join('.')}, { path: itemsLinkedPathArraySyntax.join('.')});
-        // } else {
-        //   treeNode.snippet = paths.join('.');
-        // }
-        //
-        // if (selectedNode.dataType === 'array') {
-        //   const forEachParam = isCurrentNodeArray ? treeNode.snippet : '';
-        //   treeNode.snippet = ArrayMappingHelper.applyExpressionForEach(forEachParam);
-        // }
-        // return treeNode;
       }
     );
 
     /// SYMBOL TABLE necessary for validation only, disabling for now
     const symbolTable = {};
-    // const symbolTable = this.nodeFactory.fromJsonSchemaToSymbolTable(outputSchemas);
-    // if (lastMappedParent && lastMappedParent.fullLinkedPath) {
-    //   // set the relative path for the array mappings
-    //   const { memberType, children } = lastMappedParent.fullLinkedPath.split('.')
-    //     .reduce((currentSchema, pathPart) => currentSchema.children[pathPart], { children: symbolTable });
-    //   symbolTable['$'] = { type: memberType, children };
-    // }
-
     return {
       mappings,
       tree,
@@ -495,16 +391,10 @@ export class MapperService {
     return resultSubmappings.mappings;
   }
 
-  // TODO: add actual parsing
-  private processArrayMapExpression(expression: string) {
-    return ArrayMappingHelper.processExpressionForEach(expression);
-  }
-
   private makeRelativeNodePath(childNode: MapperTreeNode, parentNode: { path?: string }) {
     // a.b.c.x.y - a.b.c = $.x.y
     return '$' + childNode.path.slice(parentNode.path.length);
   }
-
 
   private getInitialState(): MapperState {
     return {
