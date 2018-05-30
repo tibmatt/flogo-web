@@ -8,9 +8,9 @@ import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
 // todo: shared models should be moved to core
 import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
 import { ROOT_TYPES } from '../constants';
-import { IMapping, IMapExpression } from '../models';
+import { Mappings, MapExpression } from '../models';
 
-export type  MappingsValidatorFn = (imapping: IMapping) => boolean;
+export type  MappingsValidatorFn = (mappings: Mappings) => boolean;
 
 export class MapperTranslator {
   static createInputSchema(tile: FlowTile) {
@@ -133,8 +133,7 @@ export class MapperTranslator {
   }
 
   static makeValidator(): MappingsValidatorFn {
-    return (imapping: IMapping) => {
-      const mappings = imapping && imapping.mappings;
+    return (mappings: Mappings) => {
       if (!mappings) {
         return true;
       }
@@ -172,7 +171,7 @@ function sortObjectKeys (object: {[key: string]: any}) {
 }
 
 // TODO: only works for first level mappings
-function isInvalidMapping(mapping: IMapExpression) {
+function isInvalidMapping(mapping: MapExpression) {
   const expression = mapping.expression;
   if (!expression || !expression.trim().length) {
     return false;

@@ -1,10 +1,10 @@
+import { cloneDeep } from 'lodash';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
-import { IMapping, IMapExpression, MapperTranslator, StaticMapperContextFactory } from '../../../shared/mapper';
-
+import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
+import { Mappings, MapExpression, MapperTranslator, StaticMapperContextFactory } from '../../../shared/mapper';
 import {ConfiguratorService as TriggerConfiguratorService} from '../configurator.service';
 import {MapperStatus} from '../interfaces';
-import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import {TRIGGER_TABS} from '../core/constants';
 
 @Component({
@@ -25,8 +25,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   mapperContext: any;
   currentViewName: string;
   private editingMappings: {
-    actionInput: { [key: string]: IMapExpression };
-    actionOutput: { [key: string]: IMapExpression };
+    actionInput: { [key: string]: MapExpression };
+    actionOutput: { [key: string]: MapExpression };
   };
   private ngDestroy = SingleEmissionSubject.create();
 
@@ -90,8 +90,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMappingsChange(change: IMapping) {
-    const mappings = _.cloneDeep(change).mappings;
+  onMappingsChange(newMappings: Mappings) {
+    const mappings = cloneDeep(newMappings);
     const currentView = this.currentViewStatus;
     if (currentView === this.triggerTabs.get(TRIGGER_TABS.MAP_FLOW_INPUT)) {
       this.editingMappings.actionInput = mappings;
@@ -100,7 +100,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     } else {
       return;
     }
-    currentView.isValid = this.triggerConfiguratorService.areValidMappings({ mappings });
+    currentView.isValid = this.triggerConfiguratorService.areValidMappings(mappings);
     this.updateCurrentTriggerStatus();
   }
 
@@ -134,7 +134,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     const flowInputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.input);
     const triggerSchema = this.currentMapperState.triggerSchema || {outputs: []};
     const triggerOutputSchema = MapperTranslator.attributesToObjectDescriptor(triggerSchema.outputs);
-    const mappings = _.cloneDeep(this.editingMappings.actionInput);
+    const mappings = cloneDeep(this.editingMappings.actionInput);
 
     this.mapperContext = StaticMapperContextFactory.create(flowInputSchema, triggerOutputSchema, mappings);
   }
@@ -144,7 +144,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     const triggerReplySchema = MapperTranslator.attributesToObjectDescriptor( triggerSchema.reply );
     const flowMetadata = this.currentMapperState.flowMetadata || { output: [] };
     const flowOutputSchema = MapperTranslator.attributesToObjectDescriptor(flowMetadata.output);
-    const mappings = _.cloneDeep(this.editingMappings.actionOutput);
+    const mappings = cloneDeep(this.editingMappings.actionOutput);
 
     this.mapperContext = StaticMapperContextFactory.create(triggerReplySchema, flowOutputSchema, mappings);
   }

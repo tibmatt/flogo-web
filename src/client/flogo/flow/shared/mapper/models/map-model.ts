@@ -1,13 +1,5 @@
-// import { IFlow } from '../app/flows';
-import { Observable } from 'rxjs/Observable';
-import { IMapping } from './imapping';
-import { IMapContextValidator } from './imap-context-validator';
 import { IMapperResult } from './imapper-result';
 import { IMappingError } from './imapping-error';
-// import { IFunctionArgs, IFunctionContribution, IFunctionReturn } from '../contrib';
-// import { STRING_MAP } from '../../types';
-// import { IAppModel } from '../index';
-// import { IMessaging } from '../messaging';
 
 // tslint:disable-next-line:interface-over-type-literal
 export type STRING_MAP<T> = {[key: string]: T};
@@ -15,7 +7,7 @@ export type STRING_MAP<T> = {[key: string]: T};
 /**
  * Details of a parsed expression string
  */
-export interface IParsedExpressionDetails {
+export interface ParsedExpressionDetails {
   isSyntaxValid: boolean;
   functionReferences: string[];
   memberReferences: string[];
@@ -24,7 +16,7 @@ export interface IParsedExpressionDetails {
 /**
  * A Mapped expression and its sub expressions
  */
-export interface IMapExpression {
+export interface MapExpression {
   /**
    * expression string
    * e.g.  String.concat(a.b.c,"abc")
@@ -33,82 +25,21 @@ export interface IMapExpression {
 
   /**
    * child expression map for nested expressions
-   * map<FunctionToken,IMapExpression>
+   * map<FunctionToken,MapExpression>
    * e.g. for-each(x,y)=>{ y.a = x.a, y.b = x.b}
    * e.g. for-each(p,q)=>{ p.a = q.a, p.b = q.b}
    *         child: for-each(p.a,q.a)=>{ for-each(p.a,q.a) => { p.a.x=q.a.x, p.a.y=q.a.y }}
    */
-  mappings: STRING_MAP<IMapExpression>;
+  mappings?: STRING_MAP<MapExpression>;
 
   /**
    * Details of a parsed expression string
    */
-  parsedExpressionDetails?: IParsedExpressionDetails;
+  parsedExpressionDetails?: ParsedExpressionDetails;
 
   mappingType?: number;
 }
 
-/**
- * A mapping function is defined by a schema
- * {
- *  arg1: type
- *  arg2: type
- *  return : type
- *  }
- */
-// export interface IMappingFunction extends IFunctionContribution {
-//   /**
-//    * returns the Function Input JSON Schema
-//    */
-//   getInputSchema(): any;
-//
-//   /**
-//    * returns the function Output JSON Schema
-//    */
-//   getOutputSchema(): any;
-//
-//   /**
-//    * returns the Function Output JSON Schema
-//    */
-//   getFullyQualifiedName(): string;
-//
-//   /**
-//    * returns the name of the function
-//    */
-//   getName(): string;
-//
-//   /**
-//    * returns function args
-//    */
-//   getArgs(): IFunctionArgs[];
-//
-//   /**
-//    * return function arg by arg name
-//    */
-//   getArg(name: string): IFunctionArgs;
-//
-//   /**
-//    * return function return type
-//    */
-//   getReturnType(): IFunctionReturn;
-// }
-
-/**
- * Provides function lookup and schemas
- */
-export interface IMapFunctionsLookup {
-  // getFunctions(): Observable<STRING_MAP<IMappingFunction>>;
-  getFunctions(): Observable<STRING_MAP<any>>;
-
-  isValidFunction(fqFunctionPath: string): boolean;
-
-  // getFunction(fqFunctionPath: string): IMappingFunction;
-  getFunction(fqFunctionPath: string): any;
-}
-
-/**
- * Mapping Error codes
- */
 
 /**
  * Parse location
@@ -199,73 +130,4 @@ export interface IParseResult extends IMapperResult {
  */
 export interface IExpressionParser {
   parse(expression: string): IParseResult;
-}
-
-/**
- * A mapper context is the starting point for rendering the mapper and returning its mapping data
- */
-export interface IMapperContext {
-  /**
-   * This id is can be activity id | branch id | sub context id
-   * activity id : uuid
-   * branch id: uuid
-   * sub context id: for-each(a.b,x.y)
-   */
-  getId(): string;
-
-  /**
-   * context data on which the mapper works.
-   */
-  getContextData(): STRING_MAP<any>;
-
-  /**
-   * mapping for this context
-   */
-  getMapping(): IMapping;
-
-  /**
-   * function provider
-   */
-  getMapFunctionsProvider(): IMapFunctionsLookup;
-
-  /**
-   * Validation Provider
-   */
-  getMapContextValidator(): IMapContextValidator;
-
-  /**
-   * provides the JSON schema for this context
-   * containing visible schemas in scope from previous
-   * activity/task/trigger outputs
-   */
-  getScopedOutputSchemaProvider(): ISchemaProvider;
-
-  /**
-   * provides the JSON schema for the current
-   * activity/trigger/branch input
-   */
-  getContextInputSchemaProvider(): ISchemaProvider;
-
-
-  /**
-   * Mapping Expression Parser
-   */
-  getExpressionParser(): IExpressionParser;
-
-  /**
-   * parent mapping context
-   *
-   */
-  getParentContext(): IMapperContext;
-
-  /**
-   * children mapping context
-   */
-  getChildContexts(): STRING_MAP<IMapperContext>;
-
-  /**
-   * context messaging
-   */
-  // getMessagingService(): IMessaging;
-
 }

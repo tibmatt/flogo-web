@@ -1,6 +1,6 @@
 // import { Observable } from 'rxjs/Observable';
 // import { TreeNodeFactoryService } from './tree-node-factory.service';
-// import { IMapperContext, IMappingFunction } from './../../../common/models/mapper/map-model';
+// import { MapperContext, IMappingFunction } from './../../../common/models/mapper/map-model';
 // import { Injectable } from '@angular/core';
 // // import { STRING_MAP } from '../../../common/types';
 // // import { IAppModel } from '../../../common/models/app/app.model';
@@ -13,7 +13,7 @@
 //     //
 //   }
 //
-//   getRecommendations(context: IMapperContext, editorContent: string, offset: number): Observable<any> {
+//   getRecommendations(context: MapperContext, editorContent: string, offset: number): Observable<any> {
 //     // return Observable.create(observer => {
 //     //   lconst_observer = observer, recommendations = [];
 //     //   lconstoutputSchema = this.getOutputSchema(context);
@@ -42,7 +42,7 @@
 //     // Merge those two and based on cursor position give the recommendations
 //   }
 //
-//   getOutputSchema(context: IMapperContext): Observable<any> {
+//   getOutputSchema(context: MapperContext): Observable<any> {
 //     // return Observable.create(observer => {
 //     //   lconstoutputSchema = context.getScopedOutputSchemaProvider().getSchema(<any>context.getContextData());
 //     //   observer.next(outputSchema);
@@ -50,7 +50,7 @@
 //     // });
 //   }
 //
-//   getFunctionsData(context: IMapperContext): Observable<STRING_MAP<IMappingFunction>> {
+//   getFunctionsData(context: MapperContext): Observable<STRING_MAP<IMappingFunction>> {
 //     return context.getMapFunctionsProvider().getFunctions();
 //   }
 // }

@@ -152,11 +152,9 @@ describe('MapperTranslator', function () {
 
     it('Treats empty expressions as a valid', function() {
       expect(isValidExpression({
-        mappings: {
-          something: {
-            expression: '',
-            mappings: {},
-          }
+        something: {
+          expression: '',
+          mappings: {},
         }
       })).toBeTruthy();
     });
@@ -164,24 +162,20 @@ describe('MapperTranslator', function () {
     it('Treats well formed objects as valid', function() {
       expect(true).toBe(true);
       expect(isValidExpression({
-        mappings: {
-          something: {
-            expression: '{ "a": 1, "b": [1, 2]}',
-            mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
-            mappings: {},
-          }
+        something: {
+          expression: '{ "a": 1, "b": [1, 2]}',
+          mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
+          mappings: {},
         }
       })).toBeTruthy();
     });
 
     it('Treats incorrectly formed objects as invalid', function() {
       expect(isValidExpression({
-        mappings: {
-          something: {
-            expression: '{ "a": 1, "b": [1, 2}',
-            mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
-            mappings: {},
-          }
+        something: {
+          expression: '{ "a": 1, "b": [1, 2}',
+          mappingType: MAPPING_TYPE.OBJECT_TEMPLATE,
+          mappings: {},
         }
       })).toBeFalsy();
     });
@@ -197,11 +191,9 @@ describe('MapperTranslator', function () {
       ].forEach(expr => {
         it(`Treats ${expr} as valid`,
           () => expect(isValidExpression({
-            mappings: {
-              testMapping: {
-                expression: expr,
-                mappings: {}
-              }
+            testMapping: {
+              expression: expr,
+              mappings: {}
             }
           })).toBeTruthy());
       });
@@ -216,11 +208,9 @@ describe('MapperTranslator', function () {
       ].forEach(expr => {
         it(`Treats ${expr} as invalid`,
           () => expect(isValidExpression({
-            mappings: {
-              testMapping: {
-                expression: expr,
-                mappings: {}
-              }
+            testMapping: {
+              expression: expr,
+              mappings: {}
             }
           })).toBeFalsy()
         );

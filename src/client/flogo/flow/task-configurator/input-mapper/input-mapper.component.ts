@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 
-import { IMapping, Mappings } from '../../shared/mapper';
+import { Mappings } from '../../shared/mapper';
 import { MapperTranslator, StaticMapperContextFactory } from '../../shared/mapper';
 import { TaskAttribute, Task } from '@flogo/core';
 
@@ -23,8 +23,8 @@ export class InputMapperComponent implements OnInit {
 
   mapperContext: any;
 
-  onMappingsChange(change: IMapping) {
-    this.mappingsChange.emit(change.mappings);
+  onMappingsChange(change: Mappings) {
+    this.mappingsChange.emit(change);
   }
 
   ngOnInit() {
@@ -37,15 +37,9 @@ export class InputMapperComponent implements OnInit {
                                    mappings: Mappings,
                                    scope: Task[]) {
     const inputSchema = MapperTranslator.attributesToObjectDescriptor(propsToMap);
-    const outputSchema = MapperTranslator.createOutputSchema(scope);
-    const outputSchemaWithIterator = MapperTranslator.createOutputSchema(scope, { $current: this.getIteratorSchema() });
-    const context = StaticMapperContextFactory.create(inputSchema, outputSchema, mappings);
-    context.getScopedOutputSchemaProvider = () => {
-      return {
-        getSchema: () => this.isIterableScope ? outputSchemaWithIterator : outputSchema
-      };
-    };
-    return context;
+    const iteratorSchema = this.isIterableScope ? { $current: this.getIteratorSchema() } : null;
+    const outputSchema =  MapperTranslator.createOutputSchema(scope, iteratorSchema);
+    return StaticMapperContextFactory.create(inputSchema, outputSchema, mappings);
   }
 
   private getIteratorSchema(): MapperSchema {

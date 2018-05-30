@@ -12,7 +12,6 @@ import { MappingParser } from './services/map.parser';
 // import { ScopedOutputSchemaProvider } from './service/map.output.schema.provider';
 import { MapContextValidator } from './services/map.context.validator';
 import { FunctionsComponent } from './functions-list/functions.component';
-import { FunctionsLookup } from './services/map.function.lookup';
 // import { ContextInputSchemaProvider } from './service/map.input.schema.provider';
 
 import { EditorComponent } from './editor/editor.component';
@@ -66,7 +65,6 @@ import { ExpressionProcessorService } from './services/expression-processor.serv
     IconsService,
     ExpressionProcessorService,
 
-    FunctionsLookup,
     MapContextValidator,
     MappingParser,
   ],

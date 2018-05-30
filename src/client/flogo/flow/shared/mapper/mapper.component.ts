@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
-import { IMapping } from './models/imapping';
-import { IMapperContext } from './models/imapper-context';
+import { Mappings } from './models/mappings';
+import { MapperContext } from './models/mapper-context';
 
 import { Subject } from 'rxjs/Subject';
 import { distinctUntilChanged, first, map, merge, scan, share, skipWhile, takeUntil, withLatestFrom } from 'rxjs/operators';
@@ -34,10 +34,10 @@ import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from './constants';
   providers: [MapperService, EditorService, DraggingService]
 })
 export class MapperComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() context: IMapperContext;
+  @Input() context: MapperContext;
   @Input() inputsSearchPlaceHolder = 'Search';
   @Input() outputsSearchPlaceHolder = 'Search';
-  @Output() mappingsChange = new EventEmitter<IMapping>();
+  @Output() mappingsChange = new EventEmitter<Mappings>();
   @Input() isSingleInputMode = false;
   currentInput: CurrentSelection = null;
   isDraggingOver = false;
@@ -46,7 +46,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
   private contextChanged = new Subject();
-  private contextInUse: IMapperContext;
+  private contextInUse: MapperContext;
   private hasInitted = false;
 
   constructor(private mapperService: MapperService,
@@ -187,12 +187,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
         map(({ state }) => (<MapperState>state).currentSelection.editingExpression),
         distinctUntilChanged(),
         withLatestFrom(state$, (expr, state) => state),
-        map((state: MapperState) => ({
-          mappings: <any>state.mappings,
-          getMappings() {
-            return this.mappings;
-          }
-        })),
+        map((state: MapperState) => state.mappings),
         takeUntil(stop$)
       )
       .subscribe(change => this.mappingsChange.emit(change));

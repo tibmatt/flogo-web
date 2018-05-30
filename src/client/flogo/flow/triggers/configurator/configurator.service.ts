@@ -11,7 +11,7 @@ import {
   MapperStatus,
   TriggerChanges
 } from './interfaces';
-import {MapperTranslator, MappingsValidatorFn, IMapping} from '../../shared/mapper';
+import {MapperTranslator, MappingsValidatorFn, Mappings} from '../../shared/mapper';
 import {reduce as arrayReduce} from 'lodash';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {isEqual} from 'lodash';
@@ -94,7 +94,7 @@ export class ConfiguratorService {
     this.publishConfigurationChanges();
   }
 
-  areValidMappings(mappings: IMapping) {
+  areValidMappings(mappings: Mappings) {
     return this.mappingValidationFn(mappings);
   }
 
@@ -112,12 +112,8 @@ export class ConfiguratorService {
         input: MapperTranslator.translateMappingsIn(input as AttributeMapping[]),
         output: MapperTranslator.translateMappingsIn(output as AttributeMapping[])
       };
-      triggerConfiguration.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isValid = this.areValidMappings({
-        mappings: mappings.input
-      });
-      triggerConfiguration.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).isValid = this.areValidMappings({
-        mappings: mappings.output
-      });
+      triggerConfiguration.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isValid = this.areValidMappings(mappings.input);
+      triggerConfiguration.tabs.get(TRIGGER_TABS.MAP_FLOW_OUTPUT).isValid = this.areValidMappings(mappings.output);
       triggerConfiguration.isValid = triggerConfiguration.tabs.areValid();
       return triggersMap.set(triggerDetail.trigger.id, triggerConfiguration);
     }, this.triggersToConfigure);

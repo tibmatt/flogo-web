@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit, HostBinding } from '@angular/core';
-import { IMapping, MapperTranslator, StaticMapperContextFactory } from '../../shared/mapper';
+import { Mappings, MapperTranslator, StaticMapperContextFactory } from '../../shared/mapper';
 import { Task } from '@flogo/core';
 
 const ITERABLE_VALUE_KEY = 'iterate';
@@ -32,8 +32,8 @@ export class IteratorComponent implements OnInit {
     this.changeIteratorMode.emit();
   }
 
-  onIteratorValueChange(change: IMapping) {
-    const mapping = change.mappings[ITERABLE_VALUE_KEY];
+  onIteratorValueChange(change: Mappings) {
+    const mapping = change[ITERABLE_VALUE_KEY];
     this.iteratorValueChange.emit(mapping ? mapping.expression : '');
   }
 

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
-import { scan } from 'rxjs/operators';
+import { distinctUntilChanged, map, scan, withLatestFrom } from 'rxjs/operators';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/zip';
@@ -19,16 +18,11 @@ import { resolveExpressionType } from 'flogo-parser';
 
 import { TreeNodeFactoryService } from './tree-node-factory.service';
 import { TreeService } from './tree.service';
-// import { ExpressionProcessorService } from './expression-processor.service';
-import {
-  IMapExpression,
-  IMapFunctionsLookup,
-  ISchemaProvider
-} from '../models/map-model';
+import { MapExpression } from '../models/map-model';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
-import { IParsedExpressionDetails, IMapperContext } from '../models';
+import { ParsedExpressionDetails, MapperContext, Mappings } from '../models';
 import { TYPE_ATTR_ASSIGNMENT, ROOT_TYPES } from '../constants';
 
 export interface TreeState {
@@ -46,16 +40,8 @@ export interface CurrentSelection {
   mapRelativeTo?: string;
 }
 
-export interface Mappings {
-  [path: string]: IMapExpression;
-}
-
 export interface MapperState {
-  context: IMapperContext;
-  providers?: {
-    outputsProvider: ISchemaProvider;
-    functionsProvider: IMapFunctionsLookup;
-  };
+  context: MapperContext;
   hasMappings: boolean;
   mappings: Mappings;
   currentSelection?: CurrentSelection;
@@ -85,7 +71,7 @@ export class MapperService {
 
   state: ReplaySubject<MapperState> = new ReplaySubject(1);
 
-  private contextSrc: Subject<IMapperContext> = new Subject();
+  private contextSrc: Subject<MapperContext> = new Subject();
   private updatesSrc: Subject<any> = new Subject<any>();
 
   //// actions
@@ -133,7 +119,7 @@ export class MapperService {
 
   }
 
-  setContext(context: IMapperContext) {
+  setContext(context: MapperContext) {
     this.contextSrc.next(context);
   }
 
@@ -159,97 +145,79 @@ export class MapperService {
 
   private setupSelectInput() {
     this.selectInputSrc
-      .distinctUntilChanged()
-      .withLatestFrom(this.state, (node: MapperTreeNode, state: MapperState) => ({ node, state }))
-      .switchMap(({ node, state }: { node: MapperTreeNode, state: MapperState }) => {
-        if (node) {
-          return Observable.zip(
-            [node],
-            Observable.of(state.providers.outputsProvider.getSchema(state.context.getContextData()))
-              .map(outputSchemas => this.makeOutputContext(node, outputSchemas, state.mappings)),
-            state.providers.functionsProvider.getFunctions()
-              .map(functions => ({
-                treeNodes: this.nodeFactory.fromFunctions(functions),
-                symbolTable: <any> this.nodeFactory.fromFunctionsToSymbolTable(functions),
-              })),
-          );
-        } else {
-          return Observable.of([node, <any>{}, <any>[]]);
-        }
-      })
-      .map(([node, outputContext, functions]: [MapperTreeNode, OutputContext, { treeNodes: MapperTreeNode[], symbolTable: any }]) => {
-        let currentSelection: CurrentSelection = null;
-        if (node && node.data) {
-          if (!outputContext) {
-            return (state: MapperState) => Object.assign({}, state, {
-              currentSelection: { mappingKey: null },
-              inputs: { nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
-              functions: { filterTerm: '', nodes: [] },
-              outputs: { filterTerm: '', nodes: [] },
-            });
+      .pipe(
+        distinctUntilChanged(),
+        withLatestFrom(this.state, (node: MapperTreeNode, state: MapperState) => ({ node, state })),
+        map(({ node, state }: { node: MapperTreeNode, state: MapperState }) => {
+          if (node) {
+            return [
+              node,
+              this.makeOutputContext(node, state.context.outputSchemas, state.mappings),
+              {
+                treeNodes: this.nodeFactory.fromFunctions(state.context.functions),
+                symbolTable: <any> this.nodeFactory.fromFunctionsToSymbolTable(state.context.functions),
+              }
+            ];
+          } else {
+            return [ node,  <any>{}, <any[]>[] ];
           }
-          const mapping = outputContext.mappings[outputContext.mappingKey];
-          const symbolTable = Object.assign({}, outputContext.symbolTable, functions.symbolTable);
-          currentSelection = {
-            node,
-            symbolTable,
-            editingExpression: mapping ?
-              { expression: mapping.expression, mappingType: mapping.mappingType }
-              : { expression: '', mappingType: TYPE_ATTR_ASSIGNMENT },
-            mappings: outputContext.mappings,
-            mappingKey: outputContext.mappingKey,
-            mapRelativeTo: outputContext.mapRelativeTo,
-          };
+        }),
+        map(([node, outputContext, functions]: [MapperTreeNode, OutputContext, { treeNodes: MapperTreeNode[], symbolTable: any }]) => {
+          let currentSelection: CurrentSelection = null;
+          if (node && node.data) {
+            if (!outputContext) {
+              return (state: MapperState) => Object.assign({}, state, {
+                currentSelection: { mappingKey: null },
+                inputs: { nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
+                functions: { filterTerm: '', nodes: [] },
+                outputs: { filterTerm: '', nodes: [] },
+              });
+            }
+            const mapping = outputContext.mappings[outputContext.mappingKey];
+            const symbolTable = Object.assign({}, outputContext.symbolTable, functions.symbolTable);
+            currentSelection = {
+              node,
+              symbolTable,
+              editingExpression: mapping ?
+                { expression: mapping.expression, mappingType: mapping.mappingType }
+                : { expression: '', mappingType: TYPE_ATTR_ASSIGNMENT },
+              mappings: outputContext.mappings,
+              mappingKey: outputContext.mappingKey,
+              mapRelativeTo: outputContext.mapRelativeTo,
+            };
 
-          let expectedResultType = { type: node.dataType, array: false };
-          if (node.dataType === 'array') {
-            expectedResultType = { array: true, type: node.memberType || 'object' };
+            let expectedResultType = { type: node.dataType, array: false };
+            if (node.dataType === 'array') {
+              expectedResultType = { array: true, type: node.memberType || 'object' };
+            }
+            expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
+            // const parseResult = this.parserService.processExpression(currentSelection.expression,
+            //   expectedResultType, currentSelection.symbolTable, outputContext.mapRelativeTo);
+            const parseResult = <any>{};
+            currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
           }
-          expectedResultType.type = expectedResultType.type === 'date' ? 'string' : expectedResultType.type;
-          // const parseResult = this.parserService.processExpression(currentSelection.expression,
-          //   expectedResultType, currentSelection.symbolTable, outputContext.mapRelativeTo);
-          const parseResult = <any>{};
-          currentSelection.errors = parseResult.errors && parseResult.errors.length > 0 ? parseResult.errors : null;
-        }
 
-        return (state: MapperState) => Object.assign({}, state, {
-          currentSelection,
-          inputs: { nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
-          functions: { filterTerm: '', nodes: functions.treeNodes },
-          outputs: { filterTerm: '', nodes: outputContext.tree },
-        });
-      })
+          return (state: MapperState) => Object.assign({}, state, {
+            currentSelection,
+            inputs: { nodes: this.treeService.selectNode(state.inputs.nodes, node ? node.path : null) },
+            functions: { filterTerm: '', nodes: functions.treeNodes },
+            outputs: { filterTerm: '', nodes: outputContext.tree },
+          });
+        })
+      )
       .subscribe(this.updatesSrc);
   }
 
   private setupContextChange() {
     this.contextSrc
-      .map((context: IMapperContext) => {
+      .map((context: MapperContext) => {
         return (state: MapperState) => {
           const newState = this.getInitialState();
           newState.context = context;
-
-          newState.providers = {
-            functionsProvider: context.getMapFunctionsProvider(),
-            outputsProvider: context.getScopedOutputSchemaProvider(),
-          };
-
-          const inputSchemaProvider = context.getContextInputSchemaProvider();
-          // let mappingsProvider = null;
-          let iMapping;
-          if (context.getMapping) {
-            // mappingsProvider = context.getMapping();
-            iMapping = context.getMapping();
-          }
-          // mappingsProvider = mappingsProvider || { getMappings: () => ({}) };
-          // let mappings = mappingsProvider.getMappings();
-          iMapping = iMapping || {};
-          newState.mappings = iMapping.mappings || {};
+          newState.mappings = context.mappings || {};
           newState.hasMappings = this.hasMappings(newState.mappings);
           const flattenedMappings = this.nodeFactory.flatMappings(newState.mappings);
-
-          const inputSchemas = inputSchemaProvider.getSchema(<any>context.getContextData());
-          newState.inputs.nodes = this.nodeFactory.fromJsonSchema(inputSchemas,
+          newState.inputs.nodes = this.nodeFactory.fromJsonSchema(context.inputSchemas,
             (treeNode: MapperTreeNode, level, path, parents: MapperTreeNode[]) => {
               treeNode.data.level = level;
               const expression = flattenedMappings[path];
@@ -316,7 +284,7 @@ export class MapperService {
     mappings: Mappings,
     path: string,
     editingExpression: EditingExpression,
-    parsedExpressionDetails?: IParsedExpressionDetails
+    parsedExpressionDetails?: ParsedExpressionDetails
   ) {
     const existingMapping = mappings[path];
     const isEmptyExpression = !editingExpression || !editingExpression.expression || !editingExpression.expression.trim();
@@ -468,7 +436,7 @@ export class MapperService {
 
     const nodes = [...arrayNodes];
     const rootArrayNode = nodes.shift();
-    let mapping: IMapExpression = nodes ? mappings[rootArrayNode.path] : null;
+    let mapping: MapExpression = nodes ? mappings[rootArrayNode.path] : null;
     const isEmptyExpression = m => !m.expression || !m.expression.trim();
     if (!mapping || isEmptyExpression(mapping)) {
       return [];

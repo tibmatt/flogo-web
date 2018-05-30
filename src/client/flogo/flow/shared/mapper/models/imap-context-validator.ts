@@ -1,4 +1,4 @@
-import { IMapperContext } from './imapper-context';
+import { MapperContext } from './mapper-context';
 import { IMapperResult } from './imapper-result';
 
 /**
@@ -6,5 +6,5 @@ import { IMapperResult } from './imapper-result';
  * validating mapping LHS and RHS expressions
  */
 export interface IMapContextValidator {
-  validate(context: IMapperContext): IMapperResult;
+  validate(context: MapperContext): IMapperResult;
 }

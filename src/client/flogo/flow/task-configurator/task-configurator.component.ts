@@ -8,7 +8,7 @@ import { PostService } from '@flogo/core/services/post.service';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventData } from './messages';
 
-import { IMapping, Mappings, MapperTranslator } from '../shared/mapper';
+import { Mappings, MapperTranslator } from '../shared/mapper';
 
 import { InputMapperConfig } from './input-mapper';
 import {Tabs} from '../shared/tabs/models/tabs.model';
@@ -74,7 +74,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   private _subscriptions: any[];
   // todo: move to proper service
-  private areValidMappings: (mappings: IMapping) => boolean;
+  private areValidMappings: (mappings: Mappings) => boolean;
 
   constructor(private _flowService: FlowsService,
               private _postService: PostService) {
@@ -89,7 +89,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   onMappingsChange(newMappings: Mappings) {
     const mapperTab = this.tabs.get(TASK_TABS.INPUT_MAPPINGS);
-    mapperTab.isValid = this.areValidMappings({mappings: newMappings});
+    mapperTab.isValid = this.areValidMappings(newMappings);
     mapperTab.isDirty = true;
     this.currentMappings = _.cloneDeep(newMappings);
   }
