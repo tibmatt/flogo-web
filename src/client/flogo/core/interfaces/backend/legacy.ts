@@ -61,7 +61,7 @@ export interface flowToJSON_Link {
 export interface triggerToJSON_TriggerInfo {
   name: string;
   settings: any;
-  endpoints: any;
+  handlers: any;
 }
 
 // Disabling tslint rule for legacy purposes

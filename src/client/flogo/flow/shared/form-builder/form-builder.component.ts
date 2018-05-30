@@ -113,7 +113,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       }
 
       if (this._context.isTrigger) {
-        state['endpointSettings'] = this._getCurrentTaskState(this._attributes.endpointSettings || []);
+        state['handlerSettings'] = this._getCurrentTaskState(this._attributes.handlerSettings || []);
         state['outputs'] = this._getCurrentTaskState(this._attributes.outputs || []);
         state['settings'] = this._getCurrentTaskState(this._attributes.settings || []);
         this._postService.publish(_.assign({}, PUB_EVENTS.triggerDetailsChanged, {
@@ -218,7 +218,7 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
 
     if (task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
       inputs = _.get(this._task, 'settings', []);
-      inputs = inputs.concat(_.get(this._task, 'endpoint.settings', []));
+      inputs = inputs.concat(_.get(this._task, 'handler.settings', []));
     } else if (task.type === FLOGO_TASK_TYPE.TASK) {
       inputs = _.get(this._task, 'attributes.inputs', []);
     }
@@ -273,8 +273,8 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       const attributes: any = {};
       const task = this._task || {};
 
-      // ((task['endpoint'] || {})['settings']) || [];
-      attributes['endpointSettings'] = this._getArray(_.get(task, 'endpoint.settings', []));
+      // ((task['handler'] || {})['settings']) || [];
+      attributes['handlerSettings'] = this._getArray(_.get(task, 'handler.settings', []));
       // override trigger outputs attributes if there is internal values
       // attributesTrigger[ 'outputs' ] = _.get( task, '__props.initData', task[ 'outputs' ] || [] );
       attributes['outputs'] = this._getArray(_.get(task, 'outputs', []));

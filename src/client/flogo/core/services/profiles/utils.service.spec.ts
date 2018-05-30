@@ -24,7 +24,7 @@ const mockTasksAvailable = {
       }
     ],
     'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/timer',
-    'endpoint': {
+    'handler': {
       'settings': [
         {
           'name': 'repeating',

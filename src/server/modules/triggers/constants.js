@@ -1,5 +1,3 @@
-export const EDITABLE_FIELDS = [];
-
 export const PUBLISH_FIELDS_SHORT = [
   'id',
   'name',
@@ -21,7 +19,6 @@ export const PUBLISH_FIELDS_LONG = [
   'settings',
   'outputs',
   'handler',
-  'endpoint',
   'reply',
 ];
 

@@ -24,7 +24,7 @@ export class ItemFactory {
       settings: {},
       outputs: [],
       ref: '',
-      endpoint: { settings: [] },
+      handler: { settings: [] },
       __props: {
         errors: [],
       },
@@ -35,7 +35,7 @@ export class ItemFactory {
 
   static makeTrigger(trigger): any {
     // todo: what does cli means in this context??
-    const { installed, cli, endpointSetting } = trigger;
+    const { installed, cli, handlerSetting } = trigger;
     const item = Object.assign({}, this.getDefaultTriggerProperties(installed), { id: trigger.node.taskID }, {
       nodeId: trigger.node.taskID, type: FLOGO_TASK_TYPE.TASK_ROOT, triggerType: installed.name, settings: [],
     });
@@ -44,8 +44,8 @@ export class ItemFactory {
     const triggerSchemaSettings = isArray(installed.settings) ? installed.settings : [];
     item.settings = mergeAttributesWithSchema(settings, triggerSchemaSettings);
 
-    const endpointSettings = get(installed, 'endpoint.settings', []);
-    item.endpoint.settings = mergeAttributesWithSchema(endpointSetting.settings || {}, endpointSettings);
+    const handlerSettings = get(installed, 'handler.settings', []);
+    item.handler.settings = mergeAttributesWithSchema(handlerSetting.settings || {}, handlerSettings);
 
     const mapType = prop => ({
       name: prop.name,
