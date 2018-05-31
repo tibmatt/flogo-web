@@ -25,7 +25,7 @@ import { SingleEmissionSubject } from './shared/single-emission-subject';
 
 import { CurrentSelection, MapperService, MapperState } from './services/mapper.service';
 import { EditorService } from './editor/editor.service';
-import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './tree/dragging.service';
+import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './services/dragging.service';
 import { TYPE_ATTR_ASSIGNMENT } from './constants';
 
 @Component({

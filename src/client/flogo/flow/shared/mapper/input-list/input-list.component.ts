@@ -1,55 +1,58 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
-import { Subject } from 'rxjs/Subject';
-
-import { MapperService, MapperState, TreeState } from '../services/mapper.service';
+import { MapperService, MapperState } from '../services/mapper.service';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
-import { distinctUntilChanged, map, share, takeUntil } from 'rxjs/operators';
+import { combineLatest, distinctUntilChanged, map, pluck, shareReplay, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'flogo-mapper-input-list',
   templateUrl: 'input-list.component.html',
   styleUrls: ['input-list.component.css']
 })
-export class InputListComponent implements OnInit, OnDestroy {
+export class InputListComponent implements OnInit {
   @Input() searchPlaceholder: string;
-  treeNodes: MapperTreeNode[];
-  selectedInput: MapperTreeNode;
-  filterTerm: string;
-
-  private ngUnsubscribe: Subject<void> = new Subject<void>();
+  filteredNodes$: Observable<MapperTreeNode[]>;
+  selectedInput$: Observable<MapperTreeNode>;
+  filterTerm$: Observable<string>;
 
   constructor(private mapperService: MapperService) {
   }
 
   ngOnInit() {
-    const stateObserver = this.mapperService.state.pipe(share());
-    stateObserver
+    const mapperState$ = this.mapperService.state.pipe(shareReplay());
+
+    const inputs$: Observable<MapperState['inputs']> = mapperState$
       .pipe(
         map((state: MapperState) => state.inputs),
         distinctUntilChanged(),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe((inputs: TreeState) => {
-        this.treeNodes = inputs.nodes;
-        this.filterTerm = inputs.filterTerm;
-      });
+        shareReplay(),
+      );
 
-    stateObserver
+    this.filterTerm$ = inputs$
+      .pipe(
+        map((inputs: MapperState['inputs']) => inputs.filterTerm),
+        distinctUntilChanged(),
+      );
+
+    this.filteredNodes$ = inputs$
+      .pipe(
+        pluck('nodes'),
+        distinctUntilChanged(),
+        combineLatest(this.filterTerm$, (inputs: MapperState['inputs']['nodes'], filterTerm: string) => {
+          if (!filterTerm || !filterTerm.trim()) {
+            return inputs;
+          }
+          filterTerm = filterTerm.trim().toLowerCase();
+          return inputs.filter(inputNode => inputNode.label.toLowerCase().includes(filterTerm));
+        }),
+      );
+
+    this.selectedInput$ = mapperState$
       .pipe(
         map((state: MapperState) => state.currentSelection ? state.currentSelection.node : null),
         distinctUntilChanged(),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe((node: MapperTreeNode) => {
-        this.selectedInput = node;
-      });
-
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+      );
   }
 
   onInputSelect(node: MapperTreeNode) {

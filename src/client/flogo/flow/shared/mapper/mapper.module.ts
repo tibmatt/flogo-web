@@ -20,6 +20,7 @@ import { InputListComponent } from './input-list/input-list.component';
 import { OutputListComponent } from './output-list/output-list.component';
 import { FunctionDetailsComponent } from './functions-list/function-details.component';
 import { TreeComponent } from './tree/tree.component';
+import { ListComponent } from './list/list.component';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 
 import { TreeNodeFactoryService } from './services/tree-node-factory.service';
@@ -54,7 +55,8 @@ import { ExpressionProcessorService } from './services/expression-processor.serv
     BreadcrumbsComponent,
     InlineHrefDirective,
     ClickOutsideDirective,
-    TreeComponent
+    TreeComponent,
+    ListComponent,
   ],
   entryComponents: [
     MapperComponent

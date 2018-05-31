@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
-import { TYPE_PARAM_FUNCTION } from '../tree/dragging.service';
+import { TYPE_PARAM_FUNCTION } from '../services/dragging.service';
 
 import { EditorService } from '../editor/editor.service';
 import { MapperTreeNode } from '../models/mapper-treenode.model';

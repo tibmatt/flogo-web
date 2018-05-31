@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -17,11 +18,12 @@ import { DraggingService } from '../services/dragging.service';
 import { IconsService } from '../services/icons.service';
 
 @Component({
-  selector: 'flogo-mapper-tree',
-  templateUrl: 'tree.component.html',
-  styleUrls: ['tree.component.css']
+  selector: 'flogo-mapper-list',
+  templateUrl: 'list.component.html',
+  styleUrls: ['list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TreeComponent implements OnChanges, AfterViewInit {
+export class ListComponent implements OnChanges, AfterViewInit {
   @Input() treeNodes: MapperTreeNode[];
   @Input() searchTerm = '';
   @Input() searchPlaceholder = 'Search';
@@ -35,15 +37,10 @@ export class TreeComponent implements OnChanges, AfterViewInit {
 
   @ViewChildren(ScrollbarDirective) scrollbars: QueryList<ScrollbarDirective>;
 
-  private selectedBranch: MapperTreeNode[] | null;
-
   constructor(private draggingService: DraggingService, private iconsService: IconsService) {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['selected'] && this.selected) {
-      this.selectedBranch = this.extractNodePath(this.selected);
-    }
 
     if (changes['searchTerm']) {
       this.searchTerm = this.searchTerm || '';
@@ -59,15 +56,10 @@ export class TreeComponent implements OnChanges, AfterViewInit {
     this.updateScrollbars();
   }
 
-  onSelect(event: { node: MapperTreeNode }) {
-    const node = event.node;
+  onSelect(node: MapperTreeNode) {
     if (node && node.isSelectable) {
       this.select.emit(node);
     }
-  }
-
-  onCategoryExpand(event: any) {
-    this.updateScrollbars();
   }
 
   onMouseHover(event) {
@@ -93,16 +85,6 @@ export class TreeComponent implements OnChanges, AfterViewInit {
 
   onSearchChange(term: string) {
     this.search.emit(term);
-  }
-
-  private extractNodePath(node: MapperTreeNode): MapperTreeNode[] {
-    const path: MapperTreeNode[] = [node];
-    let currentNode = node;
-    while (currentNode.parent) {
-      currentNode = currentNode.parent;
-      path.push(currentNode);
-    }
-    return path;
   }
 
   private updateScrollbars() {
