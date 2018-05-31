@@ -20,7 +20,7 @@ export class InputListComponent implements OnInit {
   }
 
   ngOnInit() {
-    const mapperState$ = this.mapperService.state.pipe(shareReplay());
+    const mapperState$ = this.mapperService.state$.pipe(shareReplay());
 
     const inputs$: Observable<MapperState['inputs']> = mapperState$
       .pipe(

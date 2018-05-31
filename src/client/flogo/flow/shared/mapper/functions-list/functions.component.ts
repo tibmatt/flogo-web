@@ -28,7 +28,7 @@ export class FunctionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.name = '';
     this.help = null;
-    this.mapperService.state
+    this.mapperService.state$
       .pipe(
         map((state: MapperState) => state.functions),
         distinctUntilChanged(),

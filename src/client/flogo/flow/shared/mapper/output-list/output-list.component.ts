@@ -25,7 +25,7 @@ export class OutputListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.mapperService.state
+    this.mapperService.state$
       .pipe(
         map((state: MapperState) => state.outputs),
         distinctUntilChanged(),

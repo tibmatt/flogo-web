@@ -11,6 +11,7 @@ import { MapperTreeNode } from '../models/mapper-treenode.model';
 import { ArrayMappingHelper, ArrayMappingInfo } from '../models/array-mapping';
 import { ParsedExpressionDetails, MapperContext, Mappings } from '../models';
 import { TYPE_ATTR_ASSIGNMENT, ROOT_TYPES } from '../constants';
+import { Observable } from 'rxjs/Observable';
 
 export interface TreeState {
   filterTerm: string | null;
@@ -64,11 +65,15 @@ const isSameEditingExpression = (prev: EditingExpression, next: EditingExpressio
 export class MapperService {
 
   currentState: MapperState;
-  state: ReplaySubject<MapperState> = new ReplaySubject(1);
+  state$: Observable<MapperState>;
+  private stateSrc: ReplaySubject<MapperState>;
 
   constructor(private nodeFactory: TreeNodeFactoryService,
               private treeService: TreeService,
-  ) {}
+  ) {
+    this.stateSrc = new ReplaySubject<MapperState>(1);
+    this.state$ = this.stateSrc.asObservable();
+  }
 
   setContext(context: MapperContext) {
     this.setupContextChange(context);
@@ -109,7 +114,7 @@ export class MapperService {
 
   private updateState(state: MapperState) {
     this.currentState = state;
-    this.state.next(state);
+    this.stateSrc.next(state);
   }
 
   private getSelectionContext(node: MapperTreeNode, state: MapperState)

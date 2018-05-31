@@ -134,7 +134,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       share(),
     );
 
-    const state$ = this.mapperService.state
+    const state$ = this.mapperService.state$
       .pipe(
         catchError(err => {
           console.error(err);
@@ -207,7 +207,7 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe(position => this.editorService.dragOver(position));
 
     this.mapperService
-      .state.pipe(
+      .state$.pipe(
         distinctUntilKeyChanged('context'),
         takeUntil(stop$),
         first(),
