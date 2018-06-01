@@ -10,21 +10,14 @@ export { EditorContext, InsertEvent };
 
 @Injectable()
 export class EditorService {
-
-  private contextSrc = new ReplaySubject<EditorContext>(1);
-  context$: Observable<EditorContext> = this.contextSrc.asObservable();
   private insertSrc = new Subject<InsertEvent>();
   insert$: Observable<InsertEvent> = this.insertSrc.asObservable();
-  private expressionSrc = new Subject<string>();
-  outputExpression$: Observable<string> = this.expressionSrc.asObservable();
+  private expressionSrc = new Subject<{ mapKey: string, expression: string }>();
+  outputExpression$: Observable<{ mapKey: string, expression: string }> = this.expressionSrc.asObservable();
   private validationSrc = new ReplaySubject<any[]>(1);
   validate$: Observable<any[]> = this.validationSrc.asObservable();
   private dragOverSrc = new Subject<{ x: number, y: number }>();
   dragOver$: Observable<{ x: number, y: number }> = this.dragOverSrc.asObservable();
-
-  changeContext(expression: string) {
-    this.contextSrc.next({ expression});
-  }
 
   insertText(string: string, replaceTokenAtPosition?: { x: number, y: number }) {
     this.insertSrc.next({ text: string, replaceTokenAtPosition });
@@ -34,8 +27,8 @@ export class EditorService {
     this.dragOverSrc.next(position);
   }
 
-  outputExpression(expression: string) {
-    this.expressionSrc.next(expression);
+  outputExpression(mapKey: string, expression: string) {
+    this.expressionSrc.next({ mapKey, expression });
   }
 
   validated(errors: any[]) {

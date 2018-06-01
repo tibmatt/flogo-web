@@ -15,25 +15,15 @@
     </div>
 
     <div class="workspace" *ngIf="currentInput">
-      <flogo-mapper-breadcrumbs [inputNode]="currentInput?.node"></flogo-mapper-breadcrumbs>
+      <flogo-mapper-breadcrumbs [inputNode]="currentInput"></flogo-mapper-breadcrumbs>
 
-      <div *ngIf="currentInput.mappingKey && currentInput.node"
+      <div *ngIf="currentInput"
            class="workspace__editor-container"
            [class.workspace__editor-container--droppable]="isDraggingOver" (drop)="onDrop($event)"
            (dragover)="onDragOver($event)"
            (dragenter)="onDragEnter()" (dragleave)="onDragLeave()">
         <flogo-mapper-editor class="workspace__editor" *loadMonacoEditor></flogo-mapper-editor>
       </div>
-
-      <!--<div *ngIf="!currentInput.mappingKey && !currentInput.node"-->
-           <!--class="workspace__editor workspace__editor&#45;&#45;disabled">-->
-        <!--To map a child in an array, its array parent must be configured. See array.forEach() function for more details.-->
-      <!--</div>-->
-
-      <!--<div *ngIf="currentInput.mappingKey && currentInput.node && currentInput.node.dataType === 'object'"-->
-           <!--class="workspace__editor workspace__editor&#45;&#45;disabled">-->
-        <!--Object input is not mappable-->
-      <!--</div>-->
 
       <div class="workspace__parameters parameters">
         <div class="parameters__parameter mapper__output-list">

@@ -1,12 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
+import { shareReplay, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
+
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { TYPE_PARAM_FUNCTION } from '../services/dragging.service';
 
 import { EditorService } from '../editor/editor.service';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
-import { MapperService, MapperState, TreeState } from '../services/mapper.service';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+import { MapperService } from '../services/mapper.service';
+import { selectedInputKey, selectFilterFromFunctions, selectNodesFromFunctions } from '../services/selectors';
 
 @Component({
   selector: 'flogo-mapper-functions',
@@ -16,8 +19,8 @@ import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 export class FunctionsComponent implements OnInit, OnDestroy {
   help: MapperTreeNode;
   name: string;
-  functions: MapperTreeNode[] = [];
-  filterTerm = '';
+  functions$: Observable<MapperTreeNode[]>;
+  filterTerm$: Observable<string>;
   dragType = TYPE_PARAM_FUNCTION;
 
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -26,17 +29,17 @@ export class FunctionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.name = '';
-    this.help = null;
-    this.mapperService.state$
+    const state$ = this.mapperService.state$.pipe(shareReplay());
+    this.functions$ = state$.pipe(selectNodesFromFunctions);
+    this.filterTerm$ = state$.pipe(selectFilterFromFunctions);
+    state$
       .pipe(
-        map((state: MapperState) => state.functions),
-        distinctUntilChanged(),
-        takeUntil(this.ngDestroy),
+        selectedInputKey,
+        takeUntil(this.ngDestroy)
       )
-      .subscribe((functions: TreeState) => {
-        this.functions = functions.nodes;
-        this.filterTerm = functions.filterTerm || '';
+      .subscribe(() => {
+        this.name = '';
+        this.help = null;
       });
   }
 

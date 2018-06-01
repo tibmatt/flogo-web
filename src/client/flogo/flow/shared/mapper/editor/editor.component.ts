@@ -1,12 +1,21 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged, distinctUntilKeyChanged,
+  shareReplay,
+  skipUntil,
+  switchMap,
+  takeUntil
+} from 'rxjs/operators';
 
 import { MonacoEditorComponent, DEFAULT_EDITOR_OPTIONS } from '../../monaco-editor';
-
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
-import { EditorContext, EditorService, InsertEvent } from './editor.service';
-import { combineLatest, debounceTime, distinctUntilChanged, skipUntil, switchMap, takeUntil } from 'rxjs/operators';
+
+import { MapperService } from '../services/mapper.service';
+import { EditorService, InsertEvent } from './editor.service';
+import { selectCurrentEditingExpression, selectedInputKey } from '../services/selectors';
 
 @Component({
   selector: 'flogo-mapper-editor',
@@ -16,42 +25,44 @@ export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) editor: MonacoEditorComponent;
   expression = '';
 
+  private currentMapKey: string;
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
 
-  constructor(private editorService: EditorService) {
+  constructor(private editorService: EditorService, private mapperService: MapperService) {
   }
 
   ngOnInit() {
-    const editorContext$ = this.editorService.context$
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.ngDestroy),
-      );
+    const mapperState$ = this.mapperService.state$.pipe(shareReplay());
+    const editorContext$ = mapperState$.pipe(selectedInputKey);
 
     const valueChange$ = this.editor.valueChange
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
       );
+
     editorContext$
       .pipe(
         switchMap(() => valueChange$),
         takeUntil(this.ngDestroy),
       )
       .subscribe((value: string) => {
-        this.editorService.outputExpression(value);
+        this.editorService.outputExpression(this.currentMapKey, value);
       });
 
     this.editor.ready
       .pipe(
-        switchMap(() => editorContext$),
+        switchMap(() => mapperState$.pipe(selectCurrentEditingExpression)),
         takeUntil(this.ngDestroy),
       )
-      .subscribe((context: EditorContext) => {
+      .subscribe((context) => {
         if (context) {
+          this.currentMapKey = context.currentKey;
           const newExpression = context.expression || '';
-          this.editor.changeModel(newExpression, context.mode ? context.mode : DEFAULT_EDITOR_OPTIONS.language);
-          setTimeout(() => this.editor.onWindowResize(), 0);
+          if (this.editor.value !== newExpression) {
+            this.editor.changeModel(newExpression, DEFAULT_EDITOR_OPTIONS.language);
+            setTimeout(() => this.editor.onWindowResize(), 0);
+          }
         }
       });
 

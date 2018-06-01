@@ -40,6 +40,10 @@ export class ListComponent implements OnChanges, AfterViewInit {
   constructor(private draggingService: DraggingService, private iconsService: IconsService) {
   }
 
+  trackNodeByFn(index, node: MapperTreeNode) {
+    return node.path;
+  }
+
   ngOnChanges(changes: SimpleChanges) {
 
     if (changes['searchTerm']) {

@@ -11,11 +11,8 @@ import {
   first,
   map,
   merge,
-  scan,
   share,
-  skipWhile,
-  takeUntil,
-  withLatestFrom
+  takeUntil
 } from 'rxjs/operators';
 
 import { MonacoEditorLoaderService } from '../monaco-editor';
@@ -23,10 +20,12 @@ import { load as loadMonacoLangPlugin } from '../mapper-language/monaco-contribu
 
 import { SingleEmissionSubject } from './shared/single-emission-subject';
 
-import { CurrentSelection, MapperService, MapperState } from './services/mapper.service';
+import { MapperService, MapperState } from './services/mapper.service';
 import { EditorService } from './editor/editor.service';
 import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './services/dragging.service';
 import { TYPE_ATTR_ASSIGNMENT } from './constants';
+import { selectCurrentEditingExpression, selectCurrentNode, selectMappings } from '@flogo/flow/shared/mapper/services/selectors';
+import { MapperTreeNode } from '@flogo/flow/shared/mapper/models/mapper-treenode.model';
 
 @Component({
   selector: 'flogo-mapper',
@@ -40,9 +39,8 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() outputsSearchPlaceHolder = 'Search';
   @Output() mappingsChange = new EventEmitter<Mappings>();
   @Input() isSingleInputMode = false;
-  currentInput: CurrentSelection = null;
+  currentInput: MapperTreeNode = null;
   isDraggingOver = false;
-  currentMappingType: number;
 
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -146,56 +144,35 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
     state$
       .pipe(
-        distinctUntilKeyChanged('currentSelection'),
+        selectCurrentNode,
         takeUntil(stop$),
       )
-      .subscribe((state: MapperState) => {
-        this.currentInput = state.currentSelection;
-        if (this.currentInput) {
-          const editingExpression = this.currentInput.editingExpression;
-          this.currentMappingType = editingExpression.mappingType || TYPE_ATTR_ASSIGNMENT;
-          this.editorService.changeContext(editingExpression.expression);
-        }
+      .subscribe((currentInputNode) => {
+        this.currentInput = currentInputNode;
       });
+
+    // state$
+    //   .pipe(
+    //     map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null),
+    //     distinctUntilChanged(),
+    //     takeUntil(stop$),
+    //   )
+    //   .subscribe((errors: any[]) => {
+    //     if (this.currentInput) {
+    //       this.editorService.validated(errors);
+    //     }
+    //   });
 
     state$
       .pipe(
-        map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null),
-        distinctUntilChanged(),
-        takeUntil(stop$),
-      )
-      .subscribe((errors: any[]) => {
-        if (this.currentInput) {
-          this.editorService.validated(errors);
-        }
-      });
-
-    state$
-      .pipe(
-        scan((acc: { state: MapperState, prevNode, nodeChanged }, state: MapperState) => {
-          let nodeChanged = false;
-          let prevNode = acc.prevNode;
-          const currentSelection = state.currentSelection || {};
-          if (currentSelection.node && currentSelection.node !== acc.prevNode) {
-            nodeChanged = true;
-            prevNode = currentSelection.node;
-          }
-          return { state, prevNode, nodeChanged };
-        }, { state: null, prevNode: null, nodeChanged: false }),
-        skipWhile(({ state, nodeChanged }) =>
-          nodeChanged || !state || !state.currentSelection || !state.currentSelection.node
-        ),
-        map(({ state }) => (<MapperState>state).currentSelection.editingExpression),
-        distinctUntilChanged(),
-        withLatestFrom(state$, (expr, state) => state),
-        map((state: MapperState) => state.mappings),
+        selectMappings,
         takeUntil(stop$)
       )
       .subscribe(change => this.mappingsChange.emit(change));
 
     this.editorService.outputExpression$
       .pipe(takeUntil(this.ngDestroy))
-      .subscribe(expression => this.mapperService.expressionChange({ expression, mappingType: this.currentMappingType }));
+      .subscribe(({ mapKey, expression }) => this.mapperService.expressionChange(mapKey, expression));
 
     this.dragOverEditor
       .pipe(

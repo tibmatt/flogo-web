@@ -14,6 +14,7 @@
 
 <div class="nodes" [class.is-filtered]="!!searchTerm" perfect-scrollbar>
   <div class="node"
+       *ngFor="let node of treeNodes; trackBy: trackNodeByFn"
        [ngClass]="{
          'node--selectable': node.isSelectable,
          'node--required': node.isRequired,
@@ -21,7 +22,6 @@
          'has-expression': node.data?.expression,
          'has-errors': node.isInvalid
        }"
-       *ngFor="let node of treeNodes"
        [draggable]="node.isSelectable"
        (dragstart)="onDragStart($event, node)"
        (mouseenter)="onMouseHover(node)"

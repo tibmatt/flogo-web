@@ -5,7 +5,9 @@ import { TYPE_PARAM_OUTPUT } from '../services/dragging.service';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';
 import { MapperService, MapperState, TreeState } from '../services/mapper.service';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { selectedInputKey, selectFilterFromOutputs, selectNodesFromOutputs } from '@flogo/flow/shared/mapper/services/selectors';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'flogo-mapper-output-list',
@@ -15,8 +17,8 @@ import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 export class OutputListComponent implements OnInit, OnDestroy {
   @Input() searchPlaceholder: string;
   @Output() selectNode = new EventEmitter<MapperTreeNode>();
-  treeNodes: MapperTreeNode[];
-  filterTerm: string;
+  treeNodes$: Observable<MapperTreeNode[]>;
+  filterTerm$: Observable<string>;
   dragType = TYPE_PARAM_OUTPUT;
 
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -25,16 +27,9 @@ export class OutputListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.mapperService.state$
-      .pipe(
-        map((state: MapperState) => state.outputs),
-        distinctUntilChanged(),
-        takeUntil(this.ngDestroy),
-      )
-      .subscribe((outputs: TreeState) => {
-        this.treeNodes = outputs.nodes;
-        this.filterTerm = outputs.filterTerm;
-      });
+    const state$ = this.mapperService.state$.pipe(shareReplay());
+    this.treeNodes$ = state$.pipe(selectNodesFromOutputs);
+    this.filterTerm$ = state$.pipe(selectFilterFromOutputs);
   }
 
   ngOnDestroy() {
