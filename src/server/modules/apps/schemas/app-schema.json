@@ -22,6 +22,12 @@
     "version": {
       "type": "string",
       "default": "0.1.0"
+    },
+    "properties": {
+      "type": "array",
+      "items": {
+        "ref": "common.json#/definitions/appProperty"
+      }
     }
   }
 }

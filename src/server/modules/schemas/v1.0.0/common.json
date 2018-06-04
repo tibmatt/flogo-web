@@ -50,6 +50,21 @@
           "$comment": "Type any, so no 'type' keyword"
         }
       }
+    },
+    "appProperty": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "common.json#/definitions/valueType"
+        },
+        "value": {
+          "description": "The value to map. i.e. the right hand side of the expression",
+          "$comment": "Type any, so no 'type' keyword"
+        }
+      }
     }
   }
 }
