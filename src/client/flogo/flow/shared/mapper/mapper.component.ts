@@ -23,8 +23,7 @@ import { SingleEmissionSubject } from './shared/single-emission-subject';
 import { MapperService, MapperState } from './services/mapper.service';
 import { EditorService } from './editor/editor.service';
 import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './services/dragging.service';
-import { TYPE_ATTR_ASSIGNMENT } from './constants';
-import { selectCurrentEditingExpression, selectCurrentNode, selectMappings } from '@flogo/flow/shared/mapper/services/selectors';
+import { selectCurrentNode, selectMappings } from '@flogo/flow/shared/mapper/services/selectors';
 import { MapperTreeNode } from '@flogo/flow/shared/mapper/models/mapper-treenode.model';
 
 @Component({
@@ -151,28 +150,12 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
         this.currentInput = currentInputNode;
       });
 
-    // state$
-    //   .pipe(
-    //     map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null),
-    //     distinctUntilChanged(),
-    //     takeUntil(stop$),
-    //   )
-    //   .subscribe((errors: any[]) => {
-    //     if (this.currentInput) {
-    //       this.editorService.validated(errors);
-    //     }
-    //   });
-
     state$
       .pipe(
         selectMappings,
         takeUntil(stop$)
       )
       .subscribe(change => this.mappingsChange.emit(change));
-
-    this.editorService.outputExpression$
-      .pipe(takeUntil(this.ngDestroy))
-      .subscribe(({ mapKey, expression }) => this.mapperService.expressionChange(mapKey, expression));
 
     this.dragOverEditor
       .pipe(

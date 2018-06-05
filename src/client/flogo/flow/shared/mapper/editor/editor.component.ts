@@ -1,11 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import {
-  combineLatest,
   debounceTime,
-  distinctUntilChanged, distinctUntilKeyChanged,
+  distinctUntilChanged,
   shareReplay,
-  skipUntil,
   switchMap,
   takeUntil
 } from 'rxjs/operators';
@@ -47,7 +45,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         takeUntil(this.ngDestroy),
       )
       .subscribe((value: string) => {
-        this.editorService.outputExpression(this.currentMapKey, value);
+        this.mapperService.expressionChange(this.currentMapKey, value);
       });
 
     this.editor.ready
@@ -86,16 +84,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.editor.ready
       .pipe(takeUntil(this.ngDestroy))
       .subscribe(editorReady);
-
-    this.editorService.validate$
-      .pipe(
-        combineLatest(editorReady, e => e),
-        skipUntil(editorReady.filter(isLoaded => isLoaded)),
-        takeUntil(this.ngDestroy),
-      )
-      .subscribe(errors => {
-        this.editor.setErrors(errors);
-      });
   }
 
   ngOnDestroy() {

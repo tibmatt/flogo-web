@@ -1,4 +1,3 @@
-// import { AutoCompleteProvider } from './service/auto.complete.provider';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,10 +8,7 @@ import { TreeModule } from 'primeng/components/tree/tree';
 import { MonacoEditorModule } from '../monaco-editor/monaco-editor.module';
 
 import { MappingParser } from './services/map.parser';
-// import { ScopedOutputSchemaProvider } from './service/map.output.schema.provider';
-import { MapContextValidator } from './services/map.context.validator';
 import { FunctionsComponent } from './functions-list/functions.component';
-// import { ContextInputSchemaProvider } from './service/map.input.schema.provider';
 
 import { EditorComponent } from './editor/editor.component';
 import { MapperComponent } from './mapper.component';
@@ -66,8 +62,6 @@ import { ExpressionProcessorService } from './services/expression-processor.serv
     TreeService,
     IconsService,
     ExpressionProcessorService,
-
-    MapContextValidator,
     MappingParser,
   ],
   bootstrap: []
