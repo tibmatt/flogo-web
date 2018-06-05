@@ -10,5 +10,5 @@ export interface Trigger {
   updatedAt?: string | null;
   settings: any;
   handlers: TriggerHandler[];
-  handler?: any;
+  handler?: TriggerHandler;
 }
