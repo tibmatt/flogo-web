@@ -6,6 +6,8 @@ import {ConfiguratorService as TriggerConfiguratorService} from '../configurator
 import {MapperStatus} from '../interfaces';
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import {TRIGGER_TABS} from '../core/constants';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../core/state/app.state';
 
 @Component({
   selector: 'flogo-flow-trigger-mapper',
@@ -30,7 +32,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   };
   private ngDestroy = SingleEmissionSubject.create();
 
-  constructor(private triggerConfiguratorService: TriggerConfiguratorService) {
+  constructor(private triggerConfiguratorService: TriggerConfiguratorService, private store: Store<AppState>) {
   }
 
   ngOnInit() {

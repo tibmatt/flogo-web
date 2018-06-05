@@ -1,14 +1,14 @@
 import { Dictionary, UiFlow } from '@flogo/core';
 import * as fromRoot from '../../../store';
 import { CurrentSelection } from '../models/selection';
-import { Trigger, TriggerHandler, TriggerConfigure } from '../interfaces';
+import { Trigger, TriggerHandler, TriggerConfigureState } from '../interfaces';
 
 export interface FlowState extends UiFlow {
   isErrorPanelOpen: boolean;
   currentSelection: null | CurrentSelection;
   triggers: Dictionary<Trigger>;
   handlers: Dictionary<TriggerHandler>;
-  triggerConfigure: null | Dictionary<TriggerConfigure>;
+  triggerConfigure: TriggerConfigureState;
 }
 
 export interface State extends fromRoot.State {
