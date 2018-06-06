@@ -1,22 +1,22 @@
-import {FormGroupState} from 'ngrx-forms';
-import {Dictionary} from '@flogo/core';
+import { FormGroupState } from 'ngrx-forms';
+import { Dictionary, TriggerSchema } from '@flogo/core';
 
-interface TriggerConfigureSettings {
+export interface TriggerConfigureSettings {
   id: string;
   name: string;
   description: string;
-  settings: {
+  trigger: {
     [id: string]: any;
   };
   handler: {
-    settings: {
-      [id: string]: any;
-    }
+    [id: string]: any;
   };
 }
+
 export interface TriggerConfigureState {
-  selectedTrigger: string;
-  settings: Dictionary<FormGroupState<TriggerConfigureSettings>>;
+  selectedTriggerId: string;
+  schemas: Dictionary<TriggerSchema>;
+  triggersForm: FormGroupState<Dictionary<TriggerConfigureSettings>>;
 }
 
 /*const FORM_ID = 'triggerConfigureForm';

@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { Dictionary, TriggerSchema } from '@flogo/core';
 import { Trigger, TriggerHandler } from '@flogo/flow/core';
 
 export enum TriggerActionType {
@@ -27,7 +28,7 @@ export class RemoveHandler implements Action {
 
 export class SelectTrigger implements Action {
   readonly type = TriggerActionType.SelectTrigger;
-  constructor(public payload: string) {}
+  constructor(public payload: { triggerId: string, triggerSchemas: Dictionary<TriggerSchema> }) {}
 }
 
 export class AddTrigger implements Action {

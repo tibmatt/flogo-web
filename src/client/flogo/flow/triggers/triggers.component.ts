@@ -1,11 +1,11 @@
-import { assign, cloneDeep, each, isFunction, pick } from 'lodash';
+import { assign, cloneDeep, each, isFunction, pick, uniq } from 'lodash';
 import {Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { from } from 'rxjs/observable/from';
-import { takeUntil, mergeMap, switchMap } from 'rxjs/operators';
+import { takeUntil, mergeMap, switchMap, reduce } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import { LanguageService, FlowMetadata } from '@flogo/core';
+import { LanguageService, FlowMetadata, TriggerSchema, Dictionary } from '@flogo/core';
 import { TriggersApiService } from '@flogo/core/services';
 import { FLOGO_PROFILE_TYPE, TRIGGER_MENU_OPERATION } from '@flogo/core/constants';
 import { notification, objectFromArray } from '@flogo/shared/utils';
@@ -66,12 +66,12 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
       .select(getTriggersState)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(triggerState => {
-        const prevTrigger = this.currentTrigger;
         this.currentTrigger = triggerState.currentTrigger;
-        if (prevTrigger !== this.currentTrigger) {
-          // todo: only needed because trigger details panel using pub/sub
-          this.onSelectionChange(prevTrigger);
-        }
+        // const prevTrigger = this.currentTrigger;
+        // if (prevTrigger !== this.currentTrigger) {
+        //   // todo: only needed because trigger details panel using pub/sub
+        //   this.onSelectionChange(prevTrigger);
+        // }
 
         this.actionId = triggerState.actionId;
         this.triggersList = triggerState.triggers;
@@ -290,14 +290,28 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   }
 
   private openTriggerMapper(selectedTrigger: Trigger) {
-    Promise.all(this.triggersList.map(trigger => {
-      const handler = trigger.handler;
-      return this._converterService.getTriggerTask(trigger).then(triggerSchema => {
-        return {trigger, handler, triggerSchema};
+    const refs = uniq(this.triggersList.map(trigger => trigger.ref));
+    from(refs)
+      .pipe(
+        mergeMap(ref => this._converterService.getTriggerSchema(ref)),
+        reduce((schemas: Dictionary<TriggerSchema>, schema: TriggerSchema) => {
+          return { ...schemas, [schema.ref]: schema };
+        }, {}),
+      ).subscribe((triggerSchemas) => {
+        this.store.dispatch(new TriggerActions.SelectTrigger({
+          triggerId: selectedTrigger.id,
+          triggerSchemas,
+        }));
       });
-    })).then(allTriggerDetails => {
-      this._triggerConfiguratorService.open(allTriggerDetails, this.appDetails.metadata, selectedTrigger.id);
-    });
+
+    // Promise.all(this.triggersList.map(trigger => {
+    //   const handler = trigger.handler;
+    //   return this._converterService.getTriggerTask(trigger).then(triggerSchema => {
+    //     return {trigger, handler, triggerSchema};
+    //   });
+    // })).then(allTriggerDetails => {
+    //   this._triggerConfiguratorService.open(allTriggerDetails, this.appDetails.metadata, selectedTrigger.id);
+    // });
   }
 
   private deleteHandlerForTrigger(triggerId) {
@@ -346,7 +360,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   handleMenuSelection(event: TriggerMenuSelectionEvent) {
     switch (event.operation) {
       case TRIGGER_MENU_OPERATION.SHOW_SETTINGS:
-        this.store.dispatch(new TriggerActions.SelectTrigger(event.trigger.id));
+        this.openTriggerMapper(event.trigger);
         break;
       case TRIGGER_MENU_OPERATION.CONFIGURE:
         this.openTriggerMapper(event.trigger);

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/toPromise';
+import { ContribSchema } from '@flogo/core';
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import {RestApiService} from '../rest-api.service';
+import { map } from 'rxjs/operators';
 
 interface InstallationData {
   url: string;
@@ -20,8 +21,9 @@ export class RESTAPIContributionsService {
   }
 
   getContributionDetails(profileType: FLOGO_PROFILE_TYPE, ref: string) {
-    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[ref]=' + ref).toPromise()
-      .then(response => response[0]);
+    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[ref]=' + ref)
+      .pipe(map(([schema]) => schema))
+      .toPromise();
   }
 
   listContribs(profileType, type) {
@@ -30,7 +32,6 @@ export class RESTAPIContributionsService {
 
   installContributions({profileType, installType, url}) {
     const body = this.prepareBodyData(profileType, installType, url);
-
     return this.restApi.post(this.getApiPath(profileType), body).toPromise();
   }
 

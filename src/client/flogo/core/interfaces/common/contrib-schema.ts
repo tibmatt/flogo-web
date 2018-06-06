@@ -19,7 +19,7 @@ export interface TriggerSchema extends BaseSchema {
   };
 }
 
-interface SchemaAttribute {
+export interface SchemaAttribute {
   name: string;
   type: ValueType;
   required?: boolean;
