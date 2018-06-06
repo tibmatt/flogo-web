@@ -1,5 +1,5 @@
+import { TriggerSchema } from '@flogo/core';
 import { FormGroupState } from 'ngrx-forms';
-import { Dictionary, TriggerSchema } from '@flogo/core';
 
 export interface TriggerConfigureSettings {
   id: string;
@@ -13,21 +13,25 @@ export interface TriggerConfigureSettings {
   };
 }
 
+export interface TriggerConfigureMappings {
+  id: string;
+  mappings: { [field: string]: string };
+}
+
+export interface  TriggerConfigureGroup {
+  id: string;
+  settings?: TriggerConfigureSettings;
+  inputMappings?: TriggerConfigureMappings;
+  outputMappings?: TriggerConfigureMappings;
+}
+
+export interface TriggerConfigureGroups {
+  [triggerId: string]: TriggerConfigureGroup;
+}
+
 export interface TriggerConfigureState {
   isOpen: boolean;
   selectedTriggerId: string;
-  schemas: Dictionary<TriggerSchema>;
-  triggersForm: FormGroupState<Dictionary<TriggerConfigureSettings>>;
+  schemas: { [triggerRef: string]: TriggerSchema };
+  triggersForm: FormGroupState<TriggerConfigureGroups>;
 }
-
-/*const FORM_ID = 'triggerConfigureForm';
-
-export const initialSettingsState = createFormGroupState<TriggerConfigureSettings>(FORM_ID, {
-  id: '',
-  name: '',
-  description: '',
-  settings: {},
-  handler: {
-    settings: {}
-  }
-});*/

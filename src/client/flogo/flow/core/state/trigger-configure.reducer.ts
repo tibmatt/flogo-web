@@ -1,22 +1,31 @@
+import { mapValues, isObject, isUndefined, keyBy, isEmpty } from 'lodash';
+import { createFormGroupState, disable, formGroupReducer, FormGroupState, isNgrxFormsAction, updateGroup } from 'ngrx-forms';
+import {Action} from '@ngrx/store';
+import { Dictionary, flow, MetadataAttribute, SchemaAttribute as ContribSchemaAttribute, TriggerSchema } from '@flogo/core';
+import {
+Trigger,
+TriggerConfigureSettings,
+TriggerHandler,
+TriggerConfigureState,
+TriggerConfigureGroups,
+} from '../interfaces';
+import { TriggerConfigureGroup, TriggerConfigureMappings } from '@flogo/flow/core/interfaces/trigger-configure';
 import {FlowState} from './flow.state';
 import {TriggerConfigureActionType, TriggerConfigureActionUnion} from './trigger-configure.actions';
-import {createFormGroupState, formGroupReducer, FormGroupState, isNgrxFormsAction} from 'ngrx-forms';
-import {Trigger, TriggerConfigureSettings, TriggerHandler, TriggerConfigureState} from '../interfaces';
-import {Dictionary, SchemaAttribute, TriggerSchema} from '@flogo/core';
-import {Action} from '@ngrx/store';
-import {mapValues, isObject, isUndefined} from 'lodash';
+import Mapping = flow.Mapping;
 
 export function triggerConfigureReducer(state: FlowState, action: TriggerConfigureActionUnion) {
   state = reduceTriggerConfigure(state, action);
   switch (action.type) {
     case TriggerConfigureActionType.OpenConfigureWithSelection:
+      const selectedTriggerId = action.payload.triggerId;
       return {
         ...state,
         triggerConfigure: {
           isOpen: true,
-          selectedTriggerId: action.payload.triggerId,
+          selectedTriggerId,
           schemas: action.payload.triggerSchemas,
-          triggersForm: createTriggersFormGroup(state.handlers, state.triggers, action.payload.triggerSchemas),
+          triggersForm: initTriggerConfigureGroups(createTriggersFormGroup(state, action.payload.triggerSchemas)),
         }
       };
     case TriggerConfigureActionType.CloseConfigure:
@@ -56,11 +65,9 @@ function reduceTriggerConfigure(state: FlowState, action: Action) {
   return state;
 }
 
-type TriggerFormsState = FormGroupState<Dictionary<TriggerConfigureSettings>>;
 function createTriggersFormReducer(triggers: FlowState['triggers'], schemas: TriggerConfigureState['schemas']):
-  (state: TriggerFormsState, action: Action) => TriggerFormsState {
-  // use triggers + schemas to generate form updater
-  // schemaFormUpdateFns: Dictionary<string, formGroupUpdate> = schemas.map(schema => createUpdateGroupFromSchema(schema))
+  (state: FormGroupState<TriggerConfigureGroups>, action: Action) => FormGroupState<TriggerConfigureGroups> {
+  // const schemaFormUpdateFns = schemas.map(schema => createUpdateGroupFromSchema(schema));
   // triggerUpdateFns = triggers.map(trigger => {
   //     return [trigger.id, (state) => schemaFormUpdateFns[trigger.ref](state) ]
   //  })
@@ -69,8 +76,7 @@ function createTriggersFormReducer(triggers: FlowState['triggers'], schemas: Tri
 }
 
 const isPrimitive = value => !isObject(value);
-
-function settingsToFormProperties(schemaAttributes: SchemaAttribute[] = [], instanceProperties: Dictionary<any> = {}) {
+function settingsToFormProperties(schemaAttributes: ContribSchemaAttribute[] = [], instanceProperties: Dictionary<any> = {}) {
   return schemaAttributes.map(schemaAttribute => {
     const valueInProps = instanceProperties[schemaAttribute.name];
     const value = isUndefined(valueInProps) ? schemaAttribute.value : valueInProps;
@@ -84,21 +90,62 @@ function settingsToFormProperties(schemaAttributes: SchemaAttribute[] = [], inst
   }, {});
 }
 
-function mergeTriggerWithSchema(handler: TriggerHandler, trigger: Trigger, schema: TriggerSchema): TriggerConfigureSettings {
+function mergeTriggerWithSchemaSettings(handler: TriggerHandler, trigger: Trigger, schema: TriggerSchema): TriggerConfigureSettings {
   const handlerSchema = trigger.handler || {} as TriggerSchema['handler'];
   return {
     id: trigger.id,
     name: trigger.name,
     description: trigger.description,
     trigger: settingsToFormProperties(schema.settings, trigger.settings),
-    handler: settingsToFormProperties(handlerSchema.settings as SchemaAttribute[], handler.settings)
+    handler: settingsToFormProperties(handlerSchema.settings as ContribSchemaAttribute[], handler.settings)
   };
 }
 
-function createTriggersFormGroup(handlers: Dictionary<TriggerHandler>, triggers: Dictionary<Trigger>, schemas: Dictionary<TriggerSchema>):
-  FormGroupState<Dictionary<TriggerConfigureSettings>> {
-  return createFormGroupState('triggerConfig', mapValues(handlers, (handler, triggerId) => {
+function mergeFlowMetadataGroupWithActionMappings(
+  flowInputs: MetadataAttribute[] = [],
+  handlerInputMappings: Mapping[] = []
+): TriggerConfigureMappings['mappings'] {
+  const mappings = keyBy(handlerInputMappings, (mapping) => mapping.mapTo);
+  const allFields = flowInputs
+    .reduce((fields, flowInput) => {
+      const mapping = mappings[flowInput.name];
+      const hasMapping = mapping && !isUndefined(mapping.value);
+      fields[flowInput.name] = hasMapping ? mapping.value : '';
+      return fields;
+    }, {});
+  return isEmpty(allFields) ? null : allFields;
+}
+
+function createTriggersFormGroup(state: FlowState, schemas: Dictionary<TriggerSchema>):
+  FormGroupState<TriggerConfigureGroups> {
+  const handlers = state.handlers;
+  const triggers = state.triggers;
+  const metadata = state.metadata || {} as FlowState['metadata'];
+  return createFormGroupState<TriggerConfigureGroups>('triggerConfig', mapValues(handlers, (handler, triggerId) => {
     const trigger = triggers[triggerId];
-    return mergeTriggerWithSchema(handler, trigger, schemas[trigger.ref]);
+    const actionMappings = handler.actionMappings;
+    return {
+      id: triggerId,
+      settings: mergeTriggerWithSchemaSettings(handler, trigger, schemas[trigger.ref]),
+      inputMappings: {
+        id: 'inputMappings',
+        mappings: mergeFlowMetadataGroupWithActionMappings(metadata.input, actionMappings.input),
+      },
+      outputMappings: {
+        id: 'outputMappings',
+        mappings: mergeFlowMetadataGroupWithActionMappings(metadata.output, actionMappings.output),
+      }
+    };
   }));
+}
+
+function initTriggerConfigureGroups(triggerConfigureGroups: FormGroupState<TriggerConfigureGroups>) {
+  const disableIfNothingToMap = (mappingsGroupState: FormGroupState<TriggerConfigureMappings>) => {
+    return isEmpty(mappingsGroupState.value.mappings) ? disable(mappingsGroupState) : mappingsGroupState;
+  };
+  const initStateFn = updateGroup<TriggerConfigureGroup>({
+    inputMappings: disableIfNothingToMap,
+    outputMappings: disableIfNothingToMap,
+  });
+  return updateGroup(mapValues(triggerConfigureGroups.controls, () => initStateFn))(triggerConfigureGroups);
 }
