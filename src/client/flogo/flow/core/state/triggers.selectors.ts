@@ -10,7 +10,7 @@ import { SelectionType } from '../models';
 export const getRenderableTriggers = createSelector(
   selectHandlers,
   selectTriggers,
-  (actionId, triggers) => triggersToRenderableTriggers(actionId, triggers)
+  (handlers, triggers) => triggersToRenderableTriggers(handlers, triggers)
 );
 
 export const selectAppInfo = createSelector(

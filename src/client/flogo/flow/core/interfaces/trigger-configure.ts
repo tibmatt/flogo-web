@@ -14,6 +14,7 @@ export interface TriggerConfigureSettings {
 }
 
 export interface TriggerConfigureState {
+  isOpen: boolean;
   selectedTriggerId: string;
   schemas: Dictionary<TriggerSchema>;
   triggersForm: FormGroupState<Dictionary<TriggerConfigureSettings>>;

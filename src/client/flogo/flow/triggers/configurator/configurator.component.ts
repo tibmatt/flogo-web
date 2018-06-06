@@ -20,7 +20,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     isOpen: false,
     disableSave: true,
     triggers: [],
-    selectedTriggerID: null
+    selectedTriggerId: null
   };
   private ngDestroy = SingleEmissionSubject.create();
 
@@ -41,7 +41,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   changeTriggerSelection(triggerId: string) {
-    if (triggerId !== this.currentConfiguratorState.selectedTriggerID) {
+    if (triggerId !== this.currentConfiguratorState.selectedTriggerId) {
       this.triggerConfiguratorService.selectTrigger(triggerId);
     }
   }

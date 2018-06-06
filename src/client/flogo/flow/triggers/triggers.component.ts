@@ -31,6 +31,7 @@ import { SaveData } from './configurator/interfaces';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
 import { getTriggersState } from '../core/state/triggers.selectors';
 import * as TriggerActions from '../core/state/triggers.actions';
+import * as TriggerConfigureActions from '../core/state/trigger-configure.actions';
 
 @Component({
   selector : 'flogo-flow-triggers',
@@ -252,7 +253,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
       });
   }
 
-  private onSelectionChange(prevTrigger: Trigger) {
+  /*private onSelectionChange(prevTrigger: Trigger) {
     if (prevTrigger === this.currentTrigger || !this.currentTrigger) {
       return;
     }
@@ -287,7 +288,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
           )
         );
       });
-  }
+  }*/
 
   private openTriggerMapper(selectedTrigger: Trigger) {
     const refs = uniq(this.triggersList.map(trigger => trigger.ref));
@@ -298,7 +299,7 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
           return { ...schemas, [schema.ref]: schema };
         }, {}),
       ).subscribe((triggerSchemas) => {
-        this.store.dispatch(new TriggerActions.SelectTrigger({
+        this.store.dispatch(new TriggerConfigureActions.OpenConfigureWithSelection({
           triggerId: selectedTrigger.id,
           triggerSchemas,
         }));
@@ -360,8 +361,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   handleMenuSelection(event: TriggerMenuSelectionEvent) {
     switch (event.operation) {
       case TRIGGER_MENU_OPERATION.SHOW_SETTINGS:
-        this.openTriggerMapper(event.trigger);
-        break;
       case TRIGGER_MENU_OPERATION.CONFIGURE:
         this.openTriggerMapper(event.trigger);
         break;

@@ -12,7 +12,7 @@ describe('ConfiguratorComponent component', () => {
   let fixture: ComponentFixture<ConfiguratorComponent>;
   let de: DebugElement;
   const MockData: ConfiguratorStatus = {
-    selectedTriggerID: 'trigger_1',
+    selectedTriggerId: 'trigger_1',
     isOpen: true,
     disableSave: true,
     triggers: [...TriggersMock]

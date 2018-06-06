@@ -17,6 +17,12 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {isEqual} from 'lodash';
 import {createTabs} from './core/utils';
 import {TRIGGER_TABS} from './core/constants';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../core/state/app.state';
+import {getConfigureModalState} from '../../core/state/trigger-configure.selectors';
+import {TriggerConfigureState} from '../../core';
+import {AttributeMapping} from '@flogo/core';
+import * as TriggerConfigureActions from '../../core/state/trigger-configure.actions';
 
 @Injectable()
 export class ConfiguratorService {
@@ -25,7 +31,9 @@ export class ConfiguratorService {
   currentModalStatus: ModalStatus = {
     isOpen: false,
     flowMetadata: null,
-    selectedTriggerID: null
+    selectedTriggerId: null,
+    schemas: {},
+    triggersForm: null
   };
 
   configuratorStatus$ = new Subject<ConfiguratorStatus>();
@@ -34,12 +42,22 @@ export class ConfiguratorService {
 
   private mappingValidationFn: MappingsValidatorFn = MapperTranslator.makeValidator();
 
-  open(triggers: TriggerDetail[], flowMetadata: FlowMetadata, triggerId: string) {
+  constructor(private store: Store<AppState>) {
+    this.store.select(getConfigureModalState).subscribe(modalState => {
+      if (modalState.triggerConfigure && modalState.triggerConfigure.isOpen) {
+        this.open(modalState);
+      } else if (modalState.triggerConfigure && !modalState.triggerConfigure.isOpen) {
+        this.close();
+      }
+    });
+  }
+
+  open(modalState: {triggers: TriggerDetail[], flowMetadata: FlowMetadata, triggerConfigure: TriggerConfigureState} | null) {
+    const {triggers, flowMetadata} = modalState;
     this.currentModalStatus = {
       ...this.currentModalStatus,
-      isOpen: true,
-      flowMetadata,
-      selectedTriggerID: triggerId
+      ...modalState.triggerConfigure,
+      flowMetadata
     };
     this.initTriggersData(triggers);
     this.publishCompleteStatuses();
@@ -48,6 +66,7 @@ export class ConfiguratorService {
   close() {
     this.reset();
     this.publishCompleteStatuses();
+    this.store.dispatch(new TriggerConfigureActions.CloseConfigure());
   }
 
   save() {
@@ -61,17 +80,17 @@ export class ConfiguratorService {
   }
 
   selectTrigger(triggerId: string) {
-    this.currentModalStatus.selectedTriggerID = triggerId;
+    this.currentModalStatus.selectedTriggerId = triggerId;
     this.publishChangedTriggerSelection();
   }
 
   updateTriggerConfiguration(newConfigurations: TriggerChanges) {
     const triggerToUpdate = {
-      ...this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerID),
+      ...this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerId),
       ...newConfigurations
     };
     triggerToUpdate.isDirty = !isEqual(triggerToUpdate.changedMappings.actionMappings, triggerToUpdate.handler.actionMappings);
-    this.triggersToConfigure.set(this.currentModalStatus.selectedTriggerID, triggerToUpdate);
+    this.triggersToConfigure.set(this.currentModalStatus.selectedTriggerId, triggerToUpdate);
     this.publishConfigurationChanges();
   }
 
@@ -81,16 +100,17 @@ export class ConfiguratorService {
 
   private initTriggersData(triggerDetailsList: TriggerDetail[]) {
     arrayReduce(triggerDetailsList, (triggersMap, triggerDetail) => {
+      const triggerSchema = this.currentModalStatus.schemas[triggerDetail.trigger.ref];
       const triggerConfiguration: TriggerConfiguration = {
         ...triggerDetail,
         isValid: true,
         isDirty: false,
-        tabs: createTabs(triggerDetail.triggerSchema, this.currentModalStatus.flowMetadata)
+        tabs: createTabs(triggerSchema, this.currentModalStatus.flowMetadata)
       };
       const { input, output } = triggerDetail.handler.actionMappings;
       const mappings = {
-        input: MapperTranslator.translateMappingsIn(input),
-        output: MapperTranslator.translateMappingsIn(output)
+        input: MapperTranslator.translateMappingsIn(input as AttributeMapping[]),
+        output: MapperTranslator.translateMappingsIn(output as AttributeMapping[])
       };
       triggerConfiguration.tabs.get(TRIGGER_TABS.MAP_FLOW_INPUT).isValid = this.areValidMappings({
         mappings: mappings.input
@@ -104,32 +124,34 @@ export class ConfiguratorService {
   }
 
   private publishCompleteStatuses() {
-    const triggerToConfigure = this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerID);
+    const triggerToConfigure = this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerId);
+    const triggerSchema = this.currentModalStatus.schemas[triggerToConfigure && triggerToConfigure.trigger.ref];
     this.configuratorStatus$.next({
       isOpen: this.currentModalStatus.isOpen,
       disableSave: true,
-      selectedTriggerID: this.currentModalStatus.selectedTriggerID,
+      selectedTriggerId: this.currentModalStatus.selectedTriggerId,
       triggers: this.getTriggerStatusForAll()
     });
     this.triggerMapperStatus$.next({
       flowMetadata: this.currentModalStatus.flowMetadata,
-      triggerSchema: (triggerToConfigure && triggerToConfigure.triggerSchema) || null,
+      triggerSchema: triggerSchema || null,
       handler: (triggerToConfigure && triggerToConfigure.handler) || null,
       tabs: (triggerToConfigure && triggerToConfigure.tabs) || null
     });
   }
 
   private publishChangedTriggerSelection() {
-    const triggerToConfigure = this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerID);
+    const triggerToConfigure = this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerId);
+    const triggerSchema = this.currentModalStatus.schemas[triggerToConfigure.trigger.ref];
     const mapperNextStatus: MapperStatus = {
       flowMetadata: this.currentModalStatus.flowMetadata,
-      triggerSchema: triggerToConfigure.triggerSchema,
+      triggerSchema: triggerSchema,
       handler: triggerToConfigure.handler,
       changedMappings: triggerToConfigure.changedMappings || null,
       tabs: triggerToConfigure.tabs || null
     };
     this.configuratorStatus$.next({
-      selectedTriggerID: this.currentModalStatus.selectedTriggerID
+      selectedTriggerId: this.currentModalStatus.selectedTriggerId
     });
     this.triggerMapperStatus$.next(mapperNextStatus);
   }
@@ -146,7 +168,9 @@ export class ConfiguratorService {
     this.currentModalStatus = {
       isOpen: false,
       flowMetadata: null,
-      selectedTriggerID: null
+      selectedTriggerId: null,
+      schemas: {},
+      triggersForm: null
     };
     this.triggersToConfigure.clear();
   }
