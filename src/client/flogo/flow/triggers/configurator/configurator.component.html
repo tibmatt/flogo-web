@@ -17,14 +17,14 @@
   </div>
   <div class="trigger-configuration__content">
     <div class="configuration__triggers js-triggers-list">
-      <flogo-triggers-configure-trigger class="js-trigger-element" *ngFor="let trigger of currentConfiguratorState?.triggers"
+      <flogo-triggers-configure-trigger class="js-trigger-element" *ngFor="let trigger of triggerStatuses$ | async"
                                         [triggerData]="trigger"
-                                        [selectedTriggerId]="currentConfiguratorState?.selectedTriggerId"
+                                        [selectedTriggerId]="selectedTriggerId"
                                         (selectTrigger)="changeTriggerSelection($event)">
       </flogo-triggers-configure-trigger>
     </div>
     <div class="configuration__mapper" @triggerConfiguratorLayoutElement>
-      <flogo-flow-trigger-mapper></flogo-flow-trigger-mapper>
+      <flogo-flow-trigger-mapper *ngIf="isInitialized$ | async"></flogo-flow-trigger-mapper>
     </div>
   </div>
 </div>

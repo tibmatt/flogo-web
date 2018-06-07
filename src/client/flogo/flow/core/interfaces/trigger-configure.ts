@@ -2,6 +2,7 @@ import { TriggerSchema } from '@flogo/core';
 import { FormGroupState } from 'ngrx-forms';
 
 export interface TriggerConfigureSettings {
+  groupId: 'settings';
   id: string;
   name: string;
   description: string;
@@ -14,7 +15,7 @@ export interface TriggerConfigureSettings {
 }
 
 export interface TriggerConfigureMappings {
-  id: string;
+  groupId: 'flowInputMappings' | 'flowOutputMappings';
   mappings: { [field: string]: string };
 }
 
@@ -29,9 +30,11 @@ export interface TriggerConfigureGroups {
   [triggerId: string]: TriggerConfigureGroup;
 }
 
+export type TriggerConfigureTabName = 'settings' | 'flowInputMappings' | 'flowOutputMappings';
 export interface TriggerConfigureState {
   isOpen: boolean;
   selectedTriggerId: string;
+  currentTab: TriggerConfigureTabName;
   schemas: { [triggerRef: string]: TriggerSchema };
   triggersForm: FormGroupState<TriggerConfigureGroups>;
 }

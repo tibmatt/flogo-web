@@ -3,11 +3,11 @@ import { createFormGroupState, disable, formGroupReducer, FormGroupState, isNgrx
 import {Action} from '@ngrx/store';
 import { Dictionary, flow, MetadataAttribute, SchemaAttribute as ContribSchemaAttribute, TriggerSchema } from '@flogo/core';
 import {
-Trigger,
-TriggerConfigureSettings,
-TriggerHandler,
-TriggerConfigureState,
-TriggerConfigureGroups,
+  Trigger,
+  TriggerConfigureSettings,
+  TriggerHandler,
+  TriggerConfigureState,
+  TriggerConfigureGroups, TriggerConfigureTabName,
 } from '../interfaces';
 import { TriggerConfigureGroup, TriggerConfigureMappings } from '@flogo/flow/core/interfaces/trigger-configure';
 import {FlowState} from './flow.state';
@@ -24,6 +24,7 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
         triggerConfigure: {
           isOpen: true,
           selectedTriggerId,
+          currentTab: <TriggerConfigureTabName> 'settings',
           schemas: action.payload.triggerSchemas,
           triggersForm: initTriggerConfigureGroups(createTriggersFormGroup(state, action.payload.triggerSchemas)),
         }
@@ -38,7 +39,16 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
         ...state,
         triggerConfigure: {
           ...state.triggerConfigure,
-          selectedTriggerId: action.payload
+          selectedTriggerId: action.payload,
+          currentTab: 'settings' as TriggerConfigureTabName,
+        }
+      };
+    case TriggerConfigureActionType.SelectTab:
+      return {
+        ...state,
+        triggerConfigure: {
+          ...state.triggerConfigure,
+          currentTab: action.payload as TriggerConfigureTabName,
         }
       };
     default: {
@@ -94,6 +104,7 @@ function mergeTriggerWithSchemaSettings(handler: TriggerHandler, trigger: Trigge
   const handlerSchema = trigger.handler || {} as TriggerSchema['handler'];
   return {
     id: trigger.id,
+    groupId: 'settings',
     name: trigger.name,
     description: trigger.description,
     trigger: settingsToFormProperties(schema.settings, trigger.settings),
@@ -128,11 +139,11 @@ function createTriggersFormGroup(state: FlowState, schemas: Dictionary<TriggerSc
       id: triggerId,
       settings: mergeTriggerWithSchemaSettings(handler, trigger, schemas[trigger.ref]),
       inputMappings: {
-        id: 'inputMappings',
+        groupId: 'flowInputMappings' as 'flowInputMappings',
         mappings: mergeFlowMetadataGroupWithActionMappings(metadata.input, actionMappings.input),
       },
       outputMappings: {
-        id: 'outputMappings',
+        groupId: 'flowOutputMappings' as 'flowOutputMappings',
         mappings: mergeFlowMetadataGroupWithActionMappings(metadata.output, actionMappings.output),
       }
     };

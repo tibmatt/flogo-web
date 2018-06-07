@@ -1,11 +1,20 @@
 import { cloneDeep } from 'lodash';
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { AbstractControlState } from 'ngrx-forms';
 
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
+import { FlowState } from '../../../core/state';
+import { getCurrentTabId, getHasTriggersConfigure, getTabs } from '../../../core/state/trigger-configure.selectors';
+import * as TriggerConfigureActions from '../../../core/state/trigger-configure.actions';
+import { TriggerConfigureTabName } from '../../../core/interfaces';
 import { Mappings, MapExpression, MapperTranslator, StaticMapperContextFactory } from '../../../shared/mapper';
 import {ConfiguratorService as TriggerConfiguratorService} from '../configurator.service';
-import {MapperStatus} from '../interfaces';
-import {TRIGGER_TABS} from '../core/constants';
+import { MapperStatus } from '../interfaces';
+import { TRIGGER_TABS } from '../core/constants';
 
 @Component({
   selector: 'flogo-flow-trigger-mapper',
@@ -24,23 +33,37 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   };
   mapperContext: any;
   currentViewName: string;
+
+  currentTabId: string;
+  tabs$: Observable<{ id: string, i18nKey: string, state: AbstractControlState<any> }[]>;
+
   private editingMappings: {
     actionInput: { [key: string]: MapExpression };
     actionOutput: { [key: string]: MapExpression };
   };
-  private ngDestroy = SingleEmissionSubject.create();
+  private ngDestroy$ = SingleEmissionSubject.create();
 
-  constructor(private triggerConfiguratorService: TriggerConfiguratorService) {
+  constructor(private triggerConfiguratorService: TriggerConfiguratorService, private store: Store<FlowState>) {
   }
 
   ngOnInit() {
     this.triggerConfiguratorService.triggerMapperStatus$
-      .takeUntil(this.ngDestroy)
+      .pipe(takeUntil(this.ngDestroy$))
       .subscribe((nextStatus: MapperStatus) => this.onNextStatus(nextStatus));
+
+    const selectTabs$ = this.store.select(getTabs);
+    this.tabs$ = this.store.select(getHasTriggersConfigure)
+      .pipe(
+        switchMap((isInitialized) => isInitialized ? selectTabs$ : of([]))
+      );
+    this.store
+      .select(getCurrentTabId)
+      .pipe(takeUntil(this.ngDestroy$))
+      .subscribe(tabId => this.currentTabId = tabId);
   }
 
   ngOnDestroy() {
-    this.ngDestroy.emitAndComplete();
+    this.ngDestroy$.emitAndComplete();
   }
 
   onNextStatus(nextStatus: MapperStatus) {
@@ -74,20 +97,20 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
         viewType = TRIGGER_TABS.MAP_FLOW_OUTPUT;
       }
     }
-    this.setCurrentView(viewType);
+    // this.setCurrentView(viewType);
   }
 
-  setCurrentView(viewName: string) {
-
-    if (this.triggerTabs && this.triggerTabs.get(viewName).enabled) {
-      this.triggerTabs.markSelected(viewName);
-    }
-    this.currentViewName = viewName;
-    if (viewName === TRIGGER_TABS.MAP_FLOW_INPUT) {
-      this.setupInputsContext();
-    } else if (viewName === TRIGGER_TABS.MAP_FLOW_OUTPUT) {
-      this.setupReplyContext();
-    }
+  setCurrentView(viewName: TriggerConfigureTabName) {
+    this.store.dispatch(new TriggerConfigureActions.SelectTab(viewName));
+    // if (this.triggerTabs && this.triggerTabs.get(viewName).enabled) {
+    //   this.triggerTabs.markSelected(viewName);
+    // }
+    // this.currentViewName = viewName;
+    // if (viewName === TRIGGER_TABS.MAP_FLOW_INPUT) {
+    //   this.setupInputsContext();
+    // } else if (viewName === TRIGGER_TABS.MAP_FLOW_OUTPUT) {
+    //   this.setupReplyContext();
+    // }
   }
 
   onMappingsChange(newMappings: Mappings) {
@@ -125,8 +148,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     return this.currentMapperState.tabs && this.currentMapperState.tabs.get(this.currentViewName);
   }
 
-  trackTabsByFn(index, [tabName, tab]) {
-    return tabName;
+  trackTabsByFn(index, tab) {
+    return tab.id;
   }
 
   private setupInputsContext() {

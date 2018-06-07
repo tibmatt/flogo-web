@@ -33,6 +33,7 @@ export class ConfiguratorService {
     flowMetadata: null,
     selectedTriggerId: null,
     schemas: {},
+    currentTab: null,
     triggersForm: null
   };
 
@@ -166,7 +167,8 @@ export class ConfiguratorService {
       flowMetadata: null,
       selectedTriggerId: null,
       schemas: {},
-      triggersForm: null
+      triggersForm: null,
+      currentTab: null,
     };
     this.triggersToConfigure.clear();
   }

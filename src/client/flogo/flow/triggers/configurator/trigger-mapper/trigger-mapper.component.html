@@ -1,13 +1,13 @@
 <div class="content--with-menu">
   <ul class="content__menu">
-    <li class="menu__item" *ngFor="let tabData of currentMapperState.tabs; trackBy: trackTabsByFn"
-        [class.--has-errors]="!tabData[1].isValid"
-        [class.--disabled]="!tabData[1].enabled"
-        [class.--active]="tabData[1].isSelected"
-        (click)="setCurrentView(tabData[0])">{{ tabData[1].labelKey | translate }}</li>
+    <li class="menu__item" *ngFor="let tab of tabs$ | async; trackBy: trackTabsByFn"
+        [class.--has-errors]="tab.state.isInvalid"
+        [class.--disabled]="tab.state.isDisabled"
+        [class.--active]="tab.id === currentTabId"
+        (click)="setCurrentView(tab.id)">{{ tab.i18nKey | translate }}</li>
   </ul>
-  <flogo-mapper class="mapper content__mapper"
-                inputsSearchPlaceHolder="{{ currentViewStatus?.inputsLabelKey | translate }}"
-                outputsSearchPlaceHolder="{{ currentViewStatus?.outputsLabelKey | translate }}"
-                [context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>
+  <!--<flogo-mapper class="mapper content__mapper"-->
+                <!--inputsSearchPlaceHolder="{{ currentViewStatus?.inputsLabelKey | translate }}"-->
+                <!--outputsSearchPlaceHolder="{{ currentViewStatus?.outputsLabelKey | translate }}"-->
+                <!--[context]="mapperContext" (mappingsChange)="onMappingsChange($event)"></flogo-mapper>-->
 </div>
