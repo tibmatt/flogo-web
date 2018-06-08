@@ -14,7 +14,7 @@ import { FlogoExportFlowsComponent } from '../export-flows/export-flows.componen
 import { diffDates, notification } from '../../shared/utils';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
-const SHIM_SERVERLESS_APP = 'ServerlessApp';
+const SHIM_SERVERLESS_APP = 'Serverless App';
 const SHIM_CLI_APP = 'CLI App';
 
 @Component({
