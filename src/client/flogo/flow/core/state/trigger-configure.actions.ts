@@ -1,6 +1,6 @@
 import {Action} from '@ngrx/store';
 import {Dictionary, TriggerSchema} from '@flogo/core';
-import { TriggerConfigureTabName } from '../interfaces';
+import { TriggerConfigureTabType } from '../interfaces';
 
 export enum TriggerConfigureActionType {
   OpenConfigureWithSelection = '[Flow] [Trigger] [Configure] Open Configure with trigger selected',
@@ -25,7 +25,7 @@ export class SelectTrigger implements Action {
 
 export class SelectTab implements Action {
   readonly type = TriggerConfigureActionType.SelectTab;
-  constructor(public payload: TriggerConfigureTabName) {}
+  constructor(public payload: TriggerConfigureTabType) {}
 }
 
 export type TriggerConfigureActionUnion = OpenConfigureWithSelection

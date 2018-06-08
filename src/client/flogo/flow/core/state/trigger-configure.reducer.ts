@@ -7,7 +7,7 @@ import {
   TriggerConfigureSettings,
   TriggerHandler,
   TriggerConfigureState,
-  TriggerConfigureGroups, TriggerConfigureTabName,
+  TriggerConfigureGroups, TriggerConfigureTabType,
 } from '../interfaces';
 import { TriggerConfigureGroup, TriggerConfigureMappings } from '@flogo/flow/core/interfaces/trigger-configure';
 import {FlowState} from './flow.state';
@@ -24,7 +24,7 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
         triggerConfigure: {
           isOpen: true,
           selectedTriggerId,
-          currentTab: <TriggerConfigureTabName> 'settings',
+          currentTab: <TriggerConfigureTabType> 'settings',
           schemas: action.payload.triggerSchemas,
           triggersForm: initTriggerConfigureGroups(createTriggersFormGroup(state, action.payload.triggerSchemas)),
         }
@@ -40,7 +40,7 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
         triggerConfigure: {
           ...state.triggerConfigure,
           selectedTriggerId: action.payload,
-          currentTab: 'settings' as TriggerConfigureTabName,
+          currentTab: 'settings' as TriggerConfigureTabType,
         }
       };
     case TriggerConfigureActionType.SelectTab:
@@ -48,7 +48,7 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
         ...state,
         triggerConfigure: {
           ...state.triggerConfigure,
-          currentTab: action.payload as TriggerConfigureTabName,
+          currentTab: action.payload as TriggerConfigureTabType,
         }
       };
     default: {

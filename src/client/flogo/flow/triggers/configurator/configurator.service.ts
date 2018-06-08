@@ -28,14 +28,7 @@ import * as TriggerConfigureActions from '../../core/state/trigger-configure.act
 export class ConfiguratorService {
 
   triggersToConfigure: Map<string, TriggerConfiguration> = new Map<string, TriggerConfiguration>();
-  currentModalStatus: ModalStatus = {
-    isOpen: false,
-    flowMetadata: null,
-    selectedTriggerId: null,
-    schemas: {},
-    currentTab: null,
-    triggersForm: null
-  };
+  currentModalStatus: ModalStatus | null = null;
 
   configuratorStatus$ = new Subject<ConfiguratorStatus>();
   triggerMapperStatus$ = new BehaviorSubject<MapperStatus>(undefined);
@@ -162,14 +155,7 @@ export class ConfiguratorService {
   }
 
   private reset() {
-    this.currentModalStatus = {
-      isOpen: false,
-      flowMetadata: null,
-      selectedTriggerId: null,
-      schemas: {},
-      triggersForm: null,
-      currentTab: null,
-    };
+    this.currentModalStatus = null;
     this.triggersToConfigure.clear();
   }
 

@@ -1,5 +1,4 @@
 import { TriggerSchema } from '@flogo/core';
-import { FormGroupState } from 'ngrx-forms';
 
 export interface TriggerConfigureSettings {
   groupId: 'settings';
@@ -30,11 +29,52 @@ export interface TriggerConfigureGroups {
   [triggerId: string]: TriggerConfigureGroup;
 }
 
-export type TriggerConfigureTabName = 'settings' | 'flowInputMappings' | 'flowOutputMappings';
+interface TriggerConfigureTrigger {
+  name: string;
+  tabs: string[];
+  isValid: boolean;
+  isDirty: boolean;
+}
+
+interface TriggerConfigureTabs {
+  triggerId: string;
+  type: TriggerConfigureTabType;
+  i18nLabelKey: string;
+  isValid: boolean;
+  isDirty: boolean;
+  isEnabled: boolean;
+}
+
+interface TriggerConfigureField {
+  isDirty: boolean;
+  isValid: boolean;
+  isEnabled: boolean;
+  value: string;
+  errors?: any;
+  parsedMetadata?: {
+    type: string;
+    parsedValue: any;
+    parsedDetails?: any;
+  };
+}
+
+interface TriggerConfigureFields {
+  [fieldName: string]: TriggerConfigureField;
+}
+
+export type TriggerConfigureTabType = 'settings' | 'flowInputMappings' | 'flowOutputMappings';
 export interface TriggerConfigureState {
   isOpen: boolean;
   selectedTriggerId: string;
-  currentTab: TriggerConfigureTabName;
+  currentTab: TriggerConfigureTabType;
   schemas: { [triggerRef: string]: TriggerSchema };
-  triggersForm: FormGroupState<TriggerConfigureGroups>;
+  triggers: {
+    [triggerId: string]: TriggerConfigureTrigger;
+  };
+  tabs: {
+    [tabsId: string]: TriggerConfigureTabs;
+  };
+  fields: {
+    [fieldId: string]: TriggerConfigureFields;
+  };
 }

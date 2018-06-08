@@ -10,7 +10,7 @@ import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject'
 import { FlowState } from '../../../core/state';
 import { getCurrentTabId, getHasTriggersConfigure, getTabs } from '../../../core/state/trigger-configure.selectors';
 import * as TriggerConfigureActions from '../../../core/state/trigger-configure.actions';
-import { TriggerConfigureTabName } from '../../../core/interfaces';
+import { TriggerConfigureTabType } from '../../../core/interfaces';
 import { Mappings, MapExpression, MapperTranslator, StaticMapperContextFactory } from '../../../shared/mapper';
 import {ConfiguratorService as TriggerConfiguratorService} from '../configurator.service';
 import { MapperStatus } from '../interfaces';
@@ -100,7 +100,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
     // this.setCurrentView(viewType);
   }
 
-  setCurrentView(viewName: TriggerConfigureTabName) {
+  setCurrentView(viewName: TriggerConfigureTabType) {
     this.store.dispatch(new TriggerConfigureActions.SelectTab(viewName));
     // if (this.triggerTabs && this.triggerTabs.get(viewName).enabled) {
     //   this.triggerTabs.markSelected(viewName);

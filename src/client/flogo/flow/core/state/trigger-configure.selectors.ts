@@ -22,20 +22,20 @@ export const selectCurrentTriggerId = createSelector(
   triggerConfigureState => triggerConfigureState.selectedTriggerId
 );
 
-const selectTriggersForm = createSelector(selectTriggerConfigure, triggerConfigureState => triggerConfigureState.triggersForm);
-export const getTriggerStatuses = createSelector(selectTriggersForm, (triggersForm): TriggerStatus[] => Object
-  .values(triggersForm.controls)
-  .map((control): TriggerStatus => {
+const selectTriggerConfigureTriggers = createSelector(selectTriggerConfigure, triggerConfigureState => triggerConfigureState.triggers);
+export const getTriggerStatuses = createSelector(selectTriggerConfigureTriggers, (triggers): TriggerStatus[] => Object
+  .keys(triggers)
+  .map((triggerId): TriggerStatus => {
     return {
-      id: control.value.id,
-      name: control.value.settings.name,
-      isValid: control.isValid,
-      isDirty: control.isDirty,
+      id: triggerId,
+      name: triggers[triggerId].name,
+      isValid: triggers[triggerId].isValid,
+      isDirty: triggers[triggerId].isDirty,
     };
   }));
 
 const getCurrentTriggerForm = createSelector(
-  selectTriggersForm,
+  selectTriggerConfigureTriggers,
   selectCurrentTriggerId,
   (triggersFormState, currentTriggerId) => {
     return triggersFormState.controls[currentTriggerId] as FormGroupState<TriggerConfigureGroup>;
