@@ -5,7 +5,7 @@ import {LanguageService, FlowSummary, Trigger, ERROR_CODE} from '@flogo/core';
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
-
+import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import {
   AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../core';
@@ -14,6 +14,8 @@ import { FlogoExportFlowsComponent } from '../export-flows/export-flows.componen
 import { diffDates, notification } from '../../shared/utils';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
+const SHIM_SERVERLESS_APP = 'ServerlessApp';
+const SHIM_CLI_APP = 'CLI App';
 
 @Component({
   selector: 'flogo-apps-details-application',
@@ -44,19 +46,21 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   flows: Array<FlowSummary> = [];
   isFlowsViewActive: boolean;
   selectedViewTranslateKey: string;
-
   isNewApp = false;
 
   isBuildBoxShown = false;
   buildOptions = [
-    { label: 'Darwin/amd64', os: 'darwin', arch: 'amd64' },
-    { label: 'Linux/amd64', os: 'linux', arch: 'amd64' },
-    { label: 'Linux/386', os: 'linux', arch: '386' },
-    { label: 'Linux/arm', os: 'linux', arch: 'arm' },
-    { label: 'Linux/arm64', os: 'linux', arch: 'arm64' },
-    { label: 'Windows/amd64', os: 'windows', arch: 'amd64' },
+    {label: 'Darwin/amd64', os: 'darwin', arch: 'amd64'},
+    {label: 'Linux/amd64', os: 'linux', arch: 'amd64'},
+    {label: 'Linux/386', os: 'linux', arch: '386'},
+    {label: 'Linux/arm', os: 'linux', arch: 'arm'},
+    {label: 'Linux/arm64', os: 'linux', arch: 'arm64'},
+    {label: 'Windows/amd64', os: 'windows', arch: 'amd64'},
   ];
-
+  shimmableTriggers = [];
+  shimTriggerOptions = [];
+  serverLessAppTriggers = [];
+  cliAppTriggers = [];
   isExportBoxShown = false;
   downloadLink: string;
 
@@ -65,7 +69,9 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   constructor(public translate: LanguageService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal,
-              private sanitizer: SanitizeService) {
+              private sanitizer: SanitizeService,
+              private contributionService: RESTAPIContributionsService
+  ) {
   }
 
   ngOnInit() {
@@ -206,11 +212,41 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   toggleBuildBox() {
     this.isBuildBoxShown = !this.isBuildBoxShown;
+    if (this.isBuildBoxShown) {
+      this.contributionService.getShimContributionDetails(FLOGO_PROFILE_TYPE.MICRO_SERVICE).then(shimmableTriggersDetails => {
+        shimmableTriggersDetails.forEach(shimmableTriggerDetail => {
+          const shimTriggerGroups = this.flowGroups.filter(flowGroup => flowGroup.trigger.ref === shimmableTriggerDetail.ref);
+          this.shimmableTriggers.push(shimTriggerGroups);
+          shimTriggerGroups.forEach(shimTriggerGroup => {
+            if (shimTriggerGroup.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda') {
+              this.serverLessAppTriggers.push(shimTriggerGroup);
+            } else if (shimTriggerGroup.trigger.ref === 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli') {
+              this.cliAppTriggers.push(shimTriggerGroup);
+            }
+          });
+        });
+        this.triggerShimBuildOptions();
+      });
+    } else {
+      this.shimTriggerOptions = [];
+    }
+  }
+
+  triggerShimBuildOptions() {
+    if (this.serverLessAppTriggers.length > 0) {
+      this.shimTriggerOptions.push(SHIM_SERVERLESS_APP);
+    }
+    if (this.cliAppTriggers.length > 0) {
+      this.shimTriggerOptions.push(SHIM_CLI_APP);
+    }
   }
 
   closeBuildBox() {
     this.isBuildBoxShown = false;
+    this.shimmableTriggers = [];
+    this.shimTriggerOptions = [];
   }
+
   toggleExportBox() {
     this.isExportBoxShown = !this.isExportBoxShown;
   }

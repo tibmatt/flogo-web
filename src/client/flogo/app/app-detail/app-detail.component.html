@@ -127,6 +127,12 @@
                       <span>{{ opt.label }} </span></a>
                   </li>
                 </ul>
+                <ul class="flogo-app-detail-list flogo-app-trigger-build list-unstyled">
+                  <li *ngFor="let opt of shimTriggerOptions" class="flogo-app-detail-list-item">
+                    <a class="flogo-app-detail-list-link" (click)="closeBuildBox()" href="{{downloadLink}}?os={{opt.os}}&arch={{opt.arch}}">
+                      <span>{{ opt }} </span></a>
+                  </li>
+                </ul>
               </div>
             </div>
             <div class="flogo-flow-detail-menu">
