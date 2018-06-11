@@ -19,10 +19,10 @@ import {createTabs} from './core/utils';
 import {TRIGGER_TABS} from './core/constants';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../core/state/app.state';
-import {getConfigureModalState} from '../../core/state/trigger-configure.selectors';
+import {getConfigureModalState} from '../../core/state/triggers-configure/trigger-configure.selectors';
 import {TriggerConfigureState} from '../../core';
 import {AttributeMapping} from '@flogo/core';
-import * as TriggerConfigureActions from '../../core/state/trigger-configure.actions';
+import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';
 
 @Injectable()
 export class ConfiguratorService {

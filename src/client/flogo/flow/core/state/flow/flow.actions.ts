@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
-import { ContribSchema, Dictionary, GraphNode, Item, ItemTask } from '@flogo/core';
-import { HandlerType } from '../models/handler-type';
+import { ContribSchema, Dictionary, GraphNode, Item, ItemTask } from '../../../../core/index';
+import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 
 export enum ActionType {

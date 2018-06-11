@@ -8,7 +8,7 @@ import { featureReducer, FlowState, INITIAL_STATE } from '@flogo/flow/core/state
 import {ConfiguratorModule} from './configurator.module';
 import {TriggersMock} from './mocks/triggers.mock';
 import {ConfiguratorStatus} from './interfaces';
-import { OpenConfigureWithSelection } from '@flogo/flow/core/state/trigger-configure.actions';
+import { OpenConfigureWithSelection } from '@flogo/flow/core/state/triggers-configure/trigger-configure.actions';
 
 const TEST_STATE: FlowState = {
   ...INITIAL_STATE,

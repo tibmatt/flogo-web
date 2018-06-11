@@ -1,6 +1,6 @@
 import {Action} from '@ngrx/store';
-import {Dictionary, TriggerSchema} from '@flogo/core';
-import { TriggerConfigureTabType } from '../interfaces';
+import {Dictionary, TriggerSchema} from '../../../../core/index';
+import { TriggerConfigureTabType } from '../../interfaces/index';
 
 export enum TriggerConfigureActionType {
   OpenConfigureWithSelection = '[Flow] [Trigger] [Configure] Open Configure with trigger selected',

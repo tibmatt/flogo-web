@@ -1,8 +1,8 @@
 import { FlowState } from '../flow.state';
 import { RemoveItem } from '../flow.actions';
-import { getGraphName, getItemsDictionaryName, PayloadOf } from '../utils';
-import { removeNode } from '../../models/flow/remove-node';
-import { CurrentSelection, SelectionType } from '../../models/selection';
+import { getGraphName, getItemsDictionaryName, PayloadOf } from '../../utils';
+import { removeNode } from '../../../models/flow/remove-node';
+import { CurrentSelection, SelectionType } from '../../../models/selection';
 
 export function removeItem(state: FlowState, payload: PayloadOf<RemoveItem>) {
   const {handlerType, itemId} = payload;

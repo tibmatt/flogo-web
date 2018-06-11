@@ -7,8 +7,8 @@ import {ConfiguratorService as TriggerConfiguratorService} from './configurator.
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import { configuratorAnimations } from './configurator.animations';
 import { FlowState } from '@flogo/flow/core/state';
-import { getHasTriggersConfigure, getTriggerStatuses, selectCurrentTriggerId } from '@flogo/flow/core/state/trigger-configure.selectors';
-import * as TriggerConfigureActions from '@flogo/flow/core/state/trigger-configure.actions';
+import { getHasTriggersConfigure, getTriggerStatuses, selectCurrentTriggerId } from '@flogo/flow/core/state/triggers-configure/trigger-configure.selectors';
+import * as TriggerConfigureActions from '@flogo/flow/core/state/triggers-configure/trigger-configure.actions';
 import { ConfiguratorStatus, TriggerStatus } from './interfaces';
 
 @Component({

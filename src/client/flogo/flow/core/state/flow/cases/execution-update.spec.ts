@@ -1,6 +1,6 @@
 import { executionUpdate } from './execution-update';
 import { FlowState, INITIAL_STATE } from '../flow.state';
-import { GraphNode, NodeType } from '@flogo/core/interfaces/graph/node';
+import { GraphNode, NodeType } from '../../../../../core/interfaces/graph/node';
 
 describe('state.cases.execution-update', function () {
   let mainNode: GraphNode;

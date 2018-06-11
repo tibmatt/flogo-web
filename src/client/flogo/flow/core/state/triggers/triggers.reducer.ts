@@ -1,6 +1,6 @@
-import { FlowState } from '@flogo/flow/core/state/flow.state';
+import { FlowState } from '../flow/flow.state';
 import { TriggerActionsUnion, TriggerActionType } from './triggers.actions';
-import { makeTriggerSelection, isTriggerSelection } from '@flogo/flow/core/models/flow/selection';
+import { makeTriggerSelection, isTriggerSelection } from '../../models/flow/selection';
 
 export function triggersReducer(state: FlowState, action: TriggerActionsUnion): FlowState {
   switch (action.type) {

@@ -8,8 +8,8 @@ import { AbstractControlState } from 'ngrx-forms';
 
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import { FlowState } from '../../../core/state';
-import { getCurrentTabId, getHasTriggersConfigure, getTabs } from '../../../core/state/trigger-configure.selectors';
-import * as TriggerConfigureActions from '../../../core/state/trigger-configure.actions';
+import { getCurrentTabId, getHasTriggersConfigure, getTabs } from '../../../core/state/triggers-configure/trigger-configure.selectors';
+import * as TriggerConfigureActions from '../../../core/state/triggers-configure/trigger-configure.actions';
 import { TriggerConfigureTabType } from '../../../core/interfaces';
 import { Mappings, MapExpression, MapperTranslator, StaticMapperContextFactory } from '../../../shared/mapper';
 import {ConfiguratorService as TriggerConfiguratorService} from '../configurator.service';

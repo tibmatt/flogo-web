@@ -1,7 +1,7 @@
 import { createSelector } from '@ngrx/store';
 // todo: move to shared location
-import { TriggerStatus } from '../../triggers/configurator/interfaces';
-import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from './flow.selectors';
+import { TriggerStatus } from '../../../triggers/configurator/interfaces/index';
+import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
 
 const getConfigurableTriggerDetails = createSelector(
   selectHandlers,

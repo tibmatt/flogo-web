@@ -1,5 +1,5 @@
-import * as selectionFactory from '../models/flow/selection';
-import { cleanGraphRunState } from '../models/flow/clean-run-state';
+import * as selectionFactory from '../../models/flow/selection';
+import { cleanGraphRunState } from '../../models/flow/clean-run-state';
 
 import * as actions from './flow.actions';
 import { FlowState, INITIAL_STATE } from './flow.state';

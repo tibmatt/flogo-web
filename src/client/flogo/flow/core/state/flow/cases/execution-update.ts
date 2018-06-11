@@ -1,8 +1,8 @@
 import { isEmpty } from 'lodash';
-import { Dictionary, FlowGraph, GraphNode } from '@flogo/core';
+import { Dictionary, FlowGraph, GraphNode } from '../../../../../core/index';
 
-import { FlowState } from '..';
-import { PayloadOf } from '../utils';
+import { FlowState } from '../../index';
+import { PayloadOf } from '../../utils';
 import { ExecutionStateUpdated } from '../flow.actions';
 
 const applyChanges = (graph: FlowGraph, nodeChanges: Dictionary<GraphNode>) => {

@@ -1,8 +1,8 @@
-import { GraphNode } from '@flogo/core';
-import { isIterableTask } from '@flogo/shared/utils';
+import { GraphNode } from '../../../../../core/index';
+import { isIterableTask } from '../../../../../shared/utils';
 import { FlowState } from '../flow.state';
 import { ItemUpdated } from '../flow.actions';
-import { getGraphName, getItemsDictionaryName, PayloadOf } from '../utils';
+import { getGraphName, getItemsDictionaryName, PayloadOf } from '../../utils';
 
 export function itemUpdate(state: FlowState, payload: PayloadOf<ItemUpdated>) {
   const {handlerType, item} = payload;

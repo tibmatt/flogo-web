@@ -29,9 +29,9 @@ import {TriggerMenuSelectionEvent} from '@flogo/flow/triggers/trigger-block/mode
 import { ConfiguratorService as TriggersConfiguratorService } from './configurator/configurator.service';
 import { SaveData } from './configurator/interfaces';
 import { RenderableTrigger } from './interfaces/renderable-trigger';
-import { getTriggersState } from '../core/state/triggers.selectors';
-import * as TriggerActions from '../core/state/triggers.actions';
-import * as TriggerConfigureActions from '../core/state/trigger-configure.actions';
+import { getTriggersState } from '../core/state/triggers/triggers.selectors';
+import * as TriggerActions from '../core/state/triggers/triggers.actions';
+import * as TriggerConfigureActions from '../core/state/triggers-configure/trigger-configure.actions';
 
 @Component({
   selector : 'flogo-flow-triggers',

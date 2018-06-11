@@ -7,19 +7,19 @@ import {
   MetadataAttribute,
   SchemaAttribute as ContribSchemaAttribute,
   TriggerSchema
-} from '@flogo/core';
+} from '../../../../core/index';
 import {
   Trigger,
   TriggerConfigureSettings,
   TriggerHandler,
   TriggerConfigureState,
   TriggerConfigureGroups, TriggerConfigureTabType,
-} from '../interfaces';
-import { TriggerConfigureGroup, TriggerConfigureMappings } from '@flogo/flow/core/interfaces/trigger-configure';
-import {FlowState} from './flow.state';
+} from '../../interfaces/index';
+import { TriggerConfigureGroup, TriggerConfigureMappings } from '../../interfaces/trigger-configure';
+import {FlowState} from '../flow/flow.state';
 import {TriggerConfigureActionType, TriggerConfigureActionUnion} from './trigger-configure.actions';
 import Mapping = flow.Mapping;
-import {getProfileType} from '@flogo/shared/utils';
+import {getProfileType} from '../../../../shared/utils';
 
 const SETTINGS_TAB: { type: TriggerConfigureTabType, i18nKey: string } = {
   'type': 'settings',

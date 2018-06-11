@@ -1,11 +1,11 @@
 import { createSelector } from '@ngrx/store';
-import { getProfileType } from '@flogo/shared/utils';
+import { getProfileType } from '../../../../shared/utils';
 import {
   selectActionId, selectApp, selectFlowMetadata, selectTriggers, selectHandlers, selectCurrentSelection
-} from './flow.selectors';
-import { TriggersState } from '../../triggers/interfaces/triggers-state';
-import { triggersToRenderableTriggers } from '../../triggers/models/triggers-to-renderable-triggers';
-import { SelectionType } from '../models';
+} from '../flow/flow.selectors';
+import { TriggersState } from '../../../triggers/interfaces/triggers-state';
+import { triggersToRenderableTriggers } from '../../../triggers/models/triggers-to-renderable-triggers';
+import { SelectionType } from '../../models/index';
 
 export const getRenderableTriggers = createSelector(
   selectHandlers,

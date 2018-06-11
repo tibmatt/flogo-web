@@ -1,7 +1,7 @@
-import { Dictionary, UiFlow } from '@flogo/core';
-import * as fromRoot from '../../../store';
-import { CurrentSelection } from '../models/selection';
-import { Trigger, TriggerHandler, TriggerConfigureState } from '../interfaces';
+import { Dictionary, UiFlow } from '../../../../core/index';
+import * as fromRoot from '../../../../store';
+import { CurrentSelection } from '../../models/selection';
+import { Trigger, TriggerHandler, TriggerConfigureState } from '../../interfaces/index';
 
 export interface FlowState extends UiFlow {
   isErrorPanelOpen: boolean;
