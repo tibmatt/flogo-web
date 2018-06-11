@@ -29,7 +29,8 @@ export interface TriggerConfigureGroups {
   [triggerId: string]: TriggerConfigureGroup;
 }
 
-interface TriggerConfigureTrigger {
+export interface TriggerConfigureTrigger {
+  id: string;
   name: string;
   tabs: string[];
   isValid: boolean;

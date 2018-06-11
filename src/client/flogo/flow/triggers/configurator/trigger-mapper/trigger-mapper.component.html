@@ -5,8 +5,7 @@
         [class.--disabled]="tab.isDisabled"
         [class.--active]="tab.type === currentTabType"
         (click)="setCurrentView(tab.type)">
-      <!--{{ tab.i18nKey | translate }}-->
-      {{  tab.type }}
+      {{ tab.i18nKey | translate }}
     </li>
   </ul>
   <!--<flogo-mapper class="mapper content__mapper"-->
