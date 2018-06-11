@@ -116,7 +116,6 @@ function initTriggerConfigureState(state: FlowState, triggersSchema: Dictionary<
     tabs = {...tabs, ...createTriggerConfigureTabs(triggers[trigger.id].tabs)};
     return {triggers, tabs, fields};
   }, {triggers: {}, tabs: {}, fields: {}});
-  debugger;
   return {
     ...triggerConfigureState
   };

@@ -1,7 +1,9 @@
 import { createSelector } from '@ngrx/store';
 // todo: move to shared location
-import { TriggerStatus } from '../../../triggers/configurator/interfaces/index';
+import { TriggerStatus } from '../../../triggers/configurator/interfaces';
 import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
+
+export const getAllTabs = createSelector(selectTriggerConfigure, state => state.tabs);
 
 const getConfigurableTriggerDetails = createSelector(
   selectHandlers,
@@ -31,7 +33,7 @@ export const getTriggerStatuses = createSelector(selectTriggerConfigureTriggers,
     };
   }));
 
-const getCurrentTriggerForm = createSelector(
+const getCurrentTrigger = createSelector(
   selectTriggerConfigureTriggers,
   selectCurrentTriggerId,
   (triggersState, currentTriggerId) => {
@@ -39,18 +41,14 @@ const getCurrentTriggerForm = createSelector(
   }
 );
 
-export const getCurrentTabId = createSelector(selectTriggerConfigure, (triggerConfigure) => {
+export const getCurrentTabType = createSelector(selectTriggerConfigure, (triggerConfigure) => {
   return triggerConfigure ? triggerConfigure.currentTab : null;
 });
 
-export const getTabs = createSelector(
-  getCurrentTriggerForm,
-  (currentTriggerFormState) => {
-    if (!currentTriggerFormState) {
-      return [];
-    }
-    return currentTriggerFormState.tabs;
-  }
+export const getCurrentTabs = createSelector(
+  getCurrentTrigger,
+  getAllTabs,
+  (currentTrigger, tabs) => currentTrigger.tabs.map(tabId => tabs[tabId]),
 );
 
 export const getHasTriggersConfigure = createSelector(selectTriggerConfigure, triggerConfigure => !!triggerConfigure);

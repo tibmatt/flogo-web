@@ -7,7 +7,7 @@ import {ConfiguratorService as TriggerConfiguratorService} from './configurator.
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import { configuratorAnimations } from './configurator.animations';
 import { FlowState } from '@flogo/flow/core/state';
-import { getHasTriggersConfigure, getTriggerStatuses, selectCurrentTriggerId } from '@flogo/flow/core/state/triggers-configure/trigger-configure.selectors';
+import { TriggerConfigureSelectors } from '@flogo/flow/core/state/triggers-configure';
 import * as TriggerConfigureActions from '@flogo/flow/core/state/triggers-configure/trigger-configure.actions';
 import { ConfiguratorStatus, TriggerStatus } from './interfaces';
 
@@ -40,12 +40,12 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     this.triggerConfiguratorService.configuratorStatus$
       .pipe(takeUntil(this.ngDestroy))
       .subscribe((nextStatus: ConfiguratorStatus) => this.onNextStatus(nextStatus));
-    this.isInitialized$ = this.store.select(getHasTriggersConfigure);
+    this.isInitialized$ = this.store.select(TriggerConfigureSelectors.getHasTriggersConfigure);
 
-    const triggerStatuses$ = this.store.select(getTriggerStatuses);
+    const triggerStatuses$ = this.store.select(TriggerConfigureSelectors.getTriggerStatuses);
     this.triggerStatuses$ = this.observeWhileInitialized(triggerStatuses$, []);
 
-    const currentTriggerId$ = this.store.select(selectCurrentTriggerId);
+    const currentTriggerId$ = this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId);
     this.observeWhileInitialized(currentTriggerId$, null)
       .subscribe((selectedTriggerId) => this.selectedTriggerId = selectedTriggerId);
   }

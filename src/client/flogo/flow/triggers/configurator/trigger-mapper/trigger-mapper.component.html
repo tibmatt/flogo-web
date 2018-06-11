@@ -1,10 +1,13 @@
 <div class="content--with-menu">
   <ul class="content__menu">
     <li class="menu__item" *ngFor="let tab of tabs$ | async; trackBy: trackTabsByFn"
-        [class.--has-errors]="tab.state.isInvalid"
-        [class.--disabled]="tab.state.isDisabled"
-        [class.--active]="tab.id === currentTabId"
-        (click)="setCurrentView(tab.id)">{{ tab.i18nKey | translate }}</li>
+        [class.--has-errors]="tab.isInvalid"
+        [class.--disabled]="tab.isDisabled"
+        [class.--active]="tab.type === currentTabType"
+        (click)="setCurrentView(tab.type)">
+      <!--{{ tab.i18nKey | translate }}-->
+      {{  tab.type }}
+    </li>
   </ul>
   <!--<flogo-mapper class="mapper content__mapper"-->
                 <!--inputsSearchPlaceHolder="{{ currentViewStatus?.inputsLabelKey | translate }}"-->

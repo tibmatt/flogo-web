@@ -36,7 +36,7 @@ interface TriggerConfigureTrigger {
   isDirty: boolean;
 }
 
-interface TriggerConfigureTabs {
+export interface TriggerConfigureTab {
   triggerId: string;
   type: TriggerConfigureTabType;
   i18nLabelKey: string;
@@ -72,7 +72,7 @@ export interface TriggerConfigureState {
     [triggerId: string]: TriggerConfigureTrigger;
   };
   tabs: {
-    [tabsId: string]: TriggerConfigureTabs;
+    [tabsId: string]: TriggerConfigureTab;
   };
   fields: {
     [fieldId: string]: TriggerConfigureFields;

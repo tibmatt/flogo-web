@@ -3,14 +3,18 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { AbstractControlState } from 'ngrx-forms';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
 import { FlowState } from '../../../core/state';
-import { getCurrentTabId, getHasTriggersConfigure, getTabs } from '../../../core/state/triggers-configure/trigger-configure.selectors';
+import {
+  getCurrentTabType,
+  getHasTriggersConfigure,
+  getAllTabs,
+  getCurrentTabs
+} from '../../../core/state/triggers-configure/trigger-configure.selectors';
 import * as TriggerConfigureActions from '../../../core/state/triggers-configure/trigger-configure.actions';
-import { TriggerConfigureTabType } from '../../../core/interfaces';
+import { TriggerConfigureTabType, TriggerConfigureTab } from '../../../core/interfaces';
 import { Mappings, MapExpression, MapperTranslator, StaticMapperContextFactory } from '../../../shared/mapper';
 import {ConfiguratorService as TriggerConfiguratorService} from '../configurator.service';
 import { MapperStatus } from '../interfaces';
@@ -34,8 +38,8 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
   mapperContext: any;
   currentViewName: string;
 
-  currentTabId: string;
-  tabs$: Observable<{ id: string, i18nKey: string, state: AbstractControlState<any> }[]>;
+  currentTabType: TriggerConfigureTabType;
+  tabs$: Observable<TriggerConfigureTab[]>;
 
   private editingMappings: {
     actionInput: { [key: string]: MapExpression };
@@ -51,15 +55,15 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((nextStatus: MapperStatus) => this.onNextStatus(nextStatus));
 
-    const selectTabs$ = this.store.select(getTabs);
+    const selectTabs$ = this.store.select(getCurrentTabs);
     this.tabs$ = this.store.select(getHasTriggersConfigure)
       .pipe(
-        switchMap((isInitialized) => isInitialized ? selectTabs$ : of([]))
+        switchMap((isInitialized) => isInitialized ? selectTabs$ : of([])),
       );
     this.store
-      .select(getCurrentTabId)
+      .select(getCurrentTabType)
       .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(tabId => this.currentTabId = tabId);
+      .subscribe(currentTabType => this.currentTabType = currentTabType);
   }
 
   ngOnDestroy() {
