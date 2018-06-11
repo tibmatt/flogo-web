@@ -10,6 +10,7 @@ import {
   TriggerConfigureTrigger
 } from '@flogo/flow/core/interfaces';
 import { getDeviceTabs, getMicroServiceTabs } from './tab-base-by-profile';
+import { setEnabledStatusToTabs } from '@flogo/flow/core/state/triggers-configure/cases/set-enabled-status-to-tabs';
 
 export function init(flowState: FlowState, payload: OpenConfigureWithSelection['payload']): FlowState {
   const { triggerId: selectedTriggerId, triggerSchemas } = payload;
@@ -28,6 +29,7 @@ export function init(flowState: FlowState, payload: OpenConfigureWithSelection['
     triggerSchemas,
     getProfileType(flowState.app)
   );
+  triggerConfigureState = setEnabledStatusToTabs(triggerConfigureState);
   return {
     ...flowState,
     triggerConfigure: triggerConfigureState,
@@ -58,7 +60,7 @@ function initTriggerConfigureState(
   };
 }
 
-function createTabsForTrigger(triggerId: string, appProfileType: FLOGO_PROFILE_TYPE) {
+function createTabsForTrigger(triggerId: string, appProfileType: FLOGO_PROFILE_TYPE): Dictionary<TriggerConfigureTab> {
   const getTabBases = appProfileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE ? getMicroServiceTabs : getDeviceTabs;
   return getTabBases().reduce((tabs, tabBase) => {
     tabs[`${triggerId}.${tabBase.type}`] = {
@@ -81,3 +83,4 @@ function createTriggerState(trigger: Trigger, tabIds: string[]): TriggerConfigur
     isDirty: false
   };
 }
+

@@ -25,10 +25,6 @@ export interface  TriggerConfigureGroup {
   outputMappings?: TriggerConfigureMappings;
 }
 
-export interface TriggerConfigureGroups {
-  [triggerId: string]: TriggerConfigureGroup;
-}
-
 export interface TriggerConfigureTrigger {
   id: string;
   name: string;

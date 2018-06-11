@@ -13,6 +13,7 @@ import { OpenConfigureWithSelection } from '@flogo/flow/core/state/triggers-conf
 const TEST_STATE: FlowState = {
   ...INITIAL_STATE,
   id: 'abc',
+  app: <any>{},
   triggers: {
     trigger1: {
       id: 'trigger1',
