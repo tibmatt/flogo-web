@@ -58,7 +58,7 @@
           "type": "string"
         },
         "type": {
-          "$ref": "common.json#/definitions/valueType"
+          "$ref": "#/definitions/valueType"
         },
         "value": {
           "description": "The value to map. i.e. the right hand side of the expression",
