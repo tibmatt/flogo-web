@@ -1,10 +1,7 @@
 import { createSelector } from '@ngrx/store';
-import { FormGroupState } from 'ngrx-forms';
 // todo: move to shared location
 import { TriggerStatus } from '../../triggers/configurator/interfaces';
 import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from './flow.selectors';
-import { TriggerConfigureGroup } from '../interfaces';
-import { triggerControlsToTabs } from '../models/trigger-configure/trigger-controls-to-tabs';
 
 const getConfigurableTriggerDetails = createSelector(
   selectHandlers,
@@ -37,8 +34,8 @@ export const getTriggerStatuses = createSelector(selectTriggerConfigureTriggers,
 const getCurrentTriggerForm = createSelector(
   selectTriggerConfigureTriggers,
   selectCurrentTriggerId,
-  (triggersFormState, currentTriggerId) => {
-    return triggersFormState.controls[currentTriggerId] as FormGroupState<TriggerConfigureGroup>;
+  (triggersState, currentTriggerId) => {
+    return triggersState[currentTriggerId];
   }
 );
 
@@ -49,10 +46,10 @@ export const getCurrentTabId = createSelector(selectTriggerConfigure, (triggerCo
 export const getTabs = createSelector(
   getCurrentTriggerForm,
   (currentTriggerFormState) => {
-    if (!currentTriggerFormState || !currentTriggerFormState.controls) {
+    if (!currentTriggerFormState) {
       return [];
     }
-    return triggerControlsToTabs(currentTriggerFormState.controls);
+    return currentTriggerFormState.tabs;
   }
 );
 
