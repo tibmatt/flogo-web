@@ -37,11 +37,12 @@ const PUBLISH_FIELDS = [
   'type',
   'version',
   'description',
+  'properties',
   'version',
   'createdAt',
   'updatedAt',
   'triggers',
-  'actions',
+  'actions'
 ];
 
 const DEFAULT_APP = {

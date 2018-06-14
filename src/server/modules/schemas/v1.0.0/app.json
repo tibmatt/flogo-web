@@ -28,6 +28,12 @@
       "title": "The description of this app",
       "default": ""
     },
+    "properties": {
+      "type": "array",
+      "items": {
+        "ref": "common.json#/definitions/appProperty"
+      }
+    },
     "triggers": {
       "type": "array",
       "items": {
