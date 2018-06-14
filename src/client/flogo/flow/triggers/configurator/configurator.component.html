@@ -23,7 +23,8 @@
                                         (selectTrigger)="changeTriggerSelection($event)">
       </flogo-triggers-configure-trigger>
     </div>
-    <div class="configuration__mapper" @triggerConfiguratorLayoutElement>
+    <div class="configuration__trigger" @triggerConfiguratorLayoutElement>
+      <flogo-flow-triggers-configurator-tabs></flogo-flow-triggers-configurator-tabs>
       <flogo-flow-trigger-mapper *ngIf="isInitialized$ | async"></flogo-flow-trigger-mapper>
     </div>
   </div>

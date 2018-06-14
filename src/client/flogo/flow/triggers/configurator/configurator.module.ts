@@ -6,6 +6,7 @@ import {TriggerMapperComponent} from './trigger-mapper';
 import {ConfiguratorComponent} from './configurator.component';
 import {ConfiguratorService} from './configurator.service';
 import {ConfigureTriggerComponent} from './trigger/trigger.component';
+import { TabsComponent } from './tabs/tabs.component';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import {ConfigureTriggerComponent} from './trigger/trigger.component';
   declarations: [
     TriggerMapperComponent,
     ConfiguratorComponent,
-    ConfigureTriggerComponent
+    ConfigureTriggerComponent,
+    TabsComponent
   ],
   exports: [
     ConfiguratorComponent

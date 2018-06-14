@@ -1,7 +1,10 @@
-import { createSelector } from '@ngrx/store';
+import { createSelector, select, Store } from '@ngrx/store';
 // todo: move to shared location
 import { TriggerStatus } from '../../../triggers/configurator/interfaces';
 import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
+import { switchMap } from 'rxjs/operators';
+import { of as observableOf } from 'rxjs/observable/of';
+import { FlowState } from '@flogo/flow/core/state';
 
 export const getAllTabs = createSelector(selectTriggerConfigure, state => state.tabs);
 
@@ -45,11 +48,20 @@ export const getCurrentTabType = createSelector(selectTriggerConfigure, (trigger
   return triggerConfigure ? triggerConfigure.currentTab : null;
 });
 
-export const getCurrentTabs = createSelector(
+const selectCurrentTabs = createSelector(
   getCurrentTrigger,
   getAllTabs,
   (currentTrigger, tabs) => currentTrigger.tabs.map(tabId => tabs[tabId]),
 );
+
+export const getCurrentTabs = (store: Store<FlowState>) => {
+  const empty$ = observableOf([]);
+  const currentTabs$ = store.select(selectCurrentTabs);
+  return store.pipe(
+    select(getHasTriggersConfigure),
+    switchMap(isTriggerInitialized => isTriggerInitialized ? currentTabs$ : empty$)
+  );
+};
 
 export const getHasTriggersConfigure = createSelector(selectTriggerConfigure, triggerConfigure => !!triggerConfigure);
 

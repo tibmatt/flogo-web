@@ -55,7 +55,7 @@ export class TriggerMapperComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe((nextStatus: MapperStatus) => this.onNextStatus(nextStatus));
 
-    const selectTabs$ = this.store.select(getCurrentTabs);
+    const selectTabs$ = this.store.pipe(getCurrentTabs);
     this.tabs$ = this.store.select(getHasTriggersConfigure)
       .pipe(
         switchMap((isInitialized) => isInitialized ? selectTabs$ : of([])),
