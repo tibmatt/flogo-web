@@ -53,7 +53,7 @@ function* listContributions() {
     searchTerms.ref = filterRef;
   }
   if (filterShim) {
-    searchTerms["schema.shim"] = { $exists: true };
+    searchTerms.shim = filterShim;
   }
   if (contributionType) {
     foundContributions = yield contributionType.manager.find(searchTerms);

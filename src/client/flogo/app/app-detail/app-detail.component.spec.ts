@@ -14,6 +14,7 @@ import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.component';
 import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
 import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
+import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.component';
 import {FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 
@@ -73,7 +74,8 @@ describe('FlogoApplicationDetailComponent component', () => {
         ContainerComponent,
         FlogoExportFlowsComponent,
         FlowTriggerGroupComponent,
-        FlogoNewFlowComponent
+        FlogoNewFlowComponent,
+        TriggerShimBuildComponent
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },

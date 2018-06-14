@@ -1,0 +1,16 @@
+<bs-modal [cssClass]="'flogo-common-modal shim-trigger__modal'" #shimTriggersModal>
+  <div>
+    <i class="flogo-icon-close shim-trigger__modal-close" (click)="closeModal()"></i>
+    <div class="shim-trigger__modal-header">{{'TRIGGER-SHIM:MULTIPLE-TRIGGERS' | translate}}</div>
+    <div *ngFor="let shimTrigger of shimTriggersList" class="shim-trigger-container">
+      <ul class="list-unstyled shim-trigger_content">
+        <li class="shim-trigger-item">
+          <i class="flogo-icon-trigger shim-trigger-icon"></i><span>{{shimTrigger.configuredTrigger.name}}</span></li>
+      </ul>
+      <ul class="list-unstyled shim-trigger-flow_content">
+        <li class="shim-trigger-flow-item"><span class="shim-trigger-connected-flow">{{ 'TRIGGER-SHIM:CONNECTED-FLOW' | translate }}</span>
+          <span>{{shimTrigger.configuredFlow.name}}</span></li>
+      </ul>
+    </div>
+  </div>
+</bs-modal>
