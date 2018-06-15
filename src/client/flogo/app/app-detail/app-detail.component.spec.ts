@@ -15,6 +15,7 @@ import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.comp
 import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
 import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
 import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.component';
+import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import {FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 
@@ -49,6 +50,13 @@ class MockAppDetailService extends AppDetailService {
 
 }
 
+class MockRESTAPIContributionsService {
+  getShimContributionDetails(profile) {
+    return Promise.resolve([]);
+  }
+}
+
+
 describe('FlogoApplicationDetailComponent component', () => {
   const application = null;
   let comp: ContainerComponent;
@@ -79,6 +87,7 @@ describe('FlogoApplicationDetailComponent component', () => {
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },
+        { provide: RESTAPIContributionsService, useClass: MockRESTAPIContributionsService },
         FlogoProfileService
       ],
       //  schemas: [ NO_ERRORS_SCHEMA ]
@@ -275,3 +284,16 @@ function makeMockAppDetail() {
     }
   };
 }
+
+/*function MockRESTAPIContributionsService() {
+  return [{
+    description: 'Simple Lambda Trigger',
+    id: 'github-com-tibco-software-flogo-contrib-trigger-lambda',
+    name: 'flogo-lambda',
+    outputs: [],
+    handlers: {},
+    ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda',
+    title: 'Start Flow as a function in Lambda',
+    version: '0.0.1'
+  }]
+}*/
