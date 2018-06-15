@@ -285,15 +285,3 @@ function makeMockAppDetail() {
   };
 }
 
-/*function MockRESTAPIContributionsService() {
-  return [{
-    description: 'Simple Lambda Trigger',
-    id: 'github-com-tibco-software-flogo-contrib-trigger-lambda',
-    name: 'flogo-lambda',
-    outputs: [],
-    handlers: {},
-    ref: 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda',
-    title: 'Start Flow as a function in Lambda',
-    version: '0.0.1'
-  }]
-}*/
