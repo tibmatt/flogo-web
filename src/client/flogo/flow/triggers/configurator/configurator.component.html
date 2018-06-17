@@ -25,7 +25,14 @@
     </div>
     <div class="configuration__trigger" @triggerConfiguratorLayoutElement>
       <flogo-flow-triggers-configurator-tabs></flogo-flow-triggers-configurator-tabs>
-      <flogo-flow-trigger-mapper *ngIf="isInitialized$ | async"></flogo-flow-trigger-mapper>
+      <ng-container [ngSwitch]="currentTabType$ | async">
+        <flogo-flow-trigger-mapper *ngSwitchCase="TAB_TYPES.FlowInputMappings"
+                                   [mapperController]="flowInputMapperController">
+        </flogo-flow-trigger-mapper>
+        <flogo-flow-trigger-mapper *ngSwitchCase="TAB_TYPES.FlowOutputMappings"
+                                   [mapperController]="replyMapperController">
+        </flogo-flow-trigger-mapper>
+      </ng-container>
     </div>
   </div>
 </div>

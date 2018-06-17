@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { shareReplay } from 'rxjs/operators';
+import { selectFilterFromOutputs, selectNodesFromOutputs } from '@flogo/flow/shared/mapper/services/selectors';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { TYPE_PARAM_OUTPUT } from '../services/dragging.service';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';
-import { MapperService, MapperState, TreeState } from '../services/mapper.service';
-import { distinctUntilChanged, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { selectedInputKey, selectFilterFromOutputs, selectNodesFromOutputs } from '@flogo/flow/shared/mapper/services/selectors';
-import { Observable } from 'rxjs/Observable';
+import { MapperService } from '../services/mapper.service';
 
 @Component({
   selector: 'flogo-mapper-output-list',

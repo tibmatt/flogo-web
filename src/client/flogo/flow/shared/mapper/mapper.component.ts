@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Mappings } from './models/mappings';
-import { MapperContext } from './models/mapper-context';
 
 import { Subject } from 'rxjs/Subject';
 import {
@@ -12,7 +11,7 @@ import {
   map,
   merge,
   share,
-  takeUntil
+  takeUntil, tap
 } from 'rxjs/operators';
 
 import { MonacoEditorLoaderService } from '../monaco-editor';
@@ -20,11 +19,13 @@ import { load as loadMonacoLangPlugin } from '../mapper-language/monaco-contribu
 
 import { SingleEmissionSubject } from './shared/single-emission-subject';
 
-import { MapperService, MapperState } from './services/mapper.service';
+import { MapperService } from './services/mapper.service';
 import { EditorService } from './editor/editor.service';
 import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './services/dragging.service';
-import { selectCurrentNode, selectMappings } from '@flogo/flow/shared/mapper/services/selectors';
-import { MapperTreeNode } from '@flogo/flow/shared/mapper/models/mapper-treenode.model';
+import { selectCurrentNode, selectMappings } from './services/selectors';
+import { MapperTreeNode } from './models/mapper-treenode.model';
+import { MapperController } from './services/mapper-controller/mapper-controller';
+import { MapperState } from './models/mapper-state';
 
 @Component({
   selector: 'flogo-mapper',
@@ -33,7 +34,7 @@ import { MapperTreeNode } from '@flogo/flow/shared/mapper/models/mapper-treenode
   providers: [MapperService, EditorService, DraggingService]
 })
 export class MapperComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() context: MapperContext;
+  @Input() controller: MapperController;
   @Input() inputsSearchPlaceHolder = 'Search';
   @Input() outputsSearchPlaceHolder = 'Search';
   @Output() mappingsChange = new EventEmitter<Mappings>();
@@ -44,7 +45,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
   private contextChanged = new Subject();
-  private contextInUse: MapperContext;
   private hasInitted = false;
 
   constructor(private mapperService: MapperService,
@@ -63,12 +63,12 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     this.initContext();
   }
 
-  ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
-    const contextChange = changes['context'];
-    if (!contextChange || contextChange.currentValue === this.contextInUse) {
+  ngOnChanges(changes: SimpleChanges) {
+    const contextChange = changes['controller'];
+    if (!contextChange) {
       return;
     }
-    this.contextInUse = this.context;
+    this.mapperService.setController(this.controller);
     this.contextChanged.next();
     if (!contextChange.isFirstChange() && this.hasInitted) {
       this.initContext();
@@ -124,7 +124,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private initContext() {
-    this.mapperService.setContext(this.contextInUse);
     const stop$ = this.ngDestroy.pipe(
       merge(this.contextChanged),
       first(),

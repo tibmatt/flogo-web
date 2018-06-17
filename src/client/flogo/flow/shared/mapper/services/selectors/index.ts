@@ -4,8 +4,7 @@ import { OperatorFunction } from 'rxjs/interfaces';
 import { pipe } from 'rxjs/util/pipe';
 import { combineLatest, distinctUntilChanged, distinctUntilKeyChanged, map, shareReplay } from 'rxjs/operators';
 
-import { MapExpression } from '../../models';
-import { MapperState, TreeState } from '../mapper.service';
+import { MapExpression, MapperState, TreeState } from '../../models';
 
 function selectFromMapperState<T extends keyof MapperState>(property: T):
   OperatorFunction<MapperState, MapperState[T]> {

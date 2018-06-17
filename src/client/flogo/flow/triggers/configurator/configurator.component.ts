@@ -1,15 +1,20 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
+import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
-import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
-import { configuratorAnimations } from './configurator.animations';
+import { Observable } from 'rxjs/Observable';
+import { distinctUntilChanged, filter, map, skip, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
+import { pipe } from 'rxjs/util/pipe';
+
+import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
+import { TriggerConfigureTabType } from '@flogo/flow/core/interfaces';
 import { FlowState } from '@flogo/flow/core/state';
-import { TriggerConfigureSelectors } from '@flogo/flow/core/state/triggers-configure';
-import * as TriggerConfigureActions from '@flogo/flow/core/state/triggers-configure/trigger-configure.actions';
+import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/core/state/triggers-configure';
+import { MapperControllerFactory, MapperController } from '@flogo/flow/shared/mapper';
+
+import { configuratorAnimations } from './configurator.animations';
 import { ConfiguratorStatus, TriggerStatus } from './interfaces';
+import { ConfiguratorService as TriggerConfiguratorService } from './configurator.service';
+import { ContribSchema, FlowMetadata } from '@flogo/core';
 
 @Component({
   selector: 'flogo-triggers-configuration',
@@ -20,8 +25,7 @@ import { ConfiguratorStatus, TriggerStatus } from './interfaces';
   ],
   animations: configuratorAnimations
 })
-export class ConfiguratorComponent implements OnInit, OnDestroy {
-
+export class ConfiguratorComponent implements OnDestroy {
   isInitialized$: Observable<boolean>;
   triggerStatuses$: Observable<TriggerStatus[]>;
   selectedTriggerId: string;
@@ -31,23 +35,48 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     triggers: [],
     selectedTriggerId: null
   };
-  private ngDestroy = SingleEmissionSubject.create();
+  currentTabType$: Observable<TriggerConfigureTabType>;
+  flowInputMapperController: MapperController;
+  replyMapperController: MapperController;
+  TAB_TYPES = TriggerConfigureTabType;
+  private ngDestroy$ = SingleEmissionSubject.create();
 
-  constructor(private triggerConfiguratorService: TriggerConfiguratorService, private store: Store<FlowState>) {
-  }
-
-  ngOnInit() {
+  constructor(
+    private triggerConfiguratorService: TriggerConfiguratorService,
+    private store: Store<FlowState>,
+    private mapperControllerFactory: MapperControllerFactory,
+  ) {
     this.triggerConfiguratorService.configuratorStatus$
-      .pipe(takeUntil(this.ngDestroy))
+      .pipe(takeUntil(this.ngDestroy$))
       .subscribe((nextStatus: ConfiguratorStatus) => this.onNextStatus(nextStatus));
-    this.isInitialized$ = this.store.select(TriggerConfigureSelectors.getHasTriggersConfigure);
 
+    this.isInitialized$ = this.store.select(TriggerConfigureSelectors.getHasTriggersConfigure);
     const triggerStatuses$ = this.store.select(TriggerConfigureSelectors.getTriggerStatuses);
-    this.triggerStatuses$ = this.observeWhileInitialized(triggerStatuses$, []);
+    this.triggerStatuses$ = this.observeWhileConfiguratorIsActive(triggerStatuses$, []);
 
     const currentTriggerId$ = this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId);
-    this.observeWhileInitialized(currentTriggerId$, null)
-      .subscribe((selectedTriggerId) => this.selectedTriggerId = selectedTriggerId);
+    this.currentTabType$ = this.observeWhileConfiguratorIsActive(
+      this.store.select(TriggerConfigureSelectors.getCurrentTabType),
+      null
+    );
+
+    this.isInitialized$
+      .pipe(
+        filter(initialized => initialized),
+        switchMap(() => currentTriggerId$),
+        filter(triggerId => !!triggerId),
+        switchMap(() => this.store
+          .select(TriggerConfigureSelectors.getConfigureState)
+          .pipe(take(1))
+        ),
+        takeUntil(this.ngDestroy$),
+      )
+      .subscribe((state) => this.init(state));
+  }
+
+  private init(state) {
+    this.selectedTriggerId = state.trigger.id;
+    this.initializeMapperControllers(state.flowMetadata, state.schema, state.handler.actionMappings);
   }
 
   onNextStatus(nextStatus: ConfiguratorStatus) {
@@ -59,13 +88,10 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
 
   changeTriggerSelection(triggerId: string) {
     this.store.dispatch(new TriggerConfigureActions.SelectTrigger(triggerId));
-    // if (triggerId !== this.currentConfiguratorState.selectedTriggerId) {
-    //   this.triggerConfiguratorService.selectTrigger(triggerId);
-    // }
   }
 
   ngOnDestroy() {
-    this.ngDestroy.emitAndComplete();
+    this.ngDestroy$.emitAndComplete();
   }
 
   onCloseOrDismiss() {
@@ -76,11 +102,51 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     this.triggerConfiguratorService.save();
   }
 
-  private observeWhileInitialized<T>(observable$: Observable<T>, valueWhenNotInitialized: any) {
+  private initializeMapperControllers(flowMetadata: FlowMetadata, triggerSchema: ContribSchema, actionMappings) {
+    const { input, output } = actionMappings;
+    const subscribeToUpdates = this.mapperStatusUpdateSubscriber();
+    this.initializeInputMapperController(flowMetadata, triggerSchema, input);
+    subscribeToUpdates(this.flowInputMapperController, TriggerConfigureTabType.FlowInputMappings);
+
+    this.initializeReplyMapperController(flowMetadata, triggerSchema, output);
+    subscribeToUpdates(this.replyMapperController, TriggerConfigureTabType.FlowOutputMappings);
+  }
+
+  private initializeReplyMapperController(flowMetadata, triggerSchema, output: any) {
+    this.replyMapperController = this.mapperControllerFactory.createController(
+      flowMetadata && flowMetadata.output ? flowMetadata.output : [],
+      triggerSchema.reply || [],
+      output,
+    );
+  }
+
+  private initializeInputMapperController(flowMetadata, triggerSchema, input: any) {
+    this.flowInputMapperController = this.mapperControllerFactory.createController(
+      flowMetadata && flowMetadata.input ? flowMetadata.input : [],
+      triggerSchema.outputs || [],
+      input
+    );
+  }
+
+  private observeWhileConfiguratorIsActive<T>(observable$: Observable<T>, valueWhenNotInitialized: any) {
     return this.isInitialized$.pipe(
       switchMap(isInitialized => isInitialized ? observable$ : of(valueWhenNotInitialized)),
-      takeUntil(this.ngDestroy),
+      takeUntil(this.ngDestroy$),
     );
+  }
+
+  private mapperStatusUpdateSubscriber() {
+    return (controller: MapperController, groupType: TriggerConfigureTabType) => {
+      controller.status$
+        .pipe(takeUntil(this.ngDestroy$))
+        .subscribe(status => {
+          this.store.dispatch(new TriggerConfigureActions.MapperStatusChanged({
+            triggerId: this.selectedTriggerId,
+            groupType,
+            newStatus: status,
+          }));
+        });
+    };
   }
 
 }

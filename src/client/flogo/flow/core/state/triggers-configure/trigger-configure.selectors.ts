@@ -6,6 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs/observable/of';
 import { FlowState } from '@flogo/flow/core/state';
 
+export const getSchemas = createSelector(selectTriggerConfigure, state => state.schemas);
 export const getAllTabs = createSelector(selectTriggerConfigure, state => state.tabs);
 
 const getConfigurableTriggerDetails = createSelector(
@@ -36,7 +37,7 @@ export const getTriggerStatuses = createSelector(selectTriggerConfigureTriggers,
     };
   }));
 
-const getCurrentTrigger = createSelector(
+const getCurrentTriggerConfig = createSelector(
   selectTriggerConfigureTriggers,
   selectCurrentTriggerId,
   (triggersState, currentTriggerId) => {
@@ -49,7 +50,7 @@ export const getCurrentTabType = createSelector(selectTriggerConfigure, (trigger
 });
 
 const selectCurrentTabs = createSelector(
-  getCurrentTrigger,
+  getCurrentTriggerConfig,
   getAllTabs,
   (currentTrigger, tabs) => currentTrigger.tabs.map(tabId => tabs[tabId]),
 );
@@ -76,4 +77,41 @@ export const getConfigureModalState = createSelector(
       triggerConfigure
     };
   }
+);
+
+export const getCurrentSchema = createSelector(
+  selectTriggers,
+  selectCurrentTriggerId,
+  getSchemas, (triggers, currentTriggerId, schemas) => {
+    const trigger = triggers[currentTriggerId];
+    return schemas[trigger.ref];
+  }
+);
+
+const getCurrentTrigger = createSelector(
+  selectCurrentTriggerId,
+  selectTriggers,
+  (currentTriggerId, triggers) => triggers[currentTriggerId],
+);
+
+const getCurrentHandler = createSelector(
+  selectCurrentTriggerId,
+  selectHandlers,
+  (currentTriggerId, handlers) => handlers[currentTriggerId],
+);
+
+export const getConfigureState = createSelector(
+  selectFlowMetadata,
+  getCurrentSchema,
+  getCurrentTrigger,
+  getCurrentHandler,
+  (flowMetadata, schema, trigger, handler) => {
+    return {
+      flowMetadata,
+      schema,
+      trigger,
+      handler,
+    };
+  },
+
 );

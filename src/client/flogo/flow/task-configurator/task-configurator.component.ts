@@ -1,21 +1,24 @@
 import * as _ from 'lodash';
+import { skip, takeUntil } from 'rxjs/operators';
 
 import { Component, Input, OnDestroy } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Task } from '@flogo/core/interfaces';
 import { PostService } from '@flogo/core/services/post.service';
+import { SingleEmissionSubject } from '@flogo/core/models';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventData } from './messages';
 
-import { Mappings, MapperTranslator } from '../shared/mapper';
+import { Mappings, MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
 
-import { InputMapperConfig } from './input-mapper';
+import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {Tabs} from '../shared/tabs/models/tabs.model';
 import {SubFlowConfig} from './subflow-config';
 import {isSubflowTask} from '@flogo/shared/utils';
-import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {ActionBase} from '@flogo/core';
+import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
+import { Subscription } from 'rxjs/Subscription';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -62,8 +65,6 @@ export class TaskConfiguratorComponent implements OnDestroy {
   iteratorModeOn = false;
   iterableValue: string;
   iterator: {};
-  inputMappingsConfig: InputMapperConfig;
-  currentMappings: Mappings;
   isSubflowType: boolean;
   subFlowConfig: SubFlowConfig;
   subflowList: ActionBase[];
@@ -72,12 +73,18 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   isActive = false;
 
-  private _subscriptions: any[];
-  // todo: move to proper service
-  private areValidMappings: (mappings: Mappings) => boolean;
+  inputMapperController: MapperController;
+  iteratorController: MapperController;
 
-  constructor(private _flowService: FlowsService,
-              private _postService: PostService) {
+  private inputMapperStateSubscription: Subscription;
+  private contextChange$ = SingleEmissionSubject.create();
+  private _subscriptions: any[];
+
+  constructor(
+    private _flowService: FlowsService,
+    private _postService: PostService,
+    private mapperControllerFactory: MapperControllerFactory,
+  ) {
     this.initSubscriptions();
     this.isSubflowType = false;
     this.resetState();
@@ -85,13 +92,9 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.cancelSubscriptions();
-  }
-
-  onMappingsChange(newMappings: Mappings) {
-    const mapperTab = this.tabs.get(TASK_TABS.INPUT_MAPPINGS);
-    mapperTab.isValid = this.areValidMappings(newMappings);
-    mapperTab.isDirty = true;
-    this.currentMappings = _.cloneDeep(newMappings);
+    if (!this.contextChange$.isStopped) {
+      this.contextChange$.emitAndComplete();
+    }
   }
 
   selectSubFlow() {
@@ -116,23 +119,13 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.currentTile.description = event.description;
     const mappings = [];
     const propsToMap = event.metadata ? event.metadata.input : [];
-    this.currentMappings = MapperTranslator.translateMappingsIn(mappings);
-    this.inputMappingsConfig = {
-      inputScope: this.inputScope,
-      propsToMap,
-      inputMappings: mappings
-    };
-  }
-
-  onIteratorValueChange(newValue: string) {
-    this.tabs.get(TASK_TABS.ITERATOR).isValid = MapperTranslator.isValidExpression(newValue);
-    this.iterableValue = newValue;
-    this.checkIsIteratorDirty();
+    this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
   }
 
   onChangeIteratorMode() {
     this.iteratorModeOn = !this.iteratorModeOn;
     this.checkIsIteratorDirty();
+    this.adjustIteratorInInputMapper();
   }
 
   save() {
@@ -145,7 +138,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
           isIterable,
           iterableValue: isIterable ? this.iterableValue : undefined,
         },
-        inputMappings: MapperTranslator.translateMappingsOut(this.currentMappings),
+        inputMappings: MapperTranslator.translateMappingsOut(this.inputMapperController.getCurrentState().mappings),
         handlerId: this.flowId
       }
     }));
@@ -167,6 +160,12 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   trackTabsByFn(index, [tabName, tab]) {
     return tabName;
+  }
+
+  private onIteratorValueChange(newValue: string, isValid: boolean) {
+    this.tabs.get(TASK_TABS.ITERATOR).isValid = MapperTranslator.isValidExpression(newValue);
+    this.iterableValue = newValue;
+    this.checkIsIteratorDirty();
   }
 
   private checkIsIteratorDirty() {
@@ -208,6 +207,8 @@ export class TaskConfiguratorComponent implements OnDestroy {
     if (!this.raisedByThisDiagram(eventData.handlerId)) {
       return;
     }
+    this.ensurePreviousContextCleanup();
+    this.contextChange$ = SingleEmissionSubject.create();
     this.context = eventData;
     this.currentTile = eventData.tile;
     this.title = eventData.title;
@@ -222,24 +223,59 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.inputsSearchPlaceholderKey = eventData.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
 
     this.createInputMapperConfig(eventData);
+
     if (this.isSubflowType) {
       this.createSubflowConfig(eventData.subflowSchema);
     }
     if (this.iterator) {
-      this.iteratorModeOn = eventData.iterator.isIterable;
-      this.iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
-      this.initialIteratorData = {
-        iteratorModeOn: this.iteratorModeOn,
-        iterableValue: this.iterableValue,
-      };
+      this.initIterator(eventData);
+      this.adjustIteratorInInputMapper();
     }
 
     if (eventData.inputMappingsTabLabelKey) {
       this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
     }
-
-    this.areValidMappings = MapperTranslator.makeValidator();
     this.open();
+  }
+
+  private adjustIteratorInInputMapper() {
+    if (this.iteratorModeOn) {
+      this.enableIteratorInInputMapper();
+    } else {
+      this.disableIteratorInInputMapper();
+    }
+  }
+
+  private enableIteratorInInputMapper() {
+    const iteratorNode = this.mapperControllerFactory.createNodeFromSchema(getIteratorOutputSchema());
+    this.inputMapperController.appendOutputNode(iteratorNode);
+  }
+
+  private disableIteratorInInputMapper() {
+    this.inputMapperController.removeOutputNode(ITERATOR_OUTPUT_KEY);
+  }
+
+  private initIterator(eventData: SelectTaskConfigEventData) {
+    this.iteratorModeOn = eventData.iterator.isIterable;
+    this.initialIteratorData = {
+      iteratorModeOn: this.iteratorModeOn,
+      iterableValue: this.iterableValue,
+    };
+    const iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
+    const iteratorContext = createIteratorMappingContext(iterableValue);
+    this.iteratorController = this.mapperControllerFactory.createController(
+      iteratorContext.inputContext,
+      this.inputScope,
+      iteratorContext.mappings
+    );
+    this.iteratorController.state$
+      .pipe(takeUntil(this.contextChange$))
+      .subscribe((state) => {
+        const iterableMapping = state.mappings[ITERABLE_VALUE_KEY];
+        if (iterableMapping) {
+          this.onIteratorValueChange(iterableMapping.expression, state.isValid);
+        }
+      });
   }
 
   private createInputMapperConfig(data: SelectTaskConfigEventData) {
@@ -252,19 +288,29 @@ export class TaskConfiguratorComponent implements OnDestroy {
     } else if (this.currentTile.attributes && this.currentTile.attributes.inputs) {
       propsToMap = this.currentTile.attributes.inputs;
     }
-
     if (data.overrideMappings) {
       mappings = data.overrideMappings;
     } else {
       mappings = this.currentTile.inputMappings;
     }
+    this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
+  }
 
-    this.currentMappings = MapperTranslator.translateMappingsIn(mappings);
-    this.inputMappingsConfig = {
-      inputScope: this.inputScope,
-      propsToMap,
-      inputMappings: mappings
-    };
+  private resetInputMappingsController(propsToMap, inputScope, mappings) {
+    if (this.inputMapperStateSubscription && !this.inputMapperStateSubscription.closed) {
+      this.inputMapperStateSubscription.unsubscribe();
+    }
+    this.inputMapperController = this.mapperControllerFactory.createController(propsToMap, inputScope, mappings);
+    this.inputMapperStateSubscription = this.inputMapperController.status$
+      .pipe(
+        skip(1),
+        takeUntil(this.contextChange$)
+      )
+      .subscribe(({isValid, isDirty}) => {
+        const inputMappingsTab = this.tabs.get(TASK_TABS.INPUT_MAPPINGS);
+        inputMappingsTab.isValid = isValid;
+        inputMappingsTab.isDirty = isDirty;
+      });
   }
 
   private createSubflowConfig(subflowSchema: ActionBase) {
@@ -301,7 +347,14 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   private close() {
+    this.contextChange$.emitAndComplete();
     this.isActive = false;
+  }
+
+  private ensurePreviousContextCleanup() {
+    if (this.contextChange$ && !this.contextChange$.isStopped) {
+      this.contextChange$.emitAndComplete();
+    }
   }
 
 }

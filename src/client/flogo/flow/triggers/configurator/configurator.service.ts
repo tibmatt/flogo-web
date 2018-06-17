@@ -17,12 +17,13 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {isEqual} from 'lodash';
 import {createTabs} from './core/utils';
 import {TRIGGER_TABS} from './core/constants';
-import {Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import {AppState} from '../../core/state/app.state';
-import {getConfigureModalState} from '../../core/state/triggers-configure/trigger-configure.selectors';
+import { getConfigureModalState, getHasTriggersConfigure } from '../../core/state/triggers-configure/trigger-configure.selectors';
 import {TriggerConfigureState} from '../../core';
 import {AttributeMapping} from '@flogo/core';
 import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class ConfiguratorService {
@@ -37,12 +38,18 @@ export class ConfiguratorService {
   private mappingValidationFn: MappingsValidatorFn = MapperTranslator.makeValidator();
 
   constructor(private store: Store<AppState>) {
-    this.store.select(getConfigureModalState).subscribe(modalState => {
-      if (modalState.triggerConfigure && modalState.triggerConfigure.isOpen) {
-        this.open(modalState);
-      } else if (modalState.triggerConfigure && !modalState.triggerConfigure.isOpen) {
-        this.close();
-      }
+    this.store
+      .pipe(
+        select(getHasTriggersConfigure),
+        filter(hasTriggersConfigure => hasTriggersConfigure),
+        switchMap(() => this.store.select(getConfigureModalState)),
+      )
+      .subscribe(modalState => {
+        if (modalState.triggerConfigure && modalState.triggerConfigure.isOpen) {
+          this.open(modalState);
+        } else if (modalState.triggerConfigure && !modalState.triggerConfigure.isOpen) {
+          this.close();
+        }
     });
   }
 

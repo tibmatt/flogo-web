@@ -10,14 +10,14 @@ import {
   TriggerConfigureTrigger
 } from '@flogo/flow/core/interfaces';
 import { getDeviceTabs, getMicroServiceTabs } from './tab-base-by-profile';
-import { setEnabledStatusToTabs } from '@flogo/flow/core/state/triggers-configure/cases/set-enabled-status-to-tabs';
+import { setEnabledStatusToTabs } from './set-enabled-status-to-tabs';
 
 export function init(flowState: FlowState, payload: OpenConfigureWithSelection['payload']): FlowState {
   const { triggerId: selectedTriggerId, triggerSchemas } = payload;
   let triggerConfigureState = {
     isOpen: true,
     selectedTriggerId,
-    currentTab: <TriggerConfigureTabType> 'settings',
+    currentTab: TriggerConfigureTabType.Settings,
     schemas: payload.triggerSchemas,
     triggers: null,
     tabs: null,

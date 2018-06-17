@@ -26,6 +26,7 @@ import { InlineHrefDirective } from './shared/inline-href.directive';
 import { IconsService } from './services/icons.service';
 import { ClickOutsideDirective } from './shared/click-outside.directive';
 import { ExpressionProcessorService } from './services/expression-processor.service';
+import { MapperControllerFactory } from './services/mapper-controller/mapper-controller-factory.service';
 
 @NgModule({
   imports: [
@@ -63,6 +64,7 @@ import { ExpressionProcessorService } from './services/expression-processor.serv
     IconsService,
     ExpressionProcessorService,
     MappingParser,
+    MapperControllerFactory,
   ],
   bootstrap: []
 })

@@ -1,7 +1,8 @@
 import { TriggerConfigureTabType } from '../../interfaces';
 import {FlowState} from '../flow/flow.state';
 import {TriggerConfigureActionType, TriggerConfigureActionUnion} from './trigger-configure.actions';
-import { init } from '@flogo/flow/core/state/triggers-configure/cases/init';
+import { init } from './cases/init';
+import { mapperStatusReducer } from './cases/mapper-status-reducer';
 
 export function triggerConfigureReducer(state: FlowState, action: TriggerConfigureActionUnion) {
   switch (action.type) {
@@ -19,7 +20,7 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
         triggerConfigure: {
           ...state.triggerConfigure,
           selectedTriggerId: action.payload,
-          currentTab: 'settings' as TriggerConfigureTabType,
+          currentTab: TriggerConfigureTabType.Settings,
         }
       };
     case TriggerConfigureActionType.SelectTab:
@@ -27,9 +28,17 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
         ...state,
         triggerConfigure: {
           ...state.triggerConfigure,
-          currentTab: action.payload as TriggerConfigureTabType,
+          currentTab: action.payload,
         }
       };
+    case TriggerConfigureActionType.MapperStatusChanged: {
+      const { triggerId, groupType, newStatus } = action.payload;
+      const groupId = `${triggerId}.${groupType}`;
+      return {
+        ...state,
+        triggerConfigure: mapperStatusReducer(state.triggerConfigure, groupId, newStatus),
+      };
+    }
     default: {
       return state;
     }

@@ -1,17 +1,17 @@
-import { TriggerConfigureTabType } from '@flogo/flow/core';
+import { TriggerConfigureTabType } from '@flogo/flow/core/interfaces';
 
 const SETTINGS_TAB: { type: TriggerConfigureTabType, i18nKey: string } = {
-  type: 'settings',
+  type: TriggerConfigureTabType.Settings,
   i18nKey: 'TRIGGER-CONFIGURATOR:SETTINGS'
 };
 
 const INPUT_MAPPINGS_TAB: { type: TriggerConfigureTabType, i18nKey: string } = {
-  type: 'flowInputMappings',
+  type: TriggerConfigureTabType.FlowInputMappings,
   i18nKey: 'TRIGGER-CONFIGURATOR:FLOW-INPUTS'
 };
 
 const OUTPUT_MAPPINGS_TAB: { type: TriggerConfigureTabType, i18nKey: string } = {
-  type: 'flowOutputMappings',
+  type: TriggerConfigureTabType.FlowOutputMappings,
   i18nKey: 'TRIGGER-CONFIGURATOR:FLOW-OUTPUTS'
 };
 

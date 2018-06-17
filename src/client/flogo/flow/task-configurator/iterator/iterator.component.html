@@ -21,5 +21,6 @@
 </div>
 <flogo-mapper class="content__main" *ngIf="iteratorModeOn"
               [isSingleInputMode]="true"
-              outputsSearchPlaceHolder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}"
-              [context]="iteratorContext" (mappingsChange)="onIteratorValueChange($event)"></flogo-mapper>
+              [controller]="mapperController"
+              outputsSearchPlaceHolder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}">
+</flogo-mapper>

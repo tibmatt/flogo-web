@@ -36,4 +36,8 @@ export class TabsComponent implements OnInit, OnDestroy {
     this.ngDestroy$.emitAndComplete();
   }
 
+  trackTabsByFn(index, tab: TriggerConfigureTab) {
+    return tab.type;
+  }
+
 }

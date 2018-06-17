@@ -1,12 +1,13 @@
 import {Action} from '@ngrx/store';
-import {Dictionary, TriggerSchema} from '../../../../core/index';
-import { TriggerConfigureTabType } from '../../interfaces/index';
+import {Dictionary, TriggerSchema} from '@flogo/core';
+import { TriggerConfigureTabType } from '../../interfaces';
 
 export enum TriggerConfigureActionType {
   OpenConfigureWithSelection = '[Flow] [Trigger] [Configure] Open Configure with trigger selected',
   CloseConfigure = '[Flow] [Trigger] [Configure] Close Configure',
   SelectTrigger = '[Flow] [Trigger] [Configure] Select Trigger',
-  SelectTab = '[Flow] [Trigger] [Configure] Select Trigger Tab'
+  SelectTab = '[Flow] [Trigger] [Configure] Select Trigger Tab',
+  MapperStatusChanged = '[Flow] [Trigger] [Configure] Mapper update',
 }
 
 export class OpenConfigureWithSelection implements Action {
@@ -28,7 +29,17 @@ export class SelectTab implements Action {
   constructor(public payload: TriggerConfigureTabType) {}
 }
 
+export class MapperStatusChanged implements Action {
+  readonly type = TriggerConfigureActionType.MapperStatusChanged;
+  constructor(public payload: {
+    triggerId: string,
+    groupType: TriggerConfigureTabType,
+    newStatus: { isValid: boolean, isDirty: boolean },
+  }) {}
+}
+
 export type TriggerConfigureActionUnion = OpenConfigureWithSelection
   | CloseConfigure
   | SelectTrigger
-  | SelectTab;
+  | SelectTab
+  | MapperStatusChanged;

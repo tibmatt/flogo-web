@@ -14,7 +14,7 @@ export interface TriggerConfigureSettings {
 }
 
 export interface TriggerConfigureMappings {
-  groupId: 'flowInputMappings' | 'flowOutputMappings';
+  groupId: TriggerConfigureTabType.FlowInputMappings | TriggerConfigureTabType.FlowOutputMappings;
   mappings: { [field: string]: string };
 }
 
@@ -59,7 +59,12 @@ interface TriggerConfigureFields {
   [fieldName: string]: TriggerConfigureField;
 }
 
-export type TriggerConfigureTabType = 'settings' | 'flowInputMappings' | 'flowOutputMappings';
+export enum TriggerConfigureTabType {
+  Settings = 'settings',
+  FlowInputMappings = 'flowInputMappings',
+  FlowOutputMappings = 'flowOutputMappings',
+}
+
 export interface TriggerConfigureState {
   isOpen: boolean;
   selectedTriggerId: string;
