@@ -1,0 +1,19 @@
+<flogo-flow-triggers-configurator-tabs
+  [tabs]="tabs$ | async"
+  [currentTabType]="currentTabType"
+  (tabSelected)="onTabSelected($event)"
+></flogo-flow-triggers-configurator-tabs>
+<ng-container [ngSwitch]="currentTabType">
+  <flogo-mapper *ngSwitchCase="TAB_TYPES.FlowInputMappings"
+                class="mapper content__mapper"
+                [controller]="flowInputMapperController"
+                inputsSearchPlaceHolder="{{ 'TRIGGER-MAPPER:LABEL-FLOW-INPUTS' | translate }}"
+                outputsSearchPlaceHolder="{{ 'TRIGGER-MAPPER:LABEL-TRIGGER-OUTPUT' | translate }}">
+  </flogo-mapper>
+  <flogo-mapper *ngSwitchCase="TAB_TYPES.FlowOutputMappings"
+                class="mapper content__mapper"
+                [controller]="replyMapperController"
+                inputsSearchPlaceHolder="{{ 'TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES' | translate }}"
+                outputsSearchPlaceHolder="{{ 'TRIGGER-MAPPER:LABEL-FLOW-OUTPUTS' | translate }}">
+  </flogo-mapper>
+</ng-container>
