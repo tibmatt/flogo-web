@@ -121,20 +121,26 @@ export class ConfiguratorService {
   }
 
   private publishCompleteStatuses() {
-    const triggerToConfigure = this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerId);
-    const triggerSchema = this.currentModalStatus.schemas[triggerToConfigure && triggerToConfigure.trigger.ref];
-    this.configuratorStatus$.next({
-      isOpen: this.currentModalStatus.isOpen,
-      disableSave: true,
-      selectedTriggerId: this.currentModalStatus.selectedTriggerId,
-      triggers: this.getTriggerStatusForAll()
-    });
-    this.triggerMapperStatus$.next({
-      flowMetadata: this.currentModalStatus.flowMetadata,
-      triggerSchema: triggerSchema || null,
-      handler: (triggerToConfigure && triggerToConfigure.handler) || null,
-      tabs: (triggerToConfigure && triggerToConfigure.tabs) || null
-    });
+    if (this.currentModalStatus) {
+      const triggerToConfigure = this.triggersToConfigure.get(this.currentModalStatus.selectedTriggerId);
+      const triggerSchema = this.currentModalStatus.schemas[triggerToConfigure && triggerToConfigure.trigger.ref];
+      this.configuratorStatus$.next({
+        isOpen: this.currentModalStatus.isOpen,
+        disableSave: true,
+        selectedTriggerId: this.currentModalStatus.selectedTriggerId,
+        triggers: this.getTriggerStatusForAll()
+      });
+      this.triggerMapperStatus$.next({
+        flowMetadata: this.currentModalStatus.flowMetadata,
+        triggerSchema: triggerSchema || null,
+        handler: (triggerToConfigure && triggerToConfigure.handler) || null,
+        tabs: (triggerToConfigure && triggerToConfigure.tabs) || null
+      });
+    } else {
+      this.configuratorStatus$.next({
+        isOpen: false
+      });
+    }
   }
 
   private publishChangedTriggerSelection() {

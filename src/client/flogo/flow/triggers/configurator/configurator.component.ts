@@ -1,17 +1,18 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
-import { FlowState } from '@flogo/flow/core/state';
-import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/core/state/triggers-configure';
+
+import { TriggerConfigureSelectors } from '../../core/state/triggers-configure';
+import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';
 
 import { configuratorAnimations } from './configurator.animations';
-import { TriggerStatus } from './interfaces';
-import { ConfiguratorService as TriggerConfiguratorService } from './configurator.service';
-import { CloseConfigure } from '@flogo/flow/core/state/triggers-configure/trigger-configure.actions';
+import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
+import { FlowState } from '../../core/state';
+import { TriggerStatus, ConfigureTriggerDetails } from './interfaces';
 
 @Component({
   selector: 'flogo-triggers-configuration',
@@ -22,17 +23,18 @@ import { CloseConfigure } from '@flogo/flow/core/state/triggers-configure/trigge
   ],
   animations: configuratorAnimations
 })
-export class ConfiguratorComponent implements OnDestroy {
+export class ConfiguratorComponent implements OnInit, OnDestroy {
   isConfiguratorInitialized$: Observable<boolean>;
   triggerStatuses$: Observable<TriggerStatus[]>;
   selectedTriggerId: string;
   isOpen: boolean;
   private ngDestroy$ = SingleEmissionSubject.create();
+  selectedTriggerDetails$: Observable<ConfigureTriggerDetails>;
 
-  constructor(
-    private triggerConfiguratorService: TriggerConfiguratorService,
-    private store: Store<FlowState>,
-  ) {
+  constructor(private triggerConfiguratorService: TriggerConfiguratorService, private store: Store<FlowState>) {
+  }
+
+  ngOnInit() {
     this.isConfiguratorInitialized$ = this.store.select(TriggerConfigureSelectors.getHasTriggersConfigure);
     const triggerStatuses$ = this.store.select(TriggerConfigureSelectors.getTriggerStatuses);
     this.triggerStatuses$ = this.observeWhileConfiguratorIsActive(triggerStatuses$, []);
@@ -48,6 +50,12 @@ export class ConfiguratorComponent implements OnDestroy {
       .subscribe((currentTriggerId) => {
         this.selectedTriggerId = currentTriggerId;
       });
+    const selectedTriggerDetails$ = this.store.select(TriggerConfigureSelectors.getTriggerConfigureDetails);
+    this.selectedTriggerDetails$ = this.observeWhileConfiguratorIsActive(selectedTriggerDetails$, {
+      tabs: [],
+      fields: {}
+    });
+
   }
 
   changeTriggerSelection(triggerId: string) {

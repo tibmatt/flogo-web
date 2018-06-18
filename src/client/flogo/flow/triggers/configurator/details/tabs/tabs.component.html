@@ -1,0 +1,9 @@
+<ul class="content__menu">
+  <li class="menu__item" *ngFor="let tab of tabs"
+      [class.--has-errors]="tab.isInvalid"
+      [class.--disabled]="tab.isDisabled"
+      [class.--active]="tab.type === currentTabType"
+      (click)="setCurrentView(tab.type)">
+    {{ tab.i18nKey | translate }}
+  </li>
+</ul>

@@ -7,18 +7,28 @@ import {ConfiguratorComponent} from './configurator.component';
 import {ConfiguratorService} from './configurator.service';
 import {ConfigureTriggerComponent} from './trigger/trigger.component';
 import { TabsComponent } from './trigger-detail/tabs.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {
+  ConfigureDetailsComponent as TriggerConfigureDetailsComponent,
+  TabsComponent as TriggerConfigureDetailsTabsComponent,
+  ConfigureSettingsComponent as TriggerConfigureSettingsComponent
+} from './details';
 
 @NgModule({
   imports: [
     NgCommonModule,
     FlogoSharedModule,
-    MapperModule
+    MapperModule,
+    ReactiveFormsModule
   ],
   declarations: [
     TriggerDetailComponent,
     ConfiguratorComponent,
     ConfigureTriggerComponent,
-    TabsComponent
+    TabsComponent,
+    TriggerConfigureDetailsComponent,
+    TriggerConfigureDetailsTabsComponent,
+    TriggerConfigureSettingsComponent
   ],
   exports: [
     ConfiguratorComponent

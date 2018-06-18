@@ -1,10 +1,14 @@
 import { createSelector, select, Store } from '@ngrx/store';
-// todo: move to shared location
-import { TriggerStatus } from '../../../triggers/configurator/interfaces';
-import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
 import { switchMap } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs/observable/of';
+
 import { FlowState } from '@flogo/flow/core/state';
+// todo: move to shared location
+import { TriggerStatus, ConfigureTriggerDetails } from '../../../triggers/configurator/interfaces';
+import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
+
+import {createTriggerConfigureFields} from './cases/create-trigger-configure-fields';
+
 
 export const getSchemas = createSelector(selectTriggerConfigure, state => state.schemas);
 export const getAllTabs = createSelector(selectTriggerConfigure, state => state.tabs);
@@ -113,5 +117,20 @@ export const getConfigureState = createSelector(
       handler,
     };
   },
+);
 
+export const getTriggerConfigureDetails = createSelector(
+  selectTriggerConfigure,
+  getConfigurableTriggerDetails,
+  (triggerConfigure, allTriggersHandlers): ConfigureTriggerDetails => {
+    const {selectedTriggerId, triggers, tabs: availableTabs, schemas} = triggerConfigure;
+    const {trigger, handler} = allTriggersHandlers.find(configureData => configureData.trigger.id === selectedTriggerId);
+    const schema = schemas[trigger.ref];
+    const fields = createTriggerConfigureFields(trigger, handler, schema);
+    return {
+      tabs: triggers[selectedTriggerId].tabs.map(tab => availableTabs[tab]),
+      fields,
+      schema
+    };
+  },
 );
