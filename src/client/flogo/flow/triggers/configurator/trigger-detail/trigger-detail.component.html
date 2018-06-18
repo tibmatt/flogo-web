@@ -1,9 +1,12 @@
 <flogo-flow-triggers-configurator-tabs
   [tabs]="tabs$ | async"
   [currentTabType]="currentTabType"
-  (tabSelected)="onTabSelected($event)"
-></flogo-flow-triggers-configurator-tabs>
+  (tabSelected)="onTabSelected($event)">
+</flogo-flow-triggers-configurator-tabs>
 <ng-container [ngSwitch]="currentTabType">
+  <flogo-triggers-configuration-settings *ngSwitchCase="TAB_TYPES.Settings"
+                                         [settingsForm]="settingsForm">
+  </flogo-triggers-configuration-settings>
   <flogo-mapper *ngSwitchCase="TAB_TYPES.FlowInputMappings"
                 class="mapper content__mapper"
                 [controller]="flowInputMapperController"

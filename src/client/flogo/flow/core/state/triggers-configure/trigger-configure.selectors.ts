@@ -4,7 +4,7 @@ import { of as observableOf } from 'rxjs/observable/of';
 
 import { FlowState } from '@flogo/flow/core/state';
 // todo: move to shared location
-import { TriggerStatus, ConfigureTriggerDetails } from '../../../triggers/configurator/interfaces';
+import { TriggerStatus, ConfigureTriggerDetails, CurrentTriggerState } from '../../../triggers/configurator/interfaces';
 import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
 
 import {createTriggerConfigureFields} from './cases/create-trigger-configure-fields';
@@ -26,7 +26,7 @@ const getConfigurableTriggerDetails = createSelector(
 
 export const selectCurrentTriggerId = createSelector(
   selectTriggerConfigure,
-  triggerConfigureState => triggerConfigureState.selectedTriggerId
+  triggerConfigureState => triggerConfigureState ? triggerConfigureState.selectedTriggerId : null
 );
 
 const selectTriggerConfigureTriggers = createSelector(selectTriggerConfigure, triggerConfigureState => triggerConfigureState.triggers);
@@ -109,12 +109,13 @@ export const getConfigureState = createSelector(
   getCurrentSchema,
   getCurrentTrigger,
   getCurrentHandler,
-  (flowMetadata, schema, trigger, handler) => {
+  (flowMetadata, schema, trigger, handler): CurrentTriggerState => {
     return {
       flowMetadata,
       schema,
       trigger,
       handler,
+      fields: createTriggerConfigureFields(trigger, handler, schema),
     };
   },
 );

@@ -1,57 +1,66 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 
-import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
-import { FlowState } from '../../../core/state';
+import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 import { MapperController } from '@flogo/flow/shared/mapper/services/mapper-controller/mapper-controller';
-import * as TriggerConfigureActions from '../../../core/state/triggers-configure/trigger-configure.actions';
-import { TriggerConfigureTabType, TriggerConfigureTab } from '../../../core/interfaces';
-import { ContribSchema, FlowMetadata } from '@flogo/core';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
-import { ConfiguratorService as TriggerConfiguratorService } from '@flogo/flow/triggers/configurator/configurator.service';
-import { TriggerConfigureSelectors } from '@flogo/flow/core/state/triggers-configure';
-import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
-import { getCurrentTabs, getCurrentTabType } from '@flogo/flow/core/state/triggers-configure/trigger-configure.selectors';
+
+import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/core/state/triggers-configure';
+import { FlowState } from '@flogo/flow/core/state';
+import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/interfaces';
+
+import { CurrentTriggerState } from '../interfaces';
+import { ConfigureDetailsService } from './details.service';
+import { SettingsFormBuilder } from './settings-form-builder';
 
 @Component({
   selector: 'flogo-flow-triggers-configurator-detail',
   styleUrls: [
     'trigger-detail.component.less'
   ],
-  templateUrl: 'trigger-detail.component.html'
+  templateUrl: 'trigger-detail.component.html',
+  providers: [
+    ConfigureDetailsService,
+    SettingsFormBuilder
+  ],
 })
-export class TriggerDetailComponent implements OnDestroy {
+export class TriggerDetailComponent implements OnInit, OnDestroy {
 
-  @Input() mapperController: MapperController;
+  TAB_TYPES = TriggerConfigureTabType;
 
   selectedTriggerId: string;
+
   tabs$: Observable<TriggerConfigureTab[]>;
   currentTabType: TriggerConfigureTabType;
+
   flowInputMapperController: MapperController;
   replyMapperController: MapperController;
-  TAB_TYPES = TriggerConfigureTabType;
+  settingsForm: FormGroup;
+
   private ngDestroy$ = SingleEmissionSubject.create();
 
   constructor(
-    private triggerConfiguratorService: TriggerConfiguratorService,
     private store: Store<FlowState>,
-    private mapperControllerFactory: MapperControllerFactory,
+    private detailsService: ConfigureDetailsService,
   ) {
-    this.tabs$ = this.store.pipe(getCurrentTabs);
+  }
+
+  ngOnInit() {
+    this.tabs$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTabs);
     this.store
-      .select(getCurrentTabType)
+      .select(TriggerConfigureSelectors.getCurrentTabType)
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(currentTabType => {
         this.currentTabType = currentTabType;
       });
 
+    const getCurrentTriggerState = this.store.select(TriggerConfigureSelectors.getConfigureState).pipe(take(1));
     this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId)
       .pipe(
-        switchMap(() => this.store
-          .select(TriggerConfigureSelectors.getConfigureState)
-          .pipe(take(1))
-        ),
+        filter(currentTriggerId => !!currentTriggerId),
+        switchMap(() => getCurrentTriggerState),
         takeUntil(this.ngDestroy$),
       )
       .subscribe((state) => this.restart(state));
@@ -67,35 +76,16 @@ export class TriggerDetailComponent implements OnDestroy {
     }
   }
 
-  private restart(state) {
+  private restart(state: CurrentTriggerState) {
     this.selectedTriggerId = state.trigger.id;
-    this.initMapperControllers(state.flowMetadata, state.schema, state.handler.actionMappings);
-  }
+    const { settings, flowInputMapper, replyMapper } = this.detailsService.build(state);
+    this.settingsForm = settings;
 
-  private initMapperControllers(flowMetadata: FlowMetadata, triggerSchema: ContribSchema, actionMappings) {
-    const { input, output } = actionMappings;
     const subscribeToUpdates = this.createMapperStatusUpdateSubscriber();
-    this.flowInputMapperController = this.createInputMapperController(flowMetadata, triggerSchema, input);
+    this.flowInputMapperController = flowInputMapper;
     subscribeToUpdates(this.flowInputMapperController, TriggerConfigureTabType.FlowInputMappings);
-
-    this.replyMapperController = this.createReplyMapperController(flowMetadata, triggerSchema, output);
+    this.replyMapperController = replyMapper;
     subscribeToUpdates(this.replyMapperController, TriggerConfigureTabType.FlowOutputMappings);
-  }
-
-  private createReplyMapperController(flowMetadata, triggerSchema, output: any) {
-    return this.mapperControllerFactory.createController(
-      flowMetadata && flowMetadata.output ? flowMetadata.output : [],
-      triggerSchema.reply || [],
-      output,
-    );
-  }
-
-  private createInputMapperController(flowMetadata, triggerSchema, input: any) {
-    return this.mapperControllerFactory.createController(
-      flowMetadata && flowMetadata.input ? flowMetadata.input : [],
-      triggerSchema.outputs || [],
-      input
-    );
   }
 
   private createMapperStatusUpdateSubscriber() {

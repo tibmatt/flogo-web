@@ -1,18 +1,14 @@
 import {NgModule} from '@angular/core';
+import { ReactiveFormsModule} from '@angular/forms';
 import {CommonModule as NgCommonModule} from '@angular/common';
+
 import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 import {MapperModule} from '@flogo/flow/shared/mapper';
-import {TriggerDetailComponent} from './trigger-detail';
-import {ConfiguratorComponent} from './configurator.component';
+
 import {ConfiguratorService} from './configurator.service';
-import {ConfigureTriggerComponent} from './trigger/trigger.component';
-import { TabsComponent } from './trigger-detail/tabs.component';
-import {ReactiveFormsModule} from '@angular/forms';
-import {
-  ConfigureDetailsComponent as TriggerConfigureDetailsComponent,
-  TabsComponent as TriggerConfigureDetailsTabsComponent,
-  ConfigureSettingsComponent as TriggerConfigureSettingsComponent
-} from './details';
+import {ConfiguratorComponent} from './configurator.component';
+import { ConfigureTriggerComponent } from './trigger/trigger.component';
+import { TriggerDetailComponent, TabsComponent, ConfigureSettingsComponent } from './trigger-detail';
 
 @NgModule({
   imports: [
@@ -25,10 +21,8 @@ import {
     TriggerDetailComponent,
     ConfiguratorComponent,
     ConfigureTriggerComponent,
+    ConfigureSettingsComponent,
     TabsComponent,
-    TriggerConfigureDetailsComponent,
-    TriggerConfigureDetailsTabsComponent,
-    TriggerConfigureSettingsComponent
   ],
   exports: [
     ConfiguratorComponent

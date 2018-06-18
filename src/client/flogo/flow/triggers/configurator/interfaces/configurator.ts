@@ -1,6 +1,7 @@
 import {FlowMetadata} from '@flogo/core/interfaces/flow';
 import {Trigger, TriggerHandler, TriggerConfigureState} from '../../../core';
 import {Tabs} from '../../../shared/tabs/models/tabs.model';
+import { TriggerSchema } from '@flogo/core';
 
 export interface TriggerConfiguration {
   handler: any;
@@ -41,4 +42,13 @@ export interface TriggerStatus {
   isValid?: boolean;
   isDirty?: boolean;
   name?: string;
+}
+
+export interface CurrentTriggerState {
+  flowMetadata: FlowMetadata;
+  schema: TriggerSchema;
+  handler: TriggerHandler;
+  trigger: Trigger;
+  // todo: define
+  fields: any;
 }

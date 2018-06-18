@@ -28,8 +28,9 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   triggerStatuses$: Observable<TriggerStatus[]>;
   selectedTriggerId: string;
   isOpen: boolean;
-  private ngDestroy$ = SingleEmissionSubject.create();
   selectedTriggerDetails$: Observable<ConfigureTriggerDetails>;
+
+  private ngDestroy$ = SingleEmissionSubject.create();
 
   constructor(private triggerConfiguratorService: TriggerConfiguratorService, private store: Store<FlowState>) {
   }
