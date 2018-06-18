@@ -24,7 +24,8 @@
       </flogo-triggers-configure-trigger>
     </div>
     <div class="configuration__mapper" @triggerConfiguratorLayoutElement>
-      <flogo-flow-trigger-mapper *ngIf="isInitialized$ | async"></flogo-flow-trigger-mapper>
+      <flogo-triggers-configuration-details
+        [details]="selectedTriggerDetails$ | async"></flogo-triggers-configuration-details>
     </div>
   </div>
 </div>

@@ -42,7 +42,7 @@ export interface TriggerConfigureTab {
   isEnabled: boolean;
 }
 
-interface TriggerConfigureField {
+export interface TriggerConfigureField {
   isDirty: boolean;
   isValid: boolean;
   isEnabled: boolean;
@@ -55,7 +55,7 @@ interface TriggerConfigureField {
   };
 }
 
-interface TriggerConfigureFields {
+export interface TriggerConfigureFields {
   [fieldName: string]: TriggerConfigureField;
 }
 

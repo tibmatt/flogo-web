@@ -4,12 +4,12 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import { Store } from '@ngrx/store';
 import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
-import {SingleEmissionSubject} from '@flogo/core/models/single-emission-subject';
+import {SingleEmissionSubject} from '@flogo/core/models';
 import { configuratorAnimations } from './configurator.animations';
-import { FlowState } from '@flogo/flow/core/state';
-import { TriggerConfigureSelectors } from '@flogo/flow/core/state/triggers-configure';
-import * as TriggerConfigureActions from '@flogo/flow/core/state/triggers-configure/trigger-configure.actions';
-import { ConfiguratorStatus, TriggerStatus } from './interfaces';
+import { FlowState } from '../../core/state';
+import { TriggerConfigureSelectors } from '../../core/state/triggers-configure';
+import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';
+import { ConfiguratorStatus, TriggerStatus, ConfigureTriggerDetails } from './interfaces';
 
 @Component({
   selector: 'flogo-triggers-configuration',
@@ -31,6 +31,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     triggers: [],
     selectedTriggerId: null
   };
+  selectedTriggerDetails$: Observable<ConfigureTriggerDetails>;
   private ngDestroy = SingleEmissionSubject.create();
 
   constructor(private triggerConfiguratorService: TriggerConfiguratorService, private store: Store<FlowState>) {
@@ -48,6 +49,12 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     const currentTriggerId$ = this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId);
     this.observeWhileInitialized(currentTriggerId$, null)
       .subscribe((selectedTriggerId) => this.selectedTriggerId = selectedTriggerId);
+
+    const selectedTriggerDetails$ = this.store.select(TriggerConfigureSelectors.getTriggerConfigureDetails);
+    this.selectedTriggerDetails$ = this.observeWhileInitialized(selectedTriggerDetails$, {
+      tabs: [],
+      fields: {}
+    });
   }
 
   onNextStatus(nextStatus: ConfiguratorStatus) {
