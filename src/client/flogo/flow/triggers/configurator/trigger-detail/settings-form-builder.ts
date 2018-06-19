@@ -5,7 +5,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Injectable()
 export class SettingsFormBuilder {
-  constructor(private ngFormBuilder: FormBuilder, ) {}
+  constructor(private ngFormBuilder: FormBuilder) {}
 
   build(settingsFields, schema: TriggerSchema) {
     const triggerSettingsSchema = keyBy<SchemaAttribute>(schema.settings, 'name');

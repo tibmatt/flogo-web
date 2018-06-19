@@ -13,7 +13,6 @@ import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/i
 
 import { CurrentTriggerState } from '../interfaces';
 import { ConfigureDetailsService } from './details.service';
-import { SettingsFormBuilder } from './settings-form-builder';
 
 @Component({
   selector: 'flogo-flow-triggers-configurator-detail',
@@ -21,10 +20,7 @@ import { SettingsFormBuilder } from './settings-form-builder';
     'trigger-detail.component.less'
   ],
   templateUrl: 'trigger-detail.component.html',
-  providers: [
-    ConfigureDetailsService,
-    SettingsFormBuilder
-  ],
+  providers: [],
 })
 export class TriggerDetailComponent implements OnInit, OnDestroy {
 

@@ -8,7 +8,13 @@ import {MapperModule} from '@flogo/flow/shared/mapper';
 import {ConfiguratorService} from './configurator.service';
 import {ConfiguratorComponent} from './configurator.component';
 import { ConfigureTriggerComponent } from './trigger/trigger.component';
-import { TriggerDetailComponent, TabsComponent, ConfigureSettingsComponent } from './trigger-detail';
+import {
+  TriggerDetailComponent,
+  TabsComponent,
+  ConfigureSettingsComponent,
+  ConfigureDetailsService,
+  SettingsFormBuilder
+} from './trigger-detail';
 
 @NgModule({
   imports: [
@@ -28,7 +34,9 @@ import { TriggerDetailComponent, TabsComponent, ConfigureSettingsComponent } fro
     ConfiguratorComponent
   ],
   providers: [
-    ConfiguratorService
+    ConfiguratorService,
+    ConfigureDetailsService,
+    SettingsFormBuilder
   ]
 })
 
