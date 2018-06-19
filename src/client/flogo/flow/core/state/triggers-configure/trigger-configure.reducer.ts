@@ -31,7 +31,7 @@ export function triggerConfigureReducer(state: FlowState, action: TriggerConfigu
           currentTab: action.payload,
         }
       };
-    case TriggerConfigureActionType.MapperStatusChanged: {
+    case TriggerConfigureActionType.CofigureStatusChanged: {
       const { triggerId, groupType, newStatus } = action.payload;
       const groupId = `${triggerId}.${groupType}`;
       return {

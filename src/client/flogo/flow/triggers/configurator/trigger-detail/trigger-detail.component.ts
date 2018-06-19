@@ -72,6 +72,14 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  updateSettingsStatus(settingsStatus: {isValid: boolean, isDirty: boolean}) {
+    this.store.dispatch(new TriggerConfigureActions.ConfigureStatusChanged({
+      triggerId: this.selectedTriggerId,
+      groupType: TriggerConfigureTabType.Settings,
+      newStatus: settingsStatus
+    }));
+  }
+
   private restart(state: CurrentTriggerState) {
     this.selectedTriggerId = state.trigger.id;
     const { settings, flowInputMapper, replyMapper } = this.detailsService.build(state);
@@ -89,7 +97,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
       controller.status$
         .pipe(takeUntil(this.ngDestroy$))
         .subscribe(status => {
-          this.store.dispatch(new TriggerConfigureActions.MapperStatusChanged({
+          this.store.dispatch(new TriggerConfigureActions.ConfigureStatusChanged({
             triggerId: this.selectedTriggerId,
             groupType,
             newStatus: status,

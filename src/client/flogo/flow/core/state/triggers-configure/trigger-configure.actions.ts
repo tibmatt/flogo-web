@@ -7,7 +7,7 @@ export enum TriggerConfigureActionType {
   CloseConfigure = '[Flow] [Trigger] [Configure] Close Configure',
   SelectTrigger = '[Flow] [Trigger] [Configure] Select Trigger',
   SelectTab = '[Flow] [Trigger] [Configure] Select Trigger Tab',
-  MapperStatusChanged = '[Flow] [Trigger] [Configure] Mapper update',
+  CofigureStatusChanged = '[Flow] [Trigger] [Configure] Trigger Configuration update',
 }
 
 export class OpenConfigureWithSelection implements Action {
@@ -29,8 +29,8 @@ export class SelectTab implements Action {
   constructor(public payload: TriggerConfigureTabType) {}
 }
 
-export class MapperStatusChanged implements Action {
-  readonly type = TriggerConfigureActionType.MapperStatusChanged;
+export class ConfigureStatusChanged implements Action {
+  readonly type = TriggerConfigureActionType.CofigureStatusChanged;
   constructor(public payload: {
     triggerId: string,
     groupType: TriggerConfigureTabType,
@@ -42,4 +42,4 @@ export type TriggerConfigureActionUnion = OpenConfigureWithSelection
   | CloseConfigure
   | SelectTrigger
   | SelectTab
-  | MapperStatusChanged;
+  | ConfigureStatusChanged;
