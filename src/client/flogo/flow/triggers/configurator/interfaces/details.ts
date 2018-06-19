@@ -4,7 +4,8 @@ import {
   TriggerConfigureFields,
   TriggerConfigureTabType
 } from '@flogo/flow/core';
-import {TriggerSchema} from '@flogo/core';
+import {SchemaAttribute, TriggerSchema} from '@flogo/core';
+import {ValidatorFn} from '@angular/forms';
 
 export interface ConfigureTriggerDetails {
   tabs: TriggerConfigureTab[];
@@ -14,4 +15,15 @@ export interface ConfigureTriggerDetails {
     };
   };
   schema: TriggerSchema;
+}
+
+export type SettingControlGroupType = 'triggerSettings' | 'handlerSettings';
+export enum SettingControlGroup {
+  TRIGGER = 'triggerSettings',
+  HANDLER = 'handlerSettings'
+}
+export interface SettingControlInfo extends SchemaAttribute {
+  partOf: SettingControlGroupType;
+  propsAllowed: string[];
+  validations: ValidatorFn[];
 }

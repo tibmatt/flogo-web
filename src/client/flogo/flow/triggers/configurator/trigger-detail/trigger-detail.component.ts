@@ -37,6 +37,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   flowInputMapperController: MapperController;
   replyMapperController: MapperController;
   settingsForm: FormGroup;
+  settingsControlInformation;
 
   private previousState: CurrentTriggerState;
   private ngDestroy$ = SingleEmissionSubject.create();
@@ -106,8 +107,9 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   private restart(state: CurrentTriggerState) {
     this.selectedTriggerId = state.trigger.id;
-    const { settings, flowInputMapper, replyMapper } = this.detailsService.build(state);
+    const { settings, flowInputMapper, replyMapper, settingsControlInfo } = this.detailsService.build(state);
     this.settingsForm = settings;
+    this.settingsControlInformation = settingsControlInfo;
 
     const subscribeToUpdates = this.createMapperStatusUpdateSubscriber();
     this.flowInputMapperController = flowInputMapper;
