@@ -1,0 +1,54 @@
+@import (reference) '../../../../../../assets/_variables';
+@import (reference) '../../../../../../assets/uxpl/dropdown';
+
+:host {
+  .uxpl-dropdown-container;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  top: 8px;
+  max-height: 436px;
+}
+
+.help {
+  flex: 0 0 auto;
+  padding: 16px;
+  color: @color-dark-gray;
+  line-height: 1.3;
+  strong {
+    color: @color-ink;
+  }
+  border-bottom: 1px solid @color-medium-gray;
+}
+
+.all-options-wrapper {
+  flex: 1;
+  overflow: auto;
+}
+
+.options-group {
+  .uxpl-dropdown;
+
+  &:first-of-type {
+    padding-top: 12px;
+  }
+  &:last-of-type {
+    margin-bottom: 12px;
+  }
+}
+
+.options-group__option {
+  .uxpl-dropdown__item;
+}
+
+.options-group + .app-variables-list {
+  padding-top: 0;
+  &::before {
+    border-top: 1px solid @color-medium-gray;
+    content: '';
+    display: block;
+    border-top: 1px solid @color-medium-gray;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}

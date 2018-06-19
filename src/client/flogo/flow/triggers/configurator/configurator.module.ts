@@ -1,6 +1,8 @@
 import {NgModule} from '@angular/core';
 import { ReactiveFormsModule} from '@angular/forms';
-import {CommonModule as NgCommonModule} from '@angular/common';
+import { CommonModule as NgCommonModule } from '@angular/common';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { PortalModule } from '@angular/cdk/portal';
 
 import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 import {MapperModule} from '@flogo/flow/shared/mapper';
@@ -13,15 +15,19 @@ import {
   TabsComponent,
   ConfigureSettingsComponent,
   ConfigureDetailsService,
-  SettingsFormBuilder
+  SettingsFormBuilder,
+  AutoCompleteDirective,
+  AutoCompleteContentComponent
 } from './trigger-detail';
 
 @NgModule({
   imports: [
     NgCommonModule,
+    ReactiveFormsModule,
+    OverlayModule,
+    PortalModule,
     FlogoSharedModule,
-    MapperModule,
-    ReactiveFormsModule
+    MapperModule
   ],
   declarations: [
     TriggerDetailComponent,
@@ -29,6 +35,8 @@ import {
     ConfigureTriggerComponent,
     ConfigureSettingsComponent,
     TabsComponent,
+    AutoCompleteDirective,
+    AutoCompleteContentComponent,
   ],
   exports: [
     ConfiguratorComponent
@@ -36,7 +44,10 @@ import {
   providers: [
     ConfiguratorService,
     ConfigureDetailsService,
-    SettingsFormBuilder
+    SettingsFormBuilder,
+  ],
+  entryComponents: [
+    AutoCompleteContentComponent,
   ]
 })
 

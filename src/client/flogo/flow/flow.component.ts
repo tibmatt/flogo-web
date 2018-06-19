@@ -101,9 +101,8 @@ const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.ty
 @Component({
   selector: 'flogo-flow',
   templateUrl: 'flow.component.html',
-  styleUrls: ['flow.component.less']
+  styleUrls: ['flow.component.less'],
 })
-
 export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
   public flowState: FlowState;

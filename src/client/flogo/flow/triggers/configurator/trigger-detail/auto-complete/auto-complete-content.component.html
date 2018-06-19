@@ -1,0 +1,22 @@
+<div class="help">
+  Type to filter. Type “<strong>$</strong>” to filter properties.<br>
+  Use “<strong>$env.</strong>” for environment variables
+</div>
+<div class="all-options-wrapper">
+    <ng-container *ngIf="options?.allowedValues | async as allowedValues">
+      <ul role="listbox" *ngIf="allowedValues.length > 0" class="options-group">
+        <li *ngFor="let value of allowedValues"
+            role="option"
+            class="options-group__option"
+            (click)="onOptionClicked(value)">{{ value }}</li>
+      </ul>
+    </ng-container>
+    <ng-container *ngIf="options?.appVariables | async as variables">
+      <ul role="listbox" *ngIf="variables.length > 0" class="options-group app-variables-list">
+        <li *ngFor="let variable of variables"
+            role="option"
+            class="options-group__option"
+            (click)="onOptionClicked(variable)">{{ variable }}</li>
+      </ul>
+    </ng-container>
+</div>

@@ -1,9 +1,17 @@
 <div [formGroup]="settingsForm">
-  <input type="text" [formControl]="settingsForm.controls.name">
+  <input type="text" [formControl]="settingsForm.controls.name"
+         fgTriggersConfigAutoComplete
+         [autoCompleteVariablesSource]="['$env[ABC]', '$property[xyz].sd', '$property[abcd]']"
+         [autoCompleteAllowedSource]="['ALLOWED1', 'ALLOWED2', 'ALLOWED3']">
   <input type="text" [formControl]="settingsForm.controls.description">
   <div *ngIf="triggerSettings" [formGroup]="settingsForm.controls.triggerSettings">
     <input *ngFor="let settingName of triggerSettings"
-           formControlName="{{settingName}}">
+           formControlName="{{settingName}}"
+           [formControl]="settingsForm.controls.triggerSettings.controls[settingName]"
+           fgTriggersConfigAutoComplete
+           [autoCompleteVariablesSource]="['$env[ABC]', '$property[xyz].sd', '$property[abcd]', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']"
+           [autoCompleteAllowedSource]="['ALLOWED1', 'ALLOWED2', 'ALLOWED3']"
+    >
   </div>
   <div *ngIf="handlerSettings" [formGroup]="settingsForm.controls.handlerSettings">
     <input *ngFor="let settingName of handlerSettings"

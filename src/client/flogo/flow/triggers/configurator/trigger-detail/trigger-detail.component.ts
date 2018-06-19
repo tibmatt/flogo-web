@@ -59,7 +59,9 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
         switchMap(() => getCurrentTriggerState),
         takeUntil(this.ngDestroy$),
       )
-      .subscribe((state) => this.restart(state));
+      .subscribe((state) => {
+        this.restart(state);
+      });
   }
 
   ngOnDestroy() {

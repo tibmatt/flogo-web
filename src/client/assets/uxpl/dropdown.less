@@ -1,0 +1,28 @@
+@import "../_variables";
+
+.uxpl-dropdown-container {
+  background-color: #fff;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
+  border-radius: 3px;
+}
+
+.uxpl-dropdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.uxpl-dropdown__item {
+  color: @primary-blue;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin: 0;
+  &:hover,
+  &:focus {
+    background-color: rgba(197, 202, 233, 0.2);
+  }
+  &:active {
+    color: #fff;
+    background-color: @primary-blue;
+  }
+}
