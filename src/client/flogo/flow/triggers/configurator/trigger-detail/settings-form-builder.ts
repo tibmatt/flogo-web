@@ -1,4 +1,4 @@
-import {keyBy} from 'lodash';
+import {keyBy, isEmpty} from 'lodash';
 import {Injectable} from '@angular/core';
 import {Dictionary, SchemaAttribute, TriggerSchema} from '@flogo/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -13,8 +13,12 @@ export class SettingsFormBuilder {
     const settingsFormGroup: Dictionary<FormControl | FormGroup> = {};
     settingsFormGroup.name = this.ngFormBuilder.control(settingsFields.name.value || '', Validators.required);
     settingsFormGroup.description = this.ngFormBuilder.control(settingsFields.description.value || '', Validators.required);
-    settingsFormGroup.triggerSettings = this.formGroupBySettings(settingsFields.triggerSettings, triggerSettingsSchema);
-    settingsFormGroup.handlerSettings = this.formGroupBySettings(settingsFields.handlerSettings, handlerSettingsSchema);
+    if (!isEmpty(settingsFields.triggerSettings)) {
+      settingsFormGroup.triggerSettings = this.formGroupBySettings(settingsFields.triggerSettings, triggerSettingsSchema);
+    }
+    if (!isEmpty(settingsFields.handlerSettings)) {
+      settingsFormGroup.handlerSettings = this.formGroupBySettings(settingsFields.handlerSettings, handlerSettingsSchema);
+    }
     return this.ngFormBuilder.group(settingsFormGroup);
   }
 

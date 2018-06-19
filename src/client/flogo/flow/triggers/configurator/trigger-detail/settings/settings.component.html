@@ -1,12 +1,12 @@
 <div [formGroup]="settingsForm">
   <input type="text" [formControl]="settingsForm.controls.name">
   <input type="text" [formControl]="settingsForm.controls.description">
-  <div [formGroup]="settingsForm.controls.triggerSettings">
+  <div *ngIf="triggerSettings" [formGroup]="settingsForm.controls.triggerSettings">
     <input *ngFor="let settingName of triggerSettings"
-           [formControl]="settingsForm.controls.triggerSettings.controls[settingName]">
+           formControlName="{{settingName}}">
   </div>
-  <div [formGroup]="settingsForm.controls.handlerSettings">
+  <div *ngIf="handlerSettings" [formGroup]="settingsForm.controls.handlerSettings">
     <input *ngFor="let settingName of handlerSettings"
-           [formControl]="settingsForm.controls.handlerSettings.controls[settingName]">
+           formControlName="{{settingName}}">
   </div>
 </div>

@@ -28,7 +28,6 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   triggerStatuses$: Observable<TriggerStatus[]>;
   selectedTriggerId: string;
   isOpen: boolean;
-  selectedTriggerDetails$: Observable<ConfigureTriggerDetails>;
 
   private ngDestroy$ = SingleEmissionSubject.create();
 
@@ -51,11 +50,6 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
       .subscribe((currentTriggerId) => {
         this.selectedTriggerId = currentTriggerId;
       });
-    const selectedTriggerDetails$ = this.store.select(TriggerConfigureSelectors.getTriggerConfigureDetails);
-    this.selectedTriggerDetails$ = this.observeWhileConfiguratorIsActive(selectedTriggerDetails$, {
-      tabs: [],
-      fields: {}
-    });
 
   }
 

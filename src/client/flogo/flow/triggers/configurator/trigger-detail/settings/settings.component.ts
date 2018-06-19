@@ -8,11 +8,15 @@ import {Component, Input, OnChanges} from '@angular/core';
 export class ConfigureSettingsComponent implements OnChanges {
   @Input()
   settingsForm;
-  triggerSettings;
-  handlerSettings;
+  triggerSettings: string[] | null;
+  handlerSettings: string[] | null;
 
   ngOnChanges() {
-    this.triggerSettings = Object.keys(this.settingsForm.controls.triggerSettings.controls);
-    this.handlerSettings = Object.keys(this.settingsForm.controls.handlerSettings.controls);
+    this.triggerSettings = this.settingsForm.controls.triggerSettings ?
+      Object.keys(this.settingsForm.controls.triggerSettings.controls)
+      : null;
+    this.handlerSettings = this.settingsForm.controls.handlerSettings ?
+      Object.keys(this.settingsForm.controls.handlerSettings.controls)
+      : null;
   }
 }

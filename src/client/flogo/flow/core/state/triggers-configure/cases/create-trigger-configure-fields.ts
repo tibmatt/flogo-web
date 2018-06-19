@@ -15,8 +15,8 @@ export function createTriggerConfigureFields(triggerInstance: Trigger,
     settings: {
       name: createField(name),
       description: createField(description),
-      triggerSettings: groupBySettings(triggerSettingsSchema, common),
-      handlerSettings: groupBySettings(handlerSettingsSchema, handlerSettings)
+      triggerSettings: groupBySettings(triggerSettingsSchema || [], common),
+      handlerSettings: groupBySettings(handlerSettingsSchema || [], handlerSettings)
     },
     flowInputMappings: null,
     flowOutputMappings: null

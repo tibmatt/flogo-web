@@ -119,19 +119,3 @@ export const getConfigureState = createSelector(
     };
   },
 );
-
-export const getTriggerConfigureDetails = createSelector(
-  selectTriggerConfigure,
-  getConfigurableTriggerDetails,
-  (triggerConfigure, allTriggersHandlers): ConfigureTriggerDetails => {
-    const {selectedTriggerId, triggers, tabs: availableTabs, schemas} = triggerConfigure;
-    const {trigger, handler} = allTriggersHandlers.find(configureData => configureData.trigger.id === selectedTriggerId);
-    const schema = schemas[trigger.ref];
-    const fields = createTriggerConfigureFields(trigger, handler, schema);
-    return {
-      tabs: triggers[selectedTriggerId].tabs.map(tab => availableTabs[tab]),
-      fields,
-      schema
-    };
-  },
-);
