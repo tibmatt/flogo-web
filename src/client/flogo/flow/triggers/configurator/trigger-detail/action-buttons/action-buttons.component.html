@@ -1,0 +1,14 @@
+<div *ngIf="status && status.isDirty; else noChanges" class="buttons">
+  <button class="flogo-button--secondary action"
+          (click)="discardChanges.emit()">
+    {{ 'TRIGGER-CONFIGURATOR:CANCEL' | translate }}
+  </button>
+  <button [disabled]="!status?.isValid"
+          class="flogo-button--primary  action"
+          (click)="save.emit()">
+    {{ 'TRIGGER-CONFIGURATOR:SAVE' | translate }}
+  </button>
+</div>
+<ng-template #noChanges>
+  <span class="default-text">{{ 'TRIGGER-CONFIGURATOR:NO-PENDING-CHANGES' | translate }}</span>
+</ng-template>

@@ -222,6 +222,8 @@ export class MapperControllerFactory {
 
   private getInitialState(): MapperState {
     return {
+      isDirty: false,
+      isValid: true,
       mappings: {},
       inputs: {
         filterTerm: null,

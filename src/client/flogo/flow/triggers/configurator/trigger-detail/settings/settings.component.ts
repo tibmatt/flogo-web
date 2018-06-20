@@ -1,6 +1,10 @@
 import {isEqual} from 'lodash';
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@angular/core';
-import {Subscription} from 'rxjs/src/Subscription';
+import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { concat as concatObservables } from 'rxjs/observable/concat';
+import { of as observableOf } from 'rxjs/observable/of';
 
 @Component({
   selector: 'flogo-triggers-configuration-settings',
@@ -9,7 +13,7 @@ import {Subscription} from 'rxjs/src/Subscription';
 })
 export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   @Input()
-  settingsForm;
+  settingsForm: FormGroup;
   @Output()
   statusChanges = new EventEmitter();
   triggerSettings: string[] | null;
@@ -19,23 +23,37 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
 
   ngOnChanges() {
     this.triggerSettings = this.settingsForm.controls.triggerSettings ?
-      Object.keys(this.settingsForm.controls.triggerSettings.controls)
+      Object.keys((<FormGroup>this.settingsForm.controls.triggerSettings).controls)
       : null;
     this.handlerSettings = this.settingsForm.controls.handlerSettings ?
-      Object.keys(this.settingsForm.controls.handlerSettings.controls)
+      Object.keys((<FormGroup>this.settingsForm.controls.handlerSettings).controls)
       : null;
-    this.valueChangeSub = this.settingsForm.valueChanges.debounceTime(300)
-      .distinctUntilChanged()
-      .subscribe(() => {
-        if (!isEqual(this.previousState, this.settingsFormStatus)) {
-          this.previousState = this.settingsFormStatus;
-          this.statusChanges.emit(this.settingsFormStatus);
-        }
-      });
+    this.unsubscribePrevious();
+    this.previousState = null;
+    this.valueChangeSub = concatObservables(
+      observableOf(this.settingsForm.value),
+      this.settingsForm.valueChanges.pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+      ),
+    )
+    .subscribe(() => {
+      if (!isEqual(this.previousState, this.settingsFormStatus)) {
+        this.previousState = this.settingsFormStatus;
+        this.statusChanges.emit(this.settingsFormStatus);
+      }
+    });
   }
 
   ngOnDestroy() {
-    this.valueChangeSub.unsubscribe();
+    this.unsubscribePrevious();
+  }
+
+  private unsubscribePrevious() {
+    if (this.valueChangeSub && !this.valueChangeSub.closed) {
+      this.valueChangeSub.unsubscribe();
+      this.valueChangeSub = null;
+    }
   }
 
   get settingsFormStatus() {

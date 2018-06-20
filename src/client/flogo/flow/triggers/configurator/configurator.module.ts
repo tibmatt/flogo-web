@@ -17,7 +17,8 @@ import {
   ConfigureDetailsService,
   SettingsFormBuilder,
   AutoCompleteDirective,
-  AutoCompleteContentComponent
+  AutoCompleteContentComponent,
+  ActionButtonsComponent,
 } from './trigger-detail';
 
 @NgModule({
@@ -37,6 +38,7 @@ import {
     TabsComponent,
     AutoCompleteDirective,
     AutoCompleteContentComponent,
+    ActionButtonsComponent,
   ],
   exports: [
     ConfiguratorComponent

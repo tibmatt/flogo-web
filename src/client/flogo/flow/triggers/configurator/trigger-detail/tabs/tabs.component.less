@@ -1,19 +1,22 @@
 
 .tabs {
-  border-bottom: solid 2px #b6b6b6;
   background-color: white;
   margin: 0;
+  padding: 0;
 }
 
 .tab {
-  display: inline;
-  width: 100%;
-  font-size: 0.875em;
-  line-height: 2.43;
-  padding: 0.5em 3.429em;
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1;
+  margin: 0;
+  padding: 1.25em 1.75em;
   color: #0081cb;
-  border-bottom: 3px solid transparent;
+  border-bottom: 7px solid transparent;
   cursor: pointer;
+  // spacing to compensate for font size in "active" state being bolder than the one in normal states
+  // this avoids the "jump" effect caused by the change of the width of the tab when switching between states
+  letter-spacing: 0.013em;
 
   &:hover {
     color: #062e79;
@@ -21,9 +24,9 @@
 
   &.is-active {
     color: #062e79;
-    font-weight: bold;
-    border-bottom: 3px solid #062e79;
-
+    font-weight: 600;
+    border-bottom-color: #062e79;
+    letter-spacing: unset;
   }
 
   &.is-disabled,

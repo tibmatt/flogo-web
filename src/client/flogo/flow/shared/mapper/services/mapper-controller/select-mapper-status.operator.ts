@@ -4,7 +4,6 @@ import { MapperState } from '../../models';
 
 export const selectMapperStatus = pipe(
   map((state: MapperState) => ({isDirty: state.isDirty, isValid: state.isValid})),
-  skip(1),
-  // tslint:disable-next-line:triple-equals -- "truthy" and "falsy" values are okay
+  // tslint:disable-next-line:triple-equals -- no strict equality needed, "truthy" and "falsy" values are okay
   distinctUntilChanged((prev, next) => prev.isDirty == next.isDirty && prev.isValid == next.isValid),
 );

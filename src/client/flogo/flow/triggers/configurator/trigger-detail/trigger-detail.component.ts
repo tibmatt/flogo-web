@@ -28,6 +28,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   selectedTriggerId: string;
 
+  overallStatus$: Observable<{ isDirty: boolean, isValid: boolean }>;
   tabs$: Observable<TriggerConfigureTab[]>;
   currentTabType: TriggerConfigureTabType;
 
@@ -35,6 +36,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   replyMapperController: MapperController;
   settingsForm: FormGroup;
 
+  private previousState: CurrentTriggerState;
   private ngDestroy$ = SingleEmissionSubject.create();
 
   constructor(
@@ -44,6 +46,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.overallStatus$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTirggerOverallStatus);
     this.tabs$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTabs);
     this.store
       .select(TriggerConfigureSelectors.getCurrentTabType)
@@ -60,6 +63,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
         takeUntil(this.ngDestroy$),
       )
       .subscribe((state) => {
+        this.previousState = state;
         this.restart(state);
       });
   }
@@ -80,6 +84,12 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
       groupType: TriggerConfigureTabType.Settings,
       newStatus: settingsStatus
     }));
+  }
+
+  discardChanges() {
+    if (this.previousState) {
+      this.restart(this.previousState);
+    }
   }
 
   private restart(state: CurrentTriggerState) {

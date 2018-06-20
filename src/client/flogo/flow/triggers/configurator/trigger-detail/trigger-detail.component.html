@@ -1,8 +1,16 @@
-<flogo-flow-triggers-configurator-tabs
-  [tabs]="tabs$ | async"
-  [currentTabType]="currentTabType"
-  (tabSelected)="onTabSelected($event)">
-</flogo-flow-triggers-configurator-tabs>
+<div class="action-bar">
+  <flogo-flow-triggers-configurator-tabs
+    [tabs]="tabs$ | async"
+    [currentTabType]="currentTabType"
+    (tabSelected)="onTabSelected($event)">
+  </flogo-flow-triggers-configurator-tabs>
+  <flogo-triggers-configuration-detail-action-buttons
+    class="action-bar__buttons"
+    [status]="overallStatus$ | async"
+    (save)="save()"
+    (discardChanges)="discardChanges()">
+  </flogo-triggers-configuration-detail-action-buttons>
+</div>
 <ng-container [ngSwitch]="currentTabType">
   <flogo-triggers-configuration-settings *ngSwitchCase="TAB_TYPES.Settings"
                                          [settingsForm]="settingsForm" (statusChanges)="updateSettingsStatus($event)">

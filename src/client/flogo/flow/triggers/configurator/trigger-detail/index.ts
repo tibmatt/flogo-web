@@ -5,3 +5,4 @@ export { AutoCompleteContentComponent } from './auto-complete/auto-complete-cont
 export { TabsComponent } from './tabs/tabs.component';
 export { ConfigureDetailsService } from './details.service';
 export { SettingsFormBuilder } from './settings-form-builder';
+export { ActionButtonsComponent } from './action-buttons/action-buttons.component';

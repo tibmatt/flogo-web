@@ -1,5 +1,5 @@
 import { createSelector, select, Store } from '@ngrx/store';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs/observable/of';
 
 import { FlowState } from '@flogo/flow/core/state';
@@ -69,6 +69,23 @@ export const getCurrentTabs = (store: Store<FlowState>) => {
 };
 
 export const getHasTriggersConfigure = createSelector(selectTriggerConfigure, triggerConfigure => !!triggerConfigure);
+
+export const getCurrentTirggerOverallStatus = (store: Store<FlowState>) => {
+  const empty$ = observableOf({ isDirty: false, isValid: true });
+  const currentTabs$ = store.pipe(
+    select(selectCurrentTabs),
+    map((currentTabs) => {
+      return {
+        isDirty: !!currentTabs.find(tab => tab.isDirty),
+        isValid: !currentTabs.find(tab => !tab.isValid),
+      };
+    })
+  );
+  return store.pipe(
+    select(getHasTriggersConfigure),
+    switchMap(isTriggerInitialized => isTriggerInitialized ? currentTabs$ : empty$),
+  );
+};
 
 export const getConfigureModalState = createSelector(
   selectTriggerConfigure,
