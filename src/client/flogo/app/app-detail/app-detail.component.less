@@ -153,17 +153,15 @@
     font-size: 0.75em;
   }
 
-
   .flogo-app-detail-list-wrapper {
-    border: solid 1px #727272;
-    border-radius: 2px;
-    box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
+    border-radius: 3px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
     color: #666;
     position: absolute;
-    top: 43px;
+    top: 46px;
     right: 193px;
     z-index: 2;
-    min-width: 124px;
+    min-width: 264px;
     background-color: #ffffff;
     transform: scale(0, 0);
 
@@ -174,12 +172,13 @@
     }
 
     .flogo-app-detail-list {
-      margin: 0;
+      margin: 10px;
 
       .flogo-app-detail-list-item {
         margin: 0;
-        font-size: 14px;
+        font-size: 16px;
         cursor: pointer;
+        letter-spacing: 0.3px;
 
         .flogo-app-detail-list-link {
           display: inline-block;
@@ -187,8 +186,17 @@
           padding: 5px;
           padding-left: 12px;
         }
+
       }
+
     }
+    .flogo-app-trigger-build {
+      padding: 15px 0px;
+      border-top: 1px solid #d8d8d8;
+    }
+  }
+  .app-detail-export-list {
+    min-width: 124px;
   }
   .flogo-app-detail-profile-wrapper{
     right: 54px;

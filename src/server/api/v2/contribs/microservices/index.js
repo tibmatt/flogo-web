@@ -42,6 +42,7 @@ function* listContributions() {
   const searchTerms = {};
   const filterName = this.request.query['filter[name]'];
   const filterRef = this.request.query['filter[ref]'];
+  const filterShim = this.request.query['filter[shim]'];
   let contributionType = contributionTypes[this.request.query['filter[type]']];
   let foundContributions;
 
@@ -51,7 +52,9 @@ function* listContributions() {
   if (filterRef) {
     searchTerms.ref = filterRef;
   }
-
+  if (filterShim) {
+    searchTerms.shim = filterShim;
+  }
   if (contributionType) {
     foundContributions = yield contributionType.manager.find(searchTerms);
   } else {
