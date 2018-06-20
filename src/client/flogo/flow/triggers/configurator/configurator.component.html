@@ -15,7 +15,9 @@
       </flogo-triggers-configure-trigger>
     </div>
     <div class="configuration__trigger" @triggerConfiguratorLayoutElement>
-      <flogo-flow-triggers-configurator-detail *ngIf="(isConfiguratorInitialized$ | async) && selectedTriggerId">
+      <flogo-flow-triggers-configurator-detail
+        *ngIf="(isConfiguratorInitialized$ | async) && selectedTriggerId"
+        (statusChange)="triggerDetailStatusChanged($event)">
       </flogo-flow-triggers-configurator-detail>
     </div>
   </div>

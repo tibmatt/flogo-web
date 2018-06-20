@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 import { MapperController } from '@flogo/flow/shared/mapper/services/mapper-controller/mapper-controller';
@@ -11,7 +11,7 @@ import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/
 import { FlowState } from '@flogo/flow/core/state';
 import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/interfaces';
 
-import { CurrentTriggerState } from '../interfaces';
+import { CurrentTriggerState, TriggerStatus } from '../interfaces';
 import { ConfigureDetailsService } from './details.service';
 
 @Component({
@@ -23,6 +23,8 @@ import { ConfigureDetailsService } from './details.service';
   providers: [],
 })
 export class TriggerDetailComponent implements OnInit, OnDestroy {
+
+  @Output() statusChange = new EventEmitter<TriggerStatus>();
 
   TAB_TYPES = TriggerConfigureTabType;
 
@@ -42,11 +44,19 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<FlowState>,
     private detailsService: ConfigureDetailsService,
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.overallStatus$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTirggerOverallStatus);
+    this.overallStatus$ = this.store.pipe(
+      TriggerConfigureSelectors.getCurrentTirggerOverallStatus,
+      shareReplay(),
+    );
+    this.overallStatus$
+      .pipe(tap(s => {
+        console.log(s);
+      }), takeUntil(this.ngDestroy$))
+      .subscribe(this.statusChange);
+
     this.tabs$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTabs);
     this.store
       .select(TriggerConfigureSelectors.getCurrentTabType)

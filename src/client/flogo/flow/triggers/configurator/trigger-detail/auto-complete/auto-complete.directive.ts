@@ -158,8 +158,6 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     if (!this.popoverRef) {
       this.popoverRef = this.overlay.create({
         width: POPOVER_WIDTH,
-        // height: POPOVER_MAX_HEIGHT,
-        // maxHeight: POPOVER_MAX_HEIGHT,
         positionStrategy: this.overlay
           .position()
           .connectedTo(

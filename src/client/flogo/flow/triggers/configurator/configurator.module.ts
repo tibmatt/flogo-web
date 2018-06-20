@@ -10,6 +10,7 @@ import {MapperModule} from '@flogo/flow/shared/mapper';
 import {ConfiguratorService} from './configurator.service';
 import {ConfiguratorComponent} from './configurator.component';
 import { ConfigureTriggerComponent } from './trigger/trigger.component';
+import { ConfirmationComponent } from './confirmation';
 import {
   TriggerDetailComponent,
   TabsComponent,
@@ -39,6 +40,7 @@ import {
     AutoCompleteDirective,
     AutoCompleteContentComponent,
     ActionButtonsComponent,
+    ConfirmationComponent,
   ],
   exports: [
     ConfiguratorComponent
@@ -50,6 +52,7 @@ import {
   ],
   entryComponents: [
     AutoCompleteContentComponent,
+    ConfirmationComponent,
   ]
 })
 

@@ -12,7 +12,8 @@ import * as TriggerConfigureActions from '../../core/state/triggers-configure/tr
 import { configuratorAnimations } from './configurator.animations';
 import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
 import { FlowState } from '../../core/state';
-import { TriggerStatus, ConfigureTriggerDetails } from './interfaces';
+import { TriggerStatus } from './interfaces';
+import { ConfirmationService, ConfirmationResult } from './confirmation';
 
 @Component({
   selector: 'flogo-triggers-configuration',
@@ -21,17 +22,25 @@ import { TriggerStatus, ConfigureTriggerDetails } from './interfaces';
     '../../../../assets/_mapper-modal.less',
     'configurator.component.less'
   ],
-  animations: configuratorAnimations
+  animations: configuratorAnimations,
+  providers: [
+    ConfirmationService,
+  ],
 })
 export class ConfiguratorComponent implements OnInit, OnDestroy {
   isConfiguratorInitialized$: Observable<boolean>;
   triggerStatuses$: Observable<TriggerStatus[]>;
+  currentTriggerDetailStatus: TriggerStatus;
   selectedTriggerId: string;
   isOpen: boolean;
 
   private ngDestroy$ = SingleEmissionSubject.create();
 
-  constructor(private triggerConfiguratorService: TriggerConfiguratorService, private store: Store<FlowState>) {
+  constructor(
+    private triggerConfiguratorService: TriggerConfiguratorService,
+    private confirmationService: ConfirmationService,
+    private store: Store<FlowState>
+  ) {
   }
 
   ngOnInit() {
@@ -54,7 +63,17 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   changeTriggerSelection(triggerId: string) {
-    this.store.dispatch(new TriggerConfigureActions.SelectTrigger(triggerId));
+    this.checkForContextSwitchConfirmation((result?: ConfirmationResult) => {
+      if (!result || result === ConfirmationResult.Discard) {
+        this.store.dispatch(new TriggerConfigureActions.SelectTrigger(triggerId));
+      } else if (result === ConfirmationResult.Save) {
+        // todo: save
+      }
+    });
+  }
+
+  triggerDetailStatusChanged(status: TriggerStatus) {
+    this.currentTriggerDetailStatus = status;
   }
 
   ngOnDestroy() {
@@ -62,11 +81,27 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   onCloseOrDismiss() {
-    this.store.dispatch(new TriggerConfigureActions.CloseConfigure());
+    this.checkForContextSwitchConfirmation((result?: ConfirmationResult) => {
+      if (!result || result === ConfirmationResult.Discard) {
+        this.store.dispatch(new TriggerConfigureActions.CloseConfigure());
+      } else if (result === ConfirmationResult.Save) {
+        // todo: save
+      }
+    });
   }
 
   onSave() {
     this.triggerConfiguratorService.save();
+  }
+
+  private checkForContextSwitchConfirmation(onConfirm: (result?: ConfirmationResult | null) => void) {
+    const status = this.currentTriggerDetailStatus;
+    if (!status || !status.isDirty) {
+      return onConfirm();
+    }
+    // todo: confirmation should not allow to save if there are validation problems
+    const confirmation = this.confirmationService.open();
+    confirmation.result.subscribe(onConfirm);
   }
 
   private observeWhileConfiguratorIsActive<T>(observable$: Observable<T>, valueWhenNotInitialized: any) {
