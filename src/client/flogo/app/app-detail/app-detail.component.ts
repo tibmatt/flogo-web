@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
-import {LanguageService, FlowSummary, Trigger, ERROR_CODE} from '@flogo/core';
+import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
@@ -15,8 +15,6 @@ import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.componen
 import { diffDates, notification } from '../../shared/utils';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
-const LAMBDA_REF = 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
-const CLI_REF = 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli';
 
 @Component({
   selector: 'flogo-apps-details-application',
@@ -90,7 +88,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       // this.flows = this.extractFlows();
       this.createFlowGroups();
       this.createTriggerGroups();
-      if (!this.application.device) {
+      if (this.application.profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
         this.getShimTriggerBuildOptions();
       }
       const prevValue = change.previousValue;
@@ -147,15 +145,15 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
         triggerRef: flowGroup.trigger ? flowGroup.trigger.ref : null
       };
     });
-    this.contributionService.getShimContributionDetails(FLOGO_PROFILE_TYPE.MICRO_SERVICE).then(shimmableTriggersDetails => {
+    this.contributionService.getShimContributionDetails(this.application.profileType).then(shimmableTriggersDetails => {
       shimmableTriggersDetails.forEach(shimmableTriggerDetail => {
         const shimmableTrigger = flowGroupsMap.find(flowGroupMap => flowGroupMap.triggerRef === shimmableTriggerDetail.ref);
         if (!!shimmableTrigger) {
           switch (shimmableTriggerDetail.ref) {
-            case LAMBDA_REF:
+            case CONTRIB_REF_PLACEHOLDER.REF_LAMBDA:
               this.shimTriggerOptions.push({label: this.translate.instant('TRIGGER-SHIM:SERVERLESS-APP'), ref: shimmableTriggerDetail.ref});
               break;
-            case CLI_REF:
+            case CONTRIB_REF_PLACEHOLDER.REF_CLI:
               this.shimTriggerOptions.push({label: this.translate.instant('TRIGGER-SHIM:CLI-APP'), ref: shimmableTriggerDetail.ref});
               break;
             default:

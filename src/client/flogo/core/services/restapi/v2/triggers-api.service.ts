@@ -42,6 +42,10 @@ export class TriggersApiService {
       .toPromise();
   }
 
+  public getShimTriggerBuildLink(triggerId: string) {
+    return this.restApi.apiPrefix(`triggers/${triggerId}:shim`);
+  }
+
   private extractErrors(error: HttpErrorResponse | any) {
     const body = error.error;
     if (body instanceof Error) {
