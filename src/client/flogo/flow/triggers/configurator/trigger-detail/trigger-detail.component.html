@@ -15,7 +15,8 @@
   <flogo-triggers-configuration-settings *ngSwitchCase="TAB_TYPES.Settings"
                                          [settingsForm]="settingsForm"
                                          [settingsInformation]="settingsControlInformation"
-                                         (statusChanges)="updateSettingsStatus($event)">
+                                         (statusChanges)="updateSettingsStatus($event)"
+                                         cdkScrollable>
   </flogo-triggers-configuration-settings>
   <flogo-mapper *ngSwitchCase="TAB_TYPES.FlowInputMappings"
                 class="mapper content__mapper"

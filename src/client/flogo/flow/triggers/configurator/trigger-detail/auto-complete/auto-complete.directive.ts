@@ -158,19 +158,33 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     if (!this.popoverRef) {
       this.popoverRef = this.overlay.create({
         width: POPOVER_WIDTH,
-        positionStrategy: this.overlay
-          .position()
-          .connectedTo(
-            this.containerRef,
-            { originX: 'start', originY: 'bottom' },
-            { overlayX: 'start', overlayY: 'top' }
-          )
+        scrollStrategy: this.getScrollStrategy(),
+        positionStrategy: this.getPositionStrategy(),
       });
     }
 
     if (!this.popoverRef.hasAttached()) {
       this.popoverComponentRef = this.popoverRef.attach(this.contentPortal);
     }
+  }
+
+  private getScrollStrategy() {
+    return this.overlay
+      .scrollStrategies
+      .reposition();
+  }
+
+  private getPositionStrategy() {
+    return this.overlay
+      .position()
+      .connectedTo(
+        this.containerRef,
+        { originX: 'start', originY: 'bottom' },
+        { overlayX: 'start', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+        {originX: 'start', originY: 'top'}, {overlayX: 'start', overlayY: 'bottom'}
+      );
   }
 
   private optionSelected(option: string) {
