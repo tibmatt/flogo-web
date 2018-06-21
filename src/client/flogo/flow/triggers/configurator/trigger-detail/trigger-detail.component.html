@@ -13,7 +13,9 @@
 </div>
 <ng-container [ngSwitch]="currentTabType">
   <flogo-triggers-configuration-settings *ngSwitchCase="TAB_TYPES.Settings"
-                                         [settingsForm]="settingsForm" (statusChanges)="updateSettingsStatus($event)">
+                                         [settingsForm]="settingsForm"
+                                         [settingsInformation]="settingsControlInformation"
+                                         (statusChanges)="updateSettingsStatus($event)">
   </flogo-triggers-configuration-settings>
   <flogo-mapper *ngSwitchCase="TAB_TYPES.FlowInputMappings"
                 class="mapper content__mapper"

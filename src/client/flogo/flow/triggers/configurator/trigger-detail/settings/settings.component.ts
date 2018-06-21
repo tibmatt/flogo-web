@@ -3,6 +3,8 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@ang
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {SettingControlInfo} from '../../interfaces';
+import {Dictionary} from '@flogo/core';
 
 @Component({
   selector: 'flogo-triggers-configuration-settings',
@@ -12,6 +14,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   @Input()
   settingsForm: FormGroup;
+  @Input()
+  settingsInformation: Dictionary<SettingControlInfo>;
   @Output()
   statusChanges = new EventEmitter();
   triggerSettings: string[] | null;
