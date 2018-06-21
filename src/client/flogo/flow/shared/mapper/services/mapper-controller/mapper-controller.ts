@@ -12,7 +12,6 @@ import { updateNodeExpression } from './update-node-expression';
 import { selectMapperStatus } from './select-mapper-status.operator';
 import { isSameEditingExpression } from './is-same-editing-expression';
 
-@Injectable()
 export class MapperController {
 
   state$: Observable<MapperState>;

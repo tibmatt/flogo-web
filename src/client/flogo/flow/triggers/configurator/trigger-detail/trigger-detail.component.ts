@@ -80,6 +80,10 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     this.ngDestroy$.emitAndComplete();
   }
 
+  save() {
+    // todo: link to save service to persist changes
+  }
+
   onTabSelected(tab: TriggerConfigureTab) {
     if (tab.type !== this.currentTabType) {
       this.store.dispatch(new TriggerConfigureActions.SelectTab(tab.type));
