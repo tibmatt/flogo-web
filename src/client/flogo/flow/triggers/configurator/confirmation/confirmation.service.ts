@@ -37,8 +37,6 @@ export class ConfirmationService {
   private getOverlayConfig(): OverlayConfig {
     return new OverlayConfig({
       hasBackdrop: true,
-      // backdropClass: config.backdropClass,
-      // panelClass: config.panelClass,
       scrollStrategy: this.overlay.scrollStrategies.block(),
       positionStrategy: this.overlay.position()
         .global()
