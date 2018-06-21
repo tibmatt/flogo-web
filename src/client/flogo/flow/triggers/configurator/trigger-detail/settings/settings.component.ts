@@ -3,8 +3,6 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@ang
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { concat as concatObservables } from 'rxjs/observable/concat';
-import { of as observableOf } from 'rxjs/observable/of';
 
 @Component({
   selector: 'flogo-triggers-configuration-settings',
@@ -30,19 +28,17 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
       : null;
     this.unsubscribePrevious();
     this.previousState = null;
-    this.valueChangeSub = concatObservables(
-      observableOf(this.settingsForm.value),
-      this.settingsForm.valueChanges.pipe(
+    this.valueChangeSub = this.settingsForm.valueChanges
+      .pipe(
         debounceTime(300),
         distinctUntilChanged(),
-      ),
-    )
-    .subscribe(() => {
-      if (!isEqual(this.previousState, this.settingsFormStatus)) {
-        this.previousState = this.settingsFormStatus;
-        this.statusChanges.emit(this.settingsFormStatus);
-      }
-    });
+      )
+      .subscribe(() => {
+        if (!isEqual(this.previousState, this.settingsFormStatus)) {
+          this.previousState = this.settingsFormStatus;
+          this.statusChanges.emit(this.settingsFormStatus);
+        }
+      });
   }
 
   ngOnDestroy() {

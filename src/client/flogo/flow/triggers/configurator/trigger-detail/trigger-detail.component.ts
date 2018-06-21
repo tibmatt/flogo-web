@@ -24,7 +24,7 @@ import { ConfigureDetailsService } from './details.service';
 })
 export class TriggerDetailComponent implements OnInit, OnDestroy {
 
-  @Output() statusChange = new EventEmitter<TriggerStatus>();
+  @Output() statusChange = new EventEmitter<TriggerStatus>(true);
 
   TAB_TYPES = TriggerConfigureTabType;
 
@@ -52,9 +52,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
       shareReplay(),
     );
     this.overallStatus$
-      .pipe(tap(s => {
-        console.log(s);
-      }), takeUntil(this.ngDestroy$))
+      .pipe(takeUntil(this.ngDestroy$))
       .subscribe(this.statusChange);
 
     this.tabs$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTabs);

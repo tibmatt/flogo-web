@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { ConfirmationService } from './confirmation.service';
 
-describe('ConfirmationService', () => {
+xdescribe('ConfirmationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ConfirmationService]
