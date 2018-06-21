@@ -1,6 +1,6 @@
-import {keyBy, isEmpty} from 'lodash';
+import {isEmpty} from 'lodash';
 import {Injectable} from '@angular/core';
-import {Dictionary, SchemaAttribute, TriggerSchema} from '@flogo/core';
+import {Dictionary} from '@flogo/core';
 import {FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {SettingControlInfo, SettingControlGroup, SettingControlGroupType} from '../interfaces';
 
@@ -8,38 +8,32 @@ import {SettingControlInfo, SettingControlGroup, SettingControlGroupType} from '
 export class SettingsFormBuilder {
   constructor(private ngFormBuilder: FormBuilder) {}
 
-  build(settingsFields, schema: TriggerSchema, settingControls: Dictionary<SettingControlInfo>) {
-    const triggerSettingsSchema = keyBy<SchemaAttribute>(schema.settings, 'name');
-    const handlerSettingsSchema = keyBy<SchemaAttribute>(schema.handler.settings, 'name');
+  build(settingsFields, settingControls: Dictionary<SettingControlInfo>) {
     const settingsFormGroup: Dictionary<FormControl | FormGroup> = {};
     settingsFormGroup.name = this.ngFormBuilder.control(settingsFields.name.value || '', Validators.required);
     settingsFormGroup.description = this.ngFormBuilder.control(settingsFields.description.value || '', Validators.required);
     if (!isEmpty(settingsFields.triggerSettings)) {
-      const getValidatorFn = this.generateValidatorFnGetter(settingControls, SettingControlGroup.TRIGGER);
-      settingsFormGroup.triggerSettings = this.formGroupBySettings(settingsFields.triggerSettings, triggerSettingsSchema, getValidatorFn);
+      const getValidatorFn = this.generateGetValidatorFn(settingControls, SettingControlGroup.TRIGGER);
+      settingsFormGroup.triggerSettings = this.formGroupBySettings(settingsFields.triggerSettings, getValidatorFn);
     }
     if (!isEmpty(settingsFields.handlerSettings)) {
-      const getValidatorFn = this.generateValidatorFnGetter(settingControls, SettingControlGroup.HANDLER);
-      settingsFormGroup.handlerSettings = this.formGroupBySettings(settingsFields.handlerSettings, handlerSettingsSchema, getValidatorFn);
+      const getValidatorFn = this.generateGetValidatorFn(settingControls, SettingControlGroup.HANDLER);
+      settingsFormGroup.handlerSettings = this.formGroupBySettings(settingsFields.handlerSettings, getValidatorFn);
     }
     return this.ngFormBuilder.group(settingsFormGroup);
   }
 
-  private formGroupBySettings(settings, schema: Dictionary<SchemaAttribute>, controls): FormGroup {
+  private formGroupBySettings(settings, getValidators: (string) => ValidatorFn[]): FormGroup {
     return this.ngFormBuilder.group(Object.keys(settings).reduce((group, setting) => {
-      group[setting] = this.ngFormBuilder.control(settings[setting].value || '', controls(setting));
-      /*if (schema[setting].required) {
-        group[setting] = this.ngFormBuilder.control(settings[setting].value || '', Validators.required);
-      } else {
-        group[setting] = this.ngFormBuilder.control(settings[setting].value || '');
-      }*/
+      group[setting] = this.ngFormBuilder.control(settings[setting].value || '', getValidators(setting));
       return group;
     }, {}));
   }
 
-  private generateValidatorFnGetter(controls: Dictionary<SettingControlInfo>, type: SettingControlGroupType) {
+  private generateGetValidatorFn(controlInfoBySetting: Dictionary<SettingControlInfo>,
+                                    type: SettingControlGroupType): (string) => ValidatorFn[] {
     return (settingName: string): ValidatorFn[] => {
-      return controls[`${type}.${settingName}`].validations;
+      return controlInfoBySetting[`${type}.${settingName}`].validations;
     };
   }
 }

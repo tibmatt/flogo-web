@@ -11,8 +11,9 @@ import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/
 import { FlowState } from '@flogo/flow/core/state';
 import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/interfaces';
 
-import { CurrentTriggerState, TriggerStatus } from '../interfaces';
+import { CurrentTriggerState, TriggerStatus, SettingControlInfo } from '../interfaces';
 import { ConfigureDetailsService } from './details.service';
+import {Dictionary} from '@flogo/core';
 
 @Component({
   selector: 'flogo-flow-triggers-configurator-detail',
@@ -37,7 +38,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   flowInputMapperController: MapperController;
   replyMapperController: MapperController;
   settingsForm: FormGroup;
-  settingsControlInformation;
+  settingsControlInformation: Dictionary<SettingControlInfo>;
 
   private previousState: CurrentTriggerState;
   private ngDestroy$ = SingleEmissionSubject.create();
