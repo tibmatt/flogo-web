@@ -12,7 +12,8 @@
     <div *ngIf="triggerSettings" class="settings-group__content"
          [formGroup]="settingsForm.controls.triggerSettings">
       <div class="settings-group__header">
-        <i class="flogo-icon-settings settings-group__icon"></i> Trigger settings
+        <i class="flogo-icon-settings settings-group__icon"></i>
+        {{"TRIGGER-CONFIGURATOR:SETTINGS:TRIGGER-SETTINGS" | translate}}
       </div>
       <div class="settings-block" *ngFor="let settingName of triggerSettings">
         <input class="settings-field" [id]="'triggerSettings.'+settingName" fgTriggersConfigAutoComplete
@@ -25,7 +26,8 @@
     <div *ngIf="handlerSettings" class="settings-group__content"
          [formGroup]="settingsForm.controls.handlerSettings">
       <div class="settings-group__header">
-        <i class="flogo-icon-settings settings-group__icon"></i> Handler settings
+        <i class="flogo-icon-settings settings-group__icon"></i>
+        {{"TRIGGER-CONFIGURATOR:SETTINGS:HANDLER-SETTINGS" | translate}}
       </div>
       <div class="settings-block" *ngFor="let settingName of handlerSettings">
         <input class="settings-field" [id]="'handlerSettings.'+settingName" fgTriggersConfigAutoComplete
