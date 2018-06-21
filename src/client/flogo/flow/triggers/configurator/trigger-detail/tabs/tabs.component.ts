@@ -12,7 +12,9 @@ export class TabsComponent {
   @Output() tabSelected = new EventEmitter<TriggerConfigureTab>();
 
   selectTab(tab: TriggerConfigureTab) {
-    this.tabSelected.emit(tab);
+    if (tab.isEnabled) {
+      this.tabSelected.emit(tab);
+    }
   }
 
   trackTabsByFn(index, tab: TriggerConfigureTab) {

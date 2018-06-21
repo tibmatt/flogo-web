@@ -1,7 +1,7 @@
 <ul class="tabs">
   <li class="tab" *ngFor="let tab of tabs; trackBy: trackTabsByFn"
       [class.has-errors]="!tab.isValid"
-      [class.is-disabled]="tab.isDisabled"
+      [class.is-disabled]="!tab.isEnabled"
       [class.is-active]="tab.type === currentTabType"
       (click)="selectTab(tab)">
     {{ tab.i18nKey | translate }}
