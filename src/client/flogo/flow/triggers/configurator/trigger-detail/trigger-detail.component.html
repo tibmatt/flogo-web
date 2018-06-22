@@ -7,6 +7,7 @@
   <flogo-triggers-configuration-detail-action-buttons
     class="action-bar__buttons"
     [status]="overallStatus$ | async"
+    [isSaving]="isSaving$ | async"
     (save)="save()"
     (discardChanges)="discardChanges()">
   </flogo-triggers-configuration-detail-action-buttons>

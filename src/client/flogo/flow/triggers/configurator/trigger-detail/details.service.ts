@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
 import { SettingsFormBuilder } from './settings-form-builder';
 import { CurrentTriggerState, SettingControlInfo, SettingControlGroupType } from '../interfaces';
-import {Dictionary, SchemaAttribute, TriggerSchema} from '@flogo/core';
-import {createValidatorsForSchema} from '@flogo/flow/core/models';
+import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo/core';
+import { createValidatorsForSchema } from '@flogo/flow/core/models';
 
 @Injectable()
 export class ConfigureDetailsService {

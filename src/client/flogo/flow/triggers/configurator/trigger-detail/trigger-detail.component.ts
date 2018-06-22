@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -7,13 +7,16 @@ import { filter, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/opera
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 import { MapperController } from '@flogo/flow/shared/mapper/services/mapper-controller/mapper-controller';
 
+import {Dictionary} from '@flogo/core';
 import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/core/state/triggers-configure';
 import { FlowState } from '@flogo/flow/core/state';
 import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/interfaces';
 
-import { CurrentTriggerState, TriggerStatus, SettingControlInfo } from '../interfaces';
+import { CurrentTriggerState, SettingControlInfo } from '../interfaces';
 import { ConfigureDetailsService } from './details.service';
-import {Dictionary} from '@flogo/core';
+import { ConfiguratorService } from '../services/configurator.service';
+
+type MapperSubscriberFn = (controller: MapperController, groupType: TriggerConfigureTabType) => void;
 
 @Component({
   selector: 'flogo-flow-triggers-configurator-detail',
@@ -24,19 +27,17 @@ import {Dictionary} from '@flogo/core';
   providers: [],
 })
 export class TriggerDetailComponent implements OnInit, OnDestroy {
-
-  @Output() statusChange = new EventEmitter<TriggerStatus>(true);
-
   TAB_TYPES = TriggerConfigureTabType;
 
   selectedTriggerId: string;
 
+  isSaving$: Observable<boolean>;
   overallStatus$: Observable<{ isDirty: boolean, isValid: boolean }>;
   tabs$: Observable<TriggerConfigureTab[]>;
   currentTabType: TriggerConfigureTabType;
 
-  flowInputMapperController: MapperController;
-  replyMapperController: MapperController;
+  flowInputMapperController?: MapperController;
+  replyMapperController?: MapperController;
   settingsForm: FormGroup;
   settingsControlInformation: Dictionary<SettingControlInfo>;
 
@@ -46,16 +47,14 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<FlowState>,
     private detailsService: ConfigureDetailsService,
+    private configuratorService: ConfiguratorService,
   ) {}
 
   ngOnInit() {
     this.overallStatus$ = this.store.pipe(
-      TriggerConfigureSelectors.getCurrentTirggerOverallStatus,
+      TriggerConfigureSelectors.getCurrentTriggerOverallStatus,
       shareReplay(),
     );
-    this.overallStatus$
-      .pipe(takeUntil(this.ngDestroy$))
-      .subscribe(this.statusChange);
 
     this.tabs$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTabs);
     this.store
@@ -65,6 +64,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
         this.currentTabType = currentTabType;
       });
 
+    this.isSaving$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTriggerIsSaving);
     const getCurrentTriggerState = this.store.select(TriggerConfigureSelectors.getConfigureState).pipe(take(1));
     this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId)
       .pipe(
@@ -74,16 +74,31 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
       )
       .subscribe((state) => {
         this.previousState = state;
-        this.restart(state);
+        this.reconfigure(state);
       });
   }
 
   ngOnDestroy() {
+    this.isSaving$ = null;
     this.ngDestroy$.emitAndComplete();
   }
 
   save() {
-    // todo: link to save service to persist changes
+    const currentTriggerId = this.selectedTriggerId;
+    this.configuratorService.save()
+      .subscribe(() => {
+        const isUpdateStillApplicable = this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
+        if (isUpdateStillApplicable) {
+          return;
+        }
+        this.settingsForm.reset(this.settingsForm.value);
+        if (this.flowInputMapperController) {
+          this.flowInputMapperController.resetStatus();
+        }
+        if (this.replyMapperController) {
+          this.replyMapperController.resetStatus();
+        }
+      });
   }
 
   onTabSelected(tab: TriggerConfigureTab) {
@@ -93,43 +108,63 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   }
 
   updateSettingsStatus(settingsStatus: {isValid: boolean, isDirty: boolean}) {
-    this.store.dispatch(new TriggerConfigureActions.ConfigureStatusChanged({
-      triggerId: this.selectedTriggerId,
-      groupType: TriggerConfigureTabType.Settings,
-      newStatus: settingsStatus
-    }));
+    this.updateTabState(TriggerConfigureTabType.Settings, settingsStatus);
   }
 
   discardChanges() {
     if (this.previousState) {
-      this.restart(this.previousState);
+      this.reconfigure(this.previousState);
     }
   }
 
-  private restart(state: CurrentTriggerState) {
+  private reconfigure(state: CurrentTriggerState) {
     this.selectedTriggerId = state.trigger.id;
     const { settings, flowInputMapper, replyMapper, settingsControlInfo } = this.detailsService.build(state);
     this.settingsForm = settings;
     this.settingsControlInformation = settingsControlInfo;
+    this.updateSettingsStatus({ isValid: this.settingsForm.valid, isDirty: this.settingsForm.dirty });
 
     const subscribeToUpdates = this.createMapperStatusUpdateSubscriber();
+
     this.flowInputMapperController = flowInputMapper;
-    subscribeToUpdates(this.flowInputMapperController, TriggerConfigureTabType.FlowInputMappings);
+    this.reconfigureMapperController(this.flowInputMapperController, TriggerConfigureTabType.FlowInputMappings, subscribeToUpdates);
+
     this.replyMapperController = replyMapper;
-    subscribeToUpdates(this.replyMapperController, TriggerConfigureTabType.FlowOutputMappings);
+    this.reconfigureMapperController(this.replyMapperController, TriggerConfigureTabType.FlowOutputMappings, subscribeToUpdates);
+
+    this.configuratorService.setParams({
+      settings: this.settingsForm,
+      flowInputMapper: this.flowInputMapperController,
+      replyMapper: this.replyMapperController,
+    });
   }
 
-  private createMapperStatusUpdateSubscriber() {
+  private reconfigureMapperController(
+    controller: MapperController,
+    groupType: TriggerConfigureTabType,
+    subscribeToUpdates: MapperSubscriberFn
+  ) {
+    if (controller) {
+      subscribeToUpdates(controller, groupType);
+      this.updateTabState(groupType, { isEnabled: true });
+    } else {
+      this.updateTabState(groupType, { isDirty: false, isValid: true, isEnabled: false });
+    }
+  }
+
+  private updateTabState(groupType: TriggerConfigureTabType, newStatus) {
+    this.store.dispatch(new TriggerConfigureActions.ConfigureStatusChanged({
+      triggerId: this.selectedTriggerId,
+      groupType,
+      newStatus,
+    }));
+  }
+
+  private createMapperStatusUpdateSubscriber(): MapperSubscriberFn {
     return (controller: MapperController, groupType: TriggerConfigureTabType) => {
       controller.status$
         .pipe(takeUntil(this.ngDestroy$))
-        .subscribe(status => {
-          this.store.dispatch(new TriggerConfigureActions.ConfigureStatusChanged({
-            triggerId: this.selectedTriggerId,
-            groupType,
-            newStatus: status,
-          }));
-        });
+        .subscribe(status => this.updateTabState(groupType, status));
     };
   }
 

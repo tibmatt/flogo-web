@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Observable } from 'rxjs/Observable';
-import { take } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 
 import { MapperState, MapperTreeNode, Mappings, ParsedExpressionDetails, TreeState } from '../../models';
 import { TreeNodeFactoryService } from '../tree-node-factory.service';
@@ -96,12 +96,21 @@ export class MapperController {
     );
   }
 
+  resetStatus() {
+    this.updateState({ ...this.getCurrentState(), isDirty: false });
+  }
+
   getCurrentState() {
     let currentState;
     this.stateSrc
       .pipe(take(1))
       .subscribe(state => currentState = state);
     return currentState;
+  }
+
+  getMappings() {
+    const state = this.getCurrentState();
+    return state.mappings;
   }
 
   private updateState(state: MapperState) {

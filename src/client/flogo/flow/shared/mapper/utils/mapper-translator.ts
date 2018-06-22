@@ -34,10 +34,10 @@ export class MapperTranslator {
       switch (tile.type) {
         case FLOGO_TASK_TYPE.TASK:
         case FLOGO_TASK_TYPE.TASK_SUB_PROC:
-          this.addTileToOutputContext(rootSchema, tile, includeEmptySchemas);
+          MapperTranslator.addTileToOutputContext(rootSchema, tile, includeEmptySchemas);
           break;
         case 'metadata':
-          this.addFlowMetadataToOutputSchema(rootSchema, tile);
+          MapperTranslator.addFlowMetadataToOutputSchema(rootSchema, tile);
           break;
         default:
           rootSchema.properties[tile.name] = { type: tile.type };
@@ -78,8 +78,8 @@ export class MapperTranslator {
   static translateMappingsIn(inputMappings: FlowMapping[]) {
     inputMappings = inputMappings || [];
     return inputMappings.reduce((mappings, input) => {
-      let value = this.upgradeLegacyMappingIfNeeded(input.value);
-      value = this.rawExpressionToString(value, input.type);
+      let value = MapperTranslator.upgradeLegacyMappingIfNeeded(input.value);
+      value = MapperTranslator.rawExpressionToString(value, input.type);
       mappings[input.mapTo] = {expression: value, mappingType: input.type};
       return mappings;
     }, {});
@@ -101,7 +101,7 @@ export class MapperTranslator {
       .filter(attrName => mappings[attrName].expression && mappings[attrName].expression.trim())
       .map(attrName => {
         const mapping = mappings[attrName];
-        const { value, mappingType } = this.parseExpression(mapping.expression);
+        const { value, mappingType } = MapperTranslator.parseExpression(mapping.expression);
         return {
           mapTo: attrName,
           type: mappingType,
@@ -173,7 +173,7 @@ export class MapperTranslator {
     const hasAttributes = outputs && outputs.length > 0;
     if (hasAttributes || includeEmptySchemas) {
       const tileSchema = MapperTranslator.attributesToObjectDescriptor(outputs || []);
-      tileSchema.rootType = this.getRootType(tile);
+      tileSchema.rootType = MapperTranslator.getRootType(tile);
       tileSchema.title = tile.name;
       const propName = tileSchema.rootType === ROOT_TYPES.ERROR ? 'error' : tile.id;
       rootSchema.properties[propName] = tileSchema;

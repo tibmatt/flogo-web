@@ -8,7 +8,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 import {MapperModule} from '@flogo/flow/shared/mapper';
 
-import {ConfiguratorService} from './configurator.service';
+import {ConfiguratorService} from './services/configurator.service';
 import {ConfiguratorComponent} from './configurator.component';
 import { ConfigureTriggerComponent } from './trigger/trigger.component';
 import { ConfirmationComponent } from './confirmation';

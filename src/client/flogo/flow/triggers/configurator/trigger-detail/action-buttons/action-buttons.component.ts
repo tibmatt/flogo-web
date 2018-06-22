@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 })
 export class ActionButtonsComponent {
   @Input() status: { isDirty: boolean; isValid: boolean };
+  @Input() isSaving: boolean;
   @Output() discardChanges = new EventEmitter();
   @Output() save = new EventEmitter();
 }

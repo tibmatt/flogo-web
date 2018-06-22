@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
@@ -10,7 +10,7 @@ import { TriggerConfigureSelectors } from '../../core/state/triggers-configure';
 import * as TriggerConfigureActions from '../../core/state/triggers-configure/trigger-configure.actions';
 
 import { configuratorAnimations } from './configurator.animations';
-import {ConfiguratorService as TriggerConfiguratorService} from './configurator.service';
+import {ConfiguratorService as TriggerConfiguratorService} from './services/configurator.service';
 import { FlowState } from '../../core/state';
 import { TriggerStatus } from './interfaces';
 import { ConfirmationService, ConfirmationResult } from './confirmation';
@@ -52,7 +52,17 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngDestroy$))
       .subscribe(isConfigInitialized => {
         this.isOpen = isConfigInitialized;
+        if (this.isOpen) {
+          this.triggerConfiguratorService.clear();
+        }
       });
+
+    this.store.pipe(
+      TriggerConfigureSelectors.getCurrentTriggerOverallStatus,
+      takeUntil(this.ngDestroy$),
+    ).subscribe(status => {
+      this.currentTriggerDetailStatus = status;
+    });
 
     const currentTriggerId$ = this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId);
     this.observeWhileConfiguratorIsActive(currentTriggerId$, null)
@@ -63,35 +73,32 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   changeTriggerSelection(triggerId: string) {
+    const switchTrigger = () => this.store.dispatch(new TriggerConfigureActions.SelectTrigger(triggerId));
     this.checkForContextSwitchConfirmation((result?: ConfirmationResult) => {
       if (!result || result === ConfirmationResult.Discard) {
-        this.store.dispatch(new TriggerConfigureActions.SelectTrigger(triggerId));
+        switchTrigger();
       } else if (result === ConfirmationResult.Save) {
-        // todo: save
+        this.triggerConfiguratorService.save().subscribe(() => {});
+        switchTrigger();
       }
     });
   }
 
-  triggerDetailStatusChanged(status: TriggerStatus) {
-    this.currentTriggerDetailStatus = status;
-  }
-
   ngOnDestroy() {
+    this.triggerConfiguratorService.clear();
     this.ngDestroy$.emitAndComplete();
   }
 
   onCloseOrDismiss() {
+    const close = () => this.store.dispatch(new TriggerConfigureActions.CloseConfigure());
     this.checkForContextSwitchConfirmation((result?: ConfirmationResult) => {
       if (!result || result === ConfirmationResult.Discard) {
-        this.store.dispatch(new TriggerConfigureActions.CloseConfigure());
+        close();
       } else if (result === ConfirmationResult.Save) {
-        // todo: save
+        this.triggerConfiguratorService.save().subscribe(() => {});
+        close();
       }
     });
-  }
-
-  onSave() {
-    this.triggerConfiguratorService.save();
   }
 
   private checkForContextSwitchConfirmation(onConfirm: (result?: ConfirmationResult | null) => void) {
