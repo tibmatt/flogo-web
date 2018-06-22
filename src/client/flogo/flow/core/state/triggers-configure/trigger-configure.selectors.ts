@@ -2,9 +2,9 @@ import { createSelector, select, Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs/observable/of';
 
-import { FlowState } from '@flogo/flow/core/state';
+import { FlowState, selectActionId } from '@flogo/flow/core/state';
 // todo: move to shared location
-import { TriggerStatus, ConfigureTriggerDetails, CurrentTriggerState } from '../../../triggers/configurator/interfaces';
+import { TriggerStatus, CurrentTriggerState } from '../../../triggers/configurator/interfaces';
 import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
 
 import {createTriggerConfigureFields} from './cases/create-trigger-configure-fields';
@@ -70,7 +70,21 @@ export const getCurrentTabs = (store: Store<FlowState>) => {
 
 export const getHasTriggersConfigure = createSelector(selectTriggerConfigure, triggerConfigure => !!triggerConfigure);
 
-export const getCurrentTirggerOverallStatus = (store: Store<FlowState>) => {
+export const getCurrentTriggerIsSaving = (store: Store<FlowState>) => {
+  const currentSavingState$ = store.select(
+    createSelector(
+      selectTriggerConfigureTriggers,
+      selectCurrentTriggerId,
+      (triggers, triggerId) => triggers[triggerId].isSaving,
+    ),
+  );
+  return store.pipe(
+    select(getHasTriggersConfigure),
+    switchMap(isTriggerInitialized => isTriggerInitialized ? currentSavingState$ : observableOf(false)),
+  );
+};
+
+export const getCurrentTriggerOverallStatus = (store: Store<FlowState>) => {
   const empty$ = observableOf({ isDirty: false, isValid: true });
   const currentTabs$ = store.pipe(
     select(selectCurrentTabs),
@@ -136,3 +150,9 @@ export const getConfigureState = createSelector(
     };
   },
 );
+
+export const getSaveInfo = createSelector(
+  selectActionId,
+  selectCurrentTriggerId,
+  getCurrentHandler,
+  (actionId, triggerId, handler) => ({ actionId, triggerId, handler }));

@@ -8,6 +8,8 @@ export enum TriggerConfigureActionType {
   SelectTrigger = '[Flow] [Trigger] [Configure] Select Trigger',
   SelectTab = '[Flow] [Trigger] [Configure] Select Trigger Tab',
   CofigureStatusChanged = '[Flow] [Trigger] [Configure] Trigger Configuration update',
+  SaveTriggerStarted = '[Flow] [Trigger] [Configure] Saving trigger',
+  SaveTriggerCompleted = '[Flow] [Trigger] [Configure] Save trigger completed',
 }
 
 export class OpenConfigureWithSelection implements Action {
@@ -34,12 +36,24 @@ export class ConfigureStatusChanged implements Action {
   constructor(public payload: {
     triggerId: string,
     groupType: TriggerConfigureTabType,
-    newStatus: { isValid: boolean, isDirty: boolean },
+    newStatus: { isValid: boolean, isDirty: boolean, isEnabled?: boolean },
   }) {}
+}
+
+export class SaveTriggerStarted implements Action {
+  readonly type = TriggerConfigureActionType.SaveTriggerStarted;
+  constructor(public payload: { triggerId: string }) {}
+}
+
+export class SaveTriggerCompleted implements Action {
+  readonly type = TriggerConfigureActionType.SaveTriggerCompleted;
+  constructor(public payload: { triggerId: string }) {}
 }
 
 export type TriggerConfigureActionUnion = OpenConfigureWithSelection
   | CloseConfigure
   | SelectTrigger
   | SelectTab
-  | ConfigureStatusChanged;
+  | ConfigureStatusChanged
+  | SaveTriggerStarted
+  | SaveTriggerCompleted;

@@ -12,7 +12,7 @@ import {
 import { getDeviceTabs, getMicroServiceTabs } from './tab-base-by-profile';
 import { setEnabledStatusToTabs } from './set-enabled-status-to-tabs';
 
-export function init(flowState: FlowState, payload: OpenConfigureWithSelection['payload']): FlowState {
+export function init(flowState: FlowState, payload: OpenConfigureWithSelection['payload']): TriggerConfigureState {
   const { triggerId: selectedTriggerId, triggerSchemas } = payload;
   let triggerConfigureState = {
     isOpen: true,
@@ -29,11 +29,7 @@ export function init(flowState: FlowState, payload: OpenConfigureWithSelection['
     triggerSchemas,
     getProfileType(flowState.app)
   );
-  triggerConfigureState = setEnabledStatusToTabs(triggerConfigureState);
-  return {
-    ...flowState,
-    triggerConfigure: triggerConfigureState,
-  };
+  return setEnabledStatusToTabs(triggerConfigureState);
 }
 
 function initTriggerConfigureState(
@@ -80,7 +76,8 @@ function createTriggerState(trigger: Trigger, tabIds: string[]): TriggerConfigur
     name: trigger.name,
     tabs: tabIds,
     isValid: true,
-    isDirty: false
+    isDirty: false,
+    isSaving: false,
   };
 }
 

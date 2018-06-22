@@ -1,46 +1,78 @@
-import { TriggerConfigureTabType } from '../../interfaces';
+import { TriggerConfigureState, TriggerConfigureTabType } from '../../interfaces';
 import {FlowState} from '../flow/flow.state';
 import {TriggerConfigureActionType, TriggerConfigureActionUnion} from './trigger-configure.actions';
 import { init } from './cases/init';
 import { mapperStatusReducer } from './cases/mapper-status-reducer';
 
-export function triggerConfigureReducer(state: FlowState, action: TriggerConfigureActionUnion) {
+export function reducer(flowState: FlowState, action: TriggerConfigureActionUnion): FlowState {
+  const prevState = flowState.triggerConfigure;
+  const triggerConfigureState = triggerConfigureReducer(prevState, action, flowState);
+  if (prevState !== triggerConfigureState) {
+    return {
+      ...flowState,
+      triggerConfigure: triggerConfigureState,
+    };
+  }
+  return flowState;
+}
+
+export function triggerConfigureReducer(
+  state: TriggerConfigureState,
+  action: TriggerConfigureActionUnion,
+  flowState: FlowState
+): TriggerConfigureState {
   switch (action.type) {
     case TriggerConfigureActionType.OpenConfigureWithSelection: {
-      return init(state, action.payload);
+      return init(flowState, action.payload);
     }
     case TriggerConfigureActionType.CloseConfigure:
-      return {
-        ...state,
-        triggerConfigure: null
-      };
+      return null;
     case TriggerConfigureActionType.SelectTrigger:
       return {
         ...state,
-        triggerConfigure: {
-          ...state.triggerConfigure,
-          selectedTriggerId: action.payload,
-          currentTab: TriggerConfigureTabType.Settings,
-        }
+        selectedTriggerId: action.payload,
+        currentTab: TriggerConfigureTabType.Settings,
       };
     case TriggerConfigureActionType.SelectTab:
       return {
         ...state,
-        triggerConfigure: {
-          ...state.triggerConfigure,
-          currentTab: action.payload,
-        }
+        currentTab: action.payload,
       };
     case TriggerConfigureActionType.CofigureStatusChanged: {
       const { triggerId, groupType, newStatus } = action.payload;
       const groupId = `${triggerId}.${groupType}`;
-      return {
-        ...state,
-        triggerConfigure: mapperStatusReducer(state.triggerConfigure, groupId, newStatus),
-      };
+      return mapperStatusReducer(state, groupId, newStatus);
+    }
+    case TriggerConfigureActionType.SaveTriggerStarted: {
+      const { triggerId } = action.payload;
+      return updateTriggerSavingStatus(state, triggerId, true);
+    }
+    case TriggerConfigureActionType.SaveTriggerCompleted: {
+      const { triggerId } = action.payload;
+      return updateTriggerSavingStatus(state, triggerId, false);
     }
     default: {
       return state;
     }
   }
+}
+
+function updateTriggerSavingStatus(state: TriggerConfigureState, triggerId: string, isSaving: boolean) {
+  if (!state) {
+    return state;
+  }
+  const triggers = state.triggers;
+  if (triggers[triggerId].isSaving === isSaving) {
+    return state;
+  }
+  return {
+    ...state,
+    triggers: {
+      ...triggers,
+      [triggerId]: {
+        ...triggers[triggerId],
+        isSaving,
+      }
+    }
+  };
 }

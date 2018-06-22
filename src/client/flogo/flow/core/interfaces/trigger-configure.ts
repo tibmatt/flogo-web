@@ -31,6 +31,7 @@ export interface TriggerConfigureTrigger {
   tabs: string[];
   isValid: boolean;
   isDirty: boolean;
+  isSaving: boolean;
 }
 
 export interface TriggerConfigureTab {
