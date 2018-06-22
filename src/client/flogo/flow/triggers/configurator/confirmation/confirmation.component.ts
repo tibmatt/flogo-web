@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { TriggerStatus } from '../interfaces';
 import { ConfirmationControl } from './confirmation-control';
+import { TRIGGER_STATUS_TOKEN } from './status.token';
 
 @Component({
   selector: 'flogo-triggers-configuration-settings-confirmation',
@@ -7,5 +9,5 @@ import { ConfirmationControl } from './confirmation-control';
   styleUrls: ['./confirmation.component.less']
 })
 export class ConfirmationComponent {
-  constructor(public control: ConfirmationControl) {}
+  constructor(@Inject(TRIGGER_STATUS_TOKEN) public status: TriggerStatus, public control: ConfirmationControl) {}
 }

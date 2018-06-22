@@ -101,14 +101,13 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkForContextSwitchConfirmation(onConfirm: (result?: ConfirmationResult | null) => void) {
+  private checkForContextSwitchConfirmation(onResult: (result?: ConfirmationResult | null) => void) {
     const status = this.currentTriggerDetailStatus;
     if (!status || !status.isDirty) {
-      return onConfirm();
+      return onResult();
     }
-    // todo: confirmation should not allow to save if there are validation problems
-    const confirmation = this.confirmationService.open();
-    confirmation.result.subscribe(onConfirm);
+    const confirmation = this.confirmationService.open(status);
+    confirmation.result.subscribe(onResult);
   }
 
   private observeWhileConfiguratorIsActive<T>(observable$: Observable<T>, valueWhenNotInitialized: any) {
