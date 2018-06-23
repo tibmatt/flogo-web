@@ -8,6 +8,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 import {MapperModule} from '@flogo/flow/shared/mapper';
 
+import { MonacoEditorModule } from '../../shared/monaco-editor';
 import {ConfiguratorService} from './services/configurator.service';
 import {ConfiguratorComponent} from './configurator.component';
 import { ConfigureTriggerComponent } from './trigger/trigger.component';
@@ -31,7 +32,8 @@ import {
     OverlayModule,
     PortalModule,
     FlogoSharedModule,
-    MapperModule
+    MapperModule,
+    MonacoEditorModule,
   ],
   declarations: [
     TriggerDetailComponent,

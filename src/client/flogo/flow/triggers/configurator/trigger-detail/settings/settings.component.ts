@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {SettingControlInfo} from '../../interfaces';
 import {Dictionary} from '@flogo/core';
+import { ValueType } from '@flogo/core/constants';
 
 @Component({
   selector: 'flogo-triggers-configuration-settings',
@@ -20,8 +21,11 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   statusChanges = new EventEmitter();
   triggerSettings: string[] | null;
   handlerSettings: string[] | null;
-  previousState;
-  valueChangeSub: Subscription;
+
+  VALUE_TYPES = ValueType;
+
+  private previousState;
+  private valueChangeSub: Subscription;
 
   ngOnChanges() {
     this.triggerSettings = this.settingsForm.controls.triggerSettings ?

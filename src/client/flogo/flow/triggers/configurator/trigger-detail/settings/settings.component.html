@@ -1,4 +1,4 @@
-<div [formGroup]="settingsForm" class="settings-form">
+<div [formGroup]="settingsForm" class="settings-form" *loadMonacoEditor>
   <div class="settings-block settings-block__name">
     <input type="text" id="triggerName" [formControl]="settingsForm.controls.name">
     <label for="triggerName">{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</label>
@@ -16,10 +16,16 @@
         {{"TRIGGER-CONFIGURATOR:SETTINGS:TRIGGER-SETTINGS" | translate}}
       </div>
       <div class="settings-block" *ngFor="let settingName of triggerSettings">
-        <input class="settings-field" [id]="'triggerSettings.'+settingName" fgTriggersConfigAutoComplete
-               [formControl]="settingsForm.controls.triggerSettings.controls[settingName]"
-               [autoCompleteVariablesSource]="settingsInformation['triggerSettings.'+settingName].propsAllowed"
-               [autoCompleteAllowedSource]="settingsInformation['triggerSettings.'+settingName].allowed">
+        <ng-container [ngSwitch]="settingsInformation['triggerSettings.'+settingName].type">
+          <monaco-editor *ngSwitchCase="VALUE_TYPES.Any"
+                         [formControl]="settingsForm.controls.triggerSettings.controls[settingName]">
+          </monaco-editor>
+          <input *ngSwitchDefault
+                 class="settings-field" [id]="'triggerSettings.'+settingName" fgTriggersConfigAutoComplete
+                 [formControl]="settingsForm.controls.triggerSettings.controls[settingName]"
+                 [autoCompleteVariablesSource]="settingsInformation['triggerSettings.'+settingName].propsAllowed"
+                 [autoCompleteAllowedSource]="settingsInformation['triggerSettings.'+settingName].allowed">
+        </ng-container>
         <label class="settings-label" [for]="'triggerSettings.'+settingName">{{settingName}}</label>
       </div>
     </div>
