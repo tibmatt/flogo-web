@@ -22,6 +22,7 @@ import {
   AutoCompleteDirective,
   AutoCompleteContentComponent,
   ActionButtonsComponent,
+  SettingsHelpComponent
 } from './trigger-detail';
 
 @NgModule({
@@ -45,6 +46,7 @@ import {
     AutoCompleteContentComponent,
     ActionButtonsComponent,
     ConfirmationComponent,
+    SettingsHelpComponent
   ],
   exports: [
     ConfiguratorComponent

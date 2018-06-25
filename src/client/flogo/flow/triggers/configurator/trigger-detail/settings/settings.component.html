@@ -1,12 +1,17 @@
 <div [formGroup]="settingsForm" class="settings-form" *loadMonacoEditor>
-  <div class="settings-block settings-block__name">
-    <input type="text" id="triggerName" [formControl]="settingsForm.controls.name">
-    <label for="triggerName">{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</label>
+  <div class="settings-group">
+    <div class="settings-group__content settings-block settings-block__name">
+      <input type="text" id="triggerName"
+             [class.--isValid]="settingsForm.controls.name.value !== ''"
+             [formControl]="settingsForm.controls.name">
+      <label class="settings-label" for="triggerName">{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</label>
+    </div>
+    <flogo-triggers-configuration-settings-help></flogo-triggers-configuration-settings-help>
   </div>
   <div class="settings-block">
+    <label class="settings-label" for="triggerDescription">{{"TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION" | translate}}</label>
     <textarea id="triggerDescription" class="settings-field settings-field__description"
               [formControl]="settingsForm.controls.description"></textarea>
-    <label class="settings-label" for="triggerDescription">{{"TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION" | translate}}</label>
   </div>
   <div class="settings-group">
     <div *ngIf="triggerSettings" class="settings-group__content"
@@ -16,6 +21,7 @@
         {{"TRIGGER-CONFIGURATOR:SETTINGS:TRIGGER-SETTINGS" | translate}}
       </div>
       <div class="settings-block" *ngFor="let settingName of triggerSettings">
+        <label class="settings-label" [for]="'triggerSettings.'+settingName">{{settingName}}</label>
         <ng-container [ngSwitch]="settingsInformation['triggerSettings.'+settingName].type">
           <monaco-editor *ngSwitchCase="VALUE_TYPES.Any"
                          [formControl]="settingsForm.controls.triggerSettings.controls[settingName]">
@@ -26,7 +32,6 @@
                  [autoCompleteVariablesSource]="settingsInformation['triggerSettings.'+settingName].propsAllowed"
                  [autoCompleteAllowedSource]="settingsInformation['triggerSettings.'+settingName].allowed">
         </ng-container>
-        <label class="settings-label" [for]="'triggerSettings.'+settingName">{{settingName}}</label>
       </div>
     </div>
     <div *ngIf="handlerSettings" class="settings-group__content"
@@ -36,11 +41,11 @@
         {{"TRIGGER-CONFIGURATOR:SETTINGS:HANDLER-SETTINGS" | translate}}
       </div>
       <div class="settings-block" *ngFor="let settingName of handlerSettings">
+        <label class="settings-label" [for]="'handlerSettings.'+settingName">{{settingName}}</label>
         <input class="settings-field" [id]="'handlerSettings.'+settingName" fgTriggersConfigAutoComplete
                [formControl]="settingsForm.controls.handlerSettings.controls[settingName]"
                [autoCompleteVariablesSource]="settingsInformation['handlerSettings.'+settingName].propsAllowed"
                [autoCompleteAllowedSource]="settingsInformation['handlerSettings.'+settingName].allowed">
-        <label class="settings-label" [for]="'handlerSettings.'+settingName">{{settingName}}</label>
       </div>
     </div>
   </div>

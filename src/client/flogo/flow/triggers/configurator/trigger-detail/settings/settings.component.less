@@ -36,14 +36,12 @@ monaco-editor {
   .settings-label {
     display: block;
     color: @warm-grey;
-    order: 1;
   }
 
   .settings-field {
     width: 100%;
     border-radius: 3px;
     border: solid 1px @color-medium-gray;
-    order: 2;
 
     &.ng-invalid {
       border-color: @scarlet;
@@ -51,17 +49,33 @@ monaco-editor {
 
     &:focus {
       outline-color: @cerulean;
-
-      ~ .settings-label {
-        color: @cerulean;
-      }
     }
   }
 }
 
 
 .settings-block__name {
+  width: 50%;
+
   .uxpl-form-div;
+
+  input {
+
+    &:focus {
+      ~ .settings-label {
+        color: @warm-grey;
+      }
+    }
+
+    &[disabled].--isValid {
+      ~ .settings-label {
+        top: 2px;
+        letter-spacing: normal;
+        text-align: left;
+        z-index: 2;
+      }
+    }
+  }
 }
 
 .settings-field__description {
