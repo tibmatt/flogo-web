@@ -50,9 +50,9 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     programNoExpression(ctx) {
       let rule = null;
-      if (ctx.json[0]) {
+      if (ctx.json) {
         rule = ctx.json;
-      } else if (ctx.attrAccess[0]) {
+      } else if (ctx.attrAccess) {
         rule = ctx.attrAccess;
       } else {
         rule = ctx.literal;
@@ -62,7 +62,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     attrAccess(ctx) {
       const operand = <ExprNodes.ScopeResolver | ExprNodes.Identifier> this.visit(ctx.operandHead);
-      if (ctx.primaryExprTail.length > 0) {
+      if (ctx.primaryExprTail) {
         return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
         return operand;
@@ -71,15 +71,16 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     // todo: check precedence order
     expression(ctx): ExprNodes.Expr {
-      const baseExpr = <ExprNodes.Expr> this.visit(ctx.unaryExpr);
-      if (ctx.binaryExprSide) {
-        return ctx.binaryExprSide
-          .map(cstNode => <ExprNodes.BinaryExpr> this.visit(cstNode))
-          .reduce((leftOperator: ExprNodes.BinaryExpr, binaryExpr: ExprNodes.BinaryExpr) => {
-            binaryExpr.x = leftOperator;
-            return binaryExpr;
-          }, baseExpr);
+      const unaryExpr = <ExprNodes.Expr> this.visit(ctx.unaryExpr);
+      if (!ctx.binaryExprSide) {
+        return unaryExpr;
       }
+      return ctx.binaryExprSide
+        .map(cstNode => <ExprNodes.BinaryExpr> this.visit(cstNode))
+        .reduce((leftOperator: ExprNodes.BinaryExpr, binaryExpr: ExprNodes.BinaryExpr) => {
+          binaryExpr.x = leftOperator;
+          return binaryExpr;
+        }, unaryExpr);
     }
 
     binaryExprSide(ctx): ExprNodes.BinaryExpr {
@@ -106,7 +107,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     primaryExpr(ctx): PrimaryExprNode {
       const operand = <ExprNodes.BasicLit | ExprNodes.Identifier> this.visit(ctx.operand);
-      if (ctx.primaryExprTail.length > 0) {
+      if (ctx.primaryExprTail) {
         return this.$createPrimaryExprHierarchy(ctx.primaryExprTail, operand);
       } else {
         return operand;
@@ -114,9 +115,9 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     primaryExprTail(ctx): ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr {
-      if (ctx.selector[0]) {
+      if (ctx.selector) {
         return <ExprNodes.SelectorExpr> this.visit(ctx.selector);
-      } else if (ctx.index[0]) {
+      } else if (ctx.index) {
         return <ExprNodes.IndexExpr> this.visit(ctx.index);
       } else {
         return <ExprNodes.CallExpr> this.visit(ctx.argumentList);
@@ -144,7 +145,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     operandHead(ctx): ExprNodes.Identifier | ExprNodes.ScopeResolver {
-      if (ctx.IdentifierName[0]) {
+      if (ctx.IdentifierName) {
         return {
           type: 'Identifier',
           name: ctx.IdentifierName[0].image,
@@ -195,7 +196,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     argumentList(ctx): ExprNodes.CallExpr {
-      const args = ctx.expression.map(exprNode => this.visit(exprNode));
+      const args = (ctx.expression || []).map(exprNode => this.visit(exprNode));
       return {
         type: 'CallExpr',
         fun: null,
@@ -204,7 +205,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     json(ctx): JsonNodes.JsonNode {
-      const value = <any> this.visit(ctx.object) || this.visit(ctx.array);
+      const value = ctx.object ? <JsonNodes.ObjectNode>this.visit(ctx.object) : <JsonNodes.ArrayNode> this.visit(ctx.array);
       return {
         type: 'json',
         value,
@@ -221,7 +222,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     object(ctx): JsonNodes.ObjectNode {
       return {
         type: 'jsonObject',
-        children: ctx.objectItem.map(item => this.visit(item)),
+        children: (ctx.objectItem || []).map(item => this.visit(item)),
       };
     }
 

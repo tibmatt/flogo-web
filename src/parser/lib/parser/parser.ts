@@ -96,9 +96,7 @@ const StringLiteral = createToken({
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
 });
 
-function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IToken[], groups?: {
-  [groupName: string]: IToken;
-}) {
+function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IToken[]) {
   if (tokens.length <= 2) {
     return null;
   }
@@ -115,7 +113,8 @@ function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IT
 const StringTemplateOpen = createToken({
   name: 'StringTemplateOpen',
   label: '"{{',
-  pattern: matchStringTemplateOpen,
+  pattern: { exec: matchStringTemplateOpen },
+  line_breaks: false,
   push_mode: 'string_template'
 });
 
