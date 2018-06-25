@@ -12,7 +12,7 @@ import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/
 import { FlowState } from '@flogo/flow/core/state';
 import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/interfaces';
 
-import { CurrentTriggerState, SettingControlInfo } from '../interfaces';
+import { CurrentTriggerState, TriggerInformation } from '../interfaces';
 import { ConfigureDetailsService } from './details.service';
 import { ConfiguratorService } from '../services/configurator.service';
 
@@ -39,7 +39,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   flowInputMapperController?: MapperController;
   replyMapperController?: MapperController;
   settingsForm: FormGroup;
-  settingsControlInformation: Dictionary<SettingControlInfo>;
+  settingsTriggerInformation: TriggerInformation;
 
   private previousState: CurrentTriggerState;
   private ngDestroy$ = SingleEmissionSubject.create();
@@ -119,9 +119,12 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   private reconfigure(state: CurrentTriggerState) {
     this.selectedTriggerId = state.trigger.id;
-    const { settings, flowInputMapper, replyMapper, settingsControlInfo } = this.detailsService.build(state);
+    const { settings, flowInputMapper, replyMapper, triggerInformation } = this.detailsService.build(state);
+    if (this.settingsForm) {
+      this.settingsForm.enable();
+    }
     this.settingsForm = settings;
-    this.settingsControlInformation = settingsControlInfo;
+    this.settingsTriggerInformation = triggerInformation;
     this.updateSettingsStatus({ isValid: this.settingsForm.valid, isDirty: this.settingsForm.dirty });
 
     const subscribeToUpdates = this.createMapperStatusUpdateSubscriber();

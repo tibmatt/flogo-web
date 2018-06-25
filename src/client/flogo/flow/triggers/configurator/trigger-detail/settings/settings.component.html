@@ -6,7 +6,8 @@
              [formControl]="settingsForm.controls.name">
       <label class="settings-label" for="triggerName">{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</label>
     </div>
-    <flogo-triggers-configuration-settings-help></flogo-triggers-configuration-settings-help>
+    <flogo-triggers-configuration-settings-help
+      [trigger]="triggerInformation?.trigger"></flogo-triggers-configuration-settings-help>
   </div>
   <div class="settings-block">
     <label class="settings-label" for="triggerDescription">{{"TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION" | translate}}</label>
@@ -22,15 +23,15 @@
       </div>
       <div class="settings-block" *ngFor="let settingName of triggerSettings">
         <label class="settings-label" [for]="'triggerSettings.'+settingName">{{settingName}}</label>
-        <ng-container [ngSwitch]="settingsInformation['triggerSettings.'+settingName].type">
+        <ng-container [ngSwitch]="triggerInformation?.settingsControls['triggerSettings.'+settingName].type">
           <monaco-editor *ngSwitchCase="VALUE_TYPES.Any"
                          [formControl]="settingsForm.controls.triggerSettings.controls[settingName]">
           </monaco-editor>
           <input *ngSwitchDefault
                  class="settings-field" [id]="'triggerSettings.'+settingName" fgTriggersConfigAutoComplete
                  [formControl]="settingsForm.controls.triggerSettings.controls[settingName]"
-                 [autoCompleteVariablesSource]="settingsInformation['triggerSettings.'+settingName].propsAllowed"
-                 [autoCompleteAllowedSource]="settingsInformation['triggerSettings.'+settingName].allowed">
+                 [autoCompleteVariablesSource]="triggerInformation?.settingsControls['triggerSettings.'+settingName].propsAllowed"
+                 [autoCompleteAllowedSource]="triggerInformation?.settingsControls['triggerSettings.'+settingName].allowed">
         </ng-container>
       </div>
     </div>
@@ -44,8 +45,8 @@
         <label class="settings-label" [for]="'handlerSettings.'+settingName">{{settingName}}</label>
         <input class="settings-field" [id]="'handlerSettings.'+settingName" fgTriggersConfigAutoComplete
                [formControl]="settingsForm.controls.handlerSettings.controls[settingName]"
-               [autoCompleteVariablesSource]="settingsInformation['handlerSettings.'+settingName].propsAllowed"
-               [autoCompleteAllowedSource]="settingsInformation['handlerSettings.'+settingName].allowed">
+               [autoCompleteVariablesSource]="triggerInformation?.settingsControls['handlerSettings.'+settingName].propsAllowed"
+               [autoCompleteAllowedSource]="triggerInformation?.settingsControls['handlerSettings.'+settingName].allowed">
       </div>
     </div>
   </div>

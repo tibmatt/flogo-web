@@ -3,9 +3,10 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@ang
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {SettingControlInfo} from '../../interfaces';
-import {Dictionary} from '@flogo/core';
+import {TriggerInformation} from '../../interfaces';
 import { ValueType } from '@flogo/core/constants';
+
+const COMMON_FIELDS_TO_DISABLE = ['name', 'description', 'triggerSettings'];
 
 @Component({
   selector: 'flogo-triggers-configuration-settings',
@@ -16,7 +17,7 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   @Input()
   settingsForm: FormGroup;
   @Input()
-  settingsInformation: Dictionary<SettingControlInfo>;
+  triggerInformation: TriggerInformation;
   @Output()
   statusChanges = new EventEmitter();
   triggerSettings: string[] | null;
@@ -28,6 +29,14 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   private valueChangeSub: Subscription;
 
   ngOnChanges() {
+    if (this.triggerInformation.trigger.handlersCount > 1) {
+      COMMON_FIELDS_TO_DISABLE.forEach(prop => {
+        const propInSettingsForm = this.settingsForm.get(prop);
+        if (propInSettingsForm) {
+          propInSettingsForm.disable();
+        }
+      });
+    }
     this.triggerSettings = this.settingsForm.controls.triggerSettings ?
       Object.keys((<FormGroup>this.settingsForm.controls.triggerSettings).controls)
       : null;

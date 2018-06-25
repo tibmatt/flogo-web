@@ -4,7 +4,7 @@ import {
   TriggerConfigureFields,
   TriggerConfigureTabType
 } from '@flogo/flow/core';
-import {SchemaAttribute, TriggerSchema} from '@flogo/core';
+import {Dictionary, SchemaAttribute, TriggerSchema} from '@flogo/core';
 import {ValidatorFn} from '@angular/forms';
 
 export interface ConfigureTriggerDetails {
@@ -26,4 +26,13 @@ export interface SettingControlInfo extends SchemaAttribute {
   partOf: SettingControlGroupType;
   propsAllowed: string[];
   validations: ValidatorFn[];
+}
+
+export interface TriggerInformation {
+  settingsControls: Dictionary<SettingControlInfo>;
+  trigger: {
+    handlersCount: number;
+    homePage: string;
+    readme?: string;
+  };
 }

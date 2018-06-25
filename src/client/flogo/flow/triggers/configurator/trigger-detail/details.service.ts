@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
 import { SettingsFormBuilder } from './settings-form-builder';
-import { CurrentTriggerState, SettingControlInfo, SettingControlGroupType } from '../interfaces';
+import { CurrentTriggerState, SettingControlInfo, SettingControlGroupType, TriggerInformation } from '../interfaces';
 import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo/core';
 import { createValidatorsForSchema } from '@flogo/flow/core/models';
 
@@ -10,14 +10,22 @@ export class ConfigureDetailsService {
   constructor(private settingsFormBuilder: SettingsFormBuilder, private mapperControllerFactory: MapperControllerFactory) {}
 
   build(state: CurrentTriggerState) {
-    const { flowMetadata, schema: triggerSchema, handler: { actionMappings }, fields } = state;
+    const { flowMetadata, schema: triggerSchema, handler: { actionMappings }, fields, trigger: {handlers} } = state;
     const { input, output } = actionMappings;
     const settingsControlInfo = this.getAllSettingsControls(triggerSchema);
+    const triggerInformation: TriggerInformation = {
+      settingsControls: settingsControlInfo,
+      trigger: {
+        handlersCount: handlers.length,
+        homePage: triggerSchema.homepage,
+        readme: `${triggerSchema.homepage}/README.md`
+      }
+    };
     return {
       settings: this.settingsFormBuilder.build(fields.settings, settingsControlInfo),
       flowInputMapper: this.createInputMapperController(flowMetadata, triggerSchema, input),
       replyMapper: this.createReplyMapperController(flowMetadata, triggerSchema, output),
-      settingsControlInfo
+      triggerInformation
     };
   }
 

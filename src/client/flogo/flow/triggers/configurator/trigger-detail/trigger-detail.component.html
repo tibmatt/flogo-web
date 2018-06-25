@@ -15,7 +15,7 @@
 <ng-container [ngSwitch]="currentTabType">
   <flogo-triggers-configuration-settings *ngSwitchCase="TAB_TYPES.Settings"
                                          [settingsForm]="settingsForm"
-                                         [settingsInformation]="settingsControlInformation"
+                                         [triggerInformation]="settingsTriggerInformation"
                                          (statusChanges)="updateSettingsStatus($event)"
                                          cdkScrollable>
   </flogo-triggers-configuration-settings>
