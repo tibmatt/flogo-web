@@ -23,13 +23,14 @@ export enum SettingControlGroup {
   HANDLER = 'handlerSettings'
 }
 export interface SettingControlInfo extends SchemaAttribute {
-  partOf: SettingControlGroupType;
   propsAllowed: string[];
   validations: ValidatorFn[];
 }
 
 export interface TriggerInformation {
-  settingsControls: Dictionary<SettingControlInfo>;
+  settingsControls: {
+    [groupType in SettingControlGroupType]: Dictionary<SettingControlInfo>;
+  };
   trigger: {
     handlersCount: number;
     homePage: string;

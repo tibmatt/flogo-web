@@ -6,12 +6,12 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {TriggerInformation} from '../../interfaces';
 import { ValueType } from '@flogo/core/constants';
 
-const COMMON_FIELDS_TO_DISABLE = ['name', 'description', 'triggerSettings'];
+const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 
 @Component({
   selector: 'flogo-triggers-configuration-settings',
   templateUrl: 'settings.component.html',
-  styleUrls: ['settings.component.less']
+  styleUrls: ['./shared/form-common-styles.less', 'settings.component.less']
 })
 export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   @Input()
@@ -29,14 +29,6 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   private valueChangeSub: Subscription;
 
   ngOnChanges() {
-    if (this.triggerInformation.trigger.handlersCount > 1) {
-      COMMON_FIELDS_TO_DISABLE.forEach(prop => {
-        const propInSettingsForm = this.settingsForm.get(prop);
-        if (propInSettingsForm) {
-          propInSettingsForm.disable();
-        }
-      });
-    }
     this.triggerSettings = this.settingsForm.controls.triggerSettings ?
       Object.keys((<FormGroup>this.settingsForm.controls.triggerSettings).controls)
       : null;
@@ -51,9 +43,10 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
         distinctUntilChanged(),
       )
       .subscribe(() => {
-        if (!isEqual(this.previousState, this.settingsFormStatus)) {
-          this.previousState = this.settingsFormStatus;
-          this.statusChanges.emit(this.settingsFormStatus);
+        const settingsStatus = this.settingsFormStatus;
+        if (!isEqual(this.previousState, settingsStatus)) {
+          this.previousState = settingsStatus;
+          this.statusChanges.emit(settingsStatus);
         }
       });
   }

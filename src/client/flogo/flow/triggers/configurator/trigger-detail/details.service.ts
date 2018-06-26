@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
 import { SettingsFormBuilder } from './settings-form-builder';
-import { CurrentTriggerState, SettingControlInfo, SettingControlGroupType, TriggerInformation } from '../interfaces';
+import { CurrentTriggerState, SettingControlInfo, TriggerInformation } from '../interfaces';
 import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo/core';
 import { createValidatorsForSchema } from '@flogo/flow/core/models';
 
@@ -13,6 +13,7 @@ export class ConfigureDetailsService {
     const { flowMetadata, schema: triggerSchema, handler: { actionMappings }, fields, trigger: {handlers} } = state;
     const { input, output } = actionMappings;
     const settingsControlInfo = this.getAllSettingsControls(triggerSchema);
+    const disableCommonSettings = handlers.length > 1;
     const triggerInformation: TriggerInformation = {
       settingsControls: settingsControlInfo,
       trigger: {
@@ -22,18 +23,20 @@ export class ConfigureDetailsService {
       }
     };
     return {
-      settings: this.settingsFormBuilder.build(fields.settings, settingsControlInfo),
+      settings: this.settingsFormBuilder.build(fields.settings, settingsControlInfo, disableCommonSettings),
       flowInputMapper: this.createInputMapperController(flowMetadata, triggerSchema, input),
       replyMapper: this.createReplyMapperController(flowMetadata, triggerSchema, output),
       triggerInformation
     };
   }
 
-  getAllSettingsControls(schema: TriggerSchema): Dictionary<SettingControlInfo> {
+  getAllSettingsControls(schema: TriggerSchema): TriggerInformation['settingsControls'] {
     const {settings: triggerSettings, handler} = schema;
     const {settings: handlerSettings} = handler;
-    const settingsControlInfo = this.reduceSettingsAndGetInfo(triggerSettings, this.generateCreateControlInfo('triggerSettings'));
-    return this.reduceSettingsAndGetInfo(handlerSettings, this.generateCreateControlInfo('handlerSettings'), settingsControlInfo);
+    return {
+      'triggerSettings': this.reduceSettingsAndGetInfo(triggerSettings),
+      'handlerSettings': this.reduceSettingsAndGetInfo(handlerSettings)
+    };
   }
 
   private createReplyMapperController(flowMetadata, triggerSchema, output: any) {
@@ -52,23 +55,15 @@ export class ConfigureDetailsService {
     );
   }
 
-  private reduceSettingsAndGetInfo(settings: SchemaAttribute[],
-                                   createControlInfo: (string) => SettingControlInfo,
-                                   initialValue: Dictionary<SettingControlInfo> = {}): Dictionary<SettingControlInfo> {
+  private reduceSettingsAndGetInfo(settings: SchemaAttribute[]): Dictionary<SettingControlInfo> {
     return (settings || []).reduce((allSettings, setting) => {
-      const controlInfo = createControlInfo(setting);
-      allSettings[`${controlInfo.partOf}.${setting.name}`] = controlInfo;
+      allSettings[setting.name] = {
+        ...setting,
+        propsAllowed: [],
+        validations: createValidatorsForSchema(setting)
+      };
       return allSettings;
-    }, initialValue);
-  }
-
-  private generateCreateControlInfo(partOf: SettingControlGroupType) {
-    return (settingSchema: SchemaAttribute): SettingControlInfo => ({
-      ...settingSchema,
-      partOf,
-      propsAllowed: [],
-      validations: createValidatorsForSchema(settingSchema)
-    });
+    }, {});
   }
 
 }
