@@ -27,8 +27,6 @@ const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
   };
 };
 
-const isSelectorNode = (node: PrimaryExprNode): node is ExprNodes.SelectorExpr => node.type === 'SelectorExpr';
-
 export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisitorBase {
   class AstConstructor extends BaseCstVisitorClass {
     constructor() {
@@ -46,18 +44,6 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
         };
       }
       return <JsonNodes.JsonNode> this.visit(ctx.json);
-    }
-
-    programNoExpression(ctx) {
-      let rule = null;
-      if (ctx.json) {
-        rule = ctx.json;
-      } else if (ctx.attrAccess) {
-        rule = ctx.attrAccess;
-      } else {
-        rule = ctx.literal;
-      }
-      return this.visit(rule);
     }
 
     attrAccess(ctx) {
@@ -171,9 +157,10 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     resolverSelector(ctx): { name: string, selector?: string } {
-      const [name, selector] = ctx.IdentifierName;
+      const [name] = ctx.IdentifierName;
       const resolverSelector: { name: string, selector?: string } = { name };
-      if (selector) {
+      if (ctx.ResolverIdentifier) {
+        const [selector] = ctx.ResolverIdentifier;
         resolverSelector.selector = selector;
       }
       return resolverSelector;
@@ -215,7 +202,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     array(ctx): JsonNodes.ArrayNode {
       return {
         type: 'jsonArray',
-        children: ctx.value.map(valueNode => this.visit(valueNode)),
+        children: ctx.jsonValue.map(valueNode => this.visit(valueNode)),
       };
     }
 
@@ -228,7 +215,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     objectItem(ctx): JsonNodes.PropertyNode {
       const key = JSON.parse(ctx.StringLiteral[0].image);
-      const value = <JsonNodes.ValueNode> this.visit(ctx.value);
+      const value = <JsonNodes.ValueNode> this.visit(ctx.jsonValue);
       return {
         type: 'jsonProperty',
         key,
@@ -236,7 +223,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       };
     }
 
-    value(ctx): JsonNodes.ValueNode {
+    jsonValue(ctx): JsonNodes.ValueNode {
       const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
       if (cstNodeType === 'object' || cstNodeType === 'array' || cstNodeType === 'stringTemplate' ) {
         return <JsonNodes.ObjectNode | JsonNodes.ArrayNode> this.visit(ctx[cstNodeType]);
