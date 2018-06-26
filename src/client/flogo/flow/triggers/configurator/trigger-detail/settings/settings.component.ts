@@ -2,9 +2,11 @@ import {isEqual} from 'lodash';
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import {TriggerInformation} from '../../interfaces';
 import { ValueType } from '@flogo/core/constants';
+import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
+import { parseValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings/parse-value';
 
 const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 
@@ -39,7 +41,6 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
     this.previousState = null;
     this.valueChangeSub = this.settingsForm.valueChanges
       .pipe(
-        debounceTime(300),
         distinctUntilChanged(),
       )
       .subscribe(() => {
@@ -53,6 +54,17 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
 
   ngOnDestroy() {
     this.unsubscribePrevious();
+  }
+
+  editorOut(valueType: ValueType): (value: string) => SettingValue {
+    return (value: string) => parseValue(valueType, value);
+  }
+
+  editorIn(value: SettingValue) {
+    if (value != null) {
+      return value.viewValue;
+    }
+    return '';
   }
 
   private unsubscribePrevious() {

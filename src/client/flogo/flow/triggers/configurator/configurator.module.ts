@@ -24,6 +24,7 @@ import {
   ActionButtonsComponent,
   SettingsHelpComponent
 } from './trigger-detail';
+import { FieldValueAccesorDirective } from './trigger-detail/settings/field.directive';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import {
     ConfigureSettingsComponent,
     TabsComponent,
     AutoCompleteDirective,
+    FieldValueAccesorDirective,
     AutoCompleteContentComponent,
     ActionButtonsComponent,
     ConfirmationComponent,

@@ -25,13 +25,20 @@
         <label class="settings-label">{{settingName}}</label>
         <ng-container [ngSwitch]="triggerInformation?.settingsControls.triggerSettings[settingName].type">
           <monaco-editor *ngSwitchCase="VALUE_TYPES.Any"
+                         [formValueChangeTransformerFn]="editorOut(triggerInformation?.settingsControls.triggerSettings[settingName].type)"
+                         [formValueWriteTransformerFn]="editorIn"
                          [formControl]="settingsForm.controls.triggerSettings.controls[settingName]">
           </monaco-editor>
-          <input *ngSwitchDefault class="settings-field" fgTriggersConfigAutoComplete
+          <input *ngSwitchDefault class="settings-field"
+                 fgTriggersConfigAutoComplete
+                 [fgTriggerSettingsField]="triggerInformation.settingsControls.triggerSettings[settingName].type"
                  [formControl]="settingsForm.controls.triggerSettings.controls[settingName]"
                  [autoCompleteVariablesSource]="triggerInformation?.settingsControls.triggerSettings[settingName].propsAllowed"
                  [autoCompleteAllowedSource]="triggerInformation?.settingsControls.triggerSettings[settingName].allowed">
         </ng-container>
+        <span *ngIf="settingsForm.controls.triggerSettings.controls[settingName]?.errors; let errors">
+          {{ errors | json }}
+        </span>
       </div>
     </div>
     <div *ngIf="handlerSettings" class="settings-group__content"
@@ -43,9 +50,13 @@
       <div class="settings-block" *ngFor="let settingName of handlerSettings">
         <label class="settings-label">{{settingName}}</label>
         <input class="settings-field" fgTriggersConfigAutoComplete
+               [fgTriggerSettingsField]="triggerInformation.settingsControls.handlerSettings[settingName].type"
                [formControl]="settingsForm.controls.handlerSettings.controls[settingName]"
                [autoCompleteVariablesSource]="triggerInformation?.settingsControls.handlerSettings[settingName].propsAllowed"
                [autoCompleteAllowedSource]="triggerInformation?.settingsControls.handlerSettings[settingName].allowed">
+        <span *ngIf="settingsForm.controls.handlerSettings.controls[settingName]?.errors; let errors">
+          {{ errors | json }}
+        </span>
       </div>
     </div>
   </div>

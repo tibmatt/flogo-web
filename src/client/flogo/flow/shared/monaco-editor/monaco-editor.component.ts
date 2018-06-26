@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 import {
   EditorConstructOptions,
@@ -100,6 +100,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   @Output() selectionChange: EventEmitter<ICursorSelectionChangedEvent> = new EventEmitter<ICursorSelectionChangedEvent>();
 
   @Output() ready: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Input() formValueWriteTransformerFn?: (value: any) => string;
+  @Input() formValueChangeTransformerFn?: (value: string) => any;
 
   editor: IStandaloneCodeEditor;
   public isEditorLoading: boolean;
@@ -288,7 +291,10 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
 
   registerOnChange(onChange) {
     this.valueChange
-      .pipe(takeUntil(this.destroyed))
+      .pipe(
+        takeUntil(this.destroyed),
+        map(value => this.formValueChangeTransformerFn ? this.formValueChangeTransformerFn(value) : value)
+      )
       .subscribe(onChange);
   }
 
@@ -301,6 +307,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   }
 
   writeValue(value: any) {
+    if (this.formValueWriteTransformerFn) {
+      value = this.formValueWriteTransformerFn(value);
+    }
     this.value = value;
   }
 
