@@ -18,7 +18,7 @@ export class ConfigureDetailsService {
       trigger: {
         handlersCount: handlers.length,
         homePage: triggerSchema.homepage,
-        readme: `${triggerSchema.homepage}/README.md`
+        readme: triggerSchema.homepage
       }
     };
     return {
