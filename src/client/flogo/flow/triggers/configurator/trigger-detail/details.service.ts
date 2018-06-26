@@ -3,7 +3,8 @@ import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
 import { SettingsFormBuilder } from './settings-form-builder';
 import { CurrentTriggerState, SettingControlInfo, TriggerInformation } from '../interfaces';
 import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo/core';
-import { createValidatorsForSchema } from '@flogo/flow/core/models';
+import { createValidatorsForSchema } from './settings-validation';
+import { TriggerHandler } from '@flogo/flow/core';
 
 @Injectable()
 export class ConfigureDetailsService {
@@ -12,30 +13,33 @@ export class ConfigureDetailsService {
   build(state: CurrentTriggerState) {
     const { flowMetadata, schema: triggerSchema, handler: { actionMappings }, fields, trigger: {handlers} } = state;
     const { input, output } = actionMappings;
-    const settingsControlInfo = this.getAllSettingsControls(triggerSchema);
     const disableCommonSettings = handlers.length > 1;
-    const triggerInformation: TriggerInformation = {
-      settingsControls: settingsControlInfo,
-      trigger: {
-        handlersCount: handlers.length,
-        homePage: triggerSchema.homepage,
-        readme: triggerSchema.homepage
-      }
-    };
+    const triggerInformation = this.getTriggerInformation(handlers, triggerSchema);
     return {
-      settings: this.settingsFormBuilder.build(fields.settings, settingsControlInfo, disableCommonSettings),
+      settings: this.settingsFormBuilder.build(fields.settings, triggerInformation.settingsControls, disableCommonSettings),
       flowInputMapper: this.createInputMapperController(flowMetadata, triggerSchema, input),
       replyMapper: this.createReplyMapperController(flowMetadata, triggerSchema, output),
       triggerInformation
     };
   }
 
-  getAllSettingsControls(schema: TriggerSchema): TriggerInformation['settingsControls'] {
+  private getTriggerInformation(handlers: TriggerHandler[], triggerSchema: TriggerSchema): TriggerInformation {
+    return {
+      settingsControls: this.getAllSettingsControls(triggerSchema),
+      trigger: {
+        handlersCount: handlers.length,
+        homePage: triggerSchema.homepage,
+        readme: triggerSchema.homepage
+      }
+    };
+  }
+
+  private getAllSettingsControls(schema: TriggerSchema): TriggerInformation['settingsControls'] {
     const {settings: triggerSettings, handler} = schema;
     const {settings: handlerSettings} = handler;
     return {
-      'triggerSettings': this.reduceSettingsAndGetInfo(triggerSettings),
-      'handlerSettings': this.reduceSettingsAndGetInfo(handlerSettings)
+      triggerSettings: this.reduceSettingsAndGetInfo(triggerSettings),
+      handlerSettings: this.reduceSettingsAndGetInfo(handlerSettings)
     };
   }
 

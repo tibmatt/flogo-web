@@ -1,6 +1,4 @@
-<div class="help">
-  Type to filter. Type “<strong>$</strong>” to filter properties.<br>
-  Use “<strong>$env.</strong>” for environment variables
+<div class="help" [innerHTML]="'TRIGGER-CONFIGURATOR:SETTINGS:AUTOCOMPLETE-HELP' | translate">
 </div>
 <div class="all-options-wrapper">
     <ng-container *ngIf="options?.allowedValues | async as allowedValues">

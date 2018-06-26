@@ -1,6 +1,7 @@
 import { fromPairs } from 'lodash';
 import { FormGroup } from '@angular/forms';
 import { SettingControlGroup } from '@flogo/flow/triggers/configurator/interfaces';
+import { convertSettingsFormValues } from './convert-setting-form-values';
 
 export function extractTriggerChanges(form: FormGroup) {
   if (!form || !form.dirty) {
@@ -15,9 +16,9 @@ export function extractTriggerChanges(form: FormGroup) {
   if (descriptionControl && descriptionControl.dirty) {
     triggerChanges.push(['description', descriptionControl.value]);
   }
-  const settingsControl = form.get(SettingControlGroup.TRIGGER);
+  const settingsControl = form.get(SettingControlGroup.TRIGGER) as FormGroup;
   if (settingsControl && settingsControl.dirty) {
-    triggerChanges.push(['settings', settingsControl.value]);
+    triggerChanges.push(['settings', convertSettingsFormValues(settingsControl)]);
   }
   return triggerChanges.length > 0 ? fromPairs(triggerChanges) : null;
 }

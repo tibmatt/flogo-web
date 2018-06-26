@@ -88,7 +88,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     this.configuratorService.save()
       .subscribe(() => {
         const isUpdateStillApplicable = this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
-        if (isUpdateStillApplicable) {
+        if (!isUpdateStillApplicable) {
           return;
         }
         this.settingsForm.reset(this.settingsForm.value);

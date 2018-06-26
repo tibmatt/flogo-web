@@ -5,6 +5,7 @@ import { TriggerHandler } from '@flogo/flow/core';
 import { MapperController, MapperTranslator } from '@flogo/flow/shared/mapper';
 import { SettingControlGroup } from '../../interfaces';
 import { SaveParams } from './save-params';
+import { convertSettingsFormValues } from './convert-setting-form-values';
 
 export function extractHandlerChanges(oldHandler: TriggerHandler, {settings, flowInputMapper, replyMapper}: SaveParams) {
   const changes = [];
@@ -23,9 +24,9 @@ function checkForSettingChanges(settings: FormGroup) {
   if (!settings && !settings.dirty) {
     return null;
   }
-  const handlerSettingsControl = settings.get(SettingControlGroup.HANDLER);
+  const handlerSettingsControl = settings.get(SettingControlGroup.HANDLER) as FormGroup;
   if (handlerSettingsControl && handlerSettingsControl.dirty) {
-    return handlerSettingsControl.value;
+    return convertSettingsFormValues(handlerSettingsControl);
   }
   return null;
 }

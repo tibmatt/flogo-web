@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { empty as emptyObservable } from 'rxjs/observable/empty';
+import { of as observableOf } from 'rxjs/observable/of';
 import { mergeMap, take, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { RESTAPIHandlersService } from '@flogo/core/services/restapi/v2/handlers-api.service';
@@ -65,7 +65,7 @@ export class ConfiguratorService {
           }));
         });
     }
-    return emptyObservable();
+    return observableOf(null);
   }
 
   private saveTriggerSettings(triggerId: string, allSettingsForm: FormGroup) {
@@ -76,7 +76,7 @@ export class ConfiguratorService {
           this.store.dispatch(new TriggerActions.UpdateTrigger(updatedTrigger));
         });
     }
-    return emptyObservable();
+    return observableOf(null);
   }
 
 }

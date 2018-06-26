@@ -201,6 +201,7 @@
   "TRIGGER-CONFIGURATOR:SETTINGS:HELP:TRIGGER-DOCUMENTATION": "View trigger documentation",
   "TRIGGER-CONFIGURATOR:SETTINGS:HELP:README": "View README",
   "TRIGGER-CONFIGURATOR:SETTINGS:HELP:MAPPER-HOW-TO": "How-to mapper",
+  "TRIGGER-CONFIGURATOR:SETTINGS:AUTOCOMPLETE-HELP": "Type to filter. Type “<strong>$</strong>” to filter properties.<br>Use “<strong>$env[VAR]</strong>” for environment variables",
   "TRIGGER-MAPPER:LABEL-FLOW-INPUTS": "Flow Input Params",
   "TRIGGER-MAPPER:LABEL-TRIGGER-OUTPUT": "Trigger Output",
   "TRIGGER-MAPPER:LABEL-TRIGGER-REPLY-ATTRIBUTES": "Trigger Response",

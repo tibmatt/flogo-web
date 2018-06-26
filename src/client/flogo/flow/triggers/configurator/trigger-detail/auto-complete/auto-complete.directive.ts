@@ -1,4 +1,4 @@
-import { isArray } from 'lodash';
+import { isArray, isString } from 'lodash';
 import {
   ComponentRef,
   Directive,
@@ -10,6 +10,7 @@ import {
   OnDestroy,
   OnInit,
   SimpleChange,
+  Optional,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { AbstractControl } from '@angular/forms';
@@ -24,10 +25,10 @@ import { concat } from 'rxjs/observable/concat';
 
 import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
 import { SingleEmissionSubject } from '@flogo/core/models';
+import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
+import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/field.directive';
 
 const POPOVER_WIDTH = '344px';
-// note: needs to be in sync with the max-height in the stylesheet auto-complete-content.component.less
-// const POPOVER_MAX_HEIGHT = '436px';
 
 const ensureObservable = (value) => {
   if (!value) {
@@ -38,13 +39,17 @@ const ensureObservable = (value) => {
   return value;
 };
 
-const filterList = (collection, term) => {
+const filterList = (collection: string[], term: string) => {
   term = term ? term.toLowerCase() : '';
   if (!term) {
     return collection;
   }
   return collection.filter(element => element.toLowerCase().startsWith(term));
 };
+
+const coerceSettingValueToString = (settingValue: SettingValue) => isString(settingValue.viewValue)
+  ? settingValue.viewValue
+  : JSON.stringify(settingValue.viewValue);
 
 @Directive({
   selector: '[fgTriggersConfigAutoComplete]'
@@ -74,12 +79,18 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     private parentInjector: Injector,
     private overlay: Overlay,
     @Inject(DOCUMENT) private document: Document,
-  ) {}
+    @Optional() private valueAccessor: FieldValueAccesorDirective,
+  ) {
+  }
 
   ngOnInit() {
-    const switchToInner = switchMap<Observable<string[]>, string[]>(newValueSource => newValueSource);
+    const switchToInner = switchMap<Observable<any>, any>(newValueSource => newValueSource);
     const mapToFiltered = map(([currentInputValue, allowedValues]) => filterList(allowedValues, currentInputValue));
-    const value$ = this.valueSources.pipe(switchToInner, shareReplay());
+    const value$ = this.valueSources.pipe(
+      switchToInner,
+      map((value: string | SettingValue) => !isString(value) ? coerceSettingValueToString(value) : value),
+      shareReplay()
+    );
     const connect = (subjectSrc: Observable<Observable<string[]>>) => value$.pipe(
       takeUntil(this.destroy$),
       withLatestFrom(subjectSrc.pipe(switchToInner)),
@@ -189,6 +200,9 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
 
   private optionSelected(option: string) {
     this.formControl.setValue(option);
+    if (this.valueAccessor) {
+      this.valueAccessor.update(option);
+    }
     this.close();
   }
 
