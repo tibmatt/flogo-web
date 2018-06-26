@@ -1,7 +1,6 @@
-import {Component, ViewChild, Input, SimpleChanges, OnChanges} from '@angular/core';
+import {Component, ViewChild, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
 import {BsModalComponent} from 'ng2-bs3-modal';
 import {CONTRIB_REF_PLACEHOLDER, LanguageService} from '@flogo/core';
-import {TriggersApiService} from '@flogo/core/services/restapi/v2/triggers-api.service';
 
 
 @Component({
@@ -14,15 +13,12 @@ export class TriggerShimBuildComponent implements OnChanges {
   @ViewChild('shimTriggersModal') shimTriggersModal: BsModalComponent;
   @Input() shimTriggersList;
   @Input() buildOptions;
-
+  @Output() triggerSelected: EventEmitter<{ triggerId?: string, env?: {os: string, arch: string}}> = new EventEmitter();
   displayOptions: any;
   isLambdaTrigger: boolean;
-  buildLink: string;
-  serverlessAppBuildLink: HTMLAnchorElement;
   isTriggerSelected: boolean;
 
-  constructor(private triggersApiService: TriggersApiService,
-              public translate: LanguageService) {}
+  constructor(public translate: LanguageService) {}
 
 
   ngOnChanges(changes: SimpleChanges) {
@@ -31,9 +27,18 @@ export class TriggerShimBuildComponent implements OnChanges {
       this.shimTriggersList = _.flatMap(this.shimTriggersList, shimTriggerList =>
         _.map(shimTriggerList.flows, flow => _.defaults({configuredTrigger: shimTriggerList.trigger}, {configuredFlow: flow}))
       );
+      if (this.shimTriggersList.length === 1) {
+        this.displayOptions = {
+          triggerName: this.shimTriggersList[0].configuredTrigger.name,
+          triggerId: this.shimTriggersList[0].configuredTrigger.id,
+          flowName: this.shimTriggersList[0].configuredFlow.name
+        };
+        this.isTriggerSelected = true;
+      } else {
+        this.displayOptions = {};
+        this.isTriggerSelected = false;
+      }
       this.isLambdaTrigger = false;
-      this.displayOptions = {};
-      this.isTriggerSelected = false;
     }
   }
 
@@ -45,20 +50,23 @@ export class TriggerShimBuildComponent implements OnChanges {
     this.shimTriggersModal.close();
   }
 
-  buildTrigger(trigger) {
-    this.buildLink = this.triggersApiService.getShimTriggerBuildLink(trigger.configuredTrigger.id);
+  onTriggerSelectionFinish(trigger) {
     if (trigger.configuredTrigger.ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA) {
       this.isLambdaTrigger = true;
-      this.serverlessAppBuildLink = document.createElement('a');
-      this.serverlessAppBuildLink.style.display = 'none';
-      document.body.appendChild(this.serverlessAppBuildLink);
-      this.serverlessAppBuildLink.setAttribute('href', this.buildLink);
-      this.serverlessAppBuildLink.click();
-      this.closeModal();
+      this.triggerSelected.emit({triggerId: trigger.configuredTrigger.id});
     } else {
-      this.isLambdaTrigger = false;
+      this.displayOptions = {
+        triggerName: trigger.configuredTrigger.name,
+        triggerId: trigger.configuredTrigger.id,
+        flowName: trigger.configuredFlow.name
+      };
       this.isTriggerSelected = true;
-      this.displayOptions = {triggerName: trigger.configuredTrigger.name, flowName: trigger.configuredFlow.name};
+      this.isLambdaTrigger = false;
     }
   }
+
+  onBuildEnvSelection(env, triggerId) {
+    this.triggerSelected.emit({triggerId: triggerId, env: {os: env.os, arch: env.arch}});
+  }
+
 }

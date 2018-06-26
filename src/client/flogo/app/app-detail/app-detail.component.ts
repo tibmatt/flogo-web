@@ -13,6 +13,7 @@ import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 import { diffDates, notification } from '../../shared/utils';
+import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -62,13 +63,15 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   isExportBoxShown = false;
   downloadLink: string;
 
+
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
   constructor(public translate: LanguageService,
               private appDetailService: AppDetailService,
               public flogoModal: FlogoModal,
               private sanitizer: SanitizeService,
-              private contributionService: RESTAPIContributionsService
+              private contributionService: RESTAPIContributionsService,
+              private shimtriggersApiService: ShimTriggerBuildApiService
   ) {
   }
 
@@ -89,6 +92,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       this.createFlowGroups();
       this.createTriggerGroups();
       if (this.application.profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
+        this.shimTriggerOptions = [];
         this.getShimTriggerBuildOptions();
       }
       const prevValue = change.previousValue;
@@ -164,6 +168,16 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
       });
     });
   }
+
+  onShimTriggerSelection(selectedTrigger) {
+    this.buildShimTrigger(selectedTrigger);
+  }
+
+  buildShimTrigger(selectedTriggerDetails) {
+    this.shimTriggersBuild.closeModal();
+    return this.shimtriggersApiService.buildShimTrigger(selectedTriggerDetails);
+  }
+
 
   openCreateFlowFromTrigger(trigger: Trigger) {
     this.addFlow.open(trigger.id);
@@ -254,13 +268,20 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   showShimTriggerList(ref) {
-    this.shimTriggersBuild.openModal();
-    this.shimTriggersList = this.flowGroups.filter(flowGroup => flowGroup.trigger.ref === ref);
+    this.shimTriggersList = this.flowGroups.filter(flowGroup => (flowGroup.trigger) && (flowGroup.trigger.ref === ref));
+    if (ref === CONTRIB_REF_PLACEHOLDER.REF_LAMBDA && this.shimTriggersList.length === 1) {
+      this.buildShimTrigger({triggerId: this.shimTriggersList[0].trigger.id});
+    } else {
+      this.shimTriggersBuild.openModal();
+    }
+    this.closeBuildBox();
   }
 
   toggleExportBox() {
     this.isExportBoxShown = !this.isExportBoxShown;
   }
+
+
 
   closeExportBox() {
     this.isExportBoxShown = false;

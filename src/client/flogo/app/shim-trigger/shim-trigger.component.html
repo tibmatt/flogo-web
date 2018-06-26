@@ -3,7 +3,7 @@
   <div *ngIf="!isTriggerSelected">
     <div class="shim-trigger__modal-header">{{'TRIGGER-SHIM:MULTIPLE-TRIGGERS' | translate}}</div>
     <div *ngFor="let shimTrigger of shimTriggersList"
-         (click)="buildTrigger(shimTrigger)">
+         (click)="onTriggerSelectionFinish(shimTrigger)">
       <div class="shim-trigger-container">
         <ul class="list-unstyled shim-trigger_content">
           <li class="shim-trigger-item">
@@ -32,7 +32,7 @@
     <div class="select-environment">{{ 'TRIGGER-SHIM:SELECT-ENVIRONMENT' | translate }}</div>
     <ul class="list-unstyled trigger-build-options">
       <li *ngFor="let opt of buildOptions" class="build-environment-list-item">
-        <a class="build-environment-link" (click)="closeModal()" href="{{buildLink}}?os={{opt.os}}&arch={{opt.arch}}">
+        <a class="build-environment-link" (click)="onBuildEnvSelection(opt, displayOptions.triggerId)">
           <span>{{ opt.label }}</span></a>
       </li>
     </ul>
