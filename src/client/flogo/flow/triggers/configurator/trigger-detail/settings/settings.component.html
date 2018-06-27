@@ -1,14 +1,14 @@
 <div [formGroup]="settingsForm" class="settings-form" *loadMonacoEditor>
   <div class="settings-group">
     <div class="settings-group__content settings-block settings-block__name">
+      <i *ngIf="settingsForm.controls.name.disabled"
+         class="flogo-icon-edit settings-icon__edit"
+         (click)="enableAllSettings()"></i>
       <input type="text" id="triggerName"
              [class.--isValid]="settingsForm.controls.name.value !== ''"
              [formControl]="settingsForm.controls.name">
       <label class="settings-label" for="triggerName">
         <span>{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</span>
-        <i *ngIf="settingsForm.controls.name.disabled"
-           class="flogo-icon-edit settings-icon__edit"
-           (click)="enableAllSettings()"></i>
       </label>
     </div>
     <flogo-triggers-configuration-settings-help
