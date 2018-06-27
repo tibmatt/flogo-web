@@ -4,13 +4,23 @@
       <input type="text" id="triggerName"
              [class.--isValid]="settingsForm.controls.name.value !== ''"
              [formControl]="settingsForm.controls.name">
-      <label class="settings-label" for="triggerName">{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</label>
+      <label class="settings-label" for="triggerName">
+        <span>{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</span>
+        <i *ngIf="settingsForm.controls.name.disabled"
+           class="flogo-icon-edit settings-icon__edit"
+           (click)="enableAllSettings()"></i>
+      </label>
     </div>
     <flogo-triggers-configuration-settings-help
       [trigger]="triggerInformation?.trigger"></flogo-triggers-configuration-settings-help>
   </div>
   <div class="settings-block">
-    <label class="settings-label" for="triggerDescription">{{"TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION" | translate}}</label>
+    <label class="settings-label" for="triggerDescription">
+      <span>{{"TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION" | translate}}</span>
+      <i *ngIf="settingsForm.controls.description.disabled"
+         class="flogo-icon-edit settings-icon__edit"
+        (click)="enableAllSettings()"></i>
+    </label>
     <textarea id="triggerDescription" class="settings-field settings-field__description"
               [formControl]="settingsForm.controls.description"></textarea>
   </div>
@@ -21,25 +31,11 @@
         <i class="flogo-icon-settings settings-group__icon"></i>
         {{"TRIGGER-CONFIGURATOR:SETTINGS:TRIGGER-SETTINGS" | translate}}
       </div>
-      <div class="settings-block" *ngFor="let settingName of triggerSettings">
-        <label class="settings-label">{{settingName}}</label>
-        <ng-container [ngSwitch]="triggerInformation?.settingsControls.triggerSettings[settingName].type">
-          <monaco-editor *ngSwitchCase="VALUE_TYPES.Any"
-                         [formValueChangeTransformerFn]="editorOut(triggerInformation?.settingsControls.triggerSettings[settingName].type)"
-                         [formValueWriteTransformerFn]="editorIn"
-                         [formControl]="settingsForm.controls.triggerSettings.controls[settingName]">
-          </monaco-editor>
-          <input *ngSwitchDefault class="settings-field"
-                 fgTriggersConfigAutoComplete
-                 [fgTriggerSettingsField]="triggerInformation.settingsControls.triggerSettings[settingName].type"
-                 [formControl]="settingsForm.controls.triggerSettings.controls[settingName]"
-                 [autoCompleteVariablesSource]="triggerInformation?.settingsControls.triggerSettings[settingName].propsAllowed"
-                 [autoCompleteAllowedSource]="triggerInformation?.settingsControls.triggerSettings[settingName].allowed">
-        </ng-container>
-        <span *ngIf="settingsForm.controls.triggerSettings.controls[settingName]?.errors; let errors">
-          {{ errors | json }}
-        </span>
-      </div>
+      <flogo-configuration-settings-field *ngFor="let settingName of triggerSettings"
+        [settingInformation]="triggerInformation?.settingsControls.triggerSettings[settingName]"
+        [settingControl]="settingsForm.controls.triggerSettings.controls[settingName]"
+        (enableSettings)="enableAllSettings()">
+      </flogo-configuration-settings-field>
     </div>
     <div *ngIf="handlerSettings" class="settings-group__content"
          [formGroup]="settingsForm.controls.handlerSettings">
@@ -47,17 +43,11 @@
         <i class="flogo-icon-settings settings-group__icon"></i>
         {{"TRIGGER-CONFIGURATOR:SETTINGS:HANDLER-SETTINGS" | translate}}
       </div>
-      <div class="settings-block" *ngFor="let settingName of handlerSettings">
-        <label class="settings-label">{{settingName}}</label>
-        <input class="settings-field" fgTriggersConfigAutoComplete
-               [fgTriggerSettingsField]="triggerInformation.settingsControls.handlerSettings[settingName].type"
-               [formControl]="settingsForm.controls.handlerSettings.controls[settingName]"
-               [autoCompleteVariablesSource]="triggerInformation?.settingsControls.handlerSettings[settingName].propsAllowed"
-               [autoCompleteAllowedSource]="triggerInformation?.settingsControls.handlerSettings[settingName].allowed">
-        <span *ngIf="settingsForm.controls.handlerSettings.controls[settingName]?.errors; let errors">
-          {{ errors | json }}
-        </span>
-      </div>
+      <flogo-configuration-settings-field *ngFor="let settingName of handlerSettings"
+        [settingInformation]="triggerInformation?.settingsControls.handlerSettings[settingName]"
+        [settingControl]="settingsForm.controls.handlerSettings.controls[settingName]"
+        (enableSettings)="enableAllSettings()">
+      </flogo-configuration-settings-field>
     </div>
   </div>
 </div>

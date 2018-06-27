@@ -24,11 +24,10 @@ monaco-editor {
 }
 
 .settings-block__name {
-  width: 50%;
-
   .uxpl-form-div;
 
   input {
+    font-size: 1.125em;
 
     &:focus {
       ~ .settings-label {
@@ -45,9 +44,40 @@ monaco-editor {
       }
     }
   }
+
+  .settings-label {
+    width: 100%;
+  }
+
+  .settings-icon__edit {
+    top: 0;
+  }
+}
+
+.settings-label {
+  font-size: 0.875em;
 }
 
 .settings-field__description {
   resize: none;
-  padding: 10px;
+  font-size: 1em;
+}
+
+.settings-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.settings-group__content {
+  width: 45%;
+}
+
+.settings-group__header {
+  margin: 1em 0;
+  display: flex;
+  align-items: center;
+}
+
+.settings-group__icon {
+  margin-right: 5px;
 }

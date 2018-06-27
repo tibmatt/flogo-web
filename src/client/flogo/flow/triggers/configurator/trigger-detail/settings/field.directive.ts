@@ -1,7 +1,7 @@
 import { Directive, ElementRef, forwardRef, HostListener, Input, Renderer2 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ValueType } from '@flogo/core';
-import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
+import { SettingValue } from '../settings-value';
 import { parseValue } from './parse-value';
 
 export const FIELD_VALUE_ACCESSOR: any = {
@@ -49,5 +49,8 @@ export class FieldValueAccesorDirective implements ControlValueAccessor {
 
   registerOnChange(fn: (_: any) => void): void { this.onChange = fn; }
   registerOnTouched(fn: () => void): void { this.onTouched = fn; }
+  setDisabledState(isDisabled: boolean): void {
+    this.renderer.setProperty(this.elementRef.nativeElement, 'disabled', isDisabled);
+  }
 
 }

@@ -22,7 +22,8 @@ import {
   AutoCompleteDirective,
   AutoCompleteContentComponent,
   ActionButtonsComponent,
-  SettingsHelpComponent
+  SettingsHelpComponent,
+  SettingsFormFieldComponent
 } from './trigger-detail';
 import { FieldValueAccesorDirective } from './trigger-detail/settings/field.directive';
 
@@ -48,7 +49,8 @@ import { FieldValueAccesorDirective } from './trigger-detail/settings/field.dire
     AutoCompleteContentComponent,
     ActionButtonsComponent,
     ConfirmationComponent,
-    SettingsHelpComponent
+    SettingsHelpComponent,
+    SettingsFormFieldComponent
   ],
   exports: [
     ConfiguratorComponent

@@ -10,51 +10,50 @@
   display: flex;
   flex-direction: column;
 
-  .settings-label {
-    display: block;
-    color: @warm-grey;
-  }
-
-  .settings-field {
-    width: 100%;
-    border-radius: 3px;
-    border: solid 1px @color-medium-gray;
-
-    &.ng-invalid {
-      border-color: @scarlet;
-    }
-
-    &:focus {
-      outline-color: @cerulean;
+  &:hover {
+    .settings-icon__edit {
+      opacity: 1;
     }
   }
 }
 
-.settings-group {
-  display: flex;
-  justify-content: space-between;
+.settings-label {
+  font-size: 1em;
+  color: @warm-grey;
+}
 
-  .settings-label {
-    font-size: 1em;
+.settings-field {
+  width: 100%;
+  font-size: 0.875em;
+  min-height: 40px;
+  padding: 10px;
+  border-radius: 3px;
+  border: solid 1px @color-medium-gray;
+
+  &.ng-invalid {
+    border-color: @scarlet;
   }
 
-  .settings-field {
-    font-size: 0.875em;
-    height: 40px;
-    padding: 10px;
+  &:focus {
+    outline-color: @cerulean;
   }
+}
 
-  .settings-group__content {
-    width: 45%;
-  }
+.settings-label__optional {
+  float: right;
+  font-size: 0.875em;
+  margin: 0 5px;
+}
 
-  .settings-group__header {
-    margin: 1em 0;
-    display: flex;
-    align-items: center;
-
-    .settings-group__icon {
-      margin-right: 5px;
-    }
-  }
+.settings-icon__edit {
+  float: right;
+  font-size: 18px;
+  text-align: right;
+  color: @warm-grey;
+  position: relative;
+  top: 2em;
+  right: 5px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms;
 }

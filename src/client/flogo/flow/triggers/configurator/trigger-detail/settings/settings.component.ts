@@ -4,9 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {TriggerInformation} from '../../interfaces';
-import { ValueType } from '@flogo/core/constants';
-import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
-import { parseValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings/parse-value';
 
 const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 
@@ -24,8 +21,6 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   statusChanges = new EventEmitter();
   triggerSettings: string[] | null;
   handlerSettings: string[] | null;
-
-  VALUE_TYPES = ValueType;
 
   private previousState;
   private valueChangeSub: Subscription;
@@ -56,15 +51,13 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
     this.unsubscribePrevious();
   }
 
-  editorOut(valueType: ValueType): (value: string) => SettingValue {
-    return (value: string) => parseValue(valueType, value);
-  }
-
-  editorIn(value: SettingValue) {
-    if (value != null) {
-      return value.viewValue;
-    }
-    return '';
+  enableAllSettings() {
+    COMMON_FIELDS_TO_ENABLE.forEach(prop => {
+      const propInSettingsForm = this.settingsForm.get(prop);
+      if (propInSettingsForm) {
+        propInSettingsForm.enable();
+      }
+    });
   }
 
   private unsubscribePrevious() {
