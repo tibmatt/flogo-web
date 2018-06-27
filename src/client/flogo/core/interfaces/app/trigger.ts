@@ -6,4 +6,5 @@ export interface Trigger {
   updatedAt: string;
   settings: any;
   handlers: any[];
+  ref: string;
 }

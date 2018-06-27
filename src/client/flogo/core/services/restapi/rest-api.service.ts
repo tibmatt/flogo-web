@@ -70,7 +70,7 @@ export class RestApiService {
       }, this.defaultHeaders);
   }
 
-  private apiPrefix(path) {
+  apiPrefix(path) {
     return this.httpUtils.apiPrefix(path);
   }
 

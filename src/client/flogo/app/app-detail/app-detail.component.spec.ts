@@ -14,6 +14,8 @@ import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.component';
 import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
 import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
+import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.component';
+import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import {FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 
@@ -48,6 +50,13 @@ class MockAppDetailService extends AppDetailService {
 
 }
 
+class MockRESTAPIContributionsService {
+  getShimContributionDetails(profile) {
+    return Promise.resolve([]);
+  }
+}
+
+
 describe('FlogoApplicationDetailComponent component', () => {
   const application = null;
   let comp: ContainerComponent;
@@ -73,10 +82,12 @@ describe('FlogoApplicationDetailComponent component', () => {
         ContainerComponent,
         FlogoExportFlowsComponent,
         FlowTriggerGroupComponent,
-        FlogoNewFlowComponent
+        FlogoNewFlowComponent,
+        TriggerShimBuildComponent
       ], // declare the test component
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },
+        { provide: RESTAPIContributionsService, useClass: MockRESTAPIContributionsService },
         FlogoProfileService
       ],
       //  schemas: [ NO_ERRORS_SCHEMA ]
@@ -273,3 +284,4 @@ function makeMockAppDetail() {
     }
   };
 }
+

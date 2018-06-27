@@ -102,7 +102,7 @@
               <button class="flogo-button flogo-button--secondary" (click)="toggleExportBox()">
                 {{ 'DETAILS:EXPORT' | translate }}
               </button>
-              <div class="flogo-app-detail-list-wrapper "
+              <div class="flogo-app-detail-list-wrapper app-detail-export-list"
                    [ngClass]="{'active' : isExportBoxShown, 'flogo-app-detail-profile-wrapper' : application?.profileType === PROFILE_TYPES.DEVICE}">
                 <ul class="flogo-app-detail-list list-unstyled">
                   <li *ngIf="application?.profileType == PROFILE_TYPES.MICRO_SERVICE" class="flogo-app-detail-list-item" [fgJsonDownloader]="appExporter()">
@@ -118,13 +118,21 @@
               </div>
             </div>
             <div (fgClickOutside)="closeBuildBox()" *ngIf="application?.profileType !== PROFILE_TYPES.DEVICE">
-              <button class="flogo-button flogo-button--default flogo-app-detail-build-button" (click)="toggleBuildBox()">{{ 'DETAILS:BUILD' | translate }}</button>
+              <button class="flogo-button flogo-button--default flogo-app-detail-build-button" (click)="toggleBuildBox()">
+                <span class="build-button-title">{{ 'DETAILS:BUILD' | translate }}</span>
+                <span class="flogo-icon flogo-icon-back build-button-dropdown-caret"></span></button>
               <div class="flogo-app-detail-list-wrapper flogo-app-detail-profile-wrapper"
                    [ngClass]="{'active' : isBuildBoxShown}">
                 <ul class="flogo-app-detail-list list-unstyled">
                   <li *ngFor="let opt of buildOptions" class="flogo-app-detail-list-item">
                     <a class="flogo-app-detail-list-link" (click)="closeBuildBox()" href="{{downloadLink}}?os={{opt.os}}&arch={{opt.arch}}">
                       <span>{{ opt.label }} </span></a>
+                  </li>
+                </ul>
+                <ul class="flogo-app-detail-list flogo-app-trigger-build list-unstyled" *ngIf = "shimTriggerOptions.length > 0">
+                  <li *ngFor="let opt of shimTriggerOptions" class="flogo-app-detail-list-item">
+                    <span class="flogo-app-detail-list-link" (click)="showShimTriggerList(opt.ref)">
+                      {{ opt.label}}</span>
                   </li>
                 </ul>
               </div>
@@ -173,5 +181,6 @@
                                    (addFlow)="openCreateFlowFromTrigger($event)"></flogo-apps-flows-flow-group>
     </div>
     <flogo-export-flow #exportFlowModal [flows]="application?.actions" [isLegacyExport]="application?.profileType == PROFILE_TYPES.DEVICE"></flogo-export-flow>
+<flogo-trigger-shim-build #shimTriggersModal [shimTriggersList]="shimTriggersList" [buildOptions]="buildOptions" (triggerSelected)="onShimTriggerSelection($event)"></flogo-trigger-shim-build>
   </div>
 </div>

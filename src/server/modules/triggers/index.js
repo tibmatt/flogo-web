@@ -26,13 +26,13 @@ export class TriggerManager {
    * @params options.fields {string} which fields to retrieve, defaults to 'full' version
    */
   static find(terms, options) {
-    terms = terms || {};
-    const { fields } = Object.assign({ fields: 'full' }, options);
+    terms = translateFindTerms(terms);
+    const {fields} = Object.assign({fields: 'full'}, options);
 
     return triggersDBService.db.find(terms)
-          .then(result => (result || [])
-            .map(triggerRow => cleanForOutput(triggerRow, fields)),
-          );
+      .then(result => (result || [])
+        .map(triggerRow => cleanForOutput(triggerRow, fields)),
+      );
   }
 
   static findByRef(ref) {
@@ -62,4 +62,16 @@ function cleanForOutput(trigger, fields) {
     cleanTrigger = pick(cleanTrigger, PUBLISH_FIELDS_LONG);
   }
   return cleanTrigger;
+}
+
+function translateFindTerms(terms) {
+  if (!terms) {
+    return {};
+  }
+  terms = {...terms};
+  if (terms.shim) {
+    delete terms.shim;
+    terms['schema.shim'] = { $exists: true };
+  }
+  return terms;
 }

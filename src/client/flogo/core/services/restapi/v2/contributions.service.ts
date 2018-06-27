@@ -26,6 +26,10 @@ export class RESTAPIContributionsService {
       .toPromise();
   }
 
+  getShimContributionDetails(profileType: FLOGO_PROFILE_TYPE) {
+    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[shim]=' + true).toPromise();
+  }
+
   listContribs(profileType, type) {
     return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }

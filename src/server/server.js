@@ -76,7 +76,7 @@ function initServer() {
 
     let port = config.app.port;
 
-    app.use(cors({ methods: 'GET,HEAD,PATCH,PUT,POST,DELETE' }));
+    app.use(cors({ methods: 'GET,HEAD,PATCH,PUT,POST,DELETE', expose: 'Content-Disposition' }));
 
     api(app, router);
     router.use(bodyParser({

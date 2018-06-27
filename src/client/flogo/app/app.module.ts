@@ -13,6 +13,7 @@ import {FlowTriggerGroupComponent} from '@flogo/app/trigger-group/trigger-group.
 import {CommonModule} from '@angular/common';
 import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
 import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
+import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
     FlogoAppSettingsComponent,
     FlogoExportFlowsComponent,
     FlowTriggerGroupComponent,
-    FlogoNewFlowComponent
+    FlogoNewFlowComponent,
+    TriggerShimBuildComponent
   ],
   bootstrap: [],
   providers: [
