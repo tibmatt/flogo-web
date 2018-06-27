@@ -1,5 +1,6 @@
 @import '../../../assets/_variables';
 @import "../../../assets/_mixins";
+@import (reference) '../../../assets/uxpl/dropdown';
 
 @trigger-height: 47px;
 @arrow-width: 8px;
@@ -62,6 +63,13 @@
   }
 }
 
+.shim-trigger-selected {
+  display: flex;
+  width: 346px;
+  height: 68px;
+  margin-left: 55px;
+}
+
 .shim-trigger-flow-item {
   margin: 0;
 }
@@ -88,3 +96,34 @@
   margin: 6px 8px;
 }
 
+.select-environment{
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.trigger-build-options{
+  border : solid 1px @light-grey;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+}
+
+.build-environment-list-item{
+  .uxpl-dropdown;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+}
+
+.build-environment-link {
+  .uxpl-dropdown__item;
+  display: inline-block;
+  width: 100%;
+  color: @cerulean;
+  text-decoration: none;
+}
+
+.shim-trigger-build-link{
+  text-decoration: none;
+  color: @warm-grey;
+}

@@ -1,4 +1,5 @@
 @import '../../../assets/_variables';
+@import (reference) '../../../assets/uxpl/dropdown';
 
 @action-fore-color: #449ed8;
 @width-inputs: 60%;
@@ -146,6 +147,7 @@
 
   .flogo-app-detail-build-button {
     margin-left: 0;
+    display: inline-block;
   }
 
   .flogo-app-header__date--creation,
@@ -154,15 +156,13 @@
   }
 
   .flogo-app-detail-list-wrapper {
-    border-radius: 3px;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
+    .uxpl-dropdown-container;
     color: #666;
     position: absolute;
     top: 46px;
     right: 193px;
     z-index: 2;
     min-width: 264px;
-    background-color: #ffffff;
     transform: scale(0, 0);
 
     &.active {
@@ -172,26 +172,26 @@
     }
 
     .flogo-app-detail-list {
-      margin: 10px;
 
       .flogo-app-detail-list-item {
-        margin: 0;
+        .uxpl-dropdown;
         font-size: 16px;
         cursor: pointer;
         letter-spacing: 0.3px;
 
         .flogo-app-detail-list-link {
+          .uxpl-dropdown__item;
           display: inline-block;
           width: 100%;
-          padding: 5px;
-          padding-left: 12px;
+          color: @cerulean;
+          text-decoration: none;
         }
 
       }
 
     }
     .flogo-app-trigger-build {
-      padding: 15px 0px;
+      padding: 10px 0;
       border-top: 1px solid #d8d8d8;
     }
   }
@@ -346,4 +346,21 @@
   position: absolute;
   top: 16px;
   right: 16px;
+}
+
+.build-button-title {
+  margin-right: 10px;
+}
+
+.build-button-dropdown-caret {
+  display: inline-block;
+  transform: rotate(270deg);
+  transform-origin: center center;
+  margin: 0;
+  padding: 0;
+  line-height: 16px;
+  position: relative;
+  height: 16px;
+  top: 1px;
+  font-size: 0.9em;
 }

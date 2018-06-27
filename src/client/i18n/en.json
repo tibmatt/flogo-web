@@ -202,6 +202,7 @@
   "TRIGGER-SHIM:CONNECTED-FLOW": "Connected to",
   "TRIGGER-SHIM:SERVERLESS-APP": "Serverless App",
   "TRIGGER-SHIM:CLI-APP": "CLI App",
+  "TRIGGER-SHIM:SELECT-ENVIRONMENT": "Select Environment",
   "TRIGGER-SHIM:MULTIPLE-TRIGGERS": "This app has multiple shim triggers. Which would you like to build this app with?",
   "URL-INSTALLER:PASTE-URL": "Paste in URL to install",
   "URL-INSTALLER:CANCEL": "Cancel",

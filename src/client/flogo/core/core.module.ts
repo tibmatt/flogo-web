@@ -34,6 +34,7 @@ import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from '@flogo/core/services/log.service';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
 import { WalkthroughModule } from './walkthrough/walkthrough.module';
+import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
 
 @NgModule({
   imports: [
@@ -76,6 +77,7 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
     FlogoDeviceTaskIdGeneratorService,
     LogService,
     SvgRefFixerService,
+    ShimTriggerBuildApiService
   ],
   declarations: [
     FlogoNavbarComponent,
