@@ -120,7 +120,7 @@
             <div (fgClickOutside)="closeBuildBox()" *ngIf="application?.profileType !== PROFILE_TYPES.DEVICE">
               <button class="flogo-button flogo-button--default flogo-app-detail-build-button" (click)="toggleBuildBox()">
                 <span class="build-button-title">{{ 'DETAILS:BUILD' | translate }}</span>
-                <span class="flogo-icon flogo-icon-back build-buttom-toggler" [class.is-open]="isBuildBoxShown"></span></button>
+                <span class="flogo-icon flogo-icon-back build-button-dropdown-caret"></span></button>
               <div class="flogo-app-detail-list-wrapper flogo-app-detail-profile-wrapper"
                    [ngClass]="{'active' : isBuildBoxShown}">
                 <ul class="flogo-app-detail-list list-unstyled">

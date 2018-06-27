@@ -1,5 +1,6 @@
 @import '../../../assets/_variables';
 @import "../../../assets/_mixins";
+@import (reference) '../../../assets/uxpl/dropdown';
 
 @trigger-height: 47px;
 @arrow-width: 8px;
@@ -109,21 +110,17 @@
 }
 
 .build-environment-list-item{
-  margin: 10px;
+  .uxpl-dropdown;
   cursor: pointer;
   letter-spacing: 0.3px;
 }
 
 .build-environment-link {
+  .uxpl-dropdown__item;
   display: inline-block;
   width: 100%;
-  padding: 5px;
-  padding-left: 12px;
   color: @cerulean;
   text-decoration: none;
-  &:hover {
-   color: @twilight-blue;
-  }
 }
 
 .shim-trigger-build-link{

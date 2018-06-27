@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {HttpUtilsService} from '@flogo/core/services/restapi/http-utils.service';
-import {getFileName} from '@flogo/shared/utils';
+import {getFileName} from '@flogo/core/services/restapi/restapi-utils';
 
 @Injectable()
 export class ShimTriggerBuildApiService {
@@ -10,16 +10,14 @@ export class ShimTriggerBuildApiService {
   }
 
 
-  private getShimTriggerBuildLink(triggerId: string) {
-    return this.httpUtilsService.apiPrefix(`triggers/${triggerId}:shim`);
-  }
-
   public buildShimTrigger(shimTrigger) {
-    let buildURL = this.getShimTriggerBuildLink(shimTrigger.triggerId);
+    const buildURL = this.getShimTriggerBuildLink(shimTrigger.triggerId);
+    let params = new HttpParams();
     if (shimTrigger.env) {
-      buildURL = buildURL + '?os=' + shimTrigger.env.os + '&arch=' + shimTrigger.env.arch;
+       params = params.append ('os', shimTrigger.env.os);
+       params = params.append('arch', shimTrigger.env.arch);
     }
-    this.http.get(buildURL, {responseType: 'blob', observe: 'response'})
+    this.http.get(buildURL, {params, responseType: 'blob', observe: 'response'})
       .subscribe((response) => {
         const url = window.URL.createObjectURL(response.body);
         const link = document.createElement('a');
@@ -31,4 +29,9 @@ export class ShimTriggerBuildApiService {
         document.body.removeChild(link);
       });
   }
+
+  private getShimTriggerBuildLink(triggerId: string) {
+    return this.httpUtilsService.apiPrefix(`triggers/${triggerId}:shim`);
+  }
+
 }
