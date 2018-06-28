@@ -18,6 +18,7 @@ const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   @Input() settingsForm: FormGroup;
   @Input() triggerInformation: TriggerInformation;
+  @Input() appProperties?: string[];
   @Output() statusChanges = new EventEmitter();
   triggerSettings: string[] | null;
   handlerSettings: string[] | null;

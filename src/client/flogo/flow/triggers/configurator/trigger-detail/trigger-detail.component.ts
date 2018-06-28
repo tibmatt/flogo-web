@@ -39,6 +39,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   replyMapperController?: MapperController;
   settingsForm: FormGroup;
   settingsTriggerInformation: TriggerInformation;
+  appProperties?: string[];
 
   private previousState: CurrentTriggerState;
   private ngDestroy$ = SingleEmissionSubject.create();
@@ -133,6 +134,10 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
     this.replyMapperController = replyMapper;
     this.reconfigureMapperController(this.replyMapperController, TriggerConfigureTabType.FlowOutputMappings, subscribeToUpdates);
+
+    this.appProperties = state.appProperties ?
+      state.appProperties.map(prop => prop && prop.name ? `$property[${prop.name}]` : null).filter(Boolean)
+      : null;
 
     this.configuratorService.setParams({
       settings: this.settingsForm,

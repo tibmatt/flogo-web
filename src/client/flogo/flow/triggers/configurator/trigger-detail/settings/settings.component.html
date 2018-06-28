@@ -40,6 +40,7 @@
       <flogo-configuration-settings-field *ngFor="let settingName of triggerSettings"
         [settingInformation]="triggerInformation?.settingsControls.triggerSettings[settingName]"
         [settingControl]="settingsForm.controls.triggerSettings.controls[settingName]"
+        [appProperties]="appProperties"
         (enableSettings)="onEnableSettings($event)">
       </flogo-configuration-settings-field>
     </div>
@@ -52,6 +53,7 @@
       <flogo-configuration-settings-field *ngFor="let settingName of handlerSettings"
         [settingInformation]="triggerInformation?.settingsControls.handlerSettings[settingName]"
         [settingControl]="settingsForm.controls.handlerSettings.controls[settingName]"
+        [appProperties]="appProperties"
         (enableSettings)="onEnableSettings($event)">
       </flogo-configuration-settings-field>
     </div>

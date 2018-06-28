@@ -1,7 +1,7 @@
 import {FlowMetadata} from '@flogo/core/interfaces/flow';
 import {Trigger, TriggerHandler, TriggerConfigureState} from '../../../core';
 import {Tabs} from '../../../shared/tabs/models/tabs.model';
-import { TriggerSchema } from '@flogo/core';
+import { TriggerSchema, AppProperty } from '@flogo/core';
 
 export interface TriggerConfiguration {
   handler: any;
@@ -51,4 +51,5 @@ export interface CurrentTriggerState {
   trigger: Trigger;
   // todo: define
   fields: any;
+  appProperties?: AppProperty[];
 }

@@ -3,9 +3,8 @@ import {FormControl} from '@angular/forms';
 import {ValueType} from '@flogo/core/constants';
 import {SettingValue} from '../../settings-value';
 import {SettingControlInfo} from '../../../interfaces';
-import { ConfirmationResult, ConfirmationService } from '../../../confirmation';
 import {parseValue} from '../parse-value';
-import { ConfirmEditionComponent } from '../confirm-edition/confirm-edition.component';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'flogo-configuration-settings-field',
@@ -15,6 +14,7 @@ import { ConfirmEditionComponent } from '../confirm-edition/confirm-edition.comp
 export class SettingsFormFieldComponent implements OnChanges {
   @Input() settingInformation: SettingControlInfo;
   @Input() settingControl: FormControl;
+  @Input() appProperties?: string[] | Observable<string>;
   @Output() enableSettings = new EventEmitter<ElementRef>();
   @ViewChild('field') fieldRef: ElementRef;
 

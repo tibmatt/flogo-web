@@ -2,7 +2,7 @@ import { createSelector, select, Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs/observable/of';
 
-import { FlowState, selectActionId } from '@flogo/flow/core/state';
+import { FlowState, selectActionId, selectApp } from '@flogo/flow/core/state';
 // todo: move to shared location
 import { TriggerStatus, CurrentTriggerState } from '../../../triggers/configurator/interfaces';
 import { selectFlowMetadata, selectHandlers, selectTriggerConfigure, selectTriggers } from '../flow/flow.selectors';
@@ -135,17 +135,24 @@ const getCurrentHandler = createSelector(
   (currentTriggerId, handlers) => handlers[currentTriggerId],
 );
 
+const getAppProperties = createSelector(
+  selectApp,
+  (app) => app.properties
+);
+
 export const getConfigureState = createSelector(
   selectFlowMetadata,
   getCurrentSchema,
   getCurrentTrigger,
   getCurrentHandler,
-  (flowMetadata, schema, trigger, handler): CurrentTriggerState => {
+  getAppProperties,
+  (flowMetadata, schema, trigger, handler, appProperties): CurrentTriggerState => {
     return {
       flowMetadata,
       schema,
       trigger,
       handler,
+      appProperties,
       fields: createTriggerConfigureFields(trigger, handler, schema),
     };
   },
