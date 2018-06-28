@@ -90,7 +90,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
         if (!isUpdateStillApplicable) {
           return;
         }
-        this.settingsForm.reset(this.settingsForm.value);
+        this.settingsForm.reset(this.settingsForm.getRawValue());
         if (this.flowInputMapperController) {
           this.flowInputMapperController.resetStatus();
         }
