@@ -1,8 +1,14 @@
-<div class="uxpl-modal-confirmation__body">
-  <p class="uxpl-modal-confirmation__lead">This trigger is used by {{ data.flowCount }} other flows</p>
+<div class="confirmation">
+  <p class="confirmation-title"
+     [innerHTML]="'TRIGGER-CONFIGURATOR:SETTINGS:EDIT-CONFIRMATION-TITLE' | translate:{othersCount: data.flowCount-1}"></p>
+  <p class="confirmation-message">{{ "TRIGGER-CONFIGURATOR:SETTINGS:EDIT-CONFIRMATION-MESSAGE" | translate }}</p>
 </div>
 
-<div class="uxpl-modal-confirmation__footer footer">
-  <button class="flogo-button--secondary" (click)="control.cancel()">Cancel</button><!-- comment to avoid gap bc style:inline-blocks
-  --><button class="flogo-button--primary" (click)="control.confirm()">Edit</button>
+<div class="footer">
+  <button class="flogo-button--flat confirmation-button" (click)="control.cancel()">{{
+    "TRIGGER-CONFIGURATOR:SETTINGS:EDIT-CONFIRMATION-CANCEL" | translate }}
+  </button>
+  <button class="flogo-button--primary confirmation-button" (click)="control.confirm()">{{
+    "TRIGGER-CONFIGURATOR:SETTINGS:EDIT-CONFIRMATION-CONTINUE" | translate:{count: data.flowCount} }}
+  </button>
 </div>

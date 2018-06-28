@@ -60,8 +60,7 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
 
   onEnableSettings(ref: ElementRef) {
     const data = new WeakMap<any, any>();
-    // todo: use actual count
-    data.set(EDITION_DATA_TOKEN, { flowCount: 5 } as EditionData);
+    data.set(EDITION_DATA_TOKEN, { flowCount: this.triggerInformation.trigger.handlersCount } as EditionData);
     this.confirmationService
       .openPopover(ref, ConfirmEditionComponent, data)
       .result

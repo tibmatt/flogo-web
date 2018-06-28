@@ -1,7 +1,9 @@
 <div class="settings-block">
   <label class="settings-label">
     <span>{{settingInformation.name}}</span>
-    <i *ngIf="!settingInformation.required" class="settings-label__optional">Optional</i>
+    <i *ngIf="!settingInformation.required" class="settings-label__optional">
+      {{ "TRIGGER-CONFIGURATOR:SETTINGS:OPTIONAL"| translate}}
+    </i>
     <i *ngIf="settingControl.disabled" class="flogo-icon-edit settings-icon__edit" (click)="enableField()"></i>
   </label>
   <ng-container [ngSwitch]="settingInformation.type">
