@@ -1,10 +1,11 @@
-import {Injectable} from '@angular/core';
-import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
-import { SettingsFormBuilder } from './settings-form-builder';
-import { CurrentTriggerState, SettingControlInfo, TriggerInformation } from '../interfaces';
+import { isEmpty } from 'lodash';
+import { Injectable } from '@angular/core';
+import { MapperController, MapperControllerFactory } from '@flogo/flow/shared/mapper';
 import { Dictionary, SchemaAttribute, TriggerSchema } from '@flogo/core';
-import { createValidatorsForSchema } from './settings-validation';
 import { TriggerHandler } from '@flogo/flow/core';
+import { CurrentTriggerState, SettingControlInfo, TriggerInformation } from '../interfaces';
+import { SettingsFormBuilder } from './settings-form-builder';
+import { createValidatorsForSchema } from './settings-validation';
 
 @Injectable()
 export class ConfigureDetailsService {
@@ -43,7 +44,11 @@ export class ConfigureDetailsService {
     };
   }
 
-  private createReplyMapperController(flowMetadata, triggerSchema, output: any) {
+  private createReplyMapperController(flowMetadata, triggerSchema, output: any): null | MapperController {
+    const flowOutput = flowMetadata && flowMetadata.output ? flowMetadata.output : null;
+    if (isEmpty(flowOutput) || isEmpty(triggerSchema.reply)) {
+      return null;
+    }
     return this.mapperControllerFactory.createController(
       flowMetadata && flowMetadata.output ? flowMetadata.output : [],
       triggerSchema.reply || [],
@@ -51,9 +56,13 @@ export class ConfigureDetailsService {
     );
   }
 
-  private createInputMapperController(flowMetadata, triggerSchema, input: any) {
+  private createInputMapperController(flowMetadata, triggerSchema, input: any): null | MapperController {
+    const flowInput = flowMetadata && flowMetadata.input ? flowMetadata.input : null;
+    if (isEmpty(flowInput) || isEmpty(triggerSchema.outputs)) {
+      return null;
+    }
     return this.mapperControllerFactory.createController(
-      flowMetadata && flowMetadata.input ? flowMetadata.input : [],
+      flowInput,
       triggerSchema.outputs || [],
       input
     );
