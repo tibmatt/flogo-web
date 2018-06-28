@@ -26,7 +26,7 @@ import { concat } from 'rxjs/observable/concat';
 import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
-import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/field.directive';
+import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
 
 const POPOVER_WIDTH = '344px';
 
@@ -69,6 +69,7 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   private allowedValuesSources = new ReplaySubject<Observable<string[]>>(1);
   private valueSources = new ReplaySubject<Observable<string[]>>(1);
 
+  private filterTerm$: Observable<string>;
   private filteredAllowedValues$: Observable<string[]>;
   private fileteredVariableOptions$: Observable<string[]>;
 
@@ -86,12 +87,12 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   ngOnInit() {
     const switchToInner = switchMap<Observable<any>, any>(newValueSource => newValueSource);
     const mapToFiltered = map(([currentInputValue, allowedValues]) => filterList(allowedValues, currentInputValue));
-    const value$ = this.valueSources.pipe(
+    this.filterTerm$ = this.valueSources.pipe(
       switchToInner,
       map((value: string | SettingValue) => !isString(value) ? coerceSettingValueToString(value) : value),
       shareReplay()
     );
-    const connect = (subjectSrc: Observable<Observable<string[]>>) => value$.pipe(
+    const connect = (subjectSrc: Observable<Observable<string[]>>) => this.filterTerm$.pipe(
       takeUntil(this.destroy$),
       withLatestFrom(subjectSrc.pipe(switchToInner)),
       mapToFiltered,
@@ -208,6 +209,7 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
 
   private createPortal() {
     const sources: AutocompleteOptions = {
+      filterTerm: this.filterTerm$,
       allowedValues: this.filteredAllowedValues$,
       appVariables: this.fileteredVariableOptions$,
       onOptionSelected: (option) => this.optionSelected(option)

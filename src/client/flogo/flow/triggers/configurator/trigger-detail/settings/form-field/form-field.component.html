@@ -16,4 +16,7 @@
            [autoCompleteVariablesSource]="settingInformation.propsAllowed"
            [autoCompleteAllowedSource]="settingInformation.allowed">
   </ng-container>
+  <flogo-configuration-settings-field-error *ngIf="settingControl?.errors"
+                                            [validationErrors]="settingControl?.errors">
+  </flogo-configuration-settings-field-error>
 </div>

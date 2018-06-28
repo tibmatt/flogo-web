@@ -1,8 +1,8 @@
 import { Directive, ElementRef, forwardRef, HostListener, Input, Renderer2 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ValueType } from '@flogo/core';
-import { SettingValue } from '../settings-value';
-import { parseValue } from './parse-value';
+import { SettingValue } from '../../settings-value';
+import { parseValue } from '../parse-value';
 
 export const FIELD_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

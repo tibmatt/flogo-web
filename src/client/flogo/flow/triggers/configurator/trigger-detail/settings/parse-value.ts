@@ -1,8 +1,7 @@
-import { isString } from 'lodash';
+import { isBoolean, isString, isUndefined, toNumber } from 'lodash';
 import { ValueType } from '@flogo/core';
 import { parseResolver } from 'flogo-parser';
 import { SettingValue } from '../settings-value';
-import { isBoolean, isUndefined } from 'util';
 
 export function parseValue(type: ValueType, viewValue: string): SettingValue {
   const isExpression = isString(viewValue) && viewValue.startsWith('$');
@@ -25,7 +24,7 @@ function coerce(type: ValueType, inputValue: string) {
     case ValueType.Double:
     case ValueType.Integer:
     case ValueType.Long:
-      return parseFloat(inputValue);
+      return toNumber(inputValue);
     case ValueType.Boolean:
       return coerceToBoolean(inputValue);
     case ValueType.ComplexObject:

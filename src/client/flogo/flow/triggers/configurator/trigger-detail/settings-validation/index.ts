@@ -7,6 +7,8 @@ import { getStrictTypeValidator } from './type.validator';
 import { validateExpression } from './resolver.validator';
 import { isResolverExpression } from './is-resolver-expression';
 
+export * from './error-types';
+
 export function createValidatorsForSchema(schema: SchemaAttribute) {
   const validators: ValidatorFn[] = [];
   addRequiredValidation(schema.required, validators);

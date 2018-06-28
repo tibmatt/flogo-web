@@ -1,6 +1,7 @@
 import { isBoolean, isPlainObject, isArray } from 'lodash';
 import { ValueType } from '@flogo/core';
 import { ValidationErrors } from '@angular/forms';
+import { ErrorTypeMismatch, ErrorTypes } from './error-types';
 
 export function getStrictTypeValidator(schemaType: ValueType): (value: any) => (ValidationErrors | null) | null {
   switch (schemaType) {
@@ -20,12 +21,12 @@ export function getStrictTypeValidator(schemaType: ValueType): (value: any) => (
   return null;
 }
 
-function makeMismatchError(expectedType: ValueType) {
-  return {'typeMismatch': {expectedType}};
+function makeMismatchError(expectedType: ValueType): { [type: string]: ErrorTypeMismatch } {
+  return {[ErrorTypes.TypeMismatch]: { expectedType }};
 }
 
 function getNumberValidator(expectedType: ValueType) {
-  return value => isNaN(Number(value)) ? makeMismatchError(expectedType) : null;
+  return value => isNaN(value) ? makeMismatchError(expectedType) : null;
 }
 
 function booleanValidator(value: any) {

@@ -20,12 +20,13 @@ import {
   ConfigureDetailsService,
   SettingsFormBuilder,
   AutoCompleteDirective,
+  FieldValueAccesorDirective,
+  FieldErrorComponent,
   AutoCompleteContentComponent,
   ActionButtonsComponent,
   SettingsHelpComponent,
   SettingsFormFieldComponent
 } from './trigger-detail';
-import { FieldValueAccesorDirective } from './trigger-detail/settings/field.directive';
 
 @NgModule({
   imports: [
@@ -50,7 +51,8 @@ import { FieldValueAccesorDirective } from './trigger-detail/settings/field.dire
     ActionButtonsComponent,
     ConfirmationComponent,
     SettingsHelpComponent,
-    SettingsFormFieldComponent
+    SettingsFormFieldComponent,
+    FieldErrorComponent
   ],
   exports: [
     ConfiguratorComponent

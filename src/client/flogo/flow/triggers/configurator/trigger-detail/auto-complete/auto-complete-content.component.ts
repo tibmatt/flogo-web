@@ -2,6 +2,7 @@ import { Component, Inject, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 export interface AutocompleteOptions {
+  filterTerm: Observable<string>;
   allowedValues: Observable<string[]>;
   appVariables: Observable<string[]>;
   onOptionSelected: (option) => void;
