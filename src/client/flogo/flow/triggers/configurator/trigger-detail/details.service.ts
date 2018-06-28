@@ -13,7 +13,7 @@ export class ConfigureDetailsService {
 
   build(state: CurrentTriggerState) {
     const { flowMetadata, schema: triggerSchema, handler: { actionMappings }, fields, trigger: {handlers} } = state;
-    const { input, output } = actionMappings;
+    const { input, output } = actionMappings || { input: [], output: []};
     const disableCommonSettings = handlers.length > 1;
     const triggerInformation = this.getTriggerInformation(handlers, triggerSchema);
     return {

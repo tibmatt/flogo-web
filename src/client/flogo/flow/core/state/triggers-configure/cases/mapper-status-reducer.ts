@@ -10,6 +10,10 @@ export function mapperStatusReducer(
     ...prevTab,
     ...nextStatus,
   };
+  // Return the original state in case of non microservice profiles where input and output mappings are not applicable
+  if (!prevTab) {
+    return state;
+  }
   // tslint:disable-next-line:triple-equals - we care if values are truthy or falsy, we're okay with non strict equality
   if (prevTab.isValid == nextTab.isValid && prevTab.isDirty == nextTab.isDirty && prevTab.isEnabled === nextTab.isEnabled) {
     return state;
