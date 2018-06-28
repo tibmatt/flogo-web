@@ -10,6 +10,9 @@
       <label class="settings-label" for="triggerName">
         <span>{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</span>
       </label>
+      <span class="field-error-message" *ngIf="settingsForm.controls.name.errors">
+        <ng-container *ngIf="settingsForm.controls.name.hasError('required')">Name cannot be empty</ng-container>
+      </span>
     </div>
     <flogo-triggers-configuration-settings-help
       [trigger]="triggerInformation?.trigger"></flogo-triggers-configuration-settings-help>
@@ -17,6 +20,9 @@
   <div class="settings-block">
     <label class="settings-label" for="triggerDescription">
       <span>{{"TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION" | translate}}</span>
+      <i class="settings-label__optional">
+        {{ "TRIGGER-CONFIGURATOR:SETTINGS:OPTIONAL"| translate}}
+      </i>
       <i *ngIf="settingsForm.controls.description.disabled"
          class="flogo-icon-edit settings-icon__edit"
         (click)="onEnableNameOrDescription(triggerDescription)"></i>
