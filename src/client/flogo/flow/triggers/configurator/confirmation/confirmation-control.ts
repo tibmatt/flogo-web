@@ -12,8 +12,8 @@ export class ConfirmationControl {
     this.result = this.resultSubscriber.asObservable();
   }
 
-  save() {
-    this.close(ConfirmationResult.Save);
+  confirm() {
+    this.close(ConfirmationResult.Confirm);
   }
 
   discard() {

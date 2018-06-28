@@ -1,43 +1,81 @@
-import { Injectable, Injector } from '@angular/core';
-import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
-import { TriggerStatus } from '../interfaces';
+import { ElementRef, Injectable, Injector } from '@angular/core';
+import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { ComponentType, ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ConfirmationControl } from './confirmation-control';
-import { ConfirmationComponent } from './confirmation.component';
-import { TRIGGER_STATUS_TOKEN } from './status.token';
+import { ConfirmationContent } from './confirmation-content';
 
 @Injectable()
 export class ConfirmationService {
 
   constructor(private injector: Injector, private overlay: Overlay) { }
 
-  open(triggerStatus: TriggerStatus) {
-    const overlayRef = this.createOverlay();
+  openModal<T extends ConfirmationContent>(contentComponent: ComponentType<T>, customTokens?: WeakMap<any, any>): ConfirmationControl {
+    const overlayRef = this.createModalOverlay();
+    return this.buildAndAttach(overlayRef, contentComponent, customTokens);
+  }
+
+  openPopover<T>(connectedToRef: ElementRef, contentComponent: ComponentType<T>, customTokens?: WeakMap<any, any>): ConfirmationControl {
+    const overlayRef = this.createPopoverOverlay(connectedToRef);
+    return this.buildAndAttach(overlayRef, contentComponent, customTokens);
+  }
+
+  private buildAndAttach<T>(
+    overlayRef: OverlayRef,
+    contentComponent: ComponentType<T>,
+    customTokens?: WeakMap<any, any>
+  ): ConfirmationControl {
     const control = new ConfirmationControl(overlayRef);
-    const portal = this.createPortal(triggerStatus, control);
+    const portal = this.createPortal(contentComponent, customTokens, control);
     overlayRef.attach(portal);
     overlayRef.backdropClick().subscribe(() => control.cancel());
     return control;
   }
 
-  private createPortal(triggerStatus: TriggerStatus, control: ConfirmationControl) {
-    const injector = this.createInjector(triggerStatus, control);
-    return new ComponentPortal(ConfirmationComponent, null, injector);
+  private createPortal<T>(componentType: ComponentType<T>, customTokens: WeakMap<any, any>, control: ConfirmationControl) {
+    const injector = this.createInjector(customTokens, control);
+    return new ComponentPortal(componentType, null, injector);
   }
 
-  private createInjector(triggerStatus: TriggerStatus, control: ConfirmationControl): PortalInjector {
-    const injectionTokens = new WeakMap();
+  private createInjector(customTokens: WeakMap<any, any>, control: ConfirmationControl): PortalInjector {
+    const injectionTokens = customTokens || new WeakMap<any, any>();
     injectionTokens.set(ConfirmationControl, control);
-    injectionTokens.set(TRIGGER_STATUS_TOKEN, triggerStatus);
     return new PortalInjector(this.injector, injectionTokens);
   }
 
-  private createOverlay() {
-    const overlayConfig = this.getOverlayConfig();
+  private createModalOverlay() {
+    const overlayConfig = this.getModalOverlayConfig();
     return this.overlay.create(overlayConfig);
   }
 
-  private getOverlayConfig(): OverlayConfig {
+  private createPopoverOverlay(connectedToRef: ElementRef) {
+    return this.overlay.create({
+      hasBackdrop: true,
+      backdropClass: 'transparent',
+      scrollStrategy: this.getPopoverScrollStrategy(),
+      positionStrategy: this.getPopoverPositionStrategy(connectedToRef),
+    });
+  }
+
+  private getPopoverScrollStrategy() {
+    return this.overlay
+      .scrollStrategies
+      .close();
+  }
+
+  private getPopoverPositionStrategy(connectedToRef: ElementRef) {
+    return this.overlay
+      .position()
+      .connectedTo(
+        connectedToRef,
+        { originX: 'end', originY: 'top' },
+        { overlayX: 'end', overlayY: 'top' }
+      )
+      .withFallbackPosition(
+        {originX: 'start', originY: 'top'}, {overlayX: 'start', overlayY: 'bottom'}
+      );
+  }
+
+  private getModalOverlayConfig(): OverlayConfig {
     return new OverlayConfig({
       hasBackdrop: true,
       scrollStrategy: this.overlay.scrollStrategies.block(),

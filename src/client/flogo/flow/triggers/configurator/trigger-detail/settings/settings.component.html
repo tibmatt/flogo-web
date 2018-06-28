@@ -3,8 +3,8 @@
     <div class="settings-group__content settings-block settings-block__name">
       <i *ngIf="settingsForm.controls.name.disabled"
          class="flogo-icon-edit settings-icon__edit"
-         (click)="enableAllSettings()"></i>
-      <input type="text" id="triggerName"
+         (click)="onEnableNameOrDescription(triggerName)"></i>
+      <input type="text" id="triggerName" #triggerName
              [class.--isValid]="settingsForm.controls.name.value !== ''"
              [formControl]="settingsForm.controls.name">
       <label class="settings-label" for="triggerName">
@@ -19,9 +19,9 @@
       <span>{{"TRIGGER-CONFIGURATOR:SETTINGS:DESCRIPTION" | translate}}</span>
       <i *ngIf="settingsForm.controls.description.disabled"
          class="flogo-icon-edit settings-icon__edit"
-        (click)="enableAllSettings()"></i>
+        (click)="onEnableNameOrDescription(triggerDescription)"></i>
     </label>
-    <textarea id="triggerDescription" class="settings-field settings-field__description"
+    <textarea id="triggerDescription" #triggerDescription class="settings-field settings-field__description"
               [formControl]="settingsForm.controls.description"></textarea>
   </div>
   <div class="settings-group">
@@ -34,7 +34,7 @@
       <flogo-configuration-settings-field *ngFor="let settingName of triggerSettings"
         [settingInformation]="triggerInformation?.settingsControls.triggerSettings[settingName]"
         [settingControl]="settingsForm.controls.triggerSettings.controls[settingName]"
-        (enableSettings)="enableAllSettings()">
+        (enableSettings)="onEnableSettings($event)">
       </flogo-configuration-settings-field>
     </div>
     <div *ngIf="handlerSettings" class="settings-group__content"
@@ -46,7 +46,7 @@
       <flogo-configuration-settings-field *ngFor="let settingName of handlerSettings"
         [settingInformation]="triggerInformation?.settingsControls.handlerSettings[settingName]"
         [settingControl]="settingsForm.controls.handlerSettings.controls[settingName]"
-        (enableSettings)="enableAllSettings()">
+        (enableSettings)="onEnableSettings($event)">
       </flogo-configuration-settings-field>
     </div>
   </div>

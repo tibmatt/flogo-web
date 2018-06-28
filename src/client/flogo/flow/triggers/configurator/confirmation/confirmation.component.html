@@ -9,5 +9,5 @@
 
 <div class="uxpl-modal-confirmation__footer footer">
   <button class="flogo-button--secondary" (click)="control.discard()">Discard changes</button><!-- comment to avoid gap bc style:inline-blocks
-  --><button *ngIf="status?.isValid" class="flogo-button--primary" (click)="control.save()">Save</button>
+  --><button *ngIf="status?.isValid" class="flogo-button--primary" (click)="control.confirm()">Save</button>
 </div>

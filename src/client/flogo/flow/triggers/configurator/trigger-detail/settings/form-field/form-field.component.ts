@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange } from '@angular/core';
-import {parseValue} from '../parse-value';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChange, ViewChild } from '@angular/core';
+import {FormControl} from '@angular/forms';
 import {ValueType} from '@flogo/core/constants';
 import {SettingValue} from '../../settings-value';
 import {SettingControlInfo} from '../../../interfaces';
-import {FormControl} from '@angular/forms';
+import { ConfirmationResult, ConfirmationService } from '../../../confirmation';
+import {parseValue} from '../parse-value';
+import { ConfirmEditionComponent } from '../confirm-edition/confirm-edition.component';
 
 @Component({
   selector: 'flogo-configuration-settings-field',
@@ -11,12 +13,10 @@ import {FormControl} from '@angular/forms';
   styleUrls: ['../shared/form-common-styles.less']
 })
 export class SettingsFormFieldComponent implements OnChanges {
-  @Input()
-  settingInformation: SettingControlInfo;
-  @Input()
-  settingControl: FormControl;
-  @Output()
-  enableSettings = new EventEmitter();
+  @Input() settingInformation: SettingControlInfo;
+  @Input() settingControl: FormControl;
+  @Output() enableSettings = new EventEmitter<ElementRef>();
+  @ViewChild('field') fieldRef: ElementRef;
 
   editorOut: (value: string) => SettingValue;
 
@@ -37,6 +37,6 @@ export class SettingsFormFieldComponent implements OnChanges {
   }
 
   enableField() {
-    this.enableSettings.emit();
+    this.enableSettings.emit(this.fieldRef);
   }
 }

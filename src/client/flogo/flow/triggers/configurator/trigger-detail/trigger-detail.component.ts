@@ -7,7 +7,6 @@ import { filter, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/opera
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 import { MapperController } from '@flogo/flow/shared/mapper/services/mapper-controller/mapper-controller';
 
-import {Dictionary} from '@flogo/core';
 import { TriggerConfigureSelectors, TriggerConfigureActions } from '@flogo/flow/core/state/triggers-configure';
 import { FlowState } from '@flogo/flow/core/state';
 import { TriggerConfigureTabType, TriggerConfigureTab } from '@flogo/flow/core/interfaces';

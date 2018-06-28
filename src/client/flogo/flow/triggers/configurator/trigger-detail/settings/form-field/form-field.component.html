@@ -6,11 +6,14 @@
   </label>
   <ng-container [ngSwitch]="settingInformation.type">
     <monaco-editor *ngSwitchCase="VALUE_TYPES.Any"
+                   #field
                    [formValueChangeTransformerFn]="editorOut(settingInformation.type)"
                    [formValueWriteTransformerFn]="editorIn"
                    [formControl]="settingControl">
     </monaco-editor>
-    <input *ngSwitchDefault class="settings-field" fgTriggersConfigAutoComplete
+    <input *ngSwitchDefault class="settings-field"
+           #field
+           fgTriggersConfigAutoComplete
            [fgTriggerSettingsField]="settingInformation.type"
            [formControl]="settingControl"
            [autoCompleteVariablesSource]="settingInformation.propsAllowed"

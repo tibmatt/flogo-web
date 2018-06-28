@@ -1,0 +1,8 @@
+<div class="uxpl-modal-confirmation__body">
+  <p class="uxpl-modal-confirmation__lead">This trigger is used by {{ data.flowCount }} other flows</p>
+</div>
+
+<div class="uxpl-modal-confirmation__footer footer">
+  <button class="flogo-button--secondary" (click)="control.cancel()">Cancel</button><!-- comment to avoid gap bc style:inline-blocks
+  --><button class="flogo-button--primary" (click)="control.confirm()">Edit</button>
+</div>

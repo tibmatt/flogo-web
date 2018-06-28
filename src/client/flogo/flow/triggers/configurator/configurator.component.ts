@@ -13,7 +13,8 @@ import { configuratorAnimations } from './configurator.animations';
 import {ConfiguratorService as TriggerConfiguratorService} from './services/configurator.service';
 import { FlowState } from '../../core/state';
 import { TriggerStatus } from './interfaces';
-import { ConfirmationService, ConfirmationResult } from './confirmation';
+import { ConfirmationService, ConfirmationResult, ConfirmationComponent } from './confirmation';
+import { TRIGGER_STATUS_TOKEN } from './confirmation/status.token';
 
 @Component({
   selector: 'flogo-triggers-configuration',
@@ -77,7 +78,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     this.checkForContextSwitchConfirmation((result?: ConfirmationResult) => {
       if (!result || result === ConfirmationResult.Discard) {
         switchTrigger();
-      } else if (result === ConfirmationResult.Save) {
+      } else if (result === ConfirmationResult.Confirm) {
         this.triggerConfiguratorService.save().subscribe(() => {});
         switchTrigger();
       }
@@ -94,7 +95,7 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     this.checkForContextSwitchConfirmation((result?: ConfirmationResult) => {
       if (!result || result === ConfirmationResult.Discard) {
         close();
-      } else if (result === ConfirmationResult.Save) {
+      } else if (result === ConfirmationResult.Confirm) {
         this.triggerConfiguratorService.save().subscribe(() => {});
         close();
       }
@@ -106,7 +107,9 @@ export class ConfiguratorComponent implements OnInit, OnDestroy {
     if (!status || !status.isDirty) {
       return onResult();
     }
-    const confirmation = this.confirmationService.open(status);
+    const injectionTokens = new WeakMap();
+    injectionTokens.set(TRIGGER_STATUS_TOKEN, status);
+    const confirmation = this.confirmationService.openModal(ConfirmationComponent, injectionTokens);
     confirmation.result.subscribe(onResult);
   }
 

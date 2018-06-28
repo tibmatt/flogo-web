@@ -1,9 +1,12 @@
 import {isEqual} from 'lodash';
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, ElementRef} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { distinctUntilChanged } from 'rxjs/operators';
-import {TriggerInformation} from '../../interfaces';
+import { TriggerInformation } from '../../interfaces';
+import { ConfirmationService } from '../../confirmation';
+import { ConfirmEditionComponent, EDITION_DATA_TOKEN, EditionData } from './confirm-edition/confirm-edition.component';
+import { ConfirmationResult } from '@flogo/flow/triggers/configurator/confirmation';
 
 const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 
@@ -13,17 +16,17 @@ const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
   styleUrls: ['./shared/form-common-styles.less', 'settings.component.less']
 })
 export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
-  @Input()
-  settingsForm: FormGroup;
-  @Input()
-  triggerInformation: TriggerInformation;
-  @Output()
-  statusChanges = new EventEmitter();
+  @Input() settingsForm: FormGroup;
+  @Input() triggerInformation: TriggerInformation;
+  @Output() statusChanges = new EventEmitter();
   triggerSettings: string[] | null;
   handlerSettings: string[] | null;
 
   private previousState;
   private valueChangeSub: Subscription;
+
+  constructor(private confirmationService: ConfirmationService) {
+  }
 
   ngOnChanges() {
     this.triggerSettings = this.settingsForm.controls.triggerSettings ?
@@ -49,6 +52,24 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
 
   ngOnDestroy() {
     this.unsubscribePrevious();
+  }
+
+  onEnableNameOrDescription(nativeElement) {
+    this.onEnableSettings(new ElementRef(nativeElement));
+  }
+
+  onEnableSettings(ref: ElementRef) {
+    const data = new WeakMap<any, any>();
+    // todo: use actual count
+    data.set(EDITION_DATA_TOKEN, { flowCount: 5 } as EditionData);
+    this.confirmationService
+      .openPopover(ref, ConfirmEditionComponent, data)
+      .result
+      .subscribe(result => {
+        if (result === ConfirmationResult.Confirm) {
+          this.enableAllSettings();
+        }
+      });
   }
 
   enableAllSettings() {

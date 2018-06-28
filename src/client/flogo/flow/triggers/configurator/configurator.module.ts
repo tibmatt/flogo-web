@@ -25,7 +25,8 @@ import {
   AutoCompleteContentComponent,
   ActionButtonsComponent,
   SettingsHelpComponent,
-  SettingsFormFieldComponent
+  SettingsFormFieldComponent,
+  ConfirmEditionComponent,
 } from './trigger-detail';
 
 @NgModule({
@@ -52,7 +53,8 @@ import {
     ConfirmationComponent,
     SettingsHelpComponent,
     SettingsFormFieldComponent,
-    FieldErrorComponent
+    FieldErrorComponent,
+    ConfirmEditionComponent,
   ],
   exports: [
     ConfiguratorComponent
@@ -65,6 +67,7 @@ import {
   entryComponents: [
     AutoCompleteContentComponent,
     ConfirmationComponent,
+    ConfirmEditionComponent,
   ]
 })
 

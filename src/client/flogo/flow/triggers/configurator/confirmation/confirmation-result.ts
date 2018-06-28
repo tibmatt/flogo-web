@@ -1,5 +1,5 @@
 export enum ConfirmationResult {
-  Save = 'save',
+  Confirm = 'save',
   Discard = 'discard',
   Cancel = 'cancel',
 }
