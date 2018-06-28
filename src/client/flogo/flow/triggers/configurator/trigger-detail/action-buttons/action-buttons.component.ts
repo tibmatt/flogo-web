@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionButtonsComponent {
-  @Input() status: { isDirty: boolean; isValid: boolean };
+  @Input() status: { isDirty: boolean; isValid: boolean, isPending?: boolean };
   @Input() isSaving: boolean;
   @Output() discardChanges = new EventEmitter();
   @Output() save = new EventEmitter();

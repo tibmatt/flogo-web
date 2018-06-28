@@ -4,8 +4,8 @@
           (click)="discardChanges.emit()">
     {{ 'TRIGGER-CONFIGURATOR:CANCEL' | translate }}
   </button>
-  <button [disabled]="!status?.isValid || isSaving"
-          class="flogo-button--primary  action"
+  <button [disabled]="!status?.isValid || status?.isPending || isSaving"
+          class="flogo-button--primary action"
           (click)="save.emit()">
     {{ (isSaving ? 'TRIGGER-CONFIGURATOR:SAVING' : 'TRIGGER-CONFIGURATOR:SAVE') | translate }}
   </button>

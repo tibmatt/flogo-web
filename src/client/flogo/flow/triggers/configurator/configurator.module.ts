@@ -18,6 +18,7 @@ import {
   TabsComponent,
   ConfigureSettingsComponent,
   ConfigureDetailsService,
+  TriggerNameValidatorService,
   SettingsFormBuilder,
   AutoCompleteDirective,
   FieldValueAccesorDirective,
@@ -63,6 +64,7 @@ import {
     ConfiguratorService,
     ConfigureDetailsService,
     SettingsFormBuilder,
+    TriggerNameValidatorService,
   ],
   entryComponents: [
     AutoCompleteContentComponent,

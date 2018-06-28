@@ -41,6 +41,7 @@ export interface TriggerConfigureTab {
   isValid: boolean;
   isDirty: boolean;
   isEnabled: boolean;
+  isPending: boolean;
 }
 
 export interface TriggerConfigureField {

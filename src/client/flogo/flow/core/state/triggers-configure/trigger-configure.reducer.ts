@@ -2,7 +2,7 @@ import { TriggerConfigureState, TriggerConfigureTabType } from '../../interfaces
 import {FlowState} from '../flow/flow.state';
 import {TriggerConfigureActionType, TriggerConfigureActionUnion} from './trigger-configure.actions';
 import { init } from './cases/init';
-import { mapperStatusReducer } from './cases/mapper-status-reducer';
+import { tabStatusReducer } from './cases/tab-status-reducer';
 
 export function reducer(flowState: FlowState, action: TriggerConfigureActionUnion): FlowState {
   const prevState = flowState.triggerConfigure;
@@ -41,7 +41,7 @@ export function triggerConfigureReducer(
     case TriggerConfigureActionType.CofigureStatusChanged: {
       const { triggerId, groupType, newStatus } = action.payload;
       const groupId = `${triggerId}.${groupType}`;
-      return mapperStatusReducer(state, groupId, newStatus);
+      return tabStatusReducer(state, groupId, newStatus);
     }
     case TriggerConfigureActionType.SaveTriggerStarted: {
       const { triggerId } = action.payload;

@@ -92,6 +92,7 @@ export const getCurrentTriggerOverallStatus = (store: Store<FlowState>) => {
       return {
         isDirty: !!currentTabs.find(tab => tab.isDirty),
         isValid: !currentTabs.find(tab => !tab.isValid),
+        isPending: !!currentTabs.find(tab => tab.isPending)
       };
     })
   );
@@ -135,24 +136,20 @@ const getCurrentHandler = createSelector(
   (currentTriggerId, handlers) => handlers[currentTriggerId],
 );
 
-const getAppProperties = createSelector(
-  selectApp,
-  (app) => app.properties
-);
-
 export const getConfigureState = createSelector(
   selectFlowMetadata,
   getCurrentSchema,
   getCurrentTrigger,
   getCurrentHandler,
-  getAppProperties,
-  (flowMetadata, schema, trigger, handler, appProperties): CurrentTriggerState => {
+  selectApp,
+  (flowMetadata, schema, trigger, handler, app): CurrentTriggerState => {
     return {
       flowMetadata,
       schema,
       trigger,
       handler,
-      appProperties,
+      appId: app.id,
+      appProperties: app.properties,
       fields: createTriggerConfigureFields(trigger, handler, schema),
     };
   },

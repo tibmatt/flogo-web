@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { _throw } from 'rxjs/observable/throw';
 
-import { RestApiService } from '../rest-api.service';
+import { RestApiOptions, RestApiService } from '../rest-api.service';
 // TriggersBackendService
 // TriggersApiService
 // TriggerStorage
@@ -12,8 +12,9 @@ export class TriggersApiService {
   constructor(private restApi: RestApiService) {
   }
 
-  listTriggersForApp(appId) {
-    return this.restApi.get<any>(`apps/${appId}/triggers`)
+  listTriggersForApp(appId, filters?: { name?: string }) {
+    const options: RestApiOptions = filters && filters.name ? { params: { 'filter[name]': filters.name } } : null;
+    return this.restApi.get<any>(`apps/${appId}/triggers`, options)
       .toPromise();
   }
 

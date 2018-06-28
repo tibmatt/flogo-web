@@ -45,6 +45,7 @@ export interface TriggerStatus {
 }
 
 export interface CurrentTriggerState {
+  appId: string;
   flowMetadata: FlowMetadata;
   schema: TriggerSchema;
   handler: TriggerHandler;

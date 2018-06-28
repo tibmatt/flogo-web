@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { filter, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 import { MapperController } from '@flogo/flow/shared/mapper/services/mapper-controller/mapper-controller';
@@ -107,7 +107,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateSettingsStatus(settingsStatus: {isValid: boolean, isDirty: boolean}) {
+  updateSettingsStatus(settingsStatus: {isValid: boolean, isDirty: boolean, isPending?: boolean}) {
     this.updateTabState(TriggerConfigureTabType.Settings, settingsStatus);
   }
 
@@ -155,7 +155,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
       subscribeToUpdates(controller, groupType);
       this.updateTabState(groupType, { isEnabled: true });
     } else {
-      this.updateTabState(groupType, { isDirty: false, isValid: true, isEnabled: false });
+      this.updateTabState(groupType, { isDirty: false, isValid: true, isEnabled: false, isPending: false });
     }
   }
 

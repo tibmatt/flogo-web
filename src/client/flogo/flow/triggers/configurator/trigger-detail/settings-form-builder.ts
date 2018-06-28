@@ -1,21 +1,31 @@
 import {isEmpty, isObject, mapValues} from 'lodash';
 import {Injectable} from '@angular/core';
 import {Dictionary} from '@flogo/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {SettingControlInfo, SettingControlGroup, TriggerInformation} from '../interfaces';
 import { SettingValue } from './settings-value';
+import { AsyncValidatorFn } from '@angular/forms/src/directives/validators';
 
 @Injectable()
 export class SettingsFormBuilder {
   constructor(private ngFormBuilder: FormBuilder) {}
 
-  build(settingsFields, settingControls: TriggerInformation['settingsControls'], disableCommonSettings: boolean) {
+  build(
+    settingsFields,
+    settingControls: TriggerInformation['settingsControls'],
+    disableCommonSettings: boolean,
+    nameValidator: AsyncValidatorFn
+  ) {
     const settingsFormGroup: Dictionary<FormControl | FormGroup> = {};
 
-    settingsFormGroup.name = this.ngFormBuilder.control({
-      value: settingsFields.name.value || '',
-      disabled: disableCommonSettings
-    }, Validators.required);
+    settingsFormGroup.name = this.ngFormBuilder.control(
+      {
+        value: settingsFields.name.value || '',
+        disabled: disableCommonSettings
+      },
+      Validators.required,
+      nameValidator
+    );
 
     settingsFormGroup.description = this.ngFormBuilder.control({
       value: settingsFields.description.value || '',

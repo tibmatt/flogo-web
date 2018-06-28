@@ -46,7 +46,6 @@ function initTriggerConfigureState(
       const tabsForTrigger = createTabsForTrigger(trigger.id, appProfileType);
       allTabs = { ...allTabs, ...tabsForTrigger };
       triggersForConfigure[trigger.id] = createTriggerState(trigger, [...Object.keys(tabsForTrigger)]);
-      // fields = createFields(trigger, triggersSchemas[trigger.ref])
     });
   return {
     ...baseState,
@@ -65,6 +64,7 @@ function createTabsForTrigger(triggerId: string, appProfileType: FLOGO_PROFILE_T
       isValid: true,
       isDirty: false,
       isEnabled: true,
+      isPending: false,
     };
     return tabs;
   }, {});

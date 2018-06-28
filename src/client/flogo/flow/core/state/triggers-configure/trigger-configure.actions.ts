@@ -36,7 +36,7 @@ export class ConfigureStatusChanged implements Action {
   constructor(public payload: {
     triggerId: string,
     groupType: TriggerConfigureTabType,
-    newStatus: { isValid: boolean, isDirty: boolean, isEnabled?: boolean },
+    newStatus: { isValid: boolean, isDirty: boolean, isEnabled?: boolean, isPending?: boolean; },
   }) {}
 }
 

@@ -6,18 +6,25 @@ import { TriggerHandler } from '@flogo/flow/core';
 import { CurrentTriggerState, SettingControlInfo, TriggerInformation } from '../interfaces';
 import { SettingsFormBuilder } from './settings-form-builder';
 import { createValidatorsForSchema } from './settings-validation';
+import { TriggerNameValidatorService } from './trigger-name-validator.service';
 
 @Injectable()
 export class ConfigureDetailsService {
-  constructor(private settingsFormBuilder: SettingsFormBuilder, private mapperControllerFactory: MapperControllerFactory) {}
+
+  constructor(
+    private settingsFormBuilder: SettingsFormBuilder,
+    private mapperControllerFactory: MapperControllerFactory,
+    private nameValidator: TriggerNameValidatorService
+  ) {}
 
   build(state: CurrentTriggerState) {
     const { flowMetadata, schema: triggerSchema, handler: { actionMappings }, fields, trigger: {handlers} } = state;
     const { input, output } = actionMappings || { input: [], output: []};
     const disableCommonSettings = handlers.length > 1;
     const triggerInformation = this.getTriggerInformation(handlers, triggerSchema);
+    const nameValidator = this.nameValidator.create(state.appId, state.trigger.id);
     return {
-      settings: this.settingsFormBuilder.build(fields.settings, triggerInformation.settingsControls, disableCommonSettings),
+      settings: this.settingsFormBuilder.build(fields.settings, triggerInformation.settingsControls, disableCommonSettings, nameValidator),
       flowInputMapper: this.createInputMapperController(flowMetadata, triggerSchema, input),
       replyMapper: this.createReplyMapperController(flowMetadata, triggerSchema, output),
       triggerInformation

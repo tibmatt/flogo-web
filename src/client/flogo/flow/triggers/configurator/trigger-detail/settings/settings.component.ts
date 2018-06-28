@@ -24,7 +24,7 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   handlerSettings: string[] | null;
 
   private previousState;
-  private valueChangeSub: Subscription;
+  private valueChangeSubscription: Subscription;
 
   constructor(private confirmationService: ConfirmationService) {
   }
@@ -38,12 +38,9 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
       : null;
     this.unsubscribePrevious();
     this.previousState = null;
-    this.valueChangeSub = this.settingsForm.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-      )
+    this.valueChangeSubscription = this.settingsForm.statusChanges
       .subscribe(() => {
-        const settingsStatus = this.settingsFormStatus;
+        const settingsStatus = this.getSettingsFormStatus();
         if (!isEqual(this.previousState, settingsStatus)) {
           this.previousState = settingsStatus;
           this.statusChanges.emit(settingsStatus);
@@ -82,14 +79,15 @@ export class ConfigureSettingsComponent implements OnChanges, OnDestroy {
   }
 
   private unsubscribePrevious() {
-    if (this.valueChangeSub && !this.valueChangeSub.closed) {
-      this.valueChangeSub.unsubscribe();
-      this.valueChangeSub = null;
+    if (this.valueChangeSubscription && !this.valueChangeSubscription.closed) {
+      this.valueChangeSubscription.unsubscribe();
+      this.valueChangeSubscription = null;
     }
   }
 
-  get settingsFormStatus() {
+  getSettingsFormStatus() {
     return {
+      isPending: this.settingsForm.pending,
       isValid: this.settingsForm.valid,
       isDirty: this.settingsForm.dirty
     };

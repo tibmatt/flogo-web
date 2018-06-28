@@ -5,13 +5,14 @@
          class="flogo-icon-edit settings-icon__edit"
          (click)="onEnableNameOrDescription(triggerName)"></i>
       <input type="text" id="triggerName" #triggerName
-             [class.--isValid]="settingsForm.controls.name.value !== ''"
+             [class.is-empty]="settingsForm.controls.name.value === ''"
              [formControl]="settingsForm.controls.name">
       <label class="settings-label" for="triggerName">
         <span>{{"TRIGGER-CONFIGURATOR:SETTINGS:NAME" | translate}}</span>
       </label>
       <span class="field-error-message" *ngIf="settingsForm.controls.name.errors">
-        <ng-container *ngIf="settingsForm.controls.name.hasError('required')">Name cannot be empty</ng-container>
+        <ng-container *ngIf="settingsForm.controls.name.hasError('required')">Name cannot be empty.</ng-container>
+        <ng-container *ngIf="settingsForm.controls.name.hasError('nameNotUnique')">There is another trigger with this name.</ng-container>
       </span>
     </div>
     <flogo-triggers-configuration-settings-help
