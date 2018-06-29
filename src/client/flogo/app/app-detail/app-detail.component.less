@@ -1,11 +1,12 @@
 @import '../../../assets/_variables';
 @import (reference) '../../../assets/uxpl/dropdown';
+@import (reference) '../../../assets/uxpl/buttons';
 
 @action-fore-color: #449ed8;
 @width-inputs: 60%;
 
 :host {
-  color: #666;
+  color: @color-plain;
   display: block;
   min-height: 100%;
   margin-bottom: -@size-height-footer;
@@ -19,7 +20,7 @@
 }
 
 .flogo-app-header-wrapper {
-  background: #fff;
+  background: @color-bg;
 }
 
 .flogo-app-details-container {
@@ -36,7 +37,7 @@
     .flogo-app-details__icon {
       width: 62px;
       height: 62px;
-      fill:#fff;
+      fill: @color-bg;
       margin-right: 10px;
 
       .flogo-app-details__icon-wrapper {
@@ -95,7 +96,7 @@
     height: 268px;
     left: -100px;
     top: -30px;
-    fill: #856cad;
+    fill: @pale-purple;
   }
 
   .flogo-app-header__edge-icon--device {
@@ -104,7 +105,7 @@
     height: 286px;
     right: 0;
     top: -50px;
-    fill: #8a9ccd;
+    fill: @light-purple;
   }
 
   .flogo-app-header__icon {
@@ -114,14 +115,14 @@
 
   .flogo-app-header__icon--profile {
     .flogo-app-header__icon;
-    fill: #fff;
-    background-color: #856cad;
+    fill: @color-bg;
+    background-color: @pale-purple;
   }
 
   .flogo-app-header__icon--device {
     .flogo-app-header__icon;
-    fill: #fff;
-    background-color: #8a9ccd;
+    fill: @color-bg;
+    background-color: @light-purple;
   }
 
   .flogo-app-header__description-container {
@@ -157,10 +158,10 @@
 
   .flogo-app-detail-list-wrapper {
     .uxpl-dropdown-container;
-    color: #666;
+    color: @color-plain;
     position: absolute;
-    top: 46px;
-    right: 193px;
+    top: 50px;
+    right: 161px;
     z-index: 2;
     min-width: 264px;
     transform: scale(0, 0);
@@ -192,7 +193,7 @@
     }
     .flogo-app-trigger-build {
       padding: 10px 0;
-      border-top: 1px solid #d8d8d8;
+      border-top: 1px solid @gainsboro;
     }
   }
   .app-detail-export-list {
@@ -215,7 +216,7 @@
       padding: 0.2em .3em 0.2em 0.2em;
 
       font-size: 1.5em;
-      color: #79b8dc;
+      color: @color-secondary;
 
       .flogo-icon {
         display: inline-block;
@@ -240,13 +241,10 @@
   }
 }
 
-.flogo-button {
+.flogo-app-detail-button {
   margin: 0 15px;
-  min-width: 124px;
-  height: 35px;
-  //&:nth-child(2) {
-  //  margin: 0 15px;
-  //}
+  min-width: 93px;
+  height: 40px;
 }
 
 .is-editable {
@@ -254,7 +252,7 @@
   padding: 1px;
   margin: 0 -1px;
   &:hover {
-    border: solid 1px #ccc;
+    border: solid 1px @gainsboro-three;
     padding: 0;
   }
 }
@@ -275,15 +273,15 @@
 }
 
 .flogo-input-error {
-  color: #ee3342;
+  color: @color-error;
   position: relative;
   .flogo-input-error-msg {
-    color: #fff;
+    color: @color-bg;
     position: absolute;
     font-size: .875em;
     letter-spacing: .2px;
     bottom: 55px;
-    background-color: #ee3342;
+    background-color: @color-error;
     padding: 1em;
     z-index: 3;
     transform: scale(0, 0);
@@ -296,7 +294,7 @@
       height: 0;
       border-left: 7px solid transparent;
       border-right: 7px solid transparent;
-      border-top: 10px solid #ee3342;
+      border-top: 10px solid @color-error;
       bottom: -10px;
       left: 30%;
       transform: translateY(-10px);
@@ -304,7 +302,7 @@
     }
   }
   .flogo-app-header__name {
-    color: #ee3342;
+    color: @color-error;
   }
 }
 
@@ -340,11 +338,12 @@
   position: relative;
   text-align: left;
   margin: 0 15px 0 0;
+  width: 125px;
 }
 
 .views-dropdown_caret {
   position: absolute;
-  top: 16px;
+  top: 19px;
   right: 16px;
 }
 
@@ -363,4 +362,8 @@
   height: 16px;
   top: 1px;
   font-size: 0.9em;
+}
+
+.content-empty__action{
+  width: 110px;
 }

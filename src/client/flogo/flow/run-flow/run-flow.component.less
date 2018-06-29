@@ -1,4 +1,7 @@
 @deep: ~"/deep/";
+@import (reference) '../../../assets/uxpl/buttons';
+@import "../../../assets/_variables";
+
 @{deep} flogo-flow-dynamic-form .form-container {
   max-height: 320px;
   overflow-y: auto;
@@ -19,12 +22,13 @@
   position: relative;
 }
 
-.flogo-button {
+.flogo-run-flow-button {
   width: 125px;
   margin-left: 0.5em;
 }
 
 .run-flow__button {
+  .uxpl-button-primary;
   margin: 0;
   width: 124px;
 
@@ -44,9 +48,9 @@
 .tip {
   height: 30px;
   width: 30px;
-  background: #FFFFFF;
+  background: @color-bg;
   transform: rotate(135deg);
-  border: solid 1px #d8d8d8;
+  border: solid 1px @gainsboro;
   border-right: none;
   border-top: none;
   margin: 0 auto;
@@ -57,9 +61,9 @@
 
 .content {
   padding: 2em;
-  background: #FFFFFF;
+  background: @color-bg;
   box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.33);
-  border: solid 1px #d8d8d8;
+  border: solid 1px @gainsboro;
 }
 
 .button__container {

@@ -66,8 +66,8 @@
 
        <div class="device-settings__commands">
          <div>
-           <button type="button" class="flogo-button--secondary" data-dismiss="modal" (click)="closeModal()">{{ 'SETTINGS:CANCEL' | translate }}</button>
-           <button type="submit" class="flogo-button--default" (click)="saveChanges()" [disabled]="!hasChanges">
+           <button type="button" class="device-settings-button flogo-button--secondary" data-dismiss="modal" (click)="closeModal()">{{ 'SETTINGS:CANCEL' | translate }}</button>
+           <button type="submit" class="device-settings-button flogo-button--default" (click)="saveChanges()" [disabled]="!hasChanges">
              {{ 'SETTINGS:SAVE' | translate }}
            </button>
          </div>

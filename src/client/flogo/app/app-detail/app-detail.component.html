@@ -75,7 +75,7 @@
           </div>
           <div class="flogo-app-detail-commands">
             <div class="dropdown views-dropdown">
-              <button class="flogo-button btn btn-default dropdown-toggle views-dropdown_button"
+              <button class="flogo-app-detail-button btn btn-default dropdown-toggle views-dropdown_button"
                       id="viewsDropDown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="views-dropdown_label">{{selectedViewTranslateKey | translate}}</span>
                 <span class="caret list-caret views-dropdown_caret pull-right"></span>
@@ -99,7 +99,7 @@
           <div class="flogo-app-header__options">
 
             <div (fgClickOutside)="closeExportBox()">
-              <button class="flogo-button flogo-button--secondary" (click)="toggleExportBox()">
+              <button class="flogo-button--secondary flogo-app-detail-button" (click)="toggleExportBox()">
                 {{ 'DETAILS:EXPORT' | translate }}
               </button>
               <div class="flogo-app-detail-list-wrapper app-detail-export-list"
@@ -118,7 +118,7 @@
               </div>
             </div>
             <div (fgClickOutside)="closeBuildBox()" *ngIf="application?.profileType !== PROFILE_TYPES.DEVICE">
-              <button class="flogo-button flogo-button--default flogo-app-detail-build-button"
+              <button class="flogo-button--default flogo-app-detail-button flogo-app-detail-build-button"
                       [disabled]="isBuilding"
                       (click)="toggleBuildBox()">
                 <ng-container *ngIf="!isBuilding; else buildIndicator">

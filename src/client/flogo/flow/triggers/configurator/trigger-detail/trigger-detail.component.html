@@ -5,7 +5,6 @@
     (tabSelected)="onTabSelected($event)">
   </flogo-flow-triggers-configurator-tabs>
   <flogo-triggers-configuration-detail-action-buttons
-    class="action-bar__buttons"
     [status]="overallStatus$ | async"
     [isSaving]="isSaving$ | async"
     (save)="save()"

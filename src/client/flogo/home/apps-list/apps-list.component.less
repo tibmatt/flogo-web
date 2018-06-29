@@ -1,3 +1,4 @@
+@import '../../../assets/_variables';
 @margin-top: 15px;
 
 :host {
@@ -17,7 +18,7 @@
     .search {
       width: 80%;
     }
-    .flogo-button {
+    .flogo-app-list-button {
       width: 45%;
       margin-left: 4%;
     }
@@ -38,7 +39,7 @@
         margin-bottom: 1em;
         border-radius: 4px;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.33);
-        border: solid 1px #d8d8d8;
+        border: solid 1px @gainsboro;
         padding-left: 56px;
         // background-size: 56px 100%;
         // background-position: 0;
@@ -46,7 +47,7 @@
 
         .apps-list__element-container {
           padding: @margin-top;
-          background: #fff;
+          background: @color-bg;
           border-radius: 2px;
           border-bottom-left-radius: 0;
           border-top-left-radius: 0;
@@ -69,7 +70,7 @@
         &:hover {
           cursor: pointer;
           border-radius: 4px;
-          box-shadow: 0 0 5px 0 #79b8dc;
+          box-shadow: 0 0 5px 0 @color-secondary;
 
           .apps-list__delete-btn {
             visibility: visible;
@@ -99,7 +100,7 @@
         line-height: 0.75;
         letter-spacing: 0.4px;
         text-align: center;
-        color: #676a6d;
+        color: @color-disabled;
         margin-top: 19px;
       }
 

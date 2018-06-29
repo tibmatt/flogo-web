@@ -1,3 +1,5 @@
+@import "../../../assets/_variables";
+
 :host {
   width: 100%;
   position: fixed;
@@ -11,9 +13,10 @@
 }
 
 .toggle-button {
-  background: #36bfbb;
+  background: @lighter-blue;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   min-width: 55px;
+  border-width: 0;
   height: 48px;
   width: 198px;
   margin-top: 0;
@@ -99,7 +102,7 @@
 .error-panel {
   border-radius: 5px 5px 0 0;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.33);
-  background: #fff;
+  background: @color-bg;
 }
 
 .error-panel__content {
