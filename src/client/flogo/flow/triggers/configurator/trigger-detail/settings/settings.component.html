@@ -48,7 +48,7 @@
     <div *ngIf="handlerSettings" class="settings-group__content"
          [formGroup]="settingsForm.controls.handlerSettings">
       <div class="settings-group__header">
-        <i class="flogo-icon-settings settings-group__icon"></i>
+        <i class="flogo-icon-flag settings-group__icon"></i>
         {{"TRIGGER-CONFIGURATOR:SETTINGS:HANDLER-SETTINGS" | translate}}
       </div>
       <flogo-configuration-settings-field *ngFor="let settingName of handlerSettings"
