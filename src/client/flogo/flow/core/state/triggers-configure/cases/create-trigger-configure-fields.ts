@@ -1,6 +1,5 @@
 import {isObject} from 'lodash';
 import {Trigger, TriggerHandler} from '../../../interfaces/index';
-import {isUndefined} from 'util';
 import {Dictionary, TriggerSchema, SchemaAttribute} from '@flogo/core/index';
 import {ConfigureTriggerDetails} from '../../../../triggers/configurator/interfaces';
 
@@ -25,11 +24,9 @@ export function createTriggerConfigureFields(triggerInstance: Trigger,
 
 function mergeSettingsWithSchema(schemaAttributes, instanceProperties) {
   return schemaAttributes.map(schemaAttribute => {
-    const valueInProps = instanceProperties[schemaAttribute.name];
-    const value = isUndefined(valueInProps) ? schemaAttribute.value : valueInProps;
     return [
       schemaAttribute.name,
-      value
+      instanceProperties[schemaAttribute.name]
     ];
   }).reduce((props, [name, value]) => {
     props[name] = value;

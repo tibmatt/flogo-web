@@ -101,8 +101,8 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   }
 
   addTriggerToAction(data) {
-    const settings = objectFromArray(data.triggerData.handler.settings, false);
-    const outputs = objectFromArray(data.triggerData.outputs, false);
+    const settings = objectFromArray(data.triggerData.handler.settings, true);
+    const outputs = objectFromArray(data.triggerData.outputs, true);
     this.persistNewTriggerAndHandler(data, settings, outputs)
       .then(triggerId => this.restAPITriggersService.getTrigger(triggerId))
       .then(trigger => {
