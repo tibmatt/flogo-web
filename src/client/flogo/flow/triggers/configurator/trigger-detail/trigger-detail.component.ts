@@ -91,7 +91,14 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
         if (!isUpdateStillApplicable) {
           return;
         }
+
         this.settingsForm.reset(this.settingsForm.getRawValue());
+        this.updateSettingsStatus({
+          isValid: this.settingsForm.valid,
+          isDirty: this.settingsForm.dirty,
+          isPending: this.settingsForm.pending,
+        });
+
         if (this.flowInputMapperController) {
           this.flowInputMapperController.resetStatus();
         }
@@ -125,7 +132,11 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     }
     this.settingsForm = settings;
     this.settingsTriggerInformation = triggerInformation;
-    this.updateSettingsStatus({ isValid: this.settingsForm.valid, isDirty: this.settingsForm.dirty });
+    this.updateSettingsStatus({
+      isValid: this.settingsForm.valid,
+      isDirty: this.settingsForm.dirty,
+      isPending: this.settingsForm.pending
+    });
 
     const subscribeToUpdates = this.createMapperStatusUpdateSubscriber();
 
