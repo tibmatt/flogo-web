@@ -154,7 +154,6 @@ export class FlogoFlowTriggersPanelComponent implements OnInit, OnDestroy {
   handleMenuSelection(event: TriggerMenuSelectionEvent) {
     switch (event.operation) {
       case TRIGGER_MENU_OPERATION.SHOW_SETTINGS:
-      case TRIGGER_MENU_OPERATION.CONFIGURE:
         this.openTriggerMapper(event.trigger);
         break;
       case TRIGGER_MENU_OPERATION.DELETE:

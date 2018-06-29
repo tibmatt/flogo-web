@@ -67,7 +67,6 @@
   "CANVAS:SUCCESS-MESSAGE-COMPLETED": "Flow completed! ^_^",
   "CANVAS:SUCCESS-MESSAGE-UPDATE": "Update flow's {{value}} successfully!",
   "CANVAS:WARNING-UNSUPPORTED-TEST-RUN": "Running flows with iterator or subflow activities is not supported yet.",
-  "TRIGGER-MENU:CONFIGURE": "Configure",
   "TRIGGER-MENU:DELETE": "Delete",
   "CATEGORY-SELECTOR:CATEGORY": "CATEGORY",
   "DETAILS:ADD-DESCRIPTION": "Add description",
