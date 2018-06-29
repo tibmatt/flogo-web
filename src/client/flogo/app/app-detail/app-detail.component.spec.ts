@@ -47,7 +47,6 @@ class MockAppDetailService extends AppDetailService {
     return appId;
   }
 
-
 }
 
 class MockRESTAPIContributionsService {

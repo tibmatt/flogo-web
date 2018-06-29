@@ -34,7 +34,8 @@ import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from '@flogo/core/services/log.service';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
 import { WalkthroughModule } from './walkthrough/walkthrough.module';
-import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
+import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
+import { FileDownloaderService } from './services/file-downloader.service';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-t
     RESTAPIApplicationsService,
     RESTAPIConfigurationService,
     RESTAPIFlowsService,
+    ShimTriggerBuildApiService,
 
     RESTAPIHandlersServiceV2,
     AppsApiService,
@@ -77,7 +79,7 @@ import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-t
     FlogoDeviceTaskIdGeneratorService,
     LogService,
     SvgRefFixerService,
-    ShimTriggerBuildApiService
+    FileDownloaderService,
   ],
   declarations: [
     FlogoNavbarComponent,

@@ -118,15 +118,22 @@
               </div>
             </div>
             <div (fgClickOutside)="closeBuildBox()" *ngIf="application?.profileType !== PROFILE_TYPES.DEVICE">
-              <button class="flogo-button flogo-button--default flogo-app-detail-build-button" (click)="toggleBuildBox()">
-                <span class="build-button-title">{{ 'DETAILS:BUILD' | translate }}</span>
-                <span class="flogo-icon flogo-icon-back build-button-dropdown-caret"></span></button>
+              <button class="flogo-button flogo-button--default flogo-app-detail-build-button"
+                      [disabled]="isBuilding"
+                      (click)="toggleBuildBox()">
+                <ng-container *ngIf="!isBuilding; else buildIndicator">
+                  <span class="build-button-title">{{ 'DETAILS:BUILD' | translate }}</span>
+                  <span class="flogo-icon flogo-icon-back build-button-dropdown-caret"></span>
+                </ng-container>
+                <ng-template #buildIndicator>{{ 'DETAILS:BUILDING' | translate }}</ng-template>
+              </button>
               <div class="flogo-app-detail-list-wrapper flogo-app-detail-profile-wrapper"
                    [ngClass]="{'active' : isBuildBoxShown}">
                 <ul class="flogo-app-detail-list list-unstyled">
                   <li *ngFor="let opt of buildOptions" class="flogo-app-detail-list-item">
-                    <a class="flogo-app-detail-list-link" (click)="closeBuildBox()" href="{{downloadLink}}?os={{opt.os}}&arch={{opt.arch}}">
-                      <span>{{ opt.label }} </span></a>
+                    <a class="flogo-app-detail-list-link" (click)="buildApp(opt)">
+                      <span>{{ opt.label }} </span>
+                    </a>
                   </li>
                 </ul>
                 <ul class="flogo-app-detail-list flogo-app-trigger-build list-unstyled" *ngIf = "shimTriggerOptions.length > 0">

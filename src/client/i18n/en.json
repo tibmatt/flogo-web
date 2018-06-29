@@ -86,6 +86,8 @@
   "DETAILS:CREATE-A-FLOW": "Create a flow",
   "DETAILS:SEARCH": "Search",
   "DETAILS:BUILD": "Build",
+  "DETAILS:BUILDING": "Building...",
+  "DETAILS:BUILD-ERROR": "An error occurred while building your app. Please check the error logs.",
   "DETAILS-VIEW-MENU:FLOWS": "Flows view",
   "DETAILS-VIEW-MENU:TRIGGERS": "Triggers view",
   "DIAGRAM:ADD-BRANCH": "Add branch",
