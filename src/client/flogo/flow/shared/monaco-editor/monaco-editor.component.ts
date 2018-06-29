@@ -11,8 +11,10 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Subject } from 'rxjs/Subject';
+import { map, takeUntil } from 'rxjs/operators';
 
-// import { MonacoLoaderService } from './monaco-loader.service';
 import {
   EditorConstructOptions,
   ICursorPositionChangedEvent,
@@ -45,6 +47,11 @@ export const DEFAULT_EDITOR_OPTIONS = {
   // tslint:disable-next-line:component-selector
   selector: 'monaco-editor',
   styleUrls: ['monaco-editor.component.less'],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: MonacoEditorComponent,
+    multi: true
+  }],
   template: `
     <div #editor class="editor-container" [style.width]="'100%'" [style.height]="'100%'"></div>
     <div class="editor-spinner" *ngIf="isEditorLoading">
@@ -81,7 +88,7 @@ export const DEFAULT_EDITOR_OPTIONS = {
     </div>
   `,
 })
-export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
+export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
   @ViewChild('editor') editorRef: ElementRef;
 
   @Input() editorOptions: EditorConstructOptions = {};
@@ -94,6 +101,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @Output() ready: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  @Input() formValueWriteTransformerFn?: (value: any) => string;
+  @Input() formValueChangeTransformerFn?: (value: string) => any;
+
   editor: IStandaloneCodeEditor;
   public isEditorLoading: boolean;
   private _disposed = false;
@@ -102,6 +112,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
     hoverProvider: <IDisposable>null,
     completionProvider: <IDisposable>null
   };
+  private destroyed = new Subject();
   private _value = '';
 
   constructor(private ngZone: NgZone) {
@@ -233,23 +244,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
     this.ngZone.runOutsideAngular(() => {
       this.initMonaco();
     });
-    // Wait until monaco editor is available
-    // this._monacoLoader.load()
-    //   .then(() => {
-    //     // Need to check if the view has already been destroyed before Monaco was loaded
-    //     if (this._disposed) {
-    //       return;
-    //     }
-    //     this.initMonaco();
-    //     // return monaco.languages.typescript.getJavaScriptWorker();
-    //   });
-    // .then(() => {
-    //   this._monacoLoader.restoreGlobals();
-    // });
-
   }
 
   ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
+
     if (this._disposed) {
       return;
     }
@@ -287,6 +287,30 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy {
         this.editor.layout(dimension);
       }
     }, 0);
+  }
+
+  registerOnChange(onChange) {
+    this.valueChange
+      .pipe(
+        takeUntil(this.destroyed),
+        map(value => this.formValueChangeTransformerFn ? this.formValueChangeTransformerFn(value) : value)
+      )
+      .subscribe(onChange);
+  }
+
+  registerOnTouched(fn: any) {
+    // part of control value accessor but not required by this implementation
+  }
+
+  setDisabledState(isDisabled: boolean) {
+    this.editor.updateOptions({ readOnly: isDisabled });
+  }
+
+  writeValue(value: any) {
+    if (this.formValueWriteTransformerFn) {
+      value = this.formValueWriteTransformerFn(value);
+    }
+    this.value = value;
   }
 
   private initMonaco() {

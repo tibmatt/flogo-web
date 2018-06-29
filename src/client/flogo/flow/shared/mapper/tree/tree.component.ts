@@ -13,7 +13,7 @@ import {
 import { PerfectScrollbarDirective as ScrollbarDirective } from 'ngx-perfect-scrollbar';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';
-import { DraggingService } from './dragging.service';
+import { DraggingService } from '../services/dragging.service';
 import { IconsService } from '../services/icons.service';
 
 @Component({
@@ -76,13 +76,6 @@ export class TreeComponent implements OnChanges, AfterViewInit {
 
   onMouseLeave(event) {
     this.leave.emit(event);
-  }
-
-  isNodeInSelectedBranch(node: MapperTreeNode) {
-    if (!this.selectedBranch) {
-      return false;
-    }
-    return this.selectedBranch.indexOf(node) >= 0;
   }
 
   onDragStart(event, node) {

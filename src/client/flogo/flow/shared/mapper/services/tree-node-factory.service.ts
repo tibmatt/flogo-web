@@ -321,6 +321,7 @@ export class TreeNodeFactoryService {
       if (required && required.length) {
         if (required.indexOf(propName) >= 0) {
           node.styleClass = `${node.styleClass} node--required`;
+          node.isRequired = true;
         }
       }
 

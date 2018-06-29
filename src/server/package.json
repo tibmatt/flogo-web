@@ -29,8 +29,8 @@
     "sinon": "^4.4.1"
   },
   "peerDependencies": {
-    "flogo-parser": "",
-    "chevrotain": "^1.0.1"
+    "chevrotain": "^3.0.0",
+    "flogo-parser": ""
   },
   "dependencies": {
     "ajv": "^6.1.1",

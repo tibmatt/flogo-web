@@ -10,11 +10,12 @@ const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructor();
 // const BaseCstVisitor = parserInstance.getBaseCstVisitorConstructorWithDefaults();
 const AstCreator = astCreatorFactory(BaseCstVisitor);
 
-export function parse(text): ParseResult {
+export type StartingRuleName = 'mappingExpression' | 'resolver';
+export function parse(text, startingRule: StartingRuleName = 'mappingExpression'): ParseResult {
   const lexResult = lexer.tokenize(text);
   // setting a new input will RESET the parser instance's state.
   parserInstance.input = lexResult.tokens;
-  const cst = parserInstance.mappingExpression();
+  const cst = parserInstance[startingRule]();
   let ast = null;
   if (parserInstance.errors.length === 0) {
     const astCreator = new AstCreator();
@@ -26,4 +27,8 @@ export function parse(text): ParseResult {
       lexErrors: lexResult.errors,
       parseErrors: parserInstance.errors
   };
+}
+
+export function parseResolver(text) {
+  return parse(text, 'resolver');
 }

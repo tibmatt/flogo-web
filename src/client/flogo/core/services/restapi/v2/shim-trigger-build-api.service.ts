@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {HttpUtilsService} from '@flogo/core/services/restapi/http-utils.service';
-import {getFileName} from '@flogo/core/services/restapi/restapi-utils';
+import { FileDownloaderService } from '@flogo/core/services/file-downloader.service';
 
 @Injectable()
 export class ShimTriggerBuildApiService {
   constructor(private httpUtilsService: HttpUtilsService,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private downloaderService: FileDownloaderService) {
   }
-
 
   public buildShimTrigger(shimTrigger) {
     const buildURL = this.getShimTriggerBuildLink(shimTrigger.triggerId);
@@ -17,17 +17,8 @@ export class ShimTriggerBuildApiService {
        params = params.append ('os', shimTrigger.env.os);
        params = params.append('arch', shimTrigger.env.arch);
     }
-    this.http.get(buildURL, {params, responseType: 'blob', observe: 'response'})
-      .subscribe((response) => {
-        const url = window.URL.createObjectURL(response.body);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        const responseHeader = response.headers.get('content-disposition');
-        link.setAttribute('download', getFileName(responseHeader));
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
+    return this.http.get(buildURL, {params, responseType: 'blob', observe: 'response'})
+      .pipe(this.downloaderService.downloadResolver());
   }
 
   private getShimTriggerBuildLink(triggerId: string) {

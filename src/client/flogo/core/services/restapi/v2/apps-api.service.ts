@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 
 import { App } from '@flogo/core';
-import { ErrorService } from '../../error.service';
 import { FLOGO_PROFILE_TYPE, TYPE_APP_MODEL, APP_MODELS } from '../../../constants';
 import { HttpUtilsService } from '../http-utils.service';
+import { FileDownloaderService } from '@flogo/core/services/file-downloader.service';
 
 const UNTITLED_APP = 'Untitled App';
 
 @Injectable()
 export class AppsApiService {
 
-  constructor(private http: Http, private httpUtils: HttpUtilsService, private errorService: ErrorService) {
-
-
-  }
+  constructor(
+    private http: Http,
+    private httpUtils: HttpUtilsService,
+    private httpClient: HttpClient,
+    private downloadService: FileDownloaderService,
+  ) {}
 
   recentFlows() {
     return this.http.get(this.apiPrefix('actions/recent'), this.httpUtils.defaultOptions()).toPromise()
@@ -125,6 +128,13 @@ export class AppsApiService {
 
   downloadAppLink(appId: string) {
     return this.apiPrefix(`apps/${appId}/build`);
+  }
+
+  buildAndDownload(appId: string, { os, arch }) {
+    const url = this.downloadAppLink(appId);
+    const params = new HttpParams({ fromObject: { os, arch } });
+    return this.httpClient.get(url, { params, responseType: 'blob', observe: 'response' })
+      .pipe(this.downloadService.downloadResolver());
   }
 
   determineUniqueName(name: string) {

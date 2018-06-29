@@ -1,3 +1,5 @@
+import { AppProperty } from '../app';
+
 export interface App {
   id: string;
   name: string;
@@ -6,4 +8,5 @@ export interface App {
   description: string;
   createdAt: string;
   updatedAt?: string;
+  properties?: AppProperty[];
 }

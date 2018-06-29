@@ -143,6 +143,11 @@ export class AppDetailService {
     }
     return this.appsApiService.exportFlows(this.currentApp$.getValue().app.id, flowids, appModel);
   }
+
+  public build(appId, opts: { os: string, arch: string }) {
+    return this.appsApiService.buildAndDownload(appId, opts);
+  }
+
   public getDownloadLink(appId: string): string {
     return this.appsApiService.downloadAppLink(appId);
   }

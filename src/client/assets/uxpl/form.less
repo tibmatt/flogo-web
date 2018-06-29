@@ -1,0 +1,57 @@
+@import "../_variables";
+
+.uxpl-form-div {
+  position: relative;
+
+  input {
+    position: relative;
+    padding-bottom: 0px;
+    padding-top: 20px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    width: 100%;
+    border-bottom: 1px solid @warm-grey;
+    z-index: 1;
+
+    &:focus {
+      border-bottom: 1px solid @cerulean;
+
+      ~ label {
+        color: @cerulean;
+      }
+    }
+  }
+
+  input.ng-invalid {
+    border-bottom-color: @scarlet;
+  }
+
+  label {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    text-align: left;
+    line-height: 1.31;
+    color: @warm-grey;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0;
+  }
+
+  input.is-empty:not(:focus) {
+    ~ label {
+      pointer-events: none;
+      top: 15px;
+      z-index: 2;
+    }
+  }
+
+  input:disabled {
+    border-bottom-style: dashed;
+    border-bottom-style: @color-medium-gray;
+  }
+
+}

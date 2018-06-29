@@ -122,83 +122,6 @@ export const ConfigureTriggersMock = [
       'actionId': 'action_1',
       'createdAt': 'datetime',
       'updatedAt': 'datetime'
-    },
-    'triggerSchema': {
-      'name': 'Receive HTTP Message',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
-      'description': 'Simple REST Trigger',
-      'installed': true,
-      'settings': [
-        {
-          'name': 'port',
-          'type': 'integer',
-          'required': true,
-          'value': '8081'
-        }
-      ],
-      'outputs': [
-        {
-          'name': 'params',
-          'type': 'params'
-        },
-        {
-          'name': 'pathParams',
-          'type': 'params'
-        },
-        {
-          'name': 'queryParams',
-          'type': 'params'
-        },
-        {
-          'name': 'header',
-          'type': 'params'
-        },
-        {
-          'name': 'content',
-          'type': 'any'
-        }
-      ],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'handler': {
-        'settings': [
-          {
-            'name': 'method',
-            'type': 'string',
-            'required': true,
-            'allowed': [
-              'GET',
-              'POST',
-              'PUT',
-              'PATCH',
-              'DELETE'
-            ]
-          },
-          {
-            'name': 'path',
-            'type': 'string',
-            'required': true
-          }
-        ]
-      },
-      '__props': {
-        'errors': []
-      },
-      '__status': {},
-      'id': 'trigger_1',
-      'nodeId': 'trigger_node_1',
-      'type': 0,
-      'triggerType': 'flogo-rest',
-      'reply': [
-        {
-          'name': 'code',
-          'type': 'integer'
-        },
-        {
-          'name': 'data',
-          'type': 'any'
-        }
-      ]
     }
   },
   {
@@ -293,88 +216,81 @@ export const ConfigureTriggersMock = [
       'actionId': 'action_1',
       'createdAt': 'datetime',
       'updatedAt': 'datetime'
-    },
-    'triggerSchema': {
-      'name': 'Receive HTTP Message (1) (1)',
-      'version': '0.0.1',
-      'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
-      'description': 'Simple REST Trigger',
-      'installed': true,
-      'settings': [
-        {
-          'name': 'port',
-          'type': 'integer',
-          'required': true,
-          'value': '8080'
-        }
-      ],
-      'outputs': [
-        {
-          'name': 'params',
-          'type': 'params'
-        },
-        {
-          'name': 'pathParams',
-          'type': 'params'
-        },
-        {
-          'name': 'queryParams',
-          'type': 'params'
-        },
-        {
-          'name': 'header',
-          'type': 'params'
-        },
-        {
-          'name': 'content',
-          'type': 'any'
-        }
-      ],
-      'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
-      'handler': {
-        'settings': [
-          {
-            'name': 'method',
-            'type': 'string',
-            'required': true,
-            'allowed': [
-              'GET',
-              'POST',
-              'PUT',
-              'PATCH',
-              'DELETE'
-            ],
-            'value': 'GET'
-          },
-          {
-            'name': 'path',
-            'type': 'string',
-            'required': true,
-            'value': '/testing'
-          }
-        ]
-      },
-      '__props': {
-        'errors': []
-      },
-      '__status': {},
-      'id': 'trigger_2',
-      'nodeId': 'trigger_node_1',
-      'type': 0,
-      'triggerType': 'flogo-rest',
-      'reply': [
-        {
-          'name': 'code',
-          'type': 'integer'
-        },
-        {
-          'name': 'data',
-          'type': 'any'
-        }
-      ]
     }
   }
 ];
+
+export const ConfigureTriggerSchema = {
+  'github.com/TIBCOSoftware/flogo-contrib/trigger/rest': {
+    'id': 'github-com-tibco-software-flogo-contrib-trigger-rest',
+    'name': 'flogo-rest',
+    'version': '0.0.1',
+    'title': 'Receive HTTP Message',
+    'description': 'Simple REST Trigger',
+    'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
+    'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+    'settings': [
+      {
+        'name': 'port',
+        'type': 'integer',
+        'required': true
+      }
+    ],
+    'outputs': [
+      {
+        'name': 'params',
+        'type': 'params'
+      },
+      {
+        'name': 'pathParams',
+        'type': 'params'
+      },
+      {
+        'name': 'queryParams',
+        'type': 'params'
+      },
+      {
+        'name': 'header',
+        'type': 'params'
+      },
+      {
+        'name': 'content',
+        'type': 'any'
+      }
+    ],
+    'handler': {
+      'settings': [
+        {
+          'name': 'method',
+          'type': 'string',
+          'required': true,
+          'allowed': [
+            'GET',
+            'POST',
+            'PUT',
+            'PATCH',
+            'DELETE'
+          ]
+        },
+        {
+          'name': 'path',
+          'type': 'string',
+          'required': true
+        }
+      ]
+    },
+    'reply': [
+      {
+        'name': 'code',
+        'type': 'integer'
+      },
+      {
+        'name': 'data',
+        'type': 'any'
+      }
+    ]
+  }
+};
 
 export const InvalidConfigureTriggersMock = [
   {

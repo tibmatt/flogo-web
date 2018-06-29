@@ -4,7 +4,7 @@
  *  - https://golang.org/ref/spec
  *  - https://github.com/antlr/grammars-v4/tree/master/golang
  */
-import { IToken, TokenType, Lexer, Parser, tokenMatcher, createToken, IMultiModeLexerDefinition } from 'chevrotain';
+import { IToken, TokenType, Lexer, Parser, tokenMatcher, createToken, IMultiModeLexerDefinition, TokenVocabulary } from 'chevrotain';
 import { Identifier } from '../ast/expr-nodes';
 import { UnicodeCategory } from './unicode';
 
@@ -96,9 +96,7 @@ const StringLiteral = createToken({
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
 });
 
-function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IToken[], groups?: {
-  [groupName: string]: IToken;
-}) {
+function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IToken[]) {
   if (tokens.length <= 2) {
     return null;
   }
@@ -115,7 +113,8 @@ function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IT
 const StringTemplateOpen = createToken({
   name: 'StringTemplateOpen',
   label: '"{{',
-  pattern: matchStringTemplateOpen,
+  pattern: { exec: matchStringTemplateOpen },
+  line_breaks: false,
   push_mode: 'string_template'
 });
 
@@ -147,6 +146,28 @@ const IdentifierName = createToken({
   label: 'Identifier',
   // TODO: should we change this regex for manual parsing to avoid perf issues?
   pattern: new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`),
+});
+
+const RESOLVER_PATTERN = new RegExp(`[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`);
+function matchResolverIdentifier(text: string, startOffset?: number, tokens?: IToken[]) {
+  if (tokens.length < 3) {
+    return null;
+  }
+  const lastTokenIdx = tokens.length - 1;
+  const isLexingResolver = tokenMatcher(tokens[lastTokenIdx], Token.LSquare)
+    && tokenMatcher(tokens[lastTokenIdx - 1], Token.IdentifierName)
+    &&  tokenMatcher(tokens[lastTokenIdx - 2], Token.Lookup);
+  if (isLexingResolver) {
+    return RESOLVER_PATTERN.exec(text.substr(startOffset));
+  }
+  return null;
+}
+
+const ResolverIdentifier = createToken({
+  name: 'ResolverIdentifier',
+  label: 'ResolverIdentifier',
+  pattern: { exec: matchResolverIdentifier },
+  line_breaks: false,
 });
 
 const Lookup = createToken({
@@ -206,7 +227,7 @@ const LogicalOr = createToken({
   categories: BinaryOp,
 });
 
-const Token = {
+export const Token = {
   WhiteSpace,
   Lookup,
   NumberLiteral,
@@ -232,6 +253,7 @@ const Token = {
   LogicalOr,
   BinaryOp,
   UnaryOp,
+  ResolverIdentifier,
   IdentifierName,
 };
 
@@ -262,6 +284,7 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       LogicalOr,
       BinaryOp,
       UnaryOp,
+      ResolverIdentifier,
       IdentifierName,
     ],
     string_template: [
@@ -286,6 +309,7 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       LogicalOr,
       BinaryOp,
       UnaryOp,
+      ResolverIdentifier,
       IdentifierName,
     ],
   },
@@ -318,20 +342,6 @@ export class MappingParser extends Parser {
     ]);
   });
 
-  public programNoExpression = this.RULE('programNoExpression', () => {
-    this.OR([
-      {
-        ALT: () => this.SUBRULE(this.attrAccess)
-      },
-      {
-        ALT: () => this.SUBRULE(this.literal)
-      },
-      {
-        ALT: () => this.SUBRULE(this.json)
-      }
-    ]);
-  });
-
   public attrAccess = this.RULE('attrAccess', () => {
     this.SUBRULE(this.operandHead);
     this.MANY(() => this.SUBRULE(this.primaryExprTail));
@@ -357,6 +367,11 @@ export class MappingParser extends Parser {
   public expression = this.RULE('expression', () => {
     this.SUBRULE(this.unaryExpr);
     this.MANY(() => this.SUBRULE1(this.binaryExprSide));
+  });
+
+  public resolver = this.RULE('resolver', () => {
+    this.CONSUME1(Token.Lookup);
+    this.OPTION(() => this.SUBRULE(this.resolverSelector));
   });
 
   private binaryExprSide = this.RULE('binaryExprSide', () => {
@@ -408,11 +423,6 @@ export class MappingParser extends Parser {
     ]);
   });
 
-  private resolver = this.RULE('resolver', () => {
-    this.CONSUME1(Token.Lookup);
-    this.OPTION(() => this.SUBRULE(this.resolverSelector));
-  });
-
   private resolverSelector = this.RULE('resolverSelector', () => {
     this.CONSUME1(Token.IdentifierName);
     this.OPTION({
@@ -420,24 +430,24 @@ export class MappingParser extends Parser {
       GATE: () => !tokenMatcher(this.LA(2), Token.NumberLiteral),
       DEF: () => {
         this.CONSUME(Token.LSquare);
-        this.CONSUME2(Token.IdentifierName);
+        this.CONSUME(Token.ResolverIdentifier);
         this.CONSUME(Token.RSquare);
       },
     });
   });
 
-  private selector = this.RULE('selector', () => {
+  protected selector = this.RULE('selector', () => {
     this.CONSUME(Token.Dot);
     this.CONSUME(Token.IdentifierName);
   });
 
-  private index = this.RULE('index', () => {
+  protected index = this.RULE('index', () => {
     this.CONSUME(Token.LSquare);
     this.CONSUME(Token.NumberLiteral);
     this.CONSUME(Token.RSquare);
   });
 
-  private argumentList = this.RULE('argumentList', () => {
+  protected argumentList = this.RULE('argumentList', () => {
     this.CONSUME(Token.LParen);
     this.MANY_SEP({
       SEP: Token.Comma,
@@ -448,7 +458,7 @@ export class MappingParser extends Parser {
 
   //// JSON
 
-  private object = this.RULE('object', () => {
+  protected object = this.RULE('object', () => {
     this.CONSUME(Token.LCurly);
     this.MANY_SEP({
       SEP: Token.Comma,
@@ -459,24 +469,24 @@ export class MappingParser extends Parser {
     this.CONSUME(Token.RCurly);
   });
 
-  private objectItem = this.RULE('objectItem', () => {
+  protected objectItem = this.RULE('objectItem', () => {
     this.CONSUME(Token.StringLiteral);
     this.CONSUME(Token.Colon);
-    this.SUBRULE(this.value);
+    this.SUBRULE(this.jsonValue);
   });
 
-  private array = this.RULE('array', () => {
+  protected array = this.RULE('array', () => {
     this.CONSUME(Token.LSquare);
     this.MANY_SEP({
       SEP: Token.Comma,
       DEF: () => {
-        this.SUBRULE(this.value);
+        this.SUBRULE(this.jsonValue);
       }
     });
     this.CONSUME(Token.RSquare);
   });
 
-  private value = this.RULE('value', () => {
+  protected jsonValue = this.RULE('jsonValue', () => {
     this.OR([
       {ALT: () => this.SUBRULE(this.stringTemplate)},
       {ALT: () => this.CONSUME(Token.StringLiteral)},
@@ -489,7 +499,7 @@ export class MappingParser extends Parser {
     ]);
   });
 
-  private stringTemplate = this.RULE('stringTemplate', () => {
+  protected stringTemplate = this.RULE('stringTemplate', () => {
     this.CONSUME(Token.StringTemplateOpen);
     this.SUBRULE(this.expression);
     this.CONSUME(Token.StringTemplateClose);

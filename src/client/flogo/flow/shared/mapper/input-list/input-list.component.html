@@ -1,11 +1,11 @@
 <div class="mapper-input-list">
-  <flogo-mapper-tree
+  <flogo-mapper-list
     class="tree-input-list"
-    [treeNodes]="treeNodes"
-    [selected]="selectedInput"
-    [searchTerm]="filterTerm"
+    [treeNodes]="filteredNodes$ | async"
+    [selected]="selectedInput$ | async"
+    [searchTerm]="filterTerm$ | async"
     [searchPlaceholder]="searchPlaceholder"
     (select)="onInputSelect($event)"
     (search)="onInputSearch($event)">
-  </flogo-mapper-tree>
+  </flogo-mapper-list>
 </div>

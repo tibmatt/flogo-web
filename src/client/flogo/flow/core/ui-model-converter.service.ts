@@ -59,4 +59,8 @@ export class UIModelConverterService {
       });
   }
 
+  getTriggerSchema(triggerRef) {
+    return this.converterModelInstance.getTriggerSchema({ ref: triggerRef });
+  }
+
 }

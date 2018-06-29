@@ -5,7 +5,6 @@ import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { MapperModule } from '../shared/mapper';
 
 import { TaskConfiguratorComponent } from './task-configurator.component';
-import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
 import { SubFlowComponent } from './subflow/subflow.component';
 import {FlowsListModule} from '../shared/flows-list';
@@ -18,7 +17,6 @@ import {FlowsListModule} from '../shared/flows-list';
     FlowsListModule
   ],
   declarations: [
-    InputMapperComponent,
     IteratorComponent,
     SubFlowComponent,
     TaskConfiguratorComponent,

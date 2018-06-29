@@ -27,6 +27,14 @@ const EDITABLE_FIELDS_UPDATE = [
   'settings',
 ];
 
+const getComparableTriggerName = fromName =>  fromName.trim().toLowerCase();
+
+const nameExists = (triggerId, name, triggers) => {
+  const comparableName = getComparableTriggerName(name);
+  return !!triggers.find(
+    currentTrigger => getComparableTriggerName(currentTrigger.name) === comparableName && currentTrigger.id !== triggerId,
+  );
+};
 
 /**
 {
@@ -166,13 +174,7 @@ export class AppsTriggersManager {
             }
 
             if (triggerFields.name) {
-              const nameExists = triggers => {
-                const comparableName = triggerFields.name.trim().toLowerCase();
-                return !!triggers.find(
-                  t => t.name.trim().toLowerCase() === comparableName && t.id !== triggerId,
-                );
-              };
-              if (nameExists(app.triggers)) {
+              if (nameExists(triggerId, triggerFields.name, app.triggers)) {
                 // do nothing
                 return reject(ErrorManager.createValidationError('Validation error', [{
                   property: 'name',
@@ -213,9 +215,16 @@ export class AppsTriggersManager {
       });
   }
 
-  static list(appId) {
+  static list(appId, { name }) {
     return appsDb.findOne({ _id: appId })
-      .then(app => (app && app.triggers ? app.triggers : []));
+      .then(app => (app && app.triggers ? app.triggers : []))
+      .then(triggers => {
+        if (name) {
+          const findName = getComparableTriggerName(name);
+          return triggers.filter(trigger => findName === getComparableTriggerName(trigger.name));
+        }
+        return triggers;
+      });
   }
 
   static remove(triggerId) {

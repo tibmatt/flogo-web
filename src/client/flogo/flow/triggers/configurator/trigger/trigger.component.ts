@@ -8,7 +8,7 @@ import {TriggerStatus} from '../interfaces';
 })
 export class ConfigureTriggerComponent {
   @Input()
-  selectedTriggerID: string;
+  selectedTriggerId: string;
   @Input()
   triggerData: TriggerStatus;
   @Output()
@@ -16,10 +16,10 @@ export class ConfigureTriggerComponent {
 
   @HostBinding('class.is-selected')
   get isSelected() {
-    if (!this.triggerData || !this.selectedTriggerID) {
+    if (!this.triggerData || !this.selectedTriggerId) {
       return false;
     }
-    return this.selectedTriggerID === this.triggerData.id;
+    return this.selectedTriggerId === this.triggerData.id;
   }
 
   @HostListener('click')

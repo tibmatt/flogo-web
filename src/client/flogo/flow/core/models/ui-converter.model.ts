@@ -3,7 +3,7 @@ import {
   ActionBase,
   FlowMetadata,
   FLOGO_PROFILE_TYPE,
-  UiFlow, Dictionary, Item, ItemSubflow,
+  UiFlow, Dictionary, Item, ItemSubflow, TriggerSchema
 } from '@flogo/core';
 import { ErrorService } from '@flogo/core/services/error.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
@@ -52,7 +52,8 @@ export abstract class AbstractModelConverter {
           value: trigger
         });
     } else {
-      return this.contribService.getContributionDetails(this.getProfileType(), trigger.ref);
+      return this.contribService.getContributionDetails(this.getProfileType(), trigger.ref)
+        .then((schema: TriggerSchema) => this.normalizeTriggerSchema(schema));
     }
   }
 
@@ -181,6 +182,15 @@ export abstract class AbstractModelConverter {
 
   private isSubflowItem(item: Item): item is ItemSubflow {
     return isSubflowTask(item.type);
+  }
+
+  private normalizeTriggerSchema(schema: TriggerSchema): TriggerSchema {
+    if (!schema.handler) {
+      schema.handler = {
+        settings: []
+      };
+    }
+    return schema;
   }
 
 }

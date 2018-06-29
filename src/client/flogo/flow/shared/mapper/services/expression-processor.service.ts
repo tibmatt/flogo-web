@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IParsedExpressionDetails, IParseResult } from '../models/map-model';
+import { ParsedExpressionDetails, IParseResult } from '../models/map-model';
 import { ExpressionParser } from '../models/expr-parser';
 import { NodeFactory } from '../models/expr-visitor';
 import {
@@ -11,7 +11,7 @@ import { ReferenceCollector } from '../models/reference-collector';
 export interface ProcessedExpression {
   // todo: interface
   errors: any[];
-  structureDetails: IParsedExpressionDetails;
+  structureDetails: ParsedExpressionDetails;
   hasSyntaxErrors: boolean;
   hasSemanticErrors: boolean;
   expression: string;

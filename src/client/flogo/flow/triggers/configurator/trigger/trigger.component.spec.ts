@@ -27,14 +27,14 @@ describe('ConfigureTriggerComponent component', () => {
 
   it('Should mark the trigger selected', () => {
     component.triggerData = MockData;
-    component.selectedTriggerID = 'trigger_1';
+    component.selectedTriggerId = 'trigger_1';
     fixture.detectChanges();
     expect(component.isSelected).toEqual(true);
   });
 
   it('Should not mark the trigger selected', () => {
     component.triggerData = MockData;
-    component.selectedTriggerID = 'trigger_2';
+    component.selectedTriggerId = 'trigger_2';
     fixture.detectChanges();
     expect(component.isSelected).toEqual(false);
   });

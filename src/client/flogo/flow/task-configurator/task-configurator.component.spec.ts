@@ -8,7 +8,6 @@ import { TaskConfiguratorComponent } from './task-configurator.component';
 import { MapperModule } from '../shared/mapper';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import { SelectTaskConfigEventData } from '@flogo/flow/task-configurator/messages';
-import { InputMapperComponent } from './input-mapper';
 import { IteratorComponent } from './iterator/iterator.component';
 import { ValueType } from '@flogo/core';
 import { SubFlowComponent } from './subflow/subflow.component';
@@ -62,7 +61,6 @@ describe('Component: TaskConfiguratorComponent', () => {
         FlowsListModule
       ],
       declarations: [
-        InputMapperComponent,
         IteratorComponent,
         SubFlowComponent,
         TaskConfiguratorComponent,

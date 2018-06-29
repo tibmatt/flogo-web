@@ -1,54 +1,29 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { shareReplay } from 'rxjs/operators';
+import { selectCurrentNode, selectFilteredNodes, selectInputFilter } from '../services/selectors';
+import { MapperService } from '../services/mapper.service';
 import { MapperTreeNode } from '../models/mapper-treenode.model';
-
-import { MapperService, MapperState, TreeState } from '../services/mapper.service';
-
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
 
 @Component({
   selector: 'flogo-mapper-input-list',
   templateUrl: 'input-list.component.html',
   styleUrls: ['input-list.component.css']
 })
-export class InputListComponent implements OnInit, OnDestroy {
+export class InputListComponent implements OnInit {
   @Input() searchPlaceholder: string;
-  treeNodes: MapperTreeNode[];
-  selectedInput: MapperTreeNode;
-  filterTerm: string;
-
-  private ngUnsubscribe: Subject<void> = new Subject<void>();
+  filteredNodes$: Observable<MapperTreeNode[]>;
+  selectedInput$: Observable<MapperTreeNode>;
+  filterTerm$: Observable<string>;
 
   constructor(private mapperService: MapperService) {
   }
 
   ngOnInit() {
-    const stateObserver = this.mapperService.state.share();
-    stateObserver
-      .map((state: MapperState) => state.inputs)
-      .distinctUntilChanged()
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((inputs: TreeState) => {
-        this.treeNodes = inputs.nodes;
-        this.filterTerm = inputs.filterTerm;
-      });
-
-    stateObserver
-      .map((state: MapperState) => state.currentSelection ? state.currentSelection.node : null)
-      .distinctUntilChanged()
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((node: MapperTreeNode) => {
-        this.selectedInput = node;
-      });
-
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+    const mapperState$ = this.mapperService.state$.pipe(shareReplay());
+    this.filterTerm$ = mapperState$.pipe(selectInputFilter);
+    this.filteredNodes$ = mapperState$.pipe(selectFilteredNodes);
+    this.selectedInput$ = mapperState$.pipe(selectCurrentNode);
   }
 
   onInputSelect(node: MapperTreeNode) {

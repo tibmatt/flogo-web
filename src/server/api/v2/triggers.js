@@ -14,7 +14,12 @@ export function triggers(router, basePath) {
 
 function* listTriggers() {
   const appId = this.params.appId;
-  const triggerList = yield AppsTriggersManager.list(appId);
+  const searchTerms = {};
+  const filterName = this.request.query['filter[name]'];
+  if (filterName) {
+    searchTerms.name = filterName;
+  }
+  const triggerList = yield AppsTriggersManager.list(appId, searchTerms);
   this.body = {
     data: triggerList || [],
   };

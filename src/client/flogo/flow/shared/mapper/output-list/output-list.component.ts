@@ -1,15 +1,13 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { shareReplay } from 'rxjs/operators';
+import { selectFilterFromOutputs, selectNodesFromOutputs } from '@flogo/flow/shared/mapper/services/selectors';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
-import { TYPE_PARAM_OUTPUT } from '../tree/dragging.service';
+import { TYPE_PARAM_OUTPUT } from '../services/dragging.service';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';
-import { MapperService, MapperState, TreeState } from '../services/mapper.service';
-
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/takeUntil';
+import { MapperService } from '../services/mapper.service';
 
 @Component({
   selector: 'flogo-mapper-output-list',
@@ -19,8 +17,8 @@ import 'rxjs/add/operator/takeUntil';
 export class OutputListComponent implements OnInit, OnDestroy {
   @Input() searchPlaceholder: string;
   @Output() selectNode = new EventEmitter<MapperTreeNode>();
-  treeNodes: MapperTreeNode[];
-  filterTerm: string;
+  treeNodes$: Observable<MapperTreeNode[]>;
+  filterTerm$: Observable<string>;
   dragType = TYPE_PARAM_OUTPUT;
 
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -29,15 +27,9 @@ export class OutputListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.mapperService.state
-      .map((state: MapperState) => state.outputs)
-      .distinctUntilChanged()
-      // .do(ins => console.log("outputs changed", ins))
-      .takeUntil(this.ngDestroy)
-      .subscribe((outputs: TreeState) => {
-        this.treeNodes = outputs.nodes;
-        this.filterTerm = outputs.filterTerm;
-      });
+    const state$ = this.mapperService.state$.pipe(shareReplay());
+    this.treeNodes$ = state$.pipe(selectNodesFromOutputs);
+    this.filterTerm$ = state$.pipe(selectFilterFromOutputs);
   }
 
   ngOnDestroy() {

@@ -1,3 +1,5 @@
+@import '../shared/_search-box.less';
+
 :host {
   display: block;
   height: 100%;
@@ -25,7 +27,7 @@
   background-color: transparent;
 }
 
-:host >>> p-tree .nodes {
+:host ::ng-deep p-tree .nodes {
   border: 0;
   color: #212121;
   width: 100%;
@@ -54,95 +56,61 @@
   display: flex;
 }
 
-.search {
-  border-bottom: 2px solid #dedede;
-  margin-bottom: 5px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-left: 0.2em;
-  padding-right: 0.2em;
-}
-
-.search__text {
-  border: none;
-  border-bottom: 3px solid transparent;
-  height: 34px;
-  outline: none;
-  background: transparent;
-  flex: 1;
-  width: 0;
-}
-
-.search__command {
-  width: 1em;
-  color: #8b91a2;
-}
-
-.search--has-value {
-  border-bottom: 3px solid #58acdc;
-}
-
-.search--has-value .search__command {
-  color: #58acdc;
-  cursor: pointer;
-}
-
-:host >>> p-tree .ui-treenode-content {
+:host ::ng-deep p-tree .ui-treenode-content {
   opacity: 0.75;
   transition: all 0.250s ease-in-out;
 }
 
-:host >>> p-tree .ui-tree-container {
+:host ::ng-deep p-tree .ui-tree-container {
   padding: 0 12px 0 0;
 }
 
-:host >>> p-tree .ui-treenode-content .ui-tree-toggler {
+:host ::ng-deep p-tree .ui-treenode-content .ui-tree-toggler {
   width: 1em;
 }
 
 /* when node has no children hide toggle */
-:host >>> p-tree > .ui-tree .ui-treenode.ui-treenode-leaf.node--has-no-children .ui-treenode-content > .ui-tree-toggler {
+:host ::ng-deep p-tree > .ui-tree .ui-treenode.ui-treenode-leaf.node--has-no-children .ui-treenode-content > .ui-tree-toggler {
   visibility: hidden !important;
 }
 
 /* when we're not filtering and node has a children make the toggler visible */
-:host >>> p-tree > .ui-tree .node--has-children .ui-treenode-content > .ui-tree-toggler {
+:host ::ng-deep p-tree > .ui-tree .node--has-children .ui-treenode-content > .ui-tree-toggler {
   visibility: visible !important;
 }
 
 /* when tree is filtered by default hide all nodes */
-:host >>> p-tree.tree--is-filtered .ui-treenode > .ui-treenode-content {
+:host ::ng-deep p-tree.tree--is-filtered .ui-treenode > .ui-treenode-content {
   cursor: auto;
   opacity: 0.75;
   display: none;
 }
 
-:host >>> p-tree.tree--is-filtered .ui-treenode.node--is-filter-match > .ui-treenode-content {
+:host ::ng-deep p-tree.tree--is-filtered .ui-treenode.node--is-filter-match > .ui-treenode-content {
   font-weight: bold;
   opacity: 1;
 }
 
 /* make visible all nodes that have a match */
-:host >>> p-tree.tree--is-filtered .node--visible > .ui-treenode-content > .ui-tree-toggler {
+:host ::ng-deep p-tree.tree--is-filtered .node--visible > .ui-treenode-content > .ui-tree-toggler {
   visibility: visible !important;
 }
 
-:host >>> p-tree .ui-treenode.node--selectable > .ui-treenode-content {
+:host ::ng-deep p-tree .ui-treenode.node--selectable > .ui-treenode-content {
   opacity: 1;
   cursor: pointer;
 }
 
-:host >>> p-tree .ui-treenode.node--selectable > .ui-treenode-content:hover {
+:host ::ng-deep p-tree .ui-treenode.node--selectable > .ui-treenode-content:hover {
   background-color: rgba(197, 202, 233, 0.2);
 }
 
 /* when tree is filtered and node has a match make the node visible */
-:host >>> p-tree.tree--is-filtered .ui-treenode.node--visible > .ui-treenode-content {
+:host ::ng-deep p-tree.tree--is-filtered .ui-treenode.node--visible > .ui-treenode-content {
   display: block;
 }
 
-:host(.tree-input-list) >>> p-tree .mapper-tree__node > .ui-treenode-content {
+:host(.tree-input-list) ::ng-deep p-tree .mapper-tree__node > .ui-treenode-content {
   border-left: 4px solid transparent;
 }
 
@@ -150,21 +118,21 @@
   height: 32px;
 }
 
-:host(.tree-input-list) >>> p-tree .ui-treenode-content {
+:host(.tree-input-list) ::ng-deep p-tree .ui-treenode-content {
   border: solid 1px transparent;
 }
 
 /* mark node and parents which have an expression */
-:host(.tree-input-list) >>> p-tree .node--has-expression > .ui-treenode-content {
+:host(.tree-input-list) ::ng-deep p-tree .node--has-expression > .ui-treenode-content {
   border: solid 1px #f4f4f4;
 }
 
-:host(.tree-input-list) >>> p-tree .node--is-selected > .ui-treenode-content {
+:host(.tree-input-list) ::ng-deep p-tree .node--is-selected > .ui-treenode-content {
   background-color: #f4f4f4;
   border-left: 4px solid #062e79;
 }
 
-:host(.tree-input-list) >>> p-tree .node--has-errors > .ui-treenode-content {
+:host(.tree-input-list) ::ng-deep p-tree .node--has-errors > .ui-treenode-content {
   border: solid 1px #d0011b;
 }
 
@@ -185,7 +153,7 @@
   color: #727272;
 }
 
-:host(.tree-input-list) >>> p-tree .ui-treenode.node--required > .ui-treenode-content .node__label::after {
+:host(.tree-input-list) ::ng-deep p-tree .ui-treenode.node--required > .ui-treenode-content .node__label::after {
   content: " *";
   color: #d0011b;
 }

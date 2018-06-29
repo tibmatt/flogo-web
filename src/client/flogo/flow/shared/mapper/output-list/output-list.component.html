@@ -1,9 +1,9 @@
 <div class="mapper-output-list">
   <flogo-mapper-tree
-    [treeNodes]="treeNodes"
     class="tree-output-list"
+    [treeNodes]="treeNodes$ | async"
+    [searchTerm]="filterTerm$ | async"
     [dragType]="dragType"
-    [searchTerm]="filterTerm"
     [searchPlaceholder]="searchPlaceholder"
     (select)="onOutputSelect($event)"
     (search)="onSearchChange($event)">

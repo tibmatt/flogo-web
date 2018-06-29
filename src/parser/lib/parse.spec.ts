@@ -1,8 +1,17 @@
 import { expect } from 'chai';
-import { LiteralNode, PropertyNode, StringTemplateNode } from './ast/index';
-import { parse } from './parse';
+import { LiteralNode, PropertyNode, StringTemplateNode } from './ast';
+import { parse, parseResolver } from './parse';
 
 describe('parse', function () {
+  it('parses simple resolvers', function() {
+    const parseResult = parseResolver(`$env[something]`);
+    expect(parseResult.ast).to.deep.equal({
+      type: 'ScopeResolver',
+      name: 'env',
+      sel: 'something'
+    });
+  });
+
   it('parses object string templates', function () {
     const parseResult = parse(`{
       "simpleLiteral": "bar",
@@ -85,3 +94,4 @@ describe('parse', function () {
     });
   });
 });
+

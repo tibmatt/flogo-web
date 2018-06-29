@@ -1,31 +1,31 @@
-import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
-import { IMapping } from './models/imapping';
-import { IMapperContext } from './models/imapper-context';
+import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Mappings } from './models/mappings';
 
 import { Subject } from 'rxjs/Subject';
-import { distinctUntilChanged, first, map, merge, scan, share, skipWhile, takeUntil, withLatestFrom } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  first,
+  map,
+  merge,
+  share,
+  takeUntil, tap
+} from 'rxjs/operators';
 
-import 'rxjs/add/operator/auditTime';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/skipWhile';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/withLatestFrom';
 import { MonacoEditorLoaderService } from '../monaco-editor';
 import { load as loadMonacoLangPlugin } from '../mapper-language/monaco-contribution';
 
 import { SingleEmissionSubject } from './shared/single-emission-subject';
 
-import { CurrentSelection, MapperService, MapperState } from './services/mapper.service';
+import { MapperService } from './services/mapper.service';
 import { EditorService } from './editor/editor.service';
-import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './tree/dragging.service';
-import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from './constants';
-
+import { DraggingService, TYPE_PARAM_FUNCTION, TYPE_PARAM_OUTPUT } from './services/dragging.service';
+import { selectCurrentNode, selectMappings } from './services/selectors';
+import { MapperTreeNode } from './models/mapper-treenode.model';
+import { MapperController } from './services/mapper-controller/mapper-controller';
+import { MapperState } from './models/mapper-state';
 
 @Component({
   selector: 'flogo-mapper',
@@ -34,19 +34,17 @@ import { TYPE_ATTR_ASSIGNMENT, TYPE_OBJECT_TEMPLATE } from './constants';
   providers: [MapperService, EditorService, DraggingService]
 })
 export class MapperComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() context: IMapperContext;
+  @Input() controller: MapperController;
   @Input() inputsSearchPlaceHolder = 'Search';
   @Input() outputsSearchPlaceHolder = 'Search';
-  @Output() mappingsChange = new EventEmitter<IMapping>();
+  @Output() mappingsChange = new EventEmitter<Mappings>();
   @Input() isSingleInputMode = false;
-  currentInput: CurrentSelection = null;
+  currentInput: MapperTreeNode = null;
   isDraggingOver = false;
-  currentMappingType: number;
 
   private dragOverEditor = new EventEmitter<Event>();
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
   private contextChanged = new Subject();
-  private contextInUse: IMapperContext;
   private hasInitted = false;
 
   constructor(private mapperService: MapperService,
@@ -65,12 +63,12 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     this.initContext();
   }
 
-  ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
-    const contextChange = changes['context'];
-    if (!contextChange || contextChange.currentValue === this.contextInUse) {
+  ngOnChanges(changes: SimpleChanges) {
+    const contextChange = changes['controller'];
+    if (!contextChange) {
       return;
     }
-    this.contextInUse = this.context;
+    this.mapperService.setController(this.controller);
     this.contextChanged.next();
     if (!contextChange.isFirstChange() && this.hasInitted) {
       this.initContext();
@@ -84,7 +82,6 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
 
   onDrop(event: DragEvent) {
     if (this.isDragAcceptable()) {
-      const dataTransfer = event.dataTransfer.getData('data');
       const node = this.draggingService.getData();
       const type = this.draggingService.getType();
       let text = '';
@@ -121,97 +118,59 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
     this.isDraggingOver = false;
   }
 
-  onClickOutside() {
-    if (this.currentInput) {
-      this.mapperService.selectInput(null);
-    }
-  }
-
   private isDragAcceptable() {
     return this.draggingService.accepts(TYPE_PARAM_OUTPUT)
       || this.draggingService.accepts(TYPE_PARAM_FUNCTION);
   }
 
   private initContext() {
-    this.mapperService.setContext(this.contextInUse);
     const stop$ = this.ngDestroy.pipe(
       merge(this.contextChanged),
       first(),
       share(),
     );
 
-    const state$ = this.mapperService.state
-      .catch(err => {
-        console.error(err);
-        throw err;
-      })
-      .takeUntil(stop$)
-      .share();
+    const state$ = this.mapperService.state$
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          throw err;
+        }),
+        takeUntil(stop$),
+        share(),
+      );
 
     state$
-      .distinctUntilKeyChanged('currentSelection')
-      .takeUntil(stop$)
-      .subscribe((state: MapperState) => {
-        this.currentInput = state.currentSelection;
-        if (this.currentInput) {
-          const editingExpression = this.currentInput.editingExpression;
-          this.currentMappingType = editingExpression.mappingType || TYPE_ATTR_ASSIGNMENT;
-          this.editorService.changeContext(editingExpression.expression);
-        }
-      });
-
-    state$.map((state: MapperState) => state.currentSelection ? state.currentSelection.errors : null)
-      .distinctUntilChanged()
-      .takeUntil(stop$)
-      .subscribe((errors: any[]) => {
-        if (this.currentInput) {
-          this.editorService.validated(errors);
-        }
+      .pipe(
+        selectCurrentNode,
+        takeUntil(stop$),
+      )
+      .subscribe((currentInputNode) => {
+        this.currentInput = currentInputNode;
       });
 
     state$
       .pipe(
-        scan((acc: { state: MapperState, prevNode, nodeChanged }, state: MapperState) => {
-          let nodeChanged = false;
-          let prevNode = acc.prevNode;
-          const currentSelection = state.currentSelection || {};
-          if (currentSelection.node && currentSelection.node !== acc.prevNode) {
-            nodeChanged = true;
-            prevNode = currentSelection.node;
-          }
-          return { state, prevNode, nodeChanged };
-        }, { state: null, prevNode: null, nodeChanged: false }),
-        skipWhile(({ state, nodeChanged }) =>
-          nodeChanged || !state || !state.currentSelection || !state.currentSelection.node
-        ),
-        map(({ state }) => (<MapperState>state).currentSelection.editingExpression),
-        distinctUntilChanged(),
-        withLatestFrom(state$, (expr, state) => state),
-        map((state: MapperState) => ({
-          mappings: <any>state.mappings,
-          getMappings() {
-            return this.mappings;
-          }
-        })),
+        selectMappings,
         takeUntil(stop$)
       )
       .subscribe(change => this.mappingsChange.emit(change));
 
-    this.editorService.outputExpression$
-      .takeUntil(this.ngDestroy)
-      .subscribe(expression => this.mapperService.expressionChange({ expression, mappingType: this.currentMappingType }));
-
     this.dragOverEditor
-      .takeUntil(stop$)
-      .debounceTime(300)
-      .map((ev: DragEvent) => ({ x: ev.clientX, y: ev.clientY }))
-      .distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y)
+      .pipe(
+        takeUntil(stop$),
+        debounceTime(300),
+        map((ev: DragEvent) => ({ x: ev.clientX, y: ev.clientY })),
+        distinctUntilChanged((prev, next) => prev.x === next.x && prev.y === next.y),
+      )
       .subscribe(position => this.editorService.dragOver(position));
 
-    this.mapperService.state
-      .distinctUntilKeyChanged('context')
-      .takeUntil(stop$)
-      .first()
+    this.mapperService
+      .state$.pipe(
+        distinctUntilKeyChanged('context'),
+        takeUntil(stop$),
+        first(),
+      )
       .subscribe((state: MapperState) => {
         const inputsData = state.inputs;
         // open first input by default

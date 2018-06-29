@@ -33,7 +33,7 @@ export class ItemFactory {
     return Object.assign({}, defaults, pick(installed, ['name', 'version', 'homepage', 'description', 'ref']));
   }
 
-  static makeTrigger(trigger): any {
+  static makeTrigger(trigger: { installed: any, cli: any, handlerSetting: any, node: any }): any {
     // todo: what does cli means in this context??
     const { installed, cli, handlerSetting } = trigger;
     const item = Object.assign({}, this.getDefaultTriggerProperties(installed), { id: trigger.node.taskID }, {

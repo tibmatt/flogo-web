@@ -3,9 +3,6 @@
      [class.trigger_block--selected]="isSelected" (mouseenter)="handleTriggerMenuShow()" (mouseleave)="handleTriggerMenuHide()" >
   <div class="trigger_menu">
     <ul class="list-group trigger_menu-list">
-      <li class="list-group-item trigger_menu-item" (click)="selectedMenuItem(MENU_OPTIONS.CONFIGURE)"><i
-        class="flogo-icon-settings trigger_menu-icon"></i>{{"TRIGGER-MENU:CONFIGURE" | translate}}
-      </li>
       <li class="list-group-item trigger_menu-item" (click)="selectedMenuItem(MENU_OPTIONS.DELETE)"><i
         class="flogo-icon-delete trigger_menu-icon"></i>{{"TRIGGER-MENU:DELETE" | translate}}
       </li>

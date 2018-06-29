@@ -22,5 +22,7 @@ export interface MapperTreeNode extends TreeNode {
   isVisible?: boolean;
   isInvalid?: boolean;
   isSelectable?: boolean;
+  isRequired?: boolean;
+  isDirty?: boolean;
 }
 

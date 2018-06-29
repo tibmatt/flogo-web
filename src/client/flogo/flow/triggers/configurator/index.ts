@@ -1,2 +1,2 @@
 export {ConfiguratorModule} from './configurator.module';
-export {ConfiguratorService} from './configurator.service';
+export {ConfiguratorService} from './services/configurator.service';

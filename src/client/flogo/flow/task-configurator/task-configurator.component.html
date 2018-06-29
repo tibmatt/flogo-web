@@ -31,21 +31,17 @@
           </li>
         </ul>
       </div>
-      <flogo-flow-task-configurator-input-mapper
-        *ngIf="this.tabs.get('inputMappings').isSelected"
-        class="content"
-        [mappings]="currentMappings"
-        [initialConfig]="inputMappingsConfig"
-        [isIterableScope]="iteratorModeOn"
-        (mappingsChange)="onMappingsChange($event)"
-        inputsSearchPlaceholder="{{ inputsSearchPlaceholderKey | translate }}"
-        outputsSearchPlaceholder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}"></flogo-flow-task-configurator-input-mapper>
+      <flogo-mapper class="content"
+                    *ngIf="this.tabs.get('inputMappings').isSelected"
+                    [controller]="inputMapperController"
+                    inputsSearchPlaceHolder="{{ inputsSearchPlaceholderKey | translate }}"
+                    outputsSearchPlaceHolder="{{ 'TASK-CONFIGURATOR:AVAILABLE-DATA' | translate }}">
+      </flogo-mapper>
       <flogo-flow-task-configurator-iterator *ngIf="this.tabs.get('iterator')?.isSelected"
         class="content"
         [iteratorModeOn]="iteratorModeOn"
-        [initialConfig]="{ inputScope: inputScope, iterableValue: iterableValue }"
-        (changeIteratorMode)="onChangeIteratorMode()"
-        (iteratorValueChange)="onIteratorValueChange($event)"></flogo-flow-task-configurator-iterator>
+        [mapperController]="iteratorController"
+        (changeIteratorMode)="onChangeIteratorMode()"></flogo-flow-task-configurator-iterator>
       <flogo-flow-task-configurator-subflow *ngIf="isSubflowType && this.tabs.get('subFlow').isSelected && !showSubflowList" [subFlow]="subFlowConfig"
                                            (selectDifferentFlow)="selectSubFlow($event)" class="content"></flogo-flow-task-configurator-subflow>
       <flogo-flow-flows-list class="content subflow-list__content" *ngIf="showSubflowList" (flowSelected)="subFlowChanged($event)"
