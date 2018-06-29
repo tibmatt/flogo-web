@@ -132,10 +132,12 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     }
     this.settingsForm = settings;
     this.settingsTriggerInformation = triggerInformation;
+    const isFieldValid = (controlName: string) => !this.settingsForm.contains(controlName) || this.settingsForm.get(controlName).valid;
     this.updateSettingsStatus({
-      isValid: this.settingsForm.valid,
+      // TODO: replace manual valid check when async validation bug is fixed in ng forms -> https://github.com/angular/angular/issues/20424
+      isValid: isFieldValid('triggerSettings') && isFieldValid('handlerSettings'),
       isDirty: this.settingsForm.dirty,
-      isPending: this.settingsForm.pending
+      isPending: false,
     });
 
     const subscribeToUpdates = this.createMapperStatusUpdateSubscriber();

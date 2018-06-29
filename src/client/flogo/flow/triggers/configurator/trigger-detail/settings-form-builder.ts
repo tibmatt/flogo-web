@@ -30,7 +30,7 @@ export class SettingsFormBuilder {
     settingsFormGroup.description = this.ngFormBuilder.control({
       value: settingsFields.description.value || '',
       disabled: disableCommonSettings
-    }, Validators.required);
+    });
 
     if (!isEmpty(settingsFields.triggerSettings)) {
       settingsFormGroup.triggerSettings = this.formGroupBySettings(
