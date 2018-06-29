@@ -1,6 +1,25 @@
-
+/* tslint:disable:max-line-length */
 export function getFunctions() {
   return {
+    array: {
+      type: 'namespace',
+      functions: {
+        length: {
+          name: 'length',
+          args: [
+            {
+              name: 'arr',
+              type: 'array'
+            },
+          ],
+          help: {
+            description: 'Returns the length of the array',
+            example: 'array.length(someArray)\n Returns 3',
+            usage: 'array.length(<<array>>)',
+          },
+        }
+      },
+    },
     'string': {
       'type': 'namespace',
       'functions': {
@@ -28,6 +47,25 @@ export function getFunctions() {
           'name': 'equals',
           'args': [
             {
+              'name': 'str1',
+              'type': 'string'
+            },
+            {
+              'name': 'str2',
+              'type': 'string'
+            }
+          ],
+          'return': {'type': 'boolean'},
+          'help': {
+            'description': 'Returns whether strings str1 and str2 are equal.',
+            'usage': 'string.equals(<<str1>>, <<str2>>)',
+            'example': 'string.equals(\'Flogo Web\', \'Flogo Web\')\nReturns\ntrue'
+          }
+        },
+        'equalsignorecase': {
+          'name': 'equalsignorecase',
+          'args': [
+            {
               'name': 'str',
               'type': 'string'
             },
@@ -38,9 +76,9 @@ export function getFunctions() {
           ],
           'return': {'type': 'boolean'},
           'help': {
-            'description': 'Returns whether those two string are equals.',
-            'usage': 'string.equals(<< str >>, <<str2>>)\nReturn Type\nboolean',
-            'example': 'string.equals(\'Flogo Web\', \'Flogo Web\')\nReturns\ntrue'
+            'description': 'Compares this one string to another string, ignoring case considerations. Returns true if equal.',
+            'usage': 'string.equalsignorecase(<<str1>>, <<str2>>)',
+            'example': 'string.equalsignorecase(\'FLOGO WEB\', \'Flogo Web\')\nReturns\ntrue'
           }
         },
         'length': {
@@ -55,7 +93,30 @@ export function getFunctions() {
             'usage': 'string.length(<< str >>)\nReturn Type\nint',
             'example': 'string.length(\'Flogo Web\')\nReturns\n9'
           }
-        }
+        },
+        'substring': {
+          'name': 'substring',
+          'args': [
+            {
+              'name': 'string',
+              'type': 'string'
+            },
+            {
+              'name': 'position',
+              'type': 'integer',
+            },
+            {
+              'name': 'length',
+              'type': 'integer',
+            }
+          ],
+          'return': {'type': 'string'},
+          'help': {
+            'description': 'Returns a substring starting at the position specified by the second argument. Character positions are numbered from 0.',
+            'usage': 'string.substring(<<string>>, <<position>>, <<length>>)',
+            'example': 'string.substring("Flogo is the most awesome project ever", 18, 7) \nReturns "awesome"'
+          }
+        },
 
       }
     },
