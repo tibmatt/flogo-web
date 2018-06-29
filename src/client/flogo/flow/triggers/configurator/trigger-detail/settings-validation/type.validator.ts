@@ -25,18 +25,18 @@ function makeMismatchError(expectedType: ValueType): { [type: string]: ErrorType
   return {[ErrorTypes.TypeMismatch]: { expectedType }};
 }
 
-function getNumberValidator(expectedType: ValueType) {
+export function getNumberValidator(expectedType: ValueType) {
   return value => isNaN(value) ? makeMismatchError(expectedType) : null;
 }
 
-function booleanValidator(value: any) {
-  return isBoolean(value) ? makeMismatchError(ValueType.Boolean) : null;
+export function booleanValidator(value: any) {
+  return !isBoolean(value) ? makeMismatchError(ValueType.Boolean) : null;
 }
 
-function getObjectValidator(expectedType: ValueType) {
+export function getObjectValidator(expectedType: ValueType) {
   return value => isPlainObject(value) ? makeMismatchError(expectedType) : null;
 }
 
-function arrayValidator(value: any) {
+export function arrayValidator(value: any) {
   return isArray(value) ? makeMismatchError(ValueType.Array) : null;
 }
