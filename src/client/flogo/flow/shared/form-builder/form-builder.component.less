@@ -4,7 +4,7 @@
 .flogo-form-builder {
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: @color-bg;
 
 }
 
@@ -26,9 +26,9 @@
   }
 
   .flogo-task-container__footer {
-    background-color: #f8f8f8;
-    border-top: 1px solid #b5b5b5;
-    color: #666;
+    background-color: @smoke-white;
+    border-top: 1px solid @pale-gray;
+    color: @color-plain;
     margin-top: 10px;
     min-height: 83px;
     padding: 19px 16px;
@@ -36,9 +36,9 @@
   }
 }
 .flogo-common-edit-panel__head.flogo-common-edit-panel__head-branch{
-  background: #8a90ae;
+  background: @cadet-gray;
   height: 64.1px;
-  color: #fff;
+  color: @color-bg;
   .flogo-common-edit-panel__head-wrapper{
     justify-content: center;
   }
@@ -181,9 +181,9 @@
       padding: 0 20px 20px;
       width: 100%;
       border-radius: 2px;
-      background: #fff;
-      border: solid 1px #d8d8d8;
-      color: #666;
+      background: @color-bg;
+      border: solid 1px @gainsboro;
+      color: @color-plain;
       transform: translate(100%, -100%);
       transition: all 300ms linear 200ms;
     }
@@ -193,10 +193,10 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    color: #b5b5b5;
+    color: @pale-gray;
     cursor: pointer;
     &:hover{
-      color: #666;
+      color: @color-plain;
     }
   }
   .flogo-common-edit-panel__head-read-titles{
@@ -219,7 +219,7 @@
       max-width: 277px;
       font-size: 10px;
       letter-spacing: 0.6px;
-      color: #666666;
+      color: @color-plain;
     }
     .flogo-common-edit-panel__head-read-text{
       font-size: 14px;
@@ -239,7 +239,7 @@
   flex-direction: column;
 
   .tile {
-    background-color: #959798;
+    background-color: @gainsboro-eight;
     border-radius: 8px;
     opacity: 0.2;
     height: 90px;
@@ -255,7 +255,7 @@
       right: -16px;
       width: 32px;
       height: 26px;
-      background-color: #959798;
+      background-color: @gainsboro-eight;
       transform: rotate(62.8deg) skewX(35deg) scale(0.8);
     }
   }

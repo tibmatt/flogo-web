@@ -1,4 +1,6 @@
 @import "../../../assets/_mixins";
+@import "../../../assets/_variables";
+
 :host {
   display: block;
   margin: 0;
@@ -69,7 +71,7 @@
 
 .walkthrough-modal-title {
   font-size: 24px;
-  color: #666;
+  color: @color-plain;
   margin: 0;
   padding: 0;
 }
@@ -90,7 +92,7 @@
 }
 
 .walkthrough-option {
-  color: #666666;
+  color: @color-plain;
   cursor: pointer;
   font-size: 14px;
   min-height: 60px;
@@ -101,9 +103,9 @@
   width: 100%;
 
   &__bullet {
-    border: 2px solid #36bfbb;
+    border: 2px solid @lighter-blue;
     border-radius: 50%;
-    color: #36bfbb;
+    color: @lighter-blue;
     display: inline-block;
     line-height: 26px;
     margin-right: 1em;
@@ -114,8 +116,8 @@
 
   &-selected .walkthrough-option__bullet,
   &:hover .walkthrough-option__bullet {
-    border-color: #fff;
-    color: #fff;
+    border-color: @color-bg;
+    color: @color-bg;
   }
 
 }
@@ -125,7 +127,7 @@
 }
 
 .walkthrough-option-selected-mixin() {
-  background-color: #36bfbb;
+  background-color: @lighter-blue;
   color: white;
 }
 
@@ -136,7 +138,7 @@
 
 .walkthrough-description {
   margin-left: 20px;
-  color: #666;
+  color: @color-plain;
   font-size: 14px;
 }
 

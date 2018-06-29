@@ -1,3 +1,4 @@
+@import "../../../assets/_variables";
 
 .flow-input-params-field {
   display: flex;
@@ -10,7 +11,7 @@
 }
 
 .flow-input-params-pane {
-  background-color: #f4f4f4;
+  background-color: @lighter-gray;
   width: 75%;
   max-height: 422px;
   overflow-y: auto;
@@ -26,12 +27,12 @@
 .flow-input-params-header__title {
   position: relative;
   font-size: 20px;
-  color: #b5b5b5;
+  color: @pale-gray;
   flex: 1;
 }
 
 .flow-input-params-close {
-  color: #b5b5b5;
+  color: @pale-gray;
   position: fixed;
   top: 24px;
   right: 24px;
@@ -51,26 +52,26 @@
 }
 
 .btn-input-output-params {
-  color: #4e7ead;
-  background-color: #fff;
-  border-color: #4e7ead;
+  color: @color-primary;
+  background-color: @color-bg;
+  border-color: @color-primary;
 }
 
 .btn-input-output-params.active {
-  color: #fff;
-  background-color: #4e7ead;
-  border-color: #4e7ead;
+  color: @color-bg;
+  background-color: @color-primary;
+  border-color: @color-primary;
 }
 
 .flow-input-params-container {
   display: flex;
-  border: 1px solid #0081cb;
+  border: 1px solid @primary-blue;
   height: 422px;
 }
 
 .flow-input-params-categories {
   width: 25%;
-  border-right: 1px solid #e0e0e0;
+  border-right: 1px solid @gainsboro-five;
   ul {
     display: block;
     margin: 0;
@@ -88,26 +89,26 @@
   line-height: 1.43;
   display: flex;
   align-items: center;
-  color: #727272;
+  color: @warm-grey;
   cursor: pointer;
   vertical-align: middle;
 
   &:hover {
-    color: #0081cb;
+    color: @primary-blue;
     background: rgba(197, 202, 233, 0.2);
     cursor: pointer;
   }
 }
 
 .flow-input-params__category-error {
-  color: #d2335c;
+  color: @color-invalid;
   font-size: 0.75em;
   margin-left: 0.5em;
 }
 
 .flow-input-params__category--selected {
-  background-color: #cad3df;
-  color: #062e79;
+  background-color: @link-water;
+  color: @twilight-blue;
 }
 
 .flow-param-fields {
@@ -119,8 +120,8 @@
   min-width: 45px;
   height: 45px;
   border-radius: 4px;
-  color: #fff;
-  background-color: #79b8dc;
+  color: @color-bg;
+  background-color: @color-secondary;
   padding: 0.4em 0.5em 0.5em;
   display: flex;
   text-align: center;

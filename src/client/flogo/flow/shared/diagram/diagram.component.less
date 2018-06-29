@@ -53,14 +53,14 @@
   height: @diagram-node-height;
   //border: solid 1px #f4f4f4;
   //background-image: linear-gradient(to right, #f4f4f4, #ffffff);
-  background: #fff;
+  background: @color-bg;
   border-radius: 10px;
 
   white-space: normal;
   font-size: @diagram-node-font-size-large;
   line-height: 1;
   letter-spacing: 1px;
-  color: #666666;
+  color: @color-plain;
 
   display: inline-block;
   margin: 20px 5px;
@@ -99,11 +99,11 @@
       opacity: 1;
 
       .flogo-flows-detail-diagram-node-detail {
-        background-color: #4e7ead;
+        background-color: @color-primary;
         border: none;
 
         &:before {
-          color: #FFF;
+          color: @color-bg;
         }
       }
     }
@@ -112,15 +112,15 @@
       .flogo-flows-detail-diagram-node-detail-description {
         font-weight: normal;
         font-size: @diagram-node-font-size-small;
-        color: #fff;
+        color: @color-bg;
       }
     }
   }
   &.flogo-flows-detail-diagram-node-run {
     &:before {
-      background: #DEF2FE;
-      border-top: solid 1.6px #8FC5E4;
-      border-right: solid 1.6px #8FC5E4;
+      background: @marian-blue;
+      border-top: solid 1.6px @baby-blue;
+      border-right: solid 1.6px @baby-blue;
     }
   }
   &:hover {
@@ -177,7 +177,7 @@
     }
 
     .tile__stroke {
-      stroke: #79b8dc;
+      stroke: @color-secondary;
       stroke-width: 0.8;
     }
 
@@ -185,7 +185,7 @@
 
   &.flogo-flows-detail-diagram-node-selected @{deep} {
     .tile__bg {
-      fill: #4e7ead;
+      fill: @color-primary;
     }
 
     .tile__shadow {
@@ -193,7 +193,7 @@
     }
 
     .tile__stroke {
-      stroke: #4e7ead;
+      stroke: @color-primary;
     }
 
   }
@@ -201,7 +201,7 @@
   &.flogo-flows-detail-diagram-node-has-warn @{deep} {
 
     .tile__stroke {
-      stroke: #f5a623;
+      stroke: @color-stroke;
       stroke-width: 2;
     }
 
@@ -220,7 +220,7 @@
   .flogo-flows-detail-diagram-node-menu:hover {
 
     left: 103px;
-    background-color: #79b8dc;
+    background-color: @color-secondary;
     width: 162px;
     transition-delay: 200ms;
 
@@ -237,7 +237,7 @@
   &[data-flogo-node-type="node_branch"] {
     .flogo-flows-detail-diagram-node-menu:hover {
       left: 115px;
-      background-color: #79b8dc;
+      background-color: @color-secondary;
       //box-shadow: 0 2.5px 7px 0 rgba(0, 0, 0, 0.3);
       width: 142px; // TODO maybe in the future, we should make the width dynamic..
 
@@ -249,12 +249,12 @@
   }
 
   &[data-flogo-node-type="node_link"] {
-    background-color: #F0AD4E;
-    color: #222;
+    background-color: @light-orange;
+    color: @color-nero;
   }
   &[data-flogo-node-type="node_branch"] {
-    background-color: #B9C519;
-    color: #222;
+    background-color: @shade-yellow;
+    color: @color-nero;
   }
   &[data-flogo-node-type="node_root"] {
     //background-color: #206188;
@@ -293,14 +293,14 @@
 
   &[data-flogo-node-type="node_add"],
   &[data-flogo-node-type="node_root_new"] {
-    background-color: #fff;
+    background-color: @color-bg;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
     opacity: 0;
     .flogo-flows-detail-diagram-node-detail:before {
       content: '+';
       font-size: 88px;
       line-height: 110px;
-      color: #b6d9ed;
+      color: @columbia-blue;
     }
     &:hover {
       box-shadow: 3px 3px 8px 0 rgba(0, 0, 0, 0.3);
@@ -337,7 +337,7 @@
       width: 30px;
 
       &.--lambda {
-        color: #fff;
+        color: @color-bg;
         background-color: orange;
         border-radius: 50%;
         padding: 5px;
@@ -359,7 +359,7 @@
     background: transparent;
 
     .flogo-flows-detail-diagram-node-detail-error-icon {
-      color: #ee3342;
+      color: @color-error;
       font-size: 22px;
       // compensate for background
       margin-left: 6px;
@@ -402,7 +402,7 @@
     .flogo-flows-detail-diagram-node-detail-description {
       font-weight: 600;
       font-size: 11px;
-      color: #ff9f00;
+      color: @pale-orange;
     }
   }
   .flogo-flows-detail-diagram-node-menu {
@@ -428,7 +428,7 @@
     border-top: solid 1.3px @color-secondary;
     border-bottom: solid 1.3px @color-secondary;
 
-    background: #fff;
+    background: @color-bg;
     //box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.5);
     transition: all 250ms linear;
     li {
@@ -491,7 +491,7 @@
         margin: auto;
         font-size: 20px;
         font-weight: bold;
-        color: #FFF;
+        color: @color-bg;
       }
     }
 
@@ -560,7 +560,7 @@
     &.flogo-flows-detail-diagram-node-run {
 
       .flogo-flows-detail-diagram-node-detail:before {
-        color: #79B8DC;
+        color: @color-secondary;
       }
 
       .flogo-flows-detail-diagram-node-detail-branch-run {
@@ -580,7 +580,7 @@
 
       // override the node-run status
       .flogo-flows-detail-diagram-node-detail:before {
-        color: #FFF;
+        color: @color-bg;
       }
 
       // `hover` style overrides the `run` style
@@ -595,7 +595,7 @@
 
       // override the node-run status
       .flogo-flows-detail-diagram-node-detail:before {
-        color: #FFF;
+        color: @color-bg;
       }
 
       .flogo-flows-detail-diagram-node-detail-branch-selected {
@@ -614,7 +614,7 @@
 
 .flogo-flows-detail-diagram-node-menu-box li {
   &:hover {
-    background: #ededed;
+    background: @gainsboro-seven;
   }
   i {
     margin-right: 10px;
@@ -629,7 +629,7 @@
   top: -9px;
   right: 8px;
   z-index: 4;
-  color: #fff;
+  color: @color-bg;
 
   .flogo-flows-detail-diagram-status-icon {
     border-radius: 50%;
@@ -647,7 +647,7 @@
       background-image: url('/assets/svg/flogo.flows.diagram.icon.error.svg');
     }
     &.flogo-icon-iterator {
-      background: #36bfbb;
+      background: @lighter-blue;
       font-size: 14px;
 
     }
