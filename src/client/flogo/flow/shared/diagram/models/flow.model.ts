@@ -63,8 +63,8 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
   const flowPathNodes = flowPath.nodes;
   const errorPathRoot = errorPath.rootId;
   const errorPathNodes = errorPath.nodes;
-  const isFlowPath = isEmpty(flowPath) || isEmpty(flowPathRoot) || isEmpty(flowPathNodes);
-  const isErrorPath = isEmpty(errorPath) || isEmpty(errorPathRoot) || isEmpty(errorPathNodes);
+  const isMainFlowEmpty = isEmpty(flowPath) || !flowPathRoot || isEmpty(flowPathNodes);
+  const isErrorFlowEmpty = isEmpty(errorPath) || !errorPathRoot || isEmpty(errorPathNodes);
 
   flowJSON.id = flowID;
   flowJSON.name = inFlow.name || '';
@@ -96,7 +96,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
     return flowMetadata;
   }
 
-  if (isFlowPath && isErrorPath) {
+  if (isMainFlowEmpty && isErrorFlowEmpty) {
     /* tslint:disable-next-line:no-unused-expression */
     DEBUG && console.warn('Invalid path information in the given flow');
     /* tslint:disable-next-line:no-unused-expression */
@@ -306,7 +306,7 @@ export function flogoFlowToJSON(inFlow: UiFlow): LegacyFlowWrapper {
       return false;
     }
 
-    if (isEmpty(task.id)) {
+    if (!task.id) {
       /* tslint:disable-next-line:no-unused-expression */
       DEBUG && console.warn('Empty task id');
       /* tslint:disable-next-line:no-unused-expression */
