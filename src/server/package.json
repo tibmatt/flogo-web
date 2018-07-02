@@ -1,6 +1,6 @@
 {
   "name": "flogo-web-server",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Wonderful web application for Flogo",
   "repository": {
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
