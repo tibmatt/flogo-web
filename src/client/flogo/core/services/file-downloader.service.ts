@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { WindowRef } from '@flogo/core/services/window-ref';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { WindowRef } from '@flogo/core/services/window-ref';
 import { getFileName } from './restapi/restapi-utils';
 
 @Injectable()

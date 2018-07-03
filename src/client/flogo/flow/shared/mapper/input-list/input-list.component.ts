@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { selectCurrentNode, selectFilteredNodes, selectInputFilter } from '../services/selectors';
 import { MapperService } from '../services/mapper.service';

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { filter, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';

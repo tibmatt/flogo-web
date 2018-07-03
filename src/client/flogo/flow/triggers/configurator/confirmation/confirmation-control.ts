@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable ,  Subject } from 'rxjs';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { ConfirmationResult } from './confirmation-result';
 

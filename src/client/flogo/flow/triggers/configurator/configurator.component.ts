@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { Observable ,  of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 
 import { SingleEmissionSubject } from '@flogo/core/models/single-emission-subject';
 

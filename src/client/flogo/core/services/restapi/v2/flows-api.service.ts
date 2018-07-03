@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Action } from 'flogo/core/interfaces';

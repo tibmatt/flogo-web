@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Mappings } from './models/mappings';
 
-import { Subject } from 'rxjs/Subject';
+import { merge, Subject } from 'rxjs';
 import {
   catchError,
   debounceTime,
@@ -9,9 +9,8 @@ import {
   distinctUntilKeyChanged,
   first,
   map,
-  merge,
   share,
-  takeUntil, tap
+  takeUntil
 } from 'rxjs/operators';
 
 import { MonacoEditorLoaderService } from '../monaco-editor';
@@ -124,11 +123,11 @@ export class MapperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private initContext() {
-    const stop$ = this.ngDestroy.pipe(
-      merge(this.contextChanged),
-      first(),
-      share(),
-    );
+    const stop$ = merge(this.ngDestroy, this.contextChanged)
+      .pipe(
+        first(),
+        share(),
+      );
 
     const state$ = this.mapperService.state$
       .pipe(

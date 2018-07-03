@@ -10,7 +10,7 @@ import { SingleEmissionSubject } from '@flogo/core/models';
 
 import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventData } from './messages';
 
-import { Mappings, MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
+import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
 
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {Tabs} from '../shared/tabs/models/tabs.model';
@@ -18,7 +18,7 @@ import {SubFlowConfig} from './subflow-config';
 import {isSubflowTask} from '@flogo/shared/utils';
 import {ActionBase} from '@flogo/core';
 import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',

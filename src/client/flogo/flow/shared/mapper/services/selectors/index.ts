@@ -1,8 +1,6 @@
 import { isEqual } from 'lodash';
-import { Observable } from 'rxjs/Observable';
-import { OperatorFunction } from 'rxjs/interfaces';
-import { pipe } from 'rxjs/util/pipe';
-import { combineLatest, distinctUntilChanged, distinctUntilKeyChanged, map, shareReplay } from 'rxjs/operators';
+import { Observable, OperatorFunction, combineLatest, pipe } from 'rxjs';
+import { distinctUntilChanged, distinctUntilKeyChanged, map, shareReplay } from 'rxjs/operators';
 
 import { MapExpression, MapperState, TreeState } from '../../models';
 
@@ -71,52 +69,51 @@ interface EditingExpression {
 }
 export const selectCurrentEditingExpression = (source: Observable<MapperState>): Observable<null | EditingExpression> => {
   const sharedSource: Observable<MapperState> = source.pipe(shareReplay());
-  return sharedSource
-    .pipe(
-      selectedInputKey,
-      combineLatest(
-        sharedSource.pipe(selectMappings),
-        (currentKey, mappings) => {
-          if (!currentKey) {
-            return null;
-          }
-          const nodeMappings = mappings[currentKey] || <MapExpression>{};
-          return {
-            currentKey,
-            expression: nodeMappings.expression,
-          };
-        },
-      ),
-      distinctUntilChanged(isEqual),
-    );
+  return combineLatest(
+    sharedSource.pipe(selectedInputKey),
+    sharedSource.pipe(selectMappings)
+  )
+  .pipe(
+    map(([currentKey, mappings]) => {
+      if (!currentKey) {
+        return null;
+      }
+      const nodeMappings = mappings[currentKey] || <MapExpression>{};
+      return {
+        currentKey,
+        expression: nodeMappings.expression,
+      };
+    }),
+    distinctUntilChanged(isEqual),
+  );
 };
 
 export const selectCurrentNode = (source: Observable<MapperState>) => {
   const sharedSource = source.pipe(shareReplay());
-  return sharedSource
-    .pipe(
-      selectedInputKey,
-      combineLatest(
-        sharedSource.pipe(selectInputNodes),
-        (currentNodeKey, nodes) => currentNodeKey && nodes ? nodes[currentNodeKey] : null,
-      ),
-      distinctUntilChanged(),
-    );
+  return combineLatest(
+    sharedSource.pipe(selectedInputKey),
+    sharedSource.pipe(selectInputNodes),
+  )
+  .pipe(
+    map(([currentNodeKey, nodes]) => currentNodeKey && nodes ? nodes[currentNodeKey] : null),
+    distinctUntilChanged(),
+  );
 };
 
 export const selectFilteredNodes = (source: Observable<MapperState>) => {
   const sharedSource = source.pipe(shareReplay());
-  return source.pipe(
-    selectInputFilter,
-    combineLatest(
-      sharedSource.pipe(selectInputsList),
-      (filterTerm: string, inputs) => {
-        if (!filterTerm || !filterTerm.trim()) {
-          return inputs;
-        }
-        filterTerm = filterTerm.trim().toLowerCase();
-        return inputs.filter(inputNode => inputNode.label.toLowerCase().includes(filterTerm));
-      }),
+  return combineLatest(
+    sharedSource.pipe(selectInputFilter),
+    sharedSource.pipe(selectInputsList)
+  )
+  .pipe(
+    map(([filterTerm, inputs]) => {
+      if (!filterTerm || !filterTerm.trim()) {
+        return inputs;
+      }
+      filterTerm = filterTerm.trim().toLowerCase();
+      return inputs.filter(inputNode => inputNode.label.toLowerCase().includes(filterTerm));
+    })
   );
 };
 

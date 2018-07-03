@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import {Component, OnInit} from '@angular/core';
 import {environment} from '../../../environments/environment';
 
@@ -29,7 +30,7 @@ export class FlogoNavbarComponent implements OnInit {
   showInstructions() {
     // TODO: show again if walkthrough content was updated?
     const instructions: string = localStorage.getItem('flogo-show-instructions');
-    if (_.isEmpty(instructions)) {
+    if (isEmpty(instructions)) {
       localStorage.setItem('flogo-show-instructions', new Date().toString());
       this.isWalkthroughActivated = true;
     }

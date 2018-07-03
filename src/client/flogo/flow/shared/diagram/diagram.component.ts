@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChange } from '@angular/core';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 import { LanguageService } from '@flogo/core';
 
@@ -13,7 +13,6 @@ import { PUB_EVENTS, SUB_EVENTS } from './messages';
 import { FLOGO_FLOW_DIAGRAM_NODE_MENU_ITEM_TYPE, FLOGO_FLOW_DIAGRAM_NODE_TYPE } from './constants';
 import { FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { FlogoFlowDiagram, FlogoFlowDiagramNode } from './models';
-import { diagramToRenderableMatrix } from './models/matrix-creator.model';
 
 @Component(
   {

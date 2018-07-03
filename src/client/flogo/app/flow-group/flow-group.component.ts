@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash';
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Trigger, FlowSummary } from '@flogo/core';
 
@@ -24,7 +25,7 @@ export class FlowGroupComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['flows'] && changes['flows'].currentValue) {
-      this.flows = _.sortBy(this.flows, flow => flow.name.toLowerCase());
+      this.flows = sortBy(this.flows, flow => flow.name.toLowerCase());
     }
   }
 

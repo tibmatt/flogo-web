@@ -1,6 +1,6 @@
+import { defaultsDeep, cloneDeep } from 'lodash';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 
 import { AppsApiService } from '@flogo/core/services/restapi/v2/apps-api.service';
 import { ErrorService } from '@flogo/core/services/error.service';
@@ -44,7 +44,7 @@ export class AppDetailService {
 
   public load(appId: string) {
     this.fetchApp(appId).then(app => {
-      this.currentApp$.next(<ApplicationDetail>_.defaultsDeep({}, {
+      this.currentApp$.next(<ApplicationDetail>defaultsDeep({}, {
         app: this.transform(app),
         state: DEFAULT_STATE
       }));
@@ -59,7 +59,7 @@ export class AppDetailService {
     }
     this.fetchApp(currentApp.app.id).then(app => {
       const prevApp = this.currentApp$.getValue();
-      this.currentApp$.next(<ApplicationDetail>_.defaultsDeep({}, {
+      this.currentApp$.next(<ApplicationDetail>defaultsDeep({}, {
         app: this.transform(app),
         state: prevApp.state
       }));
@@ -112,7 +112,7 @@ export class AppDetailService {
 
   public cancelUpdate(prop: string) {
     const nextApp = this.getCurrentAsEditable();
-    nextApp.state[prop] = _.cloneDeep(DEFAULT_STATE[prop]);
+    nextApp.state[prop] = cloneDeep(DEFAULT_STATE[prop]);
     this.currentApp$.next(nextApp);
   }
 
@@ -123,7 +123,7 @@ export class AppDetailService {
     }
     this.appsApiService.deleteApp(currentApp.id)
       .then(() => {
-        this.currentApp$.next(<ApplicationDetail>_.defaultsDeep({}, {
+        this.currentApp$.next(<ApplicationDetail>defaultsDeep({}, {
           // todo better signal app was deleted
           app: null,
           state: DEFAULT_STATE
@@ -162,7 +162,7 @@ export class AppDetailService {
   }
 
   private getCurrentAsEditable() {
-    return _.cloneDeep(this.currentApp$.getValue());
+    return cloneDeep(this.currentApp$.getValue());
   }
 
   private transform(app: App | BackendApp): App {

@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
 
 import { App } from '@flogo/core';
-import { ErrorService } from '../../error.service';
 import { HttpUtilsService } from '../http-utils.service';
 import { AppsApiService } from './apps-api.service';
 

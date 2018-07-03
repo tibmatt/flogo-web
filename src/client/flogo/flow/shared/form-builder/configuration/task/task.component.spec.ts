@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import 'rxjs/add/operator/filter';
+import { ReplaySubject } from 'rxjs';
 
 import { FlogoFormBuilderConfigurationTaskComponent } from './task.component';
 import {FormBuilderModule} from '@flogo/flow/shared/form-builder';

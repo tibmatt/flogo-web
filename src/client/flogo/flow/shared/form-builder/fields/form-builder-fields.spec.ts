@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs';
 
 import { CoreModule } from '@flogo/flow/core';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';

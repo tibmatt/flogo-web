@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { of as observableOf } from 'rxjs/observable/of';
+import { of as observableOf, forkJoin } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { RESTAPIHandlersService } from '@flogo/core/services/restapi/v2/handlers-api.service';
 import { TriggersApiService } from '@flogo/core/services';
 

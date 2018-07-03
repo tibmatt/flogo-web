@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import { _throw } from 'rxjs/observable/throw';
+import { Observable ,  throwError as _throw } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { flowToJSON_Link, Interceptor, InterceptorTask, Snapshot, Step, LegacyFlowWrapper } from '@flogo/core/interfaces';
@@ -110,13 +109,17 @@ export class RunApiService {
 
     return this.getSnapshot(processInstanceId, snapshotId)
       .pipe(
-        map(snapshot =>
-          updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot),
-        switchMap(() => {
+        map(snapshot => updateProcessId ? updateSnapshotActionUri(snapshot, updateProcessId) : snapshot),
+        switchMap((snapshot) => {
           // TODO: flowinfo interface
           return this.fetch(`flows/run/flows/${updateProcessId}`)
-            .map(flowInfo => _.get(flowInfo, 'rootTask.links', []));
-        }, (snapshot, links) => ({snapshot, links})),
+            .pipe(
+              map(flowInfo => {
+                const links = _.get(flowInfo, 'rootTask.links', []);
+                return { snapshot, links };
+              })
+            );
+        }),
         switchMap(({snapshot, links}) => {
           // process state info based on flowInfo
           // find all of the tasks in the path of the given tasks to intercept.

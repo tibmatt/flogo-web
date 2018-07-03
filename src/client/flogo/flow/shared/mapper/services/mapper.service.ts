@@ -1,6 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Observable } from 'rxjs/Observable';
+import { ReplaySubject ,  Observable } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 
 import { MapperTreeNode } from '../models/mapper-treenode.model';

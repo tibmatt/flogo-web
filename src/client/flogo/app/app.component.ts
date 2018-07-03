@@ -1,11 +1,13 @@
+import { cloneDeep } from 'lodash';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params as RouteParams } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LanguageService } from '@flogo/core';
 import { notification } from '../shared/utils';
 import { ApplicationDetail, AppDetailService} from './core';
-import 'rxjs/add/operator/map';
+
 import { FlowsService } from '../core/services/flows.service';
-import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'flogo-app',
@@ -25,8 +27,9 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.route.params
-      .map((params: RouteParams) => params['appId'])
+    this.route.params.pipe(
+        map((params: RouteParams) => params['appId'])
+      )
       .subscribe((appId: string) => {
         this.appService.load(appId);
       });
@@ -42,7 +45,7 @@ export class FlogoApplicationComponent implements OnInit, OnDestroy {
           this.router.navigate(['/']);
           return;
         }
-        this.appDetail = _.cloneDeep(appDetail);
+        this.appDetail = cloneDeep(appDetail);
       });
   }
 

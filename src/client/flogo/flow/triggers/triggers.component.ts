@@ -1,7 +1,7 @@
 import { pick, uniq } from 'lodash';
 import {Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { from } from 'rxjs/observable/from';
+import { from } from 'rxjs';
 import { takeUntil, mergeMap, reduce } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 

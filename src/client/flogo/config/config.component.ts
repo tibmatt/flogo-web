@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { reduce, startCase, each, cloneDeep } from 'lodash';
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -23,7 +23,7 @@ export class FlogoConfigComponent {
   init() {
     this._config = this._configurationService.configuration;
 
-    this._servers = _.reduce(this._config, (result: any[], value: any, key: string) => {
+    this._servers = reduce(this._config, (result: any[], value: any, key: string) => {
       if (SEVER_NAMES.indexOf(key) !== -1) {
         let _display = false;
 
@@ -33,7 +33,7 @@ export class FlogoConfigComponent {
         }
         value.name = key;
         result.push({
-          _label: _.startCase(key),
+          _label: startCase(key),
           _key: key,
           _display: _display,
           config: value
@@ -48,14 +48,14 @@ export class FlogoConfigComponent {
   onSave() {
     const config = <any>{};
 
-    _.each(this._servers, (server: any) => {
+    each(this._servers, (server: any) => {
       if (SEVER_NAMES.indexOf(server._key) !== -1) {
-        config[server._key] = _.cloneDeep(server.config);
+        config[server._key] = cloneDeep(server.config);
       }
     });
 
     console.groupCollapsed('Save configuration');
-    console.log(_.cloneDeep(config));
+    console.log(cloneDeep(config));
     console.groupEnd();
     // this._configurationService.save();
 

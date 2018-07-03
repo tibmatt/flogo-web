@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError as _throw } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { RestApiOptions, RestApiService } from '../rest-api.service';
 // TriggersBackendService
@@ -31,10 +32,11 @@ export class TriggersApiService {
   updateTrigger(triggerId: string, trigger: any) {
     return this.restApi
       .patch<any>(`triggers/${triggerId}`, trigger)
-      // extract errors
-      .catch((err: HttpErrorResponse) => {
-        return _throw(this.extractErrors(err));
-      })
+      .pipe(
+        catchError((err: HttpErrorResponse) => {
+          return _throw(this.extractErrors(err));
+        }),
+      )
       .toPromise();
   }
 

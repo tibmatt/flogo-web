@@ -1,9 +1,25 @@
+import {
+  assign,
+  cloneDeep,
+  defaultsDeep,
+  each,
+  filter,
+  get, set,
+  isEmpty,
+  isEqual,
+  isFunction,
+  isUndefined,
+  isNil,
+  isNull,
+  map,
+  noop,
+  reduce,
+  toInteger,
+  values
+} from 'lodash';
+import {tap, share, takeUntil } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-
-import * as _ from 'lodash';
-import { filter, share, takeUntil, withLatestFrom } from 'rxjs/operators';
-
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   MetadataAttribute,
   Task,
@@ -194,14 +210,14 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
 
     const subs = [
-      _.assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
-      _.assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
-      _.assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTask, { callback: this._saveConfigFromTaskConfigurator.bind(this) }),
-      _.assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
-      _.assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
+      assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
+      assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
+      assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTask, { callback: this._saveConfigFromTaskConfigurator.bind(this) }),
+      assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
+      assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
     ];
 
-    _.each(
+    each(
       subs, sub => {
         this._subscriptions.push(this._postService.subscribe(sub));
       }
@@ -293,7 +309,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ngOnDestroy$.emitAndComplete();
-    _.each(this._subscriptions, sub => {
+    each(this._subscriptions, sub => {
         this._postService.unsubscribe(sub);
       }
     );
@@ -360,7 +376,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const allTasks = { ...this.flowState.mainItems, ...this.flowState.errorItems };
 
     // search for the greatest index in all the flow
-    const greatestIndex = _.reduce(allTasks, (greatest: number, task: any) => {
+    const greatestIndex = reduce(allTasks, (greatest: number, task: any) => {
       const currentNormalized = normalizeTaskName(task.name);
       let repeatIndex = 0;
       if (newNormalizedName === currentNormalized) {
@@ -368,7 +384,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       } else {
         const match = /^(.*)\-([0-9]+)$/.exec(currentNormalized); // some-name-{{integer}}
         if (match && match[1] === newNormalizedName) {
-          repeatIndex = _.toInteger(match[2]);
+          repeatIndex = toInteger(match[2]);
         }
       }
 
@@ -457,7 +473,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     return this._flowService.listFlowsByName(this.flowState.appId, name)
       .then((flows) => {
         const results = flows || [];
-        if (!_.isEmpty(results)) {
+        if (!isEmpty(results)) {
           if (results[0].id === this.flowId) {
             return;
           }
@@ -515,7 +531,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     let task = data.task;
     const taskName = this.uniqueTaskName(data.task.name);
     // generate task id when adding the task
-    task = <Task> _.assign({},
+    task = <Task> assign({},
       task,
       {
         id: this.profileService.generateTaskID(this._getAllTasks(), task),
@@ -589,10 +605,10 @@ export class FlowComponent implements OnInit, OnDestroy {
     const currentStep = this._getCurrentState(taskId);
     const context = this._getCurrentTaskContext(taskId);
 
-    const currentItem = <Item> _.cloneDeep(this.getTaskInHandler(handlerId, taskId));
+    const currentItem = <Item> cloneDeep(this.getTaskInHandler(handlerId, taskId));
     let currentTask;
     if (currentItem.type === FLOGO_TASK_TYPE.TASK_BRANCH) {
-      currentTask = _.cloneDeep(currentItem);
+      currentTask = cloneDeep(currentItem);
     } else {
       // schema == {} for subflow case
       const activitySchema = this.flowState.schemas[currentItem.ref] || <any>{};
@@ -612,9 +628,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     context: TaskContext,
   ) {
     this._postService.publish(
-      _.assign(
+      assign(
         {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-          data: _.assign({},
+          data: assign({},
             // data,
             { task: currentTask, step: currentStep, context }
           ),
@@ -656,7 +672,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     propsToUpdateFormBuilder.name = task.name;
 
     this._postService.publish(
-      _.assign(
+      assign(
         {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
           data: propsToUpdateFormBuilder
         }
@@ -701,7 +717,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
       // todo: used?
       this._triggerDetailsChanged(task, data, envelope);
-      if (_.isFunction(envelope.done)) {
+      if (isFunction(envelope.done)) {
         envelope.done();
       }
       return;
@@ -710,7 +726,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const changes: { item: {id: string} & Partial<Item>, node: Partial<GraphNode> } = <any>{};
     if (task.type === FLOGO_TASK_TYPE.TASK) {
       const changedInputs = data.inputs || {};
-      if (_.isEqual(changedInputs, task.input)) {
+      if (isEqual(changedInputs, task.input)) {
         return;
       }
       changes.item = {
@@ -718,7 +734,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         input: { ...changedInputs  }
       };
     } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
-      if (_.isEqual(data.condition, task.condition)) {
+      if (isEqual(data.condition, task.condition)) {
         return;
       }
       changes.item = {
@@ -727,7 +743,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       };
     }
 
-    if (_.isFunction(envelope.done)) {
+    if (isFunction(envelope.done)) {
       envelope.done();
     }
 
@@ -761,11 +777,11 @@ export class FlowComponent implements OnInit, OnDestroy {
         task.__props = task.__props || {};
 
         // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
-        task.__props['outputs'] = _.map(_.get(task, 'outputs', []), (output: any) => {
+        task.__props['outputs'] = map(get(task, 'outputs', []), (output: any) => {
           const newValue = data.outputs[output.name];
 
           // undefined is invalid default value, hence filter that out.
-          if (output && !_.isUndefined(newValue)) {
+          if (output && !isUndefined(newValue)) {
             output.value = newValue;
           }
 
@@ -775,7 +791,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private _updateAttributesChanges(task: any, changedInputs: any, structure: any) {
-    const attributeNamePairs = _.get(task, structure, []).map(attr => <[string, any]>[attr.name, attr]);
+    const attributeNamePairs = get(task, structure, []).map(attr => <[string, any]>[attr.name, attr]);
     const attributesByName = new Map<string, any>(attributeNamePairs);
     Object.keys(changedInputs || {}).forEach(name => {
       const attribute = attributesByName.get(name);
@@ -814,7 +830,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     runner.registered.subscribe(info => {
       this.runState.currentProcessId = info.processId;
       this.runState.processInstanceId = info.instanceId;
-    }, _.noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
+    }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
 
     return this.observeRunProgress(runner)
       .then((runState: RunProgress) => {
@@ -849,7 +865,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const attrs = _.get(selectedTask, 'attributes.inputs');
+    const attrs = get(selectedTask, 'attributes.inputs');
     const dataOfInterceptor = {
       tasks: [{
         id: selectedTask.id,
@@ -869,7 +885,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.observeRunProgress(runner)
       .then(() => {
-        if (_.isFunction(envelope.done)) {
+        if (isFunction(envelope.done)) {
           envelope.done();
         }
         this.refreshCurrentSelectedTaskIfNeeded();
@@ -882,9 +898,9 @@ export class FlowComponent implements OnInit, OnDestroy {
       if (!formAttrs) {
         return [];
       }
-      return _.map(formAttrs, (input: any) => {
+      return map(formAttrs, (input: any) => {
         // override the value;
-        return _.assign(_.cloneDeep(input), {
+        return assign(cloneDeep(input), {
           value: inputData[input.name],
           type: input.type
         });
@@ -898,12 +914,12 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     // TODO: remove noop when fixed https://github.com/ReactiveX/rxjs/issues/2180
     runner.processStatus
-      .subscribe(processStatus => this.logRunStatus(processStatus), _.noop);
+      .subscribe(processStatus => this.logRunStatus(processStatus), noop);
 
     // TODO: only on run from trigger?
     runner.registered.subscribe(info => {
       this._isCurrentProcessDirty = false;
-    }, _.noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
+    }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
 
     runner.steps
       .subscribe(steps => {
@@ -911,14 +927,14 @@ export class FlowComponent implements OnInit, OnDestroy {
           this.runState.steps = steps;
           this.updateTaskRunStatus(steps, {});
         }
-      }, _.noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180
+      }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180
 
-    return runner.completed
-      .do(state => {
+    return runner.completed.pipe(
+      tap(state => {
         this.runState.steps = state.steps;
         const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-COMPLETED');
         notification(message, 'success', 3000);
-      })
+      }))
       .toPromise();
 
   }
@@ -948,23 +964,23 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private getInitDataForRoot(): { name: string; type: string; value: any }[] {
-    const flowInput = _.get(this.flowState, 'metadata.input');
-    if (_.isEmpty(flowInput)) {
+    const flowInput = get(this.flowState, 'metadata.input');
+    if (isEmpty(flowInput)) {
       return undefined;
     }
     // preprocessing initial data
     return _(flowInput)
       .filter((item: any) => {
         // filter empty values
-        return !_.isNil(item.value);
+        return !isNil(item.value);
       })
-      .map((item: any) => _.cloneDeep(item))
+      .map((item: any) => cloneDeep(item))
       .value();
   }
 
   private determineRunnableEnabled() {
     this.runnableInfo = {
-      disabled: _.isEmpty(this.flowState.mainItems),
+      disabled: isEmpty(this.flowState.mainItems),
       disableReason: null
     };
     if (this.runnableInfo.disabled) {
@@ -1018,7 +1034,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     runTaskIds.forEach(taskId => {
       let node = this.flowState.mainGraph.nodes[taskId];
       let changeAccumulator = allStatusChanges.mainGraphNodes;
-      if (_.isEmpty(node)) {
+      if (isEmpty(node)) {
         node = this.flowState.errorGraph.nodes[taskId];
         changeAccumulator = allStatusChanges.errorGraphNodes;
         isErrorHandlerTouched = !!node;
@@ -1030,7 +1046,7 @@ export class FlowComponent implements OnInit, OnDestroy {
           status: {
             ...node.status,
             executed: true,
-            executionErrored: !_.isUndefined(taskErrors) ? Object.values(taskErrors).map(err => err.msg) : null,
+            executionErrored: !isUndefined(taskErrors) ? Object.values(taskErrors).map(err => err.msg) : null,
           },
         };
       }
@@ -1063,7 +1079,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
     };
 
-    _.set(rsp, '__status', {
+    set(rsp, '__status', {
       isFlowDone: isFlowDone,
       errors: errors,
       runTasks: runTasks,
@@ -1074,7 +1090,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     // when the flow is done on error, throw an error
     // the error is the response with `__status` provisioned.
-    if (isFlowDone && !_.isEmpty(errors)) {
+    if (isFlowDone && !isEmpty(errors)) {
       throw rsp;
     }
 
@@ -1094,10 +1110,10 @@ export class FlowComponent implements OnInit, OnDestroy {
         time: string;
       }[];
     }>{};
-    const runTasks = _.reduce(steps, (result: any, step: any) => {
+    const runTasks = reduce(steps, (result: any, step: any) => {
       const taskID = step.taskId;
 
-      if (taskID !== 'root' && taskID !== 1 && !_.isNil(taskID)) {
+      if (taskID !== 'root' && taskID !== 1 && !isNil(taskID)) {
 
         /****
          *  Exclude the tasks which are skipped by the engine while running the flow
@@ -1110,15 +1126,15 @@ export class FlowComponent implements OnInit, OnDestroy {
         const reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
         const reAttrErrMsg = new RegExp(`^_E.message`, 'g');
 
-        const taskInfo = _.reduce(_.get(step, 'flow.attributes', []),
+        const taskInfo = reduce(get(step, 'flow.attributes', []),
           (currentTaskInfo: any, attr: any) => {
-            if (reAttrName.test(_.get(attr, 'name', ''))) {
+            if (reAttrName.test(get(attr, 'name', ''))) {
               currentTaskInfo[attr.name] = attr;
             }
 
             if (reAttrErrMsg.test(attr.name)) {
-              let errs = <any[]>_.get(errors, `${taskID}`);
-              const shouldOverride = _.isUndefined(errs);
+              let errs = <any[]>get(errors, `${taskID}`);
+              const shouldOverride = isUndefined(errs);
               errs = errs || [];
 
               errs.push({
@@ -1127,14 +1143,14 @@ export class FlowComponent implements OnInit, OnDestroy {
               });
 
               if (shouldOverride) {
-                _.set(errors, `${taskID}`, errs);
+                set(errors, `${taskID}`, errs);
               }
             }
             return currentTaskInfo;
           }, {});
 
         result[taskID] = {attrs: taskInfo};
-      } else if (_.isNull(taskID)) {
+      } else if (isNull(taskID)) {
         isFlowDone = true;
       }
 
@@ -1150,7 +1166,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     let stepNumber = 0;
     // firstly try to get steps from the last process instance running from the beginning,
     // otherwise use some defauts
-    const steps = _.get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
+    const steps = get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
 
     steps.forEach((step: any, index: number) => {
       // allowing double equals for legacy ids that were of type number
@@ -1191,12 +1207,12 @@ export class FlowComponent implements OnInit, OnDestroy {
       scope = this.mapNodesToTiles(previousNodes, { nodes: flowState.mainGraph.nodes, items: flowState.mainItems });
     }
 
-    const metadata = <FlowMetadata>  _.defaultsDeep({
+    const metadata = <FlowMetadata>  defaultsDeep({
       type: 'metadata',
     }, this.flowState.metadata, { input: [], output: [] });
     scope.push(metadata);
 
-    const selectedItem = <ItemTask>_.cloneDeep(this.findItemById(itemId));
+    const selectedItem = <ItemTask>cloneDeep(this.findItemById(itemId));
     const activitySchema: PartialActivitySchema = this.flowState.schemas[selectedItem.ref] || {};
     const task = mergeItemWithSchema(selectedItem, activitySchema);
     const outputMapper = isMapperActivity(activitySchema);
@@ -1221,7 +1237,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       isIterable: isIterableTask(selectedItem),
       iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
     };
-    const dataToPublish = _.assign(
+    const dataToPublish = assign(
       {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
         data: <SelectTaskConfigEventData>{
           scope,
@@ -1274,10 +1290,10 @@ export class FlowComponent implements OnInit, OnDestroy {
     const isMapperTask = isMapperActivity(activitySchema);
     if (isMapperTask) {
       itemChanges.input = {
-        mappings: _.cloneDeep(data.inputMappings),
+        mappings: cloneDeep(data.inputMappings),
       };
     } else {
-      itemChanges.inputMappings = _.cloneDeep(data.inputMappings);
+      itemChanges.inputMappings = cloneDeep(data.inputMappings);
     }
 
     // tile.type = <any>data.tile.type;
@@ -1336,7 +1352,7 @@ export class FlowComponent implements OnInit, OnDestroy {
           let schema: PartialActivitySchema = this.flowState.schemas[item.ref];
           if (isSubflowItem(item)) {
             const subFlowSchema = this.flowDetails.getSubflowSchema(item.settings.flowPath);
-            schema = { outputs: _.get(subFlowSchema, 'metadata.output', []) };
+            schema = { outputs: get(subFlowSchema, 'metadata.output', []) };
           }
           return mergeItemWithSchema(item, schema);
         } else {
@@ -1449,7 +1465,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     return Promise.resolve();
 
     function reduceToUpdatableHandlers(result, handler) {
-      const actionInputMappings = _.get(handler, 'actionMappings.input', []);
+      const actionInputMappings = get(handler, 'actionMappings.input', []);
       const applicableMappings = actionInputMappings.filter(isApplicableMapping);
       if (applicableMappings.length !== actionInputMappings.length) {
         handler.actionMappings.input = applicableMappings;
@@ -1466,7 +1482,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       const inputs = (task.attributes || {}).inputs || [];
       return isMapperActivity(schema) && inputs.length > 0;
     };
-    _.filter(this._getAllTasks(), isMapperContribAndHasMapping)
+    filter(this._getAllTasks(), isMapperContribAndHasMapping)
       .forEach((task: Task) => {
         task.attributes.inputs.forEach((mapping) => {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
@@ -1481,7 +1497,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private isFlowUsedAgain(id: string) {
-    return !!_.values(this._getAllTasks()).find((t: ItemSubflow) => t.settings && t.settings.flowPath === id);
+    return !!values(this._getAllTasks()).find((t: ItemSubflow) => t.settings && t.settings.flowPath === id);
   }
 
 }

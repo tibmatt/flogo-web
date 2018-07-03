@@ -1,15 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { timer } from 'rxjs/observable/timer';
-import { of } from 'rxjs/observable/of';
-import { _throw } from 'rxjs/observable/throw';
-
-import { isEqual, defaults } from 'lodash';
-
 import {
-  catchError, combineLatest, distinctUntilChanged, exhaustMap, filter, last, map, merge, share,
+  take, catchError, distinctUntilChanged, exhaustMap, filter, last, map, share,
   startWith, switchMap, takeWhile
 } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Observable, combineLatest, merge, timer, of, throwError as _throw } from 'rxjs';
+
+import { isEqual, defaults } from 'lodash';
 
 import { Interceptor, Step, UiFlow } from '@flogo/core';
 import {
@@ -179,7 +175,7 @@ export class RunnerService {
 
   startAndMonitor(opts: BaseRunOptions, startFlow: StartFlowFn): RunProgressStore {
 
-    const registered = this.registerAndStartFlow(opts, startFlow).share();
+    const registered = this.registerAndStartFlow(opts, startFlow).pipe(share());
     const shareObservable = obs => obs.pipe(share());
 
     const instanceStatus = registered
@@ -293,22 +289,22 @@ export class RunnerService {
 
     const isStatusCompleted = (status: string) => status === RunStatusCode.Completed;
 
-    return source
-      .pipe(
-        // continue until we reach the completed status
-        takeWhile(runStatus => !isStatusCompleted(runStatus.status)),
-        // also publish the completion status
-        merge(source.filter(runStatus => isStatusCompleted(runStatus.status)).take(1))
-      );
+    return merge(
+      source.pipe(takeWhile(runStatus => !isStatusCompleted(runStatus.status))),
+      source.pipe(
+        filter(runStatus => isStatusCompleted(runStatus.status)),
+        take(1),
+      )
+    );
   }
 
   registerAndStartFlow(opts: BaseRunOptions, startFlow: StartFlowFn): Observable<{ processId: string, instanceId: string }> {
     return this.registerFlowIfNeeded(opts)
       .pipe(
         switchMap(
-          processId => startFlow(processId),
-          (processId, instance) => ({ processId, instanceId: instance.id })
-        )
+          processId => startFlow(processId)
+            .pipe(map((instance) => ({ processId, instanceId: instance.id }))),
+        ),
       );
   }
 
@@ -322,9 +318,11 @@ export class RunnerService {
       //  since the same process ID returns 204 No Content response and cannot be updated,
       //  while the flow information without ID will be assigned an ID automatically.
       delete process.id;
-      registered = this.runService.storeProcess(process).pipe(
-        map(storedProcess => storedProcess.id)
-      );
+      registered = this.runService
+        .storeProcess(process)
+        .pipe(
+          map(storedProcess => storedProcess.id)
+        );
     } else if (opts.useProcessId) {
       registered = of(opts.useProcessId);
     } else {
@@ -365,18 +363,20 @@ export class RunnerService {
     querySteps$: Observable<Step[]|null>,
     processRegistered$: Observable<{instanceId: string, processId: string}>
   ): Observable<RunProgress> {
-    return querySteps$.pipe(
-        combineLatest(
-          instanceStatus$,
-          processRegistered$,
-          (steps, runStatus, registeredInfo) => ({
-            instanceId: registeredInfo.instanceId,
-            processId: registeredInfo.processId,
-            runStatus,
-            steps,
-            lastInstance: null
-          })
-        ),
+    return combineLatest(
+      querySteps$,
+      instanceStatus$,
+      processRegistered$,
+    ).pipe(
+      map(
+        ([steps, runStatus, registeredInfo]) => ({
+          instanceId: registeredInfo.instanceId,
+          processId: registeredInfo.processId,
+          runStatus,
+          steps,
+          lastInstance: null
+        })
+      ),
     );
   }
 
@@ -384,11 +384,11 @@ export class RunnerService {
     return stateStream.pipe(
       last(),
       switchMap(
-        state => this.runService.getInstance(state.instanceId),
-        (runState, instance) => {
-          runState.lastInstance = instance;
-          return runState;
-        }
+        state => this.runService
+          .getInstance(state.instanceId)
+          .pipe(
+            map(lastInstance => ({ ...state, lastInstance }))
+          ),
       )
     );
   }

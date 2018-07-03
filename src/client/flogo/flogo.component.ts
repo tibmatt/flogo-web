@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params, NavigationEnd, NavigationCancel } from '@angular/router';
 
 import { LoadingStatusService } from './core/services/loading-status.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   // disabling component-selector rule as the main application component name does not require it

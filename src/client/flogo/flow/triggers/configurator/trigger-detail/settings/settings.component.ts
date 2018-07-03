@@ -1,8 +1,7 @@
 import {isEqual} from 'lodash';
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, ElementRef} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { TriggerInformation } from '../../interfaces';
 import { ConfirmationService } from '../../confirmation';
 import { ConfirmEditionComponent, EDITION_DATA_TOKEN, EditionData } from './confirm-edition/confirm-edition.component';

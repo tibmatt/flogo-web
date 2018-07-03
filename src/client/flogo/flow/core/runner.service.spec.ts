@@ -1,7 +1,4 @@
-import { of } from 'rxjs/observable/of';
-import { from } from 'rxjs/observable/from';
-import { _throw } from 'rxjs/observable/throw';
-import { concat } from 'rxjs/observable/concat';
+import { of, from, throwError as _throw, concat } from 'rxjs';
 
 import { finalize } from 'rxjs/operators';
 import Spy = jasmine.Spy;

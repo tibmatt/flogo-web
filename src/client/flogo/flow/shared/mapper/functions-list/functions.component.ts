@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
+import { Observable } from 'rxjs';
 import { shareReplay, takeUntil } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 import { TYPE_PARAM_FUNCTION } from '../services/dragging.service';

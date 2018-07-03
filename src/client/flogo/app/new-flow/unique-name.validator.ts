@@ -1,16 +1,7 @@
 import { APIFlowsService } from '../../core/services/restapi/v2/flows-api.service';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-
-import { timer } from 'rxjs/observable/timer';
-import { of } from 'rxjs/observable/of';
+import { Observable, timer, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-
-import 'rxjs/add/observable/timer';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/switchMap';
 
 export class UniqueNameValidator {
 

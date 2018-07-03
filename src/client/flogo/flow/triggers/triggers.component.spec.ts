@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 
 import { Store, StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { BsModalModule } from 'ng2-bs3-modal';
 
 import { InstallerModule } from '@flogo/flow/shared/installer';

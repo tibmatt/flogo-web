@@ -1,12 +1,12 @@
+import { ReplaySubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { PostService } from '@flogo/core/services/post.service';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { PUB_EVENTS, SUB_EVENTS } from './messages';
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_PROFILE_TYPE, FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { convertTaskID, getDefaultValue, normalizeTaskName } from '@flogo/shared/utils';
 import { LanguageService } from '@flogo/core';
-import { ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'flogo-flow-form-builder',
@@ -154,9 +154,9 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   _setFieldsObservers() {
     this._fieldObserver = new ReplaySubject(2);
     // handle error status
-    this._fieldObserver.filter((param: any) => {
+    this._fieldObserver.pipe(filter((param: any) => {
       return param.message === 'validation' && param.payload.status === 'error';
-    }).subscribe((param: any) => {
+    })).subscribe((param: any) => {
       // add to the error array
       if (this._fieldsErrors.indexOf(param.payload.field) === -1) {
         this._fieldsErrors.push(param.payload.field);
@@ -164,9 +164,9 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
     });
 
     // handle ok validation status
-    this._fieldObserver.filter((param: any) => {
+    this._fieldObserver.pipe(filter((param: any) => {
       return param.message === 'validation' && param.payload.status === 'ok';
-    }).subscribe((param: any) => {
+    })).subscribe((param: any) => {
       // remove from the error array
       const index = this._fieldsErrors.indexOf(param.payload.field);
       if (index !== -1) {
@@ -175,9 +175,9 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
     });
 
     // when some field changes
-    this._fieldObserver.filter((param: any) => {
+    this._fieldObserver.pipe(filter((param: any) => {
       return param.message === 'change-field';
-    }).subscribe((param: any) => {
+    })).subscribe((param: any) => {
       this._hasChanges = true;
 
       if (param.payload.isTask || param.payload.isTrigger) {
@@ -188,9 +188,9 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
     });
 
     // handle the change of condition of branch
-    this._fieldObserver.filter((param: any) => {
+    this._fieldObserver.pipe(filter((param: any) => {
       return param.message === 'change-field' && param.payload.isBranch && param.payload.name === 'condition';
-    })
+    }))
       .subscribe((param: any) => {
         this._branchConfigs[0].condition = param.payload.value;
         this.saveChanges(null);

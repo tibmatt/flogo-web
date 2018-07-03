@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/toPromise';
+
 import { FLOGO_PROFILE_TYPE } from '@flogo/core';
 import { ErrorService } from '@flogo/core/services';
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';

@@ -1,8 +1,6 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {LogService} from '@flogo/core/services/log.service';
 
-import 'rxjs/add/operator/map';
-
 @Component(
   {
     selector: 'flogo-logs-content',

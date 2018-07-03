@@ -1,20 +1,20 @@
-import * as _ from 'lodash';
+import { sortBy, snakeCase, clone } from 'lodash';
 
 import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
 import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 import {
-  AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
+AppDetailService, ApplicationDetail, ApplicationDetailState, FlowGroup, App, TriggerGroup
 } from '../core';
 import { FlogoNewFlowComponent } from '../new-flow/new-flow.component';
 import { FlogoExportFlowsComponent } from '../export-flows/export-flows.component';
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 import { diffDates, notification } from '../../shared/utils';
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
-import { Observable } from 'rxjs/Observable';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -109,19 +109,19 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   private createFlowGroups() {
     const flowGroups = this.application ? this.application.flowGroups : null;
     this.flowGroups = flowGroups ? [...this.application.flowGroups] : [];
-    this.flowGroups = _.sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
+    this.flowGroups = sortBy(this.flowGroups, g => g.trigger ? g.trigger.name.toLocaleLowerCase() : '');
   }
 
   private createTriggerGroups() {
     const triggerGroups = this.application ? this.application.triggerGroups : null;
     this.triggerGroups = triggerGroups ? [...this.application.triggerGroups] : [];
-    this.triggerGroups = _.sortBy(this.triggerGroups, g => g.triggers ? g.flow.name.toLocaleLowerCase() : '');
+    this.triggerGroups = sortBy(this.triggerGroups, g => g.triggers ? g.flow.name.toLocaleLowerCase() : '');
   }
 
   appExporter(isLegacyExport: boolean = false) {
     return () => this.appDetailService.toEngineSpec(isLegacyExport)
       .then(engineApp => {
-        const appName = _.snakeCase(engineApp.name);
+        const appName = snakeCase(engineApp.name);
         const fileNameSuffix = isLegacyExport ? '_legacy' : '';
         return [{
           fileName: `${appName}${fileNameSuffix}.json`,
@@ -335,6 +335,6 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   private extractFlows() {
-    return _.clone(this.application.flows || []);
+    return clone(this.application.flows || []);
   }
 }

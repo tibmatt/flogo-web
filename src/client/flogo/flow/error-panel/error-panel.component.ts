@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnDestroy, HostListener, TemplateRef, Input } from '@angular/core';
 import { animate, style, transition, trigger, AnimationEvent, state } from '@angular/animations';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { FlowState, FlowActions, FlowSelectors } from '../core/state';

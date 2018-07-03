@@ -1,12 +1,7 @@
+import {throwError as observableThrowError, combineLatest, BehaviorSubject , Observable,  Subscription } from 'rxjs';
+import { catchError, distinctUntilChanged, retry, switchMap } from 'rxjs/operators';
 import { Component, Input, OnInit, DoCheck, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/retry';
-import 'rxjs/add/operator/switchMap';
 
 import { getURL } from '../shared/utils';
 import { ConfigurationService } from '@flogo/core/services/configuration.service';
@@ -41,30 +36,31 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
   }
 
   ngOnInit() {
-    const configChangeStream = this.configChangeSubject.distinctUntilChanged();
+    const configChangeStream = this.configChangeSubject.pipe(distinctUntilChanged());
 
     configChangeStream.subscribe(() => this.status = null);
 
-    this.subscription = IntervalObservable.create(PING_INTERVAL_MS)
-      .combineLatest(configChangeStream, (_, config) => config)
-      .switchMap((config: ServiceUrlConfig) => this.configService.pingService(config))
-      .catch((error: any) => {
-        this.statusCode = error.status;
-        // status 200 means no response from server
-        if (error.status !== 500) {
-          this.status = 'online-warning';
-        } else {
-          this.status = 'offline';
-        }
-        // TODO: report if error 500?
-        // TODO: when there are cors issues we get also 200 code
-        return Observable.throw(error);
-      })
-      .retry()
-      .subscribe((result: any) => {
-        this.status = 'online';
-        this.statusCode = result.status;
-      });
+    this.subscription = combineLatest(configChangeStream, IntervalObservable.create(PING_INTERVAL_MS))
+        .pipe(
+          switchMap(([config]: [ServiceUrlConfig]) => this.configService.pingService(config)),
+          catchError((error: any) => {
+            this.statusCode = error.status;
+            // status 200 means no response from server
+            if (error.status !== 500) {
+              this.status = 'online-warning';
+            } else {
+              this.status = 'offline';
+            }
+            // TODO: report if error 500?
+            // TODO: when there are cors issues we get also 200 code
+            return observableThrowError(error);
+          }),
+          retry(),
+        )
+        .subscribe((result: any) => {
+          this.status = 'online';
+          this.statusCode = result.status;
+        });
 
   }
 

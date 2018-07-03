@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash';
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 import { FlowSummary } from '@flogo/core';
 
@@ -19,7 +20,7 @@ export class FlogoApplicationFlowsComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.flows = _.sortBy(this.flows, flow => flow.name.toLowerCase());
+    this.flows = sortBy(this.flows, flow => flow.name.toLowerCase());
   }
 
   trackByFlowId(index: number, flow: FlowSummary) {

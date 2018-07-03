@@ -1,5 +1,5 @@
 import { Component, Inject, InjectionToken } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export interface AutocompleteOptions {
   filterTerm: Observable<string>;

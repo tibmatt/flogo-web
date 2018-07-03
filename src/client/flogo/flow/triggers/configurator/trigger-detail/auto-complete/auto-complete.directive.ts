@@ -18,11 +18,9 @@ import { AbstractControl } from '@angular/forms';
 import { Overlay, OverlayConnectionPosition, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { TAB } from '@angular/cdk/keycodes';
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { combineLatest, distinctUntilChanged, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { of as observableOf } from 'rxjs/observable/of';
-import { concat } from 'rxjs/observable/concat';
+
+import { Observable, ReplaySubject, of as observableOf, concat } from 'rxjs';
+import { map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
 import { SingleEmissionSubject } from '@flogo/core/models';

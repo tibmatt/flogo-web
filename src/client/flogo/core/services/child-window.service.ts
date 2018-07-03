@@ -1,12 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
-
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/publishReplay';
+import { Observable, fromEvent } from 'rxjs';
 
 import { WindowRef } from './window-ref';
+import { first, publishReplay, refCount, tap } from 'rxjs/operators';
 
 export class ChildWindow {
 
@@ -19,10 +15,13 @@ export class ChildWindow {
     }
 
     // since the event comes from a different window we need to manually re-enter it into the ngZone
-    this._closed = FromEventObservable.create<Event>(nativeWindow, 'beforeunload')
-      .do(event => ngZone.run(() => this._isClosed = true))
-      .first()
-      .publishReplay().refCount();
+    this._closed = fromEvent(nativeWindow, 'beforeunload')
+      .pipe(
+        tap(event => ngZone.run(() => this._isClosed = true)),
+        first(),
+        publishReplay(),
+        refCount(),
+      );
   }
 
   get closed(): Observable<Event> {

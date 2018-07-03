@@ -1,9 +1,9 @@
 import { get, uniq, isEqual, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { of as observableOfValue } from 'rxjs/observable/of';
+import { of as observableOfValue } from 'rxjs';
 
-import { ActionBase, Action, Dictionary, LegacyFlowWrapper, UiFlow, flow as BackendFlow } from '@flogo/core';
+import { ActionBase, Action, Dictionary, LegacyFlowWrapper, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 import { isSubflowTask } from '@flogo/shared/utils';

@@ -1,8 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Observable } from 'rxjs/Observable';
-import { take, tap } from 'rxjs/operators';
+import { ReplaySubject ,  Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { MapperState, MapperTreeNode, Mappings, ParsedExpressionDetails, TreeState } from '../../models';
 import { TreeNodeFactoryService } from '../tree-node-factory.service';

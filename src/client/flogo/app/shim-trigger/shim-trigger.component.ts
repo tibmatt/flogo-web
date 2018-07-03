@@ -1,7 +1,7 @@
+import { flatMap, map, defaults } from 'lodash';
 import {Component, ViewChild, Input, SimpleChanges, OnChanges, EventEmitter, Output} from '@angular/core';
 import {BsModalComponent} from 'ng2-bs3-modal';
 import {CONTRIB_REF_PLACEHOLDER, LanguageService} from '@flogo/core';
-
 
 @Component({
   selector: 'flogo-trigger-shim-build',
@@ -24,8 +24,8 @@ export class TriggerShimBuildComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const change = changes['shimTriggersList'];
     if (change.currentValue) {
-      this.shimTriggersList = _.flatMap(this.shimTriggersList, shimTriggerList =>
-        _.map(shimTriggerList.flows, flow => _.defaults({configuredTrigger: shimTriggerList.trigger}, {configuredFlow: flow}))
+      this.shimTriggersList = flatMap(this.shimTriggersList, shimTriggerList =>
+        map(shimTriggerList.flows, flow => defaults({configuredTrigger: shimTriggerList.trigger}, {configuredFlow: flow}))
       );
       if (this.shimTriggersList.length === 1) {
         this.displayOptions = {

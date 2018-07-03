@@ -1,5 +1,5 @@
-import { pipe } from 'rxjs/util/pipe';
-import { distinctUntilChanged, map, skip } from 'rxjs/operators';
+import { pipe } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { MapperState } from '../../models';
 
 export const selectMapperStatus = pipe(

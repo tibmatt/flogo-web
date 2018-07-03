@@ -1,6 +1,6 @@
 import { createSelector, select, Store } from '@ngrx/store';
 import { switchMap, map } from 'rxjs/operators';
-import { of as observableOf } from 'rxjs/observable/of';
+import { of as observableOf } from 'rxjs';
 
 import { FlowState, selectActionId, selectApp } from '@flogo/flow/core/state';
 // todo: move to shared location
