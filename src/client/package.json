@@ -7,16 +7,16 @@
     "url": "https://github.com/TIBCOSoftware/flogo-web.git"
   },
   "scripts": {
-    "test": "ng test",
-    "test:once": "ng test --single-run",
+    "test": "ng test flogo-web",
+    "test:once": "ng test flogo-web --watch=false",
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --env=prod --target=production",
-    "lint": "ng lint --type-check --format=stylish",
+    "build": "ng build --prod",
+    "lint": "ng lint --type-check --format=stylish flogo-web",
     "e2e": "ng e2e",
     "check": "npm run lint && npm run test:once",
     "travis:test": "yarn run test:once --progress=false",
-    "travis:lint": "yarn run lint --format=stylish && yarn run build --prod --progress=false"
+    "travis:lint": "yarn run lint --format=stylish && yarn run build --progress=false"
   },
   "author": "TIBCO Software Inc.",
   "private": true,

@@ -5,7 +5,10 @@ function getReporters(config) {
   if (process.env.TRAVIS) {
     return ['mocha'];
   }
-  return config.
+  return config.angularCli && config.angularCli.codeCoverage
+    ? ['progress', 'coverage-istanbul']
+    : ['kjhtml', 'mocha']
+}
 
 module.exports = function (config) {
   config.set({
@@ -21,12 +24,6 @@ module.exports = function (config) {
     ],
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser
-    },
-    files: [
-      { pattern: './test.ts', watched: false }
-    ],
-    preprocessors: {
-      './test.ts': ['@angular-devkit/build-angular']
     },
     mime: {
       'text/x-typescript': ['ts','tsx']

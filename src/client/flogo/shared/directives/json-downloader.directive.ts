@@ -42,7 +42,7 @@ export class JsonDownloaderDirective {
           this._link.setAttribute('href', dataString);
           this._link.setAttribute('download', output.fileName || 'flow.json');
           // if download attribute is not supported
-          if (!('download' in this._link)) {
+          if (!this._link.download) {
             this._link.setAttribute('target', '_blank');
           }
           this._link.click();

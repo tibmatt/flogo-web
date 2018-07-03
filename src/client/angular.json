@@ -2,45 +2,48 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
+  "cli": {
+    "packageManager": "yarn"
+  },
   "projects": {
     "flogo-web": {
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "",
       "projectType": "application",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "../../dist/public",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
+            "index": "index.html",
+            "main": "main.ts",
+            "tsConfig": "tsconfig.app.json",
             "preserveSymlinks": true,
-            "polyfills": "src/polyfills.ts",
+            "polyfills": "polyfills.ts",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "src/assets",
+                "input": "assets",
                 "output": "/assets"
               },
               {
                 "glob": "**/*",
-                "input": "src/node_modules/monaco-editor/min",
+                "input": "node_modules/monaco-editor/min",
                 "output": "/assets/monaco-editor"
               },
               {
                 "glob": "**/*",
-                "input": "src/node_modules/monaco-editor/min-maps",
+                "input": "node_modules/monaco-editor/min-maps",
                 "output": "/assets/min-maps"
               },
               {
                 "glob": "favicon.ico",
-                "input": "src",
+                "input": "",
                 "output": "/"
               },
               {
                 "glob": "**/*",
-                "input": "src/i18n",
+                "input": "i18n",
                 "output": "/i18n"
               }
             ],
@@ -101,10 +104,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
+            "main": "test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
+            "polyfills": "polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
             "scripts": [
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.min.js",
@@ -124,27 +127,27 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "src/assets",
+                "input": "assets",
                 "output": "/assets"
               },
               {
                 "glob": "**/*",
-                "input": "src/node_modules/monaco-editor/min",
+                "input": "node_modules/monaco-editor/min",
                 "output": "/assets/monaco-editor"
               },
               {
                 "glob": "**/*",
-                "input": "src/node_modules/monaco-editor/min-maps",
+                "input": "node_modules/monaco-editor/min-maps",
                 "output": "/assets/min-maps"
               },
               {
                 "glob": "favicon.ico",
-                "input": "src",
+                "input": "",
                 "output": "/"
               },
               {
                 "glob": "**/*",
-                "input": "src/i18n",
+                "input": "i18n",
                 "output": "/i18n"
               }
             ]
@@ -163,108 +166,6 @@
           }
         }
       }
-    },
-    "flogo-web-e2e": {
-      "root": "",
-      "sourceRoot": "e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "flogo-web:serve"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "gen": {
-      "root": "",
-      "sourceRoot": "flogo",
-      "projectType": "application",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/",
-            "index": "flogo/index.html",
-            "main": "flogo/main.ts",
-            "tsConfig": "flogo/tsconfig.app.json",
-            "preserveSymlinks": true,
-            "assets": [],
-            "styles": [],
-            "scripts": []
-          },
-          "configurations": {}
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "gen:build"
-          },
-          "configurations": {}
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "gen:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "flogo/undefined",
-            "karmaConfig": "./karma.conf.js",
-            "scripts": [],
-            "styles": [],
-            "assets": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "./tsconfig.app.json",
-              "./tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "gen-e2e": {
-      "root": "",
-      "sourceRoot": "e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "gen:serve"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
     }
   },
   "defaultProject": "flogo-web",
@@ -274,7 +175,7 @@
       "styleext": "less"
     },
     "@schematics/angular:directive": {
-      "prefix": "flogo"
+      "prefix": "fg"
     }
   }
 }

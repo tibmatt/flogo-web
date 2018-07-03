@@ -522,7 +522,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         name: taskName
       });
 
-    let item: ItemTask = {
+    let item: ItemActivityTask | ItemSubflow = {
       id: task.id,
       type: task.type,
       ref: task.ref,
@@ -532,13 +532,12 @@ export class FlowComponent implements OnInit, OnDestroy {
       input: extractItemInputsFromTask(task),
       settings: task.settings,
     };
-
-    const isSubFlowTask = isSubflowTask(data.task.type);
-    if (isSubFlowTask) {
+    const isSubflow = isSubflowItem(item);
+    if (isSubflow) {
       item = {
         ...item,
         outputMappings: task.outputMappings,
-      };
+      } as ItemSubflow;
     } else {
       (<ItemActivityTask>item).return = task.return;
     }
@@ -551,7 +550,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       description: task.description,
       parents: [selection.parentId],
       features: {
-        subflow: isSubFlowTask,
+        subflow: isSubflow,
         final: isFinal,
         canHaveChildren: !isFinal
       }
