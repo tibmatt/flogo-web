@@ -5,21 +5,18 @@ function getReporters(config) {
   if (process.env.TRAVIS) {
     return ['mocha'];
   }
-  return config.angularCli && config.angularCli.codeCoverage
-    ? ['progress', 'coverage-istanbul']
-    : ['kjhtml', 'mocha']
-}
+  return config.
 
 module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine', '@angular/cli'],
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
-      require('@angular/cli/plugins/karma'),
+      require('@angular-devkit/build-angular/plugins/karma'),
       require('karma-mocha-reporter')
     ],
     client:{
@@ -29,13 +26,13 @@ module.exports = function (config) {
       { pattern: './test.ts', watched: false }
     ],
     preprocessors: {
-      './test.ts': ['@angular/cli']
+      './test.ts': ['@angular-devkit/build-angular']
     },
     mime: {
       'text/x-typescript': ['ts','tsx']
     },
     coverageIstanbulReporter: {
-      reports: [ 'html', 'lcovonly' ],
+      dir: require('path').join(__dirname, 'coverage'), reports: [ 'html', 'lcovonly' ],
       fixWebpackSourcePaths: true
     },
     angularCli: {
