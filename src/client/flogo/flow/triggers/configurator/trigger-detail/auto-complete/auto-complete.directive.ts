@@ -3,23 +3,24 @@ import {
   ComponentRef,
   Directive,
   ElementRef,
-  HostListener, Inject,
+  HostListener,
+  Inject,
   Injector,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
-  SimpleChange,
   Optional,
+  SimpleChange,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { AbstractControl } from '@angular/forms';
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { Overlay, OverlayConnectionPosition, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { TAB } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, distinctUntilChanged, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs/observable/of';
 import { concat } from 'rxjs/observable/concat';
 
@@ -27,8 +28,12 @@ import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
 import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
+import { Subscription } from 'rxjs/Subscription';
+import { OriginConnectionPosition } from '@angular/cdk/overlay/typings/position/connected-position';
 
 const POPOVER_WIDTH = '344px';
+const POPOVER_MIN_HEIGHT = 150;
+const POPOVER_MAX_HEIGHT = '250px';
 
 const ensureObservable = (value) => {
   if (!value) {
@@ -65,13 +70,16 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   contentPortal: ComponentPortal<AutoCompleteContentComponent>;
   popoverComponentRef: ComponentRef<AutoCompleteContentComponent>;
 
+  private lastPosition: 'top' | 'bottom' | null = null;
+
   private variablesSources = new ReplaySubject<Observable<string[]>>(1);
   private allowedValuesSources = new ReplaySubject<Observable<string[]>>(1);
   private valueSources = new ReplaySubject<Observable<string[]>>(1);
 
   private filterTerm$: Observable<string>;
   private filteredAllowedValues$: Observable<string[]>;
-  private fileteredVariableOptions$: Observable<string[]>;
+  private filteredVariableOptions$: Observable<string[]>;
+  private resultsChangeSubscription: Subscription;
 
   private destroy$ = SingleEmissionSubject.create();
 
@@ -98,7 +106,7 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       mapToFiltered,
     );
     this.filteredAllowedValues$ = connect(this.allowedValuesSources);
-    this.fileteredVariableOptions$ = connect(this.variablesSources);
+    this.filteredVariableOptions$ = connect(this.variablesSources);
   }
 
   @HostListener('focus')
@@ -145,12 +153,12 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.destroy$.emitAndComplete();
     if (this.popoverRef) {
       this.close();
       this.popoverRef.dispose();
       this.popoverRef = null;
     }
-    this.destroy$.emitAndComplete();
   }
 
   private close() {
@@ -160,6 +168,10 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     if (this.contentPortal && this.contentPortal.isAttached) {
       this.contentPortal.detach();
     }
+    if (this.resultsChangeSubscription && this.resultsChangeSubscription.closed) {
+      this.resultsChangeSubscription.unsubscribe();
+      this.resultsChangeSubscription = null;
+    }
   }
 
   private open() {
@@ -167,11 +179,14 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       this.contentPortal = this.createPortal();
     }
 
+    const calculatePosition = this.getPosition();
     if (!this.popoverRef) {
       this.popoverRef = this.overlay.create({
+        panelClass: 'overlay-flex',
         width: POPOVER_WIDTH,
+        maxHeight: POPOVER_MAX_HEIGHT,
         scrollStrategy: this.getScrollStrategy(),
-        positionStrategy: this.getPositionStrategy(),
+        positionStrategy: this.getPositionStrategy(calculatePosition.position),
       });
     }
 
@@ -180,22 +195,37 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  private getPosition() {
+    const connectedElement = this.containerRef.nativeElement as HTMLElement;
+    const connectedBoundingRect = connectedElement.getBoundingClientRect();
+    const topDistance = connectedBoundingRect.top;
+    const bottomDistance = window.innerHeight - connectedBoundingRect.bottom;
+    return bottomDistance < POPOVER_MIN_HEIGHT ?
+      { position: 'top' as 'top', distance: topDistance }
+      : { position: 'bottom' as 'bottom', distance: bottomDistance };
+  }
+
   private getScrollStrategy() {
     return this.overlay
       .scrollStrategies
       .reposition();
   }
 
-  private getPositionStrategy() {
+  private getPositionStrategy(preferredOrientation?: 'top' | 'bottom') {
+    type PositionTuple = [OriginConnectionPosition, OverlayConnectionPosition];
+    const bottomPosition: PositionTuple = [{ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'top' }];
+    const topPosition: PositionTuple = [{originX: 'start', originY: 'top'}, {overlayX: 'start', overlayY: 'bottom'}];
+    const [preffered, fallback] = preferredOrientation === 'top' ? [topPosition, bottomPosition] : [bottomPosition, topPosition];
     return this.overlay
       .position()
       .connectedTo(
         this.containerRef,
-        { originX: 'start', originY: 'bottom' },
-        { overlayX: 'start', overlayY: 'top' }
+        preffered[0],
+        preffered[1],
       )
       .withFallbackPosition(
-        {originX: 'start', originY: 'top'}, {overlayX: 'start', overlayY: 'bottom'}
+        fallback[0],
+        fallback[1],
       );
   }
 
@@ -211,7 +241,7 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     const sources: AutocompleteOptions = {
       filterTerm: this.filterTerm$,
       allowedValues: this.filteredAllowedValues$,
-      appVariables: this.fileteredVariableOptions$,
+      appVariables: this.filteredVariableOptions$,
       onOptionSelected: (option) => this.optionSelected(option)
     };
     const injector = new PortalInjector(this.parentInjector, new WeakMap<any, any>([ [AUTOCOMPLETE_OPTIONS, sources] ]));
