@@ -1,6 +1,14 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
+### Production Dependencies
+
+- **Added:**
+  - [@angular/cdk@5.2.4](https://github.com/angular/material2) (MIT)
+  - [@ngrx/store@^5.2.0](https://github.com/ngrx/platform) (MIT)
+- **Upgraded:**
+  - [chevrotain@3.0.0](https://github.com/SAP/chevrotain) ([Apache2.0](https://github.com/SAP/chevrotain/raw/master/LICENSE.txt)) - Was 1.0.1
+
 ## v0.5.4
 
 [No changes]

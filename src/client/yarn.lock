@@ -2325,7 +2325,9 @@ find-up@^2.0.0, find-up@^2.1.0:
     locate-path "^2.0.0"
 
 flogo-parser@../parser:
-  version "0.5.4"
+  version "0.5.5"
+  dependencies:
+    chevrotain "^3.0.0"
 
 flush-write-stream@^1.0.0:
   version "1.0.3"
@@ -4160,10 +4162,6 @@ next-tick@1:
 ng2-bs3-modal@^0.13.0:
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/ng2-bs3-modal/-/ng2-bs3-modal-0.13.0.tgz#e501a660a968668b44cc28252c310fdd67e4fd7a"
-
-ngrx-forms@^2.3.5:
-  version "2.3.6"
-  resolved "https://registry.yarnpkg.com/ngrx-forms/-/ngrx-forms-2.3.6.tgz#d90f52350a57f0e3945f9d6b0a56341d7c1ceb52"
 
 ngx-perfect-scrollbar@^5.3.5:
   version "5.3.5"
