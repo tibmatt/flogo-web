@@ -54,7 +54,7 @@ export class AppsApiServiceMock extends AppsApiService {
   /* tslint:enable:max-line-length */
 
   constructor(httpUtil: HttpUtilsService) {
-    super(null, httpUtil, null, null);
+    super(httpUtil, null, null, null);
   }
 
   listApps() {

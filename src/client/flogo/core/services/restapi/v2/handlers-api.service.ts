@@ -1,34 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
-import { HttpUtilsService } from '../http-utils.service';
+import { RestApiService } from '../rest-api.service';
+import { TriggerHandler } from '@flogo/flow/core';
 
 @Injectable()
 export class RESTAPIHandlersService {
-  constructor(private http: Http, private httpUtils: HttpUtilsService) {
+  constructor(private restApiService: RestApiService) {
   }
 
   updateHandler(triggerId, actionId, handlerSettings) {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
-
-    return this.http.put(this.apiPrefix(`triggers/${triggerId}/handlers/${actionId}`), handlerSettings, options).toPromise()
-      .then(response => response.json().data);
-
+    return this.restApiService
+      .put<TriggerHandler>(`triggers/${triggerId}/handlers/${actionId}`, handlerSettings)
+      .toPromise();
   }
 
   getHandler(triggerId, actionId) {
-    return this.http.get(this.apiPrefix(`triggers/${triggerId}/handlers/${actionId}`)).toPromise()
-      .then(response => response.json().data);
-
+    return this.restApiService
+      .get(`triggers/${triggerId}/handlers/${actionId}`)
+      .toPromise();
   }
 
   deleteHandler(actionId, triggerId) {
-    return this.http.delete(this.apiPrefix(`triggers/${triggerId}/handlers/${actionId}`)).toPromise();
-  }
-
-  private apiPrefix(path) {
-    return this.httpUtils.apiPrefix(path, 'v2');
+    return this.restApiService
+      .delete(`triggers/${triggerId}/handlers/${actionId}`)
+      .toPromise();
   }
 
 }

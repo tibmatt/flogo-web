@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/map';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 import { App } from '@flogo/core';
-import { FLOGO_PROFILE_TYPE, TYPE_APP_MODEL, APP_MODELS } from '../../../constants';
-import { HttpUtilsService } from '../http-utils.service';
 import { FileDownloaderService } from '@flogo/core/services/file-downloader.service';
+import { FLOGO_PROFILE_TYPE, TYPE_APP_MODEL } from '../../../constants';
+import { HttpUtilsService } from '../http-utils.service';
+import { RestApiService } from '../rest-api.service';
 
 const UNTITLED_APP = 'Untitled App';
 
@@ -15,15 +13,16 @@ const UNTITLED_APP = 'Untitled App';
 export class AppsApiService {
 
   constructor(
-    private http: Http,
     private httpUtils: HttpUtilsService,
     private httpClient: HttpClient,
+    private restApi: RestApiService,
     private downloadService: FileDownloaderService,
   ) {}
 
   recentFlows() {
-    return this.http.get(this.apiPrefix('actions/recent'), this.httpUtils.defaultOptions()).toPromise()
-      .then(response => response.json().data);
+    return this.restApi
+      .get('actions/recent')
+      .toPromise();
   }
 
   createNewApp(profileDetails): Promise<any> {
@@ -41,88 +40,74 @@ export class AppsApiService {
         application.device.deviceType = profileDetails.deviceType;
         application.device.settings = profileDetails.settings || {};
       }
-
-      const options = this.httpUtils.defaultOptions();
-
-      return this.http.post(this.apiPrefix('apps/'), application, options).toPromise()
-        .then(response => response.json().data);
+      return this.restApi
+        .post('apps', application)
+        .toPromise();
     });
   }
 
   listApps(): Promise<App[]> {
-    return this.http.get(this.apiPrefix('apps'), this.httpUtils.defaultOptions())
-      .map(response => response.json())
-      .map(responseBody => responseBody.data ? responseBody.data : [])
+    return this.restApi
+      .get<App[]>('apps')
       .toPromise();
   }
 
   getApp(appId: string): Promise<App | null> {
-    return this.http.get(this.apiPrefix(`apps/${appId}`))
-      .map(response => response.json())
-      .map(responseBody => responseBody.data ? <App> responseBody.data : null)
+    return this.restApi
+      .get<App>(`apps/${appId}`)
       .toPromise();
   }
 
   updateApp(appId: string, app: any) {
-    const options = this.httpUtils.defaultOptions();
-
-    return this.http.patch(this.apiPrefix(`apps/${appId}`), app, options)
+    return this.restApi
+      .patch<App>(`apps/${appId}`, app)
       .toPromise()
-      .then(response => response.json())
-      .then(body => body.data)
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
   deleteApp(appId: string) {
-    const options = this.httpUtils.defaultOptions();
-
-    return this.http.delete(this.apiPrefix(`apps/${appId}`), options)
+    return this.restApi
+      .delete(`apps/${appId}`)
       .toPromise()
-      .then(response => true)
+      .then(() => true)
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
   // todo: combine with exportflows
   exportApp(appId: string, options: { appModel?: TYPE_APP_MODEL } = {}) {
-    let searchOptions: URLSearchParams;
+    let requestOptions = null;
     if (options.appModel) {
-      searchOptions = new URLSearchParams();
-      searchOptions.set('appmodel', options.appModel);
+      requestOptions = {
+        params: {
+          appmodel: options.appModel,
+        }
+      };
     }
-    const requestOptions = this.httpUtils.defaultOptions({ search: searchOptions });
-    return this.http.get(this.apiPrefix(`apps/${appId}:export`), requestOptions)
-      .map(response => response.json())
+    return this.restApi
+      .get<any>(`apps/${appId}:export`, requestOptions)
       .toPromise()
       .catch(err => Promise.reject(err.json()));
   }
 
   // todo: combine with exportapp
   exportFlows(appId: string, flowIds: any[], appModel?: TYPE_APP_MODEL) {
-    let reqOptions = this.httpUtils.defaultOptions();
-    const searchParams = new URLSearchParams();
-    searchParams.set('type', 'flows');
+    let requestParams = new HttpParams({ fromObject: { type: 'flows' } });
     if (flowIds && flowIds.length > 0) {
       const selectedFlowIds = flowIds.join(',');
-      searchParams.set('flowids', selectedFlowIds);
+      requestParams = requestParams.set('flowids', selectedFlowIds);
     }
     if (appModel) {
-      searchParams.set('appmodel', appModel);
+      requestParams = requestParams.set('appmodel', appModel);
     }
-    reqOptions = reqOptions.merge({
-      search: searchParams
-    });
-    return this.http.get(
-      this.httpUtils.apiPrefix(`apps/${appId}:export`), reqOptions)
-      .map((res: Response) => res.json())
+    return this.restApi.get(`apps/${appId}:export`, { params: requestParams })
       .toPromise()
       .catch(err => Promise.reject(err.json()));
   }
 
   uploadApplication(application) {
-    const options = this.httpUtils.defaultOptions();
-
-    return this.http.post(this.apiPrefix('apps:import'), application, options).toPromise()
-      .then(response => response.json())
+    return this.restApi
+      .post<App>('apps:import', application)
+      .toPromise()
       .catch(error => Promise.reject(this.extractErrors(error)));
   }
 
@@ -138,24 +123,24 @@ export class AppsApiService {
   }
 
   determineUniqueName(name: string) {
-    return this.listApps().then((apps: Array<App>) => {
-      const normalizedName = name.trim().toLowerCase();
-      const possibleMatches = apps
-        .map(app => app.name.trim().toLowerCase())
-        .filter(appName => appName.startsWith(normalizedName));
+    return this.listApps()
+      .then((apps: Array<App>) => {
+        const normalizedName = name.trim().toLowerCase();
+        const possibleMatches = apps
+          .map(app => app.name.trim().toLowerCase())
+          .filter(appName => appName.startsWith(normalizedName));
 
-      if (!possibleMatches.length) {
-        return name;
-      }
+        if (!possibleMatches.length) {
+          return name;
+        }
 
-      let found = true;
-      let index = 0;
-      while (found) {
-        index++;
-        found = possibleMatches.includes(`${normalizedName} (${index})`);
-      }
-      return `${name} (${index})`;
-
+        let found = true;
+        let index = 0;
+        while (found) {
+          index++;
+          found = possibleMatches.includes(`${normalizedName} (${index})`);
+        }
+        return `${name} (${index})`;
     });
 
   }
@@ -164,13 +149,12 @@ export class AppsApiService {
     return this.httpUtils.apiPrefix(path, 'v2');
   }
 
-  private extractErrors(error: Response | any) {
-    if (error instanceof Response) {
-      const body = error.json();
-      const errs = body.errors || [body];
-      return errs;
+  private extractErrors(error: HttpErrorResponse | any) {
+    const body = error.error;
+    if (body instanceof Error) {
+      return new Error(`Unknown error: error.error.message`);
     } else {
-      return new Error('Unknown error');
+      return body.errors || [body];
     }
   }
 

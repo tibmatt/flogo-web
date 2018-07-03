@@ -4,7 +4,7 @@ import { objectFromArray } from '../../shared/utils';
 import { TriggersApiService } from './restapi';
 import { RESTAPIHandlersService as HandlersService } from './restapi/v2/handlers-api.service';
 import { APIFlowsService as FlowsApiService } from './restapi/v2/flows-api.service';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core';
+import { FLOGO_PROFILE_TYPE, TriggerSchema } from '@flogo/core';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
 
 @Injectable()
@@ -15,18 +15,17 @@ export class FlowsService {
               private contribTriggerService: RESTAPIContributionsService) {
   }
 
-  createFlow(appId: string, newFlow: { name: string, description: string }, triggerId, profile: FLOGO_PROFILE_TYPE) {
+  createFlow(appId: string, newFlow: { name: string, description: string }, triggerId, profile: FLOGO_PROFILE_TYPE): Promise<any> {
     if (!triggerId) {
       return this.flowsService.createFlow(appId, newFlow);
     }
-
     return this.flowsService.createFlow(appId, newFlow)
       .then(flow => {
         return this.getContribInfo(triggerId, profile)
           .then(contribTrigger => ({ flow, contribTrigger }));
       })
       .then(({ flow, contribTrigger }) => {
-        const handlerSchema = contribTrigger.handler || {};
+        const handlerSchema = contribTrigger.handler || {} as TriggerSchema;
         const settings = objectFromArray(handlerSchema.settings);
         const outputs = objectFromArray(contribTrigger.outputs);
         return this.handlersService.updateHandler(triggerId, flow.id, { settings, outputs });
@@ -58,7 +57,7 @@ export class FlowsService {
 
   private getContribInfo(triggerInstanceId, type: FLOGO_PROFILE_TYPE) {
     return this.triggersService.getTrigger(triggerInstanceId)
-      .then(triggerInstance => this.contribTriggerService.getContributionDetails(type, triggerInstance.ref));
+      .then(triggerInstance => this.contribTriggerService.getContributionDetails<TriggerSchema>(type, triggerInstance.ref));
   }
 
 }

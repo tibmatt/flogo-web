@@ -8,9 +8,6 @@ import {
   createDefaultRestApiHttpHeaders, DEFAULT_REST_HEADERS, HttpUtilsService, RestApiService,
   TriggersApiService
 } from './services/restapi';
-import { RESTAPIApplicationsService } from './services/restapi/applications-api.service';
-import { RESTAPIConfigurationService } from './services/restapi/configuration-api-service';
-import { RESTAPIFlowsService } from './services/restapi/flows-api.service';
 import { RESTAPIHandlersService as RESTAPIHandlersServiceV2 } from './services/restapi/v2/handlers-api.service';
 import { APIFlowsService } from './services/restapi/v2/flows-api.service';
 import { AppsApiService } from './services/restapi/v2/apps-api.service';
@@ -19,7 +16,6 @@ import { FlogoModal } from './services/modal.service';
 import { ConfigurationService } from './services/configuration.service';
 import { PostService } from './services/post.service';
 import { SanitizeService } from './services/sanitize.service';
-import { ConfigurationLoadedGuard } from './services/configuration-loaded-guard.service';
 import { LoadingStatusService } from './services/loading-status.service';
 import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
@@ -51,10 +47,6 @@ import { FileDownloaderService } from './services/file-downloader.service';
     RestApiService,
 
     TriggersApiService,
-
-    RESTAPIApplicationsService,
-    RESTAPIConfigurationService,
-    RESTAPIFlowsService,
     ShimTriggerBuildApiService,
 
     RESTAPIHandlersServiceV2,
@@ -70,7 +62,6 @@ import { FileDownloaderService } from './services/file-downloader.service';
     ConfigurationService,
     PostService,
     SanitizeService,
-    ConfigurationLoadedGuard,
     LoadingStatusService,
     WindowRef,
     FlowsService,

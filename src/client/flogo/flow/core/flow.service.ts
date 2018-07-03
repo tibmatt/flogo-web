@@ -1,9 +1,9 @@
-import { assign, cloneDeep, get, uniq, isEqual, omit } from 'lodash';
+import { get, uniq, isEqual, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs/observable/of';
 
-import { ActionBase, Dictionary, LegacyFlowWrapper, UiFlow } from '@flogo/core';
+import { ActionBase, Action, Dictionary, LegacyFlowWrapper, UiFlow, flow as BackendFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 import { isSubflowTask } from '@flogo/shared/utils';
@@ -42,7 +42,7 @@ export class FlogoFlowService {
   loadFlow(flowId: string): Promise<FlowData> {
     this.previousSavedFlow = null;
     return this._flowAPIService.getFlow(flowId)
-      .then(flow => {
+      .then((flow: Action): PromiseLike<[Action, Action[]]> => {
         const subFlowTasks = get(flow, 'data.flow.rootTask.tasks', [])
           .concat(get(flow, 'data.flow.errorHandlerTask.tasks', []))
           .filter(t => isSubflowTask(t.type));
@@ -50,7 +50,7 @@ export class FlogoFlowService {
         if (flowIdsToFetch.length > 0) {
           return Promise.all([flow, this._flowAPIService.getSubFlows(flow.appId, flowIdsToFetch)]);
         }
-        return Promise.all([flow, flowIdsToFetch]);
+        return Promise.resolve([flow, []] as [Action, Action[]]);
       })
       .then(([flow, subflows]) => {
         const flowTriggers = flow.triggers || [];
@@ -58,7 +58,7 @@ export class FlogoFlowService {
           'triggers'
         ]);
         const { triggers, handlers } = normalizeTriggersAndHandlersForAction(flow.id, flowTriggers);
-        const subflowsMap = new Map<string, ActionBase>(subflows.map(a => [a.id, a]));
+        const subflowsMap = new Map<string, ActionBase>(subflows.map(a => [a.id, a]) as [string, Action][]);
         this.currentFlowDetails = new FlogoFlowDetails(flow, subflowsMap, this.store);
 
         this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);

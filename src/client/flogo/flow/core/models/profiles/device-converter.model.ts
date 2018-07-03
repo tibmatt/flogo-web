@@ -1,5 +1,5 @@
 import { AbstractModelConverter } from '../ui-converter.model';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core';
+import { ActivitySchema, FLOGO_PROFILE_TYPE } from '@flogo/core';
 
 export class DeviceModelConverter extends AbstractModelConverter {
 
@@ -10,11 +10,14 @@ export class DeviceModelConverter extends AbstractModelConverter {
   getActivitiesSchema(activities) {
     const promises = [];
     activities.forEach(activityRef => {
-      promises.push(this.contribService.getContributionDetails(this.getProfileType(), activityRef).then(activity => {
-        activity.inputs = activity.settings;
-        activity.outputs = [];
-        return activity;
-      }));
+      promises.push(this.contribService
+        .getContributionDetails<ActivitySchema>(this.getProfileType(), activityRef)
+        .then(activity => {
+          // todo: normalize activities in backend?
+          activity.inputs = (activity as any).settings;
+          activity.outputs = [];
+          return activity;
+        }));
     });
     return Promise.all(promises);
   }

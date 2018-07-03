@@ -10,6 +10,8 @@ export interface ActionBase {
 }
 
 export interface Action extends ActionBase {
+  appId?: string;
+  triggers?: any[];
   updatedAt: string;
   data: {
     flow?: flow.Flow

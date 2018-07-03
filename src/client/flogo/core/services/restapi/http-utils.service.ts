@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Headers, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import { environment } from '../../../../environments/environment';
 
 export const domainURL = environment.hostname;
@@ -14,15 +13,6 @@ export class HttpUtilsService {
   apiPrefix(path?: string, version?: 'v1'|'v2') {
     const prefix = version === 'v1' ? API_PREFIX : API_PREFIX_V2;
     return `${prefix}${path}`;
-  }
-
-  defaultOptions(extendOptions?: RequestOptionsArgs): RequestOptions {
-    const options = Object.assign(
-      {},
-      { headers: new Headers({ 'Accept': 'application/json' }) },
-      extendOptions || {}
-    );
-    return new RequestOptions(options);
   }
 
 }

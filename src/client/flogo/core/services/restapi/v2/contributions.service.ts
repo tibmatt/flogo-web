@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ContribSchema } from '@flogo/core';
+import { map } from 'rxjs/operators';
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import {RestApiService} from '../rest-api.service';
-import { map } from 'rxjs/operators';
 
 interface InstallationData {
   url: string;
@@ -20,18 +20,18 @@ export class RESTAPIContributionsService {
   constructor(private restApi: RestApiService) {
   }
 
-  getContributionDetails(profileType: FLOGO_PROFILE_TYPE, ref: string) {
-    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[ref]=' + ref)
+  getContributionDetails<T extends ContribSchema = ContribSchema>(profileType: FLOGO_PROFILE_TYPE, ref: string): Promise<T> {
+    return this.restApi.get<Array<T>>(this.getApiPath(profileType) + '?filter[ref]=' + ref)
       .pipe(map(([schema]) => schema))
       .toPromise();
   }
 
-  getShimContributionDetails(profileType: FLOGO_PROFILE_TYPE) {
-    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[shim]=' + true).toPromise();
+  getShimContributionDetails<T extends ContribSchema = ContribSchema>(profileType: FLOGO_PROFILE_TYPE) {
+    return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[shim]=' + true).toPromise();
   }
 
-  listContribs(profileType, type) {
-    return this.restApi.get<any[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
+  listContribs<T extends ContribSchema = ContribSchema>(profileType, type) {
+    return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }
 
   installContributions({profileType, installType, url}) {

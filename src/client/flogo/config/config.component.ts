@@ -57,8 +57,7 @@ export class FlogoConfigComponent {
     console.groupCollapsed('Save configuration');
     console.log(_.cloneDeep(config));
     console.groupEnd();
-
-    this._configurationService.save();
+    // this._configurationService.save();
 
   }
 
@@ -92,10 +91,10 @@ export class FlogoConfigComponent {
   }
 
   onResetDefault() {
-    this._configurationService.resetConfiguration()
-      .then((config) => {
-        this.init();
-        console.log('Configuration restored');
-      });
+    // this._configurationService.resetConfiguration()
+    //   .then((config) => {
+    //     this.init();
+    //     console.log('Configuration restored');
+    //   });
   }
 }

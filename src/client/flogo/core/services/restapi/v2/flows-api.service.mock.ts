@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { APIFlowsService } from './flows-api.service';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class MockAPIFlowsService implements Partial<APIFlowsService> {
@@ -167,7 +166,7 @@ export class MockAPIFlowsService implements Partial<APIFlowsService> {
   };
 
   getFlow(flowId: string) {
-    return Promise.resolve(this.mockFlowDetails);
+    return Promise.resolve(this.mockFlowDetails as any);
   }
 
 }

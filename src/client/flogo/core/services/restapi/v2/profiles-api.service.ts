@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { HttpUtilsService } from '../http-utils.service';
-import 'rxjs/add/operator/toPromise';
+import { RestApiService } from '../rest-api.service';
 
 @Injectable()
 export class ProfilesAPIService {
-  constructor(private _http: Http, private _httpUtils: HttpUtilsService) {
-
+  constructor(private restApiService: RestApiService) {
   }
 
   getProfilesList() {
-    return this._http.get(this._httpUtils.apiPrefix('profiles'), this._httpUtils.defaultOptions()).toPromise()
-      .then(response => response.json().data);
+    return this.restApiService
+      .get<{ type: string, id: string }[]>('profiles')
+      .toPromise();
   }
 }

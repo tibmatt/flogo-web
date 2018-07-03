@@ -20,7 +20,7 @@ export class MockProfilesAPIService extends ProfilesAPIService {
   ];
 
   constructor() {
-    super(null, null);
+    super(null);
   }
 
   getProfilesList() {

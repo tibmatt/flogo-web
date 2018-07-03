@@ -9,7 +9,7 @@ import { App } from './app.interface';
 import { ApplicationDetail } from './application-detail.interface';
 import { TriggerGroup } from './trigger-group.interface';
 import { FlowGroup } from './flow-group.interface';
-import { APP_MODELS, TYPE_APP_MODEL } from '@flogo/core';
+import { APP_MODELS, App as BackendApp } from '@flogo/core';
 import {getProfileType} from '@flogo/shared/utils';
 
 const DEFAULT_STATE = {
@@ -165,7 +165,7 @@ export class AppDetailService {
     return _.cloneDeep(this.currentApp$.getValue());
   }
 
-  private transform(app: App): App {
+  private transform(app: App | BackendApp): App {
     const triggers = app.triggers || [];
     const actions = app.actions || [];
     const profileType = getProfileType(app);
