@@ -1,4 +1,7 @@
 @import '../../../../../../../assets/_variables';
+@import (reference) '../../../../../../../assets/uxpl/dropdown';
+
+@menu-max-width: 220px;
 
 .help {
   color: @warm-grey;
@@ -9,11 +12,9 @@
   }
 
   .help-content {
-    width: 220px;
+    .uxpl-dropdown-container;
+    width: @menu-max-width;
     font-size: 1em;
-    background-color: @color-menu-bg;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
-    border-radius: 3px;
     position: absolute;
     z-index: 1;
     top: 35px;
@@ -24,26 +25,32 @@
     color: @primary-blue;
 
     .help-content__menu {
-      list-style: none;
-      padding: 1em;
-      margin: 0;
+      .uxpl-dropdown;
     }
 
     .help-content__option {
-      margin: 0 0 1em;
-
+      margin: 0;
       a {
+        .uxpl-dropdown__item;
         display: block;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
       }
     }
   }
 
   &:hover {
     color: @primary-blue;
+
+    &:after {
+      display: block;
+      content: "";
+      position: absolute;
+      height: 0;
+      right: 0;
+      top: 10px;
+      border-left: @menu-max-width solid transparent;
+      border-right: 0 solid transparent;
+      border-bottom: 25px solid transparent;
+    }
 
     .help-content {
       transform: scale(1);
