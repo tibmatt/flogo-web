@@ -9,10 +9,10 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
         <span *ngIf="deleteContentType=='application'">{{ 'APP-LIST-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
         <span *ngIf="deleteContentType=='flow'">{{ 'APP-DETAIL-POPUP:CONFIRM-MESSAGE-DELETE' | translate }}</span>
       </p>
-      <button class="popup-btn flogo-button flogo-button--secondary" (click)="cancelDelete($event)">{{
+      <button class="flogo-button--secondary" (click)="cancelDelete($event)">{{
         'APP-LIST-POPUP:DELETE-CANCEL' | translate | uppercase}}
       </button>
-      <button class="popup-btn popup-btn-confirm flogo-button flogo-button--default" (click)="confirmDelete($event)">{{
+      <button class="popup-btn-confirm flogo-button--default" (click)="confirmDelete($event)">{{
         'APP-LIST-POPUP:DELETE-CONFIRM' | translate | uppercase}}
       </button>
     </div>
@@ -43,10 +43,7 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
       margin-top: 0;
       margin-bottom: 2em;
     }
-    .popup-container .popup-btn {
-      width: 125px;
-    }
-    .popup-container .popup-btn.popup-btn-confirm {
+    .popup-container .popup-btn-confirm {
       background-color: #d0011b;
     }
   `]

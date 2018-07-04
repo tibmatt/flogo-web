@@ -439,6 +439,7 @@ code {
   .uxpl-button-secondary;
   width: 100%;
   height: 40px;
+  margin: 0;
   .flogo-icon-import {
     margin-right: 5px;
   }
@@ -630,11 +631,6 @@ code {
 }
 .flogo-common-service-modal-button{
   float: right;
-  margin-left: 20px;
-  width: 124px;
-  height: 45px;
-  text-align: center;
-  font-size: 16px;
 }
 
 .flogo-common-flows-new-flow {
@@ -749,16 +745,14 @@ code {
   .uxpl-button-secondary;
 }
 
-.flogo-button {
-  min-width: 126px;
-}
-
 .flogo-button--flat {
   height: @size-height-button;
   text-align: center;
   color: @primary-blue;
   background: transparent;
   border: none;
+  padding-left: 16px;
+  padding-right: 16px;
 
   &:hover {
     border-radius: 4px;
@@ -778,55 +772,6 @@ code {
   }
 }
 
-
-.flogo-button--accent{
-  height: @size-height-button;
-  color: @color-accent;
-  background-color: transparent;
-  border: solid 2px @color-accent;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-
-  &:hover{
-    background-color: transparent;
-    border-radius: 4px;
-    color: @color-accent;
-  }
-  &:active{
-    background: @color-accent-dark;
-    background: @color-accent-light;
-    border-radius: 4px;
-    color: white;
-  }
-  &:disabled{
-    opacity: .5;
-  }
-}
-
-.flogo-button-squared {
-  background-color: @color-bg;
-  border-radius: 5px;
-  border: solid 1px @gainsboro;
-  font-size: .875em;
-  height: 31px;
-  width: 31px;
-
-  .flogo-button-squared__icon {
-    color: @pale-blue;
-    position: relative;
-    top: 1px;
-  }
-
-  &:hover {
-    background-color: @color-secondary;
-    border: none;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
-
-    .flogo-button-squared__icon  {
-      color: @color-bg;
-    }
-  }
-}
 
 .flogo-profile__tile {
   width: 60px;

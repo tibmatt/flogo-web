@@ -170,7 +170,7 @@
     <div class="row content-empty" *ngIf="!flowGroups?.length">
       <img src="/assets/svg/flogo.flynn-placeholder.svg">
       <p class="content-empty__message">No flows found</p>
-      <button class="flogo-button--default content-empty__action" (click)="openCreateFlow()">{{'DETAILS:CREATE-A-FLOW' | translate}}</button>
+      <button class="flogo-button--default" (click)="openCreateFlow()">{{'DETAILS:CREATE-A-FLOW' | translate}}</button>
     </div>
 
     <div *ngIf="isFlowsViewActive" class="flows-view_container">

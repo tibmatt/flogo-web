@@ -1,5 +1,5 @@
 <div *ngIf="status && status.isDirty; else noChanges" class="buttons">
-  <button class="flogo-button flogo-button--secondary action"
+  <button class="flogo-button--secondary action"
           [disabled]="isSaving"
           (click)="discardChanges.emit()">
     {{ 'TRIGGER-CONFIGURATOR:CANCEL' | translate }}

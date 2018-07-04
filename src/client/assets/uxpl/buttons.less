@@ -1,48 +1,55 @@
 @import '../_variables';
 
-.uxpl-button-primary {
+.uxpl-button {
   height: @size-height-button;
-  width: 78px;
   border-radius: 3px;
-  color: @color-bg;
-  background-color: @primary-blue;
   border: solid 1px @primary-blue;
-
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-left: 24px;
   &:hover {
-    background-color: @color-link-hover;
     border: solid 1px @color-link-hover;
+    transition: all 0.2s ease-in-out;
   }
+
   &:active {
     box-shadow: inset 0 0 0 2px @color-link-hover;
     border: solid 1px @color-link-hover;
   }
+
   &:disabled {
+    cursor: not-allowed;
     opacity: .5;
+  }
+
+}
+
+.uxpl-button-primary {
+  .uxpl-button;
+  height: @size-height-button;
+  color: @color-bg;
+  background-color: @primary-blue;
+
+  &:hover {
+    background-color: @color-link-hover;
+  }
+  &:disabled {
+    background-color: @primary-blue;
   }
 }
 
 .uxpl-button-secondary {
-  width: 78px;
-  height: @size-height-button;
+  .uxpl-button;
   background-color: @color-bg;
   color: @primary-blue;
-  border-radius: 3px;
-  border: solid 1px @primary-blue;
 
   &:hover {
-    border: solid 1px @color-link-hover;
     color: @color-link-hover;
-    font-weight: 600;
   }
   &:active {
-    box-shadow: inset 0 0 0 2px @color-link-hover;
-    border: solid 1px @color-link-hover;
     color: @color-link-hover;
-    font-weight: 600;
   }
-
   &:disabled {
-    opacity: .5;
+    background-color: @color-bg;
   }
-
 }
