@@ -2,7 +2,7 @@
      class="help"
      [innerHTML]="'TRIGGER-CONFIGURATOR:SETTINGS:AUTOCOMPLETE-HELP' | translate">
 </div>
-<div class="all-options-wrapper">
+<div class="all-options-wrapper" *ngIf="(options?.allowedValues | async)?.length > 0 || (options?.appVariables | async)?.length > 0">
     <ng-container *ngIf="options?.allowedValues | async as allowedValues">
       <ul role="listbox" *ngIf="allowedValues.length > 0" class="options-group">
         <li *ngFor="let value of allowedValues"
