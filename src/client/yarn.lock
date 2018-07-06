@@ -193,9 +193,11 @@
     tree-kill "^1.0.0"
     webpack-sources "^1.1.0"
 
-"@ngx-translate/core@^9.1.1":
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/@ngx-translate/core/-/core-9.1.1.tgz#ae103928836b8a9e069fd2e2e76fa2198cc7e628"
+"@ngx-translate/core@^10.0.2":
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@ngx-translate/core/-/core-10.0.2.tgz#5eeb78f47845b476a1e892fb2fb153dbbaf72850"
+  dependencies:
+    tslib "^1.9.0"
 
 "@schematics/angular@0.6.8":
   version "0.6.8"
@@ -1218,8 +1220,8 @@ chalk@~2.2.2:
     supports-color "^4.0.0"
 
 chevrotain@^3.0.0:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-3.6.1.tgz#e4374a16172c95cf09525c873dea7e98d81ec4c1"
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-3.7.0.tgz#9b2a4556fdc8479313b37578348d9d2824fefb5c"
   dependencies:
     regexp-to-ast "0.3.4"
 
@@ -4219,9 +4221,9 @@ moment@^2.13.0:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
-monaco-editor@^0.10.0:
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.10.1.tgz#8c96c4f15b6b5258bf92cbde93cad8a7e3007e14"
+monaco-editor@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.13.1.tgz#6b9ce20e4d1c945042d256825eb133cb23315a52"
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -4298,9 +4300,9 @@ ng2-bs3-modal@^0.13.0:
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/ng2-bs3-modal/-/ng2-bs3-modal-0.13.0.tgz#e501a660a968668b44cc28252c310fdd67e4fd7a"
 
-ngx-perfect-scrollbar@^5.3.5:
-  version "5.3.5"
-  resolved "https://registry.yarnpkg.com/ngx-perfect-scrollbar/-/ngx-perfect-scrollbar-5.3.5.tgz#adb0ddd6f1a376dc43e99db7fa8540046fa36a5a"
+ngx-perfect-scrollbar@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/ngx-perfect-scrollbar/-/ngx-perfect-scrollbar-6.2.0.tgz#6c2de8b2c396e60d953a32d2896db0de8658d6e0"
   dependencies:
     perfect-scrollbar "^1.3.0"
     resize-observer-polyfill "^1.4.0"
