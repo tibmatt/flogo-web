@@ -1,6 +1,8 @@
+@import "../../../assets/_variables";
+
 :host {
-  background-color: #fff;
-  color: #666;
+  background-color: @color-bg;
+  color: @color-plain;
   text-align: center;
   display: flex;
   padding-top: 180px;
@@ -10,7 +12,7 @@
 }
 
 .tile {
-  background-color: #959798;
+  background-color: @gainsboro-eight;
   border-radius: 8px;
   opacity: 0.2;
   height: 90px;
@@ -26,7 +28,7 @@
     right: -16px;
     width: 32px;
     height: 26px;
-    background-color: #959798;
+    background-color: @gainsboro-eight;
     transform: rotate(62.8deg) skewX(35deg) scale(0.8);
   }
 

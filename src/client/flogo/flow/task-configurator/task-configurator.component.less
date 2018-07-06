@@ -1,5 +1,7 @@
+@import '../../../assets/_variables';
+
 .modal-wrapper {
-  background-color: #fff;
+  background-color: @color-bg;
 
   position: fixed;
   top: 0;
@@ -15,7 +17,7 @@
 .content {
   flex: 1;
   height: 100%;
-  border: solid 1px #b6b6b6;
+  border: solid 1px @color-medium-gray;
   display: flex;
   flex-direction: row;
 
@@ -55,31 +57,31 @@
   line-height: 1.43;
   display: flex;
   align-items: center;
-  color: #727272;
+  color: @warm-grey;
   cursor: pointer;
   vertical-align: middle;
   font-weight: 600;
 
   &:hover {
-    color: #0081cb;
+    color: @primary-blue;
     background: rgba(197, 202, 233, 0.2);
     cursor: pointer;
   }
 }
 
 .tabs__tab--selected {
-  background-color: #cad3df;
-  color: #062e79;
+  background-color: @link-water;
+  color: @twilight-blue;
 }
 
 .tabs__tab--has-errors {
   font-weight: normal;
-  color: #d0011b;
-  border-color: #d0011b;
+  color: @color-red;
+  border-color: @color-red;
 }
 
 .header__title {
-  color: #212121;
+  color: @color-ink;
   background: url('/assets/svg/flogo.flows.detail.diagram.activity.icon.svg') no-repeat left center;
   background-size: 36px 26px;
   padding-left: 40px;

@@ -58,25 +58,25 @@ README!!
 }
 
 .flogo-icon-trigger {
-  color: #1B4874;
+  color: @trigger-blue;
 }
 
 .trigger--empty {
   background: @color-app-detail-bg;
-  border: @apps__trigger-border-width--empty dashed #d8d8d8;
-  color: #bfbfbf;
+  border: @apps__trigger-border-width--empty dashed @gainsboro;
+  color: @gainsboro-six;
   border-right: none;
   // needs to account for the thicker border
   padding: 8px 2px 8px 12px;
 
   .flogo-icon-trigger {
-    color: #bfbfbf;
+    color: @gainsboro-six;
   }
 
   &:after {
     transform: rotate(45deg) skew(20deg, 20deg);
     background: @color-app-detail-bg;
-    border: 0 dashed #d8d8d8;
+    border: 0 dashed @gainsboro;
     border-top-width: 3px;
     border-right-width: 3px;
     height: 20px;

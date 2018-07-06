@@ -1,6 +1,7 @@
 @import "../node_modules/@angular/cdk/overlay-prebuilt.css";
 @import "_variables";
 @import "flogo-icons";
+@import (reference) '../assets/uxpl/buttons';
 //@import '../node_modules/bootstrap/less/bootstrap';
 /* Reset */
 html,
@@ -117,7 +118,7 @@ button[hidden] {
 
 
 label {
-  color: #676a6d;
+  color: @color-disabled;
   font-size: 13px;
   font-weight: normal;
 }
@@ -144,15 +145,15 @@ code {
 }
 
 .flogo-btn-link:hover {
-  color: #79b8dc;
+  color: @color-secondary;
 }
 
 .flogo-btn-link:active {
-  color: #062e79;
+  color: @color-link-active;
 }
 
 .flogo-input-search {
-  border: 1px solid #106cc8;
+  border: 1px solid @navy-blue;
   font-size: 14px;
   height: 40px;
   outline: none;
@@ -163,7 +164,7 @@ code {
 .flogo-btn-link[disabled]:hover,
 .flogo-btn-link.disabled,
 .flogo-btn-link.disabled:hover {
-  color: #cad3df;
+  color: @link-water;
 }
 
 .flogo-icon{
@@ -264,7 +265,7 @@ code {
   width: 100%;
   height: 100%;
   border-radius: 15px;
-  background: #062e79;
+  background: @twilight-blue;
 }
 .flogo-spin-loading > div:nth-of-type(1) > div {
   animation: flogo-spin-loading 1s linear infinite 0s;
@@ -344,7 +345,7 @@ code {
 .flogo-flows-detail-tasks-install-modal .category-list__title,
 .flogo-flows-detail-triggers-install-modal .category-list__title {
   font-size: 15px;
-  color: #0081cb;
+  color: @primary-blue;
 }
 
 .flogo-flows-detail-tasks-install-modal__content,
@@ -364,14 +365,14 @@ code {
 
 .flogo-flows-detail-tasks-install-modal .activities-list__activity,
 .flogo-flows-detail-triggers-install-modal .activities-list__activity {
-  border-bottom: solid 1px #d8d8d8;
+  border-bottom: solid 1px @gainsboro;
   margin-top: 0;
   padding: 19px 26px 17px;
 }
 
 .flogo-flows-detail-tasks-install-modal .activities-list__activity:hover,
 .flogo-flows-detail-triggers-install-modal .activities-list__activity:hover {
-  background-color: #d8d8d8;
+  background-color: @gainsboro;
   cursor: pointer;
 }
 
@@ -382,26 +383,26 @@ code {
 
 .flogo-flows-detail-tasks-install-modal .activities-list__activity .install-status-icon,
 .flogo-flows-detail-triggers-install-modal .activities-list__activity .install-status-icon {
-  color: #79b8dc;
+  color: @color-secondary;
   font-size: 20px;
   margin-left: 10px;
 }
 
 .flogo-flows-detail-tasks-install-modal .activities-list__activity.installed .install-status-icon,
 .flogo-flows-detail-triggers-install-modal .activities-list__activity.installed .install-status-icon {
-  color: #d8d8d8;
+  color: @gainsboro;
 }
 
 /* Edit panel */
 .flogo-common-edit-panel {
-  background-color: #fff;
+  background-color: @color-bg;
 }
 
 .flogo-common-edit-panel__head {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
   position: relative;
-  background-color: #fff;
-  color: #676a6d;
+  background-color: @color-bg;
+  color: @color-disabled;
   height: 113px;
   padding-left: 16px;
   padding-right: 16px;
@@ -426,7 +427,7 @@ code {
 }
 
 .flogo-common-edit-panel__footer {
-  background-color: #f8f8f8;
+  background-color: @smoke-white;
   padding: 10px 16px;
   position: fixed;
   bottom:0;
@@ -435,15 +436,17 @@ code {
 }
 
 .flogo-common-edit-panel__btn-download {
+  .uxpl-button-secondary;
   width: 100%;
   height: 40px;
-  .flogo-icon-import{
+  margin: 0;
+  .flogo-icon-import {
     margin-right: 5px;
   }
 }
 
 .flogo-common-edit-panel__tiles-list {
-  border-bottom: solid 1px #d8d8d8;
+  border-bottom: solid 1px @gainsboro;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -451,8 +454,8 @@ code {
 
 .flogo-common-edit-panel__tiles-list-tile,
 .flogo-common-edit-panel__tiles-list-trigger {
-  border-top: solid 1px #d8d8d8;
-  color: #666;
+  border-top: solid 1px @gainsboro;
+  color: @color-plain;
   font-weight: bold;
   margin: 0;
   padding: 19.5px 53px 19.5px 65px;
@@ -473,14 +476,14 @@ code {
 .flogo-common-edit-panel__tiles-list-tile:hover,
 .flogo-common-edit-panel__tiles-list-trigger:hover
 {
-  background-color: #ececec;
+  background-color: @card-bg-color-hover;
   cursor: pointer;
 }
 
 .flogo-common-edit-panel__legend {
-  background-color: #f4f4f4;
+  background-color: @lighter-gray;
   border: none;
-  color: #666;
+  color: @color-plain;
   font-size: 14px;
   margin: 10px 0 0 0;
   line-height: 1.5;
@@ -600,13 +603,13 @@ code {
   background: rgba(113, 113, 113, 0.8);
 }
 .flogo-common-service-modal-detail{
-  background: #fff;
+  background: @color-bg;
   padding: 40px;
   margin: 40px auto;
   width: 40%;
   border-radius: 4px;
   box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.3);
-  color: #666666;
+  color: @color-plain;
   transform: translate(0, -200%);
   transition: all 200ms linear;
 }
@@ -615,7 +618,7 @@ code {
 }
 .flogo-common-service-modal-confirm{
   padding: 17px 0;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid @gainsboro;
   font-size: 24px;
   line-height: 0.8;
   letter-spacing: 0.4px;
@@ -628,16 +631,11 @@ code {
 }
 .flogo-common-service-modal-button{
   float: right;
-  margin-left: 20px;
-  width: 124px;
-  height: 45px;
-  text-align: center;
-  font-size: 16px;
 }
 
 .flogo-common-flows-new-flow {
   background: transparent;
-  color: #0081cb;
+  color: @primary-blue;
   cursor: pointer;
   font-size: 14px;
   text-align: center;
@@ -645,8 +643,8 @@ code {
   padding: 10px;
 
   &:hover{
-    background: #fff;
-    color: #36bfbb;
+    background: @color-bg;
+    color: @lighter-blue;
   }
 }
 
@@ -664,18 +662,18 @@ code {
 
 .flogo-flow-detail-menu {
   background: white;
-  border: solid 2px #d8d8d8;
+  border: solid 2px @gainsboro;
   border-radius: 7px;
   color: @color-secondary;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  height: 35px;
+  height: 40px;
   width: 24px;
 
   &:hover, &:active {
-    color: #fff;
+    color: @color-bg;
     background: @color-secondary;
     border: 0;
     border-bottom-right-radius: 0;
@@ -688,17 +686,17 @@ code {
     }
   }
   .flogo-flow-detail-menu-list-wrapper{
-    border: solid 1px #727272;
-    box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
-    color: #666;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.35);
+    border-radius: 3px;
+    color: @color-plain;
     position: absolute;
-    top: 35px;
+    top: 40px;
     right: 0;
     overflow: hidden;
     transform: scale(0,0);
   }
   .flogo-flow-detail-menu-list{
-    background-color: #ffffff;
+    background-color: @color-bg;
     margin: 0;
     min-width: 110px;
     padding: 0;
@@ -730,9 +728,9 @@ code {
     font-size: 16px;
     position: relative;
     &:hover{
-      color: #666;
+      color: @color-plain;
       &:hover{
-        border-color: #666;
+        border-color: @color-plain;
       }
     }
   }
@@ -740,59 +738,26 @@ code {
 
 .flogo-button--primary,
 .flogo-button--default {
-  height: @size-height-button;
-  color: white;
-  background: @color-primary;
-  border: none;
-  padding-left: 1em;
-  padding-right: 1em;
-
-  &:hover {
-    border-radius: 4px;
-  }
-  &:active{
-    background: @color-primary;
-    border-radius: 4px;
-  }
-  &:disabled {
-    opacity: .5;
-    &:hover {
-      border-radius: 0;
-    }
-  }
+.uxpl-button-primary;
 }
 
-.flogo-button--secondary{
-  height: @size-height-button;
-  color: @color-secondary;
-  background: white;
-  border: solid 2px @color-secondary;
-  padding-left: 1em;
-  padding-right: 1em;
-
-  &:hover{
-    border-radius: 4px;
-  }
-  &:active{
-    background: @color-secondary;
-    border-radius: 4px;
-    color: white;
-  }
-  &:disabled{
-    opacity: .5;
-  }
+.flogo-button--secondary {
+  .uxpl-button-secondary;
 }
 
 .flogo-button--flat {
   height: @size-height-button;
   text-align: center;
-  color: @color-secondary;
+  color: @primary-blue;
   background: transparent;
   border: none;
+  padding-left: 16px;
+  padding-right: 16px;
 
   &:hover {
     border-radius: 4px;
     background-color: rgba(121, 184, 220, 0.2);
+    color: @color-link-hover;
   }
 
   &:active {
@@ -807,55 +772,6 @@ code {
   }
 }
 
-
-.flogo-button--accent{
-  height: @size-height-button;
-  color: @color-accent;
-  background-color: transparent;
-  border: solid 2px @color-accent;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-
-  &:hover{
-    background-color: transparent;
-    border-radius: 4px;
-    color: @color-accent;
-  }
-  &:active{
-    background: @color-accent-dark;
-    background: @color-accent-light;
-    border-radius: 4px;
-    color: white;
-  }
-  &:disabled{
-    opacity: .5;
-  }
-}
-
-.flogo-button-squared {
-  background-color: #fff;
-  border-radius: 5px;
-  border: solid 1px #d8d8d8;
-  font-size: .875em;
-  height: 31px;
-  width: 31px;
-
-  .flogo-button-squared__icon {
-    color: #b2d8f2;
-    position: relative;
-    top: 1px;
-  }
-
-  &:hover {
-    background-color: #79b8dc;
-    border: none;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
-
-    .flogo-button-squared__icon  {
-      color: #fff;
-    }
-  }
-}
 
 .flogo-profile__tile {
   width: 60px;
@@ -976,8 +892,8 @@ code {
     bottom: 0;
     width: 48px;
     height: 28px;
-    background-color: #727272;
-    border: solid 1px #727272;
+    background-color: @color-dark-gray;
+    border: solid 1px @color-dark-gray;
     transition: .4s;
     &:before {
       position: absolute;
@@ -986,26 +902,26 @@ code {
       width: 24px;
       left: 0px;
       bottom: 1px;
-      background-color: #ffffff;
+      background-color: @color-bg;
       transition: .4s;
     }
   }
   input {
     &:checked {
       & + .flogo-toggle-switch_slider {
-        background-color: #0081cb;
-        border: solid 1px #0081cb;
+        background-color: @primary-blue;
+        border: solid 1px @primary-blue;
         &:before {
           transform: translateX(22px);
         }
         &:hover {
-          background-color: #055dab;
+          background-color: @color-link-hover;
         }
       }
     }
     &:focus {
       & + .flogo-toggle-switch_slider {
-        box-shadow: 0 0 4px #0081cb;
+        box-shadow: 0 0 4px @primary-blue;
       }
     }
   }

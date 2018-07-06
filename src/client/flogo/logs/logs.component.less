@@ -1,3 +1,4 @@
+@import '../../assets/_variables';
 @logs-background-content: #414141;
 
 .flogo-logs {
@@ -30,18 +31,18 @@
 
   .command {
     .log-button {
-      background-color: #fff;
-      height: 35px;
-      width: 35px;
-      color: #7ab8dc;
-      font-size: 1.6em;
+      background-color: @color-bg;
+      height: 40px;
+      width: 40px;
+      color: @color-secondary;
+      font-size: 2em;
       padding: 0;
       text-align: center;
     }
 
     .log-button:hover,
     .log-button-selected {
-      background-color: #79b8dc;
+      background-color: @color-secondary;
       color: white;
     }
   }

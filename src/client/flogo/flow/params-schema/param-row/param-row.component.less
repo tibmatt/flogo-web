@@ -1,3 +1,5 @@
+@import "../../../../assets/_variables";
+
 .form-input {
   width: 100%;
   display: flex;
@@ -5,7 +7,7 @@
 
 .form-input__name {
   border-radius: 4px;
-  border: solid 1px #cad3df;
+  border: solid 1px @link-water;
   width: 236px;
   height: 45px;
   padding: 6px 12px;
@@ -14,9 +16,9 @@
   line-height: 1.4;
 
   &.--invalid {
-    border: 1px solid #d2335c;
+    border: 1px solid @color-invalid;
     &:focus {
-      outline-color: #d2335c;
+      outline-color: @color-invalid;
     }
   }
 }
@@ -31,7 +33,7 @@
   display: flex;
 
   &:hover .delete-icon {
-    color: #79b8dc;
+    color: @color-secondary;
   }
 }
 

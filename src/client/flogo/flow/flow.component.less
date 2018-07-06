@@ -58,7 +58,7 @@
   }
 
   .flogo-flows-diagram-container {
-    background-color: #eeeded;
+    background-color: @gainsboro-nine;
     flex: 1;
   }
 }
@@ -69,7 +69,7 @@
   min-width: 321px;
   flex-direction: column;
   box-shadow: -2px -2px 4px 0 rgba(0, 0, 0, 0.1);
-  background: #fff;
+  background: @color-bg;
   position: relative;
   z-index: 1;
   -webkit-transition: width .5s; /* Safari */
@@ -155,14 +155,14 @@
       .flogo-icon-back {
         font-size: 1.2em;
         padding: 0 10px;
-        color: #727272;
+        color: @warm-grey;
         font-weight: bold;
       }
     }
 
     .flogo-flow-detail-header-back-app-name {
       font-size: .875em;
-      color: @color-secondary;
+      color: @color-primary;
       cursor: pointer;
       margin-left: 4px;
     }
@@ -209,7 +209,7 @@
   position: absolute;
   z-index: 1;
   line-height: @error-panel-height;
-  color: #ee3342;
+  color: @color-error;
   font-size: 22px;
   text-align: center;
   padding-left: 1px;

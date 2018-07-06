@@ -1,9 +1,11 @@
+@import "../../../../../../assets/_variables";
+
 .flogo-icon-edit {
   font-size: 14px;
 }
 
 .settings__menu {
-  color: #676a6d;
+  color: @color-disabled;
   position: absolute;
   right: 16px;
   display: flex;
@@ -15,9 +17,9 @@
     transform: scale(0, 0);
 
     border-radius: 2px;
-    border: solid 1px #727272;
+    border: solid 1px @warm-grey;
     box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
-    background-color: #fff;
+    background-color: @color-bg;
     position: absolute;
     top: 10px;
     right: 15px;
@@ -29,7 +31,7 @@
       list-style: none;
       font-size: 12px;
       line-height: 1.25;
-      color: #727272;
+      color: @warm-grey;
       padding: 0 0 0 10px;
       text-align: left;
 
@@ -42,7 +44,7 @@
           margin-left: 3.5px;
         }
         &:hover {
-          color: #79b8dc;
+          color: @color-secondary;
         }
 
         .flogo-icon-edit {
@@ -56,7 +58,7 @@
 
   &:hover {
     cursor: pointer;
-    color: #79b8dc;
+    color: @color-secondary;
     .settings__menu__options {
       transform: scale(1, 1);
     }
@@ -80,7 +82,7 @@
 }
 
 .flogo-common-edit-panel__header {
-  background-color: #f4f4f4;
+  background-color: @lighter-gray;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -107,11 +109,11 @@
 }
 
 .flogo-common-edit-panel-info__content {
-  background-color: #fff;
-  border: solid 1px #727272;
+  background-color: @color-bg;
+  border: solid 1px @warm-grey;
   border-radius: 2px;
   box-shadow: 0 2px 4px 0 rgba(199, 199, 199, 0.5);
-  color: #666;
+  color: @color-plain;
   padding: 20px;
   right: 0;
   transform: translate(100%, -100%);

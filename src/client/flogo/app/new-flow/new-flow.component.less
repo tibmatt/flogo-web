@@ -1,3 +1,5 @@
+@import '../../../assets/_variables';
+
 :host {
   display: inline-block;
 }
@@ -17,7 +19,7 @@
 
 .form__label {
   font-size: 14px;
-  color: #727272;
+  color: @warm-grey;
 }
 
 .form__input {
@@ -35,17 +37,6 @@
 .footer {
   padding-top: 40px;
   text-align: right;
-}
-
-.footer__button {
-  width: 124px;
-  height: 40px;
-  font-size: 16px;
-
-  & + .footer__button {
-    margin-left: 20px;
-  }
-
 }
 
 .flogo-app-header__add-flow {

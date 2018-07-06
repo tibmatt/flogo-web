@@ -14,9 +14,9 @@
       <textarea class="form-control form__input" formControlName="description" rows="3" id="flowDescription" placeholder="{{ 'ADD:ADD-FLOW-DESCRIPTION' | translate }}"></textarea>
     </div>
     <div class="footer">
-      <button type="button" class="flogo-button--secondary flogo-flows-add-cancel footer__button" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
+      <button type="button" class="flogo-button--secondary flogo-flows-add-cancel" data-dismiss="modal" (click)="closeAddFlowModal()">{{ 'ADD:CANCEL' | translate }}
       </button>
-      <button type="submit" class="flogo-button--default flogo-flows-add-save footer__button" [disabled]="!flow.valid">
+      <button type="submit" class="flogo-button--default flogo-flows-add-save" [disabled]="!flow.valid">
         {{ 'ADD:CREATE' | translate }}
       </button>
     </div>

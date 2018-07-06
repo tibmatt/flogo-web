@@ -1,27 +1,29 @@
+@import '../../assets/_variables';
+
 :host {
-  background: #fff;
+  background: @color-bg;
   height: 100%;
 }
 
 .flogo-main {
-  color: #666;
+  color: @color-plain;
   //height: ~'calc(100% - @{@size-height-footer})';
   height: 100%;
   .header {
     display: flex;
     padding: 1em 0;
-    border-bottom: solid 1px #d8d8d8;
+    border-bottom: solid 1px @gainsboro;
 
     .welcome-message {
       font-size: 3em;
       font-weight: 300;
       letter-spacing: 1px;
-      color: #666;
+      color: @color-plain;
       margin-bottom: .625em;
     }
 
     .description-message {
-      color: #666;
+      color: @color-plain;
       font-size: 14px;
       line-height: 1.1;
       margin-top: 10px;
@@ -34,7 +36,7 @@
     }
 
     .header__link {
-      color: #0081cb
+      color: @color-link;
     }
   }
 
@@ -66,14 +68,11 @@
       }
 
       .recent-flows__list__flow {
-        color: #0081cb;
+        color: @primary-blue;
       }
       .recent-flows__list__app {
+        font-size: .875em;
         font-style: italic;
-        &:hover {
-          text-decoration: none;
-          color: #1573ca;
-        }
       }
     }
 
@@ -92,7 +91,7 @@
       line-height: 1.14;
       letter-spacing: 0.3px;
       text-align: center;
-      color: #676a6d;
+      color: @color-disabled;
       margin-top: 19px;
     }
   }

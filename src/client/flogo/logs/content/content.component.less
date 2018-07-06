@@ -1,6 +1,7 @@
+@import '../../../assets/_variables';
 @info-font-size: 11px;
 @logs-background-toolbar: #4a4a4a;
-@logs-background-header: #676a6d;
+@logs-background-header: @color-disabled;
 @logs-background-content: #414141;
 @logs-background-icon: #888a8d;
 
@@ -59,14 +60,14 @@
             width: 32px;
             height: 32px;
             background-color: @logs-background-icon;
-            color: #FFF;
+            color: @color-bg;
           }
           .caption {
             font-size: 18px;
             padding-left: 15px;
             outline: none;
             margin-top: -5px;
-            color: #fff;
+            color: @color-bg;
             font-weight: bold;
             display: flex;
             display: -webkit-flex;
@@ -82,7 +83,7 @@
         display:  flex;
 
         input {
-          color:#000;
+          color: @color-black;
           border-radius: 0;
           height: 40px;
           font-size: 15.9px;
@@ -90,7 +91,7 @@
 
         .search-button {
           font-size: 1.2em;
-          background-color: #4e7ead ;
+          background-color:  @color-primary;
           height: 40px;
           color: white;
           padding: 10px;
@@ -104,7 +105,7 @@
     flex-direction: column;
 
     .flogo-logs-info() {
-      color: #79b8dc;
+      color: @color-secondary;
       font-size: @info-font-size;
       line-height: 1.4;
       &--error {
@@ -119,7 +120,7 @@
       height: 100%;
 
       .log-line {
-        color: #fff;
+        color: @color-bg;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
