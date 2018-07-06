@@ -120,7 +120,7 @@ function toDiagnostics(resource: Uri, diagnostic: RecognitionException|LexingErr
 function parseExceptionToMarker(exception: RecognitionException) {
   const marker = {
     code: exception.name,
-    severity: monaco.Severity.Error,
+    severity: monaco.MarkerSeverity.Error,
     message: exception.message,
     startLineNumber: exception.token.startLine,
     startColumn: exception.token.startColumn,
@@ -138,7 +138,7 @@ function lexErrorToMarker(resource: monaco.Uri, lexingError: LexingError) {
   const startPosition = model.getPositionAt(lexingError.offset);
   const endPosition = model.getPositionAt(lexingError.offset + lexingError.length);
   return {
-    severity: monaco.Severity.Error,
+    severity: monaco.MarkerSeverity.Error,
     message: lexingError.message,
     startLineNumber: startPosition.lineNumber,
     startColumn: startPosition.column,

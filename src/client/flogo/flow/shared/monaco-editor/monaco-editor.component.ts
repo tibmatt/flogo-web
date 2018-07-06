@@ -217,7 +217,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     const model = this.editor.getModel();
     if (model) {
       const markers = monaco.editor.getModelMarkers({ owner: SOURCE_ID });
-      return Boolean(markers) && markers.find((marker) => marker.severity === monaco.Severity.Error) != null;
+      return Boolean(markers) && markers.find((marker) => marker.severity === monaco.MarkerSeverity.Error) != null;
     }
     return false;
   }
@@ -453,7 +453,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
       startColumn,
       endLineNumber,
       endColumn,
-      severity: monaco.Severity.Error,
+      severity: monaco.MarkerSeverity.Error,
       message: e.message,
     };
   }
@@ -477,8 +477,6 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     this.editor.executeEdits(SOURCE_ID, [{
       text,
       range,
-      // todo: what's this exactly?
-      identifier: { major: 1, minor: 1 },
       forceMoveMarkers: true,
     }]);
   }

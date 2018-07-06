@@ -1,6 +1,6 @@
 export type Thenable<T> = monaco.Thenable<T>;
 
-export type MarkedString = monaco.MarkedString;
+export type MarkedString = monaco.IMarkdownString;
 export type CancellationToken = monaco.CancellationToken;
 export type MonacoHover = monaco.languages.Hover;
 
