@@ -662,9 +662,7 @@ code {
 
 .flogo-flow-detail-menu {
   background: white;
-  border: solid 2px @gainsboro;
-  border-radius: 7px;
-  color: @color-secondary;
+  color: @warm-grey;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -704,7 +702,7 @@ code {
   .flogo-flow-detail-menu-item{
     margin: 0;
     list-style: none;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 
     .flogo-flow-detail-menu-anchor{
@@ -712,6 +710,11 @@ code {
       padding: 10px;
       padding-left: 15px;
       white-space: nowrap;
+      text-decoration: none;
+    }
+
+    &:hover {
+      background-color: rgba(197, 202, 233, 0.2);
     }
 
   }
@@ -936,4 +939,17 @@ code {
 
 .overlay-flex {
   display: flex;
+}
+
+.flogo-button-dropdown-caret {
+  display: inline-block;
+  transform: rotate(270deg);
+  transform-origin: center center;
+  margin: 0;
+  padding: 0;
+  line-height: 16px;
+  position: relative;
+  height: 16px;
+  top: 1px;
+  font-size: 0.9em;
 }
