@@ -65,14 +65,21 @@ export class ConfirmationService {
   private getPopoverPositionStrategy(connectedToRef: ElementRef) {
     return this.overlay
       .position()
-      .connectedTo(
-        connectedToRef,
-        { originX: 'end', originY: 'top' },
-        { overlayX: 'end', overlayY: 'top' }
-      )
-      .withFallbackPosition(
-        {originX: 'start', originY: 'top'}, {overlayX: 'start', overlayY: 'bottom'}
-      );
+      .flexibleConnectedTo(connectedToRef)
+      .withPositions([
+        {
+          originX: 'end',
+          originY: 'top',
+          overlayX: 'end',
+          overlayY: 'top',
+        },
+        {
+          originX: 'start',
+          originY: 'top',
+          overlayX: 'start',
+          overlayY: 'bottom',
+        }
+      ]);
   }
 
   private getModalOverlayConfig(): OverlayConfig {

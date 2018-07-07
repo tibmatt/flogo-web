@@ -1,4 +1,4 @@
-import { isArray, isString } from 'lodash';
+import { isArray, isString, isEmpty } from 'lodash';
 import {
   ComponentRef,
   Directive,
@@ -15,23 +15,21 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { AbstractControl } from '@angular/forms';
-import { Overlay, OverlayConnectionPosition, OverlayRef } from '@angular/cdk/overlay';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { TAB } from '@angular/cdk/keycodes';
 
-import { Observable, ReplaySubject, of as observableOf, concat } from 'rxjs';
-import { map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { Observable, ReplaySubject, of as observableOf, concat, combineLatest, merge } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
 import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
-import { Subscription } from 'rxjs/Subscription';
-import { OriginConnectionPosition } from '@angular/cdk/overlay/typings/position/connected-position';
 
 const POPOVER_WIDTH = '344px';
-const POPOVER_MIN_HEIGHT = 150;
 const POPOVER_MAX_HEIGHT = '250px';
+const DISTANCE_TO_VIEWPORT_MARGIN = 10;
 
 const ensureObservable = (value) => {
   if (!value) {
@@ -68,8 +66,6 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   contentPortal: ComponentPortal<AutoCompleteContentComponent>;
   popoverComponentRef: ComponentRef<AutoCompleteContentComponent>;
 
-  private lastPosition: 'top' | 'bottom' | null = null;
-
   private variablesSources = new ReplaySubject<Observable<string[]>>(1);
   private allowedValuesSources = new ReplaySubject<Observable<string[]>>(1);
   private valueSources = new ReplaySubject<Observable<string[]>>(1);
@@ -77,7 +73,6 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   private filterTerm$: Observable<string>;
   private filteredAllowedValues$: Observable<string[]>;
   private filteredVariableOptions$: Observable<string[]>;
-  private resultsChangeSubscription: Subscription;
 
   private destroy$ = SingleEmissionSubject.create();
 
@@ -166,10 +161,6 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
     if (this.contentPortal && this.contentPortal.isAttached) {
       this.contentPortal.detach();
     }
-    if (this.resultsChangeSubscription && this.resultsChangeSubscription.closed) {
-      this.resultsChangeSubscription.unsubscribe();
-      this.resultsChangeSubscription = null;
-    }
   }
 
   private open() {
@@ -177,30 +168,48 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       this.contentPortal = this.createPortal();
     }
 
-    const calculatePosition = this.getPosition();
     if (!this.popoverRef) {
       this.popoverRef = this.overlay.create({
         panelClass: 'overlay-flex',
         width: POPOVER_WIDTH,
         maxHeight: POPOVER_MAX_HEIGHT,
         scrollStrategy: this.getScrollStrategy(),
-        positionStrategy: this.getPositionStrategy(calculatePosition.position),
+        positionStrategy: this.getPositionStrategy(),
       });
     }
 
     if (!this.popoverRef.hasAttached()) {
       this.popoverComponentRef = this.popoverRef.attach(this.contentPortal);
+      // we need to manually trigger a position recalculation anytime the help section appears or dissapears because
+      // it forces a change in the distribution of the container potentially clipping the autosuggestion list outside the view
+      const reposition = () => setTimeout(this.popoverRef.updatePosition());
+      merge(
+        this.helpVisibilityChanges(),
+        this.resultsContainerVisibilityChanges()
+      )
+      .pipe(takeUntil(this.popoverRef.detachments()))
+      .subscribe(reposition);
     }
   }
 
-  private getPosition() {
-    const connectedElement = this.containerRef.nativeElement as HTMLElement;
-    const connectedBoundingRect = connectedElement.getBoundingClientRect();
-    const topDistance = connectedBoundingRect.top;
-    const bottomDistance = window.innerHeight - connectedBoundingRect.bottom;
-    return bottomDistance < POPOVER_MIN_HEIGHT ?
-      { position: 'top' as 'top', distance: topDistance }
-      : { position: 'bottom' as 'bottom', distance: bottomDistance };
+  private helpVisibilityChanges() {
+    return this.filterTerm$
+      .pipe(
+        map((term) => isEmpty(term)),
+        distinctUntilChanged(),
+      );
+  }
+
+  private resultsContainerVisibilityChanges(): Observable<boolean> {
+    const countResults = map((results: any[] | null) => results ? results.length : 0);
+    return combineLatest(
+      this.filteredAllowedValues$.pipe(countResults),
+      this.filteredVariableOptions$.pipe(countResults),
+    )
+    .pipe(
+      map(([count1, count2]) => count1 + count2 === 0),
+      distinctUntilChanged(),
+    );
   }
 
   private getScrollStrategy() {
@@ -209,22 +218,18 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       .reposition();
   }
 
-  private getPositionStrategy(preferredOrientation?: 'top' | 'bottom') {
-    type PositionTuple = [OriginConnectionPosition, OverlayConnectionPosition];
-    const bottomPosition: PositionTuple = [{ originX: 'start', originY: 'bottom' }, { overlayX: 'start', overlayY: 'top' }];
-    const topPosition: PositionTuple = [{originX: 'start', originY: 'top'}, {overlayX: 'start', overlayY: 'bottom'}];
-    const [preffered, fallback] = preferredOrientation === 'top' ? [topPosition, bottomPosition] : [bottomPosition, topPosition];
+  private getPositionStrategy() {
     return this.overlay
       .position()
-      .connectedTo(
-        this.containerRef,
-        preffered[0],
-        preffered[1],
-      )
-      .withFallbackPosition(
-        fallback[0],
-        fallback[1],
-      );
+      .flexibleConnectedTo(this.containerRef)
+      .withFlexibleDimensions(true)
+      .withViewportMargin(DISTANCE_TO_VIEWPORT_MARGIN)
+      .withGrowAfterOpen(true)
+      .withPush(false)
+      .withPositions([
+        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 6 },
+        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -6 },
+      ]);
   }
 
   private optionSelected(option: string) {
