@@ -661,7 +661,7 @@ code {
 }
 
 .flogo-flow-detail-menu {
-  background: white;
+  background: transparent;
   color: @warm-grey;
   display: flex;
   justify-content: center;
@@ -688,7 +688,7 @@ code {
     border-radius: 3px;
     color: @color-plain;
     position: absolute;
-    top: 40px;
+    top: 44px;
     right: 0;
     overflow: hidden;
     transform: scale(0,0);
@@ -741,11 +741,15 @@ code {
 
 .flogo-button--primary,
 .flogo-button--default {
-.uxpl-button-primary;
+  .uxpl-button-primary;
 }
 
 .flogo-button--secondary {
   .uxpl-button-secondary;
+}
+
+.kebabmenu-icon {
+  font-size: 1.4em;
 }
 
 .flogo-button--flat {
@@ -868,7 +872,6 @@ code {
   padding: 2px 10px;
   border-radius: 100px;
   position:relative;
-  top: -5px;
   color: @color-plain;
 }
 
