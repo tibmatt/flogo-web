@@ -1,6 +1,7 @@
 import {
   assign,
   cloneDeep,
+  chain,
   each,
   filter,
   get, set,
@@ -13,10 +14,9 @@ import {
   map,
   noop,
   reduce,
-  toInteger,
   values
 } from 'lodash';
-import {tap, share, takeUntil } from 'rxjs/operators';
+import { tap, share, takeUntil, take, switchMap } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -68,7 +68,6 @@ import {
   FLOGO_TASK_TYPE
 } from '../core/constants';
 import {
-  isIterableTask,
   isMapperActivity,
   isSubflowTask,
   notification,
@@ -84,7 +83,7 @@ import { FlowState } from './core/state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
-import {Trigger} from './core';
+import { Trigger } from './core';
 import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
 
 export interface IPropsToUpdateFormBuilder {
@@ -194,6 +193,15 @@ export class FlowComponent implements OnInit, OnDestroy {
         takeUntil(this.ngOnDestroy$),
       )
       .subscribe(selection => this.onSelectionChanged(selection));
+    this.flowDetails.runnableState$
+      .pipe(takeUntil(this.ngOnDestroy$))
+      .subscribe(runnableState => this.runnableInfo = runnableState);
+    this.flowDetails.itemsChange$
+      .pipe(
+        takeUntil(this.ngOnDestroy$),
+        switchMap(() => this.flowDetails.flowState$.pipe(take(1))),
+      )
+      .subscribe(state => this.onItemsChange(state));
     this.initSubscribe();
     this.loading = false;
   }
@@ -281,14 +289,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     return firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/');
   }
 
-  private onFlowStateUpdate(nextState: FlowState) {
-    const prevState = this.flowState;
-    this.flowState = nextState;
-    this.determineRunnableEnabled();
-    if (prevState && prevState.isErrorPanelOpen !== nextState.isErrorPanelOpen) {
-      // todo: this shouldn't be necessary once we move away from route based state
-      this._navigateFromModuleRoot();
-    }
+  private onItemsChange(nextState: FlowState) {
+    this.refreshCurrentTileContextIfNeeded();
     this._flowService.saveFlowIfChanged(this.flowId, nextState)
       .subscribe(updated => {
         if (updated && !this._isCurrentProcessDirty) {
@@ -296,6 +298,15 @@ export class FlowComponent implements OnInit, OnDestroy {
         }
         console.log('flowSaved?', updated);
       });
+  }
+
+  private onFlowStateUpdate(nextState: FlowState) {
+    const prevState = this.flowState;
+    this.flowState = nextState;
+    if (prevState && prevState.isErrorPanelOpen !== nextState.isErrorPanelOpen) {
+      // todo: this shouldn't be necessary once we move away from route based state
+      this._navigateFromModuleRoot();
+    }
   }
 
   ngOnDestroy() {
@@ -886,34 +897,13 @@ export class FlowComponent implements OnInit, OnDestroy {
       return undefined;
     }
     // preprocessing initial data
-    return _(flowInput)
+    return chain(flowInput)
       .filter((item: any) => {
         // filter empty values
         return !isNil(item.value);
       })
       .map((item: any) => cloneDeep(item))
       .value();
-  }
-
-  private determineRunnableEnabled() {
-    this.runnableInfo = {
-      disabled: isEmpty(this.flowState.mainItems),
-      disableReason: null
-    };
-    if (this.runnableInfo.disabled) {
-      return;
-    }
-    const allTasks = this._getAllTasks();
-    const subflowOrIteratorTasks = Object.keys(allTasks).find(task => {
-      return isSubflowTask(allTasks[task].type) || isIterableTask(allTasks[task]);
-    });
-    if (subflowOrIteratorTasks) {
-      this.runnableInfo.disabled = true;
-      this.runnableInfo.disableReason = this.translate.instant('CANVAS:WARNING-UNSUPPORTED-TEST-RUN');
-    } else {
-      this.runnableInfo.disabled = false;
-      this.runnableInfo.disableReason = null;
-    }
   }
 
   private handleRunError(error) {
@@ -1094,17 +1084,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     });
 
     return stepNumber;
-  }
-
-  /*-------------------------------*
-   |      Task Configurator        |
-   *-------------------------------*/
-
-  private _saveConfigFromTaskConfigurator(envelope: any) {
-    // todo: re-enable
-    this.determineRunnableEnabled();
-    // context potentially changed
-    this.refreshCurrentTileContextIfNeeded();
   }
 
   /*-------------------------------*

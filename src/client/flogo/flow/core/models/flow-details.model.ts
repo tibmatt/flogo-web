@@ -25,6 +25,14 @@ export class FlogoFlowDetails {
     this.relatedSubFlows = subFlowRelations;
   }
 
+  get runnableState$() {
+    return this.store.select(FlowSelectors.getRunnableState);
+  }
+
+  get itemsChange$() {
+    return this.store.select(FlowSelectors.getAllItems);
+  }
+
   get flowState$() {
     return this.store.select(FlowSelectors.selectFlowState);
   }
@@ -103,10 +111,6 @@ export class FlogoFlowDetails {
 
   addSubflowSchema(flow: ActionBase) {
     this.relatedSubFlows.set(flow.id, flow);
-  }
-
-  getSubflowSchema(flowId: string): ActionBase {
-    return this.relatedSubFlows.get(flowId);
   }
 
   deleteSubflowSchema(flowId: string) {
