@@ -14,13 +14,13 @@ import { mockTriggerDetails } from './ui-model-trigger.mock';
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import Spy = jasmine.Spy;
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
-import {ActionBase} from '@flogo/core';
+import { ActionBase, Dictionary } from '@flogo/core';
 
 describe('Service: UI Model Converter', function (this: {
   service: UIModelConverterService,
   errorService: ErrorService,
   contribServiceMock: RESTAPIContributionsService,
-  emptySchemaRegistry: Map<string, ActionBase>
+  emptySchemaRegistry: Dictionary<ActionBase>,
 }) {
 
   beforeEach(() => {
@@ -30,7 +30,7 @@ describe('Service: UI Model Converter', function (this: {
     this.errorService = new ErrorService();
     this.service = new UIModelConverterService(this.contribServiceMock, this.errorService);
     this.service.setProfile(FLOGO_PROFILE_TYPE.MICRO_SERVICE);
-    this.emptySchemaRegistry = new Map(<[string, ActionBase][]> []);
+    this.emptySchemaRegistry = {};
   });
 
   it('Should throw error when Activity does not have a activityRef', () => {
