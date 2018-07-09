@@ -1,7 +1,6 @@
 import {
   assign,
   cloneDeep,
-  defaultsDeep,
   each,
   filter,
   get, set,
@@ -61,9 +60,6 @@ import {
   PUB_EVENTS as FLOGO_TASK_SUB_EVENTS,
   SUB_EVENTS as FLOGO_TASK_PUB_EVENTS
 } from './shared/form-builder/messages';
-import {
-  PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS,
-} from './task-configurator/messages';
 
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
@@ -75,23 +71,21 @@ import {
   isIterableTask,
   isMapperActivity,
   isSubflowTask,
-  normalizeTaskName,
   notification,
 } from '@flogo/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
-import { SaveTaskConfigEventData } from './task-configurator';
-import { mergeItemWithSchema, extractItemInputsFromTask, PartialActivitySchema } from '@flogo/core/models';
+import { mergeItemWithSchema, extractItemInputsFromTask } from '@flogo/core/models';
 import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
 import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
 import { HandlerType, CurrentSelection, InsertTaskSelection, SelectionType } from './core/models';
 import { FlowState } from './core/state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
-import { makeErrorTask } from './core/models/make-error-task';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import {Trigger} from './core';
+import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -210,7 +204,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     const subs = [
       assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
-      assign({}, FLOGO_TRANSFORM_SUB_EVENTS.saveTask, { callback: this._saveConfigFromTaskConfigurator.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
     ];
@@ -368,29 +361,11 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   private uniqueTaskName(taskName: string) {
-    // TODO for performance pre-normalize and store task names?
-    const newNormalizedName = normalizeTaskName(taskName);
-
-    const allTasks = { ...this.flowState.mainItems, ...this.flowState.errorItems };
-
-    // search for the greatest index in all the flow
-    const greatestIndex = reduce(allTasks, (greatest: number, task: any) => {
-      const currentNormalized = normalizeTaskName(task.name);
-      let repeatIndex = 0;
-      if (newNormalizedName === currentNormalized) {
-        repeatIndex = 1;
-      } else {
-        const match = /^(.*)\-([0-9]+)$/.exec(currentNormalized); // some-name-{{integer}}
-        if (match && match[1] === newNormalizedName) {
-          repeatIndex = toInteger(match[2]);
-        }
-      }
-
-      return repeatIndex > greatest ? repeatIndex : greatest;
-
-    }, 0);
-
-    return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
+    return uniqueTaskName(
+      taskName,
+      this.flowState.mainItems,
+      this.flowState.errorItems
+    );
   }
 
   private _getCurrentTaskContext(taskId: any): TaskContext {
@@ -713,7 +688,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const handlerId = this.getDiagramId(data.taskId);
     const task = this.getTaskInHandler(handlerId, data.taskId);
 
-    const changes: { item: {id: string} & Partial<Item>, node: Partial<GraphNode> } = <any>{};
+    const changes: { item: {id: string} & Partial<Item>, node:  {id: string} & Partial<GraphNode> } = <any>{};
     if (task.type === FLOGO_TASK_TYPE.TASK) {
       const changedInputs = data.inputs || {};
       if (isEqual(changedInputs, task.input)) {
@@ -1125,43 +1100,8 @@ export class FlowComponent implements OnInit, OnDestroy {
    |      Task Configurator        |
    *-------------------------------*/
 
-  private _saveConfigFromTaskConfigurator(data: SaveTaskConfigEventData, envelope: any) {
-    const diagramId = data.handlerId;
-    const tile = <ItemTask> this.getTaskInHandler(diagramId, data.tile.id);
-    const changedSubflowSchema = data.changedSubflowSchema;
-    const tileAsSubflow = <ItemSubflow> tile;
-    const itemChanges: {id: string} & Partial<ItemActivityTask & ItemSubflow> = {
-      id: tile.id,
-      settings: tile.settings,
-    };
-    if (changedSubflowSchema && tileAsSubflow.settings.flowPath !== data.tile.settings.flowPath) {
-      this.manageFlowRelationships(tileAsSubflow.settings.flowPath);
-      itemChanges.name = this.uniqueTaskName(changedSubflowSchema.name);
-      itemChanges.description = changedSubflowSchema.description;
-      itemChanges.settings = {
-        ...itemChanges.settings,
-        flowPath: changedSubflowSchema.id,
-      };
-      this.flowDetails.addSubflowSchema(changedSubflowSchema);
-    }
-    const activitySchema = this.flowState.schemas[tile.ref];
-    const isMapperTask = isMapperActivity(activitySchema);
-    if (isMapperTask) {
-      itemChanges.input = {
-        mappings: cloneDeep(data.inputMappings),
-      };
-    } else {
-      itemChanges.inputMappings = cloneDeep(data.inputMappings);
-    }
-
-    const iteratorInfo = data.iterator;
-    itemChanges.settings = {
-      ...itemChanges.settings,
-      iterate: iteratorInfo.isIterable ? data.iterator.iterableValue : undefined,
-    };
-
-    this.flowDetails.updateItem(this.handlerTypeFromString(diagramId), { item: itemChanges });
-
+  private _saveConfigFromTaskConfigurator(envelope: any) {
+    // todo: re-enable
     this.determineRunnableEnabled();
     // context potentially changed
     this.refreshCurrentTileContextIfNeeded();

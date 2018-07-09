@@ -1,4 +1,4 @@
-import { assign, isEmpty, cloneDeep } from 'lodash';
+import { isEmpty, cloneDeep } from 'lodash';
 import { skip, takeUntil } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -9,8 +9,6 @@ import { Task } from '@flogo/core/interfaces';
 import { PostService } from '@flogo/core/services/post.service';
 import { mergeItemWithSchema, PartialActivitySchema, SingleEmissionSubject } from '@flogo/core/models';
 
-import { PUB_EVENTS, SaveTaskConfigEventData } from './messages';
-
 import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
 
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
@@ -19,9 +17,11 @@ import {SubFlowConfig} from './subflow-config';
 import { isIterableTask, isMapperActivity, isSubflowTask, notification } from '@flogo/shared/utils';
 import { ActionBase, Item, ItemActivityTask, ItemSubflow, ItemTask, LanguageService } from '@flogo/core';
 import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
-import { FlowState } from '@flogo/flow/core/state';
+import { FlowState, FlowActions } from '@flogo/flow/core/state';
 import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
 import { getStateWhenTaskConfigureChanges } from './task-configurator.selector';
+import { createSaveAction } from '@flogo/flow/task-configurator/models/save-action-creator';
+import { CancelItemConfiguration } from '@flogo/flow/core/state/flow/flow.actions';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -100,7 +100,13 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         getStateWhenTaskConfigureChanges(),
         takeUntil(this.destroy$),
       )
-      .subscribe(state => this.initConfigurator(state));
+      .subscribe(state => {
+        if (state) {
+          this.initConfigurator(state);
+        } else if (this.isActive) {
+          this.close();
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -144,18 +150,19 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
   save() {
     const isIterable = this.iteratorModeOn && !isEmpty(this.iterableValue);
-    this._postService.publish(assign({}, PUB_EVENTS.saveTask, {
-      data: <SaveTaskConfigEventData>{
-        tile: this.currentTile,
-        changedSubflowSchema: this.currentSubflowSchema,
-        iterator: {
-          isIterable,
-          iterableValue: isIterable ? this.iterableValue : undefined,
-        },
-        inputMappings: MapperTranslator.translateMappingsOut(this.inputMapperController.getCurrentState().mappings),
-      }
-    }));
-    this.close();
+    createSaveAction(this.store, {
+      tileId: this.currentTile.id,
+      subflowPath: this.currentTile.settings ? this.currentTile.settings.flowPath : null,
+      changedSubflowSchema: this.currentSubflowSchema,
+      iterator: {
+        isIterable,
+        iterableValue: isIterable ? this.iterableValue : undefined,
+      },
+      inputMappings: MapperTranslator.translateMappingsOut(this.inputMapperController.getCurrentState().mappings),
+    })
+    .subscribe(action => {
+      this.store.dispatch(action);
+    });
   }
 
   selectTab(name: string) {
@@ -168,7 +175,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   cancel() {
-    this.close();
+    this.store.dispatch(new FlowActions.CancelItemConfiguration());
   }
 
   trackTabsByFn(index, [tabName, tab]) {
@@ -386,7 +393,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private close() {
-    this.contextChange$.emitAndComplete();
+    if (!this.contextChange$.closed) {
+      this.contextChange$.emitAndComplete();
+    }
     this.isActive = false;
   }
 
