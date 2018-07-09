@@ -266,9 +266,10 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   toggleViewsDropdown() {
-   this.isViewsDropdownShown = !this.isViewsDropdownShown;
+    this.isViewsDropdownShown = !this.isViewsDropdownShown;
   }
-  closeViewsDropdown(){
+
+  closeViewsDropdown() {
     this.isViewsDropdownShown = false;
   }
   showDetailsView(viewType: string) {
