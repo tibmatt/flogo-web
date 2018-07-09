@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { ActionBase, ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
+import { Action as ActionSchema, ActionBase, ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { getProfileType } from '@flogo/shared/utils';
 
@@ -15,14 +15,12 @@ export class FlogoFlowDetails {
   id: string;
   associatedToAppId: string;
   applicationProfileType: FLOGO_PROFILE_TYPE;
-  relatedSubFlows: Map<string, ActionBase>;
   flow: UiFlow;
 
-  constructor(flow, subFlowRelations: Map<string, ActionBase>, private store: Store<AppState>) {
+  constructor(flow, private store: Store<AppState>) {
     this.id = flow.id;
     this.associatedToAppId = flow.app.id;
     this.applicationProfileType = getProfileType(flow.app);
-    this.relatedSubFlows = subFlowRelations;
   }
 
   get runnableState$() {
@@ -75,15 +73,11 @@ export class FlogoFlowDetails {
     }));
   }
 
-  registerNewItem(handlerType: HandlerType, { item, node, schema }: { item: ItemTask, node: GraphNode, schema: ContribSchema }) {
-    this.store.dispatch(
-      new FlowActions.TaskItemCreated({
-        handlerType,
-        item,
-        node,
-        schema,
-      })
-    );
+  registerNewItem(
+    handlerType: HandlerType,
+    itemDetails: { item: ItemTask, node: GraphNode, schema: ContribSchema, subflowSchema?: ActionSchema }
+   ) {
+    this.store.dispatch(new FlowActions.TaskItemCreated({ handlerType, ...itemDetails }));
   }
 
   removeItem(handlerType: HandlerType, itemId: string) {
@@ -107,14 +101,6 @@ export class FlogoFlowDetails {
 
   executionStatusChanged(changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> }) {
     this.store.dispatch(new FlowActions.ExecutionStateUpdated({ changes }));
-  }
-
-  addSubflowSchema(flow: ActionBase) {
-    this.relatedSubFlows.set(flow.id, flow);
-  }
-
-  deleteSubflowSchema(flowId: string) {
-    this.relatedSubFlows.delete(flowId);
   }
 
 }

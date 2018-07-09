@@ -1,17 +1,17 @@
+import { Action as ActionSchema } from '@flogo/core';
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName, PayloadOf } from '../../utils';
 import { TaskItemCreated } from '../flow.actions';
 import { addNewNode } from '../../../models/flow/add-new-node';
 import { makeTaskSelection } from '../../../models/flow/selection';
 
-export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCreated>) {
+export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCreated>): FlowState {
   const {handlerType, schema, item, node} = payload;
   const graphName = getGraphName(handlerType);
   const itemsDictionaryName = getItemsDictionaryName(handlerType);
   const itemsDictionary = state[itemsDictionaryName];
   const schemas = schema ? {...state.schemas, [schema.ref]: schema} : state.schemas;
-
-  return {
+  state = {
     ...state,
     currentSelection: makeTaskSelection(handlerType, node.id),
     [graphName]: addNewNode(state[graphName], node),
@@ -21,4 +21,19 @@ export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCre
     },
     schemas,
   };
+  state = registerSubflowSchema(state, payload.subflowSchema);
+  return state;
+}
+
+function registerSubflowSchema(state: FlowState,  subflowSchema?: ActionSchema): FlowState {
+  if (subflowSchema) {
+    state = {
+      ...state,
+      linkedSubflows: {
+        ...state.linkedSubflows,
+        [subflowSchema.id]: { ...subflowSchema }
+      },
+    };
+  }
+  return state;
 }

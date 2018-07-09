@@ -26,7 +26,7 @@ export interface FlowInfo {
 }
 
 export abstract class AbstractModelConverter {
-  subflowSchemaRegistry: Map<string, ActionBase>;
+  subflowSchemaRegistry: Dictionary<ActionBase>;
   errorService: ErrorService;
   contribService: RESTAPIContributionsService;
 
@@ -57,7 +57,7 @@ export abstract class AbstractModelConverter {
     }
   }
 
-  convertToWebFlowModel(flowObj, subflowSchema: Map<string, ActionBase>) {
+  convertToWebFlowModel(flowObj, subflowSchema: Dictionary<ActionBase>) {
     this.subflowSchemaRegistry = subflowSchema;
     return this.getActivitiesSchema(this.activitiesUsed(flowObj))
       .then((installedActivities) => {
@@ -171,7 +171,7 @@ export abstract class AbstractModelConverter {
       }
       // If the flow is still available get the inputs of a subflow from its latest definition
       // else consider an empty array as flow inputs.
-      const subflowSchema = this.subflowSchemaRegistry.get(item.settings.flowPath);
+      const subflowSchema = this.subflowSchemaRegistry[item.settings.flowPath];
       const subflowInputs = (subflowSchema && subflowSchema.metadata && subflowSchema.metadata.input) || [];
       // Remove the dangling inputMappings of old flow inputs. This won't save to the database yet
       // but it will make sure it won't maintain the dangling mappings when next time flow is saved.

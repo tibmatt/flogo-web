@@ -14,7 +14,6 @@ import {
   map,
   noop,
   reduce,
-  values
 } from 'lodash';
 import { tap, share, takeUntil, take, switchMap } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -558,7 +557,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.flowDetails.registerNewItem(
       this.handlerTypeFromString(diagramId),
-      { item, node, schema },
+      { item, node, schema, subflowSchema: data.subflowSchema },
     );
   }
 
@@ -685,9 +684,6 @@ export class FlowComponent implements OnInit, OnDestroy {
           return;
         }
         this._isDiagramEdited = true;
-        if (isSubflowItem(task)) {
-          this.manageFlowRelationships(task.settings.flowPath);
-        }
         this.flowDetails.removeItem(handlerType, taskId);
       })
       .catch((err) => {
@@ -1211,16 +1207,6 @@ export class FlowComponent implements OnInit, OnDestroy {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
         });
       });
-  }
-
-  private manageFlowRelationships(flowId: string) {
-    if (!this.isFlowUsedAgain(flowId)) {
-      this.flowDetails.deleteSubflowSchema(flowId);
-    }
-  }
-
-  private isFlowUsedAgain(id: string) {
-    return !!values(this._getAllTasks()).find((t: ItemSubflow) => t.settings && t.settings.flowPath === id);
   }
 
 }

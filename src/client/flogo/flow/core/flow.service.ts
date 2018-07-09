@@ -1,9 +1,9 @@
-import { get, uniq, isEqual, omit } from 'lodash';
+import { get, uniq, fromPairs, isEqual, omit } from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { of as observableOfValue } from 'rxjs';
 
-import { ActionBase, Action, Dictionary, LegacyFlowWrapper, UiFlow } from '@flogo/core';
+import { Action, Dictionary, LegacyFlowWrapper, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 import { isSubflowTask } from '@flogo/shared/utils';
@@ -58,14 +58,14 @@ export class FlogoFlowService {
           'triggers'
         ]);
         const { triggers, handlers } = normalizeTriggersAndHandlersForAction(flow.id, flowTriggers);
-        const subflowsMap = new Map<string, ActionBase>(subflows.map(a => [a.id, a]) as [string, Action][]);
-        this.currentFlowDetails = new FlogoFlowDetails(flow, subflowsMap, this.store);
+        const linkedSubflows = fromPairs(subflows.map(a => [a.id, a]) as [string, Action][]);
+        this.currentFlowDetails = new FlogoFlowDetails(flow, this.store);
 
         this._converterService.setProfile(this.currentFlowDetails.applicationProfileType);
-        return this._converterService.getWebFlowModel(flowDiagramDetails, subflowsMap)
+        return this._converterService.getWebFlowModel(flowDiagramDetails, linkedSubflows)
           .then(convertedFlow => {
             this.previousSavedFlow = flogoFlowToJSON(convertedFlow);
-            this.store.dispatch(new Init({ ...convertedFlow, triggers, handlers }));
+            this.store.dispatch(new Init({ ...convertedFlow, triggers, handlers, linkedSubflows }));
             return {
               flow: convertedFlow,
               triggers: flowTriggers,

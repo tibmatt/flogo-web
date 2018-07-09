@@ -51,7 +51,13 @@ export class CreateBranch implements BaseFlowAction {
 
 export class TaskItemCreated implements BaseFlowAction {
   readonly type = ActionType.TaskItemCreated;
-  constructor(public payload: { handlerType: HandlerType, item: ItemTask, node: GraphNode, schema: ContribSchema}) {}
+  constructor(public payload: {
+    handlerType: HandlerType,
+    item: ItemTask,
+    node: GraphNode,
+    schema: ContribSchema,
+    subflowSchema?: ActionSchema
+  }) {}
 }
 
 export class RemoveItem implements BaseFlowAction {

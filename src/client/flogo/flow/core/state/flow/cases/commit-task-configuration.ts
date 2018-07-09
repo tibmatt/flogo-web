@@ -2,8 +2,10 @@ import { ItemSubflow } from '@flogo/core';
 import { PayloadOf, getItem } from '../../utils';
 import { FlowState } from '../flow.state';
 import { CommitItemConfiguration } from '../flow.actions';
-import { subflowSchemaUpdate, getLinkedSubflow, removeSubschemaIfNotUsed } from './subflow-schema-update';
+import { subflowSchemaUpdate } from './subflow-schema-update';
+import { getLinkedSubflow } from './get-linked-subflow';
 import { itemUpdate } from './item-update';
+import { removeSubschemaIfNotUsed } from '@flogo/flow/core/state/flow/cases/remove-subschema';
 
 export function commitTaskConfiguration(state: FlowState, payload: PayloadOf<CommitItemConfiguration>) {
   const { handlerType, item: { id: itemId } } = payload;
