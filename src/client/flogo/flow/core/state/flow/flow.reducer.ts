@@ -51,8 +51,10 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
       return itemUpdate(state, action.payload);
     }
     case ActionType.ConfigureItem: {
-      // todo: currently managed directly by flow.component
-      return state;
+      return {
+        ...state,
+        taskConfigure: action.payload.itemId,
+      };
     }
     case ActionType.ExecutionWillStart: {
       return  {

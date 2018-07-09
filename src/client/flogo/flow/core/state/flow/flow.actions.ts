@@ -64,7 +64,7 @@ export class ItemUpdated implements BaseFlowAction {
 
 export class ConfigureItem implements BaseFlowAction {
   readonly type = ActionType.ConfigureItem;
-  constructor(public payload: { handlerType: HandlerType, item: ItemTask, node: GraphNode, schema: ContribSchema }) {}
+  constructor(public payload: { itemId: string; }) {}
 }
 
 export class ExecutionWillStart implements BaseFlowAction {

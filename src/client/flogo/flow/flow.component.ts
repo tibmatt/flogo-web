@@ -63,8 +63,6 @@ import {
 } from './shared/form-builder/messages';
 import {
   PUB_EVENTS as FLOGO_TRANSFORM_SUB_EVENTS,
-  SelectTaskConfigEventData,
-  SUB_EVENTS as FLOGO_TRANSFORM_PUB_EVENTS
 } from './task-configurator/messages';
 
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
@@ -244,7 +242,7 @@ export class FlowComponent implements OnInit, OnDestroy {
         return;
       }
       case DiagramActionType.Configure: {
-        this._selectConfigureTaskFromDiagram((<DiagramActionSelf>diagramAction).id);
+        flowDetails.configureItem((<DiagramActionSelf>diagramAction).id);
         return;
       }
       case DiagramActionType.Remove: {
@@ -714,14 +712,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   private _taskDetailsChanged(data: any, envelope: any) {
     const handlerId = this.getDiagramId(data.taskId);
     const task = this.getTaskInHandler(handlerId, data.taskId);
-    if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) { // trigger
-      // todo: used?
-      this._triggerDetailsChanged(task, data, envelope);
-      if (isFunction(envelope.done)) {
-        envelope.done();
-      }
-      return;
-    }
 
     const changes: { item: {id: string} & Partial<Item>, node: Partial<GraphNode> } = <any>{};
     if (task.type === FLOGO_TASK_TYPE.TASK) {
@@ -751,54 +741,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       this.handlerTypeFromString(handlerId),
       changes,
     );
-  }
-
-  private _triggerDetailsChanged(task: any, data: any, evnelope: any) {
-    // todo: used?
-    let updatePromise: any = Promise.resolve(true);
-
-    if (data.changedStructure === 'settings') {
-      updatePromise = this.triggersApiService.updateTrigger(this.currentTrigger.id, { settings: data.settings });
-    } else if (data.changedStructure === 'handlerSettings' || data.changedStructure === 'outputs') {
-      updatePromise = this._restAPIHandlerService.updateHandler(this.currentTrigger.id, this.flowState.id, {
-        settings: data.handlerSettings,
-        outputs: data.outputs
-      });
-
-    }
-
-    updatePromise
-      .then((res) => {
-        this._updateAttributesChanges(task, data.settings, 'settings');
-        this._updateAttributesChanges(task, data.handlerSettings, 'handler.settings');
-        this._updateAttributesChanges(task, data.outputs, 'outputs');
-
-        // ensure the persence of the internal properties
-        task.__props = task.__props || {};
-
-        // cache the outputs mock of a trigger, to be used as initial data when start/restart the flow.
-        task.__props['outputs'] = map(get(task, 'outputs', []), (output: any) => {
-          const newValue = data.outputs[output.name];
-
-          // undefined is invalid default value, hence filter that out.
-          if (output && !isUndefined(newValue)) {
-            output.value = newValue;
-          }
-
-          return output;
-        });
-      });
-  }
-
-  private _updateAttributesChanges(task: any, changedInputs: any, structure: any) {
-    const attributeNamePairs = get(task, structure, []).map(attr => <[string, any]>[attr.name, attr]);
-    const attributesByName = new Map<string, any>(attributeNamePairs);
-    Object.keys(changedInputs || {}).forEach(name => {
-      const attribute = attributesByName.get(name);
-      if (attribute) {
-        attribute.value = changedInputs[name];
-      }
-    });
   }
 
   private _getAllTasks() {
@@ -1183,90 +1125,6 @@ export class FlowComponent implements OnInit, OnDestroy {
    |      Task Configurator        |
    *-------------------------------*/
 
-  private _selectConfigureTaskFromDiagram(itemId: string) {
-    const diagramId = this.getDiagramId(itemId);
-    const flowState = this.flowState;
-    let scope: any[];
-
-    if (diagramId === HandlerType.Error) {
-      const allPathsMainFlow = this.getAllPaths(flowState.mainGraph.nodes);
-      const previousTilesMainFlow = this.mapNodesToTiles(
-        allPathsMainFlow,
-        { nodes: flowState.mainGraph.nodes, items: flowState.mainItems }
-      );
-      const previousNodesErrorFlow = this.findPathToNode(flowState.errorGraph.rootId, itemId, flowState.errorGraph.nodes);
-      previousNodesErrorFlow.pop(); // ignore last item as it is the very same selected node
-      const previousTilesErrorFlow = this.mapNodesToTiles(
-        previousNodesErrorFlow,
-        { nodes: flowState.errorGraph.nodes, items: flowState.errorItems  }
-      );
-      scope = [...previousTilesMainFlow, makeErrorTask(), ...previousTilesErrorFlow];
-    } else {
-      const previousNodes = this.findPathToNode(flowState.mainGraph.rootId, itemId, flowState.mainGraph.nodes);
-      previousNodes.pop(); // ignore last item as it is the very same selected node
-      scope = this.mapNodesToTiles(previousNodes, { nodes: flowState.mainGraph.nodes, items: flowState.mainItems });
-    }
-
-    const metadata = <FlowMetadata>  defaultsDeep({
-      type: 'metadata',
-    }, this.flowState.metadata, { input: [], output: [] });
-    scope.push(metadata);
-
-    const selectedItem = <ItemTask>cloneDeep(this.findItemById(itemId));
-    const activitySchema: PartialActivitySchema = this.flowState.schemas[selectedItem.ref] || {};
-    const task = mergeItemWithSchema(selectedItem, activitySchema);
-    const outputMapper = isMapperActivity(activitySchema);
-
-    let overridePropsToMap = null;
-    let overrideMappings = null;
-    let inputMappingsTabLabelKey = null;
-    let searchTitleKey;
-    let transformTitle;
-
-    if (outputMapper) {
-      overridePropsToMap = metadata.output;
-      const inputs = selectedItem.input || {};
-      overrideMappings = inputs.mappings || [];
-      transformTitle = this.translate.instant('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName: selectedItem.name });
-      searchTitleKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
-      inputMappingsTabLabelKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
-    }
-
-    const taskSettings = selectedItem.settings;
-    const iterator = (<ItemActivityTask>selectedItem).return ? null : {
-      isIterable: isIterableTask(selectedItem),
-      iterableValue: taskSettings && taskSettings.iterate ? taskSettings.iterate : null,
-    };
-    const dataToPublish = assign(
-      {}, FLOGO_TRANSFORM_PUB_EVENTS.selectTask, {
-        data: <SelectTaskConfigEventData>{
-          scope,
-          overridePropsToMap,
-          overrideMappings,
-          inputMappingsTabLabelKey,
-          tile: task,
-          handlerId: diagramId,
-          title: transformTitle,
-          inputsSearchPlaceholderKey: searchTitleKey,
-          iterator: iterator
-        }
-      }
-    );
-    if (isSubflowItem(selectedItem)) {
-      const subflowSchema = this.flowDetails.getSubflowSchema(selectedItem.settings.flowPath);
-      if (subflowSchema) {
-        dataToPublish.data.subflowSchema = subflowSchema;
-        dataToPublish.data.appId = this.flowState.appId;
-        dataToPublish.data.actionId = this.flowState.id;
-      } else {
-        return this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
-          .subscribe(message => notification(message, 'error'));
-      }
-    }
-    this._postService.publish(dataToPublish);
-
-  }
-
   private _saveConfigFromTaskConfigurator(data: SaveTaskConfigEventData, envelope: any) {
     const diagramId = data.handlerId;
     const tile = <ItemTask> this.getTaskInHandler(diagramId, data.tile.id);
@@ -1296,7 +1154,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       itemChanges.inputMappings = cloneDeep(data.inputMappings);
     }
 
-    // tile.type = <any>data.tile.type;
     const iteratorInfo = data.iterator;
     itemChanges.settings = {
       ...itemChanges.settings,
@@ -1309,59 +1166,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     // context potentially changed
     this.refreshCurrentTileContextIfNeeded();
   }
-
-  private getAllPaths(nodes: any) {
-    return Object.keys(nodes);
-  }
-
-  /**
-   * Finds a path from starting node to target node
-   * Assumes we have a tree structure, meaning we have no cycles
-   * @param {string} startNodeId
-   * @param {string} targetNodeId
-   * @param {Dictionary<GraphNode>} nodes
-   * @returns string[] list of node ids
-   */
-  private findPathToNode(startNodeId: any, targetNodeId: any, nodes: Dictionary<GraphNode>) {
-    let queue = [[startNodeId]];
-
-    while (queue.length > 0) {
-      const path = queue.shift();
-      const nodeId = path[path.length - 1];
-
-      if (nodeId === targetNodeId) {
-        return path;
-      }
-
-      const children = nodes[nodeId].children;
-      if (children) {
-        const paths = children.map(child => path.concat(child));
-        queue = queue.concat(paths);
-      }
-    }
-    return [];
-  }
-
-  private mapNodesToTiles(nodeIds: any[], from: { nodes: Dictionary<GraphNode>, items: Dictionary<Item> }) {
-    const canUseItemOutputs = (node: GraphNode) => node.type === NodeType.Task;
-    return nodeIds
-      .map(nodeId => {
-        const node = from.nodes[nodeId];
-        if (canUseItemOutputs(node)) {
-          const item = <ItemTask> from.items[nodeId];
-          let schema: PartialActivitySchema = this.flowState.schemas[item.ref];
-          if (isSubflowItem(item)) {
-            const subFlowSchema = this.flowDetails.getSubflowSchema(item.settings.flowPath);
-            schema = { outputs: get(subFlowSchema, 'metadata.output', []) };
-          }
-          return mergeItemWithSchema(item, schema);
-        } else {
-          return null;
-        }
-      })
-      .filter(task => !!task);
-  }
-
 
   /*-------------------------------*
    |      APP NAVIGATION           |

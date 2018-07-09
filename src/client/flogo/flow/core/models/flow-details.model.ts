@@ -42,6 +42,12 @@ export class FlogoFlowDetails {
     }));
   }
 
+  configureItem(itemId: string) {
+    this.store.dispatch(new FlowActions.ConfigureItem({
+      itemId,
+    }));
+  }
+
   selectInsert(handlerType: HandlerType, parentItemId: string) {
     this.store.dispatch(new FlowActions.SelectCreateItem({
       handlerType,

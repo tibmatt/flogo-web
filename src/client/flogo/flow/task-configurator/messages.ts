@@ -34,22 +34,6 @@ interface IteratorInfo {
   iterableValue?: string;
 }
 
-export interface SelectTaskConfigEventData {
-  handlerId: string;
-  // scope
-  scope: any[];
-  tile: Task;
-  overridePropsToMap?: any[];
-  overrideMappings?: any[];
-  title?: string;
-  inputMappingsTabLabelKey?: string;
-  inputsSearchPlaceholderKey?: string;
-  iterator: IteratorInfo;
-  subflowSchema?: ActionBase;
-  appId?: string;
-  actionId?: string;
-}
-
 export interface SaveTaskConfigEventData {
   handlerId: string;
   tile: Task;

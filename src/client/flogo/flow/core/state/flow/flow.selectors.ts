@@ -10,3 +10,4 @@ export const selectHandlers = createSelector(selectFlowState, (flowState: FlowSt
 export const selectApp = createSelector(selectFlowState, flowState => flowState.app);
 export const selectActionId = createSelector(selectFlowState, flowState => flowState.id);
 export const selectTriggerConfigure = createSelector(selectFlowState, (flowState: FlowState) => flowState.triggerConfigure);
+export const selectTaskConfigure = createSelector(selectFlowState, (flowState: FlowState) => flowState.taskConfigure);
