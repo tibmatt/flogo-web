@@ -110,6 +110,36 @@
   display: block;
 }
 
+:host ::ng-deep .ui-tree-toggler {
+  width: 1.1em;
+  height: 1em;
+  margin-right: -0.25em;
+  position: relative;
+  &::before {
+    content: '';
+    display: block;
+    position: relative;
+    bottom: -3px;
+    right: -5px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+
+  &.pi-caret-right::before {
+    border-width: 5px 0 5px 6px;
+    border-color: transparent transparent transparent #8b91a2;
+  }
+
+  &.pi-caret-down::before {
+    bottom: -5px;
+    right: -3px;
+    border-width: 6px 5px 0 5px;
+    border-color: #8b91a2 transparent transparent transparent;
+  }
+
+}
+
 :host(.tree-input-list) ::ng-deep p-tree .mapper-tree__node > .ui-treenode-content {
   border-left: 4px solid transparent;
 }

@@ -5,6 +5,9 @@ All notable changes to this project's dependencies will be documented in this fi
 
 ### Production Dependencies
 
+- **Upgraded:**
+  - [ng2-bs3-modal@0.15.0](https://github.com/dougludlow/ng2-bs3-modal) (ISC) - Was 0.13.0
+  - [primeng@6.0.0](https://github.com/primefaces/primeng) (MIT) - Was 5.2.3
 - ** Removed **
   - d3.js
 

@@ -1,7 +1,6 @@
-import {throwError as observableThrowError, combineLatest, BehaviorSubject , Observable,  Subscription } from 'rxjs';
+import {throwError as observableThrowError, combineLatest, BehaviorSubject, interval, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, retry, switchMap } from 'rxjs/operators';
 import { Component, Input, OnInit, DoCheck, OnDestroy } from '@angular/core';
-import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 
 import { getURL } from '../shared/utils';
 import { ConfigurationService } from '@flogo/core/services/configuration.service';
@@ -40,7 +39,7 @@ export class ServiceStatusIndicatorComponent implements OnInit, DoCheck, OnDestr
 
     configChangeStream.subscribe(() => this.status = null);
 
-    this.subscription = combineLatest(configChangeStream, IntervalObservable.create(PING_INTERVAL_MS))
+    this.subscription = combineLatest(configChangeStream, interval(PING_INTERVAL_MS))
         .pipe(
           switchMap(([config]: [ServiceUrlConfig]) => this.configService.pingService(config)),
           catchError((error: any) => {

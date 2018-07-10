@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
+import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 import { select, Store } from '@ngrx/store';
 
 import { Action, ActionBase, ItemActivityTask, ItemSubflow, ItemTask } from '@flogo/core';

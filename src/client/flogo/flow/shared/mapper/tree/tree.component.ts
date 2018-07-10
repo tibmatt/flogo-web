@@ -19,7 +19,7 @@ import { IconsService } from '../services/icons.service';
 @Component({
   selector: 'flogo-mapper-tree',
   templateUrl: 'tree.component.html',
-  styleUrls: ['tree.component.css']
+  styleUrls: ['tree.component.less']
 })
 export class TreeComponent implements OnChanges, AfterViewInit {
   @Input() treeNodes: MapperTreeNode[];
