@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { ContribSchema, Dictionary, GraphNode, Item, ItemTask } from '../../../../core/index';
+import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask } from '../../../../core/index';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 
@@ -12,6 +12,8 @@ export enum ActionType {
   RemoveItem = '[Flow] Remove item',
   CreateBranch = '[Flow] Create branch',
   ItemUpdated = '[Flow] Item updated',
+  CommitItemConfiguration = '[Flow] Commit item configuration',
+  CancelItemConfiguration = '[Flow] Cancel item configuration',
   ClearSelection = '[Flow] Clear selection',
   ExecutionWillStart = '[Flow] Execution will start',
   ExecutionUpdated = '[Flow] Execution updated',
@@ -49,7 +51,13 @@ export class CreateBranch implements BaseFlowAction {
 
 export class TaskItemCreated implements BaseFlowAction {
   readonly type = ActionType.TaskItemCreated;
-  constructor(public payload: { handlerType: HandlerType, item: ItemTask, node: GraphNode, schema: ContribSchema}) {}
+  constructor(public payload: {
+    handlerType: HandlerType,
+    item: ItemTask,
+    node: GraphNode,
+    schema: ContribSchema,
+    subflowSchema?: ActionSchema
+  }) {}
 }
 
 export class RemoveItem implements BaseFlowAction {
@@ -59,12 +67,21 @@ export class RemoveItem implements BaseFlowAction {
 
 export class ItemUpdated implements BaseFlowAction {
   readonly type = ActionType.ItemUpdated;
-  constructor(public payload: { handlerType: HandlerType, item: {id: string} & Partial<Item>, node?: Partial<GraphNode> }) {}
+  constructor(public payload: { handlerType: HandlerType, item: {id: string} & Partial<Item>, node?: {id: string} & Partial<GraphNode> }) {}
 }
 
 export class ConfigureItem implements BaseFlowAction {
   readonly type = ActionType.ConfigureItem;
-  constructor(public payload: { handlerType: HandlerType, item: ItemTask, node: GraphNode, schema: ContribSchema }) {}
+  constructor(public payload: { itemId: string; }) {}
+}
+
+export class CommitItemConfiguration implements BaseFlowAction {
+  readonly type = ActionType.CommitItemConfiguration;
+  constructor(public payload: { handlerType: HandlerType, item: {id: string} & Partial<Item>, newSubflowSchema?: ActionSchema }) {}
+}
+
+export class CancelItemConfiguration implements BaseFlowAction {
+  readonly type = ActionType.CancelItemConfiguration;
 }
 
 export class ExecutionWillStart implements BaseFlowAction {
@@ -92,6 +109,8 @@ export type ActionsUnion =
   | RemoveItem
   | CreateBranch
   | ItemUpdated
+  | CommitItemConfiguration
+  | CancelItemConfiguration
   | ExecutionWillStart
   | ExecutionStateUpdated
   | ErrorPanelStatusChange;

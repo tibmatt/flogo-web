@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { FLOGO_PROFILE_TYPE } from '@flogo/core';
+import { Dictionary, FLOGO_PROFILE_TYPE } from '@flogo/core';
 import { ErrorService } from '@flogo/core/services';
 import { RESTAPIContributionsService } from '../../core/services/restapi/v2/contributions.service';
 import { AbstractModelConverter } from './models/ui-converter.model';
@@ -48,7 +48,7 @@ export class UIModelConverterService {
    */
 
   // todo: define interfaces
-  getWebFlowModel(flowObj: any, subflowSchemas: Map<string, ActionBase>) {
+  getWebFlowModel(flowObj: any, subflowSchemas: Dictionary<ActionBase>) {
     return this.converterModelInstance.convertToWebFlowModel(flowObj, subflowSchemas);
   }
 

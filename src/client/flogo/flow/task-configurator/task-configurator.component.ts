@@ -1,24 +1,27 @@
-import * as _ from 'lodash';
+import { isEmpty, cloneDeep } from 'lodash';
 import { skip, takeUntil } from 'rxjs/operators';
-
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 import { Task } from '@flogo/core/interfaces';
 import { PostService } from '@flogo/core/services/post.service';
-import { SingleEmissionSubject } from '@flogo/core/models';
-
-import { PUB_EVENTS, SUB_EVENTS, SelectTaskConfigEventData, SaveTaskConfigEventData } from './messages';
+import { mergeItemWithSchema, PartialActivitySchema, SingleEmissionSubject } from '@flogo/core/models';
 
 import { MapperTranslator, MapperControllerFactory, MapperController } from '../shared/mapper';
 
 import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {Tabs} from '../shared/tabs/models/tabs.model';
 import {SubFlowConfig} from './subflow-config';
-import {isSubflowTask} from '@flogo/shared/utils';
-import {ActionBase} from '@flogo/core';
+import { isIterableTask, isMapperActivity, isSubflowTask, notification } from '@flogo/shared/utils';
+import { ActionBase, Item, ItemActivityTask, ItemSubflow, ItemTask, LanguageService } from '@flogo/core';
 import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
-import { Subscription } from 'rxjs';
+import { FlowState, FlowActions } from '@flogo/flow/core/state';
+import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
+import { getStateWhenTaskConfigureChanges } from './task-configurator.selector';
+import { createSaveAction } from '@flogo/flow/task-configurator/models/save-action-creator';
+import { CancelItemConfiguration } from '@flogo/flow/core/state/flow/flow.actions';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -48,29 +51,28 @@ const MAPPINGS_TAB_INFO = { name: TASK_TABS.INPUT_MAPPINGS, labelKey: 'TASK-CONF
     ])
   ],
 })
-export class TaskConfiguratorComponent implements OnDestroy {
-  @Input()
-  flowId: string;
-  currentTile: Task;
+export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
-
   inputScope: any[];
-  tabs: Tabs;
 
+  tabs: Tabs;
   title: string;
+
+  canIterate: boolean;
   initialIteratorData: {
     iteratorModeOn: boolean;
     iterableValue: string;
   };
+  appId: string;
+  actionId: string;
+  currentTile: Task;
   iteratorModeOn = false;
   iterableValue: string;
-  iterator: {};
   isSubflowType: boolean;
+  currentSubflowSchema: ActionBase;
   subFlowConfig: SubFlowConfig;
   subflowList: ActionBase[];
-  context: SelectTaskConfigEventData;
   showSubflowList = false;
-
   isActive = false;
 
   inputMapperController: MapperController;
@@ -78,19 +80,37 @@ export class TaskConfiguratorComponent implements OnDestroy {
 
   private inputMapperStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
+  private destroy$ = SingleEmissionSubject.create();
   private _subscriptions: any[];
 
   constructor(
+    private store: Store<FlowState>,
     private _flowService: FlowsService,
     private _postService: PostService,
+    private translate: LanguageService,
     private mapperControllerFactory: MapperControllerFactory,
   ) {
-    this.initSubscriptions();
     this.isSubflowType = false;
     this.resetState();
   }
 
+  ngOnInit() {
+    this.store
+      .pipe<FlowState>(
+        getStateWhenTaskConfigureChanges(),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(state => {
+        if (state) {
+          this.initConfigurator(state);
+        } else if (this.isActive) {
+          this.close();
+        }
+      });
+  }
+
   ngOnDestroy() {
+    this.destroy$.emitAndComplete();
     this.cancelSubscriptions();
     if (!this.contextChange$.isStopped) {
       this.contextChange$.emitAndComplete();
@@ -98,8 +118,8 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   selectSubFlow() {
-    this._flowService.listFlowsForApp(this.context.appId).then(flows => {
-      this.subflowList = flows.filter(flow => !(flow.id === this.context.actionId || flow.id === this.currentTile.settings.flowPath));
+    this._flowService.listFlowsForApp(this.appId).then(flows => {
+      this.subflowList = flows.filter(flow => !(flow.id === this.actionId || flow.id === this.currentTile.settings.flowPath));
       this.showSubflowList = true;
     });
   }
@@ -109,7 +129,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.showSubflowList = false;
     subFlowTab.isDirty = true;
     this.createSubflowConfig(event);
-    this.context.subflowSchema = event;
+    this.currentSubflowSchema = event;
     this.createChangedsubFlowConfig(event);
   }
 
@@ -129,20 +149,20 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   save() {
-    const isIterable = this.iteratorModeOn && !_.isEmpty(this.iterableValue);
-    this._postService.publish(_.assign({}, PUB_EVENTS.saveTask, {
-      data: <SaveTaskConfigEventData>{
-        tile: this.currentTile,
-        changedSubflowSchema: this.context.subflowSchema,
-        iterator: {
-          isIterable,
-          iterableValue: isIterable ? this.iterableValue : undefined,
-        },
-        inputMappings: MapperTranslator.translateMappingsOut(this.inputMapperController.getCurrentState().mappings),
-        handlerId: this.flowId
-      }
-    }));
-    this.close();
+    const isIterable = this.iteratorModeOn && !isEmpty(this.iterableValue);
+    createSaveAction(this.store, {
+      tileId: this.currentTile.id,
+      subflowPath: this.currentTile.settings ? this.currentTile.settings.flowPath : null,
+      changedSubflowSchema: this.currentSubflowSchema,
+      iterator: {
+        isIterable,
+        iterableValue: isIterable ? this.iterableValue : undefined,
+      },
+      inputMappings: MapperTranslator.translateMappingsOut(this.inputMapperController.getCurrentState().mappings),
+    })
+    .subscribe(action => {
+      this.store.dispatch(action);
+    });
   }
 
   selectTab(name: string) {
@@ -155,7 +175,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   cancel() {
-    this.close();
+    this.store.dispatch(new FlowActions.CancelItemConfiguration());
   }
 
   trackTabsByFn(index, [tabName, tab]) {
@@ -184,56 +204,74 @@ export class TaskConfiguratorComponent implements OnDestroy {
     iteratorTab.isDirty = isDirty;
   }
 
-  private initSubscriptions() {
-    const subHandlers = [
-      _.assign({}, SUB_EVENTS.selectTask, { callback: this.initConfigurator.bind(this) })
-    ];
-    this._subscriptions = subHandlers.map(handler => this._postService.subscribe(handler));
-  }
-
-  private raisedByThisDiagram(id: string) {
-    return this.flowId === (id || '');
-  }
-
   private cancelSubscriptions() {
-    if (_.isEmpty(this._subscriptions)) {
+    if (isEmpty(this._subscriptions)) {
       return true;
     }
     this._subscriptions.forEach(this._postService.unsubscribe);
     return true;
   }
 
-  private initConfigurator(eventData: SelectTaskConfigEventData, envelope: any) {
-    if (!this.raisedByThisDiagram(eventData.handlerId)) {
-      return;
-    }
+  private configureOutputMapperLabels(taskName) {
+    this.inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
+    this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
+    this.translate.get('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName })
+      .subscribe(title => this.title = title);
+  }
+
+  private initConfigurator(state: FlowState) {
+    const itemId = state.taskConfigure;
     this.ensurePreviousContextCleanup();
     this.contextChange$ = SingleEmissionSubject.create();
-    this.context = eventData;
-    this.currentTile = eventData.tile;
-    this.title = eventData.title;
-    this.inputScope = eventData.scope;
+
+    const selectedItem = <ItemTask>cloneDeep(state.mainItems[itemId] || state.errorItems[itemId]);
+    const activitySchema: PartialActivitySchema = state.schemas[selectedItem.ref] || {};
+    this.currentTile = mergeItemWithSchema(selectedItem, activitySchema);
+
+    this.inputScope = getInputContext(itemId, state);
     this.isSubflowType = isSubflowTask(this.currentTile.type);
-    this.iterator = eventData.iterator;
+
+    this.title = this.currentTile.name;
+
+    const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.type);
+    this.isSubflowType = isSubflowItem(selectedItem);
+    let subflowSchema = null;
+    if (isSubflowItem(selectedItem)) {
+      subflowSchema = state.linkedSubflows[selectedItem.settings.flowPath];
+      if (subflowSchema) {
+        this.appId = state.appId;
+        this.actionId = state.id;
+        this.createSubflowConfig(subflowSchema);
+      } else {
+        return this.translate.get('SUBFLOW:REFERENCE-ERROR-TEXT')
+          .subscribe(message => notification(message, 'error'));
+      }
+    }
+
+    const flowMetadata = getFlowMetadata(state);
+    const { propsToMap, mappings } = this.getInputMappingsInfo({
+      selectedItem,
+      activitySchema,
+      subflowSchema,
+      flowMetadata,
+    });
+    this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
+    this.initIterator(selectedItem);
+
     this.resetState();
-
-    if (!this.title && this.currentTile) {
-      this.title = this.currentTile.name;
-    }
-    this.inputsSearchPlaceholderKey = eventData.inputsSearchPlaceholderKey || 'TASK-CONFIGURATOR:ACTIVITY-INPUTS';
-
-    this.createInputMapperConfig(eventData);
-
-    if (this.isSubflowType) {
-      this.createSubflowConfig(eventData.subflowSchema);
-    }
-    if (this.iterator) {
-      this.initIterator(eventData);
-      this.adjustIteratorInInputMapper();
+    if (isMapperActivity(activitySchema)) {
+      this.configureOutputMapperLabels(selectedItem.name);
     }
 
-    if (eventData.inputMappingsTabLabelKey) {
-      this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
+    if (this.iteratorController) {
+      this.iteratorController.state$
+        .pipe(takeUntil(this.contextChange$))
+        .subscribe((mapperState) => {
+          const iterableMapping = mapperState.mappings[ITERABLE_VALUE_KEY];
+          if (iterableMapping) {
+            this.onIteratorValueChange(iterableMapping.expression, mapperState.isValid);
+          }
+        });
     }
     this.open();
   }
@@ -255,45 +293,53 @@ export class TaskConfiguratorComponent implements OnDestroy {
     this.inputMapperController.removeOutputNode(ITERATOR_OUTPUT_KEY);
   }
 
-  private initIterator(eventData: SelectTaskConfigEventData) {
-    this.iteratorModeOn = eventData.iterator.isIterable;
+  private initIterator(selectedItem: ItemTask) {
+    const taskSettings = selectedItem.settings;
+    this.canIterate = !(<ItemActivityTask>selectedItem).return;
+    if (!this.canIterate) {
+      this.iteratorController = null;
+      return;
+    }
+    this.iteratorModeOn = isIterableTask(selectedItem);
+    this.iterableValue = taskSettings && taskSettings.iterate ? taskSettings.iterate : null;
     this.initialIteratorData = {
       iteratorModeOn: this.iteratorModeOn,
       iterableValue: this.iterableValue,
     };
-    const iterableValue = MapperTranslator.rawExpressionToString(eventData.iterator.iterableValue || '');
+    const iterableValue = MapperTranslator.rawExpressionToString(this.iterableValue || '');
     const iteratorContext = createIteratorMappingContext(iterableValue);
     this.iteratorController = this.mapperControllerFactory.createController(
       iteratorContext.inputContext,
       this.inputScope,
       iteratorContext.mappings
     );
-    this.iteratorController.state$
-      .pipe(takeUntil(this.contextChange$))
-      .subscribe((state) => {
-        const iterableMapping = state.mappings[ITERABLE_VALUE_KEY];
-        if (iterableMapping) {
-          this.onIteratorValueChange(iterableMapping.expression, state.isValid);
-        }
-      });
+    this.adjustIteratorInInputMapper();
   }
 
-  private createInputMapperConfig(data: SelectTaskConfigEventData) {
+  private getInputMappingsInfo({
+    selectedItem,
+    flowMetadata,
+    activitySchema,
+    subflowSchema,
+                               }): { propsToMap: any[], mappings: any[] } {
     let propsToMap = [];
     let mappings = [];
-    if (data.overridePropsToMap) {
-      propsToMap = data.overridePropsToMap;
+    const isOutputMapper = isMapperActivity(activitySchema);
+    if (isOutputMapper) {
+      propsToMap = flowMetadata.output;
     } else if (this.isSubflowType) {
-      propsToMap = data.subflowSchema.metadata ? data.subflowSchema.metadata.input : [];
+      propsToMap = subflowSchema.metadata ? subflowSchema.metadata.input : [];
     } else if (this.currentTile.attributes && this.currentTile.attributes.inputs) {
       propsToMap = this.currentTile.attributes.inputs;
     }
-    if (data.overrideMappings) {
-      mappings = data.overrideMappings;
+
+    if (isOutputMapper) {
+      const inputs = selectedItem.input || {};
+      mappings = inputs.mappings || [];
     } else {
       mappings = this.currentTile.inputMappings;
     }
-    this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
+    return { mappings, propsToMap };
   }
 
   private resetInputMappingsController(propsToMap, inputScope, mappings) {
@@ -332,7 +378,7 @@ export class TaskConfiguratorComponent implements OnDestroy {
       tabsInfo = [SUBFLOW_TAB_INFO, ...tabsInfo, ITERATOR_TAB_INFO];
       this.tabs = Tabs.create(tabsInfo);
       this.tabs.get(TASK_TABS.SUBFLOW).isSelected = true;
-    } else if (this.iterator) {
+    } else if (this.canIterate) {
       tabsInfo = [...tabsInfo, ITERATOR_TAB_INFO];
       this.tabs = Tabs.create(tabsInfo);
       this.tabs.get(TASK_TABS.INPUT_MAPPINGS).isSelected = true;
@@ -347,7 +393,9 @@ export class TaskConfiguratorComponent implements OnDestroy {
   }
 
   private close() {
-    this.contextChange$.emitAndComplete();
+    if (!this.contextChange$.closed) {
+      this.contextChange$.emitAndComplete();
+    }
     this.isActive = false;
   }
 

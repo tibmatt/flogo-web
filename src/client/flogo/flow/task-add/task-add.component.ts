@@ -63,7 +63,7 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
     this._filterActivities();
   }
 
-  public sendAddTaskMsg( task: any ) {
+  public sendAddTaskMsg( task: any, subflowSchema?: any ) {
 
     this._postService.publish(
       _.assign(
@@ -71,7 +71,8 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
           // TODO for the moment, the taskId can only be number, so timestamp is used.
           data : _.assign(
             {}, this._addTaskMsg, {
-              task : _.assign( {}, task )
+              task : _.assign( {}, task ),
+              subflowSchema,
             }
           )
         }
@@ -153,13 +154,11 @@ export class FlogoFlowsDetailTasksComponent implements OnDestroy {
   public handleFlowSelection(selectedFlow: any) {
     this.showFlowsList = false;
     if (selectedFlow !== 'dismiss' && _.isObjectLike(selectedFlow) && _.isObjectLike(this.subFlowTask)) {
-      // update the flow relation in the flow details model
-      this.flowService.currentFlowDetails.addSubflowSchema(selectedFlow);
       this.subFlowTask.name = selectedFlow.name;
       this.subFlowTask.description = selectedFlow.description;
       this.subFlowTask.settings = this.subFlowTask.settings || {};
       this.subFlowTask.settings.flowPath = selectedFlow.id;
-      this.sendAddTaskMsg(this.subFlowTask);
+      this.sendAddTaskMsg(this.subFlowTask, selectedFlow);
     }
   }
 

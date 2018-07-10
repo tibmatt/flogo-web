@@ -7,8 +7,10 @@ import { FlowState, INITIAL_STATE } from './flow.state';
 import { createBranch } from './cases/create-branch';
 import { taskItemCreated } from './cases/task-item-created';
 import { removeItem } from './cases/remove-item';
-import { itemUpdate } from './cases/item-update';
+import { itemUpdate, nodeUpdate } from './cases/item-update';
 import { executionUpdate } from './cases/execution-update';
+import { subflowSchemaUpdate } from './cases/subflow-schema-update';
+import { commitTaskConfiguration } from '@flogo/flow/core/state/flow/cases/commit-task-configuration';
 
 const ActionType = actions.ActionType;
 
@@ -48,11 +50,28 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
       return removeItem(state, action.payload);
     }
     case ActionType.ItemUpdated: {
-      return itemUpdate(state, action.payload);
+      state = itemUpdate(state, action.payload);
+      state = nodeUpdate(state, action.payload);
+      return state;
     }
     case ActionType.ConfigureItem: {
-      // todo: currently managed directly by flow.component
-      return state;
+      return {
+        ...state,
+        taskConfigure: action.payload.itemId,
+      };
+    }
+    case ActionType.CommitItemConfiguration: {
+      state = commitTaskConfiguration(state, action.payload);
+      return {
+        ...state,
+        taskConfigure: null,
+      };
+    }
+    case ActionType.CancelItemConfiguration: {
+      return {
+        ...state,
+        taskConfigure: null,
+      };
     }
     case ActionType.ExecutionWillStart: {
       return  {
