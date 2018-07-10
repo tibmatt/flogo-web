@@ -15,8 +15,9 @@
     "lint": "ng lint --type-check --format=stylish flogo-web",
     "e2e": "ng e2e",
     "check": "npm run lint && npm run test:once",
+    "check-compile": "ng build --build-optimizer=false --aot=true",
     "travis:test": "yarn run test:once --progress=false",
-    "travis:lint": "yarn run lint && yarn run build --progress=false"
+    "travis:lint": "yarn run lint && yarn run check-compile --progress=false"
   },
   "author": "TIBCO Software Inc.",
   "private": true,
