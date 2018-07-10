@@ -1,8 +1,10 @@
 import { difference, cloneDeep, find, get, each, includes, isEmpty, isNumber, isString, isUndefined, trim  } from 'lodash';
-import {convertTaskID, getDefaultValue, isSubflowTask} from '@flogo/shared/utils';
+import { convertTaskID, getDefaultValue, isSubflowTask } from '@flogo/shared/utils';
 
-import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../constants';
-import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces/flow';
+import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '@flogo/core/constants';
+import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces/flow/index';
+import { mergeItemWithSchema } from '@flogo/core/models';
+
 import {
   AttributeMapping as DiagramTaskAttributeMapping,
   TaskAttribute as DiagramTaskAttribute,
@@ -24,7 +26,6 @@ import {
   ItemBranch,
   ItemTask, FlowGraph, GraphNode, NodeType,
 } from '@flogo/core';
-import { mergeItemWithSchema } from '@flogo/core/models';
 /**
  * Convert the flow to flow.json
  *

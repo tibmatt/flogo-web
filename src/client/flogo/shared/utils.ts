@@ -1,13 +1,15 @@
+import { assign, cloneDeep, each, get, isEmpty, isObject, isUndefined, kebabCase, uniqueId, trimStart } from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { Item, Task } from '@flogo/core';
-
-export function flogoGenBranchID(): string {
-  return `Flogo::Branch::${Date.now()}`;
-}
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;
 }
+
+export function flogoGenNodeID() {
+  return uniqueId(`FlogoFlowDiagramNode::${Date.now()}::`);
+}
+
 
 /**
  * Convert task ID to integer, which is the currently supported type in engine
@@ -38,9 +40,9 @@ function portAttribute(inAttr: {
     type: any;
     value: any;
     [key: string]: any;
-  }>_.assign({}, inAttr);
+  }>assign({}, inAttr);
 
-  if (withDefault && _.isUndefined(outAttr.value)) {
+  if (withDefault && isUndefined(outAttr.value)) {
     outAttr.value = getDefaultValue(outAttr.type);
   }
 
@@ -69,11 +71,11 @@ function portAttribute(inAttr: {
  * @return {boolean}
  */
 export function isMapperActivity(activitySchema: any) {
-  const hasOutputMapperDefinition = _.get(activitySchema, 'inputs', []).find(isOutputMapper);
+  const hasOutputMapperDefinition = get(activitySchema, 'inputs', []).find(isOutputMapper);
   return Boolean(hasOutputMapperDefinition);
 
   function isOutputMapper(inputDefinition) {
-    if (_.isObject(inputDefinition.display)) {
+    if (isObject(inputDefinition.display)) {
       return inputDefinition.display.type === 'mapper';
     }
     return false;
@@ -85,31 +87,31 @@ export function activitySchemaToTask(schema: any): any {
 
   const task: any = {
     type: FLOGO_TASK_TYPE.TASK,
-    activityType: _.get(schema, 'name', ''),
+    activityType: get(schema, 'name', ''),
     ref: schema.ref,
-    name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
-    version: _.get(schema, 'version', ''),
-    description: _.get(schema, 'description', ''),
-    homepage: _.get(schema, 'homepage', ''),
+    name: get(schema, 'title', get(schema, 'name', 'Activity')),
+    version: get(schema, 'version', ''),
+    description: get(schema, 'description', ''),
+    homepage: get(schema, 'homepage', ''),
     attributes: {
-      inputs: _.get(schema, 'inputs', []),
-      outputs: _.get(schema, 'outputs', [])
+      inputs: get(schema, 'inputs', []),
+      outputs: get(schema, 'outputs', [])
     },
     return: schema.return,
-    __schema: _.cloneDeep(schema)
+    __schema: cloneDeep(schema)
   };
 
-  _.each(
+  each(
     task.attributes.inputs, (input: any) => {
       // convert to task enumeration and provision default types
-      _.assign(input, portAttribute(input, true));
+      assign(input, portAttribute(input, true));
     }
   );
 
-  _.each(
+  each(
     task.attributes.outputs, (output: any) => {
       // convert to task enumeration and provision default types
-      _.assign(output, portAttribute(output));
+      assign(output, portAttribute(output));
     }
   );
 
@@ -121,29 +123,29 @@ export function activitySchemaToTrigger(schema: any): any {
 
   const trigger: any = {
     type: FLOGO_TASK_TYPE.TASK_ROOT,
-    triggerType: _.get(schema, 'name', ''),
+    triggerType: get(schema, 'name', ''),
     ref: schema.ref,
-    name: _.get(schema, 'title', _.get(schema, 'name', 'Activity')),
-    version: _.get(schema, 'version', ''),
-    description: _.get(schema, 'description', ''),
-    homepage: _.get(schema, 'homepage', ''),
-    settings: _.get(schema, 'settings', ''),
-    outputs: _.get(schema, 'outputs', ''),
-    handler: { settings: _.get(schema, 'handler.settings', []) } // ,
-    // __schema: _.cloneDeep(schema)
+    name: get(schema, 'title', get(schema, 'name', 'Activity')),
+    version: get(schema, 'version', ''),
+    description: get(schema, 'description', ''),
+    homepage: get(schema, 'homepage', ''),
+    settings: get(schema, 'settings', ''),
+    outputs: get(schema, 'outputs', ''),
+    handler: { settings: get(schema, 'handler.settings', []) } // ,
+    // __schema: cloneDeep(schema)
   };
 
-  _.each(
+  each(
     trigger.inputs, (input: any) => {
       // convert to task enumeration and provision default types
-      _.assign(input, portAttribute(input, true));
+      assign(input, portAttribute(input, true));
     }
   );
 
-  _.each(
+  each(
     trigger.outputs, (output: any) => {
       // convert to task enumeration and provision default types
-      _.assign(output, portAttribute(output));
+      assign(output, portAttribute(output));
     }
   );
 
@@ -164,12 +166,12 @@ export function objectFromArray(arr, copyValues?) {
 }
 
 export function normalizeTaskName(taskName: string) {
-  return _.kebabCase(taskName);
+  return kebabCase(taskName);
 }
 
 export function parseMapping(mappingValue: string) {
   // todo: support other scopes,: flow, env, property, etc.
-  const processExprTail = (tail: string) => tail ? _.trimStart(tail, '.') : null;
+  const processExprTail = (tail: string) => tail ? trimStart(tail, '.') : null;
   let taskId = null;
   let attributeName;
   let exprTail;
@@ -381,10 +383,10 @@ export function diffDates(beginDate: any, endDate: any, timeUnit: any) {
 export function createSubFlowTask(schema: any) {
   return {
     type: FLOGO_TASK_TYPE.TASK_SUB_PROC,
-    name: _.get(schema, 'title', _.get(schema, 'name', 'Start a Subflow')),
+    name: get(schema, 'title', get(schema, 'name', 'Start a Subflow')),
     ref: schema.ref,
     version: '',
-    description: _.get(schema, 'description', ''),
+    description: get(schema, 'description', ''),
     homepage: '',
     attributes: {
       inputs: [],
@@ -399,7 +401,7 @@ export function isSubflowTask(taskType: FLOGO_TASK_TYPE): boolean {
 }
 
 export function isIterableTask(task: Task | Item): boolean {
-  return !_.isEmpty(_.get(task, 'settings.iterate'));
+  return !isEmpty(get(task, 'settings.iterate'));
 }
 
 export function getProfileType(app) {

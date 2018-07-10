@@ -3,18 +3,15 @@ import {
   ActionBase,
   FlowMetadata,
   FLOGO_PROFILE_TYPE,
+  FLOGO_FLOW_DIAGRAM_NODE_TYPE,
   UiFlow, Dictionary, Item, ItemSubflow, TriggerSchema
 } from '@flogo/core';
 import { ErrorService } from '@flogo/core/services/error.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
-import { flogoGenTriggerID, isSubflowTask } from '@flogo/shared/utils';
-
-import { FLOGO_FLOW_DIAGRAM_NODE_TYPE } from '../../shared/diagram/constants';
+import { flogoGenTriggerID, flogoGenNodeID, isSubflowTask } from '@flogo/shared/utils';
 
 import { ItemFactory } from './graph-and-items/item-factory';
 import { makeGraphAndItems } from './graph-and-items';
-
-import { FlogoFlowDiagramNode } from '../../shared/diagram/models/node.model';
 
 export interface FlowInfo {
   id: string;
@@ -210,7 +207,7 @@ class NodeFactory {
 
   static getSharedProperties() {
     const status = { isSelected: false };
-    return Object.assign({}, { id: FlogoFlowDiagramNode.genNodeID(), __status: status, children: [], parents: [] });
+    return Object.assign({}, { id: flogoGenNodeID(), __status: status, children: [], parents: [] });
   }
 
   static makeBranch() {

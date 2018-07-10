@@ -6,7 +6,7 @@ import Spy = jasmine.Spy;
 import { UiFlow } from '@flogo/core';
 import { RunApiService, StatusResponse, ErrorService } from '@flogo/core/services';
 import { ERRORS, RunStatusCode, RunnerService } from './runner.service';
-import * as flowUtils from '../shared/diagram/models/flow.model';
+import * as flowUtils from './models/backend-flow/flow.model';
 
 describe('Service: RunnerService', function (this: {
   DEFAULT_PROCESS_ID: string,

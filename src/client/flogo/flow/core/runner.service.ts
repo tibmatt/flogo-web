@@ -15,7 +15,7 @@ import {
   StatusResponse,
   ErrorService
 } from '@flogo/core/services';
-import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
+import { flogoFlowToJSON } from './models/backend-flow/flow.model';
 
 export const ERRORS = {
   MAX_TRIALS_REACHED: 'MaxTrialsReached',

@@ -7,7 +7,7 @@ import { Action, Dictionary, LegacyFlowWrapper, UiFlow } from '@flogo/core';
 import { APIFlowsService } from '@flogo/core/services/restapi/v2/flows-api.service';
 import { FlowsService } from '@flogo/core/services/flows.service';
 import { isSubflowTask } from '@flogo/shared/utils';
-import { flogoFlowToJSON } from '../shared/diagram/models/flow.model';
+import { flogoFlowToJSON } from './models/backend-flow/flow.model';
 
 import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowDetails } from './models';

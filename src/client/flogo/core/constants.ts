@@ -15,6 +15,26 @@ export enum FLOGO_TASK_TYPE {
   TASK_SUB_PROC,
 }
 
+export enum FLOGO_FLOW_DIAGRAM_NODE_TYPE {
+  NODE_PADDING,   // padding node
+  NODE_HOLDER,    // placeholder node
+  NODE_ADD,       // node to add an activity
+  NODE_ROOT,      // the trigger node
+  NODE_ROOT_NEW,  // node to add a trigger
+  NODE,           // activity node
+  NODE_BRANCH,    // the branch line node
+  NODE_LINK,      // the link node
+  NODE_SUB_PROC,  // activity with sub flow
+  NODE_LOOP,       // repeatable activity
+  NODE_ROOT_ERROR_NEW
+}
+
+export enum FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE {
+  DEFAULT,
+  BRANCH,
+  LABELED
+}
+
 export enum FLOGO_PROCESS_TYPE { DEFAULT = 1 }
 
 
@@ -54,18 +74,7 @@ export namespace ValueType {
  * Constants
  */
 
-export const FLOGO_PROCESS_MODELS = {
-  'DEFAULT': 'simple'
-};
-
-/**
- * Defined in modules
- */
-
 export const FLOGO_ERROR_ROOT_NAME = '__error-trigger';
-
-export * from '../flow/shared/diagram/constants';
-export { REGEX_INPUT_VALUE_EXTERNAL as FLOGO_AUTOMAPPING_FORMAT } from '../flow/shared/mapper/constants';
 
 export const ERROR_CODE = {
   REQUIRED: 'RequiredProperty',
@@ -102,4 +111,3 @@ export const CONTRIB_REF_PLACEHOLDER = {
   REF_LAMBDA: 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda',
   REF_CLI: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli'
 };
-

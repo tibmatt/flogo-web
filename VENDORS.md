@@ -1,6 +1,20 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
+# v0.5.6
+
+### Production Dependencies
+
+- ** Removed **
+  - d3.js
+
+
+### Development Dependencies
+  - @types/d3
+
+
+# v0.5.5
+
 ### Production Dependencies
 
 - **Added:**

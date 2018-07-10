@@ -3,6 +3,7 @@ import { fromPairs } from 'lodash';
 import {
   ActivitySchema,
   CONTRIB_REF_PLACEHOLDER,
+  FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE,
   ContribSchema,
   Dictionary,
   flow as backendFlow,
@@ -12,7 +13,6 @@ import {
 } from '@flogo/core';
 import { isSubflowTask } from '@flogo/shared/utils';
 
-import { FLOGO_FLOW_DIAGRAM_FLOW_LINK_TYPE } from '../../../shared/diagram/constants';
 import { makeTaskNodes, makeBranchNode } from './graph-creator';
 import { makeBranchItem, makeTaskItems } from './items-creator';
 
