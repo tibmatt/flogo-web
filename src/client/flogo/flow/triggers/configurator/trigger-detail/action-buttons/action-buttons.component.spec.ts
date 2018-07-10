@@ -27,22 +27,22 @@ describe('Component: ActionButtonsComponent', () => {
 
   it('Should show no pending changes by default', () => {
     fixture.detectChanges();
-    expect(de.query(By.css('.default-text'))).not.toBeNull();
-    expect(de.query(By.css('.buttons'))).toBeNull();
+    expect(de.query(By.css('.qa-default-text'))).not.toBeNull();
+    expect(de.query(By.css('.qa-buttons'))).toBeNull();
   });
 
   it('Should show action buttons when there are changes', () => {
     component.status.isDirty = true;
     fixture.detectChanges();
-    expect(de.query(By.css('.default-text'))).toBeNull();
-    expect(de.query(By.css('.buttons'))).not.toBeNull();
+    expect(de.query(By.css('.qa-default-text'))).toBeNull();
+    expect(de.query(By.css('.qa-buttons'))).not.toBeNull();
   });
 
   it('Should disable save button when changes are invalid', () => {
     component.status.isDirty = true;
     component.status.isValid = false;
     fixture.detectChanges();
-    const saveEl = de.query(By.css('.action-save'));
+    const saveEl = de.query(By.css('.qa-action-save'));
     expect(saveEl.nativeElement.disabled).toEqual(true);
   });
 
@@ -50,7 +50,7 @@ describe('Component: ActionButtonsComponent', () => {
     component.status.isDirty = true;
     component.status.isPending = true;
     fixture.detectChanges();
-    const saveEl = de.query(By.css('.action-save'));
+    const saveEl = de.query(By.css('.qa-action-save'));
     expect(saveEl.nativeElement.disabled).toEqual(true);
   });
 
@@ -58,8 +58,8 @@ describe('Component: ActionButtonsComponent', () => {
     component.status.isDirty = true;
     component.isSaving = true;
     fixture.detectChanges();
-    const saveEl = de.query(By.css('.action-save'));
-    const discardEl = de.query(By.css('.action-discard'));
+    const saveEl = de.query(By.css('.qa-action-save'));
+    const discardEl = de.query(By.css('.qa-action-discard'));
     expect(saveEl.nativeElement.disabled).toEqual(true);
     expect(discardEl.nativeElement.disabled).toEqual(true);
   });
