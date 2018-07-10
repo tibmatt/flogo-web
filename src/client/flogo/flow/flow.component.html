@@ -23,7 +23,7 @@
                   (fgContentEditableChange)="changeFlowDetailName($event, 'name')"></h3>
               <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{flowState.app.device.deviceType}}</span>
             </div>
-            <div>
+            <div class="flow-detail-name-description">
               <span>in</span> <span (click)="navigateToApp()"
                                     class="flogo-flow-detail-header-back-app-name"
                                     (mouseover)="onMouseOverBackControl()"
@@ -47,7 +47,7 @@
           <flogo-logs></flogo-logs>
         </div>
         <div class="flogo-flow-detail-menu">
-          <i class="flogo-icon-kebabmenu"></i>
+          <i class="flogo-icon-kebabmenu kebabmenu-icon"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">
             <ul class="flogo-flow-detail-menu-list">
               <!--<li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>-->

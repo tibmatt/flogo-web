@@ -90,18 +90,18 @@
 }
 
 .flogo-flow-detail-name {
-  font-size: 24px;
-  color: @color-plain;
-  margin: 0 0 -5px;
+  font-size: 18px;
+  color: @color-ink;
+  font-weight: 600;
   line-height: 1.5;
+  letter-spacing: 0.3px;
+  margin: 0 0 1px;
   display: inline-block;
 }
 
 .flogo-flow-detail-description {
-  font-size: 15px;
-  line-height: 1.5;
-  color: rgba(102, 102, 102, 0.7);
-  margin-top: 5px;
+  color: @warm-grey;
+  margin-top: 3px;
   margin-bottom: 0;
   word-wrap: break-word;
   word-break: break-all;
@@ -138,10 +138,6 @@
 
 .flogo-flow-detail-header {
 
-  .flogo-flow-detail-name + span {
-    font-size: .875em;
-  }
-
   .flogo-flow-detail-header-back {
     display: flex;
     flex-direction: row;
@@ -161,7 +157,6 @@
     }
 
     .flogo-flow-detail-header-back-app-name {
-      font-size: .875em;
       color: @color-primary;
       cursor: pointer;
       margin-left: 4px;
@@ -177,6 +172,12 @@
       }
     }
   }
+}
+
+.flow-detail-name-description {
+  font-size: 12px;
+  margin: 0 0 7px;
+  color: @warm-grey;
 }
 
 @error-panel-icon__width: 46px;

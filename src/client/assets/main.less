@@ -661,10 +661,8 @@ code {
 }
 
 .flogo-flow-detail-menu {
-  background: white;
-  border: solid 2px @gainsboro;
-  border-radius: 7px;
-  color: @color-secondary;
+  background: transparent;
+  color: @warm-grey;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -690,7 +688,7 @@ code {
     border-radius: 3px;
     color: @color-plain;
     position: absolute;
-    top: 40px;
+    top: 44px;
     right: 0;
     overflow: hidden;
     transform: scale(0,0);
@@ -704,7 +702,7 @@ code {
   .flogo-flow-detail-menu-item{
     margin: 0;
     list-style: none;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 
     .flogo-flow-detail-menu-anchor{
@@ -712,6 +710,11 @@ code {
       padding: 10px;
       padding-left: 15px;
       white-space: nowrap;
+      text-decoration: none;
+    }
+
+    &:hover {
+      background-color: rgba(197, 202, 233, 0.2);
     }
 
   }
@@ -738,11 +741,15 @@ code {
 
 .flogo-button--primary,
 .flogo-button--default {
-.uxpl-button-primary;
+  .uxpl-button-primary;
 }
 
 .flogo-button--secondary {
   .uxpl-button-secondary;
+}
+
+.kebabmenu-icon {
+  font-size: 1.4em;
 }
 
 .flogo-button--flat {
@@ -865,7 +872,6 @@ code {
   padding: 2px 10px;
   border-radius: 100px;
   position:relative;
-  top: -5px;
   color: @color-plain;
 }
 
@@ -936,4 +942,17 @@ code {
 
 .overlay-flex {
   display: flex;
+}
+
+.flogo-button-dropdown-caret {
+  display: inline-block;
+  transform: rotate(270deg);
+  transform-origin: center center;
+  margin: 0;
+  padding: 0;
+  line-height: 16px;
+  position: relative;
+  height: 16px;
+  top: 1px;
+  font-size: 0.9em;
 }

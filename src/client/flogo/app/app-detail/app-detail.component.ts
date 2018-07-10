@@ -51,6 +51,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   isNewApp = false;
   isBuildBoxShown = false;
   isBuilding: boolean;
+  isViewsDropdownShown = false;
   buildOptions = [
     {label: 'Darwin/amd64', os: 'darwin', arch: 'amd64'},
     {label: 'Linux/amd64', os: 'linux', arch: 'amd64'},
@@ -264,9 +265,17 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isExportBoxShown = false;
   }
 
+  toggleViewsDropdown() {
+    this.isViewsDropdownShown = !this.isViewsDropdownShown;
+  }
+
+  closeViewsDropdown() {
+    this.isViewsDropdownShown = false;
+  }
   showDetailsView(viewType: string) {
     this.isFlowsViewActive = viewType === 'flows';
     this.selectedViewTranslateKey = this.isFlowsViewActive ? 'DETAILS-VIEW-MENU:FLOWS' : 'DETAILS-VIEW-MENU:TRIGGERS';
+    this.isViewsDropdownShown = false;
   }
 
   private handleBuildDownload(download: Observable<any>) {

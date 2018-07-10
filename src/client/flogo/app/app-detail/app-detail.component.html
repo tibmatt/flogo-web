@@ -74,18 +74,19 @@
 
           </div>
           <div class="flogo-app-detail-commands">
-            <div class="dropdown views-dropdown">
-              <button class="flogo-app-detail-button btn btn-default dropdown-toggle views-dropdown_button"
-                      id="viewsDropDown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <div class="app-detail-views-dropdown" (fgClickOutside)="closeViewsDropdown()">
+              <button class="flogo-button--secondary views-dropdown_button" (click)="toggleViewsDropdown()">
                 <span class="views-dropdown_label">{{selectedViewTranslateKey | translate}}</span>
-                <span class="caret list-caret views-dropdown_caret pull-right"></span>
+                <span class="flogo-icon-back flogo-button-dropdown-caret views-dropdown_caret" [ngClass]="{'active' : isViewsDropdownShown}"></span>
               </button>
-              <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="viewsDropDown">
-                <li class="list-label" (click)="showDetailsView('flows')"><a>{{"DETAILS-VIEW-MENU:FLOWS" |
+              <div class="app-detail-view-menu" [ngClass]="{'active' : isViewsDropdownShown}">
+              <ul class="list-unstyled app-detail-view-list">
+                <li class="app-detail-view-menu-item" (click)="showDetailsView('flows')"><a class="app-detail-view-menu-list">{{"DETAILS-VIEW-MENU:FLOWS" |
                   translate}}</a></li>
-                <li class="list-label" (click)="showDetailsView('triggers')"><a>{{"DETAILS-VIEW-MENU:TRIGGERS" |
+                <li class="app-detail-view-menu-item" (click)="showDetailsView('triggers')"><a class="app-detail-view-menu-list">{{"DETAILS-VIEW-MENU:TRIGGERS" |
                   translate}}</a></li>
               </ul>
+              </div>
             </div>
             <flogo-new-flow [appId]="application?.id" (newFlow)="onFlowAdd($event)"></flogo-new-flow>
             <flogo-apps-settings *ngIf="application?.profileType === PROFILE_TYPES.DEVICE"
@@ -123,7 +124,7 @@
                       (click)="toggleBuildBox()">
                 <ng-container *ngIf="!isBuilding; else buildIndicator">
                   <span class="build-button-title">{{ 'DETAILS:BUILD' | translate }}</span>
-                  <span class="flogo-icon flogo-icon-back build-button-dropdown-caret"></span>
+                  <span class="flogo-icon flogo-icon-back flogo-button-dropdown-caret"></span>
                 </ng-container>
                 <ng-template #buildIndicator>{{ 'DETAILS:BUILDING' | translate }}</ng-template>
               </button>
@@ -145,7 +146,7 @@
               </div>
             </div>
             <div class="flogo-flow-detail-menu">
-              <i class="flogo-icon-kebabmenu"></i>
+              <i class="flogo-icon-kebabmenu kebabmenu-icon"></i>
               <div class="flogo-flow-detail-menu-list-wrapper">
                 <ul class="flogo-flow-detail-menu-list">
                   <li class="flogo-flow-detail-menu-item">

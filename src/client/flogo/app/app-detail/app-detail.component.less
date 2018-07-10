@@ -32,6 +32,8 @@
 
     .flogo-app-header__name-container {
       width: 100%;
+      margin-top: -8px;
+      color: @color-ink;
     }
 
     .flogo-app-details__icon {
@@ -39,7 +41,7 @@
       height: 62px;
       fill: @color-bg;
       margin-right: 10px;
-
+      border-radius: 2px;
       .flogo-app-details__icon-wrapper {
         width: 62px;
         height: 62px;
@@ -64,25 +66,23 @@
 
   .flogo-app-header__name {
     font-size: 1.5em;
-    letter-spacing: .4px;
     color: rgba(0, 0, 0, 0.87);
   }
   .flogo-app-header__name--edit {
     margin-bottom: 5px;
     font-size: 1.5em;
-    letter-spacing: .4px;
     padding: 0;
   }
 
   .flogo-app-header__date-container, .flogo-app-header__description {
     // font-size: 0.75em;
-    letter-spacing: .2px;
-    line-height: 1.14;
+    letter-spacing: .3px;
+    margin-top: -5px;
+    color: @warm-grey;
   }
 
   .flogo-app-header__description {
     font-size: 0.875em;
-    color: rgba(0,0,0,0.87);
   }
 
   .flogo-app-header__edge-icon {
@@ -127,6 +127,8 @@
 
   .flogo-app-header__description-container {
     // margin: .625em 0;
+    font-size: 12px;
+    color: @warm-grey;
     .flogo-app-header__description--edit {
       font-size: .875em;
       width: 100%;
@@ -160,8 +162,8 @@
     .uxpl-dropdown-container;
     color: @color-plain;
     position: absolute;
-    top: 50px;
-    right: 161px;
+    top: 53px;
+    right: 183px;
     z-index: 2;
     min-width: 264px;
     transform: scale(0, 0);
@@ -200,7 +202,7 @@
     min-width: 124px;
   }
   .flogo-app-detail-profile-wrapper{
-    right: 54px;
+    right: 63px;
   }
   .flogo-app-header__go-back-container {
     position: relative;
@@ -216,7 +218,7 @@
       padding: 0.2em .3em 0.2em 0.2em;
 
       font-size: 1.5em;
-      color: @color-secondary;
+      color: @warm-grey;
 
       .flogo-icon {
         display: inline-block;
@@ -242,8 +244,7 @@
 }
 
 .flogo-app-detail-button {
-  margin: 0 15px;
-  min-width: 93px;
+  margin: 0 24px;
   height: 40px;
 }
 
@@ -338,29 +339,79 @@
   position: relative;
   text-align: left;
   margin: 0 15px 0 0;
-  width: 125px;
+  width: 164px;
+  border: 1px solid @gainsboro-two;
+  &:active {
+    border: 1px solid @primary-blue;
+  }
 }
 
+.app-detail-views-dropdown{
+  position: relative;
+}
 .views-dropdown_caret {
   position: absolute;
-  top: 19px;
-  right: 16px;
+  color: @warm-grey;
+  right: 12px;
+  top: 11px;
+  &.active {
+    color: @primary-blue;
+  }
+}
+
+.views-dropdown_label {
+  margin-right: 10px;
+  color: @color-ink;
+}
+
+.app-detail-view-item {
+  padding: 0 20px;
+}
+
+.app-detail-view-menu-list {
+  .uxpl-dropdown__item;
+  font-size: 16px;
+  &:hover {
+    color: @primary-blue;
+  }
+  &:active {
+    color: @color-bg;
+  }
+}
+
+.app-detail-view-menu {
+  .uxpl-dropdown-container;
+  position: absolute;
+  z-index: 3;
+  transform: scale(0, 0);
+  min-width: 164px;
+  top: 44px;
+  &.active {
+    animation: scale-in-ver-top 300ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  }
+  .app-detail-view-list {
+    .app-detail-view-menu-item {
+      .uxpl-dropdown;
+      font-size: 16px;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+
+      .app-detail-view-menu-list {
+        .uxpl-dropdown__item;
+        display: inline-block;
+        width: 100%;
+        color: @cerulean;
+        text-decoration: none;
+      }
+
+    }
+
+  }
 }
 
 .build-button-title {
   margin-right: 10px;
 }
 
-.build-button-dropdown-caret {
-  display: inline-block;
-  transform: rotate(270deg);
-  transform-origin: center center;
-  margin: 0;
-  padding: 0;
-  line-height: 16px;
-  position: relative;
-  height: 16px;
-  top: 1px;
-  font-size: 0.9em;
-}
+
 
