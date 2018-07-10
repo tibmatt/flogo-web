@@ -1,30 +1,36 @@
 import { ModuleWithProviders } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { ExternalWindowComponent } from '@flogo/logs';
-import { FlogoHomeComponent } from '@flogo/home';
-import { FlogoApplicationComponent } from '@flogo/app';
 
 export const appRoutes: Routes = [
   {
-    path: 'apps',
-    component: FlogoHomeComponent,
-    // canActivate: [ConfigurationLoadedGuard],
+    path: '',
+    loadChildren: './home/home.module#FlogoHomeModule',
   },
   {
-    path: 'apps/:appId',
-    component: FlogoApplicationComponent
+    path: 'apps',
+    loadChildren: './app/app.module#FlogoApplicationModule',
   },
   {
     path: 'logs',
     component: ExternalWindowComponent
   },
   {
+    path: 'flows',
+    loadChildren: './flow/flow.module#FlowModule'
+  },
+  {
     path: '**',
-    redirectTo: 'apps',
+    redirectTo: '',
     pathMatch: 'full'
   }
 ];
 
 export const appRoutingProviders: any[] = [];
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+export const routing: ModuleWithProviders = RouterModule.forRoot(
+  appRoutes,
+  {
+    preloadingStrategy: PreloadAllModules
+  }
+);

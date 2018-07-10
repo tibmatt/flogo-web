@@ -3,18 +3,18 @@ import {BsModalModule} from 'ng2-bs3-modal';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {FlogoApplicationComponent} from './app.component';
-import {FlogoAppSettingsComponent} from '@flogo/app/settings/settings.component';
-import {FlogoApplicationDetailComponent} from '@flogo/app/app-detail/app-detail.component';
-import {AppDetailService} from '@flogo/app/core/apps.service';
-import {FlogoApplicationFlowsComponent} from '@flogo/app/shared/flows/flows.component';
-import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
-import {FlogoExportFlowsComponent} from '@flogo/app/export-flows/export-flows.component';
-import {FlowTriggerGroupComponent} from '@flogo/app/trigger-group/trigger-group.component';
+import {FlogoAppSettingsComponent} from './settings/settings.component';
+import {FlogoApplicationDetailComponent} from './app-detail/app-detail.component';
+import {AppDetailService} from './core/apps.service';
+import {FlogoApplicationFlowsComponent} from './shared/flows/flows.component';
+import {FlowGroupComponent} from './flow-group/flow-group.component';
+import {FlogoExportFlowsComponent} from './export-flows/export-flows.component';
+import {FlowTriggerGroupComponent} from './trigger-group/trigger-group.component';
 import {CommonModule} from '@angular/common';
 import { SharedModule as FlogoSharedModule } from '../shared/shared.module';
-import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
-import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.component';
-
+import {FlogoNewFlowComponent} from './new-flow/new-flow.component';
+import {TriggerShimBuildComponent} from './shim-trigger/shim-trigger.component';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   imports: [
@@ -22,7 +22,8 @@ import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.co
     FormsModule,
     BsModalModule,
     FlogoSharedModule,
-    RouterModule
+    RouterModule,
+    AppRoutingModule,
   ],
   declarations: [
     FlogoApplicationDetailComponent,

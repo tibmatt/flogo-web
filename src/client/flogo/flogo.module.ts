@@ -16,9 +16,7 @@ import { initializer } from '@flogo/core/initializer';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 
 import { FlogoHomeModule } from '@flogo/home';
-import { FlowModule } from '@flogo/flow';
 import { LogsModule as FlogoLogsModule } from '@flogo/logs';
-import { ConfigModule as FlogoConfigModule } from '@flogo/config';
 
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';
@@ -46,11 +44,7 @@ import { environment } from '../environments/environment';
     BsModalModule,
 
     FlogoSharedModule,
-    FlogoHomeModule,
     FlogoLogsModule,
-    FlowModule,
-    FlogoConfigModule,
-    FlogoApplicationModule,
     routing,
   ],
   declarations: [

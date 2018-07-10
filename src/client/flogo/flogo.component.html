@@ -1,3 +1,5 @@
 <flogo-navbar *ngIf="showNav"></flogo-navbar>
 <flogo-loading-indicator [active]="isPageLoading"></flogo-loading-indicator>
-<router-outlet></router-outlet>
+<div [hidden]="isPageLoading" class="router-output">
+  <router-outlet></router-outlet>
+</div>

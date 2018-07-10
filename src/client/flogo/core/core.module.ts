@@ -16,7 +16,6 @@ import { FlogoModal } from './services/modal.service';
 import { ConfigurationService } from './services/configuration.service';
 import { PostService } from './services/post.service';
 import { SanitizeService } from './services/sanitize.service';
-import { LoadingStatusService } from './services/loading-status.service';
 import { ErrorService } from './services/error.service';
 import { WindowRef } from './services/window-ref';
 import { ChildWindowService } from './services/child-window.service';
@@ -62,7 +61,6 @@ import { FileDownloaderService } from './services/file-downloader.service';
     ConfigurationService,
     PostService,
     SanitizeService,
-    LoadingStatusService,
     WindowRef,
     FlowsService,
     FlogoProfileService,

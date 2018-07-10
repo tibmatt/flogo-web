@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { compose, StoreModule } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 import { LogsModule as FlogoLogsModule } from '@flogo/logs';
@@ -19,7 +19,7 @@ import { TriggerDetailModule as FlogoFlowTriggerDetailModule } from './trigger-d
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
 import { ParamsSchemaModule } from './params-schema';
 
-import { routing } from './flow.routing';
+import { FlowRoutingModule } from './flow-routing.module';
 import { FlowComponent } from './flow.component';
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlowDataResolver } from './flow-data.resolver';
@@ -42,7 +42,7 @@ import { featureReducer } from './core/state';
     FlogoFlowTaskDetailModule,
     FlogoFlowTriggerDetailModule,
     FlogoFlowTaskAddModule,
-    routing
+    FlowRoutingModule,
   ],
   declarations: [
     EmptyDetailComponent,

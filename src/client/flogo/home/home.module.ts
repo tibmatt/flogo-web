@@ -8,7 +8,7 @@ import { FlogoAppsListComponent } from './apps-list/apps-list.component';
 import { FlogoAppImportComponent } from './app-import/app-import.component';
 import { ImportErrorFormatterService } from './core/import-error-formatter.service';
 import { FlogoNewAppComponent } from './new-app/new-app.component';
-import { RouterModule } from '@angular/router';
+import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
   imports: [
@@ -16,7 +16,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     BsModalModule,
     FlogoSharedModule,
-    RouterModule
+    HomeRoutingModule,
   ],
   declarations: [
     FlogoHomeComponent,

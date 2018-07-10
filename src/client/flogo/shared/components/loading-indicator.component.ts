@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'flogo-loading-indicator',
   'template': `
-<div *ngIf="(active | async)" class="flogo-spin-loading-bg">
+<div *ngIf="active" class="flogo-spin-loading-bg">
   <div class="flogo-spin-loading">
     <div>
       <div></div>
