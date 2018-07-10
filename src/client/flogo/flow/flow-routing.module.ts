@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
-import { FlogoFlowsDetailTriggersDetailComponent } from './trigger-detail';
 import { FlogoFlowsDetailTasksComponent } from './task-add';
 import { FlogoFlowsDetailTasksDetailComponent } from './task-detail';
 import { FlowComponent } from './flow.component';
@@ -17,7 +16,6 @@ const flowRoutes: Routes = [
     },
     children: [
       { path: '', component: EmptyDetailComponent },
-      { path: 'trigger/:id', component: FlogoFlowsDetailTriggersDetailComponent },
       { path: 'task/add', component: FlogoFlowsDetailTasksComponent },
       { path: 'task/:id', component: FlogoFlowsDetailTasksDetailComponent }
     ]

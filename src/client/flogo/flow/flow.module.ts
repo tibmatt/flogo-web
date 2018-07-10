@@ -15,7 +15,6 @@ import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-p
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
-import { TriggerDetailModule as FlogoFlowTriggerDetailModule } from './trigger-detail';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
 import { ParamsSchemaModule } from './params-schema';
 
@@ -40,7 +39,6 @@ import { featureReducer } from './core/state';
     FlogoFlowErrorPanelModule,
     FlogoFlowTriggersModule,
     FlogoFlowTaskDetailModule,
-    FlogoFlowTriggerDetailModule,
     FlogoFlowTaskAddModule,
     FlowRoutingModule,
   ],
