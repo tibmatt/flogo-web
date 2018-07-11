@@ -5,7 +5,7 @@
         <div class="col-md-8">
           <p class="welcome-message">{{ 'FLOWS:WELCOME-BACK' | translate }}</p>
           <p class="description-message">{{ 'FLOWS:NEW-INSTRUCTIONS' | translate }}</p>
-          <a class="flogo-link header__link" href="https://www.youtube.com/watch?v=OHX4kKVdI28&amp;feature=youtu.be"
+          <a class="flogo-link" href="https://www.youtube.com/watch?v=OHX4kKVdI28&amp;feature=youtu.be"
              target="_blank">
             <span><i class="flogo-icon flogo-icon-video"></i>{{ 'FLOWS:FEATURED-VIDEO-TUTORIAL' | translate }}</span>
           </a>
@@ -30,7 +30,7 @@
 
             <ul class="recent-flows__list">
               <li *ngFor="let item of recent" class="recent-flows__list__item">
-                <span class="recent-flows__flow__name"><a [routerLink]="['/flows', item.id]" class="flogo-link recent-flows__list__flow">{{item.name}}</a></span>
+                <span class="recent-flows__flow__name"><a [routerLink]="['/flows', item.id]" class="flogo-link">{{item.name}}</a></span>
                 <span>in <a [routerLink]="['/apps', item.appId]" class="flogo-link recent-flows__list__app">{{item.app ? item.app.name
                   : item.appId}}</a></span>
               </li>
