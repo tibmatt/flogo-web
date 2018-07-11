@@ -163,7 +163,7 @@
     color: @color-plain;
     position: absolute;
     top: 53px;
-    right: 183px;
+    right: 180px;
     z-index: 2;
     min-width: 264px;
     transform: scale(0, 0);
@@ -175,10 +175,9 @@
     }
 
     .flogo-app-detail-list {
-
+      margin: 10px 0;
       .flogo-app-detail-list-item {
         .uxpl-dropdown;
-        font-size: 16px;
         cursor: pointer;
         letter-spacing: 0.3px;
 
@@ -186,6 +185,7 @@
           .uxpl-dropdown__item;
           display: inline-block;
           width: 100%;
+          font-size: 16px;
           color: @cerulean;
           text-decoration: none;
         }
@@ -195,6 +195,7 @@
     }
     .flogo-app-trigger-build {
       padding: 10px 0;
+      margin: 0;
       border-top: 1px solid @gainsboro;
     }
   }
@@ -362,6 +363,9 @@
 .views-dropdown_label {
   margin-right: 10px;
   color: @color-ink;
+  &.active {
+    color: @primary-blue;
+  }
 }
 
 .app-detail-view-item {
@@ -395,7 +399,7 @@
       font-size: 16px;
       cursor: pointer;
       letter-spacing: 0.3px;
-
+      margin: 10px 0;
       .app-detail-view-menu-list {
         .uxpl-dropdown__item;
         display: inline-block;
@@ -409,7 +413,7 @@
   }
 }
 
-.build-button-title {
+.button-title {
   margin-right: 10px;
 }
 
