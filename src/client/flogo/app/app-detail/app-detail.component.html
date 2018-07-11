@@ -76,7 +76,7 @@
           <div class="flogo-app-detail-commands">
             <div class="app-detail-views-dropdown" (fgClickOutside)="closeViewsDropdown()">
               <button class="flogo-button--secondary views-dropdown_button" (click)="toggleViewsDropdown()">
-                <span class="views-dropdown_label">{{selectedViewTranslateKey | translate}}</span>
+                <span class="views-dropdown_label"  [ngClass]="{'active' : isViewsDropdownShown}">{{selectedViewTranslateKey | translate}}</span>
                 <span class="flogo-icon-back flogo-button-dropdown-caret views-dropdown_caret" [ngClass]="{'active' : isViewsDropdownShown}"></span>
               </button>
               <div class="app-detail-view-menu" [ngClass]="{'active' : isViewsDropdownShown}">
@@ -101,7 +101,8 @@
 
             <div (fgClickOutside)="closeExportBox()">
               <button class="flogo-button--secondary flogo-app-detail-button" (click)="toggleExportBox()">
-                {{ 'DETAILS:EXPORT' | translate }}
+                <span class="button-title">{{ 'DETAILS:EXPORT' | translate }}</span>
+                <span class="flogo-icon flogo-icon-back flogo-button-dropdown-caret"></span>
               </button>
               <div class="flogo-app-detail-list-wrapper app-detail-export-list"
                    [ngClass]="{'active' : isExportBoxShown, 'flogo-app-detail-profile-wrapper' : application?.profileType === PROFILE_TYPES.DEVICE}">
@@ -123,7 +124,7 @@
                       [disabled]="isBuilding"
                       (click)="toggleBuildBox()">
                 <ng-container *ngIf="!isBuilding; else buildIndicator">
-                  <span class="build-button-title">{{ 'DETAILS:BUILD' | translate }}</span>
+                  <span class="button-title">{{ 'DETAILS:BUILD' | translate }}</span>
                   <span class="flogo-icon flogo-icon-back flogo-button-dropdown-caret"></span>
                 </ng-container>
                 <ng-template #buildIndicator>{{ 'DETAILS:BUILDING' | translate }}</ng-template>
