@@ -1,4 +1,4 @@
-import {ValueType} from '@flogo/core';
+import {TriggerSchema, ValueType} from '@flogo/core';
 
 export const TriggersMock = [
   {
@@ -55,6 +55,37 @@ export const ConfigureTriggersMock = [
             'content': null
           },
           'actionId': 'action_1',
+          'createdAt': 'datetime',
+          'updatedAt': 'datetime'
+        },
+        {
+          'actionMappings': {
+            'input': [
+              {
+                'mapTo': 'in',
+                'type': 2,
+                'value': 200
+              },
+              {
+                'mapTo': 'in2',
+                'type': 2,
+                'value': 56565656
+              }
+            ],
+            'output': []
+          },
+          'settings': {
+            'method': null,
+            'path': null
+          },
+          'outputs': {
+            'params': null,
+            'pathParams': null,
+            'queryParams': null,
+            'header': null,
+            'content': null
+          },
+          'actionId': 'action_2',
           'createdAt': 'datetime',
           'updatedAt': 'datetime'
         }
@@ -220,79 +251,77 @@ export const ConfigureTriggersMock = [
   }
 ];
 
-export const ConfigureTriggerSchema = {
-  'github.com/TIBCOSoftware/flogo-contrib/trigger/rest': {
-    'id': 'github-com-tibco-software-flogo-contrib-trigger-rest',
-    'name': 'flogo-rest',
-    'version': '0.0.1',
-    'title': 'Receive HTTP Message',
-    'description': 'Simple REST Trigger',
-    'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
-    'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+export const ConfigureTriggerSchema: TriggerSchema = {
+  'type': 'flogo:trigger',
+  'name': 'flogo-rest',
+  'version': '0.0.1',
+  'title': 'Receive HTTP Message',
+  'description': 'Simple REST Trigger',
+  'homepage': 'https://github.com/TIBCOSoftware/flogo-contrib/tree/master/trigger/rest',
+  'ref': 'github.com/TIBCOSoftware/flogo-contrib/trigger/rest',
+  'settings': [
+    {
+      'name': 'port',
+      'type': ValueType.Integer,
+      'required': true
+    }
+  ],
+  'outputs': [
+    {
+      'name': 'params',
+      'type': ValueType.Params
+    },
+    {
+      'name': 'pathParams',
+      'type': ValueType.Params
+    },
+    {
+      'name': 'queryParams',
+      'type': ValueType.Params
+    },
+    {
+      'name': 'header',
+      'type': ValueType.Params
+    },
+    {
+      'name': 'content',
+      'type': ValueType.Any
+    }
+  ],
+  'handler': {
     'settings': [
       {
-        'name': 'port',
-        'type': 'integer',
+        'name': 'method',
+        'type': ValueType.String,
+        'required': true,
+        'allowed': [
+          'GET',
+          'POST',
+          'PUT',
+          'PATCH',
+          'DELETE'
+        ]
+      },
+      {
+        'name': 'path',
+        'type': ValueType.String,
         'required': true
       }
-    ],
-    'outputs': [
-      {
-        'name': 'params',
-        'type': 'params'
-      },
-      {
-        'name': 'pathParams',
-        'type': 'params'
-      },
-      {
-        'name': 'queryParams',
-        'type': 'params'
-      },
-      {
-        'name': 'header',
-        'type': 'params'
-      },
-      {
-        'name': 'content',
-        'type': 'any'
-      }
-    ],
-    'handler': {
-      'settings': [
-        {
-          'name': 'method',
-          'type': 'string',
-          'required': true,
-          'allowed': [
-            'GET',
-            'POST',
-            'PUT',
-            'PATCH',
-            'DELETE'
-          ]
-        },
-        {
-          'name': 'path',
-          'type': 'string',
-          'required': true
-        }
-      ]
-    },
-    'reply': [
-      {
-        'name': 'code',
-        'type': 'integer'
-      },
-      {
-        'name': 'data',
-        'type': 'any'
-      }
     ]
-  }
+  },
+  'reply': [
+    {
+      'name': 'code',
+      'type': ValueType.Integer
+    },
+    {
+      'name': 'data',
+      'type': ValueType.Any
+    }
+  ]
 };
 
-export const InvalidConfigureTriggersMock = [
+/*export const InvalidConfigureTriggersMock = [
   {
     'trigger': {
       'name': 'Receive HTTP Message',
@@ -478,4 +507,4 @@ export const FlowMetaDataMock = {
     }
   ],
   'output': []
-};
+};*/
