@@ -10,6 +10,7 @@ All notable changes to this project's dependencies will be documented in this fi
   - [primeng@6.0.0](https://github.com/primefaces/primeng) (MIT) - Was 5.2.3
 - ** Removed **
   - d3.js
+  - @angular/http
 
 
 ### Development Dependencies

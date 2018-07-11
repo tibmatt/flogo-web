@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -34,7 +33,6 @@ import { FileDownloaderService } from './services/file-downloader.service';
 
 @NgModule({
   imports: [
-    HttpModule,
     HttpClientModule,
     RouterModule,
     WalkthroughModule,

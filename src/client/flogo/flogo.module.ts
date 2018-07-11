@@ -15,12 +15,10 @@ import { createTranslateLoader } from '@flogo/core/language';
 import { initializer } from '@flogo/core/initializer';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared';
 
-import { FlogoHomeModule } from '@flogo/home';
 import { LogsModule as FlogoLogsModule } from '@flogo/logs';
 
 import { appRoutingProviders, routing } from './flogo.routing';
 import { FlogoAppComponent } from './flogo.component';
-import { FlogoApplicationModule } from '@flogo/app';
 import { environment } from '../environments/environment';
 
 @NgModule({
