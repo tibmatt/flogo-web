@@ -10,8 +10,8 @@
             <span><i class="flogo-icon flogo-icon-video"></i>{{ 'FLOWS:FEATURED-VIDEO-TUTORIAL' | translate }}</span>
           </a>
         </div>
-        <div class="flogo-mascot col-md-4">
-          <object class="flogo-flows-mascotImg" data="/assets/svg/flogo-flynn.svg" type="image/svg+xml">
+        <div class="flogo-mascot col-md-4" [class.is-flying]="isFlying">
+          <object (load)="onFlynnLoaded($event)" #flynn class="flogo-flows-mascotImg" data="/assets/svg/flogo-flynn.svg" type="image/svg+xml">
             <img src="/assets/svg/flogo-flynn.svg"/>
           </object>
         </div>

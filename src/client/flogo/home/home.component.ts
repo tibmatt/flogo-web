@@ -1,43 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { fromEvent, timer, Subscription } from 'rxjs';
+import { bufferCount, exhaustMap } from 'rxjs/operators';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { App, FlowSummary } from '@flogo/core';
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 
 @Component({
   selector: 'flogo-home',
-  // moduleId: module.id,
   templateUrl: 'home.component.html',
   styleUrls: ['home.component.less']
 })
-export class FlogoHomeComponent implements OnInit {
+export class FlogoHomeComponent implements OnInit, OnDestroy {
   public recent: Array<any> = [];
   flows: Array<FlowSummary> = [];
-  originalFlows: Array<FlowSummary> = [];
   application: App = null;
 
+  isFlying = false;
+  private flynnFlightSubscription: Subscription;
+
   constructor(private router: Router,
-              public applicationServiceAPI: AppsApiService) {
+              public applicationServiceAPI: AppsApiService,
+              private ngZone: NgZone
+  ) {
   }
 
   ngOnInit() {
     this.loadFlows();
   }
 
-  /*onChangedSearch(search) {
-   let flows = this.originalFlows || [];
-
-   if(search && flows.length){
-   let filtered =  flows.filter((flow:FlowSummary)=> {
-   return (flow.name || '').toLowerCase().includes(search.toLowerCase()) ||
-   (flow.description || '').toLowerCase().includes(search.toLowerCase())
-   });
-
-   this.flows = filtered || [];
-
-   }else {
-   this.flows = this.getOriginalFlows();
-   }
-   }*/
+  ngOnDestroy() {
+    this.flynnFlightSubscription.unsubscribe();
+  }
 
   loadFlows() {
     this.applicationServiceAPI.recentFlows()
@@ -50,4 +43,24 @@ export class FlogoHomeComponent implements OnInit {
   onSelectedApp(application: App) {
     this.router.navigate(['/apps', application.id]);
   }
+
+  onFlynnLoaded(event) {
+    const contentDocument = event && event.target && event.target.contentDocument;
+    if (!contentDocument || !contentDocument.children || !contentDocument.children[0]) {
+      return;
+    }
+    const flynnSvg = event.target.contentDocument.children[0];
+    const startFlight = () => this.isFlying = true;
+    const endFlight = () => this.isFlying = false;
+    this.flynnFlightSubscription = fromEvent(flynnSvg, 'click')
+      .pipe(
+        bufferCount(3),
+        exhaustMap(() => {
+          this.ngZone.run(startFlight);
+          return timer(5000);
+        })
+      )
+      .subscribe(() => this.ngZone.run(endFlight));
+  }
+
 }
