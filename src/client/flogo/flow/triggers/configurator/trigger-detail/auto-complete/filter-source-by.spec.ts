@@ -1,38 +1,37 @@
-import {connect} from './auto-complete.directive';
-import {of, Observable} from 'rxjs';
-import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
+import {filterSourceBy} from './filter-source-by';
+import {of, Observable, Subject} from 'rxjs';
 import {async} from '@angular/core/testing';
-import {Subject} from 'rxjs/internal/Subject';
 
-describe('AutoCompleteDirective', () => {
+describe('FilterSourceByValue', () => {
   let filterTerm$: Subject<string>;
   let source$: Observable<Observable<string[]>>;
-  let destroy$: SingleEmissionSubject;
   let filteredValues$: Observable<string[]>;
 
   beforeEach(() => {
     filterTerm$ = new Subject<string>();
     source$ = of(of(['Option1', 'Option2', 'Value3', 'Selection4', 'Select5']));
-    destroy$ = SingleEmissionSubject.create();
-    filteredValues$ = connect(source$, filterTerm$, destroy$);
-  });
-
-  afterEach(() => {
-    destroy$.emitAndComplete();
+    filteredValues$ = filterSourceBy(source$, filterTerm$);
   });
 
   it('Should create the filter observable', () => {
     expect(filteredValues$).toBeTruthy();
   });
 
-  it('Should filter source based on filter term', async(() => {
+  it('Should show all options without any filter value', async(() => {
+    filteredValues$.subscribe(filteredValues => {
+      expect(filteredValues.length).toEqual(5);
+    });
+    filterTerm$.next('');
+  }));
+
+  it('Should filter source based on filter value', async(() => {
     filteredValues$.subscribe(filteredValues => {
       expect(filteredValues.length).toEqual(2);
     });
     filterTerm$.next('Option');
   }));
 
-  it('Should filter with case insensitivity', async(() => {
+  it('Should filter source by value with case insensitivity', async(() => {
     filteredValues$.subscribe(filteredValues => {
       expect(filteredValues.length).toEqual(2);
     });

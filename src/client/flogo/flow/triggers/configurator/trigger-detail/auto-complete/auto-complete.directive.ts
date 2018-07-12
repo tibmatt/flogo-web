@@ -20,12 +20,13 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { TAB } from '@angular/cdk/keycodes';
 
 import { Observable, ReplaySubject, of as observableOf, concat, combineLatest, merge } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
 import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
+import {filterSourceBy} from './filter-source-by';
 
 const POPOVER_WIDTH = '344px';
 const POPOVER_MAX_HEIGHT = '250px';
@@ -39,27 +40,6 @@ const ensureObservable = (value) => {
   }
   return value;
 };
-
-const filterList = (collection: string[], term: string) => {
-  term = term ? term.toLowerCase() : '';
-  if (!term) {
-    return collection;
-  }
-  return collection.filter(element => element.toLowerCase().startsWith(term));
-};
-
-export function connect(subjectSrc: Observable<Observable<string[]>>,
-                        filterTerm$: Observable<string>,
-                        destroy$: Observable<void>) {
-  const mapToFiltered = map(([currentInputValue, allowedValues]) => filterList(allowedValues, currentInputValue));
-  return filterTerm$.pipe(
-    takeUntil(destroy$),
-    withLatestFrom(subjectSrc.pipe(
-      switchMap<Observable<any>, any>(newValueSource => newValueSource)
-    )),
-    mapToFiltered,
-  );
-}
 
 const coerceSettingValueToString = (settingValue: SettingValue) => isString(settingValue.viewValue)
   ? settingValue.viewValue
@@ -104,8 +84,12 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
       map((value: string | SettingValue) => !isString(value) ? coerceSettingValueToString(value) : value),
       shareReplay()
     );
-    this.filteredAllowedValues$ = connect(this.allowedValuesSources, this.filterTerm$, this.destroy$);
-    this.filteredVariableOptions$ = connect(this.variablesSources, this.filterTerm$, this.destroy$);
+    this.filteredAllowedValues$ = filterSourceBy(this.allowedValuesSources, this.filterTerm$).pipe(
+      takeUntil(this.destroy$)
+    );
+    this.filteredVariableOptions$ = filterSourceBy(this.variablesSources, this.filterTerm$).pipe(
+      takeUntil(this.destroy$)
+    );
   }
 
   @HostListener('focus')
