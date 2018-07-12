@@ -20,12 +20,13 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { TAB } from '@angular/cdk/keycodes';
 
 import { Observable, ReplaySubject, of as observableOf, concat, combineLatest, merge } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AUTOCOMPLETE_OPTIONS, AutoCompleteContentComponent, AutocompleteOptions } from './auto-complete-content.component';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { SettingValue } from '@flogo/flow/triggers/configurator/trigger-detail/settings-value';
 import { FieldValueAccesorDirective } from '@flogo/flow/triggers/configurator/trigger-detail/settings/form-field/field.directive';
+import {filterSourceBy} from './filter-source-by';
 
 const POPOVER_WIDTH = '344px';
 const POPOVER_MAX_HEIGHT = '250px';
@@ -38,14 +39,6 @@ const ensureObservable = (value) => {
     return observableOf(value);
   }
   return value;
-};
-
-const filterList = (collection: string[], term: string) => {
-  term = term ? term.toLowerCase() : '';
-  if (!term) {
-    return collection;
-  }
-  return collection.filter(element => element.toLowerCase().startsWith(term));
 };
 
 const coerceSettingValueToString = (settingValue: SettingValue) => isString(settingValue.viewValue)
@@ -86,20 +79,17 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const switchToInner = switchMap<Observable<any>, any>(newValueSource => newValueSource);
-    const mapToFiltered = map(([currentInputValue, allowedValues]) => filterList(allowedValues, currentInputValue));
     this.filterTerm$ = this.valueSources.pipe(
-      switchToInner,
+      switchMap<Observable<any>, any>(newValueSource => newValueSource),
       map((value: string | SettingValue) => !isString(value) ? coerceSettingValueToString(value) : value),
       shareReplay()
     );
-    const connect = (subjectSrc: Observable<Observable<string[]>>) => this.filterTerm$.pipe(
-      takeUntil(this.destroy$),
-      withLatestFrom(subjectSrc.pipe(switchToInner)),
-      mapToFiltered,
+    this.filteredAllowedValues$ = filterSourceBy(this.allowedValuesSources, this.filterTerm$).pipe(
+      takeUntil(this.destroy$)
     );
-    this.filteredAllowedValues$ = connect(this.allowedValuesSources);
-    this.filteredVariableOptions$ = connect(this.variablesSources);
+    this.filteredVariableOptions$ = filterSourceBy(this.variablesSources, this.filterTerm$).pipe(
+      takeUntil(this.destroy$)
+    );
   }
 
   @HostListener('focus')
