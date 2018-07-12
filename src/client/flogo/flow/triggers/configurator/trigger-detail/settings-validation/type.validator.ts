@@ -1,4 +1,4 @@
-import { isBoolean, isPlainObject, isArray } from 'lodash';
+import { isBoolean, isPlainObject, isArray, isNumber } from 'lodash';
 import { ValueType } from '@flogo/core';
 import { ValidationErrors } from '@angular/forms';
 import { ErrorTypeMismatch, ErrorTypes } from './error-types';
@@ -26,7 +26,7 @@ function makeMismatchError(expectedType: ValueType): { [type: string]: ErrorType
 }
 
 export function getNumberValidator(expectedType: ValueType) {
-  return value => isNaN(value) ? makeMismatchError(expectedType) : null;
+  return value => !isNumber(value) ? makeMismatchError(expectedType) : null;
 }
 
 export function booleanValidator(value: any) {
@@ -34,9 +34,9 @@ export function booleanValidator(value: any) {
 }
 
 export function getObjectValidator(expectedType: ValueType) {
-  return value => isPlainObject(value) ? makeMismatchError(expectedType) : null;
+  return value => !isPlainObject(value) ? makeMismatchError(expectedType) : null;
 }
 
 export function arrayValidator(value: any) {
-  return isArray(value) ? makeMismatchError(ValueType.Array) : null;
+  return !isArray(value) ? makeMismatchError(ValueType.Array) : null;
 }
