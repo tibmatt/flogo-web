@@ -19,6 +19,8 @@ interface RestApiResponseBody<T> {
   data: T;
 }
 
+const isStdResponseBody = <T>(r): r is RestApiResponseBody<T> => r && r.data;
+
 @Injectable()
 export class RestApiService {
   constructor(@Inject(DEFAULT_REST_HEADERS) private defaultHeaders: HttpHeaders,
@@ -46,9 +48,13 @@ export class RestApiService {
     return this.request<T>('put', endpoint, {...options, body});
   }
 
+  apiPrefix(path) {
+    return this.httpUtils.apiPrefix(path);
+  }
+
   private request<T>(verb, url, options: RestApiOptions & { body?: any } = {}): Observable<T> {
-    return this.http.request<RestApiResponseBody<T>>(verb, this.apiPrefix(url), this.mergeOptions(verb, options))
-      .pipe(map(response => response.data));
+    return this.http.request<RestApiResponseBody<T> | T>(verb, this.apiPrefix(url), this.mergeOptions(verb, options))
+      .pipe(map(response => isStdResponseBody(response) ? response.data : response));
   }
 
   private mergeOptions(verb: string, options: RestApiOptions = {}) {
@@ -68,10 +74,6 @@ export class RestApiService {
       .reduce((headers, [headerName, headerValue]) => {
         return this.defaultHeaders.set(headerName, headerValue);
       }, this.defaultHeaders);
-  }
-
-  apiPrefix(path) {
-    return this.httpUtils.apiPrefix(path);
   }
 
   private requestForVerbHasBody(verb) {
