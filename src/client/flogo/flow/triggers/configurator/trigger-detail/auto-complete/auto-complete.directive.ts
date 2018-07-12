@@ -48,6 +48,19 @@ const filterList = (collection: string[], term: string) => {
   return collection.filter(element => element.toLowerCase().startsWith(term));
 };
 
+export function connect(subjectSrc: Observable<Observable<string[]>>,
+                        filterTerm$: Observable<string>,
+                        destroy$: Observable<void>) {
+  const mapToFiltered = map(([currentInputValue, allowedValues]) => filterList(allowedValues, currentInputValue));
+  return filterTerm$.pipe(
+    takeUntil(destroy$),
+    withLatestFrom(subjectSrc.pipe(
+      switchMap<Observable<any>, any>(newValueSource => newValueSource)
+    )),
+    mapToFiltered,
+  );
+}
+
 const coerceSettingValueToString = (settingValue: SettingValue) => isString(settingValue.viewValue)
   ? settingValue.viewValue
   : JSON.stringify(settingValue.viewValue);
@@ -86,20 +99,13 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const switchToInner = switchMap<Observable<any>, any>(newValueSource => newValueSource);
-    const mapToFiltered = map(([currentInputValue, allowedValues]) => filterList(allowedValues, currentInputValue));
     this.filterTerm$ = this.valueSources.pipe(
-      switchToInner,
+      switchMap<Observable<any>, any>(newValueSource => newValueSource),
       map((value: string | SettingValue) => !isString(value) ? coerceSettingValueToString(value) : value),
       shareReplay()
     );
-    const connect = (subjectSrc: Observable<Observable<string[]>>) => this.filterTerm$.pipe(
-      takeUntil(this.destroy$),
-      withLatestFrom(subjectSrc.pipe(switchToInner)),
-      mapToFiltered,
-    );
-    this.filteredAllowedValues$ = connect(this.allowedValuesSources);
-    this.filteredVariableOptions$ = connect(this.variablesSources);
+    this.filteredAllowedValues$ = connect(this.allowedValuesSources, this.filterTerm$, this.destroy$);
+    this.filteredVariableOptions$ = connect(this.variablesSources, this.filterTerm$, this.destroy$);
   }
 
   @HostListener('focus')
