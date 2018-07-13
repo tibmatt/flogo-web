@@ -1,5 +1,6 @@
 @deep: ~"/deep/";
 @import (reference) '../../../assets/uxpl/buttons';
+@import (reference) '../../../assets/uxpl/dropdown';
 @import "../../../assets/_variables";
 
 @{deep} flogo-flow-dynamic-form .form-container {
@@ -32,32 +33,17 @@
 }
 
 .main {
+  .uxpl-dropdown-container;
   position: absolute;
   min-width: 376px;
-  left: -130px;
+  left: -136px;
   z-index: 2;
-  margin-top: -5px;
-}
-
-.tip {
-  height: 30px;
-  width: 30px;
-  background: @color-bg;
-  transform: rotate(135deg);
-  border: solid 1px @gainsboro;
-  border-right: none;
-  border-top: none;
-  margin: 0 auto;
-  position: relative;
-  top: 15px;
-  box-shadow: -2px 2px 4px -2px rgba(0, 0, 0, 0.33);
+  margin-top: 4px;
+  animation: scale-in-ver-top 300ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 .content {
   padding: 2em;
-  background: @color-bg;
-  box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.33);
-  border: solid 1px @gainsboro;
 }
 
 .button__container {
