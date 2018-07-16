@@ -9,4 +9,13 @@ import {Component, Input} from '@angular/core';
 export class SettingsHelpComponent {
   @Input()
   trigger;
+  isHelpMenuOpen = false;
+
+  toggleMenu() {
+    this.isHelpMenuOpen = !this.isHelpMenuOpen;
+  }
+
+  closeMenu() {
+    this.isHelpMenuOpen = false;
+  }
 }

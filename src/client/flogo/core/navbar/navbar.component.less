@@ -4,6 +4,7 @@
 
 @flogo-header-background-color: #36bfbb;
 @flogo-header-height: 40px;
+@help-icon-active-color: @color-bg;
 
 :host {
   background-color: @flogo-header-background-color;
@@ -42,7 +43,7 @@
 
   &.--active {
     .flogo-header__help-menu-btn {
-      color: @color-bg;
+      color: @help-icon-active-color;
     }
 
     .flogo-header__help-menu-content {
@@ -92,7 +93,7 @@
   font-size: 1em;
 
   &:hover {
-    color: @color-bg;
+    color: @help-icon-active-color;
   }
 }
 
