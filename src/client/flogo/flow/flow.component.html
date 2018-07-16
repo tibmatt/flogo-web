@@ -46,8 +46,8 @@
         <div class="flogo-flow-detail-log-button-container">
           <flogo-logs></flogo-logs>
         </div>
-        <div class="flogo-flow-detail-menu">
-          <i class="flogo-icon-kebabmenu kebabmenu-icon"></i>
+        <div class="flogo-flow-detail-menu" [class.--active]="isflowMenuOpen" (fgClickOutside)="closeFlowMenu()">
+          <i class="flogo-icon-kebabmenu kebabmenu-icon" (click)="toggleFlowMenu()"></i>
           <div class="flogo-flow-detail-menu-list-wrapper">
             <ul class="flogo-flow-detail-menu-list">
               <!--<li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>-->

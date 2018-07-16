@@ -46,6 +46,10 @@ export class FlogoNavbarComponent implements OnInit {
     this.isWalkthroughActivated = true;
   }
 
+  toggleNavMenu() {
+    this.isOpenMenu = !this.isOpenMenu;
+  }
+
   closeNavMenu() {
     this.isOpenMenu = false;
   }

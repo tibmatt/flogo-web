@@ -52,6 +52,8 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   isBuildBoxShown = false;
   isBuilding: boolean;
   isViewsDropdownShown = false;
+  isDetailsMenuOpen = false;
+
   buildOptions = [
     {label: 'Darwin/amd64', os: 'darwin', arch: 'amd64'},
     {label: 'Linux/amd64', os: 'linux', arch: 'amd64'},
@@ -230,6 +232,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
   }
 
   onDeleteApp(application) {
+    this.closeDetailsMenu();
     const message = this.translate.instant('APP-DETAIL:CONFIRM_DELETE', { appName: application.name });
     this.flogoModal.confirmDelete(message).then((res) => {
       if (res) {
@@ -276,6 +279,14 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
     this.isFlowsViewActive = viewType === 'flows';
     this.selectedViewTranslateKey = this.isFlowsViewActive ? 'DETAILS-VIEW-MENU:FLOWS' : 'DETAILS-VIEW-MENU:TRIGGERS';
     this.isViewsDropdownShown = false;
+  }
+
+  toggleDetailsMenu() {
+    this.isDetailsMenuOpen = !this.isDetailsMenuOpen;
+  }
+
+  closeDetailsMenu() {
+    this.isDetailsMenuOpen = false;
   }
 
   private handleBuildDownload(download: Observable<any>) {

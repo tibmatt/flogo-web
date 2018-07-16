@@ -1,13 +1,11 @@
 <nav>
   <div class="flogo-header">
     <a [routerLink]="['/']"><img class="flogo-header__logo" src="/assets/svg/flogo.logo.svg" alt=""/></a>
-    <div class="flogo-header__help-menu navbar-right" (fgClickOutside)="closeNavMenu()">
-      <button class="flogo-btn-link flogo-header__help-menu-btn" [class.--active]="isOpenMenu"
-              type="button" (click)="isOpenMenu = !isOpenMenu;"
-              aria-haspopup="true" aria-expanded="true">
+    <div class="flogo-header__help-menu navbar-right" [class.--active]="isOpenMenu" (fgClickOutside)="closeNavMenu()">
+      <button class="flogo-btn-link flogo-header__help-menu-btn" type="button" (click)="toggleNavMenu()">
         <i class="flogo-icon-help"></i>
       </button>
-      <div class="flogo-header__help-menu-content" [class.--active]="isOpenMenu">
+      <div class="flogo-header__help-menu-content">
         <h3 class="header-help">{{'NAVBAR:HELP'| translate}}</h3>
         <p class="secondary-text">{{'NAVBAR:FLOGO-VERSION'| translate}} {{version}}</p>
         <ul (click)="closeNavMenu()">
