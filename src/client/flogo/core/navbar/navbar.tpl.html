@@ -6,20 +6,21 @@
         <i class="flogo-icon-help"></i>
       </button>
       <div class="flogo-header__help-menu-content">
-        <h3>{{'NAVBAR:HELP'| translate}}</h3>
-        <p class="version">{{'NAVBAR:FLOGO-VERSION'| translate}} {{version}}</p>
+        <h3 class="header-help">{{'NAVBAR:HELP'| translate}}</h3>
+        <p class="secondary-text">{{'NAVBAR:FLOGO-VERSION'| translate}} {{version}}</p>
         <ul>
         <li><a href="https://tibcosoftware.github.io/flogo/" target="_blank">{{ 'NAVBAR:HELP-DOCUMENTATION' | translate }}</a></li>
         <!--<li><a (click)="activateInstructions($event)">{{ 'NAVBAR:HELP-OPEN-INSTRUCTIONS' | translate }}</a></li>-->
         <li><a href="https://tibcosoftware.github.io/flogo/getting-started/quickstart/#launching-the-web-ui" target="_blank">{{ 'NAVBAR:HELP-OPEN-INSTRUCTIONS' | translate }}</a></li>
         <li><a href="https://community.tibco.com/products/project-flogo?_ga=1.213003284.1423112884.1479356766" target="_blank">{{ 'NAVBAR:HELP-COMMUNITY' | translate }}</a></li>
         </ul>
+        <div class="flogo-header__divider"></div>
         <ul class="flogo-header__help-menu-copyright-content">
         <li><a href="http://www.tibco.com/company/privacy-cma" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-PRIVACY-POLICY' | translate }}</a></li>
         <li><a href="http://www.tibco.com/company/termsofuse" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-TERMS-OF-USE' | translate }}</a></li>
         <li><a href="http://www.tibco.com/trademarks" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-TRADEMARKS' | translate }}</a></li>
-        <li class="help-menu-copyright-reserve-content">{{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}</li>
         </ul>
+        <p class="secondary-text copy-notice">{{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}</p>
       </div>
     </div>
   </div>
