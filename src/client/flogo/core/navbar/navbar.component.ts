@@ -14,6 +14,7 @@ export class FlogoNavbarComponent implements OnInit {
   public currentYear: number;
   public isWalkthroughActivated = false;
   public version: string;
+  isOpenMenu = false;
 
   constructor() {
     this.currentYear = (new Date).getFullYear();
@@ -43,6 +44,10 @@ export class FlogoNavbarComponent implements OnInit {
 
   public activateInstructions(event: any) {
     this.isWalkthroughActivated = true;
+  }
+
+  closeNavMenu() {
+    this.isOpenMenu = false;
   }
 
 }
