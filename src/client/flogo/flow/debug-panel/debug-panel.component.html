@@ -1,0 +1,14 @@
+<div class="content" #content [class.is-open]="isOpen">
+  <ng-content></ng-content>
+</div>
+<div class="debug-panel-container" [class.is-open]="isOpen">
+  <button *ngIf="!isOpen" class="toggle-button" (click)="togglePanel()">
+    <span>Activity</span><span class="flogo-icon flogo-icon-back toggle-button__icon"></span>
+  </button>
+  <flogo-flow-debug-panel-detail
+    *ngIf="isOpen"
+    [@debugpanel]="isOpen"
+    (@debugpanel.done)="onAnimationEnd($event)"
+    class="debug-panel__content"
+    (close)="togglePanel()"></flogo-flow-debug-panel-detail>
+</div>
