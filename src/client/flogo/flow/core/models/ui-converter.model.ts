@@ -1,10 +1,16 @@
-import { get, flattenDeep, fromPairs, uniqueId } from 'lodash';
+import { get, fromPairs, uniqueId } from 'lodash';
 import {
   ActionBase,
   FlowMetadata,
   FLOGO_PROFILE_TYPE,
   FLOGO_FLOW_DIAGRAM_NODE_TYPE,
-  UiFlow, Dictionary, Item, ItemSubflow, TriggerSchema
+  UiFlow,
+  Dictionary,
+  Item,
+  ItemSubflow,
+  TriggerSchema,
+  FLOGO_CONTRIB_TYPE,
+  ActivitySchema
 } from '@flogo/core';
 import { ErrorService } from '@flogo/core/services/error.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
@@ -32,11 +38,11 @@ export abstract class AbstractModelConverter {
     this.errorService = errorService;
   }
 
-  abstract getActivitiesSchema(list);
-
   abstract getProfileType(): FLOGO_PROFILE_TYPE;
 
   abstract getFlowInformation(flow): FlowInfo;
+
+  abstract normalizeActivitySchema(schema: ActivitySchema): ActivitySchema;
 
   getTriggerSchema(trigger) {
     if (!trigger.ref) {
@@ -56,15 +62,12 @@ export abstract class AbstractModelConverter {
 
   convertToWebFlowModel(flowObj, subflowSchema: Dictionary<ActionBase>) {
     this.subflowSchemaRegistry = subflowSchema;
-    return this.getActivitiesSchema(this.activitiesUsed(flowObj))
-      .then((installedActivities) => {
-        const installedTiles = flattenDeep(installedActivities);
-        return this.processFlowObj(flowObj, installedTiles);
-      });
+    this.hasProperTasks(flowObj);
+    return this.getAllActivitySchemas()
+      .then(installedActivities => this.processFlowObj(flowObj, installedActivities));
   }
 
-  activitiesUsed(flow: any) {
-    const activitiesList = [];
+  hasProperTasks(flow: any) {
     let tasks = get(flow, 'data.flow.rootTask.tasks', []);
     // add tiles from error diagram
     tasks = tasks.concat(get(flow, 'data.flow.errorHandlerTask.tasks', []));
@@ -84,12 +87,7 @@ export abstract class AbstractModelConverter {
             value: task
           });
       }
-      if (activitiesList.indexOf(ref) === -1) {
-        activitiesList.push(ref);
-      }
     });
-
-    return activitiesList;
   }
 
   processFlowObj(flowJSON, installedContribs) {
@@ -158,6 +156,11 @@ export abstract class AbstractModelConverter {
     });
 
     return itemTrigger;
+  }
+
+  private getAllActivitySchemas(): Promise<ActivitySchema[]> {
+    return this.contribService.listContribs<ActivitySchema>(this.getProfileType(), FLOGO_CONTRIB_TYPE.ACTIVITY)
+      .then(activities => activities.map(this.normalizeActivitySchema));
   }
 
   private cleanDanglingSubflowMappings(items: Dictionary<Item>) {

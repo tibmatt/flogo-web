@@ -13,7 +13,7 @@ import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowDetails } from './models';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
-import { Init } from './state';
+import {FlowState, Init} from './state';
 import { Trigger, TriggerHandler } from './interfaces';
 
 function normalizeTriggersAndHandlersForAction(actionId: string, originalTriggers: Trigger[]) {
@@ -65,7 +65,7 @@ export class FlogoFlowService {
         return this._converterService.getWebFlowModel(flowDiagramDetails, linkedSubflows)
           .then(convertedFlow => {
             this.previousSavedFlow = flogoFlowToJSON(convertedFlow);
-            this.store.dispatch(new Init({ ...convertedFlow, triggers, handlers, linkedSubflows }));
+            this.store.dispatch(new Init({ ...convertedFlow, triggers, handlers, linkedSubflows } as FlowState));
             return {
               flow: convertedFlow,
               triggers: flowTriggers,

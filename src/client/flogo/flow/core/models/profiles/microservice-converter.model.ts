@@ -1,7 +1,7 @@
 import { FlowMetadata, MetadataAttribute } from '@flogo/core/interfaces';
 import { ValueType } from '@flogo/core/constants';
 import { AbstractModelConverter } from '../ui-converter.model';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core';
+import {ActivitySchema, FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 export class MicroServiceModelConverter extends AbstractModelConverter {
 
@@ -9,12 +9,8 @@ export class MicroServiceModelConverter extends AbstractModelConverter {
     return FLOGO_PROFILE_TYPE.MICRO_SERVICE;
   }
 
-  getActivitiesSchema(activities) {
-    const promises = [];
-    activities.forEach(activityRef => {
-      promises.push(this.contribService.getContributionDetails(this.getProfileType(), activityRef));
-    });
-    return Promise.all(promises);
+  normalizeActivitySchema(schema: ActivitySchema) {
+    return schema;
   }
 
   getFlowInformation(flowJSON) {

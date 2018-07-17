@@ -15,6 +15,7 @@ import { RESTAPIContributionsService } from '../../core/services/restapi/v2/cont
 import Spy = jasmine.Spy;
 import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import { ActionBase, Dictionary } from '@flogo/core';
+import { cloneDeep } from 'lodash';
 
 describe('Service: UI Model Converter', function (this: {
   service: UIModelConverterService,
@@ -25,7 +26,8 @@ describe('Service: UI Model Converter', function (this: {
 
   beforeEach(() => {
     this.contribServiceMock = jasmine.createSpyObj<RESTAPIContributionsService>('contribService', [
-      'getContributionDetails'
+      'getContributionDetails',
+      'listContribs'
     ]);
     this.errorService = new ErrorService();
     this.service = new UIModelConverterService(this.contribServiceMock, this.errorService);
@@ -36,8 +38,8 @@ describe('Service: UI Model Converter', function (this: {
   it('Should throw error when Activity does not have a activityRef', () => {
     let thrownError: Error;
     try {
-      const spy = <Spy>this.contribServiceMock.getContributionDetails;
-      spy.and.returnValue({});
+      const spy = <Spy>this.contribServiceMock.listContribs;
+      spy.and.returnValue([]);
       this.service.getWebFlowModel(mockErrorFlow, this.emptySchemaRegistry);
     } catch (error) {
       thrownError = error;
@@ -48,60 +50,42 @@ describe('Service: UI Model Converter', function (this: {
   });
 
   it('Should convert the Engine Flow Model to UI Flow model', (done) => {
-    const thisTestData: any = _.cloneDeep(mockFlow);
+    const thisTestData: any = cloneDeep(mockFlow);
     const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(Promise.resolve(mockTriggerDetails));
-    const spyActivityService = <Spy>this.contribServiceMock.getContributionDetails;
-    spyActivityService.and.callFake(function (type, activityRef) {
-      if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
-        return Promise.resolve(mockActivitiesDetails[0]);
-      } else {
-        return Promise.resolve(mockActivitiesDetails[1]);
-      }
-    });
+    const spyActivityService = <Spy>this.contribServiceMock.listContribs;
+    spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
-      .then((flow) => {
+      .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlow);
         done();
       });
   });
 
   it('Should have error handler in UI Flow model', (done) => {
-    const thisTestData: any = _.cloneDeep(mockFlow);
+    const thisTestData: any = cloneDeep(mockFlow);
     const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
-    const spyActivityService = <Spy>this.contribServiceMock.getContributionDetails;
-    spyActivityService.and.callFake(function (type, activityRef) {
-      if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
-        return mockActivitiesDetails[0];
-      } else {
-        return mockActivitiesDetails[1];
-      }
-    });
+    const spyActivityService = <Spy>this.contribServiceMock.listContribs;
+    spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
     thisTestData.data.flow.errorHandlerTask = mockErrorHandler.errorHandlerTask;
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
-      .then((flow) => {
+      .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlowWithError);
         done();
       });
   });
 
   it('Should maintain the transformation details of a tile', (done) => {
-    const thisTestData: any = _.cloneDeep(mockFlow);
+    const thisTestData: any = cloneDeep(mockFlow);
     const spyTriggerService = <Spy>this.contribServiceMock.getContributionDetails;
     spyTriggerService.and.returnValue(mockTriggerDetails);
-    const spyActivityService = <Spy>this.contribServiceMock.getContributionDetails;
-    spyActivityService.and.callFake(function (type, activityRef) {
-      if (activityRef === 'github.com/TIBCOSoftware/flogo-contrib/activity/log') {
-        return mockActivitiesDetails[0];
-      } else {
-        return mockActivitiesDetails[1];
-      }
-    });
+    const spyActivityService = <Spy>this.contribServiceMock.listContribs;
+    spyActivityService.and.returnValue(Promise.resolve(mockActivitiesDetails));
     thisTestData.data.flow.rootTask.tasks[0].attributes = mockTransformationData.attributes;
     thisTestData.data.flow.rootTask.tasks[0].inputMappings = mockTransformationData.inputMappings;
     this.service.getWebFlowModel(thisTestData, this.emptySchemaRegistry)
-      .then((flow) => {
+      .then((flow: any) => {
         expect(flow).toEqual(mockResultantUIFlowWithTransformations);
         done();
       });

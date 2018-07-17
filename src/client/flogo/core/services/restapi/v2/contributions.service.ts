@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ContribSchema } from '@flogo/core';
 import { map } from 'rxjs/operators';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
+import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import {RestApiService} from '../rest-api.service';
 
 interface InstallationData {
@@ -30,7 +30,7 @@ export class RESTAPIContributionsService {
     return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[shim]=' + true).toPromise();
   }
 
-  listContribs<T extends ContribSchema = ContribSchema>(profileType, type) {
+  listContribs<T extends ContribSchema = ContribSchema>(profileType: FLOGO_PROFILE_TYPE, type: FLOGO_CONTRIB_TYPE) {
     return this.restApi.get<T[]>(this.getApiPath(profileType) + '?filter[type]=' + type).toPromise();
   }
 

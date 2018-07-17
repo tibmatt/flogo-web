@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FLOGO_PROFILE_TYPE, CONTRIB_REF_PLACEHOLDER } from '../constants';
+import {FLOGO_PROFILE_TYPE, CONTRIB_REF_PLACEHOLDER, FLOGO_CONTRIB_TYPE} from '../constants';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
 import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask, getProfileType} from '../../shared/utils';
 import { AbstractTaskIdGenerator } from './profiles/profiles.utils.service';
@@ -30,7 +30,7 @@ export class FlogoProfileService {
   }
 
   getTriggers(profile) {
-    return this.contribService.listContribs(profile, 'trigger').then(response => {
+    return this.contribService.listContribs(profile, FLOGO_CONTRIB_TYPE.TRIGGER).then(response => {
       const data = response || [];
       return _.map(data, (trigger: any) => {
         if (profile === FLOGO_PROFILE_TYPE.DEVICE) {
@@ -49,7 +49,7 @@ export class FlogoProfileService {
 
   getActivities(profile) {
     let subflowAcivitySchema;
-    return this.contribService.listContribs(profile, 'activity').then(response => {
+    return this.contribService.listContribs(profile, FLOGO_CONTRIB_TYPE.ACTIVITY).then(response => {
       const data = response || [];
       // Exclude subflow activity from processing it as a normal activity
       subflowAcivitySchema = _.remove(data, (activity: any) => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW).pop();
