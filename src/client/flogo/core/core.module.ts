@@ -30,6 +30,7 @@ import { FlogoNavbarComponent } from './navbar/navbar.component';
 import { WalkthroughModule } from './walkthrough/walkthrough.module';
 import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
 import { FileDownloaderService } from './services/file-downloader.service';
+import {SharedModule as FlogoSharedModule} from '@flogo/shared';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { FileDownloaderService } from './services/file-downloader.service';
     RouterModule,
     WalkthroughModule,
     TranslateModule,
+    FlogoSharedModule
   ],
   providers: [ // services
     { provide: DEFAULT_REST_HEADERS, useValue: createDefaultRestApiHttpHeaders() },

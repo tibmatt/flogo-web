@@ -145,6 +145,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   public hasTrigger: boolean;
   public currentTrigger: any;
   public app: any;
+  public isflowMenuOpen = false;
+
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   constructor(public translate: LanguageService,
@@ -203,6 +205,14 @@ export class FlowComponent implements OnInit, OnDestroy {
       .subscribe(state => this.onItemsChange(state));
     this.initSubscribe();
     this.loading = false;
+  }
+
+  toggleFlowMenu() {
+    this.isflowMenuOpen = !this.isflowMenuOpen;
+  }
+
+  closeFlowMenu() {
+    this.isflowMenuOpen = false;
   }
 
   private initSubscribe() {
@@ -317,6 +327,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   deleteFlow() {
+    this.closeFlowMenu();
     this.translate.get('FLOWS:CONFIRM_DELETE', { flowName: this.flowState.name })
       .toPromise()
       .then(deleteMessage => this._flogoModal.confirmDelete(deleteMessage))

@@ -1,25 +1,26 @@
 <nav>
   <div class="flogo-header">
     <a [routerLink]="['/']"><img class="flogo-header__logo" src="/assets/svg/flogo.logo.svg" alt=""/></a>
-    <div class="flogo-header__help-menu navbar-right">
-      <button class="flogo-btn-link flogo-header__help-menu-btn" type="button" aria-haspopup="true" aria-expanded="true">
+    <div class="flogo-header__help-menu navbar-right" [class.--active]="isOpenMenu" (fgClickOutside)="closeNavMenu()">
+      <button class="flogo-btn-link flogo-header__help-menu-btn" type="button" (click)="toggleNavMenu()">
         <i class="flogo-icon-help"></i>
       </button>
       <div class="flogo-header__help-menu-content">
-        <h3>{{'NAVBAR:HELP'| translate}}</h3>
-        <p class="version">{{'NAVBAR:FLOGO-VERSION'| translate}} {{version}}</p>
-        <ul>
+        <h3 class="header-help">{{'NAVBAR:HELP'| translate}}</h3>
+        <p class="secondary-text">{{'NAVBAR:FLOGO-VERSION'| translate}} {{version}}</p>
+        <ul (click)="closeNavMenu()">
         <li><a href="https://tibcosoftware.github.io/flogo/" target="_blank">{{ 'NAVBAR:HELP-DOCUMENTATION' | translate }}</a></li>
         <!--<li><a (click)="activateInstructions($event)">{{ 'NAVBAR:HELP-OPEN-INSTRUCTIONS' | translate }}</a></li>-->
         <li><a href="https://tibcosoftware.github.io/flogo/getting-started/quickstart/#launching-the-web-ui" target="_blank">{{ 'NAVBAR:HELP-OPEN-INSTRUCTIONS' | translate }}</a></li>
         <li><a href="https://community.tibco.com/products/project-flogo?_ga=1.213003284.1423112884.1479356766" target="_blank">{{ 'NAVBAR:HELP-COMMUNITY' | translate }}</a></li>
         </ul>
-        <ul class="flogo-header__help-menu-copyright-content">
+        <div class="flogo-header__divider"></div>
+        <ul (click)="closeNavMenu()">
         <li><a href="http://www.tibco.com/company/privacy-cma" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-PRIVACY-POLICY' | translate }}</a></li>
         <li><a href="http://www.tibco.com/company/termsofuse" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-TERMS-OF-USE' | translate }}</a></li>
         <li><a href="http://www.tibco.com/trademarks" target="_new" class="flogo-privacyText">{{ 'FLOGO:LINK-TRADEMARKS' | translate }}</a></li>
-        <li class="help-menu-copyright-reserve-content">{{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}</li>
         </ul>
+        <p class="secondary-text copy-notice">{{ 'FLOGO:COPYRIGHT-NOTICE' | translate:{ year: currentYear } }}</p>
       </div>
     </div>
   </div>

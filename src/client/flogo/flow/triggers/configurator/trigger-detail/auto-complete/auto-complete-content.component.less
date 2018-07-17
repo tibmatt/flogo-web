@@ -27,28 +27,15 @@
 }
 
 .options-group {
-  .uxpl-dropdown;
-
-  &:first-of-type {
-    padding-top: 12px;
-  }
-  &:last-of-type {
-    margin-bottom: 12px;
-  }
+  .uxpl-dropdown();
 }
 
 .options-group__option {
-  .uxpl-dropdown__item;
+  .uxpl-dropdown__item();
 }
 
-.options-group + .app-variables-list {
-  padding-top: 0;
-  &::before {
-    border-top: 1px solid @color-medium-gray;
-    content: '';
-    display: block;
-    border-top: 1px solid @color-medium-gray;
-    margin-left: 16px;
-    margin-right: 16px;
-  }
+.options-group-divider {
+  border-top: 1px solid @color-medium-gray;
+  margin-left: 16px;
+  margin-right: 16px;
 }

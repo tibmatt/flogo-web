@@ -45,6 +45,7 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
     }
     .popup-container .popup-btn-confirm {
       background-color: #d0011b;
+      border-color: #d0011b;
     }
   `]
 })

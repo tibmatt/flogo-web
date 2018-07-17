@@ -146,8 +146,8 @@
                 </ul>
               </div>
             </div>
-            <div class="flogo-flow-detail-menu">
-              <i class="flogo-icon-kebabmenu kebabmenu-icon"></i>
+            <div class="flogo-flow-detail-menu" [class.--active]="isDetailsMenuOpen" (fgClickOutside)="closeDetailsMenu()">
+              <i class="flogo-icon-kebabmenu kebabmenu-icon" (click)="toggleDetailsMenu()"></i>
               <div class="flogo-flow-detail-menu-list-wrapper">
                 <ul class="flogo-flow-detail-menu-list">
                   <li class="flogo-flow-detail-menu-item">
