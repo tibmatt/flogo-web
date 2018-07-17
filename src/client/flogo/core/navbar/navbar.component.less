@@ -1,6 +1,6 @@
 @import '../../../assets/_variables';
 @import (reference) '../../../assets/uxpl/dropdown';
-@import (reference) '../../../assets/_mixins';
+@import (reference) '../../../assets/_typography';
 
 @flogo-header-background-color: #36bfbb;
 @flogo-header-height: 40px;
@@ -71,7 +71,7 @@
       letter-spacing: 0.3px;
 
       a {
-        .styleguide-body-small();
+        .body-small();
         .uxpl-dropdown__item();
         padding: 8px 24px;
         display: block;
@@ -98,14 +98,14 @@
 }
 
 .header-help {
-  .styleguide-header2();
+  .secondary-header();
   margin: 24px 24px 10px;
   line-height: 1.5;
   letter-spacing: 0.3px;
 }
 
 .secondary-text {
-  .styleguide-body-small();
+  .body-small();
   color: @color-dark-gray;
   margin: 10px 24px;
 }
