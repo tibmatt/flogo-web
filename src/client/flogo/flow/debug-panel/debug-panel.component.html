@@ -3,7 +3,7 @@
 </div>
 <div class="debug-panel-container" [class.is-open]="isOpen">
   <button *ngIf="!isOpen" class="toggle-button" (click)="togglePanel()">
-    <span>Activity</span><span class="flogo-icon flogo-icon-back toggle-button__icon"></span>
+    <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span><span class="flogo-icon flogo-icon-back toggle-button__icon"></span>
   </button>
   <flogo-flow-debug-panel-detail
     *ngIf="isOpen"

@@ -1,25 +1,30 @@
 <div class="header">
-  <span>Activity</span>
+  <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span>
   <span class="flogo-icon flogo-icon-back toggler" role="button" (click)="onClose()"></span>
 </div>
 <div class="content">
   <ng-container *ngIf="activity; else noActivity">
     <div class="activity">
-      <div class="activity__info">
-        <div>{{ activity.name }}</div>
-        <div>{{ activity.description }}</div>
-        <div>{{ activity.id }}</div>
-        <button class="flogo-button--default">Run from this tile</button>
+      <div class="activity__info-group">
+        <div class="activity__name">{{ activity.name }}</div>
+        <div class="activity__details">{{ activity.description }}</div>
+        <div class="activity__id activity__details">ID: {{ activity.id }}</div>
+        <button class="flogo-button--default btn-run">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
       </div>
-      <div *ngIf="fields?.get('input.formFields'); let fieldGroup" class="activity__input">
+      <div *ngIf="fields?.get('input.formFields'); let fieldGroup" class="activity__field-group">
+        <div class="fields-title">{{ 'DEBUGGER:INPUT' | translate }}</div>
         <flogo-flow-dynamic-field-group [fieldGroup]="fieldGroup"></flogo-flow-dynamic-field-group>
       </div>
-      <div *ngIf="fields?.get('output.formFields'); let fieldGroup" class="activity__output">
+      <div *ngIf="fields?.get('output.formFields'); let fieldGroup" class="activity__field-group">
+        <div class="fields-title">{{ 'DEBUGGER:OUTPUT' | translate }}</div>
         <flogo-flow-dynamic-field-group [fieldGroup]="fieldGroup"></flogo-flow-dynamic-field-group>
       </div>
     </div>
   </ng-container>
   <ng-template #noActivity>
-    No activity selected
+    <div class="empty-text">
+      <div class="empty-text__title">{{ 'DEBUGGER:EMPTY-STATE-TITLE' | translate }}</div>
+      <div class="empty-text__detail">{{ 'DEBUGGER:EMPTY-STATE-DESCRIPTION' | translate }}</div>
+    </div>
   </ng-template>
 </div>
