@@ -10,5 +10,7 @@
     [@debugpanel]="isOpen"
     (@debugpanel.done)="onAnimationEnd($event)"
     class="debug-panel__content"
+    [activity]="activity$ | async"
+    [fields]="fields$ | async"
     (close)="togglePanel()"></flogo-flow-debug-panel-detail>
 </div>

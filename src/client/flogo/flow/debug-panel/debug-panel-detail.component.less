@@ -29,3 +29,20 @@
 .content {
   padding: 1rem;
 }
+
+.activity {
+  display: flex;
+  flex-direction: row;
+}
+
+@info-width: 22%;
+.activity__info {
+  width: @info-width;
+  padding: 1rem;
+  border-right: 1px solid gray;
+}
+
+.activity__input,
+.activity__output {
+  width: (100% - @info-width) / 2;
+}

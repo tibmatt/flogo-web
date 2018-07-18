@@ -1,6 +1,14 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { debugPanelAnimations } from './debug-panel.animations';
+import { isEmpty } from 'lodash';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AnimationEvent } from '@angular/animations';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FlowState, FlowSelectors } from '@flogo/flow/core/state';
+import { debugPanelAnimations } from './debug-panel.animations';
+import { ActivitySchema, ItemActivityTask } from '@flogo/core';
+import { FormBuilderService } from '@flogo/flow/shared/dynamic-form/form-builder.service';
 
 const SELECTED_SELECTOR = 'flogo-diagram-tile-task.is-selected';
 
@@ -10,10 +18,33 @@ const SELECTED_SELECTOR = 'flogo-diagram-tile-task.is-selected';
   styleUrls: ['./debug-panel.component.less'],
   animations: [debugPanelAnimations.transformPanel],
 })
-export class DebugPanelComponent {
+export class DebugPanelComponent implements OnInit {
 
   @ViewChild('content') content: ElementRef;
   isOpen = null;
+  activity$: Observable<ItemActivityTask>;
+  fields$: Observable<FormGroup>;
+
+  constructor(private store: Store<FlowState>, private formBuilder: FormBuilder, private attributeFormBuilder: FormBuilderService) {
+  }
+
+  ngOnInit() {
+    this.activity$ = this.store.pipe(
+      select(FlowSelectors.getSelectedActivity),
+    );
+
+    const form$: Observable<null | FormGroup> = this.store.pipe(
+      select(FlowSelectors.getSelectedActivitySchema),
+      map((schema: ActivitySchema) => this.createFormFromSchema(schema)),
+    );
+    this.fields$ = combineLatest(form$, this.activity$)
+      .pipe(
+        map(([form, activity]) => {
+          // todo: merge with execution status
+          return form;
+        })
+      );
+  }
 
   togglePanel() {
     this.isOpen = !this.isOpen ? 'open' : null;
@@ -23,6 +54,23 @@ export class DebugPanelComponent {
     if (event.toState === 'open') {
       this.scrollContextElementIntoView();
     }
+  }
+
+  private createFormFromSchema(schema: ActivitySchema) {
+    if (!schema) {
+      return null;
+    }
+    const inputs = !isEmpty(schema.inputs) ? this.attributeFormBuilder.toFormGroup(schema.inputs).formGroup : null;
+    const outputs = !isEmpty(schema.outputs) ? this.attributeFormBuilder.toFormGroup(schema.outputs).formGroup : null;
+    const form = this.formBuilder.group({});
+    if (inputs) {
+      form.addControl('input', inputs);
+    }
+    if (outputs) {
+      form.addControl('output', outputs);
+    }
+    form.disable();
+    return form;
   }
 
   private scrollContextElementIntoView() {

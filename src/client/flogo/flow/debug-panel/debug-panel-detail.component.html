@@ -3,5 +3,23 @@
   <span class="flogo-icon flogo-icon-back toggler" role="button" (click)="onClose()"></span>
 </div>
 <div class="content">
-  Some content
+  <ng-container *ngIf="activity; else noActivity">
+    <div class="activity">
+      <div class="activity__info">
+        <div>{{ activity.name }}</div>
+        <div>{{ activity.description }}</div>
+        <div>{{ activity.id }}</div>
+        <button class="flogo-button--default">Run from this tile</button>
+      </div>
+      <div *ngIf="fields?.get('input.formFields'); let fieldGroup" class="activity__input">
+        <flogo-flow-dynamic-field-group [fieldGroup]="fieldGroup"></flogo-flow-dynamic-field-group>
+      </div>
+      <div *ngIf="fields?.get('output.formFields'); let fieldGroup" class="activity__output">
+        <flogo-flow-dynamic-field-group [fieldGroup]="fieldGroup"></flogo-flow-dynamic-field-group>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #noActivity>
+    No activity selected
+  </ng-template>
 </div>
