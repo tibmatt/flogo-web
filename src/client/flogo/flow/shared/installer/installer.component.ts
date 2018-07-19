@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnChanges, SimpleChange, ViewChild, Input, Output } from '@angular/core';
 import { BsModalComponent } from 'ng2-bs3-modal';
 import { RESTAPIContributionsService } from '@flogo/core/services/restapi/v2/contributions.service';
-import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
+import {FLOGO_CONTRIB_TYPE, FLOGO_PROFILE_TYPE} from '@flogo/core/constants';
 import {
   FLOGO_INSTALLER_STATUS_STANDBY,
   FLOGO_INSTALLER_STATUS_IDLE,
@@ -36,7 +36,7 @@ export class FlogoInstallerComponent implements OnChanges {
   @Output()
   installed = new EventEmitter();
 
-  _installType: string;
+  _installType: FLOGO_CONTRIB_TYPE;
   _isActivated: boolean;
 
   showBlock = {
@@ -112,7 +112,7 @@ export class FlogoInstallerComponent implements OnChanges {
   }
 
   onInstallAction(url: string) {
-    if (this._installType !== 'trigger' && this._installType !== 'activity') {
+    if (this._installType !== FLOGO_CONTRIB_TYPE.TRIGGER && this._installType !== FLOGO_CONTRIB_TYPE.ACTIVITY) {
       console.warn('Unknown installation type.');
       console.groupEnd();
       return;
@@ -120,8 +120,6 @@ export class FlogoInstallerComponent implements OnChanges {
 
     console.group(`[FlogoInstallerComponent] onInstallAction`);
     console.log(`Source URL: ${url} `);
-
-    const installAPI = this.contributionsAPIs.installContributions.bind(this.contributionsAPIs);
 
     const self = this;
 

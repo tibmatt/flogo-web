@@ -7,6 +7,11 @@ export enum FLOGO_PROFILE_TYPE {
   DEVICE
 }
 
+export enum FLOGO_CONTRIB_TYPE {
+  TRIGGER = 'trigger',
+  ACTIVITY = 'activity'
+}
+
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
   TASK = 1,

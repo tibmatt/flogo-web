@@ -7,19 +7,11 @@ export class DeviceModelConverter extends AbstractModelConverter {
     return FLOGO_PROFILE_TYPE.DEVICE;
   }
 
-  getActivitiesSchema(activities) {
-    const promises = [];
-    activities.forEach(activityRef => {
-      promises.push(this.contribService
-        .getContributionDetails<ActivitySchema>(this.getProfileType(), activityRef)
-        .then(activity => {
-          // todo: normalize activities in backend?
-          activity.inputs = (activity as any).settings;
-          activity.outputs = [];
-          return activity;
-        }));
-    });
-    return Promise.all(promises);
+  normalizeActivitySchema(schema: ActivitySchema) {
+    // todo: normalize activities in backend?
+    schema.inputs = (schema as any).settings;
+    schema.outputs = [];
+    return schema;
   }
 
   getFlowInformation(flowJSON) {
