@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask } from '../../../../core/index';
+import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo/core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 
@@ -15,8 +15,9 @@ export enum ActionType {
   CommitItemConfiguration = '[Flow] Commit item configuration',
   CancelItemConfiguration = '[Flow] Cancel item configuration',
   ClearSelection = '[Flow] Clear selection',
-  ExecutionWillStart = '[Flow] Execution will start',
-  ExecutionUpdated = '[Flow] Execution updated',
+  ExecutionWillStart = '[Run Flow] Execution will start',
+  ExecutionUpdated = '[Run Flow] Execution updated',
+  ExecutionStepsUpdate = '[Run Flow] Steps update',
   ErrorPanelStatusChange = '[Flow] Error panel status change',
 }
 
@@ -94,6 +95,11 @@ export class ExecutionStateUpdated implements BaseFlowAction {
   constructor(public payload: { changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> } }) {}
 }
 
+export class ExecutionStepsUpdated implements BaseFlowAction {
+  readonly type = ActionType.ExecutionStepsUpdate;
+  constructor(public payload: { steps: Dictionary<Dictionary<StepAttribute>> } ) {}
+}
+
 export class ErrorPanelStatusChange implements BaseFlowAction {
   readonly type = ActionType.ErrorPanelStatusChange;
   constructor(public payload: { isOpen: boolean }) {}
@@ -112,5 +118,6 @@ export type ActionsUnion =
   | CommitItemConfiguration
   | CancelItemConfiguration
   | ExecutionWillStart
+  | ExecutionStepsUpdated
   | ExecutionStateUpdated
   | ErrorPanelStatusChange;

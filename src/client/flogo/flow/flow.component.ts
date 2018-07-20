@@ -12,6 +12,7 @@ import {
   isNil,
   isNull,
   map,
+  mapValues,
   noop,
   reduce,
 } from 'lodash';
@@ -949,6 +950,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     });
 
     this.flowDetails.executionStatusChanged(allStatusChanges);
+    this.flowDetails.executionStepsUpdate(mapValues(runTasks, task => task.attrs));
 
     // when the flow is done on error, throw an error
     // the error is the response with `__status` provisioned.

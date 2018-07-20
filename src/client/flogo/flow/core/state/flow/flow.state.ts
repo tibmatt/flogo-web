@@ -1,4 +1,4 @@
-import { Action, Dictionary, UiFlow } from '@flogo/core';
+import { Action, Dictionary, StepAttribute, UiFlow } from '@flogo/core';
 import * as fromRoot from '../../../../store';
 import { CurrentSelection } from '../../models/selection';
 import { Trigger, TriggerHandler, TriggerConfigureState } from '../../interfaces/index';
@@ -11,6 +11,7 @@ export interface FlowState extends UiFlow {
   triggerConfigure: TriggerConfigureState;
   linkedSubflows: Dictionary<Action>;
   taskConfigure: string | null;
+  lastExecutionResult: { [taskId: string]: Dictionary<StepAttribute> };
 }
 
 export interface State extends fromRoot.State {
@@ -31,4 +32,5 @@ export const INITIAL_STATE: FlowState = {
   linkedSubflows: {},
   triggerConfigure: null,
   taskConfigure: null,
+  lastExecutionResult: {},
 };

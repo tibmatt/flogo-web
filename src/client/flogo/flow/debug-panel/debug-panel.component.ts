@@ -5,10 +5,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FlowState, FlowSelectors } from '@flogo/flow/core/state';
-import { debugPanelAnimations } from './debug-panel.animations';
+import { FlowSelectors, FlowState } from '@flogo/flow/core/state';
 import { ActivitySchema, ItemActivityTask } from '@flogo/core';
+import { debugPanelAnimations } from './debug-panel.animations';
 import { FormBuilderService } from '@flogo/flow/shared/dynamic-form/form-builder.service';
+import { mergeFormWithOutputs } from '@flogo/flow/debug-panel/utils';
 
 const SELECTED_SELECTOR = 'flogo-diagram-tile-task.is-selected';
 
@@ -37,12 +38,10 @@ export class DebugPanelComponent implements OnInit {
       select(FlowSelectors.getSelectedActivitySchema),
       map((schema: ActivitySchema) => this.createFormFromSchema(schema)),
     );
-    this.fields$ = combineLatest(form$, this.activity$)
+    const executionStep$ = this.store.pipe(select(FlowSelectors.getSelectedActivityExecutionResult));
+    this.fields$ = combineLatest(form$, executionStep$)
       .pipe(
-        map(([form, activity]) => {
-          // todo: merge with execution status
-          return form;
-        })
+        map(([form, lastExecutionResult]) => mergeFormWithOutputs(form, lastExecutionResult))
       );
   }
 

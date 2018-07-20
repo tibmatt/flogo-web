@@ -1,5 +1,6 @@
-import { createSelector, createFeatureSelector } from '@ngrx/store';
-import {Dictionary, Item} from '@flogo/core';
+import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
+import { Dictionary, Item, ItemActivityTask } from '@flogo/core';
+
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName } from '../utils';
@@ -18,6 +19,7 @@ export const selectActionId = createSelector(selectFlowState, flowState => flowS
 export const selectTriggerConfigure = createSelector(selectFlowState, (flowState: FlowState) => flowState.triggerConfigure);
 export const selectTaskConfigure = createSelector(selectFlowState, (flowState: FlowState) => flowState.taskConfigure);
 export const selectSchemas = createSelector(selectFlowState, (flowState: FlowState) => flowState.schemas);
+export const selectLastExecutionResult = createSelector(selectFlowState, (flowState: FlowState) => flowState.lastExecutionResult);
 
 export const getItems = (handlerType: HandlerType) => {
   const handlerName = getItemsDictionaryName(handlerType);
@@ -81,7 +83,7 @@ export const getCurrentHandlerType = createSelector(
   }
 );
 
-export const getCurrentItems = createSelector(
+export const getCurrentItems: MemoizedSelector<FlowState, Dictionary<Item>> = createSelector(
   getCurrentHandlerType,
   selectFlowState,
   (currentHandlerType, flowState) => currentHandlerType ? flowState[getItemsDictionaryName(currentHandlerType)] : null
@@ -91,7 +93,7 @@ export const getSelectedActivity = createSelector(
   selectCurrentSelection,
   getCurrentItems,
   (currentSelection, currentItems) =>
-    currentSelection && currentSelection.type === SelectionType.Task ? currentItems[currentSelection.taskId] : null
+    currentSelection && currentSelection.type === SelectionType.Task ? currentItems[currentSelection.taskId] as ItemActivityTask : null
 );
 
 export const getSelectedActivitySchema = createSelector(
@@ -100,3 +102,9 @@ export const getSelectedActivitySchema = createSelector(
   (selectedActivity, schemas) => selectedActivity ? schemas[selectedActivity.ref] : null
 );
 
+export const getSelectedActivityExecutionResult = createSelector(
+  getSelectedActivity,
+  selectLastExecutionResult,
+  /* tslint:disable-next-line:triple-equals --> for legacy ids of type number so 1 == '1' */
+  (selectedActivity, steps) => selectedActivity && steps ? steps[selectedActivity.id] : null
+);

@@ -1,13 +1,15 @@
 import { flowToJSON_Link } from './backend/legacy';
 
+export interface StepAttribute {
+  name: string;
+  // todo: limit types
+  type: string;
+  value: any;
+}
+
 export interface Step {
   flow: {
-    attributes: [{
-      name: string;
-      // todo: limit types
-      type: string;
-      value: null;
-    }],
+    attributes: StepAttribute[],
     // todo: what's the difference between state and status?
     state: number;
     status: number;
