@@ -26,6 +26,7 @@ import { featureReducer } from './core/state';
 import { FlogoFlowDiagramComponent } from './flow-diagram/flow-diagram.component';
 import { FlowTabsComponent } from './flow-tabs/flow-tabs.component';
 import { DebugPanelComponent, DebugPanelDetailComponent } from './debug-panel';
+import {TaskAddModule} from '@flogo/flow/task-add-new/task-add.module';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import { DebugPanelComponent, DebugPanelDetailComponent } from './debug-panel';
     FlogoFlowTaskDetailModule,
     FlogoFlowTaskAddModule,
     FlowRoutingModule,
+    TaskAddModule
   ],
   declarations: [
     EmptyDetailComponent,

@@ -1,0 +1,9 @@
+<!--<div>
+  <input type="text" (change)="filterActivities($event)"
+         placeholder="{{ 'ADD:FILTER-TASKS' | translate }}">
+</div>-->
+
+<i class="flogo-icon-close icon-close" (click)="closePopover()"></i>
+<ul class="activity-list">
+  <li class="activity-list-item" *ngFor="let activity of options.activities | async as activities ">{{activity.title}}</li>
+</ul>

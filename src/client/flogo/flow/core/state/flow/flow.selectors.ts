@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
-import { Dictionary, Item, ItemActivityTask } from '@flogo/core';
+import { ContribSchema, Dictionary, Item, ItemActivityTask } from '@flogo/core';
 
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
@@ -7,6 +7,7 @@ import { getGraphName, getItemsDictionaryName } from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
 import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models/selection';
 import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
+import {Activity} from '@flogo/flow/task-add-new/task-add.component';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
@@ -108,4 +109,14 @@ export const getSelectedActivityExecutionResult = createSelector(
   selectLastExecutionResult,
   /* tslint:disable-next-line:triple-equals --> for legacy ids of type number so 1 == '1' */
   (selectedActivity, steps) => selectedActivity && steps ? steps[selectedActivity.id] : null
+);
+
+export const getInstalledActivities = createSelector(
+  selectSchemas,
+  (schemas: Dictionary<ContribSchema>): Activity[] => Object.values(schemas)
+  .filter(schema => schema.type === 'flogo:activity')
+  .map(schema => ({
+    title: schema.title,
+    ref: schema.ref
+  }))
 );

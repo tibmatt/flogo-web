@@ -208,7 +208,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
 
     const subs = [
-      assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
+      // assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
@@ -234,7 +234,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     } else if (selection.type === SelectionType.Task) {
       this._selectTaskFromDiagram(selection.taskId);
     } else if (selection.type === SelectionType.InsertTask) {
-      this._addTaskFromDiagram(selection.parentId);
+      this._navigateFromModuleRoot();
+      // this._addTaskFromDiagram(selection.parentId);
     }
   }
 
@@ -447,7 +448,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _addTaskFromDiagram(parentId: string) {
+  /*private _addTaskFromDiagram(parentId: string) {
     this._navigateFromModuleRoot(['task', 'add'])
       .then(
         () => {
@@ -458,9 +459,9 @@ export class FlowComponent implements OnInit, OnDestroy {
             }
           });
         });
-  }
+  }*/
 
-  private _addTaskFromTasks(data: any, envelope: any) {
+  /*private _addTaskFromTasks(data: any, envelope: any) {
     const currentState = this.flowState;
     const selection = currentState.currentSelection as InsertTaskSelection;
     const isAddingToRoot = selection && !selection.parentId;
@@ -519,7 +520,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       this.handlerTypeFromString(diagramId),
       { item, node, schema, subflowSchema: data.subflowSchema },
     );
-  }
+  }*/
 
   private getTriggerCurrentFlow(app, flowId) {
     let trigger: any = null;
