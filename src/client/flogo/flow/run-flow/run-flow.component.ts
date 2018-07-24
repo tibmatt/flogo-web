@@ -54,6 +54,6 @@ export class FlogoRunFlowComponent {
 
   onRunFlowSubmit() {
     this.setRunFlowFlag(false);
-    this.submit.emit(this.runFlowFormGroup ? this.runFlowFormGroup.value.fieldGroup : []);
+    this.submit.emit(this.runFlowFormGroup ? this.runFlowFormGroup.value.formFields : []);
   }
 }
