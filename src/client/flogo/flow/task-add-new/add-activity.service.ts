@@ -5,7 +5,7 @@ import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {Activity, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
 import {Observable} from 'rxjs';
-import {distinctUntilChanged, share, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, filter, share, takeUntil} from 'rxjs/operators';
 import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
 import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
@@ -26,11 +26,10 @@ export class AddActivityService {
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
       share(),
+      filter((currentSelection: CurrentSelection) => (currentSelection && currentSelection.type === SelectionType.InsertTask)),
       takeUntil(this.destroy$)
-    ).subscribe((currentSelection: CurrentSelection) => {
-      if (currentSelection && currentSelection.type === SelectionType.InsertTask) {
-        this.openAddActivityPanel();
-      }
+    ).subscribe(() => {
+      this.openAddActivityPanel();
     });
   }
 
