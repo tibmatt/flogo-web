@@ -19,6 +19,7 @@ export enum ActionType {
   ExecutionUpdated = '[Run Flow] Execution updated',
   ExecutionStepsUpdate = '[Run Flow] Steps update',
   ErrorPanelStatusChange = '[Flow] Error panel status change',
+  DebugPanelStatusChange = '[Flow][Debug panel] Debug panel status change',
 }
 
 interface BaseFlowAction extends Action {
@@ -105,6 +106,11 @@ export class ErrorPanelStatusChange implements BaseFlowAction {
   constructor(public payload: { isOpen: boolean }) {}
 }
 
+export class DebugPanelStatusChange implements BaseFlowAction {
+  readonly type = ActionType.DebugPanelStatusChange;
+  constructor(public payload: { isOpen: boolean }) {}
+}
+
 export type ActionsUnion =
   | Init
   | SelectCreateItem
@@ -120,4 +126,5 @@ export type ActionsUnion =
   | ExecutionWillStart
   | ExecutionStepsUpdated
   | ExecutionStateUpdated
-  | ErrorPanelStatusChange;
+  | ErrorPanelStatusChange
+  | DebugPanelStatusChange;

@@ -12,6 +12,7 @@ export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
 export const selectFlowMetadata = createSelector(selectFlowState, (flowState: FlowState) => flowState.metadata);
 export const selectErrorPanelStatus = createSelector(selectFlowState, (flowState: FlowState) => flowState.isErrorPanelOpen);
+export const selectDebugPanelOpen = createSelector(selectFlowState, (flowState: FlowState) => flowState.isDebugPanelOpen);
 export const selectTriggers = createSelector(selectFlowState, (flowState: FlowState) => flowState.triggers);
 export const selectHandlers = createSelector(selectFlowState, (flowState: FlowState) => flowState.handlers);
 export const selectApp = createSelector(selectFlowState, flowState => flowState.app);

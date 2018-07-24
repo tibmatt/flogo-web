@@ -97,6 +97,12 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
         currentSelection : null
       };
     }
+    case ActionType.DebugPanelStatusChange: {
+      return {
+        ...state,
+        isDebugPanelOpen: action.payload.isOpen
+      };
+    }
   }
   return state;
 }

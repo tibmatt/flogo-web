@@ -1,17 +1,18 @@
 import { isEmpty } from 'lodash';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AnimationEvent } from '@angular/animations';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FlowSelectors, FlowState } from '@flogo/flow/core/state';
+import { FlowActions, FlowSelectors, FlowState } from '@flogo/flow/core/state';
 import { ActivitySchema, ItemActivityTask } from '@flogo/core';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { FormBuilderService } from '@flogo/flow/shared/dynamic-form/form-builder.service';
 import { mergeFormWithOutputs } from '@flogo/flow/debug-panel/utils';
 
-const SELECTED_SELECTOR = 'flogo-diagram-tile-task.is-selected';
+const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
+const OPEN_STATE = 'open';
 
 @Component({
   selector: 'flogo-flow-debug-panel',
@@ -19,12 +20,14 @@ const SELECTED_SELECTOR = 'flogo-diagram-tile-task.is-selected';
   styleUrls: ['./debug-panel.component.less'],
   animations: [debugPanelAnimations.transformPanel],
 })
-export class DebugPanelComponent implements OnInit {
+export class DebugPanelComponent implements OnInit, OnDestroy {
 
   @ViewChild('content') content: ElementRef;
-  isOpen = null;
+  isOpen: string;
   activity$: Observable<ItemActivityTask>;
   fields$: Observable<FormGroup>;
+
+  private isOpenSubscription: Subscription;
 
   constructor(private store: Store<FlowState>, private formBuilder: FormBuilder, private attributeFormBuilder: FormBuilderService) {
   }
@@ -38,19 +41,27 @@ export class DebugPanelComponent implements OnInit {
       select(FlowSelectors.getSelectedActivitySchema),
       map((schema: ActivitySchema) => this.createFormFromSchema(schema)),
     );
-    const executionStep$ = this.store.pipe(select(FlowSelectors.getSelectedActivityExecutionResult));
-    this.fields$ = combineLatest(form$, executionStep$)
-      .pipe(
-        map(([form, lastExecutionResult]) => mergeFormWithOutputs(form, lastExecutionResult))
-      );
+    this.fields$ = combineLatest(
+      form$,
+      this.store.pipe(select(FlowSelectors.getSelectedActivityExecutionResult))
+    ).pipe(
+      map(([form, lastExecutionResult]) => mergeFormWithOutputs(form, lastExecutionResult))
+    );
+
+    this.isOpenSubscription = this.store.pipe(select(FlowSelectors.selectDebugPanelOpen))
+      .subscribe(isOpen => this.isOpen = isOpen ? OPEN_STATE : null);
+  }
+
+  ngOnDestroy() {
+    this.isOpenSubscription.unsubscribe();
   }
 
   togglePanel() {
-    this.isOpen = !this.isOpen ? 'open' : null;
+    this.store.dispatch(new FlowActions.DebugPanelStatusChange({ isOpen: !this.isOpen }));
   }
 
   onAnimationEnd(event: AnimationEvent) {
-    if (event.toState === 'open') {
+    if (event.toState === OPEN_STATE) {
       this.scrollContextElementIntoView();
     }
   }
@@ -74,7 +85,7 @@ export class DebugPanelComponent implements OnInit {
 
   private scrollContextElementIntoView() {
     const contentElement: Element = this.content.nativeElement;
-    const selection = contentElement.querySelector(SELECTED_SELECTOR);
+    const selection = contentElement.querySelector(SELECTOR_FOR_CURRENT_ELEMENT);
     if (selection) {
       selection.scrollIntoView({ behavior: 'smooth' });
     }

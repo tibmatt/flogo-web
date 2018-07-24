@@ -5,6 +5,7 @@ import { Trigger, TriggerHandler, TriggerConfigureState } from '../../interfaces
 
 export interface FlowState extends UiFlow {
   isErrorPanelOpen: boolean;
+  isDebugPanelOpen: boolean;
   currentSelection: null | CurrentSelection;
   triggers: Dictionary<Trigger>;
   handlers: Dictionary<TriggerHandler>;
@@ -26,6 +27,7 @@ export const INITIAL_STATE: FlowState = {
   errorGraph: null,
   currentSelection: null,
   isErrorPanelOpen: false,
+  isDebugPanelOpen: false,
   schemas: {},
   handlers: {},
   triggers: {},
