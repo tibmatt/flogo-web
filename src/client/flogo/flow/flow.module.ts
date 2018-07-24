@@ -11,7 +11,6 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
 import { CoreModule as FlowCoreModule } from './core';
 
-import {ErrorPanelModule as FlogoFlowErrorPanelModule} from '@flogo/flow/error-panel';
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
@@ -23,6 +22,7 @@ import { FlowComponent } from './flow.component';
 import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlowDataResolver } from './flow-data.resolver';
 import { featureReducer } from './core/state';
+import {FlogoFlowDiagramComponent} from '@flogo/flow/flow-diagram/flow-diagram.component';
 
 @NgModule({
   imports: [
@@ -36,7 +36,6 @@ import { featureReducer } from './core/state';
     ParamsSchemaModule,
     FlogoTaskMapperModule,
     FlogoCommonFormBuilderModule,
-    FlogoFlowErrorPanelModule,
     FlogoFlowTriggersModule,
     FlogoFlowTaskDetailModule,
     FlogoFlowTaskAddModule,
@@ -46,6 +45,7 @@ import { featureReducer } from './core/state';
     EmptyDetailComponent,
     FlogoRunFlowComponent,
     FlowComponent,
+    FlogoFlowDiagramComponent
   ],
   providers: [
     FlowDataResolver,

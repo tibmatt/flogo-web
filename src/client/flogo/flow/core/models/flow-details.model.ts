@@ -41,36 +41,8 @@ export class FlogoFlowDetails {
       .pipe(distinctUntilChanged(isEqual));
   }
 
-  selectItem(handlerType: HandlerType, itemId: string) {
-    this.store.dispatch(new FlowActions.SelectItem({
-      handlerType,
-      itemId,
-    }));
-  }
-
-  configureItem(itemId: string) {
-    this.store.dispatch(new FlowActions.ConfigureItem({
-      itemId,
-    }));
-  }
-
-  selectInsert(handlerType: HandlerType, parentItemId: string) {
-    this.store.dispatch(new FlowActions.SelectCreateItem({
-      handlerType,
-      parentItemId,
-    }));
-  }
-
   clearSelection() {
     this.store.dispatch(new FlowActions.ClearSelection());
-  }
-
-  createBranch(handlerType: HandlerType, parentId: string) {
-    this.store.dispatch(new FlowActions.CreateBranch({
-      handlerType,
-      parentId,
-      newBranchId: newBranchId(),
-    }));
   }
 
   registerNewItem(
@@ -101,6 +73,10 @@ export class FlogoFlowDetails {
 
   executionStatusChanged(changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> }) {
     this.store.dispatch(new FlowActions.ExecutionStateUpdated({ changes }));
+  }
+
+  errorHandlerPanelStatus(isErrorPanelOpen) {
+    this.store.dispatch(new FlowActions.ErrorPanelStatusChange({isOpen: isErrorPanelOpen}));
   }
 
 }

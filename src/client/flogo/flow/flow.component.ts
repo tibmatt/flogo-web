@@ -75,8 +75,6 @@ import {
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { mergeItemWithSchema, extractItemInputsFromTask } from '@flogo/core/models';
-import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
-import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
 import { HandlerType, CurrentSelection, InsertTaskSelection, SelectionType } from './core/models';
 import { FlowState } from './core/state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
@@ -84,6 +82,7 @@ import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { Trigger } from './core';
 import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
+import {Tabs} from '@flogo/flow/shared/tabs/models/tabs.model';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -101,7 +100,12 @@ interface TaskContext {
   currentTrigger: any;
   profileType: FLOGO_PROFILE_TYPE;
 }
-
+const FLOW_TABS = {
+  PRIMARY_FLOW: 'primaryFlow',
+  ERROR_HANDLER: 'errorHandler',
+};
+const FLOW_TAB_INFO = [{name: FLOW_TABS.PRIMARY_FLOW, labelKey: 'FLOWS:PRIMARY-FLOW'},
+  {name: FLOW_TABS.ERROR_HANDLER, labelKey: 'FLOWS:ERROR-HANDLER'}];
 const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.type);
 
 @Component({
@@ -137,15 +141,15 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
-  handlerTypes = HandlerType;
 
-  currentDiagramSelection: DiagramSelection;
 
   public loading: boolean;
   public hasTrigger: boolean;
   public currentTrigger: any;
   public app: any;
   public isflowMenuOpen = false;
+  tabs: Tabs;
+  isErrorHandlerShown = false;
 
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
@@ -170,14 +174,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   get flowId() {
     return this.flowDetails.id;
-  }
-
-  getSelectionFor(handlerType) {
-    if (this.currentDiagramSelection && this.currentDiagramSelection.diagramId === handlerType) {
-      return this.currentDiagramSelection;
-    } else {
-      return null;
-    }
   }
 
   public ngOnInit() {
@@ -205,6 +201,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       .subscribe(state => this.onItemsChange(state));
     this.initSubscribe();
     this.loading = false;
+    this.createFlowTabs();
   }
 
   toggleFlowMenu() {
@@ -232,63 +229,19 @@ export class FlowComponent implements OnInit, OnDestroy {
     );
   }
 
-  onMainDiagramAction(diagramAction: DiagramAction) {
-    this.onDiagramAction(HandlerType.Main, diagramAction);
-  }
-
-  onErrorDiagramAction(diagramAction: DiagramAction) {
-    this.onDiagramAction(HandlerType.Error, diagramAction);
-  }
 
   private get flowDetails() {
     return this._flowService.currentFlowDetails;
   }
 
-  private onDiagramAction(handlerType: HandlerType, diagramAction: DiagramAction) {
-    const flowDetails = this.flowDetails;
-    switch (diagramAction.type) {
-      case DiagramActionType.Select: {
-        flowDetails.selectItem(handlerType, (<DiagramActionSelf>diagramAction).id);
-        return;
-      }
-      case DiagramActionType.Configure: {
-        flowDetails.configureItem((<DiagramActionSelf>diagramAction).id);
-        return;
-      }
-      case DiagramActionType.Remove: {
-        this._deleteTaskFromDiagram(handlerType, (<DiagramActionSelf>diagramAction).id);
-        return;
-      }
-      case DiagramActionType.Insert: {
-        flowDetails.selectInsert(handlerType, (<DiagramActionChild>diagramAction).parentId);
-        return;
-      }
-      case DiagramActionType.Branch: {
-        flowDetails.createBranch(handlerType, (<DiagramActionChild>diagramAction).parentId);
-        return;
-      }
-    }
-  }
-
   private onSelectionChanged(selection: CurrentSelection) {
-    this.currentDiagramSelection = null;
     if (!selection) {
       if (this.isTaskSubroute()) {
         this._navigateFromModuleRoot();
       }
     } else if (selection.type === SelectionType.Task) {
-      this.currentDiagramSelection = {
-        type: DiagramSelectionType.Node,
-        taskId: selection.taskId,
-        diagramId: selection.handlerType,
-      };
       this._selectTaskFromDiagram(selection.taskId);
     } else if (selection.type === SelectionType.InsertTask) {
-      this.currentDiagramSelection = {
-        type: DiagramSelectionType.Insert,
-        taskId: selection.parentId,
-        diagramId: selection.handlerType,
-      };
       this._addTaskFromDiagram(selection.parentId);
     }
   }
@@ -351,6 +304,10 @@ export class FlowComponent implements OnInit, OnDestroy {
             });
         }
       });
+  }
+
+  onDeleteTask(taskDetails) {
+    this._deleteTaskFromDiagram(taskDetails.handlerType, taskDetails.itemId);
   }
 
   private refreshCurrentTileContextIfNeeded() {
@@ -1218,6 +1175,25 @@ export class FlowComponent implements OnInit, OnDestroy {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
         });
       });
+  }
+
+  createFlowTabs() {
+    this.tabs = Tabs.create(FLOW_TAB_INFO);
+    this.tabs.markSelected(FLOW_TABS.PRIMARY_FLOW);
+  }
+
+  selectFlowTab(name: string) {
+    this.tabs.markSelected(name);
+    if (name === FLOW_TABS.ERROR_HANDLER) {
+      this.isErrorHandlerShown = true;
+    } else if (name === FLOW_TABS.PRIMARY_FLOW) {
+      this.isErrorHandlerShown = false;
+    }
+    this.flowDetails.errorHandlerPanelStatus(this.isErrorHandlerShown);
+  }
+
+  trackTabsByFn(index, [tabName, tab]) {
+    return tabName;
   }
 
 }

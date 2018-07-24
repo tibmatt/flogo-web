@@ -1,9 +1,12 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { Dictionary, Item } from '@flogo/core';
+import {Dictionary, FlowGraph, Item} from '@flogo/core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
-import { getItemsDictionaryName } from '../utils';
+import {getGraphName, getItemsDictionaryName} from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
+import {InsertTaskSelection, TaskSelection} from '@flogo/flow/core/models/selection';
+import {SelectionType} from '@flogo/flow/core/models';
+import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
@@ -27,7 +30,45 @@ export const getAllItems = createSelector(
   (mainItems, errorItems) => ({ mainItems, errorItems }),
 );
 
+export const getGraph = (handlerType: HandlerType) => {
+  const handlerName = getGraphName(handlerType);
+  return createSelector(selectFlowState, flowState => flowState[handlerName] as FlowGraph);
+};
+
 export const getRunnableState = createSelector(
   getAllItems,
   ({ mainItems, errorItems }) => determineRunnableStatus(mainItems, errorItems),
+);
+
+export const getCurrentHandlerId = createSelector(
+  selectErrorPanelStatus,
+  (isErrorPanelOpen) => {
+    return isErrorPanelOpen ? HandlerType.Error : HandlerType.Main;
+  },
+);
+
+export const getCurrentGraph = createSelector(selectFlowState, getCurrentHandlerId, (flowState, currentHandlerId) => {
+  return flowState[getGraphName(currentHandlerId)];
+});
+
+export const getSelectionForCurrentHandler = createSelector(
+  selectCurrentSelection,
+  getCurrentHandlerId,
+  (currentSelection: TaskSelection | InsertTaskSelection, currentHandlerId) => {
+    if (currentSelection && currentSelection.type === SelectionType.Task) {
+      return {
+        type: DiagramSelectionType.Node,
+        taskId: currentSelection.taskId,
+        diagramId: currentSelection.handlerType,
+      };
+    } else if (currentSelection && currentSelection.type === SelectionType.InsertTask) {
+      return {
+        type: DiagramSelectionType.Insert,
+        taskId: currentSelection.parentId,
+        diagramId: currentSelection.handlerType,
+      };
+    } else {
+      return null;
+    }
+  }
 );
