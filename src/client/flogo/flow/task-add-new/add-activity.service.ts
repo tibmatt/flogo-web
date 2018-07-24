@@ -14,15 +14,15 @@ import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
 export class AddActivityService {
 
   private installedActivities$: Observable<Activity[]>;
-  private destroy$ = SingleEmissionSubject.create();
+  private destroy$: SingleEmissionSubject;
   private contentPortal: ComponentPortal<TaskAddComponent>;
   private popoverRef: OverlayRef;
 
   constructor(private store: Store<FlowState>, private injector: Injector, private overlay: Overlay) {}
 
   startSubscriptions() {
-    this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities)
-      .pipe(takeUntil(this.destroy$));
+    this.destroy$ = SingleEmissionSubject.create();
+    this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities);
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
       share(),
@@ -31,6 +31,16 @@ export class AddActivityService {
     ).subscribe(() => {
       this.openAddActivityPanel();
     });
+  }
+
+  closePopover() {
+    if (this.popoverRef && this.popoverRef.hasAttached()) {
+      this.popoverRef.detach();
+    }
+    if (this.contentPortal && this.contentPortal.isAttached) {
+      this.contentPortal.detach();
+    }
+    this.store.dispatch(new FlowActions.ClearSelection());
   }
 
   closeAndDestroy() {
@@ -42,38 +52,35 @@ export class AddActivityService {
     }
   }
 
+  get popoverReference(): OverlayRef {
+    return this.popoverRef;
+  }
+
   private openAddActivityPanel() {
-    const taskAddOptions: TaskAddOptions = {
-      activities: this.installedActivities$,
-      onSelect: (ref: string) => this.selectedActivity(ref),
-      onClose: () => this.closePopover()
-    };
-    const customTokens = new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>();
-    customTokens.set(TASKADD_OPTIONS, taskAddOptions);
-    const injector = new PortalInjector(this.injector, customTokens);
-    this.contentPortal = new ComponentPortal(TaskAddComponent, null, injector);
-    this.popoverRef = this.overlay.create({
-      hasBackdrop: true,
-      scrollStrategy: this.overlay.scrollStrategies.block(),
-      positionStrategy: this.overlay.position()
-        .global()
-        .centerHorizontally()
-        .centerVertically()
-    });
-    this.popoverRef.attach(this.contentPortal);
+    if (!this.contentPortal) {
+      const taskAddOptions: TaskAddOptions = {
+        activities: this.installedActivities$,
+        onSelect: (ref: string) => this.selectedActivity(ref)
+      };
+      const customTokens = new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>();
+      customTokens.set(TASKADD_OPTIONS, taskAddOptions);
+      const injector = new PortalInjector(this.injector, customTokens);
+      this.contentPortal = new ComponentPortal(TaskAddComponent, null, injector);
+    }
+    if (!this.popoverRef) {
+      this.popoverRef = this.overlay.create({
+        positionStrategy: this.overlay.position()
+          .global()
+          .centerHorizontally()
+          .centerVertically()
+      });
+    }
+    if (!this.popoverRef.hasAttached()) {
+      this.popoverRef.attach(this.contentPortal);
+    }
   }
 
   private selectedActivity(ref: string) {
     console.log('Selected activity is: ', ref);
-  }
-
-  private closePopover() {
-    if (this.popoverRef && this.popoverRef.hasAttached()) {
-      this.popoverRef.detach();
-    }
-    if (this.contentPortal && this.contentPortal.isAttached) {
-      this.contentPortal.detach();
-    }
-    this.store.dispatch(new FlowActions.ClearSelection());
   }
 }

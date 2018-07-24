@@ -116,3 +116,6 @@ export const CONTRIB_REF_PLACEHOLDER = {
   REF_LAMBDA: 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda',
   REF_CLI: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli'
 };
+
+export const SELECTED_INSERT_TILE_CLASS = 'logic-selected';
+export const BUTTON_INSERT_CLASS = 'btn-insert';
