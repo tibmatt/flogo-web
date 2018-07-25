@@ -3,8 +3,13 @@
          placeholder="{{ 'ADD:FILTER-TASKS' | translate }}"
          (keyup)="filterActivities($event.target.value)">
 </div>
-<ul class="activity-list">
-  <li class="activity-list-item" *ngFor="let activity of filteredActivities$ | async as activities ">
-    {{activity.title}}
-  </li>
-</ul>
+<div *ngIf="filteredActivities$ | async as activities">
+  <ul class="activity-list" *ngIf="activities.length > 0; else emptyCase">
+    <li class="activity-list-item" *ngFor="let activity of activities ">
+      {{activity.title}}
+    </li>
+  </ul>
+  <ng-template #emptyCase>
+    <p>{{ 'ADD:NO-TASKS' | translate }}</p>
+  </ng-template>
+</div>

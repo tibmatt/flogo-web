@@ -9,7 +9,7 @@ export function filterActivitiesBy(sourceList$: Observable<Activity[]>, filterTe
     withLatestFrom(sourceList$),
     map(([filterText, activities]) => {
       if (filterText && !isEmpty(filterText)) {
-        return filter(activities, (activity: Activity) => activity.title.toLowerCase().indexOf(filterText) >= 0);
+        return filter(activities, (activity: Activity) => activity.title.toLowerCase().indexOf(filterText.toLowerCase()) >= 0);
       } else {
         return activities;
       }
