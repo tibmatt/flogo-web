@@ -186,12 +186,13 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.flowDetails.runnableState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(runnableState => this.runnableInfo = runnableState);
+    // TODO: fcastill - remove after getting rid of right rail
     this.flowDetails.itemsChange$
       .pipe(
         takeUntil(this.ngOnDestroy$),
         switchMap(() => this.flowDetails.flowState$.pipe(take(1))),
       )
-      .subscribe(state => this.onItemsChange(state));
+      .subscribe(() => this.refreshCurrentTileContextIfNeeded);
     this.initSubscribe();
     this.loading = false;
   }
@@ -241,17 +242,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   private isTaskSubroute() {
     const [firstRouteChild] = this._route.children;
     return firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/');
-  }
-
-  private onItemsChange(nextState: FlowState) {
-    this.refreshCurrentTileContextIfNeeded();
-    this._flowService.saveFlowIfChanged(this.flowId, nextState)
-      .subscribe(updated => {
-        if (updated && !this._isCurrentProcessDirty) {
-          this._isCurrentProcessDirty = true;
-        }
-        console.log('flowSaved?', updated);
-      });
   }
 
   private onFlowStateUpdate(nextState: FlowState) {
@@ -702,6 +692,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const initData = this.getInitDataForRoot();
     const runOptions: RunOptions = { attrsData: initData };
     const shouldUpdateFlow = this._isCurrentProcessDirty || !this.runState.currentProcessId;
+    const shouldUpdateFlow = this.flowState.flowChangedSinceLastFullExecution || !this.runState.currentProcessId;
     if (shouldUpdateFlow) {
       runOptions.useFlow = this.flowState;
     } else {

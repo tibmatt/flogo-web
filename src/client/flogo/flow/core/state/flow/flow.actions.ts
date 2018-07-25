@@ -20,6 +20,7 @@ export enum ActionType {
   ExecutionStepsUpdate = '[Run Flow] Steps update',
   ErrorPanelStatusChange = '[Flow] Error panel status change',
   DebugPanelStatusChange = '[Flow][Debug panel] Debug panel status change',
+  FlowSaveSuccess = '[Flow] Save success',
 }
 
 interface BaseFlowAction extends Action {
@@ -109,6 +110,10 @@ export class ErrorPanelStatusChange implements BaseFlowAction {
 export class DebugPanelStatusChange implements BaseFlowAction {
   readonly type = ActionType.DebugPanelStatusChange;
   constructor(public payload: { isOpen: boolean }) {}
+}
+
+export class FlowSaveSuccess implements BaseFlowAction {
+  readonly type = ActionType.FlowSaveSuccess;
 }
 
 export type ActionsUnion =
