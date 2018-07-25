@@ -5,12 +5,14 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {AddActivityService} from '@flogo/flow/task-add-new/add-activity.service';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     OverlayModule,
-    PortalModule
+    PortalModule,
+    TranslateModule
   ],
   declarations: [
     AddActivityDirective,

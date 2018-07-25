@@ -1,8 +1,10 @@
-<!--<div>
-  <input type="text" (change)="filterActivities($event)"
-         placeholder="{{ 'ADD:FILTER-TASKS' | translate }}">
-</div>-->
-
+<div class="search">
+  <input class="flogo-input-search" type="text"
+         placeholder="{{ 'ADD:FILTER-TASKS' | translate }}"
+         (keyup)="filterActivities($event.target.value)">
+</div>
 <ul class="activity-list">
-  <li class="activity-list-item" *ngFor="let activity of options.activities | async as activities ">{{activity.title}}</li>
+  <li class="activity-list-item" *ngFor="let activity of filteredActivities$ | async as activities ">
+    {{activity.title}}
+  </li>
 </ul>
