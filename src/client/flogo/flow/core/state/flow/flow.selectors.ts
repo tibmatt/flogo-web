@@ -1,12 +1,13 @@
+
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
 import { Dictionary, Item, ItemActivityTask } from '@flogo/core';
 
-import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName } from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
-import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models/selection';
-import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
+
+import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
+import { DiagramSelectionType } from '@flogo/packages/diagram';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
@@ -21,6 +22,11 @@ export const selectTriggerConfigure = createSelector(selectFlowState, (flowState
 export const selectTaskConfigure = createSelector(selectFlowState, (flowState: FlowState) => flowState.taskConfigure);
 export const selectSchemas = createSelector(selectFlowState, (flowState: FlowState) => flowState.schemas);
 export const selectLastExecutionResult = createSelector(selectFlowState, (flowState: FlowState) => flowState.lastExecutionResult);
+export const selectLastFullExecution = createSelector(selectFlowState, (flowState: FlowState) => flowState.lastFullExecution);
+export const selectHasStructureChangedSinceLastRun = createSelector(
+  selectFlowState,
+  (flowState: FlowState) => flowState.structureChangedSinceLastFullExecution
+);
 
 export const getItems = (handlerType: HandlerType) => {
   const handlerName = getItemsDictionaryName(handlerType);
@@ -108,4 +114,18 @@ export const getSelectedActivityExecutionResult = createSelector(
   selectLastExecutionResult,
   /* tslint:disable-next-line:triple-equals --> for legacy ids of type number so 1 == '1' */
   (selectedActivity, steps) => selectedActivity && steps ? steps[selectedActivity.id] : null
+);
+
+export const getIsRunDisabledForSelectedActivity = createSelector(
+  getCurrentHandlerType,
+  getRunnableState,
+  selectLastFullExecution,
+  selectHasStructureChangedSinceLastRun,
+  selectCurrentSelection,
+  (handlerType, runnableInfo, lastFullExecution, structureHasChanged) => {
+    const isErrorHandler = handlerType === HandlerType.Error;
+    const isRunDisabled = runnableInfo && runnableInfo.disabled;
+    const hasExecuted = lastFullExecution && lastFullExecution.processId;
+    return isErrorHandler || structureHasChanged || isRunDisabled || !hasExecuted;
+  }
 );

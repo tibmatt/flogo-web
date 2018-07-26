@@ -15,7 +15,10 @@ export enum ActionType {
   CommitItemConfiguration = '[Flow] Commit item configuration',
   CancelItemConfiguration = '[Flow] Cancel item configuration',
   ClearSelection = '[Flow] Clear selection',
-  ExecutionWillStart = '[Run Flow] Execution will start',
+  RunFromStart = '[Run Flow] Run from start',
+  RunFromTask = '[Run Flow] Run from tile',
+  NewExecutionRegistered = '[Run Flow] New execution registered',
+  NewProcessRanFromStart = '[Run Flow] New process started from beginning',
   ExecutionUpdated = '[Run Flow] Execution updated',
   ExecutionStepsUpdate = '[Run Flow] Steps update',
   ErrorPanelStatusChange = '[Flow] Error panel status change',
@@ -87,9 +90,21 @@ export class CancelItemConfiguration implements BaseFlowAction {
   readonly type = ActionType.CancelItemConfiguration;
 }
 
-export class ExecutionWillStart implements BaseFlowAction {
-  readonly type = ActionType.ExecutionWillStart;
-  constructor() {}
+export class RunFromStart implements BaseFlowAction {
+  readonly type = ActionType.RunFromStart;
+}
+
+export class RunFromTask implements BaseFlowAction {
+  readonly type = ActionType.RunFromTask;
+}
+
+export class NewExecutionRegistered implements BaseFlowAction {
+  readonly type = ActionType.NewExecutionRegistered;
+}
+
+export class NewRunFromStartProcess implements BaseFlowAction {
+  readonly type = ActionType.NewProcessRanFromStart;
+  constructor(public payload: { processId: string, instanceId: string }) {}
 }
 
 export class ExecutionStateUpdated implements BaseFlowAction {
@@ -128,7 +143,10 @@ export type ActionsUnion =
   | ItemUpdated
   | CommitItemConfiguration
   | CancelItemConfiguration
-  | ExecutionWillStart
+  | NewExecutionRegistered
+  | NewRunFromStartProcess
+  | RunFromStart
+  | RunFromTask
   | ExecutionStepsUpdated
   | ExecutionStateUpdated
   | ErrorPanelStatusChange

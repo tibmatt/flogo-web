@@ -118,9 +118,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   };
 
   private runState = {
-    // data
-    currentProcessId: <string> null,
-    processInstanceId: <string> null,
     // TODO: may need better implementation
     lastProcessInstanceFromBeginning: <any> null,
     steps: <Step[]> null,
@@ -129,7 +126,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   _subscriptions: any[];
   _id: any;
 
-  _isCurrentProcessDirty = true;
   _isDiagramEdited: boolean;
   flowName: string;
   backToAppHover = false;
@@ -221,7 +217,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
     );
   }
-
 
   private get flowDetails() {
     return this._flowService.currentFlowDetails;
@@ -337,7 +332,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
       shouldSkipTaskConfigure: this.isTaskSubflowOrMapper(taskId, handlerId),
       flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
-      hasProcess: Boolean(this.runState.currentProcessId),
+      hasProcess: Boolean(this.flowState.lastFullExecution.processId),
       isDiagramEdited: this._isDiagramEdited,
       app: null,
       currentTrigger: null,
@@ -686,25 +681,23 @@ export class FlowComponent implements OnInit, OnDestroy {
   private _runFromRoot() {
 
     this._isDiagramEdited = false;
-    this.cleanDiagramRunState();
+    this.flowDetails.runFromStart();
 
     // The initial data to start the process from trigger
     const initData = this.getInitDataForRoot();
     const runOptions: RunOptions = { attrsData: initData };
-    const shouldUpdateFlow = this._isCurrentProcessDirty || !this.runState.currentProcessId;
-    const shouldUpdateFlow = this.flowState.flowChangedSinceLastFullExecution || !this.runState.currentProcessId;
+    const shouldUpdateFlow = this.flowState.configChangedSinceLastExecution || !this.flowState.lastFullExecution.processId;
     if (shouldUpdateFlow) {
       runOptions.useFlow = this.flowState;
     } else {
-      runOptions.useProcessId = this.runState.currentProcessId;
+      runOptions.useProcessId = this.flowState.lastFullExecution.processId;
     }
 
     this.runState.steps = null;
     const runner = this._runnerService.runFromRoot(runOptions);
 
     runner.registered.subscribe(info => {
-      this.runState.currentProcessId = info.processId;
-      this.runState.processInstanceId = info.instanceId;
+      this.flowDetails.executionProcessChanged(info.processId, info.instanceId);
     }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
 
     return this.observeRunProgress(runner)
@@ -725,7 +718,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     const selectedTask = this.flowState.mainItems[data.taskId];
 
-    if (!this.runState.processInstanceId) {
+    if (!this.flowState.lastFullExecution.processId) {
       // run from other than the trigger (root task);
       // TODO
       console.warn('Cannot find proper step to restart from, skipping...');
@@ -749,13 +742,13 @@ export class FlowComponent implements OnInit, OnDestroy {
     };
 
     this.runState.steps = null;
-    this.clearAllHandlersRunStatus();
+    this.flowDetails.runFromTask();
 
     const runner = this._runnerService.rerun({
       useFlow: this.flowState,
       interceptor: dataOfInterceptor,
       step: step,
-      instanceId: this.runState.processInstanceId,
+      instanceId: this.flowState.lastFullExecution.instanceId,
     });
 
     this.observeRunProgress(runner)
@@ -793,7 +786,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     // TODO: only on run from trigger?
     runner.registered.subscribe(info => {
-      this._isCurrentProcessDirty = false;
+      this.flowDetails.newExecutionStarted();
     }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
 
     runner.steps
@@ -832,12 +825,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
   }
 
-  private cleanDiagramRunState() {
-    // clear task status and render the diagram
-    this.clearAllHandlersRunStatus();
-    // this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-  }
-
   private getInitDataForRoot(): { name: string; type: string; value: any }[] {
     const flowInput = get(this.flowState, 'metadata.input');
     if (isEmpty(flowInput)) {
@@ -870,10 +857,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     message = message || 'CANVAS:ERROR-MESSAGE';
     notification(this.translate.instant(message), 'error');
     return error;
-  }
-
-  private clearAllHandlersRunStatus() {
-    this.flowDetails.clearExecutionStatus();
   }
 
   private updateTaskRunStatus(steps: Step[], rsp: any) {

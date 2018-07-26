@@ -63,8 +63,12 @@ export class FlogoFlowDetails {
     }));
   }
 
-  clearExecutionStatus() {
-    this.store.dispatch(new FlowActions.ExecutionWillStart());
+  runFromStart() {
+    this.store.dispatch(new FlowActions.RunFromStart());
+  }
+
+  runFromTask() {
+    this.store.dispatch(new FlowActions.RunFromTask());
   }
 
   executionStatusChanged(changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> }) {
@@ -73,6 +77,14 @@ export class FlogoFlowDetails {
 
   executionStepsUpdate(steps: Dictionary<Dictionary<StepAttribute>>) {
     this.store.dispatch(new FlowActions.ExecutionStepsUpdated({ steps }));
+  }
+
+  newExecutionStarted() {
+    this.store.dispatch(new FlowActions.NewExecutionRegistered());
+  }
+
+  executionProcessChanged(processId: string, instanceId: string) {
+    this.store.dispatch(new FlowActions.NewRunFromStartProcess({ processId, instanceId }));
   }
 
 }

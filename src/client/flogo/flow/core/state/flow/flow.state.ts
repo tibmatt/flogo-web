@@ -12,6 +12,12 @@ export interface FlowState extends UiFlow {
   triggerConfigure: TriggerConfigureState;
   linkedSubflows: Dictionary<Action>;
   taskConfigure: string | null;
+  configChangedSinceLastExecution: boolean;
+  structureChangedSinceLastFullExecution: boolean;
+  lastFullExecution: {
+    processId: string;
+    instanceId: string;
+  };
   lastExecutionResult: { [taskId: string]: Dictionary<StepAttribute> };
 }
 
@@ -34,5 +40,11 @@ export const INITIAL_STATE: FlowState = {
   linkedSubflows: {},
   triggerConfigure: null,
   taskConfigure: null,
+  lastFullExecution: {
+    processId: null,
+    instanceId: null,
+  },
+  configChangedSinceLastExecution: false,
+  structureChangedSinceLastFullExecution: false,
   lastExecutionResult: {},
 };
