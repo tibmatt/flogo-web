@@ -10,6 +10,7 @@ export class DebugPanelDetailComponent {
 
   @Input() activity;
   @Input() fields: FormGroup;
+  @Input() runDisabled: boolean;
   @Output() close = new EventEmitter();
 
   onClose() {

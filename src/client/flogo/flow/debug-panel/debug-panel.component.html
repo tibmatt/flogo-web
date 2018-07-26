@@ -12,5 +12,6 @@
     class="debug-panel__content"
     [activity]="activity$ | async"
     [fields]="fields$ | async"
+    [runDisabled]="isRunDisabled$ | async"
     (close)="togglePanel()"></flogo-flow-debug-panel-detail>
 </div>

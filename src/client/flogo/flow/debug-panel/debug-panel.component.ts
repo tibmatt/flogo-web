@@ -26,6 +26,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   isOpen: string;
   activity$: Observable<ItemActivityTask>;
   fields$: Observable<FormGroup>;
+  isRunDisabled$: Observable<boolean>;
 
   private isOpenSubscription: Subscription;
 
@@ -35,6 +36,9 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.activity$ = this.store.pipe(
       select(FlowSelectors.getSelectedActivity),
+    );
+    this.isRunDisabled$ = this.store.pipe(
+      select(FlowSelectors.getIsRunDisabledForSelectedActivity),
     );
 
     const form$: Observable<null | FormGroup> = this.store.pipe(

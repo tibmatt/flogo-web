@@ -121,7 +121,6 @@ export const getIsRunDisabledForSelectedActivity = createSelector(
   getRunnableState,
   selectLastFullExecution,
   selectHasStructureChangedSinceLastRun,
-  selectCurrentSelection,
   (handlerType, runnableInfo, lastFullExecution, structureHasChanged) => {
     const isErrorHandler = handlerType === HandlerType.Error;
     const isRunDisabled = runnableInfo && runnableInfo.disabled;
