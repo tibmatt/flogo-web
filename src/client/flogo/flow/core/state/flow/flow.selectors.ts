@@ -4,7 +4,7 @@ import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 import {getGraphName, getItemsDictionaryName} from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
-import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models';
+import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models/selection';
 import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
