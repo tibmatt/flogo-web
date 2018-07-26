@@ -75,8 +75,6 @@ import {
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { mergeItemWithSchema, extractItemInputsFromTask } from '@flogo/core/models';
-import { DiagramSelection, DiagramAction, DiagramActionType } from '@flogo/packages/diagram';
-import { DiagramActionChild, DiagramActionSelf, DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
 import { HandlerType, CurrentSelection, InsertTaskSelection, SelectionType } from './core/models';
 import { FlowState } from './core/state';
 import { makeNode } from './core/models/graph-and-items/graph-creator';
@@ -137,9 +135,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
-  handlerTypes = HandlerType;
 
-  currentDiagramSelection: DiagramSelection;
 
   public loading: boolean;
   public hasTrigger: boolean;
@@ -170,14 +166,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   get flowId() {
     return this.flowDetails.id;
-  }
-
-  getSelectionFor(handlerType) {
-    if (this.currentDiagramSelection && this.currentDiagramSelection.diagramId === handlerType) {
-      return this.currentDiagramSelection;
-    } else {
-      return null;
-    }
   }
 
   public ngOnInit() {
@@ -232,63 +220,19 @@ export class FlowComponent implements OnInit, OnDestroy {
     );
   }
 
-  onMainDiagramAction(diagramAction: DiagramAction) {
-    this.onDiagramAction(HandlerType.Main, diagramAction);
-  }
-
-  onErrorDiagramAction(diagramAction: DiagramAction) {
-    this.onDiagramAction(HandlerType.Error, diagramAction);
-  }
 
   private get flowDetails() {
     return this._flowService.currentFlowDetails;
   }
 
-  private onDiagramAction(handlerType: HandlerType, diagramAction: DiagramAction) {
-    const flowDetails = this.flowDetails;
-    switch (diagramAction.type) {
-      case DiagramActionType.Select: {
-        flowDetails.selectItem(handlerType, (<DiagramActionSelf>diagramAction).id);
-        return;
-      }
-      case DiagramActionType.Configure: {
-        flowDetails.configureItem((<DiagramActionSelf>diagramAction).id);
-        return;
-      }
-      case DiagramActionType.Remove: {
-        this._deleteTaskFromDiagram(handlerType, (<DiagramActionSelf>diagramAction).id);
-        return;
-      }
-      case DiagramActionType.Insert: {
-        flowDetails.selectInsert(handlerType, (<DiagramActionChild>diagramAction).parentId);
-        return;
-      }
-      case DiagramActionType.Branch: {
-        flowDetails.createBranch(handlerType, (<DiagramActionChild>diagramAction).parentId);
-        return;
-      }
-    }
-  }
-
   private onSelectionChanged(selection: CurrentSelection) {
-    this.currentDiagramSelection = null;
     if (!selection) {
       if (this.isTaskSubroute()) {
         this._navigateFromModuleRoot();
       }
     } else if (selection.type === SelectionType.Task) {
-      this.currentDiagramSelection = {
-        type: DiagramSelectionType.Node,
-        taskId: selection.taskId,
-        diagramId: selection.handlerType,
-      };
       this._selectTaskFromDiagram(selection.taskId);
     } else if (selection.type === SelectionType.InsertTask) {
-      this.currentDiagramSelection = {
-        type: DiagramSelectionType.Insert,
-        taskId: selection.parentId,
-        diagramId: selection.handlerType,
-      };
       this._addTaskFromDiagram(selection.parentId);
     }
   }
@@ -351,6 +295,10 @@ export class FlowComponent implements OnInit, OnDestroy {
             });
         }
       });
+  }
+
+  onDeleteTask(taskDetails) {
+    this._deleteTaskFromDiagram(taskDetails.handlerType, taskDetails.itemId);
   }
 
   private refreshCurrentTileContextIfNeeded() {

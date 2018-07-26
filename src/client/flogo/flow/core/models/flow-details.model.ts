@@ -2,14 +2,13 @@ import { isEqual } from 'lodash';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { Action as ActionSchema, ActionBase, ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
+import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { getProfileType } from '@flogo/shared/utils';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';
 import { HandlerType } from './handler-type';
-import { newBranchId } from './flow/id-generator';
 
 export class FlogoFlowDetails {
   id: string;
@@ -41,36 +40,8 @@ export class FlogoFlowDetails {
       .pipe(distinctUntilChanged(isEqual));
   }
 
-  selectItem(handlerType: HandlerType, itemId: string) {
-    this.store.dispatch(new FlowActions.SelectItem({
-      handlerType,
-      itemId,
-    }));
-  }
-
-  configureItem(itemId: string) {
-    this.store.dispatch(new FlowActions.ConfigureItem({
-      itemId,
-    }));
-  }
-
-  selectInsert(handlerType: HandlerType, parentItemId: string) {
-    this.store.dispatch(new FlowActions.SelectCreateItem({
-      handlerType,
-      parentItemId,
-    }));
-  }
-
   clearSelection() {
     this.store.dispatch(new FlowActions.ClearSelection());
-  }
-
-  createBranch(handlerType: HandlerType, parentId: string) {
-    this.store.dispatch(new FlowActions.CreateBranch({
-      handlerType,
-      parentId,
-      newBranchId: newBranchId(),
-    }));
   }
 
   registerNewItem(
