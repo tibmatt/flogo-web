@@ -23,6 +23,7 @@ import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlowDataResolver } from './flow-data.resolver';
 import { featureReducer } from './core/state';
 import {FlogoFlowDiagramComponent} from '@flogo/flow/flow-diagram/flow-diagram.component';
+import {FlowTabsComponent} from '@flogo/flow/flow-tabs/flow-tabs.component';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import {FlogoFlowDiagramComponent} from '@flogo/flow/flow-diagram/flow-diagram.c
     EmptyDetailComponent,
     FlogoRunFlowComponent,
     FlowComponent,
-    FlogoFlowDiagramComponent
+    FlogoFlowDiagramComponent,
+    FlowTabsComponent
   ],
   providers: [
     FlowDataResolver,

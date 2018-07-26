@@ -1,11 +1,10 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import {Dictionary, FlowGraph, Item} from '@flogo/core';
+import {Dictionary, Item} from '@flogo/core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 import {getGraphName, getItemsDictionaryName} from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
-import {InsertTaskSelection, TaskSelection} from '@flogo/flow/core/models/selection';
-import {SelectionType} from '@flogo/flow/core/models';
+import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models';
 import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
@@ -27,17 +26,12 @@ export const getItems = (handlerType: HandlerType) => {
 export const getAllItems = createSelector(
   getItems(HandlerType.Main),
   getItems(HandlerType.Error),
-  (mainItems, errorItems) => ({ mainItems, errorItems }),
+  (mainItems, errorItems) => ({mainItems, errorItems}),
 );
-
-export const getGraph = (handlerType: HandlerType) => {
-  const handlerName = getGraphName(handlerType);
-  return createSelector(selectFlowState, flowState => flowState[handlerName] as FlowGraph);
-};
 
 export const getRunnableState = createSelector(
   getAllItems,
-  ({ mainItems, errorItems }) => determineRunnableStatus(mainItems, errorItems),
+  ({mainItems, errorItems}) => determineRunnableStatus(mainItems, errorItems),
 );
 
 export const getCurrentHandlerId = createSelector(
@@ -53,8 +47,7 @@ export const getCurrentGraph = createSelector(selectFlowState, getCurrentHandler
 
 export const getSelectionForCurrentHandler = createSelector(
   selectCurrentSelection,
-  getCurrentHandlerId,
-  (currentSelection: TaskSelection | InsertTaskSelection, currentHandlerId) => {
+  (currentSelection: TaskSelection | InsertTaskSelection) => {
     if (currentSelection && currentSelection.type === SelectionType.Task) {
       return {
         type: DiagramSelectionType.Node,

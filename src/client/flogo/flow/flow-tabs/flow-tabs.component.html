@@ -1,0 +1,10 @@
+<div class="flogo-flow-tabs-container">
+  <ul class="flogo-flow-tabs-list list-unstyled">
+    <li class="flogo-flow-tabs-item" (click)="selectPrimaryFlow()"
+        [ngClass]="{'flogo-flow-tabs-item--selected': !isErrorHandlerShown}">{{'FLOWS:PRIMARY-FLOW' | translate}}
+    </li>
+    <li class="flogo-flow-tabs-item" (click)="selectErrorHandler()"
+        [ngClass]="{'flogo-flow-tabs-item--selected': isErrorHandlerShown}">{{'FLOWS:ERROR-HANDLER' | translate}}
+    </li>
+  </ul>
+</div>

@@ -87,7 +87,8 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     case ActionType.ErrorPanelStatusChange: {
       return {
         ...state,
-        isErrorPanelOpen: action.payload.isOpen
+        isErrorPanelOpen: action.payload.isOpen,
+        currentSelection : null
       };
     }
   }

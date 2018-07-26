@@ -6,7 +6,7 @@ import { FlowState, FlowActions, FlowSelectors } from '../core/state';
 import {DiagramAction, DiagramActionType, DiagramSelection} from '@flogo/packages/diagram';
 import {HandlerType} from '@flogo/flow/core/models';
 import {DiagramActionChild, DiagramActionSelf} from '@flogo/packages/diagram/interfaces';
-import {takeUntil} from 'rxjs/internal/operators';
+import {takeUntil} from 'rxjs/operators';
 import {SingleEmissionSubject} from '@flogo/core/models';
 import {newBranchId} from '@flogo/flow/core/models/flow/id-generator';
 import {FlowGraph} from '@flogo/core';

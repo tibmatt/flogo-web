@@ -2,14 +2,13 @@ import { isEqual } from 'lodash';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { Action as ActionSchema, ActionBase, ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
+import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { getProfileType } from '@flogo/shared/utils';
 
 import { FlowActions, FlowSelectors } from '../state';
 import { AppState } from '../state/app.state';
 import { HandlerType } from './handler-type';
-import { newBranchId } from './flow/id-generator';
 
 export class FlogoFlowDetails {
   id: string;
@@ -73,10 +72,6 @@ export class FlogoFlowDetails {
 
   executionStatusChanged(changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> }) {
     this.store.dispatch(new FlowActions.ExecutionStateUpdated({ changes }));
-  }
-
-  errorHandlerPanelStatus(isErrorPanelOpen) {
-    this.store.dispatch(new FlowActions.ErrorPanelStatusChange({isOpen: isErrorPanelOpen}));
   }
 
 }

@@ -82,7 +82,6 @@ import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { Trigger } from './core';
 import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
-import {Tabs} from '@flogo/flow/shared/tabs/models/tabs.model';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -100,12 +99,7 @@ interface TaskContext {
   currentTrigger: any;
   profileType: FLOGO_PROFILE_TYPE;
 }
-const FLOW_TABS = {
-  PRIMARY_FLOW: 'primaryFlow',
-  ERROR_HANDLER: 'errorHandler',
-};
-const FLOW_TAB_INFO = [{name: FLOW_TABS.PRIMARY_FLOW, labelKey: 'FLOWS:PRIMARY-FLOW'},
-  {name: FLOW_TABS.ERROR_HANDLER, labelKey: 'FLOWS:ERROR-HANDLER'}];
+
 const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.type);
 
 @Component({
@@ -148,8 +142,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   public currentTrigger: any;
   public app: any;
   public isflowMenuOpen = false;
-  tabs: Tabs;
-  isErrorHandlerShown = false;
 
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
@@ -201,7 +193,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       .subscribe(state => this.onItemsChange(state));
     this.initSubscribe();
     this.loading = false;
-    this.createFlowTabs();
   }
 
   toggleFlowMenu() {
@@ -1175,25 +1166,6 @@ export class FlowComponent implements OnInit, OnDestroy {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));
         });
       });
-  }
-
-  createFlowTabs() {
-    this.tabs = Tabs.create(FLOW_TAB_INFO);
-    this.tabs.markSelected(FLOW_TABS.PRIMARY_FLOW);
-  }
-
-  selectFlowTab(name: string) {
-    this.tabs.markSelected(name);
-    if (name === FLOW_TABS.ERROR_HANDLER) {
-      this.isErrorHandlerShown = true;
-    } else if (name === FLOW_TABS.PRIMARY_FLOW) {
-      this.isErrorHandlerShown = false;
-    }
-    this.flowDetails.errorHandlerPanelStatus(this.isErrorHandlerShown);
-  }
-
-  trackTabsByFn(index, [tabName, tab]) {
-    return tabName;
   }
 
 }

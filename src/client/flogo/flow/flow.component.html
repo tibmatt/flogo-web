@@ -62,18 +62,7 @@
 
       </div>
     </section>
-    <div class="flogo-flow-tabs-container">
-      <ul class="flogo-flow-tabs-list list-unstyled">
-        <li class="flogo-flow-tabs-item"
-            (click)="selectFlowTab(tabData[0])"
-            *ngFor="let tabData of tabs; trackBy: trackTabsByFn"
-            [ngClass]='{
-                "flogo-flow-tabs-item--selected": tabData[1].isSelected
-               }'>
-          {{ tabData[1].labelKey | translate }}
-        </li>
-      </ul>
-    </div>
+         <flogo-flow-tabs></flogo-flow-tabs>
     <div class="flogo-flow-container">
       <div class="clearfix flogo-flows-main">
         <div class="flogo-flows-triggers-container">
