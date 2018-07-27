@@ -13,3 +13,14 @@
     <p>{{ 'ADD:NO-TASKS' | translate }}</p>
   </ng-template>
 </div>
+<div>
+  <ul class="activity-list">
+    <li class="activity-list-item" (click)="handleInstallerWizard(true)">
+      {{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}
+    </li>
+  </ul>
+</div>
+<flogo-flow-installer
+  [profileType]="(options.appInfo$ | async).appProfileType"
+  [installType]="'activity'" [isActivated]="wizardOpen" (isActivatedChange)="handleInstallerWizard($event)"
+  (installed)="afterActivityInstalled($event)"></flogo-flow-installer>

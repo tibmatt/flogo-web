@@ -3,8 +3,8 @@ import {FlowActions, FlowSelectors, FlowState} from '@flogo/flow/core/state';
 import {Store} from '@ngrx/store';
 import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
-import {Activity, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
-import {Observable} from 'rxjs';
+import {Activity, AppInfo, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
+import {Observable, Subject} from 'rxjs';
 import {distinctUntilChanged, filter, share, takeUntil} from 'rxjs/operators';
 import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
@@ -14,7 +14,10 @@ import {createTaskAddAction} from '@flogo/flow/task-add-new/models/task-add-acti
 @Injectable()
 export class AddActivityService {
 
+  private keepPopoverActive: boolean;
+  private wizardState$ = new Subject<boolean>();
   private installedActivities$: Observable<Activity[]>;
+  private appInfo$: Observable<AppInfo>;
   private destroy$: SingleEmissionSubject;
   private contentPortal: ComponentPortal<TaskAddComponent>;
   private popoverRef: OverlayRef;
@@ -24,6 +27,10 @@ export class AddActivityService {
   startSubscriptions() {
     this.destroy$ = SingleEmissionSubject.create();
     this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities);
+    this.appInfo$ = this.store.select(FlowSelectors.selectAppInfo);
+    this.wizardState$.subscribe(wizardState => {
+      this.keepPopoverActive = wizardState;
+    });
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
       share(),
@@ -52,10 +59,16 @@ export class AddActivityService {
     return this.popoverRef;
   }
 
+  get shouldKeepActive(): boolean {
+    return this.keepPopoverActive;
+  }
+
   private openAddActivityPanel() {
     if (!this.contentPortal) {
       const taskAddOptions: TaskAddOptions = {
         activities$: this.installedActivities$,
+        wizardState$: this.wizardState$,
+        appInfo$: this.appInfo$,
         onSelect: (ref: string) => this.selectedActivity(ref)
       };
       const customTokens = new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>();

@@ -25,7 +25,6 @@ import {
   LanguageService,
   ItemTask,
   Item,
-  ItemSubflow,
   Dictionary,
   GraphNode,
   NodeType,
@@ -434,80 +433,6 @@ export class FlowComponent implements OnInit, OnDestroy {
         return Promise.reject(err);
       });
   }
-
-  /*private _addTaskFromDiagram(parentId: string) {
-    this._navigateFromModuleRoot(['task', 'add'])
-      .then(
-        () => {
-          this._postService.publish({
-            ...FLOGO_ADD_TASKS_PUB_EVENTS.addTask,
-            data: {
-              parentId
-            }
-          });
-        });
-  }*/
-
-  /*private _addTaskFromTasks(data: any, envelope: any) {
-    const currentState = this.flowState;
-    const selection = currentState.currentSelection as InsertTaskSelection;
-    const isAddingToRoot = selection && !selection.parentId;
-    let diagramId: string;
-    if (isAddingToRoot) {
-      diagramId = selection.handlerType;
-    } else {
-      diagramId = this.getDiagramId(data.parentId);
-    }
-
-    let task = data.task;
-    const taskName = this.uniqueTaskName(data.task.name);
-    // generate task id when adding the task
-    task = <Task> assign({},
-      task,
-      {
-        id: this.profileService.generateTaskID(this._getAllTasks(), task),
-        name: taskName
-      });
-
-    let item: ItemActivityTask | ItemSubflow = {
-      id: task.id,
-      type: task.type,
-      ref: task.ref,
-      name: taskName,
-      description: task.description,
-      inputMappings: task.inputMappings,
-      input: extractItemInputsFromTask(task),
-      settings: task.settings,
-    };
-    const isSubflow = isSubflowItem(item);
-    if (isSubflow) {
-      item = {
-        ...item,
-        outputMappings: task.outputMappings,
-      } as ItemSubflow;
-    } else {
-      (<ItemActivityTask>item).return = task.return;
-    }
-    // const schema = task.__schema;
-    const isFinal = !!task.return;
-    const node = makeNode({
-      id: task.id,
-      type: NodeType.Task,
-      title: task.name,
-      description: task.description,
-      parents: [selection.parentId],
-      features: {
-        subflow: isSubflow,
-        final: isFinal,
-        canHaveChildren: !isFinal
-      }
-    });
-
-    this.flowDetails.registerNewItem(
-      this.handlerTypeFromString(diagramId),
-      { item, node, schema, subflowSchema: data.subflowSchema },
-    );*!/
-  }*/
 
   private getTriggerCurrentFlow(app, flowId) {
     let trigger: any = null;

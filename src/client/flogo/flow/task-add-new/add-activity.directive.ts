@@ -20,7 +20,8 @@ export class AddActivityDirective implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     const popoverRef = this.addTaskService.popoverReference;
-    if (popoverRef && popoverRef.hasAttached()) {
+    const keepActive = this.addTaskService.shouldKeepActive;
+    if (!keepActive && popoverRef && popoverRef.hasAttached()) {
       const clickTarget = <HTMLElement> event.target;
       const overlayHost = popoverRef.hostElement;
       const currentInsertEl = this.el.nativeElement.querySelector(`.${SELECTED_INSERT_TILE_CLASS} .${BUTTON_INSERT_CLASS}`);

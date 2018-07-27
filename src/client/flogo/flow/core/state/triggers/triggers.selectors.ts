@@ -1,7 +1,6 @@
 import { createSelector } from '@ngrx/store';
-import { getProfileType } from '../../../../shared/utils';
 import {
-  selectActionId, selectApp, selectFlowMetadata, selectTriggers, selectHandlers, selectCurrentSelection
+  selectActionId, selectFlowMetadata, selectTriggers, selectHandlers, selectCurrentSelection, selectAppInfo
 } from '../flow/flow.selectors';
 import { TriggersState } from '../../../triggers/interfaces/triggers-state';
 import { triggersToRenderableTriggers } from '../../../triggers/models/triggers-to-renderable-triggers';
@@ -11,22 +10,6 @@ export const getRenderableTriggers = createSelector(
   selectHandlers,
   selectTriggers,
   (handlers, triggers) => triggersToRenderableTriggers(handlers, triggers)
-);
-
-export const selectAppInfo = createSelector(
-  selectApp,
-  (app) => {
-    if (!app) {
-      return {
-        appId: null,
-        appProfileType: null,
-      };
-    }
-    return {
-      appId: app.id,
-      appProfileType: getProfileType(app),
-    };
-  },
 );
 
 export const selectCurrentTrigger = createSelector(

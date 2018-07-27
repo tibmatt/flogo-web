@@ -1,11 +1,18 @@
 import { Component, Inject, InjectionToken, OnInit} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {filterActivitiesBy} from './core/filter-activities-by';
-import {CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
+import {CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;
+  wizardState$: Subject<boolean>;
+  appInfo$: Observable<AppInfo>;
   onSelect: (activityRef: string) => void;
+}
+
+export interface AppInfo {
+  appId: string;
+  appProfileType: FLOGO_PROFILE_TYPE;
 }
 
 export interface Activity {
@@ -23,6 +30,8 @@ export class TaskAddComponent implements OnInit {
 
   filteredActivities$: Observable<Activity[]>;
   filterText$: ReplaySubject<string>;
+  isInstallOpen = false;
+  private wizardOpen: boolean;
 
   constructor(@Inject(TASKADD_OPTIONS) private options: TaskAddOptions) {
     this.filterText$ = new ReplaySubject<string>(1);
@@ -41,5 +50,18 @@ export class TaskAddComponent implements OnInit {
     if (ref !== CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
       this.options.onSelect(ref);
     }
+  }
+
+  handleInstallerWizard(state: boolean) {
+    this.isInstallOpen = this.wizardOpen = state;
+    this.updateWizardStatus();
+  }
+
+  afterActivityInstalled(schema) {
+    // TODO: Add the new schema to the flowstate.schemas
+  }
+
+  private updateWizardStatus() {
+    this.options.wizardState$.next(this.wizardOpen);
   }
 }
