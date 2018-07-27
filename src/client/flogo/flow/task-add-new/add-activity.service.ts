@@ -9,6 +9,7 @@ import {distinctUntilChanged, filter, share, takeUntil} from 'rxjs/operators';
 import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
 import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
+import {createTaskAddAction} from '@flogo/flow/task-add-new/models/task-add-action-creator';
 
 @Injectable()
 export class AddActivityService {
@@ -59,7 +60,7 @@ export class AddActivityService {
   private openAddActivityPanel() {
     if (!this.contentPortal) {
       const taskAddOptions: TaskAddOptions = {
-        activities: this.installedActivities$,
+        activities$: this.installedActivities$,
         onSelect: (ref: string) => this.selectedActivity(ref)
       };
       const customTokens = new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>();
@@ -81,6 +82,12 @@ export class AddActivityService {
   }
 
   private selectedActivity(ref: string) {
-    console.log('Selected activity is: ', ref);
+    createTaskAddAction(
+      this.store,
+      {ref}
+    ).subscribe(action => {
+      // TODO dispatch the created action
+    });
+    this.closePopover();
   }
 }

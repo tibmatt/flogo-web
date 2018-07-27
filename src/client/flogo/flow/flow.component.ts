@@ -501,7 +501,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     } else {
       (<ItemActivityTask>item).return = task.return;
     }
-    const schema = task.__schema;
+    // const schema = task.__schema;
     const isFinal = !!task.return;
     const node = makeNode({
       id: task.id,
@@ -519,7 +519,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.flowDetails.registerNewItem(
       this.handlerTypeFromString(diagramId),
       { item, node, schema, subflowSchema: data.subflowSchema },
-    );
+    );*!/
   }*/
 
   private getTriggerCurrentFlow(app, flowId) {

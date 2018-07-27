@@ -43,7 +43,7 @@ export class FlogoFlowDetails {
 
   registerNewItem(
     handlerType: HandlerType,
-    itemDetails: { item: ItemTask, node: GraphNode, schema: ContribSchema, subflowSchema?: ActionSchema }
+    itemDetails: { item: ItemTask, node: GraphNode, subflowSchema?: ActionSchema }
    ) {
     this.store.dispatch(new FlowActions.TaskItemCreated({ handlerType, ...itemDetails }));
   }

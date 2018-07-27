@@ -57,7 +57,6 @@ export class TaskItemCreated implements BaseFlowAction {
     handlerType: HandlerType,
     item: ItemTask,
     node: GraphNode,
-    schema: ContribSchema,
     subflowSchema?: ActionSchema
   }) {}
 }

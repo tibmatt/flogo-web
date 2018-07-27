@@ -5,7 +5,7 @@
 </div>
 <div *ngIf="filteredActivities$ | async as activities">
   <ul class="activity-list" *ngIf="activities.length > 0; else emptyCase">
-    <li class="activity-list-item" *ngFor="let activity of activities ">
+    <li class="activity-list-item" *ngFor="let activity of activities" (click)="selectActivity(activity.ref)">
       {{activity.title}}
     </li>
   </ul>

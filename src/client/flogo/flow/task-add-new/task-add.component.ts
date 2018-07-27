@@ -1,9 +1,10 @@
 import { Component, Inject, InjectionToken, OnInit} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
-import {filterActivitiesBy} from './filter-activities-by';
+import {filterActivitiesBy} from './core/filter-activities-by';
+import {CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
 
 export interface TaskAddOptions {
-  activities: Observable<Activity[]>;
+  activities$: Observable<Activity[]>;
   onSelect: (activityRef: string) => void;
 }
 
@@ -23,16 +24,22 @@ export class TaskAddComponent implements OnInit {
   filteredActivities$: Observable<Activity[]>;
   filterText$: ReplaySubject<string>;
 
-  constructor(@Inject(TASKADD_OPTIONS) public options: TaskAddOptions) {
+  constructor(@Inject(TASKADD_OPTIONS) private options: TaskAddOptions) {
     this.filterText$ = new ReplaySubject<string>(1);
   }
 
   ngOnInit() {
-    this.filteredActivities$ = filterActivitiesBy(this.options.activities, this.filterText$);
+    this.filteredActivities$ = filterActivitiesBy(this.options.activities$, this.filterText$);
     this.filterText$.next('');
   }
 
   filterActivities(term: string) {
     this.filterText$.next(term);
+  }
+
+  selectActivity(ref: string) {
+    if (ref !== CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
+      this.options.onSelect(ref);
+    }
   }
 }
