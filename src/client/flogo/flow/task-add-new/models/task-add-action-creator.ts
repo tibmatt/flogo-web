@@ -3,13 +3,14 @@ import {FlowState, FlowActions, FlowSelectors} from '../../core/state/index';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {PayloadOf} from '../../core/state/utils';
-import {activitySchemaToTask, createSubFlowTask, isSubflowTask} from '@flogo/shared/utils';
-import {CONTRIB_REF_PLACEHOLDER, ItemActivityTask, ItemSubflow, NodeType, Task} from '@flogo/core';
+import {activitySchemaToTask, createSubFlowTask, getProfileType, isSubflowTask} from '@flogo/shared/utils';
+import {CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE, ItemActivityTask, ItemSubflow, NodeType, Task} from '@flogo/core';
 import {assign} from 'lodash';
 import {uniqueTaskName} from '@flogo/flow/core/models/unique-task-name';
-import {extractItemInputsFromTask} from '@flogo/core/models';
+import {extractItemInputsFromTask, FlogoDeviceTaskIdGeneratorService, FlogoMicroserviceTaskIdGeneratorService} from '@flogo/core/models';
 import {makeNode} from '@flogo/flow/core/models/graph-and-items/graph-creator';
 import {HandlerType, InsertTaskSelection} from '@flogo/flow/core/models';
+import {AbstractTaskIdGenerator} from '@flogo/core/models/profile/profile-utils';
 
 interface TaskAddData {
   ref: string;
@@ -31,15 +32,22 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
   const selection = flowState.currentSelection as InsertTaskSelection;
   const handlerType = selection.handlerType === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
   const schema = flowState.schemas[activityData.ref];
+  const profileType = getProfileType(flowState.app);
+  let utils: AbstractTaskIdGenerator;
+  if (profileType === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
+    utils = new FlogoMicroserviceTaskIdGeneratorService();
+  } else {
+    utils = new FlogoDeviceTaskIdGeneratorService();
+  }
   let task;
   if (activityData.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
-    task = activitySchemaToTask(schema);
-  } else {
     task = createSubFlowTask(schema);
+  } else {
+    task = activitySchemaToTask(schema);
   }
   const taskName = uniqueTaskName(task.name, flowState.mainItems, flowState.errorItems);
   task = <Task> assign({}, task, {
-    id: '', // need to generate the taskID
+    id: utils.generateTaskID({...flowState.mainItems, ...flowState.errorItems}, task),
     name: taskName
   });
   let item: ItemActivityTask | ItemSubflow = {

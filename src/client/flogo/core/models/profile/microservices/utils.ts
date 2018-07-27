@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
-import { AbstractTaskIdGenerator } from '../profiles.utils.service';
+import { AbstractTaskIdGenerator } from '../profile-utils';
 
-@Injectable()
 export class FlogoMicroserviceTaskIdGeneratorService extends AbstractTaskIdGenerator {
   generateTaskID(items?: any, currentTask?: any) {
     let taskID = '';

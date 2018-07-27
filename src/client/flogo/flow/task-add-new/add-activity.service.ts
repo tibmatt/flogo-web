@@ -34,14 +34,9 @@ export class AddActivityService {
     });
   }
 
-  closePopover() {
-    if (this.popoverRef && this.popoverRef.hasAttached()) {
-      this.popoverRef.detach();
-    }
-    if (this.contentPortal && this.contentPortal.isAttached) {
-      this.contentPortal.detach();
-    }
-    this.store.dispatch(new FlowActions.ClearSelection());
+  closeAndClearSelection() {
+    this.closePopover();
+    this.store.dispatch((new FlowActions.ClearSelection()));
   }
 
   closeAndDestroy() {
@@ -81,13 +76,22 @@ export class AddActivityService {
     }
   }
 
+  private closePopover() {
+    if (this.popoverRef && this.popoverRef.hasAttached()) {
+      this.popoverRef.detach();
+    }
+    if (this.contentPortal && this.contentPortal.isAttached) {
+      this.contentPortal.detach();
+    }
+  }
+
   private selectedActivity(ref: string) {
     createTaskAddAction(
       this.store,
       {ref}
-    ).subscribe(action => {
-      // TODO dispatch the created action
+    ).subscribe((action: FlowActions.TaskItemCreated) => {
+      this.closePopover();
+      this.store.dispatch(action);
     });
-    this.closePopover();
   }
 }

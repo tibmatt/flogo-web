@@ -1,6 +1,6 @@
-import { FlogoMicroserviceTaskIdGeneratorService } from './microservices/utils.service';
-import { AbstractTaskIdGenerator } from './profiles.utils.service';
-import { FlogoDeviceTaskIdGeneratorService } from './devices/utils.service';
+import { FlogoMicroserviceTaskIdGeneratorService } from './microservices/utils';
+import { AbstractTaskIdGenerator } from './profile-utils';
+import { FlogoDeviceTaskIdGeneratorService } from './devices/utils';
 
 const mockTasksAvailable = {
   'RmxvZ286OlRyaWdnZXI6OjE1MDQ2Mjg3ODI1NzU': {

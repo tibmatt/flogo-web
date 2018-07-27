@@ -26,7 +26,7 @@ export class AddActivityDirective implements OnInit, OnDestroy {
       const currentInsertEl = this.el.nativeElement.querySelector(`.${SELECTED_INSERT_TILE_CLASS} .${BUTTON_INSERT_CLASS}`);
       if (!currentInsertEl || (clickTarget !== currentInsertEl && !currentInsertEl.contains(clickTarget)
         && clickTarget !== overlayHost && !overlayHost.contains(clickTarget))) {
-        this.addTaskService.closePopover();
+        this.addTaskService.closeAndClearSelection();
       }
     }
   }
