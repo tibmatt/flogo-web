@@ -103,6 +103,12 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
         isDebugPanelOpen: action.payload.isOpen
       };
     }
+    case ActionType.ActivityInstalled: {
+      return {
+        ...state,
+        schemas: {...state.schemas, [action.payload.ref]: action.payload}
+      };
+    }
   }
   return state;
 }

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo/core';
+import { Action as ActionSchema, ActivitySchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo/core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 
@@ -20,6 +20,7 @@ export enum ActionType {
   ExecutionStepsUpdate = '[Run Flow] Steps update',
   ErrorPanelStatusChange = '[Flow] Error panel status change',
   DebugPanelStatusChange = '[Flow][Debug panel] Debug panel status change',
+  ActivityInstalled = '[Flow] Activity installed'
 }
 
 interface BaseFlowAction extends Action {
@@ -110,6 +111,11 @@ export class DebugPanelStatusChange implements BaseFlowAction {
   constructor(public payload: { isOpen: boolean }) {}
 }
 
+export class ActivityInstalled implements BaseFlowAction {
+  readonly type = ActionType.ActivityInstalled;
+  constructor(public payload: ActivitySchema) {}
+}
+
 export type ActionsUnion =
   | Init
   | SelectCreateItem
@@ -126,4 +132,5 @@ export type ActionsUnion =
   | ExecutionStepsUpdated
   | ExecutionStateUpdated
   | ErrorPanelStatusChange
-  | DebugPanelStatusChange;
+  | DebugPanelStatusChange
+  | ActivityInstalled;

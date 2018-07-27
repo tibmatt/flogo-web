@@ -1,13 +1,14 @@
 import { Component, Inject, InjectionToken, OnInit} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {filterActivitiesBy} from './core/filter-activities-by';
-import {CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE} from '@flogo/core';
+import {ActivitySchema, CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;
   wizardState$: Subject<boolean>;
   appInfo$: Observable<AppInfo>;
   onSelect: (activityRef: string) => void;
+  installedActivity: (schema: ActivitySchema) => void;
 }
 
 export interface AppInfo {
@@ -57,8 +58,8 @@ export class TaskAddComponent implements OnInit {
     this.updateWizardStatus();
   }
 
-  afterActivityInstalled(schema) {
-    // TODO: Add the new schema to the flowstate.schemas
+  afterActivityInstalled(schema: ActivitySchema) {
+    this.options.installedActivity(schema);
   }
 
   private updateWizardStatus() {

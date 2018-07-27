@@ -10,6 +10,7 @@ import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
 import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
 import {createTaskAddAction} from '@flogo/flow/task-add-new/models/task-add-action-creator';
+import {ActivitySchema} from '@flogo/core';
 
 @Injectable()
 export class AddActivityService {
@@ -69,7 +70,8 @@ export class AddActivityService {
         activities$: this.installedActivities$,
         wizardState$: this.wizardState$,
         appInfo$: this.appInfo$,
-        onSelect: (ref: string) => this.selectedActivity(ref)
+        onSelect: (ref: string) => this.selectedActivity(ref),
+        installedActivity: ((schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)))
       };
       const customTokens = new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>();
       customTokens.set(TASKADD_OPTIONS, taskAddOptions);
