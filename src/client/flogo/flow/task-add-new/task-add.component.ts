@@ -1,14 +1,14 @@
 import { Component, Inject, InjectionToken, OnInit} from '@angular/core';
-import {Observable, ReplaySubject, Subject} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
 import {filterActivitiesBy} from './core/filter-activities-by';
 import {ActivitySchema, CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;
-  wizardState$: Subject<boolean>;
   appInfo$: Observable<AppInfo>;
-  onSelect: (activityRef: string) => void;
+  selectActivity: (activityRef: string) => void;
   installedActivity: (schema: ActivitySchema) => void;
+  updateActiveState: (isOpen: boolean) => void;
 }
 
 export interface AppInfo {
@@ -32,7 +32,6 @@ export class TaskAddComponent implements OnInit {
   filteredActivities$: Observable<Activity[]>;
   filterText$: ReplaySubject<string>;
   isInstallOpen = false;
-  private wizardOpen: boolean;
 
   constructor(@Inject(TASKADD_OPTIONS) private options: TaskAddOptions) {
     this.filterText$ = new ReplaySubject<string>(1);
@@ -49,20 +48,20 @@ export class TaskAddComponent implements OnInit {
 
   selectActivity(ref: string) {
     if (ref !== CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
-      this.options.onSelect(ref);
+      this.options.selectActivity(ref);
     }
   }
 
-  handleInstallerWizard(state: boolean) {
-    this.isInstallOpen = this.wizardOpen = state;
-    this.updateWizardStatus();
+  handleInstallerWindow(state: boolean) {
+    this.isInstallOpen = state;
+    this.updateWindowState();
   }
 
   afterActivityInstalled(schema: ActivitySchema) {
     this.options.installedActivity(schema);
   }
 
-  private updateWizardStatus() {
-    this.options.wizardState$.next(this.wizardOpen);
+  private updateWindowState() {
+    this.options.updateActiveState(this.isInstallOpen);
   }
 }

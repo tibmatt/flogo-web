@@ -15,12 +15,12 @@
     </ng-template>
   </div>
   <ul class="activity-list">
-    <li class="activity-list-item" (click)="handleInstallerWizard(true)">
+    <li class="activity-list-item" (click)="handleInstallerWindow(true)">
       {{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}
     </li>
   </ul>
 </div>
 <flogo-flow-installer
   [profileType]="(options.appInfo$ | async).appProfileType"
-  [installType]="'activity'" [isActivated]="wizardOpen" (isActivatedChange)="handleInstallerWizard($event)"
+  [installType]="'activity'" [isActivated]="isInstallOpen" (isActivatedChange)="handleInstallerWindow($event)"
   (installed)="afterActivityInstalled($event)"></flogo-flow-installer>

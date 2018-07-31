@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {Activity, AppInfo, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {distinctUntilChanged, filter, share, takeUntil} from 'rxjs/operators';
 import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
@@ -16,7 +16,6 @@ import {ActivitySchema} from '@flogo/core';
 export class AddActivityService {
 
   private keepPopoverActive: boolean;
-  private wizardState$ = new Subject<boolean>();
   private installedActivities$: Observable<Activity[]>;
   private appInfo$: Observable<AppInfo>;
   private destroy$: SingleEmissionSubject;
@@ -29,9 +28,6 @@ export class AddActivityService {
     this.destroy$ = SingleEmissionSubject.create();
     this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities);
     this.appInfo$ = this.store.select(FlowSelectors.selectAppInfo);
-    this.wizardState$.subscribe(wizardState => {
-      this.keepPopoverActive = wizardState;
-    });
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
       share(),
@@ -68,10 +64,10 @@ export class AddActivityService {
     if (!this.contentPortal) {
       const taskAddOptions: TaskAddOptions = {
         activities$: this.installedActivities$,
-        wizardState$: this.wizardState$,
         appInfo$: this.appInfo$,
-        onSelect: (ref: string) => this.selectedActivity(ref),
-        installedActivity: ((schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)))
+        selectActivity: (ref: string) => this.selectedActivity(ref),
+        installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
+        updateActiveState: (isOpen: boolean) => (this.keepPopoverActive = isOpen)
       };
       const customTokens = new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>();
       customTokens.set(TASKADD_OPTIONS, taskAddOptions);
