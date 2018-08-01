@@ -1,12 +1,12 @@
 import { Component, Inject, InjectionToken, OnInit} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {filterActivitiesBy} from './core/filter-activities-by';
-import {ActivitySchema, CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE} from '@flogo/core';
+import {ActionBase, ActivitySchema, CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE} from '@flogo/core';
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;
   appInfo$: Observable<AppInfo>;
-  selectActivity: (activityRef: string) => void;
+  selectActivity: (activityRef: string, selectedSubFlow?: ActionBase) => void;
   installedActivity: (schema: ActivitySchema) => void;
   updateActiveState: (isOpen: boolean) => void;
 }
@@ -14,6 +14,7 @@ export interface TaskAddOptions {
 export interface AppInfo {
   appId: string;
   appProfileType: FLOGO_PROFILE_TYPE;
+  actionId: string;
 }
 
 export interface Activity {
@@ -32,6 +33,7 @@ export class TaskAddComponent implements OnInit {
   filteredActivities$: Observable<Activity[]>;
   filterText$: ReplaySubject<string>;
   isInstallOpen = false;
+  isSubflowOpen = false;
 
   constructor(@Inject(TASKADD_OPTIONS) private options: TaskAddOptions) {
     this.filterText$ = new ReplaySubject<string>(1);
@@ -47,7 +49,9 @@ export class TaskAddComponent implements OnInit {
   }
 
   selectActivity(ref: string) {
-    if (ref !== CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
+    if (ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
+      this.setSubflowWindowState(true);
+    } else {
       this.options.selectActivity(ref);
     }
   }
@@ -57,11 +61,23 @@ export class TaskAddComponent implements OnInit {
     this.updateWindowState();
   }
 
+  handleFlowSelection(selectedFlow: ActionBase | string) {
+    if (selectedFlow !== 'dismiss') {
+      this.options.selectActivity(CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW, selectedFlow as ActionBase);
+    }
+    this.setSubflowWindowState(false);
+  }
+
   afterActivityInstalled(schema: ActivitySchema) {
     this.options.installedActivity(schema);
   }
 
   private updateWindowState() {
-    this.options.updateActiveState(this.isInstallOpen);
+    this.options.updateActiveState(this.isInstallOpen || this.isSubflowOpen);
+  }
+
+  private setSubflowWindowState(state: boolean) {
+    this.isSubflowOpen = state;
+    this.updateWindowState();
   }
 }

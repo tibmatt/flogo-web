@@ -20,7 +20,12 @@
     </li>
   </ul>
 </div>
-<flogo-flow-installer
-  [profileType]="(options.appInfo$ | async).appProfileType"
-  [installType]="'activity'" [isActivated]="isInstallOpen" (isActivatedChange)="handleInstallerWindow($event)"
-  (installed)="afterActivityInstalled($event)"></flogo-flow-installer>
+<flogo-flow-installer [profileType]="(options.appInfo$ | async).appProfileType"
+                      [installType]="'activity'"
+                      [isActivated]="isInstallOpen"
+                      (isActivatedChange)="handleInstallerWindow($event)"
+                      (installed)="afterActivityInstalled($event)"></flogo-flow-installer>
+<flogo-flow-sub-flow *ngIf="isSubflowOpen"
+                     [appId]="(options.appInfo$ | async).appId"
+                     [currentFlow]="(options.appInfo$ | async).actionId"
+                     (flowSelected)="handleFlowSelection($event)"></flogo-flow-sub-flow>

@@ -4,9 +4,10 @@ import {TaskAddComponent} from './task-add.component';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
-import {AddActivityService} from '@flogo/flow/task-add-new/add-activity.service';
+import {AddActivityService} from './add-activity.service';
 import {TranslateModule} from '@ngx-translate/core';
-import {InstallerModule} from '@flogo/flow/shared/installer';
+import {InstallerModule} from '../shared/installer';
+import {SubFlowModule} from '../sub-flow';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import {InstallerModule} from '@flogo/flow/shared/installer';
     OverlayModule,
     PortalModule,
     TranslateModule,
-    InstallerModule
+    InstallerModule,
+    SubFlowModule
   ],
   declarations: [
     AddActivityDirective,

@@ -10,7 +10,7 @@ import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
 import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
 import {createTaskAddAction} from '@flogo/flow/task-add-new/models/task-add-action-creator';
-import {ActivitySchema} from '@flogo/core';
+import {ActionBase, ActivitySchema} from '@flogo/core';
 
 @Injectable()
 export class AddActivityService {
@@ -27,7 +27,7 @@ export class AddActivityService {
   startSubscriptions() {
     this.destroy$ = SingleEmissionSubject.create();
     this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities);
-    this.appInfo$ = this.store.select(FlowSelectors.selectAppInfo);
+    this.appInfo$ = this.store.select(FlowSelectors.selectAppAndFlowInfo);
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
       share(),
@@ -65,7 +65,7 @@ export class AddActivityService {
       const taskAddOptions: TaskAddOptions = {
         activities$: this.installedActivities$,
         appInfo$: this.appInfo$,
-        selectActivity: (ref: string) => this.selectedActivity(ref),
+        selectActivity: (ref: string, selectedSubFlow?: ActionBase) => this.selectedActivity(ref, selectedSubFlow),
         installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
         updateActiveState: (isOpen: boolean) => (this.keepPopoverActive = isOpen)
       };
@@ -96,10 +96,10 @@ export class AddActivityService {
     }
   }
 
-  private selectedActivity(ref: string) {
+  private selectedActivity(ref: string, flowData?: ActionBase) {
     createTaskAddAction(
       this.store,
-      {ref}
+      {ref, flowData}
     ).subscribe((action: FlowActions.TaskItemCreated) => {
       this.closePopover();
       this.store.dispatch(action);

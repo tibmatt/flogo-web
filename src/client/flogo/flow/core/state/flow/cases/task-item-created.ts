@@ -10,7 +10,6 @@ export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCre
   const graphName = getGraphName(handlerType);
   const itemsDictionaryName = getItemsDictionaryName(handlerType);
   const itemsDictionary = state[itemsDictionaryName];
-  // const schemas = schema ? {...state.schemas, [schema.ref]: schema} : state.schemas;
   state = {
     ...state,
     currentSelection: makeTaskSelection(handlerType, node.id),

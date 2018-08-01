@@ -14,7 +14,7 @@ import {AbstractTaskIdGenerator} from '@flogo/core/models/profile/profile-utils'
 
 interface TaskAddData {
   ref: string;
-  subflowSchema?: any;
+  flowData?: any;
 }
 
 export function createTaskAddAction(
@@ -41,7 +41,14 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
   }
   let task;
   if (activityData.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
-    task = createSubFlowTask(schema);
+    const {flowData: {name, description, id: actionId}} = activityData;
+    task = {
+      ...createSubFlowTask(schema),
+      name,
+      description
+    };
+    task.settings = task.settings || {};
+    task.settings.flowPath = actionId;
   } else {
     task = activitySchemaToTask(schema);
   }
@@ -86,6 +93,6 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
     handlerType,
     item,
     node,
-    subflowSchema: activityData.subflowSchema
+    subflowSchema: activityData.flowData
   };
 }

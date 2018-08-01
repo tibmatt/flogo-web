@@ -128,6 +128,12 @@ export const selectAppInfo = createSelector(
   },
 );
 
+export const selectAppAndFlowInfo = createSelector(
+  selectAppInfo,
+  selectActionId,
+  (appInfo, actionId) => ({...appInfo, actionId})
+);
+
 export const getInstalledActivities = createSelector(
   selectSchemas,
   (schemas: Dictionary<ContribSchema>): Activity[] => Object.values(schemas)
