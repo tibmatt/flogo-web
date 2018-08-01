@@ -5,7 +5,7 @@ import {ActionBase, ActivitySchema, CONTRIB_REF_PLACEHOLDER, FLOGO_PROFILE_TYPE}
 
 export interface TaskAddOptions {
   activities$: Observable<Activity[]>;
-  appInfo$: Observable<AppInfo>;
+  appAndFlowInfo$: Observable<AppInfo>;
   selectActivity: (activityRef: string, selectedSubFlow?: ActionBase) => void;
   installedActivity: (schema: ActivitySchema) => void;
   updateActiveState: (isOpen: boolean) => void;

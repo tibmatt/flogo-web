@@ -17,7 +17,7 @@ export class AddActivityService {
 
   private keepPopoverActive: boolean;
   private installedActivities$: Observable<Activity[]>;
-  private appInfo$: Observable<AppInfo>;
+  private appAndFlowInfo$: Observable<AppInfo>;
   private destroy$: SingleEmissionSubject;
   private contentPortal: ComponentPortal<TaskAddComponent>;
   private popoverRef: OverlayRef;
@@ -27,7 +27,7 @@ export class AddActivityService {
   startSubscriptions() {
     this.destroy$ = SingleEmissionSubject.create();
     this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities);
-    this.appInfo$ = this.store.select(FlowSelectors.selectAppAndFlowInfo);
+    this.appAndFlowInfo$ = this.store.select(FlowSelectors.selectAppAndFlowInfo);
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
       share(),
@@ -64,7 +64,7 @@ export class AddActivityService {
     if (!this.contentPortal) {
       const taskAddOptions: TaskAddOptions = {
         activities$: this.installedActivities$,
-        appInfo$: this.appInfo$,
+        appAndFlowInfo$: this.appAndFlowInfo$,
         selectActivity: (ref: string, selectedSubFlow?: ActionBase) => this.selectedActivity(ref, selectedSubFlow),
         installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
         updateActiveState: (isOpen: boolean) => (this.keepPopoverActive = isOpen)
