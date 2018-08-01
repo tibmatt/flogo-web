@@ -35,7 +35,7 @@ export class TaskAddComponent implements OnInit {
   isInstallOpen = false;
   isSubflowOpen = false;
 
-  constructor(@Inject(TASKADD_OPTIONS) private options: TaskAddOptions) {
+  constructor(@Inject(TASKADD_OPTIONS) public options: TaskAddOptions) {
     this.filterText$ = new ReplaySubject<string>(1);
   }
 
