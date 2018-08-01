@@ -11,11 +11,10 @@ import { Router, ActivatedRoute, Params, NavigationEnd, NavigationCancel, Naviga
 
 export class FlogoAppComponent implements OnInit {
 
-  public isPageLoading: boolean;
+  public isPageLoading = true;
   public showNav = true;
 
   constructor(public router: Router, private activatedRoute: ActivatedRoute) {
-    this.isPageLoading = true;
   }
 
   public ngOnInit() {

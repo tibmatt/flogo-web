@@ -1,0 +1,17 @@
+<div [formGroup]="fieldGroup" *ngFor="let field of fieldGroup.controls; let i=index;">
+  <div [formGroupName]="i" [ngSwitch]="field.controlType">
+    <flogo-fb-textbox *ngSwitchCase="'FieldTextBox'" [fieldGroup]="field"
+                      [fieldControl]="field"></flogo-fb-textbox>
+    <flogo-fb-number *ngSwitchCase="'FieldNumber'" [fieldGroup]="field"
+                     [fieldControl]="field"></flogo-fb-number>
+    <flogo-fb-textarea *ngSwitchCase="'FieldTextArea'" [fieldGroup]="field"
+                       [fieldControl]="field"></flogo-fb-textarea>
+    <flogo-fb-radio *ngSwitchCase="'FieldRadio'" [fieldGroup]="field"
+                    [fieldControl]="field"></flogo-fb-radio>
+    <flogo-fb-object *ngSwitchCase="'FieldObject'" [fieldGroup]="field"
+                     [fieldControl]="field"></flogo-fb-object>
+    <flogo-fb-textbox *ngSwitchDefault [fieldGroup]="field"
+                      [fieldControl]="field"></flogo-fb-textbox>
+  </div>
+</div>
+

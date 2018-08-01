@@ -12,11 +12,12 @@ import {
   isNil,
   isNull,
   map,
+  mapValues,
   noop,
   reduce,
 } from 'lodash';
 import { tap, share, takeUntil, take, switchMap } from 'rxjs/operators';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   MetadataAttribute,
@@ -137,7 +138,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
 
 
-  public loading: boolean;
+  @HostBinding('hidden') loading: boolean;
   public hasTrigger: boolean;
   public currentTrigger: any;
   public app: any;
@@ -949,6 +950,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     });
 
     this.flowDetails.executionStatusChanged(allStatusChanges);
+    this.flowDetails.executionStepsUpdate(mapValues(runTasks, task => task.attrs));
 
     // when the flow is done on error, throw an error
     // the error is the response with `__status` provisioned.

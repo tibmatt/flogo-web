@@ -9,6 +9,7 @@ import { NumberComponent } from './number/number.component';
 import { TextareaComponent } from './textarea/textarea.component';
 import { RadioComponent } from './radio/radio.component';
 import { ObjectTypeComponent } from './object/objectType.component';
+import { DynamicFieldGroupComponent } from './dynamic-field-group.component';
 
 @NgModule({
   imports: [
@@ -21,14 +22,16 @@ import { ObjectTypeComponent } from './object/objectType.component';
     NumberComponent,
     TextareaComponent,
     RadioComponent,
-    ObjectTypeComponent
+    ObjectTypeComponent,
+    DynamicFieldGroupComponent,
   ],
   providers: [
     FormBuilderService,
     FormFieldService
   ],
   exports: [
-    FormBuilderComponent
+    FormBuilderComponent,
+    DynamicFieldGroupComponent,
   ]
 })
 export class FormBuilderModule {

@@ -7,13 +7,7 @@
   align-items: stretch;
   width: 100%;
   flex-grow: 2;
-  height: calc(100vh - 54px);
-
-  > div {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
-  }
+  height: calc(100vh - @size-height-nav-bar);
 }
 
 .footer-wrapper {
@@ -24,9 +18,7 @@
   display: flex;
   width: 77.5%;
   flex-direction: column;
-  //z-index: 1;
 
-  -webkit-transition: width .5s; /* Safari */
   transition: width .5s;
   background-position: -61px -53px;
   background-size: 260px 255px;
@@ -45,10 +37,11 @@
 
 .flogo-flow-container {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .flogo-flows-main {
+  max-height: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: row;

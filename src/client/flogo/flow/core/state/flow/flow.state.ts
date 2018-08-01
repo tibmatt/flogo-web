@@ -1,16 +1,18 @@
-import { Action, Dictionary, UiFlow } from '@flogo/core';
+import { Action, Dictionary, StepAttribute, UiFlow } from '@flogo/core';
 import * as fromRoot from '../../../../store';
 import { CurrentSelection } from '../../models/selection';
 import { Trigger, TriggerHandler, TriggerConfigureState } from '../../interfaces/index';
 
 export interface FlowState extends UiFlow {
   isErrorPanelOpen: boolean;
+  isDebugPanelOpen: boolean;
   currentSelection: null | CurrentSelection;
   triggers: Dictionary<Trigger>;
   handlers: Dictionary<TriggerHandler>;
   triggerConfigure: TriggerConfigureState;
   linkedSubflows: Dictionary<Action>;
   taskConfigure: string | null;
+  lastExecutionResult: { [taskId: string]: Dictionary<StepAttribute> };
 }
 
 export interface State extends fromRoot.State {
@@ -25,10 +27,12 @@ export const INITIAL_STATE: FlowState = {
   errorGraph: null,
   currentSelection: null,
   isErrorPanelOpen: false,
+  isDebugPanelOpen: false,
   schemas: {},
   handlers: {},
   triggers: {},
   linkedSubflows: {},
   triggerConfigure: null,
   taskConfigure: null,
+  lastExecutionResult: {},
 };

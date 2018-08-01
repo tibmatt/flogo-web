@@ -9,7 +9,6 @@ import { taskItemCreated } from './cases/task-item-created';
 import { removeItem } from './cases/remove-item';
 import { itemUpdate, nodeUpdate } from './cases/item-update';
 import { executionUpdate } from './cases/execution-update';
-import { subflowSchemaUpdate } from './cases/subflow-schema-update';
 import { commitTaskConfiguration } from '@flogo/flow/core/state/flow/cases/commit-task-configuration';
 
 const ActionType = actions.ActionType;
@@ -79,16 +78,29 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
         isErrorPanelOpen: false,
         mainGraph: cleanGraphRunState(state.mainGraph),
         errorGraph: cleanGraphRunState(state.errorGraph),
+        lastExecutionResult: {},
       };
     }
     case ActionType.ExecutionUpdated: {
       return executionUpdate(state, action.payload);
+    }
+    case ActionType.ExecutionStepsUpdate: {
+      return {
+        ...state,
+        lastExecutionResult: { ...state.lastExecutionResult, ...action.payload.steps },
+      };
     }
     case ActionType.ErrorPanelStatusChange: {
       return {
         ...state,
         isErrorPanelOpen: action.payload.isOpen,
         currentSelection : null
+      };
+    }
+    case ActionType.DebugPanelStatusChange: {
+      return {
+        ...state,
+        isDebugPanelOpen: action.payload.isOpen
       };
     }
   }

@@ -1,0 +1,100 @@
+@import (reference) '../../../assets/_variables';
+@import (reference) '../../../assets/_typography';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  .secondary-header();
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem 0.5rem;
+  border-bottom: 1px solid @twilight-blue;
+}
+
+.toggler {
+  display: block;
+  transform-origin: center center;
+  position: relative;
+  transform: rotate(270deg);
+  &::before {
+    padding: 5px;
+    display: block;
+    margin-right: 0;
+  }
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+}
+
+.empty-text {
+  padding: 0 1rem 1rem;
+  color: @color-plain;
+}
+
+.empty-text__title {
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.empty-text__detail {
+  font-size: 0.75em;
+}
+
+
+.activity {
+  display: flex;
+  flex-direction: row;
+}
+
+@info-width: 22%;
+@padding-width: 1em;
+@activity-icon-width: 2em;
+.activity__info-group {
+  width: @info-width;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  border-right: 1px solid @warm-grey;
+
+  padding: 0 1em 1em (@padding-width * 2 + @activity-icon-width);
+  background: url(/assets/svg/flogo.icon.gears.circle.svg) no-repeat @padding-width 0;
+  background-size: @activity-icon-width;
+
+}
+
+.activity__field-group {
+  width: (100% - @info-width) / 2;
+  padding: 1rem 1rem 1rem 2rem;
+}
+
+.activity__field-group + .activity__field-group {
+  padding-left: 1rem;
+}
+
+.activity__name {
+  font-weight: 600;
+  margin-bottom: 0.5em;
+}
+
+.activity__details {
+  font-size: 0.87em;
+}
+
+.activity__id {
+  opacity: 0.7;
+}
+
+.fields-title {
+  font-weight: 600;
+}
+
+.btn-run {
+  margin-top: 1rem;
+}

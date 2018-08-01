@@ -2,7 +2,8 @@ import { isEqual } from 'lodash';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, UiFlow } from '@flogo/core';
+import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute, UiFlow } from '@flogo/core';
+
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { getProfileType } from '@flogo/shared/utils';
 
@@ -40,10 +41,6 @@ export class FlogoFlowDetails {
       .pipe(distinctUntilChanged(isEqual));
   }
 
-  clearSelection() {
-    this.store.dispatch(new FlowActions.ClearSelection());
-  }
-
   registerNewItem(
     handlerType: HandlerType,
     itemDetails: { item: ItemTask, node: GraphNode, schema: ContribSchema, subflowSchema?: ActionSchema }
@@ -74,6 +71,8 @@ export class FlogoFlowDetails {
     this.store.dispatch(new FlowActions.ExecutionStateUpdated({ changes }));
   }
 
+  executionStepsUpdate(steps: Dictionary<Dictionary<StepAttribute>>) {
+    this.store.dispatch(new FlowActions.ExecutionStepsUpdated({ steps }));
+  }
+
 }
-
-
