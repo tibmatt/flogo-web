@@ -12,10 +12,9 @@ const filterList = (activities, filterText) => {
 };
 
 export function filterActivitiesBy(sourceList$: Observable<Activity[]>, filterText$: ReplaySubject<string>): Observable<Activity[]> {
-  const mapTo = map(([searchTerm, activityList]) => filterList(activityList, searchTerm));
   return filterText$.pipe(
     shareReplay(),
     withLatestFrom(sourceList$),
-    mapTo
+    map(([searchTerm, activityList]) => filterList(activityList, searchTerm))
   );
 }

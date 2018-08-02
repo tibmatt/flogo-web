@@ -15,7 +15,7 @@ export class TileInsertComponent implements OnChanges {
   @HostBinding('class.is-selected')
   @HostBinding(`class.${SELECTED_INSERT_TILE_CLASS}`)
   isSelected = false;
-  btnInsert = BUTTON_INSERT_CLASS;
+  btnInsertClass = BUTTON_INSERT_CLASS;
 
   ngOnChanges({ currentSelection: currentSelectionChange }: SimpleChanges) {
     if (currentSelectionChange) {

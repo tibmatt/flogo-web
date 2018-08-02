@@ -5,7 +5,7 @@ import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {Activity, AppInfo, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
 import {Observable} from 'rxjs';
-import {distinctUntilChanged, filter, share, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, filter, takeUntil} from 'rxjs/operators';
 import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
 import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
@@ -30,7 +30,6 @@ export class AddActivityService {
     this.appAndFlowInfo$ = this.store.select(FlowSelectors.selectAppAndFlowInfo);
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
-      share(),
       filter((currentSelection: CurrentSelection) => (currentSelection && currentSelection.type === SelectionType.InsertTask)),
       takeUntil(this.destroy$)
     ).subscribe(() => {
@@ -62,15 +61,7 @@ export class AddActivityService {
 
   private openAddActivityPanel() {
     if (!this.contentPortal) {
-      const taskAddOptions: TaskAddOptions = {
-        activities$: this.installedActivities$,
-        appAndFlowInfo$: this.appAndFlowInfo$,
-        selectActivity: (ref: string, selectedSubFlow?: ActionBase) => this.selectedActivity(ref, selectedSubFlow),
-        installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
-        updateActiveState: (isOpen: boolean) => (this.keepPopoverActive = isOpen)
-      };
-      const customTokens = new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>();
-      customTokens.set(TASKADD_OPTIONS, taskAddOptions);
+      const customTokens = this.createInjectorTokens();
       const injector = new PortalInjector(this.injector, customTokens);
       this.contentPortal = new ComponentPortal(TaskAddComponent, null, injector);
     }
@@ -85,6 +76,18 @@ export class AddActivityService {
     if (!this.popoverRef.hasAttached()) {
       this.popoverRef.attach(this.contentPortal);
     }
+  }
+
+  private createInjectorTokens(): WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions> {
+    const taskAddOptions: TaskAddOptions = {
+      activities$: this.installedActivities$,
+      appAndFlowInfo$: this.appAndFlowInfo$,
+      selectActivity: (ref: string, selectedSubFlow?: ActionBase) => this.selectedActivity(ref, selectedSubFlow),
+      installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
+      updateActiveState: (isOpen: boolean) => (this.keepPopoverActive = isOpen)
+    };
+    return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>()
+      .set(TASKADD_OPTIONS, taskAddOptions);
   }
 
   private closePopover() {

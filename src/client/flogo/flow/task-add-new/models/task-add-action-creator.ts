@@ -32,45 +32,11 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
   const handlerType = selection.handlerType === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
   const schema = flowState.schemas[activityData.ref];
   const profileType = getProfileType(flowState.app);
-  const generateTaskID = taskIdGenerator(profileType);
-  let task;
-  if (activityData.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
-    const {flowData: {name, description, id: actionId}} = activityData;
-    task = {
-      ...createSubFlowTask(schema),
-      name,
-      description
-    };
-    task.settings = task.settings || {};
-    task.settings.flowPath = actionId;
-  } else {
-    task = activitySchemaToTask(schema);
-  }
-  const taskName = uniqueTaskName(task.name, flowState.mainItems, flowState.errorItems);
-  task = <Task> assign({}, task, {
-    id: generateTaskID({...flowState.mainItems, ...flowState.errorItems}, task),
-    name: taskName
-  });
-  let item: ItemActivityTask | ItemSubflow = {
-    id: task.id,
-    type: task.type,
-    ref: task.ref,
-    name: taskName,
-    description: task.description,
-    inputMappings: task.inputMappings,
-    input: extractItemInputsFromTask(task),
-    settings: task.settings,
-  };
-  const isSubflow = isSubflowTask(item.type);
+  const {errorItems, mainItems} = flowState;
+  const task = createTask({profileType, activitySchema: schema, data: activityData, errorItems, mainItems});
   const isFinal = !!task.return;
-  if (isSubflow) {
-    item = {
-      ...item,
-      outputMappings: task.outputMappings,
-    } as ItemSubflow;
-  } else {
-    (<ItemActivityTask>item).return = task.return;
-  }
+  const isSubflow = isSubflowTask(task.type);
+  const item: ItemActivityTask | ItemSubflow = createItem(task, isSubflow);
   const node = makeNode({
     id: task.id,
     type: NodeType.Task,
@@ -89,4 +55,49 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
     node,
     subflowSchema: activityData.flowData
   };
+}
+
+function createTask({profileType, data, activitySchema, mainItems, errorItems}) {
+  const generateTaskID = taskIdGenerator(profileType);
+  let task;
+  if (data.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
+    const {flowData: {name, description, id: actionId}} = data;
+    task = {
+      ...createSubFlowTask(activitySchema),
+      name,
+      description
+    };
+    task.settings = task.settings || {};
+    task.settings.flowPath = actionId;
+  } else {
+    task = activitySchemaToTask(activitySchema);
+  }
+  const taskName = uniqueTaskName(task.name, mainItems, errorItems);
+  task = <Task> assign({}, task, {
+    id: generateTaskID({...mainItems, ...errorItems}, task),
+    name: taskName
+  });
+  return task;
+}
+
+function createItem(task, isSubflow) {
+  let item: ItemActivityTask | ItemSubflow = {
+    id: task.id,
+    type: task.type,
+    ref: task.ref,
+    name: task.name,
+    description: task.description,
+    inputMappings: task.inputMappings,
+    input: extractItemInputsFromTask(task),
+    settings: task.settings,
+  };
+  if (isSubflow) {
+    item = {
+      ...item,
+      outputMappings: task.outputMappings,
+    } as ItemSubflow;
+  } else {
+    (<ItemActivityTask>item).return = task.return;
+  }
+  return item;
 }

@@ -135,10 +135,11 @@ export class FlogoInstallerComponent implements OnChanges {
       console.groupEnd();
       return response;
     }).then(() => this.contributionsAPIs.getContributionDetails(this.profileType, url))
-      .then(contribDetails => this.installed.emit(contribDetails)).catch((err) => {
-      console.error(err);
-      self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
-      console.groupEnd();
-    });
+      .then(contribDetails => this.installed.emit(contribDetails))
+      .catch((err) => {
+        console.error(err);
+        self._status = FLOGO_INSTALLER_STATUS_INSTALL_FAILED;
+        console.groupEnd();
+      });
   }
 }
