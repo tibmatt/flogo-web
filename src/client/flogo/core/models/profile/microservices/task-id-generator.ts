@@ -1,13 +1,13 @@
-import { AbstractTaskIdGenerator } from '../profile-utils';
+import {calculateNextId} from '../calculate-next-id';
 
-export class FlogoMicroserviceTaskIdGeneratorService extends AbstractTaskIdGenerator {
-  generateTaskID(items?: any, currentTask?: any) {
+export function microserviceTaskIdGenerator() {
+  return (items?: any, currentTask?: any) => {
     let taskID = '';
     if (items) {
       if (currentTask) {
         taskID = currentTask.ref.split('/').pop() + '_';
       }
-      taskID += this.calculateNextId(items, (item) => {
+      taskID += calculateNextId(items, (item) => {
         return item.split('_').pop();
       });
 
@@ -18,5 +18,5 @@ export class FlogoMicroserviceTaskIdGeneratorService extends AbstractTaskIdGener
     }
 
     return taskID;
-  }
+  };
 }

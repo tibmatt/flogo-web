@@ -1,12 +1,12 @@
-import { AbstractTaskIdGenerator } from '../profile-utils';
+import {calculateNextId} from '../calculate-next-id';
 
-export class FlogoDeviceTaskIdGeneratorService extends AbstractTaskIdGenerator {
-  generateTaskID(items?: any) {
+export function deviceTaskIdGenerator() {
+  return (items?: any) => {
     let taskID: string;
     // TODO
     //  generate a more meaningful task ID in string format
     if (items) {
-      taskID = this.calculateNextId(items);
+      taskID = calculateNextId(items);
 
     } else {
       // shift the timestamp for avoiding overflow 32 bit system
@@ -15,5 +15,5 @@ export class FlogoDeviceTaskIdGeneratorService extends AbstractTaskIdGenerator {
     }
 
     return taskID;
-  }
+  };
 }
