@@ -31,7 +31,7 @@ function getPrecedingTasksForMainHandler(taskId: string, state: FlowState) {
 
 export function getPrecedingTasksForErrorHandler(itemId: string, state: FlowState) {
   const allItemsInMainHandler = mapItemIdsToTasks(
-    Object.keys(state.mainGraph),
+    Object.keys(state.mainGraph.nodes),
     { nodes: state.mainGraph.nodes, items: state.mainItems },
     state,
   );
