@@ -1,15 +1,16 @@
 import * as selectionFactory from '../../models/flow/selection';
-import { cleanGraphRunState } from '../../models/flow/clean-run-state';
+import {SelectionType} from '../../models/selection';
+import {cleanGraphRunState} from '../../models/flow/clean-run-state';
 
 import * as actions from './flow.actions';
-import { FlowState, INITIAL_STATE } from './flow.state';
+import {FlowState, INITIAL_STATE} from './flow.state';
 
-import { createBranch } from './cases/create-branch';
-import { taskItemCreated } from './cases/task-item-created';
-import { removeItem } from './cases/remove-item';
-import { itemUpdate, nodeUpdate } from './cases/item-update';
-import { executionUpdate } from './cases/execution-update';
-import { commitTaskConfiguration } from '@flogo/flow/core/state/flow/cases/commit-task-configuration';
+import {createBranch} from './cases/create-branch';
+import {taskItemCreated} from './cases/task-item-created';
+import {removeItem} from './cases/remove-item';
+import {itemUpdate, nodeUpdate} from './cases/item-update';
+import {executionUpdate} from './cases/execution-update';
+import {commitTaskConfiguration} from '@flogo/flow/core/state/flow/cases/commit-task-configuration';
 
 const ActionType = actions.ActionType;
 
@@ -108,6 +109,15 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
         ...state,
         schemas: {...state.schemas, [action.payload.ref]: action.payload}
       };
+    }
+    case ActionType.CancelCreateItem: {
+      const selection = state.currentSelection;
+      if (selection && selection.type === SelectionType.InsertTask) {
+        return {
+          ...state,
+          currentSelection: null
+        };
+      }
     }
   }
   return state;

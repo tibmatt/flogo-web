@@ -5,12 +5,14 @@ import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {Activity, AppInfo, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
 import {Observable} from 'rxjs';
-import {distinctUntilChanged, filter, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
 import {isEqual} from 'lodash';
 import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
 import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
 import {createTaskAddAction} from '@flogo/flow/task-add-new/models/task-add-action-creator';
 import {ActionBase, ActivitySchema} from '@flogo/core';
+
+const isAddSelection = (selection: CurrentSelection) => (selection && selection.type === SelectionType.InsertTask);
 
 @Injectable()
 export class AddActivityService {
@@ -30,22 +32,24 @@ export class AddActivityService {
     this.appAndFlowInfo$ = this.store.select(FlowSelectors.selectAppAndFlowInfo);
     this.store.select(FlowSelectors.selectCurrentSelection).pipe(
       distinctUntilChanged(isEqual),
-      filter((currentSelection: CurrentSelection) => (currentSelection && currentSelection.type === SelectionType.InsertTask)),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.openAddActivityPanel();
+      takeUntil(this.destroy$),
+      map((currentSelection: CurrentSelection) => isAddSelection(currentSelection) ? currentSelection : null)
+    ).subscribe((selection) => {
+      if (selection) {
+        this.openAddActivityPanel();
+      } else {
+        this.closePopover();
+      }
     });
   }
 
-  closeAndClearSelection() {
-    this.closePopover();
-    this.store.dispatch((new FlowActions.ClearSelection()));
+  cancelAddActivity() {
+    this.store.dispatch(new FlowActions.CancelCreateItem());
   }
 
   closeAndDestroy() {
     this.destroy$.emitAndComplete();
     if (this.popoverRef) {
-      this.closePopover();
       this.popoverRef.dispose();
       this.popoverRef = null;
     }
@@ -104,7 +108,6 @@ export class AddActivityService {
       this.store,
       {ref, flowData}
     ).subscribe((action: FlowActions.TaskItemCreated) => {
-      this.closePopover();
       this.store.dispatch(action);
     });
   }

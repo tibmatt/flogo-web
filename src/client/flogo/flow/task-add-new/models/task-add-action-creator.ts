@@ -58,7 +58,6 @@ function createNewTask(flowState: FlowState, activityData: TaskAddData): Payload
 }
 
 function createTask({profileType, data, activitySchema, mainItems, errorItems}) {
-  const generateTaskID = taskIdGenerator(profileType);
   let task;
   if (data.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
     const {flowData: {name, description, id: actionId}} = data;
@@ -74,7 +73,7 @@ function createTask({profileType, data, activitySchema, mainItems, errorItems}) 
   }
   const taskName = uniqueTaskName(task.name, mainItems, errorItems);
   task = <Task> assign({}, task, {
-    id: generateTaskID({...mainItems, ...errorItems}, task),
+    id: taskIdGenerator(profileType, {...mainItems, ...errorItems}, task),
     name: taskName
   });
   return task;

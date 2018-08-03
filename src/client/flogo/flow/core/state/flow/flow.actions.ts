@@ -6,6 +6,7 @@ import { FlowState } from './flow.state';
 export enum ActionType {
   Init = '[Flow] Init',
   SelectCreateItem = '[Flow] Select create task',
+  CancelCreateItem = '[Flow] Cancel create task',
   TaskItemCreated = '[Flow] Task created',
   ConfigureItem = '[Flow] Configure item',
   SelectItem = '[Flow] Select item',
@@ -116,6 +117,11 @@ export class ActivityInstalled implements BaseFlowAction {
   constructor(public payload: ActivitySchema) {}
 }
 
+export class CancelCreateItem implements BaseFlowAction {
+  readonly type = ActionType.CancelCreateItem;
+  constructor() {}
+}
+
 export type ActionsUnion =
   | Init
   | SelectCreateItem
@@ -133,4 +139,5 @@ export type ActionsUnion =
   | ExecutionStateUpdated
   | ErrorPanelStatusChange
   | DebugPanelStatusChange
-  | ActivityInstalled;
+  | ActivityInstalled
+  | CancelCreateItem;
