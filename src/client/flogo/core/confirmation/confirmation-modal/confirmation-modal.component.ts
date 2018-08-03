@@ -7,7 +7,7 @@ export const CONFIRMATION_MODAL_TOKEN = new InjectionToken('flogo/core/confirmat
 
 export interface ConfirmationModal {
   title?: string;
-  message?: string;
+  textMessage?: string;
 }
 
 @Component({
