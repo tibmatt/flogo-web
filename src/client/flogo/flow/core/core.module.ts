@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RunnerService } from './runner.service';
+import { RunOrchestratorService } from './test-runner/run-orchestrator.service';
 import { UIModelConverterService } from './ui-model-converter.service';
 import { FlogoFlowService } from './flow.service';
 
@@ -10,7 +10,7 @@ import { FlogoFlowService } from './flow.service';
   ],
   declarations: [],
   providers: [
-    RunnerService,
+    RunOrchestratorService,
     UIModelConverterService,
     FlogoFlowService
   ]
