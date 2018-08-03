@@ -34,7 +34,6 @@ import {
 } from '@flogo/core';
 import { TriggersApiService, OperationalError } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
-import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
 import {
@@ -83,6 +82,8 @@ import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { Trigger } from './core';
 import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
+import {ConfirmationResult} from '@flogo/core';
+import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -154,7 +155,7 @@ export class FlowComponent implements OnInit, OnDestroy {
               private _restAPIAppsService: AppsApiService,
               private _runnerService: RunnerService,
               private _router: Router,
-              private _flogoModal: FlogoModal,
+              private standardModalService: ConfirmationModalService,
               private profileService: FlogoProfileService,
               private _route: ActivatedRoute) {
     this._isDiagramEdited = false;
@@ -273,11 +274,12 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   deleteFlow() {
     this.closeFlowMenu();
-    this.translate.get('FLOWS:CONFIRM_DELETE', { flowName: this.flowState.name })
-      .toPromise()
-      .then(deleteMessage => this._flogoModal.confirmDelete(deleteMessage))
-      .then((res) => {
-        if (res) {
+    const textMessage = this.translate.instant('FLOWS:CONFIRM_DELETE', { flowName: this.flowState.name });
+    const title = this.translate.instant('MODAL:CONFIRM-DELETION');
+    this.standardModalService.openModal({title, textMessage})
+      .result
+      .subscribe(result => {
+        if (result === ConfirmationResult.Confirm)  {
           const appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flowState.app.id);
           appPromise
             .then((app) => {
@@ -638,16 +640,18 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (!task) {
       return;
     }
-    this._flogoModal.confirmDelete('Are you sure you want to delete this task?')
-      .then((confirmed) => {
-        if (!confirmed) {
+    const textMessage = this.translate.instant('MODAL:MESSAGE');
+    const title = this.translate.instant('MODAL:CONFIRM-DELETION');
+    this.standardModalService.openModal({title, textMessage})
+      .result
+      .subscribe(result => {
+        if (!result) {
           return;
         }
-        this._isDiagramEdited = true;
-        this.flowDetails.removeItem(handlerType, taskId);
-      })
-      .catch((err) => {
-        console.error(err);
+        if (result === ConfirmationResult.Confirm) {
+          this._isDiagramEdited = true;
+          this.flowDetails.removeItem(handlerType, taskId);
+        }
       });
   }
 

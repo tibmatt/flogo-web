@@ -173,6 +173,7 @@
   "MODAL:NEXT": "Next",
   "MODAL:OKAY": "Okay",
   "MODAL:INSTALL": "Install",
+  "MODAL:MESSAGE": "Are you sure you want to delete this task?",
   "NAVBAR:HELP": "Help",
   "NAVBAR:HELP-DOCUMENTATION": "Documentation",
   "NAVBAR:HELP-OPEN-INSTRUCTIONS": "Walkthrough: Creating a Flow",
