@@ -34,7 +34,7 @@ export class AddActivityDirective implements OnInit, OnChanges, OnDestroy {
       } else {
         setTimeout(() => {
           this.addTaskService.open(this.el.nativeElement, currentSelection.taskId);
-        }, 0);
+        }, 300);
       }
     }
   }
