@@ -155,7 +155,7 @@ export class FlowComponent implements OnInit, OnDestroy {
               private _restAPIAppsService: AppsApiService,
               private _runnerService: RunnerService,
               private _router: Router,
-              private standardModalService: ConfirmationModalService,
+              private confirmationModalService: ConfirmationModalService,
               private profileService: FlogoProfileService,
               private _route: ActivatedRoute) {
     this._isDiagramEdited = false;
@@ -274,30 +274,33 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   deleteFlow() {
     this.closeFlowMenu();
-    const textMessage = this.translate.instant('FLOWS:CONFIRM_DELETE', { flowName: this.flowState.name });
-    const title = this.translate.instant('MODAL:CONFIRM-DELETION');
-    this.standardModalService.openModal({title, textMessage})
-      .result
-      .subscribe(result => {
-        if (result === ConfirmationResult.Confirm)  {
-          const appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flowState.app.id);
-          appPromise
-            .then((app) => {
-              const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
-              return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
-            })
-            .then(() => {
-              this.navigateToApp();
-            })
-            .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED').toPromise())
-            .then(message => notification(message, 'success', 3000))
-            .catch(err => {
-              console.error(err);
-              this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err)
-                .subscribe(message =>  notification(message, 'error'));
-            });
-        }
-      });
+    this.translate.get(['FLOWS:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], {flowName: this.flowState.name}).pipe(
+      switchMap(translation => {
+        return this.confirmationModalService.openModal({
+          title: translation['MODAL:CONFIRM-DELETION'],
+          textMessage: translation['FLOWS:CONFIRM_DELETE']
+        }).result;
+      })
+    ).subscribe(result => {
+      if (result === ConfirmationResult.Confirm) {
+        const appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flowState.app.id);
+        appPromise
+          .then((app) => {
+            const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
+            return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
+          })
+          .then(() => {
+            this.navigateToApp();
+          })
+          .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED').toPromise())
+          .then(message => notification(message, 'success', 3000))
+          .catch(err => {
+            console.error(err);
+            this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err)
+              .subscribe(message => notification(message, 'error'));
+          });
+      }
+    });
   }
 
   onDeleteTask(taskDetails) {
@@ -640,19 +643,22 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (!task) {
       return;
     }
-    const textMessage = this.translate.instant('MODAL:MESSAGE');
-    const title = this.translate.instant('MODAL:CONFIRM-DELETION');
-    this.standardModalService.openModal({title, textMessage})
-      .result
-      .subscribe(result => {
-        if (!result) {
-          return;
-        }
-        if (result === ConfirmationResult.Confirm) {
-          this._isDiagramEdited = true;
-          this.flowDetails.removeItem(handlerType, taskId);
-        }
-      });
+    this.translate.get(['FLOW:CONFIRM-TASK-DELETE', 'MODAL:CONFIRM-DELETION']).pipe(
+      switchMap(translation => {
+        return this.confirmationModalService.openModal({
+          title: translation['MODAL:CONFIRM-DELETION'],
+          textMessage: translation['FLOW:CONFIRM-TASK-DELETE']
+        }).result;
+      })
+    ).subscribe(result => {
+      if (!result) {
+        return;
+      }
+      if (result === ConfirmationResult.Confirm) {
+        this._isDiagramEdited = true;
+        this.flowDetails.removeItem(handlerType, taskId);
+      }
+    });
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
