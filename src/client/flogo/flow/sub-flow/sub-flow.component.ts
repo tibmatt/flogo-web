@@ -40,7 +40,7 @@ export class SubFlowComponent implements AfterViewInit, OnInit {
   }
 
   closeModal() {
-    this.onModalCloseOrDismiss();
+    this.modal.close();
   }
 
   selectedFlow(flow: ActionBase) {

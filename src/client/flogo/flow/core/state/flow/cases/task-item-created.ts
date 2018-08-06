@@ -6,11 +6,10 @@ import { addNewNode } from '../../../models/flow/add-new-node';
 import { makeTaskSelection } from '../../../models/flow/selection';
 
 export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCreated>): FlowState {
-  const {handlerType, schema, item, node} = payload;
+  const {handlerType, item, node} = payload;
   const graphName = getGraphName(handlerType);
   const itemsDictionaryName = getItemsDictionaryName(handlerType);
   const itemsDictionary = state[itemsDictionaryName];
-  const schemas = schema ? {...state.schemas, [schema.ref]: schema} : state.schemas;
   state = {
     ...state,
     currentSelection: makeTaskSelection(handlerType, node.id),
@@ -19,7 +18,6 @@ export function taskItemCreated(state: FlowState, payload: PayloadOf<TaskItemCre
       ...itemsDictionary,
       [item.id]: {...item}
     },
-    schemas,
   };
   state = registerSubflowSchema(state, payload.subflowSchema);
   return state;

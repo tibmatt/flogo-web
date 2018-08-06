@@ -25,10 +25,8 @@ import {
   LanguageService,
   ItemTask,
   Item,
-  ItemSubflow,
   Dictionary,
   GraphNode,
-  ItemActivityTask,
   NodeType,
   FlowGraph
 } from '@flogo/core';
@@ -50,11 +48,6 @@ import {
 import { FlowData } from './core';
 
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
-
-import {
-  PUB_EVENTS as FLOGO_ADD_TASKS_SUB_EVENTS,
-  SUB_EVENTS as FLOGO_ADD_TASKS_PUB_EVENTS
-} from './task-add/messages';
 import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from './task-detail/messages';
 import {
   PUB_EVENTS as FLOGO_TASK_SUB_EVENTS,
@@ -68,17 +61,14 @@ import {
   FLOGO_TASK_TYPE
 } from '../core/constants';
 import {
-  isMapperActivity,
-  isSubflowTask,
-  notification,
+  getProfileType, isMapperActivity, isSubflowTask, notification,
 } from '@flogo/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
-import { mergeItemWithSchema, extractItemInputsFromTask } from '@flogo/core/models';
-import { HandlerType, CurrentSelection, InsertTaskSelection, SelectionType } from './core/models';
+import { mergeItemWithSchema } from '@flogo/core/models';
+import { HandlerType, CurrentSelection, SelectionType } from './core/models';
 import { FlowState } from './core/state';
-import { makeNode } from './core/models/graph-and-items/graph-creator';
 import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { Trigger } from './core';
@@ -100,8 +90,6 @@ interface TaskContext {
   currentTrigger: any;
   profileType: FLOGO_PROFILE_TYPE;
 }
-
-const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.type);
 
 @Component({
   selector: 'flogo-flow',
@@ -208,7 +196,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
 
     const subs = [
-      assign({}, FLOGO_ADD_TASKS_SUB_EVENTS.addTask, { callback: this._addTaskFromTasks.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
@@ -234,7 +221,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     } else if (selection.type === SelectionType.Task) {
       this._selectTaskFromDiagram(selection.taskId);
     } else if (selection.type === SelectionType.InsertTask) {
-      this._addTaskFromDiagram(selection.parentId);
+      this._navigateFromModuleRoot();
+      // this._addTaskFromDiagram(selection.parentId);
     }
   }
 
@@ -319,8 +307,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   private initFlowData(flowData: FlowData) {
     this.flowName = flowData.flow.name;
     this.triggersList = flowData.triggers;
-    this.profileService.initializeProfile(flowData.flow.app);
-    this.profileType = this.profileService.currentApplicationProfile;
+    this.profileType = getProfileType(flowData.flow.app);
   }
 
   private _getCurrentState(taskID: string) {
@@ -445,80 +432,6 @@ export class FlowComponent implements OnInit, OnDestroy {
         notification(message, 'error');
         return Promise.reject(err);
       });
-  }
-
-  private _addTaskFromDiagram(parentId: string) {
-    this._navigateFromModuleRoot(['task', 'add'])
-      .then(
-        () => {
-          this._postService.publish({
-            ...FLOGO_ADD_TASKS_PUB_EVENTS.addTask,
-            data: {
-              parentId
-            }
-          });
-        });
-  }
-
-  private _addTaskFromTasks(data: any, envelope: any) {
-    const currentState = this.flowState;
-    const selection = currentState.currentSelection as InsertTaskSelection;
-    const isAddingToRoot = selection && !selection.parentId;
-    let diagramId: string;
-    if (isAddingToRoot) {
-      diagramId = selection.handlerType;
-    } else {
-      diagramId = this.getDiagramId(data.parentId);
-    }
-
-    let task = data.task;
-    const taskName = this.uniqueTaskName(data.task.name);
-    // generate task id when adding the task
-    task = <Task> assign({},
-      task,
-      {
-        id: this.profileService.generateTaskID(this._getAllTasks(), task),
-        name: taskName
-      });
-
-    let item: ItemActivityTask | ItemSubflow = {
-      id: task.id,
-      type: task.type,
-      ref: task.ref,
-      name: taskName,
-      description: task.description,
-      inputMappings: task.inputMappings,
-      input: extractItemInputsFromTask(task),
-      settings: task.settings,
-    };
-    const isSubflow = isSubflowItem(item);
-    if (isSubflow) {
-      item = {
-        ...item,
-        outputMappings: task.outputMappings,
-      } as ItemSubflow;
-    } else {
-      (<ItemActivityTask>item).return = task.return;
-    }
-    const schema = task.__schema;
-    const isFinal = !!task.return;
-    const node = makeNode({
-      id: task.id,
-      type: NodeType.Task,
-      title: task.name,
-      description: task.description,
-      parents: [selection.parentId],
-      features: {
-        subflow: isSubflow,
-        final: isFinal,
-        canHaveChildren: !isFinal
-      }
-    });
-
-    this.flowDetails.registerNewItem(
-      this.handlerTypeFromString(diagramId),
-      { item, node, schema, subflowSchema: data.subflowSchema },
-    );
   }
 
   private getTriggerCurrentFlow(app, flowId) {

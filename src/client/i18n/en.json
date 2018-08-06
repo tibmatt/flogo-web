@@ -4,6 +4,7 @@
   "ADD:CREATE":"Create",
   "ADD:CREATE-NEW-FLOW":"Create New",
   "ADD:FILTER-TASKS":"Filter tasks",
+  "ADD:NO-TASKS":"No activities to select",
   "ADD:FLOW-DESCRIPTION":"Description",
   "ADD:FLOW-NAME":"Name",
   "ADD:FLOW-NAME-EXISTS":"Flow with same name exists, please choose another name.",

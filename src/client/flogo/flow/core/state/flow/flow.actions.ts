@@ -1,11 +1,12 @@
 import { Action } from '@ngrx/store';
-import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo/core';
+import { Action as ActionSchema, ActivitySchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute } from '@flogo/core';
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
 
 export enum ActionType {
   Init = '[Flow] Init',
   SelectCreateItem = '[Flow] Select create task',
+  CancelCreateItem = '[Flow] Cancel create task',
   TaskItemCreated = '[Flow] Task created',
   ConfigureItem = '[Flow] Configure item',
   SelectItem = '[Flow] Select item',
@@ -20,6 +21,7 @@ export enum ActionType {
   ExecutionStepsUpdate = '[Run Flow] Steps update',
   ErrorPanelStatusChange = '[Flow] Error panel status change',
   DebugPanelStatusChange = '[Flow][Debug panel] Debug panel status change',
+  ActivityInstalled = '[Flow] Activity installed'
 }
 
 interface BaseFlowAction extends Action {
@@ -57,7 +59,6 @@ export class TaskItemCreated implements BaseFlowAction {
     handlerType: HandlerType,
     item: ItemTask,
     node: GraphNode,
-    schema: ContribSchema,
     subflowSchema?: ActionSchema
   }) {}
 }
@@ -111,6 +112,16 @@ export class DebugPanelStatusChange implements BaseFlowAction {
   constructor(public payload: { isOpen: boolean }) {}
 }
 
+export class ActivityInstalled implements BaseFlowAction {
+  readonly type = ActionType.ActivityInstalled;
+  constructor(public payload: ActivitySchema) {}
+}
+
+export class CancelCreateItem implements BaseFlowAction {
+  readonly type = ActionType.CancelCreateItem;
+  constructor() {}
+}
+
 export type ActionsUnion =
   | Init
   | SelectCreateItem
@@ -127,4 +138,6 @@ export type ActionsUnion =
   | ExecutionStepsUpdated
   | ExecutionStateUpdated
   | ErrorPanelStatusChange
-  | DebugPanelStatusChange;
+  | DebugPanelStatusChange
+  | ActivityInstalled
+  | CancelCreateItem;
