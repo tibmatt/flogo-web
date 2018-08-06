@@ -112,7 +112,7 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     }
     case ActionType.CancelCreateItem: {
       const selection = state.currentSelection;
-      if (selection && selection.type === SelectionType.InsertTask) {
+      if (selection && selection.type === SelectionType.InsertTask && selection.parentId === action.payload.parentId) {
         return {
           ...state,
           currentSelection: null
