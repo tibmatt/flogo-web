@@ -1,8 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { TriggerStatus } from '../interfaces';
-import { ConfirmationControl } from './confirmation-control';
+import { ConfirmationControl, ConfirmationContent } from '@flogo/core';
 import { TRIGGER_STATUS_TOKEN } from './status.token';
-import { ConfirmationContent } from './confirmation-content';
 
 @Component({
   selector: 'flogo-triggers-configuration-settings-confirmation',

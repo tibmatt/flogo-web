@@ -1,5 +1,5 @@
 import { Component, Inject, InjectionToken } from '@angular/core';
-import { ConfirmationContent, ConfirmationControl } from '../../../confirmation/index';
+import { ConfirmationContent, ConfirmationControl } from '@flogo/core';
 
 export const EDITION_DATA_TOKEN = new InjectionToken('flogo/triggers/configurator/confirm-settings-edition');
 

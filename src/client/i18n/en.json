@@ -138,6 +138,7 @@
   "FLOW-RUN:INPUTS-LABEL": "Run flow with the following inputs:",
   "FLOW-RUN:RUN-BUTTON": "Run Flow",
   "FLOW-RUN:CANCEL-BUTTON": "Cancel",
+  "FLOW:CONFIRM-TASK-DELETE": "Are you sure you want to delete this task?",
   "FORM-BUILDER-CONFIGURATION-BRANCH:IF": "If condition",
   "FORM-BUILDER-CONFIGURATION-TASK:INPUT":"Input",
   "FORM-BUILDER-CONFIGURATION-TASK:OUTPUT":"Output",

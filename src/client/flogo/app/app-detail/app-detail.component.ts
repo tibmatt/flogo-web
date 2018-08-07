@@ -1,9 +1,10 @@
 import { sortBy, snakeCase, clone } from 'lodash';
 
-import { Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter } from '@angular/core';
+import {
+  Component, Input, Output, SimpleChanges, OnChanges, OnInit, ViewChild, EventEmitter,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import {LanguageService, FlowSummary, Trigger, ERROR_CODE, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
-import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { SanitizeService } from '@flogo/core/services/sanitize.service';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
@@ -15,6 +16,9 @@ import { FlogoExportFlowsComponent } from '../export-flows/export-flows.componen
 import { TriggerShimBuildComponent } from '../shim-trigger/shim-trigger.component';
 import { diffDates, notification } from '../../shared/utils';
 import {ShimTriggerBuildApiService} from '@flogo/core/services/restapi/v2/shim-trigger-build-api.service';
+import {ConfirmationResult} from '@flogo/core/confirmation';
+import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
+import {switchMap} from 'rxjs/operators';
 
 const MAX_SECONDS_TO_ASK_APP_NAME = 5;
 
@@ -72,7 +76,7 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   constructor(public translate: LanguageService,
               private appDetailService: AppDetailService,
-              public flogoModal: FlogoModal,
+              private confirmationModalService: ConfirmationModalService,
               private sanitizer: SanitizeService,
               private contributionService: RESTAPIContributionsService,
               private shimtriggersApiService: ShimTriggerBuildApiService
@@ -233,9 +237,15 @@ export class FlogoApplicationDetailComponent implements OnChanges, OnInit {
 
   onDeleteApp(application) {
     this.closeDetailsMenu();
-    const message = this.translate.instant('APP-DETAIL:CONFIRM_DELETE', { appName: application.name });
-    this.flogoModal.confirmDelete(message).then((res) => {
-      if (res) {
+    this.translate.get(['APP-DETAIL:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], {appName: application.name}).pipe(
+      switchMap(translation => {
+        return this.confirmationModalService.openModal({
+          title: translation['MODAL:CONFIRM-DELETION'],
+          textMessage: translation['APP-DETAIL:CONFIRM_DELETE']
+        }).result;
+      })
+    ).subscribe(result => {
+      if (result === ConfirmationResult.Confirm) {
         this.appDetailService.deleteApp();
       }
     });

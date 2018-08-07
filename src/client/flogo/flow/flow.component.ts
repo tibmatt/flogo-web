@@ -32,7 +32,6 @@ import {
 } from '@flogo/core';
 import { TriggersApiService, OperationalError } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
-import { FlogoModal } from '@flogo/core/services/modal.service';
 import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
 import {
@@ -73,6 +72,8 @@ import { isBranchExecuted } from './core/models/flow/branch-execution-status';
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { Trigger } from './core';
 import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
+import {ConfirmationResult} from '@flogo/core';
+import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -142,7 +143,7 @@ export class FlowComponent implements OnInit, OnDestroy {
               private _restAPIAppsService: AppsApiService,
               private _runnerService: RunnerService,
               private _router: Router,
-              private _flogoModal: FlogoModal,
+              private confirmationModalService: ConfirmationModalService,
               private profileService: FlogoProfileService,
               private _route: ActivatedRoute) {
     this._isDiagramEdited = false;
@@ -261,29 +262,33 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   deleteFlow() {
     this.closeFlowMenu();
-    this.translate.get('FLOWS:CONFIRM_DELETE', { flowName: this.flowState.name })
-      .toPromise()
-      .then(deleteMessage => this._flogoModal.confirmDelete(deleteMessage))
-      .then((res) => {
-        if (res) {
-          const appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flowState.app.id);
-          appPromise
-            .then((app) => {
-              const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
-              return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
-            })
-            .then(() => {
-              this.navigateToApp();
-            })
-            .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED').toPromise())
-            .then(message => notification(message, 'success', 3000))
-            .catch(err => {
-              console.error(err);
-              this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err)
-                .subscribe(message =>  notification(message, 'error'));
-            });
-        }
-      });
+    this.translate.get(['FLOWS:CONFIRM_DELETE', 'MODAL:CONFIRM-DELETION'], {flowName: this.flowState.name}).pipe(
+      switchMap(translation => {
+        return this.confirmationModalService.openModal({
+          title: translation['MODAL:CONFIRM-DELETION'],
+          textMessage: translation['FLOWS:CONFIRM_DELETE']
+        }).result;
+      })
+    ).subscribe(result => {
+      if (result === ConfirmationResult.Confirm) {
+        const appPromise = (this.app) ? Promise.resolve(this.app) : this._restAPIAppsService.getApp(this.flowState.app.id);
+        appPromise
+          .then((app) => {
+            const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
+            return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
+          })
+          .then(() => {
+            this.navigateToApp();
+          })
+          .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED').toPromise())
+          .then(message => notification(message, 'success', 3000))
+          .catch(err => {
+            console.error(err);
+            this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err)
+              .subscribe(message => notification(message, 'error'));
+          });
+      }
+    });
   }
 
   onDeleteTask(taskDetails) {
@@ -551,17 +556,22 @@ export class FlowComponent implements OnInit, OnDestroy {
     if (!task) {
       return;
     }
-    this._flogoModal.confirmDelete('Are you sure you want to delete this task?')
-      .then((confirmed) => {
-        if (!confirmed) {
-          return;
-        }
+    this.translate.get(['FLOW:CONFIRM-TASK-DELETE', 'MODAL:CONFIRM-DELETION']).pipe(
+      switchMap(translation => {
+        return this.confirmationModalService.openModal({
+          title: translation['MODAL:CONFIRM-DELETION'],
+          textMessage: translation['FLOW:CONFIRM-TASK-DELETE']
+        }).result;
+      })
+    ).subscribe(result => {
+      if (!result) {
+        return;
+      }
+      if (result === ConfirmationResult.Confirm) {
         this._isDiagramEdited = true;
         this.flowDetails.removeItem(handlerType, taskId);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      }
+    });
   }
 
   private _taskDetailsChanged(data: any, envelope: any) {
