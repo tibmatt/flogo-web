@@ -2,6 +2,7 @@ import {Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit
 import {AddActivityService} from './add-activity.service';
 import {DiagramSelection, DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
 import {isEqual} from 'lodash';
+import {BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo/core';
 
 @Directive({
   selector: '[fgAddActivity]'
@@ -32,8 +33,13 @@ export class AddActivityDirective implements OnInit, OnChanges, OnDestroy {
           this.addTaskService.close();
         }, 0);
       } else {
+        /***
+         * We are opening the popover with a time delay of 300 ms to let the "add branch" animation to end
+         * and allow the popover to get attached to the Insert tile created after an animation.
+         */
         setTimeout(() => {
-          this.addTaskService.open(this.el.nativeElement, currentSelection.taskId);
+          const selectedInsertTile = this.el.nativeElement.querySelector(`.${SELECTED_INSERT_TILE_CLASS} .${BUTTON_INSERT_CLASS}`);
+          this.addTaskService.open(selectedInsertTile, currentSelection.taskId);
         }, 300);
       }
     }

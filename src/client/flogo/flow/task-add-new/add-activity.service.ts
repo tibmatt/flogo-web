@@ -5,9 +5,8 @@ import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {Activity, AppInfo, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
 import {Observable} from 'rxjs';
-import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
-import {createTaskAddAction} from '@flogo/flow/task-add-new/models/task-add-action-creator';
-import {ActionBase, ActivitySchema, BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo/core';
+import {createTaskAddAction} from './models/task-add-action-creator';
+import {ActionBase, ActivitySchema} from '@flogo/core';
 
 @Injectable()
 export class AddActivityService {
@@ -41,7 +40,7 @@ export class AddActivityService {
   open(attachTo: HTMLElement, parentId: string) {
     this.parentId = parentId;
     const positionStrategy = this.overlay.position()
-      .flexibleConnectedTo(<HTMLElement>attachTo.querySelector(`.${SELECTED_INSERT_TILE_CLASS} .${BUTTON_INSERT_CLASS}`))
+      .flexibleConnectedTo(attachTo)
       .withPositions(
         [
           { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
