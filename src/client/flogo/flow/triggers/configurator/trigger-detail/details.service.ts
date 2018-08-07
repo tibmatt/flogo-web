@@ -57,8 +57,8 @@ export class ConfigureDetailsService {
       return null;
     }
     return this.mapperControllerFactory.createController(
-      flowMetadata && flowMetadata.output ? flowMetadata.output : [],
       triggerSchema.reply || [],
+      flowMetadata && flowMetadata.output ? flowMetadata.output : [],
       output,
     );
   }
