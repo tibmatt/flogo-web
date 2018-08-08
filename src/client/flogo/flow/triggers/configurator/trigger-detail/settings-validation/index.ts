@@ -42,6 +42,9 @@ function getComposedExpressionOrTypeValidator(strictTypeValidator: (value: any) 
     if (!settingValue) {
       return null;
     }
+    if (!settingValue.viewValue) {
+      return null;
+    }
     return isResolverExpression(settingValue.parsedValue) ?
       validateExpression(settingValue)
       : strictTypeValidator(settingValue.parsedValue);

@@ -1,4 +1,4 @@
-import { isBoolean, isPlainObject, isArray, isNumber } from 'lodash';
+import { isNaN as isNotaNumber, isBoolean, isPlainObject, isArray, isNumber } from 'lodash';
 import { ValueType } from '@flogo/core';
 import { ValidationErrors } from '@angular/forms';
 import { ErrorTypeMismatch, ErrorTypes } from './error-types';
@@ -26,7 +26,7 @@ function makeMismatchError(expectedType: ValueType): { [type: string]: ErrorType
 }
 
 export function getNumberValidator(expectedType: ValueType) {
-  return value => !isNumber(value) ? makeMismatchError(expectedType) : null;
+  return value => isNotaNumber(value) || !isNumber(value) ? makeMismatchError(expectedType) : null;
 }
 
 export function booleanValidator(value: any) {
