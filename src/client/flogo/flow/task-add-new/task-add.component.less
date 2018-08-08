@@ -1,12 +1,24 @@
 @import (reference) '../../../assets/uxpl/dropdown';
+@import (reference) '../../../assets/_typography';
 @import '../../../assets/_variables';
 
 :host {
   .uxpl-dropdown-container();
+  display: flex;
+  flex-direction: column;
   position: relative;
-  padding: 10px 10px 0;
   width: 250px;
-  height: 300px;
+  height: 285px;
+}
+
+.main {
+  padding: 10px 10px 0;
+  border-bottom: 1px solid @color-medium-gray;
+}
+
+.title {
+  .secondary-header();
+  margin: 0 0 10px;
 }
 
 .search {
@@ -18,7 +30,7 @@
 }
 
 .scrollable-content {
-  height: 240px;
+  height: 170px;
   overflow-y: auto;
 }
 
@@ -35,4 +47,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.install {
+  background: @lighter-gray;
+}
+
+.install-activity {
+  .uxpl-dropdown__item();
+  padding-left: 26px;
+  padding-right: 26px;
 }

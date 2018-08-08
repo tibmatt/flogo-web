@@ -5,80 +5,71 @@ import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {Activity, AppInfo, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
 import {Observable} from 'rxjs';
-import {distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
-import {isEqual} from 'lodash';
-import {SingleEmissionSubject} from '@flogo/flow/shared/mapper/shared/single-emission-subject';
-import {CurrentSelection, SelectionType} from '@flogo/flow/core/models';
-import {createTaskAddAction} from '@flogo/flow/task-add-new/models/task-add-action-creator';
+import {createTaskAddAction} from './models/task-add-action-creator';
 import {ActionBase, ActivitySchema} from '@flogo/core';
-
-const isAddSelection = (selection: CurrentSelection) => (selection && selection.type === SelectionType.InsertTask);
 
 @Injectable()
 export class AddActivityService {
 
-  private keepPopoverActive: boolean;
+  shouldKeepPopoverActive: boolean;
+  popoverReference: OverlayRef;
+
   private installedActivities$: Observable<Activity[]>;
   private appAndFlowInfo$: Observable<AppInfo>;
-  private destroy$: SingleEmissionSubject;
   private contentPortal: ComponentPortal<TaskAddComponent>;
-  private popoverRef: OverlayRef;
+  private parentId: string;
 
   constructor(private store: Store<FlowState>, private injector: Injector, private overlay: Overlay) {}
 
   startSubscriptions() {
-    this.destroy$ = SingleEmissionSubject.create();
     this.installedActivities$ = this.store.select(FlowSelectors.getInstalledActivities);
     this.appAndFlowInfo$ = this.store.select(FlowSelectors.selectAppAndFlowInfo);
-    this.store.select(FlowSelectors.selectCurrentSelection).pipe(
-      distinctUntilChanged(isEqual),
-      takeUntil(this.destroy$),
-      map((currentSelection: CurrentSelection) => isAddSelection(currentSelection) ? currentSelection : null)
-    ).subscribe((selection) => {
-      if (selection) {
-        this.openAddActivityPanel();
-      } else {
-        this.closePopover();
-      }
-    });
   }
 
-  cancelAddActivity() {
-    this.store.dispatch(new FlowActions.CancelCreateItem());
+  cancel() {
+    this.store.dispatch(new FlowActions.CancelCreateItem({parentId: this.parentId}));
   }
 
   closeAndDestroy() {
-    this.destroy$.emitAndComplete();
-    if (this.popoverRef) {
-      this.popoverRef.dispose();
-      this.popoverRef = null;
+    if (this.popoverReference) {
+      this.popoverReference.dispose();
+      this.popoverReference = null;
     }
   }
 
-  get popoverReference(): OverlayRef {
-    return this.popoverRef;
-  }
-
-  get shouldKeepActive(): boolean {
-    return this.keepPopoverActive;
-  }
-
-  private openAddActivityPanel() {
+  open(attachTo: HTMLElement, parentId: string) {
+    this.parentId = parentId;
+    const positionStrategy = this.overlay.position()
+      .flexibleConnectedTo(attachTo)
+      .withPositions(
+        [
+          { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
+          { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
+          { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
+          { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' }
+        ]
+      );
     if (!this.contentPortal) {
       const customTokens = this.createInjectorTokens();
       const injector = new PortalInjector(this.injector, customTokens);
       this.contentPortal = new ComponentPortal(TaskAddComponent, null, injector);
     }
-    if (!this.popoverRef) {
-      this.popoverRef = this.overlay.create({
-        positionStrategy: this.overlay.position()
-          .global()
-          .centerHorizontally()
-          .centerVertically()
-      });
+    if (!this.popoverReference) {
+      this.popoverReference = this.overlay.create();
     }
-    if (!this.popoverRef.hasAttached()) {
-      this.popoverRef.attach(this.contentPortal);
+    if (!this.popoverReference.hasAttached()) {
+      this.popoverReference.attach(this.contentPortal);
+    }
+    positionStrategy.attach(this.popoverReference);
+    positionStrategy.apply();
+  }
+
+  close() {
+    if (this.popoverReference && this.popoverReference.hasAttached()) {
+      this.popoverReference.detach();
+    }
+    if (this.contentPortal && this.contentPortal.isAttached) {
+      this.contentPortal.detach();
     }
   }
 
@@ -88,19 +79,10 @@ export class AddActivityService {
       appAndFlowInfo$: this.appAndFlowInfo$,
       selectActivity: (ref: string, selectedSubFlow?: ActionBase) => this.selectedActivity(ref, selectedSubFlow),
       installedActivity: (schema: ActivitySchema) => this.store.dispatch(new FlowActions.ActivityInstalled(schema)),
-      updateActiveState: (isOpen: boolean) => (this.keepPopoverActive = isOpen)
+      updateActiveState: (isOpen: boolean) => (this.shouldKeepPopoverActive = isOpen)
     };
     return new WeakMap<InjectionToken<TaskAddOptions>, TaskAddOptions>()
       .set(TASKADD_OPTIONS, taskAddOptions);
-  }
-
-  private closePopover() {
-    if (this.popoverRef && this.popoverRef.hasAttached()) {
-      this.popoverRef.detach();
-    }
-    if (this.contentPortal && this.contentPortal.isAttached) {
-      this.contentPortal.detach();
-    }
   }
 
   private selectedActivity(ref: string, flowData?: ActionBase) {

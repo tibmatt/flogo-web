@@ -119,7 +119,7 @@ export class ActivityInstalled implements BaseFlowAction {
 
 export class CancelCreateItem implements BaseFlowAction {
   readonly type = ActionType.CancelCreateItem;
-  constructor() {}
+  constructor(public payload: {parentId: string}) {}
 }
 
 export type ActionsUnion =
