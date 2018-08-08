@@ -4,6 +4,8 @@ import {DiagramSelection, DiagramSelectionType} from '@flogo/packages/diagram/in
 import {isEqual} from 'lodash';
 import {BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo/core';
 
+const BRANCH_ANIMATION_DURATION = 300;
+
 @Directive({
   selector: '[fgAddActivity]'
 })
@@ -33,14 +35,10 @@ export class AddActivityDirective implements OnInit, OnChanges, OnDestroy {
           this.addTaskService.close();
         }, 0);
       } else {
-        /***
-         * We are opening the popover with a time delay of 300 ms to let the "add branch" animation to end
-         * and allow the popover to get attached to the Insert tile created after an animation.
-         */
         setTimeout(() => {
           const selectedInsertTile = this.el.nativeElement.querySelector(`.${SELECTED_INSERT_TILE_CLASS} .${BUTTON_INSERT_CLASS}`);
           this.addTaskService.open(selectedInsertTile, currentSelection.taskId);
-        }, 300);
+        }, BRANCH_ANIMATION_DURATION);
       }
     }
   }
