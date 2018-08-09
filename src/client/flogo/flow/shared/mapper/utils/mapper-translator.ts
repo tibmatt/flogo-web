@@ -34,6 +34,7 @@ export class MapperTranslator {
       switch (tile.type) {
         case FLOGO_TASK_TYPE.TASK:
         case FLOGO_TASK_TYPE.TASK_SUB_PROC:
+        case FLOGO_TASK_TYPE.TASK_ROOT:
           MapperTranslator.addTileToOutputContext(rootSchema, tile, includeEmptySchemas);
           break;
         case 'metadata':
