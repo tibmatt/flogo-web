@@ -1,26 +1,33 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {FlogoFlowsDetailTasksComponent} from '@flogo/flow/task-add/task-add.component';
-import {CoreModule as FlogoCoreModule} from '@flogo/core';
-import {SharedModule as FlogoSharedModule} from '@flogo/shared';
-import {InstallModule as ActivityInsatallModule} from './install';
-import {CoreModule as FlowCoreModule} from '@flogo/flow/core';
-import {SubFlowModule} from '@flogo/flow/sub-flow/sub-flow.module';
+import {NgModule} from '@angular/core';
+import {AddActivityDirective} from './add-activity.directive';
+import {TaskAddComponent} from './task-add.component';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {PortalModule} from '@angular/cdk/portal';
+import {CommonModule} from '@angular/common';
+import {AddActivityService} from './add-activity.service';
+import {TranslateModule} from '@ngx-translate/core';
+import {InstallerModule} from '../shared/installer';
+import {SubFlowModule} from '../sub-flow';
 
 @NgModule({
   imports: [
     CommonModule,
-    FlogoCoreModule,
-    FlogoSharedModule,
-    FlowCoreModule,
-    SubFlowModule,
-    ActivityInsatallModule
+    OverlayModule,
+    PortalModule,
+    TranslateModule,
+    InstallerModule,
+    SubFlowModule
   ],
   declarations: [
-    FlogoFlowsDetailTasksComponent
+    AddActivityDirective,
+    TaskAddComponent
+  ],
+  providers: [AddActivityService],
+  entryComponents: [
+    TaskAddComponent
   ],
   exports: [
-    FlogoFlowsDetailTasksComponent
+    AddActivityDirective
   ]
 })
-export class TaskAddModule { }
+export class TaskAddModule {}
