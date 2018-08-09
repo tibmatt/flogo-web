@@ -1,12 +1,15 @@
-import {ConfigureDetailsService} from './details.service';
-import {SettingsFormBuilder} from './settings-form-builder';
-import {CurrentTriggerState} from '../interfaces';
-import {ConfigureTriggerSchema, ConfigureTriggersMock} from '../mocks/triggers.mock';
-import Spy = jasmine.Spy;
+import { ValueType } from '@flogo/core';
+import { MapperControllerFactory } from '@flogo/flow/shared/mapper';
+import { CurrentTriggerState } from '../interfaces';
+import { ConfigureTriggerSchema, ConfigureTriggersMock } from '../mocks/triggers.mock';
+import { ConfigureDetailsService } from './details.service';
+import { SettingsFormBuilder } from './settings-form-builder';
+import SpyObj = jasmine.SpyObj;
 
 describe('Serive: ConfigureDetailsService', function(this: {
   testService: ConfigureDetailsService,
-  settingsFormBuilder: SettingsFormBuilder
+  settingsFormBuilder: SpyObj<SettingsFormBuilder>,
+  mapperControllerFactory: SpyObj<MapperControllerFactory>,
 }) {
   const MockData: CurrentTriggerState = {
     appId: 'test_app',
@@ -16,28 +19,46 @@ describe('Serive: ConfigureDetailsService', function(this: {
     fields: {
       settings: []
     },
-    flowMetadata: null
+    flowMetadata: {
+      input: [],
+      output: [
+        {
+          name: 'myOutput',
+          type: ValueType.Any,
+          value: null,
+        }
+      ]
+    }
   };
 
   beforeEach(() => {
     this.settingsFormBuilder = jasmine.createSpyObj<SettingsFormBuilder>('settingsFormBuilder', [
       'build'
     ]);
-    const mapperController = jasmine.createSpyObj('mapperControllerFactory', [
+    this.mapperControllerFactory = jasmine.createSpyObj('mapperControllerFactory', [
       'createController'
     ]);
-    const nameAsynValidator = jasmine.createSpyObj('triggerNameValidatorService', [
+    const nameAsyncValidator = jasmine.createSpyObj('triggerNameValidatorService', [
       'create'
     ]);
-    this.testService = new ConfigureDetailsService(this.settingsFormBuilder, mapperController, nameAsynValidator);
+    this.testService = new ConfigureDetailsService(this.settingsFormBuilder, this.mapperControllerFactory, nameAsyncValidator);
   });
 
   it('Should disable the common settings when the trigger has multiple handlers', () => {
-    const spying = <Spy>this.settingsFormBuilder.build;
-    spying.and.callFake(function() {
+    this.settingsFormBuilder.build.and.callFake(function() {
       expect(arguments[2]).toEqual(true);
     });
     this.testService.build(MockData);
-    expect(spying).toHaveBeenCalled();
+    expect(this.settingsFormBuilder.build).toHaveBeenCalled();
+  });
+
+  it('Should create a reply mapper with the correct arguments', () => {
+    this.mapperControllerFactory.createController.and.callFake((...args) => args);
+    this.testService.build(MockData);
+    expect(this.mapperControllerFactory.createController.calls.mostRecent().args).toEqual([
+      MockData.schema.reply,
+      MockData.flowMetadata.output,
+      MockData.handler.actionMappings.output,
+    ]);
   });
 });

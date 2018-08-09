@@ -1,5 +1,7 @@
 import { animate, animateChild, group, keyframes, query, sequence, state, style, transition, trigger } from '@angular/animations';
 
+const INITIAL_TRIGGER_POSITION = 'translate(-18px, 94px)';
+
 export const configuratorAnimations = [
   trigger('configurationPanel', [
     transition('void => *', [
@@ -24,7 +26,7 @@ export const configuratorAnimations = [
             width: '46px',
             marginBottom: '11px',
             opacity: 0,
-            transform: 'translate(-18px, 104px)',
+            transform: INITIAL_TRIGGER_POSITION,
           }),
           group([
             sequence([
@@ -51,7 +53,7 @@ export const configuratorAnimations = [
           style('*'),
           sequence([
             animate('200ms 50ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({
-              transform: 'translate(-18px, 104px)',
+              transform: INITIAL_TRIGGER_POSITION,
               width: '46px',
               marginBottom: '11px',
             })),
