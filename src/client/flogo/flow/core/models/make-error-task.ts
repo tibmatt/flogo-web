@@ -3,7 +3,7 @@ import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '../../../core
 
 export function makeErrorTask(): Task {
   return {
-    id: 'error',
+    id: '',
     name: 'On Error',
     // title: 'On Error',
     type: FLOGO_TASK_TYPE.TASK_ROOT,
