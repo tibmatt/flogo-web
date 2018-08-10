@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -16,6 +16,8 @@ import { ConfigureDetailsService } from './details.service';
 import { ConfiguratorService } from '../services/configurator.service';
 
 type MapperSubscriberFn = (controller: MapperController, groupType: TriggerConfigureTabType) => void;
+
+const isFieldValid = (form: FormGroup, controlName: string) => !form.contains(controlName) || form.get(controlName).valid;
 
 @Component({
   selector: 'flogo-flow-triggers-configurator-detail',
@@ -94,9 +96,10 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
         this.settingsForm.reset(this.settingsForm.getRawValue());
         this.updateSettingsStatus({
-          isValid: this.settingsForm.valid,
+          // TODO: replace manual valid check when async validation bug is fixed in ng forms -> github.com/angular/angular/issues/20424
+          isValid: isFieldValid(this.settingsForm, 'triggerSettings') && isFieldValid(this.settingsForm, 'handlerSettings'),
           isDirty: this.settingsForm.dirty,
-          isPending: this.settingsForm.pending,
+          isPending: false,
         });
 
         if (this.flowInputMapperController) {
@@ -132,10 +135,9 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
     }
     this.settingsForm = settings;
     this.settingsTriggerInformation = triggerInformation;
-    const isFieldValid = (controlName: string) => !this.settingsForm.contains(controlName) || this.settingsForm.get(controlName).valid;
     this.updateSettingsStatus({
       // TODO: replace manual valid check when async validation bug is fixed in ng forms -> https://github.com/angular/angular/issues/20424
-      isValid: isFieldValid('triggerSettings') && isFieldValid('handlerSettings'),
+      isValid: isFieldValid(this.settingsForm, 'triggerSettings') && isFieldValid(this.settingsForm, 'handlerSettings'),
       isDirty: this.settingsForm.dirty,
       isPending: false,
     });
