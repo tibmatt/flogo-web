@@ -12,6 +12,11 @@ export enum FLOGO_CONTRIB_TYPE {
   ACTIVITY = 'activity'
 }
 
+export enum FLOGO_CONTRIB_TYPE_VALUES {
+  MICRO_SERVICE_ACTIVITY = 'flogo:activity',
+  DEVICE_ACTIVITY = 'flogo:device:activity'
+}
+
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
   TASK = 1,

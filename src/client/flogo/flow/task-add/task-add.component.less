@@ -1,43 +1,60 @@
+@import (reference) '../../../assets/uxpl/dropdown';
+@import (reference) '../../../assets/_typography';
 @import '../../../assets/_variables';
 
-.filter-box {
-  margin: 19px 21px;
+:host {
+  .uxpl-dropdown-container();
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 250px;
+  height: 285px;
 }
 
-.filter-box__input {
+.main {
+  padding: 10px 10px 0;
+  border-bottom: 1px solid @color-medium-gray;
+}
+
+.title {
+  .secondary-header();
+  margin: 0 0 10px;
+}
+
+.search {
+  text-align: center;
+}
+
+.search-input {
   width: 100%;
 }
 
-.flogo-flows-detail-activities{
-  .flogo-common-edit-panel__container{
-    padding: 0;
-  }
+.scrollable-content {
+  height: 170px;
+  overflow-y: auto;
 }
 
-.flogo-common-edit-panel__head {
-  background-color: @color-primary;
-  color: @color-bg;
-  display: flex;
-  display: -webkit-flex;
-  flex-direction: column;
-  justify-content: space-around;
-  .flogo-common-edit-panel__head-title{
-    float: left;
-    width: 50%;
-  }
-  .flogo-common-edit-panel__head-subtitle{
-    float: left;
-  }
+.empty-text {
+  margin: 1em;
 }
 
-.flogo-common-edit-panel__head-wrapper{
-  .flogo-icon-add {
-    border: solid 1.3px @color-bg;
-    border-radius: 50%;
-    float: left;
-    margin-right: 10px;
-    padding: 10px;
-    position: relative;
-    top: 7px;
-  }
+.activity-list {
+  .uxpl-dropdown();
+}
+
+.activity-list-item {
+  .uxpl-dropdown__item();
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.install {
+  background: @lighter-gray;
+}
+
+.install-activity {
+  .uxpl-dropdown__item();
+  padding-left: 26px;
+  padding-right: 26px;
 }

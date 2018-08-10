@@ -3,7 +3,8 @@ import {FlowActions, FlowSelectors, FlowState} from '@flogo/flow/core/state';
 import {Store} from '@ngrx/store';
 import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
-import {Activity, AppInfo, TaskAddComponent, TASKADD_OPTIONS, TaskAddOptions} from './task-add.component';
+import {TaskAddComponent, TASKADD_OPTIONS} from './task-add.component';
+import {Activity, TaskAddOptions} from './core/task-add-options';
 import {Observable} from 'rxjs';
 import {createTaskAddAction} from './models/task-add-action-creator';
 import {ActionBase, ActivitySchema} from '@flogo/core';
@@ -15,7 +16,7 @@ export class AddActivityService {
   popoverReference: OverlayRef;
 
   private installedActivities$: Observable<Activity[]>;
-  private appAndFlowInfo$: Observable<AppInfo>;
+  private appAndFlowInfo$: TaskAddOptions['appAndFlowInfo$'];
   private contentPortal: ComponentPortal<TaskAddComponent>;
   private parentId: string;
 

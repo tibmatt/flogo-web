@@ -1,5 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {TASKADD_OPTIONS, TaskAddComponent, TaskAddOptions} from './task-add.component';
+import {TASKADD_OPTIONS, TaskAddComponent} from './task-add.component';
 import {TaskAddModule} from './task-add.module';
 import {FakeRootLanguageModule} from '@flogo/core/language/testing';
 import {of} from 'rxjs';
@@ -7,6 +7,7 @@ import {FLOGO_PROFILE_TYPE} from '@flogo/core';
 import {By} from '@angular/platform-browser';
 import {FlogoFlowService} from '@flogo/flow/core';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
+import {TaskAddOptions} from './core/task-add-options';
 
 describe('Component: TaskAddComponent', () => {
   let component: TaskAddComponent;

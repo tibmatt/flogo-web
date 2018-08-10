@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
-import { ContribSchema, Dictionary, Item, ItemActivityTask } from '@flogo/core';
+import {ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask} from '@flogo/core';
 
 import { HandlerType } from '../../models/handler-type';
 import { FlowState } from './flow.state';
@@ -7,7 +7,7 @@ import { getGraphName, getItemsDictionaryName } from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
 import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models/selection';
 import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
-import {Activity} from '@flogo/flow/task-add-new/task-add.component';
+import {Activity} from '@flogo/flow/task-add';
 import {getProfileType} from '@flogo/shared/utils';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
@@ -137,7 +137,8 @@ export const selectAppAndFlowInfo = createSelector(
 export const getInstalledActivities = createSelector(
   selectSchemas,
   (schemas: Dictionary<ContribSchema>): Activity[] => Object.values(schemas)
-  .filter(schema => schema.type === 'flogo:activity' || schema.type === 'flogo:device:activity')
+  .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.DEVICE_ACTIVITY
+    || schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_ACTIVITY)
   .map(schema => ({
     title: schema.title,
     ref: schema.ref

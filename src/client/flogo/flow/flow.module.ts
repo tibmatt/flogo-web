@@ -14,7 +14,6 @@ import { CoreModule as FlowCoreModule } from './core';
 
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
-import {TaskAddModule as FlogoFlowTaskAddModule} from './task-add';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
 import { ParamsSchemaModule } from './params-schema';
 
@@ -26,7 +25,7 @@ import { featureReducer } from './core/state';
 import { FlogoFlowDiagramComponent } from './flow-diagram/flow-diagram.component';
 import { FlowTabsComponent } from './flow-tabs/flow-tabs.component';
 import { DebugPanelComponent, DebugPanelDetailComponent } from './debug-panel';
-import {TaskAddModule} from '@flogo/flow/task-add-new/task-add.module';
+import {TaskAddModule} from './task-add';
 
 @NgModule({
   imports: [
@@ -43,7 +42,6 @@ import {TaskAddModule} from '@flogo/flow/task-add-new/task-add.module';
     FlogoCommonFormBuilderModule,
     FlogoFlowTriggersModule,
     FlogoFlowTaskDetailModule,
-    FlogoFlowTaskAddModule,
     FlowRoutingModule,
     TaskAddModule
   ],

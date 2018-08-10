@@ -1,165 +1,65 @@
-import { Component, OnDestroy } from '@angular/core';
-import { PostService } from '@flogo/core/services/post.service';
-import { SUB_EVENTS, PUB_EVENTS } from './messages';
+import { Component, Inject, InjectionToken, OnInit} from '@angular/core';
+import {Observable, ReplaySubject} from 'rxjs';
+import {filterActivitiesBy} from './core/filter-activities-by';
+import {ActionBase, ActivitySchema, CONTRIB_REF_PLACEHOLDER} from '@flogo/core';
+import {Activity, TaskAddOptions} from './core/task-add-options';
 
-import {FlogoProfileService} from '@flogo/core/services/profile.service';
-import {FlogoFlowService} from '@flogo/flow/core';
-import {isSubflowTask} from '@flogo/shared/utils';
+export const TASKADD_OPTIONS = new InjectionToken<TaskAddOptions>('flogo-flow-task-add');
 
-@Component(
-  {
-    selector : 'flogo-flow-task-add',
-    templateUrl : 'task-add.component.html',
-    styleUrls : [ 'task-add.component.less' ]
-  }
-)
-export class FlogoFlowsDetailTasksComponent implements OnDestroy {
-  public filteredTasks: any[] = [];
-  private _filterQuery: string = null;
+@Component({
+  templateUrl: 'task-add.component.html',
+  styleUrls: ['task-add.component.less']
+})
+export class TaskAddComponent implements OnInit {
 
-  public tasks: any[] = [];
+  filteredActivities$: Observable<Activity[]>;
+  filterText$: ReplaySubject<string>;
+  isInstallOpen = false;
+  isSubflowOpen = false;
 
-  private _subscriptions: any;
-  private _addTaskMsg: any;
-  private subFlowTask: any;
-  public showFlowsList = false;
-
-  constructor(public flowService: FlogoFlowService,
-          private _postService: PostService,
-          private _profileService: FlogoProfileService ) {
-    console.group( 'Constructing FlogoFlowsDetailTasksComponent' );
-
-    this.initSubscribe();
-
-    console.groupEnd();
+  constructor(@Inject(TASKADD_OPTIONS) public options: TaskAddOptions) {
+    this.filterText$ = new ReplaySubject<string>(1);
   }
 
-  ngOnDestroy() {
-    this._subscriptions.forEach(
-      ( sub: any ) => {
-        this._postService.unsubscribe( sub );
-      }
-    );
+  ngOnInit() {
+    this.filteredActivities$ = filterActivitiesBy(this.options.activities$, this.filterText$);
+    this.filterText$.next('');
   }
 
-  public get appId() {
-    return this.flowService.currentFlowDetails.associatedToAppId;
+  filterActivities(term: string) {
+    this.filterText$.next(term);
   }
 
-  public get currentFlowId() {
-    return this.flowService.currentFlowDetails.id;
-  }
-
-  public get profileType() {
-    return this.flowService.currentFlowDetails.applicationProfileType;
-  }
-
-  public get filterQuery() {
-    return this._filterQuery;
-  }
-
-  public set filterQuery(query: string) {
-    this._filterQuery = query;
-    this._filterActivities();
-  }
-
-  public sendAddTaskMsg( task: any, subflowSchema?: any ) {
-
-    this._postService.publish(
-      _.assign(
-        {}, PUB_EVENTS.addTask, {
-          // TODO for the moment, the taskId can only be number, so timestamp is used.
-          data : _.assign(
-            {}, this._addTaskMsg, {
-              task : _.assign( {}, task ),
-              subflowSchema,
-            }
-          )
-        }
-      )
-    );
-  }
-
-  private initSubscribe() {
-    this._subscriptions = [];
-
-    const subs = [
-      _.assign( {}, SUB_EVENTS.addTask, { callback : this._getAddTaskMsg.bind( this ) } ),
-      _.assign( {}, SUB_EVENTS.installActivity, { callback : this._loadActivities.bind( this ) } ),
-    ];
-
-    _.each(
-      subs, sub => {
-        this._subscriptions.push( this._postService.subscribe( sub ) );
-      }
-    );
-  }
-
-  private _loadActivities(profileType) {
-    console.log('Loading activities');
-
-    this._profileService.getActivities(profileType)
-      .then(
-        ( tasks: any ) => {
-          this.tasks = tasks;
-          this._filterActivities();
-        }
-      )
-      .catch(
-        ( err: any ) => {
-          console.error( err );
-        }
-      );
-  }
-
-
-  private _getAddTaskMsg( data: any, envelope: any ) {
-    console.group( 'Add task message in tasks' );
-
-    console.log( data );
-    console.log( envelope );
-
-
-    this._addTaskMsg = data;
-    this._loadActivities(this.flowService.currentFlowDetails.applicationProfileType);
-
-    console.groupEnd();
-  }
-
-  private _filterActivities() {
-    if (this.filterQuery) {
-      const filterQuery = this.filterQuery.toLowerCase();
-      this.filteredTasks = _.filter(this.tasks, task => task.name.toLowerCase().indexOf(filterQuery) >= 0);
+  selectActivity(ref: string) {
+    if (ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
+      this.setSubflowWindowState(true);
     } else {
-      this.filteredTasks = this.tasks;
+      this.options.selectActivity(ref);
     }
   }
 
-  public onInstalledAction( response: any ) {
-    console.group( `[FlogoFlowsDetailTasks] onInstalled` );
-    console.log( response );
-    console.groupEnd();
-    this._loadActivities(this.flowService.currentFlowDetails.applicationProfileType);
+  handleInstallerWindow(state: boolean) {
+    this.isInstallOpen = state;
+    this.updateWindowState();
   }
 
-  public manageAddTaskMsg(task: any) {
-    if (isSubflowTask(task.type)) {
-      this.showFlowsList = true;
-      this.subFlowTask = task;
-    } else {
-      this.sendAddTaskMsg(task);
+  handleFlowSelection(selectedFlow: ActionBase | string) {
+    if (selectedFlow !== 'dismiss') {
+      this.options.selectActivity(CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW, selectedFlow as ActionBase);
     }
+    this.setSubflowWindowState(false);
   }
 
-  public handleFlowSelection(selectedFlow: any) {
-    this.showFlowsList = false;
-    if (selectedFlow !== 'dismiss' && _.isObjectLike(selectedFlow) && _.isObjectLike(this.subFlowTask)) {
-      this.subFlowTask.name = selectedFlow.name;
-      this.subFlowTask.description = selectedFlow.description;
-      this.subFlowTask.settings = this.subFlowTask.settings || {};
-      this.subFlowTask.settings.flowPath = selectedFlow.id;
-      this.sendAddTaskMsg(this.subFlowTask, selectedFlow);
-    }
+  afterActivityInstalled(schema: ActivitySchema) {
+    this.options.installedActivity(schema);
   }
 
+  private updateWindowState() {
+    this.options.updateActiveState(this.isInstallOpen || this.isSubflowOpen);
+  }
+
+  private setSubflowWindowState(state: boolean) {
+    this.isSubflowOpen = state;
+    this.updateWindowState();
+  }
 }
