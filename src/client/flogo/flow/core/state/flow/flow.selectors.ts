@@ -9,6 +9,8 @@ import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models/se
 import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
 import {Activity} from '@flogo/flow/task-add';
 import {getProfileType} from '@flogo/shared/utils';
+import {remove} from 'lodash';
+import {CONTRIB_REF_PLACEHOLDER} from '@flogo/core/constants';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
@@ -136,11 +138,18 @@ export const selectAppAndFlowInfo = createSelector(
 
 export const getInstalledActivities = createSelector(
   selectSchemas,
-  (schemas: Dictionary<ContribSchema>): Activity[] => Object.values(schemas)
-  .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.DEVICE_ACTIVITY
-    || schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_ACTIVITY)
-  .map(schema => ({
-    title: schema.title,
-    ref: schema.ref
-  }))
+  (schemas: Dictionary<ContribSchema>): Activity[] => {
+    const activities = Object.values(schemas)
+      .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.DEVICE_ACTIVITY
+        || schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_ACTIVITY)
+      .map(schema => ({
+        title: schema.title,
+        ref: schema.ref
+      }));
+    const subflowActivity = remove(activities, activity => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW).pop();
+    if (subflowActivity) {
+      activities.unshift(subflowActivity);
+    }
+    return activities;
+  }
 );

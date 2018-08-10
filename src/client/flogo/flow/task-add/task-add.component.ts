@@ -16,6 +16,7 @@ export class TaskAddComponent implements OnInit {
   filterText$: ReplaySubject<string>;
   isInstallOpen = false;
   isSubflowOpen = false;
+  SUBFLOW_REF = CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW;
 
   constructor(@Inject(TASKADD_OPTIONS) public options: TaskAddOptions) {
     this.filterText$ = new ReplaySubject<string>(1);
@@ -31,7 +32,7 @@ export class TaskAddComponent implements OnInit {
   }
 
   selectActivity(ref: string) {
-    if (ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW) {
+    if (ref === this.SUBFLOW_REF) {
       this.setSubflowWindowState(true);
     } else {
       this.options.selectActivity(ref);
@@ -45,7 +46,7 @@ export class TaskAddComponent implements OnInit {
 
   handleFlowSelection(selectedFlow: ActionBase | string) {
     if (selectedFlow !== 'dismiss') {
-      this.options.selectActivity(CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW, selectedFlow as ActionBase);
+      this.options.selectActivity(this.SUBFLOW_REF, selectedFlow as ActionBase);
     }
     this.setSubflowWindowState(false);
   }
