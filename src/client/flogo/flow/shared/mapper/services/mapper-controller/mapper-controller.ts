@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { forIn, cloneDeep } from 'lodash';
 import { ReplaySubject ,  Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -95,7 +95,11 @@ export class MapperController {
   }
 
   resetStatus() {
-    this.updateState({ ...this.getCurrentState(), isDirty: false });
+    const resetState: MapperState = { ...this.getCurrentState(), isDirty: false };
+    forIn(resetState.inputs.nodes, node => {
+      node.isDirty = false;
+    });
+    this.updateState(resetState);
   }
 
   getCurrentState() {
