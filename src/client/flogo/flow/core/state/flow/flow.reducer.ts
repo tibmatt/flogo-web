@@ -1,8 +1,9 @@
 import * as selectionFactory from '../../models/flow/selection';
-import { cleanGraphRunState } from '../../models/flow/clean-run-state';
+import {SelectionType} from '../../models/selection';
+import {cleanGraphRunState} from '../../models/flow/clean-run-state';
 
 import * as actions from './flow.actions';
-import { FlowState, INITIAL_STATE } from './flow.state';
+import {FlowState, INITIAL_STATE} from './flow.state';
 
 import { createBranch } from './cases/create-branch';
 import { taskItemCreated } from './cases/task-item-created';
@@ -98,6 +99,21 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
         ...state,
         isDebugPanelOpen: action.payload.isOpen
       };
+    }
+    case ActionType.ActivityInstalled: {
+      return {
+        ...state,
+        schemas: {...state.schemas, [action.payload.ref]: action.payload}
+      };
+    }
+    case ActionType.CancelCreateItem: {
+      const selection = state.currentSelection;
+      if (selection && selection.type === SelectionType.InsertTask && selection.parentId === action.payload.parentId) {
+        return {
+          ...state,
+          currentSelection: null
+        };
+      }
     }
   }
   return state;

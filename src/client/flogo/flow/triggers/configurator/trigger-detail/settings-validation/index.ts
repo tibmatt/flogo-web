@@ -39,9 +39,10 @@ export function addTypeOrResolverValidation(valueType: ValueType, validators: Va
 function getComposedExpressionOrTypeValidator(strictTypeValidator: (value: any) => (ValidationErrors | null) | null ) {
   strictTypeValidator = strictTypeValidator ? strictTypeValidator : () => null;
   return (settingValue: SettingValue) => {
-    if (!settingValue) {
+    if (!settingValue || !settingValue.viewValue) {
       return null;
     }
+
     return isResolverExpression(settingValue.parsedValue) ?
       validateExpression(settingValue)
       : strictTypeValidator(settingValue.parsedValue);

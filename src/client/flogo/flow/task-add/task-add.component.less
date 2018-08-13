@@ -1,43 +1,102 @@
+@import (reference) '../../../assets/uxpl/dropdown';
+@import (reference) '../../../assets/uxpl/search';
+@import (reference) '../../../assets/_typography';
 @import '../../../assets/_variables';
 
-.filter-box {
-  margin: 19px 21px;
-}
-
-.filter-box__input {
-  width: 100%;
-}
-
-.flogo-flows-detail-activities{
-  .flogo-common-edit-panel__container{
-    padding: 0;
-  }
-}
-
-.flogo-common-edit-panel__head {
-  background-color: @color-primary;
-  color: @color-bg;
+:host {
+  .uxpl-dropdown-container();
+  position: relative;
+  left: 8px;
   display: flex;
-  display: -webkit-flex;
   flex-direction: column;
-  justify-content: space-around;
-  .flogo-common-edit-panel__head-title{
-    float: left;
-    width: 50%;
+  width: 480px;
+  height: 440px;
+  border: 1px solid @primary-blue;
+  border-radius: 3px;
+}
+
+.head {
+  z-index: 1;
+  padding: 24px 20px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  .secondary-header();
+  margin: 0 20px 0 0;
+}
+
+.search {
+  .search();
+  padding-right: 20px;
+  color: @color-ink;
+  flex: 1;
+  font-size: 14px;
+  background: transparent;
+  z-index: 1;
+}
+
+.icon-search {
+  position: absolute;
+  right: 20px;
+  color: @color-dark-gray;
+  font-size: 20px;
+}
+
+.content {
+  flex: 1;
+  background: @lightest-gray;
+  overflow-y: auto;
+}
+
+.activity {
+  padding: 16px 16px 16px 48px;
+  color: @color-ink;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: url('/assets/svg/flogo.flows.detail.diagram.activity.icon.svg') no-repeat 16px;
+  background-size: 24px;
+  border-bottom: 1px solid @gainsboro-two;
+
+  &.activity--subflow {
+    background-image: url('/assets/svg/subflow.svg');
   }
-  .flogo-common-edit-panel__head-subtitle{
-    float: left;
+
+  &:last-child {
+    border: none;
+  }
+
+  &:hover {
+    background-color: #e0f0f9;
   }
 }
 
-.flogo-common-edit-panel__head-wrapper{
-  .flogo-icon-add {
-    border: solid 1.3px @color-bg;
-    border-radius: 50%;
-    float: left;
-    margin-right: 10px;
-    padding: 10px;
-    position: relative;
-    top: 7px;
-  }
+.empty-text {
+  margin: 16px;
+}
+
+.footer {
+  z-index: 1;
+  padding: 16px;
+  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.install-activity {
+  margin: 0;
+}
+
+.install-icon {
+  background: @primary-blue;
+  border-radius: 17px;
+  color: @white;
+  margin-right: 10px;
+  vertical-align: middle;
+  font-size: 7px;
+  padding: 5px;
 }

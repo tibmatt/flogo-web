@@ -12,7 +12,8 @@ import { configuratorAnimations } from './configurator.animations';
 import {ConfiguratorService as TriggerConfiguratorService} from './services/configurator.service';
 import { FlowState } from '../../core/state';
 import { TriggerStatus } from './interfaces';
-import { ConfirmationService, ConfirmationResult, ConfirmationComponent } from './confirmation';
+import { ConfirmationService, ConfirmationResult } from '@flogo/core';
+import {ConfirmationComponent} from './confirmation';
 import { TRIGGER_STATUS_TOKEN } from './confirmation/status.token';
 
 @Component({

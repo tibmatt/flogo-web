@@ -1,11 +1,6 @@
 import {FlogoProfileService} from './profile.service';
 import {FLOGO_PROFILE_TYPE} from '../constants';
 import {RESTAPIContributionsService} from './restapi/v2/contributions.service';
-import {
-  MOCK_DEVICE_APP_DATA as mockDeviceAppData, MOCK_MICROSERVICE_APP_DATA as mockMicroServiceAppData
-} from '../mocks/application.json.mock';
-import {FlogoMicroserviceTaskIdGeneratorService} from './profiles/microservices/utils.service';
-import {FlogoDeviceTaskIdGeneratorService} from './profiles/devices/utils.service';
 import Spy = jasmine.Spy;
 
 describe('Service: FlogoProfileService', function (this: {
@@ -430,16 +425,6 @@ describe('Service: FlogoProfileService', function (this: {
       'listContribs'
     ]);
     this.testService = new FlogoProfileService(this.contribServiceMock);
-  });
-
-  it('Should create utilities class for a microservice profile', () => {
-    this.testService.initializeProfile(mockMicroServiceAppData);
-    expect(this.testService.utils instanceof FlogoMicroserviceTaskIdGeneratorService).toBeTruthy();
-  });
-
-  it('Should create utilities class for a device profile', () => {
-    this.testService.initializeProfile(mockDeviceAppData);
-    expect(this.testService.utils instanceof FlogoDeviceTaskIdGeneratorService).toBeTruthy();
   });
 
   it('Should transform the 11 activities in case subflow is not installed in engine', (done) => {

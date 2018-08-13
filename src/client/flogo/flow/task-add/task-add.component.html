@@ -1,33 +1,32 @@
-<div class="flogo-common-edit-panel flogo-flows-detail-activities">
-
-  <div class="flogo-common-edit-panel__head">
-    <div class="flogo-common-edit-panel__head-wrapper">
-      <i class="flogo-icon-add"></i>
-      <h3 class="flogo-common-edit-panel__head-title"> {{ 'TASKS:ADD-ACTIVITY' | translate }} </h3>
-      <div class="flogo-common-edit-panel__head-subtitle">
-        {{'TASKS:HINT-ADD-ACTIVITY' | translate}}
-      </div>
-    </div>
-    <flogo-flow-task-add-install
-      [profileType]="profileType"
-      (flogoOnInstalled)="onInstalledAction($event)"></flogo-flow-task-add-install>
-  </div>
-
-  <div class="flogo-common-edit-panel__container">
-    <div class="filter-box">
-      <input class="flogo-input-search filter-box__input" type="text" [(ngModel)]="filterQuery"
-             placeholder="{{ 'ADD:FILTER-TASKS' | translate }}">
-    </div>
-
-
-    <ul class="flogo-common-edit-panel__tiles-list">
-      <li class="flogo-common-edit-panel__tiles-list-tile" *ngFor="let task of filteredTasks"
-          (click)="manageAddTaskMsg(task)">{{task.name}}
-      </li>
-    </ul>
-  </div>
-  <flogo-flow-sub-flow *ngIf="showFlowsList"
-                       [appId]="appId"
-                       [currentFlow]="currentFlowId"
-                       (flowSelected)="handleFlowSelection($event)"></flogo-flow-sub-flow>
+<div class="head">
+  <h2 class="title">{{"TASKS:ADD-ACTIVITY" | translate}}</h2>
+  <input type="text" class="search" placeholder="{{ 'ADD:SEARCH-ACTIVITIES' | translate }}"
+         (keyup)="filterActivities($event.target.value)">
+  <span class="flogo-icon-search icon-search"></span>
 </div>
+<div class="content" *ngIf="filteredActivities$ | async as activities">
+  <div *ngIf="activities.length > 0; else emptyCase">
+    <div class="activity qa-activities" [class.activity--subflow]="activity.ref === SUBFLOW_REF"
+         *ngFor="let activity of activities" (click)="selectActivity(activity.ref)">
+      <span>{{activity.title}}</span>
+    </div>
+  </div>
+  <ng-template #emptyCase>
+    <p class="empty-text qa-no-tasks">{{ 'ADD:NO-TASKS' | translate }}</p>
+  </ng-template>
+</div>
+<div class="footer">
+  <button class="install-activity flogo-button--secondary qa-install-activity" (click)="handleInstallerWindow(true)">
+    <i class="install-icon flogo-icon-add"></i>
+    <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>
+  </button>
+</div>
+<flogo-flow-installer [profileType]="(options.appAndFlowInfo$ | async).appProfileType"
+                      [installType]="'activity'"
+                      [isActivated]="isInstallOpen"
+                      (isActivatedChange)="handleInstallerWindow($event)"
+                      (installed)="afterActivityInstalled($event)"></flogo-flow-installer>
+<flogo-flow-sub-flow *ngIf="isSubflowOpen"
+                     [appId]="(options.appAndFlowInfo$ | async).appId"
+                     [currentFlow]="(options.appAndFlowInfo$ | async).actionId"
+                     (flowSelected)="handleFlowSelection($event)"></flogo-flow-sub-flow>

@@ -11,7 +11,6 @@ import { RESTAPIHandlersService as RESTAPIHandlersServiceV2 } from './services/r
 import { APIFlowsService } from './services/restapi/v2/flows-api.service';
 import { AppsApiService } from './services/restapi/v2/apps-api.service';
 import { RunApiService } from './services/restapi/run-api.service';
-import { FlogoModal } from './services/modal.service';
 import { ConfigurationService } from './services/configuration.service';
 import { PostService } from './services/post.service';
 import { SanitizeService } from './services/sanitize.service';
@@ -22,8 +21,6 @@ import { FlowsService } from './services/flows.service';
 import { ProfilesAPIService } from './services/restapi/v2/profiles-api.service';
 import { FlogoProfileService } from './services/profile.service';
 import { RESTAPIContributionsService } from './services/restapi/v2/contributions.service';
-import { FlogoMicroserviceTaskIdGeneratorService } from './services/profiles/microservices/utils.service';
-import { FlogoDeviceTaskIdGeneratorService } from './services/profiles/devices/utils.service';
 import { SvgRefFixerService } from './services/svg-ref-fixer.service';
 import { LogService } from '@flogo/core/services/log.service';
 import { FlogoNavbarComponent } from './navbar/navbar.component';
@@ -31,6 +28,10 @@ import { WalkthroughModule } from './walkthrough/walkthrough.module';
 import { ShimTriggerBuildApiService } from './services/restapi/v2/shim-trigger-build-api.service';
 import { FileDownloaderService } from './services/file-downloader.service';
 import {SharedModule as FlogoSharedModule} from '@flogo/shared';
+import {ConfirmationModalComponent} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.component';
+import {ConfirmationService} from '@flogo/core/confirmation/confirmation.service';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import {SharedModule as FlogoSharedModule} from '@flogo/shared';
     RouterModule,
     WalkthroughModule,
     TranslateModule,
-    FlogoSharedModule
+    FlogoSharedModule,
+    OverlayModule
   ],
   providers: [ // services
     { provide: DEFAULT_REST_HEADERS, useValue: createDefaultRestApiHttpHeaders() },
@@ -57,24 +59,27 @@ import {SharedModule as FlogoSharedModule} from '@flogo/shared';
     RunApiService,
     ChildWindowService,
     ErrorService,
-    FlogoModal,
     ConfigurationService,
     PostService,
     SanitizeService,
     WindowRef,
     FlowsService,
     FlogoProfileService,
-    FlogoMicroserviceTaskIdGeneratorService,
-    FlogoDeviceTaskIdGeneratorService,
     LogService,
     SvgRefFixerService,
     FileDownloaderService,
+    ConfirmationService,
+    ConfirmationModalService
   ],
   declarations: [
     FlogoNavbarComponent,
+    ConfirmationModalComponent
   ],
   exports: [
     FlogoNavbarComponent,
+  ],
+  entryComponents: [
+    ConfirmationModalComponent
   ]
 })
 export class CoreModule {

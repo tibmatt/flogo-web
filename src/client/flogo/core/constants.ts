@@ -12,6 +12,11 @@ export enum FLOGO_CONTRIB_TYPE {
   ACTIVITY = 'activity'
 }
 
+export enum FLOGO_CONTRIB_TYPE_VALUES {
+  MICRO_SERVICE_ACTIVITY = 'flogo:activity',
+  DEVICE_ACTIVITY = 'flogo:device:activity'
+}
+
 export enum FLOGO_TASK_TYPE {
   TASK_ROOT,  // this is the type for triggers
   TASK = 1,
@@ -116,3 +121,6 @@ export const CONTRIB_REF_PLACEHOLDER = {
   REF_LAMBDA: 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda',
   REF_CLI: 'github.com/TIBCOSoftware/flogo-contrib/trigger/cli'
 };
+
+export const SELECTED_INSERT_TILE_CLASS = 'logic-selected';
+export const BUTTON_INSERT_CLASS = 'btn-insert';

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { DiagramSelection, InsertTile, DiagramSelectionType } from '../interfaces';
+import {BUTTON_INSERT_CLASS, SELECTED_INSERT_TILE_CLASS} from '@flogo/core';
 
 @Component({
   selector: 'flogo-diagram-tile-insert',
@@ -11,7 +12,10 @@ export class TileInsertComponent implements OnChanges {
   @Input() tile: InsertTile;
   @Input() currentSelection: DiagramSelection;
   @Output() select = new EventEmitter<string>();
-  @HostBinding('class.is-selected') isSelected = false;
+  @HostBinding('class.is-selected')
+  @HostBinding(`class.${SELECTED_INSERT_TILE_CLASS}`)
+  isSelected = false;
+  btnInsertClass = BUTTON_INSERT_CLASS;
 
   ngOnChanges({ currentSelection: currentSelectionChange }: SimpleChanges) {
     if (currentSelectionChange) {

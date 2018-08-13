@@ -1,13 +1,18 @@
 
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
-import { Dictionary, Item, ItemActivityTask } from '@flogo/core';
+import {ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask} from '@flogo/core';
+import { remove } from 'lodash';
 
 import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName } from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
 
+
 import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
-import { DiagramSelectionType } from '@flogo/packages/diagram';
+import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
+import { Activity } from '@flogo/flow/task-add';
+import { getProfileType } from '@flogo/shared/utils';
+import { CONTRIB_REF_PLACEHOLDER } from '@flogo/core/constants';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
@@ -116,6 +121,7 @@ export const getSelectedActivityExecutionResult = createSelector(
   (selectedActivity, steps) => selectedActivity && steps ? steps[selectedActivity.id] : null
 );
 
+
 export const getIsRunDisabledForSelectedActivity = createSelector(
   getCurrentHandlerType,
   getRunnableState,
@@ -126,5 +132,45 @@ export const getIsRunDisabledForSelectedActivity = createSelector(
     const isRunDisabled = runnableInfo && runnableInfo.disabled;
     const hasExecuted = lastFullExecution && lastFullExecution.processId;
     return isErrorHandler || structureHasChanged || isRunDisabled || !hasExecuted;
+  },
+);
+
+export const selectAppInfo = createSelector(
+  selectApp,
+  (app) => {
+    if (!app) {
+      return {
+        appId: null,
+        appProfileType: null,
+      };
+    }
+    return {
+      appId: app.id,
+      appProfileType: getProfileType(app),
+    };
+  },
+);
+
+export const selectAppAndFlowInfo = createSelector(
+  selectAppInfo,
+  selectActionId,
+  (appInfo, actionId) => ({...appInfo, actionId})
+);
+
+export const getInstalledActivities = createSelector(
+  selectSchemas,
+  (schemas: Dictionary<ContribSchema>): Activity[] => {
+    const activities = Object.values(schemas)
+      .filter(schema => schema.type === FLOGO_CONTRIB_TYPE_VALUES.DEVICE_ACTIVITY
+        || schema.type === FLOGO_CONTRIB_TYPE_VALUES.MICRO_SERVICE_ACTIVITY)
+      .map(schema => ({
+        title: schema.title,
+        ref: schema.ref
+      }));
+    const subflowActivity = remove(activities, activity => activity.ref === CONTRIB_REF_PLACEHOLDER.REF_SUBFLOW).pop();
+    if (subflowActivity) {
+      activities.unshift(subflowActivity);
+    }
+    return activities;
   }
 );

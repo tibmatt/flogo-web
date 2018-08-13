@@ -12,7 +12,7 @@ import { MonacoEditorModule } from '../../shared/monaco-editor';
 import {ConfiguratorService} from './services/configurator.service';
 import {ConfiguratorComponent} from './configurator.component';
 import { ConfigureTriggerComponent } from './trigger/trigger.component';
-import { ConfirmationComponent } from './confirmation';
+import { ConfirmationComponent } from './confirmation/index';
 import {
   TriggerDetailComponent,
   TabsComponent,

@@ -3,9 +3,8 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, ElementRef
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TriggerInformation } from '../../interfaces';
-import { ConfirmationService } from '../../confirmation';
+import { ConfirmationService, ConfirmationResult } from '@flogo/core';
 import { ConfirmEditionComponent, EDITION_DATA_TOKEN, EditionData } from './confirm-edition/confirm-edition.component';
-import { ConfirmationResult } from '@flogo/flow/triggers/configurator/confirmation';
 
 const COMMON_FIELDS_TO_ENABLE = ['name', 'description', 'triggerSettings'];
 

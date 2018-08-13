@@ -1,33 +1,12 @@
 import { Injectable } from '@angular/core';
 import {FLOGO_PROFILE_TYPE, CONTRIB_REF_PLACEHOLDER, FLOGO_CONTRIB_TYPE} from '../constants';
 import { RESTAPIContributionsService } from './restapi/v2/contributions.service';
-import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask, getProfileType} from '../../shared/utils';
-import { AbstractTaskIdGenerator } from './profiles/profiles.utils.service';
-import { FlogoDeviceTaskIdGeneratorService } from './profiles/devices/utils.service';
-import { FlogoMicroserviceTaskIdGeneratorService } from './profiles/microservices/utils.service';
+import {activitySchemaToTask, activitySchemaToTrigger, createSubFlowTask} from '../../shared/utils';
 
 @Injectable()
 export class FlogoProfileService {
 
-  public currentApplicationProfile: FLOGO_PROFILE_TYPE;
-  utils: AbstractTaskIdGenerator;
-
-  constructor(private contribService: RESTAPIContributionsService) {
-
-  }
-
-  initializeProfile(app) {
-    this.currentApplicationProfile = getProfileType(app);
-    if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.DEVICE) {
-      this.utils = new FlogoDeviceTaskIdGeneratorService();
-    } else if (this.currentApplicationProfile === FLOGO_PROFILE_TYPE.MICRO_SERVICE) {
-      this.utils = new FlogoMicroserviceTaskIdGeneratorService();
-    }
-  }
-
-  generateTaskID(items?: any, taskSchema?: any) {
-    return this.utils.generateTaskID(items, taskSchema);
-  }
+  constructor(private contribService: RESTAPIContributionsService) {}
 
   getTriggers(profile) {
     return this.contribService.listContribs(profile, FLOGO_CONTRIB_TYPE.TRIGGER).then(response => {
@@ -47,6 +26,9 @@ export class FlogoProfileService {
     });
   }
 
+  /*****
+   * @deprecated
+   */
   getActivities(profile) {
     let subflowAcivitySchema;
     return this.contribService.listContribs(profile, FLOGO_CONTRIB_TYPE.ACTIVITY).then(response => {
