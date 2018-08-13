@@ -1,60 +1,102 @@
 @import (reference) '../../../assets/uxpl/dropdown';
+@import (reference) '../../../assets/uxpl/search';
 @import (reference) '../../../assets/_typography';
 @import '../../../assets/_variables';
 
 :host {
   .uxpl-dropdown-container();
+  position: relative;
+  left: 8px;
   display: flex;
   flex-direction: column;
-  position: relative;
-  width: 250px;
-  height: 285px;
+  width: 480px;
+  height: 440px;
+  border: 1px solid @primary-blue;
+  border-radius: 3px;
 }
 
-.main {
-  padding: 10px 10px 0;
-  border-bottom: 1px solid @color-medium-gray;
+.head {
+  z-index: 1;
+  padding: 24px 20px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
 }
 
 .title {
   .secondary-header();
-  margin: 0 0 10px;
+  margin: 0 20px 0 0;
 }
 
 .search {
-  text-align: center;
+  .search();
+  padding-right: 20px;
+  color: @color-ink;
+  flex: 1;
+  font-size: 14px;
+  background: transparent;
+  z-index: 1;
 }
 
-.search-input {
-  width: 100%;
+.icon-search {
+  position: absolute;
+  right: 20px;
+  color: @color-dark-gray;
+  font-size: 20px;
 }
 
-.scrollable-content {
-  height: 170px;
+.content {
+  flex: 1;
+  background: @lightest-gray;
   overflow-y: auto;
 }
 
-.empty-text {
-  margin: 1em;
-}
-
-.activity-list {
-  .uxpl-dropdown();
-}
-
-.activity-list-item {
-  .uxpl-dropdown__item();
+.activity {
+  padding: 16px 16px 16px 48px;
+  color: @color-ink;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+  cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background: url('/assets/svg/flogo.flows.detail.diagram.activity.icon.svg') no-repeat 16px;
+  background-size: 24px;
+  border-bottom: 1px solid @gainsboro-two;
+
+  &.activity--subflow {
+    background-image: url('/assets/svg/subflow.svg');
+  }
+
+  &:last-child {
+    border: none;
+  }
+
+  &:hover {
+    background-color: #e0f0f9;
+  }
 }
 
-.install {
-  background: @lighter-gray;
+.empty-text {
+  margin: 16px;
+}
+
+.footer {
+  z-index: 1;
+  padding: 16px;
+  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 }
 
 .install-activity {
-  .uxpl-dropdown__item();
-  padding-left: 26px;
-  padding-right: 26px;
+  margin: 0;
+}
+
+.install-icon {
+  background: @primary-blue;
+  border-radius: 17px;
+  color: @white;
+  margin-right: 10px;
+  vertical-align: middle;
+  font-size: 7px;
+  padding: 5px;
 }

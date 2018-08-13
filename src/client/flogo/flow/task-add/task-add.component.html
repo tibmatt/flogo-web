@@ -1,25 +1,25 @@
-<div class="main">
+<div class="head">
   <h2 class="title">{{"TASKS:ADD-ACTIVITY" | translate}}</h2>
-  <div class="search">
-    <input class="flogo-input-search search-input" type="text"
-           placeholder="{{ 'ADD:FILTER-TASKS' | translate }}"
-           (keyup)="filterActivities($event.target.value)">
-  </div>
-  <div *ngIf="filteredActivities$ | async as activities" class="scrollable-content">
-    <ul class="activity-list" *ngIf="activities.length > 0; else emptyCase">
-      <li class="activity-list-item qa-activities" *ngFor="let activity of activities" (click)="selectActivity(activity.ref)">
-        {{activity.title}}
-      </li>
-    </ul>
-    <ng-template #emptyCase>
-      <p class="empty-text qa-no-tasks">{{ 'ADD:NO-TASKS' | translate }}</p>
-    </ng-template>
-  </div>
+  <input type="text" class="search" placeholder="{{ 'ADD:SEARCH-ACTIVITIES' | translate }}"
+         (keyup)="filterActivities($event.target.value)">
+  <span class="flogo-icon-search icon-search"></span>
 </div>
-<div class="install">
-  <div class="install-activity qa-install-activity" (click)="handleInstallerWindow(true)">
-    {{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}
+<div class="content" *ngIf="filteredActivities$ | async as activities">
+  <div *ngIf="activities.length > 0; else emptyCase">
+    <div class="activity qa-activities" [class.activity--subflow]="activity.ref === SUBFLOW_REF"
+         *ngFor="let activity of activities" (click)="selectActivity(activity.ref)">
+      <span>{{activity.title}}</span>
+    </div>
   </div>
+  <ng-template #emptyCase>
+    <p class="empty-text qa-no-tasks">{{ 'ADD:NO-TASKS' | translate }}</p>
+  </ng-template>
+</div>
+<div class="footer">
+  <button class="install-activity flogo-button--secondary qa-install-activity" (click)="handleInstallerWindow(true)">
+    <i class="install-icon flogo-icon-add"></i>
+    <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>
+  </button>
 </div>
 <flogo-flow-installer [profileType]="(options.appAndFlowInfo$ | async).appProfileType"
                       [installType]="'activity'"
