@@ -30,11 +30,10 @@
 }
 
 .trigger-configuration__content {
-  flex: 1;
-}
-
-.trigger-configuration__content {
   display: flex;
+  // Fix the issue with Edge and Mozilla browsers which has problem with scroll content of a flex element
+  height: 100%;
+  min-height: 0;
 }
 
 .configuration__triggers {
