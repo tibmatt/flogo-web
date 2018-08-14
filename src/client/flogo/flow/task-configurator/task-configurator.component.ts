@@ -15,13 +15,12 @@ import {FlogoFlowService as FlowsService} from '@flogo/flow/core';
 import {Tabs} from '../shared/tabs/models/tabs.model';
 import {SubFlowConfig} from './subflow-config';
 import { isIterableTask, isMapperActivity, isSubflowTask, notification } from '@flogo/shared/utils';
-import { ActionBase, Item, ItemActivityTask, ItemSubflow, ItemTask, LanguageService } from '@flogo/core';
+import {ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTask, LanguageService} from '@flogo/core';
 import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
 import { FlowState, FlowActions } from '@flogo/flow/core/state';
 import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
-import { getStateWhenTaskConfigureChanges } from './task-configurator.selector';
+import { getStateWhenTaskConfigureChanges } from '../shared/configurator/configurator.selector';
 import { createSaveAction } from '@flogo/flow/task-configurator/models/save-action-creator';
-import { CancelItemConfiguration } from '@flogo/flow/core/state/flow/flow.actions';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -101,7 +100,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(state => {
-        if (state) {
+        if (state && (state.mainItems[state.taskConfigure] || state.errorItems[state.taskConfigure]).type === FLOGO_TASK_TYPE.TASK) {
           this.initConfigurator(state);
         } else if (this.isActive) {
           this.close();

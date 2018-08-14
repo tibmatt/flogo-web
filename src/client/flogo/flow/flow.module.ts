@@ -15,6 +15,7 @@ import { CoreModule as FlowCoreModule } from './core';
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
+import { BranchMapperModule as FlogoBranchMapperModule } from './branch-configurator';
 import { ParamsSchemaModule } from './params-schema';
 
 import { FlowRoutingModule } from './flow-routing.module';
@@ -43,7 +44,8 @@ import {TaskAddModule} from './task-add';
     FlogoFlowTriggersModule,
     FlogoFlowTaskDetailModule,
     FlowRoutingModule,
-    TaskAddModule
+    TaskAddModule,
+    FlogoBranchMapperModule
   ],
   declarations: [
     EmptyDetailComponent,

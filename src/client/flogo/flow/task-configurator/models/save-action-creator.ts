@@ -3,7 +3,16 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 
-import { Action, ActionBase, ItemActivityTask, ItemSubflow, ItemTask } from '@flogo/core';
+import {
+  Action,
+  ActionBase,
+  FLOGO_TASK_TYPE,
+  GraphNode,
+  ItemActivityTask,
+  ItemBranch,
+  ItemSubflow,
+  ItemTask
+} from '@flogo/core';
 import { isMapperActivity } from '@flogo/shared/utils';
 
 import { FlowState, FlowSelectors, FlowActions } from '@flogo/flow/core/state';
@@ -20,6 +29,10 @@ export interface SaveTaskConfigEventData {
   subflowPath?: string;
   changedSubflowSchema?: ActionBase;
 }
+export interface SaveBranchConfigEventData {
+  id: string;
+  condition: string;
+}
 
 export function createSaveAction(
   store: Store<FlowState>,
@@ -32,6 +45,18 @@ export function createSaveAction(
       map(flowState => new FlowActions.CommitItemConfiguration(getChanges(flowState, saveData))),
   );
 }
+export function createSaveBranchAction(
+  store: Store<FlowState>,
+  saveData: SaveBranchConfigEventData
+): Observable<FlowActions.ItemUpdated> {
+  return store.
+  pipe(
+    select(FlowSelectors.selectFlowState),
+    take(1),
+    map(flowState => new FlowActions.ItemUpdated(getBranchChanges(flowState, saveData))),
+  );
+}
+
 
 function getChanges(flowState: FlowState, saveData: SaveTaskConfigEventData): FlowActions.CommitItemConfiguration['payload'] {
   let handlerType: HandlerType;
@@ -74,4 +99,20 @@ function getChanges(flowState: FlowState, saveData: SaveTaskConfigEventData): Fl
     iterate: iteratorInfo.isIterable ? saveData.iterator.iterableValue : undefined,
   };
   return { handlerType, item: itemChanges, newSubflowSchema: changedSubflowSchema as Action };
+}
+
+function getBranchChanges(flowState: FlowState, saveData: SaveBranchConfigEventData): FlowActions.ItemUpdated['payload'] {
+  let handlerType: HandlerType;
+  const tileId = saveData.id;
+  if (flowState.mainItems[tileId]) {
+    handlerType = HandlerType.Main;
+  } else {
+    handlerType = HandlerType.Error;
+  }
+
+  const itemChanges: {id: string} & Partial<ItemBranch> = {
+    id: saveData.id,
+    condition: saveData.condition,
+  };
+  return { handlerType, item: itemChanges};
 }
