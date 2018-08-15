@@ -95,7 +95,7 @@
   "DIAGRAM:TRANSFORM": "Transform",
   "DIAGRAM:CONFIGURE": "Configure",
   "DEBUGGER:TITLE-ACTIVITY": "Activity",
-  "DEBUGGER:INPUT": "Input",
+  "DEBUGGER:INPUT": "Mock input",
   "DEBUGGER:OUTPUT": "Output",
   "DEBUGGER:EMPTY-STATE-TITLE": "No activity selected",
   "DEBUGGER:EMPTY-STATE-DESCRIPTION": "Select an activity to view its detail",

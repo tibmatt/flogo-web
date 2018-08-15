@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FieldsInfo } from './fields-info';
 
 @Component({
   selector: 'flogo-flow-debug-panel-detail',
@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 export class DebugPanelDetailComponent {
 
   @Input() activity;
-  @Input() fields: FormGroup;
+  @Input() fields: FieldsInfo;
   @Input() runDisabled: boolean;
   @Output() close = new EventEmitter();
 
