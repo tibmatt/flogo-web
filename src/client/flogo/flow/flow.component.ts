@@ -5,8 +5,6 @@ import {
   filter,
   get,
   isEmpty,
-  isEqual,
-  isFunction,
 } from 'lodash';
 import { share, takeUntil, take, switchMap } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -17,11 +15,8 @@ import {
   LanguageService,
   ItemTask,
   Item,
-  GraphNode,
 } from '@flogo/core';
-import { TriggersApiService } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
-import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
 import { Step } from './core/test-runner/run-orchestrator.service';
 import { FlowData } from './core';
@@ -40,7 +35,7 @@ import {
   FLOGO_TASK_TYPE
 } from '../core/constants';
 import {
-  getProfileType, isMapperActivity, isSubflowTask, notification,
+  getProfileType, isMapperActivity, notification,
 } from '@flogo/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
@@ -111,12 +106,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   constructor(public translate: LanguageService,
               private _postService: PostService,
               private _flowService: FlowsService,
-              private triggersApiService: TriggersApiService,
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _restAPIAppsService: AppsApiService,
               private _router: Router,
               private confirmationModalService: ConfirmationModalService,
-              private profileService: FlogoProfileService,
               private _route: ActivatedRoute,
               private testRunner: TestRunnerService) {
     this._isDiagramEdited = false;
@@ -171,8 +164,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
 
     const subs = [
-      assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
-      assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
     ];
 
@@ -299,13 +290,14 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTrigger: false, // taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
-      shouldSkipTaskConfigure: this.isTaskSubflowOrMapper(taskId, handlerId),
+      shouldSkipTaskConfigure: taskType !== FLOGO_TASK_TYPE.TASK_BRANCH,
+      profileType: this.profileType,
+      // can't run from tile anymore in this panel, hardcoding to false until we remove the right panel
+      hasProcess: false,
       flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
-      hasProcess: Boolean(this.flowState.lastFullExecution.processId),
       isDiagramEdited: this._isDiagramEdited,
       app: null,
       currentTrigger: null,
-      profileType: this.profileType
     };
   }
 
@@ -315,12 +307,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private getTaskInHandler(handlerId: string, taskId: string) {
     return this.getItemsByHandlerId(handlerId)[taskId];
-  }
-
-  private isTaskSubflowOrMapper(taskId: any, diagramId: string): boolean {
-    const currentTask = <ItemTask> this.getTaskInHandler(diagramId, taskId);
-    const activitySchema = this.flowState.schemas[currentTask.ref];
-    return isSubflowTask(currentTask.type) || isMapperActivity(activitySchema);
   }
 
   /**
@@ -502,11 +488,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       )
     );
 
-    // TODO: used?
-    if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-      updateObject[data.proper] = task[data.proper];
-      this.triggersApiService.updateTrigger(this.currentTrigger.id, updateObject);
-    }
   }
 
   private findItemById(taskId: string) {
@@ -536,57 +517,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _taskDetailsChanged(data: any, envelope: any) {
-    const handlerId = this.getDiagramId(data.taskId);
-    const task = this.getTaskInHandler(handlerId, data.taskId);
-
-    const changes: { item: {id: string} & Partial<Item>, node:  {id: string} & Partial<GraphNode> } = <any>{};
-    if (task.type === FLOGO_TASK_TYPE.TASK) {
-      const changedInputs = data.inputs || {};
-      if (isEqual(changedInputs, task.input)) {
-        return;
-      }
-      changes.item = {
-        id: task.id,
-        input: { ...changedInputs  }
-      };
-    } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
-      if (isEqual(data.condition, task.condition)) {
-        return;
-      }
-      changes.item = {
-        id: task.id,
-        condition: data.condition,
-      };
-    }
-
-    if (isFunction(envelope.done)) {
-      envelope.done();
-    }
-
-    this.flowDetails.updateItem(
-      this.handlerTypeFromString(handlerId),
-      changes,
-    );
-  }
-
   private _getAllTasks() {
     return {...this.flowState.mainItems, ...this.flowState.errorItems};
-  }
-
-  /*-------------------------------*
-   |      RUN FLOW                 |
-   *-------------------------------*/
-
-  private _runFromThisTile(data: any, envelope: any) {
-    this.testRunner
-      .runFromTask(data)
-      .subscribe(() => {
-        if (isFunction(envelope.done)) {
-          envelope.done();
-        }
-        this.refreshCurrentSelectedTaskIfNeeded();
-      });
   }
 
   /*-------------------------------*

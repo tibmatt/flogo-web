@@ -94,7 +94,7 @@
   "DIAGRAM:DELETE": "Delete",
   "DIAGRAM:TRANSFORM": "Transform",
   "DIAGRAM:CONFIGURE": "Configure",
-  "DEBUGGER:TITLE-ACTIVITY": "Activity",
+  "DEBUGGER:TITLE-ACTIVITY": "Testing and Debugging",
   "DEBUGGER:INPUT": "Mock input",
   "DEBUGGER:OUTPUT": "Output",
   "DEBUGGER:EMPTY-STATE-TITLE": "No activity selected",
