@@ -9,7 +9,7 @@
         <div class="activity__name">{{ activity.name }}</div>
         <div class="activity__details">{{ activity.description }}</div>
         <div class="activity__id activity__details">ID: {{ activity.id }}</div>
-        <button class="flogo-button--default btn-run" [disabled]="runDisabled">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
+        <button class="flogo-button--default btn-run" [disabled]="runDisabled" (click)="onRun()">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
       </div>
       <div *ngIf="fields?.form?.get('input.formFields'); let fieldGroup" class="activity__field-group">
         <div class="fields-title">{{ 'DEBUGGER:INPUT' | translate }}</div>

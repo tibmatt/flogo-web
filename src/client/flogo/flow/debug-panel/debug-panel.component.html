@@ -7,11 +7,12 @@
   </button>
   <flogo-flow-debug-panel-detail
     *ngIf="isOpen"
-    [@debugpanel]="isOpen"
-    (@debugpanel.done)="onAnimationEnd($event)"
     class="debug-panel__content"
     [activity]="activity$ | async"
     [fields]="fields$ | async"
     [runDisabled]="isRunDisabled$ | async"
+    [@debugpanel]="isOpen"
+    (@debugpanel.done)="onAnimationEnd($event)"
+    (runFromHere)="run()"
     (close)="togglePanel()"></flogo-flow-debug-panel-detail>
 </div>

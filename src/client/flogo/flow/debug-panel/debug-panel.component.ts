@@ -1,12 +1,14 @@
-import { SingleEmissionSubject } from '@flogo/core/models';
-import { createSaveChangesAction } from '@flogo/flow/debug-panel/save-changes-action.creator';
 import { isEmpty, fromPairs } from 'lodash';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AnimationEvent } from '@angular/animations';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, pipe } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+
+import { SingleEmissionSubject } from '@flogo/core/models';
+import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.service';
+import { createSaveChangesAction } from '@flogo/flow/debug-panel/save-changes-action.creator';
 
 import { FlowActions, FlowSelectors, FlowState } from '@flogo/flow/core/state';
 import { ActivitySchema, Dictionary, ItemActivityTask, StepAttribute } from '@flogo/core';
@@ -43,18 +45,22 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
 
   private destroy$ = SingleEmissionSubject.create();
 
-  constructor(private store: Store<FlowState>, private formBuilder: FormBuilder, private attributeFormBuilder: FormBuilderService) {
-  }
+  constructor(
+    private store: Store<FlowState>,
+    private formBuilder: FormBuilder,
+    private attributeFormBuilder: FormBuilderService,
+    private testRunner: TestRunnerService,
+  ) {}
 
   ngOnInit() {
-    const selectAndShare = (selector) => this.store.pipe(select(selector), shareReplay());
+    const selectAndShare = (selector) => this.store.pipe(select(selector), shareReplay(1));
     this.activity$ = selectAndShare(FlowSelectors.getSelectedActivity);
     this.isRunDisabled$ = selectAndShare(FlowSelectors.getIsRunDisabledForSelectedActivity);
 
-    const form$: Observable<null | FieldsInfo> = this.store.pipe(this.mapStateToForm(), shareReplay());
+    const form$: Observable<null | FieldsInfo> = this.store.pipe(this.mapStateToForm(), shareReplay(1));
     const executionResult$ = this.store.pipe(select(FlowSelectors.getSelectedActivityExecutionResult));
     this.fields$ = combineLatest(form$, this.activity$, this.isRunDisabled$, executionResult$)
-      .pipe(this.mergeToFormFields(), shareReplay());
+      .pipe(this.mergeToFormFields(), shareReplay(1));
 
     form$.pipe(
         mapFormInputChangesToSaveAction(this.store, this.activity$),
@@ -82,6 +88,14 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     if (event.toState === OPEN_STATE) {
       this.scrollContextElementIntoView();
     }
+  }
+
+  run() {
+    this.activity$
+      .pipe(
+        take(1),
+        switchMap(task => this.testRunner.runFromTask({ taskId: task.id, inputs: task.input }))
+      ).subscribe();
   }
 
   private mapStateToForm() {
