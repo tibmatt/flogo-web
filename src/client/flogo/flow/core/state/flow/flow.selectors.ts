@@ -1,12 +1,11 @@
 
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
-import {ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask} from '@flogo/core';
+import { ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask, FLOGO_TASK_TYPE } from '@flogo/core';
 import { remove } from 'lodash';
 
 import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName } from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
-
 
 import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
 import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
@@ -101,11 +100,16 @@ export const getCurrentItems: MemoizedSelector<FlowState, Dictionary<Item>> = cr
   (currentHandlerType, flowState) => currentHandlerType ? flowState[getItemsDictionaryName(currentHandlerType)] : null
 );
 
+const isTaskSelection = (selection): selection is TaskSelection => selection && selection.type === SelectionType.Task;
 export const getSelectedActivity = createSelector(
   selectCurrentSelection,
   getCurrentItems,
-  (currentSelection, currentItems) =>
-    currentSelection && currentSelection.type === SelectionType.Task ? currentItems[currentSelection.taskId] as ItemActivityTask : null
+  (currentSelection, currentItems) => {
+    if (isTaskSelection(currentSelection) && currentItems[currentSelection.taskId].type !== FLOGO_TASK_TYPE.TASK_BRANCH) {
+      return currentItems[currentSelection.taskId] as ItemActivityTask;
+    }
+    return null;
+  }
 );
 
 export const getSelectedActivitySchema = createSelector(
