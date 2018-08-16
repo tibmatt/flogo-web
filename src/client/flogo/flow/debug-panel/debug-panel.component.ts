@@ -16,6 +16,7 @@ import { FormBuilderService } from '@flogo/flow/shared/dynamic-form';
 import { debugPanelAnimations } from './debug-panel.animations';
 import { mergeFormWithOutputs } from './utils';
 import { FieldsInfo } from './fields-info';
+import { isMapperActivity } from '@flogo/shared/utils';
 
 const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
 const OPEN_STATE = 'open';
@@ -42,6 +43,9 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   activity$: Observable<ItemActivityTask>;
   fields$: Observable<FieldsInfo>;
   isRunDisabled$: Observable<boolean>;
+  flowHasRun$: Observable<boolean>;
+  activityHasRun$: Observable<boolean>;
+  isEndOfFlow$: Observable<boolean>;
 
   private destroy$ = SingleEmissionSubject.create();
 
@@ -56,9 +60,14 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     const selectAndShare = (selector) => this.store.pipe(select(selector), shareReplay(1));
     this.activity$ = selectAndShare(FlowSelectors.getSelectedActivity);
     this.isRunDisabled$ = selectAndShare(FlowSelectors.getIsRunDisabledForSelectedActivity);
+    const schema$ = selectAndShare(FlowSelectors.getSelectedActivitySchema);
 
-    const form$: Observable<null | FieldsInfo> = this.store.pipe(this.mapStateToForm(), shareReplay(1));
-    const executionResult$ = this.store.pipe(select(FlowSelectors.getSelectedActivityExecutionResult));
+    this.flowHasRun$ = selectAndShare(FlowSelectors.getFlowHasRun);
+    this.isEndOfFlow$ = schema$.pipe(map(isMapperActivity));
+    const form$: Observable<null | FieldsInfo> = schema$.pipe(this.mapStateToForm(), shareReplay(1));
+
+    const executionResult$ = selectAndShare(FlowSelectors.getSelectedActivityExecutionResult);
+    this.activityHasRun$ = executionResult$.pipe(map(Boolean));
     this.fields$ = combineLatest(form$, this.activity$, this.isRunDisabled$, executionResult$)
       .pipe(this.mergeToFormFields(), shareReplay(1));
 
@@ -100,7 +109,6 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
 
   private mapStateToForm() {
     return pipe(
-      select(FlowSelectors.getSelectedActivitySchema),
       map((schema: ActivitySchema) => this.createFormFromSchema(schema)),
     );
   }

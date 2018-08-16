@@ -2,22 +2,31 @@
   <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span>
   <span class="flogo-icon flogo-icon-back toggler" role="button" (click)="onClose()"></span>
 </div>
-<div class="content">
-  <ng-container *ngIf="activity; else noActivity">
-    <div class="activity">
-      <div class="activity__info-group">
-        <div class="activity__name">{{ activity.name }}</div>
-        <div class="activity__details">{{ activity.description }}</div>
-        <div class="activity__id activity__details">ID: {{ activity.id }}</div>
-        <button class="flogo-button--default btn-run" [disabled]="runDisabled" (click)="onRun()">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
-      </div>
+<div class="content" [ngSwitch]="viewState">
+  <div *ngSwitchCase="'activity'" class="activity">
+    <div class="activity__info-group">
+      <div class="activity__name">{{ activity.name }}</div>
+      <div class="activity__details">{{ activity.description }}</div>
+      <div class="activity__id activity__details">ID: {{ activity.id }}</div>
+      <button class="flogo-button--default btn-run" [disabled]="runDisabled" (click)="onRun()">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
+    </div>
+    <ng-container *ngIf="!isEndOfFlow; else endOfFlow">
       <flogo-flow-debug-panel-fields class="activity__fields" [fields]="fields"></flogo-flow-debug-panel-fields>
-    </div>
-  </ng-container>
-  <ng-template #noActivity>
-    <div class="empty-text">
-      <div class="empty-text__title">{{ 'DEBUGGER:EMPTY-STATE-TITLE' | translate }}</div>
-      <div class="empty-text__detail">{{ 'DEBUGGER:EMPTY-STATE-DESCRIPTION' | translate }}</div>
-    </div>
-  </ng-template>
+    </ng-container>
+  </div>
+  <div *ngSwitchCase="'noFlowRun'" class="empty-text">
+    <div class="empty-text__title">{{ 'DEBUGGER:NO-RUN-MESSAGE' | translate }}</div>
+  </div>
+  <div *ngSwitchCase="'noActivityRun'" class="empty-text">
+    <div class="empty-text__title">{{ 'DEBUGGER:NO-ACTIVITY-RUN-MESSAGE' | translate }}</div>
+  </div>
+  <div *ngSwitchDefault class="empty-text">
+    <div class="empty-text__title">{{ 'DEBUGGER:EMPTY-STATE-TITLE' | translate }}</div>
+    <div class="empty-text__detail">{{ 'DEBUGGER:EMPTY-STATE-DESCRIPTION' | translate }}</div>
+  </div>
 </div>
+<ng-template #endOfFlow>
+  <div class="empty-text">
+    <div class="empty-text__title">{{ 'DEBUGGER:EMPTY-STATE-END-OF-FLOW' | translate }}</div>
+  </div>
+</ng-template>

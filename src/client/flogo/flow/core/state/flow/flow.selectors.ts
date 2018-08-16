@@ -125,17 +125,20 @@ export const getSelectedActivityExecutionResult = createSelector(
   (selectedActivity, steps) => selectedActivity && steps ? steps[selectedActivity.id] : null
 );
 
+export const getFlowHasRun = createSelector(
+  selectLastFullExecution,
+  lastFullExecution => lastFullExecution && lastFullExecution.processId,
+);
 
 export const getIsRunDisabledForSelectedActivity = createSelector(
   getCurrentHandlerType,
   getRunnableState,
-  selectLastFullExecution,
+  getFlowHasRun,
   selectHasStructureChangedSinceLastRun,
-  (handlerType, runnableInfo, lastFullExecution, structureHasChanged) => {
+  (handlerType, runnableInfo, flowHasRun, structureHasChanged) => {
     const isErrorHandler = handlerType === HandlerType.Error;
     const isRunDisabled = runnableInfo && runnableInfo.disabled;
-    const hasExecuted = lastFullExecution && lastFullExecution.processId;
-    return isErrorHandler || structureHasChanged || isRunDisabled || !hasExecuted;
+    return isErrorHandler || structureHasChanged || isRunDisabled || !flowHasRun;
   },
 );
 
