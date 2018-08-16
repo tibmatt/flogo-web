@@ -28,8 +28,8 @@ import { FlogoFlowDiagramComponent } from './flow-diagram/flow-diagram.component
 import { FlowTabsComponent } from './flow-tabs/flow-tabs.component';
 import { SaveEffects } from './core/effects';
 
-import { DebugPanelComponent, DebugPanelDetailComponent } from './debug-panel';
-import {TaskAddModule} from './task-add';
+import { DebugPanelModule} from './debug-panel';
+import { TaskAddModule } from './task-add';
 
 @NgModule({
   imports: [
@@ -50,7 +50,8 @@ import {TaskAddModule} from './task-add';
     FlogoFlowTriggersModule,
     FlogoFlowTaskDetailModule,
     FlowRoutingModule,
-    TaskAddModule
+    TaskAddModule,
+    DebugPanelModule,
   ],
   declarations: [
     EmptyDetailComponent,
@@ -58,8 +59,6 @@ import {TaskAddModule} from './task-add';
     FlowComponent,
     FlogoFlowDiagramComponent,
     FlowTabsComponent,
-    DebugPanelComponent,
-    DebugPanelDetailComponent,
   ],
   providers: [
     FlowDataResolver,

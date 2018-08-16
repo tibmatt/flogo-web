@@ -99,6 +99,7 @@
   "DEBUGGER:OUTPUT": "Output",
   "DEBUGGER:EMPTY-STATE-TITLE": "No activity selected",
   "DEBUGGER:EMPTY-STATE-DESCRIPTION": "Select an activity to view its detail",
+  "DEBUGGER:FIELDS-EMPTY-STATE-TITLE": "This activity doesn't have any inputs or outputs",
   "DEBUGGER:BUTTON-RUN-FROM-TILE": "Run from this tile",
   "ERROR-PANEL:ERROR-HANDLER" : "Error Handler",
   "FIELDS-BASE:TITLE-REQUIRED" : "{{value}} is required",

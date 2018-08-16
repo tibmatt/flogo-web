@@ -5,7 +5,7 @@
   <button *ngIf="!isOpen" class="toggle-button" (click)="togglePanel()">
     <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span><span class="flogo-icon flogo-icon-back toggle-button__icon"></span>
   </button>
-  <flogo-flow-debug-panel-detail
+  <flogo-flow-debug-panel-content
     *ngIf="isOpen"
     class="debug-panel__content"
     [activity]="activity$ | async"
@@ -14,5 +14,5 @@
     [@debugpanel]="isOpen"
     (@debugpanel.done)="onAnimationEnd($event)"
     (runFromHere)="run()"
-    (close)="togglePanel()"></flogo-flow-debug-panel-detail>
+    (close)="togglePanel()"></flogo-flow-debug-panel-content>
 </div>

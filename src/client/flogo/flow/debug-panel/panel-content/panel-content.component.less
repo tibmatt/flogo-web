@@ -1,5 +1,6 @@
-@import (reference) '../../../assets/_variables';
-@import (reference) '../../../assets/_typography';
+@import (reference) '../../../../assets/_variables';
+@import (reference) '../../../../assets/_typography';
+@import (reference) '../_variables';
 
 :host {
   display: flex;
@@ -33,30 +34,28 @@
   flex: 1;
   overflow: auto;
 }
+::ng-deep {
+  .empty-text {
+    padding: 0 1rem 1rem;
+    color: @color-plain;
+  }
 
-.empty-text {
-  padding: 0 1rem 1rem;
-  color: @color-plain;
+  .empty-text__title {
+    margin-top: 1.25em;
+    margin-bottom: 0.5em;
+  }
+
+  .empty-text__detail {
+    font-size: 0.75em;
+  }
+
 }
-
-.empty-text__title {
-  margin-top: 1.25em;
-  margin-bottom: 0.5em;
-}
-
-.empty-text__detail {
-  font-size: 0.75em;
-}
-
 
 .activity {
   display: flex;
   flex-direction: row;
 }
 
-@info-width: 22%;
-@padding-width: 1em;
-@activity-icon-width: 2em;
 .activity__info-group {
   width: @info-width;
   margin-top: 1rem;
@@ -69,15 +68,6 @@
 
 }
 
-.activity__field-group {
-  width: (100% - @info-width) / 2;
-  padding: 1rem 1rem 1rem 2rem;
-}
-
-.activity__field-group + .activity__field-group {
-  padding-left: 1rem;
-}
-
 .activity__name {
   font-weight: 600;
   margin-bottom: 0.5em;
@@ -85,6 +75,10 @@
 
 .activity__details {
   font-size: 0.87em;
+}
+
+.activity__fields {
+  flex: 1;
 }
 
 .activity__id {
