@@ -85,14 +85,13 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   save() {
     const currentTriggerId = this.selectedTriggerId;
+    const isUpdateStillApplicable = () => this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
     this.configuratorService.save()
-      .subscribe(() => {
-        const isUpdateStillApplicable = this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
-        if (!isUpdateStillApplicable) {
-          return;
-        }
-
-        this.getCurrentTriggerState.subscribe(state => this.previousState = state);
+      .pipe(
+        filter(() => isUpdateStillApplicable()),
+        switchMap(() => this.getCurrentTriggerState)
+      ).subscribe((triggerState) => {
+        this.previousState = triggerState;
         this.settingsForm.reset(this.settingsForm.getRawValue());
         this.updateSettingsStatus({
           // TODO: replace manual valid check when async validation bug is fixed in ng forms -> github.com/angular/angular/issues/20424
