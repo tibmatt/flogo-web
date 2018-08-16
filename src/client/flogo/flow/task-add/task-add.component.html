@@ -5,8 +5,14 @@
   <span class="flogo-icon-search icon-search"></span>
 </div>
 <div class="content" *ngIf="filteredActivities$ | async as activities">
-  <div *ngIf="activities.length > 0; else emptyCase">
-    <div class="activity qa-activities" [class.activity--subflow]="activity.ref === SUBFLOW_REF"
+  <div class="list-item install-item" (click)="handleInstallerWindow(true)">
+    <div class="install-activity qa-install-activity">
+      <i class="install-icon flogo-icon-add"></i>
+      <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>
+    </div>
+  </div>
+  <div *ngIf="activities.length > 0; else emptyCase" class="activities-list">
+    <div class="list-item activity qa-activities" [class.activity--subflow]="activity.ref === SUBFLOW_REF"
          *ngFor="let activity of activities" (click)="selectActivity(activity.ref)">
       <span>{{activity.title}}</span>
     </div>
@@ -14,12 +20,6 @@
   <ng-template #emptyCase>
     <p class="empty-text qa-no-tasks">{{ 'ADD:NO-TASKS' | translate }}</p>
   </ng-template>
-</div>
-<div class="footer">
-  <button class="install-activity flogo-button--secondary qa-install-activity" (click)="handleInstallerWindow(true)">
-    <i class="install-icon flogo-icon-add"></i>
-    <span>{{ 'FLOWS-DETAILS-TASKS:INSTALL-NEW-ACTIVITY' | translate }}</span>
-  </button>
 </div>
 <flogo-flow-installer [profileType]="(options.appAndFlowInfo$ | async).appProfileType"
                       [installType]="'activity'"
