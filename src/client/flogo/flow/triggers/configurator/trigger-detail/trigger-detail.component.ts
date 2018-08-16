@@ -44,6 +44,7 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
   appProperties?: string[];
 
   private previousState: CurrentTriggerState;
+  private getCurrentTriggerState: Observable<CurrentTriggerState>;
   private ngDestroy$ = SingleEmissionSubject.create();
 
   constructor(
@@ -64,11 +65,11 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
       });
 
     this.isSaving$ = this.store.pipe(TriggerConfigureSelectors.getCurrentTriggerIsSaving);
-    const getCurrentTriggerState = this.store.select(TriggerConfigureSelectors.getConfigureState).pipe(take(1));
+    this.getCurrentTriggerState = this.store.select(TriggerConfigureSelectors.getConfigureState).pipe(take(1));
     this.store.select(TriggerConfigureSelectors.selectCurrentTriggerId)
       .pipe(
         filter(currentTriggerId => !!currentTriggerId),
-        switchMap(() => getCurrentTriggerState),
+        switchMap(() => this.getCurrentTriggerState),
         takeUntil(this.ngDestroy$),
       )
       .subscribe((state) => {
@@ -84,13 +85,13 @@ export class TriggerDetailComponent implements OnInit, OnDestroy {
 
   save() {
     const currentTriggerId = this.selectedTriggerId;
+    const isUpdateStillApplicable = () => this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
     this.configuratorService.save()
-      .subscribe(() => {
-        const isUpdateStillApplicable = this.selectedTriggerId !== currentTriggerId || !this.ngDestroy$.closed;
-        if (!isUpdateStillApplicable) {
-          return;
-        }
-
+      .pipe(
+        filter(() => isUpdateStillApplicable()),
+        switchMap(() => this.getCurrentTriggerState)
+      ).subscribe((triggerState) => {
+        this.previousState = triggerState;
         this.settingsForm.reset(this.settingsForm.getRawValue());
         this.updateSettingsStatus({
           // TODO: replace manual valid check when async validation bug is fixed in ng forms -> github.com/angular/angular/issues/20424
