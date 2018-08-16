@@ -3,6 +3,7 @@
 @import "flogo-icons";
 @import (reference) '../assets/uxpl/buttons';
 @import (reference) './uxpl/dropdown';
+
 //@import '../node_modules/bootstrap/less/bootstrap';
 /* Reset */
 html,
@@ -119,10 +120,13 @@ button[hidden] {
 }
 
 
-label {
+label,
+.form-field-label {
   color: @color-disabled;
   font-size: 13px;
   font-weight: normal;
+  border-bottom: none;
+  margin-bottom: 0;
 }
 
 code {
@@ -807,7 +811,6 @@ code {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-
 
 
 

@@ -8,6 +8,8 @@ import { Textarea } from './textarea/textarea';
 import { Radio } from './radio/radio';
 import { ObjectType } from './object/objectType';
 
+const coerceToBoolean = (value) => !!(value && value !== 'false');
+
 @Injectable()
 export class FormFieldService {
 
@@ -37,7 +39,7 @@ export class FormFieldService {
         return new Radio({
           name: field.name,
           type: field.type,
-          value: field.value
+          value: coerceToBoolean(field.value),
         });
       case ValueType.Object:
       case ValueType.Any:
