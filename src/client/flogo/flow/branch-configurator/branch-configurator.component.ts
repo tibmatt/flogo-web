@@ -6,7 +6,7 @@ import {PostService} from '@flogo/core/services/post.service';
 import {FLOGO_TASK_TYPE, GraphNode, ItemBranch, LanguageService} from '@flogo/core';
 import {MapperController, MapperControllerFactory} from '@flogo/flow/shared/mapper';
 import {
- getStateWhenTaskConfigureChanges,
+ getStateWhenConfigureChanges,
 } from '@flogo/flow/shared/configurator/configurator.selector';
 import {skip, takeUntil} from 'rxjs/operators';
 import {SingleEmissionSubject} from '@flogo/core/models';
@@ -43,8 +43,7 @@ export class BranchConfiguratorComponent implements OnInit {
   itemId: string;
   inputScope: any[];
   isActive = false;
-  isDirty = false;
-  isValid = false;
+  isSaveDisabled = false;
   isEmpty = false;
   parentActivity: string;
   childActivity: string;
@@ -65,11 +64,11 @@ export class BranchConfiguratorComponent implements OnInit {
   ngOnInit() {
     this.store
       .pipe<FlowState>(
-        getStateWhenTaskConfigureChanges(),
+        getStateWhenConfigureChanges(FLOGO_TASK_TYPE.TASK_BRANCH),
         takeUntil(this.destroy$),
       )
       .subscribe(state => {
-        if (state && (state.mainItems[state.taskConfigure] || state.errorItems[state.taskConfigure]).type === FLOGO_TASK_TYPE.TASK_BRANCH) {
+        if (state) {
           this.initConfigurator(state);
         } else if (this.isActive) {
           this.close();
@@ -81,10 +80,9 @@ export class BranchConfiguratorComponent implements OnInit {
     this.itemId = state.taskConfigure;
     this.ensurePreviousContextCleanup();
     this.contextChange$ = SingleEmissionSubject.create();
-    this.isDirty = false;
-    this.isValid = false;
     const selectedItem = <ItemBranch>cloneDeep(state.mainItems[this.itemId] || state.errorItems[this.itemId]);
     this.createActivityLinksInfo(state);
+    this.isSaveDisabled = true;
     this.inputScope = getInputContext(this.itemId, state);
     const {propsToMap, mappings} = createBranchMappingContext(selectedItem.condition);
     this.resetInputMappingsController(propsToMap, this.inputScope, mappings);
@@ -119,9 +117,8 @@ export class BranchConfiguratorComponent implements OnInit {
         takeUntil(this.contextChange$)
       )
       .subscribe((state) => {
-        this.isDirty = state.isDirty;
-        this.isValid = state.isValid;
         this.isEmpty = !state.mappings.condition;
+        this.isSaveDisabled = !state.isDirty || !state.isValid || this.isEmpty;
       });
   }
 

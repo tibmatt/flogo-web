@@ -10,7 +10,7 @@
           Cancel
         </button>
         <button class="flogo-button--primary  actions__action--save"
-                [disabled]="!this.isDirty || !this.isValid || this.isEmpty"
+                [disabled]="this.isSaveDisabled"
                 (click)="save()">{{ 'BRANCH-CONFIGURATOR:SAVE' | translate }}
         </button>
       </div>

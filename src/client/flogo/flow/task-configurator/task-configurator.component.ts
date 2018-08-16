@@ -19,7 +19,7 @@ import {ActionBase, FLOGO_TASK_TYPE, Item, ItemActivityTask, ItemSubflow, ItemTa
 import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_KEY, ITERATOR_OUTPUT_KEY } from './models';
 import { FlowState, FlowActions } from '@flogo/flow/core/state';
 import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
-import { getStateWhenTaskConfigureChanges } from '../shared/configurator/configurator.selector';
+import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
 import { createSaveAction } from '@flogo/flow/task-configurator/models/save-action-creator';
 
 const TASK_TABS = {
@@ -96,11 +96,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store
       .pipe<FlowState>(
-        getStateWhenTaskConfigureChanges(),
+        getStateWhenConfigureChanges(FLOGO_TASK_TYPE.TASK),
         takeUntil(this.destroy$),
       )
       .subscribe(state => {
-        if (state && (state.mainItems[state.taskConfigure] || state.errorItems[state.taskConfigure]).type === FLOGO_TASK_TYPE.TASK) {
+        if (state) {
           this.initConfigurator(state);
         } else if (this.isActive) {
           this.close();

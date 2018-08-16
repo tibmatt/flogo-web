@@ -60,9 +60,6 @@
         <flogo-flow-configuration-task [attributes]="_attributes" [fieldObserver]="_fieldObserver" [task]="_task"></flogo-flow-configuration-task>
       </div>
 
-      <div *ngIf="_context.isBranch">
-        <flogo-flow-configuration-branch [attributes]="_branchConfigs" [fieldObserver]="_fieldObserver"    ></flogo-flow-configuration-branch>
-      </div>
     </div>
     <div *ngIf="_context.shouldSkipTaskConfigure" class="flogo-task-container--no-configure">
       <div class="tile"></div>

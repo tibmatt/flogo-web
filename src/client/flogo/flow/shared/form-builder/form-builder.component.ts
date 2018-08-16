@@ -38,7 +38,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   _hasChanges = false;
   _attributesOriginal: any;
   _fieldsErrors: string[];
-  _branchConfigs: any[]; // force the fields update by taking the advantage of ngFor
   hasErrors = false;
   @Output() builderAction: EventEmitter<string>;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
@@ -127,29 +126,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
     });
   }
 
-  _saveBranchChangesToFlow() {
-    return new Promise((resolve, reject) => {
-      const diagramId = this._flowId;
-
-      const self = this;
-      const branchInfo = this._branchConfigs[0];
-      const state = {
-        taskId: branchInfo.id,
-        id: diagramId,
-        condition: self.convertBranchConditionToInternal(branchInfo.condition,
-          _.get(self, '_context.contextData.previousTiles', []))
-      };
-
-      this._postService.publish(_.assign({}, PUB_EVENTS.taskDetailsChanged, {
-        data: state,
-        done: () => {
-          this._hasChanges = false;
-          resolve();
-        }
-      }));
-    });
-  }
-
 
   _setFieldsObservers() {
     this._fieldObserver = new ReplaySubject(2);
@@ -186,15 +162,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
 
       }
     });
-
-    // handle the change of condition of branch
-    this._fieldObserver.pipe(filter((param: any) => {
-      return param.message === 'change-field' && param.payload.isBranch && param.payload.name === 'condition';
-    }))
-      .subscribe((param: any) => {
-        this._branchConfigs[0].condition = param.payload.value;
-        this.saveChanges(null);
-      });
   }
 
   _updateAttributeByUserChanges(attributes: any, changedObject: any) {
@@ -294,10 +261,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       refreshTaskWarnings();
       return;
     }
-
-    if (this._context.isBranch) {
-      this._setBranchEnvironment(this._task);
-    }
   }
 
   _getCanRunFromThisTile() {
@@ -331,18 +294,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       output.mappings = this._task.outputMappings;
       output.step = this._step;
     });
-  }
-
-  _setBranchEnvironment(branchInfo: any) {
-    const self = this;
-    this._branchConfigs = [
-      _.assign({},
-        {
-          id: branchInfo.id,
-          condition: self.convertBranchConditionToDisplay(branchInfo.condition,
-            _.get(self, '_context.contextData.previousTiles', []))
-        })
-    ];
   }
 
   _getArray(obj: any) {
@@ -397,10 +348,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
       this._setTaskEnvironment(_.cloneDeep(this._attributesOriginal || {}));
     }
 
-    if (this._context.isBranch) {
-      this._setBranchEnvironment(this._task || {});
-    }
-
     this._fieldsErrors = [];
     this._hasChanges = false;
 
@@ -409,8 +356,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   private _saveChangesToFlow(changedStructure) {
     if (this._context.isTask || this._context.isTrigger) {
       return this._saveActivityChangesToFlow(changedStructure);
-    } else if (this._context.isBranch) {
-      return this._saveBranchChangesToFlow();
     }
     return null;
   }
@@ -421,7 +366,6 @@ export class FlogoFormBuilderComponent implements OnDestroy, OnChanges {
   }
 
   changeTaskDetail(content: any, proper: string) {
-    console.log(content);
 
     this._postService.publish(_.assign({}, PUB_EVENTS.changeTileDetail,
       {
