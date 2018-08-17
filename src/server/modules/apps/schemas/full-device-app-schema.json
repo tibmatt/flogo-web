@@ -151,10 +151,16 @@
               "type": "integer"
             },
             "from": {
-              "type": "integer"
+              "type": [
+                "integer",
+                "string"
+              ]
             },
             "to": {
-              "type": "integer"
+              "type": [
+                "integer",
+                "string"
+              ]
             },
             "type": {
               "type": "integer"
@@ -174,7 +180,10 @@
           "type": "object",
           "properties": {
             "id": {
-              "type": "integer"
+              "type": [
+                "integer",
+                "string"
+              ]
             },
             "name": {
               "type": "string"
