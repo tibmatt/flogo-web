@@ -12,6 +12,7 @@ export class PanelContentComponent implements OnChanges {
 
   @Input() activity: ItemActivityTask;
   @Input() fields: FieldsInfo;
+  @Input() executionErrors?: Array<string>;
   @Input() runDisabled: boolean;
   @Input() isEndOfFlow: boolean;
   @Input() activityHasRun: boolean;

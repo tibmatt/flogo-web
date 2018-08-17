@@ -10,6 +10,7 @@
     class="debug-panel__content"
     [activity]="activity$ | async"
     [fields]="fields$ | async"
+    [executionErrors]="executionErrrors$ | async"
     [activityHasRun]="activityHasRun$ | async"
     [flowHasRun]="flowHasRun$ | async"
     [runDisabled]="isRunDisabled$ | async"

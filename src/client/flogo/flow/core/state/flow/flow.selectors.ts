@@ -12,6 +12,7 @@ import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
 import { Activity } from '@flogo/flow/task-add';
 import { getProfileType } from '@flogo/shared/utils';
 import { CONTRIB_REF_PLACEHOLDER } from '@flogo/core/constants';
+import { NodeDictionary } from '@flogo/core/interfaces/graph/graph';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
@@ -100,6 +101,15 @@ export const getCurrentItems: MemoizedSelector<FlowState, Dictionary<Item>> = cr
   (currentHandlerType, flowState) => currentHandlerType ? flowState[getItemsDictionaryName(currentHandlerType)] : null
 );
 
+export const getCurrentNodes: MemoizedSelector<FlowState, NodeDictionary> = createSelector(
+  getCurrentHandlerType,
+  selectFlowState,
+  (currentHandlerType, flowState) => currentHandlerType ?
+      flowState[getGraphName(currentHandlerType)].nodes as NodeDictionary
+    : null
+);
+
+
 const isTaskSelection = (selection): selection is TaskSelection => selection && selection.type === SelectionType.Task;
 export const getSelectedActivity = createSelector(
   selectCurrentSelection,
@@ -139,6 +149,14 @@ export const getIsRunDisabledForSelectedActivity = createSelector(
     const isErrorHandler = handlerType === HandlerType.Error;
     const isRunDisabled = runnableInfo && runnableInfo.disabled;
     return isErrorHandler || structureHasChanged || isRunDisabled || !flowHasRun;
+  },
+);
+
+export const getCurrentActivityExecutionErrors = createSelector(
+  getSelectedActivity,
+  getCurrentNodes,
+  (activity, nodes) => {
+    return activity && nodes ? nodes[activity.id].status.executionErrored : null;
   },
 );
 

@@ -45,6 +45,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   isRunDisabled$: Observable<boolean>;
   flowHasRun$: Observable<boolean>;
   activityHasRun$: Observable<boolean>;
+  executionErrrors$: Observable<Array<string>>;
   isEndOfFlow$: Observable<boolean>;
 
   private destroy$ = SingleEmissionSubject.create();
@@ -60,12 +61,13 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     const selectAndShare = (selector) => this.store.pipe(select(selector), shareReplay(1));
     this.activity$ = selectAndShare(FlowSelectors.getSelectedActivity);
     this.isRunDisabled$ = selectAndShare(FlowSelectors.getIsRunDisabledForSelectedActivity);
+    this.executionErrrors$ = selectAndShare(FlowSelectors.getCurrentActivityExecutionErrors);
+
     const schema$ = selectAndShare(FlowSelectors.getSelectedActivitySchema);
 
     this.flowHasRun$ = selectAndShare(FlowSelectors.getFlowHasRun);
     this.isEndOfFlow$ = schema$.pipe(map(isMapperActivity));
     const form$: Observable<null | FieldsInfo> = schema$.pipe(this.mapStateToForm(), shareReplay(1));
-
     const executionResult$ = selectAndShare(FlowSelectors.getSelectedActivityExecutionResult);
     this.activityHasRun$ = executionResult$.pipe(map(Boolean));
     this.fields$ = combineLatest(form$, this.activity$, this.isRunDisabled$, executionResult$)

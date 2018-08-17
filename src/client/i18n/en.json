@@ -104,6 +104,8 @@
   "DEBUGGER:NO-RUN-MESSAGE": "You don’t have any activity result because the flow has not run yet. Click “run flow” to run this flow and get results.",
   "DEBUGGER:NO-ACTIVITY-RUN-MESSAGE": "This activity has not run yet.",
   "DEBUGGER:BUTTON-RUN-FROM-TILE": "Run from this tile",
+  "DEBUGGER:ERROR-TITLE": "Error message",
+  "DEBUGGER:ERROR-EMPTY-MSG": "(Empty error)",
   "ERROR-PANEL:ERROR-HANDLER" : "Error Handler",
   "FIELDS-BASE:TITLE-REQUIRED" : "{{value}} is required",
   "FIELDS-TEXTAREA:INVALID-JSON" : "{{value}} invalid JSON",

@@ -5,6 +5,7 @@ import { FormBuilderModule as DynamicFormModule } from '@flogo/flow/shared/dynam
 import { DebugPanelComponent } from './debug-panel.component';
 import { PanelContentComponent } from './panel-content/panel-content.component';
 import { FieldsComponent } from './fields/fields.component';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { FieldsComponent } from './fields/fields.component';
     DebugPanelComponent,
     PanelContentComponent,
     FieldsComponent,
+    ErrorComponent,
   ],
   exports: [
     DebugPanelComponent
