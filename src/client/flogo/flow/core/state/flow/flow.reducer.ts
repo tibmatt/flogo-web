@@ -54,7 +54,10 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
     case ActionType.ItemUpdated: {
       state = itemUpdate(state, action.payload);
       state = nodeUpdate(state, action.payload);
-      return state;
+      return {
+        ...state,
+        taskConfigure : null
+      };
     }
     case ActionType.ConfigureItem: {
       return {

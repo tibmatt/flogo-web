@@ -256,5 +256,8 @@
   "FLOWS-LIST:LINK-TEXT":"View in new tab",
   "FLOWS-LIST:NODESCRIPTION": "No Description",
   "FLOWS-LIST:NOFLOW": "No flow is available for selection",
-  "FLOWS-LIST:SELECT":"Select"
+  "FLOWS-LIST:SELECT":"Select",
+  "BRANCH-CONFIGURATOR:SAVE": "Save",
+  "BRANCH-CONFIGURATOR:CANCEL": "Cancel",
+  "BRANCH-CONFIGURATOR:AVAILABLE-DATA": "Available Data"
 }

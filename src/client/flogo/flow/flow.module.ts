@@ -16,6 +16,7 @@ import { CoreModule as FlowCoreModule } from './core';
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
 import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
+import { BranchMapperModule } from './branch-configurator';
 import { ParamsSchemaModule } from './params-schema';
 
 import { FlowRoutingModule } from './flow-routing.module';
@@ -28,7 +29,7 @@ import { FlogoFlowDiagramComponent } from './flow-diagram/flow-diagram.component
 import { FlowTabsComponent } from './flow-tabs/flow-tabs.component';
 import { SaveEffects } from './core/effects';
 
-import { DebugPanelModule} from './debug-panel';
+import { DebugPanelModule } from './debug-panel';
 import { TaskAddModule } from './task-add';
 
 @NgModule({
@@ -52,6 +53,7 @@ import { TaskAddModule } from './task-add';
     FlowRoutingModule,
     TaskAddModule,
     DebugPanelModule,
+    BranchMapperModule,
   ],
   declarations: [
     EmptyDetailComponent,
