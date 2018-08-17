@@ -19,9 +19,6 @@ import {
 import {
   FlogoFormBuilderConfigurationTaskComponent as TaskDirective
 } from './configuration/task/task.component';
-import {
-  FlogoFormBuilderConfigurationBranchComponent as BranchDirective
-} from './configuration/branch/branch.component';
 
 import { FlogoFormBuilderComponent } from './form-builder.component';
 
@@ -40,7 +37,6 @@ import { FlogoFormBuilderComponent } from './form-builder.component';
     FlogoFormBuilderFieldsTextBoxComponent,
     TriggersDirective,
     TaskDirective,
-    BranchDirective,
     FlogoFormBuilderComponent
   ],
   exports: [
