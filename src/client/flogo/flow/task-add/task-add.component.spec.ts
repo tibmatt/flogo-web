@@ -102,7 +102,7 @@ describe('Component: TaskAddComponent', () => {
 
   it('should open installer and mark the popover to keep active', () => {
     const spyActiveState = spyOn(fixture.debugElement.injector.get(TASKADD_OPTIONS), 'updateActiveState');
-    const installElement = fixture.debugElement.query(By.css('.qa-install-activity'));
+    const installElement = fixture.debugElement.query(By.css('.qa-install-item'));
     installElement.triggerEventHandler('click', null);
     fixture.detectChanges();
     const [state] = spyActiveState.calls.mostRecent().args;
