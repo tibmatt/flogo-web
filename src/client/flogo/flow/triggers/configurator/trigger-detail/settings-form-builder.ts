@@ -1,4 +1,4 @@
-import {isEmpty, isObject, mapValues} from 'lodash';
+import {isEmpty, isString, mapValues, isUndefined, isNull} from 'lodash';
 import {Injectable} from '@angular/core';
 import {Dictionary} from '@flogo/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -59,8 +59,8 @@ export class SettingsFormBuilder {
   }
 
   private makeFormControl(setting, settingInfo: SettingControlInfo, disableControls?: boolean) {
-    const value = setting.value || '';
-    const viewValue = isObject(value) ? JSON.stringify(value, null, 2) : value;
+    const value = !isNull(setting.value) && !isUndefined(setting.value) ? setting.value : '';
+    const viewValue = isString(value) ? value : JSON.stringify(value, null, 2);
     return this.ngFormBuilder.control({
       value: <SettingValue> {
         viewValue,

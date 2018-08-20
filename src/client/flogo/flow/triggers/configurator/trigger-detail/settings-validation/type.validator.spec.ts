@@ -1,10 +1,6 @@
 import {arrayValidator, booleanValidator, getNumberValidator, getObjectValidator} from './type.validator';
+import {makeExpectationFunctions} from './testing/make-expectation-functions';
 import {ValueType} from '@flogo/core';
-
-const makeExpectationFunctions = validatorFunction => ({
-  shouldPass: val => expect(validatorFunction(val)).toBeFalsy(`Expected ${val} to pass the validation`),
-  shouldFail: val => expect(validatorFunction(val)).toBeTruthy(`Expected ${val} to NOT pass the validation`)
-});
 
 describe('booleanValidator', function () {
   it('Should correctly validate boolean values', function () {

@@ -223,9 +223,10 @@ export class AutoCompleteDirective implements OnChanges, OnInit, OnDestroy {
   }
 
   private optionSelected(option: string) {
-    this.formControl.setValue(option);
     if (this.valueAccessor) {
       this.valueAccessor.update(option);
+    } else {
+      this.formControl.setValue(option);
     }
     this.close();
   }
