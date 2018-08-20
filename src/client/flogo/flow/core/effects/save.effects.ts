@@ -1,18 +1,18 @@
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
-import { FlowActions, FlowState } from '../state';
+import { FlowActions } from '../state';
 import { FlogoFlowService as FlowsService } from '@flogo/flow/core/flow.service';
 const ActionType = FlowActions.ActionType;
 
 @Injectable()
 export class SaveEffects {
   @Effect()
-  login$: Observable<Action> = this.actions$.pipe(
+  saveFlow$: Observable<Action> = this.actions$.pipe(
     ofType(
       ActionType.TaskItemCreated,
       ActionType.RemoveItem,
