@@ -1,23 +1,47 @@
 # Third party dependencies change log
 All notable changes to this project's dependencies will be documented in this file.
 
-# v0.5.6
+## v0.5.6
 
 ### Production Dependencies
 
-- **Upgraded:**
-  - [ng2-bs3-modal@0.15.0](https://github.com/dougludlow/ng2-bs3-modal) (ISC) - Was 0.13.0
-  - [primeng@6.0.0](https://github.com/primefaces/primeng) (MIT) - Was 5.2.3
+- ** New **
+  - [@ngrx/effects@^6.0.1](https://github.com/ngrx/platform) - MIT
+- ** Upgraded **
+  - [@angular/animations@6.0.7](https://github.com/angular/angular) - MIT (Was ^5.0.0)
+  - [@angular/cdk@6.3.2](https://github.com/angular/material2) - MIT (Was 5.2.4)
+  - [@angular/common@6.0.7](https://github.com/angular/angular) - MIT (Was ^5.0.0)
+  - [@angular/core@6.0.7](https://github.com/angular/angular) - MIT (Was ^5.0.0)
+  - [@angular/forms@6.0.7](https://github.com/angular/angular) - MIT (Was ^5.0.0)
+  - [@angular/platform-browser@6.0.7](https://github.com/angular/angular) - MIT (Was ^5.0.0)
+  - [@angular/platform-browser-dynamic@6.0.7](https://github.com/angular/angular) - - MIT (Was ^5.0.0)
+  - [@angular/router@6.0.7](https://github.com/angular/angular) - MIT (Was ^5.0.0)
+  - [@ngrx/store@^6.0.1](https://github.com/ngrx/platform) - MIT (Was ^5.2.0)
+  - [@ngrx/store-devtools@^6.0.1](https://github.com/ngrx/platform) - MIT (Was ^5.2.0)
+  - [@ngx-translate/core@^10.0.2](https://github.com/ngx-translate/core) - MIT (Was ^9.1.1)
+  - [monaco-editor@^0.13.1](https://github.com/Microsoft/monaco-editor) - MIT (Was ^0.10.0)
+  - [ng2-bs3-modal@^0.15.0](https://github.com/dougludlow/ng2-bs3-modal) - ISC (Was ^0.13.0)
+  - [ngx-perfect-scrollbar@^6.2.0](https://github.com/zefoy/ngx-perfect-scrollbar) - MIT (Was ^5.3.5)
+  - [primeng@^6.0.0](https://github.com/primefaces/primeng) - MIT (Was ^5.2.3)
+  - [rxjs@^6.2.1](https://github.com/reactivex/rxjs) - Apache-2.0 (Was ^5.5.2)
+  - [zone.js@^0.8.26](https://github.com/angular/zone.js) - MIT (Was ^0.8.20)
 - ** Removed **
-  - d3.js
   - @angular/http
+  - d3
 
+## Development Dependencies
 
-### Development Dependencies
+- ** New **
+  - [@angular-devkit/build-angular@~0.6.8](https://github.com/angular/devkit) MIT
+- ** Upgraded **
+  - [@angular/cli@^6.0.8](https://github.com/angular/angular-cli) MIT (Was ^1.7.3)
+  - [@angular/compiler@6.0.7](https://github.com/angular/angular) MIT (Was ^5.0.0)
+  - [@angular/compiler-cli@6.0.7](https://github.com/angular/angular) MIT (Was ^5.0.0)
+  - [typescript@2.7.2](https://github.com/Microsoft/TypeScript) Apache-2.0 (Was ~2.5.3)
+- ** Removed **
   - @types/d3
 
-
-# v0.5.5
+## v0.5.5
 
 ### Production Dependencies
 
