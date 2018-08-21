@@ -1,5 +1,5 @@
 import { assign, cloneDeep, get, isEmpty, isNil, isNull, isUndefined, map as _map, mapValues, noop, reduce, set } from 'lodash';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -215,7 +215,7 @@ export class TestRunnerService implements OnDestroy {
 
     message = message || 'CANVAS:ERROR-MESSAGE';
     notification(this.translate.instant(message), 'error');
-    return error;
+    return throwError(error);
   }
 
   private observeProcessRegistration(runner: RunProgressStore) {
