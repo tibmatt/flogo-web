@@ -15,6 +15,7 @@ export function runnerReducer(state: FlowState = INITIAL_STATE, action: actions.
     case ActionType.RemoveItem:
       state = markAsConfigChanged(state);
       state = markAsStructureChanged(state);
+      state = removeExecutionDataForItem(state, action.payload.itemId);
       break;
     case ActionType.NewExecutionRegistered: {
       state = {
@@ -54,23 +55,31 @@ export function runnerReducer(state: FlowState = INITIAL_STATE, action: actions.
 }
 
 function markAsConfigChanged(state: FlowState) {
-  if (!state.configChangedSinceLastExecution) {
-    return {
-      ...state,
-      configChangedSinceLastExecution: true,
-    };
+  if (state.configChangedSinceLastExecution) {
+    return state;
   }
-  return state;
+  return {
+    ...state,
+    configChangedSinceLastExecution: true,
+  };
 }
 
 function markAsStructureChanged(state: FlowState) {
-  if (!state.structureChangedSinceLastFullExecution) {
-    return {
-      ...state,
-      structureChangedSinceLastFullExecution: true,
-    };
+  if (state.structureChangedSinceLastFullExecution) {
+    return state;
   }
-  return state;
+  return {
+    ...state,
+    structureChangedSinceLastFullExecution: true,
+  };
+}
+
+function removeExecutionDataForItem(flowState: FlowState, itemId: string): FlowState {
+  const { [itemId]: _itemToRemove, ...lastExecutionResult } = flowState.lastExecutionResult;
+  return {
+    ...flowState,
+    lastExecutionResult,
+  };
 }
 
 function resetExecutionResult(state: FlowState) {
