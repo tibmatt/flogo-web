@@ -1,22 +1,30 @@
-<div class="content" #content [class.is-open]="isOpen">
+<div class="content" #content
+     [@wrappedContentState]="panelStatus"
+     (@wrappedContentState.done)="onAnimationEnd($event)">
   <ng-content></ng-content>
 </div>
-<div class="debug-panel-container" [class.is-open]="isOpen">
-  <button *ngIf="!isOpen" class="toggle-button" (click)="togglePanel()">
-    <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span><span class="flogo-icon flogo-icon-back toggle-button__icon"></span>
-  </button>
-  <flogo-flow-debug-panel-content
-    *ngIf="isOpen"
-    class="debug-panel__content"
-    [activity]="activity$ | async"
-    [fields]="fields$ | async"
-    [executionErrors]="executionErrrors$ | async"
-    [activityHasRun]="activityHasRun$ | async"
-    [flowHasRun]="flowHasRun$ | async"
-    [runDisabled]="isRunDisabled$ | async"
-    [isEndOfFlow]="isEndOfFlow$ | async"
-    [@debugpanel]="isOpen"
-    (@debugpanel.done)="onAnimationEnd($event)"
-    (runFromHere)="run()"
-    (close)="togglePanel()"></flogo-flow-debug-panel-content>
+<div class="debug-panel-container" [class.is-open]="isOpen" [@debugPanelContainerState]="panelStatus">
+  <div class="debug-panel-container__content"
+       [class.is-open]="isOpen"
+       [@debugPanelState]="panelStatus">
+    <div class="header" class="toggle-button" (click)="openPanel()">
+      <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span>
+      <flogo-debug-panel-toggle-button class="toggle-button__icon"
+                                       role="button"
+                                       [isMinimized]="!isOpen"
+                                       (click)="closePanel($event)">
+      </flogo-debug-panel-toggle-button>
+    </div>
+    <flogo-flow-debug-panel-content
+      *ngIf="isOpen"
+      class="js-debug-panel-content debug-panel__content"
+      [activity]="activity$ | async"
+      [fields]="fields$ | async"
+      [executionErrors]="executionErrrors$ | async"
+      [activityHasRun]="activityHasRun$ | async"
+      [flowHasRun]="flowHasRun$ | async"
+      [runDisabled]="isRunDisabled$ | async"
+      [isEndOfFlow]="isEndOfFlow$ | async"
+      (runFromHere)="run()"></flogo-flow-debug-panel-content>
+  </div>
 </div>

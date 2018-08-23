@@ -1,7 +1,3 @@
-<div class="header">
-  <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span>
-  <span class="flogo-icon flogo-icon-back toggler" role="button" (click)="onClose()"></span>
-</div>
 <div class="content" [ngSwitch]="viewState">
   <div *ngSwitchCase="'activity'" class="activity">
     <div class="activity__info-group">

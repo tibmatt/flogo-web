@@ -19,7 +19,8 @@ import { FieldsInfo } from './fields-info';
 import { isMapperActivity } from '@flogo/shared/utils';
 
 const SELECTOR_FOR_CURRENT_ELEMENT = 'flogo-diagram-tile-task.is-selected';
-const OPEN_STATE = 'open';
+const STATUS_OPEN = 'open';
+const STATUS_CLOSED = 'closed';
 
 const mapFormInputChangesToSaveAction = (store, activity$) => pipe(
   filter((formInfo: FieldsInfo) => Boolean(formInfo && formInfo.form && formInfo.form.get('input'))),
@@ -34,12 +35,16 @@ const mapFormInputChangesToSaveAction = (store, activity$) => pipe(
   selector: 'flogo-flow-debug-panel',
   templateUrl: './debug-panel.component.html',
   styleUrls: ['./debug-panel.component.less'],
-  animations: [debugPanelAnimations.transformPanel],
+  animations: [
+    debugPanelAnimations.panelContainer,
+    debugPanelAnimations.panel,
+    debugPanelAnimations.wrappedContent,
+  ],
 })
 export class DebugPanelComponent implements OnInit, OnDestroy {
 
   @ViewChild('content') content: ElementRef;
-  isOpen: string;
+  panelStatus: 'open' | 'closed' = STATUS_CLOSED;
   activity$: Observable<ItemActivityTask>;
   fields$: Observable<FieldsInfo>;
   isRunDisabled$: Observable<boolean>;
@@ -84,19 +89,29 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
         select(FlowSelectors.selectDebugPanelOpen),
         takeUntil(this.destroy$),
       )
-      .subscribe(isOpen => this.isOpen = isOpen ? OPEN_STATE : null);
+      .subscribe(isOpen => this.panelStatus = isOpen ? STATUS_OPEN : STATUS_CLOSED);
   }
 
   ngOnDestroy() {
     this.destroy$.emitAndComplete();
   }
 
-  togglePanel() {
-    this.store.dispatch(new FlowActions.DebugPanelStatusChange({ isOpen: !this.isOpen }));
+  openPanel() {
+    if (!this.isOpen) {
+      this.changePanelState(true);
+    }
+  }
+
+  closePanel(event) {
+    if (this.isOpen) {
+      event.stopPropagation();
+      this.changePanelState(false);
+    }
   }
 
   onAnimationEnd(event: AnimationEvent) {
-    if (event.toState === OPEN_STATE) {
+    console.log('animation end', event.toState);
+    if (event.toState === STATUS_OPEN) {
       this.scrollContextElementIntoView();
     }
   }
@@ -107,6 +122,14 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
         take(1),
         switchMap(task => this.testRunner.runFromTask({ taskId: task.id, inputs: task.input }))
       ).subscribe();
+  }
+
+  get isOpen(): boolean {
+    return this.panelStatus === STATUS_OPEN;
+  }
+
+  private changePanelState(isOpen: boolean) {
+    this.store.dispatch(new FlowActions.DebugPanelStatusChange({ isOpen }));
   }
 
   private mapStateToForm() {

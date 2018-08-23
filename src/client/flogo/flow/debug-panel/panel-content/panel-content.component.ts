@@ -17,14 +17,9 @@ export class PanelContentComponent implements OnChanges {
   @Input() isEndOfFlow: boolean;
   @Input() activityHasRun: boolean;
   @Input() flowHasRun: boolean;
-  @Output() close = new EventEmitter();
   @Output() runFromHere = new EventEmitter<ItemActivityTask>();
 
   viewState = 'empty';
-
-  onClose() {
-    this.close.emit();
-  }
 
   onRun() {
     this.runFromHere.emit(this.activity);

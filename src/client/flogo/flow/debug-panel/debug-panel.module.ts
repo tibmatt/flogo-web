@@ -6,6 +6,7 @@ import { DebugPanelComponent } from './debug-panel.component';
 import { PanelContentComponent } from './panel-content/panel-content.component';
 import { FieldsComponent } from './fields/fields.component';
 import { ErrorComponent } from './error/error.component';
+import { ToggleButtonComponent } from './toggle-button/toggle-button.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { ErrorComponent } from './error/error.component';
     PanelContentComponent,
     FieldsComponent,
     ErrorComponent,
+    ToggleButtonComponent,
   ],
   exports: [
     DebugPanelComponent

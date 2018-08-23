@@ -8,32 +8,11 @@
   overflow: hidden;
 }
 
-.header {
-  .secondary-header();
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.6rem 1rem 0.5rem;
-  border-bottom: 1px solid @twilight-blue;
-}
-
-.toggler {
-  display: block;
-  transform-origin: center center;
-  position: relative;
-  transform: rotate(270deg);
-  &::before {
-    padding: 5px;
-    display: block;
-    margin-right: 0;
-  }
-}
-
 .content {
   flex: 1;
   overflow: auto;
 }
+
 ::ng-deep {
   .empty-text {
     padding: 0 1rem 1rem;
