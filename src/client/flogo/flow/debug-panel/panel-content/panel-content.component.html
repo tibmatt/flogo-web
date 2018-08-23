@@ -2,20 +2,21 @@
   <div *ngSwitchCase="'activity'" class="activity">
     <div class="activity__info-group">
       <div class="activity__name">{{ activity.name }}</div>
-      <div class="activity__details">{{ activity.description }}</div>
-      <div class="activity__id activity__details">ID: {{ activity.id }}</div>
-      <button class="flogo-button--default btn-run" [disabled]="runDisabled" (click)="onRun()">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
+      <div class="activity__id">ID: {{ activity.id }}</div>
+      <div class="activity__description">{{ activity.description }}</div>
+      <button class="flogo-button--secondary btn-run" [disabled]="runDisabled" (click)="onRun()">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
     </div>
     <ng-container *ngIf="executionErrors?.length > 0; then errorDisplay else activityFields"></ng-container>
   </div>
   <div *ngSwitchCase="'noFlowRun'" class="empty-text">
-    <div class="empty-text__title">{{ 'DEBUGGER:NO-RUN-MESSAGE' | translate }}</div>
+    <div class="empty-text__lead">{{ 'DEBUGGER:NO-RUN-MESSAGE-TITLE' | translate }}</div>
+    <div class="empty-text__detail">{{ 'DEBUGGER:NO-RUN-MESSAGE-DETAIL' | translate }}</div>
   </div>
   <div *ngSwitchCase="'noActivityRun'" class="empty-text">
-    <div class="empty-text__title">{{ 'DEBUGGER:NO-ACTIVITY-RUN-MESSAGE' | translate }}</div>
+    <div class="empty-text__lead">{{ 'DEBUGGER:NO-ACTIVITY-RUN-MESSAGE' | translate }}</div>
   </div>
   <div *ngSwitchDefault class="empty-text">
-    <div class="empty-text__title">{{ 'DEBUGGER:EMPTY-STATE-TITLE' | translate }}</div>
+    <div class="empty-text__lead">{{ 'DEBUGGER:EMPTY-STATE-TITLE' | translate }}</div>
     <div class="empty-text__detail">{{ 'DEBUGGER:EMPTY-STATE-DESCRIPTION' | translate }}</div>
   </div>
 </div>
@@ -30,6 +31,6 @@
 </ng-template>
 <ng-template #endOfFlow>
   <div class="empty-text">
-    <div class="empty-text__title">{{ 'DEBUGGER:EMPTY-STATE-END-OF-FLOW' | translate }}</div>
+    <div class="empty-text__lead">{{ 'DEBUGGER:EMPTY-STATE-END-OF-FLOW' | translate }}</div>
   </div>
 </ng-template>

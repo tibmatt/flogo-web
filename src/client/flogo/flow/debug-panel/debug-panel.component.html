@@ -7,9 +7,9 @@
   <div class="debug-panel-container__content"
        [class.is-open]="isOpen"
        [@debugPanelState]="panelStatus">
-    <div class="header" class="toggle-button" (click)="openPanel()">
+    <div class="header" (click)="openPanel()">
       <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span>
-      <flogo-debug-panel-toggle-button class="toggle-button__icon"
+      <flogo-debug-panel-toggle-button class="header__toggler"
                                        role="button"
                                        [isMinimized]="!isOpen"
                                        (click)="closePanel($event)">

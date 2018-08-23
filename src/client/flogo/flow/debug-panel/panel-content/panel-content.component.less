@@ -10,22 +10,31 @@
 
 .content {
   flex: 1;
+  display: flex;
   overflow: auto;
 }
 
 ::ng-deep {
   .empty-text {
-    padding: 0 1rem 1rem;
-    color: @color-plain;
+    margin: 1.5rem;
+    border-radius: 4px;
+    background-color: @lightest-gray;
+    color: @color-dark-gray;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
   }
 
-  .empty-text__title {
-    margin-top: 1.25em;
+  .empty-text__lead {
     margin-bottom: 0.5em;
+    font-weight: 600;
+    font-size: 1.125rem;
   }
 
   .empty-text__detail {
-    font-size: 0.75em;
+    font-size: 0.875rem;
   }
 
   .activity__field-group {
@@ -40,6 +49,7 @@
 }
 
 .activity {
+  flex: 1;
   display: flex;
   flex-direction: row;
 }
@@ -47,30 +57,36 @@
 .activity__info-group {
   width: @info-width;
   margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  border-right: 1px solid @warm-grey;
+  border-right: 1px solid @light-grey;
 
-  padding: 0 1em 1em (@padding-width * 2 + @activity-icon-width);
-  background: url(/assets/svg/flogo.icon.gears.circle.svg) no-repeat @padding-width 0;
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  background: url(/assets/svg/flogo.icon.gears.circle.svg) no-repeat @padding-width 1rem;
   background-size: @activity-icon-width;
-
 }
 
 .activity__name {
+  margin-top: 1rem;
   font-weight: 600;
-  margin-bottom: 0.5em;
 }
 
-.activity__details {
-  font-size: 0.87em;
+.activity__name,
+.activity__id {
+  padding-left: (@padding-width / 2 + @activity-icon-width);
+}
+
+.activity__id,
+.activity__description {
+  font-size: 0.75rem;
+  color: @color-dark-gray;
+}
+
+.activity__description {
+  margin-top: 1rem;
 }
 
 .activity__fields {
   flex: 1;
-}
-
-.activity__id {
-  opacity: 0.7;
+  overflow: auto;
 }
 
 .fields-title {
@@ -79,4 +95,7 @@
 
 .btn-run {
   margin-top: 1rem;
+  // todo: margin should be zero at global level
+  margin-left: 0;
+  width: 100%;
 }

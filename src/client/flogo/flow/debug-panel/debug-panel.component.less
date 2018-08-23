@@ -47,13 +47,14 @@
   overflow-y: auto;
 }
 
-.toggle-button {
+.header {
   .secondary-header();
   color: @color-ink;
   height: @panel-height-minimized;
   line-height: @panel-height-minimized;
   margin-top: 0;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding-left: 1rem;
@@ -61,31 +62,11 @@
   border-bottom: solid 2px @color-medium-gray;
 }
 
-.toggle-button__icon {
+.header__toggler {
   display: block;
   width: 28px;
   height: 28px;
 }
 
-.header {
-  .secondary-header();
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.6rem 1rem 0.5rem;
-}
-
-.toggler {
-  display: block;
-  transform-origin: center center;
-  position: relative;
-  transform: rotate(270deg);
-  &::before {
-    padding: 5px;
-    display: block;
-    margin-right: 0;
-  }
-}
 
 
