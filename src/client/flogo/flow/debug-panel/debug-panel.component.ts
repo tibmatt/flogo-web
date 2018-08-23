@@ -110,7 +110,6 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   }
 
   onAnimationEnd(event: AnimationEvent) {
-    console.log('animation end', event.toState);
     if (event.toState === STATUS_OPEN) {
       this.scrollContextElementIntoView();
     }
