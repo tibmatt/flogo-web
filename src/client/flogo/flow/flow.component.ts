@@ -51,6 +51,7 @@ import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
 import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.service';
 import {ConfirmationResult} from '@flogo/core';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
+import { trigger, transition, animateChild } from '@angular/animations';
 
 
 export interface IPropsToUpdateFormBuilder {
@@ -75,8 +76,12 @@ interface TaskContext {
   providers: [TestRunnerService],
   templateUrl: 'flow.component.html',
   styleUrls: ['flow.component.less'],
+  animations: [
+    trigger('initialAnimation', [ transition( 'void => *', animateChild()) ]),
+  ],
 })
 export class FlowComponent implements OnInit, OnDestroy {
+  @HostBinding('@initialAnimation') initialAnimation = true;
   @ViewChild('inputSchemaModal') defineInputSchema: ParamsSchemaComponent;
   public flowState: FlowState;
   public triggersList: Trigger[];

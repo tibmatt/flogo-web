@@ -1,5 +1,6 @@
-<div class="canvas-flow" *ngIf="flowState && !loading" [ngClass]="{'flogo-flow-detail__device': profileType === PROFILE_TYPES.DEVICE,
-                       'flogo-flow-detail__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
+<div class="canvas-flow" *ngIf="flowState && !loading"
+     [ngClass]="{'flogo-flow-detail--device': profileType === PROFILE_TYPES.DEVICE,
+                       'flogo-flow-detail--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
 
   <section class="flogo-flow-detail">
 
@@ -61,34 +62,29 @@
       </div>
     </section>
     <flogo-flow-tabs></flogo-flow-tabs>
-    <div class="flogo-flow-container">
-      <div class="clearfix flogo-flows-main">
-        <div class="flogo-flows-triggers-container">
-          <flogo-flow-triggers></flogo-flow-triggers>
-        </div>
 
-      <div class="flogo-flows-flow-schema-container" *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE">
-        <flogo-flow-params-schema-button role="button"
-                                         [flowMetadata]="flowState?.metadata"
-                                         (click)="openInputSchemaModal()">
-        </flogo-flow-params-schema-button>
+    <flogo-flow-debug-panel *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram"
+                            class="debug-panel-container">
+      <ng-container *ngTemplateOutlet="flowContent"></ng-container>
+    </flogo-flow-debug-panel>
+
+    <ng-template #deviceDiagram>
+      <div class="diagram-container">
+        <ng-container *ngTemplateOutlet="flowContent"></ng-container>
       </div>
+    </ng-template>
 
-      <flogo-flow-debug-panel *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram" class="flogo-flows-diagram-container">
-        <flogo-flow-diagram (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
-      </flogo-flow-debug-panel>
-
-      <ng-template #deviceDiagram>
-        <div class="flogo-flows-diagram-container">
-          <flogo-flow-diagram (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
-        </div>
-      </ng-template>
-
-    </div>
-  </div>
+    <ng-template #flowContent>
+      <flogo-flow-triggers></flogo-flow-triggers>
+      <flogo-flow-params-schema-button role="button"
+                                       *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
+                                       [flowMetadata]="flowState?.metadata"
+                                       (click)="openInputSchemaModal()"></flogo-flow-params-schema-button>
+      <flogo-flow-diagram class="diagram" (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
+    </ng-template>
 
   <flogo-flow-task-configurator></flogo-flow-task-configurator>
-<flogo-flow-branch-configurator></flogo-flow-branch-configurator>
+  <flogo-flow-branch-configurator></flogo-flow-branch-configurator>
 </div>
 <div class="canvas-right-container">
   <router-outlet></router-outlet>
