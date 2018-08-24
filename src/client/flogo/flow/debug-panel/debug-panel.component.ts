@@ -4,7 +4,7 @@ import { AnimationEvent } from '@angular/animations';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, pipe } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, filter, map, shareReplay, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.service';
