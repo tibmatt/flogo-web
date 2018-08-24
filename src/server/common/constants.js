@@ -2,6 +2,12 @@ export const REF_SUBFLOW = 'github.com/TIBCOSoftware/flogo-contrib/activity/subf
 export const REF_TRIGGER_LAMBDA = 'github.com/TIBCOSoftware/flogo-contrib/trigger/lambda';
 export const LEGACY_FLOW_TYPE = 1;
 
+export const EXPORT_MODE = {
+  STANDARD_MODEL: 'standard',
+  LEGACY_MODEL: 'legacy',
+  FORMAT_FLOWS: 'flows'
+};
+
 export const FLOGO_FLOW_DIAGRAM_NODE_TYPE = {
   0: "NODE_PADDING",
   1: "NODE_HOLDER",
