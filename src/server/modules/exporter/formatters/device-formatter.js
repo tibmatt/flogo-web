@@ -1,10 +1,14 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
 import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
+import {mappingsToAttributes} from "../mappings-to-attributes";
 
 const DEVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/device/action/flow';
 
 export class DeviceFormatter {
+  constructor(activitySchemas) {
+    this.activitySchemas = activitySchemas;
+  }
 
   preprocess(app) {
     if (this.appHasSubflowTask(app)) {
@@ -57,10 +61,14 @@ export class DeviceFormatter {
   }
 
   formatTasks(flow) {
-    return flow.tasks.map(task => ({
-      ...task,
-      attributes: this.formatTaskAttributes(task),
-    }));
+    // preparing task attribute from inputMappings while formatting the tasks
+    return flow.tasks.map(task => {
+      return {
+        ...task,
+        ...mappingsToAttributes(task, this.activitySchemas.find(schema => schema.ref === task.activityRef)),
+        attributes: this.formatTaskAttributes(task),
+      };
+    });
   }
 
   formatTaskAttributes(task) {

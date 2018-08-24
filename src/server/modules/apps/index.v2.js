@@ -15,7 +15,6 @@ import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
-import { ActivitiesManager } from '../activities';
 import { importApp } from '../importer';
 import { exportApplication } from '../exporter';
 import { buildBinary } from './build';
@@ -253,8 +252,7 @@ export class AppsManager {
         const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
         const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
 
-        return ActivitiesManager.find()
-          .then(activitySchemas => exportApplication(app, appModel, activitySchemas, exportOptions));
+        return exportApplication(app, appModel, exportOptions);
       });
   }
 
