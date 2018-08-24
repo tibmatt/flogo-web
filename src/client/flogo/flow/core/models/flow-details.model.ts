@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { Action as ActionSchema, ContribSchema, Dictionary, GraphNode, Item, ItemTask, StepAttribute, UiFlow } from '@flogo/core';
+import { GraphNode, Item, UiFlow } from '@flogo/core';
 
 import { FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { getProfileType } from '@flogo/shared/utils';
@@ -41,13 +41,6 @@ export class FlogoFlowDetails {
       .pipe(distinctUntilChanged(isEqual));
   }
 
-  registerNewItem(
-    handlerType: HandlerType,
-    itemDetails: { item: ItemTask, node: GraphNode, subflowSchema?: ActionSchema }
-   ) {
-    this.store.dispatch(new FlowActions.TaskItemCreated({ handlerType, ...itemDetails }));
-  }
-
   removeItem(handlerType: HandlerType, itemId: string) {
     this.store.dispatch(new FlowActions.RemoveItem({
       handlerType,
@@ -61,18 +54,6 @@ export class FlogoFlowDetails {
       item,
       node,
     }));
-  }
-
-  clearExecutionStatus() {
-    this.store.dispatch(new FlowActions.ExecutionWillStart());
-  }
-
-  executionStatusChanged(changes: { mainGraphNodes?: Dictionary<GraphNode>, errorGraphNodes?: Dictionary<GraphNode> }) {
-    this.store.dispatch(new FlowActions.ExecutionStateUpdated({ changes }));
-  }
-
-  executionStepsUpdate(steps: Dictionary<Dictionary<StepAttribute>>) {
-    this.store.dispatch(new FlowActions.ExecutionStepsUpdated({ steps }));
   }
 
 }

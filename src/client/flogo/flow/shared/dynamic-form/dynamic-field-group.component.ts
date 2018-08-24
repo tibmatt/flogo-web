@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BaseField } from './field-base';
 
 @Component({
   selector: 'flogo-flow-dynamic-field-group',
@@ -8,4 +9,5 @@ import { FormGroup } from '@angular/forms';
 })
 export class DynamicFieldGroupComponent {
   @Input() fieldGroup: FormGroup;
+  @Input() metadata: BaseField<any>[][];
 }

@@ -1,16 +1,30 @@
-<div class="content" #content [class.is-open]="isOpen">
+<div class="content" #content
+     [@wrappedContentState]="panelStatus"
+     (@wrappedContentState.done)="onAnimationEnd($event)">
   <ng-content></ng-content>
 </div>
-<div class="debug-panel-container" [class.is-open]="isOpen">
-  <button *ngIf="!isOpen" class="toggle-button" (click)="togglePanel()">
-    <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span><span class="flogo-icon flogo-icon-back toggle-button__icon"></span>
-  </button>
-  <flogo-flow-debug-panel-detail
-    *ngIf="isOpen"
-    [@debugpanel]="isOpen"
-    (@debugpanel.done)="onAnimationEnd($event)"
-    class="debug-panel__content"
-    [activity]="activity$ | async"
-    [fields]="fields$ | async"
-    (close)="togglePanel()"></flogo-flow-debug-panel-detail>
+<div class="debug-panel-container" [class.is-open]="isOpen" [@debugPanelContainerState]="panelStatus">
+  <div class="debug-panel-container__content"
+       [class.is-open]="isOpen"
+       [@debugPanelState]="panelStatus">
+    <div class="header" (click)="openPanel()">
+      <span>{{ 'DEBUGGER:TITLE-ACTIVITY' | translate }}</span>
+      <flogo-debug-panel-toggle-button class="header__toggler"
+                                       role="button"
+                                       [isMinimized]="!isOpen"
+                                       (click)="closePanel($event)">
+      </flogo-debug-panel-toggle-button>
+    </div>
+    <flogo-flow-debug-panel-content
+      *ngIf="isOpen"
+      class="js-debug-panel-content debug-panel__content"
+      [activity]="activity$ | async"
+      [fields]="fields$ | async"
+      [executionErrors]="executionErrrors$ | async"
+      [activityHasRun]="activityHasRun$ | async"
+      [flowHasRun]="flowHasRun$ | async"
+      [runDisabled]="isRunDisabled$ | async"
+      [isEndOfFlow]="isEndOfFlow$ | async"
+      (runFromHere)="run()"></flogo-flow-debug-panel-content>
+  </div>
 </div>

@@ -15,7 +15,7 @@ import {
   StatusResponse,
   ErrorService
 } from '@flogo/core/services';
-import { flogoFlowToJSON } from './models/backend-flow/flow.model';
+import { flogoFlowToJSON } from '../models/backend-flow/flow.model';
 
 export const ERRORS = {
   MAX_TRIALS_REACHED: 'MaxTrialsReached',
@@ -86,11 +86,11 @@ type StartFlowFn = (processId: string) => Observable<{ id: string }>;
 /**
  * Main point of interaction with services to run a flow.
  *
- * Usually only {@link RunnerService#runFromRoot} and {@link RunnerService#rerun} are required.
+ * Usually only {@link RunOrchestratorService#runFromRoot} and {@link RunOrchestratorService#rerun} are required.
  *
  */
 @Injectable()
-export class RunnerService {
+export class RunOrchestratorService {
 
   constructor(private runService: RunApiService, private errorService: ErrorService) {
   }
@@ -124,7 +124,7 @@ export class RunnerService {
    * @param {number} [opts.queryInterval=500] - Polling interval to query for status (In milliseconds)
    * @return {RunProgressStore}
    * @see RunProgressStore
-   * @see RunnerService#monitorProcessStatus
+   * @see RunOrchestratorService#monitorProcessStatus
    */
   runFromRoot(opts: RunOptions): RunProgressStore {
     return this.startAndMonitor(opts, processId => this.runService.startProcess(processId, opts.attrsData));
@@ -164,7 +164,7 @@ export class RunnerService {
    * @param {number} [opts.queryInterval=500] - Polling interval to query for status (In milliseconds)
    * @return {RunProgressStore}
    * @see RunProgressStore
-   * @see RunnerService#monitorProcessStatus
+   * @see RunOrchestratorService#monitorProcessStatus
    */
   rerun(opts: RerunOptions): RunProgressStore {
     const { instanceId, step, interceptor } = opts;

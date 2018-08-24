@@ -5,16 +5,18 @@ import {cleanGraphRunState} from '../../models/flow/clean-run-state';
 import * as actions from './flow.actions';
 import {FlowState, INITIAL_STATE} from './flow.state';
 
-import {createBranch} from './cases/create-branch';
-import {taskItemCreated} from './cases/task-item-created';
-import {removeItem} from './cases/remove-item';
-import {itemUpdate, nodeUpdate} from './cases/item-update';
-import {executionUpdate} from './cases/execution-update';
-import {commitTaskConfiguration} from '@flogo/flow/core/state/flow/cases/commit-task-configuration';
+import { createBranch } from './cases/create-branch';
+import { taskItemCreated } from './cases/task-item-created';
+import { removeItem } from './cases/remove-item';
+import { itemUpdate, nodeUpdate } from './cases/item-update';
+import { executionUpdate } from './cases/execution-update';
+import { commitTaskConfiguration } from '@flogo/flow/core/state/flow/cases/commit-task-configuration';
+import { runnerReducer } from './runner.reducer';
 
 const ActionType = actions.ActionType;
 
 export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.ActionsUnion): FlowState {
+  state = runnerReducer(state, action);
   switch (action.type) {
     case ActionType.Init: {
       return {
@@ -76,23 +78,17 @@ export function flowReducer(state: FlowState = INITIAL_STATE, action: actions.Ac
         taskConfigure: null,
       };
     }
-    case ActionType.ExecutionWillStart: {
+    case ActionType.RunFromStart:
+    case ActionType.RunFromTask: {
       return  {
         ...state,
         isErrorPanelOpen: false,
         mainGraph: cleanGraphRunState(state.mainGraph),
         errorGraph: cleanGraphRunState(state.errorGraph),
-        lastExecutionResult: {},
       };
     }
     case ActionType.ExecutionUpdated: {
       return executionUpdate(state, action.payload);
-    }
-    case ActionType.ExecutionStepsUpdate: {
-      return {
-        ...state,
-        lastExecutionResult: { ...state.lastExecutionResult, ...action.payload.steps },
-      };
     }
     case ActionType.ErrorPanelStatusChange: {
       return {

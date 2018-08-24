@@ -1,16 +1,18 @@
-import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
-import {ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask} from '@flogo/core';
 
-import { HandlerType } from '../../models/handler-type';
+import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
+import { ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask, FLOGO_TASK_TYPE } from '@flogo/core';
+import { remove } from 'lodash';
+
 import { FlowState } from './flow.state';
 import { getGraphName, getItemsDictionaryName } from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
-import {InsertTaskSelection, TaskSelection, SelectionType} from '../../models/selection';
-import {DiagramSelectionType} from '@flogo/packages/diagram/interfaces';
-import {Activity} from '@flogo/flow/task-add';
-import {getProfileType} from '@flogo/shared/utils';
-import {remove} from 'lodash';
-import {CONTRIB_REF_PLACEHOLDER} from '@flogo/core/constants';
+
+import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
+import { DiagramSelectionType } from '@flogo/packages/diagram/interfaces';
+import { Activity } from '@flogo/flow/task-add';
+import { getProfileType } from '@flogo/shared/utils';
+import { CONTRIB_REF_PLACEHOLDER } from '@flogo/core/constants';
+import { NodeDictionary } from '@flogo/core/interfaces/graph/graph';
 
 export const selectFlowState = createFeatureSelector<FlowState>('flow');
 export const selectCurrentSelection = createSelector(selectFlowState, (flowState: FlowState) => flowState.currentSelection);
@@ -25,6 +27,11 @@ export const selectTriggerConfigure = createSelector(selectFlowState, (flowState
 export const selectTaskConfigure = createSelector(selectFlowState, (flowState: FlowState) => flowState.taskConfigure);
 export const selectSchemas = createSelector(selectFlowState, (flowState: FlowState) => flowState.schemas);
 export const selectLastExecutionResult = createSelector(selectFlowState, (flowState: FlowState) => flowState.lastExecutionResult);
+export const selectLastFullExecution = createSelector(selectFlowState, (flowState: FlowState) => flowState.lastFullExecution);
+export const selectHasStructureChangedSinceLastRun = createSelector(
+  selectFlowState,
+  (flowState: FlowState) => flowState.structureChangedSinceLastFullExecution
+);
 
 export const getItems = (handlerType: HandlerType) => {
   const handlerName = getItemsDictionaryName(handlerType);
@@ -94,11 +101,25 @@ export const getCurrentItems: MemoizedSelector<FlowState, Dictionary<Item>> = cr
   (currentHandlerType, flowState) => currentHandlerType ? flowState[getItemsDictionaryName(currentHandlerType)] : null
 );
 
+export const getCurrentNodes: MemoizedSelector<FlowState, NodeDictionary> = createSelector(
+  getCurrentHandlerType,
+  selectFlowState,
+  (currentHandlerType, flowState) => currentHandlerType ?
+      flowState[getGraphName(currentHandlerType)].nodes as NodeDictionary
+    : null
+);
+
+
+const isTaskSelection = (selection): selection is TaskSelection => selection && selection.type === SelectionType.Task;
 export const getSelectedActivity = createSelector(
   selectCurrentSelection,
   getCurrentItems,
-  (currentSelection, currentItems) =>
-    currentSelection && currentSelection.type === SelectionType.Task ? currentItems[currentSelection.taskId] as ItemActivityTask : null
+  (currentSelection, currentItems) => {
+    if (isTaskSelection(currentSelection) && currentItems[currentSelection.taskId].type !== FLOGO_TASK_TYPE.TASK_BRANCH) {
+      return currentItems[currentSelection.taskId] as ItemActivityTask;
+    }
+    return null;
+  }
 );
 
 export const getSelectedActivitySchema = createSelector(
@@ -112,6 +133,31 @@ export const getSelectedActivityExecutionResult = createSelector(
   selectLastExecutionResult,
   /* tslint:disable-next-line:triple-equals --> for legacy ids of type number so 1 == '1' */
   (selectedActivity, steps) => selectedActivity && steps ? steps[selectedActivity.id] : null
+);
+
+export const getFlowHasRun = createSelector(
+  selectLastFullExecution,
+  lastFullExecution => lastFullExecution && lastFullExecution.processId,
+);
+
+export const getIsRunDisabledForSelectedActivity = createSelector(
+  getCurrentHandlerType,
+  getRunnableState,
+  getFlowHasRun,
+  selectHasStructureChangedSinceLastRun,
+  (handlerType, runnableInfo, flowHasRun, structureHasChanged) => {
+    const isErrorHandler = handlerType === HandlerType.Error;
+    const isRunDisabled = runnableInfo && runnableInfo.disabled;
+    return isErrorHandler || structureHasChanged || isRunDisabled || !flowHasRun;
+  },
+);
+
+export const getCurrentActivityExecutionErrors = createSelector(
+  getSelectedActivity,
+  getCurrentNodes,
+  (activity, nodes) => {
+    return activity && nodes ? nodes[activity.id].status.executionErrored : null;
+  },
 );
 
 export const selectAppInfo = createSelector(

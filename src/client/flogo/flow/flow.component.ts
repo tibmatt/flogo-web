@@ -1,22 +1,12 @@
 import {
   assign,
   cloneDeep,
-  chain,
   each,
   filter,
-  get, set,
+  get,
   isEmpty,
-  isEqual,
-  isFunction,
-  isUndefined,
-  isNil,
-  isNull,
-  map,
-  mapValues,
-  noop,
-  reduce,
 } from 'lodash';
-import { tap, share, takeUntil, take, switchMap } from 'rxjs/operators';
+import { share, takeUntil, take, switchMap } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -25,25 +15,10 @@ import {
   LanguageService,
   ItemTask,
   Item,
-  Dictionary,
-  GraphNode,
-  NodeType,
-  FlowGraph
 } from '@flogo/core';
-import { TriggersApiService, OperationalError } from '@flogo/core/services';
 import { PostService } from '@flogo/core/services/post.service';
-import { FlogoProfileService } from '@flogo/core/services/profile.service';
 
-import {
-  ERRORS as RUNNER_ERRORS,
-  RunStateCode as RUNNER_STATE,
-  RunStatusCode as RUNNER_STATUS,
-  RunnerService,
-  RunOptions,
-  RunProgress,
-  RunProgressStore,
-  Step
-} from './core/runner.service';
+import { Step } from './core/test-runner/run-orchestrator.service';
 import { FlowData } from './core';
 
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
@@ -60,7 +35,7 @@ import {
   FLOGO_TASK_TYPE
 } from '../core/constants';
 import {
-  getProfileType, isMapperActivity, isSubflowTask, notification,
+  getProfileType, isMapperActivity, notification,
 } from '@flogo/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
@@ -68,12 +43,15 @@ import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { mergeItemWithSchema } from '@flogo/core/models';
 import { HandlerType, CurrentSelection, SelectionType } from './core/models';
 import { FlowState } from './core/state';
-import { isBranchExecuted } from './core/models/flow/branch-execution-status';
+
+
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { Trigger } from './core';
 import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
+import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.service';
 import {ConfirmationResult} from '@flogo/core';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
+
 
 export interface IPropsToUpdateFormBuilder {
   name: string;
@@ -94,6 +72,7 @@ interface TaskContext {
 
 @Component({
   selector: 'flogo-flow',
+  providers: [TestRunnerService],
   templateUrl: 'flow.component.html',
   styleUrls: ['flow.component.less'],
 })
@@ -106,26 +85,15 @@ export class FlowComponent implements OnInit, OnDestroy {
     disableReason?: string;
   };
 
-  private runState = {
-    // data
-    currentProcessId: <string> null,
-    processInstanceId: <string> null,
-    // TODO: may need better implementation
-    lastProcessInstanceFromBeginning: <any> null,
-    steps: <Step[]> null,
-  };
-
   _subscriptions: any[];
   _id: any;
 
-  _isCurrentProcessDirty = true;
   _isDiagramEdited: boolean;
   flowName: string;
   backToAppHover = false;
 
   profileType: FLOGO_PROFILE_TYPE;
   PROFILE_TYPES: typeof FLOGO_PROFILE_TYPE = FLOGO_PROFILE_TYPE;
-
 
   @HostBinding('hidden') loading: boolean;
   public hasTrigger: boolean;
@@ -138,14 +106,12 @@ export class FlowComponent implements OnInit, OnDestroy {
   constructor(public translate: LanguageService,
               private _postService: PostService,
               private _flowService: FlowsService,
-              private triggersApiService: TriggersApiService,
               private _restAPIHandlerService: RESTAPIHandlersService,
               private _restAPIAppsService: AppsApiService,
-              private _runnerService: RunnerService,
               private _router: Router,
               private confirmationModalService: ConfirmationModalService,
-              private profileService: FlogoProfileService,
-              private _route: ActivatedRoute) {
+              private _route: ActivatedRoute,
+              private testRunner: TestRunnerService) {
     this._isDiagramEdited = false;
 
     this.loading = true;
@@ -175,12 +141,13 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.flowDetails.runnableState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(runnableState => this.runnableInfo = runnableState);
+    // TODO: fcastill - remove after getting rid of right rail
     this.flowDetails.itemsChange$
       .pipe(
         takeUntil(this.ngOnDestroy$),
         switchMap(() => this.flowDetails.flowState$.pipe(take(1))),
       )
-      .subscribe(state => this.onItemsChange(state));
+      .subscribe(() => this.refreshCurrentTileContextIfNeeded);
     this.initSubscribe();
     this.loading = false;
   }
@@ -197,8 +164,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
 
     const subs = [
-      assign({}, FLOGO_TASK_SUB_EVENTS.runFromThisTile, { callback: this._runFromThisTile.bind(this) }),
-      assign({}, FLOGO_TASK_SUB_EVENTS.taskDetailsChanged, { callback: this._taskDetailsChanged.bind(this) }),
       assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
     ];
 
@@ -208,7 +173,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
     );
   }
-
 
   private get flowDetails() {
     return this._flowService.currentFlowDetails;
@@ -230,17 +194,6 @@ export class FlowComponent implements OnInit, OnDestroy {
   private isTaskSubroute() {
     const [firstRouteChild] = this._route.children;
     return firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/');
-  }
-
-  private onItemsChange(nextState: FlowState) {
-    this.refreshCurrentTileContextIfNeeded();
-    this._flowService.saveFlowIfChanged(this.flowId, nextState)
-      .subscribe(updated => {
-        if (updated && !this._isCurrentProcessDirty) {
-          this._isCurrentProcessDirty = true;
-        }
-        console.log('flowSaved?', updated);
-      });
   }
 
   private onFlowStateUpdate(nextState: FlowState) {
@@ -315,8 +268,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.profileType = getProfileType(flowData.flow.app);
   }
 
-  private _getCurrentState(taskID: string) {
-    const steps = this.runState.steps || [];
+  private getCurrentRunStateForTask(taskID: string) {
+    const steps = this.testRunner.getCurrentRunState().steps || [];
     // allow double equal check for legacy ids that were type number
     /* tslint:disable-next-line:triple-equals */
     return steps.find(step => taskID == step.taskId);
@@ -337,13 +290,14 @@ export class FlowComponent implements OnInit, OnDestroy {
       isTrigger: false, // taskType === FLOGO_TASK_TYPE.TASK_ROOT,
       isBranch: taskType === FLOGO_TASK_TYPE.TASK_BRANCH,
       isTask: taskType === FLOGO_TASK_TYPE.TASK || taskType === FLOGO_TASK_TYPE.TASK_SUB_PROC,
-      shouldSkipTaskConfigure: this.isTaskSubflowOrMapper(taskId, handlerId),
+      shouldSkipTaskConfigure: taskType !== FLOGO_TASK_TYPE.TASK_BRANCH,
+      profileType: this.profileType,
+      // can't run from tile anymore in this panel, hardcoding to false until we remove the right panel
+      hasProcess: false,
       flowRunDisabled: this.runnableInfo && this.runnableInfo.disabled,
-      hasProcess: Boolean(this.runState.currentProcessId),
       isDiagramEdited: this._isDiagramEdited,
       app: null,
       currentTrigger: null,
-      profileType: this.profileType
     };
   }
 
@@ -353,12 +307,6 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   private getTaskInHandler(handlerId: string, taskId: string) {
     return this.getItemsByHandlerId(handlerId)[taskId];
-  }
-
-  private isTaskSubflowOrMapper(taskId: any, diagramId: string): boolean {
-    const currentTask = <ItemTask> this.getTaskInHandler(diagramId, taskId);
-    const activitySchema = this.flowState.schemas[currentTask.ref];
-    return isSubflowTask(currentTask.type) || isMapperActivity(activitySchema);
   }
 
   /**
@@ -463,7 +411,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const handlerId = this.getDiagramId(taskId);
 
     // Refresh task detail
-    const currentStep = this._getCurrentState(taskId);
+    const currentStep = this.getCurrentRunStateForTask(taskId);
     const context = this._getCurrentTaskContext(taskId);
 
     const currentItem = <Item> cloneDeep(this.getTaskInHandler(handlerId, taskId));
@@ -540,11 +488,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       )
     );
 
-    // TODO: used?
-    if (<any>task.type === FLOGO_TASK_TYPE.TASK_ROOT) {
-      updateObject[data.proper] = task[data.proper];
-      this.triggersApiService.updateTrigger(this.currentTrigger.id, updateObject);
-    }
   }
 
   private findItemById(taskId: string) {
@@ -574,396 +517,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _taskDetailsChanged(data: any, envelope: any) {
-    const handlerId = this.getDiagramId(data.taskId);
-    const task = this.getTaskInHandler(handlerId, data.taskId);
-
-    const changes: { item: {id: string} & Partial<Item>, node:  {id: string} & Partial<GraphNode> } = <any>{};
-    if (task.type === FLOGO_TASK_TYPE.TASK) {
-      const changedInputs = data.inputs || {};
-      if (isEqual(changedInputs, task.input)) {
-        return;
-      }
-      changes.item = {
-        id: task.id,
-        input: { ...changedInputs  }
-      };
-    } else if (task.type === FLOGO_TASK_TYPE.TASK_BRANCH) { // branch
-      if (isEqual(data.condition, task.condition)) {
-        return;
-      }
-      changes.item = {
-        id: task.id,
-        condition: data.condition,
-      };
-    }
-
-    if (isFunction(envelope.done)) {
-      envelope.done();
-    }
-
-    this.flowDetails.updateItem(
-      this.handlerTypeFromString(handlerId),
-      changes,
-    );
-  }
-
   private _getAllTasks() {
     return {...this.flowState.mainItems, ...this.flowState.errorItems};
-  }
-
-  /*-------------------------------*
-   |      RUN FLOW                 |
-   *-------------------------------*/
-
-  private _runFromRoot() {
-
-    this._isDiagramEdited = false;
-    this.cleanDiagramRunState();
-
-    // The initial data to start the process from trigger
-    const initData = this.getInitDataForRoot();
-    const runOptions: RunOptions = { attrsData: initData };
-    const shouldUpdateFlow = this._isCurrentProcessDirty || !this.runState.currentProcessId;
-    if (shouldUpdateFlow) {
-      runOptions.useFlow = this.flowState;
-    } else {
-      runOptions.useProcessId = this.runState.currentProcessId;
-    }
-
-    this.runState.steps = null;
-    const runner = this._runnerService.runFromRoot(runOptions);
-
-    runner.registered.subscribe(info => {
-      this.runState.currentProcessId = info.processId;
-      this.runState.processInstanceId = info.instanceId;
-    }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
-
-    return this.observeRunProgress(runner)
-      .then((runState: RunProgress) => {
-        this.runState.lastProcessInstanceFromBeginning = runState.lastInstance;
-        return runState;
-      })
-      .catch(err => this.handleRunError(err));
-  }
-
-
-  // TODO
-  //  to do proper restart process, need to select proper snapshot, hence
-  //  the current implementation is only for the last start-from-beginning snapshot, i.e.
-  //  the using this.runState.processInstanceId to restart
-  private _runFromThisTile(data: any, envelope: any) {
-    console.group('Run from this tile');
-
-    const selectedTask = this.flowState.mainItems[data.taskId];
-
-    if (!this.runState.processInstanceId) {
-      // run from other than the trigger (root task);
-      // TODO
-      console.warn('Cannot find proper step to restart from, skipping...');
-      return;
-    }
-    const step = this._getStepNumberFromSteps(data.taskId);
-
-    if (!step) {
-      // TODO
-      //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
-      console.error(`Cannot start from task ${(<any>selectedTask).name} (${selectedTask.id})`);
-      return;
-    }
-
-    const attrs = get(selectedTask, 'attributes.inputs');
-    const dataOfInterceptor = {
-      tasks: [{
-        id: selectedTask.id,
-        inputs: parseInput(attrs, data.inputs),
-      }]
-    };
-
-    this.runState.steps = null;
-    this.clearAllHandlersRunStatus();
-
-    const runner = this._runnerService.rerun({
-      useFlow: this.flowState,
-      interceptor: dataOfInterceptor,
-      step: step,
-      instanceId: this.runState.processInstanceId,
-    });
-
-    this.observeRunProgress(runner)
-      .then(() => {
-        if (isFunction(envelope.done)) {
-          envelope.done();
-        }
-        this.refreshCurrentSelectedTaskIfNeeded();
-      })
-      .catch(err => this.handleRunError(err));
-
-    console.groupEnd();
-
-    function parseInput(formAttrs: any, inputData: any) {
-      if (!formAttrs) {
-        return [];
-      }
-      return map(formAttrs, (input: any) => {
-        // override the value;
-        return assign(cloneDeep(input), {
-          value: inputData[input.name],
-          type: input.type
-        });
-      });
-    }
-
-  }
-
-  // monitor the status of a process till it's done or up to the max trials
-  private observeRunProgress(runner: RunProgressStore): Promise<RunProgress | void> {
-
-    // TODO: remove noop when fixed https://github.com/ReactiveX/rxjs/issues/2180
-    runner.processStatus
-      .subscribe(processStatus => this.logRunStatus(processStatus), noop);
-
-    // TODO: only on run from trigger?
-    runner.registered.subscribe(info => {
-      this._isCurrentProcessDirty = false;
-    }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180);
-
-    runner.steps
-      .subscribe(steps => {
-        if (steps) {
-          this.runState.steps = steps;
-          this.updateTaskRunStatus(steps, {});
-        }
-      }, noop); // TODO: remove when fixed https://github.com/ReactiveX/rxjs/issues/2180
-
-    return runner.completed.pipe(
-      tap(state => {
-        this.runState.steps = state.steps;
-        const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-COMPLETED');
-        notification(message, 'success', 3000);
-      }))
-      .toPromise();
-
-  }
-
-  private logRunStatus(processStatus) {
-    switch (processStatus.status) {
-      case RUNNER_STATUS.NotStarted:
-        console.log(`[PROC STATE][${processStatus.trial}] Process has not started.`);
-        break;
-      case RUNNER_STATUS.Active:
-        console.log(`[PROC STATE][${processStatus.trial}] Process is running...`);
-        break;
-      case RUNNER_STATUS.Completed:
-        console.log(`[PROC STATE][${processStatus.trial}] Process finished.`);
-        break;
-      case null:
-        break;
-      default:
-        console.warn(`[PROC STATE][${processStatus.trial}] Unknown status.`);
-    }
-  }
-
-  private cleanDiagramRunState() {
-    // clear task status and render the diagram
-    this.clearAllHandlersRunStatus();
-    // this._postService.publish(FLOGO_DIAGRAM_PUB_EVENTS.render);
-  }
-
-  private getInitDataForRoot(): { name: string; type: string; value: any }[] {
-    const flowInput = get(this.flowState, 'metadata.input');
-    if (isEmpty(flowInput)) {
-      return undefined;
-    }
-    // preprocessing initial data
-    return chain(flowInput)
-      .filter((item: any) => {
-        // filter empty values
-        return !isNil(item.value);
-      })
-      .map((item: any) => cloneDeep(item))
-      .value();
-  }
-
-  private handleRunError(error) {
-    console.error(error);
-    // todo: more specific error message?
-    let message = null;
-    if (error.isOperational) {
-      const opError = <OperationalError> error;
-      if (opError.name === RUNNER_ERRORS.PROCESS_NOT_COMPLETED) {
-        // run error instance has status prop hence the casting to any
-        message = (<any>opError).status === RUNNER_STATUS.Cancelled ? 'CANVAS:RUN-ERROR:RUN-CANCELLED' : 'CANVAS:RUN-ERROR:RUN-FAILED';
-      } else if (opError.name === RUNNER_ERRORS.MAX_TRIALS_REACHED) {
-        message = 'CANVAS:RUN-ERROR:MAX-REACHED';
-      }
-    }
-
-    message = message || 'CANVAS:ERROR-MESSAGE';
-    notification(this.translate.instant(message), 'error');
-    return error;
-  }
-
-  private clearAllHandlersRunStatus() {
-    this.flowDetails.clearExecutionStatus();
-  }
-
-  private updateTaskRunStatus(steps: Step[], rsp: any) {
-    let isErrorHandlerTouched = false;
-    const { isFlowDone, runTasks, runTaskIds, errors } = this.extractExecutionStatus(steps);
-
-    let allStatusChanges = {
-      mainGraphNodes: {} as Dictionary<GraphNode>,
-      errorGraphNodes: {} as Dictionary<GraphNode>,
-    };
-
-    runTaskIds.forEach(taskId => {
-      let node = this.flowState.mainGraph.nodes[taskId];
-      let changeAccumulator = allStatusChanges.mainGraphNodes;
-      if (isEmpty(node)) {
-        node = this.flowState.errorGraph.nodes[taskId];
-        changeAccumulator = allStatusChanges.errorGraphNodes;
-        isErrorHandlerTouched = !!node;
-      }
-      if (node) {
-        const taskErrors = errors[node.id];
-        changeAccumulator[node.id] = {
-          ...node,
-          status: {
-            ...node.status,
-            executed: true,
-            executionErrored: !isUndefined(taskErrors) ? Object.values(taskErrors).map(err => err.msg) : null,
-          },
-        };
-      }
-    });
-
-    const filterBranches = (nodes: Dictionary<GraphNode>) => [...Object.values(nodes)].filter(node => node.type === NodeType.Branch);
-    const branchUpdates = (nodes: FlowGraph['nodes']) => filterBranches(nodes)
-      .reduce((changes, branchNode) => {
-        const branchWasExecuted = isBranchExecuted(branchNode, nodes);
-        if (branchWasExecuted && !nodes[branchNode.id].status.executed) {
-          changes[branchNode.id] = {
-            ...branchNode,
-            status: {
-              ...branchNode.status,
-              executed: true,
-            },
-          };
-        }
-        return changes;
-      }, {});
-
-    allStatusChanges = {
-      mainGraphNodes: {
-        ...allStatusChanges.mainGraphNodes,
-        ...branchUpdates({ ...this.flowState.mainGraph.nodes, ...allStatusChanges.mainGraphNodes }),
-      },
-      errorGraphNodes: {
-        ...allStatusChanges.errorGraphNodes,
-        ...branchUpdates({ ...this.flowState.errorGraph.nodes, ...allStatusChanges.errorGraphNodes }),
-      }
-    };
-
-    set(rsp, '__status', {
-      isFlowDone: isFlowDone,
-      errors: errors,
-      runTasks: runTasks,
-      runTasksIDs: runTaskIds
-    });
-
-    this.flowDetails.executionStatusChanged(allStatusChanges);
-    this.flowDetails.executionStepsUpdate(mapValues(runTasks, task => task.attrs));
-
-    // when the flow is done on error, throw an error
-    // the error is the response with `__status` provisioned.
-    if (isFlowDone && !isEmpty(errors)) {
-      throw rsp;
-    }
-
-    // TODO
-    //  how to verify if a task is running?
-    //    should be the next task downstream the last running task
-    //    but need to find the node of that task in the diagram
-
-  }
-
-  private extractExecutionStatus(steps: Step[]) {
-    let isFlowDone = false;
-    const runTaskIds = [];
-    const errors = <{
-      [index: string]: {
-        msg: string;
-        time: string;
-      }[];
-    }>{};
-    const runTasks = reduce(steps, (result: any, step: any) => {
-      const taskID = step.taskId;
-
-      if (taskID !== 'root' && taskID !== 1 && !isNil(taskID)) {
-
-        /****
-         *  Exclude the tasks which are skipped by the engine while running the flow
-         *  but their running task information is generated and maintained
-         ****/
-        const taskState = step.taskState || 0;
-        if (taskState !== RUNNER_STATE.Skipped) {
-          runTaskIds.push(taskID);
-        }
-        const reAttrName = new RegExp(`^_A.${step.taskId}\\..*`, 'g');
-        const reAttrErrMsg = new RegExp(`^_E.message`, 'g');
-
-        const taskInfo = reduce(get(step, 'flow.attributes', []),
-          (currentTaskInfo: any, attr: any) => {
-            if (reAttrName.test(get(attr, 'name', ''))) {
-              currentTaskInfo[attr.name] = attr;
-            }
-
-            if (reAttrErrMsg.test(attr.name)) {
-              let errs = <any[]>get(errors, `${taskID}`);
-              const shouldOverride = isUndefined(errs);
-              errs = errs || [];
-
-              errs.push({
-                msg: attr.value,
-                time: new Date().toJSON()
-              });
-
-              if (shouldOverride) {
-                set(errors, `${taskID}`, errs);
-              }
-            }
-            return currentTaskInfo;
-          }, {});
-
-        result[taskID] = {attrs: taskInfo};
-      } else if (isNull(taskID)) {
-        isFlowDone = true;
-      }
-
-      return result;
-    }, {});
-    return { isFlowDone, runTasks, runTaskIds, errors };
-  }
-
-  // TODO
-  //  get step index logic should be based on the selected snapshot,
-  //  hence need to be refined in the future
-  private _getStepNumberFromSteps(taskId: string) {
-    let stepNumber = 0;
-    // firstly try to get steps from the last process instance running from the beginning,
-    // otherwise use some defauts
-    const steps = get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
-
-    steps.forEach((step: any, index: number) => {
-      // allowing double equals for legacy ids that were of type number
-      /* tslint:disable-next-line:triple-equals */
-      if (step.taskId == taskId) {
-        stepNumber = index + 1;
-      }
-    });
-
-    return stepNumber;
   }
 
   /*-------------------------------*
@@ -994,10 +549,9 @@ export class FlowComponent implements OnInit, OnDestroy {
     } else {
       flowUpdatePromise = Promise.resolve(this.flowState);
     }
-    flowUpdatePromise.then(() => this._runFromRoot())
-      .then(() => {
-        this.refreshCurrentSelectedTaskIfNeeded();
-      });
+    flowUpdatePromise
+      .then(() => this.testRunner.runFromRoot().toPromise())
+      .then(() => this.refreshCurrentSelectedTaskIfNeeded());
   }
 
   private refreshCurrentSelectedTaskIfNeeded() {

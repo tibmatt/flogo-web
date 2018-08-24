@@ -1,5 +1,3 @@
-import { DiagramSelectionType } from '../../../../../packages/diagram/interfaces/index';
-
 import { FlowState } from '../flow.state';
 import { getGraphName, getItemsDictionaryName, PayloadOf } from '../../utils';
 import { CreateBranch } from '../flow.actions';

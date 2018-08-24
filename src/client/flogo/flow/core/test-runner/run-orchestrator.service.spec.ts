@@ -5,14 +5,14 @@ import Spy = jasmine.Spy;
 
 import { UiFlow } from '@flogo/core';
 import { RunApiService, StatusResponse, ErrorService } from '@flogo/core/services';
-import { ERRORS, RunStatusCode, RunnerService } from './runner.service';
-import * as flowUtils from './models/backend-flow/flow.model';
+import { ERRORS, RunStatusCode, RunOrchestratorService } from './run-orchestrator.service';
+import * as flowUtils from '../models/backend-flow/flow.model';
 
-describe('Service: RunnerService', function (this: {
+describe('Service: RunOrchestratorService', function (this: {
   DEFAULT_PROCESS_ID: string,
   errorService: ErrorService,
   runServiceMock: RunApiService,
-  service: RunnerService
+  service: RunOrchestratorService
 }) {
 
   beforeAll(() => {
@@ -27,7 +27,7 @@ describe('Service: RunnerService', function (this: {
       'storeProcess'
     ]);
     this.errorService = new ErrorService();
-    this.service = new RunnerService(this.runServiceMock, new ErrorService());
+    this.service = new RunOrchestratorService(this.runServiceMock, new ErrorService());
   });
 
   describe('::monitorProcessStatus', () => {
@@ -101,7 +101,7 @@ describe('Service: RunnerService', function (this: {
     });
 
 
-    function expectSequenceCompleted(service: RunnerService, runServiceMock: RunApiService, sequence: any[], done) {
+    function expectSequenceCompleted(service: RunOrchestratorService, runServiceMock: RunApiService, sequence: any[], done) {
       let count = 0;
       service.monitorProcessStatus('123', { queryInterval: 2, maxTrials: 10 })
         .subscribe(state => {
@@ -123,7 +123,7 @@ describe('Service: RunnerService', function (this: {
     }
 
     function expectSequenceWithError(
-      service: RunnerService,
+      service: RunOrchestratorService,
       sequence: any[],
       onError: (error) => void,
       done: () => void,

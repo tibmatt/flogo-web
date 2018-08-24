@@ -10,7 +10,7 @@ import { isSubflowTask } from '@flogo/shared/utils';
 import { flogoFlowToJSON } from './models/backend-flow/flow.model';
 
 import { UIModelConverterService } from './ui-model-converter.service';
-import { FlogoFlowDetails } from './models';
+import { FlogoFlowDetails } from './models/flow-details.model';
 import { FlowData } from './flow-data';
 import { AppState } from './state/app.state';
 import {FlowState, Init} from './state';

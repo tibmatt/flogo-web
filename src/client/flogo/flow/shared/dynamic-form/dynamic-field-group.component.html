@@ -1,5 +1,5 @@
 <div [formGroup]="fieldGroup" *ngFor="let field of fieldGroup.controls; let i=index;">
-  <div [formGroupName]="i" [ngSwitch]="field.controlType">
+  <div [formGroupName]="i" [ngSwitch]="metadata[i].controlType">
     <flogo-fb-textbox *ngSwitchCase="'FieldTextBox'" [fieldGroup]="field"
                       [fieldControl]="field"></flogo-fb-textbox>
     <flogo-fb-number *ngSwitchCase="'FieldNumber'" [fieldGroup]="field"

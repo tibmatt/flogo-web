@@ -74,9 +74,15 @@
         </flogo-flow-params-schema-button>
       </div>
 
-      <flogo-flow-debug-panel class="flogo-flows-diagram-container">
+      <flogo-flow-debug-panel *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram" class="flogo-flows-diagram-container">
         <flogo-flow-diagram (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
       </flogo-flow-debug-panel>
+
+      <ng-template #deviceDiagram>
+        <div class="flogo-flows-diagram-container">
+          <flogo-flow-diagram (deleteTask)="onDeleteTask($event)"></flogo-flow-diagram>
+        </div>
+      </ng-template>
 
     </div>
   </div>
