@@ -21,6 +21,8 @@ import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
 
 export interface SaveTaskConfigEventData {
   tileId: string;
+  description?: string;
+  name: string;
   iterator: {
     isIterable: boolean;
     iterableValue?: string;
@@ -57,7 +59,6 @@ export function createSaveBranchAction(
   );
 }
 
-
 function getChanges(flowState: FlowState, saveData: SaveTaskConfigEventData): FlowActions.CommitItemConfiguration['payload'] {
   let handlerType: HandlerType;
   let tile: ItemTask;
@@ -73,6 +74,8 @@ function getChanges(flowState: FlowState, saveData: SaveTaskConfigEventData): Fl
   const tileAsSubflow = <ItemSubflow> tile;
   const itemChanges: {id: string} & Partial<ItemActivityTask & ItemSubflow> = {
     id: tile.id,
+    description: saveData.description,
+    name: saveData.name,
     settings: tile.settings,
   };
   if (changedSubflowSchema && tileAsSubflow.settings.flowPath !== saveData.subflowPath) {

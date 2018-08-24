@@ -64,7 +64,7 @@ export class BranchConfiguratorComponent implements OnInit {
   ngOnInit() {
     this.store
       .pipe<FlowState>(
-        getStateWhenConfigureChanges(FLOGO_TASK_TYPE.TASK_BRANCH),
+        getStateWhenConfigureChanges([FLOGO_TASK_TYPE.TASK_BRANCH]),
         takeUntil(this.destroy$),
       )
       .subscribe(state => {

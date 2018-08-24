@@ -1,4 +1,4 @@
-import { isEmpty, cloneDeep } from 'lodash';
+import {isEmpty, cloneDeep, assign} from 'lodash';
 import { skip, takeUntil } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -20,7 +20,8 @@ import { createIteratorMappingContext, getIteratorOutputSchema, ITERABLE_VALUE_K
 import { FlowState, FlowActions } from '@flogo/flow/core/state';
 import { getFlowMetadata, getInputContext } from '@flogo/flow/core/models/task-configure/get-input-context';
 import { getStateWhenConfigureChanges } from '../shared/configurator/configurator.selector';
-import { createSaveAction } from '@flogo/flow/task-configurator/models/save-action-creator';
+import {createSaveAction} from '@flogo/flow/task-configurator/models/save-action-creator';
+import {uniqueTaskNameValidator} from '@flogo/flow/core/models/unique-task-name';
 
 const TASK_TABS = {
   SUBFLOW: 'subFlow',
@@ -73,9 +74,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   subflowList: ActionBase[];
   showSubflowList = false;
   isActive = false;
-
+  flowState: FlowState;
   inputMapperController: MapperController;
   iteratorController: MapperController;
+  isValidTaskName: boolean;
+  isTaskDetailEdited: boolean;
 
   private inputMapperStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
@@ -96,7 +99,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store
       .pipe<FlowState>(
-        getStateWhenConfigureChanges(FLOGO_TASK_TYPE.TASK),
+        getStateWhenConfigureChanges([FLOGO_TASK_TYPE.TASK, FLOGO_TASK_TYPE.TASK_SUB_PROC, FLOGO_TASK_TYPE.TASK_ITERATOR]),
         takeUntil(this.destroy$),
       )
       .subscribe(state => {
@@ -151,6 +154,8 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     const isIterable = this.iteratorModeOn && !isEmpty(this.iterableValue);
     createSaveAction(this.store, {
       tileId: this.currentTile.id,
+      name: this.title,
+      description: this.currentTile.description,
       subflowPath: this.currentTile.settings ? this.currentTile.settings.flowPath : null,
       changedSubflowSchema: this.currentSubflowSchema,
       iterator: {
@@ -219,6 +224,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   }
 
   private initConfigurator(state: FlowState) {
+    this.flowState = state;
     const itemId = state.taskConfigure;
     this.ensurePreviousContextCleanup();
     this.contextChange$ = SingleEmissionSubject.create();
@@ -229,9 +235,9 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
     this.inputScope = getInputContext(itemId, state);
     this.isSubflowType = isSubflowTask(this.currentTile.type);
-
     this.title = this.currentTile.name;
-
+    this.isValidTaskName = true;
+    this.isTaskDetailEdited = false;
     const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.type);
     this.isSubflowType = isSubflowItem(selectedItem);
     let subflowSchema = null;
@@ -404,4 +410,17 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  changeTaskDetail(content, property) {
+    this.isTaskDetailEdited = true;
+    if (property === 'name') {
+      const uniqueName = uniqueTaskNameValidator(content, this.flowState.mainItems, this.flowState.errorItems);
+      if ((uniqueName && content !== this.currentTile.name) || content === '') {
+        this.isValidTaskName = false;
+      } else {
+        this.isValidTaskName = true;
+        this.title = content;
+      }
+    }
+  }
 }
