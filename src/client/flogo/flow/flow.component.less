@@ -12,17 +12,16 @@
 
 .canvas-flow {
   display: flex;
-  width: 77.5%;
+  flex: 1;
   flex-direction: column;
+  width: 100%;
 
   transition: width .5s;
-  background-position: -61px -53px;
   background-size: 260px 255px;
-  background-repeat: no-repeat;
+  background: no-repeat -61px -53px;
 
   &.flogo-flow-detail--microservice {
-    background: url(/assets/svg/bg-microservice.svg) no-repeat;
-    background-position: -61px -53px;
+    background: url(/assets/svg/bg-microservice.svg) no-repeat -61px -53px;
     background-size: 260px 255px;
   }
   &.flogo-flow-detail--device {
@@ -47,19 +46,6 @@
 .debug-panel-container {
   flex: 1;
   overflow: hidden;
-}
-
-.canvas-right-container {
-  display: flex;
-  width: 22.5%;
-  min-width: 321px;
-  flex-direction: column;
-  box-shadow: -2px -2px 4px 0 rgba(0, 0, 0, 0.1);
-  background: @color-bg;
-  position: relative;
-  z-index: 1;
-  -webkit-transition: width .5s; /* Safari */
-  transition: width .5s;
 }
 
 .flogo-flow-detail {

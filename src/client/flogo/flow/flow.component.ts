@@ -1,32 +1,24 @@
 import {
-  assign,
   cloneDeep,
   each,
   filter,
   get,
   isEmpty,
 } from 'lodash';
-import { share, takeUntil, take, switchMap } from 'rxjs/operators';
+import { takeUntil, switchMap } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   MetadataAttribute,
   Task,
   LanguageService,
-  ItemTask,
   Item,
 } from '@flogo/core';
 import { PostService } from '@flogo/core/services/post.service';
 
-import { Step } from './core/test-runner/run-orchestrator.service';
 import { FlowData } from './core';
 
 import { FlowMetadata } from './task-configurator/models/flow-metadata';
-import { SUB_EVENTS as FLOGO_SELECT_TASKS_PUB_EVENTS } from './task-detail/messages';
-import {
-  PUB_EVENTS as FLOGO_TASK_SUB_EVENTS,
-  SUB_EVENTS as FLOGO_TASK_PUB_EVENTS
-} from './shared/form-builder/messages';
 
 import { AppsApiService } from '../core/services/restapi/v2/apps-api.service';
 import { RESTAPIHandlersService } from '../core/services/restapi/v2/handlers-api.service';
@@ -41,22 +33,15 @@ import {
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
 import { mergeItemWithSchema } from '@flogo/core/models';
-import { HandlerType, CurrentSelection, SelectionType } from './core/models';
+import { HandlerType, SelectionType } from './core/models';
 import { FlowState } from './core/state';
-
 
 import { SingleEmissionSubject } from '@flogo/core/models';
 import { Trigger } from './core';
-import { uniqueTaskName } from '@flogo/flow/core/models/unique-task-name';
 import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.service';
 import {ConfirmationResult} from '@flogo/core';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
-import { trigger, transition, animateChild } from '@angular/animations';
-
-
-export interface IPropsToUpdateFormBuilder {
-  name: string;
-}
+import { trigger as animationTrigger, transition, animateChild } from '@angular/animations';
 
 interface TaskContext {
   isTrigger: boolean;
@@ -77,7 +62,7 @@ interface TaskContext {
   templateUrl: 'flow.component.html',
   styleUrls: ['flow.component.less'],
   animations: [
-    trigger('initialAnimation', [ transition( 'void => *', animateChild()) ]),
+    animationTrigger('initialAnimation', [ transition( 'void => *', animateChild()) ]),
   ],
 })
 export class FlowComponent implements OnInit, OnDestroy {
@@ -136,24 +121,9 @@ export class FlowComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(flowState => this.onFlowStateUpdate(flowState));
     this.initFlowData(flowData);
-    this.flowDetails
-      .selectionChange$
-      .pipe(
-        share(),
-        takeUntil(this.ngOnDestroy$),
-      )
-      .subscribe(selection => this.onSelectionChanged(selection));
     this.flowDetails.runnableState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(runnableState => this.runnableInfo = runnableState);
-    // TODO: fcastill - remove after getting rid of right rail
-    this.flowDetails.itemsChange$
-      .pipe(
-        takeUntil(this.ngOnDestroy$),
-        switchMap(() => this.flowDetails.flowState$.pipe(take(1))),
-      )
-      .subscribe(() => this.refreshCurrentTileContextIfNeeded);
-    this.initSubscribe();
     this.loading = false;
   }
 
@@ -165,40 +135,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.isflowMenuOpen = false;
   }
 
-  private initSubscribe() {
-    this._subscriptions = [];
-
-    const subs = [
-      assign({}, FLOGO_TASK_SUB_EVENTS.changeTileDetail, { callback: this._changeTileDetail.bind(this) }),
-    ];
-
-    each(
-      subs, sub => {
-        this._subscriptions.push(this._postService.subscribe(sub));
-      }
-    );
-  }
-
   private get flowDetails() {
     return this._flowService.currentFlowDetails;
-  }
-
-  private onSelectionChanged(selection: CurrentSelection) {
-    if (!selection) {
-      if (this.isTaskSubroute()) {
-        this._navigateFromModuleRoot();
-      }
-    } else if (selection.type === SelectionType.Task) {
-      this._selectTaskFromDiagram(selection.taskId);
-    } else if (selection.type === SelectionType.InsertTask) {
-      this._navigateFromModuleRoot();
-      // this._addTaskFromDiagram(selection.parentId);
-    }
-  }
-
-  private isTaskSubroute() {
-    const [firstRouteChild] = this._route.children;
-    return firstRouteChild && firstRouteChild.routeConfig.path.startsWith('task/');
   }
 
   private onFlowStateUpdate(nextState: FlowState) {
@@ -253,20 +191,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     this._deleteTaskFromDiagram(taskDetails.handlerType, taskDetails.itemId);
   }
 
-  private refreshCurrentTileContextIfNeeded() {
-    const selection = this.flowState.currentSelection;
-    if (!selection || selection.type !== SelectionType.Task) {
-      return;
-    }
-    const { taskId } = selection;
-    const context = this._getCurrentTaskContext(taskId);
-    this._postService.publish(Object.assign(
-      {},
-      FLOGO_SELECT_TASKS_PUB_EVENTS.taskContextUpdated,
-      { data: { taskId, context } }
-      ));
-  }
-
   private initFlowData(flowData: FlowData) {
     this.flowName = flowData.flow.name;
     this.triggersList = flowData.triggers;
@@ -278,14 +202,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     // allow double equal check for legacy ids that were type number
     /* tslint:disable-next-line:triple-equals */
     return steps.find(step => taskID == step.taskId);
-  }
-
-  private uniqueTaskName(taskName: string) {
-    return uniqueTaskName(
-      taskName,
-      this.flowState.mainItems,
-      this.flowState.errorItems
-    );
   }
 
   private _getCurrentTaskContext(taskId: any): TaskContext {
@@ -428,71 +344,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       const activitySchema = this.flowState.schemas[currentItem.ref] || <any>{};
       currentTask = mergeItemWithSchema(currentItem, activitySchema);
     }
-    this._navigateFromModuleRoot(['task', taskId])
-      .then(
-        () => {
-          this.openTaskDetail(currentTask, currentStep, context);
-        }
-      );
-  }
-
-  private openTaskDetail(
-    currentTask: Task,
-    currentStep: Step,
-    context: TaskContext,
-  ) {
-    this._postService.publish(
-      assign(
-        {}, FLOGO_SELECT_TASKS_PUB_EVENTS.selectTask, {
-          data: assign({},
-            // data,
-            { task: currentTask, step: currentStep, context }
-          ),
-        }
-      )
-    );
-  }
-
-  private _changeTileDetail(data: {
-    content: string;
-    proper: string;
-    taskId: any,
-    id: string,
-    tileType: string
-  }, envelope: any) {
-    if (data.tileType !== 'activity') {
-      return;
-    }
-
-    const task = <ItemTask> this.getTaskInHandler(data.id, data.taskId);
-    if (!task) {
-      return;
-    }
-
-    let item;
-    let node;
-    if (data.proper === 'name') {
-      const uniqueName = this.uniqueTaskName(data.content);
-      item = { id: data.taskId, name: uniqueName };
-      node = { id: data.taskId, title: uniqueName };
-    } else {
-      item = { id: data.taskId, [data.proper]: data.content };
-      node = { id: data.taskId, [data.proper]: data.content };
-    }
-    this.flowDetails.updateItem(this.handlerTypeFromString(data.id), { item, node });
-
-    const updateObject = {};
-    const propsToUpdateFormBuilder: IPropsToUpdateFormBuilder = <IPropsToUpdateFormBuilder> {};
-    propsToUpdateFormBuilder.name = task.name;
-
-    this._postService.publish(
-      assign(
-        {}, FLOGO_TASK_PUB_EVENTS.updatePropertiesToFormBuilder, {
-          data: propsToUpdateFormBuilder
-        }
-      )
-    );
-
   }
 
   private findItemById(taskId: string) {
@@ -579,10 +430,6 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
     // todo: throw error?
     return null;
-  }
-
-  private handlerTypeFromString(handlerTypeName: string): HandlerType {
-    return handlerTypeName === HandlerType.Main ? HandlerType.Main : HandlerType.Error;
   }
 
   public onFlowSchemaSave(newMetadata: FlowMetadata) {

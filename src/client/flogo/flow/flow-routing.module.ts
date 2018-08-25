@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
-import { FlogoFlowsDetailTasksDetailComponent } from './task-detail';
 import { FlowComponent } from './flow.component';
 import { FlowDataResolver } from './flow-data.resolver';
 
@@ -13,10 +11,6 @@ const flowRoutes: Routes = [
     resolve: {
       flowData: FlowDataResolver,
     },
-    children: [
-      { path: '', component: EmptyDetailComponent },
-      { path: 'task/:id', component: FlogoFlowsDetailTasksDetailComponent }
-    ]
   },
   {
     path: '**',
@@ -30,4 +24,3 @@ const flowRoutes: Routes = [
   exports: [RouterModule]
 })
 export class FlowRoutingModule {}
-
