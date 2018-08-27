@@ -60,6 +60,8 @@ describe('Parser Type Resolver', function () {
         {text: '$activity[my_activity].array[0].id || 45 && false', expectedType: 'expression'},
         {text: 'isDefined()', expectedType: 'expression'},
         {text: 'string.concat("a", 1, $.input, $activity[xyz].someProp, otherFuncCall(2))', expectedType: 'expression'},
+        {text: 'a ? b : c', expectedType: 'expression'},
+        {text: '1 > 5 ? "hello" : $activity[a].b', expectedType: 'expression'}
       ].forEach(assertParsedType);
     });
   });
@@ -77,6 +79,9 @@ describe('Parser Type Resolver', function () {
         {text: '', expectedType: null},
         {text: '$a >', expectedType: null},
         {text: `{ "a": "{{}}" }`, expectedType: null},
+        {text: `a ? 4`, expectedType: null},
+        {text: `1 > ? a : b`, expectedType: null},
+        {text: `true ? a`, expectedType: null},
       ].forEach(assertParsedType);
     });
   });

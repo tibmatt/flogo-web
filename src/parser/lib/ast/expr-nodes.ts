@@ -5,7 +5,15 @@
  */
 import { Node } from './node';
 
-export type Expr = SelectorExpr | ScopeResolver | IndexExpr | CallExpr | UnaryExpr | BinaryExpr | Identifier | BasicLit;
+export type Expr = SelectorExpr
+  | ScopeResolver
+  | IndexExpr
+  | CallExpr
+  | UnaryExpr
+  | BinaryExpr
+  | TernaryExpr
+  | Identifier
+  | BasicLit;
 
 export interface ExprStmt {
   type: 'ExprStmt';
@@ -68,4 +76,12 @@ export interface BinaryExpr extends Node {
   x: Expr;
   operator: string;
   y: Expr;
+}
+
+// a ? b : c => (condition=a, body=b, else=c)
+export interface TernaryExpr extends Node {
+  type: 'TernaryExpr';
+  condition: Expr;
+  consequent: Expr;
+  alternate: Expr;
 }

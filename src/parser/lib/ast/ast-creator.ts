@@ -55,18 +55,21 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       }
     }
 
+    expression(ctx): ExprNodes.Expr | ExprNodes.TernaryExpr {
+      const expr = this.visit(ctx.baseExpr) as ExprNodes.Expr;
+      if (!ctx.ternaryExpr) {
+        return expr;
+      }
+      return this.visit(ctx.ternaryExpr, <any>expr) as ExprNodes.TernaryExpr;
+    }
+
     // todo: check precedence order
-    expression(ctx): ExprNodes.Expr {
+    baseExpr(ctx): ExprNodes.Expr {
       const unaryExpr = <ExprNodes.Expr> this.visit(ctx.unaryExpr);
       if (!ctx.binaryExprSide) {
         return unaryExpr;
       }
-      return ctx.binaryExprSide
-        .map(cstNode => <ExprNodes.BinaryExpr> this.visit(cstNode))
-        .reduce((leftOperator: ExprNodes.BinaryExpr, binaryExpr: ExprNodes.BinaryExpr) => {
-          binaryExpr.x = leftOperator;
-          return binaryExpr;
-        }, unaryExpr);
+      return this.$reduceToBinaryExpression(ctx, unaryExpr);
     }
 
     binaryExprSide(ctx): ExprNodes.BinaryExpr {
@@ -98,6 +101,16 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       } else {
         return operand;
       }
+    }
+
+    ternaryExpr(ctx, condition: ExprNodes.Expr): ExprNodes.TernaryExpr {
+      const [ consequent, alternate ] = ctx.baseExpr;
+      return {
+        type: 'TernaryExpr',
+        condition,
+        consequent: this.visit(consequent) as ExprNodes.Expr,
+        alternate: this.visit(alternate) as ExprNodes.Expr,
+      };
     }
 
     primaryExprTail(ctx): ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr {
@@ -259,6 +272,15 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
           }
         }, operand);
 
+    }
+
+    private $reduceToBinaryExpression(ctx, unaryExpr) {
+      return ctx.binaryExprSide
+        .map(cstNode => <ExprNodes.BinaryExpr> this.visit(cstNode))
+        .reduce((leftOperator: ExprNodes.BinaryExpr, binaryExpr: ExprNodes.BinaryExpr) => {
+          binaryExpr.x = leftOperator;
+          return binaryExpr;
+        }, unaryExpr);
     }
 
   }

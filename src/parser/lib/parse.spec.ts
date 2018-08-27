@@ -93,5 +93,15 @@ describe('parse', function () {
       }
     });
   });
+
+  it('parses ternary expressions', function() {
+    const parseResult = parse('a > b ? true : false');
+    /* tslint:disable:no-unused-expression -- chai uses non method assertions */
+    expect(parseResult.ast).to.be.ok;
+    expect(parseResult.lexErrors).to.be.empty;
+    expect(parseResult.lexErrors).to.be.empty;
+    /* tslint:enable:no-unused-expression */
+  });
+
 });
 

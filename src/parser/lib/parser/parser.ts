@@ -84,6 +84,12 @@ const Comma = createToken({
   pattern: /,/,
 });
 
+const TernaryOper = createToken({
+  name: 'TernaryOper',
+  label: '?',
+  pattern: /\?/,
+});
+
 const Colon = createToken({
   name: 'Colon',
   label: ':',
@@ -193,7 +199,7 @@ const BinaryOp = createToken({
 // OPERATOR PRECEDENCE: 5 (greatest)
 const MulOp = createToken({
   name: 'MulOp',
-  pattern: /\*|\/|%|<<|>>|&\^|&/,
+  pattern: /\*|\/|%|<<|>>|&/,
   categories: BinaryOp,
 });
 
@@ -201,7 +207,7 @@ const MulOp = createToken({
 // TODO: are all operators supported?
 const AddOp = createToken({
   name: 'AddOp',
-  pattern: /\+|-|\|\^/,
+  pattern: /[+\-]/,
   categories: BinaryOp,
 });
 
@@ -240,6 +246,7 @@ export const Token = {
   RCurly,
   LSquare,
   RSquare,
+  TernaryOper,
   Dot,
   Comma,
   Colon,
@@ -271,6 +278,7 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       RCurly,
       LSquare,
       RSquare,
+      TernaryOper,
       Dot,
       Comma,
       Colon,
@@ -296,6 +304,7 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       RParen,
       LSquare,
       RSquare,
+      TernaryOper,
       Dot,
       Comma,
       Colon,
@@ -365,6 +374,11 @@ export class MappingParser extends Parser {
   });
 
   public expression = this.RULE('expression', () => {
+    this.SUBRULE(this.baseExpr);
+    this.OPTION(() => this.SUBRULE(this.ternaryExpr));
+  });
+
+  public baseExpr = this.RULE('baseExpr', () => {
     this.SUBRULE(this.unaryExpr);
     this.MANY(() => this.SUBRULE1(this.binaryExprSide));
   });
@@ -454,6 +468,13 @@ export class MappingParser extends Parser {
       DEF: () => this.SUBRULE(this.expression),
     });
     this.CONSUME(Token.RParen);
+  });
+
+  protected ternaryExpr = this.RULE('ternaryExpr', () => {
+    this.CONSUME(Token.TernaryOper);
+    this.SUBRULE1(this.baseExpr);
+    this.CONSUME(Token.Colon);
+    this.SUBRULE2(this.baseExpr);
   });
 
   //// JSON
