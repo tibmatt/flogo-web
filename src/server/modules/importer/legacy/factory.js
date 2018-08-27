@@ -18,14 +18,15 @@ export class LegacyAppImporterFactory {
   }
 
   async create() {
+    const contributions = await this.loadContributions();
     const actionsImporter = this.createActionsImporter(
       this.resourceStorageRegistry.getActionsManager(),
+      contributions.activities
     );
     const triggersHandlersImporter = this.createTriggersHandlersImporter(
       this.resourceStorageRegistry.getAppsTriggersManager(),
       this.resourceStorageRegistry.getHandlersManager(),
     );
-    const contributions = await this.loadContributions();
     const validator = this.createValidator(contributions);
     return {
       actionsImporter,
@@ -57,8 +58,8 @@ export class LegacyAppImporterFactory {
     return validatorFactory(fullAppSchema, contribRefs);
   }
 
-  createActionsImporter(actionsManager) {
-    return new ActionsImporter(actionsManager);
+  createActionsImporter(actionsManager, activities) {
+    return new ActionsImporter(actionsManager, activities);
   }
 
   createTriggersHandlersImporter(appsTriggersManager, handlersManager) {

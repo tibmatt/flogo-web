@@ -1,9 +1,12 @@
 import { actionHasSubflowTasks, forEachSubflowTaskInAction } from '../../../common/utils/subflow';
 import { actionValueTypesNormalizer } from './action-value-type-normalizer';
+import {taskAttributesToMappingsUnifier} from "./task-attributes-to-mappings-unifier";
 
 export class AbstractActionsImporter {
-  constructor(actionStorage) {
+
+  constructor(actionStorage, activitySchemas) {
     this.actionStorage = actionStorage;
+    this.activitySchemas = activitySchemas;
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -12,7 +15,8 @@ export class AbstractActionsImporter {
   }
 
   async importAll(appId, fromRawApp) {
-    const rawActions = this.extractActions(fromRawApp).map(actionValueTypesNormalizer);
+    const rawActions = this.extractActions(fromRawApp).map(actionValueTypesNormalizer)
+      .map(action => taskAttributesToMappingsUnifier(action, this.activitySchemas));
 
     const actionPairs = await this.storeActions(appId, rawActions);
     let actionRegistry = new Map(actionPairs);

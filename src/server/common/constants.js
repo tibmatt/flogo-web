@@ -148,3 +148,7 @@ export const DEFAULT_APP_TYPE = 'flogo:app';
 
 export const TASK_HANDLER_NAME_ROOT = 'rootTask';
 export const TASK_HANDLER_NAME_ERROR = 'errorHandlerTask';
+
+// The below constant must be in sync with the client side TYPE_LITERAL_ASSIGNMENT
+// [src/client/flogo/flow/shared/mapper/constants.ts]
+export const TYPE_LITERAL_ASSIGNMENT = 2;

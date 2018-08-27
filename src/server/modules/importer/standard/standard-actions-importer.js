@@ -12,13 +12,13 @@ export class StandardActionsImporter extends AbstractActionsImporter {
    * @param {{ref: string}[]} activitySchemas
    */
   constructor(actionStorage, taskConverterFactory, activitySchemas) {
-    super(actionStorage);
     if (!activitySchemas) {
       throw new TypeError('Missing parameter: activitySchemas');
     }
     if (!taskConverterFactory) {
       throw new TypeError('Missing parameter: taskConverterFactory');
     }
+    super(actionStorage, activitySchemas);
     this.taskConverterFactory = taskConverterFactory;
     this.activitySchemasByRef = activitySchemas
       .reduce(

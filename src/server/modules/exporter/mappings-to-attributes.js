@@ -1,9 +1,6 @@
-// The below constant must be in sync with the client side TYPE_LITERAL_ASSIGNMENT
-// [src/client/flogo/flow/shared/mapper/constants.ts]
 import {isSubflowTask} from "../../common/utils/subflow";
 import {isMapperActivity} from "../../common/utils/flow";
-
-const TYPE_LITERAL_ASSIGNMENT = 2;
+import {TYPE_LITERAL_ASSIGNMENT} from "../../common/constants";
 
 export function mappingsToAttributes(task, schema) {
   if (schema && !isSubflowTask(task) && !isMapperActivity(schema)) {
