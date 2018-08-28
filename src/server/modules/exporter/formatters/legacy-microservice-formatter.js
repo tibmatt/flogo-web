@@ -52,9 +52,9 @@ export class LegacyMicroServiceFormatter {
       });
 
     // Prepare task with attributes from input mappings
-    allTasks = allTasks.map(task => {
+    allTasks.forEach(task => {
       const activitySchema = this.activitySchemas.find(schema => schema.ref === task.activityRef);
-      return mappingsToAttributes(task, activitySchema);
+      task = mappingsToAttributes(task, activitySchema);
     });
     return action;
   }

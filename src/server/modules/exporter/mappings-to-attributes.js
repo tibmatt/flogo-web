@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash/cloneDeep';
 import {isSubflowTask} from "../../common/utils/subflow";
 import {isMapperActivity} from "../../common/utils/flow";
 import {TYPE_LITERAL_ASSIGNMENT} from "../../common/constants";
@@ -9,7 +10,7 @@ export function mappingsToAttributes(task, schema) {
     const taskMappings = task.inputMappings || [];
     taskMappings.forEach(mapping => {
       if (mapping.type === TYPE_LITERAL_ASSIGNMENT) {
-        const attribute = schema.inputs.find(input => mapping.mapTo === input.name);
+        const attribute = cloneDeep(schema.inputs.find(input => mapping.mapTo === input.name));
         attribute.value = mapping.value;
         attributes.push(attribute);
       } else {
