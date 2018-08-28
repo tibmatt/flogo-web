@@ -18,6 +18,15 @@ import { UnicodeCategory } from './unicode';
 // with the current setup.
 // const Token = require('./tokens');
 
+// https://golang.org/ref/spec#Identifiers
+// identifier = letter { letter | unicode_digit }
+const IdentifierName = createToken({
+  name: 'IdentifierName',
+  label: 'Identifier',
+  // TODO: should we change this regex for manual parsing to avoid perf issues?
+  pattern: new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`),
+});
+
 const True = createToken({
   name: 'True',
   label: 'true',
@@ -30,10 +39,26 @@ const False = createToken({
   pattern: /false/,
 });
 
+const Nullable = createToken({
+  name: 'Nullable',
+  label: 'Nullable',
+  pattern: Lexer.NA,
+});
+
 const Null = createToken({
   name: 'Null',
   label: 'null',
+  longer_alt: IdentifierName,
+  categories: Nullable,
   pattern: /null/,
+});
+
+const Nil = createToken({
+  name: 'Nil',
+  label: 'nil',
+  longer_alt: IdentifierName,
+  categories: Nullable,
+  pattern: /nil/,
 });
 
 const LCurly = createToken({
@@ -166,15 +191,6 @@ const WhiteSpace = createToken({
   line_breaks: true,
 });
 
-// https://golang.org/ref/spec#Identifiers
-// identifier = letter { letter | unicode_digit }
-const IdentifierName = createToken({
-  name: 'IdentifierName',
-  label: 'Identifier',
-  // TODO: should we change this regex for manual parsing to avoid perf issues?
-  pattern: new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`),
-});
-
 const RESOLVER_PATTERN = new RegExp(`[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`);
 function matchResolverIdentifier(text: string, startOffset?: number, tokens?: IToken[]) {
   if (tokens.length < 3) {
@@ -276,7 +292,9 @@ export const Token = {
   Colon,
   True,
   False,
+  Nullable,
   Null,
+  Nil,
   LogicalAnd,
   MulOp,
   AddOp,
@@ -311,6 +329,8 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       True,
       False,
       Null,
+      Nil,
+      Nullable,
       LogicalAnd,
       MulOp,
       AddOp,
@@ -339,7 +359,9 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       Colon,
       True,
       False,
+      Nil,
       Null,
+      Nullable,
       LogicalAnd,
       MulOp,
       AddOp,
@@ -391,7 +413,7 @@ export class MappingParser extends Parser {
       {ALT: () => this.CONSUME(Token.NumberLiteral)},
       {ALT: () => this.CONSUME(Token.True)},
       {ALT: () => this.CONSUME(Token.False)},
-      {ALT: () => this.CONSUME(Token.Null)}
+      {ALT: () => this.CONSUME(Token.Nullable)}
     ]);
   });
 

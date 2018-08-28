@@ -23,6 +23,7 @@ function translateExprStmtType(exprStmtType: string) {
     case 'BinaryExpr':
     case 'CallExpr':
     case 'TernaryExpr':
+    case 'ParenExpr':
       return 'expression';
     default:
       return 'attrAccess';

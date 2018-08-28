@@ -28,6 +28,8 @@ function parseImage(tokenName: string, image: string) {
       return image.slice(1, -1);
     case 'NestedDblQuoteStringLiteral':
       return image.slice(2, -2);
+    case 'Nil':
+      return null;
     default:
       return JSON.parse(image);
   }

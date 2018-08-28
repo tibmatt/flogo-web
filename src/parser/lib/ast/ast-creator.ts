@@ -3,7 +3,7 @@
  * https://godoc.org/go/ast
  */
 
-import { CstNode, ICstVisitor, IToken } from 'chevrotain';
+import { CstNode, ICstVisitor } from 'chevrotain';
 import { Node } from './node';
 import * as JsonNodes from './json-nodes';
 import * as ExprNodes from './expr-nodes';
@@ -54,7 +54,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     // todo: check precedence order
     baseExpr(ctx): ExprNodes.Expr {
-      const expr = (ctx.unaryExpr ? this.visit(ctx.unaryExpr) : this.visit(ctx.parenExpr)) as ExprNodes.Expr;
+      const expr = (ctx.parenExpr ? this.visit(ctx.parenExpr) : this.visit(ctx.unaryExpr)) as ExprNodes.Expr;
       if (!ctx.binaryExprSide) {
         return expr;
       }
@@ -85,8 +85,11 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       }
     }
 
-    parenExpr(ctx) {
-      return this.visit(ctx.baseExpr);
+    parenExpr(ctx): ExprNodes.ParenExpr {
+      return {
+        type: 'ParenExpr',
+        expr: this.visit(ctx.baseExpr) as ExprNodes.Expr,
+      };
     }
 
     ternaryExpr(ctx, condition: ExprNodes.Expr): ExprNodes.TernaryExpr {

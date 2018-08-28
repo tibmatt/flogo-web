@@ -85,3 +85,8 @@ export interface TernaryExpr extends Node {
   consequent: Expr;
   alternate: Expr;
 }
+
+export interface ParenExpr extends Node {
+  type: 'ParenExpr';
+  expr: Expr;
+}

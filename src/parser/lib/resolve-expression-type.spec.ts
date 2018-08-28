@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { resolveExpressionType } from './resolve-expression-type';
-import { test } from 'mocha';
 
 describe('Parser Type Resolver', function () {
 
@@ -11,7 +10,9 @@ describe('Parser Type Resolver', function () {
     });
   }
 
-  const testResolvesToType = (expectedType, cases) => cases.forEach(text => assertParsedType(expectedType, text));
+  const testResolvesToType = (expectedType, cases) => {
+    describe(`${expectedType}`, () => cases.forEach(text => assertParsedType(expectedType, text)));
+  };
 
   describe('for valid input', () => {
     describe('it correctly determines its type', () => {
@@ -41,6 +42,10 @@ describe('Parser Type Resolver', function () {
         '1.4',
         '"with double quotes"',
         `'with single quotes'`,
+        'true',
+        'false',
+        'null',
+        'nil',
       ]);
 
       testResolvesToType('json', [
@@ -54,7 +59,8 @@ describe('Parser Type Resolver', function () {
         `{ "a": "{{ $activity[xyz].result.id }}" }`,
         `{ "foo": ["{{ string.concat($activity[hello].world, $flow.a[0]) }}"] }`,
         `{"q": "{{string.concat(\\"isbn:\\", $flow.isbn)}}"}`,
-        `{"q": "{{string.concat('isbn:', $flow.isbn)}}"}`
+        `{"q": "{{string.concat('isbn:', $flow.isbn)}}"}`,
+        `{ "foo": null }`,
       ]);
 
       testResolvesToType('expression', [
@@ -115,6 +121,7 @@ describe('Parser Type Resolver', function () {
         `$.name.test == "test"`,
         `$.name.obj.value == null`,
         `$.name.obj.doesnotexist == null`,
+        '(null)',
       ]);
     });
   });
@@ -128,6 +135,8 @@ describe('Parser Type Resolver', function () {
       '25a',
       '{ "a": 1, b: {} }',
       '{ "a": 1, b: {} ',
+      `{ 'a': 'b' }`,
+      `{ "foo": nil }`,
       '',
       '$a >',
       `{ "a": "{{}}" }`,

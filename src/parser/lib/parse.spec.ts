@@ -112,7 +112,7 @@ describe('parse', function () {
     expect(parseResult.lexErrors).to.be.empty;
     expect(parseResult.lexErrors).to.be.empty;
     expect(parseResult.ast.type).to.equal('ExprStmt');
-    expect(parseResult.ast['x'].type).to.equal('BasicLit');
+    expect(parseResult.ast['x'].type).to.equal('ParenExpr');
     /* tslint:enable:no-unused-expression */
   });
 
