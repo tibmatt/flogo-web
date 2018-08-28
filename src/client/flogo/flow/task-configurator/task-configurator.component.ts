@@ -79,6 +79,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   iteratorController: MapperController;
   isValidTaskName: boolean;
   isTaskDetailEdited: boolean;
+  mapperText: string;
 
   private inputMapperStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
@@ -186,6 +187,19 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     return tabName;
   }
 
+  changeTaskDetail(content, property) {
+    this.isTaskDetailEdited = true;
+    if (property === 'name') {
+      const uniqueName = uniqueTaskNameValidator(content, this.flowState.mainItems, this.flowState.errorItems);
+      if ((uniqueName && content !== this.currentTile.name) || content === '') {
+        this.isValidTaskName = false;
+      } else {
+        this.isValidTaskName = true;
+        this.title = content;
+      }
+    }
+  }
+
   private onIteratorValueChange(newValue: string, isValid: boolean) {
     this.tabs.get(TASK_TABS.ITERATOR).isValid = MapperTranslator.isValidExpression(newValue);
     this.iterableValue = newValue;
@@ -216,11 +230,11 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  private configureOutputMapperLabels(taskName) {
+  private configureOutputMapperLabels() {
     this.inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
     this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
-    this.translate.get('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER', { taskName })
-      .subscribe(title => this.title = title);
+    this.translate.get('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER')
+      .subscribe(mapperText => this.mapperText = mapperText);
   }
 
   private initConfigurator(state: FlowState) {
@@ -265,7 +279,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
 
     this.resetState();
     if (isMapperActivity(activitySchema)) {
-      this.configureOutputMapperLabels(selectedItem.name);
+      this.configureOutputMapperLabels();
     }
 
     if (this.iteratorController) {
@@ -410,17 +424,4 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  changeTaskDetail(content, property) {
-    this.isTaskDetailEdited = true;
-    if (property === 'name') {
-      const uniqueName = uniqueTaskNameValidator(content, this.flowState.mainItems, this.flowState.errorItems);
-      if ((uniqueName && content !== this.currentTile.name) || content === '') {
-        this.isValidTaskName = false;
-      } else {
-        this.isValidTaskName = true;
-        this.title = content;
-      }
-    }
-  }
 }

@@ -9,7 +9,10 @@ const getFlowState = (store: Store<AppState>, taskId: string, taskType: FLOGO_TA
   return store.pipe(
     select(FlowSelectors.selectFlowState),
     take(1),
-    filter((state) => taskType.includes((state.mainItems[taskId] || state.errorItems[taskId]).type))
+    filter((state) => {
+      const task = state.mainItems[taskId] || state.errorItems[taskId];
+      return taskType.includes(task.type);
+    })
   );
 };
 
