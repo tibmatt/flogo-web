@@ -100,6 +100,30 @@ describe('parse', function () {
     expect(parseResult.ast).to.be.ok;
     expect(parseResult.lexErrors).to.be.empty;
     expect(parseResult.lexErrors).to.be.empty;
+    expect(parseResult.ast.type).to.equal('ExprStmt');
+    expect(parseResult.ast['x'].type).to.equal('TernaryExpr');
+    /* tslint:enable:no-unused-expression */
+  });
+
+  it('parses expressions with parenthesis', function() {
+    const parseResult = parse('(true)');
+    /* tslint:disable:no-unused-expression -- chai uses non method assertions */
+    expect(parseResult.ast).to.be.ok;
+    expect(parseResult.lexErrors).to.be.empty;
+    expect(parseResult.lexErrors).to.be.empty;
+    expect(parseResult.ast.type).to.equal('ExprStmt');
+    expect(parseResult.ast['x'].type).to.equal('BasicLit');
+    /* tslint:enable:no-unused-expression */
+  });
+
+  it('parses expressions with parenthesis', function() {
+    const parseResult = parse('(a + 2) * 55');
+    /* tslint:disable:no-unused-expression -- chai uses non method assertions */
+    expect(parseResult.ast).to.be.ok;
+    expect(parseResult.lexErrors).to.be.empty;
+    expect(parseResult.lexErrors).to.be.empty;
+    expect(parseResult.ast.type).to.equal('ExprStmt');
+    expect(parseResult.ast['x'].type).to.equal('BinaryExpr');
     /* tslint:enable:no-unused-expression */
   });
 

@@ -65,11 +65,11 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
 
     // todo: check precedence order
     baseExpr(ctx): ExprNodes.Expr {
-      const unaryExpr = <ExprNodes.Expr> this.visit(ctx.unaryExpr);
+      const expr = (ctx.unaryExpr ? this.visit(ctx.unaryExpr) : this.visit(ctx.parenExpr)) as ExprNodes.Expr;
       if (!ctx.binaryExprSide) {
-        return unaryExpr;
+        return expr;
       }
-      return this.$reduceToBinaryExpression(ctx, unaryExpr);
+      return this.$reduceToBinaryExpression(ctx, expr);
     }
 
     binaryExprSide(ctx): ExprNodes.BinaryExpr {
@@ -77,7 +77,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
         type: 'BinaryExpr',
         x: null,
         operator: ctx.BinaryOp[0].image,
-        y: <ExprNodes.Expr> this.visit(ctx.expression),
+        y: <ExprNodes.Expr> this.visit(ctx.baseExpr),
       };
     }
 
@@ -103,8 +103,12 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       }
     }
 
+    parenExpr(ctx) {
+      return this.visit(ctx.baseExpr);
+    }
+
     ternaryExpr(ctx, condition: ExprNodes.Expr): ExprNodes.TernaryExpr {
-      const [ consequent, alternate ] = ctx.baseExpr;
+      const [consequent, alternate] = ctx.baseExpr;
       return {
         type: 'TernaryExpr',
         condition,
@@ -124,9 +128,8 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     unaryExpr(ctx): ExprNodes.Expr {
-      const primaryExpr = <PrimaryExprNode> this.visit(ctx.primaryExpr);
-      if (primaryExpr) {
-        return primaryExpr;
+      if (ctx.primaryExpr) {
+        return <PrimaryExprNode> this.visit(ctx.primaryExpr);
       }
       return <ExprNodes.UnaryExpr> this.visit(ctx.unaryExprOperation);
     }
@@ -196,7 +199,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     argumentList(ctx): ExprNodes.CallExpr {
-      const args = (ctx.expression || []).map(exprNode => this.visit(exprNode));
+      const args = (ctx.baseExpr || []).map(exprNode => this.visit(exprNode));
       return {
         type: 'CallExpr',
         fun: null,

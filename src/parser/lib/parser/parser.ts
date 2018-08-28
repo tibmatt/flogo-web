@@ -379,8 +379,17 @@ export class MappingParser extends Parser {
   });
 
   public baseExpr = this.RULE('baseExpr', () => {
-    this.SUBRULE(this.unaryExpr);
+    this.OR([
+      { ALT: () => this.SUBRULE(this.parenExpr) },
+      { ALT: () => this.SUBRULE(this.unaryExpr) }
+    ]);
     this.MANY(() => this.SUBRULE1(this.binaryExprSide));
+  });
+
+  private parenExpr = this.RULE('parenExpr', () => {
+    this.CONSUME(Token.LParen);
+    this.SUBRULE(this.baseExpr);
+    this.CONSUME(Token.RParen);
   });
 
   public resolver = this.RULE('resolver', () => {
@@ -390,7 +399,7 @@ export class MappingParser extends Parser {
 
   private binaryExprSide = this.RULE('binaryExprSide', () => {
     this.CONSUME(Token.BinaryOp);
-    this.SUBRULE(this.expression);
+    this.SUBRULE(this.baseExpr);
   });
 
   private unaryExpr = this.RULE('unaryExpr', () => {
@@ -465,15 +474,15 @@ export class MappingParser extends Parser {
     this.CONSUME(Token.LParen);
     this.MANY_SEP({
       SEP: Token.Comma,
-      DEF: () => this.SUBRULE(this.expression),
+      DEF: () => this.SUBRULE(this.baseExpr),
     });
     this.CONSUME(Token.RParen);
   });
 
   protected ternaryExpr = this.RULE('ternaryExpr', () => {
-    this.CONSUME(Token.TernaryOper);
+    this.CONSUME1(Token.TernaryOper);
     this.SUBRULE1(this.baseExpr);
-    this.CONSUME(Token.Colon);
+    this.CONSUME2(Token.Colon);
     this.SUBRULE2(this.baseExpr);
   });
 

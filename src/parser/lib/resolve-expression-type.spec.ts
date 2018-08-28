@@ -1,89 +1,133 @@
 import { expect } from 'chai';
 import { resolveExpressionType } from './resolve-expression-type';
+import { test } from 'mocha';
 
 describe('Parser Type Resolver', function () {
 
-  function assertParsedType(inputData) {
-    it(`For ${inputData.text}`, () => {
-      const parsedType = resolveExpressionType(inputData.text);
-      expect(parsedType).to.equal(inputData.expectedType, `Expected ${inputData.expectedType} but got ${parsedType}`);
+  function assertParsedType(expectedType, expr) {
+    it(`For ${expr}`, () => {
+      const parsedType = resolveExpressionType(expr);
+      expect(parsedType).to.equal(expectedType, `Expected ${expectedType} but got ${parsedType}`);
     });
   }
 
+  const testResolvesToType = (expectedType, cases) => cases.forEach(text => assertParsedType(expectedType, text));
+
   describe('for valid input', () => {
     describe('it correctly determines its type', () => {
-      [
-        {text: '$.inputName', expectedType: 'attrAccess'},
-        {text: '$activity', expectedType: 'attrAccess'},
-        {text: '$trigger', expectedType: 'attrAccess'},
-        {text: '$regularVar.withProp', expectedType: 'attrAccess'},
-        {text: '$regularVar.with.nested.props', expectedType: 'attrAccess'},
-        {text: '$activity[my_activity]', expectedType: 'attrAccess'},
-        {text: '$activity[myActivity].with.nested.props', expectedType: 'attrAccess'},
-        {text: '$activity[myActivity].withProps', expectedType: 'attrAccess'},
-        {text: '$arrayVar[0].with.props', expectedType: 'attrAccess'},
-        {text: '$myVarIsAnArray[0]', expectedType: 'attrAccess'},
-        {text: '$myVar.has.an.array[0]', expectedType: 'attrAccess'},
-        {text: '$myVar.has.an.array[1].with.another[0].prop', expectedType: 'attrAccess'},
-        {text: '$activity[my_activity].can.be.Combined.with.arrays[0]', expectedType: 'attrAccess'},
-        {text: '$env[MY_ENV_PROP]', expectedType: 'attrAccess'},
-        {text: '$property[i.want.to.namespace.my.props]', expectedType: 'attrAccess'},
-        {text: 'string.cooncat($property[i.want.to.namespace.my.props],"qwerty")', expectedType: 'expression'},
-        {text: 'a25', expectedType: 'attrAccess'},
-        {text: 'adadsa', expectedType: 'attrAccess'},
-        {text: '$abcd', expectedType: 'attrAccess'},
-        {text: '1', expectedType: 'literal'},
-        {text: '1.4', expectedType: 'literal'},
-        {text: '"adadsa"', expectedType: 'literal'},
-        {text: '{}', expectedType: 'json'},
-        {text: '{ "a": 1, "b": {"c": [{"d": "e" }]} }', expectedType: 'json'},
-        {
-          text: `{ "a": 1,
-        "b": {
-          "c": [{"d": "e" }]
-        }
-      }`, expectedType: 'json'
-        },
-        {text: `{ "a": "{{ $activity[xyz].result.id }}" }`, expectedType: 'json'},
-        {text: `{ "foo": ["{{ string.concat($activity[hello].world, $flow.a[0]) }}"] }`, expectedType: 'json'},
-        {text: '$.inputName != 2', expectedType: 'expression'},
-        {text: '$a + $b', expectedType: 'expression'},
-        {text: '$a + $b.c', expectedType: 'expression'},
-        {text: '$a < $b.c', expectedType: 'expression'},
-        {text: '$a >= $b.c', expectedType: 'expression'},
-        {text: '$a < $b.c', expectedType: 'expression'},
-        {text: '$a <= $b.c', expectedType: 'expression'},
-        {text: '$a == $b.c', expectedType: 'expression'},
-        {text: '1 + 2 + 3', expectedType: 'expression'},
-        {text: '1 + 2 > 3 + $a.b.c', expectedType: 'expression'},
-        {text: '$a - 3 * $a.b[0]', expectedType: 'expression'},
-        {text: '$activity[my_activity].array[0].id || 45 && false', expectedType: 'expression'},
-        {text: 'isDefined()', expectedType: 'expression'},
-        {text: 'string.concat("a", 1, $.input, $activity[xyz].someProp, otherFuncCall(2))', expectedType: 'expression'},
-        {text: 'a ? b : c', expectedType: 'expression'},
-        {text: '1 > 5 ? "hello" : $activity[a].b', expectedType: 'expression'}
-      ].forEach(assertParsedType);
+      testResolvesToType('attrAccess', [
+        '$.inputName',
+        '$activity',
+        '$trigger',
+        '$regularVar.withProp',
+        '$regularVar.with.nested.props',
+        '$activity[my_activity]',
+        '$activity[myActivity].with.nested.props',
+        '$activity[myActivity].withProps',
+        '$arrayVar[0].with.props',
+        '$myVarIsAnArray[0]',
+        '$myVar.has.an.array[0]',
+        '$myVar.has.an.array[1].with.another[0].prop',
+        '$activity[my_activity].can.be.Combined.with.arrays[0]',
+        '$env[MY_ENV_PROP]',
+        '$property[i.want.to.namespace.my.props]',
+        'a25',
+        'adadsa',
+        '$abcd',
+      ]);
+
+      testResolvesToType('literal', [
+        '1',
+        '1.4',
+        '"adadsa"',
+      ]);
+
+      testResolvesToType('json', [
+        '{}',
+        '{ "a": 1, "b": {"c": [{"d": "e" }]} }',
+        `{ "a": 1,
+            "b": {
+              "c": [{"d": "e" }]
+            }
+         }`,
+        `{ "a": "{{ $activity[xyz].result.id }}" }`,
+        `{ "foo": ["{{ string.concat($activity[hello].world, $flow.a[0]) }}"] }`,
+      ]);
+
+      testResolvesToType('expression', [
+        'string.concat($property[i.want.to.namespace.my.props],"qwerty")',
+        '$.inputName != 2',
+        '$a + $b',
+        '$a + $b.c',
+        '$a < $b.c',
+        '$a >= $b.c',
+        '$a < $b.c',
+        '$a <= $b.c',
+        '$a == $b.c',
+        '1 + 2 + 3',
+        '1 + 2 > 3 + $a.b.c',
+        '$a - 3 * $a.b[0]',
+        '$activity[my_activity].array[0].id || 45 && false',
+        'isDefined()',
+        'string.concat("a", 1, $.input, $activity[xyz].someProp, otherFuncCall(2))',
+        'a ? b : c',
+        '1 > 5 ? "hello" : $activity[a].b',
+        '1>2?string.concat("sss","ddd"):"ffff"',
+        '200>100?true:false',
+        '$activity[C].result==3',
+        'string.length($TriggerData.queryParams.id) == 0 ? "Query Id cannot be null" : string.length($TriggerData.queryParams.id)',
+        'string.length("lixingwang")>11?$env.name:$env.address',
+        '123==456',
+        'string.concat("123","456")=="123456"',
+        'string.concat("123","456") == string.concat("12","3456")',
+        '("dddddd" == "dddd3dd") && ("133" == "123")',
+        'string.length("flogoweb") == 8',
+        'string.length("flogoweb") > 8',
+        'string.length("flogoweb") >= 8',
+        'string.length("flogoweb") < 8',
+        'string.length("flogoweb") <= 8',
+        'len("flogo") <= 10',
+        '(string.length("sea") == 3) == true',
+        '(true && true) == false',
+        '(true && true) != nil',
+        '123 != nil',
+        'nil == nil',
+        '$env.name != nil',
+        `$env.name == "test"`,
+        '$.name.test == nil',
+        `$.name.test != nil`,
+        `$.name.test == "123"`,
+        `$.name.test == "test"`,
+        `$.name.obj.value == nil`,
+        `$.name.obj.id == 123`,
+        `$env.name != null`,
+        `$env.name == "test"`,
+        `$.name.test == null`,
+        `$.name.test != null`,
+        `$.name.test == "123"`,
+        `$.name.test == "test"`,
+        `$.name.obj.value == null`,
+        `$.name.obj.doesnotexist == null`,
+      ]);
     });
   });
 
-  describe('for invalid input', () => {
-    describe('dismisses incorrect expressions', () => {
-      [
-        {text: '$trigger[]', expectedType: null},
-        {text: '$abcd.', expectedType: null},
-        {text: '$abcd.e[what]', expectedType: null},
-        {text: '1.4.25', expectedType: null},
-        {text: '25a', expectedType: null},
-        {text: '{ "a": 1, b: {} }', expectedType: null},
-        {text: '{ "a": 1, b: {} ', expectedType: null},
-        {text: '', expectedType: null},
-        {text: '$a >', expectedType: null},
-        {text: `{ "a": "{{}}" }`, expectedType: null},
-        {text: `a ? 4`, expectedType: null},
-        {text: `1 > ? a : b`, expectedType: null},
-        {text: `true ? a`, expectedType: null},
-      ].forEach(assertParsedType);
-    });
+  describe('for invalid input dismisses incorrect expressions', () => {
+    testResolvesToType(null, [
+      '$trigger[]',
+      '$abcd.',
+      '$abcd.e[what]',
+      '1.4.25',
+      '25a',
+      '{ "a": 1, b: {} }',
+      '{ "a": 1, b: {} ',
+      '',
+      '$a >',
+      `{ "a": "{{}}" }`,
+      `a ? 4`,
+      `1 > ? a : b`,
+      `true ? a`,
+    ]);
   });
 
 });
