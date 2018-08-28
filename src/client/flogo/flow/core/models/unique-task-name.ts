@@ -30,5 +30,5 @@ export function uniqueTaskName(taskName: string, ...taskDictionaries) {
 export function uniqueTaskNameValidator(taskName, ...taskDictionaries) {
   const allTasks = Object.assign({}, ...taskDictionaries);
   const itemIds = Object.keys(allTasks);
-  return itemIds.find(itemId => allTasks[itemId].name === taskName);
+  return itemIds.find(itemId => normalizeTaskName(allTasks[itemId].name) === normalizeTaskName(taskName));
 }
