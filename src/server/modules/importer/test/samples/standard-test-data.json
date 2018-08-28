@@ -55,7 +55,23 @@
                       "value": false
                     }
                   ],
-                  "inputMappings": []
+                  "inputMappings": [
+                    {
+                      "mapTo": "message",
+                      "type": 2,
+                      "value": ""
+                    },
+                    {
+                      "mapTo": "flowInfo",
+                      "type": 2,
+                      "value": false
+                    },
+                    {
+                      "mapTo": "addToFlow",
+                      "type": 2,
+                      "value": false
+                    }
+                  ]
                 }
               ],
               "links": []
@@ -88,7 +104,23 @@
                       "value": false
                     }
                   ],
-                  "inputMappings": []
+                  "inputMappings": [
+                    {
+                      "mapTo": "message",
+                      "type": 2,
+                      "value": "log in error handler"
+                    },
+                    {
+                      "mapTo": "flowInfo",
+                      "type": 2,
+                      "value": false
+                    },
+                    {
+                      "mapTo": "addToFlow",
+                      "type": 2,
+                      "value": false
+                    }
+                  ]
                 }
               ],
               "links": []

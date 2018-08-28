@@ -20,7 +20,6 @@ function unifyTaskAttributesToMappings(action, handlerName, schemas) {
   tasks.filter(task => !isSubflowTask(task) && !isMapperActivity(schemas[task.activityRef]))
     .forEach(task => {
       task.inputMappings = attributesToMappings(task.attributes, task.inputMappings);
-      task.attributes = [];
     })
 }
 
