@@ -39,7 +39,8 @@ describe('Parser Type Resolver', function () {
       testResolvesToType('literal', [
         '1',
         '1.4',
-        '"adadsa"',
+        '"with double quotes"',
+        `'with single quotes'`,
       ]);
 
       testResolvesToType('json', [
@@ -52,6 +53,8 @@ describe('Parser Type Resolver', function () {
          }`,
         `{ "a": "{{ $activity[xyz].result.id }}" }`,
         `{ "foo": ["{{ string.concat($activity[hello].world, $flow.a[0]) }}"] }`,
+        `{"q": "{{string.concat(\\"isbn:\\", $flow.isbn)}}"}`,
+        `{"q": "{{string.concat('isbn:', $flow.isbn)}}"}`
       ]);
 
       testResolvesToType('expression', [
@@ -81,6 +84,9 @@ describe('Parser Type Resolver', function () {
         'string.concat("123","456")=="123456"',
         'string.concat("123","456") == string.concat("12","3456")',
         '("dddddd" == "dddd3dd") && ("133" == "123")',
+        `string.concat('123','456')=='123456'`,
+        `string.concat('123','456') == string.concat('12','3456')`,
+        `('dddddd' == 'dddd3dd') && ('133' == '123')`,
         'string.length("flogoweb") == 8',
         'string.length("flogoweb") > 8',
         'string.length("flogoweb") >= 8',
@@ -102,6 +108,7 @@ describe('Parser Type Resolver', function () {
         `$.name.obj.id == 123`,
         `$env.name != null`,
         `$env.name == "test"`,
+        `$env.name == 'test'`,
         `$.name.test == null`,
         `$.name.test != null`,
         `$.name.test == "123"`,

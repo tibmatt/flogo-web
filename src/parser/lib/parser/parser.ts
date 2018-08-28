@@ -99,7 +99,28 @@ const Colon = createToken({
 const StringLiteral = createToken({
   name: 'StringLiteral',
   label: 'StringLiteral',
+  pattern: Lexer.NA,
+});
+
+const DblQuoteStringLiteral = createToken({
+  name: 'DblQuoteStringLiteral',
+  label: 'DblQuoteStringLiteral',
+  categories: StringLiteral,
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+});
+
+const SingleQuoteStringLiteral = createToken({
+  name: 'SingleQuoteStringLiteral',
+  label: 'SingleQuoteStringLiteral',
+  categories: StringLiteral,
+  pattern: /'(?:[^\\']|\\(?:[bfnrtv'\\/]|u[0-9a-fA-F]{4}))*'/,
+});
+
+const NestedDblQuoteStringLiteral = createToken({
+  name: 'NestedDblQuoteStringLiteral',
+  label: 'NestedDblQuoteStringLiteral',
+  categories: StringLiteral,
+  pattern: /\\"(?:[^\\\\"]|\\\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*\\"/,
 });
 
 function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IToken[]) {
@@ -238,6 +259,9 @@ export const Token = {
   Lookup,
   NumberLiteral,
   StringLiteral,
+  DblQuoteStringLiteral,
+  NestedDblQuoteStringLiteral,
+  SingleQuoteStringLiteral,
   StringTemplateOpen,
   StringTemplateClose,
   LParen,
@@ -272,6 +296,8 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       NumberLiteral,
       StringTemplateOpen,
       StringLiteral,
+      DblQuoteStringLiteral,
+      SingleQuoteStringLiteral,
       LParen,
       RParen,
       LCurly,
@@ -299,6 +325,9 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       WhiteSpace,
       Lookup,
       NumberLiteral,
+      StringLiteral,
+      NestedDblQuoteStringLiteral,
+      SingleQuoteStringLiteral,
       StringTemplateClose,
       LParen,
       RParen,
@@ -431,7 +460,6 @@ export class MappingParser extends Parser {
     ]);
   });
 
-  // todo: parenthesis support
   private operand = this.RULE('operand', () => {
     this.OR([
       {ALT: () => this.SUBRULE(this.literal)},
@@ -519,7 +547,7 @@ export class MappingParser extends Parser {
   protected jsonValue = this.RULE('jsonValue', () => {
     this.OR([
       {ALT: () => this.SUBRULE(this.stringTemplate)},
-      {ALT: () => this.CONSUME(Token.StringLiteral)},
+      {ALT: () => this.CONSUME(Token.DblQuoteStringLiteral)},
       {ALT: () => this.CONSUME(Token.NumberLiteral)},
       {ALT: () => this.SUBRULE(this.object)},
       {ALT: () => this.SUBRULE(this.array)},

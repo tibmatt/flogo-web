@@ -7,6 +7,7 @@ import { CstNode, ICstVisitor, IToken } from 'chevrotain';
 import { Node } from './node';
 import * as JsonNodes from './json-nodes';
 import * as ExprNodes from './expr-nodes';
+import { makeLiteralNode } from './make-literal-node';
 
 export interface CstVisitorBase {
   new (...args: any[]): ICstVisitor<CstNode, Node | Node[]>;
@@ -14,18 +15,6 @@ export interface CstVisitorBase {
 
 type PrimaryExprNode = ExprNodes.BasicLit | ExprNodes.Identifier | ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
 type PrimaryExprAstNode = ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
-
-const literalTypeMap = {StringLiteral: 'string', NumberLiteral: 'number', True: 'boolean', False: 'boolean', Null: 'null'};
-const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
-  const value = JSON.parse(cstToken.image);
-  const tokenName = cstToken.tokenType.tokenName;
-  return {
-    type: 'jsonLiteral',
-    kind: literalTypeMap[tokenName],
-    value,
-    raw: cstToken.image,
-  };
-};
 
 export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisitorBase {
   class AstConstructor extends BaseCstVisitorClass {
@@ -84,14 +73,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     literal(ctx) {
       const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
       const cstToken = ctx[cstNodeType][0];
-      const value = JSON.parse(cstToken.image);
-      const tokenName = cstToken.tokenType.tokenName;
-      return {
-        type: 'BasicLit',
-        kind: literalTypeMap[tokenName],
-        value,
-        raw: cstToken.image,
-      };
+      return makeLiteralNode('BasicLit', cstToken);
     }
 
     primaryExpr(ctx): PrimaryExprNode {
@@ -244,7 +226,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       if (cstNodeType === 'object' || cstNodeType === 'array' || cstNodeType === 'stringTemplate' ) {
         return <JsonNodes.ObjectNode | JsonNodes.ArrayNode> this.visit(ctx[cstNodeType]);
       } else {
-        return makeLiteralJsonNode(ctx[cstNodeType][0]);
+        return makeLiteralNode('jsonLiteral', ctx[cstNodeType][0]) as JsonNodes.LiteralNode;
       }
     }
 
