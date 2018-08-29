@@ -1,4 +1,4 @@
-import { parseMapping } from './utils';
+import {activitySchemaToTask, parseMapping} from './utils';
 
 
 describe('Function: ParseMapping', () => {
@@ -56,7 +56,48 @@ describe('Function: ParseMapping', () => {
 
 });
 
+describe('Function: activitySchemaToTask', function () {
+  const schemasUnderTest = {
+    'normal': {
+      'inputs': [
+        {
+          'name': 'flowInfo',
+          'type': 'boolean',
+          'value': 'false'
+        },
+        {
+          'name': 'addToFlow',
+          'type': 'boolean'
+        }
+      ]
+    },
+    'mapper': {
+      'inputs': [
+        {
+          'name': 'mappings',
+          'type': 'array',
+          'required': true,
+          'display': {
+            'name': 'Mapper',
+            'type': 'mapper',
+            'mapperOutputScope': 'action'
+          }
+        }
+      ]
+    }
+  };
 
+  it('Should create configurations for inputs with default values for normal activities', () => {
+    const normalTask = activitySchemaToTask(schemasUnderTest.normal);
+    expect(normalTask.inputMappings).toBeDefined();
+    expect(normalTask.inputMappings).toEqual([{
+      'mapTo': 'flowInfo',
+      'type': 2,
+      'value': 'false'
+    }]);
+  });
 
-
-
+  it('Should not create configurations for inputs for normal activities', () => {
+    expect(activitySchemaToTask(schemasUnderTest.mapper).inputMappings).toBeUndefined();
+  });
+});
