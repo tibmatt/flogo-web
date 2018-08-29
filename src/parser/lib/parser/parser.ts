@@ -219,13 +219,6 @@ const Lookup = createToken({
   pattern: /\$/,
 });
 
-// TODO: are all operators supported?
-const UnaryOp = createToken({
-  name: 'UnaryOp',
-  label: 'Unary operator',
-  pattern: /\+|-|!|\^|\*|&|<-/,
-});
-
 const BinaryOp = createToken({
   name: 'BinaryOp',
   label: 'Binary operator',
@@ -301,7 +294,6 @@ export const Token = {
   RelOp,
   LogicalOr,
   BinaryOp,
-  UnaryOp,
   ResolverIdentifier,
   IdentifierName,
 };
@@ -337,7 +329,6 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       RelOp,
       LogicalOr,
       BinaryOp,
-      UnaryOp,
       ResolverIdentifier,
       IdentifierName,
     ],
@@ -368,7 +359,6 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       RelOp,
       LogicalOr,
       BinaryOp,
-      UnaryOp,
       ResolverIdentifier,
       IdentifierName,
     ],
@@ -454,19 +444,7 @@ export class MappingParser extends Parser {
   });
 
   private unaryExpr = this.RULE('unaryExpr', () => {
-    this.OR([
-      {
-        ALT: () => this.SUBRULE(this.primaryExpr)
-      },
-      {
-        ALT: () => this.SUBRULE(this.unaryExprOperation)
-      }
-    ]);
-  });
-
-  private unaryExprOperation = this.RULE('unaryExprOperation', () => {
-    this.CONSUME(Token.UnaryOp);
-    this.SUBRULE(this.unaryExpr);
+    return this.SUBRULE(this.primaryExpr);
   });
 
   private primaryExpr = this.RULE('primaryExpr', () => {

@@ -113,18 +113,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     unaryExpr(ctx): ExprNodes.Expr {
-      if (ctx.primaryExpr) {
-        return <PrimaryExprNode> this.visit(ctx.primaryExpr);
-      }
-      return <ExprNodes.UnaryExpr> this.visit(ctx.unaryExprOperation);
-    }
-
-    unaryExprOperation(ctx): ExprNodes.UnaryExpr {
-      return {
-        type: 'UnaryExpr',
-        operator: ctx.UnaryExpr[0].image,
-        x: <ExprNodes.Expr> this.visit(ctx.UnaryExpr)
-      };
+      return this.visit(ctx.primaryExpr) as PrimaryExprNode;
     }
 
     operand(ctx) {

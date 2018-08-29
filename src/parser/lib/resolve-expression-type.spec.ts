@@ -40,6 +40,8 @@ describe('Parser Type Resolver', function () {
       testResolvesToType('literal', [
         '1',
         '1.4',
+        '-5',
+        '-2.8',
         '"with double quotes"',
         `'with single quotes'`,
         'true',
@@ -143,6 +145,7 @@ describe('Parser Type Resolver', function () {
       `a ? 4`,
       `1 > ? a : b`,
       `true ? a`,
+      `!true`
     ]);
   });
 
