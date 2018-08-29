@@ -2,7 +2,7 @@
   <div class="mapper-modal qa-transform-modal">
     <div class="mapper-modal__header header">
       <div class="header__title" [ngClass]='{"header__title--subflow": isSubflowType}'>
-        <div *ngIf="mapperText" class="output-mapper-text">{{mapperText}}</div>
+        <div *ngIf="ismapperActivity" class="output-mapper-text">{{'TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER' | translate}}</div>
         <div class="task-details">
           <input class="task-name" [ngClass]='{"task-name--error": !isValidTaskName}' [(ngModel)]="title"
                  (keyup)="changeTaskDetail($event.target.value,'name')" [size]="title.length + 1">

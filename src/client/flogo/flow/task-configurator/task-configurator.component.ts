@@ -79,7 +79,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   iteratorController: MapperController;
   isValidTaskName: boolean;
   isTaskDetailEdited: boolean;
-  mapperText: string;
+  ismapperActivity: boolean;
 
   private inputMapperStateSubscription: Subscription;
   private contextChange$ = SingleEmissionSubject.create();
@@ -233,8 +233,6 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
   private configureOutputMapperLabels() {
     this.inputsSearchPlaceholderKey = 'TASK-CONFIGURATOR:FLOW-OUTPUTS';
     this.tabs.get(TASK_TABS.INPUT_MAPPINGS).labelKey = 'TASK-CONFIGURATOR:TABS:MAP-OUTPUTS';
-    this.translate.get('TASK-CONFIGURATOR:TITLE-OUTPUT-MAPPER')
-      .subscribe(mapperText => this.mapperText = mapperText);
   }
 
   private initConfigurator(state: FlowState) {
@@ -251,6 +249,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.isSubflowType = isSubflowTask(this.currentTile.type);
     this.title = this.currentTile.name;
     this.isValidTaskName = true;
+    this.ismapperActivity = false;
     this.isTaskDetailEdited = false;
     const isSubflowItem = (item: Item): item is ItemSubflow => isSubflowTask(item.type);
     this.isSubflowType = isSubflowItem(selectedItem);
@@ -280,6 +279,7 @@ export class TaskConfiguratorComponent implements OnInit, OnDestroy {
     this.resetState();
     if (isMapperActivity(activitySchema)) {
       this.configureOutputMapperLabels();
+      this.ismapperActivity = true;
     }
 
     if (this.iteratorController) {
