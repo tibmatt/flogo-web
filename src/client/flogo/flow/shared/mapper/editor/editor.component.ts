@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   shareReplay,
   switchMap,
-  takeUntil
+  takeUntil, filter, map
 } from 'rxjs/operators';
 
 import { MonacoEditorComponent, DEFAULT_EDITOR_OPTIONS } from '../../monaco-editor';
@@ -17,11 +17,43 @@ import { selectCurrentEditingExpression, selectedInputKey } from '../services/se
 
 @Component({
   selector: 'flogo-mapper-editor',
-  template: `<monaco-editor></monaco-editor>`
+  template: `
+    <div class="hints-overlay" *ngIf="displayHints$ | async">
+      <button *ngFor="let hint of hints"
+        class="hints-overlay__hint"
+        (click)="hintSelected(hint)">{{ hint.label }}</button>
+    </div>
+    <monaco-editor class="editor"></monaco-editor>
+  `,
+  styleUrls: ['editor.component.less'],
 })
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) editor: MonacoEditorComponent;
   expression = '';
+  displayHints$: Observable<boolean>;
+
+  hints = [
+    {
+      label: 'GET',
+      value: '"GET"'
+    },
+    {
+      label: 'POST',
+      value: '"POST"'
+    },
+    {
+      label: 'PUT',
+      value: '"PUT"'
+    },
+    {
+      label: 'PATCH',
+      value: '"PATCH"'
+    },
+    {
+      label: 'DELETE',
+      value: '"DELETE"'
+    },
+  ];
 
   private currentMapKey: string;
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -39,6 +71,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
       );
 
+    this.displayHints$ = this.editor.valueChange
+      .pipe(map((value) => !value && this.hints && this.hints.length > 0));
+
     editorContext$
       .pipe(
         switchMap(() => valueChange$),
@@ -52,15 +87,15 @@ export class EditorComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(() => mapperState$.pipe(selectCurrentEditingExpression)),
         takeUntil(this.ngDestroy),
+        filter(context => !!context),
       )
       .subscribe((context) => {
-        if (context) {
-          this.currentMapKey = context.currentKey;
-          const newExpression = context.expression || '';
-          if (this.editor.value !== newExpression) {
-            this.editor.changeModel(newExpression, DEFAULT_EDITOR_OPTIONS.language);
-            setTimeout(() => this.editor.onWindowResize(), 0);
-          }
+        this.currentMapKey = context.currentKey;
+        this.expression = context.expression;
+        const newExpression = context.expression || '';
+        if (this.editor.value !== newExpression) {
+          this.editor.changeModel(newExpression, DEFAULT_EDITOR_OPTIONS.language);
+          setTimeout(() => this.editor.onWindowResize(), 0);
         }
       });
 
@@ -84,6 +119,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.editor.ready
       .pipe(takeUntil(this.ngDestroy))
       .subscribe(editorReady);
+  }
+
+  hintSelected(hint) {
+    this.editor.insert(hint.value);
   }
 
   ngOnDestroy() {
