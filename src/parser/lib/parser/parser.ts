@@ -129,21 +129,21 @@ const StringLiteral = createToken({
 
 const DblQuoteStringLiteral = createToken({
   name: 'DblQuoteStringLiteral',
-  label: 'DblQuoteStringLiteral',
+  label: 'StringLiteral',
   categories: StringLiteral,
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
 });
 
 const SingleQuoteStringLiteral = createToken({
   name: 'SingleQuoteStringLiteral',
-  label: 'SingleQuoteStringLiteral',
+  label: 'StringLiteral',
   categories: StringLiteral,
   pattern: /'(?:[^\\']|\\(?:[bfnrtv'\\/]|u[0-9a-fA-F]{4}))*'/,
 });
 
 const NestedDblQuoteStringLiteral = createToken({
   name: 'NestedDblQuoteStringLiteral',
-  label: 'NestedDblQuoteStringLiteral',
+  label: 'StringLiteral',
   categories: StringLiteral,
   pattern: /\\"(?:[^\\\\"]|\\\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*\\"/,
 });
@@ -164,7 +164,7 @@ function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IT
 
 const StringTemplateOpen = createToken({
   name: 'StringTemplateOpen',
-  label: '"{{',
+  label: 'Open String template ("{{)',
   pattern: { exec: matchStringTemplateOpen },
   line_breaks: false,
   push_mode: 'string_template'
@@ -172,7 +172,7 @@ const StringTemplateOpen = createToken({
 
 const StringTemplateClose = createToken({
   name: 'StringTemplateClose',
-  label: '}}"',
+  label: 'Closing StringTemplate (}}")',
   pattern: /}}"/,
   pop_mode: true,
 });
