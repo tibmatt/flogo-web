@@ -1,13 +1,22 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, shareReplay, switchMap, takeUntil, filter, map, startWith } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  shareReplay,
+  switchMap,
+  takeUntil,
+  filter,
+  map,
+  startWith,
+} from 'rxjs/operators';
 
 import { MonacoEditorComponent, DEFAULT_EDITOR_OPTIONS } from '../../monaco-editor';
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 
 import { MapperState } from '../models';
 import { MapperService } from '../services/mapper.service';
-import { selectCurrentEditingExpression, selectedInputKey } from '../services/selectors';
+import { selectCurrentEditingExpression, selectedInputKey, getCurrentNodeValueHints } from '../services/selectors';
 import { EditorService, InsertEvent } from './editor.service';
 
 function distinctAndDebounce(obs) {
@@ -17,46 +26,20 @@ function distinctAndDebounce(obs) {
   );
 }
 
+interface EditorHint {
+  label: string;
+  value: string;
+}
+
 @Component({
   selector: 'flogo-mapper-editor',
-  template: `
-    <div class="hints-overlay" *ngIf="displayHints$ | async">
-      <button *ngFor="let hint of hints"
-              class="hints-overlay__hint"
-              (click)="onHintSelected(hint)">{{ hint.label }}
-      </button>
-    </div>
-    <monaco-editor class="editor"></monaco-editor>
-  `,
+  templateUrl: 'editor.component.html',
   styleUrls: ['editor.component.less'],
 })
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) editor: MonacoEditorComponent;
   expression = '';
-  displayHints$: Observable<boolean>;
-
-  hints = [
-    {
-      label: 'GET',
-      value: '"GET"'
-    },
-    {
-      label: 'POST',
-      value: '"POST"'
-    },
-    {
-      label: 'PUT',
-      value: '"PUT"'
-    },
-    {
-      label: 'PATCH',
-      value: '"PATCH"'
-    },
-    {
-      label: 'DELETE',
-      value: '"DELETE"'
-    },
-  ];
+  valueHints$: Observable<null|Array<EditorHint>>;
 
   private currentMapKey: string;
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -69,7 +52,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.setupExternalModelChanges(mapperState$);
 
     const editorContext$ = mapperState$.pipe(selectedInputKey);
-    this.displayHints$ = this.createHintsStream(editorContext$);
+    this.valueHints$ = this.createHintsStream(editorContext$, mapperState$.pipe(getCurrentNodeValueHints));
     this.subscribeToValueChanges(editorContext$);
 
     this.editorService.insert$
@@ -90,7 +73,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       });
   }
 
-  onHintSelected(hint) {
+  onHintSelected(hint: EditorHint) {
     this.editor.insert(hint.value);
     this.editor.focus();
   }
@@ -129,13 +112,19 @@ export class EditorComponent implements OnInit, OnDestroy {
       });
   }
 
-  private createHintsStream(editorContext$) {
-    const getCurrentValueStream = () => this.editor.valueChange.pipe(startWith(this.editor.value));
+  private createHintsStream(editorContext$, currentNodeValueHints$: Observable<null | any[]>) {
+    const hasValues = a => a && a.length >= 0;
+    const nodeHintsToEditorHints = nodeHints => hasValues(nodeHints)
+      ? nodeHints.map(value => ({ label: value, value: JSON.stringify(value) }))
+      : [];
     return this.editor.ready
       .pipe(
         switchMap(() => editorContext$),
-        switchMap(() => getCurrentValueStream()),
-        map((value) => !value && this.hints && this.hints.length > 0),
+        switchMap(() => combineLatest(
+          this.editor.valueChange.pipe(startWith(this.editor.value)),
+          currentNodeValueHints$.pipe(map(nodeHintsToEditorHints)),
+        )),
+        map(([currentEditorValue, hints]) => !currentEditorValue ? hints : null),
       );
   }
 

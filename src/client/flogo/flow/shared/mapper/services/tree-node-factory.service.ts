@@ -284,6 +284,7 @@ export class TreeNodeFactoryService {
         styleClass: 'mapper-tree__node',
         path: nodePath,
         // snippet: nodePath,
+        hintOptions: property.enum,
         dataType: dataType,
         data: {
           nodeName: propName,

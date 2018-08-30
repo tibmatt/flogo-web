@@ -1,13 +1,11 @@
-import { isString, fromPairs } from 'lodash';
+import { isString, isArray, fromPairs } from 'lodash';
 import { resolveExpressionType } from 'flogo-parser';
 
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
 import { Task as FlowTile, AttributeMapping as FlowMapping, } from '@flogo/core';
-import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL } from '../constants';
-
+import { MAPPING_TYPE, REGEX_INPUT_VALUE_EXTERNAL, ROOT_TYPES } from '../constants';
 // todo: shared models should be moved to core
 import { FlowMetadata, MapperSchema, Properties as MapperSchemaProperties } from '../../../task-configurator/models';
-import { ROOT_TYPES } from '../constants';
 import { Mappings, MapExpression } from '../models';
 
 export type  MappingsValidatorFn = (mappings: Mappings) => boolean;
@@ -15,6 +13,19 @@ export interface AttributeDescriptor {
   name: string;
   type: ValueType;
   required?: boolean;
+  allowed?: any[];
+}
+
+function getEnumDescriptor(attr: AttributeDescriptor) {
+  let allowed = isArray(attr.allowed) ? [...attr.allowed] : [];
+  if (attr.type === ValueType.Boolean) {
+    allowed = [ true, false, ...allowed ];
+  }
+  if (allowed.length <= 0) {
+    return null;
+  }
+  // removing duplicates
+  return Array.from((new Set(allowed)).values());
 }
 
 export class MapperTranslator {
@@ -64,9 +75,13 @@ export class MapperTranslator {
     const properties = {};
     const requiredPropertyNames = [];
     attributes.forEach(attr => {
-      let property = { type: attr.type };
+      let property = {
+        type: attr.type,
+        // using enum to conform to jsonschema
+        enum: getEnumDescriptor(attr),
+      };
       if (additionalProps) {
-        property = Object.assign({}, additionalProps, property);
+        property = {...additionalProps, ...property};
       }
       properties[attr.name] = property;
       if (attr.required) {
