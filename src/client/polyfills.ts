@@ -72,9 +72,44 @@ import 'web-animations-js';  // Run `npm install --save web-animations-js`.
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
-
-
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
 (window as any).global = window;
+
+// Patch to fix monaco-editor's promise (winJS) incompatibility with zone.js' promises
+// See:
+// - https://github.com/Microsoft/monaco-editor/issues/790
+// - https://github.com/angular/zone.js/issues/1077
+/* tslint:disable */
+/* external code used as it is from: https://github.com/Microsoft/monaco-editor/issues/790#issuecomment-378452532 **/
+(window as any).Promise.all = function (values: any): Promise<any> {
+  let resolve: (v: any) => void;
+  let reject: (v: any) => void;
+  const promise = new this((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  let count = 0;
+  let index = 0;
+  const resolvedValues: any[] = [];
+  for (let value of values) {
+    if (!(value && value.then)) {
+      value = this.resolve(value);
+    }
+    value.then(
+      ((index) => (value: any) => {
+        resolvedValues[index] = value;
+        count--;
+        if (!count) {
+          resolve(resolvedValues);
+        }
+      })(index),
+      reject);
+    count++;
+    index++;
+  }
+  if (!count) { resolve(resolvedValues); }
+  return promise;
+};
+/* tslint:enable */

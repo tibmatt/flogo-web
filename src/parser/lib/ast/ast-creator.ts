@@ -3,10 +3,11 @@
  * https://godoc.org/go/ast
  */
 
-import { CstNode, ICstVisitor, IToken } from 'chevrotain';
+import { CstNode, ICstVisitor } from 'chevrotain';
 import { Node } from './node';
 import * as JsonNodes from './json-nodes';
 import * as ExprNodes from './expr-nodes';
+import { makeLiteralNode } from './make-literal-node';
 
 export interface CstVisitorBase {
   new (...args: any[]): ICstVisitor<CstNode, Node | Node[]>;
@@ -14,18 +15,6 @@ export interface CstVisitorBase {
 
 type PrimaryExprNode = ExprNodes.BasicLit | ExprNodes.Identifier | ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
 type PrimaryExprAstNode = ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr;
-
-const literalTypeMap = {StringLiteral: 'string', NumberLiteral: 'number', True: 'boolean', False: 'boolean', Null: 'null'};
-const makeLiteralJsonNode = (cstToken: IToken): JsonNodes.LiteralNode => {
-  const value = JSON.parse(cstToken.image);
-  const tokenName = cstToken.tokenType.tokenName;
-  return {
-    type: 'jsonLiteral',
-    kind: literalTypeMap[tokenName],
-    value,
-    raw: cstToken.image,
-  };
-};
 
 export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisitorBase {
   class AstConstructor extends BaseCstVisitorClass {
@@ -55,18 +44,21 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       }
     }
 
-    // todo: check precedence order
-    expression(ctx): ExprNodes.Expr {
-      const unaryExpr = <ExprNodes.Expr> this.visit(ctx.unaryExpr);
-      if (!ctx.binaryExprSide) {
-        return unaryExpr;
+    expression(ctx): ExprNodes.Expr | ExprNodes.TernaryExpr {
+      const expr = this.visit(ctx.baseExpr) as ExprNodes.Expr;
+      if (!ctx.ternaryExpr) {
+        return expr;
       }
-      return ctx.binaryExprSide
-        .map(cstNode => <ExprNodes.BinaryExpr> this.visit(cstNode))
-        .reduce((leftOperator: ExprNodes.BinaryExpr, binaryExpr: ExprNodes.BinaryExpr) => {
-          binaryExpr.x = leftOperator;
-          return binaryExpr;
-        }, unaryExpr);
+      return this.visit(ctx.ternaryExpr, <any>expr) as ExprNodes.TernaryExpr;
+    }
+
+    // todo: check precedence order
+    baseExpr(ctx): ExprNodes.Expr {
+      const expr = (ctx.parenExpr ? this.visit(ctx.parenExpr) : this.visit(ctx.unaryExpr)) as ExprNodes.Expr;
+      if (!ctx.binaryExprSide) {
+        return expr;
+      }
+      return this.$reduceToBinaryExpression(ctx, expr);
     }
 
     binaryExprSide(ctx): ExprNodes.BinaryExpr {
@@ -74,21 +66,14 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
         type: 'BinaryExpr',
         x: null,
         operator: ctx.BinaryOp[0].image,
-        y: <ExprNodes.Expr> this.visit(ctx.expression),
+        y: <ExprNodes.Expr> this.visit(ctx.baseExpr),
       };
     }
 
     literal(ctx) {
       const cstNodeType = this.$findCstNodeTypeFromContext(ctx);
       const cstToken = ctx[cstNodeType][0];
-      const value = JSON.parse(cstToken.image);
-      const tokenName = cstToken.tokenType.tokenName;
-      return {
-        type: 'BasicLit',
-        kind: literalTypeMap[tokenName],
-        value,
-        raw: cstToken.image,
-      };
+      return makeLiteralNode('BasicLit', cstToken);
     }
 
     primaryExpr(ctx): PrimaryExprNode {
@@ -98,6 +83,23 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       } else {
         return operand;
       }
+    }
+
+    parenExpr(ctx): ExprNodes.ParenExpr {
+      return {
+        type: 'ParenExpr',
+        expr: this.visit(ctx.baseExpr) as ExprNodes.Expr,
+      };
+    }
+
+    ternaryExpr(ctx, condition: ExprNodes.Expr): ExprNodes.TernaryExpr {
+      const [consequent, alternate] = ctx.baseExpr;
+      return {
+        type: 'TernaryExpr',
+        condition,
+        consequent: this.visit(consequent) as ExprNodes.Expr,
+        alternate: this.visit(alternate) as ExprNodes.Expr,
+      };
     }
 
     primaryExprTail(ctx): ExprNodes.SelectorExpr | ExprNodes.IndexExpr | ExprNodes.CallExpr {
@@ -111,19 +113,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     unaryExpr(ctx): ExprNodes.Expr {
-      const primaryExpr = <PrimaryExprNode> this.visit(ctx.primaryExpr);
-      if (primaryExpr) {
-        return primaryExpr;
-      }
-      return <ExprNodes.UnaryExpr> this.visit(ctx.unaryExprOperation);
-    }
-
-    unaryExprOperation(ctx): ExprNodes.UnaryExpr {
-      return {
-        type: 'UnaryExpr',
-        operator: ctx.UnaryExpr[0].image,
-        x: <ExprNodes.Expr> this.visit(ctx.UnaryExpr)
-      };
+      return this.visit(ctx.primaryExpr) as PrimaryExprNode;
     }
 
     operand(ctx) {
@@ -183,7 +173,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
     }
 
     argumentList(ctx): ExprNodes.CallExpr {
-      const args = (ctx.expression || []).map(exprNode => this.visit(exprNode));
+      const args = (ctx.baseExpr || []).map(exprNode => this.visit(exprNode));
       return {
         type: 'CallExpr',
         fun: null,
@@ -228,7 +218,7 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
       if (cstNodeType === 'object' || cstNodeType === 'array' || cstNodeType === 'stringTemplate' ) {
         return <JsonNodes.ObjectNode | JsonNodes.ArrayNode> this.visit(ctx[cstNodeType]);
       } else {
-        return makeLiteralJsonNode(ctx[cstNodeType][0]);
+        return makeLiteralNode('jsonLiteral', ctx[cstNodeType][0]) as JsonNodes.LiteralNode;
       }
     }
 
@@ -259,6 +249,15 @@ export function astCreatorFactory(BaseCstVisitorClass: CstVisitorBase): CstVisit
           }
         }, operand);
 
+    }
+
+    private $reduceToBinaryExpression(ctx, unaryExpr) {
+      return ctx.binaryExprSide
+        .map(cstNode => <ExprNodes.BinaryExpr> this.visit(cstNode))
+        .reduce((leftOperator: ExprNodes.BinaryExpr, binaryExpr: ExprNodes.BinaryExpr) => {
+          binaryExpr.x = leftOperator;
+          return binaryExpr;
+        }, unaryExpr);
     }
 
   }

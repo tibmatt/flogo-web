@@ -74,13 +74,15 @@ export class DiagnosticsAdapter {
     if (!initialModel) {
       return;
     }
-   LanguageService.doValidation(initialModel.getValue()).then(diagnostics => {
-     const model = monaco.editor.getModel(resource);
-     if (model.getModeId() === languageId) {
-       const markers = diagnostics.map(d => toDiagnostics(resource, d));
-       monaco.editor.setModelMarkers(model, languageId, markers);
-     }
-   });
+    LanguageService
+      .doValidation(initialModel.getValue())
+      .then(diagnostics => {
+         const model = monaco.editor.getModel(resource);
+         if (model.getModeId() === languageId) {
+           const markers = diagnostics.map(d => toDiagnostics(resource, d));
+           monaco.editor.setModelMarkers(model, languageId, markers);
+         }
+      });
 
     // this._worker(resource).then(worker => {
     //   return worker.doValidation(resource.toString()).then(diagnostics => {
@@ -117,23 +119,33 @@ function toDiagnostics(resource: Uri, diagnostic: RecognitionException|LexingErr
   }
 }
 
-function parseExceptionToMarker(exception: RecognitionException) {
-  const marker = {
+const tokenToPosition = (token: RecognitionException['token']) => ({
+  startLineNumber: token.startLine,
+  startColumn: token.startColumn,
+  endLineNumber: token.endLine,
+  endColumn: token.endColumn,
+});
+const missingToken = (token: RecognitionException['token']) => ({
+  startLineNumber: token.startLine,
+  startColumn: token.endColumn + 1,
+  endLineNumber: token.endLine,
+  endColumn: token.endColumn + 2,
+});
+function parseExceptionToMarker(exception: RecognitionException): monaco.editor.IMarkerData {
+  let positionInfo = tokenToPosition(exception.token);
+  //
+  if (isNaN(exception.token.startOffset) && (<any>exception).previousToken) {
+    positionInfo = missingToken((<any>exception).previousToken);
+  }
+  return {
     code: exception.name,
     severity: monaco.MarkerSeverity.Error,
     message: exception.message,
-    startLineNumber: exception.token.startLine,
-    startColumn: exception.token.startColumn,
-    endLineNumber: exception.token.endLine,
-    endColumn: exception.token.endColumn,
+    ...positionInfo,
   };
-  if (isNaN(exception.token.startOffset)) {
-
-  }
-  return marker;
 }
 
-function lexErrorToMarker(resource: monaco.Uri, lexingError: LexingError) {
+function lexErrorToMarker(resource: monaco.Uri, lexingError: LexingError): monaco.editor.IMarkerData {
   const model = monaco.editor.getModel(resource);
   const startPosition = model.getPositionAt(lexingError.offset);
   const endPosition = model.getPositionAt(lexingError.offset + lexingError.length);

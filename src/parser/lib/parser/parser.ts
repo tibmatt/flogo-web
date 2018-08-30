@@ -18,6 +18,15 @@ import { UnicodeCategory } from './unicode';
 // with the current setup.
 // const Token = require('./tokens');
 
+// https://golang.org/ref/spec#Identifiers
+// identifier = letter { letter | unicode_digit }
+const IdentifierName = createToken({
+  name: 'IdentifierName',
+  label: 'Identifier',
+  // TODO: should we change this regex for manual parsing to avoid perf issues?
+  pattern: new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`),
+});
+
 const True = createToken({
   name: 'True',
   label: 'true',
@@ -30,10 +39,26 @@ const False = createToken({
   pattern: /false/,
 });
 
+const Nullable = createToken({
+  name: 'Nullable',
+  label: 'Nullable',
+  pattern: Lexer.NA,
+});
+
 const Null = createToken({
   name: 'Null',
   label: 'null',
+  longer_alt: IdentifierName,
+  categories: Nullable,
   pattern: /null/,
+});
+
+const Nil = createToken({
+  name: 'Nil',
+  label: 'nil',
+  longer_alt: IdentifierName,
+  categories: Nullable,
+  pattern: /nil/,
 });
 
 const LCurly = createToken({
@@ -84,6 +109,12 @@ const Comma = createToken({
   pattern: /,/,
 });
 
+const TernaryOper = createToken({
+  name: 'TernaryOper',
+  label: '?',
+  pattern: /\?/,
+});
+
 const Colon = createToken({
   name: 'Colon',
   label: ':',
@@ -93,7 +124,28 @@ const Colon = createToken({
 const StringLiteral = createToken({
   name: 'StringLiteral',
   label: 'StringLiteral',
+  pattern: Lexer.NA,
+});
+
+const DblQuoteStringLiteral = createToken({
+  name: 'DblQuoteStringLiteral',
+  label: 'StringLiteral',
+  categories: StringLiteral,
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+});
+
+const SingleQuoteStringLiteral = createToken({
+  name: 'SingleQuoteStringLiteral',
+  label: 'StringLiteral',
+  categories: StringLiteral,
+  pattern: /'(?:[^\\']|\\(?:[bfnrtv'\\/]|u[0-9a-fA-F]{4}))*'/,
+});
+
+const NestedDblQuoteStringLiteral = createToken({
+  name: 'NestedDblQuoteStringLiteral',
+  label: 'StringLiteral',
+  categories: StringLiteral,
+  pattern: /\\"(?:[^\\\\"]|\\\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*\\"/,
 });
 
 function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IToken[]) {
@@ -112,7 +164,7 @@ function matchStringTemplateOpen(text: string, startOffset?: number, tokens?: IT
 
 const StringTemplateOpen = createToken({
   name: 'StringTemplateOpen',
-  label: '"{{',
+  label: 'Open String template ("{{)',
   pattern: { exec: matchStringTemplateOpen },
   line_breaks: false,
   push_mode: 'string_template'
@@ -120,7 +172,7 @@ const StringTemplateOpen = createToken({
 
 const StringTemplateClose = createToken({
   name: 'StringTemplateClose',
-  label: '}}"',
+  label: 'Closing StringTemplate (}}")',
   pattern: /}}"/,
   pop_mode: true,
 });
@@ -137,15 +189,6 @@ const WhiteSpace = createToken({
   pattern: /\s+/,
   group: Lexer.SKIPPED,
   line_breaks: true,
-});
-
-// https://golang.org/ref/spec#Identifiers
-// identifier = letter { letter | unicode_digit }
-const IdentifierName = createToken({
-  name: 'IdentifierName',
-  label: 'Identifier',
-  // TODO: should we change this regex for manual parsing to avoid perf issues?
-  pattern: new RegExp(`[_${UnicodeCategory.Letter}][_${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`),
 });
 
 const RESOLVER_PATTERN = new RegExp(`[_${UnicodeCategory.Letter}][_\.${UnicodeCategory.Letter}${UnicodeCategory.DecimalDigit}]*`);
@@ -176,13 +219,6 @@ const Lookup = createToken({
   pattern: /\$/,
 });
 
-// TODO: are all operators supported?
-const UnaryOp = createToken({
-  name: 'UnaryOp',
-  label: 'Unary operator',
-  pattern: /\+|-|!|\^|\*|&|<-/,
-});
-
 const BinaryOp = createToken({
   name: 'BinaryOp',
   label: 'Binary operator',
@@ -193,7 +229,7 @@ const BinaryOp = createToken({
 // OPERATOR PRECEDENCE: 5 (greatest)
 const MulOp = createToken({
   name: 'MulOp',
-  pattern: /\*|\/|%|<<|>>|&\^|&/,
+  pattern: /\*|\/|%|<<|>>|&/,
   categories: BinaryOp,
 });
 
@@ -201,7 +237,7 @@ const MulOp = createToken({
 // TODO: are all operators supported?
 const AddOp = createToken({
   name: 'AddOp',
-  pattern: /\+|-|\|\^/,
+  pattern: /[+\-]/,
   categories: BinaryOp,
 });
 
@@ -232,6 +268,9 @@ export const Token = {
   Lookup,
   NumberLiteral,
   StringLiteral,
+  DblQuoteStringLiteral,
+  NestedDblQuoteStringLiteral,
+  SingleQuoteStringLiteral,
   StringTemplateOpen,
   StringTemplateClose,
   LParen,
@@ -240,19 +279,21 @@ export const Token = {
   RCurly,
   LSquare,
   RSquare,
+  TernaryOper,
   Dot,
   Comma,
   Colon,
   True,
   False,
+  Nullable,
   Null,
+  Nil,
   LogicalAnd,
   MulOp,
   AddOp,
   RelOp,
   LogicalOr,
   BinaryOp,
-  UnaryOp,
   ResolverIdentifier,
   IdentifierName,
 };
@@ -265,25 +306,29 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       NumberLiteral,
       StringTemplateOpen,
       StringLiteral,
+      DblQuoteStringLiteral,
+      SingleQuoteStringLiteral,
       LParen,
       RParen,
       LCurly,
       RCurly,
       LSquare,
       RSquare,
+      TernaryOper,
       Dot,
       Comma,
       Colon,
       True,
       False,
       Null,
+      Nil,
+      Nullable,
       LogicalAnd,
       MulOp,
       AddOp,
       RelOp,
       LogicalOr,
       BinaryOp,
-      UnaryOp,
       ResolverIdentifier,
       IdentifierName,
     ],
@@ -291,24 +336,29 @@ export const lexerDefinition: IMultiModeLexerDefinition = {
       WhiteSpace,
       Lookup,
       NumberLiteral,
+      StringLiteral,
+      NestedDblQuoteStringLiteral,
+      SingleQuoteStringLiteral,
       StringTemplateClose,
       LParen,
       RParen,
       LSquare,
       RSquare,
+      TernaryOper,
       Dot,
       Comma,
       Colon,
       True,
       False,
+      Nil,
       Null,
+      Nullable,
       LogicalAnd,
       MulOp,
       AddOp,
       RelOp,
       LogicalOr,
       BinaryOp,
-      UnaryOp,
       ResolverIdentifier,
       IdentifierName,
     ],
@@ -353,7 +403,7 @@ export class MappingParser extends Parser {
       {ALT: () => this.CONSUME(Token.NumberLiteral)},
       {ALT: () => this.CONSUME(Token.True)},
       {ALT: () => this.CONSUME(Token.False)},
-      {ALT: () => this.CONSUME(Token.Null)}
+      {ALT: () => this.CONSUME(Token.Nullable)}
     ]);
   });
 
@@ -365,8 +415,22 @@ export class MappingParser extends Parser {
   });
 
   public expression = this.RULE('expression', () => {
-    this.SUBRULE(this.unaryExpr);
+    this.SUBRULE(this.baseExpr);
+    this.OPTION(() => this.SUBRULE(this.ternaryExpr));
+  });
+
+  public baseExpr = this.RULE('baseExpr', () => {
+    this.OR([
+      { ALT: () => this.SUBRULE(this.parenExpr) },
+      { ALT: () => this.SUBRULE(this.unaryExpr) }
+    ]);
     this.MANY(() => this.SUBRULE1(this.binaryExprSide));
+  });
+
+  private parenExpr = this.RULE('parenExpr', () => {
+    this.CONSUME(Token.LParen);
+    this.SUBRULE(this.baseExpr);
+    this.CONSUME(Token.RParen);
   });
 
   public resolver = this.RULE('resolver', () => {
@@ -376,23 +440,11 @@ export class MappingParser extends Parser {
 
   private binaryExprSide = this.RULE('binaryExprSide', () => {
     this.CONSUME(Token.BinaryOp);
-    this.SUBRULE(this.expression);
+    this.SUBRULE(this.baseExpr);
   });
 
   private unaryExpr = this.RULE('unaryExpr', () => {
-    this.OR([
-      {
-        ALT: () => this.SUBRULE(this.primaryExpr)
-      },
-      {
-        ALT: () => this.SUBRULE(this.unaryExprOperation)
-      }
-    ]);
-  });
-
-  private unaryExprOperation = this.RULE('unaryExprOperation', () => {
-    this.CONSUME(Token.UnaryOp);
-    this.SUBRULE(this.unaryExpr);
+    return this.SUBRULE(this.primaryExpr);
   });
 
   private primaryExpr = this.RULE('primaryExpr', () => {
@@ -408,7 +460,6 @@ export class MappingParser extends Parser {
     ]);
   });
 
-  // todo: parenthesis support
   private operand = this.RULE('operand', () => {
     this.OR([
       {ALT: () => this.SUBRULE(this.literal)},
@@ -451,9 +502,16 @@ export class MappingParser extends Parser {
     this.CONSUME(Token.LParen);
     this.MANY_SEP({
       SEP: Token.Comma,
-      DEF: () => this.SUBRULE(this.expression),
+      DEF: () => this.SUBRULE(this.baseExpr),
     });
     this.CONSUME(Token.RParen);
+  });
+
+  protected ternaryExpr = this.RULE('ternaryExpr', () => {
+    this.CONSUME1(Token.TernaryOper);
+    this.SUBRULE1(this.baseExpr);
+    this.CONSUME2(Token.Colon);
+    this.SUBRULE2(this.baseExpr);
   });
 
   //// JSON
@@ -489,7 +547,7 @@ export class MappingParser extends Parser {
   protected jsonValue = this.RULE('jsonValue', () => {
     this.OR([
       {ALT: () => this.SUBRULE(this.stringTemplate)},
-      {ALT: () => this.CONSUME(Token.StringLiteral)},
+      {ALT: () => this.CONSUME(Token.DblQuoteStringLiteral)},
       {ALT: () => this.CONSUME(Token.NumberLiteral)},
       {ALT: () => this.SUBRULE(this.object)},
       {ALT: () => this.SUBRULE(this.array)},

@@ -1,12 +1,15 @@
 import { parse } from './parse';
-import { ExprStmt } from './ast/expr-nodes';
+import { ExprStmt } from './ast';
 
+const isEmptyArray = arr => !arr || arr.length <= 0;
 export function resolveExpressionType(text: string): string | null {
-  const ast = parse(text).ast;
-  if (!ast) {
+  const result = parse(text);
+  const hasErrors = !isEmptyArray(result.lexErrors) || !isEmptyArray(result.parseErrors);
+  if (hasErrors || !result.ast) {
     return null;
   }
 
+  const ast = result.ast;
   if (ast.type === 'json') {
     return 'json';
   } else {
@@ -22,6 +25,8 @@ function translateExprStmtType(exprStmtType: string) {
     case 'UnaryExpr':
     case 'BinaryExpr':
     case 'CallExpr':
+    case 'TernaryExpr':
+    case 'ParenExpr':
       return 'expression';
     default:
       return 'attrAccess';

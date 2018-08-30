@@ -24,7 +24,7 @@
     "build": "tsc -p tsconfig.dist.json",
     "build:watch": "tsc -p tsconfig.dist.json --watch",
     "test": "mocha --require ts-node/register './{,!(node_modules)/**/}*.spec.ts'",
-    "test:watch": "mocha --watch --require ts-node/register --watch-extensions json './{,!(node_modules)/**/}*.spec.ts'",
+    "test:watch": "mocha --watch --require ts-node/register --watch-extensions ts './{,!(node_modules)/**/}*.spec.ts'",
     "installbuild": "yarn install && yarn run build"
   },
   "dependencies": {

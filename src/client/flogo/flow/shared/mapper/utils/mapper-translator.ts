@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { isString, fromPairs } from 'lodash';
 import { resolveExpressionType } from 'flogo-parser';
 
 import { FLOGO_ERROR_ROOT_NAME, FLOGO_TASK_TYPE, ValueType } from '@flogo/core/constants';
@@ -87,13 +87,9 @@ export class MapperTranslator {
   }
 
   static rawExpressionToString(rawExpression: any, inputType?: number) {
-    let value = rawExpression;
-    if (inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT && _.isString(rawExpression)) {
-      value = `"${value}"`;
-    } else if (!_.isString(value)) {
-      value = JSON.stringify(value, null, 2);
-    }
-    return value;
+    return !isString(rawExpression) || inputType === MAPPING_TYPE.LITERAL_ASSIGNMENT
+      ? JSON.stringify(rawExpression)
+      : rawExpression;
   }
 
   static translateMappingsOut(mappings: { [attr: string]: { expression: string, mappingType?: number } }): FlowMapping[] {
@@ -115,7 +111,7 @@ export class MapperTranslator {
     const mappingType = mappingTypeFromExpression(expression);
     let value = expression;
     if (mappingType === MAPPING_TYPE.OBJECT_TEMPLATE || mappingType === MAPPING_TYPE.LITERAL_ASSIGNMENT) {
-      value = JSON.parse(value);
+      value = value !== 'nil' ? JSON.parse(value) : null;
     }
     return { mappingType, value };
   }
@@ -186,7 +182,7 @@ export class MapperTranslator {
 function sortObjectKeys (object: {[key: string]: any}) {
   const keys = Object.keys(object);
   const sortedKeys = keys.sort();
-  return _.fromPairs(sortedKeys.map(key => [key, object[key]]));
+  return fromPairs(sortedKeys.map(key => [key, object[key]]));
 }
 
 // TODO: only works for first level mappings
