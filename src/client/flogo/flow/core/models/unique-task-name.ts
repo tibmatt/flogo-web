@@ -26,3 +26,9 @@ export function uniqueTaskName(taskName: string, ...taskDictionaries) {
 
   return greatestIndex > 0 ? `${taskName} (${greatestIndex + 1})` : taskName;
 }
+
+export function uniqueTaskNameValidator(taskName, ...taskDictionaries) {
+  const allTasks = Object.assign({}, ...taskDictionaries);
+  const itemIds = Object.keys(allTasks);
+  return itemIds.find(itemId => (allTasks[itemId].name).toLowerCase() === taskName.toLowerCase());
+}

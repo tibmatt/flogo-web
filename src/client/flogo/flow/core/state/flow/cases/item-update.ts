@@ -1,11 +1,12 @@
-import { GraphNode, Item } from '@flogo/core';
-import { isIterableTask } from '@flogo/shared/utils';
-import { FlowState } from '../flow.state';
-import { getGraphName, getItemsDictionaryName } from '../../utils';
-import { HandlerType } from '@flogo/flow/core/models/handler-type';
+import {GraphNode, Item} from '@flogo/core';
+import {isIterableTask} from '@flogo/shared/utils';
+import {FlowState} from '../flow.state';
+import {getGraphName, getItemsDictionaryName} from '../../utils';
+import {HandlerType} from '@flogo/flow/core/models/handler-type';
+import {BaseItemTask} from '@flogo/core/interfaces/flow/items';
 
 export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType, node?: Partial<GraphNode> }) {
-  const { handlerType, node } = payload;
+  const {handlerType, node} = payload;
   if (!node) {
     return state;
   }
@@ -35,7 +36,7 @@ export function nodeUpdate(state: FlowState, payload: { handlerType: HandlerType
   };
 }
 
-export function itemUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: {id: string} & Partial<Item> }) {
+export function itemUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: { id: string } & Partial<Item> }) {
   const {handlerType, item} = payload;
   if (!item) {
     return state;
@@ -49,5 +50,31 @@ export function itemUpdate(state: FlowState, payload: { handlerType: HandlerType
       ...items,
       [item.id]: newItemState,
     },
+  };
+}
+
+export function graphUpdate(state: FlowState, payload: { handlerType: HandlerType, item?: { id: string } & Partial<BaseItemTask> }) {
+  const {handlerType, item} = payload;
+  const graphName = getGraphName(handlerType);
+  const graph = state[graphName];
+  const currentNode = graph.nodes[item.id];
+  if (item.name === currentNode.title && item.description === currentNode.description) {
+    return state;
+  }
+  const newNodeState: GraphNode = {
+    ...currentNode,
+    ...item,
+    title: item.name,
+    description: item.description,
+  };
+  return {
+    ...state,
+    [graphName]: {
+      ...graph,
+      nodes: {
+        ...graph.nodes,
+        [item.id]: newNodeState
+      }
+    }
   };
 }

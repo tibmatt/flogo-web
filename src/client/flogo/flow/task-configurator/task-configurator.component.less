@@ -1,5 +1,8 @@
 @import '../../../assets/_variables';
 
+@actions-max-width: 320px;
+@edit-icon-background: @color-bg url('/assets/svg/flogo.flows.detail.edit.icon.svg') center right no-repeat;
+
 .modal-wrapper {
   background-color: @color-bg;
 
@@ -82,17 +85,75 @@
 
 .header__title {
   color: @color-ink;
-  background: url('/assets/svg/flogo.flows.detail.diagram.activity.icon.svg') no-repeat left center;
-  background-size: 36px 26px;
-  padding-left: 40px;
+  background: url('/assets/svg/flogo.flows.detail.diagram.activity.icon.svg') no-repeat left top;
+  padding-left: 53px;
+  max-width: calc(100% - @actions-max-width);
+  font-size: 18px;
 }
 
 .header__title--subflow {
-  background: url('/assets/svg/subflow.svg') no-repeat left center;
-  background-size: 34px 23px;
-  padding-left: 45px;
+  background: url('/assets/svg/subflow.svg') no-repeat left top;
+  padding-left: 53px;
 }
-.subflow-list__content{
+
+.subflow-list__content {
   display: block;
   padding: 15px;
+}
+
+.task-id {
+  font-size: 16px;
+  color: @color-dark-gray;
+  margin-left: 5px;
+}
+
+.task-description {
+  color: @warm-grey;
+  word-wrap: break-word;
+  word-break: break-all;
+  font-size: 12px;
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+  min-width: 20%;
+}
+
+.task-details {
+  display: flex;
+  align-items: center;
+}
+
+.task-name {
+  word-wrap: break-word;
+  word-break: break-all;
+  border: 1px solid transparent;;
+  max-width: 100%;
+  min-width: 5%;
+  text-overflow: ellipsis;
+  font-size: 18px;
+  font-weight: 600;
+  color: @color-ink;
+  height: 23px;
+  border-radius: 3px;
+  &:hover {
+    border: 1px solid @color-medium-gray;
+  }
+}
+
+.task-name--error {
+  border: 1px solid @color-red;
+  outline-color: @color-red;
+}
+
+.unique-name-error-message {
+  font-size: 12px;
+  color: @color-red;
+}
+
+
+.output-mapper-text{
+  font-size: 14px;
+  line-height: 1.5;
+  color: @warm-grey;
+  margin-top: -5px;
 }
