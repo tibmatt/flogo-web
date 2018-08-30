@@ -14,14 +14,12 @@ import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 import { CoreModule as FlowCoreModule } from './core';
 
 import {TriggersModule as FlogoFlowTriggersModule} from '@flogo/flow/triggers';
-import {TaskDetailModule as FlogoFlowTaskDetailModule} from './task-detail';
 import { TaskMapperModule as FlogoTaskMapperModule } from './task-configurator';
 import { BranchMapperModule } from './branch-configurator';
 import { ParamsSchemaModule } from './params-schema';
 
 import { FlowRoutingModule } from './flow-routing.module';
 import { FlowComponent } from './flow.component';
-import { EmptyDetailComponent } from './empty-detail/empty-detail.component';
 import { FlowDataResolver } from './flow-data.resolver';
 import { featureReducer } from './core/state';
 
@@ -49,14 +47,12 @@ import { TaskAddModule } from './task-add';
     FlogoTaskMapperModule,
     FlogoCommonFormBuilderModule,
     FlogoFlowTriggersModule,
-    FlogoFlowTaskDetailModule,
     FlowRoutingModule,
     TaskAddModule,
     DebugPanelModule,
     BranchMapperModule,
   ],
   declarations: [
-    EmptyDetailComponent,
     FlogoRunFlowComponent,
     FlowComponent,
     FlogoFlowDiagramComponent,

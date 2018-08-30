@@ -10,13 +10,11 @@
 }
 
 .content {
+  display: flex;
+  flex-direction: row;
   flex: 1;
   min-height: 0;
   overflow: auto;
-
-  transition-duration: .4s;
-  transition-timing-function: cubic-bezier(.25,.8,.25,1);
-  transition-property: transform, margin-bottom;
 }
 
 .debug-panel-container {
@@ -59,7 +57,7 @@
   justify-content: space-between;
   padding-left: 1rem;
   padding-right: 1rem;
-  border-bottom: solid 2px @color-medium-gray;
+  border-bottom: solid 1px @color-medium-gray;
 }
 
 .header__toggler {

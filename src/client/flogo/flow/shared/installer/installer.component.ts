@@ -12,7 +12,6 @@ import {
 
 @Component({
   selector: 'flogo-flow-installer',
-  // moduleId : module.id,
   templateUrl: 'installer.component.html',
   styleUrls: ['installer.component.less']
 })
@@ -55,8 +54,6 @@ export class FlogoInstallerComponent implements OnChanges {
   }
 
   init() {
-    console.log('Initialise Flogo Installer Component.');
-
     this._status = FLOGO_INSTALLER_STATUS_STANDBY;
   }
 
@@ -79,12 +76,7 @@ export class FlogoInstallerComponent implements OnChanges {
   }
 
   onActivatedStatusChange(newVal) {
-
-    console.log(`Changed in FlogoInstallerComponent: ${newVal}`);
-
     if (newVal !== this._isActivated) {
-
-      console.log(`Assigned.`);
       this._isActivated = newVal;
 
       if (this._isActivated) {

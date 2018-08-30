@@ -11,7 +11,6 @@ import {SingleEmissionSubject} from '@flogo/core/models';
 import {newBranchId} from '@flogo/flow/core/models/flow/id-generator';
 import {FlowGraph} from '@flogo/core';
 
-
 @Component({
   selector: 'flogo-flow-diagram',
   templateUrl: 'flow-diagram.component.html',
