@@ -1,27 +1,30 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  shareReplay,
-  switchMap,
-  takeUntil, filter, map
-} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, shareReplay, switchMap, takeUntil, filter, map, startWith } from 'rxjs/operators';
 
 import { MonacoEditorComponent, DEFAULT_EDITOR_OPTIONS } from '../../monaco-editor';
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 
+import { MapperState } from '../models';
 import { MapperService } from '../services/mapper.service';
-import { EditorService, InsertEvent } from './editor.service';
 import { selectCurrentEditingExpression, selectedInputKey } from '../services/selectors';
+import { EditorService, InsertEvent } from './editor.service';
+
+function distinctAndDebounce(obs) {
+  return obs.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+  );
+}
 
 @Component({
   selector: 'flogo-mapper-editor',
   template: `
     <div class="hints-overlay" *ngIf="displayHints$ | async">
       <button *ngFor="let hint of hints"
-        class="hints-overlay__hint"
-        (click)="hintSelected(hint)">{{ hint.label }}</button>
+              class="hints-overlay__hint"
+              (click)="onHintSelected(hint)">{{ hint.label }}
+      </button>
     </div>
     <monaco-editor class="editor"></monaco-editor>
   `,
@@ -63,17 +66,41 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const mapperState$ = this.mapperService.state$.pipe(shareReplay());
+    this.setupExternalModelChanges(mapperState$);
+
     const editorContext$ = mapperState$.pipe(selectedInputKey);
+    this.displayHints$ = this.createHintsStream(editorContext$);
+    this.subscribeToValueChanges(editorContext$);
 
-    const valueChange$ = this.editor.valueChange
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      );
+    this.editorService.insert$
+      .pipe(takeUntil(this.ngDestroy))
+      .subscribe((event: InsertEvent) => {
+        if (event.replaceTokenAtPosition) {
+          this.editor.replaceTokenAtClientPosition(event.text, event.replaceTokenAtPosition);
+        } else {
+          this.editor.insert(event.text);
+        }
+        this.editor.focus();
+      });
 
-    this.displayHints$ = this.editor.valueChange
-      .pipe(map((value) => !value && this.hints && this.hints.length > 0));
+    this.editorService.dragOver$
+      .pipe(takeUntil(this.ngDestroy))
+      .subscribe(position => {
+        this.editor.selectTokenAtClientPosition(position);
+      });
+  }
 
+  onHintSelected(hint) {
+    this.editor.insert(hint.value);
+    this.editor.focus();
+  }
+
+  ngOnDestroy() {
+    this.ngDestroy.emitAndComplete();
+  }
+
+  private subscribeToValueChanges(editorContext$) {
+    const valueChange$ = distinctAndDebounce(this.editor.valueChange);
     editorContext$
       .pipe(
         switchMap(() => valueChange$),
@@ -82,7 +109,9 @@ export class EditorComponent implements OnInit, OnDestroy {
       .subscribe((value: string) => {
         this.mapperService.expressionChange(this.currentMapKey, value);
       });
+  }
 
+  private setupExternalModelChanges(mapperState$: Observable<MapperState>) {
     this.editor.ready
       .pipe(
         switchMap(() => mapperState$.pipe(selectCurrentEditingExpression)),
@@ -98,35 +127,16 @@ export class EditorComponent implements OnInit, OnDestroy {
           setTimeout(() => this.editor.onWindowResize(), 0);
         }
       });
-
-    this.editorService.insert$
-      .pipe(takeUntil(this.ngDestroy))
-      .subscribe((event: InsertEvent) => {
-        if (event.replaceTokenAtPosition) {
-          this.editor.replaceTokenAtClientPosition(event.text, event.replaceTokenAtPosition);
-        } else {
-          this.editor.insert(event.text);
-        }
-      });
-
-    this.editorService.dragOver$
-      .pipe(takeUntil(this.ngDestroy))
-      .subscribe(position => {
-        this.editor.selectTokenAtClientPosition(position);
-      });
-
-    const editorReady = new BehaviorSubject<boolean>(false);
-    this.editor.ready
-      .pipe(takeUntil(this.ngDestroy))
-      .subscribe(editorReady);
   }
 
-  hintSelected(hint) {
-    this.editor.insert(hint.value);
-  }
-
-  ngOnDestroy() {
-    this.ngDestroy.emitAndComplete();
+  private createHintsStream(editorContext$) {
+    const getCurrentValueStream = () => this.editor.valueChange.pipe(startWith(this.editor.value));
+    return this.editor.ready
+      .pipe(
+        switchMap(() => editorContext$),
+        switchMap(() => getCurrentValueStream()),
+        map((value) => !value && this.hints && this.hints.length > 0),
+      );
   }
 
 }
