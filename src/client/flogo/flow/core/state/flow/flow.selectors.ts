@@ -160,6 +160,27 @@ export const getCurrentActivityExecutionErrors = createSelector(
   },
 );
 
+export const getAllNodes = createSelector(
+  selectFlowState,
+  (flowState) => {
+    return {
+      errorNodes: flowState.errorGraph.nodes,
+      mainNodes: flowState.mainGraph.nodes
+    };
+  });
+
+export const getAllCurrentExecutionErrors = createSelector(
+  getAllNodes,
+  (nodes) => {
+    const errorNodeKeys = Object.keys(nodes.errorNodes);
+    const mainNodeKeys = Object.keys(nodes.mainNodes);
+    const errorNodesExecution = errorNodeKeys.find(errorNodeKey => !!nodes.errorNodes[errorNodeKey].status.executionErrored);
+    const mainNodesExecution = mainNodeKeys.find(mainNodeKey => !!nodes.mainNodes[mainNodeKey].status.executionErrored);
+    return {errorNodesExecution, mainNodesExecution};
+
+  },
+);
+
 export const selectAppInfo = createSelector(
   selectApp,
   (app) => {

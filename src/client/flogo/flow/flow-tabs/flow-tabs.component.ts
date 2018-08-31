@@ -13,6 +13,8 @@ import {SingleEmissionSubject} from '@flogo/core/models';
 export class FlowTabsComponent {
   isErrorHandlerShown = false;
   private ngOnDestroy$ = SingleEmissionSubject.create();
+  showBadgeForError = false;
+  showBadgeForFlow = false;
 
   constructor(private store: Store<FlowState>) {
     this.store.pipe(select(FlowSelectors.selectErrorPanelStatus),
@@ -23,7 +25,15 @@ export class FlowTabsComponent {
         this.isErrorHandlerShown = false;
       }
     });
-
+    this.store.pipe(select(FlowSelectors.getAllCurrentExecutionErrors),
+      takeUntil(this.ngOnDestroy$)).subscribe(executionError => {
+      if (executionError.errorNodesExecution) {
+        this.showBadgeForError = true;
+      }
+      if (executionError.mainNodesExecution) {
+        this.showBadgeForFlow = true;
+      }
+    });
   }
 
   selectPrimaryFlow() {
