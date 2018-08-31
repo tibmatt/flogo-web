@@ -17,17 +17,6 @@
   width: 100%;
 
   transition: width .5s;
-  background-size: 260px 255px;
-  background: no-repeat -61px -53px;
-
-  &.flogo-flow-detail--microservice {
-    background: url(/assets/svg/bg-microservice.svg) no-repeat -61px -53px;
-    background-size: 260px 255px;
-  }
-  &.flogo-flow-detail--device {
-    background-image: url(/assets/svg/bg-device.svg);
-  }
-
 }
 
 .diagram-container {
@@ -49,9 +38,18 @@
 }
 
 .flogo-flow-detail {
-  height: 113px;
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  padding: 20px 24px;
+  background: no-repeat -61px -53px;
+  background-size: 260px 255px;
+
+  &.flogo-flow-detail--microservice {
+    background-image: url(/assets/svg/bg-microservice.svg);
+  }
+  &.flogo-flow-detail--device {
+    background-image: url(/assets/svg/bg-device.svg);
+  }
 }
 
 .flogo-flow-detail-name {
@@ -74,9 +72,7 @@
 }
 
 .flogo-flow-detail-menu-container {
-  padding-left: 0;
   display: flex;
-  justify-content: flex-end;
 }
 
 .flogo-flow-detail-menu-container:hover {
@@ -92,46 +88,57 @@
   border: none;
 }
 
-.flow-detail-name-description {
+.flogo-profile__device-type {
+  margin-right: 8px;
+}
+
+.flow-detail-name {
+  display: flex;
+}
+
+.flow-detail-description {
+  display: inline-block;
   font-size: 12px;
   margin: 0 0 7px;
   color: @warm-grey;
 }
 
 .flogo-flow-detail-header {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
 
-  .flogo-flow-detail-header-back {
+  .flogo-flow-detail-header-back-icon {
+    cursor: pointer;
+    color: @warm-grey;
+    font-weight: bold;
     display: flex;
-    flex-direction: row;
     align-items: center;
+    margin-right: 2.5em;
+  }
 
-    .flogo-flow-detail-header-back-icon {
-      cursor: pointer;
-      margin-top: 10px;
-      margin-right: 28px;
+  .flogo-flow-detail-header-back-app-name {
+    color: @warm-grey;
+    cursor: pointer;
+    margin-left: 4px;
+  }
 
-      .flogo-icon-back {
-        font-size: 1.2em;
-        padding: 0 10px;
-        color: @warm-grey;
-        font-weight: bold;
-      }
-    }
-
+  &.--hover {
     .flogo-flow-detail-header-back-app-name {
-      color: @primary-blue;
-      cursor: pointer;
-      margin-left: 4px;
+      color: @color-link-hover;
+      text-decoration: underline;
     }
-
-    &.--hover {
-      .flogo-flow-detail-header-back-app-name {
-        color: @color-link-hover;
-        text-decoration: underline;
-      }
-      .flogo-flow-detail-header-back-icon .flogo-icon {
-        color: @color-link-hover;
-      }
+    .flogo-flow-detail-header-back-icon .flogo-icon {
+      color: @color-link-hover;
     }
   }
+}
+
+.flogo-profile-detail__thumb {
+  width: 35px;
+  height: 35px;
+  border-radius: 3px;
+  background-size: contain;
+  margin: 8px 20px 0 0;
+  padding: 0;
 }
