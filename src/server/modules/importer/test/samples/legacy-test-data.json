@@ -38,6 +38,23 @@
                       "required": false,
                       "type": "boolean"
                     }
+                  ],
+                  "inputMappings": [
+                    {
+                      "mapTo": "message",
+                      "type": 2,
+                      "value": "Hello world"
+                    },
+                    {
+                      "mapTo": "flowInfo",
+                      "type": 2,
+                      "value": "true"
+                    },
+                    {
+                      "mapTo": "addToFlow",
+                      "type": 2,
+                      "value": "true"
+                    }
                   ]
                 }
               ],

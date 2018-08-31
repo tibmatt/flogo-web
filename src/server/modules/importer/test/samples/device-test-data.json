@@ -47,6 +47,23 @@
                       "type": "integer",
                       "value": "70"
                     }
+                  ],
+                  "inputMappings": [
+                    {
+                      "mapTo": "pin",
+                      "type": 2,
+                      "value": "50"
+                    },
+                    {
+                      "mapTo": "digital",
+                      "type": 2,
+                      "value": "true"
+                    },
+                    {
+                      "mapTo": "value",
+                      "type": 2,
+                      "value": "70"
+                    }
                   ]
                 },
                 {
@@ -60,6 +77,13 @@
                     {
                       "name": "message",
                       "type": "string",
+                      "value": "Hello world"
+                    }
+                  ],
+                  "inputMappings": [
+                    {
+                      "mapTo": "message",
+                      "type": 2,
                       "value": "Hello world"
                     }
                   ]
@@ -80,6 +104,18 @@
                     {
                       "name": "message",
                       "type": "string",
+                      "value": "hello again"
+                    }
+                  ],
+                  "inputMappings": [
+                    {
+                      "mapTo": "topic",
+                      "type": 2,
+                      "value": "my-message"
+                    },
+                    {
+                      "mapTo": "message",
+                      "type": 2,
                       "value": "hello again"
                     }
                   ]
@@ -122,6 +158,23 @@
                     {
                       "name": "value",
                       "type": "integer",
+                      "value": "20"
+                    }
+                  ],
+                  "inputMappings": [
+                    {
+                      "mapTo": "pin",
+                      "type": 2,
+                      "value": "10"
+                    },
+                    {
+                      "mapTo": "digital",
+                      "type": 2,
+                      "value": ""
+                    },
+                    {
+                      "mapTo": "value",
+                      "type": 2,
                       "value": "20"
                     }
                   ]

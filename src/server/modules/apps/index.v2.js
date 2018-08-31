@@ -7,7 +7,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import shortid from 'shortid';
 
-import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE } from '../../common/constants';
+import { DEFAULT_APP_ID, DEFAULT_APP_VERSION, FLOGO_PROFILE_TYPES, FLOGO_TASK_TYPE, EXPORT_MODE } from '../../common/constants';
 import { ErrorManager, ERROR_TYPES as GENERAL_ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
 import { apps as appStore } from '../../common/db';
@@ -15,9 +15,8 @@ import { logger } from '../../common/logging';
 import { findGreatestNameIndex } from '../../common/utils/collection';
 
 import { ActionsManager } from '../actions';
-import { ActivitiesManager } from '../activities';
 import { importApp } from '../importer';
-import { exportLegacy, exportStandard } from '../exporter';
+import { exportApplication } from '../exporter';
 import { buildBinary } from './build';
 
 import { Validator } from './validator';
@@ -51,10 +50,6 @@ const DEFAULT_APP = {
   description: 'App created by default',
   version: DEFAULT_APP_VERSION,
 };
-
-const EXPORT_MODEL_STANDARD = 'standard';
-const EXPORT_MODEL_LEGACY = 'legacy';
-const EXPORT_FORMAT_FLOWS = 'flows';
 
 export class AppsManager {
 
@@ -244,8 +239,8 @@ export class AppsManager {
    * @return {object} exported object
    * @throws Not found error if app not found
    */
-  static export(appId, { appModel = EXPORT_MODEL_STANDARD, format, flowIds } = {}) {
-    if (appModel !== EXPORT_MODEL_STANDARD && appModel !== EXPORT_MODEL_LEGACY) {
+  static export(appId, { appModel = EXPORT_MODE.STANDARD_MODEL, format, flowIds } = {}) {
+    if (appModel !== EXPORT_MODE.STANDARD_MODEL && appModel !== EXPORT_MODE.LEGACY_MODEL) {
       throw ErrorManager.makeError(`Cannot export to unknown application model "${appModel}"`, { type: APP_ERRORS.UNKNOWN_APP_MODEL });
     }
     return AppsManager.findOne(appId)
@@ -253,14 +248,11 @@ export class AppsManager {
         if (!app) {
           throw ErrorManager.makeError('Application not found', { type: GENERAL_ERROR_TYPES.COMMON.NOT_FOUND });
         }
-        const isFullExportMode = format !== EXPORT_FORMAT_FLOWS;
+
+        const isFullExportMode = format !== EXPORT_MODE.FORMAT_FLOWS;
         const exportOptions = { isFullExportMode, onlyThisActions: flowIds };
 
-        if (appModel !== EXPORT_MODEL_STANDARD) {
-          return exportLegacy(app, exportOptions);
-        }
-        return ActivitiesManager.find()
-          .then(activitySchemas => exportStandard(app, activitySchemas, exportOptions));
+        return exportApplication(app, appModel, exportOptions);
       });
   }
 

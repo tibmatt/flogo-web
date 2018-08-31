@@ -1,6 +1,7 @@
 import { assign, cloneDeep, each, get, isEmpty, isObject, isUndefined, kebabCase, uniqueId, trimStart } from 'lodash';
 import { ValueType, FLOGO_TASK_TYPE, FLOGO_PROFILE_TYPE } from '@flogo/core/constants';
 import { Item, Task } from '@flogo/core';
+import {TYPE_LITERAL_ASSIGNMENT} from '@flogo/flow/shared/mapper';
 
 export function flogoGenTriggerID(): string {
   return `Flogo::Trigger::${Date.now()}`;
@@ -94,11 +95,20 @@ export function activitySchemaToTask(schema: any): any {
     description: get(schema, 'description', ''),
     homepage: get(schema, 'homepage', ''),
     attributes: {
-      inputs: get(schema, 'inputs', []),
-      outputs: get(schema, 'outputs', [])
+      inputs: cloneDeep(get(schema, 'inputs', [])),
+      outputs: cloneDeep(get(schema, 'outputs', []))
     },
     return: schema.return
   };
+
+  if (!isMapperActivity(schema)) {
+    task.inputMappings = get(schema, 'inputs', []).filter(attribute => !isUndefined(attribute.value))
+      .map(attribute => ({
+        'mapTo': attribute.name,
+        'type': TYPE_LITERAL_ASSIGNMENT,
+        'value': attribute.value
+      }));
+  }
 
   each(
     task.attributes.inputs, (input: any) => {

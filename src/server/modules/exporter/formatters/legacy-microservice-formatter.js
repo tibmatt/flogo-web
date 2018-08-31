@@ -3,10 +3,14 @@ import { ERROR_TYPES, ErrorManager } from '../../../common/errors';
 import { isIterableTask } from '../../../common/utils';
 import { appHasSubflowTasks } from '../../../common/utils/subflow';
 import { FLOGO_TASK_TYPE } from '../../../common/constants';
+import { mappingsToAttributes } from "../mappings-to-attributes";
 
 const MICROSERVICE_ACTION_REF = 'github.com/TIBCOSoftware/flogo-contrib/action/flow';
 
 export class LegacyMicroServiceFormatter {
+  constructor(activitySchemas) {
+    this.activitySchemas = activitySchemas;
+  }
 
   preprocess(app) {
     if (appHasSubflowTasks(app)) {
@@ -47,6 +51,11 @@ export class LegacyMicroServiceFormatter {
         task.type = FLOGO_TASK_TYPE.TASK_ITERATOR;
       });
 
+    // Prepare task with attributes from input mappings
+    allTasks.forEach(task => {
+      const activitySchema = this.activitySchemas.find(schema => schema.ref === task.activityRef);
+      task = mappingsToAttributes(task, activitySchema);
+    });
     return action;
   }
 

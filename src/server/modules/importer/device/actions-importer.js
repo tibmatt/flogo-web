@@ -2,15 +2,6 @@ import { AbstractActionsImporter } from '../common';
 
 export class ActionsImporter extends AbstractActionsImporter {
 
-  /**
-   * @param actionStorage
-   * @param activitySchemas
-   */
-  constructor(actionStorage, activitySchemas) {
-    super(actionStorage);
-    this.activitySchemas = activitySchemas;
-  }
-
   extractActions(fromRawApp) {
     return (fromRawApp.actions || [])
       .map(action => this.formatAction(action));
