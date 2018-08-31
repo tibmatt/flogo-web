@@ -1,4 +1,5 @@
-<div class="hints-overlay" *ngIf="(valueHints$ | async) as hints">
+<div class="hints-overlay" *ngIf="(valueHints$ | async) as hints"
+  (click)="onHintOverlayClick()">
   <div>
     Select a data field or function
     <ng-container *ngIf="hints?.length > 0">or one of the options below</ng-container>
@@ -6,7 +7,7 @@
   <div *ngIf="hints?.length > 0">
     <button *ngFor="let hint of hints"
             class="hints-overlay__hint"
-            (click)="onHintSelected(hint)">{{ hint.label }}
+            (click)="onHintSelected($event, hint)">{{ hint.label }}
     </button>
   </div>
 </div>

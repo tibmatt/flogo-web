@@ -73,8 +73,13 @@ export class EditorComponent implements OnInit, OnDestroy {
       });
   }
 
-  onHintSelected(hint: EditorHint) {
+  onHintSelected(event: Event, hint: EditorHint) {
     this.editor.insert(hint.value);
+    this.editor.focus();
+    event.stopPropagation();
+  }
+
+  onHintOverlayClick() {
     this.editor.focus();
   }
 
