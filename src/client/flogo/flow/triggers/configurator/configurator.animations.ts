@@ -1,6 +1,6 @@
 import { animate, animateChild, group, keyframes, query, sequence, state, style, transition, trigger } from '@angular/animations';
 
-const INITIAL_TRIGGER_POSITION = 'translate(-18px, 94px)';
+const INITIAL_TRIGGER_POSITION = 'translate(-18px, 84px)';
 
 export const configuratorAnimations = [
   trigger('configurationPanel', [
