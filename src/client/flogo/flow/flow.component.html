@@ -12,7 +12,7 @@
       <div class="flogo-profile__tile flogo-profile-detail__thumb"
            [ngClass]="{'flogo-profile__device': profileType === PROFILE_TYPES.DEVICE,
                          'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}"></div>
-      <div>
+      <div class="header-content">
         <div class="flow-detail-name">
           <h3 class="flogo-flow-detail-name" [(fgContentEditable)]="flowState.name"
               (fgContentEditableChange)="changeFlowDetailName($event, 'name')"></h3>
@@ -22,11 +22,9 @@
                                 (mouseover)="onMouseOverBackControl()"
                                 (mouseout)="onMouseOutBackControl()">{{flowState?.app?.name}}</span>
         </div>
-        <div class="flow-detail-description">
-          <p class="flogo-flow-detail-description" [(fgContentEditable)]="flowState.description"
-             placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
-             (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
-        </div>
+        <p class="flow-detail-description" [(fgContentEditable)]="flowState.description"
+           placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
+           (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
       </div>
     </header>
 

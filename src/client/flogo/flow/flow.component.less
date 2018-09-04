@@ -1,4 +1,5 @@
 @import '../../assets/_variables';
+@import '../../assets/_typography';
 
 @common-bg-color: #FAFAFA;
 
@@ -53,26 +54,22 @@
 }
 
 .flogo-flow-detail-name {
-  font-size: 18px;
+  .secondary-header();
+  max-width: 90%;
   color: @color-ink;
   font-weight: 600;
   line-height: 1.5;
   letter-spacing: 0.3px;
   margin: 0 0 1px;
   display: inline-block;
-}
-
-.flogo-flow-detail-description {
-  color: @warm-grey;
-  margin-top: 3px;
-  margin-bottom: 0;
-  word-wrap: break-word;
-  word-break: break-all;
-
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .flogo-flow-detail-menu-container {
   display: flex;
+  flex-shrink: 0;
 }
 
 .flogo-flow-detail-menu-container:hover {
@@ -90,23 +87,41 @@
 
 .flogo-profile__device-type {
   margin-right: 8px;
+  flex-shrink: 0;
+  height: 20px;
+}
+
+.header-content {
+  .body-small();
+  width: 100%;
+  padding: 0 10px;
+  overflow: hidden;
+  letter-spacing: 0.3px;
 }
 
 .flow-detail-name {
   display: flex;
+  margin-bottom: 8px;
+  line-height: 2;
 }
 
 .flow-detail-description {
-  display: inline-block;
-  font-size: 12px;
-  margin: 0 0 7px;
+  width: 100%;
   color: @warm-grey;
+  padding: 0 10px;
+  margin: 0 0 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
 }
 
 .flogo-flow-detail-header {
-  flex: 1;
   display: flex;
   flex-direction: row;
+  overflow: hidden;
+  width: 100%;
+  margin-right: 2em;
 
   .flogo-flow-detail-header-back-icon {
     cursor: pointer;
@@ -119,8 +134,12 @@
 
   .flogo-flow-detail-header-back-app-name {
     color: @warm-grey;
+    font-style: italic;
     cursor: pointer;
     margin-left: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &.--hover {
@@ -141,4 +160,5 @@
   background-size: contain;
   margin: 8px 20px 0 0;
   padding: 0;
+  flex-shrink: 0;
 }
