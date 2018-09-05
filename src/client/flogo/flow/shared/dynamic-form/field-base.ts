@@ -1,12 +1,13 @@
 import { ValueType } from '@flogo/core';
+import { ValidatorFn, Validator } from '@angular/forms';
 
 export abstract class BaseField<T> {
   name: string;
   type: ValueType;
   value: T;
-  // making required defaulted to true only for the case of Input metadata
-  required = true;
+  required = false;
   controlType: string;
+  validators?: Array<Validator | ValidatorFn>;
 
   constructor(options: {
     name?: string,
@@ -19,5 +20,6 @@ export abstract class BaseField<T> {
     this.type = options.type;
     this.value = options.value;
     this.controlType = options.controlType || '';
+    this.required = options.required;
   }
 }

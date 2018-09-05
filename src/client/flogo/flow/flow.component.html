@@ -2,7 +2,7 @@
      [ngClass]="{'flogo-flow-detail--device': profileType === PROFILE_TYPES.DEVICE,
                        'flogo-flow-detail--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
 
-  <section class="flogo-flow-detail">
+  <section class="flogo-flow-detail" *loadMonacoEditor>
 
     <header class="flogo-flow-detail-header col-sm-9">
       <div class="flogo-flow-detail-header-back"

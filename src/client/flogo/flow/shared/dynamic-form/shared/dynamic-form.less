@@ -1,13 +1,29 @@
 @import "../../../../../assets/_variables";
 
+.form-invalid-states() {
+  &.ng-invalid {
+    &.ng-touched,
+    &.ng-dirty {
+      border-color: #e76e3c;
+    }
+  }
+}
+
 .tc-inputs {
   height: 30px;
   padding: 0 10px;
   color: @color-disabled;
 }
 
-.ng-dirty.--invalid {
-  border-color: red;
+.form-invalid-states();
+
+.df-container {
+  &.ng-invalid {
+    &.ng-touched,
+    &.ng-dirty {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .df-resize-vertical {

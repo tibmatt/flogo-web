@@ -24,7 +24,7 @@ export class FormBuilderComponent implements OnInit {
   }
 
   ngOnInit() {
-    const { formGroup, fieldsWithControlType } = this.formBuilder.toFormGroup(this.fields);
+    const { formGroup, fieldsWithControlType } = this.formBuilder.toFormGroup(this.fields, { requireAll: true });
     this.fbForm = formGroup;
     this.fieldsWithControlType = fieldsWithControlType;
     this.setFormGroup.emit(this.fbForm);

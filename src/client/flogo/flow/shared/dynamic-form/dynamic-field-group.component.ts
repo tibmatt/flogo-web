@@ -10,4 +10,5 @@ import { BaseField } from './field-base';
 export class DynamicFieldGroupComponent {
   @Input() fieldGroup: FormGroup;
   @Input() metadata: BaseField<any>[][];
+  @Input() readonly?: boolean;
 }

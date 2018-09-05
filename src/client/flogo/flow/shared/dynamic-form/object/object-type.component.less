@@ -1,0 +1,28 @@
+@import (reference) '../../../../../assets/_variables';
+@import (reference) '../shared/dynamic-form';
+
+.editor {
+  height: 8rem;
+  border: solid 1px #cad3df;
+  border-radius: 4px;
+  .form-invalid-states();
+}
+
+.df-container();
+
+::ng-deep {
+  .is-disabled {
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .margin,
+    .inputarea.ime-input {
+      background-color: #eee;
+    }
+  }
+
+  .monaco-editor,
+  .margin,
+  .editor-scrollable {
+    border-radius: 4px;
+  }
+}

@@ -13,4 +13,6 @@ export class NumberComponent {
   fieldGroup: FormGroup;
   @Input()
   fieldControl: BaseField<any>;
+  @Input()
+  hideOptionalLabel?: boolean;
 }

@@ -8,6 +8,7 @@ import { LogsModule as FlogoLogsModule } from '@flogo/logs';
 import { DiagramModule } from '@flogo/packages/diagram';
 import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 
+import { MonacoEditorModule } from './shared/monaco-editor';
 import { FormBuilderModule as FlogoCommonFormBuilderModule } from './shared/dynamic-form';
 import { FlogoRunFlowComponent } from './run-flow/run-flow.component';
 
@@ -41,6 +42,7 @@ import { TaskAddModule } from './task-add';
     FlogoSharedModule,
     FlogoLogsModule,
     DiagramModule,
+    MonacoEditorModule,
 
     FlowCoreModule,
     ParamsSchemaModule,

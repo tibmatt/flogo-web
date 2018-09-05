@@ -21,7 +21,13 @@
 .editor-container {
   position: relative;
 
-  /deep/ .monaco-editor {
+  ::ng-deep .monaco-editor {
     position: absolute;
+  }
+
+  &.is-disabled ::ng-deep .monaco-editor {
+    .cursor {
+      background-color: transparent;
+    }
   }
 }

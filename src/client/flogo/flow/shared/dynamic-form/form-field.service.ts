@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ValueType } from '@flogo/core';
+import { ValueType, SchemaAttribute } from '@flogo/core';
 import { Textbox } from './textbox/textbox';
 import { BaseField } from './field-base';
-import { FieldAttribute } from './field-attribute';
 import { NumberType } from './number/number';
-import { Textarea } from './textarea/textarea';
 import { Radio } from './radio/radio';
 import { ObjectType } from './object/objectType';
 
@@ -13,49 +11,33 @@ const coerceToBoolean = (value) => !!(value && value !== 'false');
 @Injectable()
 export class FormFieldService {
 
-  mapFieldsToControlType(field: FieldAttribute): BaseField<any> {
+  mapFieldsToControlType(field: SchemaAttribute, forceRequired: boolean): BaseField<any> {
+    const initOpts = {
+      name: field.name,
+      type: field.type,
+      value: field.value,
+      required: field.required || forceRequired
+    };
     switch (field.type) {
       case ValueType.String:
-        return new Textbox({
-          name: field.name,
-          type: field.type,
-          value: field.value
-        });
+        return new Textbox(initOpts);
       case ValueType.Double:
       case ValueType.Integer:
       case ValueType.Long:
-        return new NumberType({
-          name: field.name,
-          type: field.type,
-          value: field.value
-        });
-      case ValueType.Params:
-        return new Textarea({
-          name: field.name,
-          type: field.type,
-          value: field.value
-        });
+        return new NumberType(initOpts);
       case ValueType.Boolean:
         return new Radio({
-          name: field.name,
-          type: field.type,
+          ...initOpts,
           value: coerceToBoolean(field.value),
         });
       case ValueType.Object:
+      case ValueType.Array:
       case ValueType.Any:
       case ValueType.ComplexObject:
-        return new ObjectType({
-          name: field.name,
-          type: field.type,
-          value: field.value
-        });
-
+      case ValueType.Params:
+        return new ObjectType(initOpts);
       default:
-        return new Textbox({
-          name: field.name,
-          type: field.type,
-          value: field.value
-        });
+        return new Textbox(initOpts);
     }
   }
 }

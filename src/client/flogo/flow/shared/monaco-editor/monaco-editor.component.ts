@@ -13,29 +13,29 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, take } from 'rxjs/operators';
 
 import {
   EditorConstructOptions,
   ICursorPositionChangedEvent,
   ICursorSelectionChangedEvent,
-  IDisposable,
   IReadOnlyModel,
   IStandaloneCodeEditor,
   LineRange
 } from './monaco.types';
 import { ClientPosition, CompletionProvider, EditorError, HoverProvider, OffsetRange } from './types';
+import { DisposableTracker } from './disposable-tracker';
 
 const SOURCE_ID = 'ngx-monaco-editor';
 const LANGUAGE_ID = 'flogomapping';
-export const DEFAULT_EDITOR_OPTIONS = {
+export const DEFAULT_EDITOR_OPTIONS: EditorConstructOptions = {
   language: LANGUAGE_ID,
   theme: LANGUAGE_ID,
   fontSize: 13,
   glyphMargin: false,
   lineNumbersMinChars: 3,
   fixedOverflowWidgets: true,
-  lineNumbers: true,
+  lineNumbers: 'on',
   scrollBeyondLastLine: false,
   minimap: {
     enabled: false
@@ -53,8 +53,11 @@ export const DEFAULT_EDITOR_OPTIONS = {
     multi: true
   }],
   template: `
-    <div #editor class="editor-container" [style.width]="'100%'" [style.height]="'100%'"></div>
-    <div class="editor-spinner" *ngIf="isEditorLoading">
+    <div #editor class="editor-container"
+         [class.is-disabled]="isDisabled"
+         [style.width]="'100%'" [style.height]="'100%'">
+    </div>
+    <div class="editor-spinner" *ngIf="!(ready | async)">
       <div class="editor-spinner__indicator">
         <svg viewBox="0 0 64 64">
           <g stroke-width="0">
@@ -98,20 +101,20 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() cursorChange: EventEmitter<ICursorPositionChangedEvent> = new EventEmitter<ICursorPositionChangedEvent>();
   @Output() selectionChange: EventEmitter<ICursorSelectionChangedEvent> = new EventEmitter<ICursorSelectionChangedEvent>();
+  @Output() blur: EventEmitter<void> = new EventEmitter<void>();
 
   @Output() ready: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   @Input() formValueWriteTransformerFn?: (value: any) => string;
   @Input() formValueChangeTransformerFn?: (value: string) => any;
+  @Input() shouldUpdateValue?: (currentValue: string, newValue: any) => boolean;
 
   editor: IStandaloneCodeEditor;
+  private isDisabled = false;
   public isEditorLoading: boolean;
   private _disposed = false;
   private _internalHoverProvider = null;
-  private _disposables = {
-    hoverProvider: <IDisposable>null,
-    completionProvider: <IDisposable>null
-  };
+  private _disposables = new DisposableTracker();
   private destroyed = new Subject();
   private _value = '';
 
@@ -124,10 +127,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
 
   @Input()
   set value(val: string) {
-    // console.log("Monaco set value: ", val);
     val = val || '';
     this._value = val;
-    if (this.editor) {
+    if (this.editor && this.editor.getValue() !== val) {
       this.editor.setValue(val);
     }
   }
@@ -241,9 +243,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     if (this._disposed) {
       return;
     }
-    this.ngZone.runOutsideAngular(() => {
-      this.initMonaco();
-    });
+    this.ngZone.runOutsideAngular(() => this.initMonaco());
   }
 
   ngOnDestroy() {
@@ -261,19 +261,11 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
       this.editor.dispose();
     }
     this.editor = null;
-
-    Object.keys(this._disposables).forEach(key => {
-      const disposable: IDisposable = this._disposables[key];
-      if (disposable) {
-        disposable.dispose();
-      }
-    });
-
+    this._disposables.disposeAll();
     if (this._internalHoverProvider) {
       this._internalHoverProvider.dispose();
     }
     this._internalHoverProvider = null;
-
   }
 
   @HostListener('window:resize')
@@ -298,15 +290,21 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
       .subscribe(onChange);
   }
 
-  registerOnTouched(fn: any) {
-    // part of control value accessor but not required by this implementation
+  registerOnTouched(listener: any) {
+    this.blur.pipe(takeUntil(this.destroyed)).subscribe(listener);
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.editor.updateOptions({ readOnly: isDisabled });
+    this.isDisabled = isDisabled;
+    if (this.editor) {
+      this.editor.updateOptions({ readOnly: isDisabled });
+    }
   }
 
   writeValue(value: any) {
+    if (this.shouldUpdateValue && this.editor && !this.shouldUpdateValue(this.editor.getValue(), value)) {
+      return;
+    }
     if (this.formValueWriteTransformerFn) {
       value = this.formValueWriteTransformerFn(value);
     }
@@ -314,7 +312,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   }
 
   private initMonaco() {
-    const editorOptions = Object.assign({}, DEFAULT_EDITOR_OPTIONS, this.editorOptions, { value: this._value });
+    const editorOptions = {
+      ...DEFAULT_EDITOR_OPTIONS,
+      ...this.editorOptions,
+      value: this._value,
+      readOnly: this.isDisabled,
+    };
     const languageId = this.getLanguageId();
     // Register a new language
     monaco.languages.register({ id: languageId });
@@ -324,27 +327,24 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     this.registerHoverProvider();
     this.registerCompletionProvider();
     this.editor = monaco.editor.create(this.editorRef.nativeElement, editorOptions);
+    this.setupResizeObserver();
 
-    // monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
-    this.editor.onDidChangeModelContent(() => this.ngZone.run(() => {
-      this.onDidChangeContent();
-    }));
-    this.editor.onDidChangeCursorPosition(event => {
-      this.ngZone.run(() => this.onDidChangeCursorPosition(event));
-    });
-    this.editor.onDidChangeCursorSelection(event => {
-      this.ngZone.run(() => this.onDidChangeCursorSelection(event));
-    });
+    const ngZone = fn => (event?) => this.ngZone.run(() => fn(event));
+
+    this._disposables.add(
+      this.editor.onDidChangeModelContent(ngZone(() => this.onDidChangeContent())),
+      this.editor.onDidChangeCursorPosition(ngZone(event => this.onDidChangeCursorPosition(event))),
+      this.editor.onDidChangeCursorSelection(ngZone(event => this.onDidChangeCursorSelection(event))),
+      this.editor.onDidBlurEditor(ngZone(() => this.blur.emit())),
+    );
 
     const didScrollChangeDisposable = this.editor.onDidScrollChange((event) => {
       didScrollChangeDisposable.dispose();
       // allow monaco event handlers to execute
-      setTimeout(() => {
-        this.ngZone.run(() => {
-          this.isEditorLoading = false;
-          this.ready.next(true);
-        });
-      }, 0);
+      setTimeout(ngZone(() => {
+        this.isEditorLoading = false;
+        this.ready.next(true);
+      }), 0);
     });
   }
 
@@ -394,12 +394,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
 
     };
 
-    this._disposables.hoverProvider = monaco.languages.registerHoverProvider(this.getLanguageId(), {
+    const hoverDisposable = monaco.languages.registerHoverProvider(this.getLanguageId(), {
       provideHover(model, position, token) {
         return _provideHover(model, position, token);
       }
     });
-
+    this._disposables.add(hoverDisposable);
   }
 
   private registerCompletionProvider() {
@@ -415,11 +415,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
       return this.completionProvider.provideCompletionItems({ lineNumber, column, offset }, cancellationToken);
     };
 
-    this._disposables.completionProvider = monaco.languages.registerCompletionItemProvider(this.getLanguageId(), {
+    const disposable = monaco.languages.registerCompletionItemProvider(this.getLanguageId(), {
       provideCompletionItems(model, position, cancellationToken) {
         return _provideCompletion(model, position, cancellationToken);
       }
     });
+    this._disposables.add(disposable);
   }
 
   private createMonacoRangeInstance(range: OffsetRange | LineRange) {
@@ -505,6 +506,27 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
       };
     }
     return null;
+  }
+
+  private setupResizeObserver() {
+    // only available in chrome
+    const ResizeObserver: {
+      new (callback: Function);
+      observe: (target: Element) => void;
+      disconnect: () => void;
+    } = (<any>window).ResizeObserver;
+    if (!ResizeObserver) {
+      return;
+    }
+    const resizeObserver = new ResizeObserver(() => {
+      if (this.editor && !this._disposed) {
+        this.updateDimensions();
+      }
+    });
+    resizeObserver.observe(this.editorRef.nativeElement);
+    this.destroyed
+      .pipe(take(1))
+      .subscribe(() => resizeObserver.disconnect());
   }
 
 }
