@@ -39,7 +39,7 @@ export class ContenteditableDirective implements OnInit, OnChanges {
     }
     this.$el.attr('contenteditable', 'true');
     this.$el.css({
-      'paddingRight': '38px',
+      'paddingRight': '10px',
       'marginLeft': '-10px',
       'paddingLeft': '10px',
       'borderRadius': '4px',
@@ -57,7 +57,7 @@ export class ContenteditableDirective implements OnInit, OnChanges {
   @HostListener('mouseenter')
   onMouseEnter() {
     if (document.activeElement !== this._el) {
-      this.$el.css({ 'background': '#fff url("/assets/svg/flogo.flows.detail.edit.icon.svg") center right no-repeat' });
+      this.$el.css({ 'border': '1px solid #ccc' });
       if (this.colorFlag) {
         this.$el.css('color', '#666');
       }
@@ -68,7 +68,6 @@ export class ContenteditableDirective implements OnInit, OnChanges {
   onMouseLeave() {
     if (document.activeElement !== this._el) {
       this.$el.css({
-        'background': '',
         'border': '1px solid transparent',
       });
       if (this.colorFlag) {
@@ -99,7 +98,6 @@ export class ContenteditableDirective implements OnInit, OnChanges {
   onBlur() {
     if (this.placeholder || this.$el.text() !== '') {
       this.$el.css({
-        'background': '',
         'border': '1px solid transparent',
         'overflow': 'hidden',
         'text-overflow': 'ellipsis',

@@ -12,6 +12,6 @@ export const getItem = (state: FlowState, handlerType: HandlerType, itemId: stri
 };
 export const nodesContainErrors = (nodes: NodeDictionary) => {
   const nodeKeys = Object.keys(nodes);
-  return nodeKeys.find(nodeKey => !!nodes[nodeKey].status.executionErrored);
+  return !!nodeKeys.find(nodeKey => !!nodes[nodeKey].status.executionErrored);
 };
 export type PayloadOf<T extends { payload: any }> = T['payload'];

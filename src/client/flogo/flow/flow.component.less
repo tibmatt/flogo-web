@@ -41,16 +41,7 @@
 .flogo-flow-detail {
   display: flex;
   flex-direction: row;
-  padding: 20px 24px;
-  background: no-repeat -61px -53px;
-  background-size: 260px 255px;
-
-  &.flogo-flow-detail--microservice {
-    background-image: url(/assets/svg/bg-microservice.svg);
-  }
-  &.flogo-flow-detail--device {
-    background-image: url(/assets/svg/bg-device.svg);
-  }
+  padding: 20px 24px 0;
 }
 
 .flogo-flow-detail-name {
@@ -61,10 +52,11 @@
   line-height: 1.5;
   letter-spacing: 0.3px;
   margin: 0 0 1px;
-  display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
 }
 
 .flogo-flow-detail-menu-container {
@@ -88,7 +80,10 @@
 .flogo-profile__device-type {
   margin-right: 8px;
   flex-shrink: 0;
-  height: 28px;
+  height: 20px;
+  line-height: 20px;
+  padding: 0 10px;
+  color: @warm-grey;
 }
 
 .header-content {
@@ -101,8 +96,7 @@
 
 .flow-detail-name {
   display: flex;
-  margin-bottom: 8px;
-  line-height: 2;
+  align-items: center;
 }
 
 .flow-detail-description {
@@ -126,10 +120,15 @@
   .flogo-flow-detail-header-back-icon {
     cursor: pointer;
     color: @warm-grey;
+    font-size: 19px;
     font-weight: bold;
     display: flex;
+    position: relative;
+    bottom: -4px;
     align-items: center;
-    margin-right: 2.5em;
+    margin: 0;
+    // (trigger panel width) - (header padding)
+    width: 66px;
   }
 
   .flogo-flow-detail-header-back-app-name {
@@ -147,7 +146,7 @@
       color: @color-link-hover;
       text-decoration: underline;
     }
-    .flogo-flow-detail-header-back-icon .flogo-icon {
+    .flogo-flow-detail-header-back-icon {
       color: @color-link-hover;
     }
   }
@@ -158,7 +157,22 @@
   height: 35px;
   border-radius: 3px;
   background-size: contain;
-  margin: 8px 20px 0 0;
+  margin: 8px 10px 0 0;
   padding: 0;
   flex-shrink: 0;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: no-repeat -61px -53px;
+  background-size: 260px 255px;
+}
+
+.header--microservice {
+  background-image: url(/assets/svg/bg-microservice.svg);
+}
+.header--device {
+  background-image: url(/assets/svg/bg-device.svg);
 }
