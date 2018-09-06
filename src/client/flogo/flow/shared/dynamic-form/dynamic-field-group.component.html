@@ -14,7 +14,7 @@
                       [hideOptionalLabel]="readonly"></flogo-fb-radio>
     <flogo-fb-object *ngSwitchCase="'FieldObject'" [fieldGroup]="field"
                       [fieldControl]="metadata[i]"
-                      [hideOptionalLabel]="readonly"></flogo-fb-object>
+                     [readonly]="readonly"></flogo-fb-object>
     <flogo-fb-textbox *ngSwitchDefault [fieldGroup]="field"
                       [fieldControl]="metadata[i]"
                       [hideOptionalLabel]="readonly"></flogo-fb-textbox>

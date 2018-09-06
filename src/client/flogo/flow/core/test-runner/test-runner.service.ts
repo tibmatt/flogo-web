@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { notification } from '@flogo/shared/utils';
 
-import { Dictionary, FlowGraph, GraphNode, Interceptor, LanguageService, NodeType } from '@flogo/core';
+import { Dictionary, FlowGraph, GraphNode, Interceptor, LanguageService, NodeType, ItemActivityTask, ActivitySchema } from '@flogo/core';
 import { OperationalError } from '@flogo/core/services';
 import { FlowActions, FlowSelectors } from '@flogo/flow/core/state';
 import { isBranchExecuted } from '@flogo/flow/core/models/flow/branch-execution-status';
@@ -85,7 +85,8 @@ export class TestRunnerService implements OnDestroy {
     return this.getFlowStateOnce()
       .pipe(
         map((flowState: FlowState) => {
-          const selectedTask = flowState.mainItems[taskId];
+          const selectedTask = flowState.mainItems[taskId] as ItemActivityTask;
+          const schema = flowState.schemas[selectedTask.ref] as ActivitySchema;
           if (!flowState.lastFullExecution.processId) {
             // run from other than the trigger (root task);
             // TODO
@@ -100,11 +101,10 @@ export class TestRunnerService implements OnDestroy {
           }
 
           this.store.dispatch(new FlowActions.RunFromTask());
-          const attrs = get(selectedTask, 'attributes.inputs');
           const dataOfInterceptor: Interceptor = {
             tasks: [{
               id: selectedTask.id,
-              inputs: parseInput(attrs, inputs),
+              inputs: mergeInputAndSchema(schema.inputs, inputs),
             }]
           };
           this.runState.steps = null;
@@ -120,11 +120,11 @@ export class TestRunnerService implements OnDestroy {
         catchError(err => this.handleRunError(err)),
       );
 
-    function parseInput(formAttrs: any, inputData: any) {
-      if (!formAttrs) {
+    function mergeInputAndSchema(schemaInput: any, inputData: any) {
+      if (!schemaInput) {
         return [];
       }
-      return _map(formAttrs, (input: any) => {
+      return _map(schemaInput, (input: any) => {
         // override the value;
         return assign(cloneDeep(input), {
           value: inputData[input.name],

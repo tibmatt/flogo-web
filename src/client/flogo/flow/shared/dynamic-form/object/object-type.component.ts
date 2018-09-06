@@ -14,8 +14,10 @@ import { BaseField } from '../field-base';
 export class ObjectTypeComponent {
   @Input() fieldGroup: FormGroup;
   @Input() fieldControl: BaseField<any>;
-  @Input() hideOptionalLabel?: boolean;
+  @Input() readonly?: boolean;
   editorOptions = { language: 'json' };
+  // once initialized we don't want updates to propagate back
+  shouldUpdateEditorValue = () => this.readonly;
 
   transformValueIn(value) {
     return isEmpty(value) || isString(value) ? value : JSON.stringify(value, null, 2);
@@ -32,8 +34,4 @@ export class ObjectTypeComponent {
     }
   }
 
-  // once initialized we don't want updates to propagate back
-  shouldUpdateEditorValue() {
-    return false;
-  }
 }

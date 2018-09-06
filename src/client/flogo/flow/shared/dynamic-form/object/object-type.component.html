@@ -2,7 +2,7 @@
   <label flogo-flow-dynamic-form-label
          [fieldMetadata]="fieldControl"
          [control]="fieldGroup.get('name')"
-         [noOptionalLabel]="hideOptionalLabel"></label>
+         [noOptionalLabel]="readonly"></label>
   <monaco-editor class="editor"
                  #field [editorOptions]="editorOptions"
                  [formControl]="fieldGroup.get('value')"
