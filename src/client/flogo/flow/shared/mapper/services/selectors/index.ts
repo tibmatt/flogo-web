@@ -100,6 +100,15 @@ export const selectCurrentNode = (source: Observable<MapperState>) => {
   );
 };
 
+export const getCurrentNodeValueHints = (source: Observable<MapperState>) => {
+  return source
+    .pipe(
+      selectCurrentNode,
+      map((currentTreeNode) => currentTreeNode && currentTreeNode.hintOptions ? currentTreeNode.hintOptions : null),
+      distinctUntilChanged(),
+    );
+};
+
 export const selectFilteredNodes = (source: Observable<MapperState>) => {
   const sharedSource = source.pipe(shareReplay());
   return combineLatest(
