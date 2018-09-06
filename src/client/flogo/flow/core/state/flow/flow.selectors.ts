@@ -1,10 +1,13 @@
 
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
-import { ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask, FLOGO_TASK_TYPE } from '@flogo/core';
+import {
+  ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask, FLOGO_TASK_TYPE,
+   FlowGraph
+} from '@flogo/core';
 import { remove } from 'lodash';
 
 import { FlowState } from './flow.state';
-import { getGraphName, getItemsDictionaryName } from '../utils';
+import {getGraphName, getItemsDictionaryName, nodesContainErrors} from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
 
 import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
@@ -169,17 +172,15 @@ export const getAllNodes = createSelector(
     };
   });
 
-export const getAllCurrentExecutionErrors = createSelector(
-  getAllNodes,
-  (nodes) => {
-    const errorNodeKeys = Object.keys(nodes.errorNodes);
-    const mainNodeKeys = Object.keys(nodes.mainNodes);
-    const errorNodesExecution = errorNodeKeys.find(errorNodeKey => !!nodes.errorNodes[errorNodeKey].status.executionErrored);
-    const mainNodesExecution = mainNodeKeys.find(mainNodeKey => !!nodes.mainNodes[mainNodeKey].status.executionErrored);
-    return {errorNodesExecution, mainNodesExecution};
+export const getGraph = (handlerType: HandlerType) => {
+  const graphName = getGraphName(handlerType);
+  return createSelector(selectFlowState, flowState => flowState[graphName] as FlowGraph);
+};
 
-  },
-);
+const getMainGraphNodes = createSelector(getGraph(HandlerType.Main), mainGraph => mainGraph.nodes);
+const getErrorGraphNodes = createSelector(getGraph(HandlerType.Error), errorGraph => errorGraph.nodes);
+export const getPrimaryFlowHasExecutionErrors = createSelector(getMainGraphNodes, nodes => nodesContainErrors(nodes));
+export const getErrorFlowHasExecutionErrors = createSelector(getErrorGraphNodes, nodes => nodesContainErrors(nodes));
 
 export const selectAppInfo = createSelector(
   selectApp,

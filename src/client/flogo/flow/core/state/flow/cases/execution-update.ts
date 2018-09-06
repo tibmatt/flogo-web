@@ -23,10 +23,8 @@ function hasExecutedNodes(nodes: Dictionary<GraphNode>) {
 }
 
 export function executionUpdate(state: FlowState, {changes}: PayloadOf<ExecutionStateUpdated>) {
-  const isErrorPanelOpen = state.isErrorPanelOpen;
   return {
     ...state,
-    isErrorPanelOpen,
     mainGraph: applyChanges(state.mainGraph, changes.mainGraphNodes),
     errorGraph: applyChanges(state.errorGraph, changes.errorGraphNodes),
   };
