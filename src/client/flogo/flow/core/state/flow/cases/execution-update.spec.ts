@@ -46,20 +46,6 @@ describe('state.cases.execution-update', function () {
     };
   });
 
-  it('should reveal the error panel if the at least one task in the error handler was executed', function () {
-    const newState = executionUpdate(
-      state,
-      {
-        changes: {
-          errorGraphNodes: {
-            [errorNode.id]: {...errorNode, status: { executed: true }}
-          }
-        },
-      }
-    );
-    expect(newState.isErrorPanelOpen).toBe(true);
-  });
-
   it('should not reveal the error panel if no tasks in error panel were executed', function() {
     const newState = executionUpdate(
       state,

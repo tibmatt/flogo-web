@@ -1,10 +1,13 @@
 
 import { createSelector, createFeatureSelector, MemoizedSelector } from '@ngrx/store';
-import { ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask, FLOGO_TASK_TYPE } from '@flogo/core';
+import {
+  ContribSchema, Dictionary, FLOGO_CONTRIB_TYPE_VALUES, Item, ItemActivityTask, FLOGO_TASK_TYPE,
+   FlowGraph
+} from '@flogo/core';
 import { remove } from 'lodash';
 
 import { FlowState } from './flow.state';
-import { getGraphName, getItemsDictionaryName } from '../utils';
+import {getGraphName, getItemsDictionaryName, nodesContainErrors} from '../utils';
 import { determineRunnableStatus } from './views/determine-runnable-status';
 
 import { InsertTaskSelection, HandlerType, TaskSelection, SelectionType } from '../../models';
@@ -159,6 +162,25 @@ export const getCurrentActivityExecutionErrors = createSelector(
     return activity && nodes ? nodes[activity.id].status.executionErrored : null;
   },
 );
+
+export const getAllNodes = createSelector(
+  selectFlowState,
+  (flowState) => {
+    return {
+      errorNodes: flowState.errorGraph.nodes,
+      mainNodes: flowState.mainGraph.nodes
+    };
+  });
+
+export const getGraph = (handlerType: HandlerType) => {
+  const graphName = getGraphName(handlerType);
+  return createSelector(selectFlowState, flowState => flowState[graphName] as FlowGraph);
+};
+
+const getMainGraphNodes = createSelector(getGraph(HandlerType.Main), mainGraph => mainGraph.nodes);
+const getErrorGraphNodes = createSelector(getGraph(HandlerType.Error), errorGraph => errorGraph.nodes);
+export const getPrimaryFlowHasExecutionErrors = createSelector(getMainGraphNodes, nodes => nodesContainErrors(nodes));
+export const getErrorFlowHasExecutionErrors = createSelector(getErrorGraphNodes, nodes => nodesContainErrors(nodes));
 
 export const selectAppInfo = createSelector(
   selectApp,
