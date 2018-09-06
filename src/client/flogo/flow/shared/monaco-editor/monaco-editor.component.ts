@@ -110,7 +110,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
   @Input() shouldUpdateValue?: (currentValue: string, newValue: any) => boolean;
 
   editor: IStandaloneCodeEditor;
-  private isDisabled = false;
+  isDisabled = false;
   public isEditorLoading: boolean;
   private _disposed = false;
   private _internalHoverProvider = null;
