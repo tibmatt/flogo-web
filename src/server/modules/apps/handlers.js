@@ -7,7 +7,6 @@ import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
 import { getProfileType } from '../../common/utils/profile';
 import { FLOGO_PROFILE_TYPES } from '../../common/constants';
-import mapKeys from "lodash/mapKeys";
 
 const EDITABLE_FIELDS = [
   'settings',
