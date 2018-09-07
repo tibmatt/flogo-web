@@ -2,14 +2,14 @@
 
   <div class="header"
        [ngClass]="{'header--device': profileType === PROFILE_TYPES.DEVICE,
-                       'header--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
-    <section class="flogo-flow-detail">
-
-      <header class="flogo-flow-detail-header" [ngClass]="{'--hover':backToAppHover}">
-        <i class="flogo-icon flogo-icon-back flogo-flow-detail-header-back-icon"
-           (click)="navigateToApp()"
-           (mouseover)="onMouseOverBackControl()"
-           (mouseout)="onMouseOutBackControl()"></i>
+                   'header--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE,
+                   'header--back-hover':backToAppHover
+                       }">
+      <i class="flogo-icon flogo-icon-back flogo-flow-detail-header-back-icon"
+         (click)="navigateToApp()"
+         (mouseover)="onMouseOverBackControl()"
+         (mouseout)="onMouseOutBackControl()"></i>
+      <header class="flogo-flow-detail-header">
         <div class="flogo-profile__tile flogo-profile-detail__thumb"
              [ngClass]="{'flogo-profile__device': profileType === PROFILE_TYPES.DEVICE,
                          'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}"></div>
@@ -28,8 +28,6 @@
              (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
         </div>
       </header>
-
-
       <div class="flogo-flow-detail-menu-container">
         <flogo-run-flow *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
                         [disableRun]="runnableInfo?.disabled"
@@ -54,8 +52,7 @@
         </div>
 
       </div>
-    </section>
-    <flogo-flow-tabs></flogo-flow-tabs>
+      <flogo-flow-tabs class="tabs"></flogo-flow-tabs>
   </div>
 
     <flogo-flow-debug-panel *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram"

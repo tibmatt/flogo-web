@@ -88,7 +88,6 @@
 
 .header-content {
   .body-small();
-  width: 100%;
   padding: 0 10px;
   overflow: hidden;
   letter-spacing: 0.3px;
@@ -97,13 +96,14 @@
 .flow-detail-name {
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .flow-detail-description {
   width: 100%;
   color: @warm-grey;
   padding: 0 10px;
-  margin: 0 0 7px;
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -114,42 +114,31 @@
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  width: 100%;
   margin-right: 2em;
+}
 
-  .flogo-flow-detail-header-back-icon {
-    cursor: pointer;
-    color: @warm-grey;
-    font-size: 19px;
-    font-weight: bold;
-    display: flex;
-    position: relative;
-    bottom: -4px;
-    align-items: center;
-    margin: 0;
-    // (trigger panel width) - (header padding)
-    width: 66px;
-  }
+.flogo-flow-detail-header-back-icon {
+  cursor: pointer;
+  color: @warm-grey;
+  font-size: 19px;
+  font-weight: bold;
+  display: flex;
+  position: relative;
+  align-items: center;
+  margin-bottom: -6px;
+  align-self: end;
+  padding: 10px;
+  justify-self: baseline;
+}
 
-  .flogo-flow-detail-header-back-app-name {
-    color: @warm-grey;
-    font-style: italic;
-    cursor: pointer;
-    margin-left: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &.--hover {
-    .flogo-flow-detail-header-back-app-name {
-      color: @color-link-hover;
-      text-decoration: underline;
-    }
-    .flogo-flow-detail-header-back-icon {
-      color: @color-link-hover;
-    }
-  }
+.flogo-flow-detail-header-back-app-name {
+  color: @warm-grey;
+  font-style: italic;
+  cursor: pointer;
+  margin-left: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .flogo-profile-detail__thumb {
@@ -164,8 +153,11 @@
 
 .header {
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: 64px 1fr auto [grid-end];
+  grid-row-gap: 5px;
+  padding: 28px 24px 0;
   background: no-repeat -61px -53px;
   background-size: 260px 255px;
 }
@@ -175,4 +167,19 @@
 }
 .header--device {
   background-image: url(/assets/svg/bg-device.svg);
+}
+
+.header--back-hover {
+  .flogo-flow-detail-header-back-app-name {
+    color: @color-link-hover;
+    text-decoration: underline;
+  }
+  .flogo-flow-detail-header-back-icon {
+    color: @color-link-hover;
+  }
+}
+
+.tabs {
+  display: block;
+  grid-column: 2 / grid-end;
 }
