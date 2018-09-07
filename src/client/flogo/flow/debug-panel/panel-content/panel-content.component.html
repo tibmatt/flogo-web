@@ -4,7 +4,8 @@
       <div class="activity__name">{{ activity.name }}</div>
       <div class="activity__id">ID: {{ activity.id }}</div>
       <div class="activity__description">{{ activity.description }}</div>
-      <button class="flogo-button--secondary btn-run" [disabled]="runDisabled" (click)="onRun()">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
+      <button *ngIf="canRestart" class="flogo-button--secondary btn-run"
+              [disabled]="runDisabled" (click)="onRun()">{{ 'DEBUGGER:BUTTON-RUN-FROM-TILE' | translate }}</button>
     </div>
     <ng-container *ngIf="executionErrors?.length > 0; then errorDisplay else activityFields"></ng-container>
   </div>

@@ -23,6 +23,7 @@
       [executionErrors]="executionErrrors$ | async"
       [activityHasRun]="activityHasRun$ | async"
       [flowHasRun]="flowHasRun$ | async"
+      [canRestart]="isRestartableTask$ | async"
       [runDisabled]="isRunDisabled$ | async"
       [isEndOfFlow]="isEndOfFlow$ | async"
       (runFromHere)="run()"></flogo-flow-debug-panel-content>

@@ -93,8 +93,8 @@ export class TestRunnerService implements OnDestroy {
             throw new Error('Cannot find proper step to restart from, skipping...');
           }
 
-          const step = this.getStepNumberFromSteps(taskId);
-          if (!step) {
+          const stepNumber = this.getStepNumberFromSteps(taskId);
+          if (stepNumber < 0) {
             // TODO
             //  handling the case that trying to start from the middle of a path without run from the trigger for the first time.
             throw new Error(`Cannot start from task ${(<any>selectedTask).name} (${selectedTask.id})`);
@@ -112,7 +112,7 @@ export class TestRunnerService implements OnDestroy {
           return this.orchestrator.rerun({
             useFlow: flowState,
             interceptor: dataOfInterceptor,
-            step: step,
+            step: stepNumber,
             instanceId: flowState.lastFullExecution.instanceId,
           });
         }),
@@ -139,20 +139,11 @@ export class TestRunnerService implements OnDestroy {
   //  get step index logic should be based on the selected snapshot,
   //  hence need to be refined in the future
   private getStepNumberFromSteps(taskId: string) {
-    let stepNumber = 0;
-    // firstly try to get steps from the last process instance running from the beginning,
-    // otherwise use some defauts
+    // try to get steps from the last process instance running from the beginning,
+    // otherwise use some defaults
     const steps = get(this.runState.lastProcessInstanceFromBeginning, 'steps', this.runState.steps || []);
-
-    steps.forEach((step: any, index: number) => {
-      // allowing double equals for legacy ids that were of type number
-      /* tslint:disable-next-line:triple-equals */
-      if (step.taskId == taskId) {
-        stepNumber = index + 1;
-      }
-    });
-
-    return stepNumber;
+    /* tslint:disable-next-line:triple-equals - allowing double equals for legacy ids that were of type number */
+    return steps.findIndex(step => step.taskId == taskId);
   }
 
 

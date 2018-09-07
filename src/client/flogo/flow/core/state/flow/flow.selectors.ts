@@ -60,7 +60,7 @@ export const getCurrentHandlerId = createSelector(
 );
 
 export const getCurrentGraph = createSelector(selectFlowState, getCurrentHandlerId, (flowState, currentHandlerId) => {
-  return flowState[getGraphName(currentHandlerId)];
+  return flowState[getGraphName(currentHandlerId)] as FlowGraph;
 });
 
 export const getSelectionForCurrentHandler = createSelector(
@@ -153,6 +153,18 @@ export const getIsRunDisabledForSelectedActivity = createSelector(
     const isRunDisabled = runnableInfo && runnableInfo.disabled;
     return isErrorHandler || structureHasChanged || isRunDisabled || !flowHasRun;
   },
+);
+
+export const isCurrentSelectionRoot = createSelector(
+  getSelectedActivity,
+  getCurrentGraph,
+  (activity, currentGraph): boolean => activity && currentGraph && currentGraph.rootId === activity.id
+);
+
+export const getIsRestartableTask = createSelector(
+  getCurrentHandlerType,
+  isCurrentSelectionRoot,
+  (handlerType, isRoot) => handlerType !== HandlerType.Error && !isRoot,
 );
 
 export const getCurrentActivityExecutionErrors = createSelector(
