@@ -1,27 +1,45 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   shareReplay,
   switchMap,
-  takeUntil
+  takeUntil,
+  filter,
+  map,
+  startWith,
 } from 'rxjs/operators';
 
 import { MonacoEditorComponent, DEFAULT_EDITOR_OPTIONS } from '../../monaco-editor';
 import { SingleEmissionSubject } from '../shared/single-emission-subject';
 
+import { MapperState } from '../models';
 import { MapperService } from '../services/mapper.service';
+import { selectCurrentEditingExpression, selectedInputKey, getCurrentNodeValueHints } from '../services/selectors';
 import { EditorService, InsertEvent } from './editor.service';
-import { selectCurrentEditingExpression, selectedInputKey } from '../services/selectors';
+
+function distinctAndDebounce(obs) {
+  return obs.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+  );
+}
+
+interface EditorHint {
+  label: string;
+  value: string;
+}
 
 @Component({
   selector: 'flogo-mapper-editor',
-  template: `<monaco-editor></monaco-editor>`
+  templateUrl: 'editor.component.html',
+  styleUrls: ['editor.component.less'],
 })
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) editor: MonacoEditorComponent;
   expression = '';
+  valueHints$: Observable<null|Array<EditorHint>>;
 
   private currentMapKey: string;
   private ngDestroy: SingleEmissionSubject = SingleEmissionSubject.create();
@@ -31,38 +49,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const mapperState$ = this.mapperService.state$.pipe(shareReplay());
+    this.setupExternalModelChanges(mapperState$);
+
     const editorContext$ = mapperState$.pipe(selectedInputKey);
-
-    const valueChange$ = this.editor.valueChange
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      );
-
-    editorContext$
-      .pipe(
-        switchMap(() => valueChange$),
-        takeUntil(this.ngDestroy),
-      )
-      .subscribe((value: string) => {
-        this.mapperService.expressionChange(this.currentMapKey, value);
-      });
-
-    this.editor.ready
-      .pipe(
-        switchMap(() => mapperState$.pipe(selectCurrentEditingExpression)),
-        takeUntil(this.ngDestroy),
-      )
-      .subscribe((context) => {
-        if (context) {
-          this.currentMapKey = context.currentKey;
-          const newExpression = context.expression || '';
-          if (this.editor.value !== newExpression) {
-            this.editor.changeModel(newExpression, DEFAULT_EDITOR_OPTIONS.language);
-            setTimeout(() => this.editor.onWindowResize(), 0);
-          }
-        }
-      });
+    this.valueHints$ = this.createHintsStream(editorContext$, mapperState$.pipe(getCurrentNodeValueHints));
+    this.subscribeToValueChanges(editorContext$);
 
     this.editorService.insert$
       .pipe(takeUntil(this.ngDestroy))
@@ -72,6 +63,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         } else {
           this.editor.insert(event.text);
         }
+        this.editor.focus();
       });
 
     this.editorService.dragOver$
@@ -79,15 +71,66 @@ export class EditorComponent implements OnInit, OnDestroy {
       .subscribe(position => {
         this.editor.selectTokenAtClientPosition(position);
       });
+  }
 
-    const editorReady = new BehaviorSubject<boolean>(false);
-    this.editor.ready
-      .pipe(takeUntil(this.ngDestroy))
-      .subscribe(editorReady);
+  onHintSelected(event: Event, hint: EditorHint) {
+    this.editor.insert(hint.value);
+    this.editor.focus();
+    event.stopPropagation();
+  }
+
+  onHintOverlayClick() {
+    this.editor.focus();
   }
 
   ngOnDestroy() {
     this.ngDestroy.emitAndComplete();
+  }
+
+  private subscribeToValueChanges(editorContext$) {
+    const valueChange$ = distinctAndDebounce(this.editor.valueChange);
+    editorContext$
+      .pipe(
+        switchMap(() => valueChange$),
+        takeUntil(this.ngDestroy),
+      )
+      .subscribe((value: string) => {
+        this.mapperService.expressionChange(this.currentMapKey, value);
+      });
+  }
+
+  private setupExternalModelChanges(mapperState$: Observable<MapperState>) {
+    this.editor.ready
+      .pipe(
+        switchMap(() => mapperState$.pipe(selectCurrentEditingExpression)),
+        takeUntil(this.ngDestroy),
+        filter(context => !!context),
+      )
+      .subscribe((context) => {
+        this.currentMapKey = context.currentKey;
+        this.expression = context.expression;
+        const newExpression = context.expression || '';
+        if (this.editor.value !== newExpression) {
+          this.editor.changeModel(newExpression, DEFAULT_EDITOR_OPTIONS.language);
+          setTimeout(() => this.editor.onWindowResize(), 0);
+        }
+      });
+  }
+
+  private createHintsStream(editorContext$, currentNodeValueHints$: Observable<null | any[]>) {
+    const hasValues = a => a && a.length >= 0;
+    const nodeHintsToEditorHints = nodeHints => hasValues(nodeHints)
+      ? nodeHints.map(value => ({ label: value, value: JSON.stringify(value) }))
+      : [];
+    return this.editor.ready
+      .pipe(
+        switchMap(() => editorContext$),
+        switchMap(() => combineLatest(
+          this.editor.valueChange.pipe(startWith(this.editor.value)),
+          currentNodeValueHints$.pipe(map(nodeHintsToEditorHints)),
+        )),
+        map(([currentEditorValue, hints]) => !currentEditorValue ? hints : null),
+      );
   }
 
 }

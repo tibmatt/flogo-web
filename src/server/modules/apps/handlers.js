@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import defaults from 'lodash/defaults';
 import defaultsDeep from 'lodash/defaultsDeep';
-
+import isEmpty from 'lodash/isEmpty';
 import { apps as appsDb, dbUtils } from '../../common/db';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { Validator } from './validator';
@@ -108,18 +108,21 @@ export class HandlersManager {
   }
 
   static removeByActionId(actionId) {
-    return appsDb.findOne({ 'triggers.handlers.actionId': actionId }, { triggers: 1 })
+    return appsDb.findOne({'triggers.handlers.actionId': actionId}, {triggers: 1})
       .then(app => {
         if (!app) {
           return null;
         }
-
-        const triggerIndex = app.triggers.findIndex(t => t.handlers.findIndex(h => h.actionId === actionId) >= 0);
-        if (triggerIndex >= 0) {
+        const pull = app.triggers.reduce((result, trigger, index) => {
+          const existingHandlers = trigger.handlers.findIndex(handler => handler.actionId === actionId);
+          if (existingHandlers >= 0) {
+            result['triggers.' + index + '.handlers'] = {actionId: actionId}
+          }
+          return result;
+        }, {});
+        if (!isEmpty(pull)) {
           return appsDb.update(
-            { 'triggers.handlers.actionId': actionId },
-            { $pull: { [`triggers.${triggerIndex}.handlers`]: { actionId } } },
-            {});
+            {'triggers.handlers.actionId': actionId}, {$pull: pull}, {});
         }
         return null;
       })

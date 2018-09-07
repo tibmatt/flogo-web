@@ -190,6 +190,10 @@ export class MonacoEditorComponent implements AfterViewInit, OnInit, OnDestroy, 
     }
   }
 
+  focus() {
+    this.editor.focus();
+  }
+
   changeModel(value: string, mode?: string) {
     if (this._disposed) {
       return;

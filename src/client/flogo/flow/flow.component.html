@@ -1,67 +1,62 @@
-<div class="canvas-flow" *ngIf="flowState && !loading"
-     [ngClass]="{'flogo-flow-detail--device': profileType === PROFILE_TYPES.DEVICE,
-                       'flogo-flow-detail--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
+<div class="canvas-flow" *ngIf="flowState && !loading">
 
-  <section class="flogo-flow-detail" *loadMonacoEditor>
+  <div class="header"
+       [ngClass]="{'header--device': profileType === PROFILE_TYPES.DEVICE,
+                       'header--microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}">
+    <section class="flogo-flow-detail">
 
-    <header class="flogo-flow-detail-header col-sm-9">
-      <div class="flogo-flow-detail-header-back"
-           [ngClass]="{'--hover':backToAppHover}">
-        <div class="flogo-flow-detail-header-back-icon"
-             (click)="navigateToApp()"
-             (mouseover)="onMouseOverBackControl()"
-             (mouseout)="onMouseOutBackControl()">
-          <i class="flogo-icon flogo-icon-back"></i>
-        </div>
+      <header class="flogo-flow-detail-header" [ngClass]="{'--hover':backToAppHover}">
+        <i class="flogo-icon flogo-icon-back flogo-flow-detail-header-back-icon"
+           (click)="navigateToApp()"
+           (mouseover)="onMouseOverBackControl()"
+           (mouseout)="onMouseOutBackControl()"></i>
         <div class="flogo-profile__tile flogo-profile-detail__thumb"
              [ngClass]="{'flogo-profile__device': profileType === PROFILE_TYPES.DEVICE,
                          'flogo-profile__microservice': profileType === PROFILE_TYPES.MICRO_SERVICE}"></div>
-        <div>
-          <div class="clearfix">
+        <div class="header-content">
+          <div class="flow-detail-name">
             <h3 class="flogo-flow-detail-name" [(fgContentEditable)]="flowState.name"
                 (fgContentEditableChange)="changeFlowDetailName($event, 'name')"></h3>
             <span *ngIf="profileType === PROFILE_TYPES.DEVICE" class="flogo-profile__device-type">{{flowState.app.device.deviceType}}</span>
-          </div>
-          <div class="flow-detail-name-description">
             <span>in</span> <span (click)="navigateToApp()"
                                   class="flogo-flow-detail-header-back-app-name"
                                   (mouseover)="onMouseOverBackControl()"
                                   (mouseout)="onMouseOutBackControl()">{{flowState?.app?.name}}</span>
-            <p class="flogo-flow-detail-description" [(fgContentEditable)]="flowState.description"
-               placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
-               (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
+          </div>
+          <p class="flow-detail-description" [(fgContentEditable)]="flowState.description"
+             placeholder="{{ 'CANVAS:ADD-FLOW-DESCRIPTION' | translate }}"
+             (fgContentEditableChange)="changeFlowDetail($event, 'descrption')"></p>
+        </div>
+      </header>
+
+
+      <div class="flogo-flow-detail-menu-container">
+        <flogo-run-flow *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
+                        [disableRun]="runnableInfo?.disabled"
+                        disableReason="{{ runnableInfo?.disableReason | translate }}"
+                        [flowInputs]="flowState?.metadata?.input"
+                        (submit)="onRunFlow($event)"></flogo-run-flow>
+        <div class="flogo-flow-detail-log-button-container">
+          <flogo-logs></flogo-logs>
+        </div>
+        <div class="flogo-flow-detail-menu" [class.--active]="isflowMenuOpen" (fgClickOutside)="closeFlowMenu()">
+          <i class="flogo-icon-kebabmenu kebabmenu-icon" (click)="toggleFlowMenu()"></i>
+          <div class="flogo-flow-detail-menu-list-wrapper">
+            <ul class="flogo-flow-detail-menu-list">
+              <!--<li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>-->
+              <li class="flogo-flow-detail-menu-item">
+                <a (click)="deleteFlow()" href="javascript:void(0);" class="flogo-flow-detail-menu-anchor">
+                  <i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-      </div>
-    </header>
-
-
-    <div class="col-sm-3 flogo-flow-detail-menu-container">
-      <flogo-run-flow *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE"
-                      [disableRun]="runnableInfo?.disabled"
-                      disableReason="{{ runnableInfo?.disableReason | translate }}"
-                      [flowInputs]="flowState?.metadata?.input"
-                      (submit)="onRunFlow($event)"></flogo-run-flow>
-      <div class="flogo-flow-detail-log-button-container">
-        <flogo-logs></flogo-logs>
-      </div>
-      <div class="flogo-flow-detail-menu" [class.--active]="isflowMenuOpen" (fgClickOutside)="closeFlowMenu()">
-        <i class="flogo-icon-kebabmenu kebabmenu-icon" (click)="toggleFlowMenu()"></i>
-        <div class="flogo-flow-detail-menu-list-wrapper">
-          <ul class="flogo-flow-detail-menu-list">
-            <!--<li class="flogo-flow-detail-menu-item"><a disabled href="javascript:void(0);"><i class="fa fa-clone fa-fw"></i>{{ 'CANVAS:COPY' | translate }}</a></li>-->
-            <li class="flogo-flow-detail-menu-item">
-              <a (click)="deleteFlow()" href="javascript:void(0);" class="flogo-flow-detail-menu-anchor">
-                <i class="flogo-icon flogo-icon-delete"></i>{{ 'CANVAS:DELETE' | translate }}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
 
       </div>
     </section>
     <flogo-flow-tabs></flogo-flow-tabs>
+  </div>
 
     <flogo-flow-debug-panel *ngIf="profileType === PROFILE_TYPES.MICRO_SERVICE; else deviceDiagram"
                             class="debug-panel-container">

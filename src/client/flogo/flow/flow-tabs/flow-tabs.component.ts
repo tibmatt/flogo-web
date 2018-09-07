@@ -1,6 +1,9 @@
 import {Component} from '@angular/core';
+import {Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
-import {FlowActions, FlowSelectors, FlowState} from '@flogo/flow/core/state';
+import {
+  FlowActions, FlowSelectors, FlowState, getErrorFlowHasExecutionErrors, getPrimaryFlowHasExecutionErrors
+} from '@flogo/flow/core/state';
 import {takeUntil} from 'rxjs/operators';
 import {SingleEmissionSubject} from '@flogo/core/models';
 
@@ -12,17 +15,19 @@ import {SingleEmissionSubject} from '@flogo/core/models';
 
 export class FlowTabsComponent {
   isErrorHandlerShown = false;
+  showBadgeForError$: Observable<boolean>;
+  showBadgeForFlow$: Observable<boolean>;
   private ngOnDestroy$ = SingleEmissionSubject.create();
 
   constructor(private store: Store<FlowState>) {
-    this.store.pipe(select(FlowSelectors.selectErrorPanelStatus),
-      takeUntil(this.ngOnDestroy$)).subscribe(isErrorPanelOpen => {
-      if (isErrorPanelOpen) {
-        this.isErrorHandlerShown = true;
-      } else {
-        this.isErrorHandlerShown = false;
-      }
-    });
+    this.store
+      .pipe(
+        select(FlowSelectors.selectErrorPanelStatus),
+        takeUntil(this.ngOnDestroy$),
+      )
+      .subscribe(isErrorPanelOpen => this.isErrorHandlerShown = isErrorPanelOpen);
+    this.showBadgeForFlow$ = this.store.pipe(select(getPrimaryFlowHasExecutionErrors));
+    this.showBadgeForError$ = this.store.pipe(select(getErrorFlowHasExecutionErrors));
 
   }
 
