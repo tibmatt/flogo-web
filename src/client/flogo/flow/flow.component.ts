@@ -1,11 +1,11 @@
 import {
   cloneDeep,
   each,
-  filter,
+  filter as _filter,
   get,
   isEmpty,
 } from 'lodash';
-import { takeUntil, switchMap } from 'rxjs/operators';
+import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -42,6 +42,7 @@ import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.serv
 import {ConfirmationResult} from '@flogo/core';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
 import { trigger as animationTrigger, transition, animateChild } from '@angular/animations';
+import { MonacoEditorLoaderService } from '@flogo/flow/shared/monaco-editor';
 
 interface TaskContext {
   isTrigger: boolean;
@@ -101,7 +102,8 @@ export class FlowComponent implements OnInit, OnDestroy {
               private _router: Router,
               private confirmationModalService: ConfirmationModalService,
               private _route: ActivatedRoute,
-              private testRunner: TestRunnerService) {
+              private testRunner: TestRunnerService,
+              private  monacoLoaderService: MonacoEditorLoaderService) {
     this._isDiagramEdited = false;
 
     this.loading = true;
@@ -124,7 +126,13 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.flowDetails.runnableState$
       .pipe(takeUntil(this.ngOnDestroy$))
       .subscribe(runnableState => this.runnableInfo = runnableState);
-    this.loading = false;
+    this.monacoLoaderService.isMonacoLoaded
+      .pipe(filter(Boolean), take(1), takeUntil(this.ngOnDestroy$))
+      .subscribe((loaded) => {
+        if (loaded) {
+          this.loading = false;
+        }
+      });
   }
 
   toggleFlowMenu() {
@@ -491,7 +499,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       const inputs = (task.attributes || {}).inputs || [];
       return isMapperActivity(schema) && inputs.length > 0;
     };
-    filter(this._getAllTasks(), isMapperContribAndHasMapping)
+    _filter(this._getAllTasks(), isMapperContribAndHasMapping)
       .forEach((task: Task) => {
         task.attributes.inputs.forEach((mapping) => {
           mapping.value = mapping.value.filter((m) => outputRegistry.has(m.mapTo));

@@ -21,7 +21,6 @@ export class MonacoEditorLoaderService {
         ngZone.runOutsideAngular(() => {
           const onGotAmdLoader = () => {
             // Load monaco
-            console.log(this._monacoPath);
             (<any>window).require.config({ paths: { 'vs': this._monacoPath } });
             (<any>window).require(['vs/editor/editor.main'], () => {
               ngZone.run(() => this.isMonacoLoaded.next(true));

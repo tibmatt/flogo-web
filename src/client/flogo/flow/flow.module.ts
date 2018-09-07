@@ -42,7 +42,7 @@ import { TaskAddModule } from './task-add';
     FlogoSharedModule,
     FlogoLogsModule,
     DiagramModule,
-    MonacoEditorModule,
+    MonacoEditorModule.forRoot(),
 
     FlowCoreModule,
     ParamsSchemaModule,
