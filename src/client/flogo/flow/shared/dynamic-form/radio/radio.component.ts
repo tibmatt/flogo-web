@@ -13,4 +13,6 @@ export class RadioComponent {
   fieldGroup: FormGroup;
   @Input()
   fieldControl: BaseField<any>;
+  @Input()
+  hideOptionalLabel?: boolean;
 }

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MonacoEditorModule } from '@flogo/flow/shared/monaco-editor';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TextBoxComponent } from './textbox/textbox.component';
@@ -8,13 +9,16 @@ import { FormFieldService } from './form-field.service';
 import { NumberComponent } from './number/number.component';
 import { TextareaComponent } from './textarea/textarea.component';
 import { RadioComponent } from './radio/radio.component';
-import { ObjectTypeComponent } from './object/objectType.component';
+import { ObjectTypeComponent } from './object/object-type.component';
 import { DynamicFieldGroupComponent } from './dynamic-field-group.component';
+import { FieldErrorComponent } from './field-error/field-error.component';
+import { LabelComponent } from './label/label.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MonacoEditorModule,
   ],
   declarations: [
     FormBuilderComponent,
@@ -24,6 +28,8 @@ import { DynamicFieldGroupComponent } from './dynamic-field-group.component';
     RadioComponent,
     ObjectTypeComponent,
     DynamicFieldGroupComponent,
+    FieldErrorComponent,
+    LabelComponent,
   ],
   providers: [
     FormBuilderService,

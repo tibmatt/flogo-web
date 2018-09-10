@@ -1,4 +1,3 @@
-import { FLOGO_TASK_TYPE } from '@flogo/core/constants';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash';
 import { Observable } from 'rxjs';
@@ -28,6 +27,10 @@ export function getChanges(flowState: FlowState, taskId, changedInputs) {
     items = flowState.errorItems;
   }
   const task = items[taskId] as ItemActivityTask;
+  if (!task) {
+    // update is not applicable anymore because task was deleted
+    return null;
+  }
   changedInputs = changedInputs || {};
   if (isEqual(changedInputs, task.input)) {
     return null;

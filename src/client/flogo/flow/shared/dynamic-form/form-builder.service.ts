@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { SchemaAttribute } from '@flogo/core';
 import { FormFieldService } from './form-field.service';
 import { BaseField } from './field-base';
-import { FieldAttribute } from './field-attribute';
 
 @Injectable()
 export class FormBuilderService {
   constructor(private ngFB: FormBuilder, private formService: FormFieldService) {
   }
 
-  toFormGroup(fields: FieldAttribute[]) {
-    const fieldsWithControlType = fields.map(f => this.formService.mapFieldsToControlType(f));
+  toFormGroup(fields: SchemaAttribute[], { requireAll } = { requireAll: false }) {
+    const fieldsWithControlType = fields.map(f => this.formService.mapFieldsToControlType(f, requireAll));
     const formGroup = this.ngFB.group({ formFields: this.makeFormFieldsArray(fieldsWithControlType) });
     return { formGroup, fieldsWithControlType };
   }
@@ -21,12 +21,15 @@ export class FormBuilderService {
 
   private makeFormFieldGroup(fieldControl: BaseField<any>) {
     const group: any = {};
-    group.name = [fieldControl.name, Validators.required];
-    group.type = [fieldControl.type, Validators.required];
+    group.name = [fieldControl.name];
+    group.type = [fieldControl.type];
     group.value = [fieldControl.value];
-    if (fieldControl.required) {
+    if (fieldControl.validators) {
+      group.value.push(fieldControl.validators);
+    } else if (fieldControl.required) {
       group.value.push(Validators.required);
     }
     return this.ngFB.group(group);
   }
+
 }

@@ -75,7 +75,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     const form$: Observable<null | FieldsInfo> = schema$.pipe(this.mapStateToForm(), shareReplay(1));
     const executionResult$ = selectAndShare(FlowSelectors.getSelectedActivityExecutionResult);
     this.activityHasRun$ = executionResult$.pipe(map(Boolean));
-    this.fields$ = combineLatest(form$, this.activity$, this.isRunDisabled$, executionResult$)
+    this.fields$ = combineLatest(form$, this.activity$, executionResult$)
       .pipe(this.mergeToFormFields(), shareReplay(1));
 
     form$.pipe(
@@ -138,13 +138,10 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   }
 
   private mergeToFormFields()  {
-    return (source: Observable<[FieldsInfo, ItemActivityTask, boolean, Dictionary<StepAttribute>]>) => source.pipe(
+    return (source: Observable<[FieldsInfo, ItemActivityTask, Dictionary<StepAttribute>]>) => source.pipe(
       filter(([schemaForm]) => !!schemaForm),
-      map(([schemaForm, activity, isRunDisabled, lastExecutionResult]) => {
+      map(([schemaForm, activity, lastExecutionResult]) => {
         const inputForm = schemaForm && schemaForm.form.get('input');
-        if (inputForm && inputForm.disabled !== isRunDisabled) {
-          this.updateFormDisabledState(inputForm, isRunDisabled);
-        }
         if (inputForm && activity) {
           this.mergeFormWithInputs(inputForm, activity);
         }
@@ -188,15 +185,6 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
       form.addControl('output', outputs.formGroup);
     }
     return { form, metadata: { input: inputs && inputs.fieldsWithControlType, output: outputs && outputs.fieldsWithControlType } };
-  }
-
-  private updateFormDisabledState(inputForm: AbstractControl, isRunDisabled: boolean) {
-    const options = { onlySelf: true, emitEvent: false };
-    if (isRunDisabled) {
-      inputForm.disable(options);
-    } else {
-      inputForm.enable(options);
-    }
   }
 
   private scrollContextElementIntoView() {

@@ -32,9 +32,7 @@ export class PanelContentComponent implements OnChanges {
   private computeViewState() {
     if (!this.flowHasRun) {
       this.viewState = 'noFlowRun';
-    } else if (this.activity && !this.activityHasRun) {
-      this.viewState = 'noActivityRun';
-    } else if (this.activity) {
+    } if (this.activity) {
       this.viewState = 'activity';
     } else {
       this.viewState = 'empty';
