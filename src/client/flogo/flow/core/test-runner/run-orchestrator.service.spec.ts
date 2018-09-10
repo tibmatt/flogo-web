@@ -186,6 +186,37 @@ describe('Service: RunOrchestratorService', function (this: {
 
     });
 
+    it('Should not send error handler if empty', () => {
+      spyOn(flowUtils, 'flogoFlowToJSON').and.returnValue({ id: 'transformed-flow', flow: { errorHandlerTask: { tasks: {} } } });
+      const storeProcessMock = <jasmine.Spy> this.runServiceMock.storeProcess;
+      storeProcessMock.and.returnValue(of({ id: '456' }));
+
+      const testFlow = <any> { name: 'test-flow' };
+      return this.service.registerFlowIfNeeded({ useFlow: <UiFlow>testFlow })
+        .toPromise()
+        .then(() => {
+          expect(storeProcessMock.calls.mostRecent().args[0].flow.errorHandlerTask)
+            .toBeUndefined('Was not expecting error handler to be present');
+        });
+    });
+
+    it('Should send error flow if not empty', () => {
+      spyOn(flowUtils, 'flogoFlowToJSON').and.returnValue({
+        id: 'transformed-flow',
+        flow: { errorHandlerTask: { tasks: { 'hi': { id: 'hi' } } } } }
+      );
+      const storeProcessMock = <jasmine.Spy> this.runServiceMock.storeProcess;
+      storeProcessMock.and.returnValue(of({ id: '456' }));
+
+      const testFlow = <any> { name: 'test-flow' };
+      return this.service.registerFlowIfNeeded({ useFlow: <UiFlow>testFlow })
+        .toPromise()
+        .then(() => {
+          expect(storeProcessMock.calls.mostRecent().args[0].flow.errorHandlerTask)
+            .toBeDefined('Was expecting error handler to be present but it was not present');
+        });
+    });
+
   });
 
   describe('::streamSteps', () => {

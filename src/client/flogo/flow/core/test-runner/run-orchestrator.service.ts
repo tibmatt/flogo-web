@@ -5,7 +5,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, combineLatest, merge, timer, of, throwError as _throw } from 'rxjs';
 
-import { isEqual, defaults } from 'lodash';
+import { isEqual, isEmpty, defaults } from 'lodash';
 
 import { Interceptor, Step, UiFlow } from '@flogo/core';
 import {
@@ -313,6 +313,10 @@ export class RunOrchestratorService {
     if (opts.useFlow) {
       // generate process based on the current flow
       const process = flogoFlowToJSON(opts.useFlow);
+      const errorHandler = process.flow && process.flow.errorHandlerTask;
+      if (errorHandler && isEmpty(errorHandler.tasks)) {
+        delete process.flow.errorHandlerTask;
+      }
 
       //  delete the id of the flow,
       //  since the same process ID returns 204 No Content response and cannot be updated,

@@ -52,6 +52,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
   activityHasRun$: Observable<boolean>;
   executionErrrors$: Observable<Array<string>>;
   isEndOfFlow$: Observable<boolean>;
+  isRestartableTask$: Observable<boolean>;
 
   private destroy$ = SingleEmissionSubject.create();
 
@@ -67,6 +68,7 @@ export class DebugPanelComponent implements OnInit, OnDestroy {
     this.activity$ = selectAndShare(FlowSelectors.getSelectedActivity);
     this.isRunDisabled$ = selectAndShare(FlowSelectors.getIsRunDisabledForSelectedActivity);
     this.executionErrrors$ = selectAndShare(FlowSelectors.getCurrentActivityExecutionErrors);
+    this.isRestartableTask$ =  selectAndShare(FlowSelectors.getIsRestartableTask);
 
     const schema$ = selectAndShare(FlowSelectors.getSelectedActivitySchema);
 

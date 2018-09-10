@@ -1,3 +1,4 @@
+import { get, filter as _filter } from 'lodash';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -102,10 +103,10 @@ export class RunApiService {
   //  the using this.runState.processInstanceId to restart
   restartFrom(processInstanceId: string, step: number, interceptor: Interceptor, updateProcessId?: string): Observable<RestartResponse> {
     // get the state of the last step
-    const snapshotId = step - 1;
-    if (snapshotId < 0) {
+    if (step < 0) {
       return _throw(new Error(`Invalid step ${step} to start from.`));
     }
+    const snapshotId = step !== 0 ? step : 1;
 
     return this.getSnapshot(processInstanceId, snapshotId)
       .pipe(
@@ -115,7 +116,7 @@ export class RunApiService {
           return this.fetch(`flows/run/flows/${updateProcessId}`)
             .pipe(
               map(flowInfo => {
-                const links = _.get(flowInfo, 'rootTask.links', []);
+                const links = get(flowInfo, 'rootTask.links', []);
                 return { snapshot, links };
               })
             );
@@ -173,12 +174,12 @@ export class RunApiService {
     let taskData = snapshot.rootTaskEnv.taskDatas || [];
 
     // filter out the tasks that are not in the path
-    workQueue = _.filter(workQueue, (queueItem: any) => {
+    workQueue = _filter(workQueue, (queueItem: any) => {
       return taskIds.indexOf(queueItem.taskID) !== -1;
     });
 
     // filter out the tasks that are not in the path
-    taskData = _.filter(taskData, (taskDatum: any) => {
+    taskData = _filter(taskData, (taskDatum: any) => {
       return taskDatum.taskId === '1' || taskDatum.taskId === 1 || taskIds.indexOf(taskDatum.taskId) !== -1;
     });
 
@@ -192,7 +193,7 @@ export class RunApiService {
   // TODO: left algorithm as it was when refactored, need to make it clearer
   private findTaskIdsInLinkPath(tasks: InterceptorTask[], links: flowToJSON_Link[]) {
     // TODO: icpt, what does it mean?? for icpTaskIds
-    const tasksIdsInPath: string[] = _.map(tasks, (task: any) => task.id);
+    const tasksIdsInPath: string[] = (tasks || []).map((task: any) => task.id);
     let linksToGo = links.slice();
     let lastLinksToGoLength = linksToGo.length;
 
@@ -209,7 +210,7 @@ export class RunApiService {
 
     // once the linksToGo stay the same or empty, then finish
     while (linksToGo.length) {
-      linksToGo = _.filter(linksToGo, filterLinksAndAccumulateTasks);
+      linksToGo = _filter(linksToGo, filterLinksAndAccumulateTasks);
       if (lastLinksToGoLength === linksToGo.length) {
         break;
       }
