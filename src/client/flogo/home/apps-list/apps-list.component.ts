@@ -1,11 +1,11 @@
+import { sortBy } from 'lodash';
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { LanguageService, App } from '@flogo/core';
+import { App } from '@flogo/core';
+import { NotificationsService } from '@flogo/core/notifications';
 import { AppsApiService } from '@flogo/core/services/restapi/v2/apps-api.service';
-import { notification } from '@flogo/shared/utils';
 
 @Component({
   selector: 'flogo-home-apps-list',
-  // moduleId: module.id,
   templateUrl: 'apps-list.component.html',
   styleUrls: ['apps-list.component.less']
 })
@@ -19,8 +19,8 @@ export class FlogoAppsListComponent implements OnInit {
 
   public applications: Array<App> = [];
 
-  constructor(private translate: LanguageService,
-              private apiApplications: AppsApiService) {
+  constructor(private apiApplications: AppsApiService,
+              private notifications: NotificationsService) {
   }
 
   ngOnInit() {
@@ -46,7 +46,7 @@ export class FlogoAppsListComponent implements OnInit {
       this.apiApplications.uploadApplication(appData)
         .then((application) => {
           this.applications.push(application);
-          this.applications = _.sortBy(this.applications, 'name');
+          this.applications = sortBy(this.applications, 'name');
           this.notifyUser(true);
         }).catch((error) => {
         this.notifyUser(false, error);
@@ -58,39 +58,34 @@ export class FlogoAppsListComponent implements OnInit {
   }
 
   notifyUser(isImported: boolean, errorDetails?: Error) {
-    let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
+    let key = 'APP-LIST:BROKEN_RULE_UNKNOWN';
 
     if (isImported) {
-      message = 'APP-LIST:SUCCESSFULLY-IMPORTED';
-      notification(this.translate.instant(message), 'success', 3000);
+      key = 'APP-LIST:SUCCESSFULLY-IMPORTED';
+      this.notifications.success({ key });
     } else {
       this.uploadAppErrorHandler(errorDetails);
     }
   }
 
   uploadAppErrorHandler(error) {
-    let message = 'APP-LIST:BROKEN_RULE_UNKNOWN';
+    let key = 'APP-LIST:BROKEN_RULE_UNKNOWN';
 
     if (error.name === 'SyntaxError') {
-      message = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
-      notification(this.translate.instant(message), 'error');
+      key = 'APP-LIST:BROKEN_RULE_WRONG_INPUT_JSON_FILE';
     } else {
       if (error[0].status === 400) {
         if (error[0].meta.details) {
           this.importValidationErrors = error[0].meta.details;
           this.showValidationErrors = true;
         } else {
-          message = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
-          notification(this.translate.instant(message), 'error');
+          key = 'APP-LIST:BROKEN_RULE_NOT_INSTALLED_TRIGGER';
         }
       } else if (error.status === 500) {
-        message = 'APP-LIST:INTERNAL_ERROR';
-        notification(this.translate.instant(message), 'error');
-      } else {
-        // Last case where we show "Unknown error"
-        notification(this.translate.instant(message), 'error');
+        key = 'APP-LIST:INTERNAL_ERROR';
       }
     }
+    this.notifications.error({ key });
   }
 
   resetValidationErrors() {
@@ -116,7 +111,7 @@ export class FlogoAppsListComponent implements OnInit {
   listAllApps() {
     this.apiApplications.listApps()
       .then((applications: Array<App>) => {
-        this.applications = _.sortBy(applications, 'name');
+        this.applications = sortBy(applications, 'name');
       });
   }
 

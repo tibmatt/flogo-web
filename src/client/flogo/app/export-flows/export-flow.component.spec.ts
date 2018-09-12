@@ -8,6 +8,8 @@ import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import {FlowSummary } from '@flogo/core/interfaces/app/flow-summary';
 import { AppDetailService } from '@flogo/app/core/apps.service';
 import { FlogoExportFlowsComponent } from './export-flows.component';
+import { NotificationsService } from '@flogo/core/notifications/notifications.service';
+import { NotificationsServiceMock } from '@flogo/core/notifications/testing';
 
 @Component({
   template: `<flogo-export-flow [flows]="flows" [isLegacyExport]="isLegacyExport"></flogo-export-flow>`
@@ -45,7 +47,8 @@ describe('FlogoExportFlowsComponent component', () => {
         TestHostComponent,
       ], // declare the test component
       providers: [
-        { provide: AppDetailService, useClass: MockAppDetailService }
+        { provide: AppDetailService, useClass: MockAppDetailService },
+        { provide: NotificationsService, useValue: new NotificationsServiceMock() },
       ],
       //  schemas: [ NO_ERRORS_SCHEMA ]
     })

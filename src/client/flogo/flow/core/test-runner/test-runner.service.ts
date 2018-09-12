@@ -3,9 +3,9 @@ import { Observable, Subject, throwError } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { catchError, filter, map, mergeMap, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { notification } from '@flogo/shared/utils';
 
 import { Dictionary, FlowGraph, GraphNode, Interceptor, LanguageService, NodeType, ItemActivityTask, ActivitySchema } from '@flogo/core';
+import { NotificationsService } from '@flogo/core/notifications';
 import { OperationalError } from '@flogo/core/services';
 import { FlowActions, FlowSelectors } from '@flogo/flow/core/state';
 import { isBranchExecuted } from '@flogo/flow/core/models/flow/branch-execution-status';
@@ -31,7 +31,8 @@ export class TestRunnerService implements OnDestroy {
   constructor(
     private store: Store<FlowState>,
     private orchestrator: RunOrchestratorService,
-    public translate: LanguageService,
+    private translate: LanguageService,
+    private notificationsService: NotificationsService,
   ) {
   }
 
@@ -178,7 +179,7 @@ export class TestRunnerService implements OnDestroy {
       tap((state: RunProgress) => {
         this.runState.steps = state.steps;
         const message = this.translate.instant('CANVAS:SUCCESS-MESSAGE-COMPLETED');
-        notification(message, 'success', 3000);
+        this.notificationsService.success(message);
       })
     );
   }
@@ -193,19 +194,19 @@ export class TestRunnerService implements OnDestroy {
   private handleRunError(error) {
     console.error(error);
     // todo: more specific error message?
-    let message = null;
+    let msgKey = null;
     if (error.isOperational) {
       const opError = <OperationalError> error;
       if (opError.name === RUNNER_ERRORS.PROCESS_NOT_COMPLETED) {
         // run error instance has status prop hence the casting to any
-        message = (<any>opError).status === RUNNER_STATUS.Cancelled ? 'CANVAS:RUN-ERROR:RUN-CANCELLED' : 'CANVAS:RUN-ERROR:RUN-FAILED';
+        msgKey = (<any>opError).status === RUNNER_STATUS.Cancelled ? 'CANVAS:RUN-ERROR:RUN-CANCELLED' : 'CANVAS:RUN-ERROR:RUN-FAILED';
       } else if (opError.name === RUNNER_ERRORS.MAX_TRIALS_REACHED) {
-        message = 'CANVAS:RUN-ERROR:MAX-REACHED';
+        msgKey = 'CANVAS:RUN-ERROR:MAX-REACHED';
       }
     }
 
-    message = message || 'CANVAS:ERROR-MESSAGE';
-    notification(this.translate.instant(message), 'error');
+    msgKey = msgKey || 'CANVAS:ERROR-MESSAGE';
+    this.notificationsService.error({ key: msgKey });
     return throwError(error);
   }
 

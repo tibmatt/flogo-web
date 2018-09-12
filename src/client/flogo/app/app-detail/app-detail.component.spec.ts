@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { BsModalModule } from 'ng2-bs3-modal';
+import {FLOGO_PROFILE_TYPE} from '@flogo/core';
+import { NotificationsServiceMock } from '@flogo/core/notifications/testing';
+import { NotificationsService } from '@flogo/core/notifications/notifications.service';
 import { SharedModule as FlogoSharedModule } from '@flogo/shared/shared.module';
 import { CoreModule as FlogoCoreModule } from '@flogo/core/core.module';
 import { FlogoApplicationDetailComponent } from './app-detail.component';
@@ -16,7 +19,7 @@ import {FlowGroupComponent} from '@flogo/app/flow-group/flow-group.component';
 import {FlogoNewFlowComponent} from '@flogo/app/new-flow/new-flow.component';
 import {TriggerShimBuildComponent} from '@flogo/app/shim-trigger/shim-trigger.component';
 import {RESTAPIContributionsService} from '@flogo/core/services/restapi/v2/contributions.service';
-import {FLOGO_PROFILE_TYPE} from '@flogo/core';
+
 
 
 @Component({
@@ -57,13 +60,8 @@ class MockRESTAPIContributionsService {
 
 
 describe('FlogoApplicationDetailComponent component', () => {
-  const application = null;
   let comp: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
-
-  function createComponent() {
-    return TestBed.compileComponents();
-  }
 
   beforeEach(done => {
     TestBed.configureTestingModule({
@@ -87,9 +85,9 @@ describe('FlogoApplicationDetailComponent component', () => {
       providers: [
         { provide: AppDetailService, useClass: MockAppDetailService },
         { provide: RESTAPIContributionsService, useClass: MockRESTAPIContributionsService },
+        { provide: NotificationsService, useValue: new NotificationsServiceMock() },
         FlogoProfileService
       ],
-      //  schemas: [ NO_ERRORS_SCHEMA ]
     })
       .compileComponents()
       .then(() => done());

@@ -14,6 +14,8 @@ import { FlogoNewAppComponent } from '../new-app/new-app.component';
 import { FakeRootLanguageModule } from '@flogo/core/language/testing';
 import { ProfilesAPIService } from '@flogo/core/services/restapi/v2/profiles-api.service';
 import { MockProfilesAPIService } from '@flogo/core/services/restapi/v2/profiles-api.service.mock';
+import { NotificationsService } from '@flogo/core/notifications/notifications.service';
+import { NotificationsServiceMock } from '@flogo/core/notifications/testing';
 
 describe('FlogoAppList component', () => {
   const applications = [
@@ -72,7 +74,8 @@ describe('FlogoAppList component', () => {
         HttpUtilsService,
         { provide: ProfilesAPIService, useClass: MockProfilesAPIService },
         { provide: ErrorService, useClass: ErrorService },
-        { provide: AppsApiService, useClass: AppsApiServiceMock }
+        { provide: AppsApiService, useClass: AppsApiServiceMock },
+        { provide: NotificationsService, useValue: new NotificationsServiceMock() },
       ]
     });
   });

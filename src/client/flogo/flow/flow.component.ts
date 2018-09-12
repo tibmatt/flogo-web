@@ -8,12 +8,14 @@ import {
 import { takeUntil, switchMap, take, filter } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { trigger as animationTrigger, transition, animateChild } from '@angular/animations';
 import {
   MetadataAttribute,
   Task,
   LanguageService,
   Item,
 } from '@flogo/core';
+import { NotificationsService } from '@flogo/core/notifications';
 import { PostService } from '@flogo/core/services/post.service';
 
 import { FlowData } from './core';
@@ -26,9 +28,7 @@ import {
   FLOGO_PROFILE_TYPE,
   FLOGO_TASK_TYPE
 } from '../core/constants';
-import {
-  getProfileType, isMapperActivity, notification,
-} from '@flogo/shared/utils';
+import { getProfileType, isMapperActivity } from '@flogo/shared/utils';
 
 import { FlogoFlowService as FlowsService } from './core/flow.service';
 import { ParamsSchemaComponent } from './params-schema/params-schema.component';
@@ -41,7 +41,6 @@ import { Trigger } from './core';
 import { TestRunnerService } from '@flogo/flow/core/test-runner/test-runner.service';
 import {ConfirmationResult} from '@flogo/core';
 import {ConfirmationModalService} from '@flogo/core/confirmation/confirmation-modal/confirmation-modal.service';
-import { trigger as animationTrigger, transition, animateChild } from '@angular/animations';
 import { MonacoEditorLoaderService } from '@flogo/flow/shared/monaco-editor';
 
 interface TaskContext {
@@ -103,7 +102,8 @@ export class FlowComponent implements OnInit, OnDestroy {
               private confirmationModalService: ConfirmationModalService,
               private _route: ActivatedRoute,
               private testRunner: TestRunnerService,
-              private  monacoLoaderService: MonacoEditorLoaderService) {
+              private notifications: NotificationsService,
+              private monacoLoaderService: MonacoEditorLoaderService) {
     this._isDiagramEdited = false;
 
     this.loading = true;
@@ -181,15 +181,11 @@ export class FlowComponent implements OnInit, OnDestroy {
             const triggerDetails = this.getTriggerCurrentFlow(app, this.flowState.id);
             return this._flowService.deleteFlow(this.flowId, triggerDetails ? triggerDetails.id : null);
           })
-          .then(() => {
-            this.navigateToApp();
-          })
-          .then(() => this.translate.get('FLOWS:SUCCESS-MESSAGE-FLOW-DELETED').toPromise())
-          .then(message => notification(message, 'success', 3000))
+          .then(() => this.navigateToApp())
+          .then(() => this.notifications.success({ key: 'FLOWS:SUCCESS-MESSAGE-FLOW-DELETED' }))
           .catch(err => {
             console.error(err);
-            this.translate.get('FLOWS:ERROR-MESSAGE-REMOVE-FLOW', err)
-              .subscribe(message => notification(message, 'error'));
+            this.notifications.error({ key: 'FLOWS:ERROR-MESSAGE-REMOVE-FLOW', params: err });
           });
       }
     });
@@ -256,16 +252,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     return this._updateFlow()
       .then(wasSaved => {
         if (wasSaved) {
-          this.translate
-            .get('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property })
-            .subscribe(message => notification(message, 'success', 3000));
+          this.notifications.success({ key: 'CANVAS:SUCCESS-MESSAGE-UPDATE', params: { value: property } });
         }
         return wasSaved;
       })
-      .catch(() => this.translate
-          .get('CANVAS:ERROR-MESSAGE-UPDATE', { value: property })
-          .subscribe(errorMsg => notification(errorMsg, 'error'))
-      );
+      .catch(() => this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property }  }));
   }
 
   /**
@@ -289,29 +280,24 @@ export class FlowComponent implements OnInit, OnDestroy {
           if (results[0].id === this.flowId) {
             return;
           }
-          const message = this.translate.instant('CANVAS:FLOW-NAME-EXISTS', { value: name });
           this.flowState.name = this.flowName;
-          notification(message, 'error');
+          this.notifications.error({ key: 'CANVAS:FLOW-NAME-EXISTS', params: { value: name } });
           return results;
         } else {
           this.flowState.name = name;
           this._updateFlow()
             .then((response: any) => {
-              this.translate.get('CANVAS:SUCCESS-MESSAGE-UPDATE', { value: property })
-                .subscribe(message =>    notification(message, 'success', 3000));
+              this.notifications.success({ key: 'CANVAS:SUCCESS-MESSAGE-UPDATE', params: { value: property } });
               this.flowName = this.flowState.name;
               return response;
             }).catch((err) => {
-              const message = this.translate
-                .get('CANVAS:ERROR-MESSAGE-UPDATE', { value: property })
-                .subscribe(errorMsg =>  notification(errorMsg, 'error'));
+              this.notifications.success({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
               return Promise.reject(err);
             });
         }
       })
       .catch((err) => {
-        const message = this.translate.instant('CANVAS:ERROR-MESSAGE-UPDATE', { value: property });
-        notification(message, 'error');
+        this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
         return Promise.reject(err);
       });
   }
