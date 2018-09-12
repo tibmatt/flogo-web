@@ -1,6 +1,6 @@
 import { animate, animateChild, group, keyframes, query, sequence, state, style, transition, trigger } from '@angular/animations';
 
-const INITIAL_TRIGGER_POSITION = 'translate(-18px, 84px)';
+const INITIAL_TRIGGER_POSITION = 'translate(-18px, 86px)';
 
 export const configuratorAnimations = [
   trigger('configurationPanel', [
@@ -24,7 +24,7 @@ export const configuratorAnimations = [
         query('.js-trigger-element', [
           style({
             width: '46px',
-            marginBottom: '11px',
+            marginBottom: '12px',
             opacity: 0,
             transform: INITIAL_TRIGGER_POSITION,
           }),
@@ -55,7 +55,7 @@ export const configuratorAnimations = [
             animate('200ms 50ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({
               transform: INITIAL_TRIGGER_POSITION,
               width: '46px',
-              marginBottom: '11px',
+              marginBottom: '12px',
             })),
             animate('150ms ease-in-out', style({ opacity: 0 })),
           ]),
