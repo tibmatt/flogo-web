@@ -1,27 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
 
 import { FakeTranslatePipe } from '@flogo/core/language/testing';
-import { Notification } from './notifications';
 import { NotificationsService } from './notifications.service';
 import { NotificationsComponent } from './notifications.component';
+import { NotificationsServiceMock } from './testing/notifications.service.mock';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('NotificationsComponent', () => {
   let component: NotificationsComponent;
-  let mockNotificationService: Partial<NotificationsService>;
+  let mockNotificationService: NotificationsServiceMock;
   let fixture: ComponentFixture<NotificationsComponent>;
 
   beforeEach(async(() => {
-    mockNotificationService = {
-      notifications$: new Subject<Notification[]>(),
-      removeNotification: () => {},
-    };
+    mockNotificationService = new NotificationsServiceMock();
     spyOn(mockNotificationService, 'removeNotification').and.callThrough();
     TestBed.configureTestingModule({
-      declarations: [
-        NotificationsComponent,
-        FakeTranslatePipe,
-      ],
+      declarations: [ NotificationsComponent ],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: NotificationsService, useValue: mockNotificationService }
       ],
@@ -33,7 +28,7 @@ describe('NotificationsComponent', () => {
     fixture = TestBed.createComponent(NotificationsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    (mockNotificationService.notifications$ as Subject<Notification[]>).next([
+    mockNotificationService.notificationsSource.next([
       { type: 'success', message: 'notification 3' },
       { type: 'success', message: 'notification 2' },
       { type: 'error', message: 'notification 1' },
@@ -42,7 +37,7 @@ describe('NotificationsComponent', () => {
   }));
 
   afterEach(() => {
-    (mockNotificationService.notifications$ as Subject<any>).complete();
+    mockNotificationService.notificationsSource.complete();
   });
 
   it('should render all notifications', () => {

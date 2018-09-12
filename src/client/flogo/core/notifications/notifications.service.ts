@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, timer, Observable } from 'rxjs';
-import { Router, NavigationEnd } from '@angular/router';
+import { BehaviorSubject, timer, Observable, Subscription } from 'rxjs';
+import { Router, NavigationStart } from '@angular/router';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { Notification, NotificationMessage } from '@flogo/core/notifications/notifications';
 
@@ -14,12 +14,13 @@ export class NotificationsService {
 
   private notificationsSource = new BehaviorSubject([]);
   private routeChange$: Observable<any>;
+  private navigationSubscription: Subscription;
 
   constructor(private router: Router) {
     this.routeChange$ = router.events
-      .pipe(filter(event => event instanceof NavigationEnd));
-    this.routeChange$
-      .subscribe(() => this.onNavigationEnd());
+      .pipe(filter(event => event instanceof NavigationStart));
+    this.navigationSubscription = this.routeChange$
+      .subscribe(() => this.onNavigation());
   }
 
   get notifications$() {
@@ -36,6 +37,10 @@ export class NotificationsService {
 
   removeNotification(notification: Notification) {
     this.updateNotifications((current) => current.filter(n => n !== notification));
+  }
+
+  destroy() {
+    this.navigationSubscription.unsubscribe();
   }
 
   private addNotification(notification: Notification, timeout?: number) {
@@ -60,7 +65,7 @@ export class NotificationsService {
     return this.routeChange$.pipe(take(1));
   }
 
-  private onNavigationEnd() {
+  private onNavigation() {
     this.updateNotifications(keepPersistableOnly);
   }
 
