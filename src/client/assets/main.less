@@ -542,60 +542,6 @@ code {
 
 }
 
-
-/* the class of notification */
-.flogo-common-notification-container{
-  position: fixed;
-  top: 48px;
-  right: 0;
-  width: 26%;
-  min-width: 320px;
-  z-index: 2000;
-}
-.flogo-common-notification {
-  position: relative;
-  opacity: 0;
-  width: 0;
-  float: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 10px 25px;
-  margin-bottom: 10px;
-  text-align: center;
-  border-radius: 4px;
-  transition: all 500ms linear;
-}
-.flogo-common-notification.on {
-  width: 100%;
-  opacity: 1;
-}
-.flogo-common-notification.information {
-  color: @color-info;
-  background: rgba(255, 255, 255, 1);
-  border: solid 1px @color-info;
-}
-.flogo-common-notification.success {
-  color: @color-success;
-  background: rgba(255, 255, 255, 1);
-  border: 2px solid @color-success;
-}
-.flogo-common-notification.warning {
-  color: @color-warning;
-  background: rgba(255, 255, 255, 1);
-  border: solid 1px @color-warning;
-}
-.flogo-common-notification.error {
-  color: @color-danger;
-  background: rgba(255, 255, 255, 1);
-  border: 2px solid @color-danger;
-}
-.flogo-common-notification .flogo-common-notification-close{
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-}
-
 /* the style for confirm modal */
 .flogo-common-service-modal-container{
   position: fixed;
