@@ -47,8 +47,10 @@
 
 .content {
   flex: 1;
-  background: @lightest-gray;
   display: flex;
+  // necessary for firefox flex overflow scroll
+  min-height: 0;
+  background: @lightest-gray;
   flex-direction: column;
   border-radius: 3px;
 }
@@ -64,6 +66,9 @@
   letter-spacing: 0.3px;
   cursor: pointer;
   border-bottom: 1px solid @gainsboro-two;
+  transition-property: border, background-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
 
   &:last-child {
     border: none;
