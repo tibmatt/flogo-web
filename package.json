@@ -30,7 +30,12 @@
     "clean:engines": "rm -rf ./dist/server/local/engines",
     "clean:local": "rm -rf -rf ./dist/server/local",
     "update-global-flogo": "go get -u github.com/TIBCOSoftware/flogo-cli/...",
-    "submodules:link": "yarn --cwd src/parser link && yarn link flogo-parser && yarn --cwd src/client link flogo-parser && yarn --cwd src/server link flogo-parser"
+    "submodules:link": "yarn --cwd src/parser link && yarn link flogo-parser && yarn --cwd src/client link flogo-parser && yarn --cwd src/server link flogo-parser",
+    "services:status": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml ps",
+    "services:pull": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml pull",
+    "services:start": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml up -d",
+    "services:stop": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml stop flogo-flow-service flogo-state-service",
+    "services:clear": "docker-compose -p flogo-dev -f docker/services.docker-compose.yml down"
   },
   "author": "TIBCO Software Inc.",
   "devDependencies": {
