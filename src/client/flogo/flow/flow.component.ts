@@ -291,7 +291,7 @@ export class FlowComponent implements OnInit, OnDestroy {
               this.flowName = this.flowState.name;
               return response;
             }).catch((err) => {
-              this.notifications.success({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
+              this.notifications.error({ key: 'CANVAS:ERROR-MESSAGE-UPDATE', params: { value: property } });
               return Promise.reject(err);
             });
         }
