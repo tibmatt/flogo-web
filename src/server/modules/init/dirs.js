@@ -1,8 +1,13 @@
 // Where we store the local files
-import {isDirectory, createFolder as createDirectory} from '../../common/utils'
+import path  from 'path';
+import { config } from '../../config/app-config';
+import { ensureDir } from '../../common/utils/file'
 
-const LOCAL_DIR = 'local/engines';
+const DIRS = [
+  ['engines'],
+  ['db'],
+];
 
 export function ensureDefaultDirs() {
-  return !isDirectory(LOCAL_DIR) ? createDirectory(LOCAL_DIR) : Promise.resolve(true);
+  return DIRS.reduce((promiseChain, d) => promiseChain.then(() => ensureDir(path.join(config.localPath, ...d))), Promise.resolve(true));
 }

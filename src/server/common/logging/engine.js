@@ -9,7 +9,7 @@ import { config } from '../../config/app-config';
 const engineLogger = new winston.Logger({
   level: 'debug',
   transports: [
-    new winston.transports.File({ filename: path.join(config.rootPath, 'winston.log') })
+    new winston.transports.File({ filename: path.join(config.localPath, 'engine.log') })
   ],
 });
 

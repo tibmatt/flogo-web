@@ -13,21 +13,17 @@ const FLOW_STATE_SERVICE_PORT = process.env.FLOGO_FLOW_STATE_SERVICE_PORT || '91
 const FLOW_SERVICE_PORT = process.env.FLOGO_FLOW_SERVICE_PORT || '9090';
 const FLOW_TESTER_PORT = process.env.FLOGO_FLOW_TESTER_PORT || '8080';
 
-const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve('local');
-// Default local/d
+const LOCAL_DIR = process.env.FLOGO_WEB_LOCALDIR || path.resolve(rootPath, '..', '..', 'dist', 'local');
 const DB_DIR = process.env.FLOGO_WEB_DBDIR || path.resolve(LOCAL_DIR, 'db');
+console.log('Local dir', LOCAL_DIR);
 
 const logLevel = process.env.FLOGO_WEB_LOGLEVEL || 'debug';
 
-console.log('rootPath: ', rootPath);
-console.log('publicPath: ', publicPath);
-
 const appPort = process.env.PORT || 3303;
 
-const enginesPath = path.join('local', 'engines');
-const enginesRoot = path.join(rootPath, enginesPath);
+const enginesRoot = path.join(LOCAL_DIR, 'engines');
 const defaultEngineName = 'flogo-web';
-const defaultEngine = path.join(enginesPath, defaultEngineName);
+const defaultEngine = path.join(enginesRoot, defaultEngineName);
 
 let libVersion = process.env.FLOGO_LIB_VERSION || process.env.FLOGO_WEB_LIB_VERSION;
 if (!libVersion || libVersion === 'latest') {
@@ -54,7 +50,7 @@ const config = {
   },
   exportedAppBuild: path.join(enginesRoot, 'exported-app-build.json'),
   appBuildEngine: {
-    path: path.resolve(enginesPath, 'app-build'),
+    path: path.resolve(enginesRoot, 'app-build'),
   },
   defaultEngine: {
     path: defaultEngine,
