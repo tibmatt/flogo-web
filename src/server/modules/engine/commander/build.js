@@ -2,6 +2,11 @@ import path from 'path';
 import { runShellCMD } from '../../../common/utils/process';
 import { logger } from "../../../common/logging";
 
+const DEFAULT_ENV = {
+  // necessary for cross compiling and static linking
+  CGO_ENABLED: '0'
+};
+
 /**
  * Build the engine.
  *
@@ -76,11 +81,12 @@ function _translateOptsToCommandArgs(opts) {
 }
 
 function _getEnv(opts) {
+  const env = {...DEFAULT_ENV};
+
   if (!opts.compile) {
-    return {};
+    return env;
   }
 
-  const env = {};
   if (opts.compile.os) {
     env.GOOS = opts.compile.os;
   }
