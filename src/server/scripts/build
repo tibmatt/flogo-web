@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+'use strict';
+const runAll = require('npm-run-all');
+const copy = require('cpy');
+
+const dest = process.argv[2];
+if (!dest) {
+  console.error('Missing destination path');
+  exit(1);
+}
+
+const log = message => console.log(`[@flogo-web/server:build] ${message}`);
+(async () => {
+  log('Building flogo server app');
+
+  log('1 of 2: Transpiling source code ...');
+  await runAll([`build:transpile -- --out-dir ${dest}`], {
+    printName: true,
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+
+  log('2 of 2: Copying files ...');
+  await copy(['*/**', '!**/*.js', '!**/{node_modules,test}/**'], dest, { parents: true });
+})().catch(e => {
+  console.error(e);
+  process.exit(1);
+});

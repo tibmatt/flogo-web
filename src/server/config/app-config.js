@@ -2,6 +2,8 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 
+import './load-env';
+
 const rootPath = path.resolve(__dirname, '..');
 const publicPath = path.resolve(rootPath, '..', 'public');
 
